@@ -44,11 +44,6 @@ JSBool js_map_spot_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 JSBool js_map_spot_get_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_spot_attach_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			map_spot_class={"map_spot_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	map_spot_props[]={
 							{"count",				js_map_spot_get_count,				NULL},
 							{0}};
@@ -72,7 +67,7 @@ script_js_function	map_spot_functions[]={
 
 void script_add_map_spot_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"spot",&map_spot_class,map_spot_props,map_spot_functions);
+	script_create_child_object(parent_obj,"spot",map_spot_props,map_spot_functions);
 }
 
 /* =======================================================

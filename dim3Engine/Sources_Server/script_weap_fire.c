@@ -41,11 +41,6 @@ JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc
 JSBool js_weap_fire_reset_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_fire_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			weap_fire_class={"weap_fire_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_fire_props[]={
 							{"method",				js_weap_fire_get_method,				NULL},
 							{"lastFireTick",		js_weap_fire_get_lastFireTick,			NULL},
@@ -65,7 +60,7 @@ script_js_function	weap_fire_functions[]={
 
 void script_add_weap_fire_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"fire",&weap_fire_class,weap_fire_props,weap_fire_functions);
+	script_create_child_object(parent_obj,"fire",weap_fire_props,weap_fire_functions);
 }
 
 /* =======================================================

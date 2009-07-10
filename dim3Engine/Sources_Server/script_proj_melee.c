@@ -54,11 +54,6 @@ JSBool js_proj_melee_set_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 JSBool js_proj_melee_spawn_from_projectile_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_melee_spawn_from_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			proj_melee_class={"proj_melee_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_melee_props[]={
 							{"strikeBoneTag",			js_proj_melee_get_strikeBoneTag,		js_proj_melee_set_strikeBoneTag},
 							{"strikePoseName",			js_proj_melee_get_strikePoseName,		js_proj_melee_set_strikePoseName},
@@ -82,7 +77,7 @@ script_js_function	proj_melee_functions[]={
 
 void script_add_proj_melee_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"melee",&proj_melee_class,proj_melee_props,proj_melee_functions);
+	script_create_child_object(parent_obj,"melee",proj_melee_props,proj_melee_functions);
 }
 
 /* =======================================================

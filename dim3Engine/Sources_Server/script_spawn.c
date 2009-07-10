@@ -49,11 +49,6 @@ JSBool js_spawn_ray_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 JSBool js_spawn_shake_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_push_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			spawn_class={"spawn_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	spawn_functions[]={
 							{"particle",			js_spawn_particle_func,				4},
 							{"particleMoving",		js_spawn_particle_moving_func,		7},
@@ -76,7 +71,7 @@ script_js_function	spawn_functions[]={
 
 void script_add_global_spawn_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"spawn",&spawn_class,NULL,spawn_functions);
+	script_create_child_object(parent_obj,"spawn",NULL,spawn_functions);
 }
 
 /* =======================================================

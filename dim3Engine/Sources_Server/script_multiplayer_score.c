@@ -41,11 +41,6 @@ extern setup_type		setup;
 JSBool js_multiplayer_score_get_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_multiplayer_score_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			multiplayer_score_class={"multiplayer_score_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	multiplayer_score_functions[]={
 							{"getObject",			js_multiplayer_score_get_object_func,		1},
 							{"getTeam",				js_multiplayer_score_get_team_func,			1},
@@ -59,7 +54,7 @@ script_js_function	multiplayer_score_functions[]={
 
 void script_add_multiplayer_score_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"score",&multiplayer_score_class,NULL,multiplayer_score_functions);
+	script_create_child_object(parent_obj,"score",NULL,multiplayer_score_functions);
 }
 
 /* =======================================================

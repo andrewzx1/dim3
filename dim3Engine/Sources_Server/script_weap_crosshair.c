@@ -47,11 +47,6 @@ JSBool js_weap_crosshair_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsva
 JSBool js_weap_crosshair_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_crosshair_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			weap_crosshair_class={"weap_crosshair_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_crosshair_props[]={
 							{"on",					js_weap_crosshair_get_on,			js_weap_crosshair_set_on},
 							{"type",				js_weap_crosshair_get_type,			js_weap_crosshair_set_type},
@@ -75,7 +70,7 @@ void script_add_weap_crosshair_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
 	
-	j_obj=script_create_child_object(parent_obj,"crosshair",&weap_crosshair_class,weap_crosshair_props,NULL);
+	j_obj=script_create_child_object(parent_obj,"crosshair",weap_crosshair_props,NULL);
 	
 		// crosshair color objects
 		

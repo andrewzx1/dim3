@@ -32,9 +32,6 @@ and can be sold or given away.
 #include "scripts.h"
 
 extern js_type			js;
-extern JSClass			dim3_class;
-
-JSClass			global_class={"global_class",0,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 /* =======================================================
 
@@ -44,15 +41,11 @@ JSClass			global_class={"global_class",0,JS_PropertyStub,JS_PropertyStub,JS_Prop
 
 void script_initialize_classes(void)
 {
-	/*
-*/	
-	script_set_property_lock(FALSE);
+	// supergumba -- necessary anymore?
 }
 
 void script_release_classes(void)
 {
-	/*
-	*/
 }
 
 /* =======================================================
@@ -69,15 +62,13 @@ bool script_add_global_object(script_type *script,char *err_str)
 	
 		// create global for this script
 	
-	script->global=JS_NewObject(js.cx,&global_class,NULL,NULL);
+	script->global=JS_NewObject(js.cx,NULL,NULL,NULL);
 	if (script->global==NULL) {
 		strcpy(err_str,"Not enough memory to create global object");
 		return(FALSE);
 	}
 
 		// set sub objects
-
-	script_set_property_lock(TRUE);
 
 	script_add_global_map_object(script->global);
 	script_add_global_multiplayer_object(script->global);
@@ -87,8 +78,6 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_global_sound_object(script->global);
 	script_add_global_spawn_object(script->global);
 	script_add_global_utility_object(script->global);
-
-	script_set_property_lock(FALSE);
 	
 		// set global
 
@@ -114,12 +103,8 @@ JSObject* script_create_main_object(attach_type *attach)
 {
 	JSObject		*j_obj;
 
-	j_obj=JS_NewObject(js.cx,&dim3_class,NULL,NULL);
+	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
 	if (j_obj==NULL) return(NULL);
-
-		// don't trigger adding lock
-
-	script_set_property_lock(TRUE);
 
 		// add sub-objects
 
@@ -214,15 +199,11 @@ JSObject* script_create_main_object(attach_type *attach)
 			break;
 
 	}
-
-		// clear lock
-
-	script_set_property_lock(FALSE);
 	
 	return(j_obj);
 }
 
-JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *class,script_js_property *props,script_js_function *funcs)
+JSObject* script_create_child_object(JSObject *parent_obj,char *name,script_js_property *props,script_js_function *funcs)
 {
 	int					flags;
 	script_js_property	*prop;
@@ -231,7 +212,7 @@ JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *cl
 
 		// object
 
-	j_obj=JS_DefineObject(js.cx,parent_obj,name,class,NULL,0);
+	j_obj=JS_DefineObject(js.cx,parent_obj,name,NULL,NULL,0);
 
 		// properties
 
@@ -263,30 +244,5 @@ JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *cl
 	}
 
 	return(j_obj);
-}
-
-/* =======================================================
-
-      Script Add Property
-      
-======================================================= */
-
-void script_set_property_lock(bool lock)
-{
-	js.add_property_lock=lock;
-}
-
-JSBool script_add_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
-{
-	char		prop_name[256];
-	
-	if (js.add_property_lock) return(JS_TRUE);
-	
-		// only allow dim3 to add property to game objects
-
-	script_value_to_string(id,prop_name,256);
-	JS_ReportError(js.cx,"%s is not a property or function of this object",prop_name);
-	
-	return(JS_FALSE);
 }
 

@@ -41,11 +41,6 @@ JSBool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 JSBool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_thrust_set_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_thrust_class={"obj_thrust_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_thrust_props[]={
 							{"speed",					js_obj_thrust_get_speed,			js_obj_thrust_set_speed},
 							{"maxSpeed",				js_obj_thrust_get_maxSpeed,			js_obj_thrust_set_maxSpeed},
@@ -60,7 +55,7 @@ script_js_property	obj_thrust_props[]={
 
 void script_add_obj_thrust_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"thrust",&obj_thrust_class,obj_thrust_props,NULL);
+	script_create_child_object(parent_obj,"thrust",obj_thrust_props,NULL);
 }
 
 /* =======================================================

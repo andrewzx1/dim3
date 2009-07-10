@@ -43,11 +43,6 @@ JSBool js_proj_setting_get_parentTeam(JSContext *cx,JSObject *j_obj,jsval id,jsv
 JSBool js_proj_setting_set_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_setting_set_resetAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			proj_setting_class={"proj_setting_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_setting_props[]={
 							{"name",				js_proj_setting_get_name,				NULL},
 							{"hitScan",				js_proj_setting_get_hitscan,			js_proj_setting_set_hitscan},
@@ -64,7 +59,7 @@ script_js_property	proj_setting_props[]={
 
 void script_add_proj_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"setting",&proj_setting_class,proj_setting_props,NULL);
+	script_create_child_object(parent_obj,"setting",proj_setting_props,NULL);
 }
 
 /* =======================================================

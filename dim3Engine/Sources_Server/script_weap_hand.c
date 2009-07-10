@@ -45,11 +45,6 @@ JSBool js_weap_hand_set_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval
 JSBool js_weap_hand_set_bobSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_hand_set_bobAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			weap_hand_class={"weap_hand_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_hand_props[]={
 							{"raiseTick",			js_weap_hand_get_raiseTick,				js_weap_hand_set_raiseTick},
 							{"lowerTick",			js_weap_hand_get_lowerTick,				js_weap_hand_set_lowerTick},
@@ -66,7 +61,7 @@ script_js_property	weap_hand_props[]={
 
 void script_add_weap_hand_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"hand",&weap_hand_class,weap_hand_props,NULL);
+	script_create_child_object(parent_obj,"hand",weap_hand_props,NULL);
 }
 
 /* =======================================================

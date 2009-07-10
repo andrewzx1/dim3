@@ -76,11 +76,6 @@ JSBool js_map_object_set_model_mesh_func(JSContext *cx,JSObject *j_obj,uintN arg
 JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_remove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			map_object_class={"map_object_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	map_object_functions[]={
 							{"find",						js_map_object_find_func,							1},
 							{"findPlayer",					js_map_object_find_player_func,						0},
@@ -131,7 +126,7 @@ script_js_function	map_object_functions[]={
 
 void script_add_map_object_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"object",&map_object_class,NULL,map_object_functions);
+	script_create_child_object(parent_obj,"object",NULL,map_object_functions);
 }
 
 /* =======================================================

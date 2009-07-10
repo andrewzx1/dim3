@@ -33,11 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSClass			multiplayer_class={"multiplayer_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 extern void script_add_multiplayer_setting_object(JSObject *parent_obj);
 extern void script_add_multiplayer_bot_object(JSObject *parent_obj);
 extern void script_add_multiplayer_score_object(JSObject *parent_obj);
@@ -52,7 +47,7 @@ void script_add_global_multiplayer_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
     
-	j_obj=JS_DefineObject(js.cx,parent_obj,"multiplayer",&multiplayer_class,NULL,0);
+	j_obj=JS_DefineObject(js.cx,parent_obj,"multiplayer",NULL,NULL,0);
 	
 	script_add_multiplayer_setting_object(j_obj);
 	script_add_multiplayer_bot_object(j_obj);

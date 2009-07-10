@@ -44,11 +44,6 @@ JSBool js_camera_static_position_move_func(JSContext *cx,JSObject *j_obj,uintN a
 JSBool js_camera_static_position_move_to_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_camera_static_position_walk_to_node_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			camera_static_position_class={"camera_static_position_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	camera_static_position_props[]={
 							{"follow",				js_camera_static_position_get_follow,			js_camera_static_position_set_follow},
 							{"walkTurnSpeed",		js_camera_static_position_get_walkTurnSpeed,	js_camera_static_position_set_walkTurnSpeed},
@@ -68,7 +63,7 @@ script_js_function	camera_static_position_functions[]={
 
 void script_add_camera_static_position_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"staticPosition",&camera_static_position_class,camera_static_position_props,camera_static_position_functions);
+	script_create_child_object(parent_obj,"staticPosition",camera_static_position_props,camera_static_position_functions);
 }
 
 /* =======================================================

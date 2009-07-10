@@ -56,11 +56,6 @@ JSBool js_camera_plane_set_near(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 JSBool js_camera_plane_set_far(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_plane_set_nearOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			camera_plane_class={"camera_plane_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	camera_plane_props[]={
 							{"projectionType",		js_camera_plane_get_projectionType,		js_camera_plane_set_projectionType},
 							{"fov",					js_camera_plane_get_fov,				js_camera_plane_set_fov},
@@ -82,7 +77,7 @@ script_js_property	camera_plane_props[]={
 
 void script_add_camera_plane_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"plane",&camera_plane_class,camera_plane_props,NULL);
+	script_create_child_object(parent_obj,"plane",camera_plane_props,NULL);
 }
 
 /* =======================================================

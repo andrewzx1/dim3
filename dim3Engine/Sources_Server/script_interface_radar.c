@@ -47,11 +47,6 @@ JSBool js_interface_radar_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 JSBool js_interface_radar_set_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_radar_set_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			interface_radar_class={"interface_radar_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	interface_radar_props[]={
 							{"on",					js_interface_radar_get_on,				js_interface_radar_set_on},
 							{"x",					js_interface_radar_get_x,				js_interface_radar_set_x},
@@ -68,7 +63,7 @@ script_js_property	interface_radar_props[]={
 
 void script_add_interface_radar_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"radar",&interface_radar_class,interface_radar_props,NULL);
+	script_create_child_object(parent_obj,"radar",interface_radar_props,NULL);
 }
 
 /* =======================================================

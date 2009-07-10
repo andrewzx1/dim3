@@ -53,10 +53,6 @@ JSBool js_obj_weapon_get_alt_max_ammo_count_func(JSContext *cx,JSObject *j_obj,u
 JSBool js_obj_weapon_get_alt_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_weapon_get_alt_max_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_weapon_class={"obj_weapon_class",0,
-							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-                            
 script_js_function	obj_weapon_functions[]={
 							{"add",					js_obj_weapon_add_func,						1},
 							{"getSelect",			js_obj_weapon_get_select_func,				0},
@@ -85,7 +81,7 @@ script_js_function	obj_weapon_functions[]={
 
 void script_add_obj_weapon_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"weapon",&obj_weapon_class,NULL,obj_weapon_functions);
+	script_create_child_object(parent_obj,"weapon",NULL,obj_weapon_functions);
 }
 
 /* =======================================================

@@ -38,11 +38,6 @@ JSBool js_proj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 JSBool js_proj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_motion_vector_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			proj_motion_vector_class={"proj_motion_vector_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_motion_vector_props[]={
 							{"x",					js_proj_motion_vector_get_x,			NULL},
 							{"y",					js_proj_motion_vector_get_y,			NULL},
@@ -57,7 +52,7 @@ script_js_property	proj_motion_vector_props[]={
 
 void script_add_proj_motion_vector_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"motionVector",&proj_motion_vector_class,proj_motion_vector_props,NULL);
+	script_create_child_object(parent_obj,"motionVector",proj_motion_vector_props,NULL);
 }
 
 /* =======================================================

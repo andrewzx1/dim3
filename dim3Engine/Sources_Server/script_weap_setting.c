@@ -39,11 +39,6 @@ JSBool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,j
 JSBool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_setting_set_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			weap_setting_class={"weap_setting_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_setting_props[]={
 							{"name",				js_weap_setting_get_name,				NULL},
 							{"failInLiquid",		js_weap_setting_get_failInLiquid,		js_weap_setting_set_failInLiquid},
@@ -58,7 +53,7 @@ script_js_property	weap_setting_props[]={
 
 void script_add_weap_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"setting",&weap_setting_class,weap_setting_props,NULL);
+	script_create_child_object(parent_obj,"setting",weap_setting_props,NULL);
 }
 
 /* =======================================================

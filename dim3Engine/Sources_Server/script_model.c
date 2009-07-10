@@ -57,11 +57,6 @@ JSBool js_model_change_fill_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 JSBool js_model_find_bone_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_find_bone_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			model_class={"model_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	model_props[]={
 							{"on",					js_model_get_on,					js_model_set_on},
 							{"name",				js_model_get_name,					js_model_set_name},
@@ -93,7 +88,7 @@ void script_add_model_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
 
-	j_obj=script_create_child_object(parent_obj,"model",&model_class,model_props,NULL);
+	j_obj=script_create_child_object(parent_obj,"model",model_props,NULL);
 	
 	script_add_model_offset_object(j_obj);
 	script_add_model_rotate_object(j_obj);

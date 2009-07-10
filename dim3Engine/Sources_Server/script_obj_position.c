@@ -50,11 +50,6 @@ JSBool js_obj_position_reset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 JSBool js_obj_position_distance_to_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_distance_to_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_position_class={"obj_position_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_position_props[]={
 							{"x",								js_obj_position_get_x,				NULL},
 							{"y",								js_obj_position_get_y,				NULL},
@@ -85,7 +80,7 @@ extern JSBool js_obj_position_pause_func(JSContext *cx,JSObject *j_obj,uintN arg
 
 void script_add_obj_position_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"position",&obj_position_class,obj_position_props,obj_position_functions);
+	script_create_child_object(parent_obj,"position",obj_position_props,obj_position_functions);
 }
 
 /* =======================================================

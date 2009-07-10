@@ -37,10 +37,6 @@ JSBool js_utility_pack_pack_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 JSBool js_utility_pack_unpack_high_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_utility_pack_unpack_low_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			utility_pack_class={"utility_pack_class",0,
-							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	utility_pack_functions[]={
 							{"pack",				js_utility_pack_pack_func,				2},
 							{"unpackHigh",			js_utility_pack_unpack_high_func,		1},
@@ -55,7 +51,7 @@ script_js_function	utility_pack_functions[]={
 
 void script_add_utility_pack_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"pack",&utility_pack_class,NULL,utility_pack_functions);
+	script_create_child_object(parent_obj,"pack",NULL,utility_pack_functions);
 }
 
 /* =======================================================

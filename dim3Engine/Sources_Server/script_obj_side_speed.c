@@ -51,11 +51,6 @@ JSBool js_obj_side_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id
 JSBool js_obj_side_speed_set_accelerationAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_side_speed_set_decelerationAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_side_speed_class={"obj_side_speed_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_side_speed_props[]={
 							{"walk",					js_obj_side_speed_get_walk,				js_obj_side_speed_set_walk},
 							{"run",						js_obj_side_speed_get_run,				js_obj_side_speed_set_run},
@@ -75,7 +70,7 @@ script_js_property	obj_side_speed_props[]={
 
 void script_add_obj_side_speed_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"sideSpeed",&obj_side_speed_class,obj_side_speed_props,NULL);
+	script_create_child_object(parent_obj,"sideSpeed",obj_side_speed_props,NULL);
 }
 
 /* =======================================================

@@ -59,12 +59,6 @@ JSBool js_weap_recoil_set_resetLook(JSContext *cx,JSObject *j_obj,jsval id,jsval
 JSBool js_weap_recoil_set_resetTurn(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_recoil_go_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			weap_recoil_class={"weap_recoil_class",0,
-							script_add_property,JS_PropertyStub,
-                            JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
-
 script_js_property	weap_recoil_props[]={
 							{"minX",				js_weap_recoil_get_minX,			js_weap_recoil_set_minX},
 							{"maxX",				js_weap_recoil_get_maxX,			js_weap_recoil_set_maxX},
@@ -91,7 +85,7 @@ script_js_function	weap_recoil_functions[]={
 
 void script_add_weap_recoil_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"recoil",&weap_recoil_class,weap_recoil_props,weap_recoil_functions);
+	script_create_child_object(parent_obj,"recoil",weap_recoil_props,weap_recoil_functions);
 }
 
 /* =======================================================

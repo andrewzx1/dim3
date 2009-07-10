@@ -41,11 +41,6 @@ JSBool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 JSBool js_game_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_setting_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			game_setting_class={"game_setting_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	game_setting_props[]={
 							{"type",				js_game_setting_get_type,				NULL},
 							{"multiplayer",			js_game_setting_get_multiplayer,		NULL},
@@ -60,7 +55,7 @@ script_js_property	game_setting_props[]={
 
 void script_add_game_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"setting",&game_setting_class,game_setting_props,NULL);
+	script_create_child_object(parent_obj,"setting",game_setting_props,NULL);
 }
 
 /* =======================================================

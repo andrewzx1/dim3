@@ -49,11 +49,6 @@ JSBool js_obj_object_speed_set_bumpSmoothFactor(JSContext *cx,JSObject *j_obj,js
 JSBool js_obj_object_speed_set_bounceFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_object_speed_set_noSlide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_object_speed_class={"obj_object_speed_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_object_speed_props[]={
 							{"jumpHeight",				js_obj_object_speed_get_jumpHeight,			js_obj_object_speed_set_jumpHeight},
 							{"duckAdd",					js_obj_object_speed_get_duckAdd,			js_obj_object_speed_set_duckAdd},
@@ -72,7 +67,7 @@ script_js_property	obj_object_speed_props[]={
 
 void script_add_obj_object_speed_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"objectSpeed",&obj_object_speed_class,obj_object_speed_props,NULL);
+	script_create_child_object(parent_obj,"objectSpeed",obj_object_speed_props,NULL);
 }
 
 /* =======================================================

@@ -49,11 +49,6 @@ JSBool js_obj_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 JSBool js_obj_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_melee_spawn_from_object_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_melee_class={"obj_melee_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_melee_props[]={
 							{"strikeBoneTag",			js_obj_melee_get_strikeBoneTag,					js_obj_melee_set_strikeBoneTag},
 							{"strikePoseName",			js_obj_melee_get_strikePoseName,				js_obj_melee_set_strikePoseName},
@@ -75,7 +70,7 @@ script_js_function	obj_melee_functions[]={
 
 void script_add_obj_melee_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"melee",&obj_melee_class,obj_melee_props,obj_melee_functions);
+	script_create_child_object(parent_obj,"melee",obj_melee_props,obj_melee_functions);
 }
 
 /* =======================================================

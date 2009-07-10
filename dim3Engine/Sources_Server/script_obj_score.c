@@ -42,11 +42,6 @@ JSBool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_score_get_score(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_score_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_score_class={"obj_score_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_score_props[]={
 							{"kill",				js_obj_score_get_kill,				NULL},
 							{"death",				js_obj_score_get_death,				NULL},
@@ -67,7 +62,7 @@ script_js_function	obj_score_functions[]={
 
 void script_add_obj_score_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"score",&obj_score_class,obj_score_props,obj_score_functions);
+	script_create_child_object(parent_obj,"score",obj_score_props,obj_score_functions);
 }
 
 /* =======================================================

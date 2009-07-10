@@ -40,11 +40,6 @@ JSBool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 JSBool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_touch_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_touch_class={"obj_touch_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_touch_props[]={
 							{"objectId",			js_obj_touch_get_objectId,			NULL},
 							{"objectName",			js_obj_touch_get_objectName,		NULL},
@@ -60,7 +55,7 @@ script_js_property	obj_touch_props[]={
 
 void script_add_obj_touch_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"touch",&obj_touch_class,obj_touch_props,NULL);
+	script_create_child_object(parent_obj,"touch",obj_touch_props,NULL);
 }
 
 /* =======================================================

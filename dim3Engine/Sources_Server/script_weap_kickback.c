@@ -39,11 +39,6 @@ JSBool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 JSBool js_weap_kickback_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_kickback_kick_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			weap_kickback_class={"weap_kickback_class",0,
-							script_add_property,JS_PropertyStub,
-                            JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-                            
 script_js_property	weap_kickback_props[]={
 							{"size",				js_weap_kickback_get_size,				js_weap_kickback_set_size},
 							{0}};
@@ -60,7 +55,7 @@ script_js_function	weap_kickback_functions[]={
 
 void script_add_weap_kickback_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"kickback",&weap_kickback_class,weap_kickback_props,weap_kickback_functions);
+	script_create_child_object(parent_obj,"kickback",weap_kickback_props,weap_kickback_functions);
 }
 
 /* =======================================================

@@ -38,11 +38,6 @@ JSBool js_obj_touch_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 JSBool js_obj_touch_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_touch_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_touch_angle_class={"obj_touch_angle_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_touch_angle_props[]={
 							{"x",					js_obj_touch_angle_get_x,				NULL},
 							{"y",					js_obj_touch_angle_get_y,				NULL},
@@ -57,7 +52,7 @@ script_js_property	obj_touch_angle_props[]={
 
 void script_add_obj_touch_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"touchAngle",&obj_touch_angle_class,obj_touch_angle_props,NULL);
+	script_create_child_object(parent_obj,"touchAngle",obj_touch_angle_props,NULL);
 }
 
 /* =======================================================

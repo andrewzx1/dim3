@@ -43,11 +43,6 @@ JSBool js_proj_mark_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_mark_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_mark_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			proj_mark_class={"proj_mark_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_mark_props[]={
 							{"on",					js_proj_mark_get_on,				js_proj_mark_set_on},
 							{"name",				js_proj_mark_get_name,				js_proj_mark_set_name},
@@ -63,7 +58,7 @@ script_js_property	proj_mark_props[]={
 
 void script_add_proj_mark_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"mark",&proj_mark_class,proj_mark_props,NULL);
+	script_create_child_object(parent_obj,"mark",proj_mark_props,NULL);
 }
 
 /* =======================================================

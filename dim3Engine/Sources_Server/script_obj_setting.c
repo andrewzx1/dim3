@@ -101,11 +101,6 @@ JSBool js_obj_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 JSBool js_obj_change_ambient_pitch_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_clear_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_setting_class={"obj_setting_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_setting_props[]={
 							{"id",						js_obj_setting_get_id,						NULL},
 							{"name",					js_obj_setting_get_name,					NULL},
@@ -156,7 +151,7 @@ script_js_function	obj_setting_functions[]={
 
 void script_add_obj_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"setting",&obj_setting_class,obj_setting_props,obj_setting_functions);
+	script_create_child_object(parent_obj,"setting",obj_setting_props,obj_setting_functions);
 }
 
 /* =======================================================

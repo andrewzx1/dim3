@@ -39,11 +39,6 @@ extern js_type			js;
 JSBool js_interface_fade_circle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_fade_clear_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			interface_fade_class={"interface_fade_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	interface_fade_functions[]={
 							{"circle",				js_interface_fade_circle_func,			6},
 							{"clear",				js_interface_fade_clear_func,			0},
@@ -60,7 +55,7 @@ extern void object_fade_clear(obj_type *obj);
 
 void script_add_interface_fade_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"fade",&interface_fade_class,NULL,interface_fade_functions);
+	script_create_child_object(parent_obj,"fade",NULL,interface_fade_functions);
 }
 
 /* =======================================================

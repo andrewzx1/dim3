@@ -43,11 +43,6 @@ JSBool js_obj_look_set_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsva
 JSBool js_obj_look_set_look_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_look_set_look_at_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_look_class={"obj_look_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_look_props[]={
 							{"upAngle",					js_obj_look_get_upAngle,				js_obj_look_set_upAngle},
 							{"downAngle",				js_obj_look_get_downAngle,				js_obj_look_set_downAngle},
@@ -67,7 +62,7 @@ script_js_function	obj_look_functions[]={
 
 void script_add_obj_look_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"look",&obj_look_class,obj_look_props,obj_look_functions);
+	script_create_child_object(parent_obj,"look",obj_look_props,obj_look_functions);
 }
 
 /* =======================================================

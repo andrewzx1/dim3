@@ -46,11 +46,6 @@ JSBool js_map_node_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 JSBool js_map_node_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			map_node_class={"map_node_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	map_node_functions[]={
 							{"find",							js_map_node_find_func,									1},
 							{"findRandom",						js_map_node_find_random_func,							1},
@@ -72,7 +67,7 @@ script_js_function	map_node_functions[]={
 
 void script_add_map_node_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"node",&map_node_class,NULL,map_node_functions);
+	script_create_child_object(parent_obj,"node",NULL,map_node_functions);
 }
 
 /* =======================================================

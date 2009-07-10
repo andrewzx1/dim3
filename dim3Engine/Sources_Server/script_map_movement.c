@@ -41,11 +41,6 @@ JSBool js_map_movement_freeze_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 JSBool js_map_movement_thaw_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_movement_is_looping_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			map_movement_class={"map_movement_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	map_movement_functions[]={
 							{"start",				js_map_movement_start_func,			1},
 							{"startReverse",		js_map_movement_start_reverse_func,	1},
@@ -69,7 +64,7 @@ extern bool map_movements_script_is_looping(int movement_idx);
 
 void script_add_map_movement_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"movement",&map_movement_class,NULL,map_movement_functions);
+	script_create_child_object(parent_obj,"movement",NULL,map_movement_functions);
 }
 
 /* =======================================================

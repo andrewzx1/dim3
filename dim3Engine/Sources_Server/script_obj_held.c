@@ -38,11 +38,6 @@ extern js_type			js;
 JSBool js_obj_held_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_held_drop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_held_class={"obj_held_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	obj_held_functions[]={
 							{"add",					js_obj_held_add_func,				4},
 							{"drop",				js_obj_held_drop_func,				3},
@@ -56,7 +51,7 @@ script_js_function	obj_held_functions[]={
 
 void script_add_obj_held_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"held",&obj_held_class,NULL,obj_held_functions);
+	script_create_child_object(parent_obj,"held",NULL,obj_held_functions);
 }
 
 /* =======================================================

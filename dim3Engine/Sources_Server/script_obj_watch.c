@@ -49,11 +49,6 @@ JSBool js_obj_watch_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 JSBool js_obj_watch_set_restrict_sight_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_watch_clear_restrict_sight_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_watch_class={"obj_watch_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_watch_props[]={
 							{"objectId",				js_obj_watch_get_objectId,					NULL},
 							{"objectName",				js_obj_watch_get_objectName,				NULL},
@@ -81,7 +76,7 @@ script_js_function	obj_watch_functions[]={
 
 void script_add_obj_watch_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"watch",&obj_watch_class,obj_watch_props,obj_watch_functions);
+	script_create_child_object(parent_obj,"watch",obj_watch_props,obj_watch_functions);
 }
 
 /* =======================================================

@@ -45,11 +45,6 @@ JSBool js_interface_interaction_start_setup_func(JSContext *cx,JSObject *j_obj,u
 JSBool js_interface_interaction_start_menu_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_interaction_quit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			interface_interaction_class={"interface_interaction_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	interface_interaction_functions[]={
 							{"startStory",			js_interface_interaction_start_story_func,				2},
 							{"startTitle",			js_interface_interaction_start_title_func,				3},
@@ -69,7 +64,7 @@ script_js_function	interface_interaction_functions[]={
 
 void script_add_interface_interaction_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"interaction",&interface_interaction_class,NULL,interface_interaction_functions);
+	script_create_child_object(parent_obj,"interaction",NULL,interface_interaction_functions);
 }
 
 /* =======================================================

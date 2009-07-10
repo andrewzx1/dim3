@@ -47,11 +47,6 @@ JSBool js_proj_speed_set_decelerationMinSpeed(JSContext *cx,JSObject *j_obj,jsva
 JSBool js_proj_speed_set_maxHitscanDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_speed_set_inheritMotionFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			proj_speed_class={"proj_speed_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_speed_props[]={
 							{"speed",					js_proj_speed_get_speed,					js_proj_speed_set_speed},
 							{"deceleration",			js_proj_speed_get_deceleration,				js_proj_speed_set_deceleration},
@@ -69,7 +64,7 @@ script_js_property	proj_speed_props[]={
 
 void script_add_proj_speed_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"speed",&proj_speed_class,proj_speed_props,NULL);
+	script_create_child_object(parent_obj,"speed",proj_speed_props,NULL);
 }
 
 /* =======================================================

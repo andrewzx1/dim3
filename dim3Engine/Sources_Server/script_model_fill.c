@@ -36,11 +36,6 @@ JSBool js_model_fill_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 
 extern js_type			js;
 
-JSClass			model_fill_class={"model_fill_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	model_fill_functions[]={
 							{"change",				js_model_fill_change_func,				2},
 							{0}};
@@ -55,7 +50,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_fill_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"fill",&model_fill_class,NULL,model_fill_functions);
+	script_create_child_object(parent_obj,"fill",NULL,model_fill_functions);
 }
 
 /* =======================================================

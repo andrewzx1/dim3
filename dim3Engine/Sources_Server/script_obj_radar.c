@@ -44,11 +44,6 @@ JSBool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_radar_set_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_radar_class={"obj_radar_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_radar_props[]={
 							{"on",					js_obj_radar_get_on,				js_obj_radar_set_on},
 							{"icon",				js_obj_radar_get_icon,				js_obj_radar_set_icon},
@@ -64,7 +59,7 @@ script_js_property	obj_radar_props[]={
 
 void script_add_obj_radar_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"radar",&obj_radar_class,obj_radar_props,NULL);
+	script_create_child_object(parent_obj,"radar",obj_radar_props,NULL);
 }
 
 /* =======================================================

@@ -40,11 +40,6 @@ JSBool js_model_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsva
 
 extern js_type			js;
 
-JSClass			model_light_color_class={"model_light_color_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	model_light_color_props[]={
 							{"red",					js_model_light_color_get_red,			js_model_light_color_set_red},
 							{"green",				js_model_light_color_get_green,			js_model_light_color_set_green},
@@ -61,7 +56,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_light_color_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"lightColor",&model_light_color_class,model_light_color_props,NULL);
+	script_create_child_object(parent_obj,"lightColor",model_light_color_props,NULL);
 }
 
 /* =======================================================

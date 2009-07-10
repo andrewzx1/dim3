@@ -41,11 +41,6 @@ JSBool js_map_group_set_texture_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 JSBool js_map_group_set_texture_shift_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_group_set_texture_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			map_group_class={"map_group_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	map_group_functions[]={
 							{"getCenter",			js_map_group_get_center_func,			1},
 							{"setShow",				js_map_group_set_show_func,				2},
@@ -69,8 +64,8 @@ extern void group_texture_alpha(int group_idx,float alpha);
 
 void script_add_map_group_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"group",&map_group_class,NULL,map_group_functions);
-	script_create_child_object(parent_obj,"segment",&map_group_class,NULL,map_group_functions);	// depreciated; here for backwards compatiability
+	script_create_child_object(parent_obj,"group",NULL,map_group_functions);
+	script_create_child_object(parent_obj,"segment",NULL,map_group_functions);	// depreciated; here for backwards compatiability
 }
 
 /* =======================================================

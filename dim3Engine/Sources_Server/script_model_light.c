@@ -46,11 +46,6 @@ JSBool js_model_light_set_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 
 extern js_type			js;
 
-JSClass			model_light_class={"model_light_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	model_light_props[]={
 							{"index",				js_model_light_get_index,				js_model_light_set_index},
 							{"on",					js_model_light_get_on,					js_model_light_set_on},
@@ -70,7 +65,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_light_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"light",&model_light_class,model_light_props,NULL);
+	script_create_child_object(parent_obj,"light",model_light_props,NULL);
 }
 
 /* =======================================================

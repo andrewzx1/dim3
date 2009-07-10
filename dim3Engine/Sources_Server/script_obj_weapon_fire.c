@@ -37,11 +37,6 @@ extern js_type			js;
 JSBool js_obj_weapon_fire_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_weapon_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_weapon_fire_class={"obj_weapon_fire_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_weapon_fire_props[]={
 							{"name",				js_obj_weapon_fire_get_name,		NULL},
 							{"method",				js_obj_weapon_fire_get_method,		NULL},
@@ -55,7 +50,7 @@ script_js_property	obj_weapon_fire_props[]={
 
 void script_add_obj_weapon_fire_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"weaponFire",&obj_weapon_fire_class,obj_weapon_fire_props,NULL);
+	script_create_child_object(parent_obj,"weaponFire",obj_weapon_fire_props,NULL);
 }
 
 /* =======================================================

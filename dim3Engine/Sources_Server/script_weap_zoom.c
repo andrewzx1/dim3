@@ -56,11 +56,6 @@ JSBool js_weap_zoom_set_maskName(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 JSBool js_weap_zoom_set_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_zoom_set_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			weap_zoom_class={"weap_zoom_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_zoom_props[]={
 							{"on",					js_weap_zoom_get_on,						js_weap_zoom_set_on},
 							{"active",				js_weap_zoom_get_active,					NULL},
@@ -83,7 +78,7 @@ script_js_property	weap_zoom_props[]={
 
 void script_add_weap_zoom_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"zoom",&weap_zoom_class,weap_zoom_props,NULL);
+	script_create_child_object(parent_obj,"zoom",weap_zoom_props,NULL);
 }
 
 /* =======================================================

@@ -60,11 +60,6 @@ JSBool js_proj_action_reflect_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 JSBool js_proj_action_stick_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_action_destroy_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			proj_action_class={"proj_action_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_action_props[]={
 							{"damage",				js_proj_action_get_damage,				js_proj_action_set_damage},
 							{"collision",			js_proj_action_get_collision,			js_proj_action_set_collision},
@@ -94,7 +89,7 @@ script_js_function	proj_action_functions[]={
 
 void script_add_proj_action_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"action",&proj_action_class,proj_action_props,proj_action_functions);
+	script_create_child_object(parent_obj,"action",proj_action_props,proj_action_functions);
 }
 
 /* =======================================================

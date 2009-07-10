@@ -42,11 +42,6 @@ JSBool js_map_action_set_host_map_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_map_action_restart_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_action_restart_map_from_save_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			map_action_class={"map_action_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	map_action_functions[]={
 							{"setMap",				js_map_action_set_map_func,					3},
 							{"setHostMap",			js_map_action_set_host_map_func,			0},
@@ -66,7 +61,7 @@ extern void game_time_pause_end(void);
 
 void script_add_map_action_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"action",&map_action_class,NULL,map_action_functions);
+	script_create_child_object(parent_obj,"action",NULL,map_action_functions);
 }
 
 /* =======================================================

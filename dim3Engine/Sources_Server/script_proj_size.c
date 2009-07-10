@@ -43,11 +43,6 @@ JSBool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			proj_size_class={"proj_size_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_size_props[]={
 							{"x",					js_proj_size_get_x,					js_proj_size_set_x},
 							{"y",					js_proj_size_get_y,					js_proj_size_set_y},
@@ -63,7 +58,7 @@ script_js_property	proj_size_props[]={
 
 void script_add_proj_size_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"size",&proj_size_class,proj_size_props,NULL);
+	script_create_child_object(parent_obj,"size",proj_size_props,NULL);
 }
 
 /* =======================================================

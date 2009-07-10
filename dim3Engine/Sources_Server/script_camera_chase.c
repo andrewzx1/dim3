@@ -42,11 +42,6 @@ JSBool js_camera_chase_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 JSBool js_camera_chase_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_chase_set_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			camera_chase_class={"camera_chase_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	camera_chase_props[]={
 							{"size",				js_camera_chase_get_size,				js_camera_chase_set_size},
 							{"distance",			js_camera_chase_get_distance,			js_camera_chase_set_distance},
@@ -61,7 +56,7 @@ script_js_property	camera_chase_props[]={
 
 void script_add_camera_chase_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"chase",&camera_chase_class,camera_chase_props,NULL);
+	script_create_child_object(parent_obj,"chase",camera_chase_props,NULL);
 }
 
 /* =======================================================

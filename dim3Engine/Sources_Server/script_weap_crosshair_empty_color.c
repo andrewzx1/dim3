@@ -41,11 +41,6 @@ JSBool js_weap_crosshair_empty_color_set_blue(JSContext *cx,JSObject *j_obj,jsva
 
 extern js_type			js;
 
-JSClass			weap_crosshair_empty_color_class={"weap_crosshair_empty_color_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_crosshair_empty_color_props[]={
 							{"red",					js_weap_crosshair_empty_color_get_red,		js_weap_crosshair_empty_color_set_red},
 							{"green",				js_weap_crosshair_empty_color_get_green,	js_weap_crosshair_empty_color_set_green},
@@ -60,7 +55,7 @@ script_js_property	weap_crosshair_empty_color_props[]={
 
 void script_add_weap_crosshair_empty_color_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"emptyColor",&weap_crosshair_empty_color_class,weap_crosshair_empty_color_props,NULL);
+	script_create_child_object(parent_obj,"emptyColor",weap_crosshair_empty_color_props,NULL);
 }
 
 /* =======================================================

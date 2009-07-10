@@ -41,11 +41,6 @@ JSBool js_obj_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_angle_rotate_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_angle_rotate_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_angle_class={"obj_angle_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_angle_props[]={
 							{"x",					js_obj_angle_get_x,					NULL},
 							{"y",					js_obj_angle_get_y,					NULL},
@@ -67,7 +62,7 @@ extern void object_setup_motion(obj_type *obj,float ang,float speed);
 
 void script_add_obj_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"angle",&obj_angle_class,obj_angle_props,obj_angle_functions);
+	script_create_child_object(parent_obj,"angle",obj_angle_props,obj_angle_functions);
 }
 
 /* =======================================================

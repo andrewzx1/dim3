@@ -33,23 +33,13 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSClass			d3_ang_class={"d3_ang_class",0,
-							JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-JSClass			d3_point_class={"d3_point_class",0,
-							JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-JSClass			d3_color_class={"d3_color_class",0,
-							JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 /* =======================================================
 
       Float-JSVAL Translations
       
 ======================================================= */
 
-float script_value_to_float(jsval val)
+inline float script_value_to_float(jsval val)
 {
     jsdouble		jd;
     
@@ -57,7 +47,7 @@ float script_value_to_float(jsval val)
 	return((float)jd);
 }
 
-jsval script_float_to_value(float f)
+inline jsval script_float_to_value(float f)
 {
     jsval		vp;
     
@@ -131,7 +121,7 @@ jsval script_angle_to_value(float x,float y,float z)
 {
 	JSObject		*j_obj;
 
-	j_obj=JS_NewObject(js.cx,&d3_ang_class,NULL,NULL);
+	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
 	if (j_obj==NULL) return(JSVAL_NULL);
 
 	JS_DefineProperty(js.cx,j_obj,"x",script_float_to_value(x),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
@@ -145,7 +135,7 @@ jsval script_point_to_value(int x,int y,int z)
 {
 	JSObject		*j_obj;
 
-	j_obj=JS_NewObject(js.cx,&d3_point_class,NULL,NULL);
+	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
 	if (j_obj==NULL) return(JSVAL_NULL);
 
 	JS_DefineProperty(js.cx,j_obj,"x",INT_TO_JSVAL(x),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
@@ -159,7 +149,7 @@ jsval script_color_to_value(d3col *col)
 {
 	JSObject		*j_obj;
 
-	j_obj=JS_NewObject(js.cx,&d3_color_class,NULL,NULL);
+	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
 	if (j_obj==NULL) return(JSVAL_NULL);
 
 	JS_DefineProperty(js.cx,j_obj,"r",script_float_to_value(col->r),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);

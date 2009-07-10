@@ -46,11 +46,6 @@ JSBool js_interface_bitmap_set_flash_func(JSContext *cx,JSObject *j_obj,uintN ar
 JSBool js_interface_bitmap_set_rotate_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_bitmap_start_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			interface_bitmap_class={"interface_bitmap_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	interface_bitmap_functions[]={
 							{"show",				js_interface_bitmap_show_func,			1},
 							{"hide",				js_interface_bitmap_hide_func,			1},
@@ -73,7 +68,7 @@ script_js_function	interface_bitmap_functions[]={
 
 void script_add_interface_bitmap_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"bitmap",&interface_bitmap_class,NULL,interface_bitmap_functions);
+	script_create_child_object(parent_obj,"bitmap",NULL,interface_bitmap_functions);
 }
 
 /* =======================================================

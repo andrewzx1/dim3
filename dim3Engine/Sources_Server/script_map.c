@@ -33,11 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSClass			map_class={"map_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 extern void script_add_map_info_object(JSObject *parent_obj);
 extern void script_add_map_setting_object(JSObject *parent_obj);
 extern void script_add_map_light_color_object(JSObject *parent_obj);
@@ -60,7 +55,7 @@ void script_add_global_map_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
     
-	j_obj=JS_DefineObject(js.cx,parent_obj,"map",&map_class,NULL,0);
+	j_obj=JS_DefineObject(js.cx,parent_obj,"map",NULL,NULL,0);
 	
 	script_add_map_info_object(j_obj);
 	script_add_map_setting_object(j_obj);

@@ -172,10 +172,7 @@ extern void script_initialize_classes(void);
 extern void script_release_classes(void);
 extern bool script_add_global_object(script_type *script,char *err_str);
 extern JSObject* script_create_main_object(attach_type *attach);
-extern JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *class,script_js_property *props,script_js_function *funcs);
-
-extern void script_set_property_lock(bool lock);
-extern JSBool script_add_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+extern JSObject* script_create_child_object(JSObject *parent_obj,char *name,script_js_property *props,script_js_function *funcs);
 
 extern void script_globals_initialize(void);
 extern int script_find_global(char *name,int script_uid);

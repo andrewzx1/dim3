@@ -44,11 +44,6 @@ JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,js
 JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			multiplayer_setting_class={"multiplayer_setting_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	multiplayer_setting_props[]={
 							{"on",					js_multiplayer_setting_get_on,				NULL},
 							{"type",				js_multiplayer_setting_get_type,			NULL},
@@ -67,7 +62,7 @@ script_js_function	multiplayer_setting_functions[]={
 
 void script_add_multiplayer_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"setting",&multiplayer_setting_class,multiplayer_setting_props,multiplayer_setting_functions);
+	script_create_child_object(parent_obj,"setting",multiplayer_setting_props,multiplayer_setting_functions);
 }
 
 /* =======================================================

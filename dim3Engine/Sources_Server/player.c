@@ -56,6 +56,7 @@ bool player_attach_object(char *err_str)
 	float				ang_y;
 	spot_type			*spot;
 	obj_type			*obj;
+	weapon_type			*weap;
 	
 	obj=object_find_uid(server.player_obj_uid);
 
@@ -124,7 +125,7 @@ bool player_attach_object(char *err_str)
 		object_telefrag_players(obj,FALSE);
 	}
 	
-		// other settings
+		// physic resets
 		
  	obj->air_mode=am_ground;
     obj->liquid_mode=lm_out;
@@ -134,6 +135,11 @@ bool player_attach_object(char *err_str)
 	if (!map.info.in_load) {
 		scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_stop,0);
 	}
+
+		// weapon resets
+
+	weap=weapon_find_current(obj);
+	if (weap!=NULL) weapon_clear_state(obj,weap);
 	
 	return(TRUE);
 }
