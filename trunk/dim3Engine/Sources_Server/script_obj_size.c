@@ -51,11 +51,6 @@ JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_obj_size_grow_over_time_change_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_change_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_size_class={"obj_size_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_size_props[]={
 							{"x",					js_obj_size_get_x,					js_obj_size_set_x},
 							{"y",					js_obj_size_get_y,					js_obj_size_set_y},
@@ -80,7 +75,7 @@ script_js_function	obj_size_functions[]={
 
 void script_add_obj_size_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"size",&obj_size_class,obj_size_props,obj_size_functions);
+	script_create_child_object(parent_obj,"size",obj_size_props,obj_size_functions);
 }
 
 /* =======================================================

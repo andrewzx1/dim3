@@ -55,11 +55,6 @@ JSBool js_obj_rigid_body_set_maxAngleZ(JSContext *cx,JSObject *j_obj,jsval id,js
 JSBool js_obj_rigid_body_set_resetFactorZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_rigid_body_set_smoothFactorZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_rigid_body_class={"obj_rigid_body_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_rigid_body_props[]={
 							{"on",					js_obj_rigid_body_get_on,				js_obj_rigid_body_set_on},
 							{"maxDropY",			js_obj_rigid_body_get_maxDropY,			js_obj_rigid_body_set_maxDropY},
@@ -81,7 +76,7 @@ script_js_property	obj_rigid_body_props[]={
 
 void script_add_obj_rigid_body_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"rigidBody",&obj_rigid_body_class,obj_rigid_body_props,NULL);
+	script_create_child_object(parent_obj,"rigidBody",obj_rigid_body_props,NULL);
 }
 
 /* =======================================================

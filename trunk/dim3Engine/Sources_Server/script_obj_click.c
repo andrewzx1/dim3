@@ -42,11 +42,6 @@ JSBool js_obj_click_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 JSBool js_obj_click_set_crosshairUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_click_set_crosshairDown(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_click_class={"obj_click_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_click_props[]={
 							{"crosshairUp",			js_obj_click_get_crosshairUp,			js_obj_click_set_crosshairUp},
 							{"crosshairDown",		js_obj_click_get_crosshairDown,			js_obj_click_set_crosshairDown},
@@ -62,7 +57,7 @@ script_js_property	obj_click_props[]={
 
 void script_add_obj_click_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"click",&obj_click_class,obj_click_props,NULL);
+	script_create_child_object(parent_obj,"click",obj_click_props,NULL);
 }
 
 /* =======================================================

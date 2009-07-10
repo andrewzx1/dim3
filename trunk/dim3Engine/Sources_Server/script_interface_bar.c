@@ -42,11 +42,6 @@ JSBool js_interface_bar_resize_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 JSBool js_interface_bar_set_value_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_bar_set_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			interface_bar_class={"interface_bar_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	interface_bar_functions[]={
 							{"show",				js_interface_bar_show_func,				1},
 							{"hide",				js_interface_bar_hide_func,				1},
@@ -65,7 +60,7 @@ script_js_function	interface_bar_functions[]={
 
 void script_add_interface_bar_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"bar",&interface_bar_class,NULL,interface_bar_functions);
+	script_create_child_object(parent_obj,"bar",NULL,interface_bar_functions);
 }
 
 /* =======================================================

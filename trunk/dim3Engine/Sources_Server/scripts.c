@@ -35,10 +35,6 @@ and can be sold or given away.
 extern js_type				js;
 extern setup_type			setup;
 
-JSClass			dim3_class={"dim3_class",0,
-							JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 JSBool scripts_gc_reporter(JSContext *cx,JSGCStatus status);		// forward reference
 
 //

@@ -50,10 +50,6 @@ JSBool js_sound_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 JSBool js_sound_fade_out_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_fade_out_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			sound_class={"sound_class",0,
-							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-							
 script_js_function	sound_functions[]={
 							{"play",				js_sound_play_func,						5},
 							{"playAtObject",		js_sound_play_at_object_func,			3},
@@ -74,7 +70,7 @@ script_js_function	sound_functions[]={
 
 void script_add_global_sound_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"sound",&sound_class,NULL,sound_functions);
+	script_create_child_object(parent_obj,"sound",NULL,sound_functions);
 }
 
 /* =======================================================

@@ -38,11 +38,6 @@ JSBool js_map_info_get_file(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_info_get_title(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_info_get_author(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			map_info_class={"map_info_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	map_info_props[]={
 							{"file",				js_map_info_get_file,				NULL},
 							{"title",				js_map_info_get_title,				NULL},
@@ -57,7 +52,7 @@ script_js_property	map_info_props[]={
 
 void script_add_map_info_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"info",&map_info_class,map_info_props,NULL);
+	script_create_child_object(parent_obj,"info",map_info_props,NULL);
 }
 
 /* =======================================================

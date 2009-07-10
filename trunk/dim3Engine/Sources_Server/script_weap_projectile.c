@@ -68,11 +68,6 @@ JSBool js_weap_projectile_spawn_from_center_slop_func(JSContext *cx,JSObject *j_
 JSBool js_weap_projectile_spawn_from_center_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_projectile_spawn_from_center_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			weap_projectile_class={"weap_projectile_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-							
 script_js_property	weap_projectile_props[]={
 							{"fireBoneTag",				js_weap_projectile_get_fireBoneTag,				js_weap_projectile_set_fireBoneTag},
 							{"barrelBoneTag",			js_weap_projectile_get_barrelBoneTag,			js_weap_projectile_set_barrelBoneTag},
@@ -111,7 +106,7 @@ script_js_function	weap_projectile_functions[]={
 
 void script_add_weap_projectile_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"projectile",&weap_projectile_class,weap_projectile_props,weap_projectile_functions);
+	script_create_child_object(parent_obj,"projectile",weap_projectile_props,weap_projectile_functions);
 }
 
 /* =======================================================

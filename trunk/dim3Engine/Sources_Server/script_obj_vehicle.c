@@ -43,11 +43,6 @@ JSBool js_obj_vehicle_enter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 JSBool js_obj_vehicle_exit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_vehicle_remove_occupant_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_vehicle_class={"obj_vehicle_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_vehicle_props[]={
 							{"on",					js_obj_vehicle_get_on,				js_obj_vehicle_set_on},
 							{"hasOccupant",			js_obj_vehicle_get_hasOccupant,		NULL},
@@ -67,7 +62,7 @@ script_js_function	obj_vehicle_functions[]={
 
 void script_add_obj_vehicle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"vehicle",&obj_vehicle_class,obj_vehicle_props,obj_vehicle_functions);
+	script_create_child_object(parent_obj,"vehicle",obj_vehicle_props,obj_vehicle_functions);
 }
 
 /* =======================================================

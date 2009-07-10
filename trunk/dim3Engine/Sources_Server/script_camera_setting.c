@@ -40,11 +40,6 @@ JSBool js_camera_setting_get_attachObjectId(JSContext *cx,JSObject *j_obj,jsval 
 JSBool js_camera_setting_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_setting_attach_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			camera_setting_class={"camera_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	camera_setting_props[]={
 							{"type",				js_camera_setting_get_type,				js_camera_setting_set_type},
 							{"attachObjectId",		js_camera_setting_get_attachObjectId,	NULL},
@@ -62,7 +57,7 @@ script_js_function	camera_setting_functions[]={
 
 void script_add_camera_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"setting",&camera_setting_class,camera_setting_props,camera_setting_functions);
+	script_create_child_object(parent_obj,"setting",camera_setting_props,camera_setting_functions);
 }
 
 /* =======================================================

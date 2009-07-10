@@ -40,11 +40,6 @@ JSBool js_model_rotate_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 extern js_type			js;
 
-JSClass			model_rotate_class={"model_rotate_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	model_rotate_props[]={
 							{"x",					js_model_rotate_get_x,				js_model_rotate_set_x},
 							{"y",					js_model_rotate_get_y,				js_model_rotate_set_y},
@@ -61,7 +56,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_rotate_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"rotate",&model_rotate_class,model_rotate_props,NULL);
+	script_create_child_object(parent_obj,"rotate",model_rotate_props,NULL);
 }
 
 /* =======================================================

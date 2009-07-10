@@ -43,11 +43,6 @@ JSBool js_obj_lock_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_lock_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_lock_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_lock_class={"obj_lock_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_lock_props[]={
 							{"x",					js_obj_lock_get_x,					js_obj_lock_set_x},
 							{"y",					js_obj_lock_get_y,					js_obj_lock_set_y},
@@ -62,7 +57,7 @@ script_js_property	obj_lock_props[]={
 
 void script_add_obj_lock_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"lock",&obj_lock_class,obj_lock_props,NULL);
+	script_create_child_object(parent_obj,"lock",obj_lock_props,NULL);
 }
 
 /* =======================================================

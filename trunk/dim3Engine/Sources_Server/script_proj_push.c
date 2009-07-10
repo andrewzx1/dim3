@@ -40,11 +40,6 @@ JSBool js_proj_push_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_push_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_push_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			proj_push_class={"proj_push_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_push_props[]={
 							{"on",					js_proj_push_get_on,				js_proj_push_set_on},
 							{"force",				js_proj_push_get_force,				js_proj_push_set_force},
@@ -58,7 +53,7 @@ script_js_property	proj_push_props[]={
 
 void script_add_proj_push_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"push",&proj_push_class,proj_push_props,NULL);
+	script_create_child_object(parent_obj,"push",proj_push_props,NULL);
 }
 
 /* =======================================================

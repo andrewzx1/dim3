@@ -40,11 +40,6 @@ JSBool js_model_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 extern js_type			js;
 
-JSClass			model_offset_class={"model_offset_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	model_offset_props[]={
 							{"x",					js_model_offset_get_x,				js_model_offset_set_x},
 							{"y",					js_model_offset_get_y,				js_model_offset_set_y},
@@ -61,7 +56,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_offset_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"offset",&model_offset_class,model_offset_props,NULL);
+	script_create_child_object(parent_obj,"offset",model_offset_props,NULL);
 }
 
 /* =======================================================

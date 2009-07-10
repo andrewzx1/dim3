@@ -43,11 +43,6 @@ JSBool js_obj_vert_speed_set_acceleration(JSContext *cx,JSObject *j_obj,jsval id
 JSBool js_obj_vert_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_vert_speed_set_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_vert_speed_class={"obj_vert_speed_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_vert_speed_props[]={
 							{"normal",					js_obj_vert_speed_get_normal,			js_obj_vert_speed_set_normal},
 							{"acceleration",			js_obj_vert_speed_get_acceleration,		js_obj_vert_speed_set_acceleration},
@@ -63,7 +58,7 @@ script_js_property	obj_vert_speed_props[]={
 
 void script_add_obj_vert_speed_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"verticalSpeed",&obj_vert_speed_class,obj_vert_speed_props,NULL);
+	script_create_child_object(parent_obj,"verticalSpeed",obj_vert_speed_props,NULL);
 }
 
 /* =======================================================

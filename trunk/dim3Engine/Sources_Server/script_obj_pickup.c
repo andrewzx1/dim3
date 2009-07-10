@@ -50,11 +50,6 @@ JSBool js_obj_pickup_add_health_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 JSBool js_obj_pickup_add_custom_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_pickup_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_pickup_class={"obj_pickup_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_pickup_props[]={
 							{"objectId",			js_obj_pickup_get_objectId,			NULL},
 							{"objectName",			js_obj_pickup_get_objectName,		NULL},
@@ -83,7 +78,7 @@ script_js_function	obj_pickup_functions[]={
 
 void script_add_obj_pickup_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"pickup",&obj_pickup_class,obj_pickup_props,obj_pickup_functions);
+	script_create_child_object(parent_obj,"pickup",obj_pickup_props,obj_pickup_functions);
 }
 
 /* =======================================================

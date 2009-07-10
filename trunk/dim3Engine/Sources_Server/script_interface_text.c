@@ -49,11 +49,6 @@ JSBool js_interface_text_set_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc
 JSBool js_interface_text_start_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_text_and_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			interface_text_class={"interface_text_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	interface_text_functions[]={
 							{"show",						js_interface_text_show_func,				1},
 							{"hide",						js_interface_text_hide_func,				1},
@@ -78,7 +73,7 @@ script_js_function	interface_text_functions[]={
 
 void script_add_interface_text_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"text",&interface_text_class,NULL,interface_text_functions);
+	script_create_child_object(parent_obj,"text",NULL,interface_text_functions);
 }
 
 /* =======================================================

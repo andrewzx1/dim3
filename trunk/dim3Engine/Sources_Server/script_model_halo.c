@@ -58,11 +58,6 @@ JSBool js_model_halo_set_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval
 extern server_type		server;
 extern js_type			js;
 
-JSClass			model_halo_class={"model_halo_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	model_halo_props[]={
 							{"index",				js_model_halo_get_index,				js_model_halo_set_index},
 							{"on",					js_model_halo_get_on,					js_model_halo_set_on},
@@ -87,7 +82,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_halo_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"halo",&model_halo_class,model_halo_props,NULL);
+	script_create_child_object(parent_obj,"halo",model_halo_props,NULL);
 }
 
 /* =======================================================

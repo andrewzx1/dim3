@@ -54,11 +54,6 @@ JSBool js_weap_alt_ammo_use_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 JSBool js_weap_alt_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_alt_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			weap_alt_ammo_class={"weap_alt_ammo_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_alt_ammo_props[]={
 							{"clip",				js_weap_alt_ammo_get_clip,				js_weap_alt_ammo_set_clip},
 							{"count",				js_weap_alt_ammo_get_count,				js_weap_alt_ammo_set_count},
@@ -84,7 +79,7 @@ script_js_function	weap_alt_ammo_functions[]={
 
 void script_add_weap_alt_ammo_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"altAmmo",&weap_alt_ammo_class,weap_alt_ammo_props,weap_alt_ammo_functions);
+	script_create_child_object(parent_obj,"altAmmo",weap_alt_ammo_props,weap_alt_ammo_functions);
 }
 
 /* =======================================================

@@ -45,11 +45,6 @@ JSBool js_model_animation_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 
 extern js_type			js;
 
-JSClass			model_animation_class={"model_animation_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	model_animation_props[]={
 							{"index",					js_model_animation_get_index,					js_model_animation_set_index},
 							{"currentAnimationName",	js_model_animation_get_currentAnimationName,	NULL},
@@ -75,7 +70,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_animation_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"animation",&model_animation_class,model_animation_props,model_animation_functions);
+	script_create_child_object(parent_obj,"animation",model_animation_props,model_animation_functions);
 }
 
 /* =======================================================

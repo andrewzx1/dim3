@@ -40,11 +40,6 @@ JSBool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 JSBool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			camera_position_class={"camera_position_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	camera_position_props[]={
 							{"x",					js_camera_position_get_x,				NULL},
 							{"y",					js_camera_position_get_y,				NULL},
@@ -59,7 +54,7 @@ script_js_property	camera_position_props[]={
 
 void script_add_camera_position_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"position",&camera_position_class,camera_position_props,NULL);
+	script_create_child_object(parent_obj,"position",camera_position_props,NULL);
 }
 
 /* =======================================================

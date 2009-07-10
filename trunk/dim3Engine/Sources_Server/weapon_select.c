@@ -104,6 +104,36 @@ void weapon_set(obj_type *obj,weapon_type *weap)
 
 /* =======================================================
 
+      Clear Weapon States
+      
+======================================================= */
+
+void weapon_clear_state(obj_type *obj,weapon_type *weap)
+{
+		// turn off any weapon changing
+
+    obj->held_weapon.mode=wm_held;
+    obj->held_weapon.swap_tick=0;
+	obj->held_weapon.bounce_y=0;
+
+		// turn off any zooming
+
+	weap->zoom.mode=zoom_mode_off;
+
+		// and any animation
+		// and get idle animation from script and
+		// make sure weapon gets set
+
+	weapon_clear_animation(weap);
+
+	scripts_post_event_console(&weap->attach,sd_event_animation_weapon,sd_event_animation_weapon_held,0);
+
+	scripts_post_event_console(&weap->attach,sd_event_weapon_select,0,0);
+	scripts_post_event_console(&obj->attach,sd_event_weapon_select,0,0);
+}
+
+/* =======================================================
+
       Change Weapon
       
 ======================================================= */

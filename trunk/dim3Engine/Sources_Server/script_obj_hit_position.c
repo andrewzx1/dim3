@@ -39,11 +39,6 @@ JSBool js_obj_hit_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 JSBool js_obj_hit_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_hit_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_hit_position_class={"obj_hit_position_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_hit_position_props[]={
 							{"x",					js_obj_hit_position_get_x,			NULL},
 							{"y",					js_obj_hit_position_get_y,			NULL},
@@ -58,7 +53,7 @@ script_js_property	obj_hit_position_props[]={
 
 void script_add_obj_hit_position_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"hitPosition",&obj_hit_position_class,obj_hit_position_props,NULL);
+	script_create_child_object(parent_obj,"hitPosition",obj_hit_position_props,NULL);
 }
 
 /* =======================================================

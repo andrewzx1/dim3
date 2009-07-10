@@ -47,11 +47,6 @@ JSBool js_game_join_set_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc
 JSBool js_game_join_set_spawn_spot_to_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_clear_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			game_join_class={"game_join_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	game_join_props[]={
 							{"name",				js_game_join_get_name,						NULL},
 							{"team",				js_game_join_get_team,						NULL},
@@ -75,7 +70,7 @@ script_js_function	game_join_functions[]={
 
 void script_add_game_join_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"join",&game_join_class,game_join_props,game_join_functions);
+	script_create_child_object(parent_obj,"join",game_join_props,game_join_functions);
 }
 
 /* =======================================================

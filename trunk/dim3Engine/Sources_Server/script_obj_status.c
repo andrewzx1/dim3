@@ -48,11 +48,6 @@ JSBool js_obj_status_get_standUnderObjectId(JSContext *cx,JSObject *j_obj,jsval 
 JSBool js_obj_status_freeze_input_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_status_tint_view_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_status_class={"obj_status_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_status_props[]={
 							{"speed",				js_obj_status_get_speed,				NULL},
 							{"moving",				js_obj_status_get_moving,				NULL},
@@ -79,7 +74,7 @@ script_js_function	obj_status_functions[]={
 
 void script_add_obj_status_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"status",&obj_status_class,obj_status_props,obj_status_functions);
+	script_create_child_object(parent_obj,"status",obj_status_props,obj_status_functions);
 }
 
 /* =======================================================

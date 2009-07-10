@@ -42,11 +42,6 @@ JSBool js_map_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 JSBool js_map_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			map_light_color_class={"map_light_color_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	map_light_color_props[]={
 							{"red",					js_map_light_color_get_red,				js_map_light_color_set_red},
 							{"green",				js_map_light_color_get_green,			js_map_light_color_set_green},
@@ -61,7 +56,7 @@ script_js_property	map_light_color_props[]={
 
 void script_add_map_light_color_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"lightColor",&map_light_color_class,map_light_color_props,NULL);
+	script_create_child_object(parent_obj,"lightColor",map_light_color_props,NULL);
 }
 
 /* =======================================================

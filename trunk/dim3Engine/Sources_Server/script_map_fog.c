@@ -59,11 +59,6 @@ JSBool js_map_fog_set_textureYFact(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 JSBool js_map_fog_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_fog_set_useSolidColor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			map_fog_class={"map_fog_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	map_fog_props[]={
 							{"on",					js_map_fog_get_on,					js_map_fog_set_on},
 							{"layerCount",			js_map_fog_get_count,				js_map_fog_set_count},
@@ -87,7 +82,7 @@ script_js_property	map_fog_props[]={
 
 void script_add_map_fog_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"fog",&map_fog_class,map_fog_props,NULL);
+	script_create_child_object(parent_obj,"fog",map_fog_props,NULL);
 }
 
 /* =======================================================

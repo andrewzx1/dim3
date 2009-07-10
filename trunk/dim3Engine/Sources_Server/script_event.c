@@ -58,11 +58,6 @@ JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_event_call_course_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_event_call_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			event_class={"event_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	event_functions[]={
 							{"startTimer",					js_event_start_timer_func,						2},
 							{"clearTimer",					js_event_clear_timer_func,						0},
@@ -94,7 +89,7 @@ script_js_function	event_functions[]={
 
 void script_add_event_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"event",&event_class,NULL,event_functions);
+	script_create_child_object(parent_obj,"event",NULL,event_functions);
 }
 
 /* =======================================================

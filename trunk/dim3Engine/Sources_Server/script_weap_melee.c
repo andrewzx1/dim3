@@ -56,11 +56,6 @@ JSBool js_weap_melee_set_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 JSBool js_weap_melee_spawn_from_weapon_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_melee_spawn_from_object_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			weap_melee_class={"weap_melee_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_melee_props[]={
 							{"strikeBoneTag",			js_weap_melee_get_strikeBoneTag,			js_weap_melee_set_strikeBoneTag},
 							{"strikePoseName",			js_weap_melee_get_strikePoseName,			js_weap_melee_set_strikePoseName},
@@ -86,7 +81,7 @@ script_js_function	weap_melee_functions[]={
 
 void script_add_weap_melee_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"melee",&weap_melee_class,weap_melee_props,weap_melee_functions);
+	script_create_child_object(parent_obj,"melee",weap_melee_props,weap_melee_functions);
 }
 
 /* =======================================================

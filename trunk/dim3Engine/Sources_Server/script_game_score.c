@@ -46,11 +46,6 @@ JSBool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 JSBool js_game_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_score_set_score_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			game_score_class={"game_score_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	game_score_props[]={
 							{"objectId",			js_game_score_get_objectId,			NULL},
 							{"kill",				js_game_score_get_kill,				NULL},
@@ -71,7 +66,7 @@ script_js_function	game_score_functions[]={
 
 void script_add_game_score_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"score",&game_score_class,game_score_props,game_score_functions);
+	script_create_child_object(parent_obj,"score",game_score_props,game_score_functions);
 }
 
 /* =======================================================

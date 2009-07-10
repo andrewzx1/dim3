@@ -42,10 +42,6 @@ JSBool js_data_sub_specific_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 JSBool js_data_set_specific_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_data_get_specific_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			data_class={"data_class",0,
-							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	data_functions[]={
 							{"add",					js_data_add_func,					2},
 							{"sub",					js_data_sub_func,					1},
@@ -65,7 +61,7 @@ script_js_function	data_functions[]={
 
 void script_add_global_data_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"data",&data_class,NULL,data_functions);
+	script_create_child_object(parent_obj,"data",NULL,data_functions);
 }
 
 /* =======================================================

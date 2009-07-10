@@ -46,11 +46,6 @@ JSBool js_proj_hit_get_materialName(JSContext *cx,JSObject *j_obj,jsval id,jsval
 JSBool js_proj_hit_get_ejectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_hit_get_reflectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			proj_hit_class={"proj_hit_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	proj_hit_props[]={
 							{"type",				js_proj_hit_get_type,				NULL},
 							{"name",				js_proj_hit_get_name,				NULL},
@@ -70,7 +65,7 @@ script_js_property	proj_hit_props[]={
 
 void script_add_proj_hit_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"hit",&proj_hit_class,proj_hit_props,NULL);
+	script_create_child_object(parent_obj,"hit",proj_hit_props,NULL);
 }
 
 /* =======================================================

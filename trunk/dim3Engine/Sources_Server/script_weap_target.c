@@ -43,11 +43,6 @@ JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			weap_target_class={"weap_target_class",0,
-							script_add_property,JS_PropertyStub,
-                            JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-                            
 script_js_property	weap_target_props[]={
 							{"on",					js_weap_target_get_on,					NULL},
 							{"distance",			js_weap_target_get_distance,			js_weap_target_set_distance},
@@ -72,7 +67,7 @@ void script_add_weap_target_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
 
-	j_obj=script_create_child_object(parent_obj,"target",&weap_target_class,weap_target_props,weap_target_functions);
+	j_obj=script_create_child_object(parent_obj,"target",weap_target_props,weap_target_functions);
 
 		// target color objects
 		

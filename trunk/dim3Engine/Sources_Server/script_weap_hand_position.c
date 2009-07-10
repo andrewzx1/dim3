@@ -41,11 +41,6 @@ JSBool js_weap_hand_position_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 JSBool js_weap_hand_position_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_hand_position_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			weap_hand_position_class={"weap_hand_position_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_hand_position_props[]={
 							{"x",						js_weap_hand_position_get_x,				js_weap_hand_position_set_x},
 							{"y",						js_weap_hand_position_get_y,				js_weap_hand_position_set_y},
@@ -60,7 +55,7 @@ script_js_property	weap_hand_position_props[]={
 
 void script_add_weap_hand_position_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"handPosition",&weap_hand_position_class,weap_hand_position_props,NULL);
+	script_create_child_object(parent_obj,"handPosition",weap_hand_position_props,NULL);
 }
 
 /* =======================================================

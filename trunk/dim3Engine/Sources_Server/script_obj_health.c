@@ -51,11 +51,6 @@ JSBool js_obj_health_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 JSBool js_obj_health_remove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_health_reset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			obj_health_class={"obj_health_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_health_props[]={
 							{"maximum",					js_obj_health_get_maximum,					js_obj_health_set_maximum},
 							{"start",					js_obj_health_get_start,					js_obj_health_set_start},
@@ -80,7 +75,7 @@ script_js_function	obj_health_functions[]={
 
 void script_add_obj_health_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"health",&obj_health_class,obj_health_props,obj_health_functions);
+	script_create_child_object(parent_obj,"health",obj_health_props,obj_health_functions);
 }
 
 /* =======================================================

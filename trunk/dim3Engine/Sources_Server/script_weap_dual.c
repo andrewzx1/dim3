@@ -43,11 +43,6 @@ JSBool js_weap_dual_set_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 JSBool js_weap_dual_set_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_dual_switch_hand_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			weap_dual_class={"weap_dual_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	weap_dual_props[]={
 							{"on",					js_weap_dual_get_on,					js_weap_dual_set_on},
 							{"active",				js_weap_dual_get_active,				js_weap_dual_set_active},
@@ -66,7 +61,7 @@ script_js_function	weap_dual_functions[]={
 
 void script_add_weap_dual_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"dual",&weap_dual_class,weap_dual_props,weap_dual_functions);
+	script_create_child_object(parent_obj,"dual",weap_dual_props,weap_dual_functions);
 }
 
 /* =======================================================

@@ -42,11 +42,6 @@ JSBool js_camera_angle_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_angle_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_angle_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			camera_angle_class={"camera_angle_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	camera_angle_props[]={
 							{"x",					js_camera_angle_get_x,		js_camera_angle_set_x},
 							{"y",					js_camera_angle_get_y,		js_camera_angle_set_y},
@@ -61,7 +56,7 @@ script_js_property	camera_angle_props[]={
 
 void script_add_camera_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"angle",&camera_angle_class,camera_angle_props,NULL);
+	script_create_child_object(parent_obj,"angle",camera_angle_props,NULL);
 }
 
 /* =======================================================

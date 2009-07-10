@@ -33,11 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSClass			interface_class={"interface_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 extern void script_add_interface_screen_object(JSObject *parent_obj);
 extern void script_add_interface_console_object(JSObject *parent_obj);
 extern void script_add_interface_text_object(JSObject *parent_obj);
@@ -59,7 +54,7 @@ void script_add_global_interface_object(JSObject *parent_obj)
     
 		// main object
 		
-	j_obj=JS_DefineObject(js.cx,parent_obj,"iface",&interface_class,NULL,0);
+	j_obj=JS_DefineObject(js.cx,parent_obj,"iface",NULL,NULL,0);
 	
 		// children objects
 		

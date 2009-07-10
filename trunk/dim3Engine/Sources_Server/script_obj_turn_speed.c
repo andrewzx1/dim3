@@ -55,11 +55,6 @@ JSBool js_obj_turn_speed_set_motionAir(JSContext *cx,JSObject *j_obj,jsval id,js
 JSBool js_obj_turn_speed_set_key(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_turn_speed_set_topDownAngleOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			obj_turn_speed_class={"obj_turn_speed_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_property	obj_turn_speed_props[]={
 							{"facingWalk",				js_obj_turn_speed_get_facingWalk,			js_obj_turn_speed_set_facingWalk},
 							{"motionWalk",				js_obj_turn_speed_get_motionWalk,			js_obj_turn_speed_set_motionWalk},
@@ -81,7 +76,7 @@ script_js_property	obj_turn_speed_props[]={
 
 void script_add_obj_turn_speed_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"turnSpeed",&obj_turn_speed_class,obj_turn_speed_props,NULL);
+	script_create_child_object(parent_obj,"turnSpeed",obj_turn_speed_props,NULL);
 }
 
 /* =======================================================

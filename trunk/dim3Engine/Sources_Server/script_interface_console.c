@@ -38,11 +38,6 @@ extern js_type			js;
 JSBool js_interface_console_write_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_console_read_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			interface_console_class={"interface_console_class",0,
-							script_add_property,JS_PropertyStub,
-							JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 script_js_function	interface_console_functions[]={
 							{"write",				js_interface_console_write_func,		1},
 							{"read",				js_interface_console_read_func,			0},
@@ -56,7 +51,7 @@ script_js_function	interface_console_functions[]={
 
 void script_add_interface_console_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"console",&interface_console_class,NULL,interface_console_functions);
+	script_create_child_object(parent_obj,"console",NULL,interface_console_functions);
 }
 
 /* =======================================================

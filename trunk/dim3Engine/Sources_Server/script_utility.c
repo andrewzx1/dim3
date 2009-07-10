@@ -33,10 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSClass			utility_class={"utility_class",0,
-							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
-
 extern void script_add_utility_angle_object(JSObject *parent_obj);
 extern void script_add_utility_point_object(JSObject *parent_obj);
 extern void script_add_utility_random_object(JSObject *parent_obj);
@@ -52,7 +48,7 @@ void script_add_global_utility_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
     
-	j_obj=JS_DefineObject(js.cx,parent_obj,"utility",&utility_class,NULL,0);
+	j_obj=JS_DefineObject(js.cx,parent_obj,"utility",NULL,NULL,0);
 	
 	script_add_utility_angle_object(j_obj);
 	script_add_utility_point_object(j_obj);
