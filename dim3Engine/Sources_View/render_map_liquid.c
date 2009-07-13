@@ -163,6 +163,10 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 	y_txtoff=f_tick*liq->y_shift;
 	k=(int)y_txtoff;
 	y_txtoff=liq->y_txtoff+(y_txtoff-(float)k);
+		
+		// setup vertex calcing
+
+	gl_lights_calc_vertex_setup_liquid(liq);
 
 		// create vertexes from tide splits
 

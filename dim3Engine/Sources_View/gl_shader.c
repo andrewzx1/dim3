@@ -505,22 +505,9 @@ void gl_shader_set_texture_variables(view_shader_type *shader,texture_type *text
 	if (shader->var_dim3TexColor!=-1) glUniform3fARB(shader->var_dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
-void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,float alpha,view_glsl_light_list_type *light_idx)
+void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,float alpha,view_glsl_light_list_type *light_list)
 {
-	int							n;
-	bool						light_fix;
-	view_glsl_light_list_type	light_list[max_view_lights_per_poly];
-	
-		// has the lighting changed?
-		
-	light_fix=FALSE;
-	
-	for (n=0;n!=(3*max_view_lights_per_poly);n++) {
-		if (shader->cur_light_pos[n]!=light_list->pos[n]) light_fix=TRUE;
-		shader->cur_light_pos[n]=light_list->pos[n];
-	}
-
-	if (light_fix) {
+	if (light_list!=NULL) {
 		if (shader->var_dim3LightPosition!=-1) glUniform3fvARB(shader->var_dim3LightPosition,max_view_lights_per_poly,light_list->pos);
 		if (shader->var_dim3LightColor!=-1) glUniform3fvARB(shader->var_dim3LightColor,max_view_lights_per_poly,light_list->col);
 		if (shader->var_dim3LightIntensity!=-1) glUniform1fvARB(shader->var_dim3LightIntensity,max_view_lights_per_poly,light_list->intensity);
@@ -567,7 +554,7 @@ void gl_shader_draw_scene_initialize(void)
 			// also setup some per poly current values
 			// so we can skip setting if the values haven't changed
 
-		shader->cur_light_pos[0]=-1.0f;
+		shader->cur_light_idx[0]=-1;
 		shader->cur_dark_factor=-1.0f;
 		shader->cur_alpha=-1.0f;
 		
@@ -709,6 +696,8 @@ void gl_shader_texture_override(GLuint gl_id)
 
 void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,int *light_idx,d3pnt *pnt,d3col *col)
 {
+	int								n;
+	bool							light_fix;
 	view_shader_type				*shader;
 	view_glsl_light_list_type		light_list;
 	
@@ -745,11 +734,35 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 		
 	gl_shader_texture_set(shader,texture,txt_idx,extra_txt_idx,frame);
 	
-		// per-poly variables
+		// lighting variables
+		// this version is for shaders lite by view lights
 		
 	if (light_idx!=NULL) {
-		gl_lights_idx_to_light_list(light_idx,&light_list);
+
+			// determine if lighting has changed to avoid
+			// heavy uniform sets for lighting
+
+		light_fix=FALSE;
+	
+		for (n=0;n!=max_view_lights_per_poly;n++) {
+			if (shader->cur_light_idx[n]!=light_idx[n]) light_fix=TRUE;
+			shader->cur_light_idx[n]=light_idx[n];
+		}
+
+			// set the lighting uniforms
+
+		if (light_fix) {
+			gl_lights_idx_to_light_list(light_idx,&light_list);
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,&light_list);
+		}
+		else {
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,NULL);
+		}
 	}
+
+		// lighting by highlight
+		// this version uses a single large light
+
 	else {
 		bzero(&light_list,sizeof(view_glsl_light_list_type));
 
@@ -765,9 +778,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 		light_list.direction[0]=0.0f;
 		light_list.direction[1]=0.0f;
 		light_list.direction[2]=0.0f;
-	}
-	
-		// per-poly variables
 		
-	gl_shader_set_poly_variables(shader,dark_factor,alpha,&light_list);
+		gl_shader_set_poly_variables(shader,dark_factor,alpha,&light_list);
+	}
 }

@@ -406,10 +406,6 @@ void view_draw_scene_build(int tick)
 		
 	halo_draw_clear();
 	view_add_halos();
-	
-		// create per-mesh light lists
-		
-	gl_lights_create_mesh_light_lists();
 }
 
 void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
