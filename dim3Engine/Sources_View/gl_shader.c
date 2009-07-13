@@ -40,6 +40,21 @@ extern setup_type			setup;
 
 int							gl_shader_current_idx,gl_shader_current_txt_idx,gl_shader_current_frame;
 
+GLint						gl_shader_var_dim3TimeMillisec,
+							gl_shader_var_dim3FrequencySecond,
+							gl_shader_var_dim3CameraPosition,
+							gl_shader_var_dim3AmbientColor,
+							gl_shader_var_dim3BumpFactor,
+							gl_shader_var_dim3SpecularFactor,
+							gl_shader_var_dim3TexColor,
+							gl_shader_var_dim3LightPosition,
+							gl_shader_var_dim3LightColor,
+							gl_shader_var_dim3LightIntensity,
+							gl_shader_var_dim3LightExponent,
+							gl_shader_var_dim3LightDirection,
+							gl_shader_var_dim3DarkFactor,
+							gl_shader_var_dim3Alpha;
+
 extern int game_time_get(void);
 extern float game_time_fequency_second_get(void);
 
@@ -79,6 +94,12 @@ char* gl_shader_open_file(char *path)
     
 	return(data);
 }
+
+/* =======================================================
+
+      Setup Shader Variables
+      
+======================================================= */
 
 void gl_shader_set_instance_variables(view_shader_type *shader)
 {
@@ -137,6 +158,24 @@ void gl_shader_set_instance_variables(view_shader_type *shader)
 		// cancel program
 		
 	glUseProgramObjectARB(0);
+}
+
+void gl_shader_cache_dynamic_variable_locations(view_shader_type *shader)
+{
+	shader->var_dim3TimeMillisec=glGetUniformLocationARB(shader->program_obj,"dim3TimeMillisec");
+	shader->var_dim3FrequencySecond=glGetUniformLocationARB(shader->program_obj,"dim3FrequencySecond");
+	shader->var_dim3CameraPosition=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
+	shader->var_dim3AmbientColor=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
+	shader->var_dim3BumpFactor=glGetUniformLocationARB(shader->program_obj,"dim3BumpFactor");
+	shader->var_dim3SpecularFactor=glGetUniformLocationARB(shader->program_obj,"dim3SpecularFactor");
+	shader->var_dim3TexColor=glGetUniformLocationARB(shader->program_obj,"dim3TexColor");
+	shader->var_dim3LightPosition=glGetUniformLocationARB(shader->program_obj,"dim3LightPosition");
+	shader->var_dim3LightColor=glGetUniformLocationARB(shader->program_obj,"dim3LightColor");
+	shader->var_dim3LightIntensity=glGetUniformLocationARB(shader->program_obj,"dim3LightIntensity");
+	shader->var_dim3LightExponent=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
+	shader->var_dim3LightDirection=glGetUniformLocationARB(shader->program_obj,"dim3LightDirection");
+	shader->var_dim3DarkFactor=glGetUniformLocationARB(shader->program_obj,"dim3DarkFactor");
+	shader->var_dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 }
 
 /* =======================================================
@@ -344,6 +383,10 @@ bool gl_shader_initialize(char *err_str)
 			// per instance shader variables
 
 		gl_shader_set_instance_variables(shader);
+		
+			// cache the location of the dymaic variables
+			
+		gl_shader_cache_dynamic_variable_locations(shader);
 
 		shader++;
 	}
@@ -449,59 +492,55 @@ void gl_shader_attach_model(model_type *mdl)
 
 void gl_shader_set_scene_variables(view_shader_type *shader)
 {
-	GLint			var;
-
-	var=glGetUniformLocationARB(shader->program_obj,"dim3TimeMillisec");
-	if (var!=-1) glUniform1iARB(var,game_time_get());
-		
-	var=glGetUniformLocationARB(shader->program_obj,"dim3FrequencySecond");
-	if (var!=-1) glUniform1fARB(var,game_time_fequency_second_get());
-		
-	var=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
-	if (var!=-1) glUniform3fARB(var,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
-	
-	var=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
-	if (var!=-1) glUniform3fARB(var,(map.ambient.light_color.r+setup.gamma),(map.ambient.light_color.g+setup.gamma),(map.ambient.light_color.b+setup.gamma));
+	if (shader->var_dim3TimeMillisec!=-1) glUniform1iARB(shader->var_dim3TimeMillisec,game_time_get());
+	if (shader->var_dim3FrequencySecond!=-1) glUniform1fARB(shader->var_dim3FrequencySecond,game_time_fequency_second_get());
+	if (shader->var_dim3CameraPosition!=-1) glUniform3fARB(shader->var_dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
+	if (shader->var_dim3AmbientColor!=-1) glUniform3fARB(shader->var_dim3AmbientColor,(map.ambient.light_color.r+setup.gamma),(map.ambient.light_color.g+setup.gamma),(map.ambient.light_color.b+setup.gamma));
 }
 
 void gl_shader_set_texture_variables(view_shader_type *shader,texture_type *texture)
 {
-	GLint			var;
-
-	var=glGetUniformLocationARB(shader->program_obj,"dim3BumpFactor");
-	if (var!=-1) glUniform1fARB(var,texture->bump_factor);
-	
-	var=glGetUniformLocationARB(shader->program_obj,"dim3SpecularFactor");
-	if (var!=-1) glUniform1fARB(var,texture->specular_factor);
-		
-	var=glGetUniformLocationARB(shader->program_obj,"dim3TexColor");
-	if (var!=-1) glUniform3fARB(var,texture->col.r,texture->col.g,texture->col.b);
+	if (shader->var_dim3BumpFactor!=-1) glUniform1fARB(shader->var_dim3BumpFactor,texture->bump_factor);
+	if (shader->var_dim3SpecularFactor!=-1) glUniform1fARB(shader->var_dim3SpecularFactor,texture->specular_factor);
+	if (shader->var_dim3TexColor!=-1) glUniform3fARB(shader->var_dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
-void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,float alpha,view_glsl_light_list_type *light_list)
+void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,float alpha,view_glsl_light_list_type *light_idx)
 {
-	GLint			var;
-
-	var=glGetUniformLocationARB(shader->program_obj,"dim3LightPosition");
-	if (var!=-1) glUniform3fvARB(var,max_view_lights_per_poly,light_list->pos);
-
-	var=glGetUniformLocationARB(shader->program_obj,"dim3LightColor");
-	if (var!=-1) glUniform3fvARB(var,max_view_lights_per_poly,light_list->col);
+	int							n;
+	bool						light_fix;
+	view_glsl_light_list_type	light_list[max_view_lights_per_poly];
 	
-	var=glGetUniformLocationARB(shader->program_obj,"dim3LightIntensity");
-	if (var!=-1) glUniform1fvARB(var,max_view_lights_per_poly,light_list->intensity);
+		// has the lighting changed?
+		
+	light_fix=FALSE;
 	
-	var=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
-	if (var!=-1) glUniform1fvARB(var,max_view_lights_per_poly,light_list->exponent);
+	for (n=0;n!=(3*max_view_lights_per_poly);n++) {
+		if (shader->cur_light_pos[n]!=light_list->pos[n]) light_fix=TRUE;
+		shader->cur_light_pos[n]=light_list->pos[n];
+	}
 
-	var=glGetUniformLocationARB(shader->program_obj,"dim3LightDirection");
-	if (var!=-1) glUniform3fvARB(var,max_view_lights_per_poly,light_list->direction);
+	if (light_fix) {
+		if (shader->var_dim3LightPosition!=-1) glUniform3fvARB(shader->var_dim3LightPosition,max_view_lights_per_poly,light_list->pos);
+		if (shader->var_dim3LightColor!=-1) glUniform3fvARB(shader->var_dim3LightColor,max_view_lights_per_poly,light_list->col);
+		if (shader->var_dim3LightIntensity!=-1) glUniform1fvARB(shader->var_dim3LightIntensity,max_view_lights_per_poly,light_list->intensity);
+		if (shader->var_dim3LightExponent!=-1) glUniform1fvARB(shader->var_dim3LightExponent,max_view_lights_per_poly,light_list->exponent);
+		if (shader->var_dim3LightDirection!=-1) glUniform3fvARB(shader->var_dim3LightDirection,max_view_lights_per_poly,light_list->direction);
+	}
 	
-	var=glGetUniformLocationARB(shader->program_obj,"dim3DarkFactor");
-	if (var!=-1) glUniform1fARB(var,dark_factor);
-
-	var=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
-	if (var!=-1) glUniform1fARB(var,alpha);
+	if (shader->var_dim3DarkFactor!=-1) {
+		if (shader->cur_dark_factor!=dark_factor) {
+			shader->cur_dark_factor=dark_factor;
+			glUniform1fARB(shader->var_dim3DarkFactor,dark_factor);
+		}
+	}
+	
+	if (shader->var_dim3Alpha!=-1) {
+		if (shader->cur_alpha!=alpha) {
+			shader->cur_alpha=alpha;
+			glUniform1fARB(shader->var_dim3Alpha,alpha);
+		}
+	}
 }
 
 /* =======================================================
@@ -515,14 +554,23 @@ void gl_shader_draw_scene_initialize(void)
 	int					n;
 	view_shader_type	*shader;
 
-		// use this flag to mark scene only variables
-		// as needing a load.  In this way we optimize
-		// out the amount of variable setting we need to do
-
 	shader=view.shaders;
 
 	for (n=0;n!=view.count.shader;n++) {
+	
+			// use this flag to mark scene only variables
+			// as needing a load.  In this way we optimize
+			// out the amount of variable setting we need to do
+		
 		shader->per_scene_vars_set=FALSE;
+			
+			// also setup some per poly current values
+			// so we can skip setting if the values haven't changed
+
+		shader->cur_light_pos[0]=-1.0f;
+		shader->cur_dark_factor=-1.0f;
+		shader->cur_alpha=-1.0f;
+		
 		shader++;
 	}
 }
@@ -659,9 +707,10 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list)
+void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,int *light_idx,d3pnt *pnt,d3col *col)
 {
 	view_shader_type				*shader;
+	view_glsl_light_list_type		light_list;
 	
 		// get shader
 		
@@ -698,36 +747,27 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 	
 		// per-poly variables
 		
-	gl_shader_set_poly_variables(shader,dark_factor,alpha,light_list);
-}
-
-void gl_shader_draw_hilite_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,d3pnt *pnt,d3col *col)
-{
-	view_glsl_light_list_type	light_list;
-
-		// create highlight list
-
-	bzero(&light_list,sizeof(view_glsl_light_list_type));
-
-	light_list.pos[0]=(float)pnt->x;
-	light_list.pos[1]=(float)pnt->y;
-	light_list.pos[2]=(float)pnt->z;
-	
-	if (col==NULL) {
-		light_list.col[0]=light_list.col[1]=light_list.col[2]=1.0f;
+	if (light_idx!=NULL) {
+		gl_lights_idx_to_light_list(light_idx,&light_list);
 	}
 	else {
-		light_list.col[0]=col->r;
-		light_list.col[1]=col->g;
-		light_list.col[2]=col->b;
+		bzero(&light_list,sizeof(view_glsl_light_list_type));
+
+		light_list.pos[0]=(float)pnt->x;
+		light_list.pos[1]=(float)pnt->y;
+		light_list.pos[2]=(float)pnt->z;
+		
+		light_list.col[0]=light_list.col[1]=light_list.col[2]=1.0f;
+
+		light_list.intensity[0]=(float)map_max_size;
+		light_list.exponent[0]=0.0f;		// hard light
+
+		light_list.direction[0]=0.0f;
+		light_list.direction[1]=0.0f;
+		light_list.direction[2]=0.0f;
 	}
-
-	light_list.intensity[0]=(float)map_max_size;
-	light_list.exponent[0]=0.0f;		// hard light
-
-	light_list.direction[0]=0.0f;
-	light_list.direction[1]=0.0f;
-	light_list.direction[2]=0.0f;
-
-	gl_shader_draw_execute(texture,txt_idx,frame,extra_txt_idx,dark_factor,alpha,&light_list);
+	
+		// per-poly variables
+		
+	gl_shader_set_poly_variables(shader,dark_factor,alpha,&light_list);
 }

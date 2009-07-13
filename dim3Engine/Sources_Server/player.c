@@ -56,7 +56,6 @@ bool player_attach_object(char *err_str)
 	float				ang_y;
 	spot_type			*spot;
 	obj_type			*obj;
-	weapon_type			*weap;
 	
 	obj=object_find_uid(server.player_obj_uid);
 
@@ -138,8 +137,7 @@ bool player_attach_object(char *err_str)
 
 		// weapon resets
 
-	weap=weapon_find_current(obj);
-	if (weap!=NULL) weapon_clear_state(obj,weap);
+	weapon_clear_state(obj);
 	
 	return(TRUE);
 }

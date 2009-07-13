@@ -44,7 +44,7 @@ extern void weapon_reset_ammo(weapon_type *weap);
 extern void weapon_reset_ammo_object(obj_type *obj);
 extern void weapon_set(obj_type *obj,weapon_type *weap);
 
-extern void weapon_clear_state(obj_type *obj,weapon_type *weap);
+extern void weapon_clear_state(obj_type *obj);
 
 extern void weapon_lower(int tick,obj_type *obj);
 extern void weapon_raise(int tick,obj_type *obj);

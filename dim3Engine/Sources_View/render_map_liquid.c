@@ -329,10 +329,9 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
-	int							v_sz,quad_cnt,frame;
+	int							v_sz,quad_cnt,frame,light_idx[max_view_lights_per_poly];
 	bool						shader_on;
 	texture_type				*texture;
-	view_glsl_light_list_type	light_list;
 
 		// setup texture
 
@@ -376,10 +375,10 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 	if (shader_on) {
 
-		gl_lights_build_from_liquid(liq,&light_list);
+		gl_lights_build_from_liquid(liq,light_idx);
 
 		gl_shader_draw_start();
-		gl_shader_draw_execute(texture,liq->txt_idx,frame,-1,1.0f,liq->alpha,&light_list);
+		gl_shader_draw_execute(texture,liq->txt_idx,frame,-1,1.0f,liq->alpha,light_idx,NULL,NULL);
 
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 		

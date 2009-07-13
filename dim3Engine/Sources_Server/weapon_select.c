@@ -108,13 +108,26 @@ void weapon_set(obj_type *obj,weapon_type *weap)
       
 ======================================================= */
 
-void weapon_clear_state(obj_type *obj,weapon_type *weap)
+void weapon_clear_state(obj_type *obj)
 {
+	weapon_type			*weap;
+	
+		// if there was a changing weapon
+		// complete the change
+		
+	if (obj->held_weapon.next_uid!=-1) obj->held_weapon.current_uid=obj->held_weapon.next_uid;
+	
 		// turn off any weapon changing
 
+	obj->held_weapon.next_uid=-1;
     obj->held_weapon.mode=wm_held;
     obj->held_weapon.swap_tick=0;
 	obj->held_weapon.bounce_y=0;
+	
+		// get held weapon
+		
+	weap=weapon_find_current(obj);
+	if (weap==NULL) return;
 
 		// turn off any zooming
 

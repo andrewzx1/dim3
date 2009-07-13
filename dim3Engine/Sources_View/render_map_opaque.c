@@ -134,12 +134,11 @@ void render_opaque_mesh_simple(void)
 
 void render_opaque_mesh_shader(void)
 {
-	int							n,k;
+	int							n,k,light_idx[max_view_lights_per_poly];
 	GLuint						gl_id;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
-	view_glsl_light_list_type	light_list;
 
 		// setup drawing
 
@@ -170,19 +169,16 @@ void render_opaque_mesh_shader(void)
 				continue;
 			}
 
-				// build lights
-
-			gl_lights_build_from_poly(poly,&light_list);
-			
 				// setup shader
 
 			texture=&map.textures[poly->txt_idx];
 
 			if (!mesh->flag.hilite) {
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,&light_list);
+				gl_lights_build_from_poly(mesh,poly,light_idx);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,light_idx,NULL,NULL);
 			}
 			else {
-				gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,NULL,&poly->box.mid,NULL);
 			}
 
 				// fix texture if any back rendering

@@ -34,8 +34,7 @@ and can be sold or given away.
 #define max_view_shader							64
 #define max_view_shader_custom_vars				8
 
-#define max_light_spot							128
-#define max_view_lights_per_poly				8
+#define max_view_lights_per_poly				4
 
 #define max_view_render_item					5120
 
@@ -195,12 +194,21 @@ typedef struct		{
 					} view_shader_custom_var_type;
 					
 typedef struct		{
+						float								cur_light_pos[3*max_view_lights_per_poly],
+															cur_dark_factor,cur_alpha;
 						char								name[name_str_len],
 															vertex_name[file_str_len],
 															fragment_name[file_str_len];
 						bool								per_scene_vars_set;
 						view_shader_custom_var_type			custom_vars[max_view_shader_custom_vars];
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
+						GLint								var_dim3TimeMillisec,var_dim3FrequencySecond,
+															var_dim3CameraPosition,var_dim3AmbientColor,
+															var_dim3BumpFactor,var_dim3SpecularFactor,
+															var_dim3TexColor,var_dim3LightPosition,
+															var_dim3LightColor,var_dim3LightIntensity,
+															var_dim3LightExponent,var_dim3LightDirection,
+															var_dim3DarkFactor,var_dim3Alpha;
 					} view_shader_type;
 
 //

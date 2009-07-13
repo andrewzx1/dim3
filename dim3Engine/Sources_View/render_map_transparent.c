@@ -246,13 +246,12 @@ void render_transparent_mesh_simple(void)
 
 void render_transparent_mesh_shader(void)
 {
-	int							n,sort_cnt;
+	int							n,sort_cnt,light_idx[max_view_lights_per_poly];
 	bool						cur_additive;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	map_poly_sort_item_type		*sort_list;
 	texture_type				*texture;
-	view_glsl_light_list_type	light_list;
 
 		// sorted transparent poly list
 
@@ -291,17 +290,14 @@ void render_transparent_mesh_shader(void)
 			}
 		}
 
-			// setup the lights
-
-		gl_lights_build_from_poly(poly,&light_list);
-
 			// draw shader
 
 		if (!mesh->flag.hilite) {
-			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,poly->alpha,&light_list);
+			gl_lights_build_from_poly(mesh,poly,light_idx);
+			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,poly->alpha,light_idx,NULL,NULL);
 		}
 		else {
-			gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,NULL,&poly->box.mid,NULL);
 		}
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
