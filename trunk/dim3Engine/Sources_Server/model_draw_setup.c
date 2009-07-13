@@ -372,3 +372,55 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
 }
 
+/* =======================================================
+
+      Utility to get Model Min/Max in View
+      
+======================================================= */
+
+void model_get_view_min_max(model_draw *draw,d3pnt *pnt,d3pnt *min,d3pnt *max)
+{
+	int					cx,cy,cz,sz;
+	float				fx,fy,fz;
+	matrix_type			mat;
+	
+		// need to move model if no rot on
+
+	memmove(pnt,&draw->pnt,sizeof(d3pnt));
+		
+	if (draw->no_rot.on) {
+		matrix_rotate_y(&mat,draw->no_rot.ang.y);
+
+		fx=(float)(pnt->x-draw->no_rot.center.x);
+		fy=(float)(pnt->y-draw->no_rot.center.y);
+		fz=(float)(pnt->z-draw->no_rot.center.z);
+		
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+		
+		pnt->x=((int)fx)+draw->no_rot.center.x;
+		pnt->y=((int)fy)+draw->no_rot.center.y;
+		pnt->z=((int)fz)+draw->no_rot.center.z;
+	}
+
+		// get model bounds
+
+	sz=draw->size.x>>1;
+	min->x=pnt->x-sz;
+	max->x=pnt->x+sz;
+
+	sz=draw->size.z>>1;
+	min->z=pnt->z-sz;
+	max->z=pnt->z+sz;
+
+	min->y=pnt->y-draw->size.y;
+	max->y=pnt->y;
+
+		// any rotations
+
+	cx=pnt->x+draw->center.x;
+	cy=pnt->y+draw->center.y;
+	cz=pnt->z+draw->center.z;
+
+	rotate_point(&min->x,&min->y,&min->z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
+	rotate_point(&max->x,&max->y,&max->z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
+}

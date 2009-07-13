@@ -59,6 +59,10 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 	if ((!dim3_debug) && (!mdl->has_no_shader)) return;
 
+		// setup vertex calcing
+
+	gl_lights_calc_vertex_setup_model(draw);
+
 		// need color lists
 
 	for (n=0;n!=mdl->nmesh;n++) {

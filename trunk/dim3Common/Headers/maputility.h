@@ -72,7 +72,6 @@ extern char light_type_str[][32];
 
 #define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
-#define max_shader_light									4				// maximum number of shader lights
 #define max_light_spot										128				// maximum number of lights in a scene
 
 #define max_mesh_poly_uv_layer								2				// maximum number of uv layers
@@ -212,17 +211,11 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int									nlight,
-															light_idx[max_shader_light];
-					} map_mesh_poly_draw_light_type;
-
-typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
 															frame,txt_frame_offset,
 															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
 						float								x_shift_offset,y_shift_offset;
 						bool								shift_on,shader_on,transparent_on,glow_on;
-						map_mesh_poly_draw_light_type		light;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -270,7 +263,7 @@ typedef struct		{
 															extra_txt_idx;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
-						d3vct								*normals;
+						float								*colors_cache;
 						map_mesh_poly_type					*polys;
 						map_mesh_box_type					box;
 						map_mesh_flag_type					flag;
@@ -614,7 +607,7 @@ extern int map_mesh_find_closest(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_always(map_type *map,d3pnt *pnt);
 extern double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 
-extern void map_mesh_calc_normals(map_mesh_type *mesh);
+extern bool map_mesh_create_colors_cache(map_mesh_type *mesh);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
 extern int map_mesh_combine_small(map_type *map,int poly_threshold);

@@ -243,6 +243,15 @@ bool view_compile_mesh_gl_list_init(void)
 	view_unmap_map_index_object();
 	view_unbind_map_index_object();
 
+		// create color cache for non-shader coloring
+
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (!map_mesh_create_colors_cache(mesh)) return(FALSE);
+		mesh++;
+	}
+
 	return(TRUE);
 }
 
@@ -260,7 +269,7 @@ bool view_compile_mesh_gl_lists(int tick)
 {
 	int							n,k,t,uv_idx,vertex_cnt;
 	float						x_shift_offset,y_shift_offset;
-	float						*vertex_ptr,*pv,*pp,*pc;
+	float						*vertex_ptr,*pv,*pp,*pc,*pc2;
 	d3pnt						*pnt;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -374,6 +383,21 @@ bool view_compile_mesh_gl_lists(int tick)
 
 			if (mesh->draw.has_no_shader) {
 
+					// create colors for each vertes
+
+				gl_lights_calc_vertex_setup_mesh(mesh);
+
+				pc=mesh->colors_cache;
+				pnt=mesh->vertexes;
+
+				for (k=0;k!=mesh->nvertex;k++) {
+					gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
+					pc+=3;
+					pnt++;
+				}
+
+					// create per poly colors
+
 				pc=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*3));
 
 				poly=mesh->polys;
@@ -381,9 +405,10 @@ bool view_compile_mesh_gl_lists(int tick)
 				for (k=0;k!=mesh->npoly;k++) {
 
 					for (t=0;t!=poly->ptsz;t++) {
-						pnt=&mesh->vertexes[poly->v[t]];
-						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
-						pc+=3;
+						pc2=mesh->colors_cache+(poly->v[t]*3);
+						*pc++=*pc2++;
+						*pc++=*pc2++;
+						*pc++=*pc2;
 					}
 
 					poly++;

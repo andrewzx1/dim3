@@ -107,8 +107,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									direction;
-						float								exponent;
+						int									direction,i_intensity;
+						float								exponent,f_x,f_y,f_z;
 						double								d_x,d_y,d_z,
 															intensity,inv_intensity,
 															d_intensity,d_inv_intensity,
@@ -194,8 +194,8 @@ typedef struct		{
 					} view_shader_custom_var_type;
 					
 typedef struct		{
-						float								cur_light_pos[3*max_view_lights_per_poly],
-															cur_dark_factor,cur_alpha;
+						int									cur_light_idx[max_view_lights_per_poly];
+						float								cur_dark_factor,cur_alpha;
 						char								name[name_str_len],
 															vertex_name[file_str_len],
 															fragment_name[file_str_len];
