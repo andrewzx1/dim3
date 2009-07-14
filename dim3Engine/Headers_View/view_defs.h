@@ -194,8 +194,8 @@ typedef struct		{
 					} view_shader_custom_var_type;
 					
 typedef struct		{
-						int									cur_light_idx[max_view_lights_per_poly];
-						float								cur_dark_factor,cur_alpha;
+						float								cur_light_pos[max_view_lights_per_poly*3],
+															cur_dark_factor,cur_alpha;
 						char								name[name_str_len],
 															vertex_name[file_str_len],
 															fragment_name[file_str_len];
