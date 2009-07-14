@@ -287,6 +287,122 @@ void gl_lights_compile(int tick)
 
 /* =======================================================
 
+      Turn Indexed list of Lights into Array
+      
+======================================================= */
+
+void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light_list)
+{
+	int						n,idx;
+	view_light_spot_type	*lspot;
+	
+	idx=0;
+	
+	for (n=0;n!=max_view_lights_per_poly;n++) {
+		
+			// null lights
+			
+		if (light_idx[n]==-1) {
+			light_list->pos[idx]=0.0f;
+			light_list->pos[idx+1]=0.0f;
+			light_list->pos[idx+2]=0.0f;
+			
+			light_list->col[idx]=0.0f;
+			light_list->col[idx+1]=0.0f;
+			light_list->col[idx+2]=0.0f;
+			
+			light_list->intensity[n]=0.0f;		// effectively turns light off
+			light_list->exponent[n]=1.0f;
+
+			light_list->direction[idx]=0.0f;
+			light_list->direction[idx+1]=0.0f;
+			light_list->direction[idx+2]=0.0f;
+		}
+		
+			// regular lights
+			
+		else {
+			lspot=&view.render->light.spots[light_idx[n]];
+			
+			light_list->pos[idx]=lspot->f_x;
+			light_list->pos[idx+1]=lspot->f_y;
+			light_list->pos[idx+2]=lspot->f_z;
+			
+			light_list->col[idx]=lspot->col.r;
+			light_list->col[idx+1]=lspot->col.g;
+			light_list->col[idx+2]=lspot->col.b;
+			
+			light_list->intensity[n]=(float)lspot->intensity;
+			light_list->exponent[n]=lspot->exponent;
+
+			light_list->direction[idx]=light_shader_direction[lspot->direction][0];
+			light_list->direction[idx+1]=light_shader_direction[lspot->direction][1];
+			light_list->direction[idx+2]=light_shader_direction[lspot->direction][2];
+		}
+		
+		idx+=3;
+	}
+}
+
+/* =======================================================
+
+      Find Closest Light
+      
+======================================================= */
+
+view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
+{
+	int						n,k;
+	double					dx,dz,dy,d,dist;
+	view_light_spot_type	*lspot;
+
+		// no lights in scene
+
+	if (view.render->light.count==0) return(NULL);
+
+		// find closest light
+	
+	k=-1;
+	dist=-1;
+	
+	for (n=0;n!=view.render->light.count;n++) {
+
+		lspot=&view.render->light.spots[n];
+		
+			// get distance to light spot
+			
+		dx=lspot->d_x-x;
+		dz=lspot->d_z-z;
+		dy=lspot->d_y-y;
+
+		d=(dx*dx)+(dz*dz)+(dy*dy);
+		
+			// reject lights outside globe
+			// and in wrong direction
+
+		if (d<=lspot->d_intensity) {
+
+			if (gl_lights_direction_ok(x,y,z,lspot)) {
+		
+					// compare distances
+			
+				if ((d<dist) || (dist==-1)) {
+					dist=d;
+					k=n;
+				}
+			}
+		}
+		
+		lspot++;
+	}
+	
+	if (k==-1) return(NULL);
+
+	return(&view.render->light.spots[k]);
+}
+
+/* =======================================================
+
       Create Light Lists For Mesh
       
 ======================================================= */
@@ -374,6 +490,13 @@ inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_ty
 
 	return(TRUE);
 }
+
+/* =======================================================
+
+      Per Vertex non GLSL Lighting
+      
+======================================================= */
+
 
 /* =======================================================
 
@@ -487,63 +610,6 @@ void gl_lights_calc_vertex_setup_model(model_draw *draw)
 
 /* =======================================================
 
-      Find Closest Light
-      
-======================================================= */
-
-view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
-{
-	int						n,k;
-	double					dx,dz,dy,d,dist;
-	view_light_spot_type	*lspot;
-
-		// no lights in scene
-
-	if (view.render->light.count==0) return(NULL);
-
-		// find closest light
-	
-	k=-1;
-	dist=-1;
-	
-	for (n=0;n!=view.render->light.count;n++) {
-
-		lspot=&view.render->light.spots[n];
-		
-			// get distance to light spot
-			
-		dx=lspot->d_x-x;
-		dz=lspot->d_z-z;
-		dy=lspot->d_y-y;
-
-		d=(dx*dx)+(dz*dz)+(dy*dy);
-		
-			// reject lights outside globe
-			// and in wrong direction
-
-		if (d<=lspot->d_intensity) {
-
-			if (gl_lights_direction_ok(x,y,z,lspot)) {
-		
-					// compare distances
-			
-				if ((d<dist) || (dist==-1)) {
-					dist=d;
-					k=n;
-				}
-			}
-		}
-		
-		lspot++;
-	}
-	
-	if (k==-1) return(NULL);
-
-	return(&view.render->light.spots[k]);
-}
-
-/* =======================================================
-
       GLSL Lights
       
 ======================================================= */
@@ -622,63 +688,33 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 	}
 }
 
-void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light_list)
+
+void gl_lights_calc_vertex_setup_box(d3pnt *min,d3pnt *max)
 {
-	int						n,idx;
-	view_light_spot_type	*lspot;
-	
-	idx=0;
-	
-	for (n=0;n!=max_view_lights_per_poly;n++) {
-		
-			// null lights
-			
-		if (light_idx[n]==-1) {
-			light_list->pos[idx]=0.0f;
-			light_list->pos[idx+1]=0.0f;
-			light_list->pos[idx+2]=0.0f;
-			
-			light_list->col[idx]=0.0f;
-			light_list->col[idx+1]=0.0f;
-			light_list->col[idx+2]=0.0f;
-			
-			light_list->intensity[n]=0.0f;		// effectively turns light off
-			light_list->exponent[n]=1.0f;
+	int				n;
 
-			light_list->direction[idx]=0.0f;
-			light_list->direction[idx+1]=0.0f;
-			light_list->direction[idx+2]=0.0f;
-		}
-		
-			// regular lights
-			
-		else {
-			lspot=&view.render->light.spots[light_idx[n]];
-			
-			light_list->pos[idx]=lspot->f_x;
-			light_list->pos[idx+1]=lspot->f_y;
-			light_list->pos[idx+2]=lspot->f_z;
-			
-			light_list->col[idx]=lspot->col.r;
-			light_list->col[idx+1]=lspot->col.g;
-			light_list->col[idx+2]=lspot->col.b;
-			
-			light_list->intensity[n]=(float)lspot->intensity;
-			light_list->exponent[n]=lspot->exponent;
+	light_calc_vertex_count=0;
 
-			light_list->direction[idx]=light_shader_direction[lspot->direction][0];
-			light_list->direction[idx+1]=light_shader_direction[lspot->direction][1];
-			light_list->direction[idx+2]=light_shader_direction[lspot->direction][2];
+	for (n=0;n!=view.render->light.count;n++) {
+		if (gl_lights_collide_with_box(&view.render->light.spots[n],min,max)) {
+			light_calc_vertex_idx[light_calc_vertex_count]=n;
+			light_calc_vertex_count++;
 		}
-		
-		idx+=3;
 	}
+}
+
+void gl_lights_build_from_poly_setup(map_mesh_type *mesh)
+{
+	gl_lights_calc_vertex_setup_box(&mesh->box.min,&mesh->box.max);
 }
 
 void gl_lights_build_from_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,int *light_idx)
 {
 	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_idx);
 }
+
+
+
 
 void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx)
 {
@@ -696,6 +732,7 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx)
 	max.y=liq->y;
 	max.z=liq->bot;
 	
+	gl_lights_calc_vertex_setup_box(&min,&max);
 	gl_lights_build_from_box(&mid,&min,&max,light_idx);
 }
 
@@ -704,6 +741,7 @@ void gl_lights_build_from_model(model_draw *draw,int *light_idx)
 	d3pnt			mid,min,max;
 	
 	model_get_view_min_max(draw,&mid,&min,&max);
+	gl_lights_calc_vertex_setup_box(&min,&max);
 	gl_lights_build_from_box(&mid,&min,&max,light_idx);
 }
 
