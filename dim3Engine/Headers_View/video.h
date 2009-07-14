@@ -49,16 +49,17 @@ extern bool gl_check_shader_ok(void);
 
 	// lights
 
+
+extern void gl_lights_compile(int tick);
+extern void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light_list);
+
+extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
+
 extern void gl_lights_calc_vertex(double x,double y,double z,float *cf);
 extern void gl_lights_calc_vertex_setup_all(void);
 extern void gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh);
 extern void gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq);
 extern void gl_lights_calc_vertex_setup_model(model_draw *draw);
-
-extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
-
-extern void gl_lights_compile(int tick);
-extern void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light_list);
 
 extern void gl_lights_build_from_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,int *light_idx);
 extern void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx);
