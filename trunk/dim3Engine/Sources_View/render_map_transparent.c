@@ -293,7 +293,7 @@ void render_transparent_mesh_shader(void)
 			// draw shader
 
 		if (!mesh->flag.hilite) {
-			gl_lights_build_from_poly(mesh,poly,light_idx);
+			gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,light_idx);
 			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,poly->alpha,light_idx,NULL,NULL);
 		}
 		else {

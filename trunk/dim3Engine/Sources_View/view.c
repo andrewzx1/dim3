@@ -44,6 +44,7 @@ and can be sold or given away.
 #include "inputs.h"
 
 view_type					view;
+view_render_type			view_camera_render,view_node_render;
 render_info_type			render_info;
 
 extern map_type				map;
