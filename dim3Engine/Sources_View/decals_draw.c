@@ -120,7 +120,6 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		cf[2]=decal->tint.b;
 	}
 	else {
-		gl_lights_calc_vertex_setup_all();
 		gl_lights_calc_vertex((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf);
 		cf[0]*=decal->tint.r;
 		cf[1]*=decal->tint.g;
@@ -148,6 +147,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 void decal_render(void)
 {
 	int					n,stencil_idx;
+	bool				has_decal;
 	decal_type			*decal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
@@ -157,6 +157,8 @@ void decal_render(void)
 		// clear all rendering stencil marks
 		// and detect if in view
 
+	has_decal=FALSE;
+	
 	decal=server.decals;
 
 	for (n=0;n!=server.count.decal;n++) {
@@ -166,10 +168,17 @@ void decal_render(void)
 		if (decal->in_view) {
 			mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
 			mesh_poly->draw.decal_stencil_idx=0;
+			has_decal=TRUE;
 		}
 		
 		decal++;
 	}
+	
+	if (!has_decal) return;
+	
+		// setup lighting
+		
+	gl_lights_calc_vertex_setup_none();
 
 		// decals use stenciling
 

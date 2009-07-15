@@ -514,17 +514,17 @@ void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,flo
 		
 	light_fix=FALSE;
 	
-	for (n=0;n!=(max_view_lights_per_poly*3);n++) {
+	for (n=0;n!=(max_shader_light*3);n++) {
 		if (shader->cur_light_pos[n]!=light_list->pos[n]) light_fix=TRUE;
 		shader->cur_light_pos[n]=light_list->pos[n];
 	}
 
 	if (light_fix) {
-		if (shader->var_dim3LightPosition!=-1) glUniform3fvARB(shader->var_dim3LightPosition,max_view_lights_per_poly,light_list->pos);
-		if (shader->var_dim3LightColor!=-1) glUniform3fvARB(shader->var_dim3LightColor,max_view_lights_per_poly,light_list->col);
-		if (shader->var_dim3LightIntensity!=-1) glUniform1fvARB(shader->var_dim3LightIntensity,max_view_lights_per_poly,light_list->intensity);
-		if (shader->var_dim3LightExponent!=-1) glUniform1fvARB(shader->var_dim3LightExponent,max_view_lights_per_poly,light_list->exponent);
-		if (shader->var_dim3LightDirection!=-1) glUniform3fvARB(shader->var_dim3LightDirection,max_view_lights_per_poly,light_list->direction);
+		if (shader->var_dim3LightPosition!=-1) glUniform3fvARB(shader->var_dim3LightPosition,max_shader_light,light_list->pos);
+		if (shader->var_dim3LightColor!=-1) glUniform3fvARB(shader->var_dim3LightColor,max_shader_light,light_list->col);
+		if (shader->var_dim3LightIntensity!=-1) glUniform1fvARB(shader->var_dim3LightIntensity,max_shader_light,light_list->intensity);
+		if (shader->var_dim3LightExponent!=-1) glUniform1fvARB(shader->var_dim3LightExponent,max_shader_light,light_list->exponent);
+		if (shader->var_dim3LightDirection!=-1) glUniform3fvARB(shader->var_dim3LightDirection,max_shader_light,light_list->direction);
 	}
 	
 		// set dark and alpha if they've changed

@@ -41,7 +41,7 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-int							light_calc_vertex_count,light_calc_vertex_idx[max_light_spot];
+int							light_spot_reduce_count,light_spot_reduce_idx[max_light_spot];
 
 float						light_shader_direction[7][3]={{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}};
 
@@ -298,7 +298,7 @@ void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light
 	
 	idx=0;
 	
-	for (n=0;n!=max_view_lights_per_poly;n++) {
+	for (n=0;n!=max_shader_light;n++) {
 		
 			// null lights
 			
@@ -342,6 +342,42 @@ void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light
 		
 		idx+=3;
 	}
+}
+
+/* =======================================================
+
+      Light Direction Elimination
+      
+======================================================= */
+
+inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_type *lspot)
+{
+	switch (lspot->direction) {
+
+		case ld_all:
+			return(TRUE);
+
+		case ld_neg_x:
+			return(x<=lspot->d_x);
+
+		case ld_pos_x:
+			return(x>=lspot->d_x);
+
+		case ld_neg_y:
+			return(y<=lspot->d_y);
+
+		case ld_pos_y:
+			return(y>=lspot->d_y);
+
+		case ld_neg_z:
+			return(z<=lspot->d_z);
+
+		case ld_pos_z:
+			return(z>=lspot->d_z);
+
+	}
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -455,48 +491,58 @@ bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt *min,d3pnt *ma
 	return(TRUE);
 }
 
-/* =======================================================
-
-      Light Direction Elimination
-      
-======================================================= */
-
-inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_type *lspot)
+void gl_lights_cache_mesh_light_collisions(void)
 {
-	switch (lspot->direction) {
+	int				n,k;
+	map_mesh_type	*mesh;
+	
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
-		case ld_all:
-			return(TRUE);
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
 
-		case ld_neg_x:
-			return(x<=lspot->d_x);
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+	
+		mesh->draw.light.nlight=0;
 
-		case ld_pos_x:
-			return(x>=lspot->d_x);
-
-		case ld_neg_y:
-			return(y<=lspot->d_y);
-
-		case ld_pos_y:
-			return(y>=lspot->d_y);
-
-		case ld_neg_z:
-			return(z<=lspot->d_z);
-
-		case ld_pos_z:
-			return(z>=lspot->d_z);
-
+		for (k=0;k!=view.render->light.count;k++) {
+			if (gl_lights_collide_with_box(&view.render->light.spots[k],&mesh->box.min,&mesh->box.max)) {
+				mesh->draw.light.light_idx[mesh->draw.light.nlight]=k;
+				mesh->draw.light.nlight++;
+			}
+		}
 	}
-
-	return(TRUE);
 }
 
 /* =======================================================
 
-      Per Vertex non GLSL Lighting
+      Light Spot Reductions
       
 ======================================================= */
 
+void gl_lights_spot_reduce_none(void)
+{
+	int				n;
+
+	light_spot_reduce_count=view.render->light.count;
+	
+	for (n=0;n!=light_spot_reduce_count;n++) {
+		light_spot_reduce_idx[n]=n;
+	}
+}
+
+void gl_lights_spot_reduce_box(d3pnt *min,d3pnt *max)
+{
+	int				n;
+
+	light_spot_reduce_count=0;
+
+	for (n=0;n!=view.render->light.count;n++) {
+		if (gl_lights_collide_with_box(&view.render->light.spots[n],min,max)) {
+			light_spot_reduce_idx[light_spot_reduce_count]=n;
+			light_spot_reduce_count++;
+		}
+	}
+}
 
 /* =======================================================
 
@@ -512,7 +558,7 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 
 		// no lights in scene
 
-	if (light_calc_vertex_count==0) {
+	if (light_spot_reduce_count==0) {
 		*cf++=(map.ambient.light_color.r+setup.gamma);
 		*cf++=(map.ambient.light_color.g+setup.gamma);
 		*cf=(map.ambient.light_color.b+setup.gamma);
@@ -523,9 +569,9 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 		
 	r=g=b=0.0;
 	
-	for (n=0;n!=light_calc_vertex_count;n++) {
+	for (n=0;n!=light_spot_reduce_count;n++) {
 
-		lspot=&view.render->light.spots[light_calc_vertex_idx[n]];
+		lspot=&view.render->light.spots[light_spot_reduce_idx[n]];
 
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;
@@ -555,34 +601,14 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
 }
 
-void gl_lights_calc_vertex_setup_all(void)
+inline void gl_lights_calc_vertex_setup_none(void)
 {
-	int				n;
-
-	light_calc_vertex_count=view.render->light.count;
-	
-	for (n=0;n!=light_calc_vertex_count;n++) {
-		light_calc_vertex_idx[n]=n;
-	}
+	gl_lights_spot_reduce_none();
 }
 
-void gl_lights_calc_vertex_setup_box(d3pnt *min,d3pnt *max)
+inline void gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh)
 {
-	int				n;
-
-	light_calc_vertex_count=0;
-
-	for (n=0;n!=view.render->light.count;n++) {
-		if (gl_lights_collide_with_box(&view.render->light.spots[n],min,max)) {
-			light_calc_vertex_idx[light_calc_vertex_count]=n;
-			light_calc_vertex_count++;
-		}
-	}
-}
-
-void gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh)
-{
-	gl_lights_calc_vertex_setup_box(&mesh->box.min,&mesh->box.max);
+	gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max);
 }
 
 void gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
@@ -597,7 +623,7 @@ void gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
 	max.y=liq->y;
 	max.z=liq->bot;
 
-	gl_lights_calc_vertex_setup_box(&min,&max);
+	gl_lights_spot_reduce_box(&min,&max);
 }
 
 void gl_lights_calc_vertex_setup_model(model_draw *draw)
@@ -605,7 +631,7 @@ void gl_lights_calc_vertex_setup_model(model_draw *draw)
 	d3pnt			pnt,min,max;
 
 	model_get_view_min_max(draw,&pnt,&min,&max);
-	gl_lights_calc_vertex_setup_box(&min,&max);
+	gl_lights_spot_reduce_box(&min,&max);
 }
 
 /* =======================================================
@@ -614,19 +640,30 @@ void gl_lights_calc_vertex_setup_model(model_draw *draw)
       
 ======================================================= */
 
-void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
+void gl_lights_build_from_box(int spot_count,int *spot_idx,d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 {
 	int						n,k,
 							idx,cnt,sort_list[max_light_spot];
 	double					d,dx,dy,dz,sort_dist[max_light_spot];
 	view_light_spot_type	*lspot;
+	
+		// if reduced spot list is empty, then empty light list
+				
+	if (spot_count==0) {
+		for (n=0;n!=max_shader_light;n++) {
+			light_idx[n]=-1;
+		}
+		return;
+	}
 
-		// sort the light list
+		// sort the light spots, only using
+		// top 4
 
 	cnt=0;
 
-	for (n=0;n!=view.render->light.count;n++) {
-		lspot=&view.render->light.spots[n];
+	for (n=0;n!=spot_count;n++) {
+
+		lspot=&view.render->light.spots[spot_idx[n]];
 		
 			// does light hit this box?
 			
@@ -651,16 +688,16 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 			}
 		}
 
-			// since we can only use max_view_lights_per_poly lights,
-			// ignore all lights that sort beyond max_view_lights_per_poly
+			// since we can only use max_shader_light lights,
+			// ignore all lights that sort beyond max_shader_light
 
-		if ((idx>=max_view_lights_per_poly) || ((idx==-1) && (cnt>=max_view_lights_per_poly))) continue;
+		if ((idx>=max_shader_light) || ((idx==-1) && (cnt>=max_shader_light))) continue;
 	
 			// insert at end of list
 			
 		if (idx==-1) {
 			sort_dist[cnt]=d;
-			sort_list[cnt]=n;
+			sort_list[cnt]=spot_idx[n];
 			cnt++;
 			continue;
 		}
@@ -671,13 +708,15 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 		memmove(&sort_list[idx+1],&sort_list[idx],(sizeof(int)*(cnt-idx)));
 		
 		sort_dist[idx]=d;
-		sort_list[idx]=n;
+		sort_list[idx]=spot_idx[n];
 		
 		cnt++;
-		if (cnt>=max_view_lights_per_poly) cnt=max_view_lights_per_poly;
+		if (cnt>=max_shader_light) cnt=max_shader_light;
 	}
 	
-	for (n=0;n!=max_view_lights_per_poly;n++) {
+		// create the light list
+		
+	for (n=0;n!=max_shader_light;n++) {
 	
 		if (n>=cnt) {
 			light_idx[n]=-1;
@@ -688,33 +727,12 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 	}
 }
 
-
-void gl_lights_calc_vertex_setup_box(d3pnt *min,d3pnt *max)
-{
-	int				n;
-
-	light_calc_vertex_count=0;
-
-	for (n=0;n!=view.render->light.count;n++) {
-		if (gl_lights_collide_with_box(&view.render->light.spots[n],min,max)) {
-			light_calc_vertex_idx[light_calc_vertex_count]=n;
-			light_calc_vertex_count++;
-		}
-	}
-}
-
-void gl_lights_build_from_poly_setup(map_mesh_type *mesh)
-{
-	gl_lights_calc_vertex_setup_box(&mesh->box.min,&mesh->box.max);
-}
-
 void gl_lights_build_from_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,int *light_idx)
 {
-	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_idx);
+	gl_lights_spot_reduce_none();
+	gl_lights_build_from_box(light_spot_reduce_count,light_spot_reduce_idx,&poly->box.mid,&poly->box.min,&poly->box.max,light_idx);
+//	gl_lights_build_from_box(mesh->draw.light.nlight,mesh->draw.light.light_idx,&poly->box.mid,&poly->box.min,&poly->box.max,light_idx);
 }
-
-
-
 
 void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx)
 {
@@ -732,8 +750,8 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx)
 	max.y=liq->y;
 	max.z=liq->bot;
 	
-	gl_lights_calc_vertex_setup_box(&min,&max);
-	gl_lights_build_from_box(&mid,&min,&max,light_idx);
+	gl_lights_spot_reduce_box(&min,&max);
+	gl_lights_build_from_box(light_spot_reduce_count,light_spot_reduce_idx,&mid,&min,&max,light_idx);
 }
 
 void gl_lights_build_from_model(model_draw *draw,int *light_idx)
@@ -741,7 +759,7 @@ void gl_lights_build_from_model(model_draw *draw,int *light_idx)
 	d3pnt			mid,min,max;
 	
 	model_get_view_min_max(draw,&mid,&min,&max);
-	gl_lights_calc_vertex_setup_box(&min,&max);
-	gl_lights_build_from_box(&mid,&min,&max,light_idx);
+	gl_lights_spot_reduce_box(&min,&max);
+	gl_lights_build_from_box(light_spot_reduce_count,light_spot_reduce_idx,&mid,&min,&max,light_idx);
 }
 

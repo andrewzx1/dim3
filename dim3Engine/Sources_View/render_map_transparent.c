@@ -246,7 +246,7 @@ void render_transparent_mesh_simple(void)
 
 void render_transparent_mesh_shader(void)
 {
-	int							n,sort_cnt,light_idx[max_view_lights_per_poly];
+	int							n,sort_cnt,light_idx[max_shader_light];
 	bool						cur_additive;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;

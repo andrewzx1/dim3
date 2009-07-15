@@ -134,7 +134,7 @@ void render_opaque_mesh_simple(void)
 
 void render_opaque_mesh_shader(void)
 {
-	int							n,k,light_idx[max_view_lights_per_poly];
+	int							n,k,light_idx[max_shader_light];
 	GLuint						gl_id;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;

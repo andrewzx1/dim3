@@ -854,7 +854,7 @@ void render_model_setup(int tick,model_draw *draw)
 
 void render_model_opaque(model_draw *draw)
 {
-	int							n,light_idx[max_view_lights_per_poly];
+	int							n,light_idx[max_shader_light];
 	model_type					*mdl;
 
 		// any opaque?
@@ -898,7 +898,7 @@ void render_model_opaque(model_draw *draw)
 
 void render_model_transparent(model_draw *draw)
 {
-	int							n,light_idx[max_view_lights_per_poly];
+	int							n,light_idx[max_shader_light];
 	model_type					*mdl;
 
 		// any transparent?
