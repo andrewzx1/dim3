@@ -406,6 +406,10 @@ void view_draw_scene_build(int tick)
 		
 	halo_draw_clear();
 	view_add_halos();
+	
+		// cache lights hitting meshes
+		
+	gl_lights_cache_mesh_light_collisions();
 }
 
 void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)

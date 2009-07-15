@@ -34,8 +34,6 @@ and can be sold or given away.
 #define max_view_shader							64
 #define max_view_shader_custom_vars				8
 
-#define max_view_lights_per_poly				4
-
 #define max_view_render_item					5120
 
 //
@@ -118,11 +116,11 @@ typedef struct		{
 					} view_light_spot_type;
 
 typedef struct		{
-						float								pos[3*max_view_lights_per_poly],
-															col[3*max_view_lights_per_poly],												
-															intensity[max_view_lights_per_poly],
-															exponent[max_view_lights_per_poly],
-															direction[3*max_view_lights_per_poly];
+						float								pos[3*max_shader_light],
+															col[3*max_shader_light],												
+															intensity[max_shader_light],
+															exponent[max_shader_light],
+															direction[3*max_shader_light];
 					} view_glsl_light_list_type;
 
 //
@@ -194,7 +192,7 @@ typedef struct		{
 					} view_shader_custom_var_type;
 					
 typedef struct		{
-						float								cur_light_pos[max_view_lights_per_poly*3],
+						float								cur_light_pos[max_shader_light*3],
 															cur_dark_factor,cur_alpha;
 						char								name[name_str_len],
 															vertex_name[file_str_len],

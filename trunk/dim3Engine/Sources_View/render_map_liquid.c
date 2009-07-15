@@ -333,7 +333,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
-	int							v_sz,quad_cnt,frame,light_idx[max_view_lights_per_poly];
+	int							v_sz,quad_cnt,frame,light_idx[max_shader_light];
 	bool						shader_on;
 	texture_type				*texture;
 

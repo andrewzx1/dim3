@@ -73,6 +73,7 @@ extern char light_type_str[][32];
 #define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
 #define max_light_spot										128				// maximum number of lights in a scene
+#define max_shader_light									4				// maximum number of lights passed to a shader
 
 #define max_mesh_poly_uv_layer								2				// maximum number of uv layers
 
@@ -253,9 +254,14 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
+						int									nlight,light_idx[max_light_spot];
+					} map_mesh_draw_light_type;
+					
+typedef struct		{
 						int									vertex_offset;
 						bool								moved,has_opaque,has_transparent,
 															has_shader,has_no_shader,has_glow;
+						map_mesh_draw_light_type			light;
 					} map_mesh_draw_type;
 					
 typedef struct		{
