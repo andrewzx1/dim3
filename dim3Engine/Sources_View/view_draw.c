@@ -50,10 +50,9 @@ extern hud_type				hud;
 extern render_info_type		render_info;
 
 extern bool					dim3_debug;
+extern view_render_type		view_camera_render,view_node_render;
 
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
-
-view_render_type			view_camera_render,view_node_render;
 
 extern void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap);
 extern void draw_background(void);
@@ -406,10 +405,6 @@ void view_draw_scene_build(int tick)
 		
 	halo_draw_clear();
 	view_add_halos();
-	
-		// cache lights hitting meshes
-		
-	gl_lights_cache_mesh_light_collisions();
 }
 
 void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)

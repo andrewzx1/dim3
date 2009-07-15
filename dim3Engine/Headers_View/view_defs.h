@@ -29,67 +29,70 @@ and can be sold or given away.
 // view maximums
 //
 
-#define max_view_image							1024
+#define max_view_image										1024
 
-#define max_view_shader							64
-#define max_view_shader_custom_vars				8
+#define max_view_shader										64
+#define max_view_shader_custom_vars							8
 
-#define max_view_render_item					5120
+#define max_view_render_item								5120
+
+#define max_light_spot										128				// maximum number of lights in a scene
+#define max_shader_light									4				// maximum number of lights passed to a shader
 
 //
 // close never obscure distance
 //
 
-#define view_never_obscure_dist					(double)(map_enlarge*15)
+#define view_never_obscure_dist								(double)(map_enlarge*15)
 
 //
 // input rate
 //
 
-#define input_tick_rate							33
+#define input_tick_rate										33
 
 //
 // stencil constants
 //
 
-#define stencil_none							0
-#define stencil_poly_start						1
-#define stencil_poly_end						255
+#define stencil_none										0
+#define stencil_poly_start									1
+#define stencil_poly_end									255
 
-#define stencil_shadow							1
+#define stencil_shadow										1
 
 //
 // remote names
 //
 
-#define remote_name_max_distance				(map_enlarge*500)	// how far away you can see map names
-#define remote_name_min_distance				(map_enlarge*100)	// closest you can see map names in full
+#define remote_name_max_distance							(map_enlarge*500)	// how far away you can see map names
+#define remote_name_min_distance							(map_enlarge*100)	// closest you can see map names in full
 
 //
 // render item type
 //
 
-#define view_render_type_mesh					0
-#define view_render_type_liquid					1
-#define view_render_type_object					2
-#define view_render_type_projectile				3
-#define view_render_type_effect					4
+#define view_render_type_mesh								0
+#define view_render_type_liquid								1
+#define view_render_type_object								2
+#define view_render_type_projectile							3
+#define view_render_type_effect								4
 
 //
 // sorting types
 //
 
-#define view_sort_object						0
-#define view_sort_projectile					1
+#define view_sort_object									0
+#define view_sort_projectile								1
 
 //
 // shader variable types
 //
 
-#define shader_var_type_int						0
-#define shader_var_type_float					1
-#define shader_var_type_vec3					2
-#define shader_var_type_vec4					3
+#define shader_var_type_int									0
+#define shader_var_type_float								1
+#define shader_var_type_vec3								2
+#define shader_var_type_vec4								3
 
 //
 // image structures
@@ -239,7 +242,7 @@ typedef struct		{
 						int									count;
 						view_light_spot_type				spots[max_light_spot];
 					} view_render_light_type;
-					
+
 typedef struct		{
 						int									count,in_view_count;
 						halo_draw_type						halos[max_light_spot];

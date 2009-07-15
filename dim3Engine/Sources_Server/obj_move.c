@@ -862,6 +862,8 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		return(FALSE);
 	}
 
+	return(TRUE);		// supergumba
+
 		// if the hit poly was wall-like, then find vector for wall
 		// and attempt to slide across it
 	
