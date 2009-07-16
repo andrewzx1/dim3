@@ -133,28 +133,12 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n;
-	d3ang			org_ang;
-	
-		// if no rot, add in original rot to diffuse calc
-		
-	if (draw->no_rot.on) {
-		memmove(&org_ang,&draw->setup.ang,sizeof(d3ang));
-		draw->setup.ang.x=draw->no_rot.ang.x;
-		draw->setup.ang.y=angle_add(draw->no_rot.ang.y,-180.0f);
-		draw->setup.ang.z=draw->no_rot.ang.z;
-	}
 	
 		// create the normals
 		
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
 		model_create_draw_normals(mdl,n,&draw->setup);
-	}
-	
-		// restore angle if no rot
-		
-	if (draw->no_rot.on) {
-		memmove(&draw->setup.ang,&org_ang,sizeof(d3ang));
 	}
 }
 
@@ -173,8 +157,6 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
     model_trig_type	*trig;
 	model_mesh_type	*mesh;
 	
-		// create 
-
  		// construct VBO
 
 	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3+3)));
