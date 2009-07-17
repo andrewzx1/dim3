@@ -707,7 +707,7 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 	float				f,ang,rang;
 	bool				hit,cwise;
 	d3vct				line_vct,obj_vct;
-	
+
 		// special check for horizontal/vertical walls
 
 	if (lx==rx) {
@@ -861,8 +861,6 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		obj->pnt.z+=zadd2;
 		return(FALSE);
 	}
-
-	return(TRUE);		// supergumba
 
 		// if the hit poly was wall-like, then find vector for wall
 		// and attempt to slide across it

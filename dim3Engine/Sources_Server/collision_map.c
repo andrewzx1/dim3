@@ -29,7 +29,10 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#define collide_obj_ray_count			35
+#define collide_obj_ray_count			25
+#define collide_obj_ray_half_sweep		40.0f
+#define collide_obj_ray_spindle_count	5
+#define collide_obj_ray_spindle_size	((collide_obj_ray_half_sweep*2)/(collide_obj_ray_spindle_count-1))
 
 #include "scripts.h"
 #include "objects.h"
@@ -39,6 +42,45 @@ and can be sold or given away.
 
 extern map_type			map;
 extern server_type		server;
+
+
+// supergumba
+/*
+extern view_type		view;
+
+d3pnt					test_spt[collide_obj_ray_count],test_ept[collide_obj_ray_count];
+
+void test_rays(void)
+{
+	int			n;
+	d3pnt		*spt,*ept;
+
+	
+	gl_3D_view();
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
+
+	spt=test_spt;
+	ept=test_ept;
+
+	glColor4f(0,1,0,1);
+	glLineWidth(2.0f);
+
+	glBegin(GL_LINES);
+
+	for (n=0;n!=collide_obj_ray_count;n++) {
+		glVertex3i(spt->x,spt->y,spt->z);
+		glVertex3i(ept->x,ept->y,ept->z);
+		spt++;
+		ept++;
+	}
+
+	glEnd();
+
+	glLineWidth(1.0f);
+}
+*/
+
 
 /* =======================================================
 
@@ -75,7 +117,8 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
-	int						n,k,mx,mz,y,idx,d,dist,hx[7],hz[7],vert_y[5];
+	int						n,k,mx,mz,y,idx,d,dist,
+							hx[collide_obj_ray_spindle_count],hz[collide_obj_ray_spindle_count],vert_y[5];
 	float					move_ang,ang;
 	double					radius,rad;
 	bool					bump,hits[collide_obj_ray_count];
@@ -107,7 +150,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		// get movement radius
 
-	radius=(double)(obj->size.radius+map_enlarge);
+	radius=(double)(obj->size.radius+map_enlarge);		// supergumba -- do something better here
 
 		// vertical race trace positions
 
@@ -120,8 +163,8 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		// create the ray trace points
 
-	for (n=0;n!=7;n++) {
-		ang=(move_ang-90.0f)+(float)(n*30);
+	for (n=0;n!=collide_obj_ray_spindle_count;n++) {
+		ang=(move_ang-collide_obj_ray_half_sweep)+(float)(n*collide_obj_ray_spindle_size);
 		if (ang<0) ang=360.0f+ang;
 		if (ang>=360) ang=ang-360.0f;
 
@@ -139,11 +182,11 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 	idx=0;
 
-	for (n=0;n!=7;n++) {
+	for (k=0;k!=5;k++) {
 
-		for (k=0;k!=5;k++) {
+		y=vert_y[k];
 
-			y=vert_y[k];
+		for (n=0;n!=collide_obj_ray_spindle_count;n++) {
 
 			spt[idx].x=obj_pnt.x;
 			spt[idx].y=y;
@@ -155,6 +198,15 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 			idx++;
 		}
 	}
+
+
+	// supergumba
+	/*
+	if (obj->player) {
+		memmove(test_spt,spt,(sizeof(d3pnt)*collide_obj_ray_count));
+		memmove(test_ept,ept,(sizeof(d3pnt)*collide_obj_ray_count));
+	}
+	*/
 
 		// set the collisions and run the
 		// ray tracing
