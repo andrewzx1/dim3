@@ -249,7 +249,13 @@ int shadow_build_poly_set(int *px,int *py,int *pz,int skip_mesh_idx)
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
 		if (view.render->draw_list.items[n].idx==skip_mesh_idx) continue;
 
+			// find mesh colliding with shadow
+
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+
+		if ((mesh->box.max.x<min.x) || (mesh->box.min.x>max.x)) continue;
+		if ((mesh->box.max.z<min.z) || (mesh->box.min.z>max.z)) continue;
+		if ((mesh->box.max.y<min.y) || (mesh->box.min.y>max.y)) continue;		// check Y last as X/Z are usually better eliminations
 		
 			// find polys colliding with shadow
 			

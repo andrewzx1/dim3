@@ -522,6 +522,7 @@ void view_draw(int tick)
 	view.render->camera.flip=FALSE;
 	view.render->camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
 	
+	view.render->no_shader=FALSE;
 	view.render->no_shadow=FALSE;
 	view.render->force_camera_obj=FALSE;
 
@@ -555,6 +556,8 @@ void view_draw(int tick)
 
 	fade_screen_draw(tick);
 	fade_object_draw(tick,obj);
+
+//	test_rays();		// supergumba
 }
 
 bool view_draw_node(int tick,node_type *node,int pixel_size)
@@ -586,6 +589,7 @@ bool view_draw_node(int tick,node_type *node,int pixel_size)
 	view.render->camera.flip=TRUE;
 	view.render->camera.under_liquid_idx=-1;
 	
+	view.render->no_shader=TRUE;
 	view.render->no_shadow=TRUE;
 	view.render->force_camera_obj=TRUE;
 
