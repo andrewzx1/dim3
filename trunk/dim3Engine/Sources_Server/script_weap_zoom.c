@@ -92,7 +92,7 @@ JSBool js_weap_zoom_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->zoom.on);
+	*vp=script_bool_to_value(weap->zoom.on);
 	
 	return(JS_TRUE);
 }
@@ -102,7 +102,7 @@ JSBool js_weap_zoom_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->zoom.mode!=zoom_mode_off);
+	*vp=script_bool_to_value(weap->zoom.mode!=zoom_mode_off);
 	
 	return(JS_TRUE);
 }
@@ -182,7 +182,7 @@ JSBool js_weap_zoom_get_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->zoom.show_weapon);
+	*vp=script_bool_to_value(weap->zoom.show_weapon);
 	
 	return(JS_TRUE);
 }
@@ -208,7 +208,7 @@ JSBool js_weap_zoom_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.on=JSVAL_TO_BOOLEAN(*vp);
+	weap->zoom.on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -289,7 +289,7 @@ JSBool js_weap_zoom_set_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.show_weapon=JSVAL_TO_BOOLEAN(*vp);
+	weap->zoom.show_weapon=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

@@ -100,13 +100,7 @@ void script_add_event_object(JSObject *parent_obj)
 
 JSBool js_event_start_timer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	if (!timers_add(&js.attach,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]),NULL,timer_mode_repeat)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
-
+	*rval=script_bool_to_value(timers_add(&js.attach,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]),NULL,timer_mode_repeat));
     return(JS_TRUE);
 }
 
@@ -124,13 +118,7 @@ JSBool js_event_clear_timer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 
 JSBool js_event_start_wait_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	if (!timers_add(&js.attach,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]),NULL,timer_mode_single)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
-
+	*rval=script_bool_to_value(timers_add(&js.attach,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]),NULL,timer_mode_single));
     return(JS_TRUE);
 }
 
@@ -142,12 +130,7 @@ JSBool js_event_start_wait_random_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	max=JSVAL_TO_INT(argv[1]);
 	tick=random_int(abs(max-min))+min;
 	
-	if (!timers_add(&js.attach,tick,JSVAL_TO_INT(argv[2]),NULL,timer_mode_single)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	*rval=script_bool_to_value(timers_add(&js.attach,tick,JSVAL_TO_INT(argv[2]),NULL,timer_mode_single));
 
     return(JS_TRUE);
 }
@@ -170,12 +153,7 @@ JSBool js_event_chain_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,
 	
 	script_value_to_string(argv[1],chain_func_name,64);
 	
-	if (!timers_add(&js.attach,JSVAL_TO_INT(argv[0]),0,chain_func_name,timer_mode_chain)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	*rval=script_bool_to_value(timers_add(&js.attach,JSVAL_TO_INT(argv[0]),0,chain_func_name,timer_mode_chain));
 
     return(JS_TRUE);
 }
@@ -201,7 +179,7 @@ JSBool js_event_send_message_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	msg_to=JSVAL_TO_INT(argv[0]);
 	id=JSVAL_TO_INT(argv[2]);
 	
-	*rval=JSVAL_TRUE;
+	*rval=script_bool_to_value(TRUE);
 	
 	switch (msg_to) {
 	
@@ -215,7 +193,7 @@ JSBool js_event_send_message_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 			script_value_to_string(argv[1],name,name_str_len);
 			obj=object_find_name(name);
 			if (obj==NULL) {
-				*rval=JSVAL_FALSE;
+				*rval=script_bool_to_value(FALSE);
 				break;
 			}
 
@@ -257,7 +235,7 @@ JSBool js_event_send_message_to_object_by_id_func(JSContext *cx,JSObject *j_obj,
 
 	obj=object_find_uid(JSVAL_TO_INT(argv[0]));
 	if (obj==NULL) {
-		*rval=JSVAL_FALSE;
+		*rval=script_bool_to_value(FALSE);
 		return(JS_TRUE);
 	}
 
@@ -265,7 +243,7 @@ JSBool js_event_send_message_to_object_by_id_func(JSContext *cx,JSObject *j_obj,
 
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[1]));
 
-	*rval=JSVAL_TRUE;
+	*rval=script_bool_to_value(TRUE);
 
 	return(JS_TRUE);
 }
@@ -278,7 +256,7 @@ JSBool js_event_send_message_to_object_by_name_func(JSContext *cx,JSObject *j_ob
 	script_value_to_string(argv[0],name,name_str_len);
 	obj=object_find_name(name);
 	if (obj==NULL) {
-		*rval=JSVAL_FALSE;
+		*rval=script_bool_to_value(FALSE);
 		return(JS_TRUE);
 	}
 
@@ -286,7 +264,7 @@ JSBool js_event_send_message_to_object_by_name_func(JSContext *cx,JSObject *j_ob
 			
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[1]));
 
-	*rval=JSVAL_TRUE;
+	*rval=script_bool_to_value(TRUE);
 
 	return(JS_TRUE);
 }
@@ -392,7 +370,7 @@ JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	
 	if (JSVAL_IS_BOOLEAN(argv[1])) {
 		js.attach.set_msg_data[idx].type=d3_jsval_type_boolean;
-		js.attach.set_msg_data[idx].data.d3_boolean=JSVAL_TO_BOOLEAN(argv[1]);
+		js.attach.set_msg_data[idx].data.d3_boolean=script_value_to_bool(argv[1]);
 		return(JS_TRUE);
 	}
 	
@@ -415,7 +393,7 @@ JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 
 		// get data
 
-	*rval=JSVAL_NULL;
+	*rval=script_null_to_value();
 
 	switch (js.attach.get_msg_data[idx].type) {
 
@@ -428,7 +406,7 @@ JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 			break;
 
 		case d3_jsval_type_boolean:
-			*rval=BOOLEAN_TO_JSVAL(js.attach.get_msg_data[idx].data.d3_boolean);
+			*rval=script_bool_to_value(js.attach.get_msg_data[idx].data.d3_boolean);
 			break;
 
 		case d3_jsval_type_string:
@@ -457,7 +435,7 @@ JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,
 
 	obj=object_find_uid(JSVAL_TO_INT(argv[0]));
 	if (obj==NULL) {
-		*rval=JSVAL_FALSE;
+		*rval=script_bool_to_value(FALSE);
 		return(JS_TRUE);
 	}
 

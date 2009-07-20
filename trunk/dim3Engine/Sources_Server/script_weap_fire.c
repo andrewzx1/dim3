@@ -114,12 +114,7 @@ JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc
 		last_fire_tick=weap->fire.last_fire_dual_tick;
 	}
 
-	if (js.time.current_tick>(last_fire_tick+JSVAL_TO_INT(argv[0]))) {
-		*rval=JSVAL_TRUE;
-	}
-	else {
-		*rval=JSVAL_FALSE;
-	}
+	*rval=script_bool_to_value(js.time.current_tick>(last_fire_tick+JSVAL_TO_INT(argv[0])));
     
 	return(JS_TRUE);
 }

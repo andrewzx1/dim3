@@ -88,7 +88,7 @@ JSBool js_utility_random_get_float_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 JSBool js_utility_random_get_boolean_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	*rval=BOOLEAN_TO_JSVAL(random_boolean());
+	*rval=script_bool_to_value(random_boolean());
 	
 	return(JS_TRUE);
 }

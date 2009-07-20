@@ -73,7 +73,7 @@ JSBool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->radar.on);
+	*vp=script_bool_to_value(obj->radar.on);
 	
 	return(JS_TRUE);
 }
@@ -93,7 +93,7 @@ JSBool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->radar.motion_only);
+	*vp=script_bool_to_value(obj->radar.motion_only);
 	
 	return(JS_TRUE);
 }
@@ -103,7 +103,7 @@ JSBool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->radar.always_visible);
+	*vp=script_bool_to_value(obj->radar.always_visible);
 	
 	return(JS_TRUE);
 }
@@ -119,7 +119,7 @@ JSBool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->radar.on=JSVAL_TO_BOOLEAN(*vp);
+	obj->radar.on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -140,7 +140,7 @@ JSBool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->radar.motion_only=JSVAL_TO_BOOLEAN(*vp);
+	obj->radar.motion_only=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -150,7 +150,7 @@ JSBool js_obj_radar_set_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->radar.always_visible=JSVAL_TO_BOOLEAN(*vp);
+	obj->radar.always_visible=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

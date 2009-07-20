@@ -141,7 +141,7 @@ JSBool js_obj_object_speed_get_noSlide(JSContext *cx,JSObject *j_obj,jsval id,js
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->no_slide);
+	*vp=script_bool_to_value(obj->no_slide);
 	
 	return(JS_TRUE);
 }
@@ -217,7 +217,7 @@ JSBool js_obj_object_speed_set_noSlide(JSContext *cx,JSObject *j_obj,jsval id,js
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->no_slide=JSVAL_TO_BOOLEAN(*vp);
+	obj->no_slide=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

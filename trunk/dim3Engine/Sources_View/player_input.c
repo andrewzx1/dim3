@@ -622,7 +622,7 @@ void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap)
 
 	weapon_zoom_off(obj,weap);
 	weapon_target_end(obj,weap);
-		
+
 	if (next_weapon_key) {
 		weapon_switch(tick,obj,1);
 		weapon_change_key_down=TRUE;

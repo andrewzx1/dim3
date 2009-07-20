@@ -214,7 +214,7 @@ bool scripts_direct_call(attach_type *attach,char *func_name,int arg_count,jsval
 		// no error
 		
 	err_str[0]=0x0;
-	*rval=JSVAL_NULL;
+	*rval=script_null_to_value();
 	
 		// find script
 		

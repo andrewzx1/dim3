@@ -29,9 +29,9 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#define collide_obj_ray_count			25
 #define collide_obj_ray_half_sweep		40.0f
-#define collide_obj_ray_spindle_count	5
+#define collide_obj_ray_spindle_count	12		// 5 -- supergumba
+#define collide_obj_ray_count			(collide_obj_ray_spindle_count*5)
 #define collide_obj_ray_spindle_size	((collide_obj_ray_half_sweep*2)/(collide_obj_ray_spindle_count-1))
 
 #include "scripts.h"
@@ -45,7 +45,7 @@ extern server_type		server;
 
 
 // supergumba
-/*
+
 extern view_type		view;
 
 d3pnt					test_spt[collide_obj_ray_count],test_ept[collide_obj_ray_count];
@@ -79,7 +79,6 @@ void test_rays(void)
 
 	glLineWidth(1.0f);
 }
-*/
 
 
 /* =======================================================
@@ -168,10 +167,13 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		if (ang<0) ang=360.0f+ang;
 		if (ang>=360) ang=ang-360.0f;
 
+
+		ang=(360.0f/(float)(collide_obj_ray_spindle_count))*((float)n);
+
 		rad=(double)(ang*ANG_to_RAD);
 
-		mx=(int)(radius*sin(rad));
-		mz=-(int)(radius*cos(rad));
+		mx=(int)((double)((obj->size.x/2)+map_enlarge)*sin(rad));
+		mz=-(int)((double)((obj->size.z/2)+map_enlarge)*cos(rad));
 
 		hx[n]=mx+mov.x;
 		hz[n]=mz+mov.z;
@@ -201,12 +203,12 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 
 	// supergumba
-	/*
+	
 	if (obj->player) {
 		memmove(test_spt,spt,(sizeof(d3pnt)*collide_obj_ray_count));
 		memmove(test_ept,ept,(sizeof(d3pnt)*collide_obj_ray_count));
 	}
-	*/
+	
 
 		// set the collisions and run the
 		// ray tracing

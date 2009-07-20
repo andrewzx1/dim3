@@ -67,7 +67,7 @@ JSBool js_model_shadow_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	draw=js_find_model_draw(j_obj,TRUE);
 	shadow=&draw->shadow;
 	
-	*vp=BOOLEAN_TO_JSVAL(shadow->on);
+	*vp=script_bool_to_value(shadow->on);
 
 	return(JS_TRUE);
 }
@@ -86,7 +86,7 @@ JSBool js_model_shadow_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	draw=js_find_model_draw(j_obj,TRUE);
 	shadow=&draw->shadow;
 
-	shadow->on=JSVAL_TO_BOOLEAN(*vp);
+	shadow->on=script_value_to_bool(*vp);
 
 	return(JS_TRUE);
 }

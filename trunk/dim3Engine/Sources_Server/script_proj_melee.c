@@ -167,7 +167,7 @@ JSBool js_proj_melee_get_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=BOOLEAN_TO_JSVAL(proj_setup->melee.fall_off);
+	*vp=script_bool_to_value(proj_setup->melee.fall_off);
 	
 	return(JS_TRUE);
 }
@@ -259,7 +259,7 @@ JSBool js_proj_melee_set_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->melee.fall_off=JSVAL_TO_BOOLEAN(*vp);
+	proj_setup->melee.fall_off=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

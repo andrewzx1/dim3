@@ -82,7 +82,7 @@ JSBool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	
 	touch_obj=object_find_uid(obj->touch.obj_uid);
 	if (touch_obj==NULL) {
-		*vp=JSVAL_NULL;
+		*vp=script_null_to_value();
 	}
 	else {
 		*vp=script_string_to_value(touch_obj->name);
@@ -96,7 +96,7 @@ JSBool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,js
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->touch.obj_uid==server.player_obj_uid);
+	*vp=script_bool_to_value(obj->touch.obj_uid==server.player_obj_uid);
 	
 	return(JS_TRUE);
 }
@@ -106,7 +106,7 @@ JSBool js_obj_touch_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->touch.stand);
+	*vp=script_bool_to_value(obj->touch.stand);
 	
 	return(JS_TRUE);
 }

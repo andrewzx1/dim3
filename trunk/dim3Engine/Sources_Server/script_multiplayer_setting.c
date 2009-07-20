@@ -73,14 +73,14 @@ void script_add_multiplayer_setting_object(JSObject *parent_obj)
 
 JSBool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
+	*vp=script_bool_to_value(net_setup.client.joined);
 	return(JS_TRUE);
 }
 
 JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
  	if (!net_setup.client.joined) {
-		*vp=JSVAL_NULL;
+		*vp=script_null_to_value();
 	}
 	else {
 		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
@@ -92,10 +92,10 @@ JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,js
 JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
  	if (!net_setup.client.joined) {
-		*vp=JSVAL_FALSE;
+		*vp=script_bool_to_value(FALSE);
 	}
 	else {
-		*vp=BOOLEAN_TO_JSVAL(net_setup.games[net_setup.game_idx].use_teams);
+		*vp=script_bool_to_value(net_setup.games[net_setup.game_idx].use_teams);
 	}
 	
 	return(JS_TRUE);
@@ -115,7 +115,7 @@ JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,ui
 		// all options are false if not in networking
 		
 	if (!net_setup.client.joined) {
-		*rval=JSVAL_FALSE;
+		*rval=script_bool_to_value(FALSE);
 		return(JS_TRUE);
 	}
 
@@ -125,12 +125,12 @@ JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,ui
 
 	for (n=0;n!=setup.network.noption;n++) {
 		if (strcasecmp(name,setup.network.options[n].name)==0) {
-			*rval=JSVAL_TRUE;
+			*rval=script_bool_to_value(TRUE);
 			return(JS_TRUE);
 		}
 	}
 
-	*rval=JSVAL_FALSE;
+	*rval=script_bool_to_value(FALSE);
 	return(JS_TRUE);
 }
 

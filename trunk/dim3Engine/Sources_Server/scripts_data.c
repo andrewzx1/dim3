@@ -93,7 +93,7 @@ void script_set_global_by_index(int idx,jsval val)
 	
 	if (JSVAL_IS_BOOLEAN(val)) {
 		global->type=d3_jsval_type_boolean;
-		global->data.d3_boolean=JSVAL_TO_BOOLEAN(val);
+		global->data.d3_boolean=script_value_to_bool(val);
 		return;
 	}
 	
@@ -118,7 +118,7 @@ jsval script_get_global(char *name,int script_uid)
 	global_type		*global;
 	
 	idx=script_find_global(name,script_uid);
-	if (idx==-1) return(JSVAL_NULL);
+	if (idx==-1) return(script_null_to_value());
 	
 	global=&js.globals[idx];
 	
@@ -128,12 +128,12 @@ jsval script_get_global(char *name,int script_uid)
 		case d3_jsval_type_float:
 			return(script_float_to_value(global->data.d3_float));
 		case d3_jsval_type_boolean:
-			return(BOOLEAN_TO_JSVAL(global->data.d3_boolean));
+			return(script_bool_to_value(global->data.d3_boolean));
 		case d3_jsval_type_string:
 			return(script_string_to_value(global->data.d3_string));
 	}
 	
-	return(JSVAL_NULL);
+	return(script_null_to_value());
 }
 
 /* =======================================================

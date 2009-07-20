@@ -96,7 +96,7 @@ JSBool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->look.effect_weapons);
+	*vp=script_bool_to_value(obj->look.effect_weapons);
 	
 	return(JS_TRUE);
 }
@@ -132,7 +132,7 @@ JSBool js_obj_look_set_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->look.effect_weapons=JSVAL_TO_BOOLEAN(*vp);
+	obj->look.effect_weapons=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

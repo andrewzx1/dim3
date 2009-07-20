@@ -92,19 +92,19 @@ JSBool js_map_spot_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *arg
 {
 	char		name[name_str_len],type[name_str_len];
 	
-	if ((argv[0]==JSVAL_NULL) && (argv[1]==JSVAL_NULL)) {
+	if ((script_is_value_null(argv[0])) && (script_is_value_null(argv[1]))) {
 		*rval=INT_TO_JSVAL(-1);
 		return(JS_TRUE);
 	}
 	
-	if ((argv[0]!=JSVAL_NULL) && (argv[1]!=JSVAL_NULL)) {
+	if ((!script_is_value_null(argv[0])) && (!script_is_value_null(argv[1]))) {
 		script_value_to_string(argv[0],name,name_str_len);
 		script_value_to_string(argv[1],type,name_str_len);
 		*rval=INT_TO_JSVAL(map_find_spot(&map,name,type));
 		return(JS_TRUE);
 	}
 	
-	if (argv[0]!=JSVAL_NULL) {
+	if (!script_is_value_null(argv[0])) {
 		script_value_to_string(argv[0],name,name_str_len);
 		*rval=INT_TO_JSVAL(map_find_spot(&map,name,NULL));
 		return(JS_TRUE);

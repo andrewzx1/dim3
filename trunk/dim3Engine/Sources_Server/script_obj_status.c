@@ -98,7 +98,7 @@ JSBool js_obj_status_get_moving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->forward_move.moving);
+	*vp=script_bool_to_value(obj->forward_move.moving);
 	
 	return(JS_TRUE);
 }
@@ -108,7 +108,7 @@ JSBool js_obj_status_get_running(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->forward_move.running);
+	*vp=script_bool_to_value(obj->forward_move.running);
 	
 	return(JS_TRUE);
 }
@@ -118,7 +118,7 @@ JSBool js_obj_status_get_backward(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->forward_move.reverse);
+	*vp=script_bool_to_value(obj->forward_move.reverse);
 	
 	return(JS_TRUE);
 }
@@ -128,7 +128,7 @@ JSBool js_obj_status_get_sliding(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->side_move.moving);
+	*vp=script_bool_to_value(obj->side_move.moving);
 	
 	return(JS_TRUE);
 }
@@ -194,7 +194,7 @@ JSBool js_obj_status_freeze_input_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	object_input_freeze(obj,JSVAL_TO_BOOLEAN(argv[0]));
+	object_input_freeze(obj,script_value_to_bool(argv[0]));
 
 	return(JS_TRUE);
 }
@@ -216,7 +216,7 @@ JSBool js_obj_status_tint_view_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 
 	obj=object_find_uid(js.attach.thing_uid);
 	object_fs_tint_start(js.time.current_tick,obj,r,g,b,script_value_to_float(argv[3]),JSVAL_TO_INT(argv[4]),JSVAL_TO_INT(argv[5]),JSVAL_TO_INT(argv[6]));
-    *rval=JSVAL_TRUE;
+    *rval=script_bool_to_value(TRUE);
     
 	return(JS_TRUE);
 }

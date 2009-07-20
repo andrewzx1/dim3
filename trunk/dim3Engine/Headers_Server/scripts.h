@@ -59,8 +59,14 @@ extern void script_free_user_defines(void);
 extern bool script_load_file(script_type *script,char *script_dir,char *script_name,char *err_str);
 extern void script_free_file(script_type *script);
 
+extern jsval script_null_to_value(void);
+extern bool script_is_value_null(jsval val);
+extern int script_value_to_int(jsval val);
+extern jsval script_int_to_value(int i);
 extern float script_value_to_float(jsval val);
 extern jsval script_float_to_value(float f);
+extern bool script_value_to_bool(jsval val);
+extern jsval script_bool_to_value(bool b);
 extern void script_value_to_string(jsval val,char *str,int len);
 extern jsval script_string_to_value(char *str);
 extern jsval script_int_array_to_value(int cnt,int *values);

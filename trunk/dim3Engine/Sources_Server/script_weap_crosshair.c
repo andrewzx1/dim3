@@ -90,7 +90,7 @@ JSBool js_weap_crosshair_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->crosshair.on);
+	*vp=script_bool_to_value(weap->crosshair.on);
 	
 	return(JS_TRUE);
 }
@@ -156,7 +156,7 @@ JSBool js_weap_crosshair_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.on=JSVAL_TO_BOOLEAN(*vp);
+	weap->crosshair.on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

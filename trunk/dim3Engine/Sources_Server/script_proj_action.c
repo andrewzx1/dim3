@@ -117,7 +117,7 @@ JSBool js_proj_action_get_collision(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=BOOLEAN_TO_JSVAL(proj_setup->collision);
+	*vp=script_bool_to_value(proj_setup->collision);
 	
 	return(JS_TRUE);
 }
@@ -141,7 +141,7 @@ JSBool js_proj_action_get_auto_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=BOOLEAN_TO_JSVAL(proj_setup->action.bounce);
+	*vp=script_bool_to_value(proj_setup->action.bounce);
 	
 	return(JS_TRUE);
 }
@@ -177,7 +177,7 @@ JSBool js_proj_action_get_auto_reflect(JSContext *cx,JSObject *j_obj,jsval id,js
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=BOOLEAN_TO_JSVAL(proj_setup->action.reflect);
+	*vp=script_bool_to_value(proj_setup->action.reflect);
 	
 	return(JS_TRUE);
 }
@@ -207,7 +207,7 @@ JSBool js_proj_action_set_collision(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->collision=JSVAL_TO_BOOLEAN(*vp);
+	proj_setup->collision=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -231,7 +231,7 @@ JSBool js_proj_action_set_auto_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->action.bounce=JSVAL_TO_BOOLEAN(*vp);
+	proj_setup->action.bounce=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -267,7 +267,7 @@ JSBool js_proj_action_set_auto_reflect(JSContext *cx,JSObject *j_obj,jsval id,js
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->action.reflect=JSVAL_TO_BOOLEAN(*vp);
+	proj_setup->action.reflect=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

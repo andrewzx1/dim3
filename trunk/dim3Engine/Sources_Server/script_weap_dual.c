@@ -75,7 +75,7 @@ JSBool js_weap_dual_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->dual.on);
+	*vp=script_bool_to_value(weap->dual.on);
 	
 	return(JS_TRUE);
 }
@@ -85,7 +85,7 @@ JSBool js_weap_dual_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->dual.active);
+	*vp=script_bool_to_value(weap->dual.active);
 	
 	return(JS_TRUE);
 }
@@ -111,7 +111,7 @@ JSBool js_weap_dual_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->dual.on=JSVAL_TO_BOOLEAN(*vp);
+	weap->dual.on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -121,7 +121,7 @@ JSBool js_weap_dual_set_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->dual.active=JSVAL_TO_BOOLEAN(*vp);
+	weap->dual.active=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -152,7 +152,7 @@ JSBool js_weap_dual_switch_hand_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 		weap->dual.in_dual=FALSE;
 	}
 	else {
-		weap->dual.in_dual=JSVAL_TO_BOOLEAN(argv[0]);
+		weap->dual.in_dual=script_value_to_bool(argv[0]);
 	}
 	
 	return(JS_TRUE);

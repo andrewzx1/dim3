@@ -96,7 +96,7 @@ JSBool js_weap_alt_ammo_get_clip(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 	
-	*vp=BOOLEAN_TO_JSVAL(alt_ammo->use_clips);
+	*vp=script_bool_to_value(alt_ammo->use_clips);
 	
 	return(JS_TRUE);
 }
@@ -216,7 +216,7 @@ JSBool js_weap_alt_ammo_set_clip(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 	
-	alt_ammo->use_clips=JSVAL_TO_BOOLEAN(*vp);
+	alt_ammo->use_clips=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -321,18 +321,18 @@ JSBool js_weap_alt_ammo_use_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 
 	count=JSVAL_TO_INT(argv[0]);
 	
-	*rval=JSVAL_FALSE;
+	*rval=script_bool_to_value(FALSE);
 	
 	if (weap->dual.in_dual) {
 		if (alt_ammo->count_dual>=count) {
 			alt_ammo->count_dual-=count;
-			*rval=JSVAL_TRUE;
+			*rval=script_bool_to_value(TRUE);
 		}
 	}
 	else {
 		if (alt_ammo->count>=count) {
 			alt_ammo->count-=count;
-			*rval=JSVAL_TRUE;
+			*rval=script_bool_to_value(TRUE);
 		}
 	}
 	
@@ -350,11 +350,11 @@ JSBool js_weap_alt_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	
 	add=JSVAL_TO_INT(argv[0]);
 	
-	*rval=JSVAL_TRUE;
+	*rval=script_bool_to_value(TRUE);
 
 	if (weap->dual.in_dual) {
 		if (alt_ammo->count_dual==alt_ammo->max_count) {
-			*rval=JSVAL_FALSE;
+			*rval=script_bool_to_value(FALSE);
 		}
 		else {
 			alt_ammo->count_dual+=add;
@@ -363,7 +363,7 @@ JSBool js_weap_alt_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	}
 	else {
 		if (alt_ammo->count==alt_ammo->max_count) {
-			*rval=JSVAL_FALSE;
+			*rval=script_bool_to_value(FALSE);
 		}
 		else {
 			alt_ammo->count+=add;
@@ -388,7 +388,7 @@ JSBool js_weap_alt_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN arg
 		// is this a clip based weapon and enough clips?
 		
 	if ((!alt_ammo->use_clips) || (alt_ammo->clip_count==0)) {
-		*rval=JSVAL_FALSE;
+		*rval=script_bool_to_value(FALSE);
 		return(JS_TRUE);
 	}
 	
@@ -409,7 +409,7 @@ JSBool js_weap_alt_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN arg
 		
 	scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_clip_change,0);
 	
-	*rval=JSVAL_TRUE;
+	*rval=script_bool_to_value(TRUE);
 	return(JS_TRUE);
 }
 

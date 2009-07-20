@@ -103,7 +103,7 @@ JSBool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) {
-		*vp=JSVAL_NULL;
+		*vp=script_null_to_value();
 	}
 	else {
 		*vp=script_string_to_value(watch_obj->name);
@@ -117,7 +117,7 @@ JSBool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,js
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->watch.obj_uid==server.player_obj_uid);
+	*vp=script_bool_to_value(obj->watch.obj_uid==server.player_obj_uid);
 	
 	return(JS_TRUE);
 }
@@ -130,10 +130,10 @@ JSBool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,js
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) {
-		*vp=JSVAL_FALSE;
+		*vp=script_bool_to_value(FALSE);
 	}
 	else {
-		*vp=BOOLEAN_TO_JSVAL(watch_obj->remote.on);
+		*vp=script_bool_to_value(watch_obj->remote.on);
 	}
 	
 	return(JS_TRUE);
@@ -147,10 +147,10 @@ JSBool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) {
-		*vp=JSVAL_FALSE;
+		*vp=script_bool_to_value(FALSE);
 	}
 	else {
-		*vp=BOOLEAN_TO_JSVAL(watch_obj->bot);
+		*vp=script_bool_to_value(watch_obj->bot);
 	}
 	
 	return(JS_TRUE);
@@ -163,15 +163,15 @@ JSBool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,js
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	if (obj->watch.obj_uid==server.player_obj_uid) {
-		*vp=JSVAL_TRUE;
+		*vp=script_bool_to_value(TRUE);
 	}
 	else {
 		watch_obj=object_find_uid(obj->watch.obj_uid);
 		if (watch_obj==NULL) {
-			*vp=JSVAL_FALSE;
+			*vp=script_bool_to_value(FALSE);
 		}
 		else {
-			*vp=BOOLEAN_TO_JSVAL((watch_obj->remote.on) || (watch_obj->bot));
+			*vp=script_bool_to_value((watch_obj->remote.on) || (watch_obj->bot));
 		}
 	}
 	

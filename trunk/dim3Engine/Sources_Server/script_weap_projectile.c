@@ -179,7 +179,7 @@ JSBool js_weap_projectile_get_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,j
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->proj.repeat_on);
+	*vp=script_bool_to_value(weap->proj.repeat_on);
 	
 	return(JS_TRUE);
 }
@@ -264,7 +264,7 @@ JSBool js_weap_projectile_set_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,j
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->proj.repeat_on=JSVAL_TO_BOOLEAN(*vp);
+	weap->proj.repeat_on=script_value_to_bool(*vp);
 
 	return(JS_TRUE);
 }
@@ -296,12 +296,7 @@ JSBool js_weap_projectile_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 
 	script_value_to_string(argv[0],str,name_str_len);
 
-	if (!proj_setup_add(obj,weap,str)) {
-		*rval=JSVAL_FALSE;
-		return(JS_TRUE);
-	}
-
-	*rval=JSVAL_TRUE;
+	*rval=script_bool_to_value(proj_setup_add(obj,weap,str));
 
 	return(JS_TRUE);
 }

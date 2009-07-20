@@ -198,7 +198,7 @@ JSBool js_obj_sight_test_object_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	obj=object_find_uid(js.attach.thing_uid);
 
 	id=JSVAL_TO_INT(argv[0]);
-	*rval=BOOLEAN_TO_JSVAL(object_sight_test_object(obj,id));
+	*rval=script_bool_to_value(object_sight_test_object(obj,id));
 	
 	return(JS_TRUE);
 }
@@ -209,7 +209,7 @@ JSBool js_obj_sight_test_player_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	*rval=BOOLEAN_TO_JSVAL(object_sight_test_object(obj,server.player_obj_uid));
+	*rval=script_bool_to_value(object_sight_test_object(obj,server.player_obj_uid));
 
 	return(JS_TRUE);
 }

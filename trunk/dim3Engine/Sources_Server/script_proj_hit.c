@@ -206,7 +206,7 @@ JSBool js_proj_hit_get_isPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=BOOLEAN_TO_JSVAL(proj->contact.obj_uid==server.player_obj_uid);
+	*vp=script_bool_to_value(proj->contact.obj_uid==server.player_obj_uid);
 	
 	return(JS_TRUE);
 }
