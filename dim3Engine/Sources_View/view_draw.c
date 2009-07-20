@@ -557,7 +557,7 @@ void view_draw(int tick)
 	fade_screen_draw(tick);
 	fade_object_draw(tick,obj);
 
-//	test_rays();		// supergumba
+	test_rays();		// supergumba
 }
 
 bool view_draw_node(int tick,node_type *node,int pixel_size)

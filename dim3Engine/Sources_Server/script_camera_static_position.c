@@ -74,7 +74,7 @@ void script_add_camera_static_position_object(JSObject *parent_obj)
 
 JSBool js_camera_static_position_get_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=BOOLEAN_TO_JSVAL(camera.static_follow);
+	*vp=script_bool_to_value(camera.static_follow);
 	return(JS_TRUE);
 }
 
@@ -92,7 +92,7 @@ JSBool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj
 
 JSBool js_camera_static_position_set_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	camera.static_follow=JSVAL_TO_BOOLEAN(*vp);
+	camera.static_follow=script_value_to_bool(*vp);
 	return(JS_TRUE);
 }
 
@@ -143,8 +143,8 @@ JSBool js_camera_static_position_walk_to_node_func(JSContext *cx,JSObject *j_obj
 
 	msec=JSVAL_TO_INT(argv[2]);
 	event_id=JSVAL_TO_INT(argv[3]);
-	open_doors=JSVAL_TO_BOOLEAN(argv[4]);
-	in_freeze=JSVAL_TO_BOOLEAN(argv[5]);
+	open_doors=script_value_to_bool(argv[4]);
+	in_freeze=script_value_to_bool(argv[5]);
 		
 	if (!camera_walk_to_node_setup(start_name,end_name,msec,event_id,open_doors,in_freeze)) return(JS_FALSE);
 

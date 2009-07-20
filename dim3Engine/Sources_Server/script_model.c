@@ -153,7 +153,7 @@ JSBool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	model_draw		*draw;
 
 	draw=js_find_model_draw(j_obj,FALSE);
-	*vp=BOOLEAN_TO_JSVAL(draw->on);
+	*vp=script_bool_to_value(draw->on);
 
 	return(JS_TRUE);
 }
@@ -173,7 +173,7 @@ JSBool js_model_get_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	model_draw		*draw;
 
 	draw=js_find_model_draw(j_obj,FALSE);
-	*vp=BOOLEAN_TO_JSVAL(draw->bounce);
+	*vp=script_bool_to_value(draw->bounce);
 
 	return(JS_TRUE);
 }
@@ -203,7 +203,7 @@ JSBool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	model_draw		*draw;
 
 	draw=js_find_model_draw(j_obj,FALSE);
-	*vp=BOOLEAN_TO_JSVAL(draw->face_forward);
+	*vp=script_bool_to_value(draw->face_forward);
 
 	return(JS_TRUE);
 }
@@ -219,7 +219,7 @@ JSBool js_model_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	model_draw		*draw;
 
 	draw=js_find_model_draw(j_obj,FALSE);
-	draw->on=JSVAL_TO_BOOLEAN(*vp);
+	draw->on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -239,7 +239,7 @@ JSBool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	model_draw		*draw;
 
 	draw=js_find_model_draw(j_obj,FALSE);
-	draw->bounce=JSVAL_TO_BOOLEAN(*vp);
+	draw->bounce=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -269,7 +269,7 @@ JSBool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	model_draw		*draw;
 
 	draw=js_find_model_draw(j_obj,FALSE);
-	draw->face_forward=JSVAL_TO_BOOLEAN(*vp);
+	draw->face_forward=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

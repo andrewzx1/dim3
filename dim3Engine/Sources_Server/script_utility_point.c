@@ -76,12 +76,7 @@ JSBool js_utility_point_equal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	to_y=JSVAL_TO_INT(argv[5]);
 	slop=JSVAL_TO_INT(argv[6]);
 	
-	if ((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop))) {
-		*rval=JSVAL_FALSE;
-	}
-	else {
-		*rval=JSVAL_TRUE;
-	}
+	*rval=script_bool_to_value(!((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop))));
 	
 	return(JS_TRUE);
 }

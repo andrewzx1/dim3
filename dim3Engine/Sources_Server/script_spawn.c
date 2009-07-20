@@ -98,12 +98,7 @@ JSBool js_spawn_particle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 		return(JS_FALSE);
 	}
 	
-	if (!particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL));
     
 	return(JS_TRUE);
 }
@@ -132,12 +127,7 @@ JSBool js_spawn_particle_moving_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 		return(JS_FALSE);
 	}
 	
-	if (!particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,&motion)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,&motion));
     
 	return(JS_TRUE);
 }
@@ -166,12 +156,7 @@ JSBool js_spawn_particle_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 		return(JS_FALSE);
 	}
 	
-	if (!particle_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(particle_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
     
 	return(JS_TRUE);
 }
@@ -200,12 +185,7 @@ JSBool js_spawn_ring_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 		return(JS_FALSE);
 	}
 	
-	if (!ring_spawn(idx,script_get_attached_object_uid(),&pt,NULL)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(ring_spawn(idx,script_get_attached_object_uid(),&pt,NULL));
     
 	return(JS_TRUE);
 }
@@ -234,12 +214,7 @@ JSBool js_spawn_ring_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 		return(JS_FALSE);
 	}
 	
-	if (!ring_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(ring_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
     
 	return(JS_TRUE);
 }
@@ -268,12 +243,7 @@ JSBool js_spawn_flash_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,
 	flash_msec=JSVAL_TO_INT(argv[7]);
 	fade_msec=JSVAL_TO_INT(argv[8]);
 
-	if (!effect_spawn_flash(&pt,&col,intensity,flash_msec,fade_msec)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(effect_spawn_flash(&pt,&col,intensity,flash_msec,fade_msec));
     
 	return(JS_TRUE);
 }
@@ -308,12 +278,7 @@ JSBool js_spawn_lightning_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 
 	life_msec=JSVAL_TO_INT(argv[11]);
 
-	if (!effect_spawn_lightning(js.time.current_tick,&start_pt,&end_pt,wid,varient,&col,life_msec)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(effect_spawn_lightning(js.time.current_tick,&start_pt,&end_pt,wid,varient,&col,life_msec));
     
 	return(JS_TRUE);
 }
@@ -346,12 +311,7 @@ JSBool js_spawn_ray_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,js
 
 	life_msec=JSVAL_TO_INT(argv[10]);
 
-	if (!effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
     
 	return(JS_TRUE);
 }
@@ -385,12 +345,7 @@ JSBool js_spawn_ray_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 		if (obj!=NULL) object_get_tint(obj,&col);
 	}
 
-	if (!effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
     
 	return(JS_TRUE);
 }
@@ -415,12 +370,7 @@ JSBool js_spawn_shake_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,
 	sz=JSVAL_TO_INT(argv[4]);
 	life_msec=JSVAL_TO_INT(argv[5]);
 	
-	if (!effect_spawn_shake(&pt,dist,sz,life_msec)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
+	script_bool_to_value(effect_spawn_shake(&pt,dist,sz,life_msec));
     
 	return(JS_TRUE);
 }
@@ -443,7 +393,7 @@ JSBool js_spawn_push_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	force=JSVAL_TO_INT(argv[4]);
 
 	collide_push_objects(x,y,z,radius,force);
-	*rval=JSVAL_TRUE;
+	*rval=script_bool_to_value(TRUE);
 	
 	return(JS_TRUE);
 }

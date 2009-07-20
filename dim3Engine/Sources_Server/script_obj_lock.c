@@ -71,7 +71,7 @@ JSBool js_obj_lock_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->lock.x);
+	*vp=script_bool_to_value(obj->lock.x);
 	
 	return(JS_TRUE);
 }
@@ -81,7 +81,7 @@ JSBool js_obj_lock_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->lock.y);
+	*vp=script_bool_to_value(obj->lock.y);
 	
 	return(JS_TRUE);
 }
@@ -91,7 +91,7 @@ JSBool js_obj_lock_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->lock.z);
+	*vp=script_bool_to_value(obj->lock.z);
 	
 	return(JS_TRUE);
 }
@@ -107,7 +107,7 @@ JSBool js_obj_lock_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.x=JSVAL_TO_BOOLEAN(*vp);
+	obj->lock.x=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -117,7 +117,7 @@ JSBool js_obj_lock_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.y=JSVAL_TO_BOOLEAN(*vp);
+	obj->lock.y=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -127,7 +127,7 @@ JSBool js_obj_lock_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.z=JSVAL_TO_BOOLEAN(*vp);
+	obj->lock.z=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

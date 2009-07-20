@@ -103,7 +103,7 @@ JSBool js_obj_click_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	obj=object_find_uid(js.attach.thing_uid);
 
 	if (obj->click.current_click_obj_uid==-1) {
-		*vp=JSVAL_NULL;
+		*vp=script_null_to_value();
 	}
 	else {
 		click_obj=object_find_uid(obj->click.current_click_obj_uid);

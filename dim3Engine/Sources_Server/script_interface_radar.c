@@ -74,7 +74,7 @@ void script_add_interface_radar_object(JSObject *parent_obj)
 
 JSBool js_interface_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-			*vp=BOOLEAN_TO_JSVAL(hud.radar.on);
+	*vp=script_bool_to_value(hud.radar.on);
 	return(JS_TRUE);
 }
 
@@ -110,7 +110,7 @@ JSBool js_interface_radar_get_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,
 
 JSBool js_interface_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	hud.radar.on=JSVAL_TO_BOOLEAN(*vp);
+	hud.radar.on=script_value_to_bool(*vp);
 	return(JS_TRUE);
 }
 

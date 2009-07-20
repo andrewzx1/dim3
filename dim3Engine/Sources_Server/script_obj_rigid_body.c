@@ -90,7 +90,7 @@ JSBool js_obj_rigid_body_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->rigid_body.on);
+	*vp=script_bool_to_value(obj->rigid_body.on);
 	
 	return(JS_TRUE);
 }
@@ -196,7 +196,7 @@ JSBool js_obj_rigid_body_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.on=JSVAL_TO_BOOLEAN(*vp);
+	obj->rigid_body.on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

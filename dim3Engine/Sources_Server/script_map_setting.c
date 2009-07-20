@@ -103,14 +103,14 @@ JSBool js_map_setting_get_resistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 
 JSBool js_map_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
+	*vp=script_bool_to_value(net_setup.client.joined);
 	return(JS_TRUE);
 }
 
 JSBool js_map_setting_get_multiplayerType(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	if (!net_setup.client.joined) {
-		*vp=JSVAL_NULL;
+		*vp=script_null_to_value();
 	}
 	else {
 		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);

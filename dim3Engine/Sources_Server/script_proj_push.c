@@ -69,7 +69,7 @@ JSBool js_proj_push_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=BOOLEAN_TO_JSVAL(proj_setup->push.on);
+	*vp=script_bool_to_value(proj_setup->push.on);
 	
 	return(JS_TRUE);
 }
@@ -99,7 +99,7 @@ JSBool js_proj_push_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->push.on=JSVAL_TO_BOOLEAN(*vp);
+	proj_setup->push.on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

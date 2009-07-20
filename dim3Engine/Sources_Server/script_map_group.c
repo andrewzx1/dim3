@@ -106,7 +106,7 @@ JSBool js_map_group_set_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	group_idx=script_find_group_from_name(argv[0]);
 	if (group_idx==-1) return(JS_FALSE);
 	
-	group_show(group_idx,JSVAL_TO_BOOLEAN(argv[1]));
+	group_show(group_idx,script_value_to_bool(argv[1]));
 	return(JS_TRUE);
 }
 
@@ -117,7 +117,7 @@ JSBool js_map_group_set_solid_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	group_idx=script_find_group_from_name(argv[0]);
 	if (group_idx==-1) return(JS_FALSE);
 
-	group_solid(group_idx,JSVAL_TO_BOOLEAN(argv[1]));
+	group_solid(group_idx,script_value_to_bool(argv[1]));
 	return(JS_TRUE);
 }
 

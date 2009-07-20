@@ -178,7 +178,7 @@ JSBool js_interface_bitmap_set_flash_func(JSContext *cx,JSObject *j_obj,uintN ar
 	bitmap=script_find_bitmap_from_name(argv[0]);
 	if (bitmap==NULL) return(JS_FALSE);
 	
-	bitmap->flash=JSVAL_TO_BOOLEAN(argv[1]);
+	bitmap->flash=script_value_to_bool(argv[1]);
 	
 	return(JS_TRUE);
 }

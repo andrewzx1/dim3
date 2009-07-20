@@ -202,7 +202,7 @@ JSBool scripts_gc_reporter(JSContext *cx,JSGCStatus status)
 			break;
 	}
 			
-	return(JSVAL_TRUE);
+	return(JS_TRUE);
 }
 
 /* =======================================================
@@ -262,12 +262,12 @@ void scripts_get_last_error(char *err_str)
 		// check for pending exceptions
 		
 	if (!JS_GetPendingException(js.cx,&eval)) {
-		eval=JSVAL_NULL;
+		eval=script_null_to_value();
 	}
 	
 		// no error?
 		
-	if (eval==JSVAL_NULL) {
+	if (script_is_value_null(eval)) {
 		snprintf(err_str,256,"JS Error [%s]\nUnknown Error",script->name);
 		return;
 	}

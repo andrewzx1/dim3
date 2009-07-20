@@ -76,7 +76,7 @@ JSBool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->vehicle.on);
+	*vp=script_bool_to_value(obj->vehicle.on);
 	
 	return(JS_TRUE);
 }
@@ -86,7 +86,7 @@ JSBool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->vehicle.attach_obj_uid!=-1);
+	*vp=script_bool_to_value(obj->vehicle.attach_obj_uid!=-1);
 	
 	return(JS_TRUE);
 }
@@ -102,7 +102,7 @@ JSBool js_obj_vehicle_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->vehicle.on=JSVAL_TO_BOOLEAN(*vp);
+	obj->vehicle.on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

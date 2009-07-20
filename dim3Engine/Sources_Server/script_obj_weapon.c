@@ -101,12 +101,7 @@ JSBool js_obj_weapon_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 	
 		// add weapon
 		
-	if (!weapon_create(obj,name)) {
-		*rval=JSVAL_FALSE;
-		return(JS_TRUE);
-	}
-
-	*rval=JSVAL_TRUE;
+	script_bool_to_value(weapon_create(obj,name));
 
 	return(JS_TRUE);
 }
@@ -125,7 +120,7 @@ JSBool js_obj_weapon_get_select_func(JSContext *cx,JSObject *j_obj,uintN argc,js
     obj=object_find_uid(js.attach.thing_uid);
 	weap=weapon_find_uid(obj->held_weapon.next_uid);
 	if (weap==NULL) {
-		*rval=JSVAL_NULL;
+		*rval=script_null_to_value();
 		return(JS_TRUE);
 	}
 	
@@ -163,9 +158,7 @@ JSBool js_obj_weapon_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 
-	*rval=JSVAL_FALSE;
-	
-	if (weapon_script_fire(js.time.current_tick,obj,weap,JSVAL_TO_INT(argv[1]))) *rval=JSVAL_TRUE;
+	script_bool_to_value(weapon_script_fire(js.time.current_tick,obj,weap,JSVAL_TO_INT(argv[1])));
 
 	return(JS_TRUE);
 }
@@ -181,7 +174,7 @@ JSBool js_obj_weapon_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
     obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->hide_all_weapons=JSVAL_TO_BOOLEAN(argv[0]);
+	obj->hide_all_weapons=script_value_to_bool(argv[0]);
 
 	return(JS_TRUE);
 }
@@ -205,7 +198,7 @@ JSBool js_obj_weapon_hide_single_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 	
-	weap->hidden=JSVAL_TO_BOOLEAN(argv[1]);
+	weap->hidden=script_value_to_bool(argv[1]);
 
 	return(JS_TRUE);
 }
@@ -233,7 +226,7 @@ JSBool js_obj_weapon_is_hidden_single_func(JSContext *cx,JSObject *j_obj,uintN a
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 	
-	*rval=BOOLEAN_TO_JSVAL(weap->hidden);
+	*rval=script_bool_to_value(weap->hidden);
 
 	return(JS_TRUE);
 }

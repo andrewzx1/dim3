@@ -77,7 +77,7 @@ JSBool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,j
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->fail_in_liquid);
+	*vp=script_bool_to_value(weap->fail_in_liquid);
 	
 	return(JS_TRUE);
 }
@@ -103,7 +103,7 @@ JSBool js_weap_setting_set_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,j
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->fail_in_liquid=JSVAL_TO_BOOLEAN(*vp);
+	weap->fail_in_liquid=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

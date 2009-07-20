@@ -88,7 +88,7 @@ JSBool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(obj->thrust.drag);
+	*vp=script_bool_to_value(obj->thrust.drag);
 	
 	return(JS_TRUE);
 }
@@ -124,7 +124,7 @@ JSBool js_obj_thrust_set_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->thrust.drag=JSVAL_TO_BOOLEAN(*vp);
+	obj->thrust.drag=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

@@ -112,7 +112,7 @@ JSBool js_model_halo_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	draw=js_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 	
-	*vp=BOOLEAN_TO_JSVAL(halo->on);
+	*vp=script_bool_to_value(halo->on);
 
 	return(JS_TRUE);
 }
@@ -126,7 +126,7 @@ JSBool js_model_halo_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	if (halo->idx==-1) {
-		*vp=JSVAL_NULL;
+		*vp=script_null_to_value();
 	}
 	else {
 		*vp=script_string_to_value(server.halos[halo->idx].name);
@@ -221,7 +221,7 @@ JSBool js_model_halo_get_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	draw=js_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 	
-	*vp=BOOLEAN_TO_JSVAL(halo->no_clip_object);
+	*vp=script_bool_to_value(halo->no_clip_object);
 
 	return(JS_TRUE);
 }
@@ -234,7 +234,7 @@ JSBool js_model_halo_get_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	draw=js_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 	
-	*vp=BOOLEAN_TO_JSVAL(halo->no_clip_self);
+	*vp=script_bool_to_value(halo->no_clip_self);
 
 	return(JS_TRUE);
 }
@@ -267,7 +267,7 @@ JSBool js_model_halo_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	draw=js_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 
-	halo->on=JSVAL_TO_BOOLEAN(*vp);
+	halo->on=script_value_to_bool(*vp);
 
 	return(JS_TRUE);
 }
@@ -373,7 +373,7 @@ JSBool js_model_halo_set_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	draw=js_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 
-	halo->no_clip_object=JSVAL_TO_BOOLEAN(*vp);
+	halo->no_clip_object=script_value_to_bool(*vp);
 
 	return(JS_TRUE);
 }
@@ -386,7 +386,7 @@ JSBool js_model_halo_set_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	draw=js_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 
-	halo->no_clip_self=JSVAL_TO_BOOLEAN(*vp);
+	halo->no_clip_self=script_value_to_bool(*vp);
 
 	return(JS_TRUE);
 }

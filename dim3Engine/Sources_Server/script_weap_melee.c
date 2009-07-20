@@ -181,7 +181,7 @@ JSBool js_weap_melee_get_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->melee.fall_off);
+	*vp=script_bool_to_value(weap->melee.fall_off);
 
 	return(JS_TRUE);
 }
@@ -283,7 +283,7 @@ JSBool js_weap_melee_set_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->melee.fall_off=JSVAL_TO_BOOLEAN(*vp);
+	weap->melee.fall_off=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

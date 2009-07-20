@@ -35,6 +35,38 @@ extern js_type			js;
 
 /* =======================================================
 
+      NULL JSVAL
+      
+======================================================= */
+
+inline jsval script_null_to_value(void)
+{
+	return(JSVAL_NULL);
+}
+
+inline bool script_is_value_null(jsval val)
+{
+	return(val==JSVAL_NULL);
+}
+
+/* =======================================================
+
+      Int-JSVAL Translations
+      
+======================================================= */
+
+inline int script_value_to_int(jsval val)
+{
+	return(JSVAL_TO_INT(val));
+}
+
+inline jsval script_int_to_value(int i)
+{
+	return(INT_TO_JSVAL(i));
+}
+
+/* =======================================================
+
       Float-JSVAL Translations
       
 ======================================================= */
@@ -53,6 +85,22 @@ inline jsval script_float_to_value(float f)
     
     JS_NewDoubleValue(js.cx,(jsdouble)f,&vp);
     return(vp);
+}
+
+/* =======================================================
+
+      Bool-JSVAL Translations
+      
+======================================================= */
+
+inline bool script_value_to_bool(jsval val)
+{
+	return(JSVAL_TO_BOOLEAN(val));
+}
+
+inline jsval script_bool_to_value(bool b)
+{
+	return(BOOLEAN_TO_JSVAL(b));
 }
 
 /* =======================================================

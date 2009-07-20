@@ -93,7 +93,7 @@ void script_add_map_fog_object(JSObject *parent_obj)
 
 JSBool js_map_fog_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=BOOLEAN_TO_JSVAL(map.fog.on);
+	*vp=script_bool_to_value(map.fog.on);
 	return(JS_TRUE);
 }
 
@@ -159,7 +159,7 @@ JSBool js_map_fog_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 
 JSBool js_map_fog_get_useSolidColor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=BOOLEAN_TO_JSVAL(map.fog.use_solid_color);
+	*vp=script_bool_to_value(map.fog.use_solid_color);
 	return(JS_TRUE);
 }
 
@@ -171,7 +171,7 @@ JSBool js_map_fog_get_useSolidColor(JSContext *cx,JSObject *j_obj,jsval id,jsval
 
 JSBool js_map_fog_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	map.fog.on=JSVAL_TO_BOOLEAN(*vp);
+	map.fog.on=script_value_to_bool(*vp);
 	return(JS_TRUE);
 }
 
@@ -237,7 +237,7 @@ JSBool js_map_fog_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 
 JSBool js_map_fog_set_useSolidColor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	map.fog.use_solid_color=JSVAL_TO_BOOLEAN(*vp);
+	map.fog.use_solid_color=script_value_to_bool(*vp);
 	return(JS_TRUE);
 }
 

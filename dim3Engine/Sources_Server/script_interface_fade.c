@@ -79,7 +79,7 @@ JSBool js_interface_fade_circle_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 
 	life_msec=JSVAL_TO_INT(argv[4]);
 	
-	auto_clear=JSVAL_TO_BOOLEAN(argv[5]);
+	auto_clear=script_value_to_bool(argv[5]);
 	
 	obj=object_find_uid(server.player_obj_uid);
 	object_fade_start(js.time.current_tick,obj,x,y,start_sz,end_sz,life_msec,auto_clear);

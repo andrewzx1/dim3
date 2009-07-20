@@ -74,7 +74,7 @@ JSBool js_proj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) {
-		*vp=JSVAL_NULL;
+		*vp=script_null_to_value();
 	}
 	else {
 		*vp=script_string_to_value(proj_setup->name);
@@ -89,10 +89,10 @@ JSBool js_proj_setting_get_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) {
-		*vp=JSVAL_FALSE;
+		*vp=script_bool_to_value(FALSE);
 	}
 	else {
-		*vp=BOOLEAN_TO_JSVAL(proj_setup->hitscan.on);
+		*vp=script_bool_to_value(proj_setup->hitscan.on);
 	}
 	
 	return(JS_TRUE);
@@ -104,10 +104,10 @@ JSBool js_proj_setting_get_resetAngle(JSContext *cx,JSObject *j_obj,jsval id,jsv
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) {
-		*vp=JSVAL_FALSE;
+		*vp=script_bool_to_value(FALSE);
 	}
 	else {
-		*vp=BOOLEAN_TO_JSVAL(proj_setup->reset_angle);
+		*vp=script_bool_to_value(proj_setup->reset_angle);
 	}
 	
 	return(JS_TRUE);
@@ -163,7 +163,7 @@ JSBool js_proj_setting_set_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->hitscan.on=JSVAL_TO_BOOLEAN(*vp);
+	proj_setup->hitscan.on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
@@ -175,7 +175,7 @@ JSBool js_proj_setting_set_resetAngle(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 
-	proj_setup->reset_angle=JSVAL_TO_BOOLEAN(*vp);
+	proj_setup->reset_angle=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }

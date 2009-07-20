@@ -135,7 +135,7 @@ JSBool js_map_movement_is_looping_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	movement_idx=script_find_map_movement_from_name(argv[0]);
 	if (movement_idx==-1) return(JS_FALSE);
 	
-	*rval=BOOLEAN_TO_JSVAL(map_movements_script_is_looping(movement_idx));
+	*rval=script_bool_to_value(map_movements_script_is_looping(movement_idx));
 	return(JS_TRUE);
 }
 

@@ -85,7 +85,7 @@ JSBool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=BOOLEAN_TO_JSVAL(weap->target.on);
+	*vp=script_bool_to_value(weap->target.on);
 	
 	return(JS_TRUE);
 }
@@ -143,7 +143,7 @@ JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 
 	script_value_to_string(argv[0],target_type,name_str_len);
 
-	*rval=BOOLEAN_TO_JSVAL(weapon_target_start(obj,weap,target_type));
+	*rval=script_bool_to_value(weapon_target_start(obj,weap,target_type));
 
 	return(JS_TRUE);
 }
@@ -156,7 +156,7 @@ JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN ar
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 	
-	*rval=BOOLEAN_TO_JSVAL(weapon_target_start(obj,weap,NULL));
+	*rval=script_bool_to_value(weapon_target_start(obj,weap,NULL));
 
 	return(JS_TRUE);
 }
@@ -169,7 +169,7 @@ JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 	
-	*rval=BOOLEAN_TO_JSVAL(weapon_target_end(obj,weap));
+	*rval=script_bool_to_value(weapon_target_end(obj,weap));
 
 	return(JS_TRUE);
 }
