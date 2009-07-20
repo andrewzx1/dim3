@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2612D45F0E6CEEE200994B22 /* area.c in Sources */ = {isa = PBXBuildFile; fileRef = 2612D45E0E6CEEE200994B22 /* area.c */; };
+		26ED705E0FF1A7DB00AD19BF /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 26ED705D0FF1A7DB00AD19BF /* zip.c */; };
+		26ED70770FF1A86600AD19BF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26ED70760FF1A86600AD19BF /* libz.dylib */; };
 		F53F280E0BC1C7D900EB3C0F /* dim3baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD52AB0BBE1727001C7C04 /* dim3baseutility.h */; };
 		F53F280F0BC1C7D900EB3C0F /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD52AE0BBE1746001C7C04 /* os_defs.h */; };
 		F53F28100BC1C7D900EB3C0F /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD52A00BBE16AC001C7C04 /* baseutility.h */; };
@@ -55,6 +57,8 @@
 /* Begin PBXFileReference section */
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		2612D45E0E6CEEE200994B22 /* area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = area.c; path = Sources_Math/area.c; sourceTree = "<group>"; };
+		26ED705D0FF1A7DB00AD19BF /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zip.c; path = Sources_File/zip.c; sourceTree = "<group>"; };
+		26ED70760FF1A86600AD19BF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F53F25260BBF770900EB3C0F /* file_paths.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_paths.c; path = Sources_File/file_paths.c; sourceTree = "<group>"; };
 		F53F280B0BC1C74800EB3C0F /* libBaseUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libBaseUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		F556BC740C7BA9E90059E7FC /* file_search.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_search.c; path = Sources_File/file_search.c; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 				F53F28C30BC1C7F700EB3C0F /* QuickTime.framework in Frameworks */,
 				F53F28E50BC1C7F800EB3C0F /* OpenGL.framework in Frameworks */,
 				F53F28F60BC1C7F800EB3C0F /* PNG.framework in Frameworks */,
+				26ED70770FF1A86600AD19BF /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +120,7 @@
 				F5AD52750BBE146A001C7C04 /* Headers */,
 				F5AD52760BBE1470001C7C04 /* Exports */,
 				08FB77ACFE841707C02AAC07 /* Source */,
+				26ED70780FF1A87500AD19BF /* Libraries */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DDFF38A45A11DB9C8B /* Products */,
 			);
@@ -143,11 +149,20 @@
 			name = Source;
 			sourceTree = "<group>";
 		};
+		26ED70780FF1A87500AD19BF /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				26ED70760FF1A86600AD19BF /* libz.dylib */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
 		F53F251A0BBF683700EB3C0F /* File */ = {
 			isa = PBXGroup;
 			children = (
 				F53F25260BBF770900EB3C0F /* file_paths.c */,
 				F556BC740C7BA9E90059E7FC /* file_search.c */,
+				26ED705D0FF1A7DB00AD19BF /* zip.c */,
 			);
 			name = File;
 			sourceTree = "<group>";
@@ -290,6 +305,7 @@
 				F53F28270BC1C7ED00EB3C0F /* textures.c in Sources */,
 				F556BC750C7BA9E90059E7FC /* file_search.c in Sources */,
 				2612D45F0E6CEEE200994B22 /* area.c in Sources */,
+				26ED705E0FF1A7DB00AD19BF /* zip.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

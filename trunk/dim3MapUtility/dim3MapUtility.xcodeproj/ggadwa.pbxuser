@@ -13,10 +13,10 @@
 	};
 	2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6930}}";
-			sepNavSelRange = "{2138, 0}";
-			sepNavVisRange = "{1024, 1404}";
-			sepNavWindowFrame = "{{282, 178}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7056}}";
+			sepNavSelRange = "{10847, 0}";
+			sepNavVisRange = "{10238, 1833}";
+			sepNavWindowFrame = "{{747, 173}, {1041, 747}}";
 		};
 	};
 	267568D10DBD52E1008BEDEE /* auto_generate_door_ramp_step.c */ = {
@@ -53,9 +53,9 @@
 	};
 	2683177A0E4A8B1900BBCDCA /* map_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 12726}}";
-			sepNavSelRange = "{7520, 0}";
-			sepNavVisRange = "{7005, 845}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12670}}";
+			sepNavSelRange = "{2028, 0}";
+			sepNavVisRange = "{1518, 1034}";
 			sepNavWindowFrame = "{{666, 161}, {1041, 747}}";
 		};
 	};
@@ -102,17 +102,17 @@
 	};
 	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7644}}";
-			sepNavSelRange = "{3513, 0}";
-			sepNavVisRange = "{2458, 1394}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7588}}";
+			sepNavSelRange = "{11175, 0}";
+			sepNavVisRange = "{10387, 1848}";
 			sepNavWindowFrame = "{{334, 135}, {1041, 747}}";
 		};
 	};
 	26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1038, 20076}}";
-			sepNavSelRange = "{3721, 0}";
-			sepNavVisRange = "{3055, 1430}";
+			sepNavIntBoundsRect = "{{0, 0}, {1038, 19404}}";
+			sepNavSelRange = "{35109, 0}";
+			sepNavVisRange = "{34515, 1956}";
 			sepNavWindowFrame = "{{513, 129}, {1041, 747}}";
 		};
 	};
@@ -166,10 +166,10 @@
 	};
 	F5A8B1B005229DA4008D4331 /* file_map_write.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10668}}";
-			sepNavSelRange = "{11427, 0}";
-			sepNavVisRange = "{10824, 1566}";
-			sepNavWindowFrame = "{{404, 153}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10710}}";
+			sepNavSelRange = "{18478, 0}";
+			sepNavVisRange = "{17553, 1732}";
+			sepNavWindowFrame = "{{739, 134}, {1041, 747}}";
 		};
 	};
 	F5A8B1B105229DA4008D4331 /* map_main.c */ = {
@@ -182,9 +182,9 @@
 	};
 	F5AD54150BBE1EBD001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7574}}";
-			sepNavSelRange = "{18157, 0}";
-			sepNavVisRange = "{17197, 2044}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7294}}";
+			sepNavSelRange = "{13058, 31}";
+			sepNavVisRange = "{11622, 2647}";
 			sepNavWindowFrame = "{{641, 139}, {1041, 747}}";
 		};
 	};
@@ -251,8 +251,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 266290568;
-			PBXWorkspaceStateSaveDate = 266290568;
+			PBXPerProjectTemplateStateSaveDate = 269403984;
+			PBXWorkspaceStateSaveDate = 269403984;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -261,24 +261,24 @@
 	F5C5353D051C074F00968AF1 /* dim3maputility.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 675}}";
-			sepNavSelRange = "{0, 0}";
+			sepNavSelRange = "{1038, 25}";
 			sepNavVisRange = "{0, 1112}";
 			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
 		};
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9702}}";
-			sepNavSelRange = "{6089, 0}";
-			sepNavVisRange = "{5293, 1213}";
-			sepNavWindowFrame = "{{321, 239}, {1041, 691}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9184}}";
+			sepNavSelRange = "{2585, 0}";
+			sepNavVisRange = "{1262, 1820}";
+			sepNavWindowFrame = "{{554, 120}, {1041, 691}}";
 		};
 	};
 	F5CE96BD0D23584100512EE1 /* mapimport.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5124}}";
-			sepNavSelRange = "{4272, 0}";
-			sepNavVisRange = "{3946, 1493}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5404}}";
+			sepNavSelRange = "{11295, 52}";
+			sepNavVisRange = "{9991, 1669}";
 			sepNavWindowFrame = "{{486, 113}, {1041, 747}}";
 		};
 	};
