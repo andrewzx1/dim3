@@ -40,21 +40,6 @@ extern setup_type			setup;
 
 int							gl_shader_current_idx,gl_shader_current_txt_idx,gl_shader_current_frame;
 
-GLint						gl_shader_var_dim3TimeMillisec,
-							gl_shader_var_dim3FrequencySecond,
-							gl_shader_var_dim3CameraPosition,
-							gl_shader_var_dim3AmbientColor,
-							gl_shader_var_dim3BumpFactor,
-							gl_shader_var_dim3SpecularFactor,
-							gl_shader_var_dim3TexColor,
-							gl_shader_var_dim3LightPosition,
-							gl_shader_var_dim3LightColor,
-							gl_shader_var_dim3LightIntensity,
-							gl_shader_var_dim3LightExponent,
-							gl_shader_var_dim3LightDirection,
-							gl_shader_var_dim3DarkFactor,
-							gl_shader_var_dim3Alpha;
-
 extern int game_time_get(void);
 extern float game_time_fequency_second_get(void);
 

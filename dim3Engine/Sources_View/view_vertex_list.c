@@ -49,7 +49,7 @@ bool view_compile_mesh_gl_list_init(void)
 	int					n,k,t,uv_idx,vertex_cnt,i_idx;
 	unsigned int		v_poly_start_idx;
 	unsigned int		*index_ptr;
-	float				x_shift_offset,y_shift_offset;
+	float				x_shift_offset,y_shift_offset,dark_factor;
 	float				*vertex_ptr,*pv,*pp,*pc;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
@@ -116,6 +116,8 @@ bool view_compile_mesh_gl_list_init(void)
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
+		
+			dark_factor=poly->dark_factor;
 
 			for (t=0;t!=poly->ptsz;t++) {
 			
@@ -125,9 +127,9 @@ bool view_compile_mesh_gl_list_init(void)
 				*pv++=(float)pnt->y;
 				*pv++=(float)pnt->z;
 
-				*pc++=1.0f;
-				*pc++=1.0f;
-				*pc++=1.0f;
+				*pc++=dark_factor;
+				*pc++=dark_factor;
+				*pc++=dark_factor;
 			}
 
 			poly++;
@@ -268,7 +270,7 @@ void view_compile_mesh_gl_list_free(void)
 bool view_compile_mesh_gl_lists(int tick)
 {
 	int							n,k,t,uv_idx,vertex_cnt;
-	float						x_shift_offset,y_shift_offset;
+	float						x_shift_offset,y_shift_offset,dark_factor;
 	float						*vertex_ptr,*pv,*pp,*pc,*pc2;
 	d3pnt						*pnt;
 	map_mesh_type				*mesh;
@@ -366,11 +368,15 @@ bool view_compile_mesh_gl_lists(int tick)
 			poly=mesh->polys;
 				
 			for (k=0;k!=mesh->npoly;k++) {
+			
+				dark_factor=poly->dark_factor;
+				
 				for (t=0;t!=poly->ptsz;t++) {
-					*pc++=1.0f;
-					*pc++=1.0f;
-					*pc++=1.0f;
+					*pc++=dark_factor;
+					*pc++=dark_factor;
+					*pc++=dark_factor;
 				}
+				
 				poly++;
 			}
 		}
@@ -403,12 +409,14 @@ bool view_compile_mesh_gl_lists(int tick)
 				poly=mesh->polys;
 				
 				for (k=0;k!=mesh->npoly;k++) {
+				
+					dark_factor=poly->dark_factor;
 
 					for (t=0;t!=poly->ptsz;t++) {
 						pc2=mesh->colors_cache+(poly->v[t]*3);
-						*pc++=*pc2++;
-						*pc++=*pc2++;
-						*pc++=*pc2;
+						*pc++=(*pc2++)*dark_factor;
+						*pc++=(*pc2++)*dark_factor;
+						*pc++=(*pc2)*dark_factor;
 					}
 
 					poly++;
