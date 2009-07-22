@@ -492,7 +492,7 @@ typedef struct		{
 					} obj_mesh;
 
 //
-// jumping, falling, climbing
+// jumping, ducking, climbing, and falling
 //
 
 typedef struct		{
@@ -506,7 +506,7 @@ typedef struct		{
 					} obj_jump;
 
 typedef struct		{
-						bool					on;
+						bool					on,stepped_off;
 						poly_pointer_type		poly_ptr;
 					} obj_climb;
 					
@@ -801,7 +801,7 @@ typedef struct		{
 
 typedef struct		{
 						int						uid,bind,team_idx,tint_color_idx,spawn_idx,spawn_mesh_idx,
-												count,input_mode,air_mode,liquid_mode,
+												count,input_mode,air_mode,liquid_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],type[name_str_len],spawn_spot_name[name_str_len];

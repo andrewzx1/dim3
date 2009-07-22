@@ -304,7 +304,7 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 		
 	draw->pnt.x=(int)fx+obj->pnt.x;
 	draw->pnt.y=(int)fy+obj->pnt.y;
-	draw->pnt.z=(int)fz+obj->pnt.z;
+	draw->pnt.z=((int)fz+obj->pnt.z)-obj->camera_z_adjust;
 
 		// weapons need rotation fixes
 		// as they are rendered without rotation in fpp

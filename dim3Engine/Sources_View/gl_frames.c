@@ -101,7 +101,7 @@ void gl_3D_view(void)
 		glScalef(-1.0f,-1.0f,-1.0f);
 	}
 	
-	glTranslatef(0.0f,0.0f,(float)camera.plane.near_z_offset);
+	glTranslatef(0.0f,0.0f,(float)(camera.plane.near_z_offset+view.render->camera.z_adjust));
 
 		// default rotations
 

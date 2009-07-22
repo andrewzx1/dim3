@@ -40,12 +40,14 @@ JSBool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_get_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_set_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_grow_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_change_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -58,6 +60,7 @@ script_js_property	obj_size_props[]={
 							{"eyeOffset",			js_obj_size_get_eyeOffset,			js_obj_size_set_eyeOffset},
 							{"weight",				js_obj_size_get_weight,				js_obj_size_set_weight},
 							{"clickDistance",		js_obj_size_get_clickDistance,		js_obj_size_set_clickDistance},
+							{"cameraZAdjust",		js_obj_size_get_cameraZAdjust,		js_obj_size_set_cameraZAdjust},
 							{0}};
 
 script_js_function	obj_size_functions[]={
@@ -144,6 +147,16 @@ JSBool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
+JSBool js_obj_size_get_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->camera_z_adjust);
+	
+	return(JS_TRUE);
+}
+
 /* =======================================================
 
       Setters
@@ -208,6 +221,16 @@ JSBool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->click.distance=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_set_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->camera_z_adjust=JSVAL_TO_INT(*vp);
 	
 	return(JS_TRUE);
 }

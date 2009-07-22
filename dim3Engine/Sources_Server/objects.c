@@ -516,6 +516,8 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->name[0]=0x0;
 	obj->team_idx=net_team_none;
 	obj->spawn_spot_name[0]=0x0;
+
+	obj->camera_z_adjust=0;
 	
 	obj->click.on=FALSE;
 	obj->click.distance=map_enlarge*10;
