@@ -220,7 +220,7 @@ typedef struct		{
 #define view_list_item_flag_shadow_in_view					0x2
 
 typedef struct		{
-						int									under_liquid_idx;
+						int									under_liquid_idx,z_adjust;
 						float								fov;
 						bool								flip;
 						d3pnt								pnt;
