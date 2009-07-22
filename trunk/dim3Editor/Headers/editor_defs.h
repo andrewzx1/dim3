@@ -162,7 +162,7 @@ and can be sold or given away.
 #define walk_view_far_z							(2000*map_enlarge)
 #define walk_view_near_offset					(3*map_enlarge)
 
-#define walk_view_handle_size					8.0f
+#define walk_view_handle_size					10.0f
 
 //
 // draw passing struct

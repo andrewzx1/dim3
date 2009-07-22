@@ -74,10 +74,11 @@ void piece_add_mesh_finish(int mesh_idx)
       
 ======================================================= */
 
-void piece_add_obj_mesh_replace(d3fpnt *min,d3fpnt *max,d3fpnt *scale,d3pnt *pnt)
+void piece_add_obj_mesh_replace(d3pnt *r_min,d3pnt *r_max)
 {
-	int				n,type,mesh_idx,poly_idx,sel_cnt,hit_cnt;
-	d3pnt			kmin,kmax,kpnt,pmin,pmax,ppnt;
+	int				n,type,mesh_idx,poly_idx,sel_cnt;
+	bool			hit;
+	d3pnt			pmin,pmax;
 	
 	sel_cnt=select_count();
 	if (sel_cnt==0) return;
@@ -88,54 +89,30 @@ void piece_add_obj_mesh_replace(d3fpnt *min,d3fpnt *max,d3fpnt *scale,d3pnt *pnt
 
 		// get size
 		
-	hit_cnt=0;
+	hit=FALSE;
 		
 	for (n=0;n!=sel_cnt;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 	
-			// find farthest sizes
-			
 		map_mesh_calculate_extent(&map,mesh_idx,&pmin,&pmax);
-		map_mesh_calculate_center(&map,mesh_idx,&ppnt);
 		
-		if (hit_cnt==0) {
-			memmove(&kmin,&pmin,sizeof(d3pnt));
-			memmove(&kmax,&pmax,sizeof(d3pnt));
-			memmove(&kpnt,&ppnt,sizeof(d3pnt));
-		}
-		else {
-			if (pmin.x<kmin.x) kmin.x=pmin.x;
-			if (pmax.x>kmax.x) kmax.x=pmax.x;
-			if (pmin.y<kmin.y) kmin.y=pmin.y;
-			if (pmax.y>kmax.y) kmax.y=pmax.y;
-			if (pmin.z<kmin.z) kmin.z=pmin.z;
-			if (pmax.z>kmax.z) kmax.z=pmax.z;
+		if (!hit) {
+			memmove(r_min,&pmin,sizeof(d3pnt));
+			memmove(r_max,&pmax,sizeof(d3pnt));
 			
-			kpnt.x+=ppnt.x;
-			kpnt.y+=ppnt.y;
-			kpnt.z+=ppnt.z;
+			hit=TRUE;
+			continue;
 		}
-		
-		hit_cnt++;
+
+		if (pmin.x<r_min->x) r_min->x=pmin.x;
+		if (pmax.x>r_max->x) r_max->x=pmax.x;
+		if (pmin.y<r_min->y) r_min->y=pmin.y;
+		if (pmax.y>r_max->y) r_max->y=pmax.y;
+		if (pmin.z<r_min->z) r_min->z=pmin.z;
+		if (pmax.z>r_max->z) r_max->z=pmax.z;
 	}
-	
-		// no meshes hit
 		
-	if (hit_cnt==0) return;
-	
-		// get center
-		
-	pnt->x=kpnt.x/hit_cnt;
-	pnt->y=kpnt.y/hit_cnt;
-	pnt->z=kpnt.z/hit_cnt;
-		
-		// get factor
-		
-	scale->x=(float)(kmax.x-kmin.x)/(float)(max->x-min->x);
-	scale->y=(float)(kmax.y-kmin.y)/(float)(max->y-min->y);
-	scale->z=(float)(kmax.z-kmin.z)/(float)(max->z-min->z);
-	
 		// delete old meshes
 		
 	for (n=0;n!=sel_cnt;n++) {
@@ -161,7 +138,7 @@ void piece_add_obj_mesh(void)
 	float				fx,fy,fz,fsz,f_scale,gx[8],gy[8];
 	float				*uvs,*uv;
 	bool				replace,mesh_add;
-	d3pnt				*vertexes,*dpt,pnt;
+	d3pnt				*vertexes,*dpt,pnt,r_min,r_max;
 	d3fpnt				min,max,scale;
 	map_mesh_type		*mesh;
 	
@@ -196,21 +173,29 @@ void piece_add_obj_mesh(void)
         textdecode_get_piece(n,0,txt);
         
         if (strcmp(txt,"v")==0) {
-			nvertex++;
 			
 			textdecode_get_piece(n,1,txt);
 			fx=strtod(txt,NULL);
 			textdecode_get_piece(n,2,txt);
-			fy=strtod(txt,NULL);
+			fy=-strtod(txt,NULL);
 			textdecode_get_piece(n,3,txt);
 			fz=strtod(txt,NULL);
 			
-			if (fx<min.x) min.x=fx;
-			if (fx>max.x) max.x=fx;
-			if (fy<min.y) min.y=fy;
-			if (fy>max.y) max.y=fy;
-			if (fz<min.z) min.z=fz;
-			if (fz>max.z) max.z=fz;
+			if (nvertex==0) {
+				min.x=max.x=fx;
+				min.y=max.y=fy;
+				min.z=max.z=fz;
+			}
+			else {
+				if (fx<min.x) min.x=fx;
+				if (fx>max.x) max.x=fx;
+				if (fy<min.y) min.y=fy;
+				if (fy>max.y) max.y=fy;
+				if (fz<min.z) min.z=fz;
+				if (fz>max.z) max.z=fz;
+			}
+			
+			nvertex++;
 		}
 		else {
 			if (strcmp(txt,"f")==0) {
@@ -247,13 +232,13 @@ void piece_add_obj_mesh(void)
 	k=(int)(f_scale*100.0f);
 	f_scale=((float)k)/100.0f;
 
-	replace=dialog_mesh_scale_run(&f_scale);
+	replace=dialog_mesh_scale_run(&f_scale,select_has_type(mesh_piece));
 	
 	scale.x=scale.y=scale.z=f_scale;
 	
 		// fix scale if a replace
 		
-	if (replace) piece_add_obj_mesh_replace(&min,&max,&scale,&pnt);
+	if (replace) piece_add_obj_mesh_replace(&r_min,&r_max);
 	
 		// get texture index
 		
@@ -269,49 +254,63 @@ void piece_add_obj_mesh(void)
 		return;
     }
 	
- 	dpt=vertexes;
+	dpt=vertexes;
 
-    for (n=0;n!=nline;n++) {
+	for (n=0;n!=nline;n++) {
 
-        textdecode_get_piece(n,0,txt);
+		textdecode_get_piece(n,0,txt);
 		if (strcmp(txt,"v")!=0) continue;
-                
+				
 		textdecode_get_piece(n,1,txt);
-		dpt->x=(int)(strtod(txt,NULL)*scale.x);
+		fx=strtod(txt,NULL);
 		
 		textdecode_get_piece(n,2,txt);
-		dpt->y=-(int)(strtod(txt,NULL)*scale.y);
+		fy=-strtod(txt,NULL);
 		
 		textdecode_get_piece(n,3,txt);
-		dpt->z=(int)(strtod(txt,NULL)*scale.z);
-        
-		dpt++;
-    }
-	
-		// recenter the vertexes
+		fz=strtod(txt,NULL);
 		
-	x=y=z=0;
-	
- 	dpt=vertexes;
-	
-	for (n=0;n!=nvertex;n++) {
-		x+=dpt->x;
-		y+=dpt->y;
-		z+=dpt->z;
+		if (!replace) {
+			dpt->x=(int)(fx*scale.x);
+			dpt->y=(int)(fy*scale.y);
+			dpt->z=(int)(fz*scale.z);
+		}
+		else {
+			dpt->x=r_min.x+(int)(((fx-min.x)/(max.x-min.x))*(float)(r_max.x-r_min.x));
+			dpt->y=r_min.y+(int)(((fy-min.y)/(max.y-min.y))*(float)(r_max.y-r_min.y));
+			dpt->z=r_min.z+(int)(((fz-min.z)/(max.z-min.z))*(float)(r_max.z-r_min.z));
+		}
+		
 		dpt++;
 	}
-	
-	x/=nvertex;
-	y/=nvertex;
-	z/=nvertex;
 		
-	dpt=vertexes;
-	
-	for (n=0;n!=nvertex;n++) {
-		dpt->x=(dpt->x-x)+pnt.x;
-		dpt->y=(dpt->y-y)+pnt.y;
-		dpt->z=(dpt->z-z)+pnt.z;
-		dpt++;
+		// recenter the vertexes
+		
+	if (!replace) {
+			
+		x=y=z=0;
+		
+		dpt=vertexes;
+		
+		for (n=0;n!=nvertex;n++) {
+			x+=dpt->x;
+			y+=dpt->y;
+			z+=dpt->z;
+			dpt++;
+		}
+		
+		x/=nvertex;
+		y/=nvertex;
+		z/=nvertex;
+			
+		dpt=vertexes;
+		
+		for (n=0;n!=nvertex;n++) {
+			dpt->x=(dpt->x-x)+pnt.x;
+			dpt->y=(dpt->y-y)+pnt.y;
+			dpt->z=(dpt->z-z)+pnt.z;
+			dpt++;
+		}
 	}
 	
 		// get the UVs

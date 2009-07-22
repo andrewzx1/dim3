@@ -30,7 +30,7 @@ and can be sold or given away.
 #endif
 
 #define collide_obj_ray_half_sweep		40.0f
-#define collide_obj_ray_spindle_count	12		// 5 -- supergumba
+#define collide_obj_ray_spindle_count	5
 #define collide_obj_ray_count			(collide_obj_ray_spindle_count*5)
 #define collide_obj_ray_spindle_size	((collide_obj_ray_half_sweep*2)/(collide_obj_ray_spindle_count-1))
 
@@ -45,7 +45,7 @@ extern server_type		server;
 
 
 // supergumba
-
+/*
 extern view_type		view;
 
 d3pnt					test_spt[collide_obj_ray_count],test_ept[collide_obj_ray_count];
@@ -79,7 +79,7 @@ void test_rays(void)
 
 	glLineWidth(1.0f);
 }
-
+*/
 
 /* =======================================================
 
@@ -116,15 +116,15 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
-	int						n,k,mx,mz,y,idx,d,dist,
+	int						n,k,y,idx,d,dist,
 							hx[collide_obj_ray_spindle_count],hz[collide_obj_ray_spindle_count],vert_y[5];
-	float					move_ang,ang;
-	double					radius,rad;
-	bool					bump,hits[collide_obj_ray_count];
+	float					move_ang,ang,fx,fy,fz;
+	double					rad;
+	bool					hits[collide_obj_ray_count];
 	d3pnt					obj_pnt,mov,
 							spt[collide_obj_ray_count],ept[collide_obj_ray_count],hpt[collide_obj_ray_count];
 	ray_trace_contact_type	base_contact,contacts[collide_obj_ray_count];
-	map_mesh_poly_type		*poly;
+	matrix_type				mat;
 	model_type				*mdl;
 
 		// get movements out of pointers
@@ -147,10 +147,6 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		obj_pnt.z+=mdl->center.z;
 	}
 
-		// get movement radius
-
-	radius=(double)(obj->size.radius+map_enlarge);		// supergumba -- do something better here
-
 		// vertical race trace positions
 
 	vert_y[0]=obj_pnt.y-obj->size.y;
@@ -159,24 +155,32 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 	vert_y[1]=(vert_y[0]+vert_y[2])>>1;
 	vert_y[3]=(vert_y[2]+vert_y[4])>>1;
-
+	
 		// create the ray trace points
-
+		
+	ang=360.0f-collide_obj_ray_half_sweep;
+	
+	matrix_rotate_y(&mat,angle_add(move_ang,180.0f));
+		
 	for (n=0;n!=collide_obj_ray_spindle_count;n++) {
-		ang=(move_ang-collide_obj_ray_half_sweep)+(float)(n*collide_obj_ray_spindle_size);
-		if (ang<0) ang=360.0f+ang;
-		if (ang>=360) ang=ang-360.0f;
-
-
-		ang=(360.0f/(float)(collide_obj_ray_spindle_count))*((float)n);
-
+	
+			// the eclipse points
+			
 		rad=(double)(ang*ANG_to_RAD);
-
-		mx=(int)((double)((obj->size.x/2)+map_enlarge)*sin(rad));
-		mz=-(int)((double)((obj->size.z/2)+map_enlarge)*cos(rad));
-
-		hx[n]=mx+mov.x;
-		hz[n]=mz+mov.z;
+		
+		fx=(float)((obj->size.x>>1))*(float)sin(rad);
+		fz=(float)((obj->size.z>>1))*(float)cos(rad);
+		
+		ang+=collide_obj_ray_spindle_size;
+		if (ang>=360.0f) ang=ang-360.0f;
+		
+			// rotate the eclipse
+			
+		fy=0.0f;
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+		
+		hx[n]=(int)fx+mov.x;
+		hz[n]=(int)fz+mov.z;
 	}
 
 		// create the rays that come from
@@ -203,12 +207,12 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 
 	// supergumba
-	
+/*	
 	if (obj->player) {
 		memmove(test_spt,spt,(sizeof(d3pnt)*collide_obj_ray_count));
 		memmove(test_ept,ept,(sizeof(d3pnt)*collide_obj_ray_count));
 	}
-	
+*/	
 
 		// set the collisions and run the
 		// ray tracing
@@ -247,42 +251,10 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 	if (idx==-1) return(FALSE);
 	
-		// determine if hit poly is bump-capable
-		// we ignore object radius calculations
-		// for bump-capable segments as it pushes
-		// the object around on stairs
-		
-	if (contacts[idx].poly.mesh_idx!=-1) {
-	
-		if (obj->bump.on) {
-			poly=&map.mesh.meshes[contacts[idx].poly.mesh_idx].polys[contacts[idx].poly.poly_idx];
-			bump=((obj->pnt.y-poly->box.min.y)<=obj->bump.high);
-		}
-		else {
-			bump=FALSE;
-		}
-		
-	}
-	
-		// make sure distance stays within
-		// object radius
-
-	if (!bump) {
-		mx=hpt[idx].x-spt[idx].x;
-		mz=hpt[idx].z-spt[idx].z;
-
-		d=(int)(sqrt((double)(mx*mx)+(double)(mz*mz)));
-
-		angle_get_movement(move_ang,(obj->size.radius-d),&mx,&mz);
-		*xadd=(*xadd)-mx;
-		*zadd=(*zadd)-mz;
-	}
-	else {
-		*xadd=hpt[idx].x-spt[idx].x;
-		*zadd=hpt[idx].z-spt[idx].z;
-	}
-	
 		// setup the hits
+		
+	*xadd=hpt[idx].x-spt[idx].x;
+	*zadd=hpt[idx].z-spt[idx].z;
 
 	if (contacts[idx].poly.mesh_idx!=-1) {
 		memmove(&obj->contact.hit_poly,&contacts[idx].poly,sizeof(poly_pointer_type));

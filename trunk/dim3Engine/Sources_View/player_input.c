@@ -325,7 +325,7 @@ void player_movement_fly_swim_y_input(obj_type *obj)
 
 void player_movement_ladder_y_input(obj_type *obj)
 {
-	if ((!obj->on_ladder) || (!obj->forward_move.moving)) return;
+	if ((!obj->climb.on) || (!obj->forward_move.moving)) return;
 			
     if (obj->view_ang.x<-obj->vert_move.slop) {
         obj->vert_move.moving=TRUE;

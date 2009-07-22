@@ -512,7 +512,6 @@ obj_type* object_create(int bind,int reserve_uid)
 	
 	obj->stand_obj_uid=-1;
 	obj->damage_obj_uid=-1;
-	obj->on_ladder=FALSE;
 	
 	obj->name[0]=0x0;
 	obj->team_idx=net_team_none;
@@ -583,6 +582,9 @@ obj_type* object_create(int bind,int reserve_uid)
 	
 	obj->jump.on=TRUE;
     obj->jump.y_add=32;
+	
+	obj->climb.on=FALSE;
+	obj->climb.poly_ptr.mesh_idx=-1;
 	
 	obj->kickback.size=100;
 

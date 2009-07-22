@@ -32,7 +32,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					drag_mode;
+extern int					drag_mode,drag_handle_idx;
 extern d3pnt				view_pnt;
 
 extern map_type				map;
@@ -95,7 +95,6 @@ void walk_view_draw_select_mesh(int mesh_idx)
 	
 		glEnable(GL_DEPTH_TEST);
 
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		glPointSize(walk_view_handle_size);
 		
 		walk_view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
@@ -103,6 +102,12 @@ void walk_view_draw_select_mesh(int mesh_idx)
 		glBegin(GL_POINTS);
 
 		for (n=0;n!=8;n++) {
+			if (drag_handle_idx==n) {
+				glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+			}
+			else {
+				glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+			}
 			glVertex3i(px[n],py[n],pz[n]);
 		}
 
@@ -120,7 +125,6 @@ void walk_view_draw_select_mesh_vertex(int mesh_idx)
 	
 	glEnable(GL_DEPTH_TEST);
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glPointSize(walk_view_handle_size);
 	
 	mesh=&map.mesh.meshes[mesh_idx];
@@ -129,6 +133,12 @@ void walk_view_draw_select_mesh_vertex(int mesh_idx)
 	glBegin(GL_POINTS);
 
 	for (n=0;n!=mesh->nvertex;n++) {
+		if (drag_handle_idx==n) {
+			glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+		}
+		else {
+			glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+		}
 		glVertex3i(pt->x,pt->y,pt->z);
 		
 		pt++;

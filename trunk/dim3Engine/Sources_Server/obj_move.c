@@ -105,17 +105,6 @@ void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
 		}
 	}
 
-		// climbing ladders
-
-	else {
-
-		if (obj->on_ladder) {
-			*ymove=obj->vert_move.speed;
-			if (obj->vert_move.reverse) *ymove=-(*ymove);
-		}
-
-	}
-
 		// add in outside forces
 
 	*xmove=(*xmove)+obj->force.vct.x;
@@ -240,7 +229,7 @@ void object_gravity(obj_type *obj)
     
 		// reset gravity if flying, climbing ladder, or on ground
 
-	if ((obj->fly) || (obj->on_ladder) || (obj->air_mode==am_ground)) {
+	if ((obj->fly) || (obj->climb.on) || (obj->air_mode==am_ground)) {
 		obj->force.gravity=gravity_start_power;
 		return;
 	}
@@ -932,7 +921,33 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 /* =======================================================
 
-      Flying, Swiming, Normal Movement Variants
+      Climbing Movements
+      
+======================================================= */
+
+void object_move_climb(obj_type *obj)
+{
+	int			ymove;
+	
+		// climb up and down
+		
+	ymove=(int)obj->vert_move.speed;
+	if (obj->vert_move.reverse) ymove=-ymove;
+	
+	object_move_y_fly(obj,(int)ymove);
+	
+		// cancel climb if standing on ground
+		// or turned away from ladder or above
+		// ladder
+		
+	if (obj->contact.stand_poly.mesh_idx!=-1) {
+		obj->climb.on=FALSE;
+	}
+}
+
+/* =======================================================
+
+      Flying Movements
       
 ======================================================= */
 
@@ -988,6 +1003,12 @@ void object_move_fly(obj_type *obj)
 
 	object_move_y_fly(obj,(int)ymove);
 }
+
+/* =======================================================
+
+      Swimming Movements
+      
+======================================================= */
 
 void object_move_swim(obj_type *obj)
 {
@@ -1058,6 +1079,12 @@ void object_move_swim(obj_type *obj)
 
 	object_move_y_fly(obj,i_ymove);
 }
+
+/* =======================================================
+
+      Normal Movements
+      
+======================================================= */
 
 void object_move_normal(obj_type *obj)
 {
@@ -1296,28 +1323,25 @@ void object_move_normal(obj_type *obj)
 
 void object_move(obj_type *obj)
 {
-	int				x,y,z;
-
-		// save original position for ladder checks
-
-	x=obj->pnt.x;
-	y=obj->pnt.y;
-	z=obj->pnt.z;
-
 		// call proper movement
-
-	if (obj->fly) {
-		object_move_fly(obj);
+		
+	if (obj->climb.on) {
+		object_move_climb(obj);
 	}
 	else {
-		if (obj->liquid_mode==lm_under) {
-			object_move_swim(obj);
+		if (obj->fly) {
+			object_move_fly(obj);
 		}
 		else {
-			object_move_normal(obj);
+			if (obj->liquid_mode==lm_under) {
+				object_move_swim(obj);
+			}
+			else {
+				object_move_normal(obj);
+			}
 		}
 	}
-
+	
 		// check for contacts
 		// only send contact event once per hit, and check for
 		// ladder contacts.  If no contacts, only turn off
@@ -1334,12 +1358,13 @@ void object_move(obj_type *obj)
 
 			// ladder check
 
-		obj->on_ladder=map.mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable;
+		if (map.mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable) {
+			obj->climb.on=TRUE;
+			memmove(&obj->climb.poly_ptr,&obj->contact.hit_poly,sizeof(poly_pointer_type));
+		}
 	}
 	else {
 		obj->in_collide_event=FALSE;
-
-		if ((x!=obj->pnt.x) && (y!=obj->pnt.y) && (z!=obj->pnt.z)) obj->on_ladder=FALSE;
 	}
 }
 
