@@ -38,7 +38,8 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-int							gl_shader_current_idx,gl_shader_current_txt_idx,gl_shader_current_frame;
+int							gl_shader_current_idx,gl_shader_current_txt_idx,gl_shader_current_frame,
+							gl_shader_current_extra_txt_idx;
 
 extern int game_time_get(void);
 extern float game_time_fequency_second_get(void);
@@ -572,6 +573,7 @@ void gl_shader_draw_start(void)
 	
 	gl_shader_current_txt_idx=-1;
 	gl_shader_current_frame=-1;
+	gl_shader_current_extra_txt_idx=-1;
 
 		// make all textures replace
 		
@@ -627,10 +629,11 @@ void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int tx
 
 		// any changes?
 
-	if ((gl_shader_current_txt_idx==txt_idx) && (gl_shader_current_frame==frame)) return;
+	if ((gl_shader_current_txt_idx==txt_idx) && (gl_shader_current_frame==frame) && (gl_shader_current_extra_txt_idx==extra_txt_idx)) return;
 
 	gl_shader_current_txt_idx=txt_idx;
 	gl_shader_current_frame=frame;
+	gl_shader_current_extra_txt_idx=extra_txt_idx;
 	
 		// extra texture map
 

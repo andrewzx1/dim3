@@ -492,7 +492,7 @@ typedef struct		{
 					} obj_mesh;
 
 //
-// jumping, falling
+// jumping, falling, climbing
 //
 
 typedef struct		{
@@ -504,6 +504,11 @@ typedef struct		{
 						int						y_add;
 						bool					on;
 					} obj_jump;
+
+typedef struct		{
+						bool					on;
+						poly_pointer_type		poly_ptr;
+					} obj_climb;
 					
 typedef struct		{
 						int						dist,damage_minimum_height;
@@ -803,7 +808,7 @@ typedef struct		{
 						bool					spawning,hidden,suspend,fly,slope_gravity,
 												player,bot,side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,
-												find_on,in_collide_event,on_ladder,
+												find_on,in_collide_event,
 												quick_reverse,death_trigger,death_telefrag;
 						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang,view_ang,org_ang,last_ang;
@@ -822,6 +827,7 @@ typedef struct		{
 						obj_bounce				bounce;
 						obj_duck				duck;
 						obj_jump				jump;
+						obj_climb				climb;
 						obj_fall				fall;
 						obj_auto_walk			auto_walk;
 						obj_watch				watch;

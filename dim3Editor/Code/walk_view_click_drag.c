@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					vertex_mode;
+extern int					vertex_mode,drag_handle_idx;
 extern bool					dp_auto_texture;
 extern d3pnt				view_pnt;
 
@@ -149,6 +149,11 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 	undo_save();
 	
+		// hilite the drag handle
+		
+	drag_handle_idx=handle_idx;
+	main_wind_draw();
+	
 		// backup all the vertexes
 		
 	old_dpt=malloc(mesh->nvertex*sizeof(d3pnt));
@@ -237,7 +242,12 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 	os_set_arrow_cursor();
 	
-	return(!first_drag);
+		// turn off hilite
+		
+	drag_handle_idx=-1;
+	main_wind_draw();
+	
+	return(TRUE);
 }
 
 /* =======================================================
@@ -550,7 +560,14 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
     if (!os_button_down()) return(FALSE);
 	
 	undo_save();
+	
+		// turn on hilite
+		
+	drag_handle_idx=vertex_idx;
+	main_wind_draw();
 
+		// drag
+		
 	first_drag=TRUE;
 	
 	dpt=&mesh->vertexes[vertex_idx];
@@ -604,7 +621,12 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 	os_set_arrow_cursor();
 	
-	return(!first_drag);
+		// turn off hilite
+		
+	drag_handle_idx=-1;
+	main_wind_draw();
+	
+	return(TRUE);
 }
 
 /* =======================================================

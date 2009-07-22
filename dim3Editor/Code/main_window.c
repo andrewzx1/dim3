@@ -41,7 +41,7 @@ extern setup_type		setup;
 extern CCrsrHandle		handcur,dragcur,cutcur,rotatecur,towardcur,forwardcur,resizecur,addcur;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
-						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer;
+						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer,drag_handle_idx;
 bool					select_toggle_mode,dp_auto_texture,dp_liquid,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,dp_area,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
@@ -850,6 +850,8 @@ void main_wind_open(void)
 	drag_mode=drag_mode_mesh;
 	grid_mode=grid_mode_small;
 	select_toggle_mode=FALSE;
+	
+	drag_handle_idx=-1;
 	
 	main_wind_set_uv_layer(0);
 	

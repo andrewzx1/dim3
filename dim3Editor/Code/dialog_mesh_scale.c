@@ -79,7 +79,7 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
       
 ======================================================= */
 
-bool dialog_mesh_scale_run(float *scale)
+bool dialog_mesh_scale_run(float *scale,bool replace_ok)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -92,6 +92,8 @@ bool dialog_mesh_scale_run(float *scale)
 		
 	dialog_set_float(dialog_mesh_scale_wind,kMeshScaleScale,0,(*scale));
 	dialog_set_focus(dialog_mesh_scale_wind,kMeshScaleScale,0);
+	
+	dialog_enable(dialog_mesh_scale_wind,kMeshScaleButtonReplace,0,replace_ok);
 	
 		// show window
 	
