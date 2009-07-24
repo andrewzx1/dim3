@@ -76,6 +76,14 @@ script_js_function	obj_pickup_functions[]={
       
 ======================================================= */
 
+void script_init_obj_pickup_object(void)
+{
+}
+
+void script_free_obj_pickup_object(void)
+{
+}
+
 void script_add_obj_pickup_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"pickup",obj_pickup_props,obj_pickup_functions);

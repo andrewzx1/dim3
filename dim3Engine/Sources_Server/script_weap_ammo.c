@@ -80,6 +80,14 @@ script_js_function	weap_ammo_functions[]={
       
 ======================================================= */
 
+void script_init_weap_ammo_object(void)
+{
+}
+
+void script_free_weap_ammo_object(void)
+{
+}
+
 void script_add_weap_ammo_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"ammo",weap_ammo_props,weap_ammo_functions);

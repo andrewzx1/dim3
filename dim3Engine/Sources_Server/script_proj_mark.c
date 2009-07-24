@@ -56,6 +56,14 @@ script_js_property	proj_mark_props[]={
       
 ======================================================= */
 
+void script_init_proj_mark_object(void)
+{
+}
+
+void script_free_proj_mark_object(void)
+{
+}
+
 void script_add_proj_mark_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"mark",proj_mark_props,NULL);

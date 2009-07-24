@@ -76,6 +76,14 @@ script_js_function	obj_size_functions[]={
       
 ======================================================= */
 
+void script_init_obj_size_object(void)
+{
+}
+
+void script_free_obj_size_object(void)
+{
+}
+
 void script_add_obj_size_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"size",obj_size_props,obj_size_functions);

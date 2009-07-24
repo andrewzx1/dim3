@@ -53,6 +53,14 @@ script_js_property	map_fog_color_props[]={
       
 ======================================================= */
 
+void script_init_map_fog_color_object(void)
+{
+}
+
+void script_free_map_fog_color_object(void)
+{
+}
+
 void script_add_map_fog_color_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"fogColor",map_fog_color_props,NULL);

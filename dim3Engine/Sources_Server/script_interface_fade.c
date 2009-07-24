@@ -53,6 +53,14 @@ extern void object_fade_clear(obj_type *obj);
       
 ======================================================= */
 
+void script_init_interface_fade_object(void)
+{
+}
+
+void script_free_interface_fade_object(void)
+{
+}
+
 void script_add_interface_fade_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"fade",NULL,interface_fade_functions);

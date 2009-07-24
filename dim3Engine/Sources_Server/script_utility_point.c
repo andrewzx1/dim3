@@ -53,6 +53,14 @@ script_js_function	utility_point_functions[]={
       
 ======================================================= */
 
+void script_init_utility_point_object(void)
+{
+}
+
+void script_free_utility_point_object(void)
+{
+}
+
 void script_add_utility_point_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"point",NULL,utility_point_functions);

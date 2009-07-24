@@ -50,6 +50,14 @@ script_js_property	obj_touch_angle_props[]={
       
 ======================================================= */
 
+void script_init_obj_touch_angle_object(void)
+{
+}
+
+void script_free_obj_touch_angle_object(void)
+{
+}
+
 void script_add_obj_touch_angle_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"touchAngle",obj_touch_angle_props,NULL);

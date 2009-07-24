@@ -51,6 +51,14 @@ extern void script_add_map_action_object(JSObject *parent_obj);
       
 ======================================================= */
 
+void script_init_global_map_object(void)
+{
+}
+
+void script_free_global_map_object(void)
+{
+}
+
 void script_add_global_map_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;

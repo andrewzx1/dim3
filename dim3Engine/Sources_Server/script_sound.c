@@ -68,6 +68,14 @@ script_js_function	sound_functions[]={
       
 ======================================================= */
 
+void script_init_global_sound_object(void)
+{
+}
+
+void script_free_global_sound_object(void)
+{
+}
+
 void script_add_global_sound_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"sound",NULL,sound_functions);

@@ -43,6 +43,14 @@ extern void script_add_multiplayer_score_object(JSObject *parent_obj);
       
 ======================================================= */
 
+void script_init_global_multiplayer_object(void)
+{
+}
+
+void script_free_global_multiplayer_object(void)
+{
+}
+
 void script_add_global_multiplayer_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;

@@ -50,6 +50,14 @@ script_js_property	proj_origin_props[]={
       
 ======================================================= */
 
+void script_init_proj_origin_object(void)
+{
+}
+
+void script_free_proj_origin_object(void)
+{
+}
+
 void script_add_proj_origin_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"origin",proj_origin_props,NULL);

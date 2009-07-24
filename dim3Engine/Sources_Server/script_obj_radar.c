@@ -57,6 +57,14 @@ script_js_property	obj_radar_props[]={
       
 ======================================================= */
 
+void script_init_obj_radar_object(void)
+{
+}
+
+void script_free_obj_radar_object(void)
+{
+}
+
 void script_add_obj_radar_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"radar",obj_radar_props,NULL);

@@ -60,6 +60,14 @@ script_js_function	obj_score_functions[]={
       
 ======================================================= */
 
+void script_init_obj_score_object(void)
+{
+}
+
+void script_free_obj_score_object(void)
+{
+}
+
 void script_add_obj_score_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"score",obj_score_props,obj_score_functions);

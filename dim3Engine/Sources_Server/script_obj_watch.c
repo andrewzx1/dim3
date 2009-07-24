@@ -74,6 +74,14 @@ script_js_function	obj_watch_functions[]={
       
 ======================================================= */
 
+void script_init_obj_watch_object(void)
+{
+}
+
+void script_free_obj_watch_object(void)
+{
+}
+
 void script_add_obj_watch_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"watch",obj_watch_props,obj_watch_functions);

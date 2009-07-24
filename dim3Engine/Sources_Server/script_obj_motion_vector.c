@@ -82,6 +82,14 @@ script_js_function	obj_motion_vector_functions[]={
       
 ======================================================= */
 
+void script_init_obj_motion_vector_object(void)
+{
+}
+
+void script_free_obj_motion_vector_object(void)
+{
+}
+
 void script_add_obj_motion_vector_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"motionVector",obj_motion_vector_props,obj_motion_vector_functions);

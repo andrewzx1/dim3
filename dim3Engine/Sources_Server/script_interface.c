@@ -48,6 +48,14 @@ extern void script_add_interface_interaction_object(JSObject *parent_obj);
       
 ======================================================= */
 
+void script_init_global_interface_object(void)
+{
+}
+
+void script_free_global_interface_object(void)
+{
+}
+
 void script_add_global_interface_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;

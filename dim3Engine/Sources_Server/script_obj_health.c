@@ -73,6 +73,14 @@ script_js_function	obj_health_functions[]={
       
 ======================================================= */
 
+void script_init_obj_health_object(void)
+{
+}
+
+void script_free_obj_health_object(void)
+{
+}
+
 void script_add_obj_health_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"health",obj_health_props,obj_health_functions);

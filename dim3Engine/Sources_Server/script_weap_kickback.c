@@ -53,6 +53,14 @@ script_js_function	weap_kickback_functions[]={
       
 ======================================================= */
 
+void script_init_weap_kickback_object(void)
+{
+}
+
+void script_free_weap_kickback_object(void)
+{
+}
+
 void script_add_weap_kickback_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"kickback",weap_kickback_props,weap_kickback_functions);

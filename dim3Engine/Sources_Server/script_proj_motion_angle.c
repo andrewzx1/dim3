@@ -50,6 +50,14 @@ script_js_property	proj_motion_angle_props[]={
       
 ======================================================= */
 
+void script_init_proj_motion_angle_object(void)
+{
+}
+
+void script_free_proj_motion_angle_object(void)
+{
+}
+
 void script_add_proj_motion_angle_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"motionAngle",proj_motion_angle_props,NULL);

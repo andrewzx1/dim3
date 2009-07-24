@@ -74,6 +74,14 @@ script_js_property	obj_rigid_body_props[]={
       
 ======================================================= */
 
+void script_init_obj_rigid_body_object(void)
+{
+}
+
+void script_free_obj_rigid_body_object(void)
+{
+}
+
 void script_add_obj_rigid_body_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"rigidBody",obj_rigid_body_props,NULL);

@@ -53,6 +53,14 @@ script_js_property	weap_hand_position_props[]={
       
 ======================================================= */
 
+void script_init_weap_hand_position_object(void)
+{
+}
+
+void script_free_weap_hand_position_object(void)
+{
+}
+
 void script_add_weap_hand_position_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"handPosition",weap_hand_position_props,NULL);

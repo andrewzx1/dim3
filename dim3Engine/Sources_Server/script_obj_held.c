@@ -49,6 +49,14 @@ script_js_function	obj_held_functions[]={
       
 ======================================================= */
 
+void script_init_obj_held_object(void)
+{
+}
+
+void script_free_obj_held_object(void)
+{
+}
+
 void script_add_obj_held_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"held",NULL,obj_held_functions);

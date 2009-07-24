@@ -60,6 +60,14 @@ extern void object_setup_motion(obj_type *obj,float ang,float speed);
       
 ======================================================= */
 
+void script_init_obj_angle_object(void)
+{
+}
+
+void script_free_obj_angle_object(void)
+{
+}
+
 void script_add_obj_angle_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"angle",obj_angle_props,obj_angle_functions);

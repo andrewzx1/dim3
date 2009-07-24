@@ -64,6 +64,14 @@ script_js_function	game_score_functions[]={
       
 ======================================================= */
 
+void script_init_game_score_object(void)
+{
+}
+
+void script_free_game_score_object(void)
+{
+}
+
 void script_add_game_score_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"score",game_score_props,game_score_functions);

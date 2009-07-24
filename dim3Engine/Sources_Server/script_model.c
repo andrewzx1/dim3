@@ -84,6 +84,14 @@ extern void script_add_model_fill_object(JSObject *parent_obj);
       
 ======================================================= */
 
+void script_init_model_object(void)
+{
+}
+
+void script_free_model_object(void)
+{
+}
+
 void script_add_model_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;

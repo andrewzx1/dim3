@@ -65,6 +65,14 @@ script_js_function	map_node_functions[]={
       
 ======================================================= */
 
+void script_init_map_node_object(void)
+{
+}
+
+void script_free_map_node_object(void)
+{
+}
+
 void script_add_map_node_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"node",NULL,map_node_functions);

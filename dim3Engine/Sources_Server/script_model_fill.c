@@ -48,6 +48,14 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
       
 ======================================================= */
 
+void script_init_model_fill_object(void)
+{
+}
+
+void script_free_model_fill_object(void)
+{
+}
+
 void script_add_model_fill_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"fill",NULL,model_fill_functions);

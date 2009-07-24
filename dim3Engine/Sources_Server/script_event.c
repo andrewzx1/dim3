@@ -87,6 +87,14 @@ script_js_function	event_functions[]={
       
 ======================================================= */
 
+void script_init_event_object(void)
+{
+}
+
+void script_free_event_object(void)
+{
+}
+
 void script_add_event_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"event",NULL,event_functions);

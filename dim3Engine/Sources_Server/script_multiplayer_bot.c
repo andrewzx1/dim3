@@ -55,6 +55,14 @@ script_js_function	multiplayer_bot_functions[]={
       
 ======================================================= */
 
+void script_init_multiplayer_bot_object(void)
+{
+}
+
+void script_free_multiplayer_bot_object(void)
+{
+}
+
 void script_add_multiplayer_bot_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"bot",multiplayer_bot_props,multiplayer_bot_functions);

@@ -71,6 +71,14 @@ script_js_function	interface_text_functions[]={
       
 ======================================================= */
 
+void script_init_interface_text_object(void)
+{
+}
+
+void script_free_interface_text_object(void)
+{
+}
+
 void script_add_interface_text_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"text",NULL,interface_text_functions);
