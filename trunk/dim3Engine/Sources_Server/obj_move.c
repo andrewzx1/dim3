@@ -935,14 +935,6 @@ void object_move_climb(obj_type *obj)
 	if (obj->vert_move.reverse) ymove=-ymove;
 	
 	object_move_y_fly(obj,(int)ymove);
-	
-		// cancel climb if standing on ground
-		// or turned away from ladder or above
-		// ladder
-		
-	if (obj->contact.stand_poly.mesh_idx!=-1) {
-		obj->climb.on=FALSE;
-	}
 }
 
 /* =======================================================
@@ -1317,6 +1309,58 @@ void object_move_normal(obj_type *obj)
 
 /* =======================================================
 
+      Climbing Checks
+      
+======================================================= */
+
+void object_move_climb_check(obj_type *obj)
+{
+	bool			climb_mesh;
+	
+		// are we contacting any meshes?
+		
+	climb_mesh=FALSE;
+	
+	if (obj->contact.hit_poly.mesh_idx!=-1) {
+		climb_mesh=map.mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable;
+	}
+	
+		// stop climbing if we are touching the ground
+		// and not touching a climbing mesh
+		
+	if (!climb_mesh) {
+		obj->climb.stepped_off=FALSE;
+		return;
+	}
+	
+		// if we are touching ground but not
+		// stepped on, then we can stop
+		
+	if (obj->contact.stand_poly.mesh_idx!=-1) {
+		if (!obj->climb.stepped_on) {
+			obj->climb.on=FALSE;
+			obj->climb.stepped_off=TRUE;
+		}
+	}
+	else {
+		obj->climb.stepped_on=FALSE;
+	}
+	
+		// have we stepped off?  If so, don't climb
+		
+	if ((!obj->climb.on) && (obj->climb.stepped_off)) return;
+		
+		// start climbing
+		
+	if (!obj->climb.on) obj->climb.stepped_on=TRUE;
+		
+	obj->climb.on=TRUE;
+	obj->climb.stepped_off=FALSE;
+	memmove(&obj->climb.poly_ptr,&obj->contact.hit_poly,sizeof(poly_pointer_type));
+}
+
+/* =======================================================
+
       Object Movement Mainline
       
 ======================================================= */
@@ -1343,29 +1387,21 @@ void object_move(obj_type *obj)
 	}
 	
 		// check for contacts
-		// only send contact event once per hit, and check for
-		// ladder contacts.  If no contacts, only turn off
-		// ladder if there was actually movement
+		// only send contact event once per hit
 
 	if (obj->contact.hit_poly.mesh_idx!=-1) {
-
-			// collide events
-
 		if (!obj->in_collide_event) {
 			obj->in_collide_event=TRUE;
 			scripts_post_event_console(&obj->attach,sd_event_collide,0,0);
-		}
-
-			// ladder check
-
-		if (map.mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable) {
-			obj->climb.on=TRUE;
-			memmove(&obj->climb.poly_ptr,&obj->contact.hit_poly,sizeof(poly_pointer_type));
 		}
 	}
 	else {
 		obj->in_collide_event=FALSE;
 	}
+	
+		// check for climbing
+		
+	object_move_climb_check(obj);
 }
 
 void object_move_remote(obj_type *obj)
