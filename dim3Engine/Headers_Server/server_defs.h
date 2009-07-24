@@ -506,7 +506,7 @@ typedef struct		{
 					} obj_jump;
 
 typedef struct		{
-						bool					on,stepped_off;
+						bool					on,stepped_on,stepped_off;
 						poly_pointer_type		poly_ptr;
 					} obj_climb;
 					
