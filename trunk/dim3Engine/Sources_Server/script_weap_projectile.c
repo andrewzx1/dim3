@@ -104,6 +104,14 @@ script_js_function	weap_projectile_functions[]={
       
 ======================================================= */
 
+void script_init_weap_projectile_object(void)
+{
+}
+
+void script_free_weap_projectile_object(void)
+{
+}
+
 void script_add_weap_projectile_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"projectile",weap_projectile_props,weap_projectile_functions);

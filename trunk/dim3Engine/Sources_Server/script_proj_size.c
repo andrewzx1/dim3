@@ -56,6 +56,14 @@ script_js_property	proj_size_props[]={
       
 ======================================================= */
 
+void script_init_proj_size_object(void)
+{
+}
+
+void script_free_proj_size_object(void)
+{
+}
+
 void script_add_proj_size_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"size",proj_size_props,NULL);

@@ -53,6 +53,14 @@ script_js_property	obj_thrust_props[]={
       
 ======================================================= */
 
+void script_init_obj_thrust_object(void)
+{
+}
+
+void script_free_obj_thrust_object(void)
+{
+}
+
 void script_add_obj_thrust_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"thrust",obj_thrust_props,NULL);

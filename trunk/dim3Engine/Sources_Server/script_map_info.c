@@ -50,6 +50,14 @@ script_js_property	map_info_props[]={
       
 ======================================================= */
 
+void script_init_map_info_object(void)
+{
+}
+
+void script_free_map_info_object(void)
+{
+}
+
 void script_add_map_info_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"info",map_info_props,NULL);

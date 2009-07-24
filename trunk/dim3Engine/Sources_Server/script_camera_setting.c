@@ -55,6 +55,14 @@ script_js_function	camera_setting_functions[]={
       
 ======================================================= */
 
+void script_init_camera_setting_object(void)
+{
+}
+
+void script_free_camera_setting_object(void)
+{
+}
+
 void script_add_camera_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",camera_setting_props,camera_setting_functions);

@@ -63,6 +63,14 @@ extern void script_add_weap_target_color_object(JSObject *parent_obj);
       
 ======================================================= */
 
+void script_init_weap_target_object(void)
+{
+}
+
+void script_free_weap_target_object(void)
+{
+}
+
 void script_add_weap_target_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;

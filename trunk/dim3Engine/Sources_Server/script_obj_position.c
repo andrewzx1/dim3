@@ -78,6 +78,14 @@ extern JSBool js_obj_position_pause_func(JSContext *cx,JSObject *j_obj,uintN arg
       
 ======================================================= */
 
+void script_init_obj_position_object(void)
+{
+}
+
+void script_free_obj_position_object(void)
+{
+}
+
 void script_add_obj_position_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"position",obj_position_props,obj_position_functions);

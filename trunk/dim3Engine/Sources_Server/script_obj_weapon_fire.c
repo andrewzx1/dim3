@@ -48,6 +48,14 @@ script_js_property	obj_weapon_fire_props[]={
       
 ======================================================= */
 
+void script_init_obj_weapon_fire_object(void)
+{
+}
+
+void script_free_obj_weapon_fire_object(void)
+{
+}
+
 void script_add_obj_weapon_fire_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"weaponFire",obj_weapon_fire_props,NULL);

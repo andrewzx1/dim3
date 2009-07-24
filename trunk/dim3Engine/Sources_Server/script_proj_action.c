@@ -87,6 +87,14 @@ script_js_function	proj_action_functions[]={
       
 ======================================================= */
 
+void script_init_proj_action_object(void)
+{
+}
+
+void script_free_proj_action_object(void)
+{
+}
+
 void script_add_proj_action_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"action",proj_action_props,proj_action_functions);

@@ -54,6 +54,14 @@ script_js_property	map_light_color_props[]={
       
 ======================================================= */
 
+void script_init_map_light_color_object(void)
+{
+}
+
+void script_free_map_light_color_object(void)
+{
+}
+
 void script_add_map_light_color_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"lightColor",map_light_color_props,NULL);

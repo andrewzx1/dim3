@@ -54,6 +54,14 @@ script_js_property	camera_chase_slop_props[]={
       
 ======================================================= */
 
+void script_init_camera_chase_slop_object(void)
+{
+}
+
+void script_free_camera_chase_slop_object(void)
+{
+}
+
 void script_add_camera_chase_slop_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"chaseSlop",camera_chase_slop_props,NULL);

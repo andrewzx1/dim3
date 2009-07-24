@@ -149,6 +149,14 @@ script_js_function	obj_setting_functions[]={
       
 ======================================================= */
 
+void script_init_obj_setting_object(void)
+{
+}
+
+void script_free_obj_setting_object(void)
+{
+}
+
 void script_add_obj_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",obj_setting_props,obj_setting_functions);

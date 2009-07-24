@@ -87,6 +87,168 @@ extern int script_find_group_from_name(jsval arg);
 extern int script_find_map_movement_from_name(jsval arg);
 extern int script_get_attached_object_uid(void);
 
+extern void script_init_global_map_object(void);
+extern void script_init_global_multiplayer_object(void);
+extern void script_init_global_camera_object(void);
+extern void script_init_global_interface_object(void);
+extern void script_init_global_data_object(void);
+extern void script_init_global_sound_object(void);
+extern void script_init_global_spawn_object(void);
+extern void script_init_global_utility_object(void);
+
+extern void script_init_game_setting_object(void);
+extern void script_init_game_score_object(void);
+extern void script_init_game_join_object(void);
+
+extern void script_init_model_object(void);
+
+extern void script_init_obj_setting_object(void);
+extern void script_init_obj_position_object(void);
+extern void script_init_obj_angle_object(void);
+extern void script_init_obj_lock_object(void);
+extern void script_init_obj_status_object(void);
+extern void script_init_obj_motion_vector_object(void);
+extern void script_init_obj_motion_angle_object(void);
+extern void script_init_obj_forward_speed_object(void);
+extern void script_init_obj_side_speed_object(void);
+extern void script_init_obj_vert_speed_object(void);
+extern void script_init_obj_turn_speed_object(void);
+extern void script_init_obj_object_speed_object(void);
+extern void script_init_obj_thrust_object(void);
+extern void script_init_obj_look_object(void);
+extern void script_init_obj_sight_object(void);
+extern void script_init_obj_health_object(void);
+extern void script_init_obj_size_object(void);
+extern void script_init_obj_rigid_body_object(void);
+extern void script_init_obj_vehicle_object(void);
+extern void script_init_obj_radar_object(void);
+extern void script_init_obj_score_object(void);
+extern void script_init_obj_touch_object(void);
+extern void script_init_obj_touch_position_object(void);
+extern void script_init_obj_touch_angle_object(void);
+extern void script_init_obj_hit_object(void);
+extern void script_init_obj_hit_position_object(void);
+extern void script_init_obj_hit_angle_object(void);
+extern void script_init_obj_click_object(void);
+extern void script_init_obj_held_object(void);
+extern void script_init_obj_pickup_object(void);
+extern void script_init_obj_watch_object(void);
+extern void script_init_obj_weapon_object(void);
+extern void script_init_obj_weapon_fire_object(void);
+extern void script_init_obj_melee_object(void);
+
+extern void script_init_weap_setting_object(void);
+extern void script_init_weap_hand_object(void);
+extern void script_init_weap_hand_position_object(void);
+extern void script_init_weap_hand_angle_object(void);
+extern void script_init_weap_projectile_object(void);
+extern void script_init_weap_crosshair_object(void);
+extern void script_init_weap_ammo_object(void);
+extern void script_init_weap_alt_ammo_object(void);
+extern void script_init_weap_kickback_object(void);
+extern void script_init_weap_recoil_object(void);
+extern void script_init_weap_melee_object(void);
+extern void script_init_weap_fire_object(void);
+extern void script_init_weap_dual_object(void);
+extern void script_init_weap_target_object(void);
+extern void script_init_weap_zoom_object(void);
+
+extern void script_init_proj_setting_object(void);
+extern void script_init_proj_position_object(void);
+extern void script_init_proj_origin_object(void);
+extern void script_init_proj_motion_vector_object(void);
+extern void script_init_proj_motion_angle_object(void);
+extern void script_init_proj_speed_object(void);
+extern void script_init_proj_hit_object(void);
+extern void script_init_proj_action_object(void);
+extern void script_init_proj_push_object(void);
+extern void script_init_proj_size_object(void);
+extern void script_init_proj_mark_object(void);
+extern void script_init_proj_melee_object(void);
+
+extern void script_init_event_object(void);
+
+extern void script_free_global_map_object(void);
+extern void script_free_global_multiplayer_object(void);
+extern void script_free_global_camera_object(void);
+extern void script_free_global_interface_object(void);
+extern void script_free_global_data_object(void);
+extern void script_free_global_sound_object(void);
+extern void script_free_global_spawn_object(void);
+extern void script_free_global_utility_object(void);
+
+extern void script_free_game_setting_object(void);
+extern void script_free_game_score_object(void);
+extern void script_free_game_join_object(void);
+
+extern void script_free_model_object(void);
+
+extern void script_free_obj_setting_object(void);
+extern void script_free_obj_position_object(void);
+extern void script_free_obj_angle_object(void);
+extern void script_free_obj_lock_object(void);
+extern void script_free_obj_status_object(void);
+extern void script_free_obj_motion_vector_object(void);
+extern void script_free_obj_motion_angle_object(void);
+extern void script_free_obj_forward_speed_object(void);
+extern void script_free_obj_side_speed_object(void);
+extern void script_free_obj_vert_speed_object(void);
+extern void script_free_obj_turn_speed_object(void);
+extern void script_free_obj_object_speed_object(void);
+extern void script_free_obj_thrust_object(void);
+extern void script_free_obj_look_object(void);
+extern void script_free_obj_sight_object(void);
+extern void script_free_obj_health_object(void);
+extern void script_free_obj_size_object(void);
+extern void script_free_obj_rigid_body_object(void);
+extern void script_free_obj_vehicle_object(void);
+extern void script_free_obj_radar_object(void);
+extern void script_free_obj_score_object(void);
+extern void script_free_obj_touch_object(void);
+extern void script_free_obj_touch_position_object(void);
+extern void script_free_obj_touch_angle_object(void);
+extern void script_free_obj_hit_object(void);
+extern void script_free_obj_hit_position_object(void);
+extern void script_free_obj_hit_angle_object(void);
+extern void script_free_obj_click_object(void);
+extern void script_free_obj_held_object(void);
+extern void script_free_obj_pickup_object(void);
+extern void script_free_obj_watch_object(void);
+extern void script_free_obj_weapon_object(void);
+extern void script_free_obj_weapon_fire_object(void);
+extern void script_free_obj_melee_object(void);
+
+extern void script_free_weap_setting_object(void);
+extern void script_free_weap_hand_object(void);
+extern void script_free_weap_hand_position_object(void);
+extern void script_free_weap_hand_angle_object(void);
+extern void script_free_weap_projectile_object(void);
+extern void script_free_weap_crosshair_object(void);
+extern void script_free_weap_ammo_object(void);
+extern void script_free_weap_alt_ammo_object(void);
+extern void script_free_weap_kickback_object(void);
+extern void script_free_weap_recoil_object(void);
+extern void script_free_weap_melee_object(void);
+extern void script_free_weap_fire_object(void);
+extern void script_free_weap_dual_object(void);
+extern void script_free_weap_target_object(void);
+extern void script_free_weap_zoom_object(void);
+
+extern void script_free_proj_setting_object(void);
+extern void script_free_proj_position_object(void);
+extern void script_free_proj_origin_object(void);
+extern void script_free_proj_motion_vector_object(void);
+extern void script_free_proj_motion_angle_object(void);
+extern void script_free_proj_speed_object(void);
+extern void script_free_proj_hit_object(void);
+extern void script_free_proj_action_object(void);
+extern void script_free_proj_push_object(void);
+extern void script_free_proj_size_object(void);
+extern void script_free_proj_mark_object(void);
+extern void script_free_proj_melee_object(void);
+
+extern void script_free_event_object(void);
+
 extern void script_add_global_map_object(JSObject *parent_obj);
 extern void script_add_global_multiplayer_object(JSObject *parent_obj);
 extern void script_add_global_camera_object(JSObject *parent_obj);
@@ -167,6 +329,7 @@ extern void script_add_proj_mark_object(JSObject *parent_obj);
 extern void script_add_proj_melee_object(JSObject *parent_obj);
 
 extern void script_add_event_object(JSObject *parent_obj);
+
 extern void scripts_setup_events(int script_uid);
 extern bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str);
 extern void scripts_post_event_console(attach_type *attach,int main_event,int sub_event,int id);
@@ -176,9 +339,13 @@ extern bool scripts_direct_call(attach_type *attach,char *func_name,int arg_coun
 
 extern void script_initialize_classes(void);
 extern void script_release_classes(void);
+extern JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp setter);
+extern void script_free_class(JSClass *cls);
 extern bool script_add_global_object(script_type *script,char *err_str);
 extern JSObject* script_create_main_object(attach_type *attach);
 extern JSObject* script_create_child_object(JSObject *parent_obj,char *name,script_js_property *props,script_js_function *funcs);
+extern JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props);
+extern JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props);
 
 extern void script_globals_initialize(void);
 extern int script_find_global(char *name,int script_uid);

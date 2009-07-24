@@ -53,6 +53,14 @@ script_js_property	game_setting_props[]={
       
 ======================================================= */
 
+void script_init_game_setting_object(void)
+{
+}
+
+void script_free_game_setting_object(void)
+{
+}
+
 void script_add_game_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",game_setting_props,NULL);

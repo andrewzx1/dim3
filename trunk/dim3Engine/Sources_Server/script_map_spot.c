@@ -65,6 +65,14 @@ script_js_function	map_spot_functions[]={
       
 ======================================================= */
 
+void script_init_map_spot_object(void)
+{
+}
+
+void script_free_map_spot_object(void)
+{
+}
+
 void script_add_map_spot_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"spot",map_spot_props,map_spot_functions);

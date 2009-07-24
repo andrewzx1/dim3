@@ -61,6 +61,14 @@ script_js_function	camera_static_position_functions[]={
       
 ======================================================= */
 
+void script_init_camera_static_position_object(void)
+{
+}
+
+void script_free_camera_static_position_object(void)
+{
+}
+
 void script_add_camera_static_position_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"staticPosition",camera_static_position_props,camera_static_position_functions);

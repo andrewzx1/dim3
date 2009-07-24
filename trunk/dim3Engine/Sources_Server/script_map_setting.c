@@ -72,6 +72,14 @@ script_js_function	map_setting_functions[]={
       
 ======================================================= */
 
+void script_init_map_setting_object(void)
+{
+}
+
+void script_free_map_setting_object(void)
+{
+}
+
 void script_add_map_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",map_setting_props,map_setting_functions);

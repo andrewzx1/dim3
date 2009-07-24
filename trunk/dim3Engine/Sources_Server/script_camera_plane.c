@@ -75,6 +75,14 @@ script_js_property	camera_plane_props[]={
       
 ======================================================= */
 
+void script_init_camera_plane_object(void)
+{
+}
+
+void script_free_camera_plane_object(void)
+{
+}
+
 void script_add_camera_plane_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"plane",camera_plane_props,NULL);

@@ -49,6 +49,14 @@ script_js_function	interface_console_functions[]={
       
 ======================================================= */
 
+void script_init_interface_console_object(void)
+{
+}
+
+void script_free_interface_console_object(void)
+{
+}
+
 void script_add_interface_console_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"console",NULL,interface_console_functions);

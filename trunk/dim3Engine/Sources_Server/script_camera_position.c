@@ -52,6 +52,14 @@ script_js_property	camera_position_props[]={
       
 ======================================================= */
 
+void script_init_camera_position_object(void)
+{
+}
+
+void script_free_camera_position_object(void)
+{
+}
+
 void script_add_camera_position_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"position",camera_position_props,NULL);

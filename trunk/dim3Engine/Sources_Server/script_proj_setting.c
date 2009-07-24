@@ -57,6 +57,14 @@ script_js_property	proj_setting_props[]={
       
 ======================================================= */
 
+void script_init_proj_setting_object(void)
+{
+}
+
+void script_free_proj_setting_object(void)
+{
+}
+
 void script_add_proj_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",proj_setting_props,NULL);

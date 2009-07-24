@@ -52,6 +52,14 @@ script_js_function	multiplayer_score_functions[]={
       
 ======================================================= */
 
+void script_init_multiplayer_score_object(void)
+{
+}
+
+void script_free_multiplayer_score_object(void)
+{
+}
+
 void script_add_multiplayer_score_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"score",NULL,multiplayer_score_functions);

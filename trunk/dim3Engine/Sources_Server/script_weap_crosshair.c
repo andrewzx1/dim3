@@ -66,6 +66,14 @@ extern void script_add_weap_crosshair_pickup_color_object(JSObject *parent_obj);
       
 ======================================================= */
 
+void script_init_weap_crosshair_object(void)
+{
+}
+
+void script_free_weap_crosshair_object(void)
+{
+}
+
 void script_add_weap_crosshair_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;

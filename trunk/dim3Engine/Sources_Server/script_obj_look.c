@@ -60,6 +60,14 @@ script_js_function	obj_look_functions[]={
       
 ======================================================= */
 
+void script_init_obj_look_object(void)
+{
+}
+
+void script_free_obj_look_object(void)
+{
+}
+
 void script_add_obj_look_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"look",obj_look_props,obj_look_functions);

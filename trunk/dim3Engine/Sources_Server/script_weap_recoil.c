@@ -83,6 +83,14 @@ script_js_function	weap_recoil_functions[]={
       
 ======================================================= */
 
+void script_init_weap_recoil_object(void)
+{
+}
+
+void script_free_weap_recoil_object(void)
+{
+}
+
 void script_add_weap_recoil_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"recoil",weap_recoil_props,weap_recoil_functions);

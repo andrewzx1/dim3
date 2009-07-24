@@ -49,6 +49,14 @@ script_js_function	utility_pack_functions[]={
       
 ======================================================= */
 
+void script_init_utility_pack_object(void)
+{
+}
+
+void script_free_utility_pack_object(void)
+{
+}
+
 void script_add_utility_pack_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"pack",NULL,utility_pack_functions);

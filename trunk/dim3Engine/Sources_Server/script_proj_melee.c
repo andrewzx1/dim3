@@ -75,6 +75,14 @@ script_js_function	proj_melee_functions[]={
       
 ======================================================= */
 
+void script_init_proj_melee_object(void)
+{
+}
+
+void script_free_proj_melee_object(void)
+{
+}
+
 void script_add_proj_melee_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"melee",proj_melee_props,proj_melee_functions);

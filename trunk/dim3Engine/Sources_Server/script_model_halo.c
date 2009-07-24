@@ -80,6 +80,14 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
       
 ======================================================= */
 
+void script_init_model_halo_object(void)
+{
+}
+
+void script_free_model_halo_object(void)
+{
+}
+
 void script_add_model_halo_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"halo",model_halo_props,NULL);

@@ -51,6 +51,14 @@ extern void script_add_camera_state_object(JSObject *parent_obj);
       
 ======================================================= */
 
+void script_init_global_camera_object(void)
+{
+}
+
+void script_free_global_camera_object(void)
+{
+}
+
 void script_add_global_camera_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;

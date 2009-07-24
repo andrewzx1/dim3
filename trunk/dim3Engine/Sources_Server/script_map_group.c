@@ -62,6 +62,14 @@ extern void group_texture_alpha(int group_idx,float alpha);
       
 ======================================================= */
 
+void script_init_map_group_object(void)
+{
+}
+
+void script_free_map_group_object(void)
+{
+}
+
 void script_add_map_group_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"group",NULL,map_group_functions);

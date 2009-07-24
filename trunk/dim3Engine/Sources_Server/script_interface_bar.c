@@ -58,6 +58,14 @@ script_js_function	interface_bar_functions[]={
       
 ======================================================= */
 
+void script_init_interface_bar_object(void)
+{
+}
+
+void script_free_interface_bar_object(void)
+{
+}
+
 void script_add_interface_bar_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"bar",NULL,interface_bar_functions);

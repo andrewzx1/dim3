@@ -76,6 +76,14 @@ script_js_property	weap_zoom_props[]={
       
 ======================================================= */
 
+void script_init_weap_zoom_object(void)
+{
+}
+
+void script_free_weap_zoom_object(void)
+{
+}
+
 void script_add_weap_zoom_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"zoom",weap_zoom_props,NULL);

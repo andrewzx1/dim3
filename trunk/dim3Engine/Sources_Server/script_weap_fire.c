@@ -34,6 +34,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_weap_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+
+
 JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_fire_get_lastFireTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -52,14 +56,29 @@ script_js_function	weap_fire_functions[]={
 							{"cancel",				js_weap_fire_cancel_func,				0},
 							{0}};
 
+JSClass				*weap_fire_class;
+
 /* =======================================================
 
       Create Object
       
 ======================================================= */
 
+// supergumba -- move this
+void script_init_weap_fire_object(void)
+{
+//	weap_fire_class=script_create_class("weap_fire_class",js_weap_fire_get_property,js_weap_fire_set_property);
+}
+
+void script_free_weap_fire_object(void)
+{
+//	script_free_class(weap_fire_class);
+}
+
 void script_add_weap_fire_object(JSObject *parent_obj)
 {
+// supergumba
+//	script_create_child_object_2(parent_obj,weap_fire_class,"fire",weap_fire_props,weap_fire_functions);
 	script_create_child_object(parent_obj,"fire",weap_fire_props,weap_fire_functions);
 }
 

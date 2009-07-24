@@ -48,6 +48,14 @@ script_js_property	interface_screen_props[]={
       
 ======================================================= */
 
+void script_init_interface_screen_object(void)
+{
+}
+
+void script_free_interface_screen_object(void)
+{
+}
+
 void script_add_interface_screen_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"screen",interface_screen_props,NULL);

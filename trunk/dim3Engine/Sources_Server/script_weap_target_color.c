@@ -53,6 +53,14 @@ script_js_property	weap_target_color_props[]={
       
 ======================================================= */
 
+void script_init_weap_target_color_object(void)
+{
+}
+
+void script_free_weap_target_color_object(void)
+{
+}
+
 void script_add_weap_target_color_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"color",weap_target_color_props,NULL);

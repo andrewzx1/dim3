@@ -51,6 +51,14 @@ script_js_property	obj_hit_position_props[]={
       
 ======================================================= */
 
+void script_init_obj_hit_position_object(void)
+{
+}
+
+void script_free_obj_hit_position_object(void)
+{
+}
+
 void script_add_obj_hit_position_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"hitPosition",obj_hit_position_props,NULL);

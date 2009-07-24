@@ -59,6 +59,14 @@ extern void game_time_pause_end(void);
       
 ======================================================= */
 
+void script_init_map_action_object(void)
+{
+}
+
+void script_free_map_action_object(void)
+{
+}
+
 void script_add_map_action_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"action",NULL,map_action_functions);

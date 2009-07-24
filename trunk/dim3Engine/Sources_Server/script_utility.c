@@ -44,6 +44,14 @@ extern void script_add_utility_pack_object(JSObject *parent_obj);
       
 ======================================================= */
 
+void script_init_global_utility_object(void)
+{
+}
+
+void script_free_global_utility_object(void)
+{
+}
+
 void script_add_global_utility_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;

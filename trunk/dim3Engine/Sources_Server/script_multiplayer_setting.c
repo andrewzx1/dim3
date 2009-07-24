@@ -60,6 +60,14 @@ script_js_function	multiplayer_setting_functions[]={
       
 ======================================================= */
 
+void script_init_multiplayer_setting_object(void)
+{
+}
+
+void script_free_multiplayer_setting_object(void)
+{
+}
+
 void script_add_multiplayer_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",multiplayer_setting_props,multiplayer_setting_functions);

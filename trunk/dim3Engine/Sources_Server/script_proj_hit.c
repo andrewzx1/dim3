@@ -63,6 +63,14 @@ script_js_property	proj_hit_props[]={
       
 ======================================================= */
 
+void script_init_proj_hit_object(void)
+{
+}
+
+void script_free_proj_hit_object(void)
+{
+}
+
 void script_add_proj_hit_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"hit",proj_hit_props,NULL);

@@ -55,6 +55,14 @@ script_js_property	obj_lock_props[]={
       
 ======================================================= */
 
+void script_init_obj_lock_object(void)
+{
+}
+
+void script_free_obj_lock_object(void)
+{
+}
+
 void script_add_obj_lock_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"lock",obj_lock_props,NULL);
