@@ -1315,48 +1315,63 @@ void object_move_normal(obj_type *obj)
 
 void object_move_climb_check(obj_type *obj)
 {
-	bool			climb_mesh;
+	bool						cwise;
+	map_mesh_poly_type			*poly;
 	
-		// are we contacting any meshes?
-		
-	climb_mesh=FALSE;
-	
-	if (obj->contact.hit_poly.mesh_idx!=-1) {
-		climb_mesh=map.mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable;
-	}
-	
-		// stop climbing if we are touching the ground
-		// and not touching a climbing mesh
-		
-	if (!climb_mesh) {
-		obj->climb.stepped_off=FALSE;
-		return;
-	}
-	
-		// if we are touching ground but not
-		// stepped on, then we can stop
-		
+		// check if we are touching ground
+		// if not, we can step off next time we touch
+
 	if (obj->contact.stand_poly.mesh_idx!=-1) {
-		if (!obj->climb.stepped_on) {
+		if ((obj->climb.on) && (obj->climb.step_off_ready)) {
 			obj->climb.on=FALSE;
-			obj->climb.stepped_off=TRUE;
+			return;
 		}
 	}
 	else {
-		obj->climb.stepped_on=FALSE;
+		obj->climb.step_off_ready=TRUE;
 	}
 	
-		// have we stepped off?  If so, don't climb
+		// check if we've gone above climbable polygon
+		// or turned away from it
 		
-	if ((!obj->climb.on) && (obj->climb.stepped_off)) return;
+	if (obj->climb.on) {
+	
+		poly=&map.mesh.meshes[obj->climb.poly_ptr.mesh_idx].polys[obj->climb.poly_ptr.poly_idx];
 		
-		// start climbing
+			// above polygon?
+			
+		if (obj->pnt.y<poly->box.min.y) {
+			obj->climb.on=FALSE;
+			return;
+		}
 		
-	if (!obj->climb.on) obj->climb.stepped_on=TRUE;
+			// turned away from it?
+			
+		if (angle_dif(obj->ang.y,obj->climb.y_ang,&cwise)>60.0f) {
+			obj->climb.on=FALSE;
+			return;
+		}
+	
+	}
+	
+		// if we aren't climbing and contact
+		// a climbable mesh, then start climbing
 		
-	obj->climb.on=TRUE;
-	obj->climb.stepped_off=FALSE;
-	memmove(&obj->climb.poly_ptr,&obj->contact.hit_poly,sizeof(poly_pointer_type));
+	if (!obj->climb.on) {
+		
+		if (obj->contact.hit_poly.mesh_idx!=-1) {
+		
+			if (map.mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable) {
+				obj->climb.on=TRUE;
+				obj->climb.step_off_ready=FALSE;
+				
+				memmove(&obj->climb.poly_ptr,&obj->contact.hit_poly,sizeof(poly_pointer_type));
+				
+				poly=&map.mesh.meshes[obj->climb.poly_ptr.mesh_idx].polys[obj->climb.poly_ptr.poly_idx];
+				obj->climb.y_ang=angle_find(obj->pnt.x,obj->pnt.z,poly->box.mid.x,poly->box.mid.z);
+			}
+		}
+	}
 }
 
 /* =======================================================

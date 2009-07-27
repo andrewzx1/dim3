@@ -195,12 +195,12 @@ typedef struct		{
 					} view_shader_custom_var_type;
 					
 typedef struct		{
-						float								cur_light_pos[max_shader_light*3],
-															cur_dark_factor,cur_alpha;
+						int									cur_light_idx[max_shader_light];
+						float								cur_dark_factor,cur_alpha;
 						char								name[name_str_len],
 															vertex_name[file_str_len],
 															fragment_name[file_str_len];
-						bool								per_scene_vars_set;
+						bool								per_scene_vars_set,cur_in_hilite;
 						view_shader_custom_var_type			custom_vars[max_view_shader_custom_vars];
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
 						GLint								var_dim3TimeMillisec,var_dim3FrequencySecond,
