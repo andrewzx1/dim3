@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_obj_weapon_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_weapon_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_weapon_fire_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_weapon_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
@@ -41,6 +43,8 @@ script_js_property	obj_weapon_fire_props[]={
 							{"name",				js_obj_weapon_fire_get_name,		NULL},
 							{"method",				js_obj_weapon_fire_get_method,		NULL},
 							{0}};
+
+JSClass				*obj_weapon_fire_class;
 
 /* =======================================================
 
@@ -50,15 +54,33 @@ script_js_property	obj_weapon_fire_props[]={
 
 void script_init_obj_weapon_fire_object(void)
 {
+	obj_weapon_fire_class=script_create_class("obj_weapon_fire_class",js_obj_weapon_fire_get_property,js_obj_weapon_fire_set_property);
 }
 
 void script_free_obj_weapon_fire_object(void)
 {
+	script_free_class(obj_weapon_fire_class);
 }
 
 void script_add_obj_weapon_fire_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"weaponFire",obj_weapon_fire_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_weapon_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_weapon_fire_props));
+}
+
+JSBool js_obj_weapon_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_weapon_fire_props));
 }
 
 /* =======================================================

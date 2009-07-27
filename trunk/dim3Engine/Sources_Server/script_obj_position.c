@@ -37,6 +37,12 @@ extern server_type			server;
 extern js_type				js;
 extern network_setup_type	net_setup;
 
+extern void object_setup_motion(obj_type *obj,float ang,float speed);
+extern JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+extern JSBool js_obj_position_pause_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+							
+JSBool js_obj_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -68,10 +74,8 @@ script_js_function	obj_position_functions[]={
 							{"distanceToObject",				js_obj_position_distance_to_object_func,				1},
 							{0}};
 
-extern void object_setup_motion(obj_type *obj,float ang,float speed);
-extern JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-extern JSBool js_obj_position_pause_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-							
+JSClass				*obj_position_class;
+
 /* =======================================================
 
       Create Object
@@ -80,15 +84,33 @@ extern JSBool js_obj_position_pause_func(JSContext *cx,JSObject *j_obj,uintN arg
 
 void script_init_obj_position_object(void)
 {
+	obj_position_class=script_create_class("obj_position_class",js_obj_position_get_property,js_obj_position_set_property);
 }
 
 void script_free_obj_position_object(void)
 {
+	script_free_class(obj_position_class);
 }
 
 void script_add_obj_position_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"position",obj_position_props,obj_position_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_position_props));
+}
+
+JSBool js_obj_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_position_props));
 }
 
 /* =======================================================

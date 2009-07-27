@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_weap_zoom_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_zoom_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_zoom_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_zoom_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_zoom_get_fovMinimum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -70,6 +72,8 @@ script_js_property	weap_zoom_props[]={
 							{"tick",				js_weap_zoom_get_tick,						js_weap_zoom_set_tick},
 							{0}};
 
+JSClass				*weap_zoom_class;
+
 /* =======================================================
 
       Create Object
@@ -78,15 +82,33 @@ script_js_property	weap_zoom_props[]={
 
 void script_init_weap_zoom_object(void)
 {
+	weap_zoom_class=script_create_class("weap_zoom_class",js_weap_zoom_get_property,js_weap_zoom_set_property);
 }
 
 void script_free_weap_zoom_object(void)
 {
+	script_free_class(weap_zoom_class);
 }
 
 void script_add_weap_zoom_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"zoom",weap_zoom_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_zoom_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_zoom_props));
+}
+
+JSBool js_weap_zoom_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_zoom_props));
 }
 
 /* =======================================================

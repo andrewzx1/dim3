@@ -40,6 +40,8 @@ extern setup_type			setup;
 extern server_type			server;
 extern network_setup_type	net_setup;
 
+JSBool js_sound_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_sound_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_play_at_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -62,6 +64,8 @@ script_js_function	sound_functions[]={
 							{"fadeOutFadeInMusic",	js_sound_fade_out_fade_in_music_func,	1},
 							{0}};
 
+JSClass				*sound_class;
+
 /* =======================================================
 
       Create Object
@@ -70,15 +74,33 @@ script_js_function	sound_functions[]={
 
 void script_init_global_sound_object(void)
 {
+	sound_class=script_create_class("sound_class",js_sound_get_property,js_sound_set_property);
 }
 
 void script_free_global_sound_object(void)
 {
+	script_free_class(sound_class);
 }
 
 void script_add_global_sound_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"sound",NULL,sound_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_sound_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_sound_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

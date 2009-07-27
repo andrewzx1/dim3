@@ -35,6 +35,8 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
+JSBool js_camera_plane_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_plane_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_plane_get_projectionType(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_plane_get_fov(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_plane_get_aspectRatio(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -69,6 +71,8 @@ script_js_property	camera_plane_props[]={
 							{"nearOffset",			js_camera_plane_get_nearOffset,			js_camera_plane_set_nearOffset},
 							{0}};
 
+JSClass				*camera_plane_class;
+
 /* =======================================================
 
       Create Object
@@ -77,15 +81,33 @@ script_js_property	camera_plane_props[]={
 
 void script_init_camera_plane_object(void)
 {
+	camera_plane_class=script_create_class("camera_plane_class",js_camera_plane_get_property,js_camera_plane_set_property);
 }
 
 void script_free_camera_plane_object(void)
 {
+	script_free_class(camera_plane_class);
 }
 
 void script_add_camera_plane_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"plane",camera_plane_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_camera_plane_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,camera_plane_props));
+}
+
+JSBool js_camera_plane_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,camera_plane_props));
 }
 
 /* =======================================================

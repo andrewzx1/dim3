@@ -35,6 +35,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_weap_melee_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_melee_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_melee_get_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_melee_get_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_melee_get_objectStrikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -73,6 +75,8 @@ script_js_function	weap_melee_functions[]={
 							{"spawnFromObjectBone",		js_weap_melee_spawn_from_object_bone_func,		0},
 							{0}};
 
+JSClass				*weap_melee_class;
+
 /* =======================================================
 
       Create Object
@@ -81,15 +85,33 @@ script_js_function	weap_melee_functions[]={
 
 void script_init_weap_melee_object(void)
 {
+	weap_melee_class=script_create_class("weap_melee_class",js_weap_melee_get_property,js_weap_melee_set_property);
 }
 
 void script_free_weap_melee_object(void)
 {
+	script_free_class(weap_melee_class);
 }
 
 void script_add_weap_melee_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"melee",weap_melee_props,weap_melee_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_melee_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_melee_props));
+}
+
+JSBool js_weap_melee_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_melee_props));
 }
 
 /* =======================================================

@@ -86,6 +86,7 @@ extern hud_bar_type* script_find_bar_from_name(jsval arg);
 extern int script_find_group_from_name(jsval arg);
 extern int script_find_map_movement_from_name(jsval arg);
 extern int script_get_attached_object_uid(void);
+extern model_draw* script_find_model_draw(JSObject *j_obj,bool is_child);
 
 extern void script_init_global_map_object(void);
 extern void script_init_global_multiplayer_object(void);

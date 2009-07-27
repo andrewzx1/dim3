@@ -36,6 +36,8 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
+JSBool js_obj_vehicle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vehicle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_vehicle_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -54,6 +56,8 @@ script_js_function	obj_vehicle_functions[]={
 							{"removeOccupant",		js_obj_vehicle_exit_func,			0},
 							{0}};
 
+JSClass				*obj_vehicle_class;
+
 /* =======================================================
 
       Create Object
@@ -62,15 +66,33 @@ script_js_function	obj_vehicle_functions[]={
 
 void script_init_obj_vehicle_object(void)
 {
+	obj_vehicle_class=script_create_class("obj_vehicle_class",js_obj_vehicle_get_property,js_obj_vehicle_set_property);
 }
 
 void script_free_obj_vehicle_object(void)
 {
+	script_free_class(obj_vehicle_class);
 }
 
 void script_add_obj_vehicle_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"vehicle",obj_vehicle_props,obj_vehicle_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_vehicle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_vehicle_props));
+}
+
+JSBool js_obj_vehicle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_vehicle_props));
 }
 
 /* =======================================================

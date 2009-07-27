@@ -36,6 +36,8 @@ extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
+JSBool js_camera_static_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_static_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_static_position_get_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_static_position_set_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -55,6 +57,8 @@ script_js_function	camera_static_position_functions[]={
 							{"walkToNode",			js_camera_static_position_walk_to_node_func,	6},
 							{0}};
 
+JSClass				*camera_static_position_class;
+
 /* =======================================================
 
       Create Object
@@ -63,15 +67,33 @@ script_js_function	camera_static_position_functions[]={
 
 void script_init_camera_static_position_object(void)
 {
+	camera_static_position_class=script_create_class("camera_static_position_class",js_camera_static_position_get_property,js_camera_static_position_set_property);
 }
 
 void script_free_camera_static_position_object(void)
 {
+	script_free_class(camera_static_position_class);
 }
 
 void script_add_camera_static_position_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"staticPosition",camera_static_position_props,camera_static_position_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_camera_static_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,camera_static_position_props));
+}
+
+JSBool js_camera_static_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,camera_static_position_props));
 }
 
 /* =======================================================

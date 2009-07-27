@@ -35,6 +35,8 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
+JSBool js_obj_score_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -54,6 +56,8 @@ script_js_function	obj_score_functions[]={
 							{"addGoal",				js_obj_score_add_goal_func,			0},
 							{0}};
 
+JSClass				*obj_score_class;
+
 /* =======================================================
 
       Create Object
@@ -62,15 +66,33 @@ script_js_function	obj_score_functions[]={
 
 void script_init_obj_score_object(void)
 {
+	obj_score_class=script_create_class("obj_score_class",js_obj_score_get_property,js_obj_score_set_property);
 }
 
 void script_free_obj_score_object(void)
 {
+	script_free_class(obj_score_class);
 }
 
 void script_add_obj_score_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"score",obj_score_props,obj_score_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_score_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_score_props));
+}
+
+JSBool js_obj_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_score_props));
 }
 
 /* =======================================================

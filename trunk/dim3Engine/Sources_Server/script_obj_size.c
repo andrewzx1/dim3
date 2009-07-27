@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_obj_size_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -70,6 +72,8 @@ script_js_function	obj_size_functions[]={
 							{"growOverTimeChangeOffset",	js_obj_size_grow_over_time_change_offset_func,	5},
 							{0}};
 
+JSClass				*obj_size_class;
+
 /* =======================================================
 
       Create Object
@@ -78,15 +82,33 @@ script_js_function	obj_size_functions[]={
 
 void script_init_obj_size_object(void)
 {
+	obj_size_class=script_create_class("obj_size_class",js_obj_size_get_property,js_obj_size_set_property);
 }
 
 void script_free_obj_size_object(void)
 {
+	script_free_class(obj_size_class);
 }
 
 void script_add_obj_size_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"size",obj_size_props,obj_size_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_size_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_size_props));
+}
+
+JSBool js_obj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_size_props));
 }
 
 /* =======================================================

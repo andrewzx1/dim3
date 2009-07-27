@@ -36,6 +36,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_weap_projectile_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_projectile_get_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_projectile_get_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_projectile_get_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -98,6 +100,8 @@ script_js_function	weap_projectile_functions[]={
 							{"spawnFromCenterOffsetAngle",				js_weap_projectile_spawn_from_center_offset_angle_func,					5},
 							{0}};							
 
+JSClass				*weap_projectile_class;
+
 /* =======================================================
 
       Create Projectile
@@ -106,15 +110,33 @@ script_js_function	weap_projectile_functions[]={
 
 void script_init_weap_projectile_object(void)
 {
+	weap_projectile_class=script_create_class("weap_projectile_class",js_weap_projectile_get_property,js_weap_projectile_set_property);
 }
 
 void script_free_weap_projectile_object(void)
 {
+	script_free_class(weap_projectile_class);
 }
 
 void script_add_weap_projectile_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"projectile",weap_projectile_props,weap_projectile_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_projectile_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_projectile_props));
+}
+
+JSBool js_weap_projectile_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_projectile_props));
 }
 
 /* =======================================================

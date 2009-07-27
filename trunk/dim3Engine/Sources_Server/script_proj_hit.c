@@ -37,6 +37,8 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
+JSBool js_proj_hit_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_hit_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_hit_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_hit_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -57,6 +59,8 @@ script_js_property	proj_hit_props[]={
 							{"reflectVector",		js_proj_hit_get_reflectVector,		NULL},
 							{0}};
 
+JSClass				*proj_hit_class;
+
 /* =======================================================
 
       Create Object
@@ -65,15 +69,33 @@ script_js_property	proj_hit_props[]={
 
 void script_init_proj_hit_object(void)
 {
+	proj_hit_class=script_create_class("proj_hit_class",js_proj_hit_get_property,js_proj_hit_set_property);
 }
 
 void script_free_proj_hit_object(void)
 {
+	script_free_class(proj_hit_class);
 }
 
 void script_add_proj_hit_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"hit",proj_hit_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_proj_hit_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,proj_hit_props));
+}
+
+JSBool js_proj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,proj_hit_props));
 }
 
 /* =======================================================

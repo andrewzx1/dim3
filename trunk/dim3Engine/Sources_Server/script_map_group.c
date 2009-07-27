@@ -34,6 +34,14 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
+extern void group_show(int group_idx,bool show);
+extern void group_solid(int group_idx,bool solid);
+extern void group_texture(int group_idx,int index);
+extern void group_texture_shift(int group_idx,float x_shift,float y_shift);
+extern void group_texture_alpha(int group_idx,float alpha);
+
+JSBool js_map_group_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_group_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_group_get_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_group_set_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_group_set_solid_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -50,11 +58,7 @@ script_js_function	map_group_functions[]={
 							{"setTextureAlpha",		js_map_group_set_texture_alpha_func,	2},
 							{0}};
 
-extern void group_show(int group_idx,bool show);
-extern void group_solid(int group_idx,bool solid);
-extern void group_texture(int group_idx,int index);
-extern void group_texture_shift(int group_idx,float x_shift,float y_shift);
-extern void group_texture_alpha(int group_idx,float alpha);
+JSClass				*map_group_class;
 
 /* =======================================================
 
@@ -64,16 +68,34 @@ extern void group_texture_alpha(int group_idx,float alpha);
 
 void script_init_map_group_object(void)
 {
+	map_group_class=script_create_class("map_group_class",js_map_group_get_property,js_map_group_set_property);
 }
 
 void script_free_map_group_object(void)
 {
+	script_free_class(map_group_class);
 }
 
 void script_add_map_group_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"group",NULL,map_group_functions);
 	script_create_child_object(parent_obj,"segment",NULL,map_group_functions);	// depreciated; here for backwards compatiability
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_map_group_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_map_group_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

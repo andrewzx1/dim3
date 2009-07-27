@@ -37,6 +37,8 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
+JSBool js_spawn_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_spawn_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_spawn_particle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_particle_moving_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_particle_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -63,6 +65,8 @@ script_js_function	spawn_functions[]={
 							{"push",				js_spawn_push_func,					5},
 							{0}};
 
+JSClass				*spawn_class;
+
 /* =======================================================
 
       Create Object
@@ -71,15 +75,33 @@ script_js_function	spawn_functions[]={
 
 void script_init_global_spawn_object(void)
 {
+	spawn_class=script_create_class("spawn_class",js_spawn_get_property,js_spawn_set_property);
 }
 
 void script_free_global_spawn_object(void)
 {
+	script_free_class(spawn_class);
 }
 
 void script_add_global_spawn_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"spawn",NULL,spawn_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_spawn_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_spawn_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

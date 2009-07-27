@@ -35,6 +35,8 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
+JSBool js_obj_radar_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -51,6 +53,8 @@ script_js_property	obj_radar_props[]={
 							{"alwaysVisible",		js_obj_radar_get_alwaysVisible,		js_obj_radar_set_alwaysVisible},
 							{0}};
 							
+JSClass				*obj_radar_class;
+
 /* =======================================================
 
       Create Object
@@ -59,15 +63,33 @@ script_js_property	obj_radar_props[]={
 
 void script_init_obj_radar_object(void)
 {
+	obj_radar_class=script_create_class("obj_radar_class",js_obj_radar_get_property,js_obj_radar_set_property);
 }
 
 void script_free_obj_radar_object(void)
 {
+	script_free_class(obj_radar_class);
 }
 
 void script_add_obj_radar_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"radar",obj_radar_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_radar_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_radar_props));
+}
+
+JSBool js_obj_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_radar_props));
 }
 
 /* =======================================================

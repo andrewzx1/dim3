@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "scripts.h"
 #include "models.h"
 
+JSBool js_model_animation_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_animation_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_animation_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_animation_get_currentAnimationName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_animation_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -60,7 +62,7 @@ script_js_function	model_animation_functions[]={
 							{"fade",					js_model_animation_fade_func,					2},
 							{0}};
 
-extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
+JSClass				*model_animation_class;
 
 /* =======================================================
 
@@ -70,15 +72,33 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_init_model_animation_object(void)
 {
+	model_animation_class=script_create_class("model_animation_class",js_model_animation_get_property,js_model_animation_set_property);
 }
 
 void script_free_model_animation_object(void)
 {
+	script_free_class(model_animation_class);
 }
 
 void script_add_model_animation_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"animation",model_animation_props,model_animation_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_model_animation_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,model_animation_props));
+}
+
+JSBool js_model_animation_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,model_animation_props));
 }
 
 /* =======================================================
@@ -91,7 +111,7 @@ JSBool js_model_animation_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval
 {
 	model_draw			*draw;
 
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	*vp=INT_TO_JSVAL(draw->script_animation_idx);
 
 	return(JS_TRUE);
@@ -102,7 +122,7 @@ JSBool js_model_animation_get_currentAnimationName(JSContext *cx,JSObject *j_obj
 	char				name[64];
 	model_draw			*draw;
 
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 
 	model_get_current_animation_name(draw,name);
 	*vp=script_string_to_value(name);
@@ -120,7 +140,7 @@ JSBool js_model_animation_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval
 {
 	model_draw			*draw;
 
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 
 	draw->script_animation_idx=JSVAL_TO_INT(*vp);
 	if ((draw->script_animation_idx<0) || (draw->script_animation_idx>=max_model_blend_animation)) draw->script_animation_idx=0;
@@ -139,7 +159,7 @@ JSBool js_model_animation_start_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	char			name[name_str_len];
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
 	
@@ -155,7 +175,7 @@ JSBool js_model_animation_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 {
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	
 	model_stop_animation(draw);
 	return(JS_TRUE);
@@ -166,7 +186,7 @@ JSBool js_model_animation_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	char			name[name_str_len];
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_cancel_animation(draw,name)) {
@@ -182,7 +202,7 @@ JSBool js_model_animation_change_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	char			name[name_str_len];
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_change_animation(draw,name)) {
@@ -198,7 +218,7 @@ JSBool js_model_animation_interrupt_func(JSContext *cx,JSObject *j_obj,uintN arg
 	char			name[name_str_len];
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_interrupt_animation(draw,name)) {
@@ -214,7 +234,7 @@ JSBool js_model_animation_start_then_change_func(JSContext *cx,JSObject *j_obj,u
 	char			name[name_str_len];
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_start_animation(draw,name)) {
@@ -241,7 +261,7 @@ JSBool js_model_animation_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 {
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	model_fade_start(draw,JSVAL_TO_INT(argv[1]),script_value_to_float(argv[0]));
 	
 	return(JS_TRUE);

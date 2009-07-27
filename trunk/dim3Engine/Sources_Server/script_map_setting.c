@@ -40,6 +40,8 @@ extern network_setup_type	net_setup;
 extern void map_set_ambient(char *name,float pitch);
 extern void map_clear_ambient(void);
 
+JSBool js_map_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_setting_get_scale(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_setting_get_gravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_setting_get_resistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -66,6 +68,8 @@ script_js_function	map_setting_functions[]={
 							{"clearAmbient",		js_map_clear_ambient_func,				0},
 							{0}};
 
+JSClass				*map_setting_class;
+
 /* =======================================================
 
       Create Object
@@ -74,15 +78,33 @@ script_js_function	map_setting_functions[]={
 
 void script_init_map_setting_object(void)
 {
+	map_setting_class=script_create_class("map_setting_class",js_map_setting_get_property,js_map_setting_set_property);
 }
 
 void script_free_map_setting_object(void)
 {
+	script_free_class(map_setting_class);
 }
 
 void script_add_map_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",map_setting_props,map_setting_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_map_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,map_setting_props));
+}
+
+JSBool js_map_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,map_setting_props));
 }
 
 /* =======================================================

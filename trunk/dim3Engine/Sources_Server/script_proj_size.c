@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_proj_size_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -50,6 +52,8 @@ script_js_property	proj_size_props[]={
 							{"weight",				js_proj_size_get_weight,			js_proj_size_set_weight},
 							{0}};
 
+JSClass				*proj_size_class;
+
 /* =======================================================
 
       Create Object
@@ -58,15 +62,33 @@ script_js_property	proj_size_props[]={
 
 void script_init_proj_size_object(void)
 {
+	proj_size_class=script_create_class("proj_size_class",js_proj_size_get_property,js_proj_size_set_property);
 }
 
 void script_free_proj_size_object(void)
 {
+	script_free_class(proj_size_class);
 }
 
 void script_add_proj_size_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"size",proj_size_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_proj_size_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,proj_size_props));
+}
+
+JSBool js_proj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,proj_size_props));
 }
 
 /* =======================================================

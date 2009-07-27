@@ -35,6 +35,8 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
+JSBool js_obj_pickup_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_pickup_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -70,6 +72,8 @@ script_js_function	obj_pickup_functions[]={
 							{"cancel",				js_obj_pickup_cancel_func,			0},
 							{0}};
 
+JSClass				*obj_pickup_class;
+
 /* =======================================================
 
       Create Object
@@ -78,15 +82,33 @@ script_js_function	obj_pickup_functions[]={
 
 void script_init_obj_pickup_object(void)
 {
+	obj_pickup_class=script_create_class("obj_pickup_class",js_obj_pickup_get_property,js_obj_pickup_set_property);
 }
 
 void script_free_obj_pickup_object(void)
 {
+	script_free_class(obj_pickup_class);
 }
 
 void script_add_obj_pickup_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"pickup",obj_pickup_props,obj_pickup_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_pickup_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_pickup_props));
+}
+
+JSBool js_obj_pickup_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_pickup_props));
 }
 
 /* =======================================================

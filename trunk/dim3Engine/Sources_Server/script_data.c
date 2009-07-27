@@ -33,6 +33,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_data_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_data_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_data_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_data_sub_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_data_set_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -53,6 +55,8 @@ script_js_function	data_functions[]={
 							{"getScriptSpecific",	js_data_get_specific_func,			1},
 							{0}};
 
+JSClass				*data_class;
+
 /* =======================================================
 
       Create Object
@@ -61,15 +65,33 @@ script_js_function	data_functions[]={
 
 void script_init_global_data_object(void)
 {
+	data_class=script_create_class("data_class",js_data_get_property,js_data_set_property);
 }
 
 void script_free_global_data_object(void)
 {
+	script_free_class(data_class);
 }
 
 void script_add_global_data_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"data",NULL,data_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_data_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_data_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

@@ -39,6 +39,8 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
+JSBool js_multiplayer_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -54,6 +56,8 @@ script_js_function	multiplayer_setting_functions[]={
 							{"checkOption",			js_multiplayer_setting_check_option_func,	1},
 							{0}};
 
+JSClass				*multiplayer_setting_class;
+
 /* =======================================================
 
       Create Object
@@ -62,15 +66,33 @@ script_js_function	multiplayer_setting_functions[]={
 
 void script_init_multiplayer_setting_object(void)
 {
+	multiplayer_setting_class=script_create_class("multiplayer_setting_class",js_multiplayer_setting_get_property,js_multiplayer_setting_set_property);
 }
 
 void script_free_multiplayer_setting_object(void)
 {
+	script_free_class(multiplayer_setting_class);
 }
 
 void script_add_multiplayer_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",multiplayer_setting_props,multiplayer_setting_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_multiplayer_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,multiplayer_setting_props));
+}
+
+JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,multiplayer_setting_props));
 }
 
 /* =======================================================

@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_obj_health_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_health_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_get_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_get_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_get_current(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -67,6 +69,8 @@ script_js_function	obj_health_functions[]={
 							{"reset",					js_obj_health_reset_func,					0},
 							{0}};
 
+JSClass				*obj_health_class;
+
 /* =======================================================
 
       Create Object
@@ -75,15 +79,33 @@ script_js_function	obj_health_functions[]={
 
 void script_init_obj_health_object(void)
 {
+	obj_health_class=script_create_class("obj_health_class",js_obj_health_get_property,js_obj_health_set_property);
 }
 
 void script_free_obj_health_object(void)
 {
+	script_free_class(obj_health_class);
 }
 
 void script_add_obj_health_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"health",obj_health_props,obj_health_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_health_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_health_props));
+}
+
+JSBool js_obj_health_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_health_props));
 }
 
 /* =======================================================

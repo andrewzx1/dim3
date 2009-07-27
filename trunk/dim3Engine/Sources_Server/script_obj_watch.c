@@ -35,6 +35,8 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
+JSBool js_obj_watch_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -68,6 +70,8 @@ script_js_function	obj_watch_functions[]={
 							{"clearRestrictSight",		js_obj_watch_clear_restrict_sight_func,		0},
 							{0}};
 
+JSClass				*obj_watch_class;
+
 /* =======================================================
 
       Create Object
@@ -76,15 +80,33 @@ script_js_function	obj_watch_functions[]={
 
 void script_init_obj_watch_object(void)
 {
+	obj_watch_class=script_create_class("obj_watch_class",js_obj_watch_get_property,js_obj_watch_set_property);
 }
 
 void script_free_obj_watch_object(void)
 {
+	script_free_class(obj_watch_class);
 }
 
 void script_add_obj_watch_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"watch",obj_watch_props,obj_watch_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_watch_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_watch_props));
+}
+
+JSBool js_obj_watch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_watch_props));
 }
 
 /* =======================================================

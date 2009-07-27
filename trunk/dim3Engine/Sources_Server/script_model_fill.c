@@ -32,15 +32,17 @@ and can be sold or given away.
 #include "scripts.h"
 #include "models.h"
 
-JSBool js_model_fill_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-
 extern js_type			js;
+
+JSBool js_model_fill_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_fill_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_fill_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_function	model_fill_functions[]={
 							{"change",				js_model_fill_change_func,				2},
 							{0}};
 
-extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
+JSClass				*model_fill_class;
 
 /* =======================================================
 
@@ -50,15 +52,33 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_init_model_fill_object(void)
 {
+	model_fill_class=script_create_class("model_fill_class",js_model_fill_get_property,js_model_fill_set_property);
 }
 
 void script_free_model_fill_object(void)
 {
+	script_free_class(model_fill_class);
 }
 
 void script_add_model_fill_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"fill",NULL,model_fill_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_model_fill_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_model_fill_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================
@@ -71,7 +91,7 @@ JSBool js_model_fill_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 {
     model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
     
     model_change_fill(draw,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]));
 	return(JS_TRUE);

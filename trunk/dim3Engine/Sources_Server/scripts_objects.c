@@ -209,6 +209,38 @@ void script_release_classes(void)
 
 /* =======================================================
 
+      Create dim3 Script Classes
+      
+======================================================= */
+
+JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp setter)
+{
+	JSClass			*cls;
+
+	cls=(JSClass*)malloc(sizeof(JSClass));
+	bzero(cls,sizeof(JSClass));
+
+	cls->name=name;
+	
+	cls->addProperty=JS_PropertyStub;
+	cls->delProperty=JS_PropertyStub;
+	cls->getProperty=getter;
+	cls->setProperty=setter;
+	cls->enumerate=JS_EnumerateStub;
+	cls->resolve=JS_ResolveStub;
+	cls->convert=JS_ConvertStub;
+	cls->finalize=JS_FinalizeStub;
+
+	return(cls);
+}
+
+void script_free_class(JSClass *cls)
+{
+	free(cls);
+}
+
+/* =======================================================
+
       Add Global Objects to Script
       
 ======================================================= */
@@ -250,38 +282,6 @@ bool script_add_global_object(script_type *script,char *err_str)
 	}
 
 	return(TRUE);
-}
-
-/* =======================================================
-
-      Create dim3 Script Classes
-      
-======================================================= */
-
-JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp setter)
-{
-	JSClass			*cls;
-
-	cls=(JSClass*)malloc(sizeof(JSClass));
-	bzero(cls,sizeof(JSClass));
-
-	cls->name=name;
-	
-	cls->addProperty=JS_PropertyStub;
-	cls->delProperty=JS_PropertyStub;
-	cls->getProperty=getter;
-	cls->setProperty=setter;
-	cls->enumerate=JS_EnumerateStub;
-	cls->resolve=JS_ResolveStub;
-	cls->convert=JS_ConvertStub;
-	cls->finalize=JS_FinalizeStub;
-
-	return(cls);
-}
-
-void script_free_class(JSClass *cls)
-{
-	free(cls);
 }
 
 /* =======================================================
@@ -487,6 +487,22 @@ JSObject* script_create_child_object_2(JSObject *parent_obj,JSClass *cls,char *n
       
 ======================================================= */
 
+void script_no_property_error(jsval id)
+{
+	char				name[64];
+
+	script_value_to_string(id,name,64);
+	JS_ReportError(js.cx,"The property %s does not exist on this object",name);
+}
+
+void script_read_only_property_error(jsval id)
+{
+	char				name[64];
+
+	script_value_to_string(id,name,64);
+	JS_ReportError(js.cx,"The property %s is read-only",name);
+}
+
 inline int script_find_object_property_index(jsval id,script_js_property *props)
 {
 	int					idx;
@@ -499,32 +515,68 @@ inline int script_find_object_property_index(jsval id,script_js_property *props)
 	idx=0;
 
 	while (props[idx].name!=NULL) {
-		fprintf(stdout,"%s = %s\n",props[idx].name,name);
 		if (strcmp(props[idx].name,name)==0) return(idx);
 		idx++;
 	}
+
+	script_no_property_error(id);
 
 	return(-1);
 }
 
 JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props)
 {
-	int			idx;
+	int					idx;
+	script_js_property	*prop;
+
+		// any properties?
+
+	if (props==NULL) {
+		script_no_property_error(id);
+		return(JS_FALSE);
+	}
+
+		// find the property
 
 	idx=script_find_object_property_index(id,props);
-	if (idx==-1) return(JS_TRUE);
+	if (idx==-1) return(JS_FALSE);
 
+	prop=&props[idx];
+
+		// call getter
+
+	return((prop->getter)(cx,j_obj,id,vp));
 
 	return(JS_TRUE);
 }
 
 JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props)
 {
-	int			idx;
+	int					idx;
+	script_js_property	*prop;
+
+		// any properties?
+
+	if (props==NULL) {
+		script_no_property_error(id);
+		return(JS_FALSE);
+	}
+
+		// find the property
 
 	idx=script_find_object_property_index(id,props);
-	if (idx==-1) return(JS_TRUE);
+	if (idx==-1) return(JS_FALSE);
 
+	prop=&props[idx];
 
-	return(JS_TRUE);
+		// is it read only?
+
+	if (prop->setter==NULL) {
+		script_read_only_property_error(id);
+		return(JS_FALSE);
+	}
+
+		// call setter
+
+	return((prop->setter)(cx,j_obj,id,vp));
 }

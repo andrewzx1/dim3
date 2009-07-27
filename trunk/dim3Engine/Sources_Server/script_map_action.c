@@ -37,6 +37,12 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern js_type				js;
 
+extern bool game_file_reload_ok(void);
+extern bool game_file_reload(char *err_str);
+extern void game_time_pause_end(void);
+
+JSBool js_map_action_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_action_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_action_set_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_action_set_host_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_action_restart_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -49,9 +55,7 @@ script_js_function	map_action_functions[]={
 							{"restartMapFromSave",	js_map_action_restart_map_from_save_func,	0},
 							{0}};
 
-extern bool game_file_reload_ok(void);
-extern bool game_file_reload(char *err_str);
-extern void game_time_pause_end(void);
+JSClass				*map_action_class;
 
 /* =======================================================
 
@@ -61,15 +65,33 @@ extern void game_time_pause_end(void);
 
 void script_init_map_action_object(void)
 {
+	map_action_class=script_create_class("map_action_class",js_map_action_get_property,js_map_action_set_property);
 }
 
 void script_free_map_action_object(void)
 {
+	script_free_class(map_action_class);
 }
 
 void script_add_map_action_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"action",NULL,map_action_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_map_action_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_map_action_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

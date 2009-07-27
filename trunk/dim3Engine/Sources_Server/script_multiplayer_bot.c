@@ -38,6 +38,8 @@ extern server_type		server;
 extern js_type			js;
 extern setup_type		setup;
 
+JSBool js_multiplayer_bot_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_bot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_bot_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_bot_get_from_min_max_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -49,6 +51,8 @@ script_js_function	multiplayer_bot_functions[]={
 							{"getFromMinMax",		js_multiplayer_bot_get_from_min_max_func,	2},
 							{0}};
 
+JSClass				*multiplayer_bot_class;
+
 /* =======================================================
 
       Create Object
@@ -57,15 +61,33 @@ script_js_function	multiplayer_bot_functions[]={
 
 void script_init_multiplayer_bot_object(void)
 {
+	multiplayer_bot_class=script_create_class("multiplayer_bot_class",js_multiplayer_bot_get_property,js_multiplayer_bot_set_property);
 }
 
 void script_free_multiplayer_bot_object(void)
 {
+	script_free_class(multiplayer_bot_class);
 }
 
 void script_add_multiplayer_bot_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"bot",multiplayer_bot_props,multiplayer_bot_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_multiplayer_bot_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,multiplayer_bot_props));
+}
+
+JSBool js_multiplayer_bot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,multiplayer_bot_props));
 }
 
 /* =======================================================

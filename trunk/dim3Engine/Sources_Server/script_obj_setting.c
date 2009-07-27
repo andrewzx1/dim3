@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_obj_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -143,6 +145,8 @@ script_js_function	obj_setting_functions[]={
 							{"clearAmbient",			js_obj_clear_ambient_func,					0},
 							{0}};
 
+JSClass				*obj_setting_class;
+
 /* =======================================================
 
       Create Object
@@ -151,15 +155,33 @@ script_js_function	obj_setting_functions[]={
 
 void script_init_obj_setting_object(void)
 {
+	obj_setting_class=script_create_class("obj_setting_class",js_obj_setting_get_property,js_obj_setting_set_property);
 }
 
 void script_free_obj_setting_object(void)
 {
+	script_free_class(obj_setting_class);
 }
 
 void script_add_obj_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",obj_setting_props,obj_setting_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_setting_props));
+}
+
+JSBool js_obj_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_setting_props));
 }
 
 /* =======================================================

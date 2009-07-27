@@ -38,6 +38,11 @@ extern void script_add_utility_point_object(JSObject *parent_obj);
 extern void script_add_utility_random_object(JSObject *parent_obj);
 extern void script_add_utility_pack_object(JSObject *parent_obj);
 
+JSBool js_utility_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_utility_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+
+JSClass				*utility_class;
+
 /* =======================================================
 
       Create Object
@@ -46,10 +51,12 @@ extern void script_add_utility_pack_object(JSObject *parent_obj);
 
 void script_init_global_utility_object(void)
 {
+	utility_class=script_create_class("utility_class",js_utility_get_property,js_utility_set_property);
 }
 
 void script_free_global_utility_object(void)
 {
+	script_free_class(utility_class);
 }
 
 void script_add_global_utility_object(JSObject *parent_obj)
@@ -62,5 +69,21 @@ void script_add_global_utility_object(JSObject *parent_obj)
 	script_add_utility_point_object(j_obj);
 	script_add_utility_random_object(j_obj);
 	script_add_utility_pack_object(j_obj);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_utility_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_utility_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 

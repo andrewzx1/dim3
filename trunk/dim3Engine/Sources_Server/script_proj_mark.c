@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_proj_mark_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_mark_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_mark_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_mark_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -50,6 +52,8 @@ script_js_property	proj_mark_props[]={
 							{"alpha",				js_proj_mark_get_alpha,				js_proj_mark_set_alpha},
 							{0}};
 
+JSClass				*proj_mark_class;
+
 /* =======================================================
 
       Create Object
@@ -58,15 +62,33 @@ script_js_property	proj_mark_props[]={
 
 void script_init_proj_mark_object(void)
 {
+	proj_mark_class=script_create_class("proj_mark_class",js_proj_mark_get_property,js_proj_mark_set_property);
 }
 
 void script_free_proj_mark_object(void)
 {
+	script_free_class(proj_mark_class);
 }
 
 void script_add_proj_mark_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"mark",proj_mark_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_proj_mark_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,proj_mark_props));
+}
+
+JSBool js_proj_mark_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,proj_mark_props));
 }
 
 /* =======================================================
