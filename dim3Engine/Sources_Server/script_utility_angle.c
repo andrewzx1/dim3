@@ -33,6 +33,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_utility_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_utility_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_utility_angle_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_utility_angle_sub_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_utility_angle_dif_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -43,6 +45,8 @@ script_js_function	utility_angle_functions[]={
 							{"dif",					js_utility_angle_dif_func,			2},
 							{0}};
 
+JSClass				*utility_angle_class;
+
 /* =======================================================
 
       Create Object
@@ -51,15 +55,33 @@ script_js_function	utility_angle_functions[]={
 
 void script_init_utility_angle_object(void)
 {
+	utility_angle_class=script_create_class("utility_angle_class",js_utility_angle_get_property,js_utility_angle_set_property);
 }
 
 void script_free_utility_angle_object(void)
 {
+	script_free_class(utility_angle_class);
 }
 
 void script_add_utility_angle_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"angle",NULL,utility_angle_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_utility_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_utility_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

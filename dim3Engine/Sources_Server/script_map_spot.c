@@ -34,6 +34,8 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
+JSBool js_map_spot_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_spot_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_spot_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_spot_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -59,6 +61,8 @@ script_js_function	map_spot_functions[]={
 							{"attachObject",		js_map_spot_attach_object_func,		5},
 							{0}};
 
+JSClass				*map_spot_class;
+
 /* =======================================================
 
       Create Object
@@ -67,15 +71,33 @@ script_js_function	map_spot_functions[]={
 
 void script_init_map_spot_object(void)
 {
+	map_spot_class=script_create_class("map_spot_class",js_map_spot_get_property,js_map_spot_set_property);
 }
 
 void script_free_map_spot_object(void)
 {
+	script_free_class(map_spot_class);
 }
 
 void script_add_map_spot_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"spot",map_spot_props,map_spot_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_map_spot_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,map_spot_props));
+}
+
+JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,map_spot_props));
 }
 
 /* =======================================================

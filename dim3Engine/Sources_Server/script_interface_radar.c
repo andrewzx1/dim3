@@ -36,6 +36,8 @@ extern js_type			js;
 extern setup_type		setup;
 extern hud_type			hud;
 
+JSBool js_interface_radar_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_radar_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_radar_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -55,6 +57,8 @@ script_js_property	interface_radar_props[]={
 							{"viewRadius",			js_interface_radar_get_viewRadius,		js_interface_radar_set_viewRadius},
 							{0}};
 
+JSClass				*interface_radar_class;
+
 /* =======================================================
 
       Create Object
@@ -63,15 +67,33 @@ script_js_property	interface_radar_props[]={
 
 void script_init_interface_radar_object(void)
 {
+	interface_radar_class=script_create_class("interface_radar_class",js_interface_radar_get_property,js_interface_radar_set_property);
 }
 
 void script_free_interface_radar_object(void)
 {
+	script_free_class(interface_radar_class);
 }
 
 void script_add_interface_radar_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"radar",interface_radar_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_interface_radar_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,interface_radar_props));
+}
+
+JSBool js_interface_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,interface_radar_props));
 }
 
 /* =======================================================

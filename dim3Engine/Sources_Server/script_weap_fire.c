@@ -36,8 +36,6 @@ extern js_type			js;
 
 JSBool js_weap_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-
-
 JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_fire_get_lastFireTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -64,15 +62,14 @@ JSClass				*weap_fire_class;
       
 ======================================================= */
 
-// supergumba -- move this
 void script_init_weap_fire_object(void)
 {
-//	weap_fire_class=script_create_class("weap_fire_class",js_weap_fire_get_property,js_weap_fire_set_property);
+	weap_fire_class=script_create_class("weap_fire_class",js_weap_fire_get_property,js_weap_fire_set_property);
 }
 
 void script_free_weap_fire_object(void)
 {
-//	script_free_class(weap_fire_class);
+	script_free_class(weap_fire_class);
 }
 
 void script_add_weap_fire_object(JSObject *parent_obj)
@@ -80,6 +77,22 @@ void script_add_weap_fire_object(JSObject *parent_obj)
 // supergumba
 //	script_create_child_object_2(parent_obj,weap_fire_class,"fire",weap_fire_props,weap_fire_functions);
 	script_create_child_object(parent_obj,"fire",weap_fire_props,weap_fire_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_fire_props));
+}
+
+JSBool js_weap_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_fire_props));
 }
 
 /* =======================================================

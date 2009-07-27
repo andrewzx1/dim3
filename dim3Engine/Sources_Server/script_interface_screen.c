@@ -34,6 +34,8 @@ and can be sold or given away.
 extern js_type			js;
 extern setup_type		setup;
 
+JSBool js_interface_screen_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_screen_get_width(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_screen_get_height(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
@@ -41,6 +43,8 @@ script_js_property	interface_screen_props[]={
 							{"width",				js_interface_screen_get_width,		NULL},
 							{"height",				js_interface_screen_get_height,		NULL},
 							{0}};
+
+JSClass				*interface_screen_class;
 
 /* =======================================================
 
@@ -50,15 +54,33 @@ script_js_property	interface_screen_props[]={
 
 void script_init_interface_screen_object(void)
 {
+	interface_screen_class=script_create_class("interface_screen_class",js_interface_screen_get_property,js_interface_screen_set_property);
 }
 
 void script_free_interface_screen_object(void)
 {
+	script_free_class(interface_screen_class);
 }
 
 void script_add_interface_screen_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"screen",interface_screen_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_interface_screen_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,interface_screen_props));
+}
+
+JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,interface_screen_props));
 }
 
 /* =======================================================

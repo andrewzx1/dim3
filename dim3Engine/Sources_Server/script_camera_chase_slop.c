@@ -35,6 +35,8 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
+JSBool js_camera_chase_slop_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_chase_slop_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_chase_slop_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_chase_slop_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_chase_slop_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -48,6 +50,8 @@ script_js_property	camera_chase_slop_props[]={
 							{"z",					js_camera_chase_slop_get_z,			js_camera_chase_slop_set_z},
 							{0}};
 
+JSClass				*camera_chase_slop_class;
+
 /* =======================================================
 
       Create Object
@@ -56,15 +60,33 @@ script_js_property	camera_chase_slop_props[]={
 
 void script_init_camera_chase_slop_object(void)
 {
+	camera_chase_slop_class=script_create_class("camera_chase_slop_class",js_camera_chase_slop_get_property,js_camera_chase_slop_set_property);
 }
 
 void script_free_camera_chase_slop_object(void)
 {
+	script_free_class(camera_chase_slop_class);
 }
 
 void script_add_camera_chase_slop_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"chaseSlop",camera_chase_slop_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_camera_chase_slop_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,camera_chase_slop_props));
+}
+
+JSBool js_camera_chase_slop_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,camera_chase_slop_props));
 }
 
 /* =======================================================

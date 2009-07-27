@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_weap_hand_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_hand_get_raiseTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_hand_get_lowerTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_hand_get_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -53,6 +55,8 @@ script_js_property	weap_hand_props[]={
 							{"bobAngle",			js_weap_hand_get_bobAngle,				js_weap_hand_set_bobAngle},
 							{0}};
 
+JSClass				*weap_hand_class;
+
 /* =======================================================
 
       Create Object
@@ -61,15 +65,33 @@ script_js_property	weap_hand_props[]={
 
 void script_init_weap_hand_object(void)
 {
+	weap_hand_class=script_create_class("weap_hand_class",js_weap_hand_get_property,js_weap_hand_set_property);
 }
 
 void script_free_weap_hand_object(void)
 {
+	script_free_class(weap_hand_class);
 }
 
 void script_add_weap_hand_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"hand",weap_hand_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_hand_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_hand_props));
+}
+
+JSBool js_weap_hand_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_hand_props));
 }
 
 /* =======================================================

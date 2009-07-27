@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_weap_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -45,6 +47,8 @@ script_js_property	weap_setting_props[]={
 							{"parentObjectId",		js_weap_setting_get_parentObjectId,		NULL},
 							{0}};
 
+JSClass				*weap_setting_class;
+
 /* =======================================================
 
       Create Object
@@ -53,15 +57,33 @@ script_js_property	weap_setting_props[]={
 
 void script_init_weap_setting_object(void)
 {
+	weap_setting_class=script_create_class("weap_setting_class",js_weap_setting_get_property,js_weap_setting_set_property);
 }
 
 void script_free_weap_setting_object(void)
 {
+	script_free_class(weap_setting_class);
 }
 
 void script_add_weap_setting_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"setting",weap_setting_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_setting_props));
+}
+
+JSBool js_weap_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_setting_props));
 }
 
 /* =======================================================

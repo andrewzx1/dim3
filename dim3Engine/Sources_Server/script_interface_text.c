@@ -35,6 +35,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_interface_text_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_text_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_text_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_hide_all_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -65,6 +67,8 @@ script_js_function	interface_text_functions[]={
 							{"setTextAndFade",				js_interface_text_set_text_and_fade_func,	2},
 							{0}};
 
+JSClass				*interface_text_class;
+
 /* =======================================================
 
       Create Object
@@ -73,15 +77,33 @@ script_js_function	interface_text_functions[]={
 
 void script_init_interface_text_object(void)
 {
+	interface_text_class=script_create_class("interface_text_class",js_interface_text_get_property,js_interface_text_set_property);
 }
 
 void script_free_interface_text_object(void)
 {
+	script_free_class(interface_text_class);
 }
 
 void script_add_interface_text_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"text",NULL,interface_text_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_interface_text_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_interface_text_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

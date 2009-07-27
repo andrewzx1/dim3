@@ -45,6 +45,11 @@ extern void script_add_camera_static_position_object(JSObject *parent_obj);
 extern void script_add_camera_plane_object(JSObject *parent_obj);
 extern void script_add_camera_state_object(JSObject *parent_obj);
 
+JSBool js_camera_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+
+JSClass				*camera_class;
+
 /* =======================================================
 
       Create Object
@@ -53,10 +58,12 @@ extern void script_add_camera_state_object(JSObject *parent_obj);
 
 void script_init_global_camera_object(void)
 {
+	camera_class=script_create_class("camera_class",js_camera_get_property,js_camera_set_property);
 }
 
 void script_free_global_camera_object(void)
 {
+	script_free_class(camera_class);
 }
 
 void script_add_global_camera_object(JSObject *parent_obj)
@@ -75,5 +82,21 @@ void script_add_global_camera_object(JSObject *parent_obj)
 	script_add_camera_static_position_object(j_obj);
 	script_add_camera_plane_object(j_obj);
 	script_add_camera_state_object(j_obj);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_camera_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_camera_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 

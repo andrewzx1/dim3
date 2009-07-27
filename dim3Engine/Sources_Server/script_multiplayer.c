@@ -37,6 +37,11 @@ extern void script_add_multiplayer_setting_object(JSObject *parent_obj);
 extern void script_add_multiplayer_bot_object(JSObject *parent_obj);
 extern void script_add_multiplayer_score_object(JSObject *parent_obj);
 
+JSBool js_multiplayer_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+
+JSClass				*multiplayer_class;
+
 /* =======================================================
 
       Create Object
@@ -45,10 +50,12 @@ extern void script_add_multiplayer_score_object(JSObject *parent_obj);
 
 void script_init_global_multiplayer_object(void)
 {
+	multiplayer_class=script_create_class("multiplayer_class",js_multiplayer_get_property,js_multiplayer_set_property);
 }
 
 void script_free_global_multiplayer_object(void)
 {
+	script_free_class(multiplayer_class);
 }
 
 void script_add_global_multiplayer_object(JSObject *parent_obj)
@@ -60,5 +67,21 @@ void script_add_global_multiplayer_object(JSObject *parent_obj)
 	script_add_multiplayer_setting_object(j_obj);
 	script_add_multiplayer_bot_object(j_obj);
 	script_add_multiplayer_score_object(j_obj);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_multiplayer_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_multiplayer_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 

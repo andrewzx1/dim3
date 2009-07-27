@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_obj_side_speed_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_side_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_side_speed_get_walk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_side_speed_get_run(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_side_speed_get_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -62,6 +64,8 @@ script_js_property	obj_side_speed_props[]={
 							{"decelerationAir",			js_obj_side_speed_get_decelerationAir,	js_obj_side_speed_set_decelerationAir},
 							{0}};
 
+JSClass				*obj_side_speed_class;
+
 /* =======================================================
 
       Create Object
@@ -70,15 +74,33 @@ script_js_property	obj_side_speed_props[]={
 
 void script_init_obj_side_speed_object(void)
 {
+	obj_side_speed_class=script_create_class("obj_side_speed_class",js_obj_side_speed_get_property,js_obj_side_speed_set_property);
 }
 
 void script_free_obj_side_speed_object(void)
 {
+	script_free_class(obj_side_speed_class);
 }
 
 void script_add_obj_side_speed_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"sideSpeed",obj_side_speed_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_side_speed_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_side_speed_props));
+}
+
+JSBool js_obj_side_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_side_speed_props));
 }
 
 /* =======================================================

@@ -37,6 +37,8 @@ extern network_setup_type	net_setup;
 
 extern int					game_obj_rule_uid;
 
+JSBool js_game_join_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_join_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_join_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_join_set_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -62,6 +64,8 @@ script_js_function	game_join_functions[]={
 							{"clearSpawnSpot",		js_game_join_clear_spawn_spot_func,			0},
 							{0}};
 
+JSClass				*game_join_class;
+
 /* =======================================================
 
       Create Object
@@ -70,15 +74,33 @@ script_js_function	game_join_functions[]={
 
 void script_init_game_join_object(void)
 {
+	game_join_class=script_create_class("game_join_class",js_game_join_get_property,js_game_join_set_property);
 }
 
 void script_free_game_join_object(void)
 {
+	script_free_class(game_join_class);
 }
 
 void script_add_game_join_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"join",game_join_props,game_join_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_game_join_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,game_join_props));
+}
+
+JSBool js_game_join_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,game_join_props));
 }
 
 /* =======================================================

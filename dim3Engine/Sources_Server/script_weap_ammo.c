@@ -35,6 +35,8 @@ and can be sold or given away.
 
 extern js_type				js;
 
+JSBool js_weap_ammo_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_ammo_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_ammo_get_ammo(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_ammo_get_clip(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_ammo_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -74,6 +76,8 @@ script_js_function	weap_ammo_functions[]={
 							{"changeClip",			js_weap_ammo_change_clip_func,			0},
 							{0}};
 
+JSClass				*weap_ammo_class;
+
 /* =======================================================
 
       Create Object
@@ -82,15 +86,33 @@ script_js_function	weap_ammo_functions[]={
 
 void script_init_weap_ammo_object(void)
 {
+	weap_ammo_class=script_create_class("weap_ammo_class",js_weap_ammo_get_property,js_weap_ammo_set_property);
 }
 
 void script_free_weap_ammo_object(void)
 {
+	script_free_class(weap_ammo_class);
 }
 
 void script_add_weap_ammo_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"ammo",weap_ammo_props,weap_ammo_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_ammo_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_ammo_props));
+}
+
+JSBool js_weap_ammo_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_ammo_props));
 }
 
 /* =======================================================

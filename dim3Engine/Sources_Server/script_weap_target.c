@@ -35,6 +35,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
+extern void script_add_weap_target_color_object(JSObject *parent_obj);
+
+JSBool js_weap_target_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -55,7 +59,7 @@ script_js_function	weap_target_functions[]={
 							{"end",					js_weap_target_end_func,				0},
 							{0}};
 
-extern void script_add_weap_target_color_object(JSObject *parent_obj);
+JSClass				*weap_target_class;
 
 /* =======================================================
 
@@ -65,10 +69,12 @@ extern void script_add_weap_target_color_object(JSObject *parent_obj);
 
 void script_init_weap_target_object(void)
 {
+	weap_target_class=script_create_class("weap_target_class",js_weap_target_get_property,js_weap_target_set_property);
 }
 
 void script_free_weap_target_object(void)
 {
+	script_free_class(weap_target_class);
 }
 
 void script_add_weap_target_object(JSObject *parent_obj)
@@ -80,6 +86,22 @@ void script_add_weap_target_object(JSObject *parent_obj)
 		// target color objects
 		
 	script_add_weap_target_color_object(j_obj);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_target_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_target_props));
+}
+
+JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_target_props));
 }
 
 /* =======================================================

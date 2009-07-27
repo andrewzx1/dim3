@@ -34,6 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_interface_bitmap_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_bitmap_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_bitmap_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_bitmap_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_bitmap_hide_all_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -60,6 +62,8 @@ script_js_function	interface_bitmap_functions[]={
 							{"startFade",			js_interface_bitmap_start_fade_func,	1},
 							{0}};
 
+JSClass				*interface_bitmap_class;
+
 /* =======================================================
 
       Create Object
@@ -68,15 +72,33 @@ script_js_function	interface_bitmap_functions[]={
 
 void script_init_interface_bitmap_object(void)
 {
+	interface_bitmap_class=script_create_class("interface_bitmap_class",js_interface_bitmap_get_property,js_interface_bitmap_set_property);
 }
 
 void script_free_interface_bitmap_object(void)
 {
+	script_free_class(interface_bitmap_class);
 }
 
 void script_add_interface_bitmap_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"bitmap",NULL,interface_bitmap_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_interface_bitmap_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_interface_bitmap_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

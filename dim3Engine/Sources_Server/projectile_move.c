@@ -60,7 +60,7 @@ void projectile_gravity(proj_type *proj)
 	
 		// positive gravity drags down the Y move
 	
-	if (gravity>0) proj->force.vct.y+=gravity;
+	if (gravity>0) proj->gravity_add+=gravity;
 }
 
 /* =======================================================

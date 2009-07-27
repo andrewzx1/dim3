@@ -35,6 +35,8 @@ and can be sold or given away.
 
 extern js_type				js;
 
+JSBool js_weap_dual_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_dual_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_dual_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_dual_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_dual_get_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -53,6 +55,8 @@ script_js_function	weap_dual_functions[]={
 							{"switchHand",			js_weap_dual_switch_hand_func,		1},
 							{0}};
 
+JSClass				*weap_dual_class;
+
 /* =======================================================
 
       Create Object
@@ -61,15 +65,33 @@ script_js_function	weap_dual_functions[]={
 
 void script_init_weap_dual_object(void)
 {
+	weap_dual_class=script_create_class("weap_dual_class",js_weap_dual_get_property,js_weap_dual_set_property);
 }
 
 void script_free_weap_dual_object(void)
 {
+	script_free_class(weap_dual_class);
 }
 
 void script_add_weap_dual_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"dual",weap_dual_props,weap_dual_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_dual_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_dual_props));
+}
+
+JSBool js_weap_dual_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_dual_props));
 }
 
 /* =======================================================

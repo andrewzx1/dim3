@@ -34,6 +34,8 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
+JSBool js_map_fog_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_fog_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_fog_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_fog_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_fog_get_outerRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -74,6 +76,8 @@ script_js_property	map_fog_props[]={
 							{"useSolidColor",		js_map_fog_get_useSolidColor,		js_map_fog_set_useSolidColor},
 							{0}};
 
+JSClass				*map_fog_class;
+
 /* =======================================================
 
       Create Object
@@ -82,15 +86,33 @@ script_js_property	map_fog_props[]={
 
 void script_init_map_fog_object(void)
 {
+	map_fog_class=script_create_class("map_fog_class",js_map_fog_get_property,js_map_fog_set_property);
 }
 
 void script_free_map_fog_object(void)
 {
+	script_free_class(map_fog_class);
 }
 
 void script_add_map_fog_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"fog",map_fog_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_map_fog_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,map_fog_props));
+}
+
+JSBool js_map_fog_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,map_fog_props));
 }
 
 /* =======================================================

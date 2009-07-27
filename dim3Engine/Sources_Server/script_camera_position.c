@@ -36,6 +36,8 @@ extern camera_type		camera;
 extern view_type		view;
 extern js_type			js;
 
+JSBool js_camera_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -46,6 +48,8 @@ script_js_property	camera_position_props[]={
 							{"z",					js_camera_position_get_z,				NULL},
 							{0}};
 							
+JSClass				*camera_position_class;
+
 /* =======================================================
 
       Create Object
@@ -54,15 +58,33 @@ script_js_property	camera_position_props[]={
 
 void script_init_camera_position_object(void)
 {
+	camera_position_class=script_create_class("camera_position_class",js_camera_position_get_property,js_camera_position_set_property);
 }
 
 void script_free_camera_position_object(void)
 {
+	script_free_class(camera_position_class);
 }
 
 void script_add_camera_position_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"position",camera_position_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_camera_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,camera_position_props));
+}
+
+JSBool js_camera_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,camera_position_props));
 }
 
 /* =======================================================

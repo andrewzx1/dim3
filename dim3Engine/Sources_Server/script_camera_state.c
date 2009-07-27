@@ -35,6 +35,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_camera_state_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_state_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_state_save_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_camera_state_restore_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -42,6 +44,8 @@ script_js_function	camera_state_functions[]={
 							{"save",				js_camera_state_save_func,				0},
 							{"restore",				js_camera_state_restore_func,			0},
 							{0}};
+
+JSClass				*camera_state_class;
 
 /* =======================================================
 
@@ -51,15 +55,33 @@ script_js_function	camera_state_functions[]={
 
 void script_init_camera_state_object(void)
 {
+	camera_state_class=script_create_class("camera_state_class",js_camera_state_get_property,js_camera_state_set_property);
 }
 
 void script_free_camera_state_object(void)
 {
+	script_free_class(camera_state_class);
 }
 
 void script_add_camera_state_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"state",NULL,camera_state_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_camera_state_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_camera_state_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

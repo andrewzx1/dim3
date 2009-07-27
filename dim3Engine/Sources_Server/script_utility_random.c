@@ -33,6 +33,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_utility_random_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_utility_random_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_utility_random_get_integer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_utility_random_get_float_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_utility_random_get_boolean_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -45,6 +47,8 @@ script_js_function	utility_random_functions[]={
 							{"getPosOrNeg",			js_utility_random_get_pos_or_neg_func,	0},
 							{0}};
 
+JSClass				*utility_random_class;
+
 /* =======================================================
 
       Create Object
@@ -53,15 +57,33 @@ script_js_function	utility_random_functions[]={
 
 void script_init_utility_random_object(void)
 {
+	utility_random_class=script_create_class("utility_random_class",js_utility_random_get_property,js_utility_random_set_property);
 }
 
 void script_free_utility_random_object(void)
 {
+	script_free_class(utility_random_class);
 }
 
 void script_add_utility_random_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"random",NULL,utility_random_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_utility_random_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_utility_random_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

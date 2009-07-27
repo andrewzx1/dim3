@@ -35,6 +35,8 @@ extern js_type			js;
 
 extern void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2);
 
+JSBool js_utility_point_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_utility_point_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_utility_point_equal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_utility_point_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_utility_point_distance_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -47,6 +49,8 @@ script_js_function	utility_point_functions[]={
 							{"transform3Dto2D",		js_utility_point_transform_3D_to_2D_func,	3},
 							{0}};
 
+JSClass				*utility_point_class;
+
 /* =======================================================
 
       Create Object
@@ -55,15 +59,33 @@ script_js_function	utility_point_functions[]={
 
 void script_init_utility_point_object(void)
 {
+	utility_point_class=script_create_class("utility_point_class",js_utility_point_get_property,js_utility_point_set_property);
 }
 
 void script_free_utility_point_object(void)
 {
+	script_free_class(utility_point_class);
 }
 
 void script_add_utility_point_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"point",NULL,utility_point_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_utility_point_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_utility_point_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

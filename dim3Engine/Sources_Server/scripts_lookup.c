@@ -258,3 +258,43 @@ int script_get_attached_object_uid(void)
 
 	return(-1);
 }
+
+/* =======================================================
+
+      Models
+      
+======================================================= */
+
+model_draw* script_find_model_draw(JSObject *j_obj,bool is_child)
+{
+	obj_type			*obj;
+	weapon_type			*weap;
+	proj_type			*proj;
+	proj_setup_type		*proj_setup;
+	
+		// get correct model from attachment
+		
+	switch (js.attach.thing_type) {
+	
+		case thing_type_object:
+			obj=object_find_uid(js.attach.thing_uid);
+			return(&obj->draw);
+			
+		case thing_type_weapon:
+			weap=weapon_find_uid(js.attach.thing_uid);
+			if (weap->dual.in_dual) return(&weap->draw_dual);
+			return(&weap->draw);
+			
+		case thing_type_projectile_setup:
+			proj_setup=proj_setups_find_uid(js.attach.thing_uid);
+			return(&proj_setup->draw);
+			
+		case thing_type_projectile:
+			proj=projectile_find_uid(js.attach.thing_uid);
+			return(&proj->draw);
+			
+	}
+	
+	return(NULL);
+}
+	

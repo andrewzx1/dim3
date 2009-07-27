@@ -35,6 +35,10 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
+extern void object_setup_motion(obj_type *obj,float ang,float speed);
+
+JSBool js_obj_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -52,7 +56,7 @@ script_js_function	obj_angle_functions[]={
 							{"rotateTo",			js_obj_angle_rotate_to_func,		1},
 							{0}};
 
-extern void object_setup_motion(obj_type *obj,float ang,float speed);
+JSClass				*obj_angle_class;
 
 /* =======================================================
 
@@ -62,15 +66,33 @@ extern void object_setup_motion(obj_type *obj,float ang,float speed);
 
 void script_init_obj_angle_object(void)
 {
+	obj_angle_class=script_create_class("obj_angle_class",js_obj_angle_get_property,js_obj_angle_set_property);
 }
 
 void script_free_obj_angle_object(void)
 {
+	script_free_class(obj_angle_class);
 }
 
 void script_add_obj_angle_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"angle",obj_angle_props,obj_angle_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_obj_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,obj_angle_props));
+}
+
+JSBool js_obj_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,obj_angle_props));
 }
 
 /* =======================================================

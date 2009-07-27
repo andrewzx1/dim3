@@ -35,6 +35,8 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
+JSBool js_map_light_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -48,6 +50,8 @@ script_js_property	map_light_color_props[]={
 							{"blue",				js_map_light_color_get_blue,			js_map_light_color_set_blue},
 							{0}};
 
+JSClass				*map_light_color_class;
+
 /* =======================================================
 
       Create Object
@@ -56,15 +60,33 @@ script_js_property	map_light_color_props[]={
 
 void script_init_map_light_color_object(void)
 {
+	map_light_color_class=script_create_class("map_light_color_class",js_map_light_color_get_property,js_map_light_color_set_property);
 }
 
 void script_free_map_light_color_object(void)
 {
+	script_free_class(map_light_color_class);
 }
 
 void script_add_map_light_color_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"lightColor",map_light_color_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_map_light_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,map_light_color_props));
+}
+
+JSBool js_map_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,map_light_color_props));
 }
 
 /* =======================================================

@@ -34,6 +34,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
+extern void script_add_weap_crosshair_color_object(JSObject *parent_obj);
+extern void script_add_weap_crosshair_empty_color_object(JSObject *parent_obj);
+extern void script_add_weap_crosshair_pickup_color_object(JSObject *parent_obj);
+							
+JSBool js_weap_crosshair_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_crosshair_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_crosshair_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_crosshair_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_crosshair_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -56,10 +62,8 @@ script_js_property	weap_crosshair_props[]={
 							{"distance",			js_weap_crosshair_get_distance,		js_weap_crosshair_set_distance},
 							{0}};
 
-extern void script_add_weap_crosshair_color_object(JSObject *parent_obj);
-extern void script_add_weap_crosshair_empty_color_object(JSObject *parent_obj);
-extern void script_add_weap_crosshair_pickup_color_object(JSObject *parent_obj);
-							
+JSClass				*weap_crosshair_class;
+
 /* =======================================================
 
       Create Object
@@ -68,10 +72,12 @@ extern void script_add_weap_crosshair_pickup_color_object(JSObject *parent_obj);
 
 void script_init_weap_crosshair_object(void)
 {
+	weap_crosshair_class=script_create_class("weap_crosshair_class",js_weap_crosshair_get_property,js_weap_crosshair_set_property);
 }
 
 void script_free_weap_crosshair_object(void)
 {
+	script_free_class(weap_crosshair_class);
 }
 
 void script_add_weap_crosshair_object(JSObject *parent_obj)
@@ -85,6 +91,22 @@ void script_add_weap_crosshair_object(JSObject *parent_obj)
 	script_add_weap_crosshair_color_object(j_obj);
 	script_add_weap_crosshair_empty_color_object(j_obj);
 	script_add_weap_crosshair_pickup_color_object(j_obj);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_crosshair_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_crosshair_props));
+}
+
+JSBool js_weap_crosshair_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_crosshair_props));
 }
 
 /* =======================================================

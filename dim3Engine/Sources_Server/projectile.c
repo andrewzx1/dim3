@@ -155,6 +155,7 @@ void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang)
 		// initial gravity
 	
 	proj->force.gravity=gravity_start_power;
+	proj->gravity_add=0.0f;
 }
 
 /* =======================================================
@@ -203,6 +204,8 @@ void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,i
 	fx+=proj->force.vct.x;
 	fy+=proj->force.vct.y;
 	fz+=proj->force.vct.z;
+
+	fy+=proj->gravity_add;
 	
 		// save for projectile
 		

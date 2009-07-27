@@ -34,6 +34,8 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
+JSBool js_map_info_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_info_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_info_get_file(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_info_get_title(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_info_get_author(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -44,6 +46,8 @@ script_js_property	map_info_props[]={
 							{"author",				js_map_info_get_author,				NULL},
 							{0}};
 
+JSClass				*map_info_class;
+
 /* =======================================================
 
       Create Object
@@ -52,15 +56,33 @@ script_js_property	map_info_props[]={
 
 void script_init_map_info_object(void)
 {
+	map_info_class=script_create_class("map_info_class",js_map_info_get_property,js_map_info_set_property);
 }
 
 void script_free_map_info_object(void)
 {
+	script_free_class(map_info_class);
 }
 
 void script_add_map_info_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"info",map_info_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_map_info_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,map_info_props));
+}
+
+JSBool js_map_info_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,map_info_props));
 }
 
 /* =======================================================

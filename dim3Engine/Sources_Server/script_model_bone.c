@@ -35,11 +35,13 @@ and can be sold or given away.
 #include "projectiles.h"
 #include "models.h"
 
+extern js_type			js;
+
+JSBool js_model_bone_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_bone_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_bone_find_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_bone_find_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_bone_get_brightness_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-
-extern js_type			js;
 
 script_js_function	model_bone_functions[]={
 							{"findOffset",			js_model_bone_find_offset_func,			2},
@@ -47,7 +49,7 @@ script_js_function	model_bone_functions[]={
 							{"getBrightness",		js_model_bone_get_brightness_func,		2},
 							{0}};
 
-extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
+JSClass				*model_bone_class;
 
 /* =======================================================
 
@@ -57,15 +59,33 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_init_model_bone_object(void)
 {
+	model_bone_class=script_create_class("model_bone_class",js_model_bone_get_property,js_model_bone_set_property);
 }
 
 void script_free_model_bone_object(void)
 {
+	script_free_class(model_bone_class);
 }
 
 void script_add_model_bone_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"bone",NULL,model_bone_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_model_bone_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,NULL));
+}
+
+JSBool js_model_bone_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
 /* =======================================================

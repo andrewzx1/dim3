@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "scripts.h"
 #include "weapons.h"
 
+JSBool js_weap_target_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_target_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -47,6 +49,8 @@ script_js_property	weap_target_color_props[]={
 							{"blue",				js_weap_target_color_get_blue,			js_weap_target_color_set_blue},
 							{0}};
 
+JSClass				*weap_target_color_class;
+
 /* =======================================================
 
       Create Object
@@ -55,15 +59,33 @@ script_js_property	weap_target_color_props[]={
 
 void script_init_weap_target_color_object(void)
 {
+	weap_target_color_class=script_create_class("weap_target_color_class",js_weap_target_color_get_property,js_weap_target_color_set_property);
 }
 
 void script_free_weap_target_color_object(void)
 {
+	script_free_class(weap_target_color_class);
 }
 
 void script_add_weap_target_color_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"color",weap_target_color_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_weap_target_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,weap_target_color_props));
+}
+
+JSBool js_weap_target_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,weap_target_color_props));
 }
 
 /* =======================================================

@@ -39,6 +39,8 @@ extern network_setup_type	net_setup;
 
 extern int				game_obj_rule_uid;
 
+JSBool js_game_score_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -58,6 +60,8 @@ script_js_function	game_score_functions[]={
 							{"setScore",			js_game_score_set_score_func,		1},
 							{0}};
 
+JSClass				*game_score_class;
+
 /* =======================================================
 
       Create Object
@@ -66,15 +70,33 @@ script_js_function	game_score_functions[]={
 
 void script_init_game_score_object(void)
 {
+	game_score_class=script_create_class("game_score_class",js_game_score_get_property,js_game_score_set_property);
 }
 
 void script_free_game_score_object(void)
 {
+	script_free_class(game_score_class);
 }
 
 void script_add_game_score_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"score",game_score_props,game_score_functions);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_game_score_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,game_score_props));
+}
+
+JSBool js_game_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,game_score_props));
 }
 
 /* =======================================================

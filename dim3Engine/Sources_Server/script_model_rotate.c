@@ -31,6 +31,8 @@ and can be sold or given away.
 
 #include "scripts.h"
 
+JSBool js_model_rotate_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_rotate_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_rotate_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_rotate_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_rotate_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -46,7 +48,7 @@ script_js_property	model_rotate_props[]={
 							{"z",					js_model_rotate_get_z,				js_model_rotate_set_z},
 							{0}};
 
-extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
+JSClass				*model_rotate_class;
 
 /* =======================================================
 
@@ -56,15 +58,33 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_init_model_rotate_object(void)
 {
+	model_rotate_class=script_create_class("model_rotate_class",js_model_rotate_get_property,js_model_rotate_set_property);
 }
 
 void script_free_model_rotate_object(void)
 {
+	script_free_class(model_rotate_class);
 }
 
 void script_add_model_rotate_object(JSObject *parent_obj)
 {
 	script_create_child_object(parent_obj,"rotate",model_rotate_props,NULL);
+}
+
+/* =======================================================
+
+      Object Getter and Setter
+      
+======================================================= */
+
+JSBool js_model_rotate_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_get_property(cx,j_obj,id,vp,model_rotate_props));
+}
+
+JSBool js_model_rotate_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	return(script_set_property(cx,j_obj,id,vp,model_rotate_props));
 }
 
 /* =======================================================
@@ -77,7 +97,7 @@ JSBool js_model_rotate_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	*vp=script_float_to_value(draw->rot.x);
 
 	return(JS_TRUE);
@@ -87,7 +107,7 @@ JSBool js_model_rotate_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	*vp=script_float_to_value(draw->rot.y);
 
 	return(JS_TRUE);
@@ -97,7 +117,7 @@ JSBool js_model_rotate_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	*vp=script_float_to_value(draw->rot.z);
 
 	return(JS_TRUE);
@@ -113,7 +133,7 @@ JSBool js_model_rotate_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	draw->rot.x=script_value_to_float(*vp);
 
 	return(JS_TRUE);
@@ -123,7 +143,7 @@ JSBool js_model_rotate_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	draw->rot.y=script_value_to_float(*vp);
 
 	return(JS_TRUE);
@@ -133,7 +153,7 @@ JSBool js_model_rotate_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=js_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw(j_obj,TRUE);
 	draw->rot.z=script_value_to_float(*vp);
 
 	return(JS_TRUE);
