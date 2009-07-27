@@ -640,7 +640,7 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 		}
 		return;
 	}
-
+	
 		// sort the light spots, only using
 		// top max_shader_light
 
