@@ -148,6 +148,7 @@ JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj
 	int				n,idx,from_idx,k,len,d,dist;
 	unsigned int	u_len;
 	char			name[name_str_len];
+	bool			good_param;
 	JSObject		*array;
 	jsval			vp;
 	
@@ -156,6 +157,21 @@ JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj
 	from_idx=JSVAL_TO_INT(argv[0]);
 	
 		// get number of array elements
+		
+	good_param=(argc>=2);
+	if (good_param) {
+		if (!JSVAL_IS_OBJECT(argv[1])) {
+			good_param=FALSE;
+		}
+		else {
+			good_param=JS_IsArrayObject(js.cx,JSVAL_TO_OBJECT(argv[1]));
+		}
+	}
+	
+	if (!good_param) {
+		JS_ReportError(js.cx,"Second parameter to findNearestNamesInPath needs to be an array");
+		return(JS_FALSE);
+	}
 	
 	array=JSVAL_TO_OBJECT(argv[1]);
 	JS_GetArrayLength(js.cx,array,&u_len);
