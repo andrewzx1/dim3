@@ -93,7 +93,7 @@ void script_free_weap_alt_ammo_object(void)
 
 void script_add_weap_alt_ammo_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"altAmmo",weap_alt_ammo_props,weap_alt_ammo_functions);
+	script_create_child_object(parent_obj,weap_alt_ammo_class,"altAmmo",weap_alt_ammo_props,weap_alt_ammo_functions);
 }
 
 /* =======================================================

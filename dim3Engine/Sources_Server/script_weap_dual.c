@@ -75,7 +75,7 @@ void script_free_weap_dual_object(void)
 
 void script_add_weap_dual_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"dual",weap_dual_props,weap_dual_functions);
+	script_create_child_object(parent_obj,weap_dual_class,"dual",weap_dual_props,weap_dual_functions);
 }
 
 /* =======================================================

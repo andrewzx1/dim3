@@ -77,7 +77,7 @@ void script_free_model_light_object(void)
 
 void script_add_model_light_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"light",model_light_props,NULL);
+	script_create_child_object(parent_obj,model_light_class,"light",model_light_props,NULL);
 }
 
 /* =======================================================

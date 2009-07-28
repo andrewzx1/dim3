@@ -92,7 +92,7 @@ void script_free_obj_size_object(void)
 
 void script_add_obj_size_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"size",obj_size_props,obj_size_functions);
+	script_create_child_object(parent_obj,obj_size_class,"size",obj_size_props,obj_size_functions);
 }
 
 /* =======================================================

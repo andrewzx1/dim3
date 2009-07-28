@@ -78,8 +78,8 @@ void script_free_map_group_object(void)
 
 void script_add_map_group_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"group",NULL,map_group_functions);
-	script_create_child_object(parent_obj,"segment",NULL,map_group_functions);	// depreciated; here for backwards compatiability
+	script_create_child_object(parent_obj,map_group_class,"group",NULL,map_group_functions);
+	script_create_child_object(parent_obj,map_group_class,"segment",NULL,map_group_functions);	// depreciated; here for backwards compatiability -- supergumba
 }
 
 /* =======================================================

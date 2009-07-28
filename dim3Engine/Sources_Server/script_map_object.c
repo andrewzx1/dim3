@@ -140,7 +140,7 @@ void script_free_map_object_object(void)
 
 void script_add_map_object_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"object",NULL,map_object_functions);
+	script_create_child_object(parent_obj,map_object_class,"object",NULL,map_object_functions);
 }
 
 /* =======================================================

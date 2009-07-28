@@ -65,7 +65,7 @@ void script_free_interface_console_object(void)
 
 void script_add_interface_console_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"console",NULL,interface_console_functions);
+	script_create_child_object(parent_obj,interface_console_class,"console",NULL,interface_console_functions);
 }
 
 /* =======================================================

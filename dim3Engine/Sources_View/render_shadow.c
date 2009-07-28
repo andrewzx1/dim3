@@ -612,10 +612,12 @@ void shadow_render_model(model_draw *draw)
 
 void shadow_render_mesh(int mesh_idx)
 {
-	int							n,k,poly_count;
+	int							n,k,t,poly_count,
+								ntrig,max_trig_cnt,trig_count;
 	float						f_dist;
 	double						dx,dy,dz,d_alpha;
 	float						*vertex_ptr,*vl,*cl;
+	unsigned short				*index_ptr;
 	d3vct						ray_move;
 	d3pnt						*pt,*spt,*ept,*hpt;
 	map_mesh_type				*mesh;
@@ -667,7 +669,6 @@ void shadow_render_mesh(int mesh_idx)
 			// to draw a shadow on
 
 		shadow_stencil_mesh_poly(shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
-
 
 			// run through all the vertexes of this mesh
 
@@ -732,6 +733,51 @@ void shadow_render_mesh(int mesh_idx)
 		
 		view_unmap_current_vertex_object();
 
+			// create the index object
+			// break polygons up into triangles so we
+			// can draw with one call and skip parts
+			// with no collisions
+
+		max_trig_cnt=0;
+
+		poly=mesh->polys;
+
+		for (n=0;n!=mesh->npoly;n++) {
+			max_trig_cnt+=(poly->ptsz-2);
+			poly++;
+		}
+			
+		index_ptr=view_bind_map_next_index_object(max_trig_cnt*3);
+		if (index_ptr==NULL) {
+			view_unbind_current_vertex_object();
+			glDisable(GL_STENCIL_TEST);
+			glDepthMask(GL_TRUE);
+			return;
+		}
+
+		trig_count=0;
+
+		poly=mesh->polys;
+
+		for (n=0;n!=mesh->npoly;n++) {
+
+			ntrig=poly->ptsz-2;
+
+			for (t=0;t<ntrig;t++) {
+
+				if ((shadow_hits[poly->v[t]]) && (shadow_hits[poly->v[t+1]]) && (shadow_hits[poly->v[t+2]])) {
+					*index_ptr++=(unsigned short)poly->v[t];
+					*index_ptr++=(unsigned short)poly->v[t+1];
+					*index_ptr++=(unsigned short)poly->v[t+2];
+					trig_count++;
+				}
+			}
+
+			poly++;
+		}
+
+		view_unmap_current_index_object();
+
 			// shadows are blended and stenciled
 			// we clear the stencil as we draw so
 			// we can maintain the alpha levels
@@ -751,19 +797,15 @@ void shadow_render_mesh(int mesh_idx)
 		glEnableClientState(GL_COLOR_ARRAY);
 		glColorPointer(4,GL_FLOAT,0,(void*)((mesh->nvertex*3)*sizeof(float)));
 
-		poly=mesh->polys;
-
-		for (n=0;n!=mesh->npoly;n++) {
-			glDrawRangeElements(GL_POLYGON,0,mesh->nvertex,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->v);
-			poly++;
-		}
+		glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 
 		glDisableClientState(GL_COLOR_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
 		
-			// unbind the vertex object
+			// unbind the vertex and index object
 				
 		view_unbind_current_vertex_object();
+		view_unbind_current_index_object();
 
 			// erase the stencil
 

@@ -75,7 +75,7 @@ void script_free_global_data_object(void)
 
 void script_add_global_data_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"data",NULL,data_functions);
+	script_create_child_object(parent_obj,data_class,"data",NULL,data_functions);
 }
 
 /* =======================================================

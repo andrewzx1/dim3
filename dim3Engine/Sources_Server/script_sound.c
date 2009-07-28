@@ -84,7 +84,7 @@ void script_free_global_sound_object(void)
 
 void script_add_global_sound_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"sound",NULL,sound_functions);
+	script_create_child_object(parent_obj,sound_class,"sound",NULL,sound_functions);
 }
 
 /* =======================================================

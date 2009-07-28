@@ -69,7 +69,7 @@ void script_free_map_fog_color_object(void)
 
 void script_add_map_fog_color_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"fogColor",map_fog_color_props,NULL);
+	script_create_child_object(parent_obj,map_fog_color_class,"fogColor",map_fog_color_props,NULL);
 }
 
 /* =======================================================

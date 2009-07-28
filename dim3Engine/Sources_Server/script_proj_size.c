@@ -72,7 +72,7 @@ void script_free_proj_size_object(void)
 
 void script_add_proj_size_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"size",proj_size_props,NULL);
+	script_create_child_object(parent_obj,proj_size_class,"size",proj_size_props,NULL);
 }
 
 /* =======================================================

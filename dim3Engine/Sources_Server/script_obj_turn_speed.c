@@ -90,7 +90,7 @@ void script_free_obj_turn_speed_object(void)
 
 void script_add_obj_turn_speed_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"turnSpeed",obj_turn_speed_props,NULL);
+	script_create_child_object(parent_obj,obj_turn_speed_class,"turnSpeed",obj_turn_speed_props,NULL);
 }
 
 /* =======================================================

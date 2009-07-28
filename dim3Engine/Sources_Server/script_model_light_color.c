@@ -68,7 +68,7 @@ void script_free_model_light_color_object(void)
 
 void script_add_model_light_color_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"lightColor",model_light_color_props,NULL);
+	script_create_child_object(parent_obj,model_light_color_class,"lightColor",model_light_color_props,NULL);
 }
 
 /* =======================================================

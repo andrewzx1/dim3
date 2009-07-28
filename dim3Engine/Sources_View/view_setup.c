@@ -370,6 +370,35 @@ bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 	return(model_inview(draw));
 }
 
+bool view_setup_shadow_in_view(model_draw *draw,int mesh_idx)
+{
+	double					obscure_dist;
+
+	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+
+		// is model in a mesh that's in the mesh draw list?
+
+	if ((mesh_idx!=-1) && (view.render->has_area)) {
+		if (!view_mesh_in_draw_list(mesh_idx)) return(FALSE);
+	}
+	
+		// is model within obscure distance
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+		
+	draw->draw_dist=distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	if (draw->draw_dist>=obscure_dist) return(FALSE);
+	
+		// is model in view?
+
+	return(model_shadow_inview(draw));
+}
+
 void view_setup_objects(int tick)
 {
 	int					n,flag;
@@ -400,7 +429,7 @@ void view_setup_objects(int tick)
 			if (view_setup_model_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_model_in_view;
 
 			if (obj->draw.shadow.on) {
-				if (model_shadow_inview(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
+				if (view_setup_shadow_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_shadow_in_view;
 			}
 
 			if (flag==0x0) continue;

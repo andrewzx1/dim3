@@ -69,7 +69,7 @@ void script_free_weap_crosshair_empty_color_object(void)
 
 void script_add_weap_crosshair_empty_color_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"emptyColor",weap_crosshair_empty_color_props,NULL);
+	script_create_child_object(parent_obj,weap_crosshair_empty_color_class,"emptyColor",weap_crosshair_empty_color_props,NULL);
 }
 
 /* =======================================================

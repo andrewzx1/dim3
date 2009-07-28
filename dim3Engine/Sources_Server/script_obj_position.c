@@ -94,7 +94,7 @@ void script_free_obj_position_object(void)
 
 void script_add_obj_position_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"position",obj_position_props,obj_position_functions);
+	script_create_child_object(parent_obj,obj_position_class,"position",obj_position_props,obj_position_functions);
 }
 
 /* =======================================================

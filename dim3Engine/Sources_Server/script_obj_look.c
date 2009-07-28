@@ -76,7 +76,7 @@ void script_free_obj_look_object(void)
 
 void script_add_obj_look_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"look",obj_look_props,obj_look_functions);
+	script_create_child_object(parent_obj,obj_look_class,"look",obj_look_props,obj_look_functions);
 }
 
 /* =======================================================

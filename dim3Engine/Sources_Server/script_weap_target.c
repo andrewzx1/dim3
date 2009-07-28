@@ -81,7 +81,7 @@ void script_add_weap_target_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
 
-	j_obj=script_create_child_object(parent_obj,"target",weap_target_props,weap_target_functions);
+	j_obj=script_create_child_object(parent_obj,weap_target_class,"target",weap_target_props,weap_target_functions);
 
 		// target color objects
 		

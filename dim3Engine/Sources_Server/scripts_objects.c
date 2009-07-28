@@ -224,8 +224,10 @@ JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp s
 	
 	cls->addProperty=JS_PropertyStub;
 	cls->delProperty=JS_PropertyStub;
-	cls->getProperty=getter;
-	cls->setProperty=setter;
+//	cls->getProperty=getter;
+//	cls->setProperty=setter;
+	cls->getProperty=JS_PropertyStub;
+	cls->setProperty=JS_PropertyStub;
 	cls->enumerate=JS_EnumerateStub;
 	cls->resolve=JS_ResolveStub;
 	cls->convert=JS_ConvertStub;
@@ -394,7 +396,7 @@ JSObject* script_create_main_object(attach_type *attach)
 	return(j_obj);
 }
 
-JSObject* script_create_child_object(JSObject *parent_obj,char *name,script_js_property *props,script_js_function *funcs)
+JSObject* script_create_child_object(JSObject *parent_obj,JSClass *cls,char *name,script_js_property *props,script_js_function *funcs)
 {
 	int					flags;
 	script_js_property	*prop;
@@ -404,6 +406,7 @@ JSObject* script_create_child_object(JSObject *parent_obj,char *name,script_js_p
 		// object
 
 	j_obj=JS_DefineObject(js.cx,parent_obj,name,NULL,NULL,0);
+//	j_obj=JS_DefineObject(js.cx,parent_obj,name,cls,NULL,0);
 
 		// properties
 
@@ -417,50 +420,7 @@ JSObject* script_create_child_object(JSObject *parent_obj,char *name,script_js_p
 			if (prop->setter==NULL) flags|=JSPROP_READONLY;
 
 			JS_DefineProperty(js.cx,j_obj,prop->name,JSVAL_NULL,prop->getter,prop->setter,flags);
-
-			prop++;
-		}
-	}
-
-		// functions
-
-	if (funcs!=NULL) {
-
-		func=funcs;
-
-		while (func->name!=NULL) {
-			JS_DefineFunction(js.cx,j_obj,func->name,func->call,func->nargs,0);
-			func++;
-		}
-	}
-
-	return(j_obj);
-}
-
-// supergumba -- replace original with this
-JSObject* script_create_child_object_2(JSObject *parent_obj,JSClass *cls,char *name,script_js_property *props,script_js_function *funcs)
-{
-	int					flags;
-	script_js_property	*prop;
-	script_js_function	*func;
-	JSObject			*j_obj;
-
-		// object
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,name,cls,NULL,0);
-
-		// properties
-
-	if (props!=NULL) {
-
-		prop=props;
-
-		while (prop->name!=NULL) {
-
-			flags=JSPROP_PERMANENT|JSPROP_SHARED;
-			if (prop->setter==NULL) flags|=JSPROP_READONLY;
-
-			JS_DefineProperty(js.cx,j_obj,prop->name,JSVAL_NULL,prop->getter,prop->setter,flags);
+//			JS_DefineProperty(js.cx,j_obj,prop->name,JSVAL_NULL,NULL,NULL,flags);
 
 			prop++;
 		}
@@ -487,14 +447,6 @@ JSObject* script_create_child_object_2(JSObject *parent_obj,JSClass *cls,char *n
       
 ======================================================= */
 
-void script_no_property_error(jsval id)
-{
-	char				name[64];
-
-	script_value_to_string(id,name,64);
-	JS_ReportError(js.cx,"The property %s does not exist on this object",name);
-}
-
 void script_read_only_property_error(jsval id)
 {
 	char				name[64];
@@ -519,8 +471,6 @@ inline int script_find_object_property_index(jsval id,script_js_property *props)
 		idx++;
 	}
 
-	script_no_property_error(id);
-
 	return(-1);
 }
 
@@ -531,23 +481,18 @@ JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,scri
 
 		// any properties?
 
-	if (props==NULL) {
-		script_no_property_error(id);
-		return(JS_FALSE);
-	}
+	if (props==NULL) return(JS_TRUE);
 
 		// find the property
 
 	idx=script_find_object_property_index(id,props);
-	if (idx==-1) return(JS_FALSE);
+	if (idx==-1) return(JS_TRUE);
 
 	prop=&props[idx];
 
 		// call getter
 
-	return((prop->getter)(cx,j_obj,id,vp));
-
-	return(JS_TRUE);
+	return((*prop->getter)(cx,j_obj,id,vp));
 }
 
 JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props)
@@ -557,15 +502,12 @@ JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,scri
 
 		// any properties?
 
-	if (props==NULL) {
-		script_no_property_error(id);
-		return(JS_FALSE);
-	}
+	if (props==NULL) return(JS_TRUE);
 
 		// find the property
 
 	idx=script_find_object_property_index(id,props);
-	if (idx==-1) return(JS_FALSE);
+	if (idx==-1) return(JS_TRUE);
 
 	prop=&props[idx];
 
@@ -578,5 +520,5 @@ JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,scri
 
 		// call setter
 
-	return((prop->setter)(cx,j_obj,id,vp));
+	return((*prop->setter)(cx,j_obj,id,vp));
 }

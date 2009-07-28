@@ -503,6 +503,8 @@ void weapon_zoom_exit(obj_type *obj,weapon_type *weap)
 {
 	weap->zoom.mode=zoom_mode_out;
 	obj->zoom_draw.start_tick=game_time_get();
+
+	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_exit,0);
 }
 
 void weapon_zoom_off(obj_type *obj,weapon_type *weap)
@@ -515,8 +517,6 @@ void weapon_zoom_off(obj_type *obj,weapon_type *weap)
 
 	weap->zoom.mode=zoom_mode_off;
 	obj->zoom_draw.on=FALSE;
-
-	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_exit,0);
 }
 
 void weapon_zoom_key(obj_type *obj,weapon_type *weap)

@@ -70,7 +70,7 @@ void script_free_camera_chase_object(void)
 
 void script_add_camera_chase_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"chase",camera_chase_props,NULL);
+	script_create_child_object(parent_obj,camera_chase_class,"chase",camera_chase_props,NULL);
 }
 
 /* =======================================================

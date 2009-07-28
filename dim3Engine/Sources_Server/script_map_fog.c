@@ -96,7 +96,7 @@ void script_free_map_fog_object(void)
 
 void script_add_map_fog_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"fog",map_fog_props,NULL);
+	script_create_child_object(parent_obj,map_fog_class,"fog",map_fog_props,NULL);
 }
 
 /* =======================================================

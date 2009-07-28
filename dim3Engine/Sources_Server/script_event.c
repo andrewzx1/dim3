@@ -103,7 +103,7 @@ void script_free_event_object(void)
 
 void script_add_event_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"event",NULL,event_functions);
+	script_create_child_object(parent_obj,event_class,"event",NULL,event_functions);
 }
 
 /* =======================================================

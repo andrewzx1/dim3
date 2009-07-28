@@ -69,7 +69,7 @@ void script_free_interface_fade_object(void)
 
 void script_add_interface_fade_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"fade",NULL,interface_fade_functions);
+	script_create_child_object(parent_obj,interface_fade_class,"fade",NULL,interface_fade_functions);
 }
 
 /* =======================================================

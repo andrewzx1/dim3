@@ -165,7 +165,7 @@ void script_free_obj_setting_object(void)
 
 void script_add_obj_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"setting",obj_setting_props,obj_setting_functions);
+	script_create_child_object(parent_obj,obj_setting_class,"setting",obj_setting_props,obj_setting_functions);
 }
 
 /* =======================================================

@@ -66,7 +66,7 @@ void script_free_proj_origin_object(void)
 
 void script_add_proj_origin_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"origin",proj_origin_props,NULL);
+	script_create_child_object(parent_obj,proj_origin_class,"origin",proj_origin_props,NULL);
 }
 
 /* =======================================================
