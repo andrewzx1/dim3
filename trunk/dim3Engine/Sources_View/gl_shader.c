@@ -677,6 +677,8 @@ void gl_shader_texture_override(GLuint gl_id)
 		// need to force a reset for next time
 
 	gl_shader_current_txt_idx=-1;
+	gl_shader_current_frame=-1;
+	gl_shader_current_extra_txt_idx=-1;
 }
 
 /* =======================================================
