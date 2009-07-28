@@ -71,7 +71,7 @@ void script_free_obj_click_object(void)
 
 void script_add_obj_click_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"click",obj_click_props,NULL);
+	script_create_child_object(parent_obj,obj_click_class,"click",obj_click_props,NULL);
 }
 
 /* =======================================================

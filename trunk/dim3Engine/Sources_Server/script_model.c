@@ -102,7 +102,7 @@ void script_add_model_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
 
-	j_obj=script_create_child_object(parent_obj,"model",model_props,NULL);
+	j_obj=script_create_child_object(parent_obj,model_class,"model",model_props,NULL);
 	
 	script_add_model_offset_object(j_obj);
 	script_add_model_rotate_object(j_obj);

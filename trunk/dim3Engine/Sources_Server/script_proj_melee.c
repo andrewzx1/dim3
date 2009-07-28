@@ -91,7 +91,7 @@ void script_free_proj_melee_object(void)
 
 void script_add_proj_melee_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"melee",proj_melee_props,proj_melee_functions);
+	script_create_child_object(parent_obj,proj_melee_class,"melee",proj_melee_props,proj_melee_functions);
 }
 
 /* =======================================================

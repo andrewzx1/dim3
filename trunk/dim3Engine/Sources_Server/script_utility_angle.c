@@ -65,7 +65,7 @@ void script_free_utility_angle_object(void)
 
 void script_add_utility_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"angle",NULL,utility_angle_functions);
+	script_create_child_object(parent_obj,utility_angle_class,"angle",NULL,utility_angle_functions);
 }
 
 /* =======================================================

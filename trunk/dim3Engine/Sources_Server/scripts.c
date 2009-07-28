@@ -55,8 +55,6 @@ bool scripts_engine_initialize(char *err_str)
 	js.rt=NULL;
 	js.cx=NULL;
 	
-	script_initialize_classes();
-	
 		// create runtime
 		
 	js.rt=JS_NewRuntime(js_script_memory_size);
@@ -84,7 +82,11 @@ bool scripts_engine_initialize(char *err_str)
 		// get a message for garbage collection
 		
 	// JS_SetGCCallback(js.cx,scripts_gc_reporter);		// supergumba -- for testing
-	
+
+		// initialize classes
+
+	script_initialize_classes();
+
 		// load up the define file
 		
 	script_load_user_defines();

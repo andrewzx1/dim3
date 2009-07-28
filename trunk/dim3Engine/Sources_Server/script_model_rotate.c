@@ -68,7 +68,7 @@ void script_free_model_rotate_object(void)
 
 void script_add_model_rotate_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"rotate",model_rotate_props,NULL);
+	script_create_child_object(parent_obj,model_rotate_class,"rotate",model_rotate_props,NULL);
 }
 
 /* =======================================================

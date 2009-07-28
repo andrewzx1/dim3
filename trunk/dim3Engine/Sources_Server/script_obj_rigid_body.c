@@ -90,7 +90,7 @@ void script_free_obj_rigid_body_object(void)
 
 void script_add_obj_rigid_body_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"rigidBody",obj_rigid_body_props,NULL);
+	script_create_child_object(parent_obj,obj_rigid_body_class,"rigidBody",obj_rigid_body_props,NULL);
 }
 
 /* =======================================================

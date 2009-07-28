@@ -85,7 +85,7 @@ void script_free_global_spawn_object(void)
 
 void script_add_global_spawn_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"spawn",NULL,spawn_functions);
+	script_create_child_object(parent_obj,spawn_class,"spawn",NULL,spawn_functions);
 }
 
 /* =======================================================

@@ -99,7 +99,7 @@ void script_free_weap_recoil_object(void)
 
 void script_add_weap_recoil_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"recoil",weap_recoil_props,weap_recoil_functions);
+	script_create_child_object(parent_obj,weap_recoil_class,"recoil",weap_recoil_props,weap_recoil_functions);
 }
 
 /* =======================================================

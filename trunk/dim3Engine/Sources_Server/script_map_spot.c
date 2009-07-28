@@ -81,7 +81,7 @@ void script_free_map_spot_object(void)
 
 void script_add_map_spot_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"spot",map_spot_props,map_spot_functions);
+	script_create_child_object(parent_obj,map_spot_class,"spot",map_spot_props,map_spot_functions);
 }
 
 /* =======================================================
@@ -252,7 +252,7 @@ JSBool js_map_spot_attach_object_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	
 	spot=script_find_spot_from_idx_arg(argv[0]);
 	if (spot==NULL) return(JS_FALSE);
-	
+
 		// attach
 		
 	script_value_to_string(argv[1],name,name_str_len);

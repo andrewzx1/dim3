@@ -70,7 +70,7 @@ void script_free_model_mesh_object(void)
 
 void script_add_model_mesh_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"mesh",NULL,model_mesh_functions);
+	script_create_child_object(parent_obj,model_mesh_class,"mesh",NULL,model_mesh_functions);
 }
 
 /* =======================================================

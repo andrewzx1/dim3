@@ -70,7 +70,7 @@ void script_free_camera_angle_object(void)
 
 void script_add_camera_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"angle",camera_angle_props,NULL);
+	script_create_child_object(parent_obj,camera_angle_class,"angle",camera_angle_props,NULL);
 }
 
 /* =======================================================

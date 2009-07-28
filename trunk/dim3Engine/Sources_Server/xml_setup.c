@@ -114,6 +114,7 @@ void setup_xml_default(void)
 	setup.debug_console=FALSE;
 	setup.window=FALSE;
 	setup.window_editor=TRUE;
+	setup.metrics_on=FALSE;
 }
 
 /* =======================================================
@@ -214,6 +215,7 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Debug_Console",&setup.debug_console);
 	xml_key_read_boolean(setup_tag,"Window",&setup.window);
 	xml_key_read_boolean(setup_tag,"Window_Editor",&setup.window_editor);
+	xml_key_read_boolean(setup_tag,"Metrics_On",&setup.metrics_on);
 
 		// fix some items
 
@@ -390,6 +392,7 @@ bool setup_xml_write(void)
 	xml_key_write_boolean("Debug_Console",setup.debug_console);
 	xml_key_write_boolean("Window",setup.window);
 	xml_key_write_boolean("Window_Editor",setup.window_editor);
+	xml_key_write_boolean("Metrics_On",setup.metrics_on);
 	
 		// actions
 
@@ -490,6 +493,7 @@ void setup_restore(void)
 	setup.debug_console=TRUE;
 	setup.window=FALSE;
 	setup.window_editor=TRUE;
+	setup.metrics_on=FALSE;
 	
 		// save XML
 		

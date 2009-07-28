@@ -68,7 +68,7 @@ void script_free_model_spin_object(void)
 
 void script_add_model_spin_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"spin",model_spin_props,NULL);
+	script_create_child_object(parent_obj,model_spin_class,"spin",model_spin_props,NULL);
 }
 
 /* =======================================================

@@ -76,7 +76,7 @@ void script_free_obj_angle_object(void)
 
 void script_add_obj_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"angle",obj_angle_props,obj_angle_functions);
+	script_create_child_object(parent_obj,obj_angle_class,"angle",obj_angle_props,obj_angle_functions);
 }
 
 /* =======================================================

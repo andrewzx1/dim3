@@ -81,7 +81,7 @@ void script_free_obj_object_speed_object(void)
 
 void script_add_obj_object_speed_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"objectSpeed",obj_object_speed_props,NULL);
+	script_create_child_object(parent_obj,obj_object_speed_class,"objectSpeed",obj_object_speed_props,NULL);
 }
 
 /* =======================================================

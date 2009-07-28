@@ -78,7 +78,7 @@ void script_free_interface_interaction_object(void)
 
 void script_add_interface_interaction_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"interaction",NULL,interface_interaction_functions);
+	script_create_child_object(parent_obj,interface_interaction_class,"interaction",NULL,interface_interaction_functions);
 }
 
 /* =======================================================

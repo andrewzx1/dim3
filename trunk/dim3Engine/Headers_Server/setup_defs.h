@@ -142,7 +142,8 @@ typedef struct		{
 						bool						lock_fps_refresh,texture_compression,
 													decal_on,shadow_on,
 													always_run,toggle_run,invert_look,mouse_smooth,
-													music_on,debug_console,window,window_editor;
+													music_on,debug_console,window,window_editor,
+													metrics_on;
 						setup_path_type				path;
 						setup_screen_type			screen;
 						setup_axis_type				mouse_x,mouse_y,joystick_x,joystick_y;

@@ -69,7 +69,7 @@ void script_free_model_bone_object(void)
 
 void script_add_model_bone_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"bone",NULL,model_bone_functions);
+	script_create_child_object(parent_obj,model_bone_class,"bone",NULL,model_bone_functions);
 }
 
 /* =======================================================

@@ -77,7 +77,7 @@ void script_free_interface_radar_object(void)
 
 void script_add_interface_radar_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"radar",interface_radar_props,NULL);
+	script_create_child_object(parent_obj,interface_radar_class,"radar",interface_radar_props,NULL);
 }
 
 /* =======================================================

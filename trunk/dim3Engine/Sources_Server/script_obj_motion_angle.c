@@ -73,7 +73,7 @@ void script_free_obj_motion_angle_object(void)
 
 void script_add_obj_motion_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"motionAngle",obj_motion_angle_props,obj_motion_angle_functions);
+	script_create_child_object(parent_obj,obj_motion_angle_class,"motionAngle",obj_motion_angle_props,obj_motion_angle_functions);
 }
 
 /* =======================================================

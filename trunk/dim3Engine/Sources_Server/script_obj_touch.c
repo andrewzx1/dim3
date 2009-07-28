@@ -69,7 +69,7 @@ void script_free_obj_touch_object(void)
 
 void script_add_obj_touch_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"touch",obj_touch_props,NULL);
+	script_create_child_object(parent_obj,obj_touch_class,"touch",obj_touch_props,NULL);
 }
 
 /* =======================================================

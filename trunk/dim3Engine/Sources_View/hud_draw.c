@@ -37,6 +37,7 @@ and can be sold or given away.
 #include "video.h"
 #include "sounds.h"
 
+extern map_type				map;
 extern server_type			server;
 extern view_type			view;
 extern hud_type				hud;
@@ -471,6 +472,133 @@ void hud_bars_draw(void)
 
 /* =======================================================
 
+      HUD Metrics
+      
+======================================================= */
+
+void hud_metrics_draw_single(int y,char *title,char *data)
+{
+	d3col			col;
+
+	col.r=col.g=col.b=1.0f;
+
+	gl_text_draw(80,y,title,tx_right,FALSE,&col,1.0f);
+	gl_text_draw(85,y,data,tx_left,FALSE,&col,1.0f);
+}
+
+void hud_metrics_draw(void)
+{
+	int					n,y,high,
+						nmesh,npoly,nmesh_shadow,nmodel,nmodel_shadow,
+						nliquid,neffect;
+	char				str[256];
+	map_mesh_type		*mesh;
+
+		// gather some info
+
+	nmesh=npoly=nmesh_shadow=nmodel=nmodel_shadow=nliquid=neffect=0;
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+
+		switch (view.render->draw_list.items[n].type) {
+			
+			case view_render_type_mesh:
+				nmesh++;
+				mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+				npoly+=mesh->npoly;
+				if (mesh->flag.shadow) nmesh_shadow++;
+				break;
+
+			case view_render_type_object:
+			case view_render_type_projectile:
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) nmodel++;
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) nmodel_shadow++;
+				break;
+
+			case view_render_type_liquid:
+				nliquid++;
+				break;
+
+			case view_render_type_effect:
+				neffect++;
+				break;
+		}
+	}
+
+		// start text
+
+	high=gl_text_get_char_height(20);
+
+	gl_text_start(20);
+
+	y=high+5;
+
+		// fps
+
+	if (view.fps.total==0) {
+		strcpy(str,"--.--");
+	}
+	else {
+		if ((setup.lock_fps_refresh) && (view.fps.total>render_info.monitor_refresh_rate)) {
+			sprintf(str,"%d.00",render_info.monitor_refresh_rate);
+		}
+		else {
+			sprintf(str,"%.2f",view.fps.total);
+		}
+	}
+
+	hud_metrics_draw_single(y,"FPS:",str);
+	y+=high;
+
+		// latency
+
+	if (!net_setup.client.joined) {
+		strcpy(str,"---");
+	}
+	else {
+		if (net_setup.client.latency>=100) {
+			strcat(str,"---");
+		}
+		else {
+			sprintf(str,"%d",net_setup.client.latency);
+		}
+	}
+
+	hud_metrics_draw_single(y,"Latency:",str);
+	y+=high;
+
+		// meshes and polys and mesh shadows
+
+	sprintf(str,"%d %d %d",nmesh,npoly,nmesh_shadow);
+
+	hud_metrics_draw_single(y,"Meshes:",str);
+	y+=high;
+
+		// liquids
+
+	sprintf(str,"%d",nliquid);
+
+	hud_metrics_draw_single(y,"Liquids:",str);
+	y+=high;
+
+		// models and model shadows
+
+	sprintf(str,"%d %d",nmodel,nmodel_shadow);
+
+	hud_metrics_draw_single(y,"Models:",str);
+	y+=high;
+
+		// effects
+
+	sprintf(str,"%d",neffect);
+
+	hud_metrics_draw_single(y,"Effects:",str);
+
+	gl_text_end();
+}
+
+/* =======================================================
+
       HUD Sounds
       
 ======================================================= */
@@ -507,6 +635,7 @@ void hud_draw(int tick)
 	hud_bitmaps_draw(tick);
 	hud_bars_draw();
 	hud_texts_draw(tick);
+	if (setup.metrics_on) hud_metrics_draw();
 	
 		// reset any color changes
 		

@@ -67,7 +67,7 @@ void script_free_obj_hit_angle_object(void)
 
 void script_add_obj_hit_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"hitAngle",obj_hit_angle_props,NULL);
+	script_create_child_object(parent_obj,obj_hit_angle_class,"hitAngle",obj_hit_angle_props,NULL);
 }
 
 /* =======================================================

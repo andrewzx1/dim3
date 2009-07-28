@@ -74,9 +74,7 @@ void script_free_weap_fire_object(void)
 
 void script_add_weap_fire_object(JSObject *parent_obj)
 {
-// supergumba
-//	script_create_child_object_2(parent_obj,weap_fire_class,"fire",weap_fire_props,weap_fire_functions);
-	script_create_child_object(parent_obj,"fire",weap_fire_props,weap_fire_functions);
+	script_create_child_object(parent_obj,weap_fire_class,"fire",weap_fire_props,weap_fire_functions);
 }
 
 /* =======================================================

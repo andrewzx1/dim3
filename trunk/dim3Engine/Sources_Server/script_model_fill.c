@@ -62,7 +62,7 @@ void script_free_model_fill_object(void)
 
 void script_add_model_fill_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"fill",NULL,model_fill_functions);
+	script_create_child_object(parent_obj,model_fill_class,"fill",NULL,model_fill_functions);
 }
 
 /* =======================================================

@@ -72,7 +72,7 @@ void script_free_proj_mark_object(void)
 
 void script_add_proj_mark_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"mark",proj_mark_props,NULL);
+	script_create_child_object(parent_obj,proj_mark_class,"mark",proj_mark_props,NULL);
 }
 
 /* =======================================================

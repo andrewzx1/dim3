@@ -67,7 +67,7 @@ void script_free_utility_random_object(void)
 
 void script_add_utility_random_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"random",NULL,utility_random_functions);
+	script_create_child_object(parent_obj,utility_random_class,"random",NULL,utility_random_functions);
 }
 
 /* =======================================================

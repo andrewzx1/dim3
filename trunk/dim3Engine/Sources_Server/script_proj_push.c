@@ -67,7 +67,7 @@ void script_free_proj_push_object(void)
 
 void script_add_proj_push_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"push",proj_push_props,NULL);
+	script_create_child_object(parent_obj,proj_push_class,"push",proj_push_props,NULL);
 }
 
 /* =======================================================

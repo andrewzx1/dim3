@@ -77,7 +77,7 @@ void script_free_obj_hit_object(void)
 
 void script_add_obj_hit_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"hit",obj_hit_props,NULL);
+	script_create_child_object(parent_obj,obj_hit_class,"hit",obj_hit_props,NULL);
 }
 
 /* =======================================================

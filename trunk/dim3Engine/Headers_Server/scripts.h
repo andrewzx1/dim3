@@ -344,7 +344,7 @@ extern JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPrope
 extern void script_free_class(JSClass *cls);
 extern bool script_add_global_object(script_type *script,char *err_str);
 extern JSObject* script_create_main_object(attach_type *attach);
-extern JSObject* script_create_child_object(JSObject *parent_obj,char *name,script_js_property *props,script_js_function *funcs);
+extern JSObject* script_create_child_object(JSObject *parent_obj,JSClass *cls,char *name,script_js_property *props,script_js_function *funcs);
 extern JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props);
 extern JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props);
 

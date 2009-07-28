@@ -89,7 +89,7 @@ void script_free_obj_health_object(void)
 
 void script_add_obj_health_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"health",obj_health_props,obj_health_functions);
+	script_create_child_object(parent_obj,obj_health_class,"health",obj_health_props,obj_health_functions);
 }
 
 /* =======================================================

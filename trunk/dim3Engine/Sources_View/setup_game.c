@@ -73,6 +73,7 @@ and can be sold or given away.
 #define ctrl_debug_console_id				70
 #define ctrl_debug_engine_windowed_id		71
 #define ctrl_debug_editor_windowed_id		72
+#define ctrl_debug_metrics_on_id			73
 
 #define ctrl_tab_id							80
 
@@ -322,6 +323,7 @@ void setup_game_debug_pane(void)
 	y+=control_y_add;
 	element_checkbox_add("Editor Windowed Run Mode",setup.window_editor,ctrl_debug_editor_windowed_id,x,y,TRUE);
 	y+=control_y_add;
+	element_checkbox_add("Display Metrics",setup.metrics_on,ctrl_debug_metrics_on_id,x,y,TRUE);
 }
 
 void setup_game_create_pane(void)
@@ -828,8 +830,13 @@ void setup_game_handle_click(int id)
 		case ctrl_debug_engine_windowed_id:
 			setup.window=element_get_value(ctrl_debug_engine_windowed_id);
 			break;
+
 		case ctrl_debug_editor_windowed_id:
 			setup.window_editor=element_get_value(ctrl_debug_editor_windowed_id);
+			break;
+
+		case ctrl_debug_metrics_on_id:
+			setup.metrics_on=element_get_value(ctrl_debug_metrics_on_id);
 			break;
 			
 	}

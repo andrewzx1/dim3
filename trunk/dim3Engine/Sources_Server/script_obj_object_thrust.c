@@ -69,7 +69,7 @@ void script_free_obj_thrust_object(void)
 
 void script_add_obj_thrust_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,"thrust",obj_thrust_props,NULL);
+	script_create_child_object(parent_obj,obj_thrust_class,"thrust",obj_thrust_props,NULL);
 }
 
 /* =======================================================
