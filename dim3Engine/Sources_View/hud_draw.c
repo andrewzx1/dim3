@@ -478,17 +478,20 @@ void hud_bars_draw(void)
 
 void hud_metrics_draw_single(int y,char *title,char *data)
 {
+	int				x;
 	d3col			col;
 
 	col.r=col.g=col.b=1.0f;
+	
+	x=(int)(((float)hud.scale_x)*0.085f);
 
-	gl_text_draw(80,y,title,tx_right,FALSE,&col,1.0f);
-	gl_text_draw(85,y,data,tx_left,FALSE,&col,1.0f);
+	gl_text_draw(x,y,title,tx_right,FALSE,&col,1.0f);
+	gl_text_draw((x+5),y,data,tx_left,FALSE,&col,1.0f);
 }
 
 void hud_metrics_draw(void)
 {
-	int					n,y,high,
+	int					n,y,high,txt_sz,
 						nmesh,npoly,nmesh_shadow,nmodel,nmodel_shadow,
 						nliquid,neffect;
 	char				str[256];
@@ -526,12 +529,14 @@ void hud_metrics_draw(void)
 	}
 
 		// start text
+		
+	txt_sz=(int)(((float)hud.scale_x)*0.02f);
 
-	high=gl_text_get_char_height(20);
+	high=gl_text_get_char_height(txt_sz);
 
-	gl_text_start(20);
+	gl_text_start(txt_sz);
 
-	y=high+5;
+	y=(high*2)+5;
 
 		// fps
 
