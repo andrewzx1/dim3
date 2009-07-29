@@ -281,7 +281,7 @@ JSBool js_model_halo_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	draw=script_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 
-	draw->script_halo_idx=JSVAL_TO_INT(*vp);
+	draw->script_halo_idx=script_value_to_int(*vp);
 	if ((draw->script_halo_idx<0) || (draw->script_halo_idx>=max_model_halo)) draw->script_halo_idx=0;
 
 	return(JS_TRUE);
@@ -323,7 +323,7 @@ JSBool js_model_halo_set_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	draw=script_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 
-	halo->min_dist=JSVAL_TO_INT(*vp);
+	halo->min_dist=script_value_to_int(*vp);
 
 	return(JS_TRUE);
 }
@@ -336,7 +336,7 @@ JSBool js_model_halo_set_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	draw=script_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 
-	halo->max_dist=JSVAL_TO_INT(*vp);
+	halo->max_dist=script_value_to_int(*vp);
 
 	return(JS_TRUE);
 }
@@ -349,7 +349,7 @@ JSBool js_model_halo_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	draw=script_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 
-	halo->min_size=JSVAL_TO_INT(*vp);
+	halo->min_size=script_value_to_int(*vp);
 
 	return(JS_TRUE);
 }
@@ -362,7 +362,7 @@ JSBool js_model_halo_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	draw=script_find_model_draw(j_obj,TRUE);
 	halo=&draw->halos[draw->script_halo_idx];
 
-	halo->max_size=JSVAL_TO_INT(*vp);
+	halo->max_size=script_value_to_int(*vp);
 
 	return(JS_TRUE);
 }

@@ -154,7 +154,7 @@ JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj
 	
 		// from node and name
 		
-	from_idx=JSVAL_TO_INT(argv[0]);
+	from_idx=script_value_to_int(argv[0]);
 	
 		// get number of array elements
 		
@@ -209,7 +209,7 @@ JSBool js_map_node_find_nearest_unheld_weapon_in_path_func(JSContext *cx,JSObjec
 	
 		// from node and object
 		
-	from_idx=JSVAL_TO_INT(argv[0]);
+	from_idx=script_value_to_int(argv[0]);
 
 	obj=script_find_obj_from_uid_arg(argv[1]);
 	if (obj==NULL) return(JS_FALSE);
@@ -248,7 +248,7 @@ JSBool js_map_node_next_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 {
 	int				idx;
 	
-	idx=map_find_next_node_in_path(&map,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]));
+	idx=map_find_next_node_in_path(&map,script_value_to_int(argv[0]),script_value_to_int(argv[1]));
 	*rval=INT_TO_JSVAL(idx);
 
 	return(JS_TRUE);
@@ -293,9 +293,9 @@ JSBool js_map_node_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 
 		// x,z,y
 		
-	x=JSVAL_TO_INT(argv[1]);
-	z=JSVAL_TO_INT(argv[2]);
-	y=JSVAL_TO_INT(argv[3]);
+	x=script_value_to_int(argv[1]);
+	z=script_value_to_int(argv[2]);
+	y=script_value_to_int(argv[3]);
 	
 		// get distance
 		
@@ -317,9 +317,9 @@ JSBool js_map_node_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 
 		// x,z,y
 		
-	x=JSVAL_TO_INT(argv[1]);
-	z=JSVAL_TO_INT(argv[2]);
-	y=JSVAL_TO_INT(argv[3]);
+	x=script_value_to_int(argv[1]);
+	z=script_value_to_int(argv[2]);
+	y=script_value_to_int(argv[3]);
 	
 		// get angles to
 		

@@ -186,9 +186,9 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	d3pnt			pt;
 	
 	script_value_to_string(argv[0],name,name_str_len);
-	pt.x=JSVAL_TO_INT(argv[1]);
-	pt.z=JSVAL_TO_INT(argv[2]);
-	pt.y=JSVAL_TO_INT(argv[3]);
+	pt.x=script_value_to_int(argv[1]);
+	pt.z=script_value_to_int(argv[2]);
+	pt.y=script_value_to_int(argv[3]);
 	pitch=script_value_to_float(argv[4]);
 
 	if (!script_sound_play(name,&pt,pitch,FALSE,FALSE)) return(JS_FALSE);
@@ -284,7 +284,7 @@ JSBool js_sound_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	if (!setup.music_on) return(JS_TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
-	msec=JSVAL_TO_INT(argv[1]);
+	msec=script_value_to_int(argv[1]);
 
 	file_paths_data(&setup.file_path_setup,wave_path,"Music",name,"wav");
 	if (!al_music_fade_in(js.time.current_tick,name,wave_path,msec)) {
@@ -301,7 +301,7 @@ JSBool js_sound_fade_out_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	
 	if (!setup.music_on) return(JS_TRUE);
 
-	msec=JSVAL_TO_INT(argv[0]);
+	msec=script_value_to_int(argv[0]);
 	al_music_fade_out(js.time.current_tick,msec);
 
 	return(JS_TRUE);
@@ -315,8 +315,8 @@ JSBool js_sound_fade_out_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN 
 	if (!setup.music_on) return(JS_TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
-	fade_out_msec=JSVAL_TO_INT(argv[1]);
-	fade_in_msec=JSVAL_TO_INT(argv[2]);
+	fade_out_msec=script_value_to_int(argv[1]);
+	fade_in_msec=script_value_to_int(argv[2]);
 
 	file_paths_data(&setup.file_path_setup,wave_path,"Music",name,"wav");
 	if (!al_music_fade_out_fade_in(js.time.current_tick,name,wave_path,fade_out_msec,fade_in_msec)) {

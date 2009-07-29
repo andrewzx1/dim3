@@ -161,7 +161,7 @@ JSBool js_weap_hand_set_raiseTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.raise_tick=JSVAL_TO_INT(*vp);
+	weap->hand.raise_tick=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -171,7 +171,7 @@ JSBool js_weap_hand_set_lowerTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.lower_tick=JSVAL_TO_INT(*vp);
+	weap->hand.lower_tick=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -181,7 +181,7 @@ JSBool js_weap_hand_set_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.select_shift=JSVAL_TO_INT(*vp);
+	weap->hand.select_shift=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

@@ -273,7 +273,7 @@ JSBool js_weap_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->melee.radius=JSVAL_TO_INT(*vp);
+	weap->melee.radius=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -283,7 +283,7 @@ JSBool js_weap_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->melee.distance=JSVAL_TO_INT(*vp);
+	weap->melee.distance=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -293,7 +293,7 @@ JSBool js_weap_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->melee.damage=JSVAL_TO_INT(*vp);
+	weap->melee.damage=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -303,7 +303,7 @@ JSBool js_weap_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->melee.force=JSVAL_TO_INT(*vp);
+	weap->melee.force=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

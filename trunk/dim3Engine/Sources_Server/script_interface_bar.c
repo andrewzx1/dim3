@@ -136,8 +136,8 @@ JSBool js_interface_bar_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	bar=script_find_bar_from_name(argv[0]);
 	if (bar==NULL) return(JS_FALSE);
 	
-	bar->x=JSVAL_TO_INT(argv[1]);
-	bar->y=JSVAL_TO_INT(argv[2]);
+	bar->x=script_value_to_int(argv[1]);
+	bar->y=script_value_to_int(argv[2]);
 	
 	return(JS_TRUE);
 }
@@ -149,8 +149,8 @@ JSBool js_interface_bar_resize_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	bar=script_find_bar_from_name(argv[0]);
 	if (bar==NULL) return(JS_FALSE);
 	
-	bar->x_size=JSVAL_TO_INT(argv[1]);
-	bar->y_size=JSVAL_TO_INT(argv[2]);
+	bar->x_size=script_value_to_int(argv[1]);
+	bar->y_size=script_value_to_int(argv[2]);
 	
 	return(JS_TRUE);
 }

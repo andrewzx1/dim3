@@ -260,10 +260,10 @@ JSBool js_weap_alt_ammo_set_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	alt_ammo=&weap->alt_ammo;
 
 	if (weap->dual.in_dual) {
-		alt_ammo->count_dual=JSVAL_TO_INT(*vp);
+		alt_ammo->count_dual=script_value_to_int(*vp);
 	}
 	else {
-		alt_ammo->count=JSVAL_TO_INT(*vp);
+		alt_ammo->count=script_value_to_int(*vp);
 	}
 	
 	return(JS_TRUE);
@@ -277,7 +277,7 @@ JSBool js_weap_alt_ammo_set_initCount(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	alt_ammo->init_count=JSVAL_TO_INT(*vp);
+	alt_ammo->init_count=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -290,7 +290,7 @@ JSBool js_weap_alt_ammo_set_maxCount(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	alt_ammo->max_count=JSVAL_TO_INT(*vp);
+	alt_ammo->max_count=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -303,7 +303,7 @@ JSBool js_weap_alt_ammo_set_clipCount(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	alt_ammo->clip_count=JSVAL_TO_INT(*vp);
+	alt_ammo->clip_count=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -316,7 +316,7 @@ JSBool js_weap_alt_ammo_set_initClipCount(JSContext *cx,JSObject *j_obj,jsval id
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	alt_ammo->init_clip_count=JSVAL_TO_INT(*vp);
+	alt_ammo->init_clip_count=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -329,7 +329,7 @@ JSBool js_weap_alt_ammo_set_maxClipCount(JSContext *cx,JSObject *j_obj,jsval id,
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	alt_ammo->max_clip_count=JSVAL_TO_INT(*vp);
+	alt_ammo->max_clip_count=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -349,7 +349,7 @@ JSBool js_weap_alt_ammo_use_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	count=JSVAL_TO_INT(argv[0]);
+	count=script_value_to_int(argv[0]);
 	
 	*rval=script_bool_to_value(FALSE);
 	
@@ -378,7 +378,7 @@ JSBool js_weap_alt_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 	
-	add=JSVAL_TO_INT(argv[0]);
+	add=script_value_to_int(argv[0]);
 	
 	*rval=script_bool_to_value(TRUE);
 

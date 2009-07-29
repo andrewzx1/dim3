@@ -207,37 +207,37 @@ JSBool js_map_fog_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 
 JSBool js_map_fog_set_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	map.fog.count=JSVAL_TO_INT(*vp);
+	map.fog.count=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
 JSBool js_map_fog_set_outerRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	map.fog.outer_radius=JSVAL_TO_INT(*vp);
+	map.fog.outer_radius=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
 JSBool js_map_fog_set_innerRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	map.fog.inner_radius=JSVAL_TO_INT(*vp);
+	map.fog.inner_radius=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
 JSBool js_map_fog_set_high(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	map.fog.high=JSVAL_TO_INT(*vp);
+	map.fog.high=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
 JSBool js_map_fog_set_drop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	map.fog.drop=JSVAL_TO_INT(*vp);
+	map.fog.drop=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
 JSBool js_map_fog_set_textureIndex(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	map.fog.texture_idx=JSVAL_TO_INT(*vp);
+	map.fog.texture_idx=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 

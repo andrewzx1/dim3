@@ -112,11 +112,11 @@ JSBool js_interface_interaction_start_story_func(JSContext *cx,JSObject *j_obj,u
 		event_id=-1;
 	}
 	else {
-		event_id=JSVAL_TO_INT(argv[1]);
+		event_id=script_value_to_int(argv[1]);
 	}
 
 	script_value_to_string(argv[0],name,name_str_len);
-	story_trigger_set(name,JSVAL_TO_INT(argv[1]));
+	story_trigger_set(name,script_value_to_int(argv[1]));
 	
 	return(JS_TRUE);
 }
@@ -130,7 +130,7 @@ JSBool js_interface_interaction_start_title_func(JSContext *cx,JSObject *j_obj,u
 		event_id=-1;
 	}
 	else {
-		event_id=JSVAL_TO_INT(argv[2]);
+		event_id=script_value_to_int(argv[2]);
 	}
 
 	script_value_to_string(argv[0],name,name_str_len);
@@ -150,7 +150,7 @@ JSBool js_interface_interaction_start_movie_func(JSContext *cx,JSObject *j_obj,u
 		event_id=-1;
 	}
 	else {
-		event_id=JSVAL_TO_INT(argv[1]);
+		event_id=script_value_to_int(argv[1]);
 	}
 
 	script_value_to_string(argv[0],name,name_str_len);

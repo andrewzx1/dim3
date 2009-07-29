@@ -407,6 +407,7 @@ JSObject* script_create_child_object(JSObject *parent_obj,JSClass *cls,char *nam
 
 	j_obj=JS_DefineObject(js.cx,parent_obj,name,NULL,NULL,0);
 //	j_obj=JS_DefineObject(js.cx,parent_obj,name,cls,NULL,0);
+// supergumba -- need to get working
 
 		// properties
 

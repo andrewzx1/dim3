@@ -233,9 +233,9 @@ JSBool js_map_object_nearest_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	
 		// x,z,y
 		
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 	
 		// name
 		
@@ -262,8 +262,8 @@ JSBool js_map_object_nearest_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	
 		// distances
 		
-	min_dist=JSVAL_TO_INT(argv[7]);
-	max_dist=JSVAL_TO_INT(argv[8]);
+	min_dist=script_value_to_int(argv[7]);
+	max_dist=script_value_to_int(argv[8]);
 	
 		// find object
 
@@ -288,9 +288,9 @@ JSBool js_map_object_nearest_skip_object_id_func(JSContext *cx,JSObject *j_obj,u
 	
 		// x,z,y
 		
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 	
 		// name
 		
@@ -317,12 +317,12 @@ JSBool js_map_object_nearest_skip_object_id_func(JSContext *cx,JSObject *j_obj,u
 	
 		// distances
 		
-	min_dist=JSVAL_TO_INT(argv[7]);
-	max_dist=JSVAL_TO_INT(argv[8]);
+	min_dist=script_value_to_int(argv[7]);
+	max_dist=script_value_to_int(argv[8]);
 	
 		// find object
 
-	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,JSVAL_TO_INT(argv[9]));
+	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,script_value_to_int(argv[9]));
 	if (obj==NULL) {
 		*rval=INT_TO_JSVAL(-1);
 		return(JS_TRUE);
@@ -341,9 +341,9 @@ JSBool js_map_object_nearest_player_func(JSContext *cx,JSObject *j_obj,uintN arg
 	
 		// x,z,y
 		
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 
 		// angle and sweep
 	
@@ -354,8 +354,8 @@ JSBool js_map_object_nearest_player_func(JSContext *cx,JSObject *j_obj,uintN arg
 	
 		// distances
 		
-	min_dist=JSVAL_TO_INT(argv[5]);
-	max_dist=JSVAL_TO_INT(argv[6]);
+	min_dist=script_value_to_int(argv[5]);
+	max_dist=script_value_to_int(argv[6]);
 	
 		// find object
 
@@ -378,9 +378,9 @@ JSBool js_map_object_nearest_player_skip_object_id_func(JSContext *cx,JSObject *
 	
 		// x,z,y
 		
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 
 		// angle and sweep
 	
@@ -391,12 +391,12 @@ JSBool js_map_object_nearest_player_skip_object_id_func(JSContext *cx,JSObject *
 	
 		// distances
 		
-	min_dist=JSVAL_TO_INT(argv[5]);
-	max_dist=JSVAL_TO_INT(argv[6]);
+	min_dist=script_value_to_int(argv[5]);
+	max_dist=script_value_to_int(argv[6]);
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,JSVAL_TO_INT(argv[7]));
+	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,script_value_to_int(argv[7]));
 	if (obj==NULL) {
 		*rval=INT_TO_JSVAL(-1);
 		return(JS_TRUE);
@@ -415,9 +415,9 @@ JSBool js_map_object_nearest_remote_player_func(JSContext *cx,JSObject *j_obj,ui
 	
 		// x,z,y
 		
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 
 		// angle and sweep
 	
@@ -428,8 +428,8 @@ JSBool js_map_object_nearest_remote_player_func(JSContext *cx,JSObject *j_obj,ui
 	
 		// distances
 		
-	min_dist=JSVAL_TO_INT(argv[5]);
-	max_dist=JSVAL_TO_INT(argv[6]);
+	min_dist=script_value_to_int(argv[5]);
+	max_dist=script_value_to_int(argv[6]);
 	
 		// find object
 
@@ -452,13 +452,13 @@ JSBool js_map_object_nearest_team_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 		// x,z,y
 		
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 	
 		// team
 		
-	team_idx=JSVAL_TO_INT(argv[3])-sd_team_none;
+	team_idx=script_value_to_int(argv[3])-sd_team_none;
 
 		// angle and sweep
 	
@@ -469,8 +469,8 @@ JSBool js_map_object_nearest_team_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 		// distances
 		
-	min_dist=JSVAL_TO_INT(argv[6]);
-	max_dist=JSVAL_TO_INT(argv[7]);
+	min_dist=script_value_to_int(argv[6]);
+	max_dist=script_value_to_int(argv[7]);
 	
 		// find object
 
@@ -573,9 +573,9 @@ JSBool js_map_object_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 		// x,z,y
 		
-	x=JSVAL_TO_INT(argv[1]);
-	z=JSVAL_TO_INT(argv[2]);
-	y=JSVAL_TO_INT(argv[3]);
+	x=script_value_to_int(argv[1]);
+	z=script_value_to_int(argv[2]);
+	y=script_value_to_int(argv[3]);
 	
 		// get distance
 		
@@ -597,9 +597,9 @@ JSBool js_map_object_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,
 
 		// x,z,y
 		
-	x=JSVAL_TO_INT(argv[1]);
-	z=JSVAL_TO_INT(argv[2]);
-	y=JSVAL_TO_INT(argv[3]);
+	x=script_value_to_int(argv[1]);
+	z=script_value_to_int(argv[2]);
+	y=script_value_to_int(argv[3]);
 	
 		// get angles to
 		
@@ -815,7 +815,7 @@ JSBool js_map_object_move_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 
 		// reposition
 
-	object_set_position(obj,JSVAL_TO_INT(argv[1]),JSVAL_TO_INT(argv[3]),JSVAL_TO_INT(argv[2]),script_value_to_float(argv[4]),0);
+	object_set_position(obj,script_value_to_int(argv[1]),script_value_to_int(argv[3]),script_value_to_int(argv[2]),script_value_to_float(argv[4]),0);
 	object_telefrag_players(obj,FALSE);
 
 	return(JS_TRUE);
@@ -929,7 +929,7 @@ JSBool js_map_object_set_model_light_func(JSContext *cx,JSObject *j_obj,uintN ar
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 	
-	idx=JSVAL_TO_INT(argv[1]);
+	idx=script_value_to_int(argv[1]);
 	if ((idx>=0) && (idx<max_model_light)) obj->draw.lights[idx].on=script_value_to_bool(argv[2]);
 
 	return(JS_TRUE);
@@ -943,7 +943,7 @@ JSBool js_map_object_set_model_halo_func(JSContext *cx,JSObject *j_obj,uintN arg
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 	
-	idx=JSVAL_TO_INT(argv[1]);
+	idx=script_value_to_int(argv[1]);
 	if ((idx>=0) && (idx<max_model_halo)) obj->draw.halos[idx].on=script_value_to_bool(argv[2]);
 
 	return(JS_TRUE);
@@ -993,9 +993,9 @@ JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 	script_value_to_string(argv[2],script,name_str_len);
 	script_value_to_string(argv[3],params,256);
 
-	pnt.x=JSVAL_TO_INT(argv[4]);
-	pnt.z=JSVAL_TO_INT(argv[5]);
-	pnt.y=JSVAL_TO_INT(argv[6]);
+	pnt.x=script_value_to_int(argv[4]);
+	pnt.z=script_value_to_int(argv[5]);
+	pnt.y=script_value_to_int(argv[6]);
 
 	ang.x=script_value_to_float(argv[7]);
 	ang.z=script_value_to_float(argv[8]);

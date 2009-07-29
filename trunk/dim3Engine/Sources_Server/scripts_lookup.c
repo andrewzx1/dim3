@@ -51,7 +51,7 @@ obj_type* script_find_obj_from_uid_arg(jsval arg)
 	int				uid;
 	obj_type		*obj;
 
-	uid=JSVAL_TO_INT(arg);
+	uid=script_value_to_int(arg);
 	
 	obj=object_find_uid(uid);
 	if (obj==NULL) {
@@ -88,7 +88,7 @@ spot_type* script_find_spot_from_idx_arg(jsval arg)
 {
 	int				idx;
 
-	idx=JSVAL_TO_INT(arg);
+	idx=script_value_to_int(arg);
 	if ((idx<0) || (idx>=map.nspot)) {
 		JS_ReportError(js.cx,"No spot exists with this id: %d",idx);
 		return(NULL);
@@ -131,7 +131,7 @@ node_type* script_find_node_from_idx_arg(jsval arg)
 {
 	int				idx;
 
-	idx=JSVAL_TO_INT(arg);
+	idx=script_value_to_int(arg);
 	if ((idx<0) || (idx>=map.nnode)) {
 		JS_ReportError(js.cx,"No node exists with this id: %d",idx);
 		return(NULL);

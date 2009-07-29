@@ -115,7 +115,7 @@ JSBool js_weap_kickback_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->kickback.size=JSVAL_TO_INT(*vp);
+	weap->kickback.size=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

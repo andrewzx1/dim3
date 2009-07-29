@@ -164,7 +164,7 @@ JSBool js_map_group_set_texture_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	group_idx=script_find_group_from_name(argv[0]);
 	if (group_idx==-1) return(JS_FALSE);
 
-	group_texture(group_idx,JSVAL_TO_INT(argv[1]));
+	group_texture(group_idx,script_value_to_int(argv[1]));
 	return(JS_TRUE);
 }
 

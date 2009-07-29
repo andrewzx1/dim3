@@ -140,7 +140,7 @@ JSBool js_camera_static_position_set_walkTurnSpeed(JSContext *cx,JSObject *j_obj
 
 JSBool js_camera_static_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	camera_static_update(JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]),JSVAL_TO_INT(argv[2]));
+	camera_static_update(script_value_to_int(argv[0]),script_value_to_int(argv[1]),script_value_to_int(argv[2]));
 	
 	return(JS_TRUE);
 }
@@ -150,7 +150,7 @@ JSBool js_camera_static_position_move_to_spot_func(JSContext *cx,JSObject *j_obj
 	int			idx;
 	spot_type	*spot;
 	
-	idx=JSVAL_TO_INT(argv[0]);
+	idx=script_value_to_int(argv[0]);
 	if ((idx<0) || (idx>=map.nspot)) {
 		JS_ReportError(js.cx,"Unknown spot");
 		return(JS_FALSE);
@@ -171,8 +171,8 @@ JSBool js_camera_static_position_walk_to_node_func(JSContext *cx,JSObject *j_obj
 	script_value_to_string(argv[0],start_name,name_str_len);
 	script_value_to_string(argv[1],end_name,name_str_len);
 
-	msec=JSVAL_TO_INT(argv[2]);
-	event_id=JSVAL_TO_INT(argv[3]);
+	msec=script_value_to_int(argv[2]);
+	event_id=script_value_to_int(argv[3]);
 	open_doors=script_value_to_bool(argv[4]);
 	in_freeze=script_value_to_bool(argv[5]);
 		

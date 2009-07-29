@@ -116,7 +116,7 @@ JSBool js_camera_setting_get_attachObjectId(JSContext *cx,JSObject *j_obj,jsval 
 
 JSBool js_camera_setting_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	camera.mode=JSVAL_TO_INT(*vp)-sd_camera_type_fpp;
+	camera.mode=script_value_to_int(*vp)-sd_camera_type_fpp;
 	return(JS_TRUE);
 }
 

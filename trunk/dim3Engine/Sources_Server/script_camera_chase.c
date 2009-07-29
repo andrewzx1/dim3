@@ -121,13 +121,13 @@ JSBool js_camera_chase_get_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsv
 
 JSBool js_camera_chase_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	camera.chase_size=JSVAL_TO_INT(*vp);
+	camera.chase_size=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_chase_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	camera.chase_distance=JSVAL_TO_INT(*vp);
+	camera.chase_distance=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 

@@ -304,7 +304,7 @@ JSBool js_weap_projectile_set_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->proj.repeat_tick=JSVAL_TO_INT(*vp);
+	weap->proj.repeat_tick=script_value_to_int(*vp);
 
 	return(JS_TRUE);
 }
@@ -391,7 +391,7 @@ JSBool js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContext *cx,J
 
 	script_value_to_string(argv[0],proj_name,name_str_len);
 
-	count=JSVAL_TO_INT(argv[1]);
+	count=script_value_to_int(argv[1]);
 	slop=script_value_to_float(argv[2]);
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
@@ -486,7 +486,7 @@ JSBool js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContext *cx,J
 
 	script_value_to_string(argv[0],proj_name,name_str_len);
 
-	count=JSVAL_TO_INT(argv[1]);
+	count=script_value_to_int(argv[1]);
 	slop=script_value_to_float(argv[2]);
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
@@ -581,7 +581,7 @@ JSBool js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContext *cx,JSObje
 
 	script_value_to_string(argv[0],proj_name,name_str_len);
 
-	count=JSVAL_TO_INT(argv[1]);
+	count=script_value_to_int(argv[1]);
 	slop=script_value_to_float(argv[2]);
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
@@ -676,7 +676,7 @@ JSBool js_weap_projectile_spawn_from_center_multi_slop_func(JSContext *cx,JSObje
 
 	script_value_to_string(argv[0],proj_name,name_str_len);
 
-	count=JSVAL_TO_INT(argv[1]);
+	count=script_value_to_int(argv[1]);
 	slop=script_value_to_float(argv[2]);
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
