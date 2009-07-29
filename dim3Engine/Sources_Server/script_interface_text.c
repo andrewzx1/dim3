@@ -149,8 +149,8 @@ JSBool js_interface_text_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
 	
-	text->x=JSVAL_TO_INT(argv[1]);
-	text->y=JSVAL_TO_INT(argv[2]);
+	text->x=script_value_to_int(argv[1]);
+	text->y=script_value_to_int(argv[2]);
 	
 	return(JS_TRUE);
 }
@@ -162,8 +162,8 @@ JSBool js_interface_text_move_relative_func(JSContext *cx,JSObject *j_obj,uintN 
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
 	
-	text->x+=JSVAL_TO_INT(argv[1]);
-	text->y+=JSVAL_TO_INT(argv[2]);
+	text->x+=script_value_to_int(argv[1]);
+	text->y+=script_value_to_int(argv[2]);
 	
 	return(JS_TRUE);
 }

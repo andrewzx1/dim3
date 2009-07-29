@@ -145,8 +145,8 @@ JSBool js_interface_bitmap_move_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	bitmap=script_find_bitmap_from_name(argv[0]);
 	if (bitmap==NULL) return(JS_FALSE);
 	
-	bitmap->x=JSVAL_TO_INT(argv[1]);
-	bitmap->y=JSVAL_TO_INT(argv[2]);
+	bitmap->x=script_value_to_int(argv[1]);
+	bitmap->y=script_value_to_int(argv[2]);
 	
 	return(JS_TRUE);
 }
@@ -158,8 +158,8 @@ JSBool js_interface_bitmap_move_relative_func(JSContext *cx,JSObject *j_obj,uint
 	bitmap=script_find_bitmap_from_name(argv[0]);
 	if (bitmap==NULL) return(JS_FALSE);
 	
-	bitmap->x+=JSVAL_TO_INT(argv[1]);
-	bitmap->y+=JSVAL_TO_INT(argv[2]);
+	bitmap->x+=script_value_to_int(argv[1]);
+	bitmap->y+=script_value_to_int(argv[2]);
 	
 	return(JS_TRUE);
 }
@@ -171,8 +171,8 @@ JSBool js_interface_bitmap_resize_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	bitmap=script_find_bitmap_from_name(argv[0]);
 	if (bitmap==NULL) return(JS_FALSE);
 	
-	bitmap->x_size=JSVAL_TO_INT(argv[1]);
-	bitmap->y_size=JSVAL_TO_INT(argv[2]);
+	bitmap->x_size=script_value_to_int(argv[1]);
+	bitmap->y_size=script_value_to_int(argv[2]);
 	
 	return(JS_TRUE);
 }
@@ -196,7 +196,7 @@ JSBool js_interface_bitmap_set_repeat_count_func(JSContext *cx,JSObject *j_obj,u
 	bitmap=script_find_bitmap_from_name(argv[0]);
 	if (bitmap==NULL) return(JS_FALSE);
 	
-	bitmap->repeat.count=JSVAL_TO_INT(argv[1]);
+	bitmap->repeat.count=script_value_to_int(argv[1]);
 	
 	return(JS_TRUE);
 }

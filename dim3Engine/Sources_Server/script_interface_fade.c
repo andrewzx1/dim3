@@ -101,13 +101,13 @@ JSBool js_interface_fade_circle_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	bool			auto_clear;
 	obj_type		*obj;
 	
-	x=JSVAL_TO_INT(argv[0]);
-	y=JSVAL_TO_INT(argv[1]);
+	x=script_value_to_int(argv[0]);
+	y=script_value_to_int(argv[1]);
     
     start_sz=script_value_to_float(argv[2]);
     end_sz=script_value_to_float(argv[3]);
 
-	life_msec=JSVAL_TO_INT(argv[4]);
+	life_msec=script_value_to_int(argv[4]);
 	
 	auto_clear=script_value_to_bool(argv[5]);
 	

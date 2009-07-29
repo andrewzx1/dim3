@@ -212,7 +212,7 @@ JSBool js_proj_speed_set_decelerationWait(JSContext *cx,JSObject *j_obj,jsval id
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->decel_grace=JSVAL_TO_INT(*vp);
+	proj_setup->decel_grace=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -236,7 +236,7 @@ JSBool js_proj_speed_set_maxHitscanDistance(JSContext *cx,JSObject *j_obj,jsval 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->hitscan.max_dist=JSVAL_TO_INT(*vp);
+	proj_setup->hitscan.max_dist=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

@@ -198,7 +198,7 @@ JSBool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->size.x=JSVAL_TO_INT(*vp);
+	obj->size.x=script_value_to_int(*vp);
 	object_set_radius(obj);
 	
 	return(JS_TRUE);
@@ -209,7 +209,7 @@ JSBool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->size.y=JSVAL_TO_INT(*vp);
+	obj->size.y=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -219,7 +219,7 @@ JSBool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->size.z=JSVAL_TO_INT(*vp);
+	obj->size.z=script_value_to_int(*vp);
 	object_set_radius(obj);
 	
 	return(JS_TRUE);
@@ -230,7 +230,7 @@ JSBool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->size.eye_offset=JSVAL_TO_INT(*vp);
+	obj->size.eye_offset=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -240,7 +240,7 @@ JSBool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->size.weight=JSVAL_TO_INT(*vp);
+	obj->size.weight=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -250,7 +250,7 @@ JSBool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->click.distance=JSVAL_TO_INT(*vp);
+	obj->click.distance=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -260,7 +260,7 @@ JSBool js_obj_size_set_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->camera_z_adjust=JSVAL_TO_INT(*vp);
+	obj->camera_z_adjust=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -291,7 +291,7 @@ JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	obj_type		*obj;
 
 	resize=script_value_to_float(argv[0]);
-	msec=JSVAL_TO_INT(argv[1]);
+	msec=script_value_to_int(argv[1]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_grow_start(obj,msec,resize,NULL,NULL);
@@ -308,9 +308,9 @@ JSBool js_obj_size_grow_over_time_change_size_func(JSContext *cx,JSObject *j_obj
 
 	resize=script_value_to_float(argv[0]);
 	
-	size.x=JSVAL_TO_INT(argv[1]);
-	size.z=JSVAL_TO_INT(argv[2]);
-	size.y=JSVAL_TO_INT(argv[3]);
+	size.x=script_value_to_int(argv[1]);
+	size.z=script_value_to_int(argv[2]);
+	size.y=script_value_to_int(argv[3]);
 
 	msec=JSVAL_TO_INT(argv[4]);
 	

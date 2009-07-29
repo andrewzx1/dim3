@@ -142,7 +142,7 @@ JSBool js_model_animation_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval
 
 	draw=script_find_model_draw(j_obj,TRUE);
 
-	draw->script_animation_idx=JSVAL_TO_INT(*vp);
+	draw->script_animation_idx=script_value_to_int(*vp);
 	if ((draw->script_animation_idx<0) || (draw->script_animation_idx>=max_model_blend_animation)) draw->script_animation_idx=0;
 
 	return(JS_TRUE);
@@ -262,7 +262,7 @@ JSBool js_model_animation_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	model_draw		*draw;
 	
 	draw=script_find_model_draw(j_obj,TRUE);
-	model_fade_start(draw,JSVAL_TO_INT(argv[1]),script_value_to_float(argv[0]));
+	model_fade_start(draw,script_value_to_int(argv[1]),script_value_to_float(argv[0]));
 	
 	return(JS_TRUE);
 }

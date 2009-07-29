@@ -241,7 +241,7 @@ JSBool js_proj_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->melee.radius=JSVAL_TO_INT(*vp);
+	proj_setup->melee.radius=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -253,7 +253,7 @@ JSBool js_proj_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->melee.distance=JSVAL_TO_INT(*vp);
+	proj_setup->melee.distance=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -265,7 +265,7 @@ JSBool js_proj_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->melee.damage=JSVAL_TO_INT(*vp);
+	proj_setup->melee.damage=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -277,7 +277,7 @@ JSBool js_proj_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	proj_setup->melee.force=JSVAL_TO_INT(*vp);
+	proj_setup->melee.force=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -342,9 +342,9 @@ JSBool js_proj_melee_spawn_from_position_func(JSContext *cx,JSObject *j_obj,uint
     obj=object_find_uid(proj_setup->obj_uid);
 	weap=weapon_find_uid(proj_setup->weap_uid);
 	
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 	
 	melee_add(obj,weap,&pt,&proj->ang,&proj_setup->melee,-1);
 

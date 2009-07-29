@@ -196,7 +196,7 @@ JSBool js_weap_crosshair_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.type=JSVAL_TO_INT(*vp)-sd_weap_crosshair_type_center;
+	weap->crosshair.type=script_value_to_int(*vp)-sd_weap_crosshair_type_center;
 	
 	return(JS_TRUE);
 }
@@ -217,7 +217,7 @@ JSBool js_weap_crosshair_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.min_size=JSVAL_TO_INT(*vp);
+	weap->crosshair.min_size=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -227,7 +227,7 @@ JSBool js_weap_crosshair_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.max_size=JSVAL_TO_INT(*vp);
+	weap->crosshair.max_size=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -237,7 +237,7 @@ JSBool js_weap_crosshair_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.distance=JSVAL_TO_INT(*vp);
+	weap->crosshair.distance=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

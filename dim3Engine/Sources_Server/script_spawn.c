@@ -116,9 +116,9 @@ JSBool js_spawn_particle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 	char			name[name_str_len];
 	d3pnt			pt;
 	
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 	
 	script_value_to_string(argv[3],name,name_str_len);
 	
@@ -140,9 +140,9 @@ JSBool js_spawn_particle_moving_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	d3pnt			pt;
 	particle_motion	motion;
 	
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 	
 	motion.bone_idx=-1;
 	motion.vct.x=script_value_to_float(argv[3]);
@@ -168,15 +168,15 @@ JSBool js_spawn_particle_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	char			name[name_str_len];
 	d3pnt			start_pt,end_pt;
 	
-	start_pt.x=JSVAL_TO_INT(argv[0]);
-	start_pt.z=JSVAL_TO_INT(argv[1]);
-	start_pt.y=JSVAL_TO_INT(argv[2]);
+	start_pt.x=script_value_to_int(argv[0]);
+	start_pt.z=script_value_to_int(argv[1]);
+	start_pt.y=script_value_to_int(argv[2]);
 
-	end_pt.x=JSVAL_TO_INT(argv[3]);
-	end_pt.z=JSVAL_TO_INT(argv[4]);
-	end_pt.y=JSVAL_TO_INT(argv[5]);
+	end_pt.x=script_value_to_int(argv[3]);
+	end_pt.z=script_value_to_int(argv[4]);
+	end_pt.y=script_value_to_int(argv[5]);
 
-	count=JSVAL_TO_INT(argv[6]);
+	count=script_value_to_int(argv[6]);
 
 	script_value_to_string(argv[7],name,name_str_len);
 	
@@ -203,9 +203,9 @@ JSBool js_spawn_ring_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	char			name[name_str_len];
 	d3pnt			pt;
 	
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 	
 	script_value_to_string(argv[3],name,name_str_len);
 	
@@ -226,15 +226,15 @@ JSBool js_spawn_ring_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	char			name[name_str_len];
 	d3pnt			start_pt,end_pt;
 	
-	start_pt.x=JSVAL_TO_INT(argv[0]);
-	start_pt.z=JSVAL_TO_INT(argv[1]);
-	start_pt.y=JSVAL_TO_INT(argv[2]);
+	start_pt.x=script_value_to_int(argv[0]);
+	start_pt.z=script_value_to_int(argv[1]);
+	start_pt.y=script_value_to_int(argv[2]);
 
-	end_pt.x=JSVAL_TO_INT(argv[3]);
-	end_pt.z=JSVAL_TO_INT(argv[4]);
-	end_pt.y=JSVAL_TO_INT(argv[5]);
+	end_pt.x=script_value_to_int(argv[3]);
+	end_pt.z=script_value_to_int(argv[4]);
+	end_pt.y=script_value_to_int(argv[5]);
 
-	count=JSVAL_TO_INT(argv[6]);
+	count=script_value_to_int(argv[6]);
 
 	script_value_to_string(argv[7],name,name_str_len);
 	
@@ -261,17 +261,17 @@ JSBool js_spawn_flash_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,
 	d3pnt			pt;
 	d3col			col;
 	
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
 
 	col.r=script_value_to_float(argv[3]);
 	col.g=script_value_to_float(argv[4]);
 	col.b=script_value_to_float(argv[5]);
 
-	intensity=JSVAL_TO_INT(argv[6]);
-	flash_msec=JSVAL_TO_INT(argv[7]);
-	fade_msec=JSVAL_TO_INT(argv[8]);
+	intensity=script_value_to_int(argv[6]);
+	flash_msec=script_value_to_int(argv[7]);
+	fade_msec=script_value_to_int(argv[8]);
 
 	script_bool_to_value(effect_spawn_flash(&pt,&col,intensity,flash_msec,fade_msec));
     
@@ -291,22 +291,22 @@ JSBool js_spawn_lightning_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	d3pnt			start_pt,end_pt;
 	d3col			col;
 	
-	start_pt.x=JSVAL_TO_INT(argv[0]);
-	start_pt.z=JSVAL_TO_INT(argv[1]);
-	start_pt.y=JSVAL_TO_INT(argv[2]);
+	start_pt.x=script_value_to_int(argv[0]);
+	start_pt.z=script_value_to_int(argv[1]);
+	start_pt.y=script_value_to_int(argv[2]);
 
-	end_pt.x=JSVAL_TO_INT(argv[3]);
-	end_pt.z=JSVAL_TO_INT(argv[4]);
-	end_pt.y=JSVAL_TO_INT(argv[5]);
+	end_pt.x=script_value_to_int(argv[3]);
+	end_pt.z=script_value_to_int(argv[4]);
+	end_pt.y=script_value_to_int(argv[5]);
 	
-	wid=JSVAL_TO_INT(argv[6]);
+	wid=script_value_to_int(argv[6]);
 	varient=script_value_to_float(argv[7]);
 
 	col.r=script_value_to_float(argv[8]);
 	col.g=script_value_to_float(argv[9]);
 	col.b=script_value_to_float(argv[10]);
 
-	life_msec=JSVAL_TO_INT(argv[11]);
+	life_msec=script_value_to_int(argv[11]);
 
 	script_bool_to_value(effect_spawn_lightning(js.time.current_tick,&start_pt,&end_pt,wid,varient,&col,life_msec));
     
@@ -325,21 +325,21 @@ JSBool js_spawn_ray_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,js
 	d3pnt			start_pt,end_pt;
 	d3col			col;
 	
-	start_pt.x=JSVAL_TO_INT(argv[0]);
-	start_pt.z=JSVAL_TO_INT(argv[1]);
-	start_pt.y=JSVAL_TO_INT(argv[2]);
+	start_pt.x=script_value_to_int(argv[0]);
+	start_pt.z=script_value_to_int(argv[1]);
+	start_pt.y=script_value_to_int(argv[2]);
 
-	end_pt.x=JSVAL_TO_INT(argv[3]);
-	end_pt.z=JSVAL_TO_INT(argv[4]);
-	end_pt.y=JSVAL_TO_INT(argv[5]);
+	end_pt.x=script_value_to_int(argv[3]);
+	end_pt.z=script_value_to_int(argv[4]);
+	end_pt.y=script_value_to_int(argv[5]);
 	
-	wid=JSVAL_TO_INT(argv[6]);
+	wid=script_value_to_int(argv[6]);
 
 	col.r=script_value_to_float(argv[7]);
 	col.g=script_value_to_float(argv[8]);
 	col.b=script_value_to_float(argv[9]);
 
-	life_msec=JSVAL_TO_INT(argv[10]);
+	life_msec=script_value_to_int(argv[10]);
 
 	script_bool_to_value(effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
     
@@ -353,17 +353,17 @@ JSBool js_spawn_ray_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	d3col			col;
 	obj_type		*obj;
 	
-	start_pt.x=JSVAL_TO_INT(argv[0]);
-	start_pt.z=JSVAL_TO_INT(argv[1]);
-	start_pt.y=JSVAL_TO_INT(argv[2]);
+	start_pt.x=script_value_to_int(argv[0]);
+	start_pt.z=script_value_to_int(argv[1]);
+	start_pt.y=script_value_to_int(argv[2]);
 
-	end_pt.x=JSVAL_TO_INT(argv[3]);
-	end_pt.z=JSVAL_TO_INT(argv[4]);
-	end_pt.y=JSVAL_TO_INT(argv[5]);
+	end_pt.x=script_value_to_int(argv[3]);
+	end_pt.z=script_value_to_int(argv[4]);
+	end_pt.y=script_value_to_int(argv[5]);
 	
-	wid=JSVAL_TO_INT(argv[6]);
+	wid=script_value_to_int(argv[6]);
 
-	life_msec=JSVAL_TO_INT(argv[7]);
+	life_msec=script_value_to_int(argv[7]);
 
 		// team color
 
@@ -391,14 +391,14 @@ JSBool js_spawn_shake_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,
 	int				dist,sz,life_msec;
 	d3pnt			pt;
 	
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
+	pt.x=script_value_to_int(argv[0]);
+	pt.z=script_value_to_int(argv[1]);
+	pt.y=script_value_to_int(argv[2]);
     
-    dist=JSVAL_TO_INT(argv[3]);
+    dist=script_value_to_int(argv[3]);
 	
-	sz=JSVAL_TO_INT(argv[4]);
-	life_msec=JSVAL_TO_INT(argv[5]);
+	sz=script_value_to_int(argv[4]);
+	life_msec=script_value_to_int(argv[5]);
 	
 	script_bool_to_value(effect_spawn_shake(&pt,dist,sz,life_msec));
     
@@ -415,12 +415,12 @@ JSBool js_spawn_push_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 {
 	int				x,z,y,radius,force;
 	
-	x=JSVAL_TO_INT(argv[0]);
-	z=JSVAL_TO_INT(argv[1]);
-	y=JSVAL_TO_INT(argv[2]);
+	x=script_value_to_int(argv[0]);
+	z=script_value_to_int(argv[1]);
+	y=script_value_to_int(argv[2]);
 	
-	radius=JSVAL_TO_INT(argv[3]);
-	force=JSVAL_TO_INT(argv[4]);
+	radius=script_value_to_int(argv[3]);
+	force=script_value_to_int(argv[4]);
 
 	collide_push_objects(x,y,z,radius,force);
 	*rval=script_bool_to_value(TRUE);

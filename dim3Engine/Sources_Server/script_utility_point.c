@@ -98,13 +98,13 @@ JSBool js_utility_point_equal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 {
 	int				x,z,y,to_x,to_z,to_y,slop;
 
-	x=JSVAL_TO_INT(argv[0]);
-	z=JSVAL_TO_INT(argv[1]);
-	y=JSVAL_TO_INT(argv[2]);
-	to_x=JSVAL_TO_INT(argv[3]);
-	to_z=JSVAL_TO_INT(argv[4]);
-	to_y=JSVAL_TO_INT(argv[5]);
-	slop=JSVAL_TO_INT(argv[6]);
+	x=script_value_to_int(argv[0]);
+	z=script_value_to_int(argv[1]);
+	y=script_value_to_int(argv[2]);
+	to_x=script_value_to_int(argv[3]);
+	to_z=script_value_to_int(argv[4]);
+	to_y=script_value_to_int(argv[5]);
+	slop=script_value_to_int(argv[6]);
 	
 	*rval=script_bool_to_value(!((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop))));
 	
@@ -116,10 +116,10 @@ JSBool js_utility_point_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	int				x,z,to_x,to_z;
 	float			ang;
 	
-	x=JSVAL_TO_INT(argv[0]);
-	z=JSVAL_TO_INT(argv[1]);
-	to_x=JSVAL_TO_INT(argv[2]);
-	to_z=JSVAL_TO_INT(argv[3]);
+	x=script_value_to_int(argv[0]);
+	z=script_value_to_int(argv[1]);
+	to_x=script_value_to_int(argv[2]);
+	to_z=script_value_to_int(argv[3]);
 	
 	ang=angle_find(x,z,to_x,to_z);
     *rval=script_float_to_value(ang);
@@ -131,12 +131,12 @@ JSBool js_utility_point_distance_to_func(JSContext *cx,JSObject *j_obj,uintN arg
 {
 	int				dist,x,z,y,to_x,to_z,to_y;
 	
-	x=JSVAL_TO_INT(argv[0]);
-	z=JSVAL_TO_INT(argv[1]);
-	y=JSVAL_TO_INT(argv[2]);
-	to_x=JSVAL_TO_INT(argv[3]);
-	to_z=JSVAL_TO_INT(argv[4]);
-	to_y=JSVAL_TO_INT(argv[5]);
+	x=script_value_to_int(argv[0]);
+	z=script_value_to_int(argv[1]);
+	y=script_value_to_int(argv[2]);
+	to_x=script_value_to_int(argv[3]);
+	to_z=script_value_to_int(argv[4]);
+	to_y=script_value_to_int(argv[5]);
 
 	dist=distance_get(x,y,z,to_x,to_y,to_z);
 	*rval=INT_TO_JSVAL(dist);
@@ -148,9 +148,9 @@ JSBool js_utility_point_transform_3D_to_2D_func(JSContext *cx,JSObject *j_obj,ui
 {
 	int				x,z,y,x2,y2;
 	
-	x=JSVAL_TO_INT(argv[0]);
-	z=JSVAL_TO_INT(argv[1]);
-	y=JSVAL_TO_INT(argv[2]);
+	x=script_value_to_int(argv[0]);
+	z=script_value_to_int(argv[1]);
+	y=script_value_to_int(argv[2]);
 	
 	view_script_transform_3D_to_2D(x,y,z,&x2,&y2);
 

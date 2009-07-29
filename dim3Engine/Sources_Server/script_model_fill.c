@@ -93,7 +93,7 @@ JSBool js_model_fill_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 	
 	draw=script_find_model_draw(j_obj,TRUE);
     
-    model_change_fill(draw,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]));
+    model_change_fill(draw,script_value_to_int(argv[0]),script_value_to_int(argv[1]));
 	return(JS_TRUE);
 }
 

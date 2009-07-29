@@ -195,7 +195,7 @@ JSBool js_obj_health_set_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->status.max_health=JSVAL_TO_INT(*vp);
+	obj->status.max_health=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -205,7 +205,7 @@ JSBool js_obj_health_set_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->status.start_health=JSVAL_TO_INT(*vp);
+	obj->status.start_health=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -215,7 +215,7 @@ JSBool js_obj_health_set_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->status.health_recover_tick=JSVAL_TO_INT(*vp);
+	obj->status.health_recover_tick=script_value_to_int(*vp);
 	obj->status.health_recover_count=0;			// restart recover account
 	
 	return(JS_TRUE);
@@ -226,7 +226,7 @@ JSBool js_obj_health_set_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,js
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->status.health_recover_amount=JSVAL_TO_INT(*vp);
+	obj->status.health_recover_amount=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -236,7 +236,7 @@ JSBool js_obj_health_set_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,j
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->fall.damage_minimum_height=JSVAL_TO_INT(*vp);
+	obj->fall.damage_minimum_height=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -265,7 +265,7 @@ JSBool js_obj_health_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 	obj=object_find_uid(js.attach.thing_uid);
     status=&obj->status;
 	
-    status->health+=JSVAL_TO_INT(argv[0]);
+    status->health+=script_value_to_int(argv[0]);
     if (status->health>status->max_health) status->health=status->max_health;
 
 	return(JS_TRUE);
@@ -281,7 +281,7 @@ JSBool js_obj_health_remove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 	
 	obj->damage_obj_uid=-1;			// self-inflicted damage
 	
-    status->health-=JSVAL_TO_INT(argv[0]);
+    status->health-=script_value_to_int(argv[0]);
     if (status->health<0) {
 		status->health=0;
 		obj->death_trigger=TRUE;
