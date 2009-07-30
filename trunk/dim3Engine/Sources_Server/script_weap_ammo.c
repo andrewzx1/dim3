@@ -157,14 +157,14 @@ JSBool js_weap_ammo_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 
 	if (ammo->use_ammo) {
 		if (weap->dual.in_dual) {
-			*vp=INT_TO_JSVAL(ammo->count_dual);
+			*vp=script_int_to_value(ammo->count_dual);
 		}
 		else {
-			*vp=INT_TO_JSVAL(ammo->count);
+			*vp=script_int_to_value(ammo->count);
 		}
 	}
 	else {
-		*vp=INT_TO_JSVAL(0);
+		*vp=script_int_to_value(0);
 	}
 	
 	return(JS_TRUE);
@@ -179,10 +179,10 @@ JSBool js_weap_ammo_get_initCount(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	ammo=&weap->ammo;
 
 	if (ammo->use_ammo) {
-		*vp=INT_TO_JSVAL(ammo->init_count);
+		*vp=script_int_to_value(ammo->init_count);
 	}
 	else {
-		*vp=INT_TO_JSVAL(0);
+		*vp=script_int_to_value(0);
 	}
 	
 	return(JS_TRUE);
@@ -197,10 +197,10 @@ JSBool js_weap_ammo_get_maxCount(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	ammo=&weap->ammo;
 
 	if (ammo->use_ammo) {
-		*vp=INT_TO_JSVAL(ammo->max_count);
+		*vp=script_int_to_value(ammo->max_count);
 	}
 	else {
-		*vp=INT_TO_JSVAL(0);
+		*vp=script_int_to_value(0);
 	}
 	
 	return(JS_TRUE);
@@ -215,10 +215,10 @@ JSBool js_weap_ammo_get_clipCount(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	ammo=&weap->ammo;
 
 	if ((ammo->use_ammo) && (ammo->use_clips)) {
-		*vp=INT_TO_JSVAL(ammo->clip_count);
+		*vp=script_int_to_value(ammo->clip_count);
 	}
 	else {
-		*vp=INT_TO_JSVAL(0);
+		*vp=script_int_to_value(0);
 	}
 	
 	return(JS_TRUE);
@@ -232,10 +232,10 @@ JSBool js_weap_ammo_get_initClipCount(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
 	if ((ammo->use_ammo) && (ammo->use_clips)) {
-		*vp=INT_TO_JSVAL(ammo->init_clip_count);
+		*vp=script_int_to_value(ammo->init_clip_count);
 	}
 	else {
-		*vp=INT_TO_JSVAL(0);
+		*vp=script_int_to_value(0);
 	}
 	
 	return(JS_TRUE);
@@ -250,10 +250,10 @@ JSBool js_weap_ammo_get_maxClipCount(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	ammo=&weap->ammo;
 
 	if ((ammo->use_ammo) && (ammo->use_clips)) {
-		*vp=INT_TO_JSVAL(ammo->max_clip_count);
+		*vp=script_int_to_value(ammo->max_clip_count);
 	}
 	else {
-		*vp=INT_TO_JSVAL(0);
+		*vp=script_int_to_value(0);
 	}
 	
 	return(JS_TRUE);
@@ -268,10 +268,10 @@ JSBool js_weap_ammo_get_lastReloadTick(JSContext *cx,JSObject *j_obj,jsval id,js
 	ammo=&weap->ammo;
 	
 	if (weap->dual.in_dual) {
-		*vp=INT_TO_JSVAL(ammo->last_reload_dual_tick);
+		*vp=script_int_to_value(ammo->last_reload_dual_tick);
 	}
 	else {
-		*vp=INT_TO_JSVAL(ammo->last_reload_tick);
+		*vp=script_int_to_value(ammo->last_reload_tick);
 	}
 	
 	return(JS_TRUE);

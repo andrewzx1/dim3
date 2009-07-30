@@ -81,7 +81,7 @@ void script_set_global_by_index(int idx,jsval val)
 	
 	if (JSVAL_IS_INT(val)) {
 		global->type=d3_jsval_type_int;
-		global->data.d3_int=JSVAL_TO_INT(val);
+		global->data.d3_int=script_value_to_int(val);
 		return;
 	}
 	
@@ -124,7 +124,7 @@ jsval script_get_global(char *name,int script_uid)
 	
 	switch (global->type) {
 		case d3_jsval_type_int:
-			return(INT_TO_JSVAL(global->data.d3_int));
+			return(script_int_to_value(global->data.d3_int));
 		case d3_jsval_type_float:
 			return(script_float_to_value(global->data.d3_float));
 		case d3_jsval_type_boolean:

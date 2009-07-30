@@ -168,7 +168,7 @@ JSBool js_obj_status_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->duck.mode+sd_stand_standing);
+	*vp=script_int_to_value(obj->duck.mode+sd_stand_standing);
 	
 	return(JS_TRUE);
 }
@@ -178,7 +178,7 @@ JSBool js_obj_status_get_air(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->air_mode+sd_air_up);
+	*vp=script_int_to_value(obj->air_mode+sd_air_up);
 	
 	return(JS_TRUE);
 }
@@ -188,7 +188,7 @@ JSBool js_obj_status_get_liquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->liquid_mode+sd_liquid_out);
+	*vp=script_int_to_value(obj->liquid_mode+sd_liquid_out);
 	
 	return(JS_TRUE);
 }
@@ -198,7 +198,7 @@ JSBool js_obj_status_get_standOnObjectId(JSContext *cx,JSObject *j_obj,jsval id,
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->stand_obj_uid);
+	*vp=script_int_to_value(obj->stand_obj_uid);
 	
 	return(JS_TRUE);
 }
@@ -208,7 +208,7 @@ JSBool js_obj_status_get_standUnderObjectId(JSContext *cx,JSObject *j_obj,jsval 
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(object_find_uid_by_stood_on_object_uid(obj->uid));
+	*vp=script_int_to_value(object_find_uid_by_stood_on_object_uid(obj->uid));
 	
 	return(JS_TRUE);
 }
@@ -245,7 +245,7 @@ JSBool js_obj_status_tint_view_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	b=script_value_to_float(argv[2]);
 
 	obj=object_find_uid(js.attach.thing_uid);
-	object_fs_tint_start(js.time.current_tick,obj,r,g,b,script_value_to_float(argv[3]),JSVAL_TO_INT(argv[4]),JSVAL_TO_INT(argv[5]),JSVAL_TO_INT(argv[6]));
+	object_fs_tint_start(js.time.current_tick,obj,r,g,b,script_value_to_float(argv[3]),script_value_to_int(argv[4]),script_value_to_int(argv[5]),script_value_to_int(argv[6]));
     *rval=script_bool_to_value(TRUE);
     
 	return(JS_TRUE);

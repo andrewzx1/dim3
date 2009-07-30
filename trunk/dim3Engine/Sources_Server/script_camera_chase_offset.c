@@ -97,19 +97,19 @@ JSBool js_camera_chase_offset_set_property(JSContext *cx,JSObject *j_obj,jsval i
 
 JSBool js_camera_chase_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.chase_offset.x);
+	*vp=script_int_to_value(camera.chase_offset.x);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_chase_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.chase_offset.y);
+	*vp=script_int_to_value(camera.chase_offset.y);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_chase_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.chase_offset.z);
+	*vp=script_int_to_value(camera.chase_offset.z);
 	return(JS_TRUE);
 }
 

@@ -125,7 +125,7 @@ JSBool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->target.distance);
+	*vp=script_int_to_value(weap->target.distance);
 	
 	return(JS_TRUE);
 }
@@ -135,7 +135,7 @@ JSBool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->target.obj_uid);
+	*vp=script_int_to_value(weap->target.obj_uid);
 	
 	return(JS_TRUE);
 }
@@ -151,7 +151,7 @@ JSBool js_weap_target_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->target.distance=JSVAL_TO_INT(*vp);
+	weap->target.distance=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

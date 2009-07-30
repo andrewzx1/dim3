@@ -140,10 +140,10 @@ JSBool js_weap_alt_ammo_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	alt_ammo=&weap->alt_ammo;
 
 	if (weap->dual.in_dual) {
-		*vp=INT_TO_JSVAL(alt_ammo->count_dual);
+		*vp=script_int_to_value(alt_ammo->count_dual);
 	}
 	else {
-		*vp=INT_TO_JSVAL(alt_ammo->count);
+		*vp=script_int_to_value(alt_ammo->count);
 	}
 	
 	return(JS_TRUE);
@@ -157,7 +157,7 @@ JSBool js_weap_alt_ammo_get_initCount(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	*vp=INT_TO_JSVAL(alt_ammo->init_count);
+	*vp=script_int_to_value(alt_ammo->init_count);
 	
 	return(JS_TRUE);
 }
@@ -170,7 +170,7 @@ JSBool js_weap_alt_ammo_get_maxCount(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	*vp=INT_TO_JSVAL(alt_ammo->max_count);
+	*vp=script_int_to_value(alt_ammo->max_count);
 	
 	return(JS_TRUE);
 }
@@ -183,7 +183,7 @@ JSBool js_weap_alt_ammo_get_clipCount(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	*vp=INT_TO_JSVAL(alt_ammo->clip_count);
+	*vp=script_int_to_value(alt_ammo->clip_count);
 	
 	return(JS_TRUE);
 }
@@ -196,7 +196,7 @@ JSBool js_weap_alt_ammo_get_initClipCount(JSContext *cx,JSObject *j_obj,jsval id
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	*vp=INT_TO_JSVAL(alt_ammo->init_clip_count);
+	*vp=script_int_to_value(alt_ammo->init_clip_count);
 	
 	return(JS_TRUE);
 }
@@ -209,7 +209,7 @@ JSBool js_weap_alt_ammo_get_maxClipCount(JSContext *cx,JSObject *j_obj,jsval id,
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
-	*vp=INT_TO_JSVAL(alt_ammo->max_clip_count);
+	*vp=script_int_to_value(alt_ammo->max_clip_count);
 	
 	return(JS_TRUE);
 }
@@ -223,10 +223,10 @@ JSBool js_weap_alt_ammo_get_lastReloadTick(JSContext *cx,JSObject *j_obj,jsval i
 	alt_ammo=&weap->alt_ammo;
 	
 	if (weap->dual.in_dual) {
-		*vp=INT_TO_JSVAL(alt_ammo->last_reload_dual_tick);
+		*vp=script_int_to_value(alt_ammo->last_reload_dual_tick);
 	}
 	else {
-		*vp=INT_TO_JSVAL(alt_ammo->last_reload_tick);
+		*vp=script_int_to_value(alt_ammo->last_reload_tick);
 	}
 	
 	return(JS_TRUE);

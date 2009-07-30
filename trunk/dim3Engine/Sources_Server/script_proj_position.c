@@ -98,7 +98,7 @@ JSBool js_proj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(proj->pnt.x);
+	*vp=script_int_to_value(proj->pnt.x);
 	
 	return(JS_TRUE);
 }
@@ -110,7 +110,7 @@ JSBool js_proj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(proj->pnt.y);
+	*vp=script_int_to_value(proj->pnt.y);
 	
 	return(JS_TRUE);
 }
@@ -122,7 +122,7 @@ JSBool js_proj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(proj->pnt.z);
+	*vp=script_int_to_value(proj->pnt.z);
 	
 	return(JS_TRUE);
 }

@@ -114,7 +114,7 @@ JSBool js_game_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,js
 
 JSBool js_game_setting_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(server.skill);
+	*vp=script_int_to_value(server.skill);
 	return(JS_TRUE);
 }
 

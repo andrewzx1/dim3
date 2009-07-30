@@ -125,7 +125,7 @@ JSBool js_weap_dual_get_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->dual.hand_offset);
+	*vp=script_int_to_value(weap->dual.hand_offset);
 	
 	return(JS_TRUE);
 }

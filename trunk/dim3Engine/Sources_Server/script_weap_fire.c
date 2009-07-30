@@ -104,7 +104,7 @@ JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->fire.method);
+	*vp=script_int_to_value(weap->fire.method);
 	
 	return(JS_TRUE);
 }
@@ -115,10 +115,10 @@ JSBool js_weap_fire_get_lastFireTick(JSContext *cx,JSObject *j_obj,jsval id,jsva
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	if (!weap->dual.in_dual) {
-		*vp=INT_TO_JSVAL(weap->fire.last_fire_tick);
+		*vp=script_int_to_value(weap->fire.last_fire_tick);
 	}
 	else {
-		*vp=INT_TO_JSVAL(weap->fire.last_fire_dual_tick);
+		*vp=script_int_to_value(weap->fire.last_fire_dual_tick);
 	}
 	
 	return(JS_TRUE);

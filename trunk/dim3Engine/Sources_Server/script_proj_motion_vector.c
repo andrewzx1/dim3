@@ -98,7 +98,7 @@ JSBool js_proj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(proj->motion.vct.x);
+	*vp=script_float_to_value(proj->motion.vct.x);
 	
 	return(JS_TRUE);
 }
@@ -110,7 +110,7 @@ JSBool js_proj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(proj->motion.vct.y);
+	*vp=script_float_to_value(proj->motion.vct.y);
 	
 	return(JS_TRUE);
 }
@@ -122,7 +122,7 @@ JSBool js_proj_motion_vector_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(proj->motion.vct.z);
+	*vp=script_float_to_value(proj->motion.vct.z);
 	
 	return(JS_TRUE);
 }

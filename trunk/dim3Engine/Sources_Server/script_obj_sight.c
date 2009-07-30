@@ -133,7 +133,7 @@ JSBool js_obj_sight_get_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->sight.side_division);
+	*vp=script_int_to_value(obj->sight.side_division);
 	
 	return(JS_TRUE);
 }
@@ -143,7 +143,7 @@ JSBool js_obj_sight_get_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->sight.look_division);
+	*vp=script_int_to_value(obj->sight.look_division);
 	
 	return(JS_TRUE);
 }
@@ -153,7 +153,7 @@ JSBool js_obj_sight_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->sight.distance);
+	*vp=script_int_to_value(obj->sight.distance);
 	
 	return(JS_TRUE);
 }
@@ -189,7 +189,7 @@ JSBool js_obj_sight_set_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->sight.side_division=JSVAL_TO_INT(*vp);
+	obj->sight.side_division=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -199,7 +199,7 @@ JSBool js_obj_sight_set_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->sight.look_division=JSVAL_TO_INT(*vp);
+	obj->sight.look_division=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -209,7 +209,7 @@ JSBool js_obj_sight_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->sight.distance=JSVAL_TO_INT(*vp);
+	obj->sight.distance=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -227,7 +227,7 @@ JSBool js_obj_sight_test_object_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	id=JSVAL_TO_INT(argv[0]);
+	id=script_value_to_int(argv[0]);
 	*rval=script_bool_to_value(object_sight_test_object(obj,id));
 	
 	return(JS_TRUE);

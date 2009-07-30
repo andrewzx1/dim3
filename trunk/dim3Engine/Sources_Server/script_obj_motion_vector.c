@@ -232,7 +232,7 @@ JSBool js_obj_motion_vector_walk_to_node_func(JSContext *cx,JSObject *j_obj,uint
 	
 		// start walk
 		
-	if (!object_auto_walk_node_name_setup(obj,start_name,end_name,JSVAL_TO_INT(argv[2]))) return(JS_FALSE);
+	if (!object_auto_walk_node_name_setup(obj,start_name,end_name,script_value_to_int(argv[2]))) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }
@@ -242,7 +242,7 @@ JSBool js_obj_motion_vector_walk_to_node_by_id_func(JSContext *cx,JSObject *j_ob
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	if (!object_auto_walk_node_setup(obj,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[1]),JSVAL_TO_INT(argv[2]))) return(JS_FALSE);
+	if (!object_auto_walk_node_setup(obj,script_value_to_int(argv[0]),script_value_to_int(argv[1]),script_value_to_int(argv[2]))) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }
@@ -272,7 +272,7 @@ JSBool js_obj_motion_vector_walk_to_object_func(JSContext *cx,JSObject *j_obj,ui
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	if (!object_auto_walk_object_setup(obj,JSVAL_TO_INT(argv[0]),FALSE)) return(JS_FALSE);
+	if (!object_auto_walk_object_setup(obj,script_value_to_int(argv[0]),FALSE)) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }
@@ -292,9 +292,9 @@ JSBool js_obj_motion_vector_walk_to_position_func(JSContext *cx,JSObject *j_obj,
 	d3pnt			pnt;
 	obj_type		*obj;
 	
-	pnt.x=JSVAL_TO_INT(argv[0]);
-	pnt.z=JSVAL_TO_INT(argv[1]);
-	pnt.y=JSVAL_TO_INT(argv[2]);
+	pnt.x=script_value_to_int(argv[0]);
+	pnt.z=script_value_to_int(argv[1]);
+	pnt.y=script_value_to_int(argv[2]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	if (!object_auto_walk_position_setup(obj,&pnt)) return(JS_FALSE);
@@ -313,7 +313,7 @@ JSBool js_obj_motion_vector_turn_to_object_func(JSContext *cx,JSObject *j_obj,ui
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	if (!object_auto_walk_object_setup(obj,JSVAL_TO_INT(argv[0]),TRUE)) return(JS_FALSE);
+	if (!object_auto_walk_object_setup(obj,script_value_to_int(argv[0]),TRUE)) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }

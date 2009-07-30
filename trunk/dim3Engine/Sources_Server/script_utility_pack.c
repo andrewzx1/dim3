@@ -98,7 +98,7 @@ JSBool js_utility_pack_pack_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 	low=(unsigned long)script_value_to_int(argv[1]);
 	i=(int)(((high<<16)&0xFFFF0000)|(low&0xFFFF));
 
-	*rval=INT_TO_JSVAL(i);
+	*rval=script_int_to_value(i);
 	
 	return(JS_TRUE);
 }
@@ -111,7 +111,7 @@ JSBool js_utility_pack_unpack_high_func(JSContext *cx,JSObject *j_obj,uintN argc
 	i=(unsigned int)script_value_to_int(argv[0]);
 	high=(int)((i>>16)&0xFFFF);
 	
-	*rval=INT_TO_JSVAL(high);
+	*rval=script_int_to_value(high);
 	
 	return(JS_TRUE);
 }
@@ -124,7 +124,7 @@ JSBool js_utility_pack_unpack_low_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	i=(unsigned int)script_value_to_int(argv[0]);
 	low=(int)(i&0xFFFF);
 	
-	*rval=INT_TO_JSVAL(low);
+	*rval=script_int_to_value(low);
 	
 	return(JS_TRUE);
 }

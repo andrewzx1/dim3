@@ -209,6 +209,8 @@ typedef struct		{
 
 #define max_tint_color							8
 
+#define max_player_model						32
+
 //
 // chat
 //
@@ -423,6 +425,15 @@ typedef struct		{
 					} hud_score_type;
 
 typedef struct		{
+						char					name[name_str_len],file[name_str_len];
+					} hud_player_model_type;
+
+typedef struct		{
+						int						nmodel;
+						hud_player_model_type	models[max_player_model];
+					} hud_model_type;
+
+typedef struct		{
 						char					names[max_multiplayer_bot][name_str_len];
 						bool					on;
 					} hud_bot_type;
@@ -458,6 +469,7 @@ typedef struct		{
 						hud_radar_type			radar;
 						hud_chat_type			chat;
 						hud_score_type			score;
+						hud_model_type			model;
 						hud_bot_type			bot;
 					} hud_type;
 					

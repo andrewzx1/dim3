@@ -93,10 +93,10 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		// run the event function
 		
 	argv[0]=OBJECT_TO_JSVAL(script->obj);
-	argv[1]=INT_TO_JSVAL(main_event);
-	argv[2]=INT_TO_JSVAL(sub_event);
-	argv[3]=INT_TO_JSVAL(id);
-	argv[4]=INT_TO_JSVAL(js.time.current_tick);
+	argv[1]=script_int_to_value(main_event);
+	argv[2]=script_int_to_value(sub_event);
+	argv[3]=script_int_to_value(id);
+	argv[4]=script_int_to_value(js.time.current_tick);
 
 	err_up=FALSE;
 	scripts_clear_last_error();
@@ -169,7 +169,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 		// run the event function
 		
 	argv[0]=OBJECT_TO_JSVAL(script->obj);
-	argv[1]=INT_TO_JSVAL(js.time.current_tick);
+	argv[1]=script_int_to_value(js.time.current_tick);
 
 	err_up=FALSE;
 	scripts_clear_last_error();

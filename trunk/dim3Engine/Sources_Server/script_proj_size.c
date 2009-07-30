@@ -104,7 +104,7 @@ JSBool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->size.x);
+	*vp=script_int_to_value(proj_setup->size.x);
 	
 	return(JS_TRUE);
 }
@@ -116,7 +116,7 @@ JSBool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->size.y);
+	*vp=script_int_to_value(proj_setup->size.y);
 	
 	return(JS_TRUE);
 }
@@ -128,7 +128,7 @@ JSBool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->size.z);
+	*vp=script_int_to_value(proj_setup->size.z);
 	
 	return(JS_TRUE);
 }
@@ -140,7 +140,7 @@ JSBool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->size.weight);
+	*vp=script_int_to_value(proj_setup->size.weight);
 	
 	return(JS_TRUE);
 }

@@ -219,7 +219,7 @@ JSBool js_weap_projectile_get_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->proj.repeat_tick);
+	*vp=script_int_to_value(weap->proj.repeat_tick);
 	
 	return(JS_TRUE);
 }

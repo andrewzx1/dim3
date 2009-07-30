@@ -149,10 +149,10 @@ JSBool js_proj_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id
 
 	proj=proj_get_attach();
 	if (proj==NULL) {
-		*vp=INT_TO_JSVAL(-1);
+		*vp=script_int_to_value(-1);
 	}
 	else {
-		*vp=INT_TO_JSVAL(proj->obj_uid);
+		*vp=script_int_to_value(proj->obj_uid);
 	}
 	
 	return(JS_TRUE);
@@ -165,17 +165,17 @@ JSBool js_proj_setting_get_parentTeam(JSContext *cx,JSObject *j_obj,jsval id,jsv
 
 	proj=proj_get_attach();
 	if (proj==NULL) {
-		*vp=INT_TO_JSVAL(-1);
+		*vp=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 
 	obj=object_find_uid(proj->obj_uid);
 	if (obj==NULL) {
-		*vp=INT_TO_JSVAL(-1);
+		*vp=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 	
-	*vp=INT_TO_JSVAL(obj->team_idx);
+	*vp=script_int_to_value(obj->team_idx);
 	
 	return(JS_TRUE);
 }

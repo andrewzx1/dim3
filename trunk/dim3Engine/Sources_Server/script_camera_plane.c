@@ -118,7 +118,7 @@ JSBool js_camera_plane_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 
 JSBool js_camera_plane_get_projectionType(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.plane.type+sd_projection_type_fov);
+	*vp=script_int_to_value(camera.plane.type+sd_projection_type_fov);
 	return(JS_TRUE);
 }
 
@@ -136,43 +136,43 @@ JSBool js_camera_plane_get_aspectRatio(JSContext *cx,JSObject *j_obj,jsval id,js
 
 JSBool js_camera_plane_get_left(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.plane.lft);
+	*vp=script_int_to_value(camera.plane.lft);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_plane_get_right(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.plane.rgt);
+	*vp=script_int_to_value(camera.plane.rgt);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_plane_get_top(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.plane.top);
+	*vp=script_int_to_value(camera.plane.top);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_plane_get_bottom(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.plane.bot);
+	*vp=script_int_to_value(camera.plane.bot);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_plane_get_near(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.plane.near_z);
+	*vp=script_int_to_value(camera.plane.near_z);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_plane_get_far(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.plane.far_z);
+	*vp=script_int_to_value(camera.plane.far_z);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_plane_get_nearOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.plane.near_z_offset);
+	*vp=script_int_to_value(camera.plane.near_z_offset);
 	return(JS_TRUE);
 }
 

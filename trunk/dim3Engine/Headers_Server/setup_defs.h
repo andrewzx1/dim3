@@ -111,7 +111,8 @@ typedef struct		{
 					} setup_network_option_type;
 
 typedef struct		{
-						int							nhost,noption,game_type,score_limit;
+						int							nhost,noption,game_type,score_limit,
+													player_model_idx,tint_color_idx;
 						char						name[name_str_len],last_map[name_str_len];
 						bool						show_names;
 						setup_network_hosts_type	hosts[max_setup_network_host];
@@ -137,13 +138,13 @@ typedef struct		{
 typedef struct		{
 						int							screen_wid,screen_high,
 													anisotropic_mode,mipmap_mode,fsaa_mode,
-													joystick_mode,tint_color_idx;
+													joystick_mode;
 						float						gamma,sound_volume,music_volume;
 						bool						lock_fps_refresh,texture_compression,
 													decal_on,shadow_on,
 													always_run,toggle_run,invert_look,mouse_smooth,
 													music_on,debug_console,window,window_editor,
-													metrics_on;
+													metrics_on,disable_shaders;
 						setup_path_type				path;
 						setup_screen_type			screen;
 						setup_axis_type				mouse_x,mouse_y,joystick_x,joystick_y;

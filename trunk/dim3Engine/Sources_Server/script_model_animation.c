@@ -112,7 +112,7 @@ JSBool js_model_animation_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	model_draw			*draw;
 
 	draw=script_find_model_draw(j_obj,TRUE);
-	*vp=INT_TO_JSVAL(draw->script_animation_idx);
+	*vp=script_int_to_value(draw->script_animation_idx);
 
 	return(JS_TRUE);
 }

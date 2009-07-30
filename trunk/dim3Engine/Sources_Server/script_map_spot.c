@@ -108,7 +108,7 @@ JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 
 JSBool js_map_spot_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(map.nspot);
+	*vp=script_int_to_value(map.nspot);
 	return(JS_TRUE);
 }
 
@@ -123,25 +123,25 @@ JSBool js_map_spot_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *arg
 	char		name[name_str_len],type[name_str_len];
 	
 	if ((script_is_value_null(argv[0])) && (script_is_value_null(argv[1]))) {
-		*rval=INT_TO_JSVAL(-1);
+		*rval=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 	
 	if ((!script_is_value_null(argv[0])) && (!script_is_value_null(argv[1]))) {
 		script_value_to_string(argv[0],name,name_str_len);
 		script_value_to_string(argv[1],type,name_str_len);
-		*rval=INT_TO_JSVAL(map_find_spot(&map,name,type));
+		*rval=script_int_to_value(map_find_spot(&map,name,type));
 		return(JS_TRUE);
 	}
 	
 	if (!script_is_value_null(argv[0])) {
 		script_value_to_string(argv[0],name,name_str_len);
-		*rval=INT_TO_JSVAL(map_find_spot(&map,name,NULL));
+		*rval=script_int_to_value(map_find_spot(&map,name,NULL));
 		return(JS_TRUE);
 	}
 		
 	script_value_to_string(argv[1],type,name_str_len);
-	*rval=INT_TO_JSVAL(map_find_spot(&map,NULL,type));
+	*rval=script_int_to_value(map_find_spot(&map,NULL,type));
 	
 	return(JS_TRUE);
 }

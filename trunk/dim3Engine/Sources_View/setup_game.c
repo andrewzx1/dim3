@@ -50,7 +50,6 @@ and can be sold or given away.
 #define ctrl_mipmap_id						7
 #define ctrl_compression_id					8
 #define ctrl_gamma_id						9
-#define ctrl_color_id						10
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -74,6 +73,7 @@ and can be sold or given away.
 #define ctrl_debug_engine_windowed_id		71
 #define ctrl_debug_editor_windowed_id		72
 #define ctrl_debug_metrics_on_id			73
+#define ctrl_debug_disable_shaders_id		74
 
 #define ctrl_tab_id							80
 
@@ -128,7 +128,7 @@ void setup_game_video_pane(void)
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*9)+(separate_y_add*4);
+	control_y_sz=(control_y_add*8)+(separate_y_add*3);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -171,9 +171,6 @@ void setup_game_video_pane(void)
 	y+=control_y_add+separate_y_add;
 
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
-
-	element_color_add("Color",setup.tint_color_idx,ctrl_color_id,x,y,TRUE);
 }
 
 void setup_game_audio_pane(void)
@@ -324,6 +321,8 @@ void setup_game_debug_pane(void)
 	element_checkbox_add("Editor Windowed Run Mode",setup.window_editor,ctrl_debug_editor_windowed_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Display Metrics",setup.metrics_on,ctrl_debug_metrics_on_id,x,y,TRUE);
+	y+=control_y_add;
+	element_checkbox_add("Disable Shaders (requires restart)",setup.disable_shaders,ctrl_debug_disable_shaders_id,x,y,TRUE);
 }
 
 void setup_game_create_pane(void)
@@ -750,10 +749,6 @@ void setup_game_handle_click(int id)
 		case ctrl_gamma_id:
 			setup.gamma=element_get_slider_value(ctrl_gamma_id);
 			break;
-
-		case ctrl_color_id:
-			setup.tint_color_idx=element_get_value(ctrl_color_id);
-			break;
 			
 			// audio pane
 			
@@ -837,6 +832,10 @@ void setup_game_handle_click(int id)
 
 		case ctrl_debug_metrics_on_id:
 			setup.metrics_on=element_get_value(ctrl_debug_metrics_on_id);
+			break;
+
+		case ctrl_debug_disable_shaders_id:
+			setup.disable_shaders=element_get_value(ctrl_debug_disable_shaders_id);
 			break;
 			
 	}

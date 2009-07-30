@@ -195,7 +195,7 @@ JSBool js_obj_setting_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->uid);
+	*vp=script_int_to_value(obj->uid);
 	
 	return(JS_TRUE);
 }
@@ -215,7 +215,7 @@ JSBool js_obj_setting_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->team_idx+sd_team_none);
+	*vp=script_int_to_value(obj->team_idx+sd_team_none);
 	
 	return(JS_TRUE);
 }
@@ -505,7 +505,7 @@ JSBool js_obj_setting_get_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->input_mode+sd_input_mode_fpp);
+	*vp=script_int_to_value(obj->input_mode+sd_input_mode_fpp);
 	
 	return(JS_TRUE);
 }
@@ -521,7 +521,7 @@ JSBool js_obj_setting_set_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->team_idx=JSVAL_TO_INT(*vp)-sd_team_none;
+	obj->team_idx=script_value_to_int(*vp)-sd_team_none;
 
 	return(JS_TRUE);
 }
@@ -816,7 +816,7 @@ JSBool js_obj_setting_set_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->input_mode=JSVAL_TO_INT(*vp)-sd_input_mode_fpp;
+	obj->input_mode=script_value_to_int(*vp)-sd_input_mode_fpp;
 	
 	return(JS_TRUE);
 }
@@ -841,7 +841,7 @@ JSBool js_obj_get_parameter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 		return(JS_TRUE);
     }
 	
-    k=JSVAL_TO_INT(argv[0]);
+    k=script_value_to_int(argv[0]);
     if (k<0) k=0;
     
     c=js.scripts[idx].params;

@@ -128,7 +128,7 @@ JSBool js_game_join_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-    *vp=INT_TO_JSVAL(obj->team_idx+sd_team_none);
+    *vp=script_int_to_value(obj->team_idx+sd_team_none);
 
 	return(JS_TRUE);
 }
@@ -146,7 +146,7 @@ JSBool js_game_join_set_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	obj->team_idx=JSVAL_TO_INT(argv[0])-sd_team_none;
+	obj->team_idx=script_value_to_int(argv[0])-sd_team_none;
 
 	return(JS_TRUE);
 }
@@ -179,8 +179,8 @@ JSBool js_game_join_count_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 {
 	int			team_idx;
 
-	team_idx=JSVAL_TO_INT(argv[0])-sd_team_none;
-	*rval=INT_TO_JSVAL(object_count_team(team_idx,game_obj_rule_uid));
+	team_idx=script_value_to_int(argv[0])-sd_team_none;
+	*rval=script_int_to_value(object_count_team(team_idx,game_obj_rule_uid));
 
 	return(JS_TRUE);
 }

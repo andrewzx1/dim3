@@ -100,7 +100,7 @@ JSBool js_multiplayer_score_get_object_func(JSContext *cx,JSObject *j_obj,uintN 
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(obj->score.score);
+	*rval=script_int_to_value(obj->score.score);
 	return(JS_TRUE);
 }
 
@@ -128,7 +128,7 @@ JSBool js_multiplayer_score_get_team_func(JSContext *cx,JSObject *j_obj,uintN ar
 
 		// return team score
 
-	*rval=INT_TO_JSVAL(score);
+	*rval=script_int_to_value(score);
 	return(JS_TRUE);
 }
 
