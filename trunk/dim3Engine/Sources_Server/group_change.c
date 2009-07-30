@@ -127,7 +127,7 @@ void group_texture(int group_idx,int index)
 	group_unit_type		*unit_list;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-
+	
 	group=&map.groups[group_idx];
 	
 	unit_cnt=group->unit_count;

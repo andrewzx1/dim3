@@ -765,8 +765,8 @@ void shadow_render_mesh(int mesh_idx)
 
 			for (t=0;t<ntrig;t++) {
 
-				if ((shadow_hits[poly->v[t]]) && (shadow_hits[poly->v[t+1]]) && (shadow_hits[poly->v[t+2]])) {
-					*index_ptr++=(unsigned short)poly->v[t];
+				if ((shadow_hits[poly->v[0]]) && (shadow_hits[poly->v[t+1]]) && (shadow_hits[poly->v[t+2]])) {
+					*index_ptr++=(unsigned short)poly->v[0];
 					*index_ptr++=(unsigned short)poly->v[t+1];
 					*index_ptr++=(unsigned short)poly->v[t+2];
 					trig_count++;
