@@ -35,6 +35,8 @@ and can be sold or given away.
 #include "projectiles.h"
 
 extern js_type			js;
+extern hud_type			hud;
+extern setup_type		setup;
 
 extern void script_add_model_offset_object(JSObject *parent_obj);
 extern void script_add_model_rotate_object(JSObject *parent_obj);
@@ -62,14 +64,7 @@ JSBool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_set_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_start_animation_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_stop_animation_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_cancel_animation_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_change_animation_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_interrupt_animation_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_change_fill_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_find_bone_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_find_bone_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_model_get_player_character_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	model_props[]={
 							{"on",					js_model_get_on,					js_model_set_on},
@@ -78,6 +73,10 @@ script_js_property	model_props[]={
 							{"alpha",				js_model_get_alpha,					js_model_set_alpha},
 							{"resize",				js_model_get_resize,				js_model_set_resize},
 							{"faceForward",			js_model_get_faceForward,			js_model_set_faceForward},
+							{0}};
+
+script_js_function	model_functions[]={
+							{"getPlayerCharacter",	js_model_get_player_character_func,	0},
 							{0}};
 
 JSClass				*model_class;
@@ -102,7 +101,7 @@ void script_add_model_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
 
-	j_obj=script_create_child_object(parent_obj,model_class,"model",model_props,NULL);
+	j_obj=script_create_child_object(parent_obj,model_class,"model",model_props,model_functions);
 	
 	script_add_model_offset_object(j_obj);
 	script_add_model_rotate_object(j_obj);
@@ -264,4 +263,23 @@ JSBool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	
 	return(JS_TRUE);
 }
+
+/* =======================================================
+
+      Functions
+      
+======================================================= */
+
+JSBool js_model_get_player_character_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	if (hud.model.nmodel==0) {
+		script_value_to_string(*rval,"Player",name_str_len);
+	}
+	else {
+		script_value_to_string(*rval,hud.model.models[setup.network.player_model_idx].file,name_str_len);
+	}
+
+	return(JS_TRUE);
+}
+
 

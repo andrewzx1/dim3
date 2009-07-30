@@ -106,7 +106,7 @@ JSBool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->score.kill);
+	*vp=script_int_to_value(obj->score.kill);
 	
 	return(JS_TRUE);
 }
@@ -116,7 +116,7 @@ JSBool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->score.death);
+	*vp=script_int_to_value(obj->score.death);
 	
 	return(JS_TRUE);
 }
@@ -126,7 +126,7 @@ JSBool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->score.suicide);
+	*vp=script_int_to_value(obj->score.suicide);
 	
 	return(JS_TRUE);
 }
@@ -136,7 +136,7 @@ JSBool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->score.goal);
+	*vp=script_int_to_value(obj->score.goal);
 	
 	return(JS_TRUE);
 }
@@ -146,7 +146,7 @@ JSBool js_obj_score_get_score(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->score.score);
+	*vp=script_int_to_value(obj->score.score);
 	
 	return(JS_TRUE);
 }

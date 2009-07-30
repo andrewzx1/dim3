@@ -95,19 +95,19 @@ JSBool js_camera_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
 
 JSBool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(view.render->camera.pnt.x);
+	*vp=script_int_to_value(view.render->camera.pnt.x);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(view.render->camera.pnt.y);
+	*vp=script_int_to_value(view.render->camera.pnt.y);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(view.render->camera.pnt.z);
+	*vp=script_int_to_value(view.render->camera.pnt.z);
 	return(JS_TRUE);
 }
 

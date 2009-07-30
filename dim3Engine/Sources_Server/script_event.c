@@ -428,7 +428,7 @@ JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	switch (js.attach.get_msg_data[idx].type) {
 
 		case d3_jsval_type_int:
-			*rval=INT_TO_JSVAL(js.attach.get_msg_data[idx].data.d3_int);
+			*rval=script_int_to_value(js.attach.get_msg_data[idx].data.d3_int);
 			break;
 
 		case d3_jsval_type_float:

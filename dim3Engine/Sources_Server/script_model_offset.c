@@ -98,7 +98,7 @@ JSBool js_model_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	model_draw		*draw;
 
 	draw=script_find_model_draw(j_obj,TRUE);
-	*vp=INT_TO_JSVAL(draw->offset.x);
+	*vp=script_int_to_value(draw->offset.x);
 
 	return(JS_TRUE);
 }
@@ -108,7 +108,7 @@ JSBool js_model_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	model_draw		*draw;
 
 	draw=script_find_model_draw(j_obj,TRUE);
-	*vp=INT_TO_JSVAL(draw->offset.y);
+	*vp=script_int_to_value(draw->offset.y);
 
 	return(JS_TRUE);
 }
@@ -118,7 +118,7 @@ JSBool js_model_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	model_draw		*draw;
 
 	draw=script_find_model_draw(j_obj,TRUE);
-	*vp=INT_TO_JSVAL(draw->offset.z);
+	*vp=script_int_to_value(draw->offset.z);
 
 	return(JS_TRUE);
 }

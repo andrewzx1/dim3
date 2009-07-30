@@ -139,7 +139,7 @@ JSBool js_utility_point_distance_to_func(JSContext *cx,JSObject *j_obj,uintN arg
 	to_y=script_value_to_int(argv[5]);
 
 	dist=distance_get(x,y,z,to_x,to_y,to_z);
-	*rval=INT_TO_JSVAL(dist);
+	*rval=script_int_to_value(dist);
 	
 	return(JS_TRUE);
 }

@@ -120,7 +120,7 @@ JSBool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->watch.obj_uid);
+	*vp=script_int_to_value(obj->watch.obj_uid);
 	
 	return(JS_TRUE);
 }
@@ -216,10 +216,10 @@ JSBool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) {
-		*vp=INT_TO_JSVAL(sd_team_none);
+		*vp=script_int_to_value(sd_team_none);
 	}
 	else {
-		*vp=INT_TO_JSVAL(watch_obj->team_idx+sd_team_none);
+		*vp=script_int_to_value(watch_obj->team_idx+sd_team_none);
 	}
 	
 	return(JS_TRUE);
@@ -230,7 +230,7 @@ JSBool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->watch.base_team+sd_team_none);
+	*vp=script_int_to_value(obj->watch.base_team+sd_team_none);
 	
 	return(JS_TRUE);
 }
@@ -258,7 +258,7 @@ JSBool js_obj_watch_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	obj->watch.on=TRUE;
-	obj->watch.dist=JSVAL_TO_INT(argv[0]);
+	obj->watch.dist=script_value_to_int(argv[0]);
 	
 	return(JS_TRUE);
 }

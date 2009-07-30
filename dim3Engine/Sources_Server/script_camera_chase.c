@@ -97,13 +97,13 @@ JSBool js_camera_chase_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 
 JSBool js_camera_chase_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.chase_size);
+	*vp=script_int_to_value(camera.chase_size);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_chase_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.chase_distance);
+	*vp=script_int_to_value(camera.chase_distance);
 	return(JS_TRUE);
 }
 

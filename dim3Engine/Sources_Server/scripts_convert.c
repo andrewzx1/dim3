@@ -150,12 +150,12 @@ jsval script_int_array_to_value(int cnt,int *values)
 		// create values
 
 	for (n=0;n!=cnt;n++) {
-		j_vals[n]=INT_TO_JSVAL(values[n]);
+		j_vals[n]=script_int_to_value(values[n]);
 	}
 
 		// create array
 
-	j_obj=JS_NewArrayObject(js.cx,JSVAL_TO_INT(cnt),j_vals);
+	j_obj=JS_NewArrayObject(js.cx,cnt,j_vals);
 	return(OBJECT_TO_JSVAL(j_obj));
 }
 
@@ -186,9 +186,9 @@ jsval script_point_to_value(int x,int y,int z)
 	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
 	if (j_obj==NULL) return(JSVAL_NULL);
 
-	JS_DefineProperty(js.cx,j_obj,"x",INT_TO_JSVAL(x),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
-	JS_DefineProperty(js.cx,j_obj,"y",INT_TO_JSVAL(y),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
-	JS_DefineProperty(js.cx,j_obj,"z",INT_TO_JSVAL(z),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	JS_DefineProperty(js.cx,j_obj,"x",script_int_to_value(x),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	JS_DefineProperty(js.cx,j_obj,"y",script_int_to_value(y),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	JS_DefineProperty(js.cx,j_obj,"z",script_int_to_value(z),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
 	
 	return(OBJECT_TO_JSVAL(j_obj));
 }

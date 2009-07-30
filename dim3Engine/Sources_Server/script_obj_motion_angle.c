@@ -148,7 +148,7 @@ JSBool js_obj_motion_angle_turn_to_angle_func(JSContext *cx,JSObject *j_obj,uint
 
 	turn_speed=object_get_turn_speed(obj);
 
-	switch (JSVAL_TO_INT(argv[1])) {
+	switch (script_value_to_int(argv[1])) {
 	
 		case -1:
 			obj->turn.ang_add.y=-turn_speed;

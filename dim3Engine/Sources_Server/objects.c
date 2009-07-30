@@ -780,7 +780,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		obj->player=TRUE;
 		obj->hidden=FALSE;
 		
-		obj->tint_color_idx=setup.tint_color_idx;
+		obj->tint_color_idx=setup.network.tint_color_idx;
 
 		server.player_obj_uid=obj->uid;
 	}

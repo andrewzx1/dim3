@@ -111,7 +111,7 @@ JSBool js_proj_push_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->push.force);
+	*vp=script_int_to_value(proj_setup->push.force);
 	
 	return(JS_TRUE);
 }

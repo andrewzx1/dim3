@@ -115,7 +115,7 @@ JSBool js_map_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 
 JSBool js_map_setting_get_scale(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(map_enlarge);
+	*vp=script_int_to_value(map_enlarge);
 	return(JS_TRUE);
 }
 
@@ -151,7 +151,7 @@ JSBool js_map_setting_get_multiplayerType(JSContext *cx,JSObject *j_obj,jsval id
 
 JSBool js_map_setting_get_botSkill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(setup.network.bot.skill);
+	*vp=script_int_to_value(setup.network.bot.skill);
 	return(JS_TRUE);
 }
 

@@ -130,7 +130,7 @@ JSBool js_obj_rigid_body_get_maxDropY(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->rigid_body.max_drop_y);
+	*vp=script_int_to_value(obj->rigid_body.max_drop_y);
 	
 	return(JS_TRUE);
 }
@@ -236,7 +236,7 @@ JSBool js_obj_rigid_body_set_maxDropY(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.max_drop_y=JSVAL_TO_INT(*vp);
+	obj->rigid_body.max_drop_y=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

@@ -162,7 +162,7 @@ JSBool js_weap_zoom_get_fovSteps(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->zoom.step_count);
+	*vp=script_int_to_value(weap->zoom.step_count);
 	
 	return(JS_TRUE);
 }
@@ -222,7 +222,7 @@ JSBool js_weap_zoom_get_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->zoom.tick);
+	*vp=script_int_to_value(weap->zoom.tick);
 	
 	return(JS_TRUE);
 }

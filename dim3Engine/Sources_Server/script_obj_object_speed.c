@@ -111,7 +111,7 @@ JSBool js_obj_object_speed_get_jumpHeight(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->jump.y_add);
+	*vp=script_int_to_value(obj->jump.y_add);
 	
 	return(JS_TRUE);
 }
@@ -121,7 +121,7 @@ JSBool js_obj_object_speed_get_duckAdd(JSContext *cx,JSObject *j_obj,jsval id,js
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->duck.y_add);
+	*vp=script_int_to_value(obj->duck.y_add);
 	
 	return(JS_TRUE);
 }
@@ -131,7 +131,7 @@ JSBool js_obj_object_speed_get_duckChange(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->duck.y_change);
+	*vp=script_int_to_value(obj->duck.y_change);
 	
 	return(JS_TRUE);
 }
@@ -141,7 +141,7 @@ JSBool js_obj_object_speed_get_bumpHeight(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->bump.high);
+	*vp=script_int_to_value(obj->bump.high);
 	
 	return(JS_TRUE);
 }
@@ -187,7 +187,7 @@ JSBool js_obj_object_speed_set_jumpHeight(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->jump.y_add=JSVAL_TO_INT(*vp);
+	obj->jump.y_add=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -197,7 +197,7 @@ JSBool js_obj_object_speed_set_duckAdd(JSContext *cx,JSObject *j_obj,jsval id,js
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->duck.y_add=JSVAL_TO_INT(*vp);
+	obj->duck.y_add=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -207,7 +207,7 @@ JSBool js_obj_object_speed_set_duckChange(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->duck.y_change=JSVAL_TO_INT(*vp);
+	obj->duck.y_change=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -217,7 +217,7 @@ JSBool js_obj_object_speed_set_bumpHeight(JSContext *cx,JSObject *j_obj,jsval id
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->bump.high=JSVAL_TO_INT(*vp);
+	obj->bump.high=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

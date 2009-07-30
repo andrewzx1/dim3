@@ -174,11 +174,11 @@ JSBool js_map_object_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	
 	obj=object_find_name(name);
 	if (obj==NULL) {
-		*rval=INT_TO_JSVAL(-1);
+		*rval=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 
-	*rval=INT_TO_JSVAL(obj->uid);
+	*rval=script_int_to_value(obj->uid);
 	return(JS_TRUE);
 }
 
@@ -190,7 +190,7 @@ JSBool js_map_object_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 
 JSBool js_map_object_find_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	*rval=INT_TO_JSVAL(server.player_obj_uid);
+	*rval=script_int_to_value(server.player_obj_uid);
 	return(JS_TRUE);
 }
 
@@ -269,11 +269,11 @@ JSBool js_map_object_nearest_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 
 	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
 	if (obj==NULL) {
-		*rval=INT_TO_JSVAL(-1);
+		*rval=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 	
-	*rval=INT_TO_JSVAL(obj->uid);
+	*rval=script_int_to_value(obj->uid);
 	return(JS_TRUE);
 }
 
@@ -324,11 +324,11 @@ JSBool js_map_object_nearest_skip_object_id_func(JSContext *cx,JSObject *j_obj,u
 
 	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,script_value_to_int(argv[9]));
 	if (obj==NULL) {
-		*rval=INT_TO_JSVAL(-1);
+		*rval=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 	
-	*rval=INT_TO_JSVAL(obj->uid);
+	*rval=script_int_to_value(obj->uid);
 	return(JS_TRUE);
 }
 
@@ -361,11 +361,11 @@ JSBool js_map_object_nearest_player_func(JSContext *cx,JSObject *j_obj,uintN arg
 
 	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,-1);
 	if (obj==NULL) {
-		*rval=INT_TO_JSVAL(-1);
+		*rval=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 	
-	*rval=INT_TO_JSVAL(obj->uid);
+	*rval=script_int_to_value(obj->uid);
 	return(JS_TRUE);
 }
 
@@ -398,11 +398,11 @@ JSBool js_map_object_nearest_player_skip_object_id_func(JSContext *cx,JSObject *
 
 	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,script_value_to_int(argv[7]));
 	if (obj==NULL) {
-		*rval=INT_TO_JSVAL(-1);
+		*rval=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 	
-	*rval=INT_TO_JSVAL(obj->uid);
+	*rval=script_int_to_value(obj->uid);
 	return(JS_TRUE);
 }
 
@@ -435,11 +435,11 @@ JSBool js_map_object_nearest_remote_player_func(JSContext *cx,JSObject *j_obj,ui
 
 	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,TRUE,-1);
 	if (obj==NULL) {
-		*rval=INT_TO_JSVAL(-1);
+		*rval=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 	
-	*rval=INT_TO_JSVAL(obj->uid);
+	*rval=script_int_to_value(obj->uid);
 	return(JS_TRUE);
 }
 
@@ -476,11 +476,11 @@ JSBool js_map_object_nearest_team_func(JSContext *cx,JSObject *j_obj,uintN argc,
 
 	obj=object_find_nearest(&pt,NULL,NULL,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
 	if (obj==NULL) {
-		*rval=INT_TO_JSVAL(-1);
+		*rval=script_int_to_value(-1);
 		return(JS_TRUE);
 	}
 	
-	*rval=INT_TO_JSVAL(obj->uid);
+	*rval=script_int_to_value(obj->uid);
 	return(JS_TRUE);
 }
 
@@ -523,7 +523,7 @@ JSBool js_map_object_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(obj->team_idx+sd_team_none);
+	*rval=script_int_to_value(obj->team_idx+sd_team_none);
 	return(JS_TRUE);
 }
 
@@ -579,7 +579,7 @@ JSBool js_map_object_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 		// get distance
 		
-	*rval=INT_TO_JSVAL(distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,x,y,z));
+	*rval=script_int_to_value(distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,x,y,z));
 	
 	return(JS_TRUE);
 }
@@ -728,7 +728,7 @@ JSBool js_map_object_get_health_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 		// get size
 		
-	*rval=INT_TO_JSVAL(obj->status.health);
+	*rval=script_int_to_value(obj->status.health);
 	return(JS_TRUE);
 }
 
@@ -783,7 +783,7 @@ JSBool js_map_object_get_last_damage_object_id_func(JSContext *cx,JSObject *j_ob
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 		
-	*rval=INT_TO_JSVAL(obj->damage_obj_uid);
+	*rval=script_int_to_value(obj->damage_obj_uid);
 	return(JS_TRUE);
 }
 
@@ -1008,7 +1008,7 @@ JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 
 		// return UID
 
-	*rval=INT_TO_JSVAL(uid);
+	*rval=script_int_to_value(uid);
 
 	return(JS_TRUE);
 }

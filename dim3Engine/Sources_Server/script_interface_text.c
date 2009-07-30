@@ -189,7 +189,7 @@ JSBool js_interface_text_set_size_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
 	
-	text->size=JSVAL_TO_INT(argv[1]);
+	text->size=script_value_to_int(argv[1]);
 	
 	return(JS_TRUE);
 }
@@ -216,7 +216,7 @@ JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
 
-	team_idx=JSVAL_TO_INT(argv[1])-sd_team_none;
+	team_idx=script_value_to_int(argv[1])-sd_team_none;
 	
 	object_team_get_tint(team_idx,&text->color);
 	

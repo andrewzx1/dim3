@@ -188,7 +188,7 @@ JSBool js_obj_weapon_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 
-	script_bool_to_value(weapon_script_fire(js.time.current_tick,obj,weap,JSVAL_TO_INT(argv[1])));
+	script_bool_to_value(weapon_script_fire(js.time.current_tick,obj,weap,script_value_to_int(argv[1])));
 
 	return(JS_TRUE);
 }
@@ -276,7 +276,7 @@ JSBool js_obj_weapon_get_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN arg
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 	
-	*rval=INT_TO_JSVAL(weap->ammo.count);
+	*rval=script_int_to_value(weap->ammo.count);
 
 	return(JS_TRUE);
 }
@@ -290,7 +290,7 @@ JSBool js_obj_weapon_get_max_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(weap->ammo.max_count);
+	*rval=script_int_to_value(weap->ammo.max_count);
 
 	return(JS_TRUE);
 }
@@ -304,7 +304,7 @@ JSBool js_obj_weapon_get_clip_count_func(JSContext *cx,JSObject *j_obj,uintN arg
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 	
-	*rval=INT_TO_JSVAL(weap->ammo.clip_count);
+	*rval=script_int_to_value(weap->ammo.clip_count);
 
 	return(JS_TRUE);
 }
@@ -318,7 +318,7 @@ JSBool js_obj_weapon_get_max_clip_count_func(JSContext *cx,JSObject *j_obj,uintN
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(weap->ammo.max_clip_count);
+	*rval=script_int_to_value(weap->ammo.max_clip_count);
 
 	return(JS_TRUE);
 }
@@ -338,7 +338,7 @@ JSBool js_obj_weapon_get_alt_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 	
-	*rval=INT_TO_JSVAL(weap->alt_ammo.count);
+	*rval=script_int_to_value(weap->alt_ammo.count);
 
 	return(JS_TRUE);
 }
@@ -352,7 +352,7 @@ JSBool js_obj_weapon_get_alt_max_ammo_count_func(JSContext *cx,JSObject *j_obj,u
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(weap->alt_ammo.max_count);
+	*rval=script_int_to_value(weap->alt_ammo.max_count);
 
 	return(JS_TRUE);
 }
@@ -366,7 +366,7 @@ JSBool js_obj_weapon_get_alt_clip_count_func(JSContext *cx,JSObject *j_obj,uintN
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 	
-	*rval=INT_TO_JSVAL(weap->alt_ammo.clip_count);
+	*rval=script_int_to_value(weap->alt_ammo.clip_count);
 
 	return(JS_TRUE);
 }
@@ -380,7 +380,7 @@ JSBool js_obj_weapon_get_alt_max_clip_count_func(JSContext *cx,JSObject *j_obj,u
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(weap->alt_ammo.max_clip_count);
+	*rval=script_int_to_value(weap->alt_ammo.max_clip_count);
 
 	return(JS_TRUE);
 }

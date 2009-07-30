@@ -149,7 +149,7 @@ JSBool js_proj_melee_get_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->melee.radius);
+	*vp=script_int_to_value(proj_setup->melee.radius);
 	
 	return(JS_TRUE);
 }
@@ -161,7 +161,7 @@ JSBool js_proj_melee_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->melee.distance);
+	*vp=script_int_to_value(proj_setup->melee.distance);
 	
 	return(JS_TRUE);
 }
@@ -173,7 +173,7 @@ JSBool js_proj_melee_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->melee.damage);
+	*vp=script_int_to_value(proj_setup->melee.damage);
 	
 	return(JS_TRUE);
 }
@@ -185,7 +185,7 @@ JSBool js_proj_melee_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->melee.force);
+	*vp=script_int_to_value(proj_setup->melee.force);
 	
 	return(JS_TRUE);
 }

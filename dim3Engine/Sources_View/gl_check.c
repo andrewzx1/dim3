@@ -78,6 +78,8 @@ bool gl_check_shader_ok(void)
 	GLint			fragGPU,vertGPU;
 #endif
 
+	if (setup.disable_shaders) return(FALSE);
+
 		// check GL string
 		
 	if (strstr(render_info.ext_string,"GL_ARB_shader_objects")==NULL) return(FALSE);

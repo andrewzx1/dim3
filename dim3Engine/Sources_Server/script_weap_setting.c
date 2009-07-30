@@ -117,7 +117,7 @@ JSBool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->obj_uid);
+	*vp=script_int_to_value(weap->obj_uid);
 	
 	return(JS_TRUE);
 }

@@ -135,7 +135,7 @@ JSBool js_proj_action_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->damage);
+	*vp=script_int_to_value(proj_setup->damage);
 	
 	return(JS_TRUE);
 }
@@ -159,7 +159,7 @@ JSBool js_proj_action_get_auto_hitTick(JSContext *cx,JSObject *j_obj,jsval id,js
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	*vp=INT_TO_JSVAL(proj_setup->action.hit_tick);
+	*vp=script_int_to_value(proj_setup->action.hit_tick);
 	
 	return(JS_TRUE);
 }

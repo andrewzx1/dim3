@@ -107,7 +107,7 @@ JSBool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->hit.obj_uid);
+	*vp=script_int_to_value(obj->hit.obj_uid);
 
 	return(JS_TRUE);
 }
@@ -198,7 +198,7 @@ JSBool js_obj_hit_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->hit.damage);
+	*vp=script_int_to_value(obj->hit.damage);
 	
 	return(JS_TRUE);
 }

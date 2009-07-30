@@ -112,7 +112,7 @@ JSBool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=INT_TO_JSVAL(obj->uid);
+	*vp=script_int_to_value(obj->uid);
 	
 	return(JS_TRUE);
 }
@@ -124,7 +124,7 @@ JSBool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=INT_TO_JSVAL(obj->score.kill);
+	*vp=script_int_to_value(obj->score.kill);
 	
 	return(JS_TRUE);
 }
@@ -136,7 +136,7 @@ JSBool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=INT_TO_JSVAL(obj->score.death);
+	*vp=script_int_to_value(obj->score.death);
 	
 	return(JS_TRUE);
 }
@@ -148,7 +148,7 @@ JSBool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=INT_TO_JSVAL(obj->score.suicide);
+	*vp=script_int_to_value(obj->score.suicide);
 	
 	return(JS_TRUE);
 }
@@ -160,7 +160,7 @@ JSBool js_game_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=INT_TO_JSVAL(obj->score.goal);
+	*vp=script_int_to_value(obj->score.goal);
 	
 	return(JS_TRUE);
 }
@@ -180,7 +180,7 @@ JSBool js_game_score_set_score_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 		// update score
 
 	obj=object_find_uid(game_obj_rule_uid);
-	obj->score.score=JSVAL_TO_INT(argv[0]);
+	obj->score.score=script_value_to_int(argv[0]);
 
 		// have we hit a network score limit?
 

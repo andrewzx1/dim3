@@ -96,7 +96,7 @@ JSBool js_obj_touch_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->touch.pnt.x);
+	*vp=script_int_to_value(obj->touch.pnt.x);
 	
 	return(JS_TRUE);
 }
@@ -106,7 +106,7 @@ JSBool js_obj_touch_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->touch.pnt.y);
+	*vp=script_int_to_value(obj->touch.pnt.y);
 	
 	return(JS_TRUE);
 }
@@ -116,7 +116,7 @@ JSBool js_obj_touch_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->touch.pnt.z);
+	*vp=script_int_to_value(obj->touch.pnt.z);
 	
 	return(JS_TRUE);
 }

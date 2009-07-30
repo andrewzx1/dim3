@@ -54,7 +54,6 @@ void setup_xml_default(void)
 	setup.shadow_on=TRUE;
 	
 	setup.gamma=0.0f;
-	setup.tint_color_idx=0;
 	
 	setup.sound_volume=0.6f;
 	setup.music_on=TRUE;
@@ -98,6 +97,8 @@ void setup_xml_default(void)
 	setup.action_list.naction=0;
 
 	strcpy(setup.network.name,"Player");
+	setup.network.player_model_idx=0;
+	setup.network.tint_color_idx=0;
 	setup.network.show_names=TRUE;
 	setup.network.nhost=0;
 	setup.network.noption=0;
@@ -115,6 +116,7 @@ void setup_xml_default(void)
 	setup.window=FALSE;
 	setup.window_editor=TRUE;
 	setup.metrics_on=FALSE;
+	setup.disable_shaders=FALSE;
 }
 
 /* =======================================================
@@ -166,7 +168,6 @@ bool setup_xml_read_path(char *path)
     xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_high);
 	xml_key_read_boolean(setup_tag,"Lock_FPS_Refresh",&setup.lock_fps_refresh);
 	xml_key_read_float(setup_tag,"Gamma",&setup.gamma);
-    xml_key_read_int(setup_tag,"Tint",&setup.tint_color_idx);
     xml_key_read_boolean(setup_tag,"Texture_Compression",&setup.texture_compression);
     xml_key_read_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
     xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
@@ -206,6 +207,8 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_float(setup_tag,"Joystick_Y_Acceleration_Max",&setup.joystick_y.acceleration_max);
 	xml_key_read_int(setup_tag,"Joystick_Mode",&setup.joystick_mode);
 	xml_key_read_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
+    xml_key_read_int(setup_tag,"Model",&setup.network.player_model_idx);
+    xml_key_read_int(setup_tag,"Tint",&setup.network.tint_color_idx);
 	xml_key_read_text(setup_tag,"Network_Last_Map",setup.network.last_map,name_str_len);
 	xml_key_read_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
 	xml_key_read_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
@@ -216,6 +219,7 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Window",&setup.window);
 	xml_key_read_boolean(setup_tag,"Window_Editor",&setup.window_editor);
 	xml_key_read_boolean(setup_tag,"Metrics_On",&setup.metrics_on);
+	xml_key_read_boolean(setup_tag,"Disable_Shaders",&setup.disable_shaders);
 
 		// fix some items
 
@@ -343,7 +347,6 @@ bool setup_xml_write(void)
     xml_key_write_int("Screen_Height",setup.screen_high);
     xml_key_write_boolean("Lock_FPS_Refresh",setup.lock_fps_refresh);
 	xml_key_write_float("Gamma",setup.gamma);
-	xml_key_write_int("Tint",setup.tint_color_idx);
 	xml_key_write_boolean("Texture_Compression",setup.texture_compression);
 	xml_key_write_int("Anisotropic_Mode",setup.anisotropic_mode);
     xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
@@ -383,6 +386,8 @@ bool setup_xml_write(void)
 	xml_key_write_float("Joystick_Y_Acceleration_Max",setup.joystick_y.acceleration_max);
 	xml_key_write_int("Joystick_Mode",setup.joystick_mode);
 	xml_key_write_text("Network_Name",setup.network.name);
+	xml_key_write_int("Model",setup.network.player_model_idx);
+	xml_key_write_int("Tint",setup.network.tint_color_idx);
 	xml_key_write_text("Network_Last_Map",setup.network.last_map);
 	xml_key_write_int("Host_Bot_Count",setup.network.bot.count);
 	xml_key_write_int("Host_Bot_Skill",setup.network.bot.skill);
@@ -393,6 +398,7 @@ bool setup_xml_write(void)
 	xml_key_write_boolean("Window",setup.window);
 	xml_key_write_boolean("Window_Editor",setup.window_editor);
 	xml_key_write_boolean("Metrics_On",setup.metrics_on);
+	xml_key_write_boolean("Disable_Shaders",setup.disable_shaders);
 	
 		// actions
 
@@ -494,6 +500,7 @@ void setup_restore(void)
 	setup.window=FALSE;
 	setup.window_editor=TRUE;
 	setup.metrics_on=FALSE;
+	setup.disable_shaders=FALSE;
 	
 		// save XML
 		

@@ -91,13 +91,13 @@ JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,j
 
 JSBool js_interface_screen_get_width(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(setup.screen.x_sz);
+	*vp=script_int_to_value(setup.screen.x_sz);
 	return(JS_TRUE);
 }
 
 
 JSBool js_interface_screen_get_height(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(setup.screen.y_sz);
+	*vp=script_int_to_value(setup.screen.y_sz);
 	return(JS_TRUE);
 }

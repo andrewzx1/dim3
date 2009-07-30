@@ -122,7 +122,7 @@ JSBool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->pickup.obj_uid);
+	*vp=script_int_to_value(obj->pickup.obj_uid);
 	
 	return(JS_TRUE);
 }
@@ -159,7 +159,7 @@ JSBool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->pickup.item_uid);
+	*vp=script_int_to_value(obj->pickup.item_uid);
 	
 	return(JS_TRUE);
 }
@@ -228,7 +228,7 @@ JSBool js_obj_pickup_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    *rval=script_bool_to_value(item_add_ammo(obj,weap,JSVAL_TO_INT(argv[2])));
+    *rval=script_bool_to_value(item_add_ammo(obj,weap,script_value_to_int(argv[2])));
 	return(JS_TRUE);
 }
 
@@ -243,7 +243,7 @@ JSBool js_obj_pickup_add_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    *rval=script_bool_to_value(item_add_clip(obj,weap,JSVAL_TO_INT(argv[2])));
+    *rval=script_bool_to_value(item_add_clip(obj,weap,script_value_to_int(argv[2])));
 	return(JS_TRUE);
 }
 
@@ -258,7 +258,7 @@ JSBool js_obj_pickup_add_alt_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    *rval=script_bool_to_value(item_add_alt_ammo(obj,weap,JSVAL_TO_INT(argv[2])));
+    *rval=script_bool_to_value(item_add_alt_ammo(obj,weap,script_value_to_int(argv[2])));
 	return(JS_TRUE);
 }
 
@@ -273,7 +273,7 @@ JSBool js_obj_pickup_add_alt_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    *rval=script_bool_to_value(item_add_alt_clip(obj,weap,JSVAL_TO_INT(argv[2])));
+    *rval=script_bool_to_value(item_add_alt_clip(obj,weap,script_value_to_int(argv[2])));
 	return(JS_TRUE);
 }
 
@@ -284,7 +284,7 @@ JSBool js_obj_pickup_add_health_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
-   *rval=script_bool_to_value(item_add_health(obj,JSVAL_TO_INT(argv[1])));
+   *rval=script_bool_to_value(item_add_health(obj,script_value_to_int(argv[1])));
 	return(JS_TRUE);
 }
 
@@ -295,7 +295,7 @@ JSBool js_obj_pickup_add_custom_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
-	item_add_custom(obj,JSVAL_TO_INT(argv[1]));
+	item_add_custom(obj,script_value_to_int(argv[1]));
 	return(JS_TRUE);
 }
 

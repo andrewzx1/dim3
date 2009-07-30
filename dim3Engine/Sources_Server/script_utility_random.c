@@ -96,10 +96,10 @@ JSBool js_utility_random_get_integer_func(JSContext *cx,JSObject *j_obj,uintN ar
 {
 	int				min,max;
 
-	min=JSVAL_TO_INT(argv[0]);
-	max=JSVAL_TO_INT(argv[1]);
+	min=script_value_to_int(argv[0]);
+	max=script_value_to_int(argv[1]);
 
-	*rval=INT_TO_JSVAL(random_int(abs(max-min))+min);
+	*rval=script_int_to_value(random_int(abs(max-min))+min);
 	
 	return(JS_TRUE);
 }
@@ -125,7 +125,7 @@ JSBool js_utility_random_get_boolean_func(JSContext *cx,JSObject *j_obj,uintN ar
 
 JSBool js_utility_random_get_pos_or_neg_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	*rval=INT_TO_JSVAL(random_boolean()?1:(-1));
+	*rval=script_int_to_value(random_boolean()?1:(-1));
 	
 	return(JS_TRUE);
 }

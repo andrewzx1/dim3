@@ -42,12 +42,15 @@ and can be sold or given away.
 
 #define ctrl_network_name_id				10
 #define ctrl_network_show_names_id			11
-#define ctrl_network_host_id				12
-#define ctrl_network_host_ip_id				13
+#define ctrl_model_id						12
+#define ctrl_color_id						13
 
-#define setup_network_host_add_button		20
-#define setup_network_host_update_button	21
-#define setup_network_host_delete_button	22
+#define ctrl_network_host_id				20
+#define ctrl_network_host_ip_id				21
+
+#define setup_network_host_add_button		30
+#define setup_network_host_update_button	31
+#define setup_network_host_delete_button	32
 
 #define setup_network_ok_button				100
 #define setup_network_cancel_button			101
@@ -63,7 +66,8 @@ extern hud_type				hud;
 extern setup_type			setup_backup;
 
 int							setup_network_tab_value,setup_network_host_scroll_pos;
-char						setup_host_list[max_setup_network_host+1][128];
+char						setup_host_list[max_setup_network_host+1][128],
+							model_list[max_player_model+1][32];
 
 /* =======================================================
 
@@ -88,20 +92,37 @@ void setup_network_create_host_list(void)
 
 void setup_network_player_pane(void)
 {
-	int					x,y,
-						control_y_add,control_y_sz;
+	int					n,x,y,
+						control_y_add,separate_y_add,control_y_sz;
 
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*2;
+	separate_y_add=element_get_separator_high();
+	control_y_sz=(control_y_add*4)+separate_y_add;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
 
-		// name and timeout
+		// names
 		
 	element_text_field_add("Name",setup.network.name,name_str_len,ctrl_network_name_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Show Names",setup.network.show_names,ctrl_network_show_names_id,x,y,TRUE);
+	y+=control_y_add+separate_y_add;
+
+		// colors and models
+
+	for (n=0;n!=hud.model.nmodel;n++) {
+		strncpy(model_list[n],hud.model.models[n].name,32);
+		model_list[n][31]=0x0;
+	}
+
+	model_list[n][0]=0x0;
+
+	element_combo_add("Character",(char*)model_list,setup.network.player_model_idx,ctrl_model_id,x,y,TRUE);
+	y+=control_y_add;
+
+	element_color_add("Color",setup.network.tint_color_idx,ctrl_color_id,x,y,TRUE);
+	y+=control_y_add;
 }
 
 void setup_network_host_pane(void)
@@ -403,6 +424,14 @@ void setup_network_handle_click(int id)
 
 		case ctrl_network_show_names_id:
 			setup.network.show_names=element_get_value(ctrl_network_show_names_id);
+			break;
+
+		case ctrl_model_id:
+			setup.network.player_model_idx=element_get_value(ctrl_model_id);
+			break;
+
+		case ctrl_color_id:
+			setup.network.tint_color_idx=element_get_value(ctrl_color_id);
 			break;
 
 		case ctrl_network_host_id:

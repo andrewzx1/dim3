@@ -98,13 +98,13 @@ JSBool js_camera_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
 
 JSBool js_camera_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.mode+sd_camera_type_fpp);
+	*vp=script_int_to_value(camera.mode+sd_camera_type_fpp);
 	return(JS_TRUE);
 }
 
 JSBool js_camera_setting_get_attachObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	*vp=INT_TO_JSVAL(camera.obj_uid);
+	*vp=script_int_to_value(camera.obj_uid);
 	return(JS_TRUE);
 }
 

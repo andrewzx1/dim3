@@ -97,7 +97,7 @@ JSBool js_obj_hit_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->hit.pnt.x);
+	*vp=script_int_to_value(obj->hit.pnt.x);
 	
 	return(JS_TRUE);
 }
@@ -107,7 +107,7 @@ JSBool js_obj_hit_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->hit.pnt.y);
+	*vp=script_int_to_value(obj->hit.pnt.y);
 	
 	return(JS_TRUE);
 }
@@ -117,7 +117,7 @@ JSBool js_obj_hit_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->hit.pnt.z);
+	*vp=script_int_to_value(obj->hit.pnt.z);
 	
 	return(JS_TRUE);
 }

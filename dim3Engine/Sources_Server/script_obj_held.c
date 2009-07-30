@@ -111,7 +111,7 @@ JSBool js_obj_held_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv
 		return(JS_FALSE);
 	}
 
-	*rval=INT_TO_JSVAL(uid);
+	*rval=script_int_to_value(uid);
 	
 	return(JS_TRUE);
 }
@@ -125,9 +125,9 @@ JSBool js_obj_held_drop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *arg
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	uid=JSVAL_TO_INT(argv[0]);
+	uid=script_value_to_int(argv[0]);
 	y_ang=script_value_to_float(argv[1]);
-	y_change=JSVAL_TO_INT(argv[2]);
+	y_change=script_value_to_int(argv[2]);
 
 	if (!object_held_drop(obj,uid,y_ang,y_change,err_str)) {
 		JS_ReportError(js.cx,err_str);

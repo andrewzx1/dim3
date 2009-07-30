@@ -276,6 +276,10 @@ void default_settings_interface(void)
 	strcpy(net_setup.games[0].name,"Deathmatch");
 
 	net_setup.noption=0;
+
+		// player models
+
+	hud.model.nmodel=0;
 	
 		// bot names
 		
@@ -769,7 +773,7 @@ void read_settings_interface(void)
 				radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
 				color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
 				proj_tag,debug_tag,games_head_tag,game_tag,options_head_tag,option_tag,
-				bot_head_tag,bot_tag;
+				model_head_tag,player_model_tag,bot_head_tag,bot_tag;
 	char		path[1024];
 
 	default_settings_interface();
@@ -1020,6 +1024,22 @@ void read_settings_interface(void)
 			if (net_setup.noption==network_setup_max_option) break;
 
 			option_tag=xml_findnextchild(option_tag);
+		}
+	}
+
+		// player models
+
+    model_head_tag=xml_findfirstchild("Models",interface_head_tag);
+    if (model_head_tag!=-1) {
+
+		hud.model.nmodel=0;
+		player_model_tag=xml_findfirstchild("Model",model_head_tag);
+		
+		while (player_model_tag!=-1) {
+			xml_get_attribute_text(player_model_tag,"name",hud.model.models[hud.model.nmodel].name,name_str_len);
+			xml_get_attribute_text(player_model_tag,"file",hud.model.models[hud.model.nmodel].file,name_str_len);
+			hud.model.nmodel++;
+			player_model_tag=xml_findnextchild(player_model_tag);
 		}
 	}
 	

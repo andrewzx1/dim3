@@ -99,7 +99,7 @@ JSBool js_weap_hand_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->hand.shift.x);
+	*vp=script_int_to_value(weap->hand.shift.x);
 	
 	return(JS_TRUE);
 }
@@ -109,7 +109,7 @@ JSBool js_weap_hand_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->hand.shift.y);
+	*vp=script_int_to_value(weap->hand.shift.y);
 	
 	return(JS_TRUE);
 }
@@ -119,7 +119,7 @@ JSBool js_weap_hand_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(weap->hand.shift.z);
+	*vp=script_int_to_value(weap->hand.shift.z);
 	
 	return(JS_TRUE);
 }
@@ -135,7 +135,7 @@ JSBool js_weap_hand_position_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.shift.x=JSVAL_TO_INT(*vp);
+	weap->hand.shift.x=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -145,7 +145,7 @@ JSBool js_weap_hand_position_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.shift.y=JSVAL_TO_INT(*vp);
+	weap->hand.shift.y=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -155,7 +155,7 @@ JSBool js_weap_hand_position_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.shift.z=JSVAL_TO_INT(*vp);
+	weap->hand.shift.z=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }

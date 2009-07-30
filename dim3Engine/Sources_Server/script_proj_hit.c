@@ -196,7 +196,7 @@ JSBool js_proj_hit_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(js_get_proj_hit_type(proj));
+	*vp=script_int_to_value(js_get_proj_hit_type(proj));
 	
 	return(JS_TRUE);
 }
@@ -224,7 +224,7 @@ JSBool js_proj_hit_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(proj->contact.obj_uid);
+	*vp=script_int_to_value(proj->contact.obj_uid);
 	
 	return(JS_TRUE);
 }
@@ -248,7 +248,7 @@ JSBool js_proj_hit_get_startTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	*vp=INT_TO_JSVAL(proj->start_tick);
+	*vp=script_int_to_value(proj->start_tick);
 	
 	return(JS_TRUE);
 }

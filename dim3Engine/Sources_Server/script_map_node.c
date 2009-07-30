@@ -43,6 +43,7 @@ JSBool js_map_node_find_nearest_to_object_func(JSContext *cx,JSObject *j_obj,uin
 JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_find_nearest_unheld_weapon_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_next_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_node_get_adjacent_nodes_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -55,6 +56,7 @@ script_js_function	map_node_functions[]={
 							{"findNearestNamesInPath",			js_map_node_find_nearest_names_in_path_func,			2},
 							{"findNearestUnheldWeaponInPath",	js_map_node_find_nearest_unheld_weapon_in_path_func,	2},
 							{"nextInPath",						js_map_node_next_in_path_func,							2},
+							{"getAdjacentNodes",				js_map_node_get_adjacent_nodes_func,					1},
 							{"getName",							js_map_node_get_name_func,								1},
 							{"getDistance",						js_map_node_get_distance_func,							4},
 							{"getAngleTo",						js_map_node_get_angle_to_func,							4},
@@ -113,7 +115,7 @@ JSBool js_map_node_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *arg
 	
 	script_value_to_string(argv[0],name,name_str_len);
 	idx=map_find_node(&map,name);
-	*rval=INT_TO_JSVAL(idx);
+	*rval=script_int_to_value(idx);
 	return(JS_TRUE);
 }
 
@@ -124,7 +126,7 @@ JSBool js_map_node_find_random_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	
 	script_value_to_string(argv[0],name,name_str_len);
 	idx=map_find_random_node(&map,name);
-	*rval=INT_TO_JSVAL(idx);
+	*rval=script_int_to_value(idx);
 
 	return(JS_TRUE);
 }
@@ -138,7 +140,7 @@ JSBool js_map_node_find_nearest_to_object_func(JSContext *cx,JSObject *j_obj,uin
 	if (obj==NULL) return(JS_FALSE);
 	
 	idx=map_find_nearest_node_by_point(&map,&obj->pnt);
-	*rval=INT_TO_JSVAL(idx);
+	*rval=script_int_to_value(idx);
 	
 	return(JS_TRUE);
 }
@@ -196,7 +198,7 @@ JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj
 		}
 	}
 	
-	*rval=INT_TO_JSVAL(idx);
+	*rval=script_int_to_value(idx);
 	
 	return(JS_TRUE);
 }
@@ -233,7 +235,7 @@ JSBool js_map_node_find_nearest_unheld_weapon_in_path_func(JSContext *cx,JSObjec
 		}
 	}
 	
-	*rval=INT_TO_JSVAL(idx);
+	*rval=script_int_to_value(idx);
 	
 	return(JS_TRUE);
 }
@@ -249,7 +251,28 @@ JSBool js_map_node_next_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	int				idx;
 	
 	idx=map_find_next_node_in_path(&map,script_value_to_int(argv[0]),script_value_to_int(argv[1]));
-	*rval=INT_TO_JSVAL(idx);
+	*rval=script_int_to_value(idx);
+
+	return(JS_TRUE);
+}
+
+JSBool js_map_node_get_adjacent_nodes_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				n,cnt,link[max_node_link];
+	node_type		*node;
+
+	node=script_find_node_from_idx_arg(argv[0]);
+	if (node==NULL) return(JS_FALSE);
+
+	cnt=0;
+
+	for (n=0;n!=max_node_link;n++) {
+		if (node->link[n]!=-1) {
+			link[cnt++]=(int)node->link[n];
+		}
+	}
+
+	*rval=script_int_array_to_value(cnt,link);
 
 	return(JS_TRUE);
 }
@@ -299,7 +322,7 @@ JSBool js_map_node_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 		// get distance
 		
-	*rval=INT_TO_JSVAL(distance_get(node->pnt.x,node->pnt.y,node->pnt.z,x,y,z));
+	*rval=script_int_to_value(distance_get(node->pnt.x,node->pnt.y,node->pnt.z,x,y,z));
 	
 	return(JS_TRUE);
 }

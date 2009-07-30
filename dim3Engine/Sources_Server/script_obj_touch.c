@@ -99,7 +99,7 @@ JSBool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->touch.obj_uid);
+	*vp=script_int_to_value(obj->touch.obj_uid);
 	
 	return(JS_TRUE);
 }

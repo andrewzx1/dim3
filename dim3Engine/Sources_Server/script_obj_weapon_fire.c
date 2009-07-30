@@ -104,7 +104,7 @@ JSBool js_obj_weapon_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->weapon_fire.method);
+	*vp=script_int_to_value(obj->weapon_fire.method);
 	
 	return(JS_TRUE);
 }

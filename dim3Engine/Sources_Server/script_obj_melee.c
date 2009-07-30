@@ -136,7 +136,7 @@ JSBool js_obj_melee_get_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->melee.radius);
+	*vp=script_int_to_value(obj->melee.radius);
 	
 	return(JS_TRUE);
 }
@@ -146,7 +146,7 @@ JSBool js_obj_melee_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->melee.distance);
+	*vp=script_int_to_value(obj->melee.distance);
 	
 	return(JS_TRUE);
 }
@@ -156,7 +156,7 @@ JSBool js_obj_melee_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->melee.damage);
+	*vp=script_int_to_value(obj->melee.damage);
 	
 	return(JS_TRUE);
 }
@@ -166,7 +166,7 @@ JSBool js_obj_melee_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=INT_TO_JSVAL(obj->melee.force);
+	*vp=script_int_to_value(obj->melee.force);
 	
 	return(JS_TRUE);
 }
@@ -204,7 +204,7 @@ JSBool js_obj_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->melee.radius=JSVAL_TO_INT(*vp);
+	obj->melee.radius=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -214,7 +214,7 @@ JSBool js_obj_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->melee.distance=JSVAL_TO_INT(*vp);
+	obj->melee.distance=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -224,7 +224,7 @@ JSBool js_obj_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->melee.damage=JSVAL_TO_INT(*vp);
+	obj->melee.damage=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
@@ -234,7 +234,7 @@ JSBool js_obj_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->melee.force=JSVAL_TO_INT(*vp);
+	obj->melee.force=script_value_to_int(*vp);
 	
 	return(JS_TRUE);
 }
