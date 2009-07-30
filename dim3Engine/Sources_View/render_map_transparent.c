@@ -192,6 +192,7 @@ void render_transparent_mesh_simple(void)
 		// we can optimize state changes
 
 	cur_additive=FALSE;
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	enable=FALSE;
 
@@ -206,9 +207,10 @@ void render_transparent_mesh_simple(void)
 			// skip meshes or polys with no shaders
 			// unless debug is on
 
-		if ((!dim3_debug) && (!mesh->draw.has_no_shader)) continue;
-		if ((!dim3_debug) && (poly->draw.shader_on)) continue;
-
+		if (!dim3_debug) {
+			if (poly->draw.shader_on) continue;
+		}
+		
 			// time to enable color array?
 
 		if (!enable) {
@@ -262,6 +264,7 @@ void render_transparent_mesh_shader(void)
 		// we can optimize state changes
 
 	cur_additive=FALSE;
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 		// start shaders
 
@@ -273,7 +276,7 @@ void render_transparent_mesh_shader(void)
 
 			// skip meshes or polys with no shaders
 
-		if ((mesh->draw.has_no_shader) || (!poly->draw.shader_on)) continue;
+		if (!poly->draw.shader_on) continue;
 
 			// need to change texture blending?
 
@@ -293,11 +296,11 @@ void render_transparent_mesh_shader(void)
 			// draw shader
 
 		if (!mesh->flag.hilite) {
-			gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,light_idx);
+			gl_lights_build_from_poly(sort_list[n].mesh_idx,poly,light_idx);
 			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,poly->alpha,light_idx,NULL,NULL);
 		}
 		else {
-			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,NULL,&poly->box.mid,NULL);
+			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,poly->alpha,NULL,&poly->box.mid,NULL);
 		}
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
