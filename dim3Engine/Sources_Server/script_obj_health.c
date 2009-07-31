@@ -43,12 +43,14 @@ JSBool js_obj_health_get_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsva
 JSBool js_obj_health_get_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_get_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_get_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_health_get_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_set_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_set_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_set_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_set_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_set_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_set_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_health_set_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_health_remove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_health_reset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -61,6 +63,7 @@ script_js_property	obj_health_props[]={
 							{"recoverAmount",			js_obj_health_get_recoverAmount,			js_obj_health_set_recoverAmount},
 							{"fallDamageMinimumHeight",	js_obj_health_get_fallDamageMinimumHeight,	js_obj_health_set_fallDamageMinimumHeight},
 							{"fallDamageFactor",		js_obj_health_get_fallDamageFactor,			js_obj_health_set_fallDamageFactor},
+							{"factor",					js_obj_health_get_factor,					js_obj_health_set_factor},
 							{0}};
 							
 script_js_function	obj_health_functions[]={
@@ -184,6 +187,16 @@ JSBool js_obj_health_get_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
+JSBool js_obj_health_get_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->status.health_factor);
+	
+	return(JS_TRUE);
+}
+
 /* =======================================================
 
       Setters
@@ -247,6 +260,16 @@ JSBool js_obj_health_set_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->fall.damage_factor=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_health_set_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->status.health_factor=script_value_to_float(*vp);
 	
 	return(JS_TRUE);
 }

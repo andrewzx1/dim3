@@ -425,7 +425,8 @@ typedef struct		{
 					} hud_score_type;
 
 typedef struct		{
-						char					name[name_str_len],file[name_str_len];
+						char					name[name_str_len],model_name[name_str_len],
+												param[name_str_len];
 					} hud_player_model_type;
 
 typedef struct		{

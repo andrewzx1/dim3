@@ -36,6 +36,7 @@ and can be sold or given away.
 
 extern server_type			server;
 extern js_type				js;
+extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -44,16 +45,22 @@ JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval i
 JSBool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_setting_get_characterName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_setting_get_characterModel(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_setting_get_characterParameter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	multiplayer_setting_props[]={
-							{"on",					js_multiplayer_setting_get_on,				NULL},
-							{"type",				js_multiplayer_setting_get_type,			NULL},
-							{"teamPlay",			js_multiplayer_setting_get_teamPlay,		NULL},
+							{"on",					js_multiplayer_setting_get_on,					NULL},
+							{"type",				js_multiplayer_setting_get_type,				NULL},
+							{"teamPlay",			js_multiplayer_setting_get_teamPlay,			NULL},
+							{"characterName",		js_multiplayer_setting_get_characterName,		NULL},
+							{"characterModel",		js_multiplayer_setting_get_characterModel,		NULL},
+							{"characterParameter",	js_multiplayer_setting_get_characterParameter,	NULL},
 							{0}};
 
 script_js_function	multiplayer_setting_functions[]={
-							{"checkOption",			js_multiplayer_setting_check_option_func,	1},
+							{"checkOption",			js_multiplayer_setting_check_option_func,		1},
 							{0}};
 
 JSClass				*multiplayer_setting_class;
@@ -128,6 +135,42 @@ JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval i
 		*vp=script_bool_to_value(net_setup.games[net_setup.game_idx].use_teams);
 	}
 	
+	return(JS_TRUE);
+}
+
+JSBool js_multiplayer_setting_get_characterName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	if (hud.model.nmodel==0) {
+		*vp=script_string_to_value("Player");
+	}
+	else {
+		*vp=script_string_to_value(hud.model.models[setup.network.player_model_idx].name);
+	}
+
+	return(JS_TRUE);
+}
+
+JSBool js_multiplayer_setting_get_characterModel(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	if (hud.model.nmodel==0) {
+		*vp=script_string_to_value("Player");
+	}
+	else {
+		*vp=script_string_to_value(hud.model.models[setup.network.player_model_idx].model_name);
+	}
+
+	return(JS_TRUE);
+}
+
+JSBool js_multiplayer_setting_get_characterParameter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	if (hud.model.nmodel==0) {
+		*vp=script_null_to_value();
+	}
+	else {
+		*vp=script_string_to_value(hud.model.models[setup.network.player_model_idx].param);
+	}
+
 	return(JS_TRUE);
 }
 

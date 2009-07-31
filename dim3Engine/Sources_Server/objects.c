@@ -603,6 +603,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->status.health=obj->status.start_health=obj->status.max_health=100;
 	obj->status.health_recover_tick=obj->status.health_recover_count=0;
 	obj->status.health_recover_amount=1;
+	obj->status.health_factor=1.0f;
 	
 	object_clear_draw(&obj->draw);
 	obj->ambient.on=FALSE;
