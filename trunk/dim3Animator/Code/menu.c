@@ -170,6 +170,8 @@ bool save_binary(void)
 
 void reset_model_open(void)
 {
+	CFStringRef						cfstr;
+	
     ang_y=180;
 	ang_x=0;
 	shift_x=shift_y=0;
@@ -186,6 +188,10 @@ void reset_model_open(void)
 	
 	cur_animate=-1;
 	if (model.nanimate!=0) cur_animate=0;
+	
+	cfstr=CFStringCreateWithCString(kCFAllocatorDefault,filename,kCFStringEncodingMacRoman);
+	SetWindowTitleWithCFString(model_wind,cfstr);
+	CFRelease(cfstr);
 	
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
@@ -233,7 +239,6 @@ void new_model_xml(void)
 		return;
 	}
 	
-	
 	InitCursor();
 	
 		// finish
@@ -265,6 +270,7 @@ void open_model_xml(void)
 		// finish
 		
 	fileopen=TRUE;
+	strcpy(filename,file_name);
 	
 	reset_model_open();
 }
