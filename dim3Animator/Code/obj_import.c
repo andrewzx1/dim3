@@ -45,7 +45,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 {
 	int						i,k,t,nvertex,ntrig,nobj_uv,nobj_normal,nline,ntexture,texture_idx,
 							pvtx[obj_max_face_vertex],npt;
-	char					txt[256],*c,vstr[256],vtstr[256],material_name[256];
+	char					txt[256],*c,vstr[256],vtstr[256],material_name[256],last_material_name[256];
     float					*gx,*gy,pgx[obj_max_face_vertex],pgy[obj_max_face_vertex];
 	bool					single_material,first_material;
 	model_vertex_type		*vertex,*normal_vertex;
@@ -192,6 +192,8 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
     
     ntrig=0;
 	trig=model.meshes[cur_mesh].trigs;
+	
+	last_material_name[0]=0x0;
         
     for (i=0;i!=nline;i++) {
 
@@ -201,9 +203,20 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             
         if (strcmp(txt,"usemtl")==0) {
 		
-				// single material?
+            textdecode_get_piece(i,1,material_name);
+		
+			if (!first_material) {
+			
+					// single material?
 				
-			if ((!first_material) && (single_material)) continue;
+				if (single_material) continue;
+			
+					// same as last material?
+				
+				if (strcmp(material_name,last_material_name)==0) continue;
+				
+				strcpy(last_material_name,material_name);
+			}
             
                 // close last material
             
@@ -215,7 +228,6 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             
                 // start new material
              
-            textdecode_get_piece(i,1,material_name);
             texture_idx=texture_pick(material_name,err_str);
 			if (texture_idx==-1) {
 				textdecode_close();

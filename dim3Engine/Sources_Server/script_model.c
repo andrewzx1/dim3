@@ -273,10 +273,10 @@ JSBool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 JSBool js_model_get_player_character_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	if (hud.model.nmodel==0) {
-		script_value_to_string(*rval,"Player",name_str_len);
+		*rval=script_string_to_value("Player");
 	}
 	else {
-		script_value_to_string(*rval,hud.model.models[setup.network.player_model_idx].file,name_str_len);
+		*rval=script_string_to_value(hud.model.models[setup.network.player_model_idx].file);
 	}
 
 	return(JS_TRUE);
