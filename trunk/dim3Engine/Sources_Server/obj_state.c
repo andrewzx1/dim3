@@ -383,6 +383,10 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 		// don't re-enter damage calls
 		
 	if (obj->damage.in_damage) return;
+
+		// reduce any damage
+
+	damage=(int)(((float)damage)*obj->status.health_factor);
 	
         // health
 		

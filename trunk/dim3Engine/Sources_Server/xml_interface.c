@@ -1037,7 +1037,8 @@ void read_settings_interface(void)
 		
 		while (player_model_tag!=-1) {
 			xml_get_attribute_text(player_model_tag,"name",hud.model.models[hud.model.nmodel].name,name_str_len);
-			xml_get_attribute_text(player_model_tag,"file",hud.model.models[hud.model.nmodel].file,name_str_len);
+			xml_get_attribute_text(player_model_tag,"model",hud.model.models[hud.model.nmodel].model_name,name_str_len);
+			xml_get_attribute_text(player_model_tag,"parameter",hud.model.models[hud.model.nmodel].param,name_str_len);
 			hud.model.nmodel++;
 			player_model_tag=xml_findnextchild(player_model_tag);
 		}
