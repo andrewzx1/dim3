@@ -802,7 +802,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						uid,bind,team_idx,tint_color_idx,spawn_idx,spawn_mesh_idx,
+						int						uid,bind,team_idx,tint_color_idx,character_idx,spawn_idx,spawn_mesh_idx,
 												count,input_mode,air_mode,liquid_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
 												last_move_animation_event,last_turn_animation_event;

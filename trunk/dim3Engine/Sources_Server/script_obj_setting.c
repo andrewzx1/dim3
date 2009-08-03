@@ -33,11 +33,15 @@ and can be sold or given away.
 #include "objects.h"
 
 extern js_type			js;
+extern hud_type			hud;
 
 JSBool js_obj_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_characterName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_characterModel(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_characterParameter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_get_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_setting_get_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -106,6 +110,9 @@ JSBool js_obj_clear_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 script_js_property	obj_setting_props[]={
 							{"id",						js_obj_setting_get_id,						NULL},
 							{"name",					js_obj_setting_get_name,					NULL},
+							{"characterName",			js_obj_setting_get_characterName,			NULL},
+							{"characterModel",			js_obj_setting_get_characterModel,			NULL},
+							{"characterParameter",		js_obj_setting_get_characterParameter,		NULL},
 							{"team",					js_obj_setting_get_team,					js_obj_setting_set_team},
 							{"hidden",					js_obj_setting_get_hidden,					js_obj_setting_set_hidden},
 							{"suspend",					js_obj_setting_get_suspend,					js_obj_setting_set_suspend},
@@ -207,6 +214,51 @@ JSBool js_obj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_string_to_value(obj->name);
 	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_characterName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	if (hud.character.ncharacter==0) {
+		*vp=script_null_to_value();
+	}
+	else {
+		obj=object_find_uid(js.attach.thing_uid);
+		*vp=script_string_to_value(hud.character.characters[obj->character_idx].name);
+	}
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_characterModel(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	if (hud.character.ncharacter==0) {
+		*vp=script_null_to_value();
+	}
+	else {
+		obj=object_find_uid(js.attach.thing_uid);
+		*vp=script_string_to_value(hud.character.characters[obj->character_idx].model_name);
+	}
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_characterParameter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	if (hud.character.ncharacter==0) {
+		*vp=script_null_to_value();
+	}
+	else {
+		obj=object_find_uid(js.attach.thing_uid);
+		*vp=script_string_to_value(hud.character.characters[obj->character_idx].param);
+	}
+
 	return(JS_TRUE);
 }
 

@@ -255,6 +255,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			piece_duplicate();
 			return(noErr);
 			
+		case kCommandSelectMore:
+			piece_select_more();
+			return(noErr);
+			
 			// view menu
 			
 		case kCommandView3Panel:

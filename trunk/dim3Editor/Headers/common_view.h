@@ -122,6 +122,7 @@ extern void group_clear(int group_idx,bool delete_shift);
 extern void piece_duplicate(void);
 extern void piece_delete_face(void);
 extern void piece_delete(void);
+extern void piece_select_more(void);
 extern void piece_tesselate(void);
 extern void piece_resize(void);
 extern void piece_reposition(void);

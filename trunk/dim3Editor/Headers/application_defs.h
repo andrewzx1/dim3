@@ -51,6 +51,7 @@ and can be sold or given away.
 #define kCommandUndo						FOUR_CHAR_CODE('undo')
 #define kCommandDuplicate					FOUR_CHAR_CODE('pdup')
 #define kCommandDelete						FOUR_CHAR_CODE('pdel')
+#define kCommandSelectMore					FOUR_CHAR_CODE('selm')
 
 #define kCommandView3Panel					FOUR_CHAR_CODE('vw01')
 #define kCommandView4Panel					FOUR_CHAR_CODE('vw02')

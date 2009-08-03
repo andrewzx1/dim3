@@ -107,7 +107,7 @@ bool net_host_player_find_name(int remote_uid,char *name)
       
 ======================================================= */
 
-int net_host_player_join(d3socket sock,char *name,int tint_color_idx,char *deny_reason)
+int net_host_player_join(d3socket sock,char *name,int tint_color_idx,int character_idx,char *deny_reason)
 {
 	int						n,remote_uid;
 	net_host_player_type	*player;
@@ -147,6 +147,7 @@ int net_host_player_join(d3socket sock,char *name,int tint_color_idx,char *deny_
 	strcpy(player->name,name);
 	player->team_idx=net_team_none;
 	player->tint_color_idx=tint_color_idx;
+	player->character_idx=character_idx;
 
 	player->bot=FALSE;
 	
@@ -246,6 +247,7 @@ int net_host_bot_join(obj_type *obj)
 	strcpy(player->name,obj->name);
 	player->team_idx=obj->team_idx;
 	player->tint_color_idx=0;
+	player->character_idx=0;
 
 	player->bot=TRUE;
 	
@@ -398,6 +400,7 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 			obj_add->bot=htons((short)(player->bot?1:0));
 			obj_add->team_idx=htons((short)player->team_idx);
 			obj_add->tint_color_idx=htons((short)player->tint_color_idx);
+			obj_add->character_idx=htons((short)player->character_idx);
 			obj_add->score=htons((short)player->score);
 			obj_add->pnt_x=htonl(player->pnt.x);
 			obj_add->pnt_y=htonl(player->pnt.y);
