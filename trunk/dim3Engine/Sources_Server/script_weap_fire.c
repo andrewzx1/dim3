@@ -72,9 +72,9 @@ void script_free_weap_fire_object(void)
 	script_free_class(weap_fire_class);
 }
 
-void script_add_weap_fire_object(JSObject *parent_obj)
+JSObject* script_add_weap_fire_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,weap_fire_class,"fire",weap_fire_props,weap_fire_functions);
+	return(script_create_child_object(parent_obj,weap_fire_class,"fire",weap_fire_props,weap_fire_functions));
 }
 
 /* =======================================================

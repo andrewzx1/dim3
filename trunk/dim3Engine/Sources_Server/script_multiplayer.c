@@ -33,10 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-extern void script_add_multiplayer_setting_object(JSObject *parent_obj);
-extern void script_add_multiplayer_bot_object(JSObject *parent_obj);
-extern void script_add_multiplayer_score_object(JSObject *parent_obj);
-
 JSBool js_multiplayer_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
@@ -58,15 +54,9 @@ void script_free_global_multiplayer_object(void)
 	script_free_class(multiplayer_class);
 }
 
-void script_add_global_multiplayer_object(JSObject *parent_obj)
+JSObject* script_add_global_multiplayer_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"multiplayer",NULL,NULL,0);
-	
-	script_add_multiplayer_setting_object(j_obj);
-	script_add_multiplayer_bot_object(j_obj);
-	script_add_multiplayer_score_object(j_obj);
+	return(script_create_child_object(parent_obj,multiplayer_class,"multiplayer",NULL,NULL));
 }
 
 /* =======================================================

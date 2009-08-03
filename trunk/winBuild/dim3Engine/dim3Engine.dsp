@@ -434,6 +434,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_map_info.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_light.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\script_map_light_color.c
 # End Source File
 # Begin Source File

@@ -33,15 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-extern void script_add_interface_screen_object(JSObject *parent_obj);
-extern void script_add_interface_console_object(JSObject *parent_obj);
-extern void script_add_interface_text_object(JSObject *parent_obj);
-extern void script_add_interface_bitmap_object(JSObject *parent_obj);
-extern void script_add_interface_bar_object(JSObject *parent_obj);
-extern void script_add_interface_radar_object(JSObject *parent_obj);
-extern void script_add_interface_fade_object(JSObject *parent_obj);
-extern void script_add_interface_interaction_object(JSObject *parent_obj);
-
 JSBool js_interface_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
@@ -63,24 +54,9 @@ void script_free_global_interface_object(void)
 	script_free_class(interface_class);
 }
 
-void script_add_global_interface_object(JSObject *parent_obj)
+JSObject* script_add_global_interface_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-		// main object
-		
-	j_obj=JS_DefineObject(js.cx,parent_obj,"iface",NULL,NULL,0);
-	
-		// children objects
-		
-	script_add_interface_screen_object(j_obj);
-	script_add_interface_console_object(j_obj);
-	script_add_interface_text_object(j_obj);
-	script_add_interface_bitmap_object(j_obj);
-	script_add_interface_bar_object(j_obj);
-	script_add_interface_radar_object(j_obj);
-	script_add_interface_fade_object(j_obj);
-	script_add_interface_interaction_object(j_obj);
+	return(script_create_child_object(parent_obj,interface_class,"iface",NULL,NULL));
 }
 
 /* =======================================================

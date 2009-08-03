@@ -63,9 +63,9 @@ void script_free_utility_pack_object(void)
 	script_free_class(utility_pack_class);
 }
 
-void script_add_utility_pack_object(JSObject *parent_obj)
+JSObject* script_add_utility_pack_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,utility_pack_class,"pack",NULL,utility_pack_functions);
+	return(script_create_child_object(parent_obj,utility_pack_class,"pack",NULL,utility_pack_functions));
 }
 
 /* =======================================================

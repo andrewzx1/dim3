@@ -170,9 +170,9 @@ void script_free_obj_setting_object(void)
 	script_free_class(obj_setting_class);
 }
 
-void script_add_obj_setting_object(JSObject *parent_obj)
+JSObject* script_add_obj_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_setting_class,"setting",obj_setting_props,obj_setting_functions);
+	return(script_create_child_object(parent_obj,obj_setting_class,"setting",obj_setting_props,obj_setting_functions));
 }
 
 /* =======================================================

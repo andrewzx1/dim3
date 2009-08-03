@@ -82,9 +82,9 @@ void script_free_game_join_object(void)
 	script_free_class(game_join_class);
 }
 
-void script_add_game_join_object(JSObject *parent_obj)
+JSObject* script_add_game_join_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,game_join_class,"join",game_join_props,game_join_functions);
+	return(script_create_child_object(parent_obj,game_join_class,"join",game_join_props,game_join_functions));
 }
 
 /* =======================================================

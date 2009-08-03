@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Script: map object
+ Usage: Script: map.light object
 
 ***************************** License ********************************
 
@@ -31,12 +31,18 @@ and can be sold or given away.
 
 #include "scripts.h"
 
+extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_toggle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass				*map_class;
+script_js_function	map_light_functions[]={
+							{"toggle",				js_map_light_toggle_func,			2},
+							{0}};
+
+JSClass				*map_light_class;
 
 /* =======================================================
 
@@ -44,19 +50,19 @@ JSClass				*map_class;
       
 ======================================================= */
 
-void script_init_global_map_object(void)
+void script_init_map_light_object(void)
 {
-	map_class=script_create_class("map_class",js_map_get_property,js_map_set_property);
+	map_light_class=script_create_class("map_light_class",NULL,NULL);
 }
 
-void script_free_global_map_object(void)
+void script_free_map_light_object(void)
 {
-	script_free_class(map_class);
+	script_free_class(map_light_class);
 }
 
-JSObject* script_add_global_map_object(JSObject *parent_obj)
+JSObject* script_add_map_light_object(JSObject *parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_class,"map",NULL,NULL));
+	return(script_create_child_object(parent_obj,map_light_class,"light",NULL,map_light_functions));
 }
 
 /* =======================================================
@@ -65,13 +71,30 @@ JSObject* script_add_global_map_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_light_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_map_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_light_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
 
+/* =======================================================
+
+      Functions
+      
+======================================================= */
+
+JSBool js_map_light_toggle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	map_light_type		*map_light;
+
+	map_light=script_find_light_from_name(argv[0]);
+	if (map_light==NULL) return(JS_FALSE);
+	
+	map_light->on=script_value_to_bool(argv[1]);
+	
+	return(JS_TRUE);
+}

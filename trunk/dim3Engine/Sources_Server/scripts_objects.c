@@ -42,19 +42,64 @@ extern js_type			js;
 void script_initialize_classes(void)
 {
 	script_init_global_map_object();
+	script_init_map_action_object();
+	script_init_map_fog_object();
+	script_init_map_fog_color_object();
+	script_init_map_group_object();
+	script_init_map_info_object();
+	script_init_map_light_color_object();
+	script_init_map_movement_object();
+	script_init_map_node_object();
+	script_init_map_object_object();
+	script_init_map_setting_object();
+	script_init_map_spot_object();
+	script_init_map_light_object();
+
 	script_init_global_multiplayer_object();
+	script_init_multiplayer_bot_object();
+	script_init_multiplayer_score_object();
+	script_init_multiplayer_setting_object();
+
 	script_init_global_camera_object();
+	script_init_camera_angle_object();
+	script_init_camera_chase_object();
+	script_init_camera_chase_angle_object();
+	script_init_camera_chase_offset_object();
+	script_init_camera_chase_slop_object();
+	script_init_camera_plane_object();
+	script_init_camera_position_object();
+	script_init_camera_setting_object();
+	script_init_camera_state_object();
+	script_init_camera_static_position_object();
+
 	script_init_global_interface_object();
+	script_init_interface_bar_object();
+	script_init_interface_bitmap_object();
+	script_init_interface_console_object();
+	script_init_interface_fade_object();
+	script_init_interface_interaction_object();
+	script_init_interface_radar_object();
+	script_init_interface_screen_object();
+	script_init_interface_text_object();
+
 	script_init_global_data_object();
+
 	script_init_global_sound_object();
+
 	script_init_global_spawn_object();
+
 	script_init_global_utility_object();
+	script_init_utility_angle_object();
+	script_init_utility_pack_object();
+	script_init_utility_point_object();
+	script_init_utility_random_object();
 
 	script_init_game_setting_object();
 	script_init_game_score_object();
 	script_init_game_join_object();
 
 	script_init_model_object();
+	script_init_event_object();
 
 	script_init_obj_setting_object();
 	script_init_obj_position_object();
@@ -97,6 +142,9 @@ void script_initialize_classes(void)
 	script_init_weap_hand_angle_object();
 	script_init_weap_projectile_object();
 	script_init_weap_crosshair_object();
+	script_init_weap_crosshair_color_object();
+	script_init_weap_crosshair_empty_color_object();
+	script_init_weap_crosshair_pickup_color_object();
 	script_init_weap_ammo_object();
 	script_init_weap_alt_ammo_object();
 	script_init_weap_kickback_object();
@@ -105,6 +153,7 @@ void script_initialize_classes(void)
 	script_init_weap_fire_object();
 	script_init_weap_dual_object();
 	script_init_weap_target_object();
+	script_init_weap_target_color_object();
 	script_init_weap_zoom_object();
 
 	script_init_proj_setting_object();
@@ -119,26 +168,69 @@ void script_initialize_classes(void)
 	script_init_proj_size_object();
 	script_init_proj_mark_object();
 	script_init_proj_melee_object();
-
-	script_init_event_object();
 }
 
 void script_release_classes(void)
 {
 	script_free_global_map_object();
+	script_free_map_action_object();
+	script_free_map_fog_object();
+	script_free_map_fog_color_object();
+	script_free_map_group_object();
+	script_free_map_info_object();
+	script_free_map_light_color_object();
+	script_free_map_movement_object();
+	script_free_map_node_object();
+	script_free_map_object_object();
+	script_free_map_setting_object();
+	script_free_map_spot_object();
+	script_free_map_light_object();
+
 	script_free_global_multiplayer_object();
+	script_free_multiplayer_bot_object();
+	script_free_multiplayer_score_object();
+	script_free_multiplayer_setting_object();
+
 	script_free_global_camera_object();
+	script_free_camera_angle_object();
+	script_free_camera_chase_object();
+	script_free_camera_chase_angle_object();
+	script_free_camera_chase_offset_object();
+	script_free_camera_chase_slop_object();
+	script_free_camera_plane_object();
+	script_free_camera_position_object();
+	script_free_camera_setting_object();
+	script_free_camera_state_object();
+	script_free_camera_static_position_object();
+
 	script_free_global_interface_object();
+	script_free_interface_bar_object();
+	script_free_interface_bitmap_object();
+	script_free_interface_console_object();
+	script_free_interface_fade_object();
+	script_free_interface_interaction_object();
+	script_free_interface_radar_object();
+	script_free_interface_screen_object();
+	script_free_interface_text_object();
+
 	script_free_global_data_object();
+
 	script_free_global_sound_object();
+
 	script_free_global_spawn_object();
+
 	script_free_global_utility_object();
+	script_free_utility_angle_object();
+	script_free_utility_pack_object();
+	script_free_utility_point_object();
+	script_free_utility_random_object();
 
 	script_free_game_setting_object();
 	script_free_game_score_object();
 	script_free_game_join_object();
 
 	script_free_model_object();
+	script_free_event_object();
 
 	script_free_obj_setting_object();
 	script_free_obj_position_object();
@@ -181,6 +273,9 @@ void script_release_classes(void)
 	script_free_weap_hand_angle_object();
 	script_free_weap_projectile_object();
 	script_free_weap_crosshair_object();
+	script_free_weap_crosshair_color_object();
+	script_free_weap_crosshair_empty_color_object();
+	script_free_weap_crosshair_pickup_color_object();
 	script_free_weap_ammo_object();
 	script_free_weap_alt_ammo_object();
 	script_free_weap_kickback_object();
@@ -189,6 +284,7 @@ void script_release_classes(void)
 	script_free_weap_fire_object();
 	script_free_weap_dual_object();
 	script_free_weap_target_object();
+	script_free_weap_target_color_object();
 	script_free_weap_zoom_object();
 
 	script_free_proj_setting_object();
@@ -203,8 +299,6 @@ void script_release_classes(void)
 	script_free_proj_size_object();
 	script_free_proj_mark_object();
 	script_free_proj_melee_object();
-
-	script_free_event_object();
 }
 
 /* =======================================================
@@ -249,6 +343,8 @@ void script_free_class(JSClass *cls)
 
 bool script_add_global_object(script_type *script,char *err_str)
 {
+	JSObject			*j_sub_obj;
+
 		// must remove other globals to stop parenting problems
 		
 	JS_SetGlobalObject(js.cx,NULL);
@@ -263,14 +359,58 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 		// set sub objects
 
-	script_add_global_map_object(script->global);
-	script_add_global_multiplayer_object(script->global);
-	script_add_global_camera_object(script->global);
-	script_add_global_interface_object(script->global);
+	j_sub_obj=script_add_global_map_object(script->global);
+	script_add_map_info_object(j_sub_obj);
+	script_add_map_setting_object(j_sub_obj);
+	script_add_map_light_color_object(j_sub_obj);
+	script_add_map_fog_object(j_sub_obj);
+	script_add_map_fog_color_object(j_sub_obj);
+	script_add_map_spot_object(j_sub_obj);
+	script_add_map_node_object(j_sub_obj);
+	script_add_map_object_object(j_sub_obj);
+	script_add_map_group_object(j_sub_obj);
+	script_add_map_movement_object(j_sub_obj);
+	script_add_map_action_object(j_sub_obj);
+	script_add_map_light_object(j_sub_obj);
+
+	j_sub_obj=script_add_global_multiplayer_object(script->global);
+	script_add_multiplayer_setting_object(j_sub_obj);
+	script_add_multiplayer_bot_object(j_sub_obj);
+	script_add_multiplayer_score_object(j_sub_obj);
+
+	j_sub_obj=script_add_global_camera_object(script->global);
+	script_add_camera_setting_object(j_sub_obj);
+	script_add_camera_position_object(j_sub_obj);
+	script_add_camera_angle_object(j_sub_obj);
+	script_add_camera_chase_object(j_sub_obj);
+	script_add_camera_chase_angle_object(j_sub_obj);
+	script_add_camera_chase_offset_object(j_sub_obj);
+	script_add_camera_chase_slop_object(j_sub_obj);
+	script_add_camera_static_position_object(j_sub_obj);
+	script_add_camera_plane_object(j_sub_obj);
+	script_add_camera_state_object(j_sub_obj);
+
+	j_sub_obj=script_add_global_interface_object(script->global);
+	script_add_interface_screen_object(j_sub_obj);
+	script_add_interface_console_object(j_sub_obj);
+	script_add_interface_text_object(j_sub_obj);
+	script_add_interface_bitmap_object(j_sub_obj);
+	script_add_interface_bar_object(j_sub_obj);
+	script_add_interface_radar_object(j_sub_obj);
+	script_add_interface_fade_object(j_sub_obj);
+	script_add_interface_interaction_object(j_sub_obj);
+
 	script_add_global_data_object(script->global);
+
 	script_add_global_sound_object(script->global);
+
 	script_add_global_spawn_object(script->global);
-	script_add_global_utility_object(script->global);
+
+	j_sub_obj=script_add_global_utility_object(script->global);
+	script_add_utility_angle_object(j_sub_obj);
+	script_add_utility_point_object(j_sub_obj);
+	script_add_utility_random_object(j_sub_obj);
+	script_add_utility_pack_object(j_sub_obj);
 	
 		// set global
 
@@ -294,7 +434,7 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 JSObject* script_create_main_object(attach_type *attach)
 {
-	JSObject		*j_obj;
+	JSObject		*j_obj,*j_sub_obj;
 
 	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
 	if (j_obj==NULL) return(NULL);
@@ -360,7 +500,10 @@ JSObject* script_create_main_object(attach_type *attach)
 			script_add_weap_hand_position_object(j_obj);
 			script_add_weap_hand_angle_object(j_obj);
 			script_add_weap_projectile_object(j_obj);
-			script_add_weap_crosshair_object(j_obj);
+			j_sub_obj=script_add_weap_crosshair_object(j_obj);
+				script_add_weap_crosshair_color_object(j_sub_obj);
+				script_add_weap_crosshair_empty_color_object(j_sub_obj);
+				script_add_weap_crosshair_pickup_color_object(j_sub_obj);
 			script_add_weap_kickback_object(j_obj);
 			script_add_weap_recoil_object(j_obj);
 			script_add_weap_ammo_object(j_obj);
@@ -368,7 +511,8 @@ JSObject* script_create_main_object(attach_type *attach)
 			script_add_weap_melee_object(j_obj);
 			script_add_weap_fire_object(j_obj);
 			script_add_weap_dual_object(j_obj);
-			script_add_weap_target_object(j_obj);
+			j_sub_obj=script_add_weap_target_object(j_obj);
+				script_add_weap_target_color_object(j_sub_obj);
 			script_add_weap_zoom_object(j_obj);
 			script_add_model_object(j_obj);
 			break;

@@ -36,6 +36,7 @@ char					media_type_str[][32]={"none","story","title","movie",""},
 						gl_fog_type_str[][32]={"linear","exp","exp2",""},
 						liquid_tide_direction_str[][32]={"horizontal","vertical",""},
                         light_type_str[][32]={"normal","blink","glow","pulse","flicker","failing",""},
+                        light_filter_str[][32]={"none","mesh_only","not_mesh",""},
                         light_direction_str[][32]={"all","neg_x","pos_x","neg_y","pos_y","neg_z","pos_z",""},
 						skill_type_str[][32]={"easy","medium","hard",""},
 						spawn_type_str[][32]={"always","single_player","multiplayer",""};

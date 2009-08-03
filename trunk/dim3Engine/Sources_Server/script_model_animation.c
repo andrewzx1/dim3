@@ -80,9 +80,9 @@ void script_free_model_animation_object(void)
 	script_free_class(model_animation_class);
 }
 
-void script_add_model_animation_object(JSObject *parent_obj)
+JSObject* script_add_model_animation_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,model_animation_class,"animation",model_animation_props,model_animation_functions);
+	return(script_create_child_object(parent_obj,model_animation_class,"animation",model_animation_props,model_animation_functions));
 }
 
 /* =======================================================

@@ -93,9 +93,9 @@ void script_free_weap_melee_object(void)
 	script_free_class(weap_melee_class);
 }
 
-void script_add_weap_melee_object(JSObject *parent_obj)
+JSObject* script_add_weap_melee_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,weap_melee_class,"melee",weap_melee_props,weap_melee_functions);
+	return(script_create_child_object(parent_obj,weap_melee_class,"melee",weap_melee_props,weap_melee_functions));
 }
 
 /* =======================================================

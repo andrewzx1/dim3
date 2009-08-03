@@ -76,9 +76,9 @@ void script_free_map_movement_object(void)
 	script_free_class(map_movement_class);
 }
 
-void script_add_map_movement_object(JSObject *parent_obj)
+JSObject* script_add_map_movement_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,map_movement_class,"movement",NULL,map_movement_functions);
+	return(script_create_child_object(parent_obj,map_movement_class,"movement",NULL,map_movement_functions));
 }
 
 /* =======================================================

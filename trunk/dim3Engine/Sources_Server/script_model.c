@@ -92,7 +92,7 @@ void script_free_model_object(void)
 	script_free_class(model_class);
 }
 
-void script_add_model_object(JSObject *parent_obj)
+JSObject* script_add_model_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
 
@@ -109,6 +109,8 @@ void script_add_model_object(JSObject *parent_obj)
 	script_add_model_mesh_object(j_obj);
 	script_add_model_bone_object(j_obj);
 	script_add_model_fill_object(j_obj);
+	
+	return(j_obj);
 }
 
 /* =======================================================

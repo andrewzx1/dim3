@@ -62,9 +62,9 @@ void script_free_interface_screen_object(void)
 	script_free_class(interface_screen_class);
 }
 
-void script_add_interface_screen_object(JSObject *parent_obj)
+JSObject* script_add_interface_screen_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,interface_screen_class,"screen",interface_screen_props,NULL);
+	return(script_create_child_object(parent_obj,interface_screen_class,"screen",interface_screen_props,NULL));
 }
 
 /* =======================================================

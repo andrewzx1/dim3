@@ -68,9 +68,9 @@ void script_free_camera_chase_slop_object(void)
 	script_free_class(camera_chase_slop_class);
 }
 
-void script_add_camera_chase_slop_object(JSObject *parent_obj)
+JSObject* script_add_camera_chase_slop_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,camera_chase_slop_class,"chaseSlop",camera_chase_slop_props,NULL);
+	return(script_create_child_object(parent_obj,camera_chase_slop_class,"chaseSlop",camera_chase_slop_props,NULL));
 }
 
 /* =======================================================

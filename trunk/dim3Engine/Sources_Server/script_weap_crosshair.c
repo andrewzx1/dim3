@@ -34,10 +34,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-extern void script_add_weap_crosshair_color_object(JSObject *parent_obj);
-extern void script_add_weap_crosshair_empty_color_object(JSObject *parent_obj);
-extern void script_add_weap_crosshair_pickup_color_object(JSObject *parent_obj);
-							
 JSBool js_weap_crosshair_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_crosshair_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_crosshair_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -80,17 +76,9 @@ void script_free_weap_crosshair_object(void)
 	script_free_class(weap_crosshair_class);
 }
 
-void script_add_weap_crosshair_object(JSObject *parent_obj)
+JSObject* script_add_weap_crosshair_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-	
-	j_obj=script_create_child_object(parent_obj,weap_crosshair_class,"crosshair",weap_crosshair_props,NULL);
-	
-		// crosshair color objects
-		
-	script_add_weap_crosshair_color_object(j_obj);
-	script_add_weap_crosshair_empty_color_object(j_obj);
-	script_add_weap_crosshair_pickup_color_object(j_obj);
+	return(script_create_child_object(parent_obj,weap_crosshair_class,"crosshair",weap_crosshair_props,NULL));
 }
 
 /* =======================================================

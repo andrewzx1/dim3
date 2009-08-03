@@ -75,9 +75,9 @@ void script_free_multiplayer_setting_object(void)
 	script_free_class(multiplayer_setting_class);
 }
 
-void script_add_multiplayer_setting_object(JSObject *parent_obj)
+JSObject* script_add_multiplayer_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,multiplayer_setting_class,"setting",multiplayer_setting_props,multiplayer_setting_functions);
+	return(script_create_child_object(parent_obj,multiplayer_setting_class,"setting",multiplayer_setting_props,multiplayer_setting_functions));
 }
 
 /* =======================================================

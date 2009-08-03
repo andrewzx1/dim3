@@ -120,12 +120,14 @@ void map_auto_generate_lights(map_type *map)
 		lit->pnt.y=y;
 		lit->pnt.z=z;
 		lit->type=lt_normal;
+		lit->filter=lf_none;
 		lit->direction=ld_all;
 		lit->col.r=r;
 		lit->col.g=g;
 		lit->col.b=b;
 		lit->intensity=intensity;
 		lit->exponent=1.0f;
+		lit->name[0]=0x0;
 		lit->on=TRUE;
 
 		portal++;

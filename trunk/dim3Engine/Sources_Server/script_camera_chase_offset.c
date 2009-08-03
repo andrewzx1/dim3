@@ -68,9 +68,9 @@ void script_free_camera_chase_offset_object(void)
 	script_free_class(camera_chase_offset_class);
 }
 
-void script_add_camera_chase_offset_object(JSObject *parent_obj)
+JSObject* script_add_camera_chase_offset_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,camera_chase_offset_class,"chaseOffset",camera_chase_offset_props,NULL);
+	return(script_create_child_object(parent_obj,camera_chase_offset_class,"chaseOffset",camera_chase_offset_props,NULL));
 }
 
 /* =======================================================

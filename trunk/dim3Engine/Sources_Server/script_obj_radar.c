@@ -71,9 +71,9 @@ void script_free_obj_radar_object(void)
 	script_free_class(obj_radar_class);
 }
 
-void script_add_obj_radar_object(JSObject *parent_obj)
+JSObject* script_add_obj_radar_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_radar_class,"radar",obj_radar_props,NULL);
+	return(script_create_child_object(parent_obj,obj_radar_class,"radar",obj_radar_props,NULL));
 }
 
 /* =======================================================

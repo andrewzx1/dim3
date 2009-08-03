@@ -70,9 +70,9 @@ void script_free_obj_vert_speed_object(void)
 	script_free_class(obj_vert_speed_class);
 }
 
-void script_add_obj_vert_speed_object(JSObject *parent_obj)
+JSObject* script_add_obj_vert_speed_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_vert_speed_class,"verticalSpeed",obj_vert_speed_props,NULL);
+	return(script_create_child_object(parent_obj,obj_vert_speed_class,"verticalSpeed",obj_vert_speed_props,NULL));
 }
 
 /* =======================================================

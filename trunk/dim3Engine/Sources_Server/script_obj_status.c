@@ -86,9 +86,9 @@ void script_free_obj_status_object(void)
 	script_free_class(obj_status_class);
 }
 
-void script_add_obj_status_object(JSObject *parent_obj)
+JSObject* script_add_obj_status_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_status_class,"status",obj_status_props,obj_status_functions);
+	return(script_create_child_object(parent_obj,obj_status_class,"status",obj_status_props,obj_status_functions));
 }
 
 /* =======================================================

@@ -101,9 +101,9 @@ void script_free_proj_action_object(void)
 	script_free_class(proj_action_class);
 }
 
-void script_add_proj_action_object(JSObject *parent_obj)
+JSObject* script_add_proj_action_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,proj_action_class,"action",proj_action_props,proj_action_functions);
+	return(script_create_child_object(parent_obj,proj_action_class,"action",proj_action_props,proj_action_functions));
 }
 
 /* =======================================================

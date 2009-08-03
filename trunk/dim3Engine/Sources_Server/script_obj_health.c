@@ -90,9 +90,9 @@ void script_free_obj_health_object(void)
 	script_free_class(obj_health_class);
 }
 
-void script_add_obj_health_object(JSObject *parent_obj)
+JSObject* script_add_obj_health_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_health_class,"health",obj_health_props,obj_health_functions);
+	return(script_create_child_object(parent_obj,obj_health_class,"health",obj_health_props,obj_health_functions));
 }
 
 /* =======================================================

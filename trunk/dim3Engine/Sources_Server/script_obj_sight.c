@@ -81,9 +81,9 @@ void script_free_obj_sight_object(void)
 	script_free_class(obj_sight_class);
 }
 
-void script_add_obj_sight_object(JSObject *parent_obj)
+JSObject* script_add_obj_sight_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_sight_class,"sight",obj_sight_props,obj_sight_functions);
+	return(script_create_child_object(parent_obj,obj_sight_class,"sight",obj_sight_props,obj_sight_functions));
 }
 
 /* =======================================================

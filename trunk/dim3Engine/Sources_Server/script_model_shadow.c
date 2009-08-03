@@ -60,9 +60,9 @@ void script_free_model_shadow_object(void)
 	script_free_class(model_shadow_class);
 }
 
-void script_add_model_shadow_object(JSObject *parent_obj)
+JSObject* script_add_model_shadow_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,model_shadow_class,"shadow",model_shadow_props,NULL);
+	return(script_create_child_object(parent_obj,model_shadow_class,"shadow",model_shadow_props,NULL));
 }
 
 /* =======================================================

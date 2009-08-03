@@ -96,9 +96,9 @@ void script_free_obj_motion_vector_object(void)
 	script_free_class(obj_motion_vector_class);
 }
 
-void script_add_obj_motion_vector_object(JSObject *parent_obj)
+JSObject* script_add_obj_motion_vector_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_motion_vector_class,"motionVector",obj_motion_vector_props,obj_motion_vector_functions);
+	return(script_create_child_object(parent_obj,obj_motion_vector_class,"motionVector",obj_motion_vector_props,obj_motion_vector_functions));
 }
 
 /* =======================================================

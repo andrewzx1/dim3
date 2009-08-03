@@ -69,9 +69,9 @@ void script_free_multiplayer_bot_object(void)
 	script_free_class(multiplayer_bot_class);
 }
 
-void script_add_multiplayer_bot_object(JSObject *parent_obj)
+JSObject* script_add_multiplayer_bot_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,multiplayer_bot_class,"bot",multiplayer_bot_props,multiplayer_bot_functions);
+	return(script_create_child_object(parent_obj,multiplayer_bot_class,"bot",multiplayer_bot_props,multiplayer_bot_functions));
 }
 
 /* =======================================================

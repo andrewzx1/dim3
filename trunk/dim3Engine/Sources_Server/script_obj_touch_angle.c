@@ -64,9 +64,9 @@ void script_free_obj_touch_angle_object(void)
 	script_free_class(obj_touch_angle_class);
 }
 
-void script_add_obj_touch_angle_object(JSObject *parent_obj)
+JSObject* script_add_obj_touch_angle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_touch_angle_class,"touchAngle",obj_touch_angle_props,NULL);
+	return(script_create_child_object(parent_obj,obj_touch_angle_class,"touchAngle",obj_touch_angle_props,NULL));
 }
 
 /* =======================================================
