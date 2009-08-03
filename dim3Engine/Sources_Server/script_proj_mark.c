@@ -70,9 +70,9 @@ void script_free_proj_mark_object(void)
 	script_free_class(proj_mark_class);
 }
 
-void script_add_proj_mark_object(JSObject *parent_obj)
+JSObject* script_add_proj_mark_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,proj_mark_class,"mark",proj_mark_props,NULL);
+	return(script_create_child_object(parent_obj,proj_mark_class,"mark",proj_mark_props,NULL));
 }
 
 /* =======================================================

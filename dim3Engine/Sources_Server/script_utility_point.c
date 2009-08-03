@@ -67,9 +67,9 @@ void script_free_utility_point_object(void)
 	script_free_class(utility_point_class);
 }
 
-void script_add_utility_point_object(JSObject *parent_obj)
+JSObject* script_add_utility_point_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,utility_point_class,"point",NULL,utility_point_functions);
+	return(script_create_child_object(parent_obj,utility_point_class,"point",NULL,utility_point_functions));
 }
 
 /* =======================================================

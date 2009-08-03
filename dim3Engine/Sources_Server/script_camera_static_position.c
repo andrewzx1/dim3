@@ -75,9 +75,9 @@ void script_free_camera_static_position_object(void)
 	script_free_class(camera_static_position_class);
 }
 
-void script_add_camera_static_position_object(JSObject *parent_obj)
+JSObject* script_add_camera_static_position_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,camera_static_position_class,"staticPosition",camera_static_position_props,camera_static_position_functions);
+	return(script_create_child_object(parent_obj,camera_static_position_class,"staticPosition",camera_static_position_props,camera_static_position_functions));
 }
 
 /* =======================================================

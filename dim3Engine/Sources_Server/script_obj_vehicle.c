@@ -74,9 +74,9 @@ void script_free_obj_vehicle_object(void)
 	script_free_class(obj_vehicle_class);
 }
 
-void script_add_obj_vehicle_object(JSObject *parent_obj)
+JSObject* script_add_obj_vehicle_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_vehicle_class,"vehicle",obj_vehicle_props,obj_vehicle_functions);
+	return(script_create_child_object(parent_obj,obj_vehicle_class,"vehicle",obj_vehicle_props,obj_vehicle_functions));
 }
 
 /* =======================================================

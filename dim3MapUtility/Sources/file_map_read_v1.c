@@ -1281,8 +1281,11 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 
 					light->intensity*=map_enlarge;
 					
+					light->filter=lf_none;
 					light->exponent=1.0f;
 					light->direction=ld_all;
+
+					light->name[0]=0x0;
 				
 					light_tag=xml_findnextchild(light_tag);
 				}
@@ -1384,6 +1387,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					node->pnt.z=(node->pnt.z*map_enlarge)+(portal->z*map_enlarge);
 
 					node->follow_camera=FALSE;
+					node->use_shader=FALSE;
 					
 					node_tag=xml_findnextchild(node_tag);
 				}

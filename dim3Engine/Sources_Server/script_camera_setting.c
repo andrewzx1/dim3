@@ -69,9 +69,9 @@ void script_free_camera_setting_object(void)
 	script_free_class(camera_setting_class);
 }
 
-void script_add_camera_setting_object(JSObject *parent_obj)
+JSObject* script_add_camera_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,camera_setting_class,"setting",camera_setting_props,camera_setting_functions);
+	return(script_create_child_object(parent_obj,camera_setting_class,"setting",camera_setting_props,camera_setting_functions));
 }
 
 /* =======================================================

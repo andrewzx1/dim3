@@ -12,6 +12,8 @@ _map_find_random_spot
 _map_spot_clear_attach
 _map_spot_attach_object
 
+_map_find_light
+
 _map_node_to_node_distance
 _map_find_node
 _map_find_nearest_node_by_point

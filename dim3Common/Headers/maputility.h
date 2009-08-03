@@ -108,6 +108,10 @@ extern char light_type_str[][32];
 #define lt_flicker											4
 #define lt_failing											5
 
+#define lf_none												0
+#define lf_mesh_only										1
+#define lf_not_mesh											2
+
 #define ld_all												0
 #define ld_neg_x											1
 #define ld_pos_x											2
@@ -341,9 +345,10 @@ typedef struct		{
 					} map_scenery_type;
 
 typedef struct		{
-						int									type,direction,intensity;
+						int									type,direction,intensity,filter;
 						float								exponent;
 						bool								on;
+						char								name[name_str_len];
 						d3pnt								pnt;
 						d3col								col;
 					} map_light_type;
@@ -398,7 +403,7 @@ typedef struct		{
 						short								link[max_node_link],
 															path_hint[max_node];
 						char								name[name_str_len];
-						bool								follow_camera;
+						bool								follow_camera,use_shader;
 						d3pnt								pnt;
 						d3ang								ang;
 						node_back_render_type				back_render;
@@ -579,6 +584,8 @@ extern void map_find_random_spot_clear(map_type *map,char *name,char *type);
 extern int map_find_random_spot(map_type *map,char *name,char *type);
 extern void map_spot_clear_attach(map_type *map);
 extern void map_spot_attach_object(spot_type *spot,char *name,char *type,char *script,char *params);
+
+extern int map_find_light(map_type *map,char *name);
 
 extern int map_node_to_node_distance(map_type *map,int from_idx,int to_idx);
 extern int map_find_node(map_type *map,char *name);

@@ -185,3 +185,24 @@ void map_spot_attach_object(spot_type *spot,char *name,char *type,char *script,c
 	spot->attach=TRUE;
 }
 
+/* =======================================================
+
+      Find Lights
+      
+======================================================= */
+
+int map_find_light(map_type *map,char *name)
+{
+	int					n,nlight;
+	map_light_type		*light;
+	
+	nlight=map->nlight;
+	light=map->lights;
+	
+	for (n=0;n!=nlight;n++) {
+		if (strcmp(light->name,name)==0) return(n);
+		light++;
+	}
+	
+	return(-1);
+}

@@ -90,9 +90,9 @@ void script_free_weap_zoom_object(void)
 	script_free_class(weap_zoom_class);
 }
 
-void script_add_weap_zoom_object(JSObject *parent_obj)
+JSObject* script_add_weap_zoom_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,weap_zoom_class,"zoom",weap_zoom_props,NULL);
+	return(script_create_child_object(parent_obj,weap_zoom_class,"zoom",weap_zoom_props,NULL));
 }
 
 /* =======================================================

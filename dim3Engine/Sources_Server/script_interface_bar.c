@@ -72,9 +72,9 @@ void script_free_interface_bar_object(void)
 	script_free_class(interface_bar_class);
 }
 
-void script_add_interface_bar_object(JSObject *parent_obj)
+JSObject* script_add_interface_bar_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,interface_bar_class,"bar",NULL,interface_bar_functions);
+	return(script_create_child_object(parent_obj,interface_bar_class,"bar",NULL,interface_bar_functions));
 }
 
 /* =======================================================

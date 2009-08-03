@@ -93,9 +93,9 @@ void script_free_obj_weapon_object(void)
 	script_free_class(obj_weapon_class);
 }
 
-void script_add_obj_weapon_object(JSObject *parent_obj)
+JSObject* script_add_obj_weapon_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_weapon_class,"weapon",NULL,obj_weapon_functions);
+	return(script_create_child_object(parent_obj,obj_weapon_class,"weapon",NULL,obj_weapon_functions));
 }
 
 /* =======================================================

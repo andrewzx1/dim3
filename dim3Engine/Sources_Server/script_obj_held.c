@@ -63,9 +63,9 @@ void script_free_obj_held_object(void)
 	script_free_class(obj_held_class);
 }
 
-void script_add_obj_held_object(JSObject *parent_obj)
+JSObject* script_add_obj_held_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_held_class,"held",NULL,obj_held_functions);
+	return(script_create_child_object(parent_obj,obj_held_class,"held",NULL,obj_held_functions));
 }
 
 /* =======================================================

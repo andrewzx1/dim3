@@ -63,9 +63,9 @@ void script_free_camera_state_object(void)
 	script_free_class(camera_state_class);
 }
 
-void script_add_camera_state_object(JSObject *parent_obj)
+JSObject* script_add_camera_state_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,camera_state_class,"state",NULL,camera_state_functions);
+	return(script_create_child_object(parent_obj,camera_state_class,"state",NULL,camera_state_functions));
 }
 
 /* =======================================================

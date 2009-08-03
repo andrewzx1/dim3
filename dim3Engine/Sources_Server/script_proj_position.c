@@ -64,9 +64,9 @@ void script_free_proj_position_object(void)
 	script_free_class(proj_position_class);
 }
 
-void script_add_proj_position_object(JSObject *parent_obj)
+JSObject* script_add_proj_position_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,proj_position_class,"position",proj_position_props,NULL);
+	return(script_create_child_object(parent_obj,proj_position_class,"position",proj_position_props,NULL));
 }
 
 /* =======================================================

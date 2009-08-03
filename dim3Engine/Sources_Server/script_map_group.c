@@ -76,10 +76,9 @@ void script_free_map_group_object(void)
 	script_free_class(map_group_class);
 }
 
-void script_add_map_group_object(JSObject *parent_obj)
+JSObject* script_add_map_group_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,map_group_class,"group",NULL,map_group_functions);
-	script_create_child_object(parent_obj,map_group_class,"segment",NULL,map_group_functions);	// depreciated; here for backwards compatiability -- supergumba
+	return(script_create_child_object(parent_obj,map_group_class,"group",NULL,map_group_functions));
 }
 
 /* =======================================================

@@ -15,6 +15,8 @@ EXPORTS
 	map_spot_clear_attach							@204
 	map_spot_attach_object							@205
 
+	map_find_light									@206
+
 	map_node_to_node_distance						@210
 	map_find_node									@211
 	map_find_nearest_node_by_point					@212

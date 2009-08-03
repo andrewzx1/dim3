@@ -80,9 +80,9 @@ void script_free_interface_bitmap_object(void)
 	script_free_class(interface_bitmap_class);
 }
 
-void script_add_interface_bitmap_object(JSObject *parent_obj)
+JSObject* script_add_interface_bitmap_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,interface_bitmap_class,"bitmap",NULL,interface_bitmap_functions);
+	return(script_create_child_object(parent_obj,interface_bitmap_class,"bitmap",NULL,interface_bitmap_functions));
 }
 
 /* =======================================================

@@ -88,9 +88,9 @@ void script_free_obj_watch_object(void)
 	script_free_class(obj_watch_class);
 }
 
-void script_add_obj_watch_object(JSObject *parent_obj)
+JSObject* script_add_obj_watch_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_watch_class,"watch",obj_watch_props,obj_watch_functions);
+	return(script_create_child_object(parent_obj,obj_watch_class,"watch",obj_watch_props,obj_watch_functions));
 }
 
 /* =======================================================

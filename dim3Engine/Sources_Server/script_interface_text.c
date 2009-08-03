@@ -85,9 +85,9 @@ void script_free_interface_text_object(void)
 	script_free_class(interface_text_class);
 }
 
-void script_add_interface_text_object(JSObject *parent_obj)
+JSObject* script_add_interface_text_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,interface_text_class,"text",NULL,interface_text_functions);
+	return(script_create_child_object(parent_obj,interface_text_class,"text",NULL,interface_text_functions));
 }
 
 /* =======================================================

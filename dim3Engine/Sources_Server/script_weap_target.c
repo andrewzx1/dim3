@@ -35,8 +35,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-extern void script_add_weap_target_color_object(JSObject *parent_obj);
-
 JSBool js_weap_target_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -77,15 +75,9 @@ void script_free_weap_target_object(void)
 	script_free_class(weap_target_class);
 }
 
-void script_add_weap_target_object(JSObject *parent_obj)
+JSObject* script_add_weap_target_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=script_create_child_object(parent_obj,weap_target_class,"target",weap_target_props,weap_target_functions);
-
-		// target color objects
-		
-	script_add_weap_target_color_object(j_obj);
+	return(script_create_child_object(parent_obj,weap_target_class,"target",weap_target_props,weap_target_functions));
 }
 
 /* =======================================================

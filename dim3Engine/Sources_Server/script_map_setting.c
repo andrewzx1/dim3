@@ -86,9 +86,9 @@ void script_free_map_setting_object(void)
 	script_free_class(map_setting_class);
 }
 
-void script_add_map_setting_object(JSObject *parent_obj)
+JSObject* script_add_map_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,map_setting_class,"setting",map_setting_props,map_setting_functions);
+	return(script_create_child_object(parent_obj,map_setting_class,"setting",map_setting_props,map_setting_functions));
 }
 
 /* =======================================================

@@ -81,9 +81,9 @@ void script_free_map_node_object(void)
 	script_free_class(map_node_class);
 }
 
-void script_add_map_node_object(JSObject *parent_obj)
+JSObject* script_add_map_node_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,map_node_class,"node",NULL,map_node_functions);
+	return(script_create_child_object(parent_obj,map_node_class,"node",NULL,map_node_functions));
 }
 
 /* =======================================================

@@ -101,9 +101,9 @@ void script_free_event_object(void)
 	script_free_class(event_class);
 }
 
-void script_add_event_object(JSObject *parent_obj)
+JSObject* script_add_event_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,event_class,"event",NULL,event_functions);
+	return(script_create_child_object(parent_obj,event_class,"event",NULL,event_functions));
 }
 
 /* =======================================================

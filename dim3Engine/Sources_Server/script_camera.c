@@ -34,17 +34,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-extern void script_add_camera_setting_object(JSObject *parent_obj);
-extern void script_add_camera_position_object(JSObject *parent_obj);
-extern void script_add_camera_angle_object(JSObject *parent_obj);
-extern void script_add_camera_chase_object(JSObject *parent_obj);
-extern void script_add_camera_chase_angle_object(JSObject *parent_obj);
-extern void script_add_camera_chase_offset_object(JSObject *parent_obj);
-extern void script_add_camera_chase_slop_object(JSObject *parent_obj);
-extern void script_add_camera_static_position_object(JSObject *parent_obj);
-extern void script_add_camera_plane_object(JSObject *parent_obj);
-extern void script_add_camera_state_object(JSObject *parent_obj);
-
 JSBool js_camera_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
@@ -66,22 +55,9 @@ void script_free_global_camera_object(void)
 	script_free_class(camera_class);
 }
 
-void script_add_global_camera_object(JSObject *parent_obj)
+JSObject* script_add_global_camera_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"camera",NULL,NULL,0);
-	
-	script_add_camera_setting_object(j_obj);
-	script_add_camera_position_object(j_obj);
-	script_add_camera_angle_object(j_obj);
-	script_add_camera_chase_object(j_obj);
-	script_add_camera_chase_angle_object(j_obj);
-	script_add_camera_chase_offset_object(j_obj);
-	script_add_camera_chase_slop_object(j_obj);
-	script_add_camera_static_position_object(j_obj);
-	script_add_camera_plane_object(j_obj);
-	script_add_camera_state_object(j_obj);
+	return(script_create_child_object(parent_obj,camera_class,"camera",NULL,NULL));
 }
 
 /* =======================================================

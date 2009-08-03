@@ -80,7 +80,7 @@ weapon_type* script_find_weapon_from_name_arg(obj_type *obj,jsval arg)
 
 /* =======================================================
 
-      Spots and Nodes
+      Spots, Nodes and Lights
       
 ======================================================= */
 
@@ -138,6 +138,22 @@ node_type* script_find_node_from_idx_arg(jsval arg)
 	}
 	
 	return(&map.nodes[idx]);
+}
+
+map_light_type* script_find_light_from_name(jsval arg)
+{
+	int				idx;
+	char			name[name_str_len];
+
+	script_value_to_string(arg,name,name_str_len);
+	
+	idx=map_find_light(&map,name);
+	if (idx==-1) {
+		JS_ReportError(js.cx,"No light exists with this name: %s",name);
+		return(NULL);
+	}
+	
+	return(&map.lights[idx]);
 }
 
 /* =======================================================

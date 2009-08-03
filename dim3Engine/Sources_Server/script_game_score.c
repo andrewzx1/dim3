@@ -78,9 +78,9 @@ void script_free_game_score_object(void)
 	script_free_class(game_score_class);
 }
 
-void script_add_game_score_object(JSObject *parent_obj)
+JSObject* script_add_game_score_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,game_score_class,"score",game_score_props,game_score_functions);
+	return(script_create_child_object(parent_obj,game_score_class,"score",game_score_props,game_score_functions));
 }
 
 /* =======================================================

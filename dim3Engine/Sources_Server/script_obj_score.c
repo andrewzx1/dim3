@@ -74,9 +74,9 @@ void script_free_obj_score_object(void)
 	script_free_class(obj_score_class);
 }
 
-void script_add_obj_score_object(JSObject *parent_obj)
+JSObject* script_add_obj_score_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_score_class,"score",obj_score_props,obj_score_functions);
+	return(script_create_child_object(parent_obj,obj_score_class,"score",obj_score_props,obj_score_functions));
 }
 
 /* =======================================================

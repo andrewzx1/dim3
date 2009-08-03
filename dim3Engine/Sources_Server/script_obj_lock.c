@@ -69,9 +69,9 @@ void script_free_obj_lock_object(void)
 	script_free_class(obj_lock_class);
 }
 
-void script_add_obj_lock_object(JSObject *parent_obj)
+JSObject* script_add_obj_lock_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,obj_lock_class,"lock",obj_lock_props,NULL);
+	return(script_create_child_object(parent_obj,obj_lock_class,"lock",obj_lock_props,NULL));
 }
 
 /* =======================================================

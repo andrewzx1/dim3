@@ -65,9 +65,9 @@ void script_free_weap_setting_object(void)
 	script_free_class(weap_setting_class);
 }
 
-void script_add_weap_setting_object(JSObject *parent_obj)
+JSObject* script_add_weap_setting_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,weap_setting_class,"setting",weap_setting_props,NULL);
+	return(script_create_child_object(parent_obj,weap_setting_class,"setting",weap_setting_props,NULL));
 }
 
 /* =======================================================

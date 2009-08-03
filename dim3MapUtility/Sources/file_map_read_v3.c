@@ -36,6 +36,7 @@ extern char				media_type_str[][32],
 						gl_fog_type_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
+						light_filter_str[][32],
 						light_direction_str[][32],
 						skill_type_str[][32],
 						spawn_type_str[][32],
@@ -360,13 +361,18 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			
 			light=&map->lights[map->nlight];
 			map->nlight++;
-			
+
+			xml_get_attribute_text(light_tag,"name",light->name,name_str_len);
+
 			light->type=xml_get_attribute_list(light_tag,"type",(char*)light_type_str);
+			light->filter=xml_get_attribute_list(light_tag,"filter",(char*)light_filter_str);
+
 			light->direction=xml_get_attribute_list(light_tag,"direction",(char*)light_direction_str);
 			xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);
 			light->intensity=xml_get_attribute_int(light_tag,"intensity");
 			light->exponent=xml_get_attribute_float_default(light_tag,"exponent",1.0f);
 			xml_get_attribute_color(light_tag,"rgb",&light->col);
+
 			light->on=!xml_get_attribute_boolean(light_tag,"off");
 			
 			if (light->intensity<0) light->intensity=1;
@@ -449,6 +455,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 
 			xml_get_attribute_3_coord_float(node_tag,"angle",&node->ang.x,&node->ang.y,&node->ang.z);
 			node->follow_camera=xml_get_attribute_boolean(node_tag,"follow_camera");
+			node->use_shader=xml_get_attribute_boolean(node_tag,"user_shader");
 
 			xml_get_attribute_text(node_tag,"name",node->name,name_str_len);
 			node->event_id=xml_get_attribute_int_default(node_tag,"event_id",0);

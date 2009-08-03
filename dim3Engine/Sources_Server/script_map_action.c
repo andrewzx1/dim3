@@ -73,9 +73,9 @@ void script_free_map_action_object(void)
 	script_free_class(map_action_class);
 }
 
-void script_add_map_action_object(JSObject *parent_obj)
+JSObject* script_add_map_action_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,map_action_class,"action",NULL,map_action_functions);
+	return(script_create_child_object(parent_obj,map_action_class,"action",NULL,map_action_functions));
 }
 
 /* =======================================================

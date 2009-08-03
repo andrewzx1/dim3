@@ -92,9 +92,9 @@ void script_free_model_halo_object(void)
 	script_free_class(model_halo_class);
 }
 
-void script_add_model_halo_object(JSObject *parent_obj)
+JSObject* script_add_model_halo_object(JSObject *parent_obj)
 {
-	script_create_child_object(parent_obj,model_halo_class,"halo",model_halo_props,NULL);
+	return(script_create_child_object(parent_obj,model_halo_class,"halo",model_halo_props,NULL));
 }
 
 /* =======================================================
