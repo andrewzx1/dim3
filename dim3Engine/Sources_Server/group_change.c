@@ -76,7 +76,7 @@ void group_show(int group_idx,bool show)
 	
 	for (n=0;n!=unit_cnt;n++) {
 
-		if (unit_list->type==group_type_mesh) {
+		if (unit_list->type!=group_type_mesh) {
 			unit_list++;
 			continue;
 		}
@@ -102,7 +102,7 @@ void group_solid(int group_idx,bool solid)
 	
 	for (n=0;n!=unit_cnt;n++) {
 
-		if (unit_list->type==group_type_mesh) {
+		if (unit_list->type!=group_type_mesh) {
 			unit_list++;
 			continue;
 		}
@@ -135,7 +135,7 @@ void group_texture(int group_idx,int index)
 	
 	for (n=0;n!=unit_cnt;n++) {
 
-		if (unit_list->type==group_type_mesh) {
+		if (unit_list->type!=group_type_mesh) {
 			unit_list++;
 			continue;
 		}
@@ -168,7 +168,7 @@ void group_texture_shift(int group_idx,float x_shift,float y_shift)
 	
 	for (n=0;n!=unit_cnt;n++) {
 
-		if (unit_list->type==group_type_mesh) {
+		if (unit_list->type!=group_type_mesh) {
 			unit_list++;
 			continue;
 		}
@@ -202,7 +202,7 @@ void group_texture_alpha(int group_idx,float alpha)
 	
 	for (n=0;n!=unit_cnt;n++) {
 
-		if (unit_list->type==group_type_mesh) {
+		if (unit_list->type!=group_type_mesh) {
 			unit_list++;
 			continue;
 		}

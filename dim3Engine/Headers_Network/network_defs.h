@@ -111,7 +111,9 @@ typedef struct		{
 
 typedef struct		{
 						d3socket					sock;
-						int							remote_uid,team_idx,tint_color_idx,score;
+						int							remote_uid,team_idx,
+													tint_color_idx,character_idx,
+													score;
 						char						name[name_str_len];
 						bool						ready,bot;
 						d3pnt						pnt;
@@ -235,7 +237,8 @@ typedef struct		{
 
 typedef struct		{
 						int							pnt_x,pnt_y,pnt_z;
-						short						uid,bot,score,team_idx,tint_color_idx;
+						short						uid,bot,score,
+													team_idx,tint_color_idx,character_idx;
 						char						name[name_str_len];
 					} network_request_object_add;
 
@@ -257,7 +260,7 @@ typedef struct		{
 					} network_reply_info;
 					
 typedef struct		{
-						short						tint_color_idx;
+						short						tint_color_idx,character_idx;
 						char						name[name_str_len],vers[name_str_len];
 					} network_request_join;
 

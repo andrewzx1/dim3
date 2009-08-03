@@ -502,6 +502,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->damage.in_damage=FALSE;
 	
 	obj->tint_color_idx=0;
+	obj->character_idx=0;
 	
 	obj->input_mode=im_fpp;
 	
@@ -782,6 +783,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		obj->hidden=FALSE;
 		
 		obj->tint_color_idx=setup.network.tint_color_idx;
+		obj->character_idx=setup.network.character_idx;
 
 		server.player_obj_uid=obj->uid;
 	}

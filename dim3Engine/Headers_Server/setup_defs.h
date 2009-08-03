@@ -112,7 +112,7 @@ typedef struct		{
 
 typedef struct		{
 						int							nhost,noption,game_type,score_limit,
-													player_model_idx,tint_color_idx;
+													character_idx,tint_color_idx;
 						char						name[name_str_len],last_map[name_str_len];
 						bool						show_names;
 						setup_network_hosts_type	hosts[max_setup_network_host];

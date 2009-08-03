@@ -342,6 +342,43 @@ void piece_delete(void)
 
 /* =======================================================
 
+      Select More Piece
+      
+======================================================= */
+
+void piece_select_more_mesh(void)
+{
+	int				n,sel_count,type,mesh_idx,poly_idx;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_mesh_tesselate(&map,mesh_idx);
+	}
+	
+	main_wind_draw();
+}
+
+void piece_select_more_poly(void)
+{
+}
+
+void piece_select_more(void)
+{
+	if (drag_mode==drag_mode_mesh) {
+		piece_select_more_mesh();
+		return;
+	}
+	
+	if (drag_mode==drag_mode_polygon) {
+		piece_select_more_poly();
+		return;
+	}
+}
+
+/* =======================================================
+
       Piece Tesselate
       
 ======================================================= */

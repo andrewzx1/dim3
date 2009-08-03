@@ -279,7 +279,7 @@ void default_settings_interface(void)
 
 		// player models
 
-	hud.model.nmodel=0;
+	hud.character.ncharacter=0;
 	
 		// bot names
 		
@@ -773,7 +773,7 @@ void read_settings_interface(void)
 				radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
 				color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
 				proj_tag,debug_tag,games_head_tag,game_tag,options_head_tag,option_tag,
-				model_head_tag,player_model_tag,bot_head_tag,bot_tag;
+				character_head_tag,character_item_tag,bot_head_tag,bot_tag;
 	char		path[1024];
 
 	default_settings_interface();
@@ -1027,20 +1027,20 @@ void read_settings_interface(void)
 		}
 	}
 
-		// player models
+		// characters
 
-    model_head_tag=xml_findfirstchild("Models",interface_head_tag);
-    if (model_head_tag!=-1) {
+    character_head_tag=xml_findfirstchild("Characters",interface_head_tag);
+    if (character_head_tag!=-1) {
 
-		hud.model.nmodel=0;
-		player_model_tag=xml_findfirstchild("Model",model_head_tag);
+		hud.character.ncharacter=0;
+		character_item_tag=xml_findfirstchild("Character",character_head_tag);
 		
-		while (player_model_tag!=-1) {
-			xml_get_attribute_text(player_model_tag,"name",hud.model.models[hud.model.nmodel].name,name_str_len);
-			xml_get_attribute_text(player_model_tag,"model",hud.model.models[hud.model.nmodel].model_name,name_str_len);
-			xml_get_attribute_text(player_model_tag,"parameter",hud.model.models[hud.model.nmodel].param,name_str_len);
-			hud.model.nmodel++;
-			player_model_tag=xml_findnextchild(player_model_tag);
+		while (character_item_tag!=-1) {
+			xml_get_attribute_text(character_item_tag,"name",hud.character.characters[hud.character.ncharacter].name,name_str_len);
+			xml_get_attribute_text(character_item_tag,"model",hud.character.characters[hud.character.ncharacter].model_name,name_str_len);
+			xml_get_attribute_text(character_item_tag,"parameter",hud.character.characters[hud.character.ncharacter].param,name_str_len);
+			hud.character.ncharacter++;
+			character_item_tag=xml_findnextchild(character_item_tag);
 		}
 	}
 	
