@@ -48,7 +48,7 @@ script_js_property	camera_position_props[]={
 							{"z",					js_camera_position_get_z,				NULL},
 							{0}};
 							
-JSClass				*camera_position_class;
+JSClassRef			camera_position_class;
 
 /* =======================================================
 
@@ -93,19 +93,19 @@ JSBool js_camera_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-JSBool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.x);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.y);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.z);
 	return(JS_TRUE);

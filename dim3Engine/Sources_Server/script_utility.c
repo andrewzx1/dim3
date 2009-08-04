@@ -36,7 +36,7 @@ extern js_type			js;
 JSBool js_utility_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_utility_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass				*utility_class;
+JSClassRef			utility_class;
 
 /* =======================================================
 

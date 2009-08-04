@@ -64,7 +64,7 @@ script_js_function	game_join_functions[]={
 							{"clearSpawnSpot",		js_game_join_clear_spawn_spot_func,			0},
 							{0}};
 
-JSClass				*game_join_class;
+JSClassRef			game_join_class;
 
 /* =======================================================
 
@@ -109,7 +109,7 @@ JSBool js_game_join_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ JSBool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_game_join_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_join_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 

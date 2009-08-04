@@ -70,7 +70,7 @@ script_js_property	obj_turn_speed_props[]={
 							{"topDownAngleOffset",		js_obj_turn_speed_get_topDownAngleOffset,	js_obj_turn_speed_set_topDownAngleOffset},
 							{0}};
 
-JSClass				*obj_turn_speed_class;
+JSClassRef			obj_turn_speed_class;
 
 /* =======================================================
 
@@ -115,7 +115,7 @@ JSBool js_obj_turn_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
       
 ======================================================= */
 
-JSBool js_obj_turn_speed_get_facingWalk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_facingWalk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -125,7 +125,7 @@ JSBool js_obj_turn_speed_get_facingWalk(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_motionWalk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_motionWalk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -135,7 +135,7 @@ JSBool js_obj_turn_speed_get_motionWalk(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_facingRun(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_facingRun(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -145,7 +145,7 @@ JSBool js_obj_turn_speed_get_facingRun(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_motionRun(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_motionRun(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -155,7 +155,7 @@ JSBool js_obj_turn_speed_get_motionRun(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_facingCrawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_facingCrawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -165,7 +165,7 @@ JSBool js_obj_turn_speed_get_facingCrawl(JSContext *cx,JSObject *j_obj,jsval id,
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_motionCrawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_motionCrawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -175,7 +175,7 @@ JSBool js_obj_turn_speed_get_motionCrawl(JSContext *cx,JSObject *j_obj,jsval id,
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_facingAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_facingAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -185,7 +185,7 @@ JSBool js_obj_turn_speed_get_facingAir(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_motionAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_motionAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -195,7 +195,7 @@ JSBool js_obj_turn_speed_get_motionAir(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_key(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_key(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -205,7 +205,7 @@ JSBool js_obj_turn_speed_get_key(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_get_topDownAngleOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_get_topDownAngleOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -221,7 +221,7 @@ JSBool js_obj_turn_speed_get_topDownAngleOffset(JSContext *cx,JSObject *j_obj,js
       
 ======================================================= */
 
-JSBool js_obj_turn_speed_set_facingWalk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_facingWalk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -231,7 +231,7 @@ JSBool js_obj_turn_speed_set_facingWalk(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_motionWalk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_motionWalk(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -241,7 +241,7 @@ JSBool js_obj_turn_speed_set_motionWalk(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_facingRun(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_facingRun(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -251,7 +251,7 @@ JSBool js_obj_turn_speed_set_facingRun(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_motionRun(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_motionRun(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -261,7 +261,7 @@ JSBool js_obj_turn_speed_set_motionRun(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_facingCrawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_facingCrawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -271,7 +271,7 @@ JSBool js_obj_turn_speed_set_facingCrawl(JSContext *cx,JSObject *j_obj,jsval id,
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_motionCrawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_motionCrawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -281,7 +281,7 @@ JSBool js_obj_turn_speed_set_motionCrawl(JSContext *cx,JSObject *j_obj,jsval id,
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_facingAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_facingAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -291,7 +291,7 @@ JSBool js_obj_turn_speed_set_facingAir(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_motionAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_motionAir(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -301,7 +301,7 @@ JSBool js_obj_turn_speed_set_motionAir(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_key(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_key(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -311,7 +311,7 @@ JSBool js_obj_turn_speed_set_key(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_turn_speed_set_topDownAngleOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_turn_speed_set_topDownAngleOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

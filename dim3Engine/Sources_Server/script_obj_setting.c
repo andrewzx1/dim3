@@ -152,7 +152,7 @@ script_js_function	obj_setting_functions[]={
 							{"clearAmbient",			js_obj_clear_ambient_func,					0},
 							{0}};
 
-JSClass				*obj_setting_class;
+JSClassRef			obj_setting_class;
 
 /* =======================================================
 
@@ -197,7 +197,7 @@ JSBool js_obj_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_obj_setting_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -207,7 +207,7 @@ JSBool js_obj_setting_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -217,7 +217,7 @@ JSBool js_obj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_characterName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_characterName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -232,7 +232,7 @@ JSBool js_obj_setting_get_characterName(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_characterModel(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_characterModel(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -247,7 +247,7 @@ JSBool js_obj_setting_get_characterModel(JSContext *cx,JSObject *j_obj,jsval id,
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_characterParameter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_characterParameter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -262,7 +262,7 @@ JSBool js_obj_setting_get_characterParameter(JSContext *cx,JSObject *j_obj,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -272,7 +272,7 @@ JSBool js_obj_setting_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -282,7 +282,7 @@ JSBool js_obj_setting_get_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -292,7 +292,7 @@ JSBool js_obj_setting_get_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -302,7 +302,7 @@ JSBool js_obj_setting_get_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -312,7 +312,7 @@ JSBool js_obj_setting_get_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -322,7 +322,7 @@ JSBool js_obj_setting_get_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_contactObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_contactObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -332,7 +332,7 @@ JSBool js_obj_setting_get_contactObject(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_contactProjectile(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_contactProjectile(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -342,7 +342,7 @@ JSBool js_obj_setting_get_contactProjectile(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_contactForce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_contactForce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -352,7 +352,7 @@ JSBool js_obj_setting_get_contactForce(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -362,7 +362,7 @@ JSBool js_obj_setting_get_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -372,7 +372,7 @@ JSBool js_obj_setting_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -382,7 +382,7 @@ JSBool js_obj_setting_get_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -392,7 +392,7 @@ JSBool js_obj_setting_get_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -402,7 +402,7 @@ JSBool js_obj_setting_get_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -412,7 +412,7 @@ JSBool js_obj_setting_get_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -422,7 +422,7 @@ JSBool js_obj_setting_get_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -432,7 +432,7 @@ JSBool js_obj_setting_get_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -442,7 +442,7 @@ JSBool js_obj_setting_get_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -452,7 +452,7 @@ JSBool js_obj_setting_get_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -462,7 +462,7 @@ JSBool js_obj_setting_get_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -472,7 +472,7 @@ JSBool js_obj_setting_get_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -482,7 +482,7 @@ JSBool js_obj_setting_get_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -492,7 +492,7 @@ JSBool js_obj_setting_get_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -502,7 +502,7 @@ JSBool js_obj_setting_get_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -512,7 +512,7 @@ JSBool js_obj_setting_get_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -522,7 +522,7 @@ JSBool js_obj_setting_get_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -532,7 +532,7 @@ JSBool js_obj_setting_get_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -542,7 +542,7 @@ JSBool js_obj_setting_get_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -552,7 +552,7 @@ JSBool js_obj_setting_get_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_get_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_get_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -568,7 +568,7 @@ JSBool js_obj_setting_get_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_obj_setting_set_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -578,7 +578,7 @@ JSBool js_obj_setting_set_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -588,7 +588,7 @@ JSBool js_obj_setting_set_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -598,7 +598,7 @@ JSBool js_obj_setting_set_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -608,7 +608,7 @@ JSBool js_obj_setting_set_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -618,7 +618,7 @@ JSBool js_obj_setting_set_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	bool			on;
 	obj_type		*obj;
@@ -633,7 +633,7 @@ JSBool js_obj_setting_set_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_contactObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_contactObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -643,7 +643,7 @@ JSBool js_obj_setting_set_contactObject(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_contactProjectile(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_contactProjectile(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -653,7 +653,7 @@ JSBool js_obj_setting_set_contactProjectile(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_contactForce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_contactForce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -663,7 +663,7 @@ JSBool js_obj_setting_set_contactForce(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -673,7 +673,7 @@ JSBool js_obj_setting_set_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -683,7 +683,7 @@ JSBool js_obj_setting_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -693,7 +693,7 @@ JSBool js_obj_setting_set_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -703,7 +703,7 @@ JSBool js_obj_setting_set_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -713,7 +713,7 @@ JSBool js_obj_setting_set_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -723,7 +723,7 @@ JSBool js_obj_setting_set_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -733,7 +733,7 @@ JSBool js_obj_setting_set_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -743,7 +743,7 @@ JSBool js_obj_setting_set_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -753,7 +753,7 @@ JSBool js_obj_setting_set_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -763,7 +763,7 @@ JSBool js_obj_setting_set_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -773,7 +773,7 @@ JSBool js_obj_setting_set_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -783,7 +783,7 @@ JSBool js_obj_setting_set_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -793,7 +793,7 @@ JSBool js_obj_setting_set_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -803,7 +803,7 @@ JSBool js_obj_setting_set_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -813,7 +813,7 @@ JSBool js_obj_setting_set_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -823,7 +823,7 @@ JSBool js_obj_setting_set_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -833,7 +833,7 @@ JSBool js_obj_setting_set_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -843,7 +843,7 @@ JSBool js_obj_setting_set_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -853,7 +853,7 @@ JSBool js_obj_setting_set_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -863,7 +863,7 @@ JSBool js_obj_setting_set_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_setting_set_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_setting_set_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

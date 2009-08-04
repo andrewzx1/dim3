@@ -56,7 +56,7 @@ script_js_function	obj_look_functions[]={
 							{"setLookAt",				js_obj_look_set_look_at_func,			1},
 							{0}};
 
-JSClass				*obj_look_class;
+JSClassRef			obj_look_class;
 
 /* =======================================================
 
@@ -101,7 +101,7 @@ JSBool js_obj_look_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-JSBool js_obj_look_get_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_get_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ JSBool js_obj_look_get_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_look_get_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_get_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ JSBool js_obj_look_get_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -137,7 +137,7 @@ JSBool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsva
       
 ======================================================= */
 
-JSBool js_obj_look_set_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_set_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -147,7 +147,7 @@ JSBool js_obj_look_set_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_look_set_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_set_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -157,7 +157,7 @@ JSBool js_obj_look_set_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_look_set_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_set_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

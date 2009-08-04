@@ -45,7 +45,7 @@ script_js_function	utility_angle_functions[]={
 							{"dif",					js_utility_angle_dif_func,			2},
 							{0}};
 
-JSClass				*utility_angle_class;
+JSClassRef			utility_angle_class;
 
 /* =======================================================
 

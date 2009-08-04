@@ -49,7 +49,7 @@ script_js_function	weap_kickback_functions[]={
 							{"kick",				js_weap_kickback_kick_func,				0},
 							{0}};
 
-JSClass				*weap_kickback_class;
+JSClassRef			weap_kickback_class;
 
 /* =======================================================
 
@@ -94,7 +94,7 @@ JSBool js_weap_kickback_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsva
       
 ======================================================= */
 
-JSBool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -110,7 +110,7 @@ JSBool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_weap_kickback_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_kickback_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	

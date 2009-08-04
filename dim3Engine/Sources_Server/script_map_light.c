@@ -42,7 +42,7 @@ script_js_function	map_light_functions[]={
 							{"toggle",				js_map_light_toggle_func,			2},
 							{0}};
 
-JSClass				*map_light_class;
+JSClassRef			map_light_class;
 
 /* =======================================================
 

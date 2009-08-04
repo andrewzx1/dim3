@@ -281,7 +281,7 @@ int script_get_attached_object_uid(void)
       
 ======================================================= */
 
-model_draw* script_find_model_draw(JSObject *j_obj,bool is_child)
+model_draw* script_find_model_draw(void)
 {
 	obj_type			*obj;
 	weapon_type			*weap;

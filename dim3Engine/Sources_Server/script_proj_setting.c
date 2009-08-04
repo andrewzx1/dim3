@@ -53,7 +53,7 @@ script_js_property	proj_setting_props[]={
 							{"parentTeam",			js_proj_setting_get_parentTeam,			NULL},
 							{0}};
 
-JSClass				*proj_setting_class;
+JSClassRef			proj_setting_class;
 
 /* =======================================================
 
@@ -98,7 +98,7 @@ JSBool js_proj_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_proj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -113,7 +113,7 @@ JSBool js_proj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_proj_setting_get_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_setting_get_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -128,7 +128,7 @@ JSBool js_proj_setting_get_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_proj_setting_get_resetAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_setting_get_resetAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -143,7 +143,7 @@ JSBool js_proj_setting_get_resetAngle(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_proj_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 
@@ -158,7 +158,7 @@ JSBool js_proj_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-JSBool js_proj_setting_get_parentTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_setting_get_parentTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 	obj_type			*obj;
@@ -186,7 +186,7 @@ JSBool js_proj_setting_get_parentTeam(JSContext *cx,JSObject *j_obj,jsval id,jsv
       
 ======================================================= */
 
-JSBool js_proj_setting_set_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_setting_set_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -198,7 +198,7 @@ JSBool js_proj_setting_set_hitscan(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_proj_setting_set_resetAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_setting_set_resetAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	

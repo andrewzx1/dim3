@@ -72,7 +72,7 @@ script_js_property	weap_zoom_props[]={
 							{"tick",				js_weap_zoom_get_tick,						js_weap_zoom_set_tick},
 							{0}};
 
-JSClass				*weap_zoom_class;
+JSClassRef			weap_zoom_class;
 
 /* =======================================================
 
@@ -117,7 +117,7 @@ JSBool js_weap_zoom_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_weap_zoom_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -127,7 +127,7 @@ JSBool js_weap_zoom_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -137,7 +137,7 @@ JSBool js_weap_zoom_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_fovMinimum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_fovMinimum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -147,7 +147,7 @@ JSBool js_weap_zoom_get_fovMinimum(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_fovMaximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_fovMaximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -157,7 +157,7 @@ JSBool js_weap_zoom_get_fovMaximum(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_fovSteps(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_fovSteps(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -167,7 +167,7 @@ JSBool js_weap_zoom_get_fovSteps(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_turnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_turnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -177,7 +177,7 @@ JSBool js_weap_zoom_get_turnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_crawlTurnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_crawlTurnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -187,7 +187,7 @@ JSBool js_weap_zoom_get_crawlTurnFactor(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_lookFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_lookFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -197,7 +197,7 @@ JSBool js_weap_zoom_get_lookFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_maskName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_maskName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -207,7 +207,7 @@ JSBool js_weap_zoom_get_maskName(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -217,7 +217,7 @@ JSBool js_weap_zoom_get_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_get_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_get_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -233,7 +233,7 @@ JSBool js_weap_zoom_get_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_weap_zoom_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -243,7 +243,7 @@ JSBool js_weap_zoom_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_fovMinimum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_fovMinimum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -253,7 +253,7 @@ JSBool js_weap_zoom_set_fovMinimum(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_fovMaximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_fovMaximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -263,7 +263,7 @@ JSBool js_weap_zoom_set_fovMaximum(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_fovSteps(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_fovSteps(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -273,7 +273,7 @@ JSBool js_weap_zoom_set_fovSteps(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_turnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_turnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -283,7 +283,7 @@ JSBool js_weap_zoom_set_turnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_crawlTurnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_crawlTurnFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -293,7 +293,7 @@ JSBool js_weap_zoom_set_crawlTurnFactor(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_lookFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_lookFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -303,7 +303,7 @@ JSBool js_weap_zoom_set_lookFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_maskName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_maskName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -314,7 +314,7 @@ JSBool js_weap_zoom_set_maskName(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -324,7 +324,7 @@ JSBool js_weap_zoom_set_showWeapon(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_zoom_set_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_zoom_set_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	

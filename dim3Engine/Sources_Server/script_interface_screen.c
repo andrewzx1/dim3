@@ -44,7 +44,7 @@ script_js_property	interface_screen_props[]={
 							{"height",				js_interface_screen_get_height,		NULL},
 							{0}};
 
-JSClass				*interface_screen_class;
+JSClassRef			interface_screen_class;
 
 /* =======================================================
 
@@ -89,14 +89,14 @@ JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,j
       
 ======================================================= */
 
-JSBool js_interface_screen_get_width(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_screen_get_width(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(setup.screen.x_sz);
 	return(JS_TRUE);
 }
 
 
-JSBool js_interface_screen_get_height(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_screen_get_height(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(setup.screen.y_sz);
 	return(JS_TRUE);

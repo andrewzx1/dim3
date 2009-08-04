@@ -49,7 +49,7 @@ script_js_function	model_bone_functions[]={
 							{"getBrightness",		js_model_bone_get_brightness_func,		2},
 							{0}};
 
-JSClass				*model_bone_class;
+JSClassRef			model_bone_class;
 
 /* =======================================================
 

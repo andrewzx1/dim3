@@ -58,7 +58,7 @@ script_js_function	map_group_functions[]={
 							{"setTextureAlpha",		js_map_group_set_texture_alpha_func,	2},
 							{0}};
 
-JSClass				*map_group_class;
+JSClassRef			map_group_class;
 
 /* =======================================================
 

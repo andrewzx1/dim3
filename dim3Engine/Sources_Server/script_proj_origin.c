@@ -46,7 +46,7 @@ script_js_property	proj_origin_props[]={
 							{"z",					js_proj_origin_get_z,					NULL},
 							{0}};
 
-JSClass				*proj_origin_class;
+JSClassRef			proj_origin_class;
 
 /* =======================================================
 
@@ -91,7 +91,7 @@ JSBool js_proj_origin_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_proj_origin_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_origin_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 
@@ -103,7 +103,7 @@ JSBool js_proj_origin_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_origin_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_origin_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 
@@ -115,7 +115,7 @@ JSBool js_proj_origin_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_origin_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_origin_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 

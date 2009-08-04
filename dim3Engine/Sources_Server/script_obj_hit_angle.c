@@ -47,7 +47,7 @@ script_js_property	obj_hit_angle_props[]={
 							{"z",					js_obj_hit_angle_get_z,				NULL},
 							{0}};
 
-JSClass				*obj_hit_angle_class;
+JSClassRef			obj_hit_angle_class;
 
 /* =======================================================
 
@@ -92,7 +92,7 @@ JSBool js_obj_hit_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsva
       
 ======================================================= */
 
-JSBool js_obj_hit_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
@@ -102,7 +102,7 @@ JSBool js_obj_hit_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_hit_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
@@ -112,7 +112,7 @@ JSBool js_obj_hit_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_hit_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 

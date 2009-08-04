@@ -58,7 +58,7 @@ script_js_function	interface_interaction_functions[]={
 							{"quit",				js_interface_interaction_quit_func,						0},
 							{0}};
 
-JSClass				*interface_interaction_class;
+JSClassRef			interface_interaction_class;
 
 /* =======================================================
 

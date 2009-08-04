@@ -63,7 +63,7 @@ script_js_function	map_node_functions[]={
 							{"getPosition",						js_map_node_get_position_func,							1},
 							{0}};
 
-JSClass				*map_node_class;
+JSClassRef			map_node_class;
 
 /* =======================================================
 

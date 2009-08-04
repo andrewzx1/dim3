@@ -45,7 +45,7 @@ script_js_function	camera_state_functions[]={
 							{"restore",				js_camera_state_restore_func,			0},
 							{0}};
 
-JSClass				*camera_state_class;
+JSClassRef			camera_state_class;
 
 /* =======================================================
 

@@ -50,7 +50,7 @@ script_js_property	camera_chase_props[]={
 							{"trackSpeed",			js_camera_chase_get_trackSpeed,			js_camera_chase_set_trackSpeed},
 							{0}};
 
-JSClass				*camera_chase_class;
+JSClassRef			camera_chase_class;
 
 /* =======================================================
 
@@ -95,19 +95,19 @@ JSBool js_camera_chase_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_camera_chase_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(camera.chase_size);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_chase_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(camera.chase_distance);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_chase_get_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_get_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_float_to_value(camera.chase_track_speed);
 	return(JS_TRUE);
@@ -119,19 +119,19 @@ JSBool js_camera_chase_get_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsv
       
 ======================================================= */
 
-JSBool js_camera_chase_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	camera.chase_size=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_chase_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	camera.chase_distance=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_chase_set_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_set_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	camera.chase_track_speed=script_value_to_float(*vp);
 	return(JS_TRUE);

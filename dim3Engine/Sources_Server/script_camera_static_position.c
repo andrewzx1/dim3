@@ -57,7 +57,7 @@ script_js_function	camera_static_position_functions[]={
 							{"walkToNode",			js_camera_static_position_walk_to_node_func,	6},
 							{0}};
 
-JSClass				*camera_static_position_class;
+JSClassRef			camera_static_position_class;
 
 /* =======================================================
 
@@ -102,13 +102,13 @@ JSBool js_camera_static_position_set_property(JSContext *cx,JSObject *j_obj,jsva
       
 ======================================================= */
 
-JSBool js_camera_static_position_get_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_static_position_get_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_bool_to_value(camera.static_follow);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_float_to_value(camera.auto_walk.turn_speed);
 	return(JS_TRUE);
@@ -120,13 +120,13 @@ JSBool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj
       
 ======================================================= */
 
-JSBool js_camera_static_position_set_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_static_position_set_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	camera.static_follow=script_value_to_bool(*vp);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_static_position_set_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_static_position_set_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	camera.auto_walk.turn_speed=script_value_to_float(*vp);
 	return(JS_TRUE);

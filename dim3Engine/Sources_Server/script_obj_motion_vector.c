@@ -78,7 +78,7 @@ script_js_function	obj_motion_vector_functions[]={
 							{"turnToPlayer",		js_obj_motion_vector_turn_to_player_func,			0},
 							{0}};
 	
-JSClass				*obj_motion_vector_class;
+JSClassRef			obj_motion_vector_class;
 
 /* =======================================================
 
@@ -123,7 +123,7 @@ JSBool js_obj_motion_vector_set_property(JSContext *cx,JSObject *j_obj,jsval id,
       
 ======================================================= */
 
-JSBool js_obj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -133,7 +133,7 @@ JSBool js_obj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -143,7 +143,7 @@ JSBool js_obj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_motion_vector_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_motion_vector_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 

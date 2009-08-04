@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+//
+// main script routines
+//
+
 extern bool scripts_engine_initialize(char *err_str);
 extern void scripts_engine_shutdown(void);
 
@@ -95,7 +99,7 @@ extern hud_bar_type* script_find_bar_from_name(jsval arg);
 extern int script_find_group_from_name(jsval arg);
 extern int script_find_map_movement_from_name(jsval arg);
 extern int script_get_attached_object_uid(void);
-extern model_draw* script_find_model_draw(JSObject *j_obj,bool is_child);
+extern model_draw* script_find_model_draw(void);
 
 //
 // initialize script objects
@@ -159,6 +163,18 @@ extern void script_init_game_score_object(void);
 extern void script_init_game_join_object(void);
 
 extern void script_init_model_object(void);
+extern void script_init_model_animation_object(void);
+extern void script_init_model_bone_object(void);
+extern void script_init_model_fill_object(void);
+extern void script_init_model_halo_object(void);
+extern void script_init_model_light_object(void);
+extern void script_init_model_light_color_object(void);
+extern void script_init_model_mesh_object(void);
+extern void script_init_model_offset_object(void);
+extern void script_init_model_rotate_object(void);
+extern void script_init_model_shadow_object(void);
+extern void script_init_model_spin_object(void);
+
 extern void script_init_event_object(void);
 
 extern void script_init_obj_setting_object(void);
@@ -291,6 +307,18 @@ extern void script_free_game_score_object(void);
 extern void script_free_game_join_object(void);
 
 extern void script_free_model_object(void);
+extern void script_free_model_animation_object(void);
+extern void script_free_model_bone_object(void);
+extern void script_free_model_fill_object(void);
+extern void script_free_model_halo_object(void);
+extern void script_free_model_light_object(void);
+extern void script_free_model_light_color_object(void);
+extern void script_free_model_mesh_object(void);
+extern void script_free_model_offset_object(void);
+extern void script_free_model_rotate_object(void);
+extern void script_free_model_shadow_object(void);
+extern void script_free_model_spin_object(void);
+
 extern void script_free_event_object(void);
 
 extern void script_free_obj_setting_object(void);
@@ -423,6 +451,18 @@ extern JSObject* script_add_game_score_object(JSObject *parent_obj);
 extern JSObject* script_add_game_join_object(JSObject *parent_obj);
 
 extern JSObject* script_add_model_object(JSObject *parent_obj);
+extern JSObject* script_add_model_animation_object(JSObject *parent_obj);
+extern JSObject* script_add_model_bone_object(JSObject *parent_obj);
+extern JSObject* script_add_model_fill_object(JSObject *parent_obj);
+extern JSObject* script_add_model_halo_object(JSObject *parent_obj);
+extern JSObject* script_add_model_light_object(JSObject *parent_obj);
+extern JSObject* script_add_model_light_color_object(JSObject *parent_obj);
+extern JSObject* script_add_model_mesh_object(JSObject *parent_obj);
+extern JSObject* script_add_model_offset_object(JSObject *parent_obj);
+extern JSObject* script_add_model_rotate_object(JSObject *parent_obj);
+extern JSObject* script_add_model_shadow_object(JSObject *parent_obj);
+extern JSObject* script_add_model_spin_object(JSObject *parent_obj);
+
 extern JSObject* script_add_event_object(JSObject *parent_obj);
 
 extern JSObject* script_add_obj_setting_object(JSObject *parent_obj);
@@ -506,11 +546,11 @@ extern bool scripts_direct_call(attach_type *attach,char *func_name,int arg_coun
 
 extern void script_initialize_classes(void);
 extern void script_release_classes(void);
-extern JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp setter);
-extern void script_free_class(JSClass *cls);
+extern JSClassRef script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp setter);
+extern void script_free_class(JSClassRef cls);
 extern bool script_add_global_object(script_type *script,char *err_str);
 extern JSObject* script_create_main_object(attach_type *attach);
-extern JSObject* script_create_child_object(JSObject *parent_obj,JSClass *cls,char *name,script_js_property *props,script_js_function *funcs);
+extern JSObject* script_create_child_object(JSObject *parent_obj,JSClassRef cls,char *name,script_js_property *props,script_js_function *funcs);
 extern JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props);
 extern JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props);
 

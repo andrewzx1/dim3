@@ -37,7 +37,7 @@ extern js_type			js;
 JSBool js_camera_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass				*camera_class;
+JSClassRef				camera_class;
 
 /* =======================================================
 

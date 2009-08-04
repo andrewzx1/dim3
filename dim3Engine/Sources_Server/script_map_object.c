@@ -120,7 +120,7 @@ script_js_function	map_object_functions[]={
 							{"remove",						js_map_object_remove_func,							1},
 							{0}};
 
-JSClass				*map_object_class;
+JSClassRef			map_object_class;
 
 /* =======================================================
 

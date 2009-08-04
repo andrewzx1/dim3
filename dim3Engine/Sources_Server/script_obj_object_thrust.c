@@ -49,7 +49,7 @@ script_js_property	obj_thrust_props[]={
 							{"drag",					js_obj_thrust_get_drag,				js_obj_thrust_set_drag},
 							{0}};
 
-JSClass				*obj_thrust_class;
+JSClassRef			obj_thrust_class;
 
 /* =======================================================
 
@@ -94,7 +94,7 @@ JSBool js_obj_thrust_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_obj_thrust_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -104,7 +104,7 @@ JSBool js_obj_thrust_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_thrust_get_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_get_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -113,7 +113,7 @@ JSBool js_obj_thrust_get_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -129,7 +129,7 @@ JSBool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -139,7 +139,7 @@ JSBool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -149,7 +149,7 @@ JSBool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_thrust_set_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_set_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

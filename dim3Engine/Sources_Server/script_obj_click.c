@@ -51,7 +51,7 @@ script_js_property	obj_click_props[]={
 							{"objectName",			js_obj_click_get_objectName,			NULL},
 							{0}};
 
-JSClass				*obj_click_class;
+JSClassRef			obj_click_class;
 
 /* =======================================================
 
@@ -96,7 +96,7 @@ JSBool js_obj_click_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_obj_click_get_crosshairUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_click_get_crosshairUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
@@ -106,7 +106,7 @@ JSBool js_obj_click_get_crosshairUp(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_click_get_crosshairDown(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_click_get_crosshairDown(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
@@ -116,7 +116,7 @@ JSBool js_obj_click_get_crosshairDown(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_obj_click_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_click_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
@@ -126,7 +126,7 @@ JSBool js_obj_click_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_click_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_click_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj,*click_obj;
 
@@ -149,7 +149,7 @@ JSBool js_obj_click_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_obj_click_set_crosshairUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_click_set_crosshairUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 	
@@ -160,7 +160,7 @@ JSBool js_obj_click_set_crosshairUp(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_click_set_crosshairDown(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_click_set_crosshairDown(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 	

@@ -58,7 +58,7 @@ script_js_function	map_movement_functions[]={
 							{"isLooping",			js_map_movement_is_looping_func,	1},
 							{0}};
 
-JSClass				*map_movement_class;
+JSClassRef			map_movement_class;
 
 /* =======================================================
 

@@ -49,7 +49,7 @@ script_js_property	game_setting_props[]={
 							{"skill",				js_game_setting_get_skill,				NULL},
 							{0}};
 
-JSClass				*game_setting_class;
+JSClassRef			game_setting_class;
 
 /* =======================================================
 
@@ -94,7 +94,7 @@ JSBool js_game_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	if (!net_setup.client.joined) {
 		*vp=script_null_to_value();
@@ -106,13 +106,13 @@ JSBool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_game_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_bool_to_value(net_setup.client.joined);
 	return(JS_TRUE);
 }
 
-JSBool js_game_setting_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_setting_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(server.skill);
 	return(JS_TRUE);

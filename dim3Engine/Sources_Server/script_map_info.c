@@ -46,7 +46,7 @@ script_js_property	map_info_props[]={
 							{"author",				js_map_info_get_author,				NULL},
 							{0}};
 
-JSClass				*map_info_class;
+JSClassRef			map_info_class;
 
 /* =======================================================
 
@@ -91,19 +91,19 @@ JSBool js_map_info_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-JSBool js_map_info_get_file(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_info_get_file(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_string_to_value(map.info.name);
 	return(JS_TRUE);
 }
 
-JSBool js_map_info_get_title(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_info_get_title(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_string_to_value(map.info.title);
 	return(JS_TRUE);
 }
 
-JSBool js_map_info_get_author(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_info_get_author(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_string_to_value(map.info.author);
 	return(JS_TRUE);

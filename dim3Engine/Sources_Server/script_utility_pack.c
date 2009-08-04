@@ -45,7 +45,7 @@ script_js_function	utility_pack_functions[]={
 							{"unpackLow",			js_utility_pack_unpack_low_func,		1},
 							{0}};
 
-JSClass				*utility_pack_class;
+JSClassRef			utility_pack_class;
 
 /* =======================================================
 

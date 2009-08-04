@@ -64,7 +64,7 @@ script_js_function	sound_functions[]={
 							{"fadeOutFadeInMusic",	js_sound_fade_out_fade_in_music_func,	1},
 							{0}};
 
-JSClass				*sound_class;
+JSClassRef			sound_class;
 
 /* =======================================================
 

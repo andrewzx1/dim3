@@ -57,7 +57,7 @@ script_js_function	multiplayer_setting_functions[]={
 							{"checkOption",			js_multiplayer_setting_check_option_func,		1},
 							{0}};
 
-JSClass				*multiplayer_setting_class;
+JSClassRef			multiplayer_setting_class;
 
 /* =======================================================
 
@@ -102,13 +102,13 @@ JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval i
       
 ======================================================= */
 
-JSBool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_bool_to_value(net_setup.client.joined);
 	return(JS_TRUE);
 }
 
-JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
  	if (!net_setup.client.joined) {
 		*vp=script_null_to_value();
@@ -120,7 +120,7 @@ JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
  	if (!net_setup.client.joined) {
 		*vp=script_bool_to_value(FALSE);

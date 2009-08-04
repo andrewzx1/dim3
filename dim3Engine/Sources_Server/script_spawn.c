@@ -65,7 +65,7 @@ script_js_function	spawn_functions[]={
 							{"push",				js_spawn_push_func,					5},
 							{0}};
 
-JSClass				*spawn_class;
+JSClassRef			spawn_class;
 
 /* =======================================================
 

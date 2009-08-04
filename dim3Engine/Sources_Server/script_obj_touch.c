@@ -49,7 +49,7 @@ script_js_property	obj_touch_props[]={
 							{"stand",				js_obj_touch_get_stand,				NULL},
 							{0}};
 
-JSClass				*obj_touch_class;
+JSClassRef			obj_touch_class;
 
 /* =======================================================
 
@@ -94,7 +94,7 @@ JSBool js_obj_touch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -104,7 +104,7 @@ JSBool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*touch_obj;
 
@@ -121,7 +121,7 @@ JSBool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -131,7 +131,7 @@ JSBool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_touch_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_touch_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 

@@ -49,7 +49,7 @@ script_js_function	utility_point_functions[]={
 							{"transform3Dto2D",		js_utility_point_transform_3D_to_2D_func,	3},
 							{0}};
 
-JSClass				*utility_point_class;
+JSClassRef			utility_point_class;
 
 /* =======================================================
 

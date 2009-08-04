@@ -56,7 +56,7 @@ script_js_function	obj_angle_functions[]={
 							{"rotateTo",			js_obj_angle_rotate_to_func,		1},
 							{0}};
 
-JSClass				*obj_angle_class;
+JSClassRef			obj_angle_class;
 
 /* =======================================================
 
@@ -101,7 +101,7 @@ JSBool js_obj_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_obj_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ JSBool js_obj_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ JSBool js_obj_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 

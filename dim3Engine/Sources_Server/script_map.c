@@ -36,7 +36,7 @@ extern js_type			js;
 JSBool js_map_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass				*map_class;
+JSClassRef			map_class;
 
 /* =======================================================
 

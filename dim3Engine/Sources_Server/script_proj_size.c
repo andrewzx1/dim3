@@ -52,7 +52,7 @@ script_js_property	proj_size_props[]={
 							{"weight",				js_proj_size_get_weight,			js_proj_size_set_weight},
 							{0}};
 
-JSClass				*proj_size_class;
+JSClassRef			proj_size_class;
 
 /* =======================================================
 
@@ -97,7 +97,7 @@ JSBool js_proj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -109,7 +109,7 @@ JSBool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -121,7 +121,7 @@ JSBool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -133,7 +133,7 @@ JSBool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -151,7 +151,7 @@ JSBool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_proj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -164,7 +164,7 @@ JSBool js_proj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -176,7 +176,7 @@ JSBool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -189,7 +189,7 @@ JSBool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 

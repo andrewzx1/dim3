@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "interfaces.h"
+#include "consoles.h"
 #include "sounds.h"
 #include "inputs.h"
 #include "video.h"

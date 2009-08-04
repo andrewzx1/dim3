@@ -36,7 +36,7 @@ extern js_type			js;
 JSBool js_multiplayer_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass				*multiplayer_class;
+JSClassRef			multiplayer_class;
 
 /* =======================================================
 

@@ -70,7 +70,7 @@ script_js_function	obj_watch_functions[]={
 							{"clearRestrictSight",		js_obj_watch_clear_restrict_sight_func,		0},
 							{0}};
 
-JSClass				*obj_watch_class;
+JSClassRef			obj_watch_class;
 
 /* =======================================================
 
@@ -115,7 +115,7 @@ JSBool js_obj_watch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -125,7 +125,7 @@ JSBool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -142,7 +142,7 @@ JSBool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -152,7 +152,7 @@ JSBool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -169,7 +169,7 @@ JSBool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -186,7 +186,7 @@ JSBool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -208,7 +208,7 @@ JSBool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -225,7 +225,7 @@ JSBool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -235,7 +235,7 @@ JSBool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_watch_get_soundName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_soundName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 

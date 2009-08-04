@@ -55,7 +55,7 @@ script_js_function	weap_dual_functions[]={
 							{"switchHand",			js_weap_dual_switch_hand_func,		1},
 							{0}};
 
-JSClass				*weap_dual_class;
+JSClassRef			weap_dual_class;
 
 /* =======================================================
 
@@ -100,7 +100,7 @@ JSBool js_weap_dual_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_weap_dual_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_dual_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -110,7 +110,7 @@ JSBool js_weap_dual_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_dual_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_dual_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -120,7 +120,7 @@ JSBool js_weap_dual_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_dual_get_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_dual_get_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -136,7 +136,7 @@ JSBool js_weap_dual_get_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_weap_dual_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_dual_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -146,7 +146,7 @@ JSBool js_weap_dual_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_dual_set_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_dual_set_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -156,7 +156,7 @@ JSBool js_weap_dual_set_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_dual_set_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_dual_set_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
