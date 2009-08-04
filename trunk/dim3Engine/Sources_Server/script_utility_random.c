@@ -47,7 +47,7 @@ script_js_function	utility_random_functions[]={
 							{"getPosOrNeg",			js_utility_random_get_pos_or_neg_func,	0},
 							{0}};
 
-JSClass				*utility_random_class;
+JSClassRef			utility_random_class;
 
 /* =======================================================
 

@@ -48,7 +48,7 @@ script_js_property	model_spin_props[]={
 							{"z",					js_model_spin_get_z,					js_model_spin_set_z},
 							{0}};
 
-JSClass				*model_spin_class;
+JSClassRef			model_spin_class;
 
 /* =======================================================
 
@@ -93,31 +93,31 @@ JSBool js_model_spin_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_model_spin_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_spin_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	*vp=script_float_to_value(draw->spin.x);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_spin_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_spin_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	*vp=script_float_to_value(draw->spin.y);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_spin_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_spin_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	*vp=script_float_to_value(draw->spin.z);
 
 	return(JS_TRUE);
@@ -129,11 +129,11 @@ JSBool js_model_spin_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_model_spin_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_spin_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 
 	draw->spin.x=script_value_to_float(*vp);
 	draw->spin_tick=js.time.current_tick;
@@ -141,11 +141,11 @@ JSBool js_model_spin_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_spin_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_spin_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 
 	draw->spin.y=script_value_to_float(*vp);
 	draw->spin_tick=js.time.current_tick;
@@ -153,11 +153,11 @@ JSBool js_model_spin_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_spin_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_spin_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 
 	draw->spin.z=script_value_to_float(*vp);
 	draw->spin_tick=js.time.current_tick;

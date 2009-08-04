@@ -49,7 +49,7 @@ script_js_function	interface_fade_functions[]={
 							{"clear",				js_interface_fade_clear_func,			0},
 							{0}};
 
-JSClass				*interface_fade_class;
+JSClassRef			interface_fade_class;
 
 /* =======================================================
 

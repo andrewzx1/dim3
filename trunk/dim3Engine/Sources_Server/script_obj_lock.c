@@ -51,7 +51,7 @@ script_js_property	obj_lock_props[]={
 							{"z",					js_obj_lock_get_z,					js_obj_lock_set_z},
 							{0}};
 							
-JSClass				*obj_lock_class;
+JSClassRef			obj_lock_class;
 
 /* =======================================================
 
@@ -96,7 +96,7 @@ JSBool js_obj_lock_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-JSBool js_obj_lock_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_lock_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -106,7 +106,7 @@ JSBool js_obj_lock_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_lock_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_lock_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -116,7 +116,7 @@ JSBool js_obj_lock_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_lock_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_lock_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -132,7 +132,7 @@ JSBool js_obj_lock_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_obj_lock_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_lock_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -142,7 +142,7 @@ JSBool js_obj_lock_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_lock_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_lock_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -152,7 +152,7 @@ JSBool js_obj_lock_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_lock_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_lock_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

@@ -54,7 +54,7 @@ script_js_function	weap_fire_functions[]={
 							{"cancel",				js_weap_fire_cancel_func,				0},
 							{0}};
 
-JSClass				*weap_fire_class;
+JSClassRef			weap_fire_class;
 
 /* =======================================================
 
@@ -99,7 +99,7 @@ JSBool js_weap_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -109,7 +109,7 @@ JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_fire_get_lastFireTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_fire_get_lastFireTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 

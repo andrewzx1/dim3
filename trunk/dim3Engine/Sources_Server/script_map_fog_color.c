@@ -49,7 +49,7 @@ script_js_property	map_fog_color_props[]={
 							{"blue",				js_map_fog_color_get_blue,			js_map_fog_color_set_blue},
 							{0}};
 
-JSClass				*map_fog_color_class;
+JSClassRef			map_fog_color_class;
 
 /* =======================================================
 
@@ -94,19 +94,19 @@ JSBool js_map_fog_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsva
       
 ======================================================= */
 
-JSBool js_map_fog_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_fog_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_float_to_value(map.fog.col.r);
 	return(JS_TRUE);
 }
 
-JSBool js_map_fog_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_fog_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_float_to_value(map.fog.col.g);
 	return(JS_TRUE);
 }
 
-JSBool js_map_fog_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_fog_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_float_to_value(map.fog.col.b);
 	return(JS_TRUE);
@@ -118,19 +118,19 @@ JSBool js_map_fog_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_map_fog_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_fog_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	map.fog.col.r=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-JSBool js_map_fog_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_fog_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	map.fog.col.g=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-JSBool js_map_fog_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_fog_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	map.fog.col.b=script_value_to_float(*vp);
 	return(JS_TRUE);

@@ -83,7 +83,7 @@ script_js_function	event_functions[]={
 							{"callGame",					js_event_call_game_func,						20},
 							{0}};
 
-JSClass				*event_class;
+JSClassRef			event_class;
 
 /* =======================================================
 

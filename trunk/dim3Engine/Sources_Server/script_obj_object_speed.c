@@ -61,7 +61,7 @@ script_js_property	obj_object_speed_props[]={
 							{"noSlide",					js_obj_object_speed_get_noSlide,			js_obj_object_speed_set_noSlide},
 							{0}};
 
-JSClass				*obj_object_speed_class;
+JSClassRef			obj_object_speed_class;
 
 /* =======================================================
 
@@ -106,7 +106,7 @@ JSBool js_obj_object_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,j
       
 ======================================================= */
 
-JSBool js_obj_object_speed_get_jumpHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_get_jumpHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -116,7 +116,7 @@ JSBool js_obj_object_speed_get_jumpHeight(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_get_duckAdd(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_get_duckAdd(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -126,7 +126,7 @@ JSBool js_obj_object_speed_get_duckAdd(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_get_duckChange(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_get_duckChange(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -136,7 +136,7 @@ JSBool js_obj_object_speed_get_duckChange(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_get_bumpHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_get_bumpHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -146,7 +146,7 @@ JSBool js_obj_object_speed_get_bumpHeight(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_get_bumpSmoothFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_get_bumpSmoothFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -156,7 +156,7 @@ JSBool js_obj_object_speed_get_bumpSmoothFactor(JSContext *cx,JSObject *j_obj,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_get_bounceFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_get_bounceFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -166,7 +166,7 @@ JSBool js_obj_object_speed_get_bounceFactor(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_get_noSlide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_get_noSlide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -182,7 +182,7 @@ JSBool js_obj_object_speed_get_noSlide(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-JSBool js_obj_object_speed_set_jumpHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_set_jumpHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -192,7 +192,7 @@ JSBool js_obj_object_speed_set_jumpHeight(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_set_duckAdd(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_set_duckAdd(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -202,7 +202,7 @@ JSBool js_obj_object_speed_set_duckAdd(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_set_duckChange(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_set_duckChange(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -212,7 +212,7 @@ JSBool js_obj_object_speed_set_duckChange(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_set_bumpHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_set_bumpHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -222,7 +222,7 @@ JSBool js_obj_object_speed_set_bumpHeight(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_set_bumpSmoothFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_set_bumpSmoothFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -232,7 +232,7 @@ JSBool js_obj_object_speed_set_bumpSmoothFactor(JSContext *cx,JSObject *j_obj,js
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_set_bounceFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_set_bounceFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -242,7 +242,7 @@ JSBool js_obj_object_speed_set_bounceFactor(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_object_speed_set_noSlide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_object_speed_set_noSlide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

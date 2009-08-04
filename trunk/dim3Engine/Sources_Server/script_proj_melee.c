@@ -71,7 +71,7 @@ script_js_function	proj_melee_functions[]={
 							{"spawnFromPosition",		js_proj_melee_spawn_from_position_func,			3},
 							{0}};
 
-JSClass				*proj_melee_class;
+JSClassRef			proj_melee_class;
 
 /* =======================================================
 
@@ -116,7 +116,7 @@ JSBool js_proj_melee_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_proj_melee_get_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_get_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char				str[32];
 	proj_setup_type		*proj_setup;
@@ -130,7 +130,7 @@ JSBool js_proj_melee_get_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_get_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_get_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -142,7 +142,7 @@ JSBool js_proj_melee_get_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_get_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_get_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -154,7 +154,7 @@ JSBool js_proj_melee_get_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -166,7 +166,7 @@ JSBool js_proj_melee_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -178,7 +178,7 @@ JSBool js_proj_melee_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -190,7 +190,7 @@ JSBool js_proj_melee_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_get_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_get_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -208,7 +208,7 @@ JSBool js_proj_melee_get_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_proj_melee_set_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_set_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char				str[32];
 	proj_setup_type		*proj_setup;
@@ -222,7 +222,7 @@ JSBool js_proj_melee_set_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_set_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_set_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -234,7 +234,7 @@ JSBool js_proj_melee_set_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -246,7 +246,7 @@ JSBool js_proj_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -258,7 +258,7 @@ JSBool js_proj_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -270,7 +270,7 @@ JSBool js_proj_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -282,7 +282,7 @@ JSBool js_proj_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_melee_set_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_melee_set_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	

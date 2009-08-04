@@ -52,7 +52,7 @@ script_js_property	proj_mark_props[]={
 							{"alpha",				js_proj_mark_get_alpha,				js_proj_mark_set_alpha},
 							{0}};
 
-JSClass				*proj_mark_class;
+JSClassRef			proj_mark_class;
 
 /* =======================================================
 
@@ -97,7 +97,7 @@ JSBool js_proj_mark_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_proj_mark_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_mark_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -109,7 +109,7 @@ JSBool js_proj_mark_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_mark_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_mark_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -121,7 +121,7 @@ JSBool js_proj_mark_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_mark_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_mark_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -133,7 +133,7 @@ JSBool js_proj_mark_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_mark_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_mark_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -151,7 +151,7 @@ JSBool js_proj_mark_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_proj_mark_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_mark_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -163,7 +163,7 @@ JSBool js_proj_mark_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_mark_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_mark_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -176,7 +176,7 @@ JSBool js_proj_mark_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_mark_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_mark_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -188,7 +188,7 @@ JSBool js_proj_mark_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_mark_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_mark_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	

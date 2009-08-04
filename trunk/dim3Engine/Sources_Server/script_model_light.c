@@ -60,7 +60,7 @@ script_js_property	model_light_props[]={
 							{"exponent",			js_model_light_get_exponent,			js_model_light_set_exponent},
 							{0}};
 							
-JSClass				*model_light_class;
+JSClassRef			model_light_class;
 
 /* =======================================================
 
@@ -105,12 +105,12 @@ JSBool js_model_light_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_model_light_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	*vp=script_int_to_value(draw->script_light_idx);
@@ -118,12 +118,12 @@ JSBool js_model_light_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 
 	*vp=script_bool_to_value(light->on);
@@ -131,12 +131,12 @@ JSBool js_model_light_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	*vp=script_int_to_value(light->type-sd_light_type_normal);
@@ -144,12 +144,12 @@ JSBool js_model_light_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_get_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	*vp=script_int_to_value(light->filter-sd_light_filter_none);
@@ -157,12 +157,12 @@ JSBool js_model_light_get_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_get_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 
 	*vp=script_int_to_value(light->direction+sd_light_direction_all);
@@ -170,12 +170,12 @@ JSBool js_model_light_get_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_get_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	*vp=script_int_to_value(light->intensity);
@@ -183,12 +183,12 @@ JSBool js_model_light_get_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_get_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	*vp=script_float_to_value(light->exponent);
@@ -202,12 +202,12 @@ JSBool js_model_light_get_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_model_light_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	draw->script_light_idx=script_value_to_int(*vp);
@@ -216,12 +216,12 @@ JSBool js_model_light_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->on=script_value_to_bool(*vp);
@@ -229,12 +229,12 @@ JSBool js_model_light_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->type=script_value_to_int(*vp)-sd_light_type_normal;
@@ -242,12 +242,12 @@ JSBool js_model_light_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_set_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->filter=script_value_to_int(*vp)-sd_light_filter_none;
@@ -255,12 +255,12 @@ JSBool js_model_light_set_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_set_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->direction=script_value_to_int(*vp)-sd_light_direction_all;
@@ -268,12 +268,12 @@ JSBool js_model_light_set_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_set_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 
 	light->intensity=script_value_to_int(*vp);
@@ -281,12 +281,12 @@ JSBool js_model_light_set_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_model_light_set_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->exponent=script_value_to_float(*vp);

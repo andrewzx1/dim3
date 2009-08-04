@@ -75,7 +75,7 @@ script_js_function	weap_melee_functions[]={
 							{"spawnFromObjectBone",		js_weap_melee_spawn_from_object_bone_func,		0},
 							{0}};
 
-JSClass				*weap_melee_class;
+JSClassRef			weap_melee_class;
 
 /* =======================================================
 
@@ -120,7 +120,7 @@ JSBool js_weap_melee_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_weap_melee_get_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -133,7 +133,7 @@ JSBool js_weap_melee_get_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_get_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -143,7 +143,7 @@ JSBool js_weap_melee_get_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_get_objectStrikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_objectStrikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -156,7 +156,7 @@ JSBool js_weap_melee_get_objectStrikeBoneTag(JSContext *cx,JSObject *j_obj,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_get_objectStrikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_objectStrikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -166,7 +166,7 @@ JSBool js_weap_melee_get_objectStrikePoseName(JSContext *cx,JSObject *j_obj,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_get_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -176,7 +176,7 @@ JSBool js_weap_melee_get_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -186,7 +186,7 @@ JSBool js_weap_melee_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -196,7 +196,7 @@ JSBool js_weap_melee_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -206,7 +206,7 @@ JSBool js_weap_melee_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_get_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_get_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -222,7 +222,7 @@ JSBool js_weap_melee_get_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_weap_melee_set_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -235,7 +235,7 @@ JSBool js_weap_melee_set_strikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_set_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -245,7 +245,7 @@ JSBool js_weap_melee_set_strikePoseName(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_set_objectStrikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_objectStrikeBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -258,7 +258,7 @@ JSBool js_weap_melee_set_objectStrikeBoneTag(JSContext *cx,JSObject *j_obj,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_set_objectStrikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_objectStrikePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -268,7 +268,7 @@ JSBool js_weap_melee_set_objectStrikePoseName(JSContext *cx,JSObject *j_obj,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -278,7 +278,7 @@ JSBool js_weap_melee_set_radius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -288,7 +288,7 @@ JSBool js_weap_melee_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -298,7 +298,7 @@ JSBool js_weap_melee_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -308,7 +308,7 @@ JSBool js_weap_melee_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_melee_set_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_melee_set_fallOff(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	

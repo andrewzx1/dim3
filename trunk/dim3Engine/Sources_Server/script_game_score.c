@@ -60,7 +60,7 @@ script_js_function	game_score_functions[]={
 							{"setScore",			js_game_score_set_score_func,		1},
 							{0}};
 
-JSClass				*game_score_class;
+JSClassRef			game_score_class;
 
 /* =======================================================
 
@@ -105,7 +105,7 @@ JSBool js_game_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -117,7 +117,7 @@ JSBool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -129,7 +129,7 @@ JSBool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -141,7 +141,7 @@ JSBool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -153,7 +153,7 @@ JSBool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_game_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 

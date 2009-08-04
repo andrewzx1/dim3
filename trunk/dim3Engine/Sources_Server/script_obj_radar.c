@@ -53,7 +53,7 @@ script_js_property	obj_radar_props[]={
 							{"alwaysVisible",		js_obj_radar_get_alwaysVisible,		js_obj_radar_set_alwaysVisible},
 							{0}};
 							
-JSClass				*obj_radar_class;
+JSClassRef			obj_radar_class;
 
 /* =======================================================
 
@@ -98,7 +98,7 @@ JSBool js_obj_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -108,7 +108,7 @@ JSBool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -118,7 +118,7 @@ JSBool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -128,7 +128,7 @@ JSBool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -144,7 +144,7 @@ JSBool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsv
       
 ======================================================= */
 
-JSBool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -154,7 +154,7 @@ JSBool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -165,7 +165,7 @@ JSBool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -175,7 +175,7 @@ JSBool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_radar_set_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_set_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

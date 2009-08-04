@@ -72,7 +72,7 @@ script_js_function	obj_pickup_functions[]={
 							{"cancel",				js_obj_pickup_cancel_func,			0},
 							{0}};
 
-JSClass				*obj_pickup_class;
+JSClassRef			obj_pickup_class;
 
 /* =======================================================
 
@@ -117,7 +117,7 @@ JSBool js_obj_pickup_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ JSBool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*pickup_obj;
 
@@ -144,7 +144,7 @@ JSBool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -154,7 +154,7 @@ JSBool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -164,7 +164,7 @@ JSBool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_obj_pickup_get_itemName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_itemName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*pickup_item;
 

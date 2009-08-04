@@ -72,7 +72,7 @@ script_js_function	obj_size_functions[]={
 							{"growOverTimeChangeOffset",	js_obj_size_grow_over_time_change_offset_func,	5},
 							{0}};
 
-JSClass				*obj_size_class;
+JSClassRef			obj_size_class;
 
 /* =======================================================
 
@@ -117,7 +117,7 @@ JSBool js_obj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-JSBool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ JSBool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -137,7 +137,7 @@ JSBool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -147,7 +147,7 @@ JSBool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -157,7 +157,7 @@ JSBool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -167,7 +167,7 @@ JSBool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -177,7 +177,7 @@ JSBool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_get_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -193,7 +193,7 @@ JSBool js_obj_size_get_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsva
       
 ======================================================= */
 
-JSBool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -204,7 +204,7 @@ JSBool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -214,7 +214,7 @@ JSBool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -225,7 +225,7 @@ JSBool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -235,7 +235,7 @@ JSBool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -245,7 +245,7 @@ JSBool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -255,7 +255,7 @@ JSBool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_obj_size_set_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

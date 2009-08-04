@@ -75,7 +75,7 @@ script_js_function	obj_weapon_functions[]={
 							{"getAltMaxClipCount",	js_obj_weapon_get_alt_max_clip_count_func,	1},
 							{0}};
 
-JSClass				*obj_weapon_class;
+JSClassRef			obj_weapon_class;
 
 /* =======================================================
 

@@ -74,7 +74,7 @@ script_js_property	model_halo_props[]={
 							{"noClipSelf",			js_model_halo_get_noClipSelf,			js_model_halo_set_noClipSelf},
 							{0}};
 
-JSClass				*model_halo_class;
+JSClassRef			model_halo_class;
 
 /* =======================================================
 
@@ -119,12 +119,12 @@ JSBool js_model_halo_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_model_halo_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	*vp=script_int_to_value(draw->script_halo_idx);
@@ -132,12 +132,12 @@ JSBool js_model_halo_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	*vp=script_bool_to_value(halo->on);
@@ -145,12 +145,12 @@ JSBool js_model_halo_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	if (halo->idx==-1) {
@@ -163,12 +163,12 @@ JSBool js_model_halo_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	*vp=script_int_to_value(halo->min_dist);
@@ -176,12 +176,12 @@ JSBool js_model_halo_get_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	*vp=script_int_to_value(halo->max_dist);
@@ -189,12 +189,12 @@ JSBool js_model_halo_get_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	*vp=script_int_to_value(halo->min_size);
@@ -202,12 +202,12 @@ JSBool js_model_halo_get_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	*vp=script_int_to_value(halo->max_size);
@@ -215,12 +215,12 @@ JSBool js_model_halo_get_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
     *vp=script_float_to_value(halo->min_alpha);
@@ -228,12 +228,12 @@ JSBool js_model_halo_get_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
     *vp=script_float_to_value(halo->max_alpha);
@@ -241,12 +241,12 @@ JSBool js_model_halo_get_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	*vp=script_bool_to_value(halo->no_clip_object);
@@ -254,12 +254,12 @@ JSBool js_model_halo_get_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_get_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 	
 	*vp=script_bool_to_value(halo->no_clip_self);
@@ -273,12 +273,12 @@ JSBool js_model_halo_get_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_model_halo_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	draw->script_halo_idx=script_value_to_int(*vp);
@@ -287,12 +287,12 @@ JSBool js_model_halo_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->on=script_value_to_bool(*vp);
@@ -300,13 +300,13 @@ JSBool js_model_halo_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char				name[name_str_len];
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	script_value_to_string(*vp,name,name_str_len);
@@ -315,12 +315,12 @@ JSBool js_model_halo_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->min_dist=script_value_to_int(*vp);
@@ -328,12 +328,12 @@ JSBool js_model_halo_set_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->max_dist=script_value_to_int(*vp);
@@ -341,12 +341,12 @@ JSBool js_model_halo_set_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->min_size=script_value_to_int(*vp);
@@ -354,12 +354,12 @@ JSBool js_model_halo_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->max_size=script_value_to_int(*vp);
@@ -367,12 +367,12 @@ JSBool js_model_halo_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->min_alpha=script_value_to_float(*vp);
@@ -380,12 +380,12 @@ JSBool js_model_halo_set_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->max_alpha=script_value_to_float(*vp);
@@ -393,12 +393,12 @@ JSBool js_model_halo_set_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->no_clip_object=script_value_to_bool(*vp);
@@ -406,12 +406,12 @@ JSBool js_model_halo_set_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_model_halo_set_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->no_clip_self=script_value_to_bool(*vp);

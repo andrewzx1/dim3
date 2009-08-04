@@ -67,7 +67,7 @@ script_js_function	interface_text_functions[]={
 							{"setTextAndFade",				js_interface_text_set_text_and_fade_func,	2},
 							{0}};
 
-JSClass				*interface_text_class;
+JSClassRef			interface_text_class;
 
 /* =======================================================
 

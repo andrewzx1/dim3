@@ -42,7 +42,7 @@ script_js_function	model_fill_functions[]={
 							{"change",				js_model_fill_change_func,				2},
 							{0}};
 
-JSClass				*model_fill_class;
+JSClassRef			model_fill_class;
 
 /* =======================================================
 
@@ -91,7 +91,7 @@ JSBool js_model_fill_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 {
     model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
     
     model_change_fill(draw,script_value_to_int(argv[0]),script_value_to_int(argv[1]));
 	return(JS_TRUE);

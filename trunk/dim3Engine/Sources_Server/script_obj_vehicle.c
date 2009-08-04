@@ -56,7 +56,7 @@ script_js_function	obj_vehicle_functions[]={
 							{"removeOccupant",		js_obj_vehicle_exit_func,			0},
 							{0}};
 
-JSClass				*obj_vehicle_class;
+JSClassRef			obj_vehicle_class;
 
 /* =======================================================
 
@@ -101,7 +101,7 @@ JSBool js_obj_vehicle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ JSBool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ JSBool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsv
       
 ======================================================= */
 
-JSBool js_obj_vehicle_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vehicle_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	

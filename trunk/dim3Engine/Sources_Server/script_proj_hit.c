@@ -59,7 +59,7 @@ script_js_property	proj_hit_props[]={
 							{"reflectVector",		js_proj_hit_get_reflectVector,		NULL},
 							{0}};
 
-JSClass				*proj_hit_class;
+JSClassRef			proj_hit_class;
 
 /* =======================================================
 
@@ -189,7 +189,7 @@ void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
       
 ======================================================= */
 
-JSBool js_proj_hit_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_hit_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 
@@ -201,7 +201,7 @@ JSBool js_proj_hit_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_hit_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_hit_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
@@ -217,7 +217,7 @@ JSBool js_proj_hit_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_hit_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_hit_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 
@@ -229,7 +229,7 @@ JSBool js_proj_hit_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_hit_get_isPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_hit_get_isPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 
@@ -241,7 +241,7 @@ JSBool js_proj_hit_get_isPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_proj_hit_get_startTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_hit_get_startTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
 
@@ -253,7 +253,7 @@ JSBool js_proj_hit_get_startTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_proj_hit_get_materialName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_hit_get_materialName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
@@ -269,7 +269,7 @@ JSBool js_proj_hit_get_materialName(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_proj_hit_get_ejectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_hit_get_ejectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	d3vct				vct;
 	proj_type			*proj;
@@ -283,7 +283,7 @@ JSBool js_proj_hit_get_ejectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_proj_hit_get_reflectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_hit_get_reflectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	d3vct				vct;
 	proj_type			*proj;

@@ -45,7 +45,7 @@ script_js_function	obj_held_functions[]={
 							{"drop",				js_obj_held_drop_func,				3},
 							{0}};
 
-JSClass				*obj_held_class;
+JSClassRef			obj_held_class;
 
 /* =======================================================
 

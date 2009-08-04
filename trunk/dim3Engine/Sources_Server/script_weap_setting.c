@@ -47,7 +47,7 @@ script_js_property	weap_setting_props[]={
 							{"parentObjectId",		js_weap_setting_get_parentObjectId,		NULL},
 							{0}};
 
-JSClass				*weap_setting_class;
+JSClassRef			weap_setting_class;
 
 /* =======================================================
 
@@ -92,7 +92,7 @@ JSBool js_weap_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -102,7 +102,7 @@ JSBool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -112,7 +112,7 @@ JSBool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-JSBool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -128,7 +128,7 @@ JSBool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id
       
 ======================================================= */
 
-JSBool js_weap_setting_set_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_setting_set_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	

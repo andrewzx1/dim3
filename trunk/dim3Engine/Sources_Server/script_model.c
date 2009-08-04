@@ -38,18 +38,6 @@ extern js_type			js;
 extern hud_type			hud;
 extern setup_type		setup;
 
-extern void script_add_model_offset_object(JSObject *parent_obj);
-extern void script_add_model_rotate_object(JSObject *parent_obj);
-extern void script_add_model_spin_object(JSObject *parent_obj);
-extern void script_add_model_light_object(JSObject *parent_obj);
-extern void script_add_model_light_color_object(JSObject *parent_obj);
-extern void script_add_model_halo_object(JSObject *parent_obj);
-extern void script_add_model_shadow_object(JSObject *parent_obj);
-extern void script_add_model_animation_object(JSObject *parent_obj);
-extern void script_add_model_mesh_object(JSObject *parent_obj);
-extern void script_add_model_bone_object(JSObject *parent_obj);
-extern void script_add_model_fill_object(JSObject *parent_obj);
-
 JSBool js_model_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
@@ -74,7 +62,7 @@ script_js_property	model_props[]={
 							{"faceForward",			js_model_get_faceForward,			js_model_set_faceForward},
 							{0}};
 
-JSClass				*model_class;
+JSClassRef			model_class;
 
 /* =======================================================
 
@@ -94,23 +82,7 @@ void script_free_model_object(void)
 
 JSObject* script_add_model_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=script_create_child_object(parent_obj,model_class,"model",model_props,NULL);
-	
-	script_add_model_offset_object(j_obj);
-	script_add_model_rotate_object(j_obj);
-	script_add_model_spin_object(j_obj);
-	script_add_model_light_object(j_obj);
-	script_add_model_light_color_object(j_obj);
-	script_add_model_halo_object(j_obj);
-	script_add_model_shadow_object(j_obj);
-	script_add_model_animation_object(j_obj);
-	script_add_model_mesh_object(j_obj);
-	script_add_model_bone_object(j_obj);
-	script_add_model_fill_object(j_obj);
-	
-	return(j_obj);
+    return(script_create_child_object(parent_obj,model_class,"model",model_props,NULL));
 }
 
 /* =======================================================
@@ -135,61 +107,61 @@ JSBool js_model_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	*vp=script_bool_to_value(draw->on);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	*vp=script_string_to_value(draw->name);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_get_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	*vp=script_bool_to_value(draw->bounce);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	*vp=script_float_to_value(draw->alpha);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_get_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	*vp=script_float_to_value(draw->resize);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	*vp=script_bool_to_value(draw->face_forward);
 
 	return(JS_TRUE);
@@ -201,61 +173,61 @@ JSBool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-JSBool js_model_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	draw->on=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_model_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	script_value_to_string(*vp,draw->name,name_str_len);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	draw->bounce=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_model_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	draw->alpha=script_value_to_float(*vp);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_model_set_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	draw->resize=script_value_to_float(*vp);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,FALSE);
+	draw=script_find_model_draw();
 	draw->face_forward=script_value_to_bool(*vp);
 	
 	return(JS_TRUE);

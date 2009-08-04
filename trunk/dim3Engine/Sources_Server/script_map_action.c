@@ -55,7 +55,7 @@ script_js_function	map_action_functions[]={
 							{"restartMapFromSave",	js_map_action_restart_map_from_save_func,	0},
 							{0}};
 
-JSClass				*map_action_class;
+JSClassRef			map_action_class;
 
 /* =======================================================
 

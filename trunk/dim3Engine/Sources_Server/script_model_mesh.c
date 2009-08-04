@@ -50,7 +50,7 @@ script_js_function	model_mesh_functions[]={
 							{"hideAllMesh",			js_model_mesh_hide_all_mesh_func,			0},
 							{0}};
 
-JSClass				*model_mesh_class;
+JSClassRef			model_mesh_class;
 
 /* =======================================================
 
@@ -100,7 +100,7 @@ JSBool js_model_mesh_show_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	char			name[name_str_len];
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_show_mesh(draw,name)) {
@@ -115,7 +115,7 @@ JSBool js_model_mesh_show_all_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	model_show_all_mesh(draw);
 
 	return(JS_TRUE);
@@ -126,7 +126,7 @@ JSBool js_model_mesh_show_only_mesh_func(JSContext *cx,JSObject *j_obj,uintN arg
 	char			name[name_str_len];
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_show_only_mesh(draw,name)) {
@@ -142,7 +142,7 @@ JSBool js_model_mesh_hide_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	char			name[name_str_len];
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_hide_mesh(draw,name)) {
@@ -157,7 +157,7 @@ JSBool js_model_mesh_hide_all_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	model_hide_all_mesh(draw);
 
 	return(JS_TRUE);

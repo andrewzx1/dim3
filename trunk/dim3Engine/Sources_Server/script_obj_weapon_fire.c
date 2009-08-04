@@ -44,7 +44,7 @@ script_js_property	obj_weapon_fire_props[]={
 							{"method",				js_obj_weapon_fire_get_method,		NULL},
 							{0}};
 
-JSClass				*obj_weapon_fire_class;
+JSClassRef			obj_weapon_fire_class;
 
 /* =======================================================
 

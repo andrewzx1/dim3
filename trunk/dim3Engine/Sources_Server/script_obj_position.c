@@ -74,7 +74,7 @@ script_js_function	obj_position_functions[]={
 							{"distanceToObject",				js_obj_position_distance_to_object_func,				1},
 							{0}};
 
-JSClass				*obj_position_class;
+JSClassRef			obj_position_class;
 
 /* =======================================================
 
@@ -119,7 +119,7 @@ JSBool js_obj_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -129,7 +129,7 @@ JSBool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -139,7 +139,7 @@ JSBool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 

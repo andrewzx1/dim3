@@ -49,7 +49,7 @@ script_js_property	weap_target_color_props[]={
 							{"blue",				js_weap_target_color_get_blue,			js_weap_target_color_set_blue},
 							{0}};
 
-JSClass				*weap_target_color_class;
+JSClassRef			weap_target_color_class;
 
 /* =======================================================
 
@@ -94,7 +94,7 @@ JSBool js_weap_target_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,
       
 ======================================================= */
 
-JSBool js_weap_target_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -104,7 +104,7 @@ JSBool js_weap_target_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_weap_target_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -114,7 +114,7 @@ JSBool js_weap_target_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_weap_target_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -130,7 +130,7 @@ JSBool js_weap_target_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsva
       
 ======================================================= */
 
-JSBool js_weap_target_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -140,7 +140,7 @@ JSBool js_weap_target_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-JSBool js_weap_target_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -150,7 +150,7 @@ JSBool js_weap_target_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-JSBool js_weap_target_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 

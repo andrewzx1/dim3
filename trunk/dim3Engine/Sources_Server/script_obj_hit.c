@@ -57,7 +57,7 @@ script_js_property	obj_hit_props[]={
 							{"damage",				js_obj_hit_get_damage,				NULL},
 							{0}};
 
-JSClass				*obj_hit_class;
+JSClassRef			obj_hit_class;
 
 /* =======================================================
 
@@ -102,7 +102,7 @@ JSBool js_obj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
@@ -112,7 +112,7 @@ JSBool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_hit_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj,*hit_obj;
 
@@ -129,7 +129,7 @@ JSBool js_obj_hit_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_hit_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
@@ -139,7 +139,7 @@ JSBool js_obj_hit_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_obj_hit_get_weaponName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_weaponName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 	weapon_type			*hit_weap;
@@ -157,7 +157,7 @@ JSBool js_obj_hit_get_weaponName(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_hit_get_projectileName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_projectileName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 	proj_type			*hit_proj;
@@ -177,7 +177,7 @@ JSBool js_obj_hit_get_projectileName(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-JSBool js_obj_hit_get_hitBoxName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_hitBoxName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
@@ -193,7 +193,7 @@ JSBool js_obj_hit_get_hitBoxName(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-JSBool js_obj_hit_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 

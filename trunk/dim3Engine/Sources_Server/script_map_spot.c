@@ -61,7 +61,7 @@ script_js_function	map_spot_functions[]={
 							{"attachObject",		js_map_spot_attach_object_func,		5},
 							{0}};
 
-JSClass				*map_spot_class;
+JSClassRef			map_spot_class;
 
 /* =======================================================
 
@@ -106,7 +106,7 @@ JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-JSBool js_map_spot_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_spot_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(map.nspot);
 	return(JS_TRUE);

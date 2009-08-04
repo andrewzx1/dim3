@@ -48,7 +48,7 @@ script_js_function	multiplayer_score_functions[]={
 							{"getTeam",				js_multiplayer_score_get_team_func,			1},
 							{0}};
 
-JSClass				*multiplayer_score_class;
+JSClassRef			multiplayer_score_class;
 
 /* =======================================================
 

@@ -45,7 +45,7 @@ script_js_function	interface_console_functions[]={
 							{"read",				js_interface_console_read_func,			0},
 							{0}};
 
-JSClass				*interface_console_class;
+JSClassRef			interface_console_class;
 
 /* =======================================================
 

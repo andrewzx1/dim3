@@ -56,7 +56,7 @@ script_js_function	obj_score_functions[]={
 							{"addGoal",				js_obj_score_add_goal_func,			0},
 							{0}};
 
-JSClass				*obj_score_class;
+JSClassRef			obj_score_class;
 
 /* =======================================================
 
@@ -101,7 +101,7 @@ JSBool js_obj_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ JSBool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ JSBool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -131,7 +131,7 @@ JSBool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-JSBool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
@@ -141,7 +141,7 @@ JSBool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_score_get_score(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_score(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 

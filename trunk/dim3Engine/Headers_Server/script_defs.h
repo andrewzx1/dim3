@@ -367,18 +367,32 @@ and can be sold or given away.
 #define sd_event_remote_telefrag						3085
 
 //
+// supergumba -- temporary translation items
+//
+
+#define JSContextRef				JSContext*
+#define JSClassRef					JSClass*
+#define JSObjectRef					JSObject*
+
+//
+// callbacks
+//
+
+typedef bool (*script_get_set_callback)(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+
+//
 // object setup structures
 //
 
 typedef struct		{
-						const char			*name;
-						JSPropertyOp		getter,setter;
+						const char					*name;
+						script_get_set_callback		getter,setter;
 					} script_js_property;
 
 typedef struct		{
-						const char			*name;
-						JSNative			call;
-						int					nargs;
+						const char					*name;
+						JSNative					call;
+						int							nargs;
 					} script_js_function;
 
 //
@@ -386,8 +400,8 @@ typedef struct		{
 //
  
 typedef struct		{
-						int					value_int;
-						char				value_str[64],name[64];
+						int							value_int;
+						char						value_str[64],name[64];
 					} script_define_type;
 
 //
@@ -395,9 +409,9 @@ typedef struct		{
 //
  
 typedef struct		{
-						int					type,script_uid;
-						char				name[name_str_len];
-						d3_jsval_data_type	data;
+						int							type,script_uid;
+						char						name[name_str_len];
+						d3_jsval_data_type			data;
 					} global_type;
 
 //
@@ -405,18 +419,18 @@ typedef struct		{
 //
  
 typedef struct		{
-						int					mode,count,freq,user_id;
-						char				chain_func_name[64];
-						attach_type			attach;
+						int							mode,count,freq,user_id;
+						char						chain_func_name[64];
+						attach_type					attach;
 					} timer_type;
 					
 typedef struct		{
-						int					uid,data_len;
-						char				name[file_str_len],params[param_str_len];
-						char				*data;
-						bool				used;
-						jsval				event_func;
-						JSObject			*global,*obj;
+						int							uid,data_len;
+						char						name[file_str_len],params[param_str_len];
+						char						*data;
+						bool						used;
+						jsval						event_func;
+						JSObject					*global,*obj;
 					} script_type;
 
 //
@@ -424,11 +438,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					timer,global;
+						int							timer,global;
 					} script_count_type;
 					
 typedef struct		{
-						int					timer_tick,current_tick;
+						int							timer_tick,current_tick;
 					} script_time_type;
 		
 //
@@ -436,22 +450,22 @@ typedef struct		{
 //
 
 typedef struct		{
-						JSRuntime			*rt;
-						JSContext			*cx;
+						JSRuntime					*rt;
+						JSContext					*cx;
 						
-						int					script_current_uid;
-						char				last_error_str[256];
-						bool				add_property_lock;
-						attach_type			attach;
+						int							script_current_uid;
+						char						last_error_str[256];
+						bool						add_property_lock;
+						attach_type					attach;
 						
-						attach_type			game_attach,course_attach;
+						attach_type					game_attach,course_attach;
 						
-						script_count_type	count;
-						script_time_type	time;
+						script_count_type			count;
+						script_time_type			time;
 						
-						script_type			*scripts;
-						timer_type			*timers;
-						global_type			*globals;
+						script_type					*scripts;
+						timer_type					*timers;
+						global_type					*globals;
 						
 					} js_type;
 

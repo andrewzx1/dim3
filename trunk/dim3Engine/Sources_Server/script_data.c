@@ -55,7 +55,7 @@ script_js_function	data_functions[]={
 							{"getScriptSpecific",	js_data_get_specific_func,			1},
 							{0}};
 
-JSClass				*data_class;
+JSClassRef			data_class;
 
 /* =======================================================
 

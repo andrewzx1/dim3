@@ -48,7 +48,7 @@ script_js_property	model_offset_props[]={
 							{"z",					js_model_offset_get_z,				js_model_offset_set_z},
 							{0}};
 
-JSClass				*model_offset_class;
+JSClassRef			model_offset_class;
 
 /* =======================================================
 
@@ -93,31 +93,31 @@ JSBool js_model_offset_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_model_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	*vp=script_int_to_value(draw->offset.x);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	*vp=script_int_to_value(draw->offset.y);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	*vp=script_int_to_value(draw->offset.z);
 
 	return(JS_TRUE);
@@ -129,31 +129,31 @@ JSBool js_model_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_model_offset_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_offset_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	draw->offset.x=script_value_to_int(*vp);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_offset_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_offset_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	draw->offset.y=script_value_to_int(*vp);
 
 	return(JS_TRUE);
 }
 
-JSBool js_model_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw(j_obj,TRUE);
+	draw=script_find_model_draw();
 	draw->offset.z=script_value_to_int(*vp);
 
 	return(JS_TRUE);

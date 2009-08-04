@@ -57,7 +57,7 @@ script_js_function	weap_target_functions[]={
 							{"end",					js_weap_target_end_func,				0},
 							{0}};
 
-JSClass				*weap_target_class;
+JSClassRef			weap_target_class;
 
 /* =======================================================
 
@@ -102,7 +102,7 @@ JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -112,7 +112,7 @@ JSBool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -122,7 +122,7 @@ JSBool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -138,7 +138,7 @@ JSBool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-JSBool js_weap_target_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	

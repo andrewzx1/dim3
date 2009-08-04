@@ -50,7 +50,7 @@ script_js_property	camera_chase_slop_props[]={
 							{"z",					js_camera_chase_slop_get_z,			js_camera_chase_slop_set_z},
 							{0}};
 
-JSClass				*camera_chase_slop_class;
+JSClassRef			camera_chase_slop_class;
 
 /* =======================================================
 
@@ -95,19 +95,19 @@ JSBool js_camera_chase_slop_set_property(JSContext *cx,JSObject *j_obj,jsval id,
       
 ======================================================= */
 
-JSBool js_camera_chase_slop_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_float_to_value(camera.chase_slop.x);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_chase_slop_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_float_to_value(camera.chase_slop.y);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_chase_slop_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_float_to_value(camera.chase_slop.z);
 	return(JS_TRUE);
@@ -119,19 +119,19 @@ JSBool js_camera_chase_slop_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_camera_chase_slop_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	camera.chase_slop.x=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_chase_slop_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	camera.chase_slop.y=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-JSBool js_camera_chase_slop_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	camera.chase_slop.z=script_value_to_float(*vp);
 	return(JS_TRUE);

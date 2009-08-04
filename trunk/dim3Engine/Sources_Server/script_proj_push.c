@@ -47,7 +47,7 @@ script_js_property	proj_push_props[]={
 							{"force",				js_proj_push_get_force,				js_proj_push_set_force},
 							{0}};
 
-JSClass				*proj_push_class;
+JSClassRef			proj_push_class;
 
 /* =======================================================
 
@@ -92,7 +92,7 @@ JSBool js_proj_push_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_proj_push_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_push_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -104,7 +104,7 @@ JSBool js_proj_push_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_push_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_push_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -122,7 +122,7 @@ JSBool js_proj_push_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_proj_push_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_push_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -134,7 +134,7 @@ JSBool js_proj_push_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_proj_push_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_push_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	

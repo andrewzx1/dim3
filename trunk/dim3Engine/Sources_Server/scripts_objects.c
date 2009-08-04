@@ -99,6 +99,18 @@ void script_initialize_classes(void)
 	script_init_game_join_object();
 
 	script_init_model_object();
+	script_init_model_animation_object();
+	script_init_model_bone_object();
+	script_init_model_fill_object();
+	script_init_model_halo_object();
+	script_init_model_light_object();
+	script_init_model_light_color_object();
+	script_init_model_mesh_object();
+	script_init_model_offset_object();
+	script_init_model_rotate_object();
+	script_init_model_shadow_object();
+	script_init_model_spin_object();
+
 	script_init_event_object();
 
 	script_init_obj_setting_object();
@@ -230,6 +242,18 @@ void script_release_classes(void)
 	script_free_game_join_object();
 
 	script_free_model_object();
+	script_free_model_animation_object();
+	script_free_model_bone_object();
+	script_free_model_fill_object();
+	script_free_model_halo_object();
+	script_free_model_light_object();
+	script_free_model_light_color_object();
+	script_free_model_mesh_object();
+	script_free_model_offset_object();
+	script_free_model_rotate_object();
+	script_free_model_shadow_object();
+	script_free_model_spin_object();
+
 	script_free_event_object();
 
 	script_free_obj_setting_object();
@@ -307,7 +331,7 @@ void script_release_classes(void)
       
 ======================================================= */
 
-JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp setter)
+JSClassRef script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp setter)
 {
 	JSClass			*cls;
 
@@ -318,10 +342,8 @@ JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp s
 	
 	cls->addProperty=JS_PropertyStub;
 	cls->delProperty=JS_PropertyStub;
-//	cls->getProperty=getter;
-//	cls->setProperty=setter;
-	cls->getProperty=JS_PropertyStub;
-	cls->setProperty=JS_PropertyStub;
+	cls->getProperty=getter;
+	cls->setProperty=setter;
 	cls->enumerate=JS_EnumerateStub;
 	cls->resolve=JS_ResolveStub;
 	cls->convert=JS_ConvertStub;
@@ -330,7 +352,7 @@ JSClass* script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp s
 	return(cls);
 }
 
-void script_free_class(JSClass *cls)
+void script_free_class(JSClassRef cls)
 {
 	free(cls);
 }
@@ -432,6 +454,25 @@ bool script_add_global_object(script_type *script,char *err_str)
       
 ======================================================= */
 
+void script_create_main_object_add_model_object(JSObject *parent_obj)
+{
+    JSObject		*j_obj;
+
+	j_obj=script_add_model_object(parent_obj);
+	
+	script_add_model_offset_object(j_obj);
+	script_add_model_rotate_object(j_obj);
+	script_add_model_spin_object(j_obj);
+	script_add_model_light_object(j_obj);
+	script_add_model_light_color_object(j_obj);
+	script_add_model_halo_object(j_obj);
+	script_add_model_shadow_object(j_obj);
+	script_add_model_animation_object(j_obj);
+	script_add_model_mesh_object(j_obj);
+	script_add_model_bone_object(j_obj);
+	script_add_model_fill_object(j_obj);
+}
+
 JSObject* script_create_main_object(attach_type *attach)
 {
 	JSObject		*j_obj,*j_sub_obj;
@@ -490,7 +531,7 @@ JSObject* script_create_main_object(attach_type *attach)
 			script_add_obj_weapon_object(j_obj);
 			script_add_obj_weapon_fire_object(j_obj);
 			script_add_obj_melee_object(j_obj);
-			script_add_model_object(j_obj);
+			script_create_main_object_add_model_object(j_obj);
 			break;
 
 		case thing_type_weapon:
@@ -514,7 +555,7 @@ JSObject* script_create_main_object(attach_type *attach)
 			j_sub_obj=script_add_weap_target_object(j_obj);
 				script_add_weap_target_color_object(j_sub_obj);
 			script_add_weap_zoom_object(j_obj);
-			script_add_model_object(j_obj);
+			script_create_main_object_add_model_object(j_obj);
 			break;
 
 		case thing_type_projectile:
@@ -532,7 +573,7 @@ JSObject* script_create_main_object(attach_type *attach)
 			script_add_proj_size_object(j_obj);
 			script_add_proj_mark_object(j_obj);
 			script_add_proj_melee_object(j_obj);
-			script_add_model_object(j_obj);
+			script_create_main_object_add_model_object(j_obj);
 			break;
 
 	}
@@ -540,7 +581,7 @@ JSObject* script_create_main_object(attach_type *attach)
 	return(j_obj);
 }
 
-JSObject* script_create_child_object(JSObject *parent_obj,JSClass *cls,char *name,script_js_property *props,script_js_function *funcs)
+JSObject* script_create_child_object(JSObject *parent_obj,JSClassRef cls,char *name,script_js_property *props,script_js_function *funcs)
 {
 	int					flags;
 	script_js_property	*prop;
@@ -549,9 +590,7 @@ JSObject* script_create_child_object(JSObject *parent_obj,JSClass *cls,char *nam
 
 		// object
 
-	j_obj=JS_DefineObject(js.cx,parent_obj,name,NULL,NULL,0);
-//	j_obj=JS_DefineObject(js.cx,parent_obj,name,cls,NULL,0);
-// supergumba -- need to get working
+	j_obj=JS_DefineObject(js.cx,parent_obj,name,cls,NULL,0);
 
 		// properties
 
@@ -564,8 +603,7 @@ JSObject* script_create_child_object(JSObject *parent_obj,JSClass *cls,char *nam
 			flags=JSPROP_PERMANENT|JSPROP_SHARED;
 			if (prop->setter==NULL) flags|=JSPROP_READONLY;
 
-			JS_DefineProperty(js.cx,j_obj,prop->name,JSVAL_NULL,prop->getter,prop->setter,flags);
-//			JS_DefineProperty(js.cx,j_obj,prop->name,JSVAL_NULL,NULL,NULL,flags);
+			JS_DefineProperty(js.cx,j_obj,prop->name,JSVAL_NULL,NULL,NULL,flags);
 
 			prop++;
 		}
@@ -637,7 +675,7 @@ JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,scri
 
 		// call getter
 
-	return((*prop->getter)(cx,j_obj,id,vp));
+	return((*prop->getter)(cx,j_obj,id,vp)?JS_TRUE:JS_FALSE);
 }
 
 JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props)
@@ -665,5 +703,5 @@ JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,scri
 
 		// call setter
 
-	return((*prop->setter)(cx,j_obj,id,vp));
+	return((*prop->setter)(cx,j_obj,id,vp)?JS_TRUE:JS_FALSE);
 }

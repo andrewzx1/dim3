@@ -62,7 +62,7 @@ script_js_function	interface_bitmap_functions[]={
 							{"startFade",			js_interface_bitmap_start_fade_func,	1},
 							{0}};
 
-JSClass				*interface_bitmap_class;
+JSClassRef			interface_bitmap_class;
 
 /* =======================================================
 

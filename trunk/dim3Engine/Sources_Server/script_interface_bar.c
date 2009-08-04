@@ -54,7 +54,7 @@ script_js_function	interface_bar_functions[]={
 							{"setAlpha",			js_interface_bar_set_alpha_func,		2},
 							{0}};
 
-JSClass				*interface_bar_class;
+JSClassRef			interface_bar_class;
 
 /* =======================================================
 

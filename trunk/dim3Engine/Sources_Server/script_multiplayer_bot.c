@@ -51,7 +51,7 @@ script_js_function	multiplayer_bot_functions[]={
 							{"getFromMinMax",		js_multiplayer_bot_get_from_min_max_func,	2},
 							{0}};
 
-JSClass				*multiplayer_bot_class;
+JSClassRef			multiplayer_bot_class;
 
 /* =======================================================
 
@@ -96,7 +96,7 @@ JSBool js_multiplayer_bot_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-JSBool js_multiplayer_bot_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_multiplayer_bot_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	*vp=script_int_to_value(server.skill);
 	return(JS_TRUE);
