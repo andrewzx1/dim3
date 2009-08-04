@@ -36,6 +36,7 @@ JSBool js_model_animation_get_property(JSContext *cx,JSObject *j_obj,jsval id,js
 JSBool js_model_animation_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_animation_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_animation_get_currentAnimationName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_animation_get_playing(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_animation_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_animation_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_animation_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -50,6 +51,7 @@ extern js_type			js;
 script_js_property	model_animation_props[]={
 							{"index",					js_model_animation_get_index,					js_model_animation_set_index},
 							{"currentAnimationName",	js_model_animation_get_currentAnimationName,	NULL},
+							{"playing",					js_model_animation_get_playing,					NULL},
 							{0}};
 
 script_js_function	model_animation_functions[]={
@@ -126,6 +128,18 @@ JSBool js_model_animation_get_currentAnimationName(JSContext *cx,JSObject *j_obj
 
 	model_get_current_animation_name(draw,name);
 	*vp=script_string_to_value(name);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_animation_get_playing(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw				*draw;
+	model_draw_animation	*draw_animation;
+
+	draw=script_find_model_draw(j_obj,TRUE);
+	draw_animation=&draw->animations[draw->script_animation_idx];
+	*vp=script_bool_to_value(draw_animation->mode==am_playing);
 
 	return(JS_TRUE);
 }

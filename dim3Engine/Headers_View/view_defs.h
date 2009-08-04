@@ -108,7 +108,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									direction,i_intensity;
+						int									filter,direction,i_intensity;
 						float								exponent,f_x,f_y,f_z;
 						double								d_x,d_y,d_z,
 															intensity,inv_intensity,

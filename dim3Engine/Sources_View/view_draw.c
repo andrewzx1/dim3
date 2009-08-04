@@ -591,7 +591,7 @@ bool view_draw_node(int tick,node_type *node,int pixel_size)
 	view.render->camera.under_liquid_idx=-1;
 	view.render->camera.z_adjust=0;
 	
-	view.render->no_shader=TRUE;
+	view.render->no_shader=!node->use_shader;
 	view.render->no_shadow=TRUE;
 	view.render->force_camera_obj=TRUE;
 

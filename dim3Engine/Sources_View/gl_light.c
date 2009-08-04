@@ -118,7 +118,7 @@ double gl_light_get_intensity(int tick,int light_type,int intensity)
       
 ======================================================= */
 
-void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,float exponent,int direction,d3col *col)
+void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int filter,int intensity,float exponent,int direction,d3col *col)
 {
 	view_light_spot_type			*lspot;
 	
@@ -142,6 +142,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,floa
 
 	lspot->i_intensity=(int)lspot->intensity;			// need alternate versions of data to speed up later calculations
 	
+	lspot->filter=filter;
 	lspot->exponent=exponent;
 	lspot->direction=direction;
 	
@@ -196,7 +197,7 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 				if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			gl_lights_compile_add(tick,&pnt,light->type,light->intensity,light->exponent,light->direction,&light->col);
+			gl_lights_compile_add(tick,&pnt,light->type,light->filter,light->intensity,light->exponent,light->direction,&light->col);
 		}
 
 		light++;
@@ -231,7 +232,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 		}
 	}
 	
-	gl_lights_compile_add(tick,&effect->pnt,lt_normal,intensity,1.0f,ld_all,&flash->col);
+	gl_lights_compile_add(tick,&effect->pnt,lt_normal,lf_none,intensity,1.0f,ld_all,&flash->col);
 }
 
 void gl_lights_compile(int tick)
@@ -250,7 +251,7 @@ void gl_lights_compile(int tick)
 	maplight=map.lights;
 		
 	for (n=0;n!=map.nlight;n++) {
-		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
+		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->filter,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
 		maplight++;
 	}	
 
@@ -515,13 +516,29 @@ void gl_lights_spot_reduce_none(void)
 	}
 }
 
-void gl_lights_spot_reduce_box(d3pnt *min,d3pnt *max)
+void gl_lights_spot_reduce_box(d3pnt *min,d3pnt *max,bool is_mesh)
 {
 	int				n;
 
 	light_spot_reduce_count=0;
 
 	for (n=0;n!=view.render->light.count;n++) {
+	
+			// check filtering
+			
+		switch (view.render->light.spots[n].filter) {
+		
+			case lf_mesh_only:
+				if (!is_mesh) continue;
+				break;
+				
+			case lf_not_mesh:
+				if (is_mesh) continue;
+				break;
+		}
+		
+			// check box collision
+			
 		if (gl_lights_collide_with_box(&view.render->light.spots[n],min,max)) {
 			light_spot_reduce_idx[light_spot_reduce_count]=n;
 			light_spot_reduce_count++;
@@ -593,7 +610,7 @@ inline void gl_lights_calc_vertex_setup_none(void)
 
 inline void gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh)
 {
-	gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max);
+	gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max,TRUE);
 }
 
 void gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
@@ -608,7 +625,7 @@ void gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
 	max.y=liq->y;
 	max.z=liq->bot;
 
-	gl_lights_spot_reduce_box(&min,&max);
+	gl_lights_spot_reduce_box(&min,&max,TRUE);
 }
 
 void gl_lights_calc_vertex_setup_model(model_draw *draw)
@@ -616,7 +633,7 @@ void gl_lights_calc_vertex_setup_model(model_draw *draw)
 	d3pnt			pnt,min,max;
 
 	model_get_view_min_max(draw,&pnt,&min,&max);
-	gl_lights_spot_reduce_box(&min,&max);
+	gl_lights_spot_reduce_box(&min,&max,FALSE);
 }
 
 /* =======================================================
@@ -720,7 +737,7 @@ void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,int *light_
 		light_cur_mesh_reduce_idx=mesh_idx;
 
 		mesh=&map.mesh.meshes[mesh_idx];
-		gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max);
+		gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max,TRUE);
 	}
 
 	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_idx);
@@ -744,7 +761,7 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx)
 	max.y=liq->y;
 	max.z=liq->bot;
 	
-	gl_lights_spot_reduce_box(&min,&max);
+	gl_lights_spot_reduce_box(&min,&max,TRUE);
 	gl_lights_build_from_box(&mid,&min,&max,light_idx);
 }
 
@@ -755,7 +772,7 @@ void gl_lights_build_from_model(model_draw *draw,int *light_idx)
 	light_cur_mesh_reduce_idx=-1;
 	
 	model_get_view_min_max(draw,&mid,&min,&max);
-	gl_lights_spot_reduce_box(&min,&max);
+	gl_lights_spot_reduce_box(&min,&max,FALSE);
 	gl_lights_build_from_box(&mid,&min,&max,light_idx);
 }
 

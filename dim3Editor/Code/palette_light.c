@@ -29,7 +29,9 @@ and can be sold or given away.
 #include "common_view.h"
 #include "dialog.h"
 
+#define kLightName									FOUR_CHAR_CODE('name')
 #define kLightType									FOUR_CHAR_CODE('type')
+#define kLightFilter								FOUR_CHAR_CODE('fltr')
 #define kLightDirection								FOUR_CHAR_CODE('dirr')
 #define kLightIntensity								FOUR_CHAR_CODE('ints')
 #define kLightExponent								FOUR_CHAR_CODE('fall')
@@ -58,7 +60,9 @@ void palette_light_load(void)
 	
 		// get controls
 		
+	dialog_set_text(palette_light_wind,kLightName,0,light->name);
 	dialog_set_combo(palette_light_wind,kLightType,0,light->type);
+	dialog_set_combo(palette_light_wind,kLightFilter,0,light->filter);
 	dialog_set_combo(palette_light_wind,kLightDirection,0,light->direction);
 	dialog_set_int(palette_light_wind,kLightIntensity,0,light->intensity);
 	dialog_set_float(palette_light_wind,kLightExponent,0,light->exponent);
@@ -80,7 +84,9 @@ void palette_light_save(void)
 	
 		// set controls
 	
+	dialog_get_text(palette_light_wind,kLightName,0,light->name,name_str_len);
 	light->type=dialog_get_combo(palette_light_wind,kLightType,0);
+	light->filter=dialog_get_combo(palette_light_wind,kLightFilter,0);
 	light->direction=dialog_get_combo(palette_light_wind,kLightDirection,0);
 	light->intensity=dialog_get_int(palette_light_wind,kLightIntensity,0);
 	light->exponent=dialog_get_float(palette_light_wind,kLightExponent,0);
