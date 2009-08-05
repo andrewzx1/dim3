@@ -41,11 +41,11 @@ extern int				game_obj_rule_uid;
 
 JSBool js_game_score_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_game_score_get_objectId(jsval *vp);
+bool js_game_score_get_kill(jsval *vp);
+bool js_game_score_get_death(jsval *vp);
+bool js_game_score_get_suicide(jsval *vp);
+bool js_game_score_get_goal(jsval *vp);
 JSBool js_game_score_set_score_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	game_score_props[]={
@@ -105,7 +105,7 @@ JSBool js_game_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_objectId(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -117,7 +117,7 @@ bool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_kill(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -129,7 +129,7 @@ bool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_death(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -141,7 +141,7 @@ bool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_suicide(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -153,7 +153,7 @@ bool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_game_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_score_get_goal(jsval *vp)
 {
 	obj_type		*obj;
 

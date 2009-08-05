@@ -33,8 +33,8 @@ and can be sold or given away.
 
 JSBool js_model_shadow_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_shadow_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_shadow_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_shadow_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_model_shadow_get_on(jsval *vp);
+bool js_model_shadow_set_on(jsval *vp);
 
 extern js_type			js;
 
@@ -87,7 +87,7 @@ JSBool js_model_shadow_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_model_shadow_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_shadow_get_on(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
@@ -106,7 +106,7 @@ bool js_model_shadow_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_model_shadow_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_shadow_set_on(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;

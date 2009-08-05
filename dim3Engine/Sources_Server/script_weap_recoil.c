@@ -37,28 +37,28 @@ extern js_type			js;
 
 JSBool js_weap_recoil_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_recoil_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_minX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_maxX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_resetX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_minY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_maxY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_resetY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_minZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_maxZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_resetZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_resetLook(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_get_resetTurn(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_minX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_maxX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_resetX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_minY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_maxY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_resetY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_minZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_maxZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_resetZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_resetLook(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_recoil_set_resetTurn(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_weap_recoil_get_minX(jsval *vp);
+bool js_weap_recoil_get_maxX(jsval *vp);
+bool js_weap_recoil_get_resetX(jsval *vp);
+bool js_weap_recoil_get_minY(jsval *vp);
+bool js_weap_recoil_get_maxY(jsval *vp);
+bool js_weap_recoil_get_resetY(jsval *vp);
+bool js_weap_recoil_get_minZ(jsval *vp);
+bool js_weap_recoil_get_maxZ(jsval *vp);
+bool js_weap_recoil_get_resetZ(jsval *vp);
+bool js_weap_recoil_get_resetLook(jsval *vp);
+bool js_weap_recoil_get_resetTurn(jsval *vp);
+bool js_weap_recoil_set_minX(jsval *vp);
+bool js_weap_recoil_set_maxX(jsval *vp);
+bool js_weap_recoil_set_resetX(jsval *vp);
+bool js_weap_recoil_set_minY(jsval *vp);
+bool js_weap_recoil_set_maxY(jsval *vp);
+bool js_weap_recoil_set_resetY(jsval *vp);
+bool js_weap_recoil_set_minZ(jsval *vp);
+bool js_weap_recoil_set_maxZ(jsval *vp);
+bool js_weap_recoil_set_resetZ(jsval *vp);
+bool js_weap_recoil_set_resetLook(jsval *vp);
+bool js_weap_recoil_set_resetTurn(jsval *vp);
 JSBool js_weap_recoil_go_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	weap_recoil_props[]={
@@ -124,7 +124,7 @@ JSBool js_weap_recoil_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_weap_recoil_get_minX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_minX(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -134,7 +134,7 @@ bool js_weap_recoil_get_minX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_maxX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_maxX(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -144,7 +144,7 @@ bool js_weap_recoil_get_maxX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_resetX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_resetX(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -154,7 +154,7 @@ bool js_weap_recoil_get_resetX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_minY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_minY(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -164,7 +164,7 @@ bool js_weap_recoil_get_minY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_maxY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_maxY(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -174,7 +174,7 @@ bool js_weap_recoil_get_maxY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_resetY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_resetY(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -184,7 +184,7 @@ bool js_weap_recoil_get_resetY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_minZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_minZ(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -194,7 +194,7 @@ bool js_weap_recoil_get_minZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_maxZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_maxZ(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -204,7 +204,7 @@ bool js_weap_recoil_get_maxZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_resetZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_resetZ(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -214,7 +214,7 @@ bool js_weap_recoil_get_resetZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_resetLook(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_resetLook(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -224,7 +224,7 @@ bool js_weap_recoil_get_resetLook(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_get_resetTurn(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_get_resetTurn(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -240,7 +240,7 @@ bool js_weap_recoil_get_resetTurn(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_weap_recoil_set_minX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_minX(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -250,7 +250,7 @@ bool js_weap_recoil_set_minX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_maxX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_maxX(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -260,7 +260,7 @@ bool js_weap_recoil_set_maxX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_resetX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_resetX(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -270,7 +270,7 @@ bool js_weap_recoil_set_resetX(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_minY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_minY(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -280,7 +280,7 @@ bool js_weap_recoil_set_minY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_maxY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_maxY(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -290,7 +290,7 @@ bool js_weap_recoil_set_maxY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_resetY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_resetY(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -300,7 +300,7 @@ bool js_weap_recoil_set_resetY(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_minZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_minZ(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -310,7 +310,7 @@ bool js_weap_recoil_set_minZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_maxZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_maxZ(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -320,7 +320,7 @@ bool js_weap_recoil_set_maxZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_resetZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_resetZ(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -330,7 +330,7 @@ bool js_weap_recoil_set_resetZ(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_resetLook(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_resetLook(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -340,7 +340,7 @@ bool js_weap_recoil_set_resetLook(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_weap_recoil_set_resetTurn(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_recoil_set_resetTurn(jsval *vp)
 {
 	weapon_type		*weap;
 	

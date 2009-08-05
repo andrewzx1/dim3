@@ -39,9 +39,9 @@ extern network_setup_type	net_setup;
 
 JSBool js_game_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_setting_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_game_setting_get_type(jsval *vp);
+bool js_game_setting_get_multiplayer(jsval *vp);
+bool js_game_setting_get_skill(jsval *vp);
 
 script_js_property	game_setting_props[]={
 							{"type",				js_game_setting_get_type,				NULL},
@@ -94,7 +94,7 @@ JSBool js_game_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_setting_get_type(jsval *vp)
 {
 	if (!net_setup.client.joined) {
 		*vp=script_null_to_value();
@@ -106,13 +106,13 @@ bool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_game_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_setting_get_multiplayer(jsval *vp)
 {
 	*vp=script_bool_to_value(net_setup.client.joined);
 	return(JS_TRUE);
 }
 
-bool js_game_setting_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_setting_get_skill(jsval *vp)
 {
 	*vp=script_int_to_value(server.skill);
 	return(JS_TRUE);

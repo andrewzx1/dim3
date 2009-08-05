@@ -37,8 +37,8 @@ extern js_type			js;
 
 JSBool js_weap_kickback_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_kickback_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_kickback_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_weap_kickback_get_size(jsval *vp);
+bool js_weap_kickback_set_size(jsval *vp);
 JSBool js_weap_kickback_kick_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	weap_kickback_props[]={
@@ -94,7 +94,7 @@ JSBool js_weap_kickback_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsva
       
 ======================================================= */
 
-bool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_kickback_get_size(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -110,7 +110,7 @@ bool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_weap_kickback_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_kickback_set_size(jsval *vp)
 {
 	weapon_type		*weap;
 	

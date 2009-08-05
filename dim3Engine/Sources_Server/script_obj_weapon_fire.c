@@ -36,8 +36,8 @@ extern js_type			js;
 
 JSBool js_obj_weapon_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_weapon_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_weapon_fire_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_weapon_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_weapon_fire_get_name(jsval *vp);
+bool js_obj_weapon_fire_get_method(jsval *vp);
 
 script_js_property	obj_weapon_fire_props[]={
 							{"name",				js_obj_weapon_fire_get_name,		NULL},
@@ -89,7 +89,7 @@ JSBool js_obj_weapon_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-JSBool js_obj_weapon_fire_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_weapon_fire_get_name(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -99,7 +99,7 @@ JSBool js_obj_weapon_fire_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-JSBool js_obj_weapon_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_weapon_fire_get_method(jsval *vp)
 {
 	obj_type		*obj;
 

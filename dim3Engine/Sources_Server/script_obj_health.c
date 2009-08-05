@@ -36,21 +36,21 @@ extern js_type			js;
 
 JSBool js_obj_health_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_health_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_get_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_get_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_get_current(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_get_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_get_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_get_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_get_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_get_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_set_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_set_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_set_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_set_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_set_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_set_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_health_set_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_health_get_maximum(jsval *vp);
+bool js_obj_health_get_start(jsval *vp);
+bool js_obj_health_get_current(jsval *vp);
+bool js_obj_health_get_recoverTick(jsval *vp);
+bool js_obj_health_get_recoverAmount(jsval *vp);
+bool js_obj_health_get_fallDamageMinimumHeight(jsval *vp);
+bool js_obj_health_get_fallDamageFactor(jsval *vp);
+bool js_obj_health_get_factor(jsval *vp);
+bool js_obj_health_set_maximum(jsval *vp);
+bool js_obj_health_set_start(jsval *vp);
+bool js_obj_health_set_recoverTick(jsval *vp);
+bool js_obj_health_set_recoverAmount(jsval *vp);
+bool js_obj_health_set_fallDamageMinimumHeight(jsval *vp);
+bool js_obj_health_set_fallDamageFactor(jsval *vp);
+bool js_obj_health_set_factor(jsval *vp);
 JSBool js_obj_health_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_health_remove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_health_reset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -117,7 +117,7 @@ JSBool js_obj_health_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_obj_health_get_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_get_maximum(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ bool js_obj_health_get_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_health_get_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_get_start(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -137,7 +137,7 @@ bool js_obj_health_get_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_health_get_current(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_get_current(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -147,7 +147,7 @@ bool js_obj_health_get_current(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_health_get_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_get_recoverTick(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -157,7 +157,7 @@ bool js_obj_health_get_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_obj_health_get_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_get_recoverAmount(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -167,7 +167,7 @@ bool js_obj_health_get_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_health_get_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_get_fallDamageMinimumHeight(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -177,7 +177,7 @@ bool js_obj_health_get_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,jsv
 	return(JS_TRUE);
 }
 
-bool js_obj_health_get_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_get_fallDamageFactor(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -187,7 +187,7 @@ bool js_obj_health_get_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_health_get_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_get_factor(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -203,7 +203,7 @@ bool js_obj_health_get_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_obj_health_set_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_set_maximum(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -213,7 +213,7 @@ bool js_obj_health_set_maximum(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_health_set_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_set_start(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -223,7 +223,7 @@ bool js_obj_health_set_start(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_health_set_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_set_recoverTick(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -234,7 +234,7 @@ bool js_obj_health_set_recoverTick(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_obj_health_set_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_set_recoverAmount(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -244,7 +244,7 @@ bool js_obj_health_set_recoverAmount(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_health_set_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_set_fallDamageMinimumHeight(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -254,7 +254,7 @@ bool js_obj_health_set_fallDamageMinimumHeight(JSContext *cx,JSObject *j_obj,jsv
 	return(JS_TRUE);
 }
 
-bool js_obj_health_set_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_set_fallDamageFactor(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -264,7 +264,7 @@ bool js_obj_health_set_fallDamageFactor(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_health_set_factor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_health_set_factor(jsval *vp)
 {
 	obj_type		*obj;
 	

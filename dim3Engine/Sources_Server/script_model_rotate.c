@@ -33,12 +33,12 @@ and can be sold or given away.
 
 JSBool js_model_rotate_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_rotate_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_rotate_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_rotate_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_rotate_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_rotate_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_rotate_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_rotate_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_model_rotate_get_x(jsval *vp);
+bool js_model_rotate_get_y(jsval *vp);
+bool js_model_rotate_get_z(jsval *vp);
+bool js_model_rotate_set_x(jsval *vp);
+bool js_model_rotate_set_y(jsval *vp);
+bool js_model_rotate_set_z(jsval *vp);
 
 extern js_type			js;
 
@@ -93,7 +93,7 @@ JSBool js_model_rotate_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_model_rotate_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_rotate_get_x(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -103,7 +103,7 @@ bool js_model_rotate_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_rotate_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_rotate_get_y(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -113,7 +113,7 @@ bool js_model_rotate_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_rotate_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_rotate_get_z(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -129,7 +129,7 @@ bool js_model_rotate_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_model_rotate_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_rotate_set_x(jsval *vp)
 {
 	model_draw		*draw;
 	
@@ -139,7 +139,7 @@ bool js_model_rotate_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_rotate_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_rotate_set_y(jsval *vp)
 {
 	model_draw		*draw;
 	
@@ -149,7 +149,7 @@ bool js_model_rotate_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_rotate_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_rotate_set_z(jsval *vp)
 {
 	model_draw		*draw;
 	

@@ -37,10 +37,10 @@ extern js_type			js;
 
 JSBool js_weap_target_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_target_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_weap_target_get_on(jsval *vp);
+bool js_weap_target_get_distance(jsval *vp);
+bool js_weap_target_get_objectId(jsval *vp);
+bool js_weap_target_set_distance(jsval *vp);
 JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -102,7 +102,7 @@ JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_get_on(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -112,7 +112,7 @@ bool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_get_distance(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -122,7 +122,7 @@ bool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-bool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_get_objectId(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -138,7 +138,7 @@ bool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_weap_target_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_target_set_distance(jsval *vp)
 {
 	weapon_type		*weap;
 	

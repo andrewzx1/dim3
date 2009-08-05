@@ -37,12 +37,12 @@ extern js_type			js;
 
 JSBool js_camera_chase_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_chase_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_get_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_set_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_camera_chase_get_size(jsval *vp);
+bool js_camera_chase_get_distance(jsval *vp);
+bool js_camera_chase_get_trackSpeed(jsval *vp);
+bool js_camera_chase_set_size(jsval *vp);
+bool js_camera_chase_set_distance(jsval *vp);
+bool js_camera_chase_set_trackSpeed(jsval *vp);
 
 script_js_property	camera_chase_props[]={
 							{"size",				js_camera_chase_get_size,				js_camera_chase_set_size},
@@ -95,19 +95,19 @@ JSBool js_camera_chase_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_camera_chase_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_get_size(jsval *vp)
 {
 	*vp=script_int_to_value(camera.chase_size);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_get_distance(jsval *vp)
 {
 	*vp=script_int_to_value(camera.chase_distance);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_get_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_get_trackSpeed(jsval *vp)
 {
 	*vp=script_float_to_value(camera.chase_track_speed);
 	return(JS_TRUE);
@@ -119,19 +119,19 @@ bool js_camera_chase_get_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_camera_chase_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_set_size(jsval *vp)
 {
 	camera.chase_size=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_set_distance(jsval *vp)
 {
 	camera.chase_distance=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_set_trackSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_set_trackSpeed(jsval *vp)
 {
 	camera.chase_track_speed=script_value_to_float(*vp);
 	return(JS_TRUE);

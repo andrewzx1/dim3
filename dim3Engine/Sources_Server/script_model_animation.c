@@ -34,10 +34,10 @@ and can be sold or given away.
 
 JSBool js_model_animation_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_animation_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_animation_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_animation_get_currentAnimationName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_animation_get_playing(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_animation_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_model_animation_get_index(jsval *vp);
+bool js_model_animation_get_currentAnimationName(jsval *vp);
+bool js_model_animation_get_playing(jsval *vp);
+bool js_model_animation_set_index(jsval *vp);
 JSBool js_model_animation_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_animation_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_animation_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -109,7 +109,7 @@ JSBool js_model_animation_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_model_animation_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_animation_get_index(jsval *vp)
 {
 	model_draw			*draw;
 
@@ -119,7 +119,7 @@ bool js_model_animation_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_model_animation_get_currentAnimationName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_animation_get_currentAnimationName(jsval *vp)
 {
 	char				name[64];
 	model_draw			*draw;
@@ -132,7 +132,7 @@ bool js_model_animation_get_currentAnimationName(JSContext *cx,JSObject *j_obj,j
 	return(JS_TRUE);
 }
 
-bool js_model_animation_get_playing(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_animation_get_playing(jsval *vp)
 {
 	model_draw				*draw;
 	model_draw_animation	*draw_animation;
@@ -150,7 +150,7 @@ bool js_model_animation_get_playing(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_model_animation_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_animation_set_index(jsval *vp)
 {
 	model_draw			*draw;
 

@@ -38,20 +38,20 @@ extern js_type			js;
 
 JSBool js_weap_projectile_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_projectile_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_get_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_get_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_get_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_get_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_get_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_get_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_get_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_set_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_set_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_set_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_set_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_set_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_set_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_set_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_weap_projectile_get_fireBoneTag(jsval *vp);
+bool js_weap_projectile_get_barrelBoneTag(jsval *vp);
+bool js_weap_projectile_get_firePoseName(jsval *vp);
+bool js_weap_projectile_get_objectFireBoneTag(jsval *vp);
+bool js_weap_projectile_get_objectFirePoseName(jsval *vp);
+bool js_weap_projectile_get_repeat_on(jsval *vp);
+bool js_weap_projectile_get_repeat_tick(jsval *vp);
+bool js_weap_projectile_set_fireBoneTag(jsval *vp);
+bool js_weap_projectile_set_barrelBoneTag(jsval *vp);
+bool js_weap_projectile_set_firePoseName(jsval *vp);
+bool js_weap_projectile_set_objectFireBoneTag(jsval *vp);
+bool js_weap_projectile_set_objectFirePoseName(jsval *vp);
+bool js_weap_projectile_set_repeat_on(jsval *vp);
+bool js_weap_projectile_set_repeat_tick(jsval *vp);
 JSBool js_weap_projectile_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_projectile_spawn_from_weapon_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -145,7 +145,7 @@ JSBool js_weap_projectile_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_weap_projectile_get_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_get_fireBoneTag(jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -158,7 +158,7 @@ bool js_weap_projectile_get_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_get_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_get_barrelBoneTag(jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -171,7 +171,7 @@ bool js_weap_projectile_get_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_get_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_get_firePoseName(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -181,7 +181,7 @@ bool js_weap_projectile_get_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_get_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_get_objectFireBoneTag(jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -194,7 +194,7 @@ bool js_weap_projectile_get_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsva
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_get_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_get_objectFirePoseName(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -204,7 +204,7 @@ bool js_weap_projectile_get_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsv
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_get_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_get_repeat_on(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -214,7 +214,7 @@ bool js_weap_projectile_get_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_get_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_get_repeat_tick(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -230,7 +230,7 @@ bool js_weap_projectile_get_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,j
       
 ======================================================= */
 
-bool js_weap_projectile_set_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_set_fireBoneTag(jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -243,7 +243,7 @@ bool js_weap_projectile_set_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_set_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_set_barrelBoneTag(jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -256,7 +256,7 @@ bool js_weap_projectile_set_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_set_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_set_firePoseName(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -266,7 +266,7 @@ bool js_weap_projectile_set_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_set_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_set_objectFireBoneTag(jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -279,7 +279,7 @@ bool js_weap_projectile_set_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsva
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_set_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_set_objectFirePoseName(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -289,7 +289,7 @@ bool js_weap_projectile_set_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsv
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_set_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_set_repeat_on(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -299,7 +299,7 @@ bool js_weap_projectile_set_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-bool js_weap_projectile_set_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_projectile_set_repeat_tick(jsval *vp)
 {
 	weapon_type		*weap;
 	

@@ -37,10 +37,10 @@ extern js_type			js;
 
 JSBool js_obj_touch_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_touch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_touch_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_touch_get_objectId(jsval *vp);
+bool js_obj_touch_get_objectName(jsval *vp);
+bool js_obj_touch_get_objectIsPlayer(jsval *vp);
+bool js_obj_touch_get_stand(jsval *vp);
 
 script_js_property	obj_touch_props[]={
 							{"objectId",			js_obj_touch_get_objectId,			NULL},
@@ -94,7 +94,7 @@ JSBool js_obj_touch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_touch_get_objectId(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -104,7 +104,7 @@ bool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_touch_get_objectName(jsval *vp)
 {
 	obj_type		*obj,*touch_obj;
 
@@ -121,7 +121,7 @@ bool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-bool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_touch_get_objectIsPlayer(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -131,7 +131,7 @@ bool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_touch_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_touch_get_stand(jsval *vp)
 {
 	obj_type		*obj;
 

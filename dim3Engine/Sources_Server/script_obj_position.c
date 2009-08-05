@@ -43,9 +43,9 @@ extern JSBool js_obj_position_pause_func(JSContext *cx,JSObject *j_obj,uintN arg
 							
 JSBool js_obj_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_position_get_x(jsval *vp);
+bool js_obj_position_get_y(jsval *vp);
+bool js_obj_position_get_z(jsval *vp);
 JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_place_random_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_place_network_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -119,7 +119,7 @@ JSBool js_obj_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_position_get_x(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -129,7 +129,7 @@ bool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_position_get_y(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -139,7 +139,7 @@ bool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_position_get_z(jsval *vp)
 {
 	obj_type		*obj;
 

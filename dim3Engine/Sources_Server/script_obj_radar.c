@@ -37,14 +37,14 @@ extern js_type			js;
 
 JSBool js_obj_radar_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_set_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_radar_get_on(jsval *vp);
+bool js_obj_radar_get_icon(jsval *vp);
+bool js_obj_radar_get_motionOnly(jsval *vp);
+bool js_obj_radar_get_alwaysVisible(jsval *vp);
+bool js_obj_radar_set_on(jsval *vp);
+bool js_obj_radar_set_icon(jsval *vp);
+bool js_obj_radar_set_motionOnly(jsval *vp);
+bool js_obj_radar_set_alwaysVisible(jsval *vp);
 
 script_js_property	obj_radar_props[]={
 							{"on",					js_obj_radar_get_on,				js_obj_radar_set_on},
@@ -98,7 +98,7 @@ JSBool js_obj_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_get_on(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -108,7 +108,7 @@ bool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_get_icon(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -118,7 +118,7 @@ bool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_get_motionOnly(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -128,7 +128,7 @@ bool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-bool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_get_alwaysVisible(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -144,7 +144,7 @@ bool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_set_on(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -154,7 +154,7 @@ bool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_set_icon(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -165,7 +165,7 @@ bool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_set_motionOnly(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -175,7 +175,7 @@ bool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-bool js_obj_radar_set_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_radar_set_alwaysVisible(jsval *vp)
 {
 	obj_type		*obj;
 	

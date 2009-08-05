@@ -37,12 +37,12 @@ extern js_type			js;
 
 JSBool js_map_light_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_map_light_color_get_red(jsval *vp);
+bool js_map_light_color_get_green(jsval *vp);
+bool js_map_light_color_get_blue(jsval *vp);
+bool js_map_light_color_set_red(jsval *vp);
+bool js_map_light_color_set_green(jsval *vp);
+bool js_map_light_color_set_blue(jsval *vp);
 
 script_js_property	map_light_color_props[]={
 							{"red",					js_map_light_color_get_red,				js_map_light_color_set_red},
@@ -95,19 +95,19 @@ JSBool js_map_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_map_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_light_color_get_red(jsval *vp)
 {
 	*vp=script_float_to_value(map.ambient.light_color.r);
 	return(JS_TRUE);
 }
 
-bool js_map_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_light_color_get_green(jsval *vp)
 {
 	*vp=script_float_to_value(map.ambient.light_color.g);
 	return(JS_TRUE);
 }
 
-bool js_map_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_light_color_get_blue(jsval *vp)
 {
 	*vp=script_float_to_value(map.ambient.light_color.b);
 	return(JS_TRUE);
@@ -119,19 +119,19 @@ bool js_map_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_map_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_light_color_set_red(jsval *vp)
 {
 	map.ambient.light_color.r=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-bool js_map_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_light_color_set_green(jsval *vp)
 {
 	map.ambient.light_color.g=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-bool js_map_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_light_color_set_blue(jsval *vp)
 {
 	map.ambient.light_color.b=script_value_to_float(*vp);
 	return(JS_TRUE);

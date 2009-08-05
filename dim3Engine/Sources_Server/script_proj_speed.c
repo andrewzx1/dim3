@@ -36,18 +36,18 @@ extern js_type			js;
 
 JSBool js_proj_speed_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_get_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_get_decelerationWait(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_get_decelerationMinSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_get_maxHitscanDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_get_inheritMotionFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_set_decelerationWait(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_set_decelerationMinSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_set_maxHitscanDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_set_inheritMotionFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_proj_speed_get_speed(jsval *vp);
+bool js_proj_speed_get_deceleration(jsval *vp);
+bool js_proj_speed_get_decelerationWait(jsval *vp);
+bool js_proj_speed_get_decelerationMinSpeed(jsval *vp);
+bool js_proj_speed_get_maxHitscanDistance(jsval *vp);
+bool js_proj_speed_get_inheritMotionFactor(jsval *vp);
+bool js_proj_speed_set_speed(jsval *vp);
+bool js_proj_speed_set_deceleration(jsval *vp);
+bool js_proj_speed_set_decelerationWait(jsval *vp);
+bool js_proj_speed_set_decelerationMinSpeed(jsval *vp);
+bool js_proj_speed_set_maxHitscanDistance(jsval *vp);
+bool js_proj_speed_set_inheritMotionFactor(jsval *vp);
 
 script_js_property	proj_speed_props[]={
 							{"speed",					js_proj_speed_get_speed,					js_proj_speed_set_speed},
@@ -103,7 +103,7 @@ JSBool js_proj_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_proj_speed_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_get_speed(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -115,7 +115,7 @@ bool js_proj_speed_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_get_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_get_deceleration(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -127,7 +127,7 @@ bool js_proj_speed_get_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_get_decelerationWait(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_get_decelerationWait(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -139,7 +139,7 @@ bool js_proj_speed_get_decelerationWait(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_get_decelerationMinSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_get_decelerationMinSpeed(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -151,7 +151,7 @@ bool js_proj_speed_get_decelerationMinSpeed(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_get_maxHitscanDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_get_maxHitscanDistance(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -163,7 +163,7 @@ bool js_proj_speed_get_maxHitscanDistance(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_get_inheritMotionFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_get_inheritMotionFactor(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -181,7 +181,7 @@ bool js_proj_speed_get_inheritMotionFactor(JSContext *cx,JSObject *j_obj,jsval i
       
 ======================================================= */
 
-bool js_proj_speed_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_set_speed(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -193,7 +193,7 @@ bool js_proj_speed_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_set_deceleration(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -205,7 +205,7 @@ bool js_proj_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_set_decelerationWait(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_set_decelerationWait(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -217,7 +217,7 @@ bool js_proj_speed_set_decelerationWait(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_set_decelerationMinSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_set_decelerationMinSpeed(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -229,7 +229,7 @@ bool js_proj_speed_set_decelerationMinSpeed(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_set_maxHitscanDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_set_maxHitscanDistance(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -241,7 +241,7 @@ bool js_proj_speed_set_maxHitscanDistance(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-bool js_proj_speed_set_inheritMotionFactor(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_speed_set_inheritMotionFactor(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	

@@ -36,12 +36,12 @@ extern js_type			js;
 
 JSBool js_obj_look_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_look_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_look_get_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_look_get_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_look_set_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_look_set_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_look_set_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_look_get_upAngle(jsval *vp);
+bool js_obj_look_get_downAngle(jsval *vp);
+bool js_obj_look_get_effectWeapons(jsval *vp);
+bool js_obj_look_set_upAngle(jsval *vp);
+bool js_obj_look_set_downAngle(jsval *vp);
+bool js_obj_look_set_effectWeapons(jsval *vp);
 JSBool js_obj_look_set_look_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_look_set_look_at_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -101,7 +101,7 @@ JSBool js_obj_look_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-bool js_obj_look_get_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_get_upAngle(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ bool js_obj_look_get_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_look_get_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_get_downAngle(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ bool js_obj_look_get_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_get_effectWeapons(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -137,7 +137,7 @@ bool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_obj_look_set_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_set_upAngle(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -147,7 +147,7 @@ bool js_obj_look_set_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_look_set_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_set_downAngle(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -157,7 +157,7 @@ bool js_obj_look_set_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_look_set_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_look_set_effectWeapons(jsval *vp)
 {
 	obj_type		*obj;
 	

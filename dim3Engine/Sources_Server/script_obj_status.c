@@ -37,16 +37,16 @@ extern js_type			js;
 
 JSBool js_obj_status_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_status_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_moving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_running(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_backward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_sliding(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_air(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_liquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_standOnObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_status_get_standUnderObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_status_get_speed(jsval *vp);
+bool js_obj_status_get_moving(jsval *vp);
+bool js_obj_status_get_running(jsval *vp);
+bool js_obj_status_get_backward(jsval *vp);
+bool js_obj_status_get_sliding(jsval *vp);
+bool js_obj_status_get_stand(jsval *vp);
+bool js_obj_status_get_air(jsval *vp);
+bool js_obj_status_get_liquid(jsval *vp);
+bool js_obj_status_get_standOnObjectId(jsval *vp);
+bool js_obj_status_get_standUnderObjectId(jsval *vp);
 JSBool js_obj_status_freeze_input_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_status_tint_view_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -113,7 +113,7 @@ JSBool js_obj_status_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_obj_status_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_speed(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -123,7 +123,7 @@ bool js_obj_status_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_moving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_moving(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -133,7 +133,7 @@ bool js_obj_status_get_moving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_running(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_running(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -143,7 +143,7 @@ bool js_obj_status_get_running(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_backward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_backward(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -153,7 +153,7 @@ bool js_obj_status_get_backward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_sliding(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_sliding(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -163,7 +163,7 @@ bool js_obj_status_get_sliding(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_stand(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -173,7 +173,7 @@ bool js_obj_status_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_air(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_air(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -183,7 +183,7 @@ bool js_obj_status_get_air(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_liquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_liquid(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -193,7 +193,7 @@ bool js_obj_status_get_liquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_standOnObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_standOnObjectId(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -203,7 +203,7 @@ bool js_obj_status_get_standOnObjectId(JSContext *cx,JSObject *j_obj,jsval id,js
 	return(JS_TRUE);
 }
 
-bool js_obj_status_get_standUnderObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_status_get_standUnderObjectId(jsval *vp)
 {
 	obj_type		*obj;
 

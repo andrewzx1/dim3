@@ -40,7 +40,7 @@ extern setup_type		setup;
 
 JSBool js_multiplayer_bot_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_bot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_multiplayer_bot_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_multiplayer_bot_get_skill(jsval *vp);
 JSBool js_multiplayer_bot_get_from_min_max_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	multiplayer_bot_props[]={
@@ -96,7 +96,7 @@ JSBool js_multiplayer_bot_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_multiplayer_bot_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_multiplayer_bot_get_skill(jsval *vp)
 {
 	*vp=script_int_to_value(server.skill);
 	return(JS_TRUE);

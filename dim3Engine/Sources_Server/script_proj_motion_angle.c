@@ -36,9 +36,9 @@ extern js_type			js;
 
 JSBool js_proj_motion_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_motion_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_motion_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_motion_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_motion_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_proj_motion_angle_get_x(jsval *vp);
+bool js_proj_motion_angle_get_y(jsval *vp);
+bool js_proj_motion_angle_get_z(jsval *vp);
 
 script_js_property	proj_motion_angle_props[]={
 							{"x",					js_proj_motion_angle_get_x,			NULL},
@@ -91,7 +91,7 @@ JSBool js_proj_motion_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,
       
 ======================================================= */
 
-bool js_proj_motion_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_motion_angle_get_x(jsval *vp)
 {
 	proj_type			*proj;
 
@@ -103,7 +103,7 @@ bool js_proj_motion_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_proj_motion_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_motion_angle_get_y(jsval *vp)
 {
 	proj_type			*proj;
 
@@ -115,7 +115,7 @@ bool js_proj_motion_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_proj_motion_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_motion_angle_get_z(jsval *vp)
 {
 	proj_type			*proj;
 

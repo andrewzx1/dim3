@@ -36,20 +36,20 @@ extern js_type			js;
 
 JSBool js_obj_size_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_get_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_set_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_size_get_x(jsval *vp);
+bool js_obj_size_get_y(jsval *vp);
+bool js_obj_size_get_z(jsval *vp);
+bool js_obj_size_get_eyeOffset(jsval *vp);
+bool js_obj_size_get_weight(jsval *vp);
+bool js_obj_size_get_clickDistance(jsval *vp);
+bool js_obj_size_get_cameraZAdjust(jsval *vp);
+bool js_obj_size_set_x(jsval *vp);
+bool js_obj_size_set_y(jsval *vp);
+bool js_obj_size_set_z(jsval *vp);
+bool js_obj_size_set_eyeOffset(jsval *vp);
+bool js_obj_size_set_weight(jsval *vp);
+bool js_obj_size_set_clickDistance(jsval *vp);
+bool js_obj_size_set_cameraZAdjust(jsval *vp);
 JSBool js_obj_size_grow_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_change_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -117,7 +117,7 @@ JSBool js_obj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-bool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_x(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ bool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_y(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -137,7 +137,7 @@ bool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_z(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -147,7 +147,7 @@ bool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_eyeOffset(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -157,7 +157,7 @@ bool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_weight(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -167,7 +167,7 @@ bool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_clickDistance(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -177,7 +177,7 @@ bool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_obj_size_get_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_get_cameraZAdjust(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -193,7 +193,7 @@ bool js_obj_size_get_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_x(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -204,7 +204,7 @@ bool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_y(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -214,7 +214,7 @@ bool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_z(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -225,7 +225,7 @@ bool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_eyeOffset(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -235,7 +235,7 @@ bool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_weight(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -245,7 +245,7 @@ bool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_clickDistance(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -255,7 +255,7 @@ bool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_obj_size_set_cameraZAdjust(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_size_set_cameraZAdjust(jsval *vp)
 {
 	obj_type		*obj;
 	

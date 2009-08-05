@@ -34,28 +34,28 @@ and can be sold or given away.
 
 JSBool js_model_halo_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_halo_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_get_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_halo_set_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_model_halo_get_index(jsval *vp);
+bool js_model_halo_get_on(jsval *vp);
+bool js_model_halo_get_name(jsval *vp);
+bool js_model_halo_get_minDistance(jsval *vp);
+bool js_model_halo_get_maxDistance(jsval *vp);
+bool js_model_halo_get_minSize(jsval *vp);
+bool js_model_halo_get_maxSize(jsval *vp);
+bool js_model_halo_get_minAlpha(jsval *vp);
+bool js_model_halo_get_maxAlpha(jsval *vp);
+bool js_model_halo_get_noClipObject(jsval *vp);
+bool js_model_halo_get_noClipSelf(jsval *vp);
+bool js_model_halo_set_index(jsval *vp);
+bool js_model_halo_set_on(jsval *vp);
+bool js_model_halo_set_name(jsval *vp);
+bool js_model_halo_set_minDistance(jsval *vp);
+bool js_model_halo_set_maxDistance(jsval *vp);
+bool js_model_halo_set_minSize(jsval *vp);
+bool js_model_halo_set_maxSize(jsval *vp);
+bool js_model_halo_set_minAlpha(jsval *vp);
+bool js_model_halo_set_maxAlpha(jsval *vp);
+bool js_model_halo_set_noClipObject(jsval *vp);
+bool js_model_halo_set_noClipSelf(jsval *vp);
 
 extern server_type		server;
 extern js_type			js;
@@ -119,7 +119,7 @@ JSBool js_model_halo_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_model_halo_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_index(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -132,7 +132,7 @@ bool js_model_halo_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_on(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -145,7 +145,7 @@ bool js_model_halo_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_name(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -163,7 +163,7 @@ bool js_model_halo_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_minDistance(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -176,7 +176,7 @@ bool js_model_halo_get_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_maxDistance(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -189,7 +189,7 @@ bool js_model_halo_get_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_minSize(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -202,7 +202,7 @@ bool js_model_halo_get_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_maxSize(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -215,7 +215,7 @@ bool js_model_halo_get_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_minAlpha(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -228,7 +228,7 @@ bool js_model_halo_get_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_maxAlpha(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -241,7 +241,7 @@ bool js_model_halo_get_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_noClipObject(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -254,7 +254,7 @@ bool js_model_halo_get_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-bool js_model_halo_get_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_get_noClipSelf(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -273,7 +273,7 @@ bool js_model_halo_get_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_model_halo_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_index(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -287,7 +287,7 @@ bool js_model_halo_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_on(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -300,7 +300,7 @@ bool js_model_halo_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_name(jsval *vp)
 {
 	char				name[name_str_len];
 	model_draw			*draw;
@@ -315,7 +315,7 @@ bool js_model_halo_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_minDistance(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -328,7 +328,7 @@ bool js_model_halo_set_minDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_maxDistance(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -341,7 +341,7 @@ bool js_model_halo_set_maxDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_minSize(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -354,7 +354,7 @@ bool js_model_halo_set_minSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_maxSize(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -367,7 +367,7 @@ bool js_model_halo_set_maxSize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_minAlpha(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -380,7 +380,7 @@ bool js_model_halo_set_minAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_maxAlpha(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -393,7 +393,7 @@ bool js_model_halo_set_maxAlpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_noClipObject(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -406,7 +406,7 @@ bool js_model_halo_set_noClipObject(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-bool js_model_halo_set_noClipSelf(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_halo_set_noClipSelf(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;

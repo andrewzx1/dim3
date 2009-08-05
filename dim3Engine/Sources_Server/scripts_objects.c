@@ -675,7 +675,7 @@ JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,scri
 
 		// call getter
 
-	return((*prop->getter)(cx,j_obj,id,vp)?JS_TRUE:JS_FALSE);
+	return((*prop->getter)(vp)?JS_TRUE:JS_FALSE);
 }
 
 JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props)
@@ -703,5 +703,5 @@ JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,scri
 
 		// call setter
 
-	return((*prop->setter)(cx,j_obj,id,vp)?JS_TRUE:JS_FALSE);
+	return((*prop->setter)(vp)?JS_TRUE:JS_FALSE);
 }

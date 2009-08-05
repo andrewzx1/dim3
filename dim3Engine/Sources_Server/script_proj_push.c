@@ -37,10 +37,10 @@ extern js_type			js;
 
 JSBool js_proj_push_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_push_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_push_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_push_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_push_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_push_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_proj_push_get_on(jsval *vp);
+bool js_proj_push_get_force(jsval *vp);
+bool js_proj_push_set_on(jsval *vp);
+bool js_proj_push_set_force(jsval *vp);
 
 script_js_property	proj_push_props[]={
 							{"on",					js_proj_push_get_on,				js_proj_push_set_on},
@@ -92,7 +92,7 @@ JSBool js_proj_push_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_proj_push_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_push_get_on(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -104,7 +104,7 @@ bool js_proj_push_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_push_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_push_get_force(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -122,7 +122,7 @@ bool js_proj_push_get_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_proj_push_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_push_set_on(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -134,7 +134,7 @@ bool js_proj_push_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_push_set_force(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_push_set_force(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	

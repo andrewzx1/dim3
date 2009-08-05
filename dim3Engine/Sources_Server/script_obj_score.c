@@ -37,11 +37,11 @@ extern js_type			js;
 
 JSBool js_obj_score_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_score_get_score(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_score_get_kill(jsval *vp);
+bool js_obj_score_get_death(jsval *vp);
+bool js_obj_score_get_suicide(jsval *vp);
+bool js_obj_score_get_goal(jsval *vp);
+bool js_obj_score_get_score(jsval *vp);
 JSBool js_obj_score_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	obj_score_props[]={
@@ -101,7 +101,7 @@ JSBool js_obj_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_kill(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ bool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_death(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ bool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_suicide(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -131,7 +131,7 @@ bool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_goal(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -141,7 +141,7 @@ bool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_score_get_score(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_score_get_score(jsval *vp)
 {
 	obj_type		*obj;
 

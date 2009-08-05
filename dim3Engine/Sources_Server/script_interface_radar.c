@@ -38,16 +38,16 @@ extern hud_type			hud;
 
 JSBool js_interface_radar_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_get_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_get_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_set_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_radar_set_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_interface_radar_get_on(jsval *vp);
+bool js_interface_radar_get_x(jsval *vp);
+bool js_interface_radar_get_y(jsval *vp);
+bool js_interface_radar_get_displayRadius(jsval *vp);
+bool js_interface_radar_get_viewRadius(jsval *vp);
+bool js_interface_radar_set_on(jsval *vp);
+bool js_interface_radar_set_x(jsval *vp);
+bool js_interface_radar_set_y(jsval *vp);
+bool js_interface_radar_set_displayRadius(jsval *vp);
+bool js_interface_radar_set_viewRadius(jsval *vp);
 
 script_js_property	interface_radar_props[]={
 							{"on",					js_interface_radar_get_on,				js_interface_radar_set_on},
@@ -102,31 +102,31 @@ JSBool js_interface_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_interface_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_get_on(jsval *vp)
 {
 	*vp=script_bool_to_value(hud.radar.on);
 	return(JS_TRUE);
 }
 
-bool js_interface_radar_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_get_x(jsval *vp)
 {
 	*vp=script_int_to_value(hud.radar.x);
 	return(JS_TRUE);
 }
 
-bool js_interface_radar_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_get_y(jsval *vp)
 {
 	*vp=script_int_to_value(hud.radar.y);
 	return(JS_TRUE);
 }
 
-bool js_interface_radar_get_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_get_displayRadius(jsval *vp)
 {
 	*vp=script_int_to_value(hud.radar.display_radius);
 	return(JS_TRUE);
 }
 
-bool js_interface_radar_get_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_get_viewRadius(jsval *vp)
 {
 	*vp=script_int_to_value(hud.radar.view_radius);
 	return(JS_TRUE);
@@ -138,31 +138,31 @@ bool js_interface_radar_get_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_interface_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_set_on(jsval *vp)
 {
 	hud.radar.on=script_value_to_bool(*vp);
 	return(JS_TRUE);
 }
 
-bool js_interface_radar_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_set_x(jsval *vp)
 {
 	hud.radar.x=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-bool js_interface_radar_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_set_y(jsval *vp)
 {
 	hud.radar.y=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-bool js_interface_radar_set_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_set_displayRadius(jsval *vp)
 {
 	hud.radar.display_radius=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-bool js_interface_radar_set_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_radar_set_viewRadius(jsval *vp)
 {
 	hud.radar.view_radius=script_value_to_int(*vp);
 	return(JS_TRUE);

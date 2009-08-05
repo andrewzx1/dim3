@@ -37,12 +37,12 @@ extern js_type			js;
 
 JSBool js_camera_chase_slop_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_chase_slop_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_slop_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_slop_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_slop_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_slop_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_slop_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_slop_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_camera_chase_slop_get_x(jsval *vp);
+bool js_camera_chase_slop_get_y(jsval *vp);
+bool js_camera_chase_slop_get_z(jsval *vp);
+bool js_camera_chase_slop_set_x(jsval *vp);
+bool js_camera_chase_slop_set_y(jsval *vp);
+bool js_camera_chase_slop_set_z(jsval *vp);
 
 script_js_property	camera_chase_slop_props[]={
 							{"x",					js_camera_chase_slop_get_x,			js_camera_chase_slop_set_x},
@@ -95,19 +95,19 @@ JSBool js_camera_chase_slop_set_property(JSContext *cx,JSObject *j_obj,jsval id,
       
 ======================================================= */
 
-bool js_camera_chase_slop_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_get_x(jsval *vp)
 {
 	*vp=script_float_to_value(camera.chase_slop.x);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_slop_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_get_y(jsval *vp)
 {
 	*vp=script_float_to_value(camera.chase_slop.y);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_slop_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_get_z(jsval *vp)
 {
 	*vp=script_float_to_value(camera.chase_slop.z);
 	return(JS_TRUE);
@@ -119,19 +119,19 @@ bool js_camera_chase_slop_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-bool js_camera_chase_slop_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_set_x(jsval *vp)
 {
 	camera.chase_slop.x=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_slop_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_set_y(jsval *vp)
 {
 	camera.chase_slop.y=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_slop_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_slop_set_z(jsval *vp)
 {
 	camera.chase_slop.z=script_value_to_float(*vp);
 	return(JS_TRUE);

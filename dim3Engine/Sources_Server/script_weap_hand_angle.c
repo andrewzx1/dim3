@@ -36,12 +36,12 @@ extern js_type			js;
 
 JSBool js_weap_hand_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_hand_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_angle_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_angle_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_angle_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_weap_hand_angle_get_x(jsval *vp);
+bool js_weap_hand_angle_get_y(jsval *vp);
+bool js_weap_hand_angle_get_z(jsval *vp);
+bool js_weap_hand_angle_set_x(jsval *vp);
+bool js_weap_hand_angle_set_y(jsval *vp);
+bool js_weap_hand_angle_set_z(jsval *vp);
 
 script_js_property	weap_hand_angle_props[]={
 							{"x",				js_weap_hand_angle_get_x,			js_weap_hand_angle_set_x},
@@ -94,7 +94,7 @@ JSBool js_weap_hand_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_weap_hand_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_angle_get_x(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -104,7 +104,7 @@ bool js_weap_hand_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_angle_get_y(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -114,7 +114,7 @@ bool js_weap_hand_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_angle_get_z(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -130,7 +130,7 @@ bool js_weap_hand_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_weap_hand_angle_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_angle_set_x(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -140,7 +140,7 @@ bool js_weap_hand_angle_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_angle_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_angle_set_y(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -150,7 +150,7 @@ bool js_weap_hand_angle_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_angle_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_angle_set_z(jsval *vp)
 {
 	weapon_type		*weap;
 	
