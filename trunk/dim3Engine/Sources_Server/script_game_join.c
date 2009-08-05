@@ -39,8 +39,8 @@ extern int					game_obj_rule_uid;
 
 JSBool js_game_join_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_join_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_join_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_game_join_get_name(jsval *vp);
+bool js_game_join_get_team(jsval *vp);
 JSBool js_game_join_set_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_set_team_even_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_clear_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -109,7 +109,7 @@ JSBool js_game_join_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_join_get_name(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ bool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_game_join_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_game_join_get_team(jsval *vp)
 {
 	obj_type		*obj;
 

@@ -373,12 +373,13 @@ and can be sold or given away.
 #define JSContextRef				JSContext*
 #define JSClassRef					JSClass*
 #define JSObjectRef					JSObject*
+#define JSValueRef					jsval
 
 //
 // callbacks
 //
 
-typedef bool (*script_get_set_callback)(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+typedef bool (*script_get_set_callback)(jsval *vp);
 
 //
 // object setup structures

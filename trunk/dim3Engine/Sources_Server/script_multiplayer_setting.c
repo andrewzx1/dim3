@@ -42,9 +42,9 @@ extern network_setup_type	net_setup;
 
 JSBool js_multiplayer_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_multiplayer_setting_get_on(jsval *vp);
+bool js_multiplayer_setting_get_type(jsval *vp);
+bool js_multiplayer_setting_get_teamPlay(jsval *vp);
 JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	multiplayer_setting_props[]={
@@ -102,13 +102,13 @@ JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval i
       
 ======================================================= */
 
-bool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_multiplayer_setting_get_on(jsval *vp)
 {
 	*vp=script_bool_to_value(net_setup.client.joined);
 	return(JS_TRUE);
 }
 
-bool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_multiplayer_setting_get_type(jsval *vp)
 {
  	if (!net_setup.client.joined) {
 		*vp=script_null_to_value();
@@ -120,7 +120,7 @@ bool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_multiplayer_setting_get_teamPlay(jsval *vp)
 {
  	if (!net_setup.client.joined) {
 		*vp=script_bool_to_value(FALSE);

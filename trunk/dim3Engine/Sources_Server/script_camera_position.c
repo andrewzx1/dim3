@@ -38,9 +38,9 @@ extern js_type			js;
 
 JSBool js_camera_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_camera_position_get_x(jsval *vp);
+bool js_camera_position_get_y(jsval *vp);
+bool js_camera_position_get_z(jsval *vp);
 
 script_js_property	camera_position_props[]={
 							{"x",					js_camera_position_get_x,				NULL},
@@ -93,19 +93,19 @@ JSBool js_camera_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_position_get_x(jsval *vp)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.x);
 	return(JS_TRUE);
 }
 
-bool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_position_get_y(jsval *vp)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.y);
 	return(JS_TRUE);
 }
 
-bool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_position_get_z(jsval *vp)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.z);
 	return(JS_TRUE);

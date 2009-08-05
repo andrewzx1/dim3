@@ -39,20 +39,20 @@ extern js_type			js;
 
 JSBool js_proj_action_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_action_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_get_collision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_get_auto_hitTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_get_auto_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_get_auto_bounceMinMove(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_get_auto_bounceReduce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_get_auto_reflect(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_set_collision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_set_auto_hitTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_set_auto_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_set_auto_bounceMinMove(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_set_auto_bounceReduce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_action_set_auto_reflect(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_proj_action_get_damage(jsval *vp);
+bool js_proj_action_get_collision(jsval *vp);
+bool js_proj_action_get_auto_hitTick(jsval *vp);
+bool js_proj_action_get_auto_bounce(jsval *vp);
+bool js_proj_action_get_auto_bounceMinMove(jsval *vp);
+bool js_proj_action_get_auto_bounceReduce(jsval *vp);
+bool js_proj_action_get_auto_reflect(jsval *vp);
+bool js_proj_action_set_damage(jsval *vp);
+bool js_proj_action_set_collision(jsval *vp);
+bool js_proj_action_set_auto_hitTick(jsval *vp);
+bool js_proj_action_set_auto_bounce(jsval *vp);
+bool js_proj_action_set_auto_bounceMinMove(jsval *vp);
+bool js_proj_action_set_auto_bounceReduce(jsval *vp);
+bool js_proj_action_set_auto_reflect(jsval *vp);
 JSBool js_proj_action_rotate_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_action_turn_towards_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_action_seek_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -128,7 +128,7 @@ JSBool js_proj_action_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_proj_action_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_get_damage(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -140,7 +140,7 @@ bool js_proj_action_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_action_get_collision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_get_collision(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -152,7 +152,7 @@ bool js_proj_action_get_collision(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_proj_action_get_auto_hitTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_get_auto_hitTick(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -164,7 +164,7 @@ bool js_proj_action_get_auto_hitTick(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_proj_action_get_auto_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_get_auto_bounce(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -176,7 +176,7 @@ bool js_proj_action_get_auto_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-bool js_proj_action_get_auto_bounceMinMove(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_get_auto_bounceMinMove(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -188,7 +188,7 @@ bool js_proj_action_get_auto_bounceMinMove(JSContext *cx,JSObject *j_obj,jsval i
 	return(JS_TRUE);
 }
 
-bool js_proj_action_get_auto_bounceReduce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_get_auto_bounceReduce(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -200,7 +200,7 @@ bool js_proj_action_get_auto_bounceReduce(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-bool js_proj_action_get_auto_reflect(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_get_auto_reflect(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -218,7 +218,7 @@ bool js_proj_action_get_auto_reflect(JSContext *cx,JSObject *j_obj,jsval id,jsva
       
 ======================================================= */
 
-bool js_proj_action_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_set_damage(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -230,7 +230,7 @@ bool js_proj_action_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_action_set_collision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_set_collision(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -242,7 +242,7 @@ bool js_proj_action_set_collision(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_proj_action_set_auto_hitTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_set_auto_hitTick(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -254,7 +254,7 @@ bool js_proj_action_set_auto_hitTick(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_proj_action_set_auto_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_set_auto_bounce(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -266,7 +266,7 @@ bool js_proj_action_set_auto_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-bool js_proj_action_set_auto_bounceMinMove(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_set_auto_bounceMinMove(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -278,7 +278,7 @@ bool js_proj_action_set_auto_bounceMinMove(JSContext *cx,JSObject *j_obj,jsval i
 	return(JS_TRUE);
 }
 
-bool js_proj_action_set_auto_bounceReduce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_set_auto_bounceReduce(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -290,7 +290,7 @@ bool js_proj_action_set_auto_bounceReduce(JSContext *cx,JSObject *j_obj,jsval id
 	return(JS_TRUE);
 }
 
-bool js_proj_action_set_auto_reflect(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_action_set_auto_reflect(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 	

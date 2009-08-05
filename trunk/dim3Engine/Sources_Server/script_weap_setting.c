@@ -36,10 +36,10 @@ extern js_type			js;
 
 JSBool js_weap_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_setting_set_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_weap_setting_get_name(jsval *vp);
+bool js_weap_setting_get_failInLiquid(jsval *vp);
+bool js_weap_setting_get_parentObjectId(jsval *vp);
+bool js_weap_setting_set_failInLiquid(jsval *vp);
 
 script_js_property	weap_setting_props[]={
 							{"name",				js_weap_setting_get_name,				NULL},
@@ -92,7 +92,7 @@ JSBool js_weap_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_setting_get_name(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -102,7 +102,7 @@ bool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_setting_get_failInLiquid(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -112,7 +112,7 @@ bool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-bool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_setting_get_parentObjectId(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -128,7 +128,7 @@ bool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,j
       
 ======================================================= */
 
-bool js_weap_setting_set_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_setting_set_failInLiquid(jsval *vp)
 {
 	weapon_type		*weap;
 	

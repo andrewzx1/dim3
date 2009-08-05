@@ -36,14 +36,14 @@ extern js_type			js;
 
 JSBool js_obj_vert_speed_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_vert_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vert_speed_get_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vert_speed_get_acceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vert_speed_get_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vert_speed_get_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vert_speed_set_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vert_speed_set_acceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vert_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vert_speed_set_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_vert_speed_get_normal(jsval *vp);
+bool js_obj_vert_speed_get_acceleration(jsval *vp);
+bool js_obj_vert_speed_get_deceleration(jsval *vp);
+bool js_obj_vert_speed_get_flySlop(jsval *vp);
+bool js_obj_vert_speed_set_normal(jsval *vp);
+bool js_obj_vert_speed_set_acceleration(jsval *vp);
+bool js_obj_vert_speed_set_deceleration(jsval *vp);
+bool js_obj_vert_speed_set_flySlop(jsval *vp);
 
 script_js_property	obj_vert_speed_props[]={
 							{"normal",					js_obj_vert_speed_get_normal,			js_obj_vert_speed_set_normal},
@@ -97,7 +97,7 @@ JSBool js_obj_vert_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
       
 ======================================================= */
 
-bool js_obj_vert_speed_get_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vert_speed_get_normal(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -107,7 +107,7 @@ bool js_obj_vert_speed_get_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_obj_vert_speed_get_acceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vert_speed_get_acceleration(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -117,7 +117,7 @@ bool js_obj_vert_speed_get_acceleration(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_vert_speed_get_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vert_speed_get_deceleration(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ bool js_obj_vert_speed_get_deceleration(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_vert_speed_get_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vert_speed_get_flySlop(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -143,7 +143,7 @@ bool js_obj_vert_speed_get_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_obj_vert_speed_set_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vert_speed_set_normal(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -153,7 +153,7 @@ bool js_obj_vert_speed_set_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_obj_vert_speed_set_acceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vert_speed_set_acceleration(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -163,7 +163,7 @@ bool js_obj_vert_speed_set_acceleration(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_vert_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vert_speed_set_deceleration(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -173,7 +173,7 @@ bool js_obj_vert_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_vert_speed_set_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vert_speed_set_flySlop(jsval *vp)
 {
 	obj_type		*obj;
 	

@@ -37,15 +37,15 @@ extern js_type			js;
 
 JSBool js_obj_watch_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_watch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_watch_get_soundName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_watch_get_objectId(jsval *vp);
+bool js_obj_watch_get_objectName(jsval *vp);
+bool js_obj_watch_get_objectIsPlayer(jsval *vp);
+bool js_obj_watch_get_objectIsRemote(jsval *vp);
+bool js_obj_watch_get_objectIsBot(jsval *vp);
+bool js_obj_watch_get_objectIsPlayerRemoteBot(jsval *vp);
+bool js_obj_watch_get_objectTeam(jsval *vp);
+bool js_obj_watch_get_baseTeam(jsval *vp);
+bool js_obj_watch_get_soundName(jsval *vp);
 JSBool js_obj_watch_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_watch_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_watch_set_restrict_sight_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -115,7 +115,7 @@ JSBool js_obj_watch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectId(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -125,7 +125,7 @@ bool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectName(jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -142,7 +142,7 @@ bool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-bool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectIsPlayer(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -152,7 +152,7 @@ bool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectIsRemote(jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -169,7 +169,7 @@ bool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectIsBot(jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -186,7 +186,7 @@ bool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectIsPlayerRemoteBot(jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -208,7 +208,7 @@ bool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_objectTeam(jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -225,7 +225,7 @@ bool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
-bool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_baseTeam(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -235,7 +235,7 @@ bool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_watch_get_soundName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_watch_get_soundName(jsval *vp)
 {
 	obj_type		*obj;
 

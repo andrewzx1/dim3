@@ -39,13 +39,13 @@ extern js_type			js;
 
 JSBool js_obj_hit_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_get_weaponName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_get_projectileName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_get_hitBoxName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_hit_get_objectId(jsval *vp);
+bool js_obj_hit_get_objectName(jsval *vp);
+bool js_obj_hit_get_objectIsPlayer(jsval *vp);
+bool js_obj_hit_get_weaponName(jsval *vp);
+bool js_obj_hit_get_projectileName(jsval *vp);
+bool js_obj_hit_get_hitBoxName(jsval *vp);
+bool js_obj_hit_get_damage(jsval *vp);
 
 script_js_property	obj_hit_props[]={
 							{"objectId",			js_obj_hit_get_objectId,			NULL},
@@ -102,7 +102,7 @@ JSBool js_obj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_objectId(jsval *vp)
 {
 	obj_type			*obj;
 
@@ -112,7 +112,7 @@ bool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_hit_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_objectName(jsval *vp)
 {
 	obj_type			*obj,*hit_obj;
 
@@ -129,7 +129,7 @@ bool js_obj_hit_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_hit_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_objectIsPlayer(jsval *vp)
 {
 	obj_type			*obj;
 
@@ -139,7 +139,7 @@ bool js_obj_hit_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_obj_hit_get_weaponName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_weaponName(jsval *vp)
 {
 	obj_type			*obj;
 	weapon_type			*hit_weap;
@@ -157,7 +157,7 @@ bool js_obj_hit_get_weaponName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_hit_get_projectileName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_projectileName(jsval *vp)
 {
 	obj_type			*obj;
 	proj_type			*hit_proj;
@@ -177,7 +177,7 @@ bool js_obj_hit_get_projectileName(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	return(JS_TRUE);
 }
 
-bool js_obj_hit_get_hitBoxName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_hitBoxName(jsval *vp)
 {
 	obj_type			*obj;
 
@@ -193,7 +193,7 @@ bool js_obj_hit_get_hitBoxName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_hit_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_get_damage(jsval *vp)
 {
 	obj_type			*obj;
 

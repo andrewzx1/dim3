@@ -34,12 +34,12 @@ and can be sold or given away.
 
 JSBool js_weap_crosshair_pickup_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_crosshair_pickup_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_crosshair_pickup_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_crosshair_pickup_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_crosshair_pickup_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_crosshair_pickup_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_crosshair_pickup_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_crosshair_pickup_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_weap_crosshair_pickup_color_get_red(jsval *vp);
+bool js_weap_crosshair_pickup_color_get_green(jsval *vp);
+bool js_weap_crosshair_pickup_color_get_blue(jsval *vp);
+bool js_weap_crosshair_pickup_color_set_red(jsval *vp);
+bool js_weap_crosshair_pickup_color_set_green(jsval *vp);
+bool js_weap_crosshair_pickup_color_set_blue(jsval *vp);
 
 extern js_type			js;
 
@@ -94,7 +94,7 @@ JSBool js_weap_crosshair_pickup_color_set_property(JSContext *cx,JSObject *j_obj
       
 ======================================================= */
 
-bool js_weap_crosshair_pickup_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_crosshair_pickup_color_get_red(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -104,7 +104,7 @@ bool js_weap_crosshair_pickup_color_get_red(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-bool js_weap_crosshair_pickup_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_crosshair_pickup_color_get_green(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -114,7 +114,7 @@ bool js_weap_crosshair_pickup_color_get_green(JSContext *cx,JSObject *j_obj,jsva
 	return(JS_TRUE);
 }
 
-bool js_weap_crosshair_pickup_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_crosshair_pickup_color_get_blue(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -130,7 +130,7 @@ bool js_weap_crosshair_pickup_color_get_blue(JSContext *cx,JSObject *j_obj,jsval
       
 ======================================================= */
 
-bool js_weap_crosshair_pickup_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_crosshair_pickup_color_set_red(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -140,7 +140,7 @@ bool js_weap_crosshair_pickup_color_set_red(JSContext *cx,JSObject *j_obj,jsval 
 	return(JS_TRUE);
 }
 
-bool js_weap_crosshair_pickup_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_crosshair_pickup_color_set_green(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -150,7 +150,7 @@ bool js_weap_crosshair_pickup_color_set_green(JSContext *cx,JSObject *j_obj,jsva
 	return(JS_TRUE);
 }
 
-bool js_weap_crosshair_pickup_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_crosshair_pickup_color_set_blue(jsval *vp)
 {
 	weapon_type		*weap;
 

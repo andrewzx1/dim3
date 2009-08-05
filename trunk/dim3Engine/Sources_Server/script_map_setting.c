@@ -42,14 +42,14 @@ extern void map_clear_ambient(void);
 
 JSBool js_map_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_get_scale(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_get_gravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_get_resistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_get_multiplayerType(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_get_botSkill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_set_gravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_set_resistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_map_setting_get_scale(jsval *vp);
+bool js_map_setting_get_gravity(jsval *vp);
+bool js_map_setting_get_resistance(jsval *vp);
+bool js_map_setting_get_multiplayer(jsval *vp);
+bool js_map_setting_get_multiplayerType(jsval *vp);
+bool js_map_setting_get_botSkill(jsval *vp);
+bool js_map_setting_set_gravity(jsval *vp);
+bool js_map_setting_set_resistance(jsval *vp);
 JSBool js_map_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_clear_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -113,31 +113,31 @@ JSBool js_map_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_map_setting_get_scale(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_setting_get_scale(jsval *vp)
 {
 	*vp=script_int_to_value(map_enlarge);
 	return(JS_TRUE);
 }
 
-bool js_map_setting_get_gravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_setting_get_gravity(jsval *vp)
 {
 	*vp=script_float_to_value(map.settings.gravity);
 	return(JS_TRUE);
 }
 
-bool js_map_setting_get_resistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_setting_get_resistance(jsval *vp)
 {
 	*vp=script_float_to_value(map.settings.resistance);
 	return(JS_TRUE);
 }
 
-bool js_map_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_setting_get_multiplayer(jsval *vp)
 {
 	*vp=script_bool_to_value(net_setup.client.joined);
 	return(JS_TRUE);
 }
 
-bool js_map_setting_get_multiplayerType(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_setting_get_multiplayerType(jsval *vp)
 {
 	if (!net_setup.client.joined) {
 		*vp=script_null_to_value();
@@ -149,7 +149,7 @@ bool js_map_setting_get_multiplayerType(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_map_setting_get_botSkill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_setting_get_botSkill(jsval *vp)
 {
 	*vp=script_int_to_value(setup.network.bot.skill);
 	return(JS_TRUE);
@@ -161,13 +161,13 @@ bool js_map_setting_get_botSkill(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_map_setting_set_gravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_setting_set_gravity(jsval *vp)
 {
 	map.settings.gravity=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 
-bool js_map_setting_set_resistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_setting_set_resistance(jsval *vp)
 {
 	map.settings.resistance=script_value_to_float(*vp);
 	return(JS_TRUE);

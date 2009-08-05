@@ -37,9 +37,9 @@ extern js_type			js;
 
 JSBool js_camera_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_setting_get_attachObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_setting_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_camera_setting_get_type(jsval *vp);
+bool js_camera_setting_get_attachObjectId(jsval *vp);
+bool js_camera_setting_set_type(jsval *vp);
 JSBool js_camera_setting_attach_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 script_js_property	camera_setting_props[]={
@@ -96,13 +96,13 @@ JSBool js_camera_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
       
 ======================================================= */
 
-bool js_camera_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_setting_get_type(jsval *vp)
 {
 	*vp=script_int_to_value(camera.mode+sd_camera_type_fpp);
 	return(JS_TRUE);
 }
 
-bool js_camera_setting_get_attachObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_setting_get_attachObjectId(jsval *vp)
 {
 	*vp=script_int_to_value(camera.obj_uid);
 	return(JS_TRUE);
@@ -114,7 +114,7 @@ bool js_camera_setting_get_attachObjectId(JSContext *cx,JSObject *j_obj,jsval id
       
 ======================================================= */
 
-bool js_camera_setting_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_setting_set_type(jsval *vp)
 {
 	camera.mode=script_value_to_int(*vp)-sd_camera_type_fpp;
 	return(JS_TRUE);

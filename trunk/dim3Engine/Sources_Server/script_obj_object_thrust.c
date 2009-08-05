@@ -36,12 +36,12 @@ extern js_type			js;
 
 JSBool js_obj_thrust_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_thrust_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_thrust_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_thrust_get_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_thrust_set_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_thrust_get_speed(jsval *vp);
+bool js_obj_thrust_get_maxSpeed(jsval *vp);
+bool js_obj_thrust_get_drag(jsval *vp);
+bool js_obj_thrust_set_speed(jsval *vp);
+bool js_obj_thrust_set_maxSpeed(jsval *vp);
+bool js_obj_thrust_set_drag(jsval *vp);
 
 script_js_property	obj_thrust_props[]={
 							{"speed",					js_obj_thrust_get_speed,			js_obj_thrust_set_speed},
@@ -94,7 +94,7 @@ JSBool js_obj_thrust_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_obj_thrust_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_get_speed(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -104,7 +104,7 @@ bool js_obj_thrust_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_thrust_get_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_get_maxSpeed(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -113,7 +113,7 @@ bool js_obj_thrust_get_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_get_drag(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -129,7 +129,7 @@ bool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_set_speed(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -139,7 +139,7 @@ bool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_set_maxSpeed(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -149,7 +149,7 @@ bool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_obj_thrust_set_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_thrust_set_drag(jsval *vp)
 {
 	obj_type		*obj;
 	

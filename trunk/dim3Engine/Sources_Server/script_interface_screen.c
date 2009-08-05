@@ -36,8 +36,8 @@ extern setup_type		setup;
 
 JSBool js_interface_screen_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_screen_get_width(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_screen_get_height(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_interface_screen_get_width(jsval *vp);
+bool js_interface_screen_get_height(jsval *vp);
 
 script_js_property	interface_screen_props[]={
 							{"width",				js_interface_screen_get_width,		NULL},
@@ -89,14 +89,14 @@ JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,j
       
 ======================================================= */
 
-bool js_interface_screen_get_width(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_screen_get_width(jsval *vp)
 {
 	*vp=script_int_to_value(setup.screen.x_sz);
 	return(JS_TRUE);
 }
 
 
-bool js_interface_screen_get_height(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_interface_screen_get_height(jsval *vp)
 {
 	*vp=script_int_to_value(setup.screen.y_sz);
 	return(JS_TRUE);

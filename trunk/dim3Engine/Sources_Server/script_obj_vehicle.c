@@ -38,9 +38,9 @@ extern js_type			js;
 
 JSBool js_obj_vehicle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_vehicle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vehicle_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_vehicle_get_on(jsval *vp);
+bool js_obj_vehicle_get_hasOccupant(jsval *vp);
+bool js_obj_vehicle_set_on(jsval *vp);
 JSBool js_obj_vehicle_enter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_vehicle_exit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_vehicle_remove_occupant_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -101,7 +101,7 @@ JSBool js_obj_vehicle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vehicle_get_on(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ bool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vehicle_get_hasOccupant(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ bool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_obj_vehicle_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_vehicle_set_on(jsval *vp)
 {
 	obj_type		*obj;
 	

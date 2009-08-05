@@ -40,18 +40,18 @@ extern setup_type		setup;
 
 JSBool js_model_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_get_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_get_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_set_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_model_get_on(jsval *vp);
+bool js_model_get_name(jsval *vp);
+bool js_model_get_bounce(jsval *vp);
+bool js_model_get_alpha(jsval *vp);
+bool js_model_get_resize(jsval *vp);
+bool js_model_get_faceForward(jsval *vp);
+bool js_model_set_on(jsval *vp);
+bool js_model_set_name(jsval *vp);
+bool js_model_set_bounce(jsval *vp);
+bool js_model_set_alpha(jsval *vp);
+bool js_model_set_resize(jsval *vp);
+bool js_model_set_faceForward(jsval *vp);
 
 script_js_property	model_props[]={
 							{"on",					js_model_get_on,					js_model_set_on},
@@ -107,7 +107,7 @@ JSBool js_model_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_on(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -117,7 +117,7 @@ bool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_name(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -127,7 +127,7 @@ bool js_model_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_get_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_bounce(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -137,7 +137,7 @@ bool js_model_get_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_alpha(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -147,7 +147,7 @@ bool js_model_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_get_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_resize(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -157,7 +157,7 @@ bool js_model_get_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_get_faceForward(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -173,7 +173,7 @@ bool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_model_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_on(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -183,7 +183,7 @@ bool js_model_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_name(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -193,7 +193,7 @@ bool js_model_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_bounce(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -203,7 +203,7 @@ bool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_alpha(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -213,7 +213,7 @@ bool js_model_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_set_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_resize(jsval *vp)
 {
 	model_draw		*draw;
 
@@ -223,7 +223,7 @@ bool js_model_set_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_set_faceForward(jsval *vp)
 {
 	model_draw		*draw;
 

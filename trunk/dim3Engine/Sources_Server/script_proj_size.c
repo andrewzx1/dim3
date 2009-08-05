@@ -36,14 +36,14 @@ extern js_type			js;
 
 JSBool js_proj_size_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_proj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_proj_size_get_x(jsval *vp);
+bool js_proj_size_get_y(jsval *vp);
+bool js_proj_size_get_z(jsval *vp);
+bool js_proj_size_get_weight(jsval *vp);
+bool js_proj_size_set_x(jsval *vp);
+bool js_proj_size_set_y(jsval *vp);
+bool js_proj_size_set_z(jsval *vp);
+bool js_proj_size_set_weight(jsval *vp);
 
 script_js_property	proj_size_props[]={
 							{"x",					js_proj_size_get_x,					js_proj_size_set_x},
@@ -97,7 +97,7 @@ JSBool js_proj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_get_x(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -109,7 +109,7 @@ bool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_get_y(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -121,7 +121,7 @@ bool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_get_z(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -133,7 +133,7 @@ bool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_get_weight(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -151,7 +151,7 @@ bool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_proj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_set_x(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -164,7 +164,7 @@ bool js_proj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_set_y(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -176,7 +176,7 @@ bool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_set_z(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -189,7 +189,7 @@ bool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_proj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_proj_size_set_weight(jsval *vp)
 {
 	proj_setup_type		*proj_setup;
 

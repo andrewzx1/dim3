@@ -38,10 +38,10 @@ extern js_type			js;
 
 JSBool js_camera_static_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_static_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_static_position_get_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_static_position_set_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_static_position_set_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_camera_static_position_get_follow(jsval *vp);
+bool js_camera_static_position_get_walkTurnSpeed(jsval *vp);
+bool js_camera_static_position_set_follow(jsval *vp);
+bool js_camera_static_position_set_walkTurnSpeed(jsval *vp);
 JSBool js_camera_static_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_camera_static_position_move_to_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_camera_static_position_walk_to_node_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -102,13 +102,13 @@ JSBool js_camera_static_position_set_property(JSContext *cx,JSObject *j_obj,jsva
       
 ======================================================= */
 
-bool js_camera_static_position_get_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_static_position_get_follow(jsval *vp)
 {
 	*vp=script_bool_to_value(camera.static_follow);
 	return(JS_TRUE);
 }
 
-bool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_static_position_get_walkTurnSpeed(jsval *vp)
 {
 	*vp=script_float_to_value(camera.auto_walk.turn_speed);
 	return(JS_TRUE);
@@ -120,13 +120,13 @@ bool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj,j
       
 ======================================================= */
 
-bool js_camera_static_position_set_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_static_position_set_follow(jsval *vp)
 {
 	camera.static_follow=script_value_to_bool(*vp);
 	return(JS_TRUE);
 }
 
-bool js_camera_static_position_set_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_static_position_set_walkTurnSpeed(jsval *vp)
 {
 	camera.auto_walk.turn_speed=script_value_to_float(*vp);
 	return(JS_TRUE);

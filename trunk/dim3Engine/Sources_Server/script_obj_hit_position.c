@@ -37,9 +37,9 @@ extern js_type			js;
 
 JSBool js_obj_hit_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_hit_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_hit_position_get_x(jsval *vp);
+bool js_obj_hit_position_get_y(jsval *vp);
+bool js_obj_hit_position_get_z(jsval *vp);
 
 script_js_property	obj_hit_position_props[]={
 							{"x",					js_obj_hit_position_get_x,			NULL},
@@ -92,7 +92,7 @@ JSBool js_obj_hit_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,j
       
 ======================================================= */
 
-bool js_obj_hit_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_position_get_x(jsval *vp)
 {
 	obj_type			*obj;
 
@@ -102,7 +102,7 @@ bool js_obj_hit_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_hit_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_position_get_y(jsval *vp)
 {
 	obj_type			*obj;
 
@@ -112,7 +112,7 @@ bool js_obj_hit_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_hit_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_hit_position_get_z(jsval *vp)
 {
 	obj_type			*obj;
 

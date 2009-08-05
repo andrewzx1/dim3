@@ -33,20 +33,20 @@ and can be sold or given away.
 
 JSBool js_model_light_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_light_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_get_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_get_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_get_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_get_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_set_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_set_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_set_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_set_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_model_light_get_index(jsval *vp);
+bool js_model_light_get_on(jsval *vp);
+bool js_model_light_get_type(jsval *vp);
+bool js_model_light_get_filter(jsval *vp);
+bool js_model_light_get_direction(jsval *vp);
+bool js_model_light_get_intensity(jsval *vp);
+bool js_model_light_get_exponent(jsval *vp);
+bool js_model_light_set_index(jsval *vp);
+bool js_model_light_set_on(jsval *vp);
+bool js_model_light_set_type(jsval *vp);
+bool js_model_light_set_filter(jsval *vp);
+bool js_model_light_set_direction(jsval *vp);
+bool js_model_light_set_intensity(jsval *vp);
+bool js_model_light_set_exponent(jsval *vp);
 
 extern js_type			js;
 
@@ -105,7 +105,7 @@ JSBool js_model_light_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_model_light_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_index(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -118,7 +118,7 @@ bool js_model_light_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_light_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_on(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -131,7 +131,7 @@ bool js_model_light_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_light_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_type(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -144,7 +144,7 @@ bool js_model_light_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_light_get_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_filter(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -157,7 +157,7 @@ bool js_model_light_get_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_light_get_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_direction(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -170,7 +170,7 @@ bool js_model_light_get_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_model_light_get_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_intensity(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -183,7 +183,7 @@ bool js_model_light_get_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_model_light_get_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_get_exponent(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -202,7 +202,7 @@ bool js_model_light_get_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_model_light_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_index(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -216,7 +216,7 @@ bool js_model_light_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_light_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_on(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -229,7 +229,7 @@ bool js_model_light_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_light_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_type(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -242,7 +242,7 @@ bool js_model_light_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_light_set_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_filter(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -255,7 +255,7 @@ bool js_model_light_set_filter(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_model_light_set_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_direction(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -268,7 +268,7 @@ bool js_model_light_set_direction(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_model_light_set_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_intensity(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -281,7 +281,7 @@ bool js_model_light_set_intensity(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_model_light_set_exponent(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_set_exponent(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;

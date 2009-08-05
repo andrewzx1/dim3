@@ -33,12 +33,12 @@ and can be sold or given away.
 
 JSBool js_model_light_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_model_light_color_get_red(jsval *vp);
+bool js_model_light_color_get_green(jsval *vp);
+bool js_model_light_color_get_blue(jsval *vp);
+bool js_model_light_color_set_red(jsval *vp);
+bool js_model_light_color_set_green(jsval *vp);
+bool js_model_light_color_set_blue(jsval *vp);
 
 extern js_type			js;
 
@@ -93,7 +93,7 @@ JSBool js_model_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,
       
 ======================================================= */
 
-bool js_model_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_color_get_red(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -106,7 +106,7 @@ bool js_model_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_model_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_color_get_green(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -119,7 +119,7 @@ bool js_model_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-bool js_model_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_color_get_blue(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -138,7 +138,7 @@ bool js_model_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_model_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_color_set_red(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -151,7 +151,7 @@ bool js_model_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_model_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_color_set_green(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -164,7 +164,7 @@ bool js_model_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	return(JS_TRUE);
 }
 
-bool js_model_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_model_light_color_set_blue(jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;

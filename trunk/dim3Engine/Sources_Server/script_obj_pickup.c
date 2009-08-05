@@ -37,11 +37,11 @@ extern js_type			js;
 
 JSBool js_obj_pickup_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_pickup_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_pickup_get_itemName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_pickup_get_objectId(jsval *vp);
+bool js_obj_pickup_get_objectName(jsval *vp);
+bool js_obj_pickup_get_objectIsPlayer(jsval *vp);
+bool js_obj_pickup_get_itemId(jsval *vp);
+bool js_obj_pickup_get_itemName(jsval *vp);
 JSBool js_obj_pickup_add_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_pickup_swap_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_pickup_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -117,7 +117,7 @@ JSBool js_obj_pickup_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_objectId(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ bool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_objectName(jsval *vp)
 {
 	obj_type		*obj,*pickup_obj;
 
@@ -144,7 +144,7 @@ bool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_objectIsPlayer(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -154,7 +154,7 @@ bool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsv
 	return(JS_TRUE);
 }
 
-bool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_itemId(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -164,7 +164,7 @@ bool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_obj_pickup_get_itemName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_pickup_get_itemName(jsval *vp)
 {
 	obj_type		*obj,*pickup_item;
 

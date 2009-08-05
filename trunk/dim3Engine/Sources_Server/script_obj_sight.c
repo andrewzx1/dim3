@@ -37,16 +37,16 @@ extern js_type			js;
 
 JSBool js_obj_sight_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_sight_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_get_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_get_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_get_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_get_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_set_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_set_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_set_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_set_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_sight_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_obj_sight_get_sideFieldAngle(jsval *vp);
+bool js_obj_sight_get_lookFieldAngle(jsval *vp);
+bool js_obj_sight_get_sideFieldDivision(jsval *vp);
+bool js_obj_sight_get_lookFieldDivision(jsval *vp);
+bool js_obj_sight_get_distance(jsval *vp);
+bool js_obj_sight_set_sideFieldAngle(jsval *vp);
+bool js_obj_sight_set_lookFieldAngle(jsval *vp);
+bool js_obj_sight_set_sideFieldDivision(jsval *vp);
+bool js_obj_sight_set_lookFieldDivision(jsval *vp);
+bool js_obj_sight_set_distance(jsval *vp);
 JSBool js_obj_sight_test_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_sight_test_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -108,7 +108,7 @@ JSBool js_obj_sight_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_sight_get_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_get_sideFieldAngle(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -118,7 +118,7 @@ bool js_obj_sight_get_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_sight_get_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_get_lookFieldAngle(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -128,7 +128,7 @@ bool js_obj_sight_get_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_sight_get_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_get_sideFieldDivision(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -138,7 +138,7 @@ bool js_obj_sight_get_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_sight_get_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_get_lookFieldDivision(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -148,7 +148,7 @@ bool js_obj_sight_get_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_sight_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_get_distance(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -164,7 +164,7 @@ bool js_obj_sight_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_obj_sight_set_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_set_sideFieldAngle(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -174,7 +174,7 @@ bool js_obj_sight_set_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_sight_set_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_set_lookFieldAngle(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -184,7 +184,7 @@ bool js_obj_sight_set_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	return(JS_TRUE);
 }
 
-bool js_obj_sight_set_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_set_sideFieldDivision(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -194,7 +194,7 @@ bool js_obj_sight_set_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_sight_set_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_set_lookFieldDivision(jsval *vp)
 {
 	obj_type		*obj;
 	
@@ -204,7 +204,7 @@ bool js_obj_sight_set_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,j
 	return(JS_TRUE);
 }
 
-bool js_obj_sight_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_obj_sight_set_distance(jsval *vp)
 {
 	obj_type		*obj;
 	

@@ -37,12 +37,12 @@ extern js_type			js;
 
 JSBool js_camera_chase_offset_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_chase_offset_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_offset_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_offset_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_camera_chase_offset_get_x(jsval *vp);
+bool js_camera_chase_offset_get_y(jsval *vp);
+bool js_camera_chase_offset_get_z(jsval *vp);
+bool js_camera_chase_offset_set_x(jsval *vp);
+bool js_camera_chase_offset_set_y(jsval *vp);
+bool js_camera_chase_offset_set_z(jsval *vp);
 
 script_js_property	camera_chase_offset_props[]={
 							{"x",					js_camera_chase_offset_get_x,			js_camera_chase_offset_set_x},
@@ -95,19 +95,19 @@ JSBool js_camera_chase_offset_set_property(JSContext *cx,JSObject *j_obj,jsval i
       
 ======================================================= */
 
-bool js_camera_chase_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_offset_get_x(jsval *vp)
 {
 	*vp=script_int_to_value(camera.chase_offset.x);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_offset_get_y(jsval *vp)
 {
 	*vp=script_int_to_value(camera.chase_offset.y);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_offset_get_z(jsval *vp)
 {
 	*vp=script_int_to_value(camera.chase_offset.z);
 	return(JS_TRUE);
@@ -119,19 +119,19 @@ bool js_camera_chase_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_camera_chase_offset_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_offset_set_x(jsval *vp)
 {
 	camera.chase_offset.x=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_offset_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_offset_set_y(jsval *vp)
 {
 	camera.chase_offset.y=script_value_to_int(*vp);
 	return(JS_TRUE);
 }
 
-bool js_camera_chase_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_camera_chase_offset_set_z(jsval *vp)
 {
 	camera.chase_offset.z=script_value_to_int(*vp);
 	return(JS_TRUE);

@@ -36,16 +36,16 @@ extern js_type			js;
 
 JSBool js_weap_hand_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_hand_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_get_raiseTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_get_lowerTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_get_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_get_bobSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_get_bobAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_set_raiseTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_set_lowerTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_set_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_set_bobSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_hand_set_bobAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_weap_hand_get_raiseTick(jsval *vp);
+bool js_weap_hand_get_lowerTick(jsval *vp);
+bool js_weap_hand_get_selectShift(jsval *vp);
+bool js_weap_hand_get_bobSpeed(jsval *vp);
+bool js_weap_hand_get_bobAngle(jsval *vp);
+bool js_weap_hand_set_raiseTick(jsval *vp);
+bool js_weap_hand_set_lowerTick(jsval *vp);
+bool js_weap_hand_set_selectShift(jsval *vp);
+bool js_weap_hand_set_bobSpeed(jsval *vp);
+bool js_weap_hand_set_bobAngle(jsval *vp);
 
 script_js_property	weap_hand_props[]={
 							{"raiseTick",			js_weap_hand_get_raiseTick,				js_weap_hand_set_raiseTick},
@@ -100,7 +100,7 @@ JSBool js_weap_hand_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_weap_hand_get_raiseTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_get_raiseTick(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -110,7 +110,7 @@ bool js_weap_hand_get_raiseTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_get_lowerTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_get_lowerTick(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -120,7 +120,7 @@ bool js_weap_hand_get_lowerTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_get_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_get_selectShift(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -130,7 +130,7 @@ bool js_weap_hand_get_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_get_bobSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_get_bobSpeed(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -140,7 +140,7 @@ bool js_weap_hand_get_bobSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_get_bobAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_get_bobAngle(jsval *vp)
 {
 	weapon_type		*weap;
 
@@ -156,7 +156,7 @@ bool js_weap_hand_get_bobAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_weap_hand_set_raiseTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_set_raiseTick(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -166,7 +166,7 @@ bool js_weap_hand_set_raiseTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_set_lowerTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_set_lowerTick(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -176,7 +176,7 @@ bool js_weap_hand_set_lowerTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_set_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_set_selectShift(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -186,7 +186,7 @@ bool js_weap_hand_set_selectShift(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_set_bobSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_set_bobSpeed(jsval *vp)
 {
 	weapon_type		*weap;
 	
@@ -196,7 +196,7 @@ bool js_weap_hand_set_bobSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 	return(JS_TRUE);
 }
 
-bool js_weap_hand_set_bobAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_weap_hand_set_bobAngle(jsval *vp)
 {
 	weapon_type		*weap;
 	

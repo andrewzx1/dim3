@@ -36,7 +36,7 @@ extern js_type			js;
 
 JSBool js_map_spot_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_spot_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+bool js_map_spot_get_count(jsval *vp);
 JSBool js_map_spot_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_spot_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_spot_get_type_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -106,7 +106,7 @@ JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-bool js_map_spot_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+bool js_map_spot_get_count(jsval *vp)
 {
 	*vp=script_int_to_value(map.nspot);
 	return(JS_TRUE);
