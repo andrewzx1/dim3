@@ -32,14 +32,14 @@ and can be sold or given away.
 #include "scripts.h"
 #include "weapons.h"
 
-JSBool js_weap_crosshair_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_crosshair_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_weap_crosshair_color_get_red(jsval *vp);
-bool js_weap_crosshair_color_get_green(jsval *vp);
-bool js_weap_crosshair_color_get_blue(jsval *vp);
-bool js_weap_crosshair_color_set_red(jsval *vp);
-bool js_weap_crosshair_color_set_green(jsval *vp);
-bool js_weap_crosshair_color_set_blue(jsval *vp);
+JSBool js_weap_crosshair_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_weap_crosshair_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_weap_crosshair_color_get_red(JSValueRef *vp);
+bool js_weap_crosshair_color_get_green(JSValueRef *vp);
+bool js_weap_crosshair_color_get_blue(JSValueRef *vp);
+bool js_weap_crosshair_color_set_red(JSValueRef *vp);
+bool js_weap_crosshair_color_set_green(JSValueRef *vp);
+bool js_weap_crosshair_color_set_blue(JSValueRef *vp);
 
 extern js_type			js;
 
@@ -78,12 +78,12 @@ JSObject* script_add_weap_crosshair_color_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_crosshair_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_crosshair_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,weap_crosshair_color_props));
 }
 
-JSBool js_weap_crosshair_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_crosshair_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,weap_crosshair_color_props));
 }
@@ -94,34 +94,34 @@ JSBool js_weap_crosshair_color_set_property(JSContext *cx,JSObject *j_obj,jsval 
       
 ======================================================= */
 
-bool js_weap_crosshair_color_get_red(jsval *vp)
+bool js_weap_crosshair_color_get_red(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_float_to_value(weap->crosshair.col.r);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_crosshair_color_get_green(jsval *vp)
+bool js_weap_crosshair_color_get_green(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_float_to_value(weap->crosshair.col.g);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_crosshair_color_get_blue(jsval *vp)
+bool js_weap_crosshair_color_get_blue(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_float_to_value(weap->crosshair.col.b);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -130,33 +130,33 @@ bool js_weap_crosshair_color_get_blue(jsval *vp)
       
 ======================================================= */
 
-bool js_weap_crosshair_color_set_red(jsval *vp)
+bool js_weap_crosshair_color_set_red(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->crosshair.col.r=script_value_to_float(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_crosshair_color_set_green(jsval *vp)
+bool js_weap_crosshair_color_set_green(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->crosshair.col.g=script_value_to_float(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_crosshair_color_set_blue(jsval *vp)
+bool js_weap_crosshair_color_set_blue(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->crosshair.col.b=script_value_to_float(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 

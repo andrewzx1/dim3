@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "remotes.h"
 #include "interfaces.h"
 #include "video.h"
+#include "sounds.h"
 
 #define join_pane_lan					0
 #define join_pane_internet				1
@@ -462,8 +463,12 @@ void join_open(bool local)
 	join_ping_thread_start();
 }
 
-void join_close(void)
+void join_close(bool stop_music)
 {
+	if (stop_music) {
+		if (al_music_playing()) al_music_stop();
+	}
+
 	join_ping_thread_end();
 	gui_shutdown();
 }
@@ -521,7 +526,7 @@ void join_game(void)
 		// attempt to join
 
 	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&remotes)) {
-		join_close();
+		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
 		return;
@@ -550,7 +555,7 @@ void join_game(void)
 	
 		// start game
 	
-	join_close();
+	join_close(TRUE);
 	
 	if (!game_start(skill_medium,&remotes,err_str)) {
 		net_client_send_leave_host(remote_uid);
@@ -625,7 +630,7 @@ void join_click(void)
 			break;
 			
 		case join_button_cancel_id:
-			join_close();
+			join_close(FALSE);
 			intro_open();
 			break;
 			

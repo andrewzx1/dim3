@@ -34,18 +34,18 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_interface_interaction_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_interaction_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_get_interface_interaction_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_interface_interaction_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_interaction_start_story_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_interaction_start_title_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_interaction_start_chooser_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_interaction_start_movie_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_interaction_start_save_load_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_interaction_start_setup_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_interaction_start_menu_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_interaction_quit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_interface_interaction_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_interface_interaction_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_get_interface_interaction_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_set_interface_interaction_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_interface_interaction_start_story_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_interface_interaction_start_title_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_interface_interaction_start_chooser_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_interface_interaction_start_movie_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_interface_interaction_start_save_load_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_interface_interaction_start_setup_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_interface_interaction_start_menu_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_interface_interaction_quit_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	interface_interaction_functions[]={
 							{"startStory",			js_interface_interaction_start_story_func,				2},
@@ -87,12 +87,12 @@ JSObject* script_add_interface_interaction_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_interface_interaction_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_interaction_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_interface_interaction_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_interaction_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -103,7 +103,7 @@ JSBool js_interface_interaction_set_property(JSContext *cx,JSObject *j_obj,jsval
       
 ======================================================= */
 
-JSBool js_interface_interaction_start_story_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_interaction_start_story_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				event_id;
 	char			name[name_str_len];
@@ -118,10 +118,10 @@ JSBool js_interface_interaction_start_story_func(JSContext *cx,JSObject *j_obj,u
 	script_value_to_string(argv[0],name,name_str_len);
 	story_trigger_set(name,script_value_to_int(argv[1]));
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_interface_interaction_start_title_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_interaction_start_title_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				event_id;
 	char			name[name_str_len],sound_name[name_str_len];
@@ -138,10 +138,10 @@ JSBool js_interface_interaction_start_title_func(JSContext *cx,JSObject *j_obj,u
 	
 	title_trigger_set("Titles",name,sound_name,event_id);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_interface_interaction_start_movie_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_interaction_start_movie_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				event_id;
 	char			name[name_str_len];
@@ -156,10 +156,10 @@ JSBool js_interface_interaction_start_movie_func(JSContext *cx,JSObject *j_obj,u
 	script_value_to_string(argv[0],name,name_str_len);
 	movie_trigger_set(name,event_id);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_interface_interaction_start_chooser_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_interaction_start_chooser_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				n,cnt;
 	char			name[name_str_len],
@@ -187,29 +187,29 @@ JSBool js_interface_interaction_start_chooser_func(JSContext *cx,JSObject *j_obj
 
 	chooser_trigger_set(name,(char*)sub_txt);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_interface_interaction_start_save_load_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_interaction_start_save_load_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	file_trigger_set();
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_interface_interaction_start_setup_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_interaction_start_setup_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	setup_game_trigger_set();
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_interface_interaction_start_menu_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_interaction_start_menu_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	menu_trigger_set();
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_interface_interaction_quit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_interaction_quit_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	interface_quit_trigger_set();
-	return(JS_TRUE);
+	return(TRUE);
 }

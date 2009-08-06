@@ -40,19 +40,19 @@ extern network_setup_type	net_setup;
 extern void map_set_ambient(char *name,float pitch);
 extern void map_clear_ambient(void);
 
-JSBool js_map_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_map_setting_get_scale(jsval *vp);
-bool js_map_setting_get_gravity(jsval *vp);
-bool js_map_setting_get_resistance(jsval *vp);
-bool js_map_setting_get_multiplayer(jsval *vp);
-bool js_map_setting_get_multiplayerType(jsval *vp);
-bool js_map_setting_get_botSkill(jsval *vp);
-bool js_map_setting_set_gravity(jsval *vp);
-bool js_map_setting_set_resistance(jsval *vp);
-JSBool js_map_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_clear_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_map_setting_get_scale(JSValueRef *vp);
+bool js_map_setting_get_gravity(JSValueRef *vp);
+bool js_map_setting_get_resistance(JSValueRef *vp);
+bool js_map_setting_get_multiplayer(JSValueRef *vp);
+bool js_map_setting_get_multiplayerType(JSValueRef *vp);
+bool js_map_setting_get_botSkill(JSValueRef *vp);
+bool js_map_setting_set_gravity(JSValueRef *vp);
+bool js_map_setting_set_resistance(JSValueRef *vp);
+JSBool js_map_set_ambient_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_clear_ambient_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_check_option_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	map_setting_props[]={
 							{"scale",				js_map_setting_get_scale,				NULL},
@@ -97,12 +97,12 @@ JSObject* script_add_map_setting_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,map_setting_props));
 }
 
-JSBool js_map_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,map_setting_props));
 }
@@ -113,31 +113,31 @@ JSBool js_map_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_map_setting_get_scale(jsval *vp)
+bool js_map_setting_get_scale(JSValueRef *vp)
 {
 	*vp=script_int_to_value(map_enlarge);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_setting_get_gravity(jsval *vp)
+bool js_map_setting_get_gravity(JSValueRef *vp)
 {
 	*vp=script_float_to_value(map.settings.gravity);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_setting_get_resistance(jsval *vp)
+bool js_map_setting_get_resistance(JSValueRef *vp)
 {
 	*vp=script_float_to_value(map.settings.resistance);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_setting_get_multiplayer(jsval *vp)
+bool js_map_setting_get_multiplayer(JSValueRef *vp)
 {
 	*vp=script_bool_to_value(net_setup.client.joined);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_setting_get_multiplayerType(jsval *vp)
+bool js_map_setting_get_multiplayerType(JSValueRef *vp)
 {
 	if (!net_setup.client.joined) {
 		*vp=script_null_to_value();
@@ -146,13 +146,13 @@ bool js_map_setting_get_multiplayerType(jsval *vp)
 		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_setting_get_botSkill(jsval *vp)
+bool js_map_setting_get_botSkill(JSValueRef *vp)
 {
 	*vp=script_int_to_value(setup.network.bot.skill);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -161,16 +161,16 @@ bool js_map_setting_get_botSkill(jsval *vp)
       
 ======================================================= */
 
-bool js_map_setting_set_gravity(jsval *vp)
+bool js_map_setting_set_gravity(JSValueRef *vp)
 {
 	map.settings.gravity=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_setting_set_resistance(jsval *vp)
+bool js_map_setting_set_resistance(JSValueRef *vp)
 {
 	map.settings.resistance=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -179,7 +179,7 @@ bool js_map_setting_set_resistance(jsval *vp)
       
 ======================================================= */
 
-JSBool js_map_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_set_ambient_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -189,12 +189,12 @@ JSBool js_map_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	
 	map_set_ambient(name,pitch);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_clear_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_clear_ambient_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	map_clear_ambient();
-	return(JS_TRUE);
+	return(TRUE);
 }
 

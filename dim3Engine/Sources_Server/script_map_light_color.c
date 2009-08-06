@@ -35,14 +35,14 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_light_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_map_light_color_get_red(jsval *vp);
-bool js_map_light_color_get_green(jsval *vp);
-bool js_map_light_color_get_blue(jsval *vp);
-bool js_map_light_color_set_red(jsval *vp);
-bool js_map_light_color_set_green(jsval *vp);
-bool js_map_light_color_set_blue(jsval *vp);
+JSBool js_map_light_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_light_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_map_light_color_get_red(JSValueRef *vp);
+bool js_map_light_color_get_green(JSValueRef *vp);
+bool js_map_light_color_get_blue(JSValueRef *vp);
+bool js_map_light_color_set_red(JSValueRef *vp);
+bool js_map_light_color_set_green(JSValueRef *vp);
+bool js_map_light_color_set_blue(JSValueRef *vp);
 
 script_js_property	map_light_color_props[]={
 							{"red",					js_map_light_color_get_red,				js_map_light_color_set_red},
@@ -79,12 +79,12 @@ JSObject* script_add_map_light_color_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_light_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_light_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,map_light_color_props));
 }
 
-JSBool js_map_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_light_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,map_light_color_props));
 }
@@ -95,22 +95,22 @@ JSBool js_map_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_map_light_color_get_red(jsval *vp)
+bool js_map_light_color_get_red(JSValueRef *vp)
 {
 	*vp=script_float_to_value(map.ambient.light_color.r);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_light_color_get_green(jsval *vp)
+bool js_map_light_color_get_green(JSValueRef *vp)
 {
 	*vp=script_float_to_value(map.ambient.light_color.g);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_light_color_get_blue(jsval *vp)
+bool js_map_light_color_get_blue(JSValueRef *vp)
 {
 	*vp=script_float_to_value(map.ambient.light_color.b);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -119,21 +119,21 @@ bool js_map_light_color_get_blue(jsval *vp)
       
 ======================================================= */
 
-bool js_map_light_color_set_red(jsval *vp)
+bool js_map_light_color_set_red(JSValueRef *vp)
 {
 	map.ambient.light_color.r=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_light_color_set_green(jsval *vp)
+bool js_map_light_color_set_green(JSValueRef *vp)
 {
 	map.ambient.light_color.g=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_light_color_set_blue(jsval *vp)
+bool js_map_light_color_set_blue(JSValueRef *vp)
 {
 	map.ambient.light_color.b=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 

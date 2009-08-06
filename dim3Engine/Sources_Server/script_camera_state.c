@@ -35,10 +35,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_camera_state_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_state_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_state_save_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_camera_state_restore_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_camera_state_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_camera_state_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_camera_state_save_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_camera_state_restore_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	camera_state_functions[]={
 							{"save",				js_camera_state_save_func,				0},
@@ -74,12 +74,12 @@ JSObject* script_add_camera_state_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_state_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_state_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_camera_state_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_state_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -90,15 +90,15 @@ JSBool js_camera_state_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_camera_state_save_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_camera_state_save_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	camera_save();
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_camera_state_restore_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_camera_state_restore_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	camera_restore();
-	return(JS_TRUE);
+	return(TRUE);
 }
 

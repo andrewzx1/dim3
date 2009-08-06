@@ -31,10 +31,10 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_model_shadow_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_shadow_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_model_shadow_get_on(jsval *vp);
-bool js_model_shadow_set_on(jsval *vp);
+JSBool js_model_shadow_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_shadow_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_model_shadow_get_on(JSValueRef *vp);
+bool js_model_shadow_set_on(JSValueRef *vp);
 
 extern js_type			js;
 
@@ -71,12 +71,12 @@ JSObject* script_add_model_shadow_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_shadow_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_shadow_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,model_shadow_props));
 }
 
-JSBool js_model_shadow_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_shadow_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,model_shadow_props));
 }
@@ -87,7 +87,7 @@ JSBool js_model_shadow_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_model_shadow_get_on(jsval *vp)
+bool js_model_shadow_get_on(JSValueRef *vp)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
@@ -97,7 +97,7 @@ bool js_model_shadow_get_on(jsval *vp)
 	
 	*vp=script_bool_to_value(shadow->on);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -106,7 +106,7 @@ bool js_model_shadow_get_on(jsval *vp)
       
 ======================================================= */
 
-bool js_model_shadow_set_on(jsval *vp)
+bool js_model_shadow_set_on(JSValueRef *vp)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
@@ -116,6 +116,6 @@ bool js_model_shadow_set_on(jsval *vp)
 
 	shadow->on=script_value_to_bool(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 

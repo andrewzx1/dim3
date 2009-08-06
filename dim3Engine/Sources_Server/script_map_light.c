@@ -34,9 +34,9 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_light_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_light_toggle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_light_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_light_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_light_toggle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	map_light_functions[]={
 							{"toggle",				js_map_light_toggle_func,			2},
@@ -71,12 +71,12 @@ JSObject* script_add_map_light_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_light_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_light_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_map_light_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_light_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -87,14 +87,14 @@ JSBool js_map_light_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_map_light_toggle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_light_toggle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	map_light_type		*map_light;
 
 	map_light=script_find_light_from_name(argv[0]);
-	if (map_light==NULL) return(JS_FALSE);
+	if (map_light==NULL) return(FALSE);
 	
 	map_light->on=script_value_to_bool(argv[1]);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }

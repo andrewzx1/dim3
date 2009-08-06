@@ -34,8 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_camera_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_camera_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
 
 JSClassRef				camera_class;
 
@@ -66,12 +66,12 @@ JSObject* script_add_global_camera_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_camera_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }

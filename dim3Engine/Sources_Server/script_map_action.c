@@ -41,12 +41,12 @@ extern bool game_file_reload_ok(void);
 extern bool game_file_reload(char *err_str);
 extern void game_time_pause_end(void);
 
-JSBool js_map_action_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_action_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_action_set_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_action_set_host_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_action_restart_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_action_restart_map_from_save_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_action_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_action_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_action_set_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_action_set_host_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_action_restart_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_action_restart_map_from_save_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	map_action_functions[]={
 							{"setMap",				js_map_action_set_map_func,					3},
@@ -84,12 +84,12 @@ JSObject* script_add_map_action_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_action_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_action_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_map_action_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_action_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -100,13 +100,13 @@ JSBool js_map_action_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_map_action_set_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_action_set_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 		// clients can not set maps
 		
 	if (net_setup.client.joined) {
 		JS_ReportError(cx,"setMap() illegal for client games");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
 		// set the map
@@ -118,16 +118,16 @@ JSBool js_map_action_set_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 
 	server.map_change=TRUE;
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_action_set_host_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_action_set_host_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 		// clients can not set maps
 
 	if (!net_setup.client.joined) {
 		JS_ReportError(cx,"setHostMap() illegal for normal games");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 		// set the map
@@ -139,16 +139,16 @@ JSBool js_map_action_set_host_map_func(JSContext *cx,JSObject *j_obj,uintN argc,
 
 	server.map_change=TRUE;
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_action_restart_map_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_action_restart_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 		// clients can not restart maps
 		
 	if (net_setup.client.joined) {
 		JS_ReportError(cx,"restartMap() illegal for client games");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
 		// use the last values to restart
@@ -156,10 +156,10 @@ JSBool js_map_action_restart_map_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	server.map_change=TRUE;
 	server.skip_media=TRUE;
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_action_restart_map_from_save_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_action_restart_map_from_save_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			err_str[256];
 	
@@ -167,7 +167,7 @@ JSBool js_map_action_restart_map_from_save_func(JSContext *cx,JSObject *j_obj,ui
 		
 	if (net_setup.host.hosting) {
 		JS_ReportError(cx,"restartMapFromSave() illegal for client games");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
 		// if no save game file, restart from map
@@ -175,18 +175,18 @@ JSBool js_map_action_restart_map_from_save_func(JSContext *cx,JSObject *j_obj,ui
 	if (!game_file_reload_ok()) {
 		server.map_change=TRUE;
 		server.skip_media=TRUE;
-		return(JS_TRUE);
+		return(TRUE);
 	}
 	
 		// else reload
 	
 	if (!game_file_reload(err_str)) {
 		JS_ReportError(cx,"Reload failed (%s)",err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
 	game_time_pause_end();			// loaded files are in paused mode
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 

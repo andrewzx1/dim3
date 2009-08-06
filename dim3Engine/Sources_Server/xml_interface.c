@@ -174,58 +174,64 @@ void default_settings_interface(void)
 	
 		// game buttons
 		
-	hud.intro.button_game_new.x=128;
+	hud.intro.button_game_new.x=0;
 	hud.intro.button_game_new.y=0;
 	hud.intro.button_game_new.wid=128;
 	hud.intro.button_game_new.high=32;
 	hud.intro.button_game_new.on=TRUE;
 
-	hud.intro.button_game_load.x=128;
+	hud.intro.button_game_load.x=0;
 	hud.intro.button_game_load.y=32;
 	hud.intro.button_game_load.wid=128;
 	hud.intro.button_game_load.high=32;
 	hud.intro.button_game_load.on=TRUE;
 
-	hud.intro.button_game_setup.x=128;
+	hud.intro.button_game_setup.x=0;
 	hud.intro.button_game_setup.y=64;
 	hud.intro.button_game_setup.wid=128;
 	hud.intro.button_game_setup.high=32;
 	hud.intro.button_game_setup.on=TRUE;
 
-	hud.intro.button_game_new_easy.x=256;
+	hud.intro.button_game_new_easy.x=0;
 	hud.intro.button_game_new_easy.y=0;
 	hud.intro.button_game_new_easy.wid=128;
 	hud.intro.button_game_new_easy.high=32;
 	hud.intro.button_game_new_easy.on=TRUE;
 
-	hud.intro.button_game_new_medium.x=256;
+	hud.intro.button_game_new_medium.x=0;
 	hud.intro.button_game_new_medium.y=32;
 	hud.intro.button_game_new_medium.wid=128;
 	hud.intro.button_game_new_medium.high=32;
 	hud.intro.button_game_new_medium.on=TRUE;
 
-	hud.intro.button_game_new_hard.x=256;
+	hud.intro.button_game_new_hard.x=0;
 	hud.intro.button_game_new_hard.y=64;
 	hud.intro.button_game_new_hard.wid=128;
 	hud.intro.button_game_new_hard.high=32;
 	hud.intro.button_game_new_hard.on=TRUE;
 
+	hud.intro.button_game_new_cancel.x=0;
+	hud.intro.button_game_new_cancel.y=96;
+	hud.intro.button_game_new_cancel.wid=128;
+	hud.intro.button_game_new_cancel.high=32;
+	hud.intro.button_game_new_cancel.on=TRUE;
+
 		// multiplayer buttons
 
-	hud.intro.button_multiplayer_host.x=128;
-	hud.intro.button_multiplayer_host.y=64;
+	hud.intro.button_multiplayer_host.x=0;
+	hud.intro.button_multiplayer_host.y=96;
 	hud.intro.button_multiplayer_host.wid=128;
 	hud.intro.button_multiplayer_host.high=32;
 	hud.intro.button_multiplayer_host.on=TRUE;
 
-	hud.intro.button_multiplayer_join.x=128;
-	hud.intro.button_multiplayer_join.y=96;
+	hud.intro.button_multiplayer_join.x=0;
+	hud.intro.button_multiplayer_join.y=128;
 	hud.intro.button_multiplayer_join.wid=128;
 	hud.intro.button_multiplayer_join.high=32;
 	hud.intro.button_multiplayer_join.on=TRUE;
 
-	hud.intro.button_multiplayer_setup.x=128;
-	hud.intro.button_multiplayer_setup.y=128;
+	hud.intro.button_multiplayer_setup.x=0;
+	hud.intro.button_multiplayer_setup.y=160;
 	hud.intro.button_multiplayer_setup.wid=128;
 	hud.intro.button_multiplayer_setup.high=32;
 	hud.intro.button_multiplayer_setup.on=TRUE;
@@ -233,13 +239,13 @@ void default_settings_interface(void)
 		// credit, setup, quit buttons
 
 	hud.intro.button_credit.x=0;
-	hud.intro.button_credit.y=256;
+	hud.intro.button_credit.y=192;
 	hud.intro.button_credit.wid=128;
 	hud.intro.button_credit.high=32;
 	hud.intro.button_credit.on=FALSE;
 
 	hud.intro.button_quit.x=0;
-	hud.intro.button_quit.y=320;
+	hud.intro.button_quit.y=224;
 	hud.intro.button_quit.wid=128;
 	hud.intro.button_quit.high=32;
 	hud.intro.button_quit.on=TRUE;
@@ -923,6 +929,7 @@ void read_settings_interface(void)
 		read_settings_interface_button(xml_findfirstchild("Game_New_Easy",button_tag),&hud.intro.button_game_new_easy);
 		read_settings_interface_button(xml_findfirstchild("Game_New_Medium",button_tag),&hud.intro.button_game_new_medium);
 		read_settings_interface_button(xml_findfirstchild("Game_New_Hard",button_tag),&hud.intro.button_game_new_hard);
+		read_settings_interface_button(xml_findfirstchild("Game_New_Cancel",button_tag),&hud.intro.button_game_new_cancel);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Host",button_tag),&hud.intro.button_multiplayer_host);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join",button_tag),&hud.intro.button_multiplayer_join);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&hud.intro.button_multiplayer_setup);

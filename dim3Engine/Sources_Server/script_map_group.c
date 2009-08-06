@@ -40,14 +40,14 @@ extern void group_texture(int group_idx,int index);
 extern void group_texture_shift(int group_idx,float x_shift,float y_shift);
 extern void group_texture_alpha(int group_idx,float alpha);
 
-JSBool js_map_group_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_group_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_group_get_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_group_set_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_group_set_solid_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_group_set_texture_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_group_set_texture_shift_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_group_set_texture_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_group_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_group_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_group_get_center_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_group_set_show_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_group_set_solid_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_group_set_texture_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_group_set_texture_shift_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_group_set_texture_alpha_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	map_group_functions[]={
 							{"getCenter",			js_map_group_get_center_func,			1},
@@ -87,12 +87,12 @@ JSObject* script_add_map_group_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_group_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_group_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_map_group_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_group_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -103,13 +103,13 @@ JSBool js_map_group_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-JSBool js_map_group_get_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_group_get_center_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				group_idx;
 	group_type		*group;
 	
 	group_idx=script_find_group_from_name(argv[0]);
-	if (group_idx==-1) return(JS_FALSE);
+	if (group_idx==-1) return(FALSE);
 
 	if ((group_idx>=0) && (group_idx<map.ngroup)) {
 		group=&map.groups[group_idx];
@@ -119,7 +119,7 @@ JSBool js_map_group_get_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 		*rval=script_point_to_value(0,0,0);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -128,26 +128,26 @@ JSBool js_map_group_get_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
       
 ======================================================= */
 
-JSBool js_map_group_set_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_group_set_show_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				group_idx;
 	
 	group_idx=script_find_group_from_name(argv[0]);
-	if (group_idx==-1) return(JS_FALSE);
+	if (group_idx==-1) return(FALSE);
 	
 	group_show(group_idx,script_value_to_bool(argv[1]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_group_set_solid_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_group_set_solid_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				group_idx;
 	
 	group_idx=script_find_group_from_name(argv[0]);
-	if (group_idx==-1) return(JS_FALSE);
+	if (group_idx==-1) return(FALSE);
 
 	group_solid(group_idx,script_value_to_bool(argv[1]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -156,36 +156,36 @@ JSBool js_map_group_set_solid_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
       
 ======================================================= */
 
-JSBool js_map_group_set_texture_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_group_set_texture_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				group_idx;
 	
 	group_idx=script_find_group_from_name(argv[0]);
-	if (group_idx==-1) return(JS_FALSE);
+	if (group_idx==-1) return(FALSE);
 
 	group_texture(group_idx,script_value_to_int(argv[1]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_group_set_texture_shift_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_group_set_texture_shift_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				group_idx;
 	
 	group_idx=script_find_group_from_name(argv[0]);
-	if (group_idx==-1) return(JS_FALSE);
+	if (group_idx==-1) return(FALSE);
 
 	group_texture_shift(group_idx,script_value_to_float(argv[1]),script_value_to_float(argv[2]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_group_set_texture_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_group_set_texture_alpha_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				group_idx;
 	
 	group_idx=script_find_group_from_name(argv[0]);
-	if (group_idx==-1) return(JS_FALSE);
+	if (group_idx==-1) return(FALSE);
 
 	group_texture_alpha(group_idx,script_value_to_float(argv[1]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 

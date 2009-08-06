@@ -36,14 +36,14 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_vehicle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_vehicle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_vehicle_get_on(jsval *vp);
-bool js_obj_vehicle_get_hasOccupant(jsval *vp);
-bool js_obj_vehicle_set_on(jsval *vp);
-JSBool js_obj_vehicle_enter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_vehicle_exit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_vehicle_remove_occupant_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_vehicle_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_vehicle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_vehicle_get_on(JSValueRef *vp);
+bool js_obj_vehicle_get_hasOccupant(JSValueRef *vp);
+bool js_obj_vehicle_set_on(JSValueRef *vp);
+JSBool js_obj_vehicle_enter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_vehicle_exit_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	obj_vehicle_props[]={
 							{"on",					js_obj_vehicle_get_on,				js_obj_vehicle_set_on},
@@ -85,12 +85,12 @@ JSObject* script_add_obj_vehicle_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_vehicle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_vehicle_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_vehicle_props));
 }
 
-JSBool js_obj_vehicle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_vehicle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_vehicle_props));
 }
@@ -101,24 +101,24 @@ JSBool js_obj_vehicle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_obj_vehicle_get_on(jsval *vp)
+bool js_obj_vehicle_get_on(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->vehicle.on);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_vehicle_get_hasOccupant(jsval *vp)
+bool js_obj_vehicle_get_hasOccupant(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->vehicle.attach_obj_uid!=-1);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -127,14 +127,14 @@ bool js_obj_vehicle_get_hasOccupant(jsval *vp)
       
 ======================================================= */
 
-bool js_obj_vehicle_set_on(jsval *vp)
+bool js_obj_vehicle_set_on(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vehicle.on=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -143,7 +143,7 @@ bool js_obj_vehicle_set_on(jsval *vp)
       
 ======================================================= */
 
-JSBool js_obj_vehicle_enter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_vehicle_enter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			err_str[256];
 	obj_type		*obj;
@@ -152,13 +152,13 @@ JSBool js_obj_vehicle_enter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 
 	if (!object_enter_vehicle(obj,err_str)) {
 		JS_ReportError(js.cx,"Vehicle: %s",err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_vehicle_exit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_vehicle_exit_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			err_str[256];
 	obj_type		*obj;
@@ -167,9 +167,9 @@ JSBool js_obj_vehicle_exit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 
 	if (!object_exit_vehicle(obj,FALSE,err_str)) {
 		JS_ReportError(js.cx,"Vehicle: %s",err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 

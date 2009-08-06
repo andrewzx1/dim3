@@ -379,7 +379,7 @@ and can be sold or given away.
 // callbacks
 //
 
-typedef bool (*script_get_set_callback)(jsval *vp);
+typedef bool (*script_get_set_callback)(JSValueRef *vp);
 
 //
 // object setup structures
@@ -430,7 +430,7 @@ typedef struct		{
 						char						name[file_str_len],params[param_str_len];
 						char						*data;
 						bool						used;
-						jsval						event_func;
+						JSValueRef					event_func;
 						JSObject					*global,*obj;
 					} script_type;
 

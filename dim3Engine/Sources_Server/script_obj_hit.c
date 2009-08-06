@@ -37,15 +37,15 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_hit_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_hit_get_objectId(jsval *vp);
-bool js_obj_hit_get_objectName(jsval *vp);
-bool js_obj_hit_get_objectIsPlayer(jsval *vp);
-bool js_obj_hit_get_weaponName(jsval *vp);
-bool js_obj_hit_get_projectileName(jsval *vp);
-bool js_obj_hit_get_hitBoxName(jsval *vp);
-bool js_obj_hit_get_damage(jsval *vp);
+JSBool js_obj_hit_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_hit_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_hit_get_objectId(JSValueRef *vp);
+bool js_obj_hit_get_objectName(JSValueRef *vp);
+bool js_obj_hit_get_objectIsPlayer(JSValueRef *vp);
+bool js_obj_hit_get_weaponName(JSValueRef *vp);
+bool js_obj_hit_get_projectileName(JSValueRef *vp);
+bool js_obj_hit_get_hitBoxName(JSValueRef *vp);
+bool js_obj_hit_get_damage(JSValueRef *vp);
 
 script_js_property	obj_hit_props[]={
 							{"objectId",			js_obj_hit_get_objectId,			NULL},
@@ -86,12 +86,12 @@ JSObject* script_add_obj_hit_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_hit_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_hit_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_hit_props));
 }
 
-JSBool js_obj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_hit_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_hit_props));
 }
@@ -102,17 +102,17 @@ JSBool js_obj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-bool js_obj_hit_get_objectId(jsval *vp)
+bool js_obj_hit_get_objectId(JSValueRef *vp)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->hit.obj_uid);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_hit_get_objectName(jsval *vp)
+bool js_obj_hit_get_objectName(JSValueRef *vp)
 {
 	obj_type			*obj,*hit_obj;
 
@@ -126,20 +126,20 @@ bool js_obj_hit_get_objectName(jsval *vp)
 		*vp=script_string_to_value(hit_obj->name);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_hit_get_objectIsPlayer(jsval *vp)
+bool js_obj_hit_get_objectIsPlayer(JSValueRef *vp)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->hit.obj_uid==server.player_obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_hit_get_weaponName(jsval *vp)
+bool js_obj_hit_get_weaponName(JSValueRef *vp)
 {
 	obj_type			*obj;
 	weapon_type			*hit_weap;
@@ -154,10 +154,10 @@ bool js_obj_hit_get_weaponName(jsval *vp)
 		*vp=script_string_to_value(hit_weap->name);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_hit_get_projectileName(jsval *vp)
+bool js_obj_hit_get_projectileName(JSValueRef *vp)
 {
 	obj_type			*obj;
 	proj_type			*hit_proj;
@@ -174,10 +174,10 @@ bool js_obj_hit_get_projectileName(jsval *vp)
 		*vp=script_string_to_value(hit_proj_setup->name);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_hit_get_hitBoxName(jsval *vp)
+bool js_obj_hit_get_hitBoxName(JSValueRef *vp)
 {
 	obj_type			*obj;
 
@@ -190,16 +190,16 @@ bool js_obj_hit_get_hitBoxName(jsval *vp)
 		*vp=script_string_to_value(obj->hit.hit_box_name);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_hit_get_damage(jsval *vp)
+bool js_obj_hit_get_damage(JSValueRef *vp)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->hit.damage);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 

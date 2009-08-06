@@ -35,25 +35,25 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_weapon_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_weapon_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_weapon_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_select_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_set_select_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_reset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_hide_single_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_reset_single_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_is_hidden_single_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_max_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_max_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_alt_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_alt_max_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_alt_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_weapon_get_alt_max_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_weapon_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_weapon_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_weapon_add_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_select_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_set_select_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_fire_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_hide_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_reset_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_hide_single_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_reset_single_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_is_hidden_single_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_ammo_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_max_ammo_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_clip_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_max_clip_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_alt_ammo_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_alt_max_ammo_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_alt_clip_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_weapon_get_alt_max_clip_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	obj_weapon_functions[]={
 							{"add",					js_obj_weapon_add_func,						1},
@@ -104,12 +104,12 @@ JSObject* script_add_obj_weapon_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_weapon_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_weapon_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_obj_weapon_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_weapon_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -120,7 +120,7 @@ JSBool js_obj_weapon_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_obj_weapon_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_add_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			name[name_str_len];
     obj_type		*obj;
@@ -133,7 +133,7 @@ JSBool js_obj_weapon_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 		
 	script_bool_to_value(weapon_create(obj,name));
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -142,7 +142,7 @@ JSBool js_obj_weapon_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
       
 ======================================================= */
 
-JSBool js_obj_weapon_get_select_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_select_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
@@ -151,26 +151,26 @@ JSBool js_obj_weapon_get_select_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	weap=weapon_find_uid(obj->held_weapon.next_uid);
 	if (weap==NULL) {
 		*rval=script_null_to_value();
-		return(JS_TRUE);
+		return(TRUE);
 	}
 	
     *rval=script_string_to_value(weap->name);
 
-    return(JS_TRUE);
+    return(TRUE);
 }
 
-JSBool js_obj_weapon_set_select_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_set_select_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
 	weapon_set(obj,weap);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -179,18 +179,18 @@ JSBool js_obj_weapon_set_select_func(JSContext *cx,JSObject *j_obj,uintN argc,js
       
 ======================================================= */
 
-JSBool js_obj_weapon_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_fire_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 
 	script_bool_to_value(weapon_script_fire(js.time.current_tick,obj,weap,script_value_to_int(argv[1])));
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -199,66 +199,66 @@ JSBool js_obj_weapon_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
       
 ======================================================= */
 
-JSBool js_obj_weapon_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_hide_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->hide_all_weapons=script_value_to_bool(argv[0]);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_reset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_reset_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weapon_reset_ammo_object(obj);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_hide_single_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_hide_single_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
 	weap->hidden=script_value_to_bool(argv[1]);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_reset_single_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_reset_single_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
 	weapon_reset_ammo(weap);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_is_hidden_single_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_is_hidden_single_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
 	*rval=script_bool_to_value(weap->hidden);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -267,60 +267,60 @@ JSBool js_obj_weapon_is_hidden_single_func(JSContext *cx,JSObject *j_obj,uintN a
       
 ======================================================= */
 
-JSBool js_obj_weapon_get_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_ammo_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
 	*rval=script_int_to_value(weap->ammo.count);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_get_max_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_max_ammo_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 
 	*rval=script_int_to_value(weap->ammo.max_count);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_get_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_clip_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
 	*rval=script_int_to_value(weap->ammo.clip_count);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_get_max_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_max_clip_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 
 	*rval=script_int_to_value(weap->ammo.max_clip_count);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -329,60 +329,60 @@ JSBool js_obj_weapon_get_max_clip_count_func(JSContext *cx,JSObject *j_obj,uintN
       
 ======================================================= */
 
-JSBool js_obj_weapon_get_alt_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_alt_ammo_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
 	*rval=script_int_to_value(weap->alt_ammo.count);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_get_alt_max_ammo_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_alt_max_ammo_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 
 	*rval=script_int_to_value(weap->alt_ammo.max_count);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_get_alt_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_alt_clip_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
 	*rval=script_int_to_value(weap->alt_ammo.clip_count);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_weapon_get_alt_max_clip_count_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_weapon_get_alt_max_clip_count_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     obj_type		*obj;
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 
 	*rval=script_int_to_value(weap->alt_ammo.max_clip_count);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

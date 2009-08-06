@@ -35,15 +35,15 @@ and can be sold or given away.
 
 extern js_type				js;
 
-JSBool js_weap_dual_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_dual_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_weap_dual_get_on(jsval *vp);
-bool js_weap_dual_get_active(jsval *vp);
-bool js_weap_dual_get_handOffset(jsval *vp);
-bool js_weap_dual_set_on(jsval *vp);
-bool js_weap_dual_set_active(jsval *vp);
-bool js_weap_dual_set_handOffset(jsval *vp);
-JSBool js_weap_dual_switch_hand_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_weap_dual_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_weap_dual_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_weap_dual_get_on(JSValueRef *vp);
+bool js_weap_dual_get_active(JSValueRef *vp);
+bool js_weap_dual_get_handOffset(JSValueRef *vp);
+bool js_weap_dual_set_on(JSValueRef *vp);
+bool js_weap_dual_set_active(JSValueRef *vp);
+bool js_weap_dual_set_handOffset(JSValueRef *vp);
+JSBool js_weap_dual_switch_hand_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	weap_dual_props[]={
 							{"on",					js_weap_dual_get_on,					js_weap_dual_set_on},
@@ -84,12 +84,12 @@ JSObject* script_add_weap_dual_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_dual_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_dual_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,weap_dual_props));
 }
 
-JSBool js_weap_dual_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_dual_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,weap_dual_props));
 }
@@ -100,34 +100,34 @@ JSBool js_weap_dual_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_weap_dual_get_on(jsval *vp)
+bool js_weap_dual_get_on(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(weap->dual.on);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_dual_get_active(jsval *vp)
+bool js_weap_dual_get_active(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(weap->dual.active);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_dual_get_handOffset(jsval *vp)
+bool js_weap_dual_get_handOffset(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(weap->dual.hand_offset);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -136,34 +136,34 @@ bool js_weap_dual_get_handOffset(jsval *vp)
       
 ======================================================= */
 
-bool js_weap_dual_set_on(jsval *vp)
+bool js_weap_dual_set_on(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->dual.on=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_dual_set_active(jsval *vp)
+bool js_weap_dual_set_active(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->dual.active=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_dual_set_handOffset(jsval *vp)
+bool js_weap_dual_set_handOffset(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->dual.hand_offset=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -172,7 +172,7 @@ bool js_weap_dual_set_handOffset(jsval *vp)
       
 ======================================================= */
 
-JSBool js_weap_dual_switch_hand_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_dual_switch_hand_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	weapon_type		*weap;
 	
@@ -185,6 +185,6 @@ JSBool js_weap_dual_switch_hand_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 		weap->dual.in_dual=script_value_to_bool(argv[0]);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 

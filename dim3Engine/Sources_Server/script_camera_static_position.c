@@ -36,15 +36,15 @@ extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
-JSBool js_camera_static_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_static_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_camera_static_position_get_follow(jsval *vp);
-bool js_camera_static_position_get_walkTurnSpeed(jsval *vp);
-bool js_camera_static_position_set_follow(jsval *vp);
-bool js_camera_static_position_set_walkTurnSpeed(jsval *vp);
-JSBool js_camera_static_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_camera_static_position_move_to_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_camera_static_position_walk_to_node_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_camera_static_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_camera_static_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_camera_static_position_get_follow(JSValueRef *vp);
+bool js_camera_static_position_get_walkTurnSpeed(JSValueRef *vp);
+bool js_camera_static_position_set_follow(JSValueRef *vp);
+bool js_camera_static_position_set_walkTurnSpeed(JSValueRef *vp);
+JSBool js_camera_static_position_move_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	camera_static_position_props[]={
 							{"follow",				js_camera_static_position_get_follow,			js_camera_static_position_set_follow},
@@ -86,12 +86,12 @@ JSObject* script_add_camera_static_position_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_static_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_static_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,camera_static_position_props));
 }
 
-JSBool js_camera_static_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_static_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,camera_static_position_props));
 }
@@ -102,16 +102,16 @@ JSBool js_camera_static_position_set_property(JSContext *cx,JSObject *j_obj,jsva
       
 ======================================================= */
 
-bool js_camera_static_position_get_follow(jsval *vp)
+bool js_camera_static_position_get_follow(JSValueRef *vp)
 {
 	*vp=script_bool_to_value(camera.static_follow);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_static_position_get_walkTurnSpeed(jsval *vp)
+bool js_camera_static_position_get_walkTurnSpeed(JSValueRef *vp)
 {
 	*vp=script_float_to_value(camera.auto_walk.turn_speed);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -120,16 +120,16 @@ bool js_camera_static_position_get_walkTurnSpeed(jsval *vp)
       
 ======================================================= */
 
-bool js_camera_static_position_set_follow(jsval *vp)
+bool js_camera_static_position_set_follow(JSValueRef *vp)
 {
 	camera.static_follow=script_value_to_bool(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_static_position_set_walkTurnSpeed(jsval *vp)
+bool js_camera_static_position_set_walkTurnSpeed(JSValueRef *vp)
 {
 	camera.auto_walk.turn_speed=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -138,14 +138,14 @@ bool js_camera_static_position_set_walkTurnSpeed(jsval *vp)
       
 ======================================================= */
 
-JSBool js_camera_static_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_camera_static_position_move_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	camera_static_update(script_value_to_int(argv[0]),script_value_to_int(argv[1]),script_value_to_int(argv[2]));
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_camera_static_position_move_to_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int			idx;
 	spot_type	*spot;
@@ -153,16 +153,16 @@ JSBool js_camera_static_position_move_to_spot_func(JSContext *cx,JSObject *j_obj
 	idx=script_value_to_int(argv[0]);
 	if ((idx<0) || (idx>=map.nspot)) {
 		JS_ReportError(js.cx,"Unknown spot");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
 	spot=&map.spots[idx];
 	camera_static_update(spot->pnt.x,spot->pnt.z,spot->pnt.y);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_camera_static_position_walk_to_node_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				msec,event_id;
 	char			start_name[name_str_len],end_name[name_str_len];
@@ -176,7 +176,7 @@ JSBool js_camera_static_position_walk_to_node_func(JSContext *cx,JSObject *j_obj
 	open_doors=script_value_to_bool(argv[4]);
 	in_freeze=script_value_to_bool(argv[5]);
 		
-	if (!camera_walk_to_node_setup(start_name,end_name,msec,event_id,open_doors,in_freeze)) return(JS_FALSE);
+	if (!camera_walk_to_node_setup(start_name,end_name,msec,event_id,open_doors,in_freeze)) return(FALSE);
 
-	return(JS_TRUE);
+	return(TRUE);
 }

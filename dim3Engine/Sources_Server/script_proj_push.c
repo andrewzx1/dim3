@@ -35,12 +35,12 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_proj_push_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_push_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_proj_push_get_on(jsval *vp);
-bool js_proj_push_get_force(jsval *vp);
-bool js_proj_push_set_on(jsval *vp);
-bool js_proj_push_set_force(jsval *vp);
+JSBool js_proj_push_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_proj_push_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_proj_push_get_on(JSValueRef *vp);
+bool js_proj_push_get_force(JSValueRef *vp);
+bool js_proj_push_set_on(JSValueRef *vp);
+bool js_proj_push_set_force(JSValueRef *vp);
 
 script_js_property	proj_push_props[]={
 							{"on",					js_proj_push_get_on,				js_proj_push_set_on},
@@ -76,12 +76,12 @@ JSObject* script_add_proj_push_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_push_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_push_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,proj_push_props));
 }
 
-JSBool js_proj_push_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_push_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,proj_push_props));
 }
@@ -92,28 +92,28 @@ JSBool js_proj_push_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_proj_push_get_on(jsval *vp)
+bool js_proj_push_get_on(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_bool_to_value(proj_setup->push.on);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_push_get_force(jsval *vp)
+bool js_proj_push_get_force(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_int_to_value(proj_setup->push.force);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -122,26 +122,26 @@ bool js_proj_push_get_force(jsval *vp)
       
 ======================================================= */
 
-bool js_proj_push_set_on(jsval *vp)
+bool js_proj_push_set_on(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->push.on=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_push_set_force(jsval *vp)
+bool js_proj_push_set_force(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->push.force=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }

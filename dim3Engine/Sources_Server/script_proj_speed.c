@@ -34,20 +34,20 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_proj_speed_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_proj_speed_get_speed(jsval *vp);
-bool js_proj_speed_get_deceleration(jsval *vp);
-bool js_proj_speed_get_decelerationWait(jsval *vp);
-bool js_proj_speed_get_decelerationMinSpeed(jsval *vp);
-bool js_proj_speed_get_maxHitscanDistance(jsval *vp);
-bool js_proj_speed_get_inheritMotionFactor(jsval *vp);
-bool js_proj_speed_set_speed(jsval *vp);
-bool js_proj_speed_set_deceleration(jsval *vp);
-bool js_proj_speed_set_decelerationWait(jsval *vp);
-bool js_proj_speed_set_decelerationMinSpeed(jsval *vp);
-bool js_proj_speed_set_maxHitscanDistance(jsval *vp);
-bool js_proj_speed_set_inheritMotionFactor(jsval *vp);
+JSBool js_proj_speed_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_proj_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_proj_speed_get_speed(JSValueRef *vp);
+bool js_proj_speed_get_deceleration(JSValueRef *vp);
+bool js_proj_speed_get_decelerationWait(JSValueRef *vp);
+bool js_proj_speed_get_decelerationMinSpeed(JSValueRef *vp);
+bool js_proj_speed_get_maxHitscanDistance(JSValueRef *vp);
+bool js_proj_speed_get_inheritMotionFactor(JSValueRef *vp);
+bool js_proj_speed_set_speed(JSValueRef *vp);
+bool js_proj_speed_set_deceleration(JSValueRef *vp);
+bool js_proj_speed_set_decelerationWait(JSValueRef *vp);
+bool js_proj_speed_set_decelerationMinSpeed(JSValueRef *vp);
+bool js_proj_speed_set_maxHitscanDistance(JSValueRef *vp);
+bool js_proj_speed_set_inheritMotionFactor(JSValueRef *vp);
 
 script_js_property	proj_speed_props[]={
 							{"speed",					js_proj_speed_get_speed,					js_proj_speed_set_speed},
@@ -87,12 +87,12 @@ JSObject* script_add_proj_speed_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_speed_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_speed_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,proj_speed_props));
 }
 
-JSBool js_proj_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,proj_speed_props));
 }
@@ -103,76 +103,76 @@ JSBool js_proj_speed_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_proj_speed_get_speed(jsval *vp)
+bool js_proj_speed_get_speed(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
     *vp=script_float_to_value(proj_setup->speed);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_get_deceleration(jsval *vp)
+bool js_proj_speed_get_deceleration(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
     *vp=script_float_to_value(proj_setup->decel_speed);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_get_decelerationWait(jsval *vp)
+bool js_proj_speed_get_decelerationWait(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_int_to_value(proj_setup->decel_grace);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_get_decelerationMinSpeed(jsval *vp)
+bool js_proj_speed_get_decelerationMinSpeed(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
     *vp=script_float_to_value(proj_setup->decel_min_speed);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_get_maxHitscanDistance(jsval *vp)
+bool js_proj_speed_get_maxHitscanDistance(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_int_to_value(proj_setup->hitscan.max_dist);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_get_inheritMotionFactor(jsval *vp)
+bool js_proj_speed_get_inheritMotionFactor(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_float_to_value(proj_setup->inherit_motion_factor);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -181,76 +181,76 @@ bool js_proj_speed_get_inheritMotionFactor(jsval *vp)
       
 ======================================================= */
 
-bool js_proj_speed_set_speed(jsval *vp)
+bool js_proj_speed_set_speed(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
     proj_setup->speed=script_value_to_float(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_set_deceleration(jsval *vp)
+bool js_proj_speed_set_deceleration(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->decel_speed=script_value_to_float(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_set_decelerationWait(jsval *vp)
+bool js_proj_speed_set_decelerationWait(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->decel_grace=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_set_decelerationMinSpeed(jsval *vp)
+bool js_proj_speed_set_decelerationMinSpeed(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
     proj_setup->decel_min_speed=script_value_to_float(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_set_maxHitscanDistance(jsval *vp)
+bool js_proj_speed_set_maxHitscanDistance(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->hitscan.max_dist=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_speed_set_inheritMotionFactor(jsval *vp)
+bool js_proj_speed_set_inheritMotionFactor(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->inherit_motion_factor=script_value_to_float(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

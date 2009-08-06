@@ -35,14 +35,14 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_obj_score_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_score_get_kill(jsval *vp);
-bool js_obj_score_get_death(jsval *vp);
-bool js_obj_score_get_suicide(jsval *vp);
-bool js_obj_score_get_goal(jsval *vp);
-bool js_obj_score_get_score(jsval *vp);
-JSBool js_obj_score_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_score_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_score_get_kill(JSValueRef *vp);
+bool js_obj_score_get_death(JSValueRef *vp);
+bool js_obj_score_get_suicide(JSValueRef *vp);
+bool js_obj_score_get_goal(JSValueRef *vp);
+bool js_obj_score_get_score(JSValueRef *vp);
+JSBool js_obj_score_add_goal_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	obj_score_props[]={
 							{"kill",				js_obj_score_get_kill,				NULL},
@@ -85,12 +85,12 @@ JSObject* script_add_obj_score_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_score_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_score_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_score_props));
 }
 
-JSBool js_obj_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_score_props));
 }
@@ -101,54 +101,54 @@ JSBool js_obj_score_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_score_get_kill(jsval *vp)
+bool js_obj_score_get_kill(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->score.kill);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_score_get_death(jsval *vp)
+bool js_obj_score_get_death(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->score.death);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_score_get_suicide(jsval *vp)
+bool js_obj_score_get_suicide(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->score.suicide);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_score_get_goal(jsval *vp)
+bool js_obj_score_get_goal(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->score.goal);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_score_get_score(jsval *vp)
+bool js_obj_score_get_score(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->score.score);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -157,14 +157,14 @@ bool js_obj_score_get_score(jsval *vp)
       
 ======================================================= */
 
-JSBool js_obj_score_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_score_add_goal_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_score_goal(obj);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

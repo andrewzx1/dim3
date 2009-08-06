@@ -37,11 +37,11 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_model_bone_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_bone_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_bone_find_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_bone_find_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_bone_get_brightness_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_model_bone_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_bone_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_bone_find_offset_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_model_bone_find_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_model_bone_get_brightness_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	model_bone_functions[]={
 							{"findOffset",			js_model_bone_find_offset_func,			2},
@@ -78,12 +78,12 @@ JSObject* script_add_model_bone_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_bone_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_bone_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_model_bone_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_bone_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -133,7 +133,7 @@ model_draw* script_bone_function_setup(void)
       
 ======================================================= */
 
-JSBool js_model_bone_find_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_bone_find_offset_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char				pose_name[name_str_len],bone_name[name_str_len];
 	int					x,y,z;
@@ -142,7 +142,7 @@ JSBool js_model_bone_find_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 		// get proper draw setup
 		
 	draw=script_bone_function_setup();
-	if (draw==NULL) return(JS_FALSE);
+	if (draw==NULL) return(FALSE);
 	
 		// get bone offset
 		
@@ -151,15 +151,15 @@ JSBool js_model_bone_find_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	
 	if (!model_find_bone_offset(draw,pose_name,bone_name,&x,&y,&z)) {
 		JS_ReportError(js.cx,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
 	*rval=script_point_to_value(x,y,z);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_model_bone_find_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_bone_find_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char				pose_name[name_str_len],bone_name[name_str_len];
 	int					x,y,z;
@@ -168,7 +168,7 @@ JSBool js_model_bone_find_position_func(JSContext *cx,JSObject *j_obj,uintN argc
 		// get proper draw setup
 		
 	draw=script_bone_function_setup();
-	if (draw==NULL) return(JS_FALSE);
+	if (draw==NULL) return(FALSE);
 	
 		// get bone position
 	
@@ -177,15 +177,15 @@ JSBool js_model_bone_find_position_func(JSContext *cx,JSObject *j_obj,uintN argc
 	
 	if (!model_find_bone_position(draw,pose_name,bone_name,&x,&y,&z)) {
 		JS_ReportError(js.cx,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
 	*rval=script_point_to_value(x,y,z);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_model_bone_get_brightness_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_bone_get_brightness_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			pose_name[name_str_len],bone_name[name_str_len];
 	float			bright;
@@ -194,7 +194,7 @@ JSBool js_model_bone_get_brightness_func(JSContext *cx,JSObject *j_obj,uintN arg
 		// get proper draw setup
 		
 	draw=script_bone_function_setup();
-	if (draw==NULL) return(JS_FALSE);
+	if (draw==NULL) return(FALSE);
 	
 		// get bone light
 
@@ -203,11 +203,11 @@ JSBool js_model_bone_get_brightness_func(JSContext *cx,JSObject *j_obj,uintN arg
 	
 	if (!model_get_bone_brightness(draw,pose_name,bone_name,&bright)) {
 		JS_ReportError(js.cx,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
 	*rval=script_float_to_value(bright);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 

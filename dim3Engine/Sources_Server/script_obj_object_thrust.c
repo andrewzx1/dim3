@@ -34,14 +34,14 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_thrust_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_thrust_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_thrust_get_speed(jsval *vp);
-bool js_obj_thrust_get_maxSpeed(jsval *vp);
-bool js_obj_thrust_get_drag(jsval *vp);
-bool js_obj_thrust_set_speed(jsval *vp);
-bool js_obj_thrust_set_maxSpeed(jsval *vp);
-bool js_obj_thrust_set_drag(jsval *vp);
+JSBool js_obj_thrust_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_thrust_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_thrust_get_speed(JSValueRef *vp);
+bool js_obj_thrust_get_maxSpeed(JSValueRef *vp);
+bool js_obj_thrust_get_drag(JSValueRef *vp);
+bool js_obj_thrust_set_speed(JSValueRef *vp);
+bool js_obj_thrust_set_maxSpeed(JSValueRef *vp);
+bool js_obj_thrust_set_drag(JSValueRef *vp);
 
 script_js_property	obj_thrust_props[]={
 							{"speed",					js_obj_thrust_get_speed,			js_obj_thrust_set_speed},
@@ -78,12 +78,12 @@ JSObject* script_add_obj_thrust_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_thrust_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_thrust_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_thrust_props));
 }
 
-JSBool js_obj_thrust_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_thrust_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_thrust_props));
 }
@@ -94,33 +94,33 @@ JSBool js_obj_thrust_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_obj_thrust_get_speed(jsval *vp)
+bool js_obj_thrust_get_speed(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_float_to_value(obj->thrust.speed);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_thrust_get_maxSpeed(jsval *vp)
+bool js_obj_thrust_get_maxSpeed(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_thrust_get_drag(jsval *vp)
+bool js_obj_thrust_get_drag(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->thrust.drag);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -129,34 +129,34 @@ bool js_obj_thrust_get_drag(jsval *vp)
       
 ======================================================= */
 
-bool js_obj_thrust_set_speed(jsval *vp)
+bool js_obj_thrust_set_speed(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->thrust.speed=script_value_to_float(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_thrust_set_maxSpeed(jsval *vp)
+bool js_obj_thrust_set_maxSpeed(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->thrust.max_speed=script_value_to_float(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_thrust_set_drag(jsval *vp)
+bool js_obj_thrust_set_drag(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->thrust.drag=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

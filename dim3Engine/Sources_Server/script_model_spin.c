@@ -31,14 +31,14 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_model_spin_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_spin_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_model_spin_get_x(jsval *vp);
-bool js_model_spin_get_y(jsval *vp);
-bool js_model_spin_get_z(jsval *vp);
-bool js_model_spin_set_x(jsval *vp);
-bool js_model_spin_set_y(jsval *vp);
-bool js_model_spin_set_z(jsval *vp);
+JSBool js_model_spin_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_spin_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_model_spin_get_x(JSValueRef *vp);
+bool js_model_spin_get_y(JSValueRef *vp);
+bool js_model_spin_get_z(JSValueRef *vp);
+bool js_model_spin_set_x(JSValueRef *vp);
+bool js_model_spin_set_y(JSValueRef *vp);
+bool js_model_spin_set_z(JSValueRef *vp);
 
 extern js_type			js;
 
@@ -77,12 +77,12 @@ JSObject* script_add_model_spin_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_spin_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_spin_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,model_spin_props));
 }
 
-JSBool js_model_spin_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_spin_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,model_spin_props));
 }
@@ -93,34 +93,34 @@ JSBool js_model_spin_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_model_spin_get_x(jsval *vp)
+bool js_model_spin_get_x(JSValueRef *vp)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	*vp=script_float_to_value(draw->spin.x);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_model_spin_get_y(jsval *vp)
+bool js_model_spin_get_y(JSValueRef *vp)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	*vp=script_float_to_value(draw->spin.y);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_model_spin_get_z(jsval *vp)
+bool js_model_spin_get_z(JSValueRef *vp)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	*vp=script_float_to_value(draw->spin.z);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -129,7 +129,7 @@ bool js_model_spin_get_z(jsval *vp)
       
 ======================================================= */
 
-bool js_model_spin_set_x(jsval *vp)
+bool js_model_spin_set_x(JSValueRef *vp)
 {
 	model_draw		*draw;
 	
@@ -138,10 +138,10 @@ bool js_model_spin_set_x(jsval *vp)
 	draw->spin.x=script_value_to_float(*vp);
 	draw->spin_tick=js.time.current_tick;
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_model_spin_set_y(jsval *vp)
+bool js_model_spin_set_y(JSValueRef *vp)
 {
 	model_draw		*draw;
 	
@@ -150,10 +150,10 @@ bool js_model_spin_set_y(jsval *vp)
 	draw->spin.y=script_value_to_float(*vp);
 	draw->spin_tick=js.time.current_tick;
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_model_spin_set_z(jsval *vp)
+bool js_model_spin_set_z(JSValueRef *vp)
 {
 	model_draw		*draw;
 	
@@ -162,6 +162,6 @@ bool js_model_spin_set_z(jsval *vp)
 	draw->spin.z=script_value_to_float(*vp);
 	draw->spin_tick=js.time.current_tick;
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 

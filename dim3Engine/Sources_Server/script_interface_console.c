@@ -35,10 +35,10 @@ and can be sold or given away.
 extern char				console_input_str[max_console_txt_sz];
 extern js_type			js;
 
-JSBool js_interface_console_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_console_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_console_write_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_console_read_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_interface_console_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_interface_console_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_interface_console_write_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_interface_console_read_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	interface_console_functions[]={
 							{"write",				js_interface_console_write_func,		1},
@@ -74,12 +74,12 @@ JSObject* script_add_interface_console_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_interface_console_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_console_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_interface_console_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_console_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -90,20 +90,20 @@ JSBool js_interface_console_set_property(JSContext *cx,JSObject *j_obj,jsval id,
       
 ======================================================= */
 
-JSBool js_interface_console_write_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_console_write_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			txt[256];
 	
 	script_value_to_string(argv[0],txt,256);
 	console_add(txt);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_interface_console_read_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_console_read_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	*rval=script_string_to_value(console_input_str);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

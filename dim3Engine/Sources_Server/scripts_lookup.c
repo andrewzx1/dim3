@@ -46,7 +46,7 @@ extern js_type			js;
       
 ======================================================= */
 
-obj_type* script_find_obj_from_uid_arg(jsval arg)
+obj_type* script_find_obj_from_uid_arg(JSValueRef arg)
 {
 	int				uid;
 	obj_type		*obj;
@@ -62,7 +62,7 @@ obj_type* script_find_obj_from_uid_arg(jsval arg)
 	return(obj);
 }	
 
-weapon_type* script_find_weapon_from_name_arg(obj_type *obj,jsval arg)
+weapon_type* script_find_weapon_from_name_arg(obj_type *obj,JSValueRef arg)
 {
 	char			name[name_str_len];
 	weapon_type		*weap;
@@ -84,7 +84,7 @@ weapon_type* script_find_weapon_from_name_arg(obj_type *obj,jsval arg)
       
 ======================================================= */
 
-spot_type* script_find_spot_from_idx_arg(jsval arg)
+spot_type* script_find_spot_from_idx_arg(JSValueRef arg)
 {
 	int				idx;
 
@@ -97,7 +97,7 @@ spot_type* script_find_spot_from_idx_arg(jsval arg)
 	return(&map.spots[idx]);
 }
 
-spot_type* script_find_spot_from_name_type(jsval arg_0,jsval arg_1)
+spot_type* script_find_spot_from_name_type(JSValueRef arg_0,JSValueRef arg_1)
 {
 	int				idx;
 	char			name[name_str_len],type[name_str_len];
@@ -127,7 +127,7 @@ spot_type* script_find_network_spot(obj_type *obj)
 	return(&map.spots[idx]);
 }
 
-node_type* script_find_node_from_idx_arg(jsval arg)
+node_type* script_find_node_from_idx_arg(JSValueRef arg)
 {
 	int				idx;
 
@@ -140,7 +140,7 @@ node_type* script_find_node_from_idx_arg(jsval arg)
 	return(&map.nodes[idx]);
 }
 
-map_light_type* script_find_light_from_name(jsval arg)
+map_light_type* script_find_light_from_name(JSValueRef arg)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -162,7 +162,7 @@ map_light_type* script_find_light_from_name(jsval arg)
       
 ======================================================= */
 
-hud_text_type* script_find_text_from_name(jsval arg)
+hud_text_type* script_find_text_from_name(JSValueRef arg)
 {
 	char			name[name_str_len];
 	hud_text_type	*text;
@@ -177,7 +177,7 @@ hud_text_type* script_find_text_from_name(jsval arg)
 	return(text);
 }
 
-hud_bitmap_type* script_find_bitmap_from_name(jsval arg)
+hud_bitmap_type* script_find_bitmap_from_name(JSValueRef arg)
 {
 	char			name[name_str_len];
 	hud_bitmap_type	*bitmap;
@@ -192,7 +192,7 @@ hud_bitmap_type* script_find_bitmap_from_name(jsval arg)
 	return(bitmap);
 }
 
-hud_bar_type* script_find_bar_from_name(jsval arg)
+hud_bar_type* script_find_bar_from_name(JSValueRef arg)
 {
 	char			name[name_str_len];
 	hud_bar_type	*bar;
@@ -213,7 +213,7 @@ hud_bar_type* script_find_bar_from_name(jsval arg)
       
 ======================================================= */
 
-int script_find_group_from_name(jsval arg)
+int script_find_group_from_name(JSValueRef arg)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -234,7 +234,7 @@ int script_find_group_from_name(jsval arg)
       
 ======================================================= */
 
-int script_find_map_movement_from_name(jsval arg)
+int script_find_map_movement_from_name(JSValueRef arg)
 {
 	int				idx;
 	char			name[name_str_len];

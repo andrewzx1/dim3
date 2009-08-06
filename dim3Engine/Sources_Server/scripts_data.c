@@ -73,7 +73,7 @@ int script_find_global(char *name,int script_uid)
       
 ======================================================= */
 
-void script_set_global_by_index(int idx,jsval val)
+void script_set_global_by_index(int idx,JSValueRef val)
 {
 	global_type		*global;
 	
@@ -101,7 +101,7 @@ void script_set_global_by_index(int idx,jsval val)
 	script_value_to_string(val,global->data.d3_string,max_d3_jsval_str_len);
 }
 
-bool script_set_global(char *name,int script_uid,jsval val)
+bool script_set_global(char *name,int script_uid,JSValueRef val)
 {
 	int				idx;
 	
@@ -112,7 +112,7 @@ bool script_set_global(char *name,int script_uid,jsval val)
 	return(TRUE);
 }
 
-jsval script_get_global(char *name,int script_uid)
+JSValueRef script_get_global(char *name,int script_uid)
 {
 	int				idx;
 	global_type		*global;
@@ -142,7 +142,7 @@ jsval script_get_global(char *name,int script_uid)
       
 ======================================================= */
 
-bool script_add_global(char *name,int script_uid,jsval val)
+bool script_add_global(char *name,int script_uid,JSValueRef val)
 {
 	int				idx;
 	

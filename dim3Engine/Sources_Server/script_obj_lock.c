@@ -36,14 +36,14 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_lock_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_lock_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_lock_get_x(jsval *vp);
-bool js_obj_lock_get_y(jsval *vp);
-bool js_obj_lock_get_z(jsval *vp);
-bool js_obj_lock_set_x(jsval *vp);
-bool js_obj_lock_set_y(jsval *vp);
-bool js_obj_lock_set_z(jsval *vp);
+JSBool js_obj_lock_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_lock_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_lock_get_x(JSValueRef *vp);
+bool js_obj_lock_get_y(JSValueRef *vp);
+bool js_obj_lock_get_z(JSValueRef *vp);
+bool js_obj_lock_set_x(JSValueRef *vp);
+bool js_obj_lock_set_y(JSValueRef *vp);
+bool js_obj_lock_set_z(JSValueRef *vp);
 
 script_js_property	obj_lock_props[]={
 							{"x",					js_obj_lock_get_x,					js_obj_lock_set_x},
@@ -80,12 +80,12 @@ JSObject* script_add_obj_lock_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_lock_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_lock_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_lock_props));
 }
 
-JSBool js_obj_lock_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_lock_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_lock_props));
 }
@@ -96,34 +96,34 @@ JSBool js_obj_lock_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-bool js_obj_lock_get_x(jsval *vp)
+bool js_obj_lock_get_x(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->lock.x);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_lock_get_y(jsval *vp)
+bool js_obj_lock_get_y(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->lock.y);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_lock_get_z(jsval *vp)
+bool js_obj_lock_get_z(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->lock.z);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -132,33 +132,33 @@ bool js_obj_lock_get_z(jsval *vp)
       
 ======================================================= */
 
-bool js_obj_lock_set_x(jsval *vp)
+bool js_obj_lock_set_x(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->lock.x=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_lock_set_y(jsval *vp)
+bool js_obj_lock_set_y(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->lock.y=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_lock_set_z(jsval *vp)
+bool js_obj_lock_set_z(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->lock.z=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 

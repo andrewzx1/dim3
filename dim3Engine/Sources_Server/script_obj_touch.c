@@ -35,12 +35,12 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_touch_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_touch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_touch_get_objectId(jsval *vp);
-bool js_obj_touch_get_objectName(jsval *vp);
-bool js_obj_touch_get_objectIsPlayer(jsval *vp);
-bool js_obj_touch_get_stand(jsval *vp);
+JSBool js_obj_touch_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_touch_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_touch_get_objectId(JSValueRef *vp);
+bool js_obj_touch_get_objectName(JSValueRef *vp);
+bool js_obj_touch_get_objectIsPlayer(JSValueRef *vp);
+bool js_obj_touch_get_stand(JSValueRef *vp);
 
 script_js_property	obj_touch_props[]={
 							{"objectId",			js_obj_touch_get_objectId,			NULL},
@@ -78,12 +78,12 @@ JSObject* script_add_obj_touch_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_touch_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_touch_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_touch_props));
 }
 
-JSBool js_obj_touch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_touch_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_touch_props));
 }
@@ -94,17 +94,17 @@ JSBool js_obj_touch_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_touch_get_objectId(jsval *vp)
+bool js_obj_touch_get_objectId(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->touch.obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_touch_get_objectName(jsval *vp)
+bool js_obj_touch_get_objectName(JSValueRef *vp)
 {
 	obj_type		*obj,*touch_obj;
 
@@ -118,27 +118,27 @@ bool js_obj_touch_get_objectName(jsval *vp)
 		*vp=script_string_to_value(touch_obj->name);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_touch_get_objectIsPlayer(jsval *vp)
+bool js_obj_touch_get_objectIsPlayer(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->touch.obj_uid==server.player_obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_touch_get_stand(jsval *vp)
+bool js_obj_touch_get_stand(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->touch.stand);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 
