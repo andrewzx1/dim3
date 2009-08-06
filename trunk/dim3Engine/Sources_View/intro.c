@@ -74,16 +74,11 @@ bitmap_type					intro_bitmap;
       
 ======================================================= */
 
-void intro_popup_hide(hud_intro_button_type *btn,bool hide)
-{
-	if (btn->popup) element_hide(btn->element_id,hide);
-}
-
 void intro_open_add_button(hud_intro_button_type *btn,char *name,int id,bool hide)
 {
 	char		sel_name[256],path[1024],path2[1024];
 
-	if (!hud.intro.button_game.on) return;
+	if (!btn->on) return;
 
 		// get name and position
 
@@ -94,8 +89,6 @@ void intro_open_add_button(hud_intro_button_type *btn,char *name,int id,bool hid
 	element_button_bitmap_add(path,path2,id,btn->x,btn->y,btn->wid,btn->high,element_pos_left,element_pos_top);
 	
 	btn->element_id=id;
-
-	intro_popup_hide(btn,TRUE);
 }
 
 void intro_open(void)
@@ -107,7 +100,6 @@ void intro_open(void)
 		
 	gui_initialize("Bitmaps/Backgrounds","main",FALSE);
 
-	intro_open_add_button(&hud.intro.button_game,"button_game",intro_button_game_id,FALSE);
 	intro_open_add_button(&hud.intro.button_game_new,"button_game_new",intro_button_game_new_id,TRUE);
 	intro_open_add_button(&hud.intro.button_game_load,"button_game_load",intro_button_game_load_id,TRUE);
 	intro_open_add_button(&hud.intro.button_game_setup,"button_game_setup",intro_button_game_setup_id,TRUE);
@@ -115,12 +107,9 @@ void intro_open(void)
 	intro_open_add_button(&hud.intro.button_game_new_medium,"button_game_new_medium",intro_button_game_new_medium_id,TRUE);
 	intro_open_add_button(&hud.intro.button_game_new_hard,"button_game_new_hard",intro_button_game_new_hard_id,TRUE);
 	
-	intro_open_add_button(&hud.intro.button_multiplayer,"button_multiplayer",intro_button_multiplayer_id,FALSE);
 	intro_open_add_button(&hud.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id,TRUE);
 	intro_open_add_button(&hud.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id,TRUE);
 	intro_open_add_button(&hud.intro.button_multiplayer_setup,"button_multiplayer_setup",intro_button_multiplayer_setup_id,TRUE);
-	intro_open_add_button(&hud.intro.button_multiplayer_join_lan,"button_multiplayer_join_lan",intro_button_multiplayer_join_lan_id,TRUE);
-	intro_open_add_button(&hud.intro.button_multiplayer_join_wan,"button_multiplayer_join_wan",intro_button_multiplayer_join_wan_id,TRUE);
 
 	intro_open_add_button(&hud.intro.button_credit,"button_credit",intro_button_credit_id,FALSE);
 	intro_open_add_button(&hud.intro.button_quit,"button_quit",intro_button_quit_id,FALSE);
@@ -165,153 +154,6 @@ void intro_close(bool in_game,bool stop_music)
 	gui_shutdown();
 	
 	server.state=gs_running;
-}
-
-/* =======================================================
-
-      Intro Show Hide Buttons
-      
-======================================================= */
-
-void intro_show_buttons(void)
-{
-	int			id;
-
-		// hide/show proper buttons
-
-	id=element_get_selected();
-
-	switch (id) {
-
-		case intro_button_game_id:
-			intro_popup_hide(&hud.intro.button_game_new,FALSE);
-			intro_popup_hide(&hud.intro.button_game_load,FALSE);
-			intro_popup_hide(&hud.intro.button_game_setup,FALSE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,TRUE);
-			break;
-	
-		case intro_button_game_new_id:
-			intro_popup_hide(&hud.intro.button_game_new,FALSE);
-			intro_popup_hide(&hud.intro.button_game_load,FALSE);
-			intro_popup_hide(&hud.intro.button_game_setup,FALSE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,FALSE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,FALSE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,TRUE);
-			break;
-
-		case intro_button_game_new_easy_id:
-		case intro_button_game_new_medium_id:
-		case intro_button_game_new_hard_id:
-			intro_popup_hide(&hud.intro.button_game_new,FALSE);
-			intro_popup_hide(&hud.intro.button_game_load,TRUE);
-			intro_popup_hide(&hud.intro.button_game_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,FALSE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,FALSE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,TRUE);
-			break;
-
-		case intro_button_game_load_id:
-			intro_popup_hide(&hud.intro.button_game_new,FALSE);
-			intro_popup_hide(&hud.intro.button_game_load,FALSE);
-			intro_popup_hide(&hud.intro.button_game_setup,FALSE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,TRUE);
-			break;
-
-		case intro_button_game_setup_id:
-			intro_popup_hide(&hud.intro.button_game_new,FALSE);
-			intro_popup_hide(&hud.intro.button_game_load,FALSE);
-			intro_popup_hide(&hud.intro.button_game_setup,FALSE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,TRUE);
-			break;
-
-		case intro_button_multiplayer_id:
-		case intro_button_multiplayer_host_id:
-		case intro_button_multiplayer_setup_id:
-			intro_popup_hide(&hud.intro.button_game_new,TRUE);
-			intro_popup_hide(&hud.intro.button_game_load,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,TRUE);
-			break;
-			
-		case intro_button_multiplayer_join_id:
-			intro_popup_hide(&hud.intro.button_game_new,TRUE);
-			intro_popup_hide(&hud.intro.button_game_load,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,FALSE);
-			break;
-
-		case intro_button_multiplayer_join_lan_id:
-		case intro_button_multiplayer_join_wan_id:
-			intro_popup_hide(&hud.intro.button_game_new,TRUE);
-			intro_popup_hide(&hud.intro.button_game_load,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,FALSE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,FALSE);
-			break;
-
-		default:
-			intro_popup_hide(&hud.intro.button_game_new,TRUE);
-			intro_popup_hide(&hud.intro.button_game_load,TRUE);
-			intro_popup_hide(&hud.intro.button_game_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_easy,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_medium,TRUE);
-			intro_popup_hide(&hud.intro.button_game_new_hard,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_host,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_setup,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_lan,TRUE);
-			intro_popup_hide(&hud.intro.button_multiplayer_join_wan,TRUE);
-			break;
-
-	}
 }
 
 /* =======================================================
@@ -430,7 +272,6 @@ void intro_click(void)
 
 void intro_run(void)
 {
-	intro_show_buttons();
 	gui_draw(1.0f,TRUE);
 	intro_click();
 }
