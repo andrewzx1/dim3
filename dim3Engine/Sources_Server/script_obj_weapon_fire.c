@@ -89,7 +89,7 @@ JSBool js_obj_weapon_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-JSBool js_obj_weapon_fire_get_name(jsval *vp)
+bool js_obj_weapon_fire_get_name(jsval *vp)
 {
 	obj_type		*obj;
 
@@ -99,7 +99,7 @@ JSBool js_obj_weapon_fire_get_name(jsval *vp)
 	return(JS_TRUE);
 }
 
-JSBool js_obj_weapon_fire_get_method(jsval *vp)
+bool js_obj_weapon_fire_get_method(jsval *vp)
 {
 	obj_type		*obj;
 

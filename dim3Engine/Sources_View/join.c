@@ -35,11 +35,16 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "video.h"
 
-#define join_button_join_id				0
-#define join_button_cancel_id			1
-#define join_button_rescan_id			2
-#define join_table_id					3
-#define join_status_id					4
+#define join_pane_lan					0
+#define join_pane_internet				1
+
+#define join_tab_id						0
+
+#define join_button_join_id				1
+#define join_button_cancel_id			2
+#define join_button_rescan_id			3
+#define join_table_id					4
+#define join_status_id					5
 
 extern void intro_open(void);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
@@ -53,8 +58,9 @@ extern network_setup_type	net_setup;
 
 extern int					client_timeout_values[];
 
+int							join_tab_value;
 char						*join_table_data;
-bool						join_local,join_thread_quit;
+bool						join_thread_started,join_thread_quit;
 SDL_Thread					*join_thread,*join_thread_accept;
 SDL_mutex					*join_thread_lock;
 
@@ -316,7 +322,7 @@ int join_ping_thread_network(void *arg)
       
 ======================================================= */
 
-void join_ping_thread_start(bool local)
+void join_ping_thread_start(void)
 {
 		// empty join list
 		
@@ -334,8 +340,9 @@ void join_ping_thread_start(bool local)
 		// start pinging hosts
 		
 	join_list_done=FALSE;
+	join_thread_started=TRUE;
 	
-	if (local) {
+	if (element_get_value(join_tab_id)==join_pane_lan) {
 		join_thread=SDL_CreateThread(join_ping_thread_local,NULL);
 	}
 	else {
@@ -351,6 +358,8 @@ void join_ping_thread_idle(void)
 
 void join_ping_thread_end(void)
 {
+	if (!join_thread_started) return;
+	
 	join_thread_quit=TRUE;
 	
 	SDL_WaitThread(join_thread,NULL);
@@ -366,38 +375,43 @@ void join_ping_thread_end(void)
 
 void join_open(bool local)
 {
-	int					x,y,wid,high,padding;
-	element_column_type	cols[4];
-	
-	join_local=local;
+	int						x,y,yadd,wid,high,padding,
+							tab_list_wid,tab_pane_high;
+	char					tab_list[][32]={"LAN","Internet"};
+	element_column_type		cols[4];
 
 		// setup gui
 		
 	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
 	
+		// start with first tab
+		
+	join_tab_value=0;
+	join_thread_started=FALSE;
+
 		// controls
-							
+
 	element_clear();
 	
-		// title
+		// tabs
 		
-	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.09f);
+	padding=element_get_padding();
 	
-	if (local) {
-		element_text_add("Join Local Multiplayer Game",-1,x,y,hud.font.text_size_large,tx_left,FALSE,FALSE);
-	}
-	else {
-		element_text_add("Join Internet Multiplayer Game",-1,x,y,hud.font.text_size_large,tx_left,FALSE,FALSE);
-	}
+	wid=hud.scale_x;
+	yadd=(int)(((float)hud.scale_y)*0.015f);
+	high=(int)(((float)hud.scale_y)*0.065f);
+	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
+	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
 	
+	element_tab_add((char*)tab_list,join_tab_value,join_tab_id,2,0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
+
 		// hosts table
 		
 	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.12f);
+	y=(int)(((float)hud.scale_y)*0.15f);
 
 	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.88f)-y;
+	high=(int)(((float)hud.scale_y)*0.83f)-y;
 
 	strcpy(cols[0].name,"Name");
 	cols[0].percent_size=0.45f;
@@ -445,7 +459,7 @@ void join_open(bool local)
 
 		// start ping thread
 
-	join_ping_thread_start(local);
+	join_ping_thread_start();
 }
 
 void join_close(void)
@@ -599,6 +613,12 @@ void join_click(void)
 		// run selection
 
 	switch (id) {
+			
+		case join_tab_id:
+			element_enable(join_button_rescan_id,FALSE);
+			join_ping_thread_end();
+			join_ping_thread_start();
+			return;
 	
 		case join_button_join_id:
 			join_game();
@@ -612,7 +632,7 @@ void join_click(void)
 		case join_button_rescan_id:
 			element_enable(join_button_rescan_id,FALSE);
 			join_ping_thread_end();
-			join_ping_thread_start(join_local);
+			join_ping_thread_start();
 			break;
 
 		case join_table_id:

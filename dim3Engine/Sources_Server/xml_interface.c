@@ -174,12 +174,6 @@ void default_settings_interface(void)
 	
 		// game buttons
 		
-	hud.intro.button_game.x=0;
-	hud.intro.button_game.y=0;
-	hud.intro.button_game.wid=128;
-	hud.intro.button_game.high=32;
-	hud.intro.button_game.on=TRUE;
-	
 	hud.intro.button_game_new.x=128;
 	hud.intro.button_game_new.y=0;
 	hud.intro.button_game_new.wid=128;
@@ -218,12 +212,6 @@ void default_settings_interface(void)
 
 		// multiplayer buttons
 
-	hud.intro.button_multiplayer.x=0;
-	hud.intro.button_multiplayer.y=64;
-	hud.intro.button_multiplayer.wid=128;
-	hud.intro.button_multiplayer.high=32;
-	hud.intro.button_multiplayer.on=TRUE;
-
 	hud.intro.button_multiplayer_host.x=128;
 	hud.intro.button_multiplayer_host.y=64;
 	hud.intro.button_multiplayer_host.wid=128;
@@ -242,18 +230,6 @@ void default_settings_interface(void)
 	hud.intro.button_multiplayer_setup.high=32;
 	hud.intro.button_multiplayer_setup.on=TRUE;
 	
-	hud.intro.button_multiplayer_join_lan.x=128;
-	hud.intro.button_multiplayer_join_lan.y=160;
-	hud.intro.button_multiplayer_join_lan.wid=128;
-	hud.intro.button_multiplayer_join_lan.high=32;
-	hud.intro.button_multiplayer_join_lan.on=TRUE;
-	
-	hud.intro.button_multiplayer_join_wan.x=128;
-	hud.intro.button_multiplayer_join_wan.y=192;
-	hud.intro.button_multiplayer_join_wan.wid=128;
-	hud.intro.button_multiplayer_join_wan.high=32;
-	hud.intro.button_multiplayer_join_wan.on=TRUE;
-
 		// credit, setup, quit buttons
 
 	hud.intro.button_credit.x=0;
@@ -757,7 +733,6 @@ void read_settings_interface_button(int tag,hud_intro_button_type *btn)
 	btn->high=xml_get_attribute_int_default(tag,"height",-1);
 	btn->on=xml_get_attribute_boolean(tag,"on");
 	btn->on=xml_get_attribute_boolean(tag,"on");
-	btn->popup=xml_get_attribute_boolean(tag,"popup");
 }
 
 /* =======================================================
@@ -942,19 +917,15 @@ void read_settings_interface(void)
 		
 	button_tag=xml_findfirstchild("Buttons",interface_head_tag);
 	if (button_tag!=-1) {
-		read_settings_interface_button(xml_findfirstchild("Game",button_tag),&hud.intro.button_game);
 		read_settings_interface_button(xml_findfirstchild("Game_New",button_tag),&hud.intro.button_game_new);
 		read_settings_interface_button(xml_findfirstchild("Game_Load",button_tag),&hud.intro.button_game_load);
 		read_settings_interface_button(xml_findfirstchild("Game_Setup",button_tag),&hud.intro.button_game_setup);
 		read_settings_interface_button(xml_findfirstchild("Game_New_Easy",button_tag),&hud.intro.button_game_new_easy);
 		read_settings_interface_button(xml_findfirstchild("Game_New_Medium",button_tag),&hud.intro.button_game_new_medium);
 		read_settings_interface_button(xml_findfirstchild("Game_New_Hard",button_tag),&hud.intro.button_game_new_hard);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer",button_tag),&hud.intro.button_multiplayer);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Host",button_tag),&hud.intro.button_multiplayer_host);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join",button_tag),&hud.intro.button_multiplayer_join);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&hud.intro.button_multiplayer_setup);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join_Lan",button_tag),&hud.intro.button_multiplayer_join_lan);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join_Wan",button_tag),&hud.intro.button_multiplayer_join_wan);
 		read_settings_interface_button(xml_findfirstchild("Credit",button_tag),&hud.intro.button_credit);
 		read_settings_interface_button(xml_findfirstchild("Quit",button_tag),&hud.intro.button_quit);
 	}

@@ -380,16 +380,13 @@ typedef struct		{
 
 typedef struct		{
 						int						x,y,wid,high,element_id;
-						bool					on,popup;
+						bool					on;
 					} hud_intro_button_type;
 					
 typedef struct		{
-						hud_intro_button_type	button_game,
-												button_game_new,button_game_load,button_game_setup,
+						hud_intro_button_type	button_game_new,button_game_load,button_game_setup,
 												button_game_new_easy,button_game_new_medium,button_game_new_hard,
-												button_multiplayer,
 												button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
-												button_multiplayer_join_lan,button_multiplayer_join_wan,
 												button_credit,button_quit;
 					} hud_intro_type;
 
