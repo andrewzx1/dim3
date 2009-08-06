@@ -34,12 +34,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_weap_setting_get_name(jsval *vp);
-bool js_weap_setting_get_failInLiquid(jsval *vp);
-bool js_weap_setting_get_parentObjectId(jsval *vp);
-bool js_weap_setting_set_failInLiquid(jsval *vp);
+JSBool js_weap_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_weap_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_weap_setting_get_name(JSValueRef *vp);
+bool js_weap_setting_get_failInLiquid(JSValueRef *vp);
+bool js_weap_setting_get_parentObjectId(JSValueRef *vp);
+bool js_weap_setting_set_failInLiquid(JSValueRef *vp);
 
 script_js_property	weap_setting_props[]={
 							{"name",				js_weap_setting_get_name,				NULL},
@@ -76,12 +76,12 @@ JSObject* script_add_weap_setting_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,weap_setting_props));
 }
 
-JSBool js_weap_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,weap_setting_props));
 }
@@ -92,34 +92,34 @@ JSBool js_weap_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_weap_setting_get_name(jsval *vp)
+bool js_weap_setting_get_name(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_string_to_value(weap->name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_setting_get_failInLiquid(jsval *vp)
+bool js_weap_setting_get_failInLiquid(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(weap->fail_in_liquid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_setting_get_parentObjectId(jsval *vp)
+bool js_weap_setting_get_parentObjectId(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(weap->obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -128,14 +128,14 @@ bool js_weap_setting_get_parentObjectId(jsval *vp)
       
 ======================================================= */
 
-bool js_weap_setting_set_failInLiquid(jsval *vp)
+bool js_weap_setting_set_failInLiquid(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->fail_in_liquid=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

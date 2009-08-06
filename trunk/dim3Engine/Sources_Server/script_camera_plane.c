@@ -35,28 +35,28 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
-JSBool js_camera_plane_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_plane_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_camera_plane_get_projectionType(jsval *vp);
-bool js_camera_plane_get_fov(jsval *vp);
-bool js_camera_plane_get_aspectRatio(jsval *vp);
-bool js_camera_plane_get_left(jsval *vp);
-bool js_camera_plane_get_right(jsval *vp);
-bool js_camera_plane_get_top(jsval *vp);
-bool js_camera_plane_get_bottom(jsval *vp);
-bool js_camera_plane_get_near(jsval *vp);
-bool js_camera_plane_get_far(jsval *vp);
-bool js_camera_plane_get_nearOffset(jsval *vp);
-bool js_camera_plane_set_projectionType(jsval *vp);
-bool js_camera_plane_set_fov(jsval *vp);
-bool js_camera_plane_set_aspectRatio(jsval *vp);
-bool js_camera_plane_set_left(jsval *vp);
-bool js_camera_plane_set_right(jsval *vp);
-bool js_camera_plane_set_top(jsval *vp);
-bool js_camera_plane_set_bottom(jsval *vp);
-bool js_camera_plane_set_near(jsval *vp);
-bool js_camera_plane_set_far(jsval *vp);
-bool js_camera_plane_set_nearOffset(jsval *vp);
+JSBool js_camera_plane_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_camera_plane_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_camera_plane_get_projectionType(JSValueRef *vp);
+bool js_camera_plane_get_fov(JSValueRef *vp);
+bool js_camera_plane_get_aspectRatio(JSValueRef *vp);
+bool js_camera_plane_get_left(JSValueRef *vp);
+bool js_camera_plane_get_right(JSValueRef *vp);
+bool js_camera_plane_get_top(JSValueRef *vp);
+bool js_camera_plane_get_bottom(JSValueRef *vp);
+bool js_camera_plane_get_near(JSValueRef *vp);
+bool js_camera_plane_get_far(JSValueRef *vp);
+bool js_camera_plane_get_nearOffset(JSValueRef *vp);
+bool js_camera_plane_set_projectionType(JSValueRef *vp);
+bool js_camera_plane_set_fov(JSValueRef *vp);
+bool js_camera_plane_set_aspectRatio(JSValueRef *vp);
+bool js_camera_plane_set_left(JSValueRef *vp);
+bool js_camera_plane_set_right(JSValueRef *vp);
+bool js_camera_plane_set_top(JSValueRef *vp);
+bool js_camera_plane_set_bottom(JSValueRef *vp);
+bool js_camera_plane_set_near(JSValueRef *vp);
+bool js_camera_plane_set_far(JSValueRef *vp);
+bool js_camera_plane_set_nearOffset(JSValueRef *vp);
 
 script_js_property	camera_plane_props[]={
 							{"projectionType",		js_camera_plane_get_projectionType,		js_camera_plane_set_projectionType},
@@ -100,12 +100,12 @@ JSObject* script_add_camera_plane_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_plane_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_plane_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,camera_plane_props));
 }
 
-JSBool js_camera_plane_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_plane_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,camera_plane_props));
 }
@@ -116,64 +116,64 @@ JSBool js_camera_plane_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-bool js_camera_plane_get_projectionType(jsval *vp)
+bool js_camera_plane_get_projectionType(JSValueRef *vp)
 {
 	*vp=script_int_to_value(camera.plane.type+sd_projection_type_fov);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_fov(jsval *vp)
+bool js_camera_plane_get_fov(JSValueRef *vp)
 {
 	*vp=script_float_to_value(camera.plane.fov);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_aspectRatio(jsval *vp)
+bool js_camera_plane_get_aspectRatio(JSValueRef *vp)
 {
 	*vp=script_float_to_value(camera.plane.aspect_ratio);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_left(jsval *vp)
+bool js_camera_plane_get_left(JSValueRef *vp)
 {
 	*vp=script_int_to_value(camera.plane.lft);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_right(jsval *vp)
+bool js_camera_plane_get_right(JSValueRef *vp)
 {
 	*vp=script_int_to_value(camera.plane.rgt);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_top(jsval *vp)
+bool js_camera_plane_get_top(JSValueRef *vp)
 {
 	*vp=script_int_to_value(camera.plane.top);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_bottom(jsval *vp)
+bool js_camera_plane_get_bottom(JSValueRef *vp)
 {
 	*vp=script_int_to_value(camera.plane.bot);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_near(jsval *vp)
+bool js_camera_plane_get_near(JSValueRef *vp)
 {
 	*vp=script_int_to_value(camera.plane.near_z);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_far(jsval *vp)
+bool js_camera_plane_get_far(JSValueRef *vp)
 {
 	*vp=script_int_to_value(camera.plane.far_z);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_get_nearOffset(jsval *vp)
+bool js_camera_plane_get_nearOffset(JSValueRef *vp)
 {
 	*vp=script_int_to_value(camera.plane.near_z_offset);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -182,62 +182,62 @@ bool js_camera_plane_get_nearOffset(jsval *vp)
       
 ======================================================= */
 
-bool js_camera_plane_set_projectionType(jsval *vp)
+bool js_camera_plane_set_projectionType(JSValueRef *vp)
 {
 	camera.plane.type=script_value_to_int(*vp)-sd_projection_type_fov;
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_fov(jsval *vp)
+bool js_camera_plane_set_fov(JSValueRef *vp)
 {
 	camera.plane.fov=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_aspectRatio(jsval *vp)
+bool js_camera_plane_set_aspectRatio(JSValueRef *vp)
 {
 	camera.plane.aspect_ratio=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_left(jsval *vp)
+bool js_camera_plane_set_left(JSValueRef *vp)
 {
 	camera.plane.lft=script_value_to_int(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_right(jsval *vp)
+bool js_camera_plane_set_right(JSValueRef *vp)
 {
 	camera.plane.rgt=script_value_to_int(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_top(jsval *vp)
+bool js_camera_plane_set_top(JSValueRef *vp)
 {
 	camera.plane.top=script_value_to_int(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_bottom(jsval *vp)
+bool js_camera_plane_set_bottom(JSValueRef *vp)
 {
 	camera.plane.bot=script_value_to_int(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_near(jsval *vp)
+bool js_camera_plane_set_near(JSValueRef *vp)
 {
 	camera.plane.near_z=script_value_to_int(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_far(jsval *vp)
+bool js_camera_plane_set_far(JSValueRef *vp)
 {
 	camera.plane.far_z=script_value_to_int(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_plane_set_nearOffset(jsval *vp)
+bool js_camera_plane_set_nearOffset(JSValueRef *vp)
 {
 	camera.plane.near_z_offset=script_value_to_int(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }

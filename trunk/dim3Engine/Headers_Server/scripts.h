@@ -40,10 +40,10 @@ extern int scripts_find_uid(int uid);
 extern void script_add_roots(script_type *script);
 extern void script_remove_roots(script_type *script);
 extern void scripts_clean_up_roots(void);
-extern JSBool scripts_gc_reporter(JSContext *cx,JSGCStatus status);
+extern JSBool scripts_gc_reporter(JSContextRef cx,JSGCStatus status);
 
 extern void scripts_clear_last_error(void);
-extern void scripts_catch_errors(JSContext *cx,const char *message,JSErrorReport *report);
+extern void scripts_catch_errors(JSContextRef cx,const char *message,JSErrorReport *report);
 extern void scripts_get_last_error(char *err_str);
 
 extern void scripts_clear_attach_data(attach_type *attach);
@@ -67,37 +67,37 @@ extern void script_free_file(script_type *script);
 // conversions
 //
 
-extern jsval script_null_to_value(void);
-extern bool script_is_value_null(jsval val);
-extern int script_value_to_int(jsval val);
-extern jsval script_int_to_value(int i);
-extern float script_value_to_float(jsval val);
-extern jsval script_float_to_value(float f);
-extern bool script_value_to_bool(jsval val);
-extern jsval script_bool_to_value(bool b);
-extern void script_value_to_string(jsval val,char *str,int len);
-extern jsval script_string_to_value(char *str);
-extern jsval script_int_array_to_value(int cnt,int *values);
-extern jsval script_angle_to_value(float x,float y,float z);
-extern jsval script_point_to_value(int x,int y,int z);
-extern jsval script_color_to_value(d3col *col);
+extern JSValueRef script_null_to_value(void);
+extern bool script_is_value_null(JSValueRef val);
+extern int script_value_to_int(JSValueRef val);
+extern JSValueRef script_int_to_value(int i);
+extern float script_value_to_float(JSValueRef val);
+extern JSValueRef script_float_to_value(float f);
+extern bool script_value_to_bool(JSValueRef val);
+extern JSValueRef script_bool_to_value(bool b);
+extern void script_value_to_string(JSValueRef val,char *str,int len);
+extern JSValueRef script_string_to_value(char *str);
+extern JSValueRef script_int_array_to_value(int cnt,int *values);
+extern JSValueRef script_angle_to_value(float x,float y,float z);
+extern JSValueRef script_point_to_value(int x,int y,int z);
+extern JSValueRef script_color_to_value(d3col *col);
 
 //
 // lookups
 //
 
-extern obj_type* script_find_obj_from_uid_arg(jsval arg);
-extern weapon_type* script_find_weapon_from_name_arg(obj_type *obj,jsval arg);
-extern spot_type* script_find_spot_from_idx_arg(jsval arg);
-extern spot_type* script_find_spot_from_name_type(jsval arg_0,jsval arg_1);
+extern obj_type* script_find_obj_from_uid_arg(JSValueRef arg);
+extern weapon_type* script_find_weapon_from_name_arg(obj_type *obj,JSValueRef arg);
+extern spot_type* script_find_spot_from_idx_arg(JSValueRef arg);
+extern spot_type* script_find_spot_from_name_type(JSValueRef arg_0,JSValueRef arg_1);
 extern spot_type* script_find_network_spot(obj_type *obj);
-extern node_type* script_find_node_from_idx_arg(jsval arg);
-extern map_light_type* script_find_light_from_name(jsval arg);
-extern hud_text_type* script_find_text_from_name(jsval arg);
-extern hud_bitmap_type* script_find_bitmap_from_name(jsval arg);
-extern hud_bar_type* script_find_bar_from_name(jsval arg);
-extern int script_find_group_from_name(jsval arg);
-extern int script_find_map_movement_from_name(jsval arg);
+extern node_type* script_find_node_from_idx_arg(JSValueRef arg);
+extern map_light_type* script_find_light_from_name(JSValueRef arg);
+extern hud_text_type* script_find_text_from_name(JSValueRef arg);
+extern hud_bitmap_type* script_find_bitmap_from_name(JSValueRef arg);
+extern hud_bar_type* script_find_bar_from_name(JSValueRef arg);
+extern int script_find_group_from_name(JSValueRef arg);
+extern int script_find_map_movement_from_name(JSValueRef arg);
 extern int script_get_attached_object_uid(void);
 extern model_draw* script_find_model_draw(void);
 
@@ -542,7 +542,7 @@ extern bool scripts_post_event(attach_type *attach,int main_event,int sub_event,
 extern void scripts_post_event_console(attach_type *attach,int main_event,int sub_event,int id);
 extern bool scripts_chain(attach_type *attach,char *func_name,char *err_str);
 extern void scripts_chain_console(attach_type *attach,char *func_name);
-extern bool scripts_direct_call(attach_type *attach,char *func_name,int arg_count,jsval *args,jsval *rval);
+extern bool scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,JSValueRef *rval);
 
 extern void script_initialize_classes(void);
 extern void script_release_classes(void);
@@ -551,15 +551,15 @@ extern void script_free_class(JSClassRef cls);
 extern bool script_add_global_object(script_type *script,char *err_str);
 extern JSObject* script_create_main_object(attach_type *attach);
 extern JSObject* script_create_child_object(JSObject *parent_obj,JSClassRef cls,char *name,script_js_property *props,script_js_function *funcs);
-extern JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props);
-extern JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props);
+extern JSBool script_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp,script_js_property *props);
+extern JSBool script_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp,script_js_property *props);
 
 extern void script_globals_initialize(void);
 extern int script_find_global(char *name,int script_uid);
-extern void script_set_global_by_index(int idx,jsval val);
-extern bool script_set_global(char *name,int script_uid,jsval val);
-extern jsval script_get_global(char *name,int script_uid);
-extern bool script_add_global(char *name,int script_uid,jsval val);
+extern void script_set_global_by_index(int idx,JSValueRef val);
+extern bool script_set_global(char *name,int script_uid,JSValueRef val);
+extern JSValueRef script_get_global(char *name,int script_uid);
+extern bool script_add_global(char *name,int script_uid,JSValueRef val);
 extern void script_delete_global(char *name,int script_uid);
 
 extern void script_state_save(void);

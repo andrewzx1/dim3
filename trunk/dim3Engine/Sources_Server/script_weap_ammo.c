@@ -35,28 +35,28 @@ and can be sold or given away.
 
 extern js_type				js;
 
-JSBool js_weap_ammo_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_ammo_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_weap_ammo_get_ammo(jsval *vp);
-bool js_weap_ammo_get_clip(jsval *vp);
-bool js_weap_ammo_get_count(jsval *vp);
-bool js_weap_ammo_get_initCount(jsval *vp);
-bool js_weap_ammo_get_maxCount(jsval *vp);
-bool js_weap_ammo_get_clipCount(jsval *vp);
-bool js_weap_ammo_get_initClipCount(jsval *vp);
-bool js_weap_ammo_get_maxClipCount(jsval *vp);
-bool js_weap_ammo_get_lastReloadTick(jsval *vp);
-bool js_weap_ammo_set_ammo(jsval *vp);
-bool js_weap_ammo_set_clip(jsval *vp);
-bool js_weap_ammo_set_count(jsval *vp);
-bool js_weap_ammo_set_initCount(jsval *vp);
-bool js_weap_ammo_set_maxCount(jsval *vp);
-bool js_weap_ammo_set_clipCount(jsval *vp);
-bool js_weap_ammo_set_initClipCount(jsval *vp);
-bool js_weap_ammo_set_maxClipCount(jsval *vp);
-JSBool js_weap_ammo_use_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_weap_ammo_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_weap_ammo_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_weap_ammo_get_ammo(JSValueRef *vp);
+bool js_weap_ammo_get_clip(JSValueRef *vp);
+bool js_weap_ammo_get_count(JSValueRef *vp);
+bool js_weap_ammo_get_initCount(JSValueRef *vp);
+bool js_weap_ammo_get_maxCount(JSValueRef *vp);
+bool js_weap_ammo_get_clipCount(JSValueRef *vp);
+bool js_weap_ammo_get_initClipCount(JSValueRef *vp);
+bool js_weap_ammo_get_maxClipCount(JSValueRef *vp);
+bool js_weap_ammo_get_lastReloadTick(JSValueRef *vp);
+bool js_weap_ammo_set_ammo(JSValueRef *vp);
+bool js_weap_ammo_set_clip(JSValueRef *vp);
+bool js_weap_ammo_set_count(JSValueRef *vp);
+bool js_weap_ammo_set_initCount(JSValueRef *vp);
+bool js_weap_ammo_set_maxCount(JSValueRef *vp);
+bool js_weap_ammo_set_clipCount(JSValueRef *vp);
+bool js_weap_ammo_set_initClipCount(JSValueRef *vp);
+bool js_weap_ammo_set_maxClipCount(JSValueRef *vp);
+JSBool js_weap_ammo_use_ammo_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_ammo_add_ammo_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_ammo_change_clip_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	weap_ammo_props[]={
 							{"ammo",				js_weap_ammo_get_ammo,					js_weap_ammo_set_ammo},
@@ -105,12 +105,12 @@ JSObject* script_add_weap_ammo_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_ammo_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_ammo_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,weap_ammo_props));
 }
 
-JSBool js_weap_ammo_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_ammo_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,weap_ammo_props));
 }
@@ -121,7 +121,7 @@ JSBool js_weap_ammo_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_weap_ammo_get_ammo(jsval *vp)
+bool js_weap_ammo_get_ammo(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -131,10 +131,10 @@ bool js_weap_ammo_get_ammo(jsval *vp)
 	
 	*vp=script_bool_to_value(ammo->use_ammo);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_get_clip(jsval *vp)
+bool js_weap_ammo_get_clip(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -144,10 +144,10 @@ bool js_weap_ammo_get_clip(jsval *vp)
 
 	*vp=script_bool_to_value(ammo->use_clips);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_get_count(jsval *vp)
+bool js_weap_ammo_get_count(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -167,10 +167,10 @@ bool js_weap_ammo_get_count(jsval *vp)
 		*vp=script_int_to_value(0);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_get_initCount(jsval *vp)
+bool js_weap_ammo_get_initCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -185,10 +185,10 @@ bool js_weap_ammo_get_initCount(jsval *vp)
 		*vp=script_int_to_value(0);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_get_maxCount(jsval *vp)
+bool js_weap_ammo_get_maxCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -203,10 +203,10 @@ bool js_weap_ammo_get_maxCount(jsval *vp)
 		*vp=script_int_to_value(0);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_get_clipCount(jsval *vp)
+bool js_weap_ammo_get_clipCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -221,10 +221,10 @@ bool js_weap_ammo_get_clipCount(jsval *vp)
 		*vp=script_int_to_value(0);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_get_initClipCount(jsval *vp)
+bool js_weap_ammo_get_initClipCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -238,10 +238,10 @@ bool js_weap_ammo_get_initClipCount(jsval *vp)
 		*vp=script_int_to_value(0);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_get_maxClipCount(jsval *vp)
+bool js_weap_ammo_get_maxClipCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -256,10 +256,10 @@ bool js_weap_ammo_get_maxClipCount(jsval *vp)
 		*vp=script_int_to_value(0);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_get_lastReloadTick(jsval *vp)
+bool js_weap_ammo_get_lastReloadTick(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -274,7 +274,7 @@ bool js_weap_ammo_get_lastReloadTick(jsval *vp)
 		*vp=script_int_to_value(ammo->last_reload_tick);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -283,7 +283,7 @@ bool js_weap_ammo_get_lastReloadTick(jsval *vp)
       
 ======================================================= */
 
-bool js_weap_ammo_set_ammo(jsval *vp)
+bool js_weap_ammo_set_ammo(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -293,10 +293,10 @@ bool js_weap_ammo_set_ammo(jsval *vp)
 	
 	ammo->use_ammo=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_set_clip(jsval *vp)
+bool js_weap_ammo_set_clip(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -306,10 +306,10 @@ bool js_weap_ammo_set_clip(jsval *vp)
 
 	ammo->use_clips=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_set_count(jsval *vp)
+bool js_weap_ammo_set_count(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -324,10 +324,10 @@ bool js_weap_ammo_set_count(jsval *vp)
 		ammo->count=script_value_to_int(*vp);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_set_initCount(jsval *vp)
+bool js_weap_ammo_set_initCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -337,10 +337,10 @@ bool js_weap_ammo_set_initCount(jsval *vp)
 
 	ammo->init_count=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_set_maxCount(jsval *vp)
+bool js_weap_ammo_set_maxCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -350,10 +350,10 @@ bool js_weap_ammo_set_maxCount(jsval *vp)
 
 	ammo->max_count=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_set_clipCount(jsval *vp)
+bool js_weap_ammo_set_clipCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -363,10 +363,10 @@ bool js_weap_ammo_set_clipCount(jsval *vp)
 
 	ammo->clip_count=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_set_initClipCount(jsval *vp)
+bool js_weap_ammo_set_initClipCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -376,10 +376,10 @@ bool js_weap_ammo_set_initClipCount(jsval *vp)
 
 	ammo->init_clip_count=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_ammo_set_maxClipCount(jsval *vp)
+bool js_weap_ammo_set_maxClipCount(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -389,7 +389,7 @@ bool js_weap_ammo_set_maxClipCount(jsval *vp)
 	
 	ammo->max_clip_count=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -398,7 +398,7 @@ bool js_weap_ammo_set_maxClipCount(jsval *vp)
       
 ======================================================= */
 
-JSBool js_weap_ammo_use_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_ammo_use_ammo_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				count;
 	weapon_type		*weap;
@@ -424,10 +424,10 @@ JSBool js_weap_ammo_use_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 		}
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_ammo_add_ammo_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				add;
 	weapon_type		*weap;
@@ -459,10 +459,10 @@ JSBool js_weap_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 		}
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_ammo_change_clip_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 	weapon_type		*weap;
@@ -477,7 +477,7 @@ JSBool js_weap_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 		
 	if ((!ammo->use_clips) || (ammo->clip_count==0)) {
 		*rval=script_bool_to_value(FALSE);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 	
 		// change the clip
@@ -498,7 +498,7 @@ JSBool js_weap_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_clip_change,0);
 	
 	*rval=script_bool_to_value(TRUE);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

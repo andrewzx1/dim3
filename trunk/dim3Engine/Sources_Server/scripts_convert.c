@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Script C<-->JSVAL Conversion
+ Usage: Script C<-->JSValueRef Conversion
 
 ***************************** License ********************************
 
@@ -35,43 +35,43 @@ extern js_type			js;
 
 /* =======================================================
 
-      NULL JSVAL
+      NULL JSValueRef
       
 ======================================================= */
 
-inline jsval script_null_to_value(void)
+inline JSValueRef script_null_to_value(void)
 {
 	return(JSVAL_NULL);
 }
 
-inline bool script_is_value_null(jsval val)
+inline bool script_is_value_null(JSValueRef val)
 {
 	return(val==JSVAL_NULL);
 }
 
 /* =======================================================
 
-      Int-JSVAL Translations
+      Int-JSValueRef Translations
       
 ======================================================= */
 
-inline int script_value_to_int(jsval val)
+inline int script_value_to_int(JSValueRef val)
 {
 	return(JSVAL_TO_INT(val));
 }
 
-inline jsval script_int_to_value(int i)
+inline JSValueRef script_int_to_value(int i)
 {
 	return(INT_TO_JSVAL(i));
 }
 
 /* =======================================================
 
-      Float-JSVAL Translations
+      Float-JSValueRef Translations
       
 ======================================================= */
 
-inline float script_value_to_float(jsval val)
+inline float script_value_to_float(JSValueRef val)
 {
     jsdouble		jd;
     
@@ -79,9 +79,9 @@ inline float script_value_to_float(jsval val)
 	return((float)jd);
 }
 
-inline jsval script_float_to_value(float f)
+inline JSValueRef script_float_to_value(float f)
 {
-    jsval		vp;
+    JSValueRef		vp;
     
     JS_NewDoubleValue(js.cx,(jsdouble)f,&vp);
     return(vp);
@@ -89,27 +89,27 @@ inline jsval script_float_to_value(float f)
 
 /* =======================================================
 
-      Bool-JSVAL Translations
+      Bool-JSValueRef Translations
       
 ======================================================= */
 
-inline bool script_value_to_bool(jsval val)
+inline bool script_value_to_bool(JSValueRef val)
 {
 	return(JSVAL_TO_BOOLEAN(val));
 }
 
-inline jsval script_bool_to_value(bool b)
+inline JSValueRef script_bool_to_value(bool b)
 {
 	return(BOOLEAN_TO_JSVAL(b));
 }
 
 /* =======================================================
 
-      String-JSVAL Translations
+      String-JSValueRef Translations
       
 ======================================================= */
 
-void script_value_to_string(jsval val,char *str,int len)
+void script_value_to_string(JSValueRef val,char *str,int len)
 {
 	JSString		*jstr;
 
@@ -123,7 +123,7 @@ void script_value_to_string(jsval val,char *str,int len)
 	str[len-1]=0x0;
 }
 
-jsval script_string_to_value(char *str)
+JSValueRef script_string_to_value(char *str)
 {
 	JSString		*jstr;
 	
@@ -133,15 +133,15 @@ jsval script_string_to_value(char *str)
 
 /* =======================================================
 
-      Array-JSVAL Translations
+      Array-JSValueRef Translations
       
 ======================================================= */
 
-jsval script_int_array_to_value(int cnt,int *values)
+JSValueRef script_int_array_to_value(int cnt,int *values)
 {
 	int				n;
 	JSObject		*j_obj;
-	jsval			j_vals[64];
+	JSValueRef			j_vals[64];
 
 		// 64 is the longest array
 
@@ -165,7 +165,7 @@ jsval script_int_array_to_value(int cnt,int *values)
       
 ======================================================= */
 
-jsval script_angle_to_value(float x,float y,float z)
+JSValueRef script_angle_to_value(float x,float y,float z)
 {
 	JSObject		*j_obj;
 
@@ -179,7 +179,7 @@ jsval script_angle_to_value(float x,float y,float z)
 	return(OBJECT_TO_JSVAL(j_obj));
 }
 
-jsval script_point_to_value(int x,int y,int z)
+JSValueRef script_point_to_value(int x,int y,int z)
 {
 	JSObject		*j_obj;
 
@@ -193,7 +193,7 @@ jsval script_point_to_value(int x,int y,int z)
 	return(OBJECT_TO_JSVAL(j_obj));
 }
 
-jsval script_color_to_value(d3col *col)
+JSValueRef script_color_to_value(d3col *col)
 {
 	JSObject		*j_obj;
 

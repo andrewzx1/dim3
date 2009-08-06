@@ -630,7 +630,7 @@ JSObject* script_create_child_object(JSObject *parent_obj,JSClassRef cls,char *n
       
 ======================================================= */
 
-void script_read_only_property_error(jsval id)
+void script_read_only_property_error(JSValueRef id)
 {
 	char				name[64];
 
@@ -638,7 +638,7 @@ void script_read_only_property_error(jsval id)
 	JS_ReportError(js.cx,"The property %s is read-only",name);
 }
 
-inline int script_find_object_property_index(jsval id,script_js_property *props)
+inline int script_find_object_property_index(JSValueRef id,script_js_property *props)
 {
 	int					idx;
 	char				name[64];
@@ -657,40 +657,40 @@ inline int script_find_object_property_index(jsval id,script_js_property *props)
 	return(-1);
 }
 
-JSBool script_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props)
+JSBool script_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp,script_js_property *props)
 {
 	int					idx;
 	script_js_property	*prop;
 
 		// any properties?
 
-	if (props==NULL) return(JS_TRUE);
+	if (props==NULL) return(TRUE);
 
 		// find the property
 
 	idx=script_find_object_property_index(id,props);
-	if (idx==-1) return(JS_TRUE);
+	if (idx==-1) return(TRUE);
 
 	prop=&props[idx];
 
 		// call getter
 
-	return((*prop->getter)(vp)?JS_TRUE:JS_FALSE);
+	return((*prop->getter)(vp));
 }
 
-JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,script_js_property *props)
+JSBool script_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp,script_js_property *props)
 {
 	int					idx;
 	script_js_property	*prop;
 
 		// any properties?
 
-	if (props==NULL) return(JS_TRUE);
+	if (props==NULL) return(TRUE);
 
 		// find the property
 
 	idx=script_find_object_property_index(id,props);
-	if (idx==-1) return(JS_TRUE);
+	if (idx==-1) return(TRUE);
 
 	prop=&props[idx];
 
@@ -698,10 +698,10 @@ JSBool script_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp,scri
 
 	if (prop->setter==NULL) {
 		script_read_only_property_error(id);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 		// call setter
 
-	return((*prop->setter)(vp)?JS_TRUE:JS_FALSE);
+	return((*prop->setter)(vp));
 }

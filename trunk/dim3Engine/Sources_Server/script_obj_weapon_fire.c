@@ -34,10 +34,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_weapon_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_weapon_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_weapon_fire_get_name(jsval *vp);
-bool js_obj_weapon_fire_get_method(jsval *vp);
+JSBool js_obj_weapon_fire_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_weapon_fire_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_weapon_fire_get_name(JSValueRef *vp);
+bool js_obj_weapon_fire_get_method(JSValueRef *vp);
 
 script_js_property	obj_weapon_fire_props[]={
 							{"name",				js_obj_weapon_fire_get_name,		NULL},
@@ -73,12 +73,12 @@ JSObject* script_add_obj_weapon_fire_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_weapon_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_weapon_fire_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_weapon_fire_props));
 }
 
-JSBool js_obj_weapon_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_weapon_fire_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_weapon_fire_props));
 }
@@ -89,22 +89,22 @@ JSBool js_obj_weapon_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_obj_weapon_fire_get_name(jsval *vp)
+bool js_obj_weapon_fire_get_name(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_string_to_value(obj->weapon_fire.name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_weapon_fire_get_method(jsval *vp)
+bool js_obj_weapon_fire_get_method(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->weapon_fire.method);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }

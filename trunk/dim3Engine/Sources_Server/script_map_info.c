@@ -34,11 +34,11 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_info_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_info_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_map_info_get_file(jsval *vp);
-bool js_map_info_get_title(jsval *vp);
-bool js_map_info_get_author(jsval *vp);
+JSBool js_map_info_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_info_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_map_info_get_file(JSValueRef *vp);
+bool js_map_info_get_title(JSValueRef *vp);
+bool js_map_info_get_author(JSValueRef *vp);
 
 script_js_property	map_info_props[]={
 							{"file",				js_map_info_get_file,				NULL},
@@ -75,12 +75,12 @@ JSObject* script_add_map_info_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_info_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_info_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,map_info_props));
 }
 
-JSBool js_map_info_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_info_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,map_info_props));
 }
@@ -91,22 +91,22 @@ JSBool js_map_info_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-bool js_map_info_get_file(jsval *vp)
+bool js_map_info_get_file(JSValueRef *vp)
 {
 	*vp=script_string_to_value(map.info.name);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_info_get_title(jsval *vp)
+bool js_map_info_get_title(JSValueRef *vp)
 {
 	*vp=script_string_to_value(map.info.title);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_map_info_get_author(jsval *vp)
+bool js_map_info_get_author(JSValueRef *vp)
 {
 	*vp=script_string_to_value(map.info.author);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

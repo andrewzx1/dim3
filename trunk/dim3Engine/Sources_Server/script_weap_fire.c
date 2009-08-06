@@ -34,13 +34,13 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_weap_fire_get_method(jsval *vp);
-bool js_weap_fire_get_lastFireTick(jsval *vp);
-JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_fire_reset_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_fire_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_weap_fire_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_weap_fire_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_weap_fire_get_method(JSValueRef *vp);
+bool js_weap_fire_get_lastFireTick(JSValueRef *vp);
+JSBool js_weap_fire_past_last_fire_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_fire_cancel_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	weap_fire_props[]={
 							{"method",				js_weap_fire_get_method,				NULL},
@@ -82,12 +82,12 @@ JSObject* script_add_weap_fire_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_fire_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_fire_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,weap_fire_props));
 }
 
-JSBool js_weap_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_fire_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,weap_fire_props));
 }
@@ -98,17 +98,17 @@ JSBool js_weap_fire_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_weap_fire_get_method(jsval *vp)
+bool js_weap_fire_get_method(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(weap->fire.method);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_fire_get_lastFireTick(jsval *vp)
+bool js_weap_fire_get_lastFireTick(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
@@ -120,7 +120,7 @@ bool js_weap_fire_get_lastFireTick(jsval *vp)
 		*vp=script_int_to_value(weap->fire.last_fire_dual_tick);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -129,7 +129,7 @@ bool js_weap_fire_get_lastFireTick(jsval *vp)
       
 ======================================================= */
 
-JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_fire_past_last_fire_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				last_fire_tick;
 	weapon_type		*weap;
@@ -145,10 +145,10 @@ JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 	*rval=script_bool_to_value(js.time.current_tick>(last_fire_tick+script_value_to_int(argv[0])));
     
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_fire_reset_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	weapon_type		*weap;
 
@@ -161,16 +161,16 @@ JSBool js_weap_fire_reset_last_fire_func(JSContext *cx,JSObject *j_obj,uintN arg
 		weap->fire.last_fire_dual_tick=js.time.current_tick;
 	}
     
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_fire_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_fire_cancel_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->fire.cancel=TRUE;
     
-	return(JS_TRUE);
+	return(TRUE);
 }
 

@@ -37,17 +37,17 @@ extern network_setup_type	net_setup;
 
 extern int					game_obj_rule_uid;
 
-JSBool js_game_join_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_game_join_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_game_join_get_name(jsval *vp);
-bool js_game_join_get_team(jsval *vp);
-JSBool js_game_join_set_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_game_join_set_team_even_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_game_join_clear_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_game_join_count_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_game_join_set_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_game_join_set_spawn_spot_to_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_game_join_clear_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_game_join_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_game_join_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_game_join_get_name(JSValueRef *vp);
+bool js_game_join_get_team(JSValueRef *vp);
+JSBool js_game_join_set_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_game_join_set_team_even_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_game_join_clear_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_game_join_count_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_game_join_set_spawn_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_game_join_set_spawn_spot_to_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_game_join_clear_spawn_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	game_join_props[]={
 							{"name",				js_game_join_get_name,						NULL},
@@ -93,12 +93,12 @@ JSObject* script_add_game_join_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_game_join_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_game_join_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,game_join_props));
 }
 
-JSBool js_game_join_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_game_join_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,game_join_props));
 }
@@ -109,28 +109,28 @@ JSBool js_game_join_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_game_join_get_name(jsval *vp)
+bool js_game_join_get_name(JSValueRef *vp)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(JS_TRUE);
+	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
 	*vp=script_string_to_value(obj->name);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_game_join_get_team(jsval *vp)
+bool js_game_join_get_team(JSValueRef *vp)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(JS_TRUE);
+	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
     *vp=script_int_to_value(obj->team_idx+sd_team_none);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -139,69 +139,69 @@ bool js_game_join_get_team(jsval *vp)
       
 ======================================================= */
 
-JSBool js_game_join_set_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_game_join_set_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(JS_TRUE);
+	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
 	obj->team_idx=script_value_to_int(argv[0])-sd_team_none;
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_game_join_set_team_even_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_game_join_set_team_even_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(JS_TRUE);
+	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
 	object_set_even_team(obj);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_game_join_clear_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_game_join_clear_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(JS_TRUE);
+	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
 	obj->team_idx=net_team_none;
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_game_join_count_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_game_join_count_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int			team_idx;
 
 	team_idx=script_value_to_int(argv[0])-sd_team_none;
 	*rval=script_int_to_value(object_count_team(team_idx,game_obj_rule_uid));
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_game_join_set_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_game_join_set_spawn_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(JS_TRUE);
+	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
 	script_value_to_string(argv[0],obj->spawn_spot_name,name_str_len);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_game_join_set_spawn_spot_to_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_game_join_set_spawn_spot_to_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(JS_TRUE);
+	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
 	
@@ -212,17 +212,17 @@ JSBool js_game_join_set_spawn_spot_to_team_func(JSContext *cx,JSObject *j_obj,ui
 		strcpy(obj->spawn_spot_name,"Blue");
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_game_join_clear_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_game_join_clear_spawn_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(JS_TRUE);
+	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
 	obj->spawn_spot_name[0]=0x0;
 
-	return(JS_TRUE);
+	return(TRUE);
 }

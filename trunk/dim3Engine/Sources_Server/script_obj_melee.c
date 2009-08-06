@@ -35,21 +35,21 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_melee_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_melee_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_melee_get_strikeBoneTag(jsval *vp);
-bool js_obj_melee_get_strikePoseName(jsval *vp);
-bool js_obj_melee_get_radius(jsval *vp);
-bool js_obj_melee_get_distance(jsval *vp);
-bool js_obj_melee_get_damage(jsval *vp);
-bool js_obj_melee_get_force(jsval *vp);
-bool js_obj_melee_set_strikeBoneTag(jsval *vp);
-bool js_obj_melee_set_strikePoseName(jsval *vp);
-bool js_obj_melee_set_radius(jsval *vp);
-bool js_obj_melee_set_distance(jsval *vp);
-bool js_obj_melee_set_damage(jsval *vp);
-bool js_obj_melee_set_force(jsval *vp);
-JSBool js_obj_melee_spawn_from_object_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_melee_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_melee_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_melee_get_strikeBoneTag(JSValueRef *vp);
+bool js_obj_melee_get_strikePoseName(JSValueRef *vp);
+bool js_obj_melee_get_radius(JSValueRef *vp);
+bool js_obj_melee_get_distance(JSValueRef *vp);
+bool js_obj_melee_get_damage(JSValueRef *vp);
+bool js_obj_melee_get_force(JSValueRef *vp);
+bool js_obj_melee_set_strikeBoneTag(JSValueRef *vp);
+bool js_obj_melee_set_strikePoseName(JSValueRef *vp);
+bool js_obj_melee_set_radius(JSValueRef *vp);
+bool js_obj_melee_set_distance(JSValueRef *vp);
+bool js_obj_melee_set_damage(JSValueRef *vp);
+bool js_obj_melee_set_force(JSValueRef *vp);
+JSBool js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	obj_melee_props[]={
 							{"strikeBoneTag",			js_obj_melee_get_strikeBoneTag,					js_obj_melee_set_strikeBoneTag},
@@ -93,12 +93,12 @@ JSObject* script_add_obj_melee_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_melee_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_melee_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_melee_props));
 }
 
-JSBool js_obj_melee_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_melee_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_melee_props));
 }
@@ -109,7 +109,7 @@ JSBool js_obj_melee_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_melee_get_strikeBoneTag(jsval *vp)
+bool js_obj_melee_get_strikeBoneTag(JSValueRef *vp)
 {
 	char				str[32];
     obj_type			*obj;
@@ -118,57 +118,57 @@ bool js_obj_melee_get_strikeBoneTag(jsval *vp)
 	model_tag_to_text(obj->melee.object_strike_bone_tag,str);
 	*vp=script_string_to_value(str);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_get_strikePoseName(jsval *vp)
+bool js_obj_melee_get_strikePoseName(JSValueRef *vp)
 {
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_string_to_value(obj->melee.object_strike_pose_name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_get_radius(jsval *vp)
+bool js_obj_melee_get_radius(JSValueRef *vp)
 {
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->melee.radius);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_get_distance(jsval *vp)
+bool js_obj_melee_get_distance(JSValueRef *vp)
 {
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->melee.distance);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_get_damage(jsval *vp)
+bool js_obj_melee_get_damage(JSValueRef *vp)
 {
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->melee.damage);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_get_force(jsval *vp)
+bool js_obj_melee_get_force(JSValueRef *vp)
 {
     obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->melee.force);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -177,7 +177,7 @@ bool js_obj_melee_get_force(jsval *vp)
       
 ======================================================= */
 
-bool js_obj_melee_set_strikeBoneTag(jsval *vp)
+bool js_obj_melee_set_strikeBoneTag(JSValueRef *vp)
 {
 	char				str[32];
     obj_type			*obj;
@@ -186,57 +186,57 @@ bool js_obj_melee_set_strikeBoneTag(jsval *vp)
 	script_value_to_string(*vp,str,32);
 	obj->melee.object_strike_bone_tag=text_to_model_tag(str);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_set_strikePoseName(jsval *vp)
+bool js_obj_melee_set_strikePoseName(JSValueRef *vp)
 {
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,obj->melee.object_strike_pose_name,name_str_len);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_set_radius(jsval *vp)
+bool js_obj_melee_set_radius(JSValueRef *vp)
 {
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->melee.radius=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_set_distance(jsval *vp)
+bool js_obj_melee_set_distance(JSValueRef *vp)
 {
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->melee.distance=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_set_damage(jsval *vp)
+bool js_obj_melee_set_damage(JSValueRef *vp)
 {
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->melee.damage=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_melee_set_force(jsval *vp)
+bool js_obj_melee_set_force(JSValueRef *vp)
 {
     obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->melee.force=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -245,7 +245,7 @@ bool js_obj_melee_set_force(jsval *vp)
       
 ======================================================= */
 
-JSBool js_obj_melee_spawn_from_object_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char				err_str[256];
     obj_type			*obj;
@@ -254,8 +254,8 @@ JSBool js_obj_melee_spawn_from_object_bone_func(JSContext *cx,JSObject *j_obj,ui
 
 	if (!melee_script_spawn_object_model(js.time.current_tick,obj,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }

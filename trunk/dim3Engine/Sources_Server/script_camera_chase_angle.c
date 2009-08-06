@@ -35,14 +35,14 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
-JSBool js_camera_chase_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_camera_chase_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_camera_chase_angle_get_x(jsval *vp);
-bool js_camera_chase_angle_get_y(jsval *vp);
-bool js_camera_chase_angle_get_z(jsval *vp);
-bool js_camera_chase_angle_set_x(jsval *vp);
-bool js_camera_chase_angle_set_y(jsval *vp);
-bool js_camera_chase_angle_set_z(jsval *vp);
+JSBool js_camera_chase_angle_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_camera_chase_angle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_camera_chase_angle_get_x(JSValueRef *vp);
+bool js_camera_chase_angle_get_y(JSValueRef *vp);
+bool js_camera_chase_angle_get_z(JSValueRef *vp);
+bool js_camera_chase_angle_set_x(JSValueRef *vp);
+bool js_camera_chase_angle_set_y(JSValueRef *vp);
+bool js_camera_chase_angle_set_z(JSValueRef *vp);
 
 script_js_property	camera_chase_angle_props[]={
 							{"x",					js_camera_chase_angle_get_x,			js_camera_chase_angle_set_x},
@@ -79,12 +79,12 @@ JSObject* script_add_camera_chase_angle_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_chase_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_chase_angle_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,camera_chase_angle_props));
 }
 
-JSBool js_camera_chase_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_chase_angle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,camera_chase_angle_props));
 }
@@ -95,22 +95,22 @@ JSBool js_camera_chase_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id
       
 ======================================================= */
 
-bool js_camera_chase_angle_get_x(jsval *vp)
+bool js_camera_chase_angle_get_x(JSValueRef *vp)
 {
 	*vp=script_float_to_value(camera.chase_ang.x);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_chase_angle_get_y(jsval *vp)
+bool js_camera_chase_angle_get_y(JSValueRef *vp)
 {
 	*vp=script_float_to_value(camera.chase_ang.y);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_chase_angle_get_z(jsval *vp)
+bool js_camera_chase_angle_get_z(JSValueRef *vp)
 {
 	*vp=script_float_to_value(camera.chase_ang.z);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -119,20 +119,20 @@ bool js_camera_chase_angle_get_z(jsval *vp)
       
 ======================================================= */
 
-bool js_camera_chase_angle_set_x(jsval *vp)
+bool js_camera_chase_angle_set_x(JSValueRef *vp)
 {
 	camera.chase_ang.x=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_chase_angle_set_y(jsval *vp)
+bool js_camera_chase_angle_set_y(JSValueRef *vp)
 {
 	camera.chase_ang.y=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_camera_chase_angle_set_z(jsval *vp)
+bool js_camera_chase_angle_set_z(JSValueRef *vp)
 {
 	camera.chase_ang.z=script_value_to_float(*vp);
-	return(JS_TRUE);
+	return(TRUE);
 }

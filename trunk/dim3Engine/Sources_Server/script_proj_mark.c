@@ -34,16 +34,16 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_proj_mark_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_mark_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_proj_mark_get_on(jsval *vp);
-bool js_proj_mark_get_name(jsval *vp);
-bool js_proj_mark_get_size(jsval *vp);
-bool js_proj_mark_get_alpha(jsval *vp);
-bool js_proj_mark_set_on(jsval *vp);
-bool js_proj_mark_set_name(jsval *vp);
-bool js_proj_mark_set_size(jsval *vp);
-bool js_proj_mark_set_alpha(jsval *vp);
+JSBool js_proj_mark_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_proj_mark_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_proj_mark_get_on(JSValueRef *vp);
+bool js_proj_mark_get_name(JSValueRef *vp);
+bool js_proj_mark_get_size(JSValueRef *vp);
+bool js_proj_mark_get_alpha(JSValueRef *vp);
+bool js_proj_mark_set_on(JSValueRef *vp);
+bool js_proj_mark_set_name(JSValueRef *vp);
+bool js_proj_mark_set_size(JSValueRef *vp);
+bool js_proj_mark_set_alpha(JSValueRef *vp);
 
 script_js_property	proj_mark_props[]={
 							{"on",					js_proj_mark_get_on,				js_proj_mark_set_on},
@@ -81,12 +81,12 @@ JSObject* script_add_proj_mark_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_mark_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_mark_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,proj_mark_props));
 }
 
-JSBool js_proj_mark_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_mark_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,proj_mark_props));
 }
@@ -97,52 +97,52 @@ JSBool js_proj_mark_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_proj_mark_get_on(jsval *vp)
+bool js_proj_mark_get_on(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_bool_to_value(proj_setup->mark.on);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_mark_get_name(jsval *vp)
+bool js_proj_mark_get_name(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_string_to_value(proj_setup->mark.name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_mark_get_size(jsval *vp)
+bool js_proj_mark_get_size(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_int_to_value(proj_setup->mark.size);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_mark_get_alpha(jsval *vp)
+bool js_proj_mark_get_alpha(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
     *vp=script_float_to_value(proj_setup->mark.alpha);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -151,53 +151,53 @@ bool js_proj_mark_get_alpha(jsval *vp)
       
 ======================================================= */
 
-bool js_proj_mark_set_on(jsval *vp)
+bool js_proj_mark_set_on(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
     proj_setup->mark.on=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_mark_set_name(jsval *vp)
+bool js_proj_mark_set_name(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	script_value_to_string(*vp,proj_setup->mark.name,name_str_len);
 	proj_setup_attach_mark(proj_setup);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_mark_set_size(jsval *vp)
+bool js_proj_mark_set_size(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->mark.size=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_mark_set_alpha(jsval *vp)
+bool js_proj_mark_set_alpha(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->mark.alpha=script_value_to_float(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

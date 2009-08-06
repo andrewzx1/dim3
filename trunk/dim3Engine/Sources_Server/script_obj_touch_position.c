@@ -34,11 +34,11 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_touch_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_touch_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_touch_position_get_x(jsval *vp);
-bool js_obj_touch_position_get_y(jsval *vp);
-bool js_obj_touch_position_get_z(jsval *vp);
+JSBool js_obj_touch_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_touch_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_touch_position_get_x(JSValueRef *vp);
+bool js_obj_touch_position_get_y(JSValueRef *vp);
+bool js_obj_touch_position_get_z(JSValueRef *vp);
 
 script_js_property	obj_touch_position_props[]={
 							{"x",					js_obj_touch_position_get_x,			NULL},
@@ -75,12 +75,12 @@ JSObject* script_add_obj_touch_position_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_touch_position_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_touch_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_touch_position_props));
 }
 
-JSBool js_obj_touch_position_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_touch_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_touch_position_props));
 }
@@ -91,32 +91,32 @@ JSBool js_obj_touch_position_set_property(JSContext *cx,JSObject *j_obj,jsval id
       
 ======================================================= */
 
-bool js_obj_touch_position_get_x(jsval *vp)
+bool js_obj_touch_position_get_x(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->touch.pnt.x);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_touch_position_get_y(jsval *vp)
+bool js_obj_touch_position_get_y(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->touch.pnt.y);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_touch_position_get_z(jsval *vp)
+bool js_obj_touch_position_get_z(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->touch.pnt.z);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }

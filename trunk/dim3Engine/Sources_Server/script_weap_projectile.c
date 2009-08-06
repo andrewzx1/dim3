@@ -36,39 +36,39 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_projectile_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_projectile_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_weap_projectile_get_fireBoneTag(jsval *vp);
-bool js_weap_projectile_get_barrelBoneTag(jsval *vp);
-bool js_weap_projectile_get_firePoseName(jsval *vp);
-bool js_weap_projectile_get_objectFireBoneTag(jsval *vp);
-bool js_weap_projectile_get_objectFirePoseName(jsval *vp);
-bool js_weap_projectile_get_repeat_on(jsval *vp);
-bool js_weap_projectile_get_repeat_tick(jsval *vp);
-bool js_weap_projectile_set_fireBoneTag(jsval *vp);
-bool js_weap_projectile_set_barrelBoneTag(jsval *vp);
-bool js_weap_projectile_set_firePoseName(jsval *vp);
-bool js_weap_projectile_set_objectFireBoneTag(jsval *vp);
-bool js_weap_projectile_set_objectFirePoseName(jsval *vp);
-bool js_weap_projectile_set_repeat_on(jsval *vp);
-bool js_weap_projectile_set_repeat_tick(jsval *vp);
-JSBool js_weap_projectile_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_weapon_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_object_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_object_bone_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_barrel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_barrel_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_center_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_center_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_projectile_spawn_from_center_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_weap_projectile_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_weap_projectile_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_weap_projectile_get_fireBoneTag(JSValueRef *vp);
+bool js_weap_projectile_get_barrelBoneTag(JSValueRef *vp);
+bool js_weap_projectile_get_firePoseName(JSValueRef *vp);
+bool js_weap_projectile_get_objectFireBoneTag(JSValueRef *vp);
+bool js_weap_projectile_get_objectFirePoseName(JSValueRef *vp);
+bool js_weap_projectile_get_repeat_on(JSValueRef *vp);
+bool js_weap_projectile_get_repeat_tick(JSValueRef *vp);
+bool js_weap_projectile_set_fireBoneTag(JSValueRef *vp);
+bool js_weap_projectile_set_barrelBoneTag(JSValueRef *vp);
+bool js_weap_projectile_set_firePoseName(JSValueRef *vp);
+bool js_weap_projectile_set_objectFireBoneTag(JSValueRef *vp);
+bool js_weap_projectile_set_objectFirePoseName(JSValueRef *vp);
+bool js_weap_projectile_set_repeat_on(JSValueRef *vp);
+bool js_weap_projectile_set_repeat_tick(JSValueRef *vp);
+JSBool js_weap_projectile_add_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_object_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_object_bone_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_barrel_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_barrel_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_center_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_center_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	weap_projectile_props[]={
 							{"fireBoneTag",				js_weap_projectile_get_fireBoneTag,				js_weap_projectile_set_fireBoneTag},
@@ -129,12 +129,12 @@ JSObject* script_add_weap_projectile_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_projectile_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_projectile_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,weap_projectile_props));
 }
 
-JSBool js_weap_projectile_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_projectile_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,weap_projectile_props));
 }
@@ -145,7 +145,7 @@ JSBool js_weap_projectile_set_property(JSContext *cx,JSObject *j_obj,jsval id,js
       
 ======================================================= */
 
-bool js_weap_projectile_get_fireBoneTag(jsval *vp)
+bool js_weap_projectile_get_fireBoneTag(JSValueRef *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -155,10 +155,10 @@ bool js_weap_projectile_get_fireBoneTag(jsval *vp)
 	model_tag_to_text(weap->proj.fire_bone_tag,str);
 	*vp=script_string_to_value(str);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_get_barrelBoneTag(jsval *vp)
+bool js_weap_projectile_get_barrelBoneTag(JSValueRef *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -168,20 +168,20 @@ bool js_weap_projectile_get_barrelBoneTag(jsval *vp)
 	model_tag_to_text(weap->proj.barrel_bone_tag,str);
 	*vp=script_string_to_value(str);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_get_firePoseName(jsval *vp)
+bool js_weap_projectile_get_firePoseName(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_string_to_value(weap->proj.fire_pose_name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_get_objectFireBoneTag(jsval *vp)
+bool js_weap_projectile_get_objectFireBoneTag(JSValueRef *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -191,37 +191,37 @@ bool js_weap_projectile_get_objectFireBoneTag(jsval *vp)
 	model_tag_to_text(weap->proj.object_fire_bone_tag,str);
 	*vp=script_string_to_value(str);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_get_objectFirePoseName(jsval *vp)
+bool js_weap_projectile_get_objectFirePoseName(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_string_to_value(weap->proj.object_fire_pose_name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_get_repeat_on(jsval *vp)
+bool js_weap_projectile_get_repeat_on(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(weap->proj.repeat_on);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_get_repeat_tick(jsval *vp)
+bool js_weap_projectile_get_repeat_tick(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(weap->proj.repeat_tick);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -230,7 +230,7 @@ bool js_weap_projectile_get_repeat_tick(jsval *vp)
       
 ======================================================= */
 
-bool js_weap_projectile_set_fireBoneTag(jsval *vp)
+bool js_weap_projectile_set_fireBoneTag(JSValueRef *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -240,10 +240,10 @@ bool js_weap_projectile_set_fireBoneTag(jsval *vp)
 	script_value_to_string(*vp,str,32);
 	weap->proj.fire_bone_tag=text_to_model_tag(str);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_set_barrelBoneTag(jsval *vp)
+bool js_weap_projectile_set_barrelBoneTag(JSValueRef *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -253,20 +253,20 @@ bool js_weap_projectile_set_barrelBoneTag(jsval *vp)
 	script_value_to_string(*vp,str,32);
 	weap->proj.barrel_bone_tag=text_to_model_tag(str);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_set_firePoseName(jsval *vp)
+bool js_weap_projectile_set_firePoseName(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,weap->proj.fire_pose_name,name_str_len);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_set_objectFireBoneTag(jsval *vp)
+bool js_weap_projectile_set_objectFireBoneTag(JSValueRef *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -276,37 +276,37 @@ bool js_weap_projectile_set_objectFireBoneTag(jsval *vp)
 	script_value_to_string(*vp,str,32);
 	weap->proj.object_fire_bone_tag=text_to_model_tag(str);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_set_objectFirePoseName(jsval *vp)
+bool js_weap_projectile_set_objectFirePoseName(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,weap->proj.object_fire_pose_name,name_str_len);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_set_repeat_on(jsval *vp)
+bool js_weap_projectile_set_repeat_on(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->proj.repeat_on=script_value_to_bool(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_projectile_set_repeat_tick(jsval *vp)
+bool js_weap_projectile_set_repeat_tick(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->proj.repeat_tick=script_value_to_int(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -315,7 +315,7 @@ bool js_weap_projectile_set_repeat_tick(jsval *vp)
       
 ======================================================= */
 
-JSBool js_weap_projectile_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_add_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char				str[name_str_len];
     obj_type			*obj;
@@ -328,7 +328,7 @@ JSBool js_weap_projectile_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 
 	*rval=script_bool_to_value(proj_setup_add(obj,weap,str));
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -337,7 +337,7 @@ JSBool js_weap_projectile_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
       
 ======================================================= */
 
-JSBool js_weap_projectile_spawn_from_weapon_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
     obj_type				*obj;
@@ -350,13 +350,13 @@ JSBool js_weap_projectile_spawn_from_weapon_bone_func(JSContext *cx,JSObject *j_
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,1,0.0f,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
 	float					slop;
@@ -372,13 +372,13 @@ JSBool js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContext *cx,JSObjec
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,1,slop,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int						count;
 	char					proj_name[name_str_len],err_str[256];
@@ -396,13 +396,13 @@ JSBool js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContext *cx,J
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
 	d3ang					off_ang;
@@ -420,10 +420,10 @@ JSBool js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext *cx
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -432,7 +432,7 @@ JSBool js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext *cx
       
 ======================================================= */
 
-JSBool js_weap_projectile_spawn_from_object_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_object_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
     obj_type				*obj;
@@ -445,13 +445,13 @@ JSBool js_weap_projectile_spawn_from_object_bone_func(JSContext *cx,JSObject *j_
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,1,0.0f,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_object_bone_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_object_bone_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
 	float					slop;
@@ -467,13 +467,13 @@ JSBool js_weap_projectile_spawn_from_object_bone_slop_func(JSContext *cx,JSObjec
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,1,slop,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int						count;
 	char					proj_name[name_str_len],err_str[256];
@@ -491,13 +491,13 @@ JSBool js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContext *cx,J
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
 	d3ang					off_ang;
@@ -515,10 +515,10 @@ JSBool js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext *cx
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -527,7 +527,7 @@ JSBool js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext *cx
       
 ======================================================= */
 
-JSBool js_weap_projectile_spawn_from_barrel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_barrel_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
     obj_type				*obj;
@@ -540,13 +540,13 @@ JSBool js_weap_projectile_spawn_from_barrel_func(JSContext *cx,JSObject *j_obj,u
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,1,0.0f,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_barrel_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_barrel_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
 	float					slop;
@@ -562,13 +562,13 @@ JSBool js_weap_projectile_spawn_from_barrel_slop_func(JSContext *cx,JSObject *j_
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,1,slop,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int						count;
 	char					proj_name[name_str_len],err_str[256];
@@ -586,13 +586,13 @@ JSBool js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContext *cx,JSObje
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
 	d3ang					off_ang;
@@ -610,10 +610,10 @@ JSBool js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContext *cx,JSOb
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -622,7 +622,7 @@ JSBool js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContext *cx,JSOb
       
 ======================================================= */
 
-JSBool js_weap_projectile_spawn_from_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_center_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
     obj_type				*obj;
@@ -635,13 +635,13 @@ JSBool js_weap_projectile_spawn_from_center_func(JSContext *cx,JSObject *j_obj,u
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,1,0.0f,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_center_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_center_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
 	float					slop;
@@ -657,13 +657,13 @@ JSBool js_weap_projectile_spawn_from_center_slop_func(JSContext *cx,JSObject *j_
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,1,slop,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_center_multi_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int						count;
 	char					proj_name[name_str_len],err_str[256];
@@ -681,13 +681,13 @@ JSBool js_weap_projectile_spawn_from_center_multi_slop_func(JSContext *cx,JSObje
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_projectile_spawn_from_center_offset_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char					proj_name[name_str_len],err_str[256];
 	d3ang					off_ang;
@@ -705,10 +705,10 @@ JSBool js_weap_projectile_spawn_from_center_offset_angle_func(JSContext *cx,JSOb
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

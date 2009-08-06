@@ -40,12 +40,12 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-JSBool js_multiplayer_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_multiplayer_setting_get_on(jsval *vp);
-bool js_multiplayer_setting_get_type(jsval *vp);
-bool js_multiplayer_setting_get_teamPlay(jsval *vp);
-JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_multiplayer_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_multiplayer_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_multiplayer_setting_get_on(JSValueRef *vp);
+bool js_multiplayer_setting_get_type(JSValueRef *vp);
+bool js_multiplayer_setting_get_teamPlay(JSValueRef *vp);
+JSBool js_multiplayer_setting_check_option_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	multiplayer_setting_props[]={
 							{"on",					js_multiplayer_setting_get_on,					NULL},
@@ -86,12 +86,12 @@ JSObject* script_add_multiplayer_setting_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_multiplayer_setting_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_multiplayer_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,multiplayer_setting_props));
 }
 
-JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_multiplayer_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,multiplayer_setting_props));
 }
@@ -102,13 +102,13 @@ JSBool js_multiplayer_setting_set_property(JSContext *cx,JSObject *j_obj,jsval i
       
 ======================================================= */
 
-bool js_multiplayer_setting_get_on(jsval *vp)
+bool js_multiplayer_setting_get_on(JSValueRef *vp)
 {
 	*vp=script_bool_to_value(net_setup.client.joined);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_multiplayer_setting_get_type(jsval *vp)
+bool js_multiplayer_setting_get_type(JSValueRef *vp)
 {
  	if (!net_setup.client.joined) {
 		*vp=script_null_to_value();
@@ -117,10 +117,10 @@ bool js_multiplayer_setting_get_type(jsval *vp)
 		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_multiplayer_setting_get_teamPlay(jsval *vp)
+bool js_multiplayer_setting_get_teamPlay(JSValueRef *vp)
 {
  	if (!net_setup.client.joined) {
 		*vp=script_bool_to_value(FALSE);
@@ -129,7 +129,7 @@ bool js_multiplayer_setting_get_teamPlay(jsval *vp)
 		*vp=script_bool_to_value(net_setup.games[net_setup.game_idx].use_teams);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -138,7 +138,7 @@ bool js_multiplayer_setting_get_teamPlay(jsval *vp)
       
 ======================================================= */
 
-JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_multiplayer_setting_check_option_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				n;
 	char			name[name_str_len];
@@ -147,7 +147,7 @@ JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,ui
 		
 	if (!net_setup.client.joined) {
 		*rval=script_bool_to_value(FALSE);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 
 		// find if option is on
@@ -157,11 +157,11 @@ JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,ui
 	for (n=0;n!=setup.network.noption;n++) {
 		if (strcasecmp(name,setup.network.options[n].name)==0) {
 			*rval=script_bool_to_value(TRUE);
-			return(JS_TRUE);
+			return(TRUE);
 		}
 	}
 
 	*rval=script_bool_to_value(FALSE);
-	return(JS_TRUE);
+	return(TRUE);
 }
 

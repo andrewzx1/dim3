@@ -34,10 +34,10 @@ and can be sold or given away.
 extern js_type			js;
 extern setup_type		setup;
 
-JSBool js_interface_screen_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_interface_screen_get_width(jsval *vp);
-bool js_interface_screen_get_height(jsval *vp);
+JSBool js_interface_screen_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_interface_screen_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_interface_screen_get_width(JSValueRef *vp);
+bool js_interface_screen_get_height(JSValueRef *vp);
 
 script_js_property	interface_screen_props[]={
 							{"width",				js_interface_screen_get_width,		NULL},
@@ -73,12 +73,12 @@ JSObject* script_add_interface_screen_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_interface_screen_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_screen_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,interface_screen_props));
 }
 
-JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_screen_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,interface_screen_props));
 }
@@ -89,15 +89,15 @@ JSBool js_interface_screen_set_property(JSContext *cx,JSObject *j_obj,jsval id,j
       
 ======================================================= */
 
-bool js_interface_screen_get_width(jsval *vp)
+bool js_interface_screen_get_width(JSValueRef *vp)
 {
 	*vp=script_int_to_value(setup.screen.x_sz);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 
-bool js_interface_screen_get_height(jsval *vp)
+bool js_interface_screen_get_height(JSValueRef *vp)
 {
 	*vp=script_int_to_value(setup.screen.y_sz);
-	return(JS_TRUE);
+	return(TRUE);
 }

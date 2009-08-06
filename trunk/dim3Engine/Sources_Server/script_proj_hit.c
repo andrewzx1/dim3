@@ -37,16 +37,16 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_proj_hit_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_proj_hit_get_type(jsval *vp);
-bool js_proj_hit_get_name(jsval *vp);
-bool js_proj_hit_get_id(jsval *vp);
-bool js_proj_hit_get_isPlayer(jsval *vp);
-bool js_proj_hit_get_startTick(jsval *vp);
-bool js_proj_hit_get_materialName(jsval *vp);
-bool js_proj_hit_get_ejectVector(jsval *vp);
-bool js_proj_hit_get_reflectVector(jsval *vp);
+JSBool js_proj_hit_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_proj_hit_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_proj_hit_get_type(JSValueRef *vp);
+bool js_proj_hit_get_name(JSValueRef *vp);
+bool js_proj_hit_get_id(JSValueRef *vp);
+bool js_proj_hit_get_isPlayer(JSValueRef *vp);
+bool js_proj_hit_get_startTick(JSValueRef *vp);
+bool js_proj_hit_get_materialName(JSValueRef *vp);
+bool js_proj_hit_get_ejectVector(JSValueRef *vp);
+bool js_proj_hit_get_reflectVector(JSValueRef *vp);
 
 script_js_property	proj_hit_props[]={
 							{"type",				js_proj_hit_get_type,				NULL},
@@ -88,12 +88,12 @@ JSObject* script_add_proj_hit_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_hit_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_hit_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,proj_hit_props));
 }
 
-JSBool js_proj_hit_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_hit_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,proj_hit_props));
 }
@@ -189,111 +189,111 @@ void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
       
 ======================================================= */
 
-bool js_proj_hit_get_type(jsval *vp)
+bool js_proj_hit_get_type(JSValueRef *vp)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(JS_TRUE);
+	if (proj==NULL) return(TRUE);
 
 	*vp=script_int_to_value(js_get_proj_hit_type(proj));
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_hit_get_name(jsval *vp)
+bool js_proj_hit_get_name(JSValueRef *vp)
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(JS_TRUE);
+	if (proj==NULL) return(TRUE);
 
 	hit_type=js_get_proj_hit_type(proj);
 	js_get_proj_hit_name(proj,hit_type,hit_name);
 	*vp=script_string_to_value(hit_name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_hit_get_id(jsval *vp)
+bool js_proj_hit_get_id(JSValueRef *vp)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(JS_TRUE);
+	if (proj==NULL) return(TRUE);
 
 	*vp=script_int_to_value(proj->contact.obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_hit_get_isPlayer(jsval *vp)
+bool js_proj_hit_get_isPlayer(JSValueRef *vp)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(JS_TRUE);
+	if (proj==NULL) return(TRUE);
 
 	*vp=script_bool_to_value(proj->contact.obj_uid==server.player_obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_hit_get_startTick(jsval *vp)
+bool js_proj_hit_get_startTick(JSValueRef *vp)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(JS_TRUE);
+	if (proj==NULL) return(TRUE);
 
 	*vp=script_int_to_value(proj->start_tick);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_hit_get_materialName(jsval *vp)
+bool js_proj_hit_get_materialName(JSValueRef *vp)
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(JS_TRUE);
+	if (proj==NULL) return(TRUE);
 
 	hit_type=js_get_proj_hit_type(proj);
 	js_get_proj_hit_material_name(proj,hit_type,hit_name);
 	*vp=script_string_to_value(hit_name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_hit_get_ejectVector(jsval *vp)
+bool js_proj_hit_get_ejectVector(JSValueRef *vp)
 {
 	d3vct				vct;
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(JS_TRUE);
+	if (proj==NULL) return(TRUE);
 
 	projectile_eject_vector(proj,&vct);
 	*vp=script_angle_to_value(vct.x,vct.y,vct.z);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_hit_get_reflectVector(jsval *vp)
+bool js_proj_hit_get_reflectVector(JSValueRef *vp)
 {
 	d3vct				vct;
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(JS_TRUE);
+	if (proj==NULL) return(TRUE);
 
 	projectile_reflect_vector(proj,&vct);
 	*vp=script_angle_to_value(vct.x,vct.y,vct.z);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 

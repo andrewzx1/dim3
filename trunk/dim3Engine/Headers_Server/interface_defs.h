@@ -385,7 +385,7 @@ typedef struct		{
 					
 typedef struct		{
 						hud_intro_button_type	button_game_new,button_game_load,button_game_setup,
-												button_game_new_easy,button_game_new_medium,button_game_new_hard,
+												button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
 												button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
 												button_credit,button_quit;
 					} hud_intro_type;

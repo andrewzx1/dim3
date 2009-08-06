@@ -40,14 +40,14 @@ extern void map_movements_script_freeze(int movement_idx);
 extern void map_movements_script_thaw(int movement_idx);
 extern bool map_movements_script_is_looping(int movement_idx);
 
-JSBool js_map_movement_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_movement_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_movement_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_movement_start_reverse_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_movement_start_or_thaw_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_movement_freeze_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_movement_thaw_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_movement_is_looping_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_movement_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_movement_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_movement_start_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_movement_start_reverse_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_movement_start_or_thaw_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_movement_freeze_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_movement_thaw_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_movement_is_looping_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	map_movement_functions[]={
 							{"start",				js_map_movement_start_func,			1},
@@ -87,12 +87,12 @@ JSObject* script_add_map_movement_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_movement_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_movement_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_map_movement_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_movement_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -103,69 +103,69 @@ JSBool js_map_movement_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
       
 ======================================================= */
 
-JSBool js_map_movement_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_movement_start_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				movement_idx;
 	
 	movement_idx=script_find_map_movement_from_name(argv[0]);
-	if (movement_idx==-1) return(JS_FALSE);
+	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_start(movement_idx,FALSE);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_movement_start_reverse_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_movement_start_reverse_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				movement_idx;
 	
 	movement_idx=script_find_map_movement_from_name(argv[0]);
-	if (movement_idx==-1) return(JS_FALSE);
+	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_start(movement_idx,TRUE);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_movement_start_or_thaw_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_movement_start_or_thaw_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				movement_idx;
 	
 	movement_idx=script_find_map_movement_from_name(argv[0]);
-	if (movement_idx==-1) return(JS_FALSE);
+	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_start_or_thaw(movement_idx);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_movement_freeze_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_movement_freeze_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				movement_idx;
 	
 	movement_idx=script_find_map_movement_from_name(argv[0]);
-	if (movement_idx==-1) return(JS_FALSE);
+	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_freeze(movement_idx);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_movement_thaw_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_movement_thaw_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				movement_idx;
 	
 	movement_idx=script_find_map_movement_from_name(argv[0]);
-	if (movement_idx==-1) return(JS_FALSE);
+	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_thaw(movement_idx);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_movement_is_looping_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_movement_is_looping_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				movement_idx;
 	
 	movement_idx=script_find_map_movement_from_name(argv[0]);
-	if (movement_idx==-1) return(JS_FALSE);
+	if (movement_idx==-1) return(FALSE);
 	
 	*rval=script_bool_to_value(map_movements_script_is_looping(movement_idx));
-	return(JS_TRUE);
+	return(TRUE);
 }
 

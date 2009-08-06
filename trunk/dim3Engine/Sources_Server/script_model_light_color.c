@@ -31,14 +31,14 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_model_light_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_model_light_color_get_red(jsval *vp);
-bool js_model_light_color_get_green(jsval *vp);
-bool js_model_light_color_get_blue(jsval *vp);
-bool js_model_light_color_set_red(jsval *vp);
-bool js_model_light_color_set_green(jsval *vp);
-bool js_model_light_color_set_blue(jsval *vp);
+JSBool js_model_light_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_light_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_model_light_color_get_red(JSValueRef *vp);
+bool js_model_light_color_get_green(JSValueRef *vp);
+bool js_model_light_color_get_blue(JSValueRef *vp);
+bool js_model_light_color_set_red(JSValueRef *vp);
+bool js_model_light_color_set_green(JSValueRef *vp);
+bool js_model_light_color_set_blue(JSValueRef *vp);
 
 extern js_type			js;
 
@@ -77,12 +77,12 @@ JSObject* script_add_model_light_color_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_light_color_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_light_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,model_light_color_props));
 }
 
-JSBool js_model_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_light_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,model_light_color_props));
 }
@@ -93,7 +93,7 @@ JSBool js_model_light_color_set_property(JSContext *cx,JSObject *j_obj,jsval id,
       
 ======================================================= */
 
-bool js_model_light_color_get_red(jsval *vp)
+bool js_model_light_color_get_red(JSValueRef *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -103,10 +103,10 @@ bool js_model_light_color_get_red(jsval *vp)
 	
 	*vp=script_float_to_value(light->col.r);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_model_light_color_get_green(jsval *vp)
+bool js_model_light_color_get_green(JSValueRef *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -116,10 +116,10 @@ bool js_model_light_color_get_green(jsval *vp)
 
 	*vp=script_float_to_value(light->col.g);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_model_light_color_get_blue(jsval *vp)
+bool js_model_light_color_get_blue(JSValueRef *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -129,7 +129,7 @@ bool js_model_light_color_get_blue(jsval *vp)
 	
 	*vp=script_float_to_value(light->col.b);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -138,7 +138,7 @@ bool js_model_light_color_get_blue(jsval *vp)
       
 ======================================================= */
 
-bool js_model_light_color_set_red(jsval *vp)
+bool js_model_light_color_set_red(JSValueRef *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -148,10 +148,10 @@ bool js_model_light_color_set_red(jsval *vp)
 
 	light->col.r=script_value_to_float(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_model_light_color_set_green(jsval *vp)
+bool js_model_light_color_set_green(JSValueRef *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -161,10 +161,10 @@ bool js_model_light_color_set_green(jsval *vp)
 
 	light->col.g=script_value_to_float(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_model_light_color_set_blue(jsval *vp)
+bool js_model_light_color_set_blue(JSValueRef *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -174,6 +174,6 @@ bool js_model_light_color_set_blue(jsval *vp)
 
 	light->col.b=script_value_to_float(*vp);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 

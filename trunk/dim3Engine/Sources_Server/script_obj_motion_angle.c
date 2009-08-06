@@ -34,13 +34,13 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_motion_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_motion_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_motion_angle_get_x(jsval *vp);
-bool js_obj_motion_angle_get_y(jsval *vp);
-bool js_obj_motion_angle_get_z(jsval *vp);
-JSBool js_obj_motion_angle_turn_to_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_motion_angle_turn_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_motion_angle_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_motion_angle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_motion_angle_get_x(JSValueRef *vp);
+bool js_obj_motion_angle_get_y(JSValueRef *vp);
+bool js_obj_motion_angle_get_z(JSValueRef *vp);
+JSBool js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	obj_motion_angle_props[]={
 							{"x",					js_obj_motion_angle_get_x,				NULL},
@@ -82,12 +82,12 @@ JSObject* script_add_obj_motion_angle_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_motion_angle_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_motion_angle_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_motion_angle_props));
 }
 
-JSBool js_obj_motion_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_motion_angle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_motion_angle_props));
 }
@@ -98,34 +98,34 @@ JSBool js_obj_motion_angle_set_property(JSContext *cx,JSObject *j_obj,jsval id,j
       
 ======================================================= */
 
-bool js_obj_motion_angle_get_x(jsval *vp)
+bool js_obj_motion_angle_get_x(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_float_to_value(obj->motion.ang.x);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_motion_angle_get_y(jsval *vp)
+bool js_obj_motion_angle_get_y(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_float_to_value(obj->motion.ang.y);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_motion_angle_get_z(jsval *vp)
+bool js_obj_motion_angle_get_z(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_float_to_value(obj->motion.ang.z);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -134,7 +134,7 @@ bool js_obj_motion_angle_get_z(jsval *vp)
       
 ======================================================= */
 
-JSBool js_obj_motion_angle_turn_to_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	float			turn_speed;
 	bool			cwise;
@@ -168,10 +168,10 @@ JSBool js_obj_motion_angle_turn_to_angle_func(JSContext *cx,JSObject *j_obj,uint
 	
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_motion_angle_turn_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 	
@@ -179,5 +179,5 @@ JSBool js_obj_motion_angle_turn_stop_func(JSContext *cx,JSObject *j_obj,uintN ar
 	
 	object_turn_stop(obj);
 
-	return(JS_TRUE);
+	return(TRUE);
 }

@@ -35,6 +35,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "xmls.h"
 #include "video.h"
+#include "sounds.h"
 
 #define host_pane_game					0
 #define host_pane_options				1
@@ -396,8 +397,12 @@ void host_open(void)
 	server.state=gs_host;
 }
 
-void host_close(void)
+void host_close(bool stop_music)
 {
+	if (stop_music) {
+		if (al_music_playing()) al_music_stop();
+	}
+
 	if (net_host_file_list!=NULL) free(net_host_file_list);
 	gui_shutdown();
 }
@@ -591,13 +596,13 @@ void host_handle_click(int id)
 		case host_button_host_id:
 			setup_xml_write();
 			host_game_setup();
-			host_close();
+			host_close(TRUE);
 			host_game();
 			break;
 			
 		case host_button_cancel_id:
 			setup_xml_write();
-			host_close();
+			host_close(FALSE);
 			intro_open();
 			break;
 	}

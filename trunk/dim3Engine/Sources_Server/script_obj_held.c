@@ -35,10 +35,10 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_held_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_held_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_held_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_held_drop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_held_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_held_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_held_add_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_held_drop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	obj_held_functions[]={
 							{"add",					js_obj_held_add_func,				4},
@@ -74,12 +74,12 @@ JSObject* script_add_obj_held_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_held_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_held_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_obj_held_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_held_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -90,7 +90,7 @@ JSBool js_obj_held_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-JSBool js_obj_held_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_held_add_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int			uid;
 	char		name[name_str_len],type[name_str_len],
@@ -108,15 +108,15 @@ JSBool js_obj_held_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv
 	uid=object_held_add(obj,name,type,script,params,err_str);
 	if (uid==-1) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 	*rval=script_int_to_value(uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_held_drop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_held_drop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int			uid,y_change;
 	float		y_ang;
@@ -131,9 +131,9 @@ JSBool js_obj_held_drop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *arg
 
 	if (!object_held_drop(obj,uid,y_ang,y_change,err_str)) {
 		JS_ReportError(js.cx,err_str);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 

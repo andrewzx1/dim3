@@ -32,23 +32,21 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "sounds.h"
 
-#define intro_button_game_id					0
-#define intro_button_game_new_id				1
-#define intro_button_game_load_id				2
-#define intro_button_game_setup_id				3
-#define intro_button_game_new_easy_id			4
-#define intro_button_game_new_medium_id			5
-#define intro_button_game_new_hard_id			6
+#define intro_button_game_new_id				0
+#define intro_button_game_load_id				1
+#define intro_button_game_setup_id				2
 
-#define intro_button_multiplayer_id				7
-#define intro_button_multiplayer_host_id		8
-#define intro_button_multiplayer_join_id		9
-#define intro_button_multiplayer_setup_id		10
-#define intro_button_multiplayer_join_lan_id	11
-#define intro_button_multiplayer_join_wan_id	12
+#define intro_button_game_new_easy_id			10
+#define intro_button_game_new_medium_id			11
+#define intro_button_game_new_hard_id			12
+#define intro_button_game_new_cancel_id			13
 
-#define intro_button_credit_id					13
-#define intro_button_quit_id					14
+#define intro_button_multiplayer_host_id		20
+#define intro_button_multiplayer_join_id		21
+#define intro_button_multiplayer_setup_id		22
+
+#define intro_button_credit_id					30
+#define intro_button_quit_id					31
 
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
@@ -66,6 +64,7 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
+bool						intro_in_new_game;
 bitmap_type					intro_bitmap;
 
 /* =======================================================
@@ -74,7 +73,26 @@ bitmap_type					intro_bitmap;
       
 ======================================================= */
 
-void intro_open_add_button(hud_intro_button_type *btn,char *name,int id,bool hide)
+void intro_state_button_show(void)
+{
+	element_hide(intro_button_game_new_id,intro_in_new_game);
+	element_hide(intro_button_game_load_id,intro_in_new_game);
+	element_hide(intro_button_game_setup_id,intro_in_new_game);
+
+	element_hide(intro_button_game_new_easy_id,(!intro_in_new_game));
+	element_hide(intro_button_game_new_medium_id,(!intro_in_new_game));
+	element_hide(intro_button_game_new_hard_id,(!intro_in_new_game));
+	element_hide(intro_button_game_new_cancel_id,(!intro_in_new_game));
+	
+	element_hide(intro_button_multiplayer_host_id,intro_in_new_game);
+	element_hide(intro_button_multiplayer_join_id,intro_in_new_game);
+	element_hide(intro_button_multiplayer_setup_id,intro_in_new_game);
+
+	element_hide(intro_button_credit_id,intro_in_new_game);
+	element_hide(intro_button_quit_id,intro_in_new_game);
+}
+
+void intro_open_add_button(hud_intro_button_type *btn,char *name,int id)
 {
 	char		sel_name[256],path[1024],path2[1024];
 
@@ -100,19 +118,28 @@ void intro_open(void)
 		
 	gui_initialize("Bitmaps/Backgrounds","main",FALSE);
 
-	intro_open_add_button(&hud.intro.button_game_new,"button_game_new",intro_button_game_new_id,TRUE);
-	intro_open_add_button(&hud.intro.button_game_load,"button_game_load",intro_button_game_load_id,TRUE);
-	intro_open_add_button(&hud.intro.button_game_setup,"button_game_setup",intro_button_game_setup_id,TRUE);
-	intro_open_add_button(&hud.intro.button_game_new_easy,"button_game_new_easy",intro_button_game_new_easy_id,TRUE);
-	intro_open_add_button(&hud.intro.button_game_new_medium,"button_game_new_medium",intro_button_game_new_medium_id,TRUE);
-	intro_open_add_button(&hud.intro.button_game_new_hard,"button_game_new_hard",intro_button_game_new_hard_id,TRUE);
-	
-	intro_open_add_button(&hud.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id,TRUE);
-	intro_open_add_button(&hud.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id,TRUE);
-	intro_open_add_button(&hud.intro.button_multiplayer_setup,"button_multiplayer_setup",intro_button_multiplayer_setup_id,TRUE);
+	intro_open_add_button(&hud.intro.button_game_new,"button_game_new",intro_button_game_new_id);
+	intro_open_add_button(&hud.intro.button_game_load,"button_game_load",intro_button_game_load_id);
+	intro_open_add_button(&hud.intro.button_game_setup,"button_game_setup",intro_button_game_setup_id);
 
-	intro_open_add_button(&hud.intro.button_credit,"button_credit",intro_button_credit_id,FALSE);
-	intro_open_add_button(&hud.intro.button_quit,"button_quit",intro_button_quit_id,FALSE);
+	intro_open_add_button(&hud.intro.button_game_new_easy,"button_game_new_easy",intro_button_game_new_easy_id);
+	intro_open_add_button(&hud.intro.button_game_new_medium,"button_game_new_medium",intro_button_game_new_medium_id);
+	intro_open_add_button(&hud.intro.button_game_new_hard,"button_game_new_hard",intro_button_game_new_hard_id);
+	intro_open_add_button(&hud.intro.button_game_new_cancel,"button_game_new_cancel",intro_button_game_new_cancel_id);
+	
+	intro_open_add_button(&hud.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id);
+	intro_open_add_button(&hud.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id);
+	intro_open_add_button(&hud.intro.button_multiplayer_setup,"button_multiplayer_setup",intro_button_multiplayer_setup_id);
+
+	intro_open_add_button(&hud.intro.button_credit,"button_credit",intro_button_credit_id);
+	intro_open_add_button(&hud.intro.button_quit,"button_quit",intro_button_quit_id);
+
+		// correct panel
+
+	intro_in_new_game=FALSE;
+	intro_state_button_show();
+
+		// in intro state
 	
 	server.state=gs_intro;
 	
@@ -207,20 +234,11 @@ void intro_click(void)
 		
 	switch (id) {
 	
-		case intro_button_game_id:
 		case intro_button_game_new_id:
-		case intro_button_game_new_medium_id:
-			intro_click_game(skill_medium);
+			intro_in_new_game=TRUE;
+			intro_state_button_show();
 			break;
 
-		case intro_button_game_new_easy_id:
-			intro_click_game(skill_easy);
-			break;
-
-		case intro_button_game_new_hard_id:
-			intro_click_game(skill_hard);
-			break;
-			
 		case intro_button_game_load_id:
 			intro_click_load();
 			break;
@@ -230,27 +248,43 @@ void intro_click(void)
 			setup_game_open(FALSE);
 			break;
 
-		case intro_button_multiplayer_id:
-		case intro_button_multiplayer_join_id:
-		case intro_button_multiplayer_join_lan_id:
-			intro_close(TRUE,FALSE);
-			join_open(TRUE);
+			// new game buttons
+
+		case intro_button_game_new_easy_id:
+			intro_click_game(skill_easy);
 			break;
-			
-		case intro_button_multiplayer_join_wan_id:
-			intro_close(TRUE,FALSE);
-			join_open(FALSE);
+
+		case intro_button_game_new_medium_id:
+			intro_click_game(skill_medium);
 			break;
+
+		case intro_button_game_new_hard_id:
+			intro_click_game(skill_hard);
+			break;
+
+		case intro_button_game_new_cancel_id:
+			intro_in_new_game=FALSE;
+			intro_state_button_show();
+			break;
+
+			// multiplayer buttons
 
 		case intro_button_multiplayer_host_id:
 			intro_close(TRUE,FALSE);
 			host_open();
 			break;
 
+		case intro_button_multiplayer_join_id:
+			intro_close(TRUE,FALSE);
+			join_open(TRUE);
+			break;
+			
 		case intro_button_multiplayer_setup_id:
 			intro_close(FALSE,FALSE);
 			setup_network_open();
 			break;
+
+			// credit and quit
 			
 		case intro_button_credit_id:
 			intro_close(FALSE,FALSE);

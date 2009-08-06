@@ -34,9 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_model_fill_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_fill_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_fill_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_model_fill_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_fill_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_fill_change_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	model_fill_functions[]={
 							{"change",				js_model_fill_change_func,				2},
@@ -71,12 +71,12 @@ JSObject* script_add_model_fill_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_fill_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_fill_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_model_fill_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_fill_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -87,13 +87,13 @@ JSBool js_model_fill_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_model_fill_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_fill_change_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
     model_draw		*draw;
 	
 	draw=script_find_model_draw();
     
     model_change_fill(draw,script_value_to_int(argv[0]),script_value_to_int(argv[1]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 

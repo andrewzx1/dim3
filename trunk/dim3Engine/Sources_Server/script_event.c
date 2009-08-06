@@ -37,28 +37,28 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_event_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_event_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_event_start_timer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_clear_timer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_start_wait_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_start_wait_random_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_clear_wait_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_chain_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_clear_chain_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_send_message_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_send_message_to_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_send_message_to_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_send_message_to_object_by_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_send_message_to_course_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_send_message_to_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_send_message_to_held_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_send_message_to_spawn_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_call_course_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_event_call_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_event_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_event_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_event_start_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_clear_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_start_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_start_wait_random_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_clear_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_clear_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_send_message_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_send_message_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_send_message_to_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_send_message_to_game_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_set_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_get_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_call_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_call_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_event_call_game_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	event_functions[]={
 							{"startTimer",					js_event_start_timer_func,						2},
@@ -112,12 +112,12 @@ JSObject* script_add_event_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_event_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_event_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_event_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_event_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -128,16 +128,16 @@ JSBool js_event_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
       
 ======================================================= */
 
-JSBool js_event_start_timer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_start_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	*rval=script_bool_to_value(timers_add(&js.attach,script_value_to_int(argv[0]),script_value_to_int(argv[1]),NULL,timer_mode_repeat));
-    return(JS_TRUE);
+    return(TRUE);
 }
 
-JSBool js_event_clear_timer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_clear_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	timers_clear(&js.attach,timer_mode_repeat);
-    return(JS_TRUE);
+    return(TRUE);
 }
 
 /* =======================================================
@@ -146,13 +146,13 @@ JSBool js_event_clear_timer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
       
 ======================================================= */
 
-JSBool js_event_start_wait_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_start_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	*rval=script_bool_to_value(timers_add(&js.attach,script_value_to_int(argv[0]),script_value_to_int(argv[1]),NULL,timer_mode_single));
-    return(JS_TRUE);
+    return(TRUE);
 }
 
-JSBool js_event_start_wait_random_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_start_wait_random_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				min,max,tick;
 	
@@ -162,13 +162,13 @@ JSBool js_event_start_wait_random_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 	*rval=script_bool_to_value(timers_add(&js.attach,tick,script_value_to_int(argv[2]),NULL,timer_mode_single));
 
-    return(JS_TRUE);
+    return(TRUE);
 }
 
-JSBool js_event_clear_wait_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_clear_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	timers_clear(&js.attach,timer_mode_single);
-    return(JS_TRUE);
+    return(TRUE);
 }
 
 /* =======================================================
@@ -177,7 +177,7 @@ JSBool js_event_clear_wait_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
       
 ======================================================= */
 
-JSBool js_event_chain_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			chain_func_name[64];
 	
@@ -185,13 +185,13 @@ JSBool js_event_chain_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,
 	
 	*rval=script_bool_to_value(timers_add(&js.attach,script_value_to_int(argv[0]),0,chain_func_name,timer_mode_chain));
 
-    return(JS_TRUE);
+    return(TRUE);
 }
 
-JSBool js_event_clear_chain_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_clear_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	timers_clear(&js.attach,timer_mode_chain);
-    return(JS_TRUE);
+    return(TRUE);
 }
 
 /* =======================================================
@@ -200,7 +200,7 @@ JSBool js_event_clear_chain_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
       
 ======================================================= */
 
-JSBool js_event_send_message_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_send_message_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				msg_to,id;
 	char			name[name_str_len];
@@ -243,10 +243,10 @@ JSBool js_event_send_message_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_send_message_to_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_send_message_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 
@@ -256,17 +256,17 @@ JSBool js_event_send_message_to_player_func(JSContext *cx,JSObject *j_obj,uintN 
 
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_send_message_to_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(script_value_to_int(argv[0]));
 	if (obj==NULL) {
 		*rval=script_bool_to_value(FALSE);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
@@ -275,10 +275,10 @@ JSBool js_event_send_message_to_object_by_id_func(JSContext *cx,JSObject *j_obj,
 
 	*rval=script_bool_to_value(TRUE);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_send_message_to_object_by_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			name[name_str_len];
 	obj_type		*obj;
@@ -287,7 +287,7 @@ JSBool js_event_send_message_to_object_by_name_func(JSContext *cx,JSObject *j_ob
 	obj=object_find_name(name);
 	if (obj==NULL) {
 		*rval=script_bool_to_value(FALSE);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
@@ -296,74 +296,74 @@ JSBool js_event_send_message_to_object_by_name_func(JSContext *cx,JSObject *j_ob
 
 	*rval=script_bool_to_value(TRUE);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_send_message_to_course_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_send_message_to_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	memmove(js.course_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
 	scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_send_message_to_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_send_message_to_game_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	memmove(js.game_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
 	scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_send_message_to_held_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type		*obj;
 	weapon_type		*weap;
 
 	if (js.attach.thing_type!=thing_type_object) {
 		JS_ReportError(js.cx,"Not an object script");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=weapon_find_current(obj);
 	if (weap==NULL) {
 		JS_ReportError(js.cx,"No held weapon");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 	memmove(weap->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
 	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_send_message_to_spawn_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	proj_type		*proj;
 	weapon_type		*weap;
 
 	if (js.attach.thing_type!=thing_type_projectile) {
 		JS_ReportError(js.cx,"Not an projectile script");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 	proj=projectile_find_uid(js.attach.thing_uid);
 	if (proj==NULL) {
 		JS_ReportError(js.cx,"Could not find projectile");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 	weap=weapon_find_uid(proj->weap_uid);
 	if (weap==NULL) {
 		JS_ReportError(js.cx,"Could not find weapon");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 	memmove(weap->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
 	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -372,7 +372,7 @@ JSBool js_event_send_message_to_spawn_weapon_func(JSContext *cx,JSObject *j_obj,
       
 ======================================================= */
 
-JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_set_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int			idx;
 
@@ -381,7 +381,7 @@ JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	idx=script_value_to_int(argv[0]);
 	if ((idx<0) || (idx>=max_msg_data)) {
 		JS_ReportError(js.cx,"Message data index out of bounds");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 		// set data
@@ -389,27 +389,27 @@ JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	if (JSVAL_IS_INT(argv[1])) {
 		js.attach.set_msg_data[idx].type=d3_jsval_type_int;
 		js.attach.set_msg_data[idx].data.d3_int=script_value_to_int(argv[1]);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 	
 	if (JSVAL_IS_DOUBLE(argv[1])) {
 		js.attach.set_msg_data[idx].type=d3_jsval_type_float;
 		js.attach.set_msg_data[idx].data.d3_float=script_value_to_float(argv[1]);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 	
 	if (JSVAL_IS_BOOLEAN(argv[1])) {
 		js.attach.set_msg_data[idx].type=d3_jsval_type_boolean;
 		js.attach.set_msg_data[idx].data.d3_boolean=script_value_to_bool(argv[1]);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 	
 	js.attach.set_msg_data[idx].type=d3_jsval_type_string;
 	script_value_to_string(argv[1],js.attach.set_msg_data[idx].data.d3_string,max_d3_jsval_str_len);	
-    return(JS_TRUE);
+    return(TRUE);
 }
 
-JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_get_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int			idx;
 
@@ -418,7 +418,7 @@ JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	idx=script_value_to_int(argv[0]);
 	if ((idx<0) || (idx>=max_msg_data)) {
 		JS_ReportError(js.cx,"Message data index out of bounds");
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
 		// get data
@@ -445,7 +445,7 @@ JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -454,11 +454,11 @@ JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
       
 ======================================================= */
 
-JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_call_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				n,arg_count;
 	char			func_name[64];
-	jsval			args[20];
+	JSValueRef			args[20];
 	obj_type		*obj;
 
 		// get arguments
@@ -466,7 +466,7 @@ JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	obj=object_find_uid(script_value_to_int(argv[0]));
 	if (obj==NULL) {
 		*rval=script_bool_to_value(FALSE);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 
 	script_value_to_string(argv[1],func_name,64);
@@ -481,16 +481,16 @@ JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,
 
 		// call function
 
-	if (!scripts_direct_call(&obj->attach,func_name,arg_count,args,rval)) return(JS_FALSE);
+	if (!scripts_direct_call(&obj->attach,func_name,arg_count,args,rval)) return(FALSE);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_call_course_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_call_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				n,arg_count;
 	char			func_name[64];
-	jsval			args[20];
+	JSValueRef			args[20];
 
 		// get arguments
 
@@ -506,16 +506,16 @@ JSBool js_event_call_course_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 
 		// call function
 
-	if (!scripts_direct_call(&js.course_attach,func_name,arg_count,args,rval)) return(JS_FALSE);
+	if (!scripts_direct_call(&js.course_attach,func_name,arg_count,args,rval)) return(FALSE);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_event_call_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_event_call_game_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				n,arg_count;
 	char			func_name[64];
-	jsval			args[20];
+	JSValueRef			args[20];
 
 		// get arguments
 
@@ -531,7 +531,7 @@ JSBool js_event_call_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 
 		// call function
 
-	if (!scripts_direct_call(&js.game_attach,func_name,arg_count,args,rval)) return(JS_FALSE);
+	if (!scripts_direct_call(&js.game_attach,func_name,arg_count,args,rval)) return(FALSE);
 
-	return(JS_TRUE);
+	return(TRUE);
 }

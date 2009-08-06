@@ -32,13 +32,13 @@ and can be sold or given away.
 #include "scripts.h"
 #include "models.h"
 
-JSBool js_model_mesh_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_mesh_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_model_mesh_show_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_mesh_show_all_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_mesh_show_only_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_mesh_hide_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_model_mesh_hide_all_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_model_mesh_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_mesh_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_model_mesh_show_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_model_mesh_hide_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 extern js_type			js;
 
@@ -79,12 +79,12 @@ JSObject* script_add_model_mesh_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_mesh_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_mesh_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_model_mesh_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_mesh_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -95,7 +95,7 @@ JSBool js_model_mesh_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-JSBool js_model_mesh_show_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_mesh_show_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			name[name_str_len];
 	model_draw		*draw;
@@ -105,23 +105,23 @@ JSBool js_model_mesh_show_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_show_mesh(draw,name)) {
 		JS_ReportError(js.cx,"Named mesh does not exist: %s",name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_model_mesh_show_all_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 	model_show_all_mesh(draw);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_model_mesh_show_only_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			name[name_str_len];
 	model_draw		*draw;
@@ -131,13 +131,13 @@ JSBool js_model_mesh_show_only_mesh_func(JSContext *cx,JSObject *j_obj,uintN arg
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_show_only_mesh(draw,name)) {
 		JS_ReportError(js.cx,"Named mesh does not exist: %s",name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_model_mesh_hide_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_mesh_hide_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			name[name_str_len];
 	model_draw		*draw;
@@ -147,19 +147,19 @@ JSBool js_model_mesh_hide_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_hide_mesh(draw,name)) {
 		JS_ReportError(js.cx,"Named mesh does not exist: %s",name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_model_mesh_hide_all_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 	model_hide_all_mesh(draw);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 

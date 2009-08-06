@@ -35,7 +35,7 @@ and can be sold or given away.
 extern js_type				js;
 extern setup_type			setup;
 
-JSBool scripts_gc_reporter(JSContext *cx,JSGCStatus status);		// forward reference
+JSBool scripts_gc_reporter(JSContextRef cx,JSGCStatus status);		// forward reference
 
 //
 // NOTE: Scripts aren't like other objects which have a list that is compressed as objects
@@ -187,7 +187,7 @@ void scripts_clean_up_roots(void)
 	JS_GC(js.cx);
 }
 
-JSBool scripts_gc_reporter(JSContext *cx,JSGCStatus status)
+JSBool scripts_gc_reporter(JSContextRef cx,JSGCStatus status)
 {
 	switch (status) {
 		case JSGC_BEGIN:
@@ -204,7 +204,7 @@ JSBool scripts_gc_reporter(JSContext *cx,JSGCStatus status)
 			break;
 	}
 			
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -218,7 +218,7 @@ void scripts_clear_last_error(void)
 	js.last_error_str[0]=0x0;
 }
 
-void scripts_catch_errors(JSContext *cx,const char *message,JSErrorReport *report)
+void scripts_catch_errors(JSContextRef cx,const char *message,JSErrorReport *report)
 {
 	int				idx;
 	script_type		*script;
@@ -240,7 +240,7 @@ void scripts_get_last_error(char *err_str)
 {
 	int				idx;
 	script_type		*script;
-	jsval			eval;
+	JSValueRef		eval;
 	JSString		*jstr;
 	JSErrorReport	*report;
 	
@@ -310,7 +310,7 @@ void scripts_clear_attach_data(attach_type *attach)
 
 bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 {
-	jsval			rval;
+	JSValueRef		rval;
 	
 		// execute
 		

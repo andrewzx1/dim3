@@ -40,17 +40,17 @@ extern setup_type			setup;
 extern server_type			server;
 extern network_setup_type	net_setup;
 
-JSBool js_sound_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_sound_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_sound_play_at_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_sound_play_global_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_sound_start_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_sound_stop_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_sound_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_sound_fade_out_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_sound_fade_out_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_sound_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_sound_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_sound_play_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_sound_play_at_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_sound_play_global_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_sound_play_global_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_sound_start_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_sound_stop_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_sound_fade_in_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_sound_fade_out_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	sound_functions[]={
 							{"play",				js_sound_play_func,						5},
@@ -93,12 +93,12 @@ JSObject* script_add_global_sound_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_sound_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_sound_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_sound_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_sound_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -179,7 +179,7 @@ bool script_sound_play(char *name,d3pnt *pt,float pitch,bool global,bool atplaye
 	return(TRUE);
 }
 
-JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_play_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -191,29 +191,29 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	pt.y=script_value_to_int(argv[3]);
 	pitch=script_value_to_float(argv[4]);
 
-	if (!script_sound_play(name,&pt,pitch,FALSE,FALSE)) return(JS_FALSE);
+	if (!script_sound_play(name,&pt,pitch,FALSE,FALSE)) return(FALSE);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_sound_play_at_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_play_at_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	float			pitch;
 	char			name[name_str_len];
 	obj_type		*obj;
 
 	obj=script_find_obj_from_uid_arg(argv[1]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 	
 	script_value_to_string(argv[0],name,name_str_len);
 	pitch=script_value_to_float(argv[2]);
 
-	if (!script_sound_play(name,&obj->pnt,pitch,FALSE,FALSE)) return(JS_FALSE);
+	if (!script_sound_play(name,&obj->pnt,pitch,FALSE,FALSE)) return(FALSE);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_play_global_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -224,12 +224,12 @@ JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 	
 	pt.x=pt.y=pt.z=0;
 
-	if (!script_sound_play(name,&pt,pitch,TRUE,FALSE)) return(JS_FALSE);
+	if (!script_sound_play(name,&pt,pitch,TRUE,FALSE)) return(FALSE);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_sound_play_global_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_play_global_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -240,9 +240,9 @@ JSBool js_sound_play_global_player_func(JSContext *cx,JSObject *j_obj,uintN argc
 	
 	pt.x=pt.y=pt.z=0;
 
-	if (!script_sound_play(name,&pt,pitch,TRUE,TRUE)) return(JS_FALSE);
+	if (!script_sound_play(name,&pt,pitch,TRUE,TRUE)) return(FALSE);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -251,37 +251,37 @@ JSBool js_sound_play_global_player_func(JSContext *cx,JSObject *j_obj,uintN argc
       
 ======================================================= */
 
-JSBool js_sound_start_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_start_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char			name[name_str_len],wave_path[1024];
 
-	if (!setup.music_on) return(JS_TRUE);
+	if (!setup.music_on) return(TRUE);
 	
 	script_value_to_string(argv[0],name,name_str_len);
 
 	file_paths_data(&setup.file_path_setup,wave_path,"Music",name,"wav");
 	if (!al_music_play(name,wave_path)) {
 		JS_ReportError(js.cx,"Named music does not exist or could not be played: %s",name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_sound_stop_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_stop_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
-	if (!setup.music_on) return(JS_TRUE);
+	if (!setup.music_on) return(TRUE);
 
 	al_music_stop();
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_sound_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_fade_in_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				msec;
 	char			name[name_str_len],wave_path[1024];
 	
-	if (!setup.music_on) return(JS_TRUE);
+	if (!setup.music_on) return(TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
 	msec=script_value_to_int(argv[1]);
@@ -289,30 +289,30 @@ JSBool js_sound_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	file_paths_data(&setup.file_path_setup,wave_path,"Music",name,"wav");
 	if (!al_music_fade_in(js.time.current_tick,name,wave_path,msec)) {
 		JS_ReportError(js.cx,"Named music does not exist or could not be played: %s",name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_sound_fade_out_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_fade_out_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int					msec;
 	
-	if (!setup.music_on) return(JS_TRUE);
+	if (!setup.music_on) return(TRUE);
 
 	msec=script_value_to_int(argv[0]);
 	al_music_fade_out(js.time.current_tick,msec);
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_sound_fade_out_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int					fade_out_msec,fade_in_msec;
 	char				name[name_str_len],wave_path[1024];
 	
-	if (!setup.music_on) return(JS_TRUE);
+	if (!setup.music_on) return(TRUE);
 
 	script_value_to_string(argv[0],name,name_str_len);
 	fade_out_msec=script_value_to_int(argv[1]);
@@ -321,8 +321,8 @@ JSBool js_sound_fade_out_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN 
 	file_paths_data(&setup.file_path_setup,wave_path,"Music",name,"wav");
 	if (!al_music_fade_out_fade_in(js.time.current_tick,name,wave_path,fade_out_msec,fade_in_msec)) {
 		JS_ReportError(js.cx,"Named music does not exist or could not be played: %s",name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	return(JS_TRUE);
+	return(TRUE);
 }

@@ -34,16 +34,16 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_proj_size_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_proj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_proj_size_get_x(jsval *vp);
-bool js_proj_size_get_y(jsval *vp);
-bool js_proj_size_get_z(jsval *vp);
-bool js_proj_size_get_weight(jsval *vp);
-bool js_proj_size_set_x(jsval *vp);
-bool js_proj_size_set_y(jsval *vp);
-bool js_proj_size_set_z(jsval *vp);
-bool js_proj_size_set_weight(jsval *vp);
+JSBool js_proj_size_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_proj_size_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_proj_size_get_x(JSValueRef *vp);
+bool js_proj_size_get_y(JSValueRef *vp);
+bool js_proj_size_get_z(JSValueRef *vp);
+bool js_proj_size_get_weight(JSValueRef *vp);
+bool js_proj_size_set_x(JSValueRef *vp);
+bool js_proj_size_set_y(JSValueRef *vp);
+bool js_proj_size_set_z(JSValueRef *vp);
+bool js_proj_size_set_weight(JSValueRef *vp);
 
 script_js_property	proj_size_props[]={
 							{"x",					js_proj_size_get_x,					js_proj_size_set_x},
@@ -81,12 +81,12 @@ JSObject* script_add_proj_size_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_size_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_size_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,proj_size_props));
 }
 
-JSBool js_proj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_size_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,proj_size_props));
 }
@@ -97,52 +97,52 @@ JSBool js_proj_size_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_proj_size_get_x(jsval *vp)
+bool js_proj_size_get_x(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_int_to_value(proj_setup->size.x);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_size_get_y(jsval *vp)
+bool js_proj_size_get_y(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_int_to_value(proj_setup->size.y);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_size_get_z(jsval *vp)
+bool js_proj_size_get_z(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_int_to_value(proj_setup->size.z);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_size_get_weight(jsval *vp)
+bool js_proj_size_get_weight(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	*vp=script_int_to_value(proj_setup->size.weight);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -151,53 +151,53 @@ bool js_proj_size_get_weight(jsval *vp)
       
 ======================================================= */
 
-bool js_proj_size_set_x(jsval *vp)
+bool js_proj_size_set_x(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->size.x=script_value_to_int(*vp);
 	proj_setup_set_radius(proj_setup);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_size_set_y(jsval *vp)
+bool js_proj_size_set_y(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->size.y=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_size_set_z(jsval *vp)
+bool js_proj_size_set_z(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->size.z=script_value_to_int(*vp);
 	proj_setup_set_radius(proj_setup);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_proj_size_set_weight(jsval *vp)
+bool js_proj_size_set_weight(JSValueRef *vp)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(JS_TRUE);
+	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->size.weight=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 

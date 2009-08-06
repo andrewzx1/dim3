@@ -35,16 +35,16 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_radar_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_radar_get_on(jsval *vp);
-bool js_obj_radar_get_icon(jsval *vp);
-bool js_obj_radar_get_motionOnly(jsval *vp);
-bool js_obj_radar_get_alwaysVisible(jsval *vp);
-bool js_obj_radar_set_on(jsval *vp);
-bool js_obj_radar_set_icon(jsval *vp);
-bool js_obj_radar_set_motionOnly(jsval *vp);
-bool js_obj_radar_set_alwaysVisible(jsval *vp);
+JSBool js_obj_radar_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_radar_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_radar_get_on(JSValueRef *vp);
+bool js_obj_radar_get_icon(JSValueRef *vp);
+bool js_obj_radar_get_motionOnly(JSValueRef *vp);
+bool js_obj_radar_get_alwaysVisible(JSValueRef *vp);
+bool js_obj_radar_set_on(JSValueRef *vp);
+bool js_obj_radar_set_icon(JSValueRef *vp);
+bool js_obj_radar_set_motionOnly(JSValueRef *vp);
+bool js_obj_radar_set_alwaysVisible(JSValueRef *vp);
 
 script_js_property	obj_radar_props[]={
 							{"on",					js_obj_radar_get_on,				js_obj_radar_set_on},
@@ -82,12 +82,12 @@ JSObject* script_add_obj_radar_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_radar_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_radar_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_radar_props));
 }
 
-JSBool js_obj_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_radar_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_radar_props));
 }
@@ -98,44 +98,44 @@ JSBool js_obj_radar_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
       
 ======================================================= */
 
-bool js_obj_radar_get_on(jsval *vp)
+bool js_obj_radar_get_on(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->radar.on);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_radar_get_icon(jsval *vp)
+bool js_obj_radar_get_icon(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_string_to_value(obj->radar.icon);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_radar_get_motionOnly(jsval *vp)
+bool js_obj_radar_get_motionOnly(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->radar.motion_only);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_radar_get_alwaysVisible(jsval *vp)
+bool js_obj_radar_get_alwaysVisible(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->radar.always_visible);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -144,45 +144,45 @@ bool js_obj_radar_get_alwaysVisible(jsval *vp)
       
 ======================================================= */
 
-bool js_obj_radar_set_on(jsval *vp)
+bool js_obj_radar_set_on(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->radar.on=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_radar_set_icon(jsval *vp)
+bool js_obj_radar_set_icon(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,obj->radar.icon,name_str_len);
-	if (!object_set_radar_icon(obj)) return(JS_FALSE);
+	if (!object_set_radar_icon(obj)) return(FALSE);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_radar_set_motionOnly(jsval *vp)
+bool js_obj_radar_set_motionOnly(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->radar.motion_only=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_radar_set_alwaysVisible(jsval *vp)
+bool js_obj_radar_set_alwaysVisible(JSValueRef *vp)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->radar.always_visible=script_value_to_bool(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 

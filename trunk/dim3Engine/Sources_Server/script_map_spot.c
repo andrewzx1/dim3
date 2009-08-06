@@ -34,17 +34,17 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_spot_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_map_spot_get_count(jsval *vp);
-JSBool js_map_spot_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_spot_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_spot_get_type_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_spot_get_script_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_spot_get_parameter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_spot_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_spot_get_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_spot_attach_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_spot_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_map_spot_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_map_spot_get_count(JSValueRef *vp);
+JSBool js_map_spot_find_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_spot_get_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_spot_get_type_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_spot_get_script_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_spot_get_parameter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_spot_get_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_spot_get_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_map_spot_attach_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	map_spot_props[]={
 							{"count",				js_map_spot_get_count,				NULL},
@@ -90,12 +90,12 @@ JSObject* script_add_map_spot_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_spot_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_spot_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,map_spot_props));
 }
 
-JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_spot_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,map_spot_props));
 }
@@ -106,10 +106,10 @@ JSBool js_map_spot_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-bool js_map_spot_get_count(jsval *vp)
+bool js_map_spot_get_count(JSValueRef *vp)
 {
 	*vp=script_int_to_value(map.nspot);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -118,32 +118,32 @@ bool js_map_spot_get_count(jsval *vp)
       
 ======================================================= */
 
-JSBool js_map_spot_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_spot_find_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char		name[name_str_len],type[name_str_len];
 	
 	if ((script_is_value_null(argv[0])) && (script_is_value_null(argv[1]))) {
 		*rval=script_int_to_value(-1);
-		return(JS_TRUE);
+		return(TRUE);
 	}
 	
 	if ((!script_is_value_null(argv[0])) && (!script_is_value_null(argv[1]))) {
 		script_value_to_string(argv[0],name,name_str_len);
 		script_value_to_string(argv[1],type,name_str_len);
 		*rval=script_int_to_value(map_find_spot(&map,name,type));
-		return(JS_TRUE);
+		return(TRUE);
 	}
 	
 	if (!script_is_value_null(argv[0])) {
 		script_value_to_string(argv[0],name,name_str_len);
 		*rval=script_int_to_value(map_find_spot(&map,name,NULL));
-		return(JS_TRUE);
+		return(TRUE);
 	}
 		
 	script_value_to_string(argv[1],type,name_str_len);
 	*rval=script_int_to_value(map_find_spot(&map,NULL,type));
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -152,52 +152,52 @@ JSBool js_map_spot_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *arg
       
 ======================================================= */
 
-JSBool js_map_spot_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_spot_get_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	spot_type	*spot;
 	
 	spot=script_find_spot_from_idx_arg(argv[0]);
-	if (spot==NULL) return(JS_FALSE);
+	if (spot==NULL) return(FALSE);
 	
 	*rval=script_string_to_value(spot->name);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_spot_get_type_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_spot_get_type_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	spot_type	*spot;
 	
 	spot=script_find_spot_from_idx_arg(argv[0]);
-	if (spot==NULL) return(JS_FALSE);
+	if (spot==NULL) return(FALSE);
 	
 	*rval=script_string_to_value(spot->type);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_spot_get_script_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_spot_get_script_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	spot_type	*spot;
 	
 	spot=script_find_spot_from_idx_arg(argv[0]);
-	if (spot==NULL) return(JS_FALSE);
+	if (spot==NULL) return(FALSE);
 	
 	*rval=script_string_to_value(spot->script);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_spot_get_parameter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_spot_get_parameter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	spot_type	*spot;
 	
 	spot=script_find_spot_from_idx_arg(argv[0]);
-	if (spot==NULL) return(JS_FALSE);
+	if (spot==NULL) return(FALSE);
 	
 	*rval=script_string_to_value(spot->params);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -206,34 +206,34 @@ JSBool js_map_spot_get_parameter_func(JSContext *cx,JSObject *j_obj,uintN argc,j
       
 ======================================================= */
 
-JSBool js_map_spot_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_spot_get_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	spot_type   *spot;
 
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(argv[0]);
-	if (spot==NULL) return(JS_FALSE);
+	if (spot==NULL) return(FALSE);
 	
 		// get position
 		
 	*rval=script_point_to_value(spot->pnt.x,spot->pnt.y,spot->pnt.z);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_map_spot_get_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_spot_get_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	spot_type   *spot;
 
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(argv[0]);
-	if (spot==NULL) return(JS_FALSE);
+	if (spot==NULL) return(FALSE);
 	
 		// get position
 		
 	*rval=script_angle_to_value(0,spot->ang.y,0);
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -242,7 +242,7 @@ JSBool js_map_spot_get_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
       
 ======================================================= */
 
-JSBool js_map_spot_attach_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_spot_attach_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char		name[name_str_len],type[name_str_len],
 				script[file_str_len],params[param_str_len];
@@ -251,7 +251,7 @@ JSBool js_map_spot_attach_object_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(argv[0]);
-	if (spot==NULL) return(JS_FALSE);
+	if (spot==NULL) return(FALSE);
 
 		// attach
 		
@@ -262,6 +262,6 @@ JSBool js_map_spot_attach_object_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	
 	map_spot_attach_object(spot,name,type,script,params);
 		
-	return(JS_TRUE);
+	return(TRUE);
 }
 

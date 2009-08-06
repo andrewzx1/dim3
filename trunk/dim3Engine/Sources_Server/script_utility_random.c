@@ -33,12 +33,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_utility_random_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_utility_random_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_utility_random_get_integer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_utility_random_get_float_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_utility_random_get_boolean_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_utility_random_get_pos_or_neg_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_utility_random_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_utility_random_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_utility_random_get_integer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_utility_random_get_float_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_utility_random_get_boolean_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_function	utility_random_functions[]={
 							{"getInteger",			js_utility_random_get_integer_func,		2},
@@ -76,12 +76,12 @@ JSObject* script_add_utility_random_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_utility_random_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_utility_random_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,NULL));
 }
 
-JSBool js_utility_random_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_utility_random_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,NULL));
 }
@@ -92,7 +92,7 @@ JSBool js_utility_random_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
       
 ======================================================= */
 
-JSBool js_utility_random_get_integer_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_utility_random_get_integer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	int				min,max;
 
@@ -101,10 +101,10 @@ JSBool js_utility_random_get_integer_func(JSContext *cx,JSObject *j_obj,uintN ar
 
 	*rval=script_int_to_value(random_int(abs(max-min))+min);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_utility_random_get_float_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_utility_random_get_float_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	float				min,max;
 
@@ -113,19 +113,19 @@ JSBool js_utility_random_get_float_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 	*rval=script_float_to_value(random_float(fabsf(max-min))+min);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_utility_random_get_boolean_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_utility_random_get_boolean_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	*rval=script_bool_to_value(random_boolean());
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_utility_random_get_pos_or_neg_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	*rval=script_int_to_value(random_boolean()?1:(-1));
 	
-	return(JS_TRUE);
+	return(TRUE);
 }

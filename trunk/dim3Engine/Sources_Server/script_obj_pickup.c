@@ -35,22 +35,22 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_pickup_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_pickup_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_obj_pickup_get_objectId(jsval *vp);
-bool js_obj_pickup_get_objectName(jsval *vp);
-bool js_obj_pickup_get_objectIsPlayer(jsval *vp);
-bool js_obj_pickup_get_itemId(jsval *vp);
-bool js_obj_pickup_get_itemName(jsval *vp);
-JSBool js_obj_pickup_add_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_pickup_swap_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_pickup_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_pickup_add_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_pickup_add_alt_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_pickup_add_alt_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_pickup_add_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_pickup_add_custom_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_obj_pickup_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_pickup_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_obj_pickup_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_obj_pickup_get_objectId(JSValueRef *vp);
+bool js_obj_pickup_get_objectName(JSValueRef *vp);
+bool js_obj_pickup_get_objectIsPlayer(JSValueRef *vp);
+bool js_obj_pickup_get_itemId(JSValueRef *vp);
+bool js_obj_pickup_get_itemName(JSValueRef *vp);
+JSBool js_obj_pickup_add_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_pickup_add_ammo_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_pickup_add_clip_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_pickup_add_alt_clip_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_pickup_add_health_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_pickup_add_custom_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_obj_pickup_cancel_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	obj_pickup_props[]={
 							{"objectId",			js_obj_pickup_get_objectId,			NULL},
@@ -101,12 +101,12 @@ JSObject* script_add_obj_pickup_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_pickup_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_pickup_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,obj_pickup_props));
 }
 
-JSBool js_obj_pickup_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_pickup_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,obj_pickup_props));
 }
@@ -117,17 +117,17 @@ JSBool js_obj_pickup_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
       
 ======================================================= */
 
-bool js_obj_pickup_get_objectId(jsval *vp)
+bool js_obj_pickup_get_objectId(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->pickup.obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_pickup_get_objectName(jsval *vp)
+bool js_obj_pickup_get_objectName(JSValueRef *vp)
 {
 	obj_type		*obj,*pickup_obj;
 
@@ -141,30 +141,30 @@ bool js_obj_pickup_get_objectName(jsval *vp)
 		*vp=script_string_to_value(pickup_obj->name);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_pickup_get_objectIsPlayer(jsval *vp)
+bool js_obj_pickup_get_objectIsPlayer(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(obj->pickup.obj_uid==server.player_obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_pickup_get_itemId(jsval *vp)
+bool js_obj_pickup_get_itemId(JSValueRef *vp)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(obj->pickup.item_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_obj_pickup_get_itemName(jsval *vp)
+bool js_obj_pickup_get_itemName(JSValueRef *vp)
 {
 	obj_type		*obj,*pickup_item;
 
@@ -178,7 +178,7 @@ bool js_obj_pickup_get_itemName(jsval *vp)
 		*vp=script_string_to_value(pickup_item->name);
 	}
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -187,116 +187,116 @@ bool js_obj_pickup_get_itemName(jsval *vp)
       
 ======================================================= */
 
-JSBool js_obj_pickup_add_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_add_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type	*obj;
 	weapon_type	*weap;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 	
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_weapon(obj,weap));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_pickup_swap_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type	*obj;
 	weapon_type	*weap;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 	
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_swap_weapon(obj,weap));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_pickup_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_add_ammo_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type	*obj;
 	weapon_type	*weap;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 	
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_ammo(obj,weap,script_value_to_int(argv[2])));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_pickup_add_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_add_clip_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type	*obj;
 	weapon_type	*weap;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 	
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_clip(obj,weap,script_value_to_int(argv[2])));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_pickup_add_alt_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type	*obj;
 	weapon_type	*weap;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 	
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_alt_ammo(obj,weap,script_value_to_int(argv[2])));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_pickup_add_alt_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_add_alt_clip_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type	*obj;
 	weapon_type	*weap;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 	
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
-	if (weap==NULL) return(JS_FALSE);
+	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_alt_clip(obj,weap,script_value_to_int(argv[2])));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_pickup_add_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_add_health_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type	*obj;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 
    *rval=script_bool_to_value(item_add_health(obj,script_value_to_int(argv[1])));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_obj_pickup_add_custom_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_add_custom_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type	*obj;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
-	if (obj==NULL) return(JS_FALSE);
+	if (obj==NULL) return(FALSE);
 
 	item_add_custom(obj,script_value_to_int(argv[1]));
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -305,12 +305,12 @@ JSBool js_obj_pickup_add_custom_func(JSContext *cx,JSObject *j_obj,uintN argc,js
       
 ======================================================= */
 
-JSBool js_obj_pickup_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_pickup_cancel_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->pickup.canceled=TRUE;
 	
-	return(JS_TRUE);
+	return(TRUE);
 }

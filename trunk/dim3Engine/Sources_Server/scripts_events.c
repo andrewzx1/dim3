@@ -65,7 +65,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 {
 	int				idx;
 	bool			err_up;
-	jsval			rval,argv[5];
+	JSValueRef			rval,argv[5];
 	script_type		*script;
 	attach_type		old_attach;
 	
@@ -133,7 +133,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 {
 	int				idx;
 	bool			err_up;
-	jsval			func_val,rval,argv[2];
+	JSValueRef			func_val,rval,argv[2];
 	script_type		*script;
 	attach_type		old_attach;
 	
@@ -202,12 +202,12 @@ void scripts_chain_console(attach_type *attach,char *func_name)
       
 ======================================================= */
 
-bool scripts_direct_call(attach_type *attach,char *func_name,int arg_count,jsval *args,jsval *rval)
+bool scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,JSValueRef *rval)
 {
 	int				n,idx;
 	bool			err_up;
 	char			err_str[256];
-	jsval			func_val,argv[5];
+	JSValueRef			func_val,argv[5];
 	script_type		*script;
 	attach_type		old_attach;
 	

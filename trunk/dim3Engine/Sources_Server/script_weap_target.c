@@ -35,15 +35,15 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_target_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-bool js_weap_target_get_on(jsval *vp);
-bool js_weap_target_get_distance(jsval *vp);
-bool js_weap_target_get_objectId(jsval *vp);
-bool js_weap_target_set_distance(jsval *vp);
-JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_weap_target_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSBool js_weap_target_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+bool js_weap_target_get_on(JSValueRef *vp);
+bool js_weap_target_get_distance(JSValueRef *vp);
+bool js_weap_target_get_objectId(JSValueRef *vp);
+bool js_weap_target_set_distance(JSValueRef *vp);
+JSBool js_weap_target_start_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_target_start_opponent_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSBool js_weap_target_end_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 
 script_js_property	weap_target_props[]={
 							{"on",					js_weap_target_get_on,					NULL},
@@ -86,12 +86,12 @@ JSObject* script_add_weap_target_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_target_get_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_target_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_get_property(cx,j_obj,id,vp,weap_target_props));
 }
 
-JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_target_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
 {
 	return(script_set_property(cx,j_obj,id,vp,weap_target_props));
 }
@@ -102,34 +102,34 @@ JSBool js_weap_target_set_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
       
 ======================================================= */
 
-bool js_weap_target_get_on(jsval *vp)
+bool js_weap_target_get_on(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_bool_to_value(weap->target.on);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_target_get_distance(jsval *vp)
+bool js_weap_target_get_distance(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(weap->target.distance);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-bool js_weap_target_get_objectId(jsval *vp)
+bool js_weap_target_get_objectId(JSValueRef *vp)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	*vp=script_int_to_value(weap->target.obj_uid);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -138,14 +138,14 @@ bool js_weap_target_get_objectId(jsval *vp)
       
 ======================================================= */
 
-bool js_weap_target_set_distance(jsval *vp)
+bool js_weap_target_set_distance(JSValueRef *vp)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->target.distance=script_value_to_int(*vp);
 	
-	return(JS_TRUE);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -154,7 +154,7 @@ bool js_weap_target_set_distance(jsval *vp)
       
 ======================================================= */
 
-JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_target_start_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	char				target_type[name_str_len];
 	obj_type			*obj;
@@ -167,10 +167,10 @@ JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 
 	*rval=script_bool_to_value(weapon_target_start(obj,weap,target_type));
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_target_start_opponent_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type			*obj;
 	weapon_type			*weap;
@@ -180,10 +180,10 @@ JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN ar
 	
 	*rval=script_bool_to_value(weapon_target_start(obj,weap,NULL));
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
-JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_target_end_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
 {
 	obj_type			*obj;
 	weapon_type			*weap;
@@ -193,6 +193,6 @@ JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	
 	*rval=script_bool_to_value(weapon_target_end(obj,weap));
 
-	return(JS_TRUE);
+	return(TRUE);
 }
 
