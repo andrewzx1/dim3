@@ -266,7 +266,7 @@ void file_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	gui_initialize("Bitmaps/Backgrounds","file",FALSE);
 	
 		// title
 		
