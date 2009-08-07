@@ -31,6 +31,36 @@ and can be sold or given away.
 
 /* =======================================================
 
+      IO Replacements
+      
+======================================================= */
+
+void png_utility_fread(png_structp png_ptr,png_bytep data,png_size_t length)
+{
+	FILE			*file;
+
+	file=(FILE*)png_get_io_ptr(png_ptr);
+	fread(data,1,length,file);
+}
+
+void png_utility_fwrite(png_structp png_ptr,png_bytep data,png_size_t length)
+{
+	FILE			*file;
+
+	file=(FILE*)png_get_io_ptr(png_ptr);
+	fwrite(data,1,length,file);
+}
+
+void png_utility_fflush(png_structp png_ptr)
+{
+	FILE			*file;
+
+	file=(FILE*)png_get_io_ptr(png_ptr);
+	fflush(file);
+}
+
+/* =======================================================
+
       Read PNGs
       
 ======================================================= */
@@ -47,7 +77,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_ch
 	png_bytep				*rptrs;
 
 		// open file
-		
+
 	file=fopen(path,"rb");
 	if (file==NULL) return(NULL);
 	
@@ -75,7 +105,11 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_ch
 		return(NULL);
 	}
 	
-	png_init_io(png_ptr,file);
+		// we have to force libPNG to call back
+		// for fread and fwrite because changes
+		// in the libraries in win32 cause all sorts of havoc
+
+	png_set_read_fn(png_ptr,file,png_utility_fread);
 	png_set_sig_bytes(png_ptr,8);
 	
 	png_read_info(png_ptr,info_ptr);
@@ -219,8 +253,12 @@ bool png_utility_write(unsigned char *data,int wid,int high,bool alpha_channel,c
 		fclose(file);
 		return(FALSE);
 	}
-	
-	png_init_io(png_ptr,file);
+
+		// we have to force libPNG to call back
+		// for fread and fwrite because changes
+		// in the libraries in win32 cause all sorts of havoc
+
+	png_set_write_fn(png_ptr,file,png_utility_fwrite,png_utility_fflush);
 	
 		// write the header
 		
@@ -322,7 +360,11 @@ bool png_utility_check(char *path,char *err_str)
 		return(FALSE);
 	}
 	
-	png_init_io(png_ptr,file);
+		// we have to force libPNG to call back
+		// for fread and fwrite because changes
+		// in the libraries in win32 cause all sorts of havoc
+
+	png_set_read_fn(png_ptr,file,png_utility_fread);
 	png_set_sig_bytes(png_ptr,8);
 	
 	png_read_info(png_ptr,info_ptr);

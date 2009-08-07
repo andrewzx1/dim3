@@ -445,10 +445,10 @@ void hud_bars_draw(void)
 		ty=by-high;
 			
 		if (!bar->vert) {
-			view_draw_next_vertex_object_2D_color_quad(lx,by,&bar->fill_start_color,lx,ty,&bar->fill_start_color,rx,ty,&fill_end_color,rx,by,&fill_end_color,bar->fill_alpha);
+			view_draw_next_vertex_object_2D_color_poly(lx,by,&bar->fill_start_color,lx,ty,&bar->fill_start_color,rx,ty,&fill_end_color,rx,by,&fill_end_color,bar->fill_alpha);
 		}
 		else {
-			view_draw_next_vertex_object_2D_color_quad(lx,ty,&fill_end_color,rx,ty,&fill_end_color,rx,by,&bar->fill_start_color,lx,by,&bar->fill_start_color,bar->fill_alpha);
+			view_draw_next_vertex_object_2D_color_poly(lx,ty,&fill_end_color,rx,ty,&fill_end_color,rx,by,&bar->fill_start_color,lx,by,&bar->fill_start_color,bar->fill_alpha);
 		}
 		
 			// draw outline

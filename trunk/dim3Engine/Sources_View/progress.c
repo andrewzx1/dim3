@@ -117,15 +117,15 @@ void progress_draw(float percentage)
 
 	mid=(top+bot)>>1;
 
-	view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.progress.base_color_start,rgt,top,&hud.progress.base_color_start,rgt,mid,&hud.progress.base_color_end,lft,mid,&hud.progress.base_color_end,1.0f);
-	view_draw_next_vertex_object_2D_color_quad(lft,mid,&hud.progress.base_color_end,rgt,mid,&hud.progress.base_color_end,rgt,bot,&hud.progress.base_color_start,lft,bot,&hud.progress.base_color_start,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.base_color_start,rgt,top,&hud.progress.base_color_start,rgt,mid,&hud.progress.base_color_end,lft,mid,&hud.progress.base_color_end,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.base_color_end,rgt,mid,&hud.progress.base_color_end,rgt,bot,&hud.progress.base_color_start,lft,bot,&hud.progress.base_color_start,1.0f);
 	
 		// draw the progress foreground
 	
 	rgt2=lft+(int)((float)(rgt-lft)*(percentage/100));
 	
-	view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.progress.hilite_color_start,rgt2,top,&hud.progress.hilite_color_start,rgt2,mid,&hud.progress.hilite_color_end,lft,mid,&hud.progress.hilite_color_end,1.0f);
-	view_draw_next_vertex_object_2D_color_quad(lft,mid,&hud.progress.hilite_color_end,rgt2,mid,&hud.progress.hilite_color_end,rgt2,bot,&hud.progress.hilite_color_start,lft,bot,&hud.progress.hilite_color_start,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.hilite_color_start,rgt2,top,&hud.progress.hilite_color_start,rgt2,mid,&hud.progress.hilite_color_end,lft,mid,&hud.progress.hilite_color_end,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.hilite_color_end,rgt2,mid,&hud.progress.hilite_color_end,rgt2,bot,&hud.progress.hilite_color_start,lft,bot,&hud.progress.hilite_color_start,1.0f);
 
 		// progress text
 
