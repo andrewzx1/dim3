@@ -84,7 +84,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	col2.g=col->g*0.7f;
 	col2.b=col->b*0.7f;
 
-	view_draw_next_vertex_object_2D_color_quad(lx,ty,col,rx,ty,col,rx,by,&col2,lx,by,&col2,0.4f);
+	view_draw_next_vertex_object_2D_color_poly(lx,ty,col,rx,ty,col,rx,by,&col2,lx,by,&col2,0.4f);
 	
 		// text
 		

@@ -609,7 +609,7 @@ void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top,int bo
 	view_unbind_current_vertex_object();
 }
 
-void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha)
+void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha)
 {
 	float			*vertex_ptr,*col_ptr;
 
@@ -679,7 +679,7 @@ void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1
 	view_unbind_current_vertex_object();
 }
 
-void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
+void view_draw_next_vertex_object_2D_line_poly(int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
 {
 	float			*vertex_ptr;
 
@@ -688,17 +688,17 @@ void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
 
 		// get the vertexes
 
-	*vertex_ptr++=(float)lft;
-	*vertex_ptr++=(float)top;
+	*vertex_ptr++=(float)x0;
+	*vertex_ptr++=(float)y0;
 
-	*vertex_ptr++=(float)rgt;
-	*vertex_ptr++=(float)top;
+	*vertex_ptr++=(float)x1;
+	*vertex_ptr++=(float)y1;
 
-	*vertex_ptr++=(float)rgt;
-	*vertex_ptr++=(float)bot;
+	*vertex_ptr++=(float)x2;
+	*vertex_ptr++=(float)y2;
 
-	*vertex_ptr++=(float)lft;
-	*vertex_ptr++=(float)bot;
+	*vertex_ptr++=(float)x3;
+	*vertex_ptr++=(float)y3;
 
   	view_unmap_current_vertex_object();
 
@@ -714,4 +714,9 @@ void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
 		// unbind the vbo
 
 	view_unbind_current_vertex_object();
+}
+
+void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
+{
+	view_draw_next_vertex_object_2D_line_poly(lft,top,rgt,top,rgt,bot,lft,bot);
 }
