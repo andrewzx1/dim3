@@ -346,35 +346,41 @@ void piece_delete(void)
       
 ======================================================= */
 
-void piece_select_more_mesh(void)
+void piece_select_more(void)
 {
-	int				n,sel_count,type,mesh_idx,poly_idx;
-	
+	int					n,k,t,t2,sel_count,type,mesh_idx,poly_idx;
+	d3pnt				*pt1,*pt2;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+		// select more polygons
+		
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
+	
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_tesselate(&map,mesh_idx);
+		if (type!=mesh_piece) continue;
+		
+		mesh=&map.mesh.meshes[mesh_idx];
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			for (t=0;t!=poly->ptsz;t++) {
+				t2=t+1;
+				if (t2==poly->ptsz) t2=0;
+				
+				pt1=&mesh->vertexes[poly->v[t]];
+				pt2=&mesh->vertexes[poly->v[t2]];
+				
+			}
+			
+			poly++;
+		}
 	}
 	
 	main_wind_draw();
-}
-
-void piece_select_more_poly(void)
-{
-}
-
-void piece_select_more(void)
-{
-	if (drag_mode==drag_mode_mesh) {
-		piece_select_more_mesh();
-		return;
-	}
-	
-	if (drag_mode==drag_mode_polygon) {
-		piece_select_more_poly();
-		return;
-	}
 }
 
 /* =======================================================
