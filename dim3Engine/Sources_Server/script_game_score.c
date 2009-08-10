@@ -39,14 +39,14 @@ extern network_setup_type	net_setup;
 
 extern int				game_obj_rule_uid;
 
-JSBool js_game_score_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_game_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_game_score_get_objectId(JSValueRef *vp);
-bool js_game_score_get_kill(JSValueRef *vp);
-bool js_game_score_get_death(JSValueRef *vp);
-bool js_game_score_get_suicide(JSValueRef *vp);
-bool js_game_score_get_goal(JSValueRef *vp);
-JSBool js_game_score_set_score_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_game_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_game_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_game_score_get_objectId(void);
+JSValueRef js_game_score_get_kill(void);
+JSValueRef js_game_score_get_death(void);
+JSValueRef js_game_score_get_suicide(void);
+JSValueRef js_game_score_get_goal(void);
+JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	game_score_props[]={
 							{"objectId",			js_game_score_get_objectId,			NULL},
@@ -78,7 +78,7 @@ void script_free_game_score_object(void)
 	script_free_class(game_score_class);
 }
 
-JSObject* script_add_game_score_object(JSObject *parent_obj)
+JSObjectRef script_add_game_score_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,game_score_class,"score",game_score_props,game_score_functions));
 }
@@ -89,14 +89,14 @@ JSObject* script_add_game_score_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_game_score_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_game_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,game_score_props));
+	return(script_get_property(cx,j_obj,name,game_score_props));
 }
 
-JSBool js_game_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_game_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,game_score_props));
+	return(script_set_property(cx,j_obj,name,vp,game_score_props));
 }
 
 /* =======================================================
@@ -105,7 +105,7 @@ JSBool js_game_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,
       
 ======================================================= */
 
-bool js_game_score_get_objectId(JSValueRef *vp)
+JSValueRef js_game_score_get_objectId(void)
 {
 	obj_type		*obj;
 
@@ -117,7 +117,7 @@ bool js_game_score_get_objectId(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_game_score_get_kill(JSValueRef *vp)
+JSValueRef js_game_score_get_kill(void)
 {
 	obj_type		*obj;
 
@@ -129,7 +129,7 @@ bool js_game_score_get_kill(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_game_score_get_death(JSValueRef *vp)
+JSValueRef js_game_score_get_death(void)
 {
 	obj_type		*obj;
 
@@ -141,7 +141,7 @@ bool js_game_score_get_death(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_game_score_get_suicide(JSValueRef *vp)
+JSValueRef js_game_score_get_suicide(void)
 {
 	obj_type		*obj;
 
@@ -153,7 +153,7 @@ bool js_game_score_get_suicide(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_game_score_get_goal(JSValueRef *vp)
+JSValueRef js_game_score_get_goal(void)
 {
 	obj_type		*obj;
 
@@ -171,7 +171,7 @@ bool js_game_score_get_goal(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_game_score_set_score_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 

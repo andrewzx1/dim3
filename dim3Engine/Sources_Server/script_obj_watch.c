@@ -35,21 +35,21 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_watch_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_watch_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_watch_get_objectId(JSValueRef *vp);
-bool js_obj_watch_get_objectName(JSValueRef *vp);
-bool js_obj_watch_get_objectIsPlayer(JSValueRef *vp);
-bool js_obj_watch_get_objectIsRemote(JSValueRef *vp);
-bool js_obj_watch_get_objectIsBot(JSValueRef *vp);
-bool js_obj_watch_get_objectIsPlayerRemoteBot(JSValueRef *vp);
-bool js_obj_watch_get_objectTeam(JSValueRef *vp);
-bool js_obj_watch_get_baseTeam(JSValueRef *vp);
-bool js_obj_watch_get_soundName(JSValueRef *vp);
-JSBool js_obj_watch_start_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_watch_stop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_obj_watch_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_watch_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_watch_get_objectId(void);
+JSValueRef js_obj_watch_get_objectName(void);
+JSValueRef js_obj_watch_get_objectIsPlayer(void);
+JSValueRef js_obj_watch_get_objectIsRemote(void);
+JSValueRef js_obj_watch_get_objectIsBot(void);
+JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(void);
+JSValueRef js_obj_watch_get_objectTeam(void);
+JSValueRef js_obj_watch_get_baseTeam(void);
+JSValueRef js_obj_watch_get_soundName(void);
+JSValueRef js_obj_watch_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	obj_watch_props[]={
 							{"objectId",				js_obj_watch_get_objectId,					NULL},
@@ -88,7 +88,7 @@ void script_free_obj_watch_object(void)
 	script_free_class(obj_watch_class);
 }
 
-JSObject* script_add_obj_watch_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_watch_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_watch_class,"watch",obj_watch_props,obj_watch_functions));
 }
@@ -99,14 +99,14 @@ JSObject* script_add_obj_watch_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_watch_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_watch_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_watch_props));
+	return(script_get_property(cx,j_obj,name,obj_watch_props));
 }
 
-JSBool js_obj_watch_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_watch_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_watch_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_watch_props));
 }
 
 /* =======================================================
@@ -115,7 +115,7 @@ JSBool js_obj_watch_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-bool js_obj_watch_get_objectId(JSValueRef *vp)
+JSValueRef js_obj_watch_get_objectId(void)
 {
 	obj_type		*obj;
 
@@ -125,7 +125,7 @@ bool js_obj_watch_get_objectId(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_watch_get_objectName(JSValueRef *vp)
+JSValueRef js_obj_watch_get_objectName(void)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -142,7 +142,7 @@ bool js_obj_watch_get_objectName(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_watch_get_objectIsPlayer(JSValueRef *vp)
+JSValueRef js_obj_watch_get_objectIsPlayer(void)
 {
 	obj_type		*obj;
 
@@ -152,7 +152,7 @@ bool js_obj_watch_get_objectIsPlayer(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_watch_get_objectIsRemote(JSValueRef *vp)
+JSValueRef js_obj_watch_get_objectIsRemote(void)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -169,7 +169,7 @@ bool js_obj_watch_get_objectIsRemote(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_watch_get_objectIsBot(JSValueRef *vp)
+JSValueRef js_obj_watch_get_objectIsBot(void)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -186,7 +186,7 @@ bool js_obj_watch_get_objectIsBot(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_watch_get_objectIsPlayerRemoteBot(JSValueRef *vp)
+JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(void)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -208,7 +208,7 @@ bool js_obj_watch_get_objectIsPlayerRemoteBot(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_watch_get_objectTeam(JSValueRef *vp)
+JSValueRef js_obj_watch_get_objectTeam(void)
 {
 	obj_type		*obj,*watch_obj;
 
@@ -225,7 +225,7 @@ bool js_obj_watch_get_objectTeam(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_watch_get_baseTeam(JSValueRef *vp)
+JSValueRef js_obj_watch_get_baseTeam(void)
 {
 	obj_type		*obj;
 
@@ -235,7 +235,7 @@ bool js_obj_watch_get_baseTeam(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_watch_get_soundName(JSValueRef *vp)
+JSValueRef js_obj_watch_get_soundName(void)
 {
 	obj_type		*obj;
 
@@ -251,7 +251,7 @@ bool js_obj_watch_get_soundName(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_obj_watch_start_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_watch_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
 	
@@ -263,7 +263,7 @@ JSBool js_obj_watch_start_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValu
 	return(TRUE);
 }
 
-JSBool js_obj_watch_stop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
 	
@@ -279,7 +279,7 @@ JSBool js_obj_watch_stop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValue
       
 ======================================================= */
 
-JSBool js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
 	
@@ -291,7 +291,7 @@ JSBool js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObject *j_obj,uint
 	return(TRUE);
 }
 
-JSBool js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
 	

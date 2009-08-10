@@ -34,12 +34,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_weap_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_weap_setting_get_name(JSValueRef *vp);
-bool js_weap_setting_get_failInLiquid(JSValueRef *vp);
-bool js_weap_setting_get_parentObjectId(JSValueRef *vp);
-bool js_weap_setting_set_failInLiquid(JSValueRef *vp);
+JSValueRef js_weap_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_weap_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_setting_get_name(void);
+JSValueRef js_weap_setting_get_failInLiquid(void);
+JSValueRef js_weap_setting_get_parentObjectId(void);
+bool js_weap_setting_set_failInLiquid(JSValueRef vp);
 
 script_js_property	weap_setting_props[]={
 							{"name",				js_weap_setting_get_name,				NULL},
@@ -65,7 +65,7 @@ void script_free_weap_setting_object(void)
 	script_free_class(weap_setting_class);
 }
 
-JSObject* script_add_weap_setting_object(JSObject *parent_obj)
+JSObjectRef script_add_weap_setting_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,weap_setting_class,"setting",weap_setting_props,NULL));
 }
@@ -76,14 +76,14 @@ JSObject* script_add_weap_setting_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_weap_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,weap_setting_props));
+	return(script_get_property(cx,j_obj,name,weap_setting_props));
 }
 
-JSBool js_weap_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_weap_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,weap_setting_props));
+	return(script_set_property(cx,j_obj,name,vp,weap_setting_props));
 }
 
 /* =======================================================
@@ -92,7 +92,7 @@ JSBool js_weap_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef i
       
 ======================================================= */
 
-bool js_weap_setting_get_name(JSValueRef *vp)
+JSValueRef js_weap_setting_get_name(void)
 {
 	weapon_type		*weap;
 
@@ -102,7 +102,7 @@ bool js_weap_setting_get_name(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_setting_get_failInLiquid(JSValueRef *vp)
+JSValueRef js_weap_setting_get_failInLiquid(void)
 {
 	weapon_type		*weap;
 
@@ -112,7 +112,7 @@ bool js_weap_setting_get_failInLiquid(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_setting_get_parentObjectId(JSValueRef *vp)
+JSValueRef js_weap_setting_get_parentObjectId(void)
 {
 	weapon_type		*weap;
 
@@ -128,7 +128,7 @@ bool js_weap_setting_get_parentObjectId(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_weap_setting_set_failInLiquid(JSValueRef *vp)
+bool js_weap_setting_set_failInLiquid(JSValueRef vp)
 {
 	weapon_type		*weap;
 	

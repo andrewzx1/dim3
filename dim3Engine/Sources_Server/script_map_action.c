@@ -41,12 +41,12 @@ extern bool game_file_reload_ok(void);
 extern bool game_file_reload(char *err_str);
 extern void game_time_pause_end(void);
 
-JSBool js_map_action_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_action_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_action_set_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_action_set_host_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_action_restart_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_action_restart_map_from_save_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_map_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_map_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	map_action_functions[]={
 							{"setMap",				js_map_action_set_map_func,					3},
@@ -73,7 +73,7 @@ void script_free_map_action_object(void)
 	script_free_class(map_action_class);
 }
 
-JSObject* script_add_map_action_object(JSObject *parent_obj)
+JSObjectRef script_add_map_action_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,map_action_class,"action",NULL,map_action_functions));
 }
@@ -84,14 +84,14 @@ JSObject* script_add_map_action_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_action_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_map_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_map_action_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_map_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -100,7 +100,7 @@ JSBool js_map_action_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,
       
 ======================================================= */
 
-JSBool js_map_action_set_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 		// clients can not set maps
 		
@@ -121,7 +121,7 @@ JSBool js_map_action_set_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_map_action_set_host_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 		// clients can not set maps
 
@@ -142,7 +142,7 @@ JSBool js_map_action_set_host_map_func(JSContextRef cx,JSObject *j_obj,uintN arg
 	return(TRUE);
 }
 
-JSBool js_map_action_restart_map_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 		// clients can not restart maps
 		
@@ -159,7 +159,7 @@ JSBool js_map_action_restart_map_func(JSContextRef cx,JSObject *j_obj,uintN argc
 	return(TRUE);
 }
 
-JSBool js_map_action_restart_map_from_save_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256];
 	

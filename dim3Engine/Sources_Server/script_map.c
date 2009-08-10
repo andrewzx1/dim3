@@ -33,8 +33,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_map_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
+JSValueRef js_map_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_map_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSClassRef			map_class;
 
@@ -54,7 +54,7 @@ void script_free_global_map_object(void)
 	script_free_class(map_class);
 }
 
-JSObject* script_add_global_map_object(JSObject *parent_obj)
+JSObjectRef script_add_global_map_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,map_class,"map",NULL,NULL));
 }
@@ -65,13 +65,13 @@ JSObject* script_add_global_map_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_map_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_map_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_map_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 

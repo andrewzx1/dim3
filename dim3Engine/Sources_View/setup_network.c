@@ -217,7 +217,7 @@ void setup_network_create_pane(void)
 {
 	int			x,y,wid,high,yadd,padding,
 				tab_list_wid,tab_pane_high,pane;
-	char		tab_list[][32]={"Player","Host"};
+	char		tab_list[][32]={"Player","Hosts"};
 							
 	element_clear();
 	

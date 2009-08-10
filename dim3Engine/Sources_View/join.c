@@ -332,6 +332,7 @@ void join_ping_thread_start(void)
 	
 		// table is busy
 		
+	element_set_table_data(join_table_id,NULL);
 	element_table_busy(join_table_id,TRUE);
 	
 		// table update locks

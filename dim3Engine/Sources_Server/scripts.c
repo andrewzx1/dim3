@@ -35,8 +35,6 @@ and can be sold or given away.
 extern js_type				js;
 extern setup_type			setup;
 
-JSBool scripts_gc_reporter(JSContextRef cx,JSGCStatus status);		// forward reference
-
 //
 // NOTE: Scripts aren't like other objects which have a list that is compressed as objects
 // are deleted from it.  SpiderMonkey requires rooting, which requires a pointer.  The pointers
@@ -76,12 +74,8 @@ bool scripts_engine_initialize(char *err_str)
 	JS_SetOptions(js.cx,JS_GetOptions(js.cx)|JSOPTION_STRICT|JSOPTION_VAROBJFIX|JSOPTION_WERROR);
 	
 		// error reporter
-		
-	JS_SetErrorReporter(js.cx,scripts_catch_errors);
-	
-		// get a message for garbage collection
-		
-	// JS_SetGCCallback(js.cx,scripts_gc_reporter);		// supergumba -- for testing
+// supergumba -- JS		
+//	JS_SetErrorReporter(js.cx,scripts_catch_errors);
 
 		// initialize classes
 
@@ -187,26 +181,6 @@ void scripts_clean_up_roots(void)
 	JS_GC(js.cx);
 }
 
-JSBool scripts_gc_reporter(JSContextRef cx,JSGCStatus status)
-{
-	switch (status) {
-		case JSGC_BEGIN:
-			console_add_system("JS Garbage Collection: Begin");
-			break;
-		case JSGC_END:
-			console_add_system("JS Garbage Collection: End");
-			break;
-		case JSGC_MARK_END:
-			console_add_system("JS Garbage Collection: Mark End");
-			break;
-		case JSGC_FINALIZE_END:
-			console_add_system("JS Garbage Collection: Finalize End");
-			break;
-	}
-			
-	return(TRUE);
-}
-
 /* =======================================================
 
       Errors
@@ -218,6 +192,8 @@ void scripts_clear_last_error(void)
 	js.last_error_str[0]=0x0;
 }
 
+/*
+supergumba -- JS
 void scripts_catch_errors(JSContextRef cx,const char *message,JSErrorReport *report)
 {
 	int				idx;
@@ -235,7 +211,7 @@ void scripts_catch_errors(JSContextRef cx,const char *message,JSErrorReport *rep
 	snprintf(js.last_error_str,256,"JS Error [%s]\n%d: %s",script->name,report->lineno,message);
 	js.last_error_str[255]=0x0;
 }
-
+*/
 void scripts_get_last_error(char *err_str)
 {
 	int				idx;

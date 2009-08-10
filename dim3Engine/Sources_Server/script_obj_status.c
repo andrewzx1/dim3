@@ -35,20 +35,20 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_obj_status_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_status_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_status_get_speed(JSValueRef *vp);
-bool js_obj_status_get_moving(JSValueRef *vp);
-bool js_obj_status_get_running(JSValueRef *vp);
-bool js_obj_status_get_backward(JSValueRef *vp);
-bool js_obj_status_get_sliding(JSValueRef *vp);
-bool js_obj_status_get_stand(JSValueRef *vp);
-bool js_obj_status_get_air(JSValueRef *vp);
-bool js_obj_status_get_liquid(JSValueRef *vp);
-bool js_obj_status_get_standOnObjectId(JSValueRef *vp);
-bool js_obj_status_get_standUnderObjectId(JSValueRef *vp);
-JSBool js_obj_status_freeze_input_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_status_tint_view_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_obj_status_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_status_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_status_get_speed(void);
+JSValueRef js_obj_status_get_moving(void);
+JSValueRef js_obj_status_get_running(void);
+JSValueRef js_obj_status_get_backward(void);
+JSValueRef js_obj_status_get_sliding(void);
+JSValueRef js_obj_status_get_stand(void);
+JSValueRef js_obj_status_get_air(void);
+JSValueRef js_obj_status_get_liquid(void);
+JSValueRef js_obj_status_get_standOnObjectId(void);
+JSValueRef js_obj_status_get_standUnderObjectId(void);
+JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	obj_status_props[]={
 							{"speed",				js_obj_status_get_speed,				NULL},
@@ -86,7 +86,7 @@ void script_free_obj_status_object(void)
 	script_free_class(obj_status_class);
 }
 
-JSObject* script_add_obj_status_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_status_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_status_class,"status",obj_status_props,obj_status_functions));
 }
@@ -97,14 +97,14 @@ JSObject* script_add_obj_status_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_status_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_status_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_status_props));
+	return(script_get_property(cx,j_obj,name,obj_status_props));
 }
 
-JSBool js_obj_status_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_status_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_status_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_status_props));
 }
 
 /* =======================================================
@@ -113,7 +113,7 @@ JSBool js_obj_status_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,
       
 ======================================================= */
 
-bool js_obj_status_get_speed(JSValueRef *vp)
+JSValueRef js_obj_status_get_speed(void)
 {
 	obj_type		*obj;
 
@@ -123,7 +123,7 @@ bool js_obj_status_get_speed(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_moving(JSValueRef *vp)
+JSValueRef js_obj_status_get_moving(void)
 {
 	obj_type		*obj;
 
@@ -133,7 +133,7 @@ bool js_obj_status_get_moving(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_running(JSValueRef *vp)
+JSValueRef js_obj_status_get_running(void)
 {
 	obj_type		*obj;
 
@@ -143,7 +143,7 @@ bool js_obj_status_get_running(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_backward(JSValueRef *vp)
+JSValueRef js_obj_status_get_backward(void)
 {
 	obj_type		*obj;
 
@@ -153,7 +153,7 @@ bool js_obj_status_get_backward(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_sliding(JSValueRef *vp)
+JSValueRef js_obj_status_get_sliding(void)
 {
 	obj_type		*obj;
 
@@ -163,7 +163,7 @@ bool js_obj_status_get_sliding(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_stand(JSValueRef *vp)
+JSValueRef js_obj_status_get_stand(void)
 {
 	obj_type		*obj;
 
@@ -173,7 +173,7 @@ bool js_obj_status_get_stand(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_air(JSValueRef *vp)
+JSValueRef js_obj_status_get_air(void)
 {
 	obj_type		*obj;
 
@@ -183,7 +183,7 @@ bool js_obj_status_get_air(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_liquid(JSValueRef *vp)
+JSValueRef js_obj_status_get_liquid(void)
 {
 	obj_type		*obj;
 
@@ -193,7 +193,7 @@ bool js_obj_status_get_liquid(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_standOnObjectId(JSValueRef *vp)
+JSValueRef js_obj_status_get_standOnObjectId(void)
 {
 	obj_type		*obj;
 
@@ -203,7 +203,7 @@ bool js_obj_status_get_standOnObjectId(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_status_get_standUnderObjectId(JSValueRef *vp)
+JSValueRef js_obj_status_get_standUnderObjectId(void)
 {
 	obj_type		*obj;
 
@@ -219,7 +219,7 @@ bool js_obj_status_get_standUnderObjectId(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_obj_status_freeze_input_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -235,7 +235,7 @@ JSBool js_obj_status_freeze_input_func(JSContextRef cx,JSObject *j_obj,uintN arg
       
 ======================================================= */
 
-JSBool js_obj_status_tint_view_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			r,g,b;
 	obj_type		*obj;

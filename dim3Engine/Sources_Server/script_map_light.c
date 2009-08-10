@@ -34,9 +34,9 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_light_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_light_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_light_toggle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_map_light_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_map_light_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	map_light_functions[]={
 							{"toggle",				js_map_light_toggle_func,			2},
@@ -60,7 +60,7 @@ void script_free_map_light_object(void)
 	script_free_class(map_light_class);
 }
 
-JSObject* script_add_map_light_object(JSObject *parent_obj)
+JSObjectRef script_add_map_light_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,map_light_class,"light",NULL,map_light_functions));
 }
@@ -71,14 +71,14 @@ JSObject* script_add_map_light_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_light_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_map_light_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_map_light_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_map_light_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -87,7 +87,7 @@ JSBool js_map_light_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-JSBool js_map_light_toggle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	map_light_type		*map_light;
 

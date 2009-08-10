@@ -38,10 +38,10 @@ extern server_type		server;
 extern js_type			js;
 extern setup_type		setup;
 
-JSBool js_multiplayer_score_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_multiplayer_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_multiplayer_score_get_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_multiplayer_score_get_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_multiplayer_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_multiplayer_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	multiplayer_score_functions[]={
 							{"getObject",			js_multiplayer_score_get_object_func,		1},
@@ -66,7 +66,7 @@ void script_free_multiplayer_score_object(void)
 	script_free_class(multiplayer_score_class);
 }
 
-JSObject* script_add_multiplayer_score_object(JSObject *parent_obj)
+JSObjectRef script_add_multiplayer_score_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,multiplayer_score_class,"score",NULL,multiplayer_score_functions));
 }
@@ -77,14 +77,14 @@ JSObject* script_add_multiplayer_score_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_multiplayer_score_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_multiplayer_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_multiplayer_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_multiplayer_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -93,7 +93,7 @@ JSBool js_multiplayer_score_set_property(JSContextRef cx,JSObject *j_obj,JSValue
       
 ======================================================= */
 
-JSBool js_multiplayer_score_get_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -104,7 +104,7 @@ JSBool js_multiplayer_score_get_object_func(JSContextRef cx,JSObject *j_obj,uint
 	return(TRUE);
 }
 
-JSBool js_multiplayer_score_get_team_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,score,team_idx;
 	obj_type		*obj;

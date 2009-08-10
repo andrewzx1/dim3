@@ -37,28 +37,29 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_event_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_event_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_event_start_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_clear_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_start_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_start_wait_random_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_clear_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_clear_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_send_message_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_send_message_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_send_message_to_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_send_message_to_game_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_set_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_get_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_call_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_call_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_event_call_game_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+
+JSValueRef js_event_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_event_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_event_start_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_start_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_start_wait_random_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_clear_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_clear_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_send_message_to_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_send_message_to_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	event_functions[]={
 							{"startTimer",					js_event_start_timer_func,						2},
@@ -101,7 +102,7 @@ void script_free_event_object(void)
 	script_free_class(event_class);
 }
 
-JSObject* script_add_event_object(JSObject *parent_obj)
+JSObjectRef script_add_event_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,event_class,"event",NULL,event_functions));
 }
@@ -112,14 +113,14 @@ JSObject* script_add_event_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_event_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_event_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef* exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_event_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_event_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef* exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -128,13 +129,13 @@ JSBool js_event_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSVal
       
 ======================================================= */
 
-JSBool js_event_start_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_start_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	*rval=script_bool_to_value(timers_add(&js.attach,script_value_to_int(argv[0]),script_value_to_int(argv[1]),NULL,timer_mode_repeat));
     return(TRUE);
 }
 
-JSBool js_event_clear_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	timers_clear(&js.attach,timer_mode_repeat);
     return(TRUE);
@@ -146,13 +147,13 @@ JSBool js_event_clear_timer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
       
 ======================================================= */
 
-JSBool js_event_start_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_start_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	*rval=script_bool_to_value(timers_add(&js.attach,script_value_to_int(argv[0]),script_value_to_int(argv[1]),NULL,timer_mode_single));
     return(TRUE);
 }
 
-JSBool js_event_start_wait_random_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_start_wait_random_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				min,max,tick;
 	
@@ -165,7 +166,7 @@ JSBool js_event_start_wait_random_func(JSContextRef cx,JSObject *j_obj,uintN arg
     return(TRUE);
 }
 
-JSBool js_event_clear_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_clear_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	timers_clear(&js.attach,timer_mode_single);
     return(TRUE);
@@ -177,7 +178,7 @@ JSBool js_event_clear_wait_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVal
       
 ======================================================= */
 
-JSBool js_event_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			chain_func_name[64];
 	
@@ -188,7 +189,7 @@ JSBool js_event_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef
     return(TRUE);
 }
 
-JSBool js_event_clear_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_clear_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	timers_clear(&js.attach,timer_mode_chain);
     return(TRUE);
@@ -200,7 +201,7 @@ JSBool js_event_clear_chain_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
       
 ======================================================= */
 
-JSBool js_event_send_message_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				msg_to,id;
 	char			name[name_str_len];
@@ -246,7 +247,7 @@ JSBool js_event_send_message_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_event_send_message_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -259,7 +260,7 @@ JSBool js_event_send_message_to_player_func(JSContextRef cx,JSObject *j_obj,uint
 	return(TRUE);
 }
 
-JSBool js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -278,7 +279,7 @@ JSBool js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObject *j_ob
 	return(TRUE);
 }
 
-JSBool js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
 	obj_type		*obj;
@@ -299,7 +300,7 @@ JSBool js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObject *j_
 	return(TRUE);
 }
 
-JSBool js_event_send_message_to_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_send_message_to_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	memmove(js.course_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
@@ -307,7 +308,7 @@ JSBool js_event_send_message_to_course_func(JSContextRef cx,JSObject *j_obj,uint
 	return(TRUE);
 }
 
-JSBool js_event_send_message_to_game_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_send_message_to_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	memmove(js.game_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
@@ -315,7 +316,7 @@ JSBool js_event_send_message_to_game_func(JSContextRef cx,JSObject *j_obj,uintN 
 	return(TRUE);
 }
 
-JSBool js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	weapon_type		*weap;
@@ -338,7 +339,7 @@ JSBool js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObject *j_obj
 	return(TRUE);
 }
 
-JSBool js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	proj_type		*proj;
 	weapon_type		*weap;
@@ -372,7 +373,7 @@ JSBool js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObject *j_ob
       
 ======================================================= */
 
-JSBool js_event_set_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			idx;
 
@@ -409,7 +410,7 @@ JSBool js_event_set_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc
     return(TRUE);
 }
 
-JSBool js_event_get_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			idx;
 
@@ -454,7 +455,7 @@ JSBool js_event_get_message_data_func(JSContextRef cx,JSObject *j_obj,uintN argc
       
 ======================================================= */
 
-JSBool js_event_call_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,arg_count;
 	char			func_name[64];
@@ -486,7 +487,7 @@ JSBool js_event_call_object_by_id_func(JSContextRef cx,JSObject *j_obj,uintN arg
 	return(TRUE);
 }
 
-JSBool js_event_call_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,arg_count;
 	char			func_name[64];
@@ -511,7 +512,7 @@ JSBool js_event_call_course_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
 	return(TRUE);
 }
 
-JSBool js_event_call_game_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,arg_count;
 	char			func_name[64];

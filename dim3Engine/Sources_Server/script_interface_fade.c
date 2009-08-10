@@ -39,10 +39,10 @@ extern js_type			js;
 extern void object_fade_start(int tick,obj_type *obj,int x,int y,float start_sz,float end_sz,int life_msec,bool auto_clear);
 extern void object_fade_clear(obj_type *obj);
 
-JSBool js_interface_fade_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_interface_fade_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_interface_fade_circle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_interface_fade_clear_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_interface_fade_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_interface_fade_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_interface_fade_circle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_fade_clear_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	interface_fade_functions[]={
 							{"circle",				js_interface_fade_circle_func,			6},
@@ -67,7 +67,7 @@ void script_free_interface_fade_object(void)
 	script_free_class(interface_fade_class);
 }
 
-JSObject* script_add_interface_fade_object(JSObject *parent_obj)
+JSObjectRef script_add_interface_fade_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,interface_fade_class,"fade",NULL,interface_fade_functions));
 }
@@ -78,14 +78,14 @@ JSObject* script_add_interface_fade_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_interface_fade_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_interface_fade_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_interface_fade_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_interface_fade_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -94,7 +94,7 @@ JSBool js_interface_fade_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef
       
 ======================================================= */
 
-JSBool js_interface_fade_circle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_fade_circle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,y,life_msec;
 	float			start_sz,end_sz;
@@ -117,7 +117,7 @@ JSBool js_interface_fade_circle_func(JSContextRef cx,JSObject *j_obj,uintN argc,
 	return(TRUE);
 }
 
-JSBool js_interface_fade_clear_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_fade_clear_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	

@@ -35,12 +35,12 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_touch_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_touch_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_touch_get_objectId(JSValueRef *vp);
-bool js_obj_touch_get_objectName(JSValueRef *vp);
-bool js_obj_touch_get_objectIsPlayer(JSValueRef *vp);
-bool js_obj_touch_get_stand(JSValueRef *vp);
+JSValueRef js_obj_touch_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_touch_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_touch_get_objectId(void);
+JSValueRef js_obj_touch_get_objectName(void);
+JSValueRef js_obj_touch_get_objectIsPlayer(void);
+JSValueRef js_obj_touch_get_stand(void);
 
 script_js_property	obj_touch_props[]={
 							{"objectId",			js_obj_touch_get_objectId,			NULL},
@@ -67,7 +67,7 @@ void script_free_obj_touch_object(void)
 	script_free_class(obj_touch_class);
 }
 
-JSObject* script_add_obj_touch_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_touch_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_touch_class,"touch",obj_touch_props,NULL));
 }
@@ -78,14 +78,14 @@ JSObject* script_add_obj_touch_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_touch_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_touch_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_touch_props));
+	return(script_get_property(cx,j_obj,name,obj_touch_props));
 }
 
-JSBool js_obj_touch_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_touch_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_touch_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_touch_props));
 }
 
 /* =======================================================
@@ -94,7 +94,7 @@ JSBool js_obj_touch_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-bool js_obj_touch_get_objectId(JSValueRef *vp)
+JSValueRef js_obj_touch_get_objectId(void)
 {
 	obj_type		*obj;
 
@@ -104,7 +104,7 @@ bool js_obj_touch_get_objectId(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_touch_get_objectName(JSValueRef *vp)
+JSValueRef js_obj_touch_get_objectName(void)
 {
 	obj_type		*obj,*touch_obj;
 
@@ -121,7 +121,7 @@ bool js_obj_touch_get_objectName(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_touch_get_objectIsPlayer(JSValueRef *vp)
+JSValueRef js_obj_touch_get_objectIsPlayer(void)
 {
 	obj_type		*obj;
 
@@ -131,7 +131,7 @@ bool js_obj_touch_get_objectIsPlayer(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_touch_get_stand(JSValueRef *vp)
+JSValueRef js_obj_touch_get_stand(void)
 {
 	obj_type		*obj;
 

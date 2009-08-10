@@ -31,14 +31,14 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_model_light_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_model_light_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_model_light_color_get_red(JSValueRef *vp);
-bool js_model_light_color_get_green(JSValueRef *vp);
-bool js_model_light_color_get_blue(JSValueRef *vp);
-bool js_model_light_color_set_red(JSValueRef *vp);
-bool js_model_light_color_set_green(JSValueRef *vp);
-bool js_model_light_color_set_blue(JSValueRef *vp);
+JSValueRef js_model_light_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_light_color_get_red(void);
+JSValueRef js_model_light_color_get_green(void);
+JSValueRef js_model_light_color_get_blue(void);
+bool js_model_light_color_set_red(JSValueRef vp);
+bool js_model_light_color_set_green(JSValueRef vp);
+bool js_model_light_color_set_blue(JSValueRef vp);
 
 extern js_type			js;
 
@@ -66,7 +66,7 @@ void script_free_model_light_color_object(void)
 	script_free_class(model_light_color_class);
 }
 
-JSObject* script_add_model_light_color_object(JSObject *parent_obj)
+JSObjectRef script_add_model_light_color_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,model_light_color_class,"lightColor",model_light_color_props,NULL));
 }
@@ -77,14 +77,14 @@ JSObject* script_add_model_light_color_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_light_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_model_light_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,model_light_color_props));
+	return(script_get_property(cx,j_obj,name,model_light_color_props));
 }
 
-JSBool js_model_light_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_model_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,model_light_color_props));
+	return(script_set_property(cx,j_obj,name,vp,model_light_color_props));
 }
 
 /* =======================================================
@@ -93,7 +93,7 @@ JSBool js_model_light_color_set_property(JSContextRef cx,JSObject *j_obj,JSValue
       
 ======================================================= */
 
-bool js_model_light_color_get_red(JSValueRef *vp)
+JSValueRef js_model_light_color_get_red(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -106,7 +106,7 @@ bool js_model_light_color_get_red(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_color_get_green(JSValueRef *vp)
+JSValueRef js_model_light_color_get_green(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -119,7 +119,7 @@ bool js_model_light_color_get_green(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_color_get_blue(JSValueRef *vp)
+JSValueRef js_model_light_color_get_blue(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -138,7 +138,7 @@ bool js_model_light_color_get_blue(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_model_light_color_set_red(JSValueRef *vp)
+bool js_model_light_color_set_red(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -151,7 +151,7 @@ bool js_model_light_color_set_red(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_color_set_green(JSValueRef *vp)
+bool js_model_light_color_set_green(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -164,7 +164,7 @@ bool js_model_light_color_set_green(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_color_set_blue(JSValueRef *vp)
+bool js_model_light_color_set_blue(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;

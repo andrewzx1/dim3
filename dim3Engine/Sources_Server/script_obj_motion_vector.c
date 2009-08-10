@@ -34,26 +34,26 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_motion_vector_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_motion_vector_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_motion_vector_get_x(JSValueRef *vp);
-bool js_obj_motion_vector_get_y(JSValueRef *vp);
-bool js_obj_motion_vector_get_z(JSValueRef *vp);
-JSBool js_obj_motion_vector_go_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_stop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_jump_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_alter_speed_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_walk_to_node_resume_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_walk_to_position_slop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_obj_motion_vector_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_motion_vector_get_x(void);
+JSValueRef js_obj_motion_vector_get_y(void);
+JSValueRef js_obj_motion_vector_get_z(void);
+JSValueRef js_obj_motion_vector_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_alter_speed_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_node_resume_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_position_slop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	obj_motion_vector_props[]={
 							{"x",					js_obj_motion_vector_get_x,							NULL},
@@ -96,7 +96,7 @@ void script_free_obj_motion_vector_object(void)
 	script_free_class(obj_motion_vector_class);
 }
 
-JSObject* script_add_obj_motion_vector_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_motion_vector_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_motion_vector_class,"motionVector",obj_motion_vector_props,obj_motion_vector_functions));
 }
@@ -107,14 +107,14 @@ JSObject* script_add_obj_motion_vector_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_motion_vector_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_motion_vector_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_motion_vector_props));
+	return(script_get_property(cx,j_obj,name,obj_motion_vector_props));
 }
 
-JSBool js_obj_motion_vector_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_motion_vector_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_motion_vector_props));
 }
 
 /* =======================================================
@@ -123,7 +123,7 @@ JSBool js_obj_motion_vector_set_property(JSContextRef cx,JSObject *j_obj,JSValue
       
 ======================================================= */
 
-bool js_obj_motion_vector_get_x(JSValueRef *vp)
+JSValueRef js_obj_motion_vector_get_x(void)
 {
 	obj_type		*obj;
 
@@ -133,7 +133,7 @@ bool js_obj_motion_vector_get_x(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_motion_vector_get_y(JSValueRef *vp)
+JSValueRef js_obj_motion_vector_get_y(void)
 {
 	obj_type		*obj;
 
@@ -143,7 +143,7 @@ bool js_obj_motion_vector_get_y(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_motion_vector_get_z(JSValueRef *vp)
+JSValueRef js_obj_motion_vector_get_z(void)
 {
 	obj_type		*obj;
 
@@ -159,7 +159,7 @@ bool js_obj_motion_vector_get_z(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_obj_motion_vector_go_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -168,7 +168,7 @@ JSBool js_obj_motion_vector_go_func(JSContextRef cx,JSObject *j_obj,uintN argc,J
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_stop_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -177,7 +177,7 @@ JSBool js_obj_motion_vector_stop_func(JSContextRef cx,JSObject *j_obj,uintN argc
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_jump_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -192,7 +192,7 @@ JSBool js_obj_motion_vector_jump_func(JSContextRef cx,JSObject *j_obj,uintN argc
       
 ======================================================= */
 
-JSBool js_obj_motion_vector_alter_speed_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_alter_speed_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -202,7 +202,7 @@ JSBool js_obj_motion_vector_alter_speed_func(JSContextRef cx,JSObject *j_obj,uin
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -218,7 +218,7 @@ JSBool js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObject *j_obj,u
       
 ======================================================= */
 
-JSBool js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			start_name[name_str_len],end_name[name_str_len];
 	obj_type		*obj;
@@ -237,7 +237,7 @@ JSBool js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObject *j_obj,ui
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -247,7 +247,7 @@ JSBool js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObject *j_
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_walk_to_node_resume_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_walk_to_node_resume_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -257,7 +257,7 @@ JSBool js_obj_motion_vector_walk_to_node_resume_func(JSContextRef cx,JSObject *j
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -267,7 +267,7 @@ JSBool js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObject *
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -277,7 +277,7 @@ JSBool js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObject *j_obj,
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -287,7 +287,7 @@ JSBool js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObject *j_obj,
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	d3pnt			pnt;
 	obj_type		*obj;
@@ -308,7 +308,7 @@ JSBool js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObject *j_ob
       
 ======================================================= */
 
-JSBool js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -318,7 +318,7 @@ JSBool js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObject *j_obj,
 	return(TRUE);
 }
 
-JSBool js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	

@@ -35,10 +35,10 @@ and can be sold or given away.
 extern char				console_input_str[max_console_txt_sz];
 extern js_type			js;
 
-JSBool js_interface_console_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_interface_console_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_interface_console_write_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_interface_console_read_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_interface_console_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_interface_console_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	interface_console_functions[]={
 							{"write",				js_interface_console_write_func,		1},
@@ -63,7 +63,7 @@ void script_free_interface_console_object(void)
 	script_free_class(interface_console_class);
 }
 
-JSObject* script_add_interface_console_object(JSObject *parent_obj)
+JSObjectRef script_add_interface_console_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,interface_console_class,"console",NULL,interface_console_functions));
 }
@@ -74,14 +74,14 @@ JSObject* script_add_interface_console_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_interface_console_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_interface_console_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_interface_console_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_interface_console_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -90,7 +90,7 @@ JSBool js_interface_console_set_property(JSContextRef cx,JSObject *j_obj,JSValue
       
 ======================================================= */
 
-JSBool js_interface_console_write_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			txt[256];
 	
@@ -100,7 +100,7 @@ JSBool js_interface_console_write_func(JSContextRef cx,JSObject *j_obj,uintN arg
 	return(TRUE);
 }
 
-JSBool js_interface_console_read_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	*rval=script_string_to_value(console_input_str);
 	return(TRUE);

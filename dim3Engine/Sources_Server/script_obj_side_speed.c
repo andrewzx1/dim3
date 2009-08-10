@@ -34,24 +34,24 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_side_speed_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_side_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_side_speed_get_walk(JSValueRef *vp);
-bool js_obj_side_speed_get_run(JSValueRef *vp);
-bool js_obj_side_speed_get_crawl(JSValueRef *vp);
-bool js_obj_side_speed_get_air(JSValueRef *vp);
-bool js_obj_side_speed_get_acceleration(JSValueRef *vp);
-bool js_obj_side_speed_get_deceleration(JSValueRef *vp);
-bool js_obj_side_speed_get_accelerationAir(JSValueRef *vp);
-bool js_obj_side_speed_get_decelerationAir(JSValueRef *vp);
-bool js_obj_side_speed_set_walk(JSValueRef *vp);
-bool js_obj_side_speed_set_run(JSValueRef *vp);
-bool js_obj_side_speed_set_crawl(JSValueRef *vp);
-bool js_obj_side_speed_set_air(JSValueRef *vp);
-bool js_obj_side_speed_set_acceleration(JSValueRef *vp);
-bool js_obj_side_speed_set_deceleration(JSValueRef *vp);
-bool js_obj_side_speed_set_accelerationAir(JSValueRef *vp);
-bool js_obj_side_speed_set_decelerationAir(JSValueRef *vp);
+JSValueRef js_obj_side_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_side_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_side_speed_get_walk(void);
+JSValueRef js_obj_side_speed_get_run(void);
+JSValueRef js_obj_side_speed_get_crawl(void);
+JSValueRef js_obj_side_speed_get_air(void);
+JSValueRef js_obj_side_speed_get_acceleration(void);
+JSValueRef js_obj_side_speed_get_deceleration(void);
+JSValueRef js_obj_side_speed_get_accelerationAir(void);
+JSValueRef js_obj_side_speed_get_decelerationAir(void);
+bool js_obj_side_speed_set_walk(JSValueRef vp);
+bool js_obj_side_speed_set_run(JSValueRef vp);
+bool js_obj_side_speed_set_crawl(JSValueRef vp);
+bool js_obj_side_speed_set_air(JSValueRef vp);
+bool js_obj_side_speed_set_acceleration(JSValueRef vp);
+bool js_obj_side_speed_set_deceleration(JSValueRef vp);
+bool js_obj_side_speed_set_accelerationAir(JSValueRef vp);
+bool js_obj_side_speed_set_decelerationAir(JSValueRef vp);
 
 script_js_property	obj_side_speed_props[]={
 							{"walk",					js_obj_side_speed_get_walk,				js_obj_side_speed_set_walk},
@@ -82,7 +82,7 @@ void script_free_obj_side_speed_object(void)
 	script_free_class(obj_side_speed_class);
 }
 
-JSObject* script_add_obj_side_speed_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_side_speed_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_side_speed_class,"sideSpeed",obj_side_speed_props,NULL));
 }
@@ -93,14 +93,14 @@ JSObject* script_add_obj_side_speed_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_side_speed_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_side_speed_props));
+	return(script_get_property(cx,j_obj,name,obj_side_speed_props));
 }
 
-JSBool js_obj_side_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_side_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_side_speed_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_side_speed_props));
 }
 
 /* =======================================================
@@ -109,7 +109,7 @@ JSBool js_obj_side_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef
       
 ======================================================= */
 
-bool js_obj_side_speed_get_walk(JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_walk(void)
 {
 	obj_type		*obj;
 
@@ -119,7 +119,7 @@ bool js_obj_side_speed_get_walk(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_get_run(JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_run(void)
 {
 	obj_type		*obj;
 
@@ -129,7 +129,7 @@ bool js_obj_side_speed_get_run(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_get_crawl(JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_crawl(void)
 {
 	obj_type		*obj;
 
@@ -139,7 +139,7 @@ bool js_obj_side_speed_get_crawl(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_get_air(JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_air(void)
 {
 	obj_type		*obj;
 
@@ -149,7 +149,7 @@ bool js_obj_side_speed_get_air(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_get_acceleration(JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_acceleration(void)
 {
 	obj_type		*obj;
 
@@ -159,7 +159,7 @@ bool js_obj_side_speed_get_acceleration(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_get_deceleration(JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_deceleration(void)
 {
 	obj_type		*obj;
 
@@ -169,7 +169,7 @@ bool js_obj_side_speed_get_deceleration(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_get_accelerationAir(JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_accelerationAir(void)
 {
 	obj_type		*obj;
 
@@ -179,7 +179,7 @@ bool js_obj_side_speed_get_accelerationAir(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_get_decelerationAir(JSValueRef *vp)
+JSValueRef js_obj_side_speed_get_decelerationAir(void)
 {
 	obj_type		*obj;
 
@@ -195,7 +195,7 @@ bool js_obj_side_speed_get_decelerationAir(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_obj_side_speed_set_walk(JSValueRef *vp)
+bool js_obj_side_speed_set_walk(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -205,7 +205,7 @@ bool js_obj_side_speed_set_walk(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_set_run(JSValueRef *vp)
+bool js_obj_side_speed_set_run(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -215,7 +215,7 @@ bool js_obj_side_speed_set_run(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_set_crawl(JSValueRef *vp)
+bool js_obj_side_speed_set_crawl(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -225,7 +225,7 @@ bool js_obj_side_speed_set_crawl(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_set_air(JSValueRef *vp)
+bool js_obj_side_speed_set_air(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -235,7 +235,7 @@ bool js_obj_side_speed_set_air(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_set_acceleration(JSValueRef *vp)
+bool js_obj_side_speed_set_acceleration(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -245,7 +245,7 @@ bool js_obj_side_speed_set_acceleration(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_set_deceleration(JSValueRef *vp)
+bool js_obj_side_speed_set_deceleration(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -255,7 +255,7 @@ bool js_obj_side_speed_set_deceleration(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_set_accelerationAir(JSValueRef *vp)
+bool js_obj_side_speed_set_accelerationAir(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -265,7 +265,7 @@ bool js_obj_side_speed_set_accelerationAir(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_side_speed_set_decelerationAir(JSValueRef *vp)
+bool js_obj_side_speed_set_decelerationAir(JSValueRef vp)
 {
 	obj_type		*obj;
 	

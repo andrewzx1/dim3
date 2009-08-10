@@ -35,19 +35,19 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_map_node_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_node_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_node_find_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_find_random_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_next_in_path_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_get_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_get_distance_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_get_angle_to_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_node_get_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_map_node_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_map_node_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_node_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_find_random_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_next_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_get_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	map_node_functions[]={
 							{"find",							js_map_node_find_func,									1},
@@ -81,7 +81,7 @@ void script_free_map_node_object(void)
 	script_free_class(map_node_class);
 }
 
-JSObject* script_add_map_node_object(JSObject *parent_obj)
+JSObjectRef script_add_map_node_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,map_node_class,"node",NULL,map_node_functions));
 }
@@ -92,14 +92,14 @@ JSObject* script_add_map_node_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_node_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_map_node_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_map_node_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_map_node_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -108,7 +108,7 @@ JSBool js_map_node_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JS
       
 ======================================================= */
 
-JSBool js_map_node_find_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -119,7 +119,7 @@ JSBool js_map_node_find_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueR
 	return(TRUE);
 }
 
-JSBool js_map_node_find_random_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_find_random_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -131,7 +131,7 @@ JSBool js_map_node_find_random_func(JSContextRef cx,JSObject *j_obj,uintN argc,J
 	return(TRUE);
 }
 
-JSBool js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx;
 	obj_type		*obj;
@@ -145,7 +145,7 @@ JSBool js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObject *j_obj,u
 	return(TRUE);
 }
 
-JSBool js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,idx,from_idx,k,len,d,dist;
 	unsigned int	u_len;
@@ -203,7 +203,7 @@ JSBool js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObject *j_o
 	return(TRUE);
 }
 
-JSBool js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,idx,from_idx,k,d,dist;
 	obj_type		*obj;
@@ -246,7 +246,7 @@ JSBool js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObj
       
 ======================================================= */
 
-JSBool js_map_node_next_in_path_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_next_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx;
 	
@@ -256,7 +256,7 @@ JSBool js_map_node_next_in_path_func(JSContextRef cx,JSObject *j_obj,uintN argc,
 	return(TRUE);
 }
 
-JSBool js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,cnt,link[max_node_link];
 	node_type		*node;
@@ -283,7 +283,7 @@ JSBool js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObject *j_obj,uintN
       
 ======================================================= */
 
-JSBool js_map_node_get_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	node_type		*node;
 
@@ -304,7 +304,7 @@ JSBool js_map_node_get_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
       
 ======================================================= */
 
-JSBool js_map_node_get_distance_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y;
 	node_type		*node;
@@ -327,7 +327,7 @@ JSBool js_map_node_get_distance_func(JSContextRef cx,JSObject *j_obj,uintN argc,
 	return(TRUE);
 }
 
-JSBool js_map_node_get_angle_to_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y;
 	float			ang_x,ang_z,ang_y;
@@ -361,7 +361,7 @@ JSBool js_map_node_get_angle_to_func(JSContextRef cx,JSObject *j_obj,uintN argc,
       
 ======================================================= */
 
-JSBool js_map_node_get_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_node_get_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	node_type		*node;
 

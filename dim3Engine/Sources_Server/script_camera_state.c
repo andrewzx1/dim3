@@ -35,10 +35,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_camera_state_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_camera_state_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_camera_state_save_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_camera_state_restore_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_camera_state_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_camera_state_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_state_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_camera_state_restore_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	camera_state_functions[]={
 							{"save",				js_camera_state_save_func,				0},
@@ -63,7 +63,7 @@ void script_free_camera_state_object(void)
 	script_free_class(camera_state_class);
 }
 
-JSObject* script_add_camera_state_object(JSObject *parent_obj)
+JSObjectRef script_add_camera_state_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,camera_state_class,"state",NULL,camera_state_functions));
 }
@@ -74,14 +74,14 @@ JSObject* script_add_camera_state_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_state_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_camera_state_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_camera_state_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_camera_state_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -90,13 +90,13 @@ JSBool js_camera_state_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef i
       
 ======================================================= */
 
-JSBool js_camera_state_save_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_camera_state_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	camera_save();
 	return(TRUE);
 }
 
-JSBool js_camera_state_restore_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_camera_state_restore_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	camera_restore();
 	return(TRUE);

@@ -34,11 +34,11 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_info_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_info_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_map_info_get_file(JSValueRef *vp);
-bool js_map_info_get_title(JSValueRef *vp);
-bool js_map_info_get_author(JSValueRef *vp);
+JSValueRef js_map_info_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_info_get_file(void);
+JSValueRef js_map_info_get_title(void);
+JSValueRef js_map_info_get_author(void);
 
 script_js_property	map_info_props[]={
 							{"file",				js_map_info_get_file,				NULL},
@@ -64,7 +64,7 @@ void script_free_map_info_object(void)
 	script_free_class(map_info_class);
 }
 
-JSObject* script_add_map_info_object(JSObject *parent_obj)
+JSObjectRef script_add_map_info_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,map_info_class,"info",map_info_props,NULL));
 }
@@ -75,14 +75,14 @@ JSObject* script_add_map_info_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_info_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_map_info_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,map_info_props));
+	return(script_get_property(cx,j_obj,name,map_info_props));
 }
 
-JSBool js_map_info_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,map_info_props));
+	return(script_set_property(cx,j_obj,name,vp,map_info_props));
 }
 
 /* =======================================================
@@ -91,19 +91,19 @@ JSBool js_map_info_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JS
       
 ======================================================= */
 
-bool js_map_info_get_file(JSValueRef *vp)
+JSValueRef js_map_info_get_file(void)
 {
 	*vp=script_string_to_value(map.info.name);
 	return(TRUE);
 }
 
-bool js_map_info_get_title(JSValueRef *vp)
+JSValueRef js_map_info_get_title(void)
 {
 	*vp=script_string_to_value(map.info.title);
 	return(TRUE);
 }
 
-bool js_map_info_get_author(JSValueRef *vp)
+JSValueRef js_map_info_get_author(void)
 {
 	*vp=script_string_to_value(map.info.author);
 	return(TRUE);

@@ -37,11 +37,11 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-JSBool js_game_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_game_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_game_setting_get_type(JSValueRef *vp);
-bool js_game_setting_get_multiplayer(JSValueRef *vp);
-bool js_game_setting_get_skill(JSValueRef *vp);
+JSValueRef js_game_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_game_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_game_setting_get_type(void);
+JSValueRef js_game_setting_get_multiplayer(void);
+JSValueRef js_game_setting_get_skill(void);
 
 script_js_property	game_setting_props[]={
 							{"type",				js_game_setting_get_type,				NULL},
@@ -67,7 +67,7 @@ void script_free_game_setting_object(void)
 	script_free_class(game_setting_class);
 }
 
-JSObject* script_add_game_setting_object(JSObject *parent_obj)
+JSObjectRef script_add_game_setting_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,game_setting_class,"setting",game_setting_props,NULL));
 }
@@ -78,14 +78,14 @@ JSObject* script_add_game_setting_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_game_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_game_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,game_setting_props));
+	return(script_get_property(cx,j_obj,name,game_setting_props));
 }
 
-JSBool js_game_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_game_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,game_setting_props));
+	return(script_set_property(cx,j_obj,name,vp,game_setting_props));
 }
 
 /* =======================================================
@@ -94,27 +94,20 @@ JSBool js_game_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef i
       
 ======================================================= */
 
-bool js_game_setting_get_type(JSValueRef *vp)
+JSValueRef js_game_setting_get_type(void)
 {
-	if (!net_setup.client.joined) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
-	}
+	if (!net_setup.client.joined) return(script_null_to_value());
 	
-	return(TRUE);
+	return(script_string_to_value(net_setup.games[net_setup.game_idx].name));
 }
 
-bool js_game_setting_get_multiplayer(JSValueRef *vp)
+JSValueRef js_game_setting_get_multiplayer(void)
 {
-	*vp=script_bool_to_value(net_setup.client.joined);
-	return(TRUE);
+	return(script_bool_to_value(net_setup.client.joined));
 }
 
-bool js_game_setting_get_skill(JSValueRef *vp)
+JSValueRef js_game_setting_get_skill(void)
 {
-	*vp=script_int_to_value(server.skill);
-	return(TRUE);
+	return(script_int_to_value(server.skill));
 }
 

@@ -31,10 +31,10 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_model_shadow_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_model_shadow_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_model_shadow_get_on(JSValueRef *vp);
-bool js_model_shadow_set_on(JSValueRef *vp);
+JSValueRef js_model_shadow_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_shadow_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_shadow_get_on(void);
+bool js_model_shadow_set_on(JSValueRef vp);
 
 extern js_type			js;
 
@@ -60,7 +60,7 @@ void script_free_model_shadow_object(void)
 	script_free_class(model_shadow_class);
 }
 
-JSObject* script_add_model_shadow_object(JSObject *parent_obj)
+JSObjectRef script_add_model_shadow_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,model_shadow_class,"shadow",model_shadow_props,NULL));
 }
@@ -71,14 +71,14 @@ JSObject* script_add_model_shadow_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_shadow_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_model_shadow_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,model_shadow_props));
+	return(script_get_property(cx,j_obj,name,model_shadow_props));
 }
 
-JSBool js_model_shadow_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_model_shadow_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,model_shadow_props));
+	return(script_set_property(cx,j_obj,name,vp,model_shadow_props));
 }
 
 /* =======================================================
@@ -87,7 +87,7 @@ JSBool js_model_shadow_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef i
       
 ======================================================= */
 
-bool js_model_shadow_get_on(JSValueRef *vp)
+JSValueRef js_model_shadow_get_on(void)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
@@ -106,7 +106,7 @@ bool js_model_shadow_get_on(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_model_shadow_set_on(JSValueRef *vp)
+bool js_model_shadow_set_on(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;

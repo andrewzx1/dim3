@@ -38,23 +38,21 @@ extern js_type				js;
 extern network_setup_type	net_setup;
 
 extern void object_setup_motion(obj_type *obj,float ang,float speed);
-extern JSBool js_obj_position_place_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-extern JSBool js_obj_position_pause_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
 							
-JSBool js_obj_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_position_get_x(JSValueRef *vp);
-bool js_obj_position_get_y(JSValueRef *vp);
-bool js_obj_position_get_z(JSValueRef *vp);
-JSBool js_obj_position_place_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_position_place_random_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_position_place_network_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_position_move_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_position_reset_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_position_distance_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_position_distance_to_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_obj_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_position_get_x(void);
+JSValueRef js_obj_position_get_y(void);
+JSValueRef js_obj_position_get_z(void);
+JSValueRef js_obj_position_place_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	obj_position_props[]={
 							{"x",								js_obj_position_get_x,				NULL},
@@ -92,7 +90,7 @@ void script_free_obj_position_object(void)
 	script_free_class(obj_position_class);
 }
 
-JSObject* script_add_obj_position_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_position_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_position_class,"position",obj_position_props,obj_position_functions));
 }
@@ -103,14 +101,14 @@ JSObject* script_add_obj_position_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_position_props));
+	return(script_get_property(cx,j_obj,name,obj_position_props));
 }
 
-JSBool js_obj_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_position_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_position_props));
 }
 
 /* =======================================================
@@ -119,7 +117,7 @@ JSBool js_obj_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef i
       
 ======================================================= */
 
-bool js_obj_position_get_x(JSValueRef *vp)
+JSValueRef js_obj_position_get_x(void)
 {
 	obj_type		*obj;
 
@@ -129,7 +127,7 @@ bool js_obj_position_get_x(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_position_get_y(JSValueRef *vp)
+JSValueRef js_obj_position_get_y(void)
 {
 	obj_type		*obj;
 
@@ -139,7 +137,7 @@ bool js_obj_position_get_y(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_position_get_z(JSValueRef *vp)
+JSValueRef js_obj_position_get_z(void)
 {
 	obj_type		*obj;
 
@@ -155,7 +153,7 @@ bool js_obj_position_get_z(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_obj_position_place_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_place_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -169,7 +167,7 @@ JSBool js_obj_position_place_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_obj_position_place_random_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	spot_type		*spot;
@@ -189,7 +187,7 @@ JSBool js_obj_position_place_random_spot_func(JSContextRef cx,JSObject *j_obj,ui
 	return(TRUE);
 }
 
-JSBool js_obj_position_place_network_spot_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	spot_type		*spot;
@@ -211,7 +209,7 @@ JSBool js_obj_position_place_network_spot_func(JSContextRef cx,JSObject *j_obj,u
 	return(TRUE);
 }
 
-JSBool js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	d3pnt			old_pnt;
 	obj_type		*obj;
@@ -243,7 +241,7 @@ JSBool js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JSObje
 	return(TRUE);
 }
 
-JSBool js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	d3pnt			old_pnt;
 	obj_type		*obj;
@@ -275,7 +273,7 @@ JSBool js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,JSObj
 	return(TRUE);
 }
 
-JSBool js_obj_position_move_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				xadd,zadd,yadd;
 	obj_type		*obj;
@@ -294,7 +292,7 @@ JSBool js_obj_position_move_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
 	return(TRUE);
 }
 
-JSBool js_obj_position_reset_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -311,7 +309,7 @@ JSBool js_obj_position_reset_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
       
 ======================================================= */
 
-JSBool js_obj_position_distance_to_player_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj,*player_obj;
 	
@@ -323,7 +321,7 @@ JSBool js_obj_position_distance_to_player_func(JSContextRef cx,JSObject *j_obj,u
 	return(TRUE);
 }
 
-JSBool js_obj_position_distance_to_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj,*dist_obj;
 	

@@ -34,20 +34,20 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_proj_speed_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_proj_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_proj_speed_get_speed(JSValueRef *vp);
-bool js_proj_speed_get_deceleration(JSValueRef *vp);
-bool js_proj_speed_get_decelerationWait(JSValueRef *vp);
-bool js_proj_speed_get_decelerationMinSpeed(JSValueRef *vp);
-bool js_proj_speed_get_maxHitscanDistance(JSValueRef *vp);
-bool js_proj_speed_get_inheritMotionFactor(JSValueRef *vp);
-bool js_proj_speed_set_speed(JSValueRef *vp);
-bool js_proj_speed_set_deceleration(JSValueRef *vp);
-bool js_proj_speed_set_decelerationWait(JSValueRef *vp);
-bool js_proj_speed_set_decelerationMinSpeed(JSValueRef *vp);
-bool js_proj_speed_set_maxHitscanDistance(JSValueRef *vp);
-bool js_proj_speed_set_inheritMotionFactor(JSValueRef *vp);
+JSValueRef js_proj_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_proj_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_speed_get_speed(void);
+JSValueRef js_proj_speed_get_deceleration(void);
+JSValueRef js_proj_speed_get_decelerationWait(void);
+JSValueRef js_proj_speed_get_decelerationMinSpeed(void);
+JSValueRef js_proj_speed_get_maxHitscanDistance(void);
+JSValueRef js_proj_speed_get_inheritMotionFactor(void);
+bool js_proj_speed_set_speed(JSValueRef vp);
+bool js_proj_speed_set_deceleration(JSValueRef vp);
+bool js_proj_speed_set_decelerationWait(JSValueRef vp);
+bool js_proj_speed_set_decelerationMinSpeed(JSValueRef vp);
+bool js_proj_speed_set_maxHitscanDistance(JSValueRef vp);
+bool js_proj_speed_set_inheritMotionFactor(JSValueRef vp);
 
 script_js_property	proj_speed_props[]={
 							{"speed",					js_proj_speed_get_speed,					js_proj_speed_set_speed},
@@ -76,7 +76,7 @@ void script_free_proj_speed_object(void)
 	script_free_class(proj_speed_class);
 }
 
-JSObject* script_add_proj_speed_object(JSObject *parent_obj)
+JSObjectRef script_add_proj_speed_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,proj_speed_class,"speed",proj_speed_props,NULL));
 }
@@ -87,14 +87,14 @@ JSObject* script_add_proj_speed_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_speed_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_proj_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,proj_speed_props));
+	return(script_get_property(cx,j_obj,name,proj_speed_props));
 }
 
-JSBool js_proj_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_proj_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,proj_speed_props));
+	return(script_set_property(cx,j_obj,name,vp,proj_speed_props));
 }
 
 /* =======================================================
@@ -103,7 +103,7 @@ JSBool js_proj_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,
       
 ======================================================= */
 
-bool js_proj_speed_get_speed(JSValueRef *vp)
+JSValueRef js_proj_speed_get_speed(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -115,7 +115,7 @@ bool js_proj_speed_get_speed(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_get_deceleration(JSValueRef *vp)
+JSValueRef js_proj_speed_get_deceleration(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -127,7 +127,7 @@ bool js_proj_speed_get_deceleration(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_get_decelerationWait(JSValueRef *vp)
+JSValueRef js_proj_speed_get_decelerationWait(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -139,7 +139,7 @@ bool js_proj_speed_get_decelerationWait(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_get_decelerationMinSpeed(JSValueRef *vp)
+JSValueRef js_proj_speed_get_decelerationMinSpeed(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -151,7 +151,7 @@ bool js_proj_speed_get_decelerationMinSpeed(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_get_maxHitscanDistance(JSValueRef *vp)
+JSValueRef js_proj_speed_get_maxHitscanDistance(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -163,7 +163,7 @@ bool js_proj_speed_get_maxHitscanDistance(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_get_inheritMotionFactor(JSValueRef *vp)
+JSValueRef js_proj_speed_get_inheritMotionFactor(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -181,7 +181,7 @@ bool js_proj_speed_get_inheritMotionFactor(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_proj_speed_set_speed(JSValueRef *vp)
+bool js_proj_speed_set_speed(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -193,7 +193,7 @@ bool js_proj_speed_set_speed(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_set_deceleration(JSValueRef *vp)
+bool js_proj_speed_set_deceleration(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -205,7 +205,7 @@ bool js_proj_speed_set_deceleration(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_set_decelerationWait(JSValueRef *vp)
+bool js_proj_speed_set_decelerationWait(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -217,7 +217,7 @@ bool js_proj_speed_set_decelerationWait(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_set_decelerationMinSpeed(JSValueRef *vp)
+bool js_proj_speed_set_decelerationMinSpeed(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -229,7 +229,7 @@ bool js_proj_speed_set_decelerationMinSpeed(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_set_maxHitscanDistance(JSValueRef *vp)
+bool js_proj_speed_set_maxHitscanDistance(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -241,7 +241,7 @@ bool js_proj_speed_set_maxHitscanDistance(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_speed_set_inheritMotionFactor(JSValueRef *vp)
+bool js_proj_speed_set_inheritMotionFactor(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	

@@ -36,11 +36,11 @@ extern camera_type		camera;
 extern view_type		view;
 extern js_type			js;
 
-JSBool js_camera_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_camera_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_camera_position_get_x(JSValueRef *vp);
-bool js_camera_position_get_y(JSValueRef *vp);
-bool js_camera_position_get_z(JSValueRef *vp);
+JSValueRef js_camera_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_camera_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_position_get_x(void);
+JSValueRef js_camera_position_get_y(void);
+JSValueRef js_camera_position_get_z(void);
 
 script_js_property	camera_position_props[]={
 							{"x",					js_camera_position_get_x,				NULL},
@@ -66,7 +66,7 @@ void script_free_camera_position_object(void)
 	script_free_class(camera_position_class);
 }
 
-JSObject* script_add_camera_position_object(JSObject *parent_obj)
+JSObjectRef script_add_camera_position_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,camera_position_class,"position",camera_position_props,NULL));
 }
@@ -77,14 +77,14 @@ JSObject* script_add_camera_position_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_camera_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,camera_position_props));
+	return(script_get_property(cx,j_obj,name,camera_position_props));
 }
 
-JSBool js_camera_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_camera_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,camera_position_props));
+	return(script_set_property(cx,j_obj,name,vp,camera_position_props));
 }
 
 /* =======================================================
@@ -93,19 +93,19 @@ JSBool js_camera_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRe
       
 ======================================================= */
 
-bool js_camera_position_get_x(JSValueRef *vp)
+JSValueRef js_camera_position_get_x(void)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.x);
 	return(TRUE);
 }
 
-bool js_camera_position_get_y(JSValueRef *vp)
+JSValueRef js_camera_position_get_y(void)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.y);
 	return(TRUE);
 }
 
-bool js_camera_position_get_z(JSValueRef *vp)
+JSValueRef js_camera_position_get_z(void)
 {
 	*vp=script_int_to_value(view.render->camera.pnt.z);
 	return(TRUE);

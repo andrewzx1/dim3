@@ -37,19 +37,19 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_spawn_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_spawn_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_spawn_particle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_particle_moving_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_particle_line_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_ring_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_ring_line_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_flash_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_lightning_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_ray_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_ray_team_color_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_shake_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_spawn_push_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_spawn_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_spawn_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_spawn_particle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_particle_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_ring_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_ring_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_flash_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_lightning_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_ray_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_shake_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_spawn_push_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	spawn_functions[]={
 							{"particle",			js_spawn_particle_func,				4},
@@ -83,7 +83,7 @@ void script_free_global_spawn_object(void)
 	script_free_class(spawn_class);
 }
 
-JSObject* script_add_global_spawn_object(JSObject *parent_obj)
+JSObjectRef script_add_global_spawn_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,spawn_class,"spawn",NULL,spawn_functions));
 }
@@ -94,14 +94,14 @@ JSObject* script_add_global_spawn_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_spawn_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_spawn_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_spawn_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_spawn_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -110,7 +110,7 @@ JSBool js_spawn_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSVal
       
 ======================================================= */
 
-JSBool js_spawn_particle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_particle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -133,7 +133,7 @@ JSBool js_spawn_particle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValue
 	return(TRUE);
 }
 
-JSBool js_spawn_particle_moving_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -162,7 +162,7 @@ JSBool js_spawn_particle_moving_func(JSContextRef cx,JSObject *j_obj,uintN argc,
 	return(TRUE);
 }
 
-JSBool js_spawn_particle_line_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_particle_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx,count;
 	char			name[name_str_len];
@@ -197,7 +197,7 @@ JSBool js_spawn_particle_line_func(JSContextRef cx,JSObject *j_obj,uintN argc,JS
       
 ======================================================= */
 
-JSBool js_spawn_ring_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_ring_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -220,7 +220,7 @@ JSBool js_spawn_ring_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef 
 	return(TRUE);
 }
 
-JSBool js_spawn_ring_line_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_ring_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				idx,count;
 	char			name[name_str_len];
@@ -255,7 +255,7 @@ JSBool js_spawn_ring_line_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValu
       
 ======================================================= */
 
-JSBool js_spawn_flash_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_flash_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				intensity,flash_msec,fade_msec;
 	d3pnt			pt;
@@ -284,7 +284,7 @@ JSBool js_spawn_flash_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef
       
 ======================================================= */
 
-JSBool js_spawn_lightning_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_lightning_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				wid,life_msec;
 	float			varient;
@@ -319,7 +319,7 @@ JSBool js_spawn_lightning_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValu
       
 ======================================================= */
 
-JSBool js_spawn_ray_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_ray_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				wid,life_msec;
 	d3pnt			start_pt,end_pt;
@@ -346,7 +346,7 @@ JSBool js_spawn_ray_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *
 	return(TRUE);
 }
 
-JSBool js_spawn_ray_team_color_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				wid,life_msec,obj_uid;
 	d3pnt			start_pt,end_pt;
@@ -386,7 +386,7 @@ JSBool js_spawn_ray_team_color_func(JSContextRef cx,JSObject *j_obj,uintN argc,J
       
 ======================================================= */
 
-JSBool js_spawn_shake_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_shake_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				dist,sz,life_msec;
 	d3pnt			pt;
@@ -411,7 +411,7 @@ JSBool js_spawn_shake_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef
       
 ======================================================= */
 
-JSBool js_spawn_push_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_spawn_push_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y,radius,force;
 	

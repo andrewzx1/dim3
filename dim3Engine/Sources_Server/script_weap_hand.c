@@ -34,18 +34,18 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_hand_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_weap_hand_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_weap_hand_get_raiseTick(JSValueRef *vp);
-bool js_weap_hand_get_lowerTick(JSValueRef *vp);
-bool js_weap_hand_get_selectShift(JSValueRef *vp);
-bool js_weap_hand_get_bobSpeed(JSValueRef *vp);
-bool js_weap_hand_get_bobAngle(JSValueRef *vp);
-bool js_weap_hand_set_raiseTick(JSValueRef *vp);
-bool js_weap_hand_set_lowerTick(JSValueRef *vp);
-bool js_weap_hand_set_selectShift(JSValueRef *vp);
-bool js_weap_hand_set_bobSpeed(JSValueRef *vp);
-bool js_weap_hand_set_bobAngle(JSValueRef *vp);
+JSValueRef js_weap_hand_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_weap_hand_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_hand_get_raiseTick(void);
+JSValueRef js_weap_hand_get_lowerTick(void);
+JSValueRef js_weap_hand_get_selectShift(void);
+JSValueRef js_weap_hand_get_bobSpeed(void);
+JSValueRef js_weap_hand_get_bobAngle(void);
+bool js_weap_hand_set_raiseTick(JSValueRef vp);
+bool js_weap_hand_set_lowerTick(JSValueRef vp);
+bool js_weap_hand_set_selectShift(JSValueRef vp);
+bool js_weap_hand_set_bobSpeed(JSValueRef vp);
+bool js_weap_hand_set_bobAngle(JSValueRef vp);
 
 script_js_property	weap_hand_props[]={
 							{"raiseTick",			js_weap_hand_get_raiseTick,				js_weap_hand_set_raiseTick},
@@ -73,7 +73,7 @@ void script_free_weap_hand_object(void)
 	script_free_class(weap_hand_class);
 }
 
-JSObject* script_add_weap_hand_object(JSObject *parent_obj)
+JSObjectRef script_add_weap_hand_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,weap_hand_class,"hand",weap_hand_props,NULL));
 }
@@ -84,14 +84,14 @@ JSObject* script_add_weap_hand_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_hand_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_weap_hand_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,weap_hand_props));
+	return(script_get_property(cx,j_obj,name,weap_hand_props));
 }
 
-JSBool js_weap_hand_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_weap_hand_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,weap_hand_props));
+	return(script_set_property(cx,j_obj,name,vp,weap_hand_props));
 }
 
 /* =======================================================
@@ -100,7 +100,7 @@ JSBool js_weap_hand_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-bool js_weap_hand_get_raiseTick(JSValueRef *vp)
+JSValueRef js_weap_hand_get_raiseTick(void)
 {
 	weapon_type		*weap;
 
@@ -110,7 +110,7 @@ bool js_weap_hand_get_raiseTick(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_get_lowerTick(JSValueRef *vp)
+JSValueRef js_weap_hand_get_lowerTick(void)
 {
 	weapon_type		*weap;
 
@@ -120,7 +120,7 @@ bool js_weap_hand_get_lowerTick(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_get_selectShift(JSValueRef *vp)
+JSValueRef js_weap_hand_get_selectShift(void)
 {
 	weapon_type		*weap;
 
@@ -130,7 +130,7 @@ bool js_weap_hand_get_selectShift(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_get_bobSpeed(JSValueRef *vp)
+JSValueRef js_weap_hand_get_bobSpeed(void)
 {
 	weapon_type		*weap;
 
@@ -140,7 +140,7 @@ bool js_weap_hand_get_bobSpeed(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_get_bobAngle(JSValueRef *vp)
+JSValueRef js_weap_hand_get_bobAngle(void)
 {
 	weapon_type		*weap;
 
@@ -156,7 +156,7 @@ bool js_weap_hand_get_bobAngle(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_weap_hand_set_raiseTick(JSValueRef *vp)
+bool js_weap_hand_set_raiseTick(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -166,7 +166,7 @@ bool js_weap_hand_set_raiseTick(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_set_lowerTick(JSValueRef *vp)
+bool js_weap_hand_set_lowerTick(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -176,7 +176,7 @@ bool js_weap_hand_set_lowerTick(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_set_selectShift(JSValueRef *vp)
+bool js_weap_hand_set_selectShift(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -186,7 +186,7 @@ bool js_weap_hand_set_selectShift(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_set_bobSpeed(JSValueRef *vp)
+bool js_weap_hand_set_bobSpeed(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -196,7 +196,7 @@ bool js_weap_hand_set_bobSpeed(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_set_bobAngle(JSValueRef *vp)
+bool js_weap_hand_set_bobAngle(JSValueRef vp)
 {
 	weapon_type		*weap;
 	

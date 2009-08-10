@@ -74,7 +74,7 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	obj_type			*obj,*player_obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
-    
+	
 		// create new object
 		
 	obj=object_create(bt_remote,-1);

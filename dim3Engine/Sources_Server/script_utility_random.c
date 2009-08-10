@@ -33,12 +33,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_utility_random_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_utility_random_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_utility_random_get_integer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_utility_random_get_float_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_utility_random_get_boolean_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_utility_random_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_utility_random_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	utility_random_functions[]={
 							{"getInteger",			js_utility_random_get_integer_func,		2},
@@ -65,7 +65,7 @@ void script_free_utility_random_object(void)
 	script_free_class(utility_random_class);
 }
 
-JSObject* script_add_utility_random_object(JSObject *parent_obj)
+JSObjectRef script_add_utility_random_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,utility_random_class,"random",NULL,utility_random_functions));
 }
@@ -76,14 +76,14 @@ JSObject* script_add_utility_random_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_utility_random_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_utility_random_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_utility_random_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_utility_random_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -92,7 +92,7 @@ JSBool js_utility_random_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef
       
 ======================================================= */
 
-JSBool js_utility_random_get_integer_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				min,max;
 
@@ -104,7 +104,7 @@ JSBool js_utility_random_get_integer_func(JSContextRef cx,JSObject *j_obj,uintN 
 	return(TRUE);
 }
 
-JSBool js_utility_random_get_float_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float				min,max;
 
@@ -116,14 +116,14 @@ JSBool js_utility_random_get_float_func(JSContextRef cx,JSObject *j_obj,uintN ar
 	return(TRUE);
 }
 
-JSBool js_utility_random_get_boolean_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	*rval=script_bool_to_value(random_boolean());
 	
 	return(TRUE);
 }
 
-JSBool js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	*rval=script_int_to_value(random_boolean()?1:(-1));
 	

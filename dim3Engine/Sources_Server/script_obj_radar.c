@@ -35,16 +35,16 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_radar_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_radar_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_radar_get_on(JSValueRef *vp);
-bool js_obj_radar_get_icon(JSValueRef *vp);
-bool js_obj_radar_get_motionOnly(JSValueRef *vp);
-bool js_obj_radar_get_alwaysVisible(JSValueRef *vp);
-bool js_obj_radar_set_on(JSValueRef *vp);
-bool js_obj_radar_set_icon(JSValueRef *vp);
-bool js_obj_radar_set_motionOnly(JSValueRef *vp);
-bool js_obj_radar_set_alwaysVisible(JSValueRef *vp);
+JSValueRef js_obj_radar_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_radar_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_radar_get_on(void);
+JSValueRef js_obj_radar_get_icon(void);
+JSValueRef js_obj_radar_get_motionOnly(void);
+JSValueRef js_obj_radar_get_alwaysVisible(void);
+bool js_obj_radar_set_on(JSValueRef vp);
+bool js_obj_radar_set_icon(JSValueRef vp);
+bool js_obj_radar_set_motionOnly(JSValueRef vp);
+bool js_obj_radar_set_alwaysVisible(JSValueRef vp);
 
 script_js_property	obj_radar_props[]={
 							{"on",					js_obj_radar_get_on,				js_obj_radar_set_on},
@@ -71,7 +71,7 @@ void script_free_obj_radar_object(void)
 	script_free_class(obj_radar_class);
 }
 
-JSObject* script_add_obj_radar_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_radar_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_radar_class,"radar",obj_radar_props,NULL));
 }
@@ -82,14 +82,14 @@ JSObject* script_add_obj_radar_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_radar_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_radar_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_radar_props));
+	return(script_get_property(cx,j_obj,name,obj_radar_props));
 }
 
-JSBool js_obj_radar_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_radar_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_radar_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_radar_props));
 }
 
 /* =======================================================
@@ -98,7 +98,7 @@ JSBool js_obj_radar_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-bool js_obj_radar_get_on(JSValueRef *vp)
+JSValueRef js_obj_radar_get_on(void)
 {
 	obj_type		*obj;
 
@@ -108,7 +108,7 @@ bool js_obj_radar_get_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_radar_get_icon(JSValueRef *vp)
+JSValueRef js_obj_radar_get_icon(void)
 {
 	obj_type		*obj;
 
@@ -118,7 +118,7 @@ bool js_obj_radar_get_icon(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_radar_get_motionOnly(JSValueRef *vp)
+JSValueRef js_obj_radar_get_motionOnly(void)
 {
 	obj_type		*obj;
 
@@ -128,7 +128,7 @@ bool js_obj_radar_get_motionOnly(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_radar_get_alwaysVisible(JSValueRef *vp)
+JSValueRef js_obj_radar_get_alwaysVisible(void)
 {
 	obj_type		*obj;
 
@@ -144,7 +144,7 @@ bool js_obj_radar_get_alwaysVisible(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_obj_radar_set_on(JSValueRef *vp)
+bool js_obj_radar_set_on(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -154,7 +154,7 @@ bool js_obj_radar_set_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_radar_set_icon(JSValueRef *vp)
+bool js_obj_radar_set_icon(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -165,7 +165,7 @@ bool js_obj_radar_set_icon(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_radar_set_motionOnly(JSValueRef *vp)
+bool js_obj_radar_set_motionOnly(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -175,7 +175,7 @@ bool js_obj_radar_set_motionOnly(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_radar_set_alwaysVisible(JSValueRef *vp)
+bool js_obj_radar_set_alwaysVisible(JSValueRef vp)
 {
 	obj_type		*obj;
 	

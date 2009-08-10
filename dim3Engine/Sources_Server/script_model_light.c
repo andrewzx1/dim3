@@ -31,22 +31,22 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_model_light_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_model_light_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_model_light_get_index(JSValueRef *vp);
-bool js_model_light_get_on(JSValueRef *vp);
-bool js_model_light_get_type(JSValueRef *vp);
-bool js_model_light_get_filter(JSValueRef *vp);
-bool js_model_light_get_direction(JSValueRef *vp);
-bool js_model_light_get_intensity(JSValueRef *vp);
-bool js_model_light_get_exponent(JSValueRef *vp);
-bool js_model_light_set_index(JSValueRef *vp);
-bool js_model_light_set_on(JSValueRef *vp);
-bool js_model_light_set_type(JSValueRef *vp);
-bool js_model_light_set_filter(JSValueRef *vp);
-bool js_model_light_set_direction(JSValueRef *vp);
-bool js_model_light_set_intensity(JSValueRef *vp);
-bool js_model_light_set_exponent(JSValueRef *vp);
+JSValueRef js_model_light_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_light_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_light_get_index(void);
+JSValueRef js_model_light_get_on(void);
+JSValueRef js_model_light_get_type(void);
+JSValueRef js_model_light_get_filter(void);
+JSValueRef js_model_light_get_direction(void);
+JSValueRef js_model_light_get_intensity(void);
+JSValueRef js_model_light_get_exponent(void);
+bool js_model_light_set_index(JSValueRef vp);
+bool js_model_light_set_on(JSValueRef vp);
+bool js_model_light_set_type(JSValueRef vp);
+bool js_model_light_set_filter(JSValueRef vp);
+bool js_model_light_set_direction(JSValueRef vp);
+bool js_model_light_set_intensity(JSValueRef vp);
+bool js_model_light_set_exponent(JSValueRef vp);
 
 extern js_type			js;
 
@@ -78,7 +78,7 @@ void script_free_model_light_object(void)
 	script_free_class(model_light_class);
 }
 
-JSObject* script_add_model_light_object(JSObject *parent_obj)
+JSObjectRef script_add_model_light_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,model_light_class,"light",model_light_props,NULL));
 }
@@ -89,14 +89,14 @@ JSObject* script_add_model_light_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_light_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_model_light_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,model_light_props));
+	return(script_get_property(cx,j_obj,name,model_light_props));
 }
 
-JSBool js_model_light_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_model_light_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,model_light_props));
+	return(script_set_property(cx,j_obj,name,vp,model_light_props));
 }
 
 /* =======================================================
@@ -105,7 +105,7 @@ JSBool js_model_light_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id
       
 ======================================================= */
 
-bool js_model_light_get_index(JSValueRef *vp)
+JSValueRef js_model_light_get_index(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -118,7 +118,7 @@ bool js_model_light_get_index(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_get_on(JSValueRef *vp)
+JSValueRef js_model_light_get_on(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -131,7 +131,7 @@ bool js_model_light_get_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_get_type(JSValueRef *vp)
+JSValueRef js_model_light_get_type(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -144,7 +144,7 @@ bool js_model_light_get_type(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_get_filter(JSValueRef *vp)
+JSValueRef js_model_light_get_filter(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -157,7 +157,7 @@ bool js_model_light_get_filter(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_get_direction(JSValueRef *vp)
+JSValueRef js_model_light_get_direction(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -170,7 +170,7 @@ bool js_model_light_get_direction(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_get_intensity(JSValueRef *vp)
+JSValueRef js_model_light_get_intensity(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -183,7 +183,7 @@ bool js_model_light_get_intensity(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_get_exponent(JSValueRef *vp)
+JSValueRef js_model_light_get_exponent(void)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -202,7 +202,7 @@ bool js_model_light_get_exponent(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_model_light_set_index(JSValueRef *vp)
+bool js_model_light_set_index(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -216,7 +216,7 @@ bool js_model_light_set_index(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_set_on(JSValueRef *vp)
+bool js_model_light_set_on(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -229,7 +229,7 @@ bool js_model_light_set_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_set_type(JSValueRef *vp)
+bool js_model_light_set_type(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -242,7 +242,7 @@ bool js_model_light_set_type(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_set_filter(JSValueRef *vp)
+bool js_model_light_set_filter(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -255,7 +255,7 @@ bool js_model_light_set_filter(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_set_direction(JSValueRef *vp)
+bool js_model_light_set_direction(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -268,7 +268,7 @@ bool js_model_light_set_direction(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_set_intensity(JSValueRef *vp)
+bool js_model_light_set_intensity(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -281,7 +281,7 @@ bool js_model_light_set_intensity(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_light_set_exponent(JSValueRef *vp)
+bool js_model_light_set_exponent(JSValueRef vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
