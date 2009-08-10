@@ -35,28 +35,28 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_melee_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_weap_melee_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_weap_melee_get_strikeBoneTag(JSValueRef *vp);
-bool js_weap_melee_get_strikePoseName(JSValueRef *vp);
-bool js_weap_melee_get_objectStrikeBoneTag(JSValueRef *vp);
-bool js_weap_melee_get_objectStrikePoseName(JSValueRef *vp);
-bool js_weap_melee_get_radius(JSValueRef *vp);
-bool js_weap_melee_get_distance(JSValueRef *vp);
-bool js_weap_melee_get_damage(JSValueRef *vp);
-bool js_weap_melee_get_force(JSValueRef *vp);
-bool js_weap_melee_get_fallOff(JSValueRef *vp);
-bool js_weap_melee_set_strikeBoneTag(JSValueRef *vp);
-bool js_weap_melee_set_strikePoseName(JSValueRef *vp);
-bool js_weap_melee_set_objectStrikeBoneTag(JSValueRef *vp);
-bool js_weap_melee_set_objectStrikePoseName(JSValueRef *vp);
-bool js_weap_melee_set_radius(JSValueRef *vp);
-bool js_weap_melee_set_distance(JSValueRef *vp);
-bool js_weap_melee_set_damage(JSValueRef *vp);
-bool js_weap_melee_set_force(JSValueRef *vp);
-bool js_weap_melee_set_fallOff(JSValueRef *vp);
-JSBool js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_weap_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_weap_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_melee_get_strikeBoneTag(void);
+JSValueRef js_weap_melee_get_strikePoseName(void);
+JSValueRef js_weap_melee_get_objectStrikeBoneTag(void);
+JSValueRef js_weap_melee_get_objectStrikePoseName(void);
+JSValueRef js_weap_melee_get_radius(void);
+JSValueRef js_weap_melee_get_distance(void);
+JSValueRef js_weap_melee_get_damage(void);
+JSValueRef js_weap_melee_get_force(void);
+JSValueRef js_weap_melee_get_fallOff(void);
+bool js_weap_melee_set_strikeBoneTag(JSValueRef vp);
+bool js_weap_melee_set_strikePoseName(JSValueRef vp);
+bool js_weap_melee_set_objectStrikeBoneTag(JSValueRef vp);
+bool js_weap_melee_set_objectStrikePoseName(JSValueRef vp);
+bool js_weap_melee_set_radius(JSValueRef vp);
+bool js_weap_melee_set_distance(JSValueRef vp);
+bool js_weap_melee_set_damage(JSValueRef vp);
+bool js_weap_melee_set_force(JSValueRef vp);
+bool js_weap_melee_set_fallOff(JSValueRef vp);
+JSValueRef js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	weap_melee_props[]={
 							{"strikeBoneTag",			js_weap_melee_get_strikeBoneTag,			js_weap_melee_set_strikeBoneTag},
@@ -93,7 +93,7 @@ void script_free_weap_melee_object(void)
 	script_free_class(weap_melee_class);
 }
 
-JSObject* script_add_weap_melee_object(JSObject *parent_obj)
+JSObjectRef script_add_weap_melee_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,weap_melee_class,"melee",weap_melee_props,weap_melee_functions));
 }
@@ -104,14 +104,14 @@ JSObject* script_add_weap_melee_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_melee_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_weap_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,weap_melee_props));
+	return(script_get_property(cx,j_obj,name,weap_melee_props));
 }
 
-JSBool js_weap_melee_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_weap_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,weap_melee_props));
+	return(script_set_property(cx,j_obj,name,vp,weap_melee_props));
 }
 
 /* =======================================================
@@ -120,7 +120,7 @@ JSBool js_weap_melee_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,
       
 ======================================================= */
 
-bool js_weap_melee_get_strikeBoneTag(JSValueRef *vp)
+JSValueRef js_weap_melee_get_strikeBoneTag(void)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -133,7 +133,7 @@ bool js_weap_melee_get_strikeBoneTag(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_get_strikePoseName(JSValueRef *vp)
+JSValueRef js_weap_melee_get_strikePoseName(void)
 {
 	weapon_type		*weap;
 
@@ -143,7 +143,7 @@ bool js_weap_melee_get_strikePoseName(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_get_objectStrikeBoneTag(JSValueRef *vp)
+JSValueRef js_weap_melee_get_objectStrikeBoneTag(void)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -156,7 +156,7 @@ bool js_weap_melee_get_objectStrikeBoneTag(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_get_objectStrikePoseName(JSValueRef *vp)
+JSValueRef js_weap_melee_get_objectStrikePoseName(void)
 {
 	weapon_type		*weap;
 
@@ -166,7 +166,7 @@ bool js_weap_melee_get_objectStrikePoseName(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_get_radius(JSValueRef *vp)
+JSValueRef js_weap_melee_get_radius(void)
 {
 	weapon_type		*weap;
 
@@ -176,7 +176,7 @@ bool js_weap_melee_get_radius(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_get_distance(JSValueRef *vp)
+JSValueRef js_weap_melee_get_distance(void)
 {
 	weapon_type		*weap;
 
@@ -186,7 +186,7 @@ bool js_weap_melee_get_distance(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_get_damage(JSValueRef *vp)
+JSValueRef js_weap_melee_get_damage(void)
 {
 	weapon_type		*weap;
 
@@ -196,7 +196,7 @@ bool js_weap_melee_get_damage(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_get_force(JSValueRef *vp)
+JSValueRef js_weap_melee_get_force(void)
 {
 	weapon_type		*weap;
 
@@ -206,7 +206,7 @@ bool js_weap_melee_get_force(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_get_fallOff(JSValueRef *vp)
+JSValueRef js_weap_melee_get_fallOff(void)
 {
 	weapon_type		*weap;
 
@@ -222,7 +222,7 @@ bool js_weap_melee_get_fallOff(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_weap_melee_set_strikeBoneTag(JSValueRef *vp)
+bool js_weap_melee_set_strikeBoneTag(JSValueRef vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -235,7 +235,7 @@ bool js_weap_melee_set_strikeBoneTag(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_set_strikePoseName(JSValueRef *vp)
+bool js_weap_melee_set_strikePoseName(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -245,7 +245,7 @@ bool js_weap_melee_set_strikePoseName(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_set_objectStrikeBoneTag(JSValueRef *vp)
+bool js_weap_melee_set_objectStrikeBoneTag(JSValueRef vp)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -258,7 +258,7 @@ bool js_weap_melee_set_objectStrikeBoneTag(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_set_objectStrikePoseName(JSValueRef *vp)
+bool js_weap_melee_set_objectStrikePoseName(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -268,7 +268,7 @@ bool js_weap_melee_set_objectStrikePoseName(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_set_radius(JSValueRef *vp)
+bool js_weap_melee_set_radius(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -278,7 +278,7 @@ bool js_weap_melee_set_radius(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_set_distance(JSValueRef *vp)
+bool js_weap_melee_set_distance(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -288,7 +288,7 @@ bool js_weap_melee_set_distance(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_set_damage(JSValueRef *vp)
+bool js_weap_melee_set_damage(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -298,7 +298,7 @@ bool js_weap_melee_set_damage(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_set_force(JSValueRef *vp)
+bool js_weap_melee_set_force(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -308,7 +308,7 @@ bool js_weap_melee_set_force(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_melee_set_fallOff(JSValueRef *vp)
+bool js_weap_melee_set_fallOff(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -324,7 +324,7 @@ bool js_weap_melee_set_fallOff(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256];
     obj_type		*obj;
@@ -341,7 +341,7 @@ JSBool js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObject *j_obj
 	return(TRUE);
 }
 
-JSBool js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256];
     obj_type		*obj;

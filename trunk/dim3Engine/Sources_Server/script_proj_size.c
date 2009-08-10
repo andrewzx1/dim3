@@ -34,16 +34,16 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_proj_size_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_proj_size_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_proj_size_get_x(JSValueRef *vp);
-bool js_proj_size_get_y(JSValueRef *vp);
-bool js_proj_size_get_z(JSValueRef *vp);
-bool js_proj_size_get_weight(JSValueRef *vp);
-bool js_proj_size_set_x(JSValueRef *vp);
-bool js_proj_size_set_y(JSValueRef *vp);
-bool js_proj_size_set_z(JSValueRef *vp);
-bool js_proj_size_set_weight(JSValueRef *vp);
+JSValueRef js_proj_size_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_proj_size_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_size_get_x(void);
+JSValueRef js_proj_size_get_y(void);
+JSValueRef js_proj_size_get_z(void);
+JSValueRef js_proj_size_get_weight(void);
+bool js_proj_size_set_x(JSValueRef vp);
+bool js_proj_size_set_y(JSValueRef vp);
+bool js_proj_size_set_z(JSValueRef vp);
+bool js_proj_size_set_weight(JSValueRef vp);
 
 script_js_property	proj_size_props[]={
 							{"x",					js_proj_size_get_x,					js_proj_size_set_x},
@@ -70,7 +70,7 @@ void script_free_proj_size_object(void)
 	script_free_class(proj_size_class);
 }
 
-JSObject* script_add_proj_size_object(JSObject *parent_obj)
+JSObjectRef script_add_proj_size_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,proj_size_class,"size",proj_size_props,NULL));
 }
@@ -81,14 +81,14 @@ JSObject* script_add_proj_size_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_size_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_proj_size_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,proj_size_props));
+	return(script_get_property(cx,j_obj,name,proj_size_props));
 }
 
-JSBool js_proj_size_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_proj_size_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,proj_size_props));
+	return(script_set_property(cx,j_obj,name,vp,proj_size_props));
 }
 
 /* =======================================================
@@ -97,7 +97,7 @@ JSBool js_proj_size_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-bool js_proj_size_get_x(JSValueRef *vp)
+JSValueRef js_proj_size_get_x(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -109,7 +109,7 @@ bool js_proj_size_get_x(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_size_get_y(JSValueRef *vp)
+JSValueRef js_proj_size_get_y(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -121,7 +121,7 @@ bool js_proj_size_get_y(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_size_get_z(JSValueRef *vp)
+JSValueRef js_proj_size_get_z(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -133,7 +133,7 @@ bool js_proj_size_get_z(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_size_get_weight(JSValueRef *vp)
+JSValueRef js_proj_size_get_weight(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -151,7 +151,7 @@ bool js_proj_size_get_weight(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_proj_size_set_x(JSValueRef *vp)
+bool js_proj_size_set_x(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -164,7 +164,7 @@ bool js_proj_size_set_x(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_size_set_y(JSValueRef *vp)
+bool js_proj_size_set_y(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -176,7 +176,7 @@ bool js_proj_size_set_y(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_size_set_z(JSValueRef *vp)
+bool js_proj_size_set_z(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 
@@ -189,7 +189,7 @@ bool js_proj_size_set_z(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_size_set_weight(JSValueRef *vp)
+bool js_proj_size_set_weight(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 

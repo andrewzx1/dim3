@@ -38,20 +38,20 @@ extern js_type			js;
 extern hud_type			hud;
 extern setup_type		setup;
 
-JSBool js_model_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_model_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_model_get_on(JSValueRef *vp);
-bool js_model_get_name(JSValueRef *vp);
-bool js_model_get_bounce(JSValueRef *vp);
-bool js_model_get_alpha(JSValueRef *vp);
-bool js_model_get_resize(JSValueRef *vp);
-bool js_model_get_faceForward(JSValueRef *vp);
-bool js_model_set_on(JSValueRef *vp);
-bool js_model_set_name(JSValueRef *vp);
-bool js_model_set_bounce(JSValueRef *vp);
-bool js_model_set_alpha(JSValueRef *vp);
-bool js_model_set_resize(JSValueRef *vp);
-bool js_model_set_faceForward(JSValueRef *vp);
+JSValueRef js_model_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_get_on(void);
+JSValueRef js_model_get_name(void);
+JSValueRef js_model_get_bounce(void);
+JSValueRef js_model_get_alpha(void);
+JSValueRef js_model_get_resize(void);
+JSValueRef js_model_get_faceForward(void);
+bool js_model_set_on(JSValueRef vp);
+bool js_model_set_name(JSValueRef vp);
+bool js_model_set_bounce(JSValueRef vp);
+bool js_model_set_alpha(JSValueRef vp);
+bool js_model_set_resize(JSValueRef vp);
+bool js_model_set_faceForward(JSValueRef vp);
 
 script_js_property	model_props[]={
 							{"on",					js_model_get_on,					js_model_set_on},
@@ -80,7 +80,7 @@ void script_free_model_object(void)
 	script_free_class(model_class);
 }
 
-JSObject* script_add_model_object(JSObject *parent_obj)
+JSObjectRef script_add_model_object(JSObjectRef parent_obj)
 {
     return(script_create_child_object(parent_obj,model_class,"model",model_props,NULL));
 }
@@ -91,14 +91,14 @@ JSObject* script_add_model_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_model_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,model_props));
+	return(script_get_property(cx,j_obj,name,model_props));
 }
 
-JSBool js_model_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_model_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,model_props));
+	return(script_set_property(cx,j_obj,name,vp,model_props));
 }
 
 /* =======================================================
@@ -107,7 +107,7 @@ JSBool js_model_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSVal
       
 ======================================================= */
 
-bool js_model_get_on(JSValueRef *vp)
+JSValueRef js_model_get_on(void)
 {
 	model_draw		*draw;
 
@@ -117,7 +117,7 @@ bool js_model_get_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_get_name(JSValueRef *vp)
+JSValueRef js_model_get_name(void)
 {
 	model_draw		*draw;
 
@@ -127,7 +127,7 @@ bool js_model_get_name(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_get_bounce(JSValueRef *vp)
+JSValueRef js_model_get_bounce(void)
 {
 	model_draw		*draw;
 
@@ -137,7 +137,7 @@ bool js_model_get_bounce(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_get_alpha(JSValueRef *vp)
+JSValueRef js_model_get_alpha(void)
 {
 	model_draw		*draw;
 
@@ -147,7 +147,7 @@ bool js_model_get_alpha(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_get_resize(JSValueRef *vp)
+JSValueRef js_model_get_resize(void)
 {
 	model_draw		*draw;
 
@@ -157,7 +157,7 @@ bool js_model_get_resize(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_get_faceForward(JSValueRef *vp)
+JSValueRef js_model_get_faceForward(void)
 {
 	model_draw		*draw;
 
@@ -173,7 +173,7 @@ bool js_model_get_faceForward(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_model_set_on(JSValueRef *vp)
+bool js_model_set_on(JSValueRef vp)
 {
 	model_draw		*draw;
 
@@ -183,7 +183,7 @@ bool js_model_set_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_set_name(JSValueRef *vp)
+bool js_model_set_name(JSValueRef vp)
 {
 	model_draw		*draw;
 
@@ -193,7 +193,7 @@ bool js_model_set_name(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_set_bounce(JSValueRef *vp)
+bool js_model_set_bounce(JSValueRef vp)
 {
 	model_draw		*draw;
 
@@ -203,7 +203,7 @@ bool js_model_set_bounce(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_set_alpha(JSValueRef *vp)
+bool js_model_set_alpha(JSValueRef vp)
 {
 	model_draw		*draw;
 
@@ -213,7 +213,7 @@ bool js_model_set_alpha(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_set_resize(JSValueRef *vp)
+bool js_model_set_resize(JSValueRef vp)
 {
 	model_draw		*draw;
 
@@ -223,7 +223,7 @@ bool js_model_set_resize(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_set_faceForward(JSValueRef *vp)
+bool js_model_set_faceForward(JSValueRef vp)
 {
 	model_draw		*draw;
 

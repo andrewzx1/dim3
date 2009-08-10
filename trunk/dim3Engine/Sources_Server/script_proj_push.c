@@ -35,12 +35,12 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_proj_push_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_proj_push_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_proj_push_get_on(JSValueRef *vp);
-bool js_proj_push_get_force(JSValueRef *vp);
-bool js_proj_push_set_on(JSValueRef *vp);
-bool js_proj_push_set_force(JSValueRef *vp);
+JSValueRef js_proj_push_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_proj_push_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_push_get_on(void);
+JSValueRef js_proj_push_get_force(void);
+bool js_proj_push_set_on(JSValueRef vp);
+bool js_proj_push_set_force(JSValueRef vp);
 
 script_js_property	proj_push_props[]={
 							{"on",					js_proj_push_get_on,				js_proj_push_set_on},
@@ -65,7 +65,7 @@ void script_free_proj_push_object(void)
 	script_free_class(proj_push_class);
 }
 
-JSObject* script_add_proj_push_object(JSObject *parent_obj)
+JSObjectRef script_add_proj_push_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,proj_push_class,"push",proj_push_props,NULL));
 }
@@ -76,14 +76,14 @@ JSObject* script_add_proj_push_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_push_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_proj_push_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,proj_push_props));
+	return(script_get_property(cx,j_obj,name,proj_push_props));
 }
 
-JSBool js_proj_push_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_proj_push_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,proj_push_props));
+	return(script_set_property(cx,j_obj,name,vp,proj_push_props));
 }
 
 /* =======================================================
@@ -92,7 +92,7 @@ JSBool js_proj_push_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-bool js_proj_push_get_on(JSValueRef *vp)
+JSValueRef js_proj_push_get_on(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -104,7 +104,7 @@ bool js_proj_push_get_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_push_get_force(JSValueRef *vp)
+JSValueRef js_proj_push_get_force(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -122,7 +122,7 @@ bool js_proj_push_get_force(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_proj_push_set_on(JSValueRef *vp)
+bool js_proj_push_set_on(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -134,7 +134,7 @@ bool js_proj_push_set_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_push_set_force(JSValueRef *vp)
+bool js_proj_push_set_force(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	

@@ -66,14 +66,17 @@ void net_host_client_handle_info(int sock)
 
 int net_host_client_handle_join(int sock,network_request_join *request_join)
 {
-	int							remote_uid;
+	int							remote_uid,
+								tint_color_idx,character_idx;
 	network_reply_join			reply_join;
 	network_request_object_add	remote_add;
 
 		// if correct version, add player to host
 
 	if (strncmp(request_join->vers,dim3_version,name_str_len)==0) {
-		remote_uid=net_host_player_join(sock,request_join->name,request_join->tint_color_idx,request_join->character_idx,reply_join.deny_reason);
+		tint_color_idx=htons((short)request_join->tint_color_idx);
+		character_idx=htons((short)request_join->character_idx);
+		remote_uid=net_host_player_join(sock,request_join->name,tint_color_idx,character_idx,reply_join.deny_reason);
 	}
 	else {
 		remote_uid=-1;
@@ -117,12 +120,16 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 
 int net_host_client_handle_local_join(network_request_join *request_join,char *err_str)
 {
-	int							remote_uid;
+	int							remote_uid,
+								tint_color_idx,character_idx;
 	network_request_object_add	remote_add;
 
 		// join directly to host
 
-	remote_uid=net_host_player_join(D3_NULL_SOCKET,request_join->name,request_join->tint_color_idx,request_join->character_idx,err_str);
+	tint_color_idx=htons((short)request_join->tint_color_idx);
+	character_idx=htons((short)request_join->character_idx);
+
+	remote_uid=net_host_player_join(D3_NULL_SOCKET,request_join->name,tint_color_idx,character_idx,err_str);
 	if (remote_uid==-1) return(-1);
 
 		// send all other players on host the new player for remote add

@@ -36,9 +36,6 @@ extern server_type			server;
 extern setup_type			setup;
 extern render_info_type		render_info;
 
-int							cur_bind_txt_id[8];
-float						cur_alpha,cur_dark_factor;
-GLfloat						cur_decal_alpha[4];
 bitmap_type					null_bitmap;
 
 float						gl_texture_current_alpha,gl_texture_current_glow_color;

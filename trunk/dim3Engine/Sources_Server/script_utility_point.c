@@ -35,12 +35,12 @@ extern js_type			js;
 
 extern void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2);
 
-JSBool js_utility_point_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_utility_point_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_utility_point_equal_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_utility_point_angle_to_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_utility_point_distance_to_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_utility_point_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_utility_point_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	utility_point_functions[]={
 							{"equal",				js_utility_point_equal_func,				7},
@@ -67,7 +67,7 @@ void script_free_utility_point_object(void)
 	script_free_class(utility_point_class);
 }
 
-JSObject* script_add_utility_point_object(JSObject *parent_obj)
+JSObjectRef script_add_utility_point_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,utility_point_class,"point",NULL,utility_point_functions));
 }
@@ -78,14 +78,14 @@ JSObject* script_add_utility_point_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_utility_point_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_utility_point_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_utility_point_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_utility_point_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -94,7 +94,7 @@ JSBool js_utility_point_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef 
       
 ======================================================= */
 
-JSBool js_utility_point_equal_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y,to_x,to_z,to_y,slop;
 
@@ -111,7 +111,7 @@ JSBool js_utility_point_equal_func(JSContextRef cx,JSObject *j_obj,uintN argc,JS
 	return(TRUE);
 }
 
-JSBool js_utility_point_angle_to_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,to_x,to_z;
 	float			ang;
@@ -127,7 +127,7 @@ JSBool js_utility_point_angle_to_func(JSContextRef cx,JSObject *j_obj,uintN argc
 	return(TRUE);
 }
 
-JSBool js_utility_point_distance_to_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				dist,x,z,y,to_x,to_z,to_y;
 	
@@ -144,7 +144,7 @@ JSBool js_utility_point_distance_to_func(JSContextRef cx,JSObject *j_obj,uintN a
 	return(TRUE);
 }
 
-JSBool js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y,x2,y2;
 	

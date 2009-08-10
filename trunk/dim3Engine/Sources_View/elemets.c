@@ -1940,30 +1940,6 @@ void element_draw_table(element_type *element,int sel_id)
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
-
-		// busy
-		
-	if (element->setup.table.busy) {
-		element_get_box(element,&lft,&rgt,&top,&bot);
-		
-		top++;
-		bot=top+(high+3);
-		lft=rgt-23;
-		
-		tick=(time_get()>>1)%1000;
-		if (tick<500) {
-			rgt=lft+((23*tick)/500);
-		}
-		else {
-			rgt=lft+((23*(1000-tick))/500);
-		}
-		
-		col.r=hud.color.hilite.r*0.5f;
-		col.g=hud.color.hilite.g*0.5f;
-		col.b=hud.color.hilite.b*0.5f;
-		
-		view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.hilite,rgt,top,&col,rgt,bot,&col,lft,bot,&hud.color.hilite,1.0f);
-	}
 	
 		// text positions
 		
@@ -1978,56 +1954,87 @@ void element_draw_table(element_type *element,int sel_id)
 	
 		// items
 		
-	if (element->data==NULL) return;
+	if (element->data!=NULL) {
 	
-	y=(element->y+4)+(high+2);
-	
-	c=element->data+(element->offset*128);
-	
-	for (n=0;n<=cnt;n++) {
-		if (*c==0x0) break;
+		y=(element->y+4)+(high+2);
 		
-			// selection or background
+		c=element->data+(element->offset*128);
+		
+		for (n=0;n<=cnt;n++) {
+			if (*c==0x0) break;
 			
-		if ((n+element->offset)==element->value) {
-			memmove(&col,&hud.color.hilite,sizeof(d3col));
-			col2.r=col.r*0.5f;
-			col2.g=col.g*0.5f;
-			col2.b=col.b*0.5f;
-			line_col.r=line_col.g=line_col.b=0.0f;
-			alpha=0.75f;
-		}
-		else {
-			if (((n+element->offset)&0x1)==0) {
-				col.r=col.g=col.b=0.0f;
-				col2.r=col2.g=col2.b=0.0f;
-				line_col.r=line_col.g=line_col.b=0.5f;
+				// selection or background
+				
+			if ((n+element->offset)==element->value) {
+				memmove(&col,&hud.color.hilite,sizeof(d3col));
+				col2.r=col.r*0.5f;
+				col2.g=col.g*0.5f;
+				col2.b=col.b*0.5f;
+				line_col.r=line_col.g=line_col.b=0.0f;
+				alpha=0.75f;
 			}
 			else {
-				col.r=col.g=col.b=0.35f;
-				col2.r=col2.g=col2.b=0.35f;
-				line_col.r=line_col.g=line_col.b=0.0f;
+				if (((n+element->offset)&0x1)==0) {
+					col.r=col.g=col.b=0.0f;
+					col2.r=col2.g=col2.b=0.0f;
+					line_col.r=line_col.g=line_col.b=0.5f;
+				}
+				else {
+					col.r=col.g=col.b=0.35f;
+					col2.r=col2.g=col2.b=0.35f;
+					line_col.r=line_col.g=line_col.b=0.0f;
+				}
+				alpha=0.5f;
 			}
-			alpha=0.5f;
+				
+			element_get_box(element,&lft,&rgt,&top,&bot);
+			
+			lft+=1;
+			rgt-=25;
+			top=y;
+			bot=y+row_high;
+			
+			view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,alpha);
+			
+				// table line
+				
+			element_draw_table_line_lines(element,x,y,wid,row_high,&line_col);
+			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&hud.color.base,c);
+			
+			c+=128;
+			y+=row_high;
 		}
-			
-		element_get_box(element,&lft,&rgt,&top,&bot);
-		
-		lft+=1;
-		rgt-=25;
-		top=y;
-		bot=y+row_high;
-		
-		view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,alpha);
-		
-			// table line
-			
-		element_draw_table_line_lines(element,x,y,wid,row_high,&line_col);
-		element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&hud.color.base,c);
-		
-		c+=128;
-		y+=row_high;
 	}
+	
+		// busy
+		
+	if (!element->setup.table.busy) return;
+	
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+	bot-=10;
+	top=bot-25;
+	lft+=10;
+	rgt-=35;
+	
+	wid=rgt-lft;
+
+	col.r=hud.color.hilite.r*0.5f;
+	col.g=hud.color.hilite.g*0.5f;
+	col.b=hud.color.hilite.b*0.5f;
+	
+	tick=(time_get()>>1)%1000;
+	if (tick<500) {
+		x=lft+((wid*tick)/500);
+		view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.hilite,x,top,&col,x,bot,&col,lft,bot,&hud.color.hilite,1.0f);
+	}
+	else {
+		x=lft+((wid*(1000-tick))/500);
+		view_draw_next_vertex_object_2D_color_poly(x,top,&hud.color.hilite,rgt,top,&col,rgt,bot,&col,x,bot,&hud.color.hilite,1.0f);
+	}
+	
+	glColor4f(0.8f,0.8f,0.8f,1.0f);
+	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
 }
 
 /* =======================================================
@@ -2074,9 +2081,11 @@ bool element_click_tab(element_type *element,int x)
 
 void element_draw_tab(element_type *element,int sel_id,int x)
 {
-	int				n,ky,xstart,xadd,xslant,high,max_sz,slant_add,mouse_idx,
+	int				n,ky,xstart,xadd,x_slant,x_overlap,
+					high,max_sz,top_add,mouse_idx,tab_idx,
 					lft,rgt,top,bot,lx,rx,ty,by,
 					klft,krgt,ktop;
+	int				tab_draw_list[max_element_tab];
 	float			col_base;
 	d3col			txt_col;
 	
@@ -2123,20 +2132,33 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	if (element->id==sel_id) {
 		mouse_idx=element_mouse_over_tab(element,x);
 	}
-
+	
+		// pick drawing order (last to first, selected always on top)
+		
+	tab_idx=0;
+	
+	for (n=(element->setup.tab.ntab-1);n>=0;n--) {
+		if (n!=element->value) tab_draw_list[tab_idx++]=n;
+	}
+	
+	tab_draw_list[tab_idx]=element->value;
+	
 		// tabs
 		
 	xstart=lft+(int)(((float)hud.scale_x)*0.02f);
-	slant_add=(int)(((float)hud.scale_x)*0.01f);
-	xslant=xadd/15;
-
+	top_add=(int)(((float)hud.scale_x)*0.01f);
+	x_slant=xadd/15;
+	x_overlap=x_slant/2;
+	
 	for (n=0;n!=element->setup.tab.ntab;n++) {
+	
+		tab_idx=tab_draw_list[n];
 
-		lx=xstart+(xadd*n);
+		lx=xstart+(xadd*tab_idx);
 		rx=lx+xadd;
 		
-		if (element->value!=n) {
-			ty=top+(int)(((float)slant_add)*1.5f);
+		if (element->value!=tab_idx) {
+			ty=top+(int)(((float)top_add)*1.5f);
 			by=bot-3;
 			col_base=0.25f;
 		}
@@ -2146,45 +2168,31 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 			col_base=0.35f;
 		}
 		
+		view_draw_next_vertex_object_2D_color_poly((lx+x_slant),ty,&hud.color.gradient_start,(rx+x_overlap),ty,&hud.color.gradient_start,(rx+x_overlap),by,&hud.color.gradient_end,lx,by,&hud.color.gradient_end,1.0f);
+
+		if (mouse_idx==tab_idx) {
+			glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,1.0f);
+		}
+		else { 
+			glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
+		}
+		view_draw_next_vertex_object_2D_line_poly((lx+x_slant),ty,(rx+x_overlap),ty,(rx+x_overlap),by,lx,by);
+
 		memmove(&txt_col,&hud.color.gradient_text,sizeof(d3col));
 		
-		if (element->value==n) {
+		if (element->value==tab_idx) {
 			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
 		}
 		
-		if (mouse_idx==n) {
+		if (mouse_idx==tab_idx) {
 			memmove(&txt_col,&hud.color.mouse_over,sizeof(d3col));
 		}
 
-		view_draw_next_vertex_object_2D_color_poly((lx+xslant),ty,&hud.color.gradient_start,rx,ty,&hud.color.gradient_start,rx,by,&hud.color.gradient_end,lx,by,&hud.color.gradient_end,1.0f);
-
-		glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
-		view_draw_next_vertex_object_2D_line_poly((lx+xslant),ty,rx,ty,rx,by,lx,by);
-
 		gl_text_start(hud.font.text_size_medium);
-		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[n],tx_center,TRUE,&txt_col,1.0f);
+		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[tab_idx],tx_center,TRUE,&txt_col,1.0f);
 		gl_text_end();
 	}
 
-		// mouse over element
-		
-	if (mouse_idx!=-1) {
-		lx=xstart+(xadd*mouse_idx);
-		rx=lx+xadd;
-		
-		if (element->value!=mouse_idx) {
-			ty=top+(int)(((float)slant_add)*1.5f);
-			by=bot-3;
-		}
-		else {
-			ty=top;
-			by=bot+3;
-		}
-
-		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,1.0f);
-		view_draw_next_vertex_object_2D_line_poly((lx+xslant),ty,rx,ty,rx,by,lx,by);
-	}
-	
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 }

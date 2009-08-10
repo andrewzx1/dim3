@@ -35,14 +35,14 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_obj_score_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_score_get_kill(JSValueRef *vp);
-bool js_obj_score_get_death(JSValueRef *vp);
-bool js_obj_score_get_suicide(JSValueRef *vp);
-bool js_obj_score_get_goal(JSValueRef *vp);
-bool js_obj_score_get_score(JSValueRef *vp);
-JSBool js_obj_score_add_goal_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_obj_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_score_get_kill(void);
+JSValueRef js_obj_score_get_death(void);
+JSValueRef js_obj_score_get_suicide(void);
+JSValueRef js_obj_score_get_goal(void);
+JSValueRef js_obj_score_get_score(void);
+JSValueRef js_obj_score_add_goal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	obj_score_props[]={
 							{"kill",				js_obj_score_get_kill,				NULL},
@@ -74,7 +74,7 @@ void script_free_obj_score_object(void)
 	script_free_class(obj_score_class);
 }
 
-JSObject* script_add_obj_score_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_score_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_score_class,"score",obj_score_props,obj_score_functions));
 }
@@ -85,14 +85,14 @@ JSObject* script_add_obj_score_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_score_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_score_props));
+	return(script_get_property(cx,j_obj,name,obj_score_props));
 }
 
-JSBool js_obj_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_score_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_score_props));
 }
 
 /* =======================================================
@@ -101,7 +101,7 @@ JSBool js_obj_score_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-bool js_obj_score_get_kill(JSValueRef *vp)
+JSValueRef js_obj_score_get_kill(void)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ bool js_obj_score_get_kill(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_score_get_death(JSValueRef *vp)
+JSValueRef js_obj_score_get_death(void)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ bool js_obj_score_get_death(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_score_get_suicide(JSValueRef *vp)
+JSValueRef js_obj_score_get_suicide(void)
 {
 	obj_type		*obj;
 
@@ -131,7 +131,7 @@ bool js_obj_score_get_suicide(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_score_get_goal(JSValueRef *vp)
+JSValueRef js_obj_score_get_goal(void)
 {
 	obj_type		*obj;
 
@@ -141,7 +141,7 @@ bool js_obj_score_get_goal(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_score_get_score(JSValueRef *vp)
+JSValueRef js_obj_score_get_score(void)
 {
 	obj_type		*obj;
 
@@ -157,7 +157,7 @@ bool js_obj_score_get_score(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_obj_score_add_goal_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_score_add_goal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	

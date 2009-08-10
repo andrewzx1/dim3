@@ -34,16 +34,16 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_look_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_look_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_look_get_upAngle(JSValueRef *vp);
-bool js_obj_look_get_downAngle(JSValueRef *vp);
-bool js_obj_look_get_effectWeapons(JSValueRef *vp);
-bool js_obj_look_set_upAngle(JSValueRef *vp);
-bool js_obj_look_set_downAngle(JSValueRef *vp);
-bool js_obj_look_set_effectWeapons(JSValueRef *vp);
-JSBool js_obj_look_set_look_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_look_set_look_at_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_obj_look_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_look_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_look_get_upAngle(void);
+JSValueRef js_obj_look_get_downAngle(void);
+JSValueRef js_obj_look_get_effectWeapons(void);
+bool js_obj_look_set_upAngle(JSValueRef vp);
+bool js_obj_look_set_downAngle(JSValueRef vp);
+bool js_obj_look_set_effectWeapons(JSValueRef vp);
+JSValueRef js_obj_look_set_look_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_look_set_look_at_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	obj_look_props[]={
 							{"upAngle",					js_obj_look_get_upAngle,				js_obj_look_set_upAngle},
@@ -74,7 +74,7 @@ void script_free_obj_look_object(void)
 	script_free_class(obj_look_class);
 }
 
-JSObject* script_add_obj_look_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_look_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_look_class,"look",obj_look_props,obj_look_functions));
 }
@@ -85,14 +85,14 @@ JSObject* script_add_obj_look_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_look_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_look_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_look_props));
+	return(script_get_property(cx,j_obj,name,obj_look_props));
 }
 
-JSBool js_obj_look_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_look_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_look_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_look_props));
 }
 
 /* =======================================================
@@ -101,7 +101,7 @@ JSBool js_obj_look_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JS
       
 ======================================================= */
 
-bool js_obj_look_get_upAngle(JSValueRef *vp)
+JSValueRef js_obj_look_get_upAngle(void)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ bool js_obj_look_get_upAngle(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_look_get_downAngle(JSValueRef *vp)
+JSValueRef js_obj_look_get_downAngle(void)
 {
 	obj_type		*obj;
 
@@ -121,7 +121,7 @@ bool js_obj_look_get_downAngle(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_look_get_effectWeapons(JSValueRef *vp)
+JSValueRef js_obj_look_get_effectWeapons(void)
 {
 	obj_type		*obj;
 
@@ -137,7 +137,7 @@ bool js_obj_look_get_effectWeapons(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_obj_look_set_upAngle(JSValueRef *vp)
+bool js_obj_look_set_upAngle(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -147,7 +147,7 @@ bool js_obj_look_set_upAngle(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_look_set_downAngle(JSValueRef *vp)
+bool js_obj_look_set_downAngle(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -157,7 +157,7 @@ bool js_obj_look_set_downAngle(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_look_set_effectWeapons(JSValueRef *vp)
+bool js_obj_look_set_effectWeapons(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -173,7 +173,7 @@ bool js_obj_look_set_effectWeapons(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_obj_look_set_look_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_look_set_look_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -183,7 +183,7 @@ JSBool js_obj_look_set_look_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
 	return(TRUE);
 }
 
-JSBool js_obj_look_set_look_at_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_look_set_look_at_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				dist,y,look_y;
 	float			ang;

@@ -34,28 +34,28 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_turn_speed_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_turn_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_turn_speed_get_facingWalk(JSValueRef *vp);
-bool js_obj_turn_speed_get_motionWalk(JSValueRef *vp);
-bool js_obj_turn_speed_get_facingRun(JSValueRef *vp);
-bool js_obj_turn_speed_get_motionRun(JSValueRef *vp);
-bool js_obj_turn_speed_get_facingCrawl(JSValueRef *vp);
-bool js_obj_turn_speed_get_motionCrawl(JSValueRef *vp);
-bool js_obj_turn_speed_get_facingAir(JSValueRef *vp);
-bool js_obj_turn_speed_get_motionAir(JSValueRef *vp);
-bool js_obj_turn_speed_get_key(JSValueRef *vp);
-bool js_obj_turn_speed_get_topDownAngleOffset(JSValueRef *vp);
-bool js_obj_turn_speed_set_facingWalk(JSValueRef *vp);
-bool js_obj_turn_speed_set_motionWalk(JSValueRef *vp);
-bool js_obj_turn_speed_set_facingRun(JSValueRef *vp);
-bool js_obj_turn_speed_set_motionRun(JSValueRef *vp);
-bool js_obj_turn_speed_set_facingCrawl(JSValueRef *vp);
-bool js_obj_turn_speed_set_motionCrawl(JSValueRef *vp);
-bool js_obj_turn_speed_set_facingAir(JSValueRef *vp);
-bool js_obj_turn_speed_set_motionAir(JSValueRef *vp);
-bool js_obj_turn_speed_set_key(JSValueRef *vp);
-bool js_obj_turn_speed_set_topDownAngleOffset(JSValueRef *vp);
+JSValueRef js_obj_turn_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_turn_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_turn_speed_get_facingWalk(void);
+JSValueRef js_obj_turn_speed_get_motionWalk(void);
+JSValueRef js_obj_turn_speed_get_facingRun(void);
+JSValueRef js_obj_turn_speed_get_motionRun(void);
+JSValueRef js_obj_turn_speed_get_facingCrawl(void);
+JSValueRef js_obj_turn_speed_get_motionCrawl(void);
+JSValueRef js_obj_turn_speed_get_facingAir(void);
+JSValueRef js_obj_turn_speed_get_motionAir(void);
+JSValueRef js_obj_turn_speed_get_key(void);
+JSValueRef js_obj_turn_speed_get_topDownAngleOffset(void);
+bool js_obj_turn_speed_set_facingWalk(JSValueRef vp);
+bool js_obj_turn_speed_set_motionWalk(JSValueRef vp);
+bool js_obj_turn_speed_set_facingRun(JSValueRef vp);
+bool js_obj_turn_speed_set_motionRun(JSValueRef vp);
+bool js_obj_turn_speed_set_facingCrawl(JSValueRef vp);
+bool js_obj_turn_speed_set_motionCrawl(JSValueRef vp);
+bool js_obj_turn_speed_set_facingAir(JSValueRef vp);
+bool js_obj_turn_speed_set_motionAir(JSValueRef vp);
+bool js_obj_turn_speed_set_key(JSValueRef vp);
+bool js_obj_turn_speed_set_topDownAngleOffset(JSValueRef vp);
 
 script_js_property	obj_turn_speed_props[]={
 							{"facingWalk",				js_obj_turn_speed_get_facingWalk,			js_obj_turn_speed_set_facingWalk},
@@ -88,7 +88,7 @@ void script_free_obj_turn_speed_object(void)
 	script_free_class(obj_turn_speed_class);
 }
 
-JSObject* script_add_obj_turn_speed_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_turn_speed_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_turn_speed_class,"turnSpeed",obj_turn_speed_props,NULL));
 }
@@ -99,14 +99,14 @@ JSObject* script_add_obj_turn_speed_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_turn_speed_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_turn_speed_props));
+	return(script_get_property(cx,j_obj,name,obj_turn_speed_props));
 }
 
-JSBool js_obj_turn_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_turn_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_turn_speed_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_turn_speed_props));
 }
 
 /* =======================================================
@@ -115,7 +115,7 @@ JSBool js_obj_turn_speed_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef
       
 ======================================================= */
 
-bool js_obj_turn_speed_get_facingWalk(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_facingWalk(void)
 {
 	obj_type		*obj;
 
@@ -125,7 +125,7 @@ bool js_obj_turn_speed_get_facingWalk(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_motionWalk(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_motionWalk(void)
 {
 	obj_type		*obj;
 
@@ -135,7 +135,7 @@ bool js_obj_turn_speed_get_motionWalk(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_facingRun(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_facingRun(void)
 {
 	obj_type		*obj;
 
@@ -145,7 +145,7 @@ bool js_obj_turn_speed_get_facingRun(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_motionRun(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_motionRun(void)
 {
 	obj_type		*obj;
 
@@ -155,7 +155,7 @@ bool js_obj_turn_speed_get_motionRun(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_facingCrawl(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_facingCrawl(void)
 {
 	obj_type		*obj;
 
@@ -165,7 +165,7 @@ bool js_obj_turn_speed_get_facingCrawl(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_motionCrawl(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_motionCrawl(void)
 {
 	obj_type		*obj;
 
@@ -175,7 +175,7 @@ bool js_obj_turn_speed_get_motionCrawl(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_facingAir(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_facingAir(void)
 {
 	obj_type		*obj;
 
@@ -185,7 +185,7 @@ bool js_obj_turn_speed_get_facingAir(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_motionAir(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_motionAir(void)
 {
 	obj_type		*obj;
 
@@ -195,7 +195,7 @@ bool js_obj_turn_speed_get_motionAir(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_key(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_key(void)
 {
 	obj_type		*obj;
 
@@ -205,7 +205,7 @@ bool js_obj_turn_speed_get_key(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_get_topDownAngleOffset(JSValueRef *vp)
+JSValueRef js_obj_turn_speed_get_topDownAngleOffset(void)
 {
 	obj_type		*obj;
 
@@ -221,7 +221,7 @@ bool js_obj_turn_speed_get_topDownAngleOffset(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_obj_turn_speed_set_facingWalk(JSValueRef *vp)
+bool js_obj_turn_speed_set_facingWalk(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -231,7 +231,7 @@ bool js_obj_turn_speed_set_facingWalk(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_motionWalk(JSValueRef *vp)
+bool js_obj_turn_speed_set_motionWalk(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -241,7 +241,7 @@ bool js_obj_turn_speed_set_motionWalk(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_facingRun(JSValueRef *vp)
+bool js_obj_turn_speed_set_facingRun(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -251,7 +251,7 @@ bool js_obj_turn_speed_set_facingRun(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_motionRun(JSValueRef *vp)
+bool js_obj_turn_speed_set_motionRun(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -261,7 +261,7 @@ bool js_obj_turn_speed_set_motionRun(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_facingCrawl(JSValueRef *vp)
+bool js_obj_turn_speed_set_facingCrawl(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -271,7 +271,7 @@ bool js_obj_turn_speed_set_facingCrawl(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_motionCrawl(JSValueRef *vp)
+bool js_obj_turn_speed_set_motionCrawl(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -281,7 +281,7 @@ bool js_obj_turn_speed_set_motionCrawl(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_facingAir(JSValueRef *vp)
+bool js_obj_turn_speed_set_facingAir(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -291,7 +291,7 @@ bool js_obj_turn_speed_set_facingAir(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_motionAir(JSValueRef *vp)
+bool js_obj_turn_speed_set_motionAir(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -301,7 +301,7 @@ bool js_obj_turn_speed_set_motionAir(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_key(JSValueRef *vp)
+bool js_obj_turn_speed_set_key(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -311,7 +311,7 @@ bool js_obj_turn_speed_set_key(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_turn_speed_set_topDownAngleOffset(JSValueRef *vp)
+bool js_obj_turn_speed_set_topDownAngleOffset(JSValueRef vp)
 {
 	obj_type		*obj;
 	

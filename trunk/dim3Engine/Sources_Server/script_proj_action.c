@@ -37,30 +37,30 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_proj_action_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_proj_action_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_proj_action_get_damage(JSValueRef *vp);
-bool js_proj_action_get_collision(JSValueRef *vp);
-bool js_proj_action_get_auto_hitTick(JSValueRef *vp);
-bool js_proj_action_get_auto_bounce(JSValueRef *vp);
-bool js_proj_action_get_auto_bounceMinMove(JSValueRef *vp);
-bool js_proj_action_get_auto_bounceReduce(JSValueRef *vp);
-bool js_proj_action_get_auto_reflect(JSValueRef *vp);
-bool js_proj_action_set_damage(JSValueRef *vp);
-bool js_proj_action_set_collision(JSValueRef *vp);
-bool js_proj_action_set_auto_hitTick(JSValueRef *vp);
-bool js_proj_action_set_auto_bounce(JSValueRef *vp);
-bool js_proj_action_set_auto_bounceMinMove(JSValueRef *vp);
-bool js_proj_action_set_auto_bounceReduce(JSValueRef *vp);
-bool js_proj_action_set_auto_reflect(JSValueRef *vp);
-JSBool js_proj_action_rotate_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_proj_action_turn_towards_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_proj_action_seek_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_proj_action_seek_target_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_proj_action_bounce_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_proj_action_reflect_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_proj_action_stick_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_proj_action_destroy_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_proj_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_proj_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_action_get_damage(void);
+JSValueRef js_proj_action_get_collision(void);
+JSValueRef js_proj_action_get_auto_hitTick(void);
+JSValueRef js_proj_action_get_auto_bounce(void);
+JSValueRef js_proj_action_get_auto_bounceMinMove(void);
+JSValueRef js_proj_action_get_auto_bounceReduce(void);
+JSValueRef js_proj_action_get_auto_reflect(void);
+bool js_proj_action_set_damage(JSValueRef vp);
+bool js_proj_action_set_collision(JSValueRef vp);
+bool js_proj_action_set_auto_hitTick(JSValueRef vp);
+bool js_proj_action_set_auto_bounce(JSValueRef vp);
+bool js_proj_action_set_auto_bounceMinMove(JSValueRef vp);
+bool js_proj_action_set_auto_bounceReduce(JSValueRef vp);
+bool js_proj_action_set_auto_reflect(JSValueRef vp);
+JSValueRef js_proj_action_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_proj_action_bounce_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_proj_action_reflect_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_proj_action_stick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	proj_action_props[]={
 							{"damage",				js_proj_action_get_damage,				js_proj_action_set_damage},
@@ -101,7 +101,7 @@ void script_free_proj_action_object(void)
 	script_free_class(proj_action_class);
 }
 
-JSObject* script_add_proj_action_object(JSObject *parent_obj)
+JSObjectRef script_add_proj_action_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,proj_action_class,"action",proj_action_props,proj_action_functions));
 }
@@ -112,14 +112,14 @@ JSObject* script_add_proj_action_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_action_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_proj_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,proj_action_props));
+	return(script_get_property(cx,j_obj,name,proj_action_props));
 }
 
-JSBool js_proj_action_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_proj_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,proj_action_props));
+	return(script_set_property(cx,j_obj,name,vp,proj_action_props));
 }
 
 /* =======================================================
@@ -128,7 +128,7 @@ JSBool js_proj_action_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id
       
 ======================================================= */
 
-bool js_proj_action_get_damage(JSValueRef *vp)
+JSValueRef js_proj_action_get_damage(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -140,7 +140,7 @@ bool js_proj_action_get_damage(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_get_collision(JSValueRef *vp)
+JSValueRef js_proj_action_get_collision(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -152,7 +152,7 @@ bool js_proj_action_get_collision(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_get_auto_hitTick(JSValueRef *vp)
+JSValueRef js_proj_action_get_auto_hitTick(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -164,7 +164,7 @@ bool js_proj_action_get_auto_hitTick(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_get_auto_bounce(JSValueRef *vp)
+JSValueRef js_proj_action_get_auto_bounce(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -176,7 +176,7 @@ bool js_proj_action_get_auto_bounce(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_get_auto_bounceMinMove(JSValueRef *vp)
+JSValueRef js_proj_action_get_auto_bounceMinMove(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -188,7 +188,7 @@ bool js_proj_action_get_auto_bounceMinMove(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_get_auto_bounceReduce(JSValueRef *vp)
+JSValueRef js_proj_action_get_auto_bounceReduce(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -200,7 +200,7 @@ bool js_proj_action_get_auto_bounceReduce(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_get_auto_reflect(JSValueRef *vp)
+JSValueRef js_proj_action_get_auto_reflect(void)
 {
 	proj_setup_type		*proj_setup;
 
@@ -218,7 +218,7 @@ bool js_proj_action_get_auto_reflect(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_proj_action_set_damage(JSValueRef *vp)
+bool js_proj_action_set_damage(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -230,7 +230,7 @@ bool js_proj_action_set_damage(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_set_collision(JSValueRef *vp)
+bool js_proj_action_set_collision(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -242,7 +242,7 @@ bool js_proj_action_set_collision(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_set_auto_hitTick(JSValueRef *vp)
+bool js_proj_action_set_auto_hitTick(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -254,7 +254,7 @@ bool js_proj_action_set_auto_hitTick(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_set_auto_bounce(JSValueRef *vp)
+bool js_proj_action_set_auto_bounce(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -266,7 +266,7 @@ bool js_proj_action_set_auto_bounce(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_set_auto_bounceMinMove(JSValueRef *vp)
+bool js_proj_action_set_auto_bounceMinMove(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -278,7 +278,7 @@ bool js_proj_action_set_auto_bounceMinMove(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_set_auto_bounceReduce(JSValueRef *vp)
+bool js_proj_action_set_auto_bounceReduce(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -290,7 +290,7 @@ bool js_proj_action_set_auto_bounceReduce(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_action_set_auto_reflect(JSValueRef *vp)
+bool js_proj_action_set_auto_reflect(JSValueRef vp)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -308,7 +308,7 @@ bool js_proj_action_set_auto_reflect(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_proj_action_rotate_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_proj_action_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -320,7 +320,7 @@ JSBool js_proj_action_rotate_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_proj_action_turn_towards_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	proj_type			*proj;
 	obj_type			*to_obj;
@@ -336,7 +336,7 @@ JSBool js_proj_action_turn_towards_func(JSContextRef cx,JSObject *j_obj,uintN ar
 	return(TRUE);
 }
 
-JSBool js_proj_action_seek_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	proj_type			*proj;
 	obj_type			*to_obj;
@@ -352,7 +352,7 @@ JSBool js_proj_action_seek_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVal
 	return(TRUE);
 }
 
-JSBool js_proj_action_seek_target_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type			*to_obj;
 	weapon_type			*weap;
@@ -375,7 +375,7 @@ JSBool js_proj_action_seek_target_func(JSContextRef cx,JSObject *j_obj,uintN arg
 	return(TRUE);
 }
 
-JSBool js_proj_action_bounce_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_proj_action_bounce_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
     float				min_ymove,reduce;
 	proj_type			*proj;
@@ -391,7 +391,7 @@ JSBool js_proj_action_bounce_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_proj_action_reflect_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_proj_action_reflect_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -403,7 +403,7 @@ JSBool js_proj_action_reflect_func(JSContextRef cx,JSObject *j_obj,uintN argc,JS
 	return(TRUE);
 }
 
-JSBool js_proj_action_stick_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_proj_action_stick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -416,7 +416,7 @@ JSBool js_proj_action_stick_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
 	return(TRUE);
 }
 
-JSBool js_proj_action_destroy_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	proj_type			*proj;
 

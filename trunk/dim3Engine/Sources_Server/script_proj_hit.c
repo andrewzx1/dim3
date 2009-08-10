@@ -37,16 +37,16 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_proj_hit_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_proj_hit_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_proj_hit_get_type(JSValueRef *vp);
-bool js_proj_hit_get_name(JSValueRef *vp);
-bool js_proj_hit_get_id(JSValueRef *vp);
-bool js_proj_hit_get_isPlayer(JSValueRef *vp);
-bool js_proj_hit_get_startTick(JSValueRef *vp);
-bool js_proj_hit_get_materialName(JSValueRef *vp);
-bool js_proj_hit_get_ejectVector(JSValueRef *vp);
-bool js_proj_hit_get_reflectVector(JSValueRef *vp);
+JSValueRef js_proj_hit_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_proj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_hit_get_type(void);
+JSValueRef js_proj_hit_get_name(void);
+JSValueRef js_proj_hit_get_id(void);
+JSValueRef js_proj_hit_get_isPlayer(void);
+JSValueRef js_proj_hit_get_startTick(void);
+JSValueRef js_proj_hit_get_materialName(void);
+JSValueRef js_proj_hit_get_ejectVector(void);
+JSValueRef js_proj_hit_get_reflectVector(void);
 
 script_js_property	proj_hit_props[]={
 							{"type",				js_proj_hit_get_type,				NULL},
@@ -77,7 +77,7 @@ void script_free_proj_hit_object(void)
 	script_free_class(proj_hit_class);
 }
 
-JSObject* script_add_proj_hit_object(JSObject *parent_obj)
+JSObjectRef script_add_proj_hit_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,proj_hit_class,"hit",proj_hit_props,NULL));
 }
@@ -88,14 +88,14 @@ JSObject* script_add_proj_hit_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_proj_hit_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_proj_hit_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,proj_hit_props));
+	return(script_get_property(cx,j_obj,name,proj_hit_props));
 }
 
-JSBool js_proj_hit_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_proj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,proj_hit_props));
+	return(script_set_property(cx,j_obj,name,vp,proj_hit_props));
 }
 
 /* =======================================================
@@ -189,7 +189,7 @@ void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
       
 ======================================================= */
 
-bool js_proj_hit_get_type(JSValueRef *vp)
+JSValueRef js_proj_hit_get_type(void)
 {
 	proj_type			*proj;
 
@@ -201,7 +201,7 @@ bool js_proj_hit_get_type(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_hit_get_name(JSValueRef *vp)
+JSValueRef js_proj_hit_get_name(void)
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
@@ -217,7 +217,7 @@ bool js_proj_hit_get_name(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_hit_get_id(JSValueRef *vp)
+JSValueRef js_proj_hit_get_id(void)
 {
 	proj_type			*proj;
 
@@ -229,7 +229,7 @@ bool js_proj_hit_get_id(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_hit_get_isPlayer(JSValueRef *vp)
+JSValueRef js_proj_hit_get_isPlayer(void)
 {
 	proj_type			*proj;
 
@@ -241,7 +241,7 @@ bool js_proj_hit_get_isPlayer(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_hit_get_startTick(JSValueRef *vp)
+JSValueRef js_proj_hit_get_startTick(void)
 {
 	proj_type			*proj;
 
@@ -253,7 +253,7 @@ bool js_proj_hit_get_startTick(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_hit_get_materialName(JSValueRef *vp)
+JSValueRef js_proj_hit_get_materialName(void)
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
@@ -269,7 +269,7 @@ bool js_proj_hit_get_materialName(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_hit_get_ejectVector(JSValueRef *vp)
+JSValueRef js_proj_hit_get_ejectVector(void)
 {
 	d3vct				vct;
 	proj_type			*proj;
@@ -283,7 +283,7 @@ bool js_proj_hit_get_ejectVector(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_proj_hit_get_reflectVector(JSValueRef *vp)
+JSValueRef js_proj_hit_get_reflectVector(void)
 {
 	d3vct				vct;
 	proj_type			*proj;

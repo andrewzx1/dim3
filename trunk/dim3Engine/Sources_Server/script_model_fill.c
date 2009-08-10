@@ -34,9 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_model_fill_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_model_fill_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_model_fill_change_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_model_fill_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_fill_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	model_fill_functions[]={
 							{"change",				js_model_fill_change_func,				2},
@@ -60,7 +60,7 @@ void script_free_model_fill_object(void)
 	script_free_class(model_fill_class);
 }
 
-JSObject* script_add_model_fill_object(JSObject *parent_obj)
+JSObjectRef script_add_model_fill_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,model_fill_class,"fill",NULL,model_fill_functions));
 }
@@ -71,14 +71,14 @@ JSObject* script_add_model_fill_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_fill_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_model_fill_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_model_fill_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_model_fill_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -87,7 +87,7 @@ JSBool js_model_fill_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,
       
 ======================================================= */
 
-JSBool js_model_fill_change_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
     model_draw		*draw;
 	

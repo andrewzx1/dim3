@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -32,14 +32,14 @@ and can be sold or given away.
 #include "scripts.h"
 #include "weapons.h"
 
-JSBool js_weap_target_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_weap_target_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_weap_target_color_get_red(JSValueRef *vp);
-bool js_weap_target_color_get_green(JSValueRef *vp);
-bool js_weap_target_color_get_blue(JSValueRef *vp);
-bool js_weap_target_color_set_red(JSValueRef *vp);
-bool js_weap_target_color_set_green(JSValueRef *vp);
-bool js_weap_target_color_set_blue(JSValueRef *vp);
+JSValueRef js_weap_target_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_weap_target_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_target_color_get_red(void);
+JSValueRef js_weap_target_color_get_green(void);
+JSValueRef js_weap_target_color_get_blue(void);
+bool js_weap_target_color_set_red(JSValueRef vp);
+bool js_weap_target_color_set_green(JSValueRef vp);
+bool js_weap_target_color_set_blue(JSValueRef vp);
 
 extern js_type			js;
 
@@ -67,7 +67,7 @@ void script_free_weap_target_color_object(void)
 	script_free_class(weap_target_color_class);
 }
 
-JSObject* script_add_weap_target_color_object(JSObject *parent_obj)
+JSObjectRef script_add_weap_target_color_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,weap_target_color_class,"color",weap_target_color_props,NULL));
 }
@@ -78,14 +78,14 @@ JSObject* script_add_weap_target_color_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_target_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_weap_target_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,weap_target_color_props));
+	return(script_get_property(cx,j_obj,name,weap_target_color_props));
 }
 
-JSBool js_weap_target_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_weap_target_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,weap_target_color_props));
+	return(script_set_property(cx,j_obj,name,vp,weap_target_color_props));
 }
 
 /* =======================================================
@@ -94,7 +94,7 @@ JSBool js_weap_target_color_set_property(JSContextRef cx,JSObject *j_obj,JSValue
       
 ======================================================= */
 
-bool js_weap_target_color_get_red(JSValueRef *vp)
+JSValueRef js_weap_target_color_get_red(void)
 {
 	weapon_type		*weap;
 
@@ -104,7 +104,7 @@ bool js_weap_target_color_get_red(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_target_color_get_green(JSValueRef *vp)
+JSValueRef js_weap_target_color_get_green(void)
 {
 	weapon_type		*weap;
 
@@ -114,7 +114,7 @@ bool js_weap_target_color_get_green(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_target_color_get_blue(JSValueRef *vp)
+JSValueRef js_weap_target_color_get_blue(void)
 {
 	weapon_type		*weap;
 
@@ -130,7 +130,7 @@ bool js_weap_target_color_get_blue(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_weap_target_color_set_red(JSValueRef *vp)
+bool js_weap_target_color_set_red(JSValueRef vp)
 {
 	weapon_type		*weap;
 
@@ -140,7 +140,7 @@ bool js_weap_target_color_set_red(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_target_color_set_green(JSValueRef *vp)
+bool js_weap_target_color_set_green(JSValueRef vp)
 {
 	weapon_type		*weap;
 
@@ -150,7 +150,7 @@ bool js_weap_target_color_set_green(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_target_color_set_blue(JSValueRef *vp)
+bool js_weap_target_color_set_blue(JSValueRef vp)
 {
 	weapon_type		*weap;
 

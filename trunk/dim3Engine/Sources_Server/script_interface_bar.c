@@ -34,15 +34,15 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_interface_bar_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_interface_bar_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_interface_bar_show_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_interface_bar_hide_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_interface_bar_hide_all_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_interface_bar_move_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_interface_bar_resize_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_interface_bar_set_value_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_interface_bar_set_alpha_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_interface_bar_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_interface_bar_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_interface_bar_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_bar_hide_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_bar_hide_all_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_bar_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_bar_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_bar_set_value_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_bar_set_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	interface_bar_functions[]={
 							{"show",				js_interface_bar_show_func,				1},
@@ -72,7 +72,7 @@ void script_free_interface_bar_object(void)
 	script_free_class(interface_bar_class);
 }
 
-JSObject* script_add_interface_bar_object(JSObject *parent_obj)
+JSObjectRef script_add_interface_bar_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,interface_bar_class,"bar",NULL,interface_bar_functions));
 }
@@ -83,14 +83,14 @@ JSObject* script_add_interface_bar_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_interface_bar_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_interface_bar_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_interface_bar_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_interface_bar_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -99,7 +99,7 @@ JSBool js_interface_bar_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef 
       
 ======================================================= */
 
-JSBool js_interface_bar_show_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_bar_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
@@ -111,7 +111,7 @@ JSBool js_interface_bar_show_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_interface_bar_hide_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_bar_hide_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
@@ -123,13 +123,13 @@ JSBool js_interface_bar_hide_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_interface_bar_hide_all_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_bar_hide_all_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bars_hide_all();
 	return(TRUE);
 }
 
-JSBool js_interface_bar_move_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_bar_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
@@ -142,7 +142,7 @@ JSBool js_interface_bar_move_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_interface_bar_resize_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_bar_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
@@ -155,7 +155,7 @@ JSBool js_interface_bar_resize_func(JSContextRef cx,JSObject *j_obj,uintN argc,J
 	return(TRUE);
 }
 
-JSBool js_interface_bar_set_value_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_bar_set_value_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
@@ -167,7 +167,7 @@ JSBool js_interface_bar_set_value_func(JSContextRef cx,JSObject *j_obj,uintN arg
 	return(TRUE);
 }
 
-JSBool js_interface_bar_set_alpha_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_interface_bar_set_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	

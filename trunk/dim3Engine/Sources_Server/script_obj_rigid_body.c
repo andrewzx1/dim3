@@ -34,28 +34,28 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_rigid_body_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_rigid_body_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_rigid_body_get_on(JSValueRef *vp);
-bool js_obj_rigid_body_get_maxDropY(JSValueRef *vp);
-bool js_obj_rigid_body_get_resetFactorY(JSValueRef *vp);
-bool js_obj_rigid_body_get_smoothFactorY(JSValueRef *vp);
-bool js_obj_rigid_body_get_maxAngleX(JSValueRef *vp);
-bool js_obj_rigid_body_get_resetFactorX(JSValueRef *vp);
-bool js_obj_rigid_body_get_smoothFactorX(JSValueRef *vp);
-bool js_obj_rigid_body_get_maxAngleZ(JSValueRef *vp);
-bool js_obj_rigid_body_get_resetFactorZ(JSValueRef *vp);
-bool js_obj_rigid_body_get_smoothFactorZ(JSValueRef *vp);
-bool js_obj_rigid_body_set_on(JSValueRef *vp);
-bool js_obj_rigid_body_set_maxDropY(JSValueRef *vp);
-bool js_obj_rigid_body_set_resetFactorY(JSValueRef *vp);
-bool js_obj_rigid_body_set_smoothFactorY(JSValueRef *vp);
-bool js_obj_rigid_body_set_maxAngleX(JSValueRef *vp);
-bool js_obj_rigid_body_set_resetFactorX(JSValueRef *vp);
-bool js_obj_rigid_body_set_smoothFactorX(JSValueRef *vp);
-bool js_obj_rigid_body_set_maxAngleZ(JSValueRef *vp);
-bool js_obj_rigid_body_set_resetFactorZ(JSValueRef *vp);
-bool js_obj_rigid_body_set_smoothFactorZ(JSValueRef *vp);
+JSValueRef js_obj_rigid_body_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_rigid_body_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_rigid_body_get_on(void);
+JSValueRef js_obj_rigid_body_get_maxDropY(void);
+JSValueRef js_obj_rigid_body_get_resetFactorY(void);
+JSValueRef js_obj_rigid_body_get_smoothFactorY(void);
+JSValueRef js_obj_rigid_body_get_maxAngleX(void);
+JSValueRef js_obj_rigid_body_get_resetFactorX(void);
+JSValueRef js_obj_rigid_body_get_smoothFactorX(void);
+JSValueRef js_obj_rigid_body_get_maxAngleZ(void);
+JSValueRef js_obj_rigid_body_get_resetFactorZ(void);
+JSValueRef js_obj_rigid_body_get_smoothFactorZ(void);
+bool js_obj_rigid_body_set_on(JSValueRef vp);
+bool js_obj_rigid_body_set_maxDropY(JSValueRef vp);
+bool js_obj_rigid_body_set_resetFactorY(JSValueRef vp);
+bool js_obj_rigid_body_set_smoothFactorY(JSValueRef vp);
+bool js_obj_rigid_body_set_maxAngleX(JSValueRef vp);
+bool js_obj_rigid_body_set_resetFactorX(JSValueRef vp);
+bool js_obj_rigid_body_set_smoothFactorX(JSValueRef vp);
+bool js_obj_rigid_body_set_maxAngleZ(JSValueRef vp);
+bool js_obj_rigid_body_set_resetFactorZ(JSValueRef vp);
+bool js_obj_rigid_body_set_smoothFactorZ(JSValueRef vp);
 
 script_js_property	obj_rigid_body_props[]={
 							{"on",					js_obj_rigid_body_get_on,				js_obj_rigid_body_set_on},
@@ -88,7 +88,7 @@ void script_free_obj_rigid_body_object(void)
 	script_free_class(obj_rigid_body_class);
 }
 
-JSObject* script_add_obj_rigid_body_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_rigid_body_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_rigid_body_class,"rigidBody",obj_rigid_body_props,NULL));
 }
@@ -99,14 +99,14 @@ JSObject* script_add_obj_rigid_body_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_rigid_body_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_rigid_body_props));
+	return(script_get_property(cx,j_obj,name,obj_rigid_body_props));
 }
 
-JSBool js_obj_rigid_body_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_rigid_body_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_rigid_body_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_rigid_body_props));
 }
 
 /* =======================================================
@@ -115,7 +115,7 @@ JSBool js_obj_rigid_body_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef
       
 ======================================================= */
 
-bool js_obj_rigid_body_get_on(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_on(void)
 {
 	obj_type		*obj;
 
@@ -125,7 +125,7 @@ bool js_obj_rigid_body_get_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_maxDropY(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_maxDropY(void)
 {
 	obj_type		*obj;
 
@@ -135,7 +135,7 @@ bool js_obj_rigid_body_get_maxDropY(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_resetFactorY(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_resetFactorY(void)
 {
 	obj_type		*obj;
 
@@ -145,7 +145,7 @@ bool js_obj_rigid_body_get_resetFactorY(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_smoothFactorY(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_smoothFactorY(void)
 {
 	obj_type		*obj;
 
@@ -155,7 +155,7 @@ bool js_obj_rigid_body_get_smoothFactorY(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_maxAngleX(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_maxAngleX(void)
 {
 	obj_type		*obj;
 
@@ -165,7 +165,7 @@ bool js_obj_rigid_body_get_maxAngleX(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_resetFactorX(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_resetFactorX(void)
 {
 	obj_type		*obj;
 
@@ -175,7 +175,7 @@ bool js_obj_rigid_body_get_resetFactorX(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_smoothFactorX(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_smoothFactorX(void)
 {
 	obj_type		*obj;
 
@@ -185,7 +185,7 @@ bool js_obj_rigid_body_get_smoothFactorX(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_maxAngleZ(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_maxAngleZ(void)
 {
 	obj_type		*obj;
 
@@ -195,7 +195,7 @@ bool js_obj_rigid_body_get_maxAngleZ(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_resetFactorZ(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_resetFactorZ(void)
 {
 	obj_type		*obj;
 
@@ -205,7 +205,7 @@ bool js_obj_rigid_body_get_resetFactorZ(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_get_smoothFactorZ(JSValueRef *vp)
+JSValueRef js_obj_rigid_body_get_smoothFactorZ(void)
 {
 	obj_type		*obj;
 
@@ -221,7 +221,7 @@ bool js_obj_rigid_body_get_smoothFactorZ(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_obj_rigid_body_set_on(JSValueRef *vp)
+bool js_obj_rigid_body_set_on(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -231,7 +231,7 @@ bool js_obj_rigid_body_set_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_maxDropY(JSValueRef *vp)
+bool js_obj_rigid_body_set_maxDropY(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -241,7 +241,7 @@ bool js_obj_rigid_body_set_maxDropY(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_resetFactorY(JSValueRef *vp)
+bool js_obj_rigid_body_set_resetFactorY(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -251,7 +251,7 @@ bool js_obj_rigid_body_set_resetFactorY(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_smoothFactorY(JSValueRef *vp)
+bool js_obj_rigid_body_set_smoothFactorY(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -261,7 +261,7 @@ bool js_obj_rigid_body_set_smoothFactorY(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_maxAngleX(JSValueRef *vp)
+bool js_obj_rigid_body_set_maxAngleX(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -271,7 +271,7 @@ bool js_obj_rigid_body_set_maxAngleX(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_resetFactorX(JSValueRef *vp)
+bool js_obj_rigid_body_set_resetFactorX(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -281,7 +281,7 @@ bool js_obj_rigid_body_set_resetFactorX(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_smoothFactorX(JSValueRef *vp)
+bool js_obj_rigid_body_set_smoothFactorX(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -291,7 +291,7 @@ bool js_obj_rigid_body_set_smoothFactorX(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_maxAngleZ(JSValueRef *vp)
+bool js_obj_rigid_body_set_maxAngleZ(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -301,7 +301,7 @@ bool js_obj_rigid_body_set_maxAngleZ(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_resetFactorZ(JSValueRef *vp)
+bool js_obj_rigid_body_set_resetFactorZ(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -311,7 +311,7 @@ bool js_obj_rigid_body_set_resetFactorZ(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_rigid_body_set_smoothFactorZ(JSValueRef *vp)
+bool js_obj_rigid_body_set_smoothFactorZ(JSValueRef vp)
 {
 	obj_type		*obj;
 	

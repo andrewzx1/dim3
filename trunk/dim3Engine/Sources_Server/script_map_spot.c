@@ -34,17 +34,17 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_spot_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_spot_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_map_spot_get_count(JSValueRef *vp);
-JSBool js_map_spot_find_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_spot_get_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_spot_get_type_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_spot_get_script_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_spot_get_parameter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_spot_get_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_spot_get_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_spot_attach_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_map_spot_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_map_spot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_spot_get_count(void);
+JSValueRef js_map_spot_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_spot_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_spot_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_spot_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_spot_get_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	map_spot_props[]={
 							{"count",				js_map_spot_get_count,				NULL},
@@ -79,7 +79,7 @@ void script_free_map_spot_object(void)
 	script_free_class(map_spot_class);
 }
 
-JSObject* script_add_map_spot_object(JSObject *parent_obj)
+JSObjectRef script_add_map_spot_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,map_spot_class,"spot",map_spot_props,map_spot_functions));
 }
@@ -90,14 +90,14 @@ JSObject* script_add_map_spot_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_spot_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_map_spot_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,map_spot_props));
+	return(script_get_property(cx,j_obj,name,map_spot_props));
 }
 
-JSBool js_map_spot_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_map_spot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,map_spot_props));
+	return(script_set_property(cx,j_obj,name,vp,map_spot_props));
 }
 
 /* =======================================================
@@ -106,10 +106,9 @@ JSBool js_map_spot_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JS
       
 ======================================================= */
 
-bool js_map_spot_get_count(JSValueRef *vp)
+JSValueRef js_map_spot_get_count(void)
 {
-	*vp=script_int_to_value(map.nspot);
-	return(TRUE);
+	return(script_int_to_value(map.nspot));
 }
 
 /* =======================================================
@@ -118,7 +117,7 @@ bool js_map_spot_get_count(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_map_spot_find_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_spot_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char		name[name_str_len],type[name_str_len];
 	
@@ -152,7 +151,7 @@ JSBool js_map_spot_find_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueR
       
 ======================================================= */
 
-JSBool js_map_spot_get_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_spot_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	spot_type	*spot;
 	
@@ -164,7 +163,7 @@ JSBool js_map_spot_get_name_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
 	return(TRUE);
 }
 
-JSBool js_map_spot_get_type_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_spot_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	spot_type	*spot;
 	
@@ -176,7 +175,7 @@ JSBool js_map_spot_get_type_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
 	return(TRUE);
 }
 
-JSBool js_map_spot_get_script_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	spot_type	*spot;
 	
@@ -188,7 +187,7 @@ JSBool js_map_spot_get_script_func(JSContextRef cx,JSObject *j_obj,uintN argc,JS
 	return(TRUE);
 }
 
-JSBool js_map_spot_get_parameter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_spot_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	spot_type	*spot;
 	
@@ -206,7 +205,7 @@ JSBool js_map_spot_get_parameter_func(JSContextRef cx,JSObject *j_obj,uintN argc
       
 ======================================================= */
 
-JSBool js_map_spot_get_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_spot_get_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	spot_type   *spot;
 
@@ -221,7 +220,7 @@ JSBool js_map_spot_get_position_func(JSContextRef cx,JSObject *j_obj,uintN argc,
 	return(TRUE);
 }
 
-JSBool js_map_spot_get_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	spot_type   *spot;
 
@@ -242,7 +241,7 @@ JSBool js_map_spot_get_angle_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
       
 ======================================================= */
 
-JSBool js_map_spot_attach_object_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char		name[name_str_len],type[name_str_len],
 				script[file_str_len],params[param_str_len];

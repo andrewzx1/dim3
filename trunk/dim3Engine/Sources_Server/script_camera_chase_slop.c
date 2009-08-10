@@ -35,14 +35,14 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
-JSBool js_camera_chase_slop_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_camera_chase_slop_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_camera_chase_slop_get_x(JSValueRef *vp);
-bool js_camera_chase_slop_get_y(JSValueRef *vp);
-bool js_camera_chase_slop_get_z(JSValueRef *vp);
-bool js_camera_chase_slop_set_x(JSValueRef *vp);
-bool js_camera_chase_slop_set_y(JSValueRef *vp);
-bool js_camera_chase_slop_set_z(JSValueRef *vp);
+JSValueRef js_camera_chase_slop_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_camera_chase_slop_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_chase_slop_get_x(void);
+JSValueRef js_camera_chase_slop_get_y(void);
+JSValueRef js_camera_chase_slop_get_z(void);
+bool js_camera_chase_slop_set_x(JSValueRef vp);
+bool js_camera_chase_slop_set_y(JSValueRef vp);
+bool js_camera_chase_slop_set_z(JSValueRef vp);
 
 script_js_property	camera_chase_slop_props[]={
 							{"x",					js_camera_chase_slop_get_x,			js_camera_chase_slop_set_x},
@@ -68,7 +68,7 @@ void script_free_camera_chase_slop_object(void)
 	script_free_class(camera_chase_slop_class);
 }
 
-JSObject* script_add_camera_chase_slop_object(JSObject *parent_obj)
+JSObjectRef script_add_camera_chase_slop_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,camera_chase_slop_class,"chaseSlop",camera_chase_slop_props,NULL));
 }
@@ -79,14 +79,14 @@ JSObject* script_add_camera_chase_slop_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_chase_slop_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_camera_chase_slop_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,camera_chase_slop_props));
+	return(script_get_property(cx,j_obj,name,camera_chase_slop_props));
 }
 
-JSBool js_camera_chase_slop_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_camera_chase_slop_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,camera_chase_slop_props));
+	return(script_set_property(cx,j_obj,name,vp,camera_chase_slop_props));
 }
 
 /* =======================================================
@@ -95,19 +95,19 @@ JSBool js_camera_chase_slop_set_property(JSContextRef cx,JSObject *j_obj,JSValue
       
 ======================================================= */
 
-bool js_camera_chase_slop_get_x(JSValueRef *vp)
+JSValueRef js_camera_chase_slop_get_x(void)
 {
 	*vp=script_float_to_value(camera.chase_slop.x);
 	return(TRUE);
 }
 
-bool js_camera_chase_slop_get_y(JSValueRef *vp)
+JSValueRef js_camera_chase_slop_get_y(void)
 {
 	*vp=script_float_to_value(camera.chase_slop.y);
 	return(TRUE);
 }
 
-bool js_camera_chase_slop_get_z(JSValueRef *vp)
+JSValueRef js_camera_chase_slop_get_z(void)
 {
 	*vp=script_float_to_value(camera.chase_slop.z);
 	return(TRUE);
@@ -119,19 +119,19 @@ bool js_camera_chase_slop_get_z(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_camera_chase_slop_set_x(JSValueRef *vp)
+bool js_camera_chase_slop_set_x(JSValueRef vp)
 {
 	camera.chase_slop.x=script_value_to_float(*vp);
 	return(TRUE);
 }
 
-bool js_camera_chase_slop_set_y(JSValueRef *vp)
+bool js_camera_chase_slop_set_y(JSValueRef vp)
 {
 	camera.chase_slop.y=script_value_to_float(*vp);
 	return(TRUE);
 }
 
-bool js_camera_chase_slop_set_z(JSValueRef *vp)
+bool js_camera_chase_slop_set_z(JSValueRef vp)
 {
 	camera.chase_slop.z=script_value_to_float(*vp);
 	return(TRUE);

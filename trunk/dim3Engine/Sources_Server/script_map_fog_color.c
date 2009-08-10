@@ -34,14 +34,14 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_map_fog_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_fog_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_map_fog_color_get_red(JSValueRef *vp);
-bool js_map_fog_color_get_green(JSValueRef *vp);
-bool js_map_fog_color_get_blue(JSValueRef *vp);
-bool js_map_fog_color_set_red(JSValueRef *vp);
-bool js_map_fog_color_set_green(JSValueRef *vp);
-bool js_map_fog_color_set_blue(JSValueRef *vp);
+JSValueRef js_map_fog_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_map_fog_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_fog_color_get_red(void);
+JSValueRef js_map_fog_color_get_green(void);
+JSValueRef js_map_fog_color_get_blue(void);
+bool js_map_fog_color_set_red(JSValueRef vp);
+bool js_map_fog_color_set_green(JSValueRef vp);
+bool js_map_fog_color_set_blue(JSValueRef vp);
 
 script_js_property	map_fog_color_props[]={
 							{"red",					js_map_fog_color_get_red,			js_map_fog_color_set_red},
@@ -67,7 +67,7 @@ void script_free_map_fog_color_object(void)
 	script_free_class(map_fog_color_class);
 }
 
-JSObject* script_add_map_fog_color_object(JSObject *parent_obj)
+JSObjectRef script_add_map_fog_color_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,map_fog_color_class,"fogColor",map_fog_color_props,NULL));
 }
@@ -78,14 +78,14 @@ JSObject* script_add_map_fog_color_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_fog_color_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_map_fog_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,map_fog_color_props));
+	return(script_get_property(cx,j_obj,name,map_fog_color_props));
 }
 
-JSBool js_map_fog_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_map_fog_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,map_fog_color_props));
+	return(script_set_property(cx,j_obj,name,vp,map_fog_color_props));
 }
 
 /* =======================================================
@@ -94,19 +94,19 @@ JSBool js_map_fog_color_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef 
       
 ======================================================= */
 
-bool js_map_fog_color_get_red(JSValueRef *vp)
+JSValueRef js_map_fog_color_get_red(void)
 {
 	*vp=script_float_to_value(map.fog.col.r);
 	return(TRUE);
 }
 
-bool js_map_fog_color_get_green(JSValueRef *vp)
+JSValueRef js_map_fog_color_get_green(void)
 {
 	*vp=script_float_to_value(map.fog.col.g);
 	return(TRUE);
 }
 
-bool js_map_fog_color_get_blue(JSValueRef *vp)
+JSValueRef js_map_fog_color_get_blue(void)
 {
 	*vp=script_float_to_value(map.fog.col.b);
 	return(TRUE);
@@ -118,19 +118,19 @@ bool js_map_fog_color_get_blue(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_map_fog_color_set_red(JSValueRef *vp)
+bool js_map_fog_color_set_red(JSValueRef vp)
 {
 	map.fog.col.r=script_value_to_float(*vp);
 	return(TRUE);
 }
 
-bool js_map_fog_color_set_green(JSValueRef *vp)
+bool js_map_fog_color_set_green(JSValueRef vp)
 {
 	map.fog.col.g=script_value_to_float(*vp);
 	return(TRUE);
 }
 
-bool js_map_fog_color_set_blue(JSValueRef *vp)
+bool js_map_fog_color_set_blue(JSValueRef vp)
 {
 	map.fog.col.b=script_value_to_float(*vp);
 	return(TRUE);

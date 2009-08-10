@@ -34,10 +34,10 @@ and can be sold or given away.
 extern js_type			js;
 extern setup_type		setup;
 
-JSBool js_interface_screen_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_interface_screen_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_interface_screen_get_width(JSValueRef *vp);
-bool js_interface_screen_get_height(JSValueRef *vp);
+JSValueRef js_interface_screen_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_interface_screen_get_width(void);
+JSValueRef js_interface_screen_get_height(void);
 
 script_js_property	interface_screen_props[]={
 							{"width",				js_interface_screen_get_width,		NULL},
@@ -62,7 +62,7 @@ void script_free_interface_screen_object(void)
 	script_free_class(interface_screen_class);
 }
 
-JSObject* script_add_interface_screen_object(JSObject *parent_obj)
+JSObjectRef script_add_interface_screen_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,interface_screen_class,"screen",interface_screen_props,NULL));
 }
@@ -73,14 +73,14 @@ JSObject* script_add_interface_screen_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_interface_screen_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_interface_screen_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,interface_screen_props));
+	return(script_get_property(cx,j_obj,name,interface_screen_props));
 }
 
-JSBool js_interface_screen_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,interface_screen_props));
+	return(script_set_property(cx,j_obj,name,vp,interface_screen_props));
 }
 
 /* =======================================================
@@ -89,14 +89,14 @@ JSBool js_interface_screen_set_property(JSContextRef cx,JSObject *j_obj,JSValueR
       
 ======================================================= */
 
-bool js_interface_screen_get_width(JSValueRef *vp)
+JSValueRef js_interface_screen_get_width(void)
 {
 	*vp=script_int_to_value(setup.screen.x_sz);
 	return(TRUE);
 }
 
 
-bool js_interface_screen_get_height(JSValueRef *vp)
+JSValueRef js_interface_screen_get_height(void)
 {
 	*vp=script_int_to_value(setup.screen.y_sz);
 	return(TRUE);

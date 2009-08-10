@@ -160,6 +160,7 @@ void gl_shader_cache_dynamic_variable_locations(view_shader_type *shader)
 	shader->var_dim3LightIntensity=glGetUniformLocationARB(shader->program_obj,"dim3LightIntensity");
 	shader->var_dim3LightExponent=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
 	shader->var_dim3LightDirection=glGetUniformLocationARB(shader->program_obj,"dim3LightDirection");
+	shader->var_dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_dim3DarkFactor=glGetUniformLocationARB(shader->program_obj,"dim3DarkFactor");
 	shader->var_dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 }
@@ -491,7 +492,7 @@ void gl_shader_set_texture_variables(view_shader_type *shader,texture_type *text
 	if (shader->var_dim3TexColor!=-1) glUniform3fARB(shader->var_dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
-void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,float alpha,view_glsl_light_list_type *light_list)
+void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3col *tint_col)
 {
 	if (light_list!=NULL) {
 		if (shader->var_dim3LightPosition!=-1) glUniform3fvARB(shader->var_dim3LightPosition,max_shader_light,light_list->pos);
@@ -499,6 +500,17 @@ void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,flo
 		if (shader->var_dim3LightIntensity!=-1) glUniform1fvARB(shader->var_dim3LightIntensity,max_shader_light,light_list->intensity);
 		if (shader->var_dim3LightExponent!=-1) glUniform1fvARB(shader->var_dim3LightExponent,max_shader_light,light_list->exponent);
 		if (shader->var_dim3LightDirection!=-1) glUniform3fvARB(shader->var_dim3LightDirection,max_shader_light,light_list->direction);
+	}
+	
+		// set tint color
+		
+	if (tint_col!=NULL) {
+		if (shader->var_dim3TintColor!=-1) {
+			if ((shader->cur_tint_col.r!=tint_col->r) || (shader->cur_tint_col.g!=tint_col->g) || (shader->cur_tint_col.b!=tint_col->b)) {
+				memmove(&shader->cur_tint_col,tint_col,sizeof(d3col));
+				glUniform3fARB(shader->var_dim3TintColor,tint_col->r,tint_col->g,tint_col->b);
+			}
+		}
 	}
 	
 		// set dark and alpha if they've changed
@@ -544,6 +556,7 @@ void gl_shader_draw_scene_initialize(void)
 
 		shader->cur_light_idx[0]=-1000;
 		shader->cur_in_hilite=FALSE;
+		shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=-1.0f;
 		shader->cur_dark_factor=-1.0f;
 		shader->cur_alpha=-1.0f;
 		
@@ -687,7 +700,7 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,int *light_idx,d3pnt *pnt,d3col *col)
+void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,int *light_idx,d3pnt *pnt,d3col *tint_col)
 {
 	int								n;
 	bool							light_change;
@@ -745,11 +758,11 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 		shader->cur_in_hilite=FALSE;
 		
 		if (!light_change) {
-			gl_shader_set_poly_variables(shader,dark_factor,alpha,NULL);
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,NULL,tint_col);
 		}
 		else {
 			gl_lights_idx_to_light_list(light_idx,&light_list);
-			gl_shader_set_poly_variables(shader,dark_factor,alpha,&light_list);
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,&light_list,tint_col);
 		}
 	}
 
@@ -761,7 +774,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 			// already in hilite?
 			
 		if (shader->cur_in_hilite) {
-			gl_shader_set_poly_variables(shader,dark_factor,alpha,NULL);
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,NULL,tint_col);
 		}
 		else {
 			bzero(&light_list,sizeof(view_glsl_light_list_type));
@@ -781,7 +794,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 			
 			shader->cur_in_hilite=TRUE;
 			
-			gl_shader_set_poly_variables(shader,dark_factor,alpha,&light_list);
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,&light_list,tint_col);
 		}
 	}
 }

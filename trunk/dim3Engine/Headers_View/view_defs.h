@@ -201,6 +201,7 @@ typedef struct		{
 															vertex_name[file_str_len],
 															fragment_name[file_str_len];
 						bool								per_scene_vars_set,cur_in_hilite;
+						d3col								cur_tint_col;
 						view_shader_custom_var_type			custom_vars[max_view_shader_custom_vars];
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
 						GLint								var_dim3TimeMillisec,var_dim3FrequencySecond,
@@ -209,7 +210,7 @@ typedef struct		{
 															var_dim3TexColor,var_dim3LightPosition,
 															var_dim3LightColor,var_dim3LightIntensity,
 															var_dim3LightExponent,var_dim3LightDirection,
-															var_dim3DarkFactor,var_dim3Alpha;
+															var_dim3TintColor,var_dim3DarkFactor,var_dim3Alpha;
 					} view_shader_type;
 
 //

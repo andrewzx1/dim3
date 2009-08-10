@@ -34,10 +34,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_obj_weapon_fire_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_weapon_fire_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_weapon_fire_get_name(JSValueRef *vp);
-bool js_obj_weapon_fire_get_method(JSValueRef *vp);
+JSValueRef js_obj_weapon_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_weapon_fire_get_name(void);
+JSValueRef js_obj_weapon_fire_get_method(void);
 
 script_js_property	obj_weapon_fire_props[]={
 							{"name",				js_obj_weapon_fire_get_name,		NULL},
@@ -62,7 +62,7 @@ void script_free_obj_weapon_fire_object(void)
 	script_free_class(obj_weapon_fire_class);
 }
 
-JSObject* script_add_obj_weapon_fire_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_weapon_fire_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_weapon_fire_class,"weaponFire",obj_weapon_fire_props,NULL));
 }
@@ -73,14 +73,14 @@ JSObject* script_add_obj_weapon_fire_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_weapon_fire_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_weapon_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_weapon_fire_props));
+	return(script_get_property(cx,j_obj,name,obj_weapon_fire_props));
 }
 
-JSBool js_obj_weapon_fire_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_weapon_fire_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_weapon_fire_props));
 }
 
 /* =======================================================
@@ -89,7 +89,7 @@ JSBool js_obj_weapon_fire_set_property(JSContextRef cx,JSObject *j_obj,JSValueRe
       
 ======================================================= */
 
-bool js_obj_weapon_fire_get_name(JSValueRef *vp)
+JSValueRef js_obj_weapon_fire_get_name(void)
 {
 	obj_type		*obj;
 
@@ -99,7 +99,7 @@ bool js_obj_weapon_fire_get_name(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_weapon_fire_get_method(JSValueRef *vp)
+JSValueRef js_obj_weapon_fire_get_method(void)
 {
 	obj_type		*obj;
 

@@ -133,12 +133,8 @@ void model_draw_setup_object(int tick,obj_type *obj)
 
 		// team tint
 
-	if ((net_setup.client.joined) && (obj->player) && (net_setup.games[net_setup.game_idx].use_teams)) {
-		object_get_tint(obj,&draw->tint);
-	}
-	else {
-		draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
-	}
+	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
+	if ((obj->player) || (obj->bot)) object_get_tint(obj,&draw->tint);
 }
 
 /* =======================================================
@@ -183,8 +179,8 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 	
 		// vector
 		
-	draw->connect.obj_uid=-1;
-	draw->connect.weap_uid=-1;
+	draw->connect.obj_uid=proj->obj_uid;
+	draw->connect.weap_uid=proj->weap_uid;
 	draw->connect.proj_uid=proj->uid;
 	draw->connect.net_sound=FALSE;
 	draw->connect.motion_vct.x=proj->motion.vct.x;

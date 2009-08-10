@@ -31,14 +31,14 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_model_offset_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_model_offset_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_model_offset_get_x(JSValueRef *vp);
-bool js_model_offset_get_y(JSValueRef *vp);
-bool js_model_offset_get_z(JSValueRef *vp);
-bool js_model_offset_set_x(JSValueRef *vp);
-bool js_model_offset_set_y(JSValueRef *vp);
-bool js_model_offset_set_z(JSValueRef *vp);
+JSValueRef js_model_offset_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_offset_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_offset_get_x(void);
+JSValueRef js_model_offset_get_y(void);
+JSValueRef js_model_offset_get_z(void);
+bool js_model_offset_set_x(JSValueRef vp);
+bool js_model_offset_set_y(JSValueRef vp);
+bool js_model_offset_set_z(JSValueRef vp);
 
 extern js_type			js;
 
@@ -66,7 +66,7 @@ void script_free_model_offset_object(void)
 	script_free_class(model_offset_class);
 }
 
-JSObject* script_add_model_offset_object(JSObject *parent_obj)
+JSObjectRef script_add_model_offset_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,model_offset_class,"offset",model_offset_props,NULL));
 }
@@ -77,14 +77,14 @@ JSObject* script_add_model_offset_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_model_offset_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_model_offset_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,model_offset_props));
+	return(script_get_property(cx,j_obj,name,model_offset_props));
 }
 
-JSBool js_model_offset_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_model_offset_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,model_offset_props));
+	return(script_set_property(cx,j_obj,name,vp,model_offset_props));
 }
 
 /* =======================================================
@@ -93,7 +93,7 @@ JSBool js_model_offset_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef i
       
 ======================================================= */
 
-bool js_model_offset_get_x(JSValueRef *vp)
+JSValueRef js_model_offset_get_x(void)
 {
 	model_draw		*draw;
 
@@ -103,7 +103,7 @@ bool js_model_offset_get_x(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_offset_get_y(JSValueRef *vp)
+JSValueRef js_model_offset_get_y(void)
 {
 	model_draw		*draw;
 
@@ -113,7 +113,7 @@ bool js_model_offset_get_y(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_offset_get_z(JSValueRef *vp)
+JSValueRef js_model_offset_get_z(void)
 {
 	model_draw		*draw;
 
@@ -129,7 +129,7 @@ bool js_model_offset_get_z(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_model_offset_set_x(JSValueRef *vp)
+bool js_model_offset_set_x(JSValueRef vp)
 {
 	model_draw		*draw;
 	
@@ -139,7 +139,7 @@ bool js_model_offset_set_x(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_offset_set_y(JSValueRef *vp)
+bool js_model_offset_set_y(JSValueRef vp)
 {
 	model_draw		*draw;
 	
@@ -149,7 +149,7 @@ bool js_model_offset_set_y(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_model_offset_set_z(JSValueRef *vp)
+bool js_model_offset_set_z(JSValueRef vp)
 {
 	model_draw		*draw;
 	

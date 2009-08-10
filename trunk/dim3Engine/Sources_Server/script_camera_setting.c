@@ -35,12 +35,12 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
-JSBool js_camera_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_camera_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_camera_setting_get_type(JSValueRef *vp);
-bool js_camera_setting_get_attachObjectId(JSValueRef *vp);
-bool js_camera_setting_set_type(JSValueRef *vp);
-JSBool js_camera_setting_attach_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_camera_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_camera_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_setting_get_type(void);
+JSValueRef js_camera_setting_get_attachObjectId(void);
+bool js_camera_setting_set_type(JSValueRef vp);
+JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	camera_setting_props[]={
 							{"type",				js_camera_setting_get_type,				js_camera_setting_set_type},
@@ -69,7 +69,7 @@ void script_free_camera_setting_object(void)
 	script_free_class(camera_setting_class);
 }
 
-JSObject* script_add_camera_setting_object(JSObject *parent_obj)
+JSObjectRef script_add_camera_setting_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,camera_setting_class,"setting",camera_setting_props,camera_setting_functions));
 }
@@ -80,14 +80,14 @@ JSObject* script_add_camera_setting_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_camera_setting_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_camera_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,camera_setting_props));
+	return(script_get_property(cx,j_obj,name,camera_setting_props));
 }
 
-JSBool js_camera_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_camera_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,camera_setting_props));
+	return(script_set_property(cx,j_obj,name,vp,camera_setting_props));
 }
 
 /* =======================================================
@@ -96,13 +96,13 @@ JSBool js_camera_setting_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef
       
 ======================================================= */
 
-bool js_camera_setting_get_type(JSValueRef *vp)
+JSValueRef js_camera_setting_get_type(void)
 {
 	*vp=script_int_to_value(camera.mode+sd_camera_type_fpp);
 	return(TRUE);
 }
 
-bool js_camera_setting_get_attachObjectId(JSValueRef *vp)
+JSValueRef js_camera_setting_get_attachObjectId(void)
 {
 	*vp=script_int_to_value(camera.obj_uid);
 	return(TRUE);
@@ -114,7 +114,7 @@ bool js_camera_setting_get_attachObjectId(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_camera_setting_set_type(JSValueRef *vp)
+bool js_camera_setting_set_type(JSValueRef vp)
 {
 	camera.mode=script_value_to_int(*vp)-sd_camera_type_fpp;
 	return(TRUE);
@@ -126,7 +126,7 @@ bool js_camera_setting_set_type(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_camera_setting_attach_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 

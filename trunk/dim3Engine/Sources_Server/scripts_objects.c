@@ -454,7 +454,7 @@ bool script_add_global_object(script_type *script,char *err_str)
       
 ======================================================= */
 
-void script_create_main_object_add_model_object(JSObject *parent_obj)
+void script_create_main_object_add_model_object(JSObjectRef parent_obj)
 {
     JSObject		*j_obj;
 
@@ -473,7 +473,7 @@ void script_create_main_object_add_model_object(JSObject *parent_obj)
 	script_add_model_fill_object(j_obj);
 }
 
-JSObject* script_create_main_object(attach_type *attach)
+JSObjectRef script_create_main_object(attach_type *attach)
 {
 	JSObject		*j_obj,*j_sub_obj;
 
@@ -581,7 +581,7 @@ JSObject* script_create_main_object(attach_type *attach)
 	return(j_obj);
 }
 
-JSObject* script_create_child_object(JSObject *parent_obj,JSClassRef cls,char *name,script_js_property *props,script_js_function *funcs)
+JSObjectRef script_create_child_object(JSObjectRef parent_obj,JSClassRef cls,char *name,script_js_property *props,script_js_function *funcs)
 {
 	int					flags;
 	script_js_property	*prop;
@@ -657,7 +657,7 @@ inline int script_find_object_property_index(JSValueRef id,script_js_property *p
 	return(-1);
 }
 
-JSBool script_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp,script_js_property *props)
+JSValueRef script_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,script_js_property *props)
 {
 	int					idx;
 	script_js_property	*prop;
@@ -675,10 +675,10 @@ JSBool script_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValue
 
 		// call getter
 
-	return((*prop->getter)(vp));
+	return((*prop->getter)());
 }
 
-JSBool script_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp,script_js_property *props)
+bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,script_js_property *props)
 {
 	int					idx;
 	script_js_property	*prop;

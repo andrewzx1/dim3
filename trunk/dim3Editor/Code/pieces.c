@@ -346,9 +346,48 @@ void piece_delete(void)
       
 ======================================================= */
 
+void piece_select_more_check_edge(d3pnt *k_pt1,d3pnt *k_pt2)
+{
+	int					n,k,t,t2;
+	d3pnt				*pt1,*pt2;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	mesh=map.mesh.meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			if (select_check(mesh_piece,n,k)) {
+				poly++;
+				continue;
+			}
+		
+			for (t=0;t!=poly->ptsz;t++) {
+				t2=t+1;
+				if (t2==poly->ptsz) t2=0;
+				
+				pt1=&mesh->vertexes[poly->v[t]];
+				pt2=&mesh->vertexes[poly->v[t2]];
+				
+				if (((pt1->x==k_pt1->x) && (pt1->y==k_pt1->y) && (pt1->z==k_pt1->z) && (pt2->x==k_pt2->x) && (pt2->y==k_pt2->y) && (pt2->z==k_pt2->z)) || ((pt1->x==k_pt2->x) && (pt1->y==k_pt2->y) && (pt1->z==k_pt2->z) && (pt2->x==k_pt1->x) && (pt2->y==k_pt1->y) && (pt2->z==k_pt1->z))) {
+					select_add(mesh_piece,n,k);
+				}
+			}
+			
+			poly++;
+		}
+		
+		mesh++;
+	}
+}
+
 void piece_select_more(void)
 {
-	int					n,k,t,t2,sel_count,type,mesh_idx,poly_idx;
+	int					n,t,t2,sel_count,type,mesh_idx,poly_idx;
 	d3pnt				*pt1,*pt2;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -363,20 +402,16 @@ void piece_select_more(void)
 		if (type!=mesh_piece) continue;
 		
 		mesh=&map.mesh.meshes[mesh_idx];
-		poly=mesh->polys;
+		poly=&mesh->polys[poly_idx];
 		
-		for (k=0;k!=mesh->npoly;k++) {
-		
-			for (t=0;t!=poly->ptsz;t++) {
-				t2=t+1;
-				if (t2==poly->ptsz) t2=0;
-				
-				pt1=&mesh->vertexes[poly->v[t]];
-				pt2=&mesh->vertexes[poly->v[t2]];
-				
-			}
+		for (t=0;t!=poly->ptsz;t++) {
+			t2=t+1;
+			if (t2==poly->ptsz) t2=0;
 			
-			poly++;
+			pt1=&mesh->vertexes[poly->v[t]];
+			pt2=&mesh->vertexes[poly->v[t2]];
+			
+			piece_select_more_check_edge(pt1,pt2);
 		}
 	}
 	

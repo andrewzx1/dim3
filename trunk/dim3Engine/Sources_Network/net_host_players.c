@@ -34,6 +34,7 @@ and can be sold or given away.
 extern char team_colors[][16];
 
 extern server_type		server;
+extern hud_type			hud;
 
 int						net_host_player_count,server_next_remote_uid;
 net_host_player_type	net_host_players[host_max_remote_count];
@@ -248,7 +249,7 @@ int net_host_bot_join(obj_type *obj)
 	player->team_idx=obj->team_idx;
 	player->tint_color_idx=0;
 	player->character_idx=0;
-
+	
 	player->bot=TRUE;
 	
 	memmove(&player->pnt,&obj->pnt,sizeof(d3pnt));

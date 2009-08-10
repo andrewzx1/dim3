@@ -34,14 +34,14 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_hand_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_weap_hand_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_weap_hand_position_get_x(JSValueRef *vp);
-bool js_weap_hand_position_get_y(JSValueRef *vp);
-bool js_weap_hand_position_get_z(JSValueRef *vp);
-bool js_weap_hand_position_set_x(JSValueRef *vp);
-bool js_weap_hand_position_set_y(JSValueRef *vp);
-bool js_weap_hand_position_set_z(JSValueRef *vp);
+JSValueRef js_weap_hand_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_weap_hand_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_hand_position_get_x(void);
+JSValueRef js_weap_hand_position_get_y(void);
+JSValueRef js_weap_hand_position_get_z(void);
+bool js_weap_hand_position_set_x(JSValueRef vp);
+bool js_weap_hand_position_set_y(JSValueRef vp);
+bool js_weap_hand_position_set_z(JSValueRef vp);
 
 script_js_property	weap_hand_position_props[]={
 							{"x",						js_weap_hand_position_get_x,				js_weap_hand_position_set_x},
@@ -67,7 +67,7 @@ void script_free_weap_hand_position_object(void)
 	script_free_class(weap_hand_position_class);
 }
 
-JSObject* script_add_weap_hand_position_object(JSObject *parent_obj)
+JSObjectRef script_add_weap_hand_position_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,weap_hand_position_class,"handPosition",weap_hand_position_props,NULL));
 }
@@ -78,14 +78,14 @@ JSObject* script_add_weap_hand_position_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_hand_position_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_weap_hand_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,weap_hand_position_props));
+	return(script_get_property(cx,j_obj,name,weap_hand_position_props));
 }
 
-JSBool js_weap_hand_position_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_weap_hand_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,weap_hand_position_props));
+	return(script_set_property(cx,j_obj,name,vp,weap_hand_position_props));
 }
 
 /* =======================================================
@@ -94,7 +94,7 @@ JSBool js_weap_hand_position_set_property(JSContextRef cx,JSObject *j_obj,JSValu
       
 ======================================================= */
 
-bool js_weap_hand_position_get_x(JSValueRef *vp)
+JSValueRef js_weap_hand_position_get_x(void)
 {
 	weapon_type		*weap;
 
@@ -104,7 +104,7 @@ bool js_weap_hand_position_get_x(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_position_get_y(JSValueRef *vp)
+JSValueRef js_weap_hand_position_get_y(void)
 {
 	weapon_type		*weap;
 
@@ -114,7 +114,7 @@ bool js_weap_hand_position_get_y(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_position_get_z(JSValueRef *vp)
+JSValueRef js_weap_hand_position_get_z(void)
 {
 	weapon_type		*weap;
 
@@ -130,7 +130,7 @@ bool js_weap_hand_position_get_z(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_weap_hand_position_set_x(JSValueRef *vp)
+bool js_weap_hand_position_set_x(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -140,7 +140,7 @@ bool js_weap_hand_position_set_x(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_position_set_y(JSValueRef *vp)
+bool js_weap_hand_position_set_y(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -150,7 +150,7 @@ bool js_weap_hand_position_set_y(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_hand_position_set_z(JSValueRef *vp)
+bool js_weap_hand_position_set_z(JSValueRef vp)
 {
 	weapon_type		*weap;
 	

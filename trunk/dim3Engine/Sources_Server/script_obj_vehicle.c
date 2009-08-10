@@ -36,14 +36,14 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_obj_vehicle_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_obj_vehicle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_obj_vehicle_get_on(JSValueRef *vp);
-bool js_obj_vehicle_get_hasOccupant(JSValueRef *vp);
-bool js_obj_vehicle_set_on(JSValueRef *vp);
-JSBool js_obj_vehicle_enter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_vehicle_exit_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_obj_vehicle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_vehicle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_vehicle_get_on(void);
+JSValueRef js_obj_vehicle_get_hasOccupant(void);
+bool js_obj_vehicle_set_on(JSValueRef vp);
+JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	obj_vehicle_props[]={
 							{"on",					js_obj_vehicle_get_on,				js_obj_vehicle_set_on},
@@ -74,7 +74,7 @@ void script_free_obj_vehicle_object(void)
 	script_free_class(obj_vehicle_class);
 }
 
-JSObject* script_add_obj_vehicle_object(JSObject *parent_obj)
+JSObjectRef script_add_obj_vehicle_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,obj_vehicle_class,"vehicle",obj_vehicle_props,obj_vehicle_functions));
 }
@@ -85,14 +85,14 @@ JSObject* script_add_obj_vehicle_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_obj_vehicle_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_obj_vehicle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,obj_vehicle_props));
+	return(script_get_property(cx,j_obj,name,obj_vehicle_props));
 }
 
-JSBool js_obj_vehicle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_obj_vehicle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,obj_vehicle_props));
+	return(script_set_property(cx,j_obj,name,vp,obj_vehicle_props));
 }
 
 /* =======================================================
@@ -101,7 +101,7 @@ JSBool js_obj_vehicle_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id
       
 ======================================================= */
 
-bool js_obj_vehicle_get_on(JSValueRef *vp)
+JSValueRef js_obj_vehicle_get_on(void)
 {
 	obj_type		*obj;
 
@@ -111,7 +111,7 @@ bool js_obj_vehicle_get_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_obj_vehicle_get_hasOccupant(JSValueRef *vp)
+JSValueRef js_obj_vehicle_get_hasOccupant(void)
 {
 	obj_type		*obj;
 
@@ -127,7 +127,7 @@ bool js_obj_vehicle_get_hasOccupant(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_obj_vehicle_set_on(JSValueRef *vp)
+bool js_obj_vehicle_set_on(JSValueRef vp)
 {
 	obj_type		*obj;
 	
@@ -143,7 +143,7 @@ bool js_obj_vehicle_set_on(JSValueRef *vp)
       
 ======================================================= */
 
-JSBool js_obj_vehicle_enter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256];
 	obj_type		*obj;
@@ -158,7 +158,7 @@ JSBool js_obj_vehicle_enter_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSVa
 	return(TRUE);
 }
 
-JSBool js_obj_vehicle_exit_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256];
 	obj_type		*obj;

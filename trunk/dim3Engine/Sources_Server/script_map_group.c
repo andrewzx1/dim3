@@ -40,14 +40,14 @@ extern void group_texture(int group_idx,int index);
 extern void group_texture_shift(int group_idx,float x_shift,float y_shift);
 extern void group_texture_alpha(int group_idx,float alpha);
 
-JSBool js_map_group_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_group_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_map_group_get_center_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_group_set_show_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_group_set_solid_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_group_set_texture_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_group_set_texture_shift_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
-JSBool js_map_group_set_texture_alpha_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval);
+JSValueRef js_map_group_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_map_group_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_group_set_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_group_set_solid_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_group_set_texture_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_group_set_texture_shift_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_group_set_texture_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_function	map_group_functions[]={
 							{"getCenter",			js_map_group_get_center_func,			1},
@@ -76,7 +76,7 @@ void script_free_map_group_object(void)
 	script_free_class(map_group_class);
 }
 
-JSObject* script_add_map_group_object(JSObject *parent_obj)
+JSObjectRef script_add_map_group_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,map_group_class,"group",NULL,map_group_functions));
 }
@@ -87,14 +87,14 @@ JSObject* script_add_map_group_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_map_group_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_map_group_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,NULL));
+	return(script_get_property(cx,j_obj,name,NULL));
 }
 
-JSBool js_map_group_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_map_group_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,NULL));
 }
 
 /* =======================================================
@@ -103,7 +103,7 @@ JSBool js_map_group_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,J
       
 ======================================================= */
 
-JSBool js_map_group_get_center_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	group_type		*group;
@@ -128,7 +128,7 @@ JSBool js_map_group_get_center_func(JSContextRef cx,JSObject *j_obj,uintN argc,J
       
 ======================================================= */
 
-JSBool js_map_group_set_show_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_group_set_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	
@@ -139,7 +139,7 @@ JSBool js_map_group_set_show_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSV
 	return(TRUE);
 }
 
-JSBool js_map_group_set_solid_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_group_set_solid_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	
@@ -156,7 +156,7 @@ JSBool js_map_group_set_solid_func(JSContextRef cx,JSObject *j_obj,uintN argc,JS
       
 ======================================================= */
 
-JSBool js_map_group_set_texture_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_group_set_texture_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	
@@ -167,7 +167,7 @@ JSBool js_map_group_set_texture_func(JSContextRef cx,JSObject *j_obj,uintN argc,
 	return(TRUE);
 }
 
-JSBool js_map_group_set_texture_shift_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_group_set_texture_shift_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	
@@ -178,7 +178,7 @@ JSBool js_map_group_set_texture_shift_func(JSContextRef cx,JSObject *j_obj,uintN
 	return(TRUE);
 }
 
-JSBool js_map_group_set_texture_alpha_func(JSContextRef cx,JSObject *j_obj,uintN argc,JSValueRef *argv,JSValueRef *rval)
+JSValueRef js_map_group_set_texture_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	

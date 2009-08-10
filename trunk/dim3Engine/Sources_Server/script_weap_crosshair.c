@@ -34,20 +34,20 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_weap_crosshair_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-JSBool js_weap_crosshair_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp);
-bool js_weap_crosshair_get_on(JSValueRef *vp);
-bool js_weap_crosshair_get_type(JSValueRef *vp);
-bool js_weap_crosshair_get_name(JSValueRef *vp);
-bool js_weap_crosshair_get_minSize(JSValueRef *vp);
-bool js_weap_crosshair_get_maxSize(JSValueRef *vp);
-bool js_weap_crosshair_get_distance(JSValueRef *vp);
-bool js_weap_crosshair_set_on(JSValueRef *vp);
-bool js_weap_crosshair_set_type(JSValueRef *vp);
-bool js_weap_crosshair_set_name(JSValueRef *vp);
-bool js_weap_crosshair_set_minSize(JSValueRef *vp);
-bool js_weap_crosshair_set_maxSize(JSValueRef *vp);
-bool js_weap_crosshair_set_distance(JSValueRef *vp);
+JSValueRef js_weap_crosshair_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_weap_crosshair_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_crosshair_get_on(void);
+JSValueRef js_weap_crosshair_get_type(void);
+JSValueRef js_weap_crosshair_get_name(void);
+JSValueRef js_weap_crosshair_get_minSize(void);
+JSValueRef js_weap_crosshair_get_maxSize(void);
+JSValueRef js_weap_crosshair_get_distance(void);
+bool js_weap_crosshair_set_on(JSValueRef vp);
+bool js_weap_crosshair_set_type(JSValueRef vp);
+bool js_weap_crosshair_set_name(JSValueRef vp);
+bool js_weap_crosshair_set_minSize(JSValueRef vp);
+bool js_weap_crosshair_set_maxSize(JSValueRef vp);
+bool js_weap_crosshair_set_distance(JSValueRef vp);
 
 script_js_property	weap_crosshair_props[]={
 							{"on",					js_weap_crosshair_get_on,			js_weap_crosshair_set_on},
@@ -76,7 +76,7 @@ void script_free_weap_crosshair_object(void)
 	script_free_class(weap_crosshair_class);
 }
 
-JSObject* script_add_weap_crosshair_object(JSObject *parent_obj)
+JSObjectRef script_add_weap_crosshair_object(JSObjectRef parent_obj)
 {
 	return(script_create_child_object(parent_obj,weap_crosshair_class,"crosshair",weap_crosshair_props,NULL));
 }
@@ -87,14 +87,14 @@ JSObject* script_add_weap_crosshair_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_weap_crosshair_get_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+JSValueRef js_weap_crosshair_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_get_property(cx,j_obj,id,vp,weap_crosshair_props));
+	return(script_get_property(cx,j_obj,name,weap_crosshair_props));
 }
 
-JSBool js_weap_crosshair_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef id,JSValueRef *vp)
+bool js_weap_crosshair_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,id,vp,weap_crosshair_props));
+	return(script_set_property(cx,j_obj,name,vp,weap_crosshair_props));
 }
 
 /* =======================================================
@@ -103,7 +103,7 @@ JSBool js_weap_crosshair_set_property(JSContextRef cx,JSObject *j_obj,JSValueRef
       
 ======================================================= */
 
-bool js_weap_crosshair_get_on(JSValueRef *vp)
+JSValueRef js_weap_crosshair_get_on(void)
 {
 	weapon_type		*weap;
 
@@ -113,7 +113,7 @@ bool js_weap_crosshair_get_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_get_type(JSValueRef *vp)
+JSValueRef js_weap_crosshair_get_type(void)
 {
 	weapon_type		*weap;
 
@@ -123,7 +123,7 @@ bool js_weap_crosshair_get_type(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_get_name(JSValueRef *vp)
+JSValueRef js_weap_crosshair_get_name(void)
 {
 	weapon_type		*weap;
 
@@ -133,7 +133,7 @@ bool js_weap_crosshair_get_name(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_get_minSize(JSValueRef *vp)
+JSValueRef js_weap_crosshair_get_minSize(void)
 {
 	weapon_type		*weap;
 
@@ -143,7 +143,7 @@ bool js_weap_crosshair_get_minSize(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_get_maxSize(JSValueRef *vp)
+JSValueRef js_weap_crosshair_get_maxSize(void)
 {
 	weapon_type		*weap;
 
@@ -153,7 +153,7 @@ bool js_weap_crosshair_get_maxSize(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_get_distance(JSValueRef *vp)
+JSValueRef js_weap_crosshair_get_distance(void)
 {
 	weapon_type		*weap;
 
@@ -169,7 +169,7 @@ bool js_weap_crosshair_get_distance(JSValueRef *vp)
       
 ======================================================= */
 
-bool js_weap_crosshair_set_on(JSValueRef *vp)
+bool js_weap_crosshair_set_on(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -179,7 +179,7 @@ bool js_weap_crosshair_set_on(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_set_type(JSValueRef *vp)
+bool js_weap_crosshair_set_type(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -189,7 +189,7 @@ bool js_weap_crosshair_set_type(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_set_name(JSValueRef *vp)
+bool js_weap_crosshair_set_name(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -200,7 +200,7 @@ bool js_weap_crosshair_set_name(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_set_minSize(JSValueRef *vp)
+bool js_weap_crosshair_set_minSize(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -210,7 +210,7 @@ bool js_weap_crosshair_set_minSize(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_set_maxSize(JSValueRef *vp)
+bool js_weap_crosshair_set_maxSize(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
@@ -220,7 +220,7 @@ bool js_weap_crosshair_set_maxSize(JSValueRef *vp)
 	return(TRUE);
 }
 
-bool js_weap_crosshair_set_distance(JSValueRef *vp)
+bool js_weap_crosshair_set_distance(JSValueRef vp)
 {
 	weapon_type		*weap;
 	
