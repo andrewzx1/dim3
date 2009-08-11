@@ -82,7 +82,7 @@ JSValueRef js_obj_touch_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSS
 
 bool js_obj_touch_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_touch_angle_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_touch_angle_props));
 }
 
 /* =======================================================

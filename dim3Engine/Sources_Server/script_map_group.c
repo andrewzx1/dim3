@@ -94,7 +94,7 @@ JSValueRef js_map_group_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_map_group_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -108,7 +108,7 @@ JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjec
 	int				group_idx;
 	group_type		*group;
 	
-	group_idx=script_find_group_from_name(argv[0]);
+	group_idx=script_find_group_from_name(argv[0],exception);
 	if (group_idx==-1) return(FALSE);
 
 	if ((group_idx>=0) && (group_idx<map.ngroup)) {
@@ -132,7 +132,7 @@ JSValueRef js_map_group_set_show_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0]);
+	group_idx=script_find_group_from_name(argv[0],exception);
 	if (group_idx==-1) return(FALSE);
 	
 	group_show(group_idx,script_value_to_bool(argv[1]));
@@ -143,7 +143,7 @@ JSValueRef js_map_group_set_solid_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0]);
+	group_idx=script_find_group_from_name(argv[0],exception);
 	if (group_idx==-1) return(FALSE);
 
 	group_solid(group_idx,script_value_to_bool(argv[1]));
@@ -160,7 +160,7 @@ JSValueRef js_map_group_set_texture_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0]);
+	group_idx=script_find_group_from_name(argv[0],exception);
 	if (group_idx==-1) return(FALSE);
 
 	group_texture(group_idx,script_value_to_int(argv[1]));
@@ -171,7 +171,7 @@ JSValueRef js_map_group_set_texture_shift_func(JSContextRef cx,JSObjectRef func,
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0]);
+	group_idx=script_find_group_from_name(argv[0],exception);
 	if (group_idx==-1) return(FALSE);
 
 	group_texture_shift(group_idx,script_value_to_float(argv[1]),script_value_to_float(argv[2]));
@@ -182,7 +182,7 @@ JSValueRef js_map_group_set_texture_alpha_func(JSContextRef cx,JSObjectRef func,
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0]);
+	group_idx=script_find_group_from_name(argv[0],exception);
 	if (group_idx==-1) return(FALSE);
 
 	group_texture_alpha(group_idx,script_value_to_float(argv[1]));

@@ -93,7 +93,7 @@ JSValueRef js_interface_radar_get_property(JSContextRef cx,JSObjectRef j_obj,JSS
 
 bool js_interface_radar_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,interface_radar_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,interface_radar_props));
 }
 
 /* =======================================================

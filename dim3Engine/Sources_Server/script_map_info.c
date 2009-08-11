@@ -82,7 +82,7 @@ JSValueRef js_map_info_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,map_info_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,map_info_props));
 }
 
 /* =======================================================

@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\win32Includes\pthreads,..\win32Includes\GLEW,..\win32Includes\ZLib,..\win32Includes\SDL,..\win32Includes\OpenAL,..\win32Includes\JS,..\win32Includes\PNG,..\..\dim3Engine\Headers_View,..\..\dim3Engine\Headers_Server,..\..\dim3Engine\Headers_Network,..\..\dim3Engine\Headers,..\..\dim3MapUtility\Headers,..\..\dim3ModelUtility\Headers,..\..\dim3BaseUtility\Headers,..\..\dim3Common\Headers"
+				AdditionalIncludeDirectories="..\win32Includes;..\win32Includes\GLEW;..\win32Includes\ZLib;..\win32Includes\SDL;..\win32Includes\JavaScriptCore;..\win32Includes\PNG;..\..\dim3Engine\Headers_View;..\..\dim3Engine\Headers_Server;..\..\dim3Engine\Headers_Network;..\..\dim3Engine\Headers;..\..\dim3MapUtility\Headers;..\..\dim3ModelUtility\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -183,43 +183,35 @@
 				Name="JS"
 				>
 				<File
-					RelativePath="..\win32Includes\JS\js32.lib"
+					RelativePath="..\win32Includes\JS\JavaScript.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\jsapi.h"
+					RelativePath="..\win32Includes\JS\JSBase.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\jscompat.h"
+					RelativePath="..\win32Includes\JS\JSContextRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\jsconfig.h"
+					RelativePath="..\win32Includes\JS\JSObjectRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\jscpucfg.h"
+					RelativePath="..\win32Includes\JS\JSStringRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\jslong.h"
+					RelativePath="..\win32Includes\JS\JSValueRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\jsosdep.h"
+					RelativePath="..\win32Includes\JavaScriptCore\stdbool.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\jsotypes.h"
-					>
-				</File>
-				<File
-					RelativePath="..\win32Includes\JS\jspubtd.h"
-					>
-				</File>
-				<File
-					RelativePath="..\win32Includes\JS\jstypes.h"
+					RelativePath="..\win32Includes\JavaScriptCore\WebKitAvailability.h"
 					>
 				</File>
 			</Filter>

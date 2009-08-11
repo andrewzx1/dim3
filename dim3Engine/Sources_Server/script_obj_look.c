@@ -92,7 +92,7 @@ JSValueRef js_obj_look_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 bool js_obj_look_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_look_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_look_props));
 }
 
 /* =======================================================
@@ -191,7 +191,7 @@ JSValueRef js_obj_look_set_look_at_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	look_obj=script_find_obj_from_uid_arg(argv[0]);
+	look_obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (look_obj==NULL) return(FALSE);
 	
 		// no change if within object size

@@ -112,7 +112,7 @@ JSValueRef js_map_fog_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 
 bool js_map_fog_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,map_fog_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,map_fog_props));
 }
 
 /* =======================================================

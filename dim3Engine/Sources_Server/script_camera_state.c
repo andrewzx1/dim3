@@ -81,7 +81,7 @@ JSValueRef js_camera_state_get_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 bool js_camera_state_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================

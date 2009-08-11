@@ -109,7 +109,7 @@ JSValueRef js_weap_alt_ammo_get_property(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 bool js_weap_alt_ammo_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,weap_alt_ammo_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,weap_alt_ammo_props));
 }
 
 /* =======================================================

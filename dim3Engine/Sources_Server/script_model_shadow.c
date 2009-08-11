@@ -78,7 +78,7 @@ JSValueRef js_model_shadow_get_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 bool js_model_shadow_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,model_shadow_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,model_shadow_props));
 }
 
 /* =======================================================

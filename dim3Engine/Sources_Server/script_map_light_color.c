@@ -86,7 +86,7 @@ JSValueRef js_map_light_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSS
 
 bool js_map_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,map_light_color_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,map_light_color_props));
 }
 
 /* =======================================================

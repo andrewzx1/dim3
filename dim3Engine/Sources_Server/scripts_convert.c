@@ -161,6 +161,42 @@ JSValueRef script_int_array_to_value(int cnt,int *values)
 
 /* =======================================================
 
+      Exceptions
+      
+======================================================= */
+
+JSValueRef script_create_exception(char *str)
+{
+	JSObjectRef			ex_obj;
+
+	ex_obj=JSObjectMake(js.cx,NULL,NULL);
+	JSSetProperty(js.cx,ex_obj,script_string_to_value("message"),script_string_to_value(str),kJSPropertyAttributeNone,NULL);
+
+	return(JSValueMakeObject(ex_obj));
+}
+
+void script_exception_to_string(JSValueRef ex_obj,char *str,int len)
+{
+	JSValueRef			msg;
+
+		// get line number
+
+	// supergumba -- js -- get line number here and sourceURL  (.line, .sourceURL)
+
+		// get message
+
+	msg=JSObjectGetProperty(js.cx,ex_obj,script_string_to_value("message"),NULL);
+	if (msg==NULL) {
+		strncpy(str,len,"Unknown Error");
+		str[len-1]=0x0;
+	}
+	else {
+		script_value_to_string(msg,str,len);
+	}
+}
+
+/* =======================================================
+
       Create dim3 Primitives
       
 ======================================================= */

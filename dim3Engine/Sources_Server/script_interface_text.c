@@ -103,7 +103,7 @@ JSValueRef js_interface_text_get_property(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 bool js_interface_text_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -116,7 +116,7 @@ JSValueRef js_interface_text_show_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 	
 	text->show=TRUE;
@@ -128,7 +128,7 @@ JSValueRef js_interface_text_hide_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 	
 	text->show=FALSE;
@@ -146,7 +146,7 @@ JSValueRef js_interface_text_move_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 	
 	text->x=script_value_to_int(argv[1]);
@@ -159,7 +159,7 @@ JSValueRef js_interface_text_move_relative_func(JSContextRef cx,JSObjectRef func
 {
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 	
 	text->x+=script_value_to_int(argv[1]);
@@ -173,7 +173,7 @@ JSValueRef js_interface_text_set_text_func(JSContextRef cx,JSObjectRef func,JSOb
 	char					data[max_hud_text_str_sz];
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 
 	script_value_to_string(argv[1],data,max_hud_text_str_sz);
@@ -186,7 +186,7 @@ JSValueRef js_interface_text_set_size_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 	
 	text->size=script_value_to_int(argv[1]);
@@ -198,7 +198,7 @@ JSValueRef js_interface_text_set_color_func(JSContextRef cx,JSObjectRef func,JSO
 {
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 	
 	text->color.r=script_value_to_float(argv[1]);
@@ -213,7 +213,7 @@ JSValueRef js_interface_text_set_team_color_func(JSContextRef cx,JSObjectRef fun
 	int						team_idx;
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 
 	team_idx=script_value_to_int(argv[1])-sd_team_none;
@@ -228,10 +228,10 @@ JSValueRef js_interface_text_set_object_color_func(JSContextRef cx,JSObjectRef f
 	obj_type				*obj;
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 
-	obj=script_find_obj_from_uid_arg(argv[1]);
+	obj=script_find_obj_from_uid_arg(argv[1],exception);
 	if (obj==NULL) return(TRUE);
 	
 	object_get_tint(obj,&text->color);
@@ -243,7 +243,7 @@ JSValueRef js_interface_text_set_alpha_func(JSContextRef cx,JSObjectRef func,JSO
 {
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 	
 	text->alpha=script_value_to_float(argv[1]);
@@ -255,7 +255,7 @@ JSValueRef js_interface_text_start_fade_func(JSContextRef cx,JSObjectRef func,JS
 {
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 	
 	text->show=TRUE;
@@ -270,7 +270,7 @@ JSValueRef js_interface_text_set_text_and_fade_func(JSContextRef cx,JSObjectRef 
 	char					data[max_hud_text_str_sz];
 	hud_text_type			*text;
 	
-	text=script_find_text_from_name(argv[0]);
+	text=script_find_text_from_name(argv[0],exception);
 	if (text==NULL) return(FALSE);
 
 	script_value_to_string(argv[1],data,max_hud_text_str_sz);

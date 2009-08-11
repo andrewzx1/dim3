@@ -89,7 +89,7 @@ JSValueRef js_obj_radar_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_obj_radar_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_radar_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_radar_props));
 }
 
 /* =======================================================
@@ -156,11 +156,14 @@ bool js_obj_radar_set_on(JSValueRef vp)
 
 bool js_obj_radar_set_icon(JSValueRef vp)
 {
+	char			err_str[256];
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,obj->radar.icon,name_str_len);
-	if (!object_set_radar_icon(obj)) return(FALSE);
+	if (!object_set_radar_icon(obj,err_str)) {
+		*exception=script_create_exception(err_str);
+	}
 	
 	return(TRUE);
 }

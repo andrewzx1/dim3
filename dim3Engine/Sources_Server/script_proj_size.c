@@ -88,7 +88,7 @@ JSValueRef js_proj_size_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_proj_size_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,proj_size_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,proj_size_props));
 }
 
 /* =======================================================

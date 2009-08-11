@@ -99,7 +99,7 @@ JSValueRef js_map_node_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 bool js_map_node_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -136,7 +136,7 @@ JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef f
 	int				idx;
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 	idx=map_find_nearest_node_by_point(&map,&obj->pnt);
@@ -171,7 +171,7 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 	}
 	
 	if (!good_param) {
-		JS_ReportError(js.cx,"Second parameter to findNearestNamesInPath needs to be an array");
+		*exception=script_create_exception("Second parameter to findNearestNamesInPath needs to be an array");
 		return(FALSE);
 	}
 	
@@ -213,7 +213,7 @@ JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,J
 		
 	from_idx=script_value_to_int(argv[0]);
 
-	obj=script_find_obj_from_uid_arg(argv[1]);
+	obj=script_find_obj_from_uid_arg(argv[1],exception);
 	if (obj==NULL) return(FALSE);
 	
 		// check all unheld weapons
@@ -261,7 +261,7 @@ JSValueRef js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObjectRef func,
 	int				n,cnt,link[max_node_link];
 	node_type		*node;
 
-	node=script_find_node_from_idx_arg(argv[0]);
+	node=script_find_node_from_idx_arg(argv[0],exception);
 	if (node==NULL) return(FALSE);
 
 	cnt=0;
@@ -289,7 +289,7 @@ JSValueRef js_map_node_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 		// node
 		
-	node=script_find_node_from_idx_arg(argv[0]);
+	node=script_find_node_from_idx_arg(argv[0],exception);
 	if (node==NULL) return(FALSE);
 	
 		// get position
@@ -311,7 +311,7 @@ JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 		// node
 		
-	node=script_find_node_from_idx_arg(argv[0]);
+	node=script_find_node_from_idx_arg(argv[0],exception);
 	if (node==NULL) return(FALSE);
 
 		// x,z,y
@@ -335,7 +335,7 @@ JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 		// node
 		
-	node=script_find_node_from_idx_arg(argv[0]);
+	node=script_find_node_from_idx_arg(argv[0],exception);
 	if (node==NULL) return(FALSE);
 
 		// x,z,y
@@ -367,7 +367,7 @@ JSValueRef js_map_node_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 
 		// node
 		
-	node=script_find_node_from_idx_arg(argv[0]);
+	node=script_find_node_from_idx_arg(argv[0],exception);
 	if (node==NULL) return(FALSE);
 	
 		// get position

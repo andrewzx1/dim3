@@ -108,7 +108,7 @@ JSValueRef js_obj_pickup_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_obj_pickup_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_pickup_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_pickup_props));
 }
 
 /* =======================================================
@@ -192,10 +192,10 @@ JSValueRef js_obj_pickup_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObje
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1]);
+	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
 	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_weapon(obj,weap));
@@ -207,10 +207,10 @@ JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObj
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1]);
+	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
 	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_swap_weapon(obj,weap));
@@ -222,10 +222,10 @@ JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObject
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1]);
+	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
 	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_ammo(obj,weap,script_value_to_int(argv[2])));
@@ -237,10 +237,10 @@ JSValueRef js_obj_pickup_add_clip_func(JSContextRef cx,JSObjectRef func,JSObject
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1]);
+	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
 	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_clip(obj,weap,script_value_to_int(argv[2])));
@@ -252,10 +252,10 @@ JSValueRef js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1]);
+	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
 	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_alt_ammo(obj,weap,script_value_to_int(argv[2])));
@@ -267,10 +267,10 @@ JSValueRef js_obj_pickup_add_alt_clip_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1]);
+	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
 	if (weap==NULL) return(FALSE);
 	
     *rval=script_bool_to_value(item_add_alt_clip(obj,weap,script_value_to_int(argv[2])));
@@ -281,7 +281,7 @@ JSValueRef js_obj_pickup_add_health_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type	*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
    *rval=script_bool_to_value(item_add_health(obj,script_value_to_int(argv[1])));
@@ -292,7 +292,7 @@ JSValueRef js_obj_pickup_add_custom_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type	*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	item_add_custom(obj,script_value_to_int(argv[1]));

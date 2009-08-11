@@ -156,7 +156,7 @@ JSValueRef js_map_object_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_map_object_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -496,7 +496,7 @@ JSValueRef js_map_object_get_name_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	*rval=script_string_to_value(obj->name);
@@ -509,7 +509,7 @@ JSValueRef js_map_object_get_type_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	*rval=script_string_to_value(obj->type);
@@ -520,7 +520,7 @@ JSValueRef js_map_object_get_team_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	*rval=script_int_to_value(obj->team_idx+sd_team_none);
@@ -532,7 +532,7 @@ JSValueRef js_map_object_get_team_name_func(JSContextRef cx,JSObjectRef func,JSO
 	char			str[32];
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 	object_team_get_name(obj->team_idx,str);
@@ -546,7 +546,7 @@ JSValueRef js_map_object_get_team_color_func(JSContextRef cx,JSObjectRef func,JS
 	d3col			col;
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 	object_team_get_tint(obj->team_idx,&col);
@@ -568,7 +568,7 @@ JSValueRef js_map_object_get_distance_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 		// x,z,y
@@ -592,7 +592,7 @@ JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 		// x,z,y
@@ -619,10 +619,10 @@ JSValueRef js_map_object_get_angle_to_id_func(JSContextRef cx,JSObjectRef func,J
 	
 		// uids
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
-	obj2=script_find_obj_from_uid_arg(argv[1]);
+	obj2=script_find_obj_from_uid_arg(argv[1],exception);
 	if (obj2==NULL) return(FALSE);
 	
 		// get angles to
@@ -650,10 +650,10 @@ JSValueRef js_map_object_is_facing_id_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// uids
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
-	obj2=script_find_obj_from_uid_arg(argv[1]);
+	obj2=script_find_obj_from_uid_arg(argv[1],exception);
 	if (obj2==NULL) return(FALSE);
 	
 		// get angles to
@@ -678,7 +678,7 @@ JSValueRef js_map_object_get_position_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 		// get position
@@ -693,7 +693,7 @@ JSValueRef js_map_object_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 		// get angle
@@ -708,7 +708,7 @@ JSValueRef js_map_object_get_size_func(JSContextRef cx,JSObjectRef func,JSObject
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 		// get size
@@ -723,7 +723,7 @@ JSValueRef js_map_object_get_health_func(JSContextRef cx,JSObjectRef func,JSObje
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 		// get size
@@ -736,7 +736,7 @@ JSValueRef js_map_object_is_dead_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 		
 	*rval=script_bool_to_value(obj->status.health<=0);
@@ -747,7 +747,7 @@ JSValueRef js_map_object_is_hidden_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 		
 	*rval=script_bool_to_value(obj->hidden);
@@ -758,7 +758,7 @@ JSValueRef js_map_object_is_contact_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 		
 	*rval=script_bool_to_value((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on));
@@ -769,7 +769,7 @@ JSValueRef js_map_object_is_max_health_func(JSContextRef cx,JSObjectRef func,JSO
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 		
 	*rval=script_bool_to_value(obj->status.health>=obj->status.max_health);
@@ -780,7 +780,7 @@ JSValueRef js_map_object_get_last_damage_object_id_func(JSContextRef cx,JSObject
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 		
 	*rval=script_int_to_value(obj->damage_obj_uid);
@@ -791,7 +791,7 @@ JSValueRef js_map_object_was_telefrag_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 		
 	*rval=script_bool_to_value(obj->death_telefrag);
@@ -810,7 +810,7 @@ JSValueRef js_map_object_move_to_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 		// reposition
@@ -829,7 +829,7 @@ JSValueRef js_map_object_shove_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 		// get angle
@@ -853,7 +853,7 @@ JSValueRef js_map_object_shove_direct_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 		// get direction
@@ -878,7 +878,7 @@ JSValueRef js_map_object_add_goal_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	object_score_goal(obj);
@@ -897,7 +897,7 @@ JSValueRef js_map_object_set_contact_func(JSContextRef cx,JSObjectRef func,JSObj
 	bool			on;
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	on=script_value_to_bool(argv[1]);
@@ -913,7 +913,7 @@ JSValueRef js_map_object_set_hidden_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	obj->hidden=script_value_to_bool(argv[1]);
@@ -926,7 +926,7 @@ JSValueRef js_map_object_set_model_light_func(JSContextRef cx,JSObjectRef func,J
 	int					idx;
 	obj_type			*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 	idx=script_value_to_int(argv[1]);
@@ -940,7 +940,7 @@ JSValueRef js_map_object_set_model_halo_func(JSContextRef cx,JSObjectRef func,JS
 	int					idx;
 	obj_type			*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 	idx=script_value_to_int(argv[1]);
@@ -955,7 +955,7 @@ JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JS
 	char				name[name_str_len];
 	obj_type			*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 	
 	script_value_to_string(argv[1],name,name_str_len);
@@ -981,7 +981,7 @@ JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JS
 JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				uid;
-	char			name[name_str_len],type[name_str_len],
+	char			name[name_str_len],type[name_str_len],err_str[256],
 					script[name_str_len],params[256];
 	d3pnt			pnt;
 	d3ang			ang;
@@ -1003,8 +1003,11 @@ JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 		// spawn
 
-	uid=object_script_spawn(name,type,script,params,&pnt,&ang,FALSE);
-	if (uid==-1) return(FALSE);
+	uid=object_script_spawn(name,type,script,params,&pnt,&ang,FALSE,err_str);
+	if (uid==-1) {
+		*exception=script_create_exception(err_str);
+		return(FALSE);
+	}
 
 		// return UID
 
@@ -1016,14 +1019,18 @@ JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 JSValueRef js_map_object_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				uid;
+	char			err_str[256];
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	uid=obj->uid;
 
-	if (!object_script_remove(uid)) return(FALSE);
+	if (!object_script_remove(uid,err_str)) {
+		*exception=script_create_exception(err_str);
+	}
+
 	return(TRUE);
 }
 

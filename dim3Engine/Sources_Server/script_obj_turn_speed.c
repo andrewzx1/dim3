@@ -106,7 +106,7 @@ JSValueRef js_obj_turn_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 bool js_obj_turn_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_turn_speed_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_turn_speed_props));
 }
 
 /* =======================================================

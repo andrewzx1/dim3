@@ -39,8 +39,8 @@ extern void object_dispose_2(int bind);
 
 extern void object_script_spawn_start(void);
 extern void object_script_spawn_finish(void);
-extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide);
-extern bool object_script_remove(int uid);
+extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
+extern bool object_script_remove(int uid,char *err_str);
 
 extern void object_set_radius(obj_type *obj);
 extern void object_set_spawn_mesh(obj_type *obj);
@@ -107,7 +107,7 @@ extern void object_push(obj_type *obj,d3ang *ang,int force,bool external_force);
 extern void object_shove(obj_type *obj,d3ang *ang,float speed);
 extern void object_shove_direct(obj_type *obj,d3vct *vct);
 extern bool object_is_targetted(obj_type *obj,d3col *col);
-extern bool object_set_radar_icon(obj_type *obj);
+extern bool object_set_radar_icon(obj_type *obj,char *err_str);
 
 extern void object_fs_tint_start(int tick,obj_type *obj,float r,float g,float b,float alpha,int fade_in_msec,int life_msec,int fade_out_msec);
 extern void object_fs_effect_run(int tick,obj_type *obj);
@@ -183,13 +183,13 @@ extern void object_clear_ambient(obj_type *obj);
 extern bool object_enter_vehicle(obj_type *obj,char *err_str);
 extern bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str);
 
-extern bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event_id);
-extern bool object_auto_walk_node_name_setup(obj_type *obj,char *start_node,char *end_node,int event_id);
-extern bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only);
-extern bool object_auto_walk_player_setup(obj_type *obj,bool turn_only);
+extern bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event_id,char *err_str);
+extern bool object_auto_walk_node_name_setup(obj_type *obj,char *start_node,char *end_node,int event_id,char *err_str);
+extern bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only,char *err_str);
+extern bool object_auto_walk_player_setup(obj_type *obj,bool turn_only,char *err_str);
 extern bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt);
-extern bool object_auto_walk_node_resume(obj_type *obj);
-extern bool object_auto_walk_node_reverse(obj_type *obj);
+extern bool object_auto_walk_node_resume(obj_type *obj,char *err_str);
+extern bool object_auto_walk_node_reverse(obj_type *obj,char *err_str);
 extern void object_auto_walk_stop(obj_type *obj);
 extern bool object_auto_walk_get_seek_position(obj_type *obj,d3pnt *pnt);
 extern void object_auto_walk(obj_type *obj);

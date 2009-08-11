@@ -100,7 +100,7 @@ JSValueRef js_model_animation_get_property(JSContextRef cx,JSObjectRef j_obj,JSS
 
 bool js_model_animation_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,model_animation_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,model_animation_props));
 }
 
 /* =======================================================
@@ -164,13 +164,27 @@ bool js_model_animation_set_index(JSValueRef vp)
 
 /* =======================================================
 
+      Animation Exceptions
+      
+======================================================= */
+
+JSValueRef js_model_animation_name_exception(char *name)
+{
+	char			err_str[256];
+
+	sprintf(err_str,"Named animation does not exist: %s",name);
+	return(script_create_exception(err_str));
+}
+
+/* =======================================================
+
       Model Animation Functions
       
 ======================================================= */
 
 JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
@@ -178,7 +192,7 @@ JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObje
 	script_value_to_string(argv[0],name,name_str_len);
 	
 	if (!model_start_animation(draw,name)) {
-		JS_ReportError(js.cx,"Named animation does not exist: %s",name);
+		*exception=js_model_animation_name_exception(name);
 		return(FALSE);
 	}
 	
@@ -204,7 +218,7 @@ JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObj
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_cancel_animation(draw,name)) {
-		JS_ReportError(js.cx,"Named animation does not exist: %s",name);
+		*exception=js_model_animation_name_exception(name);
 		return(FALSE);
 	}
 	
@@ -220,7 +234,7 @@ JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObj
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_change_animation(draw,name)) {
-		JS_ReportError(js.cx,"Named animation does not exist: %s",name);
+		*exception=js_model_animation_name_exception(name);
 		return(FALSE);
 	}
 	
@@ -236,7 +250,7 @@ JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JS
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_interrupt_animation(draw,name)) {
-		JS_ReportError(js.cx,"Named animation does not exist: %s",name);
+		*exception=js_model_animation_name_exception(name);
 		return(FALSE);
 	}
 	
@@ -252,13 +266,13 @@ JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_start_animation(draw,name)) {
-		JS_ReportError(js.cx,"Named animation does not exist: %s",name);
+		*exception=js_model_animation_name_exception(name);
 		return(FALSE);
 	}
 
 	script_value_to_string(argv[1],name,name_str_len);
 	if (!model_change_animation(draw,name)) {
-		JS_ReportError(js.cx,"Named animation does not exist: %s",name);
+		*exception=js_model_animation_name_exception(name);
 		return(FALSE);
 	}
 

@@ -85,7 +85,7 @@ JSValueRef js_map_fog_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 bool js_map_fog_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,map_fog_color_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,map_fog_color_props));
 }
 
 /* =======================================================

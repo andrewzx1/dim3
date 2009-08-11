@@ -81,7 +81,7 @@ JSValueRef js_obj_held_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 bool js_obj_held_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -107,7 +107,7 @@ JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_o
 
 	uid=object_held_add(obj,name,type,script,params,err_str);
 	if (uid==-1) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -130,7 +130,7 @@ JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 	y_change=script_value_to_int(argv[2]);
 
 	if (!object_held_drop(obj,uid,y_ang,y_change,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 

@@ -87,7 +87,7 @@ JSValueRef js_obj_click_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_obj_click_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_click_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_click_props));
 }
 
 /* =======================================================

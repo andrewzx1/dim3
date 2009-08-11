@@ -108,7 +108,7 @@ JSValueRef js_obj_health_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_obj_health_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_health_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_health_props));
 }
 
 /* =======================================================

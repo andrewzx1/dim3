@@ -90,7 +90,7 @@ JSValueRef js_interface_bar_get_property(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 bool js_interface_bar_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -103,7 +103,7 @@ JSValueRef js_interface_bar_show_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0]);
+	bar=script_find_bar_from_name(argv[0],exception);
 	if (bar==NULL) return(FALSE);
 	
 	bar->show=TRUE;
@@ -115,7 +115,7 @@ JSValueRef js_interface_bar_hide_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0]);
+	bar=script_find_bar_from_name(argv[0],exception);
 	if (bar==NULL) return(FALSE);
 	
 	bar->show=FALSE;
@@ -133,7 +133,7 @@ JSValueRef js_interface_bar_move_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0]);
+	bar=script_find_bar_from_name(argv[0],exception);
 	if (bar==NULL) return(FALSE);
 	
 	bar->x=script_value_to_int(argv[1]);
@@ -146,7 +146,7 @@ JSValueRef js_interface_bar_resize_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0]);
+	bar=script_find_bar_from_name(argv[0],exception);
 	if (bar==NULL) return(FALSE);
 	
 	bar->x_size=script_value_to_int(argv[1]);
@@ -159,7 +159,7 @@ JSValueRef js_interface_bar_set_value_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0]);
+	bar=script_find_bar_from_name(argv[0],exception);
 	if (bar==NULL) return(FALSE);
 	
 	bar->value=script_value_to_float(argv[1]);
@@ -171,7 +171,7 @@ JSValueRef js_interface_bar_set_alpha_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0]);
+	bar=script_find_bar_from_name(argv[0],exception);
 	if (bar==NULL) return(FALSE);
 	
 	bar->fill_alpha=script_value_to_float(argv[1]);

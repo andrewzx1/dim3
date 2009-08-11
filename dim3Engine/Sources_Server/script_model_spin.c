@@ -84,7 +84,7 @@ JSValueRef js_model_spin_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_model_spin_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,model_spin_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,model_spin_props));
 }
 
 /* =======================================================

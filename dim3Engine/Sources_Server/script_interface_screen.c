@@ -80,7 +80,7 @@ JSValueRef js_interface_screen_get_property(JSContextRef cx,JSObjectRef j_obj,JS
 
 bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,interface_screen_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,interface_screen_props));
 }
 
 /* =======================================================

@@ -72,6 +72,6 @@ JSValueRef js_utility_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 
 bool js_utility_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 

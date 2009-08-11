@@ -100,7 +100,7 @@ JSValueRef js_obj_forward_speed_get_property(JSContextRef cx,JSObjectRef j_obj,J
 
 bool js_obj_forward_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_forward_speed_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_forward_speed_props));
 }
 
 /* =======================================================

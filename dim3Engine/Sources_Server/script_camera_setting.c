@@ -87,7 +87,7 @@ JSValueRef js_camera_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 bool js_camera_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,camera_setting_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,camera_setting_props));
 }
 
 /* =======================================================
@@ -132,7 +132,7 @@ JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObje
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 		// connect

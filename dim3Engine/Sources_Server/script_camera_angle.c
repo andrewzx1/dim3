@@ -86,7 +86,7 @@ JSValueRef js_camera_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 bool js_camera_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,camera_angle_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,camera_angle_props));
 }
 
 /* =======================================================

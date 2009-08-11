@@ -92,7 +92,7 @@ JSValueRef js_obj_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_obj_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_angle_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_angle_props));
 }
 
 /* =======================================================

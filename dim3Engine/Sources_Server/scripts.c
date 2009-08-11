@@ -72,10 +72,6 @@ bool scripts_engine_initialize(char *err_str)
 		// set context options
 		
 	JS_SetOptions(js.cx,JS_GetOptions(js.cx)|JSOPTION_STRICT|JSOPTION_VAROBJFIX|JSOPTION_WERROR);
-	
-		// error reporter
-// supergumba -- JS		
-//	JS_SetErrorReporter(js.cx,scripts_catch_errors);
 
 		// initialize classes
 
@@ -183,85 +179,6 @@ void scripts_clean_up_roots(void)
 
 /* =======================================================
 
-      Errors
-      
-======================================================= */
-
-void scripts_clear_last_error(void)
-{
-	js.last_error_str[0]=0x0;
-}
-
-/*
-supergumba -- JS
-void scripts_catch_errors(JSContextRef cx,const char *message,JSErrorReport *report)
-{
-	int				idx;
-	script_type		*script;
-	
-		// find script for error
-		
-	idx=scripts_find_uid(js.attach.script_uid);
-	if (idx==-1) return;
-	
-	script=&js.scripts[idx];
-	
-		// create error
-		
-	snprintf(js.last_error_str,256,"JS Error [%s]\n%d: %s",script->name,report->lineno,message);
-	js.last_error_str[255]=0x0;
-}
-*/
-void scripts_get_last_error(char *err_str)
-{
-	int				idx;
-	script_type		*script;
-	JSValueRef		eval;
-	JSString		*jstr;
-	JSErrorReport	*report;
-	
-		// did we catch an error?
-		
-	if (js.last_error_str[0]!=0x0) {
-		strcpy(err_str,js.last_error_str);
-		return;
-	}
-	
-		// find script for error
-		
-	idx=scripts_find_uid(js.attach.script_uid);
-	if (idx==-1) {
-		strcpy(err_str,"JS Error [?]\nUnknown Error");
-		return;
-	}
-	
-	script=&js.scripts[idx];
-	
-		// check for pending exceptions
-		
-	if (!JS_GetPendingException(js.cx,&eval)) {
-		eval=script_null_to_value();
-	}
-	
-		// no error?
-		
-	if (script_is_value_null(eval)) {
-		snprintf(err_str,256,"JS Error [%s]\nUnknown Error",script->name);
-		return;
-	}
-	
-		// create error from exception
-	
-	report=JS_ErrorFromException(js.cx,eval);
-	
-	jstr=JS_NewUCStringCopyZ(js.cx,report->ucmessage);	// use the engine to convert the uchar to char
-	
-	snprintf(err_str,256,"JS Error [%s]\n%d: %s",script->name,report->lineno,JS_GetStringBytes(jstr));
-	err_str[255]=0x0;
-}
-
-/* =======================================================
-
       Script Clear Attach Data
       
 ======================================================= */
@@ -292,10 +209,8 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 		
 	memmove(&js.attach,attach,sizeof(attach_type));
 	
-	scripts_clear_last_error();
-	
 	if (!JS_EvaluateScript(js.cx,script->global,script->data,script->data_len,script->name,0,&rval)) {
-		scripts_get_last_error(err_str);
+		script_value_to_string(exception,err_str,256);
 		return(FALSE);
 	}
 

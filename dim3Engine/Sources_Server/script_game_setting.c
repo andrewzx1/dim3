@@ -85,7 +85,7 @@ JSValueRef js_game_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 bool js_game_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,game_setting_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,game_setting_props));
 }
 
 /* =======================================================

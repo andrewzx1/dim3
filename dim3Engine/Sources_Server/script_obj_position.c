@@ -108,7 +108,7 @@ JSValueRef js_obj_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 bool js_obj_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_position_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_position_props));
 }
 
 /* =======================================================
@@ -176,7 +176,7 @@ JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef fu
 	
 		// find spot
 		
-	spot=script_find_spot_from_name_type(argv[0],argv[1]);
+	spot=script_find_spot_from_name_type(argv[0],argv[1],exception);
 	if (spot==NULL) return(FALSE);
 	
 		// move player
@@ -196,7 +196,7 @@ JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef f
 
 		// get spot
 		
-	spot=script_find_network_spot(obj);
+	spot=script_find_network_spot(obj,exception);
 	if (spot==NULL) return(FALSE);
 	
 		// move player
@@ -219,7 +219,7 @@ JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JS
 		
 		// find spot
 		
-	spot=script_find_spot_from_name_type(argv[0],argv[1]);
+	spot=script_find_spot_from_name_type(argv[0],argv[1],exception);
 	if (spot==NULL) return(FALSE);
 	
 		// can we move without telefragging?
@@ -251,7 +251,7 @@ JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,J
 
 		// get spot
 		
-	spot=script_find_network_spot(obj);
+	spot=script_find_network_spot(obj,exception);
 	if (spot==NULL) return(FALSE);
 	
 		// can we move without telefragging?

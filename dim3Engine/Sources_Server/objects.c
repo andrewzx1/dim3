@@ -1154,14 +1154,14 @@ void object_script_spawn_finish(void)
 
 }
 
-int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide)
+int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str)
 {
 	delayed_obj_spawn_type	*spawn;
 
 		// room on list?
 
 	if ((ndelayed_obj_spawn>=max_delayed_obj_spawn) || (delayed_obj_spawns==NULL)) {
-		JS_ReportError(js.cx,"Not enough memory to spawn object");
+		strcpy(err_str,"Not enough memory to spawn object");
 		return(-1);
 	}
 
@@ -1186,14 +1186,14 @@ int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *p
 	return(spawn->uid);
 }
 
-bool object_script_remove(int uid)
+bool object_script_remove(int uid,char *err_str)
 {
 	delayed_obj_spawn_type	*spawn;
 
 		// can not dispose player object
 
 	if (uid==server.player_obj_uid) {
-		JS_ReportError(js.cx,"Can not dispose player object");
+		strcpy(err_str,"Can not dispose player object");
 		return(FALSE);
 	}
 

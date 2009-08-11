@@ -82,7 +82,7 @@ JSValueRef js_proj_motion_vector_get_property(JSContextRef cx,JSObjectRef j_obj,
 
 bool js_proj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,proj_motion_vector_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,proj_motion_vector_props));
 }
 
 /* =======================================================
