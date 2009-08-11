@@ -87,7 +87,7 @@ JSValueRef js_multiplayer_bot_get_property(JSContextRef cx,JSObjectRef j_obj,JSS
 
 bool js_multiplayer_bot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,multiplayer_bot_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,multiplayer_bot_props));
 }
 
 /* =======================================================

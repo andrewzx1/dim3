@@ -46,32 +46,36 @@ extern js_type			js;
       
 ======================================================= */
 
-obj_type* script_find_obj_from_uid_arg(JSValueRef arg)
+obj_type* script_find_obj_from_uid_arg(JSValueRef arg,JSValueRef *exception)
 {
 	int				uid;
+	char			err_str[256];
 	obj_type		*obj;
 
 	uid=script_value_to_int(arg);
 	
 	obj=object_find_uid(uid);
 	if (obj==NULL) {
-		JS_ReportError(js.cx,"No object exists with this ID: %d",uid);
+		swprintf(err_str,"No object exists with this ID: %d",uid);
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
 	return(obj);
 }	
 
-weapon_type* script_find_weapon_from_name_arg(obj_type *obj,JSValueRef arg)
+weapon_type* script_find_weapon_from_name_arg(obj_type *obj,JSValueRef arg,JSValueRef *exception)
 {
 	char			name[name_str_len];
+	char			err_str[256];
 	weapon_type		*weap;
 
 	script_value_to_string(arg,name,name_str_len);
 	
 	weap=weapon_find_name(obj,name);
 	if (weap==NULL) {
-		JS_ReportError(js.cx,"Named weapon does not exist in object: %s",name);
+		swprintf(err_str,"Named weapon does not exist in object: %s",name);
+		*exception=script_string_to_value(err_str);
 		return(NULL);
 	}
 	
@@ -84,72 +88,81 @@ weapon_type* script_find_weapon_from_name_arg(obj_type *obj,JSValueRef arg)
       
 ======================================================= */
 
-spot_type* script_find_spot_from_idx_arg(JSValueRef arg)
+spot_type* script_find_spot_from_idx_arg(JSValueRef arg,JSValueRef *exception)
 {
 	int				idx;
+	char			err_str[256];
 
 	idx=script_value_to_int(arg);
 	if ((idx<0) || (idx>=map.nspot)) {
-		JS_ReportError(js.cx,"No spot exists with this id: %d",idx);
+		swprintf(err_str,"No spot exists with this id: %d",idx);
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
 	return(&map.spots[idx]);
 }
 
-spot_type* script_find_spot_from_name_type(JSValueRef arg_0,JSValueRef arg_1)
+spot_type* script_find_spot_from_name_type(JSValueRef arg_0,JSValueRef arg_1,JSValueRef *exception)
 {
 	int				idx;
-	char			name[name_str_len],type[name_str_len];
+	char			name[name_str_len],type[name_str_len],
+					err_str[256];
 
 	script_value_to_string(arg_0,name,name_str_len);
 	script_value_to_string(arg_1,type,name_str_len);
 	
 	idx=map_find_random_spot(&map,name,type);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"No spot exists with this name-type: %s-%s",name,type);
+		swprintf(err_str,"No spot exists with this name-type: %s-%s",name,type);
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
 	return(&map.spots[idx]);
 }
 
-spot_type* script_find_network_spot(obj_type *obj)
+spot_type* script_find_network_spot(obj_type *obj,JSValueRef *exception)
 {
 	int				idx;
+	char			err_str[256];
 	
 	idx=object_find_network_spawn_spot(obj);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"Could not find a new network spawn spot");
+		swprintf(err_str,"Could not find a new network spawn spot");
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
 	return(&map.spots[idx]);
 }
 
-node_type* script_find_node_from_idx_arg(JSValueRef arg)
+node_type* script_find_node_from_idx_arg(JSValueRef arg,JSValueRef *exception)
 {
 	int				idx;
+	char			err_str[256];
 
 	idx=script_value_to_int(arg);
 	if ((idx<0) || (idx>=map.nnode)) {
-		JS_ReportError(js.cx,"No node exists with this id: %d",idx);
+		swprintf(err_str,"No node exists with this id: %d",idx);
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
 	return(&map.nodes[idx]);
 }
 
-map_light_type* script_find_light_from_name(JSValueRef arg)
+map_light_type* script_find_light_from_name(JSValueRef arg,JSValueRef *exception)
 {
 	int				idx;
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 
 	script_value_to_string(arg,name,name_str_len);
 	
 	idx=map_find_light(&map,name);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"No light exists with this name: %s",name);
+		swprintf(err_str,"No light exists with this name: %s",name);
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
@@ -162,45 +175,48 @@ map_light_type* script_find_light_from_name(JSValueRef arg)
       
 ======================================================= */
 
-hud_text_type* script_find_text_from_name(JSValueRef arg)
+hud_text_type* script_find_text_from_name(JSValueRef arg,JSValueRef *exception)
 {
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 	hud_text_type	*text;
 
 	script_value_to_string(arg,name,name_str_len);
 	text=hud_texts_find(name);
 	if (text==NULL) {
-		JS_ReportError(js.cx,"No interface text exists with the name: %s",name);
+		sprintf(err_str,"No interface text exists with the name: %s",name);
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
 	return(text);
 }
 
-hud_bitmap_type* script_find_bitmap_from_name(JSValueRef arg)
+hud_bitmap_type* script_find_bitmap_from_name(JSValueRef arg,JSValueRef *exception)
 {
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 	hud_bitmap_type	*bitmap;
 
 	script_value_to_string(arg,name,name_str_len);
 	bitmap=hud_bitmaps_find(name);
 	if (bitmap==NULL) {
-		JS_ReportError(js.cx,"No interface bitmap exists with the name: %s",name);
+		sprintf(err_str,"No interface bitmap exists with the name: %s",name);
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
 	return(bitmap);
 }
 
-hud_bar_type* script_find_bar_from_name(JSValueRef arg)
+hud_bar_type* script_find_bar_from_name(JSValueRef arg,JSValueRef *exception)
 {
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 	hud_bar_type	*bar;
 
 	script_value_to_string(arg,name,name_str_len);
 	bar=hud_bars_find(name);
 	if (bar==NULL) {
-		JS_ReportError(js.cx,"No interface bar exists with the name: %s",name);
+		sprintf(err_str,"No interface bar exists with the name: %s",name);
+		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
 	
@@ -213,15 +229,16 @@ hud_bar_type* script_find_bar_from_name(JSValueRef arg)
       
 ======================================================= */
 
-int script_find_group_from_name(JSValueRef arg)
+int script_find_group_from_name(JSValueRef arg,JSValueRef *exception)
 {
 	int				idx;
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 	
 	script_value_to_string(arg,name,name_str_len);
 	idx=group_find_by_index(name);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"No segment group exists with the name: %s",name);
+		sprintf(err_str,"No segment group exists with the name: %s",name);
+		*exception=script_create_exception(err_str);
 		return(-1);
 	}
 	
@@ -234,15 +251,16 @@ int script_find_group_from_name(JSValueRef arg)
       
 ======================================================= */
 
-int script_find_map_movement_from_name(JSValueRef arg)
+int script_find_map_movement_from_name(JSValueRef arg,JSValueRef *exception)
 {
 	int				idx;
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 	
 	script_value_to_string(arg,name,name_str_len);
 	idx=map_movement_find(&map,name);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"No map movement exists with the name: %s",name);
+		sprintf(err_str,"No map movement exists with the name: %s",name);
+		*exception=script_create_exception(err_str);
 		return(-1);
 	}
 	

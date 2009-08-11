@@ -92,7 +92,7 @@ JSValueRef js_interface_interaction_get_property(JSContextRef cx,JSObjectRef j_o
 
 bool js_interface_interaction_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================

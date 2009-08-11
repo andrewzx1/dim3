@@ -86,7 +86,21 @@ JSValueRef js_model_mesh_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_model_mesh_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
+}
+
+/* =======================================================
+
+      Mesh Exceptions
+      
+======================================================= */
+
+JSValueRef js_model_mesh_name_exception(char *name)
+{
+	char			err_str[256];
+
+	sprintf(err_str,"Named mesh does not exist: %s",name);
+	return(script_create_exception(err_str));
 }
 
 /* =======================================================
@@ -104,7 +118,7 @@ JSValueRef js_model_mesh_show_mesh_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_show_mesh(draw,name)) {
-		JS_ReportError(js.cx,"Named mesh does not exist: %s",name);
+		*exception=js_model_mesh_name_exception(name);
 		return(FALSE);
 	}
 	
@@ -130,7 +144,7 @@ JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JS
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_show_only_mesh(draw,name)) {
-		JS_ReportError(js.cx,"Named mesh does not exist: %s",name);
+		*exception=js_model_mesh_name_exception(name);
 		return(FALSE);
 	}
 	
@@ -146,7 +160,7 @@ JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	script_value_to_string(argv[0],name,name_str_len);
 	if (!model_hide_mesh(draw,name)) {
-		JS_ReportError(js.cx,"Named mesh does not exist: %s",name);
+		*exception=js_model_mesh_name_exception(name);
 		return(FALSE);
 	}
 	

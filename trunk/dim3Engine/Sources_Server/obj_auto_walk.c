@@ -42,17 +42,17 @@ extern js_type				js;
       
 ======================================================= */
 
-bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event_id)
+bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event_id,char *err_str)
 {
 		// check for valid nodes
 		
 	if ((from_idx<0) || (from_idx>=map.nnode)) {
-		JS_ReportError(js.cx,"Start node is not a valid node Id");
+		strcpy(err_str,"Start node is not a valid node Id");
 		return(FALSE);
 	}
 	
 	if ((to_idx<0) || (to_idx>=map.nnode)) {
-		JS_ReportError(js.cx,"End node is not a valid node Id");
+		strcpy(err_str,"End node is not a valid node Id");
 		return(FALSE);
 	}
 
@@ -61,7 +61,7 @@ bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event
 		
 	if (from_idx!=to_idx) {
 		if (map_find_next_node_in_path(&map,from_idx,to_idx)==-1) {
-			JS_ReportError(js.cx,"End node is not in the same path as the start node");
+			strcpy(err_str,"End node is not in the same path as the start node");
 			return(FALSE);
 		}
 	}
@@ -82,7 +82,7 @@ bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event
 	return(TRUE);
 }
 
-bool object_auto_walk_node_name_setup(obj_type *obj,char *start_node,char *end_node,int event_id)
+bool object_auto_walk_node_name_setup(obj_type *obj,char *start_node,char *end_node,int event_id,char *err_str)
 {
 	int			from_idx,to_idx;
 	
@@ -90,25 +90,25 @@ bool object_auto_walk_node_name_setup(obj_type *obj,char *start_node,char *end_n
 		
 	from_idx=map_find_node(&map,start_node);
 	if (from_idx==-1) {
-		JS_ReportError(js.cx,"Named node does not exist: %s",start_node);
+		sprintf(err_str,"Named node does not exist: %s",start_node);
 		return(FALSE);
 	}
 	
 	to_idx=map_find_node(&map,end_node);
 	if (to_idx==-1) {
-		JS_ReportError(js.cx,"Named node does not exist: %s",end_node);
+		sprintf(err_str,"Named node does not exist: %s",end_node);
 		return(FALSE);
 	}
 	
-	return(object_auto_walk_node_setup(obj,from_idx,to_idx,event_id));
+	return(object_auto_walk_node_setup(obj,from_idx,to_idx,event_id,err_str));
 }
 
-bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only)
+bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only,char *err_str)
 {
 		// does seek object exist?
 		
 	if (object_find_uid(uid)==NULL) {
-		JS_ReportError(js.cx,"An object with unique ID '%d' does not exist'",uid);
+		sprintf(err_str,"An object with unique ID '%d' does not exist'",uid);
 		return(FALSE);
 	}
 	
@@ -124,9 +124,9 @@ bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only)
 	return(TRUE);
 }
 
-bool object_auto_walk_player_setup(obj_type *obj,bool turn_only)
+bool object_auto_walk_player_setup(obj_type *obj,bool turn_only,err_str)
 {
-	return(object_auto_walk_object_setup(obj,server.player_obj_uid,turn_only));
+	return(object_auto_walk_object_setup(obj,server.player_obj_uid,turn_only,err_str));
 }
 
 bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt)
@@ -144,12 +144,12 @@ bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt)
 	return(TRUE);
 }
 
-bool object_auto_walk_node_resume(obj_type *obj)
+bool object_auto_walk_node_resume(obj_type *obj,char *err_str)
 {
 		// is there something to resume?
 		
 	if ((obj->auto_walk.node_seek_idx==-1) || (obj->auto_walk.node_dest_idx==-1)) {
-		JS_ReportError(js.cx,"There is no node walk to resume from");
+		strcpy(err_str,"There is no node walk to resume from");
 		return(FALSE);
 	}
 	
@@ -164,12 +164,12 @@ bool object_auto_walk_node_resume(obj_type *obj)
 	return(TRUE);
 }
 
-bool object_auto_walk_node_reverse(obj_type *obj)
+bool object_auto_walk_node_reverse(obj_type *obj,char *err_str)
 {
 		// is there something to resume?
 		
 	if ((obj->auto_walk.node_from_idx==-1) || (obj->auto_walk.node_last_seek_idx==-1)) {
-		JS_ReportError(js.cx,"There is no node walk to reverse");
+		strcpy(err_str,"There is no node walk to reverse");
 		return(FALSE);
 	}
 	

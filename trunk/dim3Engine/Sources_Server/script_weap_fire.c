@@ -89,7 +89,7 @@ JSValueRef js_weap_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_weap_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,weap_fire_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,weap_fire_props));
 }
 
 /* =======================================================

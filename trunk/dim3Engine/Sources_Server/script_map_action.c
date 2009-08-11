@@ -91,7 +91,7 @@ JSValueRef js_map_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_map_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -105,7 +105,7 @@ JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectR
 		// clients can not set maps
 		
 	if (net_setup.client.joined) {
-		JS_ReportError(cx,"setMap() illegal for client games");
+		*exception=script_create_exception("setMap() illegal for client games");
 		return(FALSE);
 	}
 	
@@ -126,7 +126,7 @@ JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSOb
 		// clients can not set maps
 
 	if (!net_setup.client.joined) {
-		JS_ReportError(cx,"setHostMap() illegal for normal games");
+		*exception=script_create_exception("setHostMap() illegal for normal games");
 		return(FALSE);
 	}
 
@@ -147,7 +147,7 @@ JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObj
 		// clients can not restart maps
 		
 	if (net_setup.client.joined) {
-		JS_ReportError(cx,"restartMap() illegal for client games");
+		*exception=script_create_exception("restartMap() illegal for client games");
 		return(FALSE);
 	}
 	
@@ -161,12 +161,12 @@ JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObj
 
 JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			err_str[256];
+	char			err_str[256],err_str_2[256];
 	
 		// clients can not restart maps from saves
 		
 	if (net_setup.host.hosting) {
-		JS_ReportError(cx,"restartMapFromSave() illegal for client games");
+		*exception=script_create_exception("restartMapFromSave() illegal for client games");
 		return(FALSE);
 	}
 	
@@ -181,7 +181,8 @@ JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef 
 		// else reload
 	
 	if (!game_file_reload(err_str)) {
-		JS_ReportError(cx,"Reload failed (%s)",err_str);
+		sprintf(err_str_2,"Reload failed (%s)",err_str);
+		*exception=script_create_exception(err_str_2);
 		return(FALSE);
 	}
 	

@@ -96,7 +96,7 @@ JSValueRef js_game_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_game_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,game_score_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,game_score_props));
 }
 
 /* =======================================================

@@ -93,7 +93,7 @@ JSValueRef js_camera_static_position_get_property(JSContextRef cx,JSObjectRef j_
 
 bool js_camera_static_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,camera_static_position_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,camera_static_position_props));
 }
 
 /* =======================================================
@@ -152,7 +152,7 @@ JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectR
 	
 	idx=script_value_to_int(argv[0]);
 	if ((idx<0) || (idx>=map.nspot)) {
-		JS_ReportError(js.cx,"Unknown spot");
+		*exception=script_create_exception("Unknown spot");
 		return(FALSE);
 	}
 	
@@ -165,7 +165,7 @@ JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectR
 JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				msec,event_id;
-	char			start_name[name_str_len],end_name[name_str_len];
+	char			start_name[name_str_len],end_name[name_str_len],err_str[256];
 	bool			open_doors,in_freeze;
 
 	script_value_to_string(argv[0],start_name,name_str_len);
@@ -176,7 +176,9 @@ JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectR
 	open_doors=script_value_to_bool(argv[4]);
 	in_freeze=script_value_to_bool(argv[5]);
 		
-	if (!camera_walk_to_node_setup(start_name,end_name,msec,event_id,open_doors,in_freeze)) return(FALSE);
+	if (!camera_walk_to_node_setup(start_name,end_name,msec,event_id,open_doors,in_freeze,err_str)) {
+		*exception=script_create_exception(err_str);
+	}
 
 	return(TRUE);
 }

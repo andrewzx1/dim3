@@ -72,6 +72,6 @@ JSValueRef js_map_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 
 bool js_map_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 

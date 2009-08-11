@@ -119,7 +119,7 @@ JSValueRef js_proj_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 bool js_proj_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,proj_action_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,proj_action_props));
 }
 
 /* =======================================================
@@ -328,7 +328,7 @@ JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSO
 	proj=proj_get_attach();
 	if (proj==NULL) return(TRUE);
 		
-	to_obj=script_find_obj_from_uid_arg(argv[0]);
+	to_obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (to_obj==NULL) return(FALSE);
 	
 	projectile_turn_xz_towards(proj,to_obj,script_value_to_float(argv[1]));
@@ -344,7 +344,7 @@ JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	proj=proj_get_attach();
 	if (proj==NULL) return(TRUE);
 		
-	to_obj=script_find_obj_from_uid_arg(argv[0]);
+	to_obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (to_obj==NULL) return(FALSE);
 	
 	projectile_seek(proj,to_obj,script_value_to_float(argv[1]),script_value_to_float(argv[2]));

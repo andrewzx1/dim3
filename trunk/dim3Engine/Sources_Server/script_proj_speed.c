@@ -94,7 +94,7 @@ JSValueRef js_proj_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_proj_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,proj_speed_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,proj_speed_props));
 }
 
 /* =======================================================

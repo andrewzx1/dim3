@@ -81,7 +81,7 @@ JSValueRef js_utility_pack_get_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 bool js_utility_pack_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -98,9 +98,7 @@ JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	low=(unsigned long)script_value_to_int(argv[1]);
 	i=(int)(((high<<16)&0xFFFF0000)|(low&0xFFFF));
 
-	*rval=script_int_to_value(i);
-	
-	return(TRUE);
+	return(script_int_to_value(i));
 }
 
 JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -111,9 +109,7 @@ JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSO
 	i=(unsigned int)script_value_to_int(argv[0]);
 	high=(int)((i>>16)&0xFFFF);
 	
-	*rval=script_int_to_value(high);
-	
-	return(TRUE);
+	return(script_int_to_value(high));
 }
 
 JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -124,7 +120,5 @@ JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSOb
 	i=(unsigned int)script_value_to_int(argv[0]);
 	low=(int)(i&0xFFFF);
 	
-	*rval=script_int_to_value(low);
-	
-	return(TRUE);
+	return(script_int_to_value(low));
 }

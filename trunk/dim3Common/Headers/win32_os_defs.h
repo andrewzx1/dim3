@@ -65,7 +65,7 @@ and can be sold or given away.
 // undefined types, constants, and functions
 //
 
-typedef int						bool;
+typedef unsigned char			bool;
 typedef unsigned char*			ptr;
 typedef SOCKET					d3socket;
 typedef int						socklen_t;
@@ -80,8 +80,6 @@ typedef int						socklen_t;
 #define bzero(a,b)				memset(a,0x0,(b))
 #define bcmp(a,b,c)				memcmp(a,b,(c))
 #define usleep(x)               Sleep((DWORD)((x)/1000))
-//#define fabsf(f)				((float)fabs((double)f))
-//#define sqrtf(f)				((float)sqrt((double)f))
 #define strcasecmp(a,b)			_stricmp(a,b)
 #define stat					_stat
 

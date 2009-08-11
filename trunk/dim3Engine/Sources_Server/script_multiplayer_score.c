@@ -84,7 +84,7 @@ JSValueRef js_multiplayer_score_get_property(JSContextRef cx,JSObjectRef j_obj,J
 
 bool js_multiplayer_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -97,7 +97,7 @@ JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func
 {
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0]);
+	obj=script_find_obj_from_uid_arg(argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
 	*rval=script_int_to_value(obj->score.score);

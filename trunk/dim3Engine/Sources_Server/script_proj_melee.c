@@ -107,7 +107,7 @@ JSValueRef js_proj_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_proj_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,proj_melee_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,proj_melee_props));
 }
 
 /* =======================================================
@@ -318,7 +318,7 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
 	weap=weapon_find_uid(proj_setup->weap_uid);
 
 	if (!melee_script_spawn_projectile_model(js.time.current_tick,obj,weap,proj_setup,proj,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 

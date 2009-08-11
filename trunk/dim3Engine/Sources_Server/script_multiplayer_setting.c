@@ -93,7 +93,7 @@ JSValueRef js_multiplayer_setting_get_property(JSContextRef cx,JSObjectRef j_obj
 
 bool js_multiplayer_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,multiplayer_setting_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,multiplayer_setting_props));
 }
 
 /* =======================================================

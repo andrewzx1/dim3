@@ -107,7 +107,7 @@ JSValueRef js_camera_plane_get_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 bool js_camera_plane_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,camera_plane_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,camera_plane_props));
 }
 
 /* =======================================================

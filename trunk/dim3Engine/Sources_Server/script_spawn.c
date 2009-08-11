@@ -101,7 +101,29 @@ JSValueRef js_spawn_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 
 bool js_spawn_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
+}
+
+/* =======================================================
+
+      Spawn Exceptions
+      
+======================================================= */
+
+JSValueRef js_particle_name_exception(char *name)
+{
+	char			err_str[256];
+
+	sprintf(err_str,"Named particle does not exist: %s",name);
+	return(script_create_exception(err_str));
+}
+
+JSValueRef js_ring_name_exception(char *name)
+{
+	char			err_str[256];
+
+	sprintf(err_str,"Named ring does not exist: %s",name);
+	return(script_create_exception(err_str));
 }
 
 /* =======================================================
@@ -124,13 +146,13 @@ JSValueRef js_spawn_particle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"Named particle does not exist: %s",name);
-		return(FALSE);
+		*exception=js_particle_name_exception(name);
 	}
-	
-	script_bool_to_value(particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL));
-    
-	return(TRUE);
+	else {
+		script_bool_to_value(particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL));
+	}
+
+	return(script_null_to_value());
 }
 
 JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -153,13 +175,13 @@ JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"Named particle does not exist: %s",name);
-		return(FALSE);
+		*exception=js_particle_name_exception(name);
 	}
-	
-	script_bool_to_value(particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,&motion));
-    
-	return(TRUE);
+	else {
+		script_bool_to_value(particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,&motion));
+	}
+
+	return(script_null_to_value());
 }
 
 JSValueRef js_spawn_particle_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -182,13 +204,13 @@ JSValueRef js_spawn_particle_line_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"Named particle does not exist: %s",name);
-		return(FALSE);
+		*exception=js_particle_name_exception(name);
 	}
-	
-	script_bool_to_value(particle_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
-    
-	return(TRUE);
+	else {
+		script_bool_to_value(particle_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
+	}
+
+	return(script_null_to_value());
 }
 
 /* =======================================================
@@ -211,13 +233,13 @@ JSValueRef js_spawn_ring_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj
 	
 	idx=ring_find_index(name);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"Named ring does not exist: %s",name);
-		return(FALSE);
+		*exception=js_ring_name_exception(name);
 	}
-	
-	script_bool_to_value(ring_spawn(idx,script_get_attached_object_uid(),&pt,NULL));
-    
-	return(TRUE);
+	else {
+		script_bool_to_value(ring_spawn(idx,script_get_attached_object_uid(),&pt,NULL));
+	}
+
+	return(script_null_to_value());
 }
 
 JSValueRef js_spawn_ring_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -240,13 +262,13 @@ JSValueRef js_spawn_ring_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	
 	idx=ring_find_index(name);
 	if (idx==-1) {
-		JS_ReportError(js.cx,"Named ring does not exist: %s",name);
-		return(FALSE);
+		*exception=js_ring_name_exception(name);
 	}
-	
-	script_bool_to_value(ring_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
-    
-	return(TRUE);
+	else {
+		script_bool_to_value(ring_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
+	}
+
+	return(script_null_to_value());
 }
 
 /* =======================================================
@@ -275,7 +297,7 @@ JSValueRef js_spawn_flash_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_on
 
 	script_bool_to_value(effect_spawn_flash(&pt,&col,intensity,flash_msec,fade_msec));
     
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 /* =======================================================
@@ -310,7 +332,7 @@ JSValueRef js_spawn_lightning_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 	script_bool_to_value(effect_spawn_lightning(js.time.current_tick,&start_pt,&end_pt,wid,varient,&col,life_msec));
     
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 /* =======================================================
@@ -343,7 +365,7 @@ JSValueRef js_spawn_ray_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,
 
 	script_bool_to_value(effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
     
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -377,7 +399,7 @@ JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	script_bool_to_value(effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
     
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 /* =======================================================
@@ -402,7 +424,7 @@ JSValueRef js_spawn_shake_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_on
 	
 	script_bool_to_value(effect_spawn_shake(&pt,dist,sz,life_msec));
     
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 /* =======================================================
@@ -423,8 +445,6 @@ JSValueRef js_spawn_push_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj
 	force=script_value_to_int(argv[4]);
 
 	collide_push_objects(x,y,z,radius,force);
-	*rval=script_bool_to_value(TRUE);
-	
-	return(TRUE);
+	return(script_bool_to_value(TRUE));
 }
 

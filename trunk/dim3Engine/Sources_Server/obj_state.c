@@ -653,7 +653,7 @@ bool object_is_targetted(obj_type *obj,d3col *col)
       
 ======================================================= */
 
-bool object_set_radar_icon(obj_type *obj)
+bool object_set_radar_icon(obj_type *obj,char *err_str)
 {
 	int				n,nicon;
 	
@@ -672,7 +672,7 @@ bool object_set_radar_icon(obj_type *obj)
 
 		// unknown radar icon
 
-	JS_ReportError(js.cx,"No radar icon exists with this name: %s",obj->radar.icon);
+	sprintf(err_str,"No radar icon exists with this name: %s",obj->radar.icon);
 	return(FALSE);
 }
 

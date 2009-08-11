@@ -84,18 +84,16 @@ typedef struct		{
       
 ======================================================= */
 
-#define d3_jsval_type_int							0
-#define d3_jsval_type_float							1
-#define d3_jsval_type_boolean						2
-#define d3_jsval_type_string						3
+#define d3_jsval_type_number						0
+#define d3_jsval_type_boolean						1
+#define d3_jsval_type_string						2
 
 #define max_d3_jsval_str_len						128
 
 #define max_msg_data								8
 
 typedef union		{
-						int							d3_int;
-						float						d3_float;
+						float						d3_number;
 						bool						d3_boolean;
 						char						d3_string[max_d3_jsval_str_len];
 					} d3_jsval_data_type;

@@ -97,7 +97,7 @@ JSValueRef js_map_spot_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 bool js_map_spot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,map_spot_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,map_spot_props));
 }
 
 /* =======================================================
@@ -155,7 +155,7 @@ JSValueRef js_map_spot_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	spot_type	*spot;
 	
-	spot=script_find_spot_from_idx_arg(argv[0]);
+	spot=script_find_spot_from_idx_arg(argv[0],exception);
 	if (spot==NULL) return(FALSE);
 	
 	*rval=script_string_to_value(spot->name);
@@ -167,7 +167,7 @@ JSValueRef js_map_spot_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	spot_type	*spot;
 	
-	spot=script_find_spot_from_idx_arg(argv[0]);
+	spot=script_find_spot_from_idx_arg(argv[0],exception);
 	if (spot==NULL) return(FALSE);
 	
 	*rval=script_string_to_value(spot->type);
@@ -179,7 +179,7 @@ JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	spot_type	*spot;
 	
-	spot=script_find_spot_from_idx_arg(argv[0]);
+	spot=script_find_spot_from_idx_arg(argv[0],exception);
 	if (spot==NULL) return(FALSE);
 	
 	*rval=script_string_to_value(spot->script);
@@ -191,7 +191,7 @@ JSValueRef js_map_spot_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObj
 {
 	spot_type	*spot;
 	
-	spot=script_find_spot_from_idx_arg(argv[0]);
+	spot=script_find_spot_from_idx_arg(argv[0],exception);
 	if (spot==NULL) return(FALSE);
 	
 	*rval=script_string_to_value(spot->params);
@@ -211,7 +211,7 @@ JSValueRef js_map_spot_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 
 		// find spot
 	
-	spot=script_find_spot_from_idx_arg(argv[0]);
+	spot=script_find_spot_from_idx_arg(argv[0],exception);
 	if (spot==NULL) return(FALSE);
 	
 		// get position
@@ -226,7 +226,7 @@ JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 		// find spot
 	
-	spot=script_find_spot_from_idx_arg(argv[0]);
+	spot=script_find_spot_from_idx_arg(argv[0],exception);
 	if (spot==NULL) return(FALSE);
 	
 		// get position
@@ -249,7 +249,7 @@ JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObj
 
 		// find spot
 	
-	spot=script_find_spot_from_idx_arg(argv[0]);
+	spot=script_find_spot_from_idx_arg(argv[0],exception);
 	if (spot==NULL) return(FALSE);
 
 		// attach

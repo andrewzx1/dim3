@@ -112,7 +112,7 @@ void camera_static_get_position(d3pnt *pnt,d3ang *ang)
       
 ======================================================= */
 
-bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int event_id,bool open_doors,bool in_freeze)
+bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int event_id,bool open_doors,bool in_freeze,char *err_str)
 {
 	int			from_idx,to_idx,dist;
 	float		speed;
@@ -121,7 +121,7 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 		// only works in static camera
 
 	if (camera.mode!=cv_static) {
-		JS_ReportError(js.cx,"Can only walk cameras in static mode");
+		strcpy(err_str,"Can only walk cameras in static mode");
 		return(FALSE);
 	}
 	
@@ -129,20 +129,20 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 		
 	from_idx=map_find_node(&map,start_node);
 	if (from_idx==-1) {
-		JS_ReportError(js.cx,"Named node does not exist: %s",start_node);
+		sprintf(err_str,"Named node does not exist: %s",start_node);
 		return(FALSE);
 	}
 	
 	to_idx=map_find_node(&map,end_node);
 	if (to_idx==-1) {
-		JS_ReportError(js.cx,"Named node does not exist: %s",end_node);
+		sprintf(err_str,"Named node does not exist: %s",end_node);
 		return(FALSE);
 	}
 	
 		// is end node in start node path?
 		
 	if (map_find_next_node_in_path(&map,from_idx,to_idx)==-1) {
-		JS_ReportError(js.cx,"End node '%s' is not in the same path as the start node '%s'",end_node,start_node);
+		sprintf(err_str,"End node '%s' is not in the same path as the start node '%s'",end_node,start_node);
 		return(FALSE);
 	}
 
@@ -150,7 +150,7 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 
 	dist=map_node_to_node_distance(&map,from_idx,to_idx);
 	if (dist==0) {
-		JS_ReportError(js.cx,"Camera walk covers no distance");
+		strcpy(err_str,"Camera walk covers no distance");
 		return(FALSE);
 	}
 

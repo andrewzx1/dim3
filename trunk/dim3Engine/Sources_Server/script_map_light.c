@@ -78,7 +78,7 @@ JSValueRef js_map_light_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_map_light_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -91,7 +91,7 @@ JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 {
 	map_light_type		*map_light;
 
-	map_light=script_find_light_from_name(argv[0]);
+	map_light=script_find_light_from_name(argv[0],exception);
 	if (map_light==NULL) return(FALSE);
 	
 	map_light->on=script_value_to_bool(argv[1]);

@@ -85,7 +85,7 @@ JSValueRef js_utility_point_get_property(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 bool js_utility_point_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -106,9 +106,7 @@ JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObject
 	to_y=script_value_to_int(argv[5]);
 	slop=script_value_to_int(argv[6]);
 	
-	*rval=script_bool_to_value(!((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop))));
-	
-	return(TRUE);
+	return(script_bool_to_value(!((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop)))));
 }
 
 JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -122,9 +120,7 @@ JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObj
 	to_z=script_value_to_int(argv[3]);
 	
 	ang=angle_find(x,z,to_x,to_z);
-    *rval=script_float_to_value(ang);
-	
-	return(TRUE);
+    return(script_float_to_value(ang));
 }
 
 JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -139,9 +135,7 @@ JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JS
 	to_y=script_value_to_int(argv[5]);
 
 	dist=distance_get(x,y,z,to_x,to_y,to_z);
-	*rval=script_int_to_value(dist);
-	
-	return(TRUE);
+	return(script_int_to_value(dist));
 }
 
 JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -154,9 +148,7 @@ JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef 
 	
 	view_script_transform_3D_to_2D(x,y,z,&x2,&y2);
 
-	*rval=script_point_to_value(x2,y2,z);
-	
-	return(TRUE);
+	return(script_point_to_value(x2,y2,z));
 }
 
 

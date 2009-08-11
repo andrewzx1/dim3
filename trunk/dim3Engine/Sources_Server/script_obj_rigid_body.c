@@ -106,7 +106,7 @@ JSValueRef js_obj_rigid_body_get_property(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 bool js_obj_rigid_body_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_rigid_body_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_rigid_body_props));
 }
 
 /* =======================================================

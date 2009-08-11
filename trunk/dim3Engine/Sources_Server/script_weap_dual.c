@@ -91,7 +91,7 @@ JSValueRef js_weap_dual_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_weap_dual_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,weap_dual_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,weap_dual_props));
 }
 
 /* =======================================================

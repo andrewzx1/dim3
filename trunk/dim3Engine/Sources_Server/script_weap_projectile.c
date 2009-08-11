@@ -136,7 +136,7 @@ JSValueRef js_weap_projectile_get_property(JSContextRef cx,JSObjectRef j_obj,JSS
 
 bool js_weap_projectile_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,weap_projectile_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,weap_projectile_props));
 }
 
 /* =======================================================
@@ -349,7 +349,7 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObje
 	script_value_to_string(argv[0],proj_name,name_str_len);
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,1,0.0f,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -371,7 +371,7 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,J
 	slop=script_value_to_float(argv[1]);
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,1,slop,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -395,7 +395,7 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContextRe
 	slop=script_value_to_float(argv[2]);
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -419,7 +419,7 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext
 	off_ang.y=script_value_to_float(argv[3]);
 
 	if (!weapon_script_projectile_spawn_weapon_model(js.time.current_tick,obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -444,7 +444,7 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_func(JSContextRef cx,JSObje
 	script_value_to_string(argv[0],proj_name,name_str_len);
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,1,0.0f,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -466,7 +466,7 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_slop_func(JSContextRef cx,J
 	slop=script_value_to_float(argv[1]);
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,1,slop,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -490,7 +490,7 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContextRe
 	slop=script_value_to_float(argv[2]);
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -514,7 +514,7 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext
 	off_ang.y=script_value_to_float(argv[3]);
 
 	if (!weapon_script_projectile_spawn_object_model(js.time.current_tick,obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -539,7 +539,7 @@ JSValueRef js_weap_projectile_spawn_from_barrel_func(JSContextRef cx,JSObjectRef
 	script_value_to_string(argv[0],proj_name,name_str_len);
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,1,0.0f,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -561,7 +561,7 @@ JSValueRef js_weap_projectile_spawn_from_barrel_slop_func(JSContextRef cx,JSObje
 	slop=script_value_to_float(argv[1]);
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,1,slop,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -585,7 +585,7 @@ JSValueRef js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContextRef cx,
 	slop=script_value_to_float(argv[2]);
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -609,7 +609,7 @@ JSValueRef js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContextRef c
 	off_ang.y=script_value_to_float(argv[3]);
 
 	if (!weapon_script_projectile_spawn_weapon_barrel(js.time.current_tick,obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -634,7 +634,7 @@ JSValueRef js_weap_projectile_spawn_from_center_func(JSContextRef cx,JSObjectRef
 	script_value_to_string(argv[0],proj_name,name_str_len);
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,1,0.0f,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -656,7 +656,7 @@ JSValueRef js_weap_projectile_spawn_from_center_slop_func(JSContextRef cx,JSObje
 	slop=script_value_to_float(argv[1]);
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,1,slop,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -680,7 +680,7 @@ JSValueRef js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,
 	slop=script_value_to_float(argv[2]);
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,count,slop,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -704,7 +704,7 @@ JSValueRef js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef c
 	off_ang.y=script_value_to_float(argv[3]);
 
 	if (!weapon_script_projectile_spawn_center(js.time.current_tick,obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 

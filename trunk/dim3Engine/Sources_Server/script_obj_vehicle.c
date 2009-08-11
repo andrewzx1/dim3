@@ -92,7 +92,7 @@ JSValueRef js_obj_vehicle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 bool js_obj_vehicle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_vehicle_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_vehicle_props));
 }
 
 /* =======================================================
@@ -151,7 +151,7 @@ JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj=object_find_uid(js.attach.thing_uid);
 
 	if (!object_enter_vehicle(obj,err_str)) {
-		JS_ReportError(js.cx,"Vehicle: %s",err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -166,7 +166,7 @@ JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	obj=object_find_uid(js.attach.thing_uid);
 
 	if (!object_exit_vehicle(obj,FALSE,err_str)) {
-		JS_ReportError(js.cx,"Vehicle: %s",err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 

@@ -96,7 +96,7 @@ JSValueRef js_model_light_get_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 bool js_model_light_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,model_light_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,model_light_props));
 }
 
 /* =======================================================

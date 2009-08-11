@@ -91,7 +91,7 @@ JSValueRef js_data_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 
 bool js_data_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -107,7 +107,7 @@ JSValueRef js_data_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 	script_value_to_string(argv[0],name,name_str_len);
 	script_add_global(name,-1,argv[1]);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_data_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -117,7 +117,7 @@ JSValueRef js_data_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 	script_value_to_string(argv[0],name,name_str_len);
 	script_delete_global(name,-1);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_data_set_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -127,7 +127,7 @@ JSValueRef js_data_set_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 	script_value_to_string(argv[0],name,name_str_len);
 	script_set_global(name,-1,argv[1]);
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_data_get_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -135,9 +135,7 @@ JSValueRef js_data_get_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 	char			name[name_str_len];
 
 	script_value_to_string(argv[0],name,name_str_len);
-	*rval=script_get_global(name,-1);
-	
-	return(TRUE);
+	return(script_get_global(name,-1));
 }
 
 JSValueRef js_data_add_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -147,7 +145,7 @@ JSValueRef js_data_add_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	script_value_to_string(argv[0],name,name_str_len);
 	script_add_global(name,js.attach.script_uid,argv[1]);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_data_sub_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -157,7 +155,7 @@ JSValueRef js_data_sub_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	script_value_to_string(argv[0],name,name_str_len);
 	script_delete_global(name,js.attach.script_uid);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_data_set_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -167,7 +165,7 @@ JSValueRef js_data_set_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	script_value_to_string(argv[0],name,name_str_len);
 	script_set_global(name,js.attach.script_uid,argv[1]);
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_data_get_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -175,8 +173,6 @@ JSValueRef js_data_get_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	char			name[name_str_len];
 
 	script_value_to_string(argv[0],name,name_str_len);
-	*rval=script_get_global(name,js.attach.script_uid);
-	
-	return(TRUE);
+	return(script_get_global(name,js.attach.script_uid));
 }
 

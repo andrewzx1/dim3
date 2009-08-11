@@ -85,7 +85,7 @@ JSValueRef js_model_bone_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_model_bone_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -94,7 +94,7 @@ bool js_model_bone_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-model_draw* script_bone_function_setup(void)
+model_draw* script_bone_function_setup(JSValueRef *exception)
 {
 	obj_type			*obj;
 	weapon_type			*weap;
@@ -119,12 +119,26 @@ model_draw* script_bone_function_setup(void)
 			return(&proj->draw);
 			
 		case thing_type_projectile_setup:
-			JS_ReportError(js.cx,"There is no model to get bone positions from");
+			*exception=script_create_exception("There is no model to get bone positions from");
 			return(NULL);
 			
 	}
 	
 	return(NULL);
+}
+
+/* =======================================================
+
+      Bone Exceptions
+      
+======================================================= */
+
+JSValueRef js_model_bone_name_exception(char *pose_name,char *bone_name)
+{
+	char			err_str[256];
+
+	sprintf(err_str,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
+	return(script_create_exception(err_str));
 }
 
 /* =======================================================
@@ -141,7 +155,7 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup();
+	draw=script_bone_function_setup(exception);
 	if (draw==NULL) return(FALSE);
 	
 		// get bone offset
@@ -150,7 +164,7 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	script_value_to_string(argv[1],bone_name,name_str_len);
 	
 	if (!model_find_bone_offset(draw,pose_name,bone_name,&x,&y,&z)) {
-		JS_ReportError(js.cx,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
+		*exception=js_model_bone_name_exception(pose_name,bone_name);
 		return(FALSE);
 	}
 	
@@ -167,7 +181,7 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup();
+	draw=script_bone_function_setup(exception);
 	if (draw==NULL) return(FALSE);
 	
 		// get bone position
@@ -176,7 +190,7 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	script_value_to_string(argv[1],bone_name,name_str_len);
 	
 	if (!model_find_bone_position(draw,pose_name,bone_name,&x,&y,&z)) {
-		JS_ReportError(js.cx,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
+		*exception=js_model_bone_name_exception(pose_name,bone_name);
 		return(FALSE);
 	}
 	
@@ -193,7 +207,7 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup();
+	draw=script_bone_function_setup(exception);
 	if (draw==NULL) return(FALSE);
 	
 		// get bone light
@@ -202,7 +216,7 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	script_value_to_string(argv[1],bone_name,name_str_len);
 	
 	if (!model_get_bone_brightness(draw,pose_name,bone_name,&bright)) {
-		JS_ReportError(js.cx,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
+		*exception=js_model_bone_name_exception(pose_name,bone_name);
 		return(FALSE);
 	}
 	

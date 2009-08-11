@@ -94,7 +94,7 @@ JSValueRef js_map_movement_get_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 bool js_map_movement_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -107,7 +107,7 @@ JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0]);
+	movement_idx=script_find_map_movement_from_name(argv[0],exception);
 	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_start(movement_idx,FALSE);
@@ -118,7 +118,7 @@ JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,J
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0]);
+	movement_idx=script_find_map_movement_from_name(argv[0],exception);
 	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_start(movement_idx,TRUE);
@@ -129,7 +129,7 @@ JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,J
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0]);
+	movement_idx=script_find_map_movement_from_name(argv[0],exception);
 	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_start_or_thaw(movement_idx);
@@ -140,7 +140,7 @@ JSValueRef js_map_movement_freeze_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0]);
+	movement_idx=script_find_map_movement_from_name(argv[0],exception);
 	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_freeze(movement_idx);
@@ -151,7 +151,7 @@ JSValueRef js_map_movement_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0]);
+	movement_idx=script_find_map_movement_from_name(argv[0],exception);
 	if (movement_idx==-1) return(FALSE);
 	
 	map_movements_script_thaw(movement_idx);
@@ -162,7 +162,7 @@ JSValueRef js_map_movement_is_looping_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0]);
+	movement_idx=script_find_map_movement_from_name(argv[0],exception);
 	if (movement_idx==-1) return(FALSE);
 	
 	*rval=script_bool_to_value(map_movements_script_is_looping(movement_idx));

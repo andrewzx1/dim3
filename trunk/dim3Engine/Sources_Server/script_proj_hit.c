@@ -95,7 +95,7 @@ JSValueRef js_proj_hit_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 bool js_proj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,proj_hit_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,proj_hit_props));
 }
 
 /* =======================================================

@@ -85,7 +85,7 @@ JSValueRef js_weap_kickback_get_property(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 bool js_weap_kickback_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,weap_kickback_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,weap_kickback_props));
 }
 
 /* =======================================================

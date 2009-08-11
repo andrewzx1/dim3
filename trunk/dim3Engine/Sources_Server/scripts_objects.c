@@ -630,27 +630,27 @@ JSObjectRef script_create_child_object(JSObjectRef parent_obj,JSClassRef cls,cha
       
 ======================================================= */
 
-void script_read_only_property_error(JSValueRef id)
+JSValueRef script_read_only_property_error(JSValueRef name)
 {
-	char				name[64];
+	char				c_name[64],err_str[256];
 
-	script_value_to_string(id,name,64);
-	JS_ReportError(js.cx,"The property %s is read-only",name);
+	script_value_to_string(name,c_name,64);
+	sprintf(err_str,"The property %s is read-only",name);
+
+	return(script_create_exception(err_str));
 }
 
-inline int script_find_object_property_index(JSValueRef id,script_js_property *props)
+inline int script_find_object_property_index(JSValueRef name,script_js_property *props)
 {
 	int					idx;
-	char				name[64];
+	char				c_name[64];
 
-	if (!JSVAL_IS_STRING(id)) return(-1);
-
-	script_value_to_string(id,name,64);
+	script_value_to_string(id,c_name,64);
 
 	idx=0;
 
 	while (props[idx].name!=NULL) {
-		if (strcmp(props[idx].name,name)==0) return(idx);
+		if (strcmp(props[idx].name,c_name)==0) return(idx);
 		idx++;
 	}
 
@@ -668,7 +668,7 @@ JSValueRef script_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 
 		// find the property
 
-	idx=script_find_object_property_index(id,props);
+	idx=script_find_object_property_index(name,props);
 	if (idx==-1) return(TRUE);
 
 	prop=&props[idx];
@@ -678,7 +678,7 @@ JSValueRef script_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 	return((*prop->getter)());
 }
 
-bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,script_js_property *props)
+bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception,script_js_property *props)
 {
 	int					idx;
 	script_js_property	*prop;
@@ -689,7 +689,7 @@ bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 
 		// find the property
 
-	idx=script_find_object_property_index(id,props);
+	idx=script_find_object_property_index(name,props);
 	if (idx==-1) return(TRUE);
 
 	prop=&props[idx];
@@ -697,11 +697,16 @@ bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 		// is it read only?
 
 	if (prop->setter==NULL) {
-		script_read_only_property_error(id);
-		return(FALSE);
+		*exception=script_read_only_property_error(name);
+		return(TRUE);
 	}
 
 		// call setter
 
-	return((*prop->setter)(vp));
+	(*prop->setter)(vp)
+
+		// always return TRUE as we are always handling
+		// the values
+
+	return(TRUE);
 }

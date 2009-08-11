@@ -82,7 +82,7 @@ JSValueRef js_proj_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 bool js_proj_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,proj_position_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,proj_position_props));
 }
 
 /* =======================================================

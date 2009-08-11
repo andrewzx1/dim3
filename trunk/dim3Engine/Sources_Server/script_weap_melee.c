@@ -111,7 +111,7 @@ JSValueRef js_weap_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_weap_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,weap_melee_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,weap_melee_props));
 }
 
 /* =======================================================
@@ -334,7 +334,7 @@ JSValueRef js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef
     obj=object_find_uid(weap->obj_uid);
 
 	if (!melee_script_spawn_weapon_model(js.time.current_tick,obj,weap,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 
@@ -351,7 +351,7 @@ JSValueRef js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef
     obj=object_find_uid(weap->obj_uid);
 
 	if (!melee_script_spawn_object_model(js.time.current_tick,obj,weap,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 

@@ -83,7 +83,7 @@ JSValueRef js_utility_random_get_property(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 bool js_utility_random_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
@@ -99,9 +99,7 @@ JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,J
 	min=script_value_to_int(argv[0]);
 	max=script_value_to_int(argv[1]);
 
-	*rval=script_int_to_value(random_int(abs(max-min))+min);
-	
-	return(TRUE);
+	return(script_int_to_value(random_int(abs(max-min))+min));
 }
 
 JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -111,21 +109,15 @@ JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSO
 	min=script_value_to_float(argv[0]);
 	max=script_value_to_float(argv[1]);
 
-	*rval=script_float_to_value(random_float(fabsf(max-min))+min);
-	
-	return(TRUE);
+	return(script_float_to_value(random_float(fabsf(max-min))+min));
 }
 
 JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	*rval=script_bool_to_value(random_boolean());
-	
-	return(TRUE);
+	return(script_bool_to_value(random_boolean()));
 }
 
 JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	*rval=script_int_to_value(random_boolean()?1:(-1));
-	
-	return(TRUE);
+	return(script_int_to_value(random_boolean()?1:(-1)));
 }

@@ -98,7 +98,7 @@ JSValueRef js_model_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 
 bool js_model_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,model_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,model_props));
 }
 
 /* =======================================================

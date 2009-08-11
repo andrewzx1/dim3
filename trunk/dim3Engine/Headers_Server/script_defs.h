@@ -29,24 +29,9 @@ and can be sold or given away.
 // Javascript Engine
 //
 
-#ifdef D3_OS_MAC
-//	#define XP_UNIX
-//	#include <js/jsapi.h>
-//	#include <js/jsconfig.h>
-	#include <JavaScriptCore/JavaScriptCore.h>
-#endif
+#define STDBOOL_WIN32_H
 
-#ifdef D3_OS_LINUX
-	#define XP_UNIX
-	#include "jsapi.h"
-	#include "jsconfig.h"
-#endif
-
-#ifdef D3_OS_WINDOWS
-	#define XP_WIN
-	#include "jsapi.h"
-	#include "jsconfig.h"
-#endif
+#include <JavaScriptCore/JavaScript.h>
 
 //
 // Script Defines
@@ -424,8 +409,7 @@ typedef struct		{
 						char							name[file_str_len],params[param_str_len];
 						char							*data;
 						bool							used;
-						JSValueRef						event_func;
-						JSObjectRef						global,obj;
+						JSObjectRef						global,obj,event_func;
 					} script_type;
 
 //
@@ -448,7 +432,6 @@ typedef struct		{
 						JSContextRef					cx;
 						
 						int								script_current_uid;
-						char							last_error_str[256];
 						bool							add_property_lock;
 						attach_type						attach;
 						

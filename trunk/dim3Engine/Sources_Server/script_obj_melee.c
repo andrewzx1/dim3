@@ -100,7 +100,7 @@ JSValueRef js_obj_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_obj_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_melee_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_melee_props));
 }
 
 /* =======================================================
@@ -253,7 +253,7 @@ JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef 
 	obj=object_find_uid(js.attach.thing_uid);
 
 	if (!melee_script_spawn_object_model(js.time.current_tick,obj,NULL,err_str)) {
-		JS_ReportError(js.cx,err_str);
+		*exception=script_create_exception(err_str);
 		return(FALSE);
 	}
 

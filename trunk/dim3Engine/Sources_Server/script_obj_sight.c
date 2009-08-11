@@ -99,7 +99,7 @@ JSValueRef js_obj_sight_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_obj_sight_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_sight_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_sight_props));
 }
 
 /* =======================================================

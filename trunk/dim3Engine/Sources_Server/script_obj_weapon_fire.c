@@ -80,7 +80,7 @@ JSValueRef js_obj_weapon_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSS
 
 bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,obj_weapon_fire_props));
+	return(script_set_property(cx,j_obj,name,vp,exception,obj_weapon_fire_props));
 }
 
 /* =======================================================

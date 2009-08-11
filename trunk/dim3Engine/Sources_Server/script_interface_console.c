@@ -81,7 +81,7 @@ JSValueRef js_interface_console_get_property(JSContextRef cx,JSObjectRef j_obj,J
 
 bool js_interface_console_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	return(script_set_property(cx,j_obj,name,vp,NULL));
+	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
 }
 
 /* =======================================================
