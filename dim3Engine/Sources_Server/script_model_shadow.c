@@ -95,9 +95,7 @@ JSValueRef js_model_shadow_get_on(void)
 	draw=script_find_model_draw();
 	shadow=&draw->shadow;
 	
-	*vp=script_bool_to_value(shadow->on);
-
-	return(TRUE);
+	return(script_bool_to_value(shadow->on));
 }
 
 /* =======================================================
@@ -114,6 +112,6 @@ void js_model_shadow_set_on(JSValueRef vp,JSValueRef *exception)
 	draw=script_find_model_draw();
 	shadow=&draw->shadow;
 
-	shadow->on=script_value_to_bool(*vp);
+	shadow->on=script_value_to_bool(vp);
 }
 

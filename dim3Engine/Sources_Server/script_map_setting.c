@@ -115,44 +115,34 @@ bool js_map_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 
 JSValueRef js_map_setting_get_scale(void)
 {
-	*vp=script_int_to_value(map_enlarge);
-	return(TRUE);
+	return(script_int_to_value(map_enlarge));
 }
 
 JSValueRef js_map_setting_get_gravity(void)
 {
-	*vp=script_float_to_value(map.settings.gravity);
-	return(TRUE);
+	return(script_float_to_value(map.settings.gravity));
 }
 
 JSValueRef js_map_setting_get_resistance(void)
 {
-	*vp=script_float_to_value(map.settings.resistance);
-	return(TRUE);
+	return(script_float_to_value(map.settings.resistance));
 }
 
 JSValueRef js_map_setting_get_multiplayer(void)
 {
-	*vp=script_bool_to_value(net_setup.client.joined);
-	return(TRUE);
+	return(script_bool_to_value(net_setup.client.joined));
 }
 
 JSValueRef js_map_setting_get_multiplayerType(void)
 {
-	if (!net_setup.client.joined) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
-	}
-	
-	return(TRUE);
+	if (!net_setup.client.joined) return(script_null_to_value());
+
+	return(script_string_to_value(net_setup.games[net_setup.game_idx].name));
 }
 
 JSValueRef js_map_setting_get_botSkill(void)
 {
-	*vp=script_int_to_value(setup.network.bot.skill);
-	return(TRUE);
+	return(script_int_to_value(setup.network.bot.skill));
 }
 
 /* =======================================================
@@ -163,12 +153,12 @@ JSValueRef js_map_setting_get_botSkill(void)
 
 void js_map_setting_set_gravity(JSValueRef vp,JSValueRef *exception)
 {
-	map.settings.gravity=script_value_to_float(*vp);
+	map.settings.gravity=script_value_to_float(vp);
 }
 
 void js_map_setting_set_resistance(JSValueRef vp,JSValueRef *exception)
 {
-	map.settings.resistance=script_value_to_float(*vp);
+	map.settings.resistance=script_value_to_float(vp);
 }
 
 /* =======================================================
@@ -187,12 +177,12 @@ JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	
 	map_set_ambient(name,pitch);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	map_clear_ambient();
-	return(TRUE);
+	return(script_null_to_value());
 }
 

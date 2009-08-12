@@ -97,20 +97,17 @@ bool js_map_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 JSValueRef js_map_light_color_get_red(void)
 {
-	*vp=script_float_to_value(map.ambient.light_color.r);
-	return(TRUE);
+	return(script_float_to_value(map.ambient.light_color.r));
 }
 
 JSValueRef js_map_light_color_get_green(void)
 {
-	*vp=script_float_to_value(map.ambient.light_color.g);
-	return(TRUE);
+	return(script_float_to_value(map.ambient.light_color.g));
 }
 
 JSValueRef js_map_light_color_get_blue(void)
 {
-	*vp=script_float_to_value(map.ambient.light_color.b);
-	return(TRUE);
+	return(script_float_to_value(map.ambient.light_color.b));
 }
 
 /* =======================================================
@@ -121,16 +118,16 @@ JSValueRef js_map_light_color_get_blue(void)
 
 void js_map_light_color_set_red(JSValueRef vp,JSValueRef *exception)
 {
-	map.ambient.light_color.r=script_value_to_float(*vp);
+	map.ambient.light_color.r=script_value_to_float(vp);
 }
 
 void js_map_light_color_set_green(JSValueRef vp,JSValueRef *exception)
 {
-	map.ambient.light_color.g=script_value_to_float(*vp);
+	map.ambient.light_color.g=script_value_to_float(vp);
 }
 
 void js_map_light_color_set_blue(JSValueRef vp,JSValueRef *exception)
 {
-	map.ambient.light_color.b=script_value_to_float(*vp);
+	map.ambient.light_color.b=script_value_to_float(vp);
 }
 

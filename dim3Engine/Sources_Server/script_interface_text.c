@@ -117,11 +117,9 @@ JSValueRef js_interface_text_show_func(JSContextRef cx,JSObjectRef func,JSObject
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
+	if (text!=NULL) text->show=TRUE;
 	
-	text->show=TRUE;
-	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_hide_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -129,17 +127,15 @@ JSValueRef js_interface_text_hide_func(JSContextRef cx,JSObjectRef func,JSObject
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
+	if (text!=NULL) text->show=FALSE;
 	
-	text->show=FALSE;
-	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_hide_all_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_texts_hide_all();
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -147,12 +143,12 @@ JSValueRef js_interface_text_move_func(JSContextRef cx,JSObjectRef func,JSObject
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
-	
-	text->x=script_value_to_int(argv[1]);
-	text->y=script_value_to_int(argv[2]);
-	
-	return(TRUE);
+	if (text!=NULL) {
+		text->x=script_value_to_int(argv[1]);
+		text->y=script_value_to_int(argv[2]);
+	}
+
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_move_relative_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -160,12 +156,12 @@ JSValueRef js_interface_text_move_relative_func(JSContextRef cx,JSObjectRef func
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
-	
-	text->x+=script_value_to_int(argv[1]);
-	text->y+=script_value_to_int(argv[2]);
-	
-	return(TRUE);
+	if (text!=NULL) {
+		text->x+=script_value_to_int(argv[1]);
+		text->y+=script_value_to_int(argv[2]);
+	}
+
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_set_text_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -174,12 +170,12 @@ JSValueRef js_interface_text_set_text_func(JSContextRef cx,JSObjectRef func,JSOb
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
+	if (text!=NULL) {
+		script_value_to_string(argv[1],data,max_hud_text_str_sz);
+		hud_text_set(text,data);
+	}
 
-	script_value_to_string(argv[1],data,max_hud_text_str_sz);
-	hud_text_set(text,data);
-	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_set_size_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -187,11 +183,9 @@ JSValueRef js_interface_text_set_size_func(JSContextRef cx,JSObjectRef func,JSOb
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
+	if (text!=NULL) text->size=script_value_to_int(argv[1]);
 	
-	text->size=script_value_to_int(argv[1]);
-	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_set_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -199,13 +193,13 @@ JSValueRef js_interface_text_set_color_func(JSContextRef cx,JSObjectRef func,JSO
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
-	
-	text->color.r=script_value_to_float(argv[1]);
-	text->color.g=script_value_to_float(argv[2]);
-	text->color.b=script_value_to_float(argv[3]);
-	
-	return(TRUE);
+	if (text!=NULL) {
+		text->color.r=script_value_to_float(argv[1]);
+		text->color.g=script_value_to_float(argv[2]);
+		text->color.b=script_value_to_float(argv[3]);
+	}
+
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_set_team_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -214,13 +208,12 @@ JSValueRef js_interface_text_set_team_color_func(JSContextRef cx,JSObjectRef fun
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
+	if (text!=NULL) {
+		team_idx=script_value_to_int(argv[1])-sd_team_none;
+		object_team_get_tint(team_idx,&text->color);
+	}
 
-	team_idx=script_value_to_int(argv[1])-sd_team_none;
-	
-	object_team_get_tint(team_idx,&text->color);
-	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_set_object_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -229,14 +222,14 @@ JSValueRef js_interface_text_set_object_color_func(JSContextRef cx,JSObjectRef f
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
+	if (text==NULL) return(script_null_to_value());
 
 	obj=script_find_obj_from_uid_arg(argv[1],exception);
-	if (obj==NULL) return(TRUE);
+	if (obj==NULL) return(script_null_to_value());
 	
 	object_get_tint(obj,&text->color);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_set_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -244,11 +237,9 @@ JSValueRef js_interface_text_set_alpha_func(JSContextRef cx,JSObjectRef func,JSO
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
+	if (text!=NULL) text->alpha=script_value_to_float(argv[1]);
 	
-	text->alpha=script_value_to_float(argv[1]);
-	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_start_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -256,13 +247,13 @@ JSValueRef js_interface_text_start_fade_func(JSContextRef cx,JSObjectRef func,JS
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
-	
-	text->show=TRUE;
-	text->fade.on=TRUE;
-	text->fade.start_tick=js.time.current_tick;
-	
-	return(TRUE);
+	if (text!=NULL) {
+		text->show=TRUE;
+		text->fade.on=TRUE;
+		text->fade.start_tick=js.time.current_tick;
+	}
+
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_text_set_text_and_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -271,14 +262,14 @@ JSValueRef js_interface_text_set_text_and_fade_func(JSContextRef cx,JSObjectRef 
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0],exception);
-	if (text==NULL) return(FALSE);
+	if (text!=NULL) {
+		script_value_to_string(argv[1],data,max_hud_text_str_sz);
+		hud_text_set(text,data);
+		
+		text->show=TRUE;
+		text->fade.on=TRUE;
+		text->fade.start_tick=js.time.current_tick;
+	}
 
-	script_value_to_string(argv[1],data,max_hud_text_str_sz);
-	hud_text_set(text,data);
-	
-	text->show=TRUE;
-	text->fade.on=TRUE;
-	text->fade.start_tick=js.time.current_tick;
-	
-	return(TRUE);
+	return(script_null_to_value());
 }

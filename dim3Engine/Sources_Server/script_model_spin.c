@@ -98,9 +98,7 @@ JSValueRef js_model_spin_get_x(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_float_to_value(draw->spin.x);
-
-	return(TRUE);
+	return(script_float_to_value(draw->spin.x));
 }
 
 JSValueRef js_model_spin_get_y(void)
@@ -108,9 +106,7 @@ JSValueRef js_model_spin_get_y(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_float_to_value(draw->spin.y);
-
-	return(TRUE);
+	return(script_float_to_value(draw->spin.y));
 }
 
 JSValueRef js_model_spin_get_z(void)
@@ -118,9 +114,7 @@ JSValueRef js_model_spin_get_z(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_float_to_value(draw->spin.z);
-
-	return(TRUE);
+	return(script_float_to_value(draw->spin.z));
 }
 
 /* =======================================================
@@ -135,7 +129,7 @@ void js_model_spin_set_x(JSValueRef vp,JSValueRef *exception)
 	
 	draw=script_find_model_draw();
 
-	draw->spin.x=script_value_to_float(*vp);
+	draw->spin.x=script_value_to_float(vp);
 	draw->spin_tick=js.time.current_tick;
 }
 
@@ -145,7 +139,7 @@ void js_model_spin_set_y(JSValueRef vp,JSValueRef *exception)
 	
 	draw=script_find_model_draw();
 
-	draw->spin.y=script_value_to_float(*vp);
+	draw->spin.y=script_value_to_float(vp);
 	draw->spin_tick=js.time.current_tick;
 }
 
@@ -155,7 +149,7 @@ void js_model_spin_set_z(JSValueRef vp,JSValueRef *exception)
 	
 	draw=script_find_model_draw();
 
-	draw->spin.z=script_value_to_float(*vp);
+	draw->spin.z=script_value_to_float(vp);
 	draw->spin_tick=js.time.current_tick;
 }
 

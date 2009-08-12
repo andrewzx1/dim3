@@ -33,6 +33,14 @@ and can be sold or given away.
 
 extern js_type			js;
 
+
+/* supergumba -- JS -- array code
+    JSStringRef array = JSStringCreateWithUTF8CString("Array");
+    JSObjectRef arrayConstructor = JSValueToObject(context, JSObjectGetProperty(context, globalObject, array, NULL), NULL);
+    JSStringRelease(array);
+    result = JSObjectCallAsConstructor(context, arrayConstructor, 0, NULL, NULL);
+*/
+
 /* =======================================================
 
       NULL JSValueRef
@@ -41,12 +49,12 @@ extern js_type			js;
 
 inline JSValueRef script_null_to_value(void)
 {
-	return(JSVAL_NULL);
+	return(JSValueMakeNull(js.cx));
 }
 
 inline bool script_is_value_null(JSValueRef val)
 {
-	return(val==JSVAL_NULL);
+	return(JSValueIsNull(js.cx,val));
 }
 
 /* =======================================================
@@ -57,12 +65,12 @@ inline bool script_is_value_null(JSValueRef val)
 
 inline int script_value_to_int(JSValueRef val)
 {
-	return(JSVAL_TO_INT(val));
+	return((int)JSValueToNumber(js.cx,val,NULL));
 }
 
 inline JSValueRef script_int_to_value(int i)
 {
-	return(INT_TO_JSVAL(i));
+	return(JSValueMakeNumber(js.cx,(float)i));
 }
 
 /* =======================================================
@@ -73,18 +81,12 @@ inline JSValueRef script_int_to_value(int i)
 
 inline float script_value_to_float(JSValueRef val)
 {
-    jsdouble		jd;
-    
-	JS_ValueToNumber(js.cx,val,&jd);
-	return((float)jd);
+	return((float)JSValueToNumber(js.cx,val,NULL));
 }
 
 inline JSValueRef script_float_to_value(float f)
 {
-    JSValueRef		vp;
-    
-    JS_NewDoubleValue(js.cx,(jsdouble)f,&vp);
-    return(vp);
+	return(JSValueMakeNumber(js.cx,(double)f));
 }
 
 /* =======================================================
@@ -95,12 +97,12 @@ inline JSValueRef script_float_to_value(float f)
 
 inline bool script_value_to_bool(JSValueRef val)
 {
-	return(JSVAL_TO_BOOLEAN(val));
+	return(JSValueToBoolean(js.cx,val));
 }
 
 inline JSValueRef script_bool_to_value(bool b)
 {
-	return(BOOLEAN_TO_JSVAL(b));
+	return(JSValueMakeBoolean(js.cx,b));
 }
 
 /* =======================================================
@@ -111,24 +113,26 @@ inline JSValueRef script_bool_to_value(bool b)
 
 void script_value_to_string(JSValueRef val,char *str,int len)
 {
-	JSString		*jstr;
+	JSString		js_str;
 
-	if ((val==JSVAL_NULL) || (val==JSVAL_VOID) || (!JSVAL_IS_PRIMITIVE(val))) {
+	js_str=JSValueToStringCopy(js.cx,val,NULL);
+	if (js_str==NULL) {
 		str[0]=0x0;
 		return;
 	}
-	
-	jstr=JS_ValueToString(js.cx,val);
-	strncpy(str,JS_GetStringBytes(jstr),len);
+
+	JSStringGetUTF8CString(js_str,str,len);
+	JSStringRelease(js_str);
+
 	str[len-1]=0x0;
 }
 
 JSValueRef script_string_to_value(char *str)
 {
-	JSString		*jstr;
-	
-	jstr=JS_NewStringCopyZ(js.cx,str);
-	return(STRING_TO_JSVAL(jstr));
+	JSString		js_str;
+
+	js_str=JSStringCreateWithUTF8CString(str);
+	return(JSValueMakeString(js.cx,js_str));
 }
 
 /* =======================================================
@@ -172,7 +176,7 @@ JSValueRef script_create_exception(char *str)
 	ex_obj=JSObjectMake(js.cx,NULL,NULL);
 	JSSetProperty(js.cx,ex_obj,script_string_to_value("message"),script_string_to_value(str),kJSPropertyAttributeNone,NULL);
 
-	return(JSValueMakeObject(ex_obj));
+	return((JSValueRef)ex_obj);
 }
 
 void script_exception_to_string(JSValueRef ex_obj,char *str,int len)

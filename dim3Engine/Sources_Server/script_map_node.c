@@ -115,8 +115,7 @@ JSValueRef js_map_node_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 	
 	script_value_to_string(argv[0],name,name_str_len);
 	idx=map_find_node(&map,name);
-	*rval=script_int_to_value(idx);
-	return(TRUE);
+	return(script_int_to_value(idx));
 }
 
 JSValueRef js_map_node_find_random_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -126,9 +125,7 @@ JSValueRef js_map_node_find_random_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	script_value_to_string(argv[0],name,name_str_len);
 	idx=map_find_random_node(&map,name);
-	*rval=script_int_to_value(idx);
-
-	return(TRUE);
+	return(script_int_to_value(idx));
 }
 
 JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -137,12 +134,10 @@ JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef f
 	obj_type		*obj;
 
 	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	if (obj==NULL) return(script_null_to_value());
 	
 	idx=map_find_nearest_node_by_point(&map,&obj->pnt);
-	*rval=script_int_to_value(idx);
-	
-	return(TRUE);
+	return(script_int_to_value(idx));
 }
 
 JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -152,7 +147,7 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 	char			name[name_str_len];
 	bool			good_param;
 	JSObject		*array;
-	JSValueRef			vp;
+	JSValueRef		vp;
 	
 		// from node and name
 		
@@ -172,7 +167,7 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 	
 	if (!good_param) {
 		*exception=script_create_exception("Second parameter to findNearestNamesInPath needs to be an array");
-		return(FALSE);
+		return(script_null_to_value());
 	}
 	
 	array=JSVAL_TO_OBJECT(argv[1]);
@@ -198,9 +193,7 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 		}
 	}
 	
-	*rval=script_int_to_value(idx);
-	
-	return(TRUE);
+	return(script_int_to_value(idx));
 }
 
 JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -214,7 +207,7 @@ JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,J
 	from_idx=script_value_to_int(argv[0]);
 
 	obj=script_find_obj_from_uid_arg(argv[1],exception);
-	if (obj==NULL) return(FALSE);
+	if (obj==NULL) return(script_null_to_value());
 	
 		// check all unheld weapons
 		
@@ -235,9 +228,7 @@ JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,J
 		}
 	}
 	
-	*rval=script_int_to_value(idx);
-	
-	return(TRUE);
+	return(script_int_to_value(idx));
 }
 
 /* =======================================================
@@ -251,9 +242,7 @@ JSValueRef js_map_node_next_in_path_func(JSContextRef cx,JSObjectRef func,JSObje
 	int				idx;
 	
 	idx=map_find_next_node_in_path(&map,script_value_to_int(argv[0]),script_value_to_int(argv[1]));
-	*rval=script_int_to_value(idx);
-
-	return(TRUE);
+	return(script_int_to_value(idx));
 }
 
 JSValueRef js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -262,7 +251,7 @@ JSValueRef js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObjectRef func,
 	node_type		*node;
 
 	node=script_find_node_from_idx_arg(argv[0],exception);
-	if (node==NULL) return(FALSE);
+	if (node==NULL) return(script_null_to_value());
 
 	cnt=0;
 
@@ -272,9 +261,7 @@ JSValueRef js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObjectRef func,
 		}
 	}
 
-	*rval=script_int_array_to_value(cnt,link);
-
-	return(TRUE);
+	return(script_int_array_to_value(cnt,link));
 }
 
 /* =======================================================
@@ -290,12 +277,11 @@ JSValueRef js_map_node_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 		// node
 		
 	node=script_find_node_from_idx_arg(argv[0],exception);
-	if (node==NULL) return(FALSE);
+	if (node==NULL) return(script_null_to_value());
 	
 		// get position
 		
-	*rval=script_string_to_value(node->name);
-	return(TRUE);
+	return(script_string_to_value(node->name));
 }
 
 /* =======================================================
@@ -312,7 +298,7 @@ JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObje
 		// node
 		
 	node=script_find_node_from_idx_arg(argv[0],exception);
-	if (node==NULL) return(FALSE);
+	if (node==NULL) return(script_null_to_value());
 
 		// x,z,y
 		
@@ -322,9 +308,7 @@ JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 		// get distance
 		
-	*rval=script_int_to_value(distance_get(node->pnt.x,node->pnt.y,node->pnt.z,x,y,z));
-	
-	return(TRUE);
+	return(script_int_to_value(distance_get(node->pnt.x,node->pnt.y,node->pnt.z,x,y,z)));
 }
 
 JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -336,7 +320,7 @@ JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObje
 		// node
 		
 	node=script_find_node_from_idx_arg(argv[0],exception);
-	if (node==NULL) return(FALSE);
+	if (node==NULL) return(script_null_to_value());
 
 		// x,z,y
 		
@@ -350,9 +334,7 @@ JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObje
 	ang_y=angle_find(x,z,node->pnt.x,node->pnt.z);
 	ang_z=angle_find(x,y,node->pnt.x,node->pnt.y);
 		
-	*rval=script_angle_to_value(ang_x,ang_y,ang_z);
-	
-	return(TRUE);
+	return(script_angle_to_value(ang_x,ang_y,ang_z));
 }
 
 /* =======================================================
@@ -368,11 +350,10 @@ JSValueRef js_map_node_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 		// node
 		
 	node=script_find_node_from_idx_arg(argv[0],exception);
-	if (node==NULL) return(FALSE);
+	if (node==NULL) return(script_null_to_value());
 	
 		// get position
 		
-	*rval=script_point_to_value(node->pnt.x,node->pnt.y,node->pnt.z);
-	return(TRUE);
+	return(script_point_to_value(node->pnt.x,node->pnt.y,node->pnt.z));
 }
 

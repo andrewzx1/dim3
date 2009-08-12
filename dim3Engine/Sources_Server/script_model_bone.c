@@ -156,7 +156,7 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 		// get proper draw setup
 		
 	draw=script_bone_function_setup(exception);
-	if (draw==NULL) return(FALSE);
+	if (draw==NULL) return(script_null_to_value());
 	
 		// get bone offset
 		
@@ -165,12 +165,10 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	if (!model_find_bone_offset(draw,pose_name,bone_name,&x,&y,&z)) {
 		*exception=js_model_bone_name_exception(pose_name,bone_name);
-		return(FALSE);
+		return(script_null_to_value());
 	}
 	
-	*rval=script_point_to_value(x,y,z);
-	
-	return(TRUE);
+	return(script_point_to_value(x,y,z));
 }
 
 JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -182,7 +180,7 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 		// get proper draw setup
 		
 	draw=script_bone_function_setup(exception);
-	if (draw==NULL) return(FALSE);
+	if (draw==NULL) return(script_null_to_value());
 	
 		// get bone position
 	
@@ -191,12 +189,10 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	
 	if (!model_find_bone_position(draw,pose_name,bone_name,&x,&y,&z)) {
 		*exception=js_model_bone_name_exception(pose_name,bone_name);
-		return(FALSE);
+		return(script_null_to_value());
 	}
 	
-	*rval=script_point_to_value(x,y,z);
-	
-	return(TRUE);
+	return(script_point_to_value(x,y,z));
 }
 
 JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -208,7 +204,7 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 		// get proper draw setup
 		
 	draw=script_bone_function_setup(exception);
-	if (draw==NULL) return(FALSE);
+	if (draw==NULL) return(script_null_to_value());
 	
 		// get bone light
 
@@ -217,11 +213,9 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	
 	if (!model_get_bone_brightness(draw,pose_name,bone_name,&bright)) {
 		*exception=js_model_bone_name_exception(pose_name,bone_name);
-		return(FALSE);
+		return(script_null_to_value());
 	}
 	
-	*rval=script_float_to_value(bright);
-	
-	return(TRUE);
+	return(script_float_to_value(bright));
 }
 

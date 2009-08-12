@@ -93,20 +93,17 @@ bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 
 JSValueRef js_map_info_get_file(void)
 {
-	*vp=script_string_to_value(map.info.name);
-	return(TRUE);
+	return(script_string_to_value(map.info.name));
 }
 
 JSValueRef js_map_info_get_title(void)
 {
-	*vp=script_string_to_value(map.info.title);
-	return(TRUE);
+	return(script_string_to_value(map.info.title));
 }
 
 JSValueRef js_map_info_get_author(void)
 {
-	*vp=script_string_to_value(map.info.author);
-	return(TRUE);
+	return(script_string_to_value(map.info.author));
 }
 
 

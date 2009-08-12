@@ -109,7 +109,7 @@ JSValueRef js_game_score_get_objectId(void)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(TRUE);
+	if (game_obj_rule_uid==-1) return(script_int_to_value(-1));
 
 	obj=object_find_uid(game_obj_rule_uid);
 	return(script_int_to_value(obj->uid));
@@ -119,7 +119,7 @@ JSValueRef js_game_score_get_kill(void)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(TRUE);
+	if (game_obj_rule_uid==-1) return(script_int_to_value(0));
 
 	obj=object_find_uid(game_obj_rule_uid);
 	return(script_int_to_value(obj->score.kill));
@@ -129,7 +129,7 @@ JSValueRef js_game_score_get_death(void)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(TRUE);
+	if (game_obj_rule_uid==-1) return(script_int_to_value(0));
 
 	obj=object_find_uid(game_obj_rule_uid);
 	return(script_int_to_value(obj->score.death));
@@ -139,7 +139,7 @@ JSValueRef js_game_score_get_suicide(void)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(TRUE);
+	if (game_obj_rule_uid==-1) return(script_int_to_value(0));
 
 	obj=object_find_uid(game_obj_rule_uid);
 	return(script_int_to_value(obj->score.suicide));
@@ -149,7 +149,7 @@ JSValueRef js_game_score_get_goal(void)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(TRUE);
+	if (game_obj_rule_uid==-1) return(script_int_to_value(0));
 
 	obj=object_find_uid(game_obj_rule_uid);
 	return(script_int_to_value(obj->score.goal));
@@ -165,7 +165,7 @@ JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(TRUE);
+	if (game_obj_rule_uid==-1) return(script_null_to_value());
 
 		// update score
 

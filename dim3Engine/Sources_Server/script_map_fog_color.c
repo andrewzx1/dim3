@@ -96,20 +96,17 @@ bool js_map_fog_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 
 JSValueRef js_map_fog_color_get_red(void)
 {
-	*vp=script_float_to_value(map.fog.col.r);
-	return(TRUE);
+	return(script_float_to_value(map.fog.col.r));
 }
 
 JSValueRef js_map_fog_color_get_green(void)
 {
-	*vp=script_float_to_value(map.fog.col.g);
-	return(TRUE);
+	return(script_float_to_value(map.fog.col.g));
 }
 
 JSValueRef js_map_fog_color_get_blue(void)
 {
-	*vp=script_float_to_value(map.fog.col.b);
-	return(TRUE);
+	return(script_float_to_value(map.fog.col.b));
 }
 
 /* =======================================================
@@ -120,16 +117,16 @@ JSValueRef js_map_fog_color_get_blue(void)
 
 void js_map_fog_color_set_red(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.col.r=script_value_to_float(*vp);
+	map.fog.col.r=script_value_to_float(vp);
 }
 
 void js_map_fog_color_set_green(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.col.g=script_value_to_float(*vp);
+	map.fog.col.g=script_value_to_float(vp);
 }
 
 void js_map_fog_color_set_blue(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.col.b=script_value_to_float(*vp);
+	map.fog.col.b=script_value_to_float(vp);
 }
 
