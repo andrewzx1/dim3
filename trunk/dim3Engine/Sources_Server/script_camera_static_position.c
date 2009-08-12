@@ -104,14 +104,12 @@ bool js_camera_static_position_set_property(JSContextRef cx,JSObjectRef j_obj,JS
 
 JSValueRef js_camera_static_position_get_follow(void)
 {
-	*vp=script_bool_to_value(camera.static_follow);
-	return(TRUE);
+	return(script_bool_to_value(camera.static_follow));
 }
 
 JSValueRef js_camera_static_position_get_walkTurnSpeed(void)
 {
-	*vp=script_float_to_value(camera.auto_walk.turn_speed);
-	return(TRUE);
+	return(script_float_to_value(camera.auto_walk.turn_speed));
 }
 
 /* =======================================================
@@ -122,12 +120,12 @@ JSValueRef js_camera_static_position_get_walkTurnSpeed(void)
 
 void js_camera_static_position_set_follow(JSValueRef vp,JSValueRef *exception)
 {
-	camera.static_follow=script_value_to_bool(*vp);
+	camera.static_follow=script_value_to_bool(vp);
 }
 
 void js_camera_static_position_set_walkTurnSpeed(JSValueRef vp,JSValueRef *exception)
 {
-	camera.auto_walk.turn_speed=script_value_to_float(*vp);
+	camera.auto_walk.turn_speed=script_value_to_float(vp);
 }
 
 /* =======================================================
@@ -140,7 +138,7 @@ JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,
 {
 	camera_static_update(script_value_to_int(argv[0]),script_value_to_int(argv[1]),script_value_to_int(argv[2]));
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -151,13 +149,13 @@ JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectR
 	idx=script_value_to_int(argv[0]);
 	if ((idx<0) || (idx>=map.nspot)) {
 		*exception=script_create_exception("Unknown spot");
-		return(FALSE);
 	}
-	
-	spot=&map.spots[idx];
-	camera_static_update(spot->pnt.x,spot->pnt.z,spot->pnt.y);
-	
-	return(TRUE);
+	else {
+		spot=&map.spots[idx];
+		camera_static_update(spot->pnt.x,spot->pnt.z,spot->pnt.y);
+	}
+
+	return(script_null_to_value());
 }
 
 JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -178,5 +176,5 @@ JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectR
 		*exception=script_create_exception(err_str);
 	}
 
-	return(TRUE);
+	return(script_null_to_value());
 }

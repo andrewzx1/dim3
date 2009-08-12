@@ -122,27 +122,22 @@ JSValueRef js_map_spot_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 	char		name[name_str_len],type[name_str_len];
 	
 	if ((script_is_value_null(argv[0])) && (script_is_value_null(argv[1]))) {
-		*rval=script_int_to_value(-1);
-		return(TRUE);
+		return(script_int_to_value(-1));
 	}
 	
 	if ((!script_is_value_null(argv[0])) && (!script_is_value_null(argv[1]))) {
 		script_value_to_string(argv[0],name,name_str_len);
 		script_value_to_string(argv[1],type,name_str_len);
-		*rval=script_int_to_value(map_find_spot(&map,name,type));
-		return(TRUE);
+		return(script_int_to_value(map_find_spot(&map,name,type)));
 	}
 	
 	if (!script_is_value_null(argv[0])) {
 		script_value_to_string(argv[0],name,name_str_len);
-		*rval=script_int_to_value(map_find_spot(&map,name,NULL));
-		return(TRUE);
+		return(script_int_to_value(map_find_spot(&map,name,NULL)));
 	}
 		
 	script_value_to_string(argv[1],type,name_str_len);
-	*rval=script_int_to_value(map_find_spot(&map,NULL,type));
-	
-	return(TRUE);
+	return(script_int_to_value(map_find_spot(&map,NULL,type)));
 }
 
 /* =======================================================
@@ -156,11 +151,9 @@ JSValueRef js_map_spot_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	spot_type	*spot;
 	
 	spot=script_find_spot_from_idx_arg(argv[0],exception);
-	if (spot==NULL) return(FALSE);
+	if (spot==NULL) return(script_null_to_value());
 	
-	*rval=script_string_to_value(spot->name);
-	
-	return(TRUE);
+	return(script_string_to_value(spot->name));
 }
 
 JSValueRef js_map_spot_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -168,11 +161,9 @@ JSValueRef js_map_spot_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	spot_type	*spot;
 	
 	spot=script_find_spot_from_idx_arg(argv[0],exception);
-	if (spot==NULL) return(FALSE);
+	if (spot==NULL) return(script_null_to_value());
 	
-	*rval=script_string_to_value(spot->type);
-	
-	return(TRUE);
+	return(script_string_to_value(spot->type));
 }
 
 JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -180,11 +171,9 @@ JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObject
 	spot_type	*spot;
 	
 	spot=script_find_spot_from_idx_arg(argv[0],exception);
-	if (spot==NULL) return(FALSE);
+	if (spot==NULL) return(script_null_to_value());
 	
-	*rval=script_string_to_value(spot->script);
-	
-	return(TRUE);
+	return(script_string_to_value(spot->script));
 }
 
 JSValueRef js_map_spot_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -192,11 +181,9 @@ JSValueRef js_map_spot_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObj
 	spot_type	*spot;
 	
 	spot=script_find_spot_from_idx_arg(argv[0],exception);
-	if (spot==NULL) return(FALSE);
+	if (spot==NULL) return(script_null_to_value());
 	
-	*rval=script_string_to_value(spot->params);
-	
-	return(TRUE);
+	return(script_string_to_value(spot->params));
 }
 
 /* =======================================================
@@ -212,12 +199,11 @@ JSValueRef js_map_spot_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(argv[0],exception);
-	if (spot==NULL) return(FALSE);
+	if (spot==NULL) return(script_null_to_value());
 	
 		// get position
 		
-	*rval=script_point_to_value(spot->pnt.x,spot->pnt.y,spot->pnt.z);
-	return(TRUE);
+	return(script_point_to_value(spot->pnt.x,spot->pnt.y,spot->pnt.z));
 }
 
 JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -227,12 +213,11 @@ JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectR
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(argv[0],exception);
-	if (spot==NULL) return(FALSE);
+	if (spot==NULL) return(script_null_to_value());
 	
 		// get position
 		
-	*rval=script_angle_to_value(0,spot->ang.y,0);
-	return(TRUE);
+	return(script_angle_to_value(0,spot->ang.y,0));
 }
 
 /* =======================================================
@@ -250,7 +235,7 @@ JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObj
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(argv[0],exception);
-	if (spot==NULL) return(FALSE);
+	if (spot==NULL) return(script_null_to_value());
 
 		// attach
 		
@@ -261,6 +246,6 @@ JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	map_spot_attach_object(spot,name,type,script,params);
 		
-	return(TRUE);
+	return(script_null_to_value());
 }
 

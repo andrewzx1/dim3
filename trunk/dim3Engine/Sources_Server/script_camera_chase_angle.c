@@ -97,20 +97,17 @@ bool js_camera_chase_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 JSValueRef js_camera_chase_angle_get_x(void)
 {
-	*vp=script_float_to_value(camera.chase_ang.x);
-	return(TRUE);
+	return(script_float_to_value(camera.chase_ang.x));
 }
 
 JSValueRef js_camera_chase_angle_get_y(void)
 {
-	*vp=script_float_to_value(camera.chase_ang.y);
-	return(TRUE);
+	return(script_float_to_value(camera.chase_ang.y));
 }
 
 JSValueRef js_camera_chase_angle_get_z(void)
 {
-	*vp=script_float_to_value(camera.chase_ang.z);
-	return(TRUE);
+	return(script_float_to_value(camera.chase_ang.z));
 }
 
 /* =======================================================
@@ -121,18 +118,15 @@ JSValueRef js_camera_chase_angle_get_z(void)
 
 void js_camera_chase_angle_set_x(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_ang.x=script_value_to_float(*vp);
-	return(TRUE);
+	camera.chase_ang.x=script_value_to_float(vp);
 }
 
 void js_camera_chase_angle_set_y(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_ang.y=script_value_to_float(*vp);
-	return(TRUE);
+	camera.chase_ang.y=script_value_to_float(vp);
 }
 
 void js_camera_chase_angle_set_z(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_ang.z=script_value_to_float(*vp);
-	return(TRUE);
+	camera.chase_ang.z=script_value_to_float(vp);
 }

@@ -91,13 +91,11 @@ bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSString
 
 JSValueRef js_interface_screen_get_width(void)
 {
-	*vp=script_int_to_value(setup.screen.x_sz);
-	return(TRUE);
+	return(script_int_to_value(setup.screen.x_sz));
 }
 
 
 JSValueRef js_interface_screen_get_height(void)
 {
-	*vp=script_int_to_value(setup.screen.y_sz);
-	return(TRUE);
+	return(script_int_to_value(setup.screen.y_sz));
 }

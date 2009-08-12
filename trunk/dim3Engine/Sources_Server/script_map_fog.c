@@ -123,74 +123,62 @@ bool js_map_fog_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 
 JSValueRef js_map_fog_get_on(void)
 {
-	*vp=script_bool_to_value(map.fog.on);
-	return(TRUE);
+	return(script_bool_to_value(map.fog.on));
 }
 
 JSValueRef js_map_fog_get_count(void)
 {
-	*vp=script_int_to_value(map.fog.count);
-	return(TRUE);
+	return(script_int_to_value(map.fog.count));
 }
 
 JSValueRef js_map_fog_get_outerRadius(void)
 {
-	*vp=script_int_to_value(map.fog.outer_radius);
-	return(TRUE);
+	return(script_int_to_value(map.fog.outer_radius));
 }
 
 JSValueRef js_map_fog_get_innerRadius(void)
 {
-	*vp=script_int_to_value(map.fog.inner_radius);
-	return(TRUE);
+	return(script_int_to_value(map.fog.inner_radius));
 }
 
 JSValueRef js_map_fog_get_high(void)
 {
-	*vp=script_int_to_value(map.fog.high);
-	return(TRUE);
+	return(script_int_to_value(map.fog.high));
 }
 
 JSValueRef js_map_fog_get_drop(void)
 {
-	*vp=script_int_to_value(map.fog.drop);
-	return(TRUE);
+	return(script_int_to_value(map.fog.drop));
 }
 
 JSValueRef js_map_fog_get_textureIndex(void)
 {
-	*vp=script_int_to_value(map.fog.texture_idx);
-	return(TRUE);
+	return(script_int_to_value(map.fog.texture_idx));
 }
 
 JSValueRef js_map_fog_get_speed(void)
 {
-	*vp=script_float_to_value(map.fog.speed);
-	return(TRUE);
+	return(script_float_to_value(map.fog.speed));
 }
 
 JSValueRef js_map_fog_get_textureXFact(void)
 {
-	*vp=script_float_to_value(map.fog.txt_x_fact);
-	return(TRUE);
+	return(script_float_to_value(map.fog.txt_x_fact));
 }
 
 JSValueRef js_map_fog_get_textureYFact(void)
 {
-	*vp=script_float_to_value(map.fog.txt_y_fact);
-	return(TRUE);
+	return(script_float_to_value(map.fog.txt_y_fact));
 }
 
 JSValueRef js_map_fog_get_alpha(void)
 {
-	*vp=script_float_to_value(map.fog.alpha);
-	return(TRUE);
+	return(script_float_to_value(map.fog.alpha));
 }
 
 JSValueRef js_map_fog_get_useSolidColor(void)
 {
-	*vp=script_bool_to_value(map.fog.use_solid_color);
-	return(TRUE);
+	return(script_bool_to_value(map.fog.use_solid_color));
 }
 
 /* =======================================================
@@ -201,62 +189,62 @@ JSValueRef js_map_fog_get_useSolidColor(void)
 
 void js_map_fog_set_on(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.on=script_value_to_bool(*vp);
+	map.fog.on=script_value_to_bool(vp);
 }
 
 void js_map_fog_set_count(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.count=script_value_to_int(*vp);
+	map.fog.count=script_value_to_int(vp);
 }
 
 void js_map_fog_set_outerRadius(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.outer_radius=script_value_to_int(*vp);
+	map.fog.outer_radius=script_value_to_int(vp);
 }
 
 void js_map_fog_set_innerRadius(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.inner_radius=script_value_to_int(*vp);
+	map.fog.inner_radius=script_value_to_int(vp);
 }
 
 void js_map_fog_set_high(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.high=script_value_to_int(*vp);
+	map.fog.high=script_value_to_int(vp);
 }
 
 void js_map_fog_set_drop(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.drop=script_value_to_int(*vp);
+	map.fog.drop=script_value_to_int(vp);
 }
 
 void js_map_fog_set_textureIndex(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.texture_idx=script_value_to_int(*vp);
+	map.fog.texture_idx=script_value_to_int(vp);
 }
 
 void js_map_fog_set_speed(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.speed=script_value_to_float(*vp);
+	map.fog.speed=script_value_to_float(vp);
 }
 
 void js_map_fog_set_textureXFact(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.txt_x_fact=script_value_to_float(*vp);
+	map.fog.txt_x_fact=script_value_to_float(vp);
 }
 
 void js_map_fog_set_textureYFact(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.txt_y_fact=script_value_to_float(*vp);
+	map.fog.txt_y_fact=script_value_to_float(vp);
 }
 
 void js_map_fog_set_alpha(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.alpha=script_value_to_float(*vp);
+	map.fog.alpha=script_value_to_float(vp);
 }
 
 void js_map_fog_set_useSolidColor(JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.use_solid_color=script_value_to_bool(*vp);
+	map.fog.use_solid_color=script_value_to_bool(vp);
 }
 
 

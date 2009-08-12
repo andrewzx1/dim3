@@ -114,7 +114,7 @@ JSValueRef js_interface_fade_circle_func(JSContextRef cx,JSObjectRef func,JSObje
 	obj=object_find_uid(server.player_obj_uid);
 	object_fade_start(js.time.current_tick,obj,x,y,start_sz,end_sz,life_msec,auto_clear);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_fade_clear_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -124,6 +124,6 @@ JSValueRef js_interface_fade_clear_func(JSContextRef cx,JSObjectRef func,JSObjec
 	obj=object_find_uid(server.player_obj_uid);
 	object_fade_clear(obj);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 

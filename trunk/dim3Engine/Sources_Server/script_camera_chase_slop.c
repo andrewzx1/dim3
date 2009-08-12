@@ -97,20 +97,17 @@ bool js_camera_chase_slop_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 JSValueRef js_camera_chase_slop_get_x(void)
 {
-	*vp=script_float_to_value(camera.chase_slop.x);
-	return(TRUE);
+	return(script_float_to_value(camera.chase_slop.x));
 }
 
 JSValueRef js_camera_chase_slop_get_y(void)
 {
-	*vp=script_float_to_value(camera.chase_slop.y);
-	return(TRUE);
+	return(script_float_to_value(camera.chase_slop.y));
 }
 
 JSValueRef js_camera_chase_slop_get_z(void)
 {
-	*vp=script_float_to_value(camera.chase_slop.z);
-	return(TRUE);
+	return(script_float_to_value(camera.chase_slop.z));
 }
 
 /* =======================================================
@@ -121,15 +118,15 @@ JSValueRef js_camera_chase_slop_get_z(void)
 
 void js_camera_chase_slop_set_x(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_slop.x=script_value_to_float(*vp);
+	camera.chase_slop.x=script_value_to_float(vp);
 }
 
 void js_camera_chase_slop_set_y(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_slop.y=script_value_to_float(*vp);
+	camera.chase_slop.y=script_value_to_float(vp);
 }
 
 void js_camera_chase_slop_set_z(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_slop.z=script_value_to_float(*vp);
+	camera.chase_slop.z=script_value_to_float(vp);
 }

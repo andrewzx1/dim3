@@ -93,12 +93,12 @@ bool js_camera_state_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 JSValueRef js_camera_state_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	camera_save();
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_camera_state_restore_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	camera_restore();
-	return(TRUE);
+	return(script_null_to_value());
 }
 

@@ -116,7 +116,7 @@ JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef
 	script_value_to_string(argv[0],name,name_str_len);
 	story_trigger_set(name,script_value_to_int(argv[1]));
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -136,7 +136,7 @@ JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef
 	
 	title_trigger_set("Titles",name,sound_name,event_id);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -154,7 +154,7 @@ JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef
 	script_value_to_string(argv[0],name,name_str_len);
 	movie_trigger_set(name,event_id);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -185,29 +185,29 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 
 	chooser_trigger_set(name,(char*)sub_txt);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_interaction_start_save_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	file_trigger_set();
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_interaction_start_setup_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	setup_game_trigger_set();
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	menu_trigger_set();
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	interface_quit_trigger_set();
-	return(TRUE);
+	return(script_null_to_value());
 }

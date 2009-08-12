@@ -113,7 +113,7 @@ JSValueRef js_game_join_get_name(void)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(TRUE);
+	if (game_obj_rule_uid==-1) return(script_null_to_value());
 
 	obj=object_find_uid(game_obj_rule_uid);
 	return(script_string_to_value(obj->name));
@@ -123,7 +123,7 @@ JSValueRef js_game_join_get_team(void)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(TRUE);
+	if (game_obj_rule_uid==-1) return(script_null_to_value());
 
 	obj=object_find_uid(game_obj_rule_uid);
     return(script_int_to_value(obj->team_idx+sd_team_none));

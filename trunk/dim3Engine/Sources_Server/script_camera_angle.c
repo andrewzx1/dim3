@@ -97,20 +97,17 @@ bool js_camera_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 
 JSValueRef js_camera_angle_get_x(void)
 {
-	*vp=script_float_to_value(camera.ang.x);
-	return(TRUE);
+	return(script_float_to_value(camera.ang.x));
 }
 
 JSValueRef js_camera_angle_get_y(void)
 {
-	*vp=script_float_to_value(camera.ang.y);
-	return(TRUE);
+	return(script_float_to_value(camera.ang.y));
 }
 
 JSValueRef js_camera_angle_get_z(void)
 {
-	*vp=script_float_to_value(camera.ang.z);
-	return(TRUE);
+	return(script_float_to_value(camera.ang.z));
 }
 
 /* =======================================================
@@ -121,16 +118,16 @@ JSValueRef js_camera_angle_get_z(void)
 
 void js_camera_angle_set_x(JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.x=script_value_to_float(*vp);
+	camera.ang.x=script_value_to_float(vp);
 }
 
 void js_camera_angle_set_y(JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.y=script_value_to_float(*vp);
+	camera.ang.y=script_value_to_float(vp);
 }
 
 void js_camera_angle_set_z(JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.z=script_value_to_float(*vp);
+	camera.ang.z=script_value_to_float(vp);
 }
 

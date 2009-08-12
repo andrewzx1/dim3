@@ -98,9 +98,7 @@ JSValueRef js_model_offset_get_x(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_int_to_value(draw->offset.x);
-
-	return(TRUE);
+	return(script_int_to_value(draw->offset.x));
 }
 
 JSValueRef js_model_offset_get_y(void)
@@ -108,9 +106,7 @@ JSValueRef js_model_offset_get_y(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_int_to_value(draw->offset.y);
-
-	return(TRUE);
+	return(script_int_to_value(draw->offset.y));
 }
 
 JSValueRef js_model_offset_get_z(void)
@@ -118,9 +114,7 @@ JSValueRef js_model_offset_get_z(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_int_to_value(draw->offset.z);
-
-	return(TRUE);
+	return(script_int_to_value(draw->offset.z));
 }
 
 /* =======================================================
@@ -134,7 +128,7 @@ void js_model_offset_set_x(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->offset.x=script_value_to_int(*vp);
+	draw->offset.x=script_value_to_int(vp);
 }
 
 void js_model_offset_set_y(JSValueRef vp,JSValueRef *exception)
@@ -142,7 +136,7 @@ void js_model_offset_set_y(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->offset.y=script_value_to_int(*vp);
+	draw->offset.y=script_value_to_int(vp);
 }
 
 void js_model_offset_set_z(JSValueRef vp,JSValueRef *exception)
@@ -150,7 +144,7 @@ void js_model_offset_set_z(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->offset.z=script_value_to_int(*vp);
+	draw->offset.z=script_value_to_int(vp);
 }
 
 

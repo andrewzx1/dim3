@@ -95,19 +95,16 @@ bool js_camera_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 JSValueRef js_camera_position_get_x(void)
 {
-	*vp=script_int_to_value(view.render->camera.pnt.x);
-	return(TRUE);
+	return(script_int_to_value(view.render->camera.pnt.x));
 }
 
 JSValueRef js_camera_position_get_y(void)
 {
-	*vp=script_int_to_value(view.render->camera.pnt.y);
-	return(TRUE);
+	return(script_int_to_value(view.render->camera.pnt.y));
 }
 
 JSValueRef js_camera_position_get_z(void)
 {
-	*vp=script_int_to_value(view.render->camera.pnt.z);
-	return(TRUE);
+	return(script_int_to_value(view.render->camera.pnt.z));
 }
 

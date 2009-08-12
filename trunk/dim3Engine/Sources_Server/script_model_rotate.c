@@ -98,9 +98,7 @@ JSValueRef js_model_rotate_get_x(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_float_to_value(draw->rot.x);
-
-	return(TRUE);
+	return(script_float_to_value(draw->rot.x));
 }
 
 JSValueRef js_model_rotate_get_y(void)
@@ -108,9 +106,7 @@ JSValueRef js_model_rotate_get_y(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_float_to_value(draw->rot.y);
-
-	return(TRUE);
+	return(script_float_to_value(draw->rot.y));
 }
 
 JSValueRef js_model_rotate_get_z(void)
@@ -118,9 +114,7 @@ JSValueRef js_model_rotate_get_z(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_float_to_value(draw->rot.z);
-
-	return(TRUE);
+	return(script_float_to_value(draw->rot.z));
 }
 
 /* =======================================================
@@ -134,7 +128,7 @@ void js_model_rotate_set_x(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->rot.x=script_value_to_float(*vp);
+	draw->rot.x=script_value_to_float(vp);
 }
 
 void js_model_rotate_set_y(JSValueRef vp,JSValueRef *exception)
@@ -142,7 +136,7 @@ void js_model_rotate_set_y(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->rot.y=script_value_to_float(*vp);
+	draw->rot.y=script_value_to_float(vp);
 }
 
 void js_model_rotate_set_z(JSValueRef vp,JSValueRef *exception)
@@ -150,6 +144,6 @@ void js_model_rotate_set_z(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->rot.z=script_value_to_float(*vp);
+	draw->rot.z=script_value_to_float(vp);
 }
 

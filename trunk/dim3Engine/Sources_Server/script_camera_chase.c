@@ -97,20 +97,17 @@ bool js_camera_chase_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 
 JSValueRef js_camera_chase_get_size(void)
 {
-	*vp=script_int_to_value(camera.chase_size);
-	return(TRUE);
+	return(script_int_to_value(camera.chase_size));
 }
 
 JSValueRef js_camera_chase_get_distance(void)
 {
-	*vp=script_int_to_value(camera.chase_distance);
-	return(TRUE);
+	return(script_int_to_value(camera.chase_distance));
 }
 
 JSValueRef js_camera_chase_get_trackSpeed(void)
 {
-	*vp=script_float_to_value(camera.chase_track_speed);
-	return(TRUE);
+	return(script_float_to_value(camera.chase_track_speed));
 }
 
 /* =======================================================
@@ -121,15 +118,15 @@ JSValueRef js_camera_chase_get_trackSpeed(void)
 
 void js_camera_chase_set_size(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_size=script_value_to_int(*vp);
+	camera.chase_size=script_value_to_int(vp);
 }
 
 void js_camera_chase_set_distance(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_distance=script_value_to_int(*vp);
+	camera.chase_distance=script_value_to_int(vp);
 }
 
 void js_camera_chase_set_trackSpeed(JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_track_speed=script_value_to_float(*vp);
+	camera.chase_track_speed=script_value_to_float(vp);
 }

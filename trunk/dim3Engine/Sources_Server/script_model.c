@@ -112,9 +112,7 @@ JSValueRef js_model_get_on(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_bool_to_value(draw->on);
-
-	return(TRUE);
+	return(script_bool_to_value(draw->on));
 }
 
 JSValueRef js_model_get_name(void)
@@ -122,9 +120,7 @@ JSValueRef js_model_get_name(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_string_to_value(draw->name);
-
-	return(TRUE);
+	return(script_string_to_value(draw->name));
 }
 
 JSValueRef js_model_get_bounce(void)
@@ -132,9 +128,7 @@ JSValueRef js_model_get_bounce(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_bool_to_value(draw->bounce);
-
-	return(TRUE);
+	return(script_bool_to_value(draw->bounce));
 }
 
 JSValueRef js_model_get_alpha(void)
@@ -142,9 +136,7 @@ JSValueRef js_model_get_alpha(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_float_to_value(draw->alpha);
-
-	return(TRUE);
+	return(script_float_to_value(draw->alpha));
 }
 
 JSValueRef js_model_get_resize(void)
@@ -152,9 +144,7 @@ JSValueRef js_model_get_resize(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_float_to_value(draw->resize);
-
-	return(TRUE);
+	return(script_float_to_value(draw->resize));
 }
 
 JSValueRef js_model_get_faceForward(void)
@@ -162,9 +152,7 @@ JSValueRef js_model_get_faceForward(void)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	*vp=script_bool_to_value(draw->face_forward);
-
-	return(TRUE);
+	return(script_bool_to_value(draw->face_forward));
 }
 
 /* =======================================================
@@ -178,7 +166,7 @@ void js_model_set_on(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->on=script_value_to_bool(*vp);
+	draw->on=script_value_to_bool(vp);
 }
 
 void js_model_set_name(JSValueRef vp,JSValueRef *exception)
@@ -186,7 +174,7 @@ void js_model_set_name(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	script_value_to_string(*vp,draw->name,name_str_len);
+	script_value_to_string(vp,draw->name,name_str_len);
 }
 
 void js_model_set_bounce(JSValueRef vp,JSValueRef *exception)
@@ -194,7 +182,7 @@ void js_model_set_bounce(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->bounce=script_value_to_bool(*vp);
+	draw->bounce=script_value_to_bool(vp);
 }
 
 void js_model_set_alpha(JSValueRef vp,JSValueRef *exception)
@@ -202,7 +190,7 @@ void js_model_set_alpha(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->alpha=script_value_to_float(*vp);
+	draw->alpha=script_value_to_float(vp);
 }
 
 void js_model_set_resize(JSValueRef vp,JSValueRef *exception)
@@ -210,7 +198,7 @@ void js_model_set_resize(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->resize=script_value_to_float(*vp);
+	draw->resize=script_value_to_float(vp);
 }
 
 void js_model_set_faceForward(JSValueRef vp,JSValueRef *exception)
@@ -218,6 +206,6 @@ void js_model_set_faceForward(JSValueRef vp,JSValueRef *exception)
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->face_forward=script_value_to_bool(*vp);
+	draw->face_forward=script_value_to_bool(vp);
 }
 

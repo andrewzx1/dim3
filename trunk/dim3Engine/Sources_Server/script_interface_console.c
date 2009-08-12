@@ -97,13 +97,12 @@ JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSOb
 	script_value_to_string(argv[0],txt,256);
 	console_add(txt);
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	*rval=script_string_to_value(console_input_str);
-	return(TRUE);
+	return(script_string_to_value(console_input_str));
 }
 
 
