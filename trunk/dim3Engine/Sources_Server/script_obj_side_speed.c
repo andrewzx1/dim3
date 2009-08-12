@@ -44,14 +44,14 @@ JSValueRef js_obj_side_speed_get_acceleration(void);
 JSValueRef js_obj_side_speed_get_deceleration(void);
 JSValueRef js_obj_side_speed_get_accelerationAir(void);
 JSValueRef js_obj_side_speed_get_decelerationAir(void);
-bool js_obj_side_speed_set_walk(JSValueRef vp);
-bool js_obj_side_speed_set_run(JSValueRef vp);
-bool js_obj_side_speed_set_crawl(JSValueRef vp);
-bool js_obj_side_speed_set_air(JSValueRef vp);
-bool js_obj_side_speed_set_acceleration(JSValueRef vp);
-bool js_obj_side_speed_set_deceleration(JSValueRef vp);
-bool js_obj_side_speed_set_accelerationAir(JSValueRef vp);
-bool js_obj_side_speed_set_decelerationAir(JSValueRef vp);
+void js_obj_side_speed_set_walk(JSValueRef vp,JSValueRef *exception);
+void js_obj_side_speed_set_run(JSValueRef vp,JSValueRef *exception);
+void js_obj_side_speed_set_crawl(JSValueRef vp,JSValueRef *exception);
+void js_obj_side_speed_set_air(JSValueRef vp,JSValueRef *exception);
+void js_obj_side_speed_set_acceleration(JSValueRef vp,JSValueRef *exception);
+void js_obj_side_speed_set_deceleration(JSValueRef vp,JSValueRef *exception);
+void js_obj_side_speed_set_accelerationAir(JSValueRef vp,JSValueRef *exception);
+void js_obj_side_speed_set_decelerationAir(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	obj_side_speed_props[]={
 							{"walk",					js_obj_side_speed_get_walk,				js_obj_side_speed_set_walk},
@@ -195,83 +195,67 @@ JSValueRef js_obj_side_speed_get_decelerationAir(void)
       
 ======================================================= */
 
-bool js_obj_side_speed_set_walk(JSValueRef vp)
+void js_obj_side_speed_set_walk(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_move.max_walk_speed=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_side_speed_set_run(JSValueRef vp)
+void js_obj_side_speed_set_run(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_move.max_run_speed=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_side_speed_set_crawl(JSValueRef vp)
+void js_obj_side_speed_set_crawl(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_move.max_crawl_speed=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_side_speed_set_air(JSValueRef vp)
+void js_obj_side_speed_set_air(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_move.max_air_speed=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_side_speed_set_acceleration(JSValueRef vp)
+void js_obj_side_speed_set_acceleration(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_move.accelerate=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_side_speed_set_deceleration(JSValueRef vp)
+void js_obj_side_speed_set_deceleration(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_move.decelerate=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_side_speed_set_accelerationAir(JSValueRef vp)
+void js_obj_side_speed_set_accelerationAir(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_move.air_accelerate=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_side_speed_set_decelerationAir(JSValueRef vp)
+void js_obj_side_speed_set_decelerationAir(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_move.air_decelerate=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 

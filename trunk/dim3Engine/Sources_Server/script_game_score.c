@@ -112,9 +112,7 @@ JSValueRef js_game_score_get_objectId(void)
 	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=script_int_to_value(obj->uid);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->uid));
 }
 
 JSValueRef js_game_score_get_kill(void)
@@ -124,9 +122,7 @@ JSValueRef js_game_score_get_kill(void)
 	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=script_int_to_value(obj->score.kill);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->score.kill));
 }
 
 JSValueRef js_game_score_get_death(void)
@@ -136,9 +132,7 @@ JSValueRef js_game_score_get_death(void)
 	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=script_int_to_value(obj->score.death);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->score.death));
 }
 
 JSValueRef js_game_score_get_suicide(void)
@@ -148,9 +142,7 @@ JSValueRef js_game_score_get_suicide(void)
 	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=script_int_to_value(obj->score.suicide);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->score.suicide));
 }
 
 JSValueRef js_game_score_get_goal(void)
@@ -160,9 +152,7 @@ JSValueRef js_game_score_get_goal(void)
 	if (game_obj_rule_uid==-1) return(TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	*vp=script_int_to_value(obj->score.goal);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->score.goal));
 }
 
 /* =======================================================
@@ -186,6 +176,6 @@ JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	if (net_setup.client.joined) score_limit_trigger_set_check_scores();
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 

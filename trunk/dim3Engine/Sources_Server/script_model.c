@@ -46,12 +46,12 @@ JSValueRef js_model_get_bounce(void);
 JSValueRef js_model_get_alpha(void);
 JSValueRef js_model_get_resize(void);
 JSValueRef js_model_get_faceForward(void);
-bool js_model_set_on(JSValueRef vp);
-bool js_model_set_name(JSValueRef vp);
-bool js_model_set_bounce(JSValueRef vp);
-bool js_model_set_alpha(JSValueRef vp);
-bool js_model_set_resize(JSValueRef vp);
-bool js_model_set_faceForward(JSValueRef vp);
+void js_model_set_on(JSValueRef vp,JSValueRef *exception);
+void js_model_set_name(JSValueRef vp,JSValueRef *exception);
+void js_model_set_bounce(JSValueRef vp,JSValueRef *exception);
+void js_model_set_alpha(JSValueRef vp,JSValueRef *exception);
+void js_model_set_resize(JSValueRef vp,JSValueRef *exception);
+void js_model_set_faceForward(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	model_props[]={
 							{"on",					js_model_get_on,					js_model_set_on},
@@ -173,63 +173,51 @@ JSValueRef js_model_get_faceForward(void)
       
 ======================================================= */
 
-bool js_model_set_on(JSValueRef vp)
+void js_model_set_on(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	draw->on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_model_set_name(JSValueRef vp)
+void js_model_set_name(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	script_value_to_string(*vp,draw->name,name_str_len);
-	
-	return(TRUE);
 }
 
-bool js_model_set_bounce(JSValueRef vp)
+void js_model_set_bounce(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	draw->bounce=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_model_set_alpha(JSValueRef vp)
+void js_model_set_alpha(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	draw->alpha=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_model_set_resize(JSValueRef vp)
+void js_model_set_resize(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	draw->resize=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_model_set_faceForward(JSValueRef vp)
+void js_model_set_faceForward(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
 	draw->face_forward=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 

@@ -47,16 +47,16 @@ JSValueRef js_camera_plane_get_bottom(void);
 JSValueRef js_camera_plane_get_near(void);
 JSValueRef js_camera_plane_get_far(void);
 JSValueRef js_camera_plane_get_nearOffset(void);
-bool js_camera_plane_set_projectionType(JSValueRef vp);
-bool js_camera_plane_set_fov(JSValueRef vp);
-bool js_camera_plane_set_aspectRatio(JSValueRef vp);
-bool js_camera_plane_set_left(JSValueRef vp);
-bool js_camera_plane_set_right(JSValueRef vp);
-bool js_camera_plane_set_top(JSValueRef vp);
-bool js_camera_plane_set_bottom(JSValueRef vp);
-bool js_camera_plane_set_near(JSValueRef vp);
-bool js_camera_plane_set_far(JSValueRef vp);
-bool js_camera_plane_set_nearOffset(JSValueRef vp);
+void js_camera_plane_set_projectionType(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_fov(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_aspectRatio(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_left(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_right(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_top(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_bottom(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_near(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_far(JSValueRef vp,JSValueRef *exception);
+void js_camera_plane_set_nearOffset(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	camera_plane_props[]={
 							{"projectionType",		js_camera_plane_get_projectionType,		js_camera_plane_set_projectionType},
@@ -182,62 +182,52 @@ JSValueRef js_camera_plane_get_nearOffset(void)
       
 ======================================================= */
 
-bool js_camera_plane_set_projectionType(JSValueRef vp)
+void js_camera_plane_set_projectionType(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.type=script_value_to_int(*vp)-sd_projection_type_fov;
-	return(TRUE);
 }
 
-bool js_camera_plane_set_fov(JSValueRef vp)
+void js_camera_plane_set_fov(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.fov=script_value_to_float(*vp);
-	return(TRUE);
 }
 
-bool js_camera_plane_set_aspectRatio(JSValueRef vp)
+void js_camera_plane_set_aspectRatio(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.aspect_ratio=script_value_to_float(*vp);
-	return(TRUE);
 }
 
-bool js_camera_plane_set_left(JSValueRef vp)
+void js_camera_plane_set_left(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.lft=script_value_to_int(*vp);
-	return(TRUE);
 }
 
-bool js_camera_plane_set_right(JSValueRef vp)
+void js_camera_plane_set_right(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.rgt=script_value_to_int(*vp);
-	return(TRUE);
 }
 
-bool js_camera_plane_set_top(JSValueRef vp)
+void js_camera_plane_set_top(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.top=script_value_to_int(*vp);
-	return(TRUE);
 }
 
-bool js_camera_plane_set_bottom(JSValueRef vp)
+void js_camera_plane_set_bottom(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.bot=script_value_to_int(*vp);
-	return(TRUE);
 }
 
-bool js_camera_plane_set_near(JSValueRef vp)
+void js_camera_plane_set_near(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.near_z=script_value_to_int(*vp);
-	return(TRUE);
 }
 
-bool js_camera_plane_set_far(JSValueRef vp)
+void js_camera_plane_set_far(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.far_z=script_value_to_int(*vp);
-	return(TRUE);
 }
 
-bool js_camera_plane_set_nearOffset(JSValueRef vp)
+void js_camera_plane_set_nearOffset(JSValueRef vp,JSValueRef *exception)
 {
 	camera.plane.near_z_offset=script_value_to_int(*vp);
-	return(TRUE);
 }

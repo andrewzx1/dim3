@@ -39,9 +39,9 @@ bool js_obj_thrust_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 JSValueRef js_obj_thrust_get_speed(void);
 JSValueRef js_obj_thrust_get_maxSpeed(void);
 JSValueRef js_obj_thrust_get_drag(void);
-bool js_obj_thrust_set_speed(JSValueRef vp);
-bool js_obj_thrust_set_maxSpeed(JSValueRef vp);
-bool js_obj_thrust_set_drag(JSValueRef vp);
+void js_obj_thrust_set_speed(JSValueRef vp,JSValueRef *exception);
+void js_obj_thrust_set_maxSpeed(JSValueRef vp,JSValueRef *exception);
+void js_obj_thrust_set_drag(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	obj_thrust_props[]={
 							{"speed",					js_obj_thrust_get_speed,			js_obj_thrust_set_speed},
@@ -129,34 +129,28 @@ JSValueRef js_obj_thrust_get_drag(void)
       
 ======================================================= */
 
-bool js_obj_thrust_set_speed(JSValueRef vp)
+void js_obj_thrust_set_speed(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->thrust.speed=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_thrust_set_maxSpeed(JSValueRef vp)
+void js_obj_thrust_set_maxSpeed(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->thrust.max_speed=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_thrust_set_drag(JSValueRef vp)
+void js_obj_thrust_set_drag(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->thrust.drag=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
 

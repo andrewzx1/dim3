@@ -38,7 +38,7 @@ extern js_type			js;
 JSValueRef js_weap_kickback_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_weap_kickback_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_kickback_get_size(void);
-bool js_weap_kickback_set_size(JSValueRef vp);
+void js_weap_kickback_set_size(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	weap_kickback_props[]={
@@ -110,14 +110,12 @@ JSValueRef js_weap_kickback_get_size(void)
       
 ======================================================= */
 
-bool js_weap_kickback_set_size(JSValueRef vp)
+void js_weap_kickback_set_size(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->kickback.size=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
 /* =======================================================

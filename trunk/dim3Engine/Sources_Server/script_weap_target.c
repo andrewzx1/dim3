@@ -40,7 +40,7 @@ bool js_weap_target_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 JSValueRef js_weap_target_get_on(void);
 JSValueRef js_weap_target_get_distance(void);
 JSValueRef js_weap_target_get_objectId(void);
-bool js_weap_target_set_distance(JSValueRef vp);
+void js_weap_target_set_distance(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_target_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_target_start_opponent_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_target_end_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -138,14 +138,12 @@ JSValueRef js_weap_target_get_objectId(void)
       
 ======================================================= */
 
-bool js_weap_target_set_distance(JSValueRef vp)
+void js_weap_target_set_distance(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->target.distance=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
 /* =======================================================

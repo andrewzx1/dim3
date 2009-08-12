@@ -46,13 +46,13 @@ JSValueRef js_proj_action_get_auto_bounce(void);
 JSValueRef js_proj_action_get_auto_bounceMinMove(void);
 JSValueRef js_proj_action_get_auto_bounceReduce(void);
 JSValueRef js_proj_action_get_auto_reflect(void);
-bool js_proj_action_set_damage(JSValueRef vp);
-bool js_proj_action_set_collision(JSValueRef vp);
-bool js_proj_action_set_auto_hitTick(JSValueRef vp);
-bool js_proj_action_set_auto_bounce(JSValueRef vp);
-bool js_proj_action_set_auto_bounceMinMove(JSValueRef vp);
-bool js_proj_action_set_auto_bounceReduce(JSValueRef vp);
-bool js_proj_action_set_auto_reflect(JSValueRef vp);
+void js_proj_action_set_damage(JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_collision(JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_hitTick(JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounce(JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounceMinMove(JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounceReduce(JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_reflect(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_proj_action_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -218,7 +218,7 @@ JSValueRef js_proj_action_get_auto_reflect(void)
       
 ======================================================= */
 
-bool js_proj_action_set_damage(JSValueRef vp)
+void js_proj_action_set_damage(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -226,11 +226,9 @@ bool js_proj_action_set_damage(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->damage=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_action_set_collision(JSValueRef vp)
+void js_proj_action_set_collision(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -238,11 +236,9 @@ bool js_proj_action_set_collision(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->collision=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_action_set_auto_hitTick(JSValueRef vp)
+void js_proj_action_set_auto_hitTick(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -250,11 +246,9 @@ bool js_proj_action_set_auto_hitTick(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->action.hit_tick=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_action_set_auto_bounce(JSValueRef vp)
+void js_proj_action_set_auto_bounce(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -262,11 +256,9 @@ bool js_proj_action_set_auto_bounce(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->action.bounce=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_action_set_auto_bounceMinMove(JSValueRef vp)
+void js_proj_action_set_auto_bounceMinMove(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -274,11 +266,9 @@ bool js_proj_action_set_auto_bounceMinMove(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->action.bounce_min_move=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_action_set_auto_bounceReduce(JSValueRef vp)
+void js_proj_action_set_auto_bounceReduce(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -286,11 +276,9 @@ bool js_proj_action_set_auto_bounceReduce(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->action.bounce_reduce=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_action_set_auto_reflect(JSValueRef vp)
+void js_proj_action_set_auto_reflect(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -298,8 +286,6 @@ bool js_proj_action_set_auto_reflect(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->action.reflect=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
 /* =======================================================

@@ -39,7 +39,7 @@ bool js_weap_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 JSValueRef js_weap_setting_get_name(void);
 JSValueRef js_weap_setting_get_failInLiquid(void);
 JSValueRef js_weap_setting_get_parentObjectId(void);
-bool js_weap_setting_set_failInLiquid(JSValueRef vp);
+void js_weap_setting_set_failInLiquid(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	weap_setting_props[]={
 							{"name",				js_weap_setting_get_name,				NULL},
@@ -128,14 +128,12 @@ JSValueRef js_weap_setting_get_parentObjectId(void)
       
 ======================================================= */
 
-bool js_weap_setting_set_failInLiquid(JSValueRef vp)
+void js_weap_setting_set_failInLiquid(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->fail_in_liquid=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
 

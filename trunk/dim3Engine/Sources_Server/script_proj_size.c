@@ -40,10 +40,10 @@ JSValueRef js_proj_size_get_x(void);
 JSValueRef js_proj_size_get_y(void);
 JSValueRef js_proj_size_get_z(void);
 JSValueRef js_proj_size_get_weight(void);
-bool js_proj_size_set_x(JSValueRef vp);
-bool js_proj_size_set_y(JSValueRef vp);
-bool js_proj_size_set_z(JSValueRef vp);
-bool js_proj_size_set_weight(JSValueRef vp);
+void js_proj_size_set_x(JSValueRef vp,JSValueRef *exception);
+void js_proj_size_set_y(JSValueRef vp,JSValueRef *exception);
+void js_proj_size_set_z(JSValueRef vp,JSValueRef *exception);
+void js_proj_size_set_weight(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	proj_size_props[]={
 							{"x",					js_proj_size_get_x,					js_proj_size_set_x},
@@ -151,7 +151,7 @@ JSValueRef js_proj_size_get_weight(void)
       
 ======================================================= */
 
-bool js_proj_size_set_x(JSValueRef vp)
+void js_proj_size_set_x(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -160,11 +160,9 @@ bool js_proj_size_set_x(JSValueRef vp)
 	
 	proj_setup->size.x=script_value_to_int(*vp);
 	proj_setup_set_radius(proj_setup);
-	
-	return(TRUE);
 }
 
-bool js_proj_size_set_y(JSValueRef vp)
+void js_proj_size_set_y(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -172,11 +170,9 @@ bool js_proj_size_set_y(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->size.y=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_size_set_z(JSValueRef vp)
+void js_proj_size_set_z(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -185,11 +181,9 @@ bool js_proj_size_set_z(JSValueRef vp)
 	
 	proj_setup->size.z=script_value_to_int(*vp);
 	proj_setup_set_radius(proj_setup);
-	
-	return(TRUE);
 }
 
-bool js_proj_size_set_weight(JSValueRef vp)
+void js_proj_size_set_weight(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -197,7 +191,5 @@ bool js_proj_size_set_weight(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->size.weight=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 

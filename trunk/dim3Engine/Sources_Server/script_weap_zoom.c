@@ -47,16 +47,16 @@ JSValueRef js_weap_zoom_get_lookFactor(void);
 JSValueRef js_weap_zoom_get_maskName(void);
 JSValueRef js_weap_zoom_get_showWeapon(void);
 JSValueRef js_weap_zoom_get_tick(void);
-bool js_weap_zoom_set_on(JSValueRef vp);
-bool js_weap_zoom_set_fovMinimum(JSValueRef vp);
-bool js_weap_zoom_set_fovMaximum(JSValueRef vp);
-bool js_weap_zoom_set_fovSteps(JSValueRef vp);
-bool js_weap_zoom_set_turnFactor(JSValueRef vp);
-bool js_weap_zoom_set_crawlTurnFactor(JSValueRef vp);
-bool js_weap_zoom_set_lookFactor(JSValueRef vp);
-bool js_weap_zoom_set_maskName(JSValueRef vp);
-bool js_weap_zoom_set_showWeapon(JSValueRef vp);
-bool js_weap_zoom_set_tick(JSValueRef vp);
+void js_weap_zoom_set_on(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_fovMinimum(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_fovMaximum(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_fovSteps(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_turnFactor(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_crawlTurnFactor(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_lookFactor(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_maskName(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_showWeapon(JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_tick(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	weap_zoom_props[]={
 							{"on",					js_weap_zoom_get_on,						js_weap_zoom_set_on},
@@ -233,105 +233,85 @@ JSValueRef js_weap_zoom_get_tick(void)
       
 ======================================================= */
 
-bool js_weap_zoom_set_on(JSValueRef vp)
+void js_weap_zoom_set_on(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_fovMinimum(JSValueRef vp)
+void js_weap_zoom_set_fovMinimum(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.fov_min=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_fovMaximum(JSValueRef vp)
+void js_weap_zoom_set_fovMaximum(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.fov_max=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_fovSteps(JSValueRef vp)
+void js_weap_zoom_set_fovSteps(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.step_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_turnFactor(JSValueRef vp)
+void js_weap_zoom_set_turnFactor(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.turn_factor=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_crawlTurnFactor(JSValueRef vp)
+void js_weap_zoom_set_crawlTurnFactor(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.crawl_turn_factor=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_lookFactor(JSValueRef vp)
+void js_weap_zoom_set_lookFactor(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.look_factor=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_maskName(JSValueRef vp)
+void js_weap_zoom_set_maskName(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,weap->zoom.mask_name,name_str_len);
 	weapon_attach_zoom_mask(weap);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_showWeapon(JSValueRef vp)
+void js_weap_zoom_set_showWeapon(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.show_weapon=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_zoom_set_tick(JSValueRef vp)
+void js_weap_zoom_set_tick(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.tick=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
 

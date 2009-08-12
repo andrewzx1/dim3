@@ -41,10 +41,10 @@ JSValueRef js_obj_radar_get_on(void);
 JSValueRef js_obj_radar_get_icon(void);
 JSValueRef js_obj_radar_get_motionOnly(void);
 JSValueRef js_obj_radar_get_alwaysVisible(void);
-bool js_obj_radar_set_on(JSValueRef vp);
-bool js_obj_radar_set_icon(JSValueRef vp);
-bool js_obj_radar_set_motionOnly(JSValueRef vp);
-bool js_obj_radar_set_alwaysVisible(JSValueRef vp);
+void js_obj_radar_set_on(JSValueRef vp,JSValueRef *exception);
+void js_obj_radar_set_icon(JSValueRef vp,JSValueRef *exception);
+void js_obj_radar_set_motionOnly(JSValueRef vp,JSValueRef *exception);
+void js_obj_radar_set_alwaysVisible(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	obj_radar_props[]={
 							{"on",					js_obj_radar_get_on,				js_obj_radar_set_on},
@@ -144,17 +144,15 @@ JSValueRef js_obj_radar_get_alwaysVisible(void)
       
 ======================================================= */
 
-bool js_obj_radar_set_on(JSValueRef vp)
+void js_obj_radar_set_on(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->radar.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_radar_set_icon(JSValueRef vp)
+void js_obj_radar_set_icon(JSValueRef vp,JSValueRef *exception)
 {
 	char			err_str[256];
 	obj_type		*obj;
@@ -164,28 +162,22 @@ bool js_obj_radar_set_icon(JSValueRef vp)
 	if (!object_set_radar_icon(obj,err_str)) {
 		*exception=script_create_exception(err_str);
 	}
-	
-	return(TRUE);
 }
 
-bool js_obj_radar_set_motionOnly(JSValueRef vp)
+void js_obj_radar_set_motionOnly(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->radar.motion_only=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_radar_set_alwaysVisible(JSValueRef vp)
+void js_obj_radar_set_alwaysVisible(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->radar.always_visible=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
 

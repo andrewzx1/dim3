@@ -357,7 +357,7 @@ and can be sold or given away.
 //
 
 typedef JSValueRef (*script_get_callback)(void);
-typedef bool (*script_set_callback)(JSValueRef vp);
+typedef void (*script_set_callback)(JSValueRef vp,JSValueRef *exception);
 
 //
 // object setup structures

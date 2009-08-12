@@ -39,9 +39,9 @@ bool js_map_fog_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 JSValueRef js_map_fog_color_get_red(void);
 JSValueRef js_map_fog_color_get_green(void);
 JSValueRef js_map_fog_color_get_blue(void);
-bool js_map_fog_color_set_red(JSValueRef vp);
-bool js_map_fog_color_set_green(JSValueRef vp);
-bool js_map_fog_color_set_blue(JSValueRef vp);
+void js_map_fog_color_set_red(JSValueRef vp,JSValueRef *exception);
+void js_map_fog_color_set_green(JSValueRef vp,JSValueRef *exception);
+void js_map_fog_color_set_blue(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	map_fog_color_props[]={
 							{"red",					js_map_fog_color_get_red,			js_map_fog_color_set_red},
@@ -118,21 +118,18 @@ JSValueRef js_map_fog_color_get_blue(void)
       
 ======================================================= */
 
-bool js_map_fog_color_set_red(JSValueRef vp)
+void js_map_fog_color_set_red(JSValueRef vp,JSValueRef *exception)
 {
 	map.fog.col.r=script_value_to_float(*vp);
-	return(TRUE);
 }
 
-bool js_map_fog_color_set_green(JSValueRef vp)
+void js_map_fog_color_set_green(JSValueRef vp,JSValueRef *exception)
 {
 	map.fog.col.g=script_value_to_float(*vp);
-	return(TRUE);
 }
 
-bool js_map_fog_color_set_blue(JSValueRef vp)
+void js_map_fog_color_set_blue(JSValueRef vp,JSValueRef *exception)
 {
 	map.fog.col.b=script_value_to_float(*vp);
-	return(TRUE);
 }
 

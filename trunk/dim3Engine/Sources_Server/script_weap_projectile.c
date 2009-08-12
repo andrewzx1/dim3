@@ -45,13 +45,13 @@ JSValueRef js_weap_projectile_get_objectFireBoneTag(void);
 JSValueRef js_weap_projectile_get_objectFirePoseName(void);
 JSValueRef js_weap_projectile_get_repeat_on(void);
 JSValueRef js_weap_projectile_get_repeat_tick(void);
-bool js_weap_projectile_set_fireBoneTag(JSValueRef vp);
-bool js_weap_projectile_set_barrelBoneTag(JSValueRef vp);
-bool js_weap_projectile_set_firePoseName(JSValueRef vp);
-bool js_weap_projectile_set_objectFireBoneTag(JSValueRef vp);
-bool js_weap_projectile_set_objectFirePoseName(JSValueRef vp);
-bool js_weap_projectile_set_repeat_on(JSValueRef vp);
-bool js_weap_projectile_set_repeat_tick(JSValueRef vp);
+void js_weap_projectile_set_fireBoneTag(JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_barrelBoneTag(JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_firePoseName(JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_objectFireBoneTag(JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_objectFirePoseName(JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_repeat_on(JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_repeat_tick(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -230,7 +230,7 @@ JSValueRef js_weap_projectile_get_repeat_tick(void)
       
 ======================================================= */
 
-bool js_weap_projectile_set_fireBoneTag(JSValueRef vp)
+void js_weap_projectile_set_fireBoneTag(JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -239,11 +239,9 @@ bool js_weap_projectile_set_fireBoneTag(JSValueRef vp)
 
 	script_value_to_string(*vp,str,32);
 	weap->proj.fire_bone_tag=text_to_model_tag(str);
-
-	return(TRUE);
 }
 
-bool js_weap_projectile_set_barrelBoneTag(JSValueRef vp)
+void js_weap_projectile_set_barrelBoneTag(JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -252,21 +250,17 @@ bool js_weap_projectile_set_barrelBoneTag(JSValueRef vp)
 
 	script_value_to_string(*vp,str,32);
 	weap->proj.barrel_bone_tag=text_to_model_tag(str);
-
-	return(TRUE);
 }
 
-bool js_weap_projectile_set_firePoseName(JSValueRef vp)
+void js_weap_projectile_set_firePoseName(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,weap->proj.fire_pose_name,name_str_len);
-
-	return(TRUE);
 }
 
-bool js_weap_projectile_set_objectFireBoneTag(JSValueRef vp)
+void js_weap_projectile_set_objectFireBoneTag(JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -275,38 +269,30 @@ bool js_weap_projectile_set_objectFireBoneTag(JSValueRef vp)
 
 	script_value_to_string(*vp,str,32);
 	weap->proj.object_fire_bone_tag=text_to_model_tag(str);
-
-	return(TRUE);
 }
 
-bool js_weap_projectile_set_objectFirePoseName(JSValueRef vp)
+void js_weap_projectile_set_objectFirePoseName(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,weap->proj.object_fire_pose_name,name_str_len);
-
-	return(TRUE);
 }
 
-bool js_weap_projectile_set_repeat_on(JSValueRef vp)
+void js_weap_projectile_set_repeat_on(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->proj.repeat_on=script_value_to_bool(*vp);
-
-	return(TRUE);
 }
 
-bool js_weap_projectile_set_repeat_tick(JSValueRef vp)
+void js_weap_projectile_set_repeat_tick(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->proj.repeat_tick=script_value_to_int(*vp);
-
-	return(TRUE);
 }
 
 /* =======================================================

@@ -39,7 +39,7 @@ JSValueRef js_camera_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSSt
 bool js_camera_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_camera_setting_get_type(void);
 JSValueRef js_camera_setting_get_attachObjectId(void);
-bool js_camera_setting_set_type(JSValueRef vp);
+void js_camera_setting_set_type(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	camera_setting_props[]={
@@ -114,10 +114,9 @@ JSValueRef js_camera_setting_get_attachObjectId(void)
       
 ======================================================= */
 
-bool js_camera_setting_set_type(JSValueRef vp)
+void js_camera_setting_set_type(JSValueRef vp,JSValueRef *exception)
 {
 	camera.mode=script_value_to_int(*vp)-sd_camera_type_fpp;
-	return(TRUE);
 }
 
 /* =======================================================

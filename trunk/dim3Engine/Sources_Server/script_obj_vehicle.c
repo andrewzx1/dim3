@@ -40,7 +40,7 @@ JSValueRef js_obj_vehicle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
 bool js_obj_vehicle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_vehicle_get_on(void);
 JSValueRef js_obj_vehicle_get_hasOccupant(void);
-bool js_obj_vehicle_set_on(JSValueRef vp);
+void js_obj_vehicle_set_on(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -127,14 +127,12 @@ JSValueRef js_obj_vehicle_get_hasOccupant(void)
       
 ======================================================= */
 
-bool js_obj_vehicle_set_on(JSValueRef vp)
+void js_obj_vehicle_set_on(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vehicle.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
 /* =======================================================
