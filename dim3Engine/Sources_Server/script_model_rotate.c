@@ -36,9 +36,9 @@ bool js_model_rotate_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 JSValueRef js_model_rotate_get_x(void);
 JSValueRef js_model_rotate_get_y(void);
 JSValueRef js_model_rotate_get_z(void);
-bool js_model_rotate_set_x(JSValueRef vp);
-bool js_model_rotate_set_y(JSValueRef vp);
-bool js_model_rotate_set_z(JSValueRef vp);
+void js_model_rotate_set_x(JSValueRef vp,JSValueRef *exception);
+void js_model_rotate_set_y(JSValueRef vp,JSValueRef *exception);
+void js_model_rotate_set_z(JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -129,33 +129,27 @@ JSValueRef js_model_rotate_get_z(void)
       
 ======================================================= */
 
-bool js_model_rotate_set_x(JSValueRef vp)
+void js_model_rotate_set_x(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 	draw->rot.x=script_value_to_float(*vp);
-
-	return(TRUE);
 }
 
-bool js_model_rotate_set_y(JSValueRef vp)
+void js_model_rotate_set_y(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 	draw->rot.y=script_value_to_float(*vp);
-
-	return(TRUE);
 }
 
-bool js_model_rotate_set_z(JSValueRef vp)
+void js_model_rotate_set_z(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 	draw->rot.z=script_value_to_float(*vp);
-
-	return(TRUE);
 }
 

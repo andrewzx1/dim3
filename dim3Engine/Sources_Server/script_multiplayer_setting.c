@@ -104,32 +104,21 @@ bool js_multiplayer_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 JSValueRef js_multiplayer_setting_get_on(void)
 {
-	*vp=script_bool_to_value(net_setup.client.joined);
-	return(TRUE);
+	return(script_bool_to_value(net_setup.client.joined));
 }
 
 JSValueRef js_multiplayer_setting_get_type(void)
 {
- 	if (!net_setup.client.joined) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
-	}
+ 	if (!net_setup.client.joined) return(script_null_to_value());
 
-	return(TRUE);
+	return(script_string_to_value(net_setup.games[net_setup.game_idx].name));
 }
 
 JSValueRef js_multiplayer_setting_get_teamPlay(void)
 {
- 	if (!net_setup.client.joined) {
-		*vp=script_bool_to_value(FALSE);
-	}
-	else {
-		*vp=script_bool_to_value(net_setup.games[net_setup.game_idx].use_teams);
-	}
+ 	if (!net_setup.client.joined) return(script_bool_to_value(FALSE));
 	
-	return(TRUE);
+	return(script_bool_to_value(net_setup.games[net_setup.game_idx].use_teams));
 }
 
 /* =======================================================
@@ -145,10 +134,7 @@ JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef 
 	
 		// all options are false if not in networking
 		
-	if (!net_setup.client.joined) {
-		*rval=script_bool_to_value(FALSE);
-		return(TRUE);
-	}
+	if (!net_setup.client.joined) return(script_bool_to_value(FALSE));
 
 		// find if option is on
 
@@ -156,12 +142,10 @@ JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef 
 
 	for (n=0;n!=setup.network.noption;n++) {
 		if (strcasecmp(name,setup.network.options[n].name)==0) {
-			*rval=script_bool_to_value(TRUE);
-			return(TRUE);
+			return(script_bool_to_value(TRUE));
 		}
 	}
 
-	*rval=script_bool_to_value(FALSE);
-	return(TRUE);
+	return(script_bool_to_value(FALSE));
 }
 

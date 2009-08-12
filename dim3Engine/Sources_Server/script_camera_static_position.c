@@ -40,8 +40,8 @@ JSValueRef js_camera_static_position_get_property(JSContextRef cx,JSObjectRef j_
 bool js_camera_static_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_camera_static_position_get_follow(void);
 JSValueRef js_camera_static_position_get_walkTurnSpeed(void);
-bool js_camera_static_position_set_follow(JSValueRef vp);
-bool js_camera_static_position_set_walkTurnSpeed(JSValueRef vp);
+void js_camera_static_position_set_follow(JSValueRef vp,JSValueRef *exception);
+void js_camera_static_position_set_walkTurnSpeed(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -120,16 +120,14 @@ JSValueRef js_camera_static_position_get_walkTurnSpeed(void)
       
 ======================================================= */
 
-bool js_camera_static_position_set_follow(JSValueRef vp)
+void js_camera_static_position_set_follow(JSValueRef vp,JSValueRef *exception)
 {
 	camera.static_follow=script_value_to_bool(*vp);
-	return(TRUE);
 }
 
-bool js_camera_static_position_set_walkTurnSpeed(JSValueRef vp)
+void js_camera_static_position_set_walkTurnSpeed(JSValueRef vp,JSValueRef *exception)
 {
 	camera.auto_walk.turn_speed=script_value_to_float(*vp);
-	return(TRUE);
 }
 
 /* =======================================================

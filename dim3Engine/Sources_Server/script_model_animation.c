@@ -37,7 +37,7 @@ bool js_model_animation_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_model_animation_get_index(void);
 JSValueRef js_model_animation_get_currentAnimationName(void);
 JSValueRef js_model_animation_get_playing(void);
-bool js_model_animation_set_index(JSValueRef vp);
+void js_model_animation_set_index(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -150,7 +150,7 @@ JSValueRef js_model_animation_get_playing(void)
       
 ======================================================= */
 
-bool js_model_animation_set_index(JSValueRef vp)
+void js_model_animation_set_index(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 
@@ -158,8 +158,6 @@ bool js_model_animation_set_index(JSValueRef vp)
 
 	draw->script_animation_idx=script_value_to_int(*vp);
 	if ((draw->script_animation_idx<0) || (draw->script_animation_idx>=max_model_blend_animation)) draw->script_animation_idx=0;
-
-	return(TRUE);
 }
 
 /* =======================================================

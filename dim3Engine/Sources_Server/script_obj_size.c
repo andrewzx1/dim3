@@ -43,13 +43,13 @@ JSValueRef js_obj_size_get_eyeOffset(void);
 JSValueRef js_obj_size_get_weight(void);
 JSValueRef js_obj_size_get_clickDistance(void);
 JSValueRef js_obj_size_get_cameraZAdjust(void);
-bool js_obj_size_set_x(JSValueRef vp);
-bool js_obj_size_set_y(JSValueRef vp);
-bool js_obj_size_set_z(JSValueRef vp);
-bool js_obj_size_set_eyeOffset(JSValueRef vp);
-bool js_obj_size_set_weight(JSValueRef vp);
-bool js_obj_size_set_clickDistance(JSValueRef vp);
-bool js_obj_size_set_cameraZAdjust(JSValueRef vp);
+void js_obj_size_set_x(JSValueRef vp,JSValueRef *exception);
+void js_obj_size_set_y(JSValueRef vp,JSValueRef *exception);
+void js_obj_size_set_z(JSValueRef vp,JSValueRef *exception);
+void js_obj_size_set_eyeOffset(JSValueRef vp,JSValueRef *exception);
+void js_obj_size_set_weight(JSValueRef vp,JSValueRef *exception);
+void js_obj_size_set_clickDistance(JSValueRef vp,JSValueRef *exception);
+void js_obj_size_set_cameraZAdjust(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_size_grow_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_size_grow_over_time_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_size_grow_over_time_change_size_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -193,76 +193,62 @@ JSValueRef js_obj_size_get_cameraZAdjust(void)
       
 ======================================================= */
 
-bool js_obj_size_set_x(JSValueRef vp)
+void js_obj_size_set_x(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->size.x=script_value_to_int(*vp);
 	object_set_radius(obj);
-	
-	return(TRUE);
 }
 
-bool js_obj_size_set_y(JSValueRef vp)
+void js_obj_size_set_y(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->size.y=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_size_set_z(JSValueRef vp)
+void js_obj_size_set_z(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->size.z=script_value_to_int(*vp);
 	object_set_radius(obj);
-	
-	return(TRUE);
 }
 
-bool js_obj_size_set_eyeOffset(JSValueRef vp)
+void js_obj_size_set_eyeOffset(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->size.eye_offset=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_size_set_weight(JSValueRef vp)
+void js_obj_size_set_weight(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->size.weight=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_size_set_clickDistance(JSValueRef vp)
+void js_obj_size_set_clickDistance(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->click.distance=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_size_set_cameraZAdjust(JSValueRef vp)
+void js_obj_size_set_cameraZAdjust(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->camera_z_adjust=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
 /* =======================================================

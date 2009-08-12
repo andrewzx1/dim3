@@ -39,9 +39,9 @@ bool js_weap_hand_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_weap_hand_angle_get_x(void);
 JSValueRef js_weap_hand_angle_get_y(void);
 JSValueRef js_weap_hand_angle_get_z(void);
-bool js_weap_hand_angle_set_x(JSValueRef vp);
-bool js_weap_hand_angle_set_y(JSValueRef vp);
-bool js_weap_hand_angle_set_z(JSValueRef vp);
+void js_weap_hand_angle_set_x(JSValueRef vp,JSValueRef *exception);
+void js_weap_hand_angle_set_y(JSValueRef vp,JSValueRef *exception);
+void js_weap_hand_angle_set_z(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	weap_hand_angle_props[]={
 							{"x",				js_weap_hand_angle_get_x,			js_weap_hand_angle_set_x},
@@ -130,34 +130,28 @@ bool js_weap_hand_angle_get_z(void)
       
 ======================================================= */
 
-bool js_weap_hand_angle_set_x(JSValueRef vp)
+void js_weap_hand_angle_set_x(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.ang.x=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_hand_angle_set_y(JSValueRef vp)
+void js_weap_hand_angle_set_y(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.ang.y=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_hand_angle_set_z(JSValueRef vp)
+void js_weap_hand_angle_set_z(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.ang.z=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
 

@@ -41,8 +41,8 @@ JSValueRef js_obj_click_get_crosshairUp(void);
 JSValueRef js_obj_click_get_crosshairDown(void);
 JSValueRef js_obj_click_get_objectId(void);
 JSValueRef js_obj_click_get_objectName(void);
-bool js_obj_click_set_crosshairUp(JSValueRef vp);
-bool js_obj_click_set_crosshairDown(JSValueRef vp);
+void js_obj_click_set_crosshairUp(JSValueRef vp,JSValueRef *exception);
+void js_obj_click_set_crosshairDown(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	obj_click_props[]={
 							{"crosshairUp",			js_obj_click_get_crosshairUp,			js_obj_click_set_crosshairUp},
@@ -149,25 +149,21 @@ JSValueRef js_obj_click_get_objectName(void)
       
 ======================================================= */
 
-bool js_obj_click_set_crosshairUp(JSValueRef vp)
+void js_obj_click_set_crosshairUp(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,obj->click.crosshair_up_name,name_str_len);
 	object_attach_click_crosshair_up(obj);
-	
-	return(TRUE);
 }
 
-bool js_obj_click_set_crosshairDown(JSValueRef vp)
+void js_obj_click_set_crosshairDown(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type			*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	script_value_to_string(*vp,obj->click.crosshair_down_name,name_str_len);
 	object_attach_click_crosshair_down(obj);
-	
-	return(TRUE);
 }
 

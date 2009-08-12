@@ -39,8 +39,8 @@ JSValueRef js_proj_push_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 bool js_proj_push_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_proj_push_get_on(void);
 JSValueRef js_proj_push_get_force(void);
-bool js_proj_push_set_on(JSValueRef vp);
-bool js_proj_push_set_force(JSValueRef vp);
+void js_proj_push_set_on(JSValueRef vp,JSValueRef *exception);
+void js_proj_push_set_force(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	proj_push_props[]={
 							{"on",					js_proj_push_get_on,				js_proj_push_set_on},
@@ -122,7 +122,7 @@ JSValueRef js_proj_push_get_force(void)
       
 ======================================================= */
 
-bool js_proj_push_set_on(JSValueRef vp)
+void js_proj_push_set_on(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -130,11 +130,9 @@ bool js_proj_push_set_on(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->push.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_push_set_force(JSValueRef vp)
+void js_proj_push_set_force(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -142,6 +140,4 @@ bool js_proj_push_set_force(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->push.force=script_value_to_int(*vp);
-	
-	return(TRUE);
 }

@@ -40,10 +40,10 @@ JSValueRef js_proj_mark_get_on(void);
 JSValueRef js_proj_mark_get_name(void);
 JSValueRef js_proj_mark_get_size(void);
 JSValueRef js_proj_mark_get_alpha(void);
-bool js_proj_mark_set_on(JSValueRef vp);
-bool js_proj_mark_set_name(JSValueRef vp);
-bool js_proj_mark_set_size(JSValueRef vp);
-bool js_proj_mark_set_alpha(JSValueRef vp);
+void js_proj_mark_set_on(JSValueRef vp,JSValueRef *exception);
+void js_proj_mark_set_name(JSValueRef vp,JSValueRef *exception);
+void js_proj_mark_set_size(JSValueRef vp,JSValueRef *exception);
+void js_proj_mark_set_alpha(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	proj_mark_props[]={
 							{"on",					js_proj_mark_get_on,				js_proj_mark_set_on},
@@ -151,7 +151,7 @@ JSValueRef js_proj_mark_get_alpha(void)
       
 ======================================================= */
 
-bool js_proj_mark_set_on(JSValueRef vp)
+void js_proj_mark_set_on(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -159,11 +159,9 @@ bool js_proj_mark_set_on(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
     proj_setup->mark.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_mark_set_name(JSValueRef vp)
+void js_proj_mark_set_name(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -172,11 +170,9 @@ bool js_proj_mark_set_name(JSValueRef vp)
 	
 	script_value_to_string(*vp,proj_setup->mark.name,name_str_len);
 	proj_setup_attach_mark(proj_setup);
-	
-	return(TRUE);
 }
 
-bool js_proj_mark_set_size(JSValueRef vp)
+void js_proj_mark_set_size(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -184,11 +180,9 @@ bool js_proj_mark_set_size(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->mark.size=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_mark_set_alpha(JSValueRef vp)
+void js_proj_mark_set_alpha(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -196,8 +190,6 @@ bool js_proj_mark_set_alpha(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->mark.alpha=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
 

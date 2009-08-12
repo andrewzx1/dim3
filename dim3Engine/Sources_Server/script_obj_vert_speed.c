@@ -40,10 +40,10 @@ JSValueRef js_obj_vert_speed_get_normal(void);
 JSValueRef js_obj_vert_speed_get_acceleration(void);
 JSValueRef js_obj_vert_speed_get_deceleration(void);
 JSValueRef js_obj_vert_speed_get_flySlop(void);
-bool js_obj_vert_speed_set_normal(JSValueRef vp);
-bool js_obj_vert_speed_set_acceleration(JSValueRef vp);
-bool js_obj_vert_speed_set_deceleration(JSValueRef vp);
-bool js_obj_vert_speed_set_flySlop(JSValueRef vp);
+void js_obj_vert_speed_set_normal(JSValueRef vp,JSValueRef *exception);
+void js_obj_vert_speed_set_acceleration(JSValueRef vp,JSValueRef *exception);
+void js_obj_vert_speed_set_deceleration(JSValueRef vp,JSValueRef *exception);
+void js_obj_vert_speed_set_flySlop(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	obj_vert_speed_props[]={
 							{"normal",					js_obj_vert_speed_get_normal,			js_obj_vert_speed_set_normal},
@@ -143,44 +143,36 @@ JSValueRef js_obj_vert_speed_get_flySlop(void)
       
 ======================================================= */
 
-bool js_obj_vert_speed_set_normal(JSValueRef vp)
+void js_obj_vert_speed_set_normal(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vert_move.max_walk_speed=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_vert_speed_set_acceleration(JSValueRef vp)
+void js_obj_vert_speed_set_acceleration(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vert_move.accelerate=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_vert_speed_set_deceleration(JSValueRef vp)
+void js_obj_vert_speed_set_deceleration(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vert_move.decelerate=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_vert_speed_set_flySlop(JSValueRef vp)
+void js_obj_vert_speed_set_flySlop(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vert_move.slop=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
 

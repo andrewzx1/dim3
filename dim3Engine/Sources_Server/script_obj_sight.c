@@ -42,11 +42,11 @@ JSValueRef js_obj_sight_get_lookFieldAngle(void);
 JSValueRef js_obj_sight_get_sideFieldDivision(void);
 JSValueRef js_obj_sight_get_lookFieldDivision(void);
 JSValueRef js_obj_sight_get_distance(void);
-bool js_obj_sight_set_sideFieldAngle(JSValueRef vp);
-bool js_obj_sight_set_lookFieldAngle(JSValueRef vp);
-bool js_obj_sight_set_sideFieldDivision(JSValueRef vp);
-bool js_obj_sight_set_lookFieldDivision(JSValueRef vp);
-bool js_obj_sight_set_distance(JSValueRef vp);
+void js_obj_sight_set_sideFieldAngle(JSValueRef vp,JSValueRef *exception);
+void js_obj_sight_set_lookFieldAngle(JSValueRef vp,JSValueRef *exception);
+void js_obj_sight_set_sideFieldDivision(JSValueRef vp,JSValueRef *exception);
+void js_obj_sight_set_lookFieldDivision(JSValueRef vp,JSValueRef *exception);
+void js_obj_sight_set_distance(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_sight_test_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_sight_test_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -164,54 +164,44 @@ JSValueRef js_obj_sight_get_distance(void)
       
 ======================================================= */
 
-bool js_obj_sight_set_sideFieldAngle(JSValueRef vp)
+void js_obj_sight_set_sideFieldAngle(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->sight.side_angle=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_sight_set_lookFieldAngle(JSValueRef vp)
+void js_obj_sight_set_lookFieldAngle(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->sight.look_angle=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_sight_set_sideFieldDivision(JSValueRef vp)
+void js_obj_sight_set_sideFieldDivision(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->sight.side_division=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_sight_set_lookFieldDivision(JSValueRef vp)
+void js_obj_sight_set_lookFieldDivision(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->sight.look_division=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_sight_set_distance(JSValueRef vp)
+void js_obj_sight_set_distance(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->sight.distance=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
 /* =======================================================

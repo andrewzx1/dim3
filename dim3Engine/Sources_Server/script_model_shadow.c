@@ -34,7 +34,7 @@ and can be sold or given away.
 JSValueRef js_model_shadow_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_model_shadow_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_model_shadow_get_on(void);
-bool js_model_shadow_set_on(JSValueRef vp);
+void js_model_shadow_set_on(JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -106,7 +106,7 @@ JSValueRef js_model_shadow_get_on(void)
       
 ======================================================= */
 
-bool js_model_shadow_set_on(JSValueRef vp)
+void js_model_shadow_set_on(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
@@ -115,7 +115,5 @@ bool js_model_shadow_set_on(JSValueRef vp)
 	shadow=&draw->shadow;
 
 	shadow->on=script_value_to_bool(*vp);
-
-	return(TRUE);
 }
 

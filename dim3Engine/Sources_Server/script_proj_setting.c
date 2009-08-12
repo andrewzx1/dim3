@@ -42,8 +42,8 @@ JSValueRef js_proj_setting_get_hitscan(void);
 JSValueRef js_proj_setting_get_resetAngle(void);
 JSValueRef js_proj_setting_get_parentObjectId(void);
 JSValueRef js_proj_setting_get_parentTeam(void);
-bool js_proj_setting_set_hitscan(JSValueRef vp);
-bool js_proj_setting_set_resetAngle(JSValueRef vp);
+void js_proj_setting_set_hitscan(JSValueRef vp,JSValueRef *exception);
+void js_proj_setting_set_resetAngle(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	proj_setting_props[]={
 							{"name",				js_proj_setting_get_name,				NULL},
@@ -186,7 +186,7 @@ JSValueRef js_proj_setting_get_parentTeam(void)
       
 ======================================================= */
 
-bool js_proj_setting_set_hitscan(JSValueRef vp)
+void js_proj_setting_set_hitscan(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -194,11 +194,9 @@ bool js_proj_setting_set_hitscan(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 	
 	proj_setup->hitscan.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_proj_setting_set_resetAngle(JSValueRef vp)
+void js_proj_setting_set_resetAngle(JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -206,6 +204,4 @@ bool js_proj_setting_set_resetAngle(JSValueRef vp)
 	if (proj_setup==NULL) return(TRUE);
 
 	proj_setup->reset_angle=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }

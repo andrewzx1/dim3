@@ -48,17 +48,17 @@ JSValueRef js_weap_recoil_get_maxZ(void);
 JSValueRef js_weap_recoil_get_resetZ(void);
 JSValueRef js_weap_recoil_get_resetLook(void);
 JSValueRef js_weap_recoil_get_resetTurn(void);
-bool js_weap_recoil_set_minX(JSValueRef vp);
-bool js_weap_recoil_set_maxX(JSValueRef vp);
-bool js_weap_recoil_set_resetX(JSValueRef vp);
-bool js_weap_recoil_set_minY(JSValueRef vp);
-bool js_weap_recoil_set_maxY(JSValueRef vp);
-bool js_weap_recoil_set_resetY(JSValueRef vp);
-bool js_weap_recoil_set_minZ(JSValueRef vp);
-bool js_weap_recoil_set_maxZ(JSValueRef vp);
-bool js_weap_recoil_set_resetZ(JSValueRef vp);
-bool js_weap_recoil_set_resetLook(JSValueRef vp);
-bool js_weap_recoil_set_resetTurn(JSValueRef vp);
+void js_weap_recoil_set_minX(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_maxX(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_resetX(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_minY(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_maxY(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_resetY(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_minZ(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_maxZ(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_resetZ(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_resetLook(JSValueRef vp,JSValueRef *exception);
+void js_weap_recoil_set_resetTurn(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_recoil_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	weap_recoil_props[]={
@@ -240,114 +240,92 @@ JSValueRef js_weap_recoil_get_resetTurn(void)
       
 ======================================================= */
 
-bool js_weap_recoil_set_minX(JSValueRef vp)
+void js_weap_recoil_set_minX(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.min_ang.x=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_maxX(JSValueRef vp)
+void js_weap_recoil_set_maxX(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.max_ang.x=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_resetX(JSValueRef vp)
+void js_weap_recoil_set_resetX(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.reset_ang.x=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_minY(JSValueRef vp)
+void js_weap_recoil_set_minY(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.min_ang.y=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_maxY(JSValueRef vp)
+void js_weap_recoil_set_maxY(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.max_ang.y=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_resetY(JSValueRef vp)
+void js_weap_recoil_set_resetY(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.reset_ang.y=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_minZ(JSValueRef vp)
+void js_weap_recoil_set_minZ(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.min_ang.z=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_maxZ(JSValueRef vp)
+void js_weap_recoil_set_maxZ(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.max_ang.z=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_resetZ(JSValueRef vp)
+void js_weap_recoil_set_resetZ(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.reset_ang.z=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_resetLook(JSValueRef vp)
+void js_weap_recoil_set_resetLook(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.look_reset=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
-bool js_weap_recoil_set_resetTurn(JSValueRef vp)
+void js_weap_recoil_set_resetTurn(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->recoil.turn_reset=fabsf(script_value_to_float(*vp));
-	
-	return(TRUE);
 }
 
 /* =======================================================

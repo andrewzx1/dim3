@@ -98,8 +98,7 @@ bool js_multiplayer_bot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 JSValueRef js_multiplayer_bot_get_skill(void)
 {
-	*vp=script_int_to_value(server.skill);
-	return(TRUE);
+	return(script_int_to_value(server.skill));
 }
 
 /* =======================================================
@@ -117,8 +116,6 @@ JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef 
 	
 	skill=(float)setup.network.bot.skill;
 
-	*rval=script_float_to_value(min+(((max-min)*skill)/4.0f));
-	
-	return(TRUE);
+	return(script_float_to_value(min+(((max-min)*skill)/4.0f)));
 }
 

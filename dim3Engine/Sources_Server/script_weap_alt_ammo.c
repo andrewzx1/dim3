@@ -45,13 +45,13 @@ JSValueRef js_weap_alt_ammo_get_clipCount(void);
 JSValueRef js_weap_alt_ammo_get_initClipCount(void);
 JSValueRef js_weap_alt_ammo_get_maxClipCount(void);
 JSValueRef js_weap_alt_ammo_get_lastReloadTick(void);
-bool js_weap_alt_ammo_set_clip(JSValueRef vp);
-bool js_weap_alt_ammo_set_count(JSValueRef vp);
-bool js_weap_alt_ammo_set_initCount(JSValueRef vp);
-bool js_weap_alt_ammo_set_maxCount(JSValueRef vp);
-bool js_weap_alt_ammo_set_clipCount(JSValueRef vp);
-bool js_weap_alt_ammo_set_initClipCount(JSValueRef vp);
-bool js_weap_alt_ammo_set_maxClipCount(JSValueRef vp);
+void js_weap_alt_ammo_set_clip(JSValueRef vp,JSValueRef *exception);
+void js_weap_alt_ammo_set_count(JSValueRef vp,JSValueRef *exception);
+void js_weap_alt_ammo_set_initCount(JSValueRef vp,JSValueRef *exception);
+void js_weap_alt_ammo_set_maxCount(JSValueRef vp,JSValueRef *exception);
+void js_weap_alt_ammo_set_clipCount(JSValueRef vp,JSValueRef *exception);
+void js_weap_alt_ammo_set_initClipCount(JSValueRef vp,JSValueRef *exception);
+void js_weap_alt_ammo_set_maxClipCount(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_alt_ammo_use_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_alt_ammo_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_alt_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -238,7 +238,7 @@ JSValueRef js_weap_alt_ammo_get_lastReloadTick(void)
       
 ======================================================= */
 
-bool js_weap_alt_ammo_set_clip(JSValueRef vp)
+void js_weap_alt_ammo_set_clip(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
@@ -247,11 +247,9 @@ bool js_weap_alt_ammo_set_clip(JSValueRef vp)
 	alt_ammo=&weap->alt_ammo;
 	
 	alt_ammo->use_clips=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_alt_ammo_set_count(JSValueRef vp)
+void js_weap_alt_ammo_set_count(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
@@ -265,11 +263,9 @@ bool js_weap_alt_ammo_set_count(JSValueRef vp)
 	else {
 		alt_ammo->count=script_value_to_int(*vp);
 	}
-	
-	return(TRUE);
 }
 
-bool js_weap_alt_ammo_set_initCount(JSValueRef vp)
+void js_weap_alt_ammo_set_initCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
@@ -278,11 +274,9 @@ bool js_weap_alt_ammo_set_initCount(JSValueRef vp)
 	alt_ammo=&weap->alt_ammo;
 
 	alt_ammo->init_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_alt_ammo_set_maxCount(JSValueRef vp)
+void js_weap_alt_ammo_set_maxCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
@@ -291,11 +285,9 @@ bool js_weap_alt_ammo_set_maxCount(JSValueRef vp)
 	alt_ammo=&weap->alt_ammo;
 
 	alt_ammo->max_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_alt_ammo_set_clipCount(JSValueRef vp)
+void js_weap_alt_ammo_set_clipCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
@@ -304,11 +296,9 @@ bool js_weap_alt_ammo_set_clipCount(JSValueRef vp)
 	alt_ammo=&weap->alt_ammo;
 
 	alt_ammo->clip_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_alt_ammo_set_initClipCount(JSValueRef vp)
+void js_weap_alt_ammo_set_initClipCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
@@ -317,11 +307,9 @@ bool js_weap_alt_ammo_set_initClipCount(JSValueRef vp)
 	alt_ammo=&weap->alt_ammo;
 
 	alt_ammo->init_clip_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_alt_ammo_set_maxClipCount(JSValueRef vp)
+void js_weap_alt_ammo_set_maxClipCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
@@ -330,8 +318,6 @@ bool js_weap_alt_ammo_set_maxClipCount(JSValueRef vp)
 	alt_ammo=&weap->alt_ammo;
 
 	alt_ammo->max_clip_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
 /* =======================================================

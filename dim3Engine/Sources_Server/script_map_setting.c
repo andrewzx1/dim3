@@ -48,8 +48,8 @@ JSValueRef js_map_setting_get_resistance(void);
 JSValueRef js_map_setting_get_multiplayer(void);
 JSValueRef js_map_setting_get_multiplayerType(void);
 JSValueRef js_map_setting_get_botSkill(void);
-bool js_map_setting_set_gravity(JSValueRef vp);
-bool js_map_setting_set_resistance(JSValueRef vp);
+void js_map_setting_set_gravity(JSValueRef vp,JSValueRef *exception);
+void js_map_setting_set_resistance(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -161,16 +161,14 @@ JSValueRef js_map_setting_get_botSkill(void)
       
 ======================================================= */
 
-bool js_map_setting_set_gravity(JSValueRef vp)
+void js_map_setting_set_gravity(JSValueRef vp,JSValueRef *exception)
 {
 	map.settings.gravity=script_value_to_float(*vp);
-	return(TRUE);
 }
 
-bool js_map_setting_set_resistance(JSValueRef vp)
+void js_map_setting_set_resistance(JSValueRef vp,JSValueRef *exception)
 {
 	map.settings.resistance=script_value_to_float(*vp);
-	return(TRUE);
 }
 
 /* =======================================================

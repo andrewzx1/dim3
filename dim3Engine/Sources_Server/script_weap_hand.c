@@ -41,11 +41,11 @@ JSValueRef js_weap_hand_get_lowerTick(void);
 JSValueRef js_weap_hand_get_selectShift(void);
 JSValueRef js_weap_hand_get_bobSpeed(void);
 JSValueRef js_weap_hand_get_bobAngle(void);
-bool js_weap_hand_set_raiseTick(JSValueRef vp);
-bool js_weap_hand_set_lowerTick(JSValueRef vp);
-bool js_weap_hand_set_selectShift(JSValueRef vp);
-bool js_weap_hand_set_bobSpeed(JSValueRef vp);
-bool js_weap_hand_set_bobAngle(JSValueRef vp);
+void js_weap_hand_set_raiseTick(JSValueRef vp,JSValueRef *exception);
+void js_weap_hand_set_lowerTick(JSValueRef vp,JSValueRef *exception);
+void js_weap_hand_set_selectShift(JSValueRef vp,JSValueRef *exception);
+void js_weap_hand_set_bobSpeed(JSValueRef vp,JSValueRef *exception);
+void js_weap_hand_set_bobAngle(JSValueRef vp,JSValueRef *exception);
 
 script_js_property	weap_hand_props[]={
 							{"raiseTick",			js_weap_hand_get_raiseTick,				js_weap_hand_set_raiseTick},
@@ -156,54 +156,44 @@ JSValueRef js_weap_hand_get_bobAngle(void)
       
 ======================================================= */
 
-bool js_weap_hand_set_raiseTick(JSValueRef vp)
+void js_weap_hand_set_raiseTick(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.raise_tick=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_hand_set_lowerTick(JSValueRef vp)
+void js_weap_hand_set_lowerTick(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.lower_tick=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_hand_set_selectShift(JSValueRef vp)
+void js_weap_hand_set_selectShift(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.select_shift=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_hand_set_bobSpeed(JSValueRef vp)
+void js_weap_hand_set_bobSpeed(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.bounce_speed=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_hand_set_bobAngle(JSValueRef vp)
+void js_weap_hand_set_bobAngle(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.bounce_ang=script_value_to_float(*vp);
-	
-	return(TRUE);
 }
 
 

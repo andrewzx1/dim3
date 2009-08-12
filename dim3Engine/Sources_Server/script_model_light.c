@@ -40,13 +40,13 @@ JSValueRef js_model_light_get_filter(void);
 JSValueRef js_model_light_get_direction(void);
 JSValueRef js_model_light_get_intensity(void);
 JSValueRef js_model_light_get_exponent(void);
-bool js_model_light_set_index(JSValueRef vp);
-bool js_model_light_set_on(JSValueRef vp);
-bool js_model_light_set_type(JSValueRef vp);
-bool js_model_light_set_filter(JSValueRef vp);
-bool js_model_light_set_direction(JSValueRef vp);
-bool js_model_light_set_intensity(JSValueRef vp);
-bool js_model_light_set_exponent(JSValueRef vp);
+void js_model_light_set_index(JSValueRef vp,JSValueRef *exception);
+void js_model_light_set_on(JSValueRef vp,JSValueRef *exception);
+void js_model_light_set_type(JSValueRef vp,JSValueRef *exception);
+void js_model_light_set_filter(JSValueRef vp,JSValueRef *exception);
+void js_model_light_set_direction(JSValueRef vp,JSValueRef *exception);
+void js_model_light_set_intensity(JSValueRef vp,JSValueRef *exception);
+void js_model_light_set_exponent(JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -202,7 +202,7 @@ JSValueRef js_model_light_get_exponent(void)
       
 ======================================================= */
 
-bool js_model_light_set_index(JSValueRef vp)
+void js_model_light_set_index(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -212,11 +212,9 @@ bool js_model_light_set_index(JSValueRef vp)
 	
 	draw->script_light_idx=script_value_to_int(*vp);
 	if ((draw->script_light_idx<0) || (draw->script_light_idx>=max_model_light)) draw->script_light_idx=0;
-
-	return(TRUE);
 }
 
-bool js_model_light_set_on(JSValueRef vp)
+void js_model_light_set_on(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -225,11 +223,9 @@ bool js_model_light_set_on(JSValueRef vp)
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->on=script_value_to_bool(*vp);
-
-	return(TRUE);
 }
 
-bool js_model_light_set_type(JSValueRef vp)
+void js_model_light_set_type(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -238,11 +234,9 @@ bool js_model_light_set_type(JSValueRef vp)
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->type=script_value_to_int(*vp)-sd_light_type_normal;
-
-	return(TRUE);
 }
 
-bool js_model_light_set_filter(JSValueRef vp)
+void js_model_light_set_filter(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -251,11 +245,9 @@ bool js_model_light_set_filter(JSValueRef vp)
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->filter=script_value_to_int(*vp)-sd_light_filter_none;
-
-	return(TRUE);
 }
 
-bool js_model_light_set_direction(JSValueRef vp)
+void js_model_light_set_direction(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -264,11 +256,9 @@ bool js_model_light_set_direction(JSValueRef vp)
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->direction=script_value_to_int(*vp)-sd_light_direction_all;
-
-	return(TRUE);
 }
 
-bool js_model_light_set_intensity(JSValueRef vp)
+void js_model_light_set_intensity(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -277,11 +267,9 @@ bool js_model_light_set_intensity(JSValueRef vp)
 	light=&draw->lights[draw->script_light_idx];
 
 	light->intensity=script_value_to_int(*vp);
-
-	return(TRUE);
 }
 
-bool js_model_light_set_exponent(JSValueRef vp)
+void js_model_light_set_exponent(JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -290,7 +278,5 @@ bool js_model_light_set_exponent(JSValueRef vp)
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->exponent=script_value_to_float(*vp);
-
-	return(TRUE);
 }
 

@@ -72,36 +72,36 @@ JSValueRef js_obj_setting_get_slopeGravity(void);
 JSValueRef js_obj_setting_get_pushable(void);
 JSValueRef js_obj_setting_get_openDoors(void);
 JSValueRef js_obj_setting_get_inputMode(void);
-bool js_obj_setting_set_team(JSValueRef vp);
-bool js_obj_setting_set_hidden(JSValueRef vp);
-bool js_obj_setting_set_suspend(JSValueRef vp);
-bool js_obj_setting_set_fly(JSValueRef vp);
-bool js_obj_setting_set_find(JSValueRef vp);
-bool js_obj_setting_set_contact(JSValueRef vp);
-bool js_obj_setting_set_contactObject(JSValueRef vp);
-bool js_obj_setting_set_contactProjectile(JSValueRef vp);
-bool js_obj_setting_set_contactForce(JSValueRef vp);
-bool js_obj_setting_set_hitBox(JSValueRef vp);
-bool js_obj_setting_set_damage(JSValueRef vp);
-bool js_obj_setting_set_crushable(JSValueRef vp);
-bool js_obj_setting_set_invincible(JSValueRef vp);
-bool js_obj_setting_set_clickable(JSValueRef vp);
-bool js_obj_setting_set_pickup(JSValueRef vp);
-bool js_obj_setting_set_ignorePickUpItems(JSValueRef vp);
-bool js_obj_setting_set_ignoreMouse(JSValueRef vp);
-bool js_obj_setting_set_turnOnlyWhenMoving(JSValueRef vp);
-bool js_obj_setting_set_restrictPlayerTurning(JSValueRef vp);
-bool js_obj_setting_set_quickReverse(JSValueRef vp);
-bool js_obj_setting_set_sideStep(JSValueRef vp);
-bool js_obj_setting_set_jump(JSValueRef vp);
-bool js_obj_setting_set_duck(JSValueRef vp);
-bool js_obj_setting_set_crawl(JSValueRef vp);
-bool js_obj_setting_set_singleSpeed(JSValueRef vp);
-bool js_obj_setting_set_bumpUp(JSValueRef vp);
-bool js_obj_setting_set_slopeGravity(JSValueRef vp);
-bool js_obj_setting_set_pushable(JSValueRef vp);
-bool js_obj_setting_set_openDoors(JSValueRef vp);
-bool js_obj_setting_set_inputMode(JSValueRef vp);
+void js_obj_setting_set_team(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_hidden(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_suspend(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_fly(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_find(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_contact(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_contactObject(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_contactProjectile(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_contactForce(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_hitBox(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_damage(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_crushable(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_invincible(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_clickable(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_pickup(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_ignorePickUpItems(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_ignoreMouse(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_turnOnlyWhenMoving(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_restrictPlayerTurning(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_quickReverse(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_sideStep(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_jump(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_duck(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_crawl(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_singleSpeed(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_bumpUp(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_slopeGravity(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_pushable(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_openDoors(JSValueRef vp,JSValueRef *exception);
+void js_obj_setting_set_inputMode(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -568,57 +568,47 @@ JSValueRef js_obj_setting_get_inputMode(void)
       
 ======================================================= */
 
-bool js_obj_setting_set_team(JSValueRef vp)
+void js_obj_setting_set_team(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->team_idx=script_value_to_int(*vp)-sd_team_none;
-
-	return(TRUE);
 }
 
-bool js_obj_setting_set_hidden(JSValueRef vp)
+void js_obj_setting_set_hidden(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_hide(obj,script_value_to_bool(*vp));
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_suspend(JSValueRef vp)
+void js_obj_setting_set_suspend(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->suspend=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_fly(JSValueRef vp)
+void js_obj_setting_set_fly(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->fly=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_find(JSValueRef vp)
+void js_obj_setting_set_find(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->find_on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_contact(JSValueRef vp)
+void js_obj_setting_set_contact(JSValueRef vp,JSValueRef *exception)
 {
 	bool			on;
 	obj_type		*obj;
@@ -629,248 +619,198 @@ bool js_obj_setting_set_contact(JSValueRef vp)
 	obj->contact.object_on=on;
 	obj->contact.projectile_on=on;
 	obj->contact.force_on=on;
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_contactObject(JSValueRef vp)
+void js_obj_setting_set_contactObject(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->contact.object_on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_contactProjectile(JSValueRef vp)
+void js_obj_setting_set_contactProjectile(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->contact.projectile_on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_contactForce(JSValueRef vp)
+void js_obj_setting_set_contactForce(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->contact.force_on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_hitBox(JSValueRef vp)
+void js_obj_setting_set_hitBox(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->hit_box.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_damage(JSValueRef vp)
+void js_obj_setting_set_damage(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->damage.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_crushable(JSValueRef vp)
+void js_obj_setting_set_crushable(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->damage.crushable=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_invincible(JSValueRef vp)
+void js_obj_setting_set_invincible(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->damage.invincible=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_clickable(JSValueRef vp)
+void js_obj_setting_set_clickable(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->click.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_pickup(JSValueRef vp)
+void js_obj_setting_set_pickup(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->pickup.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_ignorePickUpItems(JSValueRef vp)
+void js_obj_setting_set_ignorePickUpItems(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->pickup.ignore=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_ignoreMouse(JSValueRef vp)
+void js_obj_setting_set_ignoreMouse(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.ignore_mouse=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_turnOnlyWhenMoving(JSValueRef vp)
+void js_obj_setting_set_turnOnlyWhenMoving(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.only_when_moving=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_restrictPlayerTurning(JSValueRef vp)
+void js_obj_setting_set_restrictPlayerTurning(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.restrict_player_turning=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_quickReverse(JSValueRef vp)
+void js_obj_setting_set_quickReverse(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->quick_reverse=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_sideStep(JSValueRef vp)
+void js_obj_setting_set_sideStep(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->side_step=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_jump(JSValueRef vp)
+void js_obj_setting_set_jump(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->jump.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_duck(JSValueRef vp)
+void js_obj_setting_set_duck(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->duck.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_crawl(JSValueRef vp)
+void js_obj_setting_set_crawl(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->crawl=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_singleSpeed(JSValueRef vp)
+void js_obj_setting_set_singleSpeed(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->single_speed=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_bumpUp(JSValueRef vp)
+void js_obj_setting_set_bumpUp(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->bump.on=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_slopeGravity(JSValueRef vp)
+void js_obj_setting_set_slopeGravity(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->slope_gravity=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_pushable(JSValueRef vp)
+void js_obj_setting_set_pushable(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->contact.pushable=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_openDoors(JSValueRef vp)
+void js_obj_setting_set_openDoors(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->open_doors=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_obj_setting_set_inputMode(JSValueRef vp)
+void js_obj_setting_set_inputMode(JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->input_mode=script_value_to_int(*vp)-sd_input_mode_fpp;
-	
-	return(TRUE);
 }
 
 /* =======================================================

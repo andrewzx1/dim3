@@ -36,24 +36,24 @@ and can be sold or given away.
 extern js_type				js;
 
 JSValueRef js_weap_ammo_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_ammo_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-bool js_weap_ammo_get_ammo(void);
-bool js_weap_ammo_get_clip(void);
-bool js_weap_ammo_get_count(void);
-bool js_weap_ammo_get_initCount(void);
-bool js_weap_ammo_get_maxCount(void);
-bool js_weap_ammo_get_clipCount(void);
-bool js_weap_ammo_get_initClipCount(void);
-bool js_weap_ammo_get_maxClipCount(void);
-bool js_weap_ammo_get_lastReloadTick(void);
-bool js_weap_ammo_set_ammo(JSValueRef vp);
-bool js_weap_ammo_set_clip(JSValueRef vp);
-bool js_weap_ammo_set_count(JSValueRef vp);
-bool js_weap_ammo_set_initCount(JSValueRef vp);
-bool js_weap_ammo_set_maxCount(JSValueRef vp);
-bool js_weap_ammo_set_clipCount(JSValueRef vp);
-bool js_weap_ammo_set_initClipCount(JSValueRef vp);
-bool js_weap_ammo_set_maxClipCount(JSValueRef vp);
+JSValueRef js_weap_ammo_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_ammo_get_ammo(void);
+JSValueRef js_weap_ammo_get_clip(void);
+JSValueRef js_weap_ammo_get_count(void);
+JSValueRef js_weap_ammo_get_initCount(void);
+JSValueRef js_weap_ammo_get_maxCount(void);
+JSValueRef js_weap_ammo_get_clipCount(void);
+JSValueRef js_weap_ammo_get_initClipCount(void);
+JSValueRef js_weap_ammo_get_maxClipCount(void);
+JSValueRef js_weap_ammo_get_lastReloadTick(void);
+void js_weap_ammo_set_ammo(JSValueRef vp,JSValueRef *exception);
+void js_weap_ammo_set_clip(JSValueRef vp,JSValueRef *exception);
+void js_weap_ammo_set_count(JSValueRef vp,JSValueRef *exception);
+void js_weap_ammo_set_initCount(JSValueRef vp,JSValueRef *exception);
+void js_weap_ammo_set_maxCount(JSValueRef vp,JSValueRef *exception);
+void js_weap_ammo_set_clipCount(JSValueRef vp,JSValueRef *exception);
+void js_weap_ammo_set_initClipCount(JSValueRef vp,JSValueRef *exception);
+void js_weap_ammo_set_maxClipCount(JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_ammo_use_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_ammo_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -121,7 +121,7 @@ bool js_weap_ammo_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-bool js_weap_ammo_get_ammo(void)
+JSValueRef js_weap_ammo_get_ammo(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -129,12 +129,10 @@ bool js_weap_ammo_get_ammo(void)
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
 	
-	*vp=script_bool_to_value(ammo->use_ammo);
-	
-	return(TRUE);
+	return(script_bool_to_value(ammo->use_ammo));
 }
 
-bool js_weap_ammo_get_clip(void)
+JSValueRef js_weap_ammo_get_clip(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -142,12 +140,10 @@ bool js_weap_ammo_get_clip(void)
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
 
-	*vp=script_bool_to_value(ammo->use_clips);
-	
-	return(TRUE);
+	return(script_bool_to_value(ammo->use_clips));
 }
 
-bool js_weap_ammo_get_count(void)
+JSValueRef js_weap_ammo_get_count(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -157,20 +153,17 @@ bool js_weap_ammo_get_count(void)
 
 	if (ammo->use_ammo) {
 		if (weap->dual.in_dual) {
-			*vp=script_int_to_value(ammo->count_dual);
+			return(script_int_to_value(ammo->count_dual));
 		}
 		else {
-			*vp=script_int_to_value(ammo->count);
+			return(script_int_to_value(ammo->count));
 		}
 	}
-	else {
-		*vp=script_int_to_value(0);
-	}
 	
-	return(TRUE);
+	return(script_int_to_value(0));
 }
 
-bool js_weap_ammo_get_initCount(void)
+JSValueRef js_weap_ammo_get_initCount(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -178,17 +171,12 @@ bool js_weap_ammo_get_initCount(void)
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
 
-	if (ammo->use_ammo) {
-		*vp=script_int_to_value(ammo->init_count);
-	}
-	else {
-		*vp=script_int_to_value(0);
-	}
+	if (ammo->use_ammo) return(script_int_to_value(ammo->init_count));
 	
-	return(TRUE);
+	return(script_int_to_value(0));
 }
 
-bool js_weap_ammo_get_maxCount(void)
+JSValueRef js_weap_ammo_get_maxCount(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -196,17 +184,12 @@ bool js_weap_ammo_get_maxCount(void)
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
 
-	if (ammo->use_ammo) {
-		*vp=script_int_to_value(ammo->max_count);
-	}
-	else {
-		*vp=script_int_to_value(0);
-	}
+	if (ammo->use_ammo) return(script_int_to_value(ammo->max_count));
 	
-	return(TRUE);
+	return(script_int_to_value(0));
 }
 
-bool js_weap_ammo_get_clipCount(void)
+JSValueRef js_weap_ammo_get_clipCount(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -214,34 +197,24 @@ bool js_weap_ammo_get_clipCount(void)
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
 
-	if ((ammo->use_ammo) && (ammo->use_clips)) {
-		*vp=script_int_to_value(ammo->clip_count);
-	}
-	else {
-		*vp=script_int_to_value(0);
-	}
+	if ((ammo->use_ammo) && (ammo->use_clips)) return(script_int_to_value(ammo->clip_count));
 	
-	return(TRUE);
+	return(script_int_to_value(0));
 }
 
-bool js_weap_ammo_get_initClipCount(void)
+JSValueRef js_weap_ammo_get_initClipCount(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
-	if ((ammo->use_ammo) && (ammo->use_clips)) {
-		*vp=script_int_to_value(ammo->init_clip_count);
-	}
-	else {
-		*vp=script_int_to_value(0);
-	}
-	
-	return(TRUE);
+	if ((ammo->use_ammo) && (ammo->use_clips)) return(script_int_to_value(ammo->init_clip_count));
+
+	return(script_int_to_value(0));
 }
 
-bool js_weap_ammo_get_maxClipCount(void)
+JSValueRef js_weap_ammo_get_maxClipCount(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -249,17 +222,12 @@ bool js_weap_ammo_get_maxClipCount(void)
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
 
-	if ((ammo->use_ammo) && (ammo->use_clips)) {
-		*vp=script_int_to_value(ammo->max_clip_count);
-	}
-	else {
-		*vp=script_int_to_value(0);
-	}
-	
-	return(TRUE);
+	if ((ammo->use_ammo) && (ammo->use_clips)) return(script_int_to_value(ammo->max_clip_count));
+
+	return(script_int_to_value(0));
 }
 
-bool js_weap_ammo_get_lastReloadTick(void)
+JSValueRef js_weap_ammo_get_lastReloadTick(void)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -267,14 +235,9 @@ bool js_weap_ammo_get_lastReloadTick(void)
 	weap=weapon_find_uid(js.attach.thing_uid);
 	ammo=&weap->ammo;
 	
-	if (weap->dual.in_dual) {
-		*vp=script_int_to_value(ammo->last_reload_dual_tick);
-	}
-	else {
-		*vp=script_int_to_value(ammo->last_reload_tick);
-	}
-	
-	return(TRUE);
+	if (weap->dual.in_dual) return(script_int_to_value(ammo->last_reload_dual_tick));
+
+	return(script_int_to_value(ammo->last_reload_tick));
 }
 
 /* =======================================================
@@ -283,7 +246,7 @@ bool js_weap_ammo_get_lastReloadTick(void)
       
 ======================================================= */
 
-bool js_weap_ammo_set_ammo(JSValueRef vp)
+void js_weap_ammo_set_ammo(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -292,11 +255,9 @@ bool js_weap_ammo_set_ammo(JSValueRef vp)
 	ammo=&weap->ammo;
 	
 	ammo->use_ammo=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_ammo_set_clip(JSValueRef vp)
+void js_weap_ammo_set_clip(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -305,11 +266,9 @@ bool js_weap_ammo_set_clip(JSValueRef vp)
 	ammo=&weap->ammo;
 
 	ammo->use_clips=script_value_to_bool(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_ammo_set_count(JSValueRef vp)
+void js_weap_ammo_set_count(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -323,11 +282,9 @@ bool js_weap_ammo_set_count(JSValueRef vp)
 	else {
 		ammo->count=script_value_to_int(*vp);
 	}
-	
-	return(TRUE);
 }
 
-bool js_weap_ammo_set_initCount(JSValueRef vp)
+void js_weap_ammo_set_initCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -336,11 +293,9 @@ bool js_weap_ammo_set_initCount(JSValueRef vp)
 	ammo=&weap->ammo;
 
 	ammo->init_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_ammo_set_maxCount(JSValueRef vp)
+void js_weap_ammo_set_maxCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -349,11 +304,9 @@ bool js_weap_ammo_set_maxCount(JSValueRef vp)
 	ammo=&weap->ammo;
 
 	ammo->max_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_ammo_set_clipCount(JSValueRef vp)
+void js_weap_ammo_set_clipCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -362,11 +315,9 @@ bool js_weap_ammo_set_clipCount(JSValueRef vp)
 	ammo=&weap->ammo;
 
 	ammo->clip_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_ammo_set_initClipCount(JSValueRef vp)
+void js_weap_ammo_set_initClipCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -375,11 +326,9 @@ bool js_weap_ammo_set_initClipCount(JSValueRef vp)
 	ammo=&weap->ammo;
 
 	ammo->init_clip_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
-bool js_weap_ammo_set_maxClipCount(JSValueRef vp)
+void js_weap_ammo_set_maxClipCount(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -388,8 +337,6 @@ bool js_weap_ammo_set_maxClipCount(JSValueRef vp)
 	ammo=&weap->ammo;
 	
 	ammo->max_clip_count=script_value_to_int(*vp);
-	
-	return(TRUE);
 }
 
 /* =======================================================
