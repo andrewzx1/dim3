@@ -96,11 +96,9 @@ JSValueRef js_proj_position_get_x(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_int_to_value(proj->pnt.x);
-	
-	return(TRUE);
+	return(script_int_to_value(proj->pnt.x));
 }
 
 JSValueRef js_proj_position_get_y(void)
@@ -108,11 +106,9 @@ JSValueRef js_proj_position_get_y(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_int_to_value(proj->pnt.y);
-	
-	return(TRUE);
+	return(script_int_to_value(proj->pnt.y));
 }
 
 JSValueRef js_proj_position_get_z(void)
@@ -120,10 +116,8 @@ JSValueRef js_proj_position_get_z(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_int_to_value(proj->pnt.z);
-	
-	return(TRUE);
+	return(script_int_to_value(proj->pnt.z));
 }
 

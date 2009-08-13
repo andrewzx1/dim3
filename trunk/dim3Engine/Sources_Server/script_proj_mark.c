@@ -102,11 +102,9 @@ JSValueRef js_proj_mark_get_on(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_bool_to_value(proj_setup->mark.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(proj_setup->mark.on));
 }
 
 JSValueRef js_proj_mark_get_name(void)
@@ -114,11 +112,9 @@ JSValueRef js_proj_mark_get_name(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_string_to_value(proj_setup->mark.name);
-	
-	return(TRUE);
+	return(script_string_to_value(proj_setup->mark.name));
 }
 
 JSValueRef js_proj_mark_get_size(void)
@@ -126,11 +122,9 @@ JSValueRef js_proj_mark_get_size(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_int_to_value(proj_setup->mark.size);
-	
-	return(TRUE);
+	return(script_int_to_value(proj_setup->mark.size));
 }
 
 JSValueRef js_proj_mark_get_alpha(void)
@@ -138,11 +132,9 @@ JSValueRef js_proj_mark_get_alpha(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-    *vp=script_float_to_value(proj_setup->mark.alpha);
-	
-	return(TRUE);
+    return(script_float_to_value(proj_setup->mark.alpha));
 }
 
 /* =======================================================
@@ -156,9 +148,7 @@ void js_proj_mark_set_on(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-    proj_setup->mark.on=script_value_to_bool(*vp);
+	if (proj_setup!=NULL) proj_setup->mark.on=script_value_to_bool(vp);
 }
 
 void js_proj_mark_set_name(JSValueRef vp,JSValueRef *exception)
@@ -166,10 +156,10 @@ void js_proj_mark_set_name(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	script_value_to_string(*vp,proj_setup->mark.name,name_str_len);
-	proj_setup_attach_mark(proj_setup);
+	if (proj_setup!=NULL) {
+		script_value_to_string(vp,proj_setup->mark.name,name_str_len);
+		proj_setup_attach_mark(proj_setup);
+	}
 }
 
 void js_proj_mark_set_size(JSValueRef vp,JSValueRef *exception)
@@ -177,9 +167,7 @@ void js_proj_mark_set_size(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->mark.size=script_value_to_int(*vp);
+	if (proj_setup!=NULL) proj_setup->mark.size=script_value_to_int(vp);
 }
 
 void js_proj_mark_set_alpha(JSValueRef vp,JSValueRef *exception)
@@ -187,9 +175,7 @@ void js_proj_mark_set_alpha(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->mark.alpha=script_value_to_float(*vp);
+	if (proj_setup!=NULL) proj_setup->mark.alpha=script_value_to_float(vp);
 }
 
 

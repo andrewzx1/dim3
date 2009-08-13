@@ -96,11 +96,9 @@ JSValueRef js_proj_motion_angle_get_x(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_float_to_value(proj->motion.ang.x);
-	
-	return(TRUE);
+	return(script_float_to_value(proj->motion.ang.x));
 }
 
 JSValueRef js_proj_motion_angle_get_y(void)
@@ -108,11 +106,9 @@ JSValueRef js_proj_motion_angle_get_y(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_float_to_value(proj->motion.ang.y);
-	
-	return(TRUE);
+	return(script_float_to_value(proj->motion.ang.y));
 }
 
 JSValueRef js_proj_motion_angle_get_z(void)
@@ -120,10 +116,8 @@ JSValueRef js_proj_motion_angle_get_z(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_float_to_value(proj->motion.ang.z);
-	
-	return(TRUE);
+	return(script_float_to_value(proj->motion.ang.z));
 }
 
