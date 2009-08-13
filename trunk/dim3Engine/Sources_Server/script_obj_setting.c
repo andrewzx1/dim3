@@ -202,9 +202,7 @@ JSValueRef js_obj_setting_get_id(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->uid);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->uid));
 }
 
 JSValueRef js_obj_setting_get_name(void)
@@ -212,54 +210,37 @@ JSValueRef js_obj_setting_get_name(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_string_to_value(obj->name);
-	
-	return(TRUE);
+	return(script_string_to_value(obj->name));
 }
 
 JSValueRef js_obj_setting_get_characterName(void)
 {
 	obj_type		*obj;
 
-	if (hud.character.ncharacter==0) {
-		*vp=script_null_to_value();
-	}
-	else {
-		obj=object_find_uid(js.attach.thing_uid);
-		*vp=script_string_to_value(hud.character.characters[obj->character_idx].name);
-	}
+	if (hud.character.ncharacter==0) return(script_null_to_value());
 
-	return(TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	return(script_string_to_value(hud.character.characters[obj->character_idx].name));
 }
 
 JSValueRef js_obj_setting_get_characterModel(void)
 {
 	obj_type		*obj;
 	
-	if (hud.character.ncharacter==0) {
-		*vp=script_null_to_value();
-	}
-	else {
-		obj=object_find_uid(js.attach.thing_uid);
-		*vp=script_string_to_value(hud.character.characters[obj->character_idx].model_name);
-	}
+	if (hud.character.ncharacter==0) return(script_null_to_value());
 
-	return(TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	return(script_string_to_value(hud.character.characters[obj->character_idx].model_name));
 }
 
 JSValueRef js_obj_setting_get_characterParameter(void)
 {
 	obj_type		*obj;
 
-	if (hud.character.ncharacter==0) {
-		*vp=script_null_to_value();
-	}
-	else {
-		obj=object_find_uid(js.attach.thing_uid);
-		*vp=script_string_to_value(hud.character.characters[obj->character_idx].param);
-	}
+	if (hud.character.ncharacter==0) return(script_null_to_value());
 
-	return(TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	return(script_string_to_value(hud.character.characters[obj->character_idx].param));
 }
 
 JSValueRef js_obj_setting_get_team(void)
@@ -267,9 +248,7 @@ JSValueRef js_obj_setting_get_team(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->team_idx+sd_team_none);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->team_idx+sd_team_none));
 }
 
 JSValueRef js_obj_setting_get_hidden(void)
@@ -277,9 +256,7 @@ JSValueRef js_obj_setting_get_hidden(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->hidden);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->hidden));
 }
 
 JSValueRef js_obj_setting_get_suspend(void)
@@ -287,9 +264,7 @@ JSValueRef js_obj_setting_get_suspend(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->suspend);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->suspend));
 }
 
 JSValueRef js_obj_setting_get_fly(void)
@@ -297,9 +272,7 @@ JSValueRef js_obj_setting_get_fly(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->fly);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->fly));
 }
 
 JSValueRef js_obj_setting_get_find(void)
@@ -307,9 +280,7 @@ JSValueRef js_obj_setting_get_find(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->find_on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->find_on));
 }
 
 JSValueRef js_obj_setting_get_contact(void)
@@ -317,9 +288,7 @@ JSValueRef js_obj_setting_get_contact(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on));
-	
-	return(TRUE);
+	return(script_bool_to_value((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on)));
 }
 
 JSValueRef js_obj_setting_get_contactObject(void)
@@ -327,9 +296,7 @@ JSValueRef js_obj_setting_get_contactObject(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->contact.object_on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->contact.object_on));
 }
 
 JSValueRef js_obj_setting_get_contactProjectile(void)
@@ -337,9 +304,7 @@ JSValueRef js_obj_setting_get_contactProjectile(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->contact.projectile_on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->contact.projectile_on));
 }
 
 JSValueRef js_obj_setting_get_contactForce(void)
@@ -347,9 +312,7 @@ JSValueRef js_obj_setting_get_contactForce(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->contact.force_on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->contact.force_on));
 }
 
 JSValueRef js_obj_setting_get_hitBox(void)
@@ -357,9 +320,7 @@ JSValueRef js_obj_setting_get_hitBox(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->hit_box.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->hit_box.on));
 }
 
 JSValueRef js_obj_setting_get_damage(void)
@@ -367,9 +328,7 @@ JSValueRef js_obj_setting_get_damage(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->damage.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->damage.on));
 }
 
 JSValueRef js_obj_setting_get_crushable(void)
@@ -377,9 +336,7 @@ JSValueRef js_obj_setting_get_crushable(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->damage.crushable);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->damage.crushable));
 }
 
 JSValueRef js_obj_setting_get_invincible(void)
@@ -387,9 +344,7 @@ JSValueRef js_obj_setting_get_invincible(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->damage.invincible);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->damage.invincible));
 }
 
 JSValueRef js_obj_setting_get_clickable(void)
@@ -397,9 +352,7 @@ JSValueRef js_obj_setting_get_clickable(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->click.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->click.on));
 }
 
 JSValueRef js_obj_setting_get_pickup(void)
@@ -407,9 +360,7 @@ JSValueRef js_obj_setting_get_pickup(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->pickup.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->pickup.on));
 }
 
 JSValueRef js_obj_setting_get_ignorePickUpItems(void)
@@ -417,9 +368,7 @@ JSValueRef js_obj_setting_get_ignorePickUpItems(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->pickup.ignore);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->pickup.ignore));
 }
 
 JSValueRef js_obj_setting_get_ignoreMouse(void)
@@ -427,9 +376,7 @@ JSValueRef js_obj_setting_get_ignoreMouse(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->turn.ignore_mouse);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->turn.ignore_mouse));
 }
 
 JSValueRef js_obj_setting_get_turnOnlyWhenMoving(void)
@@ -437,9 +384,7 @@ JSValueRef js_obj_setting_get_turnOnlyWhenMoving(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->turn.only_when_moving);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->turn.only_when_moving));
 }
 
 JSValueRef js_obj_setting_get_restrictPlayerTurning(void)
@@ -447,9 +392,7 @@ JSValueRef js_obj_setting_get_restrictPlayerTurning(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->turn.restrict_player_turning);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->turn.restrict_player_turning));
 }
 
 JSValueRef js_obj_setting_get_quickReverse(void)
@@ -457,9 +400,7 @@ JSValueRef js_obj_setting_get_quickReverse(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->quick_reverse);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->quick_reverse));
 }
 
 JSValueRef js_obj_setting_get_sideStep(void)
@@ -467,9 +408,7 @@ JSValueRef js_obj_setting_get_sideStep(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->side_step);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->side_step));
 }
 
 JSValueRef js_obj_setting_get_jump(void)
@@ -477,9 +416,7 @@ JSValueRef js_obj_setting_get_jump(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->jump.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->jump.on));
 }
 
 JSValueRef js_obj_setting_get_duck(void)
@@ -487,9 +424,7 @@ JSValueRef js_obj_setting_get_duck(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->duck.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->duck.on));
 }
 
 JSValueRef js_obj_setting_get_crawl(void)
@@ -497,9 +432,7 @@ JSValueRef js_obj_setting_get_crawl(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->crawl);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->crawl));
 }
 
 JSValueRef js_obj_setting_get_singleSpeed(void)
@@ -507,9 +440,7 @@ JSValueRef js_obj_setting_get_singleSpeed(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->single_speed);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->single_speed));
 }
 
 JSValueRef js_obj_setting_get_bumpUp(void)
@@ -517,9 +448,7 @@ JSValueRef js_obj_setting_get_bumpUp(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->bump.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->bump.on));
 }
 
 JSValueRef js_obj_setting_get_slopeGravity(void)
@@ -527,9 +456,7 @@ JSValueRef js_obj_setting_get_slopeGravity(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->slope_gravity);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->slope_gravity));
 }
 
 JSValueRef js_obj_setting_get_pushable(void)
@@ -537,9 +464,7 @@ JSValueRef js_obj_setting_get_pushable(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->contact.pushable);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->contact.pushable));
 }
 
 JSValueRef js_obj_setting_get_openDoors(void)
@@ -547,9 +472,7 @@ JSValueRef js_obj_setting_get_openDoors(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->open_doors);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->open_doors));
 }
 
 JSValueRef js_obj_setting_get_inputMode(void)
@@ -557,9 +480,7 @@ JSValueRef js_obj_setting_get_inputMode(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->input_mode+sd_input_mode_fpp);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->input_mode+sd_input_mode_fpp));
 }
 
 /* =======================================================
@@ -573,7 +494,7 @@ void js_obj_setting_set_team(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->team_idx=script_value_to_int(*vp)-sd_team_none;
+	obj->team_idx=script_value_to_int(vp)-sd_team_none;
 }
 
 void js_obj_setting_set_hidden(JSValueRef vp,JSValueRef *exception)
@@ -581,7 +502,7 @@ void js_obj_setting_set_hidden(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	object_hide(obj,script_value_to_bool(*vp));
+	object_hide(obj,script_value_to_bool(vp));
 }
 
 void js_obj_setting_set_suspend(JSValueRef vp,JSValueRef *exception)
@@ -589,7 +510,7 @@ void js_obj_setting_set_suspend(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->suspend=script_value_to_bool(*vp);
+	obj->suspend=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_fly(JSValueRef vp,JSValueRef *exception)
@@ -597,7 +518,7 @@ void js_obj_setting_set_fly(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->fly=script_value_to_bool(*vp);
+	obj->fly=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_find(JSValueRef vp,JSValueRef *exception)
@@ -605,7 +526,7 @@ void js_obj_setting_set_find(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->find_on=script_value_to_bool(*vp);
+	obj->find_on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_contact(JSValueRef vp,JSValueRef *exception)
@@ -615,7 +536,7 @@ void js_obj_setting_set_contact(JSValueRef vp,JSValueRef *exception)
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	on=script_value_to_bool(*vp);
+	on=script_value_to_bool(vp);
 	obj->contact.object_on=on;
 	obj->contact.projectile_on=on;
 	obj->contact.force_on=on;
@@ -626,7 +547,7 @@ void js_obj_setting_set_contactObject(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->contact.object_on=script_value_to_bool(*vp);
+	obj->contact.object_on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_contactProjectile(JSValueRef vp,JSValueRef *exception)
@@ -634,7 +555,7 @@ void js_obj_setting_set_contactProjectile(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->contact.projectile_on=script_value_to_bool(*vp);
+	obj->contact.projectile_on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_contactForce(JSValueRef vp,JSValueRef *exception)
@@ -642,7 +563,7 @@ void js_obj_setting_set_contactForce(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->contact.force_on=script_value_to_bool(*vp);
+	obj->contact.force_on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_hitBox(JSValueRef vp,JSValueRef *exception)
@@ -650,7 +571,7 @@ void js_obj_setting_set_hitBox(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->hit_box.on=script_value_to_bool(*vp);
+	obj->hit_box.on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_damage(JSValueRef vp,JSValueRef *exception)
@@ -658,7 +579,7 @@ void js_obj_setting_set_damage(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->damage.on=script_value_to_bool(*vp);
+	obj->damage.on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_crushable(JSValueRef vp,JSValueRef *exception)
@@ -666,7 +587,7 @@ void js_obj_setting_set_crushable(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->damage.crushable=script_value_to_bool(*vp);
+	obj->damage.crushable=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_invincible(JSValueRef vp,JSValueRef *exception)
@@ -674,7 +595,7 @@ void js_obj_setting_set_invincible(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->damage.invincible=script_value_to_bool(*vp);
+	obj->damage.invincible=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_clickable(JSValueRef vp,JSValueRef *exception)
@@ -682,7 +603,7 @@ void js_obj_setting_set_clickable(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->click.on=script_value_to_bool(*vp);
+	obj->click.on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_pickup(JSValueRef vp,JSValueRef *exception)
@@ -690,7 +611,7 @@ void js_obj_setting_set_pickup(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->pickup.on=script_value_to_bool(*vp);
+	obj->pickup.on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_ignorePickUpItems(JSValueRef vp,JSValueRef *exception)
@@ -698,7 +619,7 @@ void js_obj_setting_set_ignorePickUpItems(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->pickup.ignore=script_value_to_bool(*vp);
+	obj->pickup.ignore=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_ignoreMouse(JSValueRef vp,JSValueRef *exception)
@@ -706,7 +627,7 @@ void js_obj_setting_set_ignoreMouse(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.ignore_mouse=script_value_to_bool(*vp);
+	obj->turn.ignore_mouse=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_turnOnlyWhenMoving(JSValueRef vp,JSValueRef *exception)
@@ -714,7 +635,7 @@ void js_obj_setting_set_turnOnlyWhenMoving(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.only_when_moving=script_value_to_bool(*vp);
+	obj->turn.only_when_moving=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_restrictPlayerTurning(JSValueRef vp,JSValueRef *exception)
@@ -722,7 +643,7 @@ void js_obj_setting_set_restrictPlayerTurning(JSValueRef vp,JSValueRef *exceptio
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.restrict_player_turning=script_value_to_bool(*vp);
+	obj->turn.restrict_player_turning=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_quickReverse(JSValueRef vp,JSValueRef *exception)
@@ -730,7 +651,7 @@ void js_obj_setting_set_quickReverse(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->quick_reverse=script_value_to_bool(*vp);
+	obj->quick_reverse=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_sideStep(JSValueRef vp,JSValueRef *exception)
@@ -738,7 +659,7 @@ void js_obj_setting_set_sideStep(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_step=script_value_to_bool(*vp);
+	obj->side_step=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_jump(JSValueRef vp,JSValueRef *exception)
@@ -746,7 +667,7 @@ void js_obj_setting_set_jump(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->jump.on=script_value_to_bool(*vp);
+	obj->jump.on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_duck(JSValueRef vp,JSValueRef *exception)
@@ -754,7 +675,7 @@ void js_obj_setting_set_duck(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->duck.on=script_value_to_bool(*vp);
+	obj->duck.on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_crawl(JSValueRef vp,JSValueRef *exception)
@@ -762,7 +683,7 @@ void js_obj_setting_set_crawl(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->crawl=script_value_to_bool(*vp);
+	obj->crawl=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_singleSpeed(JSValueRef vp,JSValueRef *exception)
@@ -770,7 +691,7 @@ void js_obj_setting_set_singleSpeed(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->single_speed=script_value_to_bool(*vp);
+	obj->single_speed=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_bumpUp(JSValueRef vp,JSValueRef *exception)
@@ -778,7 +699,7 @@ void js_obj_setting_set_bumpUp(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->bump.on=script_value_to_bool(*vp);
+	obj->bump.on=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_slopeGravity(JSValueRef vp,JSValueRef *exception)
@@ -786,7 +707,7 @@ void js_obj_setting_set_slopeGravity(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->slope_gravity=script_value_to_bool(*vp);
+	obj->slope_gravity=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_pushable(JSValueRef vp,JSValueRef *exception)
@@ -794,7 +715,7 @@ void js_obj_setting_set_pushable(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->contact.pushable=script_value_to_bool(*vp);
+	obj->contact.pushable=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_openDoors(JSValueRef vp,JSValueRef *exception)
@@ -802,7 +723,7 @@ void js_obj_setting_set_openDoors(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->open_doors=script_value_to_bool(*vp);
+	obj->open_doors=script_value_to_bool(vp);
 }
 
 void js_obj_setting_set_inputMode(JSValueRef vp,JSValueRef *exception)
@@ -810,7 +731,7 @@ void js_obj_setting_set_inputMode(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->input_mode=script_value_to_int(*vp)-sd_input_mode_fpp;
+	obj->input_mode=script_value_to_int(vp)-sd_input_mode_fpp;
 }
 
 /* =======================================================
@@ -828,10 +749,7 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	idx=scripts_find_uid(obj->attach.script_uid);
-	if (idx==-1) {
-		*rval=script_null_to_value();
-		return(TRUE);
-    }
+	if (idx==-1) return(script_null_to_value());
 	
     k=script_value_to_int(argv[0]);
     if (k<0) k=0;
@@ -844,10 +762,7 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
         k--;
     }
     
-    if (c==NULL) {
-        *rval=script_null_to_value();
-        return(TRUE);
-    }
+    if (c==NULL) return(script_null_to_value());
 	
 	strncpy(str,c,256);
 	str[255]=0x0;
@@ -855,9 +770,7 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
     c=strchr(str,'|');
     if (c!=NULL) *c=0x0;
     
-    *rval=script_string_to_value(str);
-
-	return(TRUE);
+    return(script_string_to_value(str));
 }
 
 JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -870,7 +783,7 @@ JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	script_value_to_string(argv[0],name,name_str_len);
 	object_set_ambient(obj,name,script_value_to_float(argv[1]));
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -878,10 +791,9 @@ JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSO
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	
 	object_change_ambient_pitch(obj,script_value_to_float(argv[0]));
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_obj_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -889,10 +801,9 @@ JSValueRef js_obj_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	
 	object_clear_ambient(obj);
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 

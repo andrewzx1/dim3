@@ -118,9 +118,7 @@ JSValueRef js_obj_status_get_speed(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->forward_move.speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->forward_move.speed));
 }
 
 JSValueRef js_obj_status_get_moving(void)
@@ -128,9 +126,7 @@ JSValueRef js_obj_status_get_moving(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->forward_move.moving);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->forward_move.moving));
 }
 
 JSValueRef js_obj_status_get_running(void)
@@ -138,9 +134,7 @@ JSValueRef js_obj_status_get_running(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->forward_move.running);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->forward_move.running));
 }
 
 JSValueRef js_obj_status_get_backward(void)
@@ -148,9 +142,7 @@ JSValueRef js_obj_status_get_backward(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->forward_move.reverse);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->forward_move.reverse));
 }
 
 JSValueRef js_obj_status_get_sliding(void)
@@ -158,9 +150,7 @@ JSValueRef js_obj_status_get_sliding(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->side_move.moving);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->side_move.moving));
 }
 
 JSValueRef js_obj_status_get_stand(void)
@@ -168,9 +158,7 @@ JSValueRef js_obj_status_get_stand(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->duck.mode+sd_stand_standing);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->duck.mode+sd_stand_standing));
 }
 
 JSValueRef js_obj_status_get_air(void)
@@ -178,9 +166,7 @@ JSValueRef js_obj_status_get_air(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->air_mode+sd_air_up);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->air_mode+sd_air_up));
 }
 
 JSValueRef js_obj_status_get_liquid(void)
@@ -188,9 +174,7 @@ JSValueRef js_obj_status_get_liquid(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->liquid_mode+sd_liquid_out);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->liquid_mode+sd_liquid_out));
 }
 
 JSValueRef js_obj_status_get_standOnObjectId(void)
@@ -198,9 +182,7 @@ JSValueRef js_obj_status_get_standOnObjectId(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->stand_obj_uid);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->stand_obj_uid));
 }
 
 JSValueRef js_obj_status_get_standUnderObjectId(void)
@@ -208,9 +190,7 @@ JSValueRef js_obj_status_get_standUnderObjectId(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(object_find_uid_by_stood_on_object_uid(obj->uid));
-	
-	return(TRUE);
+	return(script_int_to_value(object_find_uid_by_stood_on_object_uid(obj->uid)));
 }
 
 /* =======================================================
@@ -226,7 +206,7 @@ JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj=object_find_uid(js.attach.thing_uid);
 	object_input_freeze(obj,script_value_to_bool(argv[0]));
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 /* =======================================================
@@ -246,7 +226,5 @@ JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	obj=object_find_uid(js.attach.thing_uid);
 	object_fs_tint_start(js.time.current_tick,obj,r,g,b,script_value_to_float(argv[3]),script_value_to_int(argv[4]),script_value_to_int(argv[5]),script_value_to_int(argv[6]));
-    *rval=script_bool_to_value(TRUE);
-    
-	return(TRUE);
+    return(script_bool_to_value(TRUE));
 }

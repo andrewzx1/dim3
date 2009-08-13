@@ -103,9 +103,7 @@ JSValueRef js_obj_motion_angle_get_x(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->motion.ang.x);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->motion.ang.x));
 }
 
 JSValueRef js_obj_motion_angle_get_y(void)
@@ -113,9 +111,7 @@ JSValueRef js_obj_motion_angle_get_y(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->motion.ang.y);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->motion.ang.y));
 }
 
 JSValueRef js_obj_motion_angle_get_z(void)
@@ -123,9 +119,7 @@ JSValueRef js_obj_motion_angle_get_z(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->motion.ang.z);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->motion.ang.z));
 }
 
 /* =======================================================
@@ -168,7 +162,7 @@ JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef fu
 	
 	}
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -176,8 +170,7 @@ JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,J
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	
 	object_turn_stop(obj);
 
-	return(TRUE);
+	return(script_null_to_value());
 }
