@@ -103,14 +103,9 @@ JSValueRef js_proj_setting_get_name(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(proj_setup->name);
-	}
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	return(TRUE);
+	return(script_string_to_value(proj_setup->name));
 }
 
 JSValueRef js_proj_setting_get_hitscan(void)
@@ -118,14 +113,9 @@ JSValueRef js_proj_setting_get_hitscan(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) {
-		*vp=script_bool_to_value(FALSE);
-	}
-	else {
-		*vp=script_bool_to_value(proj_setup->hitscan.on);
-	}
-	
-	return(TRUE);
+	if (proj_setup==NULL) return(script_bool_to_value(FALSE));
+
+	return(script_bool_to_value(proj_setup->hitscan.on));
 }
 
 JSValueRef js_proj_setting_get_resetAngle(void)
@@ -133,14 +123,9 @@ JSValueRef js_proj_setting_get_resetAngle(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) {
-		*vp=script_bool_to_value(FALSE);
-	}
-	else {
-		*vp=script_bool_to_value(proj_setup->reset_angle);
-	}
+	if (proj_setup==NULL) return(script_bool_to_value(FALSE));
 	
-	return(TRUE);
+	return(script_bool_to_value(proj_setup->reset_angle));
 }
 
 JSValueRef js_proj_setting_get_parentObjectId(void)
@@ -148,14 +133,9 @@ JSValueRef js_proj_setting_get_parentObjectId(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) {
-		*vp=script_int_to_value(-1);
-	}
-	else {
-		*vp=script_int_to_value(proj->obj_uid);
-	}
+	if (proj==NULL) return(script_int_to_value(-1));
 	
-	return(TRUE);
+	return(script_int_to_value(proj->obj_uid));
 }
 
 JSValueRef js_proj_setting_get_parentTeam(void)
@@ -164,20 +144,12 @@ JSValueRef js_proj_setting_get_parentTeam(void)
 	obj_type			*obj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) {
-		*vp=script_int_to_value(-1);
-		return(TRUE);
-	}
+	if (proj==NULL) return(script_int_to_value(-1));
 
 	obj=object_find_uid(proj->obj_uid);
-	if (obj==NULL) {
-		*vp=script_int_to_value(-1);
-		return(TRUE);
-	}
+	if (obj==NULL) return(script_int_to_value(-1));
 	
-	*vp=script_int_to_value(obj->team_idx);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->team_idx));
 }
 
 /* =======================================================
@@ -191,9 +163,7 @@ void js_proj_setting_set_hitscan(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->hitscan.on=script_value_to_bool(*vp);
+	if (proj_setup!=NULL) proj_setup->hitscan.on=script_value_to_bool(vp);
 }
 
 void js_proj_setting_set_resetAngle(JSValueRef vp,JSValueRef *exception)
@@ -201,7 +171,5 @@ void js_proj_setting_set_resetAngle(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-
-	proj_setup->reset_angle=script_value_to_bool(*vp);
+	if (proj_setup!=NULL) proj_setup->reset_angle=script_value_to_bool(vp);
 }

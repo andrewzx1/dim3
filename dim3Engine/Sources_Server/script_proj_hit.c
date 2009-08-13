@@ -194,11 +194,9 @@ JSValueRef js_proj_hit_get_type(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_int_to_value(js_get_proj_hit_type(proj));
-	
-	return(TRUE);
+	return(script_int_to_value(js_get_proj_hit_type(proj)));
 }
 
 JSValueRef js_proj_hit_get_name(void)
@@ -208,13 +206,12 @@ JSValueRef js_proj_hit_get_name(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
 	hit_type=js_get_proj_hit_type(proj);
 	js_get_proj_hit_name(proj,hit_type,hit_name);
-	*vp=script_string_to_value(hit_name);
-	
-	return(TRUE);
+
+	return(script_string_to_value(hit_name));
 }
 
 JSValueRef js_proj_hit_get_id(void)
@@ -222,11 +219,9 @@ JSValueRef js_proj_hit_get_id(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_int_to_value(proj->contact.obj_uid);
-	
-	return(TRUE);
+	return(script_int_to_value(proj->contact.obj_uid));
 }
 
 JSValueRef js_proj_hit_get_isPlayer(void)
@@ -234,11 +229,9 @@ JSValueRef js_proj_hit_get_isPlayer(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_bool_to_value(proj->contact.obj_uid==server.player_obj_uid);
-	
-	return(TRUE);
+	return(script_bool_to_value(proj->contact.obj_uid==server.player_obj_uid));
 }
 
 JSValueRef js_proj_hit_get_startTick(void)
@@ -246,11 +239,9 @@ JSValueRef js_proj_hit_get_startTick(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
-	*vp=script_int_to_value(proj->start_tick);
-	
-	return(TRUE);
+	return(script_int_to_value(proj->start_tick));
 }
 
 JSValueRef js_proj_hit_get_materialName(void)
@@ -260,13 +251,12 @@ JSValueRef js_proj_hit_get_materialName(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
 	hit_type=js_get_proj_hit_type(proj);
 	js_get_proj_hit_material_name(proj,hit_type,hit_name);
-	*vp=script_string_to_value(hit_name);
-	
-	return(TRUE);
+
+	return(script_string_to_value(hit_name));
 }
 
 JSValueRef js_proj_hit_get_ejectVector(void)
@@ -275,12 +265,10 @@ JSValueRef js_proj_hit_get_ejectVector(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
 	projectile_eject_vector(proj,&vct);
-	*vp=script_angle_to_value(vct.x,vct.y,vct.z);
-	
-	return(TRUE);
+	return(script_angle_to_value(vct.x,vct.y,vct.z));
 }
 
 JSValueRef js_proj_hit_get_reflectVector(void)
@@ -289,11 +277,9 @@ JSValueRef js_proj_hit_get_reflectVector(void)
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
 	projectile_reflect_vector(proj,&vct);
-	*vp=script_angle_to_value(vct.x,vct.y,vct.z);
-	
-	return(TRUE);
+	return(script_angle_to_value(vct.x,vct.y,vct.z));
 }
 

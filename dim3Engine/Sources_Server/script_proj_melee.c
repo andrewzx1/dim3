@@ -122,12 +122,10 @@ JSValueRef js_proj_melee_get_strikeBoneTag(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
 	model_tag_to_text(proj_setup->melee.strike_bone_tag,str);
-	*vp=script_string_to_value(str);
-	
-	return(TRUE);
+	return(script_string_to_value(str));
 }
 
 JSValueRef js_proj_melee_get_strikePoseName(void)
@@ -135,11 +133,9 @@ JSValueRef js_proj_melee_get_strikePoseName(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_string_to_value(proj_setup->melee.strike_pose_name);
-	
-	return(TRUE);
+	return(script_string_to_value(proj_setup->melee.strike_pose_name));
 }
 
 JSValueRef js_proj_melee_get_radius(void)
@@ -147,11 +143,9 @@ JSValueRef js_proj_melee_get_radius(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_int_to_value(proj_setup->melee.radius);
-	
-	return(TRUE);
+	return(script_int_to_value(proj_setup->melee.radius));
 }
 
 JSValueRef js_proj_melee_get_distance(void)
@@ -159,11 +153,9 @@ JSValueRef js_proj_melee_get_distance(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_int_to_value(proj_setup->melee.distance);
-	
-	return(TRUE);
+	return(script_int_to_value(proj_setup->melee.distance));
 }
 
 JSValueRef js_proj_melee_get_damage(void)
@@ -171,11 +163,9 @@ JSValueRef js_proj_melee_get_damage(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_int_to_value(proj_setup->melee.damage);
-	
-	return(TRUE);
+	return(script_int_to_value(proj_setup->melee.damage));
 }
 
 JSValueRef js_proj_melee_get_force(void)
@@ -183,11 +173,9 @@ JSValueRef js_proj_melee_get_force(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_int_to_value(proj_setup->melee.force);
-	
-	return(TRUE);
+	return(script_int_to_value(proj_setup->melee.force));
 }
 
 JSValueRef js_proj_melee_get_fallOff(void)
@@ -195,11 +183,9 @@ JSValueRef js_proj_melee_get_fallOff(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_bool_to_value(proj_setup->melee.fall_off);
-	
-	return(TRUE);
+	return(script_bool_to_value(proj_setup->melee.fall_off));
 }
 
 /* =======================================================
@@ -214,10 +200,10 @@ void js_proj_melee_set_strikeBoneTag(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	script_value_to_string(*vp,str,32);
-	proj_setup->melee.strike_bone_tag=text_to_model_tag(str);
+	if (proj_setup!=NULL) {
+		script_value_to_string(vp,str,32);
+		proj_setup->melee.strike_bone_tag=text_to_model_tag(str);
+	}
 }
 
 void js_proj_melee_set_strikePoseName(JSValueRef vp,JSValueRef *exception)
@@ -225,9 +211,7 @@ void js_proj_melee_set_strikePoseName(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	script_value_to_string(*vp,proj_setup->melee.strike_pose_name,name_str_len);
+	if (proj_setup!=NULL) script_value_to_string(vp,proj_setup->melee.strike_pose_name,name_str_len);
 }
 
 void js_proj_melee_set_radius(JSValueRef vp,JSValueRef *exception)
@@ -235,9 +219,7 @@ void js_proj_melee_set_radius(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->melee.radius=script_value_to_int(*vp);
+	if (proj_setup!=NULL) proj_setup->melee.radius=script_value_to_int(vp);
 }
 
 void js_proj_melee_set_distance(JSValueRef vp,JSValueRef *exception)
@@ -245,9 +227,7 @@ void js_proj_melee_set_distance(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->melee.distance=script_value_to_int(*vp);
+	if (proj_setup!=NULL) proj_setup->melee.distance=script_value_to_int(vp);
 }
 
 void js_proj_melee_set_damage(JSValueRef vp,JSValueRef *exception)
@@ -255,9 +235,7 @@ void js_proj_melee_set_damage(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->melee.damage=script_value_to_int(*vp);
+	if (proj_setup!=NULL) proj_setup->melee.damage=script_value_to_int(vp);
 }
 
 void js_proj_melee_set_force(JSValueRef vp,JSValueRef *exception)
@@ -265,9 +243,7 @@ void js_proj_melee_set_force(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->melee.force=script_value_to_int(*vp);
+	if (proj_setup!=NULL) proj_setup->melee.force=script_value_to_int(vp);
 }
 
 void js_proj_melee_set_fallOff(JSValueRef vp,JSValueRef *exception)
@@ -275,9 +251,7 @@ void js_proj_melee_set_fallOff(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->melee.fall_off=script_value_to_bool(*vp);
+	if (proj_setup!=NULL) proj_setup->melee.fall_off=script_value_to_bool(vp);
 }
 
 /* =======================================================
@@ -295,20 +269,19 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
 	proj_setup_type		*proj_setup;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
 	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
     obj=object_find_uid(proj_setup->obj_uid);
 	weap=weapon_find_uid(proj_setup->weap_uid);
 
 	if (!melee_script_spawn_projectile_model(js.time.current_tick,obj,weap,proj_setup,proj,err_str)) {
 		*exception=script_create_exception(err_str);
-		return(FALSE);
 	}
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -320,10 +293,10 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	proj_setup_type		*proj_setup;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(TRUE);
+	if (proj==NULL) return(script_null_to_value());
 
 	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
     obj=object_find_uid(proj_setup->obj_uid);
 	weap=weapon_find_uid(proj_setup->weap_uid);
@@ -334,6 +307,6 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	
 	melee_add(obj,weap,&pt,&proj->ang,&proj_setup->melee,-1);
 
-	return(TRUE);
+	return(script_null_to_value());
 }
 

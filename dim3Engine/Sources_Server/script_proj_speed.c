@@ -108,11 +108,9 @@ JSValueRef js_proj_speed_get_speed(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-    *vp=script_float_to_value(proj_setup->speed);
-	
-	return(TRUE);
+    return(script_float_to_value(proj_setup->speed));
 }
 
 JSValueRef js_proj_speed_get_deceleration(void)
@@ -120,11 +118,9 @@ JSValueRef js_proj_speed_get_deceleration(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-    *vp=script_float_to_value(proj_setup->decel_speed);
-	
-	return(TRUE);
+    return(script_float_to_value(proj_setup->decel_speed));
 }
 
 JSValueRef js_proj_speed_get_decelerationWait(void)
@@ -132,11 +128,9 @@ JSValueRef js_proj_speed_get_decelerationWait(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_int_to_value(proj_setup->decel_grace);
-	
-	return(TRUE);
+	return(script_int_to_value(proj_setup->decel_grace));
 }
 
 JSValueRef js_proj_speed_get_decelerationMinSpeed(void)
@@ -144,11 +138,9 @@ JSValueRef js_proj_speed_get_decelerationMinSpeed(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-    *vp=script_float_to_value(proj_setup->decel_min_speed);
-	
-	return(TRUE);
+    return(script_float_to_value(proj_setup->decel_min_speed));
 }
 
 JSValueRef js_proj_speed_get_maxHitscanDistance(void)
@@ -156,11 +148,9 @@ JSValueRef js_proj_speed_get_maxHitscanDistance(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_int_to_value(proj_setup->hitscan.max_dist);
-	
-	return(TRUE);
+	return(script_int_to_value(proj_setup->hitscan.max_dist));
 }
 
 JSValueRef js_proj_speed_get_inheritMotionFactor(void)
@@ -168,11 +158,9 @@ JSValueRef js_proj_speed_get_inheritMotionFactor(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_float_to_value(proj_setup->inherit_motion_factor);
-	
-	return(TRUE);
+	return(script_float_to_value(proj_setup->inherit_motion_factor));
 }
 
 /* =======================================================
@@ -186,9 +174,7 @@ void js_proj_speed_set_speed(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-    proj_setup->speed=script_value_to_float(*vp);
+	if (proj_setup!=NULL) proj_setup->speed=script_value_to_float(vp);
 }
 
 void js_proj_speed_set_deceleration(JSValueRef vp,JSValueRef *exception)
@@ -196,9 +182,7 @@ void js_proj_speed_set_deceleration(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->decel_speed=script_value_to_float(*vp);
+	if (proj_setup!=NULL) proj_setup->decel_speed=script_value_to_float(vp);
 }
 
 void js_proj_speed_set_decelerationWait(JSValueRef vp,JSValueRef *exception)
@@ -206,9 +190,7 @@ void js_proj_speed_set_decelerationWait(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->decel_grace=script_value_to_int(*vp);
+	if (proj_setup!=NULL) proj_setup->decel_grace=script_value_to_int(vp);
 }
 
 void js_proj_speed_set_decelerationMinSpeed(JSValueRef vp,JSValueRef *exception)
@@ -216,9 +198,7 @@ void js_proj_speed_set_decelerationMinSpeed(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-    proj_setup->decel_min_speed=script_value_to_float(*vp);
+	if (proj_setup!=NULL) proj_setup->decel_min_speed=script_value_to_float(vp);
 }
 
 void js_proj_speed_set_maxHitscanDistance(JSValueRef vp,JSValueRef *exception)
@@ -226,9 +206,7 @@ void js_proj_speed_set_maxHitscanDistance(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->hitscan.max_dist=script_value_to_int(*vp);
+	if (proj_setup!=NULL) proj_setup->hitscan.max_dist=script_value_to_int(vp);
 }
 
 void js_proj_speed_set_inheritMotionFactor(JSValueRef vp,JSValueRef *exception)
@@ -236,9 +214,7 @@ void js_proj_speed_set_inheritMotionFactor(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->inherit_motion_factor=script_value_to_float(*vp);
+	if (proj_setup!=NULL) proj_setup->inherit_motion_factor=script_value_to_float(vp);
 }
 
 

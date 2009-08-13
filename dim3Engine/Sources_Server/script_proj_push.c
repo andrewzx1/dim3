@@ -97,11 +97,9 @@ JSValueRef js_proj_push_get_on(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_bool_to_value(proj_setup->push.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(proj_setup->push.on));
 }
 
 JSValueRef js_proj_push_get_force(void)
@@ -109,11 +107,9 @@ JSValueRef js_proj_push_get_force(void)
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
+	if (proj_setup==NULL) return(script_null_to_value());
 	
-	*vp=script_int_to_value(proj_setup->push.force);
-	
-	return(TRUE);
+	return(script_int_to_value(proj_setup->push.force));
 }
 
 /* =======================================================
@@ -127,9 +123,7 @@ void js_proj_push_set_on(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->push.on=script_value_to_bool(*vp);
+	if (proj_setup!=NULL) proj_setup->push.on=script_value_to_bool(vp);
 }
 
 void js_proj_push_set_force(JSValueRef vp,JSValueRef *exception)
@@ -137,7 +131,5 @@ void js_proj_push_set_force(JSValueRef vp,JSValueRef *exception)
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(TRUE);
-	
-	proj_setup->push.force=script_value_to_int(*vp);
+	if (proj_setup!=NULL) proj_setup->push.force=script_value_to_int(vp);
 }
