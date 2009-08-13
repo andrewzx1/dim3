@@ -101,9 +101,7 @@ JSValueRef js_obj_lock_get_x(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->lock.x);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->lock.x));
 }
 
 JSValueRef js_obj_lock_get_y(void)
@@ -111,9 +109,7 @@ JSValueRef js_obj_lock_get_y(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->lock.y);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->lock.y));
 }
 
 JSValueRef js_obj_lock_get_z(void)
@@ -121,9 +117,7 @@ JSValueRef js_obj_lock_get_z(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->lock.z);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->lock.z));
 }
 
 /* =======================================================
@@ -137,7 +131,7 @@ void js_obj_lock_set_x(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.x=script_value_to_bool(*vp);
+	obj->lock.x=script_value_to_bool(vp);
 }
 
 void js_obj_lock_set_y(JSValueRef vp,JSValueRef *exception)
@@ -145,7 +139,7 @@ void js_obj_lock_set_y(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.y=script_value_to_bool(*vp);
+	obj->lock.y=script_value_to_bool(vp);
 }
 
 void js_obj_lock_set_z(JSValueRef vp,JSValueRef *exception)
@@ -153,6 +147,6 @@ void js_obj_lock_set_z(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.z=script_value_to_bool(*vp);
+	obj->lock.z=script_value_to_bool(vp);
 }
 

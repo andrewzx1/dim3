@@ -187,7 +187,7 @@ extern bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,in
 extern bool object_auto_walk_node_name_setup(obj_type *obj,char *start_node,char *end_node,int event_id,char *err_str);
 extern bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only,char *err_str);
 extern bool object_auto_walk_player_setup(obj_type *obj,bool turn_only,char *err_str);
-extern bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt);
+extern void object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt);
 extern bool object_auto_walk_node_resume(obj_type *obj,char *err_str);
 extern bool object_auto_walk_node_reverse(obj_type *obj,char *err_str);
 extern void object_auto_walk_stop(obj_type *obj);

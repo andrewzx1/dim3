@@ -129,7 +129,7 @@ bool object_auto_walk_player_setup(obj_type *obj,bool turn_only,err_str)
 	return(object_auto_walk_object_setup(obj,server.player_obj_uid,turn_only,err_str));
 }
 
-bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt)
+void object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt)
 {
 		// setup walk to position
 		
@@ -140,8 +140,6 @@ bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt)
 		
 	obj->auto_walk.pause_for_turn=FALSE;
 	obj->forward_move.moving=TRUE;
-
-	return(TRUE);
 }
 
 bool object_auto_walk_node_resume(obj_type *obj,char *err_str)
