@@ -99,9 +99,7 @@ JSValueRef js_weap_hand_position_get_x(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->hand.shift.x);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->hand.shift.x));
 }
 
 JSValueRef js_weap_hand_position_get_y(void)
@@ -109,9 +107,7 @@ JSValueRef js_weap_hand_position_get_y(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->hand.shift.y);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->hand.shift.y));
 }
 
 JSValueRef js_weap_hand_position_get_z(void)
@@ -119,9 +115,7 @@ JSValueRef js_weap_hand_position_get_z(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->hand.shift.z);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->hand.shift.z));
 }
 
 /* =======================================================
@@ -135,7 +129,7 @@ void js_weap_hand_position_set_x(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.shift.x=script_value_to_int(*vp);
+	weap->hand.shift.x=script_value_to_int(vp);
 }
 
 void js_weap_hand_position_set_y(JSValueRef vp,JSValueRef *exception)
@@ -143,7 +137,7 @@ void js_weap_hand_position_set_y(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.shift.y=script_value_to_int(*vp);
+	weap->hand.shift.y=script_value_to_int(vp);
 }
 
 void js_weap_hand_position_set_z(JSValueRef vp,JSValueRef *exception)
@@ -151,7 +145,7 @@ void js_weap_hand_position_set_z(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.shift.z=script_value_to_int(*vp);
+	weap->hand.shift.z=script_value_to_int(vp);
 }
 
 

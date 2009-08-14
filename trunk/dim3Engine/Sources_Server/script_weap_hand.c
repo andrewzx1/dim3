@@ -105,9 +105,7 @@ JSValueRef js_weap_hand_get_raiseTick(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->hand.raise_tick);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->hand.raise_tick));
 }
 
 JSValueRef js_weap_hand_get_lowerTick(void)
@@ -115,9 +113,7 @@ JSValueRef js_weap_hand_get_lowerTick(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->hand.lower_tick);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->hand.lower_tick));
 }
 
 JSValueRef js_weap_hand_get_selectShift(void)
@@ -125,9 +121,7 @@ JSValueRef js_weap_hand_get_selectShift(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->hand.select_shift);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->hand.select_shift));
 }
 
 JSValueRef js_weap_hand_get_bobSpeed(void)
@@ -135,9 +129,7 @@ JSValueRef js_weap_hand_get_bobSpeed(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->hand.bounce_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(weap->hand.bounce_speed));
 }
 
 JSValueRef js_weap_hand_get_bobAngle(void)
@@ -145,9 +137,7 @@ JSValueRef js_weap_hand_get_bobAngle(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->hand.bounce_ang);
-	
-	return(TRUE);
+	return(script_float_to_value(weap->hand.bounce_ang));
 }
 
 /* =======================================================
@@ -161,7 +151,7 @@ void js_weap_hand_set_raiseTick(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.raise_tick=script_value_to_int(*vp);
+	weap->hand.raise_tick=script_value_to_int(vp);
 }
 
 void js_weap_hand_set_lowerTick(JSValueRef vp,JSValueRef *exception)
@@ -169,7 +159,7 @@ void js_weap_hand_set_lowerTick(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.lower_tick=script_value_to_int(*vp);
+	weap->hand.lower_tick=script_value_to_int(vp);
 }
 
 void js_weap_hand_set_selectShift(JSValueRef vp,JSValueRef *exception)
@@ -177,7 +167,7 @@ void js_weap_hand_set_selectShift(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.select_shift=script_value_to_int(*vp);
+	weap->hand.select_shift=script_value_to_int(vp);
 }
 
 void js_weap_hand_set_bobSpeed(JSValueRef vp,JSValueRef *exception)
@@ -185,7 +175,7 @@ void js_weap_hand_set_bobSpeed(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.bounce_speed=script_value_to_float(*vp);
+	weap->hand.bounce_speed=script_value_to_float(vp);
 }
 
 void js_weap_hand_set_bobAngle(JSValueRef vp,JSValueRef *exception)
@@ -193,7 +183,7 @@ void js_weap_hand_set_bobAngle(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->hand.bounce_ang=script_value_to_float(*vp);
+	weap->hand.bounce_ang=script_value_to_float(vp);
 }
 
 

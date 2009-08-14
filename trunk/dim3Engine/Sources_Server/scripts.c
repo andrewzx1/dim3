@@ -35,7 +35,7 @@ and can be sold or given away.
 extern js_type				js;
 extern setup_type			setup;
 
-//
+// supergumba -- js -- probably not necessary anymore
 // NOTE: Scripts aren't like other objects which have a list that is compressed as objects
 // are deleted from it.  SpiderMonkey requires rooting, which requires a pointer.  The pointers
 // must remain correct otherwise spidermonkey will crash.  Therefore, the script list can never
@@ -50,28 +50,15 @@ extern setup_type			setup;
 
 bool scripts_engine_initialize(char *err_str)
 {
-	js.rt=NULL;
 	js.cx=NULL;
-	
-		// create runtime
-		
-	js.rt=JS_NewRuntime(js_script_memory_size);
-	if (js.rt==NULL) {
-		strcpy(err_str,"JavaScript Engine: Not enough memory to create Script RunTime");
-		return(FALSE);
-	}
 	
 		// create context
 		
-	js.cx=JS_NewContext(js.rt,10240);
+	js.cx=JSGlobalContextCreate(NULL);
 	if (js.cx==NULL) {
 		strcpy(err_str,"JavaScript Engine: Not enough memory to create Script Context");
 		return(FALSE);
 	}
-	
-		// set context options
-		
-	JS_SetOptions(js.cx,JS_GetOptions(js.cx)|JSOPTION_STRICT|JSOPTION_VAROBJFIX|JSOPTION_WERROR);
 
 		// initialize classes
 
@@ -89,8 +76,7 @@ void scripts_engine_shutdown(void)
 	script_free_user_defines();
 	script_release_classes();
 	
-	if (js.cx!=NULL) JS_DestroyContext(js.cx);
-	if (js.rt!=NULL) JS_DestroyRuntime(js.rt);
+	if (js.cx!=NULL) JSGlobalContextRelease(js.cx);
 }
 
 /* =======================================================
@@ -162,19 +148,19 @@ int scripts_find_uid(int uid)
 
 void script_add_roots(script_type *script)
 {
-	JS_AddRoot(js.cx,&script->global);
-	JS_AddRoot(js.cx,&script->obj);
+	JSValueProtect(js.cx,(JSValueRef)script->global);
+	JSValueProtect(js.cx,(JSValueRef)script->obj);
 }
 
 void script_remove_roots(script_type *script)
 {
-	JS_RemoveRoot(js.cx,&script->global);
-	JS_RemoveRoot(js.cx,&script->obj);
+	JSValueUnprotect(js.cx,(JSValueRef)script->global);
+	JSValueUnprotect(js.cx,(JSValueRef)script->obj);
 }
 
 void scripts_clean_up_roots(void)
 {
-	JS_GC(js.cx);
+	JSGarbageCollect(NULL);
 }
 
 /* =======================================================
@@ -188,10 +174,10 @@ void scripts_clear_attach_data(attach_type *attach)
 	int				n;
 
 	for (n=0;n!=max_msg_data;n++) {
-		attach->set_msg_data[n].type=d3_jsval_type_int;
-		attach->set_msg_data[n].data.d3_int=0;
-		attach->get_msg_data[n].type=d3_jsval_type_int;
-		attach->get_msg_data[n].data.d3_int=0;
+		attach->set_msg_data[n].type=d3_jsval_type_number;
+		attach->set_msg_data[n].data.d3_number=0.0f;
+		attach->get_msg_data[n].type=d3_jsval_type_number;
+		attach->get_msg_data[n].data.d3_number=0.0f;
 	}
 }
 
@@ -203,13 +189,22 @@ void scripts_clear_attach_data(attach_type *attach)
 
 bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 {
-	JSValueRef		rval;
+	JSStringRef		j_script_data,j_script_name;
+	JSValueRef		rval,exception;
 	
 		// execute
 		
 	memmove(&js.attach,attach,sizeof(attach_type));
 	
-	if (!JS_EvaluateScript(js.cx,script->global,script->data,script->data_len,script->name,0,&rval)) {
+	j_script_data=JSStringCreateWithUTF8CString(script->data);
+	j_script_name=JSStringCreateWithUTF8CString(script->name);
+
+	rval=JSEvaluateScript(js.cx,j_script_data,script->global,j_script_name,0,&exception);
+
+	JSStringRelease(j_script_name);
+	JSStringRelease(j_script_data);
+
+	if (rval==NULL) {
 		script_value_to_string(exception,err_str,256);
 		return(FALSE);
 	}

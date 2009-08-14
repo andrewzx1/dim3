@@ -56,7 +56,7 @@ obj_type* script_find_obj_from_uid_arg(JSValueRef arg,JSValueRef *exception)
 	
 	obj=object_find_uid(uid);
 	if (obj==NULL) {
-		swprintf(err_str,"No object exists with this ID: %d",uid);
+		sprintf(err_str,"No object exists with this ID: %d",uid);
 		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
@@ -74,7 +74,7 @@ weapon_type* script_find_weapon_from_name_arg(obj_type *obj,JSValueRef arg,JSVal
 	
 	weap=weapon_find_name(obj,name);
 	if (weap==NULL) {
-		swprintf(err_str,"Named weapon does not exist in object: %s",name);
+		sprintf(err_str,"Named weapon does not exist in object: %s",name);
 		*exception=script_string_to_value(err_str);
 		return(NULL);
 	}
@@ -95,7 +95,7 @@ spot_type* script_find_spot_from_idx_arg(JSValueRef arg,JSValueRef *exception)
 
 	idx=script_value_to_int(arg);
 	if ((idx<0) || (idx>=map.nspot)) {
-		swprintf(err_str,"No spot exists with this id: %d",idx);
+		sprintf(err_str,"No spot exists with this id: %d",idx);
 		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
@@ -114,7 +114,7 @@ spot_type* script_find_spot_from_name_type(JSValueRef arg_0,JSValueRef arg_1,JSV
 	
 	idx=map_find_random_spot(&map,name,type);
 	if (idx==-1) {
-		swprintf(err_str,"No spot exists with this name-type: %s-%s",name,type);
+		sprintf(err_str,"No spot exists with this name-type: %s-%s",name,type);
 		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
@@ -129,7 +129,7 @@ spot_type* script_find_network_spot(obj_type *obj,JSValueRef *exception)
 	
 	idx=object_find_network_spawn_spot(obj);
 	if (idx==-1) {
-		swprintf(err_str,"Could not find a new network spawn spot");
+		sprintf(err_str,"Could not find a new network spawn spot");
 		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
@@ -144,7 +144,7 @@ node_type* script_find_node_from_idx_arg(JSValueRef arg,JSValueRef *exception)
 
 	idx=script_value_to_int(arg);
 	if ((idx<0) || (idx>=map.nnode)) {
-		swprintf(err_str,"No node exists with this id: %d",idx);
+		sprintf(err_str,"No node exists with this id: %d",idx);
 		*exception=script_create_exception(err_str);
 		return(NULL);
 	}
@@ -161,7 +161,7 @@ map_light_type* script_find_light_from_name(JSValueRef arg,JSValueRef *exception
 	
 	idx=map_find_light(&map,name);
 	if (idx==-1) {
-		swprintf(err_str,"No light exists with this name: %s",name);
+		sprintf(err_str,"No light exists with this name: %s",name);
 		*exception=script_create_exception(err_str);
 		return(NULL);
 	}

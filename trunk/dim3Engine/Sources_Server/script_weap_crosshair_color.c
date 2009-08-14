@@ -99,9 +99,7 @@ JSValueRef js_weap_crosshair_color_get_red(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->crosshair.col.r);
-
-	return(TRUE);
+	return(script_float_to_value(weap->crosshair.col.r));
 }
 
 JSValueRef js_weap_crosshair_color_get_green(void)
@@ -109,9 +107,7 @@ JSValueRef js_weap_crosshair_color_get_green(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->crosshair.col.g);
-
-	return(TRUE);
+	return(script_float_to_value(weap->crosshair.col.g));
 }
 
 JSValueRef js_weap_crosshair_color_get_blue(void)
@@ -119,9 +115,7 @@ JSValueRef js_weap_crosshair_color_get_blue(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->crosshair.col.b);
-
-	return(TRUE);
+	return(script_float_to_value(weap->crosshair.col.b));
 }
 
 /* =======================================================
@@ -135,7 +129,7 @@ void js_weap_crosshair_color_set_red(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.col.r=script_value_to_float(*vp);
+	weap->crosshair.col.r=script_value_to_float(vp);
 }
 
 void js_weap_crosshair_color_set_green(JSValueRef vp,JSValueRef *exception)
@@ -143,7 +137,7 @@ void js_weap_crosshair_color_set_green(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.col.g=script_value_to_float(*vp);
+	weap->crosshair.col.g=script_value_to_float(vp);
 }
 
 void js_weap_crosshair_color_set_blue(JSValueRef vp,JSValueRef *exception)
@@ -151,6 +145,6 @@ void js_weap_crosshair_color_set_blue(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.col.b=script_value_to_float(*vp);
+	weap->crosshair.col.b=script_value_to_float(vp);
 }
 
