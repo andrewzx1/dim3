@@ -99,9 +99,7 @@ JSValueRef js_obj_thrust_get_speed(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->thrust.speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->thrust.speed));
 }
 
 JSValueRef js_obj_thrust_get_maxSpeed(void)
@@ -109,8 +107,7 @@ JSValueRef js_obj_thrust_get_maxSpeed(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->thrust.max_speed));
 }
 
 JSValueRef js_obj_thrust_get_drag(void)
@@ -118,9 +115,7 @@ JSValueRef js_obj_thrust_get_drag(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->thrust.drag);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->thrust.drag));
 }
 
 /* =======================================================
@@ -134,7 +129,7 @@ void js_obj_thrust_set_speed(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->thrust.speed=script_value_to_float(*vp);
+	obj->thrust.speed=script_value_to_float(vp);
 }
 
 void js_obj_thrust_set_maxSpeed(JSValueRef vp,JSValueRef *exception)
@@ -142,7 +137,7 @@ void js_obj_thrust_set_maxSpeed(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->thrust.max_speed=script_value_to_float(*vp);
+	obj->thrust.max_speed=script_value_to_float(vp);
 }
 
 void js_obj_thrust_set_drag(JSValueRef vp,JSValueRef *exception)
@@ -150,7 +145,7 @@ void js_obj_thrust_set_drag(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->thrust.drag=script_value_to_bool(*vp);
+	obj->thrust.drag=script_value_to_bool(vp);
 }
 
 

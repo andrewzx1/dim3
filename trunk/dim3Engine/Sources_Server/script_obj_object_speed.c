@@ -111,9 +111,7 @@ JSValueRef js_obj_object_speed_get_jumpHeight(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->jump.y_add);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->jump.y_add));
 }
 
 JSValueRef js_obj_object_speed_get_duckAdd(void)
@@ -121,9 +119,7 @@ JSValueRef js_obj_object_speed_get_duckAdd(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->duck.y_add);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->duck.y_add));
 }
 
 JSValueRef js_obj_object_speed_get_duckChange(void)
@@ -131,9 +127,7 @@ JSValueRef js_obj_object_speed_get_duckChange(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->duck.y_change);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->duck.y_change));
 }
 
 JSValueRef js_obj_object_speed_get_bumpHeight(void)
@@ -141,9 +135,7 @@ JSValueRef js_obj_object_speed_get_bumpHeight(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->bump.high);
-	
-	return(TRUE);
+	return(script_int_to_value(obj->bump.high));
 }
 
 JSValueRef js_obj_object_speed_get_bumpSmoothFactor(void)
@@ -151,9 +143,7 @@ JSValueRef js_obj_object_speed_get_bumpSmoothFactor(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->bump.smooth_factor);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->bump.smooth_factor));
 }
 
 JSValueRef js_obj_object_speed_get_bounceFactor(void)
@@ -161,9 +151,7 @@ JSValueRef js_obj_object_speed_get_bounceFactor(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->bounce.factor);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->bounce.factor));
 }
 
 JSValueRef js_obj_object_speed_get_noSlide(void)
@@ -171,9 +159,7 @@ JSValueRef js_obj_object_speed_get_noSlide(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->no_slide);
-	
-	return(TRUE);
+	return(script_bool_to_value(obj->no_slide));
 }
 
 /* =======================================================
@@ -187,7 +173,7 @@ void js_obj_object_speed_set_jumpHeight(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->jump.y_add=script_value_to_int(*vp);
+	obj->jump.y_add=script_value_to_int(vp);
 }
 
 void js_obj_object_speed_set_duckAdd(JSValueRef vp,JSValueRef *exception)
@@ -195,7 +181,7 @@ void js_obj_object_speed_set_duckAdd(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->duck.y_add=script_value_to_int(*vp);
+	obj->duck.y_add=script_value_to_int(vp);
 }
 
 void js_obj_object_speed_set_duckChange(JSValueRef vp,JSValueRef *exception)
@@ -203,7 +189,7 @@ void js_obj_object_speed_set_duckChange(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->duck.y_change=script_value_to_int(*vp);
+	obj->duck.y_change=script_value_to_int(vp);
 }
 
 void js_obj_object_speed_set_bumpHeight(JSValueRef vp,JSValueRef *exception)
@@ -211,7 +197,7 @@ void js_obj_object_speed_set_bumpHeight(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->bump.high=script_value_to_int(*vp);
+	obj->bump.high=script_value_to_int(vp);
 }
 
 void js_obj_object_speed_set_bumpSmoothFactor(JSValueRef vp,JSValueRef *exception)
@@ -219,7 +205,7 @@ void js_obj_object_speed_set_bumpSmoothFactor(JSValueRef vp,JSValueRef *exceptio
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->bump.smooth_factor=script_value_to_float(*vp);
+	obj->bump.smooth_factor=script_value_to_float(vp);
 }
 
 void js_obj_object_speed_set_bounceFactor(JSValueRef vp,JSValueRef *exception)
@@ -227,7 +213,7 @@ void js_obj_object_speed_set_bounceFactor(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->bounce.factor=script_value_to_float(*vp);
+	obj->bounce.factor=script_value_to_float(vp);
 }
 
 void js_obj_object_speed_set_noSlide(JSValueRef vp,JSValueRef *exception)
@@ -235,7 +221,7 @@ void js_obj_object_speed_set_noSlide(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->no_slide=script_value_to_bool(*vp);
+	obj->no_slide=script_value_to_bool(vp);
 }
 
 
