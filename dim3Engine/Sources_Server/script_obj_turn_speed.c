@@ -120,9 +120,7 @@ JSValueRef js_obj_turn_speed_get_facingWalk(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.walk_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.walk_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_motionWalk(void)
@@ -130,9 +128,7 @@ JSValueRef js_obj_turn_speed_get_motionWalk(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.walk_motion_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.walk_motion_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_facingRun(void)
@@ -140,9 +136,7 @@ JSValueRef js_obj_turn_speed_get_facingRun(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.run_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.run_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_motionRun(void)
@@ -150,9 +144,7 @@ JSValueRef js_obj_turn_speed_get_motionRun(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.run_motion_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.run_motion_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_facingCrawl(void)
@@ -160,9 +152,7 @@ JSValueRef js_obj_turn_speed_get_facingCrawl(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.crawl_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.crawl_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_motionCrawl(void)
@@ -170,9 +160,7 @@ JSValueRef js_obj_turn_speed_get_motionCrawl(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.crawl_motion_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.crawl_motion_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_facingAir(void)
@@ -180,9 +168,7 @@ JSValueRef js_obj_turn_speed_get_facingAir(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.air_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.air_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_motionAir(void)
@@ -190,9 +176,7 @@ JSValueRef js_obj_turn_speed_get_motionAir(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.air_motion_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.air_motion_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_key(void)
@@ -200,9 +184,7 @@ JSValueRef js_obj_turn_speed_get_key(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.key_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.key_speed));
 }
 
 JSValueRef js_obj_turn_speed_get_topDownAngleOffset(void)
@@ -210,9 +192,7 @@ JSValueRef js_obj_turn_speed_get_topDownAngleOffset(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->turn.top_down_ang_offset);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->turn.top_down_ang_offset));
 }
 
 /* =======================================================
@@ -226,7 +206,7 @@ void js_obj_turn_speed_set_facingWalk(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.walk_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.walk_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_motionWalk(JSValueRef vp,JSValueRef *exception)
@@ -234,7 +214,7 @@ void js_obj_turn_speed_set_motionWalk(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.walk_motion_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.walk_motion_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_facingRun(JSValueRef vp,JSValueRef *exception)
@@ -242,7 +222,7 @@ void js_obj_turn_speed_set_facingRun(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.run_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.run_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_motionRun(JSValueRef vp,JSValueRef *exception)
@@ -250,7 +230,7 @@ void js_obj_turn_speed_set_motionRun(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.run_motion_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.run_motion_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_facingCrawl(JSValueRef vp,JSValueRef *exception)
@@ -258,7 +238,7 @@ void js_obj_turn_speed_set_facingCrawl(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.crawl_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.crawl_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_motionCrawl(JSValueRef vp,JSValueRef *exception)
@@ -266,7 +246,7 @@ void js_obj_turn_speed_set_motionCrawl(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.crawl_motion_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.crawl_motion_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_facingAir(JSValueRef vp,JSValueRef *exception)
@@ -274,7 +254,7 @@ void js_obj_turn_speed_set_facingAir(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.air_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.air_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_motionAir(JSValueRef vp,JSValueRef *exception)
@@ -282,7 +262,7 @@ void js_obj_turn_speed_set_motionAir(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.air_motion_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.air_motion_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_key(JSValueRef vp,JSValueRef *exception)
@@ -290,7 +270,7 @@ void js_obj_turn_speed_set_key(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.key_speed=fabsf(script_value_to_float(*vp));
+	obj->turn.key_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_turn_speed_set_topDownAngleOffset(JSValueRef vp,JSValueRef *exception)
@@ -298,6 +278,6 @@ void js_obj_turn_speed_set_topDownAngleOffset(JSValueRef vp,JSValueRef *exceptio
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->turn.top_down_ang_offset=fabsf(script_value_to_float(*vp));
+	obj->turn.top_down_ang_offset=fabsf(script_value_to_float(vp));
 }
 

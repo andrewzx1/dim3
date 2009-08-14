@@ -114,9 +114,7 @@ JSValueRef js_obj_side_speed_get_walk(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->side_move.max_walk_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->side_move.max_walk_speed));
 }
 
 JSValueRef js_obj_side_speed_get_run(void)
@@ -124,9 +122,7 @@ JSValueRef js_obj_side_speed_get_run(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->side_move.max_run_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->side_move.max_run_speed));
 }
 
 JSValueRef js_obj_side_speed_get_crawl(void)
@@ -134,9 +130,7 @@ JSValueRef js_obj_side_speed_get_crawl(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->side_move.max_crawl_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->side_move.max_crawl_speed));
 }
 
 JSValueRef js_obj_side_speed_get_air(void)
@@ -144,9 +138,7 @@ JSValueRef js_obj_side_speed_get_air(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->side_move.max_air_speed);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->side_move.max_air_speed));
 }
 
 JSValueRef js_obj_side_speed_get_acceleration(void)
@@ -154,9 +146,7 @@ JSValueRef js_obj_side_speed_get_acceleration(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->side_move.accelerate);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->side_move.accelerate));
 }
 
 JSValueRef js_obj_side_speed_get_deceleration(void)
@@ -164,9 +154,7 @@ JSValueRef js_obj_side_speed_get_deceleration(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->side_move.decelerate);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->side_move.decelerate));
 }
 
 JSValueRef js_obj_side_speed_get_accelerationAir(void)
@@ -174,9 +162,7 @@ JSValueRef js_obj_side_speed_get_accelerationAir(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->side_move.air_accelerate);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->side_move.air_accelerate));
 }
 
 JSValueRef js_obj_side_speed_get_decelerationAir(void)
@@ -184,9 +170,7 @@ JSValueRef js_obj_side_speed_get_decelerationAir(void)
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->side_move.air_decelerate);
-	
-	return(TRUE);
+	return(script_float_to_value(obj->side_move.air_decelerate));
 }
 
 /* =======================================================
@@ -200,7 +184,7 @@ void js_obj_side_speed_set_walk(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_move.max_walk_speed=fabsf(script_value_to_float(*vp));
+	obj->side_move.max_walk_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_side_speed_set_run(JSValueRef vp,JSValueRef *exception)
@@ -208,7 +192,7 @@ void js_obj_side_speed_set_run(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_move.max_run_speed=fabsf(script_value_to_float(*vp));
+	obj->side_move.max_run_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_side_speed_set_crawl(JSValueRef vp,JSValueRef *exception)
@@ -216,7 +200,7 @@ void js_obj_side_speed_set_crawl(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_move.max_crawl_speed=fabsf(script_value_to_float(*vp));
+	obj->side_move.max_crawl_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_side_speed_set_air(JSValueRef vp,JSValueRef *exception)
@@ -224,7 +208,7 @@ void js_obj_side_speed_set_air(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_move.max_air_speed=fabsf(script_value_to_float(*vp));
+	obj->side_move.max_air_speed=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_side_speed_set_acceleration(JSValueRef vp,JSValueRef *exception)
@@ -232,7 +216,7 @@ void js_obj_side_speed_set_acceleration(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_move.accelerate=fabsf(script_value_to_float(*vp));
+	obj->side_move.accelerate=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_side_speed_set_deceleration(JSValueRef vp,JSValueRef *exception)
@@ -240,7 +224,7 @@ void js_obj_side_speed_set_deceleration(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_move.decelerate=fabsf(script_value_to_float(*vp));
+	obj->side_move.decelerate=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_side_speed_set_accelerationAir(JSValueRef vp,JSValueRef *exception)
@@ -248,7 +232,7 @@ void js_obj_side_speed_set_accelerationAir(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_move.air_accelerate=fabsf(script_value_to_float(*vp));
+	obj->side_move.air_accelerate=fabsf(script_value_to_float(vp));
 }
 
 void js_obj_side_speed_set_decelerationAir(JSValueRef vp,JSValueRef *exception)
@@ -256,6 +240,6 @@ void js_obj_side_speed_set_decelerationAir(JSValueRef vp,JSValueRef *exception)
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->side_move.air_decelerate=fabsf(script_value_to_float(*vp));
+	obj->side_move.air_decelerate=fabsf(script_value_to_float(vp));
 }
 
