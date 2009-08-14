@@ -79,19 +79,13 @@ void script_set_global_by_index(int idx,JSValueRef val)
 	
 	global=&js.globals[idx];
 	
-	if (JSVAL_IS_INT(val)) {
-		global->type=d3_jsval_type_int;
-		global->data.d3_int=script_value_to_int(val);
+	if (JSValueIsNumber(js.cx,val)) {
+		global->type=d3_jsval_type_number;
+		global->data.d3_number=script_value_to_float(val);
 		return;
 	}
 	
-	if (JSVAL_IS_DOUBLE(val)) {
-		global->type=d3_jsval_type_float;
-		global->data.d3_float=script_value_to_float(val);
-		return;
-	}
-	
-	if (JSVAL_IS_BOOLEAN(val)) {
+	if (JSValueIsBoolean(js.cx,val)) {
 		global->type=d3_jsval_type_boolean;
 		global->data.d3_boolean=script_value_to_bool(val);
 		return;
@@ -123,10 +117,8 @@ JSValueRef script_get_global(char *name,int script_uid)
 	global=&js.globals[idx];
 	
 	switch (global->type) {
-		case d3_jsval_type_int:
-			return(script_int_to_value(global->data.d3_int));
-		case d3_jsval_type_float:
-			return(script_float_to_value(global->data.d3_float));
+		case d3_jsval_type_number:
+			return(script_float_to_value(global->data.d3_number));
 		case d3_jsval_type_boolean:
 			return(script_bool_to_value(global->data.d3_boolean));
 		case d3_jsval_type_string:

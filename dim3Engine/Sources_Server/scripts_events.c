@@ -52,8 +52,7 @@ void scripts_setup_events(int script_uid)
 	if (idx==-1) return;
 	
 	script=&js.scripts[idx];
-
-	script->event_func=(JSObjectRef)JSObjectGetProperty(js.cx,script->global,script_string_to_value("event"),NULL);
+	script->event_func=(JSObjectRef)script_get_single_property(script->global,"event");
 }
 
 /* =======================================================
@@ -65,7 +64,7 @@ void scripts_setup_events(int script_uid)
 bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
 {
 	int				idx;
-	JSValueRef		rval,argv[5];
+	JSValueRef		rval,exception,argv[5];
 	script_type		*script;
 	attach_type		old_attach;
 	
@@ -92,13 +91,13 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 
 		// run the event function
 		
-	argv[0]=OBJECT_TO_JSVAL(script->obj);
+	argv[0]=(JSValueRef)script->obj;
 	argv[1]=script_int_to_value(main_event);
 	argv[2]=script_int_to_value(sub_event);
 	argv[3]=script_int_to_value(id);
 	argv[4]=script_int_to_value(js.time.current_tick);
 
-	rval=JSObjectCallAsFunction(js.cx,script->global,script->event_func,5,argv,exception);
+	rval=JSObjectCallAsFunction(js.cx,script->global,script->event_func,5,argv,&exception);
 	if (rval==NULL) {
 		script_exception_to_string(exception,err_str,256);
 	}
@@ -129,7 +128,7 @@ void scripts_post_event_console(attach_type *attach,int main_event,int sub_event
 bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 {
 	int				idx;
-	JSValueRef		rval,argv[2];
+	JSValueRef		rval,exception,argv[2];
 	JSObjectRef		func_obj;
 	script_type		*script;
 	attach_type		old_attach;
@@ -149,7 +148,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	
 		// get the function
 		
-	func_obj=(JSObjectRef)JSObjectGetProperty(js.cx,script->global,script_string_to_value(func_name),NULL);
+	func_obj=(JSObjectRef)script_get_single_property(script->global,func_name);
 	if (func_obj==NULL) {
 		sprintf(err_str,"Chaining failed, unknown function '%s'",func_name);
 		return(FALSE);
@@ -165,10 +164,10 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 
 		// run the event function
 		
-	argv[0]=OBJECT_TO_JSVAL(script->obj);
+	argv[0]=(JSValueRef)script->obj;
 	argv[1]=script_int_to_value(js.time.current_tick);
 
-	rval=JSObjectCallAsFunction(js.cx,script->global,func_obj,2,argv,exception);
+	rval=JSObjectCallAsFunction(js.cx,script->global,func_obj,2,argv,&exception);
 	if (rval==NULL) {
 		script_exception_to_string(exception,err_str,256);
 	}
@@ -199,6 +198,7 @@ void scripts_chain_console(attach_type *attach,char *func_name)
 JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,JSValueRef *exception)
 {
 	int				n,idx;
+	char			err_str[256];
 	JSValueRef		rval,argv[5];
 	JSObjectRef		func_obj;
 	script_type		*script;
@@ -206,16 +206,16 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 	
 		// find script
 		
-	if (attach->script_uid==-1) return(rval);
+	if (attach->script_uid==-1) return(script_null_to_value());
 	
 	idx=scripts_find_uid(attach->script_uid);
-	if (idx==-1) return(rval);
+	if (idx==-1) return(script_null_to_value());
 	
 	script=&js.scripts[idx];
 
 		// find function
 
-	func_obj=(JSObjectRef)JSObjectGetProperty(js.cx,script->global,script_string_to_value(func_name),NULL);
+	func_obj=(JSObjectRef)script_get_single_property(script->global,func_name);
 	if (func_obj==NULL) {
 		sprintf(err_str,"Call failed, unknown function: %s",func_name);
 		*exception=script_create_exception(err_str);
@@ -232,7 +232,7 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 
 		// run the event function
 		
-	argv[0]=OBJECT_TO_JSVAL(script->obj);
+	argv[0]=(JSValueRef)script->obj;
 
 	for (n=0;n!=arg_count;n++) { 
 		argv[n+1]=args[n];

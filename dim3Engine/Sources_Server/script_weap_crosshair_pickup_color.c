@@ -99,9 +99,7 @@ JSValueRef js_weap_crosshair_pickup_color_get_red(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->crosshair.pickup_col.r);
-
-	return(TRUE);
+	return(script_float_to_value(weap->crosshair.pickup_col.r));
 }
 
 JSValueRef js_weap_crosshair_pickup_color_get_green(void)
@@ -109,9 +107,7 @@ JSValueRef js_weap_crosshair_pickup_color_get_green(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->crosshair.pickup_col.g);
-
-	return(TRUE);
+	return(script_float_to_value(weap->crosshair.pickup_col.g));
 }
 
 JSValueRef js_weap_crosshair_pickup_color_get_blue(void)
@@ -119,9 +115,7 @@ JSValueRef js_weap_crosshair_pickup_color_get_blue(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->crosshair.pickup_col.b);
-
-	return(TRUE);
+	return(script_float_to_value(weap->crosshair.pickup_col.b));
 }
 
 /* =======================================================
@@ -130,27 +124,27 @@ JSValueRef js_weap_crosshair_pickup_color_get_blue(void)
       
 ======================================================= */
 
-bool js_weap_crosshair_pickup_color_set_red(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_pickup_color_set_red(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.pickup_col.r=script_value_to_float(*vp);
+	weap->crosshair.pickup_col.r=script_value_to_float(vp);
 }
 
-bool js_weap_crosshair_pickup_color_set_green(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_pickup_color_set_green(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.pickup_col.g=script_value_to_float(*vp);
+	weap->crosshair.pickup_col.g=script_value_to_float(vp);
 }
 
-bool js_weap_crosshair_pickup_color_set_blue(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_pickup_color_set_blue(JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.pickup_col.b=script_value_to_float(*vp);
+	weap->crosshair.pickup_col.b=script_value_to_float(vp);
 }
 

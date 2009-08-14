@@ -107,9 +107,7 @@ JSValueRef js_weap_target_get_on(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(weap->target.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(weap->target.on));
 }
 
 JSValueRef js_weap_target_get_distance(void)
@@ -117,9 +115,7 @@ JSValueRef js_weap_target_get_distance(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->target.distance);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->target.distance));
 }
 
 JSValueRef js_weap_target_get_objectId(void)
@@ -127,9 +123,7 @@ JSValueRef js_weap_target_get_objectId(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->target.obj_uid);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->target.obj_uid));
 }
 
 /* =======================================================
@@ -143,7 +137,7 @@ void js_weap_target_set_distance(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->target.distance=script_value_to_int(*vp);
+	weap->target.distance=script_value_to_int(vp);
 }
 
 /* =======================================================
@@ -163,9 +157,7 @@ JSValueRef js_weap_target_start_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 	script_value_to_string(argv[0],target_type,name_str_len);
 
-	*rval=script_bool_to_value(weapon_target_start(obj,weap,target_type));
-
-	return(TRUE);
+	return(script_bool_to_value(weapon_target_start(obj,weap,target_type)));
 }
 
 JSValueRef js_weap_target_start_opponent_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -176,9 +168,7 @@ JSValueRef js_weap_target_start_opponent_func(JSContextRef cx,JSObjectRef func,J
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 	
-	*rval=script_bool_to_value(weapon_target_start(obj,weap,NULL));
-
-	return(TRUE);
+	return(script_bool_to_value(weapon_target_start(obj,weap,NULL)));
 }
 
 JSValueRef js_weap_target_end_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -189,8 +179,6 @@ JSValueRef js_weap_target_end_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 	
-	*rval=script_bool_to_value(weapon_target_end(obj,weap));
-
-	return(TRUE);
+	return(script_bool_to_value(weapon_target_end(obj,weap)));
 }
 

@@ -103,9 +103,7 @@ JSValueRef js_weap_fire_get_method(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->fire.method);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->fire.method));
 }
 
 JSValueRef js_weap_fire_get_lastFireTick(void)
@@ -113,14 +111,9 @@ JSValueRef js_weap_fire_get_lastFireTick(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	if (!weap->dual.in_dual) {
-		*vp=script_int_to_value(weap->fire.last_fire_tick);
-	}
-	else {
-		*vp=script_int_to_value(weap->fire.last_fire_dual_tick);
-	}
-	
-	return(TRUE);
+	if (!weap->dual.in_dual) return(script_int_to_value(weap->fire.last_fire_tick));
+
+	return(script_int_to_value(weap->fire.last_fire_dual_tick));
 }
 
 /* =======================================================
@@ -143,9 +136,7 @@ JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSO
 		last_fire_tick=weap->fire.last_fire_dual_tick;
 	}
 
-	*rval=script_bool_to_value(js.time.current_tick>(last_fire_tick+script_value_to_int(argv[0])));
-    
-	return(TRUE);
+	return(script_bool_to_value(js.time.current_tick>(last_fire_tick+script_value_to_int(argv[0]))));
 }
 
 JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -161,7 +152,7 @@ JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JS
 		weap->fire.last_fire_dual_tick=js.time.current_tick;
 	}
     
-	return(TRUE);
+	return(script_null_to_value());
 }
 
 JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -171,6 +162,6 @@ JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->fire.cancel=TRUE;
     
-	return(TRUE);
+	return(script_null_to_value());
 }
 

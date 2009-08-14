@@ -97,9 +97,7 @@ JSValueRef js_weap_setting_get_name(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_string_to_value(weap->name);
-	
-	return(TRUE);
+	return(script_string_to_value(weap->name));
 }
 
 JSValueRef js_weap_setting_get_failInLiquid(void)
@@ -107,9 +105,7 @@ JSValueRef js_weap_setting_get_failInLiquid(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(weap->fail_in_liquid);
-	
-	return(TRUE);
+	return(script_bool_to_value(weap->fail_in_liquid));
 }
 
 JSValueRef js_weap_setting_get_parentObjectId(void)
@@ -117,9 +113,7 @@ JSValueRef js_weap_setting_get_parentObjectId(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->obj_uid);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->obj_uid));
 }
 
 /* =======================================================
@@ -133,7 +127,7 @@ void js_weap_setting_set_failInLiquid(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->fail_in_liquid=script_value_to_bool(*vp);
+	weap->fail_in_liquid=script_value_to_bool(vp);
 }
 
 

@@ -429,7 +429,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						JSContextRef					cx;
+						JSGlobalContextRef				cx;
 						
 						int								script_current_uid;
 						bool							add_property_lock;

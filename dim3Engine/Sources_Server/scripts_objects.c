@@ -331,30 +331,34 @@ void script_release_classes(void)
       
 ======================================================= */
 
-JSClassRef script_create_class(const char *name,JSPropertyOp getter,JSPropertyOp setter)
+JSClassRef script_create_class(const char *name,JSObjectGetPropertyCallback getter,JSObjectSetPropertyCallback setter)
 {
-	JSClass			*cls;
+	JSClassDefinition		def;
 
-	cls=(JSClass*)malloc(sizeof(JSClass));
-	bzero(cls,sizeof(JSClass));
+	def.version=0;
+	def.attributes=kJSClassAttributeNone;
+	def.className=name;
+	def.parentClass=NULL;
+	def.staticValues=NULL;
+	def.staticFunctions=NULL;
+	def.initialize=NULL;
+	def.finalize=NULL;
+	def.hasProperty=NULL;
+	def.getProperty=getter;
+	def.setProperty=setter;
+	def.deleteProperty=NULL;
+	def.getPropertyNames=NULL;
+	def.callAsFunction=NULL;
+	def.callAsConstructor=NULL;
+	def.hasInstance=NULL;
+	def.convertToType=NULL;
 
-	cls->name=name;
-	
-	cls->addProperty=JS_PropertyStub;
-	cls->delProperty=JS_PropertyStub;
-	cls->getProperty=getter;
-	cls->setProperty=setter;
-	cls->enumerate=JS_EnumerateStub;
-	cls->resolve=JS_ResolveStub;
-	cls->convert=JS_ConvertStub;
-	cls->finalize=JS_FinalizeStub;
-
-	return(cls);
+	return(JSClassCreate(&def));
 }
 
 void script_free_class(JSClassRef cls)
 {
-	free(cls);
+	JSClassRelease(cls);
 }
 
 /* =======================================================
@@ -446,6 +450,33 @@ bool script_add_global_object(script_type *script,char *err_str)
 	}
 
 	return(TRUE);
+}
+
+/* =======================================================
+
+      Script Property Utilities
+      
+======================================================= */
+
+inline void script_set_single_property(JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags)
+{
+	JSStringRef			j_prop_name;
+
+	j_prop_name=JSStringCreateWithUTF8CString(prop_name);
+	JSObjectSetProperty(js.cx,j_obj,j_prop_name,vp,flags,NULL);
+	JSStringRelease(j_prop_name);
+}
+
+inline JSValueRef script_get_single_property(JSObjectRef j_obj,const char *prop_name)
+{
+	JSStringRef			j_prop_name;
+	JSValueRef			vp;
+
+	j_prop_name=JSStringCreateWithUTF8CString(prop_name);
+	vp=JSObjectGetProperty(js.cx,j_obj,j_prop_name,NULL);
+	JSStringRelease(j_prop_name);
+
+	return(vp);
 }
 
 /* =======================================================

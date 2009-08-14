@@ -122,9 +122,7 @@ JSValueRef js_weap_zoom_get_on(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(weap->zoom.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(weap->zoom.on));
 }
 
 JSValueRef js_weap_zoom_get_active(void)
@@ -132,9 +130,7 @@ JSValueRef js_weap_zoom_get_active(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(weap->zoom.mode!=zoom_mode_off);
-	
-	return(TRUE);
+	return(script_bool_to_value(weap->zoom.mode!=zoom_mode_off));
 }
 
 JSValueRef js_weap_zoom_get_fovMinimum(void)
@@ -142,9 +138,7 @@ JSValueRef js_weap_zoom_get_fovMinimum(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->zoom.fov_min);
-	
-	return(TRUE);
+	return(script_float_to_value(weap->zoom.fov_min));
 }
 
 JSValueRef js_weap_zoom_get_fovMaximum(void)
@@ -152,9 +146,7 @@ JSValueRef js_weap_zoom_get_fovMaximum(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->zoom.fov_max);
-	
-	return(TRUE);
+	return(script_float_to_value(weap->zoom.fov_max));
 }
 
 JSValueRef js_weap_zoom_get_fovSteps(void)
@@ -162,9 +154,7 @@ JSValueRef js_weap_zoom_get_fovSteps(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->zoom.step_count);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->zoom.step_count));
 }
 
 JSValueRef js_weap_zoom_get_turnFactor(void)
@@ -172,9 +162,7 @@ JSValueRef js_weap_zoom_get_turnFactor(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->zoom.turn_factor);
-	
-	return(TRUE);
+	return(script_float_to_value(weap->zoom.turn_factor));
 }
 
 JSValueRef js_weap_zoom_get_crawlTurnFactor(void)
@@ -182,9 +170,7 @@ JSValueRef js_weap_zoom_get_crawlTurnFactor(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->zoom.crawl_turn_factor);
-	
-	return(TRUE);
+	return(script_float_to_value(weap->zoom.crawl_turn_factor));
 }
 
 JSValueRef js_weap_zoom_get_lookFactor(void)
@@ -192,9 +178,7 @@ JSValueRef js_weap_zoom_get_lookFactor(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(weap->zoom.look_factor);
-	
-	return(TRUE);
+	return(script_float_to_value(weap->zoom.look_factor));
 }
 
 JSValueRef js_weap_zoom_get_maskName(void)
@@ -202,9 +186,7 @@ JSValueRef js_weap_zoom_get_maskName(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_string_to_value(weap->zoom.mask_name);
-	
-	return(TRUE);
+	return(script_string_to_value(weap->zoom.mask_name));
 }
 
 JSValueRef js_weap_zoom_get_showWeapon(void)
@@ -212,9 +194,7 @@ JSValueRef js_weap_zoom_get_showWeapon(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(weap->zoom.show_weapon);
-	
-	return(TRUE);
+	return(script_bool_to_value(weap->zoom.show_weapon));
 }
 
 JSValueRef js_weap_zoom_get_tick(void)
@@ -222,9 +202,7 @@ JSValueRef js_weap_zoom_get_tick(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->zoom.tick);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->zoom.tick));
 }
 
 /* =======================================================
@@ -238,7 +216,7 @@ void js_weap_zoom_set_on(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.on=script_value_to_bool(*vp);
+	weap->zoom.on=script_value_to_bool(vp);
 }
 
 void js_weap_zoom_set_fovMinimum(JSValueRef vp,JSValueRef *exception)
@@ -246,7 +224,7 @@ void js_weap_zoom_set_fovMinimum(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.fov_min=script_value_to_float(*vp);
+	weap->zoom.fov_min=script_value_to_float(vp);
 }
 
 void js_weap_zoom_set_fovMaximum(JSValueRef vp,JSValueRef *exception)
@@ -254,7 +232,7 @@ void js_weap_zoom_set_fovMaximum(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.fov_max=script_value_to_float(*vp);
+	weap->zoom.fov_max=script_value_to_float(vp);
 }
 
 void js_weap_zoom_set_fovSteps(JSValueRef vp,JSValueRef *exception)
@@ -262,7 +240,7 @@ void js_weap_zoom_set_fovSteps(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.step_count=script_value_to_int(*vp);
+	weap->zoom.step_count=script_value_to_int(vp);
 }
 
 void js_weap_zoom_set_turnFactor(JSValueRef vp,JSValueRef *exception)
@@ -270,7 +248,7 @@ void js_weap_zoom_set_turnFactor(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.turn_factor=script_value_to_float(*vp);
+	weap->zoom.turn_factor=script_value_to_float(vp);
 }
 
 void js_weap_zoom_set_crawlTurnFactor(JSValueRef vp,JSValueRef *exception)
@@ -278,7 +256,7 @@ void js_weap_zoom_set_crawlTurnFactor(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.crawl_turn_factor=script_value_to_float(*vp);
+	weap->zoom.crawl_turn_factor=script_value_to_float(vp);
 }
 
 void js_weap_zoom_set_lookFactor(JSValueRef vp,JSValueRef *exception)
@@ -286,7 +264,7 @@ void js_weap_zoom_set_lookFactor(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.look_factor=script_value_to_float(*vp);
+	weap->zoom.look_factor=script_value_to_float(vp);
 }
 
 void js_weap_zoom_set_maskName(JSValueRef vp,JSValueRef *exception)
@@ -294,7 +272,7 @@ void js_weap_zoom_set_maskName(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	script_value_to_string(*vp,weap->zoom.mask_name,name_str_len);
+	script_value_to_string(vp,weap->zoom.mask_name,name_str_len);
 	weapon_attach_zoom_mask(weap);
 }
 
@@ -303,7 +281,7 @@ void js_weap_zoom_set_showWeapon(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.show_weapon=script_value_to_bool(*vp);
+	weap->zoom.show_weapon=script_value_to_bool(vp);
 }
 
 void js_weap_zoom_set_tick(JSValueRef vp,JSValueRef *exception)
@@ -311,7 +289,7 @@ void js_weap_zoom_set_tick(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->zoom.tick=script_value_to_int(*vp);
+	weap->zoom.tick=script_value_to_int(vp);
 }
 
 

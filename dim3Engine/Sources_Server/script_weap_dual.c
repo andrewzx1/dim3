@@ -105,9 +105,7 @@ JSValueRef js_weap_dual_get_on(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(weap->dual.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(weap->dual.on));
 }
 
 JSValueRef js_weap_dual_get_active(void)
@@ -115,9 +113,7 @@ JSValueRef js_weap_dual_get_active(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(weap->dual.active);
-	
-	return(TRUE);
+	return(script_bool_to_value(weap->dual.active));
 }
 
 JSValueRef js_weap_dual_get_handOffset(void)
@@ -125,9 +121,7 @@ JSValueRef js_weap_dual_get_handOffset(void)
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(weap->dual.hand_offset);
-	
-	return(TRUE);
+	return(script_int_to_value(weap->dual.hand_offset));
 }
 
 /* =======================================================
@@ -141,7 +135,7 @@ void js_weap_dual_set_on(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->dual.on=script_value_to_bool(*vp);
+	weap->dual.on=script_value_to_bool(vp);
 }
 
 void js_weap_dual_set_active(JSValueRef vp,JSValueRef *exception)
@@ -149,7 +143,7 @@ void js_weap_dual_set_active(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->dual.active=script_value_to_bool(*vp);
+	weap->dual.active=script_value_to_bool(vp);
 }
 
 void js_weap_dual_set_handOffset(JSValueRef vp,JSValueRef *exception)
@@ -157,7 +151,7 @@ void js_weap_dual_set_handOffset(JSValueRef vp,JSValueRef *exception)
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->dual.hand_offset=script_value_to_int(*vp);
+	weap->dual.hand_offset=script_value_to_int(vp);
 }
 
 /* =======================================================
@@ -179,6 +173,6 @@ JSValueRef js_weap_dual_switch_hand_func(JSContextRef cx,JSObjectRef func,JSObje
 		weap->dual.in_dual=script_value_to_bool(argv[0]);
 	}
 	
-	return(TRUE);
+	return(script_null_to_value());
 }
 

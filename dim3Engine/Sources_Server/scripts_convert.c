@@ -33,14 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-
-/* supergumba -- JS -- array code
-    JSStringRef array = JSStringCreateWithUTF8CString("Array");
-    JSObjectRef arrayConstructor = JSValueToObject(context, JSObjectGetProperty(context, globalObject, array, NULL), NULL);
-    JSStringRelease(array);
-    result = JSObjectCallAsConstructor(context, arrayConstructor, 0, NULL, NULL);
-*/
-
 /* =======================================================
 
       NULL JSValueRef
@@ -113,7 +105,7 @@ inline JSValueRef script_bool_to_value(bool b)
 
 void script_value_to_string(JSValueRef val,char *str,int len)
 {
-	JSString		js_str;
+	JSStringRef		js_str;
 
 	js_str=JSValueToStringCopy(js.cx,val,NULL);
 	if (js_str==NULL) {
@@ -129,7 +121,7 @@ void script_value_to_string(JSValueRef val,char *str,int len)
 
 JSValueRef script_string_to_value(char *str)
 {
-	JSString		js_str;
+	JSStringRef		js_str;
 
 	js_str=JSStringCreateWithUTF8CString(str);
 	return(JSValueMakeString(js.cx,js_str));
@@ -144,23 +136,35 @@ JSValueRef script_string_to_value(char *str)
 JSValueRef script_int_array_to_value(int cnt,int *values)
 {
 	int				n;
-	JSObject		*j_obj;
-	JSValueRef			j_vals[64];
+	JSObjectRef		array_proto_obj,j_obj;
+	JSStringRef		array_name;
+	JSValueRef		array_val;
+	script_type		*script;
 
 		// 64 is the longest array
 
 	if (cnt>64) cnt=64;
 
+		// get array prototype
+
+	script=&js.scripts[scripts_find_uid(js.attach.script_uid)];
+	
+	array_name=JSStringCreateWithUTF8CString("Array");
+	array_val=JSObjectGetProperty(js.cx,script->global,array_name,NULL);
+	array_proto_obj=JSValueToObject(js.cx,array_val,NULL);
+	JSStringRelease(array_name);
+
+		// create object
+
+	j_obj=JSObjectCallAsConstructor(js.cx,array_proto_obj,0,NULL,NULL);
+
 		// create values
 
 	for (n=0;n!=cnt;n++) {
-		j_vals[n]=script_int_to_value(values[n]);
+		JSObjectSetPropertyAtIndex(js.cx,j_obj,n,script_int_to_value(values[n]),NULL);
 	}
 
-		// create array
-
-	j_obj=JS_NewArrayObject(js.cx,cnt,j_vals);
-	return(OBJECT_TO_JSVAL(j_obj));
+	return((JSValueRef)j_obj);
 }
 
 /* =======================================================
@@ -174,14 +178,17 @@ JSValueRef script_create_exception(char *str)
 	JSObjectRef			ex_obj;
 
 	ex_obj=JSObjectMake(js.cx,NULL,NULL);
-	JSSetProperty(js.cx,ex_obj,script_string_to_value("message"),script_string_to_value(str),kJSPropertyAttributeNone,NULL);
+	script_set_single_property(ex_obj,"message",script_string_to_value(str),kJSPropertyAttributeNone);
 
 	return((JSValueRef)ex_obj);
 }
 
-void script_exception_to_string(JSValueRef ex_obj,char *str,int len)
+void script_exception_to_string(JSValueRef ex_val,char *str,int len)
 {
+	JSObjectRef			ex_obj;
 	JSValueRef			msg;
+
+	ex_obj=JSValueToObject(js.cx,ex_val,NULL);
 
 		// get line number
 
@@ -189,9 +196,9 @@ void script_exception_to_string(JSValueRef ex_obj,char *str,int len)
 
 		// get message
 
-	msg=JSObjectGetProperty(js.cx,ex_obj,script_string_to_value("message"),NULL);
+	msg=script_get_single_property(ex_obj,"message");
 	if (msg==NULL) {
-		strncpy(str,len,"Unknown Error");
+		strncpy(str,"Unknown Error",len);
 		str[len-1]=0x0;
 	}
 	else {
@@ -207,42 +214,39 @@ void script_exception_to_string(JSValueRef ex_obj,char *str,int len)
 
 JSValueRef script_angle_to_value(float x,float y,float z)
 {
-	JSObject		*j_obj;
+	JSObjectRef		j_obj;
 
-	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
-	if (j_obj==NULL) return(JSVAL_NULL);
+	j_obj=JSObjectMake(js.cx,NULL,NULL);
 
-	JS_DefineProperty(js.cx,j_obj,"x",script_float_to_value(x),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
-	JS_DefineProperty(js.cx,j_obj,"y",script_float_to_value(y),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
-	JS_DefineProperty(js.cx,j_obj,"z",script_float_to_value(z),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	script_set_single_property(j_obj,"x",script_float_to_value(x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(j_obj,"y",script_float_to_value(y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(j_obj,"z",script_float_to_value(z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	
-	return(OBJECT_TO_JSVAL(j_obj));
+	return((JSValueRef)j_obj);
 }
 
 JSValueRef script_point_to_value(int x,int y,int z)
 {
-	JSObject		*j_obj;
+	JSObjectRef		j_obj;
 
-	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
-	if (j_obj==NULL) return(JSVAL_NULL);
+	j_obj=JSObjectMake(js.cx,NULL,NULL);
 
-	JS_DefineProperty(js.cx,j_obj,"x",script_int_to_value(x),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
-	JS_DefineProperty(js.cx,j_obj,"y",script_int_to_value(y),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
-	JS_DefineProperty(js.cx,j_obj,"z",script_int_to_value(z),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	script_set_single_property(j_obj,"x",script_int_to_value(x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(j_obj,"y",script_int_to_value(y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(j_obj,"z",script_int_to_value(z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	
-	return(OBJECT_TO_JSVAL(j_obj));
+	return((JSValueRef)j_obj);
 }
 
 JSValueRef script_color_to_value(d3col *col)
 {
-	JSObject		*j_obj;
+	JSObjectRef		j_obj;
 
-	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
-	if (j_obj==NULL) return(JSVAL_NULL);
+	j_obj=JSObjectMake(js.cx,NULL,NULL);
 
-	JS_DefineProperty(js.cx,j_obj,"r",script_float_to_value(col->r),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
-	JS_DefineProperty(js.cx,j_obj,"g",script_float_to_value(col->g),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
-	JS_DefineProperty(js.cx,j_obj,"b",script_float_to_value(col->b),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	script_set_single_property(j_obj,"r",script_float_to_value(col->r),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(j_obj,"g",script_float_to_value(col->g),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(j_obj,"b",script_float_to_value(col->b),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	
-	return(OBJECT_TO_JSVAL(j_obj));
+	return((JSValueRef)j_obj);
 }
