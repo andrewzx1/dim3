@@ -36,9 +36,9 @@ extern js_type			js;
 
 JSValueRef js_proj_motion_vector_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_motion_vector_get_x(void);
-JSValueRef js_proj_motion_vector_get_y(void);
-JSValueRef js_proj_motion_vector_get_z(void);
+JSValueRef js_proj_motion_vector_get_x(JSContextRef cx);
+JSValueRef js_proj_motion_vector_get_y(JSContextRef cx);
+JSValueRef js_proj_motion_vector_get_z(JSContextRef cx);
 
 script_js_property	proj_motion_vector_props[]={
 							{"x",					js_proj_motion_vector_get_x,			NULL},
@@ -91,33 +91,33 @@ bool js_proj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStri
       
 ======================================================= */
 
-JSValueRef js_proj_motion_vector_get_x(void)
+JSValueRef js_proj_motion_vector_get_x(JSContextRef cx)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_float_to_value(proj->motion.vct.x));
+	return(script_float_to_value(cx,proj->motion.vct.x));
 }
 
-JSValueRef js_proj_motion_vector_get_y(void)
+JSValueRef js_proj_motion_vector_get_y(JSContextRef cx)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_float_to_value(proj->motion.vct.y));
+	return(script_float_to_value(cx,proj->motion.vct.y));
 }
 
-JSValueRef js_proj_motion_vector_get_z(void)
+JSValueRef js_proj_motion_vector_get_z(JSContextRef cx)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_float_to_value(proj->motion.vct.z));
+	return(script_float_to_value(cx,proj->motion.vct.z));
 }
 

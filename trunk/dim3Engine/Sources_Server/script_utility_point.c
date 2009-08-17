@@ -98,15 +98,15 @@ JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	int				x,z,y,to_x,to_z,to_y,slop;
 
-	x=script_value_to_int(argv[0]);
-	z=script_value_to_int(argv[1]);
-	y=script_value_to_int(argv[2]);
-	to_x=script_value_to_int(argv[3]);
-	to_z=script_value_to_int(argv[4]);
-	to_y=script_value_to_int(argv[5]);
-	slop=script_value_to_int(argv[6]);
+	x=script_value_to_int(cx,argv[0]);
+	z=script_value_to_int(cx,argv[1]);
+	y=script_value_to_int(cx,argv[2]);
+	to_x=script_value_to_int(cx,argv[3]);
+	to_z=script_value_to_int(cx,argv[4]);
+	to_y=script_value_to_int(cx,argv[5]);
+	slop=script_value_to_int(cx,argv[6]);
 	
-	return(script_bool_to_value(!((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop)))));
+	return(script_bool_to_value(cx,!((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop)))));
 }
 
 JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -114,41 +114,41 @@ JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObj
 	int				x,z,to_x,to_z;
 	float			ang;
 	
-	x=script_value_to_int(argv[0]);
-	z=script_value_to_int(argv[1]);
-	to_x=script_value_to_int(argv[2]);
-	to_z=script_value_to_int(argv[3]);
+	x=script_value_to_int(cx,argv[0]);
+	z=script_value_to_int(cx,argv[1]);
+	to_x=script_value_to_int(cx,argv[2]);
+	to_z=script_value_to_int(cx,argv[3]);
 	
 	ang=angle_find(x,z,to_x,to_z);
-    return(script_float_to_value(ang));
+    return(script_float_to_value(cx,ang));
 }
 
 JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				dist,x,z,y,to_x,to_z,to_y;
 	
-	x=script_value_to_int(argv[0]);
-	z=script_value_to_int(argv[1]);
-	y=script_value_to_int(argv[2]);
-	to_x=script_value_to_int(argv[3]);
-	to_z=script_value_to_int(argv[4]);
-	to_y=script_value_to_int(argv[5]);
+	x=script_value_to_int(cx,argv[0]);
+	z=script_value_to_int(cx,argv[1]);
+	y=script_value_to_int(cx,argv[2]);
+	to_x=script_value_to_int(cx,argv[3]);
+	to_z=script_value_to_int(cx,argv[4]);
+	to_y=script_value_to_int(cx,argv[5]);
 
 	dist=distance_get(x,y,z,to_x,to_y,to_z);
-	return(script_int_to_value(dist));
+	return(script_int_to_value(cx,dist));
 }
 
 JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y,x2,y2;
 	
-	x=script_value_to_int(argv[0]);
-	z=script_value_to_int(argv[1]);
-	y=script_value_to_int(argv[2]);
+	x=script_value_to_int(cx,argv[0]);
+	z=script_value_to_int(cx,argv[1]);
+	y=script_value_to_int(cx,argv[2]);
 	
 	view_script_transform_3D_to_2D(x,y,z,&x2,&y2);
 
-	return(script_point_to_value(x2,y2,z));
+	return(script_point_to_value(cx,x2,y2,z));
 }
 
 

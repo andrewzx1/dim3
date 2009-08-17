@@ -33,12 +33,12 @@ and can be sold or given away.
 
 JSValueRef js_model_rotate_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_model_rotate_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_rotate_get_x(void);
-JSValueRef js_model_rotate_get_y(void);
-JSValueRef js_model_rotate_get_z(void);
-void js_model_rotate_set_x(JSValueRef vp,JSValueRef *exception);
-void js_model_rotate_set_y(JSValueRef vp,JSValueRef *exception);
-void js_model_rotate_set_z(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_rotate_get_x(JSContextRef cx);
+JSValueRef js_model_rotate_get_y(JSContextRef cx);
+JSValueRef js_model_rotate_get_z(JSContextRef cx);
+void js_model_rotate_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_rotate_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_rotate_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -93,28 +93,28 @@ bool js_model_rotate_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_model_rotate_get_x(void)
+JSValueRef js_model_rotate_get_x(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_float_to_value(draw->rot.x));
+	return(script_float_to_value(cx,draw->rot.x));
 }
 
-JSValueRef js_model_rotate_get_y(void)
+JSValueRef js_model_rotate_get_y(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_float_to_value(draw->rot.y));
+	return(script_float_to_value(cx,draw->rot.y));
 }
 
-JSValueRef js_model_rotate_get_z(void)
+JSValueRef js_model_rotate_get_z(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_float_to_value(draw->rot.z));
+	return(script_float_to_value(cx,draw->rot.z));
 }
 
 /* =======================================================
@@ -123,27 +123,27 @@ JSValueRef js_model_rotate_get_z(void)
       
 ======================================================= */
 
-void js_model_rotate_set_x(JSValueRef vp,JSValueRef *exception)
+void js_model_rotate_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->rot.x=script_value_to_float(vp);
+	draw->rot.x=script_value_to_float(cx,vp);
 }
 
-void js_model_rotate_set_y(JSValueRef vp,JSValueRef *exception)
+void js_model_rotate_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->rot.y=script_value_to_float(vp);
+	draw->rot.y=script_value_to_float(cx,vp);
 }
 
-void js_model_rotate_set_z(JSValueRef vp,JSValueRef *exception)
+void js_model_rotate_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->rot.z=script_value_to_float(vp);
+	draw->rot.z=script_value_to_float(cx,vp);
 }
 

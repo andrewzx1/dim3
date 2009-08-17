@@ -36,8 +36,8 @@ extern setup_type		setup;
 
 JSValueRef js_interface_screen_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_interface_screen_get_width(void);
-JSValueRef js_interface_screen_get_height(void);
+JSValueRef js_interface_screen_get_width(JSContextRef cx);
+JSValueRef js_interface_screen_get_height(JSContextRef cx);
 
 script_js_property	interface_screen_props[]={
 							{"width",				js_interface_screen_get_width,		NULL},
@@ -89,13 +89,12 @@ bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSString
       
 ======================================================= */
 
-JSValueRef js_interface_screen_get_width(void)
+JSValueRef js_interface_screen_get_width(JSContextRef cx)
 {
-	return(script_int_to_value(setup.screen.x_sz));
+	return(script_int_to_value(cx,setup.screen.x_sz));
 }
 
-
-JSValueRef js_interface_screen_get_height(void)
+JSValueRef js_interface_screen_get_height(JSContextRef cx)
 {
-	return(script_int_to_value(setup.screen.y_sz));
+	return(script_int_to_value(cx,setup.screen.y_sz));
 }

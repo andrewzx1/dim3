@@ -37,11 +37,11 @@ extern js_type			js;
 
 JSValueRef js_obj_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_score_get_kill(void);
-JSValueRef js_obj_score_get_death(void);
-JSValueRef js_obj_score_get_suicide(void);
-JSValueRef js_obj_score_get_goal(void);
-JSValueRef js_obj_score_get_score(void);
+JSValueRef js_obj_score_get_kill(JSContextRef cx);
+JSValueRef js_obj_score_get_death(JSContextRef cx);
+JSValueRef js_obj_score_get_suicide(JSContextRef cx);
+JSValueRef js_obj_score_get_goal(JSContextRef cx);
+JSValueRef js_obj_score_get_score(JSContextRef cx);
 JSValueRef js_obj_score_add_goal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	obj_score_props[]={
@@ -101,54 +101,44 @@ bool js_obj_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_obj_score_get_kill(void)
+JSValueRef js_obj_score_get_kill(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->score.kill);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->score.kill));
 }
 
-JSValueRef js_obj_score_get_death(void)
+JSValueRef js_obj_score_get_death(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->score.death);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->score.death));
 }
 
-JSValueRef js_obj_score_get_suicide(void)
+JSValueRef js_obj_score_get_suicide(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->score.suicide);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->score.suicide));
 }
 
-JSValueRef js_obj_score_get_goal(void)
+JSValueRef js_obj_score_get_goal(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->score.goal);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->score.goal));
 }
 
-JSValueRef js_obj_score_get_score(void)
+JSValueRef js_obj_score_get_score(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->score.score);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->score.score));
 }
 
 /* =======================================================
@@ -164,7 +154,7 @@ JSValueRef js_obj_score_add_goal_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	obj=object_find_uid(js.attach.thing_uid);
 	object_score_goal(obj);
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 

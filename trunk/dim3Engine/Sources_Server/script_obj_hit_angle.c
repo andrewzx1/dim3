@@ -37,9 +37,9 @@ extern js_type			js;
 
 JSValueRef js_obj_hit_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_hit_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_hit_angle_get_x(void);
-JSValueRef js_obj_hit_angle_get_y(void);
-JSValueRef js_obj_hit_angle_get_z(void);
+JSValueRef js_obj_hit_angle_get_x(JSContextRef cx);
+JSValueRef js_obj_hit_angle_get_y(JSContextRef cx);
+JSValueRef js_obj_hit_angle_get_z(JSContextRef cx);
 
 script_js_property	obj_hit_angle_props[]={
 							{"x",					js_obj_hit_angle_get_x,				NULL},
@@ -92,33 +92,27 @@ bool js_obj_hit_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef
       
 ======================================================= */
 
-JSValueRef js_obj_hit_angle_get_x(void)
+JSValueRef js_obj_hit_angle_get_x(JSContextRef cx)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->hit.ang.x);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->hit.ang.x));
 }
 
-JSValueRef js_obj_hit_angle_get_y(void)
+JSValueRef js_obj_hit_angle_get_y(JSContextRef cx)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->hit.ang.y);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->hit.ang.y));
 }
 
-JSValueRef js_obj_hit_angle_get_z(void)
+JSValueRef js_obj_hit_angle_get_z(JSContextRef cx)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->hit.ang.z);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->hit.ang.z));
 }
 

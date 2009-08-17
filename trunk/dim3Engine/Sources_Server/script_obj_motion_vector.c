@@ -36,9 +36,9 @@ extern js_type			js;
 
 JSValueRef js_obj_motion_vector_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_motion_vector_get_x(void);
-JSValueRef js_obj_motion_vector_get_y(void);
-JSValueRef js_obj_motion_vector_get_z(void);
+JSValueRef js_obj_motion_vector_get_x(JSContextRef cx);
+JSValueRef js_obj_motion_vector_get_y(JSContextRef cx);
+JSValueRef js_obj_motion_vector_get_z(JSContextRef cx);
 JSValueRef js_obj_motion_vector_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -123,28 +123,28 @@ bool js_obj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
       
 ======================================================= */
 
-JSValueRef js_obj_motion_vector_get_x(void)
+JSValueRef js_obj_motion_vector_get_x(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->motion.vct.x));
+	return(script_float_to_value(cx,obj->motion.vct.x));
 }
 
-JSValueRef js_obj_motion_vector_get_y(void)
+JSValueRef js_obj_motion_vector_get_y(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->motion.vct.y));
+	return(script_float_to_value(cx,obj->motion.vct.y));
 }
 
-JSValueRef js_obj_motion_vector_get_z(void)
+JSValueRef js_obj_motion_vector_get_z(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->motion.vct.z));
+	return(script_float_to_value(cx,obj->motion.vct.z));
 }
 
 /* =======================================================
@@ -160,7 +160,7 @@ JSValueRef js_obj_motion_vector_go_func(JSContextRef cx,JSObjectRef func,JSObjec
 	obj=object_find_uid(js.attach.thing_uid);
 	object_move_start(obj);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -170,7 +170,7 @@ JSValueRef js_obj_motion_vector_stop_func(JSContextRef cx,JSObjectRef func,JSObj
 	obj=object_find_uid(js.attach.thing_uid);
 	object_move_stop(obj);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -180,7 +180,7 @@ JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObj
 	obj=object_find_uid(js.attach.thing_uid);
 	object_start_jump(obj);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -194,9 +194,9 @@ JSValueRef js_obj_motion_vector_alter_speed_func(JSContextRef cx,JSObjectRef fun
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-    object_alter_speed(obj,script_value_to_float(argv[0]));
+    object_alter_speed(obj,script_value_to_float(cx,argv[0]));
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -204,9 +204,9 @@ JSValueRef js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObjectRef f
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-    object_alter_gravity(obj,script_value_to_float(argv[0]));
+    object_alter_gravity(obj,script_value_to_float(cx,argv[0]));
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -224,16 +224,16 @@ JSValueRef js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObjectRef fu
 	
 		// get node names
 		
-	script_value_to_string(argv[0],start_name,name_str_len);
-	script_value_to_string(argv[1],end_name,name_str_len);
+	script_value_to_string(cx,argv[0],start_name,name_str_len);
+	script_value_to_string(cx,argv[1],end_name,name_str_len);
 	
 		// start walk
 		
-	if (!object_auto_walk_node_name_setup(obj,start_name,end_name,script_value_to_int(argv[2]),err_str)) {
-		*exception=script_create_exception(err_str);
+	if (!object_auto_walk_node_name_setup(obj,start_name,end_name,script_value_to_int(cx,argv[2]),err_str)) {
+		*exception=script_create_exception(cx,err_str);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -242,11 +242,11 @@ JSValueRef js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObject
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	if (!object_auto_walk_node_setup(obj,script_value_to_int(argv[0]),script_value_to_int(argv[1]),script_value_to_int(argv[2]),err_str)) {
-		*exception=script_create_exception(err_str);
+	if (!object_auto_walk_node_setup(obj,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[2]),err_str)) {
+		*exception=script_create_exception(cx,err_str);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_walk_to_node_resume_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -256,10 +256,10 @@ JSValueRef js_obj_motion_vector_walk_to_node_resume_func(JSContextRef cx,JSObjec
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	if (!object_auto_walk_node_resume(obj,err_str)) {
-		*exception=script_create_exception(err_str);
+		*exception=script_create_exception(cx,err_str);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -269,10 +269,10 @@ JSValueRef js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObje
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	if (!object_auto_walk_node_reverse(obj,err_str)) {
-		*exception=script_create_exception(err_str);
+		*exception=script_create_exception(cx,err_str);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -281,11 +281,11 @@ JSValueRef js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObjectRef 
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	if (!object_auto_walk_object_setup(obj,script_value_to_int(argv[0]),FALSE,err_str)) {
-		*exception=script_create_exception(err_str);
+	if (!object_auto_walk_object_setup(obj,script_value_to_int(cx,argv[0]),FALSE,err_str)) {
+		*exception=script_create_exception(cx,err_str);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -295,10 +295,10 @@ JSValueRef js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObjectRef 
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	if (!object_auto_walk_player_setup(obj,FALSE,err_str)) {
-		*exception=script_create_exception(err_str);
+		*exception=script_create_exception(cx,err_str);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -306,14 +306,14 @@ JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRe
 	d3pnt			pnt;
 	obj_type		*obj;
 	
-	pnt.x=script_value_to_int(argv[0]);
-	pnt.z=script_value_to_int(argv[1]);
-	pnt.y=script_value_to_int(argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_auto_walk_position_setup(obj,&pnt);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -328,11 +328,11 @@ JSValueRef js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObjectRef 
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	if (!object_auto_walk_object_setup(obj,script_value_to_int(argv[0]),TRUE,err_str)) {
-		*exception=script_create_exception(err_str);
+	if (!object_auto_walk_object_setup(obj,script_value_to_int(cx,argv[0]),TRUE,err_str)) {
+		*exception=script_create_exception(cx,err_str);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -342,8 +342,8 @@ JSValueRef js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObjectRef 
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	if (!object_auto_walk_player_setup(obj,TRUE,err_str)) {
-		*exception=script_create_exception(err_str);
+		*exception=script_create_exception(cx,err_str);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }

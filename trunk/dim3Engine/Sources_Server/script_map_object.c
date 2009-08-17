@@ -170,12 +170,12 @@ JSValueRef js_map_object_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	char				name[name_str_len];
 	obj_type			*obj;
 	
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	
 	obj=object_find_name(name);
-	if (obj==NULL) return(script_int_to_value(-1));
+	if (obj==NULL) return(script_int_to_value(cx,-1));
 
-	return(script_int_to_value(obj->uid));
+	return(script_int_to_value(cx,obj->uid));
 }
 
 /* =======================================================
@@ -186,7 +186,7 @@ JSValueRef js_map_object_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 JSValueRef js_map_object_find_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	return(script_int_to_value(server.player_obj_uid));
+	return(script_int_to_value(cx,server.player_obj_uid));
 }
 
 JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -202,9 +202,9 @@ JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,
 		obj++;
 	}
 
-	if (cnt==0) return(script_null_to_value());
+	if (cnt==0) return(script_null_to_value(cx));
 
-	return(script_int_array_to_value(cnt,uids));
+	return(script_int_array_to_value(cx,cnt,uids));
 }
 
 /* =======================================================
@@ -224,23 +224,23 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 	
 		// name
 		
 	name_ptr=NULL;
-	if (!script_is_value_null(argv[3])) {
-		script_value_to_string(argv[3],name,name_str_len);
+	if (!script_is_value_null(cx,argv[3])) {
+		script_value_to_string(cx,argv[3],name,name_str_len);
 		name_ptr=name;
 	}
 	
 		// type
 		
 	type_ptr=NULL;
-	if (!script_is_value_null(argv[4])) {
-		script_value_to_string(argv[4],type,name_str_len);
+	if (!script_is_value_null(cx,argv[4])) {
+		script_value_to_string(cx,argv[4],type,name_str_len);
 		type_ptr=type;
 	}
 
@@ -248,20 +248,20 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	ang=-1;
 	ang_sweep=360;
-	if (!script_is_value_null(argv[5])) ang=script_value_to_float(argv[5]);
-	if (!script_is_value_null(argv[6])) ang_sweep=script_value_to_float(argv[6]);
+	if (!script_is_value_null(cx,argv[5])) ang=script_value_to_float(cx,argv[5]);
+	if (!script_is_value_null(cx,argv[6])) ang_sweep=script_value_to_float(cx,argv[6]);
 	
 		// distances
 		
-	min_dist=script_value_to_int(argv[7]);
-	max_dist=script_value_to_int(argv[8]);
+	min_dist=script_value_to_int(cx,argv[7]);
+	max_dist=script_value_to_int(cx,argv[8]);
 	
 		// find object
 
 	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
-	if (obj==NULL) return(script_int_to_value(-1));
+	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(obj->uid));
+	return(script_int_to_value(cx,obj->uid));
 }
 
 JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -275,23 +275,23 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 	
 		// name
 		
 	name_ptr=NULL;
-	if (!script_is_value_null(argv[3])) {
-		script_value_to_string(argv[3],name,name_str_len);
+	if (!script_is_value_null(cx,argv[3])) {
+		script_value_to_string(cx,argv[3],name,name_str_len);
 		name_ptr=name;
 	}
 	
 		// type
 		
 	type_ptr=NULL;
-	if (!script_is_value_null(argv[4])) {
-		script_value_to_string(argv[4],type,name_str_len);
+	if (!script_is_value_null(cx,argv[4])) {
+		script_value_to_string(cx,argv[4],type,name_str_len);
 		type_ptr=type;
 	}
 
@@ -299,20 +299,20 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	
 	ang=-1;
 	ang_sweep=360;
-	if (!script_is_value_null(argv[5])) ang=script_value_to_float(argv[5]);
-	if (!script_is_value_null(argv[6])) ang_sweep=script_value_to_float(argv[6]);
+	if (!script_is_value_null(cx,argv[5])) ang=script_value_to_float(cx,argv[5]);
+	if (!script_is_value_null(cx,argv[6])) ang_sweep=script_value_to_float(cx,argv[6]);
 	
 		// distances
 		
-	min_dist=script_value_to_int(argv[7]);
-	max_dist=script_value_to_int(argv[8]);
+	min_dist=script_value_to_int(cx,argv[7]);
+	max_dist=script_value_to_int(cx,argv[8]);
 	
 		// find object
 
-	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,script_value_to_int(argv[9]));
-	if (obj==NULL) return(script_int_to_value(-1));
+	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,script_value_to_int(cx,argv[9]));
+	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(obj->uid));
+	return(script_int_to_value(cx,obj->uid));
 }
 
 JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -324,28 +324,28 @@ JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JS
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 
 		// angle and sweep
 	
 	ang=-1;
 	ang_sweep=360;
-	if (!script_is_value_null(argv[3])) ang=script_value_to_float(argv[3]);
-	if (!script_is_value_null(argv[4])) ang_sweep=script_value_to_float(argv[4]);
+	if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
+	if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
 	
 		// distances
 		
-	min_dist=script_value_to_int(argv[5]);
-	max_dist=script_value_to_int(argv[6]);
+	min_dist=script_value_to_int(cx,argv[5]);
+	max_dist=script_value_to_int(cx,argv[6]);
 	
 		// find object
 
 	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,-1);
-	if (obj==NULL) return(script_int_to_value(-1));
+	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(obj->uid));
+	return(script_int_to_value(cx,obj->uid));
 }
 
 JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -357,28 +357,28 @@ JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSOb
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 
 		// angle and sweep
 	
 	ang=-1;
 	ang_sweep=360;
-	if (!script_is_value_null(argv[3])) ang=script_value_to_float(argv[3]);
-	if (!script_is_value_null(argv[4])) ang_sweep=script_value_to_float(argv[4]);
+	if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
+	if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
 	
 		// distances
 		
-	min_dist=script_value_to_int(argv[5]);
-	max_dist=script_value_to_int(argv[6]);
+	min_dist=script_value_to_int(cx,argv[5]);
+	max_dist=script_value_to_int(cx,argv[6]);
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,script_value_to_int(argv[7]));
-	if (obj==NULL) return(script_int_to_value(-1));
+	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,script_value_to_int(cx,argv[7]));
+	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(obj->uid));
+	return(script_int_to_value(cx,obj->uid));
 }
 
 JSValueRef js_map_object_nearest_remote_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -390,28 +390,28 @@ JSValueRef js_map_object_nearest_remote_player_func(JSContextRef cx,JSObjectRef 
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 
 		// angle and sweep
 	
 	ang=-1;
 	ang_sweep=360;
-	if (!script_is_value_null(argv[3])) ang=script_value_to_float(argv[3]);
-	if (!script_is_value_null(argv[4])) ang_sweep=script_value_to_float(argv[4]);
+	if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
+	if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
 	
 		// distances
 		
-	min_dist=script_value_to_int(argv[5]);
-	max_dist=script_value_to_int(argv[6]);
+	min_dist=script_value_to_int(cx,argv[5]);
+	max_dist=script_value_to_int(cx,argv[6]);
 	
 		// find object
 
 	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,TRUE,-1);
-	if (obj==NULL) return(script_int_to_value(-1));
+	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(obj->uid));
+	return(script_int_to_value(cx,obj->uid));
 }
 
 JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -423,32 +423,32 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 	
 		// team
 		
-	team_idx=script_value_to_int(argv[3])-sd_team_none;
+	team_idx=script_value_to_int(cx,argv[3])-sd_team_none;
 
 		// angle and sweep
 	
 	ang=-1;
 	ang_sweep=360;
-	if (!script_is_value_null(argv[4])) ang=script_value_to_float(argv[4]);
-	if (!script_is_value_null(argv[5])) ang_sweep=script_value_to_float(argv[5]);
+	if (!script_is_value_null(cx,argv[4])) ang=script_value_to_float(cx,argv[4]);
+	if (!script_is_value_null(cx,argv[5])) ang_sweep=script_value_to_float(cx,argv[5]);
 	
 		// distances
 		
-	min_dist=script_value_to_int(argv[6]);
-	max_dist=script_value_to_int(argv[7]);
+	min_dist=script_value_to_int(cx,argv[6]);
+	max_dist=script_value_to_int(cx,argv[7]);
 	
 		// find object
 
 	obj=object_find_nearest(&pt,NULL,NULL,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
-	if (obj==NULL) return(script_int_to_value(-1));
+	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(obj->uid));
+	return(script_int_to_value(cx,obj->uid));
 }
 
 /* =======================================================
@@ -463,10 +463,10 @@ JSValueRef js_map_object_get_name_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
-	return(script_string_to_value(obj->name));
+	return(script_string_to_value(cx,obj->name));
 }
 
 JSValueRef js_map_object_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -475,20 +475,20 @@ JSValueRef js_map_object_get_type_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
-	return(script_string_to_value(obj->type));
+	return(script_string_to_value(cx,obj->type));
 }
 
 JSValueRef js_map_object_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
-	return(script_int_to_value(obj->team_idx+sd_team_none));
+	return(script_int_to_value(cx,obj->team_idx+sd_team_none));
 }
 
 JSValueRef js_map_object_get_team_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -496,11 +496,11 @@ JSValueRef js_map_object_get_team_name_func(JSContextRef cx,JSObjectRef func,JSO
 	char			str[32];
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 	object_team_get_name(obj->team_idx,str);
-	return(script_string_to_value(str));
+	return(script_string_to_value(cx,str));
 }
 
 JSValueRef js_map_object_get_team_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -508,12 +508,12 @@ JSValueRef js_map_object_get_team_color_func(JSContextRef cx,JSObjectRef func,JS
 	d3col			col;
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 	object_team_get_tint(obj->team_idx,&col);
 
-	return(script_color_to_value(&col));
+	return(script_color_to_value(cx,&col));
 }
 
 /* =======================================================
@@ -529,18 +529,18 @@ JSValueRef js_map_object_get_distance_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
-	x=script_value_to_int(argv[1]);
-	z=script_value_to_int(argv[2]);
-	y=script_value_to_int(argv[3]);
+	x=script_value_to_int(cx,argv[1]);
+	z=script_value_to_int(cx,argv[2]);
+	y=script_value_to_int(cx,argv[3]);
 	
 		// get distance
 		
-	return(script_int_to_value(distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,x,y,z)));
+	return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,x,y,z)));
 }
 
 JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -551,14 +551,14 @@ JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
 		// x,z,y
 		
-	x=script_value_to_int(argv[1]);
-	z=script_value_to_int(argv[2]);
-	y=script_value_to_int(argv[3]);
+	x=script_value_to_int(cx,argv[1]);
+	z=script_value_to_int(cx,argv[2]);
+	y=script_value_to_int(cx,argv[3]);
 	
 		// get angles to
 		
@@ -566,7 +566,7 @@ JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSOb
 	ang_y=angle_find(x,z,obj->pnt.x,obj->pnt.z);
 	ang_z=angle_find(x,y,obj->pnt.x,obj->pnt.y);
 		
-	return(script_angle_to_value(ang_x,ang_y,ang_z));
+	return(script_angle_to_value(cx,ang_x,ang_y,ang_z));
 }
 
 JSValueRef js_map_object_get_angle_to_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -576,11 +576,11 @@ JSValueRef js_map_object_get_angle_to_id_func(JSContextRef cx,JSObjectRef func,J
 	
 		// uids
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
-	obj2=script_find_obj_from_uid_arg(argv[1],exception);
-	if (obj2==NULL) return(script_null_to_value());
+	obj2=script_find_obj_from_uid_arg(cx,argv[1],exception);
+	if (obj2==NULL) return(script_null_to_value(cx));
 	
 		// get angles to
 		
@@ -588,7 +588,7 @@ JSValueRef js_map_object_get_angle_to_id_func(JSContextRef cx,JSObjectRef func,J
 	ang_y=angle_find(obj2->pnt.x,obj2->pnt.z,obj->pnt.x,obj->pnt.z);
 	ang_z=angle_find(obj2->pnt.x,obj2->pnt.y,obj->pnt.x,obj->pnt.y);
 		
-	return(script_angle_to_value(ang_x,ang_y,ang_z));
+	return(script_angle_to_value(cx,ang_x,ang_y,ang_z));
 }
 
 /* =======================================================
@@ -605,18 +605,18 @@ JSValueRef js_map_object_is_facing_id_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// uids
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
-	obj2=script_find_obj_from_uid_arg(argv[1],exception);
-	if (obj2==NULL) return(script_null_to_value());
+	obj2=script_find_obj_from_uid_arg(cx,argv[1],exception);
+	if (obj2==NULL) return(script_null_to_value(cx));
 	
 		// get angles to
 		
 	ang_y=angle_find(obj->pnt.x,obj->pnt.z,obj2->pnt.x,obj2->pnt.z);
 
 	ang_dif=angle_dif(ang_y,obj->ang.y,&cwise);
-	return(script_bool_to_value(ang_dif<script_value_to_float(argv[2])));
+	return(script_bool_to_value(cx,ang_dif<script_value_to_float(cx,argv[2])));
 }
 
 /* =======================================================
@@ -631,12 +631,12 @@ JSValueRef js_map_object_get_position_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 		// get position
 		
-	return(script_point_to_value(obj->pnt.x,obj->pnt.y,obj->pnt.z));
+	return(script_point_to_value(cx,obj->pnt.x,obj->pnt.y,obj->pnt.z));
 }
 
 JSValueRef js_map_object_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -645,12 +645,12 @@ JSValueRef js_map_object_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 		// get angle
 		
-	return(script_angle_to_value(obj->ang.x,obj->ang.y,obj->ang.z));
+	return(script_angle_to_value(cx,obj->ang.x,obj->ang.y,obj->ang.z));
 }
 
 JSValueRef js_map_object_get_size_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -659,12 +659,12 @@ JSValueRef js_map_object_get_size_func(JSContextRef cx,JSObjectRef func,JSObject
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 		// get size
 		
-	return(script_point_to_value(obj->size.x,obj->size.y,obj->size.z));
+	return(script_point_to_value(cx,obj->size.x,obj->size.y,obj->size.z));
 }
 
 JSValueRef js_map_object_get_health_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -673,72 +673,72 @@ JSValueRef js_map_object_get_health_func(JSContextRef cx,JSObjectRef func,JSObje
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 		// get size
 		
-	return(script_int_to_value(obj->status.health));
+	return(script_int_to_value(cx,obj->status.health));
 }
 
 JSValueRef js_map_object_is_dead_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_bool_to_value(obj->status.health<=0));
+	return(script_bool_to_value(cx,obj->status.health<=0));
 }
 
 JSValueRef js_map_object_is_hidden_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_bool_to_value(obj->hidden));
+	return(script_bool_to_value(cx,obj->hidden));
 }
 
 JSValueRef js_map_object_is_contact_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_bool_to_value((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on)));
+	return(script_bool_to_value(cx,(obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on)));
 }
 
 JSValueRef js_map_object_is_max_health_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_bool_to_value(obj->status.health>=obj->status.max_health));
+	return(script_bool_to_value(cx,obj->status.health>=obj->status.max_health));
 }
 
 JSValueRef js_map_object_get_last_damage_object_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_int_to_value(obj->damage_obj_uid));
+	return(script_int_to_value(cx,obj->damage_obj_uid));
 }
 
 JSValueRef js_map_object_was_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_bool_to_value(obj->death_telefrag));
+	return(script_bool_to_value(cx,obj->death_telefrag));
 }
 
 /* =======================================================
@@ -753,15 +753,15 @@ JSValueRef js_map_object_move_to_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
 		// reposition
 
-	object_set_position(obj,script_value_to_int(argv[1]),script_value_to_int(argv[3]),script_value_to_int(argv[2]),script_value_to_float(argv[4]),0);
+	object_set_position(obj,script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[3]),script_value_to_int(cx,argv[2]),script_value_to_float(cx,argv[4]),0);
 	object_telefrag_players(obj,FALSE);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_object_shove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -772,21 +772,21 @@ JSValueRef js_map_object_shove_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 		// get angle
 		
-	ang.x=script_value_to_float(argv[1]);
-	ang.z=script_value_to_float(argv[2]);
-	ang.y=script_value_to_float(argv[3]);
+	ang.x=script_value_to_float(cx,argv[1]);
+	ang.z=script_value_to_float(cx,argv[2]);
+	ang.y=script_value_to_float(cx,argv[3]);
 	
-	speed=script_value_to_float(argv[4]);
+	speed=script_value_to_float(cx,argv[4]);
 	
 		// shove object
 		
 	object_shove(obj,&ang,speed);
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_object_shove_direct_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -796,19 +796,19 @@ JSValueRef js_map_object_shove_direct_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// uid
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
 		// get direction
 		
-	vct.x=script_value_to_float(argv[1]);
-	vct.z=script_value_to_float(argv[2]);
-	vct.y=script_value_to_float(argv[3]);
+	vct.x=script_value_to_float(cx,argv[1]);
+	vct.z=script_value_to_float(cx,argv[2]);
+	vct.y=script_value_to_float(cx,argv[3]);
 	
 		// shove object
 		
 	object_shove_direct(obj,&vct);
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -821,10 +821,10 @@ JSValueRef js_map_object_add_goal_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) object_score_goal(obj);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -838,26 +838,26 @@ JSValueRef js_map_object_set_contact_func(JSContextRef cx,JSObjectRef func,JSObj
 	bool			on;
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) {
-		on=script_value_to_bool(argv[1]);
+		on=script_value_to_bool(cx,argv[1]);
 
 		obj->contact.object_on=on;
 		obj->contact.projectile_on=on;
 		obj->contact.force_on=on;
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_object_set_hidden_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj!=NULL) obj->hidden=script_value_to_bool(argv[1]);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj!=NULL) obj->hidden=script_value_to_bool(cx,argv[1]);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_object_set_model_light_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -865,13 +865,13 @@ JSValueRef js_map_object_set_model_light_func(JSContextRef cx,JSObjectRef func,J
 	int					idx;
 	obj_type			*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) {
-		idx=script_value_to_int(argv[1]);
-		if ((idx>=0) && (idx<max_model_light)) obj->draw.lights[idx].on=script_value_to_bool(argv[2]);
+		idx=script_value_to_int(cx,argv[1]);
+		if ((idx>=0) && (idx<max_model_light)) obj->draw.lights[idx].on=script_value_to_bool(cx,argv[2]);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_object_set_model_halo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -879,13 +879,13 @@ JSValueRef js_map_object_set_model_halo_func(JSContextRef cx,JSObjectRef func,JS
 	int					idx;
 	obj_type			*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) {
-		idx=script_value_to_int(argv[1]);
-		if ((idx>=0) && (idx<max_model_halo)) obj->draw.halos[idx].on=script_value_to_bool(argv[2]);
+		idx=script_value_to_int(cx,argv[1]);
+		if ((idx>=0) && (idx<max_model_halo)) obj->draw.halos[idx].on=script_value_to_bool(cx,argv[2]);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -894,21 +894,21 @@ JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JS
 	char				name[name_str_len];
 	obj_type			*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
-	script_value_to_string(argv[1],name,name_str_len);
+	script_value_to_string(cx,argv[1],name,name_str_len);
 	idx=model_find_mesh_from_draw(&obj->draw,name);
-	if (idx==-1) return(script_null_to_value());
+	if (idx==-1) return(script_null_to_value(cx));
 
-	if (script_value_to_bool(argv[2])) {
+	if (script_value_to_bool(cx,argv[2])) {
 		obj->draw.mesh_mask|=(0x1<<idx);
 	}
 	else {
 		obj->draw.mesh_mask&=((0x1<<idx)^0xFF);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -927,30 +927,30 @@ JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 		// spawn values
 
-	script_value_to_string(argv[0],name,name_str_len);
-	script_value_to_string(argv[1],type,name_str_len);
-	script_value_to_string(argv[2],script,name_str_len);
-	script_value_to_string(argv[3],params,256);
+	script_value_to_string(cx,argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[1],type,name_str_len);
+	script_value_to_string(cx,argv[2],script,name_str_len);
+	script_value_to_string(cx,argv[3],params,256);
 
-	pnt.x=script_value_to_int(argv[4]);
-	pnt.z=script_value_to_int(argv[5]);
-	pnt.y=script_value_to_int(argv[6]);
+	pnt.x=script_value_to_int(cx,argv[4]);
+	pnt.z=script_value_to_int(cx,argv[5]);
+	pnt.y=script_value_to_int(cx,argv[6]);
 
-	ang.x=script_value_to_float(argv[7]);
-	ang.z=script_value_to_float(argv[8]);
-	ang.y=script_value_to_float(argv[9]);
+	ang.x=script_value_to_float(cx,argv[7]);
+	ang.z=script_value_to_float(cx,argv[8]);
+	ang.y=script_value_to_float(cx,argv[9]);
 
 		// spawn
 
 	uid=object_script_spawn(name,type,script,params,&pnt,&ang,FALSE,err_str);
 	if (uid==-1) {
-		*exception=script_create_exception(err_str);
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
 	}
 
 		// return UID
 
-	return(script_int_to_value(uid));
+	return(script_int_to_value(cx,uid));
 }
 
 JSValueRef js_map_object_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -959,15 +959,15 @@ JSValueRef js_map_object_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	char			err_str[256];
 	obj_type		*obj;
 
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(script_null_to_value());
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
 	uid=obj->uid;
 
 	if (!object_script_remove(uid,err_str)) {
-		*exception=script_create_exception(err_str);
+		*exception=script_create_exception(cx,err_str);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

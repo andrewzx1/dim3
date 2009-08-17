@@ -39,14 +39,14 @@ extern js_type			js;
       
 ======================================================= */
 
-inline JSValueRef script_null_to_value(void)
+inline JSValueRef script_null_to_value(JSContextRef cx)
 {
-	return(JSValueMakeNull(js.cx));
+	return(JSValueMakeNull(cx));
 }
 
-inline bool script_is_value_null(JSValueRef val)
+inline bool script_is_value_null(JSContextRef cx,JSValueRef val)
 {
-	return(JSValueIsNull(js.cx,val));
+	return(JSValueIsNull(cx,val));
 }
 
 /* =======================================================
@@ -55,14 +55,14 @@ inline bool script_is_value_null(JSValueRef val)
       
 ======================================================= */
 
-inline int script_value_to_int(JSValueRef val)
+inline int script_value_to_int(JSContextRef cx,JSValueRef val)
 {
-	return((int)JSValueToNumber(js.cx,val,NULL));
+	return((int)JSValueToNumber(cx,val,NULL));
 }
 
-inline JSValueRef script_int_to_value(int i)
+inline JSValueRef script_int_to_value(JSContextRef cx,int i)
 {
-	return(JSValueMakeNumber(js.cx,(float)i));
+	return(JSValueMakeNumber(cx,(float)i));
 }
 
 /* =======================================================
@@ -71,14 +71,14 @@ inline JSValueRef script_int_to_value(int i)
       
 ======================================================= */
 
-inline float script_value_to_float(JSValueRef val)
+inline float script_value_to_float(JSContextRef cx,JSValueRef val)
 {
-	return((float)JSValueToNumber(js.cx,val,NULL));
+	return((float)JSValueToNumber(cx,val,NULL));
 }
 
-inline JSValueRef script_float_to_value(float f)
+inline JSValueRef script_float_to_value(JSContextRef cx,float f)
 {
-	return(JSValueMakeNumber(js.cx,(double)f));
+	return(JSValueMakeNumber(cx,(double)f));
 }
 
 /* =======================================================
@@ -87,14 +87,14 @@ inline JSValueRef script_float_to_value(float f)
       
 ======================================================= */
 
-inline bool script_value_to_bool(JSValueRef val)
+inline bool script_value_to_bool(JSContextRef cx,JSValueRef val)
 {
-	return(JSValueToBoolean(js.cx,val));
+	return(JSValueToBoolean(cx,val));
 }
 
-inline JSValueRef script_bool_to_value(bool b)
+inline JSValueRef script_bool_to_value(JSContextRef cx,bool b)
 {
-	return(JSValueMakeBoolean(js.cx,b));
+	return(JSValueMakeBoolean(cx,b));
 }
 
 /* =======================================================
@@ -103,11 +103,11 @@ inline JSValueRef script_bool_to_value(bool b)
       
 ======================================================= */
 
-void script_value_to_string(JSValueRef val,char *str,int len)
+void script_value_to_string(JSContextRef cx,JSValueRef val,char *str,int len)
 {
 	JSStringRef		js_str;
 
-	js_str=JSValueToStringCopy(js.cx,val,NULL);
+	js_str=JSValueToStringCopy(cx,val,NULL);
 	if (js_str==NULL) {
 		str[0]=0x0;
 		return;
@@ -119,12 +119,12 @@ void script_value_to_string(JSValueRef val,char *str,int len)
 	str[len-1]=0x0;
 }
 
-JSValueRef script_string_to_value(char *str)
+JSValueRef script_string_to_value(JSContextRef cx,char *str)
 {
 	JSStringRef		js_str;
 
 	js_str=JSStringCreateWithUTF8CString(str);
-	return(JSValueMakeString(js.cx,js_str));
+	return(JSValueMakeString(cx,js_str));
 }
 
 /* =======================================================
@@ -133,7 +133,7 @@ JSValueRef script_string_to_value(char *str)
       
 ======================================================= */
 
-JSValueRef script_int_array_to_value(int cnt,int *values)
+JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values)
 {
 	int				n;
 	JSObjectRef		array_proto_obj,j_obj;
@@ -150,18 +150,18 @@ JSValueRef script_int_array_to_value(int cnt,int *values)
 	script=&js.scripts[scripts_find_uid(js.attach.script_uid)];
 	
 	array_name=JSStringCreateWithUTF8CString("Array");
-	array_val=JSObjectGetProperty(js.cx,script->global,array_name,NULL);
-	array_proto_obj=JSValueToObject(js.cx,array_val,NULL);
+	array_val=JSObjectGetProperty(cx,script->global_obj,array_name,NULL);
+	array_proto_obj=JSValueToObject(cx,array_val,NULL);
 	JSStringRelease(array_name);
 
 		// create object
 
-	j_obj=JSObjectCallAsConstructor(js.cx,array_proto_obj,0,NULL,NULL);
+	j_obj=JSObjectCallAsConstructor(cx,array_proto_obj,0,NULL,NULL);
 
 		// create values
 
 	for (n=0;n!=cnt;n++) {
-		JSObjectSetPropertyAtIndex(js.cx,j_obj,n,script_int_to_value(values[n]),NULL);
+		JSObjectSetPropertyAtIndex(cx,j_obj,n,script_int_to_value(cx,values[n]),NULL);
 	}
 
 	return((JSValueRef)j_obj);
@@ -173,22 +173,22 @@ JSValueRef script_int_array_to_value(int cnt,int *values)
       
 ======================================================= */
 
-JSValueRef script_create_exception(char *str)
+JSValueRef script_create_exception(JSContextRef cx,char *str)
 {
 	JSObjectRef			ex_obj;
 
-	ex_obj=JSObjectMake(js.cx,NULL,NULL);
-	script_set_single_property(ex_obj,"message",script_string_to_value(str),kJSPropertyAttributeNone);
+	ex_obj=JSObjectMake(cx,NULL,NULL);
+	script_set_single_property(cx,ex_obj,"message",script_string_to_value(cx,str),kJSPropertyAttributeNone);
 
 	return((JSValueRef)ex_obj);
 }
 
-void script_exception_to_string(JSValueRef ex_val,char *str,int len)
+void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int len)
 {
 	JSObjectRef			ex_obj;
 	JSValueRef			msg;
 
-	ex_obj=JSValueToObject(js.cx,ex_val,NULL);
+	ex_obj=JSValueToObject(cx,ex_val,NULL);
 
 		// get line number
 
@@ -196,13 +196,13 @@ void script_exception_to_string(JSValueRef ex_val,char *str,int len)
 
 		// get message
 
-	msg=script_get_single_property(ex_obj,"message");
+	msg=script_get_single_property(cx,ex_obj,"message");
 	if (msg==NULL) {
 		strncpy(str,"Unknown Error",len);
 		str[len-1]=0x0;
 	}
 	else {
-		script_value_to_string(msg,str,len);
+		script_value_to_string(cx,msg,str,len);
 	}
 }
 
@@ -212,41 +212,41 @@ void script_exception_to_string(JSValueRef ex_val,char *str,int len)
       
 ======================================================= */
 
-JSValueRef script_angle_to_value(float x,float y,float z)
+JSValueRef script_angle_to_value(JSContextRef cx,float x,float y,float z)
 {
 	JSObjectRef		j_obj;
 
-	j_obj=JSObjectMake(js.cx,NULL,NULL);
+	j_obj=JSObjectMake(cx,NULL,NULL);
 
-	script_set_single_property(j_obj,"x",script_float_to_value(x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(j_obj,"y",script_float_to_value(y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(j_obj,"z",script_float_to_value(z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"x",script_float_to_value(cx,x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"y",script_float_to_value(cx,y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"z",script_float_to_value(cx,z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	
 	return((JSValueRef)j_obj);
 }
 
-JSValueRef script_point_to_value(int x,int y,int z)
+JSValueRef script_point_to_value(JSContextRef cx,int x,int y,int z)
 {
 	JSObjectRef		j_obj;
 
-	j_obj=JSObjectMake(js.cx,NULL,NULL);
+	j_obj=JSObjectMake(cx,NULL,NULL);
 
-	script_set_single_property(j_obj,"x",script_int_to_value(x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(j_obj,"y",script_int_to_value(y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(j_obj,"z",script_int_to_value(z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"x",script_int_to_value(cx,x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"y",script_int_to_value(cx,y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"z",script_int_to_value(cx,z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	
 	return((JSValueRef)j_obj);
 }
 
-JSValueRef script_color_to_value(d3col *col)
+JSValueRef script_color_to_value(JSContextRef cx,d3col *col)
 {
 	JSObjectRef		j_obj;
 
-	j_obj=JSObjectMake(js.cx,NULL,NULL);
+	j_obj=JSObjectMake(cx,NULL,NULL);
 
-	script_set_single_property(j_obj,"r",script_float_to_value(col->r),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(j_obj,"g",script_float_to_value(col->g),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(j_obj,"b",script_float_to_value(col->b),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"r",script_float_to_value(cx,col->r),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"g",script_float_to_value(cx,col->g),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"b",script_float_to_value(cx,col->b),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	
 	return((JSValueRef)j_obj);
 }

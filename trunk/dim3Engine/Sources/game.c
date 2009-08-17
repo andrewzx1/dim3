@@ -37,6 +37,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "scripts.h"
 
+extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;

@@ -105,20 +105,20 @@ JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectR
 		// clients can not set maps
 		
 	if (net_setup.client.joined) {
-		*exception=script_create_exception("setMap() illegal for client games");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"setMap() illegal for client games");
+		return(script_null_to_value(cx));
 	}
 	
 		// set the map
 		
-	script_value_to_string(argv[0],map.info.name,name_str_len);
-	script_value_to_string(argv[1],map.info.player_start_name,name_str_len);
-	script_value_to_string(argv[2],map.info.player_start_type,name_str_len);
+	script_value_to_string(cx,argv[0],map.info.name,name_str_len);
+	script_value_to_string(cx,argv[1],map.info.player_start_name,name_str_len);
+	script_value_to_string(cx,argv[2],map.info.player_start_type,name_str_len);
 	map.info.in_load=FALSE;
 
 	server.map_change=TRUE;
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -126,8 +126,8 @@ JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSOb
 		// clients can not set maps
 
 	if (!net_setup.client.joined) {
-		*exception=script_create_exception("setHostMap() illegal for normal games");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"setHostMap() illegal for normal games");
+		return(script_null_to_value(cx));
 	}
 
 		// set the map
@@ -139,7 +139,7 @@ JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSOb
 
 	server.map_change=TRUE;
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -147,8 +147,8 @@ JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObj
 		// clients can not restart maps
 		
 	if (net_setup.client.joined) {
-		*exception=script_create_exception("restartMap() illegal for client games");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"restartMap() illegal for client games");
+		return(script_null_to_value(cx));
 	}
 	
 		// use the last values to restart
@@ -156,7 +156,7 @@ JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObj
 	server.map_change=TRUE;
 	server.skip_media=TRUE;
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -166,8 +166,8 @@ JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef 
 		// clients can not restart maps from saves
 		
 	if (net_setup.host.hosting) {
-		*exception=script_create_exception("restartMapFromSave() illegal for client games");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"restartMapFromSave() illegal for client games");
+		return(script_null_to_value(cx));
 	}
 	
 		// if no save game file, restart from map
@@ -175,19 +175,19 @@ JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef 
 	if (!game_file_reload_ok()) {
 		server.map_change=TRUE;
 		server.skip_media=TRUE;
-		return(script_null_to_value());
+		return(script_null_to_value(cx));
 	}
 	
 		// else reload
 	
 	if (!game_file_reload(err_str)) {
 		sprintf(err_str_2,"Reload failed (%s)",err_str);
-		*exception=script_create_exception(err_str_2);
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,err_str_2);
+		return(script_null_to_value(cx));
 	}
 	
 	game_time_pause_end();			// loaded files are in paused mode
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

@@ -37,12 +37,12 @@ extern js_type			js;
 
 JSValueRef js_camera_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_camera_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_camera_angle_get_x(void);
-JSValueRef js_camera_angle_get_y(void);
-JSValueRef js_camera_angle_get_z(void);
-void js_camera_angle_set_x(JSValueRef vp,JSValueRef *exception);
-void js_camera_angle_set_y(JSValueRef vp,JSValueRef *exception);
-void js_camera_angle_set_z(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_angle_get_x(JSContextRef cx);
+JSValueRef js_camera_angle_get_y(JSContextRef cx);
+JSValueRef js_camera_angle_get_z(JSContextRef cx);
+void js_camera_angle_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_camera_angle_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_camera_angle_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	camera_angle_props[]={
 							{"x",					js_camera_angle_get_x,		js_camera_angle_set_x},
@@ -95,19 +95,19 @@ bool js_camera_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_camera_angle_get_x(void)
+JSValueRef js_camera_angle_get_x(JSContextRef cx)
 {
-	return(script_float_to_value(camera.ang.x));
+	return(script_float_to_value(cx,camera.ang.x));
 }
 
-JSValueRef js_camera_angle_get_y(void)
+JSValueRef js_camera_angle_get_y(JSContextRef cx)
 {
-	return(script_float_to_value(camera.ang.y));
+	return(script_float_to_value(cx,camera.ang.y));
 }
 
-JSValueRef js_camera_angle_get_z(void)
+JSValueRef js_camera_angle_get_z(JSContextRef cx)
 {
-	return(script_float_to_value(camera.ang.z));
+	return(script_float_to_value(cx,camera.ang.z));
 }
 
 /* =======================================================
@@ -116,18 +116,18 @@ JSValueRef js_camera_angle_get_z(void)
       
 ======================================================= */
 
-void js_camera_angle_set_x(JSValueRef vp,JSValueRef *exception)
+void js_camera_angle_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.x=script_value_to_float(vp);
+	camera.ang.x=script_value_to_float(cx,vp);
 }
 
-void js_camera_angle_set_y(JSValueRef vp,JSValueRef *exception)
+void js_camera_angle_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.y=script_value_to_float(vp);
+	camera.ang.y=script_value_to_float(cx,vp);
 }
 
-void js_camera_angle_set_z(JSValueRef vp,JSValueRef *exception)
+void js_camera_angle_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.z=script_value_to_float(vp);
+	camera.ang.z=script_value_to_float(cx,vp);
 }
 

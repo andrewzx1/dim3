@@ -36,9 +36,9 @@ extern js_type			js;
 
 JSValueRef js_obj_touch_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_touch_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_touch_position_get_x(void);
-JSValueRef js_obj_touch_position_get_y(void);
-JSValueRef js_obj_touch_position_get_z(void);
+JSValueRef js_obj_touch_position_get_x(JSContextRef cx);
+JSValueRef js_obj_touch_position_get_y(JSContextRef cx);
+JSValueRef js_obj_touch_position_get_z(JSContextRef cx);
 
 script_js_property	obj_touch_position_props[]={
 							{"x",					js_obj_touch_position_get_x,			NULL},
@@ -91,32 +91,26 @@ bool js_obj_touch_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStri
       
 ======================================================= */
 
-JSValueRef js_obj_touch_position_get_x(void)
+JSValueRef js_obj_touch_position_get_x(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->touch.pnt.x);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->touch.pnt.x));
 }
 
-JSValueRef js_obj_touch_position_get_y(void)
+JSValueRef js_obj_touch_position_get_y(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->touch.pnt.y);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->touch.pnt.y));
 }
 
-JSValueRef js_obj_touch_position_get_z(void)
+JSValueRef js_obj_touch_position_get_z(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->touch.pnt.z);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->touch.pnt.z));
 }

@@ -36,9 +36,9 @@ extern js_type			js;
 
 JSValueRef js_obj_touch_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_touch_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_touch_angle_get_x(void);
-JSValueRef js_obj_touch_angle_get_y(void);
-JSValueRef js_obj_touch_angle_get_z(void);
+JSValueRef js_obj_touch_angle_get_x(JSContextRef cx);
+JSValueRef js_obj_touch_angle_get_y(JSContextRef cx);
+JSValueRef js_obj_touch_angle_get_z(JSContextRef cx);
 
 script_js_property	obj_touch_angle_props[]={
 							{"x",					js_obj_touch_angle_get_x,				NULL},
@@ -91,33 +91,27 @@ bool js_obj_touch_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_obj_touch_angle_get_x(void)
+JSValueRef js_obj_touch_angle_get_x(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->touch.ang.x);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->touch.ang.x));
 }
 
-JSValueRef js_obj_touch_angle_get_y(void)
+JSValueRef js_obj_touch_angle_get_y(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->touch.ang.y);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->touch.ang.y));
 }
 
-JSValueRef js_obj_touch_angle_get_z(void)
+JSValueRef js_obj_touch_angle_get_z(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->touch.ang.z);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->touch.ang.z));
 }
 

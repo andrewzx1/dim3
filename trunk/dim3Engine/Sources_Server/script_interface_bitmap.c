@@ -111,120 +111,120 @@ JSValueRef js_interface_bitmap_show_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
 		bitmap->show=TRUE;
 		bitmap->show_tick=js.time.current_tick;		// use to synch animations with shows
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_hide_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) bitmap->show=FALSE;
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_hide_all_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmaps_hide_all();
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
-		bitmap->x=script_value_to_int(argv[1]);
-		bitmap->y=script_value_to_int(argv[2]);
+		bitmap->x=script_value_to_int(cx,argv[1]);
+		bitmap->y=script_value_to_int(cx,argv[2]);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_move_relative_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
-		bitmap->x+=script_value_to_int(argv[1]);
-		bitmap->y+=script_value_to_int(argv[2]);
+		bitmap->x+=script_value_to_int(cx,argv[1]);
+		bitmap->y+=script_value_to_int(cx,argv[2]);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
-		bitmap->x_size=script_value_to_int(argv[1]);
-		bitmap->y_size=script_value_to_int(argv[2]);
+		bitmap->x_size=script_value_to_int(cx,argv[1]);
+		bitmap->y_size=script_value_to_int(cx,argv[2]);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_set_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
-	if (bitmap!=NULL) bitmap->alpha=script_value_to_float(argv[1]);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
+	if (bitmap!=NULL) bitmap->alpha=script_value_to_float(cx,argv[1]);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_set_repeat_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
-	if (bitmap!=NULL) bitmap->repeat.count=script_value_to_int(argv[1]);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
+	if (bitmap!=NULL) bitmap->repeat.count=script_value_to_int(cx,argv[1]);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_set_flash_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
-	if (bitmap!=NULL) bitmap->flash=script_value_to_bool(argv[1]);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
+	if (bitmap!=NULL) bitmap->flash=script_value_to_bool(cx,argv[1]);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_set_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
-	if (bitmap!=NULL) bitmap->rot=script_value_to_float(argv[1]);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
+	if (bitmap!=NULL) bitmap->rot=script_value_to_float(cx,argv[1]);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bitmap_start_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
 	
-	bitmap=script_find_bitmap_from_name(argv[0],exception);
+	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
 		bitmap->show=TRUE;
 		bitmap->fade.on=TRUE;
 		bitmap->fade.start_tick=js.time.current_tick;
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }

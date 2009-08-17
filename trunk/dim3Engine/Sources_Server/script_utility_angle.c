@@ -94,11 +94,11 @@ JSValueRef js_utility_angle_add_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	float			ang1,ang2,rang;
     
-    ang1=script_value_to_float(argv[0]);
-	ang2=script_value_to_float(argv[1]);
+    ang1=script_value_to_float(cx,argv[0]);
+	ang2=script_value_to_float(cx,argv[1]);
 	
 	rang=angle_add(ang1,ang2);
-    return(script_float_to_value(rang));
+    return(script_float_to_value(cx,rang));
 }
 
 JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -106,13 +106,13 @@ JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	float			ang1,ang2,rang;
 	bool			cwise;
 
-    ang1=script_value_to_float(argv[0]);
-    ang2=script_value_to_float(argv[1]);
+    ang1=script_value_to_float(cx,argv[0]);
+    ang2=script_value_to_float(cx,argv[1]);
 	
 	rang=angle_dif(ang1,ang2,&cwise);
 	if (!cwise) rang=-rang;
     
-	return(script_float_to_value(rang));
+	return(script_float_to_value(cx,rang));
 }
 
 JSValueRef js_utility_angle_dif_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -120,9 +120,9 @@ JSValueRef js_utility_angle_dif_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	float			ang1,ang2,rang;
 	bool			cwise;
 
-    ang1=script_value_to_float(argv[0]);
-    ang2=script_value_to_float(argv[1]);
+    ang1=script_value_to_float(cx,argv[0]);
+    ang2=script_value_to_float(cx,argv[1]);
 	
 	rang=angle_dif(ang1,ang2,&cwise);
-    return(script_float_to_value(rang));
+    return(script_float_to_value(cx,rang));
 }

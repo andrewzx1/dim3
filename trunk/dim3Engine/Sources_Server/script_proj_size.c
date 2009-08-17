@@ -36,14 +36,14 @@ extern js_type			js;
 
 JSValueRef js_proj_size_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_size_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_size_get_x(void);
-JSValueRef js_proj_size_get_y(void);
-JSValueRef js_proj_size_get_z(void);
-JSValueRef js_proj_size_get_weight(void);
-void js_proj_size_set_x(JSValueRef vp,JSValueRef *exception);
-void js_proj_size_set_y(JSValueRef vp,JSValueRef *exception);
-void js_proj_size_set_z(JSValueRef vp,JSValueRef *exception);
-void js_proj_size_set_weight(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_size_get_x(JSContextRef cx);
+JSValueRef js_proj_size_get_y(JSContextRef cx);
+JSValueRef js_proj_size_get_z(JSContextRef cx);
+JSValueRef js_proj_size_get_weight(JSContextRef cx);
+void js_proj_size_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_size_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_size_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_size_set_weight(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	proj_size_props[]={
 							{"x",					js_proj_size_get_x,					js_proj_size_set_x},
@@ -97,44 +97,44 @@ bool js_proj_size_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_proj_size_get_x(void)
+JSValueRef js_proj_size_get_x(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->size.x));
+	return(script_int_to_value(cx,proj_setup->size.x));
 }
 
-JSValueRef js_proj_size_get_y(void)
+JSValueRef js_proj_size_get_y(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->size.y));
+	return(script_int_to_value(cx,proj_setup->size.y));
 }
 
-JSValueRef js_proj_size_get_z(void)
+JSValueRef js_proj_size_get_z(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->size.z));
+	return(script_int_to_value(cx,proj_setup->size.z));
 }
 
-JSValueRef js_proj_size_get_weight(void)
+JSValueRef js_proj_size_get_weight(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->size.weight));
+	return(script_int_to_value(cx,proj_setup->size.weight));
 }
 
 /* =======================================================
@@ -143,41 +143,41 @@ JSValueRef js_proj_size_get_weight(void)
       
 ======================================================= */
 
-void js_proj_size_set_x(JSValueRef vp,JSValueRef *exception)
+void js_proj_size_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) {
-		proj_setup->size.x=script_value_to_int(vp);
+		proj_setup->size.x=script_value_to_int(cx,vp);
 		proj_setup_set_radius(proj_setup);
 	}
 }
 
-void js_proj_size_set_y(JSValueRef vp,JSValueRef *exception)
+void js_proj_size_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->size.y=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->size.y=script_value_to_int(cx,vp);
 }
 
-void js_proj_size_set_z(JSValueRef vp,JSValueRef *exception)
+void js_proj_size_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) {
-		proj_setup->size.z=script_value_to_int(vp);
+		proj_setup->size.z=script_value_to_int(cx,vp);
 		proj_setup_set_radius(proj_setup);
 	}
 }
 
-void js_proj_size_set_weight(JSValueRef vp,JSValueRef *exception)
+void js_proj_size_set_weight(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->size.weight=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->size.weight=script_value_to_int(cx,vp);
 }
 

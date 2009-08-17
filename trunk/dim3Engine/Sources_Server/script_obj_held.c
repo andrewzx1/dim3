@@ -100,20 +100,17 @@ JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_o
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	script_value_to_string(argv[0],name,name_str_len);
-	script_value_to_string(argv[1],type,name_str_len);
-	script_value_to_string(argv[2],script,file_str_len);
-	script_value_to_string(argv[3],params,param_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[1],type,name_str_len);
+	script_value_to_string(cx,argv[2],script,file_str_len);
+	script_value_to_string(cx,argv[3],params,param_str_len);
 
 	uid=object_held_add(obj,name,type,script,params,err_str);
 	if (uid==-1) {
-		*exception=script_create_exception(err_str);
-		return(FALSE);
+		*exception=script_create_exception(cx,err_str);
 	}
 
-	*rval=script_int_to_value(uid);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,uid));
 }
 
 JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -125,15 +122,14 @@ JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	uid=script_value_to_int(argv[0]);
-	y_ang=script_value_to_float(argv[1]);
-	y_change=script_value_to_int(argv[2]);
+	uid=script_value_to_int(cx,argv[0]);
+	y_ang=script_value_to_float(cx,argv[1]);
+	y_change=script_value_to_int(cx,argv[2]);
 
 	if (!object_held_drop(obj,uid,y_ang,y_change,err_str)) {
-		*exception=script_create_exception(err_str);
-		return(FALSE);
+		*exception=script_create_exception(cx,err_str);
 	}
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 

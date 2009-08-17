@@ -40,7 +40,7 @@ extern setup_type		setup;
 
 JSValueRef js_multiplayer_bot_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_multiplayer_bot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_multiplayer_bot_get_skill(void);
+JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx);
 JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	multiplayer_bot_props[]={
@@ -96,9 +96,9 @@ bool js_multiplayer_bot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_multiplayer_bot_get_skill(void)
+JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx)
 {
-	return(script_int_to_value(server.skill));
+	return(script_int_to_value(cx,server.skill));
 }
 
 /* =======================================================
@@ -111,11 +111,11 @@ JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef 
 {
 	float			skill,min,max;
 
-	min=script_value_to_float(argv[0]);
-	max=script_value_to_float(argv[1]);
+	min=script_value_to_float(cx,argv[0]);
+	max=script_value_to_float(cx,argv[1]);
 	
 	skill=(float)setup.network.bot.skill;
 
-	return(script_float_to_value(min+(((max-min)*skill)/4.0f)));
+	return(script_float_to_value(cx,min+(((max-min)*skill)/4.0f)));
 }
 

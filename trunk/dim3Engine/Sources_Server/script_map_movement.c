@@ -107,59 +107,59 @@ JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0],exception);
+	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
 	if (movement_idx!=-1) map_movements_script_start(movement_idx,FALSE);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0],exception);
+	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
 	if (movement_idx!=-1) map_movements_script_start(movement_idx,TRUE);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0],exception);
+	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
 	if (movement_idx!=-1) map_movements_script_start_or_thaw(movement_idx);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_movement_freeze_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0],exception);
+	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
 	if (movement_idx!=-1) map_movements_script_freeze(movement_idx);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_movement_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0],exception);
+	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
 	if (movement_idx!=-1) map_movements_script_thaw(movement_idx);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_movement_is_looping_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
-	movement_idx=script_find_map_movement_from_name(argv[0],exception);
-	if (movement_idx!=-1) return(script_bool_to_value(map_movements_script_is_looping(movement_idx)));
+	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
+	if (movement_idx!=-1) return(script_bool_to_value(cx,map_movements_script_is_looping(movement_idx)));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

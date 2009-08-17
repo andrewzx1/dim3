@@ -356,8 +356,8 @@ and can be sold or given away.
 // callbacks
 //
 
-typedef JSValueRef (*script_get_callback)(void);
-typedef void (*script_set_callback)(JSValueRef vp,JSValueRef *exception);
+typedef JSValueRef (*script_get_callback)(JSContextRef cx);
+typedef void (*script_set_callback)(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 //
 // object setup structures
@@ -409,7 +409,8 @@ typedef struct		{
 						char							name[file_str_len],params[param_str_len];
 						char							*data;
 						bool							used;
-						JSObjectRef						global,obj,event_func;
+						JSGlobalContextRef				cx;
+						JSObjectRef						obj,global_obj,event_func;
 					} script_type;
 
 //
@@ -429,8 +430,6 @@ typedef struct		{
 //
 
 typedef struct		{
-						JSGlobalContextRef				cx;
-						
 						int								script_current_uid;
 						bool							add_property_lock;
 						attach_type						attach;

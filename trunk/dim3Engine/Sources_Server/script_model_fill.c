@@ -92,8 +92,8 @@ JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRe
     model_draw		*draw;
 	
 	draw=script_find_model_draw();
-    model_change_fill(draw,script_value_to_int(argv[0]),script_value_to_int(argv[1]));
+    model_change_fill(draw,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

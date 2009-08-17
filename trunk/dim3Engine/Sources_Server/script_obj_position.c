@@ -41,9 +41,9 @@ extern void object_setup_motion(obj_type *obj,float ang,float speed);
 							
 JSValueRef js_obj_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_position_get_x(void);
-JSValueRef js_obj_position_get_y(void);
-JSValueRef js_obj_position_get_z(void);
+JSValueRef js_obj_position_get_x(JSContextRef cx);
+JSValueRef js_obj_position_get_y(JSContextRef cx);
+JSValueRef js_obj_position_get_z(JSContextRef cx);
 JSValueRef js_obj_position_place_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -117,28 +117,28 @@ bool js_obj_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_obj_position_get_x(void)
+JSValueRef js_obj_position_get_x(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(obj->pnt.x));
+	return(script_int_to_value(cx,obj->pnt.x));
 }
 
-JSValueRef js_obj_position_get_y(void)
+JSValueRef js_obj_position_get_y(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(obj->pnt.y));
+	return(script_int_to_value(cx,obj->pnt.y));
 }
 
-JSValueRef js_obj_position_get_z(void)
+JSValueRef js_obj_position_get_z(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(obj->pnt.z));
+	return(script_int_to_value(cx,obj->pnt.z));
 }
 
 /* =======================================================
@@ -153,10 +153,10 @@ JSValueRef js_obj_position_place_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	object_set_position(obj,script_value_to_int(argv[0]),script_value_to_int(argv[2]),script_value_to_int(argv[1]),script_value_to_float(argv[3]),0);
+	object_set_position(obj,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[2]),script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[3]),0);
 	object_telefrag_players(obj,FALSE);
     
-    return(script_bool_to_value(TRUE));
+    return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -168,15 +168,15 @@ JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef fu
 	
 		// find spot
 		
-	spot=script_find_spot_from_name_type(argv[0],argv[1],exception);
-	if (spot==NULL) return(script_null_to_value());
+	spot=script_find_spot_from_name_type(cx,argv[0],argv[1],exception);
+	if (spot==NULL) return(script_null_to_value(cx));
 	
 		// move player
 	
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
  	object_telefrag_players(obj,FALSE);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -188,15 +188,15 @@ JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef f
 
 		// get spot
 		
-	spot=script_find_network_spot(obj,exception);
-	if (spot==NULL) return(script_null_to_value());
+	spot=script_find_network_spot(cx,obj,exception);
+	if (spot==NULL) return(script_null_to_value(cx));
 	
 		// move player
 	
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
  	object_telefrag_players(obj,FALSE);
    
-    return(script_bool_to_value(TRUE));
+    return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -209,8 +209,8 @@ JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JS
 		
 		// find spot
 		
-	spot=script_find_spot_from_name_type(argv[0],argv[1],exception);
-	if (spot==NULL) return(script_null_to_value());
+	spot=script_find_spot_from_name_type(cx,argv[0],argv[1],exception);
+	if (spot==NULL) return(script_null_to_value(cx));
 	
 		// can we move without telefragging?
 	
@@ -219,13 +219,13 @@ JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JS
 
 	if (object_telefrag_players(obj,TRUE)) {
 		memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
-		return(script_bool_to_value(FALSE));
+		return(script_bool_to_value(cx,FALSE));
 	}
 
 		// move object
 		
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
-    return(script_bool_to_value(TRUE));
+    return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -238,8 +238,8 @@ JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,J
 
 		// get spot
 		
-	spot=script_find_network_spot(obj,exception);
-	if (spot==NULL) return(script_null_to_value());
+	spot=script_find_network_spot(cx,obj,exception);
+	if (spot==NULL) return(script_null_to_value(cx));
 	
 		// can we move without telefragging?
 	
@@ -248,13 +248,13 @@ JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,J
 
 	if (object_telefrag_players(obj,TRUE)) {
 		memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
-		return(script_bool_to_value(FALSE));
+		return(script_bool_to_value(cx,FALSE));
 	}
 
 		// move object
 	
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
-    return(script_bool_to_value(TRUE));
+    return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -264,14 +264,14 @@ JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	xadd=script_value_to_int(argv[0]);
-	zadd=script_value_to_int(argv[1]);
-	yadd=script_value_to_int(argv[2]);
+	xadd=script_value_to_int(cx,argv[0]);
+	zadd=script_value_to_int(cx,argv[1]);
+	yadd=script_value_to_int(cx,argv[2]);
 	
 	object_set_position(obj,(obj->pnt.x+xadd),(obj->pnt.y+yadd),(obj->pnt.z+zadd),obj->ang.y,0);
  	object_telefrag_players(obj,FALSE);
 
-	return(script_bool_to_value(TRUE));
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -282,7 +282,7 @@ JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	object_reset(obj);
 	object_telefrag_players(obj,FALSE);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -298,7 +298,7 @@ JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef f
 	obj=object_find_uid(js.attach.thing_uid);
 	player_obj=object_find_uid(server.player_obj_uid);
 
-	return(script_int_to_value(distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,player_obj->pnt.x,player_obj->pnt.y,player_obj->pnt.z)));
+	return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,player_obj->pnt.x,player_obj->pnt.y,player_obj->pnt.z)));
 }
 
 JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -307,9 +307,9 @@ JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef f
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	dist_obj=object_find_uid(script_value_to_int(argv[0]));
-	if (dist_obj==NULL) return(script_null_to_value());
+	dist_obj=object_find_uid(script_value_to_int(cx,argv[0]));
+	if (dist_obj==NULL) return(script_null_to_value(cx));
 
-	return(script_int_to_value(distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,dist_obj->pnt.x,dist_obj->pnt.y,dist_obj->pnt.z)));
+	return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,dist_obj->pnt.x,dist_obj->pnt.y,dist_obj->pnt.z)));
 }
 

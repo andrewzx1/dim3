@@ -33,12 +33,12 @@ and can be sold or given away.
 
 JSValueRef js_model_offset_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_model_offset_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_offset_get_x(void);
-JSValueRef js_model_offset_get_y(void);
-JSValueRef js_model_offset_get_z(void);
-void js_model_offset_set_x(JSValueRef vp,JSValueRef *exception);
-void js_model_offset_set_y(JSValueRef vp,JSValueRef *exception);
-void js_model_offset_set_z(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_offset_get_x(JSContextRef cx);
+JSValueRef js_model_offset_get_y(JSContextRef cx);
+JSValueRef js_model_offset_get_z(JSContextRef cx);
+void js_model_offset_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_offset_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_offset_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -93,28 +93,28 @@ bool js_model_offset_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_model_offset_get_x(void)
+JSValueRef js_model_offset_get_x(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_int_to_value(draw->offset.x));
+	return(script_int_to_value(cx,draw->offset.x));
 }
 
-JSValueRef js_model_offset_get_y(void)
+JSValueRef js_model_offset_get_y(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_int_to_value(draw->offset.y));
+	return(script_int_to_value(cx,draw->offset.y));
 }
 
-JSValueRef js_model_offset_get_z(void)
+JSValueRef js_model_offset_get_z(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_int_to_value(draw->offset.z));
+	return(script_int_to_value(cx,draw->offset.z));
 }
 
 /* =======================================================
@@ -123,28 +123,28 @@ JSValueRef js_model_offset_get_z(void)
       
 ======================================================= */
 
-void js_model_offset_set_x(JSValueRef vp,JSValueRef *exception)
+void js_model_offset_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->offset.x=script_value_to_int(vp);
+	draw->offset.x=script_value_to_int(cx,vp);
 }
 
-void js_model_offset_set_y(JSValueRef vp,JSValueRef *exception)
+void js_model_offset_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->offset.y=script_value_to_int(vp);
+	draw->offset.y=script_value_to_int(cx,vp);
 }
 
-void js_model_offset_set_z(JSValueRef vp,JSValueRef *exception)
+void js_model_offset_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	draw->offset.z=script_value_to_int(vp);
+	draw->offset.z=script_value_to_int(cx,vp);
 }
 
 

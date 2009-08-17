@@ -36,26 +36,26 @@ extern js_type			js;
 
 JSValueRef js_obj_rigid_body_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_rigid_body_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_rigid_body_get_on(void);
-JSValueRef js_obj_rigid_body_get_maxDropY(void);
-JSValueRef js_obj_rigid_body_get_resetFactorY(void);
-JSValueRef js_obj_rigid_body_get_smoothFactorY(void);
-JSValueRef js_obj_rigid_body_get_maxAngleX(void);
-JSValueRef js_obj_rigid_body_get_resetFactorX(void);
-JSValueRef js_obj_rigid_body_get_smoothFactorX(void);
-JSValueRef js_obj_rigid_body_get_maxAngleZ(void);
-JSValueRef js_obj_rigid_body_get_resetFactorZ(void);
-JSValueRef js_obj_rigid_body_get_smoothFactorZ(void);
-void js_obj_rigid_body_set_on(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_maxDropY(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_resetFactorY(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_smoothFactorY(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_maxAngleX(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_resetFactorX(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_smoothFactorX(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_maxAngleZ(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_resetFactorZ(JSValueRef vp,JSValueRef *exception);
-void js_obj_rigid_body_set_smoothFactorZ(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_rigid_body_get_on(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_maxDropY(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_resetFactorY(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_smoothFactorY(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_maxAngleX(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_resetFactorX(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_smoothFactorX(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_maxAngleZ(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_resetFactorZ(JSContextRef cx);
+JSValueRef js_obj_rigid_body_get_smoothFactorZ(JSContextRef cx);
+void js_obj_rigid_body_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_maxDropY(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_resetFactorY(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_smoothFactorY(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_maxAngleX(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_resetFactorX(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_smoothFactorX(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_maxAngleZ(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_resetFactorZ(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_rigid_body_set_smoothFactorZ(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	obj_rigid_body_props[]={
 							{"on",					js_obj_rigid_body_get_on,				js_obj_rigid_body_set_on},
@@ -115,104 +115,84 @@ bool js_obj_rigid_body_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
       
 ======================================================= */
 
-JSValueRef js_obj_rigid_body_get_on(void)
+JSValueRef js_obj_rigid_body_get_on(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->rigid_body.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(cx,obj->rigid_body.on));
 }
 
-JSValueRef js_obj_rigid_body_get_maxDropY(void)
+JSValueRef js_obj_rigid_body_get_maxDropY(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->rigid_body.max_drop_y);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->rigid_body.max_drop_y));
 }
 
-JSValueRef js_obj_rigid_body_get_resetFactorY(void)
+JSValueRef js_obj_rigid_body_get_resetFactorY(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->rigid_body.reset_factor_y);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->rigid_body.reset_factor_y));
 }
 
-JSValueRef js_obj_rigid_body_get_smoothFactorY(void)
+JSValueRef js_obj_rigid_body_get_smoothFactorY(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->rigid_body.smooth_factor_y);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->rigid_body.smooth_factor_y));
 }
 
-JSValueRef js_obj_rigid_body_get_maxAngleX(void)
+JSValueRef js_obj_rigid_body_get_maxAngleX(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->rigid_body.max_ang_x);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->rigid_body.max_ang_x));
 }
 
-JSValueRef js_obj_rigid_body_get_resetFactorX(void)
+JSValueRef js_obj_rigid_body_get_resetFactorX(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->rigid_body.reset_factor_x);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->rigid_body.reset_factor_x));
 }
 
-JSValueRef js_obj_rigid_body_get_smoothFactorX(void)
+JSValueRef js_obj_rigid_body_get_smoothFactorX(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->rigid_body.smooth_factor_x);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->rigid_body.smooth_factor_x));
 }
 
-JSValueRef js_obj_rigid_body_get_maxAngleZ(void)
+JSValueRef js_obj_rigid_body_get_maxAngleZ(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->rigid_body.max_ang_z);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->rigid_body.max_ang_z));
 }
 
-JSValueRef js_obj_rigid_body_get_resetFactorZ(void)
+JSValueRef js_obj_rigid_body_get_resetFactorZ(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->rigid_body.reset_factor_z);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->rigid_body.reset_factor_z));
 }
 
-JSValueRef js_obj_rigid_body_get_smoothFactorZ(void)
+JSValueRef js_obj_rigid_body_get_smoothFactorZ(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_float_to_value(obj->rigid_body.smooth_factor_z);
-	
-	return(TRUE);
+	return(script_float_to_value(cx,obj->rigid_body.smooth_factor_z));
 }
 
 /* =======================================================
@@ -221,83 +201,83 @@ JSValueRef js_obj_rigid_body_get_smoothFactorZ(void)
       
 ======================================================= */
 
-void js_obj_rigid_body_set_on(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.on=script_value_to_bool(*vp);
+	obj->rigid_body.on=script_value_to_bool(cx,vp);
 }
 
-void js_obj_rigid_body_set_maxDropY(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_maxDropY(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.max_drop_y=script_value_to_int(*vp);
+	obj->rigid_body.max_drop_y=script_value_to_int(cx,vp);
 }
 
-void js_obj_rigid_body_set_resetFactorY(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_resetFactorY(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.reset_factor_y=script_value_to_float(*vp);
+	obj->rigid_body.reset_factor_y=script_value_to_float(cx,vp);
 }
 
-void js_obj_rigid_body_set_smoothFactorY(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_smoothFactorY(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.smooth_factor_y=script_value_to_float(*vp);
+	obj->rigid_body.smooth_factor_y=script_value_to_float(cx,vp);
 }
 
-void js_obj_rigid_body_set_maxAngleX(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_maxAngleX(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.max_ang_x=script_value_to_float(*vp);
+	obj->rigid_body.max_ang_x=script_value_to_float(cx,vp);
 }
 
-void js_obj_rigid_body_set_resetFactorX(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_resetFactorX(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.reset_factor_x=script_value_to_float(*vp);
+	obj->rigid_body.reset_factor_x=script_value_to_float(cx,vp);
 }
 
-void js_obj_rigid_body_set_smoothFactorX(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_smoothFactorX(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.smooth_factor_x=script_value_to_float(*vp);
+	obj->rigid_body.smooth_factor_x=script_value_to_float(cx,vp);
 }
 
-void js_obj_rigid_body_set_maxAngleZ(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_maxAngleZ(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.max_ang_z=script_value_to_float(*vp);
+	obj->rigid_body.max_ang_z=script_value_to_float(cx,vp);
 }
 
-void js_obj_rigid_body_set_resetFactorZ(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_resetFactorZ(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.reset_factor_z=script_value_to_float(*vp);
+	obj->rigid_body.reset_factor_z=script_value_to_float(cx,vp);
 }
 
-void js_obj_rigid_body_set_smoothFactorZ(JSValueRef vp,JSValueRef *exception)
+void js_obj_rigid_body_set_smoothFactorZ(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->rigid_body.smooth_factor_z=script_value_to_float(*vp);
+	obj->rigid_body.smooth_factor_z=script_value_to_float(cx,vp);
 }
 

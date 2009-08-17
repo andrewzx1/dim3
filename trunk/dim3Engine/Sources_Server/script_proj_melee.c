@@ -38,20 +38,20 @@ extern js_type			js;
 
 JSValueRef js_proj_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_melee_get_strikeBoneTag(void);
-JSValueRef js_proj_melee_get_strikePoseName(void);
-JSValueRef js_proj_melee_get_radius(void);
-JSValueRef js_proj_melee_get_distance(void);
-JSValueRef js_proj_melee_get_damage(void);
-JSValueRef js_proj_melee_get_force(void);
-JSValueRef js_proj_melee_get_fallOff(void);
-void js_proj_melee_set_strikeBoneTag(JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_strikePoseName(JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_radius(JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_distance(JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_damage(JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_force(JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_fallOff(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx);
+JSValueRef js_proj_melee_get_strikePoseName(JSContextRef cx);
+JSValueRef js_proj_melee_get_radius(JSContextRef cx);
+JSValueRef js_proj_melee_get_distance(JSContextRef cx);
+JSValueRef js_proj_melee_get_damage(JSContextRef cx);
+JSValueRef js_proj_melee_get_force(JSContextRef cx);
+JSValueRef js_proj_melee_get_fallOff(JSContextRef cx);
+void js_proj_melee_set_strikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_strikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_radius(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_fallOff(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -116,76 +116,76 @@ bool js_proj_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_proj_melee_get_strikeBoneTag(void)
+JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx)
 {
 	char				str[32];
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	model_tag_to_text(proj_setup->melee.strike_bone_tag,str);
-	return(script_string_to_value(str));
+	return(script_string_to_value(cx,str));
 }
 
-JSValueRef js_proj_melee_get_strikePoseName(void)
+JSValueRef js_proj_melee_get_strikePoseName(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_string_to_value(proj_setup->melee.strike_pose_name));
+	return(script_string_to_value(cx,proj_setup->melee.strike_pose_name));
 }
 
-JSValueRef js_proj_melee_get_radius(void)
+JSValueRef js_proj_melee_get_radius(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->melee.radius));
+	return(script_int_to_value(cx,proj_setup->melee.radius));
 }
 
-JSValueRef js_proj_melee_get_distance(void)
+JSValueRef js_proj_melee_get_distance(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->melee.distance));
+	return(script_int_to_value(cx,proj_setup->melee.distance));
 }
 
-JSValueRef js_proj_melee_get_damage(void)
+JSValueRef js_proj_melee_get_damage(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->melee.damage));
+	return(script_int_to_value(cx,proj_setup->melee.damage));
 }
 
-JSValueRef js_proj_melee_get_force(void)
+JSValueRef js_proj_melee_get_force(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->melee.force));
+	return(script_int_to_value(cx,proj_setup->melee.force));
 }
 
-JSValueRef js_proj_melee_get_fallOff(void)
+JSValueRef js_proj_melee_get_fallOff(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_bool_to_value(proj_setup->melee.fall_off));
+	return(script_bool_to_value(cx,proj_setup->melee.fall_off));
 }
 
 /* =======================================================
@@ -194,64 +194,64 @@ JSValueRef js_proj_melee_get_fallOff(void)
       
 ======================================================= */
 
-void js_proj_melee_set_strikeBoneTag(JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_strikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	char				str[32];
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) {
-		script_value_to_string(vp,str,32);
+		script_value_to_string(cx,vp,str,32);
 		proj_setup->melee.strike_bone_tag=text_to_model_tag(str);
 	}
 }
 
-void js_proj_melee_set_strikePoseName(JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_strikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) script_value_to_string(vp,proj_setup->melee.strike_pose_name,name_str_len);
+	if (proj_setup!=NULL) script_value_to_string(cx,vp,proj_setup->melee.strike_pose_name,name_str_len);
 }
 
-void js_proj_melee_set_radius(JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_radius(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->melee.radius=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->melee.radius=script_value_to_int(cx,vp);
 }
 
-void js_proj_melee_set_distance(JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->melee.distance=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->melee.distance=script_value_to_int(cx,vp);
 }
 
-void js_proj_melee_set_damage(JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->melee.damage=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->melee.damage=script_value_to_int(cx,vp);
 }
 
-void js_proj_melee_set_force(JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->melee.force=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->melee.force=script_value_to_int(cx,vp);
 }
 
-void js_proj_melee_set_fallOff(JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_fallOff(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->melee.fall_off=script_value_to_bool(vp);
+	if (proj_setup!=NULL) proj_setup->melee.fall_off=script_value_to_bool(cx,vp);
 }
 
 /* =======================================================
@@ -269,19 +269,19 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
 	proj_setup_type		*proj_setup;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
 	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
     obj=object_find_uid(proj_setup->obj_uid);
 	weap=weapon_find_uid(proj_setup->weap_uid);
 
 	if (!melee_script_spawn_projectile_model(js.time.current_tick,obj,weap,proj_setup,proj,err_str)) {
-		*exception=script_create_exception(err_str);
+		*exception=script_create_exception(cx,err_str);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -293,20 +293,20 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	proj_setup_type		*proj_setup;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
 	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
     obj=object_find_uid(proj_setup->obj_uid);
 	weap=weapon_find_uid(proj_setup->weap_uid);
 	
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 	
 	melee_add(obj,weap,&pt,&proj->ang,&proj_setup->melee,-1);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

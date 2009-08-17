@@ -108,15 +108,15 @@ JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjec
 	int				group_idx;
 	group_type		*group;
 	
-	group_idx=script_find_group_from_name(argv[0],exception);
+	group_idx=script_find_group_from_name(cx,argv[0],exception);
 	if (group_idx==-1) return(FALSE);
 
 	if ((group_idx>=0) && (group_idx<map.ngroup)) {
 		group=&map.groups[group_idx];
-		return(script_point_to_value(group->center_pnt.x,group->center_pnt.y,group->center_pnt.z));
+		return(script_point_to_value(cx,group->center_pnt.x,group->center_pnt.y,group->center_pnt.z));
 	}
 
-	return(script_point_to_value(0,0,0));
+	return(script_point_to_value(cx,0,0,0));
 }
 
 /* =======================================================
@@ -129,20 +129,20 @@ JSValueRef js_map_group_set_show_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0],exception);
-	if (group_idx!=-1) group_show(group_idx,script_value_to_bool(argv[1]));
+	group_idx=script_find_group_from_name(cx,argv[0],exception);
+	if (group_idx!=-1) group_show(group_idx,script_value_to_bool(cx,argv[1]));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_group_set_solid_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0],exception);
-	if (group_idx!=-1) group_solid(group_idx,script_value_to_bool(argv[1]));
+	group_idx=script_find_group_from_name(cx,argv[0],exception);
+	if (group_idx!=-1) group_solid(group_idx,script_value_to_bool(cx,argv[1]));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -155,29 +155,29 @@ JSValueRef js_map_group_set_texture_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0],exception);
-	if (group_idx!=-1) group_texture(group_idx,script_value_to_int(argv[1]));
+	group_idx=script_find_group_from_name(cx,argv[0],exception);
+	if (group_idx!=-1) group_texture(group_idx,script_value_to_int(cx,argv[1]));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_group_set_texture_shift_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0],exception);
-	if (group_idx!=-1) group_texture_shift(group_idx,script_value_to_float(argv[1]),script_value_to_float(argv[2]));
+	group_idx=script_find_group_from_name(cx,argv[0],exception);
+	if (group_idx!=-1) group_texture_shift(group_idx,script_value_to_float(cx,argv[1]),script_value_to_float(cx,argv[2]));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_group_set_texture_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
 	
-	group_idx=script_find_group_from_name(argv[0],exception);
-	if (group_idx!=-1) group_texture_alpha(group_idx,script_value_to_float(argv[1]));
+	group_idx=script_find_group_from_name(cx,argv[0],exception);
+	if (group_idx!=-1) group_texture_alpha(group_idx,script_value_to_float(cx,argv[1]));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

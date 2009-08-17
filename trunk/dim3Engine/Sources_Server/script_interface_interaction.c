@@ -110,13 +110,13 @@ JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef
 		event_id=-1;
 	}
 	else {
-		event_id=script_value_to_int(argv[1]);
+		event_id=script_value_to_int(cx,argv[1]);
 	}
 
-	script_value_to_string(argv[0],name,name_str_len);
-	story_trigger_set(name,script_value_to_int(argv[1]));
+	script_value_to_string(cx,argv[0],name,name_str_len);
+	story_trigger_set(name,script_value_to_int(cx,argv[1]));
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -128,15 +128,15 @@ JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef
 		event_id=-1;
 	}
 	else {
-		event_id=script_value_to_int(argv[2]);
+		event_id=script_value_to_int(cx,argv[2]);
 	}
 
-	script_value_to_string(argv[0],name,name_str_len);
-	script_value_to_string(argv[1],sound_name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[1],sound_name,name_str_len);
 	
 	title_trigger_set("Titles",name,sound_name,event_id);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -148,13 +148,13 @@ JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef
 		event_id=-1;
 	}
 	else {
-		event_id=script_value_to_int(argv[1]);
+		event_id=script_value_to_int(cx,argv[1]);
 	}
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	movie_trigger_set(name,event_id);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -165,7 +165,7 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 
 		// get name
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 
 		// get any substitution text
 
@@ -178,36 +178,36 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 	if (cnt>max_chooser_sub_txt) cnt=max_chooser_sub_txt;
 
 	for (n=0;n!=cnt;n++) {
-		script_value_to_string(argv[n+1],sub_txt[n],max_chooser_text_data_sz);
+		script_value_to_string(cx,argv[n+1],sub_txt[n],max_chooser_text_data_sz);
 	}
 
 		// start chooser
 
 	chooser_trigger_set(name,(char*)sub_txt);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_save_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	file_trigger_set();
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_setup_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	setup_game_trigger_set();
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	menu_trigger_set();
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	interface_quit_trigger_set();
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }

@@ -33,12 +33,12 @@ and can be sold or given away.
 
 JSValueRef js_model_light_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_model_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_light_color_get_red(void);
-JSValueRef js_model_light_color_get_green(void);
-JSValueRef js_model_light_color_get_blue(void);
-void js_model_light_color_set_red(JSValueRef vp,JSValueRef *exception);
-void js_model_light_color_set_green(JSValueRef vp,JSValueRef *exception);
-void js_model_light_color_set_blue(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_light_color_get_red(JSContextRef cx);
+JSValueRef js_model_light_color_get_green(JSContextRef cx);
+JSValueRef js_model_light_color_get_blue(JSContextRef cx);
+void js_model_light_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_light_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_light_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -93,7 +93,7 @@ bool js_model_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
       
 ======================================================= */
 
-JSValueRef js_model_light_color_get_red(void)
+JSValueRef js_model_light_color_get_red(JSContextRef cx)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -101,10 +101,10 @@ JSValueRef js_model_light_color_get_red(void)
 	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
-	return(script_float_to_value(light->col.r));
+	return(script_float_to_value(cx,light->col.r));
 }
 
-JSValueRef js_model_light_color_get_green(void)
+JSValueRef js_model_light_color_get_green(JSContextRef cx)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -112,10 +112,10 @@ JSValueRef js_model_light_color_get_green(void)
 	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 
-	return(script_float_to_value(light->col.g));
+	return(script_float_to_value(cx,light->col.g));
 }
 
-JSValueRef js_model_light_color_get_blue(void)
+JSValueRef js_model_light_color_get_blue(JSContextRef cx)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -123,7 +123,7 @@ JSValueRef js_model_light_color_get_blue(void)
 	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 	
-	return(script_float_to_value(light->col.b));
+	return(script_float_to_value(cx,light->col.b));
 }
 
 /* =======================================================
@@ -132,7 +132,7 @@ JSValueRef js_model_light_color_get_blue(void)
       
 ======================================================= */
 
-void js_model_light_color_set_red(JSValueRef vp,JSValueRef *exception)
+void js_model_light_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -140,10 +140,10 @@ void js_model_light_color_set_red(JSValueRef vp,JSValueRef *exception)
 	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 
-	light->col.r=script_value_to_float(vp);
+	light->col.r=script_value_to_float(cx,vp);
 }
 
-void js_model_light_color_set_green(JSValueRef vp,JSValueRef *exception)
+void js_model_light_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -151,10 +151,10 @@ void js_model_light_color_set_green(JSValueRef vp,JSValueRef *exception)
 	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 
-	light->col.g=script_value_to_float(vp);
+	light->col.g=script_value_to_float(cx,vp);
 }
 
-void js_model_light_color_set_blue(JSValueRef vp,JSValueRef *exception)
+void js_model_light_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -162,6 +162,6 @@ void js_model_light_color_set_blue(JSValueRef vp,JSValueRef *exception)
 	draw=script_find_model_draw();
 	light=&draw->lights[draw->script_light_idx];
 
-	light->col.b=script_value_to_float(vp);
+	light->col.b=script_value_to_float(cx,vp);
 }
 

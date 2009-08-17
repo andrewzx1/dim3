@@ -39,20 +39,20 @@ extern js_type			js;
 
 JSValueRef js_proj_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_action_get_damage(void);
-JSValueRef js_proj_action_get_collision(void);
-JSValueRef js_proj_action_get_auto_hitTick(void);
-JSValueRef js_proj_action_get_auto_bounce(void);
-JSValueRef js_proj_action_get_auto_bounceMinMove(void);
-JSValueRef js_proj_action_get_auto_bounceReduce(void);
-JSValueRef js_proj_action_get_auto_reflect(void);
-void js_proj_action_set_damage(JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_collision(JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_hitTick(JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_bounce(JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_bounceMinMove(JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_bounceReduce(JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_reflect(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_action_get_damage(JSContextRef cx);
+JSValueRef js_proj_action_get_collision(JSContextRef cx);
+JSValueRef js_proj_action_get_auto_hitTick(JSContextRef cx);
+JSValueRef js_proj_action_get_auto_bounce(JSContextRef cx);
+JSValueRef js_proj_action_get_auto_bounceMinMove(JSContextRef cx);
+JSValueRef js_proj_action_get_auto_bounceReduce(JSContextRef cx);
+JSValueRef js_proj_action_get_auto_reflect(JSContextRef cx);
+void js_proj_action_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_collision(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_hitTick(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounce(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounceMinMove(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounceReduce(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_reflect(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_proj_action_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -128,74 +128,74 @@ bool js_proj_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
       
 ======================================================= */
 
-JSValueRef js_proj_action_get_damage(void)
+JSValueRef js_proj_action_get_damage(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->damage));
+	return(script_int_to_value(cx,proj_setup->damage));
 }
 
-JSValueRef js_proj_action_get_collision(void)
+JSValueRef js_proj_action_get_collision(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_bool_to_value(proj_setup->collision));
+	return(script_bool_to_value(cx,proj_setup->collision));
 }
 
-JSValueRef js_proj_action_get_auto_hitTick(void)
+JSValueRef js_proj_action_get_auto_hitTick(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->action.hit_tick));
+	return(script_int_to_value(cx,proj_setup->action.hit_tick));
 }
 
-JSValueRef js_proj_action_get_auto_bounce(void)
+JSValueRef js_proj_action_get_auto_bounce(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_bool_to_value(proj_setup->action.bounce));
+	return(script_bool_to_value(cx,proj_setup->action.bounce));
 }
 
-JSValueRef js_proj_action_get_auto_bounceMinMove(void)
+JSValueRef js_proj_action_get_auto_bounceMinMove(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_float_to_value(proj_setup->action.bounce_min_move));
+	return(script_float_to_value(cx,proj_setup->action.bounce_min_move));
 }
 
-JSValueRef js_proj_action_get_auto_bounceReduce(void)
+JSValueRef js_proj_action_get_auto_bounceReduce(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_float_to_value(proj_setup->action.bounce_reduce));
+	return(script_float_to_value(cx,proj_setup->action.bounce_reduce));
 }
 
-JSValueRef js_proj_action_get_auto_reflect(void)
+JSValueRef js_proj_action_get_auto_reflect(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_bool_to_value(proj_setup->action.reflect));
+	return(script_bool_to_value(cx,proj_setup->action.reflect));
 }
 
 /* =======================================================
@@ -204,60 +204,60 @@ JSValueRef js_proj_action_get_auto_reflect(void)
       
 ======================================================= */
 
-void js_proj_action_set_damage(JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->damage=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->damage=script_value_to_int(cx,vp);
 }
 
-void js_proj_action_set_collision(JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_collision(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->collision=script_value_to_bool(vp);
+	if (proj_setup!=NULL) proj_setup->collision=script_value_to_bool(cx,vp);
 }
 
-void js_proj_action_set_auto_hitTick(JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_hitTick(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->action.hit_tick=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->action.hit_tick=script_value_to_int(cx,vp);
 }
 
-void js_proj_action_set_auto_bounce(JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_bounce(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->action.bounce=script_value_to_bool(vp);
+	if (proj_setup!=NULL) proj_setup->action.bounce=script_value_to_bool(cx,vp);
 }
 
-void js_proj_action_set_auto_bounceMinMove(JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_bounceMinMove(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->action.bounce_min_move=script_value_to_float(vp);
+	if (proj_setup!=NULL) proj_setup->action.bounce_min_move=script_value_to_float(cx,vp);
 }
 
-void js_proj_action_set_auto_bounceReduce(JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_bounceReduce(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->action.bounce_reduce=script_value_to_float(vp);
+	if (proj_setup!=NULL) proj_setup->action.bounce_reduce=script_value_to_float(cx,vp);
 }
 
-void js_proj_action_set_auto_reflect(JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_reflect(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->action.reflect=script_value_to_bool(vp);
+	if (proj_setup!=NULL) proj_setup->action.reflect=script_value_to_bool(cx,vp);
 }
 
 /* =======================================================
@@ -271,11 +271,11 @@ JSValueRef js_proj_action_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 		
-	proj->ang.y=proj->motion.ang.y=script_value_to_float(argv[0]);
+	proj->ang.y=proj->motion.ang.y=script_value_to_float(cx,argv[0]);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -284,14 +284,14 @@ JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSO
 	obj_type			*to_obj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 		
-	to_obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (to_obj==NULL) return(script_null_to_value());
+	to_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (to_obj==NULL) return(script_null_to_value(cx));
 	
-	projectile_turn_xz_towards(proj,to_obj,script_value_to_float(argv[1]));
+	projectile_turn_xz_towards(proj,to_obj,script_value_to_float(cx,argv[1]));
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -300,14 +300,14 @@ JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	obj_type			*to_obj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 		
-	to_obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (to_obj==NULL) return(script_null_to_value());
+	to_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (to_obj==NULL) return(script_null_to_value(cx));
 	
-	projectile_seek(proj,to_obj,script_value_to_float(argv[1]),script_value_to_float(argv[2]));
+	projectile_seek(proj,to_obj,script_value_to_float(cx,argv[1]),script_value_to_float(cx,argv[2]));
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -318,19 +318,19 @@ JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSOb
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
 	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	weap=weapon_find_uid(proj_setup->weap_uid);
 		
 	to_obj=object_find_uid(weap->target.obj_uid);
-	if (to_obj==NULL) return(script_null_to_value());
+	if (to_obj==NULL) return(script_null_to_value(cx));
 	
-	projectile_seek(proj,to_obj,script_value_to_float(argv[0]),script_value_to_float(argv[1]));
+	projectile_seek(proj,to_obj,script_value_to_float(cx,argv[0]),script_value_to_float(cx,argv[1]));
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_proj_action_bounce_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -339,14 +339,14 @@ JSValueRef js_proj_action_bounce_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
     
-    min_ymove=script_value_to_float(argv[0]);
-	reduce=script_value_to_float(argv[1]);
+    min_ymove=script_value_to_float(cx,argv[0]);
+	reduce=script_value_to_float(cx,argv[1]);
 	
 	projectile_bounce(proj,min_ymove,reduce,FALSE);
     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_proj_action_reflect_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -354,11 +354,11 @@ JSValueRef js_proj_action_reflect_func(JSContextRef cx,JSObjectRef func,JSObject
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 	
 	projectile_reflect(proj,FALSE);
 	     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_proj_action_stick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -366,12 +366,12 @@ JSValueRef js_proj_action_stick_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
     
     proj->stick=TRUE;
     proj->ang.x=0;
     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -379,9 +379,9 @@ JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObject
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 	
 	projectile_mark_dispose(proj);
     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }

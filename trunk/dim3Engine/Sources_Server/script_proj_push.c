@@ -37,10 +37,10 @@ extern js_type			js;
 
 JSValueRef js_proj_push_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_push_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_push_get_on(void);
-JSValueRef js_proj_push_get_force(void);
-void js_proj_push_set_on(JSValueRef vp,JSValueRef *exception);
-void js_proj_push_set_force(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_push_get_on(JSContextRef cx);
+JSValueRef js_proj_push_get_force(JSContextRef cx);
+void js_proj_push_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_push_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	proj_push_props[]={
 							{"on",					js_proj_push_get_on,				js_proj_push_set_on},
@@ -92,24 +92,24 @@ bool js_proj_push_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_proj_push_get_on(void)
+JSValueRef js_proj_push_get_on(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_bool_to_value(proj_setup->push.on));
+	return(script_bool_to_value(cx,proj_setup->push.on));
 }
 
-JSValueRef js_proj_push_get_force(void)
+JSValueRef js_proj_push_get_force(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->push.force));
+	return(script_int_to_value(cx,proj_setup->push.force));
 }
 
 /* =======================================================
@@ -118,18 +118,18 @@ JSValueRef js_proj_push_get_force(void)
       
 ======================================================= */
 
-void js_proj_push_set_on(JSValueRef vp,JSValueRef *exception)
+void js_proj_push_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->push.on=script_value_to_bool(vp);
+	if (proj_setup!=NULL) proj_setup->push.on=script_value_to_bool(cx,vp);
 }
 
-void js_proj_push_set_force(JSValueRef vp,JSValueRef *exception)
+void js_proj_push_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->push.force=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->push.force=script_value_to_int(cx,vp);
 }

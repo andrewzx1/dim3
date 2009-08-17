@@ -94,15 +94,15 @@ JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	char			txt[256];
 	
-	script_value_to_string(argv[0],txt,256);
+	script_value_to_string(cx,argv[0],txt,256);
 	console_add(txt);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	return(script_string_to_value(console_input_str));
+	return(script_string_to_value(cx,console_input_str));
 }
 
 

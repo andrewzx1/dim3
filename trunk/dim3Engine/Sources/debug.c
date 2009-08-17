@@ -167,7 +167,8 @@ void debug_dump(void)
 	
 	sdl_ver=(SDL_version*)SDL_Linked_Version();
 	fprintf(stdout,"SDL Version: %d.%d.%d\n",sdl_ver->major,sdl_ver->minor,sdl_ver->patch);
-	fprintf(stdout,"JavaScript Version: %.2f\n",((float)JS_VERSION/100.0f));
+// supergumba -- js -- get version
+//	fprintf(stdout,"JavaScript Version: %.2f\n",((float)JS_VERSION/100.0f));
 	fprintf(stdout,"PNG Version: %s\n",PNG_LIBPNG_VER_STRING);
 	
 	debug_return();

@@ -36,14 +36,14 @@ extern js_type			js;
 
 JSValueRef js_proj_mark_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_mark_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_mark_get_on(void);
-JSValueRef js_proj_mark_get_name(void);
-JSValueRef js_proj_mark_get_size(void);
-JSValueRef js_proj_mark_get_alpha(void);
-void js_proj_mark_set_on(JSValueRef vp,JSValueRef *exception);
-void js_proj_mark_set_name(JSValueRef vp,JSValueRef *exception);
-void js_proj_mark_set_size(JSValueRef vp,JSValueRef *exception);
-void js_proj_mark_set_alpha(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_mark_get_on(JSContextRef cx);
+JSValueRef js_proj_mark_get_name(JSContextRef cx);
+JSValueRef js_proj_mark_get_size(JSContextRef cx);
+JSValueRef js_proj_mark_get_alpha(JSContextRef cx);
+void js_proj_mark_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_mark_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_mark_set_size(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_mark_set_alpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	proj_mark_props[]={
 							{"on",					js_proj_mark_get_on,				js_proj_mark_set_on},
@@ -97,44 +97,44 @@ bool js_proj_mark_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_proj_mark_get_on(void)
+JSValueRef js_proj_mark_get_on(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_bool_to_value(proj_setup->mark.on));
+	return(script_bool_to_value(cx,proj_setup->mark.on));
 }
 
-JSValueRef js_proj_mark_get_name(void)
+JSValueRef js_proj_mark_get_name(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_string_to_value(proj_setup->mark.name));
+	return(script_string_to_value(cx,proj_setup->mark.name));
 }
 
-JSValueRef js_proj_mark_get_size(void)
+JSValueRef js_proj_mark_get_size(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(proj_setup->mark.size));
+	return(script_int_to_value(cx,proj_setup->mark.size));
 }
 
-JSValueRef js_proj_mark_get_alpha(void)
+JSValueRef js_proj_mark_get_alpha(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-    return(script_float_to_value(proj_setup->mark.alpha));
+    return(script_float_to_value(cx,proj_setup->mark.alpha));
 }
 
 /* =======================================================
@@ -143,39 +143,39 @@ JSValueRef js_proj_mark_get_alpha(void)
       
 ======================================================= */
 
-void js_proj_mark_set_on(JSValueRef vp,JSValueRef *exception)
+void js_proj_mark_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->mark.on=script_value_to_bool(vp);
+	if (proj_setup!=NULL) proj_setup->mark.on=script_value_to_bool(cx,vp);
 }
 
-void js_proj_mark_set_name(JSValueRef vp,JSValueRef *exception)
+void js_proj_mark_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) {
-		script_value_to_string(vp,proj_setup->mark.name,name_str_len);
+		script_value_to_string(cx,vp,proj_setup->mark.name,name_str_len);
 		proj_setup_attach_mark(proj_setup);
 	}
 }
 
-void js_proj_mark_set_size(JSValueRef vp,JSValueRef *exception)
+void js_proj_mark_set_size(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->mark.size=script_value_to_int(vp);
+	if (proj_setup!=NULL) proj_setup->mark.size=script_value_to_int(cx,vp);
 }
 
-void js_proj_mark_set_alpha(JSValueRef vp,JSValueRef *exception)
+void js_proj_mark_set_alpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->mark.alpha=script_value_to_float(vp);
+	if (proj_setup!=NULL) proj_setup->mark.alpha=script_value_to_float(cx,vp);
 }
 
 

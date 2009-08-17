@@ -110,20 +110,20 @@ bool js_spawn_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
       
 ======================================================= */
 
-JSValueRef js_particle_name_exception(char *name)
+JSValueRef js_particle_name_exception(JSContextRef cx,char *name)
 {
 	char			err_str[256];
 
 	sprintf(err_str,"Named particle does not exist: %s",name);
-	return(script_create_exception(err_str));
+	return(script_create_exception(cx,err_str));
 }
 
-JSValueRef js_ring_name_exception(char *name)
+JSValueRef js_ring_name_exception(JSContextRef cx,char *name)
 {
 	char			err_str[256];
 
 	sprintf(err_str,"Named ring does not exist: %s",name);
-	return(script_create_exception(err_str));
+	return(script_create_exception(cx,err_str));
 }
 
 /* =======================================================
@@ -138,21 +138,21 @@ JSValueRef js_spawn_particle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	char			name[name_str_len];
 	d3pnt			pt;
 	
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 	
-	script_value_to_string(argv[3],name,name_str_len);
+	script_value_to_string(cx,argv[3],name,name_str_len);
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
-		*exception=js_particle_name_exception(name);
+		*exception=js_particle_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL));
+		script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL));
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -162,26 +162,26 @@ JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObje
 	d3pnt			pt;
 	particle_motion	motion;
 	
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 	
 	motion.bone_idx=-1;
-	motion.vct.x=script_value_to_float(argv[3]);
-	motion.vct.z=script_value_to_float(argv[4]);
-	motion.vct.y=script_value_to_float(argv[5]);
+	motion.vct.x=script_value_to_float(cx,argv[3]);
+	motion.vct.z=script_value_to_float(cx,argv[4]);
+	motion.vct.y=script_value_to_float(cx,argv[5]);
 
-	script_value_to_string(argv[6],name,name_str_len);
+	script_value_to_string(cx,argv[6],name,name_str_len);
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
-		*exception=js_particle_name_exception(name);
+		*exception=js_particle_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,&motion));
+		script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,&motion));
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_spawn_particle_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -190,27 +190,27 @@ JSValueRef js_spawn_particle_line_func(JSContextRef cx,JSObjectRef func,JSObject
 	char			name[name_str_len];
 	d3pnt			start_pt,end_pt;
 	
-	start_pt.x=script_value_to_int(argv[0]);
-	start_pt.z=script_value_to_int(argv[1]);
-	start_pt.y=script_value_to_int(argv[2]);
+	start_pt.x=script_value_to_int(cx,argv[0]);
+	start_pt.z=script_value_to_int(cx,argv[1]);
+	start_pt.y=script_value_to_int(cx,argv[2]);
 
-	end_pt.x=script_value_to_int(argv[3]);
-	end_pt.z=script_value_to_int(argv[4]);
-	end_pt.y=script_value_to_int(argv[5]);
+	end_pt.x=script_value_to_int(cx,argv[3]);
+	end_pt.z=script_value_to_int(cx,argv[4]);
+	end_pt.y=script_value_to_int(cx,argv[5]);
 
-	count=script_value_to_int(argv[6]);
+	count=script_value_to_int(cx,argv[6]);
 
-	script_value_to_string(argv[7],name,name_str_len);
+	script_value_to_string(cx,argv[7],name,name_str_len);
 	
 	idx=particle_find_index(name);
 	if (idx==-1) {
-		*exception=js_particle_name_exception(name);
+		*exception=js_particle_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(particle_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
+		script_bool_to_value(cx,particle_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -225,21 +225,21 @@ JSValueRef js_spawn_ring_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj
 	char			name[name_str_len];
 	d3pnt			pt;
 	
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 	
-	script_value_to_string(argv[3],name,name_str_len);
+	script_value_to_string(cx,argv[3],name,name_str_len);
 	
 	idx=ring_find_index(name);
 	if (idx==-1) {
-		*exception=js_ring_name_exception(name);
+		*exception=js_ring_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(ring_spawn(idx,script_get_attached_object_uid(),&pt,NULL));
+		script_bool_to_value(cx,ring_spawn(idx,script_get_attached_object_uid(),&pt,NULL));
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_spawn_ring_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -248,27 +248,27 @@ JSValueRef js_spawn_ring_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	char			name[name_str_len];
 	d3pnt			start_pt,end_pt;
 	
-	start_pt.x=script_value_to_int(argv[0]);
-	start_pt.z=script_value_to_int(argv[1]);
-	start_pt.y=script_value_to_int(argv[2]);
+	start_pt.x=script_value_to_int(cx,argv[0]);
+	start_pt.z=script_value_to_int(cx,argv[1]);
+	start_pt.y=script_value_to_int(cx,argv[2]);
 
-	end_pt.x=script_value_to_int(argv[3]);
-	end_pt.z=script_value_to_int(argv[4]);
-	end_pt.y=script_value_to_int(argv[5]);
+	end_pt.x=script_value_to_int(cx,argv[3]);
+	end_pt.z=script_value_to_int(cx,argv[4]);
+	end_pt.y=script_value_to_int(cx,argv[5]);
 
-	count=script_value_to_int(argv[6]);
+	count=script_value_to_int(cx,argv[6]);
 
-	script_value_to_string(argv[7],name,name_str_len);
+	script_value_to_string(cx,argv[7],name,name_str_len);
 	
 	idx=ring_find_index(name);
 	if (idx==-1) {
-		*exception=js_ring_name_exception(name);
+		*exception=js_ring_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(ring_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
+		script_bool_to_value(cx,ring_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -283,21 +283,21 @@ JSValueRef js_spawn_flash_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_on
 	d3pnt			pt;
 	d3col			col;
 	
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
 
-	col.r=script_value_to_float(argv[3]);
-	col.g=script_value_to_float(argv[4]);
-	col.b=script_value_to_float(argv[5]);
+	col.r=script_value_to_float(cx,argv[3]);
+	col.g=script_value_to_float(cx,argv[4]);
+	col.b=script_value_to_float(cx,argv[5]);
 
-	intensity=script_value_to_int(argv[6]);
-	flash_msec=script_value_to_int(argv[7]);
-	fade_msec=script_value_to_int(argv[8]);
+	intensity=script_value_to_int(cx,argv[6]);
+	flash_msec=script_value_to_int(cx,argv[7]);
+	fade_msec=script_value_to_int(cx,argv[8]);
 
-	script_bool_to_value(effect_spawn_flash(&pt,&col,intensity,flash_msec,fade_msec));
+	script_bool_to_value(cx,effect_spawn_flash(&pt,&col,intensity,flash_msec,fade_msec));
     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -313,26 +313,26 @@ JSValueRef js_spawn_lightning_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	d3pnt			start_pt,end_pt;
 	d3col			col;
 	
-	start_pt.x=script_value_to_int(argv[0]);
-	start_pt.z=script_value_to_int(argv[1]);
-	start_pt.y=script_value_to_int(argv[2]);
+	start_pt.x=script_value_to_int(cx,argv[0]);
+	start_pt.z=script_value_to_int(cx,argv[1]);
+	start_pt.y=script_value_to_int(cx,argv[2]);
 
-	end_pt.x=script_value_to_int(argv[3]);
-	end_pt.z=script_value_to_int(argv[4]);
-	end_pt.y=script_value_to_int(argv[5]);
+	end_pt.x=script_value_to_int(cx,argv[3]);
+	end_pt.z=script_value_to_int(cx,argv[4]);
+	end_pt.y=script_value_to_int(cx,argv[5]);
 	
-	wid=script_value_to_int(argv[6]);
-	varient=script_value_to_float(argv[7]);
+	wid=script_value_to_int(cx,argv[6]);
+	varient=script_value_to_float(cx,argv[7]);
 
-	col.r=script_value_to_float(argv[8]);
-	col.g=script_value_to_float(argv[9]);
-	col.b=script_value_to_float(argv[10]);
+	col.r=script_value_to_float(cx,argv[8]);
+	col.g=script_value_to_float(cx,argv[9]);
+	col.b=script_value_to_float(cx,argv[10]);
 
-	life_msec=script_value_to_int(argv[11]);
+	life_msec=script_value_to_int(cx,argv[11]);
 
-	script_bool_to_value(effect_spawn_lightning(js.time.current_tick,&start_pt,&end_pt,wid,varient,&col,life_msec));
+	script_bool_to_value(cx,effect_spawn_lightning(js.time.current_tick,&start_pt,&end_pt,wid,varient,&col,life_msec));
     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -347,25 +347,25 @@ JSValueRef js_spawn_ray_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,
 	d3pnt			start_pt,end_pt;
 	d3col			col;
 	
-	start_pt.x=script_value_to_int(argv[0]);
-	start_pt.z=script_value_to_int(argv[1]);
-	start_pt.y=script_value_to_int(argv[2]);
+	start_pt.x=script_value_to_int(cx,argv[0]);
+	start_pt.z=script_value_to_int(cx,argv[1]);
+	start_pt.y=script_value_to_int(cx,argv[2]);
 
-	end_pt.x=script_value_to_int(argv[3]);
-	end_pt.z=script_value_to_int(argv[4]);
-	end_pt.y=script_value_to_int(argv[5]);
+	end_pt.x=script_value_to_int(cx,argv[3]);
+	end_pt.z=script_value_to_int(cx,argv[4]);
+	end_pt.y=script_value_to_int(cx,argv[5]);
 	
-	wid=script_value_to_int(argv[6]);
+	wid=script_value_to_int(cx,argv[6]);
 
-	col.r=script_value_to_float(argv[7]);
-	col.g=script_value_to_float(argv[8]);
-	col.b=script_value_to_float(argv[9]);
+	col.r=script_value_to_float(cx,argv[7]);
+	col.g=script_value_to_float(cx,argv[8]);
+	col.b=script_value_to_float(cx,argv[9]);
 
-	life_msec=script_value_to_int(argv[10]);
+	life_msec=script_value_to_int(cx,argv[10]);
 
-	script_bool_to_value(effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
+	script_bool_to_value(cx,effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -375,17 +375,17 @@ JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjec
 	d3col			col;
 	obj_type		*obj;
 	
-	start_pt.x=script_value_to_int(argv[0]);
-	start_pt.z=script_value_to_int(argv[1]);
-	start_pt.y=script_value_to_int(argv[2]);
+	start_pt.x=script_value_to_int(cx,argv[0]);
+	start_pt.z=script_value_to_int(cx,argv[1]);
+	start_pt.y=script_value_to_int(cx,argv[2]);
 
-	end_pt.x=script_value_to_int(argv[3]);
-	end_pt.z=script_value_to_int(argv[4]);
-	end_pt.y=script_value_to_int(argv[5]);
+	end_pt.x=script_value_to_int(cx,argv[3]);
+	end_pt.z=script_value_to_int(cx,argv[4]);
+	end_pt.y=script_value_to_int(cx,argv[5]);
 	
-	wid=script_value_to_int(argv[6]);
+	wid=script_value_to_int(cx,argv[6]);
 
-	life_msec=script_value_to_int(argv[7]);
+	life_msec=script_value_to_int(cx,argv[7]);
 
 		// team color
 
@@ -397,9 +397,9 @@ JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjec
 		if (obj!=NULL) object_get_tint(obj,&col);
 	}
 
-	script_bool_to_value(effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
+	script_bool_to_value(cx,effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec));
     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -413,18 +413,18 @@ JSValueRef js_spawn_shake_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_on
 	int				dist,sz,life_msec;
 	d3pnt			pt;
 	
-	pt.x=script_value_to_int(argv[0]);
-	pt.z=script_value_to_int(argv[1]);
-	pt.y=script_value_to_int(argv[2]);
+	pt.x=script_value_to_int(cx,argv[0]);
+	pt.z=script_value_to_int(cx,argv[1]);
+	pt.y=script_value_to_int(cx,argv[2]);
     
-    dist=script_value_to_int(argv[3]);
+    dist=script_value_to_int(cx,argv[3]);
 	
-	sz=script_value_to_int(argv[4]);
-	life_msec=script_value_to_int(argv[5]);
+	sz=script_value_to_int(cx,argv[4]);
+	life_msec=script_value_to_int(cx,argv[5]);
 	
-	script_bool_to_value(effect_spawn_shake(&pt,dist,sz,life_msec));
+	script_bool_to_value(cx,effect_spawn_shake(&pt,dist,sz,life_msec));
     
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -437,14 +437,14 @@ JSValueRef js_spawn_push_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj
 {
 	int				x,z,y,radius,force;
 	
-	x=script_value_to_int(argv[0]);
-	z=script_value_to_int(argv[1]);
-	y=script_value_to_int(argv[2]);
+	x=script_value_to_int(cx,argv[0]);
+	z=script_value_to_int(cx,argv[1]);
+	y=script_value_to_int(cx,argv[2]);
 	
-	radius=script_value_to_int(argv[3]);
-	force=script_value_to_int(argv[4]);
+	radius=script_value_to_int(cx,argv[3]);
+	force=script_value_to_int(cx,argv[4]);
 
 	collide_push_objects(x,y,z,radius,force);
-	return(script_bool_to_value(TRUE));
+	return(script_bool_to_value(cx,TRUE));
 }
 

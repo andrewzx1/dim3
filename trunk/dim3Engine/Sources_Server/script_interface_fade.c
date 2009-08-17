@@ -101,20 +101,20 @@ JSValueRef js_interface_fade_circle_func(JSContextRef cx,JSObjectRef func,JSObje
 	bool			auto_clear;
 	obj_type		*obj;
 	
-	x=script_value_to_int(argv[0]);
-	y=script_value_to_int(argv[1]);
+	x=script_value_to_int(cx,argv[0]);
+	y=script_value_to_int(cx,argv[1]);
     
-    start_sz=script_value_to_float(argv[2]);
-    end_sz=script_value_to_float(argv[3]);
+    start_sz=script_value_to_float(cx,argv[2]);
+    end_sz=script_value_to_float(cx,argv[3]);
 
-	life_msec=script_value_to_int(argv[4]);
+	life_msec=script_value_to_int(cx,argv[4]);
 	
-	auto_clear=script_value_to_bool(argv[5]);
+	auto_clear=script_value_to_bool(cx,argv[5]);
 	
 	obj=object_find_uid(server.player_obj_uid);
 	object_fade_start(js.time.current_tick,obj,x,y,start_sz,end_sz,life_msec,auto_clear);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_fade_clear_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -124,6 +124,6 @@ JSValueRef js_interface_fade_clear_func(JSContextRef cx,JSObjectRef func,JSObjec
 	obj=object_find_uid(server.player_obj_uid);
 	object_fade_clear(obj);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
