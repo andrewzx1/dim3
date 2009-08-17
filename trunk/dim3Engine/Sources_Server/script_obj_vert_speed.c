@@ -45,12 +45,12 @@ void js_obj_vert_speed_set_acceleration(JSContextRef cx,JSValueRef vp,JSValueRef
 void js_obj_vert_speed_set_deceleration(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_vert_speed_set_flySlop(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_vert_speed_props[]={
-							{"normal",					js_obj_vert_speed_get_normal,			js_obj_vert_speed_set_normal},
-							{"acceleration",			js_obj_vert_speed_get_acceleration,		js_obj_vert_speed_set_acceleration},
-							{"deceleration",			js_obj_vert_speed_get_deceleration,		js_obj_vert_speed_set_deceleration},
-							{"flySlop",					js_obj_vert_speed_get_flySlop,			js_obj_vert_speed_set_flySlop},
-							{0}};
+JSStaticValue 		obj_vert_speed_props[]={
+							{"normal",					js_obj_vert_speed_get_normal,			js_obj_vert_speed_set_normal,			kJSPropertyAttributeDontDelete},
+							{"acceleration",			js_obj_vert_speed_get_acceleration,		js_obj_vert_speed_set_acceleration,		kJSPropertyAttributeDontDelete},
+							{"deceleration",			js_obj_vert_speed_get_deceleration,		js_obj_vert_speed_set_deceleration,		kJSPropertyAttributeDontDelete},
+							{"flySlop",					js_obj_vert_speed_get_flySlop,			js_obj_vert_speed_set_flySlop,			kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_vert_speed_class;
 
@@ -62,7 +62,7 @@ JSClassRef			obj_vert_speed_class;
 
 void script_init_obj_vert_speed_object(void)
 {
-	obj_vert_speed_class=script_create_class("obj_vert_speed_class",js_obj_vert_speed_get_property,js_obj_vert_speed_set_property);
+	obj_vert_speed_class=script_create_class("obj_vert_speed_class",obj_vert_speed_props,NULL);
 }
 
 void script_free_obj_vert_speed_object(void)
@@ -70,9 +70,9 @@ void script_free_obj_vert_speed_object(void)
 	script_free_class(obj_vert_speed_class);
 }
 
-JSObjectRef script_add_obj_vert_speed_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_vert_speed_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_vert_speed_class,"verticalSpeed",obj_vert_speed_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_vert_speed_class,"verticalSpeed",obj_vert_speed_props,NULL));
 }
 
 /* =======================================================

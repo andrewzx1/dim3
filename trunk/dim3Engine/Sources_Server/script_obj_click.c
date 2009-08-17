@@ -44,12 +44,12 @@ JSValueRef js_obj_click_get_objectName(JSContextRef cx);
 void js_obj_click_set_crosshairUp(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_click_set_crosshairDown(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_click_props[]={
-							{"crosshairUp",			js_obj_click_get_crosshairUp,			js_obj_click_set_crosshairUp},
-							{"crosshairDown",		js_obj_click_get_crosshairDown,			js_obj_click_set_crosshairDown},
-							{"objectId",			js_obj_click_get_objectId,				NULL},
-							{"objectName",			js_obj_click_get_objectName,			NULL},
-							{0}};
+JSStaticValue 		obj_click_props[]={
+							{"crosshairUp",			js_obj_click_get_crosshairUp,			js_obj_click_set_crosshairUp,		kJSPropertyAttributeDontDelete},
+							{"crosshairDown",		js_obj_click_get_crosshairDown,			js_obj_click_set_crosshairDown,		kJSPropertyAttributeDontDelete},
+							{"objectId",			js_obj_click_get_objectId,				NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectName",			js_obj_click_get_objectName,			NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_click_class;
 
@@ -61,7 +61,7 @@ JSClassRef			obj_click_class;
 
 void script_init_obj_click_object(void)
 {
-	obj_click_class=script_create_class("obj_click_class",js_obj_click_get_property,js_obj_click_set_property);
+	obj_click_class=script_create_class("obj_click_class",obj_click_props,NULL);
 }
 
 void script_free_obj_click_object(void)
@@ -69,9 +69,9 @@ void script_free_obj_click_object(void)
 	script_free_class(obj_click_class);
 }
 
-JSObjectRef script_add_obj_click_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_click_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_click_class,"click",obj_click_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_click_class,"click",obj_click_props,NULL));
 }
 
 /* =======================================================

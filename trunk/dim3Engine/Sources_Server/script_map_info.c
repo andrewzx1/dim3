@@ -40,11 +40,11 @@ JSValueRef js_map_info_get_file(JSContextRef cx);
 JSValueRef js_map_info_get_title(JSContextRef cx);
 JSValueRef js_map_info_get_author(JSContextRef cx);
 
-script_js_property	map_info_props[]={
-							{"file",				js_map_info_get_file,				NULL},
-							{"title",				js_map_info_get_title,				NULL},
-							{"author",				js_map_info_get_author,				NULL},
-							{0}};
+JSStaticValue 		map_info_props[]={
+							{"file",				js_map_info_get_file,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"title",				js_map_info_get_title,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"author",				js_map_info_get_author,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			map_info_class;
 
@@ -56,7 +56,7 @@ JSClassRef			map_info_class;
 
 void script_init_map_info_object(void)
 {
-	map_info_class=script_create_class("map_info_class",js_map_info_get_property,js_map_info_set_property);
+	map_info_class=script_create_class("map_info_class",map_info_props,NULL);
 }
 
 void script_free_map_info_object(void)
@@ -64,9 +64,9 @@ void script_free_map_info_object(void)
 	script_free_class(map_info_class);
 }
 
-JSObjectRef script_add_map_info_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_info_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_info_class,"info",map_info_props,NULL));
+	return(script_create_child_object(cx,parent_obj,map_info_class,"info",map_info_props,NULL));
 }
 
 /* =======================================================

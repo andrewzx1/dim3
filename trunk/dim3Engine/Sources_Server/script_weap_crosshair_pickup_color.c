@@ -43,11 +43,11 @@ void js_weap_crosshair_pickup_color_set_blue(JSContextRef cx,JSValueRef vp,JSVal
 
 extern js_type			js;
 
-script_js_property	weap_crosshair_pickup_color_props[]={
-							{"red",					js_weap_crosshair_pickup_color_get_red,		js_weap_crosshair_pickup_color_set_red},
-							{"green",				js_weap_crosshair_pickup_color_get_green,	js_weap_crosshair_pickup_color_set_green},
-							{"blue",				js_weap_crosshair_pickup_color_get_blue,	js_weap_crosshair_pickup_color_set_blue},
-							{0}};
+JSStaticValue 		weap_crosshair_pickup_color_props[]={
+							{"red",					js_weap_crosshair_pickup_color_get_red,		js_weap_crosshair_pickup_color_set_red,			kJSPropertyAttributeDontDelete},
+							{"green",				js_weap_crosshair_pickup_color_get_green,	js_weap_crosshair_pickup_color_set_green,		kJSPropertyAttributeDontDelete},
+							{"blue",				js_weap_crosshair_pickup_color_get_blue,	js_weap_crosshair_pickup_color_set_blue,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			weap_crosshair_pickup_color_class;
 
@@ -59,7 +59,7 @@ JSClassRef			weap_crosshair_pickup_color_class;
 
 void script_init_weap_crosshair_pickup_color_object(void)
 {
-	weap_crosshair_pickup_color_class=script_create_class("weap_crosshair_pickup_color_class",js_weap_crosshair_pickup_color_get_property,js_weap_crosshair_pickup_color_set_property);
+	weap_crosshair_pickup_color_class=script_create_class("weap_crosshair_pickup_color_class",weap_crosshair_pickup_color_props,NULL);
 }
 
 void script_free_weap_crosshair_pickup_color_object(void)
@@ -67,9 +67,9 @@ void script_free_weap_crosshair_pickup_color_object(void)
 	script_free_class(weap_crosshair_pickup_color_class);
 }
 
-JSObjectRef script_add_weap_crosshair_pickup_color_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_crosshair_pickup_color_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_crosshair_pickup_color_class,"pickupColor",weap_crosshair_pickup_color_props,NULL));
+	return(script_create_child_object(cx,parent_obj,weap_crosshair_pickup_color_class,"pickupColor",weap_crosshair_pickup_color_props,NULL));
 }
 
 /* =======================================================

@@ -58,22 +58,22 @@ void js_weap_melee_set_fallOff(JSContextRef cx,JSValueRef vp,JSValueRef *excepti
 JSValueRef js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	weap_melee_props[]={
-							{"strikeBoneTag",			js_weap_melee_get_strikeBoneTag,			js_weap_melee_set_strikeBoneTag},
-							{"strikePoseName",			js_weap_melee_get_strikePoseName,			js_weap_melee_set_strikePoseName},
-							{"objectStrikeBoneTag",		js_weap_melee_get_objectStrikeBoneTag,		js_weap_melee_set_objectStrikeBoneTag},
-							{"objectStrikePoseName",	js_weap_melee_get_objectStrikePoseName,		js_weap_melee_set_objectStrikePoseName},
-							{"radius",					js_weap_melee_get_radius,					js_weap_melee_set_radius},
-							{"distance",				js_weap_melee_get_distance,					js_weap_melee_set_distance},
-							{"damage",					js_weap_melee_get_damage,					js_weap_melee_set_damage},
-							{"force",					js_weap_melee_get_force,					js_weap_melee_set_force},
-							{"fallOff",					js_weap_melee_get_fallOff,					js_weap_melee_set_fallOff},
-							{0}};
+JSStaticValue 		weap_melee_props[]={
+							{"strikeBoneTag",			js_weap_melee_get_strikeBoneTag,			js_weap_melee_set_strikeBoneTag,			kJSPropertyAttributeDontDelete},
+							{"strikePoseName",			js_weap_melee_get_strikePoseName,			js_weap_melee_set_strikePoseName,			kJSPropertyAttributeDontDelete},
+							{"objectStrikeBoneTag",		js_weap_melee_get_objectStrikeBoneTag,		js_weap_melee_set_objectStrikeBoneTag,		kJSPropertyAttributeDontDelete},
+							{"objectStrikePoseName",	js_weap_melee_get_objectStrikePoseName,		js_weap_melee_set_objectStrikePoseName,		kJSPropertyAttributeDontDelete},
+							{"radius",					js_weap_melee_get_radius,					js_weap_melee_set_radius,					kJSPropertyAttributeDontDelete},
+							{"distance",				js_weap_melee_get_distance,					js_weap_melee_set_distance,					kJSPropertyAttributeDontDelete},
+							{"damage",					js_weap_melee_get_damage,					js_weap_melee_set_damage,					kJSPropertyAttributeDontDelete},
+							{"force",					js_weap_melee_get_force,					js_weap_melee_set_force,					kJSPropertyAttributeDontDelete},
+							{"fallOff",					js_weap_melee_get_fallOff,					js_weap_melee_set_fallOff,					kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	weap_melee_functions[]={
-							{"spawnFromWeaponBone",		js_weap_melee_spawn_from_weapon_bone_func,		0},
-							{"spawnFromObjectBone",		js_weap_melee_spawn_from_object_bone_func,		0},
-							{0}};
+JSStaticFunction	weap_melee_functions[]={
+							{"spawnFromWeaponBone",		js_weap_melee_spawn_from_weapon_bone_func,		kJSPropertyAttributeDontDelete},
+							{"spawnFromObjectBone",		js_weap_melee_spawn_from_object_bone_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			weap_melee_class;
 
@@ -85,7 +85,7 @@ JSClassRef			weap_melee_class;
 
 void script_init_weap_melee_object(void)
 {
-	weap_melee_class=script_create_class("weap_melee_class",js_weap_melee_get_property,js_weap_melee_set_property);
+	weap_melee_class=script_create_class("weap_melee_class",weap_melee_props,weap_melee_functions);
 }
 
 void script_free_weap_melee_object(void)
@@ -93,9 +93,9 @@ void script_free_weap_melee_object(void)
 	script_free_class(weap_melee_class);
 }
 
-JSObjectRef script_add_weap_melee_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_melee_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_melee_class,"melee",weap_melee_props,weap_melee_functions));
+	return(script_create_child_object(cx,parent_obj,weap_melee_class,"melee",weap_melee_props,weap_melee_functions));
 }
 
 /* =======================================================

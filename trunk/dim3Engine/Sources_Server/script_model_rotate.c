@@ -42,11 +42,11 @@ void js_model_rotate_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
-script_js_property	model_rotate_props[]={
-							{"x",					js_model_rotate_get_x,				js_model_rotate_set_x},
-							{"y",					js_model_rotate_get_y,				js_model_rotate_set_y},
-							{"z",					js_model_rotate_get_z,				js_model_rotate_set_z},
-							{0}};
+JSStaticValue 		model_rotate_props[]={
+							{"x",					js_model_rotate_get_x,				js_model_rotate_set_x,		kJSPropertyAttributeDontDelete},
+							{"y",					js_model_rotate_get_y,				js_model_rotate_set_y,		kJSPropertyAttributeDontDelete},
+							{"z",					js_model_rotate_get_z,				js_model_rotate_set_z,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			model_rotate_class;
 
@@ -58,7 +58,7 @@ JSClassRef			model_rotate_class;
 
 void script_init_model_rotate_object(void)
 {
-	model_rotate_class=script_create_class("model_rotate_class",js_model_rotate_get_property,js_model_rotate_set_property);
+	model_rotate_class=script_create_class("model_rotate_class",model_rotate_props,NULL);
 }
 
 void script_free_model_rotate_object(void)
@@ -66,9 +66,9 @@ void script_free_model_rotate_object(void)
 	script_free_class(model_rotate_class);
 }
 
-JSObjectRef script_add_model_rotate_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_rotate_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_rotate_class,"rotate",model_rotate_props,NULL));
+	return(script_create_child_object(cx,parent_obj,model_rotate_class,"rotate",model_rotate_props,NULL));
 }
 
 /* =======================================================

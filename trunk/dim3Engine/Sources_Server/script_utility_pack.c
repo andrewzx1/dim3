@@ -39,11 +39,11 @@ JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	utility_pack_functions[]={
-							{"pack",				js_utility_pack_pack_func,				2},
-							{"unpackHigh",			js_utility_pack_unpack_high_func,		1},
-							{"unpackLow",			js_utility_pack_unpack_low_func,		1},
-							{0}};
+JSStaticFunction	utility_pack_functions[]={
+							{"pack",				js_utility_pack_pack_func,				kJSPropertyAttributeDontDelete},
+							{"unpackHigh",			js_utility_pack_unpack_high_func,		kJSPropertyAttributeDontDelete},
+							{"unpackLow",			js_utility_pack_unpack_low_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			utility_pack_class;
 
@@ -55,7 +55,7 @@ JSClassRef			utility_pack_class;
 
 void script_init_utility_pack_object(void)
 {
-	utility_pack_class=script_create_class("utility_pack_class",js_utility_pack_get_property,js_utility_pack_set_property);
+	utility_pack_class=script_create_class("utility_pack_class",NULL,utility_pack_functions);
 }
 
 void script_free_utility_pack_object(void)
@@ -63,9 +63,9 @@ void script_free_utility_pack_object(void)
 	script_free_class(utility_pack_class);
 }
 
-JSObjectRef script_add_utility_pack_object(JSObjectRef parent_obj)
+JSObjectRef script_add_utility_pack_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,utility_pack_class,"pack",NULL,utility_pack_functions));
+	return(script_create_child_object(cx,parent_obj,utility_pack_class,"pack",NULL,utility_pack_functions));
 }
 
 /* =======================================================

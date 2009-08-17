@@ -42,14 +42,14 @@ JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx);
 void js_camera_setting_set_type(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	camera_setting_props[]={
-							{"type",				js_camera_setting_get_type,				js_camera_setting_set_type},
-							{"attachObjectId",		js_camera_setting_get_attachObjectId,	NULL},
-							{0}};
+JSStaticValue 		camera_setting_props[]={
+							{"type",				js_camera_setting_get_type,				js_camera_setting_set_type,		kJSPropertyAttributeDontDelete},
+							{"attachObjectId",		js_camera_setting_get_attachObjectId,	NULL,							kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	camera_setting_functions[]={
-							{"attach",				js_camera_setting_attach_func,			1},
-							{0}};
+JSStaticFunction	camera_setting_functions[]={
+							{"attach",				js_camera_setting_attach_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			camera_setting_class;
 
@@ -61,7 +61,7 @@ JSClassRef			camera_setting_class;
 
 void script_init_camera_setting_object(void)
 {
-	camera_setting_class=script_create_class("camera_setting_class",js_camera_setting_get_property,js_camera_setting_set_property);
+	camera_setting_class=script_create_class("camera_setting_class",camera_setting_props,camera_setting_functions);
 }
 
 void script_free_camera_setting_object(void)
@@ -69,9 +69,9 @@ void script_free_camera_setting_object(void)
 	script_free_class(camera_setting_class);
 }
 
-JSObjectRef script_add_camera_setting_object(JSObjectRef parent_obj)
+JSObjectRef script_add_camera_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,camera_setting_class,"setting",camera_setting_props,camera_setting_functions));
+	return(script_create_child_object(cx,parent_obj,camera_setting_class,"setting",camera_setting_props,camera_setting_functions));
 }
 
 /* =======================================================

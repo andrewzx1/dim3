@@ -55,22 +55,22 @@ JSValueRef js_obj_size_grow_over_time_func(JSContextRef cx,JSObjectRef func,JSOb
 JSValueRef js_obj_size_grow_over_time_change_size_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_size_grow_over_time_change_offset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_size_props[]={
-							{"x",					js_obj_size_get_x,					js_obj_size_set_x},
-							{"y",					js_obj_size_get_y,					js_obj_size_set_y},
-							{"z",					js_obj_size_get_z,					js_obj_size_set_z},
-							{"eyeOffset",			js_obj_size_get_eyeOffset,			js_obj_size_set_eyeOffset},
-							{"weight",				js_obj_size_get_weight,				js_obj_size_set_weight},
-							{"clickDistance",		js_obj_size_get_clickDistance,		js_obj_size_set_clickDistance},
-							{"cameraZAdjust",		js_obj_size_get_cameraZAdjust,		js_obj_size_set_cameraZAdjust},
-							{0}};
+JSStaticValue 		obj_size_props[]={
+							{"x",					js_obj_size_get_x,					js_obj_size_set_x,					kJSPropertyAttributeDontDelete},
+							{"y",					js_obj_size_get_y,					js_obj_size_set_y,					kJSPropertyAttributeDontDelete},
+							{"z",					js_obj_size_get_z,					js_obj_size_set_z,					kJSPropertyAttributeDontDelete},
+							{"eyeOffset",			js_obj_size_get_eyeOffset,			js_obj_size_set_eyeOffset,			kJSPropertyAttributeDontDelete},
+							{"weight",				js_obj_size_get_weight,				js_obj_size_set_weight,				kJSPropertyAttributeDontDelete},
+							{"clickDistance",		js_obj_size_get_clickDistance,		js_obj_size_set_clickDistance,		kJSPropertyAttributeDontDelete},
+							{"cameraZAdjust",		js_obj_size_get_cameraZAdjust,		js_obj_size_set_cameraZAdjust,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	obj_size_functions[]={
-							{"growTo",						js_obj_size_grow_to_func,						1},
-							{"growOverTime",				js_obj_size_grow_over_time_func,				2},
-							{"growOverTimeChangeSize",		js_obj_size_grow_over_time_change_size_func,	5},
-							{"growOverTimeChangeOffset",	js_obj_size_grow_over_time_change_offset_func,	5},
-							{0}};
+JSStaticFunction	obj_size_functions[]={
+							{"growTo",						js_obj_size_grow_to_func,						kJSPropertyAttributeDontDelete},
+							{"growOverTime",				js_obj_size_grow_over_time_func,				kJSPropertyAttributeDontDelete},
+							{"growOverTimeChangeSize",		js_obj_size_grow_over_time_change_size_func,	kJSPropertyAttributeDontDelete},
+							{"growOverTimeChangeOffset",	js_obj_size_grow_over_time_change_offset_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_size_class;
 
@@ -82,7 +82,7 @@ JSClassRef			obj_size_class;
 
 void script_init_obj_size_object(void)
 {
-	obj_size_class=script_create_class("obj_size_class",js_obj_size_get_property,js_obj_size_set_property);
+	obj_size_class=script_create_class("obj_size_class",obj_size_props,obj_size_functions);
 }
 
 void script_free_obj_size_object(void)
@@ -90,9 +90,9 @@ void script_free_obj_size_object(void)
 	script_free_class(obj_size_class);
 }
 
-JSObjectRef script_add_obj_size_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_size_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_size_class,"size",obj_size_props,obj_size_functions));
+	return(script_create_child_object(cx,parent_obj,obj_size_class,"size",obj_size_props,obj_size_functions));
 }
 
 /* =======================================================

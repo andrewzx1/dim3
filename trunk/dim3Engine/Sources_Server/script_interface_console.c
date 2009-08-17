@@ -40,10 +40,10 @@ bool js_interface_console_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
 JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	interface_console_functions[]={
-							{"write",				js_interface_console_write_func,		1},
-							{"read",				js_interface_console_read_func,			0},
-							{0}};
+JSStaticFunction	interface_console_functions[]={
+							{"write",				js_interface_console_write_func,		kJSPropertyAttributeDontDelete},
+							{"read",				js_interface_console_read_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			interface_console_class;
 
@@ -55,7 +55,7 @@ JSClassRef			interface_console_class;
 
 void script_init_interface_console_object(void)
 {
-	interface_console_class=script_create_class("interface_console_class",js_interface_console_get_property,js_interface_console_set_property);
+	interface_console_class=script_create_class("interface_console_class",NULL,interface_console_functions);
 }
 
 void script_free_interface_console_object(void)
@@ -63,9 +63,9 @@ void script_free_interface_console_object(void)
 	script_free_class(interface_console_class);
 }
 
-JSObjectRef script_add_interface_console_object(JSObjectRef parent_obj)
+JSObjectRef script_add_interface_console_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,interface_console_class,"console",NULL,interface_console_functions));
+	return(script_create_child_object(cx,parent_obj,interface_console_class,"console",NULL,interface_console_functions));
 }
 
 /* =======================================================

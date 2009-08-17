@@ -47,13 +47,13 @@ void js_weap_hand_set_selectShift(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 void js_weap_hand_set_bobSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_weap_hand_set_bobAngle(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	weap_hand_props[]={
-							{"raiseTick",			js_weap_hand_get_raiseTick,				js_weap_hand_set_raiseTick},
-							{"lowerTick",			js_weap_hand_get_lowerTick,				js_weap_hand_set_lowerTick},
-							{"selectShift",			js_weap_hand_get_selectShift,			js_weap_hand_set_selectShift},
-							{"bobSpeed",			js_weap_hand_get_bobSpeed,				js_weap_hand_set_bobSpeed},
-							{"bobAngle",			js_weap_hand_get_bobAngle,				js_weap_hand_set_bobAngle},
-							{0}};
+JSStaticValue 		weap_hand_props[]={
+							{"raiseTick",			js_weap_hand_get_raiseTick,				js_weap_hand_set_raiseTick,		kJSPropertyAttributeDontDelete},
+							{"lowerTick",			js_weap_hand_get_lowerTick,				js_weap_hand_set_lowerTick,		kJSPropertyAttributeDontDelete},
+							{"selectShift",			js_weap_hand_get_selectShift,			js_weap_hand_set_selectShift,	kJSPropertyAttributeDontDelete},
+							{"bobSpeed",			js_weap_hand_get_bobSpeed,				js_weap_hand_set_bobSpeed,		kJSPropertyAttributeDontDelete},
+							{"bobAngle",			js_weap_hand_get_bobAngle,				js_weap_hand_set_bobAngle,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			weap_hand_class;
 
@@ -65,7 +65,7 @@ JSClassRef			weap_hand_class;
 
 void script_init_weap_hand_object(void)
 {
-	weap_hand_class=script_create_class("weap_hand_class",js_weap_hand_get_property,js_weap_hand_set_property);
+	weap_hand_class=script_create_class("weap_hand_class",weap_hand_props,NULL);
 }
 
 void script_free_weap_hand_object(void)
@@ -73,9 +73,9 @@ void script_free_weap_hand_object(void)
 	script_free_class(weap_hand_class);
 }
 
-JSObjectRef script_add_weap_hand_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_hand_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_hand_class,"hand",weap_hand_props,NULL));
+	return(script_create_child_object(cx,parent_obj,weap_hand_class,"hand",weap_hand_props,NULL));
 }
 
 /* =======================================================

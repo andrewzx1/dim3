@@ -52,17 +52,17 @@ JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObject
 JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	sound_functions[]={
-							{"play",				js_sound_play_func,						5},
-							{"playAtObject",		js_sound_play_at_object_func,			3},
-							{"playGlobal",			js_sound_play_global_func,				2},
-							{"playGlobalPlayer",	js_sound_play_global_player_func,		2},
-							{"startMusic",			js_sound_start_music_func,				1},
-							{"stopMusic",			js_sound_stop_music_func,				0},
-							{"fadeInMusic",			js_sound_fade_in_music_func,			2},
-							{"fadeOutMusic",		js_sound_fade_out_music_func,			1},
-							{"fadeOutFadeInMusic",	js_sound_fade_out_fade_in_music_func,	1},
-							{0}};
+JSStaticFunction	sound_functions[]={
+							{"play",				js_sound_play_func,						kJSPropertyAttributeDontDelete},
+							{"playAtObject",		js_sound_play_at_object_func,			kJSPropertyAttributeDontDelete},
+							{"playGlobal",			js_sound_play_global_func,				kJSPropertyAttributeDontDelete},
+							{"playGlobalPlayer",	js_sound_play_global_player_func,		kJSPropertyAttributeDontDelete},
+							{"startMusic",			js_sound_start_music_func,				kJSPropertyAttributeDontDelete},
+							{"stopMusic",			js_sound_stop_music_func,				kJSPropertyAttributeDontDelete},
+							{"fadeInMusic",			js_sound_fade_in_music_func,			kJSPropertyAttributeDontDelete},
+							{"fadeOutMusic",		js_sound_fade_out_music_func,			kJSPropertyAttributeDontDelete},
+							{"fadeOutFadeInMusic",	js_sound_fade_out_fade_in_music_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			sound_class;
 
@@ -74,7 +74,7 @@ JSClassRef			sound_class;
 
 void script_init_global_sound_object(void)
 {
-	sound_class=script_create_class("sound_class",js_sound_get_property,js_sound_set_property);
+	sound_class=script_create_class("sound_class",NULL,sound_functions);
 }
 
 void script_free_global_sound_object(void)
@@ -82,9 +82,9 @@ void script_free_global_sound_object(void)
 	script_free_class(sound_class);
 }
 
-JSObjectRef script_add_global_sound_object(JSObjectRef parent_obj)
+JSObjectRef script_add_global_sound_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,sound_class,"sound",NULL,sound_functions));
+	return(script_create_child_object(cx,parent_obj,sound_class,"sound",NULL,sound_functions));
 }
 
 /* =======================================================

@@ -47,15 +47,15 @@ JSValueRef js_multiplayer_setting_get_type(JSContextRef cx);
 JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx);
 JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	multiplayer_setting_props[]={
-							{"on",					js_multiplayer_setting_get_on,					NULL},
-							{"type",				js_multiplayer_setting_get_type,				NULL},
-							{"teamPlay",			js_multiplayer_setting_get_teamPlay,			NULL},
-							{0}};
+JSStaticValue 		multiplayer_setting_props[]={
+							{"on",					js_multiplayer_setting_get_on,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"type",				js_multiplayer_setting_get_type,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"teamPlay",			js_multiplayer_setting_get_teamPlay,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	multiplayer_setting_functions[]={
-							{"checkOption",			js_multiplayer_setting_check_option_func,		1},
-							{0}};
+JSStaticFunction	multiplayer_setting_functions[]={
+							{"checkOption",			js_multiplayer_setting_check_option_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			multiplayer_setting_class;
 
@@ -67,7 +67,7 @@ JSClassRef			multiplayer_setting_class;
 
 void script_init_multiplayer_setting_object(void)
 {
-	multiplayer_setting_class=script_create_class("multiplayer_setting_class",js_multiplayer_setting_get_property,js_multiplayer_setting_set_property);
+	multiplayer_setting_class=script_create_class("multiplayer_setting_class",multiplayer_setting_props,multiplayer_setting_functions);
 }
 
 void script_free_multiplayer_setting_object(void)
@@ -75,9 +75,9 @@ void script_free_multiplayer_setting_object(void)
 	script_free_class(multiplayer_setting_class);
 }
 
-JSObjectRef script_add_multiplayer_setting_object(JSObjectRef parent_obj)
+JSObjectRef script_add_multiplayer_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,multiplayer_setting_class,"setting",multiplayer_setting_props,multiplayer_setting_functions));
+	return(script_create_child_object(cx,parent_obj,multiplayer_setting_class,"setting",multiplayer_setting_props,multiplayer_setting_functions));
 }
 
 /* =======================================================

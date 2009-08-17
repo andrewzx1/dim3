@@ -52,25 +52,25 @@ JSValueRef js_obj_pickup_add_health_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_obj_pickup_add_custom_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_pickup_props[]={
-							{"objectId",			js_obj_pickup_get_objectId,			NULL},
-							{"objectName",			js_obj_pickup_get_objectName,		NULL},
-							{"objectIsPlayer",		js_obj_pickup_get_objectIsPlayer,	NULL},
-							{"itemId",				js_obj_pickup_get_itemId,			NULL},
-							{"itemName",			js_obj_pickup_get_itemName,			NULL},
-							{0}};
+JSStaticValue 		obj_pickup_props[]={
+							{"objectId",			js_obj_pickup_get_objectId,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectName",			js_obj_pickup_get_objectName,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayer",		js_obj_pickup_get_objectIsPlayer,	NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"itemId",				js_obj_pickup_get_itemId,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"itemName",			js_obj_pickup_get_itemName,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	obj_pickup_functions[]={
-							{"addWeapon",			js_obj_pickup_add_weapon_func,		2},
-							{"swapWeapon",			js_obj_pickup_swap_weapon_func,		2},
-							{"addAmmo",				js_obj_pickup_add_ammo_func,		3},
-							{"addClip",				js_obj_pickup_add_clip_func,		3},
-							{"addAltAmmo",			js_obj_pickup_add_alt_ammo_func,	3},
-							{"addAltClip",			js_obj_pickup_add_alt_clip_func,	3},
-							{"addHealth",			js_obj_pickup_add_health_func,		2},
-							{"addCustom",			js_obj_pickup_add_custom_func,		2},
-							{"cancel",				js_obj_pickup_cancel_func,			0},
-							{0}};
+JSStaticFunction	obj_pickup_functions[]={
+							{"addWeapon",			js_obj_pickup_add_weapon_func,		kJSPropertyAttributeDontDelete},
+							{"swapWeapon",			js_obj_pickup_swap_weapon_func,		kJSPropertyAttributeDontDelete},
+							{"addAmmo",				js_obj_pickup_add_ammo_func,		kJSPropertyAttributeDontDelete},
+							{"addClip",				js_obj_pickup_add_clip_func,		kJSPropertyAttributeDontDelete},
+							{"addAltAmmo",			js_obj_pickup_add_alt_ammo_func,	kJSPropertyAttributeDontDelete},
+							{"addAltClip",			js_obj_pickup_add_alt_clip_func,	kJSPropertyAttributeDontDelete},
+							{"addHealth",			js_obj_pickup_add_health_func,		kJSPropertyAttributeDontDelete},
+							{"addCustom",			js_obj_pickup_add_custom_func,		kJSPropertyAttributeDontDelete},
+							{"cancel",				js_obj_pickup_cancel_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_pickup_class;
 
@@ -82,7 +82,7 @@ JSClassRef			obj_pickup_class;
 
 void script_init_obj_pickup_object(void)
 {
-	obj_pickup_class=script_create_class("obj_pickup_class",js_obj_pickup_get_property,js_obj_pickup_set_property);
+	obj_pickup_class=script_create_class("obj_pickup_class",obj_pickup_props,obj_pickup_functions);
 }
 
 void script_free_obj_pickup_object(void)
@@ -90,9 +90,9 @@ void script_free_obj_pickup_object(void)
 	script_free_class(obj_pickup_class);
 }
 
-JSObjectRef script_add_obj_pickup_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_pickup_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_pickup_class,"pickup",obj_pickup_props,obj_pickup_functions));
+	return(script_create_child_object(cx,parent_obj,obj_pickup_class,"pickup",obj_pickup_props,obj_pickup_functions));
 }
 
 /* =======================================================

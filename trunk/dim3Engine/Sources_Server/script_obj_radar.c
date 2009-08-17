@@ -46,12 +46,12 @@ void js_obj_radar_set_icon(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_radar_set_motionOnly(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_radar_set_alwaysVisible(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_radar_props[]={
-							{"on",					js_obj_radar_get_on,				js_obj_radar_set_on},
-							{"icon",				js_obj_radar_get_icon,				js_obj_radar_set_icon},
-							{"motionOnly",			js_obj_radar_get_motionOnly,		js_obj_radar_set_motionOnly},
-							{"alwaysVisible",		js_obj_radar_get_alwaysVisible,		js_obj_radar_set_alwaysVisible},
-							{0}};
+JSStaticValue 		obj_radar_props[]={
+							{"on",					js_obj_radar_get_on,				js_obj_radar_set_on,				kJSPropertyAttributeDontDelete},
+							{"icon",				js_obj_radar_get_icon,				js_obj_radar_set_icon,				kJSPropertyAttributeDontDelete},
+							{"motionOnly",			js_obj_radar_get_motionOnly,		js_obj_radar_set_motionOnly,		kJSPropertyAttributeDontDelete},
+							{"alwaysVisible",		js_obj_radar_get_alwaysVisible,		js_obj_radar_set_alwaysVisible,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
 JSClassRef			obj_radar_class;
 
@@ -63,7 +63,7 @@ JSClassRef			obj_radar_class;
 
 void script_init_obj_radar_object(void)
 {
-	obj_radar_class=script_create_class("obj_radar_class",js_obj_radar_get_property,js_obj_radar_set_property);
+	obj_radar_class=script_create_class("obj_radar_class",obj_radar_props,NULL);
 }
 
 void script_free_obj_radar_object(void)
@@ -71,9 +71,9 @@ void script_free_obj_radar_object(void)
 	script_free_class(obj_radar_class);
 }
 
-JSObjectRef script_add_obj_radar_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_radar_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_radar_class,"radar",obj_radar_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_radar_class,"radar",obj_radar_props,NULL));
 }
 
 /* =======================================================

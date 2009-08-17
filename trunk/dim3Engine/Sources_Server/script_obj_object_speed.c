@@ -51,15 +51,15 @@ void js_obj_object_speed_set_bumpSmoothFactor(JSContextRef cx,JSValueRef vp,JSVa
 void js_obj_object_speed_set_bounceFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_object_speed_set_noSlide(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_object_speed_props[]={
-							{"jumpHeight",				js_obj_object_speed_get_jumpHeight,			js_obj_object_speed_set_jumpHeight},
-							{"duckAdd",					js_obj_object_speed_get_duckAdd,			js_obj_object_speed_set_duckAdd},
-							{"duckChange",				js_obj_object_speed_get_duckChange,			js_obj_object_speed_set_duckChange},
-							{"bumpHeight",				js_obj_object_speed_get_bumpHeight,			js_obj_object_speed_set_bumpHeight},
-							{"bumpSmoothFactor",		js_obj_object_speed_get_bumpSmoothFactor,	js_obj_object_speed_set_bumpSmoothFactor},
-							{"bounceFactor",			js_obj_object_speed_get_bounceFactor,		js_obj_object_speed_set_bounceFactor},
-							{"noSlide",					js_obj_object_speed_get_noSlide,			js_obj_object_speed_set_noSlide},
-							{0}};
+JSStaticValue 		obj_object_speed_props[]={
+							{"jumpHeight",				js_obj_object_speed_get_jumpHeight,			js_obj_object_speed_set_jumpHeight,			kJSPropertyAttributeDontDelete},
+							{"duckAdd",					js_obj_object_speed_get_duckAdd,			js_obj_object_speed_set_duckAdd,			kJSPropertyAttributeDontDelete},
+							{"duckChange",				js_obj_object_speed_get_duckChange,			js_obj_object_speed_set_duckChange,			kJSPropertyAttributeDontDelete},
+							{"bumpHeight",				js_obj_object_speed_get_bumpHeight,			js_obj_object_speed_set_bumpHeight,			kJSPropertyAttributeDontDelete},
+							{"bumpSmoothFactor",		js_obj_object_speed_get_bumpSmoothFactor,	js_obj_object_speed_set_bumpSmoothFactor,	kJSPropertyAttributeDontDelete},
+							{"bounceFactor",			js_obj_object_speed_get_bounceFactor,		js_obj_object_speed_set_bounceFactor,		kJSPropertyAttributeDontDelete},
+							{"noSlide",					js_obj_object_speed_get_noSlide,			js_obj_object_speed_set_noSlide,			kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_object_speed_class;
 
@@ -71,7 +71,7 @@ JSClassRef			obj_object_speed_class;
 
 void script_init_obj_object_speed_object(void)
 {
-	obj_object_speed_class=script_create_class("obj_object_speed_class",js_obj_object_speed_get_property,js_obj_object_speed_set_property);
+	obj_object_speed_class=script_create_class("obj_object_speed_class",obj_object_speed_props,NULL);
 }
 
 void script_free_obj_object_speed_object(void)
@@ -79,9 +79,9 @@ void script_free_obj_object_speed_object(void)
 	script_free_class(obj_object_speed_class);
 }
 
-JSObjectRef script_add_obj_object_speed_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_object_speed_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_object_speed_class,"objectSpeed",obj_object_speed_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_object_speed_class,"objectSpeed",obj_object_speed_props,NULL));
 }
 
 /* =======================================================

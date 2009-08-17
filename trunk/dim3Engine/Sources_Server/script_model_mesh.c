@@ -42,13 +42,13 @@ JSValueRef js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObjectRef func,JSO
 
 extern js_type			js;
 
-script_js_function	model_mesh_functions[]={
-							{"showMesh",			js_model_mesh_show_mesh_func,				1},
-							{"showAllMesh",			js_model_mesh_show_all_mesh_func,			0},
-							{"showOnlyMesh",		js_model_mesh_show_only_mesh_func,			1},
-							{"hideMesh",			js_model_mesh_hide_mesh_func,				1},
-							{"hideAllMesh",			js_model_mesh_hide_all_mesh_func,			0},
-							{0}};
+JSStaticFunction	model_mesh_functions[]={
+							{"showMesh",			js_model_mesh_show_mesh_func,				kJSPropertyAttributeDontDelete},
+							{"showAllMesh",			js_model_mesh_show_all_mesh_func,			kJSPropertyAttributeDontDelete},
+							{"showOnlyMesh",		js_model_mesh_show_only_mesh_func,			kJSPropertyAttributeDontDelete},
+							{"hideMesh",			js_model_mesh_hide_mesh_func,				kJSPropertyAttributeDontDelete},
+							{"hideAllMesh",			js_model_mesh_hide_all_mesh_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			model_mesh_class;
 
@@ -60,7 +60,7 @@ JSClassRef			model_mesh_class;
 
 void script_init_model_mesh_object(void)
 {
-	model_mesh_class=script_create_class("model_mesh_class",js_model_mesh_get_property,js_model_mesh_set_property);
+	model_mesh_class=script_create_class("model_mesh_class",NULL,model_mesh_functions);
 }
 
 void script_free_model_mesh_object(void)
@@ -68,9 +68,9 @@ void script_free_model_mesh_object(void)
 	script_free_class(model_mesh_class);
 }
 
-JSObjectRef script_add_model_mesh_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_mesh_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_mesh_class,"mesh",NULL,model_mesh_functions));
+	return(script_create_child_object(cx,parent_obj,model_mesh_class,"mesh",NULL,model_mesh_functions));
 }
 
 /* =======================================================

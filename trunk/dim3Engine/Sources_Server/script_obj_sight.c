@@ -50,18 +50,18 @@ void js_obj_sight_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *excepti
 JSValueRef js_obj_sight_test_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_sight_test_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_sight_props[]={
-							{"sideFieldAngle",		js_obj_sight_get_sideFieldAngle,	js_obj_sight_set_sideFieldAngle},
-							{"lookFieldAngle",		js_obj_sight_get_lookFieldAngle,	js_obj_sight_set_lookFieldAngle},
-							{"sideFieldDivision",	js_obj_sight_get_sideFieldDivision,	js_obj_sight_set_sideFieldDivision},
-							{"lookFieldDivision",	js_obj_sight_get_lookFieldDivision,	js_obj_sight_set_lookFieldDivision},
-							{"distance",			js_obj_sight_get_distance,			js_obj_sight_set_distance},
-							{0}};
+JSStaticValue 		obj_sight_props[]={
+							{"sideFieldAngle",		js_obj_sight_get_sideFieldAngle,	js_obj_sight_set_sideFieldAngle,		kJSPropertyAttributeDontDelete},
+							{"lookFieldAngle",		js_obj_sight_get_lookFieldAngle,	js_obj_sight_set_lookFieldAngle,		kJSPropertyAttributeDontDelete},
+							{"sideFieldDivision",	js_obj_sight_get_sideFieldDivision,	js_obj_sight_set_sideFieldDivision,		kJSPropertyAttributeDontDelete},
+							{"lookFieldDivision",	js_obj_sight_get_lookFieldDivision,	js_obj_sight_set_lookFieldDivision,		kJSPropertyAttributeDontDelete},
+							{"distance",			js_obj_sight_get_distance,			js_obj_sight_set_distance,				kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	obj_sight_functions[]={
-							{"testObject",			js_obj_sight_test_object_func,		1},
-							{"testPlayer",			js_obj_sight_test_player_func,		0},
-							{0}};
+JSStaticFunction	obj_sight_functions[]={
+							{"testObject",			js_obj_sight_test_object_func,		kJSPropertyAttributeDontDelete},
+							{"testPlayer",			js_obj_sight_test_player_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_sight_class;
 
@@ -73,7 +73,7 @@ JSClassRef			obj_sight_class;
 
 void script_init_obj_sight_object(void)
 {
-	obj_sight_class=script_create_class("obj_sight_class",js_obj_sight_get_property,js_obj_sight_set_property);
+	obj_sight_class=script_create_class("obj_sight_class",obj_sight_props,obj_sight_functions);
 }
 
 void script_free_obj_sight_object(void)
@@ -81,9 +81,9 @@ void script_free_obj_sight_object(void)
 	script_free_class(obj_sight_class);
 }
 
-JSObjectRef script_add_obj_sight_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_sight_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_sight_class,"sight",obj_sight_props,obj_sight_functions));
+	return(script_create_child_object(cx,parent_obj,obj_sight_class,"sight",obj_sight_props,obj_sight_functions));
 }
 
 /* =======================================================

@@ -53,16 +53,16 @@ void js_obj_side_speed_set_deceleration(JSContextRef cx,JSValueRef vp,JSValueRef
 void js_obj_side_speed_set_accelerationAir(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_side_speed_set_decelerationAir(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_side_speed_props[]={
-							{"walk",					js_obj_side_speed_get_walk,				js_obj_side_speed_set_walk},
-							{"run",						js_obj_side_speed_get_run,				js_obj_side_speed_set_run},
-							{"crawl",					js_obj_side_speed_get_crawl,			js_obj_side_speed_set_crawl},
-							{"air",						js_obj_side_speed_get_air,				js_obj_side_speed_set_air},
-							{"acceleration",			js_obj_side_speed_get_acceleration,		js_obj_side_speed_set_acceleration},
-							{"deceleration",			js_obj_side_speed_get_deceleration,		js_obj_side_speed_set_deceleration},
-							{"accelerationAir",			js_obj_side_speed_get_accelerationAir,	js_obj_side_speed_set_accelerationAir},
-							{"decelerationAir",			js_obj_side_speed_get_decelerationAir,	js_obj_side_speed_set_decelerationAir},
-							{0}};
+JSStaticValue 		obj_side_speed_props[]={
+							{"walk",					js_obj_side_speed_get_walk,				js_obj_side_speed_set_walk,					kJSPropertyAttributeDontDelete},
+							{"run",						js_obj_side_speed_get_run,				js_obj_side_speed_set_run,					kJSPropertyAttributeDontDelete},
+							{"crawl",					js_obj_side_speed_get_crawl,			js_obj_side_speed_set_crawl,				kJSPropertyAttributeDontDelete},
+							{"air",						js_obj_side_speed_get_air,				js_obj_side_speed_set_air,					kJSPropertyAttributeDontDelete},
+							{"acceleration",			js_obj_side_speed_get_acceleration,		js_obj_side_speed_set_acceleration,			kJSPropertyAttributeDontDelete},
+							{"deceleration",			js_obj_side_speed_get_deceleration,		js_obj_side_speed_set_deceleration,			kJSPropertyAttributeDontDelete},
+							{"accelerationAir",			js_obj_side_speed_get_accelerationAir,	js_obj_side_speed_set_accelerationAir,		kJSPropertyAttributeDontDelete},
+							{"decelerationAir",			js_obj_side_speed_get_decelerationAir,	js_obj_side_speed_set_decelerationAir,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_side_speed_class;
 
@@ -74,7 +74,7 @@ JSClassRef			obj_side_speed_class;
 
 void script_init_obj_side_speed_object(void)
 {
-	obj_side_speed_class=script_create_class("obj_side_speed_class",js_obj_side_speed_get_property,js_obj_side_speed_set_property);
+	obj_side_speed_class=script_create_class("obj_side_speed_class",obj_side_speed_props,NULL);
 }
 
 void script_free_obj_side_speed_object(void)
@@ -82,9 +82,9 @@ void script_free_obj_side_speed_object(void)
 	script_free_class(obj_side_speed_class);
 }
 
-JSObjectRef script_add_obj_side_speed_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_side_speed_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_side_speed_class,"sideSpeed",obj_side_speed_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_side_speed_class,"sideSpeed",obj_side_speed_props,NULL));
 }
 
 /* =======================================================

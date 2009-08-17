@@ -45,17 +45,17 @@ JSValueRef js_weap_target_start_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_weap_target_start_opponent_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_target_end_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	weap_target_props[]={
-							{"on",					js_weap_target_get_on,					NULL},
-							{"distance",			js_weap_target_get_distance,			js_weap_target_set_distance},
-							{"objectId",			js_weap_target_get_objectId,			NULL},
-							{0}};
+JSStaticValue 		weap_target_props[]={
+							{"on",					js_weap_target_get_on,					NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"distance",			js_weap_target_get_distance,			js_weap_target_set_distance,		kJSPropertyAttributeDontDelete},
+							{"objectId",			js_weap_target_get_objectId,			NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	weap_target_functions[]={
-							{"start",				js_weap_target_start_func,				1},
-							{"startOpponent",		js_weap_target_start_opponent_func,		0},
-							{"end",					js_weap_target_end_func,				0},
-							{0}};
+JSStaticFunction	weap_target_functions[]={
+							{"start",				js_weap_target_start_func,				kJSPropertyAttributeDontDelete},
+							{"startOpponent",		js_weap_target_start_opponent_func,		kJSPropertyAttributeDontDelete},
+							{"end",					js_weap_target_end_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			weap_target_class;
 
@@ -67,7 +67,7 @@ JSClassRef			weap_target_class;
 
 void script_init_weap_target_object(void)
 {
-	weap_target_class=script_create_class("weap_target_class",js_weap_target_get_property,js_weap_target_set_property);
+	weap_target_class=script_create_class("weap_target_class",weap_target_props,weap_target_functions);
 }
 
 void script_free_weap_target_object(void)
@@ -75,9 +75,9 @@ void script_free_weap_target_object(void)
 	script_free_class(weap_target_class);
 }
 
-JSObjectRef script_add_weap_target_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_target_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_target_class,"target",weap_target_props,weap_target_functions));
+	return(script_create_child_object(cx,parent_obj,weap_target_class,"target",weap_target_props,weap_target_functions));
 }
 
 /* =======================================================

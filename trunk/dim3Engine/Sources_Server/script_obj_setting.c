@@ -107,50 +107,50 @@ JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_setting_props[]={
-							{"id",						js_obj_setting_get_id,						NULL},
-							{"name",					js_obj_setting_get_name,					NULL},
-							{"characterName",			js_obj_setting_get_characterName,			NULL},
-							{"characterModel",			js_obj_setting_get_characterModel,			NULL},
-							{"characterParameter",		js_obj_setting_get_characterParameter,		NULL},
-							{"team",					js_obj_setting_get_team,					js_obj_setting_set_team},
-							{"hidden",					js_obj_setting_get_hidden,					js_obj_setting_set_hidden},
-							{"suspend",					js_obj_setting_get_suspend,					js_obj_setting_set_suspend},
-							{"fly",						js_obj_setting_get_fly,						js_obj_setting_set_fly},
-							{"find",					js_obj_setting_get_find,					js_obj_setting_set_find},
-							{"contact",					js_obj_setting_get_contact,					js_obj_setting_set_contact},
-							{"contactObject",			js_obj_setting_get_contactObject,			js_obj_setting_set_contactObject},
-							{"contactProjectile",		js_obj_setting_get_contactProjectile,		js_obj_setting_set_contactProjectile},
-							{"contactForce",			js_obj_setting_get_contactForce,			js_obj_setting_set_contactForce},
-							{"hitBox",					js_obj_setting_get_hitBox,					js_obj_setting_set_hitBox},
-							{"damage",					js_obj_setting_get_damage,					js_obj_setting_set_damage},
-							{"crushable",				js_obj_setting_get_crushable,				js_obj_setting_set_crushable},
-							{"invincible",				js_obj_setting_get_invincible,				js_obj_setting_set_invincible},
-							{"clickable",				js_obj_setting_get_clickable,				js_obj_setting_set_clickable},
-							{"pickUp",					js_obj_setting_get_pickup,					js_obj_setting_set_pickup},
-							{"ignorePickUpItems",		js_obj_setting_get_ignorePickUpItems,		js_obj_setting_set_ignorePickUpItems},
-							{"ignoreMouse",				js_obj_setting_get_ignoreMouse,				js_obj_setting_set_ignoreMouse},
-							{"turnOnlyWhenMoving",		js_obj_setting_get_turnOnlyWhenMoving,		js_obj_setting_set_turnOnlyWhenMoving},
-							{"restrictPlayerTurning",	js_obj_setting_get_restrictPlayerTurning,	js_obj_setting_set_restrictPlayerTurning},
-							{"quickReverse",			js_obj_setting_get_quickReverse,			js_obj_setting_set_quickReverse},
-							{"sideStep",				js_obj_setting_get_sideStep,				js_obj_setting_set_sideStep},
-							{"jump",					js_obj_setting_get_jump,					js_obj_setting_set_jump},
-							{"duck",					js_obj_setting_get_duck,					js_obj_setting_set_duck},
-							{"crawl",					js_obj_setting_get_crawl,					js_obj_setting_set_crawl},
-							{"singleSpeed",				js_obj_setting_get_singleSpeed,				js_obj_setting_set_singleSpeed},
-							{"bumpUp",					js_obj_setting_get_bumpUp,					js_obj_setting_set_bumpUp},
-							{"slopeGravity",			js_obj_setting_get_slopeGravity,			js_obj_setting_set_slopeGravity},
-							{"pushable",				js_obj_setting_get_pushable,				js_obj_setting_set_pushable},
-							{"openDoors",				js_obj_setting_get_openDoors,				js_obj_setting_set_openDoors},
-							{"inputMode",				js_obj_setting_get_inputMode,				js_obj_setting_set_inputMode},
-							{0}};
+JSStaticValue 		obj_setting_props[]={
+							{"id",						js_obj_setting_get_id,						NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"name",					js_obj_setting_get_name,					NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"characterName",			js_obj_setting_get_characterName,			NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"characterModel",			js_obj_setting_get_characterModel,			NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"characterParameter",		js_obj_setting_get_characterParameter,		NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"team",					js_obj_setting_get_team,					js_obj_setting_set_team,					kJSPropertyAttributeDontDelete},
+							{"hidden",					js_obj_setting_get_hidden,					js_obj_setting_set_hidden,					kJSPropertyAttributeDontDelete},
+							{"suspend",					js_obj_setting_get_suspend,					js_obj_setting_set_suspend,					kJSPropertyAttributeDontDelete},
+							{"fly",						js_obj_setting_get_fly,						js_obj_setting_set_fly,						kJSPropertyAttributeDontDelete},
+							{"find",					js_obj_setting_get_find,					js_obj_setting_set_find,					kJSPropertyAttributeDontDelete},
+							{"contact",					js_obj_setting_get_contact,					js_obj_setting_set_contact,					kJSPropertyAttributeDontDelete},
+							{"contactObject",			js_obj_setting_get_contactObject,			js_obj_setting_set_contactObject,			kJSPropertyAttributeDontDelete},
+							{"contactProjectile",		js_obj_setting_get_contactProjectile,		js_obj_setting_set_contactProjectile,		kJSPropertyAttributeDontDelete},
+							{"contactForce",			js_obj_setting_get_contactForce,			js_obj_setting_set_contactForce,			kJSPropertyAttributeDontDelete},
+							{"hitBox",					js_obj_setting_get_hitBox,					js_obj_setting_set_hitBox,					kJSPropertyAttributeDontDelete},
+							{"damage",					js_obj_setting_get_damage,					js_obj_setting_set_damage,					kJSPropertyAttributeDontDelete},
+							{"crushable",				js_obj_setting_get_crushable,				js_obj_setting_set_crushable,				kJSPropertyAttributeDontDelete},
+							{"invincible",				js_obj_setting_get_invincible,				js_obj_setting_set_invincible,				kJSPropertyAttributeDontDelete},
+							{"clickable",				js_obj_setting_get_clickable,				js_obj_setting_set_clickable,				kJSPropertyAttributeDontDelete},
+							{"pickUp",					js_obj_setting_get_pickup,					js_obj_setting_set_pickup,					kJSPropertyAttributeDontDelete},
+							{"ignorePickUpItems",		js_obj_setting_get_ignorePickUpItems,		js_obj_setting_set_ignorePickUpItems,		kJSPropertyAttributeDontDelete},
+							{"ignoreMouse",				js_obj_setting_get_ignoreMouse,				js_obj_setting_set_ignoreMouse,				kJSPropertyAttributeDontDelete},
+							{"turnOnlyWhenMoving",		js_obj_setting_get_turnOnlyWhenMoving,		js_obj_setting_set_turnOnlyWhenMoving,		kJSPropertyAttributeDontDelete},
+							{"restrictPlayerTurning",	js_obj_setting_get_restrictPlayerTurning,	js_obj_setting_set_restrictPlayerTurning,	kJSPropertyAttributeDontDelete},
+							{"quickReverse",			js_obj_setting_get_quickReverse,			js_obj_setting_set_quickReverse,			kJSPropertyAttributeDontDelete},
+							{"sideStep",				js_obj_setting_get_sideStep,				js_obj_setting_set_sideStep,				kJSPropertyAttributeDontDelete},
+							{"jump",					js_obj_setting_get_jump,					js_obj_setting_set_jump,					kJSPropertyAttributeDontDelete},
+							{"duck",					js_obj_setting_get_duck,					js_obj_setting_set_duck,					kJSPropertyAttributeDontDelete},
+							{"crawl",					js_obj_setting_get_crawl,					js_obj_setting_set_crawl,					kJSPropertyAttributeDontDelete},
+							{"singleSpeed",				js_obj_setting_get_singleSpeed,				js_obj_setting_set_singleSpeed,				kJSPropertyAttributeDontDelete},
+							{"bumpUp",					js_obj_setting_get_bumpUp,					js_obj_setting_set_bumpUp,					kJSPropertyAttributeDontDelete},
+							{"slopeGravity",			js_obj_setting_get_slopeGravity,			js_obj_setting_set_slopeGravity,			kJSPropertyAttributeDontDelete},
+							{"pushable",				js_obj_setting_get_pushable,				js_obj_setting_set_pushable,				kJSPropertyAttributeDontDelete},
+							{"openDoors",				js_obj_setting_get_openDoors,				js_obj_setting_set_openDoors,				kJSPropertyAttributeDontDelete},
+							{"inputMode",				js_obj_setting_get_inputMode,				js_obj_setting_set_inputMode,				kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	obj_setting_functions[]={
-							{"getParameter",			js_obj_get_parameter_func,					1},
-							{"setAmbient",				js_obj_set_ambient_func,					2},
-							{"changeAmbientPitch",		js_obj_change_ambient_pitch_func,			1},
-							{"clearAmbient",			js_obj_clear_ambient_func,					0},
-							{0}};
+JSStaticFunction	obj_setting_functions[]={
+							{"getParameter",			js_obj_get_parameter_func,					kJSPropertyAttributeDontDelete},
+							{"setAmbient",				js_obj_set_ambient_func,					kJSPropertyAttributeDontDelete},
+							{"changeAmbientPitch",		js_obj_change_ambient_pitch_func,			kJSPropertyAttributeDontDelete},
+							{"clearAmbient",			js_obj_clear_ambient_func,					kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_setting_class;
 
@@ -162,7 +162,7 @@ JSClassRef			obj_setting_class;
 
 void script_init_obj_setting_object(void)
 {
-	obj_setting_class=script_create_class("obj_setting_class",js_obj_setting_get_property,js_obj_setting_set_property);
+	obj_setting_class=script_create_class("obj_setting_class",obj_setting_props,obj_setting_functions);
 }
 
 void script_free_obj_setting_object(void)
@@ -170,9 +170,9 @@ void script_free_obj_setting_object(void)
 	script_free_class(obj_setting_class);
 }
 
-JSObjectRef script_add_obj_setting_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_setting_class,"setting",obj_setting_props,obj_setting_functions));
+	return(script_create_child_object(cx,parent_obj,obj_setting_class,"setting",obj_setting_props,obj_setting_functions));
 }
 
 /* =======================================================

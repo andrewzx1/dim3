@@ -46,7 +46,7 @@ JSClassRef			utility_class;
 
 void script_init_global_utility_object(void)
 {
-	utility_class=script_create_class("utility_class",js_utility_get_property,js_utility_set_property);
+	utility_class=script_create_class("utility_class",NULL,NULL);
 }
 
 void script_free_global_utility_object(void)
@@ -54,9 +54,9 @@ void script_free_global_utility_object(void)
 	script_free_class(utility_class);
 }
 
-JSObjectRef script_add_global_utility_object(JSObjectRef parent_obj)
+JSObjectRef script_add_global_utility_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,utility_class,"utility",NULL,NULL));
+	return(script_create_child_object(cx,parent_obj,utility_class,"utility",NULL,NULL));
 }
 
 /* =======================================================

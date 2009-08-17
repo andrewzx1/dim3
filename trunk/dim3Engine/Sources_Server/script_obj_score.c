@@ -44,17 +44,17 @@ JSValueRef js_obj_score_get_goal(JSContextRef cx);
 JSValueRef js_obj_score_get_score(JSContextRef cx);
 JSValueRef js_obj_score_add_goal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_score_props[]={
-							{"kill",				js_obj_score_get_kill,				NULL},
-							{"death",				js_obj_score_get_death,				NULL},
-							{"suicide",				js_obj_score_get_suicide,			NULL},
-							{"goal",				js_obj_score_get_goal,				NULL},
-							{"score",				js_obj_score_get_score,				NULL},
-							{0}};
+JSStaticValue 		obj_score_props[]={
+							{"kill",				js_obj_score_get_kill,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"death",				js_obj_score_get_death,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"suicide",				js_obj_score_get_suicide,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"goal",				js_obj_score_get_goal,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"score",				js_obj_score_get_score,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	obj_score_functions[]={
-							{"addGoal",				js_obj_score_add_goal_func,			0},
-							{0}};
+JSStaticFunction	obj_score_functions[]={
+							{"addGoal",				js_obj_score_add_goal_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_score_class;
 
@@ -66,7 +66,7 @@ JSClassRef			obj_score_class;
 
 void script_init_obj_score_object(void)
 {
-	obj_score_class=script_create_class("obj_score_class",js_obj_score_get_property,js_obj_score_set_property);
+	obj_score_class=script_create_class("obj_score_class",obj_score_props,obj_score_functions);
 }
 
 void script_free_obj_score_object(void)
@@ -74,9 +74,9 @@ void script_free_obj_score_object(void)
 	script_free_class(obj_score_class);
 }
 
-JSObjectRef script_add_obj_score_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_score_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_score_class,"score",obj_score_props,obj_score_functions));
+	return(script_create_child_object(cx,parent_obj,obj_score_class,"score",obj_score_props,obj_score_functions));
 }
 
 /* =======================================================

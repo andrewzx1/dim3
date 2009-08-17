@@ -42,11 +42,11 @@ void js_model_light_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exc
 
 extern js_type			js;
 
-script_js_property	model_light_color_props[]={
-							{"red",					js_model_light_color_get_red,			js_model_light_color_set_red},
-							{"green",				js_model_light_color_get_green,			js_model_light_color_set_green},
-							{"blue",				js_model_light_color_get_blue,			js_model_light_color_set_blue},
-							{0}};
+JSStaticValue 		model_light_color_props[]={
+							{"red",					js_model_light_color_get_red,			js_model_light_color_set_red,		kJSPropertyAttributeDontDelete},
+							{"green",				js_model_light_color_get_green,			js_model_light_color_set_green,		kJSPropertyAttributeDontDelete},
+							{"blue",				js_model_light_color_get_blue,			js_model_light_color_set_blue,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			model_light_color_class;
 
@@ -58,7 +58,7 @@ JSClassRef			model_light_color_class;
 
 void script_init_model_light_color_object(void)
 {
-	model_light_color_class=script_create_class("model_light_color_class",js_model_light_color_get_property,js_model_light_color_set_property);
+	model_light_color_class=script_create_class("model_light_color_class",model_light_color_props,NULL);
 }
 
 void script_free_model_light_color_object(void)
@@ -66,9 +66,9 @@ void script_free_model_light_color_object(void)
 	script_free_class(model_light_color_class);
 }
 
-JSObjectRef script_add_model_light_color_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_light_color_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_light_color_class,"lightColor",model_light_color_props,NULL));
+	return(script_create_child_object(cx,parent_obj,model_light_color_class,"lightColor",model_light_color_props,NULL));
 }
 
 /* =======================================================

@@ -43,11 +43,11 @@ JSValueRef js_game_setting_get_type(JSContextRef cx);
 JSValueRef js_game_setting_get_multiplayer(JSContextRef cx);
 JSValueRef js_game_setting_get_skill(JSContextRef cx);
 
-script_js_property	game_setting_props[]={
-							{"type",				js_game_setting_get_type,				NULL},
-							{"multiplayer",			js_game_setting_get_multiplayer,		NULL},
-							{"skill",				js_game_setting_get_skill,				NULL},
-							{0}};
+JSStaticValue 		game_setting_props[]={
+							{"type",				js_game_setting_get_type,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"multiplayer",			js_game_setting_get_multiplayer,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"skill",				js_game_setting_get_skill,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			game_setting_class;
 
@@ -59,7 +59,7 @@ JSClassRef			game_setting_class;
 
 void script_init_game_setting_object(void)
 {
-	game_setting_class=script_create_class("game_setting_class",js_game_setting_get_property,js_game_setting_set_property);
+	game_setting_class=script_create_class("game_setting_class",game_setting_props,NULL);
 }
 
 void script_free_game_setting_object(void)
@@ -67,9 +67,9 @@ void script_free_game_setting_object(void)
 	script_free_class(game_setting_class);
 }
 
-JSObjectRef script_add_game_setting_object(JSObjectRef parent_obj)
+JSObjectRef script_add_game_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,game_setting_class,"setting",game_setting_props,NULL));
+	return(script_create_child_object(cx,parent_obj,game_setting_class,"setting",game_setting_props,NULL));
 }
 
 /* =======================================================

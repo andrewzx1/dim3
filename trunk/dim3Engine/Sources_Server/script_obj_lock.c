@@ -45,11 +45,11 @@ void js_obj_lock_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_lock_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_lock_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_lock_props[]={
-							{"x",					js_obj_lock_get_x,					js_obj_lock_set_x},
-							{"y",					js_obj_lock_get_y,					js_obj_lock_set_y},
-							{"z",					js_obj_lock_get_z,					js_obj_lock_set_z},
-							{0}};
+JSStaticValue 		obj_lock_props[]={
+							{"x",					js_obj_lock_get_x,					js_obj_lock_set_x,		kJSPropertyAttributeDontDelete},
+							{"y",					js_obj_lock_get_y,					js_obj_lock_set_y,		kJSPropertyAttributeDontDelete},
+							{"z",					js_obj_lock_get_z,					js_obj_lock_set_z,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
 JSClassRef			obj_lock_class;
 
@@ -61,7 +61,7 @@ JSClassRef			obj_lock_class;
 
 void script_init_obj_lock_object(void)
 {
-	obj_lock_class=script_create_class("obj_lock_class",js_obj_lock_get_property,js_obj_lock_set_property);
+	obj_lock_class=script_create_class("obj_lock_class",obj_lock_props,NULL);
 }
 
 void script_free_obj_lock_object(void)
@@ -69,9 +69,9 @@ void script_free_obj_lock_object(void)
 	script_free_class(obj_lock_class);
 }
 
-JSObjectRef script_add_obj_lock_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_lock_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_lock_class,"lock",obj_lock_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_lock_class,"lock",obj_lock_props,NULL));
 }
 
 /* =======================================================

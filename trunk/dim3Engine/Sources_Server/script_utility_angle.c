@@ -39,11 +39,11 @@ JSValueRef js_utility_angle_add_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_utility_angle_dif_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	utility_angle_functions[]={
-							{"add",					js_utility_angle_add_func,			2},
-							{"sub",					js_utility_angle_sub_func,			2},
-							{"dif",					js_utility_angle_dif_func,			2},
-							{0}};
+JSStaticFunction	utility_angle_functions[]={
+							{"add",					js_utility_angle_add_func,			kJSPropertyAttributeDontDelete},
+							{"sub",					js_utility_angle_sub_func,			kJSPropertyAttributeDontDelete},
+							{"dif",					js_utility_angle_dif_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			utility_angle_class;
 
@@ -55,7 +55,7 @@ JSClassRef			utility_angle_class;
 
 void script_init_utility_angle_object(void)
 {
-	utility_angle_class=script_create_class("utility_angle_class",js_utility_angle_get_property,js_utility_angle_set_property);
+	utility_angle_class=script_create_class("utility_angle_class",NULL,utility_angle_functions);
 }
 
 void script_free_utility_angle_object(void)
@@ -63,9 +63,9 @@ void script_free_utility_angle_object(void)
 	script_free_class(utility_angle_class);
 }
 
-JSObjectRef script_add_utility_angle_object(JSObjectRef parent_obj)
+JSObjectRef script_add_utility_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,utility_angle_class,"angle",NULL,utility_angle_functions));
+	return(script_create_child_object(cx,parent_obj,utility_angle_class,"angle",NULL,utility_angle_functions));
 }
 
 /* =======================================================

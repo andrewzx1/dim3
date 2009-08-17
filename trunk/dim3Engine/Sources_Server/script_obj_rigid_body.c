@@ -57,18 +57,18 @@ void js_obj_rigid_body_set_maxAngleZ(JSContextRef cx,JSValueRef vp,JSValueRef *e
 void js_obj_rigid_body_set_resetFactorZ(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_rigid_body_set_smoothFactorZ(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_rigid_body_props[]={
-							{"on",					js_obj_rigid_body_get_on,				js_obj_rigid_body_set_on},
-							{"maxDropY",			js_obj_rigid_body_get_maxDropY,			js_obj_rigid_body_set_maxDropY},
-							{"resetFactorY",		js_obj_rigid_body_get_resetFactorY,		js_obj_rigid_body_set_resetFactorY},
-							{"smoothFactorY",		js_obj_rigid_body_get_smoothFactorY,	js_obj_rigid_body_set_smoothFactorY},
-							{"maxAngleX",			js_obj_rigid_body_get_maxAngleX,		js_obj_rigid_body_set_maxAngleX},
-							{"resetFactorX",		js_obj_rigid_body_get_resetFactorX,		js_obj_rigid_body_set_resetFactorX},
-							{"smoothFactorX",		js_obj_rigid_body_get_smoothFactorX,	js_obj_rigid_body_set_smoothFactorX},
-							{"maxAngleZ",			js_obj_rigid_body_get_maxAngleZ,		js_obj_rigid_body_set_maxAngleZ},
-							{"resetFactorZ",		js_obj_rigid_body_get_resetFactorZ,		js_obj_rigid_body_set_resetFactorZ},
-							{"smoothFactorZ",		js_obj_rigid_body_get_smoothFactorZ,	js_obj_rigid_body_set_smoothFactorZ},
-							{0}};
+JSStaticValue 		obj_rigid_body_props[]={
+							{"on",					js_obj_rigid_body_get_on,				js_obj_rigid_body_set_on,				kJSPropertyAttributeDontDelete},
+							{"maxDropY",			js_obj_rigid_body_get_maxDropY,			js_obj_rigid_body_set_maxDropY,			kJSPropertyAttributeDontDelete},
+							{"resetFactorY",		js_obj_rigid_body_get_resetFactorY,		js_obj_rigid_body_set_resetFactorY,		kJSPropertyAttributeDontDelete},
+							{"smoothFactorY",		js_obj_rigid_body_get_smoothFactorY,	js_obj_rigid_body_set_smoothFactorY,	kJSPropertyAttributeDontDelete},
+							{"maxAngleX",			js_obj_rigid_body_get_maxAngleX,		js_obj_rigid_body_set_maxAngleX,		kJSPropertyAttributeDontDelete},
+							{"resetFactorX",		js_obj_rigid_body_get_resetFactorX,		js_obj_rigid_body_set_resetFactorX,		kJSPropertyAttributeDontDelete},
+							{"smoothFactorX",		js_obj_rigid_body_get_smoothFactorX,	js_obj_rigid_body_set_smoothFactorX,	kJSPropertyAttributeDontDelete},
+							{"maxAngleZ",			js_obj_rigid_body_get_maxAngleZ,		js_obj_rigid_body_set_maxAngleZ,		kJSPropertyAttributeDontDelete},
+							{"resetFactorZ",		js_obj_rigid_body_get_resetFactorZ,		js_obj_rigid_body_set_resetFactorZ,		kJSPropertyAttributeDontDelete},
+							{"smoothFactorZ",		js_obj_rigid_body_get_smoothFactorZ,	js_obj_rigid_body_set_smoothFactorZ,	kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_rigid_body_class;
 
@@ -80,7 +80,7 @@ JSClassRef			obj_rigid_body_class;
 
 void script_init_obj_rigid_body_object(void)
 {
-	obj_rigid_body_class=script_create_class("obj_rigid_body_class",js_obj_rigid_body_get_property,js_obj_rigid_body_set_property);
+	obj_rigid_body_class=script_create_class("obj_rigid_body_class",obj_rigid_body_props,NULL);
 }
 
 void script_free_obj_rigid_body_object(void)
@@ -88,9 +88,9 @@ void script_free_obj_rigid_body_object(void)
 	script_free_class(obj_rigid_body_class);
 }
 
-JSObjectRef script_add_obj_rigid_body_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_rigid_body_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_rigid_body_class,"rigidBody",obj_rigid_body_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_rigid_body_class,"rigidBody",obj_rigid_body_props,NULL));
 }
 
 /* =======================================================

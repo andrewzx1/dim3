@@ -60,19 +60,19 @@ void js_model_halo_set_noClipSelf(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 extern server_type		server;
 extern js_type			js;
 
-script_js_property	model_halo_props[]={
-							{"index",				js_model_halo_get_index,				js_model_halo_set_index},
-							{"on",					js_model_halo_get_on,					js_model_halo_set_on},
-							{"name",				js_model_halo_get_name,					js_model_halo_set_name},
-							{"minDistance",			js_model_halo_get_minDistance,			js_model_halo_set_minDistance},
-							{"maxDistance",			js_model_halo_get_maxDistance,			js_model_halo_set_maxDistance},
-							{"minSize",				js_model_halo_get_minSize,				js_model_halo_set_minSize},
-							{"maxSize",				js_model_halo_get_maxSize,				js_model_halo_set_maxSize},
-							{"minAlpha",			js_model_halo_get_minAlpha,				js_model_halo_set_minAlpha},
-							{"maxAlpha",			js_model_halo_get_maxAlpha,				js_model_halo_set_maxAlpha},
-							{"noClipObject",		js_model_halo_get_noClipObject,			js_model_halo_set_noClipObject},
-							{"noClipSelf",			js_model_halo_get_noClipSelf,			js_model_halo_set_noClipSelf},
-							{0}};
+JSStaticValue 		model_halo_props[]={
+							{"index",				js_model_halo_get_index,				js_model_halo_set_index,			kJSPropertyAttributeDontDelete},
+							{"on",					js_model_halo_get_on,					js_model_halo_set_on,				kJSPropertyAttributeDontDelete},
+							{"name",				js_model_halo_get_name,					js_model_halo_set_name,				kJSPropertyAttributeDontDelete},
+							{"minDistance",			js_model_halo_get_minDistance,			js_model_halo_set_minDistance,		kJSPropertyAttributeDontDelete},
+							{"maxDistance",			js_model_halo_get_maxDistance,			js_model_halo_set_maxDistance,		kJSPropertyAttributeDontDelete},
+							{"minSize",				js_model_halo_get_minSize,				js_model_halo_set_minSize,			kJSPropertyAttributeDontDelete},
+							{"maxSize",				js_model_halo_get_maxSize,				js_model_halo_set_maxSize,			kJSPropertyAttributeDontDelete},
+							{"minAlpha",			js_model_halo_get_minAlpha,				js_model_halo_set_minAlpha,			kJSPropertyAttributeDontDelete},
+							{"maxAlpha",			js_model_halo_get_maxAlpha,				js_model_halo_set_maxAlpha,			kJSPropertyAttributeDontDelete},
+							{"noClipObject",		js_model_halo_get_noClipObject,			js_model_halo_set_noClipObject,		kJSPropertyAttributeDontDelete},
+							{"noClipSelf",			js_model_halo_get_noClipSelf,			js_model_halo_set_noClipSelf,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			model_halo_class;
 
@@ -84,7 +84,7 @@ JSClassRef			model_halo_class;
 
 void script_init_model_halo_object(void)
 {
-	model_halo_class=script_create_class("model_halo_class",js_model_halo_get_property,js_model_halo_set_property);
+	model_halo_class=script_create_class("model_halo_class",model_halo_props,NULL);
 }
 
 void script_free_model_halo_object(void)
@@ -92,9 +92,9 @@ void script_free_model_halo_object(void)
 	script_free_class(model_halo_class);
 }
 
-JSObjectRef script_add_model_halo_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_halo_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_halo_class,"halo",model_halo_props,NULL));
+	return(script_create_child_object(cx,parent_obj,model_halo_class,"halo",model_halo_props,NULL));
 }
 
 /* =======================================================

@@ -45,16 +45,16 @@ void js_obj_look_set_effectWeapons(JSContextRef cx,JSValueRef vp,JSValueRef *exc
 JSValueRef js_obj_look_set_look_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_look_set_look_at_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_look_props[]={
-							{"upAngle",					js_obj_look_get_upAngle,				js_obj_look_set_upAngle},
-							{"downAngle",				js_obj_look_get_downAngle,				js_obj_look_set_downAngle},
-							{"effectWeapons",			js_obj_look_get_effectWeapons,			js_obj_look_set_effectWeapons},
-							{0}};
+JSStaticValue 		obj_look_props[]={
+							{"upAngle",					js_obj_look_get_upAngle,				js_obj_look_set_upAngle,			kJSPropertyAttributeDontDelete},
+							{"downAngle",				js_obj_look_get_downAngle,				js_obj_look_set_downAngle,			kJSPropertyAttributeDontDelete},
+							{"effectWeapons",			js_obj_look_get_effectWeapons,			js_obj_look_set_effectWeapons,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	obj_look_functions[]={
-							{"setLook",					js_obj_look_set_look_func,				1},
-							{"setLookAt",				js_obj_look_set_look_at_func,			1},
-							{0}};
+JSStaticFunction	obj_look_functions[]={
+							{"setLook",					js_obj_look_set_look_func,				kJSPropertyAttributeDontDelete},
+							{"setLookAt",				js_obj_look_set_look_at_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_look_class;
 
@@ -66,7 +66,7 @@ JSClassRef			obj_look_class;
 
 void script_init_obj_look_object(void)
 {
-	obj_look_class=script_create_class("obj_look_class",js_obj_look_get_property,js_obj_look_set_property);
+	obj_look_class=script_create_class("obj_look_class",obj_look_props,obj_look_functions);
 }
 
 void script_free_obj_look_object(void)
@@ -74,9 +74,9 @@ void script_free_obj_look_object(void)
 	script_free_class(obj_look_class);
 }
 
-JSObjectRef script_add_obj_look_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_look_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_look_class,"look",obj_look_props,obj_look_functions));
+	return(script_create_child_object(cx,parent_obj,obj_look_class,"look",obj_look_props,obj_look_functions));
 }
 
 /* =======================================================

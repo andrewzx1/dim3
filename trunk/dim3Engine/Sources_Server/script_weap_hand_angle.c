@@ -43,11 +43,11 @@ void js_weap_hand_angle_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 void js_weap_hand_angle_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_weap_hand_angle_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	weap_hand_angle_props[]={
-							{"x",				js_weap_hand_angle_get_x,			js_weap_hand_angle_set_x},
-							{"y",				js_weap_hand_angle_get_y,			js_weap_hand_angle_set_y},
-							{"z",				js_weap_hand_angle_get_z,			js_weap_hand_angle_set_z},
-							{0}};
+JSStaticValue 		weap_hand_angle_props[]={
+							{"x",				js_weap_hand_angle_get_x,			js_weap_hand_angle_set_x,		kJSPropertyAttributeDontDelete},
+							{"y",				js_weap_hand_angle_get_y,			js_weap_hand_angle_set_y,		kJSPropertyAttributeDontDelete},
+							{"z",				js_weap_hand_angle_get_z,			js_weap_hand_angle_set_z,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			weap_hand_angle_class;
 
@@ -59,7 +59,7 @@ JSClassRef			weap_hand_angle_class;
 
 void script_init_weap_hand_angle_object(void)
 {
-	weap_hand_angle_class=script_create_class("weap_hand_angle_class",js_weap_hand_angle_get_property,js_weap_hand_angle_set_property);
+	weap_hand_angle_class=script_create_class("weap_hand_angle_class",weap_hand_angle_props,NULL);
 }
 
 void script_free_weap_hand_angle_object(void)
@@ -67,9 +67,9 @@ void script_free_weap_hand_angle_object(void)
 	script_free_class(weap_hand_angle_class);
 }
 
-JSObjectRef script_add_weap_hand_angle_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_hand_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_hand_angle_class,"handAngle",weap_hand_angle_props,NULL));
+	return(script_create_child_object(cx,parent_obj,weap_hand_angle_class,"handAngle",weap_hand_angle_props,NULL));
 }
 
 /* =======================================================

@@ -43,11 +43,11 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	model_bone_functions[]={
-							{"findOffset",			js_model_bone_find_offset_func,			2},
-							{"findPosition",		js_model_bone_find_position_func,		2},
-							{"getBrightness",		js_model_bone_get_brightness_func,		2},
-							{0}};
+JSStaticFunction	model_bone_functions[]={
+							{"findOffset",			js_model_bone_find_offset_func,			kJSPropertyAttributeDontDelete},
+							{"findPosition",		js_model_bone_find_position_func,		kJSPropertyAttributeDontDelete},
+							{"getBrightness",		js_model_bone_get_brightness_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			model_bone_class;
 
@@ -59,7 +59,7 @@ JSClassRef			model_bone_class;
 
 void script_init_model_bone_object(void)
 {
-	model_bone_class=script_create_class("model_bone_class",js_model_bone_get_property,js_model_bone_set_property);
+	model_bone_class=script_create_class("model_bone_class",NULL,model_bone_functions);
 }
 
 void script_free_model_bone_object(void)
@@ -67,9 +67,9 @@ void script_free_model_bone_object(void)
 	script_free_class(model_bone_class);
 }
 
-JSObjectRef script_add_model_bone_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_bone_class,"bone",NULL,model_bone_functions));
+	return(script_create_child_object(cx,parent_obj,model_bone_class,"bone",NULL,model_bone_functions));
 }
 
 /* =======================================================

@@ -39,10 +39,10 @@ bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx);
 JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx);
 
-script_js_property	obj_weapon_fire_props[]={
-							{"name",				js_obj_weapon_fire_get_name,		NULL},
-							{"method",				js_obj_weapon_fire_get_method,		NULL},
-							{0}};
+JSStaticValue 		obj_weapon_fire_props[]={
+							{"name",				js_obj_weapon_fire_get_name,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"method",				js_obj_weapon_fire_get_method,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_weapon_fire_class;
 
@@ -54,7 +54,7 @@ JSClassRef			obj_weapon_fire_class;
 
 void script_init_obj_weapon_fire_object(void)
 {
-	obj_weapon_fire_class=script_create_class("obj_weapon_fire_class",js_obj_weapon_fire_get_property,js_obj_weapon_fire_set_property);
+	obj_weapon_fire_class=script_create_class("obj_weapon_fire_class",obj_weapon_fire_props,NULL);
 }
 
 void script_free_obj_weapon_fire_object(void)
@@ -62,9 +62,9 @@ void script_free_obj_weapon_fire_object(void)
 	script_free_class(obj_weapon_fire_class);
 }
 
-JSObjectRef script_add_obj_weapon_fire_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_weapon_fire_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_weapon_fire_class,"weaponFire",obj_weapon_fire_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_weapon_fire_class,"weaponFire",obj_weapon_fire_props,NULL));
 }
 
 /* =======================================================

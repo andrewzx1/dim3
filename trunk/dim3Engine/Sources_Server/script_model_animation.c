@@ -48,21 +48,21 @@ JSValueRef js_model_animation_fade_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 extern js_type			js;
 
-script_js_property	model_animation_props[]={
-							{"index",					js_model_animation_get_index,					js_model_animation_set_index},
-							{"currentAnimationName",	js_model_animation_get_currentAnimationName,	NULL},
-							{"playing",					js_model_animation_get_playing,					NULL},
-							{0}};
+JSStaticValue 		model_animation_props[]={
+							{"index",					js_model_animation_get_index,					js_model_animation_set_index,		kJSPropertyAttributeDontDelete},
+							{"currentAnimationName",	js_model_animation_get_currentAnimationName,	NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"playing",					js_model_animation_get_playing,					NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	model_animation_functions[]={
-							{"start",					js_model_animation_start_func,					1},
-							{"stop",					js_model_animation_stop_func,					0},
-							{"cancel",					js_model_animation_cancel_func,					1},
-							{"change",					js_model_animation_change_func,					1},
-							{"interrupt",				js_model_animation_interrupt_func,				1},
-							{"startThenChange",			js_model_animation_start_then_change_func,		2},
-							{"fade",					js_model_animation_fade_func,					2},
-							{0}};
+JSStaticFunction	model_animation_functions[]={
+							{"start",					js_model_animation_start_func,					kJSPropertyAttributeDontDelete},
+							{"stop",					js_model_animation_stop_func,					kJSPropertyAttributeDontDelete},
+							{"cancel",					js_model_animation_cancel_func,					kJSPropertyAttributeDontDelete},
+							{"change",					js_model_animation_change_func,					kJSPropertyAttributeDontDelete},
+							{"interrupt",				js_model_animation_interrupt_func,				kJSPropertyAttributeDontDelete},
+							{"startThenChange",			js_model_animation_start_then_change_func,		kJSPropertyAttributeDontDelete},
+							{"fade",					js_model_animation_fade_func,					kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			model_animation_class;
 
@@ -74,7 +74,7 @@ JSClassRef			model_animation_class;
 
 void script_init_model_animation_object(void)
 {
-	model_animation_class=script_create_class("model_animation_class",js_model_animation_get_property,js_model_animation_set_property);
+	model_animation_class=script_create_class("model_animation_class",model_animation_props,model_animation_functions);
 }
 
 void script_free_model_animation_object(void)
@@ -82,9 +82,9 @@ void script_free_model_animation_object(void)
 	script_free_class(model_animation_class);
 }
 
-JSObjectRef script_add_model_animation_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_animation_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_animation_class,"animation",model_animation_props,model_animation_functions));
+	return(script_create_child_object(cx,parent_obj,model_animation_class,"animation",model_animation_props,model_animation_functions));
 }
 
 /* =======================================================

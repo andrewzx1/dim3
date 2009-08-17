@@ -62,26 +62,26 @@ JSValueRef js_proj_action_reflect_func(JSContextRef cx,JSObjectRef func,JSObject
 JSValueRef js_proj_action_stick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	proj_action_props[]={
-							{"damage",				js_proj_action_get_damage,				js_proj_action_set_damage},
-							{"collision",			js_proj_action_get_collision,			js_proj_action_set_collision},
-							{"autoHitTick",			js_proj_action_get_auto_hitTick,		js_proj_action_set_auto_hitTick},
-							{"autoBounce",			js_proj_action_get_auto_bounce,			js_proj_action_set_auto_bounce},
-							{"autoBounceMinMove",	js_proj_action_get_auto_bounceMinMove,	js_proj_action_set_auto_bounceMinMove},
-							{"autoBounceReduce",	js_proj_action_get_auto_bounceReduce,	js_proj_action_set_auto_bounceReduce},
-							{"autoReflect",			js_proj_action_get_auto_reflect,		js_proj_action_set_auto_reflect},
-							{0}};
+JSStaticValue 		proj_action_props[]={
+							{"damage",				js_proj_action_get_damage,				js_proj_action_set_damage,					kJSPropertyAttributeDontDelete},
+							{"collision",			js_proj_action_get_collision,			js_proj_action_set_collision,				kJSPropertyAttributeDontDelete},
+							{"autoHitTick",			js_proj_action_get_auto_hitTick,		js_proj_action_set_auto_hitTick,			kJSPropertyAttributeDontDelete},
+							{"autoBounce",			js_proj_action_get_auto_bounce,			js_proj_action_set_auto_bounce,				kJSPropertyAttributeDontDelete},
+							{"autoBounceMinMove",	js_proj_action_get_auto_bounceMinMove,	js_proj_action_set_auto_bounceMinMove,		kJSPropertyAttributeDontDelete},
+							{"autoBounceReduce",	js_proj_action_get_auto_bounceReduce,	js_proj_action_set_auto_bounceReduce,		kJSPropertyAttributeDontDelete},
+							{"autoReflect",			js_proj_action_get_auto_reflect,		js_proj_action_set_auto_reflect,			kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	proj_action_functions[]={
-							{"rotate",				js_proj_action_rotate_func,				1},
-							{"turnTowards",			js_proj_action_turn_towards_func,		2},
-							{"seek",				js_proj_action_seek_func,				3},
-							{"seekTarget",			js_proj_action_seek_target_func,		2},
-							{"bounce",				js_proj_action_bounce_func,				2},
-							{"reflect",				js_proj_action_reflect_func,			0},
-							{"stick",				js_proj_action_stick_func,				0},
-							{"destroy",				js_proj_action_destroy_func,			0},
-							{0}};
+JSStaticFunction	proj_action_functions[]={
+							{"rotate",				js_proj_action_rotate_func,				kJSPropertyAttributeDontDelete},
+							{"turnTowards",			js_proj_action_turn_towards_func,		kJSPropertyAttributeDontDelete},
+							{"seek",				js_proj_action_seek_func,				kJSPropertyAttributeDontDelete},
+							{"seekTarget",			js_proj_action_seek_target_func,		kJSPropertyAttributeDontDelete},
+							{"bounce",				js_proj_action_bounce_func,				kJSPropertyAttributeDontDelete},
+							{"reflect",				js_proj_action_reflect_func,			kJSPropertyAttributeDontDelete},
+							{"stick",				js_proj_action_stick_func,				kJSPropertyAttributeDontDelete},
+							{"destroy",				js_proj_action_destroy_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			proj_action_class;
 
@@ -93,7 +93,7 @@ JSClassRef			proj_action_class;
 
 void script_init_proj_action_object(void)
 {
-	proj_action_class=script_create_class("proj_action_class",js_proj_action_get_property,js_proj_action_set_property);
+	proj_action_class=script_create_class("proj_action_class",proj_action_props,proj_action_functions);
 }
 
 void script_free_proj_action_object(void)
@@ -101,9 +101,9 @@ void script_free_proj_action_object(void)
 	script_free_class(proj_action_class);
 }
 
-JSObjectRef script_add_proj_action_object(JSObjectRef parent_obj)
+JSObjectRef script_add_proj_action_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,proj_action_class,"action",proj_action_props,proj_action_functions));
+	return(script_create_child_object(cx,parent_obj,proj_action_class,"action",proj_action_props,proj_action_functions));
 }
 
 /* =======================================================

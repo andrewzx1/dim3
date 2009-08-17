@@ -54,23 +54,23 @@ JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectR
 JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_position_props[]={
-							{"x",								js_obj_position_get_x,				NULL},
-							{"y",								js_obj_position_get_y,				NULL},
-							{"z",								js_obj_position_get_z,				NULL},
-							{0}};
+JSStaticValue 		obj_position_props[]={
+							{"x",								js_obj_position_get_x,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"y",								js_obj_position_get_y,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"z",								js_obj_position_get_z,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	obj_position_functions[]={
-							{"place",							js_obj_position_place_func,								4},
-							{"placeRandomSpot",					js_obj_position_place_random_spot_func,					2},
-							{"placeNetworkSpot",				js_obj_position_place_network_spot_func,				0},
-							{"placeRandomSpotNoTelefrag",		js_obj_position_place_random_spot_no_telefrag_func,		2},
-							{"placeNetworkSpotNoTelefrag",		js_obj_position_place_network_spot_no_telefrag_func,	0},
-							{"move",							js_obj_position_move_func,								3},
-							{"reset",							js_obj_position_reset_func,								0},
-							{"distanceToPlayer",				js_obj_position_distance_to_player_func,				0},
-							{"distanceToObject",				js_obj_position_distance_to_object_func,				1},
-							{0}};
+JSStaticFunction	obj_position_functions[]={
+							{"place",							js_obj_position_place_func,								kJSPropertyAttributeDontDelete},
+							{"placeRandomSpot",					js_obj_position_place_random_spot_func,					kJSPropertyAttributeDontDelete},
+							{"placeNetworkSpot",				js_obj_position_place_network_spot_func,				kJSPropertyAttributeDontDelete},
+							{"placeRandomSpotNoTelefrag",		js_obj_position_place_random_spot_no_telefrag_func,		kJSPropertyAttributeDontDelete},
+							{"placeNetworkSpotNoTelefrag",		js_obj_position_place_network_spot_no_telefrag_func,	kJSPropertyAttributeDontDelete},
+							{"move",							js_obj_position_move_func,								kJSPropertyAttributeDontDelete},
+							{"reset",							js_obj_position_reset_func,								kJSPropertyAttributeDontDelete},
+							{"distanceToPlayer",				js_obj_position_distance_to_player_func,				kJSPropertyAttributeDontDelete},
+							{"distanceToObject",				js_obj_position_distance_to_object_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_position_class;
 
@@ -82,7 +82,7 @@ JSClassRef			obj_position_class;
 
 void script_init_obj_position_object(void)
 {
-	obj_position_class=script_create_class("obj_position_class",js_obj_position_get_property,js_obj_position_set_property);
+	obj_position_class=script_create_class("obj_position_class",obj_position_props,obj_position_functions);
 }
 
 void script_free_obj_position_object(void)
@@ -90,9 +90,9 @@ void script_free_obj_position_object(void)
 	script_free_class(obj_position_class);
 }
 
-JSObjectRef script_add_obj_position_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_position_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_position_class,"position",obj_position_props,obj_position_functions));
+	return(script_create_child_object(cx,parent_obj,obj_position_class,"position",obj_position_props,obj_position_functions));
 }
 
 /* =======================================================

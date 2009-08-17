@@ -61,28 +61,28 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	event_functions[]={
-							{"startTimer",					js_event_start_timer_func,						2},
-							{"clearTimer",					js_event_clear_timer_func,						0},
-							{"startWait",					js_event_start_wait_func,						2},
-							{"startWaitRandom",				js_event_start_wait_random_func,				3},
-							{"clearWait",					js_event_clear_wait_func,						0},
-							{"chain",						js_event_chain_func,							2},
-							{"clearChain",					js_event_clear_chain_func,						0},
-							{"sendMessage",					js_event_send_message_func,						3},
-							{"sendMessageToPlayer",			js_event_send_message_to_player_func,			1},
-							{"sendMessageToObjectById",		js_event_send_message_to_object_by_id_func,		2},
-							{"sendMessageToObjectByName",	js_event_send_message_to_object_by_name_func,	2},
-							{"sendMessageToCourse",			js_event_send_message_to_course_func,			1},
-							{"sendMessageToGame",			js_event_send_message_to_game_func,				1},
-							{"sendMessageToHeldWeapon",		js_event_send_message_to_held_weapon_func,		1},
-							{"sendMessageToSpawnWeapon",	js_event_send_message_to_spawn_weapon_func,		1},
-							{"setMessageData",				js_event_set_message_data_func,					2},
-							{"getMessageData",				js_event_get_message_data_func,					1},
-							{"callObjectById",				js_event_call_object_by_id_func,				20},
-							{"callCourse",					js_event_call_course_func,						20},
-							{"callGame",					js_event_call_game_func,						20},
-							{0}};
+JSStaticFunction	event_functions[]={
+							{"startTimer",					js_event_start_timer_func,						kJSPropertyAttributeDontDelete},
+							{"clearTimer",					js_event_clear_timer_func,						kJSPropertyAttributeDontDelete},
+							{"startWait",					js_event_start_wait_func,						kJSPropertyAttributeDontDelete},
+							{"startWaitRandom",				js_event_start_wait_random_func,				kJSPropertyAttributeDontDelete},
+							{"clearWait",					js_event_clear_wait_func,						kJSPropertyAttributeDontDelete},
+							{"chain",						js_event_chain_func,							kJSPropertyAttributeDontDelete},
+							{"clearChain",					js_event_clear_chain_func,						kJSPropertyAttributeDontDelete},
+							{"sendMessage",					js_event_send_message_func,						kJSPropertyAttributeDontDelete},
+							{"sendMessageToPlayer",			js_event_send_message_to_player_func,			kJSPropertyAttributeDontDelete},
+							{"sendMessageToObjectById",		js_event_send_message_to_object_by_id_func,		kJSPropertyAttributeDontDelete},
+							{"sendMessageToObjectByName",	js_event_send_message_to_object_by_name_func,	kJSPropertyAttributeDontDelete},
+							{"sendMessageToCourse",			js_event_send_message_to_course_func,			kJSPropertyAttributeDontDelete},
+							{"sendMessageToGame",			js_event_send_message_to_game_func,				kJSPropertyAttributeDontDelete},
+							{"sendMessageToHeldWeapon",		js_event_send_message_to_held_weapon_func,		kJSPropertyAttributeDontDelete},
+							{"sendMessageToSpawnWeapon",	js_event_send_message_to_spawn_weapon_func,		kJSPropertyAttributeDontDelete},
+							{"setMessageData",				js_event_set_message_data_func,					kJSPropertyAttributeDontDelete},
+							{"getMessageData",				js_event_get_message_data_func,					kJSPropertyAttributeDontDelete},
+							{"callObjectById",				js_event_call_object_by_id_func,				kJSPropertyAttributeDontDelete},
+							{"callCourse",					js_event_call_course_func,						kJSPropertyAttributeDontDelete},
+							{"callGame",					js_event_call_game_func,						kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			event_class;
 
@@ -94,7 +94,7 @@ JSClassRef			event_class;
 
 void script_init_event_object(void)
 {
-	event_class=script_create_class("event_class",js_event_get_property,js_event_set_property);
+	event_class=script_create_class("event_class",NULL,event_functions);
 }
 
 void script_free_event_object(void)
@@ -102,9 +102,9 @@ void script_free_event_object(void)
 	script_free_class(event_class);
 }
 
-JSObjectRef script_add_event_object(JSObjectRef parent_obj)
+JSObjectRef script_add_event_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,event_class,"event",NULL,event_functions));
+	return(script_create_child_object(cx,parent_obj,event_class,"event",NULL,event_functions));
 }
 
 /* =======================================================

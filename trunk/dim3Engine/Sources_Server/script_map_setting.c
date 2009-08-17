@@ -54,19 +54,19 @@ JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	map_setting_props[]={
-							{"scale",				js_map_setting_get_scale,				NULL},
-							{"gravity",				js_map_setting_get_gravity,				js_map_setting_set_gravity},
-							{"resistance",			js_map_setting_get_resistance,			js_map_setting_set_resistance},
-							{"multiplayer",			js_map_setting_get_multiplayer,			NULL},
-							{"multiplayerType",		js_map_setting_get_multiplayerType,		NULL},
-							{"botSkill",			js_map_setting_get_botSkill,			NULL},
-							{0}};
+JSStaticValue 		map_setting_props[]={
+							{"scale",				js_map_setting_get_scale,				NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"gravity",				js_map_setting_get_gravity,				js_map_setting_set_gravity,			kJSPropertyAttributeDontDelete},
+							{"resistance",			js_map_setting_get_resistance,			js_map_setting_set_resistance,		kJSPropertyAttributeDontDelete},
+							{"multiplayer",			js_map_setting_get_multiplayer,			NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"multiplayerType",		js_map_setting_get_multiplayerType,		NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"botSkill",			js_map_setting_get_botSkill,			NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	map_setting_functions[]={
-							{"setAmbient",			js_map_set_ambient_func,				2},
-							{"clearAmbient",		js_map_clear_ambient_func,				0},
-							{0}};
+JSStaticFunction	map_setting_functions[]={
+							{"setAmbient",			js_map_set_ambient_func,				kJSPropertyAttributeDontDelete},
+							{"clearAmbient",		js_map_clear_ambient_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			map_setting_class;
 
@@ -78,7 +78,7 @@ JSClassRef			map_setting_class;
 
 void script_init_map_setting_object(void)
 {
-	map_setting_class=script_create_class("map_setting_class",js_map_setting_get_property,js_map_setting_set_property);
+	map_setting_class=script_create_class("map_setting_class",map_setting_props,map_setting_functions);
 }
 
 void script_free_map_setting_object(void)
@@ -86,9 +86,9 @@ void script_free_map_setting_object(void)
 	script_free_class(map_setting_class);
 }
 
-JSObjectRef script_add_map_setting_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_setting_class,"setting",map_setting_props,map_setting_functions));
+	return(script_create_child_object(cx,parent_obj,map_setting_class,"setting",map_setting_props,map_setting_functions));
 }
 
 /* =======================================================

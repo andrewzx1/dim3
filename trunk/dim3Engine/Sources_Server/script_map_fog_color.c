@@ -43,11 +43,11 @@ void js_map_fog_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 void js_map_fog_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_map_fog_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	map_fog_color_props[]={
-							{"red",					js_map_fog_color_get_red,			js_map_fog_color_set_red},
-							{"green",				js_map_fog_color_get_green,			js_map_fog_color_set_green},
-							{"blue",				js_map_fog_color_get_blue,			js_map_fog_color_set_blue},
-							{0}};
+JSStaticValue 		map_fog_color_props[]={
+							{"red",					js_map_fog_color_get_red,			js_map_fog_color_set_red,		kJSPropertyAttributeDontDelete},
+							{"green",				js_map_fog_color_get_green,			js_map_fog_color_set_green,		kJSPropertyAttributeDontDelete},
+							{"blue",				js_map_fog_color_get_blue,			js_map_fog_color_set_blue,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			map_fog_color_class;
 
@@ -59,7 +59,7 @@ JSClassRef			map_fog_color_class;
 
 void script_init_map_fog_color_object(void)
 {
-	map_fog_color_class=script_create_class("map_fog_color_class",js_map_fog_color_get_property,js_map_fog_color_set_property);
+	map_fog_color_class=script_create_class("map_fog_color_class",map_fog_color_props,NULL);
 }
 
 void script_free_map_fog_color_object(void)
@@ -67,9 +67,9 @@ void script_free_map_fog_color_object(void)
 	script_free_class(map_fog_color_class);
 }
 
-JSObjectRef script_add_map_fog_color_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_fog_color_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_fog_color_class,"fogColor",map_fog_color_props,NULL));
+	return(script_create_child_object(cx,parent_obj,map_fog_color_class,"fogColor",map_fog_color_props,NULL));
 }
 
 /* =======================================================

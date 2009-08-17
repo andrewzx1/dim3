@@ -42,11 +42,11 @@ void js_model_offset_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
-script_js_property	model_offset_props[]={
-							{"x",					js_model_offset_get_x,				js_model_offset_set_x},
-							{"y",					js_model_offset_get_y,				js_model_offset_set_y},
-							{"z",					js_model_offset_get_z,				js_model_offset_set_z},
-							{0}};
+JSStaticValue 		model_offset_props[]={
+							{"x",					js_model_offset_get_x,				js_model_offset_set_x,		kJSPropertyAttributeDontDelete},
+							{"y",					js_model_offset_get_y,				js_model_offset_set_y,		kJSPropertyAttributeDontDelete},
+							{"z",					js_model_offset_get_z,				js_model_offset_set_z,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			model_offset_class;
 
@@ -58,7 +58,7 @@ JSClassRef			model_offset_class;
 
 void script_init_model_offset_object(void)
 {
-	model_offset_class=script_create_class("model_offset_class",js_model_offset_get_property,js_model_offset_set_property);
+	model_offset_class=script_create_class("model_offset_class",model_offset_props,NULL);
 }
 
 void script_free_model_offset_object(void)
@@ -66,9 +66,9 @@ void script_free_model_offset_object(void)
 	script_free_class(model_offset_class);
 }
 
-JSObjectRef script_add_model_offset_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_offset_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_offset_class,"offset",model_offset_props,NULL));
+	return(script_create_child_object(cx,parent_obj,model_offset_class,"offset",model_offset_props,NULL));
 }
 
 /* =======================================================

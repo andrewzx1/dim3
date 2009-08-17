@@ -42,12 +42,12 @@ JSValueRef js_obj_touch_get_objectName(JSContextRef cx);
 JSValueRef js_obj_touch_get_objectIsPlayer(JSContextRef cx);
 JSValueRef js_obj_touch_get_stand(JSContextRef cx);
 
-script_js_property	obj_touch_props[]={
-							{"objectId",			js_obj_touch_get_objectId,			NULL},
-							{"objectName",			js_obj_touch_get_objectName,		NULL},
-							{"objectIsPlayer",		js_obj_touch_get_objectIsPlayer,	NULL},
-							{"stand",				js_obj_touch_get_stand,				NULL},
-							{0}};
+JSStaticValue 		obj_touch_props[]={
+							{"objectId",			js_obj_touch_get_objectId,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectName",			js_obj_touch_get_objectName,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayer",		js_obj_touch_get_objectIsPlayer,	NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"stand",				js_obj_touch_get_stand,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_touch_class;
 
@@ -59,7 +59,7 @@ JSClassRef			obj_touch_class;
 
 void script_init_obj_touch_object(void)
 {
-	obj_touch_class=script_create_class("obj_touch_class",js_obj_touch_get_property,js_obj_touch_set_property);
+	obj_touch_class=script_create_class("obj_touch_class",obj_touch_props,NULL);
 }
 
 void script_free_obj_touch_object(void)
@@ -67,9 +67,9 @@ void script_free_obj_touch_object(void)
 	script_free_class(obj_touch_class);
 }
 
-JSObjectRef script_add_obj_touch_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_touch_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_touch_class,"touch",obj_touch_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_touch_class,"touch",obj_touch_props,NULL));
 }
 
 /* =======================================================

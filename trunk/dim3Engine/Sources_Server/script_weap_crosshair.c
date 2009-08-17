@@ -49,14 +49,14 @@ void js_weap_crosshair_set_minSize(JSContextRef cx,JSValueRef vp,JSValueRef *exc
 void js_weap_crosshair_set_maxSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_weap_crosshair_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	weap_crosshair_props[]={
-							{"on",					js_weap_crosshair_get_on,			js_weap_crosshair_set_on},
-							{"type",				js_weap_crosshair_get_type,			js_weap_crosshair_set_type},
-							{"name",				js_weap_crosshair_get_name,			js_weap_crosshair_set_name},
-							{"minSize",				js_weap_crosshair_get_minSize,		js_weap_crosshair_set_minSize},
-							{"maxSize",				js_weap_crosshair_get_maxSize,		js_weap_crosshair_set_maxSize},
-							{"distance",			js_weap_crosshair_get_distance,		js_weap_crosshair_set_distance},
-							{0}};
+JSStaticValue 		weap_crosshair_props[]={
+							{"on",					js_weap_crosshair_get_on,			js_weap_crosshair_set_on,			kJSPropertyAttributeDontDelete},
+							{"type",				js_weap_crosshair_get_type,			js_weap_crosshair_set_type,			kJSPropertyAttributeDontDelete},
+							{"name",				js_weap_crosshair_get_name,			js_weap_crosshair_set_name,			kJSPropertyAttributeDontDelete},
+							{"minSize",				js_weap_crosshair_get_minSize,		js_weap_crosshair_set_minSize,		kJSPropertyAttributeDontDelete},
+							{"maxSize",				js_weap_crosshair_get_maxSize,		js_weap_crosshair_set_maxSize,		kJSPropertyAttributeDontDelete},
+							{"distance",			js_weap_crosshair_get_distance,		js_weap_crosshair_set_distance,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			weap_crosshair_class;
 
@@ -68,7 +68,7 @@ JSClassRef			weap_crosshair_class;
 
 void script_init_weap_crosshair_object(void)
 {
-	weap_crosshair_class=script_create_class("weap_crosshair_class",js_weap_crosshair_get_property,js_weap_crosshair_set_property);
+	weap_crosshair_class=script_create_class("weap_crosshair_class",weap_crosshair_props,NULL);
 }
 
 void script_free_weap_crosshair_object(void)
@@ -76,9 +76,9 @@ void script_free_weap_crosshair_object(void)
 	script_free_class(weap_crosshair_class);
 }
 
-JSObjectRef script_add_weap_crosshair_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_crosshair_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_crosshair_class,"crosshair",weap_crosshair_props,NULL));
+	return(script_create_child_object(cx,parent_obj,weap_crosshair_class,"crosshair",weap_crosshair_props,NULL));
 }
 
 /* =======================================================

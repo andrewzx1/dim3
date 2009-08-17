@@ -51,21 +51,21 @@ JSValueRef js_interface_text_set_alpha_func(JSContextRef cx,JSObjectRef func,JSO
 JSValueRef js_interface_text_start_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_text_set_text_and_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	interface_text_functions[]={
-							{"show",						js_interface_text_show_func,				1},
-							{"hide",						js_interface_text_hide_func,				1},
-							{"hideAll",						js_interface_text_hide_all_func,			0},
-							{"move",						js_interface_text_move_func,				3},
-							{"moveRelative",				js_interface_text_move_relative_func,		3},
-							{"setText",						js_interface_text_set_text_func,			2},
-							{"setSize",						js_interface_text_set_size_func,			2},
-							{"setColor",					js_interface_text_set_color_func,			4},
-							{"setTeamColor",				js_interface_text_set_team_color_func,		2},
-							{"setObjectColor",				js_interface_text_set_object_color_func,	2},
-							{"setAlpha",					js_interface_text_set_alpha_func,			2},
-							{"startFade",					js_interface_text_start_fade_func,			1},
-							{"setTextAndFade",				js_interface_text_set_text_and_fade_func,	2},
-							{0}};
+JSStaticFunction	interface_text_functions[]={
+							{"show",						js_interface_text_show_func,				kJSPropertyAttributeDontDelete},
+							{"hide",						js_interface_text_hide_func,				kJSPropertyAttributeDontDelete},
+							{"hideAll",						js_interface_text_hide_all_func,			kJSPropertyAttributeDontDelete},
+							{"move",						js_interface_text_move_func,				kJSPropertyAttributeDontDelete},
+							{"moveRelative",				js_interface_text_move_relative_func,		kJSPropertyAttributeDontDelete},
+							{"setText",						js_interface_text_set_text_func,			kJSPropertyAttributeDontDelete},
+							{"setSize",						js_interface_text_set_size_func,			kJSPropertyAttributeDontDelete},
+							{"setColor",					js_interface_text_set_color_func,			kJSPropertyAttributeDontDelete},
+							{"setTeamColor",				js_interface_text_set_team_color_func,		kJSPropertyAttributeDontDelete},
+							{"setObjectColor",				js_interface_text_set_object_color_func,	kJSPropertyAttributeDontDelete},
+							{"setAlpha",					js_interface_text_set_alpha_func,			kJSPropertyAttributeDontDelete},
+							{"startFade",					js_interface_text_start_fade_func,			kJSPropertyAttributeDontDelete},
+							{"setTextAndFade",				js_interface_text_set_text_and_fade_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			interface_text_class;
 
@@ -77,7 +77,7 @@ JSClassRef			interface_text_class;
 
 void script_init_interface_text_object(void)
 {
-	interface_text_class=script_create_class("interface_text_class",js_interface_text_get_property,js_interface_text_set_property);
+	interface_text_class=script_create_class("interface_text_class",NULL,interface_text_functions);
 }
 
 void script_free_interface_text_object(void)
@@ -85,9 +85,9 @@ void script_free_interface_text_object(void)
 	script_free_class(interface_text_class);
 }
 
-JSObjectRef script_add_interface_text_object(JSObjectRef parent_obj)
+JSObjectRef script_add_interface_text_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,interface_text_class,"text",NULL,interface_text_functions));
+	return(script_create_child_object(cx,parent_obj,interface_text_class,"text",NULL,interface_text_functions));
 }
 
 /* =======================================================

@@ -51,24 +51,24 @@ JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_watch_props[]={
-							{"objectId",				js_obj_watch_get_objectId,					NULL},
-							{"objectName",				js_obj_watch_get_objectName,				NULL},
-							{"objectIsPlayer",			js_obj_watch_get_objectIsPlayer,			NULL},
-							{"objectIsRemote",			js_obj_watch_get_objectIsRemote,			NULL},
-							{"objectIsBot",				js_obj_watch_get_objectIsBot,				NULL},
-							{"objectIsPlayerRemoteBot",	js_obj_watch_get_objectIsPlayerRemoteBot,	NULL},
-							{"objectTeam",				js_obj_watch_get_objectTeam,				NULL},
-							{"baseTeam",				js_obj_watch_get_baseTeam,					NULL},
-							{"soundName",				js_obj_watch_get_soundName,					NULL},
-							{0}};
+JSStaticValue 		obj_watch_props[]={
+							{"objectId",				js_obj_watch_get_objectId,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectName",				js_obj_watch_get_objectName,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayer",			js_obj_watch_get_objectIsPlayer,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsRemote",			js_obj_watch_get_objectIsRemote,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsBot",				js_obj_watch_get_objectIsBot,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayerRemoteBot",	js_obj_watch_get_objectIsPlayerRemoteBot,	NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectTeam",				js_obj_watch_get_objectTeam,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"baseTeam",				js_obj_watch_get_baseTeam,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"soundName",				js_obj_watch_get_soundName,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	obj_watch_functions[]={
-							{"start",					js_obj_watch_start_func,					1},
-							{"stop",					js_obj_watch_stop_func,						0},
-							{"setRestrictSight",		js_obj_watch_set_restrict_sight_func,		1},
-							{"clearRestrictSight",		js_obj_watch_clear_restrict_sight_func,		0},
-							{0}};
+JSStaticFunction	obj_watch_functions[]={
+							{"start",					js_obj_watch_start_func,					kJSPropertyAttributeDontDelete},
+							{"stop",					js_obj_watch_stop_func,						kJSPropertyAttributeDontDelete},
+							{"setRestrictSight",		js_obj_watch_set_restrict_sight_func,		kJSPropertyAttributeDontDelete},
+							{"clearRestrictSight",		js_obj_watch_clear_restrict_sight_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_watch_class;
 
@@ -80,7 +80,7 @@ JSClassRef			obj_watch_class;
 
 void script_init_obj_watch_object(void)
 {
-	obj_watch_class=script_create_class("obj_watch_class",js_obj_watch_get_property,js_obj_watch_set_property);
+	obj_watch_class=script_create_class("obj_watch_class",obj_watch_props,obj_watch_functions);
 }
 
 void script_free_obj_watch_object(void)
@@ -88,9 +88,9 @@ void script_free_obj_watch_object(void)
 	script_free_class(obj_watch_class);
 }
 
-JSObjectRef script_add_obj_watch_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_watch_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_watch_class,"watch",obj_watch_props,obj_watch_functions));
+	return(script_create_child_object(cx,parent_obj,obj_watch_class,"watch",obj_watch_props,obj_watch_functions));
 }
 
 /* =======================================================

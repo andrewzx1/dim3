@@ -49,19 +49,19 @@ JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_get_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	map_node_functions[]={
-							{"find",							js_map_node_find_func,									1},
-							{"findRandom",						js_map_node_find_random_func,							1},
-							{"findNearestToObject",				js_map_node_find_nearest_to_object_func,				1},
-							{"findNearestNamesInPath",			js_map_node_find_nearest_names_in_path_func,			2},
-							{"findNearestUnheldWeaponInPath",	js_map_node_find_nearest_unheld_weapon_in_path_func,	2},
-							{"nextInPath",						js_map_node_next_in_path_func,							2},
-							{"getAdjacentNodes",				js_map_node_get_adjacent_nodes_func,					1},
-							{"getName",							js_map_node_get_name_func,								1},
-							{"getDistance",						js_map_node_get_distance_func,							4},
-							{"getAngleTo",						js_map_node_get_angle_to_func,							4},
-							{"getPosition",						js_map_node_get_position_func,							1},
-							{0}};
+JSStaticFunction	map_node_functions[]={
+							{"find",							js_map_node_find_func,									kJSPropertyAttributeDontDelete},
+							{"findRandom",						js_map_node_find_random_func,							kJSPropertyAttributeDontDelete},
+							{"findNearestToObject",				js_map_node_find_nearest_to_object_func,				kJSPropertyAttributeDontDelete},
+							{"findNearestNamesInPath",			js_map_node_find_nearest_names_in_path_func,			kJSPropertyAttributeDontDelete},
+							{"findNearestUnheldWeaponInPath",	js_map_node_find_nearest_unheld_weapon_in_path_func,	kJSPropertyAttributeDontDelete},
+							{"nextInPath",						js_map_node_next_in_path_func,							kJSPropertyAttributeDontDelete},
+							{"getAdjacentNodes",				js_map_node_get_adjacent_nodes_func,					kJSPropertyAttributeDontDelete},
+							{"getName",							js_map_node_get_name_func,								kJSPropertyAttributeDontDelete},
+							{"getDistance",						js_map_node_get_distance_func,							kJSPropertyAttributeDontDelete},
+							{"getAngleTo",						js_map_node_get_angle_to_func,							kJSPropertyAttributeDontDelete},
+							{"getPosition",						js_map_node_get_position_func,							kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			map_node_class;
 
@@ -73,7 +73,7 @@ JSClassRef			map_node_class;
 
 void script_init_map_node_object(void)
 {
-	map_node_class=script_create_class("map_node_class",js_map_node_get_property,js_map_node_set_property);
+	map_node_class=script_create_class("map_node_class",NULL,map_node_functions);
 }
 
 void script_free_map_node_object(void)
@@ -81,9 +81,9 @@ void script_free_map_node_object(void)
 	script_free_class(map_node_class);
 }
 
-JSObjectRef script_add_map_node_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_node_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_node_class,"node",NULL,map_node_functions));
+	return(script_create_child_object(cx,parent_obj,map_node_class,"node",NULL,map_node_functions));
 }
 
 /* =======================================================

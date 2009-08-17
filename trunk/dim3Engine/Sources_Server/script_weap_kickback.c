@@ -41,13 +41,13 @@ JSValueRef js_weap_kickback_get_size(JSContextRef cx);
 void js_weap_kickback_set_size(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	weap_kickback_props[]={
-							{"size",				js_weap_kickback_get_size,				js_weap_kickback_set_size},
-							{0}};
+JSStaticValue 		weap_kickback_props[]={
+							{"size",				js_weap_kickback_get_size,				js_weap_kickback_set_size,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	weap_kickback_functions[]={
-							{"kick",				js_weap_kickback_kick_func,				0},
-							{0}};
+JSStaticFunction	weap_kickback_functions[]={
+							{"kick",				js_weap_kickback_kick_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			weap_kickback_class;
 
@@ -59,7 +59,7 @@ JSClassRef			weap_kickback_class;
 
 void script_init_weap_kickback_object(void)
 {
-	weap_kickback_class=script_create_class("weap_kickback_class",js_weap_kickback_get_property,js_weap_kickback_set_property);
+	weap_kickback_class=script_create_class("weap_kickback_class",weap_kickback_props,weap_kickback_functions);
 }
 
 void script_free_weap_kickback_object(void)
@@ -67,9 +67,9 @@ void script_free_weap_kickback_object(void)
 	script_free_class(weap_kickback_class);
 }
 
-JSObjectRef script_add_weap_kickback_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_kickback_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_kickback_class,"kickback",weap_kickback_props,weap_kickback_functions));
+	return(script_create_child_object(cx,parent_obj,weap_kickback_class,"kickback",weap_kickback_props,weap_kickback_functions));
 }
 
 /* =======================================================

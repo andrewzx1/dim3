@@ -45,16 +45,16 @@ JSValueRef js_interface_interaction_start_setup_func(JSContextRef cx,JSObjectRef
 JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	interface_interaction_functions[]={
-							{"startStory",			js_interface_interaction_start_story_func,				2},
-							{"startTitle",			js_interface_interaction_start_title_func,				3},
-							{"startMovie",			js_interface_interaction_start_movie_func,				2},
-							{"startChooser",		js_interface_interaction_start_chooser_func,			1},
-							{"startSaveLoad",		js_interface_interaction_start_save_load_func,			0},
-							{"startSetup",			js_interface_interaction_start_setup_func,				0},
-							{"startMenu",			js_interface_interaction_start_menu_func,				0},
-							{"quit",				js_interface_interaction_quit_func,						0},
-							{0}};
+JSStaticFunction	interface_interaction_functions[]={
+							{"startStory",			js_interface_interaction_start_story_func,				kJSPropertyAttributeDontDelete},
+							{"startTitle",			js_interface_interaction_start_title_func,				kJSPropertyAttributeDontDelete},
+							{"startMovie",			js_interface_interaction_start_movie_func,				kJSPropertyAttributeDontDelete},
+							{"startChooser",		js_interface_interaction_start_chooser_func,			kJSPropertyAttributeDontDelete},
+							{"startSaveLoad",		js_interface_interaction_start_save_load_func,			kJSPropertyAttributeDontDelete},
+							{"startSetup",			js_interface_interaction_start_setup_func,				kJSPropertyAttributeDontDelete},
+							{"startMenu",			js_interface_interaction_start_menu_func,				kJSPropertyAttributeDontDelete},
+							{"quit",				js_interface_interaction_quit_func,						kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			interface_interaction_class;
 
@@ -66,7 +66,7 @@ JSClassRef			interface_interaction_class;
 
 void script_init_interface_interaction_object(void)
 {
-	interface_interaction_class=script_create_class("interface_interaction_class",js_interface_interaction_get_property,js_interface_interaction_set_property);
+	interface_interaction_class=script_create_class("interface_interaction_class",NULL,interface_interaction_functions);
 }
 
 void script_free_interface_interaction_object(void)
@@ -74,9 +74,9 @@ void script_free_interface_interaction_object(void)
 	script_free_class(interface_interaction_class);
 }
 
-JSObjectRef script_add_interface_interaction_object(JSObjectRef parent_obj)
+JSObjectRef script_add_interface_interaction_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,interface_interaction_class,"interaction",NULL,interface_interaction_functions));
+	return(script_create_child_object(cx,parent_obj,interface_interaction_class,"interaction",NULL,interface_interaction_functions));
 }
 
 /* =======================================================

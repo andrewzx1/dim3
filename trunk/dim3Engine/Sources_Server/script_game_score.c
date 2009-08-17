@@ -48,17 +48,17 @@ JSValueRef js_game_score_get_suicide(JSContextRef cx);
 JSValueRef js_game_score_get_goal(JSContextRef cx);
 JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	game_score_props[]={
-							{"objectId",			js_game_score_get_objectId,			NULL},
-							{"kill",				js_game_score_get_kill,				NULL},
-							{"death",				js_game_score_get_death,			NULL},
-							{"suicide",				js_game_score_get_suicide,			NULL},
-							{"goal",				js_game_score_get_goal,				NULL},
-							{0}};
+JSStaticValue 		game_score_props[]={
+							{"objectId",			js_game_score_get_objectId,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"kill",				js_game_score_get_kill,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"death",				js_game_score_get_death,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"suicide",				js_game_score_get_suicide,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"goal",				js_game_score_get_goal,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	game_score_functions[]={
-							{"setScore",			js_game_score_set_score_func,		1},
-							{0}};
+JSStaticFunction	game_score_functions[]={
+							{"setScore",			js_game_score_set_score_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			game_score_class;
 
@@ -70,7 +70,7 @@ JSClassRef			game_score_class;
 
 void script_init_game_score_object(void)
 {
-	game_score_class=script_create_class("game_score_class",js_game_score_get_property,js_game_score_set_property);
+	game_score_class=script_create_class("game_score_class",game_score_props,game_score_functions);
 }
 
 void script_free_game_score_object(void)
@@ -78,9 +78,9 @@ void script_free_game_score_object(void)
 	script_free_class(game_score_class);
 }
 
-JSObjectRef script_add_game_score_object(JSObjectRef parent_obj)
+JSObjectRef script_add_game_score_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,game_score_class,"score",game_score_props,game_score_functions));
+	return(script_create_child_object(cx,parent_obj,game_score_class,"score",game_score_props,game_score_functions));
 }
 
 /* =======================================================
