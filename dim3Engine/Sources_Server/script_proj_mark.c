@@ -45,12 +45,12 @@ void js_proj_mark_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_proj_mark_set_size(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_proj_mark_set_alpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	proj_mark_props[]={
-							{"on",					js_proj_mark_get_on,				js_proj_mark_set_on},
-							{"name",				js_proj_mark_get_name,				js_proj_mark_set_name},
-							{"size",				js_proj_mark_get_size,				js_proj_mark_set_size},
-							{"alpha",				js_proj_mark_get_alpha,				js_proj_mark_set_alpha},
-							{0}};
+JSStaticValue 		proj_mark_props[]={
+							{"on",					js_proj_mark_get_on,				js_proj_mark_set_on,		kJSPropertyAttributeDontDelete},
+							{"name",				js_proj_mark_get_name,				js_proj_mark_set_name,		kJSPropertyAttributeDontDelete},
+							{"size",				js_proj_mark_get_size,				js_proj_mark_set_size,		kJSPropertyAttributeDontDelete},
+							{"alpha",				js_proj_mark_get_alpha,				js_proj_mark_set_alpha,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			proj_mark_class;
 
@@ -62,7 +62,7 @@ JSClassRef			proj_mark_class;
 
 void script_init_proj_mark_object(void)
 {
-	proj_mark_class=script_create_class("proj_mark_class",js_proj_mark_get_property,js_proj_mark_set_property);
+	proj_mark_class=script_create_class("proj_mark_class",proj_mark_props,NULL);
 }
 
 void script_free_proj_mark_object(void)
@@ -70,9 +70,9 @@ void script_free_proj_mark_object(void)
 	script_free_class(proj_mark_class);
 }
 
-JSObjectRef script_add_proj_mark_object(JSObjectRef parent_obj)
+JSObjectRef script_add_proj_mark_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,proj_mark_class,"mark",proj_mark_props,NULL));
+	return(script_create_child_object(cx,parent_obj,proj_mark_class,"mark",proj_mark_props,NULL));
 }
 
 /* =======================================================

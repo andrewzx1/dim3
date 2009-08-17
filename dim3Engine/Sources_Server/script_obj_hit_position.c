@@ -41,11 +41,11 @@ JSValueRef js_obj_hit_position_get_x(JSContextRef cx);
 JSValueRef js_obj_hit_position_get_y(JSContextRef cx);
 JSValueRef js_obj_hit_position_get_z(JSContextRef cx);
 
-script_js_property	obj_hit_position_props[]={
-							{"x",					js_obj_hit_position_get_x,			NULL},
-							{"y",					js_obj_hit_position_get_y,			NULL},
-							{"z",					js_obj_hit_position_get_z,			NULL},
-							{0}};
+JSStaticValue 		obj_hit_position_props[]={
+							{"x",					js_obj_hit_position_get_x,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"y",					js_obj_hit_position_get_y,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"z",					js_obj_hit_position_get_z,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_hit_position_class;
 
@@ -57,7 +57,7 @@ JSClassRef			obj_hit_position_class;
 
 void script_init_obj_hit_position_object(void)
 {
-	obj_hit_position_class=script_create_class("obj_hit_position_class",js_obj_hit_position_get_property,js_obj_hit_position_set_property);
+	obj_hit_position_class=script_create_class("obj_hit_position_class",obj_hit_position_props,NULL);
 }
 
 void script_free_obj_hit_position_object(void)
@@ -65,9 +65,9 @@ void script_free_obj_hit_position_object(void)
 	script_free_class(obj_hit_position_class);
 }
 
-JSObjectRef script_add_obj_hit_position_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_hit_position_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_hit_position_class,"hitPosition",obj_hit_position_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_hit_position_class,"hitPosition",obj_hit_position_props,NULL));
 }
 
 /* =======================================================

@@ -38,9 +38,9 @@ JSValueRef js_map_light_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 bool js_map_light_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	map_light_functions[]={
-							{"toggle",				js_map_light_toggle_func,			2},
-							{0}};
+JSStaticFunction	map_light_functions[]={
+							{"toggle",				js_map_light_toggle_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			map_light_class;
 
@@ -52,7 +52,7 @@ JSClassRef			map_light_class;
 
 void script_init_map_light_object(void)
 {
-	map_light_class=script_create_class("map_light_class",NULL,NULL);
+	map_light_class=script_create_class("map_light_class",NULL,map_light_functions);
 }
 
 void script_free_map_light_object(void)
@@ -60,9 +60,9 @@ void script_free_map_light_object(void)
 	script_free_class(map_light_class);
 }
 
-JSObjectRef script_add_map_light_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_light_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_light_class,"light",NULL,map_light_functions));
+	return(script_create_child_object(cx,parent_obj,map_light_class,"light",NULL,map_light_functions));
 }
 
 /* =======================================================

@@ -49,14 +49,14 @@ JSValueRef js_map_movement_freeze_func(JSContextRef cx,JSObjectRef func,JSObject
 JSValueRef js_map_movement_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_movement_is_looping_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	map_movement_functions[]={
-							{"start",				js_map_movement_start_func,			1},
-							{"startReverse",		js_map_movement_start_reverse_func,	1},
-							{"startOrThaw",			js_map_movement_start_or_thaw_func,	1},
-							{"freeze",				js_map_movement_freeze_func,		1},
-							{"thaw",				js_map_movement_thaw_func,			1},
-							{"isLooping",			js_map_movement_is_looping_func,	1},
-							{0}};
+JSStaticFunction	map_movement_functions[]={
+							{"start",				js_map_movement_start_func,			kJSPropertyAttributeDontDelete},
+							{"startReverse",		js_map_movement_start_reverse_func,	kJSPropertyAttributeDontDelete},
+							{"startOrThaw",			js_map_movement_start_or_thaw_func,	kJSPropertyAttributeDontDelete},
+							{"freeze",				js_map_movement_freeze_func,		kJSPropertyAttributeDontDelete},
+							{"thaw",				js_map_movement_thaw_func,			kJSPropertyAttributeDontDelete},
+							{"isLooping",			js_map_movement_is_looping_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			map_movement_class;
 
@@ -68,7 +68,7 @@ JSClassRef			map_movement_class;
 
 void script_init_map_movement_object(void)
 {
-	map_movement_class=script_create_class("map_movement_class",js_map_movement_get_property,js_map_movement_set_property);
+	map_movement_class=script_create_class("map_movement_class",NULL,map_movement_functions);
 }
 
 void script_free_map_movement_object(void)
@@ -76,9 +76,9 @@ void script_free_map_movement_object(void)
 	script_free_class(map_movement_class);
 }
 
-JSObjectRef script_add_map_movement_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_movement_class,"movement",NULL,map_movement_functions));
+	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement",NULL,map_movement_functions));
 }
 
 /* =======================================================

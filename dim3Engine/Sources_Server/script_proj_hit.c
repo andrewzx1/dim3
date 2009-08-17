@@ -48,16 +48,16 @@ JSValueRef js_proj_hit_get_materialName(JSContextRef cx);
 JSValueRef js_proj_hit_get_ejectVector(JSContextRef cx);
 JSValueRef js_proj_hit_get_reflectVector(JSContextRef cx);
 
-script_js_property	proj_hit_props[]={
-							{"type",				js_proj_hit_get_type,				NULL},
-							{"name",				js_proj_hit_get_name,				NULL},
-							{"id",					js_proj_hit_get_id,					NULL},
-							{"isPlayer",			js_proj_hit_get_isPlayer,			NULL},
-							{"startTick",			js_proj_hit_get_startTick,			NULL},
-							{"materialName",		js_proj_hit_get_materialName,		NULL},
-							{"ejectVector",			js_proj_hit_get_ejectVector,		NULL},
-							{"reflectVector",		js_proj_hit_get_reflectVector,		NULL},
-							{0}};
+JSStaticValue 		proj_hit_props[]={
+							{"type",				js_proj_hit_get_type,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"name",				js_proj_hit_get_name,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"id",					js_proj_hit_get_id,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"isPlayer",			js_proj_hit_get_isPlayer,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"startTick",			js_proj_hit_get_startTick,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"materialName",		js_proj_hit_get_materialName,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"ejectVector",			js_proj_hit_get_ejectVector,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"reflectVector",		js_proj_hit_get_reflectVector,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			proj_hit_class;
 
@@ -69,7 +69,7 @@ JSClassRef			proj_hit_class;
 
 void script_init_proj_hit_object(void)
 {
-	proj_hit_class=script_create_class("proj_hit_class",js_proj_hit_get_property,js_proj_hit_set_property);
+	proj_hit_class=script_create_class("proj_hit_class",proj_hit_props,NULL);
 }
 
 void script_free_proj_hit_object(void)
@@ -77,9 +77,9 @@ void script_free_proj_hit_object(void)
 	script_free_class(proj_hit_class);
 }
 
-JSObjectRef script_add_proj_hit_object(JSObjectRef parent_obj)
+JSObjectRef script_add_proj_hit_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,proj_hit_class,"hit",proj_hit_props,NULL));
+	return(script_create_child_object(cx,parent_obj,proj_hit_class,"hit",proj_hit_props,NULL));
 }
 
 /* =======================================================

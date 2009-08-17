@@ -46,20 +46,20 @@ JSValueRef js_map_spot_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	map_spot_props[]={
-							{"count",				js_map_spot_get_count,				NULL},
-							{0}};
+JSStaticValue 		map_spot_props[]={
+							{"count",				js_map_spot_get_count,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	map_spot_functions[]={
-							{"find",				js_map_spot_find_func,				2},
-							{"getName",				js_map_spot_get_name_func,			1},
-							{"getType",				js_map_spot_get_type_func,			1},
-							{"getScript",			js_map_spot_get_script_func,		1},
-							{"getParameter",		js_map_spot_get_parameter_func,		1},
-							{"getPosition",			js_map_spot_get_position_func,		1},
-							{"getAngle",			js_map_spot_get_angle_func,			1},
-							{"attachObject",		js_map_spot_attach_object_func,		5},
-							{0}};
+JSStaticFunction	map_spot_functions[]={
+							{"find",				js_map_spot_find_func,				kJSPropertyAttributeDontDelete},
+							{"getName",				js_map_spot_get_name_func,			kJSPropertyAttributeDontDelete},
+							{"getType",				js_map_spot_get_type_func,			kJSPropertyAttributeDontDelete},
+							{"getScript",			js_map_spot_get_script_func,		kJSPropertyAttributeDontDelete},
+							{"getParameter",		js_map_spot_get_parameter_func,		kJSPropertyAttributeDontDelete},
+							{"getPosition",			js_map_spot_get_position_func,		kJSPropertyAttributeDontDelete},
+							{"getAngle",			js_map_spot_get_angle_func,			kJSPropertyAttributeDontDelete},
+							{"attachObject",		js_map_spot_attach_object_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			map_spot_class;
 
@@ -71,7 +71,7 @@ JSClassRef			map_spot_class;
 
 void script_init_map_spot_object(void)
 {
-	map_spot_class=script_create_class("map_spot_class",js_map_spot_get_property,js_map_spot_set_property);
+	map_spot_class=script_create_class("map_spot_class",map_spot_props,map_spot_functions);
 }
 
 void script_free_map_spot_object(void)
@@ -79,9 +79,9 @@ void script_free_map_spot_object(void)
 	script_free_class(map_spot_class);
 }
 
-JSObjectRef script_add_map_spot_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_spot_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_spot_class,"spot",map_spot_props,map_spot_functions));
+	return(script_create_child_object(cx,parent_obj,map_spot_class,"spot",map_spot_props,map_spot_functions));
 }
 
 /* =======================================================

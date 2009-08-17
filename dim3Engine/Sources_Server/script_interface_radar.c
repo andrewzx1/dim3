@@ -49,13 +49,13 @@ void js_interface_radar_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 void js_interface_radar_set_displayRadius(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_interface_radar_set_viewRadius(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	interface_radar_props[]={
-							{"on",					js_interface_radar_get_on,				js_interface_radar_set_on},
-							{"x",					js_interface_radar_get_x,				js_interface_radar_set_x},
-							{"y",					js_interface_radar_get_y,				js_interface_radar_set_y},
-							{"displayRadius",		js_interface_radar_get_displayRadius,	js_interface_radar_set_displayRadius},
-							{"viewRadius",			js_interface_radar_get_viewRadius,		js_interface_radar_set_viewRadius},
-							{0}};
+JSStaticValue 		interface_radar_props[]={
+							{"on",					js_interface_radar_get_on,				js_interface_radar_set_on,				kJSPropertyAttributeDontDelete},
+							{"x",					js_interface_radar_get_x,				js_interface_radar_set_x,				kJSPropertyAttributeDontDelete},
+							{"y",					js_interface_radar_get_y,				js_interface_radar_set_y,				kJSPropertyAttributeDontDelete},
+							{"displayRadius",		js_interface_radar_get_displayRadius,	js_interface_radar_set_displayRadius,	kJSPropertyAttributeDontDelete},
+							{"viewRadius",			js_interface_radar_get_viewRadius,		js_interface_radar_set_viewRadius,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			interface_radar_class;
 
@@ -67,7 +67,7 @@ JSClassRef			interface_radar_class;
 
 void script_init_interface_radar_object(void)
 {
-	interface_radar_class=script_create_class("interface_radar_class",js_interface_radar_get_property,js_interface_radar_set_property);
+	interface_radar_class=script_create_class("interface_radar_class",interface_radar_props,NULL);
 }
 
 void script_free_interface_radar_object(void)
@@ -75,9 +75,9 @@ void script_free_interface_radar_object(void)
 	script_free_class(interface_radar_class);
 }
 
-JSObjectRef script_add_interface_radar_object(JSObjectRef parent_obj)
+JSObjectRef script_add_interface_radar_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,interface_radar_class,"radar",interface_radar_props,NULL));
+	return(script_create_child_object(cx,parent_obj,interface_radar_class,"radar",interface_radar_props,NULL));
 }
 
 /* =======================================================

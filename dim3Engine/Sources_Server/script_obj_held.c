@@ -40,10 +40,10 @@ bool js_obj_held_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	obj_held_functions[]={
-							{"add",					js_obj_held_add_func,				4},
-							{"drop",				js_obj_held_drop_func,				3},
-							{0}};
+JSStaticFunction	obj_held_functions[]={
+							{"add",					js_obj_held_add_func,				kJSPropertyAttributeDontDelete},
+							{"drop",				js_obj_held_drop_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_held_class;
 
@@ -55,7 +55,7 @@ JSClassRef			obj_held_class;
 
 void script_init_obj_held_object(void)
 {
-	obj_held_class=script_create_class("obj_held_class",js_obj_held_get_property,js_obj_held_set_property);
+	obj_held_class=script_create_class("obj_held_class",NULL,obj_held_functions);
 }
 
 void script_free_obj_held_object(void)
@@ -63,9 +63,9 @@ void script_free_obj_held_object(void)
 	script_free_class(obj_held_class);
 }
 
-JSObjectRef script_add_obj_held_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_held_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_held_class,"held",NULL,obj_held_functions));
+	return(script_create_child_object(cx,parent_obj,obj_held_class,"held",NULL,obj_held_functions));
 }
 
 /* =======================================================

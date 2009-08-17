@@ -55,22 +55,22 @@ JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_health_props[]={
-							{"maximum",					js_obj_health_get_maximum,					js_obj_health_set_maximum},
-							{"start",					js_obj_health_get_start,					js_obj_health_set_start},
-							{"current",					js_obj_health_get_current,					NULL},
-							{"recoverTick",				js_obj_health_get_recoverTick,				js_obj_health_set_recoverTick},
-							{"recoverAmount",			js_obj_health_get_recoverAmount,			js_obj_health_set_recoverAmount},
-							{"fallDamageMinimumHeight",	js_obj_health_get_fallDamageMinimumHeight,	js_obj_health_set_fallDamageMinimumHeight},
-							{"fallDamageFactor",		js_obj_health_get_fallDamageFactor,			js_obj_health_set_fallDamageFactor},
-							{"factor",					js_obj_health_get_factor,					js_obj_health_set_factor},
-							{0}};
+JSStaticValue 		obj_health_props[]={
+							{"maximum",					js_obj_health_get_maximum,					js_obj_health_set_maximum,					kJSPropertyAttributeDontDelete},
+							{"start",					js_obj_health_get_start,					js_obj_health_set_start,					kJSPropertyAttributeDontDelete},
+							{"current",					js_obj_health_get_current,					NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"recoverTick",				js_obj_health_get_recoverTick,				js_obj_health_set_recoverTick,				kJSPropertyAttributeDontDelete},
+							{"recoverAmount",			js_obj_health_get_recoverAmount,			js_obj_health_set_recoverAmount,			kJSPropertyAttributeDontDelete},
+							{"fallDamageMinimumHeight",	js_obj_health_get_fallDamageMinimumHeight,	js_obj_health_set_fallDamageMinimumHeight,	kJSPropertyAttributeDontDelete},
+							{"fallDamageFactor",		js_obj_health_get_fallDamageFactor,			js_obj_health_set_fallDamageFactor,			kJSPropertyAttributeDontDelete},
+							{"factor",					js_obj_health_get_factor,					js_obj_health_set_factor,					kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	obj_health_functions[]={
-							{"add",						js_obj_health_add_func,						1},
-							{"remove",					js_obj_health_remove_func,					1},
-							{"reset",					js_obj_health_reset_func,					0},
-							{0}};
+JSStaticFunction	obj_health_functions[]={
+							{"add",						js_obj_health_add_func,						kJSPropertyAttributeDontDelete},
+							{"remove",					js_obj_health_remove_func,					kJSPropertyAttributeDontDelete},
+							{"reset",					js_obj_health_reset_func,					kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_health_class;
 
@@ -82,7 +82,7 @@ JSClassRef			obj_health_class;
 
 void script_init_obj_health_object(void)
 {
-	obj_health_class=script_create_class("obj_health_class",js_obj_health_get_property,js_obj_health_set_property);
+	obj_health_class=script_create_class("obj_health_class",obj_health_props,obj_health_functions);
 }
 
 void script_free_obj_health_object(void)
@@ -90,9 +90,9 @@ void script_free_obj_health_object(void)
 	script_free_class(obj_health_class);
 }
 
-JSObjectRef script_add_obj_health_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_health_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_health_class,"health",obj_health_props,obj_health_functions));
+	return(script_create_child_object(cx,parent_obj,obj_health_class,"health",obj_health_props,obj_health_functions));
 }
 
 /* =======================================================

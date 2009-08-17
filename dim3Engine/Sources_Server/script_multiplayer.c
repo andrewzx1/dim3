@@ -46,7 +46,7 @@ JSClassRef			multiplayer_class;
 
 void script_init_global_multiplayer_object(void)
 {
-	multiplayer_class=script_create_class("multiplayer_class",js_multiplayer_get_property,js_multiplayer_set_property);
+	multiplayer_class=script_create_class("multiplayer_class",NULL,NULL);
 }
 
 void script_free_global_multiplayer_object(void)
@@ -54,9 +54,9 @@ void script_free_global_multiplayer_object(void)
 	script_free_class(multiplayer_class);
 }
 
-JSObjectRef script_add_global_multiplayer_object(JSObjectRef parent_obj)
+JSObjectRef script_add_global_multiplayer_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,multiplayer_class,"multiplayer",NULL,NULL));
+	return(script_create_child_object(cx,parent_obj,multiplayer_class,"multiplayer",NULL,NULL));
 }
 
 /* =======================================================

@@ -39,10 +39,10 @@ bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSString
 JSValueRef js_interface_screen_get_width(JSContextRef cx);
 JSValueRef js_interface_screen_get_height(JSContextRef cx);
 
-script_js_property	interface_screen_props[]={
-							{"width",				js_interface_screen_get_width,		NULL},
-							{"height",				js_interface_screen_get_height,		NULL},
-							{0}};
+JSStaticValue 		interface_screen_props[]={
+							{"width",				js_interface_screen_get_width,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"height",				js_interface_screen_get_height,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			interface_screen_class;
 
@@ -54,7 +54,7 @@ JSClassRef			interface_screen_class;
 
 void script_init_interface_screen_object(void)
 {
-	interface_screen_class=script_create_class("interface_screen_class",js_interface_screen_get_property,js_interface_screen_set_property);
+	interface_screen_class=script_create_class("interface_screen_class",interface_screen_props,NULL);
 }
 
 void script_free_interface_screen_object(void)
@@ -62,9 +62,9 @@ void script_free_interface_screen_object(void)
 	script_free_class(interface_screen_class);
 }
 
-JSObjectRef script_add_interface_screen_object(JSObjectRef parent_obj)
+JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,interface_screen_class,"screen",interface_screen_props,NULL));
+	return(script_create_child_object(cx,parent_obj,interface_screen_class,"screen",interface_screen_props,NULL));
 }
 
 /* =======================================================

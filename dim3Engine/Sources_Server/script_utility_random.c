@@ -40,12 +40,12 @@ JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSO
 JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	utility_random_functions[]={
-							{"getInteger",			js_utility_random_get_integer_func,		2},
-							{"getFloat",			js_utility_random_get_float_func,		2},
-							{"getBoolean",			js_utility_random_get_boolean_func,		0},
-							{"getPosOrNeg",			js_utility_random_get_pos_or_neg_func,	0},
-							{0}};
+JSStaticFunction	utility_random_functions[]={
+							{"getInteger",			js_utility_random_get_integer_func,		kJSPropertyAttributeDontDelete},
+							{"getFloat",			js_utility_random_get_float_func,		kJSPropertyAttributeDontDelete},
+							{"getBoolean",			js_utility_random_get_boolean_func,		kJSPropertyAttributeDontDelete},
+							{"getPosOrNeg",			js_utility_random_get_pos_or_neg_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			utility_random_class;
 
@@ -57,7 +57,7 @@ JSClassRef			utility_random_class;
 
 void script_init_utility_random_object(void)
 {
-	utility_random_class=script_create_class("utility_random_class",js_utility_random_get_property,js_utility_random_set_property);
+	utility_random_class=script_create_class("utility_random_class",NULL,utility_random_functions);
 }
 
 void script_free_utility_random_object(void)
@@ -65,9 +65,9 @@ void script_free_utility_random_object(void)
 	script_free_class(utility_random_class);
 }
 
-JSObjectRef script_add_utility_random_object(JSObjectRef parent_obj)
+JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,utility_random_class,"random",NULL,utility_random_functions));
+	return(script_create_child_object(cx,parent_obj,utility_random_class,"random",NULL,utility_random_functions));
 }
 
 /* =======================================================

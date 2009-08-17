@@ -42,16 +42,16 @@ JSValueRef js_obj_motion_angle_get_z(JSContextRef cx);
 JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_motion_angle_props[]={
-							{"x",					js_obj_motion_angle_get_x,				NULL},
-							{"y",					js_obj_motion_angle_get_y,				NULL},
-							{"z",					js_obj_motion_angle_get_z,				NULL},
-							{0}};
+JSStaticValue 		obj_motion_angle_props[]={
+							{"x",					js_obj_motion_angle_get_x,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"y",					js_obj_motion_angle_get_y,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"z",					js_obj_motion_angle_get_z,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	obj_motion_angle_functions[]={
-							{"turnToAngle",			js_obj_motion_angle_turn_to_angle_func,	2},
-							{"turnStop",			js_obj_motion_angle_turn_stop_func,		0},
-							{0}};
+JSStaticFunction	obj_motion_angle_functions[]={
+							{"turnToAngle",			js_obj_motion_angle_turn_to_angle_func,	kJSPropertyAttributeDontDelete},
+							{"turnStop",			js_obj_motion_angle_turn_stop_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 							
 JSClassRef			obj_motion_angle_class;
 
@@ -63,7 +63,7 @@ JSClassRef			obj_motion_angle_class;
 
 void script_init_obj_motion_angle_object(void)
 {
-	obj_motion_angle_class=script_create_class("obj_motion_angle_class",js_obj_motion_angle_get_property,js_obj_motion_angle_set_property);
+	obj_motion_angle_class=script_create_class("obj_motion_angle_class",obj_motion_angle_props,obj_motion_angle_functions);
 }
 
 void script_free_obj_motion_angle_object(void)
@@ -71,9 +71,9 @@ void script_free_obj_motion_angle_object(void)
 	script_free_class(obj_motion_angle_class);
 }
 
-JSObjectRef script_add_obj_motion_angle_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_motion_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_motion_angle_class,"motionAngle",obj_motion_angle_props,obj_motion_angle_functions));
+	return(script_create_child_object(cx,parent_obj,obj_motion_angle_class,"motionAngle",obj_motion_angle_props,obj_motion_angle_functions));
 }
 
 /* =======================================================

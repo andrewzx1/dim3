@@ -51,19 +51,19 @@ JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjec
 JSValueRef js_spawn_shake_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_spawn_push_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	spawn_functions[]={
-							{"particle",			js_spawn_particle_func,				4},
-							{"particleMoving",		js_spawn_particle_moving_func,		7},
-							{"particleLine",		js_spawn_particle_line_func,		8},
-							{"ring",				js_spawn_ring_func,					4},
-							{"ringLine",			js_spawn_ring_line_func,			8},
-							{"flash",				js_spawn_flash_func,				9},
-							{"lightning",			js_spawn_lightning_func,			12},
-							{"ray",					js_spawn_ray_func,					11},
-							{"rayTeamColor",		js_spawn_ray_team_color_func,		7},
-							{"shake",				js_spawn_shake_func,				6},
-							{"push",				js_spawn_push_func,					5},
-							{0}};
+JSStaticFunction	spawn_functions[]={
+							{"particle",			js_spawn_particle_func,				kJSPropertyAttributeDontDelete},
+							{"particleMoving",		js_spawn_particle_moving_func,		kJSPropertyAttributeDontDelete},
+							{"particleLine",		js_spawn_particle_line_func,		kJSPropertyAttributeDontDelete},
+							{"ring",				js_spawn_ring_func,					kJSPropertyAttributeDontDelete},
+							{"ringLine",			js_spawn_ring_line_func,			kJSPropertyAttributeDontDelete},
+							{"flash",				js_spawn_flash_func,				kJSPropertyAttributeDontDelete},
+							{"lightning",			js_spawn_lightning_func,			kJSPropertyAttributeDontDelete},
+							{"ray",					js_spawn_ray_func,					kJSPropertyAttributeDontDelete},
+							{"rayTeamColor",		js_spawn_ray_team_color_func,		kJSPropertyAttributeDontDelete},
+							{"shake",				js_spawn_shake_func,				kJSPropertyAttributeDontDelete},
+							{"push",				js_spawn_push_func,					kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			spawn_class;
 
@@ -75,7 +75,7 @@ JSClassRef			spawn_class;
 
 void script_init_global_spawn_object(void)
 {
-	spawn_class=script_create_class("spawn_class",js_spawn_get_property,js_spawn_set_property);
+	spawn_class=script_create_class("spawn_class",NULL,spawn_functions);
 }
 
 void script_free_global_spawn_object(void)
@@ -83,9 +83,9 @@ void script_free_global_spawn_object(void)
 	script_free_class(spawn_class);
 }
 
-JSObjectRef script_add_global_spawn_object(JSObjectRef parent_obj)
+JSObjectRef script_add_global_spawn_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,spawn_class,"spawn",NULL,spawn_functions));
+	return(script_create_child_object(cx,parent_obj,spawn_class,"spawn",NULL,spawn_functions));
 }
 
 /* =======================================================

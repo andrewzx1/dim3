@@ -57,18 +57,18 @@ void js_obj_turn_speed_set_motionAir(JSContextRef cx,JSValueRef vp,JSValueRef *e
 void js_obj_turn_speed_set_key(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_turn_speed_set_topDownAngleOffset(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_turn_speed_props[]={
-							{"facingWalk",				js_obj_turn_speed_get_facingWalk,			js_obj_turn_speed_set_facingWalk},
-							{"motionWalk",				js_obj_turn_speed_get_motionWalk,			js_obj_turn_speed_set_motionWalk},
-							{"facingRun",				js_obj_turn_speed_get_facingRun,			js_obj_turn_speed_set_facingRun},
-							{"motionRun",				js_obj_turn_speed_get_motionRun,			js_obj_turn_speed_set_motionRun},
-							{"facingCrawl",				js_obj_turn_speed_get_facingCrawl,			js_obj_turn_speed_set_facingCrawl},
-							{"motionCrawl",				js_obj_turn_speed_get_motionCrawl,			js_obj_turn_speed_set_motionCrawl},
-							{"facingAir",				js_obj_turn_speed_get_facingAir,			js_obj_turn_speed_set_facingAir},
-							{"motionAir",				js_obj_turn_speed_get_motionAir,			js_obj_turn_speed_set_motionAir},
-							{"key",						js_obj_turn_speed_get_key,					js_obj_turn_speed_set_key},
-							{"topDownAngleOffset",		js_obj_turn_speed_get_topDownAngleOffset,	js_obj_turn_speed_set_topDownAngleOffset},
-							{0}};
+JSStaticValue 		obj_turn_speed_props[]={
+							{"facingWalk",				js_obj_turn_speed_get_facingWalk,			js_obj_turn_speed_set_facingWalk,			kJSPropertyAttributeDontDelete},
+							{"motionWalk",				js_obj_turn_speed_get_motionWalk,			js_obj_turn_speed_set_motionWalk,			kJSPropertyAttributeDontDelete},
+							{"facingRun",				js_obj_turn_speed_get_facingRun,			js_obj_turn_speed_set_facingRun,			kJSPropertyAttributeDontDelete},
+							{"motionRun",				js_obj_turn_speed_get_motionRun,			js_obj_turn_speed_set_motionRun,			kJSPropertyAttributeDontDelete},
+							{"facingCrawl",				js_obj_turn_speed_get_facingCrawl,			js_obj_turn_speed_set_facingCrawl,			kJSPropertyAttributeDontDelete},
+							{"motionCrawl",				js_obj_turn_speed_get_motionCrawl,			js_obj_turn_speed_set_motionCrawl,			kJSPropertyAttributeDontDelete},
+							{"facingAir",				js_obj_turn_speed_get_facingAir,			js_obj_turn_speed_set_facingAir,			kJSPropertyAttributeDontDelete},
+							{"motionAir",				js_obj_turn_speed_get_motionAir,			js_obj_turn_speed_set_motionAir,			kJSPropertyAttributeDontDelete},
+							{"key",						js_obj_turn_speed_get_key,					js_obj_turn_speed_set_key,					kJSPropertyAttributeDontDelete},
+							{"topDownAngleOffset",		js_obj_turn_speed_get_topDownAngleOffset,	js_obj_turn_speed_set_topDownAngleOffset,	kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_turn_speed_class;
 
@@ -80,7 +80,7 @@ JSClassRef			obj_turn_speed_class;
 
 void script_init_obj_turn_speed_object(void)
 {
-	obj_turn_speed_class=script_create_class("obj_turn_speed_class",js_obj_turn_speed_get_property,js_obj_turn_speed_set_property);
+	obj_turn_speed_class=script_create_class("obj_turn_speed_class",obj_turn_speed_props,NULL);
 }
 
 void script_free_obj_turn_speed_object(void)
@@ -88,9 +88,9 @@ void script_free_obj_turn_speed_object(void)
 	script_free_class(obj_turn_speed_class);
 }
 
-JSObjectRef script_add_obj_turn_speed_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_turn_speed_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_turn_speed_class,"turnSpeed",obj_turn_speed_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_turn_speed_class,"turnSpeed",obj_turn_speed_props,NULL));
 }
 
 /* =======================================================

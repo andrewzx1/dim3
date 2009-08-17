@@ -46,16 +46,16 @@ JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,
 JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	camera_static_position_props[]={
-							{"follow",				js_camera_static_position_get_follow,			js_camera_static_position_set_follow},
-							{"walkTurnSpeed",		js_camera_static_position_get_walkTurnSpeed,	js_camera_static_position_set_walkTurnSpeed},
-							{0}};
+JSStaticValue 		camera_static_position_props[]={
+							{"follow",				js_camera_static_position_get_follow,			js_camera_static_position_set_follow,			kJSPropertyAttributeDontDelete},
+							{"walkTurnSpeed",		js_camera_static_position_get_walkTurnSpeed,	js_camera_static_position_set_walkTurnSpeed,	kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	camera_static_position_functions[]={
-							{"move",				js_camera_static_position_move_func,			3},
-							{"moveToSpot",			js_camera_static_position_move_to_spot_func,	1},
-							{"walkToNode",			js_camera_static_position_walk_to_node_func,	6},
-							{0}};
+JSStaticFunction	camera_static_position_functions[]={
+							{"move",				js_camera_static_position_move_func,			kJSPropertyAttributeDontDelete},
+							{"moveToSpot",			js_camera_static_position_move_to_spot_func,	kJSPropertyAttributeDontDelete},
+							{"walkToNode",			js_camera_static_position_walk_to_node_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			camera_static_position_class;
 
@@ -67,7 +67,7 @@ JSClassRef			camera_static_position_class;
 
 void script_init_camera_static_position_object(void)
 {
-	camera_static_position_class=script_create_class("camera_static_position_class",js_camera_static_position_get_property,js_camera_static_position_set_property);
+	camera_static_position_class=script_create_class("camera_static_position_class",camera_static_position_props,camera_static_position_functions);
 }
 
 void script_free_camera_static_position_object(void)
@@ -75,9 +75,9 @@ void script_free_camera_static_position_object(void)
 	script_free_class(camera_static_position_class);
 }
 
-JSObjectRef script_add_camera_static_position_object(JSObjectRef parent_obj)
+JSObjectRef script_add_camera_static_position_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,camera_static_position_class,"staticPosition",camera_static_position_props,camera_static_position_functions));
+	return(script_create_child_object(cx,parent_obj,camera_static_position_class,"staticPosition",camera_static_position_props,camera_static_position_functions));
 }
 
 /* =======================================================

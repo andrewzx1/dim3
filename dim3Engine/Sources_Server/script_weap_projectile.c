@@ -70,35 +70,35 @@ JSValueRef js_weap_projectile_spawn_from_center_slop_func(JSContextRef cx,JSObje
 JSValueRef js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	weap_projectile_props[]={
-							{"fireBoneTag",				js_weap_projectile_get_fireBoneTag,				js_weap_projectile_set_fireBoneTag},
-							{"barrelBoneTag",			js_weap_projectile_get_barrelBoneTag,			js_weap_projectile_set_barrelBoneTag},
-							{"firePoseName",			js_weap_projectile_get_firePoseName,			js_weap_projectile_set_firePoseName},
-							{"objectFireBoneTag",		js_weap_projectile_get_objectFireBoneTag,		js_weap_projectile_set_objectFireBoneTag},
-							{"objectFirePoseName",		js_weap_projectile_get_objectFirePoseName,		js_weap_projectile_set_objectFirePoseName},
-							{"repeatOn",				js_weap_projectile_get_repeat_on,				js_weap_projectile_set_repeat_on},
-							{"repeatTick",				js_weap_projectile_get_repeat_tick,				js_weap_projectile_set_repeat_tick},
-							{0}};
+JSStaticValue 		weap_projectile_props[]={
+							{"fireBoneTag",				js_weap_projectile_get_fireBoneTag,				js_weap_projectile_set_fireBoneTag,				kJSPropertyAttributeDontDelete},
+							{"barrelBoneTag",			js_weap_projectile_get_barrelBoneTag,			js_weap_projectile_set_barrelBoneTag,			kJSPropertyAttributeDontDelete},
+							{"firePoseName",			js_weap_projectile_get_firePoseName,			js_weap_projectile_set_firePoseName,			kJSPropertyAttributeDontDelete},
+							{"objectFireBoneTag",		js_weap_projectile_get_objectFireBoneTag,		js_weap_projectile_set_objectFireBoneTag,		kJSPropertyAttributeDontDelete},
+							{"objectFirePoseName",		js_weap_projectile_get_objectFirePoseName,		js_weap_projectile_set_objectFirePoseName,		kJSPropertyAttributeDontDelete},
+							{"repeatOn",				js_weap_projectile_get_repeat_on,				js_weap_projectile_set_repeat_on,				kJSPropertyAttributeDontDelete},
+							{"repeatTick",				js_weap_projectile_get_repeat_tick,				js_weap_projectile_set_repeat_tick,				kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	weap_projectile_functions[]={
-							{"add",										js_weap_projectile_add_func,											2},
-							{"spawnFromWeaponBone",						js_weap_projectile_spawn_from_weapon_bone_func,							1},
-							{"spawnFromWeaponBoneSlop",					js_weap_projectile_spawn_from_weapon_bone_slop_func,					2},
-							{"spawnFromWeaponBoneMultiSlop",			js_weap_projectile_spawn_from_weapon_bone_multi_slop_func,				3},
-							{"spawnFromWeaponBoneOffsetAngle",			js_weap_projectile_spawn_from_weapon_bone_offset_angle_func,			5},
-							{"spawnFromObjectBone",						js_weap_projectile_spawn_from_object_bone_func,							1},
-							{"spawnFromObjectBoneSlop",					js_weap_projectile_spawn_from_object_bone_slop_func,					2},
-							{"spawnFromObjectBoneMultiSlop",			js_weap_projectile_spawn_from_object_bone_multi_slop_func,				3},
-							{"spawnFromObjectBoneOffsetAngle",			js_weap_projectile_spawn_from_object_bone_offset_angle_func,			5},
-							{"spawnFromBarrel",							js_weap_projectile_spawn_from_barrel_func,								1},
-							{"spawnFromBarrelSlop",						js_weap_projectile_spawn_from_barrel_slop_func,							2},
-							{"spawnFromBarrelMultiSlop",				js_weap_projectile_spawn_from_barrel_multi_slop_func,					3},
-							{"spawnFromBarrelOffsetAngle",				js_weap_projectile_spawn_from_barrel_offset_angle_func,					5},
-							{"spawnFromCenter",							js_weap_projectile_spawn_from_center_func,								1},
-							{"spawnFromCenterSlop",						js_weap_projectile_spawn_from_center_slop_func,							2},
-							{"spawnFromCenterMultiSlop",				js_weap_projectile_spawn_from_center_multi_slop_func,					3},
-							{"spawnFromCenterOffsetAngle",				js_weap_projectile_spawn_from_center_offset_angle_func,					5},
-							{0}};							
+JSStaticFunction	weap_projectile_functions[]={
+							{"add",										js_weap_projectile_add_func,											kJSPropertyAttributeDontDelete},
+							{"spawnFromWeaponBone",						js_weap_projectile_spawn_from_weapon_bone_func,							kJSPropertyAttributeDontDelete},
+							{"spawnFromWeaponBoneSlop",					js_weap_projectile_spawn_from_weapon_bone_slop_func,					kJSPropertyAttributeDontDelete},
+							{"spawnFromWeaponBoneMultiSlop",			js_weap_projectile_spawn_from_weapon_bone_multi_slop_func,				kJSPropertyAttributeDontDelete},
+							{"spawnFromWeaponBoneOffsetAngle",			js_weap_projectile_spawn_from_weapon_bone_offset_angle_func,			kJSPropertyAttributeDontDelete},
+							{"spawnFromObjectBone",						js_weap_projectile_spawn_from_object_bone_func,							kJSPropertyAttributeDontDelete},
+							{"spawnFromObjectBoneSlop",					js_weap_projectile_spawn_from_object_bone_slop_func,					kJSPropertyAttributeDontDelete},
+							{"spawnFromObjectBoneMultiSlop",			js_weap_projectile_spawn_from_object_bone_multi_slop_func,				kJSPropertyAttributeDontDelete},
+							{"spawnFromObjectBoneOffsetAngle",			js_weap_projectile_spawn_from_object_bone_offset_angle_func,			kJSPropertyAttributeDontDelete},
+							{"spawnFromBarrel",							js_weap_projectile_spawn_from_barrel_func,								kJSPropertyAttributeDontDelete},
+							{"spawnFromBarrelSlop",						js_weap_projectile_spawn_from_barrel_slop_func,							kJSPropertyAttributeDontDelete},
+							{"spawnFromBarrelMultiSlop",				js_weap_projectile_spawn_from_barrel_multi_slop_func,					kJSPropertyAttributeDontDelete},
+							{"spawnFromBarrelOffsetAngle",				js_weap_projectile_spawn_from_barrel_offset_angle_func,					kJSPropertyAttributeDontDelete},
+							{"spawnFromCenter",							js_weap_projectile_spawn_from_center_func,								kJSPropertyAttributeDontDelete},
+							{"spawnFromCenterSlop",						js_weap_projectile_spawn_from_center_slop_func,							kJSPropertyAttributeDontDelete},
+							{"spawnFromCenterMultiSlop",				js_weap_projectile_spawn_from_center_multi_slop_func,					kJSPropertyAttributeDontDelete},
+							{"spawnFromCenterOffsetAngle",				js_weap_projectile_spawn_from_center_offset_angle_func,					kJSPropertyAttributeDontDelete},
+							{0,0,0}};							
 
 JSClassRef			weap_projectile_class;
 
@@ -110,7 +110,7 @@ JSClassRef			weap_projectile_class;
 
 void script_init_weap_projectile_object(void)
 {
-	weap_projectile_class=script_create_class("weap_projectile_class",js_weap_projectile_get_property,js_weap_projectile_set_property);
+	weap_projectile_class=script_create_class("weap_projectile_class",weap_projectile_props,weap_projectile_functions);
 }
 
 void script_free_weap_projectile_object(void)
@@ -118,9 +118,9 @@ void script_free_weap_projectile_object(void)
 	script_free_class(weap_projectile_class);
 }
 
-JSObjectRef script_add_weap_projectile_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_projectile_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_projectile_class,"projectile",weap_projectile_props,weap_projectile_functions));
+	return(script_create_child_object(cx,parent_obj,weap_projectile_class,"projectile",weap_projectile_props,weap_projectile_functions));
 }
 
 /* =======================================================

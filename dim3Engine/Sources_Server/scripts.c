@@ -194,7 +194,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	int						idx;
 	bool					ok;
 	script_type				*script;
-	
+
 		// no script
 		
 	attach->script_uid=-1;
@@ -250,7 +250,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	
 		// create the object
 	
-	script->obj=script_create_main_object(attach);
+	script->obj=script_create_main_object(script->cx,attach);
 	if (script->obj==NULL) {
 		strcpy(err_str,"JavaScript Engine: Not enough memory to create an object");
 		script_free_file(script);
@@ -352,7 +352,7 @@ bool JSValueIsArray(JSContextRef ctx,JSValueRef value)
 	protoObj=JSObjectGetPrototype(ctx,arrayObj);
 	*/
 	
-	return(NULL);
+	return(FALSE);
 	
 }
 

@@ -45,12 +45,12 @@ void js_proj_size_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_proj_size_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_proj_size_set_weight(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	proj_size_props[]={
-							{"x",					js_proj_size_get_x,					js_proj_size_set_x},
-							{"y",					js_proj_size_get_y,					js_proj_size_set_y},
-							{"z",					js_proj_size_get_z,					js_proj_size_set_z},
-							{"weight",				js_proj_size_get_weight,			js_proj_size_set_weight},
-							{0}};
+JSStaticValue 		proj_size_props[]={
+							{"x",					js_proj_size_get_x,					js_proj_size_set_x,			kJSPropertyAttributeDontDelete},
+							{"y",					js_proj_size_get_y,					js_proj_size_set_y,			kJSPropertyAttributeDontDelete},
+							{"z",					js_proj_size_get_z,					js_proj_size_set_z,			kJSPropertyAttributeDontDelete},
+							{"weight",				js_proj_size_get_weight,			js_proj_size_set_weight,	kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			proj_size_class;
 
@@ -62,7 +62,7 @@ JSClassRef			proj_size_class;
 
 void script_init_proj_size_object(void)
 {
-	proj_size_class=script_create_class("proj_size_class",js_proj_size_get_property,js_proj_size_set_property);
+	proj_size_class=script_create_class("proj_size_class",proj_size_props,NULL);
 }
 
 void script_free_proj_size_object(void)
@@ -70,9 +70,9 @@ void script_free_proj_size_object(void)
 	script_free_class(proj_size_class);
 }
 
-JSObjectRef script_add_proj_size_object(JSObjectRef parent_obj)
+JSObjectRef script_add_proj_size_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,proj_size_class,"size",proj_size_props,NULL));
+	return(script_create_child_object(cx,parent_obj,proj_size_class,"size",proj_size_props,NULL));
 }
 
 /* =======================================================

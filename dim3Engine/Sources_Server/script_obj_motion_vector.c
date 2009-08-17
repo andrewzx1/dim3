@@ -55,28 +55,28 @@ JSValueRef js_obj_motion_vector_walk_to_position_slop_func(JSContextRef cx,JSObj
 JSValueRef js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_motion_vector_props[]={
-							{"x",					js_obj_motion_vector_get_x,							NULL},
-							{"y",					js_obj_motion_vector_get_y,							NULL},
-							{"z",					js_obj_motion_vector_get_z,							NULL},
-							{0}};
+JSStaticValue 		obj_motion_vector_props[]={
+							{"x",					js_obj_motion_vector_get_x,							NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"y",					js_obj_motion_vector_get_y,							NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"z",					js_obj_motion_vector_get_z,							NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	obj_motion_vector_functions[]={
-							{"go",					js_obj_motion_vector_go_func,						0},
-							{"stop",				js_obj_motion_vector_stop_func,						0},
-							{"jump",				js_obj_motion_vector_jump_func,						0},
-							{"alterSpeed",			js_obj_motion_vector_alter_speed_func,				1},
-							{"alterGravity",		js_obj_motion_vector_alter_gravity_func,			1},
-							{"walkToNode",			js_obj_motion_vector_walk_to_node_func,				3},
-							{"walkToNodeById",		js_obj_motion_vector_walk_to_node_by_id_func,		3},
-							{"walkToNodeResume",	js_obj_motion_vector_walk_to_node_resume_func,		0},
-							{"walkToNodeReverse",	js_obj_motion_vector_walk_to_node_reverse_func,		0},
-							{"walkToObject",		js_obj_motion_vector_walk_to_object_func,			1},
-							{"walkToPlayer",		js_obj_motion_vector_walk_to_player_func,			0},
-							{"walkToPosition",		js_obj_motion_vector_walk_to_position_func,			3},
-							{"turnToObject",		js_obj_motion_vector_turn_to_object_func,			1},
-							{"turnToPlayer",		js_obj_motion_vector_turn_to_player_func,			0},
-							{0}};
+JSStaticFunction	obj_motion_vector_functions[]={
+							{"go",					js_obj_motion_vector_go_func,						kJSPropertyAttributeDontDelete},
+							{"stop",				js_obj_motion_vector_stop_func,						kJSPropertyAttributeDontDelete},
+							{"jump",				js_obj_motion_vector_jump_func,						kJSPropertyAttributeDontDelete},
+							{"alterSpeed",			js_obj_motion_vector_alter_speed_func,				kJSPropertyAttributeDontDelete},
+							{"alterGravity",		js_obj_motion_vector_alter_gravity_func,			kJSPropertyAttributeDontDelete},
+							{"walkToNode",			js_obj_motion_vector_walk_to_node_func,				kJSPropertyAttributeDontDelete},
+							{"walkToNodeById",		js_obj_motion_vector_walk_to_node_by_id_func,		kJSPropertyAttributeDontDelete},
+							{"walkToNodeResume",	js_obj_motion_vector_walk_to_node_resume_func,		kJSPropertyAttributeDontDelete},
+							{"walkToNodeReverse",	js_obj_motion_vector_walk_to_node_reverse_func,		kJSPropertyAttributeDontDelete},
+							{"walkToObject",		js_obj_motion_vector_walk_to_object_func,			kJSPropertyAttributeDontDelete},
+							{"walkToPlayer",		js_obj_motion_vector_walk_to_player_func,			kJSPropertyAttributeDontDelete},
+							{"walkToPosition",		js_obj_motion_vector_walk_to_position_func,			kJSPropertyAttributeDontDelete},
+							{"turnToObject",		js_obj_motion_vector_turn_to_object_func,			kJSPropertyAttributeDontDelete},
+							{"turnToPlayer",		js_obj_motion_vector_turn_to_player_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 	
 JSClassRef			obj_motion_vector_class;
 
@@ -88,7 +88,7 @@ JSClassRef			obj_motion_vector_class;
 
 void script_init_obj_motion_vector_object(void)
 {
-	obj_motion_vector_class=script_create_class("obj_motion_vector_class",js_obj_motion_vector_get_property,js_obj_motion_vector_set_property);
+	obj_motion_vector_class=script_create_class("obj_motion_vector_class",obj_motion_vector_props,obj_motion_vector_functions);
 }
 
 void script_free_obj_motion_vector_object(void)
@@ -96,9 +96,9 @@ void script_free_obj_motion_vector_object(void)
 	script_free_class(obj_motion_vector_class);
 }
 
-JSObjectRef script_add_obj_motion_vector_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_motion_vector_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_motion_vector_class,"motionVector",obj_motion_vector_props,obj_motion_vector_functions));
+	return(script_create_child_object(cx,parent_obj,obj_motion_vector_class,"motionVector",obj_motion_vector_props,obj_motion_vector_functions));
 }
 
 /* =======================================================

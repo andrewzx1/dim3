@@ -40,11 +40,11 @@ JSValueRef js_proj_motion_angle_get_x(JSContextRef cx);
 JSValueRef js_proj_motion_angle_get_y(JSContextRef cx);
 JSValueRef js_proj_motion_angle_get_z(JSContextRef cx);
 
-script_js_property	proj_motion_angle_props[]={
-							{"x",					js_proj_motion_angle_get_x,			NULL},
-							{"y",					js_proj_motion_angle_get_y,			NULL},
-							{"z",					js_proj_motion_angle_get_z,			NULL},
-							{0}};
+JSStaticValue 		proj_motion_angle_props[]={
+							{"x",					js_proj_motion_angle_get_x,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"y",					js_proj_motion_angle_get_y,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"z",					js_proj_motion_angle_get_z,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			proj_motion_angle_class;
 
@@ -56,7 +56,7 @@ JSClassRef			proj_motion_angle_class;
 
 void script_init_proj_motion_angle_object(void)
 {
-	proj_motion_angle_class=script_create_class("proj_motion_angle_class",js_proj_motion_angle_get_property,js_proj_motion_angle_set_property);
+	proj_motion_angle_class=script_create_class("proj_motion_angle_class",proj_motion_angle_props,NULL);
 }
 
 void script_free_proj_motion_angle_object(void)
@@ -64,9 +64,9 @@ void script_free_proj_motion_angle_object(void)
 	script_free_class(proj_motion_angle_class);
 }
 
-JSObjectRef script_add_proj_motion_angle_object(JSObjectRef parent_obj)
+JSObjectRef script_add_proj_motion_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,proj_motion_angle_class,"motionAngle",proj_motion_angle_props,NULL));
+	return(script_create_child_object(cx,parent_obj,proj_motion_angle_class,"motionAngle",proj_motion_angle_props,NULL));
 }
 
 /* =======================================================

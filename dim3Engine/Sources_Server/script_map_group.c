@@ -49,14 +49,14 @@ JSValueRef js_map_group_set_texture_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_map_group_set_texture_shift_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_group_set_texture_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	map_group_functions[]={
-							{"getCenter",			js_map_group_get_center_func,			1},
-							{"setShow",				js_map_group_set_show_func,				2},
-							{"setSolid",			js_map_group_set_solid_func,			2},
-							{"setTexture",			js_map_group_set_texture_func,			2},
-							{"setTextureShift",		js_map_group_set_texture_shift_func,	3},
-							{"setTextureAlpha",		js_map_group_set_texture_alpha_func,	2},
-							{0}};
+JSStaticFunction	map_group_functions[]={
+							{"getCenter",			js_map_group_get_center_func,			kJSPropertyAttributeDontDelete},
+							{"setShow",				js_map_group_set_show_func,				kJSPropertyAttributeDontDelete},
+							{"setSolid",			js_map_group_set_solid_func,			kJSPropertyAttributeDontDelete},
+							{"setTexture",			js_map_group_set_texture_func,			kJSPropertyAttributeDontDelete},
+							{"setTextureShift",		js_map_group_set_texture_shift_func,	kJSPropertyAttributeDontDelete},
+							{"setTextureAlpha",		js_map_group_set_texture_alpha_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			map_group_class;
 
@@ -68,7 +68,7 @@ JSClassRef			map_group_class;
 
 void script_init_map_group_object(void)
 {
-	map_group_class=script_create_class("map_group_class",js_map_group_get_property,js_map_group_set_property);
+	map_group_class=script_create_class("map_group_class",NULL,map_group_functions);
 }
 
 void script_free_map_group_object(void)
@@ -76,9 +76,9 @@ void script_free_map_group_object(void)
 	script_free_class(map_group_class);
 }
 
-JSObjectRef script_add_map_group_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_group_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_group_class,"group",NULL,map_group_functions));
+	return(script_create_child_object(cx,parent_obj,map_group_class,"group",NULL,map_group_functions));
 }
 
 /* =======================================================

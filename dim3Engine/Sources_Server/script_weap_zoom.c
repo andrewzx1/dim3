@@ -58,19 +58,19 @@ void js_weap_zoom_set_maskName(JSContextRef cx,JSValueRef vp,JSValueRef *excepti
 void js_weap_zoom_set_showWeapon(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_weap_zoom_set_tick(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	weap_zoom_props[]={
-							{"on",					js_weap_zoom_get_on,						js_weap_zoom_set_on},
-							{"active",				js_weap_zoom_get_active,					NULL},
-							{"fovMinimum",			js_weap_zoom_get_fovMinimum,				js_weap_zoom_set_fovMinimum},
-							{"fovMaximum",			js_weap_zoom_get_fovMaximum,				js_weap_zoom_set_fovMaximum},
-							{"fovSteps",			js_weap_zoom_get_fovSteps,					js_weap_zoom_set_fovSteps},
-							{"turnFactor",			js_weap_zoom_get_turnFactor,				js_weap_zoom_set_turnFactor},
-							{"crawlTurnFactor",		js_weap_zoom_get_crawlTurnFactor,			js_weap_zoom_set_crawlTurnFactor},
-							{"lookFactor",			js_weap_zoom_get_lookFactor,				js_weap_zoom_set_lookFactor},
-							{"maskName",			js_weap_zoom_get_maskName,					js_weap_zoom_set_maskName},
-							{"showWeapon",			js_weap_zoom_get_showWeapon,				js_weap_zoom_set_showWeapon},
-							{"tick",				js_weap_zoom_get_tick,						js_weap_zoom_set_tick},
-							{0}};
+JSStaticValue 		weap_zoom_props[]={
+							{"on",					js_weap_zoom_get_on,						js_weap_zoom_set_on,				kJSPropertyAttributeDontDelete},
+							{"active",				js_weap_zoom_get_active,					NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"fovMinimum",			js_weap_zoom_get_fovMinimum,				js_weap_zoom_set_fovMinimum,		kJSPropertyAttributeDontDelete},
+							{"fovMaximum",			js_weap_zoom_get_fovMaximum,				js_weap_zoom_set_fovMaximum,		kJSPropertyAttributeDontDelete},
+							{"fovSteps",			js_weap_zoom_get_fovSteps,					js_weap_zoom_set_fovSteps,			kJSPropertyAttributeDontDelete},
+							{"turnFactor",			js_weap_zoom_get_turnFactor,				js_weap_zoom_set_turnFactor,		kJSPropertyAttributeDontDelete},
+							{"crawlTurnFactor",		js_weap_zoom_get_crawlTurnFactor,			js_weap_zoom_set_crawlTurnFactor,	kJSPropertyAttributeDontDelete},
+							{"lookFactor",			js_weap_zoom_get_lookFactor,				js_weap_zoom_set_lookFactor,		kJSPropertyAttributeDontDelete},
+							{"maskName",			js_weap_zoom_get_maskName,					js_weap_zoom_set_maskName,			kJSPropertyAttributeDontDelete},
+							{"showWeapon",			js_weap_zoom_get_showWeapon,				js_weap_zoom_set_showWeapon,		kJSPropertyAttributeDontDelete},
+							{"tick",				js_weap_zoom_get_tick,						js_weap_zoom_set_tick,				kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			weap_zoom_class;
 
@@ -82,7 +82,7 @@ JSClassRef			weap_zoom_class;
 
 void script_init_weap_zoom_object(void)
 {
-	weap_zoom_class=script_create_class("weap_zoom_class",js_weap_zoom_get_property,js_weap_zoom_set_property);
+	weap_zoom_class=script_create_class("weap_zoom_class",weap_zoom_props,NULL);
 }
 
 void script_free_weap_zoom_object(void)
@@ -90,9 +90,9 @@ void script_free_weap_zoom_object(void)
 	script_free_class(weap_zoom_class);
 }
 
-JSObjectRef script_add_weap_zoom_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_zoom_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_zoom_class,"zoom",weap_zoom_props,NULL));
+	return(script_create_child_object(cx,parent_obj,weap_zoom_class,"zoom",weap_zoom_props,NULL));
 }
 
 /* =======================================================

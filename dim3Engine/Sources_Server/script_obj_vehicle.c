@@ -45,16 +45,16 @@ JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_vehicle_props[]={
-							{"on",					js_obj_vehicle_get_on,				js_obj_vehicle_set_on},
-							{"hasOccupant",			js_obj_vehicle_get_hasOccupant,		NULL},
-							{0}};
+JSStaticValue 		obj_vehicle_props[]={
+							{"on",					js_obj_vehicle_get_on,				js_obj_vehicle_set_on,		kJSPropertyAttributeDontDelete},
+							{"hasOccupant",			js_obj_vehicle_get_hasOccupant,		NULL,						kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	obj_vehicle_functions[]={
-							{"enter",				js_obj_vehicle_enter_func,			0},
-							{"exit",				js_obj_vehicle_exit_func,			0},
-							{"removeOccupant",		js_obj_vehicle_exit_func,			0},
-							{0}};
+JSStaticFunction	obj_vehicle_functions[]={
+							{"enter",				js_obj_vehicle_enter_func,			kJSPropertyAttributeDontDelete},
+							{"exit",				js_obj_vehicle_exit_func,			kJSPropertyAttributeDontDelete},
+							{"removeOccupant",		js_obj_vehicle_exit_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_vehicle_class;
 
@@ -66,7 +66,7 @@ JSClassRef			obj_vehicle_class;
 
 void script_init_obj_vehicle_object(void)
 {
-	obj_vehicle_class=script_create_class("obj_vehicle_class",js_obj_vehicle_get_property,js_obj_vehicle_set_property);
+	obj_vehicle_class=script_create_class("obj_vehicle_class",obj_vehicle_props,obj_vehicle_functions);
 }
 
 void script_free_obj_vehicle_object(void)
@@ -74,9 +74,9 @@ void script_free_obj_vehicle_object(void)
 	script_free_class(obj_vehicle_class);
 }
 
-JSObjectRef script_add_obj_vehicle_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_vehicle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_vehicle_class,"vehicle",obj_vehicle_props,obj_vehicle_functions));
+	return(script_create_child_object(cx,parent_obj,obj_vehicle_class,"vehicle",obj_vehicle_props,obj_vehicle_functions));
 }
 
 /* =======================================================

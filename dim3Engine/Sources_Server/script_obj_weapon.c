@@ -55,25 +55,25 @@ JSValueRef js_obj_weapon_get_alt_max_ammo_count_func(JSContextRef cx,JSObjectRef
 JSValueRef js_obj_weapon_get_alt_clip_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_weapon_get_alt_max_clip_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	obj_weapon_functions[]={
-							{"add",					js_obj_weapon_add_func,						1},
-							{"getSelect",			js_obj_weapon_get_select_func,				0},
-							{"setSelect",			js_obj_weapon_set_select_func,				1},
-							{"fire",				js_obj_weapon_fire_func,					2},
-							{"hide",				js_obj_weapon_hide_func,					1},
-							{"reset",				js_obj_weapon_reset_func,					0},
-							{"hideSingle",			js_obj_weapon_hide_single_func,				2},
-							{"resetSingle",			js_obj_weapon_reset_single_func,			1},
-							{"isHiddenSingle",		js_obj_weapon_is_hidden_single_func,		1},
-							{"getAmmoCount",		js_obj_weapon_get_ammo_count_func,			1},
-							{"getMaxAmmoCount",		js_obj_weapon_get_max_ammo_count_func,		1},
-							{"getClipCount",		js_obj_weapon_get_clip_count_func,			1},
-							{"getMaxClipCount",		js_obj_weapon_get_max_clip_count_func,		1},
-							{"getAltAmmoCount",		js_obj_weapon_get_alt_ammo_count_func,		1},
-							{"getAltMaxAmmoCount",	js_obj_weapon_get_alt_max_ammo_count_func,	1},
-							{"getAltClipCount",		js_obj_weapon_get_alt_clip_count_func,		1},
-							{"getAltMaxClipCount",	js_obj_weapon_get_alt_max_clip_count_func,	1},
-							{0}};
+JSStaticFunction	obj_weapon_functions[]={
+							{"add",					js_obj_weapon_add_func,						kJSPropertyAttributeDontDelete},
+							{"getSelect",			js_obj_weapon_get_select_func,				kJSPropertyAttributeDontDelete},
+							{"setSelect",			js_obj_weapon_set_select_func,				kJSPropertyAttributeDontDelete},
+							{"fire",				js_obj_weapon_fire_func,					kJSPropertyAttributeDontDelete},
+							{"hide",				js_obj_weapon_hide_func,					kJSPropertyAttributeDontDelete},
+							{"reset",				js_obj_weapon_reset_func,					kJSPropertyAttributeDontDelete},
+							{"hideSingle",			js_obj_weapon_hide_single_func,				kJSPropertyAttributeDontDelete},
+							{"resetSingle",			js_obj_weapon_reset_single_func,			kJSPropertyAttributeDontDelete},
+							{"isHiddenSingle",		js_obj_weapon_is_hidden_single_func,		kJSPropertyAttributeDontDelete},
+							{"getAmmoCount",		js_obj_weapon_get_ammo_count_func,			kJSPropertyAttributeDontDelete},
+							{"getMaxAmmoCount",		js_obj_weapon_get_max_ammo_count_func,		kJSPropertyAttributeDontDelete},
+							{"getClipCount",		js_obj_weapon_get_clip_count_func,			kJSPropertyAttributeDontDelete},
+							{"getMaxClipCount",		js_obj_weapon_get_max_clip_count_func,		kJSPropertyAttributeDontDelete},
+							{"getAltAmmoCount",		js_obj_weapon_get_alt_ammo_count_func,		kJSPropertyAttributeDontDelete},
+							{"getAltMaxAmmoCount",	js_obj_weapon_get_alt_max_ammo_count_func,	kJSPropertyAttributeDontDelete},
+							{"getAltClipCount",		js_obj_weapon_get_alt_clip_count_func,		kJSPropertyAttributeDontDelete},
+							{"getAltMaxClipCount",	js_obj_weapon_get_alt_max_clip_count_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_weapon_class;
 
@@ -85,7 +85,7 @@ JSClassRef			obj_weapon_class;
 
 void script_init_obj_weapon_object(void)
 {
-	obj_weapon_class=script_create_class("obj_weapon_class",js_obj_weapon_get_property,js_obj_weapon_set_property);
+	obj_weapon_class=script_create_class("obj_weapon_class",NULL,obj_weapon_functions);
 }
 
 void script_free_obj_weapon_object(void)
@@ -93,9 +93,9 @@ void script_free_obj_weapon_object(void)
 	script_free_class(obj_weapon_class);
 }
 
-JSObjectRef script_add_obj_weapon_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_weapon_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_weapon_class,"weapon",NULL,obj_weapon_functions));
+	return(script_create_child_object(cx,parent_obj,obj_weapon_class,"weapon",NULL,obj_weapon_functions));
 }
 
 /* =======================================================

@@ -43,11 +43,11 @@ void js_obj_thrust_set_speed(JSContextRef cx,JSValueRef vp,JSValueRef *exception
 void js_obj_thrust_set_maxSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_obj_thrust_set_drag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	obj_thrust_props[]={
-							{"speed",					js_obj_thrust_get_speed,			js_obj_thrust_set_speed},
-							{"maxSpeed",				js_obj_thrust_get_maxSpeed,			js_obj_thrust_set_maxSpeed},
-							{"drag",					js_obj_thrust_get_drag,				js_obj_thrust_set_drag},
-							{0}};
+JSStaticValue 		obj_thrust_props[]={
+							{"speed",					js_obj_thrust_get_speed,			js_obj_thrust_set_speed,		kJSPropertyAttributeDontDelete},
+							{"maxSpeed",				js_obj_thrust_get_maxSpeed,			js_obj_thrust_set_maxSpeed,		kJSPropertyAttributeDontDelete},
+							{"drag",					js_obj_thrust_get_drag,				js_obj_thrust_set_drag,			kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_thrust_class;
 
@@ -59,7 +59,7 @@ JSClassRef			obj_thrust_class;
 
 void script_init_obj_thrust_object(void)
 {
-	obj_thrust_class=script_create_class("obj_thrust_class",js_obj_thrust_get_property,js_obj_thrust_set_property);
+	obj_thrust_class=script_create_class("obj_thrust_class",obj_thrust_props,NULL);
 }
 
 void script_free_obj_thrust_object(void)
@@ -67,9 +67,9 @@ void script_free_obj_thrust_object(void)
 	script_free_class(obj_thrust_class);
 }
 
-JSObjectRef script_add_obj_thrust_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_thrust_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_thrust_class,"thrust",obj_thrust_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_thrust_class,"thrust",obj_thrust_props,NULL));
 }
 
 /* =======================================================

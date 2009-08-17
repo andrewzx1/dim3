@@ -47,15 +47,15 @@ JSValueRef js_obj_hit_get_projectileName(JSContextRef cx);
 JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx);
 JSValueRef js_obj_hit_get_damage(JSContextRef cx);
 
-script_js_property	obj_hit_props[]={
-							{"objectId",			js_obj_hit_get_objectId,			NULL},
-							{"objectName",			js_obj_hit_get_objectName,			NULL},
-							{"objectIsPlayer",		js_obj_hit_get_objectIsPlayer,		NULL},
-							{"weaponName",			js_obj_hit_get_weaponName,			NULL},
-							{"projectileName",		js_obj_hit_get_projectileName,		NULL},
-							{"hitBoxName",			js_obj_hit_get_hitBoxName,			NULL},
-							{"damage",				js_obj_hit_get_damage,				NULL},
-							{0}};
+JSStaticValue 		obj_hit_props[]={
+							{"objectId",			js_obj_hit_get_objectId,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectName",			js_obj_hit_get_objectName,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayer",		js_obj_hit_get_objectIsPlayer,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"weaponName",			js_obj_hit_get_weaponName,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"projectileName",		js_obj_hit_get_projectileName,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"hitBoxName",			js_obj_hit_get_hitBoxName,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"damage",				js_obj_hit_get_damage,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			obj_hit_class;
 
@@ -67,7 +67,7 @@ JSClassRef			obj_hit_class;
 
 void script_init_obj_hit_object(void)
 {
-	obj_hit_class=script_create_class("obj_hit_class",js_obj_hit_get_property,js_obj_hit_set_property);
+	obj_hit_class=script_create_class("obj_hit_class",obj_hit_props,NULL);
 }
 
 void script_free_obj_hit_object(void)
@@ -75,9 +75,9 @@ void script_free_obj_hit_object(void)
 	script_free_class(obj_hit_class);
 }
 
-JSObjectRef script_add_obj_hit_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_hit_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_hit_class,"hit",obj_hit_props,NULL));
+	return(script_create_child_object(cx,parent_obj,obj_hit_class,"hit",obj_hit_props,NULL));
 }
 
 /* =======================================================

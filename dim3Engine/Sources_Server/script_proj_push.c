@@ -42,10 +42,10 @@ JSValueRef js_proj_push_get_force(JSContextRef cx);
 void js_proj_push_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_proj_push_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	proj_push_props[]={
-							{"on",					js_proj_push_get_on,				js_proj_push_set_on},
-							{"force",				js_proj_push_get_force,				js_proj_push_set_force},
-							{0}};
+JSStaticValue 		proj_push_props[]={
+							{"on",					js_proj_push_get_on,				js_proj_push_set_on,		kJSPropertyAttributeDontDelete},
+							{"force",				js_proj_push_get_force,				js_proj_push_set_force,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			proj_push_class;
 
@@ -57,7 +57,7 @@ JSClassRef			proj_push_class;
 
 void script_init_proj_push_object(void)
 {
-	proj_push_class=script_create_class("proj_push_class",js_proj_push_get_property,js_proj_push_set_property);
+	proj_push_class=script_create_class("proj_push_class",proj_push_props,NULL);
 }
 
 void script_free_proj_push_object(void)
@@ -65,9 +65,9 @@ void script_free_proj_push_object(void)
 	script_free_class(proj_push_class);
 }
 
-JSObjectRef script_add_proj_push_object(JSObjectRef parent_obj)
+JSObjectRef script_add_proj_push_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,proj_push_class,"push",proj_push_props,NULL));
+	return(script_create_child_object(cx,parent_obj,proj_push_class,"push",proj_push_props,NULL));
 }
 
 /* =======================================================

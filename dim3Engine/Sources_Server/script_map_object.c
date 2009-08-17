@@ -78,47 +78,47 @@ JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JS
 JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	map_object_functions[]={
-							{"find",						js_map_object_find_func,							1},
-							{"findPlayer",					js_map_object_find_player_func,						0},
-							{"findAllPlayers",				js_map_object_find_all_players_func,				0},
-							{"nearest",						js_map_object_nearest_func,							9},
-							{"nearestSkipObjectId",			js_map_object_nearest_skip_object_id_func,			10},
-							{"nearestPlayer",				js_map_object_nearest_player_func,					7},
-							{"nearestPlayerSkipObjectId",	js_map_object_nearest_player_skip_object_id_func,	8},
-							{"nearestRemotePlayer",			js_map_object_nearest_remote_player_func,			7},
-							{"nearestTeam",					js_map_object_nearest_team_func,					8},
-							{"getName",						js_map_object_get_name_func,						1},
-							{"getType",						js_map_object_get_type_func,						1},
-							{"getTeam",						js_map_object_get_team_func,						1},
-							{"getTeamName",					js_map_object_get_team_name_func,					1},
-							{"getTeamColor",				js_map_object_get_team_color_func,					1},
-							{"getDistance",					js_map_object_get_distance_func,					4},
-							{"getAngleTo",					js_map_object_get_angle_to_func,					4},
-							{"getAngleToId",				js_map_object_get_angle_to_id_func,					2},
-							{"isFacingId",					js_map_object_is_facing_id_func,					3},
-							{"getPosition",					js_map_object_get_position_func,					1},
-							{"getAngle",					js_map_object_get_angle_func,						1},
-							{"getSize",						js_map_object_get_size_func,						1},
-							{"getHealth",					js_map_object_get_health_func,						1},
-							{"isDead",						js_map_object_is_dead_func,							1},
-							{"isHidden",					js_map_object_is_hidden_func,						1},
-							{"isContact",					js_map_object_is_contact_func,						1},
-							{"isMaxHealth",					js_map_object_is_max_health_func,					1},
-							{"getLastDamageObjectId",		js_map_object_get_last_damage_object_id_func,		1},
-							{"wasTelefrag",					js_map_object_was_telefrag_func,					1},
-							{"moveTo",						js_map_object_move_to_func,							5},
-							{"shove",						js_map_object_shove_func,							5},
-							{"shoveDirect",					js_map_object_shove_direct_func,					4},
-							{"addGoal",						js_map_object_add_goal_func,						1},
-							{"setContact",					js_map_object_set_contact_func,						2},
-							{"setHidden",					js_map_object_set_hidden_func,						2},
-							{"setModelLight",				js_map_object_set_model_light_func,					3},
-							{"setModelHalo",				js_map_object_set_model_halo_func,					3},
-							{"setModelMesh",				js_map_object_set_model_mesh_func,					3},
-							{"spawn",						js_map_object_spawn_func,							10},
-							{"remove",						js_map_object_remove_func,							1},
-							{0}};
+JSStaticFunction	map_object_functions[]={
+							{"find",						js_map_object_find_func,							kJSPropertyAttributeDontDelete},
+							{"findPlayer",					js_map_object_find_player_func,						kJSPropertyAttributeDontDelete},
+							{"findAllPlayers",				js_map_object_find_all_players_func,				kJSPropertyAttributeDontDelete},
+							{"nearest",						js_map_object_nearest_func,							kJSPropertyAttributeDontDelete},
+							{"nearestSkipObjectId",			js_map_object_nearest_skip_object_id_func,			kJSPropertyAttributeDontDelete},
+							{"nearestPlayer",				js_map_object_nearest_player_func,					kJSPropertyAttributeDontDelete},
+							{"nearestPlayerSkipObjectId",	js_map_object_nearest_player_skip_object_id_func,	kJSPropertyAttributeDontDelete},
+							{"nearestRemotePlayer",			js_map_object_nearest_remote_player_func,			kJSPropertyAttributeDontDelete},
+							{"nearestTeam",					js_map_object_nearest_team_func,					kJSPropertyAttributeDontDelete},
+							{"getName",						js_map_object_get_name_func,						kJSPropertyAttributeDontDelete},
+							{"getType",						js_map_object_get_type_func,						kJSPropertyAttributeDontDelete},
+							{"getTeam",						js_map_object_get_team_func,						kJSPropertyAttributeDontDelete},
+							{"getTeamName",					js_map_object_get_team_name_func,					kJSPropertyAttributeDontDelete},
+							{"getTeamColor",				js_map_object_get_team_color_func,					kJSPropertyAttributeDontDelete},
+							{"getDistance",					js_map_object_get_distance_func,					kJSPropertyAttributeDontDelete},
+							{"getAngleTo",					js_map_object_get_angle_to_func,					kJSPropertyAttributeDontDelete},
+							{"getAngleToId",				js_map_object_get_angle_to_id_func,					kJSPropertyAttributeDontDelete},
+							{"isFacingId",					js_map_object_is_facing_id_func,					kJSPropertyAttributeDontDelete},
+							{"getPosition",					js_map_object_get_position_func,					kJSPropertyAttributeDontDelete},
+							{"getAngle",					js_map_object_get_angle_func,						kJSPropertyAttributeDontDelete},
+							{"getSize",						js_map_object_get_size_func,						kJSPropertyAttributeDontDelete},
+							{"getHealth",					js_map_object_get_health_func,						kJSPropertyAttributeDontDelete},
+							{"isDead",						js_map_object_is_dead_func,							kJSPropertyAttributeDontDelete},
+							{"isHidden",					js_map_object_is_hidden_func,						kJSPropertyAttributeDontDelete},
+							{"isContact",					js_map_object_is_contact_func,						kJSPropertyAttributeDontDelete},
+							{"isMaxHealth",					js_map_object_is_max_health_func,					kJSPropertyAttributeDontDelete},
+							{"getLastDamageObjectId",		js_map_object_get_last_damage_object_id_func,		kJSPropertyAttributeDontDelete},
+							{"wasTelefrag",					js_map_object_was_telefrag_func,					kJSPropertyAttributeDontDelete},
+							{"moveTo",						js_map_object_move_to_func,							kJSPropertyAttributeDontDelete},
+							{"shove",						js_map_object_shove_func,							kJSPropertyAttributeDontDelete},
+							{"shoveDirect",					js_map_object_shove_direct_func,					kJSPropertyAttributeDontDelete},
+							{"addGoal",						js_map_object_add_goal_func,						kJSPropertyAttributeDontDelete},
+							{"setContact",					js_map_object_set_contact_func,						kJSPropertyAttributeDontDelete},
+							{"setHidden",					js_map_object_set_hidden_func,						kJSPropertyAttributeDontDelete},
+							{"setModelLight",				js_map_object_set_model_light_func,					kJSPropertyAttributeDontDelete},
+							{"setModelHalo",				js_map_object_set_model_halo_func,					kJSPropertyAttributeDontDelete},
+							{"setModelMesh",				js_map_object_set_model_mesh_func,					kJSPropertyAttributeDontDelete},
+							{"spawn",						js_map_object_spawn_func,							kJSPropertyAttributeDontDelete},
+							{"remove",						js_map_object_remove_func,							kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			map_object_class;
 
@@ -130,7 +130,7 @@ JSClassRef			map_object_class;
 
 void script_init_map_object_object(void)
 {
-	map_object_class=script_create_class("map_object_class",js_map_object_get_property,js_map_object_set_property);
+	map_object_class=script_create_class("map_object_class",NULL,map_object_functions);
 }
 
 void script_free_map_object_object(void)
@@ -138,9 +138,9 @@ void script_free_map_object_object(void)
 	script_free_class(map_object_class);
 }
 
-JSObjectRef script_add_map_object_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_object_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_object_class,"object",NULL,map_object_functions));
+	return(script_create_child_object(cx,parent_obj,map_object_class,"object",NULL,map_object_functions));
 }
 
 /* =======================================================

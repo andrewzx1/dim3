@@ -58,18 +58,18 @@ void js_camera_plane_set_near(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 void js_camera_plane_set_far(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_camera_plane_set_nearOffset(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	camera_plane_props[]={
-							{"projectionType",		js_camera_plane_get_projectionType,		js_camera_plane_set_projectionType},
-							{"fov",					js_camera_plane_get_fov,				js_camera_plane_set_fov},
-							{"aspectRatio",			js_camera_plane_get_aspectRatio,		js_camera_plane_set_aspectRatio},
-							{"left",				js_camera_plane_get_left,				js_camera_plane_set_left},
-							{"right",				js_camera_plane_get_right,				js_camera_plane_set_right},
-							{"top",					js_camera_plane_get_top,				js_camera_plane_set_top},
-							{"bottom",				js_camera_plane_get_bottom,				js_camera_plane_set_bottom},
-							{"near",				js_camera_plane_get_near,				js_camera_plane_set_near},
-							{"far",					js_camera_plane_get_far,				js_camera_plane_set_far},
-							{"nearOffset",			js_camera_plane_get_nearOffset,			js_camera_plane_set_nearOffset},
-							{0}};
+JSStaticValue 		camera_plane_props[]={
+							{"projectionType",		js_camera_plane_get_projectionType,		js_camera_plane_set_projectionType,	kJSPropertyAttributeDontDelete},
+							{"fov",					js_camera_plane_get_fov,				js_camera_plane_set_fov,			kJSPropertyAttributeDontDelete},
+							{"aspectRatio",			js_camera_plane_get_aspectRatio,		js_camera_plane_set_aspectRatio,	kJSPropertyAttributeDontDelete},
+							{"left",				js_camera_plane_get_left,				js_camera_plane_set_left,			kJSPropertyAttributeDontDelete},
+							{"right",				js_camera_plane_get_right,				js_camera_plane_set_right,			kJSPropertyAttributeDontDelete},
+							{"top",					js_camera_plane_get_top,				js_camera_plane_set_top,			kJSPropertyAttributeDontDelete},
+							{"bottom",				js_camera_plane_get_bottom,				js_camera_plane_set_bottom,			kJSPropertyAttributeDontDelete},
+							{"near",				js_camera_plane_get_near,				js_camera_plane_set_near,			kJSPropertyAttributeDontDelete},
+							{"far",					js_camera_plane_get_far,				js_camera_plane_set_far,			kJSPropertyAttributeDontDelete},
+							{"nearOffset",			js_camera_plane_get_nearOffset,			js_camera_plane_set_nearOffset,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			camera_plane_class;
 
@@ -81,7 +81,7 @@ JSClassRef			camera_plane_class;
 
 void script_init_camera_plane_object(void)
 {
-	camera_plane_class=script_create_class("camera_plane_class",js_camera_plane_get_property,js_camera_plane_set_property);
+	camera_plane_class=script_create_class("camera_plane_class",camera_plane_props,NULL);
 }
 
 void script_free_camera_plane_object(void)
@@ -89,9 +89,9 @@ void script_free_camera_plane_object(void)
 	script_free_class(camera_plane_class);
 }
 
-JSObjectRef script_add_camera_plane_object(JSObjectRef parent_obj)
+JSObjectRef script_add_camera_plane_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,camera_plane_class,"plane",camera_plane_props,NULL));
+	return(script_create_child_object(cx,parent_obj,camera_plane_class,"plane",camera_plane_props,NULL));
 }
 
 /* =======================================================

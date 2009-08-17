@@ -61,20 +61,20 @@ void js_map_fog_set_textureYFact(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 void js_map_fog_set_alpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_map_fog_set_useSolidColor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	map_fog_props[]={
-							{"on",					js_map_fog_get_on,					js_map_fog_set_on},
-							{"layerCount",			js_map_fog_get_count,				js_map_fog_set_count},
-							{"outerRadius",			js_map_fog_get_outerRadius,			js_map_fog_set_outerRadius},
-							{"innerRadius",			js_map_fog_get_innerRadius,			js_map_fog_set_innerRadius},
-							{"height",				js_map_fog_get_high,				js_map_fog_set_high},
-							{"drop",				js_map_fog_get_drop,				js_map_fog_set_drop},
-							{"textureIndex",		js_map_fog_get_textureIndex,		js_map_fog_set_textureIndex},
-							{"speed",				js_map_fog_get_speed,				js_map_fog_set_speed},
-							{"textureXFact",		js_map_fog_get_textureXFact,		js_map_fog_set_textureXFact},
-							{"textureYFact",		js_map_fog_get_textureYFact,		js_map_fog_set_textureYFact},
-							{"alpha",				js_map_fog_get_alpha,				js_map_fog_set_alpha},
-							{"useSolidColor",		js_map_fog_get_useSolidColor,		js_map_fog_set_useSolidColor},
-							{0}};
+JSStaticValue 		map_fog_props[]={
+							{"on",					js_map_fog_get_on,					js_map_fog_set_on,					kJSPropertyAttributeDontDelete},
+							{"layerCount",			js_map_fog_get_count,				js_map_fog_set_count,				kJSPropertyAttributeDontDelete},
+							{"outerRadius",			js_map_fog_get_outerRadius,			js_map_fog_set_outerRadius,			kJSPropertyAttributeDontDelete},
+							{"innerRadius",			js_map_fog_get_innerRadius,			js_map_fog_set_innerRadius,			kJSPropertyAttributeDontDelete},
+							{"height",				js_map_fog_get_high,				js_map_fog_set_high,				kJSPropertyAttributeDontDelete},
+							{"drop",				js_map_fog_get_drop,				js_map_fog_set_drop,				kJSPropertyAttributeDontDelete},
+							{"textureIndex",		js_map_fog_get_textureIndex,		js_map_fog_set_textureIndex,		kJSPropertyAttributeDontDelete},
+							{"speed",				js_map_fog_get_speed,				js_map_fog_set_speed,				kJSPropertyAttributeDontDelete},
+							{"textureXFact",		js_map_fog_get_textureXFact,		js_map_fog_set_textureXFact,		kJSPropertyAttributeDontDelete},
+							{"textureYFact",		js_map_fog_get_textureYFact,		js_map_fog_set_textureYFact,		kJSPropertyAttributeDontDelete},
+							{"alpha",				js_map_fog_get_alpha,				js_map_fog_set_alpha,				kJSPropertyAttributeDontDelete},
+							{"useSolidColor",		js_map_fog_get_useSolidColor,		js_map_fog_set_useSolidColor,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			map_fog_class;
 
@@ -86,7 +86,7 @@ JSClassRef			map_fog_class;
 
 void script_init_map_fog_object(void)
 {
-	map_fog_class=script_create_class("map_fog_class",js_map_fog_get_property,js_map_fog_set_property);
+	map_fog_class=script_create_class("map_fog_class",map_fog_props,NULL);
 }
 
 void script_free_map_fog_object(void)
@@ -94,9 +94,9 @@ void script_free_map_fog_object(void)
 	script_free_class(map_fog_class);
 }
 
-JSObjectRef script_add_map_fog_object(JSObjectRef parent_obj)
+JSObjectRef script_add_map_fog_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_fog_class,"fog",map_fog_props,NULL));
+	return(script_create_child_object(cx,parent_obj,map_fog_class,"fog",map_fog_props,NULL));
 }
 
 /* =======================================================

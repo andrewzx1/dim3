@@ -61,23 +61,23 @@ void js_weap_recoil_set_resetLook(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 void js_weap_recoil_set_resetTurn(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_recoil_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	weap_recoil_props[]={
-							{"minX",				js_weap_recoil_get_minX,			js_weap_recoil_set_minX},
-							{"maxX",				js_weap_recoil_get_maxX,			js_weap_recoil_set_maxX},
-							{"resetX",				js_weap_recoil_get_resetX,			js_weap_recoil_set_resetX},
-							{"minY",				js_weap_recoil_get_minY,			js_weap_recoil_set_minY},
-							{"maxY",				js_weap_recoil_get_maxY,			js_weap_recoil_set_maxY},
-							{"resetY",				js_weap_recoil_get_resetY,			js_weap_recoil_set_resetY},
-							{"minZ",				js_weap_recoil_get_minZ,			js_weap_recoil_set_minZ},
-							{"maxZ",				js_weap_recoil_get_maxZ,			js_weap_recoil_set_maxZ},
-							{"resetZ",				js_weap_recoil_get_resetZ,			js_weap_recoil_set_resetZ},
-							{"resetLook",			js_weap_recoil_get_resetLook,		js_weap_recoil_set_resetLook},
-							{"resetTurn",			js_weap_recoil_get_resetTurn,		js_weap_recoil_set_resetTurn},
-							{0}};
+JSStaticValue 		weap_recoil_props[]={
+							{"minX",				js_weap_recoil_get_minX,			js_weap_recoil_set_minX,		kJSPropertyAttributeDontDelete},
+							{"maxX",				js_weap_recoil_get_maxX,			js_weap_recoil_set_maxX,		kJSPropertyAttributeDontDelete},
+							{"resetX",				js_weap_recoil_get_resetX,			js_weap_recoil_set_resetX,		kJSPropertyAttributeDontDelete},
+							{"minY",				js_weap_recoil_get_minY,			js_weap_recoil_set_minY,		kJSPropertyAttributeDontDelete},
+							{"maxY",				js_weap_recoil_get_maxY,			js_weap_recoil_set_maxY,		kJSPropertyAttributeDontDelete},
+							{"resetY",				js_weap_recoil_get_resetY,			js_weap_recoil_set_resetY,		kJSPropertyAttributeDontDelete},
+							{"minZ",				js_weap_recoil_get_minZ,			js_weap_recoil_set_minZ,		kJSPropertyAttributeDontDelete},
+							{"maxZ",				js_weap_recoil_get_maxZ,			js_weap_recoil_set_maxZ,		kJSPropertyAttributeDontDelete},
+							{"resetZ",				js_weap_recoil_get_resetZ,			js_weap_recoil_set_resetZ,		kJSPropertyAttributeDontDelete},
+							{"resetLook",			js_weap_recoil_get_resetLook,		js_weap_recoil_set_resetLook,	kJSPropertyAttributeDontDelete},
+							{"resetTurn",			js_weap_recoil_get_resetTurn,		js_weap_recoil_set_resetTurn,	kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	weap_recoil_functions[]={
-							{"go",					js_weap_recoil_go_func,				0},
-							{0}};
+JSStaticFunction	weap_recoil_functions[]={
+							{"go",					js_weap_recoil_go_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			weap_recoil_class;
 
@@ -89,7 +89,7 @@ JSClassRef			weap_recoil_class;
 
 void script_init_weap_recoil_object(void)
 {
-	weap_recoil_class=script_create_class("weap_recoil_class",js_weap_recoil_get_property,js_weap_recoil_set_property);
+	weap_recoil_class=script_create_class("weap_recoil_class",weap_recoil_props,weap_recoil_functions);
 }
 
 void script_free_weap_recoil_object(void)
@@ -97,9 +97,9 @@ void script_free_weap_recoil_object(void)
 	script_free_class(weap_recoil_class);
 }
 
-JSObjectRef script_add_weap_recoil_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_recoil_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_recoil_class,"recoil",weap_recoil_props,weap_recoil_functions));
+	return(script_create_child_object(cx,parent_obj,weap_recoil_class,"recoil",weap_recoil_props,weap_recoil_functions));
 }
 
 /* =======================================================

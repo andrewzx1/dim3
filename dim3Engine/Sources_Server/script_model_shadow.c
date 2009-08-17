@@ -38,9 +38,9 @@ void js_model_shadow_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 
 extern js_type			js;
 
-script_js_property	model_shadow_props[]={
-							{"on",					js_model_shadow_get_on,				js_model_shadow_set_on},
-							{0}};
+JSStaticValue 		model_shadow_props[]={
+							{"on",					js_model_shadow_get_on,				js_model_shadow_set_on,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			model_shadow_class;
 
@@ -52,7 +52,7 @@ JSClassRef			model_shadow_class;
 
 void script_init_model_shadow_object(void)
 {
-	model_shadow_class=script_create_class("model_shadow_class",js_model_shadow_get_property,js_model_shadow_set_property);
+	model_shadow_class=script_create_class("model_shadow_class",model_shadow_props,NULL);
 }
 
 void script_free_model_shadow_object(void)
@@ -60,9 +60,9 @@ void script_free_model_shadow_object(void)
 	script_free_class(model_shadow_class);
 }
 
-JSObjectRef script_add_model_shadow_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_shadow_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_shadow_class,"shadow",model_shadow_props,NULL));
+	return(script_create_child_object(cx,parent_obj,model_shadow_class,"shadow",model_shadow_props,NULL));
 }
 
 /* =======================================================

@@ -45,15 +45,15 @@ void js_weap_dual_set_active(JSContextRef cx,JSValueRef vp,JSValueRef *exception
 void js_weap_dual_set_handOffset(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_dual_switch_hand_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	weap_dual_props[]={
-							{"on",					js_weap_dual_get_on,					js_weap_dual_set_on},
-							{"active",				js_weap_dual_get_active,				js_weap_dual_set_active},
-							{"handOffset",			js_weap_dual_get_handOffset,			js_weap_dual_set_handOffset},
-							{0}};
+JSStaticValue 		weap_dual_props[]={
+							{"on",					js_weap_dual_get_on,					js_weap_dual_set_on,			kJSPropertyAttributeDontDelete},
+							{"active",				js_weap_dual_get_active,				js_weap_dual_set_active,		kJSPropertyAttributeDontDelete},
+							{"handOffset",			js_weap_dual_get_handOffset,			js_weap_dual_set_handOffset,	kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	weap_dual_functions[]={
-							{"switchHand",			js_weap_dual_switch_hand_func,		1},
-							{0}};
+JSStaticFunction	weap_dual_functions[]={
+							{"switchHand",			js_weap_dual_switch_hand_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			weap_dual_class;
 
@@ -65,7 +65,7 @@ JSClassRef			weap_dual_class;
 
 void script_init_weap_dual_object(void)
 {
-	weap_dual_class=script_create_class("weap_dual_class",js_weap_dual_get_property,js_weap_dual_set_property);
+	weap_dual_class=script_create_class("weap_dual_class",weap_dual_props,weap_dual_functions);
 }
 
 void script_free_weap_dual_object(void)
@@ -73,9 +73,9 @@ void script_free_weap_dual_object(void)
 	script_free_class(weap_dual_class);
 }
 
-JSObjectRef script_add_weap_dual_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_dual_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_dual_class,"dual",weap_dual_props,weap_dual_functions));
+	return(script_create_child_object(cx,parent_obj,weap_dual_class,"dual",weap_dual_props,weap_dual_functions));
 }
 
 /* =======================================================

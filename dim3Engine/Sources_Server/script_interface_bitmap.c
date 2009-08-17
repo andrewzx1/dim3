@@ -48,19 +48,19 @@ JSValueRef js_interface_bitmap_set_flash_func(JSContextRef cx,JSObjectRef func,J
 JSValueRef js_interface_bitmap_set_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_bitmap_start_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	interface_bitmap_functions[]={
-							{"show",				js_interface_bitmap_show_func,			1},
-							{"hide",				js_interface_bitmap_hide_func,			1},
-							{"hideAll",				js_interface_bitmap_hide_all_func,		0},
-							{"move",				js_interface_bitmap_move_func,			3},
-							{"moveRelative",		js_interface_bitmap_move_relative_func,	3},
-							{"resize",				js_interface_bitmap_resize_func,		3},
-							{"setAlpha",			js_interface_bitmap_set_alpha_func,		2},
-							{"setRepeatCount",		js_interface_bitmap_set_repeat_count_func,2},
-							{"setFlash",			js_interface_bitmap_set_flash_func,		2},
-							{"setRotate",			js_interface_bitmap_set_rotate_func,	2},
-							{"startFade",			js_interface_bitmap_start_fade_func,	1},
-							{0}};
+JSStaticFunction	interface_bitmap_functions[]={
+							{"show",				js_interface_bitmap_show_func,				kJSPropertyAttributeDontDelete},
+							{"hide",				js_interface_bitmap_hide_func,				kJSPropertyAttributeDontDelete},
+							{"hideAll",				js_interface_bitmap_hide_all_func,			kJSPropertyAttributeDontDelete},
+							{"move",				js_interface_bitmap_move_func,				kJSPropertyAttributeDontDelete},
+							{"moveRelative",		js_interface_bitmap_move_relative_func,		kJSPropertyAttributeDontDelete},
+							{"resize",				js_interface_bitmap_resize_func,			kJSPropertyAttributeDontDelete},
+							{"setAlpha",			js_interface_bitmap_set_alpha_func,			kJSPropertyAttributeDontDelete},
+							{"setRepeatCount",		js_interface_bitmap_set_repeat_count_func,	kJSPropertyAttributeDontDelete},
+							{"setFlash",			js_interface_bitmap_set_flash_func,			kJSPropertyAttributeDontDelete},
+							{"setRotate",			js_interface_bitmap_set_rotate_func,		kJSPropertyAttributeDontDelete},
+							{"startFade",			js_interface_bitmap_start_fade_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			interface_bitmap_class;
 
@@ -72,7 +72,7 @@ JSClassRef			interface_bitmap_class;
 
 void script_init_interface_bitmap_object(void)
 {
-	interface_bitmap_class=script_create_class("interface_bitmap_class",js_interface_bitmap_get_property,js_interface_bitmap_set_property);
+	interface_bitmap_class=script_create_class("interface_bitmap_class",NULL,interface_bitmap_functions);
 }
 
 void script_free_interface_bitmap_object(void)
@@ -80,9 +80,9 @@ void script_free_interface_bitmap_object(void)
 	script_free_class(interface_bitmap_class);
 }
 
-JSObjectRef script_add_interface_bitmap_object(JSObjectRef parent_obj)
+JSObjectRef script_add_interface_bitmap_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,interface_bitmap_class,"bitmap",NULL,interface_bitmap_functions));
+	return(script_create_child_object(cx,parent_obj,interface_bitmap_class,"bitmap",NULL,interface_bitmap_functions));
 }
 
 /* =======================================================

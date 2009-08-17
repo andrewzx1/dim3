@@ -53,14 +53,14 @@ void js_model_set_alpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_model_set_resize(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_model_set_faceForward(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	model_props[]={
-							{"on",					js_model_get_on,					js_model_set_on},
-							{"name",				js_model_get_name,					js_model_set_name},
-							{"bounce",				js_model_get_bounce,				js_model_set_bounce},
-							{"alpha",				js_model_get_alpha,					js_model_set_alpha},
-							{"resize",				js_model_get_resize,				js_model_set_resize},
-							{"faceForward",			js_model_get_faceForward,			js_model_set_faceForward},
-							{0}};
+JSStaticValue 		model_props[]={
+							{"on",					js_model_get_on,					js_model_set_on,			kJSPropertyAttributeDontDelete},
+							{"name",				js_model_get_name,					js_model_set_name,			kJSPropertyAttributeDontDelete},
+							{"bounce",				js_model_get_bounce,				js_model_set_bounce,		kJSPropertyAttributeDontDelete},
+							{"alpha",				js_model_get_alpha,					js_model_set_alpha,			kJSPropertyAttributeDontDelete},
+							{"resize",				js_model_get_resize,				js_model_set_resize,		kJSPropertyAttributeDontDelete},
+							{"faceForward",			js_model_get_faceForward,			js_model_set_faceForward,	kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			model_class;
 
@@ -72,7 +72,7 @@ JSClassRef			model_class;
 
 void script_init_model_object(void)
 {
-	model_class=script_create_class("model_class",js_model_get_property,js_model_set_property);
+	model_class=script_create_class("model_class",model_props,NULL);
 }
 
 void script_free_model_object(void)
@@ -80,9 +80,9 @@ void script_free_model_object(void)
 	script_free_class(model_class);
 }
 
-JSObjectRef script_add_model_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-    return(script_create_child_object(parent_obj,model_class,"model",model_props,NULL));
+    return(script_create_child_object(cx,parent_obj,model_class,"model",model_props,NULL));
 }
 
 /* =======================================================

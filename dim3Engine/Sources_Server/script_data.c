@@ -44,16 +44,16 @@ JSValueRef js_data_sub_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_data_set_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_data_get_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	data_functions[]={
-							{"add",					js_data_add_func,					2},
-							{"sub",					js_data_sub_func,					1},
-							{"set",					js_data_set_func,					2},
-							{"get",					js_data_get_func,					1},
-							{"addScriptSpecific",	js_data_add_specific_func,			2},
-							{"subScriptSpecific",	js_data_sub_specific_func,			1},
-							{"setScriptSpecific",	js_data_set_specific_func,			2},
-							{"getScriptSpecific",	js_data_get_specific_func,			1},
-							{0}};
+JSStaticFunction	data_functions[]={
+							{"add",					js_data_add_func,					kJSPropertyAttributeDontDelete},
+							{"sub",					js_data_sub_func,					kJSPropertyAttributeDontDelete},
+							{"set",					js_data_set_func,					kJSPropertyAttributeDontDelete},
+							{"get",					js_data_get_func,					kJSPropertyAttributeDontDelete},
+							{"addScriptSpecific",	js_data_add_specific_func,			kJSPropertyAttributeDontDelete},
+							{"subScriptSpecific",	js_data_sub_specific_func,			kJSPropertyAttributeDontDelete},
+							{"setScriptSpecific",	js_data_set_specific_func,			kJSPropertyAttributeDontDelete},
+							{"getScriptSpecific",	js_data_get_specific_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			data_class;
 
@@ -65,7 +65,7 @@ JSClassRef			data_class;
 
 void script_init_global_data_object(void)
 {
-	data_class=script_create_class("data_class",js_data_get_property,js_data_set_property);
+	data_class=script_create_class("data_class",NULL,data_functions);
 }
 
 void script_free_global_data_object(void)
@@ -73,9 +73,9 @@ void script_free_global_data_object(void)
 	script_free_class(data_class);
 }
 
-JSObjectRef script_add_global_data_object(JSObjectRef parent_obj)
+JSObjectRef script_add_global_data_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,data_class,"data",NULL,data_functions));
+	return(script_create_child_object(cx,parent_obj,data_class,"data",NULL,data_functions));
 }
 
 /* =======================================================

@@ -40,10 +40,10 @@ bool js_camera_state_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 JSValueRef js_camera_state_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_camera_state_restore_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	camera_state_functions[]={
-							{"save",				js_camera_state_save_func,				0},
-							{"restore",				js_camera_state_restore_func,			0},
-							{0}};
+JSStaticFunction	camera_state_functions[]={
+							{"save",				js_camera_state_save_func,				kJSPropertyAttributeDontDelete},
+							{"restore",				js_camera_state_restore_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			camera_state_class;
 
@@ -55,7 +55,7 @@ JSClassRef			camera_state_class;
 
 void script_init_camera_state_object(void)
 {
-	camera_state_class=script_create_class("camera_state_class",js_camera_state_get_property,js_camera_state_set_property);
+	camera_state_class=script_create_class("camera_state_class",NULL,camera_state_functions);
 }
 
 void script_free_camera_state_object(void)
@@ -63,9 +63,9 @@ void script_free_camera_state_object(void)
 	script_free_class(camera_state_class);
 }
 
-JSObjectRef script_add_camera_state_object(JSObjectRef parent_obj)
+JSObjectRef script_add_camera_state_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,camera_state_class,"state",NULL,camera_state_functions));
+	return(script_create_child_object(cx,parent_obj,camera_state_class,"state",NULL,camera_state_functions));
 }
 
 /* =======================================================

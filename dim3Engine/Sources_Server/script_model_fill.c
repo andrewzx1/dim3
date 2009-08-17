@@ -38,9 +38,9 @@ JSValueRef js_model_fill_get_property(JSContextRef cx,JSObjectRef j_obj,JSString
 bool js_model_fill_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	model_fill_functions[]={
-							{"change",				js_model_fill_change_func,				2},
-							{0}};
+JSStaticFunction	model_fill_functions[]={
+							{"change",				js_model_fill_change_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			model_fill_class;
 
@@ -52,7 +52,7 @@ JSClassRef			model_fill_class;
 
 void script_init_model_fill_object(void)
 {
-	model_fill_class=script_create_class("model_fill_class",js_model_fill_get_property,js_model_fill_set_property);
+	model_fill_class=script_create_class("model_fill_class",NULL,model_fill_functions);
 }
 
 void script_free_model_fill_object(void)
@@ -60,9 +60,9 @@ void script_free_model_fill_object(void)
 	script_free_class(model_fill_class);
 }
 
-JSObjectRef script_add_model_fill_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_fill_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_fill_class,"fill",NULL,model_fill_functions));
+	return(script_create_child_object(cx,parent_obj,model_fill_class,"fill",NULL,model_fill_functions));
 }
 
 /* =======================================================

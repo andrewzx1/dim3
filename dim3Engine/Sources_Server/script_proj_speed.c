@@ -49,14 +49,14 @@ void js_proj_speed_set_decelerationMinSpeed(JSContextRef cx,JSValueRef vp,JSValu
 void js_proj_speed_set_maxHitscanDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_proj_speed_set_inheritMotionFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	proj_speed_props[]={
-							{"speed",					js_proj_speed_get_speed,					js_proj_speed_set_speed},
-							{"deceleration",			js_proj_speed_get_deceleration,				js_proj_speed_set_deceleration},
-							{"decelerationWait",		js_proj_speed_get_decelerationWait,			js_proj_speed_set_decelerationWait},
-							{"decelerationMinSpeed",	js_proj_speed_get_decelerationMinSpeed,		js_proj_speed_set_decelerationMinSpeed},
-							{"maxHitScanDistance",		js_proj_speed_get_maxHitscanDistance,		js_proj_speed_set_maxHitscanDistance},
-							{"inheritMotionFactor",		js_proj_speed_get_inheritMotionFactor,		js_proj_speed_set_inheritMotionFactor},
-							{0}};
+JSStaticValue 		proj_speed_props[]={
+							{"speed",					js_proj_speed_get_speed,					js_proj_speed_set_speed,					kJSPropertyAttributeDontDelete},
+							{"deceleration",			js_proj_speed_get_deceleration,				js_proj_speed_set_deceleration,				kJSPropertyAttributeDontDelete},
+							{"decelerationWait",		js_proj_speed_get_decelerationWait,			js_proj_speed_set_decelerationWait,			kJSPropertyAttributeDontDelete},
+							{"decelerationMinSpeed",	js_proj_speed_get_decelerationMinSpeed,		js_proj_speed_set_decelerationMinSpeed,		kJSPropertyAttributeDontDelete},
+							{"maxHitScanDistance",		js_proj_speed_get_maxHitscanDistance,		js_proj_speed_set_maxHitscanDistance,		kJSPropertyAttributeDontDelete},
+							{"inheritMotionFactor",		js_proj_speed_get_inheritMotionFactor,		js_proj_speed_set_inheritMotionFactor,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			proj_speed_class;
 
@@ -68,7 +68,7 @@ JSClassRef			proj_speed_class;
 
 void script_init_proj_speed_object(void)
 {
-	proj_speed_class=script_create_class("proj_speed_class",js_proj_speed_get_property,js_proj_speed_set_property);
+	proj_speed_class=script_create_class("proj_speed_class",proj_speed_props,NULL);
 }
 
 void script_free_proj_speed_object(void)
@@ -76,9 +76,9 @@ void script_free_proj_speed_object(void)
 	script_free_class(proj_speed_class);
 }
 
-JSObjectRef script_add_proj_speed_object(JSObjectRef parent_obj)
+JSObjectRef script_add_proj_speed_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,proj_speed_class,"speed",proj_speed_props,NULL));
+	return(script_create_child_object(cx,parent_obj,proj_speed_class,"speed",proj_speed_props,NULL));
 }
 
 /* =======================================================

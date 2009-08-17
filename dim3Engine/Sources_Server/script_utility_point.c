@@ -42,12 +42,12 @@ JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObj
 JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_function	utility_point_functions[]={
-							{"equal",				js_utility_point_equal_func,				7},
-							{"angleTo",				js_utility_point_angle_to_func,				4},
-							{"distanceTo",			js_utility_point_distance_to_func,			6},
-							{"transform3Dto2D",		js_utility_point_transform_3D_to_2D_func,	3},
-							{0}};
+JSStaticFunction	utility_point_functions[]={
+							{"equal",				js_utility_point_equal_func,				kJSPropertyAttributeDontDelete},
+							{"angleTo",				js_utility_point_angle_to_func,				kJSPropertyAttributeDontDelete},
+							{"distanceTo",			js_utility_point_distance_to_func,			kJSPropertyAttributeDontDelete},
+							{"transform3Dto2D",		js_utility_point_transform_3D_to_2D_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			utility_point_class;
 
@@ -59,7 +59,7 @@ JSClassRef			utility_point_class;
 
 void script_init_utility_point_object(void)
 {
-	utility_point_class=script_create_class("utility_point_class",js_utility_point_get_property,js_utility_point_set_property);
+	utility_point_class=script_create_class("utility_point_class",NULL,utility_point_functions);
 }
 
 void script_free_utility_point_object(void)
@@ -67,9 +67,9 @@ void script_free_utility_point_object(void)
 	script_free_class(utility_point_class);
 }
 
-JSObjectRef script_add_utility_point_object(JSObjectRef parent_obj)
+JSObjectRef script_add_utility_point_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,utility_point_class,"point",NULL,utility_point_functions));
+	return(script_create_child_object(cx,parent_obj,utility_point_class,"point",NULL,utility_point_functions));
 }
 
 /* =======================================================

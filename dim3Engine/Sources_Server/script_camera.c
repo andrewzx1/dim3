@@ -47,7 +47,7 @@ JSClassRef				camera_class;
 
 void script_init_global_camera_object(void)
 {
-	camera_class=script_create_class("camera_class",js_camera_get_property,js_camera_set_property);
+	camera_class=script_create_class("camera_class",NULL,NULL);
 }
 
 void script_free_global_camera_object(void)
@@ -55,9 +55,9 @@ void script_free_global_camera_object(void)
 	script_free_class(camera_class);
 }
 
-JSObjectRef script_add_global_camera_object(JSObjectRef parent_obj)
+JSObjectRef script_add_global_camera_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,camera_class,"camera",NULL,NULL));
+	return(script_create_child_object(cx,parent_obj,camera_class,"camera",NULL,NULL));
 }
 
 /* =======================================================

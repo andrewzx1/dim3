@@ -45,13 +45,13 @@ JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx);
 void js_proj_setting_set_hitscan(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_proj_setting_set_resetAngle(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	proj_setting_props[]={
-							{"name",				js_proj_setting_get_name,				NULL},
-							{"hitScan",				js_proj_setting_get_hitscan,			js_proj_setting_set_hitscan},
-							{"resetAngle",			js_proj_setting_get_resetAngle,			js_proj_setting_set_resetAngle},
-							{"parentObjectId",		js_proj_setting_get_parentObjectId,		NULL},
-							{"parentTeam",			js_proj_setting_get_parentTeam,			NULL},
-							{0}};
+JSStaticValue 		proj_setting_props[]={
+							{"name",				js_proj_setting_get_name,				NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"hitScan",				js_proj_setting_get_hitscan,			js_proj_setting_set_hitscan,		kJSPropertyAttributeDontDelete},
+							{"resetAngle",			js_proj_setting_get_resetAngle,			js_proj_setting_set_resetAngle,		kJSPropertyAttributeDontDelete},
+							{"parentObjectId",		js_proj_setting_get_parentObjectId,		NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"parentTeam",			js_proj_setting_get_parentTeam,			NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			proj_setting_class;
 
@@ -63,7 +63,7 @@ JSClassRef			proj_setting_class;
 
 void script_init_proj_setting_object(void)
 {
-	proj_setting_class=script_create_class("proj_setting_class",js_proj_setting_get_property,js_proj_setting_set_property);
+	proj_setting_class=script_create_class("proj_setting_class",proj_setting_props,NULL);
 }
 
 void script_free_proj_setting_object(void)
@@ -71,9 +71,9 @@ void script_free_proj_setting_object(void)
 	script_free_class(proj_setting_class);
 }
 
-JSObjectRef script_add_proj_setting_object(JSObjectRef parent_obj)
+JSObjectRef script_add_proj_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,proj_setting_class,"setting",proj_setting_props,NULL));
+	return(script_create_child_object(cx,parent_obj,proj_setting_class,"setting",proj_setting_props,NULL));
 }
 
 /* =======================================================

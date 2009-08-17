@@ -41,11 +41,11 @@ JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx);
 JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx);
 void js_weap_setting_set_failInLiquid(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	weap_setting_props[]={
-							{"name",				js_weap_setting_get_name,				NULL},
-							{"failInLiquid",		js_weap_setting_get_failInLiquid,		js_weap_setting_set_failInLiquid},
-							{"parentObjectId",		js_weap_setting_get_parentObjectId,		NULL},
-							{0}};
+JSStaticValue 		weap_setting_props[]={
+							{"name",				js_weap_setting_get_name,				NULL,									kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"failInLiquid",		js_weap_setting_get_failInLiquid,		js_weap_setting_set_failInLiquid,		kJSPropertyAttributeDontDelete},
+							{"parentObjectId",		js_weap_setting_get_parentObjectId,		NULL,									kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			weap_setting_class;
 
@@ -57,7 +57,7 @@ JSClassRef			weap_setting_class;
 
 void script_init_weap_setting_object(void)
 {
-	weap_setting_class=script_create_class("weap_setting_class",js_weap_setting_get_property,js_weap_setting_set_property);
+	weap_setting_class=script_create_class("weap_setting_class",weap_setting_props,NULL);
 }
 
 void script_free_weap_setting_object(void)
@@ -65,9 +65,9 @@ void script_free_weap_setting_object(void)
 	script_free_class(weap_setting_class);
 }
 
-JSObjectRef script_add_weap_setting_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_setting_class,"setting",weap_setting_props,NULL));
+	return(script_create_child_object(cx,parent_obj,weap_setting_class,"setting",weap_setting_props,NULL));
 }
 
 /* =======================================================

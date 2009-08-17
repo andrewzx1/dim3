@@ -51,18 +51,18 @@ void js_obj_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception
 void js_obj_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_melee_props[]={
-							{"strikeBoneTag",			js_obj_melee_get_strikeBoneTag,					js_obj_melee_set_strikeBoneTag},
-							{"strikePoseName",			js_obj_melee_get_strikePoseName,				js_obj_melee_set_strikePoseName},
-							{"radius",					js_obj_melee_get_radius,						js_obj_melee_set_radius},
-							{"distance",				js_obj_melee_get_distance,						js_obj_melee_set_distance},
-							{"damage",					js_obj_melee_get_damage,						js_obj_melee_set_damage},
-							{"force",					js_obj_melee_get_force,							js_obj_melee_set_force},
-							{0}};
+JSStaticValue 		obj_melee_props[]={
+							{"strikeBoneTag",			js_obj_melee_get_strikeBoneTag,					js_obj_melee_set_strikeBoneTag,		kJSPropertyAttributeDontDelete},
+							{"strikePoseName",			js_obj_melee_get_strikePoseName,				js_obj_melee_set_strikePoseName,	kJSPropertyAttributeDontDelete},
+							{"radius",					js_obj_melee_get_radius,						js_obj_melee_set_radius,			kJSPropertyAttributeDontDelete},
+							{"distance",				js_obj_melee_get_distance,						js_obj_melee_set_distance,			kJSPropertyAttributeDontDelete},
+							{"damage",					js_obj_melee_get_damage,						js_obj_melee_set_damage,			kJSPropertyAttributeDontDelete},
+							{"force",					js_obj_melee_get_force,							js_obj_melee_set_force,				kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
-script_js_function	obj_melee_functions[]={
-							{"spawnFromObjectBone",		js_obj_melee_spawn_from_object_bone_func,		0},
-							{0}};
+JSStaticFunction	obj_melee_functions[]={
+							{"spawnFromObjectBone",		js_obj_melee_spawn_from_object_bone_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_melee_class;
 
@@ -74,7 +74,7 @@ JSClassRef			obj_melee_class;
 
 void script_init_obj_melee_object(void)
 {
-	obj_melee_class=script_create_class("obj_melee_class",js_obj_melee_get_property,js_obj_melee_set_property);
+	obj_melee_class=script_create_class("obj_melee_class",obj_melee_props,obj_melee_functions);
 }
 
 void script_free_obj_melee_object(void)
@@ -82,9 +82,9 @@ void script_free_obj_melee_object(void)
 	script_free_class(obj_melee_class);
 }
 
-JSObjectRef script_add_obj_melee_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_melee_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_melee_class,"melee",obj_melee_props,obj_melee_functions));
+	return(script_create_child_object(cx,parent_obj,obj_melee_class,"melee",obj_melee_props,obj_melee_functions));
 }
 
 /* =======================================================

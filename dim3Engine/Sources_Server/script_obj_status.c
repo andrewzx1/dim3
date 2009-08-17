@@ -50,23 +50,23 @@ JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx);
 JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	obj_status_props[]={
-							{"speed",				js_obj_status_get_speed,				NULL},
-							{"moving",				js_obj_status_get_moving,				NULL},
-							{"running",				js_obj_status_get_running,				NULL},
-							{"backward",			js_obj_status_get_backward,				NULL},
-							{"sliding",				js_obj_status_get_sliding,				NULL},
-							{"stand",				js_obj_status_get_stand,				NULL},
-							{"air",					js_obj_status_get_air,					NULL},
-							{"liquid",				js_obj_status_get_liquid,				NULL},
-							{"standOnObjectId",		js_obj_status_get_standOnObjectId,		NULL},
-							{"standUnderObjectId",	js_obj_status_get_standUnderObjectId,	NULL},
-							{0}};
+JSStaticValue 		obj_status_props[]={
+							{"speed",				js_obj_status_get_speed,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"moving",				js_obj_status_get_moving,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"running",				js_obj_status_get_running,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"backward",			js_obj_status_get_backward,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"sliding",				js_obj_status_get_sliding,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"stand",				js_obj_status_get_stand,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"air",					js_obj_status_get_air,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"liquid",				js_obj_status_get_liquid,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"standOnObjectId",		js_obj_status_get_standOnObjectId,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"standUnderObjectId",	js_obj_status_get_standUnderObjectId,	NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	obj_status_functions[]={
-							{"freezeInput",			js_obj_status_freeze_input_func,		1},
-							{"tintView",			js_obj_status_tint_view_func,			7},
-							{0}};
+JSStaticFunction	obj_status_functions[]={
+							{"freezeInput",			js_obj_status_freeze_input_func,		kJSPropertyAttributeDontDelete},
+							{"tintView",			js_obj_status_tint_view_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			obj_status_class;
 
@@ -78,7 +78,7 @@ JSClassRef			obj_status_class;
 
 void script_init_obj_status_object(void)
 {
-	obj_status_class=script_create_class("obj_status_class",js_obj_status_get_property,js_obj_status_set_property);
+	obj_status_class=script_create_class("obj_status_class",obj_status_props,obj_status_functions);
 }
 
 void script_free_obj_status_object(void)
@@ -86,9 +86,9 @@ void script_free_obj_status_object(void)
 	script_free_class(obj_status_class);
 }
 
-JSObjectRef script_add_obj_status_object(JSObjectRef parent_obj)
+JSObjectRef script_add_obj_status_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,obj_status_class,"status",obj_status_props,obj_status_functions));
+	return(script_create_child_object(cx,parent_obj,obj_status_class,"status",obj_status_props,obj_status_functions));
 }
 
 /* =======================================================

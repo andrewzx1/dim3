@@ -44,11 +44,11 @@ void js_camera_chase_offset_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 void js_camera_chase_offset_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 void js_camera_chase_offset_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
-script_js_property	camera_chase_offset_props[]={
-							{"x",					js_camera_chase_offset_get_x,			js_camera_chase_offset_set_x},
-							{"y",					js_camera_chase_offset_get_y,			js_camera_chase_offset_set_y},
-							{"z",					js_camera_chase_offset_get_z,			js_camera_chase_offset_set_z},
-							{0}};
+JSStaticValue 		camera_chase_offset_props[]={
+							{"x",					js_camera_chase_offset_get_x,			js_camera_chase_offset_set_x,		kJSPropertyAttributeDontDelete},
+							{"y",					js_camera_chase_offset_get_y,			js_camera_chase_offset_set_y,		kJSPropertyAttributeDontDelete},
+							{"z",					js_camera_chase_offset_get_z,			js_camera_chase_offset_set_z,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 
 JSClassRef			camera_chase_offset_class;
 
@@ -60,7 +60,7 @@ JSClassRef			camera_chase_offset_class;
 
 void script_init_camera_chase_offset_object(void)
 {
-	camera_chase_offset_class=script_create_class("camera_chase_offset_class",js_camera_chase_offset_get_property,js_camera_chase_offset_set_property);
+	camera_chase_offset_class=script_create_class("camera_chase_offset_class",camera_chase_offset_props,NULL);
 }
 
 void script_free_camera_chase_offset_object(void)
@@ -68,9 +68,9 @@ void script_free_camera_chase_offset_object(void)
 	script_free_class(camera_chase_offset_class);
 }
 
-JSObjectRef script_add_camera_chase_offset_object(JSObjectRef parent_obj)
+JSObjectRef script_add_camera_chase_offset_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,camera_chase_offset_class,"chaseOffset",camera_chase_offset_props,NULL));
+	return(script_create_child_object(cx,parent_obj,camera_chase_offset_class,"chaseOffset",camera_chase_offset_props,NULL));
 }
 
 /* =======================================================

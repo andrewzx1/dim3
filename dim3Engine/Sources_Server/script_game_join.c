@@ -49,20 +49,20 @@ JSValueRef js_game_join_set_spawn_spot_func(JSContextRef cx,JSObjectRef func,JSO
 JSValueRef js_game_join_set_spawn_spot_to_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_game_join_clear_spawn_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	game_join_props[]={
-							{"name",				js_game_join_get_name,						NULL},
-							{"team",				js_game_join_get_team,						NULL},
-							{0}};
+JSStaticValue 		game_join_props[]={
+							{"name",				js_game_join_get_name,						NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"team",				js_game_join_get_team,						NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	game_join_functions[]={
-							{"setTeam",				js_game_join_set_team_func,					1},
-							{"setTeamEven",			js_game_join_set_team_even_func,			0},
-							{"clearTeam",			js_game_join_clear_team_func,				0},
-							{"countTeam",			js_game_join_count_team_func,				1},
-							{"setSpawnSpot",		js_game_join_set_spawn_spot_func,			1},
-							{"setSpawnSpotToTeam",	js_game_join_set_spawn_spot_to_team_func,	0},
-							{"clearSpawnSpot",		js_game_join_clear_spawn_spot_func,			0},
-							{0}};
+JSStaticFunction	game_join_functions[]={
+							{"setTeam",				js_game_join_set_team_func,					kJSPropertyAttributeDontDelete},
+							{"setTeamEven",			js_game_join_set_team_even_func,			kJSPropertyAttributeDontDelete},
+							{"clearTeam",			js_game_join_clear_team_func,				kJSPropertyAttributeDontDelete},
+							{"countTeam",			js_game_join_count_team_func,				kJSPropertyAttributeDontDelete},
+							{"setSpawnSpot",		js_game_join_set_spawn_spot_func,			kJSPropertyAttributeDontDelete},
+							{"setSpawnSpotToTeam",	js_game_join_set_spawn_spot_to_team_func,	kJSPropertyAttributeDontDelete},
+							{"clearSpawnSpot",		js_game_join_clear_spawn_spot_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			game_join_class;
 
@@ -74,7 +74,7 @@ JSClassRef			game_join_class;
 
 void script_init_game_join_object(void)
 {
-	game_join_class=script_create_class("game_join_class",js_game_join_get_property,js_game_join_set_property);
+	game_join_class=script_create_class("game_join_class",game_join_props,game_join_functions);
 }
 
 void script_free_game_join_object(void)
@@ -82,9 +82,9 @@ void script_free_game_join_object(void)
 	script_free_class(game_join_class);
 }
 
-JSObjectRef script_add_game_join_object(JSObjectRef parent_obj)
+JSObjectRef script_add_game_join_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,game_join_class,"join",game_join_props,game_join_functions));
+	return(script_create_child_object(cx,parent_obj,game_join_class,"join",game_join_props,game_join_functions));
 }
 
 /* =======================================================

@@ -43,13 +43,13 @@ bool js_multiplayer_bot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx);
 JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	multiplayer_bot_props[]={
-							{"skill",				js_multiplayer_bot_get_skill,				NULL},
-							{0}};
+JSStaticValue 		multiplayer_bot_props[]={
+							{"skill",				js_multiplayer_bot_get_skill,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	multiplayer_bot_functions[]={
-							{"getFromMinMax",		js_multiplayer_bot_get_from_min_max_func,	2},
-							{0}};
+JSStaticFunction	multiplayer_bot_functions[]={
+							{"getFromMinMax",		js_multiplayer_bot_get_from_min_max_func,	kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			multiplayer_bot_class;
 
@@ -61,7 +61,7 @@ JSClassRef			multiplayer_bot_class;
 
 void script_init_multiplayer_bot_object(void)
 {
-	multiplayer_bot_class=script_create_class("multiplayer_bot_class",js_multiplayer_bot_get_property,js_multiplayer_bot_set_property);
+	multiplayer_bot_class=script_create_class("multiplayer_bot_class",multiplayer_bot_props,multiplayer_bot_functions);
 }
 
 void script_free_multiplayer_bot_object(void)
@@ -69,9 +69,9 @@ void script_free_multiplayer_bot_object(void)
 	script_free_class(multiplayer_bot_class);
 }
 
-JSObjectRef script_add_multiplayer_bot_object(JSObjectRef parent_obj)
+JSObjectRef script_add_multiplayer_bot_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,multiplayer_bot_class,"bot",multiplayer_bot_props,multiplayer_bot_functions));
+	return(script_create_child_object(cx,parent_obj,multiplayer_bot_class,"bot",multiplayer_bot_props,multiplayer_bot_functions));
 }
 
 /* =======================================================

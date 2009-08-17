@@ -56,22 +56,22 @@ JSValueRef js_weap_alt_ammo_use_ammo_func(JSContextRef cx,JSObjectRef func,JSObj
 JSValueRef js_weap_alt_ammo_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_alt_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-script_js_property	weap_alt_ammo_props[]={
-							{"clip",				js_weap_alt_ammo_get_clip,				js_weap_alt_ammo_set_clip},
-							{"count",				js_weap_alt_ammo_get_count,				js_weap_alt_ammo_set_count},
-							{"initCount",			js_weap_alt_ammo_get_initCount,			js_weap_alt_ammo_set_initCount},
-							{"maxCount",			js_weap_alt_ammo_get_maxCount,			js_weap_alt_ammo_set_maxCount},
-							{"clipCount",			js_weap_alt_ammo_get_clipCount,			js_weap_alt_ammo_set_clipCount},
-							{"initClipCount",		js_weap_alt_ammo_get_initClipCount,		js_weap_alt_ammo_set_initClipCount},
-							{"maxClipCount",		js_weap_alt_ammo_get_maxClipCount,		js_weap_alt_ammo_set_maxClipCount},
-							{"lastReloadTick",		js_weap_alt_ammo_get_lastReloadTick,	NULL},
-							{0}};
+JSStaticValue 		weap_alt_ammo_props[]={
+							{"clip",				js_weap_alt_ammo_get_clip,				js_weap_alt_ammo_set_clip,				kJSPropertyAttributeDontDelete},
+							{"count",				js_weap_alt_ammo_get_count,				js_weap_alt_ammo_set_count,				kJSPropertyAttributeDontDelete},
+							{"initCount",			js_weap_alt_ammo_get_initCount,			js_weap_alt_ammo_set_initCount,			kJSPropertyAttributeDontDelete},
+							{"maxCount",			js_weap_alt_ammo_get_maxCount,			js_weap_alt_ammo_set_maxCount,			kJSPropertyAttributeDontDelete},
+							{"clipCount",			js_weap_alt_ammo_get_clipCount,			js_weap_alt_ammo_set_clipCount,			kJSPropertyAttributeDontDelete},
+							{"initClipCount",		js_weap_alt_ammo_get_initClipCount,		js_weap_alt_ammo_set_initClipCount,		kJSPropertyAttributeDontDelete},
+							{"maxClipCount",		js_weap_alt_ammo_get_maxClipCount,		js_weap_alt_ammo_set_maxClipCount,		kJSPropertyAttributeDontDelete},
+							{"lastReloadTick",		js_weap_alt_ammo_get_lastReloadTick,	NULL,									kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
-script_js_function	weap_alt_ammo_functions[]={
-							{"useAmmo",				js_weap_alt_ammo_use_ammo_func,			1},
-							{"addAmmo",				js_weap_alt_ammo_add_ammo_func,			1},
-							{"changeClip",			js_weap_alt_ammo_change_clip_func,		0},
-							{0}};
+JSStaticFunction	weap_alt_ammo_functions[]={
+							{"useAmmo",				js_weap_alt_ammo_use_ammo_func,			kJSPropertyAttributeDontDelete},
+							{"addAmmo",				js_weap_alt_ammo_add_ammo_func,			kJSPropertyAttributeDontDelete},
+							{"changeClip",			js_weap_alt_ammo_change_clip_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			weap_alt_ammo_class;
 
@@ -83,7 +83,7 @@ JSClassRef			weap_alt_ammo_class;
 
 void script_init_weap_alt_ammo_object(void)
 {
-	weap_alt_ammo_class=script_create_class("weap_alt_ammo_class",js_weap_alt_ammo_get_property,js_weap_alt_ammo_set_property);
+	weap_alt_ammo_class=script_create_class("weap_alt_ammo_class",weap_alt_ammo_props,weap_alt_ammo_functions);
 }
 
 void script_free_weap_alt_ammo_object(void)
@@ -91,9 +91,9 @@ void script_free_weap_alt_ammo_object(void)
 	script_free_class(weap_alt_ammo_class);
 }
 
-JSObjectRef script_add_weap_alt_ammo_object(JSObjectRef parent_obj)
+JSObjectRef script_add_weap_alt_ammo_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,weap_alt_ammo_class,"altAmmo",weap_alt_ammo_props,weap_alt_ammo_functions));
+	return(script_create_child_object(cx,parent_obj,weap_alt_ammo_class,"altAmmo",weap_alt_ammo_props,weap_alt_ammo_functions));
 }
 
 /* =======================================================

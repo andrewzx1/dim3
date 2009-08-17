@@ -46,7 +46,7 @@ JSClassRef			map_class;
 
 void script_init_global_map_object(void)
 {
-	map_class=script_create_class("map_class",js_map_get_property,js_map_set_property);
+	map_class=script_create_class("map_class",NULL,NULL);
 }
 
 void script_free_global_map_object(void)
@@ -54,9 +54,9 @@ void script_free_global_map_object(void)
 	script_free_class(map_class);
 }
 
-JSObjectRef script_add_global_map_object(JSObjectRef parent_obj)
+JSObjectRef script_add_global_map_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,map_class,"map",NULL,NULL));
+	return(script_create_child_object(cx,parent_obj,map_class,"map",NULL,NULL));
 }
 
 /* =======================================================

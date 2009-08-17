@@ -50,15 +50,15 @@ void js_model_light_set_exponent(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 
 extern js_type			js;
 
-script_js_property	model_light_props[]={
-							{"index",				js_model_light_get_index,				js_model_light_set_index},
-							{"on",					js_model_light_get_on,					js_model_light_set_on},
-							{"type",				js_model_light_get_type,				js_model_light_set_type},
-							{"filter",				js_model_light_get_filter,				js_model_light_set_filter},
-							{"direction",			js_model_light_get_direction,			js_model_light_set_direction},
-							{"intensity",			js_model_light_get_intensity,			js_model_light_set_intensity},
-							{"exponent",			js_model_light_get_exponent,			js_model_light_set_exponent},
-							{0}};
+JSStaticValue 		model_light_props[]={
+							{"index",				js_model_light_get_index,				js_model_light_set_index,			kJSPropertyAttributeDontDelete},
+							{"on",					js_model_light_get_on,					js_model_light_set_on,				kJSPropertyAttributeDontDelete},
+							{"type",				js_model_light_get_type,				js_model_light_set_type,			kJSPropertyAttributeDontDelete},
+							{"filter",				js_model_light_get_filter,				js_model_light_set_filter,			kJSPropertyAttributeDontDelete},
+							{"direction",			js_model_light_get_direction,			js_model_light_set_direction,		kJSPropertyAttributeDontDelete},
+							{"intensity",			js_model_light_get_intensity,			js_model_light_set_intensity,		kJSPropertyAttributeDontDelete},
+							{"exponent",			js_model_light_get_exponent,			js_model_light_set_exponent,		kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
 							
 JSClassRef			model_light_class;
 
@@ -70,7 +70,7 @@ JSClassRef			model_light_class;
 
 void script_init_model_light_object(void)
 {
-	model_light_class=script_create_class("model_light_class",js_model_light_get_property,js_model_light_set_property);
+	model_light_class=script_create_class("model_light_class",model_light_props,NULL);
 }
 
 void script_free_model_light_object(void)
@@ -78,9 +78,9 @@ void script_free_model_light_object(void)
 	script_free_class(model_light_class);
 }
 
-JSObjectRef script_add_model_light_object(JSObjectRef parent_obj)
+JSObjectRef script_add_model_light_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,model_light_class,"light",model_light_props,NULL));
+	return(script_create_child_object(cx,parent_obj,model_light_class,"light",model_light_props,NULL));
 }
 
 /* =======================================================

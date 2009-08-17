@@ -46,7 +46,7 @@ JSClassRef			interface_class;
 
 void script_init_global_interface_object(void)
 {
-	interface_class=script_create_class("interface_class",js_interface_get_property,js_interface_set_property);
+	interface_class=script_create_class("interface_class",NULL,NULL);
 }
 
 void script_free_global_interface_object(void)
@@ -54,9 +54,9 @@ void script_free_global_interface_object(void)
 	script_free_class(interface_class);
 }
 
-JSObjectRef script_add_global_interface_object(JSObjectRef parent_obj)
+JSObjectRef script_add_global_interface_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(parent_obj,interface_class,"iface",NULL,NULL));
+	return(script_create_child_object(cx,parent_obj,interface_class,"iface",NULL,NULL));
 }
 
 /* =======================================================

@@ -331,21 +331,23 @@ void script_release_classes(void)
       
 ======================================================= */
 
-JSClassRef script_create_class(const char *name,JSObjectGetPropertyCallback getter,JSObjectSetPropertyCallback setter)
+JSClassRef script_create_class(const char *name,const JSStaticValue *props,const JSStaticFunction *funcs)
 {
 	JSClassDefinition		def;
+
+	bzero(&def,sizeof(JSClassDefinition));
 
 	def.version=0;
 	def.attributes=kJSClassAttributeNone;
 	def.className=name;
 	def.parentClass=NULL;
-	def.staticValues=NULL;
-	def.staticFunctions=NULL;
+	def.staticValues=props;
+	def.staticFunctions=funcs;
 	def.initialize=NULL;
 	def.finalize=NULL;
 	def.hasProperty=NULL;
-	def.getProperty=getter;
-	def.setProperty=setter;
+	def.getProperty=NULL;
+	def.setProperty=NULL;
 	def.deleteProperty=NULL;
 	def.getPropertyNames=NULL;
 	def.callAsFunction=NULL;
@@ -373,66 +375,66 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 		// map object
 
-	j_sub_obj=script_add_global_map_object(script->global_obj);
-	script_add_map_info_object(j_sub_obj);
-	script_add_map_setting_object(j_sub_obj);
-	script_add_map_light_color_object(j_sub_obj);
-	script_add_map_fog_object(j_sub_obj);
-	script_add_map_fog_color_object(j_sub_obj);
-	script_add_map_spot_object(j_sub_obj);
-	script_add_map_node_object(j_sub_obj);
-	script_add_map_object_object(j_sub_obj);
-	script_add_map_group_object(j_sub_obj);
-	script_add_map_movement_object(j_sub_obj);
-	script_add_map_action_object(j_sub_obj);
-	script_add_map_light_object(j_sub_obj);
+	j_sub_obj=script_add_global_map_object(script->cx,script->global_obj);
+	script_add_map_info_object(script->cx,j_sub_obj);
+	script_add_map_setting_object(script->cx,j_sub_obj);
+	script_add_map_light_color_object(script->cx,j_sub_obj);
+	script_add_map_fog_object(script->cx,j_sub_obj);
+	script_add_map_fog_color_object(script->cx,j_sub_obj);
+	script_add_map_spot_object(script->cx,j_sub_obj);
+	script_add_map_node_object(script->cx,j_sub_obj);
+	script_add_map_object_object(script->cx,j_sub_obj);
+	script_add_map_group_object(script->cx,j_sub_obj);
+	script_add_map_movement_object(script->cx,j_sub_obj);
+	script_add_map_action_object(script->cx,j_sub_obj);
+	script_add_map_light_object(script->cx,j_sub_obj);
 
 		// multiplayer object
 		
-	j_sub_obj=script_add_global_multiplayer_object(script->global_obj);
-	script_add_multiplayer_setting_object(j_sub_obj);
-	script_add_multiplayer_bot_object(j_sub_obj);
-	script_add_multiplayer_score_object(j_sub_obj);
+	j_sub_obj=script_add_global_multiplayer_object(script->cx,script->global_obj);
+	script_add_multiplayer_setting_object(script->cx,j_sub_obj);
+	script_add_multiplayer_bot_object(script->cx,j_sub_obj);
+	script_add_multiplayer_score_object(script->cx,j_sub_obj);
 
 		// camera object
 		
-	j_sub_obj=script_add_global_camera_object(script->global_obj);
-	script_add_camera_setting_object(j_sub_obj);
-	script_add_camera_position_object(j_sub_obj);
-	script_add_camera_angle_object(j_sub_obj);
-	script_add_camera_chase_object(j_sub_obj);
-	script_add_camera_chase_angle_object(j_sub_obj);
-	script_add_camera_chase_offset_object(j_sub_obj);
-	script_add_camera_chase_slop_object(j_sub_obj);
-	script_add_camera_static_position_object(j_sub_obj);
-	script_add_camera_plane_object(j_sub_obj);
-	script_add_camera_state_object(j_sub_obj);
+	j_sub_obj=script_add_global_camera_object(script->cx,script->global_obj);
+	script_add_camera_setting_object(script->cx,j_sub_obj);
+	script_add_camera_position_object(script->cx,j_sub_obj);
+	script_add_camera_angle_object(script->cx,j_sub_obj);
+	script_add_camera_chase_object(script->cx,j_sub_obj);
+	script_add_camera_chase_angle_object(script->cx,j_sub_obj);
+	script_add_camera_chase_offset_object(script->cx,j_sub_obj);
+	script_add_camera_chase_slop_object(script->cx,j_sub_obj);
+	script_add_camera_static_position_object(script->cx,j_sub_obj);
+	script_add_camera_plane_object(script->cx,j_sub_obj);
+	script_add_camera_state_object(script->cx,j_sub_obj);
 
 		// interface object
 		
-	j_sub_obj=script_add_global_interface_object(script->global_obj);
-	script_add_interface_screen_object(j_sub_obj);
-	script_add_interface_console_object(j_sub_obj);
-	script_add_interface_text_object(j_sub_obj);
-	script_add_interface_bitmap_object(j_sub_obj);
-	script_add_interface_bar_object(j_sub_obj);
-	script_add_interface_radar_object(j_sub_obj);
-	script_add_interface_fade_object(j_sub_obj);
-	script_add_interface_interaction_object(j_sub_obj);
+	j_sub_obj=script_add_global_interface_object(script->cx,script->global_obj);
+	script_add_interface_screen_object(script->cx,j_sub_obj);
+	script_add_interface_console_object(script->cx,j_sub_obj);
+	script_add_interface_text_object(script->cx,j_sub_obj);
+	script_add_interface_bitmap_object(script->cx,j_sub_obj);
+	script_add_interface_bar_object(script->cx,j_sub_obj);
+	script_add_interface_radar_object(script->cx,j_sub_obj);
+	script_add_interface_fade_object(script->cx,j_sub_obj);
+	script_add_interface_interaction_object(script->cx,j_sub_obj);
 
 		// data, sound, and spawn objects
 		
-	script_add_global_data_object(script->global_obj);
-	script_add_global_sound_object(script->global_obj);
-	script_add_global_spawn_object(script->global_obj);
+	script_add_global_data_object(script->cx,script->global_obj);
+	script_add_global_sound_object(script->cx,script->global_obj);
+	script_add_global_spawn_object(script->cx,script->global_obj);
 
 		// utility object
 		
-	j_sub_obj=script_add_global_utility_object(script->global_obj);
-	script_add_utility_angle_object(j_sub_obj);
-	script_add_utility_point_object(j_sub_obj);
-	script_add_utility_random_object(j_sub_obj);
-	script_add_utility_pack_object(j_sub_obj);
+	j_sub_obj=script_add_global_utility_object(script->cx,script->global_obj);
+	script_add_utility_angle_object(script->cx,j_sub_obj);
+	script_add_utility_point_object(script->cx,j_sub_obj);
+	script_add_utility_random_object(script->cx,j_sub_obj);
+	script_add_utility_pack_object(script->cx,j_sub_obj);
 
 	return(TRUE);
 }
@@ -470,30 +472,30 @@ inline JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,c
       
 ======================================================= */
 
-void script_create_main_object_add_model_object(JSObjectRef parent_obj)
+void script_create_main_object_add_model_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-    JSObject		*j_obj;
+    JSObjectRef			j_obj;
 
-	j_obj=script_add_model_object(parent_obj);
+	j_obj=script_add_model_object(cx,parent_obj);
 	
-	script_add_model_offset_object(j_obj);
-	script_add_model_rotate_object(j_obj);
-	script_add_model_spin_object(j_obj);
-	script_add_model_light_object(j_obj);
-	script_add_model_light_color_object(j_obj);
-	script_add_model_halo_object(j_obj);
-	script_add_model_shadow_object(j_obj);
-	script_add_model_animation_object(j_obj);
-	script_add_model_mesh_object(j_obj);
-	script_add_model_bone_object(j_obj);
-	script_add_model_fill_object(j_obj);
+	script_add_model_offset_object(cx,j_obj);
+	script_add_model_rotate_object(cx,j_obj);
+	script_add_model_spin_object(cx,j_obj);
+	script_add_model_light_object(cx,j_obj);
+	script_add_model_light_color_object(cx,j_obj);
+	script_add_model_halo_object(cx,j_obj);
+	script_add_model_shadow_object(cx,j_obj);
+	script_add_model_animation_object(cx,j_obj);
+	script_add_model_mesh_object(cx,j_obj);
+	script_add_model_bone_object(cx,j_obj);
+	script_add_model_fill_object(cx,j_obj);
 }
 
-JSObjectRef script_create_main_object(attach_type *attach)
+JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach)
 {
-	JSObject		*j_obj,*j_sub_obj;
+	JSObjectRef			j_obj,j_sub_obj;
 
-	j_obj=JS_NewObject(js.cx,NULL,NULL,NULL);
+	j_obj=JSObjectMake(cx,NULL,NULL);
 	if (j_obj==NULL) return(NULL);
 
 		// add sub-objects
@@ -501,95 +503,95 @@ JSObjectRef script_create_main_object(attach_type *attach)
 	switch (attach->thing_type) {
 
 		case thing_type_game:
-			script_add_game_setting_object(j_obj);
-			script_add_event_object(j_obj);
-			script_add_game_score_object(j_obj);
-			script_add_game_join_object(j_obj);
+			script_add_game_setting_object(cx,j_obj);
+			script_add_event_object(cx,j_obj);
+			script_add_game_score_object(cx,j_obj);
+			script_add_game_join_object(cx,j_obj);
 			break;
 
 		case thing_type_course:
-			script_add_event_object(j_obj);
+			script_add_event_object(cx,j_obj);
 			break;
 
 		case thing_type_object:
-			script_add_obj_setting_object(j_obj);
-			script_add_event_object(j_obj);
-			script_add_obj_position_object(j_obj);
-			script_add_obj_angle_object(j_obj);
-			script_add_obj_lock_object(j_obj);
-			script_add_obj_status_object(j_obj);
-			script_add_obj_motion_vector_object(j_obj);
-			script_add_obj_motion_angle_object(j_obj);
-			script_add_obj_forward_speed_object(j_obj);
-			script_add_obj_side_speed_object(j_obj);
-			script_add_obj_vert_speed_object(j_obj);
-			script_add_obj_turn_speed_object(j_obj);
-			script_add_obj_object_speed_object(j_obj);
-			script_add_obj_thrust_object(j_obj);
-			script_add_obj_look_object(j_obj);
-			script_add_obj_sight_object(j_obj);
-			script_add_obj_health_object(j_obj);
-			script_add_obj_size_object(j_obj);
-			script_add_obj_rigid_body_object(j_obj);
-			script_add_obj_vehicle_object(j_obj);
-			script_add_obj_radar_object(j_obj);
-			script_add_obj_score_object(j_obj);
-			script_add_obj_touch_object(j_obj);
-			script_add_obj_touch_position_object(j_obj);
-			script_add_obj_touch_angle_object(j_obj);
-			script_add_obj_hit_object(j_obj);
-			script_add_obj_hit_position_object(j_obj);
-			script_add_obj_hit_angle_object(j_obj);
-			script_add_obj_click_object(j_obj);
-			script_add_obj_held_object(j_obj);
-			script_add_obj_pickup_object(j_obj);
-			script_add_obj_watch_object(j_obj);
-			script_add_obj_weapon_object(j_obj);
-			script_add_obj_weapon_fire_object(j_obj);
-			script_add_obj_melee_object(j_obj);
-			script_create_main_object_add_model_object(j_obj);
+			script_add_obj_setting_object(cx,j_obj);
+			script_add_event_object(cx,j_obj);
+			script_add_obj_position_object(cx,j_obj);
+			script_add_obj_angle_object(cx,j_obj);
+			script_add_obj_lock_object(cx,j_obj);
+			script_add_obj_status_object(cx,j_obj);
+			script_add_obj_motion_vector_object(cx,j_obj);
+			script_add_obj_motion_angle_object(cx,j_obj);
+			script_add_obj_forward_speed_object(cx,j_obj);
+			script_add_obj_side_speed_object(cx,j_obj);
+			script_add_obj_vert_speed_object(cx,j_obj);
+			script_add_obj_turn_speed_object(cx,j_obj);
+			script_add_obj_object_speed_object(cx,j_obj);
+			script_add_obj_thrust_object(cx,j_obj);
+			script_add_obj_look_object(cx,j_obj);
+			script_add_obj_sight_object(cx,j_obj);
+			script_add_obj_health_object(cx,j_obj);
+			script_add_obj_size_object(cx,j_obj);
+			script_add_obj_rigid_body_object(cx,j_obj);
+			script_add_obj_vehicle_object(cx,j_obj);
+			script_add_obj_radar_object(cx,j_obj);
+			script_add_obj_score_object(cx,j_obj);
+			script_add_obj_touch_object(cx,j_obj);
+			script_add_obj_touch_position_object(cx,j_obj);
+			script_add_obj_touch_angle_object(cx,j_obj);
+			script_add_obj_hit_object(cx,j_obj);
+			script_add_obj_hit_position_object(cx,j_obj);
+			script_add_obj_hit_angle_object(cx,j_obj);
+			script_add_obj_click_object(cx,j_obj);
+			script_add_obj_held_object(cx,j_obj);
+			script_add_obj_pickup_object(cx,j_obj);
+			script_add_obj_watch_object(cx,j_obj);
+			script_add_obj_weapon_object(cx,j_obj);
+			script_add_obj_weapon_fire_object(cx,j_obj);
+			script_add_obj_melee_object(cx,j_obj);
+			script_create_main_object_add_model_object(cx,j_obj);
 			break;
 
 		case thing_type_weapon:
-			script_add_weap_setting_object(j_obj);
-			script_add_event_object(j_obj);
-			script_add_weap_hand_object(j_obj);
-			script_add_weap_hand_position_object(j_obj);
-			script_add_weap_hand_angle_object(j_obj);
-			script_add_weap_projectile_object(j_obj);
-			j_sub_obj=script_add_weap_crosshair_object(j_obj);
-			script_add_weap_crosshair_color_object(j_sub_obj);
-			script_add_weap_crosshair_empty_color_object(j_sub_obj);
-			script_add_weap_crosshair_pickup_color_object(j_sub_obj);
-			script_add_weap_kickback_object(j_obj);
-			script_add_weap_recoil_object(j_obj);
-			script_add_weap_ammo_object(j_obj);
-			script_add_weap_alt_ammo_object(j_obj);
-			script_add_weap_melee_object(j_obj);
-			script_add_weap_fire_object(j_obj);
-			script_add_weap_dual_object(j_obj);
-			j_sub_obj=script_add_weap_target_object(j_obj);
-			script_add_weap_target_color_object(j_sub_obj);
-			script_add_weap_zoom_object(j_obj);
-			script_create_main_object_add_model_object(j_obj);
+			script_add_weap_setting_object(cx,j_obj);
+			script_add_event_object(cx,j_obj);
+			script_add_weap_hand_object(cx,j_obj);
+			script_add_weap_hand_position_object(cx,j_obj);
+			script_add_weap_hand_angle_object(cx,j_obj);
+			script_add_weap_projectile_object(cx,j_obj);
+			j_sub_obj=script_add_weap_crosshair_object(cx,j_obj);
+			script_add_weap_crosshair_color_object(cx,j_sub_obj);
+			script_add_weap_crosshair_empty_color_object(cx,j_sub_obj);
+			script_add_weap_crosshair_pickup_color_object(cx,j_sub_obj);
+			script_add_weap_kickback_object(cx,j_obj);
+			script_add_weap_recoil_object(cx,j_obj);
+			script_add_weap_ammo_object(cx,j_obj);
+			script_add_weap_alt_ammo_object(cx,j_obj);
+			script_add_weap_melee_object(cx,j_obj);
+			script_add_weap_fire_object(cx,j_obj);
+			script_add_weap_dual_object(cx,j_obj);
+			j_sub_obj=script_add_weap_target_object(cx,j_obj);
+			script_add_weap_target_color_object(cx,j_sub_obj);
+			script_add_weap_zoom_object(cx,j_obj);
+			script_create_main_object_add_model_object(cx,j_obj);
 			break;
 
 		case thing_type_projectile:
 		case thing_type_projectile_setup:
-			script_add_proj_setting_object(j_obj);
-			script_add_event_object(j_obj);
-			script_add_proj_position_object(j_obj);
-			script_add_proj_origin_object(j_obj);
-			script_add_proj_motion_vector_object(j_obj);
-			script_add_proj_motion_angle_object(j_obj);
-			script_add_proj_speed_object(j_obj);
-			script_add_proj_hit_object(j_obj);
-			script_add_proj_action_object(j_obj);
-			script_add_proj_push_object(j_obj);
-			script_add_proj_size_object(j_obj);
-			script_add_proj_mark_object(j_obj);
-			script_add_proj_melee_object(j_obj);
-			script_create_main_object_add_model_object(j_obj);
+			script_add_proj_setting_object(cx,j_obj);
+			script_add_event_object(cx,j_obj);
+			script_add_proj_position_object(cx,j_obj);
+			script_add_proj_origin_object(cx,j_obj);
+			script_add_proj_motion_vector_object(cx,j_obj);
+			script_add_proj_motion_angle_object(cx,j_obj);
+			script_add_proj_speed_object(cx,j_obj);
+			script_add_proj_hit_object(cx,j_obj);
+			script_add_proj_action_object(cx,j_obj);
+			script_add_proj_push_object(cx,j_obj);
+			script_add_proj_size_object(cx,j_obj);
+			script_add_proj_mark_object(cx,j_obj);
+			script_add_proj_melee_object(cx,j_obj);
+			script_create_main_object_add_model_object(cx,j_obj);
 			break;
 
 	}
@@ -597,16 +599,26 @@ JSObjectRef script_create_main_object(attach_type *attach)
 	return(j_obj);
 }
 
-JSObjectRef script_create_child_object(JSObjectRef parent_obj,JSClassRef cls,char *name,script_js_property *props,script_js_function *funcs)
+JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name,script_js_property *props,script_js_function *funcs)
 {
 	int					flags;
 	script_js_property	*prop;
 	script_js_function	*func;
-	JSObject			*j_obj;
+	JSObjectRef			j_obj,j_func_obj;
+	JSValueRef			j_obj_vp,j_func_obj_vp;
+	JSStringRef			j_func_name;
 
-		// object
 
-	j_obj=JS_DefineObject(js.cx,parent_obj,name,cls,NULL,0);
+
+		// create and add child object
+
+	j_obj=JSObjectMake(cx,cls,NULL);
+	j_obj_vp=JSValueToObject(cx,j_obj,NULL);
+
+	fprintf(stdout,"Create Child Object: %s, class=%d, parent=%d, j_obj=%d, val=%d\n",name,cls,parent_obj,j_obj,j_obj_vp);
+	fflush(stdout);
+
+	script_set_single_property(cx,parent_obj,name,j_obj_vp,(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 
 		// properties
 
@@ -616,10 +628,14 @@ JSObjectRef script_create_child_object(JSObjectRef parent_obj,JSClassRef cls,cha
 
 		while (prop->name!=NULL) {
 
-			flags=JSPROP_PERMANENT|JSPROP_SHARED;
-			if (prop->setter==NULL) flags|=JSPROP_READONLY;
+			flags=kJSPropertyAttributeDontDelete;
+			if (prop->setter==NULL) flags|=kJSPropertyAttributeReadOnly;
 
-			JS_DefineProperty(js.cx,j_obj,prop->name,JSVAL_NULL,NULL,NULL,flags);
+			fprintf(stdout,"Add %s.%s\n",name,prop->name);
+			fflush(stdout);
+
+
+			script_set_single_property(cx,j_obj,prop->name,script_null_to_value(cx),flags);
 
 			prop++;
 		}
@@ -632,10 +648,19 @@ JSObjectRef script_create_child_object(JSObjectRef parent_obj,JSClassRef cls,cha
 		func=funcs;
 
 		while (func->name!=NULL) {
-			JS_DefineFunction(js.cx,j_obj,func->name,func->call,func->nargs,0);
+
+			j_func_name=JSStringCreateWithUTF8CString(func->name);
+			j_func_obj=JSObjectMakeFunctionWithCallback(cx,j_func_name,func->call);
+			JSStringRelease(j_func_name);
+
+			j_func_obj_vp=JSValueToObject(cx,j_func_obj,NULL);
+			script_set_single_property(cx,j_obj,func->name,j_func_obj_vp,(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+
 			func++;
 		}
 	}
+		fprintf(stdout,"Create Child Object End\n");
+	fflush(stdout);
 
 	return(j_obj);
 }
@@ -646,22 +671,29 @@ JSObjectRef script_create_child_object(JSObjectRef parent_obj,JSClassRef cls,cha
       
 ======================================================= */
 
-JSValueRef script_read_only_property_error(JSValueRef name)
+JSValueRef script_read_only_property_error(JSContextRef cx,JSStringRef name)
 {
 	char				c_name[64],err_str[256];
 
-	script_value_to_string(cx,name,c_name,64);
-	sprintf(err_str,"The property %s is read-only",name);
+	JSStringGetUTF8CString(name,c_name,64);
+	c_name[63]=0x0;
+
+	sprintf(err_str,"The property %s is read-only",c_name);
 
 	return(script_create_exception(cx,err_str));
 }
 
-inline int script_find_object_property_index(JSValueRef name,script_js_property *props)
+inline int script_find_object_property_index(JSContextRef cx,JSStringRef name,script_js_property *props)
 {
 	int					idx;
 	char				c_name[64];
 
-	script_value_to_string(cx,id,c_name,64);
+	JSStringGetUTF8CString(name,c_name,64);
+	c_name[63]=0x0;
+
+		fprintf(stdout,"NAME = %s\n",c_name);
+	fflush(stdout);
+
 
 	idx=0;
 
@@ -678,16 +710,25 @@ JSValueRef script_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 	int					idx;
 	script_js_property	*prop;
 
+	fprintf(stdout,"1. IN GETTER!\n");
+	fflush(stdout);
+
 		// any properties?
 
-	if (props==NULL) return(TRUE);
+	if (props==NULL) return(script_null_to_value(cx));
+	fprintf(stdout,"2. IN GETTER!\n");
+	fflush(stdout);
 
 		// find the property
 
-	idx=script_find_object_property_index(name,props);
-	if (idx==-1) return(TRUE);
+	idx=script_find_object_property_index(cx,name,props);
+	if (idx==-1) return(script_null_to_value(cx));
+	fprintf(stdout,"3. IN GETTER!\n");
+	fflush(stdout);
 
 	prop=&props[idx];
+	fprintf(stdout,"4. IN GETTER!\n");
+	fflush(stdout);
 
 		// call getter
 
@@ -699,13 +740,17 @@ bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 	int					idx;
 	script_js_property	*prop;
 
+		fprintf(stdout,"IN SETTER!\n");
+	fflush(stdout);
+
+
 		// any properties?
 
 	if (props==NULL) return(TRUE);
 
 		// find the property
 
-	idx=script_find_object_property_index(name,props);
+	idx=script_find_object_property_index(cx,name,props);
 	if (idx==-1) return(TRUE);
 
 	prop=&props[idx];
@@ -713,13 +758,13 @@ bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 		// is it read only?
 
 	if (prop->setter==NULL) {
-		*exception=script_read_only_property_error(name);
+		*exception=script_read_only_property_error(cx,name);
 		return(TRUE);
 	}
 
 		// call setter
 
-	(*prop->setter)(cx,vp)
+	(*prop->setter)(cx,vp,exception);
 
 		// always return TRUE as we are always handling
 		// the values
