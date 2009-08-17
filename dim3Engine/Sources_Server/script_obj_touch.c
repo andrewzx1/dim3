@@ -37,10 +37,10 @@ extern js_type			js;
 
 JSValueRef js_obj_touch_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_touch_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_touch_get_objectId(void);
-JSValueRef js_obj_touch_get_objectName(void);
-JSValueRef js_obj_touch_get_objectIsPlayer(void);
-JSValueRef js_obj_touch_get_stand(void);
+JSValueRef js_obj_touch_get_objectId(JSContextRef cx);
+JSValueRef js_obj_touch_get_objectName(JSContextRef cx);
+JSValueRef js_obj_touch_get_objectIsPlayer(JSContextRef cx);
+JSValueRef js_obj_touch_get_stand(JSContextRef cx);
 
 script_js_property	obj_touch_props[]={
 							{"objectId",			js_obj_touch_get_objectId,			NULL},
@@ -94,51 +94,40 @@ bool js_obj_touch_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_obj_touch_get_objectId(void)
+JSValueRef js_obj_touch_get_objectId(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->touch.obj_uid);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->touch.obj_uid));
 }
 
-JSValueRef js_obj_touch_get_objectName(void)
+JSValueRef js_obj_touch_get_objectName(JSContextRef cx)
 {
 	obj_type		*obj,*touch_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	touch_obj=object_find_uid(obj->touch.obj_uid);
-	if (touch_obj==NULL) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(touch_obj->name);
-	}
+	if (touch_obj==NULL) return(script_null_to_value(cx));
 	
-	return(TRUE);
+	return(script_string_to_value(cx,touch_obj->name));
 }
 
-JSValueRef js_obj_touch_get_objectIsPlayer(void)
+JSValueRef js_obj_touch_get_objectIsPlayer(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->touch.obj_uid==server.player_obj_uid);
-	
-	return(TRUE);
+	return(script_bool_to_value(cx,obj->touch.obj_uid==server.player_obj_uid));
 }
 
-JSValueRef js_obj_touch_get_stand(void)
+JSValueRef js_obj_touch_get_stand(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->touch.stand);
-	
-	return(TRUE);
+	return(script_bool_to_value(cx,obj->touch.stand));
 }
 
 

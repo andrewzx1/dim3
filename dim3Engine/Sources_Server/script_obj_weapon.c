@@ -127,13 +127,13 @@ JSValueRef js_obj_weapon_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	
 		// add weapon
 		
-	script_bool_to_value(weapon_create(obj,name));
+	script_bool_to_value(cx,weapon_create(obj,name));
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -149,14 +149,9 @@ JSValueRef js_obj_weapon_get_select_func(JSContextRef cx,JSObjectRef func,JSObje
 
     obj=object_find_uid(js.attach.thing_uid);
 	weap=weapon_find_uid(obj->held_weapon.next_uid);
-	if (weap==NULL) {
-		*rval=script_null_to_value();
-		return(TRUE);
-	}
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-    *rval=script_string_to_value(weap->name);
-
-    return(TRUE);
+    return(script_string_to_value(cx,weap->name));
 }
 
 JSValueRef js_obj_weapon_set_select_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -165,12 +160,10 @@ JSValueRef js_obj_weapon_set_select_func(JSContextRef cx,JSObjectRef func,JSObje
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
-	
-	weapon_set(obj,weap);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap!=NULL) weapon_set(obj,weap);
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -185,12 +178,10 @@ JSValueRef js_obj_weapon_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	weapon_type		*weap;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 
-	script_bool_to_value(weapon_script_fire(js.time.current_tick,obj,weap,script_value_to_int(argv[1])));
-
-	return(TRUE);
+	return(script_bool_to_value(cx,weapon_script_fire(js.time.current_tick,obj,weap,script_value_to_int(cx,argv[1]))));
 }
 
 /* =======================================================
@@ -204,9 +195,9 @@ JSValueRef js_obj_weapon_hide_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
     obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->hide_all_weapons=script_value_to_bool(argv[0]);
+	obj->hide_all_weapons=script_value_to_bool(cx,argv[0]);
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_weapon_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -216,7 +207,7 @@ JSValueRef js_obj_weapon_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	obj=object_find_uid(js.attach.thing_uid);
 	weapon_reset_ammo_object(obj);
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_weapon_hide_single_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -225,12 +216,10 @@ JSValueRef js_obj_weapon_hide_single_func(JSContextRef cx,JSObjectRef func,JSObj
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
-	
-	weap->hidden=script_value_to_bool(argv[1]);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap!=NULL) weap->hidden=script_value_to_bool(cx,argv[1]);
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_weapon_reset_single_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -239,12 +228,10 @@ JSValueRef js_obj_weapon_reset_single_func(JSContextRef cx,JSObjectRef func,JSOb
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
-	
-	weapon_reset_ammo(weap);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap!=NULL) weapon_reset_ammo(weap);
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_weapon_is_hidden_single_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -253,12 +240,10 @@ JSValueRef js_obj_weapon_is_hidden_single_func(JSContextRef cx,JSObjectRef func,
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-	*rval=script_bool_to_value(weap->hidden);
-
-	return(TRUE);
+	return(script_bool_to_value(cx,weap->hidden));
 }
 
 /* =======================================================
@@ -273,12 +258,10 @@ JSValueRef js_obj_weapon_get_ammo_count_func(JSContextRef cx,JSObjectRef func,JS
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-	*rval=script_int_to_value(weap->ammo.count);
-
-	return(TRUE);
+	return(script_int_to_value(cx,weap->ammo.count));
 }
 
 JSValueRef js_obj_weapon_get_max_ammo_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -287,12 +270,10 @@ JSValueRef js_obj_weapon_get_max_ammo_count_func(JSContextRef cx,JSObjectRef fun
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 
-	*rval=script_int_to_value(weap->ammo.max_count);
-
-	return(TRUE);
+	return(script_int_to_value(cx,weap->ammo.max_count));
 }
 
 JSValueRef js_obj_weapon_get_clip_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -301,12 +282,10 @@ JSValueRef js_obj_weapon_get_clip_count_func(JSContextRef cx,JSObjectRef func,JS
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-	*rval=script_int_to_value(weap->ammo.clip_count);
-
-	return(TRUE);
+	return(script_int_to_value(cx,weap->ammo.clip_count));
 }
 
 JSValueRef js_obj_weapon_get_max_clip_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -315,12 +294,10 @@ JSValueRef js_obj_weapon_get_max_clip_count_func(JSContextRef cx,JSObjectRef fun
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 
-	*rval=script_int_to_value(weap->ammo.max_clip_count);
-
-	return(TRUE);
+	return(script_int_to_value(cx,weap->ammo.max_clip_count));
 }
 
 /* =======================================================
@@ -335,12 +312,10 @@ JSValueRef js_obj_weapon_get_alt_ammo_count_func(JSContextRef cx,JSObjectRef fun
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-	*rval=script_int_to_value(weap->alt_ammo.count);
-
-	return(TRUE);
+	return(script_int_to_value(cx,weap->alt_ammo.count));
 }
 
 JSValueRef js_obj_weapon_get_alt_max_ammo_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -349,12 +324,10 @@ JSValueRef js_obj_weapon_get_alt_max_ammo_count_func(JSContextRef cx,JSObjectRef
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 
-	*rval=script_int_to_value(weap->alt_ammo.max_count);
-
-	return(TRUE);
+	return(script_int_to_value(cx,weap->alt_ammo.max_count));
 }
 
 JSValueRef js_obj_weapon_get_alt_clip_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -363,12 +336,10 @@ JSValueRef js_obj_weapon_get_alt_clip_count_func(JSContextRef cx,JSObjectRef fun
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-	*rval=script_int_to_value(weap->alt_ammo.clip_count);
-
-	return(TRUE);
+	return(script_int_to_value(cx,weap->alt_ammo.clip_count));
 }
 
 JSValueRef js_obj_weapon_get_alt_max_clip_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -377,12 +348,10 @@ JSValueRef js_obj_weapon_get_alt_max_clip_count_func(JSContextRef cx,JSObjectRef
 	weapon_type		*weap;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	weap=script_find_weapon_from_name_arg(obj,argv[0],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 
-	*rval=script_int_to_value(weap->alt_ammo.max_clip_count);
-
-	return(TRUE);
+	return(script_int_to_value(cx,weap->alt_ammo.max_clip_count));
 }
 
 

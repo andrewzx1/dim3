@@ -36,8 +36,8 @@ extern js_type			js;
 
 JSValueRef js_obj_weapon_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_weapon_fire_get_name(void);
-JSValueRef js_obj_weapon_fire_get_method(void);
+JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx);
+JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx);
 
 script_js_property	obj_weapon_fire_props[]={
 							{"name",				js_obj_weapon_fire_get_name,		NULL},
@@ -89,22 +89,18 @@ bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_obj_weapon_fire_get_name(void)
+JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_string_to_value(obj->weapon_fire.name);
-	
-	return(TRUE);
+	return(script_string_to_value(cx,obj->weapon_fire.name));
 }
 
-JSValueRef js_obj_weapon_fire_get_method(void)
+JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->weapon_fire.method);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->weapon_fire.method));
 }

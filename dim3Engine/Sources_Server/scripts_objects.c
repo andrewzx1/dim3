@@ -369,23 +369,11 @@ void script_free_class(JSClassRef cls)
 
 bool script_add_global_object(script_type *script,char *err_str)
 {
-	JSObject			*j_sub_obj;
+	JSObjectRef			j_sub_obj;
 
-		// must remove other globals to stop parenting problems
-		
-	JS_SetGlobalObject(js.cx,NULL);
-	
-		// create global for this script
-	
-	script->global=JS_NewObject(js.cx,NULL,NULL,NULL);
-	if (script->global==NULL) {
-		strcpy(err_str,"Not enough memory to create global object");
-		return(FALSE);
-	}
+		// map object
 
-		// set sub objects
-
-	j_sub_obj=script_add_global_map_object(script->global);
+	j_sub_obj=script_add_global_map_object(script->global_obj);
 	script_add_map_info_object(j_sub_obj);
 	script_add_map_setting_object(j_sub_obj);
 	script_add_map_light_color_object(j_sub_obj);
@@ -399,12 +387,16 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_map_action_object(j_sub_obj);
 	script_add_map_light_object(j_sub_obj);
 
-	j_sub_obj=script_add_global_multiplayer_object(script->global);
+		// multiplayer object
+		
+	j_sub_obj=script_add_global_multiplayer_object(script->global_obj);
 	script_add_multiplayer_setting_object(j_sub_obj);
 	script_add_multiplayer_bot_object(j_sub_obj);
 	script_add_multiplayer_score_object(j_sub_obj);
 
-	j_sub_obj=script_add_global_camera_object(script->global);
+		// camera object
+		
+	j_sub_obj=script_add_global_camera_object(script->global_obj);
 	script_add_camera_setting_object(j_sub_obj);
 	script_add_camera_position_object(j_sub_obj);
 	script_add_camera_angle_object(j_sub_obj);
@@ -416,7 +408,9 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_camera_plane_object(j_sub_obj);
 	script_add_camera_state_object(j_sub_obj);
 
-	j_sub_obj=script_add_global_interface_object(script->global);
+		// interface object
+		
+	j_sub_obj=script_add_global_interface_object(script->global_obj);
 	script_add_interface_screen_object(j_sub_obj);
 	script_add_interface_console_object(j_sub_obj);
 	script_add_interface_text_object(j_sub_obj);
@@ -426,28 +420,19 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_interface_fade_object(j_sub_obj);
 	script_add_interface_interaction_object(j_sub_obj);
 
-	script_add_global_data_object(script->global);
+		// data, sound, and spawn objects
+		
+	script_add_global_data_object(script->global_obj);
+	script_add_global_sound_object(script->global_obj);
+	script_add_global_spawn_object(script->global_obj);
 
-	script_add_global_sound_object(script->global);
-
-	script_add_global_spawn_object(script->global);
-
-	j_sub_obj=script_add_global_utility_object(script->global);
+		// utility object
+		
+	j_sub_obj=script_add_global_utility_object(script->global_obj);
 	script_add_utility_angle_object(j_sub_obj);
 	script_add_utility_point_object(j_sub_obj);
 	script_add_utility_random_object(j_sub_obj);
 	script_add_utility_pack_object(j_sub_obj);
-	
-		// set global
-
-	JS_SetGlobalObject(js.cx,script->global);
-
-		// initialize standard classes
-
-	if (!JS_InitStandardClasses(js.cx,script->global)) {
-		strcpy(err_str,"Could not initialize standard classes");
-		return(FALSE);
-	}
 
 	return(TRUE);
 }
@@ -458,22 +443,22 @@ bool script_add_global_object(script_type *script,char *err_str)
       
 ======================================================= */
 
-inline void script_set_single_property(JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags)
+inline void script_set_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags)
 {
 	JSStringRef			j_prop_name;
 
 	j_prop_name=JSStringCreateWithUTF8CString(prop_name);
-	JSObjectSetProperty(js.cx,j_obj,j_prop_name,vp,flags,NULL);
+	JSObjectSetProperty(cx,j_obj,j_prop_name,vp,flags,NULL);
 	JSStringRelease(j_prop_name);
 }
 
-inline JSValueRef script_get_single_property(JSObjectRef j_obj,const char *prop_name)
+inline JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name)
 {
 	JSStringRef			j_prop_name;
 	JSValueRef			vp;
 
 	j_prop_name=JSStringCreateWithUTF8CString(prop_name);
-	vp=JSObjectGetProperty(js.cx,j_obj,j_prop_name,NULL);
+	vp=JSObjectGetProperty(cx,j_obj,j_prop_name,NULL);
 	JSStringRelease(j_prop_name);
 
 	return(vp);
@@ -573,9 +558,9 @@ JSObjectRef script_create_main_object(attach_type *attach)
 			script_add_weap_hand_angle_object(j_obj);
 			script_add_weap_projectile_object(j_obj);
 			j_sub_obj=script_add_weap_crosshair_object(j_obj);
-				script_add_weap_crosshair_color_object(j_sub_obj);
-				script_add_weap_crosshair_empty_color_object(j_sub_obj);
-				script_add_weap_crosshair_pickup_color_object(j_sub_obj);
+			script_add_weap_crosshair_color_object(j_sub_obj);
+			script_add_weap_crosshair_empty_color_object(j_sub_obj);
+			script_add_weap_crosshair_pickup_color_object(j_sub_obj);
 			script_add_weap_kickback_object(j_obj);
 			script_add_weap_recoil_object(j_obj);
 			script_add_weap_ammo_object(j_obj);
@@ -584,7 +569,7 @@ JSObjectRef script_create_main_object(attach_type *attach)
 			script_add_weap_fire_object(j_obj);
 			script_add_weap_dual_object(j_obj);
 			j_sub_obj=script_add_weap_target_object(j_obj);
-				script_add_weap_target_color_object(j_sub_obj);
+			script_add_weap_target_color_object(j_sub_obj);
 			script_add_weap_zoom_object(j_obj);
 			script_create_main_object_add_model_object(j_obj);
 			break;
@@ -665,10 +650,10 @@ JSValueRef script_read_only_property_error(JSValueRef name)
 {
 	char				c_name[64],err_str[256];
 
-	script_value_to_string(name,c_name,64);
+	script_value_to_string(cx,name,c_name,64);
 	sprintf(err_str,"The property %s is read-only",name);
 
-	return(script_create_exception(err_str));
+	return(script_create_exception(cx,err_str));
 }
 
 inline int script_find_object_property_index(JSValueRef name,script_js_property *props)
@@ -676,7 +661,7 @@ inline int script_find_object_property_index(JSValueRef name,script_js_property 
 	int					idx;
 	char				c_name[64];
 
-	script_value_to_string(id,c_name,64);
+	script_value_to_string(cx,id,c_name,64);
 
 	idx=0;
 
@@ -706,7 +691,7 @@ JSValueRef script_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 
 		// call getter
 
-	return((*prop->getter)());
+	return((*prop->getter)(cx));
 }
 
 bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception,script_js_property *props)
@@ -734,7 +719,7 @@ bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 
 		// call setter
 
-	(*prop->setter)(vp)
+	(*prop->setter)(cx,vp)
 
 		// always return TRUE as we are always handling
 		// the values

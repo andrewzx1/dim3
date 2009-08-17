@@ -94,11 +94,11 @@ JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	unsigned long			i,high,low;
 
-	high=(unsigned long)script_value_to_int(argv[0]);
-	low=(unsigned long)script_value_to_int(argv[1]);
+	high=(unsigned long)script_value_to_int(cx,argv[0]);
+	low=(unsigned long)script_value_to_int(cx,argv[1]);
 	i=(int)(((high<<16)&0xFFFF0000)|(low&0xFFFF));
 
-	return(script_int_to_value(i));
+	return(script_int_to_value(cx,i));
 }
 
 JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -106,10 +106,10 @@ JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSO
 	unsigned int			i;
 	int						high;
 	
-	i=(unsigned int)script_value_to_int(argv[0]);
+	i=(unsigned int)script_value_to_int(cx,argv[0]);
 	high=(int)((i>>16)&0xFFFF);
 	
-	return(script_int_to_value(high));
+	return(script_int_to_value(cx,high));
 }
 
 JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -117,8 +117,8 @@ JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSOb
 	unsigned int			i;
 	int						low;
 	
-	i=(unsigned int)script_value_to_int(argv[0]);
+	i=(unsigned int)script_value_to_int(cx,argv[0]);
 	low=(int)(i&0xFFFF);
 	
-	return(script_int_to_value(low));
+	return(script_int_to_value(cx,low));
 }

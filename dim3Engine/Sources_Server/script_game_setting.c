@@ -39,9 +39,9 @@ extern network_setup_type	net_setup;
 
 JSValueRef js_game_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_game_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_game_setting_get_type(void);
-JSValueRef js_game_setting_get_multiplayer(void);
-JSValueRef js_game_setting_get_skill(void);
+JSValueRef js_game_setting_get_type(JSContextRef cx);
+JSValueRef js_game_setting_get_multiplayer(JSContextRef cx);
+JSValueRef js_game_setting_get_skill(JSContextRef cx);
 
 script_js_property	game_setting_props[]={
 							{"type",				js_game_setting_get_type,				NULL},
@@ -94,20 +94,20 @@ bool js_game_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_game_setting_get_type(void)
+JSValueRef js_game_setting_get_type(JSContextRef cx)
 {
-	if (!net_setup.client.joined) return(script_null_to_value());
+	if (!net_setup.client.joined) return(script_null_to_value(cx));
 	
-	return(script_string_to_value(net_setup.games[net_setup.game_idx].name));
+	return(script_string_to_value(cx,net_setup.games[net_setup.game_idx].name));
 }
 
-JSValueRef js_game_setting_get_multiplayer(void)
+JSValueRef js_game_setting_get_multiplayer(JSContextRef cx)
 {
-	return(script_bool_to_value(net_setup.client.joined));
+	return(script_bool_to_value(cx,net_setup.client.joined));
 }
 
-JSValueRef js_game_setting_get_skill(void)
+JSValueRef js_game_setting_get_skill(JSContextRef cx)
 {
-	return(script_int_to_value(server.skill));
+	return(script_int_to_value(cx,server.skill));
 }
 

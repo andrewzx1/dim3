@@ -97,10 +97,10 @@ JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func
 {
 	obj_type		*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(FALSE);
 
-	return(script_int_to_value(obj->score.score));
+	return(script_int_to_value(cx,obj->score.score));
 }
 
 JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -108,7 +108,7 @@ JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,J
 	int				n,score,team_idx;
 	obj_type		*obj;
 
-	team_idx=script_value_to_int(argv[0])-sd_team_none;
+	team_idx=script_value_to_int(cx,argv[0])-sd_team_none;
 
 		// add up team scores
 
@@ -127,6 +127,6 @@ JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,J
 
 		// return team score
 
-	return(script_int_to_value(score));
+	return(script_int_to_value(cx,score));
 }
 

@@ -36,9 +36,9 @@ extern js_type			js;
 
 JSValueRef js_proj_motion_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_motion_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_motion_angle_get_x(void);
-JSValueRef js_proj_motion_angle_get_y(void);
-JSValueRef js_proj_motion_angle_get_z(void);
+JSValueRef js_proj_motion_angle_get_x(JSContextRef cx);
+JSValueRef js_proj_motion_angle_get_y(JSContextRef cx);
+JSValueRef js_proj_motion_angle_get_z(JSContextRef cx);
 
 script_js_property	proj_motion_angle_props[]={
 							{"x",					js_proj_motion_angle_get_x,			NULL},
@@ -91,33 +91,33 @@ bool js_proj_motion_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
       
 ======================================================= */
 
-JSValueRef js_proj_motion_angle_get_x(void)
+JSValueRef js_proj_motion_angle_get_x(JSContextRef cx)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_float_to_value(proj->motion.ang.x));
+	return(script_float_to_value(cx,proj->motion.ang.x));
 }
 
-JSValueRef js_proj_motion_angle_get_y(void)
+JSValueRef js_proj_motion_angle_get_y(JSContextRef cx)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_float_to_value(proj->motion.ang.y));
+	return(script_float_to_value(cx,proj->motion.ang.y));
 }
 
-JSValueRef js_proj_motion_angle_get_z(void)
+JSValueRef js_proj_motion_angle_get_z(JSContextRef cx)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_null_to_value());
+	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_float_to_value(proj->motion.ang.z));
+	return(script_float_to_value(cx,proj->motion.ang.z));
 }
 

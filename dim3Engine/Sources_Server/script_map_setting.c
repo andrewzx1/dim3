@@ -42,14 +42,14 @@ extern void map_clear_ambient(void);
 
 JSValueRef js_map_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_map_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_map_setting_get_scale(void);
-JSValueRef js_map_setting_get_gravity(void);
-JSValueRef js_map_setting_get_resistance(void);
-JSValueRef js_map_setting_get_multiplayer(void);
-JSValueRef js_map_setting_get_multiplayerType(void);
-JSValueRef js_map_setting_get_botSkill(void);
-void js_map_setting_set_gravity(JSValueRef vp,JSValueRef *exception);
-void js_map_setting_set_resistance(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_setting_get_scale(JSContextRef cx);
+JSValueRef js_map_setting_get_gravity(JSContextRef cx);
+JSValueRef js_map_setting_get_resistance(JSContextRef cx);
+JSValueRef js_map_setting_get_multiplayer(JSContextRef cx);
+JSValueRef js_map_setting_get_multiplayerType(JSContextRef cx);
+JSValueRef js_map_setting_get_botSkill(JSContextRef cx);
+void js_map_setting_set_gravity(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_map_setting_set_resistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -113,36 +113,36 @@ bool js_map_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
       
 ======================================================= */
 
-JSValueRef js_map_setting_get_scale(void)
+JSValueRef js_map_setting_get_scale(JSContextRef cx)
 {
-	return(script_int_to_value(map_enlarge));
+	return(script_int_to_value(cx,map_enlarge));
 }
 
-JSValueRef js_map_setting_get_gravity(void)
+JSValueRef js_map_setting_get_gravity(JSContextRef cx)
 {
-	return(script_float_to_value(map.settings.gravity));
+	return(script_float_to_value(cx,map.settings.gravity));
 }
 
-JSValueRef js_map_setting_get_resistance(void)
+JSValueRef js_map_setting_get_resistance(JSContextRef cx)
 {
-	return(script_float_to_value(map.settings.resistance));
+	return(script_float_to_value(cx,map.settings.resistance));
 }
 
-JSValueRef js_map_setting_get_multiplayer(void)
+JSValueRef js_map_setting_get_multiplayer(JSContextRef cx)
 {
-	return(script_bool_to_value(net_setup.client.joined));
+	return(script_bool_to_value(cx,net_setup.client.joined));
 }
 
-JSValueRef js_map_setting_get_multiplayerType(void)
+JSValueRef js_map_setting_get_multiplayerType(JSContextRef cx)
 {
-	if (!net_setup.client.joined) return(script_null_to_value());
+	if (!net_setup.client.joined) return(script_null_to_value(cx));
 
-	return(script_string_to_value(net_setup.games[net_setup.game_idx].name));
+	return(script_string_to_value(cx,net_setup.games[net_setup.game_idx].name));
 }
 
-JSValueRef js_map_setting_get_botSkill(void)
+JSValueRef js_map_setting_get_botSkill(JSContextRef cx)
 {
-	return(script_int_to_value(setup.network.bot.skill));
+	return(script_int_to_value(cx,setup.network.bot.skill));
 }
 
 /* =======================================================
@@ -151,14 +151,14 @@ JSValueRef js_map_setting_get_botSkill(void)
       
 ======================================================= */
 
-void js_map_setting_set_gravity(JSValueRef vp,JSValueRef *exception)
+void js_map_setting_set_gravity(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
-	map.settings.gravity=script_value_to_float(vp);
+	map.settings.gravity=script_value_to_float(cx,vp);
 }
 
-void js_map_setting_set_resistance(JSValueRef vp,JSValueRef *exception)
+void js_map_setting_set_resistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
-	map.settings.resistance=script_value_to_float(vp);
+	map.settings.resistance=script_value_to_float(cx,vp);
 }
 
 /* =======================================================
@@ -172,17 +172,17 @@ JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	float			pitch;
 	char			name[name_str_len];
 	
-	script_value_to_string(argv[0],name,name_str_len);
-	pitch=script_value_to_float(argv[1]);
+	script_value_to_string(cx,argv[0],name,name_str_len);
+	pitch=script_value_to_float(cx,argv[1]);
 	
 	map_set_ambient(name,pitch);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	map_clear_ambient();
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

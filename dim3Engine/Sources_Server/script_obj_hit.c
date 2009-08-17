@@ -39,13 +39,13 @@ extern js_type			js;
 
 JSValueRef js_obj_hit_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_hit_get_objectId(void);
-JSValueRef js_obj_hit_get_objectName(void);
-JSValueRef js_obj_hit_get_objectIsPlayer(void);
-JSValueRef js_obj_hit_get_weaponName(void);
-JSValueRef js_obj_hit_get_projectileName(void);
-JSValueRef js_obj_hit_get_hitBoxName(void);
-JSValueRef js_obj_hit_get_damage(void);
+JSValueRef js_obj_hit_get_objectId(JSContextRef cx);
+JSValueRef js_obj_hit_get_objectName(JSContextRef cx);
+JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx);
+JSValueRef js_obj_hit_get_weaponName(JSContextRef cx);
+JSValueRef js_obj_hit_get_projectileName(JSContextRef cx);
+JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx);
+JSValueRef js_obj_hit_get_damage(JSContextRef cx);
 
 script_js_property	obj_hit_props[]={
 							{"objectId",			js_obj_hit_get_objectId,			NULL},
@@ -102,44 +102,35 @@ bool js_obj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
       
 ======================================================= */
 
-JSValueRef js_obj_hit_get_objectId(void)
+JSValueRef js_obj_hit_get_objectId(JSContextRef cx)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->hit.obj_uid);
-
-	return(TRUE);
+	return(script_int_to_value(cx,obj->hit.obj_uid));
 }
 
-JSValueRef js_obj_hit_get_objectName(void)
+JSValueRef js_obj_hit_get_objectName(JSContextRef cx)
 {
 	obj_type			*obj,*hit_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 
 	hit_obj=object_find_uid(obj->hit.obj_uid);
-	if (hit_obj==NULL) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(hit_obj->name);
-	}
-
-	return(TRUE);
+	if (hit_obj==NULL) return(script_null_to_value(cx));
+	
+	return(script_string_to_value(cx,hit_obj->name));
 }
 
-JSValueRef js_obj_hit_get_objectIsPlayer(void)
+JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->hit.obj_uid==server.player_obj_uid);
-	
-	return(TRUE);
+	return(script_bool_to_value(cx,obj->hit.obj_uid==server.player_obj_uid));
 }
 
-JSValueRef js_obj_hit_get_weaponName(void)
+JSValueRef js_obj_hit_get_weaponName(JSContextRef cx)
 {
 	obj_type			*obj;
 	weapon_type			*hit_weap;
@@ -147,17 +138,12 @@ JSValueRef js_obj_hit_get_weaponName(void)
 	obj=object_find_uid(js.attach.thing_uid);
 
 	hit_weap=weapon_find_uid(obj->hit.weap_uid);
-	if (hit_weap==NULL) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(hit_weap->name);
-	}
+	if (hit_weap==NULL) return(script_null_to_value(cx));
 
-	return(TRUE);
+	return(script_string_to_value(cx,hit_weap->name));
 }
 
-JSValueRef js_obj_hit_get_projectileName(void)
+JSValueRef js_obj_hit_get_projectileName(JSContextRef cx)
 {
 	obj_type			*obj;
 	proj_type			*hit_proj;
@@ -166,40 +152,28 @@ JSValueRef js_obj_hit_get_projectileName(void)
 	obj=object_find_uid(js.attach.thing_uid);
 
 	hit_proj=projectile_find_uid(obj->hit.proj_uid);
-	if (hit_proj==NULL) {
-		*vp=script_null_to_value();
-	}
-	else {
-		hit_proj_setup=proj_setups_find_uid(hit_proj->proj_setup_uid);
-		*vp=script_string_to_value(hit_proj_setup->name);
-	}
+	if (hit_proj==NULL) return(script_null_to_value(cx));
 
-	return(TRUE);
+	hit_proj_setup=proj_setups_find_uid(hit_proj->proj_setup_uid);
+	return(script_string_to_value(cx,hit_proj_setup->name));
 }
 
-JSValueRef js_obj_hit_get_hitBoxName(void)
+JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 
-	if (obj->hit.hit_box_name[0]==0x0) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(obj->hit.hit_box_name);
-	}
+	if (obj->hit.hit_box_name[0]==0x0) return(script_null_to_value(cx));
 
-	return(TRUE);
+	return(script_string_to_value(cx,obj->hit.hit_box_name));
 }
 
-JSValueRef js_obj_hit_get_damage(void)
+JSValueRef js_obj_hit_get_damage(JSContextRef cx)
 {
 	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->hit.damage);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->hit.damage));
 }
 

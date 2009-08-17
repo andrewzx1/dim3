@@ -36,9 +36,9 @@ extern js_type			js;
 
 JSValueRef js_map_info_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_map_info_get_file(void);
-JSValueRef js_map_info_get_title(void);
-JSValueRef js_map_info_get_author(void);
+JSValueRef js_map_info_get_file(JSContextRef cx);
+JSValueRef js_map_info_get_title(JSContextRef cx);
+JSValueRef js_map_info_get_author(JSContextRef cx);
 
 script_js_property	map_info_props[]={
 							{"file",				js_map_info_get_file,				NULL},
@@ -91,19 +91,19 @@ bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
       
 ======================================================= */
 
-JSValueRef js_map_info_get_file(void)
+JSValueRef js_map_info_get_file(JSContextRef cx)
 {
-	return(script_string_to_value(map.info.name));
+	return(script_string_to_value(cx,map.info.name));
 }
 
-JSValueRef js_map_info_get_title(void)
+JSValueRef js_map_info_get_title(JSContextRef cx)
 {
-	return(script_string_to_value(map.info.title));
+	return(script_string_to_value(cx,map.info.title));
 }
 
-JSValueRef js_map_info_get_author(void)
+JSValueRef js_map_info_get_author(JSContextRef cx)
 {
-	return(script_string_to_value(map.info.author));
+	return(script_string_to_value(cx,map.info.author));
 }
 
 

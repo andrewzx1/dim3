@@ -37,9 +37,9 @@ extern js_type			js;
 
 JSValueRef js_camera_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_camera_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_camera_setting_get_type(void);
-JSValueRef js_camera_setting_get_attachObjectId(void);
-void js_camera_setting_set_type(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_setting_get_type(JSContextRef cx);
+JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx);
+void js_camera_setting_set_type(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	camera_setting_props[]={
@@ -96,16 +96,14 @@ bool js_camera_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
       
 ======================================================= */
 
-JSValueRef js_camera_setting_get_type(void)
+JSValueRef js_camera_setting_get_type(JSContextRef cx)
 {
-	*vp=script_int_to_value(camera.mode+sd_camera_type_fpp);
-	return(TRUE);
+	return(script_int_to_value(cx,camera.mode+sd_camera_type_fpp));
 }
 
-JSValueRef js_camera_setting_get_attachObjectId(void)
+JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx)
 {
-	*vp=script_int_to_value(camera.obj_uid);
-	return(TRUE);
+	return(script_int_to_value(cx,camera.obj_uid));
 }
 
 /* =======================================================
@@ -114,9 +112,9 @@ JSValueRef js_camera_setting_get_attachObjectId(void)
       
 ======================================================= */
 
-void js_camera_setting_set_type(JSValueRef vp,JSValueRef *exception)
+void js_camera_setting_set_type(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
-	camera.mode=script_value_to_int(*vp)-sd_camera_type_fpp;
+	camera.mode=script_value_to_int(cx,vp)-sd_camera_type_fpp;
 }
 
 /* =======================================================
@@ -129,14 +127,8 @@ JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type		*obj;
 
-		// uid
-	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj!=NULL) camera_connect(obj);
 
-		// connect
-
-	camera_connect(obj);
-
-	return(TRUE);
+	return(script_null_to_value(cx));
 }

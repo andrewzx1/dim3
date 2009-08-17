@@ -38,9 +38,9 @@ extern js_type			js;
 
 JSValueRef js_camera_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_camera_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_camera_position_get_x(void);
-JSValueRef js_camera_position_get_y(void);
-JSValueRef js_camera_position_get_z(void);
+JSValueRef js_camera_position_get_x(JSContextRef cx);
+JSValueRef js_camera_position_get_y(JSContextRef cx);
+JSValueRef js_camera_position_get_z(JSContextRef cx);
 
 script_js_property	camera_position_props[]={
 							{"x",					js_camera_position_get_x,				NULL},
@@ -93,18 +93,18 @@ bool js_camera_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_camera_position_get_x(void)
+JSValueRef js_camera_position_get_x(JSContextRef cx)
 {
-	return(script_int_to_value(view.render->camera.pnt.x));
+	return(script_int_to_value(cx,view.render->camera.pnt.x));
 }
 
-JSValueRef js_camera_position_get_y(void)
+JSValueRef js_camera_position_get_y(JSContextRef cx)
 {
-	return(script_int_to_value(view.render->camera.pnt.y));
+	return(script_int_to_value(cx,view.render->camera.pnt.y));
 }
 
-JSValueRef js_camera_position_get_z(void)
+JSValueRef js_camera_position_get_z(JSContextRef cx)
 {
-	return(script_int_to_value(view.render->camera.pnt.z));
+	return(script_int_to_value(cx,view.render->camera.pnt.z));
 }
 

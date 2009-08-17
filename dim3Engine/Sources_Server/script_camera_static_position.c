@@ -38,10 +38,10 @@ extern js_type			js;
 
 JSValueRef js_camera_static_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_camera_static_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_camera_static_position_get_follow(void);
-JSValueRef js_camera_static_position_get_walkTurnSpeed(void);
-void js_camera_static_position_set_follow(JSValueRef vp,JSValueRef *exception);
-void js_camera_static_position_set_walkTurnSpeed(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_static_position_get_follow(JSContextRef cx);
+JSValueRef js_camera_static_position_get_walkTurnSpeed(JSContextRef cx);
+void js_camera_static_position_set_follow(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_camera_static_position_set_walkTurnSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -102,14 +102,14 @@ bool js_camera_static_position_set_property(JSContextRef cx,JSObjectRef j_obj,JS
       
 ======================================================= */
 
-JSValueRef js_camera_static_position_get_follow(void)
+JSValueRef js_camera_static_position_get_follow(JSContextRef cx)
 {
-	return(script_bool_to_value(camera.static_follow));
+	return(script_bool_to_value(cx,camera.static_follow));
 }
 
-JSValueRef js_camera_static_position_get_walkTurnSpeed(void)
+JSValueRef js_camera_static_position_get_walkTurnSpeed(JSContextRef cx)
 {
-	return(script_float_to_value(camera.auto_walk.turn_speed));
+	return(script_float_to_value(cx,camera.auto_walk.turn_speed));
 }
 
 /* =======================================================
@@ -118,14 +118,14 @@ JSValueRef js_camera_static_position_get_walkTurnSpeed(void)
       
 ======================================================= */
 
-void js_camera_static_position_set_follow(JSValueRef vp,JSValueRef *exception)
+void js_camera_static_position_set_follow(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
-	camera.static_follow=script_value_to_bool(vp);
+	camera.static_follow=script_value_to_bool(cx,vp);
 }
 
-void js_camera_static_position_set_walkTurnSpeed(JSValueRef vp,JSValueRef *exception)
+void js_camera_static_position_set_walkTurnSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
-	camera.auto_walk.turn_speed=script_value_to_float(vp);
+	camera.auto_walk.turn_speed=script_value_to_float(cx,vp);
 }
 
 /* =======================================================
@@ -136,9 +136,9 @@ void js_camera_static_position_set_walkTurnSpeed(JSValueRef vp,JSValueRef *excep
 
 JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	camera_static_update(script_value_to_int(argv[0]),script_value_to_int(argv[1]),script_value_to_int(argv[2]));
+	camera_static_update(script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[2]));
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -146,16 +146,16 @@ JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectR
 	int			idx;
 	spot_type	*spot;
 	
-	idx=script_value_to_int(argv[0]);
+	idx=script_value_to_int(cx,argv[0]);
 	if ((idx<0) || (idx>=map.nspot)) {
-		*exception=script_create_exception("Unknown spot");
+		*exception=script_create_exception(cx,"Unknown spot");
 	}
 	else {
 		spot=&map.spots[idx];
 		camera_static_update(spot->pnt.x,spot->pnt.z,spot->pnt.y);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -164,17 +164,17 @@ JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectR
 	char			start_name[name_str_len],end_name[name_str_len],err_str[256];
 	bool			open_doors,in_freeze;
 
-	script_value_to_string(argv[0],start_name,name_str_len);
-	script_value_to_string(argv[1],end_name,name_str_len);
+	script_value_to_string(cx,argv[0],start_name,name_str_len);
+	script_value_to_string(cx,argv[1],end_name,name_str_len);
 
-	msec=script_value_to_int(argv[2]);
-	event_id=script_value_to_int(argv[3]);
-	open_doors=script_value_to_bool(argv[4]);
-	in_freeze=script_value_to_bool(argv[5]);
+	msec=script_value_to_int(cx,argv[2]);
+	event_id=script_value_to_int(cx,argv[3]);
+	open_doors=script_value_to_bool(cx,argv[4]);
+	in_freeze=script_value_to_bool(cx,argv[5]);
 		
 	if (!camera_walk_to_node_setup(start_name,end_name,msec,event_id,open_doors,in_freeze,err_str)) {
-		*exception=script_create_exception(err_str);
+		*exception=script_create_exception(cx,err_str);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }

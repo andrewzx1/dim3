@@ -37,13 +37,13 @@ extern js_type			js;
 
 JSValueRef js_proj_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_setting_get_name(void);
-JSValueRef js_proj_setting_get_hitscan(void);
-JSValueRef js_proj_setting_get_resetAngle(void);
-JSValueRef js_proj_setting_get_parentObjectId(void);
-JSValueRef js_proj_setting_get_parentTeam(void);
-void js_proj_setting_set_hitscan(JSValueRef vp,JSValueRef *exception);
-void js_proj_setting_set_resetAngle(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_setting_get_name(JSContextRef cx);
+JSValueRef js_proj_setting_get_hitscan(JSContextRef cx);
+JSValueRef js_proj_setting_get_resetAngle(JSContextRef cx);
+JSValueRef js_proj_setting_get_parentObjectId(JSContextRef cx);
+JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx);
+void js_proj_setting_set_hitscan(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_proj_setting_set_resetAngle(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	proj_setting_props[]={
 							{"name",				js_proj_setting_get_name,				NULL},
@@ -98,58 +98,58 @@ bool js_proj_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_proj_setting_get_name(void)
+JSValueRef js_proj_setting_get_name(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_null_to_value());
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	return(script_string_to_value(proj_setup->name));
+	return(script_string_to_value(cx,proj_setup->name));
 }
 
-JSValueRef js_proj_setting_get_hitscan(void)
+JSValueRef js_proj_setting_get_hitscan(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_bool_to_value(FALSE));
+	if (proj_setup==NULL) return(script_bool_to_value(cx,FALSE));
 
-	return(script_bool_to_value(proj_setup->hitscan.on));
+	return(script_bool_to_value(cx,proj_setup->hitscan.on));
 }
 
-JSValueRef js_proj_setting_get_resetAngle(void)
+JSValueRef js_proj_setting_get_resetAngle(JSContextRef cx)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup==NULL) return(script_bool_to_value(FALSE));
+	if (proj_setup==NULL) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(proj_setup->reset_angle));
+	return(script_bool_to_value(cx,proj_setup->reset_angle));
 }
 
-JSValueRef js_proj_setting_get_parentObjectId(void)
+JSValueRef js_proj_setting_get_parentObjectId(JSContextRef cx)
 {
 	proj_type			*proj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_int_to_value(-1));
+	if (proj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(proj->obj_uid));
+	return(script_int_to_value(cx,proj->obj_uid));
 }
 
-JSValueRef js_proj_setting_get_parentTeam(void)
+JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx)
 {
 	proj_type			*proj;
 	obj_type			*obj;
 
 	proj=proj_get_attach();
-	if (proj==NULL) return(script_int_to_value(-1));
+	if (proj==NULL) return(script_int_to_value(cx,-1));
 
 	obj=object_find_uid(proj->obj_uid);
-	if (obj==NULL) return(script_int_to_value(-1));
+	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(obj->team_idx));
+	return(script_int_to_value(cx,obj->team_idx));
 }
 
 /* =======================================================
@@ -158,18 +158,18 @@ JSValueRef js_proj_setting_get_parentTeam(void)
       
 ======================================================= */
 
-void js_proj_setting_set_hitscan(JSValueRef vp,JSValueRef *exception)
+void js_proj_setting_set_hitscan(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->hitscan.on=script_value_to_bool(vp);
+	if (proj_setup!=NULL) proj_setup->hitscan.on=script_value_to_bool(cx,vp);
 }
 
-void js_proj_setting_set_resetAngle(JSValueRef vp,JSValueRef *exception)
+void js_proj_setting_set_resetAngle(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
-	if (proj_setup!=NULL) proj_setup->reset_angle=script_value_to_bool(vp);
+	if (proj_setup!=NULL) proj_setup->reset_angle=script_value_to_bool(cx,vp);
 }

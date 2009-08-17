@@ -34,12 +34,12 @@ and can be sold or given away.
 
 JSValueRef js_weap_crosshair_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_weap_crosshair_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_crosshair_color_get_red(void);
-JSValueRef js_weap_crosshair_color_get_green(void);
-JSValueRef js_weap_crosshair_color_get_blue(void);
-void js_weap_crosshair_color_set_red(JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_color_set_green(JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_color_set_blue(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_crosshair_color_get_red(JSContextRef cx);
+JSValueRef js_weap_crosshair_color_get_green(JSContextRef cx);
+JSValueRef js_weap_crosshair_color_get_blue(JSContextRef cx);
+void js_weap_crosshair_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -94,28 +94,28 @@ bool js_weap_crosshair_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSSt
       
 ======================================================= */
 
-JSValueRef js_weap_crosshair_color_get_red(void)
+JSValueRef js_weap_crosshair_color_get_red(JSContextRef cx)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(weap->crosshair.col.r));
+	return(script_float_to_value(cx,weap->crosshair.col.r));
 }
 
-JSValueRef js_weap_crosshair_color_get_green(void)
+JSValueRef js_weap_crosshair_color_get_green(JSContextRef cx)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(weap->crosshair.col.g));
+	return(script_float_to_value(cx,weap->crosshair.col.g));
 }
 
-JSValueRef js_weap_crosshair_color_get_blue(void)
+JSValueRef js_weap_crosshair_color_get_blue(JSContextRef cx)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(weap->crosshair.col.b));
+	return(script_float_to_value(cx,weap->crosshair.col.b));
 }
 
 /* =======================================================
@@ -124,27 +124,27 @@ JSValueRef js_weap_crosshair_color_get_blue(void)
       
 ======================================================= */
 
-void js_weap_crosshair_color_set_red(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.col.r=script_value_to_float(vp);
+	weap->crosshair.col.r=script_value_to_float(cx,vp);
 }
 
-void js_weap_crosshair_color_set_green(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.col.g=script_value_to_float(vp);
+	weap->crosshair.col.g=script_value_to_float(cx,vp);
 }
 
-void js_weap_crosshair_color_set_blue(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.col.b=script_value_to_float(vp);
+	weap->crosshair.col.b=script_value_to_float(cx,vp);
 }
 

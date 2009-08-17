@@ -52,7 +52,7 @@ void scripts_setup_events(int script_uid)
 	if (idx==-1) return;
 	
 	script=&js.scripts[idx];
-	script->event_func=(JSObjectRef)script_get_single_property(script->global,"event");
+	script->event_func=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,"event");
 }
 
 /* =======================================================
@@ -92,14 +92,14 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		// run the event function
 		
 	argv[0]=(JSValueRef)script->obj;
-	argv[1]=script_int_to_value(main_event);
-	argv[2]=script_int_to_value(sub_event);
-	argv[3]=script_int_to_value(id);
-	argv[4]=script_int_to_value(js.time.current_tick);
+	argv[1]=script_int_to_value(script->cx,main_event);
+	argv[2]=script_int_to_value(script->cx,sub_event);
+	argv[3]=script_int_to_value(script->cx,id);
+	argv[4]=script_int_to_value(script->cx,js.time.current_tick);
 
-	rval=JSObjectCallAsFunction(js.cx,script->global,script->event_func,5,argv,&exception);
+	rval=JSObjectCallAsFunction(script->cx,script->global_obj,script->event_func,5,argv,&exception);
 	if (rval==NULL) {
-		script_exception_to_string(exception,err_str,256);
+		script_exception_to_string(script->cx,exception,err_str,256);
 	}
 		
 		// restore old attach
@@ -148,7 +148,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	
 		// get the function
 		
-	func_obj=(JSObjectRef)script_get_single_property(script->global,func_name);
+	func_obj=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,func_name);
 	if (func_obj==NULL) {
 		sprintf(err_str,"Chaining failed, unknown function '%s'",func_name);
 		return(FALSE);
@@ -165,11 +165,11 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 		// run the event function
 		
 	argv[0]=(JSValueRef)script->obj;
-	argv[1]=script_int_to_value(js.time.current_tick);
+	argv[1]=script_int_to_value(script->cx,js.time.current_tick);
 
-	rval=JSObjectCallAsFunction(js.cx,script->global,func_obj,2,argv,&exception);
+	rval=JSObjectCallAsFunction(script->cx,script->global_obj,func_obj,2,argv,&exception);
 	if (rval==NULL) {
-		script_exception_to_string(exception,err_str,256);
+		script_exception_to_string(script->cx,exception,err_str,256);
 	}
 		
 		// restore old attach
@@ -206,20 +206,16 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 	
 		// find script
 		
-	if (attach->script_uid==-1) return(script_null_to_value());
-	
 	idx=scripts_find_uid(attach->script_uid);
-	if (idx==-1) return(script_null_to_value());
-	
 	script=&js.scripts[idx];
 
 		// find function
 
-	func_obj=(JSObjectRef)script_get_single_property(script->global,func_name);
+	func_obj=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,func_name);
 	if (func_obj==NULL) {
 		sprintf(err_str,"Call failed, unknown function: %s",func_name);
-		*exception=script_create_exception(err_str);
-		return(script_null_to_value());
+		*exception=script_create_exception(script->cx,err_str);
+		return(script_null_to_value(script->cx));
 	}
 	
 		// save current attach in case event called within another script
@@ -238,8 +234,8 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 		argv[n+1]=args[n];
 	}
 
-	rval=JSObjectCallAsFunction(js.cx,script->global,func_obj,(arg_count+1),argv,exception);
-	if (rval==NULL) rval=script_null_to_value();
+	rval=JSObjectCallAsFunction(script->cx,script->global_obj,func_obj,(arg_count+1),argv,exception);
+	if (rval==NULL) rval=script_null_to_value(script->cx);
 		
 		// restore old attach
 		

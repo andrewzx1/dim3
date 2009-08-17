@@ -38,12 +38,12 @@ extern js_type			js;
 
 JSValueRef js_obj_lock_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_lock_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_lock_get_x(void);
-JSValueRef js_obj_lock_get_y(void);
-JSValueRef js_obj_lock_get_z(void);
-void js_obj_lock_set_x(JSValueRef vp,JSValueRef *exception);
-void js_obj_lock_set_y(JSValueRef vp,JSValueRef *exception);
-void js_obj_lock_set_z(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_lock_get_x(JSContextRef cx);
+JSValueRef js_obj_lock_get_y(JSContextRef cx);
+JSValueRef js_obj_lock_get_z(JSContextRef cx);
+void js_obj_lock_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_lock_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_lock_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	obj_lock_props[]={
 							{"x",					js_obj_lock_get_x,					js_obj_lock_set_x},
@@ -96,28 +96,28 @@ bool js_obj_lock_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
       
 ======================================================= */
 
-JSValueRef js_obj_lock_get_x(void)
+JSValueRef js_obj_lock_get_x(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_bool_to_value(obj->lock.x));
+	return(script_bool_to_value(cx,obj->lock.x));
 }
 
-JSValueRef js_obj_lock_get_y(void)
+JSValueRef js_obj_lock_get_y(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_bool_to_value(obj->lock.y));
+	return(script_bool_to_value(cx,obj->lock.y));
 }
 
-JSValueRef js_obj_lock_get_z(void)
+JSValueRef js_obj_lock_get_z(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_bool_to_value(obj->lock.z));
+	return(script_bool_to_value(cx,obj->lock.z));
 }
 
 /* =======================================================
@@ -126,27 +126,27 @@ JSValueRef js_obj_lock_get_z(void)
       
 ======================================================= */
 
-void js_obj_lock_set_x(JSValueRef vp,JSValueRef *exception)
+void js_obj_lock_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.x=script_value_to_bool(vp);
+	obj->lock.x=script_value_to_bool(cx,vp);
 }
 
-void js_obj_lock_set_y(JSValueRef vp,JSValueRef *exception)
+void js_obj_lock_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.y=script_value_to_bool(vp);
+	obj->lock.y=script_value_to_bool(cx,vp);
 }
 
-void js_obj_lock_set_z(JSValueRef vp,JSValueRef *exception)
+void js_obj_lock_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->lock.z=script_value_to_bool(vp);
+	obj->lock.z=script_value_to_bool(cx,vp);
 }
 

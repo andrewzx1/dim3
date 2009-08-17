@@ -37,15 +37,15 @@ extern js_type			js;
 
 JSValueRef js_obj_watch_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_watch_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_watch_get_objectId(void);
-JSValueRef js_obj_watch_get_objectName(void);
-JSValueRef js_obj_watch_get_objectIsPlayer(void);
-JSValueRef js_obj_watch_get_objectIsRemote(void);
-JSValueRef js_obj_watch_get_objectIsBot(void);
-JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(void);
-JSValueRef js_obj_watch_get_objectTeam(void);
-JSValueRef js_obj_watch_get_baseTeam(void);
-JSValueRef js_obj_watch_get_soundName(void);
+JSValueRef js_obj_watch_get_objectId(JSContextRef cx);
+JSValueRef js_obj_watch_get_objectName(JSContextRef cx);
+JSValueRef js_obj_watch_get_objectIsPlayer(JSContextRef cx);
+JSValueRef js_obj_watch_get_objectIsRemote(JSContextRef cx);
+JSValueRef js_obj_watch_get_objectIsBot(JSContextRef cx);
+JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(JSContextRef cx);
+JSValueRef js_obj_watch_get_objectTeam(JSContextRef cx);
+JSValueRef js_obj_watch_get_baseTeam(JSContextRef cx);
+JSValueRef js_obj_watch_get_soundName(JSContextRef cx);
 JSValueRef js_obj_watch_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -115,134 +115,98 @@ bool js_obj_watch_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_obj_watch_get_objectId(void)
+JSValueRef js_obj_watch_get_objectId(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->watch.obj_uid);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->watch.obj_uid));
 }
 
-JSValueRef js_obj_watch_get_objectName(void)
+JSValueRef js_obj_watch_get_objectName(JSContextRef cx)
 {
 	obj_type		*obj,*watch_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
-	if (watch_obj==NULL) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(watch_obj->name);
-	}
-	
-	return(TRUE);
+	if (watch_obj==NULL) return(script_null_to_value(cx));
+
+	return(script_string_to_value(cx,watch_obj->name));
 }
 
-JSValueRef js_obj_watch_get_objectIsPlayer(void)
+JSValueRef js_obj_watch_get_objectIsPlayer(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->watch.obj_uid==server.player_obj_uid);
-	
-	return(TRUE);
+	return(script_bool_to_value(cx,obj->watch.obj_uid==server.player_obj_uid));
 }
 
-JSValueRef js_obj_watch_get_objectIsRemote(void)
+JSValueRef js_obj_watch_get_objectIsRemote(JSContextRef cx)
 {
 	obj_type		*obj,*watch_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
-	if (watch_obj==NULL) {
-		*vp=script_bool_to_value(FALSE);
-	}
-	else {
-		*vp=script_bool_to_value(watch_obj->remote.on);
-	}
+	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
-	return(TRUE);
+	return(script_bool_to_value(cx,watch_obj->remote.on));
 }
 
-JSValueRef js_obj_watch_get_objectIsBot(void)
+JSValueRef js_obj_watch_get_objectIsBot(JSContextRef cx)
 {
 	obj_type		*obj,*watch_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
-	if (watch_obj==NULL) {
-		*vp=script_bool_to_value(FALSE);
-	}
-	else {
-		*vp=script_bool_to_value(watch_obj->bot);
-	}
+	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
-	return(TRUE);
+	return(script_bool_to_value(cx,watch_obj->bot));
 }
 
-JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(void)
+JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(JSContextRef cx)
 {
 	obj_type		*obj,*watch_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	if (obj->watch.obj_uid==server.player_obj_uid) {
-		*vp=script_bool_to_value(TRUE);
-	}
-	else {
-		watch_obj=object_find_uid(obj->watch.obj_uid);
-		if (watch_obj==NULL) {
-			*vp=script_bool_to_value(FALSE);
-		}
-		else {
-			*vp=script_bool_to_value((watch_obj->remote.on) || (watch_obj->bot));
-		}
-	}
+	if (obj->watch.obj_uid==server.player_obj_uid) return(script_bool_to_value(cx,TRUE));
+
+	watch_obj=object_find_uid(obj->watch.obj_uid);
+	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
-	return(TRUE);
+	return(script_bool_to_value(cx,(watch_obj->remote.on) || (watch_obj->bot)));
 }
 
-JSValueRef js_obj_watch_get_objectTeam(void)
+JSValueRef js_obj_watch_get_objectTeam(JSContextRef cx)
 {
 	obj_type		*obj,*watch_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
-	if (watch_obj==NULL) {
-		*vp=script_int_to_value(sd_team_none);
-	}
-	else {
-		*vp=script_int_to_value(watch_obj->team_idx+sd_team_none);
-	}
+	if (watch_obj==NULL) return(script_int_to_value(cx,sd_team_none));
 	
-	return(TRUE);
+	return(script_int_to_value(cx,watch_obj->team_idx+sd_team_none));
 }
 
-JSValueRef js_obj_watch_get_baseTeam(void)
+JSValueRef js_obj_watch_get_baseTeam(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->watch.base_team+sd_team_none);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->watch.base_team+sd_team_none));
 }
 
-JSValueRef js_obj_watch_get_soundName(void)
+JSValueRef js_obj_watch_get_soundName(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_string_to_value(obj->watch.sound_name);
-	
-	return(TRUE);
+	return(script_string_to_value(cx,obj->watch.sound_name));
 }
 
 /* =======================================================
@@ -258,9 +222,9 @@ JSValueRef js_obj_watch_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	obj->watch.on=TRUE;
-	obj->watch.dist=script_value_to_int(argv[0]);
+	obj->watch.dist=script_value_to_int(cx,argv[0]);
 	
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -270,7 +234,7 @@ JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	obj=object_find_uid(js.attach.thing_uid);
 	object_clear_watch(&obj->watch);
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -286,9 +250,9 @@ JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	obj->watch.restrict_on=TRUE;
-	obj->watch.restrict_ang=script_value_to_float(argv[0]);
+	obj->watch.restrict_ang=script_value_to_float(cx,argv[0]);
 	
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -299,5 +263,5 @@ JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef fu
 	
 	obj->watch.restrict_on=FALSE;
 	
-	return(TRUE);
+	return(script_null_to_value(cx));
 }

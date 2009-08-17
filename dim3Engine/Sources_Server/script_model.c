@@ -40,18 +40,18 @@ extern setup_type		setup;
 
 JSValueRef js_model_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_model_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_get_on(void);
-JSValueRef js_model_get_name(void);
-JSValueRef js_model_get_bounce(void);
-JSValueRef js_model_get_alpha(void);
-JSValueRef js_model_get_resize(void);
-JSValueRef js_model_get_faceForward(void);
-void js_model_set_on(JSValueRef vp,JSValueRef *exception);
-void js_model_set_name(JSValueRef vp,JSValueRef *exception);
-void js_model_set_bounce(JSValueRef vp,JSValueRef *exception);
-void js_model_set_alpha(JSValueRef vp,JSValueRef *exception);
-void js_model_set_resize(JSValueRef vp,JSValueRef *exception);
-void js_model_set_faceForward(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_get_on(JSContextRef cx);
+JSValueRef js_model_get_name(JSContextRef cx);
+JSValueRef js_model_get_bounce(JSContextRef cx);
+JSValueRef js_model_get_alpha(JSContextRef cx);
+JSValueRef js_model_get_resize(JSContextRef cx);
+JSValueRef js_model_get_faceForward(JSContextRef cx);
+void js_model_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_set_bounce(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_set_alpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_set_resize(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_set_faceForward(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	model_props[]={
 							{"on",					js_model_get_on,					js_model_set_on},
@@ -107,52 +107,52 @@ bool js_model_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
       
 ======================================================= */
 
-JSValueRef js_model_get_on(void)
+JSValueRef js_model_get_on(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_bool_to_value(draw->on));
+	return(script_bool_to_value(cx,draw->on));
 }
 
-JSValueRef js_model_get_name(void)
+JSValueRef js_model_get_name(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_string_to_value(draw->name));
+	return(script_string_to_value(cx,draw->name));
 }
 
-JSValueRef js_model_get_bounce(void)
+JSValueRef js_model_get_bounce(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_bool_to_value(draw->bounce));
+	return(script_bool_to_value(cx,draw->bounce));
 }
 
-JSValueRef js_model_get_alpha(void)
+JSValueRef js_model_get_alpha(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_float_to_value(draw->alpha));
+	return(script_float_to_value(cx,draw->alpha));
 }
 
-JSValueRef js_model_get_resize(void)
+JSValueRef js_model_get_resize(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_float_to_value(draw->resize));
+	return(script_float_to_value(cx,draw->resize));
 }
 
-JSValueRef js_model_get_faceForward(void)
+JSValueRef js_model_get_faceForward(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_bool_to_value(draw->face_forward));
+	return(script_bool_to_value(cx,draw->face_forward));
 }
 
 /* =======================================================
@@ -161,51 +161,51 @@ JSValueRef js_model_get_faceForward(void)
       
 ======================================================= */
 
-void js_model_set_on(JSValueRef vp,JSValueRef *exception)
+void js_model_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->on=script_value_to_bool(vp);
+	draw->on=script_value_to_bool(cx,vp);
 }
 
-void js_model_set_name(JSValueRef vp,JSValueRef *exception)
+void js_model_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	script_value_to_string(vp,draw->name,name_str_len);
+	script_value_to_string(cx,vp,draw->name,name_str_len);
 }
 
-void js_model_set_bounce(JSValueRef vp,JSValueRef *exception)
+void js_model_set_bounce(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->bounce=script_value_to_bool(vp);
+	draw->bounce=script_value_to_bool(cx,vp);
 }
 
-void js_model_set_alpha(JSValueRef vp,JSValueRef *exception)
+void js_model_set_alpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->alpha=script_value_to_float(vp);
+	draw->alpha=script_value_to_float(cx,vp);
 }
 
-void js_model_set_resize(JSValueRef vp,JSValueRef *exception)
+void js_model_set_resize(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->resize=script_value_to_float(vp);
+	draw->resize=script_value_to_float(cx,vp);
 }
 
-void js_model_set_faceForward(JSValueRef vp,JSValueRef *exception)
+void js_model_set_faceForward(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	draw->face_forward=script_value_to_bool(vp);
+	draw->face_forward=script_value_to_bool(cx,vp);
 }
 

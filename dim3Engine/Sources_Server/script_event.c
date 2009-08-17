@@ -131,13 +131,13 @@ bool js_event_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 
 JSValueRef js_event_start_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	return(script_bool_to_value(timers_add(&js.attach,script_value_to_int(argv[0]),script_value_to_int(argv[1]),NULL,timer_mode_repeat)));
+	return(script_bool_to_value(cx,timers_add(&js.attach,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),NULL,timer_mode_repeat)));
 }
 
 JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	timers_clear(&js.attach,timer_mode_repeat);
-    return(script_null_to_value());
+    return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -148,24 +148,24 @@ JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 JSValueRef js_event_start_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	return(script_bool_to_value(timers_add(&js.attach,script_value_to_int(argv[0]),script_value_to_int(argv[1]),NULL,timer_mode_single)));
+	return(script_bool_to_value(cx,timers_add(&js.attach,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),NULL,timer_mode_single)));
 }
 
 JSValueRef js_event_start_wait_random_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				min,max,tick;
 	
-	min=script_value_to_int(argv[0]);
-	max=script_value_to_int(argv[1]);
+	min=script_value_to_int(cx,argv[0]);
+	max=script_value_to_int(cx,argv[1]);
 	tick=random_int(abs(max-min))+min;
 	
-	return(script_bool_to_value(timers_add(&js.attach,tick,script_value_to_int(argv[2]),NULL,timer_mode_single)));
+	return(script_bool_to_value(cx,timers_add(&js.attach,tick,script_value_to_int(cx,argv[2]),NULL,timer_mode_single)));
 }
 
 JSValueRef js_event_clear_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	timers_clear(&js.attach,timer_mode_single);
-    return(script_null_to_value());
+    return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -178,15 +178,15 @@ JSValueRef js_event_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_on
 {
 	char			chain_func_name[64];
 	
-	script_value_to_string(argv[1],chain_func_name,64);
+	script_value_to_string(cx,argv[1],chain_func_name,64);
 	
-	return(script_bool_to_value(timers_add(&js.attach,script_value_to_int(argv[0]),0,chain_func_name,timer_mode_chain)));
+	return(script_bool_to_value(cx,timers_add(&js.attach,script_value_to_int(cx,argv[0]),0,chain_func_name,timer_mode_chain)));
 }
 
 JSValueRef js_event_clear_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	timers_clear(&js.attach,timer_mode_chain);
-    return(script_null_to_value());
+    return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -202,10 +202,10 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	obj_type		*obj;
 	JSValueRef		vp;
 
-	msg_to=script_value_to_int(argv[0]);
-	id=script_value_to_int(argv[2]);
+	msg_to=script_value_to_int(cx,argv[0]);
+	id=script_value_to_int(cx,argv[2]);
 	
-	vp=script_bool_to_value(TRUE);
+	vp=script_bool_to_value(cx,TRUE);
 	
 	switch (msg_to) {
 	
@@ -216,10 +216,10 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 			break;
 	
 		case sd_message_to_object:
-			script_value_to_string(argv[1],name,name_str_len);
+			script_value_to_string(cx,argv[1],name,name_str_len);
 			obj=object_find_name(name);
 			if (obj==NULL) {
-				vp=script_bool_to_value(FALSE);
+				vp=script_bool_to_value(cx,FALSE);
 				break;
 			}
 
@@ -249,23 +249,23 @@ JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func
 	obj=object_find_uid(server.player_obj_uid);
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
-	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
+	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(script_value_to_int(argv[0]));
-	if (obj==NULL) return(script_bool_to_value(FALSE));
+	obj=object_find_uid(script_value_to_int(cx,argv[0]));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
-	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[1]));
+	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[1]));
 
-	return(script_bool_to_value(TRUE));
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -273,29 +273,29 @@ JSValueRef js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObject
 	char			name[name_str_len];
 	obj_type		*obj;
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	obj=object_find_name(name);
-	if (obj==NULL) return(script_bool_to_value(FALSE));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			
-	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[1]));
+	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[1]));
 
-	return(script_bool_to_value(TRUE));
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_event_send_message_to_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	memmove(js.course_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
-	scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
-	return(script_null_to_value());
+	scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_event_send_message_to_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	memmove(js.game_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
-	scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
-	return(script_null_to_value());
+	scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -304,21 +304,21 @@ JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef
 	weapon_type		*weap;
 
 	if (js.attach.thing_type!=thing_type_object) {
-		*exception=script_create_exception("Not an object script");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"Not an object script");
+		return(script_null_to_value(cx));
 	}
 
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=weapon_find_current(obj);
 	if (weap==NULL) {
-		*exception=script_create_exception("No held weapon");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"No held weapon");
+		return(script_null_to_value(cx));
 	}
 
 	memmove(weap->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
-	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
-	return(script_null_to_value());
+	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -327,26 +327,26 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 	weapon_type		*weap;
 
 	if (js.attach.thing_type!=thing_type_projectile) {
-		*exception=script_create_exception("Not an projectile script");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"Not an projectile script");
+		return(script_null_to_value(cx));
 	}
 
 	proj=projectile_find_uid(js.attach.thing_uid);
 	if (proj==NULL) {
-		*exception=script_create_exception("Could not find projectile");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"Could not find projectile");
+		return(script_null_to_value(cx));
 	}
 
 	weap=weapon_find_uid(proj->weap_uid);
 	if (weap==NULL) {
-		*exception=script_create_exception("Could not find weapon");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"Could not find weapon");
+		return(script_null_to_value(cx));
 	}
 
 	memmove(weap->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
-	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(argv[0]));
-	return(script_null_to_value());
+	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -361,31 +361,31 @@ JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
 
 		// get index
 
-	idx=script_value_to_int(argv[0]);
+	idx=script_value_to_int(cx,argv[0]);
 	if ((idx<0) || (idx>=max_msg_data)) {
-		*exception=script_create_exception("Message data index out of bounds");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"Message data index out of bounds");
+		return(script_null_to_value(cx));
 	}
 
 		// set data
 
-	v_type=JSValueGetType(js.cx,argv[1]);
+	v_type=JSValueGetType(cx,argv[1]);
 
 	if (v_type==kJSTypeNumber) {
 		js.attach.set_msg_data[idx].type=d3_jsval_type_number;
-		js.attach.set_msg_data[idx].data.d3_number=script_value_to_float(argv[1]);
-		return(script_null_to_value());
+		js.attach.set_msg_data[idx].data.d3_number=script_value_to_float(cx,argv[1]);
+		return(script_null_to_value(cx));
 	}
 	
 	if (v_type==kJSTypeBoolean) {
 		js.attach.set_msg_data[idx].type=d3_jsval_type_boolean;
-		js.attach.set_msg_data[idx].data.d3_boolean=script_value_to_bool(argv[1]);
-		return(script_null_to_value());
+		js.attach.set_msg_data[idx].data.d3_boolean=script_value_to_bool(cx,argv[1]);
+		return(script_null_to_value(cx));
 	}
 	
 	js.attach.set_msg_data[idx].type=d3_jsval_type_string;
-	script_value_to_string(argv[1],js.attach.set_msg_data[idx].data.d3_string,max_d3_jsval_str_len);	
-    return(script_null_to_value());
+	script_value_to_string(cx,argv[1],js.attach.set_msg_data[idx].data.d3_string,max_d3_jsval_str_len);	
+    return(script_null_to_value(cx));
 }
 
 JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -395,28 +395,28 @@ JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
 
  		// get index
 
-	idx=script_value_to_int(argv[0]);
+	idx=script_value_to_int(cx,argv[0]);
 	if ((idx<0) || (idx>=max_msg_data)) {
-		*exception=script_create_exception("Message data index out of bounds");
-		return(script_null_to_value());
+		*exception=script_create_exception(cx,"Message data index out of bounds");
+		return(script_null_to_value(cx));
 	}
 
 		// get data
 
-	vp=script_null_to_value();
+	vp=script_null_to_value(cx);
 
 	switch (js.attach.get_msg_data[idx].type) {
 
 		case d3_jsval_type_number:
-			vp=script_float_to_value(js.attach.get_msg_data[idx].data.d3_number);
+			vp=script_float_to_value(cx,js.attach.get_msg_data[idx].data.d3_number);
 			break;
 
 		case d3_jsval_type_boolean:
-			vp=script_bool_to_value(js.attach.get_msg_data[idx].data.d3_boolean);
+			vp=script_bool_to_value(cx,js.attach.get_msg_data[idx].data.d3_boolean);
 			break;
 
 		case d3_jsval_type_string:
-			vp=script_string_to_value(js.attach.get_msg_data[idx].data.d3_string);
+			vp=script_string_to_value(cx,js.attach.get_msg_data[idx].data.d3_string);
 			break;
 
 	}
@@ -439,10 +439,10 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// get arguments
 
-	obj=object_find_uid(script_value_to_int(argv[0]));
-	if (obj==NULL) return(script_bool_to_value(FALSE));
+	obj=object_find_uid(script_value_to_int(cx,argv[0]));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 
-	script_value_to_string(argv[1],func_name,64);
+	script_value_to_string(cx,argv[1],func_name,64);
 
 	arg_count=argc-2;
 	if (arg_count<0) arg_count=0;
@@ -465,7 +465,7 @@ JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 		// get arguments
 
-	script_value_to_string(argv[0],func_name,64);
+	script_value_to_string(cx,argv[0],func_name,64);
 
 	arg_count=argc-1;
 	if (arg_count<0) arg_count=0;
@@ -488,7 +488,7 @@ JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 		// get arguments
 
-	script_value_to_string(argv[0],func_name,64);
+	script_value_to_string(cx,argv[0],func_name,64);
 
 	arg_count=argc-1;
 	if (arg_count<0) arg_count=0;

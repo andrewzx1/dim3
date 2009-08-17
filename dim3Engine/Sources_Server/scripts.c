@@ -50,16 +50,6 @@ extern setup_type			setup;
 
 bool scripts_engine_initialize(char *err_str)
 {
-	js.cx=NULL;
-	
-		// create context
-		
-	js.cx=JSGlobalContextCreate(NULL);
-	if (js.cx==NULL) {
-		strcpy(err_str,"JavaScript Engine: Not enough memory to create Script Context");
-		return(FALSE);
-	}
-
 		// initialize classes
 
 	script_initialize_classes();
@@ -75,8 +65,6 @@ void scripts_engine_shutdown(void)
 {
 	script_free_user_defines();
 	script_release_classes();
-	
-	if (js.cx!=NULL) JSGlobalContextRelease(js.cx);
 }
 
 /* =======================================================
@@ -142,29 +130,6 @@ int scripts_find_uid(int uid)
 
 /* =======================================================
 
-      Script Roots
-      
-======================================================= */
-
-void script_add_roots(script_type *script)
-{
-	JSValueProtect(js.cx,(JSValueRef)script->global);
-	JSValueProtect(js.cx,(JSValueRef)script->obj);
-}
-
-void script_remove_roots(script_type *script)
-{
-	JSValueUnprotect(js.cx,(JSValueRef)script->global);
-	JSValueUnprotect(js.cx,(JSValueRef)script->obj);
-}
-
-void scripts_clean_up_roots(void)
-{
-	JSGarbageCollect(NULL);
-}
-
-/* =======================================================
-
       Script Clear Attach Data
       
 ======================================================= */
@@ -199,13 +164,13 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 	j_script_data=JSStringCreateWithUTF8CString(script->data);
 	j_script_name=JSStringCreateWithUTF8CString(script->name);
 
-	rval=JSEvaluateScript(js.cx,j_script_data,script->global,j_script_name,0,&exception);
+	rval=JSEvaluateScript(script->cx,j_script_data,script->global_obj,j_script_name,0,&exception);
 
 	JSStringRelease(j_script_name);
 	JSStringRelease(j_script_data);
 
 	if (rval==NULL) {
-		script_value_to_string(exception,err_str,256);
+		script_value_to_string(script->cx,exception,err_str,256);
 		return(FALSE);
 	}
 
@@ -255,15 +220,18 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		script->params[0]=0x0;
 	}
 
-	script->global=NULL;
-	script->obj=NULL;
-
 		// script attachments
 		
 	script->uid=js.script_current_uid;
 	js.script_current_uid++;
 	
 	attach->script_uid=script->uid;
+	
+		// create the context
+		// and remember the global object
+		
+	script->cx=JSGlobalContextCreate(NULL);
+	script->global_obj=JSContextGetGlobalObject(script->cx);
 	
 		// load in script
 
@@ -300,9 +268,9 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		return(FALSE);
 	}
 	
-		// root the objects
+		// root the object
 		
-	script_add_roots(script);
+	JSValueProtect(script->cx,(JSValueRef)script->obj);
 		
 	return(TRUE);
 }
@@ -342,15 +310,50 @@ void scripts_dispose(int uid)
 
 	timers_script_dispose(uid);
 
-		// dispose
+		// unroot the object and clean up
+		// the context
 
 	script=&js.scripts[idx];
 	
-	script_remove_roots(script);
-	script->used=FALSE;
+	JSValueUnprotect(script->cx,(JSValueRef)script->obj);
+	JSGlobalContextRelease(script->cx);
 	
 		// force clean-up of removed scripts
 	
-	scripts_clean_up_roots();
+	JSGarbageCollect(NULL);
+	
+		// script is now free
+		
+	script->used=FALSE;
 }
+
+
+
+
+/* =======================================================
+
+      JS Glue Code
+      
+======================================================= */
+
+// supergumba -- js -- as a patch?
+// and TEST!
+
+bool JSValueIsArray(JSContextRef ctx,JSValueRef value)
+{
+/*
+	JSObjectRef			arrayObj,protoObj;
+	
+	if (!JSValueIsObject(ctx,value)) return(FALSE);
+	
+	arrayObj=JSValueToObject(ctx,value,NULL);
+	if (arrayObj==NULL) return(FALSE);
+
+	protoObj=JSObjectGetPrototype(ctx,arrayObj);
+	*/
+	
+	return(NULL);
+	
+}
+
 

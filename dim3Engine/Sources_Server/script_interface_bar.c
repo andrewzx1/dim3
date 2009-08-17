@@ -103,70 +103,70 @@ JSValueRef js_interface_bar_show_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0],exception);
+	bar=script_find_bar_from_name(cx,argv[0],exception);
 	if (bar!=NULL) bar->show=TRUE;
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bar_hide_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0],exception);
+	bar=script_find_bar_from_name(cx,argv[0],exception);
 	if (bar!=NULL) bar->show=FALSE;
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bar_hide_all_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bars_hide_all();
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bar_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0],exception);
+	bar=script_find_bar_from_name(cx,argv[0],exception);
 	if (bar!=NULL) {
-		bar->x=script_value_to_int(argv[1]);
-		bar->y=script_value_to_int(argv[2]);
+		bar->x=script_value_to_int(cx,argv[1]);
+		bar->y=script_value_to_int(cx,argv[2]);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bar_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0],exception);
+	bar=script_find_bar_from_name(cx,argv[0],exception);
 	if (bar!=NULL) {
-		bar->x_size=script_value_to_int(argv[1]);
-		bar->y_size=script_value_to_int(argv[2]);
+		bar->x_size=script_value_to_int(cx,argv[1]);
+		bar->y_size=script_value_to_int(cx,argv[2]);
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bar_set_value_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0],exception);
-	if (bar!=NULL) bar->value=script_value_to_float(argv[1]);
+	bar=script_find_bar_from_name(cx,argv[0],exception);
+	if (bar!=NULL) bar->value=script_value_to_float(cx,argv[1]);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_bar_set_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bar_type			*bar;
 	
-	bar=script_find_bar_from_name(argv[0],exception);
-	if (bar!=NULL) bar->fill_alpha=script_value_to_float(argv[1]);
+	bar=script_find_bar_from_name(cx,argv[0],exception);
+	if (bar!=NULL) bar->fill_alpha=script_value_to_float(cx,argv[1]);
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }

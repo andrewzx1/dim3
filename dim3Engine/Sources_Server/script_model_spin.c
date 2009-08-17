@@ -33,12 +33,12 @@ and can be sold or given away.
 
 JSValueRef js_model_spin_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_model_spin_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_spin_get_x(void);
-JSValueRef js_model_spin_get_y(void);
-JSValueRef js_model_spin_get_z(void);
-void js_model_spin_set_x(JSValueRef vp,JSValueRef *exception);
-void js_model_spin_set_y(JSValueRef vp,JSValueRef *exception);
-void js_model_spin_set_z(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_spin_get_x(JSContextRef cx);
+JSValueRef js_model_spin_get_y(JSContextRef cx);
+JSValueRef js_model_spin_get_z(JSContextRef cx);
+void js_model_spin_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_spin_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_model_spin_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -93,28 +93,28 @@ bool js_model_spin_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_model_spin_get_x(void)
+JSValueRef js_model_spin_get_x(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_float_to_value(draw->spin.x));
+	return(script_float_to_value(cx,draw->spin.x));
 }
 
-JSValueRef js_model_spin_get_y(void)
+JSValueRef js_model_spin_get_y(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_float_to_value(draw->spin.y));
+	return(script_float_to_value(cx,draw->spin.y));
 }
 
-JSValueRef js_model_spin_get_z(void)
+JSValueRef js_model_spin_get_z(JSContextRef cx)
 {
 	model_draw		*draw;
 
 	draw=script_find_model_draw();
-	return(script_float_to_value(draw->spin.z));
+	return(script_float_to_value(cx,draw->spin.z));
 }
 
 /* =======================================================
@@ -123,33 +123,33 @@ JSValueRef js_model_spin_get_z(void)
       
 ======================================================= */
 
-void js_model_spin_set_x(JSValueRef vp,JSValueRef *exception)
+void js_model_spin_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 
-	draw->spin.x=script_value_to_float(vp);
+	draw->spin.x=script_value_to_float(cx,vp);
 	draw->spin_tick=js.time.current_tick;
 }
 
-void js_model_spin_set_y(JSValueRef vp,JSValueRef *exception)
+void js_model_spin_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 
-	draw->spin.y=script_value_to_float(vp);
+	draw->spin.y=script_value_to_float(cx,vp);
 	draw->spin_tick=js.time.current_tick;
 }
 
-void js_model_spin_set_z(JSValueRef vp,JSValueRef *exception)
+void js_model_spin_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 
-	draw->spin.z=script_value_to_float(vp);
+	draw->spin.z=script_value_to_float(cx,vp);
 	draw->spin_tick=js.time.current_tick;
 }
 

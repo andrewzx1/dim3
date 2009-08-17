@@ -95,12 +95,12 @@ bool js_model_mesh_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_model_mesh_name_exception(char *name)
+JSValueRef js_model_mesh_name_exception(JSContextRef cx,char *name)
 {
 	char			err_str[256];
 
 	sprintf(err_str,"Named mesh does not exist: %s",name);
-	return(script_create_exception(err_str));
+	return(script_create_exception(cx,err_str));
 }
 
 /* =======================================================
@@ -116,12 +116,12 @@ JSValueRef js_model_mesh_show_mesh_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	draw=script_find_model_draw();
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_show_mesh(draw,name)) {
-		*exception=js_model_mesh_name_exception(name);
+		*exception=js_model_mesh_name_exception(cx,name);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -131,7 +131,7 @@ JSValueRef js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObjectRef func,JSO
 	draw=script_find_model_draw();
 	model_show_all_mesh(draw);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -141,12 +141,12 @@ JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JS
 	
 	draw=script_find_model_draw();
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_show_only_mesh(draw,name)) {
-		*exception=js_model_mesh_name_exception(name);
+		*exception=js_model_mesh_name_exception(cx,name);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -156,12 +156,12 @@ JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	draw=script_find_model_draw();
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_hide_mesh(draw,name)) {
-		*exception=js_model_mesh_name_exception(name);
+		*exception=js_model_mesh_name_exception(cx,name);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -171,6 +171,6 @@ JSValueRef js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObjectRef func,JSO
 	draw=script_find_model_draw();
 	model_hide_all_mesh(draw);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

@@ -73,59 +73,59 @@ int script_find_global(char *name,int script_uid)
       
 ======================================================= */
 
-void script_set_global_by_index(int idx,JSValueRef val)
+void script_set_global_by_index(JSContextRef cx,int idx,JSValueRef val)
 {
 	global_type		*global;
 	
 	global=&js.globals[idx];
 	
-	if (JSValueIsNumber(js.cx,val)) {
+	if (JSValueIsNumber(cx,val)) {
 		global->type=d3_jsval_type_number;
-		global->data.d3_number=script_value_to_float(val);
+		global->data.d3_number=script_value_to_float(cx,val);
 		return;
 	}
 	
-	if (JSValueIsBoolean(js.cx,val)) {
+	if (JSValueIsBoolean(cx,val)) {
 		global->type=d3_jsval_type_boolean;
-		global->data.d3_boolean=script_value_to_bool(val);
+		global->data.d3_boolean=script_value_to_bool(cx,val);
 		return;
 	}
 	
 	global->type=d3_jsval_type_string;
-	script_value_to_string(val,global->data.d3_string,max_d3_jsval_str_len);
+	script_value_to_string(cx,val,global->data.d3_string,max_d3_jsval_str_len);
 }
 
-bool script_set_global(char *name,int script_uid,JSValueRef val)
+bool script_set_global(JSContextRef cx,char *name,int script_uid,JSValueRef val)
 {
 	int				idx;
 	
 	idx=script_find_global(name,script_uid);
 	if (idx==-1) return(FALSE);
 	
-	script_set_global_by_index(idx,val);
+	script_set_global_by_index(cx,idx,val);
 	return(TRUE);
 }
 
-JSValueRef script_get_global(char *name,int script_uid)
+JSValueRef script_get_global(JSContextRef cx,char *name,int script_uid)
 {
 	int				idx;
 	global_type		*global;
 	
 	idx=script_find_global(name,script_uid);
-	if (idx==-1) return(script_null_to_value());
+	if (idx==-1) return(script_null_to_value(cx));
 	
 	global=&js.globals[idx];
 	
 	switch (global->type) {
 		case d3_jsval_type_number:
-			return(script_float_to_value(global->data.d3_number));
+			return(script_float_to_value(cx,global->data.d3_number));
 		case d3_jsval_type_boolean:
-			return(script_bool_to_value(global->data.d3_boolean));
+			return(script_bool_to_value(cx,global->data.d3_boolean));
 		case d3_jsval_type_string:
-			return(script_string_to_value(global->data.d3_string));
+			return(script_string_to_value(cx,global->data.d3_string));
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -134,7 +134,7 @@ JSValueRef script_get_global(char *name,int script_uid)
       
 ======================================================= */
 
-bool script_add_global(char *name,int script_uid,JSValueRef val)
+bool script_add_global(JSContextRef cx,char *name,int script_uid,JSValueRef val)
 {
 	int				idx;
 	
@@ -142,7 +142,7 @@ bool script_add_global(char *name,int script_uid,JSValueRef val)
 		
 	idx=script_find_global(name,script_uid);
 	if (idx!=-1) {
-		script_set_global_by_index(idx,val);
+		script_set_global_by_index(cx,idx,val);
 		return(TRUE);
 	}
 	
@@ -156,7 +156,7 @@ bool script_add_global(char *name,int script_uid,JSValueRef val)
 	strcpy(js.globals[idx].name,name);
 	js.globals[idx].script_uid=script_uid;
 	
-	script_set_global_by_index(idx,val);
+	script_set_global_by_index(cx,idx,val);
 	
 	return(TRUE);
 }

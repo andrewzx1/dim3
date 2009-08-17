@@ -36,9 +36,9 @@ extern js_type			js;
 
 JSValueRef js_obj_motion_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_motion_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_motion_angle_get_x(void);
-JSValueRef js_obj_motion_angle_get_y(void);
-JSValueRef js_obj_motion_angle_get_z(void);
+JSValueRef js_obj_motion_angle_get_x(JSContextRef cx);
+JSValueRef js_obj_motion_angle_get_y(JSContextRef cx);
+JSValueRef js_obj_motion_angle_get_z(JSContextRef cx);
 JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -98,28 +98,28 @@ bool js_obj_motion_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSString
       
 ======================================================= */
 
-JSValueRef js_obj_motion_angle_get_x(void)
+JSValueRef js_obj_motion_angle_get_x(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->motion.ang.x));
+	return(script_float_to_value(cx,obj->motion.ang.x));
 }
 
-JSValueRef js_obj_motion_angle_get_y(void)
+JSValueRef js_obj_motion_angle_get_y(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->motion.ang.y));
+	return(script_float_to_value(cx,obj->motion.ang.y));
 }
 
-JSValueRef js_obj_motion_angle_get_z(void)
+JSValueRef js_obj_motion_angle_get_z(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->motion.ang.z));
+	return(script_float_to_value(cx,obj->motion.ang.z));
 }
 
 /* =======================================================
@@ -136,13 +136,13 @@ JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef fu
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	obj->turn.ang_to.y=script_value_to_float(argv[0]);
+	obj->turn.ang_to.y=script_value_to_float(cx,argv[0]);
 	if (obj->turn.ang_to.y<0.0f) obj->turn.ang_to.y=360.0f+obj->turn.ang_to.y;
 	if (obj->turn.ang_to.y>=360.0f) obj->turn.ang_to.y=obj->turn.ang_to.y-360.0f;
 
 	turn_speed=object_get_turn_speed(obj);
 
-	switch (script_value_to_int(argv[1])) {
+	switch (script_value_to_int(cx,argv[1])) {
 	
 		case -1:
 			obj->turn.ang_add.y=-turn_speed;
@@ -162,7 +162,7 @@ JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef fu
 	
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -172,5 +172,5 @@ JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,J
 	obj=object_find_uid(js.attach.thing_uid);
 	object_turn_stop(obj);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }

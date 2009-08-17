@@ -37,11 +37,11 @@ extern js_type			js;
 
 JSValueRef js_obj_pickup_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_pickup_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_pickup_get_objectId(void);
-JSValueRef js_obj_pickup_get_objectName(void);
-JSValueRef js_obj_pickup_get_objectIsPlayer(void);
-JSValueRef js_obj_pickup_get_itemId(void);
-JSValueRef js_obj_pickup_get_itemName(void);
+JSValueRef js_obj_pickup_get_objectId(JSContextRef cx);
+JSValueRef js_obj_pickup_get_objectName(JSContextRef cx);
+JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx);
+JSValueRef js_obj_pickup_get_itemId(JSContextRef cx);
+JSValueRef js_obj_pickup_get_itemName(JSContextRef cx);
 JSValueRef js_obj_pickup_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -117,68 +117,52 @@ bool js_obj_pickup_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_obj_pickup_get_objectId(void)
+JSValueRef js_obj_pickup_get_objectId(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->pickup.obj_uid);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->pickup.obj_uid));
 }
 
-JSValueRef js_obj_pickup_get_objectName(void)
+JSValueRef js_obj_pickup_get_objectName(JSContextRef cx)
 {
 	obj_type		*obj,*pickup_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 
 	pickup_obj=object_find_uid(obj->pickup.obj_uid);
-	if (pickup_obj==NULL) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(pickup_obj->name);
-	}
+	if (pickup_obj==NULL) return(script_null_to_value(cx));
 	
-	return(TRUE);
+	return(script_string_to_value(cx,pickup_obj->name));
 }
 
-JSValueRef js_obj_pickup_get_objectIsPlayer(void)
+JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->pickup.obj_uid==server.player_obj_uid);
-	
-	return(TRUE);
+	return(script_bool_to_value(cx,obj->pickup.obj_uid==server.player_obj_uid));
 }
 
-JSValueRef js_obj_pickup_get_itemId(void)
+JSValueRef js_obj_pickup_get_itemId(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_int_to_value(obj->pickup.item_uid);
-	
-	return(TRUE);
+	return(script_int_to_value(cx,obj->pickup.item_uid));
 }
 
-JSValueRef js_obj_pickup_get_itemName(void)
+JSValueRef js_obj_pickup_get_itemName(JSContextRef cx)
 {
 	obj_type		*obj,*pickup_item;
 
 	obj=object_find_uid(js.attach.thing_uid);
 
 	pickup_item=object_find_uid(obj->pickup.item_uid);
-	if (pickup_item==NULL) {
-		*vp=script_null_to_value();
-	}
-	else {
-		*vp=script_string_to_value(pickup_item->name);
-	}
+	if (pickup_item==NULL) return(script_null_to_value(cx));
 	
-	return(TRUE);
+	return(script_string_to_value(cx,pickup_item->name));
 }
 
 /* =======================================================
@@ -192,14 +176,13 @@ JSValueRef js_obj_pickup_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObje
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-    *rval=script_bool_to_value(item_add_weapon(obj,weap));
-	return(TRUE);
+    return(script_bool_to_value(cx,item_add_weapon(obj,weap)));
 }
 
 JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -207,14 +190,13 @@ JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObj
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-    *rval=script_bool_to_value(item_swap_weapon(obj,weap));
-	return(TRUE);
+    return(script_bool_to_value(cx,item_swap_weapon(obj,weap)));
 }
 
 JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -222,14 +204,13 @@ JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObject
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-    *rval=script_bool_to_value(item_add_ammo(obj,weap,script_value_to_int(argv[2])));
-	return(TRUE);
+    return(script_bool_to_value(cx,item_add_ammo(obj,weap,script_value_to_int(cx,argv[2]))));
 }
 
 JSValueRef js_obj_pickup_add_clip_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -237,14 +218,13 @@ JSValueRef js_obj_pickup_add_clip_func(JSContextRef cx,JSObjectRef func,JSObject
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-    *rval=script_bool_to_value(item_add_clip(obj,weap,script_value_to_int(argv[2])));
-	return(TRUE);
+    return(script_bool_to_value(cx,item_add_clip(obj,weap,script_value_to_int(cx,argv[2]))));
 }
 
 JSValueRef js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -252,14 +232,13 @@ JSValueRef js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-    *rval=script_bool_to_value(item_add_alt_ammo(obj,weap,script_value_to_int(argv[2])));
-	return(TRUE);
+    return(script_bool_to_value(cx,item_add_alt_ammo(obj,weap,script_value_to_int(cx,argv[2]))));
 }
 
 JSValueRef js_obj_pickup_add_alt_clip_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -267,36 +246,33 @@ JSValueRef js_obj_pickup_add_alt_clip_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj_type	*obj;
 	weapon_type	*weap;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
-	weap=script_find_weapon_from_name_arg(obj,argv[1],exception);
-	if (weap==NULL) return(FALSE);
+	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
+	if (weap==NULL) return(script_null_to_value(cx));
 	
-    *rval=script_bool_to_value(item_add_alt_clip(obj,weap,script_value_to_int(argv[2])));
-	return(TRUE);
+    return(script_bool_to_value(cx,item_add_alt_clip(obj,weap,script_value_to_int(cx,argv[2]))));
 }
 
 JSValueRef js_obj_pickup_add_health_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
-   *rval=script_bool_to_value(item_add_health(obj,script_value_to_int(argv[1])));
-	return(TRUE);
+	return(script_bool_to_value(cx,item_add_health(obj,script_value_to_int(cx,argv[1]))));
 }
 
 JSValueRef js_obj_pickup_add_custom_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
 	
-	obj=script_find_obj_from_uid_arg(argv[0],exception);
-	if (obj==NULL) return(FALSE);
-
-	item_add_custom(obj,script_value_to_int(argv[1]));
-	return(TRUE);
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj!=NULL) item_add_custom(obj,script_value_to_int(cx,argv[1]));
+	
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -312,5 +288,5 @@ JSValueRef js_obj_pickup_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->pickup.canceled=TRUE;
 	
-	return(TRUE);
+	return(script_null_to_value(cx));
 }

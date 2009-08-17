@@ -34,12 +34,12 @@ and can be sold or given away.
 
 JSValueRef js_weap_crosshair_pickup_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_weap_crosshair_pickup_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_crosshair_pickup_color_get_red(void);
-JSValueRef js_weap_crosshair_pickup_color_get_green(void);
-JSValueRef js_weap_crosshair_pickup_color_get_blue(void);
-void js_weap_crosshair_pickup_color_set_red(JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_pickup_color_set_green(JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_pickup_color_set_blue(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_crosshair_pickup_color_get_red(JSContextRef cx);
+JSValueRef js_weap_crosshair_pickup_color_get_green(JSContextRef cx);
+JSValueRef js_weap_crosshair_pickup_color_get_blue(JSContextRef cx);
+void js_weap_crosshair_pickup_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_pickup_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_pickup_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -94,28 +94,28 @@ bool js_weap_crosshair_pickup_color_set_property(JSContextRef cx,JSObjectRef j_o
       
 ======================================================= */
 
-JSValueRef js_weap_crosshair_pickup_color_get_red(void)
+JSValueRef js_weap_crosshair_pickup_color_get_red(JSContextRef cx)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(weap->crosshair.pickup_col.r));
+	return(script_float_to_value(cx,weap->crosshair.pickup_col.r));
 }
 
-JSValueRef js_weap_crosshair_pickup_color_get_green(void)
+JSValueRef js_weap_crosshair_pickup_color_get_green(JSContextRef cx)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(weap->crosshair.pickup_col.g));
+	return(script_float_to_value(cx,weap->crosshair.pickup_col.g));
 }
 
-JSValueRef js_weap_crosshair_pickup_color_get_blue(void)
+JSValueRef js_weap_crosshair_pickup_color_get_blue(JSContextRef cx)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(weap->crosshair.pickup_col.b));
+	return(script_float_to_value(cx,weap->crosshair.pickup_col.b));
 }
 
 /* =======================================================
@@ -124,27 +124,27 @@ JSValueRef js_weap_crosshair_pickup_color_get_blue(void)
       
 ======================================================= */
 
-void js_weap_crosshair_pickup_color_set_red(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_pickup_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.pickup_col.r=script_value_to_float(vp);
+	weap->crosshair.pickup_col.r=script_value_to_float(cx,vp);
 }
 
-void js_weap_crosshair_pickup_color_set_green(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_pickup_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.pickup_col.g=script_value_to_float(vp);
+	weap->crosshair.pickup_col.g=script_value_to_float(cx,vp);
 }
 
-void js_weap_crosshair_pickup_color_set_blue(JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_pickup_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	weap->crosshair.pickup_col.b=script_value_to_float(vp);
+	weap->crosshair.pickup_col.b=script_value_to_float(cx,vp);
 }
 

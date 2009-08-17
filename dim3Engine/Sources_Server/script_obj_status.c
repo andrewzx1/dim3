@@ -37,16 +37,16 @@ extern js_type			js;
 
 JSValueRef js_obj_status_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_status_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_status_get_speed(void);
-JSValueRef js_obj_status_get_moving(void);
-JSValueRef js_obj_status_get_running(void);
-JSValueRef js_obj_status_get_backward(void);
-JSValueRef js_obj_status_get_sliding(void);
-JSValueRef js_obj_status_get_stand(void);
-JSValueRef js_obj_status_get_air(void);
-JSValueRef js_obj_status_get_liquid(void);
-JSValueRef js_obj_status_get_standOnObjectId(void);
-JSValueRef js_obj_status_get_standUnderObjectId(void);
+JSValueRef js_obj_status_get_speed(JSContextRef cx);
+JSValueRef js_obj_status_get_moving(JSContextRef cx);
+JSValueRef js_obj_status_get_running(JSContextRef cx);
+JSValueRef js_obj_status_get_backward(JSContextRef cx);
+JSValueRef js_obj_status_get_sliding(JSContextRef cx);
+JSValueRef js_obj_status_get_stand(JSContextRef cx);
+JSValueRef js_obj_status_get_air(JSContextRef cx);
+JSValueRef js_obj_status_get_liquid(JSContextRef cx);
+JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx);
+JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx);
 JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -113,84 +113,84 @@ bool js_obj_status_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_obj_status_get_speed(void)
+JSValueRef js_obj_status_get_speed(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.speed));
+	return(script_float_to_value(cx,obj->forward_move.speed));
 }
 
-JSValueRef js_obj_status_get_moving(void)
+JSValueRef js_obj_status_get_moving(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_bool_to_value(obj->forward_move.moving));
+	return(script_bool_to_value(cx,obj->forward_move.moving));
 }
 
-JSValueRef js_obj_status_get_running(void)
+JSValueRef js_obj_status_get_running(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_bool_to_value(obj->forward_move.running));
+	return(script_bool_to_value(cx,obj->forward_move.running));
 }
 
-JSValueRef js_obj_status_get_backward(void)
+JSValueRef js_obj_status_get_backward(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_bool_to_value(obj->forward_move.reverse));
+	return(script_bool_to_value(cx,obj->forward_move.reverse));
 }
 
-JSValueRef js_obj_status_get_sliding(void)
+JSValueRef js_obj_status_get_sliding(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_bool_to_value(obj->side_move.moving));
+	return(script_bool_to_value(cx,obj->side_move.moving));
 }
 
-JSValueRef js_obj_status_get_stand(void)
+JSValueRef js_obj_status_get_stand(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(obj->duck.mode+sd_stand_standing));
+	return(script_int_to_value(cx,obj->duck.mode+sd_stand_standing));
 }
 
-JSValueRef js_obj_status_get_air(void)
+JSValueRef js_obj_status_get_air(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(obj->air_mode+sd_air_up));
+	return(script_int_to_value(cx,obj->air_mode+sd_air_up));
 }
 
-JSValueRef js_obj_status_get_liquid(void)
+JSValueRef js_obj_status_get_liquid(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(obj->liquid_mode+sd_liquid_out));
+	return(script_int_to_value(cx,obj->liquid_mode+sd_liquid_out));
 }
 
-JSValueRef js_obj_status_get_standOnObjectId(void)
+JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(obj->stand_obj_uid));
+	return(script_int_to_value(cx,obj->stand_obj_uid));
 }
 
-JSValueRef js_obj_status_get_standUnderObjectId(void)
+JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(object_find_uid_by_stood_on_object_uid(obj->uid)));
+	return(script_int_to_value(cx,object_find_uid_by_stood_on_object_uid(obj->uid)));
 }
 
 /* =======================================================
@@ -204,9 +204,9 @@ JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	object_input_freeze(obj,script_value_to_bool(argv[0]));
+	object_input_freeze(obj,script_value_to_bool(cx,argv[0]));
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -220,11 +220,11 @@ JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjec
 	float			r,g,b;
 	obj_type		*obj;
 	
-	r=script_value_to_float(argv[0]);
-	g=script_value_to_float(argv[1]);
-	b=script_value_to_float(argv[2]);
+	r=script_value_to_float(cx,argv[0]);
+	g=script_value_to_float(cx,argv[1]);
+	b=script_value_to_float(cx,argv[2]);
 
 	obj=object_find_uid(js.attach.thing_uid);
-	object_fs_tint_start(js.time.current_tick,obj,r,g,b,script_value_to_float(argv[3]),script_value_to_int(argv[4]),script_value_to_int(argv[5]),script_value_to_int(argv[6]));
-    return(script_bool_to_value(TRUE));
+	object_fs_tint_start(js.time.current_tick,obj,r,g,b,script_value_to_float(cx,argv[3]),script_value_to_int(cx,argv[4]),script_value_to_int(cx,argv[5]),script_value_to_int(cx,argv[6]));
+    return(script_bool_to_value(cx,TRUE));
 }

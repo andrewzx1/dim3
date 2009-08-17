@@ -34,10 +34,10 @@ and can be sold or given away.
 
 JSValueRef js_model_animation_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_model_animation_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_animation_get_index(void);
-JSValueRef js_model_animation_get_currentAnimationName(void);
-JSValueRef js_model_animation_get_playing(void);
-void js_model_animation_set_index(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_animation_get_index(JSContextRef cx);
+JSValueRef js_model_animation_get_currentAnimationName(JSContextRef cx);
+JSValueRef js_model_animation_get_playing(JSContextRef cx);
+void js_model_animation_set_index(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -109,15 +109,15 @@ bool js_model_animation_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_model_animation_get_index(void)
+JSValueRef js_model_animation_get_index(JSContextRef cx)
 {
 	model_draw			*draw;
 
 	draw=script_find_model_draw();
-	return(script_int_to_value(draw->script_animation_idx));
+	return(script_int_to_value(cx,draw->script_animation_idx));
 }
 
-JSValueRef js_model_animation_get_currentAnimationName(void)
+JSValueRef js_model_animation_get_currentAnimationName(JSContextRef cx)
 {
 	char				name[64];
 	model_draw			*draw;
@@ -125,17 +125,17 @@ JSValueRef js_model_animation_get_currentAnimationName(void)
 	draw=script_find_model_draw();
 
 	model_get_current_animation_name(draw,name);
-	return(script_string_to_value(name));
+	return(script_string_to_value(cx,name));
 }
 
-JSValueRef js_model_animation_get_playing(void)
+JSValueRef js_model_animation_get_playing(JSContextRef cx)
 {
 	model_draw				*draw;
 	model_draw_animation	*draw_animation;
 
 	draw=script_find_model_draw();
 	draw_animation=&draw->animations[draw->script_animation_idx];
-	return(script_bool_to_value(draw_animation->mode==am_playing));
+	return(script_bool_to_value(cx,draw_animation->mode==am_playing));
 }
 
 /* =======================================================
@@ -144,13 +144,13 @@ JSValueRef js_model_animation_get_playing(void)
       
 ======================================================= */
 
-void js_model_animation_set_index(JSValueRef vp,JSValueRef *exception)
+void js_model_animation_set_index(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 
 	draw=script_find_model_draw();
 
-	draw->script_animation_idx=script_value_to_int(vp);
+	draw->script_animation_idx=script_value_to_int(cx,vp);
 	if ((draw->script_animation_idx<0) || (draw->script_animation_idx>=max_model_blend_animation)) draw->script_animation_idx=0;
 }
 
@@ -160,12 +160,12 @@ void js_model_animation_set_index(JSValueRef vp,JSValueRef *exception)
       
 ======================================================= */
 
-JSValueRef js_model_animation_name_exception(char *name)
+JSValueRef js_model_animation_name_exception(JSContextRef cx,char *name)
 {
 	char			err_str[256];
 
 	sprintf(err_str,"Named animation does not exist: %s",name);
-	return(script_create_exception(err_str));
+	return(script_create_exception(cx,err_str));
 }
 
 /* =======================================================
@@ -176,18 +176,18 @@ JSValueRef js_model_animation_name_exception(char *name)
 
 JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			name[name_str_len],err_str[256];
+	char			name[name_str_len];
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	
 	if (!model_start_animation(draw,name)) {
-		*exception=js_model_animation_name_exception(name);
+		*exception=js_model_animation_name_exception(cx,name);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -197,7 +197,7 @@ JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjec
 	draw=script_find_model_draw();
 	model_stop_animation(draw);
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -207,12 +207,12 @@ JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	draw=script_find_model_draw();
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_cancel_animation(draw,name)) {
-		*exception=js_model_animation_name_exception(name);
+		*exception=js_model_animation_name_exception(cx,name);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -222,12 +222,12 @@ JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	draw=script_find_model_draw();
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_change_animation(draw,name)) {
-		*exception=js_model_animation_name_exception(name);
+		*exception=js_model_animation_name_exception(cx,name);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -237,12 +237,12 @@ JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JS
 	
 	draw=script_find_model_draw();
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_interrupt_animation(draw,name)) {
-		*exception=js_model_animation_name_exception(name);
+		*exception=js_model_animation_name_exception(cx,name);
 	}
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -252,19 +252,19 @@ JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef
 	
 	draw=script_find_model_draw();
 
-	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_start_animation(draw,name)) {
-		*exception=js_model_animation_name_exception(name);
-		return(script_null_to_value());
+		*exception=js_model_animation_name_exception(cx,name);
+		return(script_null_to_value(cx));
 	}
 
-	script_value_to_string(argv[1],name,name_str_len);
+	script_value_to_string(cx,argv[1],name,name_str_len);
 	if (!model_change_animation(draw,name)) {
-		*exception=js_model_animation_name_exception(name);
-		return(script_null_to_value());
+		*exception=js_model_animation_name_exception(cx,name);
+		return(script_null_to_value(cx));
 	}
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================
@@ -278,8 +278,8 @@ JSValueRef js_model_animation_fade_func(JSContextRef cx,JSObjectRef func,JSObjec
 	model_draw		*draw;
 	
 	draw=script_find_model_draw();
-	model_fade_start(draw,script_value_to_int(argv[1]),script_value_to_float(argv[0]));
+	model_fade_start(draw,script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[0]));
 	
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

@@ -38,9 +38,9 @@ extern js_type			js;
 
 JSValueRef js_obj_vehicle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_vehicle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_vehicle_get_on(void);
-JSValueRef js_obj_vehicle_get_hasOccupant(void);
-void js_obj_vehicle_set_on(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_vehicle_get_on(JSContextRef cx);
+JSValueRef js_obj_vehicle_get_hasOccupant(JSContextRef cx);
+void js_obj_vehicle_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -101,24 +101,20 @@ bool js_obj_vehicle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
       
 ======================================================= */
 
-JSValueRef js_obj_vehicle_get_on(void)
+JSValueRef js_obj_vehicle_get_on(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->vehicle.on);
-	
-	return(TRUE);
+	return(script_bool_to_value(cx,obj->vehicle.on));
 }
 
-JSValueRef js_obj_vehicle_get_hasOccupant(void)
+JSValueRef js_obj_vehicle_get_hasOccupant(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	*vp=script_bool_to_value(obj->vehicle.attach_obj_uid!=-1);
-	
-	return(TRUE);
+	return(script_bool_to_value(cx,obj->vehicle.attach_obj_uid!=-1));
 }
 
 /* =======================================================
@@ -127,12 +123,12 @@ JSValueRef js_obj_vehicle_get_hasOccupant(void)
       
 ======================================================= */
 
-void js_obj_vehicle_set_on(JSValueRef vp,JSValueRef *exception)
+void js_obj_vehicle_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->vehicle.on=script_value_to_bool(*vp);
+	obj->vehicle.on=script_value_to_bool(cx,vp);
 }
 
 /* =======================================================
@@ -149,11 +145,10 @@ JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj=object_find_uid(js.attach.thing_uid);
 
 	if (!object_enter_vehicle(obj,err_str)) {
-		*exception=script_create_exception(err_str);
-		return(FALSE);
+		*exception=script_create_exception(cx,err_str);
 	}
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -164,10 +159,9 @@ JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	obj=object_find_uid(js.attach.thing_uid);
 
 	if (!object_exit_vehicle(obj,FALSE,err_str)) {
-		*exception=script_create_exception(err_str);
-		return(FALSE);
+		*exception=script_create_exception(cx,err_str);
 	}
 
-	return(TRUE);
+	return(script_null_to_value(cx));
 }
 

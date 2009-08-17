@@ -109,7 +109,7 @@ typedef struct		{
 													script_uid;
 						attach_msg_type				set_msg_data[max_msg_data],get_msg_data[max_msg_data];
 					} attach_type;
- 
+
 /* =======================================================
 
       Math

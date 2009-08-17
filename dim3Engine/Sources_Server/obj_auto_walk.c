@@ -124,7 +124,7 @@ bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only,char *er
 	return(TRUE);
 }
 
-bool object_auto_walk_player_setup(obj_type *obj,bool turn_only,err_str)
+bool object_auto_walk_player_setup(obj_type *obj,bool turn_only,char *err_str)
 {
 	return(object_auto_walk_object_setup(obj,server.player_obj_uid,turn_only,err_str));
 }

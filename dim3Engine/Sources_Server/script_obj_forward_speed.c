@@ -36,22 +36,22 @@ extern js_type			js;
 
 JSValueRef js_obj_forward_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_forward_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_forward_speed_get_walk(void);
-JSValueRef js_obj_forward_speed_get_run(void);
-JSValueRef js_obj_forward_speed_get_crawl(void);
-JSValueRef js_obj_forward_speed_get_air(void);
-JSValueRef js_obj_forward_speed_get_acceleration(void);
-JSValueRef js_obj_forward_speed_get_deceleration(void);
-JSValueRef js_obj_forward_speed_get_accelerationAir(void);
-JSValueRef js_obj_forward_speed_get_decelerationAir(void);
-void js_obj_forward_speed_set_walk(JSValueRef vp,JSValueRef *exception);
-void js_obj_forward_speed_set_run(JSValueRef vp,JSValueRef *exception);
-void js_obj_forward_speed_set_crawl(JSValueRef vp,JSValueRef *exception);
-void js_obj_forward_speed_set_air(JSValueRef vp,JSValueRef *exception);
-void js_obj_forward_speed_set_acceleration(JSValueRef vp,JSValueRef *exception);
-void js_obj_forward_speed_set_deceleration(JSValueRef vp,JSValueRef *exception);
-void js_obj_forward_speed_set_accelerationAir(JSValueRef vp,JSValueRef *exception);
-void js_obj_forward_speed_set_decelerationAir(JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_forward_speed_get_walk(JSContextRef cx);
+JSValueRef js_obj_forward_speed_get_run(JSContextRef cx);
+JSValueRef js_obj_forward_speed_get_crawl(JSContextRef cx);
+JSValueRef js_obj_forward_speed_get_air(JSContextRef cx);
+JSValueRef js_obj_forward_speed_get_acceleration(JSContextRef cx);
+JSValueRef js_obj_forward_speed_get_deceleration(JSContextRef cx);
+JSValueRef js_obj_forward_speed_get_accelerationAir(JSContextRef cx);
+JSValueRef js_obj_forward_speed_get_decelerationAir(JSContextRef cx);
+void js_obj_forward_speed_set_walk(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_forward_speed_set_run(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_forward_speed_set_crawl(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_forward_speed_set_air(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_forward_speed_set_acceleration(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_forward_speed_set_deceleration(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_forward_speed_set_accelerationAir(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+void js_obj_forward_speed_set_decelerationAir(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
 
 script_js_property	obj_forward_speed_props[]={
 							{"walk",					js_obj_forward_speed_get_walk,				js_obj_forward_speed_set_walk},
@@ -109,68 +109,68 @@ bool js_obj_forward_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
       
 ======================================================= */
 
-JSValueRef js_obj_forward_speed_get_walk(void)
+JSValueRef js_obj_forward_speed_get_walk(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.max_walk_speed));
+	return(script_float_to_value(cx,obj->forward_move.max_walk_speed));
 }
 
-JSValueRef js_obj_forward_speed_get_run(void)
+JSValueRef js_obj_forward_speed_get_run(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.max_run_speed));
+	return(script_float_to_value(cx,obj->forward_move.max_run_speed));
 }
 
-JSValueRef js_obj_forward_speed_get_crawl(void)
+JSValueRef js_obj_forward_speed_get_crawl(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.max_crawl_speed));
+	return(script_float_to_value(cx,obj->forward_move.max_crawl_speed));
 }
 
-JSValueRef js_obj_forward_speed_get_air(void)
+JSValueRef js_obj_forward_speed_get_air(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.max_air_speed));
+	return(script_float_to_value(cx,obj->forward_move.max_air_speed));
 }
 
-JSValueRef js_obj_forward_speed_get_acceleration(void)
+JSValueRef js_obj_forward_speed_get_acceleration(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.accelerate));
+	return(script_float_to_value(cx,obj->forward_move.accelerate));
 }
 
-JSValueRef js_obj_forward_speed_get_deceleration(void)
+JSValueRef js_obj_forward_speed_get_deceleration(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.decelerate));
+	return(script_float_to_value(cx,obj->forward_move.decelerate));
 }
 
-JSValueRef js_obj_forward_speed_get_accelerationAir(void)
+JSValueRef js_obj_forward_speed_get_accelerationAir(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.air_accelerate));
+	return(script_float_to_value(cx,obj->forward_move.air_accelerate));
 }
 
-JSValueRef js_obj_forward_speed_get_decelerationAir(void)
+JSValueRef js_obj_forward_speed_get_decelerationAir(JSContextRef cx)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_float_to_value(obj->forward_move.air_decelerate));
+	return(script_float_to_value(cx,obj->forward_move.air_decelerate));
 }
 
 /* =======================================================
@@ -179,67 +179,67 @@ JSValueRef js_obj_forward_speed_get_decelerationAir(void)
       
 ======================================================= */
 
-void js_obj_forward_speed_set_walk(JSValueRef vp,JSValueRef *exception)
+void js_obj_forward_speed_set_walk(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->forward_move.max_walk_speed=fabsf(script_value_to_float(vp));
+	obj->forward_move.max_walk_speed=fabsf(script_value_to_float(cx,vp));
 }
 
-void js_obj_forward_speed_set_run(JSValueRef vp,JSValueRef *exception)
+void js_obj_forward_speed_set_run(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->forward_move.max_run_speed=fabsf(script_value_to_float(vp));
+	obj->forward_move.max_run_speed=fabsf(script_value_to_float(cx,vp));
 }
 
-void js_obj_forward_speed_set_crawl(JSValueRef vp,JSValueRef *exception)
-{
-	obj_type		*obj;
-	
-	obj=object_find_uid(js.attach.thing_uid);
-	obj->forward_move.max_crawl_speed=fabsf(script_value_to_float(vp));
-}
-
-void js_obj_forward_speed_set_air(JSValueRef vp,JSValueRef *exception)
+void js_obj_forward_speed_set_crawl(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->forward_move.max_air_speed=fabsf(script_value_to_float(vp));
+	obj->forward_move.max_crawl_speed=fabsf(script_value_to_float(cx,vp));
 }
 
-void js_obj_forward_speed_set_acceleration(JSValueRef vp,JSValueRef *exception)
+void js_obj_forward_speed_set_air(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->forward_move.accelerate=fabsf(script_value_to_float(vp));
+	obj->forward_move.max_air_speed=fabsf(script_value_to_float(cx,vp));
 }
 
-void js_obj_forward_speed_set_deceleration(JSValueRef vp,JSValueRef *exception)
+void js_obj_forward_speed_set_acceleration(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->forward_move.decelerate=fabsf(script_value_to_float(vp));
+	obj->forward_move.accelerate=fabsf(script_value_to_float(cx,vp));
 }
 
-void js_obj_forward_speed_set_accelerationAir(JSValueRef vp,JSValueRef *exception)
+void js_obj_forward_speed_set_deceleration(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->forward_move.air_accelerate=fabsf(script_value_to_float(vp));
+	obj->forward_move.decelerate=fabsf(script_value_to_float(cx,vp));
 }
 
-void js_obj_forward_speed_set_decelerationAir(JSValueRef vp,JSValueRef *exception)
+void js_obj_forward_speed_set_accelerationAir(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	obj->forward_move.air_decelerate=fabsf(script_value_to_float(vp));
+	obj->forward_move.air_accelerate=fabsf(script_value_to_float(cx,vp));
+}
+
+void js_obj_forward_speed_set_decelerationAir(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->forward_move.air_decelerate=fabsf(script_value_to_float(cx,vp));
 }
 

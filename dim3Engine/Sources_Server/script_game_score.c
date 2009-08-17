@@ -41,11 +41,11 @@ extern int				game_obj_rule_uid;
 
 JSValueRef js_game_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_game_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_game_score_get_objectId(void);
-JSValueRef js_game_score_get_kill(void);
-JSValueRef js_game_score_get_death(void);
-JSValueRef js_game_score_get_suicide(void);
-JSValueRef js_game_score_get_goal(void);
+JSValueRef js_game_score_get_objectId(JSContextRef cx);
+JSValueRef js_game_score_get_kill(JSContextRef cx);
+JSValueRef js_game_score_get_death(JSContextRef cx);
+JSValueRef js_game_score_get_suicide(JSContextRef cx);
+JSValueRef js_game_score_get_goal(JSContextRef cx);
 JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 script_js_property	game_score_props[]={
@@ -105,54 +105,54 @@ bool js_game_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_game_score_get_objectId(void)
+JSValueRef js_game_score_get_objectId(JSContextRef cx)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(-1));
+	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,-1));
 
 	obj=object_find_uid(game_obj_rule_uid);
-	return(script_int_to_value(obj->uid));
+	return(script_int_to_value(cx,obj->uid));
 }
 
-JSValueRef js_game_score_get_kill(void)
+JSValueRef js_game_score_get_kill(JSContextRef cx)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(0));
+	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,0));
 
 	obj=object_find_uid(game_obj_rule_uid);
-	return(script_int_to_value(obj->score.kill));
+	return(script_int_to_value(cx,obj->score.kill));
 }
 
-JSValueRef js_game_score_get_death(void)
+JSValueRef js_game_score_get_death(JSContextRef cx)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(0));
+	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,0));
 
 	obj=object_find_uid(game_obj_rule_uid);
-	return(script_int_to_value(obj->score.death));
+	return(script_int_to_value(cx,obj->score.death));
 }
 
-JSValueRef js_game_score_get_suicide(void)
+JSValueRef js_game_score_get_suicide(JSContextRef cx)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(0));
+	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,0));
 
 	obj=object_find_uid(game_obj_rule_uid);
-	return(script_int_to_value(obj->score.suicide));
+	return(script_int_to_value(cx,obj->score.suicide));
 }
 
-JSValueRef js_game_score_get_goal(void)
+JSValueRef js_game_score_get_goal(JSContextRef cx)
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(0));
+	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,0));
 
 	obj=object_find_uid(game_obj_rule_uid);
-	return(script_int_to_value(obj->score.goal));
+	return(script_int_to_value(cx,obj->score.goal));
 }
 
 /* =======================================================
@@ -165,17 +165,17 @@ JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_null_to_value());
+	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
 
 		// update score
 
 	obj=object_find_uid(game_obj_rule_uid);
-	obj->score.score=script_value_to_int(argv[0]);
+	obj->score.score=script_value_to_int(cx,argv[0]);
 
 		// have we hit a network score limit?
 
 	if (net_setup.client.joined) score_limit_trigger_set_check_scores();
 
-	return(script_null_to_value());
+	return(script_null_to_value(cx));
 }
 

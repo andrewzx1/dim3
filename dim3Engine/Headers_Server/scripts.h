@@ -37,10 +37,6 @@ extern void scripts_initialize(void);
 extern int scripts_find_free(void);
 extern int scripts_find_uid(int uid);
 
-extern void script_add_roots(script_type *script);
-extern void script_remove_roots(script_type *script);
-extern void scripts_clean_up_roots(void);
-
 extern void scripts_clear_attach_data(attach_type *attach);
 
 extern bool scripts_execute(attach_type *attach,script_type *script,char *err_str);
@@ -62,39 +58,39 @@ extern void script_free_file(script_type *script);
 // conversions
 //
 
-extern JSValueRef script_null_to_value(void);
-extern bool script_is_value_null(JSValueRef val);
-extern int script_value_to_int(JSValueRef val);
-extern JSValueRef script_int_to_value(int i);
-extern float script_value_to_float(JSValueRef val);
-extern JSValueRef script_float_to_value(float f);
-extern bool script_value_to_bool(JSValueRef val);
-extern JSValueRef script_bool_to_value(bool b);
-extern void script_value_to_string(JSValueRef val,char *str,int len);
-extern JSValueRef script_string_to_value(char *str);
-extern JSValueRef script_int_array_to_value(int cnt,int *values);
-extern JSValueRef script_create_exception(char *str);
-extern void script_exception_to_string(JSValueRef ex_val,char *str,int len);
-extern JSValueRef script_angle_to_value(float x,float y,float z);
-extern JSValueRef script_point_to_value(int x,int y,int z);
-extern JSValueRef script_color_to_value(d3col *col);
+extern JSValueRef script_null_to_value(JSContextRef cx);
+extern bool script_is_value_null(JSContextRef cx,JSValueRef val);
+extern int script_value_to_int(JSContextRef cx,JSValueRef val);
+extern JSValueRef script_int_to_value(JSContextRef cx,int i);
+extern float script_value_to_float(JSContextRef cx,JSValueRef val);
+extern JSValueRef script_float_to_value(JSContextRef cx,float f);
+extern bool script_value_to_bool(JSContextRef cx,JSValueRef val);
+extern JSValueRef script_bool_to_value(JSContextRef cx,bool b);
+extern void script_value_to_string(JSContextRef cx,JSValueRef val,char *str,int len);
+extern JSValueRef script_string_to_value(JSContextRef cx,char *str);
+extern JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values);
+extern JSValueRef script_create_exception(JSContextRef cx,char *str);
+extern void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int len);
+extern JSValueRef script_angle_to_value(JSContextRef cx,float x,float y,float z);
+extern JSValueRef script_point_to_value(JSContextRef cx,int x,int y,int z);
+extern JSValueRef script_color_to_value(JSContextRef cx,d3col *col);
 
 //
 // lookups
 //
 
-extern obj_type* script_find_obj_from_uid_arg(JSValueRef arg,JSValueRef *exception);
-extern weapon_type* script_find_weapon_from_name_arg(obj_type *obj,JSValueRef arg,JSValueRef *exception);
-extern spot_type* script_find_spot_from_idx_arg(JSValueRef arg,JSValueRef *exception);
-extern spot_type* script_find_spot_from_name_type(JSValueRef arg_0,JSValueRef arg_1,JSValueRef *exception);
-extern spot_type* script_find_network_spot(obj_type *obj,JSValueRef *exception);
-extern node_type* script_find_node_from_idx_arg(JSValueRef arg,JSValueRef *exception);
-extern map_light_type* script_find_light_from_name(JSValueRef arg,JSValueRef *exception);
-extern hud_text_type* script_find_text_from_name(JSValueRef arg,JSValueRef *exception);
-extern hud_bitmap_type* script_find_bitmap_from_name(JSValueRef arg,JSValueRef *exception);
-extern hud_bar_type* script_find_bar_from_name(JSValueRef arg,JSValueRef *exception);
-extern int script_find_group_from_name(JSValueRef arg,JSValueRef *exception);
-extern int script_find_map_movement_from_name(JSValueRef arg,JSValueRef *exception);
+extern obj_type* script_find_obj_from_uid_arg(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern weapon_type* script_find_weapon_from_name_arg(JSContextRef cx,obj_type *obj,JSValueRef arg,JSValueRef *exception);
+extern spot_type* script_find_spot_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern spot_type* script_find_spot_from_name_type(JSContextRef cx,JSValueRef arg_0,JSValueRef arg_1,JSValueRef *exception);
+extern spot_type* script_find_network_spot(JSContextRef cx,obj_type *obj,JSValueRef *exception);
+extern node_type* script_find_node_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern map_light_type* script_find_light_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern hud_text_type* script_find_text_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern hud_bitmap_type* script_find_bitmap_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern hud_bar_type* script_find_bar_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern int script_find_group_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern int script_find_map_movement_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern int script_get_attached_object_uid(void);
 extern model_draw* script_find_model_draw(void);
 
@@ -546,8 +542,8 @@ extern void script_release_classes(void);
 extern JSClassRef script_create_class(const char *name,JSObjectGetPropertyCallback getter,JSObjectSetPropertyCallback setter);
 extern void script_free_class(JSClassRef cls);
 extern bool script_add_global_object(script_type *script,char *err_str);
-extern void script_set_single_property(JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags);
-extern JSValueRef script_get_single_property(JSObjectRef j_obj,const char *prop_name);
+extern void script_set_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags);
+extern JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name);
 extern JSObjectRef script_create_main_object(attach_type *attach);
 extern JSObjectRef script_create_child_object(JSObjectRef parent_obj,JSClassRef cls,char *name,script_js_property *props,script_js_function *funcs);
 extern JSValueRef script_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,script_js_property *props);
@@ -555,10 +551,10 @@ extern bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 
 extern void script_globals_initialize(void);
 extern int script_find_global(char *name,int script_uid);
-extern void script_set_global_by_index(int idx,JSValueRef val);
-extern bool script_set_global(char *name,int script_uid,JSValueRef val);
-extern JSValueRef script_get_global(char *name,int script_uid);
-extern bool script_add_global(char *name,int script_uid,JSValueRef val);
+extern void script_set_global_by_index(JSContextRef cx,int idx,JSValueRef val);
+extern bool script_set_global(JSContextRef cx,char *name,int script_uid,JSValueRef val);
+extern JSValueRef script_get_global(JSContextRef cx,char *name,int script_uid);
+extern bool script_add_global(JSContextRef cx,char *name,int script_uid,JSValueRef val);
 extern void script_delete_global(char *name,int script_uid);
 
 extern void script_state_save(void);

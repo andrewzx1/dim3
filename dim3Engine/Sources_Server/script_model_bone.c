@@ -94,7 +94,7 @@ bool js_model_bone_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-model_draw* script_bone_function_setup(JSValueRef *exception)
+model_draw* script_bone_function_setup(JSContextRef cx,JSValueRef *exception)
 {
 	obj_type			*obj;
 	weapon_type			*weap;
@@ -119,7 +119,7 @@ model_draw* script_bone_function_setup(JSValueRef *exception)
 			return(&proj->draw);
 			
 		case thing_type_projectile_setup:
-			*exception=script_create_exception("There is no model to get bone positions from");
+			*exception=script_create_exception(cx,"There is no model to get bone positions from");
 			return(NULL);
 			
 	}
@@ -133,12 +133,12 @@ model_draw* script_bone_function_setup(JSValueRef *exception)
       
 ======================================================= */
 
-JSValueRef js_model_bone_name_exception(char *pose_name,char *bone_name)
+JSValueRef js_model_bone_name_exception(JSContextRef cx,char *pose_name,char *bone_name)
 {
 	char			err_str[256];
 
 	sprintf(err_str,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
-	return(script_create_exception(err_str));
+	return(script_create_exception(cx,err_str));
 }
 
 /* =======================================================
@@ -155,20 +155,20 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(exception);
-	if (draw==NULL) return(script_null_to_value());
+	draw=script_bone_function_setup(cx,exception);
+	if (draw==NULL) return(script_null_to_value(cx));
 	
 		// get bone offset
 		
-	script_value_to_string(argv[0],pose_name,name_str_len);
-	script_value_to_string(argv[1],bone_name,name_str_len);
+	script_value_to_string(cx,argv[0],pose_name,name_str_len);
+	script_value_to_string(cx,argv[1],bone_name,name_str_len);
 	
 	if (!model_find_bone_offset(draw,pose_name,bone_name,&x,&y,&z)) {
-		*exception=js_model_bone_name_exception(pose_name,bone_name);
-		return(script_null_to_value());
+		*exception=js_model_bone_name_exception(cx,pose_name,bone_name);
+		return(script_null_to_value(cx));
 	}
 	
-	return(script_point_to_value(x,y,z));
+	return(script_point_to_value(cx,x,y,z));
 }
 
 JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -179,20 +179,20 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(exception);
-	if (draw==NULL) return(script_null_to_value());
+	draw=script_bone_function_setup(cx,exception);
+	if (draw==NULL) return(script_null_to_value(cx));
 	
 		// get bone position
 	
-	script_value_to_string(argv[0],pose_name,name_str_len);
-	script_value_to_string(argv[1],bone_name,name_str_len);
+	script_value_to_string(cx,argv[0],pose_name,name_str_len);
+	script_value_to_string(cx,argv[1],bone_name,name_str_len);
 	
 	if (!model_find_bone_position(draw,pose_name,bone_name,&x,&y,&z)) {
-		*exception=js_model_bone_name_exception(pose_name,bone_name);
-		return(script_null_to_value());
+		*exception=js_model_bone_name_exception(cx,pose_name,bone_name);
+		return(script_null_to_value(cx));
 	}
 	
-	return(script_point_to_value(x,y,z));
+	return(script_point_to_value(cx,x,y,z));
 }
 
 JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -203,19 +203,19 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(exception);
-	if (draw==NULL) return(script_null_to_value());
+	draw=script_bone_function_setup(cx,exception);
+	if (draw==NULL) return(script_null_to_value(cx));
 	
 		// get bone light
 
-	script_value_to_string(argv[0],pose_name,name_str_len);
-	script_value_to_string(argv[1],bone_name,name_str_len);
+	script_value_to_string(cx,argv[0],pose_name,name_str_len);
+	script_value_to_string(cx,argv[1],bone_name,name_str_len);
 	
 	if (!model_get_bone_brightness(draw,pose_name,bone_name,&bright)) {
-		*exception=js_model_bone_name_exception(pose_name,bone_name);
-		return(script_null_to_value());
+		*exception=js_model_bone_name_exception(cx,pose_name,bone_name);
+		return(script_null_to_value(cx));
 	}
 	
-	return(script_float_to_value(bright));
+	return(script_float_to_value(cx,bright));
 }
 
