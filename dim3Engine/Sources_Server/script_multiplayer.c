@@ -33,9 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_multiplayer_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_multiplayer_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-
 JSClassRef			multiplayer_class;
 
 /* =======================================================
@@ -56,22 +53,6 @@ void script_free_global_multiplayer_object(void)
 
 JSObjectRef script_add_global_multiplayer_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_class,"multiplayer",NULL,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_multiplayer_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,NULL));
-}
-
-bool js_multiplayer_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
+	return(script_create_child_object(cx,parent_obj,multiplayer_class,"multiplayer"));
 }
 

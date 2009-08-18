@@ -36,22 +36,20 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_proj_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_proj_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx);
-JSValueRef js_proj_melee_get_strikePoseName(JSContextRef cx);
-JSValueRef js_proj_melee_get_radius(JSContextRef cx);
-JSValueRef js_proj_melee_get_distance(JSContextRef cx);
-JSValueRef js_proj_melee_get_damage(JSContextRef cx);
-JSValueRef js_proj_melee_get_force(JSContextRef cx);
-JSValueRef js_proj_melee_get_fallOff(JSContextRef cx);
-void js_proj_melee_set_strikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_strikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_radius(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_melee_set_fallOff(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_melee_get_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_melee_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_melee_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_melee_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_proj_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_melee_set_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -91,23 +89,7 @@ void script_free_proj_melee_object(void)
 
 JSObjectRef script_add_proj_melee_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,proj_melee_class,"melee",proj_melee_props,proj_melee_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_proj_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,proj_melee_props));
-}
-
-bool js_proj_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,proj_melee_props));
+	return(script_create_child_object(cx,parent_obj,proj_melee_class,"melee"));
 }
 
 /* =======================================================
@@ -116,7 +98,7 @@ bool js_proj_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx)
+JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	char				str[32];
 	proj_setup_type		*proj_setup;
@@ -128,7 +110,7 @@ JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx)
 	return(script_string_to_value(cx,str));
 }
 
-JSValueRef js_proj_melee_get_strikePoseName(JSContextRef cx)
+JSValueRef js_proj_melee_get_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -138,7 +120,7 @@ JSValueRef js_proj_melee_get_strikePoseName(JSContextRef cx)
 	return(script_string_to_value(cx,proj_setup->melee.strike_pose_name));
 }
 
-JSValueRef js_proj_melee_get_radius(JSContextRef cx)
+JSValueRef js_proj_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -148,7 +130,7 @@ JSValueRef js_proj_melee_get_radius(JSContextRef cx)
 	return(script_int_to_value(cx,proj_setup->melee.radius));
 }
 
-JSValueRef js_proj_melee_get_distance(JSContextRef cx)
+JSValueRef js_proj_melee_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -158,7 +140,7 @@ JSValueRef js_proj_melee_get_distance(JSContextRef cx)
 	return(script_int_to_value(cx,proj_setup->melee.distance));
 }
 
-JSValueRef js_proj_melee_get_damage(JSContextRef cx)
+JSValueRef js_proj_melee_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -168,7 +150,7 @@ JSValueRef js_proj_melee_get_damage(JSContextRef cx)
 	return(script_int_to_value(cx,proj_setup->melee.damage));
 }
 
-JSValueRef js_proj_melee_get_force(JSContextRef cx)
+JSValueRef js_proj_melee_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -178,7 +160,7 @@ JSValueRef js_proj_melee_get_force(JSContextRef cx)
 	return(script_int_to_value(cx,proj_setup->melee.force));
 }
 
-JSValueRef js_proj_melee_get_fallOff(JSContextRef cx)
+JSValueRef js_proj_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -194,7 +176,7 @@ JSValueRef js_proj_melee_get_fallOff(JSContextRef cx)
       
 ======================================================= */
 
-void js_proj_melee_set_strikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char				str[32];
 	proj_setup_type		*proj_setup;
@@ -206,7 +188,7 @@ void js_proj_melee_set_strikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *e
 	}
 }
 
-void js_proj_melee_set_strikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -214,7 +196,7 @@ void js_proj_melee_set_strikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *
 	if (proj_setup!=NULL) script_value_to_string(cx,vp,proj_setup->melee.strike_pose_name,name_str_len);
 }
 
-void js_proj_melee_set_radius(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -222,7 +204,7 @@ void js_proj_melee_set_radius(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 	if (proj_setup!=NULL) proj_setup->melee.radius=script_value_to_int(cx,vp);
 }
 
-void js_proj_melee_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -230,7 +212,7 @@ void js_proj_melee_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *except
 	if (proj_setup!=NULL) proj_setup->melee.distance=script_value_to_int(cx,vp);
 }
 
-void js_proj_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -238,7 +220,7 @@ void js_proj_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 	if (proj_setup!=NULL) proj_setup->melee.damage=script_value_to_int(cx,vp);
 }
 
-void js_proj_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -246,7 +228,7 @@ void js_proj_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception
 	if (proj_setup!=NULL) proj_setup->melee.force=script_value_to_int(cx,vp);
 }
 
-void js_proj_melee_set_fallOff(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_melee_set_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	

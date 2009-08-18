@@ -599,68 +599,18 @@ JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach)
 	return(j_obj);
 }
 
-JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name,script_js_property *props,script_js_function *funcs)
+JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name)
 {
-	int					flags;
-	script_js_property	*prop;
-	script_js_function	*func;
-	JSObjectRef			j_obj,j_func_obj;
-	JSValueRef			j_obj_vp,j_func_obj_vp;
-	JSStringRef			j_func_name;
-
-
-
-		// create and add child object
+	JSObjectRef			j_obj;
+	JSValueRef			j_obj_vp;
 
 	j_obj=JSObjectMake(cx,cls,NULL);
 	j_obj_vp=JSValueToObject(cx,j_obj,NULL);
 
-	fprintf(stdout,"Create Child Object: %s, class=%d, parent=%d, j_obj=%d, val=%d\n",name,cls,parent_obj,j_obj,j_obj_vp);
+	fprintf(stdout,"Create Child Object: %s, class=%d, parent=%d, j_obj=%d, val=%d\n",name,(int)cls,(int)parent_obj,(int)j_obj,(int)j_obj_vp);
 	fflush(stdout);
 
 	script_set_single_property(cx,parent_obj,name,j_obj_vp,(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-
-		// properties
-
-	if (props!=NULL) {
-
-		prop=props;
-
-		while (prop->name!=NULL) {
-
-			flags=kJSPropertyAttributeDontDelete;
-			if (prop->setter==NULL) flags|=kJSPropertyAttributeReadOnly;
-
-			fprintf(stdout,"Add %s.%s\n",name,prop->name);
-			fflush(stdout);
-
-
-			script_set_single_property(cx,j_obj,prop->name,script_null_to_value(cx),flags);
-
-			prop++;
-		}
-	}
-
-		// functions
-
-	if (funcs!=NULL) {
-
-		func=funcs;
-
-		while (func->name!=NULL) {
-
-			j_func_name=JSStringCreateWithUTF8CString(func->name);
-			j_func_obj=JSObjectMakeFunctionWithCallback(cx,j_func_name,func->call);
-			JSStringRelease(j_func_name);
-
-			j_func_obj_vp=JSValueToObject(cx,j_func_obj,NULL);
-			script_set_single_property(cx,j_obj,func->name,j_func_obj_vp,(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-
-			func++;
-		}
-	}
-		fprintf(stdout,"Create Child Object End\n");
-	fflush(stdout);
 
 	return(j_obj);
 }
@@ -670,6 +620,8 @@ JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JS
       Object Setters/Getters
       
 ======================================================= */
+
+/* supergumba -- js -- delete!
 
 JSValueRef script_read_only_property_error(JSContextRef cx,JSStringRef name)
 {
@@ -771,3 +723,4 @@ bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 
 	return(TRUE);
 }
+*/

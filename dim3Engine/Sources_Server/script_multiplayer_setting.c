@@ -40,11 +40,9 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-JSValueRef js_multiplayer_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_multiplayer_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_multiplayer_setting_get_on(JSContextRef cx);
-JSValueRef js_multiplayer_setting_get_type(JSContextRef cx);
-JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx);
+JSValueRef js_multiplayer_setting_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_multiplayer_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		multiplayer_setting_props[]={
@@ -77,23 +75,7 @@ void script_free_multiplayer_setting_object(void)
 
 JSObjectRef script_add_multiplayer_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_setting_class,"setting",multiplayer_setting_props,multiplayer_setting_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_multiplayer_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,multiplayer_setting_props));
-}
-
-bool js_multiplayer_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,multiplayer_setting_props));
+	return(script_create_child_object(cx,parent_obj,multiplayer_setting_class,"setting"));
 }
 
 /* =======================================================
@@ -102,19 +84,19 @@ bool js_multiplayer_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStr
       
 ======================================================= */
 
-JSValueRef js_multiplayer_setting_get_on(JSContextRef cx)
+JSValueRef js_multiplayer_setting_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_bool_to_value(cx,net_setup.client.joined));
 }
 
-JSValueRef js_multiplayer_setting_get_type(JSContextRef cx)
+JSValueRef js_multiplayer_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
  	if (!net_setup.client.joined) return(script_null_to_value(cx));
 
 	return(script_string_to_value(cx,net_setup.games[net_setup.game_idx].name));
 }
 
-JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx)
+JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
  	if (!net_setup.client.joined) return(script_bool_to_value(cx,FALSE));
 	

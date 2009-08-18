@@ -36,22 +36,20 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_projectile_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_projectile_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx);
-JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx);
-JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx);
-JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx);
-JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx);
-JSValueRef js_weap_projectile_get_repeat_on(JSContextRef cx);
-JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx);
-void js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_firePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_repeat_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_repeat_tick(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -120,23 +118,7 @@ void script_free_weap_projectile_object(void)
 
 JSObjectRef script_add_weap_projectile_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_projectile_class,"projectile",weap_projectile_props,weap_projectile_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_projectile_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_projectile_props));
-}
-
-bool js_weap_projectile_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_projectile_props));
+	return(script_create_child_object(cx,parent_obj,weap_projectile_class,"projectile"));
 }
 
 /* =======================================================
@@ -145,7 +127,7 @@ bool js_weap_projectile_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx)
+JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -156,7 +138,7 @@ JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx)
 	return(script_string_to_value(cx,str));
 }
 
-JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx)
+JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -167,7 +149,7 @@ JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx)
 	return(script_string_to_value(cx,str));
 }
 
-JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx)
+JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -175,7 +157,7 @@ JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx)
 	return(script_string_to_value(cx,weap->proj.fire_pose_name));
 }
 
-JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx)
+JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -186,7 +168,7 @@ JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx)
 	return(script_string_to_value(cx,str));
 }
 
-JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx)
+JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -194,7 +176,7 @@ JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx)
 	return(script_string_to_value(cx,weap->proj.object_fire_pose_name));
 }
 
-JSValueRef js_weap_projectile_get_repeat_on(JSContextRef cx)
+JSValueRef js_weap_projectile_get_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -202,7 +184,7 @@ JSValueRef js_weap_projectile_get_repeat_on(JSContextRef cx)
 	return(script_bool_to_value(cx,weap->proj.repeat_on));
 }
 
-JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx)
+JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -216,7 +198,7 @@ JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -227,7 +209,7 @@ void js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef
 	weap->proj.fire_bone_tag=text_to_model_tag(str);
 }
 
-void js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -238,7 +220,7 @@ void js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSValueRef vp,JSValueR
 	weap->proj.barrel_bone_tag=text_to_model_tag(str);
 }
 
-void js_weap_projectile_set_firePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -246,7 +228,7 @@ void js_weap_projectile_set_firePoseName(JSContextRef cx,JSValueRef vp,JSValueRe
 	script_value_to_string(cx,vp,weap->proj.fire_pose_name,name_str_len);
 }
 
-void js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -257,7 +239,7 @@ void js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSValueRef vp,JSVa
 	weap->proj.object_fire_bone_tag=text_to_model_tag(str);
 }
 
-void js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -265,7 +247,7 @@ void js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSValueRef vp,JSV
 	script_value_to_string(cx,vp,weap->proj.object_fire_pose_name,name_str_len);
 }
 
-void js_weap_projectile_set_repeat_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_projectile_set_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -273,7 +255,7 @@ void js_weap_projectile_set_repeat_on(JSContextRef cx,JSValueRef vp,JSValueRef *
 	weap->proj.repeat_on=script_value_to_bool(cx,vp);
 }
 
-void js_weap_projectile_set_repeat_tick(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	

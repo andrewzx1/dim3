@@ -34,10 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_obj_weapon_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx);
-JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx);
+JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		obj_weapon_fire_props[]={
 							{"name",				js_obj_weapon_fire_get_name,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -64,23 +62,7 @@ void script_free_obj_weapon_fire_object(void)
 
 JSObjectRef script_add_obj_weapon_fire_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_weapon_fire_class,"weaponFire",obj_weapon_fire_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_weapon_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_weapon_fire_props));
-}
-
-bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_weapon_fire_props));
+	return(script_create_child_object(cx,parent_obj,obj_weapon_fire_class,"weaponFire"));
 }
 
 /* =======================================================
@@ -89,7 +71,7 @@ bool js_obj_weapon_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx)
+JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -97,7 +79,7 @@ JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx)
 	return(script_string_to_value(cx,obj->weapon_fire.name));
 }
 
-JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx)
+JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 

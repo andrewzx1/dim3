@@ -34,20 +34,18 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_crosshair_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_crosshair_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_crosshair_get_on(JSContextRef cx);
-JSValueRef js_weap_crosshair_get_type(JSContextRef cx);
-JSValueRef js_weap_crosshair_get_name(JSContextRef cx);
-JSValueRef js_weap_crosshair_get_minSize(JSContextRef cx);
-JSValueRef js_weap_crosshair_get_maxSize(JSContextRef cx);
-JSValueRef js_weap_crosshair_get_distance(JSContextRef cx);
-void js_weap_crosshair_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_set_type(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_set_minSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_set_maxSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_crosshair_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_crosshair_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_crosshair_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_crosshair_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_crosshair_get_minSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_crosshair_get_maxSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_crosshair_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_crosshair_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_set_minSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_set_maxSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_crosshair_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		weap_crosshair_props[]={
 							{"on",					js_weap_crosshair_get_on,			js_weap_crosshair_set_on,			kJSPropertyAttributeDontDelete},
@@ -78,23 +76,7 @@ void script_free_weap_crosshair_object(void)
 
 JSObjectRef script_add_weap_crosshair_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_crosshair_class,"crosshair",weap_crosshair_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_crosshair_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_crosshair_props));
-}
-
-bool js_weap_crosshair_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_crosshair_props));
+	return(script_create_child_object(cx,parent_obj,weap_crosshair_class,"crosshair"));
 }
 
 /* =======================================================
@@ -103,7 +85,7 @@ bool js_weap_crosshair_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRe
       
 ======================================================= */
 
-JSValueRef js_weap_crosshair_get_on(JSContextRef cx)
+JSValueRef js_weap_crosshair_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -111,7 +93,7 @@ JSValueRef js_weap_crosshair_get_on(JSContextRef cx)
 	return(script_bool_to_value(cx,weap->crosshair.on));
 }
 
-JSValueRef js_weap_crosshair_get_type(JSContextRef cx)
+JSValueRef js_weap_crosshair_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -119,7 +101,7 @@ JSValueRef js_weap_crosshair_get_type(JSContextRef cx)
 	return(script_int_to_value(cx,weap->crosshair.type+sd_weap_crosshair_type_center));
 }
 
-JSValueRef js_weap_crosshair_get_name(JSContextRef cx)
+JSValueRef js_weap_crosshair_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -127,7 +109,7 @@ JSValueRef js_weap_crosshair_get_name(JSContextRef cx)
 	return(script_string_to_value(cx,weap->crosshair.fire_name));
 }
 
-JSValueRef js_weap_crosshair_get_minSize(JSContextRef cx)
+JSValueRef js_weap_crosshair_get_minSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -135,7 +117,7 @@ JSValueRef js_weap_crosshair_get_minSize(JSContextRef cx)
 	return(script_int_to_value(cx,weap->crosshair.min_size));
 }
 
-JSValueRef js_weap_crosshair_get_maxSize(JSContextRef cx)
+JSValueRef js_weap_crosshair_get_maxSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -143,7 +125,7 @@ JSValueRef js_weap_crosshair_get_maxSize(JSContextRef cx)
 	return(script_int_to_value(cx,weap->crosshair.max_size));
 }
 
-JSValueRef js_weap_crosshair_get_distance(JSContextRef cx)
+JSValueRef js_weap_crosshair_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -157,7 +139,7 @@ JSValueRef js_weap_crosshair_get_distance(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_crosshair_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -165,7 +147,7 @@ void js_weap_crosshair_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 	weap->crosshair.on=script_value_to_bool(cx,vp);
 }
 
-void js_weap_crosshair_set_type(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -173,7 +155,7 @@ void js_weap_crosshair_set_type(JSContextRef cx,JSValueRef vp,JSValueRef *except
 	weap->crosshair.type=script_value_to_int(cx,vp)-sd_weap_crosshair_type_center;
 }
 
-void js_weap_crosshair_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -182,7 +164,7 @@ void js_weap_crosshair_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *except
 	weapon_attach_fire_crosshair(weap);
 }
 
-void js_weap_crosshair_set_minSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_set_minSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -190,7 +172,7 @@ void js_weap_crosshair_set_minSize(JSContextRef cx,JSValueRef vp,JSValueRef *exc
 	weap->crosshair.min_size=script_value_to_int(cx,vp);
 }
 
-void js_weap_crosshair_set_maxSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_set_maxSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -198,7 +180,7 @@ void js_weap_crosshair_set_maxSize(JSContextRef cx,JSValueRef vp,JSValueRef *exc
 	weap->crosshair.max_size=script_value_to_int(cx,vp);
 }
 
-void js_weap_crosshair_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_crosshair_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	

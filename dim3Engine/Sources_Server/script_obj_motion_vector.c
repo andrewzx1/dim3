@@ -34,11 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_obj_motion_vector_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_motion_vector_get_x(JSContextRef cx);
-JSValueRef js_obj_motion_vector_get_y(JSContextRef cx);
-JSValueRef js_obj_motion_vector_get_z(JSContextRef cx);
+JSValueRef js_obj_motion_vector_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_motion_vector_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_motion_vector_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_motion_vector_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -98,23 +96,7 @@ void script_free_obj_motion_vector_object(void)
 
 JSObjectRef script_add_obj_motion_vector_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_motion_vector_class,"motionVector",obj_motion_vector_props,obj_motion_vector_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_motion_vector_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_motion_vector_props));
-}
-
-bool js_obj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_motion_vector_props));
+	return(script_create_child_object(cx,parent_obj,obj_motion_vector_class,"motionVector"));
 }
 
 /* =======================================================
@@ -123,7 +105,7 @@ bool js_obj_motion_vector_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
       
 ======================================================= */
 
-JSValueRef js_obj_motion_vector_get_x(JSContextRef cx)
+JSValueRef js_obj_motion_vector_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -131,7 +113,7 @@ JSValueRef js_obj_motion_vector_get_x(JSContextRef cx)
 	return(script_float_to_value(cx,obj->motion.vct.x));
 }
 
-JSValueRef js_obj_motion_vector_get_y(JSContextRef cx)
+JSValueRef js_obj_motion_vector_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -139,7 +121,7 @@ JSValueRef js_obj_motion_vector_get_y(JSContextRef cx)
 	return(script_float_to_value(cx,obj->motion.vct.y));
 }
 
-JSValueRef js_obj_motion_vector_get_z(JSContextRef cx)
+JSValueRef js_obj_motion_vector_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 

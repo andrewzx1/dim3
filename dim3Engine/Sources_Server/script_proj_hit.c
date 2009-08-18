@@ -37,16 +37,14 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSValueRef js_proj_hit_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_proj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_hit_get_type(JSContextRef cx);
-JSValueRef js_proj_hit_get_name(JSContextRef cx);
-JSValueRef js_proj_hit_get_id(JSContextRef cx);
-JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx);
-JSValueRef js_proj_hit_get_startTick(JSContextRef cx);
-JSValueRef js_proj_hit_get_materialName(JSContextRef cx);
-JSValueRef js_proj_hit_get_ejectVector(JSContextRef cx);
-JSValueRef js_proj_hit_get_reflectVector(JSContextRef cx);
+JSValueRef js_proj_hit_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_hit_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_hit_get_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_hit_get_startTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_hit_get_materialName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_hit_get_ejectVector(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_hit_get_reflectVector(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		proj_hit_props[]={
 							{"type",				js_proj_hit_get_type,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -79,23 +77,7 @@ void script_free_proj_hit_object(void)
 
 JSObjectRef script_add_proj_hit_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,proj_hit_class,"hit",proj_hit_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_proj_hit_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,proj_hit_props));
-}
-
-bool js_proj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,proj_hit_props));
+	return(script_create_child_object(cx,parent_obj,proj_hit_class,"hit"));
 }
 
 /* =======================================================
@@ -189,7 +171,7 @@ void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
       
 ======================================================= */
 
-JSValueRef js_proj_hit_get_type(JSContextRef cx)
+JSValueRef js_proj_hit_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -199,7 +181,7 @@ JSValueRef js_proj_hit_get_type(JSContextRef cx)
 	return(script_int_to_value(cx,js_get_proj_hit_type(proj)));
 }
 
-JSValueRef js_proj_hit_get_name(JSContextRef cx)
+JSValueRef js_proj_hit_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
@@ -214,7 +196,7 @@ JSValueRef js_proj_hit_get_name(JSContextRef cx)
 	return(script_string_to_value(cx,hit_name));
 }
 
-JSValueRef js_proj_hit_get_id(JSContextRef cx)
+JSValueRef js_proj_hit_get_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -224,7 +206,7 @@ JSValueRef js_proj_hit_get_id(JSContextRef cx)
 	return(script_int_to_value(cx,proj->contact.obj_uid));
 }
 
-JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx)
+JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -234,7 +216,7 @@ JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx)
 	return(script_bool_to_value(cx,proj->contact.obj_uid==server.player_obj_uid));
 }
 
-JSValueRef js_proj_hit_get_startTick(JSContextRef cx)
+JSValueRef js_proj_hit_get_startTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -244,7 +226,7 @@ JSValueRef js_proj_hit_get_startTick(JSContextRef cx)
 	return(script_int_to_value(cx,proj->start_tick));
 }
 
-JSValueRef js_proj_hit_get_materialName(JSContextRef cx)
+JSValueRef js_proj_hit_get_materialName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
@@ -259,7 +241,7 @@ JSValueRef js_proj_hit_get_materialName(JSContextRef cx)
 	return(script_string_to_value(cx,hit_name));
 }
 
-JSValueRef js_proj_hit_get_ejectVector(JSContextRef cx)
+JSValueRef js_proj_hit_get_ejectVector(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	d3vct				vct;
 	proj_type			*proj;
@@ -271,7 +253,7 @@ JSValueRef js_proj_hit_get_ejectVector(JSContextRef cx)
 	return(script_angle_to_value(cx,vct.x,vct.y,vct.z));
 }
 
-JSValueRef js_proj_hit_get_reflectVector(JSContextRef cx)
+JSValueRef js_proj_hit_get_reflectVector(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	d3vct				vct;
 	proj_type			*proj;

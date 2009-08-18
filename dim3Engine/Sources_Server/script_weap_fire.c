@@ -34,10 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_fire_get_method(JSContextRef cx);
-JSValueRef js_weap_fire_get_lastFireTick(JSContextRef cx);
+JSValueRef js_weap_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_fire_get_lastFireTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -73,23 +71,7 @@ void script_free_weap_fire_object(void)
 
 JSObjectRef script_add_weap_fire_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_fire_class,"fire",weap_fire_props,weap_fire_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_fire_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_fire_props));
-}
-
-bool js_weap_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_fire_props));
+	return(script_create_child_object(cx,parent_obj,weap_fire_class,"fire"));
 }
 
 /* =======================================================
@@ -98,7 +80,7 @@ bool js_weap_fire_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_weap_fire_get_method(JSContextRef cx)
+JSValueRef js_weap_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -106,7 +88,7 @@ JSValueRef js_weap_fire_get_method(JSContextRef cx)
 	return(script_int_to_value(cx,weap->fire.method));
 }
 
-JSValueRef js_weap_fire_get_lastFireTick(JSContextRef cx)
+JSValueRef js_weap_fire_get_lastFireTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 

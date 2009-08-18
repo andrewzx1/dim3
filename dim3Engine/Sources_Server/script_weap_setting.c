@@ -34,12 +34,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_setting_get_name(JSContextRef cx);
-JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx);
-JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx);
-void js_weap_setting_set_failInLiquid(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		weap_setting_props[]={
 							{"name",				js_weap_setting_get_name,				NULL,									kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -67,23 +65,7 @@ void script_free_weap_setting_object(void)
 
 JSObjectRef script_add_weap_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_setting_class,"setting",weap_setting_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_setting_props));
-}
-
-bool js_weap_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_setting_props));
+	return(script_create_child_object(cx,parent_obj,weap_setting_class,"setting"));
 }
 
 /* =======================================================
@@ -92,7 +74,7 @@ bool js_weap_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_weap_setting_get_name(JSContextRef cx)
+JSValueRef js_weap_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -100,7 +82,7 @@ JSValueRef js_weap_setting_get_name(JSContextRef cx)
 	return(script_string_to_value(cx,weap->name));
 }
 
-JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx)
+JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -108,7 +90,7 @@ JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx)
 	return(script_bool_to_value(cx,weap->fail_in_liquid));
 }
 
-JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx)
+JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -122,7 +104,7 @@ JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_setting_set_failInLiquid(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	

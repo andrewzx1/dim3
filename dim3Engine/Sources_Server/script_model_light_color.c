@@ -31,14 +31,12 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSValueRef js_model_light_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_model_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_light_color_get_red(JSContextRef cx);
-JSValueRef js_model_light_color_get_green(JSContextRef cx);
-JSValueRef js_model_light_color_get_blue(JSContextRef cx);
-void js_model_light_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_light_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_light_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_light_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_light_color_get_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_light_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_light_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_light_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_light_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -68,23 +66,7 @@ void script_free_model_light_color_object(void)
 
 JSObjectRef script_add_model_light_color_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,model_light_color_class,"lightColor",model_light_color_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_model_light_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,model_light_color_props));
-}
-
-bool js_model_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,model_light_color_props));
+	return(script_create_child_object(cx,parent_obj,model_light_color_class,"lightColor"));
 }
 
 /* =======================================================
@@ -93,7 +75,7 @@ bool js_model_light_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
       
 ======================================================= */
 
-JSValueRef js_model_light_color_get_red(JSContextRef cx)
+JSValueRef js_model_light_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -104,7 +86,7 @@ JSValueRef js_model_light_color_get_red(JSContextRef cx)
 	return(script_float_to_value(cx,light->col.r));
 }
 
-JSValueRef js_model_light_color_get_green(JSContextRef cx)
+JSValueRef js_model_light_color_get_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -115,7 +97,7 @@ JSValueRef js_model_light_color_get_green(JSContextRef cx)
 	return(script_float_to_value(cx,light->col.g));
 }
 
-JSValueRef js_model_light_color_get_blue(JSContextRef cx)
+JSValueRef js_model_light_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -132,7 +114,7 @@ JSValueRef js_model_light_color_get_blue(JSContextRef cx)
       
 ======================================================= */
 
-void js_model_light_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_light_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -141,9 +123,11 @@ void js_model_light_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 	light=&draw->lights[draw->script_light_idx];
 
 	light->col.r=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_model_light_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_light_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -152,9 +136,11 @@ void js_model_light_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *ex
 	light=&draw->lights[draw->script_light_idx];
 
 	light->col.g=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_model_light_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_light_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
@@ -163,5 +149,7 @@ void js_model_light_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exc
 	light=&draw->lights[draw->script_light_idx];
 
 	light->col.b=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 

@@ -39,13 +39,11 @@ extern network_setup_type	net_setup;
 
 extern int				game_obj_rule_uid;
 
-JSValueRef js_game_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_game_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_game_score_get_objectId(JSContextRef cx);
-JSValueRef js_game_score_get_kill(JSContextRef cx);
-JSValueRef js_game_score_get_death(JSContextRef cx);
-JSValueRef js_game_score_get_suicide(JSContextRef cx);
-JSValueRef js_game_score_get_goal(JSContextRef cx);
+JSValueRef js_game_score_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_game_score_get_kill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_game_score_get_death(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_game_score_get_suicide(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_game_score_get_goal(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		game_score_props[]={
@@ -80,23 +78,7 @@ void script_free_game_score_object(void)
 
 JSObjectRef script_add_game_score_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,game_score_class,"score",game_score_props,game_score_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_game_score_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,game_score_props));
-}
-
-bool js_game_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,game_score_props));
+	return(script_create_child_object(cx,parent_obj,game_score_class,"score"));
 }
 
 /* =======================================================
@@ -105,7 +87,7 @@ bool js_game_score_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_game_score_get_objectId(JSContextRef cx)
+JSValueRef js_game_score_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -115,7 +97,7 @@ JSValueRef js_game_score_get_objectId(JSContextRef cx)
 	return(script_int_to_value(cx,obj->uid));
 }
 
-JSValueRef js_game_score_get_kill(JSContextRef cx)
+JSValueRef js_game_score_get_kill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -125,7 +107,7 @@ JSValueRef js_game_score_get_kill(JSContextRef cx)
 	return(script_int_to_value(cx,obj->score.kill));
 }
 
-JSValueRef js_game_score_get_death(JSContextRef cx)
+JSValueRef js_game_score_get_death(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -135,7 +117,7 @@ JSValueRef js_game_score_get_death(JSContextRef cx)
 	return(script_int_to_value(cx,obj->score.death));
 }
 
-JSValueRef js_game_score_get_suicide(JSContextRef cx)
+JSValueRef js_game_score_get_suicide(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -145,7 +127,7 @@ JSValueRef js_game_score_get_suicide(JSContextRef cx)
 	return(script_int_to_value(cx,obj->score.suicide));
 }
 
-JSValueRef js_game_score_get_goal(JSContextRef cx)
+JSValueRef js_game_score_get_goal(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 

@@ -34,23 +34,21 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_obj_health_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_health_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_health_get_maximum(JSContextRef cx);
-JSValueRef js_obj_health_get_start(JSContextRef cx);
-JSValueRef js_obj_health_get_current(JSContextRef cx);
-JSValueRef js_obj_health_get_recoverTick(JSContextRef cx);
-JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx);
-JSValueRef js_obj_health_get_fallDamageMinimumHeight(JSContextRef cx);
-JSValueRef js_obj_health_get_fallDamageFactor(JSContextRef cx);
-JSValueRef js_obj_health_get_factor(JSContextRef cx);
-void js_obj_health_set_maximum(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_obj_health_set_start(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_obj_health_set_recoverTick(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_obj_health_set_recoverAmount(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_obj_health_set_fallDamageMinimumHeight(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_obj_health_set_fallDamageFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_obj_health_set_factor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_health_get_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_current(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_fallDamageFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_obj_health_set_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_health_set_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_health_set_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_health_set_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_health_set_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_health_set_fallDamageFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_health_set_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -92,23 +90,7 @@ void script_free_obj_health_object(void)
 
 JSObjectRef script_add_obj_health_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_health_class,"health",obj_health_props,obj_health_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_health_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_health_props));
-}
-
-bool js_obj_health_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_health_props));
+	return(script_create_child_object(cx,parent_obj,obj_health_class,"health"));
 }
 
 /* =======================================================
@@ -117,7 +99,7 @@ bool js_obj_health_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_obj_health_get_maximum(JSContextRef cx)
+JSValueRef js_obj_health_get_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -125,7 +107,7 @@ JSValueRef js_obj_health_get_maximum(JSContextRef cx)
 	return(script_int_to_value(cx,obj->status.max_health));
 }
 
-JSValueRef js_obj_health_get_start(JSContextRef cx)
+JSValueRef js_obj_health_get_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -133,7 +115,7 @@ JSValueRef js_obj_health_get_start(JSContextRef cx)
 	return(script_int_to_value(cx,obj->status.start_health));
 }
 
-JSValueRef js_obj_health_get_current(JSContextRef cx)
+JSValueRef js_obj_health_get_current(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -141,7 +123,7 @@ JSValueRef js_obj_health_get_current(JSContextRef cx)
 	return(script_int_to_value(cx,obj->status.health));
 }
 
-JSValueRef js_obj_health_get_recoverTick(JSContextRef cx)
+JSValueRef js_obj_health_get_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -149,7 +131,7 @@ JSValueRef js_obj_health_get_recoverTick(JSContextRef cx)
 	return(script_int_to_value(cx,obj->status.health_recover_tick));
 }
 
-JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx)
+JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -157,7 +139,7 @@ JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx)
 	return(script_int_to_value(cx,obj->status.health_recover_amount));
 }
 
-JSValueRef js_obj_health_get_fallDamageMinimumHeight(JSContextRef cx)
+JSValueRef js_obj_health_get_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -165,7 +147,7 @@ JSValueRef js_obj_health_get_fallDamageMinimumHeight(JSContextRef cx)
 	return(script_int_to_value(cx,obj->fall.damage_minimum_height));
 }
 
-JSValueRef js_obj_health_get_fallDamageFactor(JSContextRef cx)
+JSValueRef js_obj_health_get_fallDamageFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -173,7 +155,7 @@ JSValueRef js_obj_health_get_fallDamageFactor(JSContextRef cx)
 	return(script_float_to_value(cx,obj->fall.damage_factor));
 }
 
-JSValueRef js_obj_health_get_factor(JSContextRef cx)
+JSValueRef js_obj_health_get_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -187,61 +169,75 @@ JSValueRef js_obj_health_get_factor(JSContextRef cx)
       
 ======================================================= */
 
-void js_obj_health_set_maximum(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_obj_health_set_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->status.max_health=script_value_to_int(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_obj_health_set_start(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_obj_health_set_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->status.start_health=script_value_to_int(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_obj_health_set_recoverTick(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_obj_health_set_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->status.health_recover_tick=script_value_to_int(cx,vp);
 	obj->status.health_recover_count=0;			// restart recover count
+	
+	return(TRUE);
 }
 
-void js_obj_health_set_recoverAmount(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_obj_health_set_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->status.health_recover_amount=script_value_to_int(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_obj_health_set_fallDamageMinimumHeight(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_obj_health_set_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->fall.damage_minimum_height=script_value_to_int(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_obj_health_set_fallDamageFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_obj_health_set_fallDamageFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->fall.damage_factor=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_obj_health_set_factor(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_obj_health_set_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->status.health_factor=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 
 /* =======================================================

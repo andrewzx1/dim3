@@ -37,10 +37,8 @@ extern network_setup_type	net_setup;
 
 extern int					game_obj_rule_uid;
 
-JSValueRef js_game_join_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_game_join_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_game_join_get_name(JSContextRef cx);
-JSValueRef js_game_join_get_team(JSContextRef cx);
+JSValueRef js_game_join_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_game_join_get_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_game_join_set_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_game_join_set_team_even_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_game_join_clear_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -84,23 +82,7 @@ void script_free_game_join_object(void)
 
 JSObjectRef script_add_game_join_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,game_join_class,"join",game_join_props,game_join_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_game_join_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,game_join_props));
-}
-
-bool js_game_join_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,game_join_props));
+	return(script_create_child_object(cx,parent_obj,game_join_class,"join"));
 }
 
 /* =======================================================
@@ -109,7 +91,7 @@ bool js_game_join_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_game_join_get_name(JSContextRef cx)
+JSValueRef js_game_join_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -119,7 +101,7 @@ JSValueRef js_game_join_get_name(JSContextRef cx)
 	return(script_string_to_value(cx,obj->name));
 }
 
-JSValueRef js_game_join_get_team(JSContextRef cx)
+JSValueRef js_game_join_get_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 

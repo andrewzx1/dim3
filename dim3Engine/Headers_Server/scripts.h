@@ -545,9 +545,7 @@ extern bool script_add_global_object(script_type *script,char *err_str);
 extern void script_set_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags);
 extern JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name);
 extern JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach);
-extern JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name,script_js_property *props,script_js_function *funcs);
-extern JSValueRef script_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,script_js_property *props);
-extern bool script_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception,script_js_property *props);
+extern JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name);
 
 extern void script_globals_initialize(void);
 extern int script_find_global(char *name,int script_uid);

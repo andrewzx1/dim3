@@ -34,11 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_obj_touch_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_touch_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_touch_angle_get_x(JSContextRef cx);
-JSValueRef js_obj_touch_angle_get_y(JSContextRef cx);
-JSValueRef js_obj_touch_angle_get_z(JSContextRef cx);
+JSValueRef js_obj_touch_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_touch_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_touch_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		obj_touch_angle_props[]={
 							{"x",					js_obj_touch_angle_get_x,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -66,23 +64,7 @@ void script_free_obj_touch_angle_object(void)
 
 JSObjectRef script_add_obj_touch_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_touch_angle_class,"touchAngle",obj_touch_angle_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_touch_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_touch_angle_props));
-}
-
-bool js_obj_touch_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_touch_angle_props));
+	return(script_create_child_object(cx,parent_obj,obj_touch_angle_class,"touchAngle"));
 }
 
 /* =======================================================
@@ -91,7 +73,7 @@ bool js_obj_touch_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_obj_touch_angle_get_x(JSContextRef cx)
+JSValueRef js_obj_touch_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -99,7 +81,7 @@ JSValueRef js_obj_touch_angle_get_x(JSContextRef cx)
 	return(script_float_to_value(cx,obj->touch.ang.x));
 }
 
-JSValueRef js_obj_touch_angle_get_y(JSContextRef cx)
+JSValueRef js_obj_touch_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -107,7 +89,7 @@ JSValueRef js_obj_touch_angle_get_y(JSContextRef cx)
 	return(script_float_to_value(cx,obj->touch.ang.y));
 }
 
-JSValueRef js_obj_touch_angle_get_z(JSContextRef cx)
+JSValueRef js_obj_touch_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 

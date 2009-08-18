@@ -37,15 +37,13 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSValueRef js_obj_hit_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_hit_get_objectId(JSContextRef cx);
-JSValueRef js_obj_hit_get_objectName(JSContextRef cx);
-JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx);
-JSValueRef js_obj_hit_get_weaponName(JSContextRef cx);
-JSValueRef js_obj_hit_get_projectileName(JSContextRef cx);
-JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx);
-JSValueRef js_obj_hit_get_damage(JSContextRef cx);
+JSValueRef js_obj_hit_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_get_projectileName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		obj_hit_props[]={
 							{"objectId",			js_obj_hit_get_objectId,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -77,23 +75,7 @@ void script_free_obj_hit_object(void)
 
 JSObjectRef script_add_obj_hit_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_hit_class,"hit",obj_hit_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_hit_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_hit_props));
-}
-
-bool js_obj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_hit_props));
+	return(script_create_child_object(cx,parent_obj,obj_hit_class,"hit"));
 }
 
 /* =======================================================
@@ -102,7 +84,7 @@ bool js_obj_hit_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
       
 ======================================================= */
 
-JSValueRef js_obj_hit_get_objectId(JSContextRef cx)
+JSValueRef js_obj_hit_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 
@@ -110,7 +92,7 @@ JSValueRef js_obj_hit_get_objectId(JSContextRef cx)
 	return(script_int_to_value(cx,obj->hit.obj_uid));
 }
 
-JSValueRef js_obj_hit_get_objectName(JSContextRef cx)
+JSValueRef js_obj_hit_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj,*hit_obj;
 
@@ -122,7 +104,7 @@ JSValueRef js_obj_hit_get_objectName(JSContextRef cx)
 	return(script_string_to_value(cx,hit_obj->name));
 }
 
-JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx)
+JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 
@@ -130,7 +112,7 @@ JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx)
 	return(script_bool_to_value(cx,obj->hit.obj_uid==server.player_obj_uid));
 }
 
-JSValueRef js_obj_hit_get_weaponName(JSContextRef cx)
+JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 	weapon_type			*hit_weap;
@@ -143,7 +125,7 @@ JSValueRef js_obj_hit_get_weaponName(JSContextRef cx)
 	return(script_string_to_value(cx,hit_weap->name));
 }
 
-JSValueRef js_obj_hit_get_projectileName(JSContextRef cx)
+JSValueRef js_obj_hit_get_projectileName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 	proj_type			*hit_proj;
@@ -158,7 +140,7 @@ JSValueRef js_obj_hit_get_projectileName(JSContextRef cx)
 	return(script_string_to_value(cx,hit_proj_setup->name));
 }
 
-JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx)
+JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 
@@ -169,7 +151,7 @@ JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx)
 	return(script_string_to_value(cx,obj->hit.hit_box_name));
 }
 
-JSValueRef js_obj_hit_get_damage(JSContextRef cx)
+JSValueRef js_obj_hit_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 

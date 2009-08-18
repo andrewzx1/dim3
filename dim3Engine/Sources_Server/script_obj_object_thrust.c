@@ -34,14 +34,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_obj_thrust_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_thrust_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_thrust_get_speed(JSContextRef cx);
-JSValueRef js_obj_thrust_get_maxSpeed(JSContextRef cx);
-JSValueRef js_obj_thrust_get_drag(JSContextRef cx);
-void js_obj_thrust_set_speed(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_obj_thrust_set_maxSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_obj_thrust_set_drag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_obj_thrust_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_thrust_get_maxSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_thrust_get_drag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_obj_thrust_set_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_obj_thrust_set_maxSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_obj_thrust_set_drag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		obj_thrust_props[]={
 							{"speed",					js_obj_thrust_get_speed,			js_obj_thrust_set_speed,		kJSPropertyAttributeDontDelete},
@@ -69,23 +67,7 @@ void script_free_obj_thrust_object(void)
 
 JSObjectRef script_add_obj_thrust_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_thrust_class,"thrust",obj_thrust_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_thrust_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_thrust_props));
-}
-
-bool js_obj_thrust_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_thrust_props));
+	return(script_create_child_object(cx,parent_obj,obj_thrust_class,"thrust"));
 }
 
 /* =======================================================
@@ -94,7 +76,7 @@ bool js_obj_thrust_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_obj_thrust_get_speed(JSContextRef cx)
+JSValueRef js_obj_thrust_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -102,7 +84,7 @@ JSValueRef js_obj_thrust_get_speed(JSContextRef cx)
 	return(script_float_to_value(cx,obj->thrust.speed));
 }
 
-JSValueRef js_obj_thrust_get_maxSpeed(JSContextRef cx)
+JSValueRef js_obj_thrust_get_maxSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -110,7 +92,7 @@ JSValueRef js_obj_thrust_get_maxSpeed(JSContextRef cx)
 	return(script_float_to_value(cx,obj->thrust.max_speed));
 }
 
-JSValueRef js_obj_thrust_get_drag(JSContextRef cx)
+JSValueRef js_obj_thrust_get_drag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -124,7 +106,7 @@ JSValueRef js_obj_thrust_get_drag(JSContextRef cx)
       
 ======================================================= */
 
-void js_obj_thrust_set_speed(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_obj_thrust_set_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -132,7 +114,7 @@ void js_obj_thrust_set_speed(JSContextRef cx,JSValueRef vp,JSValueRef *exception
 	obj->thrust.speed=script_value_to_float(cx,vp);
 }
 
-void js_obj_thrust_set_maxSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_obj_thrust_set_maxSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -140,7 +122,7 @@ void js_obj_thrust_set_maxSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *except
 	obj->thrust.max_speed=script_value_to_float(cx,vp);
 }
 
-void js_obj_thrust_set_drag(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_obj_thrust_set_drag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	

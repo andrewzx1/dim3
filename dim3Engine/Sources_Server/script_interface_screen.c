@@ -34,10 +34,8 @@ and can be sold or given away.
 extern js_type			js;
 extern setup_type		setup;
 
-JSValueRef js_interface_screen_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_interface_screen_get_width(JSContextRef cx);
-JSValueRef js_interface_screen_get_height(JSContextRef cx);
+JSValueRef js_interface_screen_get_width(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_interface_screen_get_height(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		interface_screen_props[]={
 							{"width",				js_interface_screen_get_width,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -64,23 +62,7 @@ void script_free_interface_screen_object(void)
 
 JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,interface_screen_class,"screen",interface_screen_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_interface_screen_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,interface_screen_props));
-}
-
-bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,interface_screen_props));
+	return(script_create_child_object(cx,parent_obj,interface_screen_class,"screen"));
 }
 
 /* =======================================================
@@ -89,12 +71,12 @@ bool js_interface_screen_set_property(JSContextRef cx,JSObjectRef j_obj,JSString
       
 ======================================================= */
 
-JSValueRef js_interface_screen_get_width(JSContextRef cx)
+JSValueRef js_interface_screen_get_width(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_int_to_value(cx,setup.screen.x_sz));
 }
 
-JSValueRef js_interface_screen_get_height(JSContextRef cx)
+JSValueRef js_interface_screen_get_height(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_int_to_value(cx,setup.screen.y_sz));
 }
