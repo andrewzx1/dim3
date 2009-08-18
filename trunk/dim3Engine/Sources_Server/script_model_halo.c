@@ -32,30 +32,28 @@ and can be sold or given away.
 #include "scripts.h"
 #include "lights.h"
 
-JSValueRef js_model_halo_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_model_halo_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_halo_get_index(JSContextRef cx);
-JSValueRef js_model_halo_get_on(JSContextRef cx);
-JSValueRef js_model_halo_get_name(JSContextRef cx);
-JSValueRef js_model_halo_get_minDistance(JSContextRef cx);
-JSValueRef js_model_halo_get_maxDistance(JSContextRef cx);
-JSValueRef js_model_halo_get_minSize(JSContextRef cx);
-JSValueRef js_model_halo_get_maxSize(JSContextRef cx);
-JSValueRef js_model_halo_get_minAlpha(JSContextRef cx);
-JSValueRef js_model_halo_get_maxAlpha(JSContextRef cx);
-JSValueRef js_model_halo_get_noClipObject(JSContextRef cx);
-JSValueRef js_model_halo_get_noClipSelf(JSContextRef cx);
-void js_model_halo_set_index(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_minDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_maxDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_minSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_maxSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_minAlpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_maxAlpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_noClipObject(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_model_halo_set_noClipSelf(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_halo_get_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_minDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_maxDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_minSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_maxSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_minAlpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_maxAlpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_noClipObject(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_halo_get_noClipSelf(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_halo_set_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_minDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_maxDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_minSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_maxSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_minAlpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_maxAlpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_noClipObject(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_model_halo_set_noClipSelf(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 extern server_type		server;
 extern js_type			js;
@@ -94,23 +92,7 @@ void script_free_model_halo_object(void)
 
 JSObjectRef script_add_model_halo_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,model_halo_class,"halo",model_halo_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_model_halo_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,model_halo_props));
-}
-
-bool js_model_halo_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,model_halo_props));
+	return(script_create_child_object(cx,parent_obj,model_halo_class,"halo"));
 }
 
 /* =======================================================
@@ -119,7 +101,7 @@ bool js_model_halo_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_model_halo_get_index(JSContextRef cx)
+JSValueRef js_model_halo_get_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -130,7 +112,7 @@ JSValueRef js_model_halo_get_index(JSContextRef cx)
 	return(script_int_to_value(cx,draw->script_halo_idx));
 }
 
-JSValueRef js_model_halo_get_on(JSContextRef cx)
+JSValueRef js_model_halo_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -141,7 +123,7 @@ JSValueRef js_model_halo_get_on(JSContextRef cx)
 	return(script_bool_to_value(cx,halo->on));
 }
 
-JSValueRef js_model_halo_get_name(JSContextRef cx)
+JSValueRef js_model_halo_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -156,7 +138,7 @@ JSValueRef js_model_halo_get_name(JSContextRef cx)
 	return(script_string_to_value(cx,server.halos[halo->idx].name));
 }
 
-JSValueRef js_model_halo_get_minDistance(JSContextRef cx)
+JSValueRef js_model_halo_get_minDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -167,7 +149,7 @@ JSValueRef js_model_halo_get_minDistance(JSContextRef cx)
 	return(script_int_to_value(cx,halo->min_dist));
 }
 
-JSValueRef js_model_halo_get_maxDistance(JSContextRef cx)
+JSValueRef js_model_halo_get_maxDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -178,7 +160,7 @@ JSValueRef js_model_halo_get_maxDistance(JSContextRef cx)
 	return(script_int_to_value(cx,halo->max_dist));
 }
 
-JSValueRef js_model_halo_get_minSize(JSContextRef cx)
+JSValueRef js_model_halo_get_minSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -189,7 +171,7 @@ JSValueRef js_model_halo_get_minSize(JSContextRef cx)
 	return(script_int_to_value(cx,halo->min_size));
 }
 
-JSValueRef js_model_halo_get_maxSize(JSContextRef cx)
+JSValueRef js_model_halo_get_maxSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -200,7 +182,7 @@ JSValueRef js_model_halo_get_maxSize(JSContextRef cx)
 	return(script_int_to_value(cx,halo->max_size));
 }
 
-JSValueRef js_model_halo_get_minAlpha(JSContextRef cx)
+JSValueRef js_model_halo_get_minAlpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -211,7 +193,7 @@ JSValueRef js_model_halo_get_minAlpha(JSContextRef cx)
     return(script_float_to_value(cx,halo->min_alpha));
 }
 
-JSValueRef js_model_halo_get_maxAlpha(JSContextRef cx)
+JSValueRef js_model_halo_get_maxAlpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -222,7 +204,7 @@ JSValueRef js_model_halo_get_maxAlpha(JSContextRef cx)
     return(script_float_to_value(cx,halo->max_alpha));
 }
 
-JSValueRef js_model_halo_get_noClipObject(JSContextRef cx)
+JSValueRef js_model_halo_get_noClipObject(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -233,7 +215,7 @@ JSValueRef js_model_halo_get_noClipObject(JSContextRef cx)
 	return(script_bool_to_value(cx,halo->no_clip_object));
 }
 
-JSValueRef js_model_halo_get_noClipSelf(JSContextRef cx)
+JSValueRef js_model_halo_get_noClipSelf(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -250,7 +232,7 @@ JSValueRef js_model_halo_get_noClipSelf(JSContextRef cx)
       
 ======================================================= */
 
-void js_model_halo_set_index(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -260,9 +242,11 @@ void js_model_halo_set_index(JSContextRef cx,JSValueRef vp,JSValueRef *exception
 
 	draw->script_halo_idx=script_value_to_int(cx,vp);
 	if ((draw->script_halo_idx<0) || (draw->script_halo_idx>=max_model_halo)) draw->script_halo_idx=0;
+
+	return(TRUE);
 }
 
-void js_model_halo_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -271,22 +255,26 @@ void js_model_halo_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->on=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_name(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char				name[name_str_len];
+	char				halo_name[name_str_len];
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
 	draw=script_find_model_draw();
 	halo=&draw->halos[draw->script_halo_idx];
 
-	script_value_to_string(cx,vp,name,name_str_len);
-	halo->idx=halo_find(name);
+	script_value_to_string(cx,vp,halo_name,name_str_len);
+	halo->idx=halo_find(halo_name);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_minDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_minDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -295,9 +283,11 @@ void js_model_halo_set_minDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exc
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->min_dist=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_maxDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_maxDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -306,9 +296,11 @@ void js_model_halo_set_maxDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exc
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->max_dist=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_minSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_minSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -317,9 +309,11 @@ void js_model_halo_set_minSize(JSContextRef cx,JSValueRef vp,JSValueRef *excepti
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->min_size=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_maxSize(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_maxSize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -328,9 +322,11 @@ void js_model_halo_set_maxSize(JSContextRef cx,JSValueRef vp,JSValueRef *excepti
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->max_size=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_minAlpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_minAlpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -339,9 +335,11 @@ void js_model_halo_set_minAlpha(JSContextRef cx,JSValueRef vp,JSValueRef *except
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->min_alpha=script_value_to_float(cx,vp);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_maxAlpha(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_maxAlpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -350,9 +348,11 @@ void js_model_halo_set_maxAlpha(JSContextRef cx,JSValueRef vp,JSValueRef *except
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->max_alpha=script_value_to_float(cx,vp);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_noClipObject(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_noClipObject(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -361,9 +361,11 @@ void js_model_halo_set_noClipObject(JSContextRef cx,JSValueRef vp,JSValueRef *ex
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->no_clip_object=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
-void js_model_halo_set_noClipSelf(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_halo_set_noClipSelf(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_halo		*halo;
@@ -372,5 +374,7 @@ void js_model_halo_set_noClipSelf(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 	halo=&draw->halos[draw->script_halo_idx];
 
 	halo->no_clip_self=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 

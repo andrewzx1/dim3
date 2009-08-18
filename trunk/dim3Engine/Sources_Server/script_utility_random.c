@@ -33,8 +33,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_utility_random_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_utility_random_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -67,23 +65,7 @@ void script_free_utility_random_object(void)
 
 JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,utility_random_class,"random",NULL,utility_random_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_utility_random_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,NULL));
-}
-
-bool js_utility_random_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
+	return(script_create_child_object(cx,parent_obj,utility_random_class,"random"));
 }
 
 /* =======================================================

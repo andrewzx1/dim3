@@ -37,22 +37,20 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSValueRef js_proj_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_proj_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_action_get_damage(JSContextRef cx);
-JSValueRef js_proj_action_get_collision(JSContextRef cx);
-JSValueRef js_proj_action_get_auto_hitTick(JSContextRef cx);
-JSValueRef js_proj_action_get_auto_bounce(JSContextRef cx);
-JSValueRef js_proj_action_get_auto_bounceMinMove(JSContextRef cx);
-JSValueRef js_proj_action_get_auto_bounceReduce(JSContextRef cx);
-JSValueRef js_proj_action_get_auto_reflect(JSContextRef cx);
-void js_proj_action_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_collision(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_hitTick(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_bounce(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_bounceMinMove(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_bounceReduce(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_action_set_auto_reflect(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_action_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_action_get_collision(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_action_get_auto_hitTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_action_get_auto_bounce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_action_get_auto_bounceMinMove(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_action_get_auto_bounceReduce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_action_get_auto_reflect(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_proj_action_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_collision(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_hitTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounceMinMove(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_bounceReduce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_action_set_auto_reflect(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_proj_action_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -103,23 +101,7 @@ void script_free_proj_action_object(void)
 
 JSObjectRef script_add_proj_action_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,proj_action_class,"action",proj_action_props,proj_action_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_proj_action_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,proj_action_props));
-}
-
-bool js_proj_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,proj_action_props));
+	return(script_create_child_object(cx,parent_obj,proj_action_class,"action"));
 }
 
 /* =======================================================
@@ -128,7 +110,7 @@ bool js_proj_action_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
       
 ======================================================= */
 
-JSValueRef js_proj_action_get_damage(JSContextRef cx)
+JSValueRef js_proj_action_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -138,7 +120,7 @@ JSValueRef js_proj_action_get_damage(JSContextRef cx)
 	return(script_int_to_value(cx,proj_setup->damage));
 }
 
-JSValueRef js_proj_action_get_collision(JSContextRef cx)
+JSValueRef js_proj_action_get_collision(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -148,7 +130,7 @@ JSValueRef js_proj_action_get_collision(JSContextRef cx)
 	return(script_bool_to_value(cx,proj_setup->collision));
 }
 
-JSValueRef js_proj_action_get_auto_hitTick(JSContextRef cx)
+JSValueRef js_proj_action_get_auto_hitTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -158,7 +140,7 @@ JSValueRef js_proj_action_get_auto_hitTick(JSContextRef cx)
 	return(script_int_to_value(cx,proj_setup->action.hit_tick));
 }
 
-JSValueRef js_proj_action_get_auto_bounce(JSContextRef cx)
+JSValueRef js_proj_action_get_auto_bounce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -168,7 +150,7 @@ JSValueRef js_proj_action_get_auto_bounce(JSContextRef cx)
 	return(script_bool_to_value(cx,proj_setup->action.bounce));
 }
 
-JSValueRef js_proj_action_get_auto_bounceMinMove(JSContextRef cx)
+JSValueRef js_proj_action_get_auto_bounceMinMove(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -178,7 +160,7 @@ JSValueRef js_proj_action_get_auto_bounceMinMove(JSContextRef cx)
 	return(script_float_to_value(cx,proj_setup->action.bounce_min_move));
 }
 
-JSValueRef js_proj_action_get_auto_bounceReduce(JSContextRef cx)
+JSValueRef js_proj_action_get_auto_bounceReduce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -188,7 +170,7 @@ JSValueRef js_proj_action_get_auto_bounceReduce(JSContextRef cx)
 	return(script_float_to_value(cx,proj_setup->action.bounce_reduce));
 }
 
-JSValueRef js_proj_action_get_auto_reflect(JSContextRef cx)
+JSValueRef js_proj_action_get_auto_reflect(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -204,7 +186,7 @@ JSValueRef js_proj_action_get_auto_reflect(JSContextRef cx)
       
 ======================================================= */
 
-void js_proj_action_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -212,7 +194,7 @@ void js_proj_action_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *excepti
 	if (proj_setup!=NULL) proj_setup->damage=script_value_to_int(cx,vp);
 }
 
-void js_proj_action_set_collision(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_collision(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -220,7 +202,7 @@ void js_proj_action_set_collision(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 	if (proj_setup!=NULL) proj_setup->collision=script_value_to_bool(cx,vp);
 }
 
-void js_proj_action_set_auto_hitTick(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_hitTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -228,7 +210,7 @@ void js_proj_action_set_auto_hitTick(JSContextRef cx,JSValueRef vp,JSValueRef *e
 	if (proj_setup!=NULL) proj_setup->action.hit_tick=script_value_to_int(cx,vp);
 }
 
-void js_proj_action_set_auto_bounce(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_bounce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -236,7 +218,7 @@ void js_proj_action_set_auto_bounce(JSContextRef cx,JSValueRef vp,JSValueRef *ex
 	if (proj_setup!=NULL) proj_setup->action.bounce=script_value_to_bool(cx,vp);
 }
 
-void js_proj_action_set_auto_bounceMinMove(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_bounceMinMove(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -244,7 +226,7 @@ void js_proj_action_set_auto_bounceMinMove(JSContextRef cx,JSValueRef vp,JSValue
 	if (proj_setup!=NULL) proj_setup->action.bounce_min_move=script_value_to_float(cx,vp);
 }
 
-void js_proj_action_set_auto_bounceReduce(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_bounceReduce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -252,7 +234,7 @@ void js_proj_action_set_auto_bounceReduce(JSContextRef cx,JSValueRef vp,JSValueR
 	if (proj_setup!=NULL) proj_setup->action.bounce_reduce=script_value_to_float(cx,vp);
 }
 
-void js_proj_action_set_auto_reflect(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_action_set_auto_reflect(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	

@@ -32,14 +32,12 @@ and can be sold or given away.
 #include "scripts.h"
 #include "weapons.h"
 
-JSValueRef js_weap_target_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_target_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_target_color_get_red(JSContextRef cx);
-JSValueRef js_weap_target_color_get_green(JSContextRef cx);
-JSValueRef js_weap_target_color_get_blue(JSContextRef cx);
-void js_weap_target_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_target_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_target_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_target_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_target_color_get_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_target_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_target_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_target_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_target_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -69,23 +67,7 @@ void script_free_weap_target_color_object(void)
 
 JSObjectRef script_add_weap_target_color_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_target_color_class,"color",weap_target_color_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_target_color_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_target_color_props));
-}
-
-bool js_weap_target_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_target_color_props));
+	return(script_create_child_object(cx,parent_obj,weap_target_color_class,"color"));
 }
 
 /* =======================================================
@@ -94,7 +76,7 @@ bool js_weap_target_color_set_property(JSContextRef cx,JSObjectRef j_obj,JSStrin
       
 ======================================================= */
 
-JSValueRef js_weap_target_color_get_red(JSContextRef cx)
+JSValueRef js_weap_target_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -102,7 +84,7 @@ JSValueRef js_weap_target_color_get_red(JSContextRef cx)
 	return(script_float_to_value(cx,weap->target.col.r));
 }
 
-JSValueRef js_weap_target_color_get_green(JSContextRef cx)
+JSValueRef js_weap_target_color_get_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -110,7 +92,7 @@ JSValueRef js_weap_target_color_get_green(JSContextRef cx)
 	return(script_float_to_value(cx,weap->target.col.g));
 }
 
-JSValueRef js_weap_target_color_get_blue(JSContextRef cx)
+JSValueRef js_weap_target_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -124,7 +106,7 @@ JSValueRef js_weap_target_color_get_blue(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_target_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_target_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -132,7 +114,7 @@ void js_weap_target_color_set_red(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 	weap->target.col.r=script_value_to_float(cx,vp);
 }
 
-void js_weap_target_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_target_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -140,7 +122,7 @@ void js_weap_target_color_set_green(JSContextRef cx,JSValueRef vp,JSValueRef *ex
 	weap->target.col.g=script_value_to_float(cx,vp);
 }
 
-void js_weap_target_color_set_blue(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_target_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 

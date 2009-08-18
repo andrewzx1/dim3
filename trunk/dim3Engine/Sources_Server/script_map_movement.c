@@ -40,8 +40,6 @@ extern void map_movements_script_freeze(int movement_idx);
 extern void map_movements_script_thaw(int movement_idx);
 extern bool map_movements_script_is_looping(int movement_idx);
 
-JSValueRef js_map_movement_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_map_movement_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -78,23 +76,7 @@ void script_free_map_movement_object(void)
 
 JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement",NULL,map_movement_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_map_movement_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,NULL));
-}
-
-bool js_map_movement_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
+	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement"));
 }
 
 /* =======================================================

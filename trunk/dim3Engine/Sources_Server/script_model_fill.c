@@ -34,8 +34,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_model_fill_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_model_fill_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	model_fill_functions[]={
@@ -62,23 +60,7 @@ void script_free_model_fill_object(void)
 
 JSObjectRef script_add_model_fill_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,model_fill_class,"fill",NULL,model_fill_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_model_fill_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,NULL));
-}
-
-bool js_model_fill_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,NULL));
+	return(script_create_child_object(cx,parent_obj,model_fill_class,"fill"));
 }
 
 /* =======================================================

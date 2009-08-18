@@ -35,18 +35,16 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSValueRef js_obj_status_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_status_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_status_get_speed(JSContextRef cx);
-JSValueRef js_obj_status_get_moving(JSContextRef cx);
-JSValueRef js_obj_status_get_running(JSContextRef cx);
-JSValueRef js_obj_status_get_backward(JSContextRef cx);
-JSValueRef js_obj_status_get_sliding(JSContextRef cx);
-JSValueRef js_obj_status_get_stand(JSContextRef cx);
-JSValueRef js_obj_status_get_air(JSContextRef cx);
-JSValueRef js_obj_status_get_liquid(JSContextRef cx);
-JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx);
-JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx);
+JSValueRef js_obj_status_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_moving(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_running(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_backward(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_sliding(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_air(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -88,23 +86,7 @@ void script_free_obj_status_object(void)
 
 JSObjectRef script_add_obj_status_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_status_class,"status",obj_status_props,obj_status_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_status_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_status_props));
-}
-
-bool js_obj_status_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_status_props));
+	return(script_create_child_object(cx,parent_obj,obj_status_class,"status"));
 }
 
 /* =======================================================
@@ -113,7 +95,7 @@ bool js_obj_status_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_obj_status_get_speed(JSContextRef cx)
+JSValueRef js_obj_status_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -121,7 +103,7 @@ JSValueRef js_obj_status_get_speed(JSContextRef cx)
 	return(script_float_to_value(cx,obj->forward_move.speed));
 }
 
-JSValueRef js_obj_status_get_moving(JSContextRef cx)
+JSValueRef js_obj_status_get_moving(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -129,7 +111,7 @@ JSValueRef js_obj_status_get_moving(JSContextRef cx)
 	return(script_bool_to_value(cx,obj->forward_move.moving));
 }
 
-JSValueRef js_obj_status_get_running(JSContextRef cx)
+JSValueRef js_obj_status_get_running(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -137,7 +119,7 @@ JSValueRef js_obj_status_get_running(JSContextRef cx)
 	return(script_bool_to_value(cx,obj->forward_move.running));
 }
 
-JSValueRef js_obj_status_get_backward(JSContextRef cx)
+JSValueRef js_obj_status_get_backward(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -145,7 +127,7 @@ JSValueRef js_obj_status_get_backward(JSContextRef cx)
 	return(script_bool_to_value(cx,obj->forward_move.reverse));
 }
 
-JSValueRef js_obj_status_get_sliding(JSContextRef cx)
+JSValueRef js_obj_status_get_sliding(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -153,7 +135,7 @@ JSValueRef js_obj_status_get_sliding(JSContextRef cx)
 	return(script_bool_to_value(cx,obj->side_move.moving));
 }
 
-JSValueRef js_obj_status_get_stand(JSContextRef cx)
+JSValueRef js_obj_status_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -161,7 +143,7 @@ JSValueRef js_obj_status_get_stand(JSContextRef cx)
 	return(script_int_to_value(cx,obj->duck.mode+sd_stand_standing));
 }
 
-JSValueRef js_obj_status_get_air(JSContextRef cx)
+JSValueRef js_obj_status_get_air(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -169,7 +151,7 @@ JSValueRef js_obj_status_get_air(JSContextRef cx)
 	return(script_int_to_value(cx,obj->air_mode+sd_air_up));
 }
 
-JSValueRef js_obj_status_get_liquid(JSContextRef cx)
+JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -177,7 +159,7 @@ JSValueRef js_obj_status_get_liquid(JSContextRef cx)
 	return(script_int_to_value(cx,obj->liquid_mode+sd_liquid_out));
 }
 
-JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx)
+JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -185,7 +167,7 @@ JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx)
 	return(script_int_to_value(cx,obj->stand_obj_uid));
 }
 
-JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx)
+JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 

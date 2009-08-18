@@ -34,14 +34,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_hand_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_hand_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_hand_position_get_x(JSContextRef cx);
-JSValueRef js_weap_hand_position_get_y(JSContextRef cx);
-JSValueRef js_weap_hand_position_get_z(JSContextRef cx);
-void js_weap_hand_position_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_hand_position_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_hand_position_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_hand_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_hand_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_hand_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_hand_position_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_hand_position_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_hand_position_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		weap_hand_position_props[]={
 							{"x",						js_weap_hand_position_get_x,				js_weap_hand_position_set_x,		kJSPropertyAttributeDontDelete},
@@ -69,23 +67,7 @@ void script_free_weap_hand_position_object(void)
 
 JSObjectRef script_add_weap_hand_position_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_hand_position_class,"handPosition",weap_hand_position_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_hand_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_hand_position_props));
-}
-
-bool js_weap_hand_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_hand_position_props));
+	return(script_create_child_object(cx,parent_obj,weap_hand_position_class,"handPosition"));
 }
 
 /* =======================================================
@@ -94,7 +76,7 @@ bool js_weap_hand_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStri
       
 ======================================================= */
 
-JSValueRef js_weap_hand_position_get_x(JSContextRef cx)
+JSValueRef js_weap_hand_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -102,7 +84,7 @@ JSValueRef js_weap_hand_position_get_x(JSContextRef cx)
 	return(script_int_to_value(cx,weap->hand.shift.x));
 }
 
-JSValueRef js_weap_hand_position_get_y(JSContextRef cx)
+JSValueRef js_weap_hand_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -110,7 +92,7 @@ JSValueRef js_weap_hand_position_get_y(JSContextRef cx)
 	return(script_int_to_value(cx,weap->hand.shift.y));
 }
 
-JSValueRef js_weap_hand_position_get_z(JSContextRef cx)
+JSValueRef js_weap_hand_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -124,7 +106,7 @@ JSValueRef js_weap_hand_position_get_z(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_hand_position_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_hand_position_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -132,7 +114,7 @@ void js_weap_hand_position_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 	weap->hand.shift.x=script_value_to_int(cx,vp);
 }
 
-void js_weap_hand_position_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_hand_position_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -140,7 +122,7 @@ void js_weap_hand_position_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 	weap->hand.shift.y=script_value_to_int(cx,vp);
 }
 
-void js_weap_hand_position_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_hand_position_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	

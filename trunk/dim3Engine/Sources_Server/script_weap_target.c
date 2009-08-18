@@ -35,12 +35,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_target_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_target_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_target_get_on(JSContextRef cx);
-JSValueRef js_weap_target_get_distance(JSContextRef cx);
-JSValueRef js_weap_target_get_objectId(JSContextRef cx);
-void js_weap_target_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_target_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_target_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_target_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_target_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_target_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_target_start_opponent_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_target_end_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -77,23 +75,7 @@ void script_free_weap_target_object(void)
 
 JSObjectRef script_add_weap_target_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_target_class,"target",weap_target_props,weap_target_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_target_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_target_props));
-}
-
-bool js_weap_target_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_target_props));
+	return(script_create_child_object(cx,parent_obj,weap_target_class,"target"));
 }
 
 /* =======================================================
@@ -102,7 +84,7 @@ bool js_weap_target_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
       
 ======================================================= */
 
-JSValueRef js_weap_target_get_on(JSContextRef cx)
+JSValueRef js_weap_target_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -110,7 +92,7 @@ JSValueRef js_weap_target_get_on(JSContextRef cx)
 	return(script_bool_to_value(cx,weap->target.on));
 }
 
-JSValueRef js_weap_target_get_distance(JSContextRef cx)
+JSValueRef js_weap_target_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -118,7 +100,7 @@ JSValueRef js_weap_target_get_distance(JSContextRef cx)
 	return(script_int_to_value(cx,weap->target.distance));
 }
 
-JSValueRef js_weap_target_get_objectId(JSContextRef cx)
+JSValueRef js_weap_target_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -132,7 +114,7 @@ JSValueRef js_weap_target_get_objectId(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_target_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_target_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	

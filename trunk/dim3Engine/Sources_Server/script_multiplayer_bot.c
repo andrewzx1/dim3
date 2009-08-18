@@ -38,9 +38,7 @@ extern server_type		server;
 extern js_type			js;
 extern setup_type		setup;
 
-JSValueRef js_multiplayer_bot_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_multiplayer_bot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx);
+JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		multiplayer_bot_props[]={
@@ -71,23 +69,7 @@ void script_free_multiplayer_bot_object(void)
 
 JSObjectRef script_add_multiplayer_bot_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_bot_class,"bot",multiplayer_bot_props,multiplayer_bot_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_multiplayer_bot_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,multiplayer_bot_props));
-}
-
-bool js_multiplayer_bot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,multiplayer_bot_props));
+	return(script_create_child_object(cx,parent_obj,multiplayer_bot_class,"bot"));
 }
 
 /* =======================================================
@@ -96,7 +78,7 @@ bool js_multiplayer_bot_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx)
+JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_int_to_value(cx,server.skill));
 }

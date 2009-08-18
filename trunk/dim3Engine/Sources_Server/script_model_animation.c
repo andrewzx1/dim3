@@ -32,12 +32,10 @@ and can be sold or given away.
 #include "scripts.h"
 #include "models.h"
 
-JSValueRef js_model_animation_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_model_animation_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_animation_get_index(JSContextRef cx);
-JSValueRef js_model_animation_get_currentAnimationName(JSContextRef cx);
-JSValueRef js_model_animation_get_playing(JSContextRef cx);
-void js_model_animation_set_index(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_animation_get_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_animation_get_currentAnimationName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_model_animation_get_playing(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_animation_set_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -84,23 +82,7 @@ void script_free_model_animation_object(void)
 
 JSObjectRef script_add_model_animation_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,model_animation_class,"animation",model_animation_props,model_animation_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_model_animation_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,model_animation_props));
-}
-
-bool js_model_animation_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,model_animation_props));
+	return(script_create_child_object(cx,parent_obj,model_animation_class,"animation"));
 }
 
 /* =======================================================
@@ -109,7 +91,7 @@ bool js_model_animation_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_model_animation_get_index(JSContextRef cx)
+JSValueRef js_model_animation_get_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 
@@ -117,18 +99,18 @@ JSValueRef js_model_animation_get_index(JSContextRef cx)
 	return(script_int_to_value(cx,draw->script_animation_idx));
 }
 
-JSValueRef js_model_animation_get_currentAnimationName(JSContextRef cx)
+JSValueRef js_model_animation_get_currentAnimationName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	char				name[64];
+	char				ani_name[64];
 	model_draw			*draw;
 
 	draw=script_find_model_draw();
 
-	model_get_current_animation_name(draw,name);
-	return(script_string_to_value(cx,name));
+	model_get_current_animation_name(draw,ani_name);
+	return(script_string_to_value(cx,ani_name));
 }
 
-JSValueRef js_model_animation_get_playing(JSContextRef cx)
+JSValueRef js_model_animation_get_playing(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw				*draw;
 	model_draw_animation	*draw_animation;
@@ -144,7 +126,7 @@ JSValueRef js_model_animation_get_playing(JSContextRef cx)
       
 ======================================================= */
 
-void js_model_animation_set_index(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_animation_set_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 
@@ -152,6 +134,8 @@ void js_model_animation_set_index(JSContextRef cx,JSValueRef vp,JSValueRef *exce
 
 	draw->script_animation_idx=script_value_to_int(cx,vp);
 	if ((draw->script_animation_idx<0) || (draw->script_animation_idx>=max_model_blend_animation)) draw->script_animation_idx=0;
+
+	return(TRUE);
 }
 
 /* =======================================================

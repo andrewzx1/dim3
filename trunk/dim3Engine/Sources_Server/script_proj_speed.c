@@ -34,20 +34,18 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_proj_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_proj_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_speed_get_speed(JSContextRef cx);
-JSValueRef js_proj_speed_get_deceleration(JSContextRef cx);
-JSValueRef js_proj_speed_get_decelerationWait(JSContextRef cx);
-JSValueRef js_proj_speed_get_decelerationMinSpeed(JSContextRef cx);
-JSValueRef js_proj_speed_get_maxHitscanDistance(JSContextRef cx);
-JSValueRef js_proj_speed_get_inheritMotionFactor(JSContextRef cx);
-void js_proj_speed_set_speed(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_speed_set_deceleration(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_speed_set_decelerationWait(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_speed_set_decelerationMinSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_speed_set_maxHitscanDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_proj_speed_set_inheritMotionFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_speed_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_speed_get_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_speed_get_decelerationWait(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_speed_get_decelerationMinSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_speed_get_maxHitscanDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_speed_get_inheritMotionFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_proj_speed_set_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_speed_set_decelerationWait(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_speed_set_decelerationMinSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_speed_set_maxHitscanDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_proj_speed_set_inheritMotionFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		proj_speed_props[]={
 							{"speed",					js_proj_speed_get_speed,					js_proj_speed_set_speed,					kJSPropertyAttributeDontDelete},
@@ -78,23 +76,7 @@ void script_free_proj_speed_object(void)
 
 JSObjectRef script_add_proj_speed_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,proj_speed_class,"speed",proj_speed_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_proj_speed_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,proj_speed_props));
-}
-
-bool js_proj_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,proj_speed_props));
+	return(script_create_child_object(cx,parent_obj,proj_speed_class,"speed"));
 }
 
 /* =======================================================
@@ -103,7 +85,7 @@ bool js_proj_speed_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_proj_speed_get_speed(JSContextRef cx)
+JSValueRef js_proj_speed_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -113,7 +95,7 @@ JSValueRef js_proj_speed_get_speed(JSContextRef cx)
     return(script_float_to_value(cx,proj_setup->speed));
 }
 
-JSValueRef js_proj_speed_get_deceleration(JSContextRef cx)
+JSValueRef js_proj_speed_get_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -123,7 +105,7 @@ JSValueRef js_proj_speed_get_deceleration(JSContextRef cx)
     return(script_float_to_value(cx,proj_setup->decel_speed));
 }
 
-JSValueRef js_proj_speed_get_decelerationWait(JSContextRef cx)
+JSValueRef js_proj_speed_get_decelerationWait(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -133,7 +115,7 @@ JSValueRef js_proj_speed_get_decelerationWait(JSContextRef cx)
 	return(script_int_to_value(cx,proj_setup->decel_grace));
 }
 
-JSValueRef js_proj_speed_get_decelerationMinSpeed(JSContextRef cx)
+JSValueRef js_proj_speed_get_decelerationMinSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -143,7 +125,7 @@ JSValueRef js_proj_speed_get_decelerationMinSpeed(JSContextRef cx)
     return(script_float_to_value(cx,proj_setup->decel_min_speed));
 }
 
-JSValueRef js_proj_speed_get_maxHitscanDistance(JSContextRef cx)
+JSValueRef js_proj_speed_get_maxHitscanDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -153,7 +135,7 @@ JSValueRef js_proj_speed_get_maxHitscanDistance(JSContextRef cx)
 	return(script_int_to_value(cx,proj_setup->hitscan.max_dist));
 }
 
-JSValueRef js_proj_speed_get_inheritMotionFactor(JSContextRef cx)
+JSValueRef js_proj_speed_get_inheritMotionFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -169,7 +151,7 @@ JSValueRef js_proj_speed_get_inheritMotionFactor(JSContextRef cx)
       
 ======================================================= */
 
-void js_proj_speed_set_speed(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_speed_set_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -177,7 +159,7 @@ void js_proj_speed_set_speed(JSContextRef cx,JSValueRef vp,JSValueRef *exception
 	if (proj_setup!=NULL) proj_setup->speed=script_value_to_float(cx,vp);
 }
 
-void js_proj_speed_set_deceleration(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -185,7 +167,7 @@ void js_proj_speed_set_deceleration(JSContextRef cx,JSValueRef vp,JSValueRef *ex
 	if (proj_setup!=NULL) proj_setup->decel_speed=script_value_to_float(cx,vp);
 }
 
-void js_proj_speed_set_decelerationWait(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_speed_set_decelerationWait(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -193,7 +175,7 @@ void js_proj_speed_set_decelerationWait(JSContextRef cx,JSValueRef vp,JSValueRef
 	if (proj_setup!=NULL) proj_setup->decel_grace=script_value_to_int(cx,vp);
 }
 
-void js_proj_speed_set_decelerationMinSpeed(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_speed_set_decelerationMinSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -201,7 +183,7 @@ void js_proj_speed_set_decelerationMinSpeed(JSContextRef cx,JSValueRef vp,JSValu
 	if (proj_setup!=NULL) proj_setup->decel_min_speed=script_value_to_float(cx,vp);
 }
 
-void js_proj_speed_set_maxHitscanDistance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_speed_set_maxHitscanDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -209,7 +191,7 @@ void js_proj_speed_set_maxHitscanDistance(JSContextRef cx,JSValueRef vp,JSValueR
 	if (proj_setup!=NULL) proj_setup->hitscan.max_dist=script_value_to_int(cx,vp);
 }
 
-void js_proj_speed_set_inheritMotionFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_proj_speed_set_inheritMotionFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	

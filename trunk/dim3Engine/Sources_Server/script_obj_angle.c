@@ -37,11 +37,9 @@ extern js_type			js;
 
 extern void object_setup_motion(obj_type *obj,float ang,float speed);
 
-JSValueRef js_obj_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_angle_get_x(JSContextRef cx);
-JSValueRef js_obj_angle_get_y(JSContextRef cx);
-JSValueRef js_obj_angle_get_z(JSContextRef cx);
+JSValueRef js_obj_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -76,23 +74,7 @@ void script_free_obj_angle_object(void)
 
 JSObjectRef script_add_obj_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_angle_class,"angle",obj_angle_props,obj_angle_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_angle_props));
-}
-
-bool js_obj_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_angle_props));
+	return(script_create_child_object(cx,parent_obj,obj_angle_class,"angle"));
 }
 
 /* =======================================================
@@ -101,7 +83,7 @@ bool js_obj_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_obj_angle_get_x(JSContextRef cx)
+JSValueRef js_obj_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -109,7 +91,7 @@ JSValueRef js_obj_angle_get_x(JSContextRef cx)
 	return(script_float_to_value(cx,obj->ang.x));
 }
 
-JSValueRef js_obj_angle_get_y(JSContextRef cx)
+JSValueRef js_obj_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -117,7 +99,7 @@ JSValueRef js_obj_angle_get_y(JSContextRef cx)
 	return(script_float_to_value(cx,obj->ang.y));
 }
 
-JSValueRef js_obj_angle_get_z(JSContextRef cx)
+JSValueRef js_obj_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 

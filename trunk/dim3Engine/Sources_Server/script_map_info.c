@@ -34,11 +34,9 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSValueRef js_map_info_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_map_info_get_file(JSContextRef cx);
-JSValueRef js_map_info_get_title(JSContextRef cx);
-JSValueRef js_map_info_get_author(JSContextRef cx);
+JSValueRef js_map_info_get_file(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_map_info_get_title(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_map_info_get_author(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		map_info_props[]={
 							{"file",				js_map_info_get_file,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -66,23 +64,7 @@ void script_free_map_info_object(void)
 
 JSObjectRef script_add_map_info_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,map_info_class,"info",map_info_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_map_info_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,map_info_props));
-}
-
-bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,map_info_props));
+	return(script_create_child_object(cx,parent_obj,map_info_class,"info"));
 }
 
 /* =======================================================
@@ -91,17 +73,17 @@ bool js_map_info_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
       
 ======================================================= */
 
-JSValueRef js_map_info_get_file(JSContextRef cx)
+JSValueRef js_map_info_get_file(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_string_to_value(cx,map.info.name));
 }
 
-JSValueRef js_map_info_get_title(JSContextRef cx)
+JSValueRef js_map_info_get_title(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_string_to_value(cx,map.info.title));
 }
 
-JSValueRef js_map_info_get_author(JSContextRef cx)
+JSValueRef js_map_info_get_author(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_string_to_value(cx,map.info.author));
 }

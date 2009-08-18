@@ -37,11 +37,9 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-JSValueRef js_game_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_game_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_game_setting_get_type(JSContextRef cx);
-JSValueRef js_game_setting_get_multiplayer(JSContextRef cx);
-JSValueRef js_game_setting_get_skill(JSContextRef cx);
+JSValueRef js_game_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_game_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_game_setting_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		game_setting_props[]={
 							{"type",				js_game_setting_get_type,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -69,23 +67,7 @@ void script_free_game_setting_object(void)
 
 JSObjectRef script_add_game_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,game_setting_class,"setting",game_setting_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_game_setting_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,game_setting_props));
-}
-
-bool js_game_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,game_setting_props));
+	return(script_create_child_object(cx,parent_obj,game_setting_class,"setting"));
 }
 
 /* =======================================================
@@ -94,19 +76,19 @@ bool js_game_setting_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_game_setting_get_type(JSContextRef cx)
+JSValueRef js_game_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	if (!net_setup.client.joined) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,net_setup.games[net_setup.game_idx].name));
 }
 
-JSValueRef js_game_setting_get_multiplayer(JSContextRef cx)
+JSValueRef js_game_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_bool_to_value(cx,net_setup.client.joined));
 }
 
-JSValueRef js_game_setting_get_skill(JSContextRef cx)
+JSValueRef js_game_setting_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_int_to_value(cx,server.skill));
 }

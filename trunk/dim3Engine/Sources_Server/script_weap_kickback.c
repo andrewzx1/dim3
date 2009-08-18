@@ -35,10 +35,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_kickback_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_kickback_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_kickback_get_size(JSContextRef cx);
-void js_weap_kickback_set_size(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_kickback_get_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_kickback_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		weap_kickback_props[]={
@@ -69,23 +67,7 @@ void script_free_weap_kickback_object(void)
 
 JSObjectRef script_add_weap_kickback_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_kickback_class,"kickback",weap_kickback_props,weap_kickback_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_kickback_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_kickback_props));
-}
-
-bool js_weap_kickback_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_kickback_props));
+	return(script_create_child_object(cx,parent_obj,weap_kickback_class,"kickback"));
 }
 
 /* =======================================================
@@ -94,7 +76,7 @@ bool js_weap_kickback_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef
       
 ======================================================= */
 
-JSValueRef js_weap_kickback_get_size(JSContextRef cx)
+JSValueRef js_weap_kickback_get_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -108,7 +90,7 @@ JSValueRef js_weap_kickback_get_size(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_kickback_set_size(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_kickback_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	

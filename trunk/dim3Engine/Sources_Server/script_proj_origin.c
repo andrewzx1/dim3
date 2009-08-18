@@ -34,11 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_proj_origin_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_proj_origin_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_proj_origin_get_x(JSContextRef cx);
-JSValueRef js_proj_origin_get_y(JSContextRef cx);
-JSValueRef js_proj_origin_get_z(JSContextRef cx);
+JSValueRef js_proj_origin_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_origin_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_proj_origin_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		proj_origin_props[]={
 							{"x",					js_proj_origin_get_x,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -66,23 +64,7 @@ void script_free_proj_origin_object(void)
 
 JSObjectRef script_add_proj_origin_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,proj_origin_class,"origin",proj_origin_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_proj_origin_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,proj_origin_props));
-}
-
-bool js_proj_origin_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,proj_origin_props));
+	return(script_create_child_object(cx,parent_obj,proj_origin_class,"origin"));
 }
 
 /* =======================================================
@@ -91,7 +73,7 @@ bool js_proj_origin_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
       
 ======================================================= */
 
-JSValueRef js_proj_origin_get_x(JSContextRef cx)
+JSValueRef js_proj_origin_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -101,7 +83,7 @@ JSValueRef js_proj_origin_get_x(JSContextRef cx)
 	return(script_int_to_value(cx,proj->org_pnt.x));
 }
 
-JSValueRef js_proj_origin_get_y(JSContextRef cx)
+JSValueRef js_proj_origin_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_type			*proj;
 
@@ -111,7 +93,7 @@ JSValueRef js_proj_origin_get_y(JSContextRef cx)
 	return(script_int_to_value(cx,proj->org_pnt.y));
 }
 
-JSValueRef js_proj_origin_get_z(JSContextRef cx)
+JSValueRef js_proj_origin_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_type			*proj;
 

@@ -34,29 +34,27 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_zoom_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_zoom_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_zoom_get_on(JSContextRef cx);
-JSValueRef js_weap_zoom_get_active(JSContextRef cx);
-JSValueRef js_weap_zoom_get_fovMinimum(JSContextRef cx);
-JSValueRef js_weap_zoom_get_fovMaximum(JSContextRef cx);
-JSValueRef js_weap_zoom_get_fovSteps(JSContextRef cx);
-JSValueRef js_weap_zoom_get_turnFactor(JSContextRef cx);
-JSValueRef js_weap_zoom_get_crawlTurnFactor(JSContextRef cx);
-JSValueRef js_weap_zoom_get_lookFactor(JSContextRef cx);
-JSValueRef js_weap_zoom_get_maskName(JSContextRef cx);
-JSValueRef js_weap_zoom_get_showWeapon(JSContextRef cx);
-JSValueRef js_weap_zoom_get_tick(JSContextRef cx);
-void js_weap_zoom_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_fovMinimum(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_fovMaximum(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_fovSteps(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_turnFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_crawlTurnFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_lookFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_maskName(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_showWeapon(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_zoom_set_tick(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_active(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_fovMinimum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_fovMaximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_fovSteps(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_turnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_crawlTurnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_zoom_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_fovMinimum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_fovMaximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_fovSteps(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_turnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_crawlTurnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_zoom_set_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		weap_zoom_props[]={
 							{"on",					js_weap_zoom_get_on,						js_weap_zoom_set_on,				kJSPropertyAttributeDontDelete},
@@ -92,23 +90,7 @@ void script_free_weap_zoom_object(void)
 
 JSObjectRef script_add_weap_zoom_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_zoom_class,"zoom",weap_zoom_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_zoom_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_zoom_props));
-}
-
-bool js_weap_zoom_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_zoom_props));
+	return(script_create_child_object(cx,parent_obj,weap_zoom_class,"zoom"));
 }
 
 /* =======================================================
@@ -117,7 +99,7 @@ bool js_weap_zoom_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_weap_zoom_get_on(JSContextRef cx)
+JSValueRef js_weap_zoom_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -125,7 +107,7 @@ JSValueRef js_weap_zoom_get_on(JSContextRef cx)
 	return(script_bool_to_value(cx,weap->zoom.on));
 }
 
-JSValueRef js_weap_zoom_get_active(JSContextRef cx)
+JSValueRef js_weap_zoom_get_active(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -133,7 +115,7 @@ JSValueRef js_weap_zoom_get_active(JSContextRef cx)
 	return(script_bool_to_value(cx,weap->zoom.mode!=zoom_mode_off));
 }
 
-JSValueRef js_weap_zoom_get_fovMinimum(JSContextRef cx)
+JSValueRef js_weap_zoom_get_fovMinimum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -141,7 +123,7 @@ JSValueRef js_weap_zoom_get_fovMinimum(JSContextRef cx)
 	return(script_float_to_value(cx,weap->zoom.fov_min));
 }
 
-JSValueRef js_weap_zoom_get_fovMaximum(JSContextRef cx)
+JSValueRef js_weap_zoom_get_fovMaximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -149,7 +131,7 @@ JSValueRef js_weap_zoom_get_fovMaximum(JSContextRef cx)
 	return(script_float_to_value(cx,weap->zoom.fov_max));
 }
 
-JSValueRef js_weap_zoom_get_fovSteps(JSContextRef cx)
+JSValueRef js_weap_zoom_get_fovSteps(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -157,7 +139,7 @@ JSValueRef js_weap_zoom_get_fovSteps(JSContextRef cx)
 	return(script_int_to_value(cx,weap->zoom.step_count));
 }
 
-JSValueRef js_weap_zoom_get_turnFactor(JSContextRef cx)
+JSValueRef js_weap_zoom_get_turnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -165,7 +147,7 @@ JSValueRef js_weap_zoom_get_turnFactor(JSContextRef cx)
 	return(script_float_to_value(cx,weap->zoom.turn_factor));
 }
 
-JSValueRef js_weap_zoom_get_crawlTurnFactor(JSContextRef cx)
+JSValueRef js_weap_zoom_get_crawlTurnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -173,7 +155,7 @@ JSValueRef js_weap_zoom_get_crawlTurnFactor(JSContextRef cx)
 	return(script_float_to_value(cx,weap->zoom.crawl_turn_factor));
 }
 
-JSValueRef js_weap_zoom_get_lookFactor(JSContextRef cx)
+JSValueRef js_weap_zoom_get_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -181,7 +163,7 @@ JSValueRef js_weap_zoom_get_lookFactor(JSContextRef cx)
 	return(script_float_to_value(cx,weap->zoom.look_factor));
 }
 
-JSValueRef js_weap_zoom_get_maskName(JSContextRef cx)
+JSValueRef js_weap_zoom_get_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -189,7 +171,7 @@ JSValueRef js_weap_zoom_get_maskName(JSContextRef cx)
 	return(script_string_to_value(cx,weap->zoom.mask_name));
 }
 
-JSValueRef js_weap_zoom_get_showWeapon(JSContextRef cx)
+JSValueRef js_weap_zoom_get_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -197,7 +179,7 @@ JSValueRef js_weap_zoom_get_showWeapon(JSContextRef cx)
 	return(script_bool_to_value(cx,weap->zoom.show_weapon));
 }
 
-JSValueRef js_weap_zoom_get_tick(JSContextRef cx)
+JSValueRef js_weap_zoom_get_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -211,7 +193,7 @@ JSValueRef js_weap_zoom_get_tick(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_zoom_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -219,7 +201,7 @@ void js_weap_zoom_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 	weap->zoom.on=script_value_to_bool(cx,vp);
 }
 
-void js_weap_zoom_set_fovMinimum(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_fovMinimum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -227,7 +209,7 @@ void js_weap_zoom_set_fovMinimum(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 	weap->zoom.fov_min=script_value_to_float(cx,vp);
 }
 
-void js_weap_zoom_set_fovMaximum(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_fovMaximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -235,7 +217,7 @@ void js_weap_zoom_set_fovMaximum(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 	weap->zoom.fov_max=script_value_to_float(cx,vp);
 }
 
-void js_weap_zoom_set_fovSteps(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_fovSteps(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -243,7 +225,7 @@ void js_weap_zoom_set_fovSteps(JSContextRef cx,JSValueRef vp,JSValueRef *excepti
 	weap->zoom.step_count=script_value_to_int(cx,vp);
 }
 
-void js_weap_zoom_set_turnFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_turnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -251,7 +233,7 @@ void js_weap_zoom_set_turnFactor(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 	weap->zoom.turn_factor=script_value_to_float(cx,vp);
 }
 
-void js_weap_zoom_set_crawlTurnFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_crawlTurnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -259,7 +241,7 @@ void js_weap_zoom_set_crawlTurnFactor(JSContextRef cx,JSValueRef vp,JSValueRef *
 	weap->zoom.crawl_turn_factor=script_value_to_float(cx,vp);
 }
 
-void js_weap_zoom_set_lookFactor(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -267,7 +249,7 @@ void js_weap_zoom_set_lookFactor(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 	weap->zoom.look_factor=script_value_to_float(cx,vp);
 }
 
-void js_weap_zoom_set_maskName(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -276,7 +258,7 @@ void js_weap_zoom_set_maskName(JSContextRef cx,JSValueRef vp,JSValueRef *excepti
 	weapon_attach_zoom_mask(weap);
 }
 
-void js_weap_zoom_set_showWeapon(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -284,7 +266,7 @@ void js_weap_zoom_set_showWeapon(JSContextRef cx,JSValueRef vp,JSValueRef *excep
 	weap->zoom.show_weapon=script_value_to_bool(cx,vp);
 }
 
-void js_weap_zoom_set_tick(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_zoom_set_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	

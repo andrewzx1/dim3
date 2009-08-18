@@ -35,14 +35,12 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
-JSValueRef js_camera_chase_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_camera_chase_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_camera_chase_angle_get_x(JSContextRef cx);
-JSValueRef js_camera_chase_angle_get_y(JSContextRef cx);
-JSValueRef js_camera_chase_angle_get_z(JSContextRef cx);
-void js_camera_chase_angle_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_camera_chase_angle_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_camera_chase_angle_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_chase_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_camera_chase_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_camera_chase_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_camera_chase_angle_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_camera_chase_angle_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_camera_chase_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		camera_chase_angle_props[]={
 							{"x",					js_camera_chase_angle_get_x,			js_camera_chase_angle_set_x,		kJSPropertyAttributeDontDelete},
@@ -70,23 +68,7 @@ void script_free_camera_chase_angle_object(void)
 
 JSObjectRef script_add_camera_chase_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,camera_chase_angle_class,"chaseAngle",camera_chase_angle_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_camera_chase_angle_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,camera_chase_angle_props));
-}
-
-bool js_camera_chase_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,camera_chase_angle_props));
+	return(script_create_child_object(cx,parent_obj,camera_chase_angle_class,"chaseAngle"));
 }
 
 /* =======================================================
@@ -95,17 +77,17 @@ bool js_camera_chase_angle_set_property(JSContextRef cx,JSObjectRef j_obj,JSStri
       
 ======================================================= */
 
-JSValueRef js_camera_chase_angle_get_x(JSContextRef cx)
+JSValueRef js_camera_chase_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_float_to_value(cx,camera.chase_ang.x));
 }
 
-JSValueRef js_camera_chase_angle_get_y(JSContextRef cx)
+JSValueRef js_camera_chase_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_float_to_value(cx,camera.chase_ang.y));
 }
 
-JSValueRef js_camera_chase_angle_get_z(JSContextRef cx)
+JSValueRef js_camera_chase_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_float_to_value(cx,camera.chase_ang.z));
 }
@@ -116,17 +98,23 @@ JSValueRef js_camera_chase_angle_get_z(JSContextRef cx)
       
 ======================================================= */
 
-void js_camera_chase_angle_set_x(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_camera_chase_angle_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	camera.chase_ang.x=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_camera_chase_angle_set_y(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_camera_chase_angle_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	camera.chase_ang.y=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_camera_chase_angle_set_z(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_camera_chase_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	camera.chase_ang.z=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }

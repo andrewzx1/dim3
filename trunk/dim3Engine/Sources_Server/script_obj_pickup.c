@@ -35,13 +35,11 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSValueRef js_obj_pickup_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_pickup_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_pickup_get_objectId(JSContextRef cx);
-JSValueRef js_obj_pickup_get_objectName(JSContextRef cx);
-JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx);
-JSValueRef js_obj_pickup_get_itemId(JSContextRef cx);
-JSValueRef js_obj_pickup_get_itemName(JSContextRef cx);
+JSValueRef js_obj_pickup_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_pickup_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_pickup_get_itemId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_pickup_get_itemName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_pickup_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -92,23 +90,7 @@ void script_free_obj_pickup_object(void)
 
 JSObjectRef script_add_obj_pickup_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_pickup_class,"pickup",obj_pickup_props,obj_pickup_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_pickup_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_pickup_props));
-}
-
-bool js_obj_pickup_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_pickup_props));
+	return(script_create_child_object(cx,parent_obj,obj_pickup_class,"pickup"));
 }
 
 /* =======================================================
@@ -117,7 +99,7 @@ bool js_obj_pickup_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_obj_pickup_get_objectId(JSContextRef cx)
+JSValueRef js_obj_pickup_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -125,7 +107,7 @@ JSValueRef js_obj_pickup_get_objectId(JSContextRef cx)
 	return(script_int_to_value(cx,obj->pickup.obj_uid));
 }
 
-JSValueRef js_obj_pickup_get_objectName(JSContextRef cx)
+JSValueRef js_obj_pickup_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj,*pickup_obj;
 
@@ -137,7 +119,7 @@ JSValueRef js_obj_pickup_get_objectName(JSContextRef cx)
 	return(script_string_to_value(cx,pickup_obj->name));
 }
 
-JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx)
+JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -145,7 +127,7 @@ JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx)
 	return(script_bool_to_value(cx,obj->pickup.obj_uid==server.player_obj_uid));
 }
 
-JSValueRef js_obj_pickup_get_itemId(JSContextRef cx)
+JSValueRef js_obj_pickup_get_itemId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
@@ -153,7 +135,7 @@ JSValueRef js_obj_pickup_get_itemId(JSContextRef cx)
 	return(script_int_to_value(cx,obj->pickup.item_uid));
 }
 
-JSValueRef js_obj_pickup_get_itemName(JSContextRef cx)
+JSValueRef js_obj_pickup_get_itemName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj,*pickup_item;
 

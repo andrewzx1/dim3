@@ -31,10 +31,8 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSValueRef js_model_shadow_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_model_shadow_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_model_shadow_get_on(JSContextRef cx);
-void js_model_shadow_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_model_shadow_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+bool js_model_shadow_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 extern js_type			js;
 
@@ -62,23 +60,7 @@ void script_free_model_shadow_object(void)
 
 JSObjectRef script_add_model_shadow_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,model_shadow_class,"shadow",model_shadow_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_model_shadow_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,model_shadow_props));
-}
-
-bool js_model_shadow_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,model_shadow_props));
+	return(script_create_child_object(cx,parent_obj,model_shadow_class,"shadow"));
 }
 
 /* =======================================================
@@ -87,7 +69,7 @@ bool js_model_shadow_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_model_shadow_get_on(JSContextRef cx)
+JSValueRef js_model_shadow_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
@@ -104,7 +86,7 @@ JSValueRef js_model_shadow_get_on(JSContextRef cx)
       
 ======================================================= */
 
-void js_model_shadow_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+bool js_model_shadow_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
@@ -113,5 +95,7 @@ void js_model_shadow_set_on(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
 	shadow=&draw->shadow;
 
 	shadow->on=script_value_to_bool(cx,vp);
+	
+	return(TRUE);
 }
 

@@ -35,11 +35,9 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSValueRef js_obj_hit_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_obj_hit_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_hit_position_get_x(JSContextRef cx);
-JSValueRef js_obj_hit_position_get_y(JSContextRef cx);
-JSValueRef js_obj_hit_position_get_z(JSContextRef cx);
+JSValueRef js_obj_hit_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		obj_hit_position_props[]={
 							{"x",					js_obj_hit_position_get_x,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -67,23 +65,7 @@ void script_free_obj_hit_position_object(void)
 
 JSObjectRef script_add_obj_hit_position_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_hit_position_class,"hitPosition",obj_hit_position_props,NULL));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_obj_hit_position_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,obj_hit_position_props));
-}
-
-bool js_obj_hit_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,obj_hit_position_props));
+	return(script_create_child_object(cx,parent_obj,obj_hit_position_class,"hitPosition"));
 }
 
 /* =======================================================
@@ -92,7 +74,7 @@ bool js_obj_hit_position_set_property(JSContextRef cx,JSObjectRef j_obj,JSString
       
 ======================================================= */
 
-JSValueRef js_obj_hit_position_get_x(JSContextRef cx)
+JSValueRef js_obj_hit_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 
@@ -100,7 +82,7 @@ JSValueRef js_obj_hit_position_get_x(JSContextRef cx)
 	return(script_int_to_value(cx,obj->hit.pnt.x));
 }
 
-JSValueRef js_obj_hit_position_get_y(JSContextRef cx)
+JSValueRef js_obj_hit_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 
@@ -108,7 +90,7 @@ JSValueRef js_obj_hit_position_get_y(JSContextRef cx)
 	return(script_int_to_value(cx,obj->hit.pnt.y));
 }
 
-JSValueRef js_obj_hit_position_get_z(JSContextRef cx)
+JSValueRef js_obj_hit_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
 

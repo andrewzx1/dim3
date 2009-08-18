@@ -353,29 +353,6 @@ and can be sold or given away.
 #define sd_event_remote_telefrag						3085
 
 //
-// callbacks
-//
-
-typedef JSValueRef (*script_get_callback)(JSContextRef cx);
-typedef void (*script_set_callback)(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-
-//
-// object setup structures
-//
-
-typedef struct		{
-						const char						*name;
-						script_get_callback				getter;
-						script_set_callback				setter;
-					} script_js_property;
-
-typedef struct		{
-						const char						*name;
-						JSObjectCallAsFunctionCallback	call;
-						int								nargs;
-					} script_js_function;
-
-//
 // define structure
 //
  

@@ -35,26 +35,24 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_weap_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_melee_get_strikeBoneTag(JSContextRef cx);
-JSValueRef js_weap_melee_get_strikePoseName(JSContextRef cx);
-JSValueRef js_weap_melee_get_objectStrikeBoneTag(JSContextRef cx);
-JSValueRef js_weap_melee_get_objectStrikePoseName(JSContextRef cx);
-JSValueRef js_weap_melee_get_radius(JSContextRef cx);
-JSValueRef js_weap_melee_get_distance(JSContextRef cx);
-JSValueRef js_weap_melee_get_damage(JSContextRef cx);
-JSValueRef js_weap_melee_get_force(JSContextRef cx);
-JSValueRef js_weap_melee_get_fallOff(JSContextRef cx);
-void js_weap_melee_set_strikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_melee_set_strikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_melee_set_objectStrikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_melee_set_objectStrikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_melee_set_radius(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_melee_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
-void js_weap_melee_set_fallOff(JSContextRef cx,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_melee_get_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_melee_get_objectStrikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_melee_get_objectStrikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_melee_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_melee_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_melee_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+void js_weap_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_melee_set_objectStrikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_melee_set_objectStrikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_melee_set_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_melee_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_melee_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+void js_weap_melee_set_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -95,23 +93,7 @@ void script_free_weap_melee_object(void)
 
 JSObjectRef script_add_weap_melee_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_melee_class,"melee",weap_melee_props,weap_melee_functions));
-}
-
-/* =======================================================
-
-      Object Getter and Setter
-      
-======================================================= */
-
-JSValueRef js_weap_melee_get_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_get_property(cx,j_obj,name,weap_melee_props));
-}
-
-bool js_weap_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	return(script_set_property(cx,j_obj,name,vp,exception,weap_melee_props));
+	return(script_create_child_object(cx,parent_obj,weap_melee_class,"melee"));
 }
 
 /* =======================================================
@@ -120,7 +102,7 @@ bool js_weap_melee_set_property(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_weap_melee_get_strikeBoneTag(JSContextRef cx)
+JSValueRef js_weap_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -131,7 +113,7 @@ JSValueRef js_weap_melee_get_strikeBoneTag(JSContextRef cx)
 	return(script_string_to_value(cx,str));
 }
 
-JSValueRef js_weap_melee_get_strikePoseName(JSContextRef cx)
+JSValueRef js_weap_melee_get_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -139,7 +121,7 @@ JSValueRef js_weap_melee_get_strikePoseName(JSContextRef cx)
 	return(script_string_to_value(cx,weap->melee.strike_pose_name));
 }
 
-JSValueRef js_weap_melee_get_objectStrikeBoneTag(JSContextRef cx)
+JSValueRef js_weap_melee_get_objectStrikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -150,7 +132,7 @@ JSValueRef js_weap_melee_get_objectStrikeBoneTag(JSContextRef cx)
 	return(script_string_to_value(cx,str));
 }
 
-JSValueRef js_weap_melee_get_objectStrikePoseName(JSContextRef cx)
+JSValueRef js_weap_melee_get_objectStrikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -158,7 +140,7 @@ JSValueRef js_weap_melee_get_objectStrikePoseName(JSContextRef cx)
 	return(script_string_to_value(cx,weap->melee.object_strike_pose_name));
 }
 
-JSValueRef js_weap_melee_get_radius(JSContextRef cx)
+JSValueRef js_weap_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -166,7 +148,7 @@ JSValueRef js_weap_melee_get_radius(JSContextRef cx)
 	return(script_int_to_value(cx,weap->melee.radius));
 }
 
-JSValueRef js_weap_melee_get_distance(JSContextRef cx)
+JSValueRef js_weap_melee_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -174,7 +156,7 @@ JSValueRef js_weap_melee_get_distance(JSContextRef cx)
 	return(script_int_to_value(cx,weap->melee.distance));
 }
 
-JSValueRef js_weap_melee_get_damage(JSContextRef cx)
+JSValueRef js_weap_melee_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -182,7 +164,7 @@ JSValueRef js_weap_melee_get_damage(JSContextRef cx)
 	return(script_int_to_value(cx,weap->melee.damage));
 }
 
-JSValueRef js_weap_melee_get_force(JSContextRef cx)
+JSValueRef js_weap_melee_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -190,7 +172,7 @@ JSValueRef js_weap_melee_get_force(JSContextRef cx)
 	return(script_int_to_value(cx,weap->melee.force));
 }
 
-JSValueRef js_weap_melee_get_fallOff(JSContextRef cx)
+JSValueRef js_weap_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -204,7 +186,7 @@ JSValueRef js_weap_melee_get_fallOff(JSContextRef cx)
       
 ======================================================= */
 
-void js_weap_melee_set_strikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -215,7 +197,7 @@ void js_weap_melee_set_strikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *e
 	weap->melee.strike_bone_tag=text_to_model_tag(str);
 }
 
-void js_weap_melee_set_strikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -223,7 +205,7 @@ void js_weap_melee_set_strikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *
 	script_value_to_string(cx,vp,weap->melee.strike_pose_name,name_str_len);
 }
 
-void js_weap_melee_set_objectStrikeBoneTag(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_objectStrikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -234,7 +216,7 @@ void js_weap_melee_set_objectStrikeBoneTag(JSContextRef cx,JSValueRef vp,JSValue
 	weap->melee.object_strike_bone_tag=text_to_model_tag(str);
 }
 
-void js_weap_melee_set_objectStrikePoseName(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_objectStrikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -242,7 +224,7 @@ void js_weap_melee_set_objectStrikePoseName(JSContextRef cx,JSValueRef vp,JSValu
 	script_value_to_string(cx,vp,weap->melee.object_strike_pose_name,name_str_len);
 }
 
-void js_weap_melee_set_radius(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -250,7 +232,7 @@ void js_weap_melee_set_radius(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 	weap->melee.radius=script_value_to_int(cx,vp);
 }
 
-void js_weap_melee_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -258,7 +240,7 @@ void js_weap_melee_set_distance(JSContextRef cx,JSValueRef vp,JSValueRef *except
 	weap->melee.distance=script_value_to_int(cx,vp);
 }
 
-void js_weap_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -266,7 +248,7 @@ void js_weap_melee_set_damage(JSContextRef cx,JSValueRef vp,JSValueRef *exceptio
 	weap->melee.damage=script_value_to_int(cx,vp);
 }
 
-void js_weap_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -274,7 +256,7 @@ void js_weap_melee_set_force(JSContextRef cx,JSValueRef vp,JSValueRef *exception
 	weap->melee.force=script_value_to_int(cx,vp);
 }
 
-void js_weap_melee_set_fallOff(JSContextRef cx,JSValueRef vp,JSValueRef *exception)
+void js_weap_melee_set_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
