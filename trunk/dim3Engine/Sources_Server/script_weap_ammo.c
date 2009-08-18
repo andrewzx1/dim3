@@ -44,14 +44,14 @@ JSValueRef js_weap_ammo_get_clipCount(JSContextRef cx,JSObjectRef j_obj,JSString
 JSValueRef js_weap_ammo_get_initClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_ammo_get_maxClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_ammo_get_lastReloadTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_weap_ammo_set_ammo(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_ammo_set_clip(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_ammo_set_count(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_ammo_set_initCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_ammo_set_maxCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_ammo_set_clipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_ammo_set_initClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_ammo_set_maxClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_ammo_set_ammo(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_ammo_set_clip(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_ammo_set_count(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_ammo_set_initCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_ammo_set_maxCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_ammo_set_clipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_ammo_set_initClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_ammo_set_maxClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_ammo_use_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_ammo_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -228,7 +228,7 @@ JSValueRef js_weap_ammo_get_lastReloadTick(JSContextRef cx,JSObjectRef j_obj,JSS
       
 ======================================================= */
 
-void js_weap_ammo_set_ammo(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_ammo_set_ammo(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -237,9 +237,11 @@ void js_weap_ammo_set_ammo(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	ammo=&weap->ammo;
 	
 	ammo->use_ammo=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_ammo_set_clip(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_ammo_set_clip(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -248,9 +250,11 @@ void js_weap_ammo_set_clip(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	ammo=&weap->ammo;
 
 	ammo->use_clips=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_ammo_set_count(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_ammo_set_count(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -264,9 +268,11 @@ void js_weap_ammo_set_count(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 	else {
 		ammo->count=script_value_to_int(cx,vp);
 	}
+
+	return(TRUE);
 }
 
-void js_weap_ammo_set_initCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_ammo_set_initCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -275,9 +281,11 @@ void js_weap_ammo_set_initCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 	ammo=&weap->ammo;
 
 	ammo->init_count=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_ammo_set_maxCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_ammo_set_maxCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -286,9 +294,11 @@ void js_weap_ammo_set_maxCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 	ammo=&weap->ammo;
 
 	ammo->max_count=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_ammo_set_clipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_ammo_set_clipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -297,9 +307,11 @@ void js_weap_ammo_set_clipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 	ammo=&weap->ammo;
 
 	ammo->clip_count=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_ammo_set_initClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_ammo_set_initClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -308,9 +320,11 @@ void js_weap_ammo_set_initClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	ammo=&weap->ammo;
 
 	ammo->init_clip_count=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_ammo_set_maxClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_ammo_set_maxClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
@@ -319,6 +333,8 @@ void js_weap_ammo_set_maxClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	ammo=&weap->ammo;
 	
 	ammo->max_clip_count=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
 /* =======================================================

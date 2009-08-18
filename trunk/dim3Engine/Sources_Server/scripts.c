@@ -35,13 +35,6 @@ and can be sold or given away.
 extern js_type				js;
 extern setup_type			setup;
 
-// supergumba -- js -- probably not necessary anymore
-// NOTE: Scripts aren't like other objects which have a list that is compressed as objects
-// are deleted from it.  SpiderMonkey requires rooting, which requires a pointer.  The pointers
-// must remain correct otherwise spidermonkey will crash.  Therefore, the script list can never
-// be changed while other scripts are live.
-//
-
 /* =======================================================
 
       JavaScript Initialize/Shutdown
@@ -156,7 +149,7 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 {
 	JSStringRef		j_script_data,j_script_name;
 	JSValueRef		rval,exception;
-	
+
 		// execute
 		
 	memmove(&js.attach,attach,sizeof(attach_type));
@@ -164,7 +157,7 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 	j_script_data=JSStringCreateWithUTF8CString(script->data);
 	j_script_name=JSStringCreateWithUTF8CString(script->name);
 
-	rval=JSEvaluateScript(script->cx,j_script_data,script->global_obj,j_script_name,0,&exception);
+	rval=JSEvaluateScript(script->cx,j_script_data,NULL,j_script_name,0,&exception);
 
 	JSStringRelease(j_script_name);
 	JSStringRelease(j_script_data);
@@ -249,7 +242,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	}
 	
 		// create the object
-	
+
 	script->obj=script_create_main_object(script->cx,attach);
 	if (script->obj==NULL) {
 		strcpy(err_str,"JavaScript Engine: Not enough memory to create an object");

@@ -43,13 +43,13 @@ JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx,JSObjectRef 
 JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_projectile_get_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -198,7 +198,7 @@ JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx,JSObjectRef j_obj,
       
 ======================================================= */
 
-void js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -207,9 +207,11 @@ void js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 	script_value_to_string(cx,vp,str,32);
 	weap->proj.fire_bone_tag=text_to_model_tag(str);
+
+	return(TRUE);
 }
 
-void js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -218,17 +220,21 @@ void js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 	script_value_to_string(cx,vp,str,32);
 	weap->proj.barrel_bone_tag=text_to_model_tag(str);
+
+	return(TRUE);
 }
 
-void js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	script_value_to_string(cx,vp,weap->proj.fire_pose_name,name_str_len);
+
+	return(TRUE);
 }
 
-void js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	char			str[32];
 	weapon_type		*weap;
@@ -237,30 +243,38 @@ void js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,
 
 	script_value_to_string(cx,vp,str,32);
 	weap->proj.object_fire_bone_tag=text_to_model_tag(str);
+
+	return(TRUE);
 }
 
-void js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	script_value_to_string(cx,vp,weap->proj.object_fire_pose_name,name_str_len);
+
+	return(TRUE);
 }
 
-void js_weap_projectile_set_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->proj.repeat_on=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->proj.repeat_tick=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
 /* =======================================================

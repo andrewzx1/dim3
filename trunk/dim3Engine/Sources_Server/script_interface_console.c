@@ -75,7 +75,7 @@ JSObjectRef script_add_interface_console_object(JSContextRef cx,JSObjectRef pare
 JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			txt[256];
-	
+
 	script_value_to_string(cx,argv[0],txt,256);
 	console_add(txt);
 	

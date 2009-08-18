@@ -39,11 +39,11 @@ JSValueRef js_weap_hand_get_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSString
 JSValueRef js_weap_hand_get_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_hand_get_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_hand_get_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_weap_hand_set_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_hand_set_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_hand_set_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_hand_set_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_weap_hand_set_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_hand_set_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_hand_set_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_hand_set_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_hand_set_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_hand_set_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		weap_hand_props[]={
 							{"raiseTick",			js_weap_hand_get_raiseTick,				js_weap_hand_set_raiseTick,		kJSPropertyAttributeDontDelete},
@@ -128,44 +128,54 @@ JSValueRef js_weap_hand_get_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-void js_weap_hand_set_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_hand_set_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.raise_tick=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_hand_set_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_hand_set_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.lower_tick=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_hand_set_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_hand_set_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.select_shift=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_hand_set_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_hand_set_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.bounce_speed=script_value_to_float(cx,vp);
+
+	return(TRUE);
 }
 
-void js_weap_hand_set_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_hand_set_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->hand.bounce_ang=script_value_to_float(cx,vp);
+
+	return(TRUE);
 }
 
 

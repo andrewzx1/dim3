@@ -37,7 +37,7 @@ extern js_type			js;
 JSValueRef js_weap_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		weap_setting_props[]={
 							{"name",				js_weap_setting_get_name,				NULL,									kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -104,12 +104,14 @@ JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,
       
 ======================================================= */
 
-void js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->fail_in_liquid=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
 

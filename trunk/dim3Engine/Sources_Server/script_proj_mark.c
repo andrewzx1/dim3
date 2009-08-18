@@ -38,10 +38,10 @@ JSValueRef js_proj_mark_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 JSValueRef js_proj_mark_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_proj_mark_get_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_proj_mark_get_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_proj_mark_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_proj_mark_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_proj_mark_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_proj_mark_set_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_mark_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_mark_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_mark_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_mark_set_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		proj_mark_props[]={
 							{"on",					js_proj_mark_get_on,				js_proj_mark_set_on,		kJSPropertyAttributeDontDelete},
@@ -125,15 +125,17 @@ JSValueRef js_proj_mark_get_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-void js_proj_mark_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_mark_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->mark.on=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
-void js_proj_mark_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_mark_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
@@ -142,22 +144,28 @@ void js_proj_mark_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 		script_value_to_string(cx,vp,proj_setup->mark.name,name_str_len);
 		proj_setup_attach_mark(proj_setup);
 	}
+
+	return(TRUE);
 }
 
-void js_proj_mark_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_mark_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->mark.size=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_proj_mark_set_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_mark_set_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->mark.alpha=script_value_to_float(cx,vp);
+
+	return(TRUE);
 }
 
 

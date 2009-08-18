@@ -40,8 +40,8 @@ JSValueRef js_proj_setting_get_hitscan(JSContextRef cx,JSObjectRef j_obj,JSStrin
 JSValueRef js_proj_setting_get_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_proj_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_proj_setting_set_hitscan(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_proj_setting_set_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_setting_set_hitscan(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_setting_set_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		proj_setting_props[]={
 							{"name",				js_proj_setting_get_name,				NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -140,18 +140,22 @@ JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx,JSObjectRef j_obj,JSSt
       
 ======================================================= */
 
-void js_proj_setting_set_hitscan(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_setting_set_hitscan(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->hitscan.on=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
-void js_proj_setting_set_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_setting_set_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->reset_angle=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
