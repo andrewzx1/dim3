@@ -41,11 +41,11 @@ JSValueRef js_interface_radar_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 JSValueRef js_interface_radar_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_interface_radar_get_displayRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_interface_radar_get_viewRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_interface_radar_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_interface_radar_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_interface_radar_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_interface_radar_set_displayRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_interface_radar_set_viewRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_interface_radar_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_interface_radar_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_interface_radar_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_interface_radar_set_displayRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_interface_radar_set_viewRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		interface_radar_props[]={
 							{"on",					js_interface_radar_get_on,				js_interface_radar_set_on,				kJSPropertyAttributeDontDelete},
@@ -115,28 +115,38 @@ JSValueRef js_interface_radar_get_viewRadius(JSContextRef cx,JSObjectRef j_obj,J
       
 ======================================================= */
 
-void js_interface_radar_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_interface_radar_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	hud.radar.on=script_value_to_bool(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_interface_radar_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_interface_radar_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	hud.radar.x=script_value_to_int(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_interface_radar_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_interface_radar_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	hud.radar.y=script_value_to_int(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_interface_radar_set_displayRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_interface_radar_set_displayRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	hud.radar.display_radius=script_value_to_int(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_interface_radar_set_viewRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_interface_radar_set_viewRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	hud.radar.view_radius=script_value_to_int(cx,vp);
+	
+	return(TRUE);
 }
 

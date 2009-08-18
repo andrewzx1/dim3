@@ -185,24 +185,43 @@ JSValueRef script_create_exception(JSContextRef cx,char *str)
 
 void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int len)
 {
+	char				txt[256];
 	JSObjectRef			ex_obj;
-	JSValueRef			msg;
+	JSValueRef			vp;
 
 	ex_obj=JSValueToObject(cx,ex_val,NULL);
 
-		// get line number
+		// get the source and line number
 
-	// supergumba -- js -- get line number here and sourceURL  (.line, .sourceURL)
+	strcpy(str,"[");
+
+	vp=script_get_single_property(cx,ex_obj,"sourceURL");
+	if (vp!=NULL) {
+		script_value_to_string(cx,vp,txt,256);
+		strcat(str,txt);
+	}
+
+	strcat(str,":");
+
+	vp=script_get_single_property(cx,ex_obj,"line");
+	if (vp!=NULL) {
+		script_value_to_string(cx,vp,txt,256);
+		strcat(str,txt);
+	}
+
+	strcat(str,"] ");
 
 		// get message
 
-	msg=script_get_single_property(cx,ex_obj,"message");
-	if (msg==NULL) {
-		strncpy(str,"Unknown Error",len);
+	vp=script_get_single_property(cx,ex_obj,"message");
+	if (vp==NULL) {
+		strncat(str,"Unknown Error",len);
 		str[len-1]=0x0;
 	}
 	else {
-		script_value_to_string(cx,msg,str,len);
+		script_value_to_string(cx,vp,txt,len);
+		strncat(str,txt,len);
+		str[len-1]=0x0;
 	}
 }
 

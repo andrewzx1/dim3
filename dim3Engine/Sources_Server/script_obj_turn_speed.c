@@ -44,16 +44,16 @@ JSValueRef js_obj_turn_speed_get_facingAir(JSContextRef cx,JSObjectRef j_obj,JSS
 JSValueRef js_obj_turn_speed_get_motionAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_turn_speed_get_key(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_turn_speed_get_topDownAngleOffset(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_obj_turn_speed_set_facingWalk(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_motionWalk(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_facingRun(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_motionRun(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_facingCrawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_motionCrawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_facingAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_motionAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_key(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_turn_speed_set_topDownAngleOffset(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_facingWalk(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_motionWalk(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_facingRun(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_motionRun(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_facingCrawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_motionCrawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_facingAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_motionAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_key(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_turn_speed_set_topDownAngleOffset(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		obj_turn_speed_props[]={
 							{"facingWalk",				js_obj_turn_speed_get_facingWalk,			js_obj_turn_speed_set_facingWalk,			kJSPropertyAttributeDontDelete},
@@ -183,83 +183,103 @@ JSValueRef js_obj_turn_speed_get_topDownAngleOffset(JSContextRef cx,JSObjectRef 
       
 ======================================================= */
 
-void js_obj_turn_speed_set_facingWalk(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_facingWalk(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.walk_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_motionWalk(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_motionWalk(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.walk_motion_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_facingRun(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_facingRun(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.run_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_motionRun(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_motionRun(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.run_motion_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_facingCrawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_facingCrawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.crawl_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_motionCrawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_motionCrawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.crawl_motion_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_facingAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_facingAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.air_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_motionAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_motionAir(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.air_motion_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_key(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_key(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.key_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_turn_speed_set_topDownAngleOffset(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_turn_speed_set_topDownAngleOffset(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->turn.top_down_ang_offset=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 

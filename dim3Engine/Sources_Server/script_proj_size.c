@@ -38,10 +38,10 @@ JSValueRef js_proj_size_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 JSValueRef js_proj_size_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_proj_size_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_proj_size_get_weight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_proj_size_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_proj_size_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_proj_size_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_proj_size_set_weight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_size_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_size_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_size_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_size_set_weight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		proj_size_props[]={
 							{"x",					js_proj_size_get_x,					js_proj_size_set_x,			kJSPropertyAttributeDontDelete},
@@ -125,7 +125,7 @@ JSValueRef js_proj_size_get_weight(JSContextRef cx,JSObjectRef j_obj,JSStringRef
       
 ======================================================= */
 
-void js_proj_size_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_size_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -134,17 +134,21 @@ void js_proj_size_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 		proj_setup->size.x=script_value_to_int(cx,vp);
 		proj_setup_set_radius(proj_setup);
 	}
+
+	return(TRUE);
 }
 
-void js_proj_size_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_size_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->size.y=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 
-void js_proj_size_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_size_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
@@ -153,13 +157,17 @@ void js_proj_size_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 		proj_setup->size.z=script_value_to_int(cx,vp);
 		proj_setup_set_radius(proj_setup);
 	}
+
+	return(TRUE);
 }
 
-void js_proj_size_set_weight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_size_set_weight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->size.weight=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }
 

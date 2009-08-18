@@ -97,7 +97,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	argv[3]=script_int_to_value(script->cx,id);
 	argv[4]=script_int_to_value(script->cx,js.time.current_tick);
 
-	rval=JSObjectCallAsFunction(script->cx,script->global_obj,script->event_func,5,argv,&exception);
+	rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
 	if (rval==NULL) {
 		script_exception_to_string(script->cx,exception,err_str,256);
 	}
@@ -167,7 +167,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	argv[0]=(JSValueRef)script->obj;
 	argv[1]=script_int_to_value(script->cx,js.time.current_tick);
 
-	rval=JSObjectCallAsFunction(script->cx,script->global_obj,func_obj,2,argv,&exception);
+	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,2,argv,&exception);
 	if (rval==NULL) {
 		script_exception_to_string(script->cx,exception,err_str,256);
 	}
@@ -234,7 +234,7 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 		argv[n+1]=args[n];
 	}
 
-	rval=JSObjectCallAsFunction(script->cx,script->global_obj,func_obj,(arg_count+1),argv,exception);
+	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,(arg_count+1),argv,exception);
 	if (rval==NULL) rval=script_null_to_value(script->cx);
 		
 		// restore old attach

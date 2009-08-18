@@ -37,8 +37,8 @@ extern js_type			js;
 
 JSValueRef js_proj_push_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_proj_push_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_proj_push_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_proj_push_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_push_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_proj_push_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		proj_push_props[]={
 							{"on",					js_proj_push_get_on,				js_proj_push_set_on,		kJSPropertyAttributeDontDelete},
@@ -100,18 +100,22 @@ JSValueRef js_proj_push_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-void js_proj_push_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_push_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->push.on=script_value_to_bool(cx,vp);
+
+	return(TRUE);
 }
 
-void js_proj_push_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_proj_push_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
 	
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) proj_setup->push.force=script_value_to_int(cx,vp);
+
+	return(TRUE);
 }

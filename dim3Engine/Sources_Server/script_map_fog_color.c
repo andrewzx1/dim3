@@ -37,9 +37,9 @@ extern js_type			js;
 JSValueRef js_map_fog_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_map_fog_color_get_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_map_fog_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_map_fog_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_map_fog_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_map_fog_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_map_fog_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_map_fog_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_map_fog_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		map_fog_color_props[]={
 							{"red",					js_map_fog_color_get_red,			js_map_fog_color_set_red,		kJSPropertyAttributeDontDelete},
@@ -97,18 +97,24 @@ JSValueRef js_map_fog_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-void js_map_fog_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_map_fog_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	map.fog.col.r=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_map_fog_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_map_fog_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	map.fog.col.g=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 
-void js_map_fog_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_map_fog_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	map.fog.col.b=script_value_to_float(cx,vp);
+	
+	return(TRUE);
 }
 

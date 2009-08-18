@@ -38,10 +38,10 @@ JSValueRef js_obj_vert_speed_get_normal(JSContextRef cx,JSObjectRef j_obj,JSStri
 JSValueRef js_obj_vert_speed_get_acceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_vert_speed_get_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_vert_speed_get_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-void js_obj_vert_speed_set_normal(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_vert_speed_set_acceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_vert_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-void js_obj_vert_speed_set_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_vert_speed_set_normal(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_vert_speed_set_acceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_vert_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_vert_speed_set_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		obj_vert_speed_props[]={
 							{"normal",					js_obj_vert_speed_get_normal,			js_obj_vert_speed_set_normal,			kJSPropertyAttributeDontDelete},
@@ -117,36 +117,44 @@ JSValueRef js_obj_vert_speed_get_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStr
       
 ======================================================= */
 
-void js_obj_vert_speed_set_normal(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_vert_speed_set_normal(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vert_move.max_walk_speed=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_vert_speed_set_acceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_vert_speed_set_acceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vert_move.accelerate=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_vert_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_vert_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vert_move.decelerate=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
-void js_obj_vert_speed_set_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_obj_vert_speed_set_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->vert_move.slop=fabsf(script_value_to_float(cx,vp));
+
+	return(TRUE);
 }
 
 
