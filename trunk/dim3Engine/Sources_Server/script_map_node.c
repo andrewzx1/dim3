@@ -95,6 +95,8 @@ JSValueRef js_map_node_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 	int				idx;
 	char			name[name_str_len];
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	idx=map_find_node(&map,name);
 	return(script_int_to_value(cx,idx));
@@ -104,6 +106,8 @@ JSValueRef js_map_node_find_random_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	int				idx;
 	char			name[name_str_len];
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	idx=map_find_random_node(&map,name);
@@ -115,6 +119,8 @@ JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef f
 	int				idx;
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 	
@@ -129,6 +135,8 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 	bool			good_param;
 	JSObjectRef		array_obj;
 	JSValueRef		vp;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 		// from node and name
 		
@@ -185,6 +193,8 @@ JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,J
 	obj_type		*obj;
 	weapon_type		*weap;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 		// from node and object
 		
 	from_idx=script_value_to_int(cx,argv[0]);
@@ -224,6 +234,8 @@ JSValueRef js_map_node_next_in_path_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	int				idx;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	idx=map_find_next_node_in_path(&map,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]));
 	return(script_int_to_value(cx,idx));
 }
@@ -233,6 +245,8 @@ JSValueRef js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObjectRef func,
 	int				n,cnt,link[max_node_link];
 	node_type		*node;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	node=script_find_node_from_idx_arg(cx,argv[0],exception);
 	if (node==NULL) return(script_null_to_value(cx));
 
@@ -257,6 +271,8 @@ JSValueRef js_map_node_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	node_type		*node;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// node
 		
 	node=script_find_node_from_idx_arg(cx,argv[0],exception);
@@ -277,6 +293,8 @@ JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	int				x,z,y;
 	node_type		*node;
+	
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
 		// node
 		
@@ -299,6 +317,8 @@ JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObje
 	int				x,z,y;
 	float			ang_x,ang_z,ang_y;
 	node_type		*node;
+	
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
 		// node
 		
@@ -330,6 +350,8 @@ JSValueRef js_map_node_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	node_type		*node;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// node
 		
 	node=script_find_node_from_idx_arg(cx,argv[0],exception);

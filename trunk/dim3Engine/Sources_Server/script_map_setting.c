@@ -158,6 +158,8 @@ JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	float			pitch;
 	char			name[name_str_len];
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	pitch=script_value_to_float(cx,argv[1]);
 	
@@ -168,6 +170,8 @@ JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	map_clear_ambient();
 	return(script_null_to_value(cx));
 }

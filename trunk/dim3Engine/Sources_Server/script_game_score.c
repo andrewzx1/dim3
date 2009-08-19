@@ -147,6 +147,8 @@ JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
 
 		// update score

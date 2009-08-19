@@ -74,12 +74,16 @@ JSObjectRef script_add_camera_state_object(JSContextRef cx,JSObjectRef parent_ob
 
 JSValueRef js_camera_state_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	camera_save();
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_camera_state_restore_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	camera_restore();
 	return(script_null_to_value(cx));
 }

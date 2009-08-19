@@ -76,6 +76,8 @@ JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	unsigned long			i,high,low;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
 	high=(unsigned long)script_value_to_int(cx,argv[0]);
 	low=(unsigned long)script_value_to_int(cx,argv[1]);
 	i=(int)(((high<<16)&0xFFFF0000)|(low&0xFFFF));
@@ -88,6 +90,8 @@ JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSO
 	unsigned int			i;
 	int						high;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
 	i=(unsigned int)script_value_to_int(cx,argv[0]);
 	high=(int)((i>>16)&0xFFFF);
 	
@@ -99,6 +103,8 @@ JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSOb
 	unsigned int			i;
 	int						low;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
 	i=(unsigned int)script_value_to_int(cx,argv[0]);
 	low=(int)(i&0xFFFF);
 	

@@ -264,6 +264,8 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
 	proj_type			*proj;
 	proj_setup_type		*proj_setup;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 
@@ -288,6 +290,8 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	proj_type			*proj;
 	proj_setup_type		*proj_setup;
 
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 

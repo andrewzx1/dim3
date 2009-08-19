@@ -80,6 +80,8 @@ JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	int				x,z,y,to_x,to_z,to_y,slop;
 
+	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
+
 	x=script_value_to_int(cx,argv[0]);
 	z=script_value_to_int(cx,argv[1]);
 	y=script_value_to_int(cx,argv[2]);
@@ -96,6 +98,8 @@ JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObj
 	int				x,z,to_x,to_z;
 	float			ang;
 	
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+
 	x=script_value_to_int(cx,argv[0]);
 	z=script_value_to_int(cx,argv[1]);
 	to_x=script_value_to_int(cx,argv[2]);
@@ -109,6 +113,8 @@ JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JS
 {
 	int				dist,x,z,y,to_x,to_z,to_y;
 	
+	if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
+
 	x=script_value_to_int(cx,argv[0]);
 	z=script_value_to_int(cx,argv[1]);
 	y=script_value_to_int(cx,argv[2]);
@@ -124,6 +130,8 @@ JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef 
 {
 	int				x,z,y,x2,y2;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+
 	x=script_value_to_int(cx,argv[0]);
 	z=script_value_to_int(cx,argv[1]);
 	y=script_value_to_int(cx,argv[2]);

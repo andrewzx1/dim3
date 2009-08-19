@@ -122,6 +122,8 @@ bool js_camera_static_position_set_walkTurnSpeed(JSContextRef cx,JSObjectRef j_o
 
 JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	camera_static_update(script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[2]));
 	
 	return(script_null_to_value(cx));
@@ -131,6 +133,8 @@ JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectR
 {
 	int			idx;
 	spot_type	*spot;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	idx=script_value_to_int(cx,argv[0]);
 	if ((idx<0) || (idx>=map.nspot)) {
@@ -150,6 +154,8 @@ JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectR
 	char			start_name[name_str_len],end_name[name_str_len],err_str[256];
 	bool			open_doors,in_freeze;
 
+	if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],start_name,name_str_len);
 	script_value_to_string(cx,argv[1],end_name,name_str_len);
 

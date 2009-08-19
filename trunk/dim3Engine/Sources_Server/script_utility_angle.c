@@ -76,7 +76,9 @@ JSValueRef js_utility_angle_add_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	float			ang1,ang2,rang;
     
-    ang1=script_value_to_float(cx,argv[0]);
+ 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+   ang1=script_value_to_float(cx,argv[0]);
 	ang2=script_value_to_float(cx,argv[1]);
 	
 	rang=angle_add(ang1,ang2);
@@ -87,6 +89,8 @@ JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	float			ang1,ang2,rang;
 	bool			cwise;
+
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
     ang1=script_value_to_float(cx,argv[0]);
     ang2=script_value_to_float(cx,argv[1]);
@@ -102,7 +106,9 @@ JSValueRef js_utility_angle_dif_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	float			ang1,ang2,rang;
 	bool			cwise;
 
-    ang1=script_value_to_float(cx,argv[0]);
+ 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+	ang1=script_value_to_float(cx,argv[0]);
     ang2=script_value_to_float(cx,argv[1]);
 	
 	rang=angle_dif(ang1,ang2,&cwise);

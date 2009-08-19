@@ -93,6 +93,8 @@ JSValueRef js_interface_bitmap_show_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	hud_bitmap_type			*bitmap;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
 		bitmap->show=TRUE;
@@ -106,6 +108,8 @@ JSValueRef js_interface_bitmap_hide_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	hud_bitmap_type			*bitmap;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) bitmap->show=FALSE;
 	
@@ -114,6 +118,8 @@ JSValueRef js_interface_bitmap_hide_func(JSContextRef cx,JSObjectRef func,JSObje
 
 JSValueRef js_interface_bitmap_hide_all_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	hud_bitmaps_hide_all();
 	return(script_null_to_value(cx));
 }
@@ -121,6 +127,8 @@ JSValueRef js_interface_bitmap_hide_all_func(JSContextRef cx,JSObjectRef func,JS
 JSValueRef js_interface_bitmap_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
@@ -135,6 +143,8 @@ JSValueRef js_interface_bitmap_move_relative_func(JSContextRef cx,JSObjectRef fu
 {
 	hud_bitmap_type			*bitmap;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
 		bitmap->x+=script_value_to_int(cx,argv[1]);
@@ -147,6 +157,8 @@ JSValueRef js_interface_bitmap_move_relative_func(JSContextRef cx,JSObjectRef fu
 JSValueRef js_interface_bitmap_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
@@ -161,6 +173,8 @@ JSValueRef js_interface_bitmap_set_alpha_func(JSContextRef cx,JSObjectRef func,J
 {
 	hud_bitmap_type			*bitmap;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) bitmap->alpha=script_value_to_float(cx,argv[1]);
 	
@@ -170,6 +184,8 @@ JSValueRef js_interface_bitmap_set_alpha_func(JSContextRef cx,JSObjectRef func,J
 JSValueRef js_interface_bitmap_set_repeat_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) bitmap->repeat.count=script_value_to_int(cx,argv[1]);
@@ -181,6 +197,8 @@ JSValueRef js_interface_bitmap_set_flash_func(JSContextRef cx,JSObjectRef func,J
 {
 	hud_bitmap_type			*bitmap;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) bitmap->flash=script_value_to_bool(cx,argv[1]);
 	
@@ -191,6 +209,8 @@ JSValueRef js_interface_bitmap_set_rotate_func(JSContextRef cx,JSObjectRef func,
 {
 	hud_bitmap_type			*bitmap;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) bitmap->rot=script_value_to_float(cx,argv[1]);
 	
@@ -200,6 +220,8 @@ JSValueRef js_interface_bitmap_set_rotate_func(JSContextRef cx,JSObjectRef func,
 JSValueRef js_interface_bitmap_start_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	hud_bitmap_type			*bitmap;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {

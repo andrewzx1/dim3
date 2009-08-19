@@ -111,6 +111,8 @@ JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) camera_connect(obj);
 

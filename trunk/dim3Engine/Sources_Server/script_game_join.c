@@ -121,6 +121,8 @@ JSValueRef js_game_join_set_team_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
 
 	obj=object_find_uid(game_obj_rule_uid);
@@ -133,6 +135,8 @@ JSValueRef js_game_join_set_team_even_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
 
 	obj=object_find_uid(game_obj_rule_uid);
@@ -145,6 +149,8 @@ JSValueRef js_game_join_clear_team_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
 
 	obj=object_find_uid(game_obj_rule_uid);
@@ -157,6 +163,8 @@ JSValueRef js_game_join_count_team_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	int			team_idx;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	team_idx=script_value_to_int(cx,argv[0])-sd_team_none;
 	return(script_int_to_value(cx,object_count_team(team_idx,game_obj_rule_uid)));
 }
@@ -165,6 +173,8 @@ JSValueRef js_game_join_set_spawn_spot_func(JSContextRef cx,JSObjectRef func,JSO
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
 
 	obj=object_find_uid(game_obj_rule_uid);
@@ -177,6 +187,8 @@ JSValueRef js_game_join_set_spawn_spot_to_team_func(JSContextRef cx,JSObjectRef 
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
 
 	obj=object_find_uid(game_obj_rule_uid);
@@ -195,6 +207,8 @@ JSValueRef js_game_join_clear_spawn_spot_func(JSContextRef cx,JSObjectRef func,J
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
 
 	obj=object_find_uid(game_obj_rule_uid);

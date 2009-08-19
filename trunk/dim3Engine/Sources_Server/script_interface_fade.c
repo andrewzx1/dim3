@@ -83,6 +83,8 @@ JSValueRef js_interface_fade_circle_func(JSContextRef cx,JSObjectRef func,JSObje
 	bool			auto_clear;
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
+	
 	x=script_value_to_int(cx,argv[0]);
 	y=script_value_to_int(cx,argv[1]);
     
@@ -102,6 +104,8 @@ JSValueRef js_interface_fade_circle_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_interface_fade_clear_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(server.player_obj_uid);
 	object_fade_clear(obj);
