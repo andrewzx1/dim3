@@ -133,6 +133,8 @@ JSValueRef js_obj_position_place_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 
 	object_set_position(obj,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[2]),script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[3]),0);
@@ -145,6 +147,8 @@ JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef fu
 {
 	obj_type		*obj;
 	spot_type		*spot;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	
@@ -166,6 +170,8 @@ JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef f
 	obj_type		*obj;
 	spot_type		*spot;
 	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 
 		// get spot
@@ -186,6 +192,8 @@ JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JS
 	d3pnt			old_pnt;
 	obj_type		*obj;
 	spot_type		*spot;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 		
@@ -216,6 +224,8 @@ JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,J
 	obj_type		*obj;
 	spot_type		*spot;
 	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 
 		// get spot
@@ -244,6 +254,8 @@ JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	int				xadd,zadd,yadd;
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	xadd=script_value_to_int(cx,argv[0]);
@@ -259,6 +271,8 @@ JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_reset(obj);
@@ -277,6 +291,8 @@ JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef f
 {
 	obj_type		*obj,*player_obj;
 	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	player_obj=object_find_uid(server.player_obj_uid);
 
@@ -286,6 +302,8 @@ JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef f
 JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj,*dist_obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 

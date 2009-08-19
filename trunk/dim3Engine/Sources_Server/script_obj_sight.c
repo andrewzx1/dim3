@@ -197,6 +197,8 @@ JSValueRef js_obj_sight_test_object_func(JSContextRef cx,JSObjectRef func,JSObje
 	int				id;
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 
 	id=script_value_to_int(cx,argv[0]);
@@ -206,6 +208,8 @@ JSValueRef js_obj_sight_test_object_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_obj_sight_test_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	return(script_bool_to_value(cx,object_sight_test_object(obj,server.player_obj_uid)));

@@ -132,7 +132,6 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 {
 	int				n,idx,from_idx,k,len,d,dist;
 	char			name[name_str_len];
-	bool			good_param;
 	JSObjectRef		array_obj;
 	JSValueRef		vp;
 	
@@ -142,29 +141,19 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 		
 	from_idx=script_value_to_int(cx,argv[0]);
 	
-		// get number of array elements
+		// check if array is OK
 		
-	good_param=(argc>=2);
-	if (good_param) {
-		good_param=JSValueIsObject(cx,argv[1]);
-		
-		if (good_param) {
-			array_obj=JSValueToObject(cx,argv[1],NULL);
-			vp=script_get_single_property(cx,array_obj,"length");
-			
-			if (vp==NULL) {
-				good_param=FALSE;
-			}
-			else {
-				len=script_value_to_int(cx,vp);
-			}
-		}
-	}
-	
-	if (!good_param) {
+	if (!JSValueIsArray(cx,argv[1])) {
 		*exception=script_create_exception(cx,"Second parameter to findNearestNamesInPath needs to be an array");
 		return(script_null_to_value(cx));
 	}
+
+		// get length
+
+	array_obj=JSValueMakeObject(argv[1]);
+
+	vp=script_get_single_property(cx,array_obj,"length");
+	len=script_value_to_int(cx,vp);
 	
 		// check all names
 		

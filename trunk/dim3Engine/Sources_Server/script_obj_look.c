@@ -153,6 +153,8 @@ JSValueRef js_obj_look_set_look_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->view_ang.x=script_value_to_float(cx,argv[0]);
 
@@ -164,6 +166,8 @@ JSValueRef js_obj_look_set_look_at_func(JSContextRef cx,JSObjectRef func,JSObjec
 	int				dist,y,look_y;
 	float			ang;
 	obj_type		*obj,*look_obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	

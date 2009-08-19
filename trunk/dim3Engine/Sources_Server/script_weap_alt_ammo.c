@@ -307,6 +307,8 @@ JSValueRef js_weap_alt_ammo_use_ammo_func(JSContextRef cx,JSObjectRef func,JSObj
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
 
@@ -336,6 +338,8 @@ JSValueRef js_weap_alt_ammo_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObj
 	JSValueRef		vp;
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;
@@ -371,6 +375,8 @@ JSValueRef js_weap_alt_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JS
 	obj_type		*obj;
 	weapon_type		*weap;
 	weap_ammo_type	*alt_ammo;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	alt_ammo=&weap->alt_ammo;

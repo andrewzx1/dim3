@@ -116,6 +116,8 @@ JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef fu
 	bool			cwise;
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	obj->turn.ang_to.y=script_value_to_float(cx,argv[0]);
@@ -150,6 +152,8 @@ JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef fu
 JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_turn_stop(obj);

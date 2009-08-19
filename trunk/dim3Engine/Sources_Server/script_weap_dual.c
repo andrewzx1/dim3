@@ -152,6 +152,8 @@ JSValueRef js_weap_dual_switch_hand_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	weapon_type		*weap;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	
 	if ((!weap->dual.on) && (!weap->dual.active)) {

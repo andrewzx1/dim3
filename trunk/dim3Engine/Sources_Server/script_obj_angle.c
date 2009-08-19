@@ -118,6 +118,8 @@ JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	float			ang_add;
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 
 	ang_add=script_value_to_float(cx,argv[0]);
@@ -129,6 +131,8 @@ JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->ang.y=script_value_to_float(cx,argv[0]);

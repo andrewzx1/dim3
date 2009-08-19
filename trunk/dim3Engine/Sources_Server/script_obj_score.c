@@ -133,6 +133,8 @@ JSValueRef js_obj_score_add_goal_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_score_goal(obj);
 

@@ -158,6 +158,8 @@ JSValueRef js_obj_pickup_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObje
 	obj_type	*obj;
 	weapon_type	*weap;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 	
@@ -171,6 +173,8 @@ JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObj
 {
 	obj_type	*obj;
 	weapon_type	*weap;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
@@ -186,6 +190,8 @@ JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObject
 	obj_type	*obj;
 	weapon_type	*weap;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 	
@@ -199,6 +205,8 @@ JSValueRef js_obj_pickup_add_clip_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	obj_type	*obj;
 	weapon_type	*weap;
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
@@ -214,6 +222,8 @@ JSValueRef js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj_type	*obj;
 	weapon_type	*weap;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 	
@@ -228,6 +238,8 @@ JSValueRef js_obj_pickup_add_alt_clip_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj_type	*obj;
 	weapon_type	*weap;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 	
@@ -241,6 +253,8 @@ JSValueRef js_obj_pickup_add_health_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type	*obj;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 
@@ -250,6 +264,8 @@ JSValueRef js_obj_pickup_add_health_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_obj_pickup_add_custom_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) item_add_custom(obj,script_value_to_int(cx,argv[1]));
@@ -266,6 +282,8 @@ JSValueRef js_obj_pickup_add_custom_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_obj_pickup_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type			*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	obj->pickup.canceled=TRUE;

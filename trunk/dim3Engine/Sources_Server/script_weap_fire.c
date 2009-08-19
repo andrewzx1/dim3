@@ -109,6 +109,8 @@ JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSO
 	int				last_fire_tick;
 	weapon_type		*weap;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	
 	if (!weap->dual.in_dual) {
@@ -125,6 +127,8 @@ JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JS
 {
 	weapon_type		*weap;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	
 	if (!weap->dual.in_dual) {
@@ -141,6 +145,8 @@ JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 {
 	weapon_type		*weap;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->fire.cancel=TRUE;
     

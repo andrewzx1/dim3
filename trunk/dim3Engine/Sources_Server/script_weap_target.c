@@ -136,6 +136,8 @@ JSValueRef js_weap_target_start_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj_type			*obj;
 	weapon_type			*weap;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -149,6 +151,8 @@ JSValueRef js_weap_target_start_opponent_func(JSContextRef cx,JSObjectRef func,J
 	obj_type			*obj;
 	weapon_type			*weap;
 	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 	
@@ -159,6 +163,8 @@ JSValueRef js_weap_target_end_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 {
 	obj_type			*obj;
 	weapon_type			*weap;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);

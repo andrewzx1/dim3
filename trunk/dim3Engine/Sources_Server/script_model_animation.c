@@ -163,6 +163,8 @@ JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObje
 	char			name[name_str_len];
 	model_draw		*draw;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	draw=script_find_model_draw();
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
@@ -178,6 +180,8 @@ JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	model_draw		*draw;
 	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	draw=script_find_model_draw();
 	model_stop_animation(draw);
 
@@ -188,6 +192,8 @@ JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObj
 {
 	char			name[name_str_len];
 	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw();
 
@@ -204,6 +210,8 @@ JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObj
 	char			name[name_str_len];
 	model_draw		*draw;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	draw=script_find_model_draw();
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
@@ -219,6 +227,8 @@ JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JS
 	char			name[name_str_len];
 	model_draw		*draw;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	draw=script_find_model_draw();
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
@@ -233,6 +243,8 @@ JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef
 {
 	char			name[name_str_len];
 	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw();
 
@@ -260,6 +272,8 @@ JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef
 JSValueRef js_model_animation_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw();
 	model_fade_start(draw,script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[0]));
