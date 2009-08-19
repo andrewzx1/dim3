@@ -544,6 +544,8 @@ extern void script_free_class(JSClassRef cls);
 extern bool script_add_global_object(script_type *script,char *err_str);
 extern void script_set_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags);
 extern JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name);
+extern bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception);
+extern bool script_check_param_at_least_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception);
 extern JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach);
 extern JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name);
 

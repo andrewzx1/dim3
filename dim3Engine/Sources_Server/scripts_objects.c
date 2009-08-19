@@ -441,7 +441,7 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 /* =======================================================
 
-      Script Property Utilities
+      Script Property and Function Utilities
       
 ======================================================= */
 
@@ -464,6 +464,58 @@ inline JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,c
 	JSStringRelease(j_prop_name);
 
 	return(vp);
+}
+
+bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception)
+{
+	char				func_name[64],err_str[256];
+	JSValueRef			vp;
+	
+		// write params?
+		
+	if (argc==need_argc) return(TRUE);
+	
+		// get function name
+		
+	vp=script_get_single_property(cx,func,"name");
+	if (vp==NULL) {
+		strcpy(func_name,"Unknown");
+	}
+	else {
+		script_value_to_string(cx,vp,func_name,64);
+	}
+	
+	sprintf(err_str,"Function '%s' requires %d parameters, found %d\n",func_name,argc,need_argc);
+	
+	*exception=script_create_exception(cx,err_str);
+
+	return(FALSE);
+}
+
+bool script_check_param_at_least_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception)
+{
+	char				func_name[64],err_str[256];
+	JSValueRef			vp;
+	
+		// write params?
+		
+	if (argc<need_argc) return(TRUE);
+	
+		// get function name
+		
+	vp=script_get_single_property(cx,func,"name");
+	if (vp==NULL) {
+		strcpy(func_name,"Unknown");
+	}
+	else {
+		script_value_to_string(cx,vp,func_name,64);
+	}
+	
+	sprintf(err_str,"Function '%s' requires at least %d parameters, found %d\n",func_name,argc,need_argc);
+	
+	*exception=script_create_exception(cx,err_str);
+
+	return(FALSE);
 }
 
 /* =======================================================

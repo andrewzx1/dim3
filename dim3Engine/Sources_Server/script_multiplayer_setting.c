@@ -114,6 +114,8 @@ JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef 
 	int				n;
 	char			name[name_str_len];
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// all options are false if not in networking
 		
 	if (!net_setup.client.joined) return(script_bool_to_value(cx,FALSE));

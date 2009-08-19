@@ -193,6 +193,8 @@ JSValueRef js_sound_play_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj
 	char			name[name_str_len];
 	d3pnt			pt;
 	
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	pt.x=script_value_to_int(cx,argv[1]);
 	pt.z=script_value_to_int(cx,argv[2]);
@@ -210,6 +212,8 @@ JSValueRef js_sound_play_at_object_func(JSContextRef cx,JSObjectRef func,JSObjec
 	char			name[name_str_len];
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
 	if (obj==NULL) return(FALSE);
 	
@@ -227,6 +231,8 @@ JSValueRef js_sound_play_global_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	char			name[name_str_len];
 	d3pnt			pt;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	pitch=script_value_to_float(cx,argv[1]);
 	
@@ -242,6 +248,8 @@ JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSO
 	float			pitch;
 	char			name[name_str_len];
 	d3pnt			pt;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	pitch=script_value_to_float(cx,argv[1]);
@@ -263,6 +271,8 @@ JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	char			name[name_str_len],wave_path[1024];
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	if (setup.music_on) {
 	
 		script_value_to_string(cx,argv[0],name,name_str_len);
@@ -278,6 +288,8 @@ JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	if (setup.music_on) al_music_stop();
 
 	return(script_null_to_value(cx));
@@ -287,6 +299,8 @@ JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	int				msec;
 	char			name[name_str_len],wave_path[1024];
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	if (setup.music_on) {
 
@@ -306,6 +320,8 @@ JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	int					msec;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	if (setup.music_on) {
 
 		msec=script_value_to_int(cx,argv[0]);
@@ -319,6 +335,8 @@ JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func
 {
 	int					fade_out_msec,fade_in_msec;
 	char				name[name_str_len],wave_path[1024];
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	if (setup.music_on) {
 

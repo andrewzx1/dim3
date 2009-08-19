@@ -187,7 +187,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	int						idx;
 	bool					ok;
 	script_type				*script;
-
+	
 		// no script
 		
 	attach->script_uid=-1;

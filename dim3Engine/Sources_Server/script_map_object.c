@@ -152,6 +152,8 @@ JSValueRef js_map_object_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	char				name[name_str_len];
 	obj_type			*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	
 	obj=object_find_name(name);
@@ -168,6 +170,8 @@ JSValueRef js_map_object_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 JSValueRef js_map_object_find_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	return(script_int_to_value(cx,server.player_obj_uid));
 }
 
@@ -176,6 +180,8 @@ JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,
 	int			n,cnt,uids[max_object];
 	obj_type	*obj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	cnt=0;
 	obj=server.objs;
 
@@ -203,6 +209,8 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	float				ang,ang_sweep;
 	d3pnt				pt;
 	obj_type			*obj;
+	
+	if (!script_check_param_count(cx,func,argc,9,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
@@ -255,6 +263,8 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	d3pnt				pt;
 	obj_type			*obj;
 	
+	if (!script_check_param_count(cx,func,argc,10,exception)) return(script_null_to_value(cx));
+	
 		// x,z,y
 		
 	pt.x=script_value_to_int(cx,argv[0]);
@@ -304,6 +314,8 @@ JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JS
 	d3pnt				pt;
 	obj_type			*obj;
 	
+	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
+	
 		// x,z,y
 		
 	pt.x=script_value_to_int(cx,argv[0]);
@@ -336,6 +348,8 @@ JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSOb
 	float				ang,ang_sweep;
 	d3pnt				pt;
 	obj_type			*obj;
+	
+	if (!script_check_param_count(cx,func,argc,8,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
@@ -370,6 +384,8 @@ JSValueRef js_map_object_nearest_remote_player_func(JSContextRef cx,JSObjectRef 
 	d3pnt				pt;
 	obj_type			*obj;
 	
+	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
+	
 		// x,z,y
 		
 	pt.x=script_value_to_int(cx,argv[0]);
@@ -402,6 +418,8 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
 	float				ang,ang_sweep;
 	d3pnt				pt;
 	obj_type			*obj;
+	
+	if (!script_check_param_count(cx,func,argc,8,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
@@ -443,7 +461,7 @@ JSValueRef js_map_object_get_name_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	obj_type		*obj;
 	
-		// uid
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
@@ -455,7 +473,7 @@ JSValueRef js_map_object_get_type_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	obj_type		*obj;
 	
-		// uid
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
@@ -466,6 +484,8 @@ JSValueRef js_map_object_get_type_func(JSContextRef cx,JSObjectRef func,JSObject
 JSValueRef js_map_object_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
@@ -478,6 +498,8 @@ JSValueRef js_map_object_get_team_name_func(JSContextRef cx,JSObjectRef func,JSO
 	char			str[32];
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 	
@@ -489,6 +511,8 @@ JSValueRef js_map_object_get_team_color_func(JSContextRef cx,JSObjectRef func,JS
 {
 	d3col			col;
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
@@ -508,6 +532,8 @@ JSValueRef js_map_object_get_distance_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	int				x,z,y;
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
 		// uid
 	
@@ -530,6 +556,8 @@ JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSOb
 	int				x,z,y;
 	float			ang_x,ang_z,ang_y;
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
 		// uid
 	
@@ -555,6 +583,8 @@ JSValueRef js_map_object_get_angle_to_id_func(JSContextRef cx,JSObjectRef func,J
 {
 	float			ang_x,ang_z,ang_y;
 	obj_type		*obj,*obj2;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 		// uids
 	
@@ -585,6 +615,8 @@ JSValueRef js_map_object_is_facing_id_func(JSContextRef cx,JSObjectRef func,JSOb
 	bool			cwise;
 	obj_type		*obj,*obj2;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 		// uids
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -611,6 +643,8 @@ JSValueRef js_map_object_get_position_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// uid
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -625,6 +659,8 @@ JSValueRef js_map_object_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// uid
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -639,6 +675,8 @@ JSValueRef js_map_object_get_size_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// uid
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -653,6 +691,8 @@ JSValueRef js_map_object_get_health_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// uid
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -667,6 +707,8 @@ JSValueRef js_map_object_is_dead_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
@@ -677,6 +719,8 @@ JSValueRef js_map_object_is_hidden_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
@@ -687,6 +731,8 @@ JSValueRef js_map_object_is_contact_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
@@ -697,6 +743,8 @@ JSValueRef js_map_object_is_max_health_func(JSContextRef cx,JSObjectRef func,JSO
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
@@ -707,6 +755,8 @@ JSValueRef js_map_object_get_last_damage_object_id_func(JSContextRef cx,JSObject
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
@@ -717,6 +767,8 @@ JSValueRef js_map_object_was_telefrag_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
@@ -733,6 +785,8 @@ JSValueRef js_map_object_move_to_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+	
 		// uid
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -752,6 +806,8 @@ JSValueRef js_map_object_shove_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	d3ang			ang;
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+	
 		// uid
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -776,6 +832,8 @@ JSValueRef js_map_object_shove_direct_func(JSContextRef cx,JSObjectRef func,JSOb
 	d3vct			vct;
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
 		// uid
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -803,6 +861,8 @@ JSValueRef js_map_object_add_goal_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) object_score_goal(obj);
 
@@ -820,6 +880,8 @@ JSValueRef js_map_object_set_contact_func(JSContextRef cx,JSObjectRef func,JSObj
 	bool			on;
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) {
 		on=script_value_to_bool(cx,argv[1]);
@@ -836,6 +898,8 @@ JSValueRef js_map_object_set_hidden_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) obj->hidden=script_value_to_bool(cx,argv[1]);
 
@@ -846,6 +910,8 @@ JSValueRef js_map_object_set_model_light_func(JSContextRef cx,JSObjectRef func,J
 {
 	int					idx;
 	obj_type			*obj;
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) {
@@ -861,6 +927,8 @@ JSValueRef js_map_object_set_model_halo_func(JSContextRef cx,JSObjectRef func,JS
 	int					idx;
 	obj_type			*obj;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj!=NULL) {
 		idx=script_value_to_int(cx,argv[1]);
@@ -875,6 +943,8 @@ JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JS
 	int					idx;
 	char				name[name_str_len];
 	obj_type			*obj;
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
@@ -907,6 +977,8 @@ JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	d3pnt			pnt;
 	d3ang			ang;
 
+	if (!script_check_param_count(cx,func,argc,10,exception)) return(script_null_to_value(cx));
+	
 		// spawn values
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
@@ -941,6 +1013,8 @@ JSValueRef js_map_object_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	char			err_str[256];
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 

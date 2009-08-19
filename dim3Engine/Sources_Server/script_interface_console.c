@@ -75,6 +75,8 @@ JSObjectRef script_add_interface_console_object(JSContextRef cx,JSObjectRef pare
 JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			txt[256];
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[0],txt,256);
 	console_add(txt);
@@ -84,6 +86,8 @@ JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSOb
 
 JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
 	return(script_string_to_value(cx,console_input_str));
 }
 

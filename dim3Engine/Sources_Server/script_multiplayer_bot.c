@@ -93,6 +93,8 @@ JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef 
 {
 	float			skill,min,max;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	min=script_value_to_float(cx,argv[0]);
 	max=script_value_to_float(cx,argv[1]);
 	

@@ -196,7 +196,7 @@ JSValueRef js_obj_weapon_hide_single_func(JSContextRef cx,JSObjectRef func,JSObj
 {
     obj_type		*obj;
 	weapon_type		*weap;
-
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
 	if (weap!=NULL) weap->hidden=script_value_to_bool(cx,argv[1]);

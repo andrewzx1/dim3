@@ -85,15 +85,9 @@ JSObjectRef script_add_interface_interaction_object(JSContextRef cx,JSObjectRef 
 
 JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				event_id;
 	char			name[name_str_len];
 
-	if (argc<2) {
-		event_id=-1;
-	}
-	else {
-		event_id=script_value_to_int(cx,argv[1]);
-	}
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	story_trigger_set(name,script_value_to_int(cx,argv[1]));
@@ -103,38 +97,26 @@ JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef
 
 JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				event_id;
 	char			name[name_str_len],sound_name[name_str_len];
 
-	if (argc<3) {
-		event_id=-1;
-	}
-	else {
-		event_id=script_value_to_int(cx,argv[2]);
-	}
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_value_to_string(cx,argv[1],sound_name,name_str_len);
 	
-	title_trigger_set("Titles",name,sound_name,event_id);
+	title_trigger_set("Titles",name,sound_name,script_value_to_int(cx,argv[2]));
 	
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				event_id;
 	char			name[name_str_len];
 
-	if (argc<2) {
-		event_id=-1;
-	}
-	else {
-		event_id=script_value_to_int(cx,argv[1]);
-	}
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	movie_trigger_set(name,event_id);
+	movie_trigger_set(name,script_value_to_int(cx,argv[1]));
 	
 	return(script_null_to_value(cx));
 }
@@ -144,6 +126,8 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 	int				n,cnt;
 	char			name[name_str_len],
 					sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
+
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
 		// get name
 
@@ -172,24 +156,32 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 
 JSValueRef js_interface_interaction_start_save_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
 	file_trigger_set();
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_setup_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
 	setup_game_trigger_set();
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
 	menu_trigger_set();
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
 	interface_quit_trigger_set();
 	return(script_null_to_value(cx));
 }

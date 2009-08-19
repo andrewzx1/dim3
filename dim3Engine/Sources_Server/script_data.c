@@ -86,6 +86,8 @@ JSValueRef js_data_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 {
 	char			name[name_str_len];
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_add_global(cx,name,-1,argv[1]);
 	
@@ -96,6 +98,8 @@ JSValueRef js_data_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 {
 	char			name[name_str_len];
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_delete_global(name,-1);
 	
@@ -106,6 +110,8 @@ JSValueRef js_data_set_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 {
 	char			name[name_str_len];
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_set_global(cx,name,-1,argv[1]);
 
@@ -116,6 +122,8 @@ JSValueRef js_data_get_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 {
 	char			name[name_str_len];
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	return(script_get_global(cx,name,-1));
 }
@@ -124,6 +132,8 @@ JSValueRef js_data_add_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	char			name[name_str_len];
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_add_global(cx,name,js.attach.script_uid,argv[1]);
 	
@@ -134,6 +144,8 @@ JSValueRef js_data_sub_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	char			name[name_str_len];
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_delete_global(name,js.attach.script_uid);
 	
@@ -144,6 +156,8 @@ JSValueRef js_data_set_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	char			name[name_str_len];
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_set_global(cx,name,js.attach.script_uid,argv[1]);
 
@@ -154,6 +168,8 @@ JSValueRef js_data_get_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	char			name[name_str_len];
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	return(script_get_global(cx,name,js.attach.script_uid));
 }

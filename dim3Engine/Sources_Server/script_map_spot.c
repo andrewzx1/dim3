@@ -103,6 +103,8 @@ JSValueRef js_map_spot_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 {
 	char		name[name_str_len],type[name_str_len];
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	if ((script_is_value_null(cx,argv[0])) && (script_is_value_null(cx,argv[1]))) {
 		return(script_int_to_value(cx,-1));
 	}
@@ -132,6 +134,8 @@ JSValueRef js_map_spot_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	spot_type	*spot;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);
 	if (spot==NULL) return(script_null_to_value(cx));
 	
@@ -141,6 +145,8 @@ JSValueRef js_map_spot_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_map_spot_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	spot_type	*spot;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);
 	if (spot==NULL) return(script_null_to_value(cx));
@@ -152,6 +158,8 @@ JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	spot_type	*spot;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);
 	if (spot==NULL) return(script_null_to_value(cx));
 	
@@ -161,6 +169,8 @@ JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObject
 JSValueRef js_map_spot_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	spot_type	*spot;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);
 	if (spot==NULL) return(script_null_to_value(cx));
@@ -178,6 +188,8 @@ JSValueRef js_map_spot_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 {
 	spot_type   *spot;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);
@@ -192,6 +204,8 @@ JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	spot_type   *spot;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);
@@ -214,6 +228,8 @@ JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObj
 				script[file_str_len],params[param_str_len];
 	spot_type   *spot;
 
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+	
 		// find spot
 	
 	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);

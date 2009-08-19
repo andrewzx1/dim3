@@ -78,6 +78,8 @@ JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,J
 {
 	int				min,max;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
 	min=script_value_to_int(cx,argv[0]);
 	max=script_value_to_int(cx,argv[1]);
 
@@ -88,6 +90,8 @@ JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSO
 {
 	float				min,max;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
 	min=script_value_to_float(cx,argv[0]);
 	max=script_value_to_float(cx,argv[1]);
 
@@ -96,10 +100,14 @@ JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSO
 
 JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
 	return(script_bool_to_value(cx,random_boolean()));
 }
 
 JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
 	return(script_int_to_value(cx,random_boolean()?1:(-1)));
 }

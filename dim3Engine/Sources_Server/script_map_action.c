@@ -84,6 +84,8 @@ JSObjectRef script_add_map_action_object(JSContextRef cx,JSObjectRef parent_obj)
 
 JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 		// clients can not set maps
 		
 	if (net_setup.client.joined) {
@@ -105,6 +107,8 @@ JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 		// clients can not set maps
 
 	if (!net_setup.client.joined) {
@@ -126,6 +130,8 @@ JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSOb
 
 JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 		// clients can not restart maps
 		
 	if (net_setup.client.joined) {
@@ -144,6 +150,8 @@ JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObj
 JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256],err_str_2[256];
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 		// clients can not restart maps from saves
 		

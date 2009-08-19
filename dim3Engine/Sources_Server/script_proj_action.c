@@ -266,6 +266,8 @@ JSValueRef js_proj_action_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	proj_type			*proj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 		
@@ -279,6 +281,8 @@ JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSO
 	proj_type			*proj;
 	obj_type			*to_obj;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 		
@@ -295,6 +299,8 @@ JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	proj_type			*proj;
 	obj_type			*to_obj;
 
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 		
@@ -313,6 +319,8 @@ JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSOb
 	proj_setup_type		*proj_setup;
 	proj_type			*proj;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 
@@ -334,6 +342,8 @@ JSValueRef js_proj_action_bounce_func(JSContextRef cx,JSObjectRef func,JSObjectR
     float				min_ymove,reduce;
 	proj_type			*proj;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
     
@@ -349,6 +359,8 @@ JSValueRef js_proj_action_reflect_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	proj_type			*proj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 	
@@ -361,6 +373,8 @@ JSValueRef js_proj_action_stick_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 {
 	proj_type			*proj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
     
@@ -374,6 +388,8 @@ JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	proj_type			*proj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 	
