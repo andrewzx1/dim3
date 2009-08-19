@@ -788,6 +788,8 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
     char			*c,str[256];
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	idx=scripts_find_uid(obj->attach.script_uid);
@@ -820,6 +822,8 @@ JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	char			name[name_str_len];
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
@@ -832,6 +836,8 @@ JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSO
 {
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_change_ambient_pitch(obj,script_value_to_float(cx,argv[0]));
 
@@ -841,6 +847,8 @@ JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSO
 JSValueRef js_obj_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_clear_ambient(obj);

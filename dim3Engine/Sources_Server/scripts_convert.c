@@ -136,35 +136,19 @@ JSValueRef script_string_to_value(JSContextRef cx,char *str)
 JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values)
 {
 	int				n;
-	JSObjectRef		array_proto_obj,j_obj;
-	JSStringRef		array_name;
-	JSValueRef		array_val;
-	script_type		*script;
+	JSValueRef		js_vals[64];
 
 		// 64 is the longest array
 
 	if (cnt>64) cnt=64;
 
-		// get array prototype
-
-	script=&js.scripts[scripts_find_uid(js.attach.script_uid)];
-	
-	array_name=JSStringCreateWithUTF8CString("Array");
-	array_val=JSObjectGetProperty(cx,script->global_obj,array_name,NULL);
-	array_proto_obj=JSValueToObject(cx,array_val,NULL);
-	JSStringRelease(array_name);
-
-		// create object
-
-	j_obj=JSObjectCallAsConstructor(cx,array_proto_obj,0,NULL,NULL);
-
-		// create values
+		// create the values
 
 	for (n=0;n!=cnt;n++) {
-		JSObjectSetPropertyAtIndex(cx,j_obj,n,script_int_to_value(cx,values[n]),NULL);
+		js_vals[n]=script_int_to_value(cx,values[n]);
 	}
 
-	return((JSValueRef)j_obj);
+	return((JSValueRef)JSObjectMakeArray(cx,cnt,js_vals,NULL));
 }
 
 /* =======================================================

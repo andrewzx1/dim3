@@ -135,6 +135,8 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	int					x,y,z;
 	model_draw			*draw;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 		// get proper draw setup
 		
 	draw=script_bone_function_setup(cx,exception);
@@ -159,6 +161,8 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	int					x,y,z;
 	model_draw			*draw;
 	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 		// get proper draw setup
 		
 	draw=script_bone_function_setup(cx,exception);
@@ -182,6 +186,8 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	char			pose_name[name_str_len],bone_name[name_str_len];
 	float			bright;
 	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		

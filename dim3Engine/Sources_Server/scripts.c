@@ -334,19 +334,48 @@ void scripts_dispose(int uid)
 
 bool JSValueIsArray(JSContextRef ctx,JSValueRef value)
 {
-/*
-	JSObjectRef			arrayObj,protoObj;
+	char				*ch,str[64];
+	JSStringRef			jsStr;
+	JSObjectRef			arrayObj;
+	JSValueRef			val;
 	
+		// only check objects
+
 	if (!JSValueIsObject(ctx,value)) return(FALSE);
 	
+		// get constructor
+
 	arrayObj=JSValueToObject(ctx,value,NULL);
 	if (arrayObj==NULL) return(FALSE);
 
-	protoObj=JSObjectGetPrototype(ctx,arrayObj);
-	*/
-	
-	return(FALSE);
-	
+	jsStr=JSStringCreateWithUTF8CString("constructor");
+	val=JSObjectGetProperty(ctx,arrayObj,jsStr,NULL);
+	JSStringRelease(jsStr);
+
+	if (val==NULL) return(FALSE);
+
+		// get constructor as a function
+
+	jsStr=JSValueToStringCopy(ctx,val,NULL);
+	if (jsStr==NULL) return(FALSE);
+
+	JSStringGetUTF8CString(jsStr,str,64);
+	str[63]=0x0;
+
+	JSStringRelease(jsStr);
+
+		// special check to make sure we don't have Array
+		// anywhere else in a function body or there just
+		// instead a function body
+
+	ch=strchr(str,'{');
+	if (ch==NULL) return(FALSE);
+
+	*ch=0x0;
+
+		// look for array in string
+
+	return(strstr(str,"Array")!=NULL);
 }
 
 

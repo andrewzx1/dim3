@@ -201,6 +201,8 @@ JSValueRef js_obj_watch_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 {
 	obj_type	*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	obj->watch.on=TRUE;
@@ -212,6 +214,8 @@ JSValueRef js_obj_watch_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_clear_watch(&obj->watch);
@@ -229,6 +233,8 @@ JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func
 {
 	obj_type	*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	
 	obj->watch.restrict_on=TRUE;
@@ -240,6 +246,8 @@ JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func
 JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	

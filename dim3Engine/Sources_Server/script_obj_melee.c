@@ -220,6 +220,8 @@ JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef 
 	char				err_str[256];
     obj_type			*obj;
 
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 
 	if (!melee_script_spawn_object_model(js.time.current_tick,obj,NULL,err_str)) {

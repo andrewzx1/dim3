@@ -244,6 +244,8 @@ JSValueRef js_obj_size_grow_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	float			resize;
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	resize=script_value_to_float(cx,argv[0]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
@@ -258,6 +260,8 @@ JSValueRef js_obj_size_grow_over_time_func(JSContextRef cx,JSObjectRef func,JSOb
 	float			resize;
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	resize=script_value_to_float(cx,argv[0]);
 	msec=script_value_to_int(cx,argv[1]);
 	
@@ -274,6 +278,8 @@ JSValueRef js_obj_size_grow_over_time_change_size_func(JSContextRef cx,JSObjectR
 	d3pnt			size;
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+	
 	resize=script_value_to_float(cx,argv[0]);
 	
 	size.x=script_value_to_int(cx,argv[1]);
@@ -295,6 +301,8 @@ JSValueRef js_obj_size_grow_over_time_change_offset_func(JSContextRef cx,JSObjec
 	d3pnt			offset;
 	obj_type		*obj;
 
+	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+	
 	resize=script_value_to_float(cx,argv[0]);
 	
 	offset.x=script_value_to_int(cx,argv[1]);

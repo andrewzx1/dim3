@@ -55,6 +55,12 @@ extern bool script_load_file(script_type *script,char *script_dir,char *script_n
 extern void script_free_file(script_type *script);
 
 //
+// supergumba -- patches
+//
+
+extern bool JSValueIsArray(JSContextRef ctx,JSValueRef value);
+
+//
 // conversions
 //
 

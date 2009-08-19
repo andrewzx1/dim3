@@ -289,6 +289,8 @@ JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObject
     obj_type			*obj;
 	weapon_type			*weap;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -309,6 +311,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObje
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -328,6 +332,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,J
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -350,6 +356,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContextRe
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -372,6 +380,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -400,6 +410,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_func(JSContextRef cx,JSObje
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -419,6 +431,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_slop_func(JSContextRef cx,J
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -441,6 +455,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContextRe
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -463,6 +479,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -491,6 +509,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_func(JSContextRef cx,JSObjectRef
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -510,6 +530,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_slop_func(JSContextRef cx,JSObje
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -532,6 +554,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContextRef cx,
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -554,6 +578,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContextRef c
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -582,6 +608,8 @@ JSValueRef js_weap_projectile_spawn_from_center_func(JSContextRef cx,JSObjectRef
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -601,6 +629,8 @@ JSValueRef js_weap_projectile_spawn_from_center_slop_func(JSContextRef cx,JSObje
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -623,6 +653,8 @@ JSValueRef js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 
@@ -645,6 +677,8 @@ JSValueRef js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef c
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 

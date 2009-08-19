@@ -185,6 +185,8 @@ JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_input_freeze(obj,script_value_to_bool(cx,argv[0]));
 
@@ -201,6 +203,8 @@ JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	float			r,g,b;
 	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
 	
 	r=script_value_to_float(cx,argv[0]);
 	g=script_value_to_float(cx,argv[1]);
