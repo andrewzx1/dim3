@@ -43,16 +43,27 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void scripts_setup_events(int script_uid)
+bool scripts_setup_events(script_type *script,char *err_str)
 {
-	int				idx;
-	script_type		*script;
-	
-	idx=scripts_find_uid(script_uid);
-	if (idx==-1) return;
-	
-	script=&js.scripts[idx];
+		// cache event function
+		
 	script->event_func=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,"event");
+	
+		// determine if event exists and is callable
+		
+	if (!JSValueIsObject(script->cx,script->event_func)) {
+		script->event_func=NULL;
+	}
+	else {
+		if (!JSObjectIsFunction(script->cx,script->event_func)) script->event_func=NULL;
+	}
+	
+	if (script->event_func==NULL) {
+		sprintf(err_str,"[%s] 'event' function is required",script->name);
+		return(FALSE);
+	}
+	
+	return(TRUE);
 }
 
 /* =======================================================

@@ -45,7 +45,8 @@ extern setup_type		setup;
 int						shadow_stencil_poly_vertex_count;
 float					*shadow_poly_stencil_vbo;
 bool					*shadow_hits;
-d3pnt					*shadow_spt,*shadow_ept,*shadow_hpt;
+d3pnt					*shadow_spt,*shadow_hpt;
+d3vct					*shadow_vct;
 poly_pointer_type		*shadow_poly_ptrs;
 view_light_spot_type	shadow_above_lspot;
 
@@ -62,10 +63,11 @@ bool shadow_initialize(char *err_str)
 		// create ray trace points
 		
 	sz=sizeof(d3pnt)*max_model_vertex;
-	
 	shadow_spt=(d3pnt*)malloc(sz);
-	shadow_ept=(d3pnt*)malloc(sz);
 	shadow_hpt=(d3pnt*)malloc(sz);
+	
+	sz=sizeof(d3vct)*max_model_vertex;
+	shadow_vct=(d3vct*)malloc(sz);
 	
 	shadow_hits=(bool*)malloc(sizeof(bool)*max_model_vertex);
 	
@@ -76,7 +78,7 @@ bool shadow_initialize(char *err_str)
 	
 		// check for memory errors
 	
-	if ((shadow_spt==NULL) || (shadow_ept==NULL) || (shadow_hpt==NULL) || (shadow_hits==NULL) || (shadow_poly_ptrs==NULL) || (shadow_poly_stencil_vbo==NULL)) {
+	if ((shadow_spt==NULL) || (shadow_vct==NULL) || (shadow_hpt==NULL) || (shadow_hits==NULL) || (shadow_poly_ptrs==NULL) || (shadow_poly_stencil_vbo==NULL)) {
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
@@ -87,7 +89,7 @@ bool shadow_initialize(char *err_str)
 void shadow_shutdown(void)
 {
 	free(shadow_spt);
-	free(shadow_ept);
+	free(shadow_vct);
 	free(shadow_hpt);
 	free(shadow_hits);
 	free(shadow_poly_ptrs);
@@ -410,12 +412,11 @@ void shadow_stencil_clear_mesh_poly(void)
 void shadow_render_model(model_draw *draw)
 {
 	int							n,k,t,poly_count,trig_count;
-	float						f_dist;
 	double						dx,dy,dz,d_alpha;
 	float						*vp,*vertex_ptr,*vl,*cl;
 	unsigned short				*index_ptr;
-	d3vct						ray_move;
-	d3pnt						*spt,*ept,*hpt;
+	d3vct						*vct;
+	d3pnt						*spt,*hpt;
     model_trig_type				*trig;
 	model_mesh_type				*mesh;
 	model_type					*mdl;
@@ -431,10 +432,9 @@ void shadow_render_model(model_draw *draw)
 	poly_count=shadow_build_poly_set_model(mdl,draw);
 	if (poly_count==0) return;
 	
-		// get light and draw distance
+		// get light
 
 	lspot=shadow_get_light_spot(&draw->pnt,draw->size.y);
-	f_dist=(float)lspot->intensity;
 
 		// get distance alpha factor
 
@@ -488,24 +488,22 @@ void shadow_render_model(model_draw *draw)
 			vp=draw->setup.mesh_arrays[n].gl_vertex_array;
 			
 			spt=shadow_spt;
-			ept=shadow_ept;
+			vct=shadow_vct;
 			
 			for (t=0;t!=mesh->nvertex;t++) {
 				spt->x=(int)*vp++;
 				spt->y=(int)*vp++;
 				spt->z=(int)*vp++;
 				
-				vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
-					
-				ept->x=spt->x-(int)(ray_move.x*f_dist);
-				ept->y=spt->y-(int)(ray_move.y*f_dist);
-				ept->z=spt->z-(int)(ray_move.z*f_dist);
+				vct->x=(float)((spt->x-lspot->pnt.x)*100);
+				vct->y=(float)((spt->y-lspot->pnt.y)*100);
+				vct->z=(float)((spt->z-lspot->pnt.z)*100);
 				
 				spt++;
-				ept++;
+				vct++;
 			}
 
-			ray_trace_mesh_poly_plane(mesh->nvertex,shadow_spt,shadow_ept,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+			ray_trace_mesh_poly_plane_by_vector(mesh->nvertex,shadow_spt,shadow_vct,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
 
 				// setup the vertex objects
 
@@ -614,12 +612,11 @@ void shadow_render_mesh(int mesh_idx)
 {
 	int							n,k,t,poly_count,
 								ntrig,max_trig_cnt,trig_count;
-	float						f_dist;
 	double						dx,dy,dz,d_alpha;
 	float						*vertex_ptr,*vl,*cl;
 	unsigned short				*index_ptr;
-	d3vct						ray_move;
-	d3pnt						*pt,*spt,*ept,*hpt;
+	d3vct						*vct;
+	d3pnt						*pt,*spt,*hpt;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	view_light_spot_type		*lspot;
@@ -636,10 +633,9 @@ void shadow_render_mesh(int mesh_idx)
 	poly_count=shadow_build_poly_set_mesh(mesh_idx);
 	if (poly_count==0) return;
 	
-		// get light and draw distance
+		// get light
 
 	lspot=shadow_get_light_spot(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y));
-	f_dist=(float)lspot->intensity;
 
 		// get distance alpha factor
 
@@ -673,7 +669,7 @@ void shadow_render_mesh(int mesh_idx)
 			// run through all the vertexes of this mesh
 
 		spt=shadow_spt;
-		ept=shadow_ept;
+		vct=shadow_vct;
 		pt=mesh->vertexes;
 		
 		for (n=0;n!=mesh->nvertex;n++) {
@@ -681,18 +677,16 @@ void shadow_render_mesh(int mesh_idx)
 			spt->y=pt->y;
 			spt->z=pt->z;
 			
-			vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
-				
-			ept->x=spt->x-(int)(ray_move.x*f_dist);
-			ept->y=spt->y-(int)(ray_move.y*f_dist);
-			ept->z=spt->z-(int)(ray_move.z*f_dist);
+			vct->x=(float)((spt->x-lspot->pnt.x)*100);
+			vct->y=(float)((spt->y-lspot->pnt.y)*100);
+			vct->z=(float)((spt->z-lspot->pnt.z)*100);
 			
 			spt++;
-			ept++;
+			vct++;
 			pt++;
 		}
 
-		ray_trace_mesh_poly_plane(mesh->nvertex,shadow_spt,shadow_ept,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+		ray_trace_mesh_poly_plane_by_vector(mesh->nvertex,shadow_spt,shadow_vct,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
 
 			// setup the vertex objects
 

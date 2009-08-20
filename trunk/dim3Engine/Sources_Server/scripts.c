@@ -154,22 +154,33 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 		
 	memmove(&js.attach,attach,sizeof(attach_type));
 	
+		// make sure UTF8 conversion didn't go crazy
+		// on some hidden characters
+	
 	j_script_data=JSStringCreateWithUTF8CString(script->data);
+	if (JSStringGetLength(j_script_data)!=strlen(script->data)) {
+		JSStringRelease(j_script_data);
+		sprintf(err_str,"[%s] contains extraneous control characters",script->name);
+		return(FALSE);
+	}
+	
+		// evaulate script
+		
 	j_script_name=JSStringCreateWithUTF8CString(script->name);
-
+	
 	rval=JSEvaluateScript(script->cx,j_script_data,NULL,j_script_name,0,&exception);
 
 	JSStringRelease(j_script_name);
 	JSStringRelease(j_script_data);
 
 	if (rval==NULL) {
-		script_value_to_string(script->cx,exception,err_str,256);
+		script_exception_to_string(script->cx,exception,err_str,256);
 		return(FALSE);
 	}
 
 		// get a pointer to the event object
 		
-	scripts_setup_events(script->uid);
+	if (!scripts_setup_events(script,err_str)) return(FALSE);
 	
 		// send the construct event
 		

@@ -1095,12 +1095,11 @@ float ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,d3pnt *plane)
 	return(hit_t);
 }
 
-void ray_trace_mesh_poly_plane(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,int mesh_idx,int poly_idx)
+void ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hpt,bool *hits,int mesh_idx,int poly_idx)
 {
 	int						n;
 	float					hit_t;
 	d3pnt					*pt,plane[8];
-	d3vct					vct;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	
@@ -1121,23 +1120,7 @@ void ray_trace_mesh_poly_plane(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hi
 		// run the ray array
 		
 	for (n=0;n!=cnt;n++) {
-	
-			// create vector from points
-
-		vct.x=(float)(ept[n].x-spt[n].x);
-		vct.y=(float)(ept[n].y-spt[n].y);
-		vct.z=(float)(ept[n].z-spt[n].z);
-		
-			// default is past end of line
-			
-		hpt[n].x=ept[n].x;
-		hpt[n].y=ept[n].y;
-		hpt[n].z=ept[n].z;
-		
-			// check against plane
-
-		hit_t=ray_trace_plane(&spt[n],&vct,&hpt[n],poly->ptsz,plane);
-		
+		hit_t=ray_trace_plane(&spt[n],&vct[n],&hpt[n],poly->ptsz,plane);
 		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
 	}
 }

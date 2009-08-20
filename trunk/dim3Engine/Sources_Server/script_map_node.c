@@ -150,8 +150,9 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 
 		// get length
 
-	array_obj=JSValueMakeObject(argv[1]);
-
+	array_obj=JSValueToObject(cx,argv[1],exception);
+	if (array_obj==NULL) return(script_null_to_value(cx));
+	
 	vp=script_get_single_property(cx,array_obj,"length");
 	len=script_value_to_int(cx,vp);
 	
