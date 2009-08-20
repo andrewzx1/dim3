@@ -536,7 +536,7 @@ extern JSObjectRef script_add_proj_melee_object(JSContextRef cx,JSObjectRef pare
 // event posting, chaining
 //
 
-extern void scripts_setup_events(int script_uid);
+extern bool scripts_setup_events(script_type *script,char *err_str);
 extern bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str);
 extern void scripts_post_event_console(attach_type *attach,int main_event,int sub_event,int id);
 extern bool scripts_chain(attach_type *attach,char *func_name,char *err_str);

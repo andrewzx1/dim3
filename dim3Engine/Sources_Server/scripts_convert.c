@@ -159,12 +159,7 @@ JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values)
 
 JSValueRef script_create_exception(JSContextRef cx,char *str)
 {
-	JSObjectRef			ex_obj;
-
-	ex_obj=JSObjectMake(cx,NULL,NULL);
-	script_set_single_property(cx,ex_obj,"message",script_string_to_value(cx,str),kJSPropertyAttributeNone);
-
-	return((JSValueRef)ex_obj);
+	return((JSValueRef)JSObjectMakeError(cx,1,(JSValueRef*)script_string_to_value(cx,str),NULL));
 }
 
 void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int len)
@@ -180,18 +175,14 @@ void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int 
 	strcpy(str,"[");
 
 	vp=script_get_single_property(cx,ex_obj,"sourceURL");
-	if (vp!=NULL) {
-		script_value_to_string(cx,vp,txt,256);
-		strcat(str,txt);
-	}
+	script_value_to_string(cx,vp,txt,256);
+	strcat(str,txt);
 
 	strcat(str,":");
 
 	vp=script_get_single_property(cx,ex_obj,"line");
-	if (vp!=NULL) {
-		script_value_to_string(cx,vp,txt,256);
-		strcat(str,txt);
-	}
+	script_value_to_string(cx,vp,txt,256);
+	strcat(str,txt);
 
 	strcat(str,"] ");
 

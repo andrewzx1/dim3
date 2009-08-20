@@ -504,8 +504,15 @@ void gl_shader_set_poly_variables(view_shader_type *shader,float dark_factor,flo
 	
 		// set tint color
 		
-	if (tint_col!=NULL) {
-		if (shader->var_dim3TintColor!=-1) {
+	if (shader->var_dim3TintColor!=-1) {
+	
+		if (tint_col==NULL) {
+			if ((shader->cur_tint_col.r!=1.0f) || (shader->cur_tint_col.g!=1.0f) || (shader->cur_tint_col.b!=1.0f)) {
+				shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=1.0f;
+				glUniform3fARB(shader->var_dim3TintColor,1.0f,1.0f,1.0f);
+			}
+		}
+		else {
 			if ((shader->cur_tint_col.r!=tint_col->r) || (shader->cur_tint_col.g!=tint_col->g) || (shader->cur_tint_col.b!=tint_col->b)) {
 				memmove(&shader->cur_tint_col,tint_col,sizeof(d3col));
 				glUniform3fARB(shader->var_dim3TintColor,tint_col->r,tint_col->g,tint_col->b);

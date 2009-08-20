@@ -836,8 +836,11 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		ok=object_start_script(obj,spot->attach_script,spot->attach_params,err_str);
 	}
 
-	if (!ok) return(-1);
-
+	if (!ok) {
+		server.count.obj--;			// wait until real delete to move memory around
+		return(-1);
+	}
+	
 		// load object model
 
 	model_load_and_init(&obj->draw);
