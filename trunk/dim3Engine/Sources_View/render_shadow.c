@@ -38,8 +38,8 @@ and can be sold or given away.
 // supergumba testing
 
 #define shadow_max_trigs		1000
-#define shadow_max_vertexes		2000
-#define shadow_max_polys		64
+#define shadow_max_vertexes		1000
+#define shadow_max_polys		128
 
 typedef struct			{
 							int						start_idx,count;
@@ -93,7 +93,7 @@ bool shadow_initialize(char *err_str)
 	
 		// memory for stencil vbo and poly ptrs
 	
-	shadow_poly_ptrs=(poly_pointer_type*)malloc(shadow_max_poly_draw*sizeof(poly_pointer_type));
+	shadow_poly_ptrs=(poly_pointer_type*)malloc(shadow_max_polys*sizeof(poly_pointer_type));
 	shadow_poly_stencil_vbo=(float*)malloc(((8*shadow_max_polys)*3)*sizeof(float));
 
 
@@ -193,9 +193,9 @@ bool shadow_get_volume(d3pnt *pnt,int high,int *px,int *py,int *pz)
 
 		vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,sp->x,sp->y,sp->z);
 				
-		ep->x=sp->x-(int)(ray_move.x*f_dist);
-		ep->y=sp->y-(int)(ray_move.y*f_dist);
-		ep->z=sp->z-(int)(ray_move.z*f_dist);
+		ep->x=lspot->pnt.x-(int)(ray_move.x*f_dist);
+		ep->y=lspot->pnt.y-(int)(ray_move.y*f_dist);
+		ep->z=lspot->pnt.z-(int)(ray_move.z*f_dist);
 		
 		sp++;
 		ep++;
@@ -318,7 +318,7 @@ int shadow_build_poly_set(int *px,int *py,int *pz,int skip_mesh_idx)
 			
 				// can only shadow for max stencil count
 				
-			if (cnt==shadow_max_poly_draw) return(cnt);
+			if (cnt==shadow_max_polys) return(cnt);
 		}
 	}
 	
@@ -588,7 +588,7 @@ void shadow_stencil_clear_mesh_poly(void)
       
 ======================================================= */
 
-void shadow_render_generic(void)
+void shadow_render_generic(shadow_render_type *shad)
 {
 	int							k;
 	float						*vertex_ptr,*cl;
@@ -599,7 +599,7 @@ void shadow_render_generic(void)
 		// arrays and only allow meshes with a limited
 		// number of vertexes
 
-	if (shadow_render.npoly==0) return;
+	if (shad->npoly==0) return;
 
 		// start stenciling
 		// never write to the depth buffer during this operation
@@ -615,25 +615,25 @@ void shadow_render_generic(void)
 
 		// setup the vertex object
 
-	vertex_ptr=view_bind_map_next_vertex_object(shadow_render.nvertex*(3+4));
+	vertex_ptr=view_bind_map_next_vertex_object(shad->nvertex*(3+4));
 	if (vertex_ptr==NULL) return;
 
-	memmove(vertex_ptr,shadow_render.vp,((3*shadow_render.nvertex)*sizeof(float)));
+	memmove(vertex_ptr,shad->vp,((3*shad->nvertex)*sizeof(float)));
 
-	cl=vertex_ptr+(shadow_render.nvertex*3);
-	memmove(cl,shadow_render.cp,((4*shadow_render.nvertex)*sizeof(float)));
+	cl=vertex_ptr+(shad->nvertex*3);
+	memmove(cl,shad->cp,((4*shad->nvertex)*sizeof(float)));
 
 	view_unmap_current_vertex_object();
 
 		// create the index object
 
-	index_ptr=view_bind_map_next_index_object(shadow_render.nindex);
+	index_ptr=view_bind_map_next_index_object(shad->nindex);
 	if (index_ptr==NULL) {
 		view_unbind_current_vertex_object();
 		return;
 	}
 
-	memmove(index_ptr,shadow_render.indexes,(shadow_render.nindex*sizeof(unsigned short)));
+	memmove(index_ptr,shad->indexes,(shad->nindex*sizeof(unsigned short)));
 
 	view_unmap_current_index_object();
 
@@ -643,7 +643,7 @@ void shadow_render_generic(void)
 	glVertexPointer(3,GL_FLOAT,0,0);
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4,GL_FLOAT,0,(void*)((shadow_render.nvertex*3)*sizeof(float)));
+	glColorPointer(4,GL_FLOAT,0,(void*)((shad->nvertex*3)*sizeof(float)));
 
 		// run through all the stenciled polygons
 		// and draw their trigs
@@ -656,15 +656,15 @@ void shadow_render_generic(void)
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 			
-	shadow_poly=shadow_render.polys;
+	shadow_poly=shad->polys;
 
-	for (k=0;k!=shadow_render.npoly;k++) {
+	for (k=0;k!=shad->npoly;k++) {
 
 		glStencilFunc(GL_EQUAL,(k+1),0xFF);
 
 			// draw the shadow trigs for this poly
 
-		glDrawRangeElements(GL_TRIANGLES,0,shadow_render.nvertex,(shadow_poly->count*3),GL_UNSIGNED_SHORT,(GLvoid*)shadow_poly->start_idx);
+		glDrawRangeElements(GL_TRIANGLES,0,shad->nvertex,(shadow_poly->count*3),GL_UNSIGNED_SHORT,(GLvoid*)shadow_poly->start_idx);
 
 			// erase the stencil
 
@@ -897,9 +897,6 @@ void shadow_render_model(model_draw *draw)
       
 ======================================================= */
 
-
-// supergumba -- need to CHECK LIMITS!
-
 void shadow_render_mesh(int mesh_idx)
 {
 	int							n,k,t,vertex_offset,index_offset,poly_count,
@@ -912,8 +909,12 @@ void shadow_render_mesh(int mesh_idx)
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	view_light_spot_type		*lspot;
+	shadow_render_type			*shad;
 
 	mesh=&map.mesh.meshes[mesh_idx];
+	if (mesh->nvertex>=max_model_vertex) return;
+	
+	shad=&shadow_render;
 	
 		// find all polys the shadow ray hits
 		
@@ -930,7 +931,6 @@ void shadow_render_mesh(int mesh_idx)
 	d_alpha=1.0/(d_alpha*d_alpha);
 
 		// setup the rays
-	// supergumba -- LIMITS HERE
 
 	spt=shadow_spt;
 	vct=shadow_vct;
@@ -953,14 +953,14 @@ void shadow_render_mesh(int mesh_idx)
 		// build the vertexes, colors and indexes
 		// for each poly and store in one list
 
-	vl=shadow_render.vp;
-	cl=shadow_render.cp;
-	index_ptr=shadow_render.indexes;
+	vl=shad->vp;
+	cl=shad->cp;
+	index_ptr=shad->indexes;
 
 	vertex_offset=0;
 	index_offset=0;
 
-	shadow_render.npoly=0;
+	shad->npoly=0;
 
 	for (k=0;k!=poly_count;k++) {
 
@@ -987,8 +987,9 @@ void shadow_render_mesh(int mesh_idx)
 					*index_ptr++=(unsigned short)(poly->v[0]+vertex_offset);
 					*index_ptr++=(unsigned short)(poly->v[t+1]+vertex_offset);
 					*index_ptr++=(unsigned short)(poly->v[t+2]+vertex_offset);
+					
 					trig_count++;
-					// supergumba -- LIMITS HERE
+					if (trig_count==shadow_max_trigs) return;
 				}
 			}
 
@@ -998,15 +999,19 @@ void shadow_render_mesh(int mesh_idx)
 			// if no trigs to draw, skip this poly
 
 		if (trig_count==0) continue;
+			
+			// check to see if we are running out of vertexes
+			
+		if ((vertex_offset+mesh->nvertex)>=shadow_max_vertexes) return;
 
 			// setup indexed per poly drawing
 
-		shadow_render.polys[shadow_render.npoly].start_idx=index_offset;
-		shadow_render.polys[shadow_render.npoly].count=trig_count;
-		shadow_render.polys[shadow_render.npoly].ptr.mesh_idx=shadow_poly_ptrs[k].mesh_idx;
-		shadow_render.polys[shadow_render.npoly].ptr.poly_idx=shadow_poly_ptrs[k].poly_idx;
+		shad->polys[shad->npoly].start_idx=index_offset;
+		shad->polys[shad->npoly].count=trig_count;
+		shad->polys[shad->npoly].ptr.mesh_idx=shadow_poly_ptrs[k].mesh_idx;
+		shad->polys[shad->npoly].ptr.poly_idx=shadow_poly_ptrs[k].poly_idx;
 
-		shadow_render.npoly++;	// supergumba -- LIMITS HERE!
+		shad->npoly++;
 
 		index_offset+=(trig_count*3);
 
@@ -1020,31 +1025,32 @@ void shadow_render_mesh(int mesh_idx)
 
 			*vl++=(float)hpt->x;
 			*vl++=(float)hpt->y;
-			*vl++=(float)hpt->z;	// supergumba -- LIMITS HERE!
+			*vl++=(float)hpt->z;
 
 				// color
 
-			dx=(hpt->x-lspot->pnt.x);
-			dy=(hpt->y-lspot->pnt.y);
-			dz=(hpt->z-lspot->pnt.z);
+			dx=(double)(hpt->x-lspot->pnt.x);
+			dy=(double)(hpt->y-lspot->pnt.y);
+			dz=(double)(hpt->z-lspot->pnt.z);
+			
 			hpt++;
 
 			*cl++=0.0f;
 			*cl++=0.0f;
 			*cl++=0.0f;
-			*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
+			*cl++=1.0f; // -(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
 		}
-
+		
 		vertex_offset+=mesh->nvertex;
 	}
 
 		// finish setup
 
-	shadow_render.nindex=index_offset;
-	shadow_render.nvertex=vertex_offset;
+	shad->nindex=index_offset;
+	shad->nvertex=vertex_offset;
 
-		// render the shadow
+		// render the shadow	
 
-	shadow_render_generic();
+	shadow_render_generic(shad);
 }
 

@@ -429,7 +429,12 @@ void view_setup_objects(int tick)
 			if (view_setup_model_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_model_in_view;
 
 			if (obj->draw.shadow.on) {
-				if (view_setup_shadow_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_shadow_in_view;
+				if ((flag&view_list_item_flag_model_in_view)!=0x0) {		// model in view means shadow is automatically in view
+					flag|=view_list_item_flag_shadow_in_view;
+				}
+				else {
+					if (view_setup_shadow_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_shadow_in_view;
+				}
 			}
 
 			if (flag==0x0) continue;
