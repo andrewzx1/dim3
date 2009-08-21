@@ -41,7 +41,6 @@ and can be sold or given away.
 // shadows
 //
 
-#define shadow_max_poly_draw					128
 
 //
 // screen sizes
