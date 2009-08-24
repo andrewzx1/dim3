@@ -38,9 +38,9 @@ and can be sold or given away.
 // supergumba testing
 // make the maxs by analyzing items, not maxs
 
-#define max_shadow_render					16
-#define shadow_max_trigs					20480
-#define shadow_max_vertexes					20480
+#define max_shadow_render					24
+#define shadow_max_trigs					10240
+#define shadow_max_vertexes					10240
 #define shadow_max_polys					128
 #define shadow_max_ray_trace_vertexes		10240
 
@@ -740,7 +740,7 @@ void shadow_render_generic(shadow_render_type *shad)
       
 ======================================================= */
 
-bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
+void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 {
 	int							n,k,t,ray_count,poly_count,trig_count,trig_offset,
 								vertex_offset,index_offset;
@@ -760,7 +760,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 		// get model
 
 	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(FALSE);
+	if (mdl==NULL) return;
 	
 		// get light
 
@@ -775,7 +775,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 
 		if ((!light_changed) && (draw->animations[0].mode!=am_playing)) {
 			shadow_render_generic(shad);
-			return(TRUE);
+			return;
 		}
 	}
 	else {
@@ -787,7 +787,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	poly_count=shadow_build_poly_set_model(mdl,draw);
 	if (poly_count==0) {
 		shadow_render_free(shad);
-		return(TRUE);		// don't turn off shadows but don't draw either
+		return;
 	}
 
 		// get distance alpha factor
@@ -806,8 +806,11 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
 		
 		mesh=&mdl->meshes[n];
-		if ((ray_count+mesh->nvertex)>shadow_max_ray_trace_vertexes) return(FALSE);
-			
+		if ((ray_count+mesh->nvertex)>shadow_max_ray_trace_vertexes) {
+			shadow_render_free(shad);
+			return;
+		}
+
 		vp=draw->setup.mesh_arrays[n].gl_vertex_array;
 
 		mesh_vertex_offset[n]=ray_count;
@@ -872,7 +875,10 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 					*index_ptr++=(unsigned short)(trig->v[2]+vertex_offset+mesh_vertex_offset[n]);
 					
 					trig_count++;
-					if ((trig_offset+trig_count)==shadow_max_trigs) return(FALSE);
+					if ((trig_offset+trig_count)==shadow_max_trigs) {
+						shadow_render_free(shad);
+						return;
+					}
 				}
 				
 				trig++;
@@ -885,7 +891,10 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 			
 			// check to see if we are running out of vertexes
 			
-		if ((vertex_offset+ray_count)>=shadow_max_vertexes) return(FALSE);
+		if ((vertex_offset+ray_count)>=shadow_max_vertexes) {
+			shadow_render_free(shad);
+			return;
+		}
 
 			// setup indexed per poly drawing
 
@@ -934,8 +943,6 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 		// render the shadow
 
 	shadow_render_generic(shad);
-
-	return(TRUE);
 }
 
 /* =======================================================
@@ -944,7 +951,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
       
 ======================================================= */
 
-bool shadow_render_mesh(int mesh_idx)
+void shadow_render_mesh(int mesh_idx)
 {
 	int							n,k,t,vertex_offset,index_offset,poly_count,
 								ntrig,trig_count,trig_offset;
@@ -960,7 +967,7 @@ bool shadow_render_mesh(int mesh_idx)
 	shadow_render_type			*shad;
 	
 	mesh=&map.mesh.meshes[mesh_idx];
-	if (mesh->nvertex>=shadow_max_ray_trace_vertexes) return(FALSE);
+	if (mesh->nvertex>=shadow_max_ray_trace_vertexes) return;
 	
 		// get light
 
@@ -975,7 +982,7 @@ bool shadow_render_mesh(int mesh_idx)
 
 		if (!light_changed) {
 			shadow_render_generic(shad);
-			return(TRUE);
+			return;
 		}
 	}
 	else {
@@ -987,7 +994,7 @@ bool shadow_render_mesh(int mesh_idx)
 	poly_count=shadow_build_poly_set_mesh(mesh_idx);
 	if (poly_count==0) {
 		shadow_render_free(shad);
-		return(TRUE);		// don't turn off shadows but don't draw either
+		return;
 	}
 
 		// get distance alpha factor
@@ -1055,7 +1062,10 @@ bool shadow_render_mesh(int mesh_idx)
 					*index_ptr++=(unsigned short)(poly->v[t+2]+vertex_offset);
 					
 					trig_count++;
-					if ((trig_offset+trig_count)==shadow_max_trigs) return(FALSE);
+					if ((trig_offset+trig_count)==shadow_max_trigs) {
+						shadow_render_free(shad);
+						return;
+					}
 				}
 			}
 
@@ -1068,7 +1078,10 @@ bool shadow_render_mesh(int mesh_idx)
 			
 			// check to see if we are running out of vertexes
 			
-		if ((vertex_offset+mesh->nvertex)>=shadow_max_vertexes) return(FALSE);
+		if ((vertex_offset+mesh->nvertex)>=shadow_max_vertexes) {
+			shadow_render_free(shad);
+			return;
+		}
 
 			// setup indexed per poly drawing
 
@@ -1118,7 +1131,5 @@ bool shadow_render_mesh(int mesh_idx)
 		// render the shadow	
 
 	shadow_render_generic(shad);
-
-	return(TRUE);
 }
 
