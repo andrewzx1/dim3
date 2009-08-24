@@ -197,12 +197,6 @@ and can be sold or given away.
 #define ci_object_click_angle					20.0f				// angle at which you can click an object
 
 //
-// multiplayer bots
-//
-
-#define max_multiplayer_bot						16
-
-//
 // models
 //
  

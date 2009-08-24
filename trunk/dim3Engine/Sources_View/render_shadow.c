@@ -39,10 +39,10 @@ and can be sold or given away.
 // make the maxs by analyzing items, not maxs
 
 #define max_shadow_render					16
-#define shadow_max_trigs					1024
-#define shadow_max_vertexes					4096
+#define shadow_max_trigs					20480
+#define shadow_max_vertexes					20480
 #define shadow_max_polys					128
-#define shadow_max_ray_trace_vertexes		2048
+#define shadow_max_ray_trace_vertexes		10240
 
 typedef struct			{
 							int							type,idx;
@@ -270,8 +270,6 @@ shadow_render_type* shadow_create_new_render(int item_type,int item_idx,d3pnt *p
 	shad->cur_item.idx=item_idx;
 
 	shadow_render_update(shad,pnt,lspot);
-
-	fprintf(stdout,"NEW %d for %d/%d\n",idx,item_type,item_idx);
 
 	return(shad);
 }
@@ -744,7 +742,7 @@ void shadow_render_generic(shadow_render_type *shad)
 
 bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 {
-	int							n,k,t,ray_count,poly_count,trig_count,
+	int							n,k,t,ray_count,poly_count,trig_count,trig_offset,
 								vertex_offset,index_offset;
 	int							mesh_vertex_offset[max_model_mesh];
 	double						dx,dy,dz,d_alpha;
@@ -773,9 +771,9 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	shad=shadow_find_existing_render(item_type,item_idx,&draw->pnt,lspot,&light_changed);
 	if (shad!=NULL) {
 
-			// no light change, just redraw setup
+			// no light change or animating, just redraw setup
 
-		if (!light_changed) {
+		if ((!light_changed) && (draw->animations[0].mode!=am_playing)) {
 			shadow_render_generic(shad);
 			return(TRUE);
 		}
@@ -844,6 +842,8 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	index_offset=0;
 
 	shad->npoly=0;
+	
+	shad->polys[0].ptr.mesh_idx=shad->polys[0].ptr.poly_idx=0;
 
 	for (k=0;k!=poly_count;k++) {
 
@@ -855,6 +855,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 			// skip triangles with no collisions
 
 		trig_count=0;
+		trig_offset=index_offset/3;
 
 		for (n=0;n!=mdl->nmesh;n++) {
 			if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
@@ -864,14 +865,14 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 
 			for (t=0;t!=mesh->ntrig;t++) {
 
-				if ((shadow_hits[trig->v[0]]) && (shadow_hits[trig->v[1]]) && (shadow_hits[trig->v[2]])) {
+				if ((shadow_hits[trig->v[0]]) || (shadow_hits[trig->v[1]]) || (shadow_hits[trig->v[2]])) {
 				
 					*index_ptr++=(unsigned short)(trig->v[0]+vertex_offset+mesh_vertex_offset[n]);
 					*index_ptr++=(unsigned short)(trig->v[1]+vertex_offset+mesh_vertex_offset[n]);
 					*index_ptr++=(unsigned short)(trig->v[2]+vertex_offset+mesh_vertex_offset[n]);
 					
 					trig_count++;
-					if (trig_count==shadow_max_trigs) return(FALSE);
+					if ((trig_offset+trig_count)==shadow_max_trigs) return(FALSE);
 				}
 				
 				trig++;
@@ -892,7 +893,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 		shad->polys[shad->npoly].count_idx=trig_count*3;
 		shad->polys[shad->npoly].ptr.mesh_idx=shadow_poly_ptrs[k].mesh_idx;
 		shad->polys[shad->npoly].ptr.poly_idx=shadow_poly_ptrs[k].poly_idx;
-
+		
 		shad->npoly++;
 
 		index_offset+=(trig_count*3);
@@ -921,7 +922,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 			*cl++=0.0f;
 			*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
 		}
-		
+	
 		vertex_offset+=ray_count;
 	}
 
@@ -930,7 +931,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	shad->nindex=index_offset;
 	shad->nvertex=vertex_offset;
 
-		// render the shadow	
+		// render the shadow
 
 	shadow_render_generic(shad);
 
@@ -946,7 +947,7 @@ bool shadow_render_model(int item_type,int item_idx,model_draw *draw)
 bool shadow_render_mesh(int mesh_idx)
 {
 	int							n,k,t,vertex_offset,index_offset,poly_count,
-								ntrig,trig_count;
+								ntrig,trig_count,trig_offset;
 	double						dx,dy,dz,d_alpha;
 	bool						light_changed;
 	float						*vl,*cl;
@@ -957,7 +958,7 @@ bool shadow_render_mesh(int mesh_idx)
 	map_mesh_poly_type			*poly;
 	view_light_spot_type		*lspot;
 	shadow_render_type			*shad;
-
+	
 	mesh=&map.mesh.meshes[mesh_idx];
 	if (mesh->nvertex>=shadow_max_ray_trace_vertexes) return(FALSE);
 	
@@ -1035,9 +1036,10 @@ bool shadow_render_mesh(int mesh_idx)
 			// create the index object
 			// break polygons up into triangles so we
 			// can draw with one call and skip polygons
-			// with no collisions
+			// with no ray hits
 
 		trig_count=0;
+		trig_offset=index_offset/3;
 
 		poly=mesh->polys;
 
@@ -1046,14 +1048,14 @@ bool shadow_render_mesh(int mesh_idx)
 			ntrig=poly->ptsz-2;
 
 			for (t=0;t<ntrig;t++) {
-
-				if ((shadow_hits[poly->v[0]]) && (shadow_hits[poly->v[t+1]]) && (shadow_hits[poly->v[t+2]])) {
+			
+				if ((shadow_hits[poly->v[0]]) || (shadow_hits[poly->v[t+1]]) || (shadow_hits[poly->v[t+2]])) {
 					*index_ptr++=(unsigned short)(poly->v[0]+vertex_offset);
 					*index_ptr++=(unsigned short)(poly->v[t+1]+vertex_offset);
 					*index_ptr++=(unsigned short)(poly->v[t+2]+vertex_offset);
 					
 					trig_count++;
-					if (trig_count==shadow_max_trigs) return(FALSE);
+					if ((trig_offset+trig_count)==shadow_max_trigs) return(FALSE);
 				}
 			}
 
@@ -1102,7 +1104,7 @@ bool shadow_render_mesh(int mesh_idx)
 			*cl++=0.0f;
 			*cl++=0.0f;
 			*cl++=0.0f;
-			*cl++=1.0f; // -(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
+			*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
 		}
 		
 		vertex_offset+=mesh->nvertex;

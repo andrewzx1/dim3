@@ -118,7 +118,7 @@ void score_limit_trigger_set_check_scores(void)
 
 		// team checks?
 		
-	if (net_setup.games[net_setup.game_idx].use_teams) {
+	if (hud.net_game.games[net_setup.game_idx].use_teams) {
 		
 		red_score=blue_score=0;
 

@@ -405,7 +405,7 @@ void object_get_tint(obj_type *obj,d3col *tint)
 		// then get team tint
 
 	if (net_setup.client.joined) {
-		if (net_setup.games[net_setup.game_idx].use_teams) {
+		if (hud.net_game.games[net_setup.game_idx].use_teams) {
 			object_team_get_tint(obj->team_idx,tint);
 			return;
 		}
@@ -1031,14 +1031,14 @@ void spot_add_multiplayer_bots(void)
 
 		// are bots allowed in this game?
 
-	if (!hud.bot.on) return;
+	if (!hud.net_bot.on) return;
 
 		// spawn bots
 
 	for (n=0;n!=setup.network.bot.count;n++) {
 	
-		if (hud.bot.names[n][0]!=0x0) {
-			strcpy(spot.attach_name,hud.bot.names[n]);
+		if (hud.net_bot.bots[n].name[0]!=0x0) {
+			strcpy(spot.attach_name,hud.net_bot.bots[n].name);
 		}
 		else {
 			sprintf(spot.attach_name,"Bot %d",(n+1));

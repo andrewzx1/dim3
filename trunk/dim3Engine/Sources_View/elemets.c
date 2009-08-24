@@ -1014,7 +1014,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 	col.r=0.0f;
 	col.g=0.0f;
 	col.b=0.0f;
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col,lft,bot,&col,0.8f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col,lft,bot,&col,0.2f);
 
 	if ((element->id==sel_id) && (element->enabled)) {
 		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,alpha);
@@ -1102,7 +1102,7 @@ void element_draw_checkbox(element_type *element,int sel_id)
 		// check
 
 	if (element->value!=0) {
-		
+
 		glLineWidth(3.0f);
 		glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,alpha);
 
@@ -1984,7 +1984,7 @@ void element_draw_table(element_type *element,int sel_id)
 					col2.r=col2.g=col2.b=0.35f;
 					line_col.r=line_col.g=line_col.b=0.0f;
 				}
-				alpha=0.5f;
+				alpha=0.3f;
 			}
 				
 			element_get_box(element,&lft,&rgt,&top,&bot);

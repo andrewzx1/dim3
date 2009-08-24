@@ -31,6 +31,8 @@ and can be sold or given away.
 
 #include "xmls.h"
 
+extern network_setup_type	net_setup;
+
 setup_type					setup;
 
 /* =======================================================
@@ -100,13 +102,15 @@ void setup_xml_default(void)
 	setup.network.character_idx=0;
 	setup.network.tint_color_idx=0;
 	setup.network.show_names=TRUE;
-	setup.network.nhost=0;
-	setup.network.noption=0;
 
 	setup.network.last_map[0]=0x0;
 	
+	setup.network.host.count=0;
+	
 	setup.network.bot.count=0;
 	setup.network.bot.skill=2;
+	
+	setup.network.option.count=0;
 
 	setup.network.game_type=0;
 	setup.network.last_map[0]=0x0;
@@ -141,12 +145,11 @@ void setup_xml_fix_axis(setup_axis_type *axis)
 
 bool setup_xml_read_path(char *path)
 {
-	int							n,k,naction,nhost,noption,
+	int							n,k,naction,nhost,
 								setup_tag,actions_tag,hosts_tag,options_tag,tag;
 	char						tag_name[32];
 	setup_action_type			*action;
-	setup_network_hosts_type	*host;
-	setup_network_option_type	*option;
+	setup_network_host_type		*host;
 	
 		// read file
 		
@@ -259,8 +262,8 @@ bool setup_xml_read_path(char *path)
 		nhost=xml_countchildren(hosts_tag);
 		tag=xml_findfirstchild("Host",hosts_tag);
 		
-		setup.network.nhost=nhost;
-		host=setup.network.hosts;
+		setup.network.host.count=nhost;
+		host=setup.network.host.hosts;
 		
         for (n=0;n!=nhost;n++) {
 			xml_get_attribute_text(tag,"ip",host->ip,256);
@@ -271,22 +274,17 @@ bool setup_xml_read_path(char *path)
 	}
 	
  		// options
-
+		
     options_tag=xml_findfirstchild("Options",setup_tag);
     if (options_tag!=-1) {
 	
-		noption=xml_countchildren(options_tag);
+		setup.network.option.count=xml_countchildren(options_tag);
 		tag=xml_findfirstchild("Option",options_tag);
-
-		setup.network.noption=noption;
-		option=setup.network.options;
 		
-        for (n=0;n!=noption;n++) {
-			xml_get_attribute_text(tag,"name",option->name,name_str_len);
-			
+        for (n=0;n!=setup.network.option.count;n++) {
+			xml_get_attribute_text(tag,"name",setup.network.option.options[n].name,name_str_len);
 			tag=xml_findnextchild(tag);
-  			option++;
-		}
+ 		}
 	}
   
 	xml_close_file();
@@ -331,8 +329,7 @@ bool setup_xml_write(void)
 	char						path[1024],tag_name[32];
 	bool						ok;
 	setup_action_type			*action;
-	setup_network_hosts_type	*host;
-	setup_network_option_type	*option;
+	setup_network_host_type		*host;
 	
 		// start the setup file
 		
@@ -429,9 +426,9 @@ bool setup_xml_write(void)
     xml_add_tagstart("Hosts");
     xml_add_tagend(FALSE);
 	
-	host=setup.network.hosts;
+	host=setup.network.host.hosts;
 		
-	for (n=0;n!=setup.network.nhost;n++) {
+	for (n=0;n!=setup.network.host.count;n++) {
 		xml_add_tagstart("Host");
 		xml_add_attribute_text("ip",host->ip);
 	    xml_add_tagend(TRUE);
@@ -445,13 +442,10 @@ bool setup_xml_write(void)
     xml_add_tagstart("Options");
     xml_add_tagend(FALSE);
 	
-	option=setup.network.options;
-		
-	for (n=0;n!=setup.network.noption;n++) {
+	for (n=0;n!=setup.network.option.count;n++) {
 		xml_add_tagstart("Option");
-		xml_add_attribute_text("name",option->name);
-	    xml_add_tagend(TRUE);
-		option++;
+		xml_add_attribute_text("name",setup.network.option.options[n].name);
+		xml_add_tagend(TRUE);
 	}
 
     xml_add_tagclose("Options");

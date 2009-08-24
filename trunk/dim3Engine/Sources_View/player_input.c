@@ -620,8 +620,8 @@ void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap)
 	
 		// change weapons
 
-	weapon_zoom_off(obj,weap);
-	weapon_target_end(obj,weap);
+	if (weap->zoom.mode!=zoom_mode_off) weapon_zoom_off(obj,weap);
+	if (weap->target.on) weapon_target_end(obj,weap);
 
 	if (next_weapon_key) {
 		weapon_switch(tick,obj,1);

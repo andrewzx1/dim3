@@ -135,7 +135,7 @@ int join_ping_thread_local_accept_read(void *arg)
 		
 			// is it the same dim3 project?
 
-		if (strcasecmp(reply_info->proj_name,net_setup.host.proj_name)==0) {
+		if (strcasecmp(reply_info->proj_name,hud.proj_name)==0) {
 	
 			SDL_mutexP(join_thread_lock);
 
@@ -264,7 +264,7 @@ int join_ping_thread_network(void *arg)
 	char						status[32],host_name[name_str_len],
 								proj_name[name_str_len],game_name[name_str_len],map_name[name_str_len];
 	char						*row_data;
-	setup_network_hosts_type	*host;
+	setup_network_host_type		*host;
 	join_server_info			*info;
 	
 		// run ping until finished or
@@ -272,17 +272,17 @@ int join_ping_thread_network(void *arg)
 
 	idx=0;
 
-	while ((!join_thread_quit) && (idx<setup.network.nhost)) {
+	while ((!join_thread_quit) && (idx<setup.network.host.count)) {
 
 			// ping host
 
-		host=&setup.network.hosts[idx];
+		host=&setup.network.host.hosts[idx];
 
 		if (net_client_ping_host(host->ip,status,host_name,proj_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
 
 				// is this reply the same dim3 project?
 				
-			if (strcasecmp(proj_name,net_setup.host.proj_name)==0) {
+			if (strcasecmp(proj_name,hud.proj_name)==0) {
 
 				SDL_mutexP(join_thread_lock);
 				
@@ -507,7 +507,7 @@ void join_activity_complete(bool single,char *msg)
 
 void join_game(void)
 {
-	int							idx,remote_uid,tick_offset;
+	int							idx,remote_uid,tick_offset,option_flags;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
 	network_reply_join_remotes	remotes;
@@ -526,7 +526,7 @@ void join_game(void)
 							
 		// attempt to join
 
-	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&remotes)) {
+	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes)) {
 		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
@@ -553,6 +553,8 @@ void join_game(void)
 	
 	map.info.name[0]=0x0;
 	strcpy(map.info.host_name,map_name);
+	
+	net_setup.option_flags=option_flags;
 	
 		// start game
 	

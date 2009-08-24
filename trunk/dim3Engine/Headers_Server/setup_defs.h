@@ -100,6 +100,11 @@ typedef struct		{
 
 typedef struct		{
 						char						ip[256];
+					} setup_network_host_type;
+					
+typedef struct		{
+						int							count;
+						setup_network_host_type		hosts[max_setup_network_host];
 					} setup_network_hosts_type;
 					
 typedef struct		{
@@ -111,13 +116,18 @@ typedef struct		{
 					} setup_network_option_type;
 
 typedef struct		{
-						int							nhost,noption,game_type,score_limit,
+						int							count;
+						setup_network_option_type	options[max_setup_network_option];
+					} setup_network_options_type;
+					
+typedef struct		{
+						int							game_type,score_limit,
 													character_idx,tint_color_idx;
 						char						name[name_str_len],last_map[name_str_len];
 						bool						show_names;
-						setup_network_hosts_type	hosts[max_setup_network_host];
+						setup_network_hosts_type	host;
 						setup_network_bot_type		bot;
-						setup_network_option_type	options[max_setup_network_option];
+						setup_network_options_type	option;
 					} setup_network_type;
 
 //

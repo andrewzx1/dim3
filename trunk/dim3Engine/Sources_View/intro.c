@@ -64,7 +64,7 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-bool						intro_in_new_game;
+bool						intro_in_new_game,intro_esc_down;
 bitmap_type					intro_bitmap;
 
 /* =======================================================
@@ -140,6 +140,8 @@ void intro_open(void)
 	intro_state_button_show();
 
 		// in intro state
+	
+	intro_esc_down=FALSE;
 	
 	server.state=gs_intro;
 	
@@ -235,8 +237,13 @@ void intro_click(void)
 	switch (id) {
 	
 		case intro_button_game_new_id:
-			intro_in_new_game=TRUE;
-			intro_state_button_show();
+			if (hud.skill) {
+				intro_in_new_game=TRUE;
+				intro_state_button_show();
+			}
+			else {
+				intro_click_game(skill_medium);
+			}
 			break;
 
 		case intro_button_game_load_id:
@@ -298,6 +305,38 @@ void intro_click(void)
 	}
 }
 
+void intro_key(void)
+{
+	char			ch;
+	
+		// check for esc
+		
+	ch=input_gui_get_keyboard_key(FALSE);
+	if (ch!=0x1B) {
+		intro_esc_down=FALSE;
+		return;
+	}
+	
+	if (intro_esc_down) return;
+	
+	hud_click();
+	
+	intro_esc_down=TRUE;
+
+		// escape quits new game
+		
+	if (intro_in_new_game) {
+		intro_in_new_game=FALSE;
+		intro_state_button_show();
+		return;
+	}
+	
+		// or entire game
+		
+	intro_close(FALSE,FALSE);
+	game_loop_quit=TRUE;
+}
+
 /* =======================================================
 
       Run Intro Page
@@ -308,6 +347,7 @@ void intro_run(void)
 {
 	gui_draw(1.0f,TRUE);
 	intro_click();
+	intro_key();
 }
 
 

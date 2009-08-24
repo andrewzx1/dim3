@@ -108,6 +108,10 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	argv[3]=script_int_to_value(script->cx,id);
 	argv[4]=script_int_to_value(script->cx,js.time.current_tick);
 
+// supergumba -- testing for bugs	
+//	fprintf(stdout,"calling event on %s [%d.%d]\n",script->name,main_event,sub_event);
+//	fflush(stdout);
+
 	rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
 	if (rval==NULL) {
 		script_exception_to_string(script->cx,exception,err_str,256);

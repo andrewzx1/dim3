@@ -157,7 +157,7 @@ void console_draw_header(void)
 
 		// project name
 
-	gl_text_draw((hud.scale_x>>1),y,net_setup.host.proj_name,tx_center,FALSE,&col,1.0f);
+	gl_text_draw((hud.scale_x>>1),y,hud.proj_name,tx_center,FALSE,&col,1.0f);
 	
 		// fps & latency
 	

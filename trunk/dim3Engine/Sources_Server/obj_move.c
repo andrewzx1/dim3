@@ -1382,6 +1382,15 @@ void object_move_climb_check(obj_type *obj)
 
 void object_move(obj_type *obj)
 {
+	d3pnt					old_pnt;
+	
+		// remember original point for force
+		// cancelation later
+		
+	old_pnt.x=obj->pnt.x;
+	old_pnt.y=obj->pnt.y;
+	old_pnt.z=obj->pnt.z;
+	
 		// call proper movement
 		
 	if (obj->climb.on) {
@@ -1402,14 +1411,27 @@ void object_move(obj_type *obj)
 	}
 	
 		// check for contacts
-		// only send contact event once per hit
 
 	if (obj->contact.hit_poly.mesh_idx!=-1) {
+	
+			// stop any forces
+			
+		if (old_pnt.x==obj->pnt.x) obj->force.vct.x=0.0f;
+		if (old_pnt.y==obj->pnt.z) obj->force.vct.y=0.0f;
+		if (old_pnt.z==obj->pnt.z) obj->force.vct.z=0.0f;
+	
+			// send contact event
+			
 		if (!obj->in_collide_event) {
 			obj->in_collide_event=TRUE;
 			scripts_post_event_console(&obj->attach,sd_event_collide,0,0);
 		}
+		
 	}
+	
+		// mark as out of event so we only
+		// send event once
+		
 	else {
 		obj->in_collide_event=FALSE;
 	}

@@ -123,14 +123,9 @@ typedef struct		{
 // setup structures
 //
 
-#define network_setup_max_game						32
-#define network_setup_max_option					32
-
 typedef struct		{
 						char						name[name_str_len],
 													ip_name[256],ip_resolve[64],
-													proj_name[name_str_len],
-													game_name2[name_str_len],
 													map_name[name_str_len];
 						bool						hosting;
 					} network_setup_host_type;
@@ -142,20 +137,9 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
-						char						name[name_str_len];
-						bool						use_teams;
-					} network_setup_game_type;
-
-typedef struct		{
-						char						name[name_str_len],descript[64];
-					} network_setup_option_type;
-
-typedef struct		{
-						int							ngame,noption,game_idx;
+						int							game_idx,option_flags;
 						network_setup_host_type		host;
 						network_setup_client_type	client;
-						network_setup_game_type		games[network_setup_max_game];
-						network_setup_option_type	options[network_setup_max_option];
 					} network_setup_type;
 
 //
@@ -265,7 +249,7 @@ typedef struct		{
 					} network_request_join;
 
 typedef struct		{
-						int							map_tick;
+						int							map_tick,option_flags;
 						short						join_uid,remote_count,bot_count;
 						char						game_name[name_str_len],map_name[name_str_len],
 													deny_reason[64];

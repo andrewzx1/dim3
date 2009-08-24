@@ -211,6 +211,10 @@ typedef struct		{
 
 #define max_character							32
 
+#define max_net_bot								16
+#define max_net_game							32
+#define max_net_option							32
+
 //
 // chat
 //
@@ -430,12 +434,35 @@ typedef struct		{
 						int						ncharacter;
 						hud_character_item_type	characters[max_character];
 					} hud_character_type;
+	
+typedef struct		{
+						char					name[name_str_len];
+					} hud_net_bot_type;
 
 typedef struct		{
-						char					names[max_multiplayer_bot][name_str_len];
 						bool					on;
-					} hud_bot_type;
+						hud_net_bot_type		bots[max_net_bot];
+					} hud_net_bots_type;
 
+typedef struct		{
+						char					name[name_str_len];
+						bool					use_teams;
+					} hud_net_game_type;
+
+typedef struct		{
+						int						ngame;
+						hud_net_game_type		games[max_net_game];
+					} hud_net_games_type;
+
+typedef struct		{
+						char					name[name_str_len],descript[64];
+					} hud_net_option_type;
+
+typedef struct		{
+						int						noption;
+						hud_net_option_type		options[max_net_option];
+					} hud_net_options_type;
+					
 //
 // HUD counts
 //
@@ -450,9 +477,10 @@ typedef struct		{
  
 typedef struct		{
 						int						scale_x,scale_y;
-						char					click_sound[name_str_len],
+						char					proj_name[name_str_len],
+												click_sound[name_str_len],
 												intro_music[name_str_len];
-						bool					debug;
+						bool					debug,skill;
 						hud_count_type			count;
 						hud_color_type			color;
 						hud_font_type			font;
@@ -468,7 +496,9 @@ typedef struct		{
 						hud_chat_type			chat;
 						hud_score_type			score;
 						hud_character_type		character;
-						hud_bot_type			bot;
+						hud_net_bots_type		net_bot;
+						hud_net_games_type		net_game;
+						hud_net_options_type	net_option;
 					} hud_type;
 					
 

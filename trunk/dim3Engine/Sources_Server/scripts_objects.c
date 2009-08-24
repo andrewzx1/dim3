@@ -486,7 +486,6 @@ bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need
 	}
 	
 	sprintf(err_str,"Function '%s' requires %d parameters, found %d\n",func_name,need_argc,argc);
-	
 	*exception=script_create_exception(cx,err_str);
 
 	return(FALSE);

@@ -34,6 +34,7 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 extern js_type				js;
+extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -80,7 +81,7 @@ JSValueRef js_game_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	if (!net_setup.client.joined) return(script_null_to_value(cx));
 	
-	return(script_string_to_value(cx,net_setup.games[net_setup.game_idx].name));
+	return(script_string_to_value(cx,hud.net_game.games[net_setup.game_idx].name));
 }
 
 JSValueRef js_game_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
