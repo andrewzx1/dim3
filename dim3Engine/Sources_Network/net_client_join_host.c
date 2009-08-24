@@ -36,6 +36,7 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 extern js_type				js;
+extern hud_type				hud;
 extern setup_type			setup;
 
 extern bool					join_thread_quit;
@@ -53,8 +54,8 @@ int net_client_find_game(char *game_name)
 {
 	int			n;
 
-	for (n=0;n!=net_setup.ngame;n++) {
-		if (strcasecmp(net_setup.games[n].name,game_name)==0) return(n);
+	for (n=0;n!=hud.net_game.ngame;n++) {
+		if (strcasecmp(hud.net_game.games[n].name,game_name)==0) return(n);
 	}
 
 	return(-1);
@@ -169,7 +170,7 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
       
 ======================================================= */
 
-bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,char *deny_reason,network_reply_join_remotes *remotes)
+bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes)
 {
 	char					err_str[256];
 	network_request_join	request_join;
@@ -220,6 +221,7 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 	strcpy(map_name,reply_join.map_name);
 	
 	*tick_offset=ntohl(reply_join.map_tick);
+	*option_flags=ntohl(reply_join.option_flags);
 
 		// additional objects
 

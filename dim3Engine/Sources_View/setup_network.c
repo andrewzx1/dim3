@@ -99,16 +99,16 @@ void setup_network_fill_character_table(void)
 void setup_network_create_host_list(void)
 {
 	int							n;
-	setup_network_hosts_type	*host;
+	setup_network_host_type		*host;
 
-	host=setup.network.hosts;
+	host=setup.network.host.hosts;
 
-	for (n=0;n!=setup.network.nhost;n++) {
+	for (n=0;n!=setup.network.host.count;n++) {
 		strcpy(setup_host_list[n],host->ip);
 		host++;
 	}
 	
-	setup_host_list[setup.network.nhost][0]=0x0;
+	setup_host_list[setup.network.host.count][0]=0x0;
 }
 
 void setup_network_player_pane(void)
@@ -322,7 +322,7 @@ void setup_network_save_close(void)
 void setup_network_enable_buttons(void)
 {
 	int							host_idx;
-	setup_network_hosts_type	*host;
+	setup_network_host_type		*host;
 	
 		// get select host
 
@@ -349,7 +349,7 @@ void setup_network_enable_buttons(void)
 
 		// set controls
 
-	host=&setup.network.hosts[host_idx];
+	host=&setup.network.host.hosts[host_idx];
 
 	element_set_value_string(ctrl_network_host_ip_id,host->ip);
 }
@@ -357,14 +357,14 @@ void setup_network_enable_buttons(void)
 void setup_network_host_add_update(bool in_add)
 {
 	int							host_idx;
-	setup_network_hosts_type	*host;
+	setup_network_host_type		*host;
 	
 		// get item to add or update
 
 	if (in_add) {
-		if (setup.network.nhost>=max_setup_network_host) return;
-		host_idx=setup.network.nhost;
-		setup.network.nhost++;
+		if (setup.network.host.count>=max_setup_network_host) return;
+		host_idx=setup.network.host.count;
+		setup.network.host.count++;
 	}
 	else {
 		host_idx=element_get_value(ctrl_network_host_id);
@@ -373,7 +373,7 @@ void setup_network_host_add_update(bool in_add)
 
 		// add/update item
 
-	host=&setup.network.hosts[host_idx];
+	host=&setup.network.host.hosts[host_idx];
 
 	element_get_value_string(ctrl_network_host_ip_id,host->ip);
 	
@@ -389,17 +389,17 @@ void setup_network_host_delete(void)
 {
 	int			host_idx,msz;
 
-	if (setup.network.nhost==0) return;
+	if (setup.network.host.count==0) return;
 
 		// delete item
 
 	host_idx=element_get_value(ctrl_network_host_id);
 	if (host_idx==-1) return;
 
-	msz=(setup.network.nhost-(host_idx+1))*sizeof(setup_network_hosts_type);
-	if (msz>0) memmove(&setup.network.hosts[host_idx],&setup.network.hosts[host_idx+1],msz);
+	msz=(setup.network.host.count-(host_idx+1))*sizeof(setup_network_host_type);
+	if (msz>0) memmove(&setup.network.host.hosts[host_idx],&setup.network.host.hosts[host_idx+1],msz);
 
-	setup.network.nhost--;
+	setup.network.host.count--;
 	
 		// rebuild list
 		

@@ -320,7 +320,7 @@ void network_score_draw(int tick)
 		// draw player and team scores
 		// if this game is team type
 
-	use_teams=net_setup.games[net_setup.game_idx].use_teams;
+	use_teams=hud.net_game.games[net_setup.game_idx].use_teams;
 
 	if (!use_teams) {
 		win_idx=network_score_players_draw(use_teams);
@@ -359,7 +359,7 @@ void network_score_draw(int tick)
 
 		// map message
 		
-	sprintf(str2,"%s at %s",net_setup.games[net_setup.game_idx].name,map.info.name);
+	sprintf(str2,"%s at %s",hud.net_game.games[net_setup.game_idx].name,map.info.name);
 	
 		// titles
 		

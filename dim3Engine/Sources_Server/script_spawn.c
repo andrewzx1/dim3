@@ -146,7 +146,7 @@ JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObje
 	d3pnt			pt;
 	particle_motion	motion;
 	
-	if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
 	
 	pt.x=script_value_to_int(cx,argv[0]);
 	pt.z=script_value_to_int(cx,argv[1]);

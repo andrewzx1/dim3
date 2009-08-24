@@ -1099,7 +1099,8 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 {
 	int						n;
 	float					hit_t;
-	d3pnt					*pt,plane[8];
+	d3pnt					*pt,*py,*pp,
+							poly_vp[8],plane_vp[8];
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	
@@ -1108,20 +1109,38 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 	mesh=&map.mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 	
-		// create plane by enlarging poly
+		// setup the poly and create a plane
+		// by enlarging the poly
 
+	py=poly_vp;
+	pp=plane_vp;
+	
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		plane[n].x=((pt->x-poly->box.mid.x)*100)+poly->box.mid.x;
-		plane[n].y=((pt->y-poly->box.mid.y)*100)+poly->box.mid.y;
-		plane[n].z=((pt->z-poly->box.mid.z)*100)+poly->box.mid.z;
+		
+			// the poly
+			
+		py->x=pt->x;
+		py->y=pt->y;
+		py->z=pt->z;
+		py++;
+		
+			// the plane
+			
+		pp->x=((pt->x-poly->box.mid.x)*100)+poly->box.mid.x;
+		pp->y=((pt->y-poly->box.mid.y)*100)+poly->box.mid.y;
+		pp->z=((pt->z-poly->box.mid.z)*100)+poly->box.mid.z;
+		pp++;
 	}
 	
 		// run the ray array
+		// check poly first, then check plane for missed hits
 		
 	for (n=0;n!=cnt;n++) {
-		hit_t=ray_trace_plane(&spt[n],&vct[n],&hpt[n],poly->ptsz,plane);
+		hit_t=ray_trace_plane(&spt[n],&vct[n],&hpt[n],poly->ptsz,poly_vp);
 		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
+		
+		if (!hits[n]) ray_trace_plane(&spt[n],&vct[n],&hpt[n],poly->ptsz,plane_vp);
 	}
 }
 

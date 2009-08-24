@@ -69,8 +69,8 @@ extern network_setup_type	net_setup;
 
 int							host_tab_value,host_map_idx;
 char						*net_host_file_list;
-char						net_game_types[network_setup_max_game+1][32],
-							bot_count_list[max_multiplayer_bot+2][32],
+char						net_game_types[max_net_game+1][32],
+							bot_count_list[max_net_bot+2][32],
 							bot_skill_list[6][32]={"Very Easy","Easy","Normal","Hard","Very Hard",""};
 
 /* =======================================================
@@ -193,10 +193,10 @@ void host_game_pane(void)
 	
 		// game type
 
-	for (n=0;n!=net_setup.ngame;n++) {
-		strcpy(net_game_types[n],net_setup.games[n].name);
+	for (n=0;n!=hud.net_game.ngame;n++) {
+		strcpy(net_game_types[n],hud.net_game.games[n].name);
 	}
-	net_game_types[net_setup.ngame][0]=0x0;
+	net_game_types[hud.net_game.ngame][0]=0x0;
 
 	x=(int)(((float)hud.scale_x)*0.15f);
 	y=(int)(((float)hud.scale_y)*0.17f);
@@ -218,7 +218,7 @@ void host_game_pane(void)
 	
 		// fill table with maps
 
-	host_fill_map_table(net_setup.games[setup.network.game_type].name);
+	host_fill_map_table(hud.net_game.games[setup.network.game_type].name);
 	host_set_last_map();
 
 	element_set_value(host_table_id,host_map_idx);
@@ -230,24 +230,24 @@ void host_options_pane(void)
 	int							n,k,x,y,control_y_add,separate_y_add,control_y_sz;
 	char						str[32];
 	bool						on;
-	network_setup_option_type	*option;
+	hud_net_option_type			*option;
 
 		// panel sizes
 
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
 
-	control_y_sz=(control_y_add+(control_y_add*net_setup.noption))+separate_y_add;
-	if (hud.bot.on) control_y_sz+=(control_y_add*2);
+	control_y_sz=(control_y_add+(control_y_add*hud.net_option.noption))+separate_y_add;
+	if (hud.net_bot.on) control_y_sz+=(control_y_add*2);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
 	
 		// bots
 
-	if (hud.bot.on) {
+	if (hud.net_bot.on) {
 
-		for (n=0;n!=(max_multiplayer_bot+1);n++) {
+		for (n=0;n!=(max_net_bot+1);n++) {
 			if (n==0) {
 				strcpy(bot_count_list[n],"None");
 			}
@@ -255,7 +255,7 @@ void host_options_pane(void)
 				sprintf(bot_count_list[n],"%d",n);
 			}
 		}
-		bot_count_list[max_multiplayer_bot+1][0]=0x0;
+		bot_count_list[max_net_bot+1][0]=0x0;
 		
 		element_combo_add("Bot Count",(char*)bot_count_list,setup.network.bot.count,host_game_bot_count_id,x,y,TRUE);
 		y+=element_get_control_high();
@@ -274,14 +274,14 @@ void host_options_pane(void)
 
 	y+=element_get_padding();
 
-	option=net_setup.options;
+	option=hud.net_option.options;
 
-	for (n=0;n!=net_setup.noption;n++) {
+	for (n=0;n!=hud.net_option.noption;n++) {
 
 		on=FALSE;
 
-		for (k=0;k!=setup.network.noption;k++) {
-			if (strcasecmp(option->name,setup.network.options[k].name)==0) {
+		for (k=0;k!=setup.network.option.count;k++) {
+			if (strcasecmp(option->name,setup.network.option.options[k].name)==0) {
 				on=TRUE;
 				break;
 			}
@@ -415,11 +415,25 @@ void host_close(bool stop_music)
 
 void host_game_setup(void)
 {
+	int				n,k;
 	char			*c;
 	
 		// game type
 		
 	net_setup.game_idx=setup.network.game_type;
+	
+		// game options
+		
+	net_setup.option_flags=0x0;
+	
+	for (n=0;n!=setup.network.option.count;n++) {
+		for (k=0;k!=hud.net_option.noption;k++) {
+			if (strcasecmp(setup.network.option.options[n].name,hud.net_option.options[k].name)==0) {
+				net_setup.option_flags=net_setup.option_flags|(0x1<<k);
+				break;
+			}
+		}
+	}
 	
 		// use graphic name to get to original map name
 		
@@ -523,21 +537,21 @@ void host_handle_click(int id)
 {
 	int							n,idx;
 	char						str[32];
-	network_setup_option_type	*option;
+	hud_net_option_type			*option;
 
 		// special option clicks
 		// rebuild the options list
 
 	if (id>=host_game_option_base) {
 	
-		setup.network.noption=0;
-		option=net_setup.options;
+		setup.network.option.count=0;
+		option=hud.net_option.options;
 
-		for (n=0;n!=net_setup.noption;n++) {
+		for (n=0;n!=hud.net_option.noption;n++) {
 
 			if (element_get_value(host_game_option_base+n)!=0) {
-				strcpy(setup.network.options[setup.network.noption].name,option->name);
-				setup.network.noption++;
+				strcpy(setup.network.option.options[setup.network.option.count].name,option->name);
+				setup.network.option.count++;
 			}
 
 			option++;
@@ -563,7 +577,7 @@ void host_handle_click(int id)
 			idx=element_get_value(host_game_type_id);
 			if (idx!=setup.network.game_type) {
 				setup.network.game_type=idx;
-				host_fill_map_table(net_setup.games[idx].name);
+				host_fill_map_table(hud.net_game.games[idx].name);
 				host_set_last_map();
 				element_set_value(host_table_id,host_map_idx);
 				element_make_selection_visible(host_table_id);

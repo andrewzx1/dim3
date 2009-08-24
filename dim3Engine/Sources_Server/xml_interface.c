@@ -72,6 +72,11 @@ void default_settings_interface(void)
 
 	hud.radar.on=FALSE;
 	
+		// project setup
+		
+	strcpy(hud.proj_name,"noname");
+	hud.skill=FALSE;
+	
 		// sounds and music
 		
 	hud.click_sound[0]=0x0;
@@ -250,25 +255,21 @@ void default_settings_interface(void)
 	hud.intro.button_quit.high=32;
 	hud.intro.button_quit.on=TRUE;
 
-		// network
-
-	strcpy(net_setup.host.proj_name,"noname");
-
-	net_setup.ngame=1;
-	strcpy(net_setup.games[0].name,"Deathmatch");
-
-	net_setup.noption=0;
-
 		// player models
 
 	hud.character.ncharacter=0;
-	
-		// bot names
-		
-	hud.bot.on=TRUE;
 
-	for (n=0;n!=max_multiplayer_bot;n++) {
-		hud.bot.names[n][0]=0x0;
+		// multiplayer
+
+	hud.net_game.ngame=1;
+	strcpy(hud.net_game.games[0].name,"Deathmatch");
+
+	hud.net_option.noption=0;
+		
+	hud.net_bot.on=TRUE;
+
+	for (n=0;n!=max_net_bot;n++) {
+		hud.net_bot.bots[n].name[0]=0x0;
 	}
 }
 
@@ -955,7 +956,8 @@ void read_settings_interface(void)
 
 	proj_tag=xml_findfirstchild("Project",interface_head_tag);
 	if (proj_tag!=-1) {
-		xml_get_attribute_text(proj_tag,"name",net_setup.host.proj_name,name_str_len);
+		xml_get_attribute_text(proj_tag,"name",hud.proj_name,name_str_len);
+		hud.skill=xml_get_attribute_boolean(proj_tag,"skill");
 	}
 
 		// debug setup
@@ -970,16 +972,16 @@ void read_settings_interface(void)
 	games_head_tag=xml_findfirstchild("Games",interface_head_tag);
 	if (games_head_tag!=-1) {
 		
-		net_setup.ngame=0;
+		hud.net_game.ngame=0;
 		
 		game_tag=xml_findfirstchild("Game",games_head_tag);
 		while (game_tag!=-1) {
 		
-			xml_get_attribute_text(game_tag,"type",net_setup.games[net_setup.ngame].name,name_str_len);
-			net_setup.games[net_setup.ngame].use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
+			xml_get_attribute_text(game_tag,"type",hud.net_game.games[hud.net_game.ngame].name,name_str_len);
+			hud.net_game.games[hud.net_game.ngame].use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
 			
-			net_setup.ngame++;
-			if (net_setup.ngame==network_setup_max_game) break;
+			hud.net_game.ngame++;
+			if (hud.net_game.ngame==max_net_game) break;
 
 			game_tag=xml_findnextchild(game_tag);
 		}
@@ -990,16 +992,16 @@ void read_settings_interface(void)
 	options_head_tag=xml_findfirstchild("Options",interface_head_tag);
 	if (options_head_tag!=-1) {
 		
-		net_setup.noption=0;
+		hud.net_option.noption=0;
 		
 		option_tag=xml_findfirstchild("Option",options_head_tag);
 		while (option_tag!=-1) {
 		
-			xml_get_attribute_text(option_tag,"name",net_setup.options[net_setup.noption].name,name_str_len);
-			xml_get_attribute_text(option_tag,"description",net_setup.options[net_setup.noption].descript,64);
+			xml_get_attribute_text(option_tag,"name",hud.net_option.options[hud.net_option.noption].name,name_str_len);
+			xml_get_attribute_text(option_tag,"description",hud.net_option.options[hud.net_option.noption].descript,64);
 			
-			net_setup.noption++;
-			if (net_setup.noption==network_setup_max_option) break;
+			hud.net_option.noption++;
+			if (hud.net_option.noption==max_net_option) break;
 
 			option_tag=xml_findnextchild(option_tag);
 		}
@@ -1027,13 +1029,13 @@ void read_settings_interface(void)
     bot_head_tag=xml_findfirstchild("Bots",interface_head_tag);
     if (bot_head_tag!=-1) {
 
-		hud.bot.on=!xml_get_attribute_boolean(bot_head_tag,"hide");
+		hud.net_bot.on=!xml_get_attribute_boolean(bot_head_tag,"hide");
 	
 		cnt=0;
 		bot_tag=xml_findfirstchild("Bot",bot_head_tag);
 		
 		while (bot_tag!=-1) {
-			xml_get_attribute_text(bot_tag,"name",hud.bot.names[cnt],name_str_len);
+			xml_get_attribute_text(bot_tag,"name",hud.net_bot.bots[cnt].name,name_str_len);
 			cnt++;
 			bot_tag=xml_findnextchild(bot_tag);
 		}

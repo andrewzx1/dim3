@@ -159,7 +159,10 @@ JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values)
 
 JSValueRef script_create_exception(JSContextRef cx,char *str)
 {
-	return((JSValueRef)JSObjectMakeError(cx,1,(JSValueRef*)script_string_to_value(cx,str),NULL));
+	JSValueRef			argv[1];
+	
+	argv[0]=script_string_to_value(cx,str);
+	return((JSValueRef)JSObjectMakeError(cx,1,argv,NULL));
 }
 
 void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int len)

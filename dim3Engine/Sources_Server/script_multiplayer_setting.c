@@ -93,14 +93,14 @@ JSValueRef js_multiplayer_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSS
 {
  	if (!net_setup.client.joined) return(script_null_to_value(cx));
 
-	return(script_string_to_value(cx,net_setup.games[net_setup.game_idx].name));
+	return(script_string_to_value(cx,hud.net_game.games[net_setup.game_idx].name));
 }
 
 JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
  	if (!net_setup.client.joined) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(cx,net_setup.games[net_setup.game_idx].use_teams));
+	return(script_bool_to_value(cx,hud.net_game.games[net_setup.game_idx].use_teams));
 }
 
 /* =======================================================
@@ -112,6 +112,7 @@ JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj
 JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n;
+	bool			on;
 	char			name[name_str_len];
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
@@ -124,9 +125,10 @@ JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef 
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 
-	for (n=0;n!=setup.network.noption;n++) {
-		if (strcasecmp(name,setup.network.options[n].name)==0) {
-			return(script_bool_to_value(cx,TRUE));
+	for (n=0;n!=hud.net_option.noption;n++) {
+		if (strcasecmp(name,hud.net_option.options[n].name)==0) {
+			on=((net_setup.option_flags&(0x1<<n))!=0x0);
+			return(script_bool_to_value(cx,on));
 		}
 	}
 

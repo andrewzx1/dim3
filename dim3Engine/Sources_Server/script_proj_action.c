@@ -387,7 +387,7 @@ JSValueRef js_proj_action_stick_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	proj_type			*proj;
-
+	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	proj=proj_get_attach();

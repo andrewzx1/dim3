@@ -38,6 +38,7 @@ and can be sold or given away.
 extern int					net_host_player_count;
 
 extern map_type				map;
+extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 extern int game_time_get(void);
@@ -57,8 +58,8 @@ void net_host_client_handle_info(int sock)
 	info.player_max_count=htons((short)host_max_remote_count);
 	strcpy(info.host_name,net_setup.host.name);
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
-	strcpy(info.proj_name,net_setup.host.proj_name);
-	strcpy(info.game_name,net_setup.games[net_setup.game_idx].name);
+	strcpy(info.proj_name,hud.proj_name);
+	strcpy(info.game_name,hud.net_game.games[net_setup.game_idx].name);
 	strcpy(info.map_name,net_setup.host.map_name);
 
 	net_send_message(sock,net_action_reply_info,net_remote_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
@@ -85,9 +86,10 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 
 		// construct the reply
 	
-	strcpy(reply_join.game_name,net_setup.games[net_setup.game_idx].name);
+	strcpy(reply_join.game_name,hud.net_game.games[net_setup.game_idx].name);
 	strcpy(reply_join.map_name,net_setup.host.map_name);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
+	reply_join.option_flags=net_setup.option_flags;
 	reply_join.join_uid=htons((short)remote_uid);
 	
 	if (remote_uid!=-1) {
