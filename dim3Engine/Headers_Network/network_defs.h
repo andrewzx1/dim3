@@ -172,12 +172,13 @@ typedef struct		{
 #define net_action_request_remote_sound				15
 #define net_action_request_remote_fire				16
 #define net_action_request_remote_pickup			17
-#define net_action_request_latency_ping				18
-#define net_action_reply_latency_ping				19
-#define net_action_request_host_exit				20
-#define net_action_request_group_synch				21
-#define net_action_reply_group_synch				22
-#define net_action_request_game_score_limit			23
+#define net_action_request_remote_click				18
+#define net_action_request_latency_ping				19
+#define net_action_reply_latency_ping				20
+#define net_action_request_host_exit				21
+#define net_action_request_group_synch				22
+#define net_action_reply_group_synch				23
+#define net_action_request_game_score_limit			24
 
 //
 // remote fire types
@@ -312,6 +313,10 @@ typedef struct		{
 						short						health;
 						network_request_remote_ammo	ammos[net_max_weapon_per_remote];
 					} network_request_remote_pickup;
+
+typedef struct		{
+						int							pt_x,pt_y,pt_z;
+					} network_request_remote_click;
 
 //
 // map synch messages

@@ -681,6 +681,42 @@ void remote_pickup(int remote_uid,network_request_remote_pickup *pickup)
 
 /* =======================================================
 
+      Remote Click
+      
+======================================================= */
+
+void remote_click(int remote_uid,network_request_remote_click *click)
+{
+	int					clicked_obj_uid;
+	d3pnt				org_pnt;
+	obj_type			*obj,*clicked_obj;
+	
+	obj=object_find_remote_uid(remote_uid);
+	if (obj==NULL) return;
+
+		// make sure click is at proper point
+
+	memmove(&org_pnt,&obj->pnt,sizeof(d3pnt));
+	
+	obj->pnt.x=ntohl(click->pt_x);
+	obj->pnt.y=ntohl(click->pt_y);
+	obj->pnt.z=ntohl(click->pt_z);
+
+		// run click
+
+	clicked_obj_uid=object_find_uid_click_object(obj);
+	if (clicked_obj_uid!=-1) {
+		clicked_obj=object_find_uid(clicked_obj_uid);
+		object_click(obj,clicked_obj);
+	}
+
+		// restore point
+
+	memmove(&obj->pnt,&org_pnt,sizeof(d3pnt));
+}
+
+/* =======================================================
+
       Remote Networking Receives
       
 ======================================================= */
@@ -740,6 +776,10 @@ bool remote_network_get_updates(int tick)
 
 			case net_action_request_remote_pickup:
 				remote_pickup(from_remote_uid,(network_request_remote_pickup*)data);
+				break;
+
+			case net_action_request_remote_click:
+				remote_click(from_remote_uid,(network_request_remote_click*)data);
 				break;
 
 			case net_action_reply_latency_ping:

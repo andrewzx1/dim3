@@ -93,8 +93,8 @@ extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(int tick,obj_type *obj);
 extern void view_calculate_sways(int tick,obj_type *obj);
 extern void view_calculate_bump(obj_type *obj);
-extern bool shadow_render_model(int item_type,int item_idx,model_draw *draw);
-extern bool shadow_render_mesh(int mesh_idx);
+extern void shadow_render_model(int item_type,int item_idx,model_draw *draw);
+extern void shadow_render_mesh(int mesh_idx);
 
 /* =======================================================
 
@@ -233,9 +233,7 @@ void view_draw_mesh_shadows(void)
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-		if (map.mesh.meshes[view.render->draw_list.items[n].idx].flag.shadow) {
-			if (!shadow_render_mesh(view.render->draw_list.items[n].idx)) map.mesh.meshes[view.render->draw_list.items[n].idx].flag.shadow=FALSE;
-		}
+		if (map.mesh.meshes[view.render->draw_list.items[n].idx].flag.shadow) shadow_render_mesh(view.render->draw_list.items[n].idx);
 	}
 }
 
@@ -341,9 +339,7 @@ void view_draw_models_final(void)
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				
 				if ((shadow_on) && (obj->draw.shadow.on)) {
-					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
-						if (!shadow_render_model(view_render_type_object,view.render->draw_list.items[n].idx,&obj->draw)) obj->draw.shadow.on=FALSE;
-					}
+					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) shadow_render_model(view_render_type_object,view.render->draw_list.items[n].idx,&obj->draw);
 				}
 				
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
@@ -359,9 +355,7 @@ void view_draw_models_final(void)
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
 				if ((shadow_on) && (proj->draw.shadow.on)) {
-					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
-						if (!shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw)) proj->draw.shadow.on=FALSE;
-					}
+					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw);
 				}
 				break;
 

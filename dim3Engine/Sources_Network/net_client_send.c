@@ -437,3 +437,24 @@ void net_client_send_pickup(int remote_uid,network_request_remote_pickup *pickup
 	}
 }
 
+/* =======================================================
+
+      Click Messages
+	        
+======================================================= */
+
+void net_client_send_click(int remote_uid,d3pnt *pt)
+{
+	network_request_remote_click		click;
+	
+	click.pt_x=htonl(pt->x);
+	click.pt_y=htonl(pt->y);
+	click.pt_z=htonl(pt->z);
+	
+	if (net_setup.host.hosting) {
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_click,(unsigned char*)&click,sizeof(network_request_remote_click));
+	}
+	else {
+		net_send_message(client_socket,net_action_request_remote_click,remote_uid,(unsigned char*)&click,sizeof(network_request_remote_click));
+	}
+}

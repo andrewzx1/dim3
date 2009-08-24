@@ -160,3 +160,4 @@ extern void net_client_send_hitscan_add(int remote_uid,char *weap_name,char *pro
 extern void net_client_send_melee_add(int remote_uid,char *weap_name,int radius,int distance,int damage,int force,d3pnt *pt,d3ang *ang);
 extern void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup);
 extern void net_client_send_pickup(int remote_uid,network_request_remote_pickup *pickup);
+extern void net_client_send_click(int remote_uid,d3pnt *pt);

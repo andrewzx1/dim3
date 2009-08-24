@@ -356,6 +356,7 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 
 void object_click(obj_type *obj,obj_type *from_obj)
 {
+	bool			network_on;
 	obj_click		*click;
 
 		// setup click structure
@@ -366,6 +367,11 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		// post the event
 		
 	scripts_post_event_console(&obj->attach,sd_event_click,0,0);
+
+		// and any network events
+
+	network_on=(net_setup.client.joined) && ((obj->uid==server.player_obj_uid) || (obj->bot));
+	if (network_on) net_client_send_click(obj->remote.uid,&obj->pnt);
 }
 
 /* =======================================================
