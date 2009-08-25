@@ -264,7 +264,10 @@ void view_draw_model_opaque(int tick)
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					render_model_setup(tick,&obj->draw);
+					if (!obj->draw.did_setup) {
+						obj->draw.did_setup=TRUE;
+						render_model_setup(tick,&obj->draw);
+					}
 					render_model_opaque(&obj->draw);
 				}
 				break;
@@ -272,7 +275,10 @@ void view_draw_model_opaque(int tick)
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					render_model_setup(tick,&proj->draw);
+					if (!proj->draw.did_setup) {
+						proj->draw.did_setup=TRUE;
+						render_model_setup(tick,&proj->draw);
+					}
 					render_model_opaque(&proj->draw);
 				}
 				break;
@@ -303,7 +309,10 @@ void view_draw_model_transparent(int tick)
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					render_model_setup(tick,&obj->draw);
+					if (!obj->draw.did_setup) {
+						obj->draw.did_setup=TRUE;
+						render_model_setup(tick,&obj->draw);
+					}
 					render_model_transparent(&obj->draw);
 				}
 				break;
@@ -311,7 +320,10 @@ void view_draw_model_transparent(int tick)
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					render_model_setup(tick,&proj->draw);
+					if (!proj->draw.did_setup) {
+						proj->draw.did_setup=TRUE;
+						render_model_setup(tick,&proj->draw);
+					}
 					render_model_transparent(&proj->draw);
 				}
 				break;
@@ -320,7 +332,7 @@ void view_draw_model_transparent(int tick)
 	}
 }
 
-void view_draw_models_final(void)
+void view_draw_models_final(int tick)
 {
 	int					n;
 	bool				shadow_on;
@@ -349,7 +361,13 @@ void view_draw_models_final(void)
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				
 				if ((shadow_on) && (obj->draw.shadow.on)) {
-					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) shadow_render_model(view_render_type_object,view.render->draw_list.items[n].idx,&obj->draw);
+					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
+						if (!obj->draw.did_setup) {
+							obj->draw.did_setup=TRUE;
+							render_model_setup(tick,&obj->draw);
+						}
+						shadow_render_model(view_render_type_object,view.render->draw_list.items[n].idx,&obj->draw);
+					}
 				}
 				
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
@@ -365,7 +383,13 @@ void view_draw_models_final(void)
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
 				if ((shadow_on) && (proj->draw.shadow.on)) {
-					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw);
+					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
+						if (!proj->draw.did_setup) {
+							proj->draw.did_setup=TRUE;
+							render_model_setup(tick,&proj->draw);
+						}
+						shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw);
+					}
 				}
 				break;
 
@@ -458,7 +482,7 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 		// shadows, remote names, etc
 
 	view_draw_mesh_shadows();
-	view_draw_models_final();
+	view_draw_models_final(tick);
 	
 		// draw transparent scene items
 

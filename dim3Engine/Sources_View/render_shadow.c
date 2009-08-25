@@ -79,7 +79,6 @@ extern setup_type		setup;
 
 int						shadow_stencil_poly_vertex_count,shadow_replace_idx;
 float					*shadow_poly_stencil_vbo;
-bool					*shadow_hits;
 d3pnt					*shadow_spt,*shadow_hpt;
 d3vct					*shadow_vct;
 poly_pointer_type		*shadow_poly_ptrs;
@@ -110,9 +109,6 @@ bool shadow_initialize(void)
 	
 	shadow_vct=(d3vct*)malloc(sizeof(d3vct)*shadow_max_ray_trace_vertexes);
 	if (shadow_vct==NULL) return(FALSE);
-	
-	shadow_hits=(bool*)malloc(sizeof(bool)*shadow_max_ray_trace_vertexes);
-	if (shadow_hits==NULL) return(FALSE);
 	
 		// memory for stencil vbo and poly ptrs
 	
@@ -175,7 +171,6 @@ void shadow_shutdown(void)
 	free(shadow_spt);
 	free(shadow_vct);
 	free(shadow_hpt);
-	free(shadow_hits);
 }
 
 /* =======================================================
@@ -701,14 +696,8 @@ void shadow_render_generic(shadow_render_type *shad)
 	shadow_poly=shad->polys;
 
 	for (k=0;k!=shad->npoly;k++) {
-
 		glStencilFunc(GL_EQUAL,(k+1),0xFF);
-
-			// draw the shadow trigs for this poly
-
 		glDrawRangeElements(GL_TRIANGLES,0,shad->nvertex,shadow_poly->count_idx,GL_UNSIGNED_SHORT,(GLvoid*)shadow_poly->start_idx);
-
-			// erase the stencil
 
 		shadow_poly++;
 	}
@@ -736,6 +725,71 @@ void shadow_render_generic(shadow_render_type *shad)
 
 /* =======================================================
 
+      Render Model Bounds Eliminations
+      
+======================================================= */
+
+void shadow_render_prepate_bounds_check(poly_pointer_type *poly_ptr,d3pnt *min,d3pnt *max)
+{
+	int						sz;
+	map_mesh_poly_type		*poly;
+
+	poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
+
+	sz=map_enlarge>>1;
+
+	min->x=poly->box.min.x-sz;
+	max->x=poly->box.max.x+sz;
+	min->y=poly->box.min.y-sz;
+	max->y=poly->box.max.y+sz;
+	min->z=poly->box.min.z-sz;
+	max->z=poly->box.max.z+sz;
+}
+
+bool shadow_render_model_trig_bounds_check(d3pnt *min,d3pnt *max,int v_idx0,int v_idx1,int v_idx2)
+{
+	d3pnt			*pt0,*pt1,*pt2;
+
+	pt0=&shadow_hpt[v_idx0];
+	pt1=&shadow_hpt[v_idx1];
+	pt2=&shadow_hpt[v_idx2];
+
+	if ((pt0->x<min->x) && (pt1->x<min->x) && (pt2->x<min->x)) return(FALSE);
+	if ((pt0->x>max->x) && (pt1->x>max->x) && (pt2->x>max->x)) return(FALSE);
+	if ((pt0->z<min->z) && (pt1->z<min->z) && (pt2->z<min->z)) return(FALSE);
+	if ((pt0->z>max->z) && (pt1->z>max->z) && (pt2->z>max->z)) return(FALSE);
+	if ((pt0->y<min->y) && (pt1->y<min->y) && (pt2->y<min->y)) return(FALSE);
+	if ((pt0->y>max->y) && (pt1->y>max->y) && (pt2->y>max->y)) return(FALSE);
+
+	return(TRUE);
+}
+
+bool shadow_render_mesh_poly_bounds_check(d3pnt *min,d3pnt *max,map_mesh_poly_type *poly)
+{
+	int				n;
+	bool			min_x,max_x,min_y,max_y,min_z,max_z;
+	d3pnt			*pt;
+
+	min_x=max_x=TRUE;
+	min_y=max_y=TRUE;
+	min_z=max_z=TRUE;
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&shadow_hpt[poly->v[n]];
+
+		min_x=min_x||(pt->x<min->x);
+		max_x=max_x||(pt->x>max->x);
+		min_y=min_y||(pt->y<min->y);
+		max_y=max_y||(pt->y>max->y);
+		min_z=min_z||(pt->z<min->z);
+		max_z=max_z||(pt->z>max->z);
+	}
+
+	return(min_x||max_x||min_y||max_y||min_z||max_z);
+}
+
+/* =======================================================
+
       Render Model Shadows
       
 ======================================================= */
@@ -750,7 +804,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	float						*vp,*vl,*cl;
 	unsigned short				*index_ptr;
 	d3vct						*vct;
-	d3pnt						*spt,*hpt;
+	d3pnt						*spt,*hpt,bound_min,bound_max;
     model_trig_type				*trig;
 	model_mesh_type				*mesh;
 	model_type					*mdl;
@@ -845,14 +899,16 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	index_offset=0;
 
 	shad->npoly=0;
-	
-	shad->polys[0].ptr.mesh_idx=shad->polys[0].ptr.poly_idx=0;
 
 	for (k=0;k!=poly_count;k++) {
 
 			// ray trace the vertexes
 
-		ray_trace_mesh_poly_plane_by_vector(ray_count,shadow_spt,shadow_vct,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+		if (!ray_trace_mesh_poly_plane_by_vector(ray_count,shadow_spt,shadow_vct,shadow_hpt,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx)) continue;
+		
+			// setup bounding eliminations
+		
+		shadow_render_prepate_bounds_check(&shadow_poly_ptrs[k],&bound_min,&bound_max);
 
 			// create the index object
 			// skip triangles with no collisions
@@ -865,23 +921,29 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 		
 			mesh=&mdl->meshes[n];
 			trig=mesh->trigs;
-
+			
 			for (t=0;t!=mesh->ntrig;t++) {
 
-				if ((shadow_hits[trig->v[0]]) || (shadow_hits[trig->v[1]]) || (shadow_hits[trig->v[2]])) {
-				
-					*index_ptr++=(unsigned short)(trig->v[0]+vertex_offset+mesh_vertex_offset[n]);
-					*index_ptr++=(unsigned short)(trig->v[1]+vertex_offset+mesh_vertex_offset[n]);
-					*index_ptr++=(unsigned short)(trig->v[2]+vertex_offset+mesh_vertex_offset[n]);
-					
-					trig_count++;
-					if ((trig_offset+trig_count)==shadow_max_trigs) {
-						shadow_render_free(shad);
-						return;
-					}
+					// do a bounds check for quick eliminations
+
+				if (!shadow_render_model_trig_bounds_check(&bound_min,&bound_max,trig->v[0]+mesh_vertex_offset[n],trig->v[1]+mesh_vertex_offset[n],trig->v[2]+mesh_vertex_offset[n])) {
+					trig++;
+					continue;
 				}
-				
+
+					// triangle indexes
+
+				*index_ptr++=(unsigned short)(trig->v[0]+vertex_offset+mesh_vertex_offset[n]);
+				*index_ptr++=(unsigned short)(trig->v[1]+vertex_offset+mesh_vertex_offset[n]);
+				*index_ptr++=(unsigned short)(trig->v[2]+vertex_offset+mesh_vertex_offset[n]);
+
 				trig++;
+
+				trig_count++;
+				if ((trig_offset+trig_count)==shadow_max_trigs) {
+					shadow_render_free(shad);
+					return;
+				}
 			}
 		}
 
@@ -960,7 +1022,7 @@ void shadow_render_mesh(int mesh_idx)
 	float						*vl,*cl;
 	unsigned short				*index_ptr;
 	d3vct						*vct;
-	d3pnt						*pt,*spt,*hpt;
+	d3pnt						*pt,*spt,*hpt,bound_min,bound_max;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	view_light_spot_type		*lspot;
@@ -1038,7 +1100,11 @@ void shadow_render_mesh(int mesh_idx)
 
 			// ray trace the vertexes
 
-		ray_trace_mesh_poly_plane_by_vector(mesh->nvertex,shadow_spt,shadow_vct,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+		if (!ray_trace_mesh_poly_plane_by_vector(mesh->nvertex,shadow_spt,shadow_vct,shadow_hpt,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx)) continue;
+		
+			// setup bounding eliminations
+		
+		shadow_render_prepate_bounds_check(&shadow_poly_ptrs[k],&bound_min,&bound_max);
 
 			// create the index object
 			// break polygons up into triangles so we
@@ -1052,20 +1118,26 @@ void shadow_render_mesh(int mesh_idx)
 
 		for (n=0;n!=mesh->npoly;n++) {
 
-			ntrig=poly->ptsz-2;
+				// polygon bounds elimination
 
-			for (t=0;t<ntrig;t++) {
+			if (!shadow_render_mesh_poly_bounds_check(&bound_min,&bound_max,poly)) {
+				poly++;
+				continue;
+			}
+
+				// convert polygon into trigs
+
+			ntrig=poly->ptsz-2;
 			
-				if ((shadow_hits[poly->v[0]]) || (shadow_hits[poly->v[t+1]]) || (shadow_hits[poly->v[t+2]])) {
-					*index_ptr++=(unsigned short)(poly->v[0]+vertex_offset);
-					*index_ptr++=(unsigned short)(poly->v[t+1]+vertex_offset);
-					*index_ptr++=(unsigned short)(poly->v[t+2]+vertex_offset);
-					
-					trig_count++;
-					if ((trig_offset+trig_count)==shadow_max_trigs) {
-						shadow_render_free(shad);
-						return;
-					}
+			for (t=0;t<ntrig;t++) {
+				*index_ptr++=(unsigned short)(poly->v[0]+vertex_offset);
+				*index_ptr++=(unsigned short)(poly->v[t+1]+vertex_offset);
+				*index_ptr++=(unsigned short)(poly->v[t+2]+vertex_offset);
+				
+				trig_count++;
+				if ((trig_offset+trig_count)==shadow_max_trigs) {
+					shadow_render_free(shad);
+					return;
 				}
 			}
 
