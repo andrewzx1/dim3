@@ -57,6 +57,7 @@ void projectile_start(void)
 
 proj_type* projectile_create(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup)
 {
+	int					k;
 	proj_type			*proj;
 
 	if (server.count.proj>=max_projectile) return(NULL);

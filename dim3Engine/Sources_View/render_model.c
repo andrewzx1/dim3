@@ -369,13 +369,6 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 			// skip shader textures
 
 		if ((!dim3_debug) && (texture->shader_idx!=-1)) continue;
-
-			// first color pointer enable?
-
-		if (!enabled) {
-			enabled=TRUE;
-			render_model_enable_color_array(draw);
-		}
 	
 			// any opaque trigs?
 			
@@ -392,6 +385,13 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		if (trig_count==0) continue;
 
 		trig_idx=trig_start_idx+(material->trig_start*3);
+
+			// first color pointer enable?
+
+		if (!enabled) {
+			enabled=TRUE;
+			render_model_enable_color_array(draw);
+		}
 
 			// draw texture
 
@@ -524,13 +524,6 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 			// skip shader textures
 
 		if ((!dim3_debug) && (texture->shader_idx!=-1)) continue;
-
-			// first color pointer enable?
-
-		if (!enabled) {
-			enabled=TRUE;
-			render_model_enable_color_array(draw);
-		}
 	
 			// any transparent trigs?
 			
@@ -538,9 +531,9 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 		
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
-			
+		
 		if (!((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0))) continue;
-
+	
 			// don't draw if no trigs
 
 		trig_count=material->trig_count;
@@ -559,6 +552,13 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 			else {
 				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			}
+		}
+
+			// first color pointer enable?
+
+		if (!enabled) {
+			enabled=TRUE;
+			render_model_enable_color_array(draw);
 		}
 
 			// draw texture
@@ -782,7 +782,7 @@ void render_model_setup(int tick,model_draw *draw)
 				// fading mesh?
 				
 			for (t=0;t!=max_model_texture;t++) {
-				if (mdl->meshes[k].materials[n].trig_count!=0) {
+				if (mdl->meshes[k].materials[t].trig_count!=0) {
 					alpha=draw->mesh_fades[k].alpha;
 					break;
 				}
