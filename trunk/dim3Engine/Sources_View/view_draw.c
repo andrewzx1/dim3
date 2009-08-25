@@ -248,7 +248,7 @@ void view_draw_model_opaque(int tick)
 	int					n;
 	obj_type			*obj;
 	proj_type			*proj;
-
+	
 		// setup draw
 		
 	gl_3D_view();
@@ -263,14 +263,18 @@ void view_draw_model_opaque(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				render_model_setup(tick,&obj->draw);
-				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) render_model_opaque(&obj->draw);
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
+					render_model_setup(tick,&obj->draw);
+					render_model_opaque(&obj->draw);
+				}
 				break;
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-				render_model_setup(tick,&proj->draw);
-				render_model_opaque(&proj->draw);
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
+					render_model_setup(tick,&proj->draw);
+					render_model_opaque(&proj->draw);
+				}
 				break;
 
 		}
@@ -282,7 +286,7 @@ void view_draw_model_transparent(int tick)
 	int					n;
 	obj_type			*obj;
 	proj_type			*proj;
-
+	
 		// setup draw
 		
 	gl_3D_view();
@@ -298,12 +302,18 @@ void view_draw_model_transparent(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) render_model_transparent(&obj->draw);
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
+					render_model_setup(tick,&obj->draw);
+					render_model_transparent(&obj->draw);
+				}
 				break;
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-				render_model_transparent(&proj->draw);
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
+					render_model_setup(tick,&proj->draw);
+					render_model_transparent(&proj->draw);
+				}
 				break;
 
 		}
@@ -317,7 +327,7 @@ void view_draw_models_final(void)
 	d3col				col;
 	obj_type			*obj;
 	proj_type			*proj;
-
+	
 		// setup draw
 		
 	gl_3D_view();
