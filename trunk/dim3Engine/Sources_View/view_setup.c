@@ -442,6 +442,7 @@ void view_setup_objects(int tick)
 		
 			// add to draw list
 
+		obj->draw.did_setup=FALSE;
 		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist,flag);
 	
 			// setup model animations for models in view
@@ -495,6 +496,7 @@ void view_setup_projectiles(int tick)
 
 			// add to draw list
 
+		proj->draw.did_setup=FALSE;
 		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,flag);
 		
 			// setup model animations for models in view
