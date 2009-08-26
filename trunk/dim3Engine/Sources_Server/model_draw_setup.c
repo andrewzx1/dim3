@@ -40,6 +40,7 @@ extern view_type			view;
 extern camera_type			camera;
 extern map_type				map;
 extern network_setup_type	net_setup;
+extern hud_type				hud;
 
 /* =======================================================
 
@@ -134,7 +135,13 @@ void model_draw_setup_object(int tick,obj_type *obj)
 		// team tint
 
 	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
-	if ((obj->player) || (obj->bot)) object_get_tint(obj,&draw->tint);
+	if ((obj->player) || (obj->bot)) {
+		if (net_setup.client.joined) {
+			if (hud.net_game.games[net_setup.game_idx].use_teams) {
+				object_team_get_tint(obj->team_idx,&draw->tint);
+			}
+		}
+	}
 }
 
 /* =======================================================

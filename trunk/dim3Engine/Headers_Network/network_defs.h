@@ -315,7 +315,8 @@ typedef struct		{
 					} network_request_remote_pickup;
 
 typedef struct		{
-						int							pt_x,pt_y,pt_z;
+						int							pt_x,pt_y,pt_z,
+													fp_ang_x,fp_ang_y,fp_ang_z;
 					} network_request_remote_click;
 
 //

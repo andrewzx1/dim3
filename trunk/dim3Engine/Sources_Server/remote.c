@@ -689,6 +689,7 @@ void remote_click(int remote_uid,network_request_remote_click *click)
 {
 	int					clicked_obj_uid;
 	d3pnt				org_pnt;
+	d3ang				org_ang;
 	obj_type			*obj,*clicked_obj;
 	
 	obj=object_find_remote_uid(remote_uid);
@@ -697,22 +698,28 @@ void remote_click(int remote_uid,network_request_remote_click *click)
 		// make sure click is at proper point
 
 	memmove(&org_pnt,&obj->pnt,sizeof(d3pnt));
+	memmove(&org_ang,&obj->ang,sizeof(d3ang));
 	
 	obj->pnt.x=ntohl(click->pt_x);
 	obj->pnt.y=ntohl(click->pt_y);
 	obj->pnt.z=ntohl(click->pt_z);
+	
+	obj->ang.x=ntohf(click->fp_ang_x);
+	obj->ang.y=ntohf(click->fp_ang_y);
+	obj->ang.z=ntohf(click->fp_ang_z);
 
 		// run click
 
 	clicked_obj_uid=object_find_uid_click_object(obj);
 	if (clicked_obj_uid!=-1) {
 		clicked_obj=object_find_uid(clicked_obj_uid);
-		object_click(obj,clicked_obj);
+		object_click(clicked_obj,obj);
 	}
 
 		// restore point
 
 	memmove(&obj->pnt,&org_pnt,sizeof(d3pnt));
+	memmove(&obj->ang,&org_ang,sizeof(d3ang));
 }
 
 /* =======================================================
