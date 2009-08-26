@@ -443,13 +443,17 @@ void net_client_send_pickup(int remote_uid,network_request_remote_pickup *pickup
 	        
 ======================================================= */
 
-void net_client_send_click(int remote_uid,d3pnt *pt)
+void net_client_send_click(int remote_uid,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_click		click;
 	
 	click.pt_x=htonl(pt->x);
 	click.pt_y=htonl(pt->y);
 	click.pt_z=htonl(pt->z);
+	
+	click.fp_ang_x=htonf(ang->x);
+	click.fp_ang_y=htonf(ang->y);
+	click.fp_ang_z=htonf(ang->z);
 	
 	if (net_setup.host.hosting) {
 		net_host_player_send_others_packet(remote_uid,net_action_request_remote_click,(unsigned char*)&click,sizeof(network_request_remote_click));

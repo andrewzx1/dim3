@@ -266,6 +266,7 @@ int net_host_client_handler_thread(void *arg)
 			case net_action_request_remote_sound:
 			case net_action_request_remote_fire:
 			case net_action_request_remote_pickup:
+			case net_action_request_remote_click:
 				net_host_player_send_others_packet(client_remote_uid,action,data,len);
 				break;
 

@@ -453,7 +453,7 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 	JSValueRef		args[20];
 	obj_type		*obj;
 
-	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_at_least_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 		// get arguments
 
