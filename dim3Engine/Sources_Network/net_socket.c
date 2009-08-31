@@ -356,3 +356,139 @@ bool net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char
 	sent_len=net_send_data(sock,data,len);
 	return(len==sent_len);										// only OK if entire data is sent
 }
+
+/* =======================================================
+
+      Network HTTP File
+      
+======================================================= */
+
+unsigned char* net_get_http_file(char *ip,int port,char *url,char *err_str)
+{
+	int				len,sent_len,max_len,
+					rcv_size,rbyte,content_offset,content_length;
+	unsigned char	http[1024],str[32];
+	unsigned char	*c,*data,*content_data;
+	d3socket		sock;
+
+		// connect to server
+
+	sock=net_open_socket();
+	if (sock==D3_NULL_SOCKET) {
+		strcpy(err_str,"Unable to create socket");
+		return(NULL);
+	}
+
+	if (!net_connect_block(sock,ip,port,5,err_str)) {
+		net_close_socket(&sock);
+		return(NULL);
+	}
+
+		// send the get
+
+	strcpy(http,"GET ");
+	strcat(http,url);
+	strcat(http," HTTP/1.1\r\n");
+	strcat(http,"Accept: text/plain\r\n");
+	strcat(http,"User-Agent: dim3\r\n");
+	strcat(http,"\r\n");
+
+	len=strlen(http);
+
+	sent_len=net_send_data(sock,http,len);
+	if (sent_len!=len) {
+		strcpy(err_str,"Unable to retrieve file");
+		net_close_socket(&sock);
+		return(NULL);
+	}
+
+		// retrieve the data
+
+	max_len=10*1024;			// only get up to 10K
+
+	data=malloc(max_len+1);
+	if (data==NULL) {
+		strcpy(err_str,"Out of memory");
+		net_close_socket(&sock);
+		return(NULL);
+	}
+
+	rcv_size=0;
+	content_offset=content_length=-1;
+
+	while (TRUE) {
+		rbyte=recv(sock,(data+rcv_size),(max_len-rcv_size),0);
+		if (rbyte<=0) break;
+
+		rcv_size+=rbyte;
+		if (rcv_size>=max_len) break;
+
+			// check for content length
+		
+		*(data+rcv_size)=0x0;
+
+		if (content_offset==-1) {
+			c=strstr(data,"\r\n\r\n");
+			if (c!=NULL) content_offset=(int)((c+4)-data);
+		}
+
+		if ((content_offset!=-1) && (content_length==-1)) {
+			c=strstr(data,"Content-Length: ");
+			if (c!=NULL) {
+				c+=16;
+				strncpy(str,c,32);
+				str[31]=0x0;
+				c=strchr(str,'\r');
+				if (c!=NULL) {
+					*c=0x0;
+					content_length=atoi(str);
+
+						// check for wild content lengths
+
+					if ((content_length<0) || (content_length>(max_len-content_offset))) {
+						strcpy(err_str,"Unable to retrieve file");
+						net_close_socket(&sock);
+						return(NULL);
+					}
+						
+				}
+			}
+		}
+
+			// are we at content length?
+
+		if ((content_offset!=-1) && (content_length!=-1)) {
+			if (rcv_size>=(content_offset+content_length)) break;
+		}
+
+		usleep(1000);
+	}
+
+		// did we ever get content?
+
+	if (content_length==-1) {
+		strcpy(err_str,"Unable to retrieve file");
+		net_close_socket(&sock);
+		return(NULL);
+	}
+
+		// get the content data
+
+	content_data=malloc(content_length+1);
+	if (content_data==NULL) {
+		strcpy(err_str,"Unable to retrieve file");
+		net_close_socket(&sock);
+		return(NULL);
+	}
+
+	memmove(content_data,(data+content_offset),content_length);
+	content_data[content_length]=0x0;
+	
+	free(data);
+
+		// close the socket
+
+	net_close_socket(&sock);
+
+	return(content_data);
+}

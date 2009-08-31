@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interfaces.h"
 #include "sounds.h"
+#include "inputs.h"
 
 #define intro_button_game_new_id				0
 #define intro_button_game_load_id				1
