@@ -55,6 +55,8 @@ extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);
 extern bool net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
 
+extern unsigned char* net_get_http_file(char *ip,int port,char *url,char *err_str);
+
 //
 // udp sockets
 //
