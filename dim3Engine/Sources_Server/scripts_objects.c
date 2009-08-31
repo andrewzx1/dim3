@@ -498,7 +498,7 @@ bool script_check_param_at_least_count(JSContextRef cx,JSObjectRef func,int argc
 	
 		// write params?
 		
-	if (argc<need_argc) return(TRUE);
+	if (argc>=need_argc) return(TRUE);
 	
 		// get function name
 		
