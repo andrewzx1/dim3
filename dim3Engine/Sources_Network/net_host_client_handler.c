@@ -35,7 +35,7 @@ and can be sold or given away.
 
 #include "network.h"
 
-extern int					net_host_player_count;
+extern int					net_host_player_count,dim3_proj_hash;
 
 extern map_type				map;
 extern hud_type				hud;
@@ -69,19 +69,34 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 {
 	int							remote_uid,
 								tint_color_idx,character_idx;
+	bool						allow;
 	network_reply_join			reply_join;
 	network_request_object_add	remote_add;
 
-		// if correct version, add player to host
+		// refuse join if hash is different
 
-	if (strncmp(request_join->vers,dim3_version,name_str_len)==0) {
+	allow=TRUE;
+
+	if (htonl(request_join->hash)!=dim3_proj_hash) {
+		allow=FALSE;
+		sprintf(reply_join.deny_reason,"Project files have been modified");
+	}
+
+		// refuse join if versions are different
+
+	if (strncmp(request_join->vers,dim3_version,name_str_len)!=0) {
+		allow=FALSE;
+		sprintf(reply_join.deny_reason,"Client version (%s) differs from Host version (%s)",request_join->vers,dim3_version);
+	}
+
+		// join to host
+	
+	remote_uid=-1;
+
+	if (allow) {
 		tint_color_idx=htons((short)request_join->tint_color_idx);
 		character_idx=htons((short)request_join->character_idx);
 		remote_uid=net_host_player_join(sock,request_join->name,tint_color_idx,character_idx,reply_join.deny_reason);
-	}
-	else {
-		remote_uid=-1;
-		sprintf(reply_join.deny_reason,"Client version (%s) differs from Host version (%s)",request_join->vers,dim3_version);
 	}
 
 		// construct the reply

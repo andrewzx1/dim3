@@ -39,6 +39,7 @@ extern js_type				js;
 extern hud_type				hud;
 extern setup_type			setup;
 
+extern int					dim3_proj_hash;
 extern bool					join_thread_quit;
 extern d3socket				client_socket;
 
@@ -196,6 +197,7 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 		
 	strcpy(request_join.name,name);
 	strcpy(request_join.vers,dim3_version);
+	request_join.hash=ntohl(dim3_proj_hash);
 	request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
 	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
 	

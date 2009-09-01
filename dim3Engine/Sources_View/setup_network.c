@@ -46,7 +46,8 @@ and can be sold or given away.
 #define ctrl_character_id					13
 
 #define ctrl_network_host_id				20
-#define ctrl_network_host_ip_id				21
+#define ctrl_network_host_name_id			21
+#define ctrl_network_host_ip_id				22
 
 #define setup_network_host_add_button		30
 #define setup_network_host_update_button	31
@@ -104,7 +105,7 @@ void setup_network_create_host_list(void)
 	host=setup.network.host.hosts;
 
 	for (n=0;n!=setup.network.host.count;n++) {
-		strcpy(setup_host_list[n],host->ip);
+		sprintf(setup_host_list[n],"%s\t%s",host->name,host->ip);
 		host++;
 	}
 	
@@ -167,13 +168,13 @@ void setup_network_player_pane(void)
 void setup_network_host_pane(void)
 {
 	int						x,y,wid,high,padding,control_y_add;
-	element_column_type		cols[1];
+	element_column_type		cols[2];
 
 	x=(int)(((float)hud.scale_x)*0.03f);
 	y=(int)(((float)hud.scale_y)*0.15f);
 
 	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.68f)-y;
+	high=(int)(((float)hud.scale_y)*0.64f)-y;
 
 	control_y_add=element_get_control_high();
 
@@ -181,15 +182,21 @@ void setup_network_host_pane(void)
 		
 	setup_network_create_host_list();
 
-	strcpy(cols[0].name,"Network Hosts");
-	cols[0].percent_size=1.0f;
+	strcpy(cols[0].name,"Name");
+	cols[0].percent_size=0.5f;
+
+	strcpy(cols[1].name,"Address");
+	cols[1].percent_size=0.5f;
 	
-	element_table_add(cols,(char*)setup_host_list,ctrl_network_host_id,1,x,y,wid,high,element_table_bitmap_none);
+	element_table_add(cols,(char*)setup_host_list,ctrl_network_host_id,2,x,y,wid,high,element_table_bitmap_none);
 
 		// host editing
 
 	x=(int)(((float)hud.scale_x)*0.15f);
 	y+=(high+control_y_add+8);
+
+	element_text_field_add("Name","",name_str_len,ctrl_network_host_name_id,x,y,TRUE);
+	y+=control_y_add;
 
 	element_text_field_add("Address","",name_str_len,ctrl_network_host_ip_id,x,y,TRUE);
 
@@ -337,6 +344,7 @@ void setup_network_enable_buttons(void)
 
 			// clear the text
 
+		element_set_value_string(ctrl_network_host_name_id,"");
 		element_set_value_string(ctrl_network_host_ip_id,"");
 		return;
 	}
@@ -351,6 +359,7 @@ void setup_network_enable_buttons(void)
 
 	host=&setup.network.host.hosts[host_idx];
 
+	element_set_value_string(ctrl_network_host_name_id,host->name);
 	element_set_value_string(ctrl_network_host_ip_id,host->ip);
 }
 
@@ -375,6 +384,7 @@ void setup_network_host_add_update(bool in_add)
 
 	host=&setup.network.host.hosts[host_idx];
 
+	element_get_value_string(ctrl_network_host_name_id,host->name);
 	element_get_value_string(ctrl_network_host_ip_id,host->ip);
 	
 		// rebuild list

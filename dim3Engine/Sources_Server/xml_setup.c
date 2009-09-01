@@ -266,6 +266,7 @@ bool setup_xml_read_path(char *path)
 		host=setup.network.host.hosts;
 		
         for (n=0;n!=nhost;n++) {
+			xml_get_attribute_text(tag,"name",host->name,64);
 			xml_get_attribute_text(tag,"ip",host->ip,256);
 
 			tag=xml_findnextchild(tag);
@@ -430,6 +431,7 @@ bool setup_xml_write(void)
 		
 	for (n=0;n!=setup.network.host.count;n++) {
 		xml_add_tagstart("Host");
+		xml_add_attribute_text("name",host->name);
 		xml_add_attribute_text("ip",host->ip);
 	    xml_add_tagend(TRUE);
 		host++;

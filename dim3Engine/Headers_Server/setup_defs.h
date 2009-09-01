@@ -99,7 +99,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						char						ip[256];
+						char						name[64],ip[256];
 					} setup_network_host_type;
 					
 typedef struct		{

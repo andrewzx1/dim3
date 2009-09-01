@@ -245,6 +245,7 @@ typedef struct		{
 					} network_reply_info;
 					
 typedef struct		{
+						int							hash;
 						short						tint_color_idx,character_idx;
 						char						name[name_str_len],vers[name_str_len];
 					} network_request_join;

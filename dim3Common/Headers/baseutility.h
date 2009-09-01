@@ -300,6 +300,8 @@ extern file_path_directory_type* file_paths_read_directory_document(file_path_se
 extern void file_paths_close_directory(file_path_directory_type *fpd);
 extern void file_paths_descript_directory_file(char *descript,int dir_type);
 
+extern int file_paths_project_hash(char *path);
+
 //
 // zipping
 //
