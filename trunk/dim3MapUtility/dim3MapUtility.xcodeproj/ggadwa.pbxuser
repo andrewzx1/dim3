@@ -5,6 +5,9 @@
 		fallbackIsa = XCSourceControlManager;
 		isSCMEnabled = 0;
 		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
 		};
 	};
 	260AFEC00D404E9300F6C42F /* Code sense */ = {
@@ -90,6 +93,7 @@
 		lineNumber = 266;
 		location = libMapUtility.dylib;
 		modificationTime = 264660588.10721;
+		originalNumberOfMultipleMatches = 0;
 		state = 1;
 	};
 	26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */ = {
@@ -251,8 +255,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 272844840;
-			PBXWorkspaceStateSaveDate = 272844840;
+			PBXPerProjectTemplateStateSaveDate = 273468494;
+			PBXWorkspaceStateSaveDate = 273468494;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {

@@ -79,11 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 273296521;
-			PBXWorkspaceStateSaveDate = 273296521;
-		};
-		perUserProjectItems = {
-			26650DDF0F0EC86400D22461 = 26650DDF0F0EC86400D22461 /* PlistBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 273468533;
+			PBXWorkspaceStateSaveDate = 273468533;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -109,6 +106,9 @@
 		configStateDict = {
 		};
 		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
 		debuggerPlugin = GDBDebugging;
 		disassemblyDisplayState = 0;
 		dylibVariantSuffix = "";
@@ -119,6 +119,7 @@
 		executableUserSymbolLevel = 0;
 		libgmallocEnabled = 0;
 		name = "dim3 Engine";
+		showTypeColumn = 0;
 		sourceDirectories = (
 		);
 	};
@@ -127,6 +128,9 @@
 		fallbackIsa = XCSourceControlManager;
 		isSCMEnabled = 0;
 		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
 		};
 	};
 	260AFF620D40531F00F6C42F /* Code sense */ = {
@@ -223,6 +227,9 @@
 			};
 		};
 		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
 		debuggerPlugin = GDBDebugging;
 		disassemblyDisplayState = 0;
 		dylibVariantSuffix = "";
@@ -236,6 +243,7 @@
 		name = "dim3Engine in dim3";
 		savedGlobals = {
 		};
+		showTypeColumn = 0;
 		sourceDirectories = (
 		);
 		startupPath = ../../dim3;
@@ -313,21 +321,6 @@
 		rType = 0;
 		vrLen = 1373;
 		vrLoc = 290;
-	};
-	26650DDF0F0EC86400D22461 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = 26650DE00F0EC86400D22461;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	26650DE00F0EC86400D22461 = {
-		isa = PBXFileReference;
-		lastKnownFileType = folder;
-		sourceTree = "<group>";
 	};
 	267345E20ECB95E80048BD10 /* script_weap_target.c */ = {
 		uiCtxt = {
