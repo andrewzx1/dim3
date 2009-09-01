@@ -5,6 +5,9 @@
 		fallbackIsa = XCSourceControlManager;
 		isSCMEnabled = 0;
 		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
 		};
 	};
 	260AFEDC0D404F5000F6C42F /* Code sense */ = {
@@ -152,8 +155,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 272844718;
-			PBXWorkspaceStateSaveDate = 272844718;
+			PBXPerProjectTemplateStateSaveDate = 273468607;
+			PBXWorkspaceStateSaveDate = 273468607;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {

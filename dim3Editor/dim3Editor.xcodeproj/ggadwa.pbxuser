@@ -143,11 +143,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 272844885;
-			PBXWorkspaceStateSaveDate = 272844885;
-		};
-		perUserProjectItems = {
-			26650D7F0F0E95CE00D22461 /* PlistBookmark */ = 26650D7F0F0E95CE00D22461 /* PlistBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 273459765;
+			PBXWorkspaceStateSaveDate = 273459765;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -165,6 +162,9 @@
 		configStateDict = {
 		};
 		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
 		debuggerPlugin = GDBDebugging;
 		disassemblyDisplayState = 0;
 		dylibVariantSuffix = "";
@@ -175,6 +175,7 @@
 		executableUserSymbolLevel = 0;
 		libgmallocEnabled = 0;
 		name = "dim3 Editor";
+		showTypeColumn = 0;
 		sourceDirectories = (
 		);
 	};
@@ -183,6 +184,9 @@
 		fallbackIsa = XCSourceControlManager;
 		isSCMEnabled = 0;
 		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
 		};
 	};
 	260AFF060D4050B200F6C42F /* Code sense */ = {
@@ -215,6 +219,9 @@
 			};
 		};
 		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
 		debuggerPlugin = GDBDebugging;
 		disassemblyDisplayState = 0;
 		dylibVariantSuffix = "";
@@ -228,6 +235,7 @@
 		name = "dim3 Editor in dim3";
 		savedGlobals = {
 		};
+		showTypeColumn = 0;
 		sourceDirectories = (
 		);
 		startupPath = ../../dim3;
@@ -271,6 +279,7 @@
 		ignoreCount = 0;
 		lineNumber = 1114;
 		modificationTime = 271040153.466244;
+		originalNumberOfMultipleMatches = 0;
 		state = 0;
 	};
 	263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {
@@ -376,21 +385,6 @@
 			sepNavVisRange = "{4011, 1587}";
 			sepNavWindowFrame = "{{455, 173}, {999, 779}}";
 		};
-	};
-	26650D7F0F0E95CE00D22461 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = 26650D800F0E95CE00D22461;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	26650D800F0E95CE00D22461 = {
-		isa = PBXFileReference;
-		lastKnownFileType = folder;
-		sourceTree = "<group>";
 	};
 	26772F800EBE8A6600F9E241 /* dialog_reposition.c */ = {
 		uiCtxt = {
