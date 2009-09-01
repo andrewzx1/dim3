@@ -38,6 +38,8 @@ and can be sold or given away.
 #include "network.h"
 #include "physics.h"
 
+int							dim3_proj_hash;
+
 extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -63,6 +65,10 @@ extern void intro_open(void);
 
 bool app_start(char *err_str)
 {
+		// get the project hash
+
+	dim3_proj_hash=file_paths_project_hash(setup.file_path_setup.path_data);
+
 		// initialize timing
 
 	game_time_initialize();

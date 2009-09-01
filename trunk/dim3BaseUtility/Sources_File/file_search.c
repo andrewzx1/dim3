@@ -501,3 +501,149 @@ void file_paths_descript_directory_file(char *descript,int dir_type)
 	strcpy(descript,names[dir_type]);
 }
 
+/* =======================================================
+
+      Project Hash
+            
+======================================================= */
+
+int file_paths_file_hash(char *path,char *file_name)
+{
+	int				n,hash,fsz;
+	char			*c,path2[1024];
+	unsigned char	*data;
+	FILE			*file;
+	struct stat		sb;
+
+		// only hash js and xml files
+
+	c=strchr(file_name,'.');
+	if (c==NULL) return(0);
+
+	c++;
+	if ((strcasecmp(c,"js")!=0) && (strcasecmp(c,"xml")!=0)) return(0);
+
+		// get file size
+
+	sprintf(path2,"%s\\%s",path,file_name);
+	if (stat(path2,&sb)!=0) return(0);
+
+	fsz=(int)sb.st_size;
+
+		// read file
+
+	data=(unsigned char*)malloc(fsz);
+	if (data==NULL) return(0);
+
+	file=fopen(path2,"rb");
+	if (file==NULL) {
+		free(data);
+		return(0);
+	}
+
+	fread(data,1,fsz,file);
+	fclose(file);
+
+		// get the hash
+
+	hash=0;
+	c=data;
+
+	for (n=0;n!=fsz;n++) {
+		hash+=(int)*c++;
+	}
+
+	free(data);
+
+	return(hash);
+}
+
+#ifndef D3_OS_WINDOWS
+
+int file_paths_project_hash(char *path)
+{
+	int					hash;
+	char				path2[1024];
+	DIR					*dir;
+	struct dirent		*de;
+	
+	dir=opendir(path);
+	if (dir==NULL) return(0);
+	
+	hash=0;
+
+	while (TRUE) {
+		de=readdir(dir);
+		if (de==NULL) break;
+
+			// skip dot paths
+		
+		if (de->d_name[0]=='.') continue;
+		
+			// recurse into directories
+			
+		c=strrchr(de->d_name,'.');
+		if (c==NULL) {
+			sprintf(path2,"%s\\%s",path,de->d_name);
+			hash+=file_paths_project_hash(path2);
+			continue;
+		}
+
+			// get file hash
+
+		hash+=file_paths_file_hash(path,de->d_name);
+	}
+	
+	closedir(dir);
+
+	return(hash);
+}
+
+#else
+
+int file_paths_project_hash(char *path)
+{
+	int					hash;
+	char				find_path[1024];
+	bool				find_first;
+	WIN32_FIND_DATA		find_data;
+	HANDLE				find_hand;
+
+	sprintf(find_path,"%s\\*",path);
+
+	find_hand=FindFirstFile(find_path,&find_data);
+	if (find_hand==INVALID_HANDLE_VALUE) return(0);
+	
+	hash=0;
+	find_first=TRUE;
+
+	while (TRUE) {
+
+		if (!find_first) {
+			if (!FindNextFile(find_hand,&find_data)) break;
+		}
+		find_first=FALSE;
+
+			// skip dot paths
+
+		if (find_data.cFileName[0]=='.') continue;
+		
+			// recurse into directories
+
+		if ((find_data.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)!=0) {
+			sprintf(find_path,"%s\\%s",path,find_data.cFileName);
+			hash+=file_paths_project_hash(find_path);
+			continue;
+		}
+
+			// get file hash
+
+		hash+=file_paths_file_hash(path,find_data.cFileName);
+	}
+
+	FindClose(find_hand);
+
+	return(hash);
+}
+
+#endif

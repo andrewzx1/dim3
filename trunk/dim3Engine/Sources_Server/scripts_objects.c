@@ -476,13 +476,12 @@ bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need
 	if (argc==need_argc) return(TRUE);
 	
 		// get function name
+	
+	strcpy(func_name,"Unknown");
 		
-	vp=script_get_single_property(cx,func,"name");
-	if (vp==NULL) {
-		strcpy(func_name,"Unknown");
-	}
-	else {
-		script_value_to_string(cx,vp,func_name,64);
+	if (func!=NULL) {
+		vp=script_get_single_property(cx,func,"name");
+		if (vp!=NULL) script_value_to_string(cx,vp,func_name,64);
 	}
 	
 	sprintf(err_str,"Function '%s' requires %d parameters, found %d\n",func_name,need_argc,argc);

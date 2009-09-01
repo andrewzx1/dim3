@@ -113,9 +113,11 @@ EXPORTS
 	file_paths_read_directory_document			@275
 	file_paths_close_directory					@276
 	file_paths_descript_directory_file			@277
+	
+	file_paths_project_hash						@278
 
-	zip_compress								@278
-	zip_expand									@279
+	zip_compress								@255
+	zip_expand									@256
 
 	xml_new_file								@280
 	xml_open_file								@281
