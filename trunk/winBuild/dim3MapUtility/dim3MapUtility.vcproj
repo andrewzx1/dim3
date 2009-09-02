@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\win32Includes\GLEW,..\win32Includes\ZLib,..\win32Includes\SDL,..\win32Includes\JS,..\win32Includes\PNG,..\..\dim3MapUtility\Headers,..\..\dim3Common\Headers"
+				AdditionalIncludeDirectories="..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\JavaScriptCore;..\Libraries\PNG;..\..\dim3MapUtility\Headers;..\..\dim3Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;D3_PCH"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\win32Includes\dim3\\dim3MapUtility.lib"
+				OutputFile="..\Libraries\dim3\dim3MapUtility.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -124,7 +124,7 @@
 				Name="dim3 Libraries"
 				>
 				<File
-					RelativePath="..\win32Includes\dim3\dim3BaseUtility.lib"
+					RelativePath="..\Libraries\dim3\dim3BaseUtility.lib"
 					>
 				</File>
 			</Filter>

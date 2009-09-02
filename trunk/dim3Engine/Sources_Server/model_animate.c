@@ -691,3 +691,137 @@ bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Model Dynamic Bones
+      
+======================================================= */
+
+model_type* model_dynamic_bone_get_model(model_draw *draw,char *err_str)
+{
+	model_type			*mdl;
+
+	mdl=model_find_uid(draw->uid);
+	if (mdl!=NULL) return(mdl);
+
+	strcpy(err_str,"No model to set bones on");
+	return(NULL);
+}
+
+int model_dynamic_bone_get_bone_idx(model_type *mdl,char *bone_tag,char *err_str)
+{
+	int					bone_idx;
+	model_tag			tag;
+
+	tag=text_to_model_tag(bone_tag);
+	bone_idx=model_find_bone(mdl,tag);
+	if (bone_idx!=-1) return(bone_idx);
+
+	sprintf(err_str,"Bone tag '%s' does not exist in model '%s'",bone_tag,mdl->name);
+	return(-1);
+}
+
+int model_dynamic_bone_find_bone_spot(model_draw *draw,int bone_idx,int dynamic_type,char *err_str)
+{
+	int					n,blank_idx;
+	model_dynamic_bone	*dyn_bone;
+
+		// see if we already have a change
+		// of this type, if so, replace
+
+	blank_idx=-1;
+	dyn_bone=draw->dynamic_bones;
+
+	for (n=0;n!=max_model_dynamic_bones;n++) {
+		if (dyn_bone->bone_idx==-1) {
+			if (blank_idx==-1) blank_idx=n;
+		}
+		else {
+			if ((dyn_bone->bone_idx==bone_idx) && (dyn_bone->type==dynamic_type)) return(n);
+		}
+	}
+
+		// is there a blank?
+
+	if (blank_idx!=-1) return(blank_idx);
+
+	sprintf(err_str,"You can only have %d dynamic bones per model",max_model_dynamic_bones);
+	return(-1);
+}
+
+bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_tag,d3ang *rot,char *err_str)
+{
+	int					bone_idx,dyn_bone_idx;
+	model_type			*mdl;
+
+		// get structs
+
+	mdl=model_dynamic_bone_get_model(draw,err_str);
+	if (mdl==NULL) return(FALSE);
+
+	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
+	if (bone_idx==-1) return(FALSE);
+
+	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,model_dynamic_bone_rotate,err_str);
+	if (dyn_bone_idx==-1) return(FALSE);
+
+		// setup
+
+	draw->dynamic_bones[dyn_bone_idx].type=model_dynamic_bone_rotate;
+	draw->dynamic_bones[dyn_bone_idx].bone_idx=bone_idx;
+	memmove(&draw->dynamic_bones[dyn_bone_idx].data.rot,rot,sizeof(d3ang));
+
+	return(TRUE);
+}
+
+bool model_dynamic_bone_set_move(model_draw *draw,char *bone_tag,d3pnt *mov,char *err_str)
+{
+	int					bone_idx,dyn_bone_idx;
+	model_type			*mdl;
+
+		// get structs
+
+	mdl=model_dynamic_bone_get_model(draw,err_str);
+	if (mdl==NULL) return(FALSE);
+
+	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
+	if (bone_idx==-1) return(FALSE);
+
+	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,model_dynamic_bone_move,err_str);
+	if (dyn_bone_idx==-1) return(FALSE);
+
+		// setup
+
+	draw->dynamic_bones[dyn_bone_idx].type=model_dynamic_bone_move;
+	draw->dynamic_bones[dyn_bone_idx].bone_idx=bone_idx;
+	memmove(&draw->dynamic_bones[dyn_bone_idx].data.mov,mov,sizeof(d3pnt));
+
+	return(TRUE);
+}
+
+bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_tag,float resize,char *err_str)
+{
+	int					bone_idx,dyn_bone_idx;
+	model_type			*mdl;
+
+		// get structs
+
+	mdl=model_dynamic_bone_get_model(draw,err_str);
+	if (mdl==NULL) return(FALSE);
+
+	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
+	if (bone_idx==-1) return(FALSE);
+
+	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,model_dynamic_bone_resize,err_str);
+	if (dyn_bone_idx==-1) return(FALSE);
+
+		// setup
+
+	draw->dynamic_bones[dyn_bone_idx].type=model_dynamic_bone_resize;
+	draw->dynamic_bones[dyn_bone_idx].bone_idx=bone_idx;
+	draw->dynamic_bones[dyn_bone_idx].data.resize=resize;
+
+	return(TRUE);
+}
+
+

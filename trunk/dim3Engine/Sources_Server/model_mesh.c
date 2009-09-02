@@ -100,3 +100,4 @@ bool model_hide_all_mesh(model_draw *draw)
     
 	return(TRUE);
 }
+

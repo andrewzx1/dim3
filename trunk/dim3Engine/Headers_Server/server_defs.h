@@ -200,70 +200,92 @@ and can be sold or given away.
 // models
 //
  
+// supergumba -- move this
+
+#define max_model_dynamic_bones					4
+
+#define model_dynamic_bone_rotate				0
+#define model_dynamic_bone_move					1
+#define model_dynamic_bone_resize				2
+
+typedef union		{
+						d3ang					rot;
+						d3pnt					mov;
+						float					resize;
+					} model_dynamic_bone_data;
+
 typedef struct		{
-						int						tick,mode,
-												animate_idx,animate_next_idx,pose_move_idx,
-												smooth_animate_idx,smooth_pose_move_idx;
+						int						type,bone_idx;
+						model_dynamic_bone_data	data;
+					} model_dynamic_bone;
+
+
+
+
+typedef struct		{
+						int							tick,mode,
+													animate_idx,animate_next_idx,pose_move_idx,
+													smooth_animate_idx,smooth_pose_move_idx;
 					} model_draw_animation;
 
 typedef struct		{
-						int						start_tick,tick;
-						float					start_alpha,end_alpha;
-						bool					on;
+						int							start_tick,tick;
+						float						start_alpha,end_alpha;
+						bool						on;
 					} model_draw_fade;
 
 typedef struct		{
-						int						type,filter,direction,intensity;
-						float					exponent;
-						bool					on;
-						d3col					col;
+						int							type,filter,direction,intensity;
+						float						exponent;
+						bool						on;
+						d3col						col;
 					} model_draw_light;
 
 typedef struct		{
-						int						idx,
-												min_dist,max_dist,
-												min_size,max_size;
-						float					min_alpha,max_alpha;
-						bool					on,no_clip_object,no_clip_self;
+						int							idx,
+													min_dist,max_dist,
+													min_size,max_size;
+						float						min_alpha,max_alpha;
+						bool						on,no_clip_object,no_clip_self;
 					} model_draw_halo;
 					
 typedef struct		{
-						int						texture_idx,high,
-												px[4],pz[4];
-						float					alpha;
-						bool					on;
-						d3pnt					pnt;
-						d3ang					ang;
+						int							texture_idx,high,
+													px[4],pz[4];
+						float						alpha;
+						bool						on;
+						d3pnt						pnt;
+						d3ang						ang;
 					} model_draw_shadow;
 
 typedef struct		{
-						int						obj_uid,weap_uid,proj_uid,
-												net_remote_uid;
-						bool					net_sound;
-						d3vct					motion_vct;
+						int							obj_uid,weap_uid,proj_uid,
+													net_remote_uid;
+						bool						net_sound;
+						d3vct						motion_vct;
 					} model_draw_connect;
 
 typedef struct		{
-						bool					on;
-						d3pnt					center;
-						d3ang					ang;
+						bool						on;
+						d3pnt						center;
+						d3ang						ang;
 					} model_draw_no_rot;
 
 typedef struct		{
-						int						size;
-						float					fade;
-						bool					on;
-						d3pnt					pnt,proj_pnt;
+						int							size;
+						float						fade;
+						bool						on;
+						d3pnt						pnt,proj_pnt;
 					} model_draw_remote_name;
 
 typedef struct		{
-						int						start_tick,fade_in_msec,fade_life_msec,fade_out_msec;
-						float					alpha;
-						bool					on;
+						int							start_tick,fade_in_msec,fade_life_msec,fade_out_msec;
+						float						alpha;
+						bool						on;
 					} model_draw_mesh_fade;
 
 typedef struct		{
-						int						ntrig,index_offset[max_model_mesh];
+						int							ntrig,index_offset[max_model_mesh];
 					} model_draw_vbo_ptr;
 
 typedef struct		{
@@ -280,6 +302,7 @@ typedef struct		{
 						d3pnt						pnt,size,center,offset;
 						d3ang						rot,spin;
 						d3col						tint;
+						model_dynamic_bone			dynamic_bones[max_model_dynamic_bones];
 						model_draw_connect			connect;
 						model_draw_light			lights[max_model_light];
 						model_draw_halo				halos[max_model_halo];
