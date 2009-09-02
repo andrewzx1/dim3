@@ -33,6 +33,8 @@ and can be sold or given away.
 	#include <ifaddrs.h>
 #endif
 
+#include "network.h"
+
 extern setup_type			setup;
 
 int							net_proj_hash;

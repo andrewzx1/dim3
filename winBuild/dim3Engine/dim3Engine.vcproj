@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\win32Includes;..\win32Includes\GLEW;..\win32Includes\ZLib;..\win32Includes\SDL;..\win32Includes\JavaScriptCore;..\win32Includes\PNG;..\..\dim3Engine\Headers_View;..\..\dim3Engine\Headers_Server;..\..\dim3Engine\Headers_Network;..\..\dim3Engine\Headers;..\..\dim3MapUtility\Headers;..\..\dim3ModelUtility\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3Common\Headers"
+				AdditionalIncludeDirectories="..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\JavaScriptCore;..\Libraries\PNG;..\..\dim3Engine\Headers_View;..\..\dim3Engine\Headers_Server;..\..\dim3Engine\Headers_Network;..\..\dim3Engine\Headers;..\..\dim3MapUtility\Headers;..\..\dim3ModelUtility\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -157,11 +157,11 @@
 				Name="glew"
 				>
 				<File
-					RelativePath="..\win32Includes\GLEW\glew.h"
+					RelativePath="..\Libraries\GLEW\glew.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\GLEW\wglew.h"
+					RelativePath="..\Libraries\GLEW\wglew.h"
 					>
 				</File>
 			</Filter>
@@ -169,15 +169,15 @@
 				Name="SDL"
 				>
 				<File
-					RelativePath="..\win32Includes\SDL\SDL.h"
+					RelativePath="..\Libraries\SDL\SDL.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\SDL\SDL.lib"
+					RelativePath="..\Libraries\SDL\SDL.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\SDL\SDLmain.lib"
+					RelativePath="..\Libraries\SDL\SDLmain.lib"
 					>
 				</File>
 			</Filter>
@@ -185,39 +185,39 @@
 				Name="JS"
 				>
 				<File
-					RelativePath="..\win32Includes\JS\JavaScript.h"
+					RelativePath="..\Libraries\JavaScriptCore\JavaScript.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JavaScriptCore\JavaScriptCore.lib"
+					RelativePath="..\Libraries\JavaScriptCore\JavaScriptCore.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\JSBase.h"
+					RelativePath="..\Libraries\JavaScriptCore\JSBase.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\JSContextRef.h"
+					RelativePath="..\Libraries\JavaScriptCore\JSContextRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\JSObjectRef.h"
+					RelativePath="..\Libraries\JavaScriptCore\JSObjectRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\JSStringRef.h"
+					RelativePath="..\Libraries\JavaScriptCore\JSStringRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JS\JSValueRef.h"
+					RelativePath="..\Libraries\JavaScriptCore\JSValueRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JavaScriptCore\stdbool.h"
+					RelativePath="..\Libraries\JavaScriptCore\stdbool.h"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\JavaScriptCore\WebKitAvailability.h"
+					RelativePath="..\Libraries\JavaScriptCore\WebKitAvailability.h"
 					>
 				</File>
 			</Filter>
@@ -225,15 +225,15 @@
 				Name="dim3 Libraries"
 				>
 				<File
-					RelativePath="..\win32Includes\dim3\dim3BaseUtility.lib"
+					RelativePath="..\Libraries\dim3\dim3BaseUtility.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\dim3\dim3MapUtility.lib"
+					RelativePath="..\Libraries\dim3\dim3MapUtility.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\win32Includes\dim3\dim3ModelUtility.lib"
+					RelativePath="..\Libraries\dim3\dim3ModelUtility.lib"
 					>
 				</File>
 			</Filter>

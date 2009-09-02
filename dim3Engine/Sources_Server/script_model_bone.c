@@ -40,11 +40,17 @@ extern js_type			js;
 JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	model_bone_functions[]={
-							{"findOffset",			js_model_bone_find_offset_func,			kJSPropertyAttributeDontDelete},
-							{"findPosition",		js_model_bone_find_position_func,		kJSPropertyAttributeDontDelete},
-							{"getBrightness",		js_model_bone_get_brightness_func,		kJSPropertyAttributeDontDelete},
+							{"findOffset",			js_model_bone_find_offset_func,				kJSPropertyAttributeDontDelete},
+							{"findPosition",		js_model_bone_find_position_func,			kJSPropertyAttributeDontDelete},
+							{"getBrightness",		js_model_bone_get_brightness_func,			kJSPropertyAttributeDontDelete},
+							{"setDynamicRotate",	js_model_bone_set_dynamic_rotate_func,		kJSPropertyAttributeDontDelete},
+							{"setDynamicMove",		js_model_bone_set_dynamic_move_func,		kJSPropertyAttributeDontDelete},
+							{"setDynamicResize",	js_model_bone_set_dynamic_resize_func,		kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			model_bone_class;
@@ -207,3 +213,87 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	return(script_float_to_value(cx,bright));
 }
 
+/* =======================================================
+
+      Dynamic Bone Functions
+      
+======================================================= */
+
+JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char			bone_name[name_str_len],err_str[256];
+	d3ang			ang;
+	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
+		// get proper draw setup
+		
+	draw=script_bone_function_setup(cx,exception);
+	if (draw==NULL) return(script_null_to_value(cx));
+
+		// create dynamic bone
+
+	script_value_to_string(cx,argv[0],bone_name,name_str_len);
+	ang.x=script_value_to_float(cx,argv[1]);
+	ang.z=script_value_to_float(cx,argv[2]);
+	ang.y=script_value_to_float(cx,argv[3]);
+
+	if (!model_dynamic_bone_set_rotate(draw,bone_name,&ang,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char			bone_name[name_str_len],err_str[256];
+	d3pnt			pnt;
+	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
+		// get proper draw setup
+		
+	draw=script_bone_function_setup(cx,exception);
+	if (draw==NULL) return(script_null_to_value(cx));
+
+		// create dynamic bone
+
+	script_value_to_string(cx,argv[0],bone_name,name_str_len);
+	pnt.x=script_value_to_int(cx,argv[1]);
+	pnt.z=script_value_to_int(cx,argv[2]);
+	pnt.y=script_value_to_int(cx,argv[3]);
+
+	if (!model_dynamic_bone_set_move(draw,bone_name,&pnt,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char			bone_name[name_str_len],err_str[256];
+	float			resize;
+	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+		// get proper draw setup
+		
+	draw=script_bone_function_setup(cx,exception);
+	if (draw==NULL) return(script_null_to_value(cx));
+
+		// create dynamic bone
+
+	script_value_to_string(cx,argv[0],bone_name,name_str_len);
+	resize=script_value_to_float(cx,argv[1]);
+
+	if (!model_dynamic_bone_set_resize(draw,bone_name,resize,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+
+	return(script_null_to_value(cx));
+}

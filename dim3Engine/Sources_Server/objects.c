@@ -207,6 +207,12 @@ void object_clear_draw(model_draw *draw)
 	draw->spin_tick=0;
 	draw->alpha=1;
 	draw->resize=1;
+
+		// dynamic bones
+
+	for (k=0;k!=max_model_dynamic_bones;k++) {
+		draw->dynamic_bones[k].bone_idx=-1;
+	}
 	
 		// lights
 		
