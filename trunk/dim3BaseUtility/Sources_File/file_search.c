@@ -511,7 +511,7 @@ int file_paths_file_hash(char *path,char *file_name)
 {
 	int				n,hash,fsz;
 	char			*c,path2[1024];
-	unsigned char	*data;
+	unsigned char	*hp,*data;
 	FILE			*file;
 	struct stat		sb;
 
@@ -525,7 +525,7 @@ int file_paths_file_hash(char *path,char *file_name)
 
 		// get file size
 
-	sprintf(path2,"%s\\%s",path,file_name);
+	sprintf(path2,"%s/%s",path,file_name);
 	if (stat(path2,&sb)!=0) return(0);
 
 	fsz=(int)sb.st_size;
@@ -547,15 +547,15 @@ int file_paths_file_hash(char *path,char *file_name)
 		// get the hash
 
 	hash=0;
-	c=data;
+	hp=data;
 
 	for (n=0;n!=fsz;n++) {
-		hash+=(int)*c++;
+		hash+=(int)*hp++;
 	}
 
 	free(data);
 
-	return(hash);
+	return(hash+fsz);
 }
 
 #ifndef D3_OS_WINDOWS
@@ -563,7 +563,7 @@ int file_paths_file_hash(char *path,char *file_name)
 int file_paths_project_hash(char *path)
 {
 	int					hash;
-	char				path2[1024];
+	char				*c,path2[1024];
 	DIR					*dir;
 	struct dirent		*de;
 	
@@ -584,7 +584,7 @@ int file_paths_project_hash(char *path)
 			
 		c=strrchr(de->d_name,'.');
 		if (c==NULL) {
-			sprintf(path2,"%s\\%s",path,de->d_name);
+			sprintf(path2,"%s/%s",path,de->d_name);
 			hash+=file_paths_project_hash(path2);
 			continue;
 		}

@@ -33,6 +33,11 @@ and can be sold or given away.
 	#include <ifaddrs.h>
 #endif
 
+extern setup_type			setup;
+
+int							net_proj_hash;
+char						*net_news;
+
 /* =======================================================
 
       Network Initialize/Shutdown
@@ -46,13 +51,70 @@ void net_initialize(void)
 
 	WSAStartup(MAKEWORD(2,2),&wsaData);
 #endif
+
+		// hash and news not loaded yet
+		
+	net_proj_hash=0;
+	net_news=NULL;
 }
 
 void net_shutdown(void)
 {
+		// free news
+		
+	if (net_news!=NULL) free(net_news);
+	
 #ifdef D3_OS_WINDOWS
 	WSACleanup();
 #endif
+}
+
+/* =======================================================
+
+      Project Hash and News
+      
+======================================================= */
+
+void net_create_project_hash(void)
+{
+		// skip if already loaded
+		
+	if (net_proj_hash!=0) return;
+	
+		// scan data directory to build hash
+		
+	net_proj_hash=file_paths_project_hash(setup.file_path_setup.path_data);
+}
+
+int net_get_project_hash(void)
+{
+	return(net_proj_hash);
+}
+
+void net_load_news(void)
+{
+	char		err_str[256];
+	
+		// skip if already loaded
+		
+	if (net_news!=NULL) return;
+	
+		// load net news
+		
+	net_news=net_get_http_file("www.klinksoftware.net",80,"/dim3/demo_news.txt",err_str);
+	if (net_news!=NULL) return;
+	
+		// build error message
+		
+	net_news=malloc(512);
+	if (net_news==NULL) return;
+	
+	sprintf(net_news,"News Read Failure\n%s",err_str);
+}
+
+char* net_get_news(void)
+{
+	return(net_news);
 }
 
 /* =======================================================

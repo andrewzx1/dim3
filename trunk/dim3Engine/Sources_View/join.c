@@ -381,7 +381,16 @@ void join_open(bool local)
 							tab_list_wid,tab_pane_high;
 	char					tab_list[][32]={"LAN","Internet"};
 	element_column_type		cols[4];
+	
+		// get the project hash and news
 
+	net_create_project_hash();
+	net_load_news();
+
+	fprintf(stdout,"----\n");
+	fprintf(stdout,net_get_news());
+	fprintf(stdout,"----\n");
+	
 		// setup gui
 		
 	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);

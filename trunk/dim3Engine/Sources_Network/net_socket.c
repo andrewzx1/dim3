@@ -363,13 +363,25 @@ bool net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char
       
 ======================================================= */
 
-unsigned char* net_get_http_file(char *ip,int port,char *url,char *err_str)
+char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 {
 	int				len,sent_len,max_len,
 					rcv_size,rbyte,content_offset,content_length;
-	unsigned char	http[1024],str[32];
-	unsigned char	*c,*data,*content_data;
+	char			*ip,http[1024],str[256];
+	char			*c,*data,*content_data;
+	bool			ok;
+	struct hostent	*hent;
 	d3socket		sock;
+	
+		// get IP address
+		
+	hent=gethostbyname(host_name);
+	if (hent==NULL) {
+		sprintf(err_str,"Could not resolve host name %s",host_name);
+		return(NULL);
+	}
+	
+	ip=inet_ntoa(*(struct in_addr*)(hent->h_addr_list[0]));
 
 		// connect to server
 
@@ -388,14 +400,14 @@ unsigned char* net_get_http_file(char *ip,int port,char *url,char *err_str)
 
 	strcpy(http,"GET ");
 	strcat(http,url);
-	strcat(http," HTTP/1.1\r\n");
-	strcat(http,"Accept: text/plain\r\n");
+	strcat(http," HTTP/1.0\r\n");
+	strcat(http,"Accept: *\r\n");
 	strcat(http,"User-Agent: dim3\r\n");
 	strcat(http,"\r\n");
 
 	len=strlen(http);
 
-	sent_len=net_send_data(sock,http,len);
+	sent_len=net_send_data(sock,(unsigned char*)http,len);
 	if (sent_len!=len) {
 		strcpy(err_str,"Unable to retrieve file");
 		net_close_socket(&sock);
@@ -414,6 +426,7 @@ unsigned char* net_get_http_file(char *ip,int port,char *url,char *err_str)
 	}
 
 	rcv_size=0;
+	ok=FALSE;
 	content_offset=content_length=-1;
 
 	while (TRUE) {
@@ -423,9 +436,31 @@ unsigned char* net_get_http_file(char *ip,int port,char *url,char *err_str)
 		rcv_size+=rbyte;
 		if (rcv_size>=max_len) break;
 
-			// check for content length
-		
 		*(data+rcv_size)=0x0;
+		
+			// check for 200 OK
+		
+		if (!ok) {
+			c=strchr(data,'\n');
+			if (c!=NULL) {
+				strncpy(str,data,256);
+				str[255]=0x0;
+				
+				c=strchr(str,'\n');
+				if (c!=NULL) {
+					*c=0x0;
+					if (strstr(str,"200 OK")==NULL) {
+						strcpy(err_str,"File not found");
+						net_close_socket(&sock);
+						return(NULL);
+					}
+					
+					ok=TRUE;
+				}
+			}
+		}
+				
+			// check for content length
 
 		if (content_offset==-1) {
 			c=strstr(data,"\r\n\r\n");
@@ -463,6 +498,9 @@ unsigned char* net_get_http_file(char *ip,int port,char *url,char *err_str)
 
 		usleep(1000);
 	}
+	
+	*(data+rcv_size)=0x0;
+	fprintf(stdout,data);		// supergumba
 
 		// did we ever get content?
 
