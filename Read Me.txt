@@ -14,12 +14,12 @@ The OS X compile requires no additional external libraries.
 For Win32 Compile:
 ------------------
 
-/winBuild/libraries/dim3 (leave empty, compile writes libraries here)
-/winBuild/libraries/GLEW (GLEW lib and headers)
-/winBuild/libraries/JavaScriptCore (Webkit JS lib and headers)
-/winBuild/libraries/PNG (PNG lib and headers)
-/winBuild/libraries/SDL (SDL lib and headers)
-/winBuild/libraries/ZLib (ZLib lib and headers)
+/winBuild/Libraries/dim3 (leave empty, compile writes libraries here)
+/winBuild/Libraries/GLEW (GLEW lib and headers)
+/winBuild/Libraries/JavaScriptCore (Webkit JS lib and headers)
+/winBuild/Libraries/PNG (PNG lib and headers)
+/winBuild/Libraries/SDL (SDL lib and headers)
+/winBuild/Libraries/ZLib (ZLib lib and headers)
 
 Currently, the win32 compile requires these DLLs:
 
