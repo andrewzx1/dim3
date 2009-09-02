@@ -35,7 +35,7 @@ and can be sold or given away.
 
 #include "network.h"
 
-extern int					net_host_player_count,dim3_proj_hash;
+extern int					net_host_player_count;
 
 extern map_type				map;
 extern hud_type				hud;
@@ -77,7 +77,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 
 	allow=TRUE;
 
-	if (htonl(request_join->hash)!=dim3_proj_hash) {
+	if (htonl(request_join->hash)!=net_get_project_hash()) {
 		allow=FALSE;
 		sprintf(reply_join.deny_reason,"Project files have been modified");
 	}

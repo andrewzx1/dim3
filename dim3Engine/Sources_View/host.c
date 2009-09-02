@@ -69,8 +69,8 @@ extern network_setup_type	net_setup;
 
 int							host_tab_value,host_map_idx;
 char						*net_host_file_list;
-char						net_game_types[max_net_game+1][32],
-							bot_count_list[max_net_bot+2][32],
+char						net_game_types[max_net_game+1][name_str_len],
+							bot_count_list[max_net_bot+2][name_str_len],
 							bot_skill_list[6][32]={"Very Easy","Easy","Normal","Hard","Very Hard",""};
 
 /* =======================================================
@@ -381,6 +381,10 @@ void host_create_pane(void)
 
 void host_open(void)
 {
+		// get the project hash
+
+	net_create_project_hash();
+
 		// setup gui
 		
 	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);

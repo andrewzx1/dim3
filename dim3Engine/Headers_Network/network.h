@@ -32,6 +32,11 @@ and can be sold or given away.
 extern void net_initialize(void);
 extern void net_shutdown(void);
 
+extern void net_create_project_hash(void);
+extern int net_get_project_hash(void);
+extern void net_load_news(void);
+extern char* net_get_news(void);
+
 extern void net_get_host_name(char *name);
 extern void net_get_host_ip(char *ip_name,char *ip_resolve);
 
@@ -55,7 +60,7 @@ extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);
 extern bool net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
 
-extern unsigned char* net_get_http_file(char *ip,int port,char *url,char *err_str);
+extern char* net_get_http_file(char *host_name,int port,char *url,char *err_str);
 
 //
 // udp sockets
