@@ -118,6 +118,8 @@ void piece_create_spot(void)
 	select_add(spot_piece,index,-1);
 	
 	main_wind_draw();
+	
+	menu_set_show_hide_check();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
 	
@@ -174,6 +176,8 @@ void piece_create_scenery(void)
 	select_add(scenery_piece,index,-1);
 	
 	main_wind_draw();
+	
+	menu_set_show_hide_check();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
 }
@@ -216,6 +220,7 @@ void piece_create_light(void)
 	select_add(light_piece,index,-1);
 	
 	main_wind_draw();
+	menu_set_show_hide_check();
 }
 
 /* =======================================================
@@ -255,6 +260,7 @@ void piece_create_sound(void)
 	select_add(sound_piece,index,-1);
 	
 	main_wind_draw();
+	menu_set_show_hide_check();
 }
 
 /* =======================================================
@@ -295,6 +301,7 @@ void piece_create_particle(void)
 	select_add(particle_piece,index,-1);
 	
 	main_wind_draw();
+	menu_set_show_hide_check();
 }
 
 /* =======================================================
@@ -339,6 +346,8 @@ void piece_create_node(void)
 	select_add(node_piece,index,-1);
 	
 	main_wind_draw();
+	
+	menu_set_show_hide_check();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
 	
@@ -410,6 +419,8 @@ void piece_create_liquid(void)
 	select_add(liquid_piece,index,-1);
 
 	main_wind_draw();
+	
+	menu_set_show_hide_check();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
 }
@@ -461,6 +472,8 @@ void piece_create_area(void)
 	select_add(area_piece,index,-1);
 
 	main_wind_draw();
+	
+	menu_set_show_hide_check();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
 }

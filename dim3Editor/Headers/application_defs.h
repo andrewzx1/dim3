@@ -61,6 +61,11 @@ and can be sold or given away.
 #define kCommandViewOrtho					FOUR_CHAR_CODE('vwot')
 #define kCommandViewUVLayer1				FOUR_CHAR_CODE('uvl1')
 #define kCommandViewUVLayer2				FOUR_CHAR_CODE('uvl2')
+#define kCommandViewShowHideLiquids			FOUR_CHAR_CODE('shlq')
+#define kCommandViewShowHideSpots			FOUR_CHAR_CODE('shss')
+#define kCommandViewShowHideLights			FOUR_CHAR_CODE('shls')
+#define kCommandViewShowHideNodes			FOUR_CHAR_CODE('shnd')
+#define kCommandViewShowHideAreas			FOUR_CHAR_CODE('shar')
 
 #define kCommandMapSettings					FOUR_CHAR_CODE('mset')
 #define kCommandMapRaiseY					FOUR_CHAR_CODE('mrsy')

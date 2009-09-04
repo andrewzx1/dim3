@@ -377,19 +377,15 @@ void join_ping_thread_end(void)
 
 void join_open(bool local)
 {
-	int						x,y,yadd,wid,high,padding,
+	int						x,y,yadd,wid,high,padding,tab_idx,
 							tab_list_wid,tab_pane_high;
-	char					tab_list[][32]={"LAN","Internet"};
+	char					tab_list[][32]={"News","LAN","Internet"};
 	element_column_type		cols[4];
 	
 		// get the project hash and news
 
 	net_create_project_hash();
 	net_load_news();
-
-	fprintf(stdout,"----\n");
-	fprintf(stdout,net_get_news());
-	fprintf(stdout,"----\n");
 	
 		// setup gui
 		
@@ -414,7 +410,10 @@ void join_open(bool local)
 	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
 	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
 	
-	element_tab_add((char*)tab_list,join_tab_value,join_tab_id,2,0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
+	tab_idx=0;
+	if (hud.net_news.host[0]==0x0) tab_idx=1;
+	
+	element_tab_add((char*)(tab_list[tab_idx]),join_tab_value,join_tab_id,(3-tab_idx),0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
 
 		// hosts table
 		

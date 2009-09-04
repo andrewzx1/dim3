@@ -463,6 +463,11 @@ typedef struct		{
 						hud_net_option_type		options[max_net_option];
 					} hud_net_options_type;
 					
+typedef struct		{
+						int						port;
+						char					host[64],url[256];
+					} hud_net_news_type;
+					
 //
 // HUD counts
 //
@@ -499,6 +504,7 @@ typedef struct		{
 						hud_net_bots_type		net_bot;
 						hud_net_games_type		net_game;
 						hud_net_options_type	net_option;
+						hud_net_news_type		net_news;
 					} hud_type;
 					
 

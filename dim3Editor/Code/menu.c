@@ -32,7 +32,8 @@ and can be sold or given away.
 #include "import.h"
 
 extern int				drag_mode,main_wind_uv_layer;
-extern bool				done,map_opened;
+extern bool				done,map_opened,
+						dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area;
 
 extern map_type			map;
 
@@ -158,6 +159,15 @@ void menu_set_uv_check(int uv_layer)
 	CheckMenuItem(GetMenuHandle(app_menu_view),9,(uv_layer==0));
 	CheckMenuItem(GetMenuHandle(app_menu_view),10,(uv_layer==1));
 	CheckMenuItem(GetMenuHandle(app_menu_view),11,(uv_layer==2));
+}
+
+void menu_set_show_hide_check(void)
+{
+	CheckMenuItem(GetMenuHandle(app_menu_view),12,dp_liquid);
+	CheckMenuItem(GetMenuHandle(app_menu_view),13,dp_object);
+	CheckMenuItem(GetMenuHandle(app_menu_view),14,dp_lightsoundparticle);
+	CheckMenuItem(GetMenuHandle(app_menu_view),15,dp_node);
+	CheckMenuItem(GetMenuHandle(app_menu_view),16,dp_area);
 }
 
 /* =======================================================
@@ -300,6 +310,40 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_set_uv_layer(1);
 			main_wind_draw();
 			return(noErr);
+			
+		case kCommandViewShowHideLiquids:
+			select_clear();
+			dp_liquid=!dp_liquid;
+			menu_set_show_hide_check();
+			main_wind_draw();
+			break;
+
+		case kCommandViewShowHideSpots:
+			select_clear();
+			dp_object=!dp_object;
+			menu_set_show_hide_check();
+			main_wind_draw();
+			break;
+			
+		case kCommandViewShowHideLights:
+			select_clear();
+			dp_lightsoundparticle=!dp_lightsoundparticle;
+			menu_set_show_hide_check();
+			main_wind_draw();
+			break;
+			
+		case kCommandViewShowHideNodes:
+			select_clear();
+			dp_node=!dp_node;
+			menu_set_show_hide_check();
+			main_wind_draw();
+			break;
+			
+		case kCommandViewShowHideAreas:
+			dp_area=!dp_area;
+			menu_set_show_hide_check();
+			main_wind_draw();
+			break;
 			
 			// map menu
 
