@@ -400,9 +400,12 @@ char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 
 	strcpy(http,"GET ");
 	strcat(http,url);
-	strcat(http," HTTP/1.0\r\n");
-	strcat(http,"Accept: *\r\n");
+	strcat(http," HTTP/1.1\r\n");
+	strcat(http,"Host: ");
+	strcat(http,host_name);
+	strcat(http,"\r\n");
 	strcat(http,"User-Agent: dim3\r\n");
+	strcat(http,"Accept: text/plain\r\n");
 	strcat(http,"\r\n");
 
 	len=strlen(http);
@@ -500,7 +503,6 @@ char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 	}
 	
 	*(data+rcv_size)=0x0;
-	fprintf(stdout,data);		// supergumba
 
 		// did we ever get content?
 

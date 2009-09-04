@@ -62,34 +62,39 @@ AGLContext				ctx;
 short					object_combo_lookup[max_spot],
 						node_combo_lookup[max_node];
 
+char					tool_icns[tool_count][64]=
+								{
+									"Tool Move Points",
+									"Tool Move Points Together",
+									"Tool Snap Points"
+								};
+								
 char					tool_tooltip_str[tool_count][64]=
 								{
-										"Move Non-Mesh Points Freely\nSwith Mode with Q",
-										"Move Non-Mesh Points Together\nSwith Mode with Q",
-										"Snap Non-Mesh Points\nSwith Mode with Q",
-										"Select Toggle Mode",
-										"Edit Entire Mesh\nSwitch Mode with W or Middle Button",
-										"Edit Polygon Only\nSwitch Mode with W or Middle Button",
-										"Edit Vertex Only\nSwitch Mode with W or Middle Button",
-										"No Grid\nSwitch Mode with E",
-										"Small Grid\nSwitch Mode with E",
-										"Medium Grid\nSwitch Mode with E",
-										"Large Grid\nSwitch Mode with E",
-										"Combine Meshes","Split Meshes","Tesselate Mesh","Auto-Texture Meshes",
-										"Show/Hide Liquids","Show/Hide Script Spots/Scenery",
-										"Show/Hide Light/Sound/Particles","Show/Hide Nodes",
-										"Show/Hide View Areas","Edit Map Script","Run Map In Engine",
-									};
+									"Move Non-Mesh Points Freely\nSwith Mode with Q",
+									"Move Non-Mesh Points Together\nSwith Mode with Q",
+									"Snap Non-Mesh Points\nSwith Mode with Q",
+									"Select Toggle Mode",
+									"Edit Entire Mesh\nSwitch Mode with W or Middle Button",
+									"Edit Polygon Only\nSwitch Mode with W or Middle Button",
+									"Edit Vertex Only\nSwitch Mode with W or Middle Button",
+									"No Grid\nSwitch Mode with E",
+									"Small Grid\nSwitch Mode with E",
+									"Medium Grid\nSwitch Mode with E",
+									"Large Grid\nSwitch Mode with E",
+									"Combine Meshes","Split Meshes","Tesselate Mesh","Auto-Texture Meshes",
+									"Edit Map Script","Run Map In Engine"
+								};
 									
 char					piece_tooltip_str[piece_count][64]=
-									{
-										"Add Script Spot","Add Light","Add Sound",
-										"Add Particle","Add Scenery","Add Node",
-										"Add OBJ Mesh","Replace Mesh UV",
-										"Add Height Map Mesh","Add Grid Mesh",
-										"Add Single Polygon Mesh","Add Liquid Volume",
-										"Add Area"
-									};
+								{
+									"Add Script Spot","Add Light","Add Sound",
+									"Add Particle","Add Scenery","Add Node",
+									"Add OBJ Mesh","Replace Mesh UV",
+									"Add Height Map Mesh","Add Grid Mesh",
+									"Add Single Polygon Mesh","Add Liquid Volume",
+									"Add Area"
+								};
 
 /* =======================================================
 
@@ -211,40 +216,14 @@ void main_wind_control_tool(int tool_idx)
 			dp_auto_texture=!dp_auto_texture;
 			break;
 			
-			// show/hide
+			// script and run buttons
 			
 		case 15:
-			select_clear();
-			dp_liquid=!dp_liquid;
-			break;
-			
-		case 16:
-			select_clear();
-			dp_object=!dp_object;
-			break;
-			
-		case 17:
-			select_clear();
-			dp_lightsoundparticle=!dp_lightsoundparticle;
-			break;
-			
-		case 18:
-			select_clear();
-			dp_node=!dp_node;
-			break;
-						
-			// obscure, script and run buttons
-			
-		case 19:
-			dp_area=!dp_area;
-			break;
-	
-		case 20:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_map_script_editor();
 			break;
 			
-		case 21:
+		case 16:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_engine();
 			break;
@@ -693,7 +672,7 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14) || (n==18) || (n==19)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14)) OffsetRect(&box,3,0);
 	}
 	
 		// object combo
@@ -701,8 +680,8 @@ void main_wind_open(void)
 	CreateNewMenu(tool_object_menu_id,kMenuAttrExcludesMarkColumn,&object_menu);
 	InsertMenu(object_menu,kInsertHierarchicalMenu);
 	
-	object_box.top=3;
-	object_box.bottom=tool_button_size-3;
+	object_box.top=tool_menu_margin;
+	object_box.bottom=tool_button_size-tool_menu_margin;
 	object_box.left=wbox.right-465;
 	object_box.right=object_box.left+150;
 	
@@ -722,8 +701,8 @@ void main_wind_open(void)
 	CreateNewMenu(tool_node_menu_id,kMenuAttrExcludesMarkColumn,&node_menu);
 	InsertMenu(node_menu,kInsertHierarchicalMenu);
 	
-	node_box.top=3;
-	node_box.bottom=tool_button_size-3;
+	node_box.top=tool_menu_margin;
+	node_box.bottom=tool_button_size-tool_menu_margin;
 	node_box.left=wbox.right-310;
 	node_box.right=node_box.left+150;
 	
@@ -743,8 +722,8 @@ void main_wind_open(void)
 	CreateNewMenu(tool_group_menu_id,kMenuAttrExcludesMarkColumn,&group_menu);
 	InsertMenu(group_menu,kInsertHierarchicalMenu);
 	
-	group_box.top=3;
-	group_box.bottom=tool_button_size-3;
+	group_box.top=tool_menu_margin;
+	group_box.bottom=tool_button_size-tool_menu_margin;
 	group_box.left=wbox.right-155;
 	group_box.right=group_box.left+150;
 	
@@ -761,7 +740,7 @@ void main_wind_open(void)
 	
 		// piece buttons
 		
-	box.left=wbox.right-(piece_button_size+3);
+	box.left=wbox.right-piece_button_size;
 	box.right=box.left+piece_button_size;
 	box.top=toolbar_high;
 	box.bottom=box.top+piece_button_size;
@@ -796,7 +775,7 @@ void main_wind_open(void)
 		// magnify slider
 		// this needs to be fixed, a texture size is hard coded
 
-	box.left=wbox.right-(piece_button_size+3);
+	box.left=wbox.right-piece_button_size;
 	box.right=box.left+piece_button_size;
 	box.left+=8;
 	box.right-=8;
@@ -854,6 +833,7 @@ void main_wind_open(void)
 	drag_handle_idx=-1;
 	
 	main_wind_set_uv_layer(0);
+	menu_set_show_hide_check();
 	
         // events
     
@@ -942,22 +922,22 @@ void main_wind_resize_buttons(void)
 	
 		// combos
 		
-	object_box.top=3;
-	object_box.bottom=tool_button_size-3;
+	object_box.top=tool_menu_margin;
+	object_box.bottom=tool_button_size-tool_menu_margin;
 	object_box.left=wbox.right-465;
 	object_box.right=object_box.left+150;
 	
 	SetControlBounds(object_combo,&object_box);
 
-	node_box.top=3;
-	node_box.bottom=tool_button_size-3;
+	node_box.top=tool_menu_margin;
+	node_box.bottom=tool_button_size-tool_menu_margin;
 	node_box.left=wbox.right-310;
 	node_box.right=node_box.left+150;
 	
 	SetControlBounds(node_combo,&node_box);
 
-	group_box.top=3;
-	group_box.bottom=tool_button_size-3;
+	group_box.top=tool_menu_margin;
+	group_box.bottom=tool_button_size-tool_menu_margin;
 	group_box.left=wbox.right-155;
 	group_box.right=group_box.left+150;
 
@@ -975,7 +955,7 @@ void main_wind_resize_buttons(void)
 	
 		// magnify control
 		
-	box.left=wbox.right-(piece_button_size+3);
+	box.left=wbox.right-piece_button_size;
 	box.right=box.left+piece_button_size;
 	box.left+=8;
 	box.right-=8;
@@ -1873,13 +1853,6 @@ void main_wind_tool_reset(void)
 		// auto-texture
 		
 	SetControlValue(tool_ctrl[14],dp_auto_texture?1:0);
- 
-		// show/hide
-		
-	SetControlValue(tool_ctrl[15],dp_liquid?1:0);
-	SetControlValue(tool_ctrl[16],dp_object?1:0);
-	SetControlValue(tool_ctrl[17],dp_lightsoundparticle?1:0);
-	SetControlValue(tool_ctrl[18],dp_node?1:0);
 }
 
 void main_wind_tool_default(void)
@@ -1895,6 +1868,7 @@ void main_wind_tool_default(void)
 	dp_textured=TRUE;
 	dp_y_hide=FALSE;
     
+	menu_set_show_hide_check();
     main_wind_tool_reset();
 }
 

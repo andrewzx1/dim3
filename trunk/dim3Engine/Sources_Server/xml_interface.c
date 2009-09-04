@@ -271,6 +271,10 @@ void default_settings_interface(void)
 	for (n=0;n!=max_net_bot;n++) {
 		hud.net_bot.bots[n].name[0]=0x0;
 	}
+	
+	hud.net_news.host[0]=0x0;
+	hud.net_news.port=80;
+	hud.net_news.url[0]=0x0;
 }
 
 /* =======================================================
@@ -755,7 +759,7 @@ void read_settings_interface(void)
 				radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
 				color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
 				proj_tag,debug_tag,games_head_tag,game_tag,options_head_tag,option_tag,
-				character_head_tag,character_item_tag,bot_head_tag,bot_tag;
+				character_head_tag,character_item_tag,bot_head_tag,bot_tag,news_tag;
 	char		path[1024];
 
 	default_settings_interface();
@@ -1039,6 +1043,15 @@ void read_settings_interface(void)
 			cnt++;
 			bot_tag=xml_findnextchild(bot_tag);
 		}
+	}
+	
+		// news
+		
+    news_tag=xml_findfirstchild("News",interface_head_tag);
+    if (news_tag!=-1) {
+		xml_get_attribute_text(news_tag,"host",hud.net_news.host,64);
+		hud.net_news.port=xml_get_attribute_int_default(news_tag,"port",80);
+		xml_get_attribute_text(news_tag,"url",hud.net_news.url,256);
 	}
 
 	xml_close_file();

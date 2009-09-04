@@ -36,6 +36,7 @@ and can be sold or given away.
 #include "network.h"
 
 extern setup_type			setup;
+extern hud_type				hud;
 
 int							net_proj_hash;
 char						*net_news;
@@ -97,13 +98,17 @@ void net_load_news(void)
 {
 	char		err_str[256];
 	
+		// any news to load?
+		
+	if (hud.net_news.host[0]==0x0) return;
+	
 		// skip if already loaded
 		
 	if (net_news!=NULL) return;
 	
 		// load net news
 		
-	net_news=net_get_http_file("www.klinksoftware.net",80,"/dim3/demo_news.txt",err_str);
+	net_news=net_get_http_file(hud.net_news.host,hud.net_news.port,hud.net_news.url,err_str);
 	if (net_news!=NULL) return;
 	
 		// build error message

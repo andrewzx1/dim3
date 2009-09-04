@@ -29,17 +29,19 @@ and can be sold or given away.
 // UI sizes
 //
 
-#define tool_button_size						28
-#define tool_count								22
+#define tool_count								17
+#define piece_count								13
+
+#define tool_button_size						36
+#define tool_menu_margin						7
 
 #define tool_object_menu_id						160
 #define tool_node_menu_id						161
 #define tool_group_menu_id						162
 
 #define piece_button_size						36
-#define piece_count								13
 
-#define toolbar_high							28
+#define toolbar_high							36
 #define info_high								16
 
 #define piece_wid								36
