@@ -44,6 +44,52 @@ extern hud_type				hud;
 
 /* =======================================================
 
+      Dynamic Bone Setups
+      
+======================================================= */
+
+void model_draw_setup_dynamic_bones(model_type *mdl,model_draw *draw,model_draw_setup *setup)
+{
+	int							n;
+	model_draw_alter_bone_type	*alter_bone;
+	model_draw_dynamic_bone		*dyn_bone;
+
+		// clear dynamic changes
+
+	alter_bone=setup->alter_bones;
+
+	for (n=0;n!=mdl->nbone;n++) {
+		alter_bone->parent_dist_add.x=alter_bone->parent_dist_add.y=alter_bone->parent_dist_add.z=0.0f;
+		alter_bone->rot_add.x=alter_bone->rot_add.y=alter_bone->rot_add.z=0.0f;
+		alter_bone->resize=1.0f;
+		alter_bone++;
+	}
+
+		// setup dynamics
+
+	dyn_bone=draw->dynamic_bones;
+
+	for (n=0;n!=max_model_dynamic_bone;n++) {
+
+			// any setting?
+
+		if (dyn_bone->bone_idx==-1) {
+			dyn_bone++;
+			continue;
+		}
+
+		alter_bone=&setup->alter_bones[dyn_bone->bone_idx];
+		
+		memmove(&alter_bone->parent_dist_add,&dyn_bone->mov,sizeof(d3vct));
+		memmove(&alter_bone->rot_add,&dyn_bone->rot,sizeof(d3vct));
+		alter_bone->resize=dyn_bone->resize;
+
+		dyn_bone++;
+	}
+}
+
+/* =======================================================
+
       Model Draw Setup For Objects
       
 ======================================================= */
@@ -131,6 +177,10 @@ void model_draw_setup_object(int tick,obj_type *obj)
 		if (draw->spin.z!=0) setup->ang.z=angle_add(setup->ang.z,(float)((int)(spin_ang*draw->spin.z)%360));
 		if (draw->spin.y!=0) setup->ang.y=angle_add(setup->ang.y,(float)((int)(spin_ang*draw->spin.y)%360));
 	}
+
+		// dynamic bones
+
+	model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 
@@ -228,6 +278,10 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 		if (draw->spin.z!=0) setup->ang.z=angle_add(setup->ang.z,(float)((int)(spin_ang*draw->spin.z)%360));
 		if (draw->spin.y!=0) setup->ang.y=angle_add(setup->ang.y,(float)((int)(spin_ang*draw->spin.y)%360));
 	}
+
+		// dynamic bones
+
+	model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 
@@ -369,6 +423,10 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	else {
 		draw->flip_x=FALSE;
 	}
+
+		// dynamic bones
+
+	model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 

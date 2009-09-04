@@ -78,6 +78,10 @@ void object_score_update(obj_type *obj)
 	game_obj_rule_uid=obj->uid;
 	scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_score,0);
 	game_obj_rule_uid=-1;
+
+		// alert object of score change
+
+	scripts_post_event_console(&obj->attach,sd_event_score,0,0);
 }
 
 void object_score_death(obj_type *obj)
