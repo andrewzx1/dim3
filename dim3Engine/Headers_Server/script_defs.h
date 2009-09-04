@@ -243,6 +243,7 @@ and can be sold or given away.
 #define sd_event_state									2035
 #define sd_event_rule									2036
 #define sd_event_remote									2037
+#define sd_event_score									2038
 
 //
 // sub events constants

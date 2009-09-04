@@ -210,7 +210,7 @@ void object_clear_draw(model_draw *draw)
 
 		// dynamic bones
 
-	for (k=0;k!=max_model_dynamic_bones;k++) {
+	for (k=0;k!=max_model_dynamic_bone;k++) {
 		draw->dynamic_bones[k].bone_idx=-1;
 	}
 	

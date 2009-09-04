@@ -36,14 +36,16 @@ and can be sold or given away.
       
 ======================================================= */
 
-void model_create_draw_bone_from_neutral(model_type *model,model_draw_bone_type *draw_bones)
+void model_create_draw_bone_from_neutral(model_type *model,model_draw_setup *draw_setup,model_draw_bone_type *draw_bones)
 {
-	int						n,nbone;
-	model_bone_type			*bone;
-	model_draw_bone_type	*draw_bone;
+	int							n,nbone;
+	model_bone_type				*bone;
+	model_draw_bone_type		*draw_bone;
+	model_draw_alter_bone_type	*alter_bone;
 
 	bone=model->bones;
 	draw_bone=draw_bones;
+	alter_bone=draw_setup->alter_bones;
 	
 	nbone=model->nbone;
 	
@@ -54,9 +56,9 @@ void model_create_draw_bone_from_neutral(model_type *model,model_draw_bone_type 
 		draw_bone->fpnt.z=(float)bone->pnt.z;
 		draw_bone->fpnt.y=(float)bone->pnt.y;
 		
-		draw_bone->rot.x=0.0f;
-		draw_bone->rot.z=0.0f;
-		draw_bone->rot.y=0.0f;
+		draw_bone->rot.x=alter_bone->rot_add.x;
+		draw_bone->rot.z=alter_bone->rot_add.y;
+		draw_bone->rot.y=alter_bone->rot_add.z;
 
 		matrix_identity(&draw_bone->rot_mat);
 		
@@ -64,6 +66,7 @@ void model_create_draw_bone_from_neutral(model_type *model,model_draw_bone_type 
 	
 		bone++;
 		draw_bone++;
+		alter_bone++;
 	}
 }
 
@@ -73,31 +76,33 @@ void model_create_draw_bone_from_neutral(model_type *model,model_draw_bone_type 
       
 ======================================================= */
 
-void model_create_draw_bone_from_pose(model_type *model,model_draw_bone_type *draw_bones,int pose_1)
+void model_create_draw_bone_from_pose(model_type *model,model_draw_setup *draw_setup,model_draw_bone_type *draw_bones,int pose_1)
 {
-	int						n,nbone;
-	model_bone_type			*bone;
-	model_draw_bone_type	*draw_bone;
-	model_bone_move_type	*bone_move;
+	int							n,nbone;
+	model_bone_type				*bone;
+	model_draw_bone_type		*draw_bone;
+	model_bone_move_type		*bone_move;
+	model_draw_alter_bone_type	*alter_bone;
 	
 		// build draw list from model bones
 	
 	bone=model->bones;
 	bone_move=model->poses[pose_1].bone_moves;
 	draw_bone=draw_bones;
+	alter_bone=draw_setup->alter_bones;
 	
 	nbone=model->nbone;
 	
 	for (n=0;n!=nbone;n++) {
 		draw_bone->parent_idx=bone->parent_idx;
 		
-		draw_bone->rot.x=bone_move->rot.x;
-        draw_bone->rot.y=bone_move->rot.y;
-        draw_bone->rot.z=bone_move->rot.z;
+		draw_bone->rot.x=angle_add(bone_move->rot.x,alter_bone->rot_add.x);
+        draw_bone->rot.y=angle_add(bone_move->rot.y,alter_bone->rot_add.y);
+        draw_bone->rot.z=angle_add(bone_move->rot.z,alter_bone->rot_add.z);
 
-		draw_bone->parent_dist.x=bone->parent_dist.x*bone_move->mov.x;
-		draw_bone->parent_dist.y=bone->parent_dist.y*bone_move->mov.y;
-		draw_bone->parent_dist.z=bone->parent_dist.z*bone_move->mov.z;
+		draw_bone->parent_dist.x=(bone->parent_dist.x*bone_move->mov.x)+alter_bone->parent_dist_add.x;
+		draw_bone->parent_dist.y=(bone->parent_dist.y*bone_move->mov.y)+alter_bone->parent_dist_add.y;
+		draw_bone->parent_dist.z=(bone->parent_dist.z*bone_move->mov.z)+alter_bone->parent_dist_add.z;
 		
 			// auto touch bone with no parent
 
@@ -114,21 +119,23 @@ void model_create_draw_bone_from_pose(model_type *model,model_draw_bone_type *dr
 		
 		bone++;
 		draw_bone++;
+		alter_bone++;
 		bone_move++;
 	}
 }
 
-void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_bone_type *draw_bones,int pose_1,int pose_2,float pose_factor)
+void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_setup *draw_setup,model_draw_bone_type *draw_bones,int pose_1,int pose_2,float pose_factor)
 {
-	int						n,nbone;
-	float					accel_pose_factor,
-							mov_x_start,mov_z_start,mov_y_start,
-							mov_x_end,mov_z_end,mov_y_end,
-							rot_x_start,rot_z_start,rot_y_start,
-							rot_x_end,rot_z_end,rot_y_end;
-	model_bone_type			*bone;
-	model_draw_bone_type	*draw_bone;
-	model_bone_move_type	*bone_move_start,*bone_move_end;
+	int							n,nbone;
+	float						accel_pose_factor,
+								mov_x_start,mov_z_start,mov_y_start,
+								mov_x_end,mov_z_end,mov_y_end,
+								rot_x_start,rot_z_start,rot_y_start,
+								rot_x_end,rot_z_end,rot_y_end;
+	model_bone_type				*bone;
+	model_draw_bone_type		*draw_bone;
+	model_bone_move_type		*bone_move_start,*bone_move_end;
+	model_draw_alter_bone_type	*alter_bone;
 	
 		// find the bone moves to interept from
 		
@@ -139,6 +146,7 @@ void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_bone_t
 	
 	bone=model->bones;
 	draw_bone=draw_bones;
+	alter_bone=draw_setup->alter_bones;
 	
 	nbone=model->nbone;
 	
@@ -170,15 +178,22 @@ void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_bone_t
 			// factor the bone moves
 			
 		draw_bone->rot.x=rot_x_end+((rot_x_start-rot_x_end)*accel_pose_factor);
+		draw_bone->rot.x=angle_add(draw_bone->rot.x,alter_bone->rot_add.x);
+
 		draw_bone->rot.y=rot_y_end+((rot_y_start-rot_y_end)*accel_pose_factor);
+		draw_bone->rot.y=angle_add(draw_bone->rot.y,alter_bone->rot_add.y);
+
 		draw_bone->rot.z=rot_z_end+((rot_z_start-rot_z_end)*accel_pose_factor);
+		draw_bone->rot.z=angle_add(draw_bone->rot.z,alter_bone->rot_add.z);
 		
 		mov_x_start=mov_x_end+((mov_x_start-mov_x_end)*accel_pose_factor);
-		draw_bone->parent_dist.x=bone->parent_dist.x*mov_x_start;
+		draw_bone->parent_dist.x=(bone->parent_dist.x*mov_x_start)+alter_bone->parent_dist_add.x;
+
 		mov_y_start=mov_y_end+((mov_y_start-mov_y_end)*accel_pose_factor);
-		draw_bone->parent_dist.y=bone->parent_dist.y*mov_y_start;
+		draw_bone->parent_dist.y=(bone->parent_dist.y*mov_y_start)+alter_bone->parent_dist_add.y;
+
 		mov_z_start=mov_z_end+((mov_z_start-mov_z_end)*accel_pose_factor);
-		draw_bone->parent_dist.z=bone->parent_dist.z*mov_z_start;
+		draw_bone->parent_dist.z=(bone->parent_dist.z*mov_z_start)+alter_bone->parent_dist_add.z;
 			
 			// auto touch bone with no parent
 
@@ -195,6 +210,7 @@ void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_bone_t
 
 		bone++;
 		draw_bone++;
+		alter_bone++;
 		bone_move_start++;
 		bone_move_end++;
 	}
@@ -416,7 +432,7 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 		// no poses get simple neutral bones
 
 	if (pose_1==-1) {
-		model_create_draw_bone_from_neutral(model,bones);
+		model_create_draw_bone_from_neutral(model,draw_setup,bones);
 		return;
 	}
 
@@ -429,10 +445,10 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 		// get single pose or tween pose bones
 
 	if (pose_2==-1) {
-		model_create_draw_bone_from_pose(model,bones,pose_1);
+		model_create_draw_bone_from_pose(model,draw_setup,bones,pose_1);
 	}
 	else {
-		model_create_draw_bone_from_pose_factor(model,bones,pose_1,pose_2,pose_factor);
+		model_create_draw_bone_from_pose_factor(model,draw_setup,bones,pose_1,pose_2,pose_factor);
 	}
 
 		// combine rotations and create matrixes

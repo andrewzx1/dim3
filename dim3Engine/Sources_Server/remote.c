@@ -284,16 +284,20 @@ void remote_host_exit(void)
 
 void remote_update(int remote_uid,network_request_remote_update *update)
 {
-	int							n,flags,map_spawn_idx,old_score,
-								animation_mode,animate_idx,animate_next_idx;
-	d3pnt						org_pnt;
-	obj_type					*obj;
-	model_draw					*draw;
-	model_draw_animation		*animation;
-	network_request_animation	*net_animation;
+	int								n,flags,map_spawn_idx,old_score,
+									animation_mode,animate_idx,animate_next_idx;
+	d3pnt							org_pnt;
+	obj_type						*obj;
+	model_draw						*draw;
+	model_draw_dynamic_bone			*dyn_bone;
+	model_draw_animation			*animation;
+	network_request_dynamic_bone	*net_dyn_bone;
+	network_request_animation		*net_animation;
 	
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
+
+	draw=&obj->draw;
 	
 		// check for vehicles
 		
@@ -324,6 +328,10 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	obj->ang.x=ntohf(update->fp_ang_x);
 	obj->ang.y=ntohf(update->fp_ang_y);
 	obj->ang.z=ntohf(update->fp_ang_z);
+	
+	draw->offset.x=(signed short)ntohs(update->offset_x);
+	draw->offset.y=(signed short)ntohs(update->offset_y);
+	draw->offset.z=(signed short)ntohs(update->offset_z);
 
 		// update predicition values
 		
@@ -338,7 +346,6 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 		// only change animations if mode, animation, or next
 		// animation are changing
 		
-	draw=&obj->draw;
 	animation=draw->animations;
 	net_animation=update->animation;
 
@@ -364,6 +371,29 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 		
 	draw->mesh_mask=ntohl(update->model_mesh_mask);
 	memmove(&draw->cur_texture_frame,update->model_cur_texture_frame,max_model_texture);
+
+		// dynamic bones
+
+	dyn_bone=draw->dynamic_bones;
+	net_dyn_bone=update->dynamic_bones;
+
+	for (n=0;n!=max_model_dynamic_bone;n++) {
+
+		dyn_bone->bone_idx=(signed short)ntohs(net_dyn_bone->bone_idx);
+
+		if (dyn_bone->bone_idx!=-1) {
+			dyn_bone->mov.x=ntohf(net_dyn_bone->fp_mov_x);
+			dyn_bone->mov.y=ntohf(net_dyn_bone->fp_mov_y);
+			dyn_bone->mov.z=ntohf(net_dyn_bone->fp_mov_z);
+			dyn_bone->rot.x=ntohf(net_dyn_bone->fp_rot_x);
+			dyn_bone->rot.y=ntohf(net_dyn_bone->fp_rot_y);
+			dyn_bone->rot.z=ntohf(net_dyn_bone->fp_rot_z);
+			dyn_bone->resize=ntohf(net_dyn_bone->fp_resize);
+		}
+
+		dyn_bone++;
+		net_dyn_bone++;
+	}
 	
 		// update flags
 	

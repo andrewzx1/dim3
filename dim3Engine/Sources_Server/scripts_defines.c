@@ -161,6 +161,7 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_state,								"",		"DIM3_EVENT_STATE"},
 								{sd_event_rule,									"",		"DIM3_EVENT_RULE"},
 								{sd_event_remote,								"",		"DIM3_EVENT_REMOTE"},
+								{sd_event_score,								"",		"DIM3_EVENT_SCORE"},
 
 									// sub events
 

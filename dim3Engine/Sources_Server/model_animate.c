@@ -721,10 +721,10 @@ int model_dynamic_bone_get_bone_idx(model_type *mdl,char *bone_tag,char *err_str
 	return(-1);
 }
 
-int model_dynamic_bone_find_bone_spot(model_draw *draw,int bone_idx,int dynamic_type,char *err_str)
+int model_dynamic_bone_find_bone_spot(model_draw *draw,int bone_idx,char *err_str)
 {
-	int					n,blank_idx;
-	model_dynamic_bone	*dyn_bone;
+	int						n,blank_idx;
+	model_draw_dynamic_bone	*dyn_bone;
 
 		// see if we already have a change
 		// of this type, if so, replace
@@ -732,20 +732,35 @@ int model_dynamic_bone_find_bone_spot(model_draw *draw,int bone_idx,int dynamic_
 	blank_idx=-1;
 	dyn_bone=draw->dynamic_bones;
 
-	for (n=0;n!=max_model_dynamic_bones;n++) {
+	for (n=0;n!=max_model_dynamic_bone;n++) {
 		if (dyn_bone->bone_idx==-1) {
 			if (blank_idx==-1) blank_idx=n;
 		}
 		else {
-			if ((dyn_bone->bone_idx==bone_idx) && (dyn_bone->type==dynamic_type)) return(n);
+			if (dyn_bone->bone_idx==bone_idx) return(n);
 		}
 	}
 
 		// is there a blank?
 
-	if (blank_idx!=-1) return(blank_idx);
+	if (blank_idx!=-1) {
 
-	sprintf(err_str,"You can only have %d dynamic bones per model",max_model_dynamic_bones);
+			// clear blank bone
+
+		dyn_bone=&draw->dynamic_bones[blank_idx];
+
+		dyn_bone->bone_idx=bone_idx;
+
+		dyn_bone->resize=1.0f;
+		dyn_bone->mov.x=dyn_bone->mov.y=dyn_bone->mov.z=0.0f;
+		dyn_bone->rot.x=dyn_bone->rot.y=dyn_bone->rot.z=0.0f;
+
+		return(blank_idx);
+	}
+
+		// no dynamic bones left
+
+	sprintf(err_str,"You can only have %d dynamic bones per model",max_model_dynamic_bone);
 	return(-1);
 }
 
@@ -762,14 +777,14 @@ bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_tag,d3ang *rot,ch
 	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
 	if (bone_idx==-1) return(FALSE);
 
-	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,model_dynamic_bone_rotate,err_str);
+	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,err_str);
 	if (dyn_bone_idx==-1) return(FALSE);
 
 		// setup
 
-	draw->dynamic_bones[dyn_bone_idx].type=model_dynamic_bone_rotate;
-	draw->dynamic_bones[dyn_bone_idx].bone_idx=bone_idx;
-	memmove(&draw->dynamic_bones[dyn_bone_idx].data.rot,rot,sizeof(d3ang));
+	draw->dynamic_bones[dyn_bone_idx].rot.x=rot->x;
+	draw->dynamic_bones[dyn_bone_idx].rot.y=rot->y;
+	draw->dynamic_bones[dyn_bone_idx].rot.z=rot->z;
 
 	return(TRUE);
 }
@@ -787,14 +802,14 @@ bool model_dynamic_bone_set_move(model_draw *draw,char *bone_tag,d3pnt *mov,char
 	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
 	if (bone_idx==-1) return(FALSE);
 
-	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,model_dynamic_bone_move,err_str);
+	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,err_str);
 	if (dyn_bone_idx==-1) return(FALSE);
 
 		// setup
 
-	draw->dynamic_bones[dyn_bone_idx].type=model_dynamic_bone_move;
-	draw->dynamic_bones[dyn_bone_idx].bone_idx=bone_idx;
-	memmove(&draw->dynamic_bones[dyn_bone_idx].data.mov,mov,sizeof(d3pnt));
+	draw->dynamic_bones[dyn_bone_idx].mov.x=(float)mov->x;
+	draw->dynamic_bones[dyn_bone_idx].mov.y=(float)mov->y;
+	draw->dynamic_bones[dyn_bone_idx].mov.z=(float)mov->z;
 
 	return(TRUE);
 }
@@ -812,14 +827,12 @@ bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_tag,float resize,
 	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
 	if (bone_idx==-1) return(FALSE);
 
-	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,model_dynamic_bone_resize,err_str);
+	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,err_str);
 	if (dyn_bone_idx==-1) return(FALSE);
 
 		// setup
 
-	draw->dynamic_bones[dyn_bone_idx].type=model_dynamic_bone_resize;
-	draw->dynamic_bones[dyn_bone_idx].bone_idx=bone_idx;
-	draw->dynamic_bones[dyn_bone_idx].data.resize=resize;
+	draw->dynamic_bones[dyn_bone_idx].resize=resize;
 
 	return(TRUE);
 }

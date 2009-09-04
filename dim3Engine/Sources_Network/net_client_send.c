@@ -113,7 +113,9 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	int								n,flags;
 	model_draw						*draw;
 	model_draw_animation			*animation;
+	model_draw_dynamic_bone			*dyn_bone;
 	network_request_animation		*net_animation;
+	network_request_dynamic_bone	*net_dyn_bone;
 	network_request_remote_update	update;
 	
 		// no updates if pipe full
@@ -121,6 +123,8 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	if (!net_setup.host.hosting) {
 		if (!net_send_ready(client_socket)) return;
 	}
+
+	draw=&obj->draw;
 
 		// create flags
 		
@@ -149,6 +153,10 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	update.fp_ang_y=htonf(obj->ang.y);
 	update.fp_ang_z=htonf(obj->ang.z);
 
+	update.offset_x=htons((short)draw->offset.x);
+	update.offset_y=htons((short)draw->offset.y);
+	update.offset_z=htons((short)draw->offset.z);
+
 	update.fp_predict_move_x=htonl(obj->pnt.x-obj->last_pnt.x);
 	update.fp_predict_move_y=htonl(obj->pnt.y-obj->last_pnt.y);
 	update.fp_predict_move_z=htonl(obj->pnt.z-obj->last_pnt.z);
@@ -166,7 +174,6 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	
 		// model animations
 
-	draw=&obj->draw;
 	animation=draw->animations;
 	net_animation=update.animation;
 	
@@ -185,6 +192,29 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	
 	update.model_mesh_mask=htonl(draw->mesh_mask);
 	memmove(update.model_cur_texture_frame,draw->cur_texture_frame,max_model_texture);
+
+		// dynamic bones
+
+	dyn_bone=draw->dynamic_bones;
+	net_dyn_bone=update.dynamic_bones;
+
+	for (n=0;n!=max_model_dynamic_bone;n++) {
+
+		net_dyn_bone->bone_idx=htons((short)dyn_bone->bone_idx);
+
+		if (dyn_bone->bone_idx!=-1) {
+			net_dyn_bone->fp_mov_x=htonf(dyn_bone->mov.x);
+			net_dyn_bone->fp_mov_y=htonf(dyn_bone->mov.y);
+			net_dyn_bone->fp_mov_z=htonf(dyn_bone->mov.z);
+			net_dyn_bone->fp_rot_x=htonf(dyn_bone->rot.x);
+			net_dyn_bone->fp_rot_y=htonf(dyn_bone->rot.y);
+			net_dyn_bone->fp_rot_z=htonf(dyn_bone->rot.z);
+			net_dyn_bone->fp_resize=htonf(dyn_bone->resize);
+		}
+
+		dyn_bone++;
+		net_dyn_bone++;
+	}
 
 		// send update
 		

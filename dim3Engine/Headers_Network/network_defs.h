@@ -267,57 +267,66 @@ typedef struct		{
 //
 				
 typedef struct		{
-						int							model_tick;
-						short						model_mode,
-													model_animate_idx,model_animate_next_idx,model_pose_move_idx,
-													model_smooth_animate_idx,model_smooth_pose_move_idx;
+						int								model_tick;
+						short							model_mode,
+														model_animate_idx,model_animate_next_idx,model_pose_move_idx,
+														model_smooth_animate_idx,model_smooth_pose_move_idx;
 					} network_request_animation;			// used as part of network_request_update
 
 typedef struct		{
-						int							flags,pnt_x,pnt_y,pnt_z,
-													fp_ang_x,fp_ang_y,fp_ang_z,
-													fp_predict_move_x,fp_predict_move_y,fp_predict_move_z,
-													fp_predict_turn_y,model_mesh_mask;
-						short						vehicle_map_spawn_idx,
-													score,health;
-						unsigned char				model_cur_texture_frame[max_model_texture];
-						network_request_animation	animation[max_model_blend_animation];
+						int								fp_mov_x,fp_mov_y,fp_mov_z,
+														fp_rot_x,fp_rot_y,fp_rot_z,
+														fp_resize;
+						short							bone_idx;
+					} network_request_dynamic_bone;			// used as part of network_request_update
+
+typedef struct		{
+						int								flags,pnt_x,pnt_y,pnt_z,
+														fp_ang_x,fp_ang_y,fp_ang_z,
+														fp_predict_move_x,fp_predict_move_y,fp_predict_move_z,
+														fp_predict_turn_y,model_mesh_mask;
+						short							offset_x,offset_y,offset_z,
+														vehicle_map_spawn_idx,
+														score,health;
+						unsigned char					model_cur_texture_frame[max_model_texture];
+						network_request_animation		animation[max_model_blend_animation];
+						network_request_dynamic_bone	dynamic_bones[max_model_dynamic_bone];
 					} network_request_remote_update;
 
 typedef struct		{
-						short						kill_remote_uid,telefrag;
+						short							kill_remote_uid,telefrag;
 					} network_request_remote_death;
 					
 typedef struct		{
-						char						str[64];
+						char							str[64];
 					} network_request_remote_chat;
 					
 typedef struct		{
-						int							pnt_x,pnt_y,pnt_z,fp_pitch;
-						char						name[name_str_len];
+						int								pnt_x,pnt_y,pnt_z,fp_pitch;
+						char							name[name_str_len];
 					} network_request_remote_sound;
 
 typedef struct		{
-						int							pt_x,pt_y,pt_z,
-													fp_ang_x,fp_ang_y,fp_ang_z;
-						short						fire_type,radius,distance,damage,force;
-						char						weap_name[name_str_len],proj_setup_name[name_str_len];
+						int								pt_x,pt_y,pt_z,
+														fp_ang_x,fp_ang_y,fp_ang_z;
+						short							fire_type,radius,distance,damage,force;
+						char							weap_name[name_str_len],proj_setup_name[name_str_len];
 					} network_request_remote_fire;
 
 typedef struct		{
-						short						hidden,ammo_count,clip_count,
-													alt_ammo_count,alt_clip_count;
+						short							hidden,ammo_count,clip_count,
+														alt_ammo_count,alt_clip_count;
 					} network_request_remote_ammo;
 
 typedef struct		{
-						int							pt_x,pt_y,pt_z;
-						short						health;
-						network_request_remote_ammo	ammos[net_max_weapon_per_remote];
+						int								pt_x,pt_y,pt_z;
+						short							health;
+						network_request_remote_ammo		ammos[net_max_weapon_per_remote];
 					} network_request_remote_pickup;
 
 typedef struct		{
-						int							pt_x,pt_y,pt_z,
-													fp_ang_x,fp_ang_y,fp_ang_z;
+						int								pt_x,pt_y,pt_z,
+														fp_ang_x,fp_ang_y,fp_ang_z;
 					} network_request_remote_click;
 
 //
@@ -325,11 +334,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							flags,
-													mov_add_x,mov_add_y,mov_add_z,
-													cuml_mov_add_x,cuml_mov_add_y,cuml_mov_add_z,
-													fp_rot_add_x,fp_rot_add_y,fp_rot_add_z,
-													fp_cuml_rot_add_x,fp_cuml_rot_add_y,fp_cuml_rot_add_z;
-						short						group_idx,movement_idx,movement_move_idx,
-													count,user_id;
+						int								flags,
+														mov_add_x,mov_add_y,mov_add_z,
+														cuml_mov_add_x,cuml_mov_add_y,cuml_mov_add_z,
+														fp_rot_add_x,fp_rot_add_y,fp_rot_add_z,
+														fp_cuml_rot_add_x,fp_cuml_rot_add_y,fp_cuml_rot_add_z;
+						short							group_idx,movement_idx,movement_move_idx,
+														count,user_id;
 					} network_reply_group_synch;
