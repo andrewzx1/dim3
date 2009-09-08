@@ -28,6 +28,8 @@ and can be sold or given away.
 #include "interface.h"
 #include "common_view.h"
 
+extern int				node_mode;
+
 extern map_type			map;
 
 typedef struct			{
@@ -125,9 +127,9 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 	next_idx=node_link_find_node_by_point(view_setup,&click_pt);
     if ((next_idx==node_idx) || (next_idx==-1)) return(FALSE);
 	
-		// delete link with option key
+		// remove link mode
 		
-	if (main_wind_option_down()) {
+	if (node_mode==node_mode_remove_link) {
 			
 		for (n=0;n!=max_node_link;n++) {
 		
@@ -150,9 +152,9 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 		return(TRUE);
 	}
 	
-		// add link with control
+		// add link mode
 		
-	if (main_wind_control_down()) {
+	if (node_mode==node_mode_link) {
 		
 		k1=node_link_get_free_link(node_idx);
 		k2=node_link_get_free_link(next_idx);
@@ -164,6 +166,9 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 		
 		if (!node_link_has_link(node_idx,next_idx)) map.nodes[node_idx].link[k1]=next_idx;
 		if (!node_link_has_link(next_idx,node_idx)) map.nodes[next_idx].link[k2]=node_idx;
+		
+		select_clear();
+		select_add(node_piece,next_idx,-1);		// move selection to next node
 		
 		main_wind_tool_fill_node_combo();
 		main_wind_draw();

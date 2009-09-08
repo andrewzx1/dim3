@@ -143,6 +143,7 @@ static pascal OSStatus palette_scenery_tab_proc(EventHandlerCallRef handler,Even
 
 void palette_scenery_open(int x,int y)
 {
+	int						n;
 	ControlID				ctrl_id;
 	EventHandlerUPP			tab_event_upp;
 	EventTypeSpec			tab_event_list[]={{kEventClassControl,kEventControlHit},
@@ -163,7 +164,18 @@ void palette_scenery_open(int x,int y)
 	
 	tab_event_upp=NewEventHandlerUPP(palette_scenery_tab_proc);
 	InstallControlEventHandler(palette_scenery_tab,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,palette_scenery_wind,NULL);
+	
+		// numeric only controls
 
+	palette_control_numeric_only(palette_scenery_wind,kSceneryAngleX,0);
+	palette_control_numeric_only(palette_scenery_wind,kSceneryAngleY,0);
+	palette_control_numeric_only(palette_scenery_wind,kSceneryAngleZ,0);
+	palette_control_numeric_only(palette_scenery_wind,kSceneryResize,0);
+	
+	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
+		palette_control_numeric_only(palette_scenery_wind,kSceneryFrame,n);
+	}
+	
 		// show palette
 		
 	ShowWindow(palette_scenery_wind);

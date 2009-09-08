@@ -730,7 +730,7 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 void render_model_setup(int tick,model_draw *draw)
 {
-	int					n,k,t,frame;
+	int					n,t,frame;
 	float				alpha;
 	model_type			*mdl;
     texture_type		*texture;
@@ -754,53 +754,47 @@ void render_model_setup(int tick,model_draw *draw)
 		}
 	}
 
-		// check for opaque/transparent textures
+		// check for opaque/transparent draws
 
 	draw->has_opaque=FALSE;
 	draw->has_transparent=FALSE;
-
-	texture=mdl->textures;
-
-	for (n=0;n!=max_model_texture;n++) {
 	
-			// need to detect if this texture
-			// is involved in a fade for a mesh
-
-		alpha=draw->alpha;
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
 		
-		for (k=0;k!=mdl->nmesh;k++) {
-		
-				// already in alpha?
-				
-			if (alpha!=1.0f) break;
-		
-				// is the fade on?
-				
-			if (!draw->mesh_fades[k].on) continue;
+			// check for any transparent textures
 			
-				// is this texture used in this
-				// fading mesh?
+		texture=mdl->textures;
+		
+		for (t=0;t!=max_model_texture;t++) {
+		
+				// texture used in this mesh?
 				
-			for (t=0;t!=max_model_texture;t++) {
-				if (mdl->meshes[k].materials[t].trig_count!=0) {
-					alpha=draw->mesh_fades[k].alpha;
-					break;
-				}
+			if (mdl->meshes[n].materials[t].trig_count==0) {
+				texture++;
+				continue;
 			}
+			
+				// check for fade
+				
+			alpha=draw->alpha;
+			if (draw->mesh_fades[n].on) alpha=draw->mesh_fades[n].alpha;
+				
+				// check texture for transparencies
+				
+			frame=texture->animate.current_frame;
+	
+			if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) {
+				draw->has_transparent=TRUE;
+			}
+			else {
+				draw->has_opaque=TRUE;
+			}
+			
+			texture++;
 		}
 		
-			// check texture
-
-		frame=texture->animate.current_frame;
-		
-		if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) {
-			draw->has_transparent=TRUE;
-		}
-		else {
-			draw->has_opaque=TRUE;
-		}
-
-		texture++;
+		if ((draw->has_transparent) && (draw->has_opaque)) break;
 	}
 	
 		// create vertex and uv lists

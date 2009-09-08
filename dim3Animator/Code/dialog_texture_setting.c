@@ -458,30 +458,30 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 				case kTextureSettingButtonAddFrame:
 					texture_setting_frame_save();
 					if (texture_setting_bitmap_open(bitmap_name)) {
-						SetCursor(*GetCursor(watchCursor));
+						SetThemeCursor(kThemeWatchCursor);
 						model_add_texture_frame(&model,dialog_texture_wind_current_txt,bitmap_name);
 						texture_setting_frame_build_combo(FALSE);
 						texture_setting_frame_reset();
-						InitCursor();
+						SetThemeCursor(kThemeArrowCursor);
 					}
 					return(noErr);
 					
 				case kTextureSettingButtonSubFrame:
 					texture_setting_frame_save();
-					SetCursor(*GetCursor(watchCursor));
+					SetThemeCursor(kThemeWatchCursor);
 					model_delete_texture_frame(&model,dialog_texture_wind_current_txt);
 					texture_setting_frame_build_combo(FALSE);
 					texture_setting_frame_reset();
-					InitCursor();
+					SetThemeCursor(kThemeArrowCursor);
 					return(noErr);
 					
 				case kTextureSettingFrameBitmapEdit:
 					if (texture_setting_bitmap_open(bitmap_name)) {
 						strcpy(model.textures[dialog_texture_wind_current_txt].frames[dialog_texture_wind_current_frame].name,bitmap_name);
-						SetCursor(*GetCursor(watchCursor));
+						SetThemeCursor(kThemeWatchCursor);
 						model_refresh_textures(&model);
 						texture_setting_frame_reset();
-						InitCursor();
+						SetThemeCursor(kThemeArrowCursor);
 					}
 					return(noErr);
 					

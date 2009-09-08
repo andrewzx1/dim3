@@ -246,7 +246,11 @@ int map_mesh_duplicate(map_type *map,int mesh_idx)
 		// mesh setup
 		
 	new_mesh->group_idx=mesh->group_idx;
+	new_mesh->nuv=mesh->nuv;
+	new_mesh->extra_txt_idx=mesh->extra_txt_idx;
+	memmove(&new_mesh->rot_off,&mesh->rot_off,sizeof(d3pnt));
 	memmove(&new_mesh->flag,&mesh->flag,sizeof(map_mesh_flag_type));
+	memmove(&new_mesh->msg,&mesh->msg,sizeof(map_mesh_message_type));
 
 	memmove(new_mesh->vertexes,mesh->vertexes,(sizeof(d3pnt)*mesh->nvertex));
 	memmove(new_mesh->polys,mesh->polys,(sizeof(map_mesh_poly_type)*mesh->npoly));

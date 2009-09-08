@@ -50,7 +50,7 @@ extern void texture_palette_put_selected_texture(int txt_idx);
 extern void texture_palette_draw(void);
 extern void texture_palette_reset(void);
 extern void texture_palette_click(d3pnt *pnt,bool dbl_click);
-
+extern void palette_control_numeric_only(WindowRef wind,int sig,int id);
 
 //
 // info status line

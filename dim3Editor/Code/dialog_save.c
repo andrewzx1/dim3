@@ -41,7 +41,7 @@ bool dialog_save_run(void)
 	bool				dialog_save_ok;
 	WindowRef			dialog_save_wind;
 
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 
 	dialog_open(&dialog_save_wind,"Save");
 	ShowWindow(dialog_save_wind);
@@ -51,7 +51,7 @@ bool dialog_save_run(void)
 	
 	DisposeWindow(dialog_save_wind);
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 	return(dialog_save_ok);
 }

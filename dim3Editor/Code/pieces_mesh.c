@@ -685,7 +685,7 @@ void piece_add_height_map_mesh(void)
 		return;
 	}
 	
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 	
 	for (z=0;z!=div_cnt;z++) {
 		for (x=0;x!=div_cnt;x++) {
@@ -803,7 +803,7 @@ void piece_add_grid_mesh(void)
 	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
 	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
 	
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 	
 		// add top and bottom polys
 		

@@ -138,33 +138,16 @@ void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_di
 
 void walk_view_cursor(bool rot_ok)
 {
-		// special check for nodes link changes
-		
-	if ((select_count()==1) && (select_has_type(node_piece))) {
-	
-		if (main_wind_option_down()) {
-			os_set_cut_cursor();
-			return;
-		}
-		
-		if (main_wind_control_down()) {
-			os_set_add_cursor();
-			return;
-		}
-	}
-	
-		// normal cursors
-
     if (main_wind_space_down()) {
         os_set_hand_cursor();
         return;
     }
     if ((main_wind_option_down()) && ((!main_wind_control_down()) && (!main_wind_shift_down()))) {
-        os_set_forward_cursor();
+        os_set_drag_cursor();
         return;
     }
     if ((main_wind_command_down()) && (rot_ok)) {
-        os_set_rotate_cursor();
+        os_set_drag_cursor();
         return;
     }
     

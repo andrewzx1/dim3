@@ -33,8 +33,6 @@ bool					done,map_opened;
 
 file_path_setup_type	file_path_setup;
 
-CCrsrHandle				handcur,dragcur,cutcur,rotatecur,towardcur,forwardcur,resizecur,addcur;
-
 extern bool setup_xml_read(void);
 extern OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
 
@@ -65,36 +63,16 @@ void doloop(void)
       
 ======================================================= */
 
-RGBColor make_rgb(unsigned short r,unsigned short g,unsigned short b)
-{
-	RGBColor	acol;
-	
-	acol.red=r;
-	acol.green=g;
-	acol.blue=b;
-	
-	return(acol);
-}
-
 void doinit(void)
 {
 	RegisterAppearanceClient();
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 	MoreMasterPointers(128);
 	FlushEvents(everyEvent,0);
 
 	HMSetTagDelay(250);
-
-	handcur=GetCCursor(128);
-	dragcur=GetCCursor(129);
-	cutcur=GetCCursor(130);
-	rotatecur=GetCCursor(131);
-	towardcur=GetCCursor(132);
-	forwardcur=GetCCursor(133);
-	resizecur=GetCCursor(134);
-	addcur=GetCCursor(135);
     
 	map_opened=FALSE;
 	
@@ -109,15 +87,6 @@ void doinit(void)
 
 void doshutdown(void)
 {
-	DisposeCCursor(handcur);
-	DisposeCCursor(dragcur);
-	DisposeCCursor(cutcur);
-	DisposeCCursor(rotatecur);
-	DisposeCCursor(towardcur);
-	DisposeCCursor(forwardcur);
-	DisposeCCursor(resizecur);
-	DisposeCCursor(addcur);
-
 	UnregisterAppearanceClient();
 }
 

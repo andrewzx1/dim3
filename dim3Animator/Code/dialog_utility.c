@@ -48,7 +48,7 @@ void dialog_open(WindowRef *wind,char *name)
 	IBNibRef				nib;
 	CFStringRef				cf_str;
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 #ifdef DIALOG_IS_EDITOR
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Editor",kCFStringEncodingMacRoman);

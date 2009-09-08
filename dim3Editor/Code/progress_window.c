@@ -42,7 +42,7 @@ void progress_wind_start(char *txt,int max)
     unsigned char		p_str[256];
     Rect				wbox,box;
 
-    SetCursor(*GetCursor(watchCursor));
+    SetThemeCursor(kThemeWatchCursor);
 
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
     
@@ -79,6 +79,6 @@ void progress_wind_close(void)
     DisposeControl(progress_ctrl);
 	DisposeWindow(progress_wind);
     
-    InitCursor();
+    SetThemeCursor(kThemeArrowCursor);
 }
 

@@ -173,15 +173,26 @@ void palette_polygon_open(int x,int y)
 		
 	dialog_open(&palette_poly_wind,"PolyPalette");
 	MoveWindow(palette_poly_wind,x,y,FALSE);
-
-		// show palette
-		
-	ShowWindow(palette_poly_wind);
 	
 		// install event handler
 		
 	event_upp=NewEventHandlerUPP(palette_poly_event_proc);
 	InstallWindowEventHandler(palette_poly_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	
+		// numeric only controls
+
+	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingOffX,0);
+	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingOffY,0);
+	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingSizeX,0);
+	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingSizeY,0);
+	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingAlpha,0);
+	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingDark,0);
+	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingShiftX,0);
+	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingShiftY,0);
+
+		// show palette
+		
+	ShowWindow(palette_poly_wind);
 }
 
 void palette_polygon_close(int *x,int *y)

@@ -1,4 +1,5 @@
-Compiling dim3 require some open-source components that you will need to supply.  They are listed below:
+Compiling dim3 require some open-source components that you will need to supply.
+They are listed below:
 
 
 For OS X Compile:
@@ -31,3 +32,18 @@ libpng13.dll (for PNG)
 pthreadVC2.dll (for JS)
 SDL.dll (for SDL)
 zlib1.dll (for ZLib)
+
+
+
+============================================================================================
+
+Compiling Order:
+
+On both OS X and Win32, the projects must be compiled in this order:
+
+dim3BaseUtility
+dim3ModelUtility (needs Base)
+dim3MapUtility (needs Base)
+dim3Engine (needs Base, Model, and Map)
+dim3Editor (OS X Only) (needs Base, Model, and Map)
+dim3Animator (OS X Only) (needs Base, Model)

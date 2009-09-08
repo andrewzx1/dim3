@@ -107,7 +107,7 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 	int						x,y,xadd,zadd,yadd;
 	d3pnt					old_pt;
     
-    os_set_forward_cursor();
+    os_set_drag_cursor();
 
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
@@ -206,7 +206,7 @@ void walk_view_mouse_turn(d3pnt *pt)
 	int						x,y;
 	d3pnt					old_pt;
     
-    os_set_rotate_cursor();
+    os_set_drag_cursor();
 
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	

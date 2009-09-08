@@ -118,15 +118,20 @@ void palette_light_open(int x,int y)
 		
 	dialog_open(&palette_light_wind,"LightPalette");
 	MoveWindow(palette_light_wind,x,y,FALSE);
-
-		// show palette
-		
-	ShowWindow(palette_light_wind);
 	
 		// install event handler
 		
 	event_upp=NewEventHandlerUPP(palette_light_event_proc);
 	InstallWindowEventHandler(palette_light_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	
+		// numeric only controls
+
+	palette_control_numeric_only(palette_light_wind,kLightIntensity,0);
+	palette_control_numeric_only(palette_light_wind,kLightExponent,0);
+	
+		// show palette
+		
+	ShowWindow(palette_light_wind);
 }
 
 void palette_light_close(int *x,int *y)

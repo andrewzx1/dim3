@@ -63,7 +63,7 @@ void app_init(void)
 {
 	RegisterAppearanceClient();
 
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 	MoreMasterPointers(128);
 	FlushEvents(everyEvent,0);

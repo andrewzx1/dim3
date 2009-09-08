@@ -249,6 +249,10 @@ void palette_spot_open(int x,int y)
 	
 	tab_event_upp=NewEventHandlerUPP(palette_spot_tab_proc);
 	InstallControlEventHandler(palette_spot_tab,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,palette_spot_wind,NULL);
+	
+		// numeric only controls
+
+	palette_control_numeric_only(palette_spot_wind,kSpotAngle,0);
 
 		// show palette
 		

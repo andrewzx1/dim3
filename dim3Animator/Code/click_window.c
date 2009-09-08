@@ -34,7 +34,6 @@ extern int						cur_mesh,cur_pose,cur_bone,draw_type,shift_x,shift_y,magnify_z,d
 extern float					ang_y,ang_x;
 extern bool						shift_on,rotate_on,size_on,play_animate,drag_sel_on,model_bone_drag_on;
 extern Rect						drag_sel_box;
-extern CCrsrHandle				shift_cursor,rotate_cursor,size_cursor,add_cursor,sub_cursor,bone_drag_cursor;
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
@@ -149,18 +148,18 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 		
 	if ((modifiers&shiftKey)!=0) {
 		select_model_wind_save_sel_state(org_vertex_sel);
-		SetCCursor(add_cursor);
+		SetThemeCursor(kThemePlusCursor);
 		chg_sel=TRUE;
 	}
 	else {
 		if ((modifiers&controlKey)!=0) {
 			select_model_wind_save_sel_state(org_vertex_sel);
-			SetCCursor(sub_cursor);
+			SetThemeCursor(kThemePoofCursor);
 			chg_sel=FALSE;
 		}
 		else {
 			memset(org_vertex_sel,0x0,max_model_vertex);
-			InitCursor();
+			SetThemeCursor(kThemeArrowCursor);
 			chg_sel=TRUE;
 		}
 	}
@@ -216,7 +215,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 		
 	hilite_vertex_rows();
 
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 }
 
 /* =======================================================
@@ -435,7 +434,7 @@ bool drag_bone_model_wind(Point start_pt)
 	
 	undo_set_bone_move(cur_pose,cur_bone);
 	
-	SetCCursor(bone_drag_cursor);
+	SetThemeCursor(kThemeClosedHandCursor);
 		
 	do {
 		TrackMouseLocation(NULL,&pt,&track);
@@ -467,7 +466,7 @@ bool drag_bone_model_wind(Point start_pt)
 
 	} while (track!=kMouseTrackingMouseReleased);
 
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 
 		// redraw model
 		

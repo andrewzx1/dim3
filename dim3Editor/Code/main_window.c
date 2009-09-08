@@ -29,19 +29,19 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern d3pnt			view_pnt;
-extern int				vertex_mode,magnify_factor,
-						txt_palette_y,txt_palette_high;
-extern float			walk_view_y_angle,walk_view_x_angle;
-extern bool				map_opened;
+extern d3pnt					view_pnt;
+extern int						vertex_mode,magnify_factor,
+								txt_palette_y,txt_palette_high;
+extern float					walk_view_y_angle,walk_view_x_angle;
+extern bool						map_opened;
 
-extern map_type			map;
-extern setup_type		setup;
+extern file_path_setup_type		file_path_setup;
 
-extern CCrsrHandle		handcur,dragcur,cutcur,rotatecur,towardcur,forwardcur,resizecur,addcur;
+extern map_type					map;
+extern setup_type				setup;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
-						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer,drag_handle_idx;
+						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer,drag_handle_idx,node_mode;
 bool					select_toggle_mode,dp_auto_texture,dp_liquid,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,dp_area,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
@@ -66,7 +66,24 @@ char					tool_icns[tool_count][64]=
 								{
 									"Tool Move Points",
 									"Tool Move Points Together",
-									"Tool Snap Points"
+									"Tool Snap Points",
+									"Tool Toggle Mode",
+									"Tool Edit Mesh",
+									"Tool Edit Polygons",
+									"Tool Edit Vertexes",
+									"Tool No Grid",
+									"Tool Small Grid",
+									"Tool Medium Grid",
+									"Tool Large Grid",
+									"Tool Combine Meshes",
+									"Tool Split Mesh",
+									"Tool Tesselate Mesh",
+									"Tool Auto-Texture Mesh",
+									"Tool Node Select",
+									"Tool Node Link",
+									"Tool Node Remove Link",
+									"Tool Edit Map Script",
+									"Tool Run Map"
 								};
 								
 char					tool_tooltip_str[tool_count][64]=
@@ -82,10 +99,34 @@ char					tool_tooltip_str[tool_count][64]=
 									"Small Grid\nSwitch Mode with E",
 									"Medium Grid\nSwitch Mode with E",
 									"Large Grid\nSwitch Mode with E",
-									"Combine Meshes","Split Meshes","Tesselate Mesh","Auto-Texture Meshes",
-									"Edit Map Script","Run Map In Engine"
+									"Combine Meshes",
+									"Split Meshes",
+									"Tesselate Mesh",
+									"Auto-Texture Meshes",
+									"Node Selects by Click",
+									"Node Links by Click",
+									"Node Removes Links by Click",
+									"Edit Map Script",
+									"Run Map In Engine"
 								};
-									
+
+char					piece_icns[piece_count][64]=
+								{
+									"Piece Spot",
+									"Piece Light",
+									"Piece Sound",
+									"Piece Particle",
+									"Piece Scenery",
+									"Piece Node",
+									"Piece Mesh",
+									"Piece Mesh UV",
+									"Piece Height Map",
+									"Piece Grid",
+									"Piece Polygon",
+									"Piece Liquid",
+									"Piece Area"
+								};
+								
 char					piece_tooltip_str[piece_count][64]=
 								{
 									"Add Script Spot","Add Light","Add Sound",
@@ -116,12 +157,14 @@ void main_wind_control_tool(int tool_idx)
 			SetControlValue(tool_ctrl[1],0);
 			SetControlValue(tool_ctrl[2],0);
 			break;
+			
 		case 1:
 			vertex_mode=vertex_mode_lock;
 			SetControlValue(tool_ctrl[0],0);
 			SetControlValue(tool_ctrl[1],1);
 			SetControlValue(tool_ctrl[2],0);
 			break;
+			
 		case 2:
 			vertex_mode=vertex_mode_snap;
 			SetControlValue(tool_ctrl[0],0);
@@ -216,14 +259,37 @@ void main_wind_control_tool(int tool_idx)
 			dp_auto_texture=!dp_auto_texture;
 			break;
 			
-			// script and run buttons
+			// node editing
 			
 		case 15:
+			node_mode=node_mode_select;
+			SetControlValue(tool_ctrl[15],1);
+			SetControlValue(tool_ctrl[16],0);
+			SetControlValue(tool_ctrl[17],0);
+			break;
+			
+		case 16:
+			node_mode=node_mode_link;
+			SetControlValue(tool_ctrl[15],0);
+			SetControlValue(tool_ctrl[16],1);
+			SetControlValue(tool_ctrl[17],0);
+			break;
+			
+		case 17:
+			node_mode=node_mode_remove_link;
+			SetControlValue(tool_ctrl[15],0);
+			SetControlValue(tool_ctrl[16],0);
+			SetControlValue(tool_ctrl[17],1);
+			break;
+			
+			// script and run buttons
+			
+		case 18:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_map_script_editor();
 			break;
 			
-		case 16:
+		case 19:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_engine();
 			break;
@@ -413,7 +479,7 @@ void main_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
 
 /* =======================================================
 
-      World Window Events
+      Main Window Events
       
 ======================================================= */
 
@@ -607,6 +673,26 @@ void main_wind_setup(void)
 
 /* =======================================================
 
+      UI Icon Loader
+      
+======================================================= */
+
+IconFamilyHandle main_wind_load_ui_icon(char *name)
+{
+	char						path[1024];
+	FSRef						fsref;
+	IconFamilyHandle			iconfamily;
+
+	file_paths_app(&file_path_setup,path,"Contents/Resources",name,"icns");
+	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
+	
+	ReadIconFromFSRef(&fsref,&iconfamily);
+
+	return(iconfamily);
+}
+
+/* =======================================================
+
       Open & Close Main Window
       
 ======================================================= */
@@ -618,7 +704,6 @@ void main_wind_open(void)
 	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_STENCIL_SIZE,8,AGL_NONE};
 	GDHandle					gdevice;
 	AGLPixelFormat				pf;
-	IconFamilyHandle			iconfamily;
 	ControlButtonContentInfo	icon_info;
 	HMHelpContentRec			tag;
 	EventTypeSpec				wind_events[]={	{kEventClassWindow,kEventWindowDrawContent},
@@ -633,7 +718,7 @@ void main_wind_open(void)
 												{kEventClassKeyboard,kEventRawKeyModifiersChanged},
 												{kEventClassMouse,kEventMouseWheelMoved},
 												{kEventClassControl,kEventControlHit}};
-												
+	
         // open window
         
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
@@ -649,8 +734,7 @@ void main_wind_open(void)
 	
 			// create button
 			
-		iconfamily=(IconFamilyHandle)GetResource('icns',(500+n));
-		IconFamilyToIconSuite(iconfamily,kSelectorAllAvailableData,&tool_icon[n]);
+		IconFamilyToIconSuite(main_wind_load_ui_icon(tool_icns[n]),kSelectorAllAvailableData,&tool_icon[n]);
 		
 		icon_info.contentType=kControlContentIconSuiteHandle;
 		icon_info.u.iconSuite=tool_icon[n];
@@ -672,7 +756,7 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14) || (n==18)) OffsetRect(&box,3,0);
 	}
 	
 		// object combo
@@ -749,8 +833,7 @@ void main_wind_open(void)
 			
 			// create button
 			
-		iconfamily=(IconFamilyHandle)GetResource('icns',(600+n));
-		IconFamilyToIconSuite(iconfamily,kSelectorAllAvailableData,&piece_icon[n]);
+		IconFamilyToIconSuite(main_wind_load_ui_icon(piece_icns[n]),kSelectorAllAvailableData,&piece_icon[n]);
 		
 		icon_info.contentType=kControlContentIconSuiteHandle;
 		icon_info.u.iconSuite=piece_icon[n];
@@ -1853,6 +1936,12 @@ void main_wind_tool_reset(void)
 		// auto-texture
 		
 	SetControlValue(tool_ctrl[14],dp_auto_texture?1:0);
+	
+		// node mode
+		
+	SetControlValue(tool_ctrl[15],(node_mode==node_mode_select)?1:0);
+	SetControlValue(tool_ctrl[16],(node_mode==node_mode_link)?1:0);
+	SetControlValue(tool_ctrl[17],(node_mode==node_mode_remove_link)?1:0);
 }
 
 void main_wind_tool_default(void)
@@ -1862,6 +1951,8 @@ void main_wind_tool_default(void)
 	grid_mode=grid_mode_small;
 	
 	dp_auto_texture=setup.auto_texture;
+	
+	node_mode=node_mode_select;
 	
 	dp_liquid=dp_object=dp_lightsoundparticle=TRUE;
 	dp_node=FALSE;
@@ -2168,52 +2259,27 @@ void os_get_window_box(d3rect *box)
 
 void os_set_arrow_cursor(void)
 {
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 }
 
 void os_set_wait_cursor(void)
 {
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 }
 
 void os_set_hand_cursor(void)
 {
-   SetCCursor(handcur);
+   SetThemeCursor(kThemeOpenHandCursor);
 }
 
 void os_set_drag_cursor(void)
 {
-   SetCCursor(dragcur);
-}
-
-void os_set_rotate_cursor(void)
-{
-   SetCCursor(rotatecur);
-}
-
-void os_set_toward_cursor(void)
-{
-   SetCCursor(towardcur);
-}
-
-void os_set_forward_cursor(void)
-{
-   SetCCursor(forwardcur);
+   SetThemeCursor(kThemeClosedHandCursor);
 }
 
 void os_set_resize_cursor(void)
 {
-   SetCCursor(resizecur);
-}
-
-void os_set_add_cursor(void)
-{
-   SetCCursor(addcur);
-}
-
-void os_set_cut_cursor(void)
-{
-   SetCCursor(cutcur);
+   SetThemeCursor(kThemeResizeUpDownCursor);
 }
 
 bool os_button_down(void)
