@@ -56,9 +56,9 @@ void auto_generate_map(void)
 
 		// run the auto-generate
 		
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 	map_auto_generate(&map,&ag_settings);
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 		// redraw the map
 	

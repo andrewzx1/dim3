@@ -29,7 +29,7 @@ and can be sold or given away.
 // UI sizes
 //
 
-#define tool_count								17
+#define tool_count								20
 #define piece_count								13
 
 #define tool_button_size						36
@@ -114,6 +114,14 @@ and can be sold or given away.
 #define grid_mode_small							1
 #define grid_mode_medium						2
 #define grid_mode_large							3
+
+//
+// node modes
+//
+
+#define node_mode_select						0
+#define node_mode_link							1
+#define node_mode_remove_link					2
 
 //
 // selection types

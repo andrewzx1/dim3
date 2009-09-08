@@ -121,7 +121,7 @@ bool create_binary(void)
 {
 	char			base_path[1024],path[1024];
 	
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 	
 		// base path
 		
@@ -144,7 +144,7 @@ bool create_binary(void)
 	
 	model_save(&model);
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
     
 	return(TRUE);
 }
@@ -153,9 +153,10 @@ bool save_binary(void)
 {
 	bool				ok;
 	
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
+	
 	ok=model_save(&model);
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 	if (!ok) StandardAlert(kAlertCautionAlert,"\pdim3 Animator could not save model.","\pThe disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).",NULL,NULL);
 	
@@ -221,7 +222,7 @@ void new_model_xml(void)
 	
 		// create model
 
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 		
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE);
 	model_new(&model,filename);
@@ -235,11 +236,11 @@ void new_model_xml(void)
 	
 	if (!create_binary()) {
 		windows_end();
-		InitCursor();
+		SetThemeCursor(kThemeArrowCursor);
 		return;
 	}
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 		// finish
 		
@@ -252,20 +253,20 @@ void open_model_xml(void)
 {
 	char		file_name[256];
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 
     if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
 	
 		// open model
 		
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 
 	windows_start();
     
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE);
 	model_open(&model,file_name,TRUE);
     	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 		// finish
 		
@@ -318,7 +319,7 @@ void import_mesh_obj(void)
 	unsigned char	p_err_str[256];
 	bool			found_normals;
     
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	if (!nav_open_file("obj",path)) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
@@ -355,7 +356,7 @@ void import_mesh_lightwave(void)
 	char			path[1024],err_str[256];
 	unsigned char	p_err_str[256];
     
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	if (!nav_open_file("lwo",path)) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
@@ -392,7 +393,7 @@ void import_mesh_c4d_xml(void)
 	unsigned char	p_err_str[256];
 	float			scale;
     
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	if (!nav_open_file("xml",path)) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
@@ -433,13 +434,13 @@ void insert_mesh_dim3_model(void)
 {
 	char			file_name[256];
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 
     if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
 	
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 	
 	insert_model(file_name);
 	
@@ -449,7 +450,7 @@ void insert_mesh_dim3_model(void)
     model_recalc_boxes(&model);
     model_recalc_normals(&model,cur_mesh);
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 	reset_vertex_tab();
 	reset_pose_list();

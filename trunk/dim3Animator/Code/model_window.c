@@ -36,10 +36,37 @@ EventLoopTimerUPP				model_timer_upp;
 ControlRef						tool_ctrl[tool_count];
 IconSuiteRef					tool_icon[tool_count];
 
-char							tool_tooltip_str[tool_count][64]={
-									"Show Textured Model","Show Mesh Only","Show Bones Only","Show Textured Model and Bones Only","Show Mesh and Bones Only",
-									"Always Show First Mesh","Show Model, Shadow, and Hit Boxes","Show Bump-Mapping","Show Normals",
-									"Rotate Bones Mode","Stretch Bones Mode","Play Current Animation"};
+char							tool_icns[tool_count][64]=
+									{
+										"Tool Textured",
+										"Tool Mesh",
+										"Tool Bones",
+										"Tool Texture Bones",
+										"Tool Mesh Bones",
+										"Tool Show First Mesh",
+										"Tool Boxes",
+										"Tool Bump Mapping",
+										"Tool Normals",
+										"Tool Rotate Mode",
+										"Tool Move Mode",
+										"Tool Play"
+									};
+									
+char							tool_tooltip_str[tool_count][64]=
+									{
+										"Show Textured Model",
+										"Show Mesh Only",
+										"Show Bones Only",
+										"Show Textured Model and Bones Only",
+										"Show Mesh and Bones Only",
+										"Always Show First Mesh",
+										"Show Model, Shadow, and Hit Boxes",
+										"Show Bump-Mapping",
+										"Show Normals",
+										"Rotate Bones Mode",
+										"Stretch Bones Mode",
+										"Play Current Animation"
+									};
 
 int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
                         shift_x,shift_y,magnify_z,drag_bone_mode,gl_view_x_sz,gl_view_y_sz,
@@ -51,13 +78,13 @@ bool					play_animate,play_animate_blend,
 						model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
 						model_box_on,model_bump_on,model_normal_on,model_bone_drag_on,model_show_first_mesh;
 Rect					drag_sel_box;
-CCrsrHandle				shift_cursor,rotate_cursor,size_cursor,add_cursor,sub_cursor,bone_drag_cursor;
 AGLContext				ctx;
 
 model_type				model;
 model_draw_setup		draw_setup;
 
-extern bool				fileopen;
+extern bool					fileopen;
+extern file_path_setup_type	file_path_setup;
 
 /* =======================================================
 
@@ -82,12 +109,12 @@ void model_wind_key(char ch,bool up)
 	if (ch==0x20) {
 		if (up) {
 			shift_on=FALSE;
-			InitCursor();
+			SetThemeCursor(kThemeArrowCursor);
 		}
 		else {
 			shift_on=TRUE;
 			rotate_on=size_on=FALSE;
-			SetCCursor(shift_cursor);
+			SetThemeCursor(kThemeOpenHandCursor);
 		}
 		return;
 	}
@@ -98,7 +125,7 @@ void key_modifier_model_wind(unsigned long modifiers)
 	if ((modifiers&cmdKey)!=0) {
 		rotate_on=TRUE;
 		shift_on=size_on=FALSE;
-		SetCCursor(rotate_cursor);
+		SetThemeCursor(kThemeOpenHandCursor);
 		return;
 	}
 	else {
@@ -108,7 +135,7 @@ void key_modifier_model_wind(unsigned long modifiers)
 	if ((modifiers&optionKey)!=0) {
 		size_on=TRUE;
 		shift_on=rotate_on=FALSE;
-		SetCCursor(size_cursor);
+		SetThemeCursor(kThemeResizeUpDownCursor);
 		return;
 	}
 	else {
@@ -117,16 +144,16 @@ void key_modifier_model_wind(unsigned long modifiers)
 	
 	if ((modifiers&shiftKey)!=0) {
 		size_on=shift_on=rotate_on=FALSE;
-		SetCCursor(add_cursor);
+		SetThemeCursor(kThemePlusCursor);
 		return;
 	}
 	if ((modifiers&controlKey)!=0) {
 		size_on=shift_on=rotate_on=FALSE;
-		SetCCursor(sub_cursor);
+		SetThemeCursor(kThemePoofCursor);
 		return;
 	}
 	
-	if (!shift_on) InitCursor();
+	if (!shift_on) SetThemeCursor(kThemeArrowCursor);
 }
 
 void model_wind_reset_modifiers(void)
@@ -143,27 +170,27 @@ void model_wind_reset_modifiers(void)
 void model_wind_cursor(unsigned long modifiers)
 {
 	if (shift_on) {
-		SetCCursor(shift_cursor);
+		SetThemeCursor(kThemeOpenHandCursor);
 		return;
 	}
 	if ((modifiers&cmdKey)!=0) {
-		SetCCursor(rotate_cursor);
+		SetThemeCursor(kThemeOpenHandCursor);
 		return;
 	}
 	if ((modifiers&optionKey)!=0) {
-		SetCCursor(size_cursor);
+		SetThemeCursor(kThemeResizeUpDownCursor);
 		return;
 	}
 	if ((modifiers&shiftKey)!=0) {
-		SetCCursor(add_cursor);
+		SetThemeCursor(kThemePlusCursor);
 		return;
 	}
 	if ((modifiers&controlKey)!=0) {
-		SetCCursor(sub_cursor);
+		SetThemeCursor(kThemePoofCursor);
 		return;
 	}
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 }
 
 /* =======================================================
@@ -639,6 +666,26 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 
 /* =======================================================
 
+      UI Icon Loader
+      
+======================================================= */
+
+IconFamilyHandle main_wind_load_ui_icon(char *name)
+{
+	char						path[1024];
+	FSRef						fsref;
+	IconFamilyHandle			iconfamily;
+
+	file_paths_app(&file_path_setup,path,"Contents/Resources",name,"icns");
+	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
+	
+	ReadIconFromFSRef(&fsref,&iconfamily);
+
+	return(iconfamily);
+}
+
+/* =======================================================
+
       Model Window
       
 ======================================================= */
@@ -649,7 +696,6 @@ void model_wind_open(void)
 	Rect						wbox,box;
 	GLint						attrib[]={AGL_RGBA,AGL_DOUBLEBUFFER,AGL_DEPTH_SIZE,16,AGL_ALL_RENDERERS,AGL_NONE};
 	AGLPixelFormat				pf;
-	IconFamilyHandle			iconfamily;
 	ControlButtonContentInfo	icon_info;
 	HMHelpContentRec			tag;
 	EventTypeSpec	wind_events[]={	{kEventClassWindow,kEventWindowDrawContent},
@@ -686,13 +732,6 @@ void model_wind_open(void)
 	size_on=FALSE;
 	drag_sel_on=FALSE;
 	
-	shift_cursor=GetCCursor(128);
-	rotate_cursor=GetCCursor(129);
-	size_cursor=GetCCursor(130);
-	add_cursor=GetCCursor(131);
-	sub_cursor=GetCCursor(132);
-	bone_drag_cursor=GetCCursor(133);
-	
 		// get gl sizes
 		
 	GetWindowPortBounds(model_wind,&box);
@@ -708,8 +747,7 @@ void model_wind_open(void)
 	
 			// create button
 			
-		iconfamily=(IconFamilyHandle)GetResource('icns',(500+n));
-		IconFamilyToIconSuite(iconfamily,kSelectorAllAvailableData,&tool_icon[n]);
+		IconFamilyToIconSuite(main_wind_load_ui_icon(tool_icns[n]),kSelectorAllAvailableData,&tool_icon[n]);
 		
 		icon_info.contentType=kControlContentIconSuiteHandle;
 		icon_info.u.iconSuite=tool_icon[n];
@@ -820,13 +858,6 @@ void model_wind_close(void)
 		// close window
 
 	DisposeWindow(model_wind);
-
-	DisposeCCursor(shift_cursor);
-	DisposeCCursor(rotate_cursor);
-	DisposeCCursor(size_cursor);
-	DisposeCCursor(add_cursor);
-	DisposeCCursor(sub_cursor);
-	DisposeCCursor(bone_drag_cursor);
 }
 
 /* =======================================================

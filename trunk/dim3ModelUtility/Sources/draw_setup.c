@@ -90,14 +90,19 @@ void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup)
 
 void model_draw_setup_clear(model_type *model,model_draw_setup *draw_setup)
 {
-	int				n;
+	int							n;
+	model_draw_alter_bone_type	*alter_bone;
 	
+		// turn off all blended animations
+		
 	for (n=0;n!=max_model_blend_animation;n++) {
 		draw_setup->poses[n].idx_1=draw_setup->poses[n].idx_2=-1;
 		draw_setup->poses[n].factor=1.0f;
 		draw_setup->poses[n].acceleration=0.0f;
 	}
 	
+		// setup centering
+		
 	if (model!=NULL) {
 		draw_setup->center.x=model->center.x;
 		draw_setup->center.y=model->center.y;
@@ -107,8 +112,21 @@ void model_draw_setup_clear(model_type *model,model_draw_setup *draw_setup)
 		draw_setup->center.x=draw_setup->center.y=draw_setup->center.z=0;
 	}
 	
+		// no full model sways, moves, turns
+		
 	draw_setup->move.x=draw_setup->move.y=draw_setup->move.z=0;
 	draw_setup->ang.x=draw_setup->ang.y=draw_setup->ang.z=0;
 	draw_setup->sway.x=draw_setup->sway.y=draw_setup->sway.z=0;
+	
+		// turn off any bone alters
+		
+	alter_bone=draw_setup->alter_bones;
+	
+	for (n=0;n!=model->nbone;n++) {
+		alter_bone->resize=1.0f;
+		alter_bone->parent_dist_add.x=alter_bone->parent_dist_add.y=alter_bone->parent_dist_add.z=0.0f;
+		alter_bone->rot_add.x=alter_bone->rot_add.y=alter_bone->rot_add.z=0.0f;
+		alter_bone++;
+	}
 }
 

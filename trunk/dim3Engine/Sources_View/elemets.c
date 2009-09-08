@@ -82,6 +82,10 @@ void element_release_control_memory(void)
 					if (element->setup.table.images[k].path[0]!=0x0) bitmap_close(&element->setup.table.images[k].bitmap);
 				}
 				break;
+				
+			case element_type_text_box:
+				if (element->data!=NULL) free(element->data);
+				break;
 		
 		}
 		
@@ -508,7 +512,7 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	element->type=element_type_table;
 	
 	element->setup.table.ncolumn=ncolumn;
-	element->setup.table.busy=FALSE;
+	element->setup.table.busy_count=element->setup.table.busy_total_count=-1;
 	
 	element->x=x;
 	element->y=y;
@@ -609,6 +613,45 @@ void element_color_add(char *str,int value,int id,int x,int y,bool selectable)
 	SDL_mutexV(element_thread_lock);
 }
 
+void element_text_box_add(char *data,int id,int x,int y,int wid,int high)
+{
+	int				sz;
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_text_box;
+	
+	element->x=x;
+	element->y=y;
+	element->wid=wid;
+	element->high=high;
+	
+	element->selectable=TRUE;
+	element->enabled=TRUE;
+	element->hidden=FALSE;
+	
+	element->value=-1;
+	element->offset=0;
+	
+	element->setup.text_box.scroll_up_ok=element->setup.text_box.scroll_down_ok=FALSE;
+	
+	if (data==NULL) {
+		element->data=NULL;
+	}
+	else {
+		sz=strlen(data)+1;
+		element->data=malloc(sz);
+		memmove(element->data,data,sz);
+	}
+	
+	SDL_mutexV(element_thread_lock);
+}
+
 /* =======================================================
 
       Change Elements
@@ -646,12 +689,15 @@ void element_hide(int id,bool hide)
 	if (element!=NULL) element->hidden=hide;
 }
 
-void element_table_busy(int id,bool busy)
+void element_table_busy(int id,int count,int total_count)
 {
 	element_type		*element;
 	
 	element=element_find(id);
-	if (element!=NULL) element->setup.table.busy=busy;
+	if (element!=NULL) {
+		element->setup.table.busy_count=count;
+		element->setup.table.busy_total_count=total_count;
+	}
 }
 
 void element_text_change(int id,char *str)
@@ -682,6 +728,7 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 		case element_type_bitmap:
 		case element_type_table:
 		case element_type_tab:
+		case element_type_text_box:
 			*lft=element->x;
 			*rgt=(*lft)+element->wid;
 			*top=element->y;
@@ -1551,11 +1598,10 @@ void element_click_table(element_type *element,int x,int y)
 	}
 }
 
-void element_draw_table_background_fills(element_type *element,int high,int row_high)
+void element_draw_table_header_fill(element_type *element,int high)
 {
-	int				lft,rgt,top,bot,x,y,top2,bot2,cnt,
-					scroll_high,row_count;
-	d3col			col,col2;
+	int				lft,rgt,top,bot,y;
+	d3col			col2;
 	
 		// header
 		
@@ -1570,54 +1616,6 @@ void element_draw_table_background_fills(element_type *element,int high,int row_
 	
 	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.header,rgt,top,&hud.color.header,rgt,y,&col2,lft,y,&col2,1.0f);
 	view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,bot,&hud.color.header,lft,bot,&hud.color.header,1.0f);
-
-		// scroll bar arrow fills
-		
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	
-	lft=rgt-24;
-	top+=(high+4);
-	bot2=top+24;
-	
-	x=(lft+rgt)>>1;
-	
-	col.r=0.5f;
-	col.g=0.5f;
-	col.b=0.5f;
-	
-	col2.r=0.3f;
-	col2.g=0.3f;
-	col2.b=0.3f;
-	
-	view_draw_next_vertex_object_2D_color_poly(lft,bot2,&col,lft,top,&col,x,top,&col2,x,bot2,&col2,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(x,bot2,&col2,x,top,&col2,rgt,top,&col,rgt,bot2,&col,1.0f);
-	
-	top2=bot-24;
-	
-	view_draw_next_vertex_object_2D_color_poly(lft,bot,&col,lft,top2,&col,x,top2,&col2,x,bot,&col2,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(x,bot,&col2,x,top2,&col2,rgt,top2,&col,rgt,bot,&col,1.0f);
-	
-		// scroll position
-		
-	top+=24;
-	bot-=24;
-		
-	row_count=element_get_table_row_count(element);
-	if (row_count!=0) {
-	
-		scroll_high=(bot-top)/row_count;
-		cnt=((element->high-(high+4))/row_high)-1;
-
-		if (element->offset!=0) top+=(scroll_high*element->offset);
-		if ((element->offset+(cnt+1))<row_count) {
-			bot=top+(scroll_high*(cnt+1));
-		}
-	}
-	
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,1.0f);
-	
-	glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
-	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
 }
 
 void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int row_high,d3col *line_col)
@@ -1815,44 +1813,58 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	}
 }
 
-void element_draw_table(element_type *element,int sel_id)
+void element_draw_table_scrollbar(element_type *element,int high,int row_high,int row_count,bool up_ok,bool down_ok)
 {
-	int				n,x,y,wid,high,cnt,lft,rgt,top,bot,tick,row_high;
-	float			alpha;
-	char			*c;
-	bool			up_ok,down_ok;
-	d3col			col,col2,line_col;
+	int				lft,rgt,top,bot,x,top2,bot2,cnt,
+					scroll_high;
+	d3col			col,col2;
+	
+		// scroll bar arrow fills
+		
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+	lft=rgt-24;
+	top+=high;
+	bot2=top+24;
+	
+	x=(lft+rgt)>>1;
+	
+	col.r=0.5f;
+	col.g=0.5f;
+	col.b=0.5f;
+	
+	col2.r=0.3f;
+	col2.g=0.3f;
+	col2.b=0.3f;
+	
+	view_draw_next_vertex_object_2D_color_poly(lft,bot2,&col,lft,top,&col,x,top,&col2,x,bot2,&col2,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(x,bot2,&col2,x,top,&col2,rgt,top,&col,rgt,bot2,&col,1.0f);
+	
+	top2=bot-24;
+	
+	view_draw_next_vertex_object_2D_color_poly(lft,bot,&col,lft,top2,&col,x,top2,&col2,x,bot,&col2,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(x,bot,&col2,x,top2,&col2,rgt,top2,&col,rgt,bot,&col,1.0f);
+	
+		// scroll position
+		
+	top+=24;
+	bot-=24;
+		
+	if (row_count!=0) {
+	
+		scroll_high=(bot-top)/row_count;
+		cnt=((element->high-high)/row_high)-1;
 
-		// sizes
+		if (element->offset!=0) top+=(scroll_high*element->offset);
+		if ((element->offset+(cnt+1))<row_count) {
+			bot=top+(scroll_high*(cnt+1));
+		}
+	}
 	
-	wid=element->wid-30;
-	high=gl_text_get_char_height(hud.font.text_size_small)+2;
-	row_high=element_get_table_row_high(element);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,1.0f);
 	
-		// get element counts
-		
-	cnt=((element->high-(high+4))/row_high)-1;
-	up_ok=(element->offset!=0);
-	down_ok=((element->offset+(cnt+1))<element_get_table_row_count(element));
-	
-		// header and scroll bar fill
-		
-	element_draw_table_background_fills(element,high,row_high);
-		
-		// outline
-		
 	glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
-	
-	element_get_box(element,&lft,&rgt,&top,&bot);
 	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
-	
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	top+=(high+4);
-	
-	glBegin(GL_LINES);
-	glVertex2i(lft,top);
-	glVertex2i(rgt,top);
-	glEnd();
 	
 		// scrolling lines
 		
@@ -1866,7 +1878,7 @@ void element_draw_table(element_type *element,int sel_id)
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
-	top+=(high+28);
+	top+=(high+24);
 	
 	glBegin(GL_LINES);
 	glVertex2i(lft,top);
@@ -1895,7 +1907,7 @@ void element_draw_table(element_type *element,int sel_id)
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-20;
 	rgt=lft+16;
-	top+=(high+8);
+	top+=(high+4);
 	bot=top+16;
 
 	glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,(up_ok?1.0f:0.1f));
@@ -1940,7 +1952,51 @@ void element_draw_table(element_type *element,int sel_id)
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
+}
+
+void element_draw_table(element_type *element,int sel_id)
+{
+	int				n,x,y,wid,high,cnt,lft,rgt,top,bot,mid,row_high;
+	float			alpha;
+	char			*c;
+	bool			up_ok,down_ok;
+	d3col			col,col2,line_col;
+
+		// sizes
 	
+	wid=element->wid-30;
+	high=gl_text_get_char_height(hud.font.text_size_small)+2;
+	row_high=element_get_table_row_high(element);
+	
+		// get element counts
+		
+	cnt=((element->high-(high+4))/row_high)-1;
+	up_ok=(element->offset!=0);
+	down_ok=((element->offset+(cnt+1))<element_get_table_row_count(element));
+	
+		// header fill
+		
+	element_draw_table_header_fill(element,high);
+	
+		// scrollbar
+		
+	element_draw_table_scrollbar(element,(high+4),row_high,element_get_table_row_count(element),up_ok,down_ok);
+		
+		// outline
+		
+	glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
+	
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
+	
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	top+=(high+4);
+	
+	glBegin(GL_LINES);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glEnd();
+
 		// text positions
 		
 	x=element->x;
@@ -2008,7 +2064,7 @@ void element_draw_table(element_type *element,int sel_id)
 	
 		// busy
 		
-	if (!element->setup.table.busy) return;
+	if (element->setup.table.busy_count==-1) return;
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
@@ -2017,20 +2073,22 @@ void element_draw_table(element_type *element,int sel_id)
 	lft+=10;
 	rgt-=35;
 	
-	wid=rgt-lft;
-
 	col.r=hud.color.hilite.r*0.5f;
 	col.g=hud.color.hilite.g*0.5f;
 	col.b=hud.color.hilite.b*0.5f;
 	
-	tick=(time_get()>>1)%1000;
-	if (tick<500) {
-		x=lft+((wid*tick)/500);
-		view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.hilite,x,top,&col,x,bot,&col,lft,bot,&hud.color.hilite,1.0f);
-	}
-	else {
-		x=lft+((wid*(1000-tick))/500);
-		view_draw_next_vertex_object_2D_color_poly(x,top,&hud.color.hilite,rgt,top,&col,rgt,bot,&col,x,bot,&hud.color.hilite,1.0f);
+	if (element->setup.table.busy_count!=0) {
+	
+		x=rgt;
+		
+		if (element->setup.table.busy_count<element->setup.table.busy_total_count) {
+			x=lft+(((rgt-lft)*element->setup.table.busy_count)/element->setup.table.busy_total_count);
+		}
+
+		mid=(top+bot)>>1;
+
+		view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.base_color_start,x,top,&hud.progress.base_color_start,x,mid,&hud.progress.base_color_end,lft,mid,&hud.progress.base_color_end,1.0f);
+		view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.base_color_end,x,mid,&hud.progress.base_color_end,x,bot,&hud.progress.base_color_start,lft,bot,&hud.progress.base_color_start,1.0f);
 	}
 	
 	glColor4f(0.8f,0.8f,0.8f,1.0f);
@@ -2293,6 +2351,188 @@ void element_draw_color(element_type *element,int sel_id)
 
 /* =======================================================
 
+      Text Box Element
+      
+======================================================= */
+
+void element_click_text_box(element_type *element,int x,int y)
+{
+	int				high,row_high,scroll_high,my;
+	
+		// check for clicking in scroll bar
+
+	if (x<((element->x+element->wid)-24)) return;
+	
+		// get text sizes
+		
+	row_high=gl_text_get_char_height(hud.font.text_size_small);
+	scroll_high=(high-10)/element->high;
+	
+	my=(28+(scroll_high*element->offset))+((scroll_high*(element->setup.text_box.line_count+1))/2);
+	
+			// is up and down OK?
+
+	y-=element->y;
+		
+	if ((y<=my) && (element->setup.text_box.scroll_up_ok)) {
+		element->offset-=scroll_high;
+		if (element->offset<0) element->offset=0;
+	}
+
+	if ((y>=my) && (element->setup.text_box.scroll_down_ok)) {
+		element->offset+=scroll_high;
+	}
+}
+
+void element_draw_text_box(element_type *element)
+{
+	int				lft,rgt,top,bot,x,y,wid,high,idx,last_space_idx,
+					line_count,line_offset;
+	char			*c,str[256];
+	bool			line_break;
+	d3col			col;
+	
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+	high=gl_text_get_char_height(hud.font.text_size_small);
+	
+		// background
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+		
+	col.r=0.0f;
+	col.g=0.0f;
+	col.b=0.0f;
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col,lft,bot,&col,0.2f);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	
+		// scrolling flags
+		
+	element->setup.text_box.scroll_up_ok=(element->offset!=0);
+	element->setup.text_box.scroll_down_ok=FALSE;
+	
+		// any text?
+		
+	if (element->data==NULL) return;
+
+		// draw text
+		
+	x=lft+5;
+	y=element->y+(high+5);
+
+	gl_text_start(hud.font.text_size_small);
+
+	idx=0;
+	last_space_idx=-1;
+	line_count=0;
+	
+	line_offset=element->offset;
+	
+	c=element->data;
+	
+	while (TRUE) {
+	
+			// have we reached the end?
+			
+		if (*c==0x0) {
+			if ((y<bot) && (line_offset==0)) {
+				str[idx]=0x0;
+				gl_text_draw(lft,y,str,tx_left,FALSE,&hud.color.base,1.0f);
+			}
+			line_count++;
+			break;
+		}
+		
+			// check to see if there's a line break
+	
+		line_break=FALSE;
+	
+		if (*c=='\n') {
+			line_break=TRUE;
+		}
+		else {
+			if (*c<0x20) {		// skip all control characters
+				c++;
+				continue;
+			}
+		}
+		
+			// time for a wrap?
+			
+		str[idx]=0x0;
+		
+		wid=gl_text_get_string_width(hud.font.text_size_small,str);
+		
+		if (wid>=(element->wid-30)) {
+			line_break=TRUE;
+			
+			if (last_space_idx!=-1) {
+				str[last_space_idx]=0x0;		// backup past the wrapping text
+				c-=(idx-last_space_idx);
+				idx=last_space_idx;
+			}
+		}
+		
+			// special break if too many characters
+			
+		if (idx==255) line_break=TRUE;
+		
+			// draw or add up line
+		
+		if (line_break) {
+		
+			if ((y<bot) && (line_offset==0)) gl_text_draw(x,y,str,tx_left,FALSE,&hud.color.base,1.0f);
+		
+			idx=0;
+			last_space_idx=-1;
+			
+			line_count++;
+			
+			if (line_offset>0) {
+				line_offset--;
+			}
+			else {
+				y+=high;
+				if (y>=bot) {
+					element->setup.text_box.scroll_down_ok=TRUE;
+				}
+			}
+		}
+		else {
+			str[idx]=*c;
+			
+			if (*c==0x20) last_space_idx=idx;
+			
+			idx++;
+		}
+		
+		c++;
+	}
+
+	gl_text_end();
+	
+	element->setup.text_box.line_count=line_count;
+	
+		// scrollbar
+		
+	if ((element->setup.text_box.scroll_up_ok) || (element->setup.text_box.scroll_down_ok)) {
+		element_draw_table_scrollbar(element,0,high,line_count,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
+	}
+	
+		// outline
+
+	glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
+	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
+}
+
+/* =======================================================
+
       Draw Elements
       
 ======================================================= */
@@ -2385,6 +2625,9 @@ void element_draw_lock(bool cursor_hilite)
 				break;
 			case element_type_color:
 				element_draw_color(element,id);
+				break;
+			case element_type_text_box:
+				element_draw_text_box(element);
 				break;
 				
 		}
@@ -2521,6 +2764,9 @@ int element_click_up_lock(int x,int y)
 			break;
 		case element_type_color:
 			element_click_color(element,x);
+			break;
+		case element_type_text_box:
+			element_click_text_box(element,x,y);
 			break;
 			
 	}

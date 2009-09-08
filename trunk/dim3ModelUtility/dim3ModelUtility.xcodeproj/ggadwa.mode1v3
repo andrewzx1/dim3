@@ -344,12 +344,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>40</integer>
-									<integer>39</integer>
+									<integer>5</integer>
+									<integer>1</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 1}, {267, 696}}</string>
+							<string>{{0, 0}, {267, 696}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -449,9 +450,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26EED438104DCF3800F28657</string>
+				<string>266C5B1410523BB0006FD9D1</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26EED439104DCF3800F28657</string>
+				<string>266C5B1510523BB0006FD9D1</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -572,7 +573,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>273534790.08083397</real>
+	<real>273824688.46999103</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -668,7 +669,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFED80D404F3200F6C42F</string>
-				<string>26EED435104DCF3400F28657</string>
+				<string>266C5AFC10523A81006FD9D1</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

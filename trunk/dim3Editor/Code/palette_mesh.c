@@ -197,6 +197,14 @@ void palette_mesh_open(int x,int y)
 	tab_event_upp=NewEventHandlerUPP(palette_mesh_tab_proc);
 	InstallControlEventHandler(ctrl,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,palette_mesh_wind,NULL);
 
+		// numeric only controls
+
+	palette_control_numeric_only(palette_mesh_wind,kMeshSettingRotX,0);
+	palette_control_numeric_only(palette_mesh_wind,kMeshSettingRotY,0);
+	palette_control_numeric_only(palette_mesh_wind,kMeshSettingRotZ,0);
+	palette_control_numeric_only(palette_mesh_wind,kMeshSendMessageEnterId,0);
+	palette_control_numeric_only(palette_mesh_wind,kMeshSendMessageExitId,0);
+
 		// show palette
 		
 	ShowWindow(palette_mesh_wind);

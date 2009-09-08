@@ -49,6 +49,7 @@ and can be sold or given away.
 #define element_type_table						7
 #define element_type_tab						8
 #define element_type_color						9
+#define element_type_text_box					10
 
 //
 // GUI position mode
@@ -148,8 +149,8 @@ typedef struct		{
 					} element_image_type;
 
 typedef struct		{
-						int						ncolumn,next_image_idx,bitmap_mode;
-						bool					busy;
+						int						ncolumn,next_image_idx,bitmap_mode,
+												busy_count,busy_total_count;
 						element_column_type		cols[max_element_column];
 						element_image_type		images[element_table_max_image];
 					} element_table_type;
@@ -159,12 +160,18 @@ typedef struct		{
 						char					name[max_element_tab][name_str_len];
 					} element_tab_type;
 
+typedef struct		{
+						int						line_count;
+						bool					scroll_up_ok,scroll_down_ok;
+					} element_text_box_type;
+
 typedef union		{
 						element_button_type		button;
 						element_text_type		text;
 						element_slider_type		slider;
 						element_table_type		table;
 						element_tab_type		tab;
+						element_text_box_type	text_box;
 					} element_setup_type;
 
 typedef struct		{

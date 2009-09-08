@@ -36,8 +36,9 @@ and can be sold or given away.
 #include "video.h"
 #include "sounds.h"
 
-#define join_pane_lan					0
-#define join_pane_internet				1
+#define join_pane_news					0
+#define join_pane_lan					1
+#define join_pane_internet				2
 
 #define join_tab_id						0
 
@@ -46,6 +47,8 @@ and can be sold or given away.
 #define join_button_rescan_id			3
 #define join_table_id					4
 #define join_status_id					5
+
+#define join_news_id					6
 
 extern void intro_open(void);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
@@ -66,7 +69,6 @@ SDL_Thread					*join_thread,*join_thread_accept;
 SDL_mutex					*join_thread_lock;
 
 int							join_count,join_start_tick_local;
-bool						join_list_done;
 join_server_info			join_list[max_setup_network_host];
 			
 /* =======================================================
@@ -104,13 +106,19 @@ char* join_create_list(void)
 	return(row_data);
 }
 
+void join_ping_thread_done(void)
+{
+	element_table_busy(join_table_id,-1,-1);
+	element_enable(join_button_rescan_id,TRUE);
+}
+
 /* =======================================================
 
-      Join Ping Local Threads
+      Join Ping LAN Threads
       
 ======================================================= */
 
-int join_ping_thread_local_accept_read(void *arg)
+int join_ping_thread_lan_accept_read(void *arg)
 {
 	int					msec;
 	unsigned char		data[net_max_msg_size];
@@ -167,7 +175,7 @@ int join_ping_thread_local_accept_read(void *arg)
 	return(0);
 }
 
-int join_ping_thread_local_accept(void *arg)
+int join_ping_thread_lan_accept(void *arg)
 {
 	d3socket			broadcast_reply_sock,sock;
 	socklen_t			addr_len;
@@ -185,15 +193,15 @@ int join_ping_thread_local_accept(void *arg)
 		
 			// spawn a thread to deal with replies
 			
-		join_thread_accept=SDL_CreateThread(join_ping_thread_local_accept_read,(void*)sock);
+		join_thread_accept=SDL_CreateThread(join_ping_thread_lan_accept_read,(void*)sock);
 	}
 
 	return(0);
 }
 
-int join_ping_thread_local(void *arg)
+int join_ping_thread_lan(void *arg)
 {
-	int			count;
+	int			count,count_tenth_sec;
 	char		ip_name[256],ip_resolve[256],err_str[256];
 	d3socket	broadcast_reply_sock;
 	
@@ -210,19 +218,19 @@ int join_ping_thread_local(void *arg)
 	net_socket_blocking(broadcast_reply_sock,TRUE);
 
 	if (!net_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) {
-		join_list_done=TRUE;
+		join_ping_thread_done();
 		return(0);
 	}
 	
 	if (listen(broadcast_reply_sock,32)!=0) {
 		net_close_socket(&broadcast_reply_sock);
-		join_list_done=TRUE;
+		join_ping_thread_done();
 		return(0);
 	}
 
 		// run thread and wait for accepts to start
 		
-	join_thread_accept=SDL_CreateThread(join_ping_thread_local_accept,(void*)broadcast_reply_sock);
+	join_thread_accept=SDL_CreateThread(join_ping_thread_lan_accept,(void*)broadcast_reply_sock);
 	
 		// send broadcast to all network nodes
 		// asking for connections from hosts
@@ -230,35 +238,42 @@ int join_ping_thread_local(void *arg)
 	join_start_tick_local=time_get();
 		
 	if (net_udp_send_broadcast(ip_resolve,net_port_host_broadcast)) {
+	
+		count=0;
+		count_tenth_sec=client_timeout_wait_seconds*10;
 		
-		count=client_timeout_wait_seconds;
-		count*=1000;
+		while ((count<count_tenth_sec) && (!join_thread_quit)) {
 		
-		while ((count>0) && (!join_thread_quit)) {
-			usleep(1000);
-			count--;
+			usleep(100000);
+			count++;
+			
+			element_table_busy(join_table_id,count,count_tenth_sec);
 		}
 		
 	}
+	
+	element_table_busy(join_table_id,1,1);
+	
+		// reset the UI and buttons
+		
+	join_ping_thread_done();
 	
 		// close the socket to cancel the accept and
 		// join the thread to wait for end
 		
 	net_close_socket(&broadcast_reply_sock);
 	SDL_WaitThread(join_thread_accept,NULL);
-	
-	join_list_done=TRUE;
 
 	return(0);
 }
 
 /* =======================================================
 
-      Join Ping Network Threads
+      Join Ping Internet Threads
       
 ======================================================= */
 
-int join_ping_thread_network(void *arg)
+int join_ping_thread_internet(void *arg)
 {
 	int							idx,player_count,player_max_count,ping_msec;
 	char						status[32],host_name[name_str_len],
@@ -312,7 +327,9 @@ int join_ping_thread_network(void *arg)
 		idx++;
 	}
 	
-	join_list_done=TRUE;
+		// reset the UI and buttons
+		
+	join_ping_thread_done();
 	
 	return(0);
 }
@@ -333,7 +350,7 @@ void join_ping_thread_start(void)
 		// table is busy
 		
 	element_set_table_data(join_table_id,NULL);
-	element_table_busy(join_table_id,TRUE);
+	element_table_busy(join_table_id,0,1);
 	
 		// table update locks
 		
@@ -341,21 +358,14 @@ void join_ping_thread_start(void)
 
 		// start pinging hosts
 		
-	join_list_done=FALSE;
 	join_thread_started=TRUE;
 	
 	if (element_get_value(join_tab_id)==join_pane_lan) {
-		join_thread=SDL_CreateThread(join_ping_thread_local,NULL);
+		join_thread=SDL_CreateThread(join_ping_thread_lan,NULL);
 	}
 	else {
-		join_thread=SDL_CreateThread(join_ping_thread_network,NULL);
+		join_thread=SDL_CreateThread(join_ping_thread_internet,NULL);
 	}
-}
-
-void join_ping_thread_idle(void)
-{
-	element_table_busy(join_table_id,(!join_list_done));
-	element_enable(join_button_rescan_id,join_list_done);
 }
 
 void join_ping_thread_end(void)
@@ -371,50 +381,43 @@ void join_ping_thread_end(void)
 
 /* =======================================================
 
-      Join Operations
+      Join Panes
       
 ======================================================= */
 
-void join_open(bool local)
+void join_news_pane(void)
 {
-	int						x,y,yadd,wid,high,padding,tab_idx,
-							tab_list_wid,tab_pane_high;
-	char					tab_list[][32]={"News","LAN","Internet"};
+	int			x,y,wid,high;
+	
+		// show and hide proper elements
+		
+	element_hide(join_button_rescan_id,TRUE);
+	element_enable(join_button_join_id,FALSE);
+	element_text_change(join_status_id,"");
+
+		// news
+		
+	x=(int)(((float)hud.scale_x)*0.03f);
+	y=(int)(((float)hud.scale_y)*0.15f);
+
+	wid=hud.scale_x-(x*2);
+	high=(int)(((float)hud.scale_y)*0.83f)-y;
+
+	element_text_box_add(net_get_news(),join_news_id,x,y,wid,high);
+}
+
+void join_lan_internet_pane(bool lan)
+{
+	int						x,y,wid,high;
 	element_column_type		cols[4];
-	
-		// get the project hash and news
 
-	net_create_project_hash();
-	net_load_news();
-	
-		// setup gui
+		// show and hide proper elements
 		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	element_hide(join_button_rescan_id,FALSE);
+	element_enable(join_button_rescan_id,FALSE);
+	element_enable(join_button_join_id,FALSE);
+	element_text_change(join_status_id,"");
 	
-		// start with first tab
-		
-	join_tab_value=0;
-	join_thread_started=FALSE;
-
-		// controls
-
-	element_clear();
-	
-		// tabs
-		
-	padding=element_get_padding();
-	
-	wid=hud.scale_x;
-	yadd=(int)(((float)hud.scale_y)*0.015f);
-	high=(int)(((float)hud.scale_y)*0.065f);
-	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
-	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
-	
-	tab_idx=0;
-	if (hud.net_news.host[0]==0x0) tab_idx=1;
-	
-	element_tab_add((char*)(tab_list[tab_idx]),join_tab_value,join_tab_id,(3-tab_idx),0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
-
 		// hosts table
 		
 	x=(int)(((float)hud.scale_x)*0.03f);
@@ -433,8 +436,45 @@ void join_open(bool local)
 	cols[3].percent_size=0.8f;
 
 	element_table_add(cols,NULL,join_table_id,4,x,y,wid,high,element_table_bitmap_data);
-	element_table_busy(join_table_id,TRUE);
+	element_table_busy(join_table_id,0,1);
+
+		// start the thread to build the table
+		
+	join_ping_thread_start();
+}
+
+void join_create_pane(void)
+{
+	int						x,y,yadd,wid,high,padding,tab_idx,pane,
+							tab_list_wid,tab_pane_high;
+	char					tab_list[][32]={"News","LAN","Internet"};
 	
+		// turn off any scanning threads
+		
+	join_ping_thread_end();
+
+		// controls
+
+	element_clear();
+	
+		// tabs
+		
+	padding=element_get_padding();
+	
+	wid=hud.scale_x;
+	yadd=(int)(((float)hud.scale_y)*0.015f);
+	high=(int)(((float)hud.scale_y)*0.065f);
+	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
+	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
+	
+	tab_idx=0;
+	if (hud.net_news.host[0]==0x0) {
+		tab_idx=1;
+		if (join_tab_value==join_pane_news) join_tab_value=join_pane_lan;
+	}
+	
+	element_tab_add((char*)(tab_list[tab_idx]),join_tab_value,join_tab_id,(3-tab_idx),0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
+
 		// status
 
 	padding=element_get_padding();
@@ -451,25 +491,62 @@ void join_open(bool local)
 	wid=(int)(((float)hud.scale_x)*0.2f);
 
 	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,wid,high,element_pos_left,element_pos_bottom);
-	element_enable(join_button_rescan_id,FALSE);
 	
 	x=hud.scale_x-padding;
 	wid=(int)(((float)hud.scale_x)*0.1f);
 
 	element_button_text_add("Join",join_button_join_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-	element_enable(join_button_join_id,FALSE);
 
 	x=element_get_x_position(join_button_join_id)-padding;
 
 	element_button_text_add("Cancel",join_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 
+		// specific pane controls
+		
+	pane=element_get_value(join_tab_id);
+		
+	switch (pane) {
+		case join_pane_news:
+			join_news_pane();
+			break;
+		case join_pane_lan:
+			join_lan_internet_pane(TRUE);
+			break;
+		case join_pane_internet:
+			join_lan_internet_pane(FALSE);
+			break;
+	}
+}
+
+/* =======================================================
+
+      Join Operations
+      
+======================================================= */
+
+void join_open(bool local)
+{
+		// get the project hash and news
+
+	net_create_project_hash();
+	net_load_news();
+	
+		// setup gui
+		
+	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	
+		// start with first tab
+		
+	join_tab_value=join_pane_news;
+	join_thread_started=FALSE;
+	
+		// create panes
+		
+	join_create_pane();
+
 		// in join thread
 		
 	server.state=gs_join;
-
-		// start ping thread
-
-	join_ping_thread_start();
 }
 
 void join_close(bool stop_music)
@@ -631,9 +708,8 @@ void join_click(void)
 	switch (id) {
 			
 		case join_tab_id:
-			element_enable(join_button_rescan_id,FALSE);
-			join_ping_thread_end();
-			join_ping_thread_start();
+			join_tab_value=element_get_value(join_tab_id);
+			join_create_pane();
 			return;
 	
 		case join_button_join_id:
@@ -666,13 +742,6 @@ void join_click(void)
 
 void join_run(void)
 {
-		// idle the ping thread to check if pinging
-		// is finished
-		
-	join_ping_thread_idle();
-	
-		// drawing and clicking
-		
 	gui_draw(1.0f,TRUE);
 	join_click();
 }

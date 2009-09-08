@@ -112,6 +112,14 @@ void palette_sound_open(int x,int y)
 		
 	event_upp=NewEventHandlerUPP(palette_sound_event_proc);
 	InstallWindowEventHandler(palette_sound_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	
+		// numeric only controls
+
+	palette_control_numeric_only(palette_sound_wind,kSoundPitch,0);
+
+		// show palette
+		
+	ShowWindow(palette_sound_wind);
 }
 
 void palette_sound_close(int *x,int *y)

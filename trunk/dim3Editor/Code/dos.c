@@ -193,7 +193,7 @@ bool file_open_map(void)
 	
 		// open the map
 		
-	SetCursor(*GetCursor(watchCursor));
+	SetThemeCursor(kThemeWatchCursor);
 	
 	main_wind_open();
 	main_wind_set_title(file_name);
@@ -202,7 +202,7 @@ bool file_open_map(void)
 	
 	ok=map_open(&map,file_name,FALSE);
 
-    InitCursor();
+    SetThemeCursor(kThemeArrowCursor);
 	
 	if (!ok) {
 		close_windows();
@@ -256,7 +256,7 @@ void file_close_map(void)
 {
 	if (!map_opened) return;
 	
-	InitCursor();
+	SetThemeCursor(kThemeArrowCursor);
 	map_close(&map);
 	
 	map_opened=FALSE;

@@ -110,15 +110,20 @@ void palette_particle_open(int x,int y)
 		
 	dialog_open(&palette_particle_wind,"ParticlePalette");
 	MoveWindow(palette_particle_wind,x,y,FALSE);
-
-		// show palette
-		
-	ShowWindow(palette_particle_wind);
 	
 		// install event handler
 		
 	event_upp=NewEventHandlerUPP(palette_particle_event_proc);
 	InstallWindowEventHandler(palette_particle_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+
+		// numeric only controls
+
+	palette_control_numeric_only(palette_particle_wind,kParticleSpawnTick,0);
+	palette_control_numeric_only(palette_particle_wind,kParticleSlopTick,0);
+
+		// show palette
+		
+	ShowWindow(palette_particle_wind);
 }
 
 void palette_particle_close(int *x,int *y)

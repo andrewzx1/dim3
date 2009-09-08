@@ -164,6 +164,14 @@ void palette_liquid_open(int x,int y)
 	tab_event_upp=NewEventHandlerUPP(palette_liquid_tab_proc);
 	InstallControlEventHandler(palette_liquid_tab,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,palette_liquid_wind,NULL);
 
+		// numeric only controls
+
+	palette_control_numeric_only(palette_liquid_wind,kLiquidHarm,0);
+	palette_control_numeric_only(palette_liquid_wind,kLiquidDrownTick,0);
+	palette_control_numeric_only(palette_liquid_wind,kLiquidDrownHarm,0);
+	palette_control_numeric_only(palette_liquid_wind,kLiquidTintAlpha,0);
+	palette_control_numeric_only(palette_liquid_wind,kLiquidDepth,0);
+
 		// show palette
 		
 	ShowWindow(palette_liquid_wind);
