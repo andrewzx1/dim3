@@ -1100,8 +1100,9 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 	int						n;
 	float					hit_t;
 	bool					hits;
-	d3pnt					*pt,*pp,
+	d3pnt					*pt,*pp,*sp,*hp,
 							plane_vp[8];
+	d3vct					*vp;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	
@@ -1125,11 +1126,23 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 	
 		// run the ray array
 		
-	hits=TRUE;
+	hits=FALSE;
+
+	sp=spt;
+	hp=hpt;
+	vp=vct;
 
 	for (n=0;n!=cnt;n++) {
-		hit_t=ray_trace_plane(&spt[n],&vct[n],&hpt[n],poly->ptsz,plane_vp);
-		hits=hits&&((hit_t>=0.0f) && (hit_t<=1.0f));
+		hp->x=sp->x;
+		hp->y=sp->y;
+		hp->z=sp->z;
+
+		hit_t=ray_trace_plane(sp,vp,hp,poly->ptsz,plane_vp);
+		hits=hits||((hit_t>=0.0f) && (hit_t<=1.0f));
+
+		sp++;
+		hp++;
+		vp++;
 	}
 
 	return(hits);

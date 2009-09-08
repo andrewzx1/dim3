@@ -94,17 +94,15 @@ shadow_render_type		shadow_renders[max_shadow_render];
 
 bool shadow_initialize(void)
 {
-	int					n,sz;
+	int					n;
 	shadow_render_type	*shad;
 
 		// memory for ray tracing lists
 		
-	sz=sizeof(d3pnt)*shadow_max_ray_trace_vertexes;
-
-	shadow_spt=(d3pnt*)malloc(sz);
+	shadow_spt=(d3pnt*)malloc(sizeof(d3pnt)*shadow_max_ray_trace_vertexes);
 	if (shadow_spt==NULL) return(FALSE);
 
-	shadow_hpt=(d3pnt*)malloc(sz);
+	shadow_hpt=(d3pnt*)malloc(sizeof(d3pnt)*shadow_max_ray_trace_vertexes);
 	if (shadow_hpt==NULL) return(FALSE);
 	
 	shadow_vct=(d3vct*)malloc(sizeof(d3vct)*shadow_max_ray_trace_vertexes);
@@ -257,6 +255,7 @@ shadow_render_type* shadow_create_new_render(int item_type,int item_idx,d3pnt *p
 		shadow_replace_idx++;
 		if (shadow_replace_idx>=max_shadow_render) shadow_replace_idx=0;
 	}
+
 		// setup items
 
 	shad=&shadow_renders[idx];
@@ -729,7 +728,7 @@ void shadow_render_generic(shadow_render_type *shad)
       
 ======================================================= */
 
-void shadow_render_prepate_bounds_check(poly_pointer_type *poly_ptr,d3pnt *min,d3pnt *max)
+void shadow_render_prepare_bounds_check(poly_pointer_type *poly_ptr,d3pnt *min,d3pnt *max)
 {
 	int						sz;
 	map_mesh_poly_type		*poly;
@@ -826,8 +825,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	if (shad!=NULL) {
 
 			// no light change or animating, just redraw setup
-
-		if ((!light_changed) && (draw->animations[0].mode!=am_playing)) {
+		if (!light_changed) {
 			shadow_render_generic(shad);
 			return;
 		}
@@ -837,7 +835,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	}
 	
 		// find all polys the shadow ray hits
-		
+
 	poly_count=shadow_build_poly_set_model(mdl,draw);
 	if (poly_count==0) {
 		shadow_render_free(shad);
@@ -908,7 +906,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 		
 			// setup bounding eliminations
 		
-		shadow_render_prepate_bounds_check(&shadow_poly_ptrs[k],&bound_min,&bound_max);
+		shadow_render_prepare_bounds_check(&shadow_poly_ptrs[k],&bound_min,&bound_max);
 
 			// create the index object
 			// skip triangles with no collisions
@@ -918,7 +916,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 
 		for (n=0;n!=mdl->nmesh;n++) {
 			if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
-		
+
 			mesh=&mdl->meshes[n];
 			trig=mesh->trigs;
 			
@@ -950,7 +948,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 			// if no trigs to draw, skip this poly
 
 		if (trig_count==0) continue;
-			
+
 			// check to see if we are running out of vertexes
 			
 		if ((vertex_offset+ray_count)>=shadow_max_vertexes) {
@@ -1104,7 +1102,7 @@ void shadow_render_mesh(int mesh_idx)
 		
 			// setup bounding eliminations
 		
-		shadow_render_prepate_bounds_check(&shadow_poly_ptrs[k],&bound_min,&bound_max);
+		shadow_render_prepare_bounds_check(&shadow_poly_ptrs[k],&bound_min,&bound_max);
 
 			// create the index object
 			// break polygons up into triangles so we
