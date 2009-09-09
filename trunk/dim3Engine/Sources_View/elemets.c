@@ -1618,24 +1618,25 @@ void element_draw_table_header_fill(element_type *element,int high)
 	view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,bot,&hud.color.header,lft,bot,&hud.color.header,1.0f);
 }
 
-void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int row_high,d3col *line_col)
+void element_draw_table_line_lines(element_type *element)
 {
-	int			n,cx,lx,ty,by;
+	int			n,x,ty,by;
+	float		f_wid;
 	
-	glColor4f(line_col->r,line_col->g,line_col->b,1.0f);
+	x=element->x;
+	f_wid=(float)(element->wid-30);
 
-	cx=x;
+	ty=element->y;
+	by=ty+element->high;
+
+	glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
 	
 	for (n=1;n<element->setup.table.ncolumn;n++) {
-		cx+=(int)(element->setup.table.cols[n-1].percent_size*(float)wid);
-	
-		lx=cx;
-		ty=y;
-		by=y+row_high;
+		x+=(int)(element->setup.table.cols[n-1].percent_size*f_wid);
 		
 		glBegin(GL_LINES);
-		glVertex2i(lx,ty);
-		glVertex2i(lx,by);
+		glVertex2i(x,ty);
+		glVertex2i(x,by);
 		glEnd();
 	}
 }
@@ -1960,7 +1961,7 @@ void element_draw_table(element_type *element,int sel_id)
 	float			alpha;
 	char			*c;
 	bool			up_ok,down_ok;
-	d3col			col,col2,line_col;
+	d3col			col,col2;
 
 		// sizes
 	
@@ -2004,8 +2005,6 @@ void element_draw_table(element_type *element,int sel_id)
 	
 		// header
 		
-	line_col.r=line_col.g=line_col.b=0.8f;
-	element_draw_table_line_lines(element,x,y,wid,high,&line_col);
 	element_draw_table_line_header(element,x,y,wid,high);
 	
 		// items
@@ -2026,19 +2025,16 @@ void element_draw_table(element_type *element,int sel_id)
 				col2.r=col.r*0.5f;
 				col2.g=col.g*0.5f;
 				col2.b=col.b*0.5f;
-				line_col.r=line_col.g=line_col.b=0.0f;
 				alpha=0.75f;
 			}
 			else {
 				if (((n+element->offset)&0x1)==0) {
 					col.r=col.g=col.b=0.0f;
 					col2.r=col2.g=col2.b=0.0f;
-					line_col.r=line_col.g=line_col.b=0.5f;
 				}
 				else {
 					col.r=col.g=col.b=0.35f;
 					col2.r=col2.g=col2.b=0.35f;
-					line_col.r=line_col.g=line_col.b=0.0f;
 				}
 				alpha=0.3f;
 			}
@@ -2052,15 +2048,18 @@ void element_draw_table(element_type *element,int sel_id)
 			
 			view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,alpha);
 			
-				// table line
+				// table line data
 				
-			element_draw_table_line_lines(element,x,y,wid,row_high,&line_col);
 			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&hud.color.base,c);
 			
 			c+=128;
 			y+=row_high;
 		}
 	}
+
+		// table lines
+
+	element_draw_table_line_lines(element);
 	
 		// busy
 		
@@ -2365,6 +2364,7 @@ void element_click_text_box(element_type *element,int x,int y)
 	
 		// get text sizes
 		
+	high=gl_text_get_char_height(hud.font.text_size_small);
 	row_high=gl_text_get_char_height(hud.font.text_size_small);
 	scroll_high=(high-10)/element->high;
 	

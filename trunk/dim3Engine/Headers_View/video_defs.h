@@ -29,49 +29,79 @@ and can be sold or given away.
 // vertex objects
 //
 
-#define view_vertex_object_count				8
+#define view_vertex_object_count						8
 
 //
 // back renderers
 //
 
-#define back_render_texture_pixel_size			256
+#define back_render_texture_pixel_size					256
 
 //
 // shadows
 //
 
+#define max_shadow_render								24
+#define shadow_max_trigs								10240
+#define shadow_max_vertexes								10240
+#define shadow_max_polys								128
+#define shadow_max_ray_trace_vertexes					10240
+
+typedef struct			{
+							int							type,idx;
+							d3pnt						pnt;
+						} shadow_render_item_type;
+
+typedef struct			{
+							double						intensity;
+							d3pnt						pnt;
+							d3col						col;
+						} shadow_render_light_type;
+
+typedef struct			{
+							int							start_idx,count_idx;
+							poly_pointer_type			ptr;
+						} shadow_render_poly_type;
+
+typedef struct			{
+							int							npoly,nindex,nvertex;
+							unsigned short				*indexes;
+							float						*vp,*cp;
+							shadow_render_item_type		cur_item;
+							shadow_render_light_type	cur_light;
+							shadow_render_poly_type		*polys;
+						} shadow_render_type;
 
 //
 // screen sizes
 //
 
-#define max_screen_size							64
+#define max_screen_size									64
 
 typedef struct		{
-						int						wid,high;
+						int								wid,high;
 					} screen_size_type;
 					
 //
 // render info
 //
  
-#define max_fps									100
+#define max_fps											100
 
 typedef struct		{
-						int						view_x,view_y,
-												monitor_x_sz,monitor_y_sz,
-												monitor_refresh_rate,
-												texture_unit_count,texture_max_size,
-												nscreen_size;
-						char					name[64],ext_string[8192];
-						screen_size_type		screen_sizes[max_screen_size];
+						int								view_x,view_y,
+														monitor_x_sz,monitor_y_sz,
+														monitor_refresh_rate,
+														texture_unit_count,texture_max_size,
+														nscreen_size;
+						char							name[64],ext_string[8192];
+						screen_size_type				screen_sizes[max_screen_size];
 					} render_info_type;
 
 //
 // fonts
 //
 
-#define tx_left									0
-#define tx_center								1
-#define tx_right								2
+#define tx_left											0
+#define tx_center										1
+#define tx_right										2
