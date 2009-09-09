@@ -149,7 +149,7 @@ void read_settings_particle(void)
         tag=xml_findfirstchild("Trail",particle_tag);
         if (tag!=-1) {
             particle->trail_count=xml_get_attribute_int(tag,"count");
-            particle->trail_step=xml_get_attribute_int(tag,"step");
+            particle->trail_step=xml_get_attribute_float(tag,"step");
             particle->reduce_pixel_fact=xml_get_attribute_float(tag,"reduce");
         }
 		

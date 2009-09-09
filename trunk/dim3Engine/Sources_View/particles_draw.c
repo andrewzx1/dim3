@@ -125,10 +125,10 @@ void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
       
 ======================================================= */
 
-int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *mat_x,matrix_type *mat_y,float gravity,int count,int particle_count,particle_piece_type *pps,float gx,float gy,float g_size)
+int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *mat_x,matrix_type *mat_y,float gravity,float f_count,int particle_count,particle_piece_type *pps,float gx,float gy,float g_size)
 {
 	int					n,k;
-	float				fx,fy,fz,f_count,px[4],py[4],pz[4];
+	float				fx,fy,fz,px[4],py[4],pz[4];
 	float				*pv,*pt;
 	matrix_type			rot_x_mat,rot_z_mat,rot_y_mat;
 	
@@ -157,8 +157,6 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 	
 	pv=vertex_ptr+(idx*3);
 	pt=vertex_ptr+(nvertex*3)+(idx*2);
-	
-	f_count=(float)count;
 	
 	for (n=0;n!=particle_count;n++) {
 	
@@ -239,9 +237,8 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 void particle_draw(effect_type *effect,int count)
 {
 	int						i,idx,particle_count,nvertex,
-							ntrail,trail_step,mx,mz,my,
-							pixel_dif;
-	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],
+							ntrail,mx,mz,my,pixel_dif;
+	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],trail_step,
 							alpha,alpha_dif,color_dif,f_count,f_tick;
 	float					*vertex_ptr;
 	d3ang					*rot_ang,rang;
@@ -367,7 +364,9 @@ void particle_draw(effect_type *effect,int count)
 
 	particle_count=particle->count;
 	ntrail=particle->trail_count+1;
+	
 	trail_step=particle->trail_step;
+	f_count=(float)count;
 		
 	idx=0;
 			
@@ -379,12 +378,13 @@ void particle_draw(effect_type *effect,int count)
 
 			// draw pixels
 
-		idx=particle_fill_array_quad_single(vertex_ptr,idx,nvertex,mx,my,mz,rot_ang,pixel_sz,&pixel_mat_x,&pixel_mat_y,gravity,count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
+		idx=particle_fill_array_quad_single(vertex_ptr,idx,nvertex,mx,my,mz,rot_ang,pixel_sz,&pixel_mat_x,&pixel_mat_y,gravity,f_count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
 
 			// reduce pixel sizes and counts for trails
 			
 		pixel_sz=pixel_sz*particle->reduce_pixel_fact;
-		count-=trail_step;
+		f_count-=trail_step;
+		
 		if ((count<0) || (pixel_sz<=0)) break;
 	}
 
