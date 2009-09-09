@@ -1055,13 +1055,13 @@ typedef struct		{
 					} particle_piece_type;
 
 typedef struct		{
-						int						image_idx,count,trail_count,trail_step,
+						int						image_idx,count,trail_count,
 												spread_offset,life_msec,
 												start_pixel_size,end_pixel_size,
 												current_variation_idx;
 						float					start_gravity,gravity_add,
 												start_alpha,end_alpha,reduce_pixel_fact,
-												ambient_factor;
+												trail_step,ambient_factor;
 						char					name[name_str_len],bitmap_name[name_str_len];
 						bool					reverse,blend_add,globe,team_tint;
 						d3pnt					pt;
