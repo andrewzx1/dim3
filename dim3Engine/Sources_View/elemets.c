@@ -1648,7 +1648,7 @@ void element_draw_table_line_header(element_type *element,int x,int y,int wid,in
 	
 	col.r=col.g=col.b=0.0f;
 
-	y+=(row_high>>1);
+	y+=((row_high>>1)-1);
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
 		gl_text_start(hud.font.text_size_small);
@@ -1727,7 +1727,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	char			*c,*c2,txt[256];
 	d3col			col,col2;
 
-	dy=y+(row_high>>1);
+	dy=y+((row_high>>1)-1);
 	
 	c=data;
 	
@@ -1814,9 +1814,9 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	}
 }
 
-void element_draw_table_scrollbar(element_type *element,int high,int row_high,int row_count,bool up_ok,bool down_ok)
+int element_draw_table_scrollbar(element_type *element,int high,int row_high,int row_count,bool up_ok,bool down_ok)
 {
-	int				lft,rgt,top,bot,x,top2,bot2,cnt,
+	int				lft,rgt,top,bot,x,top2,bot2,cnt,pos_my,
 					scroll_high;
 	d3col			col,col2;
 	
@@ -1866,6 +1866,8 @@ void element_draw_table_scrollbar(element_type *element,int high,int row_high,in
 	
 	glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
 	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
+	
+	pos_my=(top+bot)/2;
 	
 		// scrolling lines
 		
@@ -1953,6 +1955,8 @@ void element_draw_table_scrollbar(element_type *element,int high,int row_high,in
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
+	
+	return(pos_my);
 }
 
 void element_draw_table(element_type *element,int sel_id)
@@ -2356,31 +2360,30 @@ void element_draw_color(element_type *element,int sel_id)
 
 void element_click_text_box(element_type *element,int x,int y)
 {
-	int				high,row_high,scroll_high,my;
+	int				high,page_count;
+	
+		// any scrollbars?
+		
+	if (element->setup.text_box.pos_y==-1) return;
 	
 		// check for clicking in scroll bar
 
 	if (x<((element->x+element->wid)-24)) return;
 	
-		// get text sizes
+		// get page sizes
 		
 	high=gl_text_get_char_height(hud.font.text_size_small);
-	row_high=gl_text_get_char_height(hud.font.text_size_small);
-	scroll_high=(high-10)/element->high;
+	page_count=element->high/high;
 	
-	my=(28+(scroll_high*element->offset))+((scroll_high*(element->setup.text_box.line_count+1))/2);
-	
-			// is up and down OK?
+		// is up and down OK?
 
-	y-=element->y;
-		
-	if ((y<=my) && (element->setup.text_box.scroll_up_ok)) {
-		element->offset-=scroll_high;
+	if ((y<=element->setup.text_box.pos_y) && (element->setup.text_box.scroll_up_ok)) {
+		element->offset-=page_count;
 		if (element->offset<0) element->offset=0;
 	}
 
-	if ((y>=my) && (element->setup.text_box.scroll_down_ok)) {
-		element->offset+=scroll_high;
+	if ((y>=element->setup.text_box.pos_y) && (element->setup.text_box.scroll_down_ok)) {
+		element->offset+=page_count;
 	}
 }
 
@@ -2521,8 +2524,10 @@ void element_draw_text_box(element_type *element)
 	
 		// scrollbar
 		
+	element->setup.text_box.pos_y=-1;
+	
 	if ((element->setup.text_box.scroll_up_ok) || (element->setup.text_box.scroll_down_ok)) {
-		element_draw_table_scrollbar(element,0,high,line_count,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
+		element->setup.text_box.pos_y=element_draw_table_scrollbar(element,0,high,line_count,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
 	}
 	
 		// outline

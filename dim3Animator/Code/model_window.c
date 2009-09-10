@@ -34,9 +34,9 @@ EventHandlerUPP					model_wind_upp;
 EventLoopTimerRef				model_timer_event;
 EventLoopTimerUPP				model_timer_upp;
 ControlRef						tool_ctrl[tool_count];
-IconSuiteRef					tool_icon[tool_count];
+IconRef							tool_icon_ref[tool_count];
 
-char							tool_icns[tool_count][64]=
+char							tool_icns_file_name[tool_count][64]=
 									{
 										"Tool Textured",
 										"Tool Mesh",
@@ -684,6 +684,20 @@ IconFamilyHandle main_wind_load_ui_icon(char *name)
 	return(iconfamily);
 }
 
+IconRef main_wind_load_icon_ref(char *name)
+{
+	char					path[1024];
+	FSRef					fsref;
+	IconRef					iconRef;
+
+	file_paths_app(&file_path_setup,path,"Contents/Resources",name,"icns");
+	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
+	
+	RegisterIconRefFromFSRef(0,0,&fsref,&iconRef);
+
+	return(iconRef);
+}
+
 /* =======================================================
 
       Model Window
@@ -747,10 +761,9 @@ void model_wind_open(void)
 	
 			// create button
 			
-		IconFamilyToIconSuite(main_wind_load_ui_icon(tool_icns[n]),kSelectorAllAvailableData,&tool_icon[n]);
-		
-		icon_info.contentType=kControlContentIconSuiteHandle;
-		icon_info.u.iconSuite=tool_icon[n];
+		tool_icon_ref[n]=main_wind_load_icon_ref(tool_icns_file_name[n]);
+		icon_info.contentType=kControlContentIconRef;
+		icon_info.u.iconRef=tool_icon_ref[n];
 			
 		CreateBevelButtonControl(model_wind,&box,NULL,kControlBevelButtonSmallBevel,kControlBehaviorToggles,&icon_info,0,0,0,&tool_ctrl[n]);
 		SetBevelButtonGraphicAlignment(tool_ctrl[n],kControlBevelButtonAlignCenter,0,0);
@@ -846,7 +859,7 @@ void model_wind_close(void)
 		
 	for (n=0;n!=tool_count;n++) {
 		DisposeControl(tool_ctrl[n]);
-		DisposeIconSuite(tool_icon[n],TRUE);
+		ReleaseIconRef(tool_icon_ref[n]);
 	}
 
 		// close open gl
