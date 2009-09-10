@@ -123,7 +123,7 @@ extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,i
 
 	// back renderers
 	
-extern bool gl_back_render_initialize(char *err_str);
+extern void gl_back_render_initialize(void);
 extern void gl_back_render_shutdown(void);
 extern void gl_back_render_map_start(void);
 extern void gl_back_render_map_end(void);

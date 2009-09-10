@@ -40,6 +40,7 @@ extern hud_type				hud;
 
 int							net_proj_hash;
 char						*net_news;
+setup_network_hosts_type	net_news_hosts;
 
 /* =======================================================
 
@@ -96,7 +97,10 @@ int net_get_project_hash(void)
 
 void net_load_news(void)
 {
+	int			sz;
 	char		err_str[256];
+	char		*news_ptr,*hosts_ptr,
+				*c,*data;
 	
 		// any news to load?
 		
@@ -105,23 +109,99 @@ void net_load_news(void)
 		// skip if already loaded
 		
 	if (net_news!=NULL) return;
+
+		// always start with no hosts in case of error
+
+	net_news_hosts.count=0;
 	
-		// load net news
+		// get response
 		
-	net_news=net_get_http_file(hud.net_news.host,hud.net_news.port,hud.net_news.url,err_str);
-	if (net_news!=NULL) return;
+	data=net_get_http_file(hud.net_news.host,hud.net_news.port,hud.net_news.url,err_str);
+	if (data=NULL) {
 	
-		// build error message
+			// build error message
+			
+		net_news=malloc(512);
+		if (net_news!=NULL) sprintf(net_news,"News Read Failure\n%s",err_str);
+
+		return;
+	}
+
+		// find the news and hosts lists
+
+	news_ptr=strstr(data,"[News]");
+	if (news_ptr!=NULL) {
+		news_ptr=strchr(news_ptr,'\n');
+		if (news_ptr!=NULL) news_ptr++;
+	}
+
+	hosts_ptr=strstr(data,"[Hosts]");
+	if (hosts_ptr!=NULL) {
+		hosts_ptr=strchr(news_ptr,'\n');
+		if (hosts_ptr!=NULL) hosts_ptr++;
+	}
+
+		// get the news
+
+	if (news_ptr==NULL) {
+		net_news=malloc(8);
+		if (net_news!=NULL) *net_news=0x0;
+	}
+	else {
+		if (hosts_ptr==NULL) {
+			sz=strlen(news_ptr);
+		}
+		else {
+			sz=(int)(hosts_ptr-news_ptr);
+		}
+
+		net_news=malloc(sz+1);
+		if (net_news==NULL) return;
+
+		memmove(net_news,news_ptr,sz);
+		*(net_news+sz)=0x0;
+	}
+
+		// get the hosts lists
+
+	net_news_hosts.count=0;
+	if (hosts_ptr==NULL) return;
+
+	while (TRUE) {
+		strncpy(net_news_hosts.hosts[net_news_hosts.count].name,hosts_ptr,64);
+		net_news_hosts.hosts[net_news_hosts.count].name[63]=0x0;
+
+		c=strchr(net_news_hosts.hosts[net_news_hosts.count].name,'\t');
+		if (c!=NULL) *c=0x0;
+
+		hosts_ptr=strchr(hosts_ptr,'\t');
+		if (hosts_ptr==NULL) break;
+
+		strncpy(net_news_hosts.hosts[net_news_hosts.count].ip,hosts_ptr,256);
+		net_news_hosts.hosts[net_news_hosts.count].ip[255]=0x0;
+
+		c=strchr(net_news_hosts.hosts[net_news_hosts.count].ip,'\r');
+		if (c!=NULL) *c=0x0;
+		c=strchr(net_news_hosts.hosts[net_news_hosts.count].ip,'\n');
+		if (c!=NULL) *c=0x0;
+
+		net_news_hosts.count++;
 		
-	net_news=malloc(512);
-	if (net_news==NULL) return;
-	
-	sprintf(net_news,"News Read Failure\n%s",err_str);
+		hosts_ptr=strchr(hosts_ptr,'\n');
+		if (hosts_ptr==NULL) break;
+
+		hosts_ptr++;
+	}
 }
 
 char* net_get_news(void)
 {
 	return(net_news);
+}
+
+setup_network_hosts_type* net_news_get_hosts(void)
+{
+	return(&net_news_hosts);
 }
 
 /* =======================================================

@@ -36,6 +36,7 @@ extern void net_create_project_hash(void);
 extern int net_get_project_hash(void);
 extern void net_load_news(void);
 extern char* net_get_news(void);
+extern setup_network_hosts_type* net_news_get_hosts(void);
 
 extern void net_get_host_name(char *name);
 extern void net_get_host_ip(char *ip_name,char *ip_resolve);

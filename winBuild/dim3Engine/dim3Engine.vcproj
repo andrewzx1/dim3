@@ -51,8 +51,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="dim3engine.h"
-				PrecompiledHeaderFile=".\Release/dim3Engine.pch"
+				PrecompiledHeaderThrough=""
+				PrecompiledHeaderFile=".\Release\dim3Engine.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
@@ -3913,6 +3913,10 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_View\gl_full_screen_shader.c"
+						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_View\gl_light.c"
