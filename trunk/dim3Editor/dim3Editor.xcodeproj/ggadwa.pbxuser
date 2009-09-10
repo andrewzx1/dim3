@@ -17,7 +17,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1469}}";
 			sepNavSelRange = "{1955, 0}";
-			sepNavVisRange = "{1862, 744}";
+			sepNavVisRange = "{537, 1469}";
 			sepNavWindowFrame = "{{395, 212}, {1041, 747}}";
 		};
 	};
@@ -61,7 +61,8 @@
 			F5A4320D055602DF002DF965 /* dim3 Editor */,
 		);
 		breakpoints = (
-			2630149C0D73978900564E2C /* main_window.c:1177 */,
+			2630149C0D73978900564E2C /* main_window.c:1176 */,
+			2614C5D31058891B00B09EAB /* main_window.c:741 */,
 		);
 		codeSenseManager = 260AFF060D4050B200F6C42F /* Code sense */;
 		executables = (
@@ -143,8 +144,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 274041872;
-			PBXWorkspaceStateSaveDate = 274041872;
+			PBXPerProjectTemplateStateSaveDate = 274243581;
+			PBXWorkspaceStateSaveDate = 274243581;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -249,6 +250,23 @@
 		path = "../../dim3/dim3 Editor.app";
 		sourceTree = SOURCE_ROOT;
 	};
+	2614C5D31058891B00B09EAB /* main_window.c:741 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = F54CD2090233430101250BB8 /* main_window.c */;
+		functionName = "main_wind_open()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 741;
+		modificationTime = 274237723.0174569;
+		originalNumberOfMultipleMatches = 0;
+		state = 1;
+	};
 	263013CA0D713B7E00564E2C /* main_window_panels.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 5068}}";
@@ -265,7 +283,7 @@
 			sepNavWindowFrame = "{{581, 81}, {1041, 747}}";
 		};
 	};
-	2630149C0D73978900564E2C /* main_window.c:1177 */ = {
+	2630149C0D73978900564E2C /* main_window.c:1176 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -277,7 +295,7 @@
 		functionName = "main_wind_set_3D_projection()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 1177;
+		lineNumber = 1176;
 		modificationTime = 271040153.466244;
 		originalNumberOfMultipleMatches = 0;
 		state = 0;
@@ -623,10 +641,10 @@
 	};
 	F54CD2090233430101250BB8 /* main_window.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 30719}}";
-			sepNavSelRange = "{55917, 0}";
-			sepNavVisRange = "{55649, 847}";
-			sepNavWindowFrame = "{{268, 250}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 29120}}";
+			sepNavSelRange = "{1918, 0}";
+			sepNavVisRange = "{865, 1684}";
+			sepNavWindowFrame = "{{238, 173}, {1041, 747}}";
 		};
 	};
 	F54CD20D0233497001250BB8 /* walk_view.c */ = {

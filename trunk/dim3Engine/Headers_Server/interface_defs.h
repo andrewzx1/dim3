@@ -161,7 +161,7 @@ typedef struct		{
 					} element_tab_type;
 
 typedef struct		{
-						int						line_count;
+						int						line_count,pos_y;
 						bool					scroll_up_ok,scroll_down_ok;
 					} element_text_box_type;
 

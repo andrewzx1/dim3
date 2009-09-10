@@ -53,7 +53,7 @@ EventHandlerUPP			main_wind_upp;
 ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],
 						object_combo,node_combo,group_combo,magnify_slider;
 ControlActionUPP		magnify_proc;
-IconSuiteRef			tool_icon[tool_count],piece_icon[piece_count];
+IconRef					tool_icon_ref[tool_count],piece_icon_ref[piece_count];
 MenuRef					object_menu,node_menu,group_menu;
 Rect					object_box,node_box,group_box;
 
@@ -62,7 +62,7 @@ AGLContext				ctx;
 short					object_combo_lookup[max_spot],
 						node_combo_lookup[max_node];
 
-char					tool_icns[tool_count][64]=
+char					tool_icns_file_name[tool_count][64]=
 								{
 									"Tool Move Points",
 									"Tool Move Points Together",
@@ -110,7 +110,7 @@ char					tool_tooltip_str[tool_count][64]=
 									"Run Map In Engine"
 								};
 
-char					piece_icns[piece_count][64]=
+char					piece_icns_file_name[piece_count][64]=
 								{
 									"Piece Spot",
 									"Piece Light",
@@ -677,18 +677,18 @@ void main_wind_setup(void)
       
 ======================================================= */
 
-IconFamilyHandle main_wind_load_ui_icon(char *name)
+IconRef main_wind_load_icon_ref(char *name)
 {
-	char						path[1024];
-	FSRef						fsref;
-	IconFamilyHandle			iconfamily;
+	char					path[1024];
+	FSRef					fsref;
+	IconRef					iconRef;
 
 	file_paths_app(&file_path_setup,path,"Contents/Resources",name,"icns");
 	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
 	
-	ReadIconFromFSRef(&fsref,&iconfamily);
+	RegisterIconRefFromFSRef(0,0,&fsref,&iconRef);
 
-	return(iconfamily);
+	return(iconRef);
 }
 
 /* =======================================================
@@ -734,10 +734,10 @@ void main_wind_open(void)
 	
 			// create button
 			
-		IconFamilyToIconSuite(main_wind_load_ui_icon(tool_icns[n]),kSelectorAllAvailableData,&tool_icon[n]);
+		tool_icon_ref[n]=main_wind_load_icon_ref(tool_icns_file_name[n]);
+		icon_info.contentType=kControlContentIconRef;
+		icon_info.u.iconRef=tool_icon_ref[n];
 		
-		icon_info.contentType=kControlContentIconSuiteHandle;
-		icon_info.u.iconSuite=tool_icon[n];
 		
 		CreateBevelButtonControl(mainwind,&box,NULL,kControlBevelButtonSmallBevel,kControlBehaviorToggles,&icon_info,0,0,0,&tool_ctrl[n]);
 		SetBevelButtonGraphicAlignment(tool_ctrl[n],kControlBevelButtonAlignCenter,0,0);
@@ -756,7 +756,7 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14) || (n==18)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14) || (n==17)) OffsetRect(&box,3,0);
 	}
 	
 		// object combo
@@ -833,10 +833,9 @@ void main_wind_open(void)
 			
 			// create button
 			
-		IconFamilyToIconSuite(main_wind_load_ui_icon(piece_icns[n]),kSelectorAllAvailableData,&piece_icon[n]);
-		
-		icon_info.contentType=kControlContentIconSuiteHandle;
-		icon_info.u.iconSuite=piece_icon[n];
+		piece_icon_ref[n]=main_wind_load_icon_ref(piece_icns_file_name[n]);
+		icon_info.contentType=kControlContentIconRef;
+		icon_info.u.iconRef=piece_icon_ref[n];
 		
 		CreateBevelButtonControl(mainwind,&box,NULL,kControlBevelButtonSmallBevel,kControlBehaviorToggles,&icon_info,0,0,0,&piece_ctrl[n]);
 		SetBevelButtonGraphicAlignment(piece_ctrl[n],kControlBevelButtonAlignCenter,0,0);
@@ -950,7 +949,7 @@ void main_wind_close(void)
 
 	for (n=0;n!=tool_count;n++) {
 		DisposeControl(tool_ctrl[n]);
-		DisposeIconSuite(tool_icon[n],TRUE);
+		ReleaseIconRef(tool_icon_ref[n]);
 	}
 	
 	DisposeControl(object_combo);
@@ -964,7 +963,7 @@ void main_wind_close(void)
 	
 	for (n=0;n!=piece_count;n++) {
 		DisposeControl(piece_ctrl[n]);
-		DisposeIconSuite(piece_icon[n],TRUE);
+		ReleaseIconRef(piece_icon_ref[n]);
 	}
 	
 	DisposeControl(magnify_slider);
