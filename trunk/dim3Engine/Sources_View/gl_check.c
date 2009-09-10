@@ -47,6 +47,11 @@ bool gl_check_frame_buffer_ok(void)
 	return(strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL);
 }
 
+bool gl_check_frame_buffer_packed_stencil(void)
+{
+	return(strstr(render_info.ext_string,"GL_EXT_packed_depth_stencil")!=NULL);
+}
+
 bool gl_check_fsaa_ok(void)
 {
 	return(strstr(render_info.ext_string,"GL_ARB_multisample")!=NULL);

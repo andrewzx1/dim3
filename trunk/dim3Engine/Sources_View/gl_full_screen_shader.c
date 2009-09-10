@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Back Render Routines
+ Usage: Full Screen Shader Routines
 
 ***************************** License ********************************
 
@@ -31,55 +31,55 @@ and can be sold or given away.
 
 #include "video.h"
 
-GLuint						back_render_fbo_id,back_render_fbo_depth_id;
-bool						back_render_on;
+GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_id;
+bool						fs_shader_on;
 
 extern map_type				map;
 extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-extern bool view_draw_node(int tick,node_type *node,int pixel_size);
-
 /* =======================================================
 
-      Initialize Back Renderer
+      Initialize Full Screen Shader
       
 ======================================================= */
 
-void gl_back_render_initialize(void)
+bool gl_fs_shader_initialize(char *err_str)
 {
-		// check if back rendering is enabled
+		// check if fbo and shaders are available
 		
-	back_render_on=gl_check_frame_buffer_ok();
-	if (!back_render_on) return;
+	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_frame_buffer_packed_stencil()&&gl_check_shader_ok();
+	if (!fs_shader_on) return(TRUE);
 	
 		// create depth buffer object
 	
-	glGenTextures(1,&back_render_fbo_depth_id);
-	glBindTexture(GL_TEXTURE_2D,back_render_fbo_depth_id);
+	glGenTextures(1,&fs_shader_fbo_depth_id);
+	glBindTexture(GL_TEXTURE_2D,fs_shader_fbo_depth_id);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,setup.screen.x_sz,setup.screen.y_sz,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
 
 		// create the frame buffer object and attach depth
 
-	glGenFramebuffersEXT(1,&back_render_fbo_id);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,back_render_fbo_depth_id,0);
+	glGenFramebuffersEXT(1,&fs_shader_fbo_id);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fs_shader_fbo_id);
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,fs_shader_fbo_depth_id,0);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+
+	return(TRUE);
 }
 
-void gl_back_render_shutdown(void)
+void gl_fs_shader_shutdown(void)
 {
-	if (!back_render_on) return;
+	if (!fs_shader_on) return;
 
 		// destroy frame buffer and depth
 
-	glDeleteFramebuffersEXT(1,&back_render_fbo_id);
-	glDeleteTextures(1,&back_render_fbo_depth_id);
+	glDeleteFramebuffersEXT(1,&fs_shader_fbo_id);
+	glDeleteTextures(1,&fs_shader_fbo_depth_id);
 }
 
 /* =======================================================
@@ -87,7 +87,7 @@ void gl_back_render_shutdown(void)
       Per Map Back rendering
       
 ======================================================= */
-
+/*
 void gl_back_render_map_start(void)
 {
 	int				n;
@@ -119,13 +119,13 @@ void gl_back_render_map_end(void)
 		node++;
 	}
 }
-
+*/
 /* =======================================================
 
       Back Render Texture
       
 ======================================================= */
-
+/*
 GLuint gl_back_render_create_texture(void)
 {
 	GLuint				gl_id;
@@ -182,13 +182,13 @@ GLuint gl_back_render_create_texture(void)
 	
 	return(gl_id);
 }
-
+*/
 /* =======================================================
 
       Per Frame Back rendering
       
 ======================================================= */
-
+/*
 void gl_back_render_frame_node(int tick,char *node_name)
 {
 	int				node_idx;
@@ -274,13 +274,13 @@ void gl_back_render_frame_start(int tick)
 		}
 	}
 }
-
+*/
 /* =======================================================
 
       Back Render Texture
       
 ======================================================= */
-
+/*
 bool gl_back_render_get_texture(char *node_name,GLuint *txt_id)
 {
 	int				node_idx;
@@ -302,5 +302,5 @@ bool gl_back_render_get_texture(char *node_name,GLuint *txt_id)
 	*txt_id=node->back_render.txt_id;
 	return(TRUE);
 }
-
+*/
 

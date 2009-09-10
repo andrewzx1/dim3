@@ -70,6 +70,7 @@ SDL_mutex					*join_thread_lock;
 
 int							join_count,join_start_tick_local;
 join_server_info			join_list[max_setup_network_host];
+setup_network_hosts_type	join_combine_host;
 			
 /* =======================================================
 
@@ -287,11 +288,11 @@ int join_ping_thread_internet(void *arg)
 
 	idx=0;
 
-	while ((!join_thread_quit) && (idx<setup.network.host.count)) {
+	while ((!join_thread_quit) && (idx<join_combine_host.count)) {
 
 			// ping host
 
-		host=&setup.network.host.hosts[idx];
+		host=&join_combine_host.hosts[idx];
 
 		if (net_client_ping_host(host->ip,status,host_name,proj_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
 
@@ -520,6 +521,24 @@ void join_create_pane(void)
 
 /* =======================================================
 
+      Build Combined Host List
+      
+======================================================= */
+
+void join_add_to_host_list(setup_network_hosts_type *hosts)
+{
+	int			n;
+
+	for (n=0;n!=hosts->count;n++) {
+		if (join_combine_host.count>=max_setup_network_host) return;
+
+		memmove(&join_combine_host.hosts[join_combine_host.count],&hosts->hosts[n],sizeof(setup_network_host_type));
+		join_combine_host.count++;
+	}
+}
+
+/* =======================================================
+
       Join Operations
       
 ======================================================= */
@@ -530,6 +549,12 @@ void join_open(bool local)
 
 	net_create_project_hash();
 	net_load_news();
+
+		// create host list
+
+	join_combine_host.count=0;
+	join_add_to_host_list(net_news_get_hosts());
+	join_add_to_host_list(&setup.network.host);
 	
 		// setup gui
 		

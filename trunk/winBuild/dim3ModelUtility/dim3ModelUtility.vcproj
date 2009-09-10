@@ -48,6 +48,8 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough=""
 				PrecompiledHeaderFile=".\Release/dim3ModelUtility.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"

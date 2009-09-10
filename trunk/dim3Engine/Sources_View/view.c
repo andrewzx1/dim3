@@ -243,13 +243,7 @@ bool view_initialize_display(char *err_str)
 	
 		// back renderer
 		
-	if (!gl_back_render_initialize(err_str)) {
-		gl_text_shutdown();
-		gl_shutdown();
-		view_memory_release();
-		SDL_Quit();
-		return(FALSE);
-	}
+	gl_back_render_initialize();
 
 		// vertex objects
 	
