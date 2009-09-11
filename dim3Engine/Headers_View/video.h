@@ -44,7 +44,6 @@ extern bool gl_check_fsaa_ok(void);
 extern bool gl_check_texture_compress_ok(void);
 extern bool gl_check_texture_anisotropic_filter_ok(void);
 extern bool gl_check_texture_generate_mipmaps_ok(void);
-extern bool gl_check_point_sprite_ok(void);
 extern bool gl_check_shader_ok(void);
 
 	// lights

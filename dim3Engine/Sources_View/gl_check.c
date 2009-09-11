@@ -44,11 +44,7 @@ extern render_info_type		render_info;
 
 bool gl_check_frame_buffer_ok(void)
 {
-	return(strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL);
-}
-
-bool gl_check_frame_buffer_packed_stencil(void)
-{
+	if (strstr(render_info.ext_string,"GL_EXT_framebuffer_object")==NULL) return(FALSE);
 	return(strstr(render_info.ext_string,"GL_EXT_packed_depth_stencil")!=NULL);
 }
 
@@ -70,11 +66,6 @@ bool gl_check_texture_anisotropic_filter_ok(void)
 bool gl_check_texture_generate_mipmaps_ok(void)
 {
 	return(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
-}
-
-bool gl_check_point_sprite_ok(void)
-{
-	return(strstr(render_info.ext_string,"GL_ARB_point_sprite")!=NULL);
 }
 
 bool gl_check_shader_ok(void)

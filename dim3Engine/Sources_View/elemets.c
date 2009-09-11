@@ -689,12 +689,18 @@ void element_hide(int id,bool hide)
 	if (element!=NULL) element->hidden=hide;
 }
 
-void element_table_busy(int id,int count,int total_count)
+void element_table_busy(int id,char *str,int count,int total_count)
 {
 	element_type		*element;
 	
 	element=element_find(id);
 	if (element!=NULL) {
+		if (str==NULL) {
+			element->setup.table.busy_str[0]=0x0;
+		}
+		else {
+			strcpy(element->setup.table.busy_str,str);
+		}
 		element->setup.table.busy_count=count;
 		element->setup.table.busy_total_count=total_count;
 	}
@@ -1598,6 +1604,31 @@ void element_click_table(element_type *element,int x,int y)
 	}
 }
 
+void element_draw_table_row_column_lines(element_type *element,int ty,int by,float col_factor)
+{
+	int			n,x;
+	float		f_wid;
+	d3col		col;
+	
+	x=element->x;
+	f_wid=(float)(element->wid-30);
+	
+	col.r=hud.color.outline.r*col_factor;
+	col.g=hud.color.outline.g*col_factor;
+	col.b=hud.color.outline.b*col_factor;
+	
+	glColor4f(col.r,col.g,col.b,1.0f);
+
+	for (n=1;n<element->setup.table.ncolumn;n++) {
+		x+=(int)(element->setup.table.cols[n-1].percent_size*f_wid);
+	
+		glBegin(GL_LINES);
+		glVertex2i(x,ty);
+		glVertex2i(x,by);
+		glEnd();
+	}
+}
+
 void element_draw_table_header_fill(element_type *element,int high)
 {
 	int				lft,rgt,top,bot,y;
@@ -1610,35 +1641,14 @@ void element_draw_table_header_fill(element_type *element,int high)
 	bot=(top+high)+4;
 	y=(top+bot)>>1;
 	
-	col2.r=hud.color.header.r/2.0f;
-	col2.g=hud.color.header.g/2.0f;
-	col2.b=hud.color.header.b/2.0f;
+	col2.r=hud.color.header.r*0.5f;
+	col2.g=hud.color.header.g*0.5f;
+	col2.b=hud.color.header.b*0.5f;
 	
 	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.header,rgt,top,&hud.color.header,rgt,y,&col2,lft,y,&col2,1.0f);
 	view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,bot,&hud.color.header,lft,bot,&hud.color.header,1.0f);
-}
-
-void element_draw_table_line_lines(element_type *element)
-{
-	int			n,x,ty,by;
-	float		f_wid;
 	
-	x=element->x;
-	f_wid=(float)(element->wid-30);
-
-	ty=element->y;
-	by=ty+element->high;
-
-	glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
-	
-	for (n=1;n<element->setup.table.ncolumn;n++) {
-		x+=(int)(element->setup.table.cols[n-1].percent_size*f_wid);
-		
-		glBegin(GL_LINES);
-		glVertex2i(x,ty);
-		glVertex2i(x,by);
-		glEnd();
-	}
+	element_draw_table_row_column_lines(element,top,bot,1.0f);
 }
 
 void element_draw_table_line_header(element_type *element,int x,int y,int wid,int row_high)
@@ -2052,6 +2062,8 @@ void element_draw_table(element_type *element,int sel_id)
 			
 			view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,alpha);
 			
+			element_draw_table_row_column_lines(element,top,bot,0.5f);
+			
 				// table line data
 				
 			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&hud.color.base,c);
@@ -2060,10 +2072,6 @@ void element_draw_table(element_type *element,int sel_id)
 			y+=row_high;
 		}
 	}
-
-		// table lines
-
-	element_draw_table_line_lines(element);
 	
 		// busy
 		
@@ -2092,6 +2100,13 @@ void element_draw_table(element_type *element,int sel_id)
 
 		view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.base_color_start,x,top,&hud.progress.base_color_start,x,mid,&hud.progress.base_color_end,lft,mid,&hud.progress.base_color_end,1.0f);
 		view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.base_color_end,x,mid,&hud.progress.base_color_end,x,bot,&hud.progress.base_color_start,lft,bot,&hud.progress.base_color_start,1.0f);
+	}
+	
+	if (element->setup.table.busy_str[0]!=0x0) {
+		col.r=col.g=col.b=1.0f;
+		gl_text_start(hud.font.text_size_small);
+		gl_text_draw(((lft+rgt)>>1),((top+bot)>>1),element->setup.table.busy_str,tx_center,TRUE,&col,1.0f);
+		gl_text_end();
 	}
 	
 	glColor4f(0.8f,0.8f,0.8f,1.0f);

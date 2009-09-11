@@ -90,7 +90,7 @@ extern void element_set_slider_value(int id,float value);
 extern void element_set_value_string(int id,char *str);
 extern void element_enable(int id,bool enabled);
 extern void element_hide(int id,bool hide);
-extern void element_table_busy(int id,int count,int total_count);
+extern void element_table_busy(int id,char *str,int count,int total_count);
 extern void element_text_change(int id,char *str);
 extern void element_set_table_data(int id,char *row_data);
 extern void element_set_bitmap(int id,char *path);

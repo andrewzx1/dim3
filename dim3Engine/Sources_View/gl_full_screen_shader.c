@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "video.h"
 
-GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_id;
+GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id;
 bool						fs_shader_on;
 
 extern map_type				map;
@@ -45,41 +45,38 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-bool gl_fs_shader_initialize(char *err_str)
+void gl_fs_shader_initialize(void)
 {
 		// check if fbo and shaders are available
 		
-	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_frame_buffer_packed_stencil()&&gl_check_shader_ok();
-	if (!fs_shader_on) return(TRUE);
+	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_shader_ok();
+	if (!fs_shader_on) return;
 	
-		// create depth buffer object
-	
-	glGenTextures(1,&fs_shader_fbo_depth_id);
-	glBindTexture(GL_TEXTURE_2D,fs_shader_fbo_depth_id);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,setup.screen.x_sz,setup.screen.y_sz,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
+		// create depth buffer and stencil object
 
-		// create the frame buffer object and attach depth
+	glGenRenderbuffersEXT(1,&fs_shader_fbo_depth_stencil_id);
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,GL_DEPTH_STENCIL_EXT,setup.screen.x_sz,setup.screen.y_sz);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+
+		// create the frame buffer object and attach depth/stencil
 
 	glGenFramebuffersEXT(1,&fs_shader_fbo_id);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fs_shader_fbo_id);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,fs_shader_fbo_depth_id,0);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
-
-	return(TRUE);
 }
 
 void gl_fs_shader_shutdown(void)
 {
 	if (!fs_shader_on) return;
 
-		// destroy frame buffer and depth
+		// destroy frame buffer and depth/stencil
 
 	glDeleteFramebuffersEXT(1,&fs_shader_fbo_id);
-	glDeleteTextures(1,&fs_shader_fbo_depth_id);
+	glDeleteRenderbuffersEXT(1,&fs_shader_fbo_depth_stencil_id);
 }
 
 /* =======================================================

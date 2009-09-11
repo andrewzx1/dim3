@@ -99,7 +99,7 @@ void net_load_news(void)
 {
 	int			sz;
 	char		err_str[256];
-	char		*news_ptr,*hosts_ptr,
+	char		*news_ptr,*hosts_ptr,*host_start_ptr,
 				*c,*data;
 	
 		// any news to load?
@@ -117,7 +117,7 @@ void net_load_news(void)
 		// get response
 		
 	data=net_get_http_file(hud.net_news.host,hud.net_news.port,hud.net_news.url,err_str);
-	if (data=NULL) {
+	if (data==NULL) {
 	
 			// build error message
 			
@@ -135,9 +135,9 @@ void net_load_news(void)
 		if (news_ptr!=NULL) news_ptr++;
 	}
 
-	hosts_ptr=strstr(data,"[Hosts]");
+	hosts_ptr=host_start_ptr=strstr(data,"[Hosts]");
 	if (hosts_ptr!=NULL) {
-		hosts_ptr=strchr(news_ptr,'\n');
+		hosts_ptr=strchr(hosts_ptr,'\n');
 		if (hosts_ptr!=NULL) hosts_ptr++;
 	}
 
@@ -148,11 +148,11 @@ void net_load_news(void)
 		if (net_news!=NULL) *net_news=0x0;
 	}
 	else {
-		if (hosts_ptr==NULL) {
+		if (host_start_ptr==NULL) {
 			sz=strlen(news_ptr);
 		}
 		else {
-			sz=(int)(hosts_ptr-news_ptr);
+			sz=(int)(host_start_ptr-news_ptr);
 		}
 
 		net_news=malloc(sz+1);

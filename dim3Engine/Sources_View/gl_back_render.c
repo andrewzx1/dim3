@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "video.h"
 
-GLuint						back_render_fbo_id,back_render_fbo_depth_id;
+GLuint						back_render_fbo_id,back_render_fbo_depth_stencil_id;
 bool						back_render_on;
 
 extern map_type				map;
@@ -54,21 +54,20 @@ void gl_back_render_initialize(void)
 	back_render_on=gl_check_frame_buffer_ok();
 	if (!back_render_on) return;
 	
-		// create depth buffer object
-	
-	glGenTextures(1,&back_render_fbo_depth_id);
-	glBindTexture(GL_TEXTURE_2D,back_render_fbo_depth_id);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
+		// create depth buffer and stencil object
 
-		// create the frame buffer object and attach depth
+	glGenRenderbuffersEXT(1,&back_render_fbo_depth_stencil_id);
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,GL_DEPTH_STENCIL_EXT,back_render_texture_pixel_size,back_render_texture_pixel_size);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+
+		// create the frame buffer object and attach depth/stencil
 
 	glGenFramebuffersEXT(1,&back_render_fbo_id);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,back_render_fbo_depth_id,0);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 }
 
@@ -76,10 +75,10 @@ void gl_back_render_shutdown(void)
 {
 	if (!back_render_on) return;
 
-		// destroy frame buffer and depth
+		// destroy frame buffer and depth/stencil
 
 	glDeleteFramebuffersEXT(1,&back_render_fbo_id);
-	glDeleteTextures(1,&back_render_fbo_depth_id);
+	glDeleteRenderbuffersEXT(1,&back_render_fbo_depth_stencil_id);
 }
 
 /* =======================================================
@@ -215,7 +214,8 @@ void gl_back_render_frame_node(int tick,char *node_name)
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,node->back_render.txt_id,0);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_id);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
 	
 	if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)!=GL_FRAMEBUFFER_COMPLETE_EXT) {
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
