@@ -151,6 +151,7 @@ typedef struct		{
 typedef struct		{
 						int						ncolumn,next_image_idx,bitmap_mode,
 												busy_count,busy_total_count;
+						char					busy_str[256];
 						element_column_type		cols[max_element_column];
 						element_image_type		images[element_table_max_image];
 					} element_table_type;

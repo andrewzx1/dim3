@@ -109,7 +109,7 @@ char* join_create_list(void)
 
 void join_ping_thread_done(void)
 {
-	element_table_busy(join_table_id,-1,-1);
+	element_table_busy(join_table_id,NULL,-1,-1);
 	element_enable(join_button_rescan_id,TRUE);
 }
 
@@ -248,12 +248,12 @@ int join_ping_thread_lan(void *arg)
 			usleep(100000);
 			count++;
 			
-			element_table_busy(join_table_id,count,count_tenth_sec);
+			element_table_busy(join_table_id,"Looking for LAN Clients",count,count_tenth_sec);
 		}
 		
 	}
 	
-	element_table_busy(join_table_id,1,1);
+	element_table_busy(join_table_id,NULL,1,1);
 	
 		// reset the UI and buttons
 		
@@ -277,7 +277,7 @@ int join_ping_thread_lan(void *arg)
 int join_ping_thread_internet(void *arg)
 {
 	int							idx,player_count,player_max_count,ping_msec;
-	char						status[32],host_name[name_str_len],
+	char						status[32],host_name[name_str_len],str[256],
 								proj_name[name_str_len],game_name[name_str_len],map_name[name_str_len];
 	char						*row_data;
 	setup_network_host_type		*host;
@@ -290,10 +290,21 @@ int join_ping_thread_internet(void *arg)
 
 	while ((!join_thread_quit) && (idx<join_combine_host.count)) {
 
-			// ping host
+			// progress
 
 		host=&join_combine_host.hosts[idx];
+		
+		if (host->name[0]!=0x0) {
+			sprintf(str,"Querying %s",host->name);
+		}
+		else {
+			sprintf(str,"Querying %s",host->ip);
+		}
+		
+		element_table_busy(join_table_id,str,idx,join_combine_host.count);
 
+			// ping host
+			
 		if (net_client_ping_host(host->ip,status,host_name,proj_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
 
 				// is this reply the same dim3 project?
@@ -328,6 +339,8 @@ int join_ping_thread_internet(void *arg)
 		idx++;
 	}
 	
+	element_table_busy(join_table_id,NULL,1,1);
+	
 		// reset the UI and buttons
 		
 	join_ping_thread_done();
@@ -351,7 +364,7 @@ void join_ping_thread_start(void)
 		// table is busy
 		
 	element_set_table_data(join_table_id,NULL);
-	element_table_busy(join_table_id,0,1);
+	element_table_busy(join_table_id,NULL,0,1);
 	
 		// table update locks
 		
@@ -378,6 +391,8 @@ void join_ping_thread_end(void)
 	SDL_WaitThread(join_thread,NULL);
 	
 	SDL_DestroyMutex(join_thread_lock);
+	
+	join_thread_started=FALSE;
 }
 
 /* =======================================================
@@ -437,7 +452,7 @@ void join_lan_internet_pane(bool lan)
 	cols[3].percent_size=0.8f;
 
 	element_table_add(cols,NULL,join_table_id,4,x,y,wid,high,element_table_bitmap_data);
-	element_table_busy(join_table_id,0,1);
+	element_table_busy(join_table_id,NULL,0,1);
 
 		// start the thread to build the table
 		

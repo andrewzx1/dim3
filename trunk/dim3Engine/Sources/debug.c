@@ -183,11 +183,10 @@ void debug_dump(void)
 	fprintf(stdout,"Max Texture Units: %d\n",render_info.texture_unit_count);
 	fprintf(stdout,"Max Texture Size: %d\n",render_info.texture_max_size);
 	
-	if (!gl_check_frame_buffer_ok()) fprintf(stdout,"FBO support disabled; Unsupported on this video card.\n");
-	if (!gl_check_frame_buffer_packed_stencil()) fprintf(stdout,"FBO Packed Stencil unsupported\n");
-	if (!gl_check_texture_compress_ok()) fprintf(stdout,"Compression disabled; Unsupported on this video card.\n");
-	if (!gl_check_shader_ok()) fprintf(stdout,"GLSL support disabled; Unsupported on this video card.\n");
-	if (!gl_check_fsaa_ok()) fprintf(stdout,"FSAA support disabled; Unsupported on this video card.\n");
+	if (!gl_check_shader_ok()) fprintf(stdout,"GLSL (shaders) unsupported\n");
+	if (!gl_check_frame_buffer_ok()) fprintf(stdout,"FBO unsupported\n");
+	if (!gl_check_fsaa_ok()) fprintf(stdout,"FSAA unsupported\n");
+	if (!gl_check_texture_compress_ok()) fprintf(stdout,"Compression unsupported\n");
 
 	fprintf(stdout,"Extensions:\n%s\n",render_info.ext_string);
 

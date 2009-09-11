@@ -221,7 +221,7 @@ void view_draw_mesh_shadows(void)
 
 		// shadows on?
 	
-	if ((!setup.shadow_on) || (view.render->no_shadow)) return;
+	if (!setup.shadow_on) return;
 
 		// setup draw
 		
@@ -348,7 +348,7 @@ void view_draw_models_final(int tick)
 
 		// shadow overrides
 
-	shadow_on=(setup.shadow_on) && (!view.render->no_shadow);
+	shadow_on=setup.shadow_on;
 
 		// render the shadows, remote names,
 		// and any debugging information
@@ -558,7 +558,6 @@ void view_draw(int tick)
 	view.render->camera.z_adjust=obj->camera_z_adjust;
 	
 	view.render->no_shader=FALSE;
-	view.render->no_shadow=FALSE;
 	view.render->force_camera_obj=FALSE;
 
 		// camera adjustments
@@ -626,7 +625,6 @@ bool view_draw_node(int tick,node_type *node,int pixel_size)
 	view.render->camera.z_adjust=0;
 	
 	view.render->no_shader=!node->use_shader;
-	view.render->no_shadow=TRUE;
 	view.render->force_camera_obj=TRUE;
 
 		// draw the scene
