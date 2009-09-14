@@ -151,9 +151,9 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 {
 	int				n,k,offset,t_idx;
-	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*vertex_ptr,
+	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*gx,*gy,
+					*vp_start,*cp_start,*np_start,*vertex_ptr,
 					*vertex_array,*coord_array;
-	unsigned short	*index_ptr;
     model_trig_type	*trig;
 	model_mesh_type	*mesh;
 	
@@ -162,13 +162,6 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3+3)));
 	if (vertex_ptr==NULL) return(FALSE);
 
-	index_ptr=view_bind_map_next_index_object(draw->vbo_ptr.ntrig*3);
-	if (index_ptr==NULL) {
-		view_unmap_current_vertex_object();
-		view_unbind_current_vertex_object();
-		return(FALSE);
-	}
-	
 		// build the vertexes and indexes
 
 	vl=vertex_array=vertex_ptr;
@@ -183,24 +176,31 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 
 		mesh=&mdl->meshes[n];
 		trig=mesh->trigs;
+		
+		vp_start=draw->setup.mesh_arrays[n].gl_vertex_array;
+		cp_start=draw->setup.mesh_arrays[n].gl_color_array;
+		np_start=draw->setup.mesh_arrays[n].gl_normal_array;
 
 		draw->vbo_ptr.index_offset[n]=t_idx;
 
 		for (k=0;k!=mesh->ntrig;k++) {
+		
+			gx=trig->gx;
+			gy=trig->gy;
 
 				// vertex 0
 
 			offset=trig->v[0]*3;
-			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
-			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
-			np=draw->setup.mesh_arrays[n].gl_normal_array+offset;
+			vp=vp_start+offset;
+			cp=cp_start+offset;
+			np=np_start+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
 			*vl++=*vp;
 
-			*tl++=trig->gx[0];
-			*tl++=trig->gy[0];
+			*tl++=*gx++;
+			*tl++=*gy++;
 
 			*cl++=*cp++;
 			*cl++=*cp++;
@@ -213,16 +213,16 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 				// vertex 1
 
 			offset=trig->v[1]*3;
-			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
-			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
-			np=draw->setup.mesh_arrays[n].gl_normal_array+offset;
+			vp=vp_start+offset;
+			cp=cp_start+offset;
+			np=np_start+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
 			*vl++=*vp;
 
-			*tl++=trig->gx[1];
-			*tl++=trig->gy[1];
+			*tl++=*gx++;
+			*tl++=*gy++;
 
 			*cl++=*cp++;
 			*cl++=*cp++;
@@ -235,16 +235,16 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 				// vertex 2
 
 			offset=trig->v[2]*3;
-			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
-			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
-			np=draw->setup.mesh_arrays[n].gl_normal_array+offset;
+			vp=vp_start+offset;
+			cp=cp_start+offset;
+			np=np_start+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
 			*vl++=*vp;
 
-			*tl++=trig->gx[2];
-			*tl++=trig->gy[2];
+			*tl++=*gx;
+			*tl++=*gy;
 
 			*cl++=*cp++;
 			*cl++=*cp++;
@@ -254,21 +254,14 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 			*nl++=*np++;
 			*nl++=*np;
 
-				// indexes
-
-			*index_ptr++=(unsigned short)t_idx;
-			*index_ptr++=(unsigned short)(t_idx+1);
-			*index_ptr++=(unsigned short)(t_idx+2);
-
-			t_idx+=3;
-			
 			trig++;
 		}
+		
+		t_idx+=(mesh->ntrig*3);
 	}
 
 		// unmap VBO
 
-	view_unmap_current_index_object();
 	view_unmap_current_vertex_object();
 
 		// set the pointers
@@ -318,7 +311,6 @@ void render_model_release_vertex_objects(void)
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	view_unbind_current_index_object();
 	view_unbind_current_vertex_object();
 }
 
@@ -396,7 +388,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 			// draw texture
 
 		gl_texture_opaque_set(texture->frames[frame].bitmap.gl_id);
-		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
+		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 
 	if (enabled) render_model_disable_color_array();
@@ -473,7 +465,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 			}
 		}
 		
-		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
+		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 			
 	gl_shader_draw_end();
@@ -564,7 +556,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 			// draw texture
 
 		gl_texture_transparent_set(texture->frames[texture->animate.current_frame].bitmap.gl_id,alpha);
-		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
+		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 
 	if (enabled) render_model_disable_color_array();
@@ -660,7 +652,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 			}
 		}
 		
-		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
+		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 			
 	gl_shader_draw_end();
@@ -716,7 +708,8 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// draw glow texture
 		
 		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
+		
+		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 	
 	gl_texture_glow_end();

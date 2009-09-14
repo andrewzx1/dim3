@@ -40,12 +40,6 @@ and can be sold or given away.
 #define max_shader_light									4				// maximum number of lights passed to a shader
 
 //
-// close never obscure distance
-//
-
-#define view_never_obscure_dist								(double)(map_enlarge*15)
-
-//
 // input rate
 //
 

@@ -649,15 +649,23 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 	double					d,dx,dy,dz,sort_dist[max_light_spot];
 	view_light_spot_type	*lspot;
 	
-		// if reduced spot list is empty, then empty light list
-				
-	if (light_spot_reduce_count==0) {
-		for (n=0;n!=max_shader_light;n++) {
-			light_idx[n]=-1;
-		}
+		// start with no lights
+		
+	for (n=0;n!=max_shader_light;n++) {
+		light_idx[n]=-1;
+	}
+	
+		// special check for single light
+		
+	if (light_spot_reduce_count==1) {
+		lspot=&view.render->light.spots[light_spot_reduce_idx[0]];
+		if (!gl_lights_collide_with_box(lspot,min,max)) return;
+		
+		light_idx[0]=light_spot_reduce_idx[0];
 		return;
 	}
 	
+		// multiple lights on poly
 		// sort the light spots, only using
 		// top max_shader_light
 
@@ -672,12 +680,23 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 		if (!gl_lights_collide_with_box(lspot,min,max)) continue;
 
 			// get distance
+			// don't need square root as we are only comparing them
+			// against one another
 
 		dx=(double)(lspot->pnt.x-mid->x);
 		dy=(double)(lspot->pnt.y-mid->y);
 		dz=(double)(lspot->pnt.z-mid->z);
 
-		d=sqrt((dx*dx)+(dy*dy)+(dz*dz));
+		d=(dx*dx)+(dy*dy)+(dz*dz);
+		
+			// special check for first light
+			
+		if (cnt==0) {
+			sort_dist[cnt]=d;
+			sort_list[cnt]=light_spot_reduce_idx[n];
+			cnt++;
+			continue;
+		}
 
 			// find position in list (top is closest)
 
@@ -718,14 +737,8 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 	
 		// create the light list
 		
-	for (n=0;n!=max_shader_light;n++) {
-	
-		if (n>=cnt) {
-			light_idx[n]=-1;
-		}
-		else {
-			light_idx[n]=sort_list[n];
-		}
+	for (n=0;n!=cnt;n++) {
+		light_idx[n]=sort_list[n];
 	}
 }
 

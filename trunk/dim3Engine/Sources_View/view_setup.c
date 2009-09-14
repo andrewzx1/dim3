@@ -267,15 +267,11 @@ void view_add_mesh_draw_list(void)
 			d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
 			if (d>obscure_dist) continue;
 				
-				// within a certain distance, don't check for obscuring
-				// by the view to fix some bugs with large polygons very
-				// close to the camera
-
-			if (d>view_never_obscure_dist) {
-				if (!mesh_inview(mesh)) {
-					if (!mesh->flag.shadow) continue;
-					if (!mesh_shadow_inview(mesh)) continue;
-				}
+				// check if bound box is within view
+				
+			if (!mesh_inview(mesh)) {
+				if (!mesh->flag.shadow) continue;
+				if (!mesh_shadow_inview(mesh)) continue;
 			}
 		}
 		else {
@@ -321,13 +317,9 @@ void view_add_liquid_draw_list(void)
 		d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
 		if (d>obscure_dist) continue;
 				
-			// within a certain distance, don't check for obscuring
-			// by the view to fix some bugs with large polygons very
-			// close to the camera
+			// check if liquid within bound box
 
-		if (d>view_never_obscure_dist) {
-			if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) continue;
-		}
+		if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) continue;
 		
 			// sort liquids into drawing list
 
@@ -545,13 +537,9 @@ void view_add_effect_draw_list(int tick)
 		d=distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
 		if (d>obscure_dist) continue;
 				
-			// within a certain distance, don't check for obscuring
-			// by the view to fix some bugs with large polygons very
-			// close to the camera
+			// check if effect within bound box
 
-		if (d>view_never_obscure_dist) {
-			if (!effect_inview(effect,(tick-effect->start_tick))) continue;
-		}
+		if (!effect_inview(effect,(tick-effect->start_tick))) continue;
 		
 			// sort liquids into drawing list
 

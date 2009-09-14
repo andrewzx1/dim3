@@ -96,6 +96,13 @@ int map_mesh_add(map_type *map)
 	mesh->nvertex=0;
 	mesh->vertexes=NULL;
 	mesh->colors_cache=NULL;
+	
+	mesh->poly_list.wall_count=0;
+	mesh->poly_list.wall_idxs=NULL;
+	mesh->poly_list.floor_count=0;
+	mesh->poly_list.floor_idxs=NULL;
+	mesh->poly_list.all_count=0;
+	mesh->poly_list.all_idxs=NULL;
 
 	mesh->npoly=0;
 	mesh->polys=NULL;
@@ -116,6 +123,9 @@ bool map_mesh_delete(map_type *map,int mesh_idx)
 
 	if (mesh->vertexes!=NULL) free(mesh->vertexes);
 	if (mesh->colors_cache!=NULL) free(mesh->colors_cache);
+	if (mesh->poly_list.wall_idxs!=NULL) free(mesh->poly_list.wall_idxs);
+	if (mesh->poly_list.floor_idxs!=NULL) free(mesh->poly_list.floor_idxs);
+	if (mesh->poly_list.all_idxs!=NULL) free(mesh->poly_list.all_idxs);
 	if (mesh->polys!=NULL) free(mesh->polys);
 
 		// detele the mesh
@@ -764,7 +774,7 @@ int map_mesh_find_always(map_type *map,d3pnt *pnt)
 
 double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 {
-	double			dx,dy,dz;
+	double			dx,dx2,dy,dy2,dz,dz2;
 	
 		// find collision points
 		
@@ -772,36 +782,33 @@ double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 		dx=0;
 	}
 	else {
-		if (pnt->x<mesh->box.min.x) {
-			dx=mesh->box.min.x-pnt->x;
-		}
-		else {
-			dx=pnt->x-mesh->box.max.x;
-		}
+		dx=mesh->box.min.x-pnt->x;
+		dx2=pnt->x-mesh->box.max.x;
+		if (dx2<dx) dx=dx2;
+		dx2=(double)abs(pnt->x-mesh->box.mid.x);
+		if (dx2<dx) dx=dx2;
 	}
 	
 	if ((pnt->y>=mesh->box.min.y) && (pnt->y<=mesh->box.max.y)) {
 		dy=0;
 	}
 	else {
-		if (pnt->y<mesh->box.min.y) {
-			dy=mesh->box.min.y-pnt->y;
-		}
-		else {
-			dy=pnt->y-mesh->box.max.y;
-		}
+		dy=mesh->box.min.y-pnt->y;
+		dy2=pnt->y-mesh->box.max.y;
+		if (dy2<dy) dy=dy2;
+		dy2=(double)abs(pnt->y-mesh->box.mid.y);
+		if (dy2<dy) dy=dy2;
 	}
 	
 	if ((pnt->z>=mesh->box.min.z) && (pnt->z<=mesh->box.max.z)) {
 		dz=0;
 	}
 	else {
-		if (pnt->z<mesh->box.min.z) {
-			dz=mesh->box.min.z-pnt->z;
-		}
-		else {
-			dz=pnt->z-mesh->box.max.z;
-		}
+		dz=mesh->box.min.z-pnt->z;
+		dz2=pnt->z-mesh->box.max.z;
+		if (dz2<dz) dz=dz2;
+		dz2=(double)abs(pnt->z-mesh->box.mid.z);
+		if (dz2<dz) dz=dz2;
 	}
 	
 	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
