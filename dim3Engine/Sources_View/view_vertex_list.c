@@ -389,7 +389,7 @@ bool view_compile_mesh_gl_lists(int tick)
 
 			if (mesh->draw.has_no_shader) {
 
-					// create colors for each vertes
+					// create colors for each vertexes
 
 				gl_lights_calc_vertex_setup_mesh(mesh);
 

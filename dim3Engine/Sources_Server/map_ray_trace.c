@@ -652,7 +652,8 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
 
 void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_contact_type *contact)
 {
-	int							n,k,x,z,radius;
+	int							n,k,x,z,radius,poly_count;
+	short						*poly_idx;
 	d3pnt						*spt,*ept,min,max;
 	obj_type					*obj;
 	proj_type					*proj;
@@ -813,61 +814,75 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
 		mesh=&map.mesh.meshes[n];
-		if (!mesh->flag.on) continue;
 		
 			// rough vector box bounds check
+			// compare x/z first as it's a better chance
+			// for an elimination
 
 		if (max.x<mesh->box.min.x) continue;
 		if (min.x>mesh->box.max.x) continue;
-		if (max.y<mesh->box.min.y) continue;
-		if (min.y>mesh->box.max.y) continue;
 		if (max.z<mesh->box.min.z) continue;
 		if (min.z>mesh->box.max.z) continue;
+		if (max.y<mesh->box.min.y) continue;
+		if (min.y>mesh->box.max.y) continue;
 			
-			// skip pass through meshes
+			// skip off and pass through meshes
 			// we do this second as I suspect there will
 			// be a limited number of these, a lot less then
 			// will be eliminated with the bounds check
 
+		if (!mesh->flag.on) continue;
 		if (mesh->flag.pass_through) continue;
 		
-			// check polys
+			// check polys, use the poly
+			// reduced list to save time
+						
+		switch (contact->hit_mode) {
+		
+			case poly_ray_trace_hit_mode_wall_only:
+				poly_count=mesh->poly_list.wall_count;
+				poly_idx=mesh->poly_list.wall_idxs;
+				break;
+				
+			case poly_ray_trace_hit_mode_floor_only:
+				poly_count=mesh->poly_list.floor_count;
+				poly_idx=mesh->poly_list.floor_idxs;
+				break;
+			
+			default:
+				poly_count=mesh->poly_list.all_count;
+				poly_idx=mesh->poly_list.all_idxs;
+				break;
+				
+		}
+			
+		for (k=0;k!=poly_count;k++) {
 
-		for (k=0;k!=mesh->npoly;k++) {
-
-			poly=&mesh->polys[k];
-
-				// poly ignores
-
-			if (contact->hit_mode!=poly_ray_trace_hit_mode_all) {
-				if (poly->box.wall_like) {
-					if (contact->hit_mode==poly_ray_trace_hit_mode_floor_only) continue;
-				}
-				else {
-					if (contact->hit_mode==poly_ray_trace_hit_mode_wall_only) continue;
-				}
-			}
+			poly=&mesh->polys[poly_idx[k]];
 			
 				// rough vector box bounds check
+				// compare x/z first as it's a better chance
+				// for an elimination
 
 			if (max.x<poly->box.min.x) continue;
 			if (min.x>poly->box.max.x) continue;
-			if (max.y<poly->box.min.y) continue;
-			if (min.y>poly->box.max.y) continue;
 			if (max.z<poly->box.min.z) continue;
 			if (min.z>poly->box.max.z) continue;
+			if (max.y<poly->box.min.y) continue;
+			if (min.y>poly->box.max.y) continue;
 
 				// add to item list
 
 			item->type=ray_trace_check_item_mesh_poly;
 			item->index=n;
-			item->index_2=k;
+			item->index_2=poly_idx[k];
 
 			item++;
 			ray_item_count++;
 
 			if (ray_item_count==ray_trace_max_check_item) return;
 		}
+				
 	}
 }
 

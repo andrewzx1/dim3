@@ -234,6 +234,11 @@ typedef struct		{
 						map_mesh_poly_slope_type			slope;
 						map_mesh_poly_draw_type				draw;
 					} map_mesh_poly_type;
+
+typedef struct		{
+						int									all_count,wall_count,floor_count;
+						short								*all_idxs,*wall_idxs,*floor_idxs;
+					} map_mesh_poly_list;
 					
 typedef struct		{
 						d3pnt								min,max,mid;
@@ -263,10 +268,11 @@ typedef struct		{
 typedef struct		{
 						int									nvertex,npoly,nuv,group_idx,
 															extra_txt_idx;
+						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
-						float								*colors_cache;
 						map_mesh_poly_type					*polys;
+						map_mesh_poly_list					poly_list;
 						map_mesh_box_type					box;
 						map_mesh_flag_type					flag;
 						map_mesh_message_type				msg;

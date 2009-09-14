@@ -238,7 +238,8 @@ void map_prepare_mesh_box(map_mesh_type *mesh)
 
 void map_prepare(map_type *map)
 {
-	int					n,k;
+	int					n,k,wall_like_count;
+	short				*wall_sptr,*floor_sptr,*all_sptr;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
@@ -254,6 +255,8 @@ void map_prepare(map_type *map)
 		mesh->flag.shiftable=FALSE;
 		
 			// run through the mesh polygons
+			
+		wall_like_count=0;
 
 		poly=mesh->polys;
 		
@@ -270,7 +273,37 @@ void map_prepare(map_type *map)
 			poly->draw.x_shift_offset=0.0f;
 			poly->draw.y_shift_offset=0.0f;
 			mesh->flag.shiftable|=poly->draw.shift_on;
+			
+			if (poly->box.wall_like) wall_like_count++;
 
+			poly++;
+		}
+		
+			// setup poly lists
+			
+		mesh->poly_list.wall_count=wall_like_count;
+		mesh->poly_list.wall_idxs=(short*)malloc(sizeof(short)*(mesh->poly_list.wall_count+1));
+		
+		mesh->poly_list.floor_count=mesh->npoly-wall_like_count;
+		mesh->poly_list.floor_idxs=(short*)malloc(sizeof(short)*(mesh->poly_list.floor_count+1));
+		
+		mesh->poly_list.all_count=mesh->npoly;
+		mesh->poly_list.all_idxs=(short*)malloc(sizeof(short)*(mesh->poly_list.all_count+1));
+		
+		wall_sptr=mesh->poly_list.wall_idxs;
+		floor_sptr=mesh->poly_list.floor_idxs;
+		all_sptr=mesh->poly_list.all_idxs;
+		
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			if (poly->box.wall_like) {
+				*wall_sptr++=(short)k;
+			}
+			else {
+				*floor_sptr++=(short)k;
+			}
+			*all_sptr++=(short)k;
 			poly++;
 		}
 
