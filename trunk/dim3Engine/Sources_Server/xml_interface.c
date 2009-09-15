@@ -983,6 +983,7 @@ void read_settings_interface(void)
 		
 			xml_get_attribute_text(game_tag,"type",hud.net_game.games[hud.net_game.ngame].name,name_str_len);
 			hud.net_game.games[hud.net_game.ngame].use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
+			hud.net_game.games[hud.net_game.ngame].monsters=xml_get_attribute_boolean(game_tag,"monsters");
 			
 			hud.net_game.ngame++;
 			if (hud.net_game.ngame==max_net_game) break;

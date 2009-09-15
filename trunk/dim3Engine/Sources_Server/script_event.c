@@ -143,7 +143,7 @@ JSValueRef js_event_start_wait_random_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	int				min,max,tick;
 	
-	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	min=script_value_to_int(cx,argv[0]);
 	max=script_value_to_int(cx,argv[1]);

@@ -157,61 +157,22 @@ void app_check_editor_link(void)
 void app_report_error(char *err_str)
 {
 #ifdef D3_OS_MAC	
-	unsigned char	p_str[256];
+	CFStringRef			cf_str;
+	CFOptionFlags		resp;
 	
-	InitCursor();
-	CopyCStringToPascal(err_str,p_str);
-	StandardAlert(0,"\pdim3 Fatal Error",p_str,NULL,NULL);
+	SetThemeCursor(kThemeArrowCursor);
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,err_str,kCFStringEncodingMacRoman);
+	CFUserNotificationDisplayAlert(0,kCFUserNotificationStopAlertLevel,NULL,NULL,NULL,CFSTR("dim3 Error"),cf_str,NULL,NULL,NULL,&resp);
+	CFRelease(cf_str);
 #endif
 
 #ifdef D3_OS_LINUX
-    fprintf(stderr,"dim3 Fatal Error: %s\n", err_str);
+    fprintf(stderr,"dim3 Error: %s\n", err_str);
 #endif
 
 #ifdef D3_OS_WINDOWS
-	MessageBox(NULL,err_str,"dim3 Fatal Error",MB_OK);
-#endif
-}
-
-void app_report_error_ask_fix_setup(char *err_str)
-{
-#ifdef D3_OS_MAC	
-	short					hit;
-	char					str[256];
-	unsigned char			p_str[256];
-	AlertStdAlertParamRec	alert_param;
-	
-	InitCursor();
-	
-	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
-	alert_param.defaultText="\pYes";
-	alert_param.cancelText="\pNo";
-	alert_param.defaultButton=kAlertStdAlertOKButton;
-	alert_param.position=kWindowDefaultPosition;
-	
-	strcpy(str,err_str);
-	strncat(str,"\n\nClick the Yes button if you want dim3 to reset your setup to their default values.  This might allow you to start the application properly.",256);
-	str[255]=0x0;
-	
-	CopyCStringToPascal(str,p_str);
-
-	StandardAlert(0,"\pdim3 Fatal Error",p_str,&alert_param,&hit);
-	
-	if (hit==kAlertStdAlertOKButton) setup_restore();
-#endif
-
-#ifdef D3_OS_LINUX
-	app_report_error("Check your setup files.");
-#endif
-
-#ifdef D3_OS_WINDOWS
-	char			str[1024];
-
-	strcpy(str,err_str);
-	strncat(str,"\n\nClick the Yes button if you want dim3 to reset your setup to their default values.  This might allow you to start the application properly.",1024);
-	str[1023]=0x0;
-
-	if (MessageBox(NULL,str,"dim3 Fatal Error",MB_YESNO)==IDYES) setup_restore();
+	MessageBox(NULL,err_str,"dim3 Error",MB_OK);
 #endif
 }
 
@@ -263,16 +224,9 @@ int main(int argc,char *argv[])
 
 	}
 	
-		// if app couldn't start, then let user reset setup
+		// report any errors
 		
-	if (err_str[0]!=0x0) {
-		if (app_start_ok) {
-			app_report_error(err_str);
-		}
-		else {
-			app_report_error_ask_fix_setup(err_str);
-		}
-	}
+	if (err_str[0]!=0x0) app_report_error(err_str);
 	
 	return(0);
 }

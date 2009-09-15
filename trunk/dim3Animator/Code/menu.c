@@ -137,9 +137,6 @@ bool create_binary(void)
 	sprintf(path,"%s/Textures",base_path);
 	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
 
-	sprintf(path,"%s/Shaders",base_path);
-	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
-
         // write the binary
 	
 	model_save(&model);
