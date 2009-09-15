@@ -34,6 +34,7 @@ extern maputility_settings_type		maputility_settings;
 extern char				media_type_str[][32],
 						sky_type_str[][32],
 						gl_fog_type_str[][32],
+						mesh_hide_mode_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
 						light_filter_str[][32],
@@ -93,6 +94,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->flag.rot_independent=xml_get_attribute_boolean(mesh_tag,"rot_independent");
 	mesh->flag.shadow=xml_get_attribute_boolean(mesh_tag,"shadow");
 	
+	mesh->hide_mode=xml_get_attribute_list(mesh_tag,"hide_mode",(char*)mesh_hide_mode_str);
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
 
 	mesh->nuv=xml_get_attribute_int_default(mesh_tag,"uv_count",1);

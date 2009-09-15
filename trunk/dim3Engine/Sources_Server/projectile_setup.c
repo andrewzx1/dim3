@@ -240,7 +240,7 @@ proj_type* proj_get_attach(void)
       
 ======================================================= */
 
-void proj_setup_start(proj_setup_type *proj_setup)
+bool proj_setup_start(proj_setup_type *proj_setup)
 {
 	char			err_str[256];
 
@@ -249,8 +249,17 @@ void proj_setup_start(proj_setup_type *proj_setup)
 
 	scripts_clear_attach_data(&proj_setup->attach);
 
-	scripts_add_console(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,err_str);
-	model_load_and_init(&proj_setup->draw);
+	if (!scripts_add(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,err_str)) {
+		console_add_error(err_str);
+		return(FALSE);
+	}
+
+	if (!model_load_and_init(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) {
+		console_add_error(err_str);
+		return(FALSE);
+	}
+
+	return(TRUE);
 }
 
 void proj_setup_dispose(int idx)

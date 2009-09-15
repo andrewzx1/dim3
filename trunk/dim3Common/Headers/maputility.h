@@ -171,6 +171,14 @@ extern char light_type_str[][32];
 #define spawn_multiplayer_only								2
 
 //
+// mesh hide types
+//
+
+#define mesh_hide_mode_never								0
+#define mesh_hide_mode_single_player						1
+#define mesh_hide_mode_multiplayer							2
+
+//
 // group structure
 //
 
@@ -267,7 +275,7 @@ typedef struct		{
 					
 typedef struct		{
 						int									nvertex,npoly,nuv,group_idx,
-															extra_txt_idx;
+															extra_txt_idx,hide_mode;
 						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;

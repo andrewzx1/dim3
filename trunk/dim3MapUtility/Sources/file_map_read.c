@@ -34,6 +34,7 @@ extern maputility_settings_type		maputility_settings;
 char					media_type_str[][32]={"none","story","title","movie",""},
 						sky_type_str[][32]={"dome_panoramic","dome_hemisphere","cube",""},
 						gl_fog_type_str[][32]={"linear","exp","exp2",""},
+						mesh_hide_mode_str[][32]={"never","single_player","multiplayer",""},
 						liquid_tide_direction_str[][32]={"horizontal","vertical",""},
                         light_type_str[][32]={"normal","blink","glow","pulse","flicker","failing",""},
                         light_filter_str[][32]={"none","mesh_only","not_mesh",""},

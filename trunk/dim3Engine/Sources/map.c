@@ -71,6 +71,7 @@ extern bool view_compile_mesh_gl_list_init(void);
 extern void view_compile_mesh_gl_list_free(void);
 extern bool render_transparent_create_sort_list(void);
 extern void render_transparent_dispose_sort_list(void);
+extern void map_multiplayer_show_hide_meshes(void);
 
 /* =======================================================
 
@@ -216,6 +217,7 @@ bool map_start(bool skip_media,char *err_str)
 	progress_draw(20);
 
 	map_prepare(&map);
+	map_multiplayer_show_hide_meshes();
 
 		// map lists
 

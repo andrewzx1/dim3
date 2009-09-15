@@ -123,21 +123,31 @@ bool remote_add(network_request_object_add *add,bool send_event)
 
 		// load models
 		
-	model_load_and_init(&obj->draw);
+	if (!model_load_and_init(&obj->draw,"Remote",obj->name,err_str)) {
+		console_add_error(err_str);
+	}
 
-	weap=server.weapons;
+		// start weapons and projectiles
+
+    for (n=(server.count.weapon-1);n>=0;n--) {
+
+		weap=&server.weapons[n];
+		if (weap->obj_uid!=obj->uid) continue;
 		
-	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_uid==obj->uid) weapon_start(weap);
-		weap++;
-	}
+		if (!weapon_start(weap)) {
+			weapon_dispose(n);
+		}
+    }
 				
-	proj_setup=server.proj_setups;
-	
-	for (n=0;n!=server.count.proj_setup;n++) {
-		if (proj_setup->obj_uid==obj->uid) proj_setup_start(proj_setup);
-		proj_setup++;
-	}
+	for (n=(server.count.proj_setup-1);n>=0;n--) {
+
+		proj_setup=&server.proj_setups[n];
+		if (proj_setup->obj_uid!=obj->uid) continue;
+
+		if (!proj_setup_start(proj_setup)) {
+			proj_setup_dispose(n);
+		}
+    }
 	
 		// initial score
 		

@@ -712,7 +712,8 @@ bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
 
 	scripts_clear_attach_data(&obj->attach);
 
-	if (!scripts_add_console(&obj->attach,"Objects",name,params,err_str)) {
+	if (!scripts_add(&obj->attach,"Objects",name,params,err_str)) {
+		console_add_error(err_str);
 		obj->hidden=TRUE;			// hide objects if scripts fail to compile
 		return(FALSE);
 	}
@@ -849,24 +850,33 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 	
 		// load object model
 
-	model_load_and_init(&obj->draw);
+	if (!model_load_and_init(&obj->draw,"Object",obj->name,err_str)) {
+		server.count.obj--;			// wait until real delete to move memory around
+		return(-1);
+	}
 
 		// start weapons
 
-	weap=server.weapons;
+    for (n=(server.count.weapon-1);n>=0;n--) {
 
-    for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_uid==obj->uid) weapon_start(weap);
-		weap++;
+		weap=&server.weapons[n];
+		if (weap->obj_uid!=obj->uid) continue;
+		
+		if (!weapon_start(weap)) {
+			weapon_dispose(n);
+		}
     }
 
 		// start projectiles
 
-	proj_setup=server.proj_setups;
+	for (n=(server.count.proj_setup-1);n>=0;n--) {
 
-	for (n=0;n!=server.count.proj_setup;n++) {
-		if (proj_setup->obj_uid==obj->uid) proj_setup_start(proj_setup);
-		proj_setup++;
+		proj_setup=&server.proj_setups[n];
+		if (proj_setup->obj_uid!=obj->uid) continue;
+
+		if (!proj_setup_start(proj_setup)) {
+			proj_setup_dispose(n);
+		}
     }
 
 		// setup held weapon

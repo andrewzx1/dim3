@@ -80,6 +80,7 @@ int map_mesh_add(map_type *map)
 	mesh->flag.rot_independent=FALSE;
 	mesh->flag.shadow=FALSE;
 
+	mesh->hide_mode=mesh_hide_mode_never;
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
 
 	mesh->msg.entry_id=0;
