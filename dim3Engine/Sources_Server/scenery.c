@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "objects.h"
 #include "models.h"
+#include "consoles.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -44,6 +45,7 @@ extern server_type			server;
 void scenery_create(void)
 {
 	int					n;
+	char				err_str[256];
 	map_scenery_type	*map_scenery;
 	obj_type			*obj;
 	model_type			*model;
@@ -94,7 +96,9 @@ void scenery_create(void)
 		
 			// load the model
 			
-		model_load_and_init(&obj->draw);
+		if (!model_load_and_init(&obj->draw,"Scenery",obj->name,err_str)) {
+			console_add_error(err_str);
+		}
 		
 			// check if there are no hit boxes
 			// if so, turn off hit box only checking

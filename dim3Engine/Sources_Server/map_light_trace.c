@@ -104,8 +104,6 @@ bool light_trace_map(d3pnt *spt,d3pnt *ept)
 		
 			mesh_poly++;
 		}
-	
-		mesh++;
 	}
 
 	return(FALSE);

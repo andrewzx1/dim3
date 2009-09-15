@@ -76,7 +76,7 @@ bool xml_decode(void)
 
 	sptr=oldptr=(char*)xml_dataptr;
 
-	for ((i=0);(i<xml_filesz);i++) {
+	for (i=0;i<xml_filesz;i++) {
 		c=*sptr++;
 		if (c==0x0) break;
 
@@ -186,7 +186,7 @@ bool xml_decode(void)
 
 	tag=tags;
 
-	for ((k=0);(k<xml_ntag);k++) {
+	for (k=0;k<xml_ntag;k++) {
 		tag->nchild=0;
 		tag->first_child=-1;
 		tag->last_child=-1;
@@ -195,7 +195,7 @@ bool xml_decode(void)
 
 	tag=tags;
 
-	for ((k=0);(k<xml_ntag);k++) {
+	for (k=0;k<xml_ntag;k++) {
 		q=tag->parent;
 		if (q!=-1) {
 			tags[q].nchild++;
@@ -308,7 +308,7 @@ int xml_findfirstchild(char *name,int parent)
 
 	tag=&tags[start_tag];
 
-	for ((n=start_tag);(n<end_tag);n++) {
+	for (n=start_tag;n<end_tag;n++) {
 		if (tag->parent==parent) {
 			if (strcmp(tag->name,name)==0) return(n);
 		}
@@ -444,7 +444,7 @@ bool xml_get_attribute_raw(int n,char *name,char *value,int valuesz)
 	inquote=FALSE;
 	noff=voff=0;
 
-	for ((i=0);(i<sz);i++) {
+	for (i=0;i<sz;i++) {
 		c=*sptr++;
 		if (c==0x0) break;
 
@@ -776,7 +776,7 @@ bool xml_get_attribute_3_coord_float(int n,char *name,float *x,float *y,float *z
 {
 	char		*c,*c2,str[256];
 
-	*x=*y=*z=0;
+	*x=*y=*z=0.0f;
 
 	if (!xml_get_attribute_raw(n,name,str,256)) return(FALSE);
     
@@ -802,7 +802,7 @@ bool xml_get_attribute_4_coord_float(int n,char *name,float *r,float *g,float *b
 {
 	char		*c,*c2,str[256];
 
-	*r=*g=*b=*a=0;
+	*r=*g=*b=*a=0.0f;
 
 	if (!xml_get_attribute_raw(n,name,str,256)) return(FALSE);
     

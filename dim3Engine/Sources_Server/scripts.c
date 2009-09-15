@@ -279,17 +279,6 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	return(TRUE);
 }
 
-bool scripts_add_console(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str)
-{
-	if (!scripts_add(attach,sub_dir,name,params,err_str)) {
-		console_add_error(err_str);
-		if (setup.debug_console) console_trigger_set();
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
 /* =======================================================
 
       Dispose Scripts

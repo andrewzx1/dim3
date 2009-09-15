@@ -308,7 +308,7 @@ void weapon_attach_zoom_mask(weapon_type *weap)
       
 ======================================================= */
 
-void weapon_start(weapon_type *weap)
+bool weapon_start(weapon_type *weap)
 {
 	char		err_str[256];
 
@@ -317,9 +317,16 @@ void weapon_start(weapon_type *weap)
 	
 	scripts_clear_attach_data(&weap->attach);
 
-	scripts_add_console(&weap->attach,"Weapons",weap->name,NULL,err_str);
-	model_load_and_init(&weap->draw);
-	
+	if (!scripts_add(&weap->attach,"Weapons",weap->name,NULL,err_str)) {
+		console_add_error(err_str);
+		return(FALSE);
+	}
+
+	if (!model_load_and_init(&weap->draw,"Weapon",weap->name,err_str)) {
+		console_add_error(err_str);
+		return(FALSE);
+	}
+
 	memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));		// make sure dual is setup the same
 	
 	weapon_reset_ammo(weap);

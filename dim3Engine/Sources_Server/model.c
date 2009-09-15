@@ -165,10 +165,10 @@ model_type* model_load_single(char *name)
 	return(mdl);
 }
 
-void model_load_and_init(model_draw *draw)
+bool model_load_and_init(model_draw *draw,char *item_type,char *item_name,char *err_str)
 {
 	int					n;
-	char				err_str[256];
+	bool				ok;
 	model_type			*mdl;
 
 	draw->uid=-1;
@@ -179,6 +179,7 @@ void model_load_and_init(model_draw *draw)
 	draw->script_halo_idx=0;
 	draw->script_light_idx=0;
 	
+	ok=TRUE;
 	mdl=NULL;
 	
 	if (draw->name[0]!=0x0) {
@@ -191,8 +192,8 @@ void model_load_and_init(model_draw *draw)
 		else {
 			draw->on=FALSE;
 			draw->uid=-1;
-			sprintf(err_str,"Unable to load model named %s",draw->name);
-			console_add_error(err_str);
+			sprintf(err_str,"Unable to load model named %s for %s: %s",draw->name,item_type,item_name);
+			ok=FALSE;
 		}
 	}
 	else {
@@ -213,6 +214,8 @@ void model_load_and_init(model_draw *draw)
 	draw->script_animation_idx=0;
 
 	model_fade_clear(draw);
+
+	return(ok);
 }
 
 /* =======================================================

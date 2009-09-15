@@ -47,14 +47,22 @@ bitmap_type					font_bitmap;
 #ifdef D3_OS_MAC
 
 
+// supergumba -- try kCGImageAlphaNoneSkipLast, maybe that's why no drawing
+// try release, then use data
+// to test font, try:
+// CTFontRef != null  CTFontCreateWithName(CFSTR("blech"),size,NULL);
+
+
 void gl_text_initialize(void)
 {
 	int					n,x,y,data_sz,row_add;
-	char				ch;
+	char				ch,font_name[256];
 	unsigned char		*bm_data,*txt_data,*sptr,*dptr;
+	CFStringRef			cf_font_name;
 	CGPoint				txt_pt;
 	CGContextRef		bitmap_ctx;
 	CGColorSpaceRef		color_space;
+	CGAffineTransform	trans_flip;
 	
 	CGRect	rect;
 	
@@ -97,24 +105,35 @@ void gl_text_initialize(void)
 	
 	rect=CGRectMake(0,0,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
 	CGContextClipToRect(bitmap_ctx,rect);
-	
-		// create the font
-		
-	CGContextSelectFont(bitmap_ctx,hud.font.name,font_bitmap_point,kCGEncodingMacRoman);
-	
-	// supergumba -- need alt font here!
-/*
-	if (font==NULL) {
-		cf_font_name=CFStringCreateWithCString(kCFAllocatorDefault,hud.font.alt_name,kCFStringEncodingMacRoman);
-		font=CGFontCreateWithFontName(cf_font_name);
-		CFRelease(cf_font_name);
-	}
 
-*/
+	// supergumba -- also try
+
+//	CGContextScaleCTM(bitmap_ctx,1.0f,-1.0f);
+
+	CGContextSetAlpha(bitmap_ctx,1.0f);		// supergumba -- do we need all of these???
+	CGContextSetBlendMode(bitmap_ctx,kCGBlendModeNormal);
+
+		// check which font to use
+
+	strcpy(font_name,hud.font.name);
+
+	cf_font_name=CFStringCreateWithCString(kCFAllocatorDefault,hud.font.name,kCFStringEncodingMacRoman);
+	if (CTFontCreateWithName(cf_font_name,font_bitmap_point,NULL)==NULL) strcpy(font_name,hud.font.alt_name);
+	CFRelease(cf_font_name);
+
+		// create font
+
+	CGContextSelectFont(bitmap_ctx,font_name,font_bitmap_point,kCGEncodingMacRoman);
+	
 	CGContextSetTextDrawingMode(bitmap_ctx,kCGTextFillStroke);
 	CGContextSetRGBFillColor(bitmap_ctx,1.0f,1.0f,1.0f,1.0f);
 	CGContextSetRGBStrokeColor(bitmap_ctx,1.0f,1.0f,1.0f,1.0f);
+
+	trans_flip=CGAffineTransformMake(1.0f,0.0f,0.0f,-1.0f,0.0f,0.0f);
+	CGContextSetTextMatrix(bitmap_ctx,trans_flip);
 		
+		// draw the characters
+
 	for (n=0;n!=90;n++) {
 	
 			// draw the character

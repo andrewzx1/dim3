@@ -697,6 +697,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\dim3Engine\Sources_Server\map_multiplayer.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\map_ray_trace.c"
 					>
 					<FileConfiguration

@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "consoles.h"
+
 int								console_mode,console_count;
 console_line_type				console_line[max_console_line];
 
@@ -158,5 +160,7 @@ void console_add_error(char *txt)
 	col.g=col.b=0;
 	col.r=1;
 	console_add_line(txt,&col);
+
+	if (setup.debug_console) console_trigger_set();
 }
 

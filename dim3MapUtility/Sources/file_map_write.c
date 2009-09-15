@@ -29,10 +29,10 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern char					obscure_type_str[][32],
-							media_type_str[][32],
+extern char					media_type_str[][32],
 							sky_type_str[][32],
 							gl_fog_type_str[][32],
+							mesh_hide_mode_str[][32],
 							liquid_tide_direction_str[][32],
 							light_type_str[][32],
 							light_filter_str[][32],
@@ -413,8 +413,9 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("never_obscure",mesh->flag.never_obscure);
 	xml_add_attribute_boolean("rot_independent",mesh->flag.rot_independent);
 	xml_add_attribute_boolean("shadow",mesh->flag.shadow);
-	
-	xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);
+
+	if (mesh->hide_mode!=mesh_hide_mode_never) xml_add_attribute_list("hide",(char*)mesh_hide_mode_str,mesh->hide_mode);
+	if ((mesh->rot_off.x!=0.0f) || (mesh->rot_off.y!=0.0f) || (mesh->rot_off.z!=0.0f)) xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);
 	
 	xml_add_attribute_int("uv_count",mesh->nuv);
 

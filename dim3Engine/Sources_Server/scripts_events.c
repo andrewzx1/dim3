@@ -130,7 +130,6 @@ void scripts_post_event_console(attach_type *attach,int main_event,int sub_event
 	
 	if (!scripts_post_event(attach,main_event,sub_event,id,err_str)) {
 		console_add_error(err_str);
-		if (setup.debug_console) console_trigger_set();
 	}
 }
 
@@ -200,7 +199,6 @@ void scripts_chain_console(attach_type *attach,char *func_name)
 	
 	if (!scripts_chain(attach,func_name,err_str)) {
 		console_add_error(err_str);
-		if (setup.debug_console) console_trigger_set();
 	}
 }
 
