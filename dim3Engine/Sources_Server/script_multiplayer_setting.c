@@ -43,12 +43,14 @@ extern network_setup_type	net_setup;
 JSValueRef js_multiplayer_setting_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_multiplayer_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_multiplayer_setting_get_monsters(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		multiplayer_setting_props[]={
 							{"on",					js_multiplayer_setting_get_on,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"type",				js_multiplayer_setting_get_type,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"teamPlay",			js_multiplayer_setting_get_teamPlay,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"monsters",			js_multiplayer_setting_get_monsters,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
 JSStaticFunction	multiplayer_setting_functions[]={
@@ -101,6 +103,13 @@ JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj
  	if (!net_setup.client.joined) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,hud.net_game.games[net_setup.game_idx].use_teams));
+}
+
+JSValueRef js_multiplayer_setting_get_monsters(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+ 	if (!net_setup.client.joined) return(script_bool_to_value(cx,FALSE));
+	
+	return(script_bool_to_value(cx,hud.net_game.games[net_setup.game_idx].monsters));
 }
 
 /* =======================================================

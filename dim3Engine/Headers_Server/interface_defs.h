@@ -454,7 +454,7 @@ typedef struct		{
 
 typedef struct		{
 						char					name[name_str_len];
-						bool					use_teams;
+						bool					use_teams,monsters;
 					} hud_net_game_type;
 
 typedef struct		{

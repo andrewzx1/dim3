@@ -46,6 +46,141 @@ bitmap_type					font_bitmap;
 
 #ifdef D3_OS_MAC
 
+
+void gl_text_initialize(void)
+{
+	int					n,x,y,data_sz,row_add;
+	char				ch;
+	unsigned char		*bm_data,*txt_data,*sptr,*dptr;
+	CGPoint				txt_pt;
+	CGContextRef		bitmap_ctx;
+	CGColorSpaceRef		color_space;
+	
+	CGRect	rect;
+	
+		// data for bitmap
+
+	row_add=font_bitmap_pixel_sz*4;
+	data_sz=row_add*font_bitmap_pixel_sz;
+	
+	bm_data=malloc(data_sz);
+	if (bm_data==NULL) return;
+	
+	bzero(bm_data,data_sz);
+	
+	sptr=bm_data;
+	for (y=0;y!=font_bitmap_pixel_sz;y++) {
+
+		for (x=0;x!=font_bitmap_pixel_sz;x++) {
+			if ((x&0x1)==0) {
+				*sptr++=0xFF;
+			}
+			else {
+				*sptr++=0x00;
+			}
+			*sptr++;
+			*sptr++;
+			*sptr++;
+		}
+	}
+	
+		// create bitmap context
+		
+	color_space=CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	bitmap_ctx=CGBitmapContextCreate(bm_data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,8,row_add,color_space,kCGImageAlphaPremultipliedLast);
+	CGColorSpaceRelease(color_space);
+	
+	if (bitmap_ctx==NULL) {
+		free(bm_data);
+		return;
+	}
+	
+	rect=CGRectMake(0,0,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
+	CGContextClipToRect(bitmap_ctx,rect);
+	
+		// create the font
+		
+	CGContextSelectFont(bitmap_ctx,hud.font.name,font_bitmap_point,kCGEncodingMacRoman);
+	
+	// supergumba -- need alt font here!
+/*
+	if (font==NULL) {
+		cf_font_name=CFStringCreateWithCString(kCFAllocatorDefault,hud.font.alt_name,kCFStringEncodingMacRoman);
+		font=CGFontCreateWithFontName(cf_font_name);
+		CFRelease(cf_font_name);
+	}
+
+*/
+	CGContextSetTextDrawingMode(bitmap_ctx,kCGTextFillStroke);
+	CGContextSetRGBFillColor(bitmap_ctx,1.0f,1.0f,1.0f,1.0f);
+	CGContextSetRGBStrokeColor(bitmap_ctx,1.0f,1.0f,1.0f,1.0f);
+		
+	for (n=0;n!=90;n++) {
+	
+			// draw the character
+
+		ch=(n+'!');
+
+		x=(n%font_bitmap_char_per_line)*font_bitmap_char_wid;
+		y=((n/font_bitmap_char_per_line)*font_bitmap_char_high)+font_bitmap_char_baseline;
+
+		CGContextShowTextAtPoint(bitmap_ctx,x,y,&ch,1);
+
+			// get the spacing information
+			
+		txt_pt=CGContextGetTextPosition(bitmap_ctx);
+
+		font_char_size[n]=(txt_pt.x-(float)x)/(float)font_bitmap_char_wid;
+	}
+	
+	// supergumba -- test!
+	rect=CGRectMake(0,0,100,100);
+	CGContextSetRGBFillColor(bitmap_ctx,1.0f,0.0f,1.0f,1.0f);
+	CGContextFillRect(bitmap_ctx,rect);
+	
+	CGContextFlush(bitmap_ctx);
+
+		// texture data
+		
+	txt_data=malloc(data_sz);
+	if (txt_data==NULL) {
+		CGContextRelease(bitmap_ctx);
+		free(bm_data);
+		return;
+	}
+	
+		// create the texture
+
+	sptr=bm_data;
+	dptr=txt_data;
+
+	for (y=0;y!=font_bitmap_pixel_sz;y++) {
+
+		for (x=0;x!=font_bitmap_pixel_sz;x++) {
+
+			*dptr++=0xFF;
+			*dptr++=0xFF;
+			*dptr++=0xFF;
+
+			*dptr++=*sptr++;		// use the anti-aliased font as the alpha mask (using the red component)
+			sptr+=3;
+
+		}
+	}
+	
+	bitmap_data(&font_bitmap,txt_data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE);
+
+	free(txt_data);
+	
+		// dispose the bitmap context
+		
+	CGContextRelease(bitmap_ctx);
+	free(bm_data);
+}
+
+
+
+/* supergumba
 void gl_text_initialize(void)
 {
 	int					n,x,y,row_add,font;
@@ -142,6 +277,7 @@ void gl_text_initialize(void)
 	SetGWorld(org_gworld,org_gdhand);
 	DisposeGWorld(gworld);
 }
+*/
 
 #endif
 
