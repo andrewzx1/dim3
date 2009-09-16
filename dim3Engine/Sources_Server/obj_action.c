@@ -497,7 +497,7 @@ void object_start_stand(obj_type *obj)
 void object_start_duck(obj_type *obj)
 {
 	if ((obj->fly) || (!obj->duck.on)) return;
-	if (obj->air_mode!=am_ground) return;
+	if ((obj->liquid_mode==lm_under) || (obj->air_mode!=am_ground)) return;
     if ((obj->duck.mode==dm_duck) || (obj->duck.mode==dm_duck_down)) return;
 
     obj->duck.mode=dm_duck_down;

@@ -251,6 +251,10 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		script->used=FALSE;
 		return(FALSE);
 	}
+
+		// add in any constants
+
+	script_defines_create_constants(script->cx);
 	
 		// create the object
 

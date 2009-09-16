@@ -433,6 +433,10 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 	scripts_post_event_console(&obj->attach,sd_event_damage,0,0);
 	
 	obj->damage.in_damage=FALSE;
+
+		// any watches
+
+	object_watch_damage_alert(&obj->pnt,obj->uid);
 }
 
 /* =======================================================

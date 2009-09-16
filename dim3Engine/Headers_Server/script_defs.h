@@ -316,6 +316,7 @@ and can be sold or given away.
 #define sd_event_watch_object_enter_base				3053
 #define sd_event_watch_object_exit_base					3054
 #define sd_event_watch_object_sound						3055
+#define sd_event_watch_object_damage					3056
 
 #define sd_event_weapon_fire_single						3058
 #define sd_event_weapon_fire_up							3059
