@@ -350,14 +350,12 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>26</integer>
-									<integer>25</integer>
-									<integer>15</integer>
-									<integer>0</integer>
+									<integer>81</integer>
+									<integer>80</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {290, 776}}</string>
+							<string>{{0, 737}, {290, 776}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -404,10 +402,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26681ABD105EFFFD00892593</string>
+										<string>26C7B8EC106055B400F800DA</string>
 										<key>history</key>
 										<array>
-											<string>2614C67410589FFA00B09EAB</string>
+											<string>26681ABD105EFFFD00892593</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -465,9 +463,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26681ABE105EFFFD00892593</string>
+				<string>26C7B8ED106055B400F800DA</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26681ABF105EFFFD00892593</string>
+				<string>26C7B8EE106055B400F800DA</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -588,7 +586,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>274661373.865026</real>
+	<real>274748852.83397901</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -603,11 +601,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26681AC1105EFFFD00892593</string>
-		<string>26681AC2105EFFFD00892593</string>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -689,7 +682,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26681AAD105EFFC700892593</string>
+				<string>26C7B8E2106055AA00F800DA</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

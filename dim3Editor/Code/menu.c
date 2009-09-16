@@ -108,7 +108,6 @@ void menu_fix_enable(void)
         
             // pieces menu
         
-		
 		if (select_has_type(mesh_piece)) {
 			EnableMenuItem(GetMenuHandle(app_menu_mesh),0);
 			if (drag_mode==drag_mode_polygon) {
