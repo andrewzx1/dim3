@@ -76,22 +76,6 @@ void gl_text_initialize(void)
 	
 	bzero(bm_data,data_sz);
 	
-	sptr=bm_data;
-	for (y=0;y!=font_bitmap_pixel_sz;y++) {
-
-		for (x=0;x!=font_bitmap_pixel_sz;x++) {
-			if ((x&0x1)==0) {
-				*sptr++=0xFF;
-			}
-			else {
-				*sptr++=0x00;
-			}
-			*sptr++;
-			*sptr++;
-			*sptr++;
-		}
-	}
-	
 		// create bitmap context
 		
 	color_space=CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
@@ -103,8 +87,11 @@ void gl_text_initialize(void)
 		return;
 	}
 	
+	CGContextClear(bitmap_ctx, CGRectMake( 0, 0, font_bitmap_pixel_sz, font_bitmap_pixel_sz ) );
+ 
+	
 	rect=CGRectMake(0,0,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
-	CGContextClipToRect(bitmap_ctx,rect);
+//	CGContextClipToRect(bitmap_ctx,rect);
 
 	// supergumba -- also try
 
@@ -116,11 +103,12 @@ void gl_text_initialize(void)
 		// check which font to use
 
 	strcpy(font_name,hud.font.name);
-
+// supergumba
+/*
 	cf_font_name=CFStringCreateWithCString(kCFAllocatorDefault,hud.font.name,kCFStringEncodingMacRoman);
 	if (CTFontCreateWithName(cf_font_name,font_bitmap_point,NULL)==NULL) strcpy(font_name,hud.font.alt_name);
 	CFRelease(cf_font_name);
-
+*/
 		// create font
 
 	CGContextSelectFont(bitmap_ctx,font_name,font_bitmap_point,kCGEncodingMacRoman);
@@ -153,11 +141,16 @@ void gl_text_initialize(void)
 	}
 	
 	// supergumba -- test!
-	rect=CGRectMake(0,0,100,100);
-	CGContextSetRGBFillColor(bitmap_ctx,1.0f,0.0f,1.0f,1.0f);
-	CGContextFillRect(bitmap_ctx,rect);
 	
-	CGContextFlush(bitmap_ctx);
+//	rect=CGRectMake(0,0,512,250);
+//	CGContextSetRGBFillColor(bitmap_ctx,1.0f,0.0f,1.0f,1.0f);
+//	CGContextFillRect(bitmap_ctx,rect);
+	
+//	CGContextSetRGBFillColor( bitmap_ctx, 1, 1, 0, 1 );
+//	CGContextFillRect( bitmap_ctx, CGRectMake( 0, 0, font_bitmap_pixel_sz, font_bitmap_pixel_sz ) );
+
+	
+//	CGContextFlush(bitmap_ctx);
 
 		// texture data
 		
@@ -169,20 +162,22 @@ void gl_text_initialize(void)
 	}
 	
 		// create the texture
+		// note the coordinate systems are flipped
 
-	sptr=bm_data;
 	dptr=txt_data;
 
 	for (y=0;y!=font_bitmap_pixel_sz;y++) {
+	
+		sptr=bm_data+(((font_bitmap_pixel_sz-1)-y)*row_add);
 
 		for (x=0;x!=font_bitmap_pixel_sz;x++) {
 
 			*dptr++=0xFF;
 			*dptr++=0xFF;
 			*dptr++=0xFF;
-
-			*dptr++=*sptr++;		// use the anti-aliased font as the alpha mask (using the red component)
-			sptr+=3;
+			*dptr++=*sptr;		// use the anti-aliased font as the alpha mask (using the red component)
+			
+			sptr+=4;
 
 		}
 	}

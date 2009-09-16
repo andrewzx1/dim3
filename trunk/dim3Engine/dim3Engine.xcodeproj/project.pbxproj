@@ -40,6 +40,7 @@
 		26AEC4191059F15C001C9DF6 /* gl_full_screen_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AEC4181059F15C001C9DF6 /* gl_full_screen_shader.c */; };
 		26BE14280F44FA57008DB7DB /* score_limit.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE14270F44FA57008DB7DB /* score_limit.c */; };
 		26BF01C20ECCEC22009996C6 /* script_weap_target_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */; };
+		26C7B8D41060558900F800DA /* map_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C7B8D31060558900F800DA /* map_multiplayer.c */; };
 		26CC83371027BAC200682555 /* script_map_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CC83361027BAC200682555 /* script_map_light.c */; };
 		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
 		26D94410102F3D19004E5BB3 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9440F102F3D19004E5BB3 /* JavaScriptCore.framework */; };
@@ -421,6 +422,7 @@
 		26AEC4181059F15C001C9DF6 /* gl_full_screen_shader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_full_screen_shader.c; path = Sources_View/gl_full_screen_shader.c; sourceTree = "<group>"; };
 		26BE14270F44FA57008DB7DB /* score_limit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = score_limit.c; path = Sources_View/score_limit.c; sourceTree = "<group>"; };
 		26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_target_color.c; path = Sources_Server/script_weap_target_color.c; sourceTree = "<group>"; };
+		26C7B8D31060558900F800DA /* map_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_multiplayer.c; path = Sources_Server/map_multiplayer.c; sourceTree = "<group>"; };
 		26CC83361027BAC200682555 /* script_map_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_light.c; path = Sources_Server/script_map_light.c; sourceTree = "<group>"; };
 		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
 		26D9440F102F3D19004E5BB3 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = ../dim3Common/Frameworks/JavaScriptCore.framework; sourceTree = SOURCE_ROOT; };
@@ -1080,6 +1082,7 @@
 				265B377C0D7F8D3A004AE124 /* group_change.c */,
 				26DAED2F0DD55C28000EBB48 /* group_move.c */,
 				F5DD634709BAA787004A32DA /* map_movement.c */,
+				26C7B8D31060558900F800DA /* map_multiplayer.c */,
 			);
 			name = Map;
 			sourceTree = "<group>";
@@ -1931,6 +1934,7 @@
 				263EF8C00FD9CFEE00FEB1E5 /* script_multiplayer_score.c in Sources */,
 				26CC83371027BAC200682555 /* script_map_light.c in Sources */,
 				26AEC4191059F15C001C9DF6 /* gl_full_screen_shader.c in Sources */,
+				26C7B8D41060558900F800DA /* map_multiplayer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1951,8 +1955,7 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
