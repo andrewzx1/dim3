@@ -192,3 +192,32 @@ void object_watch_sound_alert(d3pnt *pnt,int sound_obj_uid,char *sound_name)
 		obj++;
 	}
 }
+
+/* =======================================================
+
+      Object Watch Damage
+      
+======================================================= */
+
+void object_watch_damage_alert(d3pnt *pnt,int damage_obj_uid)
+{
+	int				n;
+	obj_type		*obj;
+	
+		// notify watching objects of damaged objects
+
+	obj=server.objs;
+
+	for (n=0;n!=server.count.obj;n++) {
+
+		if ((obj->watch.on) && (obj->watch.dist!=0)) {
+
+			if (distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
+				obj->watch.obj_uid=damage_obj_uid;
+				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_damage,0);
+			}
+		}
+
+		obj++;
+	}
+}

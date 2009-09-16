@@ -231,6 +231,7 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_watch_object_enter_base,				"",		"DIM3_EVENT_WATCH_OBJECT_ENTER_BASE"},
 								{sd_event_watch_object_exit_base,				"",		"DIM3_EVENT_WATCH_OBJECT_EXIT_BASE"},
 								{sd_event_watch_object_sound,					"",		"DIM3_EVENT_WATCH_OBJECT_SOUND"},
+								{sd_event_watch_object_damage,					"",		"DIM3_EVENT_WATCH_OBJECT_DAMAGE"},
 								
 								{sd_event_weapon_fire_single,					"",		"DIM3_EVENT_WEAPON_FIRE_SINGLE"},
 								{sd_event_weapon_fire_up,						"",		"DIM3_EVENT_WEAPON_FIRE_UP"},
@@ -378,6 +379,16 @@ char* script_parse_defines(char *data,int *len)
 	if (script_user_defines!=NULL) data=script_parse_defines_set(script_user_defines,FALSE,data,len);
 	return(data);
 }
+
+
+// supergumba -- different constant try
+
+void script_defines_create_constants(script_type *script)
+{
+//	script_set_single_property(script->cx,script->global_obj,"x",script_float_to_value(cx,x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+
+}
+
 
 /* =======================================================
 
