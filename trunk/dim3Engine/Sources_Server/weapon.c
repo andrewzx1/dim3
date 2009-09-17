@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "weapons.h"
 #include "models.h"
 #include "interfaces.h"
+#include "consoles.h"
 
 extern server_type			server;
 
@@ -330,6 +331,8 @@ bool weapon_start(weapon_type *weap)
 	memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));		// make sure dual is setup the same
 	
 	weapon_reset_ammo(weap);
+
+	return(TRUE);
 }
 
 void weapon_dispose(int idx)

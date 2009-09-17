@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "scripts.h"
+
 extern js_type				js;
 extern setup_type			setup;
 
@@ -273,17 +275,42 @@ script_define_type			script_dim3_defines[]={
 
 /* =======================================================
 
-      Parse Defines into Scripts
+      Add Defines to Scripts
       
 ======================================================= */
 
-char* script_parse_defines_set(script_define_type *defines,bool use_int_value,char *data,int *p_len)
+bool script_defines_is_number(char *str,bool *is_float)
 {
-	int					len,strsz,repsz,movsz,coff;
-	char				*c,*data2,tch,repstr[64];
+	int			n,len;
+	char		*c,ch;
+
+	*is_float=FALSE;
+
+	len=strlen(str);
+	if (len==0) return(FALSE);
+
+	c=str;
+
+	for (n=0;n!=len;n++) {
+		ch=*c++;
+		if ((ch>='0') && (ch<='9')) continue;
+		if (ch=='.') {
+			*is_float=TRUE;
+			continue;
+		}
+		
+		return(FALSE);
+	}
+
+	return(TRUE);
+}
+
+void script_defines_create_constants_set(script_type *script,script_define_type *defines,bool user_defined)
+{
+	int					i;
+	float				f;
+	bool				is_float;
 	script_define_type	*define;
-	
-	len=*p_len;
 	
 		// run through the defines
 		
@@ -291,104 +318,39 @@ char* script_parse_defines_set(script_define_type *defines,bool use_int_value,ch
 		
 	while (TRUE) {
 		if (define->value_int==-1) break;
-		
-			// define name length
-			
-		strsz=strlen(define->name);
-		
-			// define substitute value
-		
-		if (use_int_value) {
-			sprintf(repstr,"%d",define->value_int);
+
+			// determine how to set property
+			// built in defines are always numbers, but
+			// users can be strings or numbers
+
+		if (!user_defined) {
+			script_set_single_property(script->cx,script->global_obj,define->name,script_int_to_value(script->cx,define->value_int),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 		}
 		else {
-			strcpy(repstr,define->value_str);
-		}
-		repsz=strlen(repstr);
-			
-			// run through script
-		
-		c=data;
-		
-		while (TRUE) {
-		
-				// find next occurance
-				
-			c=strstr(c,define->name);
-			if (c==NULL) break;
-			
-				// is this the whole world only?
-				
-			tch=*(c+strsz);
-			if (((tch>='0') && (tch<='9')) || ((tch>='A') && (tch<='Z')) || ((tch>='a') && (tch<='z')) || (tch=='_')) {
-				c+=strsz;
-				continue;
-			}
-			
-			if (c>data) {
-				tch=*(c-1);
-				if (((tch>='0') && (tch<='9')) || ((tch>='A') && (tch<='Z')) || ((tch>='a') && (tch<='z')) || (tch=='_')) {
-					c+=strsz;
-					continue;
+			if (script_defines_is_number(define->value_str,&is_float)) {
+				if (!is_float) {
+					i=atoi(define->value_str);
+					script_set_single_property(script->cx,script->global_obj,define->name,script_int_to_value(script->cx,i),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 				}
-			}
-			
-				// replace
-				
-			if (repsz<=strsz) {
-				movsz=(len+1)-(int)((c+strsz)-data);
-				if (movsz>0) memmove((c+repsz),(c+strsz),movsz);
-				memmove(c,repstr,repsz);
-				c+=(repsz-1);
-				len-=(strsz-repsz);
+				else {
+					f=(float)atof(define->value_str);
+					script_set_single_property(script->cx,script->global_obj,define->name,script_float_to_value(script->cx,f),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+				}
 			}
 			else {
-				coff=c-data;						// need to remember position to put c back into new array
-				data2=malloc(len+(repsz-strsz)+1);
-
-				if (data2!=NULL) {
-					memmove(data2,data,(len+1));
-					free(data);
-					
-					data=data2;
-					c=data+coff;
-					
-					movsz=(len+1)-(int)((c+strsz)-data);
-					if (movsz>0) memmove((c+repsz),(c+strsz),movsz);
-					
-					memmove(c,repstr,repsz);
-					
-					c+=(repsz-1);
-					len+=(repsz-strsz);
-				}
+				script_set_single_property(script->cx,script->global_obj,define->name,script_string_to_value(script->cx,define->value_str),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 			}
-				
 		}
 		
 		define++;
 	}
-	
-	*p_len=len;
-	
-	return(data);
 }
-
-char* script_parse_defines(char *data,int *len)
-{
-	data=script_parse_defines_set(script_dim3_defines,TRUE,data,len);
-	if (script_user_defines!=NULL) data=script_parse_defines_set(script_user_defines,FALSE,data,len);
-	return(data);
-}
-
-
-// supergumba -- different constant try
 
 void script_defines_create_constants(script_type *script)
 {
-//	script_set_single_property(script->cx,script->global_obj,"x",script_float_to_value(cx,x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-
+	script_defines_create_constants_set(script,script_dim3_defines,FALSE);
+	if (script_user_defines!=NULL) script_defines_create_constants_set(script,script_user_defines,TRUE);
 }
-
 
 /* =======================================================
 

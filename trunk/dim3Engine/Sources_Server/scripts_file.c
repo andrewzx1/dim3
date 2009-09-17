@@ -78,10 +78,6 @@ bool script_load_file(script_type *script,char *script_dir,char *script_name,cha
 	
 	data[sz]=0x0;
 	
-		// parse defines
-	
-	data=script_parse_defines(data,&sz);
-	
 		// setup script
 
 	sprintf(script->name,"%s.js",script_name);
