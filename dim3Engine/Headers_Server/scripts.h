@@ -46,7 +46,6 @@ extern void scripts_dispose(int uid);
 
 extern void scripts_run(int tick);
 
-extern char* script_parse_defines(char *data,int *len);
 extern void script_defines_create_constants(script_type *script);
 extern void script_load_user_defines(void);
 extern void script_free_user_defines(void);

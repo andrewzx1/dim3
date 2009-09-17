@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "projectiles.h"
 #include "models.h"
 #include "effects.h"
+#include "consoles.h"
 
 extern server_type			server;
 extern js_type				js;

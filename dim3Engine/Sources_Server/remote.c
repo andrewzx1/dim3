@@ -39,6 +39,7 @@ and can be sold or given away.
 #include "physics.h"
 #include "sounds.h"
 #include "interfaces.h"
+#include "consoles.h"
 
 extern map_type				map;
 extern view_type			view;
