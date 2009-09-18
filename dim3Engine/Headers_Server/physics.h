@@ -25,32 +25,44 @@ and can be sold or given away.
  
 *********************************************************************/
 
+// map collisions
+
+extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
+extern int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2);
+extern bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd);
+extern bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd);
+extern bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd);
+
+// object collisions
+
 extern void collide_object_polygon(obj_type *obj,int x_add,int z_add,int *px,int *pz);
 extern void collide_object_hit_box_polygon(obj_type *obj,model_hit_box_type *hit_box,int *px,int *pz);
 extern bool collide_object_to_object(obj_type *obj1,int x_add,int z_add,obj_type *obj2,bool include_y,bool include_stand);
 extern bool collide_object_to_object_hit_box(obj_type *obj1,int x_add,int z_add,obj_type *obj2,model_hit_box_type *hit_box);
-extern bool collide_object_to_object_get_slide_line(obj_type *obj,int hit_face,int *p_lx,int *p_rx,int *p_lz,int *p_rz);
-extern bool collide_object_to_hit_box_get_slide_line(obj_type *obj,int hit_face,model_hit_box_type *hit_box,int *p_lx,int *p_rx,int *p_lz,int *p_rz);
-extern void collide_projectile_polygon(proj_type *proj,int *px,int *pz);
-extern bool collide_projectile_to_object(proj_type *proj,obj_type *obj);
-extern bool collide_projectile_to_object_hit_box(proj_type *proj,obj_type *obj,model_hit_box_type *hit_box);
-extern bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2);
-extern bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj);
-extern bool collide_sphere_to_object_hit_box(int sx,int sy,int sz,int radius,obj_type *obj,model_hit_box_type *hit_box);
-extern bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *proj);
-
+extern bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,obj_type *check_obj);
 extern int collide_find_object_for_object_move(obj_type *obj,int x,int z);
 extern int collide_find_object_for_object(obj_type *obj);
 extern int collide_find_object_for_standing_object(obj_type *obj);
-extern int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_uid);
-extern int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_uid);
-extern int collide_find_projectile_for_projectile(proj_type *proj);
+extern bool collide_object_to_object_get_slide_line(obj_type *obj,int hit_face,int *p_lx,int *p_rx,int *p_lz,int *p_rz);
+extern bool collide_object_to_hit_box_get_slide_line(obj_type *obj,int hit_face,model_hit_box_type *hit_box,int *p_lx,int *p_rx,int *p_lz,int *p_rz);
 extern bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,obj_type *obj);
-extern int collide_find_object_for_sphere_hit(int sx,int sy,int sz,int radius,int ignore_obj_uid);
-extern int collide_find_object_for_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid);
+extern bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj);
+extern bool collide_sphere_to_object_hit_box(int sx,int sy,int sz,int radius,obj_type *obj,model_hit_box_type *hit_box);
 extern void collide_push_objects(int sx,int sy,int sz,int radius,int force);
 
-extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
+// projectile collisions
+
+extern void collide_projectile_polygon(proj_type *proj,int *px,int *pz);
+extern bool collide_projectile_to_object(proj_type *proj,obj_type *obj);
+extern bool collide_projectile_to_object_hit_box(proj_type *proj,obj_type *obj,model_hit_box_type *hit_box);
+extern bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj);
+extern int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_uid);
+extern int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_uid);
+extern bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2);
+extern int collide_find_projectile_for_projectile(proj_type *proj);
+extern bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *proj);
+
+// misc
 
 extern int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher);
 extern int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *stand_poly);
@@ -59,6 +71,8 @@ extern int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_ty
 extern int pin_upward_movement_obj(obj_type *obj,int my);
 extern bool map_stand_crush_object(obj_type *obj);
 extern bool map_stand_check_object(obj_type *obj);
+
+// ray tracing
 
 extern bool ray_trace_initialize(char *err_str);
 extern void ray_trace_shutdown(void);

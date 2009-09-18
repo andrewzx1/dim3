@@ -489,45 +489,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\collision.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\collision_map.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\collision_utility.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\console.c"
 					>
 					<FileConfiguration
@@ -3080,6 +3041,31 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
+					</File>
+				</Filter>
+				<Filter
+					Name="Collision"
+					>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\collision_map.c"
+						>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\collision_object.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\collision_projectile.c"
+						>
 					</File>
 				</Filter>
 			</Filter>

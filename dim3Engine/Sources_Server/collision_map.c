@@ -99,7 +99,7 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
 
 /* =======================================================
 
-      Check for Object-Map Collisions
+      Box-Map Collisions
       
 ======================================================= */
 
@@ -273,6 +273,12 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Object-Map Collisions
+      
+======================================================= */
+
 bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
 	int					n,nhit_box;
@@ -342,7 +348,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 /* =======================================================
 
-      Check for Project-Map Collisions
+      Project-Map Collisions
       
 ======================================================= */
 
