@@ -97,7 +97,6 @@ int texture_pick(char *material_name,char *err_str)
 {
 	int				idx;
     char			path[1024],path2[1024],sub_path[1024],txt[256];
-	unsigned char	p_str[256];
 	texture_type	*texture;
 	
 		// find a free texture
@@ -108,9 +107,7 @@ int texture_pick(char *material_name,char *err_str)
 		// pick a bitmap
 		
 	sprintf(txt,"A material named '%s' has been found.  Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).",material_name);
-	CopyCStringToPascal(txt,p_str);
-	
-	StandardAlert(0,"\pMaterial Found - Select Bitmap",p_str,NULL,NULL);
+	dialog_alert("Material Found - Select Bitmap",txt,NULL,NULL);
 	
 	if (!nav_open_file("png",path)) {
 		strcpy(err_str,"No texture was choosen.");
@@ -148,18 +145,7 @@ int texture_pick(char *material_name,char *err_str)
 
 bool texture_use_single(void)
 {
-	short					hit;
-	AlertStdAlertParamRec	alert_param;
-	
-	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
-	alert_param.defaultText="\pSingle";
-	alert_param.cancelText="\pMultiple";
-	alert_param.defaultButton=kAlertStdAlertOKButton;
-	alert_param.position=kWindowDefaultPosition;
-
-	StandardAlert(0,"\pMultiple Materials in Model","\pDo you want to use a single texture for the entire model or pick a new texture for each material?",&alert_param,&hit);
-	
-	return(hit==kAlertStdAlertOKButton);
+	return(dialog_alert("Multiple Materials in Model","Do you want to use a single texture for the entire model or pick a new texture for each material?","Single","Multiple")==0);
 }
 
 

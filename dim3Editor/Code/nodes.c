@@ -160,7 +160,7 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 		k2=node_link_get_free_link(next_idx);
 		
 		if ((k1==-1) || (k2==-1)) {
-			StandardAlert(kAlertCautionAlert,"\pCan not connect nodes","\pYou've reached the maximum number of connected nodes for this node.",NULL,NULL);
+			dialog_alert("Can not connect nodes","You've reached the maximum number of connected nodes for this node.",NULL,NULL);
 			return(TRUE);
 		}
 		

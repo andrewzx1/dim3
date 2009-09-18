@@ -155,7 +155,7 @@ bool save_binary(void)
 	ok=model_save(&model);
 	SetThemeCursor(kThemeArrowCursor);
 	
-	if (!ok) StandardAlert(kAlertCautionAlert,"\pdim3 Animator could not save model.","\pThe disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).",NULL,NULL);
+	if (!ok) dialog_alert("dim3 Animator could not save model.","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).",NULL,NULL);
 	
 	return(ok);
 }
@@ -313,7 +313,6 @@ void import_mesh_obj(void)
 {
 	float			scale;
 	char			path[1024],err_str[256];
-	unsigned char	p_err_str[256];
 	bool			found_normals;
     
 	SetThemeCursor(kThemeArrowCursor);
@@ -323,8 +322,7 @@ void import_mesh_obj(void)
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
 	
 	if (!import_obj(path,&found_normals,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pCould not import .OBJ file",p_err_str,NULL,NULL);
+		dialog_alert("Could not import .OBJ file",err_str,NULL,NULL);
 		return;
 	}
 
@@ -351,7 +349,6 @@ void import_mesh_lightwave(void)
 {
 	float			scale;
 	char			path[1024],err_str[256];
-	unsigned char	p_err_str[256];
     
 	SetThemeCursor(kThemeArrowCursor);
 	if (!nav_open_file("lwo",path)) return;
@@ -360,8 +357,7 @@ void import_mesh_lightwave(void)
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
 	
 	if (!import_lightwave(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pCould not import .LWO file",p_err_str,NULL,NULL);
+		dialog_alert("Could not import .LWO file",err_str,NULL,NULL);
 		return;
 	}
 	
@@ -387,7 +383,6 @@ void import_mesh_lightwave(void)
 void import_mesh_c4d_xml(void)
 {
 	char			path[1024],err_str[256];
-	unsigned char	p_err_str[256];
 	float			scale;
     
 	SetThemeCursor(kThemeArrowCursor);
@@ -397,8 +392,7 @@ void import_mesh_c4d_xml(void)
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
 	
 	if (!import_c4d_xml(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pCould not import .XML file",p_err_str,NULL,NULL);
+		dialog_alert("Could not import .XML file",err_str,NULL,NULL);
 		return;
 	}
 	
@@ -535,18 +529,7 @@ void redraw_model(void)
 
 void save_changes(void)
 {
-	short					hit;
-	AlertStdAlertParamRec	alert_param;
-	
-	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
-	alert_param.defaultText="\pYes";
-	alert_param.cancelText="\pNo";
-	alert_param.defaultButton=kAlertStdAlertOKButton;
-	alert_param.position=kWindowDefaultPosition;
-
-	StandardAlert(0,"\pSave Changes?","\pDo you want to save the changes to this model?",&alert_param,&hit);
-	
-	if (hit==kAlertStdAlertOKButton) save_binary();
+	if (dialog_alert("Save Changes?","Do you want to save the changes to this model?","Yes","No")==0) save_binary();
 }
 
 /* =======================================================
@@ -1012,7 +995,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandNewPose:
  			if (model.nbone==0) {
-				StandardAlert(0,"\pCan't Create Pose","\pYou need to have at least one bone before creating a pose.",NULL,NULL);
+				dialog_alert("Can't Create Pose","You need to have at least one bone before creating a pose.",NULL,NULL);
 				return(noErr);
 			}
 			
@@ -1075,7 +1058,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			if (cur_pose==-1) return(noErr);
 
 			if (model_check_pose_in_animation(&model,cur_pose)) {
-				StandardAlert(kAlertCautionAlert,"\pCan't Delete Pose","\pThis pose is being used in an animation.",NULL,NULL);
+				dialog_alert("Can't Delete Pose","This pose is being used in an animation.",NULL,NULL);
 				return(noErr);
 			}
 			
@@ -1138,7 +1121,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandNewAnimate:
 			if (model.npose==0) {
-				StandardAlert(0,"\pCan't Create Animation","\pYou need to have at least one pose before creating an animation.",NULL,NULL);
+				dialog_alert("Can't Create Animation","You need to have at least one pose before creating an animation.",NULL,NULL);
 				return(noErr);
 			}
 			

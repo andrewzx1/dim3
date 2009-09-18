@@ -177,18 +177,7 @@ void menu_set_show_hide_check(void)
 
 void menu_save_changes_dialog(void)
 {
-	short					hit;
-	AlertStdAlertParamRec	alert_param;
-	
-	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
-	alert_param.defaultText="\pYes";
-	alert_param.cancelText="\pNo";
-	alert_param.defaultButton=kAlertStdAlertOKButton;
-	alert_param.position=kWindowDefaultPosition;
-
-	StandardAlert(0,"\pSave Changes?","\pDo you want to save the changes to this map?",&alert_param,&hit);
-	
-	if (hit==kAlertStdAlertOKButton) file_save_map();
+	if (dialog_alert("Save Changes?","Do you want to save the changes to this map?","Yes","No")==0) file_save_map();
 }
 
 /* =======================================================
