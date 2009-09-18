@@ -173,7 +173,7 @@ static pascal OSStatus map_movements_event_proc(EventHandlerCallRef handler,Even
 			
 				case kMapMovementAddMovementButton:
 					if (map.ngroup==0) {
-						StandardAlert(kAlertCautionAlert,"\pCan Not Create Movement","\pYou need at least one segment group to create a movement.",NULL,NULL);
+						dialog_alert("Can Not Create Movement","You need at least one segment group to create a movement.",NULL,NULL);
 						return(noErr);
 					}
 					

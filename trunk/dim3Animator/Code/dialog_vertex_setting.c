@@ -76,7 +76,7 @@ static pascal OSStatus vertex_settings_event_proc(EventHandlerCallRef handler,Ev
 						minor_bone_idx=dialog_get_bone_combo(dialog_vertex_settings_wind,kVertexMinorBone,0);
 			
 						if ((major_bone_idx==-1) || (minor_bone_idx==-1)) {
-							StandardAlert(0,"\pBone Factors","\pYou need both a major and minor bone to set the factor to anything but 100%",NULL,NULL);
+							dialog_alert("Bone Factors","You need both a major and minor bone to set the factor to anything but 100%",NULL,NULL);
 							return(noErr);
 						}
 					}

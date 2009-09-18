@@ -69,7 +69,7 @@ void piece_duplicate(void)
 			case mesh_piece:
 				index=map_mesh_duplicate(&map,main_idx);
 				if (index==-1) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Mesh","\pNot enough memory.",NULL,NULL);
+					dialog_alert("Can Not Create Mesh","Not enough memory.",NULL,NULL);
 					return;
 				}
 				
@@ -88,7 +88,7 @@ void piece_duplicate(void)
 			case liquid_piece:
 				index=map_liquid_duplicate(&map,main_idx);
 				if (index==-1) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Liquid","\pNot enough memory.",NULL,NULL);
+					dialog_alert("Can Not Create Liquid","Not enough memory.",NULL,NULL);
 					return;
 				}
 				
@@ -101,7 +101,7 @@ void piece_duplicate(void)
 				
 			case spot_piece:
 				if (map.nspot==max_spot) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Spot","\pYou've reached the maximum number of spots for a map.",NULL,NULL);
+					dialog_alert("Can Not Create Spot","You've reached the maximum number of spots for a map.",NULL,NULL);
 					return;
 				}
 				
@@ -118,7 +118,7 @@ void piece_duplicate(void)
 				
 			case scenery_piece:
 				if (map.nscenery==max_map_scenery) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Scenery","\pYou've reached the maximum number of scenery for a map.",NULL,NULL);
+					dialog_alert("Can Not Create Scenery","You've reached the maximum number of scenery for a map.",NULL,NULL);
 					return;
 				}
 				
@@ -133,7 +133,7 @@ void piece_duplicate(void)
 				
 			case node_piece:
 				if (map.nnode==max_node) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Node","\pYou've reached the maximum number of nodes for a map.",NULL,NULL);
+					dialog_alert("Can Not Create Node","You've reached the maximum number of nodes for a map.",NULL,NULL);
 					return;
 				}
 
@@ -153,7 +153,7 @@ void piece_duplicate(void)
 				
 			case light_piece:
 				if (map.nlight==max_map_light) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Light","\pYou've reached the maximum number of lights for a map.",NULL,NULL);
+					dialog_alert("Can Not Create Light","You've reached the maximum number of lights for a map.",NULL,NULL);
 					return;
 				}
 
@@ -168,7 +168,7 @@ void piece_duplicate(void)
 				
 			case sound_piece:
 				if (map.nsound==max_map_sound) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Sound","\pYou've reached the maximum number of sounds for a map.",NULL,NULL);
+					dialog_alert("Can Not Create Sound","You've reached the maximum number of sounds for a map.",NULL,NULL);
 					return;
 				}
 
@@ -183,7 +183,7 @@ void piece_duplicate(void)
 				
 			case particle_piece:
 				if (map.nparticle==max_map_particle) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Particle","\pYou've reached the maximum number of particles for a map.",NULL,NULL);
+					dialog_alert("Can Not Create Particle","You've reached the maximum number of particles for a map.",NULL,NULL);
 					return;
 				}
 
@@ -198,7 +198,7 @@ void piece_duplicate(void)
 				
 			case area_piece:
 				if (map.narea==max_area) {
-					StandardAlert(kAlertCautionAlert,"\pCan Not Create Area","\pYou've reached the maximum number of areas for a map.",NULL,NULL);
+					dialog_alert("Can Not Create Area","You've reached the maximum number of areas for a map.",NULL,NULL);
 					return;
 				}
 

@@ -46,25 +46,16 @@ bitmap_type					font_bitmap;
 
 #ifdef D3_OS_MAC
 
-
-// supergumba -- try kCGImageAlphaNoneSkipLast, maybe that's why no drawing
-// try release, then use data
-// to test font, try:
-// CTFontRef != null  CTFontCreateWithName(CFSTR("blech"),size,NULL);
-
-
 void gl_text_initialize(void)
 {
 	int					n,x,y,data_sz,row_add;
-	char				ch,font_name[256];
+	char				ch;
 	unsigned char		*bm_data,*txt_data,*sptr,*dptr;
-	CFStringRef			cf_font_name;
+	unsigned char		p_str[name_str_len+1];
 	CGPoint				txt_pt;
 	CGContextRef		bitmap_ctx;
 	CGColorSpaceRef		color_space;
 	CGAffineTransform	trans_flip;
-	
-	CGRect	rect;
 	
 		// data for bitmap
 
@@ -87,38 +78,35 @@ void gl_text_initialize(void)
 		return;
 	}
 	
-	CGContextClear(bitmap_ctx, CGRectMake( 0, 0, font_bitmap_pixel_sz, font_bitmap_pixel_sz ) );
+	CGContextTranslateCTM(bitmap_ctx,0,font_bitmap_pixel_sz);
+    CGContextScaleCTM(bitmap_ctx,1.0f,-1.0f);
+	
+	CGContextClear(bitmap_ctx,CGRectMake(0,0,font_bitmap_pixel_sz,font_bitmap_pixel_sz));
  
-	
-	rect=CGRectMake(0,0,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
-//	CGContextClipToRect(bitmap_ctx,rect);
-
-	// supergumba -- also try
-
-//	CGContextScaleCTM(bitmap_ctx,1.0f,-1.0f);
-
-	CGContextSetAlpha(bitmap_ctx,1.0f);		// supergumba -- do we need all of these???
+	CGContextSetAlpha(bitmap_ctx,1.0f);
 	CGContextSetBlendMode(bitmap_ctx,kCGBlendModeNormal);
-
-		// check which font to use
-
-	strcpy(font_name,hud.font.name);
-// supergumba
-/*
-	cf_font_name=CFStringCreateWithCString(kCFAllocatorDefault,hud.font.name,kCFStringEncodingMacRoman);
-	if (CTFontCreateWithName(cf_font_name,font_bitmap_point,NULL)==NULL) strcpy(font_name,hud.font.alt_name);
-	CFRelease(cf_font_name);
-*/
-		// create font
-
-	CGContextSelectFont(bitmap_ctx,font_name,font_bitmap_point,kCGEncodingMacRoman);
 	
-	CGContextSetTextDrawingMode(bitmap_ctx,kCGTextFillStroke);
+		// setup text drawing
+		
+	CGContextSetTextDrawingMode(bitmap_ctx,kCGTextFill);
 	CGContextSetRGBFillColor(bitmap_ctx,1.0f,1.0f,1.0f,1.0f);
 	CGContextSetRGBStrokeColor(bitmap_ctx,1.0f,1.0f,1.0f,1.0f);
 
 	trans_flip=CGAffineTransformMake(1.0f,0.0f,0.0f,-1.0f,0.0f,0.0f);
 	CGContextSetTextMatrix(bitmap_ctx,trans_flip);
+
+		// setup the correct font
+		// this is depreciated code, but there's no replacement for 10.4
+
+	strcpy((char*)&p_str[1],hud.font.name);
+	p_str[0]=(unsigned char)strlen(hud.font.name);
+	
+	if (FMGetFontFamilyFromName(p_str)!=kInvalidFontFamily) {
+		CGContextSelectFont(bitmap_ctx,hud.font.name,font_bitmap_point,kCGEncodingMacRoman);
+	}
+	else {
+		CGContextSelectFont(bitmap_ctx,hud.font.alt_name,font_bitmap_point,kCGEncodingMacRoman);
+	}
 		
 		// draw the characters
 
@@ -139,18 +127,6 @@ void gl_text_initialize(void)
 
 		font_char_size[n]=(txt_pt.x-(float)x)/(float)font_bitmap_char_wid;
 	}
-	
-	// supergumba -- test!
-	
-//	rect=CGRectMake(0,0,512,250);
-//	CGContextSetRGBFillColor(bitmap_ctx,1.0f,0.0f,1.0f,1.0f);
-//	CGContextFillRect(bitmap_ctx,rect);
-	
-//	CGContextSetRGBFillColor( bitmap_ctx, 1, 1, 0, 1 );
-//	CGContextFillRect( bitmap_ctx, CGRectMake( 0, 0, font_bitmap_pixel_sz, font_bitmap_pixel_sz ) );
-
-	
-//	CGContextFlush(bitmap_ctx);
 
 		// texture data
 		
@@ -165,10 +141,9 @@ void gl_text_initialize(void)
 		// note the coordinate systems are flipped
 
 	dptr=txt_data;
+	sptr=bm_data;
 
 	for (y=0;y!=font_bitmap_pixel_sz;y++) {
-	
-		sptr=bm_data+(((font_bitmap_pixel_sz-1)-y)*row_add);
 
 		for (x=0;x!=font_bitmap_pixel_sz;x++) {
 
@@ -191,107 +166,6 @@ void gl_text_initialize(void)
 	CGContextRelease(bitmap_ctx);
 	free(bm_data);
 }
-
-
-
-/* supergumba
-void gl_text_initialize(void)
-{
-	int					n,x,y,row_add,font;
-	unsigned char		ch,p_str[name_str_len+1];
-	unsigned char		*data,*sptr,*dptr;
-	Rect				box;
-	PixMapHandle		texturemap;
-	GWorldPtr			gworld;
-	CGrafPtr			org_gworld;
-	GDHandle			org_gdhand;
-	
-		// data for bitmap
-
-	data=malloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
-	if (data==NULL) return;
-
-		// create bitmap
-		
-	SetRect(&box,0,0,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
-	NewGWorld(&gworld,32,&box,NULL,NULL,0);
-	
-	GetGWorld(&org_gworld,&org_gdhand);
-	SetGWorld(gworld,NULL);
-	
-		// draw the characters
-
-	strcpy((char*)&p_str[1],hud.font.name);
-	p_str[0]=(unsigned char)strlen(hud.font.name);
-	font=FMGetFontFamilyFromName(p_str);
-
-	if (font==kInvalidFontFamily) {
-		strcpy((char*)&p_str[1],hud.font.alt_name);
-		p_str[0]=(unsigned char)strlen(hud.font.alt_name);
-		font=FMGetFontFamilyFromName(p_str);
-	}
-
-	TextFont(font);
-	TextSize(font_bitmap_point);
-	TextFace(0);
-	
-	SwapQDTextFlags(kQDUseCGTextRendering|kQDUseCGTextMetrics);
-		
-	for (n=0;n!=90;n++) {
-
-			// draw the character
-
-		ch=(unsigned char)(n+'!');
-
-		x=(n%font_bitmap_char_per_line)*font_bitmap_char_wid;
-		y=((n/font_bitmap_char_per_line)*font_bitmap_char_high)+font_bitmap_char_baseline;
-
-		MoveTo(x,y);
-		DrawChar(ch);
-
-			// get the spacing information
-
-		font_char_size[n]=(float)CharWidth(ch)/(float)font_bitmap_char_wid;
-	}
-
-		// get the bitmap
-
-	texturemap=GetGWorldPixMap(gworld);
-
-	LockPixels(texturemap);
-	sptr=(unsigned char*)GetPixBaseAddr(texturemap);
-	row_add=GetPixRowBytes(texturemap)-(font_bitmap_pixel_sz<<2);
-	
-	dptr=data;
-
-	for (y=0;y!=font_bitmap_pixel_sz;y++) {
-
-		for (x=0;x!=font_bitmap_pixel_sz;x++) {
-
-			*dptr++=0xFF;
-			*dptr++=0xFF;
-			*dptr++=0xFF;
-
-			*dptr++=*sptr++;		// use the anti-aliased font as the alpha mask (using the red component)
-			sptr+=3;
-
-		}
-		
-		sptr+=row_add;
-	}
-	
-	UnlockPixels(texturemap);
-	
-	bitmap_data(&font_bitmap,data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE);
-
-	free(data);
-
-		// dispose the gworld
-		
-	SetGWorld(org_gworld,org_gdhand);
-	DisposeGWorld(gworld);
-}
-*/
 
 #endif
 

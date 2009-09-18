@@ -30,10 +30,10 @@ and can be sold or given away.
 #endif
 
 #ifdef D3_OS_MAC
-Movie							movie;
-CGContextRef					movie_bitmap_ctx;
-char							*movie_bitmap_data;
 GLuint							movie_gl_id;
+Movie							movie;
+GWorldPtr						movie_gworld;
+char							*movie_data;
 #endif
 
 /* =======================================================
@@ -47,14 +47,13 @@ bool bitmap_movie_start(char *path,int *wid,int *high)
 #ifndef D3_OS_MAC
 	return(FALSE);
 #else
-	int					err,psz,row_byte_sz;
-	short				ref_num;
-	float				fx,fy;
-	FSSpec				fspec;
-	FSRef				fsref;
-	Rect				box,movie_box;
-	MatrixRecord		matrix;
-	CGColorSpaceRef		color_space;
+	int				err,psz;
+	short			ref_num;
+	float			fx,fy;
+	FSSpec			fspec;
+	FSRef			fsref;
+	Rect			box,movie_box;
+	MatrixRecord	matrix;
 	
 		// start movies
 		
@@ -79,26 +78,29 @@ bool bitmap_movie_start(char *path,int *wid,int *high)
 		return(FALSE);
 	}
 	
-		// data for bitmap
-
-	row_byte_sz=movie_wid<<2;
-	data_sz=row_byte_sz*movie_high;
+		// create a gworld to draw movie to
+		
+	psz=(movie_wid*4)*movie_high;
+	movie_data=malloc(psz);
+	if (movie_data==NULL) {
+		ExitMovies();
+		return(FALSE);
+	}
 	
-	movie_bitmap_data=malloc(data_sz);
-	if (movie_bitmap_data==NULL) {
+	bzero(movie_data,psz);
+	
+	box.left=0;
+	box.top=0;
+	box.right=movie_wid;
+	box.bottom=movie_high;
+		
+	if (QTNewGWorldFromPtr(&movie_gworld,k32RGBAPixelFormat,&box,NULL,NULL,kNativeEndianPixMap,movie_data,(movie_wid*4))!=noErr) {
+		free(movie_data);
 		ExitMovies();
 		return(FALSE);
 	}
 
-	bzero(movie_bitmap_data,data_sz);
-	
-		// create bitmap context
-		
-	color_space=CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-	movie_bitmap_ctx=CGBitmapContextCreate(movie_bitmap_data,movie_wid,movie_high,8,row_byte_sz,color_space,kCGImageAlphaPremultipliedLast);
-	CGColorSpaceRelease(color_space);
-	
-	SetMovieGWorld(movie,(CGrafPtr)movie_bitmap_ctx,NULL);
+	SetMovieGWorld(movie,movie_gworld,NULL);
 	
 		// scale the movie to the gworld
 		
@@ -111,11 +113,11 @@ bool bitmap_movie_start(char *path,int *wid,int *high)
 	fy=(float)movie_high/(float)(movie_box.bottom-movie_box.top);
 	
 	SetIdentityMatrix(&matrix);
-	ScaleMatrix(&matrix,X2Fix(fx),X2Fix(fy),X2Fix(0.0),X2Fix(0.0));
+	ScaleMatrix (&matrix,X2Fix(fx),X2Fix(fy),X2Fix(0.0),X2Fix(0.0));
 	SetMovieMatrix(movie,&matrix);
 	
 	SetMovieBox(movie,&box);
-	
+
 		// setup the texture
 		
 	glActiveTexture(GL_TEXTURE0);
@@ -144,8 +146,8 @@ void bitmap_movie_end(void)
 #ifdef D3_OS_MAC
 	StopMovie(movie);
 	
-	CGContextRelease(movie_bitmap_ctx);
-	free(movie_bitmap_data);
+	DisposeGWorld(movie_gworld);
+	free(movie_data);
 
 	ExitMovies();
 #endif
@@ -183,13 +185,13 @@ void bitmap_movie_texture_refresh(void)
 		// update the movie
 		
 	MoviesTask(movie,10);
-		
+
 		// change the texture
 		
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,movie_gl_id);
 		
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,movie_wid,movie_high,GL_RGBA,GL_UNSIGNED_BYTE,movie_bitmap_data);
+	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,movie_wid,movie_high,GL_RGBA,GL_UNSIGNED_BYTE,movie_data);
 #endif
 }
 

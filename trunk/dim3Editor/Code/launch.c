@@ -43,12 +43,10 @@ extern map_type					map;
 
 void launch_engine(void)
 {
-	short					hit;
 	char					path[1024];
 	unsigned char			uc_len;
 	d3pnt					pt;
 	d3ang					ang;
-	AlertStdAlertParamRec	alert_param;
 	CFURLRef				cf_url;
 	FSRef					fsref;
 	FILE					*file;
@@ -58,21 +56,13 @@ void launch_engine(void)
 	file_paths_base(&file_path_setup,path,setup.engine_name,"app");
 
 	if (FSPathMakeRef((unsigned char*)path,&fsref,NULL)!=0) {
-		StandardAlert(kAlertStopAlert,"\pLaunch Engine","\pCould not find Engine, check engine name in preferences.",NULL,NULL);
+		dialog_alert("Launch Engine","Could not find Engine, check engine name in preferences.",NULL,NULL);
 		return;
     }
 	
 		// ok to save?
 	
-	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
-	alert_param.defaultText="\pYes";
-	alert_param.cancelText="\pNo";
-	alert_param.defaultButton=kAlertStdAlertOKButton;
-	alert_param.position=kWindowDefaultPosition;
-
-	StandardAlert(0,"\pSave Changes and Launch Engine?","\pYou need to save changes to this map before you can launch the engine.  Click Yes to save changes and launch the map in the engine.",&alert_param,&hit);
-	
-	if (hit!=kAlertStdAlertOKButton) return;
+	if (dialog_alert("Save Changes and Launch Engine?","You need to save changes to this map before you can launch the engine.  Click Yes to save changes and launch the map in the engine.","Yes","No")!=0) return;
 
 		// save the map
 		
@@ -129,7 +119,7 @@ void launch_map_script_editor(void)
 	
 	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
 	if (cf_url==NULL) {
-		StandardAlert(0,"\pCould not locate script file","\pNo script file with this name exists.",NULL,NULL);
+		dialog_alert("Could not locate script file","No script file with this name exists.",NULL,NULL);
 		return;
 	}
 
@@ -156,7 +146,7 @@ void launch_spot_script_editor(char *script_name)
 	
 	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
 	if (cf_url==NULL) {
-		StandardAlert(0,"\pCould not locate script file","\pNo script file with this name exists.",NULL,NULL);
+		dialog_alert("Could not locate script file","No script file with this name exists.",NULL,NULL);
 		return;
 	}
 	

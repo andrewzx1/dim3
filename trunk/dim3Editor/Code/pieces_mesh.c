@@ -153,7 +153,7 @@ void piece_add_obj_mesh(void)
 	if (!import_load_file(path,"obj")) return;
 
 	if (!textdecode_open(path,0x20)) {
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pCould not open OBJ file.",NULL,NULL);
+		dialog_alert("Import Failed","Could not open OBJ file.",NULL,NULL);
 		return;
     }
 	
@@ -213,12 +213,12 @@ void piece_add_obj_mesh(void)
 		
 	if (nvertex==0) {
 		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo vertexes in OBJ.",NULL,NULL);
+		dialog_alert("Import Failed","No vertexes in OBJ.",NULL,NULL);
 		return;
     }
 	if (npoly==0) {
 		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo faces in OBJ.",NULL,NULL);
+		dialog_alert("Import Failed","No faces in OBJ.",NULL,NULL);
 		return;
     }
 	
@@ -250,7 +250,7 @@ void piece_add_obj_mesh(void)
 	vertexes=(d3pnt*)malloc(sizeof(d3pnt)*nvertex);
 	if (vertexes==NULL) {
 		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
+		dialog_alert("Import Failed","Out of Memory.",NULL,NULL);
 		return;
     }
 	
@@ -319,7 +319,7 @@ void piece_add_obj_mesh(void)
 		uvs=(float*)malloc(sizeof(float)*(2*nuv));
 		if (uvs==NULL) {
 			textdecode_close();
-			StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
+			dialog_alert("Import Failed","Out of Memory.",NULL,NULL);
 			return;
 		}
 
@@ -364,7 +364,7 @@ void piece_add_obj_mesh(void)
 				
 				if (mesh_idx==-1) {
 					textdecode_close();
-					StandardAlert(kAlertStopAlert,"\pImport Failed","\pNot enough memory to create mesh.",NULL,NULL);
+					dialog_alert("Import Failed","Not enough memory to create mesh.",NULL,NULL);
 					return;
 				}
 	
@@ -454,7 +454,7 @@ void piece_add_obj_mesh_uv(void)
 		
 	select_get(0,&type,&mesh_idx,&poly_idx);
 	if (type!=mesh_piece) {
-		StandardAlert(kAlertCautionAlert,"\pNo mesh selected","\pYou need to select a mesh to replace the UVs on.",NULL,NULL);
+		dialog_alert("No mesh selected","You need to select a mesh to replace the UVs on.",NULL,NULL);
 		return;
 	}
 	
@@ -465,7 +465,7 @@ void piece_add_obj_mesh_uv(void)
 	if (!import_load_file(path,"obj")) return;
 
 	if (!textdecode_open(path,0x20)) {
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pCould not open OBJ file.",NULL,NULL);
+		dialog_alert("Import Failed","Could not open OBJ file.",NULL,NULL);
 		return;
     }
 	
@@ -516,13 +516,13 @@ void piece_add_obj_mesh_uv(void)
 		
 	if (nuv==0) {
 		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pThe imported OBJ has no UVs.",NULL,NULL);
+		dialog_alert("Import Failed","The imported OBJ has no UVs.",NULL,NULL);
 		return;
     }
 		
 	if (npoly!=mesh->npoly) {
 		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pThe imported OBJ must have the same number of polygons as the selected mesh.",NULL,NULL);
+		dialog_alert("Import Failed","The imported OBJ must have the same number of polygons as the selected mesh.",NULL,NULL);
 		return;
     }
 	
@@ -531,7 +531,7 @@ void piece_add_obj_mesh_uv(void)
 	uvs=(float*)malloc(sizeof(float)*(2*nuv));
 	if (uvs==NULL) {
 		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
+		dialog_alert("Import Failed","Out of Memory.",NULL,NULL);
 		return;
 	}
 
@@ -1092,7 +1092,6 @@ void map_optimize(void)
 {
 	int					poly_threshold,comb_count;
 	char				str[256];
-	unsigned char		p_str[256];
 	
 	if (!dialog_optimize_run(&poly_threshold)) return;
 	
@@ -1103,6 +1102,5 @@ void map_optimize(void)
 	os_set_arrow_cursor();
 	
 	sprintf(str,"%d small meshes were combined with larger meshes.",comb_count);
-	CopyCStringToPascal(str,p_str);
-	StandardAlert(0,"\pOptimize",p_str,NULL,NULL);
+	dialog_alert("Optimize",str,NULL,NULL);
 }

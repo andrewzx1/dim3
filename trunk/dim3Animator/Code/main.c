@@ -65,7 +65,6 @@ void app_init(void)
 
 	SetThemeCursor(kThemeArrowCursor);
 	
-	MoreMasterPointers(128);
 	FlushEvents(everyEvent,0);
 
 	HMSetTagDelay(250);

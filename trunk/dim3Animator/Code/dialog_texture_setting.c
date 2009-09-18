@@ -414,7 +414,6 @@ void texture_setting_frame_reset(void)
 bool texture_setting_bitmap_open(char *bitmap_name)
 {
     char				err_str[256],sub_path[1024],path[1024];
-	unsigned char		p_err_str[256];
 	
 		// get bitmap
 				
@@ -425,8 +424,7 @@ bool texture_setting_bitmap_open(char *bitmap_name)
 		
 	file_paths_data(&file_path_setup,path,sub_path,bitmap_name,"png");
 	if (!bitmap_check(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
+		dialog_alert("Texture Error",err_str,NULL,NULL);
 		return(FALSE);
 	}
 	

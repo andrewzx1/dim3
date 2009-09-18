@@ -982,3 +982,38 @@ int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none)
 	return(idx-2);
 }
 
+/* =======================================================
+
+      Alerts
+      
+======================================================= */
+
+int dialog_alert(char *title,char *msg,char *button_ok,char *button_cancel)
+{
+	CFStringRef			cf_title_str,cf_msg_str,cf_ok_str,cf_cancel_str;
+	CFOptionFlags		resp;
+
+	SetThemeCursor(kThemeArrowCursor);
+	
+	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
+	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);
+
+	if (button_ok==NULL) {
+		CFUserNotificationDisplayAlert(0,kCFUserNotificationStopAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,NULL,NULL,NULL,&resp);
+	}
+	else {
+		cf_ok_str=CFStringCreateWithCString(kCFAllocatorDefault,button_ok,kCFStringEncodingMacRoman);
+		cf_cancel_str=CFStringCreateWithCString(kCFAllocatorDefault,button_cancel,kCFStringEncodingMacRoman);
+	
+		CFUserNotificationDisplayAlert(0,kCFUserNotificationNoteAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,cf_ok_str,cf_cancel_str,NULL,&resp);
+	
+		CFRelease(cf_ok_str);
+		CFRelease(cf_cancel_str);
+	}
+	
+	CFRelease(cf_title_str);
+	CFRelease(cf_msg_str);
+	
+	return(resp);
+}
+
