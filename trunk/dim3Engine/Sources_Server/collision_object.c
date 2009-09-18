@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Collision Utility Routines
+ Usage: Collision Object Routines
 
 ***************************** License ********************************
 
@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
+#include "models.h"
 #include "physics.h"
 
 extern map_type			map;
@@ -169,6 +171,125 @@ bool collide_object_to_object_hit_box(obj_type *obj1,int x_add,int z_add,obj_typ
 	return(polygon_2D_collision_polygon(4,px,pz));
 }
 
+bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,obj_type *check_obj)
+{
+	int					n,nhit_box;
+	model_draw			*draw;
+	model_type			*model;
+	model_hit_box_type	*hit_box;
+
+		// no hit boxes hit
+
+	obj->hit_box.obj_hit_box_idx=-1;
+	
+		// check model
+		
+	draw=&check_obj->draw;
+	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	
+	model=model_find_uid(draw->uid);
+	if (model==NULL) return(FALSE);
+	
+		// check hit boxes
+		// unlike projectiles, we can just take the
+		// first hit off the first hitbox
+		
+	hit_box=model->hit_boxes;
+	nhit_box=model->nhit_box;
+	
+	for (n=0;n!=nhit_box;n++) {
+		if (collide_object_to_object_hit_box(obj,x,z,check_obj,hit_box)) {
+			obj->hit_box.obj_hit_box_idx=n;
+			return(TRUE);
+		}
+		hit_box++;
+	}
+
+	return(FALSE);
+}
+
+int collide_find_object_for_object_move(obj_type *obj,int x,int z)
+{
+	int				n,ignore_obj_uid;
+	obj_type	 	*check_obj;
+	
+	ignore_obj_uid=obj->uid;
+	
+	check_obj=server.objs;
+	
+	for (n=0;n!=server.count.obj;n++) {
+	
+		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->uid==ignore_obj_uid)) {
+			check_obj++;
+			continue;
+		}
+
+			// object hit?
+			
+		if (!collide_object_to_object(obj,x,z,check_obj,TRUE,FALSE)) {
+			check_obj++;
+			continue;
+		}
+		
+			// which hit box?
+		
+		if (!check_obj->hit_box.on) return(check_obj->uid);
+		if (collide_set_object_hit_box_for_object_hit(obj,x,z,check_obj)) return(check_obj->uid);
+		
+		check_obj++;
+	}
+	
+	return(-1);
+}
+
+inline int collide_find_object_for_object(obj_type *obj)
+{
+	return(collide_find_object_for_object_move(obj,0,0));
+}
+
+/* =======================================================
+
+      Standing Objects
+      
+======================================================= */
+
+int collide_find_object_for_standing_object(obj_type *obj)
+{
+	int			n,uid,y,ty,ydist,ignore_obj_uid;
+	obj_type	*stand_obj;
+	
+	y=obj->pnt.y;
+	ydist=floor_slop;
+	uid=-1;
+	
+	ignore_obj_uid=obj->uid;
+	
+	stand_obj=server.objs;
+	
+	for (n=0;n!=server.count.obj;n++) {
+	
+		if ((stand_obj->uid==ignore_obj_uid) || (stand_obj->hidden) || (!stand_obj->contact.object_on) || (stand_obj->pickup.on)) {
+			stand_obj++;
+			continue;
+		}
+		
+		ty=abs(y-(stand_obj->pnt.y-stand_obj->size.y));
+		if (ty>ydist) {
+			stand_obj++;
+			continue;
+		}
+
+		if (collide_object_to_object(obj,0,0,stand_obj,FALSE,FALSE)) {
+			uid=stand_obj->uid;
+			ydist=ty;
+		}
+		
+		stand_obj++;
+	}
+	
+	return(uid);	
+}
+
 /* =======================================================
 
       Get Object to Object Collision Slide Line
@@ -295,153 +416,66 @@ bool collide_object_to_hit_box_get_slide_line(obj_type *obj,int hit_face,model_h
 
 /* =======================================================
 
-      Colliding Projectile to Object
-      
-======================================================= */
-
-void collide_projectile_polygon(proj_type *proj,int *px,int *pz)
-{
-	int			x,z,sz;
-	float		rang;
-
-	x=proj->pnt.x;
-	sz=proj->size.x>>1;
-
-	px[0]=px[3]=x-sz;
-	px[1]=px[2]=x+sz;
-	
-	z=proj->pnt.z;
-	sz=proj->size.z>>1;
-
-	pz[0]=pz[1]=z-sz;
-	pz[2]=pz[3]=z+sz;
-
-	rang=angle_add(proj->ang.y,proj->draw.rot.y);
-	rotate_2D_polygon(4,px,pz,x,z,rang);
-}
-
-bool collide_projectile_to_object(proj_type *proj,obj_type *obj)
-{
-	int		x,z,ls1,ms1,ls2,ms2,d,
-			radius,px[4],pz[4];
-	
-		// check largest bounding circle first
-
-	radius=obj->size.x;
-	if (obj->size.z>radius) radius=obj->size.z;
-
-	x=obj->pnt.x-proj->pnt.x;
-	z=obj->pnt.z-proj->pnt.z;
-	
-	d=(int)sqrtf((float)((x*x)+(z*z)));
-	if (d>(radius+proj->size.radius)) return(FALSE);
-	
-		// check y
-		
-	ms1=proj->pnt.y;
-	ls1=ms1-proj->size.y;
-	ms2=obj->pnt.y;
-	ls2=ms2-obj->size.y;
-	
-	if (ms1<=ls2) return(FALSE);
-	if (ls1>=ms2) return(FALSE);
-
-		// finally do polygonal collisions
-		// use on vertex inside another polygon method
-
-	collide_projectile_polygon(proj,px,pz);
-	polygon_2D_collision_setup(4,px,pz);
-
-	collide_object_polygon(obj,0,0,px,pz);
-	return(polygon_2D_collision_polygon(4,px,pz));
-}
-
-bool collide_projectile_to_object_hit_box(proj_type *proj,obj_type *obj,model_hit_box_type *hit_box)
-{
-	int					ls1,ms1,ls2,ms2,
-						px[4],pz[4];
-	
-		// check y
-		
-	ms1=proj->pnt.y;
-	ls1=ms1-proj->size.y;
-	ms2=obj->pnt.y+obj->draw.offset.y+hit_box->box.offset.y;
-	ls2=ms2-hit_box->box.size.y;
-	
-	if (ms1<=ls2) return(FALSE);
-	if (ls1>=ms2) return(FALSE);
-	
-		// 2D x/z polygon to polygon collision
-
-	collide_projectile_polygon(proj,px,pz);
-	polygon_2D_collision_setup(4,px,pz);
-	
-	collide_object_hit_box_polygon(obj,hit_box,px,pz);
-	return(polygon_2D_collision_polygon(4,px,pz));
-}
-
-/* =======================================================
-
-      Colliding Projectile to Projectile
-	  Note: Projectiles are assumed to be small
-	        so this just uses circles
-      
-======================================================= */
-
-bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2)
-{
-	int		x,z,ls1,ms1,ls2,ms2,d;
-	
-		// check x
-		
-	x=proj1->pnt.x;
-	ls1=x-proj1->size.radius;
-	ms1=x+proj1->size.radius;
-	
-	x=proj2->pnt.x;
-	ls2=x-proj2->size.radius;
-	ms2=x+proj2->size.radius;
-		
-	if (ms1<ls2) return(FALSE);
-	if (ls1>ms2) return(FALSE);
-	
-		// check z
-		
-	z=proj1->pnt.z;
-	ls1=z-proj1->size.radius;
-	ms1=z+proj1->size.radius;
-	
-	z=proj2->pnt.z;
-	ls2=z-proj2->size.radius;
-	ms2=z+proj2->size.radius;
-		
-	if (ms1<ls2) return(FALSE);
-	if (ls1>ms2) return(FALSE);
-	
-		// check y
-		
-	ms1=proj1->pnt.y;
-	ls1=ms1-proj1->size.y;
-	ms2=proj2->pnt.y;
-	ls2=ms2-proj2->size.y;
-	
-	if (ms1<=ls2) return(FALSE);
-	if (ls1>=ms2) return(FALSE);
-	
-		// check radius
-		
-	x=proj1->pnt.x-proj2->pnt.x;
-	z=proj1->pnt.z-proj2->pnt.z;
-	
-	d=(int)sqrtf((float)((x*x)+(z*z)));
-	return(d<=(proj1->size.radius+proj2->size.radius));
-}
-
-/* =======================================================
-
       Colliding Sphere to Object
       
 ======================================================= */
+
+bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,obj_type *obj)
+{
+	int					n,nhit_box,
+						dist,d,x,y,z;
+	model_draw			*draw;
+	model_type			*model;
+	model_hit_box_type	*hit_box;
+	
+		// tag no hit box hits
+		
+	obj->hit_box.obj_hit_box_idx=-1;
+	
+		// find hit box middle closest to damage box middle
+	
+	dist=-1;
+	
+		// check model
+		
+	draw=&obj->draw;
+	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	
+	model=model_find_uid(draw->uid);
+	if (model==NULL) return(FALSE);
+	
+		// check hit boxes
+		
+	hit_box=model->hit_boxes;
+	nhit_box=model->nhit_box;
+	
+	for (n=0;n!=nhit_box;n++) {
+	
+			// in this hit box?
+			
+		if (!collide_sphere_to_object_hit_box(sx,sy,sz,radius,obj,hit_box)) {
+			hit_box++;
+			continue;
+		}
+		
+			// get the distance
+	
+		x=obj->pnt.x+draw->offset.x+hit_box->box.offset.x;
+		y=obj->pnt.y+draw->offset.y+hit_box->box.offset.y;
+		z=obj->pnt.z+draw->offset.z+hit_box->box.offset.z;
+	
+		d=distance_get(sx,sy,sz,x,y,z);
+				
+		if ((d<dist) || (dist==-1)) {
+			dist=d;
+			obj->hit_box.obj_hit_box_idx=n;
+		}
+		
+		hit_box++;
+	}
+
+	return(obj->hit_box.obj_hit_box_idx!=-1);
+}
 
 bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj)
 {
@@ -536,54 +570,44 @@ bool collide_sphere_to_object_hit_box(int sx,int sy,int sz,int radius,obj_type *
 
 /* =======================================================
 
-      Colliding Sphere to Projectile
+      Push Objects
       
 ======================================================= */
 
-bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *proj)
+void collide_push_objects(int sx,int sy,int sz,int radius,int force)
 {
-	int		x,z,ls1,ms1,ls2,ms2,d;
+	int			n,yhit;
+	d3ang		ang;
+	obj_type	*obj;
 	
-		// check x
+		// check objects
 		
-	ls1=sx-radius;
-	ms1=sx+radius;
+	obj=server.objs;
 	
-	x=proj->pnt.x;
-	ls2=x-proj->size.radius;
-	ms2=x+proj->size.radius;
-		
-	if (ms1<ls2) return(FALSE);
-	if (ls1>ms2) return(FALSE);
-	
-		// check z
-		
-	ls1=sz-radius;
-	ms1=sz+radius;
-	
-	z=proj->pnt.z;
-	ls2=z-proj->size.radius;
-	ms2=z+proj->size.radius;
-		
-	if (ms1<ls2) return(FALSE);
-	if (ls1>ms2) return(FALSE);
-	
-		// check y's first
-		
-	ls1=sy-radius;
-	ms1=sy+radius;
-	ms2=proj->pnt.y;
-	ls2=ms2-proj->size.y;
-	
-	if (ms1<=ls2) return(FALSE);
-	if (ls1>=ms2) return(FALSE);
-	
-		// check radius
-		
-	x=sx-proj->pnt.x;
-	z=sz-proj->pnt.z;
-	
-	d=(int)sqrtf((float)((x*x)+(z*z)));
-	return(d<=(radius+proj->size.radius));
-}
+	for (n=0;n!=server.count.obj;n++) {
 
+		if ((obj->hidden) || (obj->suspend) || (!obj->contact.object_on)) {
+			obj++;
+			continue;
+		}
+		
+			// check for collision
+			
+		if (!collide_sphere_to_object(sx,sy,sz,radius,obj)) {
+			obj++;
+			continue;
+		}
+		
+			// add push
+				
+		yhit=obj->pnt.y-(obj->size.y/2);
+		
+		ang.x=angle_find(sy,sz,yhit,obj->pnt.z);
+		ang.y=angle_find(sx,sz,obj->pnt.x,obj->pnt.z);
+		ang.z=0;
+		
+		object_push(obj,&ang,force,FALSE);
+		
+		obj++;
+	}
+}
