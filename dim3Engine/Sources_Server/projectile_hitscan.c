@@ -120,5 +120,4 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 		// destroy projectile
 	
 	projectile_mark_dispose(proj);
-	projectile_dispose();
 }

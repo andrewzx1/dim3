@@ -150,8 +150,7 @@ typedef struct		{
 													anisotropic_mode,mipmap_mode,fsaa_mode,
 													joystick_mode;
 						float						gamma,sound_volume,music_volume;
-						bool						lock_fps_refresh,texture_compression,
-													decal_on,shadow_on,
+						bool						lock_fps_refresh,decal_on,shadow_on,
 													always_run,toggle_run,invert_look,mouse_smooth,
 													music_on,debug_console,window,window_editor,
 													metrics_on,disable_shaders;

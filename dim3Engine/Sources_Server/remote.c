@@ -890,3 +890,49 @@ void remote_network_send_latency_ping(int tick)
 	net_client_send_latency_ping(object_player_get_remote_uid());
 }
 
+/* =======================================================
+
+      Monsters to Remotes
+      
+======================================================= */
+
+void remote_monsters_add(void)
+{
+	int					n;
+	bool				coop;
+	obj_type			*obj;
+
+		// nothing to do if not a network game
+		
+	if (!net_setup.client.joined) return;
+	
+		// is it co-op mode?
+		
+	coop=hud.net_game.games[net_setup.game_idx].monsters;
+	
+		// create remote IDs
+		
+	obj=server.objs;
+
+	for (n=0;n!=server.count.obj;n++) {
+	
+		if ((obj->bot) && (!obj->remote.on)) {
+		
+			if (!coop) {
+				obj->hidden=TRUE;
+			}
+			else {
+			
+				obj->remote.uid=net_remote_uid_monster_start+n;
+				
+				if (!net_setup.host.hosting) {			// if not hosting, then turn off all internal bot movement
+					obj->remote.on=TRUE;
+				}
+				
+			}
+
+		}
+		
+		obj++;
+	}
+}

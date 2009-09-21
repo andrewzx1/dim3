@@ -138,7 +138,7 @@ bool js_proj_mark_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 bool js_proj_mark_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
-	
+
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup!=NULL) {
 		script_value_to_string(cx,vp,proj_setup->mark.name,name_str_len);

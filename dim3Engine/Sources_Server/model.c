@@ -141,7 +141,7 @@ model_type* model_load_single(char *name)
 
 		// load model
 
-	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_compression);
+	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode);
 	if (!model_open(mdl,name,TRUE)) {
 		server.count.model--;		// error loading, leave memory as is an fix next model load
 		return(NULL);

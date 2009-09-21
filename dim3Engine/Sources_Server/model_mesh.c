@@ -33,8 +33,6 @@ and can be sold or given away.
 
 extern server_type				server;
 
-extern int game_time_get(void);
-
 /* =======================================================
 
       Model Meshes

@@ -53,11 +53,6 @@ bool gl_check_fsaa_ok(void)
 	return(strstr(render_info.ext_string,"GL_ARB_multisample")!=NULL);
 }
 
-bool gl_check_texture_compress_ok(void)
-{
-	return(strstr(render_info.ext_string,"GL_ARB_texture_compression")!=NULL);
-}
-
 bool gl_check_texture_anisotropic_filter_ok(void)
 {
 	return(strstr(render_info.ext_string,"GL_EXT_texture_filter_anisotropic")!=NULL);

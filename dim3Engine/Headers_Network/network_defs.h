@@ -149,6 +149,7 @@ typedef struct		{
 #define net_remote_uid_host							0
 #define net_remote_uid_none							1
 #define net_remote_uid_client_start					1000
+#define net_remote_uid_monster_start				2000
 
 //
 // messages actions

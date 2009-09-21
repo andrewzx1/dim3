@@ -216,7 +216,6 @@ bool view_initialize_display(char *err_str)
 		// fix some OpenGL settings if not supported by card
 
 	if (!gl_check_fsaa_ok()) setup.fsaa_mode=fsaa_mode_none;
-	if (!gl_check_texture_compress_ok()) setup.texture_compression=FALSE;
 	if (!gl_check_texture_anisotropic_filter_ok()) setup.anisotropic_mode=anisotropic_mode_none;
 
 		// shadows

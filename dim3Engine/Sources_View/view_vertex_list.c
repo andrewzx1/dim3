@@ -272,6 +272,8 @@ bool view_compile_mesh_gl_lists(int tick)
 	int							n,k,t,uv_idx,vertex_cnt;
 	float						x_shift_offset,y_shift_offset,dark_factor;
 	float						*vertex_ptr,*pv,*pp,*pc,*pc2;
+	bool						only_ambient;
+	d3col						col;
 	d3pnt						*pnt;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -391,17 +393,34 @@ bool view_compile_mesh_gl_lists(int tick)
 
 					// create colors for each vertexes
 
-				gl_lights_calc_vertex_setup_mesh(mesh);
+				only_ambient=!gl_lights_calc_vertex_setup_mesh(mesh);
 
 				pc=mesh->colors_cache;
-				pnt=mesh->vertexes;
-
-				for (k=0;k!=mesh->nvertex;k++) {
-					gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
-					pc+=3;
-					pnt++;
+				
+					// colors when only ambient lighting
+					
+				if (only_ambient) {
+					gl_lights_get_ambient(&col);
+					
+					for (k=0;k!=mesh->nvertex;k++) {
+						*pc++=col.r;
+						*pc++=col.g;
+						*pc++=col.b;
+					}
 				}
+				
+					// colors hit by lights
+					
+				else {
+					pnt=mesh->vertexes;
 
+					for (k=0;k!=mesh->nvertex;k++) {
+						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
+						pc+=3;
+						pnt++;
+					}
+				}
+				
 					// create per poly colors
 
 				pc=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*3));

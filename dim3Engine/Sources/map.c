@@ -194,7 +194,7 @@ bool map_start(bool skip_media,char *err_str)
 	sprintf(txt,"Opening %s",map.info.name);
 	console_add_system(txt);
 	
-	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_compression);
+	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode);
 
 // supergumba -- auto generator testing
 /*
@@ -321,6 +321,11 @@ bool map_start(bool skip_media,char *err_str)
 		// finish any script based spawns
 
 	object_script_spawn_finish();
+	
+		// if multiplayer co-op, then fix monsters
+		// to be remotes
+		
+	
 
 		// initialize movements and lookups
 	
@@ -353,6 +358,7 @@ bool map_start(bool skip_media,char *err_str)
 	js.time.timer_tick=tick;
 
 	view.fps.tick=view.fps.count=0;
+	view.fps.last_time=-1;
 	view.fps.total=0;
 
 		// clear all input

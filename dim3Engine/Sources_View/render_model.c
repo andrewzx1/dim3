@@ -53,6 +53,8 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 {
 	int				n,k;
 	float			*cp,*vp;
+	bool			only_ambient;
+	d3col			col;
 	model_mesh_type	*mesh;
 
 		// if only shaders, then no color list required
@@ -61,7 +63,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 		// setup vertex calcing
 
-	gl_lights_calc_vertex_setup_model(draw);
+	only_ambient=!gl_lights_calc_vertex_setup_model(draw);
 
 		// need color lists
 
@@ -103,6 +105,21 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 				}
 			}
 
+			continue;
+		}
+		
+			// ambient only
+			
+		if (only_ambient) {
+		
+			gl_lights_get_ambient(&col);
+		
+			for (k=0;k!=mesh->nvertex;k++) {
+				*cp++=col.r;
+				*cp++=col.g;
+				*cp++=col.b;
+			}
+			
 			continue;
 		}
 

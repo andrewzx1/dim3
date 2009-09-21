@@ -114,12 +114,12 @@ proj_type* projectile_create(int tick,obj_type *obj,weapon_type *weap,proj_setup
 
 proj_type* projectile_find_uid(int uid)
 {
-	int				i;
+	int				n;
 	proj_type		*proj;
 	
 	proj=server.projs;
 	
-	for ((i=0);(i!=server.count.proj);i++) {
+	for (n=0;n!=server.count.proj;n++) {
 		if (proj->uid==uid) return(proj);
 		proj++;
 	}

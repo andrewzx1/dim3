@@ -652,7 +652,7 @@ JSValueRef js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,
 	float					slop;
     obj_type				*obj;
 	weapon_type				*weap;
-
+	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	weap=weapon_find_uid(js.attach.thing_uid);

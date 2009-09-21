@@ -138,9 +138,9 @@
 	};
 	F56B6200080C885A00E9D08B /* mapprivate.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2506}}";
-			sepNavSelRange = "{4496, 0}";
-			sepNavVisRange = "{3455, 1196}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2314}}";
+			sepNavSelRange = "{1035, 0}";
+			sepNavVisRange = "{336, 1352}";
 			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
 		};
 	};
@@ -154,10 +154,10 @@
 	};
 	F5A10B6C052D294C006A2E68 /* file_map_texture.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1092, 2688}}";
-			sepNavSelRange = "{2531, 0}";
-			sepNavVisRange = "{3001, 1677}";
-			sepNavWindowFrame = "{{713, 102}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1048, 2587}}";
+			sepNavSelRange = "{4476, 0}";
+			sepNavVisRange = "{2871, 1739}";
+			sepNavWindowFrame = "{{639, 102}, {1041, 747}}";
 		};
 	};
 	F5A8B1AF05229DA4008D4331 /* file_map_read.c */ = {
@@ -178,9 +178,9 @@
 	};
 	F5A8B1B105229DA4008D4331 /* map_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4480}}";
-			sepNavSelRange = "{6065, 16}";
-			sepNavVisRange = "{4574, 1678}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4004}}";
+			sepNavSelRange = "{1476, 0}";
+			sepNavVisRange = "{550, 1503}";
 			sepNavWindowFrame = "{{409, 265}, {1041, 747}}";
 		};
 	};
@@ -255,8 +255,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 274918449;
-			PBXWorkspaceStateSaveDate = 274918449;
+			PBXPerProjectTemplateStateSaveDate = 275196384;
+			PBXWorkspaceStateSaveDate = 275196384;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -272,9 +272,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9074}}";
-			sepNavSelRange = "{6534, 0}";
-			sepNavVisRange = "{5420, 1452}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8567}}";
+			sepNavSelRange = "{15185, 0}";
+			sepNavVisRange = "{14351, 1535}";
 			sepNavWindowFrame = "{{378, 100}, {1041, 691}}";
 		};
 	};
