@@ -34,8 +34,6 @@ and can be sold or given away.
 extern server_type				server;
 extern map_type					map;
 
-extern int game_time_get(void);
-
 /* =======================================================
 
       Clear Object Grows

@@ -181,7 +181,7 @@ void gui_screenshot_load(void)
 
 		// save screenshot
 
-	bitmap_data(&gui_screenshot_bitmap,data,gui_screenshot_wid,gui_screenshot_high,FALSE,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
+	bitmap_data(&gui_screenshot_bitmap,data,gui_screenshot_wid,gui_screenshot_high,FALSE,anisotropic_mode_none,mipmap_mode_trilinear);
 		
 	free(data);
 	free(data2);
@@ -204,13 +204,13 @@ void gui_background_load(char *background_path,char *bitmap_name)
 	if (gl_is_screen_widescreen()) {
 		sprintf(name,"%s_wide",bitmap_name);
 		file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
-		if (bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) return;
+		if (bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE)) return;
 	}
 	
 		// and fail-over to the original if not loaded
 
 	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 }
 
 /* =======================================================

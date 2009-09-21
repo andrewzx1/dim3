@@ -99,10 +99,6 @@ void loop_game_run(int tick)
 		if (!remote_network_get_updates(tick)) return;
 	}
 	
-		// start fps
-		
-	view.fps.time=time_get();
-	
 		// mark for interface quits
 		
 	interface_quit_trigger_clear();
@@ -147,12 +143,16 @@ void loop_game_run(int tick)
 	
 		// calculate fps
 
-	view.fps.tick+=(time_get()-view.fps.time);
+	if (view.fps.last_time!=-1) {
+		view.fps.tick+=(tick-view.fps.last_time);
 
-	if (view.fps.tick>=1000) {						// average fps over 1 second
-		view.fps.total=((float)view.fps.count*1000)/(float)view.fps.tick;
-		view.fps.tick=view.fps.count=0;
+		if (view.fps.tick>=1000) {						// average fps over 1 second
+			view.fps.total=((float)view.fps.count*1000)/(float)view.fps.tick;
+			view.fps.tick=view.fps.count=0;
+		}
 	}
+	
+	view.fps.last_time=tick;
 }
 
 /* =======================================================
@@ -351,9 +351,10 @@ bool loop_main(char *err_str)
 		
 		// if we are changing state from game
 		// play to interface element, capture screen
-		// for background
+		// for background and stop fps counter
 
 	if ((server.state!=gs_running) && (state==gs_running)) {
+		view.fps.last_time=-1;
 		gui_screenshot_load();
 	}
 	

@@ -220,6 +220,7 @@ proj_setup_type* proj_setup_get_attach(void)
 	
 	if (js.attach.thing_type==thing_type_projectile) {
 		proj=projectile_find_uid(js.attach.thing_uid);
+		if (proj==NULL) return(NULL);
 		return(proj_setups_find_uid(proj->proj_setup_uid));
 	}
 	

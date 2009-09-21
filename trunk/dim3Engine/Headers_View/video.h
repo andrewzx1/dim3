@@ -41,7 +41,6 @@ extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,c
 	
 extern bool gl_check_frame_buffer_ok(void);
 extern bool gl_check_fsaa_ok(void);
-extern bool gl_check_texture_compress_ok(void);
 extern bool gl_check_texture_anisotropic_filter_ok(void);
 extern bool gl_check_texture_generate_mipmaps_ok(void);
 extern bool gl_check_shader_ok(void);
@@ -54,10 +53,11 @@ extern void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type
 extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
 
 extern void gl_lights_calc_vertex(double x,double y,double z,float *cf);
+extern void gl_lights_get_ambient(d3col *col);
 extern void gl_lights_calc_vertex_setup_none(void);
-extern void gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh);
-extern void gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq);
-extern void gl_lights_calc_vertex_setup_model(model_draw *draw);
+extern bool gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh);
+extern bool gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq);
+extern bool gl_lights_calc_vertex_setup_model(model_draw *draw);
 
 extern void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,int *light_idx);
 extern void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx);

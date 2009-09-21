@@ -30,10 +30,17 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-#ifndef D3_OS_WINDOWS
-    static double           start_time;
-#else
-	static double			start_time,freq_time;
+#ifdef D3_OS_MAC
+	int				start_time;
+	clock_serv_t	sys_clock;
+#endif
+
+#ifdef D3_OS_WINDOWS
+	double			start_time,freq_time;
+#endif
+
+#ifdef D3_OS_LINUX
+    double           start_time;
 #endif
 
 /* =======================================================
@@ -42,24 +49,32 @@ and can be sold or given away.
       
 ======================================================= */
 
-#ifndef D3_OS_WINDOWS
+#ifdef D3_OS_MAC
 
-static double time_now()
+int time_now(void)
 {
-    struct timeval		now;
+	double				dsec,dns;
+	mach_timespec_t		now;
 	
-    gettimeofday(&now, NULL);
-    return((double)now.tv_sec + (double)now.tv_usec * 0.000001);
+	clock_get_time(sys_clock,&now);
+
+	dsec=((double)now.tv_sec)*1000.0;
+	dns=((double)now.tv_nsec)*(1.0/1000000.0);
+	
+	return((int)(dsec+dns));
 }
 
 void time_start(void)
 {
-	start_time = time_now();
+	
+	host_get_clock_service(mach_host_self(),SYSTEM_CLOCK,&sys_clock);
+	
+	start_time=time_now();
 }
 
 int time_get(void)
 {
-	return((time_now() - start_time) * 1000.0);
+	return(time_now()-start_time);
 }
 
 #endif
@@ -96,3 +111,30 @@ int time_get(void)
 
 #endif
 
+/* =======================================================
+
+      Linux Low-Level Time Routines
+      
+======================================================= */
+
+#ifdef D3_OS_LINUX
+
+double time_now()
+{
+    struct timeval		now;
+	
+    gettimeofday(&now,NULL);
+    return((double)now.tv_sec+(double)now.tv_usec*0.000001);
+}
+
+void time_start(void)
+{
+	start_time=time_now();
+}
+
+int time_get(void)
+{
+	return((int)((time_now()-start_time)*1000.0));
+}
+
+#endif

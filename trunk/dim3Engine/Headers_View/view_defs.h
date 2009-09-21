@@ -167,7 +167,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									tick,count,time;
+						int									tick,count,last_time;
 						float								total;
 					} view_fps_type;
 

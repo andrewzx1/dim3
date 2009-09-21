@@ -558,15 +558,6 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 	double					dx,dz,dy,r,g,b,d,mult;
 	view_light_spot_type	*lspot;
 
-		// no lights in scene
-
-	if (light_spot_reduce_count==0) {
-		*cf++=(map.ambient.light_color.r+setup.gamma);
-		*cf++=(map.ambient.light_color.g+setup.gamma);
-		*cf=(map.ambient.light_color.b+setup.gamma);
-		return;
-	}
-
 		// combine all light spots attenuated for distance
 		
 	r=g=b=0.0;
@@ -603,17 +594,25 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
 }
 
-inline void gl_lights_calc_vertex_setup_none(void)
+void gl_lights_get_ambient(d3col *col)
+{
+	col->r=map.ambient.light_color.r+setup.gamma;
+	col->g=map.ambient.light_color.g+setup.gamma;
+	col->b=map.ambient.light_color.b+setup.gamma;
+}
+
+void gl_lights_calc_vertex_setup_none(void)
 {
 	gl_lights_spot_reduce_none();
 }
 
-inline void gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh)
+bool gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh)
 {
 	gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max,TRUE);
+	return(light_spot_reduce_count!=0);
 }
 
-void gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
+bool gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
 {
 	d3pnt			min,max;
 	
@@ -626,14 +625,18 @@ void gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
 	max.z=liq->bot;
 
 	gl_lights_spot_reduce_box(&min,&max,TRUE);
+	
+	return(light_spot_reduce_count!=0);
 }
 
-void gl_lights_calc_vertex_setup_model(model_draw *draw)
+bool gl_lights_calc_vertex_setup_model(model_draw *draw)
 {
 	d3pnt			pnt,min,max;
 
 	model_get_view_min_max(draw,&pnt,&min,&max);
 	gl_lights_spot_reduce_box(&min,&max,FALSE);
+	
+	return(light_spot_reduce_count!=0);
 }
 
 /* =======================================================
