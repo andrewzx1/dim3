@@ -120,6 +120,15 @@ extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id);
 extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,int *light_idx,d3pnt *pnt,d3col *tint_col);
 
+	// full screen shaders
+
+extern void gl_fs_shader_map_start(void);
+extern void gl_fs_shader_map_end(void);
+extern bool gl_fs_shader_start(char *shader_name,char *err_str);
+extern void gl_fs_shader_end(void);
+extern void gl_fs_shader_render_begin(void);
+extern void gl_fs_shader_render_finish(void);
+
 	// back renderers
 	
 extern void gl_back_render_initialize(void);

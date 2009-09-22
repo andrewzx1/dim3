@@ -453,12 +453,22 @@ void view_loop_draw(int tick)
 		gl_frame_start(&map.fog.col);		// is obscuring fog on, then background = fog color
 	}
 
+		// any full screen shaders
+
+	gl_fs_shader_render_begin();
+
 		// draw frame
 		
 	view_draw(tick);
 	hud_draw(tick);
 	radar_draw(tick);
 	network_draw(tick);
+
+		// finish any full screen shaders
+
+	gl_fs_shader_render_finish();
+
+		// swap frame buffers
 	
 	gl_frame_end();
 
