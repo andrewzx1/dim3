@@ -332,6 +332,7 @@ bool map_start(bool skip_media,char *err_str)
 	map_movements_initialize();
 	map_lookups_setup();
 	gl_back_render_map_start();
+	gl_fs_shader_map_start();
 	
 	progress_draw(100);
 	
@@ -408,6 +409,7 @@ void map_end(void)
 
 		// clear all back buffers
 
+	gl_fs_shader_map_end();
 	gl_back_render_map_end();
 	
 		// stop sounds

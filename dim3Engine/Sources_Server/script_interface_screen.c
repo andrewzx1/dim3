@@ -30,17 +30,25 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "video.h"
 
 extern js_type			js;
 extern setup_type		setup;
 
 JSValueRef js_interface_screen_get_width(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_interface_screen_get_height(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_interface_screen_shader_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_screen_shader_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		interface_screen_props[]={
 							{"width",				js_interface_screen_get_width,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"height",				js_interface_screen_get_height,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
+
+JSStaticFunction	interface_screen_functions[]={
+							{"shaderStart",			js_interface_screen_shader_start_func,				kJSPropertyAttributeDontDelete},
+							{"shaderStop",			js_interface_screen_shader_stop_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			interface_screen_class;
 
@@ -52,7 +60,7 @@ JSClassRef			interface_screen_class;
 
 void script_init_interface_screen_object(void)
 {
-	interface_screen_class=script_create_class("interface_screen_class",interface_screen_props,NULL);
+	interface_screen_class=script_create_class("interface_screen_class",interface_screen_props,interface_screen_functions);
 }
 
 void script_free_interface_screen_object(void)
@@ -79,4 +87,31 @@ JSValueRef js_interface_screen_get_width(JSContextRef cx,JSObjectRef j_obj,JSStr
 JSValueRef js_interface_screen_get_height(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_int_to_value(cx,setup.screen.y_sz));
+}
+
+/* =======================================================
+
+      Functions
+      
+======================================================= */
+
+JSValueRef js_interface_screen_shader_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char			shader_name[name_str_len],err_str[256];
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	script_value_to_string(cx,argv[0],shader_name,name_str_len);
+	if (!gl_fs_shader_start(shader_name,err_str)) *exception=script_create_exception(cx,err_str);
+	
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_interface_screen_shader_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
+	gl_fs_shader_end();
+
+	return(script_null_to_value(cx));
 }

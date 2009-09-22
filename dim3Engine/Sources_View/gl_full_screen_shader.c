@@ -31,13 +31,16 @@ and can be sold or given away.
 
 #include "video.h"
 
-GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id;
-bool						fs_shader_on;
+GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id,fs_shader_txt_id;
+bool						fs_shader_on,fs_shader_init,fs_shader_active;
 
 extern map_type				map;
 extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
+
+// supergumba
+// GL_TEXTURE_RECTANGLE_ARB
 
 /* =======================================================
 
@@ -48,9 +51,10 @@ extern render_info_type		render_info;
 void gl_fs_shader_initialize(void)
 {
 		// check if fbo and shaders are available
+		// or already started
 		
-	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_shader_ok();
 	if (!fs_shader_on) return;
+	if (fs_shader_init) return;
 	
 		// create depth buffer and stencil object
 
@@ -67,237 +71,202 @@ void gl_fs_shader_initialize(void)
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+
+		// create the texture
+
+	glGenTextures(1,&fs_shader_txt_id);
+	glBindTexture(GL_TEXTURE_2D,fs_shader_txt_id);
+	
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,256,256,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+	
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	
+	glBindTexture(GL_TEXTURE_2D,0);
+
+		// shader started
+
+	fs_shader_init=TRUE;
 }
 
 void gl_fs_shader_shutdown(void)
 {
 	if (!fs_shader_on) return;
+	if (!fs_shader_init) return;
 
 		// destroy frame buffer and depth/stencil
 
+	glDeleteTextures(1,&fs_shader_txt_id);
 	glDeleteFramebuffersEXT(1,&fs_shader_fbo_id);
 	glDeleteRenderbuffersEXT(1,&fs_shader_fbo_depth_stencil_id);
+
+		// shader stopped
+
+	fs_shader_init=FALSE;
 }
 
 /* =======================================================
 
-      Per Map Back rendering
+      Per Map Back Shader Start/Stop
       
 ======================================================= */
-/*
-void gl_back_render_map_start(void)
+
+void gl_fs_shader_map_start(void)
 {
-	int				n;
-	node_type		*node;
+		// check if fbo and shaders are available
+		
+	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_shader_ok();
 
-	if (!back_render_on) return;
+		// no fs shader started
 
-	node=map.nodes;
-	
-	for (n=0;n!=map.nnode;n++) {
-		node->back_render.txt_id=-1;
-		node++;
-	}
+	fs_shader_init=FALSE;
 }
 
-void gl_back_render_map_end(void)
+void gl_fs_shader_map_end(void)
 {
-	int				n;
-	node_type		*node;
-
-	if (!back_render_on) return;
-
-	node=map.nodes;
-	
-	for (n=0;n!=map.nnode;n++) {
-		if (node->back_render.txt_id!=-1) {
-			glDeleteTextures(1,&node->back_render.txt_id);
-		}
-		node++;
-	}
+	gl_fs_shader_shutdown();
 }
-*/
+
 /* =======================================================
 
-      Back Render Texture
+      Start and Stop FS Shader
       
 ======================================================= */
-/*
-GLuint gl_back_render_create_texture(void)
+
+bool gl_fs_shader_start(char *shader_name,char *err_str)
 {
-	GLuint				gl_id;
-	
-	glGenTextures(1,&gl_id);
-	glBindTexture(GL_TEXTURE_2D,gl_id);
-	
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+	if (!fs_shader_on) return(TRUE);
 
-		// animsotropic modes
-		
-	switch (setup.anisotropic_mode) {
-	
-		case anisotropic_mode_none:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
-			break;
-			
-		case anisotropic_mode_low:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,2.0);
-			break;
-			
-		case anisotropic_mode_medium:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,4.0);
-			break;
-			
-		case anisotropic_mode_high:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,8.0);
-			break;
-			
-	}
+		// initialize if needed
 
-		// mipmap modes
+	gl_fs_shader_initialize();
 		
-	switch (setup.mipmap_mode) {
-	
-		case mipmap_mode_none:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
-		case mipmap_mode_bilinear:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
-		case mipmap_mode_trilinear:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			break;
-			
-	}
-	
-	glBindTexture(GL_TEXTURE_2D,0);
-	
-	return(gl_id);
+		// now running under shaders
+
+	fs_shader_active=TRUE;
+
+	return(TRUE);
 }
-*/
+
+void gl_fs_shader_end(void)
+{
+	fs_shader_active=FALSE;
+}
+
 /* =======================================================
 
-      Per Frame Back rendering
+      Run FS Shader Render
       
 ======================================================= */
-/*
-void gl_back_render_frame_node(int tick,char *node_name)
+
+void gl_fs_shader_render_begin(void)
 {
-	int				node_idx;
-	node_type		*node;
-
-		// get node
-		
-	node_idx=map_find_node(&map,node_name);
-	if (node_idx==-1) return;
-	
-	node=&map.nodes[node_idx];
-
-		// alread rendered?
-
-	if (node->back_render.render) return;
-
-		// need to create a texture?
-
-	if (node->back_render.txt_id==-1) {
-		node->back_render.txt_id=gl_back_render_create_texture();
-	}
+	if (!fs_shader_on) return;
+	if (!fs_shader_active) return;
 
 		// setup fbo
 
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,node->back_render.txt_id,0);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_id);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fs_shader_fbo_id);
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,fs_shader_txt_id,0);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 	
 	if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)!=GL_FRAMEBUFFER_COMPLETE_EXT) {
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
-		return;
+		fs_shader_active=FALSE;
 	}
+}
 
-		// draw back buffer
-		
-	view_draw_node(tick,node,back_render_texture_pixel_size);
+void gl_fs_shader_render_finish(void)
+{
+	float			*vertex_ptr,*uv_ptr;
+
+	if (!fs_shader_on) return;
+	if (!fs_shader_active) return;
+
+		// make sure rendering is over
+
 	glFlush();
+
+		// turn off the fbo
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 
-		// generate mipmaps
-		
-	glBindTexture(GL_TEXTURE_2D,node->back_render.txt_id);
-	glGenerateMipmapEXT(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,0);
+		// create the vertexes and uv
+
+	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
+	if (vertex_ptr==NULL) return;
+
+	uv_ptr=vertex_ptr+(4*2);
+
+	*vertex_ptr++=0.0f;
+	*vertex_ptr++=0.0f;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=0.0f;
+
+	*vertex_ptr++=(float)setup.screen.x_sz;
+	*vertex_ptr++=0.0f;
+
+	*uv_ptr++=1.0f;
+	*uv_ptr++=0.0f;
+
+	*vertex_ptr++=(float)setup.screen.x_sz;
+	*vertex_ptr++=(float)setup.screen.y_sz;
+
+	*uv_ptr++=1.0f;
+	*uv_ptr++=1.0f;
+
+	*vertex_ptr++=0.0f;
+	*vertex_ptr++=(float)setup.screen.y_sz;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=1.0f;
+
+  	view_unmap_current_vertex_object();
+
+		// setup fbo texture draw
+
+	gl_2D_view_screen();
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_DEPTH_TEST);
+
+	glColor4f(1.0f,0.0f,1.0f,1.0f);
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
 	
-		// mark as rendered for this frame
-		
-	node->back_render.render=TRUE;
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D,fs_shader_txt_id);
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+
+		// draw the quad
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+
+	glDrawArrays(GL_QUADS,0,4);
+
+ 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// finish fbo draw
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	
+	glDisable(GL_TEXTURE_2D);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
 }
-
-void gl_back_render_frame_start(int tick)
-{
-	int					n,k,mesh_idx;
-	node_type			*node;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	
-	if (!back_render_on) return;
-
-		// flag rendering so we don't draw twice
-
-	node=map.nodes;
-	
-	for (n=0;n!=map.nnode;n++) {
-		node->back_render.render=FALSE;
-		node++;
-	}
-	
-		// run through all the meshes
-	
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-
-		mesh_idx=view.render->draw_list.items[n].idx;
-
-		mesh=&map.mesh.meshes[mesh_idx];
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-			if (poly->camera[0]!=0x0) gl_back_render_frame_node(tick,poly->camera);
-			poly++;
-		}
-	}
-}
-*/
-/* =======================================================
-
-      Back Render Texture
-      
-======================================================= */
-/*
-bool gl_back_render_get_texture(char *node_name,GLuint *txt_id)
-{
-	int				node_idx;
-	node_type		*node;
-	
-	if (node_name[0]==0x0) return(FALSE);
-
-		// get node
-		
-	node_idx=map_find_node(&map,node_name);
-	if (node_idx==-1) return(FALSE);
-	
-	node=&map.nodes[node_idx];
-	
-		// get back render texture
-		
-	if (!node->back_render.render) return(FALSE);
-
-	*txt_id=node->back_render.txt_id;
-	return(TRUE);
-}
-*/
 
