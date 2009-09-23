@@ -96,9 +96,9 @@ void bitmap_texture_set_mipmap_filter(int mipmap_mode,bool pixelated)
       
 ======================================================= */
 
-bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool pixelated)
+bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool rectangle,bool pixelated)
 {
-	int					gl_txtformat,gl_txttype;
+	int					gl_txtformat,gl_txttype,gl_bindtype;
 	GLuint				gl_id;
 	
 		// if no bitmap data then no texture
@@ -110,8 +110,10 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1,&gl_id);
 		
-    glBindTexture(GL_TEXTURE_2D,gl_id);
-	
+	gl_bindtype=rectangle?GL_TEXTURE_RECTANGLE_ARB:GL_TEXTURE_2D;
+
+	glBindTexture(gl_bindtype,gl_id);
+
 		// storage and settings
 		
 	glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
@@ -133,27 +135,19 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 		// load texture
 
 	if ((mipmap_mode==mipmap_mode_none) || (pixelated)) {
-		glTexImage2D(GL_TEXTURE_2D,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
+		glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
 	}
 	else {
-		gluBuild2DMipmaps(GL_TEXTURE_2D,gl_txtformat,bitmap->wid,bitmap->high,gl_txttype,GL_UNSIGNED_BYTE,data);
+		gluBuild2DMipmaps(gl_bindtype,gl_txtformat,bitmap->wid,bitmap->high,gl_txttype,GL_UNSIGNED_BYTE,data);
 	}
-	
-		// auto load texture so compression takes effect
-/*		
-	if (use_compression) {
-		glEnable(GL_TEXTURE_2D);
-		glBegin(GL_TRIANGLES);
-		glVertex3i(-1,-1,0);
-		glVertex3i(-1,-1,0);
-		glVertex3i(-1,-1,0);
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-	}
-*/
+
 		// set to bitmap
 		
 	bitmap->gl_id=gl_id;
+
+		// unbind
+
+	glBindTexture(gl_bindtype,0);
 
 	return(TRUE);
 }

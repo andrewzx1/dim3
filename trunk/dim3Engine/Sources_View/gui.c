@@ -181,7 +181,7 @@ void gui_screenshot_load(void)
 
 		// save screenshot
 
-	bitmap_data(&gui_screenshot_bitmap,data,gui_screenshot_wid,gui_screenshot_high,FALSE,anisotropic_mode_none,mipmap_mode_trilinear);
+	bitmap_data(&gui_screenshot_bitmap,data,gui_screenshot_wid,gui_screenshot_high,FALSE,anisotropic_mode_none,mipmap_mode_trilinear,TRUE);
 		
 	free(data);
 	free(data2);
@@ -204,13 +204,13 @@ void gui_background_load(char *background_path,char *bitmap_name)
 	if (gl_is_screen_widescreen()) {
 		sprintf(name,"%s_wide",bitmap_name);
 		file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
-		if (bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE)) return;
+		if (bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,TRUE,FALSE,FALSE)) return;
 	}
 	
 		// and fail-over to the original if not loaded
 
 	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,TRUE,FALSE,FALSE);
 }
 
 /* =======================================================
@@ -290,15 +290,20 @@ void gui_shutdown(void)
 
 void gui_draw_background(float alpha)
 {
-	unsigned long		gl_id;
+	int				p_wid,p_high;
+	GLuint			gl_id;
 
 		// no background at all?
 
 	if (!gui_show_view) {
 		gl_id=gui_background_bitmap.gl_id;
+		p_wid=gui_background_bitmap.wid;
+		p_high=gui_background_bitmap.high;
 	}
 	else {
 		gl_id=gui_screenshot_bitmap.gl_id;
+		p_wid=gui_screenshot_bitmap.wid;
+		p_high=gui_screenshot_bitmap.high;
 	}
 
 	if (gl_id==-1) return;
@@ -307,20 +312,7 @@ void gui_draw_background(float alpha)
 
 	gl_2D_view_interface();
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-
-		// draw bitmap
-
-	gl_texture_simple_start();
-	gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-	view_draw_next_vertex_object_2D_texture_screen(hud.scale_x,hud.scale_y,0.0f,0.0f);
-	gl_texture_simple_end();
+	view_draw_next_vertex_object_2D_texture_quad_rectangle(gl_id,0,hud.scale_x,0,hud.scale_y,p_wid,p_high);
 }
 
 /* =======================================================

@@ -219,7 +219,7 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 	
 		// skip button if graphic is missing to avoid crash
 
-	if (!bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE)) {
+	if (!bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) {
 		nelement--;
 		SDL_mutexV(element_thread_lock);
 		return;
@@ -227,8 +227,8 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 
 		// if no selected button, then just use the regular one
 
-	if (!bitmap_open(&element->setup.button.bitmap_select,path2,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE)) {
-		bitmap_open(&element->setup.button.bitmap_select,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	if (!bitmap_open(&element->setup.button.bitmap_select,path2,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) {
+		bitmap_open(&element->setup.button.bitmap_select,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 	}
 
 	if ((wid!=-1) && (high!=-1)) {
@@ -277,7 +277,7 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 		element->setup.button.bitmap.gl_id=-1;
 	}
 	else {
-		bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+		bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 	}
 	
 	element->x=x;
@@ -1725,7 +1725,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		// open
 		
 	strcpy(element->setup.table.images[idx].path,path);
-	bitmap_open(&element->setup.table.images[idx].bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	bitmap_open(&element->setup.table.images[idx].bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 
 	return(element->setup.table.images[idx].bitmap.gl_id);
 }
@@ -3030,7 +3030,7 @@ void element_set_bitmap(int id,char *path)
 			element->setup.button.bitmap.gl_id=-1;
 		}
 		else {
-			bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+			bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 		}
 	}
 
