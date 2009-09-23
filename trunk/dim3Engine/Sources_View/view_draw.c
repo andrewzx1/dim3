@@ -594,14 +594,13 @@ void view_draw(int tick)
 //	test_rays();		// supergumba
 }
 
-bool view_draw_node(int tick,node_type *node,int pixel_size)
+bool view_draw_node(int tick,node_type *node)
 {
 	d3pnt			pnt;
 	d3ang			ang;
 
-		// switch out to node render
-		
-	glViewport(0,0,pixel_size,pixel_size);
+		// switch out to node rendering
+
 	view.render=&view_node_render;
 	
 		// camera position
@@ -640,9 +639,8 @@ bool view_draw_node(int tick,node_type *node,int pixel_size)
 
 	view_draw_scene_render(tick,NULL,NULL);
 
-		// restore the normal rendering
+		// restore the old rendering
 		
-	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
 	view.render=&view_camera_render;
 	
 	return(TRUE);

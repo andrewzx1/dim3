@@ -37,7 +37,7 @@ extern map_type				map;
 extern view_type			view;
 extern camera_type			camera;
 
-int							vport[4];
+GLint						vport[4];
 double						mod_matrix[16],proj_matrix[16],
 							fix_rot_camera_x,fix_rot_camera_y,fix_rot_camera_z;
 
@@ -176,7 +176,7 @@ inline void gl_setup_project(void)
 {
 	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
 	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
+	glGetIntegerv(GL_VIEWPORT,vport);
 }
 
 inline bool gl_project_in_view_z(int x,int y,int z)
@@ -188,7 +188,7 @@ inline void gl_project_point(int *x,int *y,int *z)
 {
 	double		dx,dy,dz;
 
-	gluProject(*x,*y,*z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
+	gluProject(*x,*y,*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 	*x=((int)dx)-render_info.view_x;
 	*y=((int)dy)-render_info.view_y;
 	*z=(int)dz;
@@ -207,7 +207,7 @@ inline float gl_project_get_depth(int x,int y,int z)
 {
 	double		dx,dy,dz;
 
-	gluProject(x,y,z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
+	gluProject(x,y,z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 	return((float)dz);
 }
 
@@ -215,7 +215,7 @@ inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
 {
 	double		dx,dy,dz;
 	
-	gluUnProject(fx,fy,fz,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
+	gluUnProject(fx,fy,fz,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 	*x=((int)dx)+render_info.view_x;
 	*y=((int)dy)+render_info.view_y;
 	*z=(int)dz;
@@ -242,11 +242,11 @@ void gl_project_fix_rotation(int *x,int *y,int *z)
 
 	gl_3D_view();
 	gl_setup_project();
-	gluProject(dx,dy,dz,mod_matrix,proj_matrix,(GLint*)vport,&dx2,&dy2,&dz2);
+	gluProject(dx,dy,dz,mod_matrix,proj_matrix,vport,&dx2,&dy2,&dz2);
 
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
-	gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
+	gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 
 	*x=((int)dx);
 	*y=((int)dy);

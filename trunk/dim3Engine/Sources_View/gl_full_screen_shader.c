@@ -39,9 +39,6 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-// supergumba
-// GL_TEXTURE_RECTANGLE_ARB
-
 /* =======================================================
 
       Initialize Full Screen Shader
@@ -75,14 +72,18 @@ void gl_fs_shader_initialize(void)
 		// create the texture
 
 	glGenTextures(1,&fs_shader_txt_id);
-	glBindTexture(GL_TEXTURE_2D,fs_shader_txt_id);
-	
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,256,256,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
-	
-	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	
 	glBindTexture(GL_TEXTURE_2D,0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id);
+	
+	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_RGBA,setup.screen.x_sz,setup.screen.y_sz,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+	
+	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+	
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
 
 		// shader started
 
@@ -161,13 +162,12 @@ void gl_fs_shader_end(void)
 
 void gl_fs_shader_render_begin(void)
 {
-	if (!fs_shader_on) return;
-	if (!fs_shader_active) return;
+	if ((!fs_shader_on) || (!fs_shader_active)) return;
 
 		// setup fbo
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fs_shader_fbo_id);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,fs_shader_txt_id,0);
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id,0);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 	
@@ -175,14 +175,15 @@ void gl_fs_shader_render_begin(void)
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 		fs_shader_active=FALSE;
 	}
+	
+	glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
 }
 
 void gl_fs_shader_render_finish(void)
 {
 	float			*vertex_ptr,*uv_ptr;
 
-	if (!fs_shader_on) return;
-	if (!fs_shader_active) return;
+	if ((!fs_shader_on) || (!fs_shader_active)) return;
 
 		// make sure rendering is over
 
@@ -191,6 +192,7 @@ void gl_fs_shader_render_finish(void)
 		// turn off the fbo
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
 
 		// create the vertexes and uv
 
@@ -200,28 +202,28 @@ void gl_fs_shader_render_finish(void)
 	uv_ptr=vertex_ptr+(4*2);
 
 	*vertex_ptr++=0.0f;
-	*vertex_ptr++=0.0f;
+	*vertex_ptr++=(float)setup.screen.y_sz;
 
 	*uv_ptr++=0.0f;
 	*uv_ptr++=0.0f;
 
 	*vertex_ptr++=(float)setup.screen.x_sz;
-	*vertex_ptr++=0.0f;
+	*vertex_ptr++=(float)setup.screen.y_sz;
 
-	*uv_ptr++=1.0f;
+	*uv_ptr++=(float)setup.screen.x_sz;
 	*uv_ptr++=0.0f;
 
 	*vertex_ptr++=(float)setup.screen.x_sz;
-	*vertex_ptr++=(float)setup.screen.y_sz;
+	*vertex_ptr++=0.0f;
 
-	*uv_ptr++=1.0f;
-	*uv_ptr++=1.0f;
+	*uv_ptr++=(float)setup.screen.x_sz;
+	*uv_ptr++=(float)setup.screen.y_sz;
 
 	*vertex_ptr++=0.0f;
-	*vertex_ptr++=(float)setup.screen.y_sz;
+	*vertex_ptr++=0.0f;
 
 	*uv_ptr++=0.0f;
-	*uv_ptr++=1.0f;
+	*uv_ptr++=(float)setup.screen.y_sz;
 
   	view_unmap_current_vertex_object();
 
@@ -236,14 +238,11 @@ void gl_fs_shader_render_finish(void)
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
 
 	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 
-	glBindTexture(GL_TEXTURE_2D,fs_shader_txt_id);
-
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id);
 
 		// draw the quad
 
@@ -259,11 +258,8 @@ void gl_fs_shader_render_finish(void)
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// finish fbo draw
-
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 	
-	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_RECTANGLE_ARB);
 
 		// unbind the vbo
 

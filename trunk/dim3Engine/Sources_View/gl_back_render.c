@@ -39,7 +39,7 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-extern bool view_draw_node(int tick,node_type *node,int pixel_size);
+extern bool view_draw_node(int tick,node_type *node);
 
 /* =======================================================
 
@@ -191,6 +191,7 @@ GLuint gl_back_render_create_texture(void)
 void gl_back_render_frame_node(int tick,char *node_name)
 {
 	int				node_idx;
+	GLint			old_vport[4],old_fbo;
 	node_type		*node;
 
 		// get node
@@ -203,6 +204,15 @@ void gl_back_render_frame_node(int tick,char *node_name)
 		// alread rendered?
 
 	if (node->back_render.render) return;
+	
+		// remember old fbo and viewport
+		
+	glGetIntegerv(GL_VIEWPORT,old_vport);
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT,&old_fbo);
+	
+		// new viewport
+		
+	glViewport(0,0,back_render_texture_pixel_size,back_render_texture_pixel_size);
 
 		// need to create a texture?
 
@@ -224,10 +234,15 @@ void gl_back_render_frame_node(int tick,char *node_name)
 
 		// draw back buffer
 		
-	view_draw_node(tick,node,back_render_texture_pixel_size);
+	view_draw_node(tick,node);
+	
 	glFlush();
-
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+	
+		// restore old fbo and viewport
+		
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,old_fbo);
+	glViewport(old_vport[0],old_vport[1],old_vport[2],old_vport[3]);
+	
 
 		// generate mipmaps
 		

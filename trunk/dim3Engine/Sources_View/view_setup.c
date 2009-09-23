@@ -462,6 +462,7 @@ void view_setup_projectiles(int tick)
 
 	for (n=0;n!=server.count.proj;n++) {
 		proj=&server.projs[n];
+		if (proj->dispose) continue;
 		
 			// setup model positions
 			

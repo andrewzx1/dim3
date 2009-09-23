@@ -300,6 +300,7 @@ void run_projectiles_slice(int tick)
 	
 	for (n=0;n!=server.count.proj;n++) {
 		proj=&server.projs[n];
+		if (proj->dispose) continue;
 
 		object_clear_contact(&proj->contact);
 	   
@@ -342,14 +343,14 @@ void run_projectiles_no_slice(int tick)
 	int				n;
 	proj_type		*proj;
 
-	proj=server.projs;
-	
 	for (n=0;n!=server.count.proj;n++) {
+		proj=&server.projs[n];
+		if (proj->dispose) continue;
+	
 		model_draw_setup_projectile(tick,proj);
 		model_run_animation(&proj->draw);
 		model_fade_run(tick,&proj->draw);
 		model_mesh_fade_run(tick,&proj->draw);
-		proj++;
 	}
 }
 
