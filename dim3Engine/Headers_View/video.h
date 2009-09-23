@@ -107,6 +107,7 @@ extern void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top
 extern void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
 extern void view_draw_next_vertex_object_2D_line_poly(int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3);
 extern void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot);
+extern void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
 
 	// shaders
 	
@@ -124,7 +125,7 @@ extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,i
 
 extern void gl_fs_shader_map_start(void);
 extern void gl_fs_shader_map_end(void);
-extern bool gl_fs_shader_start(char *shader_name,char *err_str);
+extern bool gl_fs_shader_start(char *shader_name,int life_msec,char *err_str);
 extern void gl_fs_shader_end(void);
 extern void gl_fs_shader_render_begin(void);
 extern void gl_fs_shader_render_finish(void);

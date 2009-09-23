@@ -31,7 +31,12 @@ and can be sold or given away.
 
 #include "video.h"
 
+extern int game_time_get(void);
+extern int gl_shader_find(char *name);
+extern void gl_shader_set_scene_variables(view_shader_type *shader);
+
 GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id,fs_shader_txt_id;
+int							fs_shader_idx,fs_shader_life_msec,fs_shader_start_tick;
 bool						fs_shader_on,fs_shader_init,fs_shader_active;
 
 extern map_type				map;
@@ -108,6 +113,43 @@ void gl_fs_shader_shutdown(void)
 
 /* =======================================================
 
+      Start and Stop FS Shader
+      
+======================================================= */
+
+bool gl_fs_shader_start(char *shader_name,int life_msec,char *err_str)
+{
+	if (!fs_shader_on) return(TRUE);
+
+		// set the shader
+
+	fs_shader_idx=gl_shader_find(shader_name);
+	if (fs_shader_idx==-1) {
+		sprintf(err_str,"No shader with name: %s\n",shader_name);
+		return(FALSE);
+	}
+
+		// initialize if needed
+
+	gl_fs_shader_initialize();
+		
+		// now running under shaders
+
+	fs_shader_start_tick=game_time_get();
+	fs_shader_life_msec=life_msec;
+
+	fs_shader_active=TRUE;
+
+	return(TRUE);
+}
+
+void gl_fs_shader_end(void)
+{
+	fs_shader_active=FALSE;
+}
+
+/* =======================================================
+
       Per Map Back Shader Start/Stop
       
 ======================================================= */
@@ -125,33 +167,10 @@ void gl_fs_shader_map_start(void)
 
 void gl_fs_shader_map_end(void)
 {
+	if (!fs_shader_on) return;
+
+	gl_fs_shader_end();
 	gl_fs_shader_shutdown();
-}
-
-/* =======================================================
-
-      Start and Stop FS Shader
-      
-======================================================= */
-
-bool gl_fs_shader_start(char *shader_name,char *err_str)
-{
-	if (!fs_shader_on) return(TRUE);
-
-		// initialize if needed
-
-	gl_fs_shader_initialize();
-		
-		// now running under shaders
-
-	fs_shader_active=TRUE;
-
-	return(TRUE);
-}
-
-void gl_fs_shader_end(void)
-{
-	fs_shader_active=FALSE;
 }
 
 /* =======================================================
@@ -163,6 +182,15 @@ void gl_fs_shader_end(void)
 void gl_fs_shader_render_begin(void)
 {
 	if ((!fs_shader_on) || (!fs_shader_active)) return;
+
+		// check for time outs
+
+	if (fs_shader_life_msec!=-1) {
+		if ((fs_shader_start_tick+fs_shader_life_msec)<game_time_get()) {
+			gl_fs_shader_end();
+			return;
+		}
+	}
 
 		// setup fbo
 
@@ -181,8 +209,9 @@ void gl_fs_shader_render_begin(void)
 
 void gl_fs_shader_render_finish(void)
 {
-	float			*vertex_ptr,*uv_ptr;
-
+	float				*vertex_ptr,*uv_ptr;
+	view_shader_type	*shader;
+	
 	if ((!fs_shader_on) || (!fs_shader_active)) return;
 
 		// make sure rendering is over
@@ -239,10 +268,16 @@ void gl_fs_shader_render_finish(void)
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_RECTANGLE_ARB);
-	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id);
+
+		// start the shader
+
+	shader=&view.shaders[fs_shader_idx];
+	
+	glUseProgramObjectARB(shader->program_obj);
+
+	gl_shader_set_scene_variables(shader);
 
 		// draw the quad
 
@@ -256,6 +291,10 @@ void gl_fs_shader_render_finish(void)
 
  	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// end the shader
+
+	glUseProgramObjectARB(0);
 
 		// finish fbo draw
 	
