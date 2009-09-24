@@ -40,7 +40,7 @@ extern hud_type				hud;
 extern setup_type			setup;
 
 char						gui_last_key;
-bool						gui_show_view;
+bool						gui_show_view,gui_rect_textures;
 bitmap_type					gui_background_bitmap,gui_screenshot_bitmap;
 chooser_frame_type			gui_frame;
 
@@ -64,7 +64,7 @@ void gui_screenshot_free(void)
 	bitmap_close(&gui_screenshot_bitmap);
 }
 
-void gui_screenshot_load_blur_pixel(unsigned char *data,unsigned char *data2,int x,int y)
+void gui_screenshot_load_blur_pixel(unsigned char *data,unsigned char *data2,int x,int y,int x2,int y2)
 {
 	int				cnt,r,g,b;
 	unsigned char	*ptr;
@@ -73,41 +73,41 @@ void gui_screenshot_load_blur_pixel(unsigned char *data,unsigned char *data2,int
 	r=g=b=0;
 
 	if (x>0) {
-		ptr=data+((y*(gui_screenshot_wid*3))+((x-1)*3));
+		ptr=data+((y*(setup.screen.x_sz*3))+((x-1)*3));
 		r+=(int)*ptr++;
 		g+=(int)*ptr++;
 		b+=(int)*ptr++;
 		cnt++;
 	}
-	if (x<(gui_screenshot_wid-1)) {
-		ptr=data+((y*(gui_screenshot_wid*3))+((x+1)*3));
+	if (x<(setup.screen.x_sz-1)) {
+		ptr=data+((y*(setup.screen.x_sz*3))+((x+1)*3));
 		r+=(int)*ptr++;
 		g+=(int)*ptr++;
 		b+=(int)*ptr++;
 		cnt++;
 	}
 	if (y>0) {
-		ptr=data+(((y-1)*(gui_screenshot_wid*3))+(x*3));
+		ptr=data+(((y-1)*(setup.screen.x_sz*3))+(x*3));
 		r+=(int)*ptr++;
 		g+=(int)*ptr++;
 		b+=(int)*ptr++;
 		cnt++;
 	}
-	if (y<(gui_screenshot_high-1)) {
-		ptr=data+(((y+1)*(gui_screenshot_wid*3))+(x*3));
+	if (y<(setup.screen.y_sz-1)) {
+		ptr=data+(((y+1)*(setup.screen.x_sz*3))+(x*3));
 		r+=(int)*ptr++;
 		g+=(int)*ptr++;
 		b+=(int)*ptr++;
 		cnt++;
 	}
 
-	ptr=data+((y*(gui_screenshot_wid*3))+(x*3));
+	ptr=data+((y*(setup.screen.x_sz*3))+(x*3));
 	r+=(int)*ptr++;
 	g+=(int)*ptr++;
 	b+=(int)*ptr++;
 	cnt++;
 	
-	ptr=data2+((y*(gui_screenshot_wid*3))+(x*3));
+	ptr=data2+((y2*(setup.screen.x_sz*3))+(x2*3));
 	*ptr++=(unsigned char)(r/cnt);
 	*ptr++=(unsigned char)(g/cnt);
 	*ptr++=(unsigned char)(b/cnt);
@@ -115,53 +115,18 @@ void gui_screenshot_load_blur_pixel(unsigned char *data,unsigned char *data2,int
 
 void gui_screenshot_load(void)
 {
-	int					n,x,y,x_skip,y_skip,dsz;
-	unsigned char		*pixel_buffer,*data,*data2,*sptr,*dptr,*s2ptr,*d2ptr;
+	int					n,x,y,y2,dsz;
+	unsigned char		*data,*data2;
 	
-	pixel_buffer=(unsigned char*)malloc((setup.screen.x_sz*3)*setup.screen.y_sz);
-	if (pixel_buffer==NULL) return;
+	data=(unsigned char*)malloc((setup.screen.x_sz*3)*setup.screen.y_sz);
+	if (data==NULL) return;
 	
-	glReadPixels(0,0,setup.screen.x_sz,setup.screen.y_sz,GL_RGB,GL_UNSIGNED_BYTE,pixel_buffer);
-	
-		// reduce size
-		
-	x_skip=setup.screen.x_sz/gui_screenshot_wid;
-	y_skip=setup.screen.y_sz/gui_screenshot_high;
-	
-		// flip and/or reduce the data
-		
-	dsz=((gui_screenshot_wid*3)*gui_screenshot_high);
-	
-	data=(unsigned char*)malloc(dsz);
-	if (data==NULL) {
-		free(pixel_buffer);
-		return;
-	}
-
-	sptr=pixel_buffer;
-	dptr=data+((gui_screenshot_high-1)*(gui_screenshot_wid*3));
-
-	for (y=0;y!=gui_screenshot_high;y++) {
-	
-		s2ptr=sptr;
-		d2ptr=dptr;
-		
-		for (x=0;x!=gui_screenshot_wid;x++) {
-			*d2ptr++=*s2ptr++;
-			*d2ptr++=*s2ptr++;
-			*d2ptr++=*s2ptr++;
-			
-			s2ptr+=((x_skip-1)*3);
-		}
-			
-		sptr+=((setup.screen.x_sz*3)*y_skip);
-		dptr-=(gui_screenshot_wid*3);
-	}
-
-	free(pixel_buffer);
+	glReadPixels(0,0,setup.screen.x_sz,setup.screen.y_sz,GL_RGB,GL_UNSIGNED_BYTE,data);
 	
 		// blur the data
 		
+	dsz=((setup.screen.x_sz*3)*setup.screen.y_sz);
+
 	data2=(unsigned char*)malloc(dsz);
 	if (data2==NULL) {
 		free(data);
@@ -170,21 +135,26 @@ void gui_screenshot_load(void)
 	
 	for (n=0;n!=gui_screenshot_blur_count;n++) {
 	
-		for (y=0;y!=gui_screenshot_high;y++) {
-			for (x=0;x!=gui_screenshot_wid;x++) {
-				gui_screenshot_load_blur_pixel(data,data2,x,y);
+		for (y=0;y!=setup.screen.y_sz;y++) {
+
+			y2=y;
+			if (n==(gui_screenshot_blur_count-1)) y2=setup.screen.y_sz-y;		// flip the data on the last blur
+
+			for (x=0;x!=setup.screen.x_sz;x++) {
+				gui_screenshot_load_blur_pixel(data,data2,x,y,x,y2);
 			}
 		}
 		
 		memmove(data,data2,dsz);
 	}
 
+	free(data2);
+
 		// save screenshot
 
-	bitmap_data(&gui_screenshot_bitmap,data,gui_screenshot_wid,gui_screenshot_high,FALSE,anisotropic_mode_none,mipmap_mode_trilinear,TRUE);
+	bitmap_data(&gui_screenshot_bitmap,data,setup.screen.x_sz,setup.screen.y_sz,FALSE,anisotropic_mode_none,mipmap_mode_trilinear,gui_rect_textures);
 		
 	free(data);
-	free(data2);
 }
 
 /* =======================================================
@@ -195,22 +165,10 @@ void gui_screenshot_load(void)
 
 void gui_background_load(char *background_path,char *bitmap_name)
 {
-	char		name[256],path[1024];
-
-		// load the background bitmap
-		// we pick the version with _wide on the
-		// end if screen is in widescreen resolutions
-
-	if (gl_is_screen_widescreen()) {
-		sprintf(name,"%s_wide",bitmap_name);
-		file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
-		if (bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,TRUE,FALSE,FALSE)) return;
-	}
-	
-		// and fail-over to the original if not loaded
+	char		path[1024];
 
 	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,TRUE,FALSE,FALSE);
+	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,gui_rect_textures,FALSE,FALSE);
 }
 
 /* =======================================================
@@ -230,6 +188,10 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 		// stop playing ambients
 		
 	al_stop_all_looping_sources();
+
+		// detect rectangle textures
+
+	gui_rect_textures=gl_check_texture_rectangle_ok();
 	
 		// initialize cursor and elements
 		
@@ -312,7 +274,12 @@ void gui_draw_background(float alpha)
 
 	gl_2D_view_interface();
 
-	view_draw_next_vertex_object_2D_texture_quad_rectangle(gl_id,0,hud.scale_x,0,hud.scale_y,p_wid,p_high);
+	if (gui_rect_textures) {
+		view_draw_next_vertex_object_2D_texture_quad_rectangle(gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,p_wid,p_high);
+	}
+	else {
+		view_draw_next_vertex_object_2D_texture_quad(gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,0.0f);
+	}
 }
 
 /* =======================================================

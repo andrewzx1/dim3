@@ -115,8 +115,6 @@ and can be sold or given away.
 // screenshot backgrounds
 //
 
-#define gui_screenshot_wid						256
-#define gui_screenshot_high						128
 #define gui_screenshot_blur_count				10
 
 //

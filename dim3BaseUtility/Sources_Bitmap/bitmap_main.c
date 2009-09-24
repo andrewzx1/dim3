@@ -43,14 +43,128 @@ void bitmap_new(bitmap_type *bitmap)
 
 /* =======================================================
 
+      Bitmaps Utilities
+      
+======================================================= */
+
+void bitmap_scrub_black_to_alpha(bitmap_type *bitmap,unsigned char *png_data)
+{
+	int					n,psz;
+	unsigned char		*data;
+
+	data=png_data;
+	psz=(bitmap->wid<<2)*bitmap->high;
+
+	for (n=0;n<psz;n+=4) {
+		*(data+3)=*data;
+		data+=4;
+	}
+}
+
+void bitmap_set_alpha_mode(bitmap_type *bitmap,unsigned char *png_data)
+{
+	int					n,psz;
+	unsigned char		*data;
+
+		// assume it's a cut-out until we see different data
+
+	bitmap->alpha_mode=alpha_mode_cut_out;
+					
+		// search for transparencies
+
+	data=png_data+3;
+	psz=(bitmap->wid<<2)*bitmap->high;
+		
+	for (n=0;n<psz;n+=4) {
+		
+		if ((*data!=0xFF) && (*data!=0x0)) {
+			bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
+			return;
+		}
+
+		data+=4;
+	}
+}
+
+int bitmap_find_nearest_power_2(int sz)
+{
+	int			n,p2;
+
+	p2=4;
+	for (n=0;n!=10;n++) {
+		if (p2>sz) return(p2/2);
+		p2*=2;
+	}
+
+	return(1024);
+}
+
+unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,unsigned char *png_data)
+{
+	int				wid,high,byte_sz,x,y,dsz;
+	float			x_skip,y_skip;
+	unsigned char	*data,*sptr,*dptr;
+
+		// get power of 2 sizes
+
+	wid=bitmap_find_nearest_power_2(bitmap->wid);
+	high=bitmap_find_nearest_power_2(bitmap->high);
+
+	if ((wid==bitmap->wid) && (high==bitmap->high)) return(png_data);
+
+		// is it 3 or 4 bytes?
+
+	if (bitmap->alpha_mode==alpha_mode_none) {
+		byte_sz=3;
+	}
+	else {
+		byte_sz=4;
+	}
+
+		// convert data
+
+	dsz=(wid*byte_sz)*high;
+
+	data=(unsigned char*)malloc(dsz);
+	if (data==NULL) return(png_data);
+
+	x_skip=(float)bitmap->wid/(float)wid;
+	y_skip=(float)bitmap->high/(float)high;
+
+	dptr=data;
+
+	for (y=0;y!=high;y++) {
+	
+		for (x=0;x!=wid;x++) {
+			sptr=png_data+(byte_sz*(int)(x_skip*(float)x))+((bitmap->wid*byte_sz)*(int)(y_skip*(float)y));
+
+			*dptr++=*sptr++;
+			*dptr++=*sptr++;
+			*dptr++=*sptr++;
+
+			if (byte_sz==4) *dptr++=*sptr;
+		}
+	}
+
+	free(png_data);
+
+		// reset width and height
+
+	bitmap->wid=wid;
+	bitmap->high=high;
+
+	return(data);
+}
+
+/* =======================================================
+
       Open Bitmaps
       
 ======================================================= */
 
 bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
 {
-	int					n,psz;
-	unsigned char		*png_data,*data;
+	unsigned char		*png_data;
 	bool				ok,alpha_channel;
 
 	bitmap_new(bitmap);
@@ -59,44 +173,26 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 	
 	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high,&alpha_channel);
 	if (png_data==NULL) return(FALSE);
+
+		// if not a rectangle, fix size
+		// if not a power of two
+
+	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,png_data);
 	
-		// certain alpha routines
+		// set alphas and scrubbing
 		
 	bitmap->alpha_mode=alpha_mode_none;
 
 	if (alpha_channel) {
 
-		psz=(bitmap->wid<<2)*bitmap->high;
-
-			// scrub blacks to alpahs
+			// scrub blacks to alphas
 			// this is mostly used for glow maps
 
-		if (scrub_black_to_alpha) {
-
-			data=png_data;
-
-			for (n=0;n<psz;n+=4) {
-				*(data+3)=*data;
-				data+=4;
-			}
-		}
+		if (scrub_black_to_alpha) bitmap_scrub_black_to_alpha(bitmap,png_data);
 		
 			// find if bitmap has transparencies
-			// assume it's a cut-out until we see different data
-			
-		bitmap->alpha_mode=alpha_mode_cut_out;
-					
-		data=png_data+3;
-		
-		for (n=0;n<psz;n+=4) {
-		
-			if ((*data!=0xFF) && (*data!=0x0)) {
-				bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
-				break;
-			}
 
-			data+=4;
-		}
+		bitmap_set_alpha_mode(bitmap,png_data);
 	}
 	
 		// get the texture
@@ -153,35 +249,18 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
 
 bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool rectangle)
 {
-	int				n,psz;
-	unsigned char	*ptr;
-	
 	bitmap->wid=wid;
 	bitmap->high=high;
-	
-	bitmap->alpha_mode=alpha_mode_none;
+
+		// if not a rectangle, fix size
+		// if not a power of two
+
+	if (!rectangle) data=bitmap_fix_power_2(bitmap,data);
 	
 		// find if bitmap has transparencies
-		// assume it's a cut-out until we see different data
 	
-	if (alpha_channel) {
-	
-		bitmap->alpha_mode=alpha_mode_cut_out;
-
-		ptr=data+3;
-
-		psz=(wid<<2)*high;
-		
-		for (n=0;n<psz;n+=4) {
-		
-			if ((*ptr!=0xFF) && (*ptr!=0x0)) {
-				bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
-				break;
-			}
-
-			ptr+=4;
-		}
-	}
+	bitmap->alpha_mode=alpha_mode_none;
+	if (alpha_channel) bitmap_set_alpha_mode(bitmap,data);
 	
 		// get the texture
 		

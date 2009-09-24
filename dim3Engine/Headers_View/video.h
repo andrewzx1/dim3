@@ -43,6 +43,7 @@ extern bool gl_check_frame_buffer_ok(void);
 extern bool gl_check_fsaa_ok(void);
 extern bool gl_check_texture_anisotropic_filter_ok(void);
 extern bool gl_check_texture_generate_mipmaps_ok(void);
+extern bool gl_check_texture_rectangle_ok(void);
 extern bool gl_check_shader_ok(void);
 
 	// lights
@@ -101,13 +102,13 @@ extern unsigned short* view_bind_map_next_index_object(int sz);
 extern void view_unmap_current_index_object(void);
 extern void view_unbind_current_index_object(void);
 
-extern void view_draw_next_vertex_object_2D_texture_screen(int wid,int high,float gx,float gy);
 extern void view_draw_next_vertex_object_2D_tint_screen(void);
-extern void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top,int bot);
 extern void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
 extern void view_draw_next_vertex_object_2D_line_poly(int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3);
 extern void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot);
-extern void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
+
+extern void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,float gx,float gy);
+extern void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
 
 	// shaders
 	

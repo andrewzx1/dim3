@@ -855,26 +855,27 @@ void element_draw_button_text(element_type *element,int sel_id)
 void element_draw_button_bitmap(element_type *element,int sel_id)
 {
 	int				lft,rgt,top,bot;
+	float			alpha;
+	GLuint			gl_id;
 	
-	gl_texture_simple_start();
-
 	if (element->enabled) {
 		if (element->id==sel_id) {
-			gl_texture_simple_set(element->setup.button.bitmap_select.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
+			gl_id=element->setup.button.bitmap_select.gl_id;
+			alpha=1.0f;
 		}
 		else {
-			gl_texture_simple_set(element->setup.button.bitmap.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
+			gl_id=element->setup.button.bitmap.gl_id;
+			alpha=1.0f;
 		}
 	}
 	else {
-		gl_texture_simple_set(element->setup.button.bitmap.gl_id,TRUE,1.0f,1.0f,1.0f,0.5f);
+		gl_id=element->setup.button.bitmap.gl_id;
+		alpha=0.5f;
 	}
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 
-	view_draw_next_vertex_object_2D_texture_quad(lft,rgt,top,bot);
-
-	gl_texture_simple_end();
+	view_draw_next_vertex_object_2D_texture_quad(gl_id,alpha,lft,rgt,top,bot,0.0f,0.0f);
 }
 
 void element_draw_button(element_type *element,int sel_id)
@@ -911,22 +912,7 @@ void element_draw_bitmap(element_type *element)
 		// the picture
 		
 	if (element->setup.button.bitmap.gl_id!=-1) {
-		gl_texture_simple_start();
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_NOTEQUAL,0);
-
-		gl_texture_simple_set(element->setup.button.bitmap.gl_id,TRUE,1,1,1,1);
-		
-		view_draw_next_vertex_object_2D_texture_quad(lft,rgt,top,bot);
-		
-		gl_texture_simple_end();
-
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
+		view_draw_next_vertex_object_2D_texture_quad(element->setup.button.bitmap.gl_id,1.0f,lft,rgt,top,bot,0.0f,0.0f);
 	}
 	
 		// the frame
@@ -1761,16 +1747,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 			gl_id=element_draw_table_get_image_gl_id(element,row);
 
 			if (gl_id!=-1) {
-
-				gl_texture_simple_start();
-				gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-
-				glDisable(GL_BLEND);
-				glDisable(GL_ALPHA_TEST);
-
-				view_draw_next_vertex_object_2D_texture_quad(dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
-
-				gl_texture_simple_end();
+				view_draw_next_vertex_object_2D_texture_quad(gl_id,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size),0.0f,0.0f);
 				
 				glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
 				view_draw_next_vertex_object_2D_line_quad(dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
