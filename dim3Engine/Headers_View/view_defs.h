@@ -189,7 +189,8 @@ typedef struct		{
 					} view_shader_custom_var_type;
 					
 typedef struct		{
-						int									cur_light_idx[max_shader_light];
+						int									start_tick,
+															cur_light_idx[max_shader_light];
 						float								cur_dark_factor,cur_alpha;
 						char								name[name_str_len],
 															vertex_name[file_str_len],

@@ -42,7 +42,7 @@ int							gl_shader_current_idx,gl_shader_current_txt_idx,gl_shader_current_fram
 							gl_shader_current_extra_txt_idx;
 
 extern int game_time_get(void);
-extern float game_time_fequency_second_get(void);
+extern float game_time_fequency_second_get(int start_tick);
 
 /* =======================================================
 
@@ -374,6 +374,10 @@ bool gl_shader_initialize(char *err_str)
 			// cache the location of the dymaic variables
 			
 		gl_shader_cache_dynamic_variable_locations(shader);
+		
+			// timing only works for full screen shaders
+			
+		shader->start_tick=0;
 
 		shader++;
 	}
@@ -479,8 +483,8 @@ void gl_shader_attach_model(model_type *mdl)
 
 void gl_shader_set_scene_variables(view_shader_type *shader)
 {
-	if (shader->var_dim3TimeMillisec!=-1) glUniform1iARB(shader->var_dim3TimeMillisec,game_time_get());
-	if (shader->var_dim3FrequencySecond!=-1) glUniform1fARB(shader->var_dim3FrequencySecond,game_time_fequency_second_get());
+	if (shader->var_dim3TimeMillisec!=-1) glUniform1iARB(shader->var_dim3TimeMillisec,(game_time_get()-shader->start_tick));
+	if (shader->var_dim3FrequencySecond!=-1) glUniform1fARB(shader->var_dim3FrequencySecond,game_time_fequency_second_get(shader->start_tick));
 	if (shader->var_dim3CameraPosition!=-1) glUniform3fARB(shader->var_dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
 	if (shader->var_dim3AmbientColor!=-1) glUniform3fARB(shader->var_dim3AmbientColor,(map.ambient.light_color.r+setup.gamma),(map.ambient.light_color.g+setup.gamma),(map.ambient.light_color.b+setup.gamma));
 }
