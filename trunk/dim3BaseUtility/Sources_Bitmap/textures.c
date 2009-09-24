@@ -35,36 +35,36 @@ and can be sold or given away.
       
 ======================================================= */
 
-void bitmap_texture_set_anisotropic_mode(int anisotropic_mode)
+void bitmap_texture_set_anisotropic_mode(int gl_bindtype,int anisotropic_mode)
 {
 	switch (anisotropic_mode) {
 	
 		case anisotropic_mode_none:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
 			break;
 			
 		case anisotropic_mode_low:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,2.0);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,2.0);
 			break;
 			
 		case anisotropic_mode_medium:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,4.0);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,4.0);
 			break;
 			
 		case anisotropic_mode_high:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,8.0);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,8.0);
 			break;
 			
 	}
 }
 
-void bitmap_texture_set_mipmap_filter(int mipmap_mode,bool pixelated)
+void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixelated)
 {
 		// pixelated textures are always nearest
 		
 	if (pixelated) {
-		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 		return;
 	}
 			
@@ -73,18 +73,18 @@ void bitmap_texture_set_mipmap_filter(int mipmap_mode,bool pixelated)
 	switch (mipmap_mode) {
 	
 		case mipmap_mode_none:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 			break;
 			
 		case mipmap_mode_bilinear:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 			break;
 			
 		case mipmap_mode_trilinear:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 			break;
 			
 	}
@@ -118,8 +118,8 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 		
 	glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
 	
-	bitmap_texture_set_mipmap_filter(mipmap_mode,pixelated);
-	bitmap_texture_set_anisotropic_mode(anisotropic_mode);
+	bitmap_texture_set_mipmap_filter(gl_bindtype,mipmap_mode,pixelated);
+	bitmap_texture_set_anisotropic_mode(gl_bindtype,anisotropic_mode);
 	
 		// texture type
 		

@@ -119,7 +119,13 @@ void gl_fs_shader_shutdown(void)
 
 bool gl_fs_shader_start(char *shader_name,int life_msec,char *err_str)
 {
-	if (!fs_shader_on) return(TRUE);
+		// start with no error
+		
+	err_str[0]=0x0;
+	
+		// false return but no error (couldn't use shaders)
+		
+	if (!fs_shader_on) return(FALSE);
 
 		// set the shader
 
@@ -277,6 +283,7 @@ void gl_fs_shader_render_finish(void)
 	
 	glUseProgramObjectARB(shader->program_obj);
 
+	shader->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
 	gl_shader_set_scene_variables(shader);
 
 		// draw the quad

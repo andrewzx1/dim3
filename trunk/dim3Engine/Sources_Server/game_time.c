@@ -84,11 +84,11 @@ void game_time_set(int tick)
 	game_tick=tick;
 }
 
-float game_time_fequency_second_get(void)
+float game_time_fequency_second_get(int start_tick)
 {
 	int				k;
 	
-	k=game_tick%2000;
+	k=(game_tick-start_tick)%2000;
 	if (k>=1000) k=2000-k;
 	
 	return(((float)k)/1000.0f);
