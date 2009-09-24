@@ -462,60 +462,6 @@ inline void view_unbind_current_index_object(void)
       
 ======================================================= */
 
-void view_draw_next_vertex_object_2D_texture_screen(int wid,int high,float gx,float gy)
-{
-	float			*vertex_ptr,*uv_ptr;
-
-	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
-	if (vertex_ptr==NULL) return;
-
-	uv_ptr=vertex_ptr+(4*2);
-
-		// get the vertexes
-
-	*vertex_ptr++=0.0f;
-	*vertex_ptr++=0.0f;
-
-	*uv_ptr++=gx;
-	*uv_ptr++=gy;
-
-	*vertex_ptr++=(float)wid;
-	*vertex_ptr++=0.0f;
-
-	*uv_ptr++=gx+1.0f;
-	*uv_ptr++=gy;
-
-	*vertex_ptr++=(float)wid;
-	*vertex_ptr++=(float)high;
-
-	*uv_ptr++=gx+1.0f;
-	*uv_ptr++=gy+1.0f;
-
-	*vertex_ptr++=0.0f;
-	*vertex_ptr++=(float)high;
-
-	*uv_ptr++=gx;
-	*uv_ptr++=gy+1.0f;
-
-  	view_unmap_current_vertex_object();
-
-		// draw the quad
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
-
-	glDrawArrays(GL_QUADS,0,4);
-
- 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-		// unbind the vbo
-
-	view_unbind_current_vertex_object();
-}
 
 void view_draw_next_vertex_object_2D_tint_screen(void)
 {
@@ -547,61 +493,6 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 
 	glDrawArrays(GL_QUADS,0,4);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-		// unbind the vbo
-
-	view_unbind_current_vertex_object();
-}
-
-void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top,int bot)
-{
-	float			*vertex_ptr,*uv_ptr;
-
-	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
-	if (vertex_ptr==NULL) return;
-
-	uv_ptr=vertex_ptr+(4*2);
-
-		// get the vertexes
-
-	*vertex_ptr++=(float)lft;
-	*vertex_ptr++=(float)top;
-
-	*uv_ptr++=0.0f;
-	*uv_ptr++=0.0f;
-
-	*vertex_ptr++=(float)rgt;
-	*vertex_ptr++=(float)top;
-
-	*uv_ptr++=1.0f;
-	*uv_ptr++=0.0f;
-
-	*vertex_ptr++=(float)rgt;
-	*vertex_ptr++=(float)bot;
-
-	*uv_ptr++=1.0f;
-	*uv_ptr++=1.0f;
-
-	*vertex_ptr++=(float)lft;
-	*vertex_ptr++=(float)bot;
-
-	*uv_ptr++=0.0f;
-	*uv_ptr++=1.0f;
-
-  	view_unmap_current_vertex_object();
-
-		// draw the quad
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
-
-	glDrawArrays(GL_QUADS,0,4);
-
- 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// unbind the vbo
@@ -726,9 +617,92 @@ void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
 
 
 
+
+
+
 // supergumba -- replace some of these
 
-void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high)
+void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,float gx,float gy)
+{
+	float			*vertex_ptr,*uv_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
+	if (vertex_ptr==NULL) return;
+
+	uv_ptr=vertex_ptr+(4*2);
+
+		// get the vertexes
+
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)top;
+
+	*uv_ptr++=gx+0.0f;
+	*uv_ptr++=gy+0.0f;
+
+	*vertex_ptr++=(float)rgt;
+	*vertex_ptr++=(float)top;
+
+	*uv_ptr++=gx+1.0f;
+	*uv_ptr++=gy+0.0f;
+
+	*vertex_ptr++=(float)rgt;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=gx+1.0f;
+	*uv_ptr++=gy+1.0f;
+
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=gx+0.0f;
+	*uv_ptr++=gy+1.0f;
+
+  	view_unmap_current_vertex_object();
+
+		// setup texture draw
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glColor4f(1.0f,0.0f,1.0f,alpha);
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	glBindTexture(GL_TEXTURE_2D,gl_id);
+
+		// draw the quad
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+
+	glDrawArrays(GL_QUADS,0,4);
+
+ 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// finish texture draw
+	
+	glBindTexture(GL_TEXTURE_2D,0);
+	glDisable(GL_TEXTURE_2D);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high)
 {
 	float				*vertex_ptr,*uv_ptr;
 	
@@ -767,11 +741,15 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,int lft
 
 		// setup texture draw
 
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
+	glColor4f(1.0f,0.0f,1.0f,alpha);
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_RECTANGLE_ARB);
@@ -795,6 +773,9 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,int lft
 	
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
 	glDisable(GL_TEXTURE_RECTANGLE_ARB);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 
 		// unbind the vbo
 

@@ -34,6 +34,7 @@ and can be sold or given away.
 
 extern map_type			map;
 extern setup_type		setup;
+extern hud_type			hud;
 extern view_type		view;
 
 /* =======================================================
@@ -44,8 +45,8 @@ extern view_type		view;
 
 void draw_background(void)
 {
-	int					txt_id;
 	float				gx,gy;
+	GLuint				gl_id;
 	texture_type		*texture;
 	
 		// is there a background?
@@ -65,16 +66,9 @@ void draw_background(void)
 		// draw background
 		
 	texture=&map.textures[map.background.fill];
-	txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
-	
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
+	gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
-	gl_texture_simple_start();
-	gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-	view_draw_next_vertex_object_2D_texture_screen(setup.screen.x_sz,setup.screen.y_sz,gx,gy);
-	gl_texture_simple_end();
+	view_draw_next_vertex_object_2D_texture_quad(gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,gx,gy);
 }
 
 /* =======================================================

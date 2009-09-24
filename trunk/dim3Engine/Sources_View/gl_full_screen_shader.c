@@ -164,7 +164,7 @@ void gl_fs_shader_map_start(void)
 {
 		// check if fbo and shaders are available
 		
-	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_shader_ok();
+	fs_shader_on=gl_check_frame_buffer_ok()&&gl_check_shader_ok()&&gl_check_texture_rectangle_ok();
 
 		// no fs shader started
 

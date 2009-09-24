@@ -63,6 +63,11 @@ bool gl_check_texture_generate_mipmaps_ok(void)
 	return(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
 }
 
+bool gl_check_texture_rectangle_ok(void)
+{
+	return(strstr(render_info.ext_string,"GL_ARB_texture_rectangle")!=NULL);
+}
+
 bool gl_check_shader_ok(void)
 {
 #ifdef D3_OS_MAC

@@ -79,19 +79,7 @@ void cursor_draw(void)
 
 		// draw mouse
 		
-	gl_texture_simple_start();
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glDisable(GL_DEPTH_TEST);
-
-	gl_texture_simple_set(cursor_bitmap.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-	view_draw_next_vertex_object_2D_texture_quad(lft,rgt,top,bot);
-	gl_texture_simple_end();
+	view_draw_next_vertex_object_2D_texture_quad(cursor_bitmap.gl_id,1.0f,lft,rgt,top,bot,0.0f,0.0f);
 }
 
 

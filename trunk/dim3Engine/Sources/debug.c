@@ -185,6 +185,7 @@ void debug_dump(void)
 	
 	if (!gl_check_shader_ok()) fprintf(stdout,"GLSL (shaders) unsupported\n");
 	if (!gl_check_frame_buffer_ok()) fprintf(stdout,"FBO unsupported\n");
+	if (!gl_check_texture_rectangle_ok()) fprintf(stdout,"Rectangular Textures unsupported\n");
 	if (!gl_check_fsaa_ok()) fprintf(stdout,"FSAA unsupported\n");
 
 	fprintf(stdout,"Extensions:\n%s\n",render_info.ext_string);

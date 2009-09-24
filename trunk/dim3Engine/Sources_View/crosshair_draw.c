@@ -316,19 +316,7 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 	rgt=lft+crosshair_draw->sz;
 	bot=top+crosshair_draw->sz;
 	
-	gl_texture_simple_start();
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
-	glDisable(GL_DEPTH_TEST);
-
-	gl_texture_simple_set(crosshair_draw->gl_id,TRUE,crosshair_draw->color.r,crosshair_draw->color.g,crosshair_draw->color.b,crosshair_draw->alpha);
-	view_draw_next_vertex_object_2D_texture_quad(lft,rgt,top,bot);
-	gl_texture_simple_end();
+	view_draw_next_vertex_object_2D_texture_quad(crosshair_draw->gl_id,1.0f,lft,rgt,top,bot,0.0f,0.0f);
 }
 
 
