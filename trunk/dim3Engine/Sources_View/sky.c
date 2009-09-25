@@ -68,7 +68,7 @@ void draw_background(void)
 	texture=&map.textures[map.background.fill];
 	gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
-	view_draw_next_vertex_object_2D_texture_quad(gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,gx,gy);
+	view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,0,hud.scale_x,0,hud.scale_y,gx,gy);
 }
 
 /* =======================================================

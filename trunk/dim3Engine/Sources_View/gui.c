@@ -278,7 +278,7 @@ void gui_draw_background(float alpha)
 		view_draw_next_vertex_object_2D_texture_quad_rectangle(gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,p_wid,p_high);
 	}
 	else {
-		view_draw_next_vertex_object_2D_texture_quad(gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,0.0f);
+		view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,0.0f);
 	}
 }
 

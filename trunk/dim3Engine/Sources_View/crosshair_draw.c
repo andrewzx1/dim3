@@ -316,7 +316,7 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 	rgt=lft+crosshair_draw->sz;
 	bot=top+crosshair_draw->sz;
 	
-	view_draw_next_vertex_object_2D_texture_quad(crosshair_draw->gl_id,1.0f,lft,rgt,top,bot,0.0f,0.0f);
+	view_draw_next_vertex_object_2D_texture_quad(crosshair_draw->gl_id,&crosshair_draw->color,1.0f,lft,rgt,top,bot,0.0f,0.0f);
 }
 
 
