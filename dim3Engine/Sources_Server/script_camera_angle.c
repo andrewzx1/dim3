@@ -41,12 +41,17 @@ JSValueRef js_camera_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 bool js_camera_angle_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_camera_angle_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_camera_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		camera_angle_props[]={
 							{"x",					js_camera_angle_get_x,		js_camera_angle_set_x,		kJSPropertyAttributeDontDelete},
 							{"y",					js_camera_angle_get_y,		js_camera_angle_set_y,		kJSPropertyAttributeDontDelete},
 							{"z",					js_camera_angle_get_z,		js_camera_angle_set_z,		kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
+
+JSStaticFunction	camera_angle_functions[]={
+							{"turn",				js_camera_angle_turn_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			camera_angle_class;
 
@@ -58,7 +63,7 @@ JSClassRef			camera_angle_class;
 
 void script_init_camera_angle_object(void)
 {
-	camera_angle_class=script_create_class("camera_angle_class",camera_angle_props,NULL);
+	camera_angle_class=script_create_class("camera_angle_class",camera_angle_props,camera_angle_functions);
 }
 
 void script_free_camera_angle_object(void)
@@ -116,3 +121,23 @@ bool js_camera_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Functions
+      
+======================================================= */
+
+JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	d3ang			ang;
+
+	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	
+	ang.x=script_value_to_float(cx,argv[0]);
+	ang.z=script_value_to_float(cx,argv[1]);
+	ang.y=script_value_to_float(cx,argv[2]);
+
+	camera_auto_move_set_ang(&ang,script_value_to_int(cx,argv[3]));
+	
+	return(script_null_to_value(cx));
+}

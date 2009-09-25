@@ -146,7 +146,7 @@ void console_draw_header(void)
 	y=ty+(y_add+1);
 
 	col.r=col.g=col.b=0.75f;
-	view_draw_next_vertex_object_2D_color_poly(lx,ty,&col,rx,ty,&col,rx,by,&col,lx,by,&col,1.0f);
+	view_draw_next_vertex_object_2D_color_quad(&col,1.0f,lx,rx,ty,by);
 	
 	gl_text_start(hud.font.text_size_small);
 	col.r=col.g=col.b=0.0f;

@@ -408,9 +408,6 @@ void hud_bars_draw(void)
 	int					n,lx,rx,ty,by,wid,high;
 	d3col				fill_end_color;
 	hud_bar_type		*bar;
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	
 		// draw bars
 		
@@ -461,10 +458,7 @@ void hud_bars_draw(void)
 			by=ty+bar->y_size;
 			
 			glLineWidth((float)setup.screen.x_sz/(float)hud.scale_x);
-			
-			glColor4f(bar->outline_color.r,bar->outline_color.g,bar->outline_color.b,bar->outline_alpha);
-			view_draw_next_vertex_object_2D_line_quad(lx,rx,ty,by);
-			
+			view_draw_next_vertex_object_2D_line_quad(&bar->outline_color,bar->outline_alpha,lx,rx,ty,by);
 			glLineWidth(1.0f);
 		}
 	}

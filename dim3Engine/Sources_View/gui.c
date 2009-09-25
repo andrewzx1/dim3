@@ -297,7 +297,7 @@ void gui_draw_dialog(void)
 {
 	int			lft,rgt,top,bot,high,head_top,y;
 	bool		is_header;
-	d3col		col;
+	d3col		col,col2;
 	
 	if (!gui_frame.on) return;
 	
@@ -309,14 +309,6 @@ void gui_draw_dialog(void)
 
 	gl_2D_view_interface();
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-	
 	lft=gui_frame.x;
 	rgt=lft+gui_frame.wid;
 	top=gui_frame.y;
@@ -324,14 +316,8 @@ void gui_draw_dialog(void)
 
 		// darken
 
-	glColor4f(0.0f,0.0f,0.0f,0.5f);
-
-    glBegin(GL_QUADS);
-	glVertex2i(lft,top);
-	glVertex2i(rgt,top);
-	glVertex2i(rgt,bot);
-	glVertex2i(lft,bot);
-	glEnd();
+	col.r=col.g=col.b=0.0f;
+	view_draw_next_vertex_object_2D_color_quad(&col,0.5f,lft,rgt,top,bot);
 	
 		// header
 		
@@ -340,26 +326,14 @@ void gui_draw_dialog(void)
 		head_top=top-(high+(high/2));
 		
 		y=(head_top+top)>>1;
-			
-		glBegin(GL_QUADS);
-		
-		glColor4f(0.75f,0.75f,0.75f,1.0f);
-		glVertex2i(lft,head_top);
-		glVertex2i(rgt,head_top);
-		glColor4f(0.3f,0.3f,0.3f,1.0f);
-		glVertex2i(rgt,y);
-		glVertex2i(lft,y);
-		
-		glColor4f(0.3f,0.3f,0.3f,1.0f);
-		glVertex2i(lft,y);
-		glVertex2i(rgt,y);
-		glColor4f(0.75f,0.75f,0.75f,1.0f);
-		glVertex2i(rgt,top);
-		glVertex2i(lft,top);
-		
-		glEnd();
-		
-		col.r=col.g=col.b=0.0f;
+
+		col.r=col.g=col.b=0.75f;
+		col2.r=col2.g=col2.b=0.3f;
+
+		view_draw_next_vertex_object_2D_color_poly(lft,head_top,&col,rgt,head_top,&col,rgt,y,&col2,lft,y,&col2,1.0f);
+		view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,top,&col,lft,top,&col,1.0f);
+
+		col.r=col.g=col.b=1.0f;
 		
 		gl_text_start(hud.font.text_size_medium);
 		gl_text_draw(((lft+rgt)/2),y,gui_frame.title,tx_center,TRUE,&col,1.0f);
@@ -369,16 +343,16 @@ void gui_draw_dialog(void)
 		// outline
 
 	glLineWidth(4.0f);
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
+	col.r=col.g=col.b=0.0f;
+	view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,top,bot);
 	
-	if (is_header) view_draw_next_vertex_object_2D_line_quad(lft,rgt,head_top,top);
+	if (is_header) view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,head_top,top);
 	
 	glLineWidth(2.0f);
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
+	col.r=col.g=col.b=1.0f;
+	view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,top,bot);
 	
-	if (is_header) view_draw_next_vertex_object_2D_line_quad(lft,rgt,head_top,top);
+	if (is_header) view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,head_top,top);
 	
 	glLineWidth(1.0f);
 }
@@ -434,12 +408,6 @@ void gui_draw_message(char *txt)
 
 	gl_2D_view_interface();
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-	
 	element_draw(FALSE);
 	
 		// get band size
@@ -455,14 +423,7 @@ void gui_draw_message(char *txt)
 	
 		// draw the band
 		
-	glColor4f(hud.color.header.r,hud.color.header.g,hud.color.header.b,1.0f);
-	
-	glBegin(GL_QUADS);
-	glVertex2i(lx,ty);
-	glVertex2i(rx,ty);
-	glVertex2i(rx,by);
-	glVertex2i(lx,by);
-	glEnd();
+	view_draw_next_vertex_object_2D_color_quad(&hud.color.header,1.0f,lx,rx,ty,by);
 	
 		// draw the text
 		

@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "objects.h"
 #include "cameras.h"
 
+extern int game_time_get(void);
+
 extern map_type				map;
 
 camera_type					camera;
@@ -71,6 +73,8 @@ void camera_initialize(void)
 
 	camera.auto_walk.on=FALSE;
 	camera.auto_walk.turn_speed=1.0f;
+
+	camera.auto_move.ang_on=FALSE;
 
 	camera.plane.type=cp_fov;
 	camera.plane.fov=60;
@@ -180,7 +184,46 @@ void camera_restore(void)
 {
 	memmove(&camera,&state_camera,sizeof(camera_type));
 }
-	
+
+/* =======================================================
+
+      Camera Auto Moves
+      
+======================================================= */
+
+void camera_auto_move_set_ang(d3ang *ang,int life_msec)
+{
+	float			f;
+
+	if (life_msec<=0) return;
+
+	f=((float)life_msec)/10;
+	camera.auto_move.ang.x=ang->x/f;
+	camera.auto_move.ang.y=ang->y/f;
+	camera.auto_move.ang.z=ang->z/f;
+
+	camera.auto_move.ang_on=TRUE;
+	camera.auto_move.ang_end_tick=game_time_get()+life_msec;
+}
+
+void camera_auto_move_run(void)
+{
+	int			tick;
+
+	tick=game_time_get();
+
+	if (camera.auto_move.ang_on) {
+		if (tick>=camera.auto_move.ang_end_tick) {
+			camera.auto_move.ang_on=FALSE;
+		}
+		else {
+			camera.ang.x+=camera.auto_move.ang.x;
+			camera.ang.y+=camera.auto_move.ang.y;
+			camera.ang.z+=camera.auto_move.ang.z;
+		}
+	}
+}
+
 /* =======================================================
 
       Run Cameras
@@ -189,6 +232,8 @@ void camera_restore(void)
 
 void camera_run(void)
 {
+	camera_auto_move_run();
+
 	switch (camera.mode) {
 	
 		case cv_chase:
