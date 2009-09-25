@@ -53,6 +53,12 @@ typedef struct		{
 					} camera_auto_walk;
 
 typedef struct		{
+						int						ang_end_tick;
+						bool					ang_on;
+						d3ang					ang;
+					} camera_auto_move;
+
+typedef struct		{
 						int						type,
 												lft,rgt,top,bot,
 												near_z,far_z,near_z_offset;
@@ -67,6 +73,7 @@ typedef struct		{
 						d3pnt					pnt,chase_offset;
 						d3ang					ang,chase_ang,chase_slop,cur_chase_ang;
 						camera_auto_walk		auto_walk;
+						camera_auto_move		auto_move;
 						camera_plane			plane;
 					} camera_type;
 					

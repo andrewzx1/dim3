@@ -346,6 +346,89 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	return(FALSE);
 }
 
+// supergumba -- need to bump on objects, also
+
+bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,poly_pointer_type *poly_ptr)
+{
+	int							n,k,px[4],pz[4];
+	d3pnt						min,max;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+
+		// get polygon and object bounds
+
+	collide_object_polygon(obj,xadd,zadd,px,pz);
+
+	min.x=max.x=px[0];
+	min.z=max.z=pz[0];
+
+	for (n=1;n!=4;n++) {
+		if (px[n]<min.x) min.x=px[n];
+		if (px[n]>max.x) max.x=px[n];
+		if (pz[n]<min.z) min.z=pz[n];
+		if (pz[n]>max.z) max.z=pz[n];
+	}
+
+		// min y is top of bump over
+
+	max.y=obj->pnt.y;
+	min.y=max.y-obj->bump.high;
+
+		// setup collision checks
+
+	polygon_2D_collision_setup(4,px,pz);
+
+		// find polys to check
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		mesh=&map.mesh.meshes[n];
+		
+			// rough bounds check
+
+		if (max.x<mesh->box.min.x) continue;
+		if (min.x>mesh->box.max.x) continue;
+		if (max.z<mesh->box.min.z) continue;
+		if (min.z>mesh->box.max.z) continue;
+		if (max.y<mesh->box.min.y) continue;
+		if (min.y>mesh->box.max.y) continue;
+			
+			// skip off and pass through meshes
+
+		if (!mesh->flag.on) continue;
+		if (mesh->flag.pass_through) continue;
+		
+			// check wall polys
+			
+		for (k=0;k!=mesh->poly_list.wall_count;k++) {
+
+			poly=&mesh->polys[mesh->poly_list.wall_idxs[k]];
+			
+				// rough bounds check
+
+			if (max.x<poly->box.min.x) continue;
+			if (min.x>poly->box.max.x) continue;
+			if (max.z<poly->box.min.z) continue;
+			if (min.z>poly->box.max.z) continue;
+			if (max.y<poly->box.min.y) continue;
+			if (min.y>poly->box.max.y) continue;
+
+				// is it a bump up candidate?
+
+			if ((poly->box.min.y<min.y) || (poly->box.min.y>=max.y)) continue;
+			if (!polygon_2D_collision_line(poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz)) continue;
+
+			poly_ptr->mesh_idx=n;
+			poly_ptr->poly_idx=mesh->poly_list.wall_idxs[k];
+
+			return(TRUE);
+		}
+				
+	}
+
+	return(FALSE);
+}
+
 /* =======================================================
 
       Project-Map Collisions

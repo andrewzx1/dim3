@@ -127,7 +127,7 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 	char			name[name_str_len],
 					sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
 
-	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
 		// get name
 

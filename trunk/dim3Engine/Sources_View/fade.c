@@ -62,6 +62,7 @@ void fade_screen_cancel(void)
 void fade_screen_draw(int tick)
 {
 	float			alpha;
+	d3col			col;
 
 	if (fade_screen_tick==-1) return;
 
@@ -80,18 +81,8 @@ void fade_screen_draw(int tick)
 		
 	gl_2D_view_screen();
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-		
-    glBegin(GL_QUADS);
-	glVertex2i(0,0);
-	glVertex2i(setup.screen.x_sz,0);
-	glVertex2i(setup.screen.x_sz,setup.screen.y_sz);
-	glVertex2i(0,setup.screen.y_sz);
-    glEnd();
+	col.r=col.g=col.b=0.0f;
+	view_draw_next_vertex_object_2D_color_quad(&col,alpha,0,setup.screen.x_sz,0,setup.screen.y_sz);
 }
 
 /* =======================================================

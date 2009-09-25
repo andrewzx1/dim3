@@ -458,10 +458,9 @@ inline void view_unbind_current_index_object(void)
 
 /* =======================================================
 
-      Some VBO Utility Routines
+      Screen Tint
       
 ======================================================= */
-
 
 void view_draw_next_vertex_object_2D_tint_screen(void)
 {
@@ -499,6 +498,12 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 
 	view_unbind_current_vertex_object();
 }
+
+/* =======================================================
+
+      2D Fills
+      
+======================================================= */
 
 void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha)
 {
@@ -545,12 +550,17 @@ void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1
 
   	view_unmap_current_vertex_object();
 
-		// draw the quad
+		// setup draw
 		
-	if (alpha!=1.0f) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	}
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+		// draw the polygon
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
@@ -562,15 +572,140 @@ void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1
 
  	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-	
+		
+		// finish draw
+
 	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 
 		// unbind the vbo
 
 	view_unbind_current_vertex_object();
 }
 
-void view_draw_next_vertex_object_2D_line_poly(int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
+void view_draw_next_vertex_object_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot)
+{
+	view_draw_next_vertex_object_2D_color_poly(lft,top,col,rgt,top,col,rgt,bot,col,lft,bot,col,alpha);
+}
+
+void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,bool up)
+{
+	float			*vertex_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(4*2);
+	if (vertex_ptr==NULL) return;
+
+		// get the vertexes
+
+	if (up) {
+		*vertex_ptr++=(float)lft;
+		*vertex_ptr++=(float)bot;
+
+		*vertex_ptr++=(float)rgt;
+		*vertex_ptr++=(float)bot;
+
+		*vertex_ptr++=((float)(lft+rgt))*0.5f;
+		*vertex_ptr++=(float)top;
+	}
+	else {
+		*vertex_ptr++=(float)lft;
+		*vertex_ptr++=(float)top;
+
+		*vertex_ptr++=(float)rgt;
+		*vertex_ptr++=(float)top;
+
+		*vertex_ptr++=((float)(lft+rgt))*0.5f;
+		*vertex_ptr++=(float)bot;
+	}
+
+  	view_unmap_current_vertex_object();
+
+		// setup draw
+		
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glColor4f(col->r,col->g,col->b,alpha);
+
+		// draw the trig
+		
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glDrawArrays(GL_POLYGON,0,3);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	
+		// finish draw
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+/* =======================================================
+
+      2D Lines
+      
+======================================================= */
+
+void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
+{
+	float			*vertex_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(2*2);
+	if (vertex_ptr==NULL) return;
+
+		// get the vertexes
+
+	*vertex_ptr++=(float)x0;
+	*vertex_ptr++=(float)y0;
+
+	*vertex_ptr++=(float)x1;
+	*vertex_ptr++=(float)y1;
+
+  	view_unmap_current_vertex_object();
+
+		// setup draw
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glColor4f(col->r,col->g,col->b,alpha);
+
+		// draw the quad
+		
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glDrawArrays(GL_LINES,0,2);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// finish draw
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
 {
 	float			*vertex_ptr;
 
@@ -593,6 +728,18 @@ void view_draw_next_vertex_object_2D_line_poly(int x0,int y0,int x1,int y1,int x
 
   	view_unmap_current_vertex_object();
 
+		// setup draw
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glColor4f(col->r,col->g,col->b,alpha);
+
 		// draw the quad
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -602,25 +749,89 @@ void view_draw_next_vertex_object_2D_line_poly(int x0,int y0,int x1,int y1,int x
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+		// finish draw
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+
 		// unbind the vbo
 
 	view_unbind_current_vertex_object();
 }
 
-void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
+void view_draw_next_vertex_object_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot)
 {
-	view_draw_next_vertex_object_2D_line_poly(lft,top,rgt,top,rgt,bot,lft,bot);
+	view_draw_next_vertex_object_2D_line_poly(col,alpha,lft,top,rgt,top,rgt,bot,lft,bot);
 }
 
+void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,bool up)
+{
+	float			*vertex_ptr;
 
+	vertex_ptr=view_bind_map_next_vertex_object(4*2);
+	if (vertex_ptr==NULL) return;
 
+		// get the vertexes
 
+	if (up) {
+		*vertex_ptr++=(float)lft;
+		*vertex_ptr++=(float)bot;
 
+		*vertex_ptr++=(float)rgt;
+		*vertex_ptr++=(float)bot;
 
+		*vertex_ptr++=((float)(lft+rgt))*0.5f;
+		*vertex_ptr++=(float)top;
+	}
+	else {
+		*vertex_ptr++=(float)lft;
+		*vertex_ptr++=(float)top;
 
+		*vertex_ptr++=(float)rgt;
+		*vertex_ptr++=(float)top;
 
+		*vertex_ptr++=((float)(lft+rgt))*0.5f;
+		*vertex_ptr++=(float)bot;
+	}
 
-// supergumba -- replace some of these
+  	view_unmap_current_vertex_object();
+
+		// setup draw
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glColor4f(col->r,col->g,col->b,alpha);
+
+		// draw the quad
+		
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glDrawArrays(GL_LINE_LOOP,0,3);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// finish draw
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+/* =======================================================
+
+      Textured Fills
+      
+======================================================= */
 
 void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gy)
 {

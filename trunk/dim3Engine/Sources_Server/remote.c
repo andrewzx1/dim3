@@ -898,7 +898,7 @@ void remote_network_send_latency_ping(int tick)
 
 void remote_monsters_add(void)
 {
-	int					n;
+	int					n,uid;
 	bool				coop;
 	obj_type			*obj;
 
@@ -912,20 +912,31 @@ void remote_monsters_add(void)
 	
 		// create remote IDs
 		
+	uid=net_remote_uid_monster_start;
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
 	
 		if ((obj->bot) && (!obj->remote.on)) {
 		
+				// if not in coop, then no monsters
+
 			if (!coop) {
 				obj->hidden=TRUE;
 			}
+
+				// monsters need a unique remote ID, build
+				// from a high number to not interfere with real
+				// remotes or bots
+
 			else {
 			
-				obj->remote.uid=net_remote_uid_monster_start+n;
+				obj->remote.uid=uid;
+				uid++;
 				
-				if (!net_setup.host.hosting) {			// if not hosting, then turn off all internal bot movement
+					// only move monsters on the host
+
+				if (!net_setup.host.hosting) {
 					obj->remote.on=TRUE;
 				}
 				

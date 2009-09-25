@@ -928,6 +928,7 @@ void render_model_target(model_draw *draw,d3col *col)
 {
 	int				ty,by,lx,rx,lz,rz,wid,xadd,zadd;
 	float			rang;
+	float			*vertex_ptr;
 	model_type		*mdl;
 	
 		// get model
@@ -965,8 +966,33 @@ void render_model_target(model_draw *draw,d3col *col)
 	lz-=zadd;
 	rz-=zadd;
 
-		// draw target
-	
+		// build vertexes
+
+	vertex_ptr=view_bind_map_next_vertex_object(4*3);
+	if (vertex_ptr==NULL) return;
+
+		// get the vertexes
+
+	*vertex_ptr++=(float)lx;
+	*vertex_ptr++=(float)ty;
+	*vertex_ptr++=(float)lz;
+
+	*vertex_ptr++=(float)rx;
+	*vertex_ptr++=(float)ty;
+	*vertex_ptr++=(float)rz;
+
+	*vertex_ptr++=(float)rx;
+	*vertex_ptr++=(float)by;
+	*vertex_ptr++=(float)rz;
+
+	*vertex_ptr++=(float)lx;
+	*vertex_ptr++=(float)by;
+	*vertex_ptr++=(float)lz;
+
+  	view_unmap_current_vertex_object();
+
+		// setup draw
+
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 			
@@ -975,10 +1001,16 @@ void render_model_target(model_draw *draw,d3col *col)
 
 	glColor4f(col->r,col->g,col->b,1.0f);
 
-	glBegin(GL_LINE_LOOP);
-	glVertex3i(lx,ty,lz);
-	glVertex3i(rx,ty,rz);
-	glVertex3i(rx,by,rz);
-	glVertex3i(lx,by,lz);
-	glEnd();
+		// draw target
+		
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+
+	glDrawArrays(GL_LINE_LOOP,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
 }

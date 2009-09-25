@@ -1080,11 +1080,12 @@ void object_move_swim(obj_type *obj)
 
 void object_move_normal(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove,
-					start_y,fall_damage,hit_obj_uid;
-    float			xmove,zmove,ymove;
-	bool			bump_once,push_once,old_falling;
-	d3pnt			old_pnt;
+	int					i_xmove,i_ymove,i_zmove,
+						start_y,fall_damage,hit_obj_uid;
+    float				xmove,zmove,ymove;
+	bool				bump_once,push_once,old_falling;
+	d3pnt				old_pnt;
+	poly_pointer_type	bump_poly_ptr;
 
 		// get object motion
 		
@@ -1125,6 +1126,17 @@ void object_move_normal(obj_type *obj)
 		// clear all contacts
 
 	object_clear_contact(&obj->contact);
+
+		// check if we will be hitting a bump up
+		// in the course of this move
+
+	/* supergumba -- working on this
+	if (obj->bump.on) {
+		if (collide_object_to_map_bump(obj,i_xmove,i_ymove,i_zmove,&bump_poly_ptr)) {
+			fprintf(stdout,"BUMP %d.%d\n",bump_poly_ptr.mesh_idx,bump_poly_ptr.poly_idx);
+		}
+	}
+	*/
 
 		// move the object in y space at the projected
 		// x/z position
