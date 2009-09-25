@@ -79,7 +79,7 @@ void cursor_draw(void)
 
 		// draw mouse
 		
-	view_draw_next_vertex_object_2D_texture_quad(cursor_bitmap.gl_id,1.0f,lft,rgt,top,bot,0.0f,0.0f);
+	view_draw_next_vertex_object_2D_texture_quad(cursor_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,0.0f);
 }
 
 

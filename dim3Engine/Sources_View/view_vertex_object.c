@@ -622,7 +622,7 @@ void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
 
 // supergumba -- replace some of these
 
-void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,float gx,float gy)
+void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gy)
 {
 	float			*vertex_ptr,*uv_ptr;
 
@@ -669,11 +669,16 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,float alpha,int l
 
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(1.0f,0.0f,1.0f,alpha);
-
+	if (col==NULL) {
+		glColor4f(1.0f,1.0f,1.0f,alpha);
+	}
+	else {
+		glColor4f(col->r,col->g,col->b,alpha);
+	}
+	
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glBindTexture(GL_TEXTURE_2D,gl_id);
 
 		// draw the quad
