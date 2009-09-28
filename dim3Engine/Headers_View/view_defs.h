@@ -187,25 +187,38 @@ typedef struct		{
 						char								name[name_str_len];
 						view_shader_value_type				value;
 					} view_shader_custom_var_type;
-					
+
+typedef struct		{
+						int									nvar;
+						view_shader_custom_var_type			vars[max_view_shader_custom_vars];
+					} view_shader_custom_var_list_type;
+
+typedef struct		{
+						GLint								dim3TimeMillisec,dim3FrequencySecond,
+															dim3CameraPosition,dim3AmbientColor,
+															dim3BumpFactor,dim3SpecularFactor,
+															dim3TexColor,dim3LightPosition,
+															dim3LightColor,dim3LightIntensity,
+															dim3LightExponent,dim3LightDirection,
+															dim3TintColor,dim3DarkFactor,dim3Alpha;
+					} view_shader_cached_var_loc;
+
 typedef struct		{
 						int									start_tick,
 															cur_light_idx[max_shader_light];
 						float								cur_dark_factor,cur_alpha;
-						char								name[name_str_len],
-															vertex_name[file_str_len],
-															fragment_name[file_str_len];
-						bool								per_scene_vars_set,cur_in_hilite;
+						char								vertex_name[file_str_len],fragment_name[file_str_len];
+						bool								on,per_scene_vars_set,cur_in_hilite;
 						d3col								cur_tint_col;
-						view_shader_custom_var_type			custom_vars[max_view_shader_custom_vars];
+						view_shader_cached_var_loc			var_locs;
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
-						GLint								var_dim3TimeMillisec,var_dim3FrequencySecond,
-															var_dim3CameraPosition,var_dim3AmbientColor,
-															var_dim3BumpFactor,var_dim3SpecularFactor,
-															var_dim3TexColor,var_dim3LightPosition,
-															var_dim3LightColor,var_dim3LightIntensity,
-															var_dim3LightExponent,var_dim3LightDirection,
-															var_dim3TintColor,var_dim3DarkFactor,var_dim3Alpha;
+					} view_shader_code_type;
+
+typedef struct		{
+						char								name[name_str_len];
+						view_shader_code_type				code_default,
+															code_light[max_shader_light+1];
+						view_shader_custom_var_list_type	custom_var_list;
 					} view_shader_type;
 
 //

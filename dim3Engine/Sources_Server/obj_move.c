@@ -330,56 +330,9 @@ void object_alter_gravity(obj_type *obj,float alt_gravity)
 
 /* =======================================================
 
-      Object Bumping, Bounce, and Push
+      Object Bumping and Bouncing
       
 ======================================================= */
-
-bool object_bump_up(obj_type *obj)
-{
-	int					uid,ydif,ymove;
-    obj_type			*hit_obj;
-	poly_pointer_type	*poly_ptr;
-	map_mesh_poly_type	*mesh_poly;
-	
-	if (!obj->bump.on) return(FALSE);
-	if (obj->air_mode!=am_ground) return(FALSE);			// can't bump up in air
-    
-    ydif=0;
-    
-        // bump up an object?
-    
-	uid=obj->contact.obj_uid;
-    if (uid!=-1) {
-        hit_obj=object_find_uid(uid);
-        ydif=obj->pnt.y-(hit_obj->pnt.y-hit_obj->size.y);
-    }
-    
-        // bump up a wall
-	
-	poly_ptr=&obj->contact.hit_poly;
-
-	if (poly_ptr->mesh_idx!=-1) {
-		mesh_poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
-        ydif=obj->pnt.y-mesh_poly->box.min.y;
-    }
-    
-		// get bump move and no bump if
-		// you hit your head going up
-		
-	if ((ydif<=0) || (ydif>obj->bump.high)) return(FALSE);
-
-	ymove=pin_upward_movement_obj(obj,-ydif);
-	if (obj->contact.head_poly.mesh_idx!=-1) return(FALSE);
-	
-		// do bump
-		// and in movement to smooth offset so bumps are smoothed
-		// out instead of jittery
-		
-	obj->pnt.y+=ymove;
-	obj->bump.smooth_offset-=ymove;
-
-	return(TRUE);
-}
 
 void object_fix_bump_smooth(obj_type *obj)
 {
@@ -1080,12 +1033,11 @@ void object_move_swim(obj_type *obj)
 
 void object_move_normal(obj_type *obj)
 {
-	int					i_xmove,i_ymove,i_zmove,
+	int					i_xmove,i_ymove,i_zmove,bump_y_move,
 						start_y,fall_damage,hit_obj_uid;
     float				xmove,zmove,ymove;
-	bool				bump_once,push_once,old_falling;
+	bool				push_once,old_falling;
 	d3pnt				old_pnt;
-	poly_pointer_type	bump_poly_ptr;
 
 		// get object motion
 		
@@ -1128,15 +1080,24 @@ void object_move_normal(obj_type *obj)
 	object_clear_contact(&obj->contact);
 
 		// check if we will be hitting a bump up
-		// in the course of this move
+		// in the course of this move, if so, bump up
+		// now and if no movement, then bump back down
 
-	/* supergumba -- working on this
-	if (obj->bump.on) {
-		if (collide_object_to_map_bump(obj,i_xmove,i_ymove,i_zmove,&bump_poly_ptr)) {
-			fprintf(stdout,"BUMP %d.%d\n",bump_poly_ptr.mesh_idx,bump_poly_ptr.poly_idx);
+	bump_y_move=0;
+
+	if ((obj->bump.on) && (obj->air_mode==am_ground)) {
+		if (collide_object_to_map_bump(obj,i_xmove,i_ymove,i_zmove,&bump_y_move)) {
+
+			bump_y_move=pin_upward_movement_obj(obj,bump_y_move);
+			if (obj->contact.head_poly.mesh_idx==-1) {
+				obj->pnt.y+=bump_y_move;
+				obj->bump.smooth_offset-=bump_y_move;
+			}
+			else {
+				bump_y_move=0;
+			}
 		}
 	}
-	*/
 
 		// move the object in y space at the projected
 		// x/z position
@@ -1203,7 +1164,6 @@ void object_move_normal(obj_type *obj)
 			// can force the move to stop and then
 			// need to be retried
 			
-		bump_once=FALSE;
 		push_once=FALSE;
 		hit_obj_uid=-1;
 	
@@ -1213,32 +1173,8 @@ void object_move_normal(obj_type *obj)
 
 			if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
 
-				// run any potential bump ups
-				// if we are bumping up, then eliminate any
-				// additional y movement
-
-			if (!bump_once) {
-
-				if (object_bump_up(obj)) {
-					
-					bump_once=TRUE;
-					
-					obj->pnt.x=old_pnt.x;
-					obj->pnt.z=old_pnt.z;
-					
-					i_xmove=(int)xmove;
-					i_ymove=0;
-					i_zmove=(int)zmove;
-					
-					continue;
-				}
-
-			}
-			
-				// push objects, then
-				// try the movement again
-				// save the hit object uid so
-				// the hit still registers
+				// push objects, then try the movement again
+				// save the hit object uid so the hit still registers
 
 			if (!push_once) {
 			
@@ -1267,7 +1203,10 @@ void object_move_normal(obj_type *obj)
 			
 		if (hit_obj_uid!=-1) obj->contact.obj_uid=hit_obj_uid;
 
-			// additional movements if we actually moved
+			// determine if we moved or not
+
+		i_xmove=obj->pnt.x-old_pnt.x;
+		i_zmove=obj->pnt.z-old_pnt.z;
 			
 		if ((i_xmove!=0) || (i_zmove!=0)) {
 
@@ -1278,6 +1217,16 @@ void object_move_normal(obj_type *obj)
 				// objects with automatic bouncing
 
 			object_move_xz_bounce(obj);
+		}
+
+			// if no movement, get rid of any bump
+
+		else {
+			if (bump_y_move!=0) {
+				bump_y_move=pin_downward_movement_obj(obj,-bump_y_move);
+				obj->pnt.y+=bump_y_move;
+				obj->bump.smooth_offset-=bump_y_move;
+			}
 		}
 	}
 	

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
+#include "remotes.h"
 #include "weapons.h"
 #include "projectiles.h"
 #include "scenery.h"

@@ -346,14 +346,13 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	return(FALSE);
 }
 
-// supergumba -- need to bump on objects, also
-
-bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,poly_pointer_type *poly_ptr)
+bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bump_y_move)
 {
-	int							n,k,px[4],pz[4];
+	int							n,k,ty,px[4],pz[4];
 	d3pnt						min,max;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
+	obj_type	 				*check_obj;
 
 		// get polygon and object bounds
 
@@ -373,6 +372,8 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,poly_po
 
 	max.y=obj->pnt.y;
 	min.y=max.y-obj->bump.high;
+
+		// check mesh polygons
 
 		// setup collision checks
 
@@ -418,12 +419,31 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,poly_po
 			if ((poly->box.min.y<min.y) || (poly->box.min.y>=max.y)) continue;
 			if (!polygon_2D_collision_line(poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz)) continue;
 
-			poly_ptr->mesh_idx=n;
-			poly_ptr->poly_idx=mesh->poly_list.wall_idxs[k];
+			*bump_y_move=poly->box.min.y-max.y;
 
 			return(TRUE);
 		}
 				
+	}
+
+		// check objects
+
+	for (n=0;n!=server.count.obj;n++) {
+
+		check_obj=&server.objs[n];
+	
+			// any collision?
+
+		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->uid==obj->uid)) continue;
+		if (!collide_object_to_object(obj,xadd,zadd,check_obj,TRUE,FALSE)) continue;
+		
+			// is it a bump up candidate?
+		
+		ty=obj->pnt.y-obj->size.y;
+		if ((ty<min.y) || (obj->pnt.y>=max.y)) continue;
+		
+		*bump_y_move=ty-max.y;
+		return(TRUE);
 	}
 
 	return(FALSE);
