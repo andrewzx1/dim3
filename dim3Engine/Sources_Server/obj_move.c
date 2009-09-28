@@ -1108,7 +1108,7 @@ void object_move_normal(obj_type *obj)
 		// position and not run physics.  They must be standing on
 		// non-moveable meshes and not be a player
 
-	if ((i_xmove==0) && (i_zmove==0) && (i_ymove==0) && (!obj->player)) {
+	if ((i_xmove==0) && (i_zmove==0) && (i_ymove==0) && (obj->type_idx!=object_type_player)) {
 	
 			// are we standing on a non-moving mesh?
 			// if so, mark no hit collisions and return

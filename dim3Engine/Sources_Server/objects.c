@@ -176,7 +176,6 @@ void object_clear_pickup(obj_pickup *pickup)
 
 void object_clear_remote(obj_remote *remote)
 {
-	remote->on=FALSE;
 	remote->uid=-1;
 }
 
@@ -482,8 +481,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	current_map_spawn_idx++;
 	
 	obj->hidden=FALSE;
-	obj->player=FALSE;
-	obj->bot=FALSE;
+	obj->type_idx=object_type_other;
 	obj->suspend=FALSE;
 	obj->scenery.on=FALSE;
 	obj->fly=FALSE;
@@ -787,7 +785,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		obj->team_idx=net_team_none;
 		obj->spawn_spot_name[0]=0x0;
 		
-		obj->player=TRUE;
+		obj->type_idx=object_type_player;
 		obj->hidden=FALSE;
 		
 		obj->tint_color_idx=setup.network.tint_color_idx;
@@ -802,10 +800,16 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		strcpy(obj->name,spot->attach_name);
 		strcpy(obj->type,spot->attach_type);
 		
-			// special check for bots
+			// setup types
 
-		obj->bot=(strcasecmp(obj->type,"bot")==0);
-		obj->player=spot->attach_is_player;
+		if (strcasecmp(obj->type,"bot")==0) {
+			obj->type_idx=object_type_bot;
+		}
+		else {
+			if (strcasecmp(obj->type,"monster")==0) {
+				obj->type_idx=object_type_monster;
+			}
+		}
 
 			// if there's an editor display model, then
 			// default model to it
@@ -826,7 +830,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		// if networked player, run rules
 		// and send choosen team to other clients
 	
-	if (((player) || (obj->bot)) && (net_setup.client.joined)) {
+	if (((player) || (obj->type_idx==object_type_bot)) && (net_setup.client.joined)) {
 		game_obj_rule_uid=obj->uid;
 		scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
 		game_obj_rule_uid=-1;

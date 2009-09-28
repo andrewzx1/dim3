@@ -402,13 +402,9 @@ void object_move_with_standing_object(obj_type *obj,int xmove,int zmove)
 	obj_check=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-
-		if (!obj_check->remote.on) {
-			if (obj_check->stand_obj_uid==obj->uid) {
-				if (!obj_check->suspend) object_move_with_move(obj_check,xmove,zmove);
-			}
+		if (obj_check->stand_obj_uid==obj->uid) {
+			if (!obj_check->suspend) object_move_with_move(obj_check,xmove,zmove);
 		}
-
 		obj_check++;
 	}
 }
@@ -430,13 +426,9 @@ void object_rotate_with_standing_object(obj_type *obj,float y)
 	obj_check=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-
-		if (!obj_check->remote.on) {
-			if (obj_check->stand_obj_uid==obj->uid) {
-				if (!obj_check->suspend) object_turn_with_turn(obj_check,&mpt,y,1.0f);
-			}
+		if (obj_check->stand_obj_uid==obj->uid) {
+			if (!obj_check->suspend) object_turn_with_turn(obj_check,&mpt,y,1.0f);
 		}
-
 		obj_check++;
 	}
 }

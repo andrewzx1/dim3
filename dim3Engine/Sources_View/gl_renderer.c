@@ -144,6 +144,8 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE,&ntxtsize);
 	render_info.texture_max_size=(int)ntxtsize;
+	
+	gl_check_initialize();
 
 		// in case screen is bigger than desired drawing surface
 		

@@ -38,9 +38,10 @@ and can be sold or given away.
 extern server_type			server;
 extern hud_type				hud;
 extern setup_type			setup;
+extern render_info_type		render_info;
 
 char						gui_last_key;
-bool						gui_show_view,gui_rect_textures;
+bool						gui_show_view;
 bitmap_type					gui_background_bitmap,gui_screenshot_bitmap;
 chooser_frame_type			gui_frame;
 
@@ -57,11 +58,6 @@ extern void map_restart_ambient(void);
 void gui_screenshot_initialize(void)
 {
 	gui_screenshot_bitmap.gl_id=-1;
-}
-
-void gui_screenshot_free(void)
-{
-	bitmap_close(&gui_screenshot_bitmap);
 }
 
 void gui_screenshot_load_blur_pixel(unsigned char *data,unsigned char *data2,int x,int y,int x2,int y2)
@@ -118,14 +114,14 @@ void gui_screenshot_load(void)
 	int					n,x,y,y2,dsz;
 	unsigned char		*data,*data2;
 	
-	data=(unsigned char*)malloc((setup.screen.x_sz*3)*setup.screen.y_sz);
+	dsz=((setup.screen.x_sz*3)*setup.screen.y_sz);
+
+	data=(unsigned char*)malloc(dsz);
 	if (data==NULL) return;
 	
-	glReadPixels(0,0,setup.screen.x_sz,setup.screen.y_sz,GL_RGB,GL_UNSIGNED_BYTE,data);
+	glReadPixels(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,GL_RGB,GL_UNSIGNED_BYTE,data);
 	
 		// blur the data
-		
-	dsz=((setup.screen.x_sz*3)*setup.screen.y_sz);
 
 	data2=(unsigned char*)malloc(dsz);
 	if (data2==NULL) {
@@ -138,7 +134,7 @@ void gui_screenshot_load(void)
 		for (y=0;y!=setup.screen.y_sz;y++) {
 
 			y2=y;
-			if (n==(gui_screenshot_blur_count-1)) y2=setup.screen.y_sz-y;		// flip the data on the last blur
+			if (n==(gui_screenshot_blur_count-1)) y2=(setup.screen.y_sz-1)-y;		// flip the data on the last blur
 
 			for (x=0;x!=setup.screen.x_sz;x++) {
 				gui_screenshot_load_blur_pixel(data,data2,x,y,x,y2);
@@ -152,9 +148,15 @@ void gui_screenshot_load(void)
 
 		// save screenshot
 
-	bitmap_data(&gui_screenshot_bitmap,data,setup.screen.x_sz,setup.screen.y_sz,FALSE,anisotropic_mode_none,mipmap_mode_trilinear,gui_rect_textures);
-		
+	bitmap_data(&gui_screenshot_bitmap,data,setup.screen.x_sz,setup.screen.y_sz,FALSE,anisotropic_mode_none,mipmap_mode_none,gl_check_texture_rectangle_ok());
+	
 	free(data);
+}
+
+void gui_screenshot_free(void)
+{
+	bitmap_close(&gui_screenshot_bitmap);
+	gui_screenshot_bitmap.gl_id=-1;
 }
 
 /* =======================================================
@@ -168,7 +170,7 @@ void gui_background_load(char *background_path,char *bitmap_name)
 	char		path[1024];
 
 	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,gui_rect_textures,FALSE,FALSE);
+	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,gl_check_texture_rectangle_ok(),FALSE,FALSE);
 }
 
 /* =======================================================
@@ -188,10 +190,6 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 		// stop playing ambients
 		
 	al_stop_all_looping_sources();
-
-		// detect rectangle textures
-
-	gui_rect_textures=gl_check_texture_rectangle_ok();
 	
 		// initialize cursor and elements
 		
@@ -224,7 +222,9 @@ void gui_shutdown(void)
 {
 		// close background bitmap
 		
-	if (!gui_show_view) bitmap_close(&gui_background_bitmap);
+	if (!gui_show_view) {
+		bitmap_close(&gui_background_bitmap);
+	}
 	
 		// release cursor and elements
 		
@@ -274,7 +274,7 @@ void gui_draw_background(float alpha)
 
 	gl_2D_view_interface();
 
-	if (gui_rect_textures) {
+	if (gl_check_texture_rectangle_ok()) {
 		view_draw_next_vertex_object_2D_texture_quad_rectangle(gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,p_wid,p_high);
 	}
 	else {

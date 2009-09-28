@@ -83,6 +83,16 @@ and can be sold or given away.
 #define bt_remote								2
 
 //
+// object types
+//
+
+#define object_type_player						0
+#define object_type_remote						1
+#define object_type_bot							2
+#define object_type_monster						3
+#define object_type_other						4
+
+//
 // input modes
 //
 
@@ -612,7 +622,7 @@ typedef struct		{
 					
 typedef struct		{
 						int						uid,last_update;
-						bool					on,talking;
+						bool					talking;
 						obj_remote_predict		predict;
 					} obj_remote;
 
@@ -809,13 +819,13 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						uid,bind,team_idx,tint_color_idx,character_idx,spawn_idx,spawn_mesh_idx,
+						int						uid,type_idx,bind,team_idx,tint_color_idx,character_idx,spawn_idx,spawn_mesh_idx,
 												count,input_mode,air_mode,liquid_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],type[name_str_len],spawn_spot_name[name_str_len];
 						bool					spawning,hidden,suspend,fly,slope_gravity,
-												player,bot,side_step,crawl,single_speed,no_slide,
+												side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,
 												find_on,in_collide_event,
 												quick_reverse,death_trigger,death_telefrag;

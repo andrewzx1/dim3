@@ -89,13 +89,12 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	obj->team_idx=(signed short)ntohs(add->team_idx);
 	obj->tint_color_idx=(signed short)ntohs(add->tint_color_idx);
 	obj->character_idx=(signed short)ntohs(add->character_idx);
-	obj->player=TRUE;
+	obj->type_idx=object_type_remote;
 	
 	obj->pnt.x=ntohl(add->pnt_x);
 	obj->pnt.y=ntohl(add->pnt_y);
 	obj->pnt.z=ntohl(add->pnt_z);
 
-	obj->remote.on=TRUE;
 	obj->remote.uid=(signed short)ntohs(add->uid);
 	obj->remote.last_update=game_time_get();
 	obj->remote.talking=FALSE;
@@ -873,7 +872,7 @@ void remote_network_send_updates(int tick)
 		obj=server.objs;
 
 		for (n=0;n!=server.count.obj;n++) {
-			if (obj->bot) net_client_send_remote_update(tick,obj->remote.uid,obj,FALSE);
+			if (obj->type_idx==object_type_bot) net_client_send_remote_update(tick,obj->remote.uid,obj,FALSE);
 			obj++;
 		}
 	}
@@ -917,7 +916,7 @@ void remote_monsters_add(void)
 
 	for (n=0;n!=server.count.obj;n++) {
 	
-		if ((obj->bot) && (!obj->remote.on)) {
+		if (obj->type_idx==object_type_monster) {
 		
 				// if not in coop, then no monsters
 
@@ -933,12 +932,6 @@ void remote_monsters_add(void)
 			
 				obj->remote.uid=uid;
 				uid++;
-				
-					// only move monsters on the host
-
-				if (!net_setup.host.hosting) {
-					obj->remote.on=TRUE;
-				}
 				
 			}
 

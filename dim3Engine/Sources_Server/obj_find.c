@@ -80,7 +80,7 @@ obj_type* object_find_remote_uid(int uid)
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->remote.on) {
+		if (obj->type_idx==object_type_remote) {
 			if (obj->remote.uid==uid) return(obj);
 		}
 		obj++;
@@ -97,7 +97,7 @@ int object_find_index_remote_uid(int uid)
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->remote.on) {
+		if (obj->type_idx==object_type_remote) {
 			if (obj->remote.uid==uid) return(n);
 		}
 		obj++;
@@ -171,12 +171,8 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float
 		
 			// player and remotes
 			
-		if (player) {
-			if (!obj->player) continue;
-		}
-		if (remote) {
-			if (!obj->remote.on) continue;
-		}
+		if ((player) && (obj->type_idx!=object_type_player)) continue;
+		if ((remote) && (obj->type_idx!=object_type_remote)) continue;
 
 		if (obj->uid==skip_obj_uid) continue;
 		

@@ -64,12 +64,12 @@ void item_pickup_check(obj_type *obj)
 
 		// dead players can't pickup items
 
-	if ((obj->player) && (obj->status.health==0)) return;
+	if ((obj->type_idx==object_type_player) && (obj->status.health==0)) return;
 
 		// detect if we need to send synch
 		// pickup network messages
 
-	network_on=(net_setup.client.joined) && ((obj->uid==server.player_obj_uid) || (obj->bot));
+	network_on=(net_setup.client.joined) && ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot));
 
 		// check for collisions with pickup items
 	
