@@ -39,6 +39,7 @@ extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,c
 
 	// settings
 	
+extern void gl_check_initialize(void);
 extern bool gl_check_frame_buffer_ok(void);
 extern bool gl_check_fsaa_ok(void);
 extern bool gl_check_texture_anisotropic_filter_ok(void);

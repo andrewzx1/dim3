@@ -71,7 +71,7 @@ void object_score_update(obj_type *obj)
 {
 		// only run rules for players or bots
 
-	if ((obj->uid!=server.player_obj_uid) && (!obj->bot)) return;
+	if ((obj->uid!=server.player_obj_uid) && (obj->type_idx!=object_type_bot)) return;
 
 		// run rule to update score
 
@@ -154,7 +154,7 @@ void object_death(obj_type *obj)
 		// send death if joined and is player
 		
 	if (net_setup.client.joined) {
-		if ((obj->uid==server.player_obj_uid) || (obj->bot)) net_client_send_death(obj->remote.uid,obj->damage_obj_uid,FALSE);
+		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot)) net_client_send_death(obj->remote.uid,obj->damage_obj_uid,FALSE);
 	}
 }
 
@@ -183,7 +183,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 
 		// only players, remotes, and bots can telefrag
 
-	if ((!obj->player) && (!obj->remote.on) && (!obj->bot)) return(FALSE);
+	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot)) return(FALSE);
 
 		// colliding with remotes
 		
@@ -192,7 +192,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 	for (n=0;n!=server.count.obj;n++) {
 		check_obj=&server.objs[n];
 	
-		if ((!check_obj->player) && (!check_obj->remote.on) && (!check_obj->bot)) continue;
+		if ((check_obj->type_idx!=object_type_player) && (check_obj->type_idx!=object_type_remote) && (check_obj->type_idx!=object_type_bot)) continue;
 		if ((check_obj->hidden) || (!check_obj->contact.object_on)) continue;
 		if (obj->uid==check_obj->uid) continue;
 		
@@ -210,7 +210,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 				// send network message to telefrag
 
 			if (net_setup.client.joined) {
-				if ((check_obj->uid==server.player_obj_uid) || (check_obj->bot)) {
+				if ((check_obj->uid==server.player_obj_uid) || (check_obj->type_idx==object_type_bot)) {
 					net_client_send_death(check_obj->remote.uid,obj->uid,TRUE);
 				}
 			}
@@ -270,7 +270,7 @@ void object_touch(obj_type *obj)
 		// send callbacks
 
 	hit_obj=object_find_uid(uid);
-	if (hit_obj->remote.on) return;
+	if (hit_obj->type_idx==object_type_remote) return;
 		
 	object_setup_touch(hit_obj,obj,FALSE);
 	scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
@@ -374,7 +374,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		// and any network events
 
 	if (net_setup.client.joined) {
-		if ((from_obj->uid==server.player_obj_uid) || (from_obj->bot)) net_client_send_click(from_obj->remote.uid,&from_obj->pnt,&from_obj->ang);
+		if ((from_obj->uid==server.player_obj_uid) || (from_obj->type_idx==object_type_bot)) net_client_send_click(from_obj->remote.uid,&from_obj->pnt,&from_obj->ang);
 	}
 }
 
@@ -386,7 +386,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 
 void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,proj_type *source_proj,d3pnt *melee_hit_pt,int damage)
 {
-	if (obj->remote.on) return;
+	if (obj->type_idx==object_type_remote) return;
 	if (!obj->damage.on) return;
 	
 		// need to make sure cascading scripts
@@ -502,7 +502,7 @@ void object_crush(obj_type *obj,bool auto_crush)
 	
 		// kill if not a remote or invincible
 		
-	if (obj->remote.on) return;
+	if (obj->type_idx==object_type_remote) return;
 	if (obj->damage.invincible) return;
 
 	obj->damage_obj_uid=-1;

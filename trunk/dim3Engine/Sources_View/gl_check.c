@@ -31,44 +31,23 @@ and can be sold or given away.
 
 #include "video.h"
 
-extern bool					arch_ppc_g3;
+bool						gl_check_value_frame_buffer,
+							gl_check_value_fsaa,
+							gl_check_value_texture_anisotropic_filter,
+							gl_check_value_texture_generate_mipmaps,
+							gl_check_value_texture_rectangle,
+							gl_check_value_shader;
 
 extern setup_type			setup;
 extern render_info_type		render_info;
 
 /* =======================================================
 
-      GL Checks
+      GL Checks Setup
       
 ======================================================= */
 
-bool gl_check_frame_buffer_ok(void)
-{
-	if (strstr(render_info.ext_string,"GL_EXT_framebuffer_object")==NULL) return(FALSE);
-	return(strstr(render_info.ext_string,"GL_EXT_packed_depth_stencil")!=NULL);
-}
-
-bool gl_check_fsaa_ok(void)
-{
-	return(strstr(render_info.ext_string,"GL_ARB_multisample")!=NULL);
-}
-
-bool gl_check_texture_anisotropic_filter_ok(void)
-{
-	return(strstr(render_info.ext_string,"GL_EXT_texture_filter_anisotropic")!=NULL);
-}
-
-bool gl_check_texture_generate_mipmaps_ok(void)
-{
-	return(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
-}
-
-bool gl_check_texture_rectangle_ok(void)
-{
-	return(strstr(render_info.ext_string,"GL_ARB_texture_rectangle")!=NULL);
-}
-
-bool gl_check_shader_ok(void)
+bool gl_check_initialize_shader(void)
 {
 #ifdef D3_OS_MAC
 	GLint			fragGPU,vertGPU;
@@ -92,6 +71,58 @@ bool gl_check_shader_ok(void)
 #endif
 
 	return(TRUE);
+}
+
+void gl_check_initialize(void)
+{
+	gl_check_value_frame_buffer=FALSE;
+	
+	if (strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL) {
+		gl_check_value_frame_buffer=(strstr(render_info.ext_string,"GL_EXT_packed_depth_stencil")!=NULL);
+	}
+	
+	gl_check_value_fsaa=(strstr(render_info.ext_string,"GL_ARB_multisample")!=NULL);
+	gl_check_value_texture_anisotropic_filter=(strstr(render_info.ext_string,"GL_EXT_texture_filter_anisotropic")!=NULL);
+	gl_check_value_texture_generate_mipmaps=(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
+	gl_check_value_texture_rectangle=(strstr(render_info.ext_string,"GL_ARB_texture_rectangle")!=NULL);
+
+	gl_check_value_shader=gl_check_initialize_shader();
+}
+
+/* =======================================================
+
+      GL Checks
+      
+======================================================= */
+
+inline bool gl_check_frame_buffer_ok(void)
+{
+	return(gl_check_value_frame_buffer);
+}
+
+inline bool gl_check_fsaa_ok(void)
+{
+	return(gl_check_value_fsaa);
+}
+
+inline bool gl_check_texture_anisotropic_filter_ok(void)
+{
+	return(gl_check_value_texture_anisotropic_filter);
+}
+
+inline bool gl_check_texture_generate_mipmaps_ok(void)
+{
+	return(gl_check_value_texture_generate_mipmaps);
+}
+
+inline bool gl_check_texture_rectangle_ok(void)
+{
+	return(gl_check_value_texture_rectangle);
+}
+
+inline bool gl_check_shader_ok(void)
+{
+	return(gl_check_value_shader);
 }
 
 

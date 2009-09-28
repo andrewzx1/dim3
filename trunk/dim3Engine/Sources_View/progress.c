@@ -37,7 +37,6 @@ extern hud_type				hud;
 
 float						progress_current;
 char						progress_str[256];
-bool						progress_rect_textures;
 bitmap_type					progress_bitmap;
 
 /* =======================================================
@@ -56,13 +55,11 @@ void progress_initialize(char *action)
 	
 		// check for map progress background,
 		// otherwise use default
-
-	progress_rect_textures=gl_check_texture_rectangle_ok();
 		
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds_Map",map.info.name,"png");
-	if (!bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,progress_rect_textures,FALSE,FALSE)) {
+	if (!bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,gl_check_texture_rectangle_ok(),FALSE,FALSE)) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds","load","png");
-		bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,progress_rect_textures,FALSE,FALSE);
+		bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,gl_check_texture_rectangle_ok(),FALSE,FALSE);
 	}
 	
 		// current progress
@@ -101,7 +98,7 @@ void progress_draw(float percentage)
 	
 		// draw background
 
-	if (progress_rect_textures) {
+	if (gl_check_texture_rectangle_ok()) {
 		view_draw_next_vertex_object_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,progress_bitmap.wid,progress_bitmap.high);
 	}
 	else {

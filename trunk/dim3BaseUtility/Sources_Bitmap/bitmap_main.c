@@ -99,7 +99,7 @@ int bitmap_find_nearest_power_2(int sz)
 	return(1024);
 }
 
-unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,unsigned char *png_data)
+unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned char *png_data)
 {
 	int				wid,high,byte_sz,x,y,dsz;
 	float			x_skip,y_skip;
@@ -114,11 +114,11 @@ unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,unsigned char *png_data)
 
 		// is it 3 or 4 bytes?
 
-	if (bitmap->alpha_mode==alpha_mode_none) {
-		byte_sz=3;
+	if (has_alpha) {
+		byte_sz=4;
 	}
 	else {
-		byte_sz=4;
+		byte_sz=3;
 	}
 
 		// convert data
@@ -177,7 +177,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 		// if not a rectangle, fix size
 		// if not a power of two
 
-	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,png_data);
+	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,TRUE,png_data);
 	
 		// set alphas and scrubbing
 		
@@ -255,7 +255,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 		// if not a rectangle, fix size
 		// if not a power of two
 
-	if (!rectangle) data=bitmap_fix_power_2(bitmap,data);
+	if (!rectangle) data=bitmap_fix_power_2(bitmap,alpha_channel,data);
 	
 		// find if bitmap has transparencies
 	

@@ -134,7 +134,7 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 	
 		// load texture
 
-	if ((mipmap_mode==mipmap_mode_none) || (pixelated)) {
+	if ((mipmap_mode==mipmap_mode_none) || (rectangle) || (pixelated)) {
 		glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
 	}
 	else {

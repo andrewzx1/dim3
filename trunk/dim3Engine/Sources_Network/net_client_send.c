@@ -244,7 +244,7 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 			else {
 				obj=object_find_uid(kill_uid);
 				if (obj!=NULL) {
-					if (obj->remote.on) {
+					if (obj->type_idx==object_type_remote) {
 						send_kill_uid=obj->remote.uid;
 					}
 				}

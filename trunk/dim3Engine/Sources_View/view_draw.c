@@ -371,7 +371,7 @@ void view_draw_models_final(int tick)
 				}
 				
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					if (obj->remote.on) remote_draw_status(obj);
+					if (obj->type_idx==object_type_remote) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
 					if (dim3_debug) {
 						view_draw_debug_bounding_box(obj);

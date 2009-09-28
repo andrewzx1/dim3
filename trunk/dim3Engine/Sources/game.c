@@ -80,6 +80,11 @@ bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str)
 		// start view
 		
 	view_game_start();
+	
+		// no gui screenshot taken yet
+		// need to have running screenshot for mode switches
+		
+	gui_screenshot_initialize();
 
 		// game in running state
 		
@@ -179,7 +184,7 @@ void game_reset(void)
 				game_reset_single_object(obj,FALSE);
 			}
 			else {
-				if ((obj->player) || (obj->remote.on) || (obj->bot)) {
+				if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot)) {
 					obj->hidden=TRUE;
 				}
 			}
@@ -195,7 +200,7 @@ void game_reset(void)
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->player) || (obj->bot)) game_reset_single_object(obj,TRUE);
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot)) game_reset_single_object(obj,TRUE);
 		obj++;
 	}
 	

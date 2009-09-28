@@ -124,7 +124,7 @@ int network_score_players_draw(bool use_teams)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if (obj->player) {
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot)) {
 
 			s_score=(short)obj->score.score;
 			
@@ -194,7 +194,7 @@ void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_
 	for (n=0;n!=server.count.obj;n++) {
 
 		obj=&server.objs[n];
-		if (!obj->player) continue;
+		if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot)) continue;
 		if (obj->team_idx!=team_idx) continue;
 
 		s_score=(short)obj->score.score;
@@ -242,7 +242,7 @@ int network_score_teams_draw(void)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if (!obj->player) {
+		if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot)) {
 			obj++;
 			continue;
 		}

@@ -124,7 +124,7 @@ void run_object_single(obj_type *obj,int tick)
 	
 		// turning and looking
 		
-	if (obj->player) {
+	if (obj->type_idx==object_type_player) {
 		if (!obj->input_freeze) {
 			object_player_turn(obj);
 			object_player_look(obj);
@@ -183,7 +183,7 @@ void run_object_single(obj_type *obj,int tick)
 	
 		// animation events
 
-	if (obj->player) {
+	if (obj->type_idx==object_type_player) {
 		object_event_animations(obj);
 	}
 	
@@ -197,6 +197,28 @@ void run_object_single(obj_type *obj,int tick)
       Run Objects
   
 ======================================================= */
+
+inline void run_objects_slice_single(obj_type *obj,int tick)
+{
+		// remotes get predicted
+		
+	if (obj->type_idx==object_type_remote) {
+		remote_predict_move(obj);
+		return;
+	}
+	
+		// if in network and not host, monsters
+		// get predicted
+		
+	if ((net_setup.client.joined) && (!net_setup.host.hosting) && (obj->type_idx==object_type_monster)) {
+		remote_predict_move(obj);
+		return;
+	}
+	
+		// everything else is a regular move
+	
+	run_object_single(obj,tick);
+}
 
 void run_objects_slice(int tick)
 {
@@ -220,13 +242,8 @@ void run_objects_slice(int tick)
 			}
 
 				// run objects
-
-			if (obj->remote.on) {
-				remote_predict_move(obj);
-			}
-			else {
-				run_object_single(obj,tick);
-			}
+				
+			run_objects_slice_single(obj,tick);
 
 				// trigger any mesh changes if not suspended
 			
@@ -272,7 +289,7 @@ void run_objects_no_slice(int tick)
 
 					// held weapons
 
-				if (obj->player) {
+				if (obj->type_idx==object_type_player) {
 					weap=weapon_find_current(obj);
 					if (weap!=NULL) {
 						model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);

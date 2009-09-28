@@ -179,7 +179,6 @@ bool map_start(bool skip_media,char *err_str)
 	obj_type		*obj;
 
 	game_time_pause_start();
-	gui_screenshot_initialize();
 
 		// start progress
 		
@@ -290,6 +289,7 @@ bool map_start(bool skip_media,char *err_str)
 
 	spot_start_attach();
 	spot_add_multiplayer_bots();
+	remote_monsters_add();
 
 	scenery_create();
 	scenery_start();
@@ -456,8 +456,6 @@ void map_end(void)
 	progress_draw(100);
 	
 	progress_shutdown();
-
-	gui_screenshot_free();
 	
 		// map closed
 		

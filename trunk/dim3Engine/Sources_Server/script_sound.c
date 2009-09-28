@@ -133,7 +133,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 		if (js.attach.thing_type==thing_type_object) {
 			obj=object_find_uid(js.attach.thing_uid);
 			sound_obj_uid=obj->uid;
-			player=obj->player;
+			player=(obj->type_idx==object_type_player);
 		}
 	}
 	
@@ -165,14 +165,14 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 		
 			case thing_type_object:
 				obj=object_find_uid(js.attach.thing_uid);
-				if (obj!=NULL) remote_ok=(((obj->player) || (obj->bot)) && (!obj->remote.on));
+				if (obj!=NULL) remote_ok=(((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot)) && (obj->type_idx!=object_type_remote));
 				break;
 				
 			case thing_type_weapon:
 				weap=weapon_find_uid(js.attach.thing_uid);
 				if (weap!=NULL) {
 					obj=object_find_uid(weap->obj_uid);
-					if (obj!=NULL) remote_ok=(((obj->player) || (obj->bot)) && (!obj->remote.on));
+					if (obj!=NULL) remote_ok=(((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot)) && (obj->type_idx!=object_type_remote));
 				}
 				break;
 		}

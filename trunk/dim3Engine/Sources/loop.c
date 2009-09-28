@@ -229,7 +229,7 @@ bool loop_pause(void)
 
 bool loop_main(char *err_str)
 {
-	int				tick,state;
+	int				tick,old_state;
 
 		// paused?
 
@@ -258,7 +258,7 @@ bool loop_main(char *err_str)
 		
 		// run proper game state
 		
-	state=server.state;
+	old_state=server.state;
 		
 	switch (server.state) {
 	
@@ -352,10 +352,19 @@ bool loop_main(char *err_str)
 		// if we are changing state from game
 		// play to interface element, capture screen
 		// for background and stop fps counter
+		
+		// if we are going to a game element, clear
+		// the screenshot and reset counter
 
-	if ((server.state!=gs_running) && (state==gs_running)) {
+	if ((server.state!=gs_running) && (old_state==gs_running)) {
 		view.fps.last_time=-1;
 		gui_screenshot_load();
+	}
+	else {
+		if ((server.state==gs_running) && (old_state!=gs_running)) {
+			view.fps.last_time=-1;
+			gui_screenshot_free();
+		}
 	}
 	
 	return(TRUE);
