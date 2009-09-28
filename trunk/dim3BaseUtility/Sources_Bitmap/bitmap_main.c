@@ -177,7 +177,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 		// if not a rectangle, fix size
 		// if not a power of two
 
-	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,TRUE,png_data);
+	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
 	
 		// set alphas and scrubbing
 		

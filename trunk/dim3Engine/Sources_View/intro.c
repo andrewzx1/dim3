@@ -114,7 +114,7 @@ void intro_open(void)
 {
 	bool		start_music;
 	char		wave_path[1024];
-	
+
 		// intro UI
 		
 	gui_initialize("Bitmaps/Backgrounds","main",FALSE);

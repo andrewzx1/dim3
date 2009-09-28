@@ -122,9 +122,9 @@ void read_settings_shader_string_to_custom_variable(view_shader_custom_var_type 
 
 void read_settings_shader(void)
 {
-	int					nshader,nparam,shaders_head_tag,shader_tag,param_tag,tag;
-	char				vtype[32],value[64],path[1024];
-	view_shader_type	*shader;
+	int							nshader,nparam,shaders_head_tag,shader_tag,param_tag,tag;
+	char						vtype[32],value[64],path[1024];
+	view_shader_type			*shader;
 
 		// no marks yet
 
@@ -163,29 +163,31 @@ void read_settings_shader(void)
 		
 		tag=xml_findfirstchild("Code",shader_tag);
 		if (tag!=-1) {
-			xml_get_attribute_text(tag,"vert",shader->vertex_name,file_str_len);
-			xml_get_attribute_text(tag,"frag",shader->fragment_name,file_str_len);
+			xml_get_attribute_text(tag,"vert",shader->code_default.vertex_name,file_str_len);
+			xml_get_attribute_text(tag,"frag",shader->code_default.fragment_name,file_str_len);
 		}
+
+		nparam=0;
 		
 		param_tag=xml_findfirstchild("Params",shader_tag);
 		if (tag!=-1) {
 			
 			tag=xml_findfirstchild("Param",param_tag);
-			
-			nparam=0;
 		
 			while (tag!=-1) {
-				xml_get_attribute_text(tag,"name",shader->custom_vars[nparam].name,name_str_len);
+				xml_get_attribute_text(tag,"name",shader->custom_var_list.vars[nparam].name,name_str_len);
 				
 				xml_get_attribute_text(tag,"type",vtype,32);
 				xml_get_attribute_text(tag,"value",value,64);
 				
-				read_settings_shader_string_to_custom_variable(&shader->custom_vars[nparam],vtype,value);
+				read_settings_shader_string_to_custom_variable(&shader->custom_var_list.vars[nparam],vtype,value);
 
 				nparam++;
 				if (nparam==max_view_shader_custom_vars) break;
 			}
 		}
+
+		shader->custom_var_list.nvar=nparam;
 		
 			// move on to next shader
 			

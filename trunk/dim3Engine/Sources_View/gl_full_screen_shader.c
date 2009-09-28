@@ -33,7 +33,7 @@ and can be sold or given away.
 
 extern int game_time_get(void);
 extern int gl_shader_find(char *name);
-extern void gl_shader_set_scene_variables(view_shader_type *shader);
+extern void gl_shader_set_scene_variables(view_shader_code_type *shader_code);
 
 GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id,fs_shader_txt_id;
 int							fs_shader_idx,fs_shader_life_msec,fs_shader_start_tick;
@@ -215,8 +215,8 @@ void gl_fs_shader_render_begin(void)
 
 void gl_fs_shader_render_finish(void)
 {
-	float				*vertex_ptr,*uv_ptr;
-	view_shader_type	*shader;
+	float						*vertex_ptr,*uv_ptr;
+	view_shader_code_type		*shader_code;
 	
 	if ((!fs_shader_on) || (!fs_shader_active)) return;
 
@@ -279,12 +279,12 @@ void gl_fs_shader_render_finish(void)
 
 		// start the shader
 
-	shader=&view.shaders[fs_shader_idx];
+	shader_code=&view.shaders[fs_shader_idx].code_default;
 	
-	glUseProgramObjectARB(shader->program_obj);
+	glUseProgramObjectARB(shader_code->program_obj);
 
-	shader->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
-	gl_shader_set_scene_variables(shader);
+	shader_code->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
+	gl_shader_set_scene_variables(shader_code);
 
 		// draw the quad
 
