@@ -38,8 +38,9 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-int							gl_shader_current_idx,gl_shader_current_txt_idx,gl_shader_current_frame,
+int							gl_shader_current_txt_idx,gl_shader_current_frame,
 							gl_shader_current_extra_txt_idx;
+view_shader_code_type		*gl_shader_current_code;
 
 extern int game_time_get(void);
 extern float game_time_fequency_second_get(int start_tick);
@@ -630,7 +631,7 @@ void gl_shader_draw_start(void)
 {
 		// remember current shader
 
-	gl_shader_current_idx=-1;
+	gl_shader_current_code=NULL;
 
 		// only reset textures when
 		// needed
@@ -660,7 +661,7 @@ void gl_shader_draw_end(void)
 {
 		// deactivate any current shader
 		
-	if (gl_shader_current_idx!=-1) glUseProgramObjectARB(0);
+	if (gl_shader_current_code!=NULL) glUseProgramObjectARB(0);
 	
 		// turn off any used textures
 		
@@ -764,23 +765,34 @@ void gl_shader_texture_override(GLuint gl_id)
 
 void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,int *light_idx,d3pnt *pnt,d3col *tint_col)
 {
-	int								n;
+	int								n,light_count;
 	bool							light_change;
 	view_shader_code_type			*shader_code;
 	view_glsl_light_list_type		light_list;
 	
-		// get shader
+		// get shader based on number
+		// of lights.  If no shader, then use
+		// default
 		
-	shader_code=&view.shaders[texture->shader_idx].code_default;
+	light_count=0;
+	
+	if (light_idx!=NULL) {
+		for (n=0;n!=max_shader_light;n++) {
+			if (light_idx[n]!=-1) light_count++;
+		}
+	}
+	
+	shader_code=&view.shaders[texture->shader_idx].code_light[light_count];
+	if (!shader_code->on) shader_code=&view.shaders[texture->shader_idx].code_default;
 	
 		// if we are not in this shader, then
 		// change over
 		
-	if (texture->shader_idx!=gl_shader_current_idx) {
+	if (shader_code!=gl_shader_current_code) {
 	
 			// set in the new program
 			
-		gl_shader_current_idx=texture->shader_idx;
+		gl_shader_current_code=shader_code;
 		glUseProgramObjectARB(shader_code->program_obj);
 			
 			// set per-scene variables, only do this once

@@ -122,8 +122,8 @@ void read_settings_shader_string_to_custom_variable(view_shader_custom_var_type 
 
 void read_settings_shader(void)
 {
-	int							nshader,nparam,shaders_head_tag,shader_tag,param_tag,tag;
-	char						vtype[32],value[64],path[1024];
+	int							k,nshader,nparam,shaders_head_tag,shader_tag,param_tag,tag;
+	char						tag_name[64],vtype[32],value[64],path[1024];
 	view_shader_type			*shader;
 
 		// no marks yet
@@ -161,11 +161,31 @@ void read_settings_shader(void)
 		
 		xml_get_attribute_text(shader_tag,"name",shader->name,name_str_len);
 		
+			// default shader
+			
 		tag=xml_findfirstchild("Code",shader_tag);
 		if (tag!=-1) {
 			xml_get_attribute_text(tag,"vert",shader->code_default.vertex_name,file_str_len);
 			xml_get_attribute_text(tag,"frag",shader->code_default.fragment_name,file_str_len);
 		}
+		
+			// light shaders
+			
+		for (k=0;k!=(max_shader_light+1);k++) {
+			sprintf(tag_name,"Code_Light_%d",k);
+			
+			tag=xml_findfirstchild(tag_name,shader_tag);
+			if (tag!=-1) {
+				xml_get_attribute_text(tag,"vert",shader->code_light[k].vertex_name,file_str_len);
+				xml_get_attribute_text(tag,"frag",shader->code_light[k].fragment_name,file_str_len);
+			}
+			else {
+				shader->code_light[k].vertex_name[0]=0x0;
+				shader->code_light[k].fragment_name[0]=0x0;
+			}
+		}
+		
+			// parameters
 
 		nparam=0;
 		
