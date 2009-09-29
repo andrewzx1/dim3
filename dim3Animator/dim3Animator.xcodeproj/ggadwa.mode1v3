@@ -402,10 +402,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26B44744106C37240031F4AC</string>
+										<string>26A110901071971600D71801</string>
 										<key>history</key>
 										<array>
-											<string>261ED40810672BE30035747E</string>
+											<string>26B44744106C37240031F4AC</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -463,9 +463,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26B44737106C367B0031F4AC</string>
+				<string>26A1108E1071937700D71801</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26B44738106C367B0031F4AC</string>
+				<string>26A1108F1071937700D71801</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -586,7 +586,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>275527460.63163501</real>
+	<real>275879702.923953</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -601,11 +601,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26B44741106C367B0031F4AC</string>
-		<string>26B44742106C367B0031F4AC</string>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>26B44743106C367B0031F4AC</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -648,8 +643,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -689,7 +682,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26B44730106C36690031F4AC</string>
+				<string>26A1108A1071937000D71801</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

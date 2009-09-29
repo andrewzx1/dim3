@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 275633802;
-			PBXWorkspaceStateSaveDate = 275633802;
+			PBXPerProjectTemplateStateSaveDate = 275864623;
+			PBXWorkspaceStateSaveDate = 275864623;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -163,7 +163,7 @@
 	};
 	2625D0370F54C9960023B0D3 /* render_map_opaque.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1202, 4030}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1202, 4056}}";
 			sepNavSelRange = "{4214, 25}";
 			sepNavVisRange = "{3477, 1451}";
 			sepNavWindowFrame = "{{579, 132}, {999, 779}}";
@@ -267,9 +267,9 @@
 	};
 	264CA5A00F5244D700E90DF2 /* xml_shaders.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 2758}}";
-			sepNavSelRange = "{1415, 0}";
-			sepNavVisRange = "{1146, 975}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 3068}}";
+			sepNavSelRange = "{4280, 0}";
+			sepNavVisRange = "{2927, 1379}";
 			sepNavWindowFrame = "{{400, 153}, {999, 779}}";
 		};
 	};
@@ -724,9 +724,9 @@
 	};
 	F57CAC770527D9E000A68578 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9217}}";
-			sepNavSelRange = "{7564, 0}";
-			sepNavVisRange = "{5452, 1684}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9204}}";
+			sepNavSelRange = "{10777, 0}";
+			sepNavVisRange = "{9907, 1387}";
 			sepNavWindowFrame = "{{526, 110}, {1041, 747}}";
 		};
 	};
@@ -2271,10 +2271,10 @@
 	};
 	F5DD1A190908580100721649 /* objects.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 16016}}";
-			sepNavSelRange = "{17620, 40}";
-			sepNavVisRange = "{17000, 1096}";
-			sepNavWindowFrame = "{{392, 90}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 16471}}";
+			sepNavSelRange = "{22191, 0}";
+			sepNavVisRange = "{21508, 1184}";
+			sepNavWindowFrame = "{{322, 144}, {1041, 747}}";
 		};
 	};
 	F5DD1A260908583D00721649 /* remote.c */ = {
@@ -2535,9 +2535,9 @@
 	};
 	F5DD1A9309085CAA00721649 /* gl_shader.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1461, 10374}}";
-			sepNavSelRange = "{11481, 18}";
-			sepNavVisRange = "{10814, 1027}";
+			sepNavIntBoundsRect = "{{0, 0}, {1146, 11427}}";
+			sepNavSelRange = "{21964, 0}";
+			sepNavVisRange = "{21291, 1317}";
 			sepNavWindowFrame = "{{338, 119}, {1041, 747}}";
 		};
 	};

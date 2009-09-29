@@ -1031,8 +1031,6 @@ void spot_start_attach(void)
 		if (spot->skill>server.skill) continue;
 		if ((spot->spawn==spawn_single_player_only) && (net_setup.client.joined)) continue;
 		if ((spot->spawn==spawn_multiplayer_only) && (!net_setup.client.joined)) continue;
-		
-		spot->attach_is_player=FALSE;
 		 
 		object_start(spot,FALSE,bt_map,-1,err_str);
 	}
@@ -1067,7 +1065,6 @@ void spot_add_multiplayer_bots(void)
 		strcpy(spot.attach_type,"Bot");
 		strcpy(spot.attach_script,"Bot");
 		spot.attach_params[0]=0x0;
-		spot.attach_is_player=TRUE;
 		
 		uid=object_start(&spot,FALSE,bt_map,-1,err_str);
 		if (uid==-1) continue;
