@@ -207,10 +207,10 @@ inline void run_objects_slice_single(obj_type *obj,int tick)
 		return;
 	}
 	
-		// if in network and not host, monsters
+		// if in network and not host, map bots
 		// get predicted
 		
-	if ((net_setup.client.joined) && (!net_setup.host.hosting) && (obj->type_idx==object_type_monster)) {
+	if ((net_setup.client.joined) && (!net_setup.host.hosting) && (obj->type_idx==object_type_bot_map)) {
 		remote_predict_move(obj);
 		return;
 	}

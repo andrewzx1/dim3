@@ -186,7 +186,7 @@ JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot)) uids[cnt++]=obj->uid;
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) uids[cnt++]=obj->uid;
 		obj++;
 	}
 

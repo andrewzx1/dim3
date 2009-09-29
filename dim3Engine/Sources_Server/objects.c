@@ -762,7 +762,7 @@ void object_attach_click_crosshair_down(obj_type *obj)
       
 ======================================================= */
 
-int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_str)
+int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err_str)
 {
 	int					n;
 	bool				ok;
@@ -780,7 +780,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		
 			// player default setup
 		
-	if (player) {
+	if (type_idx==object_type_player) {
 		strcpy(obj->name,setup.network.name);
 		obj->team_idx=net_team_none;
 		obj->spawn_spot_name[0]=0x0;
@@ -800,16 +800,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		strcpy(obj->name,spot->attach_name);
 		strcpy(obj->type,spot->attach_type);
 		
-			// setup types
-
-		if (strcasecmp(obj->type,"bot")==0) {
-			obj->type_idx=object_type_bot;
-		}
-		else {
-			if (strcasecmp(obj->type,"monster")==0) {
-				obj->type_idx=object_type_monster;
-			}
-		}
+		obj->type_idx=type_idx;
 
 			// if there's an editor display model, then
 			// default model to it
@@ -827,10 +818,10 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		object_reset_prepare(obj);
 	}
 
-		// if networked player, run rules
+		// if networked player or multiplayer bot, run rules
 		// and send choosen team to other clients
 	
-	if (((player) || (obj->type_idx==object_type_bot)) && (net_setup.client.joined)) {
+	if (((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) && (net_setup.client.joined)) {
 		game_obj_rule_uid=obj->uid;
 		scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
 		game_obj_rule_uid=-1;
@@ -840,7 +831,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		
 		// start script
 
-	if (player) {
+	if (obj->type_idx==object_type_player) {
 		ok=object_start_script(obj,"Player",NULL,err_str);
 	}
 	else {
@@ -1014,9 +1005,15 @@ void object_dispose_2(int bind)
       
 ======================================================= */
 
+int spot_get_type_idx_from_type_str(char *type_str)
+{
+	if (strcasecmp(type_str,"bot")==0) return(object_type_bot_map);
+	return(object_type_other);
+}
+
 void spot_start_attach(void)
 {
-	int					n;
+	int					n,type_idx;
 	char				err_str[256];
 	spot_type			*spot;
 	
@@ -1031,8 +1028,10 @@ void spot_start_attach(void)
 		if (spot->skill>server.skill) continue;
 		if ((spot->spawn==spawn_single_player_only) && (net_setup.client.joined)) continue;
 		if ((spot->spawn==spawn_multiplayer_only) && (!net_setup.client.joined)) continue;
+
+		type_idx=spot_get_type_idx_from_type_str(spot->attach_type);
 		 
-		object_start(spot,FALSE,bt_map,-1,err_str);
+		object_start(spot,type_idx,bt_map,-1,err_str);
 	}
 }
 
@@ -1066,7 +1065,7 @@ void spot_add_multiplayer_bots(void)
 		strcpy(spot.attach_script,"Bot");
 		spot.attach_params[0]=0x0;
 		
-		uid=object_start(&spot,FALSE,bt_map,-1,err_str);
+		uid=object_start(&spot,object_type_bot_multiplayer,bt_map,-1,err_str);
 		if (uid==-1) continue;
 		
 		obj=object_find_uid(uid);
@@ -1100,7 +1099,7 @@ void object_script_spawn_start(void)
 
 void object_script_spawn_finish(void)
 {
-	int						n,idx,uid;
+	int						n,idx,type_idx,uid;
 	char					err_str[256],obj_err_str[256];
 	spot_type				spot;
 	obj_type				*obj;
@@ -1126,9 +1125,11 @@ void object_script_spawn_finish(void)
 			memmove(&spot.pnt,&spawn->pnt,sizeof(d3pnt));
 			memmove(&spot.ang,&spawn->ang,sizeof(d3ang));
 
+			type_idx=spot_get_type_idx_from_type_str(spawn->type);
+
 				// start object
 
-			uid=object_start(&spot,FALSE,bt_map,spawn->uid,obj_err_str);
+			uid=object_start(&spot,type_idx,bt_map,spawn->uid,obj_err_str);
 			if (uid==-1) {
 				sprintf(err_str,"Object Spawn Failed: %s",obj_err_str);
 				console_add_error(err_str);

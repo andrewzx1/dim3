@@ -865,14 +865,14 @@ void remote_network_send_updates(int tick)
 	obj=object_find_uid(server.player_obj_uid);
 	net_client_send_remote_update(tick,obj->remote.uid,obj,hud.chat.type_on);
 
-		// any bots if hosting
+		// update any multiplayer bots if hosting
 
 	if (net_setup.host.hosting) {
 
 		obj=server.objs;
 
 		for (n=0;n!=server.count.obj;n++) {
-			if (obj->type_idx==object_type_bot) net_client_send_remote_update(tick,obj->remote.uid,obj,FALSE);
+			if (obj->type_idx==object_type_bot_multiplayer) net_client_send_remote_update(tick,obj->remote.uid,obj,FALSE);
 			obj++;
 		}
 	}
@@ -891,11 +891,11 @@ void remote_network_send_latency_ping(int tick)
 
 /* =======================================================
 
-      Monsters to Remotes
+      Map Bots (in Co-Op) to Remotes
       
 ======================================================= */
 
-void remote_monsters_add(void)
+void remote_add_map_bots(void)
 {
 	int					n,uid;
 	bool				coop;
@@ -911,20 +911,20 @@ void remote_monsters_add(void)
 	
 		// create remote IDs
 		
-	uid=net_remote_uid_monster_start;
+	uid=net_remote_uid_map_bot_start;
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
 	
-		if (obj->type_idx==object_type_monster) {
+		if (obj->type_idx==object_type_bot_map) {
 		
-				// if not in coop, then no monsters
+				// if not in coop, then no map bots
 
 			if (!coop) {
 				obj->hidden=TRUE;
 			}
 
-				// monsters need a unique remote ID, build
+				// map bots need a unique remote ID, build
 				// from a high number to not interfere with real
 				// remotes or bots
 

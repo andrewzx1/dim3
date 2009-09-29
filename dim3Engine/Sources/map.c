@@ -290,7 +290,7 @@ bool map_start(bool skip_media,char *err_str)
 
 	spot_start_attach();
 	spot_add_multiplayer_bots();
-	remote_monsters_add();
+	remote_add_map_bots();
 
 	scenery_create();
 	scenery_start();

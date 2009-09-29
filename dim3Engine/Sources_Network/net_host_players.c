@@ -364,7 +364,7 @@ void net_host_player_add_bots_to_list(void)
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->type_idx==object_type_bot) obj->remote.uid=net_host_bot_join(obj);
+		if (obj->type_idx==object_type_bot_multiplayer) obj->remote.uid=net_host_bot_join(obj);
 		obj++;
 	}
 }

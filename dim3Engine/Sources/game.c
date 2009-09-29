@@ -184,7 +184,7 @@ void game_reset(void)
 				game_reset_single_object(obj,FALSE);
 			}
 			else {
-				if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot)) {
+				if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
 					obj->hidden=TRUE;
 				}
 			}
@@ -195,12 +195,12 @@ void game_reset(void)
 		return;
 	}
 	
-		// force all players and bots to respawn
+		// force all players and multiplayer bots to respawn
 
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot)) game_reset_single_object(obj,TRUE);
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) game_reset_single_object(obj,TRUE);
 		obj++;
 	}
 	

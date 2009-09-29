@@ -104,7 +104,7 @@ JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,J
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot)) {
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
 			if (obj->team_idx==team_idx) score+=obj->score.score;
 		}
 

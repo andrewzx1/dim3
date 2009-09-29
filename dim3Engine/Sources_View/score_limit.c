@@ -126,7 +126,7 @@ void score_limit_trigger_set_check_scores(void)
 
 		for (n=0;n!=server.count.obj;n++) {
 		
-			if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot)) {
+			if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot_multiplayer)) {
 				obj++;
 				continue;
 			}
@@ -157,7 +157,7 @@ void score_limit_trigger_set_check_scores(void)
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot)) {
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
 			if (obj->score.score>=limit) {
 				score_limit_trigger_set();
 				return;
