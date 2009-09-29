@@ -143,10 +143,11 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		collide_push_objects(x,y,z,melee->radius,melee->force);
 	}
 	
-		// if this object is the player object, then spawn melee in remotes
+		// if this object is the player or multiplayer bot,
+		// then spawn melee in remotes
 		
 	if (net_setup.client.joined) {
-		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot)) {
+		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer)) {
 			weap_name[0]=0x0;
 			if (weap!=NULL) strcpy(weap_name,weap->name);
 			net_client_send_melee_add(obj->remote.uid,weap_name,melee->radius,melee->distance,melee->damage,melee->force,&pnt,ang);

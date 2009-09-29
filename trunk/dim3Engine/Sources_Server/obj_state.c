@@ -69,9 +69,9 @@ void object_spawn(obj_type *obj)
 
 void object_score_update(obj_type *obj)
 {
-		// only run rules for players or bots
+		// only run rules for players or multiplayer bots
 
-	if ((obj->uid!=server.player_obj_uid) && (obj->type_idx!=object_type_bot)) return;
+	if ((obj->uid!=server.player_obj_uid) && (obj->type_idx!=object_type_bot_multiplayer)) return;
 
 		// run rule to update score
 
@@ -151,10 +151,10 @@ void object_death(obj_type *obj)
 
 	object_watch_death_alert(obj);
 	
-		// send death if joined and is player
+		// send death if joined and is player or multiplayer bot
 		
 	if (net_setup.client.joined) {
-		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot)) net_client_send_death(obj->remote.uid,obj->damage_obj_uid,FALSE);
+		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer)) net_client_send_death(obj->remote.uid,obj->damage_obj_uid,FALSE);
 	}
 }
 
@@ -181,9 +181,9 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 	bool		hit;
 	obj_type	*check_obj;
 
-		// only players, remotes, and bots can telefrag
+		// only players, remotes, and multiplayer bots can telefrag
 
-	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot)) return(FALSE);
+	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot_multiplayer)) return(FALSE);
 
 		// colliding with remotes
 		
@@ -192,7 +192,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 	for (n=0;n!=server.count.obj;n++) {
 		check_obj=&server.objs[n];
 	
-		if ((check_obj->type_idx!=object_type_player) && (check_obj->type_idx!=object_type_remote) && (check_obj->type_idx!=object_type_bot)) continue;
+		if ((check_obj->type_idx!=object_type_player) && (check_obj->type_idx!=object_type_remote) && (check_obj->type_idx!=object_type_bot_multiplayer)) continue;
 		if ((check_obj->hidden) || (!check_obj->contact.object_on)) continue;
 		if (obj->uid==check_obj->uid) continue;
 		
@@ -210,7 +210,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 				// send network message to telefrag
 
 			if (net_setup.client.joined) {
-				if ((check_obj->uid==server.player_obj_uid) || (check_obj->type_idx==object_type_bot)) {
+				if ((check_obj->uid==server.player_obj_uid) || (check_obj->type_idx==object_type_bot_multiplayer)) {
 					net_client_send_death(check_obj->remote.uid,obj->uid,TRUE);
 				}
 			}
@@ -374,7 +374,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		// and any network events
 
 	if (net_setup.client.joined) {
-		if ((from_obj->uid==server.player_obj_uid) || (from_obj->type_idx==object_type_bot)) net_client_send_click(from_obj->remote.uid,&from_obj->pnt,&from_obj->ang);
+		if ((from_obj->uid==server.player_obj_uid) || (from_obj->type_idx==object_type_bot_multiplayer)) net_client_send_click(from_obj->remote.uid,&from_obj->pnt,&from_obj->ang);
 	}
 }
 

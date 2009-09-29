@@ -131,7 +131,6 @@ void console_input(void)
 void console_draw_header(void)
 {
  	int					y,lx,rx,ty,by,y_add;
-	char				fps_txt[64],lat_txt[32];
 	d3col				col;
 
 	y_add=gl_text_get_char_height(hud.font.text_size_small);
@@ -151,39 +150,10 @@ void console_draw_header(void)
 	gl_text_start(hud.font.text_size_small);
 	col.r=col.g=col.b=0.0f;
 	
-		// version
-		
-	gl_text_draw(5,y,dim3_version,tx_left,FALSE,&col,1.0f);
-
-		// project name
+		// text
 
 	gl_text_draw((hud.scale_x>>1),y,hud.proj_name,tx_center,FALSE,&col,1.0f);
-	
-		// fps & latency
-	
-	if (view.fps.total==0) {
-		strcpy(fps_txt,"--.--");
-	}
-	else {
-		if ((setup.lock_fps_refresh) && (view.fps.total>render_info.monitor_refresh_rate)) {
-			sprintf(fps_txt,"%d.00",render_info.monitor_refresh_rate);
-		}
-		else {
-			sprintf(fps_txt,"%.2f",view.fps.total);
-		}
-	}
-
-	if (net_setup.client.joined) {
-		if (net_setup.client.latency>=100) {
-			strcat(fps_txt," [??]");
-		}
-		else {
-			sprintf(lat_txt,"[%d]",net_setup.client.latency);
-			strcat(fps_txt,lat_txt);
-		}
-	}
-
-	gl_text_draw((hud.scale_x-5),y,fps_txt,tx_right,FALSE,&col,1.0f);
+	gl_text_draw((hud.scale_x-5),y,dim3_version,tx_right,FALSE,&col,1.0f);
 
 	gl_text_end();
 }

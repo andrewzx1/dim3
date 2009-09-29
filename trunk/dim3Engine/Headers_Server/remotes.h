@@ -36,7 +36,7 @@ extern bool remote_network_get_updates(int tick);
 extern void remote_network_send_updates(int tick);
 extern void remote_network_send_group_synch(void);
 extern void remote_network_send_latency_ping(int tick);
-extern void remote_monsters_add(void);
+extern void remote_add_map_bots(void);
 
 extern void remote_draw_status(obj_type *obj);
 

@@ -328,7 +328,7 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 
 		if (weap->target.type[0]==0x0) {
 			if (chk_obj->status.health==0) continue;
-			if ((chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot)) continue;
+			if ((chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot_multiplayer)) continue;
 		}
 		else {
 			if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
@@ -399,7 +399,7 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 
 		if (weap->target.type[0]==0x0) {
 			if (chk_obj->status.health==0) continue;
-			if ((chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot)) continue;
+			if ((chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot_multiplayer)) continue;
 		}
 		else {
 			if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;

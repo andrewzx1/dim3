@@ -88,8 +88,8 @@ and can be sold or given away.
 
 #define object_type_player						0
 #define object_type_remote						1
-#define object_type_bot							2
-#define object_type_monster						3
+#define object_type_bot_multiplayer				2
+#define object_type_bot_map						3
 #define object_type_other						4
 
 //
