@@ -62,9 +62,9 @@ void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly
 		return;
 	}
 	
-		// if the slope is greater than 60, then consider it a FC
+		// if the slope is greater than 0.6, then consider it a wall
 
-	if (poly->slope.ang_y<60.0f) return;
+	if (poly->slope.y<0.6f) return;
 
 		// otherwise it's a wall
 	

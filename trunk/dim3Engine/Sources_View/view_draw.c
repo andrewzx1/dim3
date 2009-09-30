@@ -107,10 +107,7 @@ void view_draw_debug_bounding_box(obj_type *obj)
 	int				n,xsz,ysz,zsz,px[8],py[8],pz[8];
 	float			fx,fy,fz;
 	matrix_type		rot_x_mat,rot_y_mat,rot_z_mat;
-	model_type		*mdl;
-	
-	mdl=model_find_uid(obj->draw.uid);
-	if (mdl==NULL) return;
+	d3col			col;
 
 		// bounding box
 
@@ -134,17 +131,17 @@ void view_draw_debug_bounding_box(obj_type *obj)
 	matrix_rotate_y(&rot_y_mat,obj->draw.setup.ang.y);
 
 	for (n=0;n!=8;n++) {
-		fx=(float)(px[n]-mdl->center.x);
-		fy=(float)(py[n]-mdl->center.y);
-		fz=(float)(pz[n]-mdl->center.z);
+		fx=(float)px[n];
+		fy=(float)py[n];
+		fz=(float)pz[n];
 		
 		matrix_vertex_multiply(&rot_x_mat,&fx,&fy,&fz);
 		matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
 		matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
 		
-		px[n]=((int)fx)+mdl->center.x;
-		py[n]=((int)fy)+mdl->center.y;
-		pz[n]=((int)fz)+mdl->center.z;
+		px[n]=(int)fx;
+		py[n]=(int)fy;
+		pz[n]=(int)fz;
 	}
 	
 	for (n=0;n!=8;n++) {
@@ -155,57 +152,29 @@ void view_draw_debug_bounding_box(obj_type *obj)
 
 		// draw box
 
-	glColor4f(0.2f,0.2f,1.0f,1.0f);
+	col.r=col.g=0.2f;
+	col.b=1.0f;
+
 	glLineWidth(2.0f);
-
-	glBegin(GL_LINE_LOOP);
-	glVertex3i(px[0],py[0],pz[0]);
-	glVertex3i(px[1],py[1],pz[1]);
-	glVertex3i(px[2],py[2],pz[2]);
-	glVertex3i(px[3],py[3],pz[3]);
-	glEnd();
-
-	glBegin(GL_LINE_LOOP);
-	glVertex3i(px[4],py[4],pz[4]);
-	glVertex3i(px[5],py[5],pz[5]);
-	glVertex3i(px[6],py[6],pz[6]);
-	glVertex3i(px[7],py[7],pz[7]);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3i(px[0],py[0],pz[0]);
-	glVertex3i(px[4],py[4],pz[4]);
-	glVertex3i(px[1],py[1],pz[1]);
-	glVertex3i(px[5],py[5],pz[5]);
-	glVertex3i(px[2],py[2],pz[2]);
-	glVertex3i(px[6],py[6],pz[6]);
-	glVertex3i(px[3],py[3],pz[3]);
-	glVertex3i(px[7],py[7],pz[7]);
-	glEnd();
-
+	view_draw_next_vertex_object_3D_line_cube(&col,1.0f,px,py,pz);
 	glLineWidth(1.0f);
-
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 }
 
 void view_draw_object_path(obj_type *obj)
 {
 	int				yadd;
 	d3pnt			pnt;
+	d3col			col;
 
 	if (!object_auto_walk_get_seek_position(obj,&pnt)) return;
 
-	glLineWidth(2.0f);
+	col.r=col.b=0.0f;
+	col.g=1.0f;
 
-	glColor4f(0.0f,1.0f,0.0f,1.0f);
-	
 	yadd=obj->size.y>>1;
 
-	glBegin(GL_LINES);
-	glVertex3i(obj->pnt.x,(obj->pnt.y-yadd),obj->pnt.z);
-	glVertex3i(pnt.x,(pnt.y-yadd),pnt.z);
-	glEnd();
-
+	glLineWidth(2.0f);
+	view_draw_next_vertex_object_3D_line(&col,1.0f,obj->pnt.x,(obj->pnt.y-yadd),obj->pnt.z,pnt.x,(pnt.y-yadd),pnt.z);
 	glLineWidth(1.0f);
 }
 
