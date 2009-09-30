@@ -829,6 +829,196 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 
 /* =======================================================
 
+      3D Lines
+      
+======================================================= */
+
+void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1)
+{
+	float			*vertex_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(2*3);
+	if (vertex_ptr==NULL) return;
+
+		// get the vertexes
+
+	*vertex_ptr++=(float)x0;
+	*vertex_ptr++=(float)y0;
+	*vertex_ptr++=(float)z0;
+
+	*vertex_ptr++=(float)x1;
+	*vertex_ptr++=(float)y1;
+	*vertex_ptr++=(float)z1;
+
+  	view_unmap_current_vertex_object();
+
+		// setup draw
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glColor4f(col->r,col->g,col->b,alpha);
+
+		// draw the quad
+		
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+
+	glDrawArrays(GL_LINES,0,2);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// finish draw
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
+{
+	float			*vertex_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(24*3);
+	if (vertex_ptr==NULL) return;
+
+		// get the vertexes
+
+	*vertex_ptr++=(float)px[0];
+	*vertex_ptr++=(float)py[0];
+	*vertex_ptr++=(float)pz[0];
+
+	*vertex_ptr++=(float)px[1];
+	*vertex_ptr++=(float)py[1];
+	*vertex_ptr++=(float)pz[1];
+
+	*vertex_ptr++=(float)px[1];
+	*vertex_ptr++=(float)py[1];
+	*vertex_ptr++=(float)pz[1];
+
+	*vertex_ptr++=(float)px[2];
+	*vertex_ptr++=(float)py[2];
+	*vertex_ptr++=(float)pz[2];
+
+	*vertex_ptr++=(float)px[2];
+	*vertex_ptr++=(float)py[2];
+	*vertex_ptr++=(float)pz[2];
+
+	*vertex_ptr++=(float)px[3];
+	*vertex_ptr++=(float)py[3];
+	*vertex_ptr++=(float)pz[3];
+
+	*vertex_ptr++=(float)px[3];
+	*vertex_ptr++=(float)py[3];
+	*vertex_ptr++=(float)pz[3];
+
+	*vertex_ptr++=(float)px[0];
+	*vertex_ptr++=(float)py[0];
+	*vertex_ptr++=(float)pz[0];
+
+	*vertex_ptr++=(float)px[4];
+	*vertex_ptr++=(float)py[4];
+	*vertex_ptr++=(float)pz[4];
+
+	*vertex_ptr++=(float)px[5];
+	*vertex_ptr++=(float)py[5];
+	*vertex_ptr++=(float)pz[5];
+
+	*vertex_ptr++=(float)px[5];
+	*vertex_ptr++=(float)py[5];
+	*vertex_ptr++=(float)pz[5];
+
+	*vertex_ptr++=(float)px[6];
+	*vertex_ptr++=(float)py[6];
+	*vertex_ptr++=(float)pz[6];
+
+	*vertex_ptr++=(float)px[6];
+	*vertex_ptr++=(float)py[6];
+	*vertex_ptr++=(float)pz[6];
+
+	*vertex_ptr++=(float)px[7];
+	*vertex_ptr++=(float)py[7];
+	*vertex_ptr++=(float)pz[7];
+
+	*vertex_ptr++=(float)px[7];
+	*vertex_ptr++=(float)py[7];
+	*vertex_ptr++=(float)pz[7];
+
+	*vertex_ptr++=(float)px[4];
+	*vertex_ptr++=(float)py[4];
+	*vertex_ptr++=(float)pz[4];
+
+	*vertex_ptr++=(float)px[0];
+	*vertex_ptr++=(float)py[0];
+	*vertex_ptr++=(float)pz[0];
+
+	*vertex_ptr++=(float)px[4];
+	*vertex_ptr++=(float)py[4];
+	*vertex_ptr++=(float)pz[4];
+
+	*vertex_ptr++=(float)px[1];
+	*vertex_ptr++=(float)py[1];
+	*vertex_ptr++=(float)pz[1];
+
+	*vertex_ptr++=(float)px[5];
+	*vertex_ptr++=(float)py[5];
+	*vertex_ptr++=(float)pz[5];
+
+	*vertex_ptr++=(float)px[2];
+	*vertex_ptr++=(float)py[2];
+	*vertex_ptr++=(float)pz[2];
+
+	*vertex_ptr++=(float)px[6];
+	*vertex_ptr++=(float)py[6];
+	*vertex_ptr++=(float)pz[6];
+
+	*vertex_ptr++=(float)px[3];
+	*vertex_ptr++=(float)py[3];
+	*vertex_ptr++=(float)pz[3];
+
+	*vertex_ptr++=(float)px[7];
+	*vertex_ptr++=(float)py[7];
+	*vertex_ptr++=(float)pz[7];
+
+  	view_unmap_current_vertex_object();
+
+		// setup draw
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glColor4f(col->r,col->g,col->b,alpha);
+
+		// draw the quad
+		
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+
+	glDrawArrays(GL_LINES,0,24);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// finish draw
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+/* =======================================================
+
       Textured Fills
       
 ======================================================= */

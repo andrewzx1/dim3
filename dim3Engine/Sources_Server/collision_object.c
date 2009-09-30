@@ -46,18 +46,26 @@ void collide_object_polygon(obj_type *obj,int x_add,int z_add,int *px,int *pz)
 {
 	int			x,z,sz;
 	float		rang;
+	model_type	*mdl;
+
+		// position
 
 	x=obj->pnt.x+x_add;
+	z=obj->pnt.z+z_add;
+
+		// sizes
+
 	sz=obj->size.x>>1;
 
 	px[0]=px[3]=x-sz;
 	px[1]=px[2]=x+sz;
 	
-	z=obj->pnt.z+z_add;
 	sz=obj->size.z>>1;
 
 	pz[0]=pz[1]=z-sz;
 	pz[2]=pz[3]=z+sz;
+
+		// rotate
 
 	rang=angle_add(obj->ang.y,obj->draw.rot.y);
 	rotate_2D_polygon(4,px,pz,x,z,rang);

@@ -45,6 +45,7 @@ extern server_type		server;
 
 
 // supergumba
+
 /*
 extern view_type		view;
 
@@ -121,11 +122,9 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	float					move_ang,ang,fx,fy,fz;
 	double					rad;
 	bool					hits[collide_obj_ray_count];
-	d3pnt					obj_pnt,mov,
-							spt[collide_obj_ray_count],ept[collide_obj_ray_count],hpt[collide_obj_ray_count];
+	d3pnt					mov,spt[collide_obj_ray_count],ept[collide_obj_ray_count],hpt[collide_obj_ray_count];
 	ray_trace_contact_type	base_contact,contacts[collide_obj_ray_count];
 	matrix_type				mat;
-	model_type				*mdl;
 
 		// get movements out of pointers
 		// and movement angle
@@ -136,22 +135,11 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 	move_ang=angle_find(0,0,mov.x,mov.z);
 
-		// find the object center
-
-	memmove(&obj_pnt,&obj->pnt,sizeof(d3pnt));
-
-	mdl=model_find_uid(obj->draw.uid);
-	if (mdl!=NULL) {
-		obj_pnt.x+=mdl->center.x;
-		obj_pnt.y+=mdl->center.y;
-		obj_pnt.z+=mdl->center.z;
-	}
-
 		// vertical race trace positions
 
-	vert_y[0]=obj_pnt.y-obj->size.y;
-	vert_y[2]=obj_pnt.y-(obj->size.y>>1);
-	vert_y[4]=obj_pnt.y-1;
+	vert_y[0]=obj->pnt.y-obj->size.y;
+	vert_y[2]=obj->pnt.y-(obj->size.y>>1);
+	vert_y[4]=obj->pnt.y-1;
 
 	vert_y[1]=(vert_y[0]+vert_y[2])>>1;
 	vert_y[3]=(vert_y[2]+vert_y[4])>>1;
@@ -194,12 +182,12 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		for (n=0;n!=collide_obj_ray_spindle_count;n++) {
 
-			spt[idx].x=obj_pnt.x;
+			spt[idx].x=obj->pnt.x;
 			spt[idx].y=y;
-			spt[idx].z=obj_pnt.z;
-			ept[idx].x=obj_pnt.x+hx[n];
+			spt[idx].z=obj->pnt.z;
+			ept[idx].x=obj->pnt.x+hx[n];
 			ept[idx].y=y+mov.y;
-			ept[idx].z=obj_pnt.z+hz[n];
+			ept[idx].z=obj->pnt.z+hz[n];
 
 			idx++;
 		}
@@ -208,7 +196,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 	// supergumba
 /*	
-	if (obj->player) {
+	if (obj->type_idx==object_type_player) {
 		memmove(test_spt,spt,(sizeof(d3pnt)*collide_obj_ray_count));
 		memmove(test_ept,ept,(sizeof(d3pnt)*collide_obj_ray_count));
 	}
@@ -370,7 +358,7 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
 
 		// min y is top of bump over
 
-	max.y=obj->pnt.y;
+	max.y=obj->pnt.y+yadd;
 	min.y=max.y-obj->bump.high;
 
 		// check mesh polygons

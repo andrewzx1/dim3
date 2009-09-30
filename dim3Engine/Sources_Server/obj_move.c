@@ -434,11 +434,13 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 	if (mesh_poly->box.flat) return;
 
 		// if less then min slope, no gravity effects
+	fprintf(stdout,"obj ang = %.2f, slope ang = %.2f, y= %.2f\n",obj->ang.y,mesh_poly->slope.ang_y,mesh_poly->slope.y);
+	
 
 	if (mesh_poly->slope.y<gravity_slope_min_y) return;
 
 		// apply gravity
-	
+
 	object_motion_slope_alter_movement_single(xmove,mesh_poly->slope.y,mesh_poly->slope.move_x);
 	object_motion_slope_alter_movement_single(zmove,mesh_poly->slope.y,mesh_poly->slope.move_z);
 }
@@ -998,7 +1000,7 @@ void object_move_swim(obj_type *obj)
 		if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
 		
 				// pushing objects
-				
+
 			if (!object_push_with_object(obj,i_xmove,i_zmove)) {
 				
 				i_xmove=(int)xmove;
@@ -1079,26 +1081,6 @@ void object_move_normal(obj_type *obj)
 
 	object_clear_contact(&obj->contact);
 
-		// check if we will be hitting a bump up
-		// in the course of this move, if so, bump up
-		// now and if no movement, then bump back down
-
-	bump_y_move=0;
-
-	if ((obj->bump.on) && (obj->air_mode==am_ground)) {
-		if (collide_object_to_map_bump(obj,i_xmove,i_ymove,i_zmove,&bump_y_move)) {
-
-			bump_y_move=pin_upward_movement_obj(obj,bump_y_move);
-			if (obj->contact.head_poly.mesh_idx==-1) {
-				obj->pnt.y+=bump_y_move;
-				obj->bump.smooth_offset-=bump_y_move;
-			}
-			else {
-				bump_y_move=0;
-			}
-		}
-	}
-
 		// move the object in y space at the projected
 		// x/z position
 		//
@@ -1142,6 +1124,28 @@ void object_move_normal(obj_type *obj)
 
 	obj->motion.last_y_change=obj->pnt.y-start_y;
 
+		// check if we will be hitting a bump up
+		// in the course of this move, if so, bump up
+		// now and if no movement, then bump back down
+
+	bump_y_move=0;
+
+	if ((obj->bump.on) && (obj->air_mode==am_ground)) {
+
+		if (collide_object_to_map_bump(obj,i_xmove,i_ymove,i_zmove,&bump_y_move)) {
+
+			bump_y_move=pin_upward_movement_obj(obj,bump_y_move);
+			if (obj->contact.head_poly.mesh_idx==-1) {
+				obj->pnt.y+=bump_y_move;
+				obj->bump.smooth_offset-=bump_y_move;
+			}
+			else {
+				bump_y_move=0;
+			}
+
+		}
+	}
+
 		// if on ground, stop all downward motion
 		// and forces
 	
@@ -1160,9 +1164,8 @@ void object_move_normal(obj_type *obj)
 	if ((i_xmove!=0) || (i_zmove!=0)) {
 	
 			// try to move a number of times
-			// bumping up or hitting another object
-			// can force the move to stop and then
-			// need to be retried
+			// hitting another object can force the
+			// move to stop and then need to be retried
 			
 		push_once=FALSE;
 		hit_obj_uid=-1;
@@ -1177,7 +1180,7 @@ void object_move_normal(obj_type *obj)
 				// save the hit object uid so the hit still registers
 
 			if (!push_once) {
-			
+
 				if (!object_push_with_object(obj,i_xmove,i_zmove)) {
 				
 					push_once=TRUE;
@@ -1192,7 +1195,6 @@ void object_move_normal(obj_type *obj)
 
 					continue;
 				}
-
 			}
 		
 			break;
@@ -1380,6 +1382,14 @@ void object_move(obj_type *obj)
 		if (old_pnt.x==obj->pnt.x) obj->force.vct.x=0.0f;
 		if (old_pnt.y==obj->pnt.z) obj->force.vct.y=0.0f;
 		if (old_pnt.z==obj->pnt.z) obj->force.vct.z=0.0f;
+
+			// if no movement at all, stop speed
+
+		if ((old_pnt.x==obj->pnt.x) && (old_pnt.y==obj->pnt.y) && (old_pnt.z==obj->pnt.z)) {
+			obj->forward_move.speed=0.0f;
+			obj->side_move.speed=0.0f;
+			obj->vert_move.speed=0.0f;
+		}
 	
 			// send contact event
 			

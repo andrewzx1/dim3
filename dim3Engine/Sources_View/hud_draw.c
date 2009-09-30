@@ -477,7 +477,7 @@ void hud_metrics_draw_single(int y,char *title,char *data)
 
 	col.r=col.g=col.b=1.0f;
 	
-	x=(int)(((float)hud.scale_x)*0.085f);
+	x=(int)(((float)hud.scale_x)*0.1f);
 
 	gl_text_draw(x,y,title,tx_right,FALSE,&col,1.0f);
 	gl_text_draw((x+5),y,data,tx_left,FALSE,&col,1.0f);
@@ -485,10 +485,12 @@ void hud_metrics_draw_single(int y,char *title,char *data)
 
 void hud_metrics_draw(void)
 {
-	int					n,y,high,txt_sz,
+	int					n,y,high,txt_sz,rgt,bot,
 						nmesh,npoly,nmesh_shadow,nmodel,nmodel_shadow,
 						nliquid,neffect;
-	char				str[256];
+	char				str[256],str2[256];
+	d3col				col;
+	obj_type			*obj;
 	map_mesh_type		*mesh;
 
 		// gather some info
@@ -522,15 +524,24 @@ void hud_metrics_draw(void)
 		}
 	}
 
-		// start text
-		
-	txt_sz=(int)(((float)hud.scale_x)*0.02f);
+		// text sizes
 
+	txt_sz=(int)(((float)hud.scale_x)*0.02f);
 	high=gl_text_get_char_height(txt_sz);
 
+		// background
+
+	rgt=(((int)(((float)hud.scale_x)*0.1f))*2)+5;
+	bot=12+(9*high);
+
+	col.r=col.g=col.b=0.0f;
+	view_draw_next_vertex_object_2D_color_quad(&col,0.5f,5,rgt,5,bot);
+
+		// start text
+		
 	gl_text_start(txt_sz);
 
-	y=(high*2)+5;
+	y=(high+2)+5;
 
 		// fps
 
@@ -592,6 +603,71 @@ void hud_metrics_draw(void)
 	sprintf(str,"%d",neffect);
 
 	hud_metrics_draw_single(y,"Effects:",str);
+	y+=high;
+
+		// lights
+
+	sprintf(str,"%d",view.render->light.count);
+
+	hud_metrics_draw_single(y,"Lights:",str);
+	y+=high;
+
+		// object projectile hits
+
+	obj=object_find_uid(server.player_obj_uid);
+
+	str[0]=0x0;
+
+	if (obj->contact.obj_uid==-1) {
+		strcat(str,"* ");
+	}
+	else {
+		sprintf(str2,"%d ",obj->contact.obj_uid);
+		strcat(str,str2);
+	}
+
+	if (obj->contact.proj_uid==-1) {
+		strcat(str,"* ");
+	}
+	else {
+		sprintf(str2,"%d ",obj->contact.proj_uid);
+		strcat(str,str2);
+	}
+
+	hud_metrics_draw_single(y,"Hit:",str);
+	y+=high;
+
+		// map contacts
+
+	str[0]=0x0;
+
+	if (obj->contact.hit_poly.mesh_idx==-1) {
+		strcat(str,"* ");
+	}
+	else {
+		sprintf(str2,"%d.%d ",obj->contact.hit_poly.mesh_idx,obj->contact.hit_poly.poly_idx);
+		strcat(str,str2);
+	}
+
+	if (obj->contact.stand_poly.mesh_idx==-1) {
+		strcat(str,"* ");
+	}
+	else {
+		sprintf(str2,"%d.%d ",obj->contact.stand_poly.mesh_idx,obj->contact.stand_poly.poly_idx);
+		strcat(str,str2);
+	}
+
+	if (obj->contact.liquid_idx==-1) {
+		strcat(str,"* ");
+	}
+	else {
+		sprintf(str2,"%d ",obj->contact.liquid_idx);
+		strcat(str,str2);
+	}
+
+	hud_metrics_draw_single(y,"Contact:",str);
+
+		// end text
 
 	gl_text_end();
 }
