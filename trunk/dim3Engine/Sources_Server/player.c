@@ -127,7 +127,7 @@ bool player_attach_object(char *err_str)
 		// physic resets
 		
  	obj->air_mode=am_ground;
-    obj->liquid_mode=lm_out;
+    obj->liquid.mode=lm_out;
 	obj->fall.dist=0;
     obj->fall.change=FALSE;
   

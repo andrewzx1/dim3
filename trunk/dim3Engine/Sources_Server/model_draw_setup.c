@@ -348,7 +348,7 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	
 		// extra y shifting
 
-	y_shift=weap->hand.shift.y+obj->duck.y_move;
+	y_shift=weap->hand.shift.y+obj->duck.y_move+obj->liquid.bob_y_move;
 	if (!ignore_y_shifts) y_shift+=(swap_yadd+weapon_get_bounce(obj,weap));
 		
 	fy=((float)y_shift)-fy;
@@ -374,7 +374,7 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 
 	if (draw->no_rot.on) {
 		draw->no_rot.center.x=obj->pnt.x;
-		draw->no_rot.center.y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
+		draw->no_rot.center.y=(obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset;
 		draw->no_rot.center.z=obj->pnt.z;
 		draw->no_rot.ang.x=angle_add(weap->hand.ang.x,obj->ang.x);
 		draw->no_rot.ang.y=angle_add(angle_add(weap->hand.ang.y,obj->ang.y),180.0f);

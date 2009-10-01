@@ -155,7 +155,8 @@ and can be sold or given away.
 
 #define lm_out									0
 #define lm_in									1
-#define lm_under								2
+#define lm_float								2
+#define lm_under								3
 
 //
 // animation modes
@@ -205,6 +206,8 @@ and can be sold or given away.
 #define ws_step_factor							4					// how much to reduce movement when wall sliding
 #define pd_parent_grace							100					// how long till projectile can strike parent again
 #define ci_object_click_angle					20.0f				// angle at which you can click an object
+
+#define liquid_float_slop						0.1f				// how much object height is in float area
 
 //
 // dynamic bones
@@ -510,7 +513,7 @@ typedef struct		{
 					} obj_mesh;
 
 //
-// jumping, ducking, climbing, and falling
+// jumping, ducking, climbing, falling, liquids
 //
 
 typedef struct		{
@@ -534,6 +537,10 @@ typedef struct		{
 						float					damage_factor;
 						bool					change;
 					} obj_fall;
+
+typedef struct		{
+						int						mode,bob_y_move;
+					} obj_liquid;
 
 //
 // auto-walk and watch
@@ -820,7 +827,7 @@ typedef struct		{
 
 typedef struct		{
 						int						uid,type_idx,bind,team_idx,tint_color_idx,character_idx,spawn_idx,spawn_mesh_idx,
-												count,input_mode,air_mode,liquid_mode,camera_z_adjust,
+												count,input_mode,air_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],type[name_str_len],spawn_spot_name[name_str_len];
@@ -848,6 +855,7 @@ typedef struct		{
 						obj_jump				jump;
 						obj_climb				climb;
 						obj_fall				fall;
+						obj_liquid				liquid;
 						obj_auto_walk			auto_walk;
 						obj_watch				watch;
 						obj_vehicle				vehicle;

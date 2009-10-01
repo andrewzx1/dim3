@@ -397,7 +397,7 @@ bool weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method)
 {
 		// fail under liquid?
 
-	if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return(FALSE);
+	if ((weap->fail_in_liquid) && (obj->liquid.mode==lm_under)) return(FALSE);
 
 		// send event
 
@@ -431,7 +431,7 @@ bool weapon_script_projectile_spawn(int tick,obj_type *obj,weapon_type *weap,cha
 	
 		// fail under liquid?
 
-	if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return(TRUE);
+	if ((weap->fail_in_liquid) && (obj->liquid.mode==lm_under)) return(TRUE);
 
 		// get projectile setup
 
@@ -598,7 +598,7 @@ void weapon_player_fire_down(int tick,obj_type *obj,weapon_type *weap,int method
 
 		// fail under liquid?
 
-	if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return;
+	if ((weap->fail_in_liquid) && (obj->liquid.mode==lm_under)) return;
 	
 		// handle weapon fire down
 		
@@ -644,7 +644,7 @@ void weapon_player_fire_repeat(int tick,obj_type *obj,weapon_type *weap)
 
 		// fail under liquid?
 
-	if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return;
+	if ((weap->fail_in_liquid) && (obj->liquid.mode==lm_under)) return;
 	
 		// time to repeat?
 		
@@ -690,7 +690,7 @@ void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method)
 
 		// fail under liquid?
 
-	if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return;
+	if ((weap->fail_in_liquid) && (obj->liquid.mode==lm_under)) return;
 	
 		// handle weapon fire up
 

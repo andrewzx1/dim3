@@ -110,6 +110,7 @@ script_define_type			script_dim3_defines[]={
 
 								{sd_liquid_out,									"",		"DIM3_LIQUID_OUT"},
 								{sd_liquid_in,									"",		"DIM3_LIQUID_IN"},
+								{sd_liquid_float,								"",		"DIM3_LIQUID_FLOAT"},
 								{sd_liquid_under,								"",		"DIM3_LIQUID_UNDER"},
 								
 								{sd_projection_type_fov,						"",		"DIM3_PROJECTION_TYPE_FOV"},

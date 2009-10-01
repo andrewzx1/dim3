@@ -86,7 +86,7 @@ void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
 
 		// flying or swiming
 	
-	if ((obj->fly) || (obj->liquid_mode==lm_under)) {
+	if ((obj->fly) || (obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
 	
 			// in auto-walk?
 			
@@ -100,8 +100,10 @@ void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
 			// regular seeking
 			
 		else {
-			*ymove=obj->vert_move.speed;
-			if (obj->vert_move.reverse) *ymove=-(*ymove);
+			if (obj->vert_move.moving) {
+				*ymove=obj->vert_move.speed;
+				if (obj->vert_move.reverse) *ymove=-(*ymove);
+			}
 		}
 	}
 
@@ -142,7 +144,7 @@ void object_movement(obj_type *obj,obj_movement *move)
 			decelerate=move->decelerate;
 		}
 		else {
-			if ((obj->air_mode!=am_ground) || (obj->fly) || (obj->liquid_mode==lm_under)) {
+			if ((obj->air_mode!=am_ground) || (obj->fly) || (obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
 				max_speed=move->max_air_speed;
 				accelerate=move->air_accelerate;
 				decelerate=move->air_decelerate;
@@ -239,7 +241,7 @@ void object_gravity(obj_type *obj)
 	weight=(float)obj->size.weight;
 	gravity_max_power=map.settings.gravity_max_power;
 
-	if (obj->liquid_mode==lm_under) {
+	if ((obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
 		liq_speed_alter=object_liquid_alter_speed(obj);
 
 		weight*=liq_speed_alter;
@@ -295,12 +297,14 @@ void object_fix_force(obj_type *obj)
 		}
 	}
 
-		// gravity different under liquid
-		// we are fudging this a bit with the extra
-		// 0.5 for some bounancy
+		// gravity works differently under
+		// a liquid.  We reduce gravity to give
+		// bouancy and no gravity if floating
+
+	if (obj->liquid.mode==lm_float) return;
 
 	gravity_max_speed=map.settings.gravity_max_speed;
-	if (obj->liquid_mode==lm_under) gravity_max_speed*=(object_liquid_alter_speed(obj)*0.5f);
+	if (obj->liquid.mode==lm_under) gravity_max_speed*=(object_liquid_alter_speed(obj)*0.5f);
 	
 		// reduce the y by gravity
 		
@@ -979,6 +983,7 @@ void object_move_swim(obj_type *obj)
 	ymove*=liq_speed_alter;
 
 		// falling in water
+		// if on surface, then auto-float
 
 	if (ymove>=0) object_move_y_fall(obj);
 
@@ -1362,7 +1367,7 @@ void object_move(obj_type *obj)
 			object_move_fly(obj);
 		}
 		else {
-			if (obj->liquid_mode==lm_under) {
+			if ((obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
 				object_move_swim(obj);
 			}
 			else {

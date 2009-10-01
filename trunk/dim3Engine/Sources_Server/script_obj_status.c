@@ -156,7 +156,7 @@ JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-	return(script_int_to_value(cx,obj->liquid_mode+sd_liquid_out));
+	return(script_int_to_value(cx,obj->liquid.mode+sd_liquid_out));
 }
 
 JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

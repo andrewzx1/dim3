@@ -116,6 +116,7 @@ void view_draw_debug_bounding_box(obj_type *obj)
 	
 	ysz=obj->size.y;
 	if (obj->duck.mode!=dm_stand) ysz-=obj->duck.y_move;
+	if (obj->liquid.mode==lm_float) ysz+=obj->liquid.bob_y_move;
 
 	px[0]=px[1]=px[4]=px[5]=-xsz;
 	px[2]=px[3]=px[6]=px[7]=xsz;
