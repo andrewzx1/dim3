@@ -45,10 +45,11 @@ extern server_type			server;
 void object_liquid_contact(obj_type *obj)
 {
 	int					n,nliquid,sz,
-						y,eye_y,lft,rgt,top,bot;
+						y,eye_y,f_ty,f_by,f_high,
+						lft,rgt,top,bot;
 	map_liquid_type		*liq;
 	
-	obj->liquid_mode=lm_out;
+	obj->liquid.mode=lm_out;
 	obj->contact.liquid_idx=-1;
 
 	sz=obj->size.x>>1;
@@ -72,15 +73,29 @@ void object_liquid_contact(obj_type *obj)
 		y=obj->pnt.y;
 		
 		if ((y>=liq->y) && (y<(liq->y+liq->depth))) {
+
+				// eye offset and floating values
+
 			eye_y=(y+obj->duck.y_move)+obj->size.eye_offset;
-			
- 			if (eye_y>liq->y) {
-				obj->liquid_mode=lm_under;
+
+			f_high=((int)(((float)obj->size.y)*liquid_float_slop))>>1;
+			f_ty=eye_y-f_high;
+			f_by=eye_y+f_high;
+
+				// find liquid mode
+
+			if ((liq->y>=f_ty) && (liq->y<=f_by)) {
+				obj->liquid.mode=lm_float;
 			}
 			else {
-				obj->liquid_mode=lm_in;
+ 				if (eye_y>liq->y) {
+					obj->liquid.mode=lm_under;
+				}
+				else {
+					obj->liquid.mode=lm_in;
+				}
 			}
-            
+
 			obj->contact.liquid_idx=n;
         }
 	}
@@ -94,7 +109,7 @@ void object_liquid_contact(obj_type *obj)
 
 float object_liquid_alter_speed(obj_type *obj)
 {
-	if (obj->liquid_mode!=lm_under) return(1.0f);
+	if ((obj->liquid.mode!=lm_under) && (obj->liquid.mode!=lm_float)) return(1.0f);
 	if (obj->contact.liquid_idx==-1) return(1.0f);
 
 	return(map.liquid.liquids[obj->contact.liquid_idx].speed_alter);
@@ -111,7 +126,7 @@ void object_liquid(int tick,obj_type *obj)
 	int					harm,old_liquid_mode;
 	map_liquid_type		*liq;
 	
-    old_liquid_mode=obj->liquid_mode;
+    old_liquid_mode=obj->liquid.mode;
 	
 	object_liquid_contact(obj);
     
@@ -121,12 +136,80 @@ void object_liquid(int tick,obj_type *obj)
         if (old_liquid_mode!=lm_out) scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_out,0);
         return;
     }
-    
-        // entering or moving in liquid
-        
+
+		// setup bobbing
+
     liq=&map.liquid.liquids[obj->contact.liquid_idx];
 
-	switch (obj->liquid_mode) {
+	// supergumba -- setup bobbing here
+/*
+	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
+					v_cnt,tide_split,tide_split_half,
+					tide_high,tide_rate;
+	float			fy,fgx,fgy,x_txtoff,y_txtoff,
+					f_break,f_time,f_tick,sn,
+					f_tide_split_half,f_tide_high;
+	bool			x_break,z_break;
+	float			*vertex_ptr,*vl,*uv,*cl;
+	
+	y=liq->y;
+	fy=(float)y;
+
+
+		// setup tiding
+
+	tide_split=liquid_render_liquid_get_tide_split(liq);
+	
+	tide_high=liq->tide.high;
+	if (tide_high<1) tide_high=1;
+	
+	tide_rate=liq->tide.rate;
+	if (tide_rate<1) tide_rate=1;
+
+	tide_split_half=tide_split<<2;
+	f_tide_split_half=(float)tide_split_half;
+	
+	f_tide_high=(float)tide_high;
+
+	f_time=(float)(tick%tide_rate);		// get rate between 0..1
+	f_time=f_time/(float)tide_rate;
+	
+	
+		
+	z=liq->top;
+	z_add=tide_split-(z%tide_split);
+	z_break=FALSE;
+
+
+		x=liq->lft;
+		x_add=tide_split-(x%tide_split);
+		x_break=FALSE;
+
+
+				// setup tide Y
+
+			if (liq->tide.direction==liquid_direction_vertical) {
+				f_break=(float)(z%tide_split_half);
+			}
+			else {
+				f_break=(float)(x%tide_split_half);
+			}
+				
+			f_break=f_break/f_tide_split_half;
+		   
+			sn=(float)sin((TRIG_PI*2.0f)*(f_break+f_time));
+
+				// vertex and uvs
+
+			*vl++=(float)x;
+			*vl++=fy-(f_tide_high*sn);
+			*vl++=(float)z;
+
+*/
+    
+        // entering or leaving liquids
+        
+	switch (obj->liquid.mode) {
 	
 		case lm_in:
 			if (old_liquid_mode==lm_out) {
@@ -136,8 +219,22 @@ void object_liquid(int tick,obj_type *obj)
 			}
 			if (old_liquid_mode==lm_under) {
 				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_surface,0);
-				object_liquid_jump(obj);			// jump out of liquid when surfacing
+			//	object_liquid_jump(obj);				// jump out of liquid when surfacing
+				// supergumba
 				break;
+			}
+			break;
+
+		case lm_float:
+			if (old_liquid_mode!=lm_float) {
+				obj->force.vct.y=0;
+				obj->force.gravity=gravity_start_power;		// reduce all forces when moving from liquid to floating
+			}
+
+			if (old_liquid_mode==lm_under) {
+				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_surface,0);
+			//	object_liquid_jump(obj);				// jump out of liquid when surfacing
+				// supergumba
 			}
 			break;
 			
@@ -161,7 +258,7 @@ void object_liquid(int tick,obj_type *obj)
 	
 		// downing
 
-	if (obj->liquid_mode==lm_under) {
+	if (obj->liquid.mode==lm_under) {
 
 		if ((tick-obj->status.liquid_under_tick)>liq->harm.drown_tick) {
 
@@ -180,7 +277,7 @@ void object_liquid(int tick,obj_type *obj)
 
 		// hurting or healing liquids
 
-	if (obj->liquid_mode!=lm_out) {
+	if (obj->liquid.mode!=lm_out) {
 
 		if (obj->status.liquid_harm_count==0) {
 			obj->status.liquid_harm_count=100;

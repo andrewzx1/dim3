@@ -175,7 +175,8 @@ and can be sold or given away.
 
 #define sd_liquid_out									1110
 #define sd_liquid_in									1111
-#define sd_liquid_under									1112
+#define sd_liquid_float									1112
+#define sd_liquid_under									1113
 
 //
 // projection constants

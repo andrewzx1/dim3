@@ -441,12 +441,12 @@ void player_movement_input(obj_type *obj)
 	
 		case im_fpp:
 			player_movement_fpp_xz_input(obj);
-			if ((!obj->fly) && (obj->liquid_mode!=lm_under)) {
-				player_movement_fpp_y_input(obj);
-				player_movement_ladder_y_input(obj);
+			if ((obj->fly) || (obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
+				player_movement_fly_swim_y_input(obj);
 			}
 			else {
-				player_movement_fly_swim_y_input(obj);
+				player_movement_fpp_y_input(obj);
+				player_movement_ladder_y_input(obj);
 			}
 			break;
 			

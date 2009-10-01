@@ -417,7 +417,7 @@ void object_start_jump(obj_type *obj)
 		// can't jump if flying or not on ground
 		
 	if ((obj->fly) || (!obj->jump.on)) return;
-	if ((obj->liquid_mode==lm_under) || (obj->air_mode!=am_ground)) return;
+	if ((obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float) || (obj->air_mode!=am_ground)) return;
 	
 		// if current standing slope is too high to climb, you can't jump
 		
@@ -497,7 +497,7 @@ void object_start_stand(obj_type *obj)
 void object_start_duck(obj_type *obj)
 {
 	if ((obj->fly) || (!obj->duck.on)) return;
-	if ((obj->liquid_mode==lm_under) || (obj->air_mode!=am_ground)) return;
+	if ((obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float) || (obj->air_mode!=am_ground)) return;
     if ((obj->duck.mode==dm_duck) || (obj->duck.mode==dm_duck_down)) return;
 
     obj->duck.mode=dm_duck_down;

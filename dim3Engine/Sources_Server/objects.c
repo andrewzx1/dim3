@@ -643,7 +643,9 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->turn.top_down_ang_offset=0.0f;
 
 	obj->air_mode=am_ground;
-    obj->liquid_mode=lm_out;
+
+    obj->liquid.mode=lm_out;
+	obj->liquid.bob_y_move=0;
 
 	obj->fall.dist=0;
 	obj->fall.damage_minimum_height=map_enlarge*20;
