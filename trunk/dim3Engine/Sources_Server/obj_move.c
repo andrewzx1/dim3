@@ -434,8 +434,6 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 	if (mesh_poly->box.flat) return;
 
 		// if less then min slope, no gravity effects
-	fprintf(stdout,"obj ang = %.2f, slope ang = %.2f, y= %.2f\n",obj->ang.y,mesh_poly->slope.ang_y,mesh_poly->slope.y);
-	
 
 	if (mesh_poly->slope.y<gravity_slope_min_y) return;
 

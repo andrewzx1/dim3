@@ -46,7 +46,6 @@ void collide_object_polygon(obj_type *obj,int x_add,int z_add,int *px,int *pz)
 {
 	int			x,z,sz;
 	float		rang;
-	model_type	*mdl;
 
 		// position
 
