@@ -106,7 +106,7 @@ void render_opaque_mesh_simple(void)
 			}
 
 				// get texture
-
+				
 			texture=&map.textures[poly->txt_idx];
 
 			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
