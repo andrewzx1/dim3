@@ -99,11 +99,11 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		
 	scripts_post_event_console(&proj->attach,sd_event_spawn,0,0);
 	
-		// if this object is the player or multiplayer bot,
+		// if this object is the player or multiplayer\map bot,
 		// then spawn projectile in remotes
 		
 	if (net_setup.client.joined) {
-		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer)) {
+		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer) || ((obj->type_idx==object_type_bot_map) && (net_setup.host.hosting))) {
 			net_client_send_projectile_add(obj->remote.uid,weap->name,proj_setup->name,pt,ang);
 		}
 	}

@@ -860,6 +860,7 @@ bool remote_network_get_updates(int tick)
 void remote_network_send_updates(int tick)
 {
 	int					n;
+	bool				coop;
 	obj_type			*obj;
 
 	obj=object_find_uid(server.player_obj_uid);
@@ -868,11 +869,15 @@ void remote_network_send_updates(int tick)
 		// update any multiplayer bots if hosting
 
 	if (net_setup.host.hosting) {
+	
+		coop=hud.net_game.games[net_setup.game_idx].monsters;
 
 		obj=server.objs;
 
 		for (n=0;n!=server.count.obj;n++) {
-			if (obj->type_idx==object_type_bot_multiplayer) net_client_send_remote_update(tick,obj->remote.uid,obj,FALSE);
+			if ((obj->type_idx==object_type_bot_multiplayer) || ((obj->type_idx==object_type_bot_map) && (coop))) {
+				net_client_send_remote_update(tick,obj->remote.uid,obj,FALSE);
+			}
 			obj++;
 		}
 	}
