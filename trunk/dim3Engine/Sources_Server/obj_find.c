@@ -80,7 +80,7 @@ obj_type* object_find_remote_uid(int uid)
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->type_idx==object_type_remote) {
+		if ((obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_map)) {
 			if (obj->remote.uid==uid) return(obj);
 		}
 		obj++;
@@ -97,7 +97,7 @@ int object_find_index_remote_uid(int uid)
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->type_idx==object_type_remote) {
+		if ((obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_map)) {
 			if (obj->remote.uid==uid) return(n);
 		}
 		obj++;

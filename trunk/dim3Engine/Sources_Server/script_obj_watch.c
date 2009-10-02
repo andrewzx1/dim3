@@ -146,7 +146,7 @@ JSValueRef js_obj_watch_get_objectIsBot(JSContextRef cx,JSObjectRef j_obj,JSStri
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(cx,watch_obj->type_idx==object_type_bot_multiplayer));
+	return(script_bool_to_value(cx,((watch_obj->type_idx==object_type_bot_multiplayer) || (watch_obj->type_idx==object_type_bot_map))));
 }
 
 JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -160,7 +160,7 @@ JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef 
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(cx,(watch_obj->type_idx==object_type_remote) || (watch_obj->type_idx==object_type_bot_multiplayer)));
+	return(script_bool_to_value(cx,(watch_obj->type_idx==object_type_remote) || (watch_obj->type_idx==object_type_bot_multiplayer) || (watch_obj->type_idx==object_type_bot_map)));
 }
 
 JSValueRef js_obj_watch_get_objectTeam(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

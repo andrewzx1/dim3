@@ -66,12 +66,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276055733;
-			PBXWorkspaceStateSaveDate = 276055733;
-		};
-		perUserProjectItems = {
-			26628E0E107446BB00EEB82E /* PBXBookmark */ = 26628E0E107446BB00EEB82E /* PBXBookmark */;
-			26628E3610744A8100EEB82E /* PBXTextBookmark */ = 26628E3610744A8100EEB82E /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 276125596;
+			PBXWorkspaceStateSaveDate = 276125596;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
@@ -84,20 +80,6 @@
 			sepNavVisRange = "{816, 898}";
 			sepNavWindowFrame = "{{199, 120}, {1041, 747}}";
 		};
-	};
-	26628E0E107446BB00EEB82E /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = F5AD52820BBE14FA001C7C04 /* polygons.c */;
-	};
-	26628E3610744A8100EEB82E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5AD52820BBE14FA001C7C04 /* polygons.c */;
-		name = "polygons.c: 378";
-		rLen = 0;
-		rLoc = 7847;
-		rType = 0;
-		vrLen = 764;
-		vrLoc = 7393;
 	};
 	26A5EABE0D404BD000BB47DE /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -166,9 +148,9 @@
 	};
 	F5AD52820BBE14FA001C7C04 /* polygons.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6799}}";
 			sepNavSelRange = "{7847, 0}";
-			sepNavVisRange = "{7393, 764}";
+			sepNavVisRange = "{7393, 751}";
 			sepNavWindowFrame = "{{432, 180}, {1041, 747}}";
 		};
 	};
