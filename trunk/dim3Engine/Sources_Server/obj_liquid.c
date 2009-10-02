@@ -36,6 +36,8 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 
+extern int liquid_render_liquid_get_tide_split(map_liquid_type *liq);
+
 /* =======================================================
 
       Liquid Contacts
@@ -123,7 +125,9 @@ float object_liquid_alter_speed(obj_type *obj)
 
 void object_liquid(int tick,obj_type *obj)
 {
-	int					harm,old_liquid_mode;
+	int					harm,old_liquid_mode,tide_split_half,
+						bob_y_move;
+	float				sn,f_time,f_break;
 	map_liquid_type		*liq;
 	
     old_liquid_mode=obj->liquid.mode;
@@ -141,72 +145,36 @@ void object_liquid(int tick,obj_type *obj)
 
     liq=&map.liquid.liquids[obj->contact.liquid_idx];
 
-	// supergumba -- setup bobbing here
-/*
-	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
-					v_cnt,tide_split,tide_split_half,
-					tide_high,tide_rate;
-	float			fy,fgx,fgy,x_txtoff,y_txtoff,
-					f_break,f_time,f_tick,sn,
-					f_tide_split_half,f_tide_high;
-	bool			x_break,z_break;
-	float			*vertex_ptr,*vl,*uv,*cl;
-	
-	y=liq->y;
-	fy=(float)y;
+	if (obj->liquid.mode!=lm_float) {
+		obj->liquid.bob_y_move=0;
+	}
+	else {
 
+		bob_y_move=0;
 
-		// setup tiding
-
-	tide_split=liquid_render_liquid_get_tide_split(liq);
-	
-	tide_high=liq->tide.high;
-	if (tide_high<1) tide_high=1;
-	
-	tide_rate=liq->tide.rate;
-	if (tide_rate<1) tide_rate=1;
-
-	tide_split_half=tide_split<<2;
-	f_tide_split_half=(float)tide_split_half;
-	
-	f_tide_high=(float)tide_high;
-
-	f_time=(float)(tick%tide_rate);		// get rate between 0..1
-	f_time=f_time/(float)tide_rate;
-	
-	
+		if ((liq->tide.high>=1) && (liq->tide.rate>=1)) {
+			tide_split_half=liquid_render_liquid_get_tide_split(liq)<<2;
 		
-	z=liq->top;
-	z_add=tide_split-(z%tide_split);
-	z_break=FALSE;
-
-
-		x=liq->lft;
-		x_add=tide_split-(x%tide_split);
-		x_break=FALSE;
-
-
-				// setup tide Y
+			f_time=(float)(tick%liq->tide.rate);		// get rate between 0..1
+			f_time=f_time/((float)liq->tide.rate);
 
 			if (liq->tide.direction==liquid_direction_vertical) {
-				f_break=(float)(z%tide_split_half);
+				f_break=(float)(obj->pnt.z%tide_split_half);
 			}
 			else {
-				f_break=(float)(x%tide_split_half);
+				f_break=(float)(obj->pnt.x%tide_split_half);
 			}
-				
-			f_break=f_break/f_tide_split_half;
-		   
+					
+			f_break=f_break/((float)tide_split_half);
+			   
 			sn=(float)sin((TRIG_PI*2.0f)*(f_break+f_time));
 
-				// vertex and uvs
+			bob_y_move=-(int)((((float)liq->tide.high)*sn)*0.75f);
+		}
 
-			*vl++=(float)x;
-			*vl++=fy-(f_tide_high*sn);
-			*vl++=(float)z;
+		obj->liquid.bob_y_move=bob_y_move;
+	}
 
-*/
-    
         // entering or leaving liquids
         
 	switch (obj->liquid.mode) {
@@ -219,8 +187,7 @@ void object_liquid(int tick,obj_type *obj)
 			}
 			if (old_liquid_mode==lm_under) {
 				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_surface,0);
-			//	object_liquid_jump(obj);				// jump out of liquid when surfacing
-				// supergumba
+				object_liquid_jump(obj);				// jump out of liquid when surfacing
 				break;
 			}
 			break;
@@ -233,8 +200,7 @@ void object_liquid(int tick,obj_type *obj)
 
 			if (old_liquid_mode==lm_under) {
 				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_surface,0);
-			//	object_liquid_jump(obj);				// jump out of liquid when surfacing
-				// supergumba
+				object_liquid_jump(obj);				// jump out of liquid when surfacing
 			}
 			break;
 			

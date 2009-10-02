@@ -524,7 +524,7 @@ void view_draw(int tick)
 
 	view.render->camera.fov=camera.plane.fov;
 	view.render->camera.flip=FALSE;
-	view.render->camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
+	view.render->camera.under_liquid_idx=camera_check_liquid(obj,&view.render->camera.pnt);
 	view.render->camera.z_adjust=obj->camera_z_adjust;
 	
 	view.render->no_shader=FALSE;
