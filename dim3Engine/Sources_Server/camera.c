@@ -153,15 +153,20 @@ void camera_get_angle_from(d3pnt *pt,d3ang *ang)
       
 ======================================================= */
 
-int camera_check_liquid(d3pnt *pnt)
+int camera_check_liquid(obj_type *obj,d3pnt *pnt)
 {
-	int					n;
+	int					n,y;
 	map_liquid_type		*liq;
+
+		// remove any bobbing
+
+	y=pnt->y;
+	if (obj->liquid.mode==lm_float) y-=obj->liquid.bob_y_move;
 
 	liq=map.liquid.liquids;
 	
 	for (n=0;n!=map.liquid.nliquid;n++) {
-		if ((pnt->x>=liq->lft) && (pnt->x<=liq->rgt) && (pnt->z>=liq->top) && (pnt->z<=liq->bot) && (pnt->y>=liq->y) && (pnt->y<(liq->y+liq->depth))) return(n);
+		if ((pnt->x>=liq->lft) && (pnt->x<=liq->rgt) && (pnt->z>=liq->top) && (pnt->z<=liq->bot) && (y>=liq->y) && (y<(liq->y+liq->depth))) return(n);
 		liq++;
 	}
 
