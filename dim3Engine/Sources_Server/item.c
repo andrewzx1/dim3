@@ -118,7 +118,7 @@ void item_pickup_check(obj_type *obj)
 
 				// send network event
 
-			if (network_on) net_client_send_pickup(obj->remote.uid,&pickup);
+			if (network_on) net_client_send_pickup(&pickup);
 			
 				// successfully picked up
 				

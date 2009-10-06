@@ -155,8 +155,8 @@ inline void net_client_push_queue_local(int action,int remote_uid,unsigned char 
       
 ======================================================= */
 
-inline bool net_client_check_message_queue(int *action,int *from_remote_uid,unsigned char *data)
+inline bool net_client_check_message_queue(int *action,int *net_node_uid,unsigned char *data)
 {
-	return(net_queue_check_message(&client_queue,action,from_remote_uid,data,NULL));
+	return(net_queue_check_message(&client_queue,action,net_node_uid,data,NULL));
 }
 

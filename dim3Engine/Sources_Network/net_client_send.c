@@ -44,41 +44,42 @@ extern network_setup_type		net_setup;
 
 /* =======================================================
 
-      Host Messages
+      Host Join, Leave, Setup Messages
       
 ======================================================= */
 
-void net_client_send_ready(int remote_uid)
+void net_client_send_ready(void)
 {
 	if (net_setup.host.hosting) {
-		net_host_player_ready(remote_uid,TRUE);
+		net_host_node_ready(net_setup.net_node_uid);
 	}
 	else {
-		net_send_message(client_socket,net_action_request_ready,remote_uid,NULL,0);
+		net_send_message(client_socket,net_action_request_ready,net_setup.net_node_uid,NULL,0);
 	}
 }
 
-void net_client_send_set_team(int remote_uid,int team_idx)
+void net_client_send_set_team(obj_type *obj)
 {
 	network_request_team	team;
 	
-	team.team_idx=htons((short)team_idx);
+	team.remote_obj_uid=htons((short)obj->remote.uid);
+	team.team_idx=htons((short)obj->team_idx);
 
 	if (net_setup.host.hosting) {
-		net_host_client_handle_set_team(remote_uid,&team);
+		net_host_client_handle_set_team(net_setup.net_node_uid,&team);
 	}
 	else {
-		net_send_message(client_socket,net_action_request_team,remote_uid,(unsigned char*)&team,sizeof(network_request_team));
+		net_send_message(client_socket,net_action_request_team,net_setup.net_node_uid,(unsigned char*)&team,sizeof(network_request_team));
 	}
 }
 
-void net_client_send_leave_host(int remote_uid)
+void net_client_send_leave_host(void)
 {
 	if (net_setup.host.hosting) {
-		net_host_client_handle_leave(remote_uid);
+		net_host_client_handle_leave(net_setup.net_node_uid);
 	}
 	else {
-		net_send_message(client_socket,net_action_request_leave,remote_uid,NULL,0);
+		net_send_message(client_socket,net_action_request_leave,net_setup.net_node_uid,NULL,0);
 	}
 }
 
@@ -108,7 +109,7 @@ void net_client_request_group_synch_ping(int remote_uid)
       
 ======================================================= */
 
-void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool chat_on)
+void net_client_send_remote_update(int tick,obj_type *obj,bool chat_on)
 {
 	int								n,flags;
 	model_draw						*draw;
@@ -125,6 +126,10 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	}
 
 	draw=&obj->draw;
+	
+		// this object remote UID
+		
+	update.remote_obj_uid=htons((short)obj->remote.uid);
 
 		// create flags
 		
@@ -219,39 +224,36 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 		// send update
 		
 	if (net_setup.host.hosting) {
-		net_host_client_handle_update(remote_uid,&update);
+		net_host_client_handle_update(net_setup.net_node_uid,&update);
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_update,remote_uid,(unsigned char*)&update,sizeof(network_request_remote_update));
+		net_send_message(client_socket,net_action_request_remote_update,net_setup.net_node_uid,(unsigned char*)&update,sizeof(network_request_remote_update));
 	}
 }
 
-void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
+void net_client_send_death(obj_type *obj,bool telefrag)
 {
-	int								send_kill_uid,send_telefrag_uid;
-	obj_type						*obj;
+	int								send_remote_kill_uid;
+	obj_type						*chk_obj;
 	network_request_remote_death	death;
+	
+	death.remote_obj_uid=htons((short)obj->remote.uid);
 	
 		// normal deaths
 
 	if (!telefrag) {
-		send_kill_uid=-1;
+		send_remote_kill_uid=-1;
 		
-		if (kill_uid!=-1) {
-			if (kill_uid==server.player_obj_uid) {
-				send_kill_uid=object_player_get_remote_uid();
-			}
-			else {
-				obj=object_find_uid(kill_uid);
-				if (obj!=NULL) {
-					if (obj->type_idx==object_type_remote) {
-						send_kill_uid=obj->remote.uid;
-					}
+		if (obj->damage_obj_uid!=-1) {
+			chk_obj=object_find_uid(obj->damage_obj_uid);
+			if (chk_obj!=NULL) {
+				if ((chk_obj->type_idx==object_type_player) || (chk_obj->type_idx==object_type_remote)) {
+					send_remote_kill_uid=chk_obj->remote.uid;
 				}
 			}
 		}
 		
-		death.kill_remote_uid=htons((short)send_kill_uid);
+		death.remote_killer_obj_uid=htons((short)send_remote_kill_uid);
 		death.telefrag=htons(0);
 
 	}
@@ -260,24 +262,18 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 
 	else {
 
-		if (kill_uid==server.player_obj_uid) {
-			send_telefrag_uid=object_player_get_remote_uid();
-		}
-		else {
-			obj=object_find_uid(kill_uid);		// only remote objects can telefrag each other, so no other checks necessary
-			send_telefrag_uid=obj->remote.uid;
-		}
+		chk_obj=object_find_uid(obj->damage_obj_uid);		// only remote objects can telefrag each other, so no other checks necessary
 		
-		death.kill_remote_uid=htons((short)send_telefrag_uid);
+		death.remote_killer_obj_uid=htons((short)chk_obj->remote.uid);
 		death.telefrag=htons(1);
 
 	}
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death));
+		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death));
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_death,remote_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
+		net_send_message(client_socket,net_action_request_remote_death,net_setup.net_node_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
 	}
 }
 
@@ -287,37 +283,38 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 	        
 ======================================================= */
 
-void net_client_send_chat(int remote_uid,char *str)
+void net_client_send_chat(obj_type *obj,char *str)
 {
 	network_request_remote_chat		chat;
 	
+	chat.remote_obj_uid=htons((short)obj->remote.uid);
 	strcpy(chat.str,str);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat));
+		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat));
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_chat,remote_uid,(unsigned char*)&chat,sizeof(network_request_remote_chat));
+		net_send_message(client_socket,net_action_request_remote_chat,net_setup.net_node_uid,(unsigned char*)&chat,sizeof(network_request_remote_chat));
 	}
 }
 
-void net_client_send_sound(int remote_uid,int x,int y,int z,float pitch,char *name)
+void net_client_send_sound(d3pnt *pnt,float pitch,char *name)
 {
 	network_request_remote_sound	sound;
 	
-	sound.pnt_x=htonl(x);
-	sound.pnt_y=htonl(y);
-	sound.pnt_z=htonl(z);
+	sound.pnt_x=htonl(pnt->x);
+	sound.pnt_y=htonl(pnt->y);
+	sound.pnt_z=htonl(pnt->z);
 	
 	sound.fp_pitch=htonf(pitch);
 	
 	strcpy(sound.name,name);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_sound,(unsigned char*)&sound,sizeof(network_request_remote_sound));
+		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_sound,(unsigned char*)&sound,sizeof(network_request_remote_sound));
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_sound,remote_uid,(unsigned char*)&sound,sizeof(network_request_remote_sound));
+		net_send_message(client_socket,net_action_request_remote_sound,net_setup.net_node_uid,(unsigned char*)&sound,sizeof(network_request_remote_sound));
 	}
 }
 
@@ -327,10 +324,11 @@ void net_client_send_sound(int remote_uid,int x,int y,int z,float pitch,char *na
 	        
 ======================================================= */
 
-void net_client_send_projectile_add(int remote_uid,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
+void net_client_send_projectile_add(obj_type *obj,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_fire		fire;
 	
+	fire.remote_obj_uid=htons((short)obj->remote.uid);
 	fire.fire_type=htons(net_remote_fire_type_projectile);
 
 	fire.pt_x=htonl(pt->x);
@@ -350,17 +348,18 @@ void net_client_send_projectile_add(int remote_uid,char *weap_name,char *proj_se
 	fire.force=0;
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_send_message(client_socket,net_action_request_remote_fire,net_setup.net_node_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 }
 
-void net_client_send_hitscan_add(int remote_uid,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
+void net_client_send_hitscan_add(obj_type *obj,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_fire		fire;
 	
+	fire.remote_obj_uid=htons((short)obj->remote.uid);
 	fire.fire_type=htons(net_remote_fire_type_hit_scan);
 	
 	fire.pt_x=htonl(pt->x);
@@ -380,17 +379,18 @@ void net_client_send_hitscan_add(int remote_uid,char *weap_name,char *proj_setup
 	fire.force=0;
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_send_message(client_socket,net_action_request_remote_fire,net_setup.net_node_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 }
 
-void net_client_send_melee_add(int remote_uid,char *weap_name,int radius,int distance,int damage,int force,d3pnt *pt,d3ang *ang)
+void net_client_send_melee_add(obj_type *obj,char *weap_name,int radius,int distance,int damage,int force,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_fire		fire;
 	
+	fire.remote_obj_uid=htons((short)obj->remote.uid);
 	fire.fire_type=htons(net_remote_fire_type_melee);
 	
 	fire.pt_x=htonl(pt->x);
@@ -410,10 +410,10 @@ void net_client_send_melee_add(int remote_uid,char *weap_name,int radius,int dis
 	fire.force=htons((short)force);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_send_message(client_socket,net_action_request_remote_fire,net_setup.net_node_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 }
 
@@ -427,6 +427,10 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 {
 	int									n,idx;
 	weapon_type							*weap;
+	
+		// remote obj uid
+		
+	pickup->remote_obj_uid=htons((short)obj->remote.uid);
 	
 		// make sure pickup can work by
 		// moving over settings pickups are concerned with
@@ -457,13 +461,13 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 	}
 }
 
-void net_client_send_pickup(int remote_uid,network_request_remote_pickup *pickup)
+void net_client_send_pickup(network_request_remote_pickup *pickup)
 {
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_pickup,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
+		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_pickup,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_pickup,remote_uid,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
+		net_send_message(client_socket,net_action_request_remote_pickup,net_setup.net_node_uid,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
 	}
 }
 
@@ -473,10 +477,12 @@ void net_client_send_pickup(int remote_uid,network_request_remote_pickup *pickup
 	        
 ======================================================= */
 
-void net_client_send_click(int remote_uid,d3pnt *pt,d3ang *ang)
+void net_client_send_click(obj_type *obj,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_click		click;
 	
+	click.remote_obj_uid=htons((short)obj->remote.uid);
+
 	click.pt_x=htonl(pt->x);
 	click.pt_y=htonl(pt->y);
 	click.pt_z=htonl(pt->z);
@@ -486,9 +492,9 @@ void net_client_send_click(int remote_uid,d3pnt *pt,d3ang *ang)
 	click.fp_ang_z=htonf(ang->z);
 	
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_click,(unsigned char*)&click,sizeof(network_request_remote_click));
+		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_click,(unsigned char*)&click,sizeof(network_request_remote_click));
 	}
 	else {
-		net_send_message(client_socket,net_action_request_remote_click,remote_uid,(unsigned char*)&click,sizeof(network_request_remote_click));
+		net_send_message(client_socket,net_action_request_remote_click,net_setup.net_node_uid,(unsigned char*)&click,sizeof(network_request_remote_click));
 	}
 }

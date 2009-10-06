@@ -165,8 +165,8 @@ bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsi
 	
 	head.len=htons((short)msg_len);
 	head.action=htons((short)action);
-	head.from_remote_uid=htons((short)remote_uid);
-	
+//	head.from_remote_uid=htons((short)remote_uid);
+// supergumba -- network	
 	memmove((queue->data+idx),&head,sizeof(network_header));
 	idx+=sizeof(network_header);
 	
@@ -188,7 +188,7 @@ bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsi
       
 ======================================================= */
 
-bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_uid,unsigned char *msg_data,int *msg_data_len)
+bool net_queue_check_message(net_queue_type *queue,int *action,int *net_node_uid,unsigned char *msg_data,int *msg_data_len)
 {
 	int					idx,tag_idx,msg_len;
 	bool				found;
@@ -249,8 +249,8 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_
 	
 	msg_len=(int)ntohs(head.len);
 	*action=(int)ntohs(head.action);
-	*from_remote_uid=(int)ntohs(head.from_remote_uid);
-	
+	*net_node_uid=(int)ntohs(head.net_node_uid);
+
 		// enough for data?
 		
 	if ((idx+msg_len)>queue->len) {
@@ -281,7 +281,7 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_
 
 bool net_queue_block_single_message(d3socket sock,int req_action,int req_remote_uid,unsigned char *req_msg_data,int req_msg_len,int rep_desired_action,unsigned char *rep_msg_data,int rep_msg_len)
 {
-	int						timeout_tick,action,remote_uid;
+	int						net_node_uid,timeout_tick,action;
 	unsigned char			data[net_max_msg_size];
 	bool					read_ok;
 	net_queue_type			queue;
@@ -305,7 +305,7 @@ bool net_queue_block_single_message(d3socket sock,int req_action,int req_remote_
 	
 		if (!net_queue_feed(sock,&queue)) break;
 	
-		if (net_queue_check_message(&queue,&action,&remote_uid,data,NULL)) {
+		if (net_queue_check_message(&queue,&action,&net_node_uid,data,NULL)) {
 			if (action==rep_desired_action) {
 				read_ok=TRUE;
 				memmove(rep_msg_data,data,rep_msg_len);

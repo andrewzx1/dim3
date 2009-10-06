@@ -828,7 +828,7 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
 		game_obj_rule_uid=-1;
 
-		net_client_send_set_team(obj->remote.uid,obj->team_idx);
+		net_client_send_set_team(obj);
 	}
 		
 		// start script

@@ -71,7 +71,7 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 		
 	if (net_setup.client.joined) {
 		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer) || ((obj->type_idx==object_type_bot_map) && (net_setup.host.hosting))) {
-			net_client_send_hitscan_add(obj->remote.uid,weap->name,proj_setup->name,pt,ang);
+			net_client_send_hitscan_add(obj,weap->name,proj_setup->name,pt,ang);
 		}
 	}
 	

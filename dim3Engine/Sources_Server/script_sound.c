@@ -177,7 +177,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 				break;
 		}
 		
-		if (remote_ok) net_client_send_sound(obj->remote.uid,pt->x,pt->y,pt->z,pitch,name);
+		if (remote_ok) net_client_send_sound(pt,pitch,name);
 	}
 }
 

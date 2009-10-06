@@ -782,7 +782,7 @@ bool player_message_input(int tick,obj_type *obj)
 			hud.chat.type_on=FALSE;
 			if (len>1) {
 				msg[len-1]=0x0;
-				net_client_send_chat(obj->remote.uid,msg);
+				net_client_send_chat(obj,msg);
 				object_get_tint(obj,&col);
 				chat_add_message(tick,obj->name,msg,&col);
 			}
@@ -819,7 +819,7 @@ bool player_message_input(int tick,obj_type *obj)
 			}
 			
 			msg[len-1]=0x0;
-			net_client_send_chat(obj->remote.uid,msg);
+			net_client_send_chat(obj,msg);
 			object_get_tint(obj,&col);
 			chat_add_message(tick,obj->name,msg,&col);
 			

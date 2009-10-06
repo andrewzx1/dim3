@@ -328,7 +328,7 @@ int net_send_data(d3socket sock,unsigned char *data,int len)
 	return(total_len);
 }
 
-bool net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len)
+bool net_send_message(d3socket sock,int action,int net_node_uid,unsigned char *data,int len)
 {
 	int					sent_len;
 	network_header		head;
@@ -344,8 +344,8 @@ bool net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char
 
 	head.len=htons((short)len);
 	head.action=htons((short)action);
-	head.from_remote_uid=htons((short)from_remote_uid);
-	
+	head.net_node_uid=htons((short)net_node_uid);
+
 	sent_len=net_send_data(sock,(unsigned char*)&head,sizeof(network_header));
 	if (sent_len<sizeof(network_header)) return(FALSE);
 
