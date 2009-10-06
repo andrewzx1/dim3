@@ -150,7 +150,7 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer) || ((obj->type_idx==object_type_bot_map) && (net_setup.host.hosting))) {
 			weap_name[0]=0x0;
 			if (weap!=NULL) strcpy(weap_name,weap->name);
-			net_client_send_melee_add(obj->remote.uid,weap_name,melee->radius,melee->distance,melee->damage,melee->force,&pnt,ang);
+			net_client_send_melee_add(obj,weap_name,melee->radius,melee->distance,melee->damage,melee->force,&pnt,ang);
 		}
 	}
 }

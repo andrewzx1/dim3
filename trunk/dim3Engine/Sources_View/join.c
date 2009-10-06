@@ -632,7 +632,7 @@ void join_activity_complete(bool single,char *msg)
 
 void join_game(void)
 {
-	int							idx,remote_uid,tick_offset,option_flags;
+	int							idx,net_node_uid,tick_offset,option_flags;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
 	network_reply_join_remotes	remotes;
@@ -651,7 +651,7 @@ void join_game(void)
 							
 		// attempt to join
 
-	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes)) {
+	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&net_node_uid,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes)) {
 		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
@@ -664,12 +664,13 @@ void join_game(void)
 	
 	net_setup.client.joined=TRUE;
 	net_setup.client.latency=0;
+	net_setup.net_node_uid=net_node_uid;
 	
 		// setup game type
 
 	net_setup.game_idx=net_client_find_game(game_name);
 	if (net_setup.game_idx==-1) {
-		net_client_send_leave_host(remote_uid);
+		net_client_send_leave_host();
 		net_client_join_host_end();
 		sprintf(err_str,"Could not find game type: %s",game_name);
 		error_open(err_str,"Network Game Canceled");
@@ -686,7 +687,7 @@ void join_game(void)
 	join_close(TRUE);
 	
 	if (!game_start(skill_medium,&remotes,err_str)) {
-		net_client_send_leave_host(remote_uid);
+		net_client_send_leave_host();
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;
@@ -695,30 +696,33 @@ void join_game(void)
 		// start the map
 		
 	if (!map_start(TRUE,err_str)) {
-		net_client_send_leave_host(remote_uid);
+		net_client_send_leave_host();
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
 	
-	object_player_set_remote_uid(remote_uid);
+		// player can use the same unique
+		// node ID
+		
+	object_player_set_remote_uid(net_node_uid);
 	
 		// start client network thread
 		
 	if (!net_client_start_message_queue(err_str)) {
-		net_client_send_leave_host(remote_uid);
+		net_client_send_leave_host();
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
 
-		// mark as ready to receive data from host
+		// mark node as ready to receive data from host
 
-	net_client_send_ready(remote_uid);
+	net_client_send_ready();
 
 		// request moving group synchs
 
-	net_client_request_group_synch_ping(remote_uid);
+	net_client_request_group_synch_ping(net_node_uid);
 	
 		// game is running
 	

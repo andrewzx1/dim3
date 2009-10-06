@@ -108,9 +108,9 @@ bool net_host_player_find_name(int remote_uid,char *name)
       
 ======================================================= */
 
-int net_host_player_join(d3socket sock,char *name,int tint_color_idx,int character_idx,char *deny_reason)
+int net_host_node_join(d3socket sock,char *name,int tint_color_idx,int character_idx,char *deny_reason)
 {
-	int						n,remote_uid;
+	int						n,net_node_uid;
 	net_host_player_type	*player;
 
 		// lock all player operations
@@ -159,14 +159,14 @@ int net_host_player_join(d3socket sock,char *name,int tint_color_idx,int charact
 	server_next_remote_uid++;
 	net_host_player_count++;
 	
-	remote_uid=player->remote_uid;
+	net_node_uid=player->remote_uid;
 	
 	SDL_mutexV(net_host_player_lock);
 	
-	return(remote_uid);
+	return(net_node_uid);
 }
 
-void net_host_player_ready(int remote_uid,bool ready)
+void net_host_node_ready(int net_node_uid)
 {
 	int				idx;
 	
@@ -176,15 +176,15 @@ void net_host_player_ready(int remote_uid,bool ready)
 		
 		// set player ready state
 		
-	idx=net_host_player_find(remote_uid);
-	if (idx!=-1) net_host_players[idx].ready=ready;
+	idx=net_host_player_find(net_node_uid);
+	if (idx!=-1) net_host_players[idx].ready=TRUE;
 	
 		// unlock player operation
 		
 	SDL_mutexV(net_host_player_lock);
 }
 
-void net_host_player_leave(int remote_uid)
+void net_host_node_leave(int net_node_uid)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -195,7 +195,7 @@ void net_host_player_leave(int remote_uid)
 		
 		// find player
 		
-	idx=net_host_player_find(remote_uid);
+	idx=net_host_player_find(net_node_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -295,14 +295,16 @@ int net_host_player_count_team(int team_idx)
       
 ======================================================= */
 
-void net_host_player_update_team(int remote_uid,network_request_team *team)
+void net_host_player_update_team(network_request_team *team)
 {
-	int							idx;
+	int							remote_obj_uid,idx;
 	net_host_player_type		*player;
+	
+	remote_obj_uid=(signed short)ntohs(team->remote_obj_uid);
 	
 	SDL_mutexP(net_host_player_lock);
 
-	idx=net_host_player_find(remote_uid);
+	idx=net_host_player_find(remote_obj_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -316,19 +318,20 @@ void net_host_player_update_team(int remote_uid,network_request_team *team)
 	SDL_mutexV(net_host_player_lock);
 }
 
-void net_host_player_update(int remote_uid,network_request_remote_update *update)
+void net_host_player_update(network_request_remote_update *update)
 {
-	int							idx,score;
+	int							remote_obj_uid,idx,score;
 	bool						score_update;
 	net_host_player_type		*player;
 
+	remote_obj_uid=(signed short)ntohs(update->remote_obj_uid);
 	score=(signed short)ntohs(update->score);
 	
 		// update score
 		
 	SDL_mutexP(net_host_player_lock);
 
-	idx=net_host_player_find(remote_uid);
+	idx=net_host_player_find(remote_obj_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -396,7 +399,7 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 
 		if (player->remote_uid!=player_remote_uid) {
 
-			obj_add->uid=htons((short)player->remote_uid);
+			obj_add->remote_obj_uid=htons((short)player->remote_uid);
 			strcpy(obj_add->name,player->name);
 			obj_add->bot=htons((short)(player->bot?1:0));
 			obj_add->team_idx=htons((short)player->team_idx);
