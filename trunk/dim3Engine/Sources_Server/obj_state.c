@@ -412,6 +412,10 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 			if ((source_obj->type_idx!=object_type_other) && (source_obj->uid!=obj->uid)) {		// no damage from regular objects and same object
 				obj->damage_obj_uid=source_obj->uid;
 			}
+			
+					
+			fprintf(stdout,"Hit by uid=%d, type=%d, my uid=%d\n",source_obj->uid,source_obj->type_idx,obj->uid);
+
 		}
 		
 			// remove the health
