@@ -84,12 +84,13 @@ bool remote_add(network_request_object_add *add,bool send_event)
 		// setup remote
 		
 	strcpy(obj->name,add->name);
+	
 	strcpy(obj->type,"Remote");
+	obj->type_idx=object_type_remote;
 
 	obj->team_idx=(signed short)ntohs(add->team_idx);
 	obj->tint_color_idx=(signed short)ntohs(add->tint_color_idx);
 	obj->character_idx=(signed short)ntohs(add->character_idx);
-	obj->type_idx=object_type_remote;
 	
 	obj->pnt.x=ntohl(add->pnt_x);
 	obj->pnt.y=ntohl(add->pnt_y);
