@@ -43,7 +43,7 @@ and can be sold or given away.
 #define max_moves										256
 #define max_globals										1024
 
-#define js_script_memory_size							(20*1024*1024)
+#define js_max_recursive_count							5
 
 //
 // Thing types
@@ -385,7 +385,7 @@ typedef struct		{
 					} timer_type;
 					
 typedef struct		{
-						int								uid,data_len;
+						int								uid,data_len,recursive_count;
 						char							name[file_str_len],params[param_str_len];
 						char							*data;
 						bool							used;
