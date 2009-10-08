@@ -246,8 +246,9 @@ void run_objects_slice(int tick)
 			run_objects_slice_single(obj,tick);
 
 				// trigger any mesh changes if not suspended
+				// remotes handle triggers on their own
 			
-			if (!obj->suspend) {
+			if ((!obj->suspend) && (obj->type_idx!=object_type_remote)) {
 			
 				if ((old_pnt.x!=obj->pnt.x) || (old_pnt.y!=obj->pnt.y) || (old_pnt.z!=obj->pnt.z)) {
 				

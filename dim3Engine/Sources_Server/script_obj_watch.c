@@ -40,7 +40,9 @@ JSValueRef js_obj_watch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 JSValueRef js_obj_watch_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_watch_get_objectIsRemote(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_watch_get_objectIsBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_watch_get_objectIsMapBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_watch_get_objectIsPlayerRemoteBotMapBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_watch_get_objectTeam(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_watch_get_baseTeam(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_watch_get_soundName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -50,22 +52,24 @@ JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func
 JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_watch_props[]={
-							{"objectId",				js_obj_watch_get_objectId,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"objectName",				js_obj_watch_get_objectName,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"objectIsPlayer",			js_obj_watch_get_objectIsPlayer,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"objectIsRemote",			js_obj_watch_get_objectIsRemote,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"objectIsBot",				js_obj_watch_get_objectIsBot,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"objectIsPlayerRemoteBot",	js_obj_watch_get_objectIsPlayerRemoteBot,	NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"objectTeam",				js_obj_watch_get_objectTeam,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"baseTeam",				js_obj_watch_get_baseTeam,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"soundName",				js_obj_watch_get_soundName,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectId",						js_obj_watch_get_objectId,							NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectName",						js_obj_watch_get_objectName,						NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayer",					js_obj_watch_get_objectIsPlayer,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsRemote",					js_obj_watch_get_objectIsRemote,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsBot",						js_obj_watch_get_objectIsBot,						NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsMapBot",					js_obj_watch_get_objectIsMapBot,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayerRemoteBot",			js_obj_watch_get_objectIsPlayerRemoteBot,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayerRemoteBotMapBot",	js_obj_watch_get_objectIsPlayerRemoteBotMapBot,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectTeam",						js_obj_watch_get_objectTeam,						NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"baseTeam",						js_obj_watch_get_baseTeam,							NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"soundName",						js_obj_watch_get_soundName,							NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 							
 JSStaticFunction	obj_watch_functions[]={
-							{"start",					js_obj_watch_start_func,					kJSPropertyAttributeDontDelete},
-							{"stop",					js_obj_watch_stop_func,						kJSPropertyAttributeDontDelete},
-							{"setRestrictSight",		js_obj_watch_set_restrict_sight_func,		kJSPropertyAttributeDontDelete},
-							{"clearRestrictSight",		js_obj_watch_clear_restrict_sight_func,		kJSPropertyAttributeDontDelete},
+							{"start",							js_obj_watch_start_func,					kJSPropertyAttributeDontDelete},
+							{"stop",							js_obj_watch_stop_func,						kJSPropertyAttributeDontDelete},
+							{"setRestrictSight",				js_obj_watch_set_restrict_sight_func,		kJSPropertyAttributeDontDelete},
+							{"clearRestrictSight",				js_obj_watch_clear_restrict_sight_func,		kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			obj_watch_class;
@@ -146,10 +150,36 @@ JSValueRef js_obj_watch_get_objectIsBot(JSContextRef cx,JSObjectRef j_obj,JSStri
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(cx,((watch_obj->type_idx==object_type_bot_multiplayer) || (watch_obj->type_idx==object_type_bot_map))));
+	return(script_bool_to_value(cx,(watch_obj->type_idx==object_type_bot_multiplayer)));
+}
+
+JSValueRef js_obj_watch_get_objectIsMapBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj,*watch_obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	watch_obj=object_find_uid(obj->watch.obj_uid);
+	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
+	
+	return(script_bool_to_value(cx,(watch_obj->type_idx==object_type_bot_map)));
 }
 
 JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj,*watch_obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	if (obj->watch.obj_uid==server.player_obj_uid) return(script_bool_to_value(cx,TRUE));
+
+	watch_obj=object_find_uid(obj->watch.obj_uid);
+	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
+	
+	return(script_bool_to_value(cx,(watch_obj->type_idx==object_type_remote) || (watch_obj->type_idx==object_type_bot_multiplayer)));
+}
+
+JSValueRef js_obj_watch_get_objectIsPlayerRemoteBotMapBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj,*watch_obj;
 
