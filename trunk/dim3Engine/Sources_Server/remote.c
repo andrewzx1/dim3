@@ -106,6 +106,8 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	
 	obj->remote.predict.turn_y=0.0f;
 	
+	obj->mesh.cur_mesh_idx=-1;
+	
 	obj->bind=bt_remote;
 	
 		// start remote scripts

@@ -71,7 +71,7 @@ void object_score_update(obj_type *obj)
 {
 		// only run rules for players or multiplayer bots
 
-	if ((obj->uid!=server.player_obj_uid) && (obj->type_idx!=object_type_bot_multiplayer)) return;
+	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_bot_multiplayer)) return;
 
 		// run rule to update score
 
@@ -154,7 +154,7 @@ void object_death(obj_type *obj)
 		// send death if joined and is player or multiplayer bot
 		
 	if (net_setup.client.joined) {
-		if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer)) net_client_send_death(obj,FALSE);
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) net_client_send_death(obj,FALSE);
 	}
 }
 
@@ -412,9 +412,6 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 			if ((source_obj->type_idx!=object_type_other) && (source_obj->uid!=obj->uid)) {		// no damage from regular objects and same object
 				obj->damage_obj_uid=source_obj->uid;
 			}
-			
-					
-			fprintf(stdout,"Hit by uid=%d, type=%d, my uid=%d\n",source_obj->uid,source_obj->type_idx,obj->uid);
 
 		}
 		

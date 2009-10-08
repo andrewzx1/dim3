@@ -88,8 +88,6 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 	proj_type				*proj;
 	ray_trace_contact_type	contact;
 	
-	fprintf(stdout,"proj add, uid=%d, type=%d\n",obj->uid,obj->type_idx);
-	
 		// create new projectile
 		
 	proj=projectile_create(tick,obj,weap,proj_setup);
