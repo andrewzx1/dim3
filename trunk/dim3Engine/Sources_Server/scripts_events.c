@@ -62,8 +62,35 @@ bool scripts_setup_events(script_type *script,char *err_str)
 		sprintf(err_str,"[%s] 'event' function is required",script->name);
 		return(FALSE);
 	}
+
+		// set recursive count to 0
+
+	script->recursive_count=0;
 	
 	return(TRUE);
+}
+
+/* =======================================================
+
+      Scripts Recursion Checks
+      
+======================================================= */
+
+bool scripts_recursion_in(script_type *script,char *err_str)
+{
+	if (script->recursive_count==js_max_recursive_count) {
+		sprintf(err_str,"[%s] Script has recursed to deep",script->name);
+		return(FALSE);
+	}
+
+	script->recursive_count++;
+
+	return(TRUE);
+}
+
+void scripts_recursion_out(script_type *script)
+{
+	script->recursive_count--;
 }
 
 /* =======================================================
@@ -91,6 +118,10 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	if (idx==-1) return(TRUE);
 	
 	script=&js.scripts[idx];
+
+		// enter recursion
+
+	if (!scripts_recursion_in(script,err_str)) return(FALSE);
 	
 		// save current attach in case event called within another script
 		
@@ -120,6 +151,10 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		// restore old attach
 		
 	memmove(&js.attach,&old_attach,sizeof(attach_type));
+
+		// leave recursion
+
+	scripts_recursion_out(script);
 	
 	return(err_str[0]==0x0);
 }
@@ -159,6 +194,10 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	if (idx==-1) return(TRUE);
 	
 	script=&js.scripts[idx];
+
+		// enter recursion
+
+	if (!scripts_recursion_in(script,err_str)) return(FALSE);
 	
 		// get the function
 		
@@ -189,6 +228,10 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 		// restore old attach
 		
 	memmove(&js.attach,&old_attach,sizeof(attach_type));
+
+		// leave recursion
+
+	scripts_recursion_out(script);
 	
 	return(err_str[0]==0x0);
 }
@@ -222,6 +265,13 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 	idx=scripts_find_uid(attach->script_uid);
 	script=&js.scripts[idx];
 
+		// enter recursion
+
+	if (!scripts_recursion_in(script,err_str)) {
+		*exception=script_create_exception(script->cx,err_str);
+		return(script_null_to_value(script->cx));
+	}
+
 		// find function
 
 	func_obj=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,func_name);
@@ -253,6 +303,10 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 		// restore old attach
 		
 	memmove(&js.attach,&old_attach,sizeof(attach_type));
+
+		// leave recursion
+
+	scripts_recursion_out(script);
 	
 	return(rval);
 }

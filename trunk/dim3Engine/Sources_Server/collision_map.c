@@ -407,7 +407,7 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
 			if ((poly->box.min.y<min.y) || (poly->box.min.y>=max.y)) continue;
 			if (!polygon_2D_collision_line(poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz)) continue;
 
-			*bump_y_move=poly->box.min.y-max.y;
+			*bump_y_move=poly->box.min.y-obj->pnt.y;		// don't use Y added version, it bumps too much on slopes
 
 			return(TRUE);
 		}
@@ -430,7 +430,7 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
 		ty=obj->pnt.y-obj->size.y;
 		if ((ty<min.y) || (obj->pnt.y>=max.y)) continue;
 		
-		*bump_y_move=ty-max.y;
+		*bump_y_move=ty-obj->pnt.y;		// don't use Y added version, it bumps too much on slopes
 		return(TRUE);
 	}
 
