@@ -372,7 +372,7 @@ char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 	bool			ok;
 	struct hostent	*hent;
 	d3socket		sock;
-	
+
 		// get IP address
 		
 	hent=gethostbyname(host_name);
@@ -433,6 +433,12 @@ char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 	content_offset=content_length=-1;
 
 	while (TRUE) {
+
+		if (!net_receive_ready(sock)) {
+			usleep(1000);
+			continue;
+		}
+
 		rbyte=recv(sock,(data+rcv_size),(max_len-rcv_size),0);
 		if (rbyte<=0) break;
 

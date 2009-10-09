@@ -41,6 +41,7 @@ extern void game_time_pause_end(void);
 extern void map_restart_ambient(void);
 
 extern int						console_mode,console_count;
+extern bool						game_loop_quit;
 extern console_line_type		console_line[max_console_line];
 
 extern view_type				view;
@@ -220,6 +221,22 @@ void console_draw(void)
 
 /* =======================================================
 
+      Special Commands
+      
+======================================================= */
+
+bool console_builtin_commands(void)
+{
+	if ((strcasecmp(console_input_str,"quit")) || (strcasecmp(console_input_str,"exit"))) {
+		game_loop_quit=TRUE;
+		return(TRUE);
+	}
+	
+	return(FALSE);
+}
+
+/* =======================================================
+
       Console Key Presses
       
 ======================================================= */
@@ -257,7 +274,11 @@ void console_key(void)
 		
 	if (ch==0xD) {
 		console_add(console_input_str);
-		scripts_post_event_console(&js.game_attach,sd_event_console,0,0);
+
+		if (!console_builtin_commands()) {
+			scripts_post_event_console(&js.game_attach,sd_event_console,0,0);
+		}
+
 		console_input_str[0]=0x0;
 		return;
 	}

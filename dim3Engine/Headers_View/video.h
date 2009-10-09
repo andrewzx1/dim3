@@ -51,7 +51,7 @@ extern bool gl_check_shader_ok(void);
 
 
 extern void gl_lights_compile(int tick);
-extern void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light_list);
+extern void gl_lights_fill_light_list(int set_light_count,view_glsl_light_list_type *light_list);
 extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
 
 extern void gl_lights_calc_vertex(double x,double y,double z,float *cf);
@@ -61,9 +61,9 @@ extern bool gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh);
 extern bool gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq);
 extern bool gl_lights_calc_vertex_setup_model(model_draw *draw);
 
-extern void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,int *light_idx);
-extern void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx);
-extern void gl_lights_build_from_model(model_draw *draw,int *light_idx);
+extern void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_glsl_light_list_type *light_list);
+extern void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type *light_list);
+extern void gl_lights_build_from_model(model_draw *draw,view_glsl_light_list_type *light_list);
 
 	// vbos
 
@@ -126,7 +126,7 @@ extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id);
-extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,int *light_idx,d3pnt *pnt,d3col *tint_col);
+extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col);
 
 	// full screen shaders
 

@@ -248,12 +248,13 @@ void render_transparent_mesh_simple(void)
 
 void render_transparent_mesh_shader(void)
 {
-	int							n,sort_cnt,light_idx[max_shader_light];
+	int							n,sort_cnt;
 	bool						cur_additive;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	map_poly_sort_item_type		*sort_list;
 	texture_type				*texture;
+	view_glsl_light_list_type	light_list;
 
 		// sorted transparent poly list
 
@@ -296,8 +297,8 @@ void render_transparent_mesh_shader(void)
 			// draw shader
 
 		if (!mesh->flag.hilite) {
-			gl_lights_build_from_poly(sort_list[n].mesh_idx,poly,light_idx);
-			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,poly->alpha,light_idx,NULL,NULL);
+			gl_lights_build_from_poly(sort_list[n].mesh_idx,poly,&light_list);
+			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,poly->alpha,&light_list,NULL,NULL);
 		}
 		else {
 			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,poly->alpha,NULL,&poly->box.mid,NULL);

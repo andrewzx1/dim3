@@ -279,6 +279,8 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 
 void gl_shader_initialize_code_clear(view_shader_code_type *shader_code)
 {
+	shader_code->on=FALSE;
+
 	shader_code->vertex_obj=0;
 	shader_code->fragment_obj=0;
 	shader_code->program_obj=0;
@@ -293,10 +295,7 @@ bool gl_shader_initialize_code_compile(view_shader_type *shader,view_shader_code
 
 		// is shader used?
 
-	if ((shader_code->vertex_name[0]==0x0) || (shader_code->fragment_name[0]==0x0)) {
-		shader_code->on=FALSE;
-		return(TRUE);
-	}
+	if ((shader_code->vertex_name[0]==0x0) || (shader_code->fragment_name[0]==0x0)) return(TRUE);
 
 	shader_code->on=TRUE;
 
@@ -539,14 +538,14 @@ void gl_shader_set_texture_variables(view_shader_code_type *shader_code,texture_
 	if (shader_code->var_locs.dim3TexColor!=-1) glUniform3fARB(shader_code->var_locs.dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
-void gl_shader_set_poly_variables(view_shader_code_type *shader_code,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3col *tint_col)
+void gl_shader_set_poly_variables(view_shader_code_type *shader_code,float dark_factor,float alpha,int set_light_count,view_glsl_light_list_type *light_list,d3col *tint_col)
 {
 	if (light_list!=NULL) {
-		if (shader_code->var_locs.dim3LightPosition!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightPosition,max_shader_light,light_list->pos);
-		if (shader_code->var_locs.dim3LightColor!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightColor,max_shader_light,light_list->col);
-		if (shader_code->var_locs.dim3LightIntensity!=-1) glUniform1fvARB(shader_code->var_locs.dim3LightIntensity,max_shader_light,light_list->intensity);
-		if (shader_code->var_locs.dim3LightExponent!=-1) glUniform1fvARB(shader_code->var_locs.dim3LightExponent,max_shader_light,light_list->exponent);
-		if (shader_code->var_locs.dim3LightDirection!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightDirection,max_shader_light,light_list->direction);
+		if (shader_code->var_locs.dim3LightPosition!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightPosition,set_light_count,light_list->pos);
+		if (shader_code->var_locs.dim3LightColor!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightColor,set_light_count,light_list->col);
+		if (shader_code->var_locs.dim3LightIntensity!=-1) glUniform1fvARB(shader_code->var_locs.dim3LightIntensity,set_light_count,light_list->intensity);
+		if (shader_code->var_locs.dim3LightExponent!=-1) glUniform1fvARB(shader_code->var_locs.dim3LightExponent,set_light_count,light_list->exponent);
+		if (shader_code->var_locs.dim3LightDirection!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightDirection,set_light_count,light_list->direction);
 	}
 	
 		// set tint color
@@ -601,7 +600,7 @@ void gl_shader_draw_scene_initialize_code(view_shader_code_type *shader_code)
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
 
-	shader_code->cur_light_idx[0]=-1000;
+	shader_code->cur_nlight=0;
 	shader_code->cur_in_hilite=FALSE;
 	shader_code->cur_tint_col.r=shader_code->cur_tint_col.g=shader_code->cur_tint_col.b=-1.0f;
 	shader_code->cur_dark_factor=-1.0f;
@@ -763,27 +762,29 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,int *light_idx,d3pnt *pnt,d3col *tint_col)
+void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col)
 {
-	int								n,light_count;
+	int								n,set_light_count;
 	bool							light_change;
 	view_shader_code_type			*shader_code;
-	view_glsl_light_list_type		light_list;
+	view_glsl_light_list_type		hi_light_list;
 	
 		// get shader based on number
 		// of lights.  If no shader, then use
-		// default
+		// default and always set all lights
 		
-	light_count=0;
-	
-	if (light_idx!=NULL) {
-		for (n=0;n!=max_shader_light;n++) {
-			if (light_idx[n]!=-1) light_count++;
-		}
+	if (light_list==NULL) {
+		set_light_count=1;
 	}
-	
-	shader_code=&view.shaders[texture->shader_idx].code_light[light_count];
-	if (!shader_code->on) shader_code=&view.shaders[texture->shader_idx].code_default;
+	else {
+		set_light_count=light_list->nlight;
+	}
+
+	shader_code=&view.shaders[texture->shader_idx].code_light[set_light_count];
+	if (!shader_code->on) {
+		shader_code=&view.shaders[texture->shader_idx].code_default;
+		set_light_count=max_shader_light;
+	}
 	
 		// if we are not in this shader, then
 		// change over
@@ -817,26 +818,27 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 		// lighting variables
 		// this version is for shaders lite by view lights
 		
-	if (light_idx!=NULL) {
+	if (light_list!=NULL) {
 	
 			// any changes in lighting (different
 			// light list or coming out of a hilite)
 			
-		light_change=shader_code->cur_in_hilite;
+		light_change=((shader_code->cur_in_hilite) || (light_list->nlight!=shader_code->cur_nlight));
 		
-		for (n=0;n!=max_shader_light;n++) {
-			if (shader_code->cur_light_idx[n]!=light_idx[n]) light_change=TRUE;
-			shader_code->cur_light_idx[n]=light_idx[n];
+		for (n=0;n!=light_list->nlight;n++) {
+			if (shader_code->cur_light_idx[n]!=light_list->light_idx[n]) light_change=TRUE;
+			shader_code->cur_light_idx[n]=light_list->light_idx[n];
 		}
 		
+		shader_code->cur_nlight=light_list->nlight;
 		shader_code->cur_in_hilite=FALSE;
 		
 		if (!light_change) {
-			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,NULL,tint_col);
+			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,0,NULL,tint_col);
 		}
 		else {
-			gl_lights_idx_to_light_list(light_idx,&light_list);
-			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,&light_list,tint_col);
+			gl_lights_fill_light_list(set_light_count,light_list);
+			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,set_light_count,light_list,tint_col);
 		}
 	}
 
@@ -848,27 +850,27 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 			// already in hilite?
 			
 		if (shader_code->cur_in_hilite) {
-			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,NULL,tint_col);
+			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,0,NULL,tint_col);
 		}
 		else {
-			bzero(&light_list,sizeof(view_glsl_light_list_type));
+			bzero(&hi_light_list,sizeof(view_glsl_light_list_type));
 
-			light_list.pos[0]=(float)view.render->camera.pnt.x;
-			light_list.pos[1]=(float)view.render->camera.pnt.y;
-			light_list.pos[2]=(float)view.render->camera.pnt.z;
+			hi_light_list.pos[0]=(float)view.render->camera.pnt.x;
+			hi_light_list.pos[1]=(float)view.render->camera.pnt.y;
+			hi_light_list.pos[2]=(float)view.render->camera.pnt.z;
 			
-			light_list.col[0]=light_list.col[1]=light_list.col[2]=1.0f;
+			hi_light_list.col[0]=hi_light_list.col[1]=hi_light_list.col[2]=1.0f;
 
-			light_list.intensity[0]=(float)map_max_size;
-			light_list.exponent[0]=0.0f;		// hard light
+			hi_light_list.intensity[0]=(float)map_max_size;
+			hi_light_list.exponent[0]=0.0f;		// hard light
 
-			light_list.direction[0]=0.0f;
-			light_list.direction[1]=0.0f;
-			light_list.direction[2]=0.0f;
+			hi_light_list.direction[0]=0.0f;
+			hi_light_list.direction[1]=0.0f;
+			hi_light_list.direction[2]=0.0f;
 			
 			shader_code->cur_in_hilite=TRUE;
 			
-			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,&light_list,tint_col);
+			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,set_light_count,&hi_light_list,tint_col);
 		}
 	}
 }

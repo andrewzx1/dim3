@@ -311,9 +311,18 @@ bool map_start(bool skip_media,char *err_str)
 	obj=object_find_uid(server.player_obj_uid);
 	camera_connect(obj);
 	
+		// initialize movements and lookups
+
+	progress_draw(90);
+	
+	map_movements_initialize();
+	map_lookups_setup();
+	gl_back_render_map_start();
+	gl_fs_shader_map_start();
+	
 		// map start event
 		
-	progress_draw(90);
+	progress_draw(95);
 
 	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_open,0);
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_open,0);
@@ -321,21 +330,9 @@ bool map_start(bool skip_media,char *err_str)
 
 		// finish any script based spawns
 
-	object_script_spawn_finish();
-	
-		// if multiplayer co-op, then fix monsters
-		// to be remotes
-		
-	
-
-		// initialize movements and lookups
-	
-	map_movements_initialize();
-	map_lookups_setup();
-	gl_back_render_map_start();
-	gl_fs_shader_map_start();
-	
 	progress_draw(100);
+
+	object_script_spawn_finish();
 	
 	progress_shutdown();
 	
