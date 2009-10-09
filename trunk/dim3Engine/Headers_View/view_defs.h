@@ -37,7 +37,7 @@ and can be sold or given away.
 #define max_view_render_item								5120
 
 #define max_light_spot										128				// maximum number of lights in a scene
-#define max_shader_light									4				// maximum number of lights passed to a shader
+#define max_shader_light									8				// maximum number of lights passed to a shader
 
 //
 // input rate
@@ -113,6 +113,7 @@ typedef struct		{
 					} view_light_spot_type;
 
 typedef struct		{
+						int									nlight,light_idx[max_shader_light];
 						float								pos[3*max_shader_light],
 															col[3*max_shader_light],												
 															intensity[max_shader_light],
@@ -205,7 +206,7 @@ typedef struct		{
 
 typedef struct		{
 						int									start_tick,
-															cur_light_idx[max_shader_light];
+															cur_nlight,cur_light_idx[max_shader_light];
 						float								cur_dark_factor,cur_alpha;
 						char								vertex_name[file_str_len],fragment_name[file_str_len];
 						bool								on,per_scene_vars_set,cur_in_hilite;

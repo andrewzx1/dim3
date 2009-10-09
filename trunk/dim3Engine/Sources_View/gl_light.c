@@ -299,18 +299,21 @@ void gl_lights_compile(int tick)
       
 ======================================================= */
 
-void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light_list)
+void gl_lights_fill_light_list(int set_light_count,view_glsl_light_list_type *light_list)
 {
 	int						n,idx;
 	view_light_spot_type	*lspot;
 	
 	idx=0;
 	
-	for (n=0;n!=max_shader_light;n++) {
+	for (n=0;n!=set_light_count;n++) {
 		
 			// null lights
+
+			// default shaders get all lights set so we
+			// have to null out unused lights
 			
-		if (light_idx[n]==-1) {
+		if (n>=light_list->nlight) {
 			light_list->pos[idx]=0.0f;
 			light_list->pos[idx+1]=0.0f;
 			light_list->pos[idx+2]=0.0f;
@@ -330,7 +333,7 @@ void gl_lights_idx_to_light_list(int *light_idx,view_glsl_light_list_type *light
 			// regular lights
 			
 		else {
-			lspot=&view.render->light.spots[light_idx[n]];
+			lspot=&view.render->light.spots[light_list->light_idx[n]];
 			
 			light_list->pos[idx]=lspot->f_x;
 			light_list->pos[idx+1]=lspot->f_y;
@@ -645,7 +648,7 @@ bool gl_lights_calc_vertex_setup_model(model_draw *draw)
       
 ======================================================= */
 
-void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
+void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_list_type *light_list)
 {
 	int						n,k,
 							idx,cnt,sort_list[max_light_spot];
@@ -654,8 +657,10 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 	
 		// start with no lights
 		
+	light_list->nlight=0;
+	
 	for (n=0;n!=max_shader_light;n++) {
-		light_idx[n]=-1;
+		light_list->light_idx[n]=-1;
 	}
 	
 		// special check for single light
@@ -664,7 +669,9 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 		lspot=&view.render->light.spots[light_spot_reduce_idx[0]];
 		if (!gl_lights_collide_with_box(lspot,min,max)) return;
 		
-		light_idx[0]=light_spot_reduce_idx[0];
+		light_list->nlight=1;
+		light_list->light_idx[0]=light_spot_reduce_idx[0];
+
 		return;
 	}
 	
@@ -740,12 +747,14 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,int *light_idx)
 	
 		// create the light list
 		
+	light_list->nlight=cnt;
+
 	for (n=0;n!=cnt;n++) {
-		light_idx[n]=sort_list[n];
+		light_list->light_idx[n]=sort_list[n];
 	}
 }
 
-void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,int *light_idx)
+void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_glsl_light_list_type *light_list)
 {
 	map_mesh_type		*mesh;
 
@@ -756,10 +765,10 @@ void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,int *light_
 		gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max,TRUE);
 	}
 
-	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_idx);
+	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_list);
 }
 
-void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx)
+void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type *light_list)
 {
 	d3pnt			mid,min,max;
 
@@ -778,10 +787,10 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,int *light_idx)
 	max.z=liq->bot;
 	
 	gl_lights_spot_reduce_box(&min,&max,TRUE);
-	gl_lights_build_from_box(&mid,&min,&max,light_idx);
+	gl_lights_build_from_box(&mid,&min,&max,light_list);
 }
 
-void gl_lights_build_from_model(model_draw *draw,int *light_idx)
+void gl_lights_build_from_model(model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	d3pnt			mid,min,max;
 
@@ -789,6 +798,6 @@ void gl_lights_build_from_model(model_draw *draw,int *light_idx)
 	
 	model_get_view_min_max(draw,&mid,&min,&max);
 	gl_lights_spot_reduce_box(&min,&max,FALSE);
-	gl_lights_build_from_box(&mid,&min,&max,light_idx);
+	gl_lights_build_from_box(&mid,&min,&max,light_list);
 }
 

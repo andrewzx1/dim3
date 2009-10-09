@@ -413,7 +413,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	gl_texture_opaque_end();
 }
 
-void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,int *light_idx)
+void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int						n,trig_count,frame,
 							trig_start_idx,trig_idx;
@@ -471,7 +471,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,1.0f,light_idx,NULL,&draw->tint);
+			gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,1.0f,light_list,NULL,&draw->tint);
 		}
 		else {
 			if (mesh->tintable) {
@@ -581,7 +581,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 	gl_texture_transparent_end();
 }
 
-void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,int *light_idx)
+void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int						n,frame,trig_count,
 							trig_start_idx,trig_idx;
@@ -658,7 +658,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,alpha,light_idx,NULL,&draw->tint);
+			gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,alpha,light_list,NULL,&draw->tint);
 		}
 		else {
 			if (mesh->tintable) {
@@ -840,8 +840,9 @@ void render_model_setup(int tick,model_draw *draw)
 
 void render_model_opaque(model_draw *draw)
 {
-	int							n,light_idx[max_shader_light];
+	int							n;
 	model_type					*mdl;
+	view_glsl_light_list_type	light_list;
 
 		// any opaque?
 
@@ -854,7 +855,7 @@ void render_model_opaque(model_draw *draw)
 
 		// start lighting
 
-	gl_lights_build_from_model(draw,light_idx);
+	gl_lights_build_from_model(draw,&light_list);
 
 		// setup the vbo
 
@@ -865,7 +866,7 @@ void render_model_opaque(model_draw *draw)
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))!=0) {
 			render_model_opaque_simple_trigs(mdl,n,draw);
-			if (!dim3_debug) render_model_opaque_shader_trigs(mdl,n,draw,light_idx);
+			if (!dim3_debug) render_model_opaque_shader_trigs(mdl,n,draw,&light_list);
 		}
 	}
 
@@ -884,8 +885,9 @@ void render_model_opaque(model_draw *draw)
 
 void render_model_transparent(model_draw *draw)
 {
-	int							n,light_idx[max_shader_light];
+	int							n;
 	model_type					*mdl;
+	view_glsl_light_list_type	light_list;
 
 		// any transparent?
 
@@ -898,7 +900,7 @@ void render_model_transparent(model_draw *draw)
 	
 		// start lighting
 
-	gl_lights_build_from_model(draw,light_idx);
+	gl_lights_build_from_model(draw,&light_list);
 
 		// setup the vbo
 
@@ -909,7 +911,7 @@ void render_model_transparent(model_draw *draw)
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))!=0) {
 			render_model_transparent_simple_trigs(mdl,n,draw);
-			if (!dim3_debug) render_model_transparent_shader_trigs(mdl,n,draw,light_idx);
+			if (!dim3_debug) render_model_transparent_shader_trigs(mdl,n,draw,&light_list);
 		}
 	}
 
