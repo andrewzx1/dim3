@@ -79,7 +79,7 @@ bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name)
 	
 	strcpy(map->textures[txt].frames[count].name,bitmap_name);
 	
-	return(map_textures_read(map,FALSE));
+	return(map_textures_read(map));
 }
 
 bool map_delete_texture_frame(map_type *map,int txt)
@@ -100,7 +100,7 @@ bool map_delete_texture_frame(map_type *map,int txt)
 	bitmap_new(&map->textures[txt].frames[count].specularmap);
 	bitmap_new(&map->textures[txt].frames[count].glowmap);
 	
-	return(map_textures_read(map,FALSE));
+	return(map_textures_read(map));
 }
 
 

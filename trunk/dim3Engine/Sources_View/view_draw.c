@@ -551,7 +551,9 @@ void view_draw(int tick)
 
 		// render the scene
 
+	gl_fs_shader_render_begin();
 	view_draw_scene_render(tick,obj,weap);
+	gl_fs_shader_render_finish();
 
 		// draw tints and fades
 		

@@ -19,8 +19,8 @@
 	0111608D00BE2A8F7F000001 /* menu.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1825, 15769}}";
-			sepNavSelRange = "{5790, 0}";
-			sepNavVisRange = "{5435, 935}";
+			sepNavSelRange = "{5733, 82}";
+			sepNavVisRange = "{5362, 832}";
 			sepNavWindowFrame = "{{381, 192}, {1041, 747}}";
 		};
 	};
@@ -121,12 +121,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276126476;
-			PBXWorkspaceStateSaveDate = 276126476;
+			PBXPerProjectTemplateStateSaveDate = 276928974;
+			PBXWorkspaceStateSaveDate = 276928974;
 		};
 		perUserProjectItems = {
-			269E440D1075757600F220EF /* PBXTextBookmark */ = 269E440D1075757600F220EF /* PBXTextBookmark */;
-			26A110901071971600D71801 /* PBXTextBookmark */ = 26A110901071971600D71801 /* PBXTextBookmark */;
+			2621D434107EA57900767C9D /* PBXTextBookmark */ = 2621D434107EA57900767C9D /* PBXTextBookmark */;
+			26FA97A110819A7C0062926D /* PBXTextBookmark */ = 26FA97A110819A7C0062926D /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -262,17 +262,7 @@
 			sepNavWindowFrame = "{{493, 173}, {1041, 747}}";
 		};
 	};
-	269E440D1075757600F220EF /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
-	26A110901071971600D71801 /* PBXTextBookmark */ = {
+	2621D434107EA57900767C9D /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -313,6 +303,16 @@
 			sepNavVisRange = "{8073, 1321}";
 			sepNavWindowFrame = "{{456, 114}, {1041, 747}}";
 		};
+	};
+	26FA97A110819A7C0062926D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	F503D2560981A35B00DEDC74 /* draw_model.c */ = {
 		uiCtxt = {
@@ -413,8 +413,8 @@
 	F579A01D07DFDF8400DB4213 /* insert.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 2470}}";
-			sepNavSelRange = "{1681, 0}";
-			sepNavVisRange = "{1032, 1282}";
+			sepNavSelRange = "{1692, 0}";
+			sepNavVisRange = "{1032, 1286}";
 			sepNavWindowFrame = "{{371, 227}, {1041, 747}}";
 		};
 	};

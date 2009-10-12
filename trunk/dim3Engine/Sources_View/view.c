@@ -455,9 +455,7 @@ void view_loop_draw(int tick)
 
 		// draw view
 
-	gl_fs_shader_render_begin();
 	view_draw(tick);
-	gl_fs_shader_render_finish();
 
 		// draw hud and interface elements
 

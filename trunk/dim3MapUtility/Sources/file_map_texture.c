@@ -70,7 +70,7 @@ void map_textures_new(map_type *map)
       
 ======================================================= */
 
-bool map_textures_read(map_type *map,bool in_engine)
+bool map_textures_read(map_type *map)
 {
 	int					i,k,n;
 	char				path[1024],name[256];
@@ -84,7 +84,7 @@ bool map_textures_read(map_type *map,bool in_engine)
 		// if in engine, then only load textures
 		// directly hooked up to elements
 		
-	if (in_engine) {
+	if (maputility_settings.in_engine) {
 	
 		for (n=0;n!=max_map_texture;n++) {
 			txt_ok[n]=FALSE;
@@ -94,7 +94,9 @@ bool map_textures_read(map_type *map,bool in_engine)
 		
 		for (n=0;n!=map->mesh.nmesh;n++) {
 
-			if (mesh->extra_txt_idx!=-1) txt_ok[mesh->extra_txt_idx]=TRUE;
+			if (maputility_settings.glsl_ok) {
+				if (mesh->extra_txt_idx!=-1) txt_ok[mesh->extra_txt_idx]=TRUE;
+			}
 			
 			poly=mesh->polys;
 			
@@ -128,8 +130,23 @@ bool map_textures_read(map_type *map,bool in_engine)
 	for (i=0;i!=max_map_texture;i++) {
 	
 		texture=&map->textures[i];
+		
+			// clear textures
+			
+		frame=texture->frames;
+		
+		for (k=0;k!=max_texture_frame;k++) {
+			bitmap_new(&frame->bitmap);
+			bitmap_new(&frame->bumpmap);
+			bitmap_new(&frame->specularmap);
+			bitmap_new(&frame->glowmap);
+			
+			frame++;
+		}
+
+			// skip if texture isn't used
 	
-		if ((in_engine) && (!txt_ok[i])) continue;
+		if ((maputility_settings.in_engine) && (!txt_ok[i])) continue;
 			
 		frame=texture->frames;
 		
@@ -142,17 +159,21 @@ bool map_textures_read(map_type *map,bool in_engine)
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
 				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
 			
-					// bumpmap
-					
-				sprintf(name,"%s_n",frame->name);
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
-								
-					// specular map
-					
-				sprintf(name,"%s_s",frame->name);
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+				if ((!maputility_settings.in_engine) || (maputility_settings.glsl_ok)) {
+				
+						// bumpmap
+						
+					sprintf(name,"%s_n",frame->name);
+					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
+					bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+									
+						// specular map
+						
+					sprintf(name,"%s_s",frame->name);
+					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
+					bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+				
+				}
 				
 					// glow map
 					

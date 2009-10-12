@@ -2022,7 +2022,7 @@ bool map_auto_generate_test(map_type *map)
 
 		// load textures
 
-	if (!map_textures_read(map,TRUE)) return(FALSE);
+	if (!map_textures_read(map)) return(FALSE);
 
 	return(TRUE);
 }

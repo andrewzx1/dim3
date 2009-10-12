@@ -659,10 +659,6 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 		
 	light_list->nlight=0;
 	
-	for (n=0;n!=max_shader_light;n++) {
-		light_list->light_idx[n]=-1;
-	}
-	
 		// special check for single light
 		
 	if (light_spot_reduce_count==1) {

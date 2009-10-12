@@ -82,7 +82,22 @@ void model_textures_read(model_type *model)
     texture=model->textures;
     
 	for (i=0;i!=max_model_texture;i++) {
-    
+	
+			// clear textures
+			
+ 		frame=texture->frames;
+  
+        for (k=0;k!=max_texture_frame;k++) {
+			bitmap_new(&frame->bitmap);
+			bitmap_new(&frame->bumpmap);
+			bitmap_new(&frame->specularmap);
+			bitmap_new(&frame->glowmap);
+			
+			frame++;
+        }
+   
+			// load textures
+			
 		frame=texture->frames;
         
         for (k=0;k!=max_texture_frame;k++) {
@@ -93,18 +108,22 @@ void model_textures_read(model_type *model)
 				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,frame->name,"png");
 				bitmap_open(&frame->bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
 
-					// bumpmap
-
-				sprintf(name,"%s_n",frame->name);
-				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+				if ((!modelutility_settings.in_engine) || (modelutility_settings.glsl_ok)) {
 				
-					// specular map
+						// bumpmap
 
-				sprintf(name,"%s_s",frame->name);
-				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+					sprintf(name,"%s_n",frame->name);
+					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
+					bitmap_open(&frame->bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+					
+						// specular map
 
+					sprintf(name,"%s_s",frame->name);
+					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
+					bitmap_open(&frame->specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+				
+				}
+				
 					// glow map
 
 				sprintf(name,"%s_g",frame->name);

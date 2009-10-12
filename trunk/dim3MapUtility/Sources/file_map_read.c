@@ -371,7 +371,7 @@ bool map_check_game_type(char *game_type,char *map_name,char *info_name)
       
 ======================================================= */
 
-bool read_map_xml(map_type *map,bool only_current_version)
+bool read_map_xml(map_type *map)
 {
 	int			version,map_head,tag;
 	bool		map_ok;
@@ -385,11 +385,12 @@ bool read_map_xml(map_type *map,bool only_current_version)
     }
 	
 		// get the version
+		// if in engine, only allow loading of the current version
 	
 	tag=xml_findfirstchild("Creator",map_head);
 	version=xml_get_attribute_int_default(tag,"version",1);
 	
-	if (only_current_version) {
+	if (maputility_settings.in_engine) {
 		if (version!=map_current_version) return(FALSE);
 	}
 

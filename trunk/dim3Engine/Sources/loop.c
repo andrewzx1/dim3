@@ -355,15 +355,17 @@ bool loop_main(char *err_str)
 		
 		// if we are going to a game element, clear
 		// the screenshot and reset counter
+		
+		// except for console (which doesn't have background)
 
 	if ((server.state!=gs_running) && (old_state==gs_running)) {
 		view.fps.last_time=-1;
-		gui_screenshot_load();
+		if (server.state!=gs_console) gui_screenshot_load();
 	}
 	else {
 		if ((server.state==gs_running) && (old_state!=gs_running)) {
 			view.fps.last_time=-1;
-			gui_screenshot_free();
+			if (old_state!=gs_console) gui_screenshot_free();
 		}
 	}
 	
