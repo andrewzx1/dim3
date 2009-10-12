@@ -221,7 +221,7 @@ void new_model_xml(void)
 
 	SetThemeCursor(kThemeWatchCursor);
 		
-	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE,TRUE);
 	model_new(&model,filename);
 	
 	model.nmesh=1;
@@ -260,7 +260,7 @@ void open_model_xml(void)
 
 	windows_start();
     
-	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE,TRUE);
 	model_open(&model,file_name,TRUE);
     	
 	SetThemeCursor(kThemeArrowCursor);

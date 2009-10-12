@@ -571,9 +571,9 @@ typedef struct		{
 // functions
 //
 
-extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode);
+extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool in_engine,bool glsl_ok);
 extern bool map_new(map_type *map,char *name);
-extern bool map_open(map_type *map,char *name,bool in_engine);
+extern bool map_open(map_type *map,char *name);
 extern bool map_reload(map_type *map);
 extern bool map_save(map_type *map);
 extern void map_close(map_type *map);

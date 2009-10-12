@@ -143,7 +143,7 @@ bool file_new_map(void)
 	
 		// set the map paths
 		
-	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode);
+	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE,TRUE);
 	
 		// copy the course script
 		
@@ -198,9 +198,9 @@ bool file_open_map(void)
 	main_wind_open();
 	main_wind_set_title(file_name);
 	
-	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode);
+	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE,TRUE);
 	
-	ok=map_open(&map,file_name,FALSE);
+	ok=map_open(&map,file_name);
 
     SetThemeCursor(kThemeArrowCursor);
 	

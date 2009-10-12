@@ -31,6 +31,7 @@ and can be sold or given away.
 
 typedef struct		{
 						int						anisotropic_mode,mipmap_mode;
+						bool					in_engine,glsl_ok;
 						file_path_setup_type	file_path_setup;
                     } maputility_settings_type;
 
@@ -169,9 +170,9 @@ typedef struct		{
 //
 
 extern int map_count_texture_frames(map_type *map,int txt);
-extern bool map_textures_read(map_type *map,bool in_engine);
+extern bool map_textures_read(map_type *map);
 extern void map_textures_close(map_type *map);
-extern bool read_map_xml(map_type *map,bool only_current_version);
+extern bool read_map_xml(map_type *map);
 extern bool write_map_xml(map_type *map);
 extern void map_textures_new(map_type *map);
 

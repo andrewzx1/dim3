@@ -428,7 +428,6 @@ extern void xml_key_write_color(char *name,d3col *value);
 
 typedef struct		{
 						int						wid,high,alpha_mode;
-						char					name2[file_str_len];
 						GLuint					gl_id;
 					} bitmap_type;
 
