@@ -106,10 +106,10 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 
 int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *stand_poly)
 {
-	int						n,cy,sz;
-	bool					hits[5];
-	d3pnt					spt[5],ept[5],hpt[5];
-	ray_trace_contact_type	base_contact,contacts[5];
+	int						n,cy,x_sz,z_sz,ty,by;
+	bool					hits[13];
+	d3pnt					spt[13],ept[13],hpt[13];
+	ray_trace_contact_type	base_contact,contacts[13];
 	
 		// setup contact
 		
@@ -121,30 +121,45 @@ int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *sta
 
 		// create ray arrays
 	
-	sz=obj->size.x>>1;
-	spt[0].x=spt[3].x=ept[0].x=ept[3].x=obj->pnt.x-sz;
-	spt[1].x=spt[2].x=ept[1].x=ept[2].x=obj->pnt.x+sz;
+	x_sz=obj->size.x>>1;
+	spt[0].x=spt[3].x=spt[8].x=obj->pnt.x-x_sz;
+	spt[1].x=spt[2].x=spt[6].x=obj->pnt.x+x_sz;
 	
-	sz=obj->size.z>>1;
-	spt[0].z=spt[1].z=ept[0].z=ept[1].z=obj->pnt.z-sz;
-	spt[2].z=spt[3].z=ept[2].z=ept[3].z=obj->pnt.z+sz;
+	z_sz=obj->size.z>>1;
+	spt[0].z=spt[1].z=spt[5].z=obj->pnt.z-z_sz;
+	spt[2].z=spt[3].z=spt[7].z=obj->pnt.z+z_sz;
 	
-	spt[4].x=ept[4].x=obj->pnt.x;
-	spt[4].z=ept[4].z=obj->pnt.z;
-	
-	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=obj->pnt.y-ydist;
-	ept[0].y=ept[1].y=ept[2].y=ept[3].y=ept[4].y=obj->pnt.y+ydist;
+	spt[4].x=spt[5].x=spt[7].x=obj->pnt.x;
+	spt[4].z=spt[6].z=spt[8].z=obj->pnt.z;
+
+	x_sz=x_sz>>1;
+	spt[9].x=spt[12].x=obj->pnt.x-x_sz;
+	spt[10].x=spt[11].x=obj->pnt.x+x_sz;
+
+	z_sz=z_sz>>1;
+	spt[9].z=spt[10].z=obj->pnt.z-z_sz;
+	spt[11].z=spt[12].z=obj->pnt.z+z_sz;
+
+	ty=obj->pnt.y-ydist;
+	by=obj->pnt.y+ydist;
+
+	for (n=0;n!=13;n++) {
+		ept[n].x=spt[n].x;
+		ept[n].z=spt[n].z;
+		spt[n].y=ty;
+		ept[n].y=by;
+	}
 		
 		// run the rays
 		
-	ray_trace_map_by_point_array(5,spt,ept,hpt,hits,&base_contact,contacts);
+	ray_trace_map_by_point_array(13,spt,ept,hpt,hits,&base_contact,contacts);
 	
 		// find the highest point
 		
 	stand_poly->mesh_idx=-1;
 	cy=-1;
 	
-	for (n=0;n!=5;n++) {
+	for (n=0;n!=13;n++) {
 		
 			// check poly collisions
 			

@@ -90,7 +90,7 @@ void progress_draw(float percentage)
 	
 		// start the frame
 	
-	gl_frame_start(NULL);
+	gl_frame_clear(FALSE);
 	
 		// setup draw
 		
@@ -133,6 +133,6 @@ void progress_draw(float percentage)
 	gl_text_draw(x,y,progress_str,tx_center,TRUE,&hud.progress.text_color,1.0f);
 	gl_text_end();
 
-	gl_frame_end();
+	gl_frame_swap();
 }
 

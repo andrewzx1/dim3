@@ -99,7 +99,7 @@ void movie_draw(void)
 	
 		// start the frame
 	
-	gl_frame_start(NULL);
+	gl_frame_clear(FALSE);
 	gl_2D_view_screen();
 	
 	gl_texture_movie_start(movie_bitmap_gl_id);
@@ -124,7 +124,7 @@ void movie_draw(void)
 	gl_texture_movie_end();
 	glEnable(GL_DEPTH_TEST);
 
-	gl_frame_end();
+	gl_frame_swap();
 }
 
 /* =======================================================

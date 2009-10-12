@@ -41,26 +41,32 @@ GLint						vport[4];
 double						mod_matrix[16],proj_matrix[16],
 							fix_rot_camera_x,fix_rot_camera_y,fix_rot_camera_z;
 
+extern bool fog_solid_on(void);
+
 /* =======================================================
 
       Start and End a Drawing Session
       
 ======================================================= */
 
-void gl_frame_start(d3col *col)
+void gl_frame_clear(bool in_view)
 {
-	if (col==NULL) {
+		// if obscuring fog on, then background = fog color
+
+	if ((!fog_solid_on()) || (!in_view)) {
 		glClearColor(0.0f,0.0f,0.0f,0.0f);
 	}
 	else {
-		glClearColor(col->r,col->g,col->b,0.0f);
+		glClearColor(map.fog.col.r,map.fog.col.g,map.fog.col.b,0.0f);
 	}
+
+		// clear the frame
 
 	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 }
 
-void gl_frame_end(void)
+void gl_frame_swap(void)
 {
 	SDL_GL_SwapBuffers();
 }

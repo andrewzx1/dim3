@@ -200,7 +200,7 @@ void console_draw(void)
 {
 		// start frame
 
-	gl_frame_start(NULL);
+	gl_frame_clear(FALSE);
 	gl_2D_view_interface();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
@@ -216,7 +216,7 @@ void console_draw(void)
 
 		// end frame
 
-	gl_frame_end();
+	gl_frame_swap();
 }
 
 /* =======================================================

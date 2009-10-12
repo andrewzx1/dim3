@@ -211,6 +211,10 @@ void gl_fs_shader_render_begin(void)
 	}
 	
 	glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
+
+		// clear buffer
+
+	gl_frame_clear(TRUE);
 }
 
 void gl_fs_shader_render_finish(void)
