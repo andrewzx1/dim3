@@ -184,10 +184,10 @@ void score_limit_run(void)
 	
 		// draw score limit
 
-	gl_frame_start(NULL);
+	gl_frame_clear(FALSE);
 	gui_draw_background(1.0f);
 	network_draw(tick);
-	gl_frame_end();
+	gl_frame_swap();
 	
 		// pump events since we aren't calling
 		// the regular gui routines

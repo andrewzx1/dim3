@@ -446,12 +446,7 @@ void view_loop_draw(int tick)
 
 		// start frame
 		
-	if (!fog_solid_on()) {
-		gl_frame_start(NULL);
-	}
-	else {
-		gl_frame_start(&map.fog.col);		// is obscuring fog on, then background = fog color
-	}
+	gl_frame_clear(TRUE);
 
 		// draw view
 
@@ -465,7 +460,7 @@ void view_loop_draw(int tick)
 
 		// swap frame buffers
 	
-	gl_frame_end();
+	gl_frame_swap();
 
 	view.fps.count++;
 }
@@ -482,7 +477,7 @@ void view_capture_draw(char *path)
 
 	tick=game_time_get();
 
-	gl_frame_start(NULL);
+	gl_frame_clear(FALSE);
 	view_draw(tick);
 	
 	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
@@ -498,7 +493,7 @@ void view_pause_draw(void)
 {
 	d3col		col;
 
-	gl_frame_start(NULL);
+	gl_frame_clear(FALSE);
 
 	gl_2D_view_screen();
 
@@ -509,7 +504,7 @@ void view_pause_draw(void)
 	gl_text_draw((setup.screen.x_sz-2),(setup.screen.y_sz-2),"[click to resume]",tx_right,FALSE,&col,1.0f);
 	gl_text_end();
 	
-	gl_frame_end();
+	gl_frame_swap();
 }
 
 /* =======================================================

@@ -598,10 +598,9 @@ bool view_draw_node(int tick,node_type *node)
 	view.render->no_shader=!node->use_shader;
 	view.render->force_camera_obj=TRUE;
 
-		// draw the scene
+		// clear the frame
 	
-	glClearColor(0.0f,0.0f,0.0f,1.0f);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	gl_frame_clear(TRUE);
 		
 		// build the scene
 		

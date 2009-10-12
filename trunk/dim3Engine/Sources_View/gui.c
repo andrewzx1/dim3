@@ -365,7 +365,7 @@ void gui_draw_dialog(void)
 
 void gui_draw(float background_alpha,bool cursor)
 {
-	gl_frame_start(NULL);
+	gl_frame_clear(FALSE);
 
 		// background
 
@@ -390,7 +390,7 @@ void gui_draw(float background_alpha,bool cursor)
 
 		// end frame
 
-	gl_frame_end();
+	gl_frame_swap();
 }
 
 void gui_draw_message(char *txt)
@@ -398,7 +398,7 @@ void gui_draw_message(char *txt)
 	int				x,y,lx,rx,ty,by,high;
 	d3col			col;
 	
-	gl_frame_start(NULL);
+	gl_frame_clear(FALSE);
 
 		// background
 
@@ -436,7 +436,7 @@ void gui_draw_message(char *txt)
 	gl_text_draw(x,y,txt,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	
-	gl_frame_end();
+	gl_frame_swap();
 }
 
 /* =======================================================

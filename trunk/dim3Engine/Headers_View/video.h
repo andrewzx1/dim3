@@ -148,8 +148,8 @@ extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id);
 
 	// view
 	
-extern void gl_frame_start(d3col *col);
-extern void gl_frame_end(void);
+extern void gl_frame_clear(bool in_view);
+extern void gl_frame_swap(void);
 extern void gl_3D_view(void);
 extern void gl_3D_rotate(d3pnt *pnt,d3ang *ang);
 extern void gl_2D_view_screen(void);
