@@ -227,7 +227,7 @@ void console_draw(void)
 
 bool console_builtin_commands(void)
 {
-	if ((strcasecmp(console_input_str,"quit")) || (strcasecmp(console_input_str,"exit"))) {
+	if ((strcasecmp(console_input_str,"quit")==0) || (strcasecmp(console_input_str,"exit")==0)) {
 		game_loop_quit=TRUE;
 		return(TRUE);
 	}
