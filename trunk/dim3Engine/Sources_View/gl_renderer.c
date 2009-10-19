@@ -51,6 +51,31 @@ inline bool gl_in_window_mode(void)
 
 /* =======================================================
 
+      GL Context Settings
+      
+======================================================= */
+
+void gl_setup_context(void)
+{
+		// perspective correction
+		
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
+		
+		// smoothing
+		
+	glDisable(GL_DITHER);
+	
+	glEnable(GL_LINE_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+	
+		// texture compression
+		
+	glHint(GL_TEXTURE_COMPRESSION_HINT,GL_NICEST);
+	glHint(GL_GENERATE_MIPMAP_HINT,GL_NICEST);
+}
+
+/* =======================================================
+
       Open and Close OpenGL Context
       
 ======================================================= */
@@ -85,17 +110,17 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 		// full screen anti-aliasing attributes
 		
 	switch (fsaa_mode) {
-		case fsaa_mode_low:
+		case fsaa_mode_2x:
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,2);
 			break;
-		case fsaa_mode_medium:
+		case fsaa_mode_4x:
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,4);
 			break;
-		case fsaa_mode_high:
+		case fsaa_mode_8x:
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,6);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,8);
 			break;
 	}
 
@@ -198,23 +223,9 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 
 	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
 	
-		// perspective correction
+	gl_setup_context();
 		
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
-		
-		// smoothing and anti-aliasing
-		
-	glDisable(GL_DITHER);
-	
-	glEnable(GL_LINE_SMOOTH);
-	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-	
 	if (fsaa_mode!=fsaa_mode_none) glEnable(GL_MULTISAMPLE);
-	
-		// texture compression
-		
-	glHint(GL_TEXTURE_COMPRESSION_HINT,GL_NICEST);
-	glHint(GL_GENERATE_MIPMAP_HINT,GL_NICEST);
 	
 		// all alphas by 8 bit component
 		

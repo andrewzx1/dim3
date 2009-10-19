@@ -68,6 +68,13 @@ void gl_back_render_initialize(void)
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_stencil_id);
+
+		// some additional setup
+		
+	gl_setup_context();
+
+		// turn off framebuffer
+		
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 }
 

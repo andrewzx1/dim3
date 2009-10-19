@@ -157,7 +157,7 @@ void gl_text_initialize(void)
 		}
 	}
 	
-	bitmap_data(&font_bitmap,txt_data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE);
+	bitmap_data(&font_bitmap,txt_data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 
 	free(txt_data);
 	

@@ -33,6 +33,7 @@ and can be sold or given away.
 
 bool						gl_check_value_frame_buffer,
 							gl_check_value_fsaa,
+							gl_check_value_texture_compress,
 							gl_check_value_texture_anisotropic_filter,
 							gl_check_value_texture_generate_mipmaps,
 							gl_check_value_texture_rectangle,
@@ -81,6 +82,7 @@ void gl_check_initialize(void)
 		gl_check_value_frame_buffer=(strstr(render_info.ext_string,"GL_EXT_packed_depth_stencil")!=NULL);
 	}
 	
+	gl_check_value_texture_compress=(strstr(render_info.ext_string,"GL_ARB_texture_compression")!=NULL);
 	gl_check_value_fsaa=(strstr(render_info.ext_string,"GL_ARB_multisample")!=NULL);
 	gl_check_value_texture_anisotropic_filter=(strstr(render_info.ext_string,"GL_EXT_texture_filter_anisotropic")!=NULL);
 	gl_check_value_texture_generate_mipmaps=(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
@@ -103,6 +105,11 @@ inline bool gl_check_frame_buffer_ok(void)
 inline bool gl_check_fsaa_ok(void)
 {
 	return(gl_check_value_fsaa);
+}
+
+inline bool gl_check_texture_compress_ok(void)
+{
+	return(gl_check_value_texture_compress);
 }
 
 inline bool gl_check_texture_anisotropic_filter_ok(void)

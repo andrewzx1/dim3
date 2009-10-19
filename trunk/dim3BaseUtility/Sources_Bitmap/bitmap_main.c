@@ -162,7 +162,7 @@ unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned ch
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
 {
 	unsigned char		*png_data;
 	bool				ok,alpha_channel;
@@ -197,7 +197,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 	
 		// get the texture
 		
-	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,rectangle,pixelated);
+	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,compress_on,rectangle,pixelated);
 
 	free(png_data);
 	
@@ -234,7 +234,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
 		*dptr++=kb;
 	}
 	
-	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode_none,mipmap_mode_none,FALSE,TRUE);
+	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,TRUE);
 
 	free(png_data);
 	
@@ -247,7 +247,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
       
 ======================================================= */
 
-bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool rectangle)
+bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle)
 {
 	bitmap->wid=wid;
 	bitmap->high=high;
@@ -264,7 +264,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 	
 		// get the texture
 		
-	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,rectangle,FALSE));
+	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,compress_on,rectangle,FALSE));
 }
 
 /* =======================================================

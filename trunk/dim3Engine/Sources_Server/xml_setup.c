@@ -50,6 +50,7 @@ void setup_xml_default(void)
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_trilinear;
 	setup.fsaa_mode=fsaa_mode_none;
+	setup.compress_on=FALSE;
 	
 	setup.decal_on=TRUE;
 	setup.shadow_on=TRUE;
@@ -173,6 +174,7 @@ bool setup_xml_read_path(char *path)
     xml_key_read_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
     xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
 	xml_key_read_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
+	xml_key_read_boolean(setup_tag,"Compress_On",&setup.compress_on);
 	xml_key_read_boolean(setup_tag,"Decal_On",&setup.decal_on);
 	xml_key_read_boolean(setup_tag,"Shadow_On",&setup.shadow_on);
 	xml_key_read_float(setup_tag,"Sound_Volume",&setup.sound_volume);
@@ -346,6 +348,7 @@ bool setup_xml_write(void)
 	xml_key_write_int("Anisotropic_Mode",setup.anisotropic_mode);
     xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
 	xml_key_write_int("FSAA_Mode",setup.fsaa_mode);
+	xml_key_write_boolean("Compress_On",setup.compress_on);
 	xml_key_write_boolean("Decal_On",setup.decal_on);
 	xml_key_write_boolean("Shadow_On",setup.shadow_on);
 	xml_key_write_float("Sound_Volume",setup.sound_volume);
@@ -485,6 +488,7 @@ void setup_restore(void)
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_none;
 	setup.fsaa_mode=fsaa_mode_none;
+	setup.compress_on=FALSE;
 	
 	setup.music_on=FALSE;
 

@@ -66,8 +66,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276928192;
-			PBXWorkspaceStateSaveDate = 276928192;
+			PBXPerProjectTemplateStateSaveDate = 277527847;
+			PBXWorkspaceStateSaveDate = 277527847;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
@@ -204,17 +204,17 @@
 	};
 	F5AD52A00BBE16AC001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1055, 6916}}";
-			sepNavSelRange = "{16885, 0}";
-			sepNavVisRange = "{16612, 982}";
-			sepNavWindowFrame = "{{641, 85}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1202, 6682}}";
+			sepNavSelRange = "{18507, 0}";
+			sepNavVisRange = "{17434, 2058}";
+			sepNavWindowFrame = "{{639, 85}, {1041, 747}}";
 		};
 	};
 	F5AD52A90BBE1720001C7C04 /* baseprivate.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1222}}";
-			sepNavSelRange = "{2317, 0}";
-			sepNavVisRange = "{1221, 1243}";
+			sepNavIntBoundsRect = "{{0, 0}, {1062, 1222}}";
+			sepNavSelRange = "{1695, 0}";
+			sepNavVisRange = "{1280, 1275}";
 			sepNavWindowFrame = "{{495, 170}, {1041, 747}}";
 		};
 	};
@@ -252,18 +252,18 @@
 	};
 	F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4186}}";
-			sepNavSelRange = "{4410, 0}";
-			sepNavVisRange = "{3386, 1240}";
-			sepNavWindowFrame = "{{423, 183}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1146, 4004}}";
+			sepNavSelRange = "{5879, 0}";
+			sepNavVisRange = "{4855, 1233}";
+			sepNavWindowFrame = "{{636, 224}, {1041, 747}}";
 		};
 	};
 	F5AD52FD0BBE1A66001C7C04 /* textures.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4888}}";
-			sepNavSelRange = "{3692, 0}";
-			sepNavVisRange = "{2715, 1274}";
-			sepNavWindowFrame = "{{510, 139}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1055, 4927}}";
+			sepNavSelRange = "{3694, 0}";
+			sepNavVisRange = "{3093, 1226}";
+			sepNavWindowFrame = "{{491, 100}, {1041, 747}}";
 		};
 	};
 }

@@ -37,11 +37,12 @@ modelutility_settings_type		modelutility_settings;
       
 ======================================================= */
 
-void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool in_engine,bool glsl_ok)
+void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool compress_on,bool in_engine,bool glsl_ok)
 {
 	memmove(&modelutility_settings.file_path_setup,file_path_setup,sizeof(file_path_setup_type));
 	modelutility_settings.anisotropic_mode=anisotropic_mode;
 	modelutility_settings.mipmap_mode=mipmap_mode;
+	modelutility_settings.compress_on=compress_on;
 	modelutility_settings.in_engine=in_engine;
 	modelutility_settings.glsl_ok=glsl_ok;
 }

@@ -57,9 +57,9 @@ void progress_initialize(char *action)
 		// otherwise use default
 		
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds_Map",map.info.name,"png");
-	if (!bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,gl_check_texture_rectangle_ok(),FALSE,FALSE)) {
+	if (!bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE)) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds","load","png");
-		bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,gl_check_texture_rectangle_ok(),FALSE,FALSE);
+		bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
 	}
 	
 		// current progress
