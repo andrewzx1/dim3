@@ -300,7 +300,7 @@ typedef struct		{
 						float							alpha,resize,normal[3];
 						double							draw_dist;
 						bool							on,flip_x,has_opaque,has_transparent,
-														bounce,face_forward,player,did_setup;
+														bounce,face_forward,player,built_vertex_list;
 						unsigned char					cur_texture_frame[max_model_texture];
 						d3pnt							pnt,size,center,offset;
 						d3ang							rot,spin;
