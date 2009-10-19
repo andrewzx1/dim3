@@ -50,6 +50,7 @@ extern server_type			server;
 extern setup_type			setup;
 
 extern bool fog_solid_on(void);
+extern void render_model_setup(int tick,model_draw *draw);
 extern bool mesh_inview(map_mesh_type *mesh);
 extern bool mesh_shadow_inview(map_mesh_type *mesh);
 extern bool model_inview(model_draw *draw);
@@ -434,13 +435,14 @@ void view_setup_objects(int tick)
 		
 			// add to draw list
 
-		obj->draw.did_setup=FALSE;
+		obj->draw.built_vertex_list=FALSE;
 		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist,flag);
 	
 			// setup model animations for models in view
 		
 		model_calc_animation(&obj->draw);
 		model_calc_draw_bones(&obj->draw);
+		render_model_setup(tick,&obj->draw);
 		
 			// setup held weapon model
 
@@ -488,14 +490,15 @@ void view_setup_projectiles(int tick)
 		if (flag==0x0) continue;
 
 			// add to draw list
+			// projs share vertex list so we can't do the "built_vertex_list" optimization
 
-		proj->draw.did_setup=FALSE;
 		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,flag);
 		
 			// setup model animations for models in view
 			
 		model_calc_animation(&proj->draw);
 		model_calc_draw_bones(&proj->draw);
+		render_model_setup(tick,&proj->draw);
 	}
 }
 

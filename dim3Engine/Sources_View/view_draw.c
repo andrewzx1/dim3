@@ -69,6 +69,7 @@ extern void fog_solid_end(void);
 extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
 extern void render_model_setup(int tick,model_draw *draw);
+extern void render_model_build_vertex_lists(model_draw *draw);
 extern void render_model_opaque(model_draw *draw);
 extern void render_model_transparent(model_draw *draw);
 extern void render_model_target(model_draw *draw,d3col *col);
@@ -233,10 +234,10 @@ void view_draw_model_opaque(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					if (!obj->draw.did_setup) {
-						obj->draw.did_setup=TRUE;
-						render_model_setup(tick,&obj->draw);
+				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (obj->draw.has_opaque)) {
+					if (!obj->draw.built_vertex_list) {
+						obj->draw.built_vertex_list=TRUE;
+						render_model_build_vertex_lists(&obj->draw);
 					}
 					render_model_opaque(&obj->draw);
 				}
@@ -244,11 +245,8 @@ void view_draw_model_opaque(int tick)
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					if (!proj->draw.did_setup) {
-						proj->draw.did_setup=TRUE;
-						render_model_setup(tick,&proj->draw);
-					}
+				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (proj->draw.has_opaque)) {
+					render_model_build_vertex_lists(&proj->draw);	// projectiles share vertex lists
 					render_model_opaque(&proj->draw);
 				}
 				break;
@@ -278,10 +276,10 @@ void view_draw_model_transparent(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					if (!obj->draw.did_setup) {
-						obj->draw.did_setup=TRUE;
-						render_model_setup(tick,&obj->draw);
+				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (obj->draw.has_transparent)) {
+					if (!obj->draw.built_vertex_list) {
+						obj->draw.built_vertex_list=TRUE;
+						render_model_build_vertex_lists(&obj->draw);
 					}
 					render_model_transparent(&obj->draw);
 				}
@@ -289,11 +287,8 @@ void view_draw_model_transparent(int tick)
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					if (!proj->draw.did_setup) {
-						proj->draw.did_setup=TRUE;
-						render_model_setup(tick,&proj->draw);
-					}
+				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (proj->draw.has_transparent)) {
+					render_model_build_vertex_lists(&proj->draw);		// projectiles share draw lists
 					render_model_transparent(&proj->draw);
 				}
 				break;
@@ -332,9 +327,9 @@ void view_draw_models_final(int tick)
 				
 				if ((shadow_on) && (obj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
-						if (!obj->draw.did_setup) {
-							obj->draw.did_setup=TRUE;
-							render_model_setup(tick,&obj->draw);
+						if (!obj->draw.built_vertex_list) {
+							obj->draw.built_vertex_list=TRUE;
+							render_model_build_vertex_lists(&obj->draw);
 						}
 						shadow_render_model(view_render_type_object,view.render->draw_list.items[n].idx,&obj->draw);
 					}
@@ -354,10 +349,8 @@ void view_draw_models_final(int tick)
 				proj=&server.projs[view.render->draw_list.items[n].idx];
 				if ((shadow_on) && (proj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
-						if (!proj->draw.did_setup) {
-							proj->draw.did_setup=TRUE;
-							render_model_setup(tick,&proj->draw);
-						}
+						render_model_setup(tick,&proj->draw);
+						render_model_build_vertex_lists(&proj->draw);
 						shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw);
 					}
 				}

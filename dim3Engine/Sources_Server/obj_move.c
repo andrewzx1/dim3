@@ -513,7 +513,7 @@ void object_move_y_fall(obj_type *obj)
 {
 	int				y,fy,ymove,uid;
 	obj_type		*hit_obj;
-	
+
 		// check standing on polygons
 
 	y=obj->pnt.y;

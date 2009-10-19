@@ -734,7 +734,7 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 /* =======================================================
 
-      Draw Normal Model
+      Setup Model and Vertex Lists
       
 ======================================================= */
 
@@ -806,7 +806,18 @@ void render_model_setup(int tick,model_draw *draw)
 		
 		if ((draw->has_transparent) && (draw->has_opaque)) break;
 	}
+}
+
+void render_model_build_vertex_lists(model_draw *draw)
+{
+	int					n;
+	model_type			*mdl;
 	
+		// get model
+
+	mdl=model_find_uid(draw->uid);
+	if (mdl==NULL) return;
+
 		// create vertex and uv lists
 		
 	for (n=0;n!=mdl->nmesh;n++) {
@@ -837,6 +848,12 @@ void render_model_setup(int tick,model_draw *draw)
 		draw->vbo_ptr.ntrig+=mdl->meshes[n].ntrig;
 	}
 }
+
+/* =======================================================
+
+      Draw Normal Model
+      
+======================================================= */
 
 void render_model_opaque(model_draw *draw)
 {
