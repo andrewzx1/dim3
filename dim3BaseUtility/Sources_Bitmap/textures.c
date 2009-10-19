@@ -96,7 +96,7 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
       
 ======================================================= */
 
-bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool rectangle,bool pixelated)
+bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle,bool pixelated)
 {
 	int					gl_txtformat,gl_txttype,gl_bindtype;
 	GLuint				gl_id;
@@ -125,11 +125,11 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 		
 	if (bitmap->alpha_mode==alpha_mode_none) {
 		gl_txttype=GL_RGB;
-		gl_txtformat=GL_RGB;
+		gl_txtformat=compress_on?GL_COMPRESSED_RGB:GL_RGB;
 	}
 	else {
 		gl_txttype=GL_RGBA;
-		gl_txtformat=GL_RGBA;
+		gl_txtformat=compress_on?GL_COMPRESSED_RGBA:GL_RGBA;
 	}
 	
 		// load texture

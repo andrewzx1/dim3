@@ -194,7 +194,7 @@ bool map_start(bool skip_media,char *err_str)
 	sprintf(txt,"Opening %s",map.info.name);
 	console_add_system(txt);
 	
-	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,TRUE,gl_check_shader_ok());
+	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.compress_on,TRUE,gl_check_shader_ok());
 
 // supergumba -- auto generator testing
 /*
@@ -262,6 +262,10 @@ bool map_start(bool skip_media,char *err_str)
 		// reset rain
 		
 	map.rain.reset=TRUE;
+	
+		// setup FS shaders
+		
+	gl_fs_shader_map_start();
 
         // run the course script
 
@@ -318,7 +322,6 @@ bool map_start(bool skip_media,char *err_str)
 	map_movements_initialize();
 	map_lookups_setup();
 	gl_back_render_map_start();
-	gl_fs_shader_map_start();
 	
 		// map start event
 		

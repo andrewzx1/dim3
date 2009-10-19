@@ -148,7 +148,7 @@ void gui_screenshot_load(void)
 
 		// save screenshot
 
-	bitmap_data(&gui_screenshot_bitmap,data,setup.screen.x_sz,setup.screen.y_sz,FALSE,anisotropic_mode_none,mipmap_mode_none,gl_check_texture_rectangle_ok());
+	bitmap_data(&gui_screenshot_bitmap,data,setup.screen.x_sz,setup.screen.y_sz,FALSE,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok());
 	
 	free(data);
 }
@@ -170,7 +170,7 @@ void gui_background_load(char *background_path,char *bitmap_name)
 	char		path[1024];
 
 	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,gl_check_texture_rectangle_ok(),FALSE,FALSE);
+	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
 }
 
 /* =======================================================

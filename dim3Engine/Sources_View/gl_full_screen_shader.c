@@ -72,6 +72,13 @@ void gl_fs_shader_initialize(void)
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fs_shader_fbo_id);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
+	
+		// some additional setup
+		
+	gl_setup_context();
+
+		// turn off framebuffer
+		
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 
 		// create the texture

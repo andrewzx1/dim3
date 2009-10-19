@@ -157,21 +157,21 @@ bool map_textures_read(map_type *map)
 					// bitmap
 					
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
-				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compress_on,FALSE,texture->pixelated,FALSE);
 			
 				if ((!maputility_settings.in_engine) || (maputility_settings.glsl_ok)) {
 				
 						// bumpmap
 						
 					sprintf(name,"%s_n",frame->name);
-					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-					bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");		// compresses messes up normals
+					bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,FALSE,FALSE,texture->pixelated,FALSE);
 									
 						// specular map
 						
 					sprintf(name,"%s_s",frame->name);
 					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-					bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,FALSE,texture->pixelated,FALSE);
+					bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compress_on,FALSE,texture->pixelated,FALSE);
 				
 				}
 				
@@ -179,7 +179,7 @@ bool map_textures_read(map_type *map)
 					
 				sprintf(name,"%s_g",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,FALSE,texture->pixelated,TRUE);
+				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compress_on,FALSE,texture->pixelated,TRUE);
 			}
 			
 			frame++;

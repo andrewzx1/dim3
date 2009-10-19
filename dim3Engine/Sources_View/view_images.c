@@ -72,10 +72,10 @@ int view_images_load_single(char *path,bool simple)
 	image=&view.images[idx];
 
 	if (simple) {
-		bitmap_open(&image->bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+		bitmap_open(&image->bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	}
 	else {
-		bitmap_open(&image->bitmap,path,setup.anisotropic_mode,setup.mipmap_mode,FALSE,FALSE,FALSE);
+		bitmap_open(&image->bitmap,path,setup.anisotropic_mode,setup.mipmap_mode,FALSE,FALSE,FALSE,FALSE);
 	}
 
 	strcpy(image->path,path);

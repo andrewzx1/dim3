@@ -51,7 +51,7 @@ void insert_model(char *file_name)
 	
 		// open model
 		
-	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE,TRUE);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,TRUE);
 	model_open(&ins_model,file_name,TRUE);
 	
 		// bring in the bones

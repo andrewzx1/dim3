@@ -572,7 +572,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 
 			// draw texture
 
-		gl_texture_transparent_set(texture->frames[texture->animate.current_frame].bitmap.gl_id,alpha);
+		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,alpha);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 

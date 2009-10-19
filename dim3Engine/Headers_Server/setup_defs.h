@@ -43,11 +43,11 @@ and can be sold or given away.
 // anistropic mode, texture quality mode, mipmap mode, and mipmap mode all defined in baseutility.h
 
 #define fsaa_mode_none								0
-#define fsaa_mode_low								1
-#define fsaa_mode_medium							2
-#define fsaa_mode_high								3
+#define fsaa_mode_2x								1
+#define fsaa_mode_4x								2
+#define fsaa_mode_8x								3
 
-#define setup_fsaa_mode_list_def					{"None","Low","Medium","High",""}
+#define setup_fsaa_mode_list_def					{"None","2x","4x","8x",""}
 
 #define setup_joystick_mode_list_def				{"Not Used","Turn Only","Turning and Moving","Turning and Looking",""}
 
@@ -150,7 +150,7 @@ typedef struct		{
 													anisotropic_mode,mipmap_mode,fsaa_mode,
 													joystick_mode;
 						float						gamma,sound_volume,music_volume;
-						bool						lock_fps_refresh,decal_on,shadow_on,
+						bool						lock_fps_refresh,compress_on,decal_on,shadow_on,
 													always_run,toggle_run,invert_look,mouse_smooth,
 													music_on,debug_console,window,window_editor,
 													metrics_on,disable_shaders;

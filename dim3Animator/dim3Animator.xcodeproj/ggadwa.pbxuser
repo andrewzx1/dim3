@@ -18,9 +18,9 @@
 	};
 	0111608D00BE2A8F7F000001 /* menu.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1825, 15769}}";
-			sepNavSelRange = "{5733, 82}";
-			sepNavVisRange = "{5362, 832}";
+			sepNavIntBoundsRect = "{{0, 0}, {1825, 15795}}";
+			sepNavSelRange = "{5814, 0}";
+			sepNavVisRange = "{5368, 838}";
 			sepNavWindowFrame = "{{381, 192}, {1041, 747}}";
 		};
 	};
@@ -34,9 +34,9 @@
 	};
 	0111609200BE2A8F7F000001 /* texture_import.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1706, 2054}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1706, 2041}}";
 			sepNavSelRange = "{3072, 0}";
-			sepNavVisRange = "{2350, 1458}";
+			sepNavVisRange = "{2350, 1464}";
 			sepNavWindowFrame = "{{421, 209}, {1041, 747}}";
 		};
 	};
@@ -121,11 +121,11 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276928974;
-			PBXWorkspaceStateSaveDate = 276928974;
+			PBXPerProjectTemplateStateSaveDate = 277533295;
+			PBXWorkspaceStateSaveDate = 277533295;
 		};
 		perUserProjectItems = {
-			2621D434107EA57900767C9D /* PBXTextBookmark */ = 2621D434107EA57900767C9D /* PBXTextBookmark */;
+			26914051108AD4C500A80EB2 /* PBXTextBookmark */ = 26914051108AD4C500A80EB2 /* PBXTextBookmark */;
 			26FA97A110819A7C0062926D /* PBXTextBookmark */ = 26FA97A110819A7C0062926D /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
@@ -262,7 +262,7 @@
 			sepNavWindowFrame = "{{493, 173}, {1041, 747}}";
 		};
 	};
-	2621D434107EA57900767C9D /* PBXTextBookmark */ = {
+	26914051108AD4C500A80EB2 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -413,8 +413,8 @@
 	F579A01D07DFDF8400DB4213 /* insert.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 2470}}";
-			sepNavSelRange = "{1692, 0}";
-			sepNavVisRange = "{1032, 1286}";
+			sepNavSelRange = "{1688, 0}";
+			sepNavVisRange = "{1032, 1292}";
 			sepNavWindowFrame = "{{371, 227}, {1041, 747}}";
 		};
 	};
