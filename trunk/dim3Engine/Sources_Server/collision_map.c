@@ -117,13 +117,15 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
-	int						n,k,y,idx,d,dist,
+	int						n,k,y,idx,d,dist,bump_y_move,
 							hx[collide_obj_ray_spindle_count],hz[collide_obj_ray_spindle_count],vert_y[5];
 	float					move_ang,ang,fx,fy,fz;
 	double					rad;
 	bool					hits[collide_obj_ray_count];
 	d3pnt					mov,spt[collide_obj_ray_count],ept[collide_obj_ray_count],hpt[collide_obj_ray_count];
 	ray_trace_contact_type	base_contact,contacts[collide_obj_ray_count];
+	obj_type				*hit_obj;
+	map_mesh_poly_type		*poly;
 	matrix_type				mat;
 
 		// get movements out of pointers
@@ -220,17 +222,35 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		// find the one that moves the leasts
 		// as the most suitable hit point
+		
+		// also detect any bump candidates
 
 	idx=-1;
+	bump_y_move=0;
 	dist=0;
 
 	for (n=0;n!=collide_obj_ray_count;n++) {
 			
 		if (hits[n]) {
+		
+				// is this the nearest hit?
+				
 			d=collide_point_distance(&spt[n],&hpt[n]);
 			if ((d<=dist) || (idx==-1)) {
 				dist=d;
 				idx=n;
+			}
+			
+				// check if a bump candidate
+				
+			if (obj->bump.on) {
+				if (contacts[n].poly.mesh_idx!=-1) {
+					poly=&map.mesh.meshes[contacts[n].poly.mesh_idx].polys[contacts[n].poly.poly_idx];
+					if (poly->box.wall_like) {
+						y=hpt[n].y-poly->box.min.y;
+						if ((y>0) && (y<=obj->bump.high)) bump_y_move=y;
+					}
+				}
 			}
 		}
 	}
@@ -251,12 +271,22 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	if (contacts[idx].obj.uid!=-1) {
 		obj->contact.obj_uid=contacts[idx].obj.uid;
 		obj->contact.hit_face=contacts[idx].obj.hit_face;
+		
+			// check if object is bump up
+			
+		if (obj->bump.on) {
+			hit_obj=object_find_uid(obj->contact.obj_uid);
+			y=hpt[n].y-poly->box.min.y;
+			if ((y>0) && (y<=obj->bump.high)) bump_y_move=y;
+		}
 	}
 
 	if (contacts[idx].proj.uid!=-1) {
 		obj->contact.proj_uid=contacts[idx].proj.uid;
 		obj->contact.hit_face=contacts[idx].proj.hit_face;
 	}
+	
+	obj->contact.bump_y_move=bump_y_move;
 
 	return(TRUE);
 }
