@@ -174,6 +174,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			poly->dark_factor=xml_get_attribute_float_default(poly_tag,"dark_fct",1.0f);
 			poly->alpha=xml_get_attribute_float_default(poly_tag,"alpha",1.0f);
 
+			poly->bump=xml_get_attribute_boolean(poly_tag,"bump");
+
 			xml_get_attribute_text(poly_tag,"camera",poly->camera,name_str_len);
 
 			poly++;

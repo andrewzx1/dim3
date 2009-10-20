@@ -235,6 +235,7 @@ typedef struct		{
 typedef struct		{
 						int									txt_idx,ptsz,v[8];
 						float								x_shift,y_shift,dark_factor,alpha;
+						bool								bump;
 						char								camera[name_str_len];
 						map_mesh_poly_uv_type				uv[max_mesh_poly_uv_layer];
 						map_mesh_poly_box_type				box;
