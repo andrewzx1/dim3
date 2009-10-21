@@ -36,7 +36,6 @@ extern int map_auto_generate_mesh_change_texture(int txt_idx);
 extern void map_auto_generate_mesh_set_lock(map_type *map);
 extern void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
-extern void map_auto_generate_mesh_set_bump_last_poly(map_type *map);
 
 extern void map_auto_generate_mesh_save_current(void);
 extern void map_auto_generate_mesh_restore_current(void);
@@ -94,7 +93,6 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 
 			map_auto_generate_poly_from_square_wall(ag_constant_step_side_wid,(z+ag_constant_step_story_size),step_wid,(z+ag_constant_step_story_size),y,y2,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-			map_auto_generate_mesh_set_bump_last_poly(map);
 
 			map_auto_generate_poly_from_square_floor(ag_constant_step_side_wid,(z+ag_constant_step_story_size),step_wid,z,y,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);

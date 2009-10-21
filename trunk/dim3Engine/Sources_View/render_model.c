@@ -150,12 +150,26 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n;
+	d3ang			old_ang;
+	
+		// if held weapon, fix rotation
+		
+	if (draw->no_rot.on) {
+		memmove(&old_ang,&draw->setup.ang,sizeof(d3ang));
+		memmove(&draw->setup.ang,&draw->no_rot.ang,sizeof(d3ang));
+	}
 	
 		// create the normals
 		
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
 		model_create_draw_normals(mdl,n,&draw->setup);
+	}
+	
+		// restore rotation
+		
+	if (draw->no_rot.on) {
+		memmove(&draw->setup.ang,&old_ang,sizeof(d3ang));
 	}
 }
 

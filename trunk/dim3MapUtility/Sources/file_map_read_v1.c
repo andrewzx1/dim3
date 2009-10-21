@@ -124,7 +124,6 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 	mesh_poly->y_shift=seg->y_shift;
 	mesh_poly->dark_factor=seg->dark_factor;
 	mesh_poly->alpha=seg->alpha;
-	mesh_poly->bump=FALSE;
 
 	if (seg->pass_through || (seg->type==sg_ambient_wall) || (seg->type==sg_ambient_fc)) map_mesh->flag.pass_through=TRUE;
 	if (seg->moveable) map_mesh->flag.moveable=TRUE;

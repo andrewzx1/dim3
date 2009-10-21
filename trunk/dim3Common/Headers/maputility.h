@@ -225,7 +225,7 @@ typedef struct		{
 															frame,txt_frame_offset,
 															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
 						float								x_shift_offset,y_shift_offset;
-						bool								shift_on,shader_on,transparent_on,glow_on;
+						bool								bump_ok,shift_on,shader_on,transparent_on,glow_on;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -235,7 +235,6 @@ typedef struct		{
 typedef struct		{
 						int									txt_idx,ptsz,v[8];
 						float								x_shift,y_shift,dark_factor,alpha;
-						bool								bump;
 						char								camera[name_str_len];
 						map_mesh_poly_uv_type				uv[max_mesh_poly_uv_layer];
 						map_mesh_poly_box_type				box;

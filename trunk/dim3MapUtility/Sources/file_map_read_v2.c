@@ -111,8 +111,6 @@ bool read_single_mesh_v2(map_type *map,portal_type *portal,int mesh_idx,int mesh
 			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->x_shift,&poly->y_shift);
 			poly->dark_factor=xml_get_attribute_float_default(poly_tag,"dark_fct",1.0f);
 			poly->alpha=xml_get_attribute_float_default(poly_tag,"alpha",1.0f);
-			
-			poly->bump=FALSE;
 
 			poly++;
 			poly_tag=xml_findnextchild(poly_tag);
