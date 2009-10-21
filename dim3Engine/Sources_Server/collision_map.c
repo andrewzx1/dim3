@@ -246,7 +246,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 			if (obj->bump.on) {
 				if (contacts[n].poly.mesh_idx!=-1) {
 					poly=&map.mesh.meshes[contacts[n].poly.mesh_idx].polys[contacts[n].poly.poly_idx];
-					if (poly->bump) {
+					if (poly->draw.bump_ok) {
 						y=hpt[n].y-poly->box.min.y;
 						if ((y>0) && (y<=obj->bump.high)) bump_y_move=y;
 					}

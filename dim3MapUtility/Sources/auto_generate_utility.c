@@ -696,17 +696,6 @@ void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float
 	}
 }
 
-void map_auto_generate_mesh_set_bump_last_poly(map_type *map)
-{
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-
-	mesh=&map->mesh.meshes[map_ag_mesh_idx];
-	poly=&mesh->polys[mesh->npoly-1];
-
-	poly->bump=TRUE;
-}
-
 /* =======================================================
 
       Create Simple Lights

@@ -489,8 +489,6 @@ void write_single_mesh(map_mesh_type *mesh)
 
 		if (poly->dark_factor!=1.0f) xml_add_attribute_float("dark_fct",poly->dark_factor);
 		if (poly->alpha!=1.0f) xml_add_attribute_float("alpha",poly->alpha);
-
-		if (poly->bump) xml_add_attribute_boolean("bump",poly->bump);
 		
 		if (poly->camera[0]!=0x0) xml_add_attribute_text("camera",poly->camera);
 

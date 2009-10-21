@@ -177,6 +177,75 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	}
 }
 
+void map_prepare_mesh_poly_bump(map_mesh_type *mesh)
+{
+	int					n,k,t,p1_idx,p2_idx;
+	bool				p1_ok,p2_ok,bump_ok;
+	d3pnt				*pt;
+	map_mesh_poly_type	*poly,*poly2;
+	
+	for (n=0;n!=mesh->npoly;n++) {
+		poly=&mesh->polys[n];
+		poly->draw.bump_ok=FALSE;
+		
+			// only walls can bump
+			
+		if (!poly->box.wall_like) continue;
+		
+			// only quads
+			
+		if (poly->ptsz!=4) continue;
+		
+			// only walls with two top vertexes can bump
+			
+		p1_idx=p2_idx=-1;
+		
+		for (k=0;k!=poly->ptsz;k++) {
+			pt=&mesh->vertexes[poly->v[k]];
+			
+			if (pt->y==poly->box.min.y) {
+				if (p1_idx==-1) {
+					p1_idx=poly->v[k];
+				}
+				else {
+					p2_idx=poly->v[k];
+					break;
+				}
+			}
+		}
+		
+		if (p2_idx==-1) continue;
+			
+			// only bump if top vertexes are connected
+			// to a floor segment in the same mesh
+			
+		bump_ok=FALSE;
+		
+		for (t=0;t!=mesh->npoly;t++) {
+			poly2=&mesh->polys[t];
+			if (poly2->box.wall_like) continue;
+			
+			p1_ok=p2_ok=FALSE;
+			
+			for (k=0;k!=poly2->ptsz;k++) {
+				p1_ok|=(poly2->v[k]==p1_idx);
+				p2_ok|=(poly2->v[k]==p2_idx);
+			}
+			
+			if ((p1_ok) && (p2_ok)) {
+				bump_ok=TRUE;
+				break;
+			}
+		}
+		
+		if (!bump_ok) continue;
+			
+			// ok to bump!
+		
+		poly->draw.bump_ok=TRUE;
+	}
+}
+
 void map_prepare_mesh_box(map_mesh_type *mesh)
 {
 	int						n;
@@ -306,6 +375,10 @@ void map_prepare(map_type *map)
 			*all_sptr++=(short)k;
 			poly++;
 		}
+		
+			// setup bump flags
+			
+		map_prepare_mesh_poly_bump(mesh);
 
 			// setup boxes
 
