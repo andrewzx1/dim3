@@ -1133,7 +1133,7 @@ void object_move_normal(obj_type *obj)
 
 	bump_y_move=0;
 
-	if (obj->bump.on) {
+	if ((obj->bump.on) && (obj->air_mode==am_ground)) {
 
 		if (collide_object_to_map_bump(obj,i_xmove,i_ymove,i_zmove,&bump_y_move)) {
 

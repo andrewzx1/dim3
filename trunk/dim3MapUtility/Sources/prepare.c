@@ -217,13 +217,14 @@ void map_prepare_mesh_poly_bump(map_mesh_type *mesh)
 		if (p2_idx==-1) continue;
 			
 			// only bump if top vertexes are connected
-			// to a floor segment in the same mesh
+			// to a flat floor segment in the same mesh
 			
 		bump_ok=FALSE;
 		
 		for (t=0;t!=mesh->npoly;t++) {
 			poly2=&mesh->polys[t];
 			if (poly2->box.wall_like) continue;
+			if (!poly2->box.flat) continue;
 			
 			p1_ok=p2_ok=FALSE;
 			
