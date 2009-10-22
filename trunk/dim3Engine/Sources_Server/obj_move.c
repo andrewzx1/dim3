@@ -1041,7 +1041,7 @@ void object_move_normal(obj_type *obj)
 	int					i_xmove,i_ymove,i_zmove,bump_y_move,
 						start_y,fall_damage,hit_obj_uid;
     float				xmove,zmove,ymove;
-	bool				bump_once,push_once,old_falling;
+	bool				push_once,old_falling;
 	d3pnt				old_pnt;
 
 		// get object motion
@@ -1130,7 +1130,7 @@ void object_move_normal(obj_type *obj)
 		// check if we will be hitting a bump up
 		// in the course of this move, if so, bump up
 		// now and if no movement, then bump back down
-/* supergumba
+
 	bump_y_move=0;
 
 	if (obj->bump.on) {
@@ -1147,7 +1147,7 @@ void object_move_normal(obj_type *obj)
 			}
 		}
 	}
-*/
+
 		// if on ground, stop all downward motion
 		// and forces
 	
@@ -1169,7 +1169,6 @@ void object_move_normal(obj_type *obj)
 			// hitting another object or bumping can force the
 			// move to stop and then need to be retried
 			
-		bump_once=FALSE;
 		push_once=FALSE;
 		hit_obj_uid=-1;
 	
@@ -1178,30 +1177,6 @@ void object_move_normal(obj_type *obj)
 		while (TRUE) {
 
 			if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
-			
-				// check bump ups
-				
-			if ((!bump_once) && (obj->bump.on)) {
-					
-				if ((obj->contact.bump_y_move!=0) && (obj->air_mode==am_ground)) {
-				
-					bump_once=TRUE;
-					
-					memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
-					
-					bump_y_move=obj->contact.bump_y_move;
-					
-					obj->pnt.y-=bump_y_move;
-					obj->bump.smooth_offset+=bump_y_move;
-					obj->contact.bump_y_move=0;
-					
-					i_xmove=(int)xmove;
-					i_ymove=(int)ymove;
-					i_zmove=(int)zmove;
-
-					continue;
-				}
-			}
 
 				// push objects, then try the movement again
 				// save the hit object uid so the hit still registers
@@ -1251,13 +1226,11 @@ void object_move_normal(obj_type *obj)
 			// if no movement, get rid of any bump
 
 		else {
-/* supergumba
 			if (bump_y_move!=0) {
 				bump_y_move=pin_downward_movement_obj(obj,bump_y_move);
 				obj->pnt.y+=bump_y_move;
 				obj->bump.smooth_offset-=bump_y_move;
 			}
-*/
 		}
 	}
 	

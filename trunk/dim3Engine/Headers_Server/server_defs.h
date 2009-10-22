@@ -395,7 +395,7 @@ typedef struct		{
 			
 typedef struct		{
 						int						obj_uid,proj_uid,hit_face,
-												liquid_idx,bump_y_move;
+												liquid_idx;
 						bool					object_on,projectile_on,force_on,
 												melee,pushable;
 						poly_pointer_type		hit_poly,stand_poly,head_poly;
