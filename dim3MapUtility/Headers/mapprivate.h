@@ -36,12 +36,6 @@ typedef struct		{
                     } maputility_settings_type;
 
 //
-// lighting constants
-//
-
-#define light_tessel_overlap_pixel					0
-
-//
 // old map version structures (v1)
 //
 

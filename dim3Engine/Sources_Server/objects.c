@@ -143,8 +143,6 @@ void object_clear_contact(obj_contact *contact)
 	contact->obj_uid=-1;
 	contact->proj_uid=-1;
 	
-	contact->bump_y_move=0;
-	
 	contact->melee=FALSE;
 }
 
