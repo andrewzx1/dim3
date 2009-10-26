@@ -46,6 +46,7 @@ and can be sold or given away.
 #define shadow_max_vertexes								10240
 #define shadow_max_polys								128
 #define shadow_max_ray_trace_vertexes					10240
+#define shadow_infinite_light_adjust					100
 
 typedef struct			{
 							int							type,idx;
@@ -55,7 +56,6 @@ typedef struct			{
 typedef struct			{
 							double						intensity;
 							d3pnt						pnt;
-							d3col						col;
 						} shadow_render_light_type;
 
 typedef struct			{

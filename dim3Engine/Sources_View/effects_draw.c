@@ -329,8 +329,9 @@ void effect_draw(int tick)
 	gl_lights_calc_vertex_setup_none();
 		
 		// draw effects
-		
-	for (n=0;n!=view.render->draw_list.count;n++) {
+		// draw backwards to sort back to front
+
+	for (n=(view.render->draw_list.count-1);n>=0;n--) {
 		if (view.render->draw_list.items[n].type!=view_render_type_effect) continue;
 
 		effect=&server.effects[view.render->draw_list.items[n].idx];

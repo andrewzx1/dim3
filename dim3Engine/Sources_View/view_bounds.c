@@ -68,6 +68,7 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 		// check if points are behind z
 		
 	above_z=FALSE;
+	behind_z=FALSE;
 	
 	for (n=0;n!=8;n++) {
 		if (gl_project_in_view_z(cbx[n],cby[n],cbz[n])) {

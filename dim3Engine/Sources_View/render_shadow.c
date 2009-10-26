@@ -142,15 +142,14 @@ void shadow_shutdown(void)
       
 ======================================================= */
 
-void shadow_render_update(shadow_render_type *shad,d3pnt *pnt,view_light_spot_type *lspot)
+void shadow_render_update(shadow_render_type *shad,d3pnt *pnt,d3pnt *light_pnt,int light_intensity)
 {
 	memmove(&shad->cur_item.pnt,pnt,sizeof(d3pnt));
-	memmove(&shad->cur_light.pnt,&lspot->pnt,sizeof(d3pnt));
-	memmove(&shad->cur_light.col,&lspot->col,sizeof(d3col));
-	shad->cur_light.intensity=lspot->intensity;
+	memmove(&shad->cur_light.pnt,light_pnt,sizeof(d3pnt));
+	shad->cur_light.intensity=light_intensity;
 }
 
-shadow_render_type* shadow_find_existing_render(int item_type,int item_idx,d3pnt *pnt,view_light_spot_type *lspot,bool *shadow_changed)
+shadow_render_type* shadow_find_existing_render(int item_type,int item_idx,d3pnt *pnt,d3pnt *light_pnt,int light_intensity,bool *shadow_changed)
 {
 	int					n;
 	shadow_render_type	*shad;
@@ -168,15 +167,15 @@ shadow_render_type* shadow_find_existing_render(int item_type,int item_idx,d3pnt
 
 			if ((shad->cur_item.pnt.x!=pnt->x) || (shad->cur_item.pnt.y!=pnt->y) || (shad->cur_item.pnt.z!=pnt->z)) {
 				*shadow_changed=TRUE;
-				shadow_render_update(shad,pnt,lspot);
+				shadow_render_update(shad,pnt,light_pnt,light_intensity);
 				return(shad);
 			}
 
 				// has lighting changed?
 
-			if ((shad->cur_light.intensity!=lspot->intensity) || (shad->cur_light.pnt.x!=lspot->pnt.x) || (shad->cur_light.pnt.y!=lspot->pnt.y) || (shad->cur_light.pnt.z!=lspot->pnt.z) || (shad->cur_light.col.r!=lspot->col.r) || (shad->cur_light.col.g!=lspot->col.g) || (shad->cur_light.col.b!=lspot->col.b)) {
+			if ((shad->cur_light.intensity!=light_intensity) || (shad->cur_light.pnt.x!=light_pnt->x) || (shad->cur_light.pnt.y!=light_pnt->y) || (shad->cur_light.pnt.z!=light_pnt->z)) {
 				*shadow_changed=TRUE;
-				shadow_render_update(shad,pnt,lspot);
+				shadow_render_update(shad,pnt,light_pnt,light_intensity);
 				return(shad);
 			}
 
@@ -193,7 +192,7 @@ shadow_render_type* shadow_find_existing_render(int item_type,int item_idx,d3pnt
 	return(NULL);
 }
 
-shadow_render_type* shadow_create_new_render(int item_type,int item_idx,d3pnt *pnt,view_light_spot_type *lspot)
+shadow_render_type* shadow_create_new_render(int item_type,int item_idx,d3pnt *pnt,d3pnt *light_pnt,int light_intensity)
 {
 	int					n,idx;
 	shadow_render_type	*shad;
@@ -228,7 +227,7 @@ shadow_render_type* shadow_create_new_render(int item_type,int item_idx,d3pnt *p
 	shad->cur_item.type=item_type;
 	shad->cur_item.idx=item_idx;
 
-	shadow_render_update(shad,pnt,lspot);
+	shadow_render_update(shad,pnt,light_pnt,light_intensity);
 
 	return(shad);
 }
@@ -244,24 +243,24 @@ void shadow_render_free(shadow_render_type *shad)
       
 ======================================================= */
 
-view_light_spot_type* shadow_get_light_spot(d3pnt *pnt,int high)
+void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_intensity)
 {
 	view_light_spot_type			*lspot;
 
 		// get closest light
 
 	lspot=gl_light_find_closest_light(pnt->x,pnt->y,pnt->z);
+	if (lspot!=NULL) {
+		memmove(light_pnt,&lspot->pnt,sizeof(d3pnt));
+		*light_intensity=lspot->intensity;
+		return;
+	}
 
 		// if no light, get light directly above
 
-	if (lspot==NULL) {
-		lspot=&shadow_above_lspot;
-		memmove(&lspot->pnt,pnt,sizeof(d3pnt));
-		lspot->pnt.y-=map_enlarge*100;
-		lspot->intensity=(map_enlarge*100)+high;
-	}
-
-	return(lspot);
+	memmove(light_pnt,pnt,sizeof(d3pnt));
+	light_pnt->y-=(map_enlarge*100);
+	*light_intensity=(map_enlarge*100)+high;
 }
 
 /* =======================================================
@@ -272,18 +271,17 @@ view_light_spot_type* shadow_get_light_spot(d3pnt *pnt,int high)
 
 bool shadow_get_volume(d3pnt *pnt,int high,int *px,int *py,int *pz)
 {
-	int							n;
+	int							n,light_intensity;
 	float						f_dist;
 	bool						hits[8];
-	d3pnt						spt[8],ept[8],hpt[8],*sp,*ep;
+	d3pnt						light_pnt,spt[8],ept[8],hpt[8],*sp,*ep;
 	d3vct						ray_move;
-	view_light_spot_type		*lspot;
 	ray_trace_contact_type		base_contact;
 
 		// get light and draw distance
 
-	lspot=shadow_get_light_spot(pnt,high);
-	f_dist=(float)lspot->intensity;
+	shadow_get_light_point(pnt,high,&light_pnt,&light_intensity);
+	f_dist=(float)light_intensity;
 
 		// ray trace bounding box
 		
@@ -295,11 +293,11 @@ bool shadow_get_volume(d3pnt *pnt,int high,int *px,int *py,int *pz)
 		sp->y=py[n];
 		sp->z=pz[n];
 
-		vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,sp->x,sp->y,sp->z);
+		vector_create(&ray_move,light_pnt.x,light_pnt.y,light_pnt.z,sp->x,sp->y,sp->z);
 				
-		ep->x=lspot->pnt.x-(int)(ray_move.x*f_dist);
-		ep->y=lspot->pnt.y-(int)(ray_move.y*f_dist);
-		ep->z=lspot->pnt.z-(int)(ray_move.z*f_dist);
+		ep->x=light_pnt.x-(int)(ray_move.x*f_dist);
+		ep->y=light_pnt.y-(int)(ray_move.y*f_dist);
+		ep->z=light_pnt.z-(int)(ray_move.z*f_dist);
 		
 		sp++;
 		ep++;
@@ -761,18 +759,17 @@ bool shadow_render_mesh_poly_bounds_check(d3pnt *min,d3pnt *max,map_mesh_poly_ty
 void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 {
 	int							n,k,t,ray_count,poly_count,trig_count,trig_offset,
-								vertex_offset,index_offset;
+								vertex_offset,index_offset,light_intensity;
 	int							mesh_vertex_offset[max_model_mesh];
 	double						dx,dy,dz,d_alpha;
 	bool						light_changed;
 	float						*vp,*vl,*cl;
 	unsigned short				*index_ptr;
 	d3vct						*vct;
-	d3pnt						*spt,*hpt,bound_min,bound_max;
+	d3pnt						*spt,*hpt,bound_min,bound_max,light_pnt;
     model_trig_type				*trig;
 	model_mesh_type				*mesh;
 	model_type					*mdl;
-	view_light_spot_type		*lspot;
 	shadow_render_type			*shad;
 	
 		// get model
@@ -782,21 +779,28 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	
 		// get light
 
-	lspot=shadow_get_light_spot(&draw->pnt,draw->size.y);
+	shadow_get_light_point(&draw->pnt,draw->size.y,&light_pnt,&light_intensity);
+	
+		// adjust light if angle would be it infinite
+		
+	if ((light_pnt.y>=(draw->pnt.y-(draw->size.y+shadow_infinite_light_adjust))) && (light_pnt.y<=(draw->pnt.y+shadow_infinite_light_adjust))) {
+		light_pnt.y=(draw->pnt.y-draw->size.y)-shadow_infinite_light_adjust;
+	}
 
 		// get render to use
 
-	shad=shadow_find_existing_render(item_type,item_idx,&draw->pnt,lspot,&light_changed);
+	shad=shadow_find_existing_render(item_type,item_idx,&draw->pnt,&light_pnt,light_intensity,&light_changed);
 	if (shad!=NULL) {
 
 			// no light change or animating, just redraw setup
+			
 		if (!light_changed) {
 			shadow_render_generic(shad);
 			return;
 		}
 	}
 	else {
-		shad=shadow_create_new_render(item_type,item_idx,&draw->pnt,lspot);
+		shad=shadow_create_new_render(item_type,item_idx,&draw->pnt,&light_pnt,light_intensity);
 	}
 	
 		// find all polys the shadow ray hits
@@ -809,7 +813,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 
 		// get distance alpha factor
 
-	d_alpha=(double)lspot->intensity;
+	d_alpha=(double)light_intensity;
 	d_alpha=1.0/(d_alpha*d_alpha);
 
 		// setup the rays
@@ -837,9 +841,9 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 			spt->y=(int)*vp++;
 			spt->z=(int)*vp++;
 				
-			vct->x=(float)((spt->x-lspot->pnt.x)*100);
-			vct->y=(float)((spt->y-lspot->pnt.y)*100);
-			vct->z=(float)((spt->z-lspot->pnt.z)*100);
+			vct->x=(float)((spt->x-light_pnt.x)*100);
+			vct->y=(float)((spt->y-light_pnt.y)*100);
+			vct->z=(float)((spt->z-light_pnt.z)*100);
 				
 			spt++;
 			vct++;
@@ -946,9 +950,9 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 
 				// color
 
-			dx=(hpt->x-lspot->pnt.x);
-			dy=(hpt->y-lspot->pnt.y);
-			dz=(hpt->z-lspot->pnt.z);
+			dx=(hpt->x-light_pnt.x);
+			dy=(hpt->y-light_pnt.y);
+			dz=(hpt->z-light_pnt.z);
 			hpt++;
 
 			*cl++=0.0f;
@@ -979,16 +983,15 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 void shadow_render_mesh(int mesh_idx)
 {
 	int							n,k,t,vertex_offset,index_offset,poly_count,
-								ntrig,trig_count,trig_offset;
+								ntrig,trig_count,trig_offset,light_intensity;
 	double						dx,dy,dz,d_alpha;
 	bool						light_changed;
 	float						*vl,*cl;
 	unsigned short				*index_ptr;
 	d3vct						*vct;
-	d3pnt						*pt,*spt,*hpt,bound_min,bound_max;
+	d3pnt						*pt,*spt,*hpt,bound_min,bound_max,light_pnt;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
-	view_light_spot_type		*lspot;
 	shadow_render_type			*shad;
 	
 	mesh=&map.mesh.meshes[mesh_idx];
@@ -996,11 +999,17 @@ void shadow_render_mesh(int mesh_idx)
 	
 		// get light
 
-	lspot=shadow_get_light_spot(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y));
+	shadow_get_light_point(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y),&light_pnt,&light_intensity);
+	
+		// adjust light if angle would be it infinite
+		
+	if ((light_pnt.y>=(mesh->box.min.y+shadow_infinite_light_adjust)) && (light_pnt.y<=(mesh->box.max.y+shadow_infinite_light_adjust))) {
+		light_pnt.y=mesh->box.min.y-shadow_infinite_light_adjust;
+	}
 	
 		// get render to use
 
-	shad=shadow_find_existing_render(view_render_type_mesh,mesh_idx,&mesh->box.mid,lspot,&light_changed);
+	shad=shadow_find_existing_render(view_render_type_mesh,mesh_idx,&mesh->box.mid,&light_pnt,light_intensity,&light_changed);
 	if (shad!=NULL) {
 
 			// no light change, just redraw setup
@@ -1011,7 +1020,7 @@ void shadow_render_mesh(int mesh_idx)
 		}
 	}
 	else {
-		shad=shadow_create_new_render(view_render_type_mesh,mesh_idx,&mesh->box.mid,lspot);
+		shad=shadow_create_new_render(view_render_type_mesh,mesh_idx,&mesh->box.mid,&light_pnt,light_intensity);
 	}
 
 		// find all polys the shadow ray hits
@@ -1024,7 +1033,7 @@ void shadow_render_mesh(int mesh_idx)
 
 		// get distance alpha factor
 
-	d_alpha=(double)lspot->intensity;
+	d_alpha=(double)light_intensity;
 	d_alpha=1.0/(d_alpha*d_alpha);
 
 		// setup the rays
@@ -1038,9 +1047,9 @@ void shadow_render_mesh(int mesh_idx)
 		spt->y=pt->y;
 		spt->z=pt->z;
 		
-		vct->x=(float)((spt->x-lspot->pnt.x)*100);
-		vct->y=(float)((spt->y-lspot->pnt.y)*100);
-		vct->z=(float)((spt->z-lspot->pnt.z)*100);
+		vct->x=(float)((spt->x-light_pnt.x)*100);
+		vct->y=(float)((spt->y-light_pnt.y)*100);
+		vct->z=(float)((spt->z-light_pnt.z)*100);
 		
 		spt++;
 		vct++;
@@ -1143,9 +1152,9 @@ void shadow_render_mesh(int mesh_idx)
 
 				// color
 
-			dx=(double)(hpt->x-lspot->pnt.x);
-			dy=(double)(hpt->y-lspot->pnt.y);
-			dz=(double)(hpt->z-lspot->pnt.z);
+			dx=(double)(hpt->x-light_pnt.x);
+			dy=(double)(hpt->y-light_pnt.y);
+			dz=(double)(hpt->z-light_pnt.z);
 			
 			hpt++;
 

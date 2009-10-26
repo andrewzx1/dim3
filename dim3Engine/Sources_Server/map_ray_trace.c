@@ -348,6 +348,115 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int *hit_face,int x
 
 /* =======================================================
 
+      Ray Trace Bounds
+      
+======================================================= */
+
+void ray_trace_get_ray_bounds(int cnt,d3pnt *spts,d3pnt *epts,d3pnt *min,d3pnt *max)
+{
+	int				n;
+	d3pnt			*spt,*ept;
+	
+		// find bounds box for all rays
+		
+	spt=spts;
+	ept=epts;
+	
+	if (spt->x<ept->x) {
+		min->x=spt->x;
+		max->x=ept->x;
+	}
+	else {
+		min->x=ept->x;
+		max->x=spt->x;
+	}
+
+	if (spt->y<ept->y) {
+		min->y=spt->y;
+		max->y=ept->y;
+	}
+	else {
+		min->y=ept->y;
+		max->y=spt->y;
+	}
+
+	if (spt->z<ept->z) {
+		min->z=spt->z;
+		max->z=ept->z;
+	}
+	else {
+		min->z=ept->z;
+		max->z=spt->z;
+	}
+
+	for (n=1;n<cnt;n++) {
+
+		spt++;
+		ept++;
+
+		if (spt->x<min->x) min->x=spt->x;
+		if (ept->x<min->x) min->x=ept->x;
+		if (spt->x>max->x) max->x=spt->x;
+		if (ept->x>max->x) max->x=ept->x;
+
+		if (spt->y<min->y) min->y=spt->y;
+		if (ept->y<min->y) min->y=ept->y;
+		if (spt->y>max->y) max->y=spt->y;
+		if (ept->y>max->y) max->y=ept->y;
+
+		if (spt->z<min->z) min->z=spt->z;
+		if (ept->z<min->z) min->z=ept->z;
+		if (spt->z>max->z) max->z=spt->z;
+		if (ept->z>max->z) max->z=ept->z;
+	}
+}
+
+/* =======================================================
+
+      Ray Trace Mesh Bounds
+      
+======================================================= */
+
+bool ray_trace_mesh_bound_check(map_mesh_type *mesh,d3pnt *min,d3pnt *max)
+{
+		// compare x/z first as it's a better chance
+		// for an elimination
+
+	if (max->x<mesh->box.min.x) return(FALSE);
+	if (min->x>mesh->box.max.x) return(FALSE);
+	if (max->z<mesh->box.min.z) return(FALSE);
+	if (min->z>mesh->box.max.z) return(FALSE);
+	if (max->y<mesh->box.min.y) return(FALSE);
+	if (min->y>mesh->box.max.y) return(FALSE);
+		
+		// skip off and pass through meshes
+		// we do this second as I suspect there will
+		// be a limited number of these, a lot less then
+		// will be eliminated with the bounds check
+
+	if (!mesh->flag.on) return(FALSE);
+	if (mesh->flag.pass_through) return(FALSE);
+	
+	return(TRUE);
+}
+
+inline bool ray_trace_mesh_poly_bound_check(map_mesh_poly_type *poly,d3pnt *min,d3pnt *max)
+{
+		// compare x/z first as it's a better chance
+		// for an elimination
+
+	if (max->x<poly->box.min.x) return(FALSE);
+	if (min->x>poly->box.max.x) return(FALSE);
+	if (max->z<poly->box.min.z) return(FALSE);
+	if (min->z>poly->box.max.z) return(FALSE);
+	if (max->y<poly->box.min.y) return(FALSE);
+	if (min->y>poly->box.max.y) return(FALSE);
+	
+	return(TRUE);
+}
+
+/* =======================================================
+
       Ray Trace Objects
       
 ======================================================= */
@@ -430,6 +539,58 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face
 	return(-1.0f);
 }
 
+void ray_trace_object_set_hitbox(obj_type *obj,int hit_box_idx,ray_trace_contact_type *contact)
+{
+	if (contact->origin!=poly_ray_trace_origin_projectile) {
+		if (hit_box_idx!=-1) {
+			obj->hit_box.obj_hit_box_idx=hit_box_idx;
+		}
+		else {
+			obj->hit_box.obj_hit_box_idx=-1;
+		}
+	}
+	else {
+		if (hit_box_idx!=-1) {
+			obj->hit_box.proj_hit_box_idx=hit_box_idx;
+		}
+		else {
+			obj->hit_box.proj_hit_box_idx=-1;
+		}
+	}
+}
+
+inline bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray_trace_contact_type *contact)
+{
+	int			x,z,radius;
+	
+		// object a hit candidate?
+
+	if ((obj->hidden) || (obj->pickup.on) || (obj->uid==contact->obj.ignore_uid)) return(FALSE);
+	if (((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) || ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on))) return(FALSE);
+	
+		// rough y vector box check
+		
+	if (max->y<(obj->pnt.y-obj->size.y)) return(FALSE);
+	if (min->y>obj->pnt.y) return(FALSE);
+	
+		// rough x/z vector box checks
+		
+	x=obj->pnt.x;
+	z=obj->pnt.z;
+
+	radius=obj->size.x;
+	if (obj->size.z>radius) radius=obj->size.z;
+	
+	radius=radius>>1;
+	
+	if (max->x<(x-radius)) return(FALSE);
+	if (min->x>(x+radius)) return(FALSE);
+	if (max->z<(z-radius)) return(FALSE);
+	if (min->z>(z+radius)) return(FALSE);
+	
+	return(TRUE);
+}
+
 /* =======================================================
 
       Ray Trace Projectiles
@@ -464,13 +625,41 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_
 	return(ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang));
 }
 
+inline bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *max,ray_trace_contact_type *contact)
+{
+	int			x,z,radius;
+	
+		// is projectile a hit candidate?
+
+	if (proj->uid==contact->proj.ignore_uid) return(FALSE);
+	
+		// rough y vector box check
+		
+	if (max->y<(proj->pnt.y-proj->size.y)) return(FALSE);
+	if (min->y>proj->pnt.y) return(FALSE);
+	
+		// rough x/z vector box checks
+		
+	x=proj->pnt.x;
+	z=proj->pnt.z;
+
+	radius=proj->size.radius>>1;
+	
+	if (max->x<(x-radius)) return(FALSE);
+	if (min->x>(x+radius)) return(FALSE);
+	if (max->z<(z-radius)) return(FALSE);
+	if (min->z>(z+radius)) return(FALSE);
+
+	return(TRUE);
+}
+
 /* =======================================================
 
       Ray Trace Map
       
 ======================================================= */
 
-void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
+void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
 {
 	int							n,hit_face,hit_box_idx;
 	float						t;
@@ -481,8 +670,6 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 	map_mesh_poly_type			*poly;
 	ray_trace_check_item_type	*item;
 	
-	pt.x=pt.y=pt.z=0;
-
 		// check all hit candidates
 
 	item=ray_item_list;
@@ -510,24 +697,8 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 
 				contact->obj.uid=obj->uid;
 				contact->obj.hit_face=hit_face;
-
-				if (contact->origin!=poly_ray_trace_origin_projectile) {
-					if (hit_box_idx!=-1) {
-						obj->hit_box.obj_hit_box_idx=hit_box_idx;
-					}
-					else {
-						obj->hit_box.obj_hit_box_idx=-1;
-					}
-				}
-				else {
-					if (hit_box_idx!=-1) {
-						obj->hit_box.proj_hit_box_idx=hit_box_idx;
-					}
-					else {
-						obj->hit_box.proj_hit_box_idx=-1;
-					}
-				}
-
+				
+				ray_trace_object_set_hitbox(obj,hit_box_idx,contact);
 				break;
 
 			case ray_trace_check_item_projectile:
@@ -593,6 +764,130 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 	}
 }
 
+void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
+{
+	int							n,k,hit_face,hit_box_idx,poly_count;
+	short						*poly_idx;
+	float						t;
+	d3pnt						pt,min,max;
+	obj_type					*obj;
+	proj_type					*proj;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	
+		// get bounds for all vectors
+		// and use those as a collision check
+		// this is rough, but going through all
+		// the meshes is actually longer than
+		// dealing with a few missed hits
+
+	ray_trace_get_ray_bounds(1,spt,ept,&min,&max);
+
+		// check objects
+
+	if (contact->obj.on) {
+	
+		for (n=0;n!=server.count.obj;n++) {
+		
+			obj=&server.objs[n];
+			if (!ray_trace_object_bound_check(obj,&min,&max,contact)) continue;
+			
+			t=ray_trace_object(spt,ept,vct,&pt,&hit_face,&hit_box_idx,obj);
+			if (t==-1.0f) continue;
+			if (t>=(*hit_t)) continue;
+			
+			*hit_t=t;
+			hpt->x=pt.x;
+			hpt->y=pt.y;
+			hpt->z=pt.z;
+		
+			ray_trace_contact_clear(contact);
+
+			contact->obj.uid=obj->uid;
+			contact->obj.hit_face=hit_face;
+			
+			ray_trace_object_set_hitbox(obj,hit_box_idx,contact);
+		}
+	}
+	
+		// check projectiles
+		
+	if (contact->proj.on) {
+	
+		for (n=0;n!=server.count.proj;n++) {
+
+			proj=&server.projs[n];
+			if (!ray_trace_projectile_bound_check(proj,&min,&max,contact)) continue;
+			
+			t=ray_trace_projectile(spt,ept,vct,&pt,&hit_face,proj);
+			if (t==-1.0f) continue;
+			if (t>=(*hit_t)) continue;
+				
+			*hit_t=t;
+			hpt->x=pt.x;
+			hpt->y=pt.y;
+			hpt->z=pt.z;
+			
+			ray_trace_contact_clear(contact);
+
+			contact->proj.uid=proj->uid;
+			contact->proj.hit_face=hit_face;
+		}
+	}
+
+		// check all meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		mesh=&map.mesh.meshes[n];
+		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
+		
+			// check polys, use the poly
+			// reduced list to save time
+						
+		switch (contact->hit_mode) {
+		
+			case poly_ray_trace_hit_mode_wall_only:
+				poly_count=mesh->poly_list.wall_count;
+				poly_idx=mesh->poly_list.wall_idxs;
+				break;
+				
+			case poly_ray_trace_hit_mode_floor_only:
+				poly_count=mesh->poly_list.floor_count;
+				poly_idx=mesh->poly_list.floor_idxs;
+				break;
+			
+			default:
+				poly_count=mesh->poly_list.all_count;
+				poly_idx=mesh->poly_list.all_idxs;
+				break;
+				
+		}
+			
+		for (k=0;k!=poly_count;k++) {
+
+			poly=&mesh->polys[poly_idx[k]];
+			if (!ray_trace_mesh_poly_bound_check(poly,&min,&max)) continue;
+
+			t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,poly);
+			if (t==-1.0f) continue;
+			if (t>=(*hit_t)) continue;
+			
+			*hit_t=t;
+			hpt->x=pt.x;
+			hpt->y=pt.y;
+			hpt->z=pt.z;
+			
+			ray_trace_contact_clear(contact);
+			
+			contact->poly.mesh_idx=n;
+			contact->poly.poly_idx=poly_idx[k];
+		}
+				
+	}
+
+}
+
 /* =======================================================
 
       Ray Utilities
@@ -652,9 +947,9 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
 
 void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_contact_type *contact)
 {
-	int							n,k,x,z,radius,poly_count;
+	int							n,k,poly_count;
 	short						*poly_idx;
-	d3pnt						*spt,*ept,min,max;
+	d3pnt						min,max;
 	obj_type					*obj;
 	proj_type					*proj;
 	map_mesh_type				*mesh;
@@ -670,101 +965,27 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 		// the meshes is actually longer than
 		// dealing with a few missed hits
 
-	spt=spts;
-	ept=epts;
-	
-	if (spt->x<ept->x) {
-		min.x=spt->x;
-		max.x=ept->x;
-	}
-	else {
-		min.x=ept->x;
-		max.x=spt->x;
-	}
-
-	if (spt->y<ept->y) {
-		min.y=spt->y;
-		max.y=ept->y;
-	}
-	else {
-		min.y=ept->y;
-		max.y=spt->y;
-	}
-
-	if (spt->z<ept->z) {
-		min.z=spt->z;
-		max.z=ept->z;
-	}
-	else {
-		min.z=ept->z;
-		max.z=spt->z;
-	}
-
-	for (n=1;n<cnt;n++) {
-
-		spt++;
-		ept++;
-
-		if (spt->x<min.x) min.x=spt->x;
-		if (ept->x<min.x) min.x=ept->x;
-		if (spt->x>max.x) max.x=spt->x;
-		if (ept->x>max.x) max.x=ept->x;
-
-		if (spt->y<min.y) min.y=spt->y;
-		if (ept->y<min.y) min.y=ept->y;
-		if (spt->y>max.y) max.y=spt->y;
-		if (ept->y>max.y) max.y=ept->y;
-
-		if (spt->z<min.z) min.z=spt->z;
-		if (ept->z<min.z) min.z=ept->z;
-		if (spt->z>max.z) max.z=spt->z;
-		if (ept->z>max.z) max.z=ept->z;
-	}
+	ray_trace_get_ray_bounds(cnt,spts,epts,&min,&max);
 
 		// check objects
 
 	if (contact->obj.on) {
 	
+		obj=server.objs;
+		
 		for (n=0;n!=server.count.obj;n++) {
-
-			obj=&server.objs[n];
-
-				// object a hit candidate?
-
-			if ((obj->hidden) || (obj->pickup.on) || (obj->uid==contact->obj.ignore_uid)) continue;
-			if (((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) || ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on))) continue;
 			
-				// rough y vector box check
-				
-			if (max.y<(obj->pnt.y-obj->size.y)) continue;
-			if (min.y>obj->pnt.y) continue;
-			
-				// rough x/z vector box checks
-				
-			x=obj->pnt.x;
-			z=obj->pnt.z;
+			if (ray_trace_object_bound_check(obj,&min,&max,contact)) {
+				item->type=ray_trace_check_item_object;
+				item->index=n;
 
-			radius=obj->size.x;
-			if (obj->size.z>radius) radius=obj->size.z;
+				item++;
+				ray_item_count++;
 			
-			radius=radius>>1;
+				if (ray_item_count==ray_trace_max_check_item) return;
+			}
 			
-			if (max.x<(x-radius)) continue;
-			if (min.x>(x+radius)) continue;
-			if (max.z<(z-radius)) continue;
-			if (min.z>(z+radius)) continue;
-
-				// add to item list
-				
-			item->type=ray_trace_check_item_object;
-			item->index=n;
-
-			item++;
-			ray_item_count++;
-			
-				// in list, no more checks required
-			
-			if (ray_item_count==ray_trace_max_check_item) return;
+			obj++;
 		}
 	}
 	
@@ -772,40 +993,21 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 		
 	if (contact->proj.on) {
 	
+		proj=server.projs;
+		
 		for (n=0;n!=server.count.proj;n++) {
 
-			proj=&server.projs[n];
+			if (ray_trace_projectile_bound_check(proj,&min,&max,contact)) {
+				item->type=ray_trace_check_item_projectile;
+				item->index=n;
 
-				// is projectile a hit candidate?
-
-			if (proj->uid==contact->proj.ignore_uid) continue;
-			
-				// rough y vector box check
+				item++;
+				ray_item_count++;
 				
-			if (max.y<(proj->pnt.y-proj->size.y)) continue;
-			if (min.y>proj->pnt.y) continue;
+				if (ray_item_count==ray_trace_max_check_item) return;
+			}
 			
-				// rough x/z vector box checks
-				
-			x=proj->pnt.x;
-			z=proj->pnt.z;
-
-			radius=proj->size.radius>>1;
-			
-			if (max.x<(x-radius)) continue;
-			if (min.x>(x+radius)) continue;
-			if (max.z<(z-radius)) continue;
-			if (min.z>(z+radius)) continue;
-			
-				// add to item list
-
-			item->type=ray_trace_check_item_projectile;
-			item->index=n;
-
-			item++;
-			ray_item_count++;
-			
-			if (ray_item_count==ray_trace_max_check_item) return;
+			proj++;
 		}
 	}
 
@@ -814,25 +1016,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
 		mesh=&map.mesh.meshes[n];
-		
-			// rough vector box bounds check
-			// compare x/z first as it's a better chance
-			// for an elimination
-
-		if (max.x<mesh->box.min.x) continue;
-		if (min.x>mesh->box.max.x) continue;
-		if (max.z<mesh->box.min.z) continue;
-		if (min.z>mesh->box.max.z) continue;
-		if (max.y<mesh->box.min.y) continue;
-		if (min.y>mesh->box.max.y) continue;
-			
-			// skip off and pass through meshes
-			// we do this second as I suspect there will
-			// be a limited number of these, a lot less then
-			// will be eliminated with the bounds check
-
-		if (!mesh->flag.on) continue;
-		if (mesh->flag.pass_through) continue;
+		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
 		
 			// check polys, use the poly
 			// reduced list to save time
@@ -859,17 +1043,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 		for (k=0;k!=poly_count;k++) {
 
 			poly=&mesh->polys[poly_idx[k]];
-			
-				// rough vector box bounds check
-				// compare x/z first as it's a better chance
-				// for an elimination
-
-			if (max.x<poly->box.min.x) continue;
-			if (min.x>poly->box.max.x) continue;
-			if (max.z<poly->box.min.z) continue;
-			if (min.z>poly->box.max.z) continue;
-			if (max.y<poly->box.min.y) continue;
-			if (min.y>poly->box.max.y) continue;
+			if (!ray_trace_mesh_poly_bound_check(poly,&min,&max)) continue;
 
 				// add to item list
 
@@ -918,10 +1092,6 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
 	ept.y=spt->y+(int)vct.y;
 	ept.z=spt->z+(int)vct.z;
 	
-		// setup item list
-		
-	ray_trace_map_item_list_setup(1,spt,&ept,contact);
-	
 		// default is past end of line
 		
 	hit_t=2.0f;
@@ -932,7 +1102,7 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
 		
 		// ray trace map
 
-	ray_trace_map(spt,&ept,&vct,hpt,&hit_t,contact);
+	ray_trace_map_all(spt,&ept,&vct,hpt,&hit_t,contact);
 	
 	return((hit_t>=0.0f) && (hit_t<=1.0f));
 }
@@ -942,10 +1112,6 @@ bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_t
 	float						hit_t;
 	d3vct						vct;
 		
-		// setup item list
-		
-	ray_trace_map_item_list_setup(1,spt,ept,contact);
-	
 		// clear the contact
 		
 	ray_trace_contact_clear(contact);
@@ -966,7 +1132,7 @@ bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_t
 	
 		// check against map
 
-	ray_trace_map(spt,ept,&vct,hpt,&hit_t,contact);
+	ray_trace_map_all(spt,ept,&vct,hpt,&hit_t,contact);
 	
 	return((hit_t>=0.0f) && (hit_t<=1.0f));
 }
@@ -1006,7 +1172,7 @@ void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool 
 		
 			// check against map
 
-		ray_trace_map(&spt[n],&ept[n],&vct,&hpt[n],&hit_t,&contacts[n]);
+		ray_trace_map_items(&spt[n],&ept[n],&vct,&hpt[n],&hit_t,&contacts[n]);
 		
 		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
 	}
@@ -1049,7 +1215,7 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
 			// check against map
 
 		ray_trace_contact_clear(&contact);
-		ray_trace_map(&spt[n],&ept[n],&vct,&hpt[n],&hit_t,&contact);
+		ray_trace_map_items(&spt[n],&ept[n],&vct,&hpt[n],&hit_t,&contact);
 		
 		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
 	}

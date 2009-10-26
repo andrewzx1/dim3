@@ -177,12 +177,40 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	}
 }
 
-void map_prepare_mesh_poly_bump(map_mesh_type *mesh)
+bool map_prepare_mesh_poly_bump_check_floor_hit(map_mesh_type *mesh,d3pnt *p1,d3pnt *p2)
+{
+	int					n,k;
+	bool				p1_ok,p2_ok;
+	d3pnt				*pt;
+	map_mesh_poly_type	*poly;
+	
+	for (n=0;n!=mesh->npoly;n++) {
+		poly=&mesh->polys[n];
+		if (poly->box.wall_like) continue;
+		if (!poly->box.flat) continue;
+		
+		p1_ok=p2_ok=FALSE;
+		
+		for (k=0;k!=poly->ptsz;k++) {
+			pt=&mesh->vertexes[poly->v[k]];
+
+			p1_ok|=((abs(pt->x-p1->x)<25) && (abs(pt->y-p1->y)<25) && (abs(pt->z-p1->z)<25));
+			p2_ok|=((abs(pt->x-p2->x)<25) && (abs(pt->y-p2->y)<25) && (abs(pt->z-p2->z)<25));
+		}
+		
+		if ((p1_ok) && (p2_ok)) return(TRUE);
+	}
+	
+	return(FALSE);
+}
+
+void map_prepare_mesh_poly_bump(map_type *map,map_mesh_type *mesh)
 {
 	int					n,k,t,p1_idx,p2_idx;
-	bool				p1_ok,p2_ok,bump_ok;
-	d3pnt				*pt;
-	map_mesh_poly_type	*poly,*poly2;
+	bool				bump_ok;
+	d3pnt				*pt,p1,p2;
+	map_mesh_type		*mesh2;
+	map_mesh_poly_type	*poly;
 	
 	for (n=0;n!=mesh->npoly;n++) {
 		poly=&mesh->polys[n];
@@ -217,33 +245,36 @@ void map_prepare_mesh_poly_bump(map_mesh_type *mesh)
 		if (p2_idx==-1) continue;
 			
 			// only bump if top vertexes are connected
-			// to a flat floor segment in the same mesh
+			// to a flat floor polygon
+			
+			// check current mesh first, then all others
 			
 		bump_ok=FALSE;
 		
-		for (t=0;t!=mesh->npoly;t++) {
-			poly2=&mesh->polys[t];
-			if (poly2->box.wall_like) continue;
-			if (!poly2->box.flat) continue;
-			
-			p1_ok=p2_ok=FALSE;
-			
-			for (k=0;k!=poly2->ptsz;k++) {
-				p1_ok|=(poly2->v[k]==p1_idx);
-				p2_ok|=(poly2->v[k]==p2_idx);
-			}
-			
-			if ((p1_ok) && (p2_ok)) {
-				bump_ok=TRUE;
-				break;
-			}
-		}
+		memmove(&p1,&mesh->vertexes[p1_idx],sizeof(d3pnt));
+		memmove(&p2,&mesh->vertexes[p2_idx],sizeof(d3pnt));
 		
-		if (!bump_ok) continue;
+		bump_ok=map_prepare_mesh_poly_bump_check_floor_hit(mesh,&p1,&p2);
+		
+		if (!bump_ok) {
+		
+			mesh2=map->mesh.meshes;
+		
+			for (t=0;t!=map->mesh.nmesh;t++) {
+			
+				if (t!=n) {
+					bump_ok=map_prepare_mesh_poly_bump_check_floor_hit(mesh2,&p1,&p2);
+					if (bump_ok) break;
+				}
+				
+				mesh2++;
+			}
+		
+		}
 			
 			// ok to bump!
 		
-		poly->draw.bump_ok=TRUE;
+		if (bump_ok) poly->draw.bump_ok=TRUE;
 	}
 }
 
@@ -379,7 +410,7 @@ void map_prepare(map_type *map)
 		
 			// setup bump flags
 			
-		map_prepare_mesh_poly_bump(mesh);
+		map_prepare_mesh_poly_bump(map,mesh);
 
 			// setup boxes
 

@@ -32,6 +32,7 @@ extern int weapon_index_find_uid(int uid);
 extern weapon_type* weapon_find_name(obj_type *obj,char *name);
 extern weapon_type* weapon_find_current(obj_type *obj);
 extern weapon_type* weapon_find_offset(obj_type *obj,int offset);
+extern int weapon_held_count(obj_type *obj);
 
 extern bool weapon_create(obj_type *obj,char *name);
 extern bool weapon_start(weapon_type *weap);
