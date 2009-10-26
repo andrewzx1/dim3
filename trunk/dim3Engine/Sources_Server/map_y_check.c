@@ -37,6 +37,10 @@ and can be sold or given away.
 extern map_type			map;
 extern server_type		server;
 
+bool					pin_movement_hits[256];
+d3pnt					pin_movement_spt[256],pin_movement_ept[256],pin_movement_hpt[256];
+ray_trace_contact_type	pin_movement_contacts[256];
+
 /* =======================================================
 
       Find Next Nearest Stand Poly Point
@@ -106,10 +110,19 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 
 int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *stand_poly)
 {
-	int						n,cy,x_sz,z_sz,ty,by;
-	bool					hits[13];
-	d3pnt					spt[13],ept[13],hpt[13];
-	ray_trace_contact_type	base_contact,contacts[13];
+	int						n,cy,x,z,x_sz,z_sz,
+							grid_x,grid_z,lx,tz,idx,ty,by;
+	ray_trace_contact_type	base_contact;
+	
+		// get contact grid
+		
+	grid_x=obj->size.x/map_enlarge;
+	if (grid_x>16) grid_x=16;
+	if (grid_x<5) grid_x=5;
+	
+	grid_z=obj->size.z/map_enlarge;
+	if (grid_z>16) grid_z=16;
+	if (grid_z<5) grid_z=5;
 	
 		// setup contact
 		
@@ -121,60 +134,52 @@ int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *sta
 
 		// create ray arrays
 	
-	x_sz=obj->size.x>>1;
-	spt[0].x=spt[3].x=spt[8].x=obj->pnt.x-x_sz;
-	spt[1].x=spt[2].x=spt[6].x=obj->pnt.x+x_sz;
+	idx=0;
 	
-	z_sz=obj->size.z>>1;
-	spt[0].z=spt[1].z=spt[5].z=obj->pnt.z-z_sz;
-	spt[2].z=spt[3].z=spt[7].z=obj->pnt.z+z_sz;
+	lx=obj->pnt.x-(obj->size.x>>1);
+	tz=obj->pnt.z-(obj->size.z>>1);
 	
-	spt[4].x=spt[5].x=spt[7].x=obj->pnt.x;
-	spt[4].z=spt[6].z=spt[8].z=obj->pnt.z;
-
-	x_sz=x_sz>>1;
-	spt[9].x=spt[12].x=obj->pnt.x-x_sz;
-	spt[10].x=spt[11].x=obj->pnt.x+x_sz;
-
-	z_sz=z_sz>>1;
-	spt[9].z=spt[10].z=obj->pnt.z-z_sz;
-	spt[11].z=spt[12].z=obj->pnt.z+z_sz;
-
 	ty=obj->pnt.y-ydist;
 	by=obj->pnt.y+ydist;
-
-	for (n=0;n!=13;n++) {
-		ept[n].x=spt[n].x;
-		ept[n].z=spt[n].z;
-		spt[n].y=ty;
-		ept[n].y=by;
+	
+	x_sz=obj->size.x/grid_x;
+	z_sz=obj->size.z/grid_z;
+	
+	for (z=0;z!=grid_z;z++) {
+		for (x=0;x!=grid_x;x++) {
+			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(x_sz*x);
+			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(z_sz*z);
+			pin_movement_spt[idx].y=ty;
+			pin_movement_ept[idx].y=by;
+			idx++;
+		}
 	}
 		
 		// run the rays
 		
-	ray_trace_map_by_point_array(13,spt,ept,hpt,hits,&base_contact,contacts);
+	ray_trace_map_by_point_array(idx,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
 	
 		// find the highest point
 		
 	stand_poly->mesh_idx=-1;
 	cy=-1;
 	
-	for (n=0;n!=13;n++) {
+	for (n=0;n!=idx;n++) {
 		
 			// check poly collisions
 			
-		if (hits[n]) {
+		if (pin_movement_hits[n]) {
 		
 			if (stand_poly->mesh_idx==-1) {
-				stand_poly->mesh_idx=contacts[n].poly.mesh_idx;
-				stand_poly->poly_idx=contacts[n].poly.poly_idx;
-				cy=hpt[n].y;
+				stand_poly->mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
+				stand_poly->poly_idx=pin_movement_contacts[n].poly.poly_idx;
+				cy=pin_movement_hpt[n].y;
 			}
 			else {
-				if (hpt[n].y<cy) {
-					stand_poly->mesh_idx=contacts[n].poly.mesh_idx;
-					stand_poly->poly_idx=contacts[n].poly.poly_idx;
-					cy=hpt[n].y;
+				if (pin_movement_hpt[n].y<cy) {
+					stand_poly->mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
+					stand_poly->poly_idx=pin_movement_contacts[n].poly.poly_idx;
+					cy=pin_movement_hpt[n].y;
 				}
 			}
 			
@@ -234,10 +239,19 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 
 int pin_upward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *head_poly)
 {
-	int						n,cy,sz;
-	bool					hits[5];
-	d3pnt					spt[5],ept[5],hpt[5];
-	ray_trace_contact_type	base_contact,contacts[5];
+	int						n,cy,x,z,x_sz,z_sz,sz,
+							grid_x,grid_z,lx,tz,idx,ty,by;
+	ray_trace_contact_type	base_contact;
+	
+		// get contact grid
+		
+	grid_x=obj->size.x/map_enlarge;
+	if (grid_x>16) grid_x=16;
+	if (grid_x<5) grid_x=5;
+	
+	grid_z=obj->size.z/map_enlarge;
+	if (grid_z>16) grid_z=16;
+	if (grid_z<5) grid_z=5;
 	
 		// setup contact
 		
@@ -249,47 +263,55 @@ int pin_upward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *head_
 
 		// create ray arrays
 	
-	sz=obj->size.x>>1;
-	spt[0].x=spt[3].x=ept[0].x=ept[3].x=obj->pnt.x-sz;
-	spt[1].x=spt[2].x=ept[1].x=ept[2].x=obj->pnt.x+sz;
+	idx=0;
 	
-	sz=obj->size.z>>1;
-	spt[0].z=spt[1].z=ept[0].z=ept[1].z=obj->pnt.z-sz;
-	spt[2].z=spt[3].z=ept[2].z=ept[3].z=obj->pnt.z+sz;
+	lx=obj->pnt.x-(obj->size.x>>1);
+	tz=obj->pnt.z-(obj->size.z>>1);
 	
-	spt[4].x=ept[4].x=obj->pnt.x;
-	spt[4].z=ept[4].z=obj->pnt.z;
+	x_sz=obj->size.x/grid_x;
+	z_sz=obj->size.z/grid_z;
 	
 	sz=obj->size.y;
 	if (obj->duck.mode!=dm_stand) sz-=obj->duck.y_move;
-	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=(obj->pnt.y-sz)+ydist;
-	ept[0].y=ept[1].y=ept[2].y=ept[3].y=ept[4].y=(obj->pnt.y-sz)-ydist;
+	by=(obj->pnt.y-sz)+ydist;
+	ty=(obj->pnt.y-sz)-ydist;
+
+	
+	for (z=0;z!=grid_z;z++) {
+		for (x=0;x!=grid_x;x++) {
+			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(x_sz*x);
+			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(z_sz*z);
+			pin_movement_spt[idx].y=by;
+			pin_movement_ept[idx].y=ty;
+			idx++;
+		}
+	}
 		
 		// run the rays
 		
-	ray_trace_map_by_point_array(5,spt,ept,hpt,hits,&base_contact,contacts);
+	ray_trace_map_by_point_array(idx,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
 	
 		// find the lowest point
 		
 	head_poly->mesh_idx=-1;
 	cy=-1;
 	
-	for (n=0;n!=5;n++) {
+	for (n=0;n!=idx;n++) {
 		
 			// check poly collisions
 			
-		if (hits[n]) {
+		if (pin_movement_hits[n]) {
 		
 			if (head_poly->mesh_idx==-1) {
-				head_poly->mesh_idx=contacts[n].poly.mesh_idx;
-				head_poly->poly_idx=contacts[n].poly.poly_idx;
-				cy=hpt[n].y;
+				head_poly->mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
+				head_poly->poly_idx=pin_movement_contacts[n].poly.poly_idx;
+				cy=pin_movement_hpt[n].y;
 			}
 			else {
-				if (hpt[n].y>cy) {
-					head_poly->mesh_idx=contacts[n].poly.mesh_idx;
-					head_poly->poly_idx=contacts[n].poly.poly_idx;
-					cy=hpt[n].y;
+				if (pin_movement_hpt[n].y>cy) {
+					head_poly->mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
+					head_poly->poly_idx=pin_movement_contacts[n].poly.poly_idx;
+					cy=pin_movement_hpt[n].y;
 				}
 			}
 			

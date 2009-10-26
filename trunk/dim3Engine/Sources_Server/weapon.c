@@ -59,12 +59,12 @@ void weapon_initialize_list(void)
 
 weapon_type* weapon_find_uid(int uid)
 {
-	int				i;
+	int				n;
 	weapon_type		*weap;
 
 	weap=server.weapons;
 	
-	for ((i=0);(i!=server.count.weapon);i++) {
+	for (n=0;n!=server.count.weapon;n++) {
 		if (weap->uid==uid) return(weap);
 		weap++;
 	}
@@ -74,13 +74,13 @@ weapon_type* weapon_find_uid(int uid)
 
 int weapon_index_find_uid(int uid)
 {
-	int				i;
+	int				n;
 	weapon_type		*weap;
 
 	weap=server.weapons;
 	
-	for ((i=0);(i!=server.count.weapon);i++) {
-		if (weap->uid==uid) return(i);
+	for (n=0;n!=server.count.weapon;n++) {
+		if (weap->uid==uid) return(n);
 		weap++;
 	}
 	
@@ -89,13 +89,13 @@ int weapon_index_find_uid(int uid)
 
 weapon_type* weapon_find_name(obj_type *obj,char *name)
 {
-	int				i,obj_uid;
+	int				n,obj_uid;
 	weapon_type		*weap;
 
 	obj_uid=obj->uid;
 	weap=server.weapons;
 	
-	for ((i=0);(i!=server.count.weapon);i++) {
+	for (n=0;n!=server.count.weapon;n++) {
 		if (weap->obj_uid==obj_uid) {
 			if (strcasecmp(weap->name,name)==0) return(weap);
 		}
@@ -112,13 +112,13 @@ weapon_type* weapon_find_current(obj_type *obj)
 
 weapon_type* weapon_find_offset(obj_type *obj,int offset)
 {
-	int				i,obj_uid;
+	int				n,obj_uid;
 	weapon_type		*weap;
 
 	obj_uid=obj->uid;
 	weap=server.weapons;
 	
-	for ((i=0);(i!=server.count.weapon);i++) {
+	for (n=0;n!=server.count.weapon;n++) {
 	
 		if (weap->obj_uid==obj_uid) {
 			offset--;
@@ -129,6 +129,24 @@ weapon_type* weapon_find_offset(obj_type *obj,int offset)
 	}
 	
 	return(NULL);
+}
+
+int weapon_held_count(obj_type *obj)
+{
+	int				n,obj_uid,count;
+	weapon_type		*weap;
+
+	count=0;
+	
+	obj_uid=obj->uid;
+	weap=server.weapons;
+	
+	for (n=0;n!=server.count.weapon;n++) {
+		if ((weap->obj_uid==obj_uid) && (!weap->hidden)) count++;		
+		weap++;
+	}
+	
+	return(count);
 }
 
 /* =======================================================

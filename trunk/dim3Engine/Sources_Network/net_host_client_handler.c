@@ -104,7 +104,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 	strcpy(reply_join.game_name,hud.net_game.games[net_setup.game_idx].name);
 	strcpy(reply_join.map_name,net_setup.host.map_name);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
-	reply_join.option_flags=net_setup.option_flags;
+	reply_join.option_flags=htonl(net_setup.option_flags);
 	reply_join.join_uid=htons((short)net_node_uid);
 	
 	if (net_node_uid!=-1) {
