@@ -148,6 +148,12 @@ and can be sold or given away.
 #define mouse_top_view_drag_scale				0.01f
 
 //
+// snap settings
+//
+
+#define walk_view_snap_distance					(map_enlarge*5)
+
+//
 // walk view types
 //
 
@@ -173,6 +179,13 @@ and can be sold or given away.
 #define walk_view_near_offset					(3*map_enlarge)
 
 #define walk_view_handle_size					10.0f
+
+//
+// light maps
+//
+
+#define light_map_texture_pixel_size			1024
+#define light_map_pixel_factor					(100.0f/(float)(map_enlarge*20))
 
 //
 // draw passing struct

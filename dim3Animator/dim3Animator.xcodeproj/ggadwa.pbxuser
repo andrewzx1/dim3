@@ -12,15 +12,15 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1365}}";
 			sepNavSelRange = "{1864, 0}";
-			sepNavVisRange = "{639, 1277}";
+			sepNavVisRange = "{0, 1583}";
 			sepNavWindowFrame = "{{334, 247}, {1041, 747}}";
 		};
 	};
 	0111608D00BE2A8F7F000001 /* menu.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1825, 15795}}";
-			sepNavSelRange = "{5814, 0}";
-			sepNavVisRange = "{5368, 838}";
+			sepNavIntBoundsRect = "{{0, 0}, {1825, 15808}}";
+			sepNavSelRange = "{2987, 497}";
+			sepNavVisRange = "{2806, 1177}";
 			sepNavWindowFrame = "{{381, 192}, {1041, 747}}";
 		};
 	};
@@ -121,12 +121,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 278215553;
-			PBXWorkspaceStateSaveDate = 278215553;
+			PBXPerProjectTemplateStateSaveDate = 279159476;
+			PBXWorkspaceStateSaveDate = 279159476;
 		};
 		perUserProjectItems = {
 			267809DC10953B9F00FDCB51 /* PBXTextBookmark */ = 267809DC10953B9F00FDCB51 /* PBXTextBookmark */;
-			26914051108AD4C500A80EB2 /* PBXTextBookmark */ = 26914051108AD4C500A80EB2 /* PBXTextBookmark */;
+			2681881A10A3A31D000B2CD8 /* PBXTextBookmark */ = 2681881A10A3A31D000B2CD8 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -272,7 +272,7 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
-	26914051108AD4C500A80EB2 /* PBXTextBookmark */ = {
+	2681881A10A3A31D000B2CD8 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";

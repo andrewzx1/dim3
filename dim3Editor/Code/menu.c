@@ -366,6 +366,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			undo_clear();
 			return(noErr);
 			
+		case kCommandBuildLightMaps:
+			light_maps_create();
+			return(noErr);
+			
 		case kCommandRun:
 			launch_engine();
 			return(noErr);

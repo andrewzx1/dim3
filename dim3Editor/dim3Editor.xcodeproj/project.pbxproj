@@ -54,6 +54,7 @@
 		266C5A8A105235F9006FD9D1 /* Piece Mesh UV.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5A89105235F9006FD9D1 /* Piece Mesh UV.icns */; };
 		26772F810EBE8A6600F9E241 /* dialog_reposition.c in Sources */ = {isa = PBXBuildFile; fileRef = 26772F800EBE8A6600F9E241 /* dialog_reposition.c */; };
 		26791D430E4D626700AAD058 /* dialog_grid_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26791D420E4D626700AAD058 /* dialog_grid_mesh.c */; };
+		2681880310A3A28A000B2CD8 /* light_maps.c in Sources */ = {isa = PBXBuildFile; fileRef = 2681880210A3A28A000B2CD8 /* light_maps.c */; };
 		26871A3C0F11666E0043B667 /* node_defined.png in Resources */ = {isa = PBXBuildFile; fileRef = 26871A3B0F11666E0043B667 /* node_defined.png */; };
 		26871A5C0F1168330043B667 /* node_defined.png in Copy (Icons) */ = {isa = PBXBuildFile; fileRef = 26871A3B0F11666E0043B667 /* node_defined.png */; };
 		26899FA90F1EBF25007860EB /* editor_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26899FA80F1EBF25007860EB /* editor_defs.h */; };
@@ -265,6 +266,7 @@
 		266C5A89105235F9006FD9D1 /* Piece Mesh UV.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Piece Mesh UV.icns"; path = "Resources/Piece Mesh UV.icns"; sourceTree = "<group>"; };
 		26772F800EBE8A6600F9E241 /* dialog_reposition.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_reposition.c; path = Code/dialog_reposition.c; sourceTree = "<group>"; };
 		26791D420E4D626700AAD058 /* dialog_grid_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_grid_mesh.c; path = Code/dialog_grid_mesh.c; sourceTree = "<group>"; };
+		2681880210A3A28A000B2CD8 /* light_maps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = light_maps.c; path = Code/light_maps.c; sourceTree = "<group>"; };
 		26871A3B0F11666E0043B667 /* node_defined.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = node_defined.png; sourceTree = "<group>"; };
 		26899FA80F1EBF25007860EB /* editor_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = editor_defs.h; path = Headers/editor_defs.h; sourceTree = "<group>"; };
 		268BC8A50F64C8E400E900C2 /* dialog_preference.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_preference.c; path = Code/dialog_preference.c; sourceTree = "<group>"; };
@@ -612,6 +614,7 @@
 				26AFB4480D95E0E60004805A /* pieces_mesh.c */,
 				F5595F7D0918717300B60FAD /* groups.c */,
 				0123D86700C0AFD57F000001 /* nodes.c */,
+				2681880210A3A28A000B2CD8 /* light_maps.c */,
 			);
 			name = "Common View";
 			sourceTree = "<group>";
@@ -819,6 +822,7 @@
 				264A47620F760AD40054BAA6 /* palette_particle.c in Sources */,
 				264A47890F760CC60054BAA6 /* palette_light.c in Sources */,
 				264A478B0F760CCA0054BAA6 /* palette_sound.c in Sources */,
+				2681880310A3A28A000B2CD8 /* light_maps.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -839,8 +843,7 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
