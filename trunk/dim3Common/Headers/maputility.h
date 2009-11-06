@@ -51,7 +51,7 @@ extern char light_type_str[][32];
 #define max_mesh											8192			// maximum number of meshes in a map
 #define max_liquid											256				// maximum number of liquids in a a map
 
-#define max_map_texture										128				// maximum number of textures in a map
+#define max_map_texture										256				// maximum number of textures in a map
 
 #define max_group											128				// maximum number of mesh groups
 #define max_area											128				// maximum number of sight view areas

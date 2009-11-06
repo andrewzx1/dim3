@@ -367,6 +367,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		mpt.z=mz;
 		
 		walk_view_click_grid(&mpt);
+		walk_view_click_snap_mesh(mesh_idx,old_dpt,&mpt);
 
 			// move vertexes
 		
@@ -480,6 +481,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 		mpt.z=mz;
 		
 		walk_view_click_grid(&mpt);
+		walk_view_click_snap_poly(mesh_idx,poly_idx,old_dpt,&mpt);
 		
 			// move vertexes
 			
@@ -606,7 +608,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		mpt.z=mz;
 		
 		walk_view_click_grid(&mpt);
-		walk_view_click_snap(mesh_idx,vertex_idx,&old_dpt,&mpt);
+		walk_view_click_snap(mesh_idx,&old_dpt,&mpt);
 		
 			// move vertex
 			

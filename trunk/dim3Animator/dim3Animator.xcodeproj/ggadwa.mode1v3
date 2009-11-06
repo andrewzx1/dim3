@@ -349,12 +349,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>76</integer>
-									<integer>75</integer>
+									<integer>69</integer>
+									<integer>67</integer>
+									<integer>15</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 652}, {290, 776}}</string>
+							<string>{{0, 641}, {290, 776}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -401,10 +403,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>267809DC10953B9F00FDCB51</string>
+										<string>2681881A10A3A31D000B2CD8</string>
 										<key>history</key>
 										<array>
-											<string>26914051108AD4C500A80EB2</string>
+											<string>267809DC10953B9F00FDCB51</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -462,9 +464,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>267809DD10953B9F00FDCB51</string>
+				<string>2681881B10A3A31D000B2CD8</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>267809DE10953B9F00FDCB51</string>
+				<string>2681881C10A3A31D000B2CD8</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -585,7 +587,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>278215583.90387201</real>
+	<real>279159581.92599601</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -600,6 +602,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>2681881E10A3A31D000B2CD8</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -642,8 +645,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -683,7 +684,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>267809D910953B9100FDCB51</string>
+				<string>2681881D10A3A31D000B2CD8</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

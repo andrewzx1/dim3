@@ -129,6 +129,12 @@ extern void file_save_map(void);
 extern void file_close_map(void);
 
 //
+// light maps
+//
+
+extern void light_maps_create(void);
+
+//
 // launching
 //
 
