@@ -185,7 +185,8 @@ and can be sold or given away.
 //
 
 #define light_map_texture_pixel_size			1024
-#define light_map_pixel_factor					(100.0f/(float)(map_enlarge*20))
+#define light_map_texture_block_size			16
+#define light_map_pixel_factor					0.002f
 
 //
 // draw passing struct
