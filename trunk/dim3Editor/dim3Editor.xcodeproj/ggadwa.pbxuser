@@ -144,14 +144,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 279174357;
-			PBXWorkspaceStateSaveDate = 279174357;
+			PBXPerProjectTemplateStateSaveDate = 279265872;
+			PBXWorkspaceStateSaveDate = 279265872;
 		};
 		perUserProjectItems = {
-			2651D46310A3EC9600137299 /* PBXBookmark */ = 2651D46310A3EC9600137299 /* PBXBookmark */;
-			2651D47210A3F0FD00137299 /* XCBuildMessageTextBookmark */ = 2651D47210A3F0FD00137299 /* XCBuildMessageTextBookmark */;
-			2651D48610A45E6B00137299 /* PBXTextBookmark */ = 2651D48610A45E6B00137299 /* PBXTextBookmark */;
-			2651D48710A45E6B00137299 /* PBXTextBookmark */ = 2651D48710A45E6B00137299 /* PBXTextBookmark */;
+			26A1C4B710A550D90014FC7C /* XCBuildMessageTextBookmark */ = 26A1C4B710A550D90014FC7C /* XCBuildMessageTextBookmark */;
+			26A1C4C210A5512F0014FC7C /* PBXTextBookmark */ = 26A1C4C210A5512F0014FC7C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -386,39 +384,6 @@
 			sepNavWindowFrame = "{{130, 139}, {999, 779}}";
 		};
 	};
-	2651D46310A3EC9600137299 /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 26899FA80F1EBF25007860EB /* editor_defs.h */;
-	};
-	2651D47210A3F0FD00137299 /* XCBuildMessageTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "'struct <anonymous>' has no member named 'next_row_y'";
-		fRef = 2681880210A3A28A000B2CD8 /* light_maps.c */;
-		fallbackIsa = XCBuildMessageTextBookmark;
-		rLen = 1;
-		rLoc = 89;
-		rType = 1;
-	};
-	2651D48610A45E6B00137299 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26899FA80F1EBF25007860EB /* editor_defs.h */;
-		name = "editor_defs.h: 188";
-		rLen = 0;
-		rLoc = 3717;
-		rType = 0;
-		vrLen = 1105;
-		vrLoc = 2904;
-	};
-	2651D48710A45E6B00137299 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 2681880210A3A28A000B2CD8 /* light_maps.c */;
-		name = "light_maps.c: 223";
-		rLen = 0;
-		rLoc = 5235;
-		rType = 0;
-		vrLen = 1200;
-		vrLoc = 4180;
-	};
 	265DCE9F0F6CC13100C1E65D /* palette_mesh.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {984, 2717}}";
@@ -461,17 +426,17 @@
 	};
 	2681880210A3A28A000B2CD8 /* light_maps.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1063, 3965}}";
-			sepNavSelRange = "{5235, 0}";
-			sepNavVisRange = "{4180, 1200}";
-			sepNavWindowFrame = "{{354, 180}, {1078, 758}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1063, 5499}}";
+			sepNavSelRange = "{7664, 0}";
+			sepNavVisRange = "{6760, 1257}";
+			sepNavWindowFrame = "{{309, 197}, {1078, 758}}";
 		};
 	};
 	26899FA80F1EBF25007860EB /* editor_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1041, 2860}}";
-			sepNavSelRange = "{3717, 0}";
-			sepNavVisRange = "{2904, 1105}";
+			sepNavIntBoundsRect = "{{0, 0}, {1041, 2886}}";
+			sepNavSelRange = "{3660, 28}";
+			sepNavVisRange = "{2942, 1083}";
 			sepNavWindowFrame = "{{218, 134}, {1056, 814}}";
 		};
 	};
@@ -502,6 +467,25 @@
 			sepNavWindowFrame = "{{328, 146}, {1041, 747}}";
 		};
 	};
+	26A1C4B710A550D90014FC7C /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "'text_color' undeclared (first use in this function)";
+		fRef = 2681880210A3A28A000B2CD8 /* light_maps.c */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 0;
+		rLoc = 182;
+		rType = 1;
+	};
+	26A1C4C210A5512F0014FC7C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2681880210A3A28A000B2CD8 /* light_maps.c */;
+		name = "light_maps.c: 348";
+		rLen = 0;
+		rLoc = 7664;
+		rType = 0;
+		vrLen = 1257;
+		vrLoc = 6760;
+	};
 	26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 14300}}";
@@ -512,7 +496,7 @@
 	};
 	26AFB4D10D9615C00004805A /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1041, 8762}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9334}}";
 			sepNavSelRange = "{4051, 19}";
 			sepNavVisRange = "{12164, 1516}";
 			sepNavWindowFrame = "{{245, 144}, {1041, 747}}";
