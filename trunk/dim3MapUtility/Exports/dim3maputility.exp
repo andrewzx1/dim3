@@ -95,6 +95,7 @@ _map_center
 
 _map_add_texture_frame
 _map_delete_texture_frame
+_map_replace_texture
 
 _map_auto_generate_clear
 _map_auto_generate_add_simple_lights

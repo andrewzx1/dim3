@@ -33,16 +33,25 @@ extern map_type					map;
 
 extern file_path_setup_type		file_path_setup;
 
-#define max_light_map_textures				64
+#define max_light_map_textures						64
 
 typedef struct		{
-						int					x,y,next_row_y;
-						unsigned char		*data,*block;
+						unsigned char				*data,*block;
 					} light_map_texture_type;
+					
+typedef struct		{
+						int							x[8],y[8],
+													x_shift,y_shift,
+													x_sz,y_sz;
+					} light_map_mesh_poly_type;
+					
+typedef struct		{
+						int							txt_idx;
+						light_map_mesh_poly_type	*polys;
+					} light_map_mesh_type;
 
-light_map_texture_type			light_map_textures[max_light_map_textures];
-
-int	test_color=0;	// supergumba -- testing
+light_map_texture_type			*light_map_textures;
+light_map_mesh_type				*light_map_meshes;
 
 /* =======================================================
 
@@ -50,14 +59,23 @@ int	test_color=0;	// supergumba -- testing
       
 ======================================================= */
 
-void light_map_textures_clear(void)
+bool light_map_textures_start(char *err_str)
 {
-	int						n;
+	int						n,sz;
+	
+	sz=sizeof(light_map_texture_type)*max_light_map_textures;
+	light_map_textures=(light_map_texture_type*)malloc(sz);
+	if (light_map_textures==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
 	
 	for (n=0;n!=max_light_map_textures;n++) {
 		light_map_textures[n].block=NULL;
 		light_map_textures[n].data=NULL;
 	}
+	
+	return(TRUE);
 }
 
 int light_map_textures_create(void)
@@ -82,10 +100,6 @@ int light_map_textures_create(void)
 		
 	lmap=&light_map_textures[idx];
 	
-	lmap->x=0;
-	lmap->y=0;
-	lmap->next_row_y=0;
-	
 		// blocking data
 		// this is used to find empty slots to put in polygons
 		
@@ -105,26 +119,36 @@ int light_map_textures_create(void)
 
 void light_map_textures_save(char *base_path)
 {
-	int						n;
-	char					*c,name[256],path[1024];
+	int						n,txt_idx;
+	char					*c,map_name[256],bitmap_name[256],path[1024];
 	
 		// get better name
 		
-	strcpy(name,map.info.name);
+	strcpy(map_name,map.info.name);
 	
 	while (TRUE) {
-		c=strchr(name,' ');
+		c=strchr(map_name,' ');
 		if (c==NULL) break;
 		*c='_';
 	}
 	
-		// save bitmaps
+		// write textures
+		
+	txt_idx=max_map_texture-max_light_map_textures;
 	
 	for (n=0;n!=max_light_map_textures;n++) {
-		if (light_map_textures[n].data==NULL) continue;
+		if (light_map_textures[n].data==NULL) break;
 		
-		sprintf(path,"%s/lm_%s_%d.png",base_path,name,n);
-		bitmap_write_png_data(light_map_textures[n].data,light_map_texture_pixel_size,light_map_texture_pixel_size,FALSE,path);		
+			// save bitmap
+		
+		sprintf(bitmap_name,"LightMaps/lm_%s_%d",map_name,n);
+		sprintf(path,"%s/%s.png",base_path,bitmap_name);
+		bitmap_write_png_data(light_map_textures[n].data,light_map_texture_pixel_size,light_map_texture_pixel_size,FALSE,path);
+		
+			// put in texture list
+			
+		map_replace_texture(&map,txt_idx,bitmap_name);
+		txt_idx++;
 	}
 }
 
@@ -136,6 +160,127 @@ void light_map_textures_free(void)
 		if (light_map_textures[n].block!=NULL) free(light_map_textures[n].block);
 		if (light_map_textures[n].data!=NULL) free(light_map_textures[n].data);
 	}
+	
+	free(light_map_textures);
+}
+
+/* =======================================================
+
+      Light Maps Poly Setup
+      
+======================================================= */
+
+void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,int v_idx,int *px,int *py)
+{
+	double				dx,dz;
+	d3pnt				*pt;
+	
+	pt=&mesh->vertexes[poly->v[v_idx]];
+
+	if (poly->box.wall_like) {
+		dx=(double)(pt->x-poly->box.min.x);
+		dz=(double)(pt->z-poly->box.min.z);
+		
+		*px=(int)sqrt((dx*dx)+(dz*dz));
+		*py=pt->y-poly->box.min.y;
+	}
+	else {
+		*px=pt->x-poly->box.min.x;
+		*py=pt->z-poly->box.min.z;
+	}
+	
+		// reduce to pixel factor (size of render)
+		
+	*px=(int)((float)(*px)*light_map_pixel_factor);
+	*py=(int)((float)(*py)*light_map_pixel_factor);
+}
+
+bool light_map_mesh_poly_start(char *err_str)
+{
+	int							n,k,t,sz;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	light_map_mesh_type			*lm_mesh;
+	light_map_mesh_poly_type	*lm_poly;
+	
+		// mesh memory
+		
+	sz=sizeof(light_map_mesh_type)*map.mesh.nmesh;
+	light_map_meshes=(light_map_mesh_type*)malloc(sz);
+	
+	if (light_map_meshes==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+		// poly memory
+		
+	mesh=map.mesh.meshes;
+	lm_mesh=light_map_meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+			// prepare meshes
+			
+		map_prepare_mesh_box(mesh);
+
+			// create poly memory
+			
+		sz=sizeof(light_map_mesh_poly_type)*mesh->npoly;
+		lm_mesh->polys=(light_map_mesh_poly_type*)malloc(sz);
+		
+		if (lm_mesh->polys==NULL) {
+			strcpy(err_str,"Out of Memory");
+			return(FALSE);
+		}
+
+			// build poly 2D vertexes
+			// and 2D size
+			
+		poly=mesh->polys;
+		lm_poly=lm_mesh->polys;
+	
+		for (k=0;k!=mesh->npoly;k++) {
+			map_prepare_mesh_poly(mesh,poly);
+			
+			lm_poly->x_sz=0;
+			lm_poly->y_sz=0;
+			
+			for (t=0;t!=poly->ptsz;t++) {
+				light_map_create_mesh_poly_flatten(mesh,poly,t,&lm_poly->x[t],&lm_poly->y[t]);
+				if (lm_poly->x[t]>lm_poly->x_sz) lm_poly->x_sz=lm_poly->x[t];
+				if (lm_poly->y[t]>lm_poly->y_sz) lm_poly->y_sz=lm_poly->y[t];
+			}
+			
+			if ((lm_poly->x_sz>=light_map_texture_pixel_size) || (lm_poly->y_sz>=light_map_texture_pixel_size)) {
+				sprintf(err_str,"Mesh poly (%d.%d) is too big to fit within a single light map texture",n,k);
+				return(FALSE);
+			}
+
+			poly++;
+			lm_poly++;
+		}
+		
+		mesh++;
+		lm_mesh++;
+	}
+	
+	return(TRUE);
+}
+
+void light_map_mesh_poly_free(void)
+{
+	int							n;
+	light_map_mesh_type			*lm_mesh;
+	
+	lm_mesh=light_map_meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		free(lm_mesh->polys);
+		lm_mesh++;
+	}
+	
+	free(light_map_meshes);
 }
 
 /* =======================================================
@@ -144,12 +289,101 @@ void light_map_textures_free(void)
       
 ======================================================= */
 
-bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky)
+bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,light_map_texture_type *lmap)
 {
+	int				x,y,bx,by,block_count,b_x_sz,b_y_sz;
+	bool			hit;
+	unsigned char	*bptr;
+	
+		// get block size
+		
+	b_x_sz=(x_sz/light_map_texture_block_size);
+	if ((x_sz%light_map_texture_block_size)!=0) b_x_sz++;
+	
+	b_y_sz=(y_sz/light_map_texture_block_size);
+	if ((y_sz%light_map_texture_block_size)!=0) b_y_sz++;
+	
+	block_count=light_map_texture_pixel_size/light_map_texture_block_size;
+	
+		// find free block
+		
+	for (y=0;y<(block_count-b_y_sz);y++) {
+		for (x=0;x<(block_count-b_x_sz);x++) {
+			bptr=lmap->block+((y*block_count)+x);
+			if (*bptr!=0x0) continue;
+			
+				// is block of this size open?
+				
+			hit=FALSE;
+				
+			for (by=y;by<(y+b_y_sz);by++) {
+				for (bx=x;bx<(x+b_x_sz);bx++) {
+					bptr=lmap->block+((by*block_count)+bx);
+					if (*bptr!=0x0) {
+						hit=TRUE;
+						break;
+					}
+				}
+				if (hit) break;
+			}
+			
+			if (hit) continue;
+			
+				// found block!
+				
+			*kx=x*light_map_texture_block_size;
+			*ky=y*light_map_texture_block_size;
+			return(TRUE);
+		}
+	}
 
-// light_map_texture_block_size
+	return(FALSE);
+}
 
-	return(TRUE);
+void light_map_texture_block_area(int x,int y,int x_sz,int y_sz,unsigned char blk,light_map_texture_type *lmap)
+{
+	int				bx,by,b_x_sz,b_y_sz,block_count;
+	unsigned char	*bptr;
+	
+		// get block size
+		
+	b_x_sz=(x_sz/light_map_texture_block_size);
+	if ((x_sz%light_map_texture_block_size)!=0) b_x_sz++;
+	
+	b_y_sz=(y_sz/light_map_texture_block_size);
+	if ((y_sz%light_map_texture_block_size)!=0) b_y_sz++;
+	
+		// get block starts
+		
+	x/=light_map_texture_block_size;
+	y/=light_map_texture_block_size;
+	
+	block_count=light_map_texture_pixel_size/light_map_texture_block_size;
+	
+		// block out area
+		
+	for (by=y;by<(y+b_y_sz);by++) {
+		bptr=lmap->block+((by*block_count)+x);
+		for (bx=x;bx<(x+b_x_sz);bx++) {
+			*bptr++=blk;
+		}
+	}
+}
+
+void light_map_texture_clear_block_type(unsigned char blk,light_map_texture_type *lmap)
+{
+	int				n,block_count;
+	unsigned char	*bptr;
+	
+	block_count=light_map_texture_pixel_size/light_map_texture_block_size;
+	block_count*=block_count;
+		
+	bptr=lmap->block;
+	
+	for (n=0;n!=block_count;n++) {
+		if ((*bptr)==blk) *bptr=0x0;
+		bptr++;
+	}
 }
 
 /* =======================================================
@@ -163,24 +397,8 @@ void light_map_render_triangle(int *px,int *py,light_map_texture_type *lmap)
 	int				n,x,y,ty,by,x1,x2,x_count,y1,y2,
 					top_idx,bot_idx,l1_start_idx,l1_end_idx,l2_start_idx,l2_end_idx;
 	unsigned char	*pixel;
-	unsigned char	col1,col2,col3;
+	unsigned char	col;
 	
-		// supergumba -- temporary testing
-		
-	col1=col2=col3=0xFF;
-	
-	switch (test_color) {
-		case 0:
-			col2=col3=0x0;
-			break;
-		case 1:
-			col1=col3=0x0;
-			break;
-		case 2:
-			col1=col2=0x0;
-			break;
-	}
-
 		// determine the top and bottom vertex of the triangle
 
 	top_idx=bot_idx=0;
@@ -250,10 +468,17 @@ void light_map_render_triangle(int *px,int *py,light_map_texture_type *lmap)
 			x_count=x1-x2;
 		}
 		
+		if ((by-ty)==0) {		// supergumba -- testing
+			col=0x0;
+		}
+		else {
+			col=(unsigned char)(((float)(y-ty)/(float)(by-ty))*256.0f);
+		}
+			
 		for (x=0;x<x_count;x++) {
-			*pixel++=col1;
-			*pixel++=col2;
-			*pixel++=col3;
+			*pixel++=col;
+			*pixel++=col;
+			*pixel++=col;
 		}
 
 	}
@@ -265,117 +490,149 @@ void light_map_render_triangle(int *px,int *py,light_map_texture_type *lmap)
       
 ======================================================= */
 
-void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,int v_idx,int *px,int *py)
+void light_map_create_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_mesh_poly_type *lm_poly,light_map_texture_type *lmap)
 {
-	double				dx,dz;
-	d3pnt				*pt;
+	int						n,x,y,px[3],py[3];
 	
-	pt=&mesh->vertexes[poly->v[v_idx]];
-
-	if (poly->box.wall_like) {
-		dx=(double)(pt->x-poly->box.min.x);
-		dz=(double)(pt->z-poly->box.min.z);
+		// get rendering spot (need to get again as this
+		// might be a new texture and block it off
+		// from further rendering
 		
-		*px=(int)sqrt((dx*dx)+(dz*dz));
-		*py=pt->y-poly->box.min.y;
-	}
-	else {
-		*px=pt->x-poly->box.min.x;
-		*py=pt->z-poly->box.min.z;
-	}
-	
-		// reduce to pixel factor (size of render)
+	if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,lmap)) return;
+	light_map_texture_block_area(x,y,lm_poly->x_sz,lm_poly->y_sz,0x1,lmap);
 		
-	*px=(int)((float)(*px)*light_map_pixel_factor);
-	*py=(int)((float)(*py)*light_map_pixel_factor);
-}
-
-void light_map_create_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_texture_type *lmap)
-{
-	int						n,k,x,y,ex,ey,px[3],py[3];
-	
-		// prepare mesh for boxes and settings
+		// remember the shift for creating the UVs
 		
-	map_prepare_mesh_poly(mesh,poly);
-	
-		// find the rendering extents
-		
-	ex=ey=0;
-
-	for (n=0;n!=poly->ptsz;n++) {
-		light_map_create_mesh_poly_flatten(mesh,poly,n,&x,&y);
-		if (x>ex) ex=x;
-		if (y>ey) ey=y;
-	}
-	
-		// will this go over the X if we render?
-		
-	if ((lmap->x+ex)>light_map_texture_pixel_size) {
-		lmap->x=0;
-		lmap->y=lmap->next_row_y;
-	}
-	
-		// check if next y has changed
-		// we have to keep a running total of the Ys so we
-		// move down enough to avoid all the polygons in that
-		// row
-		
-	if ((lmap->y+ey)>lmap->next_row_y) lmap->next_row_y=lmap->y+ey;
-	
-	// supergumba -- temporary -- bale out if out of room
-	
-	if ((lmap->y+ey)>light_map_texture_pixel_size) return;
+	lm_poly->x_shift=x;
+	lm_poly->y_shift=y;
 	
 		// render by triangles
 		
 	for (n=0;n!=(poly->ptsz-2);n++) {
 		
-			// get 2D points
-			
-		light_map_create_mesh_poly_flatten(mesh,poly,0,&px[0],&py[0]);
-		light_map_create_mesh_poly_flatten(mesh,poly,(n+1),&px[1],&py[1]);
-		light_map_create_mesh_poly_flatten(mesh,poly,(n+2),&px[2],&py[2]);
-		
-		for (k=0;k!=3;k++) {
-			px[k]+=lmap->x;
-			py[k]+=lmap->y;
-		}
+		px[0]=lm_poly->x[0]+x;
+		py[0]=lm_poly->y[0]+y;
+		px[1]=lm_poly->x[n+1]+x;
+		py[1]=lm_poly->y[n+1]+y;
+		px[2]=lm_poly->x[n+2]+x;
+		py[2]=lm_poly->y[n+2]+y;
 		
 		light_map_render_triangle(px,py,lmap);
 	}
-	
-		
-	test_color=(test_color+1)&0x3;	// supergumba -- testing
-	
-		// move to next spot
-	
-	lmap->x+=ex;
 }
 
-bool light_map_create_mesh(map_mesh_type *mesh)
+bool light_map_create_mesh(int mesh_idx,char *err_str)
 {
-	int						n,txt_idx;
-	map_mesh_poly_type		*poly;
-	light_map_texture_type	*lmap;
+	int							n,k,x,y,txt_idx;
+	bool						txt_ok;
+	light_map_mesh_poly_type	*lm_poly;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	light_map_mesh_type			*lm_mesh;
+	light_map_texture_type		*lmap;
 	
-		// get texture map
-		// supergumba -- here we need to search open maps and find a spot that can fit
+	mesh=&map.mesh.meshes[mesh_idx];
+	lm_mesh=&light_map_meshes[mesh_idx];
+	
+		// find if it can fit in any of the
+		// existing light map textures
 		
-	txt_idx=light_map_textures_create();
-	if (txt_idx==-1) return(FALSE);
+		// go through the light maps blocking off with 0x2
+		// so it can be cleared at the end of the test
+		
+	txt_idx=-1;
 	
+	for (n=0;n!=max_light_map_textures;n++) {
+		lmap=&light_map_textures[n];
+		if (lmap->data==NULL) continue;
+		
+		txt_ok=TRUE;
+		lm_poly=lm_mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,lmap)) {
+				txt_ok=FALSE;
+				break;
+			}
+			light_map_texture_block_area(x,y,lm_poly->x_sz,lm_poly->y_sz,0x2,lmap);
+		
+			lm_poly++;
+		}
+		
+		light_map_texture_clear_block_type(0x2,lmap);
+		
+		if (txt_ok) {
+			txt_idx=n;
+			break;
+		}
+	}
+
+		// need to create a new one?
+		
+	if (txt_idx==-1) txt_idx=light_map_textures_create();
+	
+		// bail out if no texture
+		
+	if (txt_idx==-1) {
+		sprintf(err_str,"Too many polys in map, would create more than %d light maps",max_light_map_textures);
+		return(FALSE);
+	}
+	
+		// remember this light map
+		
 	lmap=&light_map_textures[txt_idx];
+	lm_mesh->txt_idx=txt_idx;
 	
-		// create the light map for the mesh
+		// create the light map for each poly
 
 	poly=mesh->polys;
+	lm_poly=lm_mesh->polys;
 	
 	for (n=0;n!=mesh->npoly;n++) {
-		light_map_create_mesh_poly(mesh,poly,lmap);
+		light_map_create_mesh_poly(mesh,poly,lm_poly,lmap);
 		poly++;
+		lm_poly++;
 	}
 	
 	return(TRUE);
+}
+
+void light_map_finialize_mesh(int mesh_idx)
+{
+	int							n,k;
+	float						f_pixel_size;
+	light_map_mesh_poly_type	*lm_poly;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	light_map_mesh_type			*lm_mesh;
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	lm_mesh=&light_map_meshes[mesh_idx];
+	
+		// set extra texture
+		
+	mesh->extra_txt_idx=(max_map_texture-max_light_map_textures)+lm_mesh->txt_idx;
+	
+		// make sure there are two UVs
+		
+	mesh->nuv=2;
+	
+		// add the alternate UVs
+		
+	f_pixel_size=(float)light_map_texture_pixel_size;
+		
+	poly=mesh->polys;
+	lm_poly=lm_mesh->polys;
+	
+	for (n=0;n!=mesh->npoly;n++) {
+		for (k=0;k!=poly->ptsz;k++) {
+			poly->uv[1].x[k]=((float)(lm_poly->x[k]+lm_poly->x_shift))/f_pixel_size;
+			poly->uv[1].y[k]=((float)(lm_poly->y[k]+lm_poly->y_shift))/f_pixel_size;
+		}
+		poly++;
+		lm_poly++;
+	}
+	
 }
 
 /* =======================================================
@@ -384,47 +641,70 @@ bool light_map_create_mesh(map_mesh_type *mesh)
       
 ======================================================= */
 
-void light_maps_create(void)
+bool light_maps_create_run(char *err_str)
 {
 	int				n;
-	char			base_path[1024];
-	map_mesh_type	*mesh;
-	
-	SetThemeCursor(kThemeWatchCursor);
+	char			base_path[1024],dir_path[1024];
 	
 		// base path
 		
 	file_paths_data_default(&file_path_setup,base_path,"Bitmaps/Textures",NULL,NULL);
-	strcat(base_path,"/LightMaps");
 	
 		// create folder if it doesn't exist
 		
-	mkdir(base_path,S_IRWXU|S_IRWXG|S_IRWXO);
+	sprintf(dir_path,"%s/LightMaps",base_path);
+	mkdir(dir_path,S_IRWXU|S_IRWXG|S_IRWXO);
 		
-		// clear the textures
+		// clear the textures and
+		// start mesh-poly setup
 		
-	light_map_textures_clear();
-
+	if (!light_map_textures_start(err_str)) return(FALSE);
+	if (!light_map_mesh_poly_start(err_str)) {
+		light_map_textures_free();
+		return(FALSE);
+	}
+	
 		// run all the meshes through
 		
-	mesh=map.mesh.meshes;
-	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
-		if (!light_map_create_mesh(mesh)) {
-			dialog_alert("Can not build light maps","You have to more polygons then will fit in texture slots.",NULL,NULL);
+		if (!light_map_create_mesh(n,err_str)) {
 			light_map_textures_free();
-			return;
+			light_map_mesh_poly_free();
+			return(FALSE);
 		}
 		
-		break;
-		mesh++;
 	}
 	
 		// write all the textures
 		
 	light_map_textures_save(base_path);
-	light_map_textures_free();
 	
+		// fix all meshes (add UVs and
+		// set alternate texture)
+		
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		light_map_finialize_mesh(n);
+	}
+	
+		// free textures and polys
+		
+	light_map_textures_free();
+	light_map_mesh_poly_free();
+	
+	main_wind_draw();
+	
+	return(TRUE);
+}
+
+void light_maps_create(void)
+{
+	bool			ok;
+	char			err_str[256];
+	
+	SetThemeCursor(kThemeWatchCursor);
+	ok=light_maps_create_run(err_str);
 	SetThemeCursor(kThemeArrowCursor);
+		
+	if (!ok) dialog_alert("Can not build light maps",err_str,NULL,NULL);
 }
