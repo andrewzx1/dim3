@@ -669,3 +669,4 @@ extern void map_movement_move_delete(map_type *map,int movement_idx,int move_idx
 
 extern bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name);
 extern bool map_delete_texture_frame(map_type *map,int txt);
+extern bool map_replace_texture(map_type *map,int txt,char *bitmap_name);

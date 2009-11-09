@@ -103,4 +103,23 @@ bool map_delete_texture_frame(map_type *map,int txt)
 	return(map_textures_read(map));
 }
 
+bool map_replace_texture(map_type *map,int txt,char *bitmap_name)
+{
+	int					n;
+	texture_type		*texture;
+
+	map_textures_close(map);
+	
+	texture=&map->textures[txt];
+	
+	for (n=0;n!=max_texture_frame;n++) {
+		texture->frames[n].name[0]=0x0;
+	}
+	
+	strcpy(map->textures[txt].frames[0].name,bitmap_name);
+
+	return(map_textures_read(map));
+}
+
+
 
