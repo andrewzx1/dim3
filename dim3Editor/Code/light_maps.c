@@ -388,16 +388,70 @@ void light_map_texture_clear_block_type(unsigned char blk,light_map_texture_type
 
 /* =======================================================
 
+      Light Map Ray Trace
+      
+======================================================= */
+
+void light_map_ray_trace(d3pnt *rpt,unsigned char *uc_col)
+{
+	int					n;
+	float				f;
+	d3col				col;
+	double				d,d_intensity,dist,dx,dy,dz;
+	map_light_type		*lit;
+	
+	col.r=map.ambient.light_color.r;
+	col.g=map.ambient.light_color.g;
+	col.b=map.ambient.light_color.b;
+	
+		// check the lights
+	
+	for (n=0;n!=map.nlight;n++) {
+		lit=&map.lights[n];
+		
+			// light within radius?
+			
+		d_intensity=(double)lit->intensity;
+			
+		dx=(lit->pnt.x-rpt->x);
+		dy=(lit->pnt.y-rpt->y);
+		dz=(lit->pnt.z-rpt->z);
+		dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
+		if (dist>d_intensity) continue;
+		
+			// get color
+			
+		d=1.0-(dist/d_intensity);
+		d+=pow(d,(double)lit->exponent);
+		f=(float)d;
+		
+		col.r+=lit->col.r*f;
+		col.g+=lit->col.g*f;
+		col.b+=lit->col.b*f;
+	}
+	
+	if (col.r>1.0f) col.r=1.0f;
+	if (col.g>1.0f) col.g=1.0f;
+	if (col.b>1.0f) col.b=1.0f;
+	
+	uc_col[0]=(unsigned char)(col.r*255.0f);
+	uc_col[1]=(unsigned char)(col.g*255.0f);
+	uc_col[2]=(unsigned char)(col.b*255.0f);
+}
+
+/* =======================================================
+
       Light Map Triangle Render
       
 ======================================================= */
 
-void light_map_render_triangle(int *px,int *py,light_map_texture_type *lmap)
+void light_map_render_triangle(int *px,int *py,d3pnt *pt,light_map_texture_type *lmap)
 {
-	int				n,x,y,ty,by,x1,x2,x_count,y1,y2,
+	int				n,x,y,ty,by,x1,x2,x_start,x_end,x_count,y1,y2,
 					top_idx,bot_idx,l1_start_idx,l1_end_idx,l2_start_idx,l2_end_idx;
+	d3pnt			pt1,pt2,rpt;
 	unsigned char	*pixel;
-	unsigned char	col;
+	unsigned char	col[3];
 	
 		// determine the top and bottom vertex of the triangle
 
@@ -444,41 +498,65 @@ void light_map_render_triangle(int *px,int *py,light_map_texture_type *lmap)
 		y1=py[l1_end_idx]-py[l1_start_idx];
 		if (y1==0) {
 			x1=px[l1_start_idx];
+			memmove(&pt1,&pt[l1_start_idx],sizeof(d3pnt));
 		}
 		else {
 			x1=px[l1_start_idx]+(((px[l1_end_idx]-px[l1_start_idx])*(y-py[l1_start_idx]))/y1);
+			pt1.x=pt[l1_start_idx].x+(((pt[l1_end_idx].x-pt[l1_start_idx].x)*(y-py[l1_start_idx]))/y1);
+			pt1.y=pt[l1_start_idx].y+(((pt[l1_end_idx].y-pt[l1_start_idx].y)*(y-py[l1_start_idx]))/y1);
+			pt1.z=pt[l1_start_idx].z+(((pt[l1_end_idx].z-pt[l1_start_idx].z)*(y-py[l1_start_idx]))/y1);
 		}
 		
 		y2=py[l2_end_idx]-py[l2_start_idx];
 		if (y2==0) {
 			x2=px[l2_start_idx];
+			memmove(&pt2,&pt[l2_start_idx],sizeof(d3pnt));
 		}
 		else {
 			x2=px[l2_start_idx]+(((px[l2_end_idx]-px[l2_start_idx])*(y-py[l2_start_idx]))/y2);
+			pt2.x=pt[l2_start_idx].x+(((pt[l2_end_idx].x-pt[l2_start_idx].x)*(y-py[l2_start_idx]))/y2);
+			pt2.y=pt[l2_start_idx].y+(((pt[l2_end_idx].y-pt[l2_start_idx].y)*(y-py[l2_start_idx]))/y2);
+			pt2.z=pt[l2_start_idx].z+(((pt[l2_end_idx].z-pt[l2_start_idx].z)*(y-py[l2_start_idx]))/y2);
 		}
+		
+			// get the scan line
+			
+		if (x1<x2) {
+			x_start=x1;
+			x_end=x2;
+		}
+		else {
+			x_start=x2;
+			x_end=x1;
+			memmove(&rpt,&pt1,sizeof(d3pnt));
+			memmove(&pt1,&pt2,sizeof(d3pnt));
+			memmove(&pt2,&rpt,sizeof(d3pnt));
+		}
+		
+		pixel=lmap->data+(((light_map_texture_pixel_size*3)*y)+(x_start*3));
 		
 			// draw the scan line
 			
-		if (x1<x2) {
-			pixel=lmap->data+(((light_map_texture_pixel_size*3)*y)+(x1*3));
-			x_count=x2-x1;
-		}
-		else {
-			pixel=lmap->data+(((light_map_texture_pixel_size*3)*y)+(x2*3));
-			x_count=x1-x2;
-		}
+		for (x=x_start;x<=x_end;x++) {
 		
-		if ((by-ty)==0) {		// supergumba -- testing
-			col=0x0;
-		}
-		else {
-			col=(unsigned char)(((float)(y-ty)/(float)(by-ty))*256.0f);
-		}
+				// find 3D point for 2D point
+				
+			x_count=x_end-x_start;
 			
-		for (x=0;x<x_count;x++) {
-			*pixel++=col;
-			*pixel++=col;
-			*pixel++=col;
+			if (x_count==0) {
+				memmove(&rpt,&pt1,sizeof(d3pnt));
+			}
+			else {
+				rpt.x=pt1.x+(((pt2.x-pt1.x)*(x-x_start))/x_count);
+				rpt.y=pt1.y+(((pt2.y-pt1.y)*(x-x_start))/x_count);
+				rpt.z=pt1.z+(((pt2.z-pt1.z)*(x-x_start))/x_count);
+			}
+			
+			light_map_ray_trace(&rpt,col);
+			
+			*pixel++=col[0];
+			*pixel++=col[1];
+			*pixel++=col[2];
 		}
 
 	}
@@ -492,7 +570,8 @@ void light_map_render_triangle(int *px,int *py,light_map_texture_type *lmap)
 
 void light_map_create_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_mesh_poly_type *lm_poly,light_map_texture_type *lmap)
 {
-	int						n,x,y,px[3],py[3];
+	int				n,x,y,px[3],py[3];
+	d3pnt			pt[3];
 	
 		// get rendering spot (need to get again as this
 		// might be a new texture and block it off
@@ -510,6 +589,8 @@ void light_map_create_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,lig
 		
 	for (n=0;n!=(poly->ptsz-2);n++) {
 		
+			// 2D points
+			
 		px[0]=lm_poly->x[0]+x;
 		py[0]=lm_poly->y[0]+y;
 		px[1]=lm_poly->x[n+1]+x;
@@ -517,7 +598,15 @@ void light_map_create_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,lig
 		px[2]=lm_poly->x[n+2]+x;
 		py[2]=lm_poly->y[n+2]+y;
 		
-		light_map_render_triangle(px,py,lmap);
+			// 3D points
+			
+		memmove(&pt[0],&mesh->vertexes[poly->v[0]],sizeof(d3pnt));
+		memmove(&pt[1],&mesh->vertexes[poly->v[n+1]],sizeof(d3pnt));
+		memmove(&pt[2],&mesh->vertexes[poly->v[n+2]],sizeof(d3pnt));
+			
+			// draw the triangle
+		
+		light_map_render_triangle(px,py,pt,lmap);
 	}
 }
 
