@@ -367,7 +367,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandBuildLightMaps:
-			light_maps_create();
+			dialog_light_map_run();
 			return(noErr);
 			
 		case kCommandRun:
