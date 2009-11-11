@@ -146,6 +146,7 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagend(TRUE);
     
     xml_add_tagstart("Settings");
+    xml_add_attribute_int("light_map_quality",map->settings.light_map_quality);
     xml_add_attribute_float("gravity",map->settings.gravity);
 	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
 	xml_add_attribute_float("gravity_max_speed",map->settings.gravity_max_speed);

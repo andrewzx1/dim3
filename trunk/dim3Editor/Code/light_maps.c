@@ -172,6 +172,7 @@ void light_map_textures_free(void)
 
 void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,int v_idx,int *px,int *py)
 {
+	float				factor;
 	double				dx,dz;
 	d3pnt				*pt;
 	
@@ -191,8 +192,10 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 	
 		// reduce to pixel factor (size of render)
 		
-	*px=(int)((float)(*px)*light_map_pixel_factor);
-	*py=(int)((float)(*py)*light_map_pixel_factor);
+	factor=((float)map.settings.light_map_quality)/light_map_quality_to_pixel_factor;
+		
+	*px=(int)((float)(*px)*factor);
+	*py=(int)((float)(*py)*factor);
 }
 
 bool light_map_mesh_poly_start(char *err_str)
@@ -392,7 +395,145 @@ void light_map_texture_clear_block_type(unsigned char blk,light_map_texture_type
       
 ======================================================= */
 
-void light_map_ray_trace(d3pnt *rpt,unsigned char *uc_col)
+inline void ray_trace_create_vector_from_points(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2)
+{
+	v->x=(float)(x1-x2);
+	v->y=(float)(y1-y2);
+	v->z=(float)(z1-z2);
+}
+
+inline void ray_trace_vector_cross_product(d3vct *cp,d3vct *v1,d3vct *v2)
+{
+	cp->x=(v1->y*v2->z)-(v2->y*v1->z);
+	cp->y=(v1->z*v2->x)-(v2->z*v1->x);
+	cp->z=(v1->x*v2->y)-(v2->x*v1->y);
+}
+
+inline float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
+{
+	return((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
+}
+
+bool light_map_ray_trace_triangle(d3pnt *spt,d3vct *vct,int *x,int *y,int *z)
+{
+	float				det,invDet,t,u,v;
+	d3vct				perpVector,lineToTrigPointVector,lineToTrigPerpVector,v1,v2;
+	
+		// get triangle vectors
+		
+	ray_trace_create_vector_from_points(&v1,x[1],y[1],z[1],x[0],y[0],z[0]);
+	ray_trace_create_vector_from_points(&v2,x[2],y[2],z[2],x[0],y[0],z[0]);
+	
+		// calculate the determinate
+
+	ray_trace_vector_cross_product(&perpVector,vct,&v2);
+	det=ray_trace_vector_inner_product(&v1,&perpVector);
+	
+		// is line on the same plane as triangle?
+		
+	if ((det>-0.00001f) && (det<0.00001f)) return(FALSE);
+
+		// get the inverse determinate
+
+	invDet=1.0f/det;
+
+		// calculate triangle U and test
+	
+	ray_trace_create_vector_from_points(&lineToTrigPointVector,spt->x,spt->y,spt->z,x[0],y[0],z[0]);
+	u=invDet*ray_trace_vector_inner_product(&lineToTrigPointVector,&perpVector);
+	if ((u<0.0f) || (u>1.0f)) return(FALSE);
+	
+		// calculate triangle V and test
+
+	ray_trace_vector_cross_product(&lineToTrigPerpVector,&lineToTrigPointVector,&v1);
+	v=invDet*ray_trace_vector_inner_product(vct,&lineToTrigPerpVector);
+	if ((v<0.0f) || ((u+v)>1.0f)) return(FALSE);
+	
+		// get line T for point(t) =  start_point + (vector*t)
+		// -t are on the negative vector behind the point, so ignore
+
+	t=invDet*ray_trace_vector_inner_product(&v2,&lineToTrigPerpVector);
+	if (t<0.0f) return(FALSE);
+	
+		// a hit!
+		
+	return((t>=0.0f) && (t<=1.0f));
+}
+
+bool light_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	int			n,trig_count;
+	int			px[3],py[3],pz[3];
+	d3pnt		*m_pt;
+	
+		// first vertex is always 0
+
+	m_pt=&mesh->vertexes[poly->v[0]];
+		
+	px[0]=m_pt->x;
+	py[0]=m_pt->y;
+	pz[0]=m_pt->z;
+	
+		// run through all the triangles of the polygon
+		
+	trig_count=poly->ptsz-2;
+	
+	for (n=0;n<trig_count;n++) {
+		m_pt=&mesh->vertexes[poly->v[n+1]];
+		px[1]=m_pt->x;
+		py[1]=m_pt->y;
+		pz[1]=m_pt->z;
+
+		m_pt=&mesh->vertexes[poly->v[n+2]];
+		px[2]=m_pt->x;
+		py[2]=m_pt->y;
+		pz[2]=m_pt->z;
+		
+			// check for hit
+			
+		if (light_map_ray_trace_triangle(spt,vct,px,py,pz)) return(TRUE);
+	}
+	
+	return(FALSE);
+}
+
+bool light_map_ray_trace_map(int mesh_idx,int poly_idx,d3pnt *spt,d3pnt *ept)
+{
+	int							n,k;
+	d3vct						vct;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	
+		// ray trace vector
+		
+	vct.x=(float)(ept->x-spt->x);
+	vct.y=(float)(ept->y-spt->y);
+	vct.z=(float)(ept->z-spt->z);
+	
+		// look for poly collisions
+	
+	mesh=map.mesh.meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+			
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			if ((n!=mesh_idx) || (k!=poly_idx)) {
+				if (light_map_ray_trace_mesh_polygon(spt,&vct,mesh,poly)) return(TRUE);
+			}
+			
+			poly++;
+		}
+		
+		mesh++;
+	}
+
+	return(FALSE);
+}
+
+void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_col)
 {
 	int					n;
 	float				f;
@@ -418,6 +559,10 @@ void light_map_ray_trace(d3pnt *rpt,unsigned char *uc_col)
 		dz=(lit->pnt.z-rpt->z);
 		dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		if (dist>d_intensity) continue;
+		
+			// is it visible?
+			
+		if (light_map_ray_trace_map(mesh_idx,poly_idx,rpt,&lit->pnt)) continue;
 		
 			// get color
 			
@@ -445,7 +590,7 @@ void light_map_ray_trace(d3pnt *rpt,unsigned char *uc_col)
       
 ======================================================= */
 
-void light_map_render_triangle(int *px,int *py,d3pnt *pt,light_map_texture_type *lmap)
+void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *pt,light_map_texture_type *lmap)
 {
 	int				n,x,y,ty,by,x1,x2,x_start,x_end,x_count,y1,y2,
 					top_idx,bot_idx,l1_start_idx,l1_end_idx,l2_start_idx,l2_end_idx;
@@ -552,7 +697,7 @@ void light_map_render_triangle(int *px,int *py,d3pnt *pt,light_map_texture_type 
 				rpt.z=pt1.z+(((pt2.z-pt1.z)*(x-x_start))/x_count);
 			}
 			
-			light_map_ray_trace(&rpt,col);
+			light_map_ray_trace(mesh_idx,poly_idx,&rpt,col);
 			
 			*pixel++=col[0];
 			*pixel++=col[1];
@@ -568,10 +713,20 @@ void light_map_render_triangle(int *px,int *py,d3pnt *pt,light_map_texture_type 
       
 ======================================================= */
 
-void light_map_create_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_mesh_poly_type *lm_poly,light_map_texture_type *lmap)
+void light_map_create_mesh_poly(int mesh_idx,int poly_idx,light_map_texture_type *lmap)
 {
-	int				n,x,y,px[3],py[3];
-	d3pnt			pt[3];
+	int							n,x,y,px[3],py[3];
+	d3pnt						pt[3];
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	light_map_mesh_type			*lm_mesh;
+	light_map_mesh_poly_type	*lm_poly;
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+	
+	lm_mesh=&light_map_meshes[mesh_idx];
+	lm_poly=&lm_mesh->polys[poly_idx];
 	
 		// get rendering spot (need to get again as this
 		// might be a new texture and block it off
@@ -606,7 +761,7 @@ void light_map_create_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,lig
 			
 			// draw the triangle
 		
-		light_map_render_triangle(px,py,pt,lmap);
+		light_map_render_triangle(mesh_idx,poly_idx,px,py,pt,lmap);
 	}
 }
 
@@ -616,7 +771,6 @@ bool light_map_create_mesh(int mesh_idx,char *err_str)
 	bool						txt_ok;
 	light_map_mesh_poly_type	*lm_poly;
 	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
 	light_map_mesh_type			*lm_mesh;
 	light_map_texture_type		*lmap;
 	
@@ -674,13 +828,8 @@ bool light_map_create_mesh(int mesh_idx,char *err_str)
 	
 		// create the light map for each poly
 
-	poly=mesh->polys;
-	lm_poly=lm_mesh->polys;
-	
 	for (n=0;n!=mesh->npoly;n++) {
-		light_map_create_mesh_poly(mesh,poly,lm_poly,lmap);
-		poly++;
-		lm_poly++;
+		light_map_create_mesh_poly(mesh_idx,n,lmap);
 	}
 	
 	return(TRUE);
@@ -730,7 +879,7 @@ void light_map_finialize_mesh(int mesh_idx)
       
 ======================================================= */
 
-bool light_maps_create_run(char *err_str)
+bool light_maps_create(char *err_str)
 {
 	int				n;
 	char			base_path[1024],dir_path[1024];
@@ -786,14 +935,3 @@ bool light_maps_create_run(char *err_str)
 	return(TRUE);
 }
 
-void light_maps_create(void)
-{
-	bool			ok;
-	char			err_str[256];
-	
-	SetThemeCursor(kThemeWatchCursor);
-	ok=light_maps_create_run(err_str);
-	SetThemeCursor(kThemeArrowCursor);
-		
-	if (!ok) dialog_alert("Can not build light maps",err_str,NULL,NULL);
-}
