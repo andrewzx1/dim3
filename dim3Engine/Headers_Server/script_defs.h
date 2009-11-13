@@ -118,10 +118,6 @@ and can be sold or given away.
 #define sd_light_type_flicker							1044
 #define sd_light_type_failing							1045
 
-#define sd_light_filter_none							1046
-#define sd_light_filter_mesh_only						1047
-#define sd_light_filter_not_mesh						1048
-
 #define sd_light_direction_all							1050
 #define sd_light_direction_neg_x						1051
 #define sd_light_direction_pos_x						1052

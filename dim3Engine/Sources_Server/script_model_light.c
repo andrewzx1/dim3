@@ -34,14 +34,12 @@ and can be sold or given away.
 JSValueRef js_model_light_get_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_light_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_light_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_model_light_get_filter(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_light_get_direction(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_light_get_intensity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_light_get_exponent(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_model_light_set_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_model_light_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_model_light_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-bool js_model_light_set_filter(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_model_light_set_direction(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_model_light_set_intensity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_model_light_set_exponent(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
@@ -52,7 +50,6 @@ JSStaticValue 		model_light_props[]={
 							{"index",				js_model_light_get_index,				js_model_light_set_index,			kJSPropertyAttributeDontDelete},
 							{"on",					js_model_light_get_on,					js_model_light_set_on,				kJSPropertyAttributeDontDelete},
 							{"type",				js_model_light_get_type,				js_model_light_set_type,			kJSPropertyAttributeDontDelete},
-							{"filter",				js_model_light_get_filter,				js_model_light_set_filter,			kJSPropertyAttributeDontDelete},
 							{"direction",			js_model_light_get_direction,			js_model_light_set_direction,		kJSPropertyAttributeDontDelete},
 							{"intensity",			js_model_light_get_intensity,			js_model_light_set_intensity,		kJSPropertyAttributeDontDelete},
 							{"exponent",			js_model_light_get_exponent,			js_model_light_set_exponent,		kJSPropertyAttributeDontDelete},
@@ -118,17 +115,6 @@ JSValueRef js_model_light_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	light=&draw->lights[draw->script_light_idx];
 	
 	return(script_int_to_value(cx,light->type-sd_light_type_normal));
-}
-
-JSValueRef js_model_light_get_filter(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	model_draw			*draw;
-	model_draw_light	*light;
-
-	draw=script_find_model_draw();
-	light=&draw->lights[draw->script_light_idx];
-	
-	return(script_int_to_value(cx,light->filter-sd_light_filter_none));
 }
 
 JSValueRef js_model_light_get_direction(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -206,19 +192,6 @@ bool js_model_light_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->type=script_value_to_int(cx,vp)-sd_light_type_normal;
-	
-	return(TRUE);
-}
-
-bool js_model_light_set_filter(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	model_draw			*draw;
-	model_draw_light	*light;
-
-	draw=script_find_model_draw();
-	light=&draw->lights[draw->script_light_idx];
-	
-	light->filter=script_value_to_int(cx,vp)-sd_light_filter_none;
 	
 	return(TRUE);
 }

@@ -37,7 +37,6 @@ extern char				media_type_str[][32],
 						mesh_hide_mode_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
-						light_filter_str[][32],
 						light_direction_str[][32],
 						skill_type_str[][32],
 						spawn_type_str[][32],
@@ -367,7 +366,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			xml_get_attribute_text(light_tag,"name",light->name,name_str_len);
 
 			light->type=xml_get_attribute_list(light_tag,"type",(char*)light_type_str);
-			light->filter=xml_get_attribute_list(light_tag,"filter",(char*)light_filter_str);
+			light->light_map=xml_get_attribute_boolean(light_tag,"light_map");
 
 			light->direction=xml_get_attribute_list(light_tag,"direction",(char*)light_direction_str);
 			xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);

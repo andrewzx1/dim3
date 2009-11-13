@@ -252,7 +252,7 @@ void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_inte
 	lspot=gl_light_find_closest_light(pnt->x,pnt->y,pnt->z);
 	if (lspot!=NULL) {
 		memmove(light_pnt,&lspot->pnt,sizeof(d3pnt));
-		*light_intensity=lspot->intensity;
+		*light_intensity=(int)lspot->intensity;
 		return;
 	}
 

@@ -118,7 +118,7 @@ double gl_light_get_intensity(int tick,int light_type,int intensity)
       
 ======================================================= */
 
-void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int filter,int intensity,float exponent,int direction,d3col *col)
+void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int intensity,float exponent,int direction,d3col *col)
 {
 	view_light_spot_type			*lspot;
 	
@@ -142,7 +142,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int filter,int int
 
 	lspot->i_intensity=(int)lspot->intensity;			// need alternate versions of data to speed up later calculations
 	
-	lspot->filter=filter;
+	lspot->light_map=light_map;
 	lspot->exponent=exponent;
 	lspot->direction=direction;
 	
@@ -197,7 +197,7 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 				if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			gl_lights_compile_add(tick,&pnt,light->type,light->filter,light->intensity,light->exponent,light->direction,&light->col);
+			gl_lights_compile_add(tick,&pnt,light->type,FALSE,light->intensity,light->exponent,light->direction,&light->col);
 		}
 
 		light++;
@@ -232,7 +232,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 		}
 	}
 	
-	gl_lights_compile_add(tick,&effect->pnt,lt_normal,lf_none,intensity,1.0f,ld_all,&flash->col);
+	gl_lights_compile_add(tick,&effect->pnt,lt_normal,FALSE,intensity,1.0f,ld_all,&flash->col);
 }
 
 void gl_lights_compile(int tick)
@@ -251,7 +251,7 @@ void gl_lights_compile(int tick)
 	maplight=map.lights;
 		
 	for (n=0;n!=map.nlight;n++) {
-		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->filter,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
+		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->light_map,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
 		maplight++;
 	}	
 
@@ -528,17 +528,8 @@ void gl_lights_spot_reduce_box(d3pnt *min,d3pnt *max,bool is_mesh)
 	for (n=0;n!=view.render->light.count;n++) {
 	
 			// check filtering
-			
-		switch (view.render->light.spots[n].filter) {
-		
-			case lf_mesh_only:
-				if (!is_mesh) continue;
-				break;
-				
-			case lf_not_mesh:
-				if (is_mesh) continue;
-				break;
-		}
+
+		if ((view.render->light.spots[n].light_map) && (is_mesh)) continue;
 		
 			// check box collision
 			

@@ -232,7 +232,7 @@ typedef struct		{
 					} model_draw_fade;
 
 typedef struct		{
-						int								type,filter,direction,intensity;
+						int								type,direction,intensity;
 						float							exponent;
 						bool							on;
 						d3col							col;
