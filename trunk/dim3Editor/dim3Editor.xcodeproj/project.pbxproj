@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26184B2C10AA56C0002C81BE /* dialog_light_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 26184B2B10AA56C0002C81BE /* dialog_light_map.c */; };
 		263013CB0D713B7E00564E2C /* main_window_panels.c in Sources */ = {isa = PBXBuildFile; fileRef = 263013CA0D713B7E00564E2C /* main_window_panels.c */; };
 		2630141E0D72844300564E2C /* walk_view_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = 2630141D0D72844300564E2C /* walk_view_swap.c */; };
 		263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263614450DC41DF6002345C0 /* walk_view_click_texture.c */; };
@@ -219,6 +220,7 @@
 		0123D87500C0AFD57F000001 /* walk_view_draw_select.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_draw_select.c; path = Code/walk_view_draw_select.c; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		26184B2B10AA56C0002C81BE /* dialog_light_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_light_map.c; path = Code/dialog_light_map.c; sourceTree = "<group>"; };
 		263013CA0D713B7E00564E2C /* main_window_panels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window_panels.c; path = Code/main_window_panels.c; sourceTree = "<group>"; };
 		2630141D0D72844300564E2C /* walk_view_swap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_swap.c; path = Code/walk_view_swap.c; sourceTree = "<group>"; };
 		263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_texture.c; path = Code/walk_view_click_texture.c; sourceTree = "<group>"; };
@@ -590,6 +592,7 @@
 				26791D420E4D626700AAD058 /* dialog_grid_mesh.c */,
 				2647AD810E4F48D000BA3338 /* dialog_height_import.c */,
 				F5CA0192098D8E6E00039712 /* dialog_map_auto_generate.c */,
+				26184B2B10AA56C0002C81BE /* dialog_light_map.c */,
 				26BE521A0E5FD01A009B6925 /* dialog_save.c */,
 			);
 			name = Dialogs;
@@ -823,6 +826,7 @@
 				264A47890F760CC60054BAA6 /* palette_light.c in Sources */,
 				264A478B0F760CCA0054BAA6 /* palette_sound.c in Sources */,
 				2681880310A3A28A000B2CD8 /* light_maps.c in Sources */,
+				26184B2C10AA56C0002C81BE /* dialog_light_map.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
