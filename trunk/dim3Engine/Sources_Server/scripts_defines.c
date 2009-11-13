@@ -72,10 +72,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_light_type_pulse,							"",		"DIM3_LIGHT_TYPE_PULSE"},
 								{sd_light_type_flicker,							"",		"DIM3_LIGHT_TYPE_FLICKER"},
 								{sd_light_type_failing,							"",		"DIM3_LIGHT_TYPE_FAILING"},
-								
-								{sd_light_filter_none,							"",		"DIM3_LIGHT_FILTER_NONE"},
-								{sd_light_filter_mesh_only,						"",		"DIM3_LIGHT_FILTER_MESH_ONLY"},
-								{sd_light_filter_not_mesh,						"",		"DIM3_LIGHT_FILTER_NOT_MESH"},
 
 								{sd_light_direction_all,						"",		"DIM3_LIGHT_DIRECTION_ALL"},
 								{sd_light_direction_neg_x,						"",		"DIM3_LIGHT_DIRECTION_NEG_X"},

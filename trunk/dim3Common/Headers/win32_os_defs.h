@@ -50,7 +50,7 @@ and can be sold or given away.
 #include <GL\gl.h>
 #include <GL\glu.h>
 
-#include "SDL_syswm.h"
+#include "SDL.h"
 
 #include "zlib.h"
 #include "png.h"

@@ -220,10 +220,6 @@ void map_prepare_mesh_poly_bump(map_type *map,map_mesh_type *mesh)
 			
 		if (!poly->box.wall_like) continue;
 		
-			// only quads
-			
-		if (poly->ptsz!=4) continue;
-		
 			// only walls with two top vertexes can bump
 			
 		p1_idx=p2_idx=-1;

@@ -108,10 +108,6 @@ extern char light_type_str[][32];
 #define lt_flicker											4
 #define lt_failing											5
 
-#define lf_none												0
-#define lf_mesh_only										1
-#define lf_not_mesh											2
-
 #define ld_all												0
 #define ld_neg_x											1
 #define ld_pos_x											2
@@ -359,9 +355,9 @@ typedef struct		{
 					} map_scenery_type;
 
 typedef struct		{
-						int									type,direction,intensity,filter;
+						int									type,direction,intensity;
 						float								exponent;
-						bool								on;
+						bool								on,light_map;
 						char								name[name_str_len];
 						d3pnt								pnt;
 						d3col								col;
