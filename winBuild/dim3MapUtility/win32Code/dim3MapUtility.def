@@ -98,6 +98,8 @@ EXPORTS
 
 	map_add_texture_frame							@310
 	map_delete_texture_frame						@311
+	map_replace_texture								@312
+	map_delete_texture								@313
 
 	map_auto_generate_clear							@320
 	map_auto_generate_add_simple_lights				@321

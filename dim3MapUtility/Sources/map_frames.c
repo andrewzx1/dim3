@@ -121,5 +121,23 @@ bool map_replace_texture(map_type *map,int txt,char *bitmap_name)
 	return(map_textures_read(map));
 }
 
+bool map_delete_texture(map_type *map,int start_txt,int end_txt)
+{
+	int					n,k;
+	texture_type		*texture;
+
+	map_textures_close(map);
+	
+	for (n=start_txt;n!=end_txt;n++) {
+		texture=&map->textures[n];
+	
+		for (k=0;k!=max_texture_frame;k++) {
+			texture->frames[k].name[0]=0x0;
+		}
+	
+	}
+
+	return(map_textures_read(map));
+}
 
 
