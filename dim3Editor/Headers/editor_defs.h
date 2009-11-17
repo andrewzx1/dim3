@@ -148,12 +148,6 @@ and can be sold or given away.
 #define mouse_top_view_drag_scale				0.01f
 
 //
-// snap settings
-//
-
-#define walk_view_snap_distance					(map_enlarge*5)
-
-//
 // walk view types
 //
 

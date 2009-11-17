@@ -40,6 +40,7 @@ extern d3pnt				view_pnt;
 extern d3rect				main_wind_box;
 
 extern map_type				map;
+extern setup_type			setup;
 
 int							walk_view_vport[4];
 double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
@@ -189,7 +190,7 @@ void walk_view_click_snap(int mesh_idx,d3pnt *pt,d3pnt *mpt)
 		
 		for (t=0;t!=mesh->nvertex;t++) {
 		
-			if (distance_get(dpt->x,dpt->y,dpt->z,chk_x,chk_y,chk_z)<walk_view_snap_distance) {
+			if (distance_get(dpt->x,dpt->y,dpt->z,chk_x,chk_y,chk_z)<(setup.snap_size*map_enlarge)) {
 				mpt->x=dpt->x-pt->x;
 				mpt->y=dpt->y-pt->y;
 				mpt->z=dpt->z-pt->z;
@@ -220,7 +221,7 @@ void walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *old_pts,d3pnt *m
 		
 		walk_view_click_snap(mesh_idx,&old_pts[n],&hpt);
 		d=distance_get(0,0,0,hpt.x,hpt.y,hpt.z);
-		if (d>walk_view_snap_distance) continue;
+		if (d>(setup.snap_size*map_enlarge)) continue;
 		
 		if ((d<cur_dist) || (cur_dist<0)) {
 			cur_dist=d;
@@ -244,7 +245,7 @@ void walk_view_click_snap_mesh(int mesh_idx,d3pnt *old_pts,d3pnt *mpt)
 		
 		walk_view_click_snap(mesh_idx,&old_pts[n],&hpt);
 		d=distance_get(0,0,0,hpt.x,hpt.y,hpt.z);
-		if (d>walk_view_snap_distance) continue;
+		if (d>(setup.snap_size*map_enlarge)) continue;
 		
 		if ((d<cur_dist) || (cur_dist<0)) {
 			cur_dist=d;
