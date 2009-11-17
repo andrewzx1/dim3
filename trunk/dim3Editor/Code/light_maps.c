@@ -171,6 +171,146 @@ void light_map_textures_free(void)
 
 /* =======================================================
 
+      Smear Light Texture
+      
+======================================================= */
+
+bool light_map_smear_box_horz(int sx,int ex,int x_add,int y,light_map_texture_type *lmap)
+{
+	int				x,hx;
+	unsigned char	*pixel,col[3];
+	
+		// find the color to smear
+		
+	x=sx;
+	hx=-1;
+	
+	while (x!=(ex+x_add)) {
+		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x*3));
+		
+		col[0]=*pixel;
+		col[1]=*(pixel+1);
+		col[2]=*(pixel+2);
+		
+		if ((col[0]!=0x0) || (col[1]!=0x0) || (col[2]!=0x0)) {
+			hx=x;
+			break;
+		}
+	
+		x+=x_add;
+	}
+	
+	if (hx==-1) return(FALSE);
+	
+		// smear the color
+		
+	x=sx;
+	
+	while (x!=hx) {
+		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x*3));
+		
+		*pixel=col[0];
+		*(pixel+1)=col[1];
+		*(pixel+2)=col[2];
+	
+		x+=x_add;
+	}
+	
+	return(TRUE);
+}
+
+void light_map_smear_box_vert(int sy,int ey,int y_add,int x,light_map_texture_type *lmap)
+{
+	int				y,hy;
+	unsigned char	*pixel,col[3];
+	
+		// find the color to smear
+		
+	y=sy;
+	hy=-1;
+	
+	while (y!=(ey+y_add)) {
+		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x*3));
+		
+		col[0]=*pixel;
+		col[1]=*(pixel+1);
+		col[2]=*(pixel+2);
+		
+		if ((col[0]!=0x0) || (col[1]!=0x0) || (col[2]!=0x0)) {
+			hy=y;
+			break;
+		}
+	
+		y+=y_add;
+	}
+	
+	if (hy==-1) return;
+
+		// smear the color
+		
+	y=sy;
+	
+	while (y!=hy) {
+		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x*3));
+		
+		*pixel=col[0];
+		*(pixel+1)=col[1];
+		*(pixel+2)=col[2];
+	
+		y+=y_add;
+	}
+}
+
+void light_map_smear_box(light_map_mesh_type *lm_mesh,light_map_mesh_poly_type *lm_poly)
+{
+	int							x,ty,by,my;
+	light_map_texture_type		*lmap;
+	
+	lmap=&light_map_textures[lm_mesh->txt_idx];
+
+		// start horz smear
+		
+	my=(lm_poly->box.ty+lm_poly->box.by)>>1;
+	
+		// smear horzontal going up
+		
+	ty=my;
+	
+	while (ty>=lm_poly->box.ty) {
+		if (!light_map_smear_box_horz(lm_poly->box.lx,lm_poly->box.rx,1,ty,lmap)) break;
+		light_map_smear_box_horz(lm_poly->box.rx,lm_poly->box.lx,-1,ty,lmap);
+		ty--;
+	}
+	
+		// smear remander of top
+		
+	if (ty>=lm_poly->box.ty) {
+		for (x=lm_poly->box.lx;x<=lm_poly->box.rx;x++) {
+			light_map_smear_box_vert(lm_poly->box.ty,lm_poly->box.by,1,x,lmap);
+		}
+	}
+	
+		// smear horzontal going down
+		
+	by=my+1;
+	
+	while (by<=lm_poly->box.by) {
+		if (!light_map_smear_box_horz(lm_poly->box.lx,lm_poly->box.rx,1,by,lmap)) break;
+		light_map_smear_box_horz(lm_poly->box.rx,lm_poly->box.lx,-1,by,lmap);
+		by++;
+	}
+	
+		// smear remander of bottom
+		
+	if (by<=lm_poly->box.by) {
+		for (x=lm_poly->box.lx;x<=lm_poly->box.rx;x++) {
+			light_map_smear_box_vert(lm_poly->box.by,lm_poly->box.ty,-1,x,lmap);
+		}
+	}
+}
+
+/* =======================================================
+
       Light Maps Poly Setup
       
 ======================================================= */
@@ -297,7 +437,7 @@ void light_map_mesh_poly_free(void)
       
 ======================================================= */
 
-bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *box,light_map_texture_type *lmap)
+bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *box,unsigned char blk,light_map_texture_type *lmap)
 {
 	int				x,y,bx,by,block_count,b_x_sz,b_y_sz;
 	bool			hit;
@@ -345,6 +485,15 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 			if (hit) continue;
 			
 				// found block!
+				// mark off the block
+				
+			for (by=y;by<(y+b_y_sz);by++) {
+				bptr=lmap->block+((by*block_count)+x);
+				for (bx=x;bx<(x+b_x_sz);bx++) {
+					*bptr++=blk;
+				}
+			}
+			
 				// remember the block so we can smear
 				// the colors laters to eliminate edge bleeding
 				
@@ -353,9 +502,9 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 				
 			if (box!=NULL) {
 				box->lx=x;
-				box->rx=x+(b_x_sz*light_map_texture_block_size);
+				box->rx=(x+(b_x_sz*light_map_texture_block_size))-1;
 				box->ty=y;
-				box->by=y+(b_y_sz*light_map_texture_block_size);
+				box->by=(y+(b_y_sz*light_map_texture_block_size))-1;
 			}
 			
 				// move x,y into center so we have more
@@ -369,36 +518,6 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 	}
 
 	return(FALSE);
-}
-
-void light_map_texture_block_area(int x,int y,int x_sz,int y_sz,unsigned char blk,light_map_texture_type *lmap)
-{
-	int				bx,by,b_x_sz,b_y_sz,block_count;
-	unsigned char	*bptr;
-	
-		// get block size
-		
-	b_x_sz=(x_sz/light_map_texture_block_size);
-	if ((x_sz%light_map_texture_block_size)!=0) b_x_sz++;
-	
-	b_y_sz=(y_sz/light_map_texture_block_size);
-	if ((y_sz%light_map_texture_block_size)!=0) b_y_sz++;
-	
-		// get block starts
-		
-	x/=light_map_texture_block_size;
-	y/=light_map_texture_block_size;
-	
-	block_count=map.settings.light_map_size/light_map_texture_block_size;
-	
-		// block out area
-		
-	for (by=y;by<(y+b_y_sz);by++) {
-		bptr=lmap->block+((by*block_count)+x);
-		for (bx=x;bx<(x+b_x_sz);bx++) {
-			*bptr++=blk;
-		}
-	}
 }
 
 void light_map_texture_clear_block_type(unsigned char blk,light_map_texture_type *lmap)
@@ -484,8 +603,10 @@ bool light_map_ray_trace_triangle(d3pnt *spt,d3vct *vct,int *x,int *y,int *z)
 	if (t<0.0f) return(FALSE);
 	
 		// a hit!
+		// ignore 0.0 hits to stop edge to edge polygon
+		// collisions
 		
-	return((t>=0.0f) && (t<=1.0f));
+	return((t>0.0f) && (t<=1.0f));
 }
 
 bool light_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -567,7 +688,7 @@ bool light_map_ray_trace_map(int mesh_idx,int poly_idx,d3pnt *spt,d3pnt *ept)
 	}
 	
 		// look for poly collisions
-	
+		// ony check opaque, non-cut-outs
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		mesh=&map.mesh.meshes[n];
@@ -582,6 +703,8 @@ bool light_map_ray_trace_map(int mesh_idx,int poly_idx,d3pnt *spt,d3pnt *ept)
 			if ((poly->box.min.x>max.x) || (poly->box.max.x<min.x)) continue;
 			if ((poly->box.min.y>max.y) || (poly->box.max.y<min.y)) continue;
 			if ((poly->box.min.z>max.z) || (poly->box.max.z<min.z)) continue;
+			
+			if ((poly->alpha!=1.0f) || (map.textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_none)) continue;
 	
 			if ((n==mesh_idx) && (k==poly_idx)) continue;		// don't check original poly
 			
@@ -608,6 +731,7 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 	
 	for (n=0;n!=map.nlight;n++) {
 		lit=&map.lights[n];
+		if (!lit->light_map) continue;
 		
 			// light within radius?
 			
@@ -792,8 +916,7 @@ void light_map_create_mesh_poly(int mesh_idx,int poly_idx,light_map_texture_type
 		// might be a new texture and block it off
 		// from further rendering
 		
-	if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lmap)) return;
-	light_map_texture_block_area(x,y,lm_poly->x_sz,lm_poly->y_sz,0x1,lmap);
+	if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,0x1,lmap)) return;
 		
 		// remember the shift for creating the UVs
 		
@@ -825,6 +948,10 @@ void light_map_create_mesh_poly(int mesh_idx,int poly_idx,light_map_texture_type
 		
 		light_map_render_triangle(mesh_idx,poly_idx,px,py,pt,lmap);
 	}
+	
+		// smear texture
+		
+	light_map_smear_box(lm_mesh,lm_poly);
 }
 
 bool light_map_create_mesh_fit_texture(int mesh_idx,light_map_texture_type *lmap)
@@ -845,11 +972,10 @@ bool light_map_create_mesh_fit_texture(int mesh_idx,light_map_texture_type *lmap
 	lm_poly=lm_mesh->polys;
 	
 	for (k=0;k!=mesh->npoly;k++) {
-		if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,NULL,lmap)) {
+		if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,NULL,0x2,lmap)) {
 			txt_ok=FALSE;
 			break;
 		}
-		light_map_texture_block_area(x,y,lm_poly->x_sz,lm_poly->y_sz,0x2,lmap);
 	
 		lm_poly++;
 	}

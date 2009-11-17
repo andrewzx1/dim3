@@ -332,7 +332,7 @@ static pascal OSStatus palette_numeric_only_proc(EventHandlerCallRef handler,Eve
 	char			ch;
 	
 	GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
-	if (((ch>='0') && (ch<='9')) || (ch=='.')) return(eventNotHandledErr);
+	if (((ch>='0') && (ch<='9')) || (ch=='.') || ((ch<' ') && (ch!=0xD))) return(eventNotHandledErr);
 	
 	return(noErr);
 }
