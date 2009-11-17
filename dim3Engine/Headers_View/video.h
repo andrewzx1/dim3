@@ -129,7 +129,7 @@ extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id);
-extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col);
+extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col);
 
 	// full screen shaders
 
@@ -172,15 +172,18 @@ extern void gl_texture_shutdown(void);
 extern void gl_texture_opaque_start(void);
 extern void gl_texture_opaque_end(void);
 extern void gl_texture_opaque_set(GLuint txt_id);
+extern void gl_texture_opaque_light_map_start(void);
+extern void gl_texture_opaque_light_map_end(void);
+extern void gl_texture_opaque_light_map_set(GLuint txt_id,GLuint lmap_txt_id);
+extern void gl_texture_transparent_start(void);
+extern void gl_texture_transparent_end(void);
+extern void gl_texture_transparent_set(GLuint txt_id,float alpha);
 extern void gl_texture_glow_start(void);
 extern void gl_texture_glow_end(void);
 extern void gl_texture_glow_set(GLuint txt_id,GLuint glow_id,float glow_color);
 extern void gl_texture_decal_start(void);
 extern void gl_texture_decal_end(void);
 extern void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha);
-extern void gl_texture_transparent_start(void);
-extern void gl_texture_transparent_end(void);
-extern void gl_texture_transparent_set(GLuint txt_id,float alpha);
 extern void gl_texture_simple_start(void);
 extern void gl_texture_simple_end(void);
 extern void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,float alpha);

@@ -39,7 +39,8 @@ extern render_info_type		render_info;
 bitmap_type					null_bitmap;
 
 float						gl_texture_current_alpha,gl_texture_current_glow_color;
-GLuint						gl_texture_current_txt_id,gl_texture_current_glow_id;
+GLuint						gl_texture_current_txt_id,gl_texture_current_lmap_txt_id,
+							gl_texture_current_glow_id;
 
 /* =======================================================
 
@@ -89,6 +90,82 @@ inline void gl_texture_opaque_set(GLuint txt_id)
 {
 	if (txt_id!=gl_texture_current_txt_id) {
 		gl_texture_current_txt_id=txt_id;
+		glBindTexture(GL_TEXTURE_2D,txt_id);
+	}
+}
+
+/* =======================================================
+
+      Opaque Light Map Texture Drawing
+      
+======================================================= */
+
+inline void gl_texture_opaque_light_map_start(void)
+{
+		// texture unit 0
+		// the light map plus the ambient light
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// texture unit 1
+		// the light map modulated with the texture
+
+	glActiveTexture(GL_TEXTURE1);
+	glEnable(GL_TEXTURE_2D);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+	gl_texture_current_txt_id=-1;
+	gl_texture_current_lmap_txt_id=-1;
+}
+
+inline void gl_texture_opaque_light_map_end(void)
+{
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
+
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_TEXTURE_2D);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+}
+
+inline void gl_texture_opaque_light_map_set(GLuint txt_id,GLuint lmap_txt_id)
+{
+	if (lmap_txt_id!=gl_texture_current_lmap_txt_id) {
+		gl_texture_current_lmap_txt_id=lmap_txt_id;
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D,lmap_txt_id);
+	}
+
+	if (txt_id!=gl_texture_current_txt_id) {
+		gl_texture_current_txt_id=txt_id;
+
+		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D,txt_id);
 	}
 }
@@ -160,7 +237,7 @@ inline void gl_texture_transparent_set(GLuint txt_id,float alpha)
 inline void gl_texture_glow_start(void)
 {
 		// texture unit 0
-		// the glow map modulated with the glow contstant
+		// the glow map modulated with the glow constant
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);

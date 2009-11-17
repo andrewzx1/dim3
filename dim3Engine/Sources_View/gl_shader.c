@@ -39,7 +39,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 int							gl_shader_current_txt_idx,gl_shader_current_frame,
-							gl_shader_current_extra_txt_idx;
+							gl_shader_current_lmap_txt_idx;
 view_shader_code_type		*gl_shader_current_code;
 
 extern int game_time_get(void);
@@ -109,7 +109,7 @@ void gl_shader_set_instance_variables(view_shader_type *shader,view_shader_code_
 	var=glGetUniformLocationARB(shader_code->program_obj,"dim3TexSpecular");
 	if (var!=-1) glUniform1iARB(var,2);
 	
-	var=glGetUniformLocationARB(shader_code->program_obj,"dim3TexExtra");
+	var=glGetUniformLocationARB(shader_code->program_obj,"dim3TexLightMap");
 	if (var!=-1) glUniform1iARB(var,3);
 
 		// custom variables
@@ -637,7 +637,7 @@ void gl_shader_draw_start(void)
 	
 	gl_shader_current_txt_idx=-1;
 	gl_shader_current_frame=-1;
-	gl_shader_current_extra_txt_idx=-1;
+	gl_shader_current_lmap_txt_idx=-1;
 
 		// make all textures replace
 		
@@ -687,22 +687,22 @@ void gl_shader_draw_end(void)
       
 ======================================================= */
 
-void gl_shader_texture_set(view_shader_code_type *shader_code,texture_type *texture,int txt_idx,int extra_txt_idx,int frame)
+void gl_shader_texture_set(view_shader_code_type *shader_code,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
 {
 	GLuint			gl_id;
 
 		// any changes?
 
-	if ((gl_shader_current_txt_idx==txt_idx) && (gl_shader_current_frame==frame) && (gl_shader_current_extra_txt_idx==extra_txt_idx)) return;
+	if ((gl_shader_current_txt_idx==txt_idx) && (gl_shader_current_frame==frame) && (gl_shader_current_lmap_txt_idx==lmap_txt_idx)) return;
 
 	gl_shader_current_txt_idx=txt_idx;
 	gl_shader_current_frame=frame;
-	gl_shader_current_extra_txt_idx=extra_txt_idx;
+	gl_shader_current_lmap_txt_idx=lmap_txt_idx;
 	
 		// extra texture map
 
-	if (extra_txt_idx!=-1) {
-		gl_id=map.textures[extra_txt_idx].frames[0].bitmap.gl_id;
+	if (lmap_txt_idx!=-1) {
+		gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
 
 		if (gl_id!=-1) {
 			glActiveTexture(GL_TEXTURE3);
@@ -753,7 +753,7 @@ void gl_shader_texture_override(GLuint gl_id)
 
 	gl_shader_current_txt_idx=-1;
 	gl_shader_current_frame=-1;
-	gl_shader_current_extra_txt_idx=-1;
+	gl_shader_current_lmap_txt_idx=-1;
 }
 
 /* =======================================================
@@ -762,7 +762,7 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col)
+void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col)
 {
 	int								n,set_light_count;
 	bool							light_change;
@@ -813,7 +813,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extr
 	
 		// textures and per-texture variables
 		
-	gl_shader_texture_set(shader_code,texture,txt_idx,extra_txt_idx,frame);
+	gl_shader_texture_set(shader_code,texture,txt_idx,lmap_txt_idx,frame);
 	
 		// lighting variables
 		// this version is for shaders lite by view lights
