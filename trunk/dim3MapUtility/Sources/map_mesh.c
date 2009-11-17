@@ -66,7 +66,7 @@ int map_mesh_add(map_type *map)
 	mesh=&map->mesh.meshes[mesh_idx];
 
 	mesh->group_idx=-1;
-	mesh->extra_txt_idx=-1;
+	mesh->lmap_txt_idx=-1;
 		
 	mesh->flag.on=TRUE;
 	mesh->flag.pass_through=FALSE;
@@ -258,7 +258,7 @@ int map_mesh_duplicate(map_type *map,int mesh_idx)
 		
 	new_mesh->group_idx=mesh->group_idx;
 	new_mesh->nuv=mesh->nuv;
-	new_mesh->extra_txt_idx=mesh->extra_txt_idx;
+	new_mesh->lmap_txt_idx=mesh->lmap_txt_idx;
 	memmove(&new_mesh->rot_off,&mesh->rot_off,sizeof(d3pnt));
 	memmove(&new_mesh->flag,&mesh->flag,sizeof(map_mesh_flag_type));
 	memmove(&new_mesh->msg,&mesh->msg,sizeof(map_mesh_message_type));

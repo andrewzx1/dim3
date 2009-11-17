@@ -84,6 +84,7 @@ void render_opaque_mesh_simple(void)
 			// unless debug is on
 
 		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
+		if (mesh->lmap_txt_idx!=-1) continue;
 		
 			// run through the polys
 			
@@ -132,6 +133,82 @@ void render_opaque_mesh_simple(void)
 	gl_texture_opaque_end();
 }
 
+void render_opaque_mesh_light_mesh(void)
+{
+	int							n,k;
+	bool						enable;
+	GLuint						gl_id;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	texture_type				*texture;
+	
+		// setup drawing
+
+	enable=FALSE;
+
+	gl_texture_opaque_light_map_start();
+	
+		// run through the meshes
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+
+			// skip meshes with no opaques and all non-shaders
+			// unless debug is on
+
+		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
+		if (mesh->lmap_txt_idx==-1) continue;
+		
+			// run through the polys
+			
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// skip transparent or shader polys
+
+			if ((poly->draw.transparent_on) || ((!dim3_debug) && (poly->draw.shader_on))) {
+				poly++;
+				continue;
+			}
+
+				// time to enable color array?
+
+			if (!enable) {
+				enable=TRUE;
+				view_compile_gl_list_enable_color();
+			}
+
+				// get texture
+				
+			texture=&map.textures[poly->txt_idx];
+
+			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
+				gl_id=texture->frames[poly->draw.frame].bitmap.gl_id;
+			}
+
+			gl_texture_opaque_light_map_set(gl_id,texture->frames[mesh->lmap_txt_idx].bitmap.gl_id);
+
+				// draw polygon
+
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+
+			poly++;
+		}
+	}
+
+		// was color array enabled?
+
+	if (enable) view_compile_gl_list_disable_color();
+
+		// end drawing
+
+	gl_texture_opaque_light_map_end();
+}
+
 void render_opaque_mesh_shader(void)
 {
 	int							n,k;
@@ -176,10 +253,10 @@ void render_opaque_mesh_shader(void)
 
 			if (!mesh->flag.hilite) {
 				gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,&light_list);
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,&light_list,NULL,NULL);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->lmap_txt_idx,poly->dark_factor,1.0f,&light_list,NULL,NULL);
 			}
 			else {
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,NULL,&poly->box.mid,NULL);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->lmap_txt_idx,poly->dark_factor,1.0f,NULL,&poly->box.mid,NULL);
 			}
 
 				// fix texture if any back rendering
@@ -288,7 +365,10 @@ void render_map_mesh_opaque(void)
 	
 	view_compile_gl_list_attach_uv_normal();
 	render_opaque_mesh_simple();
-	if (!dim3_debug) render_opaque_mesh_shader();
+	if (!dim3_debug) {
+		render_opaque_mesh_light_mesh();
+		render_opaque_mesh_shader();
+	}
 	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_FALSE);

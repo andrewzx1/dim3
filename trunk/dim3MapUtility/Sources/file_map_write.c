@@ -402,7 +402,7 @@ void write_single_mesh(map_mesh_type *mesh)
     xml_add_tagstart("Mesh");
 
   	if (mesh->group_idx!=-1) xml_add_attribute_int("group",mesh->group_idx);
-  	if (mesh->extra_txt_idx!=-1) xml_add_attribute_int("extra_txt_idx",mesh->extra_txt_idx);
+  	if (mesh->lmap_txt_idx!=-1) xml_add_attribute_int("lmap_txt_idx",mesh->lmap_txt_idx);
 
 	xml_add_attribute_boolean("off",!mesh->flag.on);
 	xml_add_attribute_boolean("pass",mesh->flag.pass_through);

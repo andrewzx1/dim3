@@ -271,7 +271,7 @@ typedef struct		{
 					
 typedef struct		{
 						int									nvertex,npoly,nuv,group_idx,
-															extra_txt_idx,hide_mode;
+															lmap_txt_idx,hide_mode;
 						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;

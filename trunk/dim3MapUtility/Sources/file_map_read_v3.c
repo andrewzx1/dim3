@@ -80,7 +80,9 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 		// mesh settings
 
 	mesh->group_idx=xml_get_attribute_int_default(mesh_tag,"group",-1);
-	mesh->extra_txt_idx=xml_get_attribute_int_default(mesh_tag,"extra_txt_idx",-1);
+	mesh->lmap_txt_idx=xml_get_attribute_int_default(mesh_tag,"lmap_txt_idx",-1);
+
+	mesh->lmap_txt_idx=xml_get_attribute_int_default(mesh_tag,"extra_txt_idx",mesh->lmap_txt_idx);		// supergumba -- temporary as we switch attribute names
 
 	mesh->flag.on=!xml_get_attribute_boolean(mesh_tag,"off");
 	mesh->flag.pass_through=xml_get_attribute_boolean(mesh_tag,"pass");
@@ -251,6 +253,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 							main_light_tag,light_tag,main_sound_tag,sound_tag,
 							main_particle_tag,particle_tag,main_node_tag,node_tag,
 							main_obj_tag,obj_tag,tag,cnt;
+	char					str[32];
     map_light_type			*light;
     map_sound_type			*sound;
 	map_particle_type		*particle;
@@ -367,6 +370,10 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 
 			light->type=xml_get_attribute_list(light_tag,"type",(char*)light_type_str);
 			light->light_map=xml_get_attribute_boolean(light_tag,"light_map");
+
+			if (xml_get_attribute_text(light_tag,"filter",str,32)) {
+				if (strcasecmp(str,"not_mesh")==0) light->light_map=TRUE;		// supergumba -- temporary as we change over attributes here
+			}
 
 			light->direction=xml_get_attribute_list(light_tag,"direction",(char*)light_direction_str);
 			xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);
