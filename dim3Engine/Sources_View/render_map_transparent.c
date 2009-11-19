@@ -45,7 +45,9 @@ map_poly_sort_type		trans_sort;
 
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
-extern void view_compile_gl_list_attach_uv_normal(void);
+extern void view_compile_gl_list_attach_uv_simple(void);
+extern void view_compile_gl_list_attach_uv_light_map(void);
+extern void view_compile_gl_list_attach_uv_shader(void);
 extern void view_compile_gl_list_attach_uv_glow(void);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
@@ -379,7 +381,7 @@ void render_map_mesh_transparent(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	view_compile_gl_list_attach_uv_normal();
+	view_compile_gl_list_attach_uv_shader();
 	render_transparent_mesh_simple();
 	if (!dim3_debug) render_transparent_mesh_shader();
 
