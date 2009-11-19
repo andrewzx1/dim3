@@ -463,6 +463,18 @@ bool view_compile_mesh_gl_lists(int tick)
 /* =======================================================
 
       Use Map OpenGL Lists
+
+	  Simple is for single pass non-shader textures,
+	  only need a single UV list.
+
+	  Light map is for light mapped non-shader
+	  textures, the light map is texture 0, the texture
+	  is texture 1
+
+	  Shader is for shaders, where the texture is in 0
+	  and the light map in 1 (reverse of light map)
+
+	  Glow is for glow textures
       
 ======================================================= */
 
@@ -479,7 +491,35 @@ void view_compile_gl_list_attach(void)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 }
 
-void view_compile_gl_list_attach_uv_normal(void)
+void view_compile_gl_list_attach_uv_simple(void)
+{
+	int			offset;
+
+	offset=(map.mesh.vbo_vertex_count*(3+3))*sizeof(float);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
+}
+
+void view_compile_gl_list_attach_uv_light_map(void)
+{
+	int			offset;
+
+	offset=(map.mesh.vbo_vertex_count*(3+3))*sizeof(float);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
+	
+	offset=((map.mesh.vbo_vertex_count*(3+3))+(map.mesh.vbo_vertex_count*2))*sizeof(float);
+
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
+}
+
+void view_compile_gl_list_attach_uv_shader(void)
 {
 	int			offset;
 

@@ -45,7 +45,9 @@ extern view_type		view;
 extern int game_time_get(void);
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
-extern void view_compile_gl_list_attach_uv_normal(void);
+extern void view_compile_gl_list_attach_uv_simple(void);
+extern void view_compile_gl_list_attach_uv_light_map(void);
+extern void view_compile_gl_list_attach_uv_shader(void);
 extern void view_compile_gl_list_attach_uv_glow(void);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
@@ -60,17 +62,16 @@ extern void view_compile_gl_list_dettach(void);
 void render_opaque_mesh_simple(void)
 {
 	int							n,k;
-	bool						enable;
+	bool						first_draw;
 	GLuint						gl_id;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
 	
-		// setup drawing
+		// only setup drawing if we actually
+		// have something to draw
 
-	enable=FALSE;
-
-	gl_texture_opaque_start();
+	first_draw=TRUE;
 	
 		// run through the meshes
 
@@ -84,7 +85,7 @@ void render_opaque_mesh_simple(void)
 			// unless debug is on
 
 		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
-		if (mesh->lmap_txt_idx!=-1) continue;
+		if ((mesh->lmap_txt_idx!=-1) && (!dim3_debug)) continue;
 		
 			// run through the polys
 			
@@ -99,10 +100,12 @@ void render_opaque_mesh_simple(void)
 				continue;
 			}
 
-				// time to enable color array?
+				// time to turn on some gl pointers?
 
-			if (!enable) {
-				enable=TRUE;
+			if (first_draw) {
+				first_draw=FALSE;
+				gl_texture_opaque_start();
+				view_compile_gl_list_attach_uv_simple();
 				view_compile_gl_list_enable_color();
 			}
 
@@ -124,29 +127,27 @@ void render_opaque_mesh_simple(void)
 		}
 	}
 
-		// was color array enabled?
+		// was drawing started?
 
-	if (enable) view_compile_gl_list_disable_color();
-
-		// end drawing
-
-	gl_texture_opaque_end();
+	if (!first_draw) {
+		view_compile_gl_list_disable_color();
+		gl_texture_opaque_end();
+	}
 }
 
-void render_opaque_mesh_light_mesh(void)
+void render_opaque_mesh_light_map(void)
 {
 	int							n,k;
-	bool						enable;
+	bool						first_draw;
 	GLuint						gl_id;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
 	
-		// setup drawing
+		// only setup drawing if we actually
+		// have something to draw
 
-	enable=FALSE;
-
-	gl_texture_opaque_light_map_start();
+	first_draw=TRUE;
 	
 		// run through the meshes
 
@@ -160,7 +161,7 @@ void render_opaque_mesh_light_mesh(void)
 			// unless debug is on
 
 		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
-		if (mesh->lmap_txt_idx==-1) continue;
+		if ((mesh->lmap_txt_idx==-1) || (dim3_debug)) continue;
 		
 			// run through the polys
 			
@@ -175,10 +176,12 @@ void render_opaque_mesh_light_mesh(void)
 				continue;
 			}
 
-				// time to enable color array?
+				// time to turn on some gl pointers?
 
-			if (!enable) {
-				enable=TRUE;
+			if (first_draw) {
+				first_draw=FALSE;
+				gl_texture_opaque_light_map_start();
+				view_compile_gl_list_attach_uv_light_map();
 				view_compile_gl_list_enable_color();
 			}
 
@@ -200,27 +203,28 @@ void render_opaque_mesh_light_mesh(void)
 		}
 	}
 
-		// was color array enabled?
+		// was drawing started?
 
-	if (enable) view_compile_gl_list_disable_color();
-
-		// end drawing
-
-	gl_texture_opaque_light_map_end();
+	if (!first_draw) {
+		view_compile_gl_list_disable_color();
+		gl_texture_opaque_light_map_end();
+	}
 }
 
 void render_opaque_mesh_shader(void)
 {
 	int							n,k;
+	bool						first_draw;
 	GLuint						gl_id;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
 	view_glsl_light_list_type	light_list;
 
-		// setup drawing
+		// only setup drawing if we actually
+		// have something to draw
 
-	gl_shader_draw_start();
+	first_draw=TRUE;
 	
 		// run through the meshes
 
@@ -245,6 +249,14 @@ void render_opaque_mesh_shader(void)
 			if ((poly->draw.transparent_on) || (!poly->draw.shader_on)) {
 				poly++;
 				continue;
+			}
+
+				// time to turn on some gl pointers?
+
+			if (first_draw) {
+				first_draw=FALSE;
+				gl_shader_draw_start();
+				view_compile_gl_list_attach_uv_shader();
 			}
 
 				// setup shader
@@ -273,21 +285,23 @@ void render_opaque_mesh_shader(void)
 		}
 	}
 
-		// end drawing
+		// was drawing started?
 
-	gl_shader_draw_end();
+	if (!first_draw) gl_shader_draw_end();
 }
 
 void render_opaque_mesh_glow(void)
 {
 	int					n,k;
+	bool				first_draw;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
 	
-		// setup drawing
+		// only setup drawing if we actually
+		// have something to draw
 
-	gl_texture_glow_start();
+	first_draw=TRUE;
 	
 		// run through the meshes
 
@@ -314,6 +328,14 @@ void render_opaque_mesh_glow(void)
 				continue;
 			}
 
+				// time to turn on some gl pointers?
+
+			if (first_draw) {
+				first_draw=FALSE;
+				gl_texture_glow_start();
+				view_compile_gl_list_attach_uv_glow();
+			}
+
 				// get texture
 
 			texture=&map.textures[poly->txt_idx];
@@ -327,9 +349,9 @@ void render_opaque_mesh_glow(void)
 		}
 	}
 
-		// end drawing
+		// was drawing started?
 
-	gl_texture_glow_end();
+	if (!first_draw) gl_texture_glow_end();
 }
 
 /* =======================================================
@@ -363,17 +385,15 @@ void render_map_mesh_opaque(void)
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 	
-	view_compile_gl_list_attach_uv_normal();
 	render_opaque_mesh_simple();
 	if (!dim3_debug) {
-		render_opaque_mesh_light_mesh();
+		render_opaque_mesh_light_map();
 		render_opaque_mesh_shader();
 	}
 	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_FALSE);
 
-	view_compile_gl_list_attach_uv_glow();
 	render_opaque_mesh_glow();
 
 	glDepthMask(GL_TRUE);
