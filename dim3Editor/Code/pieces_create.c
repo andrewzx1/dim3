@@ -209,8 +209,11 @@ void piece_create_light(void)
 
 	lit->type=lt_normal;
 	lit->col.r=lit->col.g=lit->col.b=1;
+	lit->direction=ld_all;
 	lit->intensity=10000;
+	lit->exponent=1.0f;
 	lit->on=TRUE;
+	lit->light_map=TRUE;
 	
 		// select light
 		

@@ -48,7 +48,7 @@ and can be sold or given away.
 #define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
 #define kMeshSettingRotZ						FOUR_CHAR_CODE('rotz')
 
-#define kMeshSettingExtraTexture				FOUR_CHAR_CODE('etxt')
+#define kMeshSettingLightMapTexture				FOUR_CHAR_CODE('etxt')
 #define kMeshSettingHideMode					FOUR_CHAR_CODE('hdmd')
 
 #define kMeshSendMessageEnter					FOUR_CHAR_CODE('smen')
@@ -100,7 +100,7 @@ void palette_mesh_load(void)
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotZ,0,mesh->rot_off.z);
 	
 	dialog_set_combo(palette_mesh_wind,kMeshSettingHideMode,0,mesh->hide_mode);
-	dialog_fill_texture_combo(palette_mesh_wind,kMeshSettingExtraTexture,0,TRUE,mesh->extra_txt_idx);
+	dialog_fill_texture_combo(palette_mesh_wind,kMeshSettingLightMapTexture,0,TRUE,mesh->lmap_txt_idx);
 	
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageEnter,0,mesh->msg.entry_on);
 	dialog_set_int(palette_mesh_wind,kMeshSendMessageEnterId,0,mesh->msg.entry_id);
@@ -144,7 +144,7 @@ void palette_mesh_save(void)
 	mesh->rot_off.z=dialog_get_int(palette_mesh_wind,kMeshSettingRotZ,0);
 	
 	mesh->hide_mode=dialog_get_combo(palette_mesh_wind,kMeshSettingHideMode,0);
-	mesh->extra_txt_idx=dialog_get_texture_combo(palette_mesh_wind,kMeshSettingExtraTexture,0,TRUE);
+	mesh->lmap_txt_idx=dialog_get_texture_combo(palette_mesh_wind,kMeshSettingLightMapTexture,0,TRUE);
 	
 	mesh->msg.entry_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageEnter,0);
 	mesh->msg.entry_id=dialog_get_int(palette_mesh_wind,kMeshSendMessageEnterId,0);

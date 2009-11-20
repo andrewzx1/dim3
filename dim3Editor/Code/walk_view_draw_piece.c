@@ -221,13 +221,13 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 		
 			mesh_poly=&mesh->polys[k];
 			
-				// get texture.  If in second UV, we use extra
+				// get texture.  If in second UV, we use light map
 				// texture for display if it exists
 				
 			texture=&map.textures[mesh_poly->txt_idx];
 			if (main_wind_uv_layer!=0) {
-				if (mesh->extra_txt_idx!=-1) {
-					texture=&map.textures[mesh->extra_txt_idx];
+				if (mesh->lmap_txt_idx!=-1) {
+					texture=&map.textures[mesh->lmap_txt_idx];
 				}
 			}
 		
