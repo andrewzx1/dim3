@@ -723,9 +723,7 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 	double				d,d_intensity,dist,dx,dy,dz;
 	map_light_type		*lit;
 	
-	col.r=map.ambient.light_color.r;
-	col.g=map.ambient.light_color.g;
-	col.b=map.ambient.light_color.b;
+	col.r=col.g=col.b=0.0f;
 	
 		// check the lights
 	
@@ -1060,9 +1058,9 @@ void light_map_finialize_mesh(int mesh_idx)
 	mesh=&map.mesh.meshes[mesh_idx];
 	lm_mesh=&light_map_meshes[mesh_idx];
 	
-		// set extra texture
+		// set light map texture
 		
-	mesh->extra_txt_idx=(max_map_texture-max_light_map_textures)+lm_mesh->txt_idx;
+	mesh->lmap_txt_idx=(max_map_texture-max_light_map_textures)+lm_mesh->txt_idx;
 	
 		// make sure there are two UVs
 		

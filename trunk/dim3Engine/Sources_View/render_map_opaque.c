@@ -139,7 +139,7 @@ void render_opaque_mesh_light_map(void)
 {
 	int							n,k;
 	bool						first_draw;
-	GLuint						gl_id;
+	GLuint						gl_id,lmap_gl_id;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
@@ -162,6 +162,11 @@ void render_opaque_mesh_light_map(void)
 
 		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
 		if ((mesh->lmap_txt_idx==-1) || (dim3_debug)) continue;
+		
+			// get light map id
+			
+		texture=&map.textures[mesh->lmap_txt_idx];
+		lmap_gl_id=texture->frames[0].bitmap.gl_id;
 		
 			// run through the polys
 			
@@ -193,7 +198,8 @@ void render_opaque_mesh_light_map(void)
 				gl_id=texture->frames[poly->draw.frame].bitmap.gl_id;
 			}
 
-			gl_texture_opaque_light_map_set(gl_id,texture->frames[mesh->lmap_txt_idx].bitmap.gl_id);
+
+			gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);
 
 				// draw polygon
 

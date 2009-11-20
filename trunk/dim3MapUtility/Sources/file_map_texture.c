@@ -94,9 +94,7 @@ bool map_textures_read(map_type *map)
 		
 		for (n=0;n!=map->mesh.nmesh;n++) {
 
-			if (maputility_settings.glsl_ok) {
-				if (mesh->lmap_txt_idx!=-1) txt_ok[mesh->lmap_txt_idx]=TRUE;
-			}
+			if (mesh->lmap_txt_idx!=-1) txt_ok[mesh->lmap_txt_idx]=TRUE;
 			
 			poly=mesh->polys;
 			
