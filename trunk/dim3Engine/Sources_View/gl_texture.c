@@ -146,10 +146,10 @@ inline void gl_texture_opaque_light_map_end(void)
 {
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
 	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
-	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
@@ -205,7 +205,6 @@ inline void gl_texture_transparent_start(void)
 inline void gl_texture_transparent_end(void)
 {
 	glDisable(GL_TEXTURE_2D);
-
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
@@ -224,6 +223,97 @@ inline void gl_texture_transparent_set(GLuint txt_id,float alpha)
 		col4[0]=col4[1]=col4[2]=1.0f;
 		col4[3]=alpha;
 		
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+	}
+}
+
+/* =======================================================
+
+      Transparent Light Map Texture Drawing
+      
+======================================================= */
+
+inline void gl_texture_transparent_light_map_start(void)
+{
+		// texture unit 0
+		// the light map plus the ambient light
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// texture unit 1
+		// the light map modulated with the texture
+
+	glActiveTexture(GL_TEXTURE1);
+	glEnable(GL_TEXTURE_2D);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
+
+	gl_texture_current_txt_id=-1;
+	gl_texture_current_lmap_txt_id=-1;
+	gl_texture_current_alpha=-1.0f;
+}
+
+inline void gl_texture_transparent_light_map_end(void)
+{
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+}
+
+inline void gl_texture_transparent_light_map_set(GLuint txt_id,GLuint lmap_txt_id,float alpha)
+{
+	GLfloat			col4[4];
+
+	if (lmap_txt_id!=gl_texture_current_lmap_txt_id) {
+		gl_texture_current_lmap_txt_id=lmap_txt_id;
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D,lmap_txt_id);
+	}
+
+	if (txt_id!=gl_texture_current_txt_id) {
+		gl_texture_current_txt_id=txt_id;
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D,txt_id);
+	}
+	
+	if (alpha!=gl_texture_current_alpha) {
+		gl_texture_current_alpha=alpha;
+
+		col4[0]=col4[1]=col4[2]=1.0f;
+		col4[3]=alpha;
+		
+		glActiveTexture(GL_TEXTURE1);
 		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 	}
 }

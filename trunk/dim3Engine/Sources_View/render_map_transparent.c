@@ -179,7 +179,7 @@ void render_transparent_sort(void)
 void render_transparent_mesh_simple(void)
 {
 	int							n,sort_cnt;
-	bool						cur_additive,enable;
+	bool						cur_additive,first_draw;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	map_poly_sort_item_type		*sort_list;
@@ -196,11 +196,12 @@ void render_transparent_mesh_simple(void)
 	cur_additive=FALSE;
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	enable=FALSE;
+		// only setup drawing if we actually
+		// have something to draw
+
+	first_draw=TRUE;
 
 		// draw transparent meshes
-
-	gl_texture_transparent_start();
 
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
@@ -211,12 +212,15 @@ void render_transparent_mesh_simple(void)
 
 		if (!dim3_debug) {
 			if (poly->draw.shader_on) continue;
+			if (mesh->lmap_txt_idx!=-1) continue;
 		}
 		
-			// time to enable color array?
+			// time to turn on some gl pointers?
 
-		if (!enable) {
-			enable=TRUE;
+		if (first_draw) {
+			first_draw=FALSE;
+			gl_texture_transparent_start();
+			view_compile_gl_list_attach_uv_simple();
 			view_compile_gl_list_enable_color();
 		}
 	
@@ -243,15 +247,97 @@ void render_transparent_mesh_simple(void)
 
 		// was color array enabled?
 
-	if (enable) view_compile_gl_list_disable_color();
+	if (!first_draw) {
+		view_compile_gl_list_disable_color();
+		gl_texture_transparent_end();
+	}
+}
 
-	gl_texture_transparent_end();
+void render_transparent_mesh_light_map(void)
+{
+	int							n,sort_cnt;
+	bool						cur_additive,first_draw;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	map_poly_sort_item_type		*sort_list;
+	texture_type				*texture,*lm_texture;
+
+		// sorted transparency list
+
+	sort_cnt=trans_sort.count;
+	sort_list=trans_sort.list;
+
+		// keep track of certain settings so
+		// we can optimize state changes
+
+	cur_additive=FALSE;
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+		// only setup drawing if we actually
+		// have something to draw
+
+	first_draw=TRUE;
+
+		// draw transparent meshes
+
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
+		poly=&mesh->polys[sort_list[n].poly_idx];
+
+			// skip meshes or polys with no shaders
+			// unless debug is on
+
+		if (!dim3_debug) {
+			if (poly->draw.shader_on) continue;
+			if (mesh->lmap_txt_idx==-1) continue;
+		}
+		
+			// time to turn on some gl pointers?
+
+		if (first_draw) {
+			first_draw=FALSE;
+			gl_texture_transparent_light_map_start();
+			view_compile_gl_list_attach_uv_light_map();
+			view_compile_gl_list_enable_color();
+		}
+	
+			// need to change texture blending?
+
+		texture=&map.textures[poly->txt_idx];
+
+		if (texture->additive!=cur_additive) {
+			cur_additive=texture->additive;
+
+			if (cur_additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
+		}
+
+			// get light map texture
+			
+		lm_texture=&map.textures[mesh->lmap_txt_idx];
+
+			// draw the polygon
+
+		gl_texture_transparent_light_map_set(texture->frames[poly->draw.frame].bitmap.gl_id,lm_texture->frames[0].bitmap.gl_id,poly->alpha);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	}
+
+		// was color array enabled?
+
+	if (!first_draw) {
+		view_compile_gl_list_disable_color();
+		gl_texture_transparent_light_map_end();
+	}
 }
 
 void render_transparent_mesh_shader(void)
 {
 	int							n,sort_cnt;
-	bool						cur_additive;
+	bool						cur_additive,first_draw;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	map_poly_sort_item_type		*sort_list;
@@ -269,9 +355,12 @@ void render_transparent_mesh_shader(void)
 	cur_additive=FALSE;
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-		// start shaders
+		// only setup drawing if we actually
+		// have something to draw
 
-	gl_shader_draw_start();
+	first_draw=TRUE;
+
+		// draw shader polys
 	
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
@@ -280,6 +369,14 @@ void render_transparent_mesh_shader(void)
 			// skip meshes or polys with no shaders
 
 		if (!poly->draw.shader_on) continue;
+
+			// time to turn on some gl pointers?
+
+		if (first_draw) {
+			first_draw=FALSE;
+			gl_shader_draw_start();
+			view_compile_gl_list_attach_uv_shader();
+		}
 
 			// need to change texture blending?
 
@@ -309,12 +406,13 @@ void render_transparent_mesh_shader(void)
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
-	gl_shader_draw_end();
+	if (!first_draw) gl_shader_draw_end();
 }
 
 void render_transparent_mesh_glow(void)
 {
 	int						n,sort_cnt;
+	bool					first_draw;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	map_poly_sort_item_type	*sort_list;
@@ -325,7 +423,12 @@ void render_transparent_mesh_glow(void)
 	sort_cnt=trans_sort.count;
 	sort_list=trans_sort.list;
 
-	gl_texture_glow_start();
+		// only setup drawing if we actually
+		// have something to draw
+
+	first_draw=TRUE;
+
+		// draw glo polys
 
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
@@ -334,6 +437,14 @@ void render_transparent_mesh_glow(void)
 			// skip meshes or polys with no glows
 
 		if ((!mesh->draw.has_glow) || (!poly->draw.glow_on)) continue;
+
+			// time to turn on some gl pointers?
+
+		if (first_draw) {
+			first_draw=FALSE;
+			gl_texture_glow_start();
+			view_compile_gl_list_attach_uv_glow();
+		}
 		
 			// draw glow
 
@@ -342,7 +453,7 @@ void render_transparent_mesh_glow(void)
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
-	gl_texture_glow_end();
+	if (!first_draw) gl_texture_glow_end();
 }
 
 /* =======================================================
@@ -381,13 +492,14 @@ void render_map_mesh_transparent(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	view_compile_gl_list_attach_uv_shader();
 	render_transparent_mesh_simple();
-	if (!dim3_debug) render_transparent_mesh_shader();
+	if (!dim3_debug) {
+		render_transparent_mesh_light_map();
+		render_transparent_mesh_shader();
+	}
 
 	glDisable(GL_BLEND);
 
-	view_compile_gl_list_attach_uv_glow();
 	render_transparent_mesh_glow();
 	
 	glDepthMask(GL_TRUE);
