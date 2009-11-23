@@ -31,13 +31,33 @@ and can be sold or given away.
 
 #define max_view_image										1024
 
-#define max_view_shader										64
-#define max_view_shader_custom_vars							8
-
 #define max_view_render_item								5120
 
 #define max_light_spot										128				// maximum number of lights in a scene
 #define max_shader_light									8				// maximum number of lights passed to a shader
+
+//
+// shaders
+//
+
+#define max_shader_custom_vars								8
+
+#define max_core_shader_data_sz								10240
+
+#define max_core_shader										8
+
+#define gl_core_shader_light								0
+#define gl_core_shader_light_bump							1
+#define gl_core_shader_light_spec							2
+#define gl_core_shader_light_bump_spec						3
+#define gl_core_shader_diffuse_light						4
+#define gl_core_shader_diffuse_light_bump					5
+#define gl_core_shader_diffuse_light_spec					6
+#define gl_core_shader_diffuse_light_bump_spec				7
+
+#define max_user_shader										64
+
+#define gl_core_shader_index_start							1000
 
 //
 // input rate
@@ -182,18 +202,18 @@ typedef union		{
 						float								f;
 						float								vec3[3];
 						float								vec4[4];
-					} view_shader_value_type;
+					} shader_value_type;
 					
 typedef struct		{
 						int									var_type;
 						char								name[name_str_len];
-						view_shader_value_type				value;
-					} view_shader_custom_var_type;
+						shader_value_type					value;
+					} shader_custom_var_type;
 
 typedef struct		{
 						int									nvar;
-						view_shader_custom_var_type			vars[max_view_shader_custom_vars];
-					} view_shader_custom_var_list_type;
+						shader_custom_var_type				vars[max_shader_custom_vars];
+					} shader_custom_var_list_type;
 
 typedef struct		{
 						GLint								dim3TimeMillisec,dim3FrequencySecond,
@@ -203,25 +223,20 @@ typedef struct		{
 															dim3LightColor,dim3LightIntensity,
 															dim3LightExponent,dim3LightDirection,
 															dim3TintColor,dim3DarkFactor,dim3Alpha;
-					} view_shader_cached_var_loc;
+					} shader_cached_var_loc;
 
 typedef struct		{
 						int									start_tick,
 															cur_nlight,cur_light_idx[max_shader_light];
 						float								cur_dark_factor,cur_alpha;
-						char								vertex_name[file_str_len],fragment_name[file_str_len];
-						bool								on,per_scene_vars_set,cur_in_hilite;
+						char								name[name_str_len],
+															vertex_name[file_str_len],fragment_name[file_str_len];
+						bool								per_scene_vars_set,cur_in_hilite;
 						d3col								cur_tint_col;
-						view_shader_cached_var_loc			var_locs;
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
-					} view_shader_code_type;
-
-typedef struct		{
-						char								name[name_str_len];
-						view_shader_code_type				code_default,
-															code_light[max_shader_light+1];
-						view_shader_custom_var_list_type	custom_var_list;
-					} view_shader_type;
+						shader_cached_var_loc				var_locs;
+						shader_custom_var_list_type			custom_var_list;
+					} shader_type;
 
 //
 // view rendering structure
@@ -273,7 +288,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									image,shader;
+						int									image;
 					} view_count_type;
 
 //
@@ -286,7 +301,6 @@ typedef struct		{
 						view_time_type						time;
 						view_fps_type						fps;
 						view_image_type						*images;
-						view_shader_type					*shaders;
 						rain_draw_type						*rain_draws;
 					} view_type;
 
