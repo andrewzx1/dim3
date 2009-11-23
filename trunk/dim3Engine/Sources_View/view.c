@@ -76,16 +76,12 @@ bool view_memory_allocate(void)
 		// initialize pointers
 		
 	view.images=NULL;
-	view.shaders=NULL;
 	view.rain_draws=NULL;
 	
 		// view pointers
 
 	view.images=(view_image_type*)malloc(max_view_image*sizeof(view_image_type));
 	if (view.images==NULL) return(FALSE);
-	
-	view.shaders=(view_shader_type*)malloc(max_view_shader*sizeof(view_shader_type));
-	if (view.shaders==NULL) return(FALSE);
 
 	view.rain_draws=(rain_draw_type*)malloc(max_rain_density*sizeof(rain_draw_type));
 	if (view.rain_draws==NULL) return(FALSE);
@@ -93,7 +89,6 @@ bool view_memory_allocate(void)
 		// clear pointers
 
 	bzero(view.images,(max_view_image*sizeof(view_image_type)));
-	bzero(view.shaders,(max_view_shader*sizeof(view_shader_type)));
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
 			
 	return(TRUE);
@@ -102,7 +97,6 @@ bool view_memory_allocate(void)
 void view_memory_release(void)
 {
 	if (view.images!=NULL) free(view.images);
-	if (view.shaders!=NULL) free(view.shaders);
 	if (view.rain_draws!=NULL) free(view.rain_draws);
 }
 
@@ -229,9 +223,15 @@ bool view_initialize_display(char *err_str)
 	}
 	
 		// start the shaders
+
+	if (!gl_core_shader_initialize()) {
+		gl_shutdown();
+		SDL_Quit();
+		return(FALSE);
+	}
 		
 	read_settings_shader();
-	if (!gl_shader_initialize(err_str)) {
+	if (!gl_user_shader_initialize(err_str)) {
 		gl_shutdown();
 		SDL_Quit();
 		return(FALSE);
@@ -256,7 +256,8 @@ void view_shutdown_display(void)
 {
 	view_dispose_vertex_objects();
 	shadow_shutdown();
-	gl_shader_shutdown();
+	gl_core_shader_shutdown();
+	gl_user_shader_shutdown();
 	gl_back_render_shutdown();
 	gl_text_shutdown();
 	gl_shutdown();

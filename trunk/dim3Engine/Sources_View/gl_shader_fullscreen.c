@@ -32,17 +32,18 @@ and can be sold or given away.
 #include "video.h"
 
 extern int game_time_get(void);
-extern int gl_shader_find(char *name);
-extern void gl_shader_set_scene_variables(view_shader_code_type *shader_code);
-
-GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id,fs_shader_txt_id;
-int							fs_shader_idx,fs_shader_life_msec,fs_shader_start_tick;
-bool						fs_shader_on,fs_shader_init,fs_shader_active;
+extern void gl_shader_set_scene_variables(shader_type *shader);
 
 extern map_type				map;
 extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
+
+GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id,fs_shader_txt_id;
+int							fs_shader_idx,fs_shader_life_msec,fs_shader_start_tick;
+bool						fs_shader_on,fs_shader_init,fs_shader_active;
+
+extern shader_type			user_shaders[max_user_shader];
 
 /* =======================================================
 
@@ -136,7 +137,7 @@ bool gl_fs_shader_start(char *shader_name,int life_msec,char *err_str)
 
 		// set the shader
 
-	fs_shader_idx=gl_shader_find(shader_name);
+	fs_shader_idx=gl_user_shader_find(shader_name);
 	if (fs_shader_idx==-1) {
 		sprintf(err_str,"No shader with name: %s\n",shader_name);
 		return(FALSE);
@@ -226,8 +227,8 @@ void gl_fs_shader_render_begin(void)
 
 void gl_fs_shader_render_finish(void)
 {
-	float						*vertex_ptr,*uv_ptr;
-	view_shader_code_type		*shader_code;
+	float					*vertex_ptr,*uv_ptr;
+	shader_type				*shader;
 	
 	if ((!fs_shader_on) || (!fs_shader_active)) return;
 
@@ -290,12 +291,12 @@ void gl_fs_shader_render_finish(void)
 
 		// start the shader
 
-	shader_code=&view.shaders[fs_shader_idx].code_default;
+	shader=&user_shaders[fs_shader_idx];
 	
-	glUseProgramObjectARB(shader_code->program_obj);
+	glUseProgramObjectARB(shader->program_obj);
 
-	shader_code->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
-	gl_shader_set_scene_variables(shader_code);
+	shader->start_tick=fs_shader_start_tick;			// make sure frequency matches start of shader
+	gl_shader_set_scene_variables(shader);
 
 		// draw the quad
 

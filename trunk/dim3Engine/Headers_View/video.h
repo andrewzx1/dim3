@@ -120,9 +120,10 @@ extern void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col
 extern void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
 
 	// shaders
-	
-extern bool gl_shader_initialize(char *err_str);
-extern void gl_shader_shutdown(void);
+
+extern void gl_shader_code_clear(shader_type *shader);
+extern bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str);
+extern void gl_shader_code_shutdown(shader_type *shader);
 extern void gl_shader_attach_map(void);
 extern void gl_shader_attach_model(model_type *mdl);
 extern void gl_shader_draw_scene_initialize(void);
@@ -130,6 +131,17 @@ extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id);
 extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col);
+
+	// core shaders
+
+extern bool gl_core_shader_initialize(void);
+extern void gl_core_shader_shutdown(void);
+
+	// user shaders
+
+extern bool gl_user_shader_initialize(char *err_str);
+extern void gl_user_shader_shutdown(void);
+extern int gl_user_shader_find(char *name);
 
 	// full screen shaders
 

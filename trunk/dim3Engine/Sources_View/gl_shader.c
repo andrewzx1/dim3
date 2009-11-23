@@ -34,53 +34,20 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 
+extern int game_time_get(void);
+extern float game_time_fequency_second_get(int start_tick);
+
 extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
 int							gl_shader_current_txt_idx,gl_shader_current_frame,
 							gl_shader_current_lmap_txt_idx;
-view_shader_code_type		*gl_shader_current_code;
+shader_type					*gl_shader_current;
 
-extern int game_time_get(void);
-extern float game_time_fequency_second_get(int start_tick);
-
-/* =======================================================
-
-      Shader Loading Utilities
-      
-======================================================= */
-
-char* gl_shader_open_file(char *path)
-{
-	int				sz;
-	char			*data;
-	FILE			*file;
-	struct stat		sb;
-	
-		// get file size
-		
-	if (stat(path,&sb)!=0) return(NULL);
-	sz=sb.st_size;
-	
-		// open file
-		
-	file=fopen(path,"rb");
-	if (file==NULL) return(NULL);
-    
-	data=(char*)malloc(sz+1);
-    if (data==NULL) {
-        fclose(file);
-        return(NULL);
-    }
-	
-	fread(data,1,sz,file);
-	fclose(file);
-	
-	data[sz]=0x0;
-    
-	return(data);
-}
+extern int					nuser_shader;
+extern shader_type			core_shaders[max_core_shader];
+extern shader_type			user_shaders[max_user_shader];
 
 /* =======================================================
 
@@ -88,28 +55,28 @@ char* gl_shader_open_file(char *path)
       
 ======================================================= */
 
-void gl_shader_set_instance_variables(view_shader_type *shader,view_shader_code_type *shader_code)
+void gl_shader_set_instance_variables(shader_type *shader)
 {
-	int							n;
-	GLint						var;
-	view_shader_custom_var_type	*cvar;
+	int						n;
+	GLint					var;
+	shader_custom_var_type	*cvar;
 	
 		// need to use program before calling these
 		
-	glUseProgramObjectARB(shader_code->program_obj);
+	glUseProgramObjectARB(shader->program_obj);
 
 		// texture pointers
 		
-	var=glGetUniformLocationARB(shader_code->program_obj,"dim3Tex");
+	var=glGetUniformLocationARB(shader->program_obj,"dim3Tex");
 	if (var!=-1) glUniform1iARB(var,0);
 
-	var=glGetUniformLocationARB(shader_code->program_obj,"dim3TexBump");
+	var=glGetUniformLocationARB(shader->program_obj,"dim3TexBump");
 	if (var!=-1) glUniform1iARB(var,1);
 	
-	var=glGetUniformLocationARB(shader_code->program_obj,"dim3TexSpecular");
+	var=glGetUniformLocationARB(shader->program_obj,"dim3TexSpecular");
 	if (var!=-1) glUniform1iARB(var,2);
 	
-	var=glGetUniformLocationARB(shader_code->program_obj,"dim3TexLightMap");
+	var=glGetUniformLocationARB(shader->program_obj,"dim3TexLightMap");
 	if (var!=-1) glUniform1iARB(var,3);
 
 		// custom variables
@@ -117,7 +84,7 @@ void gl_shader_set_instance_variables(view_shader_type *shader,view_shader_code_
 	for (n=0;n!=shader->custom_var_list.nvar;n++) {
 		cvar=&shader->custom_var_list.vars[n];
 		
-		var=glGetUniformLocationARB(shader_code->program_obj,cvar->name);
+		var=glGetUniformLocationARB(shader->program_obj,cvar->name);
 		if (var==-1) continue;
 		
 		switch (cvar->var_type) {
@@ -145,23 +112,23 @@ void gl_shader_set_instance_variables(view_shader_type *shader,view_shader_code_
 	glUseProgramObjectARB(0);
 }
 
-void gl_shader_cache_dynamic_variable_locations(view_shader_code_type *shader_code)
+void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 {
-	shader_code->var_locs.dim3TimeMillisec=glGetUniformLocationARB(shader_code->program_obj,"dim3TimeMillisec");
-	shader_code->var_locs.dim3FrequencySecond=glGetUniformLocationARB(shader_code->program_obj,"dim3FrequencySecond");
-	shader_code->var_locs.dim3CameraPosition=glGetUniformLocationARB(shader_code->program_obj,"dim3CameraPosition");
-	shader_code->var_locs.dim3AmbientColor=glGetUniformLocationARB(shader_code->program_obj,"dim3AmbientColor");
-	shader_code->var_locs.dim3BumpFactor=glGetUniformLocationARB(shader_code->program_obj,"dim3BumpFactor");
-	shader_code->var_locs.dim3SpecularFactor=glGetUniformLocationARB(shader_code->program_obj,"dim3SpecularFactor");
-	shader_code->var_locs.dim3TexColor=glGetUniformLocationARB(shader_code->program_obj,"dim3TexColor");
-	shader_code->var_locs.dim3LightPosition=glGetUniformLocationARB(shader_code->program_obj,"dim3LightPosition");
-	shader_code->var_locs.dim3LightColor=glGetUniformLocationARB(shader_code->program_obj,"dim3LightColor");
-	shader_code->var_locs.dim3LightIntensity=glGetUniformLocationARB(shader_code->program_obj,"dim3LightIntensity");
-	shader_code->var_locs.dim3LightExponent=glGetUniformLocationARB(shader_code->program_obj,"dim3LightExponent");
-	shader_code->var_locs.dim3LightDirection=glGetUniformLocationARB(shader_code->program_obj,"dim3LightDirection");
-	shader_code->var_locs.dim3TintColor=glGetUniformLocationARB(shader_code->program_obj,"dim3TintColor");
-	shader_code->var_locs.dim3DarkFactor=glGetUniformLocationARB(shader_code->program_obj,"dim3DarkFactor");
-	shader_code->var_locs.dim3Alpha=glGetUniformLocationARB(shader_code->program_obj,"dim3Alpha");
+	shader->var_locs.dim3TimeMillisec=glGetUniformLocationARB(shader->program_obj,"dim3TimeMillisec");
+	shader->var_locs.dim3FrequencySecond=glGetUniformLocationARB(shader->program_obj,"dim3FrequencySecond");
+	shader->var_locs.dim3CameraPosition=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
+	shader->var_locs.dim3AmbientColor=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
+	shader->var_locs.dim3BumpFactor=glGetUniformLocationARB(shader->program_obj,"dim3BumpFactor");
+	shader->var_locs.dim3SpecularFactor=glGetUniformLocationARB(shader->program_obj,"dim3SpecularFactor");
+	shader->var_locs.dim3TexColor=glGetUniformLocationARB(shader->program_obj,"dim3TexColor");
+	shader->var_locs.dim3LightPosition=glGetUniformLocationARB(shader->program_obj,"dim3LightPosition");
+	shader->var_locs.dim3LightColor=glGetUniformLocationARB(shader->program_obj,"dim3LightColor");
+	shader->var_locs.dim3LightIntensity=glGetUniformLocationARB(shader->program_obj,"dim3LightIntensity");
+	shader->var_locs.dim3LightExponent=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
+	shader->var_locs.dim3LightDirection=glGetUniformLocationARB(shader->program_obj,"dim3LightDirection");
+	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
+	shader->var_locs.dim3DarkFactor=glGetUniformLocationARB(shader->program_obj,"dim3DarkFactor");
+	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 }
 
 /* =======================================================
@@ -273,186 +240,78 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 
 /* =======================================================
 
-      Shader Init/Shutdown
+      Compile Shader
       
 ======================================================= */
 
-void gl_shader_initialize_code_clear(view_shader_code_type *shader_code)
+void gl_shader_code_clear(shader_type *shader)
 {
-	shader_code->on=FALSE;
-
-	shader_code->vertex_obj=0;
-	shader_code->fragment_obj=0;
-	shader_code->program_obj=0;
+	shader->vertex_obj=0;
+	shader->fragment_obj=0;
+	shader->program_obj=0;
 }
 
-bool gl_shader_initialize_code_compile(view_shader_type *shader,view_shader_code_type *shader_code,char *err_str)
+bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str)
 {
-	bool						ok;
-	char						path[1024];
-	char						*vertex_data,*fragment_data;
-	const GLcharARB				*vertex_ptr,*fragment_ptr;
+	const GLcharARB			*vertex_ptr,*fragment_ptr;
 
-		// is shader used?
-
-	if ((shader_code->vertex_name[0]==0x0) || (shader_code->fragment_name[0]==0x0)) return(TRUE);
-
-	shader_code->on=TRUE;
-
-		// load the shaders
-
-	file_paths_data(&setup.file_path_setup,path,"Shaders",shader_code->vertex_name,"vert");
-	vertex_data=gl_shader_open_file(path);
-	if (vertex_data==NULL) {
-		sprintf(err_str,"GLSL Error: Can not open shader file '%s'",shader_code->vertex_name);
-		return(FALSE);
-	}
-		
-	file_paths_data(&setup.file_path_setup,path,"Shaders",shader_code->fragment_name,"frag");
-	fragment_data=gl_shader_open_file(path);
-	if (fragment_data==NULL) {
-		sprintf(err_str,"GLSL Error: Can not open shader file '%s'",shader_code->fragment_name);
-		return(FALSE);
-	}
-	
 		// create the shader
 			
-	shader_code->program_obj=glCreateProgramObjectARB();
+	shader->program_obj=glCreateProgramObjectARB();
 		
-	shader_code->vertex_obj=glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+	shader->vertex_obj=glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
 	
 	vertex_ptr=vertex_data;
-	glShaderSourceARB(shader_code->vertex_obj,1,&vertex_ptr,NULL);
+	glShaderSourceARB(shader->vertex_obj,1,&vertex_ptr,NULL);
 
-	glCompileShaderARB(shader_code->vertex_obj);
-	ok=gl_shader_report_error(err_str,shader_code->vertex_name,NULL,shader_code->vertex_obj,"Vertex",vertex_data,GL_OBJECT_COMPILE_STATUS_ARB);
-	free(vertex_data);
-	
-	if (!ok) {
-		free(fragment_data);
-		return(FALSE);
-	}
+	glCompileShaderARB(shader->vertex_obj);
+	if (!gl_shader_report_error(err_str,shader->vertex_name,NULL,shader->vertex_obj,"Vertex",vertex_data,GL_OBJECT_COMPILE_STATUS_ARB)) return(FALSE);
 
-	glAttachObjectARB(shader_code->program_obj,shader_code->vertex_obj);
+	glAttachObjectARB(shader->program_obj,shader->vertex_obj);
 	
-	shader_code->fragment_obj=glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+	shader->fragment_obj=glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
 	
 	fragment_ptr=fragment_data;
-	glShaderSourceARB(shader_code->fragment_obj,1,&fragment_ptr,NULL);
+	glShaderSourceARB(shader->fragment_obj,1,&fragment_ptr,NULL);
 	
-	glCompileShaderARB(shader_code->fragment_obj);
-	ok=gl_shader_report_error(err_str,NULL,shader_code->fragment_name,shader_code->fragment_obj,"Fragment",fragment_data,GL_OBJECT_COMPILE_STATUS_ARB);
-	free(fragment_data);
+	glCompileShaderARB(shader->fragment_obj);
+	if (!gl_shader_report_error(err_str,NULL,shader->fragment_name,shader->fragment_obj,"Fragment",fragment_data,GL_OBJECT_COMPILE_STATUS_ARB)) return(FALSE);
 	
-	if (!ok) return(FALSE);
-	
-	glAttachObjectARB(shader_code->program_obj,shader_code->fragment_obj);
+	glAttachObjectARB(shader->program_obj,shader->fragment_obj);
 	
 		// link shaders into program
 		
-	glLinkProgramARB(shader_code->program_obj);
-	if (!gl_shader_report_error(err_str,shader_code->vertex_name,shader_code->fragment_name,shader_code->program_obj,"Program",NULL,GL_OBJECT_LINK_STATUS_ARB)) return(FALSE);
+	glLinkProgramARB(shader->program_obj);
+	if (!gl_shader_report_error(err_str,shader->vertex_name,shader->fragment_name,shader->program_obj,"Program",NULL,GL_OBJECT_LINK_STATUS_ARB)) return(FALSE);
 
 		// per instance shader variables
 
-	gl_shader_set_instance_variables(shader,shader_code);
+	gl_shader_set_instance_variables(shader);
 	
 		// cache the location of the dymaic variables
 		
-	gl_shader_cache_dynamic_variable_locations(shader_code);
+	gl_shader_cache_dynamic_variable_locations(shader);
 	
 		// timing only works for full screen shaders
 		
-	shader_code->start_tick=0;
+	shader->start_tick=0;
 
 	return(TRUE);
 }
 
-bool gl_shader_initialize(char *err_str)
+void gl_shader_code_shutdown(shader_type *shader)
 {
-	int							n,k;
-	view_shader_type			*shader;
-
-		// shaders on?
-
-	if (!gl_check_shader_ok()) return(TRUE);
-
-		// clear the shaders
-
-	shader=view.shaders;
-	
-	for (n=0;n!=view.count.shader;n++) {
-
-		gl_shader_initialize_code_clear(&shader->code_default);
-
-		for (k=0;k!=(max_shader_light+1);k++) {
-			gl_shader_initialize_code_clear(&shader->code_light[k]);
-		}
-
-		shader++;
-	}
-	
-		// load the shaders
-
-	shader=view.shaders;
-	
-	for (n=0;n!=view.count.shader;n++) {
-
-		if (!gl_shader_initialize_code_compile(shader,&shader->code_default,err_str)) {
-			gl_shader_shutdown();
-			return(FALSE);
-		}
-
-		for (k=0;k!=(max_shader_light+1);k++) {
-			if (!gl_shader_initialize_code_compile(shader,&shader->code_light[k],err_str)) {
-				gl_shader_shutdown();
-				return(FALSE);
-			}
-		}
-
-		shader++;
+	if (shader->vertex_obj!=0) {
+		glDetachObjectARB(shader->program_obj,shader->vertex_obj);
+		glDeleteObjectARB(shader->vertex_obj);
 	}
 
-	return(TRUE);
-}
-
-void gl_shader_shutdown_code(view_shader_code_type *shader_code)
-{
-	if (!shader_code->on) return;
-
-	if (shader_code->vertex_obj!=0) {
-		glDetachObjectARB(shader_code->program_obj,shader_code->vertex_obj);
-		glDeleteObjectARB(shader_code->vertex_obj);
+	if (shader->fragment_obj!=0) {
+		glDetachObjectARB(shader->program_obj,shader->fragment_obj);
+		glDeleteObjectARB(shader->fragment_obj);
 	}
 
-	if (shader_code->fragment_obj!=0) {
-		glDetachObjectARB(shader_code->program_obj,shader_code->fragment_obj);
-		glDeleteObjectARB(shader_code->fragment_obj);
-	}
-
-	if (shader_code->program_obj!=0) glDeleteObjectARB(shader_code->program_obj);
-}
-
-void gl_shader_shutdown(void)
-{
-	int					n,k;
-	view_shader_type	*shader;
-
-	if (!gl_check_shader_ok()) return;
-
-		// shutdown shaders
-
-	shader=view.shaders;
-	
-	for (n=0;n!=view.count.shader;n++) {
-		gl_shader_shutdown_code(&shader->code_default);
-
-		for (k=0;k!=(max_shader_light+1);k++) {
-			gl_shader_shutdown_code(&shader->code_light[k]);
-		}
-
-		shader++;
-	}
+	if (shader->program_obj!=0) glDeleteObjectARB(shader->program_obj);
 }
 
 /* =======================================================
@@ -460,21 +319,6 @@ void gl_shader_shutdown(void)
       Attach Shaders to Textures
       
 ======================================================= */
-
-int gl_shader_find(char *name)
-{
-	int					n;
-	view_shader_type	*shader;
-
-	shader=view.shaders;
-	
-	for (n=0;n!=view.count.shader;n++) {
-		if (strcasecmp(name,shader->name)==0) return(n);
-		shader++;
-	}
-	
-	return(-1);
-}
 
 void gl_shader_attach_map(void)
 {
@@ -488,7 +332,7 @@ void gl_shader_attach_map(void)
 	
 	for (n=0;n!=max_map_texture;n++) {
 		texture->shader_idx=-1;
-		if ((shader_on) && (texture->shader_name[0]!=0x0)) texture->shader_idx=gl_shader_find(texture->shader_name);
+		if ((shader_on) && (texture->shader_name[0]!=0x0)) texture->shader_idx=gl_user_shader_find(texture->shader_name);
 		texture++;
 	}
 }
@@ -508,7 +352,7 @@ void gl_shader_attach_model(model_type *mdl)
 	for (n=0;n!=max_model_texture;n++) {
 		texture->shader_idx=-1;
 		if ((shader_on) && (texture->shader_name[0]!=0x0)) {
-			texture->shader_idx=gl_shader_find(texture->shader_name);
+			texture->shader_idx=gl_user_shader_find(texture->shader_name);
 			if (texture->shader_idx!=-1) has_no_shader=FALSE;
 		}
 		texture++;
@@ -523,62 +367,62 @@ void gl_shader_attach_model(model_type *mdl)
       
 ======================================================= */
 
-void gl_shader_set_scene_variables(view_shader_code_type *shader_code)
+void gl_shader_set_scene_variables(shader_type *shader)
 {
-	if (shader_code->var_locs.dim3TimeMillisec!=-1) glUniform1iARB(shader_code->var_locs.dim3TimeMillisec,(game_time_get()-shader_code->start_tick));
-	if (shader_code->var_locs.dim3FrequencySecond!=-1) glUniform1fARB(shader_code->var_locs.dim3FrequencySecond,game_time_fequency_second_get(shader_code->start_tick));
-	if (shader_code->var_locs.dim3CameraPosition!=-1) glUniform3fARB(shader_code->var_locs.dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
-	if (shader_code->var_locs.dim3AmbientColor!=-1) glUniform3fARB(shader_code->var_locs.dim3AmbientColor,(map.ambient.light_color.r+setup.gamma),(map.ambient.light_color.g+setup.gamma),(map.ambient.light_color.b+setup.gamma));
+	if (shader->var_locs.dim3TimeMillisec!=-1) glUniform1iARB(shader->var_locs.dim3TimeMillisec,(game_time_get()-shader->start_tick));
+	if (shader->var_locs.dim3FrequencySecond!=-1) glUniform1fARB(shader->var_locs.dim3FrequencySecond,game_time_fequency_second_get(shader->start_tick));
+	if (shader->var_locs.dim3CameraPosition!=-1) glUniform3fARB(shader->var_locs.dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
+	if (shader->var_locs.dim3AmbientColor!=-1) glUniform3fARB(shader->var_locs.dim3AmbientColor,(map.ambient.light_color.r+setup.gamma),(map.ambient.light_color.g+setup.gamma),(map.ambient.light_color.b+setup.gamma));
 }
 
-void gl_shader_set_texture_variables(view_shader_code_type *shader_code,texture_type *texture)
+void gl_shader_set_texture_variables(shader_type *shader,texture_type *texture)
 {
-	if (shader_code->var_locs.dim3BumpFactor!=-1) glUniform1fARB(shader_code->var_locs.dim3BumpFactor,texture->bump_factor);
-	if (shader_code->var_locs.dim3SpecularFactor!=-1) glUniform1fARB(shader_code->var_locs.dim3SpecularFactor,texture->specular_factor);
-	if (shader_code->var_locs.dim3TexColor!=-1) glUniform3fARB(shader_code->var_locs.dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
+	if (shader->var_locs.dim3BumpFactor!=-1) glUniform1fARB(shader->var_locs.dim3BumpFactor,texture->bump_factor);
+	if (shader->var_locs.dim3SpecularFactor!=-1) glUniform1fARB(shader->var_locs.dim3SpecularFactor,texture->specular_factor);
+	if (shader->var_locs.dim3TexColor!=-1) glUniform3fARB(shader->var_locs.dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
-void gl_shader_set_poly_variables(view_shader_code_type *shader_code,float dark_factor,float alpha,int set_light_count,view_glsl_light_list_type *light_list,d3col *tint_col)
+void gl_shader_set_poly_variables(shader_type *shader,float dark_factor,float alpha,int set_light_count,view_glsl_light_list_type *light_list,d3col *tint_col)
 {
 	if (light_list!=NULL) {
-		if (shader_code->var_locs.dim3LightPosition!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightPosition,set_light_count,light_list->pos);
-		if (shader_code->var_locs.dim3LightColor!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightColor,set_light_count,light_list->col);
-		if (shader_code->var_locs.dim3LightIntensity!=-1) glUniform1fvARB(shader_code->var_locs.dim3LightIntensity,set_light_count,light_list->intensity);
-		if (shader_code->var_locs.dim3LightExponent!=-1) glUniform1fvARB(shader_code->var_locs.dim3LightExponent,set_light_count,light_list->exponent);
-		if (shader_code->var_locs.dim3LightDirection!=-1) glUniform3fvARB(shader_code->var_locs.dim3LightDirection,set_light_count,light_list->direction);
+		if (shader->var_locs.dim3LightPosition!=-1) glUniform3fvARB(shader->var_locs.dim3LightPosition,set_light_count,light_list->pos);
+		if (shader->var_locs.dim3LightColor!=-1) glUniform3fvARB(shader->var_locs.dim3LightColor,set_light_count,light_list->col);
+		if (shader->var_locs.dim3LightIntensity!=-1) glUniform1fvARB(shader->var_locs.dim3LightIntensity,set_light_count,light_list->intensity);
+		if (shader->var_locs.dim3LightExponent!=-1) glUniform1fvARB(shader->var_locs.dim3LightExponent,set_light_count,light_list->exponent);
+		if (shader->var_locs.dim3LightDirection!=-1) glUniform3fvARB(shader->var_locs.dim3LightDirection,set_light_count,light_list->direction);
 	}
 	
 		// set tint color
 		
-	if (shader_code->var_locs.dim3TintColor!=-1) {
+	if (shader->var_locs.dim3TintColor!=-1) {
 	
 		if (tint_col==NULL) {
-			if ((shader_code->cur_tint_col.r!=1.0f) || (shader_code->cur_tint_col.g!=1.0f) || (shader_code->cur_tint_col.b!=1.0f)) {
-				shader_code->cur_tint_col.r=shader_code->cur_tint_col.g=shader_code->cur_tint_col.b=1.0f;
-				glUniform3fARB(shader_code->var_locs.dim3TintColor,1.0f,1.0f,1.0f);
+			if ((shader->cur_tint_col.r!=1.0f) || (shader->cur_tint_col.g!=1.0f) || (shader->cur_tint_col.b!=1.0f)) {
+				shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=1.0f;
+				glUniform3fARB(shader->var_locs.dim3TintColor,1.0f,1.0f,1.0f);
 			}
 		}
 		else {
-			if ((shader_code->cur_tint_col.r!=tint_col->r) || (shader_code->cur_tint_col.g!=tint_col->g) || (shader_code->cur_tint_col.b!=tint_col->b)) {
-				memmove(&shader_code->cur_tint_col,tint_col,sizeof(d3col));
-				glUniform3fARB(shader_code->var_locs.dim3TintColor,tint_col->r,tint_col->g,tint_col->b);
+			if ((shader->cur_tint_col.r!=tint_col->r) || (shader->cur_tint_col.g!=tint_col->g) || (shader->cur_tint_col.b!=tint_col->b)) {
+				memmove(&shader->cur_tint_col,tint_col,sizeof(d3col));
+				glUniform3fARB(shader->var_locs.dim3TintColor,tint_col->r,tint_col->g,tint_col->b);
 			}
 		}
 	}
 	
 		// set dark and alpha if they've changed
 
-	if (shader_code->var_locs.dim3DarkFactor!=-1) {
-		if (shader_code->cur_dark_factor!=dark_factor) {
-			shader_code->cur_dark_factor=dark_factor;
-			glUniform1fARB(shader_code->var_locs.dim3DarkFactor,dark_factor);
+	if (shader->var_locs.dim3DarkFactor!=-1) {
+		if (shader->cur_dark_factor!=dark_factor) {
+			shader->cur_dark_factor=dark_factor;
+			glUniform1fARB(shader->var_locs.dim3DarkFactor,dark_factor);
 		}
 	}
 	
-	if (shader_code->var_locs.dim3Alpha!=-1) {
-		if (shader_code->cur_alpha!=alpha) {
-			shader_code->cur_alpha=alpha;
-			glUniform1fARB(shader_code->var_locs.dim3Alpha,alpha);
+	if (shader->var_locs.dim3Alpha!=-1) {
+		if (shader->cur_alpha!=alpha) {
+			shader->cur_alpha=alpha;
+			glUniform1fARB(shader->var_locs.dim3Alpha,alpha);
 		}
 	}
 }
@@ -589,39 +433,44 @@ void gl_shader_set_poly_variables(view_shader_code_type *shader_code,float dark_
       
 ======================================================= */
 
-void gl_shader_draw_scene_initialize_code(view_shader_code_type *shader_code)
+void gl_shader_draw_scene_initialize_code(shader_type *shader)
 {
 		// use this flag to mark scene only variables
 		// as needing a load.  In this way we optimize
 		// out the amount of variable setting we need to do
 	
-	shader_code->per_scene_vars_set=FALSE;
+	shader->per_scene_vars_set=FALSE;
 		
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
 
-	shader_code->cur_nlight=0;
-	shader_code->cur_in_hilite=FALSE;
-	shader_code->cur_tint_col.r=shader_code->cur_tint_col.g=shader_code->cur_tint_col.b=-1.0f;
-	shader_code->cur_dark_factor=-1.0f;
-	shader_code->cur_alpha=-1.0f;
+	shader->cur_nlight=0;
+	shader->cur_in_hilite=FALSE;
+	shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=-1.0f;
+	shader->cur_dark_factor=-1.0f;
+	shader->cur_alpha=-1.0f;
 }
 
 void gl_shader_draw_scene_initialize(void)
 {
-	int						n,k;
-	view_shader_type		*shader;
+	int					n;
+	shader_type			*shader;
 
-	shader=view.shaders;
+		// core shaders
 
-	for (n=0;n!=view.count.shader;n++) {
+	shader=core_shaders;
 
-		gl_shader_draw_scene_initialize_code(&shader->code_default);
+	for (n=0;n!=max_core_shader;n++) {
+		gl_shader_draw_scene_initialize_code(shader);
+		shader++;
+	}
 
-		for (k=0;k!=(max_shader_light+1);k++) {
-			gl_shader_draw_scene_initialize_code(&shader->code_light[k]);
-		}
-		
+		// user shaders
+
+	shader=user_shaders;
+
+	for (n=0;n!=nuser_shader;n++) {
+		gl_shader_draw_scene_initialize_code(shader);
 		shader++;
 	}
 }
@@ -630,7 +479,7 @@ void gl_shader_draw_start(void)
 {
 		// remember current shader
 
-	gl_shader_current_code=NULL;
+	gl_shader_current=NULL;
 
 		// only reset textures when
 		// needed
@@ -660,7 +509,7 @@ void gl_shader_draw_end(void)
 {
 		// deactivate any current shader
 		
-	if (gl_shader_current_code!=NULL) glUseProgramObjectARB(0);
+	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
 	
 		// turn off any used textures
 		
@@ -687,7 +536,7 @@ void gl_shader_draw_end(void)
       
 ======================================================= */
 
-void gl_shader_texture_set(view_shader_code_type *shader_code,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
+void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
 {
 	GLuint			gl_id;
 
@@ -739,7 +588,7 @@ void gl_shader_texture_set(view_shader_code_type *shader_code,texture_type *text
 
 		// set per-texture specific variables
 
-	gl_shader_set_texture_variables(shader_code,texture);
+	gl_shader_set_texture_variables(shader,texture);
 }
 
 void gl_shader_texture_override(GLuint gl_id)
@@ -766,7 +615,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 {
 	int								n,set_light_count;
 	bool							light_change;
-	view_shader_code_type			*shader_code;
+	shader_type						*shader;
 	view_glsl_light_list_type		hi_light_list;
 	
 		// get shader based on number
@@ -780,28 +629,29 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		set_light_count=light_list->nlight;
 	}
 
-	shader_code=&view.shaders[texture->shader_idx].code_light[set_light_count];
-	if (!shader_code->on) {
-		shader_code=&view.shaders[texture->shader_idx].code_default;
-		set_light_count=max_shader_light;
+	if (texture->shader_idx>=gl_core_shader_index_start) {
+		shader=&core_shaders[texture->shader_idx-gl_core_shader_index_start];
+	}
+	else {
+		shader=&user_shaders[texture->shader_idx];
 	}
 	
 		// if we are not in this shader, then
 		// change over
 		
-	if (shader_code!=gl_shader_current_code) {
+	if (shader!=gl_shader_current) {
 	
 			// set in the new program
 			
-		gl_shader_current_code=shader_code;
-		glUseProgramObjectARB(shader_code->program_obj);
+		gl_shader_current=shader;
+		glUseProgramObjectARB(shader->program_obj);
 			
 			// set per-scene variables, only do this once
 			// as they don't change per scene
 		
-		if (!shader_code->per_scene_vars_set) {
-			shader_code->per_scene_vars_set=TRUE;
-			gl_shader_set_scene_variables(shader_code);
+		if (!shader->per_scene_vars_set) {
+			shader->per_scene_vars_set=TRUE;
+			gl_shader_set_scene_variables(shader);
 		}
 
 			// a shader change will force a texture
@@ -813,7 +663,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 	
 		// textures and per-texture variables
 		
-	gl_shader_texture_set(shader_code,texture,txt_idx,lmap_txt_idx,frame);
+	gl_shader_texture_set(shader,texture,txt_idx,lmap_txt_idx,frame);
 	
 		// lighting variables
 		// this version is for shaders lite by view lights
@@ -823,22 +673,22 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 			// any changes in lighting (different
 			// light list or coming out of a hilite)
 			
-		light_change=((shader_code->cur_in_hilite) || (light_list->nlight!=shader_code->cur_nlight));
+		light_change=((shader->cur_in_hilite) || (light_list->nlight!=shader->cur_nlight));
 		
 		for (n=0;n!=light_list->nlight;n++) {
-			if (shader_code->cur_light_idx[n]!=light_list->light_idx[n]) light_change=TRUE;
-			shader_code->cur_light_idx[n]=light_list->light_idx[n];
+			if (shader->cur_light_idx[n]!=light_list->light_idx[n]) light_change=TRUE;
+			shader->cur_light_idx[n]=light_list->light_idx[n];
 		}
 		
-		shader_code->cur_nlight=light_list->nlight;
-		shader_code->cur_in_hilite=FALSE;
+		shader->cur_nlight=light_list->nlight;
+		shader->cur_in_hilite=FALSE;
 		
 		if (!light_change) {
-			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,0,NULL,tint_col);
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,0,NULL,tint_col);
 		}
 		else {
 			gl_lights_fill_light_list(set_light_count,light_list);
-			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,set_light_count,light_list,tint_col);
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,set_light_count,light_list,tint_col);
 		}
 	}
 
@@ -849,8 +699,8 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		
 			// already in hilite?
 			
-		if (shader_code->cur_in_hilite) {
-			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,0,NULL,tint_col);
+		if (shader->cur_in_hilite) {
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,0,NULL,tint_col);
 		}
 		else {
 			bzero(&hi_light_list,sizeof(view_glsl_light_list_type));
@@ -868,9 +718,9 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 			hi_light_list.direction[1]=0.0f;
 			hi_light_list.direction[2]=0.0f;
 			
-			shader_code->cur_in_hilite=TRUE;
+			shader->cur_in_hilite=TRUE;
 			
-			gl_shader_set_poly_variables(shader_code,dark_factor,alpha,set_light_count,&hi_light_list,tint_col);
+			gl_shader_set_poly_variables(shader,dark_factor,alpha,set_light_count,&hi_light_list,tint_col);
 		}
 	}
 }

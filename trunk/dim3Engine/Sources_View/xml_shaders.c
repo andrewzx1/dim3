@@ -34,17 +34,20 @@ and can be sold or given away.
 extern view_type			view;
 extern setup_type			setup;
 
+extern int					nuser_shader;
+extern shader_type			user_shaders[max_user_shader];
+
 /* =======================================================
 
       Convert Value to Raw Type
       
 ======================================================= */
 
-void read_settings_shader_string_to_custom_variable(view_shader_custom_var_type *cvar,char *vtype,char *str)
+void read_settings_shader_string_to_custom_variable(shader_custom_var_type *cvar,char *vtype,char *str)
 {
 	char			*c,*c2;
 	
-	memset(&cvar->value,0x0,sizeof(view_shader_custom_var_type));
+	memset(&cvar->value,0x0,sizeof(shader_custom_var_type));
 	
 		// int
 		
@@ -122,13 +125,13 @@ void read_settings_shader_string_to_custom_variable(view_shader_custom_var_type 
 
 void read_settings_shader(void)
 {
-	int							k,nshader,nparam,shaders_head_tag,shader_tag,param_tag,tag;
-	char						tag_name[64],vtype[32],value[64],path[1024];
-	view_shader_type			*shader;
+	int					nshader,nparam,shaders_head_tag,shader_tag,param_tag,tag;
+	char				vtype[32],value[64],path[1024];
+	shader_type			*shader;
 
 		// no marks yet
 
-	view.count.shader=0;
+	nuser_shader=0;
 	
 		// read in interface from setting files
 		
@@ -156,8 +159,8 @@ void read_settings_shader(void)
 	
 	while (shader_tag!=-1) {
 	
-		shader=&view.shaders[view.count.shader];
-		bzero(shader,sizeof(view_shader_type));
+		shader=&user_shaders[nuser_shader];
+		bzero(shader,sizeof(shader_type));
 		
 		xml_get_attribute_text(shader_tag,"name",shader->name,name_str_len);
 		
@@ -165,24 +168,8 @@ void read_settings_shader(void)
 			
 		tag=xml_findfirstchild("Code",shader_tag);
 		if (tag!=-1) {
-			xml_get_attribute_text(tag,"vert",shader->code_default.vertex_name,file_str_len);
-			xml_get_attribute_text(tag,"frag",shader->code_default.fragment_name,file_str_len);
-		}
-		
-			// light shaders
-			
-		for (k=0;k!=(max_shader_light+1);k++) {
-			sprintf(tag_name,"Code_Light_%d",k);
-			
-			tag=xml_findfirstchild(tag_name,shader_tag);
-			if (tag!=-1) {
-				xml_get_attribute_text(tag,"vert",shader->code_light[k].vertex_name,file_str_len);
-				xml_get_attribute_text(tag,"frag",shader->code_light[k].fragment_name,file_str_len);
-			}
-			else {
-				shader->code_light[k].vertex_name[0]=0x0;
-				shader->code_light[k].fragment_name[0]=0x0;
-			}
+			xml_get_attribute_text(tag,"vert",shader->vertex_name,file_str_len);
+			xml_get_attribute_text(tag,"frag",shader->fragment_name,file_str_len);
 		}
 		
 			// parameters
@@ -203,7 +190,7 @@ void read_settings_shader(void)
 				read_settings_shader_string_to_custom_variable(&shader->custom_var_list.vars[nparam],vtype,value);
 
 				nparam++;
-				if (nparam==max_view_shader_custom_vars) break;
+				if (nparam==max_shader_custom_vars) break;
 			}
 		}
 
@@ -211,7 +198,7 @@ void read_settings_shader(void)
 		
 			// move on to next shader
 			
-		view.count.shader++;
+		nuser_shader++;
 		
 		shader_tag=xml_findnextchild(shader_tag);
 	}
