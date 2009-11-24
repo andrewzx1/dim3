@@ -224,7 +224,7 @@ bool view_initialize_display(char *err_str)
 	
 		// start the shaders
 
-	if (!gl_core_shader_initialize()) {
+	if (!gl_core_shader_initialize(err_str)) {
 		gl_shutdown();
 		SDL_Quit();
 		return(FALSE);

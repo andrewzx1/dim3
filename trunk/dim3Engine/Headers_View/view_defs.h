@@ -34,7 +34,7 @@ and can be sold or given away.
 #define max_view_render_item								5120
 
 #define max_light_spot										128				// maximum number of lights in a scene
-#define max_shader_light									8				// maximum number of lights passed to a shader
+#define max_shader_light									4				// maximum number of lights passed to a shader
 
 //
 // shaders
@@ -44,7 +44,7 @@ and can be sold or given away.
 
 #define max_core_shader_data_sz								10240
 
-#define max_core_shader										8
+#define max_core_shader										12
 
 #define gl_core_shader_light								0
 #define gl_core_shader_light_bump							1
@@ -54,14 +54,14 @@ and can be sold or given away.
 #define gl_core_shader_light_map_bump						5
 #define gl_core_shader_light_map_spec						6
 #define gl_core_shader_light_map_bump_spec					7
-#define gl_core_shader_diffuse_light						8
-#define gl_core_shader_diffuse_light_bump					9
-#define gl_core_shader_diffuse_light_spec					10
-#define gl_core_shader_diffuse_light_bump_spec				11
+#define gl_core_shader_light_diffuse						8
+#define gl_core_shader_light_diffuse_bump					9
+#define gl_core_shader_light_diffuse_spec					10
+#define gl_core_shader_light_diffuse_bump_spec				11
 
 #define max_user_shader										64
 
-#define gl_user_shader_index_start							1000
+#define gl_shader_core_index								1000
 
 //
 // input rate
