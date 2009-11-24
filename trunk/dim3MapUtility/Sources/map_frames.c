@@ -59,7 +59,7 @@ int map_count_texture_frames(map_type *map,int txt)
 
 void map_setup_animated_textures(map_type *map,int tick)
 {
-	bitmap_texture_setup_animation(map->textures,max_map_texture,NULL,tick);
+	bitmap_texture_setup_animation(map->textures,max_map_texture,tick);
 }
 
 /* =======================================================

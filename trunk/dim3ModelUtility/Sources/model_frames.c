@@ -55,9 +55,9 @@ int model_count_texture_frames(model_type *model,int txt)
       
 ======================================================= */
 
-void model_setup_animated_textures(model_type *model,unsigned char *user_frames,int tick)
+void model_setup_animated_textures(model_type *model,int tick)
 {
-	bitmap_texture_setup_animation(model->textures,max_model_texture,user_frames,tick);
+	bitmap_texture_setup_animation(model->textures,max_model_texture,tick);
 }
 
 /* =======================================================

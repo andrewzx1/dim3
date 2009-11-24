@@ -395,7 +395,12 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	
 			// any opaque trigs?
 			
-		frame=texture->animate.current_frame;
+		if (texture->animate.on) {
+			frame=texture->animate.current_frame;
+		}
+		else {
+			frame=(int)draw->cur_texture_frame[n];
+		}
 		
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
@@ -468,7 +473,12 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		
 			// any opaque trigs?
 			
-		frame=texture->animate.current_frame;
+		if (texture->animate.on) {
+			frame=texture->animate.current_frame;
+		}
+		else {
+			frame=(int)draw->cur_texture_frame[n];
+		}
 		
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
@@ -485,14 +495,14 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,1.0f,light_list,NULL,&draw->tint);
+			gl_shader_draw_execute(texture,n,frame,-1,1.0f,1.0f,light_list,NULL,&draw->tint);
 		}
 		else {
 			if (mesh->tintable) {
-				gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,1.0f,NULL,&draw->pnt,&draw->tint);
+				gl_shader_draw_execute(texture,n,frame,-1,1.0f,1.0f,NULL,&draw->pnt,&draw->tint);
 			}
 			else {
-				gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,1.0f,NULL,&draw->pnt,NULL);
+				gl_shader_draw_execute(texture,n,frame,-1,1.0f,1.0f,NULL,&draw->pnt,NULL);
 			}
 		}
 		
@@ -550,7 +560,12 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 	
 			// any transparent trigs?
 			
-		frame=texture->animate.current_frame;
+		if (texture->animate.on) {
+			frame=texture->animate.current_frame;
+		}
+		else {
+			frame=(int)draw->cur_texture_frame[n];
+		}
 		
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
@@ -642,7 +657,12 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 		
 			// any transparent trigs?
 			
-		frame=texture->animate.current_frame;
+		if (texture->animate.on) {
+			frame=texture->animate.current_frame;
+		}
+		else {
+			frame=(int)draw->cur_texture_frame[n];
+		}
 		
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
@@ -672,14 +692,14 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,alpha,light_list,NULL,&draw->tint);
+			gl_shader_draw_execute(texture,n,frame,-1,1.0f,alpha,light_list,NULL,&draw->tint);
 		}
 		else {
 			if (mesh->tintable) {
-				gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,alpha,NULL,&draw->pnt,&draw->tint);
+				gl_shader_draw_execute(texture,n,frame,-1,1.0f,alpha,NULL,&draw->pnt,&draw->tint);
 			}
 			else {
-				gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,alpha,NULL,&draw->pnt,NULL);
+				gl_shader_draw_execute(texture,n,frame,-1,1.0f,alpha,NULL,&draw->pnt,NULL);
 			}
 		}
 		
@@ -723,7 +743,13 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// only draw glow textures
 
 		texture=&mdl->textures[n];
-		frame=texture->animate.current_frame;
+		
+		if (texture->animate.on) {
+			frame=texture->animate.current_frame;
+		}
+		else {
+			frame=(int)draw->cur_texture_frame[n];
+		}
 
 		if (texture->frames[frame].glowmap.gl_id==-1) continue;
 
@@ -766,7 +792,7 @@ void render_model_setup(int tick,model_draw *draw)
 
 		// setup animated textures
 
-	model_setup_animated_textures(mdl,draw->cur_texture_frame,tick);
+	model_setup_animated_textures(mdl,tick);
 
 		// setup the rendering mesh mask
 
@@ -806,7 +832,12 @@ void render_model_setup(int tick,model_draw *draw)
 				
 				// check texture for transparencies
 				
-			frame=texture->animate.current_frame;
+			if (texture->animate.on) {
+				frame=texture->animate.current_frame;
+			}
+			else {
+			frame=(int)draw->cur_texture_frame[t];
+			}
 	
 			if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) {
 				draw->has_transparent=TRUE;

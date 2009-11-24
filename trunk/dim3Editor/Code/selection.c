@@ -122,6 +122,27 @@ void select_flip(int type,int main_idx,int sub_idx)
 	nselect_item--;
 }
 
+void select_remove_type(int type)
+{
+	int					idx;
+	select_item_type	*select_item;
+	
+	idx=0;
+	
+	while (idx<nselect_item) {
+		select_item=&select_items[idx];
+		if (select_item->type!=type) {
+			idx++;
+			continue;
+		}
+		
+		if ((nselect_item>1) && (idx!=(nselect_item-1))) memmove(&select_items[idx],&select_items[idx+1],sizeof(select_item_type));
+		
+		nselect_item--;
+		if (nselect_item==0) break;
+	}
+}
+
 /* =======================================================
 
       Changing Selection For Deletions

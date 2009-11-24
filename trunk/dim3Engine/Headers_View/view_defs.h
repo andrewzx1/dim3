@@ -50,14 +50,18 @@ and can be sold or given away.
 #define gl_core_shader_light_bump							1
 #define gl_core_shader_light_spec							2
 #define gl_core_shader_light_bump_spec						3
-#define gl_core_shader_diffuse_light						4
-#define gl_core_shader_diffuse_light_bump					5
-#define gl_core_shader_diffuse_light_spec					6
-#define gl_core_shader_diffuse_light_bump_spec				7
+#define gl_core_shader_light_map							4
+#define gl_core_shader_light_map_bump						5
+#define gl_core_shader_light_map_spec						6
+#define gl_core_shader_light_map_bump_spec					7
+#define gl_core_shader_diffuse_light						8
+#define gl_core_shader_diffuse_light_bump					9
+#define gl_core_shader_diffuse_light_spec					10
+#define gl_core_shader_diffuse_light_bump_spec				11
 
 #define max_user_shader										64
 
-#define gl_core_shader_index_start							1000
+#define gl_user_shader_index_start							1000
 
 //
 // input rate

@@ -339,7 +339,7 @@ extern int model_find_pose(model_type *model,char *pose_name);
 extern int model_find_animate(model_type *model,char *animate_name);
 
 extern int model_count_texture_frames(model_type *model,int txt);
-extern void model_setup_animated_textures(model_type *model,unsigned char *user_frames,int tick);
+extern void model_setup_animated_textures(model_type *model,int tick);
 extern bool model_add_texture_frame(model_type *model,int txt,char *bitmap_name);
 extern bool model_delete_texture_frame(model_type *model,int txt);
 

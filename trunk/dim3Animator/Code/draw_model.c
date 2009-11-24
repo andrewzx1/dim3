@@ -220,7 +220,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 		// setup the current texture frames
 		
 	if (play_animate) {
-		model_setup_animated_textures(model,NULL,time_get());
+		model_setup_animated_textures(model,time_get());
 	}
 	
 	glColor4f(1,1,1,1);
@@ -290,7 +290,7 @@ void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setu
 		// setup the current texture frames
 		
 	if (play_animate) {
-		model_setup_animated_textures(model,NULL,time_get());
+		model_setup_animated_textures(model,time_get());
 	}
 	
 	glColor4f(1,1,1,0.25);

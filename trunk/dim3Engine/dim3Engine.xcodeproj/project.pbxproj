@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		260AE9350F832A5B00451942 /* gl_back_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AE9340F832A5B00451942 /* gl_back_render.c */; };
+		26100DED10BB5156002B3FA1 /* gl_shader_core.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEA10BB5156002B3FA1 /* gl_shader_core.c */; };
+		26100DEE10BB5156002B3FA1 /* gl_shader_fullscreen.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEB10BB5156002B3FA1 /* gl_shader_fullscreen.c */; };
+		26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEC10BB5156002B3FA1 /* gl_shader_user.c */; };
 		26101DCE0E5D075100D2919B /* view_vertex_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 26101DCD0E5D075100D2919B /* view_vertex_object.c */; };
 		261B52AF0FA551CE0070CAB0 /* render_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 261B52AE0FA551CE0070CAB0 /* render_model.c */; };
 		261ED11C1064A0A20035747E /* collision_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 261ED11A1064A0A20035747E /* collision_object.c */; };
@@ -39,7 +42,6 @@
 		26A5625B0EF6D0B000D38FC0 /* net_socket_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */; };
 		26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562B80EF6D50D00D38FC0 /* net_utility.c */; };
 		26ABEE820E72F0700029469D /* script_obj_object_thrust.c in Sources */ = {isa = PBXBuildFile; fileRef = 26ABEE810E72F0700029469D /* script_obj_object_thrust.c */; };
-		26AEC4191059F15C001C9DF6 /* gl_full_screen_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AEC4181059F15C001C9DF6 /* gl_full_screen_shader.c */; };
 		26BE14280F44FA57008DB7DB /* score_limit.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE14270F44FA57008DB7DB /* score_limit.c */; };
 		26BF01C20ECCEC22009996C6 /* script_weap_target_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */; };
 		26C7B8D41060558900F800DA /* map_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C7B8D31060558900F800DA /* map_multiplayer.c */; };
@@ -390,6 +392,9 @@
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		260AE9340F832A5B00451942 /* gl_back_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_back_render.c; path = Sources_View/gl_back_render.c; sourceTree = "<group>"; };
+		26100DEA10BB5156002B3FA1 /* gl_shader_core.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_core.c; path = Sources_View/gl_shader_core.c; sourceTree = "<group>"; };
+		26100DEB10BB5156002B3FA1 /* gl_shader_fullscreen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_fullscreen.c; path = Sources_View/gl_shader_fullscreen.c; sourceTree = "<group>"; };
+		26100DEC10BB5156002B3FA1 /* gl_shader_user.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_user.c; path = Sources_View/gl_shader_user.c; sourceTree = "<group>"; };
 		26101DCD0E5D075100D2919B /* view_vertex_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vertex_object.c; path = Sources_View/view_vertex_object.c; sourceTree = "<group>"; };
 		261B52AE0FA551CE0070CAB0 /* render_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_model.c; path = Sources_View/render_model.c; sourceTree = "<group>"; };
 		261ED11A1064A0A20035747E /* collision_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = collision_object.c; path = Sources_Server/collision_object.c; sourceTree = "<group>"; };
@@ -421,7 +426,6 @@
 		26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket_udp.c; path = Sources_Network/net_socket_udp.c; sourceTree = "<group>"; };
 		26A562B80EF6D50D00D38FC0 /* net_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_utility.c; path = Sources_Network/net_utility.c; sourceTree = "<group>"; };
 		26ABEE810E72F0700029469D /* script_obj_object_thrust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_obj_object_thrust.c; path = Sources_Server/script_obj_object_thrust.c; sourceTree = "<group>"; };
-		26AEC4181059F15C001C9DF6 /* gl_full_screen_shader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_full_screen_shader.c; path = Sources_View/gl_full_screen_shader.c; sourceTree = "<group>"; };
 		26BE14270F44FA57008DB7DB /* score_limit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = score_limit.c; path = Sources_View/score_limit.c; sourceTree = "<group>"; };
 		26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_target_color.c; path = Sources_Server/script_weap_target_color.c; sourceTree = "<group>"; };
 		26C7B8D31060558900F800DA /* map_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_multiplayer.c; path = Sources_Server/map_multiplayer.c; sourceTree = "<group>"; };
@@ -1305,8 +1309,10 @@
 				F5DD1A9109085CAA00721649 /* gl_frames.c */,
 				26FE82350F4E1D5C00B659D8 /* gl_light.c */,
 				F5DD1A9309085CAA00721649 /* gl_shader.c */,
+				26100DEA10BB5156002B3FA1 /* gl_shader_core.c */,
+				26100DEC10BB5156002B3FA1 /* gl_shader_user.c */,
+				26100DEB10BB5156002B3FA1 /* gl_shader_fullscreen.c */,
 				260AE9340F832A5B00451942 /* gl_back_render.c */,
-				26AEC4181059F15C001C9DF6 /* gl_full_screen_shader.c */,
 				F5DD1A9609085CAA00721649 /* gl_text.c */,
 				F5DD1A9709085CAA00721649 /* gl_texture.c */,
 			);
@@ -1931,10 +1937,12 @@
 				261B52AF0FA551CE0070CAB0 /* render_model.c in Sources */,
 				263EF8C00FD9CFEE00FEB1E5 /* script_multiplayer_score.c in Sources */,
 				26CC83371027BAC200682555 /* script_map_light.c in Sources */,
-				26AEC4191059F15C001C9DF6 /* gl_full_screen_shader.c in Sources */,
 				26C7B8D41060558900F800DA /* map_multiplayer.c in Sources */,
 				261ED11C1064A0A20035747E /* collision_object.c in Sources */,
 				261ED11D1064A0A20035747E /* collision_projectile.c in Sources */,
+				26100DED10BB5156002B3FA1 /* gl_shader_core.c in Sources */,
+				26100DEE10BB5156002B3FA1 /* gl_shader_fullscreen.c in Sources */,
+				26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

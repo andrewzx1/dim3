@@ -320,6 +320,10 @@ void gl_shader_code_shutdown(shader_type *shader)
       
 ======================================================= */
 
+
+// supergumba -- this needs to be made dynamic
+// leave this routine, but have it pick dynamically with the texture, mesh-- and the one below
+
 void gl_shader_attach_map(void)
 {
 	int					n;
@@ -332,7 +336,16 @@ void gl_shader_attach_map(void)
 	
 	for (n=0;n!=max_map_texture;n++) {
 		texture->shader_idx=-1;
-		if ((shader_on) && (texture->shader_name[0]!=0x0)) texture->shader_idx=gl_user_shader_find(texture->shader_name);
+		
+		if ((shader_on) && (texture->shader_name[0]!=0x0)) {
+			if (strcasecmp(texture->shader_name,"default")==0) {
+				texture->shader_idx=gl_core_shader_find(texture,FALSE,TRUE);
+			}
+			else {
+				texture->shader_idx=gl_user_shader_find(texture->shader_name)+gl_user_shader_index_start;
+			}
+		}
+		
 		texture++;
 	}
 }
@@ -351,10 +364,18 @@ void gl_shader_attach_model(model_type *mdl)
 	
 	for (n=0;n!=max_model_texture;n++) {
 		texture->shader_idx=-1;
+		
 		if ((shader_on) && (texture->shader_name[0]!=0x0)) {
-			texture->shader_idx=gl_user_shader_find(texture->shader_name);
+			if (strcasecmp(texture->shader_name,"default")==0) {
+				texture->shader_idx=gl_core_shader_find(texture,TRUE,FALSE);
+			}
+			else {
+				texture->shader_idx=gl_user_shader_find(texture->shader_name)+gl_user_shader_index_start;
+			}
+			
 			if (texture->shader_idx!=-1) has_no_shader=FALSE;
 		}
+		
 		texture++;
 	}
 
@@ -629,11 +650,11 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		set_light_count=light_list->nlight;
 	}
 
-	if (texture->shader_idx>=gl_core_shader_index_start) {
-		shader=&core_shaders[texture->shader_idx-gl_core_shader_index_start];
+	if (texture->shader_idx<gl_user_shader_index_start) {
+		shader=&core_shaders[texture->shader_idx];
 	}
 	else {
-		shader=&user_shaders[texture->shader_idx];
+		shader=&user_shaders[texture->shader_idx-gl_user_shader_index_start];
 	}
 	
 		// if we are not in this shader, then
