@@ -136,6 +136,7 @@ extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,i
 
 extern bool gl_core_shader_initialize(void);
 extern void gl_core_shader_shutdown(void);
+extern int gl_core_shader_find(texture_type *texture,bool diffuse,bool light_map);
 
 	// user shaders
 

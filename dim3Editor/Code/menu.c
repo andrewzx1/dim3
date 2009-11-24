@@ -300,28 +300,31 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandViewShowHideLiquids:
-			select_clear();
+			select_remove_type(liquid_piece);
 			dp_liquid=!dp_liquid;
 			menu_set_show_hide_check();
 			main_wind_draw();
 			break;
 
 		case kCommandViewShowHideSpots:
-			select_clear();
+			select_remove_type(spot_piece);
+			select_remove_type(scenery_piece);
 			dp_object=!dp_object;
 			menu_set_show_hide_check();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewShowHideLights:
-			select_clear();
+			select_remove_type(light_piece);
+			select_remove_type(sound_piece);
+			select_remove_type(particle_piece);
 			dp_lightsoundparticle=!dp_lightsoundparticle;
 			menu_set_show_hide_check();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewShowHideNodes:
-			select_clear();
+			select_remove_type(node_piece);
 			dp_node=!dp_node;
 			menu_set_show_hide_check();
 			main_wind_draw();

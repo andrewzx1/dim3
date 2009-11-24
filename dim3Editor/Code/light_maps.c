@@ -36,7 +36,9 @@ extern file_path_setup_type		file_path_setup;
 #define max_light_map_textures						64
 
 typedef struct		{
-						unsigned char				*data,*block;
+						unsigned char				*block,
+													*pixel_data,
+													*pixel_touch;
 					} light_map_texture_type;
 					
 typedef struct		{
@@ -73,7 +75,8 @@ bool light_map_textures_start(char *err_str)
 	
 	for (n=0;n!=max_light_map_textures;n++) {
 		light_map_textures[n].block=NULL;
-		light_map_textures[n].data=NULL;
+		light_map_textures[n].pixel_data=NULL;
+		light_map_textures[n].pixel_touch=NULL;
 	}
 	
 	return(TRUE);
@@ -89,7 +92,7 @@ int light_map_textures_create(void)
 	idx=-1;
 	
 	for (n=0;n!=max_light_map_textures;n++) {
-		if (light_map_textures[n].data==NULL) {
+		if (light_map_textures[n].pixel_data==NULL) {
 			idx=n;
 			break;
 		}
@@ -112,8 +115,14 @@ int light_map_textures_create(void)
 		// pixel data
 		
 	sz=(map.settings.light_map_size*map.settings.light_map_size)*3;
-	lmap->data=(unsigned char*)malloc(sz);
-	bzero(lmap->data,sz);
+	lmap->pixel_data=(unsigned char*)malloc(sz);
+	bzero(lmap->pixel_data,sz);
+	
+		// pixel touch data
+		
+	sz=map.settings.light_map_size*map.settings.light_map_size;
+	lmap->pixel_touch=(unsigned char*)malloc(sz);
+	bzero(lmap->pixel_touch,sz);
 	
 	return(idx);
 }
@@ -142,13 +151,13 @@ void light_map_textures_save(char *base_path)
 	txt_idx=max_map_texture-max_light_map_textures;
 	
 	for (n=0;n!=max_light_map_textures;n++) {
-		if (light_map_textures[n].data==NULL) break;
+		if (light_map_textures[n].pixel_data==NULL) break;
 		
 			// save bitmap
 		
 		sprintf(bitmap_name,"LightMaps/lm_%s_%d",map_name,n);
 		sprintf(path,"%s/%s.png",base_path,bitmap_name);
-		bitmap_write_png_data(light_map_textures[n].data,map.settings.light_map_size,map.settings.light_map_size,FALSE,path);
+		bitmap_write_png_data(light_map_textures[n].pixel_data,map.settings.light_map_size,map.settings.light_map_size,FALSE,path);
 		
 			// put in texture list
 			
@@ -163,7 +172,8 @@ void light_map_textures_free(void)
 	
 	for (n=0;n!=max_light_map_textures;n++) {
 		if (light_map_textures[n].block!=NULL) free(light_map_textures[n].block);
-		if (light_map_textures[n].data!=NULL) free(light_map_textures[n].data);
+		if (light_map_textures[n].pixel_data!=NULL) free(light_map_textures[n].pixel_data);
+		if (light_map_textures[n].pixel_touch!=NULL) free(light_map_textures[n].pixel_touch);
 	}
 	
 	free(light_map_textures);
@@ -178,7 +188,7 @@ void light_map_textures_free(void)
 bool light_map_smear_box_horz(int sx,int ex,int x_add,int y,light_map_texture_type *lmap)
 {
 	int				x,hx;
-	unsigned char	*pixel,col[3];
+	unsigned char	*pixel,*touch,col[3];
 	
 		// find the color to smear
 		
@@ -186,13 +196,9 @@ bool light_map_smear_box_horz(int sx,int ex,int x_add,int y,light_map_texture_ty
 	hx=-1;
 	
 	while (x!=(ex+x_add)) {
-		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x*3));
+		touch=lmap->pixel_touch+((map.settings.light_map_size*y)+x);
 		
-		col[0]=*pixel;
-		col[1]=*(pixel+1);
-		col[2]=*(pixel+2);
-		
-		if ((col[0]!=0x0) || (col[1]!=0x0) || (col[2]!=0x0)) {
+		if ((*touch)!=0x0) {
 			hx=x;
 			break;
 		}
@@ -202,12 +208,20 @@ bool light_map_smear_box_horz(int sx,int ex,int x_add,int y,light_map_texture_ty
 	
 	if (hx==-1) return(FALSE);
 	
+		// get color to smear
+		
+	pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*y)+(hx*3));
+
+	col[0]=*pixel;
+	col[1]=*(pixel+1);
+	col[2]=*(pixel+2);
+	
 		// smear the color
 		
 	x=sx;
 	
 	while (x!=hx) {
-		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x*3));
+		pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*y)+(x*3));
 		
 		*pixel=col[0];
 		*(pixel+1)=col[1];
@@ -222,7 +236,7 @@ bool light_map_smear_box_horz(int sx,int ex,int x_add,int y,light_map_texture_ty
 void light_map_smear_box_vert(int sy,int ey,int y_add,int x,light_map_texture_type *lmap)
 {
 	int				y,hy;
-	unsigned char	*pixel,col[3];
+	unsigned char	*pixel,*touch,col[3];
 	
 		// find the color to smear
 		
@@ -230,13 +244,9 @@ void light_map_smear_box_vert(int sy,int ey,int y_add,int x,light_map_texture_ty
 	hy=-1;
 	
 	while (y!=(ey+y_add)) {
-		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x*3));
+		touch=lmap->pixel_touch+((map.settings.light_map_size*y)+x);
 		
-		col[0]=*pixel;
-		col[1]=*(pixel+1);
-		col[2]=*(pixel+2);
-		
-		if ((col[0]!=0x0) || (col[1]!=0x0) || (col[2]!=0x0)) {
+		if ((*touch)!=0x0) {
 			hy=y;
 			break;
 		}
@@ -245,13 +255,21 @@ void light_map_smear_box_vert(int sy,int ey,int y_add,int x,light_map_texture_ty
 	}
 	
 	if (hy==-1) return;
+	
+		// get color to smear
+		
+	pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*hy)+(x*3));
+
+	col[0]=*pixel;
+	col[1]=*(pixel+1);
+	col[2]=*(pixel+2);
 
 		// smear the color
 		
 	y=sy;
 	
 	while (y!=hy) {
-		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x*3));
+		pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*y)+(x*3));
 		
 		*pixel=col[0];
 		*(pixel+1)=col[1];
@@ -776,7 +794,7 @@ void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *
 	int				n,x,y,ty,by,x1,x2,x_start,x_end,x_count,y1,y2,
 					top_idx,bot_idx,l1_start_idx,l1_end_idx,l2_start_idx,l2_end_idx;
 	d3pnt			pt1,pt2,rpt;
-	unsigned char	*pixel;
+	unsigned char	*pixel,*touch;
 	unsigned char	col[3];
 	
 		// determine the top and bottom vertex of the triangle
@@ -859,7 +877,8 @@ void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *
 			memmove(&pt2,&rpt,sizeof(d3pnt));
 		}
 		
-		pixel=lmap->data+(((map.settings.light_map_size*3)*y)+(x_start*3));
+		pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*y)+(x_start*3));
+		touch=lmap->pixel_touch+((map.settings.light_map_size*y)+x_start);
 		
 			// draw the scan line
 			
@@ -883,6 +902,8 @@ void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *
 			*pixel++=col[0];
 			*pixel++=col[1];
 			*pixel++=col[2];
+			
+			*touch++=0x1;
 		}
 
 	}
@@ -1003,7 +1024,7 @@ bool light_map_create_mesh(int mesh_idx,char *err_str)
 	
 	for (n=0;n!=max_light_map_textures;n++) {
 		lmap=&light_map_textures[n];
-		if (lmap->data==NULL) continue;
+		if (lmap->pixel_data==NULL) continue;
 		
 		if (light_map_create_mesh_fit_texture(mesh_idx,lmap)) {
 			txt_idx=n;

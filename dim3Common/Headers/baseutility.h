@@ -497,7 +497,7 @@ extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
 extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle);
 extern void bitmap_close(bitmap_type *bitmap);
 
-extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsigned char *user_frames,int tick);
+extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,int tick);
 extern void bitmap_texture_recalc_animation(texture_type *texture);
 
 extern void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale);

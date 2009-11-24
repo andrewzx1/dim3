@@ -81,6 +81,7 @@ extern int select_find(int type,int main_idx,int sub_idx);
 extern bool select_check(int type,int main_idx,int sub_idx);
 extern bool select_has_type(int type);
 extern void select_flip(int type,int main_idx,int sub_idx);
+extern void select_remove_type(int type);
 extern void select_delete_move_index(int type,int main_idx,int sub_idx);
 extern void select_sort(void);
 extern void select_duplicate_clear(void);

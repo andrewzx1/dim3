@@ -199,8 +199,57 @@ void gl_core_shader_shutdown(void)
 {
 }
 
+/* =======================================================
+
+      Core Shader Utilities
+      
+======================================================= */
+
+int gl_core_shader_find(texture_type *texture,bool diffuse,bool light_map)
+{
+	int					which;
+	bool				bump,spec;
+	shader_type			*shader;
+	
+		// are bump and spec on?
+		
+	bump=(texture->frames[0].bumpmap.gl_id=!=-1);
+	spec=(texture->frames[0].specmap.gl_id=!=-1);
+	
+		// pick correct shader
+	
+	if (!diffuse) {
+	
+		which=gl_core_shader_light;
+	
+	
+	}
+
+
 
 /*
+#define gl_core_shader_light								0
+#define gl_core_shader_light_bump							1
+#define gl_core_shader_light_spec							2
+#define gl_core_shader_light_bump_spec						3
+#define gl_core_shader_light_map							4
+#define gl_core_shader_light_map_bump						5
+#define gl_core_shader_light_map_spec						6
+#define gl_core_shader_light_map_bump_spec					7
+#define gl_core_shader_diffuse_light						8
+#define gl_core_shader_diffuse_light_bump					9
+#define gl_core_shader_diffuse_light_spec					10
+#define gl_core_shader_diffuse_light_bump_spec				11
+*/
+
+	if 
+
+	
+	return(-1);
+}
+
+/*
+supergumba
 
 viewVector,lightHalfVector = spec only
 

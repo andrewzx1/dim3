@@ -209,7 +209,7 @@ int bitmap_texture_get_current_frame(texture_type *texture,int tick)
 	return(0);
 }
 
-void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsigned char *user_frames,int tick)
+void bitmap_texture_setup_animation(texture_type *texture,int texture_count,int tick)
 {
 	int				n;
 	
@@ -226,9 +226,7 @@ void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsi
 			texture->animate.current_frame=bitmap_texture_get_current_frame(texture,tick);
 		}
 		else {
-			if (user_frames!=NULL) {
-				texture->animate.current_frame=(int)user_frames[n];
-			}
+			texture->animate.current_frame=0;
 		}
 		
 			// set the glow
