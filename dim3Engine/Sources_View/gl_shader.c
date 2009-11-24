@@ -339,10 +339,10 @@ void gl_shader_attach_map(void)
 		
 		if ((shader_on) && (texture->shader_name[0]!=0x0)) {
 			if (strcasecmp(texture->shader_name,"default")==0) {
-				texture->shader_idx=gl_core_shader_find(texture,FALSE,TRUE);
+				texture->shader_idx=gl_shader_core_index;
 			}
 			else {
-				texture->shader_idx=gl_user_shader_find(texture->shader_name)+gl_user_shader_index_start;
+				texture->shader_idx=gl_user_shader_find(texture->shader_name);
 			}
 		}
 		
@@ -367,10 +367,10 @@ void gl_shader_attach_model(model_type *mdl)
 		
 		if ((shader_on) && (texture->shader_name[0]!=0x0)) {
 			if (strcasecmp(texture->shader_name,"default")==0) {
-				texture->shader_idx=gl_core_shader_find(texture,TRUE,FALSE);
+				texture->shader_idx=gl_shader_core_index;
 			}
 			else {
-				texture->shader_idx=gl_user_shader_find(texture->shader_name)+gl_user_shader_index_start;
+				texture->shader_idx=gl_user_shader_find(texture->shader_name);
 			}
 			
 			if (texture->shader_idx!=-1) has_no_shader=FALSE;
@@ -632,9 +632,9 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col)
+void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse)
 {
-	int								n,set_light_count;
+	int								n,idx,set_light_count;
 	bool							light_change;
 	shader_type						*shader;
 	view_glsl_light_list_type		hi_light_list;
@@ -650,11 +650,12 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		set_light_count=light_list->nlight;
 	}
 
-	if (texture->shader_idx<gl_user_shader_index_start) {
-		shader=&core_shaders[texture->shader_idx];
+	if (texture->shader_idx==gl_shader_core_index) {
+		idx=gl_core_shader_find(texture,diffuse,(lmap_txt_idx!=-1));
+		shader=&core_shaders[idx];
 	}
 	else {
-		shader=&user_shaders[texture->shader_idx-gl_user_shader_index_start];
+		shader=&user_shaders[texture->shader_idx];
 	}
 	
 		// if we are not in this shader, then

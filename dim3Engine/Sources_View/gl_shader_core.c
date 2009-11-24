@@ -44,7 +44,7 @@ shader_type					core_shaders[max_core_shader];
       
 ======================================================= */
 
-char* gl_core_shader_build_vert(int shader_type,int nlight)
+char* gl_core_shader_build_vert(int nlight,bool light_map,bool diffuse,bool bump,bool spec)
 {
 	int				n;
 	char			*buf;
@@ -58,15 +58,21 @@ char* gl_core_shader_build_vert(int shader_type,int nlight)
 
 		// built vert shader
 
-	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
-	strcat(buf,"uniform vec3 dim3LightPosition[4];\n");
-	strcat(buf,"varying vec3 viewVector,lightHalfVector;\n");
-	sprintf(strchr(buf,0),"varying vec3 lightVector[%d];\n",nlight);
+	strcat(buf,"uniform vec3 dim3CameraPosition");
+	sprintf(strchr(buf,0),",dim3LightPosition[%d]",nlight);
+	strcat(buf,";\n");
+
+	strcat(buf,"varying vec3 ");
+	if (spec) strcat(buf,"viewVector,lightHalfVector,");
+	sprintf(strchr(buf,0),"lightVector[%d];\n",nlight);
 
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"viewVector=gl_Vertex.xyz-dim3CameraPosition;\n");
-	strcat(buf,"lightHalfVector=(dim3LightPosition[0]-dim3CameraPosition)+viewVector;\n");
+
+	if (spec) {
+		strcat(buf,"viewVector=gl_Vertex.xyz-dim3CameraPosition;\n");
+		strcat(buf,"lightHalfVector=(dim3LightPosition[0]-dim3CameraPosition)+viewVector;\n");
+	}
 
 	for (n=0;n!=nlight;n++) {
 		sprintf(strchr(buf,0),"lightVector[%d]=dim3LightPosition[%d]-gl_Vertex.xyz;\n",n,n);
@@ -74,13 +80,13 @@ char* gl_core_shader_build_vert(int shader_type,int nlight)
 
 	strcat(buf,"gl_Position=ftransform();\n");
 	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
-	strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
+	if (light_map) strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
 	strcat(buf,"}\n");
 
 	return(buf);
 }
 
-char* gl_core_shader_build_frag(int shader_type,int nlight)
+char* gl_core_shader_build_frag(int nlight,bool light_map,bool diffuse,bool bump,bool spec)
 {
 	int				n;
 	char			*buf;
@@ -94,35 +100,44 @@ char* gl_core_shader_build_frag(int shader_type,int nlight)
 
 		// build frag shader
 	
-	strcat(buf,"uniform sampler2D dim3Tex;\n");
-	strcat(buf,"uniform sampler2D dim3TexBump;\n");
-	strcat(buf,"uniform sampler2D dim3TexSpecular;\n");
-	strcat(buf,"uniform sampler2D dim3TexLightMap;\n");
-	strcat(buf,"uniform float dim3Alpha;\n");
-	strcat(buf,"uniform float dim3DarkFactor;\n");
-	strcat(buf,"uniform float dim3BumpFactor;\n");
-	strcat(buf,"uniform float dim3SpecularFactor;\n");
+	strcat(buf,"uniform sampler2D dim3Tex");
+	if (bump) strcat(buf,",dim3TexBump");
+	if (spec) strcat(buf,",dim3TexSpecular");
+	if (light_map) strcat(buf,",dim3TexLightMap");
+	strcat(buf,";\n");
+
+	strcat(buf,"uniform float dim3Alpha,dim3DarkFactor");
+	if (bump) strcat(buf,",dim3BumpFactor");
+	if (spec) strcat(buf,",dim3SpecularFactor");
+	strcat(buf,";\n");
+
 	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
 
-	sprintf(strchr(buf,0),"uniform vec3 dim3LightColor[%d];\n",nlight);
-	sprintf(strchr(buf,0),"uniform float dim3LightIntensity[%d];\n",nlight);
-	sprintf(strchr(buf,0),"uniform float dim3LightExponent[%d];\n",nlight);
-	sprintf(strchr(buf,0),"uniform vec3 dim3LightDirection[%d];\n",nlight);
+	sprintf(strchr(buf,0),"uniform float dim3LightIntensity[%d],dim3LightExponent[%d];\n",nlight,nlight);
+	sprintf(strchr(buf,0),"uniform vec3 dim3LightColor[%d],dim3LightDirection[%d];\n",nlight,nlight);
 
-	strcat(buf,"varying vec3 viewVector,lightHalfVector;\n");
-	strcat(buf,"varying vec3 lightVector[4];\n");
+	strcat(buf,"varying vec3 ");
+	if (spec) strcat(buf,"viewVector,lightHalfVector,");
+	sprintf(strchr(buf,0),"lightVector[%d];\n",nlight);
 
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-	strcat(buf,"float att,dist,pixelAtt,bump,spec,specMap;\n");
-	strcat(buf,"vec3 ambient=dim3AmbientColor;\n");
-	strcat(buf,"vec3 bumpVector=vec3(0.5,0.5,0.5);\n");
-	strcat(buf,"vec3 bumpMap,specVector,specLightHalfVector;\n");
+	strcat(buf,"float att,dist");
+	if ((bump) || (spec)) strcat(buf,",pixelAtt");
+	if (bump) strcat(buf,",bump");
+	if (spec) strcat(buf,",spec,specMap");
+	strcat(buf,";\n");
+
+	strcat(buf,"vec3 ambient=dim3AmbientColor");
+	if (bump) strcat(buf,",bumpVector=vec3(0.5,0.5,0.5),bumpMap");
+	if (spec) strcat(buf,",specVector,specLightHalfVector");
+	strcat(buf,";\n");
+
 	strcat(buf,"vec4 tex;\n");
 
 		// the light map
 
-	strcat(buf,"ambient+=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
+	if (light_map) strcat(buf,"ambient+=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
 
 		// the texture lighting
 		
@@ -133,12 +148,14 @@ char* gl_core_shader_build_frag(int shader_type,int nlight)
 		sprintf(strchr(buf,0),"  att=1.0-(dist/dim3LightIntensity[%d]);\n",n);
 		sprintf(strchr(buf,0),"  att+=pow(att,dim3LightExponent[%d]);\n",n);
 		sprintf(strchr(buf,0),"  ambient+=(dim3LightColor[%d]*att);\n",n);
-		sprintf(strchr(buf,0),"  bumpVector+=((bumpVector+lightVector[%d])*0.5);\n",n);
+		if (bump) sprintf(strchr(buf,0),"  bumpVector+=((bumpVector+lightVector[%d])*0.5);\n",n);
 		strcat(buf," }\n");
 		strcat(buf,"}\n");
 	}
 
-	strcat(buf,"pixelAtt=min((ambient.r+ambient.g+ambient.b),1.0);\n");
+		// the factor for bump/spec effect based on light
+
+	if ((bump) || (spec)) strcat(buf,"pixelAtt=min((ambient.r+ambient.g+ambient.b),1.0);\n");
 	
 		// texture
 		
@@ -146,22 +163,33 @@ char* gl_core_shader_build_frag(int shader_type,int nlight)
 	
 		// bump
 		
-	strcat(buf,"bumpVector=max(abs(normalize(bumpVector)),0.5);\n");
-	strcat(buf,"bumpVector=normalize((bumpVector*pixelAtt)+(vec3(0.5,0.5,0.5)*(1.0-pixelAtt)));\n");
-	strcat(buf,"bumpMap=texture2D(dim3TexBump,gl_TexCoord[0].st).rgb;\n");
-	strcat(buf,"bumpMap=(bumpMap-0.5)*2.0;\n");
-	strcat(buf,"bump=max(dot(bumpMap,bumpVector),0.0)*dim3BumpFactor;\n");
-		
+	if (bump) {
+		strcat(buf,"bumpVector=max(abs(normalize(bumpVector)),0.5);\n");
+		strcat(buf,"bumpVector=normalize((bumpVector*pixelAtt)+(vec3(0.5,0.5,0.5)*(1.0-pixelAtt)));\n");
+		strcat(buf,"bumpMap=texture2D(dim3TexBump,gl_TexCoord[0].st).rgb;\n");
+		strcat(buf,"bumpMap=(bumpMap-0.5)*2.0;\n");
+		strcat(buf,"bump=max(dot(bumpMap,bumpVector),0.0)*dim3BumpFactor;\n");
+	}
+
 		// specular
 		
-	strcat(buf,"specVector=normalize(viewVector);\n");
-	strcat(buf,"specLightHalfVector=normalize(lightHalfVector);\n");
-	strcat(buf,"specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).r;\n");
-	strcat(buf,"spec=(specMap*pow(max(dot(specLightHalfVector,specVector),0.0),10.0))*dim3SpecularFactor*pixelAtt;\n");
-	
+	if (spec) {
+		strcat(buf,"specVector=normalize(viewVector);\n");
+		strcat(buf,"specLightHalfVector=normalize(lightHalfVector);\n");
+		strcat(buf,"specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).r;\n");
+		strcat(buf,"spec=(specMap*pow(max(dot(specLightHalfVector,specVector),0.0),10.0))*dim3SpecularFactor*pixelAtt;\n");
+	}
+
 		// output the fragment
 
-	strcat(buf,"gl_FragColor.rgb=(((tex.rgb*ambient)*bump)+spec)*dim3DarkFactor;\n");
+	strcat(buf,"gl_FragColor.rgb=");
+	if (bump) strcat(buf,"(");
+	if (spec) strcat(buf,"(");
+	strcat(buf,"(tex.rgb*ambient)");
+	if (bump) strcat(buf,"*bump)");
+	if (spec) strcat(buf,"+spec)");
+	strcat(buf,"*dim3DarkFactor;\n");
+
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
 	strcat(buf,"}\n");
 
@@ -170,14 +198,54 @@ char* gl_core_shader_build_frag(int shader_type,int nlight)
 
 /* =======================================================
 
+      Create Single Core Shader
+      
+======================================================= */
+
+bool gl_core_shader_create(shader_type *shader,int nlight,bool light_map,bool diffuse,bool bump,bool spec,char *err_str)
+{
+	char				*vertex_data,*fragment_data;
+	bool				ok;
+
+		// create the shader code
+
+	vertex_data=gl_core_shader_build_vert(nlight,light_map,diffuse,bump,spec);
+	if (vertex_data==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+
+	fragment_data=gl_core_shader_build_frag(nlight,light_map,diffuse,bump,spec);
+	if (fragment_data==NULL) {
+		free(vertex_data);
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+		// compile the code
+
+	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
+
+		// free the code
+
+	free(vertex_data);
+	free(fragment_data);
+
+	return(ok);
+}
+
+/* =======================================================
+
       Core Shader Initialize/Shutdown
       
 ======================================================= */
 
-bool gl_core_shader_initialize(void)
+bool gl_core_shader_initialize(char *err_str)
 {
 	int					n;
 	shader_type			*shader;
+
+	if (!gl_check_shader_ok()) return(TRUE);
 
 		// clear core shaders
 
@@ -186,17 +254,109 @@ bool gl_core_shader_initialize(void)
 	for (n=0;n!=max_core_shader;n++) {
 		gl_shader_code_clear(shader);
 		shader++;
+
+		// gl_core_shader_light
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,FALSE,FALSE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
 	}
 
+		// gl_core_shader_light_bump
 
-//	buf=gl_core_shader_build_vert(gl_core_shader_light,4);
-//	buf=gl_core_shader_build_frag(gl_core_shader_light,4);
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,FALSE,TRUE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_spec
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,FALSE,FALSE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_bump_spec
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,FALSE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_map
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,TRUE,FALSE,FALSE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_map_bump
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,TRUE,FALSE,TRUE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_map_spec
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,TRUE,FALSE,FALSE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_map_bump_spec
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,TRUE,FALSE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_diffuse
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,TRUE,FALSE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_diffuse_bump
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,TRUE,TRUE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_diffuse_spec
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,TRUE,FALSE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_shader_light_diffuse_bump_spec
+
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,TRUE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
 
 	return(TRUE);
 }
 
 void gl_core_shader_shutdown(void)
 {
+	int					n;
+	shader_type			*shader;
+
+	if (!gl_check_shader_ok()) return;
+
+		// shutdown shaders
+
+	shader=core_shaders;
+
+	for (n=0;n!=max_core_shader;n++) {
+		gl_shader_code_shutdown(shader);
+		shader++;
+	}
 }
 
 /* =======================================================
@@ -207,185 +367,32 @@ void gl_core_shader_shutdown(void)
 
 int gl_core_shader_find(texture_type *texture,bool diffuse,bool light_map)
 {
-	int					which;
 	bool				bump,spec;
-	shader_type			*shader;
 	
 		// are bump and spec on?
 		
-	bump=(texture->frames[0].bumpmap.gl_id=!=-1);
-	spec=(texture->frames[0].specmap.gl_id=!=-1);
+	bump=(texture->frames[0].bumpmap.gl_id!=-1);
+	spec=(texture->frames[0].specularmap.gl_id!=-1);
 	
 		// pick correct shader
 	
-	if (!diffuse) {
-	
-		which=gl_core_shader_light;
-	
-	
+	if (diffuse) {
+		if ((bump) && (spec)) return(gl_core_shader_light_diffuse_bump_spec);
+		if ((bump) && (!spec)) return(gl_core_shader_light_diffuse_bump);
+		if ((!bump) && (spec)) return(gl_core_shader_light_diffuse_spec);
+		return(gl_core_shader_light_diffuse);
 	}
 
+	if (light_map) {
+		if ((bump) && (spec)) return(gl_core_shader_light_map_bump_spec);
+		if ((bump) && (!spec)) return(gl_core_shader_light_map_bump);
+		if ((!bump) && (spec)) return(gl_core_shader_light_map_spec);
+		return(gl_core_shader_light_map);
+	}
 
-
-/*
-#define gl_core_shader_light								0
-#define gl_core_shader_light_bump							1
-#define gl_core_shader_light_spec							2
-#define gl_core_shader_light_bump_spec						3
-#define gl_core_shader_light_map							4
-#define gl_core_shader_light_map_bump						5
-#define gl_core_shader_light_map_spec						6
-#define gl_core_shader_light_map_bump_spec					7
-#define gl_core_shader_diffuse_light						8
-#define gl_core_shader_diffuse_light_bump					9
-#define gl_core_shader_diffuse_light_spec					10
-#define gl_core_shader_diffuse_light_bump_spec				11
-*/
-
-	if 
-
-	
-	return(-1);
+	if ((bump) && (spec)) return(gl_core_shader_light_bump_spec);
+	if ((bump) && (!spec)) return(gl_core_shader_light_bump);
+	if ((!bump) && (spec)) return(gl_core_shader_light_spec);
+	return(gl_core_shader_light);
 }
 
-/*
-supergumba
-
-viewVector,lightHalfVector = spec only
-
-*/
-
-/* VERT
-
-uniform vec3 dim3CameraPosition;
-uniform vec3 dim3LightPosition[4];
-
-varying vec3 viewVector,lightHalfVector;
-varying vec3 lightVector[4];
-
-void main(void)
-{
-	viewVector=gl_Vertex.xyz-dim3CameraPosition;
-	lightHalfVector=(dim3LightPosition[0]-dim3CameraPosition)+viewVector;
-
-	lightVector[0]=dim3LightPosition[0]-gl_Vertex.xyz;
-	lightVector[1]=dim3LightPosition[1]-gl_Vertex.xyz;
-	lightVector[2]=dim3LightPosition[2]-gl_Vertex.xyz;
-	lightVector[3]=dim3LightPosition[3]-gl_Vertex.xyz;
-
-	gl_Position=ftransform();
-	gl_TexCoord[0]=gl_MultiTexCoord0;
-	gl_TexCoord[1]=gl_MultiTexCoord1;
-}
-
-*/
-
-/* FRAG
-
-uniform sampler2D dim3Tex;
-uniform sampler2D dim3TexBump;
-uniform sampler2D dim3TexSpecular;
-uniform sampler2D dim3TexExtra;
-uniform float dim3Alpha;
-uniform float dim3DarkFactor;
-uniform float dim3BumpFactor;
-uniform float dim3SpecularFactor;
-
-uniform vec3 dim3LightColor[4];
-uniform float dim3LightIntensity[4];
-uniform float dim3LightExponent[4];
-uniform vec3 dim3LightDirection[4];
-
-varying vec3 viewVector,lightHalfVector;
-varying vec3 lightVector[4];
-
-void main(void)
-{
-	float att,dist,bump,spec,specMap;
-	float specAtt=0.0;
-	vec3 ambient=vec3(0.0,0.0,0.0);
-	vec3 bumpVector=vec3(0.5,0.5,0.5);
-	vec3 colMap,bumpMap,shadowMap,specVector,specLightHalfVector;
-	vec4 tex;
-
-		// the texture lighting
-		
-	dist=length(lightVector[0]);
-	if (dist<dim3LightIntensity[0]) {
-		if (dot(lightVector[0],dim3LightDirection[0])>=0.0) {
-			att=1.0-(dist/dim3LightIntensity[0]);
-			att+=pow(att,dim3LightExponent[0]);
-			specAtt=att;
-			ambient=dim3LightColor[0]*att;
-			bumpVector=lightVector[0];
-		}
-	}
-	
-	dist=length(lightVector[1]);
-	if (dist<dim3LightIntensity[1]) {
-		if (dot(lightVector[1],dim3LightDirection[1])>=0.0) {
-			att=1.0-(dist/dim3LightIntensity[1]);
-			att+=pow(att,dim3LightExponent[1]);
-			specAtt+=att;
-			ambient+=dim3LightColor[1]*att;
-			bumpVector=(bumpVector+lightVector[1])*0.5;
-		}
-	}
-	
-	dist=length(lightVector[2]);
-	if (dist<dim3LightIntensity[2]) {
-		if (dot(lightVector[2],dim3LightDirection[2])>=0.0) {
-			att=1.0-(dist/dim3LightIntensity[2]);
-			att+=pow(att,dim3LightExponent[2]);
-			specAtt+=att;
-			ambient+=dim3LightColor[2]*att;
-			bumpVector=(bumpVector+lightVector[2])*0.5;
-		}
-	}
-	
-	dist=length(lightVector[3]);
-	if (dist<dim3LightIntensity[3]) {
-		if (dot(lightVector[3],dim3LightDirection[3])>=0.0) {
-			att=1.0-(dist/dim3LightIntensity[3]);
-			att+=pow(att,dim3LightExponent[3]);
-			specAtt+=att;
-			ambient+=dim3LightColor[3]*att;
-			bumpVector=(bumpVector+lightVector[3])*0.5;
-		}
-	}
-	
-	specAtt=min(specAtt,1.0);
-	
-		// texture
-		
-	tex=texture2D(dim3Tex,gl_TexCoord[0].st);
-	colMap=tex.rgb*ambient;
-	
-		// bump
-		
-	bumpVector=max(abs(normalize(bumpVector)),0.5);
-	bumpVector=normalize((bumpVector*specAtt)+(vec3(0.5,0.5,0.5)*(1.0-specAtt)));
-		
-	bumpMap=texture2D(dim3TexBump,gl_TexCoord[0].st).rgb;
-	bumpMap=(bumpMap-0.5)*2.0;
-	bump=max(dot(bumpMap,bumpVector),0.0)*dim3BumpFactor;
-		
-		// specular
-		
-	specVector=normalize(viewVector);
-	specLightHalfVector=normalize(lightHalfVector);
-	
-	specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).r;
-	spec=(specMap*pow(max(dot(specLightHalfVector,specVector),0.0),10.0))*dim3SpecularFactor*specAtt;
-		
-		// the multiplied shadow texture
-		
-	shadowMap=texture2D(dim3TexExtra,gl_TexCoord[1].st).rgb;
-	
-		// output the fragment
-
-	gl_FragColor.rgb=(((colMap*shadowMap)*bump)+spec)*dim3DarkFactor;
-	gl_FragColor.a=tex.a*dim3Alpha;
-}
-
-*/
