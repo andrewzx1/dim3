@@ -349,14 +349,12 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>44</integer>
-									<integer>43</integer>
-									<integer>15</integer>
-									<integer>0</integer>
+									<integer>76</integer>
+									<integer>75</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {290, 776}}</string>
+							<string>{{0, 652}, {290, 776}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -403,10 +401,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26100EFC10BB9F99002B3FA1</string>
+										<string>265FCB1310C302FD00E390A1</string>
 										<key>history</key>
 										<array>
-											<string>26100E5D10BB85B3002B3FA1</string>
+											<string>26100EFC10BB9F99002B3FA1</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -464,9 +462,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26100EFD10BB9F99002B3FA1</string>
+				<string>265FCB1410C302FD00E390A1</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26100EFE10BB9F99002B3FA1</string>
+				<string>265FCB1510C302FD00E390A1</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -587,7 +585,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>280731545.33986902</real>
+	<real>281215741.86392301</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -602,8 +600,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26100EFF10BB9F99002B3FA1</string>
-		<string>26100F0010BB9F99002B3FA1</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -687,7 +683,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26100EF310BB9F66002B3FA1</string>
+				<string>265FCB0010C302CE00E390A1</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

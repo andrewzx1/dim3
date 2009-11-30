@@ -138,13 +138,17 @@ typedef struct		{
 					} view_light_spot_type;
 
 typedef struct		{
-						int									nlight,light_idx[max_shader_light];
 						float								pos[3*max_shader_light],
 															col[3*max_shader_light],												
 															intensity[max_shader_light],
 															exponent[max_shader_light],
 															direction[3*max_shader_light];
-					} view_glsl_light_list_type;
+					} view_light_list_gl_var_type;
+
+typedef struct		{
+						int									nlight,light_idx[max_shader_light];
+						view_light_list_gl_var_type			gl_var;
+					} view_light_list_type;
 
 //
 // join UI structures

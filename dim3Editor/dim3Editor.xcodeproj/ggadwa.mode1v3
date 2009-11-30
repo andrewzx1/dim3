@@ -347,14 +347,12 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>52</integer>
-									<integer>43</integer>
-									<integer>15</integer>
-									<integer>0</integer>
+									<integer>95</integer>
+									<integer>94</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {297, 788}}</string>
+							<string>{{0, 963}, {297, 788}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -373,7 +371,7 @@
 							<real>297</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>553 159 319 847 0 0 1680 1028 </string>
+						<string>373 166 319 847 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -410,7 +408,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>553 159 319 847 0 0 1680 1028 </string>
+								<string>373 166 319 847 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -430,7 +428,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 801}}</string>
 								<key>RubberWindowFrame</key>
-								<string>553 159 319 847 0 0 1680 1028 </string>
+								<string>373 166 319 847 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -454,9 +452,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26100F0110BB9F9B002B3FA1</string>
+				<string>265FCB1110C302FC00E390A1</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26100F0210BB9F9B002B3FA1</string>
+				<string>265FCB1210C302FC00E390A1</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -577,7 +575,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>280731547.67596799</real>
+	<real>281215740.84814799</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -596,7 +594,7 @@
 		<string>/Users/ggadwa/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>553 159 319 847 0 0 1680 1028 </string>
+	<string>373 166 319 847 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -634,6 +632,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -673,7 +673,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEFF0D4050AF00F6C42F</string>
-				<string>26100EE710BB9F5E002B3FA1</string>
+				<string>265FCB0E10C302E900E390A1</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -793,13 +793,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>26100E7A10BB9C9A002B3FA1</string>
+				<string>265FC93610BF5EC300E390A1</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>26100E7B10BB9C9A002B3FA1</string>
-				<string>26100E7C10BB9C9A002B3FA1</string>
-				<string>26100E7D10BB9C9A002B3FA1</string>
-				<string>26100E7E10BB9C9A002B3FA1</string>
-				<string>26100E7F10BB9C9A002B3FA1</string>
+				<string>265FC93710BF5EC300E390A1</string>
+				<string>265FC93810BF5EC300E390A1</string>
+				<string>265FC93910BF5EC300E390A1</string>
+				<string>265FC93A10BF5EC300E390A1</string>
+				<string>265FC93B10BF5EC300E390A1</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -953,7 +953,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>26100E8010BB9C9A002B3FA1</string>
+				<string>265FC93C10BF5F3400E390A1</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

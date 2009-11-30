@@ -54,7 +54,7 @@ extern bool gl_check_shader_ok(void);
 
 
 extern void gl_lights_compile(int tick);
-extern void gl_lights_fill_light_list(int set_light_count,view_glsl_light_list_type *light_list);
+extern void gl_lights_fill_light_list(view_light_list_type *light_list);
 extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
 
 extern void gl_lights_calc_vertex(double x,double y,double z,float *cf);
@@ -64,9 +64,9 @@ extern bool gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh);
 extern bool gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq);
 extern bool gl_lights_calc_vertex_setup_model(model_draw *draw);
 
-extern void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_glsl_light_list_type *light_list);
-extern void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type *light_list);
-extern void gl_lights_build_from_model(model_draw *draw,view_glsl_light_list_type *light_list);
+extern void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list);
+extern void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *light_list);
+extern void gl_lights_build_from_model(model_draw *draw,view_light_list_type *light_list);
 
 	// vbos
 
@@ -126,22 +126,25 @@ extern bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *f
 extern void gl_shader_code_shutdown(shader_type *shader);
 extern void gl_shader_attach_map(void);
 extern void gl_shader_attach_model(model_type *mdl);
+extern void gl_shader_draw_scene_initialize_code(shader_type *shader);
 extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id);
-extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse);
+extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float dark_factor,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse);
 
 	// core shaders
 
 extern bool gl_core_shader_initialize(char *err_str);
 extern void gl_core_shader_shutdown(void);
-extern int gl_core_shader_find(texture_type *texture,bool diffuse,bool light_map);
+extern void gl_core_shader_draw_scene_initialize(void);
+extern shader_type* gl_core_shader_find_ptr(int nlight,texture_type *texture,bool diffuse,bool light_map);
 
 	// user shaders
 
 extern bool gl_user_shader_initialize(char *err_str);
 extern void gl_user_shader_shutdown(void);
+extern void gl_user_shader_draw_scene_initialize(void);
 extern int gl_user_shader_find(char *name);
 
 	// full screen shaders

@@ -336,13 +336,13 @@ void render_transparent_mesh_light_map(void)
 
 void render_transparent_mesh_shader(void)
 {
-	int							n,sort_cnt;
-	bool						cur_additive,first_draw;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	map_poly_sort_item_type		*sort_list;
-	texture_type				*texture;
-	view_glsl_light_list_type	light_list;
+	int						n,sort_cnt;
+	bool					cur_additive,first_draw;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	map_poly_sort_item_type	*sort_list;
+	texture_type			*texture;
+	view_light_list_type	light_list;
 
 		// sorted transparent poly list
 

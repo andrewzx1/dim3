@@ -432,7 +432,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	gl_texture_opaque_end();
 }
 
-void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
+void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
 	int						n,trig_count,frame,
 							trig_start_idx,trig_idx;
@@ -610,7 +610,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 	gl_texture_transparent_end();
 }
 
-void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
+void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
 	int						n,frame,trig_count,
 							trig_start_idx,trig_idx;
@@ -902,9 +902,9 @@ void render_model_build_vertex_lists(model_draw *draw)
 
 void render_model_opaque(model_draw *draw)
 {
-	int							n;
-	model_type					*mdl;
-	view_glsl_light_list_type	light_list;
+	int						n;
+	model_type				*mdl;
+	view_light_list_type	light_list;
 
 		// any opaque?
 
@@ -947,9 +947,9 @@ void render_model_opaque(model_draw *draw)
 
 void render_model_transparent(model_draw *draw)
 {
-	int							n;
-	model_type					*mdl;
-	view_glsl_light_list_type	light_list;
+	int						n;
+	model_type				*mdl;
+	view_light_list_type	light_list;
 
 		// any transparent?
 
