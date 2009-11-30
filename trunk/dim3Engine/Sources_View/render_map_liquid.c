@@ -333,10 +333,10 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
-	int							v_sz,quad_cnt,frame;
-	bool						shader_on;
-	texture_type				*texture;
-	view_glsl_light_list_type	light_list;
+	int						v_sz,quad_cnt,frame;
+	bool					shader_on;
+	texture_type			*texture;
+	view_light_list_type	light_list;
 
 		// setup texture
 

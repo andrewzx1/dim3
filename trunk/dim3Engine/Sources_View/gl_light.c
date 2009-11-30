@@ -299,57 +299,39 @@ void gl_lights_compile(int tick)
       
 ======================================================= */
 
-void gl_lights_fill_light_list(int set_light_count,view_glsl_light_list_type *light_list)
+void gl_lights_fill_light_list(view_light_list_type *light_list)
 {
 	int						n,idx;
 	view_light_spot_type	*lspot;
 	
+		// start with all lights off
+		//
+		// a intensity of 0 effectively says a light is off
+		
+	bzero(&light_list->gl_var,sizeof(view_light_list_gl_var_type));
+
+		// setup the lights that are on
+		
 	idx=0;
 	
-	for (n=0;n!=set_light_count;n++) {
+	for (n=0;n!=light_list->nlight;n++) {
+
+		lspot=&view.render->light.spots[light_list->light_idx[n]];
 		
-			// null lights
-
-			// default shaders get all lights set so we
-			// have to null out unused lights
-			
-		if (n>=light_list->nlight) {
-			light_list->pos[idx]=0.0f;
-			light_list->pos[idx+1]=0.0f;
-			light_list->pos[idx+2]=0.0f;
-			
-			light_list->col[idx]=0.0f;
-			light_list->col[idx+1]=0.0f;
-			light_list->col[idx+2]=0.0f;
-			
-			light_list->intensity[n]=0.0f;		// effectively turns light off
-			light_list->exponent[n]=1.0f;
-
-			light_list->direction[idx]=0.0f;
-			light_list->direction[idx+1]=0.0f;
-			light_list->direction[idx+2]=0.0f;
-		}
+		light_list->gl_var.pos[idx]=lspot->f_x;
+		light_list->gl_var.pos[idx+1]=lspot->f_y;
+		light_list->gl_var.pos[idx+2]=lspot->f_z;
 		
-			// regular lights
-			
-		else {
-			lspot=&view.render->light.spots[light_list->light_idx[n]];
-			
-			light_list->pos[idx]=lspot->f_x;
-			light_list->pos[idx+1]=lspot->f_y;
-			light_list->pos[idx+2]=lspot->f_z;
-			
-			light_list->col[idx]=lspot->col.r;
-			light_list->col[idx+1]=lspot->col.g;
-			light_list->col[idx+2]=lspot->col.b;
-			
-			light_list->intensity[n]=(float)lspot->intensity;
-			light_list->exponent[n]=lspot->exponent;
+		light_list->gl_var.col[idx]=lspot->col.r;
+		light_list->gl_var.col[idx+1]=lspot->col.g;
+		light_list->gl_var.col[idx+2]=lspot->col.b;
+		
+		light_list->gl_var.intensity[n]=(float)lspot->intensity;
+		light_list->gl_var.exponent[n]=lspot->exponent;
 
-			light_list->direction[idx]=light_shader_direction[lspot->direction][0];
-			light_list->direction[idx+1]=light_shader_direction[lspot->direction][1];
-			light_list->direction[idx+2]=light_shader_direction[lspot->direction][2];
-		}
+		light_list->gl_var.direction[idx]=light_shader_direction[lspot->direction][0];
+		light_list->gl_var.direction[idx+1]=light_shader_direction[lspot->direction][1];
+		light_list->gl_var.direction[idx+2]=light_shader_direction[lspot->direction][2];
 		
 		idx+=3;
 	}
@@ -639,7 +621,7 @@ bool gl_lights_calc_vertex_setup_model(model_draw *draw)
       
 ======================================================= */
 
-void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_list_type *light_list)
+void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_light_list_type *light_list)
 {
 	int						n,k,
 							idx,cnt,sort_list[max_light_spot];
@@ -741,7 +723,7 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 	}
 }
 
-void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_glsl_light_list_type *light_list)
+void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list)
 {
 	map_mesh_type		*mesh;
 
@@ -755,7 +737,7 @@ void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_glsl_l
 	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_list);
 }
 
-void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type *light_list)
+void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *light_list)
 {
 	d3pnt			mid,min,max;
 
@@ -777,7 +759,7 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type 
 	gl_lights_build_from_box(&mid,&min,&max,light_list);
 }
 
-void gl_lights_build_from_model(model_draw *draw,view_glsl_light_list_type *light_list)
+void gl_lights_build_from_model(model_draw *draw,view_light_list_type *light_list)
 {
 	d3pnt			mid,min,max;
 

@@ -59,24 +59,27 @@ char* gl_core_shader_build_vert(int nlight,bool light_map,bool diffuse,bool bump
 		// built vert shader
 
 	strcat(buf,"uniform vec3 dim3CameraPosition");
-	sprintf(strchr(buf,0),",dim3LightPosition[%d]",nlight);
+	if (nlight>0) sprintf(strchr(buf,0),",dim3LightPosition[%d]",nlight);
 	strcat(buf,";\n");
 
-	strcat(buf,"varying vec3 ");
-	if (spec) strcat(buf,"viewVector,lightHalfVector,");
-	sprintf(strchr(buf,0),"lightVector[%d];\n",nlight);
-
+	if ((diffuse) || (nlight>0)) {
+		strcat(buf,"varying vec3 ");
+		if (diffuse) strcat(buf,"normal");
+		if (nlight>0) {
+			if (diffuse) strcat(buf,",");
+			sprintf(strchr(buf,0),"lightVector[%d]",nlight);
+		}
+		strcat(buf,";\n");
+	}
+	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-
-	if (spec) {
-		strcat(buf,"viewVector=gl_Vertex.xyz-dim3CameraPosition;\n");
-		strcat(buf,"lightHalfVector=(dim3LightPosition[0]-dim3CameraPosition)+viewVector;\n");
-	}
 
 	for (n=0;n!=nlight;n++) {
 		sprintf(strchr(buf,0),"lightVector[%d]=dim3LightPosition[%d]-gl_Vertex.xyz;\n",n,n);
 	}
+	
+	if (diffuse) strcat(buf,"normal=normalize(gl_Normal);\n");
 
 	strcat(buf,"gl_Position=ftransform();\n");
 	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
@@ -106,31 +109,44 @@ char* gl_core_shader_build_frag(int nlight,bool light_map,bool diffuse,bool bump
 	if (light_map) strcat(buf,",dim3TexLightMap");
 	strcat(buf,";\n");
 
-	strcat(buf,"uniform float dim3Alpha,dim3DarkFactor");
+	strcat(buf,"uniform float dim3Alpha");
+	if (!diffuse) strcat(buf,",dim3DarkFactor");
 	if (bump) strcat(buf,",dim3BumpFactor");
 	if (spec) strcat(buf,",dim3SpecularFactor");
 	strcat(buf,";\n");
 
 	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
 
-	sprintf(strchr(buf,0),"uniform float dim3LightIntensity[%d],dim3LightExponent[%d];\n",nlight,nlight);
-	sprintf(strchr(buf,0),"uniform vec3 dim3LightColor[%d],dim3LightDirection[%d];\n",nlight,nlight);
-
-	strcat(buf,"varying vec3 ");
-	if (spec) strcat(buf,"viewVector,lightHalfVector,");
-	sprintf(strchr(buf,0),"lightVector[%d];\n",nlight);
-
+	if (nlight>0) {
+		sprintf(strchr(buf,0),"uniform float dim3LightIntensity[%d],dim3LightExponent[%d];\n",nlight,nlight);
+		sprintf(strchr(buf,0),"uniform vec3 dim3LightColor[%d],dim3LightDirection[%d];\n",nlight,nlight);
+	}
+	
+	if ((diffuse) || (nlight>0)) {
+		strcat(buf,"varying vec3 ");
+		if (diffuse) strcat(buf,"normal");
+		if (nlight>0) {
+			if (diffuse) strcat(buf,",");
+			sprintf(strchr(buf,0),"lightVector[%d]",nlight);
+		}
+		strcat(buf,";\n");
+	}
+	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
+	
+	if ((bump) || (spec) || (diffuse)) strcat(buf,"int combineCount=0;\n");
+	
 	strcat(buf,"float att,dist");
 	if ((bump) || (spec)) strcat(buf,",pixelAtt");
 	if (bump) strcat(buf,",bump");
-	if (spec) strcat(buf,",spec,specMap");
+	if (spec) strcat(buf,",spec,shineFactor,specMap");
 	strcat(buf,";\n");
 
 	strcat(buf,"vec3 ambient=dim3AmbientColor");
-	if (bump) strcat(buf,",bumpVector=vec3(0.5,0.5,0.5),bumpMap");
-	if (spec) strcat(buf,",specVector,specLightHalfVector");
+	if (diffuse) strcat(buf,",diffuse,lightNormal");
+	if ((bump) || (diffuse)) strcat(buf,",combineLightVector=vec3(0.0,0.0,0.0)");
+	if (bump) strcat(buf,",bumpVector,bumpMap");
 	strcat(buf,";\n");
 
 	strcat(buf,"vec4 tex;\n");
@@ -148,23 +164,41 @@ char* gl_core_shader_build_frag(int nlight,bool light_map,bool diffuse,bool bump
 		sprintf(strchr(buf,0),"  att=1.0-(dist/dim3LightIntensity[%d]);\n",n);
 		sprintf(strchr(buf,0),"  att+=pow(att,dim3LightExponent[%d]);\n",n);
 		sprintf(strchr(buf,0),"  ambient+=(dim3LightColor[%d]*att);\n",n);
-		if (bump) sprintf(strchr(buf,0),"  bumpVector+=((bumpVector+lightVector[%d])*0.5);\n",n);
+		if ((bump) || (diffuse)) {
+			sprintf(strchr(buf,0),"  combineLightVector+=lightVector[%d];\n",n);
+			strcat(buf,"  combineCount++;\n");
+		}
 		strcat(buf," }\n");
 		strcat(buf,"}\n");
 	}
 
 		// the factor for bump/spec effect based on light
 
-	if ((bump) || (spec)) strcat(buf,"pixelAtt=min((ambient.r+ambient.g+ambient.b),1.0);\n");
+	if ((bump) || (spec)) strcat(buf,"pixelAtt=min(((ambient.r+ambient.g+ambient.b)*0.33),1.0);\n");
+	
+		// normalize the combined light vec3
+		
+	if ((bump) || (diffuse)) strcat(buf,"if (combineCount!=0) combineLightVector=normalize(combineLightVector/float(combineCount));\n");
 	
 		// texture
 		
 	strcat(buf,"tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
 	
+		// diffuse
+		
+	if (diffuse) {
+		strcat(buf,"diffuse=vec3(max(dot(normal,combineLightVector),0.0));\n");
+		strcat(buf,"diffuse=max((diffuse*1.2),dim3AmbientColor);\n");
+		strcat(buf,"diffuse=clamp(diffuse,0.0,1.0);\n");
+	}
+	
 		// bump
 		
+		// we use the pixelAtt (which is how much light is on the pixel) to
+		// create a smooth transition between areas with no bumps vs bumps
+		
 	if (bump) {
-		strcat(buf,"bumpVector=max(abs(normalize(bumpVector)),0.5);\n");
+		strcat(buf,"bumpVector=max(abs(combineLightVector),0.5);\n");
 		strcat(buf,"bumpVector=normalize((bumpVector*pixelAtt)+(vec3(0.5,0.5,0.5)*(1.0-pixelAtt)));\n");
 		strcat(buf,"bumpMap=texture2D(dim3TexBump,gl_TexCoord[0].st).rgb;\n");
 		strcat(buf,"bumpMap=(bumpMap-0.5)*2.0;\n");
@@ -173,11 +207,16 @@ char* gl_core_shader_build_frag(int nlight,bool light_map,bool diffuse,bool bump
 
 		// specular
 		
+		// we are doing this a cheap and quick way.  We calculate a center of screen area
+		// (i.e., looking directly at surface) to light surface more.  This gives a simple
+		// but ok effect of the surface becoming more shiny
+		
 	if (spec) {
-		strcat(buf,"specVector=normalize(viewVector);\n");
-		strcat(buf,"specLightHalfVector=normalize(lightHalfVector);\n");
-		strcat(buf,"specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).r;\n");
-		strcat(buf,"spec=(specMap*pow(max(dot(specLightHalfVector,specVector),0.0),10.0))*dim3SpecularFactor*pixelAtt;\n");
+		strcat(buf,"spec=texture2D(dim3TexSpecular,gl_TexCoord[0].st).r*dim3SpecularFactor*pixelAtt;\n");
+		sprintf(strchr(buf,0),"shineFactor=1.0-(distance(gl_FragCoord.xy,vec2(%d.0,%d.0))/%d.0);\n",(setup.screen.x_sz>>1),(setup.screen.y_sz>>1),(int)(sqrt((setup.screen.x_sz*setup.screen.x_sz)+(setup.screen.y_sz+setup.screen.y_sz))*0.25));
+		strcat(buf,"spec=(spec+clamp((spec*shineFactor),0.0,1.0))");
+		if (bump) strcat(buf,"*bump");
+		strcat(buf,";\n");
 	}
 
 		// output the fragment
@@ -188,8 +227,13 @@ char* gl_core_shader_build_frag(int nlight,bool light_map,bool diffuse,bool bump
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
-	strcat(buf,"*dim3DarkFactor;\n");
-
+	if (diffuse) {
+		strcat(buf,"*diffuse;\n");
+	}
+	else {
+		strcat(buf,"*dim3DarkFactor;\n");
+	}
+	
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
 	strcat(buf,"}\n");
 
@@ -222,6 +266,10 @@ bool gl_core_shader_create(shader_type *shader,int nlight,bool light_map,bool di
 		return(FALSE);
 	}
 	
+	sprintf(shader->name,"core_%d_%s_%s_%s_%s",nlight,(light_map?"T":"F"),(diffuse?"T":"F"),(bump?"T":"F"),(spec?"T":"F"));
+	sprintf(shader->vertex_name,"%s_vert",shader->name);
+	sprintf(shader->fragment_name,"%s_frag",shader->name);
+	
 		// compile the code
 
 	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
@@ -243,18 +291,15 @@ bool gl_core_shader_create(shader_type *shader,int nlight,bool light_map,bool di
 bool gl_core_shader_initialize(char *err_str)
 {
 	int					n;
-	shader_type			*shader;
 
 	if (!gl_check_shader_ok()) return(TRUE);
 
 		// clear core shaders
 
-	shader=core_shaders;
-
 	for (n=0;n!=max_core_shader;n++) {
-		gl_shader_code_clear(shader);
-		shader++;
-
+		gl_shader_code_clear(&core_shaders[n]);
+	}
+	
 		// gl_core_shader_light
 
 	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,FALSE,FALSE,FALSE,err_str)) {
@@ -264,98 +309,109 @@ bool gl_core_shader_initialize(char *err_str)
 
 		// gl_core_shader_light_bump
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,FALSE,TRUE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_bump],max_shader_light,FALSE,FALSE,TRUE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_spec
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,FALSE,FALSE,TRUE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_spec],max_shader_light,FALSE,FALSE,FALSE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_bump_spec
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,FALSE,TRUE,TRUE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_bump_spec],max_shader_light,FALSE,FALSE,TRUE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_map
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,TRUE,FALSE,FALSE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_map],max_shader_light,TRUE,FALSE,FALSE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_map_bump
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,TRUE,FALSE,TRUE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_map_bump],max_shader_light,TRUE,FALSE,TRUE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_map_spec
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,TRUE,FALSE,FALSE,TRUE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_map_spec],max_shader_light,TRUE,FALSE,FALSE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_map_bump_spec
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,TRUE,FALSE,TRUE,TRUE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_map_bump_spec],max_shader_light,TRUE,FALSE,TRUE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_diffuse
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,TRUE,FALSE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_diffuse],max_shader_light,FALSE,TRUE,FALSE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_diffuse_bump
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,TRUE,TRUE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_diffuse_bump],max_shader_light,FALSE,TRUE,TRUE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_diffuse_spec
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,TRUE,FALSE,TRUE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_diffuse_spec],max_shader_light,FALSE,TRUE,FALSE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_shader_light_diffuse_bump_spec
 
-	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light],max_shader_light,FALSE,TRUE,TRUE,TRUE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[gl_core_shader_light_diffuse_bump_spec],max_shader_light,FALSE,TRUE,TRUE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
-
+	
 	return(TRUE);
 }
 
 void gl_core_shader_shutdown(void)
 {
 	int					n;
-	shader_type			*shader;
 
 	if (!gl_check_shader_ok()) return;
 
 		// shutdown shaders
 
-	shader=core_shaders;
-
 	for (n=0;n!=max_core_shader;n++) {
-		gl_shader_code_shutdown(shader);
-		shader++;
+		gl_shader_code_shutdown(&core_shaders[n]);
+	}
+}
+
+/* =======================================================
+
+      Per-Scene Core Shader Initialization
+      
+======================================================= */
+
+void gl_core_shader_draw_scene_initialize(void)
+{
+	int					n;
+	
+	for (n=0;n!=max_core_shader;n++) {
+		gl_shader_draw_scene_initialize_code(&core_shaders[n]);
 	}
 }
 
@@ -365,7 +421,7 @@ void gl_core_shader_shutdown(void)
       
 ======================================================= */
 
-int gl_core_shader_find(texture_type *texture,bool diffuse,bool light_map)
+int gl_core_shader_find_for_mode(texture_type *texture,bool diffuse,bool light_map)
 {
 	bool				bump,spec;
 	
@@ -394,5 +450,13 @@ int gl_core_shader_find(texture_type *texture,bool diffuse,bool light_map)
 	if ((bump) && (!spec)) return(gl_core_shader_light_bump);
 	if ((!bump) && (spec)) return(gl_core_shader_light_spec);
 	return(gl_core_shader_light);
+}
+
+shader_type* gl_core_shader_find_ptr(int nlight,texture_type *texture,bool diffuse,bool light_map)
+{
+	int				idx;
+	
+	idx=gl_core_shader_find_for_mode(texture,diffuse,light_map);
+	return(&core_shaders[idx]);
 }
 

@@ -219,13 +219,13 @@ void render_opaque_mesh_light_map(void)
 
 void render_opaque_mesh_shader(void)
 {
-	int							n,k;
-	bool						first_draw;
-	GLuint						gl_id;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	texture_type				*texture;
-	view_glsl_light_list_type	light_list;
+	int						n,k;
+	bool					first_draw;
+	GLuint					gl_id;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	texture_type			*texture;
+	view_light_list_type	light_list;
 
 		// only setup drawing if we actually
 		// have something to draw
