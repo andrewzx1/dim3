@@ -34,7 +34,7 @@ extern void menu_fix_enable(void);
 extern void menu_set_view_check(int view);
 extern void menu_set_perspective_check(int perspective);
 extern void menu_set_uv_check(int uv_layer);
-extern void menu_save_changes_dialog(void);
+extern bool menu_save_changes_dialog(void);
 
 extern void undo_clear(void);
 extern void undo_save(void);

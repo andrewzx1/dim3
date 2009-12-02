@@ -171,13 +171,19 @@ void menu_set_show_hide_check(void)
 
 /* =======================================================
 
-      Alert
+      Save Changes
       
 ======================================================= */
 
-void menu_save_changes_dialog(void)
+bool menu_save_changes_dialog(void)
 {
-	if (dialog_alert("Save Changes?","Do you want to save the changes to this map?","Yes","No")==0) file_save_map();
+	int			choice;
+	
+	choice=dialog_confirm("Save Changes?","Do you want to save the changes to this map?","Save","Cancel","Don't Save");
+	if (choice==1) return(FALSE);
+	
+	if (choice==0) file_save_map();
+	return(TRUE);
 }
 
 /* =======================================================
@@ -205,7 +211,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
             
 		case kHICommandQuit:
 			if (map_opened) {
-				menu_save_changes_dialog();
+				if (!menu_save_changes_dialog()) return(noErr);
 				file_close_map();
 			}
 			QuitApplicationEventLoop();
@@ -225,7 +231,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandClose:
 			if (map_opened) {
-				menu_save_changes_dialog();
+				if (!menu_save_changes_dialog()) return(noErr);
 				file_close_map();
 			}
 			undo_clear();

@@ -560,6 +560,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 				
 				case kEventWindowClose:
 					if (map_opened) {
+						if (!menu_save_changes_dialog()) return(noErr);
 						file_close_map();
 					}
 					return(noErr);

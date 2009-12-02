@@ -35,6 +35,7 @@ and can be sold or given away.
 #define kTextureSettingFrameSpecularmap				FOUR_CHAR_CODE('spmp')
 #define kTextureSettingFrameGlowmap					FOUR_CHAR_CODE('gwmp')
 #define kTextureSettingFrameWait					FOUR_CHAR_CODE('watm')
+#define kTextureSettingFrameInfo					FOUR_CHAR_CODE('info')
 #define kTextureSettingColor						FOUR_CHAR_CODE('colr')
 #define kTextureSettingShader						FOUR_CHAR_CODE('shdr')
 #define kTextureSettingAnimate						FOUR_CHAR_CODE('anmt')
@@ -46,9 +47,6 @@ and can be sold or given away.
 #define kTextureSettingBumpFactor					FOUR_CHAR_CODE('bfct')
 #define kTextureSettingSpecularFactor				FOUR_CHAR_CODE('sfct')
 #define kTextureSettingMaterialName					FOUR_CHAR_CODE('mtrl')
-
-#define kTextureSettingButtonAddFrame				FOUR_CHAR_CODE('addt')
-#define kTextureSettingButtonSubFrame				FOUR_CHAR_CODE('subt')
 
 extern model_type				model;
 extern file_path_setup_type		file_path_setup;
@@ -254,6 +252,7 @@ void texture_setting_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox)
       
 ======================================================= */
 
+/*
 void texture_setting_frame_build_combo(bool first)
 {
 	int						n,nframe;
@@ -404,6 +403,7 @@ void texture_setting_frame_reset(void)
 		
 	dialog_set_int(dialog_texture_wind,kTextureSettingFrameWait,0,texture->animate.wait[cframe]);
 }
+*/
 
 /* =======================================================
 
@@ -424,11 +424,242 @@ bool texture_setting_bitmap_open(char *bitmap_name)
 		
 	file_paths_data(&file_path_setup,path,sub_path,bitmap_name,"png");
 	if (!bitmap_check(path,err_str)) {
-		dialog_alert("Texture Error",err_str,NULL,NULL);
+		dialog_alert("Texture Error",err_str);
 		return(FALSE);
 	}
 	
 	return(TRUE);
+}
+
+/* =======================================================
+
+      Texture Frames
+      
+======================================================= */
+
+void texture_setting_frame_build_combo(bool first)
+{
+	int						n,nframe;
+	char					str[32];
+	texture_type			*texture;
+	
+		// set combo
+		
+	dialog_hide(dialog_texture_wind,kTextureSettingFrame,0,FALSE);
+		
+	dialog_clear_combo(dialog_texture_wind,kTextureSettingFrame,0);
+	
+		// frames
+		
+	nframe=model_count_texture_frames(&model,dialog_texture_wind_current_txt);
+	if (nframe<=0) nframe=1;
+	
+	for (n=0;n!=nframe;n++) {
+		sprintf(str,"Frame %d",n);
+		dialog_add_combo_item(dialog_texture_wind,kTextureSettingFrame,0,str,0);
+	}
+	
+		// add/delete items
+		
+	dialog_add_combo_item(dialog_texture_wind,kTextureSettingFrame,0,"-",0);
+	dialog_add_combo_item(dialog_texture_wind,kTextureSettingFrame,0,"Add New Frame",0);
+	dialog_add_combo_item(dialog_texture_wind,kTextureSettingFrame,0,"Delete Last Frame",0);
+	
+		// select correct frame
+		
+	if (first) {
+		dialog_texture_wind_current_frame=0;
+		dialog_set_combo(dialog_texture_wind,kTextureSettingFrame,0,0);
+	}
+	else {
+		dialog_texture_wind_current_frame=nframe-1;
+		dialog_set_combo(dialog_texture_wind,kTextureSettingFrame,0,(nframe-1));
+	}
+	
+	dialog_hide(dialog_texture_wind,kTextureSettingFrame,0,TRUE);
+	
+		// set wait (so next bitmap draw doesn't save wrong wait)
+		
+	texture=&model.textures[dialog_texture_wind_current_txt];
+	dialog_set_int(dialog_texture_wind,kTextureSettingFrameWait,0,texture->animate.wait[dialog_texture_wind_current_frame]);
+}
+
+void texture_setting_frame_save(void)
+{
+	texture_type			*texture;
+	
+	texture=&model.textures[dialog_texture_wind_current_txt];
+	texture->animate.wait[dialog_texture_wind_current_frame]=dialog_get_int(dialog_texture_wind,kTextureSettingFrameWait,0);
+}
+
+void texture_setting_frame_reset(void)
+{
+    int						cframe;
+	char					str[256],type_str[3][32]={"Opaque","Cut-Out","Transparent"};
+    Rect					box;
+	ControlRef				ctrl;
+	ControlID				ctrl_id;
+    RGBColor				ltgraycolor={0xCCCC,0xCCCC,0xCCCC},blackcolor={0x0,0x0,0x0};
+	texture_type			*texture;
+	
+		// save wait from current frame
+		
+	texture_setting_frame_save();
+	
+		// get current frame
+		
+	texture=&model.textures[dialog_texture_wind_current_txt];
+	cframe=dialog_get_combo(dialog_texture_wind,kTextureSettingFrame,0);
+	dialog_texture_wind_current_frame=cframe;
+		
+		// draw bitmap
+	
+	SetPort(GetWindowPort(dialog_texture_wind));
+	
+	ctrl_id.signature=kTextureSettingFrameBitmap;
+	ctrl_id.id=0;
+	GetControlByID(dialog_texture_wind,&ctrl_id,&ctrl);
+	
+	GetControlBounds(ctrl,&box);
+		
+	if (texture->frames[cframe].bitmap.gl_id==-1) {
+		RGBForeColor(&ltgraycolor);
+		PaintRect(&box);
+		RGBForeColor(&blackcolor);
+		FrameRect(&box);
+	}
+	else {
+		texture_setting_bitmap_draw(&texture->frames[cframe].bitmap,GetWindowPort(dialog_texture_wind),&box);
+		RGBForeColor(&blackcolor);
+		FrameRect(&box);
+	}
+	
+		// draw bumpmap
+		
+	ctrl_id.signature=kTextureSettingFrameBumpmap;
+	ctrl_id.id=0;
+	GetControlByID(dialog_texture_wind,&ctrl_id,&ctrl);
+	
+	GetControlBounds(ctrl,&box);
+	
+	if (texture->frames[cframe].bumpmap.gl_id==-1) {
+		RGBForeColor(&ltgraycolor);
+		PaintRect(&box);
+		RGBForeColor(&blackcolor);
+		FrameRect(&box);
+	}
+	else {
+		texture_setting_bitmap_draw(&texture->frames[cframe].bumpmap,GetWindowPort(dialog_texture_wind),&box);
+		RGBForeColor(&blackcolor);
+		FrameRect(&box);
+	}
+	
+		// draw specularmap
+		
+	ctrl_id.signature=kTextureSettingFrameSpecularmap;
+	ctrl_id.id=0;
+	GetControlByID(dialog_texture_wind,&ctrl_id,&ctrl);
+	
+	GetControlBounds(ctrl,&box);
+	
+	if (texture->frames[cframe].specularmap.gl_id==-1) {
+		RGBForeColor(&ltgraycolor);
+		PaintRect(&box);
+		RGBForeColor(&blackcolor);
+		FrameRect(&box);
+	}
+	else {
+		texture_setting_bitmap_draw(&texture->frames[cframe].specularmap,GetWindowPort(dialog_texture_wind),&box);
+		RGBForeColor(&blackcolor);
+		FrameRect(&box);
+	}
+	
+		// draw glowmap
+		
+	ctrl_id.signature=kTextureSettingFrameGlowmap;
+	ctrl_id.id=0;
+	GetControlByID(dialog_texture_wind,&ctrl_id,&ctrl);
+	
+	GetControlBounds(ctrl,&box);
+	
+	if (texture->frames[cframe].glowmap.gl_id==-1) {
+		RGBForeColor(&ltgraycolor);
+		PaintRect(&box);
+		RGBForeColor(&blackcolor);
+		FrameRect(&box);
+	}
+	else {
+		texture_setting_bitmap_draw(&texture->frames[cframe].glowmap,GetWindowPort(dialog_texture_wind),&box);
+		RGBForeColor(&blackcolor);
+		FrameRect(&box);
+	}
+	
+		// set info
+		
+	if (texture->frames[cframe].name[0]!=0x0) {
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,0,texture->frames[cframe].name);
+		sprintf(str,"%dx%d",texture->frames[cframe].bitmap.wid,texture->frames[cframe].bitmap.high);
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,1,str);
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,2,type_str[texture->frames[cframe].bitmap.alpha_mode]);
+	}
+	else {
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,0,"");
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,1,"");
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,2,"");
+	}
+	
+	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,0,FALSE);
+	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,1,FALSE);
+	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,2,FALSE);
+	
+		// set wait
+		
+	dialog_set_int(dialog_texture_wind,kTextureSettingFrameWait,0,texture->animate.wait[cframe]);
+}
+
+bool texture_setting_frame_add_delete(void)
+{
+	int				cframe,nframe;
+	char			bitmap_name[file_str_len];
+	
+		// have we hit add or delete menu items?
+
+	nframe=model_count_texture_frames(&model,dialog_texture_wind_current_txt);
+	if (nframe<=0) nframe=1;
+	
+	cframe=dialog_get_combo(dialog_texture_wind,kTextureSettingFrame,0);
+	
+		// in add
+		
+	if (cframe==(nframe+1)) {
+	
+		texture_setting_frame_save();
+		
+		if (texture_setting_bitmap_open(bitmap_name)) {
+			SetThemeCursor(kThemeWatchCursor);
+			model_add_texture_frame(&model,dialog_texture_wind_current_txt,bitmap_name);
+			SetThemeCursor(kThemeArrowCursor);
+		}
+	
+		return(TRUE);
+	}
+	
+		// in delete
+		
+	if (cframe==(nframe+2)) {
+	
+		texture_setting_frame_save();
+		
+		SetThemeCursor(kThemeWatchCursor);
+		model_delete_texture_frame(&model,dialog_texture_wind_current_txt);
+		SetThemeCursor(kThemeArrowCursor);
+		
+		return(TRUE);
+	}
+
+		// in nothing
+		
+	return(FALSE);
 }
 
 /* =======================================================
@@ -450,27 +681,18 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 			switch (cmd.commandID) {
 			
 				case kTextureSettingFrame:
-					texture_setting_frame_reset();
-					return(noErr);
-			
-				case kTextureSettingButtonAddFrame:
-					texture_setting_frame_save();
-					if (texture_setting_bitmap_open(bitmap_name)) {
-						SetThemeCursor(kThemeWatchCursor);
-						model_add_texture_frame(&model,dialog_texture_wind_current_txt,bitmap_name);
+				
+						// add or delete
+						
+					if (texture_setting_frame_add_delete()) {
 						texture_setting_frame_build_combo(FALSE);
 						texture_setting_frame_reset();
-						SetThemeCursor(kThemeArrowCursor);
+						return(noErr);
 					}
-					return(noErr);
 					
-				case kTextureSettingButtonSubFrame:
-					texture_setting_frame_save();
-					SetThemeCursor(kThemeWatchCursor);
-					model_delete_texture_frame(&model,dialog_texture_wind_current_txt);
-					texture_setting_frame_build_combo(FALSE);
+						// changing frame
+						
 					texture_setting_frame_reset();
-					SetThemeCursor(kThemeArrowCursor);
 					return(noErr);
 					
 				case kTextureSettingFrameBitmapEdit:

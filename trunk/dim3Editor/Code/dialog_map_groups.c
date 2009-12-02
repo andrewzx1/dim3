@@ -143,7 +143,7 @@ static pascal OSStatus map_groups_event_proc(EventHandlerCallRef handler,EventRe
 			
 				case kMapGroupAddButton:
 					if (map.ngroup>=max_group) {
-						dialog_alert("Can Not Create Group","You've reached the maximum number of groups.",NULL,NULL);
+						dialog_alert("Can Not Create Group","You've reached the maximum number of groups.");
 						return(noErr);
 					}
 	
@@ -177,7 +177,7 @@ static pascal OSStatus map_groups_event_proc(EventHandlerCallRef handler,EventRe
 						
 					for (n=0;n!=map.nmovement;n++) {
 						if ((map.movements[n].group_idx==dialog_map_groups_current_idx) || (map.movements[n].reverse_group_idx==dialog_map_groups_current_idx)) {
-							dialog_alert("Can Not Delete Group","This group is used in a group movement, you will need to delete or edit the group movement first.",NULL,NULL);
+							dialog_alert("Can Not Delete Group","This group is used in a group movement, you will need to delete or edit the group movement first.");
 							return(noErr);
 						}
 					}

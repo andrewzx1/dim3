@@ -435,6 +435,10 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					return(noErr);
 					
 				case kEventWindowClose:
+					if (!menu_save_changes_dialog()) return(noErr);
+					close_model_xml();
+					model_wind_play(FALSE,FALSE);
+					fix_menus();
 					return(noErr);
 					
                 case kEventWindowCursorChange:

@@ -81,7 +81,8 @@ static pascal OSStatus light_map_event_proc(EventHandlerCallRef handler,EventRef
 
 void dialog_light_map_run(void)
 {
-	int						size,quality;
+	int						n,size,quality,
+							size_list[4]={256,512,1024,2048};
 	bool					ok;
 	char					err_str[256];
 	EventHandlerUPP			event_upp;
@@ -93,7 +94,14 @@ void dialog_light_map_run(void)
 	
 		// set controls
 	
-	size=(map.settings.light_map_size/1024)-1;
+	size=0;
+	for (n=0;n!=4;n++) {
+		if (map.settings.light_map_size==size_list[n]) {
+			size=n;
+			break;
+		}
+	}
+	
 	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,size);
 	dialog_set_value(dialog_light_map_wind,kLightMapQuality,0,map.settings.light_map_quality);
 	
@@ -113,8 +121,7 @@ void dialog_light_map_run(void)
 	
 		// dialog to data
 		
-	size=dialog_get_combo(dialog_light_map_wind,kLightMapSize,0);
-	size=(size+1)*1024;
+	size=size_list[dialog_get_combo(dialog_light_map_wind,kLightMapSize,0)];
 	quality=dialog_get_value(dialog_light_map_wind,kLightMapQuality,0);
 
 		// close window
@@ -137,6 +144,6 @@ void dialog_light_map_run(void)
 	
 	DisposeWindow(dialog_light_map_generate_wind);
 		
-	if (!ok) dialog_alert("Can not build light maps",err_str,NULL,NULL);
+	if (!ok) dialog_alert("Can not build light maps",err_str);
 }
 
