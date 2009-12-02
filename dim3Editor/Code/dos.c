@@ -148,7 +148,7 @@ bool file_new_map(void)
 		// copy the course script
 		
 	if (!create_course_script(file_name)) {
-		dialog_alert("dim3 Editor could not create map script","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).",NULL,NULL);
+		dialog_alert("dim3 Editor could not create map script","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
 		return(FALSE);
 	}
 	
@@ -243,7 +243,7 @@ void file_save_map(void)
 {
 	if (dialog_save_run()) return;
 	
-	dialog_alert("dim3 Editor could not save map","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).",NULL,NULL);
+	dialog_alert("dim3 Editor could not save map","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
 }
 
 /* =======================================================

@@ -991,9 +991,9 @@ int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none)
       
 ======================================================= */
 
-int dialog_alert(char *title,char *msg,char *button_ok,char *button_cancel)
+int dialog_alert(char *title,char *msg)
 {
-	CFStringRef			cf_title_str,cf_msg_str,cf_ok_str,cf_cancel_str;
+	CFStringRef			cf_title_str,cf_msg_str;
 	CFOptionFlags		resp;
 
 	SetThemeCursor(kThemeArrowCursor);
@@ -1001,18 +1001,37 @@ int dialog_alert(char *title,char *msg,char *button_ok,char *button_cancel)
 	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
 	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);
 
-	if (button_ok==NULL) {
-		CFUserNotificationDisplayAlert(0,kCFUserNotificationStopAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,NULL,NULL,NULL,&resp);
-	}
-	else {
-		cf_ok_str=CFStringCreateWithCString(kCFAllocatorDefault,button_ok,kCFStringEncodingMacRoman);
-		cf_cancel_str=CFStringCreateWithCString(kCFAllocatorDefault,button_cancel,kCFStringEncodingMacRoman);
+	CFUserNotificationDisplayAlert(0,kCFUserNotificationStopAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,NULL,NULL,NULL,&resp);
 	
-		CFUserNotificationDisplayAlert(0,kCFUserNotificationNoteAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,cf_ok_str,cf_cancel_str,NULL,&resp);
+	CFRelease(cf_title_str);
+	CFRelease(cf_msg_str);
 	
-		CFRelease(cf_ok_str);
-		CFRelease(cf_cancel_str);
-	}
+	return(resp);
+}
+
+int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *button_3)
+{
+	CFStringRef			cf_title_str,cf_msg_str,
+						cf_butt_1_str,cf_butt_2_str,cf_butt_3_str;
+	CFOptionFlags		resp;
+
+	SetThemeCursor(kThemeArrowCursor);
+	
+	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
+	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);
+
+	cf_butt_1_str=NULL;
+	if (button_1!=NULL) cf_butt_1_str=CFStringCreateWithCString(kCFAllocatorDefault,button_1,kCFStringEncodingMacRoman);
+	cf_butt_2_str=NULL;
+	if (button_2!=NULL) cf_butt_2_str=CFStringCreateWithCString(kCFAllocatorDefault,button_2,kCFStringEncodingMacRoman);
+	cf_butt_3_str=NULL;
+	if (button_3!=NULL) cf_butt_3_str=CFStringCreateWithCString(kCFAllocatorDefault,button_3,kCFStringEncodingMacRoman);
+	
+	CFUserNotificationDisplayAlert(0,kCFUserNotificationNoteAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,cf_butt_1_str,cf_butt_2_str,cf_butt_3_str,&resp);
+	
+	if (cf_butt_1_str!=NULL) CFRelease(cf_butt_1_str);
+	if (cf_butt_2_str!=NULL) CFRelease(cf_butt_2_str);
+	if (cf_butt_3_str!=NULL) CFRelease(cf_butt_3_str);
 	
 	CFRelease(cf_title_str);
 	CFRelease(cf_msg_str);

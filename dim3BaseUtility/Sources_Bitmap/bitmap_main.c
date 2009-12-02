@@ -66,9 +66,9 @@ void bitmap_set_alpha_mode(bitmap_type *bitmap,unsigned char *png_data)
 	int					n,psz;
 	unsigned char		*data;
 
-		// assume it's a cut-out until we see different data
+		// assume it's opaque until we see different data
 
-	bitmap->alpha_mode=alpha_mode_cut_out;
+	bitmap->alpha_mode=alpha_mode_none;
 					
 		// search for transparencies
 
@@ -76,14 +76,48 @@ void bitmap_set_alpha_mode(bitmap_type *bitmap,unsigned char *png_data)
 	psz=(bitmap->wid<<2)*bitmap->high;
 		
 	for (n=0;n<psz;n+=4) {
-		
+			
+			// a single non-0xFF and non-0x00 means transparency
+			
 		if ((*data!=0xFF) && (*data!=0x0)) {
-			bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
+			bitmap->alpha_mode=alpha_mode_transparent;
 			return;
 		}
+		
+			// a single 0x0 means it's possibly a cut out
+			// but never an opaque
+			
+		if (*data==0x0) bitmap->alpha_mode=alpha_mode_cut_out;
 
 		data+=4;
 	}
+}
+
+unsigned char* bitmap_strip_alpha(bitmap_type *bitmap,unsigned char *png_data)
+{
+	int					n,psz;
+	unsigned char		*strip_data,*srce,*dest;
+
+		// new data
+		
+	psz=(bitmap->wid*3)*bitmap->high;
+	strip_data=(unsigned char*)malloc(psz);
+	
+		// strip out alphas
+		
+	srce=png_data;
+	dest=strip_data;
+	
+	psz=(bitmap->wid<<2)*bitmap->high;
+		
+	for (n=0;n<psz;n+=4) {
+		*dest++=*srce++;
+		*dest++=*srce++;
+		*dest++=*srce++;
+		srce++;
+	}
+	
+	return(strip_data);
 }
 
 int bitmap_find_nearest_power_2(int sz)
@@ -164,7 +198,7 @@ unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned ch
 
 bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
 {
-	unsigned char		*png_data;
+	unsigned char		*png_data,*strip_data;
 	bool				ok,alpha_channel;
 
 	bitmap_new(bitmap);
@@ -193,6 +227,16 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 			// find if bitmap has transparencies
 
 		bitmap_set_alpha_mode(bitmap,png_data);
+		
+			// if alpha is actually all 0x0, then strip it
+			
+		if (bitmap->alpha_mode==alpha_mode_none) {
+			strip_data=bitmap_strip_alpha(bitmap,png_data);
+			if (strip_data!=NULL) {
+				free(png_data);
+				png_data=strip_data;
+			}
+		}
 	}
 	
 		// get the texture

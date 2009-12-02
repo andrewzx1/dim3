@@ -107,7 +107,7 @@ int texture_pick(char *material_name,char *err_str)
 		// pick a bitmap
 		
 	sprintf(txt,"A material named '%s' has been found.  Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).",material_name);
-	dialog_alert("Material Found - Select Bitmap",txt,NULL,NULL);
+	dialog_alert("Material Found - Select Bitmap",txt);
 	
 	if (!nav_open_file("png",path)) {
 		strcpy(err_str,"No texture was choosen.");
@@ -145,7 +145,7 @@ int texture_pick(char *material_name,char *err_str)
 
 bool texture_use_single(void)
 {
-	return(dialog_alert("Multiple Materials in Model","Do you want to use a single texture for the entire model or pick a new texture for each material?","Single","Multiple")==0);
+	return(dialog_confirm("Multiple Materials in Model","Do you want to use a single texture for the entire model or pick a new texture for each material?","Single","Multiple",NULL)==0);
 }
 
 

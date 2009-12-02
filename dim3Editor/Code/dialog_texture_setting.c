@@ -35,6 +35,7 @@ and can be sold or given away.
 #define kTextureSettingFrameSpecularmap				FOUR_CHAR_CODE('spmp')
 #define kTextureSettingFrameGlowmap					FOUR_CHAR_CODE('gwmp')
 #define kTextureSettingFrameWait					FOUR_CHAR_CODE('watm')
+#define kTextureSettingFrameInfo					FOUR_CHAR_CODE('info')
 #define kTextureSettingColor						FOUR_CHAR_CODE('colr')
 #define kTextureSettingShader						FOUR_CHAR_CODE('shdr')
 #define kTextureSettingAnimate						FOUR_CHAR_CODE('anmt')
@@ -50,9 +51,6 @@ and can be sold or given away.
 #define kTextureSettingScaleY						FOUR_CHAR_CODE('tsyf')
 #define kTextureSettingScaleOn						FOUR_CHAR_CODE('tson')
 #define kTextureSettingScaleLockOffset				FOUR_CHAR_CODE('tslo')
-
-#define kTextureSettingButtonAddFrame				FOUR_CHAR_CODE('addt')
-#define kTextureSettingButtonSubFrame				FOUR_CHAR_CODE('subt')
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -251,6 +249,31 @@ void texture_setting_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox)
 
 /* =======================================================
 
+      Edit Textures
+      
+======================================================= */
+
+bool texture_setting_bitmap_open(char *bitmap_name)
+{
+    char				err_str[256],path[1024];
+	
+		// get bitmap
+				
+	if (!dialog_file_open_run("Open a Bitmap","Bitmaps/Textures","png",NULL,bitmap_name)) return(FALSE);
+	
+		// check bitmap
+		
+	file_paths_data(&file_path_setup,path,"Bitmaps/Textures",bitmap_name,"png");
+	if (!bitmap_check(path,err_str)) {
+		dialog_alert("Texture Error",err_str);
+		return(FALSE);
+	}
+	
+	return(TRUE);
+}
+
+/* =======================================================
+
       Texture Frames
       
 ======================================================= */
@@ -267,6 +290,8 @@ void texture_setting_frame_build_combo(bool first)
 		
 	dialog_clear_combo(dialog_texture_wind,kTextureSettingFrame,0);
 	
+		// frames
+		
 	nframe=map_count_texture_frames(&map,dialog_texture_wind_current_txt);
 	if (nframe<=0) nframe=1;
 	
@@ -275,6 +300,14 @@ void texture_setting_frame_build_combo(bool first)
 		dialog_add_combo_item(dialog_texture_wind,kTextureSettingFrame,0,str,0);
 	}
 	
+		// add/delete items
+		
+	dialog_add_combo_item(dialog_texture_wind,kTextureSettingFrame,0,"-",0);
+	dialog_add_combo_item(dialog_texture_wind,kTextureSettingFrame,0,"Add New Frame",0);
+	dialog_add_combo_item(dialog_texture_wind,kTextureSettingFrame,0,"Delete Last Frame",0);
+	
+		// select correct frame
+		
 	if (first) {
 		dialog_texture_wind_current_frame=0;
 		dialog_set_combo(dialog_texture_wind,kTextureSettingFrame,0,0);
@@ -303,6 +336,7 @@ void texture_setting_frame_save(void)
 void texture_setting_frame_reset(void)
 {
     int						cframe;
+	char					str[256],type_str[3][32]={"Opaque","Cut-Out","Transparent"};
     Rect					box;
 	ControlRef				ctrl;
 	ControlID				ctrl_id;
@@ -401,34 +435,72 @@ void texture_setting_frame_reset(void)
 		FrameRect(&box);
 	}
 	
+		// set info
+		
+	if (texture->frames[cframe].name[0]!=0x0) {
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,0,texture->frames[cframe].name);
+		sprintf(str,"%dx%d",texture->frames[cframe].bitmap.wid,texture->frames[cframe].bitmap.high);
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,1,str);
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,2,type_str[texture->frames[cframe].bitmap.alpha_mode]);
+	}
+	else {
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,0,"");
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,1,"");
+		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,2,"");
+	}
+	
+	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,0,FALSE);
+	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,1,FALSE);
+	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,2,FALSE);
+	
 		// set wait
 		
 	dialog_set_int(dialog_texture_wind,kTextureSettingFrameWait,0,texture->animate.wait[cframe]);
 }
 
-/* =======================================================
-
-      Edit Textures
-      
-======================================================= */
-
-bool texture_setting_bitmap_open(char *bitmap_name)
+bool texture_setting_frame_add_delete(void)
 {
-    char				err_str[256],path[1024];
+	int				cframe,nframe;
+	char			bitmap_name[file_str_len];
 	
-		// get bitmap
-				
-	if (!dialog_file_open_run("Open a Bitmap","Bitmaps/Textures","png",NULL,bitmap_name)) return(FALSE);
+		// have we hit add or delete menu items?
+
+	nframe=map_count_texture_frames(&map,dialog_texture_wind_current_txt);
+	if (nframe<=0) nframe=1;
 	
-		// check bitmap
+	cframe=dialog_get_combo(dialog_texture_wind,kTextureSettingFrame,0);
+	
+		// in add
 		
-	file_paths_data(&file_path_setup,path,"Bitmaps/Textures",bitmap_name,"png");
-	if (!bitmap_check(path,err_str)) {
-		dialog_alert("Texture Error",err_str,NULL,NULL);
-		return(FALSE);
+	if (cframe==(nframe+1)) {
+	
+		texture_setting_frame_save();
+		
+		if (texture_setting_bitmap_open(bitmap_name)) {
+			SetThemeCursor(kThemeWatchCursor);
+			map_add_texture_frame(&map,dialog_texture_wind_current_txt,bitmap_name);
+			SetThemeCursor(kThemeArrowCursor);
+		}
+	
+		return(TRUE);
 	}
 	
-	return(TRUE);
+		// in delete
+		
+	if (cframe==(nframe+2)) {
+	
+		texture_setting_frame_save();
+		
+		SetThemeCursor(kThemeWatchCursor);
+		map_delete_texture_frame(&map,dialog_texture_wind_current_txt);
+		SetThemeCursor(kThemeArrowCursor);
+		
+		return(TRUE);
+	}
+
+		// in nothing
+		
+	return(FALSE);
 }
 
 /* =======================================================
@@ -450,29 +522,20 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 			switch (cmd.commandID) {
 			
 				case kTextureSettingFrame:
+				
+						// add or delete
+						
+					if (texture_setting_frame_add_delete()) {
+						texture_setting_frame_build_combo(FALSE);
+						texture_setting_frame_reset();
+						return(noErr);
+					}
+					
+						// changing frame
+						
 					texture_setting_frame_reset();
 					return(noErr);
 			
-				case kTextureSettingButtonAddFrame:
-					texture_setting_frame_save();
-					if (texture_setting_bitmap_open(bitmap_name)) {
-						SetThemeCursor(kThemeWatchCursor);
-						map_add_texture_frame(&map,dialog_texture_wind_current_txt,bitmap_name);
-						texture_setting_frame_build_combo(FALSE);
-						texture_setting_frame_reset();
-						SetThemeCursor(kThemeArrowCursor);
-					}
-					return(noErr);
-					
-				case kTextureSettingButtonSubFrame:
-					texture_setting_frame_save();
-					SetThemeCursor(kThemeWatchCursor);
-					map_delete_texture_frame(&map,dialog_texture_wind_current_txt);
-					texture_setting_frame_build_combo(FALSE);
-					texture_setting_frame_reset();
-					SetThemeCursor(kThemeArrowCursor);
-					return(noErr);
-					
 				case kTextureSettingFrameBitmapEdit:
 					if (texture_setting_bitmap_open(bitmap_name)) {
 						strcpy(map.textures[dialog_texture_wind_current_txt].frames[dialog_texture_wind_current_frame].name,bitmap_name);

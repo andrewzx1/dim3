@@ -30,6 +30,8 @@ extern OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,v
 extern void menu_start(void);
 extern void fix_menus(void);
 
+extern bool menu_save_changes_dialog(void);
+
 extern void open_model_xml(void);
 
 extern void undo_clear(void);
