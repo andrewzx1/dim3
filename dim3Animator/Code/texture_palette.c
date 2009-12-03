@@ -29,7 +29,8 @@ and can be sold or given away.
 #include "dialog.h"
 #include "model.h"
 
-extern int					cur_mesh,cur_pose,gl_view_x_sz,gl_view_y_sz;
+extern int					cur_mesh,cur_pose,
+							gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size;
 extern bool					fileopen;
 extern model_type			model;
 
@@ -44,7 +45,7 @@ extern WindowRef			model_wind;
 
 void texture_palette_draw(void)
 {
-	int						i,x,y,row_texture_count;
+	int						i,x,y;
 	Rect					wbox;
 	texture_type			*texture;
 	
@@ -54,14 +55,14 @@ void texture_palette_draw(void)
 		
 	GetWindowPortBounds(model_wind,&wbox);
 	
-	glViewport(wbox.left,0,gl_view_x_sz,texture_palette_height);
+	glViewport(wbox.left,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
 	
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(wbox.left,0,gl_view_x_sz,texture_palette_height);
+	glScissor(wbox.left,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)wbox.left,(GLdouble)(wbox.left+gl_view_x_sz),(GLdouble)(wbox.bottom-info_palette_height),(GLdouble)(wbox.bottom-(info_palette_height+texture_palette_height)),-1.0,1.0);
+	glOrtho((GLdouble)wbox.left,(GLdouble)wbox.right,(GLdouble)(wbox.bottom-info_palette_height),(GLdouble)(wbox.bottom-(info_palette_height+gl_view_texture_palette_size)),-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -71,8 +72,6 @@ void texture_palette_draw(void)
 	
 		// draw textures
 
-	row_texture_count=max_model_texture/texture_palette_row_count;
-	
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	
@@ -82,7 +81,7 @@ void texture_palette_draw(void)
 	glActiveTexture(GL_TEXTURE0);
 
 	x=wbox.left;
-	y=wbox.bottom-(info_palette_height+texture_palette_height);
+	y=wbox.bottom-(info_palette_height+gl_view_texture_palette_size);
 
 	texture=model.textures;
 
@@ -100,11 +99,11 @@ void texture_palette_draw(void)
 			glTexCoord2f(0,0);
 			glVertex2i(x,y);
 			glTexCoord2f(1,0);
-			glVertex2i((x+texture_palette_texture_size),y);
+			glVertex2i((x+gl_view_texture_palette_size),y);
 			glTexCoord2f(1,1);
-			glVertex2i((x+texture_palette_texture_size),(y+texture_palette_texture_size));
+			glVertex2i((x+gl_view_texture_palette_size),(y+gl_view_texture_palette_size));
 			glTexCoord2f(0,1);
-			glVertex2i(x,(y+texture_palette_texture_size));
+			glVertex2i(x,(y+gl_view_texture_palette_size));
 			glEnd();
 			
 			glDisable(GL_TEXTURE_2D);
@@ -114,9 +113,9 @@ void texture_palette_draw(void)
 			
 			glBegin(GL_QUADS);
 			glVertex2i(x,y);
-			glVertex2i((x+texture_palette_texture_size),y);
-			glVertex2i((x+texture_palette_texture_size),(y+texture_palette_texture_size));
-			glVertex2i(x,(y+texture_palette_texture_size));
+			glVertex2i((x+gl_view_texture_palette_size),y);
+			glVertex2i((x+gl_view_texture_palette_size),(y+gl_view_texture_palette_size));
+			glVertex2i(x,(y+gl_view_texture_palette_size));
 			glEnd();
 		}
 
@@ -126,20 +125,14 @@ void texture_palette_draw(void)
 		
 		glBegin(GL_LINE_LOOP);
 		glVertex2i(x,(y+1));
-		glVertex2i((x+texture_palette_texture_size),(y+1));
-		glVertex2i((x+texture_palette_texture_size),((y+1)+texture_palette_texture_size));
-		glVertex2i(x,((y+1)+texture_palette_texture_size));
+		glVertex2i((x+gl_view_texture_palette_size),(y+1));
+		glVertex2i((x+gl_view_texture_palette_size),((y+1)+gl_view_texture_palette_size));
+		glVertex2i(x,((y+1)+gl_view_texture_palette_size));
 		glEnd();
 		
 			// next position
 			
-		if (((i+1)%row_texture_count)==0) {
-			y+=texture_palette_texture_size;
-			x=wbox.left;
-		}
-		else {
-			x+=texture_palette_texture_size;
-		}
+		x+=gl_view_texture_palette_size;
 	
 		texture++;
 	}
@@ -155,7 +148,7 @@ void texture_palette_draw(void)
 
 void texture_palette_click(Point pt,bool dblclick)
 {
-	int					x,y,nsel,row_texture_count;
+	int					nsel;
 	Rect				wbox;
 	
     if (!fileopen) return;
@@ -165,16 +158,11 @@ void texture_palette_click(Point pt,bool dblclick)
 	GetWindowPortBounds(model_wind,&wbox);
 	
 	wbox.top+=tool_button_size+gl_view_y_sz;
-	wbox.bottom=wbox.top+texture_palette_height;
+	wbox.bottom=wbox.top+gl_view_texture_palette_size;
 
 		// find clicked texture
 	
-	row_texture_count=max_model_texture/texture_palette_row_count;
-	
-	x=(pt.h-wbox.left)/texture_palette_texture_size;
-	y=(pt.v-wbox.top)/texture_palette_texture_size;
-	nsel=(y*row_texture_count)+x;
-	
+	nsel=(pt.h-wbox.left)/gl_view_texture_palette_size;
 	if ((nsel<0) || (nsel>(max_model_texture-1))) return;
 		
 		// handle click

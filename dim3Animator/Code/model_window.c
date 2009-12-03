@@ -69,7 +69,8 @@ char							tool_tooltip_str[tool_count][64]=
 									};
 
 int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
-                        shift_x,shift_y,magnify_z,drag_bone_mode,gl_view_x_sz,gl_view_y_sz,
+                        shift_x,shift_y,magnify_z,drag_bone_mode,
+						gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size,
 						play_animate_tick[max_model_blend_animation],
 						play_animate_blend_idx[max_model_blend_animation],
 						play_animate_pose_move_idx[max_model_blend_animation];
@@ -317,15 +318,15 @@ void model_wind_gl_port_setup(void)
  	rect[0]=box.left;
 	rect[1]=info_palette_height;
 	rect[2]=gl_view_x_sz;
-	rect[3]=gl_view_y_sz+texture_palette_height;
+	rect[3]=gl_view_y_sz+gl_view_texture_palette_size;
 
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
 	aglEnable(ctx,AGL_BUFFER_RECT);
 	
-	glViewport(box.left,info_palette_height,(gl_view_x_sz),(gl_view_y_sz+texture_palette_height));
+	glViewport(box.left,info_palette_height,(gl_view_x_sz),(gl_view_y_sz+gl_view_texture_palette_size));
 	
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(box.left,info_palette_height,(gl_view_x_sz),(gl_view_y_sz+texture_palette_height));
+	glScissor(box.left,info_palette_height,(gl_view_x_sz),(gl_view_y_sz+gl_view_texture_palette_size));
 }
 
 void model_wind_resize(void)
@@ -336,10 +337,12 @@ void model_wind_resize(void)
 		
 	GetWindowPortBounds(model_wind,&box);
 	
-	gl_view_x_sz=model_view_min_size;
-	gl_view_y_sz=(box.bottom-box.top)-(tool_button_size+texture_palette_height+info_palette_height);
+	gl_view_x_sz=(box.right-box.left)-total_list_width;
+	if (gl_view_x_sz<model_view_min_size) gl_view_x_sz=model_view_min_size;
 	
-	if (gl_view_y_sz<model_view_min_size) gl_view_y_sz=model_view_min_size;
+	gl_view_texture_palette_size=gl_view_x_sz/max_model_texture;
+	
+	gl_view_y_sz=(box.bottom-box.top)-(tool_button_size+gl_view_texture_palette_size+info_palette_height);
 
 		// resize controls
 
@@ -411,7 +414,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 						
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					 
-					if ((pt.h>=0) && (pt.h<=gl_view_x_sz) && (pt.v>=(tool_button_size+gl_view_y_sz)) && (pt.v<=(tool_button_size+gl_view_y_sz+texture_palette_height))) {
+					if ((pt.h>=0) && (pt.h<=gl_view_x_sz) && (pt.v>=(tool_button_size+gl_view_y_sz)) && (pt.v<=(tool_button_size+gl_view_y_sz+gl_view_texture_palette_size))) {
 						texture_palette_click(pt,(nclick!=1));
 						return(noErr);
 					}
@@ -754,8 +757,12 @@ void model_wind_open(void)
 		
 	GetWindowPortBounds(model_wind,&box);
 	
-	gl_view_x_sz=model_view_min_size;
-	gl_view_y_sz=(box.bottom-box.top)-(tool_button_size+texture_palette_height+info_palette_height);
+	gl_view_x_sz=(wbox.right-wbox.left)-total_list_width;
+	if (gl_view_x_sz<model_view_min_size) gl_view_x_sz=model_view_min_size;
+	
+	gl_view_texture_palette_size=gl_view_x_sz/max_model_texture;
+	
+	gl_view_y_sz=(box.bottom-box.top)-(tool_button_size+gl_view_texture_palette_size+info_palette_height);
 	
 		// toolbar buttons
 			

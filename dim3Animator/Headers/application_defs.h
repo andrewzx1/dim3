@@ -15,13 +15,12 @@
 
 #define model_view_min_size				512
 
-#define texture_palette_height			64
-#define texture_palette_row_count		2
-#define texture_palette_texture_size	32
-
 #define mesh_palette_width				64
 
 #define info_palette_height				14
+
+#define list_width						170
+#define total_list_width				810
 
 //
 // Menus
@@ -143,9 +142,10 @@
 
 #define kPoseNameDBColumn				1080
 #define kPoseBoneDBColumn				1081
-#define kPoseBoneMoveDBColumn			1082
-#define kPoseBoneAccDBColumn			1083
-#define kPoseBoneBlendDBColumn			1084
+#define kPoseBoneRotDBColumn			1082
+#define kPoseBoneMoveDBColumn			1083
+#define kPoseBoneAccDBColumn			1084
+#define kPoseBoneBlendDBColumn			1085
 
 #define kAnimateNameDBColumn			1090
 #define kAnimatePoseDBColumn			1091

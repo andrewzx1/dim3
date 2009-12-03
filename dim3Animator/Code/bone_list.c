@@ -184,6 +184,18 @@ static pascal OSStatus pose_bone_move_item_proc(ControlRef ctrl,DataBrowserItemI
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
 			return(noErr);
+			
+		case kPoseBoneRotDBColumn:
+			if (cur_pose==-1) return(noErr);
+
+			idx=itemID-1;
+			bone_move=&model.poses[cur_pose].bone_moves[idx];
+			
+			sprintf(txt,"%d,%d,%d",(int)bone_move->rot.x,(int)bone_move->rot.y,(int)bone_move->rot.z);
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
 
 		case kPoseBoneMoveDBColumn:
 			if (cur_pose==-1) return(noErr);
@@ -195,7 +207,7 @@ static pascal OSStatus pose_bone_move_item_proc(ControlRef ctrl,DataBrowserItemI
 			string_convert_float(s_mov_y,bone_move->mov.y);
 			string_convert_float(s_mov_z,bone_move->mov.z);
 			
-			sprintf(txt,"(%d,%d,%d) / (%s,%s,%s)",(int)bone_move->rot.x,(int)bone_move->rot.y,(int)bone_move->rot.z,s_mov_x,s_mov_y,s_mov_z);
+			sprintf(txt,"%s,%s,%s",s_mov_x,s_mov_y,s_mov_z);
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
@@ -364,7 +376,7 @@ void start_bone_controls(WindowRef wind,Rect *box)
 
 		// pose bone move data browser
 		
-	cbox.left=box->left+220;
+	cbox.left=box->left+list_width;
 	cbox.right=box->right;
 	
 	cbox.top=box->top;
@@ -408,10 +420,11 @@ void start_bone_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(bone_list,"Bone",kPoseBoneDBColumn,kDataBrowserTextType,200,0);
-	add_db_column(bone_list,"Rot & Move",kPoseBoneMoveDBColumn,kDataBrowserTextType,250,1);
-	add_db_column(bone_list,"Accel",kPoseBoneAccDBColumn,kDataBrowserTextType,60,2);
-	add_db_column(bone_list,"Skip Blend",kPoseBoneBlendDBColumn,kDataBrowserTextType,80,3);
+	add_db_column(bone_list,"Bone",kPoseBoneDBColumn,kDataBrowserTextType,150,0);
+	add_db_column(bone_list,"Rot",kPoseBoneRotDBColumn,kDataBrowserTextType,100,1);
+	add_db_column(bone_list,"Move",kPoseBoneMoveDBColumn,kDataBrowserTextType,100,2);
+	add_db_column(bone_list,"Accel",kPoseBoneAccDBColumn,kDataBrowserTextType,50,3);
+	add_db_column(bone_list,"SB",kPoseBoneBlendDBColumn,kDataBrowserTextType,50,4);
 	
 		// container
 		
@@ -441,7 +454,7 @@ void resize_bone_controls(Rect *box)
 {
 	Rect		cbox;
 	
-	cbox.left=box->left+220;
+	cbox.left=box->left+list_width;
 	cbox.right=box->right;
 	
 	cbox.top=box->top;
