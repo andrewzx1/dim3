@@ -218,7 +218,7 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 	
 		// vertex data browser
 		
-	cbox.left=box->left+440;
+	cbox.left=box->left+(list_width*2);
 	cbox.right=box->right;
 	
 	cbox.top=(box->bottom-box->top)/2;
@@ -276,7 +276,7 @@ void resize_vertex_controls(Rect *box)
 {
 	Rect		cbox;
 	
-	cbox.left=box->left+440;
+	cbox.left=box->left+(list_width*2);
 	cbox.right=box->right;
 	
 	cbox.top=(box->bottom-box->top)/2;

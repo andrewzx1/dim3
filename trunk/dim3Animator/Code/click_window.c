@@ -30,7 +30,7 @@ and can be sold or given away.
 #include "menu.h"
 
 extern int						cur_mesh,cur_pose,cur_bone,draw_type,shift_x,shift_y,magnify_z,drag_bone_mode,
-								gl_view_x_sz,gl_view_y_sz;
+								gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size;
 extern float					ang_y,ang_x;
 extern bool						shift_on,rotate_on,size_on,play_animate,drag_sel_on,model_bone_drag_on;
 extern Rect						drag_sel_box;
@@ -68,7 +68,7 @@ void model_sel_vertex(float *pv,int lx,int ty,int rx,int by,bool chg_sel,double 
 		sz=(int)*pv++;
 		gluProject(sx,sy,sz,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 		x=(int)dx;
-		y=(int)((gl_view_y_sz+texture_palette_height)-dy);
+		y=(int)((gl_view_y_sz+gl_view_texture_palette_size)-dy);
 		
 		if ((x>=lx) && (x<=rx) && (y>=ty) && (y<=by)) {
 			if (!vertex_check_hide_mask(cur_mesh,i)) vertex_set_sel_mask(cur_mesh,i,chg_sel);
@@ -288,7 +288,7 @@ bool draw_bone_model_wind_click_box(Point start_pt,float x,float y,float z)
 	
 	gluProject(x,y,z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 	ix=(int)dx;
-	iy=(int)((gl_view_y_sz+texture_palette_height)-dy);
+	iy=(int)((gl_view_y_sz+gl_view_texture_palette_size)-dy);
 
 		// check box
 		

@@ -28,7 +28,7 @@ and can be sold or given away.
 #include "model.h"
 
 extern int					draw_type,cur_mesh,cur_bone,shift_x,shift_y,magnify_z,
-							gl_view_x_sz,gl_view_y_sz;
+							gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size;
 extern float				ang_y,ang_x;
 extern bool					fileopen,play_animate,model_bump_on,model_normal_on,model_bone_drag_on,model_show_first_mesh,
 							model_box_on,drag_sel_on;
@@ -54,10 +54,10 @@ void draw_model_gl_setup(model_type *model)
 		
 	GetWindowPortBounds(model_wind,&wbox);
 	
-	glViewport(wbox.left,texture_palette_height,gl_view_x_sz,gl_view_y_sz);
+	glViewport(wbox.left,gl_view_texture_palette_size,gl_view_x_sz,gl_view_y_sz);
 	
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(wbox.left,texture_palette_height,gl_view_x_sz,gl_view_y_sz);
+	glScissor(wbox.left,gl_view_texture_palette_size,gl_view_x_sz,gl_view_y_sz);
 
 		// model perspective
 		

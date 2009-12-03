@@ -141,7 +141,7 @@ void start_animate_controls(WindowRef wind,Rect *box)
 		// setup data browser for animations
 
 	cbox.left=box->left;
-	cbox.right=box->left+220;
+	cbox.right=box->left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
 	cbox.bottom=box->bottom;
@@ -175,7 +175,7 @@ void start_animate_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(animate_list,"Animations",kAnimateNameDBColumn,kDataBrowserTextType,200,0);
+	add_db_column(animate_list,"Animations",kAnimateNameDBColumn,kDataBrowserTextType,(list_width-20),0);
 	
 	animate_list_notify_ignore=FALSE;
 }
@@ -199,7 +199,7 @@ void resize_animate_controls(Rect *box)
 	Rect		cbox;
 	
 	cbox.left=box->left;
-	cbox.right=box->left+220;
+	cbox.right=box->left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
 	cbox.bottom=box->bottom;

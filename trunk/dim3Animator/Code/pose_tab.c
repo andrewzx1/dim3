@@ -187,7 +187,7 @@ void start_pose_controls(WindowRef wind,Rect *box)
 		// pose data browser
 		
 	cbox.left=box->left;
-	cbox.right=box->left+220;
+	cbox.right=box->left+list_width;
 	
 	cbox.top=box->top;
 	cbox.bottom=(box->bottom-box->top)/2;
@@ -221,7 +221,7 @@ void start_pose_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(pose_list,"Poses",kPoseNameDBColumn,kDataBrowserTextType,200,0);
+	add_db_column(pose_list,"Poses",kPoseNameDBColumn,kDataBrowserTextType,(list_width-20),0);
 	
 	pose_list_notify_ignore=FALSE;
 }
@@ -245,7 +245,7 @@ void resize_pose_controls(Rect *box)
 	Rect		cbox;
 	
 	cbox.left=box->left;
-	cbox.right=box->left+220;
+	cbox.right=box->left+list_width;
 	
 	cbox.top=box->top;
 	cbox.bottom=(box->bottom-box->top)/2;

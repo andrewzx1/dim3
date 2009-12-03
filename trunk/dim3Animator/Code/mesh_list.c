@@ -140,8 +140,8 @@ void start_mesh_controls(WindowRef wind,Rect *box)
 	
 		// mesh data browser
 		
-	cbox.left=box->left+220;
-	cbox.right=cbox.left+220;
+	cbox.left=box->left+list_width;
+	cbox.right=cbox.left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
 	cbox.bottom=box->bottom;
@@ -174,7 +174,7 @@ void start_mesh_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(mesh_list,"Meshes",kMeshNameDBColumn,kDataBrowserTextType,200,0);
+	add_db_column(mesh_list,"Meshes",kMeshNameDBColumn,kDataBrowserTextType,(list_width-20),0);
 	
 	mesh_list_notify_ignore=FALSE;
 }
@@ -197,8 +197,8 @@ void resize_mesh_controls(Rect *box)
 {
 	Rect		cbox;
 	
-	cbox.left=box->left+220;
-	cbox.right=cbox.left+220;
+	cbox.left=box->left+list_width;
+	cbox.right=cbox.left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
 	cbox.bottom=box->bottom;
