@@ -148,7 +148,6 @@ bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_
 	
 	wid=view_setup->box.rx-view_setup->box.lx;
 	high=view_setup->box.by-view_setup->box.ty;
-		
 	
 		// click left triangle
 		

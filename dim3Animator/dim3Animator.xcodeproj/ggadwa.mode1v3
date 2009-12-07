@@ -350,13 +350,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>74</integer>
-									<integer>71</integer>
+									<integer>27</integer>
+									<integer>25</integer>
+									<integer>15</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 652}, {290, 776}}</string>
+							<string>{{0, 0}, {290, 776}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -375,7 +376,7 @@
 							<real>290</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>782 181 312 835 0 0 1680 1028 </string>
+						<string>11 181 312 835 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -403,10 +404,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26D7CD6510C6343600600DBF</string>
+										<string>26FF1E0610C8A09F003D33A0</string>
 										<key>history</key>
 										<array>
-											<string>26D7CC3D10C5F36B00600DBF</string>
+											<string>26FF1C2810C76565003D33A0</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -420,7 +421,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>782 181 312 835 0 0 1680 1028 </string>
+								<string>11 181 312 835 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -440,7 +441,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 789}}</string>
 								<key>RubberWindowFrame</key>
-								<string>782 181 312 835 0 0 1680 1028 </string>
+								<string>11 181 312 835 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -464,9 +465,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26D7CD5410C633A500600DBF</string>
+				<string>26FF1C4A10C87005003D33A0</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26D7CD5510C633A500600DBF</string>
+				<string>26FF1C4B10C87005003D33A0</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -587,7 +588,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>281424950.70546597</real>
+	<real>281583775.53456098</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -602,15 +603,17 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26D7CD6310C6343100600DBF</string>
-		<string>26D7CD6410C6343100600DBF</string>
+		<string>26FF1E0110C8A082003D33A0</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>26FF1C5310C87005003D33A0</string>
+		<string>26FF1C5410C87005003D33A0</string>
 		<string>1C78EAAD065D492600B07095</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>782 181 312 835 0 0 1680 1028 </string>
+	<string>11 181 312 835 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -689,7 +692,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26D7CD5110C6339800600DBF</string>
+				<string>26FF1C3810C86F4D003D33A0</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -809,13 +812,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>26D7CD5C10C6343100600DBF</string>
+				<string>26FF1C3B10C86F6D003D33A0</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>26D7CD5D10C6343100600DBF</string>
-				<string>26D7CD5E10C6343100600DBF</string>
-				<string>26D7CD5F10C6343100600DBF</string>
-				<string>26D7CD6010C6343100600DBF</string>
-				<string>26D7CD6110C6343100600DBF</string>
+				<string>26FF1C3C10C86F6D003D33A0</string>
+				<string>26FF1C3D10C86F6D003D33A0</string>
+				<string>26FF1C3E10C86F6D003D33A0</string>
+				<string>26FF1C3F10C86F6D003D33A0</string>
+				<string>26FF1C4010C86F6D003D33A0</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -856,7 +859,7 @@
 										<key>Frame</key>
 										<string>{{0, 0}, {781, 0}}</string>
 										<key>RubberWindowFrame</key>
-										<string>687 120 781 470 0 0 1680 1028 </string>
+										<string>899 111 781 470 0 0 1680 1028 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXNavigatorGroup</string>
@@ -882,7 +885,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {781, 424}}</string>
 								<key>RubberWindowFrame</key>
-								<string>687 120 781 470 0 0 1680 1028 </string>
+								<string>899 111 781 470 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXProjectFindModule</string>
@@ -905,13 +908,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26D7CC3210C5F32000600DBF</string>
-				<string>26D7CC3310C5F32000600DBF</string>
+				<string>26FF1C4710C87005003D33A0</string>
+				<string>26FF1C4810C87005003D33A0</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
 			<key>WindowString</key>
-			<string>687 120 781 470 0 0 1680 1028 </string>
+			<string>899 111 781 470 0 0 1680 1028 </string>
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
@@ -969,7 +972,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>26D7CD6210C6343100600DBF</string>
+				<string>26FF1C4110C86F6D003D33A0</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

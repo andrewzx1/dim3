@@ -34,17 +34,19 @@ extern map_type					map;
 extern file_path_setup_type		file_path_setup;
 
 #define max_light_map_textures						64
+#define light_map_smear_count						6
+#define light_map_blur_count						3
 
 typedef struct		{
-						unsigned char				*block,
-													*pixel_data,
-													*pixel_touch;
+						unsigned char				*block,*pixel_data,*pixel_touch,
+													*backup_block,*backup_pixel_data,*backup_pixel_touch;
 					} light_map_texture_type;
 					
 typedef struct		{
 						int							x[8],y[8],
 													x_shift,y_shift,
 													x_sz,y_sz;
+						bool						has_light;
 						d3rect						box;
 					} light_map_mesh_poly_type;
 					
@@ -77,6 +79,9 @@ bool light_map_textures_start(char *err_str)
 		light_map_textures[n].block=NULL;
 		light_map_textures[n].pixel_data=NULL;
 		light_map_textures[n].pixel_touch=NULL;
+		light_map_textures[n].backup_block=NULL;
+		light_map_textures[n].backup_pixel_data=NULL;
+		light_map_textures[n].backup_pixel_touch=NULL;
 	}
 	
 	return(TRUE);
@@ -112,11 +117,15 @@ int light_map_textures_create(void)
 	lmap->block=(unsigned char*)malloc(sz);
 	bzero(lmap->block,sz);
 	
+	lmap->backup_block=(unsigned char*)malloc(sz);
+	
 		// pixel data
 		
 	sz=(map.settings.light_map_size*map.settings.light_map_size)*3;
 	lmap->pixel_data=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_data,sz);
+	
+	lmap->backup_pixel_data=(unsigned char*)malloc(sz);
 	
 		// pixel touch data
 		
@@ -124,7 +133,46 @@ int light_map_textures_create(void)
 	lmap->pixel_touch=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_touch,sz);
 	
+	lmap->backup_pixel_touch=(unsigned char*)malloc(sz);
+	
+		// all light maps have the very
+		// first block reserved and set to black so polygons
+		// that have no light can be optimized to
+		// have their light map here
+		
+	*lmap->block=0x1;
+	
 	return(idx);
+}
+
+void light_map_textures_backup(light_map_texture_type *lmap)
+{
+	int						sz;
+	
+	sz=map.settings.light_map_size/light_map_texture_block_size;
+	sz=sz*sz;
+	memmove(lmap->backup_block,lmap->block,sz);
+	
+	sz=(map.settings.light_map_size*map.settings.light_map_size)*3;
+	memmove(lmap->backup_pixel_data,lmap->pixel_data,sz);
+	
+	sz=map.settings.light_map_size*map.settings.light_map_size;
+	memmove(lmap->backup_pixel_touch,lmap->pixel_touch,sz);
+}
+
+void light_map_textures_restore(light_map_texture_type *lmap)
+{
+	int						sz;
+	
+	sz=map.settings.light_map_size/light_map_texture_block_size;
+	sz=sz*sz;
+	memmove(lmap->block,lmap->backup_block,sz);
+	
+	sz=(map.settings.light_map_size*map.settings.light_map_size)*3;
+	memmove(lmap->pixel_data,lmap->backup_pixel_data,sz);
+	
+	sz=map.settings.light_map_size*map.settings.light_map_size;
+	memmove(lmap->pixel_touch,lmap->backup_pixel_touch,sz);
 }
 
 void light_map_textures_save(char *base_path)
@@ -174,6 +222,9 @@ void light_map_textures_free(void)
 		if (light_map_textures[n].block!=NULL) free(light_map_textures[n].block);
 		if (light_map_textures[n].pixel_data!=NULL) free(light_map_textures[n].pixel_data);
 		if (light_map_textures[n].pixel_touch!=NULL) free(light_map_textures[n].pixel_touch);
+		if (light_map_textures[n].backup_block!=NULL) free(light_map_textures[n].backup_block);
+		if (light_map_textures[n].backup_pixel_data!=NULL) free(light_map_textures[n].backup_pixel_data);
+		if (light_map_textures[n].backup_pixel_touch!=NULL) free(light_map_textures[n].backup_pixel_touch);
 	}
 	
 	free(light_map_textures);
@@ -181,149 +232,125 @@ void light_map_textures_free(void)
 
 /* =======================================================
 
-      Smear Light Texture
+      Light Texture Bluring
       
 ======================================================= */
 
-bool light_map_smear_box_horz(int sx,int ex,int x_add,int y,light_map_texture_type *lmap)
+void light_map_texture_single_blur_edges(light_map_texture_type *lmap,int blur_count,bool smear)
 {
-	int				x,hx;
-	unsigned char	*pixel,*touch,col[3];
+	int				n,x,y,cx,cy,i_col[3],col_count;
+	unsigned char	*pixel,*pixel_touch,
+					*back,*back_touch,
+					*blur,*blur_touch;
 	
-		// find the color to smear
-		
-	x=sx;
-	hx=-1;
+	for (n=0;n!=blur_count;n++) {
 	
-	while (x!=(ex+x_add)) {
-		touch=lmap->pixel_touch+((map.settings.light_map_size*y)+x);
+		for (y=0;y!=map.settings.light_map_size;y++) {
 		
-		if ((*touch)!=0x0) {
-			hx=x;
-			break;
+			pixel=lmap->pixel_data+((map.settings.light_map_size*3)*y);
+			pixel_touch=lmap->pixel_touch+(map.settings.light_map_size*y);
+			
+			back=lmap->backup_pixel_data+((map.settings.light_map_size*3)*y);
+			back_touch=lmap->backup_pixel_touch+(map.settings.light_map_size*y);
+			
+			for (x=0;x!=map.settings.light_map_size;x++) {
+			
+					// smearing only effects non-touched pixels
+					// blur effects all pixels
+					
+				if (smear) {
+					if (*pixel_touch!=0x0) {
+						*back++=*pixel++;
+						*back++=*pixel++;
+						*back++=*pixel++;
+						pixel_touch++;
+						back_touch++;
+						continue;
+					}
+				}
+				
+					// get blur from 8 surrounding pixels
+					
+				col_count=0;
+				i_col[0]=i_col[1]=i_col[2]=0;
+				
+				for (cy=(y-1);cy!=(y+2);cy++) {
+					for (cx=(x-1);cx!=(x+2);cx++) {
+					
+						if ((cy==y) && (cx==x)) continue;
+						if ((cy<0) || (cy>=map.settings.light_map_size) || (cx<0) || (cx>=map.settings.light_map_size)) continue;
+					
+							// if in smear mode, only blur from touched
+							// pixels to smear the touched pixels colors
+							
+						if (smear) {
+							blur_touch=lmap->pixel_touch+((map.settings.light_map_size*cy)+cx);
+							if (*blur_touch==0x0) continue;
+						}
+						
+							// add up blur
+							
+						blur=lmap->pixel_data+(((map.settings.light_map_size*3)*cy)+(cx*3));
+						i_col[0]+=(int)*blur;
+						i_col[1]+=(int)*(blur+1);
+						i_col[2]+=(int)*(blur+2);
+						col_count++;
+					}
+				}
+				
+				if (col_count!=0) {
+					i_col[0]=i_col[0]/col_count;
+					if (i_col[0]>255) i_col[0]=255;
+					
+					i_col[1]=i_col[1]/col_count;
+					if (i_col[1]>255) i_col[1]=255;
+					
+					i_col[2]=i_col[2]/col_count;
+					if (i_col[2]>255) i_col[2]=255;
+			
+					*back++=(unsigned char)i_col[0];
+					*back++=(unsigned char)i_col[1];
+					*back++=(unsigned char)i_col[2];
+					
+					if (smear) *back_touch=0x1;		// next time this is part of the smear
+				}
+				else {
+					back+=3;
+				}
+				
+				pixel+=3;
+				
+				pixel_touch++;
+				back_touch++;
+			}
+			
 		}
-	
-		x+=x_add;
+		
+		memmove(lmap->pixel_data,lmap->backup_pixel_data,((map.settings.light_map_size*3)*map.settings.light_map_size));
+		memmove(lmap->pixel_touch,lmap->backup_pixel_touch,(map.settings.light_map_size*map.settings.light_map_size));
 	}
-	
-	if (hx==-1) return(FALSE);
-	
-		// get color to smear
 		
-	pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*y)+(hx*3));
-
-	col[0]=*pixel;
-	col[1]=*(pixel+1);
-	col[2]=*(pixel+2);
-	
-		// smear the color
-		
-	x=sx;
-	
-	while (x!=hx) {
-		pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*y)+(x*3));
-		
-		*pixel=col[0];
-		*(pixel+1)=col[1];
-		*(pixel+2)=col[2];
-	
-		x+=x_add;
-	}
-	
-	return(TRUE);
 }
 
-void light_map_smear_box_vert(int sy,int ey,int y_add,int x,light_map_texture_type *lmap)
+void light_map_textures_blur_edges(void)
 {
-	int				y,hy;
-	unsigned char	*pixel,*touch,col[3];
-	
-		// find the color to smear
-		
-	y=sy;
-	hy=-1;
-	
-	while (y!=(ey+y_add)) {
-		touch=lmap->pixel_touch+((map.settings.light_map_size*y)+x);
-		
-		if ((*touch)!=0x0) {
-			hy=y;
-			break;
-		}
-	
-		y+=y_add;
-	}
-	
-	if (hy==-1) return;
-	
-		// get color to smear
-		
-	pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*hy)+(x*3));
-
-	col[0]=*pixel;
-	col[1]=*(pixel+1);
-	col[2]=*(pixel+2);
-
-		// smear the color
-		
-	y=sy;
-	
-	while (y!=hy) {
-		pixel=lmap->pixel_data+(((map.settings.light_map_size*3)*y)+(x*3));
-		
-		*pixel=col[0];
-		*(pixel+1)=col[1];
-		*(pixel+2)=col[2];
-	
-		y+=y_add;
-	}
-}
-
-void light_map_smear_box(light_map_mesh_type *lm_mesh,light_map_mesh_poly_type *lm_poly)
-{
-	int							x,ty,by,my;
+	int							n;
 	light_map_texture_type		*lmap;
 	
-	lmap=&light_map_textures[lm_mesh->txt_idx];
-
-		// start horz smear
-		
-	my=(lm_poly->box.ty+lm_poly->box.by)>>1;
+		// this is a two-step process.  First we smear the texture
+		// by using out touch flag as a mask and smearing the touched
+		// values.  This eliminates the polygon edge gray areas
+		// second, we blur the entire light map to fix any stark light changes
+		// within the light map itself
 	
-		// smear horzontal going up
-		
-	ty=my;
+	lmap=light_map_textures;
 	
-	while (ty>=lm_poly->box.ty) {
-		if (!light_map_smear_box_horz(lm_poly->box.lx,lm_poly->box.rx,1,ty,lmap)) break;
-		light_map_smear_box_horz(lm_poly->box.rx,lm_poly->box.lx,-1,ty,lmap);
-		ty--;
-	}
-	
-		// smear remander of top
-		
-	if (ty>=lm_poly->box.ty) {
-		for (x=lm_poly->box.lx;x<=lm_poly->box.rx;x++) {
-			light_map_smear_box_vert(lm_poly->box.ty,lm_poly->box.by,1,x,lmap);
+	for (n=0;n!=max_light_map_textures;n++) {
+		if (lmap->pixel_data!=NULL) {
+			light_map_texture_single_blur_edges(lmap,light_map_smear_count,TRUE);
+			light_map_texture_single_blur_edges(lmap,light_map_blur_count,FALSE);
 		}
-	}
-	
-		// smear horzontal going down
-		
-	by=my+1;
-	
-	while (by<=lm_poly->box.by) {
-		if (!light_map_smear_box_horz(lm_poly->box.lx,lm_poly->box.rx,1,by,lmap)) break;
-		light_map_smear_box_horz(lm_poly->box.rx,lm_poly->box.lx,-1,by,lmap);
-		by++;
-	}
-	
-		// smear remander of bottom
-		
-	if (by<=lm_poly->box.by) {
-		for (x=lm_poly->box.lx;x<=lm_poly->box.rx;x++) {
-			light_map_smear_box_vert(lm_poly->box.by,lm_poly->box.ty,-1,x,lmap);
-		}
+		lmap++;
 	}
 }
 
@@ -342,8 +369,8 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 	pt=&mesh->vertexes[poly->v[v_idx]];
 
 	if (poly->box.wall_like) {
-		dx=(double)(pt->x-poly->box.min.x);
-		dz=(double)(pt->z-poly->box.min.z);
+		dx=(double)(pt->x-poly->line.lx);
+		dz=(double)(pt->z-poly->line.lz);
 		
 		*px=(int)sqrt((dx*dx)+(dz*dz));
 		*py=pt->y-poly->box.min.y;
@@ -356,7 +383,7 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 		// reduce to pixel factor (size of render)
 		
 	factor=((float)map.settings.light_map_quality)/light_map_quality_to_pixel_factor;
-		
+	
 	*px=(int)((float)(*px)*factor);
 	*py=(int)((float)(*py)*factor);
 }
@@ -418,6 +445,8 @@ bool light_map_mesh_poly_start(char *err_str)
 				if (lm_poly->y[t]>lm_poly->y_sz) lm_poly->y_sz=lm_poly->y[t];
 			}
 			
+				// can this poly by itself fit in map?
+				
 			if ((lm_poly->x_sz>=map.settings.light_map_size) || (lm_poly->y_sz>=map.settings.light_map_size)) {
 				sprintf(err_str,"Mesh poly (%d.%d) is too big to fit within a single light map texture",n,k);
 				return(FALSE);
@@ -490,12 +519,13 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 			hit=FALSE;
 				
 			for (by=y;by<(y+b_y_sz);by++) {
+				bptr=lmap->block+((by*block_count)+x);
 				for (bx=x;bx<(x+b_x_sz);bx++) {
-					bptr=lmap->block+((by*block_count)+bx);
 					if (*bptr!=0x0) {
 						hit=TRUE;
 						break;
 					}
+					bptr++;
 				}
 				if (hit) break;
 			}
@@ -741,9 +771,10 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 	double				d,d_intensity,dist,dx,dy,dz;
 	map_light_type		*lit;
 	
-	col.r=col.g=col.b=0.0f;
 	
 		// check the lights
+		
+	col.r=col.g=col.b=0.0f;
 	
 	for (n=0;n!=map.nlight;n++) {
 		lit=&map.lights[n];
@@ -758,7 +789,7 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 		dz=(lit->pnt.z-rpt->z);
 		dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		if (dist>d_intensity) continue;
-		
+
 			// is it visible?
 			
 		if (light_map_ray_trace_map(mesh_idx,poly_idx,rpt,&lit->pnt)) continue;
@@ -785,23 +816,23 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 
 /* =======================================================
 
-      Light Map Triangle Render
+      Light Map Polygon Render
       
 ======================================================= */
 
-void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *pt,light_map_texture_type *lmap)
+bool light_map_render_poly(int mesh_idx,int poly_idx,int ptsz,int *px,int *py,d3pnt *pt,light_map_texture_type *lmap)
 {
-	int				n,x,y,ty,by,x1,x2,x_start,x_end,x_count,y1,y2,
+	int				n,x,y,ty,by,x1,x2,x_start,x_end,x_count,y1,y2,zero_check,
 					top_idx,bot_idx,l1_start_idx,l1_end_idx,l2_start_idx,l2_end_idx;
 	d3pnt			pt1,pt2,rpt;
 	unsigned char	*pixel,*touch;
 	unsigned char	col[3];
-	
-		// determine the top and bottom vertex of the triangle
+
+		// determine the top and bottom vertex of the polygon
 
 	top_idx=bot_idx=0;
 
-	for (n=1;n!=3;n++) {
+	for (n=1;n<ptsz;n++) {
 		if (py[n]<py[top_idx]) top_idx=n;
 		if (py[n]>py[bot_idx]) bot_idx=n;
 	}
@@ -810,13 +841,18 @@ void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *
 
 	l1_start_idx=top_idx;
 	l1_end_idx=l1_start_idx-1;
-	if (l1_end_idx<0) l1_end_idx=2;
+	if (l1_end_idx<0) l1_end_idx=ptsz-1;
 
 	l2_start_idx=top_idx;
 	l2_end_idx=l2_start_idx+1;
-	if (l2_end_idx>2) l2_end_idx=0;
+	if (l2_end_idx==ptsz) l2_end_idx=0;
+	
+		// special check if there are
+		// no colors in map
+		
+	zero_check=0;
 
-		// scan through the triangle
+		// scan through the polygon
 
 	ty=py[top_idx];
 	by=py[bot_idx];
@@ -828,13 +864,13 @@ void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *
 		if (y==py[l1_end_idx]) {
 			l1_start_idx=l1_end_idx;
 			l1_end_idx=l1_start_idx-1;
-			if (l1_end_idx<0) l1_end_idx=2;
+			if (l1_end_idx<0) l1_end_idx=ptsz-1;
 		}
 
 		if (y==py[l2_end_idx]) {
 			l2_start_idx=l2_end_idx;
 			l2_end_idx=l2_start_idx+1;
-			if (l2_end_idx>2) l2_end_idx=0;
+			if (l2_end_idx==ptsz) l2_end_idx=0;
 		}
 
 			// get points
@@ -903,10 +939,16 @@ void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *
 			*pixel++=col[1];
 			*pixel++=col[2];
 			
+			zero_check+=(int)col[0];
+			zero_check+=(int)col[1];
+			zero_check+=(int)col[2];
+			
 			*touch++=0x1;
 		}
 
 	}
+	
+	return(zero_check!=0);
 }
 
 /* =======================================================
@@ -917,8 +959,8 @@ void light_map_render_triangle(int mesh_idx,int poly_idx,int *px,int *py,d3pnt *
 
 void light_map_create_mesh_poly(int mesh_idx,int poly_idx,light_map_texture_type *lmap)
 {
-	int							n,x,y,px[3],py[3];
-	d3pnt						pt[3];
+	int							n,x,y,px[8],py[8];
+	d3pnt						pt[8];
 	d3rect						box;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -930,6 +972,14 @@ void light_map_create_mesh_poly(int mesh_idx,int poly_idx,light_map_texture_type
 	
 	lm_mesh=&light_map_meshes[mesh_idx];
 	lm_poly=&lm_mesh->polys[poly_idx];
+	
+		// backup the current light map
+		// context.  If there are no hits
+		// in the light map, we use restore
+		// the old light map and use the
+		// light map's special all black block
+		
+	light_map_textures_backup(lmap);
 	
 		// get rendering spot (need to get again as this
 		// might be a new texture and block it off
@@ -943,34 +993,21 @@ void light_map_create_mesh_poly(int mesh_idx,int poly_idx,light_map_texture_type
 	lm_poly->y_shift=y;
 	
 	memmove(&lm_poly->box,&box,sizeof(d3rect));
-	
-		// render by triangles
+
+		// render the polygon
 		
-	for (n=0;n!=(poly->ptsz-2);n++) {
-		
-			// 2D points
-			
-		px[0]=lm_poly->x[0]+x;
-		py[0]=lm_poly->y[0]+y;
-		px[1]=lm_poly->x[n+1]+x;
-		py[1]=lm_poly->y[n+1]+y;
-		px[2]=lm_poly->x[n+2]+x;
-		py[2]=lm_poly->y[n+2]+y;
-		
-			// 3D points
-			
-		memmove(&pt[0],&mesh->vertexes[poly->v[0]],sizeof(d3pnt));
-		memmove(&pt[1],&mesh->vertexes[poly->v[n+1]],sizeof(d3pnt));
-		memmove(&pt[2],&mesh->vertexes[poly->v[n+2]],sizeof(d3pnt));
-			
-			// draw the triangle
-		
-		light_map_render_triangle(mesh_idx,poly_idx,px,py,pt,lmap);
+	for (n=0;n!=poly->ptsz;n++) {
+		px[n]=lm_poly->x[n]+x;
+		py[n]=lm_poly->y[n]+y;
+		memmove(&pt[n],&mesh->vertexes[poly->v[n]],sizeof(d3pnt));
 	}
-	
-		// smear texture
 		
-	light_map_smear_box(lm_mesh,lm_poly);
+	lm_poly->has_light=light_map_render_poly(mesh_idx,poly_idx,poly->ptsz,px,py,pt,lmap);
+
+		// if no light, use special all
+		// black light map
+		
+	if (!lm_poly->has_light) light_map_textures_restore(lmap);
 }
 
 bool light_map_create_mesh_fit_texture(int mesh_idx,light_map_texture_type *lmap)
@@ -1050,12 +1087,10 @@ bool light_map_create_mesh(int mesh_idx,char *err_str)
 		}
 	}
 	
-		// bail out if no texture
-		
+	lmap=&light_map_textures[txt_idx];
 	
 		// remember this light map
 		
-	lmap=&light_map_textures[txt_idx];
 	lm_mesh->txt_idx=txt_idx;
 	
 		// create the light map for each poly
@@ -1095,10 +1130,25 @@ void light_map_finialize_mesh(int mesh_idx)
 	lm_poly=lm_mesh->polys;
 	
 	for (n=0;n!=mesh->npoly;n++) {
-		for (k=0;k!=poly->ptsz;k++) {
-			poly->uv[1].x[k]=((float)(lm_poly->x[k]+lm_poly->x_shift))/f_pixel_size;
-			poly->uv[1].y[k]=((float)(lm_poly->y[k]+lm_poly->y_shift))/f_pixel_size;
+	
+			// if no light, use special black
+			// block in all light maps
+			
+		if (!lm_poly->has_light) {
+			for (k=0;k!=poly->ptsz;k++) {
+				poly->uv[1].x[k]=poly->uv[1].y[k]=((float)(light_map_texture_block_size>>1))/f_pixel_size;
+			}
 		}
+		
+			// regular light mapping uvs
+			
+		else {
+			for (k=0;k!=poly->ptsz;k++) {
+				poly->uv[1].x[k]=((float)(lm_poly->x[k]+lm_poly->x_shift))/f_pixel_size;
+				poly->uv[1].y[k]=((float)(lm_poly->y[k]+lm_poly->y_shift))/f_pixel_size;
+			}
+		}
+		
 		poly++;
 		lm_poly++;
 	}
@@ -1148,6 +1198,7 @@ bool light_maps_create(char *err_str)
 	
 		// write all the textures
 		
+	light_map_textures_blur_edges();
 	light_map_textures_save(base_path);
 	
 		// fix all meshes (add UVs and

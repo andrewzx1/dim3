@@ -1064,6 +1064,8 @@ void main_wind_resize(void)
 	SetPort(saveport);
 
 		// fix all views and palettes
+		
+	aglUpdateContext(ctx);
 
 	texture_palette_setup();
 	main_wind_setup();
@@ -1416,7 +1418,6 @@ void main_wind_draw(void)
 			
 			main_wind_setup_panel_walk(&view_setup);
 			walk_view_draw(&view_setup,FALSE);
-			walk_view_compass_draw(&view_setup);
 			
 			main_wind_draw_4_panel_dividers();
 			break;
@@ -1429,7 +1430,6 @@ void main_wind_draw(void)
 		case vw_forward_only:
 			main_wind_setup_panel_forward_full(&view_setup);
 			walk_view_draw(&view_setup,FALSE);
-			walk_view_compass_draw(&view_setup);
 			break;
 	}
 	
@@ -1578,9 +1578,7 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 			main_wind_setup_panel_walk(&view_setup);
 			if (main_wind_click_check_box(pt,&view_setup.box)) {
 				main_wind_set_focus(kf_panel_walk);
-				if (!walk_view_compass_click(&view_setup,pt)) {
-					walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
-				}
+				walk_view_click(&view_setup,pt,vm_dir_forward,TRUE,dblclick);
 				return(TRUE);
 			}
 			break;
@@ -1596,9 +1594,7 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 		case vw_forward_only:
 			main_wind_setup_panel_forward_full(&view_setup);
 			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				if (!walk_view_compass_click(&view_setup,pt)) {
-					walk_view_click(&view_setup,pt,vm_dir_forward,TRUE,dblclick);
-				}
+				walk_view_click(&view_setup,pt,vm_dir_forward,TRUE,dblclick);
 				return(TRUE);
 			}
 			break;

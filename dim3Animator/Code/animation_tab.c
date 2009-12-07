@@ -34,7 +34,7 @@ ControlRef						animate_list;
 DataBrowserItemDataUPP			animate_list_setitem_upp;
 DataBrowserItemNotificationUPP	animate_list_notify_upp;
 
-extern int						cur_animate,cur_pose;
+extern int						cur_animate,cur_pose,gl_view_texture_palette_size;
 extern bool						model_view_reset;
 extern model_type				model;
 
@@ -144,7 +144,7 @@ void start_animate_controls(WindowRef wind,Rect *box)
 	cbox.right=box->left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
-	cbox.bottom=box->bottom;
+	cbox.bottom=box->bottom-gl_view_texture_palette_size;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&animate_list);
 
@@ -202,7 +202,7 @@ void resize_animate_controls(Rect *box)
 	cbox.right=box->left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
-	cbox.bottom=box->bottom;
+	cbox.bottom=box->bottom-gl_view_texture_palette_size;
 
 	MoveControl(animate_list,cbox.left,cbox.top);
 	SizeControl(animate_list,(cbox.right-cbox.left),(cbox.bottom-cbox.top));

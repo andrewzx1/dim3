@@ -204,6 +204,7 @@ void walk_view_scroll_wheel_rot_z_movement(editor_3D_view_setup *view_setup,int 
 void walk_view_mouse_turn(d3pnt *pt)
 {
 	int						x,y;
+	bool					redraw;
 	d3pnt					old_pt;
     
     os_set_drag_cursor();
@@ -214,87 +215,31 @@ void walk_view_mouse_turn(d3pnt *pt)
 		
 		x=old_pt.x-pt->x;
 		y=old_pt.y-pt->y;
+		
+		redraw=FALSE;
 	
 			// y turning
 			
-		if (labs(x)>25) {
+		if (labs(x)>5) {
 			old_pt.x=pt->x;
 			
-			if (x>0) {
-				walk_view_y_angle=angle_add(walk_view_y_angle,45.0f);
-			}
-			else {
-				walk_view_y_angle=angle_add(walk_view_y_angle,-45.0f);
-			}
+			walk_view_y_angle=angle_add(walk_view_y_angle,(float)(x/5));
 
-			main_wind_draw();
-			
-			continue;
+			redraw=TRUE;
 		}
-		
 			// x turning
 			
-		if (labs(y)>25) {
+		if (labs(y)>5) {
 			old_pt.y=pt->y;
 			
-			if (y<0) {
-				walk_view_x_angle-=30.0f;
-				if (walk_view_x_angle<-30.0f) walk_view_x_angle=-30.0f;
-			}
-			else {
-				walk_view_x_angle+=30.0f;
-				if (walk_view_x_angle>30.0f) walk_view_x_angle=30.0f;
-			}
+			walk_view_x_angle+=(float)(y/5);
+			if (walk_view_x_angle<-30.0f) walk_view_x_angle=-30.0f;
+			if (walk_view_x_angle>30.0f) walk_view_x_angle=30.0f;
 
-			main_wind_draw();
-			
-			continue;
+			redraw=TRUE;
 		}
-			
+		
+		if (redraw) main_wind_draw();
 	}
-}
-
-/* =======================================================
-
-      Walk View Go To Portal Top/Bottom/Selection
-      
-======================================================= */
-
-void walk_view_portal_go_to_top(void)
-{
-/* supergumba -- redo
-	int					by;
-	
-	portal_get_y_size(cr,&cy,&by);
-	main_wind_draw();
-	*/
-}
-
-void walk_view_portal_go_to_bottom(void)
-{
-/* supergumba -- redo
-	int					ty;
-	
-	portal_get_y_size(cr,&ty,&cy);
-	main_wind_draw();
-	main_wind_draw();
-	*/
-}
-
-void walk_view_portal_go_to_selection(void)
-{
-/* supergumba -- redo
-	d3pnt			min,max;
-	portal_type		*portal;
-	
-	select_get_extent(&min,&max);
-	
-	portal=&map.portals[cr];
-	view_pnt.x=((min.x+max.x)/2)+portal->x;
-	view_pnt.z=((min.z+max.z)/2)+portal->z;
-	view_pnt.y=(min.y+max.y)/2;
-
-	main_wind_draw();
-	*/
 }
 

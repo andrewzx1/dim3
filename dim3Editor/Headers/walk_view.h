@@ -81,16 +81,6 @@ extern void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *p
 extern void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delta,int view_move_dir);
 extern void walk_view_scroll_wheel_rot_z_movement(editor_3D_view_setup *view_setup,int delta);
 extern void walk_view_mouse_turn(d3pnt *pt);
-extern void walk_view_portal_go_to_top(void);
-extern void walk_view_portal_go_to_bottom(void);
-extern void walk_view_portal_go_to_selection(void);
-
-//
-// walk view controls
-//
-
-extern void walk_view_compass_draw(editor_3D_view_setup *view_setup);
-extern bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt);
 extern void walk_view_swap_draw(editor_3D_view_setup *view_setup);
 extern bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_on);
 

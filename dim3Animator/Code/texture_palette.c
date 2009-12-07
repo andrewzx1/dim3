@@ -34,7 +34,7 @@ extern int					cur_mesh,cur_pose,
 extern bool					fileopen;
 extern model_type			model;
 
-extern AGLContext			ctx;
+extern AGLContext			texture_ctx;
 extern WindowRef			model_wind;
 
 /* =======================================================
@@ -46,6 +46,7 @@ extern WindowRef			model_wind;
 void texture_palette_draw(void)
 {
 	int						i,x,y;
+	GLint					rect[4];
 	Rect					wbox;
 	texture_type			*texture;
 	
@@ -53,25 +54,37 @@ void texture_palette_draw(void)
 
 		// texture palette viewport
 		
+	aglSetCurrentContext(texture_ctx);
+		
 	GetWindowPortBounds(model_wind,&wbox);
 	
-	glViewport(wbox.left,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
+	rect[0]=0;
+	rect[1]=info_palette_height;
+	rect[2]=wbox.right-wbox.left;
+	rect[3]=gl_view_texture_palette_size;
+
+	aglSetInteger(texture_ctx,AGL_BUFFER_RECT,rect);
+	aglEnable(texture_ctx,AGL_BUFFER_RECT);
 	
+	glViewport(0,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
+	
+	glScissor(0,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(wbox.left,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)wbox.left,(GLdouble)wbox.right,(GLdouble)(wbox.bottom-info_palette_height),(GLdouble)(wbox.bottom-(info_palette_height+gl_view_texture_palette_size)),-1.0,1.0);
+	glOrtho(0.0,(GLdouble)(wbox.right-wbox.left),(GLdouble)gl_view_texture_palette_size,0.0,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClearColor(0.8f,0.8f,0.8f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 		// draw textures
-
+		
+	glDisable(GL_SMOOTH);
+	glDisable(GL_DITHER);
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	
@@ -80,8 +93,8 @@ void texture_palette_draw(void)
 		
 	glActiveTexture(GL_TEXTURE0);
 
-	x=wbox.left;
-	y=wbox.bottom-(info_palette_height+gl_view_texture_palette_size);
+	x=0;
+	y=0; // wbox.bottom-(info_palette_height+gl_view_texture_palette_size);
 
 	texture=model.textures;
 
@@ -137,7 +150,7 @@ void texture_palette_draw(void)
 		texture++;
 	}
 	
-	aglSwapBuffers(ctx);
+	aglSwapBuffers(texture_ctx);
 }
 
 /* =======================================================
