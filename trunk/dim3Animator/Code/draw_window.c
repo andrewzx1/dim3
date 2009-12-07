@@ -49,15 +49,26 @@ void draw_model_gl_setup(model_type *model)
 	int				yoff,sz,bsz;
 	float			aspect;
 	Rect			wbox;
+	GLint			rect[4];
 	
 		// model viewport
 		
+	aglSetCurrentContext(ctx);
+		
 	GetWindowPortBounds(model_wind,&wbox);
 	
-	glViewport(wbox.left,gl_view_texture_palette_size,gl_view_x_sz,gl_view_y_sz);
+	rect[0]=0;
+	rect[1]=info_palette_height+gl_view_texture_palette_size;
+	rect[2]=gl_view_x_sz;
+	rect[3]=gl_view_y_sz;
+
+	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
+	aglEnable(ctx,AGL_BUFFER_RECT);
 	
+	glViewport(0,0,gl_view_x_sz,gl_view_y_sz);
+	
+	glScissor(0,0,gl_view_x_sz,gl_view_y_sz);
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(wbox.left,gl_view_texture_palette_size,gl_view_x_sz,gl_view_y_sz);
 
 		// model perspective
 		
@@ -88,7 +99,12 @@ void draw_model_gl_setup(model_type *model)
 	
 	glColor4f(1.0f,1.0f,1.0f,0.0f);
 	
+	glDisable(GL_SMOOTH);
+	glDisable(GL_DITHER);
+	
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
 }

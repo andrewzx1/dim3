@@ -88,7 +88,6 @@
 		F52F19D50946A89C00FEFE18 /* common_view.h in Headers */ = {isa = PBXBuildFile; fileRef = F52F19D40946A89C00FEFE18 /* common_view.h */; };
 		F54581BB094F75D200CBE89A /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = F54581BA094F75D200CBE89A /* interface.h */; };
 		F54583E4094F868300CBE89A /* pieces_create.c in Sources */ = {isa = PBXBuildFile; fileRef = F54583E3094F868300CBE89A /* pieces_create.c */; };
-		F545877D0952652700CBE89A /* walk_view_compass.c in Sources */ = {isa = PBXBuildFile; fileRef = F545877C0952652700CBE89A /* walk_view_compass.c */; };
 		F545877F0952654600CBE89A /* walk_view.h in Headers */ = {isa = PBXBuildFile; fileRef = F545877E0952654600CBE89A /* walk_view.h */; };
 		F5595F7E0918717300B60FAD /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F5595F7D0918717300B60FAD /* groups.c */; };
 		F5691685084E6B9000ADFA44 /* dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = F5691684084E6B9000ADFA44 /* dialog_file_open.c */; };
@@ -302,7 +301,6 @@
 		F52F19D40946A89C00FEFE18 /* common_view.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = common_view.h; path = Headers/common_view.h; sourceTree = "<group>"; };
 		F54581BA094F75D200CBE89A /* interface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
 		F54583E3094F868300CBE89A /* pieces_create.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pieces_create.c; path = Code/pieces_create.c; sourceTree = "<group>"; };
-		F545877C0952652700CBE89A /* walk_view_compass.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_compass.c; path = Code/walk_view_compass.c; sourceTree = "<group>"; };
 		F545877E0952654600CBE89A /* walk_view.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = walk_view.h; path = Headers/walk_view.h; sourceTree = "<group>"; };
 		F54797150107EA3C01000001 /* pieces.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pieces.c; path = Code/pieces.c; sourceTree = "<group>"; };
 		F5498A7B00F7C83E01000001 /* walk_view_movement.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_movement.c; path = Code/walk_view_movement.c; sourceTree = "<group>"; };
@@ -529,7 +527,6 @@
 				263614450DC41DF6002345C0 /* walk_view_click_texture.c */,
 				F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */,
 				0123D87500C0AFD57F000001 /* walk_view_draw_select.c */,
-				F545877C0952652700CBE89A /* walk_view_compass.c */,
 				2630141D0D72844300564E2C /* walk_view_swap.c */,
 				F5498A7B00F7C83E01000001 /* walk_view_movement.c */,
 				F595F34D0A8C47D2004AB8BA /* walk_view_models.c */,
@@ -781,7 +778,6 @@
 				F5DD757B092CFD8700465E14 /* launch.c in Sources */,
 				F52F19B80946A63100FEFE18 /* selection.c in Sources */,
 				F54583E4094F868300CBE89A /* pieces_create.c in Sources */,
-				F545877D0952652700CBE89A /* walk_view_compass.c in Sources */,
 				F5D458EE0953160300AF9CE1 /* walk_view_draw_piece.c in Sources */,
 				F5AF0C5509638BC100F99950 /* dialog_utility.c in Sources */,
 				F5AF0C5709638BC600F99950 /* dialog_texture_setting.c in Sources */,

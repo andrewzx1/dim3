@@ -79,7 +79,7 @@ bool					play_animate,play_animate_blend,
 						model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
 						model_box_on,model_bump_on,model_normal_on,model_bone_drag_on,model_show_first_mesh;
 Rect					drag_sel_box;
-AGLContext				ctx;
+AGLContext				ctx,texture_ctx;
 
 model_type				model;
 model_draw_setup		draw_setup;
@@ -308,39 +308,21 @@ bool model_wind_control(ControlRef ctrl)
       
 ======================================================= */
 
-void model_wind_gl_port_setup(void)
-{
-	long			rect[4];
-	Rect			box;
-
-	GetWindowPortBounds(model_wind,&box);
-	
- 	rect[0]=box.left;
-	rect[1]=info_palette_height;
-	rect[2]=gl_view_x_sz;
-	rect[3]=gl_view_y_sz+gl_view_texture_palette_size;
-
-	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
-	aglEnable(ctx,AGL_BUFFER_RECT);
-	
-	glViewport(box.left,info_palette_height,(gl_view_x_sz),(gl_view_y_sz+gl_view_texture_palette_size));
-	
-	glEnable(GL_SCISSOR_TEST);
-	glScissor(box.left,info_palette_height,(gl_view_x_sz),(gl_view_y_sz+gl_view_texture_palette_size));
-}
-
 void model_wind_resize(void)
 {
 	Rect			box;
 	
 		// new model view size
 		
+	aglUpdateContext(ctx);
+	aglUpdateContext(texture_ctx);
+		
 	GetWindowPortBounds(model_wind,&box);
 	
 	gl_view_x_sz=(box.right-box.left)-total_list_width;
 	if (gl_view_x_sz<model_view_min_size) gl_view_x_sz=model_view_min_size;
 	
-	gl_view_texture_palette_size=gl_view_x_sz/max_model_texture;
+	gl_view_texture_palette_size=(box.right-box.left)/max_model_texture;
 	
 	gl_view_y_sz=(box.bottom-box.top)-(tool_button_size+gl_view_texture_palette_size+info_palette_height);
 
@@ -354,10 +336,6 @@ void model_wind_resize(void)
 	resize_animate_controls(&box);
 	resize_mesh_controls(&box);
 	resize_vertex_controls(&box);
-	
-		// resize gl view
-		
-	model_wind_gl_port_setup();
 	
 		// redraw
 
@@ -760,7 +738,7 @@ void model_wind_open(void)
 	gl_view_x_sz=(wbox.right-wbox.left)-total_list_width;
 	if (gl_view_x_sz<model_view_min_size) gl_view_x_sz=model_view_min_size;
 	
-	gl_view_texture_palette_size=gl_view_x_sz/max_model_texture;
+	gl_view_texture_palette_size=(wbox.right-wbox.left)/max_model_texture;
 	
 	gl_view_y_sz=(box.bottom-box.top)-(tool_button_size+gl_view_texture_palette_size+info_palette_height);
 	
@@ -813,27 +791,24 @@ void model_wind_open(void)
 	start_mesh_controls(model_wind,&box);
 	start_vertex_controls(model_wind,&box);
 	
-		// start open gl
+		// model OpenGL contexts
 		
 	pf=aglChoosePixelFormat(NULL,0,attrib);
+	
 	ctx=aglCreateContext(pf,NULL);
 	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(model_wind));
+	
+	texture_ctx=aglCreateContext(pf,ctx);
+	aglSetDrawable(texture_ctx,(AGLDrawable)GetWindowPort(model_wind));
+	
 	aglSetCurrentContext(ctx);
+	
 	aglDestroyPixelFormat(pf);
 	
-	model_wind_gl_port_setup();
-	
-	glDisable(GL_SMOOTH);
-	glDisable(GL_DITHER);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_DEPTH_TEST);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	glClearColor(0.9f,0.9f,0.9f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	aglSwapBuffers(ctx);
 	
 		// get the controls draw
 		
@@ -873,9 +848,13 @@ void model_wind_close(void)
 		ReleaseIconRef(tool_icon_ref[n]);
 	}
 
-		// close open gl
+		// close OpenGL contexts
 		
 	aglSetCurrentContext(NULL);
+	
+	aglSetDrawable(texture_ctx,NULL);
+	aglDestroyContext(texture_ctx);
+	
 	aglSetDrawable(ctx,NULL);
 	aglDestroyContext(ctx);
 	

@@ -17,7 +17,7 @@
 
 #define mesh_palette_width				64
 
-#define info_palette_height				14
+#define info_palette_height				15
 
 #define list_width						170
 #define total_list_width				810
