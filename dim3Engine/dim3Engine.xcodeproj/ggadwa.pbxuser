@@ -79,8 +79,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 281845815;
-			PBXWorkspaceStateSaveDate = 281845815;
+			PBXPerProjectTemplateStateSaveDate = 281936015;
+			PBXWorkspaceStateSaveDate = 281936015;
+		};
+		perUserProjectItems = {
+			26918BC110CDE8F700AB4A15 /* PBXBookmark */ = 26918BC110CDE8F700AB4A15 /* PBXBookmark */;
+			26918BC210CDE90D00AB4A15 /* PBXTextBookmark */ = 26918BC210CDE90D00AB4A15 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -139,9 +143,9 @@
 	};
 	26100DEA10BB5156002B3FA1 /* gl_shader_core.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1699, 6032}}";
-			sepNavSelRange = "{8592, 0}";
-			sepNavVisRange = "{7963, 1362}";
+			sepNavIntBoundsRect = "{{0, 0}, {1063, 5967}}";
+			sepNavSelRange = "{4155, 0}";
+			sepNavVisRange = "{4179, 1689}";
 			sepNavWindowFrame = "{{218, 190}, {1078, 758}}";
 		};
 	};
@@ -401,6 +405,17 @@
 			sepNavVisRange = "{2142, 1581}";
 			sepNavWindowFrame = "{{639, 214}, {1041, 747}}";
 		};
+	};
+	26918BC110CDE8F700AB4A15 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = F5A57F89090ABFA700BE7C36 /* camera.c */;
+	};
+	26918BC210CDE90D00AB4A15 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5A57F88090ABFA700BE7C36 /* camera_chase.c */;
+		rLen = 32;
+		rLoc = 5602;
+		rType = 0;
 	};
 	2694E5970F91A35B004B672A /* script_multiplayer_setting.c */ = {
 		uiCtxt = {
@@ -852,18 +867,18 @@
 	};
 	F5A57F88090ABFA700BE7C36 /* camera_chase.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3892}}";
-			sepNavSelRange = "{6440, 0}";
-			sepNavVisRange = "{5280, 1163}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3666}}";
+			sepNavSelRange = "{5602, 32}";
+			sepNavVisRange = "{5180, 1229}";
 			sepNavWindowFrame = "{{329, 119}, {1041, 747}}";
 		};
 	};
 	F5A57F89090ABFA700BE7C36 /* camera.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2730}}";
-			sepNavSelRange = "{2621, 0}";
-			sepNavVisRange = "{1925, 1130}";
-			sepNavWindowFrame = "{{961, 104}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3159}}";
+			sepNavSelRange = "{2888, 32}";
+			sepNavVisRange = "{2603, 1086}";
+			sepNavWindowFrame = "{{138, 222}, {1041, 747}}";
 		};
 	};
 	F5A57F8A090ABFA700BE7C36 /* camera_fpp.c */ = {

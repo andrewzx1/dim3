@@ -99,7 +99,7 @@ extern bool dialog_map_movements_run(void);
 extern bool dialog_movement_settings_run(movement_type *movement);
 extern bool dialog_movement_move_settings_run(movement_move_type *move);
 extern bool dialog_optimize_run(int *poly_threshold);
-extern void dialog_light_map_run(void);
+extern bool dialog_light_map_run(void);
 
 //
 // piece dialogs

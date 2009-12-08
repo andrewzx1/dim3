@@ -32,6 +32,7 @@ extern map_type				map;
 
 #define kLightMapSize						FOUR_CHAR_CODE('size')
 #define kLightMapQuality					FOUR_CHAR_CODE('qual')
+#define kLightMapBlurCount					FOUR_CHAR_CODE('blur')
 
 bool						dialog_light_map_cancel;
 WindowRef					dialog_light_map_wind,dialog_light_map_generate_wind;
@@ -79,9 +80,9 @@ static pascal OSStatus light_map_event_proc(EventHandlerCallRef handler,EventRef
       
 ======================================================= */
 
-void dialog_light_map_run(void)
+bool dialog_light_map_run(void)
 {
-	int						n,size,quality,
+	int						n,size,quality,blur_count,
 							size_list[4]={256,512,1024,2048};
 	bool					ok;
 	char					err_str[256];
@@ -104,6 +105,7 @@ void dialog_light_map_run(void)
 	
 	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,size);
 	dialog_set_value(dialog_light_map_wind,kLightMapQuality,0,map.settings.light_map_quality);
+	dialog_set_value(dialog_light_map_wind,kLightMapBlurCount,0,map.settings.light_map_blur_count);
 	
 		// show window
 		
@@ -123,17 +125,19 @@ void dialog_light_map_run(void)
 		
 	size=size_list[dialog_get_combo(dialog_light_map_wind,kLightMapSize,0)];
 	quality=dialog_get_value(dialog_light_map_wind,kLightMapQuality,0);
+	blur_count=dialog_get_value(dialog_light_map_wind,kLightMapBlurCount,0);
 
 		// close window
 		
 	DisposeWindow(dialog_light_map_wind);
 	
-	if (dialog_light_map_cancel) return;
+	if (dialog_light_map_cancel) return(FALSE);
 	
 		// run the light map generate
 		
 	map.settings.light_map_size=size;
 	map.settings.light_map_quality=quality;
+	map.settings.light_map_blur_count=blur_count;
 		
 	dialog_open(&dialog_light_map_generate_wind,"LightMapGenerate");
 	ShowWindow(dialog_light_map_generate_wind);
@@ -145,5 +149,7 @@ void dialog_light_map_run(void)
 	DisposeWindow(dialog_light_map_generate_wind);
 		
 	if (!ok) dialog_alert("Can not build light maps",err_str);
+	
+	return(ok);
 }
 
