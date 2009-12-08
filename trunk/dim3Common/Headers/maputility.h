@@ -471,7 +471,8 @@ typedef struct		{
 					} map_info_type;
 					
 typedef struct		{
-						int									light_map_quality,light_map_size;
+						int									light_map_quality,light_map_size,
+															light_map_blur_count;
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance,txt_scale_x,txt_scale_y;
 						bool								editor_link_always_start;

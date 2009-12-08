@@ -35,7 +35,6 @@ extern file_path_setup_type		file_path_setup;
 
 #define max_light_map_textures						64
 #define light_map_smear_count						6
-#define light_map_blur_count						3
 
 typedef struct		{
 						unsigned char				*block,*pixel_data,*pixel_touch,
@@ -348,7 +347,7 @@ void light_map_textures_blur_edges(void)
 	for (n=0;n!=max_light_map_textures;n++) {
 		if (lmap->pixel_data!=NULL) {
 			light_map_texture_single_blur_edges(lmap,light_map_smear_count,TRUE);
-			light_map_texture_single_blur_edges(lmap,light_map_blur_count,FALSE);
+			light_map_texture_single_blur_edges(lmap,map.settings.light_map_blur_count,FALSE);
 		}
 		lmap++;
 	}

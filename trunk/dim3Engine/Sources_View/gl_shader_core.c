@@ -140,13 +140,14 @@ char* gl_core_shader_build_frag(int nlight,bool light_map,bool diffuse,bool bump
 	strcat(buf,"float att,dist");
 	if ((bump) || (spec)) strcat(buf,",pixelAtt");
 	if (bump) strcat(buf,",bump");
-	if (spec) strcat(buf,",spec,shineFactor,specMap");
+	if (spec) strcat(buf,",shineFactor");
 	strcat(buf,";\n");
 
 	strcat(buf,"vec3 ambient=dim3AmbientColor");
 	if (diffuse) strcat(buf,",diffuse,lightNormal");
 	if ((bump) || (diffuse)) strcat(buf,",combineLightVector=vec3(0.0,0.0,0.0)");
 	if (bump) strcat(buf,",bumpVector,bumpMap");
+	if (spec) strcat(buf,",spec");
 	strcat(buf,";\n");
 
 	strcat(buf,"vec4 tex;\n");
@@ -212,7 +213,7 @@ char* gl_core_shader_build_frag(int nlight,bool light_map,bool diffuse,bool bump
 		// but ok effect of the surface becoming more shiny
 		
 	if (spec) {
-		strcat(buf,"spec=texture2D(dim3TexSpecular,gl_TexCoord[0].st).r*dim3SpecularFactor*pixelAtt;\n");
+		strcat(buf,"spec=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb*dim3SpecularFactor*pixelAtt;\n");
 		sprintf(strchr(buf,0),"shineFactor=1.0-(distance(gl_FragCoord.xy,vec2(%d.0,%d.0))/%d.0);\n",(setup.screen.x_sz>>1),(setup.screen.y_sz>>1),(int)(sqrt((setup.screen.x_sz*setup.screen.x_sz)+(setup.screen.y_sz+setup.screen.y_sz))*0.25));
 		strcat(buf,"spec=(spec+clamp((spec*shineFactor),0.0,1.0))");
 		if (bump) strcat(buf,"*bump");
