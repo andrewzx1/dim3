@@ -51,6 +51,7 @@ and can be sold or given away.
 typedef struct			{
 							int							type,idx;
 							d3pnt						pnt;
+							d3ang						ang;
 						} shadow_render_item_type;
 
 typedef struct			{

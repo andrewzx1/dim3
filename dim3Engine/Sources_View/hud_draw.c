@@ -103,7 +103,7 @@ void hud_bitmaps_draw(int tick)
 	hud_bitmap_type				*bitmap;
 	obj_type					*obj;
 	bitmap_type					*bitmap_data;
-		
+	
 	cur_gl_id=-1;
 	cur_alpha=1.0f;
 	cur_tint.r=cur_tint.g=cur_tint.b=1.0f;

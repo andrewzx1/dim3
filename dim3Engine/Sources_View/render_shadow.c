@@ -142,14 +142,15 @@ void shadow_shutdown(void)
       
 ======================================================= */
 
-void shadow_render_update(shadow_render_type *shad,d3pnt *pnt,d3pnt *light_pnt,int light_intensity)
+void shadow_render_update(shadow_render_type *shad,d3pnt *pnt,d3ang *ang,d3pnt *light_pnt,int light_intensity)
 {
 	memmove(&shad->cur_item.pnt,pnt,sizeof(d3pnt));
+	if (ang!=NULL) memmove(&shad->cur_item.ang,ang,sizeof(d3ang));
 	memmove(&shad->cur_light.pnt,light_pnt,sizeof(d3pnt));
 	shad->cur_light.intensity=light_intensity;
 }
 
-shadow_render_type* shadow_find_existing_render(int item_type,int item_idx,d3pnt *pnt,d3pnt *light_pnt,int light_intensity,bool *shadow_changed)
+shadow_render_type* shadow_find_existing_render(int item_type,int item_idx,d3pnt *pnt,d3ang *ang,d3pnt *light_pnt,int light_intensity,bool *shadow_changed)
 {
 	int					n;
 	shadow_render_type	*shad;
@@ -163,19 +164,27 @@ shadow_render_type* shadow_find_existing_render(int item_type,int item_idx,d3pnt
 
 		if ((shad->cur_item.type==item_type) && (shad->cur_item.idx==item_idx)) {
 
-				// has position changed?
+				// has position or angle changed?
 
 			if ((shad->cur_item.pnt.x!=pnt->x) || (shad->cur_item.pnt.y!=pnt->y) || (shad->cur_item.pnt.z!=pnt->z)) {
 				*shadow_changed=TRUE;
-				shadow_render_update(shad,pnt,light_pnt,light_intensity);
+				shadow_render_update(shad,pnt,ang,light_pnt,light_intensity);
 				return(shad);
 			}
-
+			
+			if (ang!=NULL) {
+				if ((shad->cur_item.ang.x!=ang->x) || (shad->cur_item.ang.y!=ang->y) || (shad->cur_item.ang.z!=ang->z)) {
+					*shadow_changed=TRUE;
+					shadow_render_update(shad,pnt,ang,light_pnt,light_intensity);
+					return(shad);
+				}
+			}
+			
 				// has lighting changed?
 
 			if ((shad->cur_light.intensity!=light_intensity) || (shad->cur_light.pnt.x!=light_pnt->x) || (shad->cur_light.pnt.y!=light_pnt->y) || (shad->cur_light.pnt.z!=light_pnt->z)) {
 				*shadow_changed=TRUE;
-				shadow_render_update(shad,pnt,light_pnt,light_intensity);
+				shadow_render_update(shad,pnt,ang,light_pnt,light_intensity);
 				return(shad);
 			}
 
@@ -192,7 +201,7 @@ shadow_render_type* shadow_find_existing_render(int item_type,int item_idx,d3pnt
 	return(NULL);
 }
 
-shadow_render_type* shadow_create_new_render(int item_type,int item_idx,d3pnt *pnt,d3pnt *light_pnt,int light_intensity)
+shadow_render_type* shadow_create_new_render(int item_type,int item_idx,d3pnt *pnt,d3ang *ang,d3pnt *light_pnt,int light_intensity)
 {
 	int					n,idx;
 	shadow_render_type	*shad;
@@ -227,7 +236,7 @@ shadow_render_type* shadow_create_new_render(int item_type,int item_idx,d3pnt *p
 	shad->cur_item.type=item_type;
 	shad->cur_item.idx=item_idx;
 
-	shadow_render_update(shad,pnt,light_pnt,light_intensity);
+	shadow_render_update(shad,pnt,ang,light_pnt,light_intensity);
 
 	return(shad);
 }
@@ -789,7 +798,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 
 		// get render to use
 
-	shad=shadow_find_existing_render(item_type,item_idx,&draw->pnt,&light_pnt,light_intensity,&light_changed);
+	shad=shadow_find_existing_render(item_type,item_idx,&draw->pnt,&draw->setup.ang,&light_pnt,light_intensity,&light_changed);
 	if (shad!=NULL) {
 
 			// no light change or animating, just redraw setup
@@ -800,7 +809,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 		}
 	}
 	else {
-		shad=shadow_create_new_render(item_type,item_idx,&draw->pnt,&light_pnt,light_intensity);
+		shad=shadow_create_new_render(item_type,item_idx,&draw->pnt,&draw->setup.ang,&light_pnt,light_intensity);
 	}
 	
 		// find all polys the shadow ray hits
@@ -1009,7 +1018,7 @@ void shadow_render_mesh(int mesh_idx)
 	
 		// get render to use
 
-	shad=shadow_find_existing_render(view_render_type_mesh,mesh_idx,&mesh->box.mid,&light_pnt,light_intensity,&light_changed);
+	shad=shadow_find_existing_render(view_render_type_mesh,mesh_idx,&mesh->box.mid,NULL,&light_pnt,light_intensity,&light_changed);
 	if (shad!=NULL) {
 
 			// no light change, just redraw setup
@@ -1020,7 +1029,7 @@ void shadow_render_mesh(int mesh_idx)
 		}
 	}
 	else {
-		shad=shadow_create_new_render(view_render_type_mesh,mesh_idx,&mesh->box.mid,&light_pnt,light_intensity);
+		shad=shadow_create_new_render(view_render_type_mesh,mesh_idx,&mesh->box.mid,NULL,&light_pnt,light_intensity);
 	}
 
 		// find all polys the shadow ray hits
