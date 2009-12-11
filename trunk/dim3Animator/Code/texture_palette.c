@@ -94,7 +94,7 @@ void texture_palette_draw(void)
 	glActiveTexture(GL_TEXTURE0);
 
 	x=0;
-	y=0; // wbox.bottom-(info_palette_height+gl_view_texture_palette_size);
+	y=0;
 
 	texture=model.textures;
 
@@ -122,7 +122,7 @@ void texture_palette_draw(void)
 			glDisable(GL_TEXTURE_2D);
 		}
 		else {
-			glColor4f(0.8f,0.8f,0.8f,1.0f);
+			glColor4f(1.0f,1.0f,1.0f,1.0f);
 			
 			glBegin(GL_QUADS);
 			glVertex2i(x,y);
@@ -150,6 +150,17 @@ void texture_palette_draw(void)
 		texture++;
 	}
 	
+		// top and bottom borders
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+	glBegin(GL_LINES);
+	glVertex2i(0,1);
+	glVertex2i((wbox.right-wbox.left),1);
+	glVertex2i(0,(gl_view_texture_palette_size+1));
+	glVertex2i((wbox.right-wbox.left),(gl_view_texture_palette_size+1));
+	glEnd();
+	
 	aglSwapBuffers(texture_ctx);
 }
 
@@ -170,7 +181,7 @@ void texture_palette_click(Point pt,bool dblclick)
 		
 	GetWindowPortBounds(model_wind,&wbox);
 	
-	wbox.top+=tool_button_size+gl_view_y_sz;
+	wbox.top+=tool_height+gl_view_y_sz;
 	wbox.bottom=wbox.top+gl_view_texture_palette_size;
 
 		// find clicked texture

@@ -671,7 +671,6 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 		// redraw
 		
 	menu_fix_enable();
-	main_wind_tool_fix_enable();
 	
 	main_wind_draw();
 	texture_palette_reset();

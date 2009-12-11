@@ -916,6 +916,51 @@ inline void dialog_special_combo_get_model(WindowRef wind,unsigned long sig,int 
 	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
 }
 
+
+/* =======================================================
+
+      Dialog Group Combo Utilities
+      
+======================================================= */
+
+void dialog_fill_group_combo(WindowRef wind,unsigned long sig,int id,int idx)
+{
+	int					n;
+	
+		// clear combo
+		
+	dialog_clear_combo(wind,sig,id);
+	
+		// none items
+		
+	dialog_add_combo_item(wind,sig,id,"None",0);
+	dialog_add_combo_item(wind,sig,id,"-",0);
+	
+		// groups
+		
+	for (n=0;n!=map.ngroup;n++) {
+		dialog_add_combo_item(wind,sig,id,map.groups[n].name,0);
+	}
+	
+	if (idx==-1) {
+		dialog_set_combo(wind,sig,id,0);
+	}
+	else {
+		dialog_set_combo(wind,sig,id,(idx+2));
+	}
+}
+
+int dialog_get_group_combo(WindowRef wind,unsigned long sig,int id)
+{
+	int				idx;
+	
+	idx=dialog_get_combo(wind,sig,id);
+	
+	if (idx==0) return(-1);
+	return(idx-2);
+}
+
+
 /* =======================================================
 
       Dialog Map Texture Combo Utilities

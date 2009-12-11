@@ -379,7 +379,7 @@ void start_bone_controls(WindowRef wind,Rect *box)
 	cbox.left=box->left+list_width;
 	cbox.right=box->right;
 	
-	cbox.top=box->top;
+	cbox.top=box->top+tool_height;
 	cbox.bottom=(box->bottom-box->top)/2;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&bone_list);
@@ -389,6 +389,7 @@ void start_bone_controls(WindowRef wind,Rect *box)
 
 	SetDataBrowserSelectionFlags(bone_list,kDataBrowserSelectOnlyOne);
 	SetDataBrowserTableViewRowHeight(bone_list,10);
+	SetDataBrowserHasScrollBars(bone_list,FALSE,TRUE);
 	
 	fontstyle.flags=kControlUseFontMask|kControlUseSizeMask|kControlUseJustMask;
 	fontstyle.font=FMGetFontFamilyFromName("\pMonaco");
@@ -457,7 +458,7 @@ void resize_bone_controls(Rect *box)
 	cbox.left=box->left+list_width;
 	cbox.right=box->right;
 	
-	cbox.top=box->top;
+	cbox.top=box->top+tool_height;
 	cbox.bottom=(box->bottom-box->top)/2;
 
 	MoveControl(bone_list,cbox.left,cbox.top);

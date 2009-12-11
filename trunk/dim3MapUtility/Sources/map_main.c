@@ -67,6 +67,8 @@ bool map_new(map_type *map,char *name)
 		
 	map->settings.light_map_quality=50;
 	map->settings.light_map_quality=1024;
+	map->settings.light_map_smear_count=6;
+	map->settings.light_map_blur_count=3;
 	map->settings.gravity=1;
 	map->settings.gravity_max_power=32;
 	map->settings.gravity_max_speed=400;
@@ -90,6 +92,7 @@ bool map_new(map_type *map,char *name)
 		// ambients
 		
 	map->ambient.light_color.r=map->ambient.light_color.g=map->ambient.light_color.b=0.0f;
+	map->ambient.light_ignore_mesh=FALSE;
 	map->ambient.sound_name[0]=0x0;
 	map->ambient.sound_pitch=1.0f;
 	

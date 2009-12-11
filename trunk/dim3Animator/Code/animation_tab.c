@@ -140,7 +140,7 @@ void start_animate_controls(WindowRef wind,Rect *box)
     
 		// setup data browser for animations
 
-	cbox.left=box->left;
+	cbox.left=box->left+1;
 	cbox.right=box->left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
@@ -153,6 +153,7 @@ void start_animate_controls(WindowRef wind,Rect *box)
 
 	SetDataBrowserSelectionFlags(animate_list,kDataBrowserSelectOnlyOne);
 	SetDataBrowserTableViewRowHeight(animate_list,10);
+	SetDataBrowserHasScrollBars(animate_list,FALSE,TRUE);
 
 	fontstyle.flags=kControlUseFontMask|kControlUseSizeMask|kControlUseJustMask;
 	fontstyle.font=FMGetFontFamilyFromName("\pMonaco");
@@ -198,7 +199,7 @@ void resize_animate_controls(Rect *box)
 {
 	Rect		cbox;
 	
-	cbox.left=box->left;
+	cbox.left=box->left+1;
 	cbox.right=box->left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;

@@ -113,7 +113,7 @@ void piece_duplicate(void)
 				select_duplicate_add(spot_piece,map.nspot,0);
 				map.nspot++;
 				
-				main_wind_tool_fill_object_combo();
+				main_wind_tool_fill_spot_combo();
 				break;
 				
 			case scenery_piece:
@@ -129,6 +129,8 @@ void piece_duplicate(void)
 				map.sceneries[map.nscenery].pnt.z+=zadd;
 				select_duplicate_add(scenery_piece,map.nscenery,0);
 				map.nscenery++;
+				
+				main_wind_tool_fill_scenery_combo();
 				break;
 				
 			case node_piece:
@@ -273,7 +275,7 @@ void piece_delete(void)
 				}
 				map.nspot--;
 				
-				main_wind_tool_fill_object_combo();
+				main_wind_tool_fill_spot_combo();
 				break;
 				
 			case scenery_piece:
@@ -281,6 +283,8 @@ void piece_delete(void)
 					map.sceneries[i]=map.sceneries[i+1];
 				}
 				map.nscenery--;
+				
+				main_wind_tool_fill_scenery_combo();
 				break;
 				
 			case node_piece:
@@ -960,7 +964,6 @@ void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 		piece_delete();
 		main_wind_draw();
 		menu_fix_enable();
-		main_wind_tool_fix_enable();
 		return;
 	}
 	

@@ -33,6 +33,8 @@ EventHandlerRef					model_wind_event;
 EventHandlerUPP					model_wind_upp;
 EventLoopTimerRef				model_timer_event;
 EventLoopTimerUPP				model_timer_upp;
+ControlRef						magnify_slider;
+ControlActionUPP				magnify_proc;
 ControlRef						tool_ctrl[tool_count];
 IconRef							tool_icon_ref[tool_count];
 
@@ -304,13 +306,72 @@ bool model_wind_control(ControlRef ctrl)
 
 /* =======================================================
 
+      Magnify Slider Action
+      
+======================================================= */
+
+void model_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
+{
+	int				mag_z;
+	
+	mag_z=((400-GetControlValue(ctrl))-200)*10;
+	if (mag_z==magnify_z) return;
+	
+	magnify_z=mag_z;
+	
+	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+}
+
+void model_wind_set_magnify(int mag_z)
+{
+	magnify_z=mag_z;
+	if (magnify_z<-2000) magnify_z=-2000;
+	if (magnify_z>2000) magnify_z=2000;
+
+	SetControlValue(magnify_slider,(400-((magnify_z/10)+200)));
+}
+
+/* =======================================================
+
+      Window Background Draw
+      
+======================================================= */
+
+void model_wind_draw_background(void)
+{
+	Rect				wbox;
+    RGBColor			blackcolor={0x0,0x0,0x0};
+	GrafPtr				saveport;
+	
+		// get draw box
+		
+	GetPort(&saveport);
+	SetPort(GetWindowPort(model_wind));
+
+	GetWindowPortBounds(model_wind,&wbox);
+	
+		// draw lines
+		
+	RGBForeColor(&blackcolor);
+	
+	MoveTo(wbox.left,tool_button_size);
+	LineTo(wbox.right,tool_button_size);
+
+	MoveTo((wbox.left+(gl_view_x_sz+0)),(wbox.top+tool_height));
+	LineTo((wbox.left+(gl_view_x_sz+0)),(wbox.bottom-info_palette_height));
+
+	SetPort(saveport);
+}
+
+/* =======================================================
+
       Window Resize
       
 ======================================================= */
 
 void model_wind_resize(void)
 {
-	Rect			box;
+	Rect			box,cbox;
 	
 		// new model view size
 		
@@ -324,7 +385,7 @@ void model_wind_resize(void)
 	
 	gl_view_texture_palette_size=(box.right-box.left)/max_model_texture;
 	
-	gl_view_y_sz=(box.bottom-box.top)-(tool_button_size+gl_view_texture_palette_size+info_palette_height);
+	gl_view_y_sz=(box.bottom-box.top)-(tool_height+gl_view_texture_palette_size+info_palette_height);
 
 		// resize controls
 
@@ -337,8 +398,17 @@ void model_wind_resize(void)
 	resize_mesh_controls(&box);
 	resize_vertex_controls(&box);
 	
+	cbox.left=box.right-250;
+	cbox.right=box.right-5;
+	cbox.bottom=(box.top+tool_height)-5;
+	cbox.top=box.top+5;
+	
+	MoveControl(magnify_slider,cbox.left,cbox.top);
+	SizeControl(magnify_slider,(cbox.right-cbox.left),(cbox.bottom-cbox.top));
+	
 		// redraw
 
+	model_wind_draw_background();
 	draw_model_wind_pose(&model,cur_mesh,cur_pose);
 	texture_palette_draw();
 	info_palette_draw();
@@ -369,6 +439,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 			switch (GetEventKind(event)) {
 			
 				case kEventWindowDrawContent:
+					model_wind_draw_background();
 					draw_model_wind_pose(&model,cur_mesh,cur_pose);
 					DrawControls(model_wind);
 					return(noErr);
@@ -385,14 +456,14 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 
 						// clicking in toolbar or right side controls
 
-					if (pt.v<=tool_button_size) return(eventNotHandledErr);
+					if (pt.v<=tool_height) return(eventNotHandledErr);
 					if (pt.h>=gl_view_x_sz) return(eventNotHandledErr);
 					
 						// clicking in palettes
 						
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					 
-					if ((pt.h>=0) && (pt.h<=gl_view_x_sz) && (pt.v>=(tool_button_size+gl_view_y_sz)) && (pt.v<=(tool_button_size+gl_view_y_sz+gl_view_texture_palette_size))) {
+					if ((pt.h>=0) && (pt.h<=gl_view_x_sz) && (pt.v>=(tool_height+gl_view_y_sz)) && (pt.v<=(tool_height+gl_view_y_sz+gl_view_texture_palette_size))) {
 						texture_palette_click(pt,(nclick!=1));
 						return(noErr);
 					}
@@ -463,7 +534,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 					SetPort(GetWindowPort(model_wind));
 					GlobalToLocal(&pt);
-					if (pt.v<=tool_button_size) return(eventNotHandledErr);
+					if (pt.v<=tool_height) return(eventNotHandledErr);
 					if (pt.h>=gl_view_x_sz) return(eventNotHandledErr);
 					
 						// zoom
@@ -471,7 +542,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
 					if (axis!=kEventMouseWheelAxisY) return(noErr);
 					GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
-					magnify_z-=(delta*20);
+					model_wind_set_magnify(magnify_z-(delta*20));
 					draw_model_wind_pose(&model,cur_mesh,cur_pose);
 					return(noErr);
 					
@@ -707,7 +778,7 @@ void model_wind_open(void)
 									{kEventClassKeyboard,kEventRawKeyModifiersChanged},
 									{kEventClassMouse,kEventMouseWheelMoved},
 									{kEventClassControl,kEventControlHit}};
-
+	
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 	
 	SetRect(&box,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
@@ -740,7 +811,7 @@ void model_wind_open(void)
 	
 	gl_view_texture_palette_size=(wbox.right-wbox.left)/max_model_texture;
 	
-	gl_view_y_sz=(box.bottom-box.top)-(tool_button_size+gl_view_texture_palette_size+info_palette_height);
+	gl_view_y_sz=(box.bottom-box.top)-(tool_height+gl_view_texture_palette_size+info_palette_height);
 	
 		// toolbar buttons
 			
@@ -773,6 +844,18 @@ void model_wind_open(void)
 		OffsetRect(&box,tool_button_size,0);
 		if ((n==4) || (n==8) || (n==10)) OffsetRect(&box,5,0);
 	}
+	
+		// magnify slider
+		
+	GetWindowPortBounds(model_wind,&box);
+
+	box.left=box.right-250;
+	box.right-=5;
+	box.bottom=(box.top+tool_height)-5;
+	box.top+=5;
+	
+	magnify_proc=NewControlActionUPP(model_wind_magnify_action);
+	CreateSliderControl(model_wind,&box,200,0,400,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
 		
 		// dragging for bones window
 		
@@ -811,8 +894,9 @@ void model_wind_open(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 		// get the controls draw
-		
+
 	DrawControls(model_wind);
+	model_wind_draw_background();
 
 		// events
 		
@@ -842,6 +926,9 @@ void model_wind_close(void)
     end_animate_controls();
     end_mesh_controls();
 	end_vertex_controls();
+	
+	DisposeControl(magnify_slider);
+	DisposeControlActionUPP(magnify_proc);
 		
 	for (n=0;n!=tool_count;n++) {
 		DisposeControl(tool_ctrl[n]);
@@ -871,7 +958,7 @@ void model_wind_close(void)
 
 void model_wind_offset_click(Point *pt)
 {
-	pt->v-=tool_button_size;
+	pt->v-=tool_height;
 }
 
 /* =======================================================

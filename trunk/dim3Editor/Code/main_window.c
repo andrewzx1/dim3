@@ -50,16 +50,15 @@ d3rect					main_wind_box;
 WindowRef				mainwind;
 EventHandlerRef			main_wind_event;
 EventHandlerUPP			main_wind_upp;
-ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],
-						object_combo,node_combo,group_combo,magnify_slider;
+ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],magnify_slider;
 ControlActionUPP		magnify_proc;
 IconRef					tool_icon_ref[tool_count],piece_icon_ref[piece_count];
-MenuRef					object_menu,node_menu,group_menu;
-Rect					object_box,node_box,group_box;
+MenuRef					grid_menu,spot_menu,scenery_menu,node_menu;
 
 AGLContext				ctx;
 
-short					object_combo_lookup[max_spot],
+int						spot_combo_lookup[max_spot],
+						scenery_combo_lookup[max_map_scenery],
 						node_combo_lookup[max_node];
 
 char					tool_icns_file_name[tool_count][64]=
@@ -71,13 +70,10 @@ char					tool_icns_file_name[tool_count][64]=
 									"Tool Edit Mesh",
 									"Tool Edit Polygons",
 									"Tool Edit Vertexes",
-									"Tool No Grid",
-									"Tool Small Grid",
-									"Tool Medium Grid",
-									"Tool Large Grid",
 									"Tool Combine Meshes",
 									"Tool Split Mesh",
 									"Tool Tesselate Mesh",
+									"Tool Small Grid",
 									"Tool Auto-Texture Mesh",
 									"Tool Node Select",
 									"Tool Node Link",
@@ -95,13 +91,10 @@ char					tool_tooltip_str[tool_count][64]=
 									"Edit Entire Mesh\nSwitch Mode with W or Middle Button",
 									"Edit Polygon Only\nSwitch Mode with W or Middle Button",
 									"Edit Vertex Only\nSwitch Mode with W or Middle Button",
-									"No Grid\nSwitch Mode with E",
-									"Small Grid\nSwitch Mode with E",
-									"Medium Grid\nSwitch Mode with E",
-									"Large Grid\nSwitch Mode with E",
 									"Combine Meshes",
 									"Split Meshes",
 									"Tesselate Mesh",
+									"Grid\nSwitch Mode with E",
 									"Auto-Texture Meshes",
 									"Node Selects by Click",
 									"Node Links by Click",
@@ -145,6 +138,8 @@ char					piece_tooltip_str[piece_count][64]=
 
 void main_wind_control_tool(int tool_idx)
 {
+	short		menu_idx;
+	
 	undo_clear();
 	
 	switch (tool_idx) {
@@ -204,78 +199,53 @@ void main_wind_control_tool(int tool_idx)
 			palette_reset();
 			break;
 			
-			// grid mode buttons
+			// mesh polygons
 			
 		case 7:
-			grid_mode=grid_mode_none;
-			SetControlValue(tool_ctrl[7],1);
-			SetControlValue(tool_ctrl[8],0);
-			SetControlValue(tool_ctrl[9],0);
-			SetControlValue(tool_ctrl[10],0);
-			break;
-			
-		case 8:
-			grid_mode=grid_mode_small;
-			SetControlValue(tool_ctrl[7],0);
-			SetControlValue(tool_ctrl[8],1);
-			SetControlValue(tool_ctrl[9],0);
-			SetControlValue(tool_ctrl[10],0);
-			break;
-			
-		case 9:
-			grid_mode=grid_mode_medium;
-			SetControlValue(tool_ctrl[7],0);
-			SetControlValue(tool_ctrl[8],0);
-			SetControlValue(tool_ctrl[9],1);
-			SetControlValue(tool_ctrl[10],0);
-			break;
-
-		case 10:
-			grid_mode=grid_mode_large;
-			SetControlValue(tool_ctrl[7],0);
-			SetControlValue(tool_ctrl[8],0);
-			SetControlValue(tool_ctrl[9],0);
-			SetControlValue(tool_ctrl[10],1);
-			break;
-			
-			// tesselate and auto-texture
-			
-		case 11:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			piece_combine_mesh();
 			break;
 			
-		case 12:
+		case 8:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			piece_split_mesh();
 			break;
 
-		case 13:
+		case 9:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			piece_tesselate();
 			break;
 			
-		case 14:
+			
+			// grid and auto-texture
+			
+		case 10:
+			GetBevelButtonMenuValue(tool_ctrl[tool_idx],&menu_idx);
+			grid_mode=((int)menu_idx)-1;
+			SetControlValue(tool_ctrl[tool_idx],0);
+			break;
+			
+		case 11:
 			dp_auto_texture=!dp_auto_texture;
 			break;
 			
 			// node editing
 			
-		case 15:
+		case 12:
 			node_mode=node_mode_select;
 			SetControlValue(tool_ctrl[15],1);
 			SetControlValue(tool_ctrl[16],0);
 			SetControlValue(tool_ctrl[17],0);
 			break;
 			
-		case 16:
+		case 13:
 			node_mode=node_mode_link;
 			SetControlValue(tool_ctrl[15],0);
 			SetControlValue(tool_ctrl[16],1);
 			SetControlValue(tool_ctrl[17],0);
 			break;
 			
-		case 17:
+		case 14:
 			node_mode=node_mode_remove_link;
 			SetControlValue(tool_ctrl[15],0);
 			SetControlValue(tool_ctrl[16],0);
@@ -284,12 +254,12 @@ void main_wind_control_tool(int tool_idx)
 			
 			// script and run buttons
 			
-		case 18:
+		case 15:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_map_script_editor();
 			break;
 			
-		case 19:
+		case 16:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_engine();
 			break;
@@ -302,10 +272,37 @@ void main_wind_control_tool(int tool_idx)
 
 void main_wind_control_piece(int piece_idx)
 {
+	int					idx;
+	short				menu_idx;
+	
 	switch (piece_idx) {
 
 		case 0:
-			piece_create_spot();
+			GetBevelButtonMenuValue(piece_ctrl[0],&menu_idx);
+			
+				// create a spot
+				
+			if (menu_idx==1) {
+				piece_create_spot();
+				break;
+			}
+			
+				// find a spot
+			
+			if (menu_idx>2) {
+				dp_object=TRUE;
+				
+				idx=spot_combo_lookup[menu_idx-3];
+			
+				view_pnt.x=map.spots[idx].pnt.x;
+				view_pnt.y=map.spots[idx].pnt.y-500;
+				view_pnt.z=map.spots[idx].pnt.z;
+				
+				select_clear();
+				select_add(spot_piece,idx,-1);
+				
+				main_wind_draw();	
+			}
 			break;
 			
 		case 1:
@@ -321,11 +318,59 @@ void main_wind_control_piece(int piece_idx)
 			break;
 			
 		case 4:
-			piece_create_scenery();
+			GetBevelButtonMenuValue(piece_ctrl[4],&menu_idx);
+			
+				// create a spot
+				
+			if (menu_idx==1) {
+				piece_create_scenery();
+				break;
+			}
+			
+				// find a spot
+			
+			if (menu_idx>2) {
+				dp_object=TRUE;
+				
+				idx=scenery_combo_lookup[menu_idx-3];
+			
+				view_pnt.x=map.sceneries[idx].pnt.x;
+				view_pnt.y=map.sceneries[idx].pnt.y-500;
+				view_pnt.z=map.sceneries[idx].pnt.z;
+				
+				select_clear();
+				select_add(scenery_piece,idx,-1);
+				
+				main_wind_draw();	
+			}
 			break;
 			
 		case 5:
-			piece_create_node();
+			GetBevelButtonMenuValue(piece_ctrl[5],&menu_idx);
+			
+				// create a node
+				
+			if (menu_idx==1) {
+				piece_create_node();
+				break;
+			}
+			
+				// find a node
+			
+			if (menu_idx>2) {
+				dp_node=TRUE;
+				
+				idx=node_combo_lookup[menu_idx-3];
+			
+				view_pnt.x=map.nodes[idx].pnt.x;
+				view_pnt.y=map.nodes[idx].pnt.y-500;
+				view_pnt.z=map.nodes[idx].pnt.z;
+				
+				select_clear();
+				select_add(node_piece,idx,-1);
+				
+				main_wind_draw();	
+			}
 			break;
 			
 		case 6:
@@ -365,98 +410,21 @@ void main_wind_control_piece(int piece_idx)
 
 void main_wind_control(ControlRef ctrl)
 {
-	int				i,idx,tool_idx,piece_idx;
-	
-		// object combo
-		
-	if (ctrl==object_combo) {
-		idx=GetControl32BitValue(ctrl);
-		
-		if (idx>2) {
-			idx=object_combo_lookup[idx-3];
-		
-			view_pnt.x=map.spots[idx].pnt.x;
-			view_pnt.y=map.spots[idx].pnt.y-500;
-			view_pnt.z=map.spots[idx].pnt.z;
+	int				n;
 			
-			select_clear();
-			select_add(spot_piece,idx,-1);
-			
-			main_wind_draw();	
-		}
-		
-		SetControl32BitValue(ctrl,1);
-		return;
-	}
-	
-		// node combo
-		
-	if (ctrl==node_combo) {
-		idx=GetControl32BitValue(ctrl);
-		
-		if (idx>2) {
-			idx=node_combo_lookup[idx-3];
-		
-			view_pnt.x=map.nodes[idx].pnt.x;
-			view_pnt.y=map.nodes[idx].pnt.y-500;
-			view_pnt.z=map.nodes[idx].pnt.z;
-			
-			select_clear();
-			select_add(node_piece,idx,-1);
-			
-			main_wind_draw();	
-		}
-		
-		SetControl32BitValue(ctrl,1);
-		return;
-	}
-	
-		// group combo
-		
-	if (ctrl==group_combo) {
-		idx=GetControl32BitValue(ctrl);
-		
-		if (idx==1) {
-			group_set(-1);
-		}
-		else {
-			group_set(idx-3);
-		}
-		
-		main_wind_tool_fill_group_combo();
-		return;
-	}
-		
-		// find button
-		
-	tool_idx=-1;
-	piece_idx=-1;
-	
-	for (i=0;i!=tool_count;i++) {
-		if (ctrl==tool_ctrl[i]) {
-			tool_idx=i;
-			break;
+	for (n=0;n!=tool_count;n++) {
+		if (ctrl==tool_ctrl[n]) {
+			main_wind_control_tool(n);
+			return;
 		}
 	}
-	
-	if (tool_idx==-1) {
+
 		
-		for (i=0;i!=piece_count;i++) {
-			if (ctrl==piece_ctrl[i]) {
-				piece_idx=i;
-				break;
-			}
+	for (n=0;n!=piece_count;n++) {
+		if (ctrl==piece_ctrl[n]) {
+			main_wind_control_piece(n);
+			return;
 		}
-	}
-	
-	if (tool_idx!=-1) {
-		main_wind_control_tool(tool_idx);
-		return;
-	}
-	
-	if (piece_idx!=-1) {
-		main_wind_control_piece(piece_idx);
-		return;
 	}
 }
 
@@ -527,7 +495,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					
 						// click in toolbars
 
-					if ((pt.v<toolbar_high) || (pt.h>(wbox.right-piece_wid))) return(eventNotHandledErr);
+					if ((pt.v<toolbar_high) || (pt.h>(wbox.right-palette_wid))) return(eventNotHandledErr);
 
 						// middle button vertex change mode
 						
@@ -657,7 +625,7 @@ void main_wind_setup(void)
 	GetWindowPortBounds(mainwind,&wbox);
 
 	main_wind_box.lx=0;
-	main_wind_box.rx=wbox.right-piece_wid;
+	main_wind_box.rx=wbox.right-palette_wid;
 	main_wind_box.ty=toolbar_high;
 	main_wind_box.by=wbox.bottom-info_high;
 	
@@ -665,7 +633,7 @@ void main_wind_setup(void)
 		
 	rect[0]=0;
 	rect[1]=info_high;
-	rect[2]=(wbox.right-wbox.left)-piece_wid;
+	rect[2]=(wbox.right-wbox.left)-palette_wid;
 	rect[3]=(wbox.bottom-wbox.top)-(toolbar_high+info_high);
 	
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
@@ -700,13 +668,14 @@ IconRef main_wind_load_icon_ref(char *name)
 
 void main_wind_open(void)
 {
-	int							n;
+	int							n,menu_id,behavior;
 	Rect						wbox,box;
 	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_STENCIL_SIZE,8,AGL_NONE};
 	GDHandle					gdevice;
 	AGLPixelFormat				pf;
 	ControlButtonContentInfo	icon_info;
 	HMHelpContentRec			tag;
+	CFStringRef					cf_str;
 	EventTypeSpec				wind_events[]={	{kEventClassWindow,kEventWindowDrawContent},
 												{kEventClassWindow,kEventWindowCursorChange},
 												{kEventClassWindow,kEventWindowClickContentRgn},
@@ -732,6 +701,32 @@ void main_wind_open(void)
 	SetRect(&box,0,0,tool_button_size,tool_button_size);
     
 	for (n=0;n!=tool_count;n++) {
+		
+			// grid tool has menu
+			
+		menu_id=0;
+		behavior=kControlBehaviorToggles;
+		
+		if (n==10) {
+			CreateNewMenu(tool_grid_menu_id,0,&grid_menu);
+			InsertMenu(grid_menu,kInsertHierarchicalMenu);
+	
+			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"No Grid",kCFStringEncodingMacRoman);
+			AppendMenuItemTextWithCFString(grid_menu,cf_str,0,FOUR_CHAR_CODE('gd00'),NULL);
+			CFRelease(cf_str);
+			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"Small Grid",kCFStringEncodingMacRoman);
+			AppendMenuItemTextWithCFString(grid_menu,cf_str,0,FOUR_CHAR_CODE('gd01'),NULL);
+			CFRelease(cf_str);
+			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"Medium Grid",kCFStringEncodingMacRoman);
+			AppendMenuItemTextWithCFString(grid_menu,cf_str,0,FOUR_CHAR_CODE('gd02'),NULL);
+			CFRelease(cf_str);
+			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"Large Grid",kCFStringEncodingMacRoman);
+			AppendMenuItemTextWithCFString(grid_menu,cf_str,0,FOUR_CHAR_CODE('gd03'),NULL);
+			CFRelease(cf_str);
+			
+			menu_id=tool_grid_menu_id;
+			behavior=kControlBehaviorPushbutton;
+		}
 	
 			// create button
 			
@@ -739,8 +734,7 @@ void main_wind_open(void)
 		icon_info.contentType=kControlContentIconRef;
 		icon_info.u.iconRef=tool_icon_ref[n];
 		
-		
-		CreateBevelButtonControl(mainwind,&box,NULL,kControlBevelButtonSmallBevel,kControlBehaviorToggles,&icon_info,0,0,0,&tool_ctrl[n]);
+		CreateBevelButtonControl(mainwind,&box,NULL,kControlBevelButtonSmallBevel,behavior,&icon_info,menu_id,0,0,&tool_ctrl[n]);
 		SetBevelButtonGraphicAlignment(tool_ctrl[n],kControlBevelButtonAlignCenter,0,0);
 		
 			// create tooltip
@@ -757,80 +751,48 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14) || (n==17)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==6) || (n==9) || (n==12) || (n==14)) OffsetRect(&box,3,0);
 	}
 	
-		// object combo
-		
-	CreateNewMenu(tool_object_menu_id,kMenuAttrExcludesMarkColumn,&object_menu);
-	InsertMenu(object_menu,kInsertHierarchicalMenu);
-	
-	object_box.top=tool_menu_margin;
-	object_box.bottom=tool_button_size-tool_menu_margin;
-	object_box.left=wbox.right-465;
-	object_box.right=object_box.left+150;
-	
-	CreatePopupButtonControl(mainwind,&object_box,NULL,tool_object_menu_id,FALSE,0,0,0,&object_combo);
-	
-	tag.version=kMacHelpVersion;
-	tag.tagSide=kHMDefaultSide;
-	SetRect(&tag.absHotRect,0,0,0,0);
-	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Named Spots",kCFStringEncodingMacRoman);
-	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
-		
-	HMSetControlHelpContent(object_combo,&tag);
-	
-		// node combo
-		
-	CreateNewMenu(tool_node_menu_id,kMenuAttrExcludesMarkColumn,&node_menu);
-	InsertMenu(node_menu,kInsertHierarchicalMenu);
-	
-	node_box.top=tool_menu_margin;
-	node_box.bottom=tool_button_size-tool_menu_margin;
-	node_box.left=wbox.right-310;
-	node_box.right=node_box.left+150;
-	
-	CreatePopupButtonControl(mainwind,&node_box,NULL,tool_node_menu_id,FALSE,0,0,0,&node_combo);
-	
-	tag.version=kMacHelpVersion;
-	tag.tagSide=kHMDefaultSide;
-	SetRect(&tag.absHotRect,0,0,0,0);
-	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Named Nodes",kCFStringEncodingMacRoman);
-	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
-		
-	HMSetControlHelpContent(node_combo,&tag);
-	
-		// group combo
-		
-	CreateNewMenu(tool_group_menu_id,kMenuAttrExcludesMarkColumn,&group_menu);
-	InsertMenu(group_menu,kInsertHierarchicalMenu);
-	
-	group_box.top=tool_menu_margin;
-	group_box.bottom=tool_button_size-tool_menu_margin;
-	group_box.left=wbox.right-155;
-	group_box.right=group_box.left+150;
-	
-	CreatePopupButtonControl(mainwind,&group_box,NULL,tool_group_menu_id,FALSE,0,0,0,&group_combo);
-	
-	tag.version=kMacHelpVersion;
-	tag.tagSide=kHMDefaultSide;
-	SetRect(&tag.absHotRect,0,0,0,0);
-	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Mesh Groups",kCFStringEncodingMacRoman);
-	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
-		
-	HMSetControlHelpContent(group_combo,&tag);
-	
+
 		// piece buttons
 		
-	box.left=wbox.right-piece_button_size;
-	box.right=box.left+piece_button_size;
-	box.top=toolbar_high;
-	box.bottom=box.top+piece_button_size;
+	OffsetRect(&box,10,0);
 	
 	for (n=0;n!=piece_count;n++) {
+	
+			// misc menus
+			
+		menu_id=0;
+		
+		switch (n) {
+		
+				// spot menu
+			
+			case 0:
+				CreateNewMenu(tool_spot_menu_id,kMenuAttrExcludesMarkColumn,&spot_menu);
+				InsertMenu(spot_menu,kInsertHierarchicalMenu);
+				menu_id=tool_spot_menu_id;
+				break;
+				
+				// scenery menu
+			
+			case 4:
+				CreateNewMenu(tool_scenery_menu_id,kMenuAttrExcludesMarkColumn,&scenery_menu);
+				InsertMenu(scenery_menu,kInsertHierarchicalMenu);
+				menu_id=tool_scenery_menu_id;
+				break;
+				
+		
+				// node menu
+			
+			case 5:
+				CreateNewMenu(tool_node_menu_id,kMenuAttrExcludesMarkColumn,&node_menu);
+				InsertMenu(node_menu,kInsertHierarchicalMenu);
+				menu_id=tool_node_menu_id;
+				break;
+				
+		}
 			
 			// create button
 			
@@ -838,13 +800,13 @@ void main_wind_open(void)
 		icon_info.contentType=kControlContentIconRef;
 		icon_info.u.iconRef=piece_icon_ref[n];
 		
-		CreateBevelButtonControl(mainwind,&box,NULL,kControlBevelButtonSmallBevel,kControlBehaviorToggles,&icon_info,0,0,0,&piece_ctrl[n]);
+		CreateBevelButtonControl(mainwind,&box,NULL,kControlBevelButtonSmallBevel,kControlBehaviorPushbutton,&icon_info,menu_id,0,0,&piece_ctrl[n]);
 		SetBevelButtonGraphicAlignment(piece_ctrl[n],kControlBevelButtonAlignCenter,0,0);
 
 			// create tooltip
 			
 		tag.version=kMacHelpVersion;
-		tag.tagSide=kHMOutsideLeftCenterAligned;
+		tag.tagSide=kHMDefaultSide;
 		SetRect(&tag.absHotRect,0,0,0,0);
 		tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
 		tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,piece_tooltip_str[n],kCFStringEncodingMacRoman);
@@ -852,18 +814,15 @@ void main_wind_open(void)
 		
 		HMSetControlHelpContent(piece_ctrl[n],&tag);
 		
-		OffsetRect(&box,0,piece_button_size);
+		OffsetRect(&box,tool_button_size,0);
     }
 	
 		// magnify slider
-		// this needs to be fixed, a texture size is hard coded
 
-	box.left=wbox.right-piece_button_size;
-	box.right=box.left+piece_button_size;
-	box.left+=8;
-	box.right-=8;
-	box.top=(toolbar_high+5)+(piece_button_size*piece_count);
-	box.bottom=wbox.bottom-(115+info_high);
+	box.left+=10;
+	box.right=(wbox.right-5);
+	box.top+=5;
+	box.bottom-=5;
 	
 	magnify_proc=NewControlActionUPP(main_wind_magnify_action);
 	CreateSliderControl(mainwind,&box,magnify_factor_default,magnify_factor_min,magnify_factor_max,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
@@ -953,15 +912,6 @@ void main_wind_close(void)
 		ReleaseIconRef(tool_icon_ref[n]);
 	}
 	
-	DisposeControl(object_combo);
-	DisposeMenu(object_menu);
-	
-	DisposeControl(node_combo);
-	DisposeMenu(node_menu);
-	
-	DisposeControl(group_combo);
-	DisposeMenu(group_menu);
-	
 	for (n=0;n!=piece_count;n++) {
 		DisposeControl(piece_ctrl[n]);
 		ReleaseIconRef(piece_icon_ref[n]);
@@ -969,6 +919,20 @@ void main_wind_close(void)
 	
 	DisposeControl(magnify_slider);
 	DisposeControlActionUPP(magnify_proc);
+	
+		// tool menus
+		
+	DeleteMenu(tool_grid_menu_id);
+	DisposeMenu(grid_menu);
+	
+	DeleteMenu(tool_spot_menu_id);
+	DisposeMenu(spot_menu);
+	
+	DeleteMenu(tool_scenery_menu_id);
+	DisposeMenu(scenery_menu);
+
+	DeleteMenu(tool_node_menu_id);
+	DisposeMenu(node_menu);
 
         // dispose of events and window
         
@@ -998,53 +962,13 @@ void main_wind_set_title(char *file_name)
 
 void main_wind_resize_buttons(void)
 {
-	int				n,x,y;
-	Rect			wbox,box,object_box,node_box,group_box;
+	Rect			wbox,box;
 	
 	GetWindowPortBounds(mainwind,&wbox);
-	
-		// combos
 		
-	object_box.top=tool_menu_margin;
-	object_box.bottom=tool_button_size-tool_menu_margin;
-	object_box.left=wbox.right-465;
-	object_box.right=object_box.left+150;
-	
-	SetControlBounds(object_combo,&object_box);
-
-	node_box.top=tool_menu_margin;
-	node_box.bottom=tool_button_size-tool_menu_margin;
-	node_box.left=wbox.right-310;
-	node_box.right=node_box.left+150;
-	
-	SetControlBounds(node_combo,&node_box);
-
-	group_box.top=tool_menu_margin;
-	group_box.bottom=tool_button_size-tool_menu_margin;
-	group_box.left=wbox.right-155;
-	group_box.right=group_box.left+150;
-
-	SetControlBounds(group_combo,&group_box);
-	
-		// pieces
-	
-	x=wbox.right-piece_button_size;
-	y=toolbar_high;
-	
-	for (n=0;n!=piece_count;n++) {
-		MoveControl(piece_ctrl[n],x,y);
-		y+=piece_button_size;
-	}
-	
-		// magnify control
+	GetControlBounds(magnify_slider,&box);
+	box.right=wbox.right-5;
 		
-	box.left=wbox.right-piece_button_size;
-	box.right=box.left+piece_button_size;
-	box.left+=8;
-	box.right-=8;
-	box.top=(toolbar_high+5)+(piece_button_size*piece_count);
-	box.bottom=wbox.bottom-(txt_palette_high+info_high+5);
-	
 	SetControlBounds(magnify_slider,&box);
 }
 
@@ -1228,14 +1152,59 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,float near_z,f
 
 void main_wind_draw_dividers_single(d3rect *box,bool selected)
 {
-	glColor4f((selected?1.0f:0.0f),0.0f,0.0f,1.0f);
 	
+		// the divider
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
 	glBegin(GL_LINE_LOOP);
 	glVertex2i((box->lx-1),(box->ty-1));
 	glVertex2i((box->rx+1),(box->ty-1));
 	glVertex2i((box->rx+1),(box->by+1));
 	glVertex2i((box->lx-1),(box->by+1));
 	glEnd();
+	
+		// the selection
+		
+	if (!selected) return;
+	
+	glEnable(GL_BLEND);
+	
+	glColor4f(0.8f,0.8f,0.8f,0.5f);
+
+	glBegin(GL_QUADS);
+	
+		// top
+		
+	glVertex2i(box->lx,box->ty);
+	glVertex2i(box->rx,box->ty);
+	glVertex2i(box->rx,(box->ty+view_selection_size));
+	glVertex2i(box->lx,(box->ty+view_selection_size));
+	
+		// bottom
+		
+	glVertex2i(box->lx,(box->by-view_selection_size));
+	glVertex2i(box->rx,(box->by-view_selection_size));
+	glVertex2i(box->rx,box->by);
+	glVertex2i(box->lx,box->by);
+	
+		// left
+		
+	glVertex2i(box->lx,(box->ty+view_selection_size));
+	glVertex2i((box->lx+view_selection_size),(box->ty+view_selection_size));
+	glVertex2i((box->lx+view_selection_size),(box->by-view_selection_size));
+	glVertex2i(box->lx,(box->by-view_selection_size));
+
+		// right
+		
+	glVertex2i((box->rx-view_selection_size),(box->ty+view_selection_size));
+	glVertex2i(box->rx,(box->ty+view_selection_size));
+	glVertex2i(box->rx,(box->by-view_selection_size));
+	glVertex2i((box->rx-view_selection_size),(box->by-view_selection_size));
+
+	glEnd();
+	
+	glDisable(GL_BLEND);
 }
 
 void main_wind_draw_3_panel_dividers(void)
@@ -1922,22 +1891,15 @@ void main_wind_tool_reset(void)
 	SetControlValue(tool_ctrl[5],(drag_mode==drag_mode_polygon)?1:0);
 	SetControlValue(tool_ctrl[6],(drag_mode==drag_mode_vertex)?1:0);
 	
-		// grid mode
-		
-	SetControlValue(tool_ctrl[7],(grid_mode==grid_mode_none)?1:0);
-	SetControlValue(tool_ctrl[8],(grid_mode==grid_mode_small)?1:0);
-	SetControlValue(tool_ctrl[9],(grid_mode==grid_mode_medium)?1:0);
-	SetControlValue(tool_ctrl[10],(grid_mode==grid_mode_large)?1:0);
-	
 		// auto-texture
 		
-	SetControlValue(tool_ctrl[14],dp_auto_texture?1:0);
+	SetControlValue(tool_ctrl[11],dp_auto_texture?1:0);
 	
 		// node mode
 		
-	SetControlValue(tool_ctrl[15],(node_mode==node_mode_select)?1:0);
-	SetControlValue(tool_ctrl[16],(node_mode==node_mode_link)?1:0);
-	SetControlValue(tool_ctrl[17],(node_mode==node_mode_remove_link)?1:0);
+	SetControlValue(tool_ctrl[12],(node_mode==node_mode_select)?1:0);
+	SetControlValue(tool_ctrl[13],(node_mode==node_mode_link)?1:0);
+	SetControlValue(tool_ctrl[14],(node_mode==node_mode_remove_link)?1:0);
 }
 
 void main_wind_tool_default(void)
@@ -1957,35 +1919,6 @@ void main_wind_tool_default(void)
     
 	menu_set_show_hide_check();
     main_wind_tool_reset();
-}
-
-void main_wind_tool_fix_enable(void)
-{
-	int			group_idx,type,main_idx,sub_idx;
-	
-		// group combo
-		
-	group_idx=-1;
-	
-	if (select_count()==1) {
-		select_get(0,&type,&main_idx,&sub_idx);
-		
-		switch (type) {
-			case mesh_piece:
-				group_idx=map.mesh.meshes[main_idx].group_idx;
-				break;
-			case liquid_piece:
-				group_idx=map.liquid.liquids[main_idx].group_idx;
-				break;
-		}
-	}
-	
-	if (group_idx==-1) {
-		SetControl32BitValue(group_combo,1);
-	}
-	else {
-		SetControl32BitValue(group_combo,(3+group_idx));
-	}
 }
 
 void main_wind_tool_switch_vertex_mode(void)
@@ -2019,29 +1952,22 @@ void main_wind_tool_switch_grid_mode(void)
       
 ======================================================= */
 
-void main_wind_tool_fill_object_combo(void)
+void main_wind_tool_fill_spot_combo(void)
 {
 	int					n,cnt,idx;
 	bool				spot_hit[max_spot];
 	CFStringRef			cf_str;
-	HMHelpContentRec	tag;
 	
-		// delete old control and menu
+		// delete old items
 		
-	DisposeControl(object_combo);
+	DeleteMenuItems(spot_menu,1,CountMenuItems(spot_menu));
 	
-	DeleteMenu(tool_object_menu_id);
-	DisposeMenu(object_menu);
-	
-		// recreate the menu
+		// add item
 		
-	CreateNewMenu(tool_object_menu_id,0,&object_menu);
+	AppendMenuItemTextWithCFString(spot_menu,CFSTR("Add Spot"),0,FOUR_CHAR_CODE('sp00'),NULL);
+	AppendMenuItemTextWithCFString(spot_menu,NULL,kMenuItemAttrSeparator,0,NULL);
 	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"Spots",kCFStringEncodingMacRoman);
-	AppendMenuItemTextWithCFString(object_menu,cf_str,0,FOUR_CHAR_CODE('ob01'),NULL);
-	CFRelease(cf_str);
-	
-	AppendMenuItemTextWithCFString(object_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+		// spots
 	
 	cnt=0;
 	
@@ -2066,36 +1992,62 @@ void main_wind_tool_fill_object_combo(void)
 		
 		if (idx==-1) break;
 		
-		object_combo_lookup[cnt++]=idx;
-		
-		spot_hit[idx]=TRUE;
-		
 		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.spots[idx].name,kCFStringEncodingMacRoman);
-		AppendMenuItemTextWithCFString(object_menu,cf_str,0,FOUR_CHAR_CODE('ob03'),NULL);
+		AppendMenuItemTextWithCFString(spot_menu,cf_str,0,FOUR_CHAR_CODE('sp00'),NULL);
 		CFRelease(cf_str);
+		
+		spot_combo_lookup[cnt++]=idx;
+		spot_hit[idx]=TRUE;
+	}
+}
+
+void main_wind_tool_fill_scenery_combo(void)
+{
+	int					n,cnt,idx;
+	bool				scenery_hit[max_spot];
+	CFStringRef			cf_str;
+	
+		// delete old items
+		
+	DeleteMenuItems(scenery_menu,1,CountMenuItems(scenery_menu));
+	
+		// add item
+		
+	AppendMenuItemTextWithCFString(scenery_menu,CFSTR("Add Scenery"),0,FOUR_CHAR_CODE('sc00'),NULL);
+	AppendMenuItemTextWithCFString(scenery_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+	
+		// scenery
+	
+	cnt=0;
+	
+	for (n=0;n<map.nscenery;n++) {
+		scenery_hit[n]=FALSE;
 	}
 
-	InsertMenu(object_menu,kInsertHierarchicalMenu);
+	while (TRUE) {
 	
-		// recreate the control
+		idx=-1;
 		
-	CreatePopupButtonControl(mainwind,&object_box,NULL,tool_object_menu_id,FALSE,0,0,0,&object_combo);
-	Draw1Control(object_combo);
-	
-		// build the help
-	
-	tag.version=kMacHelpVersion;
-	tag.tagSide=kHMDefaultSide;
-	SetRect(&tag.absHotRect,0,0,0,0);
-	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Named Spots",kCFStringEncodingMacRoman);
-	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
+		for (n=0;n<map.nscenery;n++) {
+			if ((map.sceneries[n].model_name[0]!=0x0) && (!scenery_hit[n])) {
+				if (idx==-1) {
+					idx=n;
+				}
+				else {
+					if (strcasecmp(map.sceneries[idx].model_name,map.sceneries[n].model_name)>0) idx=n;
+				}
+			}
+		}
 		
-	HMSetControlHelpContent(object_combo,&tag);
-	
-		// reset the control
+		if (idx==-1) break;
 		
-	SetControl32BitValue(object_combo,1);
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.sceneries[idx].model_name,kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(scenery_menu,cf_str,0,FOUR_CHAR_CODE('sc00'),NULL);
+		CFRelease(cf_str);
+		
+		scenery_combo_lookup[cnt++]=idx;
+		scenery_hit[idx]=TRUE;
+	}
 }
 
 void main_wind_tool_fill_node_combo(void)
@@ -2103,25 +2055,18 @@ void main_wind_tool_fill_node_combo(void)
 	int					n,cnt,idx;
 	bool				node_hit[max_node];
 	CFStringRef			cf_str;
-	HMHelpContentRec	tag;
 	
-		// delete old control and menu
+		// delete old items
 		
-	DisposeControl(node_combo);
+	DeleteMenuItems(node_menu,1,CountMenuItems(node_menu));
 	
-	DeleteMenu(tool_node_menu_id);
-	DisposeMenu(node_menu);
-	
-		// recreate the menu
+		// add item
 		
-	CreateNewMenu(tool_node_menu_id,0,&node_menu);
-	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"Nodes",kCFStringEncodingMacRoman);
-	AppendMenuItemTextWithCFString(node_menu,cf_str,0,FOUR_CHAR_CODE('nd01'),NULL);
-	CFRelease(cf_str);
-	
+	AppendMenuItemTextWithCFString(node_menu,CFSTR("Add Node"),0,'nd00',NULL);
 	AppendMenuItemTextWithCFString(node_menu,NULL,kMenuItemAttrSeparator,0,NULL);
 	
+		// nodes
+		
 	cnt=0;
 	
 	for (n=0;n<map.nnode;n++) {
@@ -2145,94 +2090,13 @@ void main_wind_tool_fill_node_combo(void)
 		
 		if (idx==-1) break;
 		
-		node_combo_lookup[cnt++]=idx;
-		
-		node_hit[idx]=TRUE;
-		
 		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.nodes[idx].name,kCFStringEncodingMacRoman);
-		AppendMenuItemTextWithCFString(node_menu,cf_str,0,FOUR_CHAR_CODE('nd03'),NULL);
+		AppendMenuItemTextWithCFString(node_menu,cf_str,0,'nd00',NULL);
 		CFRelease(cf_str);
+		
+		node_combo_lookup[cnt++]=idx;
+		node_hit[idx]=TRUE;
 	}
-	
-	InsertMenu(node_menu,kInsertHierarchicalMenu);
-	
-		// recreate the control
-		
-	CreatePopupButtonControl(mainwind,&node_box,NULL,tool_node_menu_id,FALSE,0,0,0,&node_combo);
-	Draw1Control(node_combo);
-	
-		// build the help
-	
-	tag.version=kMacHelpVersion;
-	tag.tagSide=kHMDefaultSide;
-	SetRect(&tag.absHotRect,0,0,0,0);
-	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Named Nodes",kCFStringEncodingMacRoman);
-	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
-		
-	HMSetControlHelpContent(node_combo,&tag);
-	
-		// reset the control
-		
-	SetControl32BitValue(node_combo,1);
-}
-
-void main_wind_tool_fill_group_combo(void)
-{
-	int					n,group_idx;
-	char				str[256];
-	CFStringRef			cf_str;
-	HMHelpContentRec	tag;
-	
-		// old settings
-		
-	group_idx=GetControl32BitValue(group_combo);
-	
-		// delete old control and menu
-		
-	DisposeControl(group_combo);
-	
-	DeleteMenu(tool_group_menu_id);
-	DisposeMenu(group_menu);
-	
-		// recreate the menu
-		
-	CreateNewMenu(tool_group_menu_id,0,&group_menu);
-	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"No Group",kCFStringEncodingMacRoman);
-	AppendMenuItemTextWithCFString(group_menu,cf_str,0,FOUR_CHAR_CODE('gp01'),NULL);
-	CFRelease(cf_str);
-	
-	AppendMenuItemTextWithCFString(group_menu,NULL,kMenuItemAttrSeparator,0,NULL);
-	
-	for (n=0;n<map.ngroup;n++) {
-		sprintf(str,"%s (%d)",map.groups[n].name,group_count(n));
-		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
-		AppendMenuItemTextWithCFString(group_menu,cf_str,0,FOUR_CHAR_CODE('gp03'),NULL);
-		CFRelease(cf_str);
-	}
-	
-	InsertMenu(group_menu,kInsertHierarchicalMenu);
-	
-		// recreate the control
-		
-	CreatePopupButtonControl(mainwind,&group_box,NULL,tool_group_menu_id,FALSE,0,0,0,&group_combo);
-	Draw1Control(group_combo);
-	
-		// build the help
-	
-	tag.version=kMacHelpVersion;
-	tag.tagSide=kHMDefaultSide;
-	SetRect(&tag.absHotRect,0,0,0,0);
-	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Mesh Groups",kCFStringEncodingMacRoman);
-	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
-		
-	HMSetControlHelpContent(group_combo,&tag);
-	
-		// reset the control
-		
-	SetControl32BitValue(group_combo,group_idx);
 }
 
 /* =======================================================

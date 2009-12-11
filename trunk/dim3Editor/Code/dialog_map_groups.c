@@ -158,7 +158,6 @@ static pascal OSStatus map_groups_event_proc(EventHandlerCallRef handler,EventRe
 					Draw1Control(map_groups_list_get_ctrl());
 					map_group_reset_buttons();
 					
-					main_wind_tool_fill_group_combo();
 					return(noErr);
 					
 				case kMapGroupClearButton:
@@ -168,7 +167,6 @@ static pascal OSStatus map_groups_event_proc(EventHandlerCallRef handler,EventRe
 					Draw1Control(map_groups_list_get_ctrl());
 					map_group_reset_buttons();
 					
-					main_wind_tool_fill_group_combo();
 					return(noErr);
 					
 				case kMapGroupDeleteButton:
@@ -204,7 +202,6 @@ static pascal OSStatus map_groups_event_proc(EventHandlerCallRef handler,EventRe
 					Draw1Control(map_groups_list_get_ctrl());
 					map_group_reset_buttons();
 					
-					main_wind_tool_fill_group_combo();
 					return(noErr);
 			
 				case kHICommandOK:

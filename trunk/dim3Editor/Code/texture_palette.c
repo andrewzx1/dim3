@@ -57,14 +57,16 @@ void texture_palette_setup(void)
 	
 	GetWindowPortBounds(mainwind,&wbox);
 		
-	txt_pixel_sz=((wbox.right-piece_wid)-(wbox.left+16))/txt_wind_column_count;
-	if (txt_pixel_sz>txt_wind_max_pixel_sz) txt_pixel_sz=txt_wind_max_pixel_sz;
+	txt_pixel_sz=((wbox.right-palette_wid)-(wbox.left+16))/txt_wind_column_count;
+//	if (txt_pixel_sz>txt_wind_max_pixel_sz) txt_pixel_sz=txt_wind_max_pixel_sz;
+
+	txt_palette_high=txt_pixel_sz;
 	
-	txt_palette_high=(txt_wind_row_count*txt_pixel_sz);
+//	txt_palette_high=(txt_wind_row_count*txt_pixel_sz);
 	txt_palette_y=(wbox.bottom-txt_palette_high)-info_high;
 	
 	txt_palette_box.lx=wbox.left;
-	txt_palette_box.rx=wbox.right-piece_wid;
+	txt_palette_box.rx=wbox.right-palette_wid;
 	txt_palette_box.ty=txt_palette_y;
 	txt_palette_box.by=txt_palette_box.ty+txt_palette_high;
 }
@@ -143,7 +145,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 
 void texture_palette_draw(void)
 {
-	int					i,x,y,yadd,sel,k,idx,page,page_cnt;
+	int					i,n,x,y,yadd,sel,idx,page,page_cnt;
 	texture_type		*texture;
 	
 		// viewport setup
@@ -195,17 +197,11 @@ void texture_palette_draw(void)
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glEnable(GL_TEXTURE_2D);
 		
-	for (i=0;i!=max_map_texture;i++) {
-		texture=&map.textures[i];
+	for (n=0;n!=txt_wind_column_count;n++) {
+		texture=&map.textures[n+(txt_page*txt_wind_column_count)];
 	
-		page=i/txt_wind_per_page;
-		if (page!=txt_page) continue;
-		
-		idx=i-(txt_page*txt_wind_per_page);
-	
-		k=idx/txt_wind_column_count;
-		x=((idx-(k*txt_wind_column_count))*txt_pixel_sz)+16;
-		y=txt_palette_y+(k*txt_pixel_sz);
+		x=(n*txt_pixel_sz)+16;
+		y=txt_palette_y;
 		
 			// the textures
 			
@@ -233,15 +229,11 @@ void texture_palette_draw(void)
 	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
-	for (i=0;i!=max_map_texture;i++) {
-		page=i/txt_wind_per_page;
-		if (page!=txt_page) continue;
-		
-		idx=i-(txt_page*txt_wind_per_page);
+	for (n=0;n!=txt_wind_column_count;n++) {
+		idx=n+(txt_page*txt_wind_column_count);
 	
-		k=idx/txt_wind_column_count;
-		x=((idx-(k*txt_wind_column_count))*txt_pixel_sz)+16;
-		y=txt_palette_y+(k*txt_pixel_sz);
+		x=(n*txt_pixel_sz)+16;
+		y=txt_palette_y;
 		
 		glBegin(GL_LINE_LOOP);
 		glVertex2i(x,(y+1));
@@ -255,15 +247,10 @@ void texture_palette_draw(void)
 		
 	sel=texture_palette_get_selected_texture();
 	if (sel==-1) return;
+	if ((sel<(txt_page*txt_wind_column_count)) || (sel>=((txt_page+1)*txt_wind_column_count))) return;
 	
-	page=sel/txt_wind_per_page;
-	if (page!=txt_page) return;
-	
-	idx=sel-(txt_page*txt_wind_per_page);
-
-	k=idx/txt_wind_column_count;
-	x=((idx-(k*txt_wind_column_count))*txt_pixel_sz)+16;
-	y=txt_palette_y+(k*txt_pixel_sz);
+	x=((sel-(txt_page*txt_wind_column_count))*txt_pixel_sz)+16;
+	y=txt_palette_y;
 	
 	glColor4f(1.0f,0.0f,0.0f,1.0f);
 	

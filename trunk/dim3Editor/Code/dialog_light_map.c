@@ -32,6 +32,7 @@ extern map_type				map;
 
 #define kLightMapSize						FOUR_CHAR_CODE('size')
 #define kLightMapQuality					FOUR_CHAR_CODE('qual')
+#define kLightMapSmearCount					FOUR_CHAR_CODE('smer')
 #define kLightMapBlurCount					FOUR_CHAR_CODE('blur')
 
 bool						dialog_light_map_cancel;
@@ -82,7 +83,7 @@ static pascal OSStatus light_map_event_proc(EventHandlerCallRef handler,EventRef
 
 bool dialog_light_map_run(void)
 {
-	int						n,size,quality,blur_count,
+	int						n,size,quality,smear_count,blur_count,
 							size_list[4]={256,512,1024,2048};
 	bool					ok;
 	char					err_str[256];
@@ -105,6 +106,7 @@ bool dialog_light_map_run(void)
 	
 	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,size);
 	dialog_set_value(dialog_light_map_wind,kLightMapQuality,0,map.settings.light_map_quality);
+	dialog_set_value(dialog_light_map_wind,kLightMapSmearCount,0,map.settings.light_map_smear_count);
 	dialog_set_value(dialog_light_map_wind,kLightMapBlurCount,0,map.settings.light_map_blur_count);
 	
 		// show window
@@ -125,6 +127,7 @@ bool dialog_light_map_run(void)
 		
 	size=size_list[dialog_get_combo(dialog_light_map_wind,kLightMapSize,0)];
 	quality=dialog_get_value(dialog_light_map_wind,kLightMapQuality,0);
+	smear_count=dialog_get_value(dialog_light_map_wind,kLightMapSmearCount,0);
 	blur_count=dialog_get_value(dialog_light_map_wind,kLightMapBlurCount,0);
 
 		// close window
@@ -137,6 +140,7 @@ bool dialog_light_map_run(void)
 		
 	map.settings.light_map_size=size;
 	map.settings.light_map_quality=quality;
+	map.settings.light_map_smear_count=smear_count;
 	map.settings.light_map_blur_count=blur_count;
 		
 	dialog_open(&dialog_light_map_generate_wind,"LightMapGenerate");

@@ -116,7 +116,7 @@ void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_di
     }
 
     if (main_wind_option_down()) {
-        walk_view_mouse_z_movement(view_setup,pt,view_move_dir);
+        walk_view_mouse_yz_movement(view_setup,pt,view_move_dir);
         return;
     }
 

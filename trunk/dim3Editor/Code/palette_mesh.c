@@ -48,6 +48,7 @@ and can be sold or given away.
 #define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
 #define kMeshSettingRotZ						FOUR_CHAR_CODE('rotz')
 
+#define kMeshSettingGroup						FOUR_CHAR_CODE('grop')
 #define kMeshSettingLightMapTexture				FOUR_CHAR_CODE('etxt')
 #define kMeshSettingHideMode					FOUR_CHAR_CODE('hdmd')
 
@@ -99,6 +100,7 @@ void palette_mesh_load(void)
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotY,0,mesh->rot_off.y);
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotZ,0,mesh->rot_off.z);
 	
+	dialog_fill_group_combo(palette_mesh_wind,kMeshSettingGroup,0,mesh->group_idx);
 	dialog_set_combo(palette_mesh_wind,kMeshSettingHideMode,0,mesh->hide_mode);
 	dialog_fill_texture_combo(palette_mesh_wind,kMeshSettingLightMapTexture,0,TRUE,mesh->lmap_txt_idx);
 	
@@ -143,6 +145,7 @@ void palette_mesh_save(void)
 	mesh->rot_off.y=dialog_get_int(palette_mesh_wind,kMeshSettingRotY,0);
 	mesh->rot_off.z=dialog_get_int(palette_mesh_wind,kMeshSettingRotZ,0);
 	
+	mesh->group_idx=dialog_get_group_combo(palette_mesh_wind,kMeshSettingGroup,0);
 	mesh->hide_mode=dialog_get_combo(palette_mesh_wind,kMeshSettingHideMode,0);
 	mesh->lmap_txt_idx=dialog_get_texture_combo(palette_mesh_wind,kMeshSettingLightMapTexture,0,TRUE);
 	

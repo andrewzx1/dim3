@@ -102,7 +102,7 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
       
 ======================================================= */
 
-void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+void walk_view_mouse_yz_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						x,y,xadd,zadd,yadd;
 	d3pnt					old_pt;
@@ -115,6 +115,8 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
+			// z movement
+			
 		x=old_pt.x-pt->x;
 		y=old_pt.y-pt->y;
 		
@@ -147,6 +149,14 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 		view_pnt.x+=(xadd*32);
 		view_pnt.y+=(yadd*32);
 		view_pnt.z+=(zadd*32);
+		
+			// y turn
+			
+		if (view_move_dir==vm_dir_forward) {
+			if (labs(x)>5) {
+				walk_view_y_angle=angle_add(walk_view_y_angle,(float)(x/5));
+			}
+		}
 
         main_wind_draw();
 	}
@@ -227,6 +237,7 @@ void walk_view_mouse_turn(d3pnt *pt)
 
 			redraw=TRUE;
 		}
+		
 			// x turning
 			
 		if (labs(y)>5) {

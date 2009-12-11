@@ -121,9 +121,8 @@ void piece_create_spot(void)
 	
 	menu_set_show_hide_check();
 	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
 	
-	main_wind_tool_fill_object_combo();
+	main_wind_tool_fill_spot_combo();
 }
 
 /* =======================================================
@@ -179,7 +178,8 @@ void piece_create_scenery(void)
 	
 	menu_set_show_hide_check();
 	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
+	
+	main_wind_tool_fill_scenery_combo();
 }
 
 /* =======================================================
@@ -352,7 +352,6 @@ void piece_create_node(void)
 	
 	menu_set_show_hide_check();
 	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
 	
 	main_wind_tool_fill_node_combo();
 }
@@ -425,7 +424,6 @@ void piece_create_liquid(void)
 	
 	menu_set_show_hide_check();
 	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
 }
 
 /* =======================================================
@@ -478,6 +476,5 @@ void piece_create_area(void)
 	
 	menu_set_show_hide_check();
 	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
 }
 

@@ -472,7 +472,7 @@ typedef struct		{
 					
 typedef struct		{
 						int									light_map_quality,light_map_size,
-															light_map_blur_count;
+															light_map_smear_count,light_map_blur_count;
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance,txt_scale_x,txt_scale_y;
 						bool								editor_link_always_start;
@@ -482,6 +482,7 @@ typedef struct		{
 typedef struct		{
 						float								sound_pitch;
 						char								sound_name[name_str_len];
+						bool								light_ignore_mesh;
 						d3col								light_color;
 					} map_ambient_type;					
 

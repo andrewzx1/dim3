@@ -57,7 +57,7 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	view_setup->box.ty=wbox.ty+(toolbar_high+2);
 	view_setup->box.by=(wbox.ty+toolbar_high)+(((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2);
 	view_setup->box.lx=wbox.lx+2;
-	view_setup->box.rx=(wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2);
+	view_setup->box.rx=(wbox.rx-palette_wid)-(((wbox.rx-palette_wid)-wbox.lx)/2);
 	
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y;
@@ -88,7 +88,7 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 	view_setup->box.ty=wbox.ty+(toolbar_high+2);
 	view_setup->box.by=(wbox.ty+toolbar_high)+(((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2);
 	view_setup->box.lx=wbox.lx+2;
-	view_setup->box.rx=(wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2);
+	view_setup->box.rx=(wbox.rx-palette_wid)-(((wbox.rx-palette_wid)-wbox.lx)/2);
 	
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y;
@@ -119,7 +119,7 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 	view_setup->box.ty=wbox.ty+toolbar_high;
 	view_setup->box.by=wbox.by-(txt_palette_high+info_high);
 	view_setup->box.lx=wbox.lx;
-	view_setup->box.rx=wbox.rx-piece_wid;
+	view_setup->box.rx=wbox.rx-palette_wid;
 
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y;
@@ -155,8 +155,8 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 
 	view_setup->box.ty=wbox.ty+(toolbar_high+2);
 	view_setup->box.by=(wbox.ty+toolbar_high)+(((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2);
-	view_setup->box.lx=((wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2))+2;
-	view_setup->box.rx=wbox.rx-(piece_wid+2);
+	view_setup->box.lx=((wbox.rx-palette_wid)-(((wbox.rx-palette_wid)-wbox.lx)/2))+2;
+	view_setup->box.rx=wbox.rx-(palette_wid+2);
 	
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y;
@@ -186,8 +186,8 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 
 	view_setup->box.ty=wbox.ty+(toolbar_high+2);
 	view_setup->box.by=(wbox.ty+toolbar_high)+(((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2);
-	view_setup->box.lx=((wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2))+2;
-	view_setup->box.rx=wbox.rx-(piece_wid+2);
+	view_setup->box.lx=((wbox.rx-palette_wid)-(((wbox.rx-palette_wid)-wbox.lx)/2))+2;
+	view_setup->box.rx=wbox.rx-(palette_wid+2);
 	
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y;
@@ -225,7 +225,7 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->box.ty=(wbox.ty+toolbar_high)+((((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2)+2);
 	view_setup->box.by=wbox.by-((txt_palette_high+info_high)+2);
 	view_setup->box.lx=wbox.lx+2;
-	view_setup->box.rx=wbox.rx-(piece_wid+2);
+	view_setup->box.rx=wbox.rx-(palette_wid+2);
 	
 	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 	
@@ -262,7 +262,7 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->box.ty=(wbox.ty+toolbar_high)+((((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2)+2);
 	view_setup->box.by=wbox.by-((txt_palette_high+info_high)+2);
 	view_setup->box.lx=wbox.lx+2;
-	view_setup->box.rx=(wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2);
+	view_setup->box.rx=(wbox.rx-palette_wid)-(((wbox.rx-palette_wid)-wbox.lx)/2);
 	
 	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 	
@@ -297,7 +297,7 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	
 	view_setup->box.ty+=toolbar_high;
 	view_setup->box.by-=(txt_palette_high+info_high);
-	view_setup->box.rx-=piece_wid;
+	view_setup->box.rx-=palette_wid;
 
 	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 
@@ -338,8 +338,8 @@ void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 
 	view_setup->box.ty=(wbox.ty+toolbar_high)+((((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2)+2);
 	view_setup->box.by=wbox.by-((txt_palette_high+info_high)+2);
-	view_setup->box.lx=((wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2))+2;
-	view_setup->box.rx=wbox.rx-(piece_wid+2);
+	view_setup->box.lx=((wbox.rx-palette_wid)-(((wbox.rx-palette_wid)-wbox.lx)/2))+2;
+	view_setup->box.rx=wbox.rx-(palette_wid+2);
 	
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y;

@@ -152,6 +152,7 @@ void start_mesh_controls(WindowRef wind,Rect *box)
 	SetControlData(mesh_list,kControlNoPart,kControlDataBrowserIncludesFrameAndFocusTag,sizeof(framefocus),&framefocus);
 
 	SetDataBrowserTableViewRowHeight(mesh_list,9);
+	SetDataBrowserHasScrollBars(mesh_list,FALSE,TRUE);
 	
 	fontstyle.flags=kControlUseFontMask|kControlUseSizeMask|kControlUseJustMask;
 	fontstyle.font=FMGetFontFamilyFromName("\pMonaco");

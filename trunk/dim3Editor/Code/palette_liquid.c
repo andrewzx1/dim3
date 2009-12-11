@@ -38,6 +38,7 @@ and can be sold or given away.
 #define kLiquidTideRate						FOUR_CHAR_CODE('trat')
 #define kLiquidTideDirection				FOUR_CHAR_CODE('tdir')
 #define kLiquidWaveFlat						FOUR_CHAR_CODE('wflt')
+#define kLiquidGroup						FOUR_CHAR_CODE('grop')
 
 #define kLiquidHarm							FOUR_CHAR_CODE('harm')
 #define kLiquidDrownTick					FOUR_CHAR_CODE('dwat')
@@ -83,6 +84,8 @@ void palette_liquid_load(void)
 	
 	dialog_set_color(palette_liquid_wind,kLiquidColor,0,&liq->col);
 	
+	dialog_fill_group_combo(palette_liquid_wind,kLiquidGroup,0,liq->group_idx);
+	
 	dialog_set_float(palette_liquid_wind,kLiquidTintAlpha,0,liq->tint_alpha);
 	dialog_set_int(palette_liquid_wind,kLiquidDepth,0,liq->depth);
 
@@ -114,6 +117,8 @@ void palette_liquid_save(void)
 	liq->harm.drown_harm=dialog_get_int(palette_liquid_wind,kLiquidDrownHarm,0);
 	
 	dialog_get_color(palette_liquid_wind,kLiquidColor,0,&liq->col);
+	
+	liq->group_idx=dialog_get_group_combo(palette_liquid_wind,kLiquidGroup,0);
 	
 	liq->tint_alpha=dialog_get_float(palette_liquid_wind,kLiquidTintAlpha,0);
 	liq->depth=dialog_get_int(palette_liquid_wind,kLiquidDepth,0);
