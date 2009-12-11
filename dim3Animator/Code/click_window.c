@@ -258,7 +258,7 @@ void change_model_wind(Point start_pt)
 			ang_x=old_ang_x-(float)((last_pt.v-start_pt.v)/5);
 		}
 		if (size_on) {
-			magnify_z=old_magnify_z+((last_pt.v-start_pt.v)*2);
+			model_wind_set_magnify(old_magnify_z+((last_pt.v-start_pt.v)*2));
 		}
 		
 		if (!play_animate) draw_model_wind_pose(&model,cur_mesh,cur_pose);

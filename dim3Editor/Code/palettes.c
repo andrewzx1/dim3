@@ -58,7 +58,7 @@ void palette_initialize(void)
 	palette_cur_type=palette_type_none;
 	
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
-	palette_x=wbox.right-325;
+	palette_x=wbox.right-290;
 	palette_y=((wbox.bottom-wbox.top)/2)-150;
 }
 

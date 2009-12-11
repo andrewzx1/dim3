@@ -65,7 +65,6 @@ void piece_add_mesh_finish(int mesh_idx)
 	
 	main_wind_draw();
 	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
 }
 
 /* =======================================================
@@ -1056,7 +1055,6 @@ void piece_split_mesh(void)
 	drag_mode=drag_mode_mesh;
 
 	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
 }
 
 /* =======================================================

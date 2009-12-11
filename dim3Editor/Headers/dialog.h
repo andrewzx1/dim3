@@ -70,6 +70,8 @@ extern void dialog_special_combo_get_node(WindowRef wind,unsigned long sig,int i
 extern void dialog_special_combo_get_script(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_map(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_model(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
+extern void dialog_fill_group_combo(WindowRef wind,unsigned long sig,int id,int idx);
+extern int dialog_get_group_combo(WindowRef wind,unsigned long sig,int id);
 extern void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none,int idx);
 extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none);
 extern int dialog_alert(char *title,char *msg);

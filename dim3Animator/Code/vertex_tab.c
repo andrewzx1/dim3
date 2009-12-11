@@ -230,6 +230,7 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 	SetControlData(vertex_list,kControlNoPart,kControlDataBrowserIncludesFrameAndFocusTag,sizeof(framefocus),&framefocus);
 
 	SetDataBrowserTableViewRowHeight(vertex_list,9);
+	SetDataBrowserHasScrollBars(vertex_list,FALSE,TRUE);
 	
 	fontstyle.flags=kControlUseFontMask|kControlUseSizeMask|kControlUseJustMask;
 	fontstyle.font=FMGetFontFamilyFromName("\pMonaco");

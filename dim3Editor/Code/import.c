@@ -62,14 +62,11 @@ void auto_generate_map(void)
 	
 		// redraw the map
 	
-	main_wind_tool_fill_group_combo();
-		
 	main_wind_center_position_in_map();		
 	main_wind_draw();
 	
 	texture_palette_reset();
 	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
 	menu_fix_enable();
 }
 

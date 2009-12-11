@@ -164,7 +164,8 @@ void palette_spot_save(void)
 		// need to reset object combo and loaded models
 		
 	walk_view_models_reset();
-	main_wind_tool_fill_object_combo();
+	main_wind_tool_fill_spot_combo();
+	main_wind_draw();
 }
 
 static pascal OSStatus palette_spot_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)

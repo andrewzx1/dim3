@@ -33,6 +33,8 @@ extern void model_wind_reset_tools(void);
 extern void model_wind_switch_mesh_mode(void);
 extern void model_wind_reset_modifiers(void);
 
+extern void model_wind_set_magnify(int mag_z);
+
 extern void click_model_wind(Point pt,unsigned long modifiers);
 
 extern void texture_palette_draw(void);

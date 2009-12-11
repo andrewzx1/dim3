@@ -102,7 +102,7 @@ void windows_start(void)
 	
 	model_wind_open();
 	model_wind_reset_tools();
-
+	
 	SelectWindow(model_wind);
 }
 

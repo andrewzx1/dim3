@@ -64,7 +64,6 @@ void redraw_windows(void)
     main_wind_tool_default();
 	
 	menu_fix_enable();
-	main_wind_tool_fix_enable();
 	
     SelectWindow(mainwind);
     
@@ -169,9 +168,9 @@ bool file_new_map(void)
     
 	redraw_windows();
 	
-	main_wind_tool_fill_object_combo();
+	main_wind_tool_fill_spot_combo();
+	main_wind_tool_fill_scenery_combo();
 	main_wind_tool_fill_node_combo();
-	main_wind_tool_fill_group_combo();
 	
 	return(TRUE);
 }
@@ -215,9 +214,9 @@ bool file_open_map(void)
 	
 		// fill in the combos
 		
-	main_wind_tool_fill_object_combo();
+	main_wind_tool_fill_spot_combo();
+	main_wind_tool_fill_scenery_combo();
 	main_wind_tool_fill_node_combo();
-	main_wind_tool_fill_group_combo();
 	
 		// start models
 		

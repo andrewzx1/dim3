@@ -345,13 +345,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>6</integer>
-									<integer>1</integer>
+									<integer>38</integer>
+									<integer>37</integer>
+									<integer>9</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {284, 692}}</string>
+							<string>{{0, 94}, {284, 692}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -451,9 +452,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26918C1F10CE008D00AB4A15</string>
+				<string>2652315410D2017600E6736B</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26918C2010CE008D00AB4A15</string>
+				<string>2652315510D2017600E6736B</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -574,7 +575,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>281936013.01939797</real>
+	<real>282198390.08042997</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -589,7 +590,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>260AFEBC0D404E7500F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
@@ -671,7 +671,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>26918BE410CDF08D00AB4A15</string>
+				<string>2652313B10D1FE5D00E6736B</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -887,8 +887,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26918BE610CDF08D00AB4A15</string>
-				<string>26918BE710CDF08D00AB4A15</string>
+				<string>2652311C10D1FC9600E6736B</string>
+				<string>2652311D10D1FC9600E6736B</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
