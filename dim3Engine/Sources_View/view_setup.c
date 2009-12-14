@@ -306,21 +306,27 @@ void view_add_liquid_draw_list(void)
 	for (n=0;n!=map.liquid.nliquid;n++) {
 
 		liq=&map.liquid.liquids[n];
+		
+		if (!liq->never_obscure) {
 			
-			// is this liquid visible?
+				// is this liquid visible?
 
-		if (view.render->has_area) {
-			if (!view_area_check_liquid(liq)) continue;
+			if (view.render->has_area) {
+				if (!view_area_check_liquid(liq)) continue;
+			}
+
+				// auto-eliminate liquids drawn outside the obscure distance
+					
+			d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
+			if (d>obscure_dist) continue;
+					
+				// check if liquid within bound box
+
+			if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) continue;
 		}
-
-			// auto-eliminate liquids drawn outside the obscure distance
-				
-		d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
-		if (d>obscure_dist) continue;
-				
-			// check if liquid within bound box
-
-		if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) continue;
+		else {
+			d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
+		}
 		
 			// sort liquids into drawing list
 

@@ -66,12 +66,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 282022311;
-			PBXWorkspaceStateSaveDate = 282022311;
-		};
-		perUserProjectItems = {
-			26B26F5B10CF543D007DB67B /* PBXBookmark */ = 26B26F5B10CF543D007DB67B /* PBXBookmark */;
-			26B26F8E10CF586F007DB67B /* PBXTextBookmark */ = 26B26F8E10CF586F007DB67B /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 282328543;
+			PBXWorkspaceStateSaveDate = 282328543;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
@@ -98,20 +94,6 @@
 	26A5EABF0D404BD000BB47DE /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
-	};
-	26B26F5B10CF543D007DB67B /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = F5AD52FD0BBE1A66001C7C04 /* textures.c */;
-	};
-	26B26F8E10CF586F007DB67B /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5AD52FD0BBE1A66001C7C04 /* textures.c */;
-		name = "textures.c: 66";
-		rLen = 130;
-		rLoc = 1868;
-		rType = 0;
-		vrLen = 1435;
-		vrLoc = 1715;
 	};
 	26ED705D0FF1A7DB00AD19BF /* zip.c */ = {
 		uiCtxt = {
@@ -254,9 +236,9 @@
 	};
 	F5AD52F90BBE1A66001C7C04 /* pngutility.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1048, 5889}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1216, 6006}}";
 			sepNavSelRange = "{1764, 16}";
-			sepNavVisRange = "{416, 1266}";
+			sepNavVisRange = "{8800, 812}";
 			sepNavWindowFrame = "{{498, 194}, {1041, 747}}";
 		};
 	};
@@ -270,17 +252,17 @@
 	};
 	F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1118, 4615}}";
-			sepNavSelRange = "{2131, 0}";
-			sepNavVisRange = "{3791, 1204}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4719}}";
+			sepNavSelRange = "{2799, 0}";
+			sepNavVisRange = "{2406, 900}";
 			sepNavWindowFrame = "{{435, 164}, {1041, 747}}";
 		};
 	};
 	F5AD52FD0BBE1A66001C7C04 /* textures.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1055, 4693}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1125, 4992}}";
 			sepNavSelRange = "{1868, 130}";
-			sepNavVisRange = "{1715, 1435}";
+			sepNavVisRange = "{5210, 1027}";
 			sepNavWindowFrame = "{{491, 100}, {1041, 747}}";
 		};
 	};

@@ -528,7 +528,7 @@ void gl_lights_spot_reduce_box(d3pnt *min,d3pnt *max,bool is_mesh)
       
 ======================================================= */
 
-void gl_lights_calc_vertex(double x,double y,double z,float *cf)
+void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf)
 {
 	int						n;
 	double					dx,dz,dy,r,g,b,d,mult;
@@ -565,13 +565,25 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 
 		// set light value
 
+	if ((is_mesh) && (map.ambient.light_ignore_mesh)) {
+		*cf++=setup.gamma+(float)r;
+		*cf++=setup.gamma+(float)g;
+		*cf=setup.gamma+(float)b;
+		return;
+	}
+	
 	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
 	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
 }
 
-void gl_lights_get_ambient(d3col *col)
+void gl_lights_get_ambient(d3col *col,bool is_mesh)
 {
+	if ((is_mesh) && (map.ambient.light_ignore_mesh)) {
+		col->r=col->g=col->b=setup.gamma;
+		return;
+	}
+	
 	col->r=map.ambient.light_color.r+setup.gamma;
 	col->g=map.ambient.light_color.g+setup.gamma;
 	col->b=map.ambient.light_color.b+setup.gamma;
@@ -735,6 +747,7 @@ void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_light_
 	}
 
 	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_list);
+	gl_lights_get_ambient(&light_list->ambient,TRUE);
 }
 
 void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *light_list)
@@ -757,6 +770,7 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *ligh
 	
 	gl_lights_spot_reduce_box(&min,&max,TRUE);
 	gl_lights_build_from_box(&mid,&min,&max,light_list);
+	gl_lights_get_ambient(&light_list->ambient,TRUE);
 }
 
 void gl_lights_build_from_model(model_draw *draw,view_light_list_type *light_list)
@@ -768,5 +782,6 @@ void gl_lights_build_from_model(model_draw *draw,view_light_list_type *light_lis
 	model_get_view_min_max(draw,&mid,&min,&max);
 	gl_lights_spot_reduce_box(&min,&max,FALSE);
 	gl_lights_build_from_box(&mid,&min,&max,light_list);
+	gl_lights_get_ambient(&light_list->ambient,FALSE);
 }
 

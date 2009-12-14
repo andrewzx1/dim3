@@ -44,7 +44,7 @@ and can be sold or given away.
 
 #define max_core_shader_data_sz								10240
 
-#define max_core_shader										12
+#define max_core_shader										24
 
 #define gl_core_shader_light								0
 #define gl_core_shader_light_bump							1
@@ -58,6 +58,18 @@ and can be sold or given away.
 #define gl_core_shader_light_diffuse_bump					9
 #define gl_core_shader_light_diffuse_spec					10
 #define gl_core_shader_light_diffuse_bump_spec				11
+#define gl_core_shader_fog_light							12
+#define gl_core_shader_fog_light_bump						13
+#define gl_core_shader_fog_light_spec						14
+#define gl_core_shader_fog_light_bump_spec					15
+#define gl_core_shader_fog_light_map						16
+#define gl_core_shader_fog_light_map_bump					17
+#define gl_core_shader_fog_light_map_spec					18
+#define gl_core_shader_fog_light_map_bump_spec				19
+#define gl_core_shader_fog_light_diffuse					20
+#define gl_core_shader_fog_light_diffuse_bump				21
+#define gl_core_shader_fog_light_diffuse_spec				22
+#define gl_core_shader_fog_light_diffuse_bump_spec			23
 
 #define max_user_shader										64
 
@@ -147,6 +159,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nlight,light_idx[max_shader_light];
+						d3col								ambient;
 						view_light_list_gl_var_type			gl_var;
 					} view_light_list_type;
 

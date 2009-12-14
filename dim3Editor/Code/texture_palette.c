@@ -29,11 +29,7 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-#define txt_wind_column_count		32
-#define txt_wind_row_count			2
-#define txt_wind_per_page			(txt_wind_column_count*txt_wind_row_count)
-
-#define txt_wind_max_pixel_sz		32
+#define txt_wind_per_page_count		32
 
 extern int				drag_mode,main_wind_uv_layer;
 
@@ -57,18 +53,15 @@ void texture_palette_setup(void)
 	
 	GetWindowPortBounds(mainwind,&wbox);
 		
-	txt_pixel_sz=((wbox.right-palette_wid)-(wbox.left+16))/txt_wind_column_count;
-//	if (txt_pixel_sz>txt_wind_max_pixel_sz) txt_pixel_sz=txt_wind_max_pixel_sz;
-
+	txt_pixel_sz=((wbox.right-palette_wid)-(wbox.left+64))/txt_wind_per_page_count;
 	txt_palette_high=txt_pixel_sz;
 	
-//	txt_palette_high=(txt_wind_row_count*txt_pixel_sz);
 	txt_palette_y=(wbox.bottom-txt_palette_high)-info_high;
 	
 	txt_palette_box.lx=wbox.left;
 	txt_palette_box.rx=wbox.right-palette_wid;
 	txt_palette_box.ty=txt_palette_y;
-	txt_palette_box.by=txt_palette_box.ty+txt_palette_high;
+	txt_palette_box.by=(txt_palette_box.ty+txt_palette_high)+1;
 }
 
 /* =======================================================
@@ -145,7 +138,8 @@ void texture_palette_put_selected_texture(int txt_idx)
 
 void texture_palette_draw(void)
 {
-	int					i,n,x,y,yadd,sel,idx,page,page_cnt;
+	int					n,k,x,ty,by,sel,idx;
+	bool				has_texture;
 	texture_type		*texture;
 	
 		// viewport setup
@@ -153,40 +147,76 @@ void texture_palette_draw(void)
 	main_wind_set_viewport(&txt_palette_box,TRUE,FALSE);
 	
 		// texture page switch
-		
-	page_cnt=max_map_texture/txt_wind_per_page;
-	yadd=(txt_wind_row_count*txt_pixel_sz)/page_cnt;
+	
+	x=0;
+	ty=txt_palette_y;
+	by=ty+(txt_pixel_sz>>1);
 
-	for (i=0;i!=page_cnt;i++) {
-		y=txt_palette_y+(i*yadd);
+	for (n=0;n!=8;n++) {
+	
+			// time to move down?
+			
+		if (n==4) {
+			x=0;
+			ty=by;
+			by=txt_palette_y+txt_pixel_sz;
+		}
 		
-		glColor4f(0.5f,0.5f,0.5f,1.0f);
+			// draw page
+			
+		glColor4f(0.75f,0.75f,0.75f,1.0f);
 		
 		glBegin(GL_QUADS);
-		glVertex2i(0,y);
-		glVertex2i(16,y);
-		glVertex2i(16,(y+yadd));
-		glVertex2i(0,(y+yadd));
+		glVertex2i(x,ty);
+		glVertex2i((x+16),ty);
+		glVertex2i((x+16),by);
+		glVertex2i(x,by);
 		glEnd();
 		
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
 		glBegin(GL_LINE_LOOP);
-		glVertex2i(0,y);
-		glVertex2i(16,y);
-		glVertex2i(16,(y+yadd));
-		glVertex2i(0,(y+yadd));
+		glVertex2i(x,ty);
+		glVertex2i((x+16),ty);
+		glVertex2i((x+16),by);
+		glVertex2i(x,by);
 		glEnd();
 		
-		if (txt_page==i) {
-			glColor4f(0.0f,0.0f,1.0f,1.0f);
+		if (txt_page==n) {
+			glColor4f(0.3f,0.3f,1.0f,1.0f);
 			
-			glBegin(GL_TRIANGLES);
-			glVertex2i(1,(y+1));
-			glVertex2i(15,(y+(yadd/2)));
-			glVertex2i(1,((y+yadd)-1));
+			glBegin(GL_QUADS);
+			glVertex2i((x+1),(ty+1));
+			glVertex2i((x+14),(ty+1));
+			glVertex2i((x+14),(by-2));
+			glVertex2i((x+1),(by-2));
 			glEnd();
 		}
+		
+			// mark if there are textures
+			
+		has_texture=FALSE;
+		idx=n*txt_wind_per_page_count;
+		
+		for (k=idx;k!=(idx+txt_wind_per_page_count);k++) {
+			if (map.textures[k].frames[0].bitmap.gl_id!=-1) {
+				has_texture=TRUE;
+				break;
+			}
+		}
+		
+		if (has_texture) {
+			glColor4f(0.0f,0.0f,0.0f,1.0f);
+			
+			glBegin(GL_QUADS);
+			glVertex2i((x+11),(by-5));
+			glVertex2i((x+14),(by-5));
+			glVertex2i((x+14),(by-2));
+			glVertex2i((x+11),(by-2));
+			glEnd();
+		}
+		
+		x+=16;
 	}
 
 		// textures
@@ -196,12 +226,13 @@ void texture_palette_draw(void)
 	
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glEnable(GL_TEXTURE_2D);
-		
-	for (n=0;n!=txt_wind_column_count;n++) {
-		texture=&map.textures[n+(txt_page*txt_wind_column_count)];
 	
-		x=(n*txt_pixel_sz)+16;
-		y=txt_palette_y;
+	x=64;
+	ty=txt_palette_y+1;
+	by=(ty+txt_pixel_sz)-1;
+		
+	for (n=0;n!=txt_wind_per_page_count;n++) {
+		texture=&map.textures[n+(txt_page*txt_wind_per_page_count)];
 		
 			// the textures
 			
@@ -210,15 +241,17 @@ void texture_palette_draw(void)
 
 			glBegin(GL_QUADS);
 			glTexCoord2f(0,0);
-			glVertex2i(x,y);
+			glVertex2i(x,ty);
 			glTexCoord2f(1,0);
-			glVertex2i((x+txt_pixel_sz),y);
+			glVertex2i((x+txt_pixel_sz),ty);
 			glTexCoord2f(1,1);
-			glVertex2i((x+txt_pixel_sz),(y+txt_pixel_sz));
+			glVertex2i((x+txt_pixel_sz),by);
 			glTexCoord2f(0,1);
-			glVertex2i(x,(y+txt_pixel_sz));
+			glVertex2i(x,by);
 			glEnd();
 		}
+		
+		x+=txt_pixel_sz;
 	}
 	
 	glDisable(GL_TEXTURE_2D);
@@ -226,39 +259,39 @@ void texture_palette_draw(void)
 	glDisable(GL_ALPHA_TEST);
 	
 		// lines
+		
+	x=64;
 	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
-	for (n=0;n!=txt_wind_column_count;n++) {
-		idx=n+(txt_page*txt_wind_column_count);
-	
-		x=(n*txt_pixel_sz)+16;
-		y=txt_palette_y;
+	for (n=0;n!=txt_wind_per_page_count;n++) {
+		idx=n+(txt_page*txt_wind_per_page_count);
 		
 		glBegin(GL_LINE_LOOP);
-		glVertex2i(x,(y+1));
-		glVertex2i((x+txt_pixel_sz),(y+1));
-		glVertex2i((x+txt_pixel_sz),(y+txt_pixel_sz));
-		glVertex2i(x,(y+txt_pixel_sz));
+		glVertex2i(x,ty);
+		glVertex2i((x+txt_pixel_sz),ty);
+		glVertex2i((x+txt_pixel_sz),by);
+		glVertex2i(x,by);
 		glEnd();
+		
+		x+=txt_pixel_sz;
 	}
 	
 		// selection
 		
 	sel=texture_palette_get_selected_texture();
 	if (sel==-1) return;
-	if ((sel<(txt_page*txt_wind_column_count)) || (sel>=((txt_page+1)*txt_wind_column_count))) return;
+	if ((sel<(txt_page*txt_wind_per_page_count)) || (sel>=((txt_page+1)*txt_wind_per_page_count))) return;
 	
-	x=((sel-(txt_page*txt_wind_column_count))*txt_pixel_sz)+16;
-	y=txt_palette_y;
+	x=((sel-(txt_page*txt_wind_per_page_count))*txt_pixel_sz)+64;
 	
 	glColor4f(1.0f,0.0f,0.0f,1.0f);
 	
 	glBegin(GL_LINE_LOOP);
-	glVertex2i(x,(y+1));
-	glVertex2i((x+txt_pixel_sz),(y+1));
-	glVertex2i((x+txt_pixel_sz),(y+txt_pixel_sz));
-	glVertex2i(x,(y+txt_pixel_sz));
+	glVertex2i(x,ty);
+	glVertex2i((x+txt_pixel_sz),ty);
+	glVertex2i((x+txt_pixel_sz),by);
+	glVertex2i(x,by);
 	glEnd();
 }
 
@@ -286,7 +319,7 @@ void texture_palette_reset(void)
 
 void texture_palette_click(d3pnt *pnt,bool dblclick)
 {
-	int				nsel,page,page_cnt,yadd;
+	int				nsel,page;
 	
 		// move within palette
 		
@@ -294,10 +327,8 @@ void texture_palette_click(d3pnt *pnt,bool dblclick)
 	
 		// texture page change
 		
-	if (pnt->x<16) {
-		page_cnt=max_map_texture/txt_wind_per_page;
-		yadd=(txt_wind_row_count*txt_pixel_sz)/page_cnt;
-		page=pnt->y/yadd;
+	if (pnt->x<64) {
+		page=((pnt->y/(txt_pixel_sz>>1))*4)+(pnt->x/16);
 		if (txt_page!=page) {
 			txt_page=page;
 			main_wind_draw();
@@ -307,8 +338,8 @@ void texture_palette_click(d3pnt *pnt,bool dblclick)
 	
 		// find clicked texture
 	
-	nsel=((pnt->y/txt_pixel_sz)*txt_wind_column_count)+((pnt->x-16)/txt_pixel_sz);
-	nsel+=(txt_page*txt_wind_per_page);
+	nsel=(pnt->x-64)/txt_pixel_sz;
+	nsel+=(txt_page*txt_wind_per_page_count);
 		
 		// double clicks
 		

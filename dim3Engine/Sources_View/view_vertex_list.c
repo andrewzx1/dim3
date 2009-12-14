@@ -400,7 +400,7 @@ bool view_compile_mesh_gl_lists(int tick)
 					// colors when only ambient lighting
 					
 				if (only_ambient) {
-					gl_lights_get_ambient(&col);
+					gl_lights_get_ambient(&col,TRUE);
 					
 					for (k=0;k!=mesh->nvertex;k++) {
 						*pc++=col.r;
@@ -415,7 +415,7 @@ bool view_compile_mesh_gl_lists(int tick)
 					pnt=mesh->vertexes;
 
 					for (k=0;k!=mesh->nvertex;k++) {
-						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
+						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,TRUE,pc);
 						pc+=3;
 						pnt++;
 					}

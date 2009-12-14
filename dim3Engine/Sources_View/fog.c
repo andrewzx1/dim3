@@ -228,6 +228,8 @@ void fog_solid_start(void)
 	glFogi(GL_FOG_MODE,GL_LINEAR);
 	glFogi(GL_FOG_START,map.fog.inner_radius);
 	glFogi(GL_FOG_END,map.fog.outer_radius);
+	
+	glFogi(GL_FOG_COORD_SRC,GL_FRAGMENT_DEPTH);
 }
 
 void fog_solid_end(void)

@@ -413,15 +413,13 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 	gl_setup_project();
 
 		// draw background and sky
-		// unless obscured by fog
 	
-	if (!fog_solid_on()) {
-		draw_background();
-		draw_sky(tick);
-	}
-	else {
-		fog_solid_start();
-	}
+	draw_background();
+	draw_sky(tick);
+	
+		// turn on obscuring fog
+	
+	if (fog_solid_on()) fog_solid_start();
 
 		// setup per-scene shader variables
 

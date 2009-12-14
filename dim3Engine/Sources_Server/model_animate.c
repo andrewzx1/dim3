@@ -683,7 +683,7 @@ bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,
 		// light at position
 
 	gl_lights_calc_vertex_setup_model(draw);
-	gl_lights_calc_vertex((double)x,(double)y,(double)z,pc);
+	gl_lights_calc_vertex((double)x,(double)y,(double)z,FALSE,pc);
 	
 	*bright=(pc[0]+pc[1]+pc[2])/3.0f;
 	if (*bright<0.0f) *bright=0.0f;
