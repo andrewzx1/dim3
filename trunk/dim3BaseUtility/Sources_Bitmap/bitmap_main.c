@@ -125,7 +125,7 @@ int bitmap_find_nearest_power_2(int sz)
 	int			n,p2;
 
 	p2=4;
-	for (n=0;n!=10;n++) {
+	for (n=0;n!=11;n++) {
 		if (p2>sz) return(p2/2);
 		p2*=2;
 	}

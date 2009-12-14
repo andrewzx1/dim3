@@ -383,12 +383,20 @@ void gl_shader_attach_model(model_type *mdl)
       
 ======================================================= */
 
-void gl_shader_set_scene_variables(shader_type *shader)
+void gl_shader_set_scene_variables(shader_type *shader,view_light_list_type *light_list)
 {
 	if (shader->var_locs.dim3TimeMillisec!=-1) glUniform1iARB(shader->var_locs.dim3TimeMillisec,(game_time_get()-shader->start_tick));
 	if (shader->var_locs.dim3FrequencySecond!=-1) glUniform1fARB(shader->var_locs.dim3FrequencySecond,game_time_fequency_second_get(shader->start_tick));
 	if (shader->var_locs.dim3CameraPosition!=-1) glUniform3fARB(shader->var_locs.dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
-	if (shader->var_locs.dim3AmbientColor!=-1) glUniform3fARB(shader->var_locs.dim3AmbientColor,(map.ambient.light_color.r+setup.gamma),(map.ambient.light_color.g+setup.gamma),(map.ambient.light_color.b+setup.gamma));
+
+	if (shader->var_locs.dim3AmbientColor!=-1) {
+		if (light_list!=NULL) {
+			glUniform3fARB(shader->var_locs.dim3AmbientColor,light_list->ambient.r,light_list->ambient.g,light_list->ambient.b);
+		}
+		else {
+			glUniform3fARB(shader->var_locs.dim3AmbientColor,0.0f,0.0f,0.0f);
+		}
+	}
 }
 
 void gl_shader_set_texture_variables(shader_type *shader,texture_type *texture)
@@ -649,7 +657,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		
 		if (!shader->per_scene_vars_set) {
 			shader->per_scene_vars_set=TRUE;
-			gl_shader_set_scene_variables(shader);
+			gl_shader_set_scene_variables(shader,light_list);
 		}
 
 			// a shader change will force a texture

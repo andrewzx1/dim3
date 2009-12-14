@@ -393,6 +393,7 @@ void piece_create_liquid(void)
 	
 	liq->txt_idx=0;
 	liq->group_idx=-1;
+	liq->never_obscure=FALSE;
 	
 	liq->alpha=1.0f;
 	liq->tint_alpha=0.5f;

@@ -120,7 +120,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		cf[2]=decal->tint.b;
 	}
 	else {
-		gl_lights_calc_vertex((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf);
+		gl_lights_calc_vertex((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],FALSE,cf);
 		cf[0]*=decal->tint.r;
 		cf[1]*=decal->tint.g;
 		cf[2]*=decal->tint.b;

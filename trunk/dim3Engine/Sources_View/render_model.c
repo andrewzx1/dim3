@@ -112,7 +112,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			
 		if (only_ambient) {
 		
-			gl_lights_get_ambient(&col);
+			gl_lights_get_ambient(&col,FALSE);
 		
 			for (k=0;k!=mesh->nvertex;k++) {
 				*cp++=col.r;
@@ -128,7 +128,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 		vp=draw->setup.mesh_arrays[n].gl_vertex_array;
 
 		for (k=0;k!=mesh->nvertex;k++) {
-			gl_lights_calc_vertex((double)*vp,(double)*(vp+1),(double)*(vp+2),cp);
+			gl_lights_calc_vertex((double)*vp,(double)*(vp+1),(double)*(vp+2),FALSE,cp);
 			cp+=3;
 			vp+=3;
 		}

@@ -437,21 +437,14 @@ void texture_setting_frame_reset(void)
 	
 		// set info
 		
+	str[0]=0x0;
+	
 	if (texture->frames[cframe].name[0]!=0x0) {
-		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,0,texture->frames[cframe].name);
-		sprintf(str,"%dx%d",texture->frames[cframe].bitmap.wid,texture->frames[cframe].bitmap.high);
-		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,1,str);
-		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,2,type_str[texture->frames[cframe].bitmap.alpha_mode]);
-	}
-	else {
-		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,0,"");
-		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,1,"");
-		dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,2,"");
+		sprintf(str,"%s\n%dx%d\n%s",texture->frames[cframe].name,texture->frames[cframe].bitmap.wid,texture->frames[cframe].bitmap.high,type_str[texture->frames[cframe].bitmap.alpha_mode]);
 	}
 	
+	dialog_set_text(dialog_texture_wind,kTextureSettingFrameInfo,0,str);
 	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,0,FALSE);
-	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,1,FALSE);
-	dialog_enable(dialog_texture_wind,kTextureSettingFrameInfo,2,FALSE);
 	
 		// set wait
 		

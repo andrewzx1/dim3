@@ -305,6 +305,7 @@ typedef struct		{
 						float								alpha,speed_alter,tint_alpha,
 															x_txtfact,y_txtfact,x_txtoff,y_txtoff,
 															x_shift,y_shift;
+						bool								never_obscure;
 						d3col								col;
 						map_liquid_harm_type				harm;
 						map_liquid_tide_type				tide;

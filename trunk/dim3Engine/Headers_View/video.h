@@ -57,8 +57,8 @@ extern void gl_lights_compile(int tick);
 extern void gl_lights_fill_light_list(view_light_list_type *light_list);
 extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
 
-extern void gl_lights_calc_vertex(double x,double y,double z,float *cf);
-extern void gl_lights_get_ambient(d3col *col);
+extern void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf);
+extern void gl_lights_get_ambient(d3col *col,bool is_mesh);
 extern void gl_lights_calc_vertex_setup_none(void);
 extern bool gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh);
 extern bool gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq);
