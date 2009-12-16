@@ -546,7 +546,7 @@ bool menu_save_changes_dialog(void)
 
 OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
 {
-	int				x,y,z,idx,major_bone_idx,minor_bone_idx,parent_idx;
+	int				x,y,z,idx,major_bone_idx,minor_bone_idx,parent_idx,old_cur_animate;
 	float			fx,fy,fz,bone_factor;
 	bool			nudge_children,nudge_vertexes;
 	HICommand		cmd;
@@ -1136,12 +1136,15 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			idx=model_animate_add(&model);
 			if (idx==-1) return(noErr);
 			
+			old_cur_animate=cur_animate;
+			cur_animate=idx;
+			
 			if (!dialog_animation_settings_run(idx)) {
 				model_animate_delete(&model,idx);
+				cur_animate=old_cur_animate;
+				reset_animate_list();
 				return(noErr);
 			}
-			
-			cur_animate=idx;
 
 			reset_animate_list();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
@@ -1154,12 +1157,15 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			idx=model_animate_duplicate(&model,cur_animate);
 			if (idx==-1) return(noErr);
 			
+			old_cur_animate=cur_animate;
+			cur_animate=idx;
+			
 			if (!dialog_animation_settings_run(idx)) {
 				model_animate_delete(&model,idx);
+				cur_animate=old_cur_animate;
+				reset_animate_list();
 				return(noErr);
 			}
-
-			cur_animate=idx;
 
 			reset_animate_list();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
