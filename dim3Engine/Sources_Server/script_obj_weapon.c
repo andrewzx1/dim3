@@ -370,5 +370,3 @@ JSValueRef js_obj_weapon_get_alt_max_clip_count_func(JSContextRef cx,JSObjectRef
 	return(script_int_to_value(cx,weap->alt_ammo.max_clip_count));
 }
 
-
-

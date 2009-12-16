@@ -724,7 +724,7 @@ void setup_game_handle_click(int id)
 		case ctrl_decal_on_id:
 			setup.decal_on=element_get_value(ctrl_decal_on_id);
 			break;
-			
+
 		case ctrl_shadow_on_id:
 			setup.shadow_on=element_get_value(ctrl_shadow_on_id);
 			break;
