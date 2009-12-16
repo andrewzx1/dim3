@@ -31,6 +31,8 @@ and can be sold or given away.
 
 #include "video.h"
 
+extern bool fog_solid_on(void);
+
 extern map_type				map;
 extern setup_type			setup;
 extern view_type			view;

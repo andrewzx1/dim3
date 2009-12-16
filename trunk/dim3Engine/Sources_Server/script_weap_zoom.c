@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "objects.h"
 #include "weapons.h"
 
 extern js_type			js;
@@ -55,6 +56,9 @@ bool js_weap_zoom_set_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 bool js_weap_zoom_set_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_zoom_goto_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		weap_zoom_props[]={
 							{"on",					js_weap_zoom_get_on,						js_weap_zoom_set_on,				kJSPropertyAttributeDontDelete},
@@ -70,6 +74,12 @@ JSStaticValue 		weap_zoom_props[]={
 							{"tick",				js_weap_zoom_get_tick,						js_weap_zoom_set_tick,				kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
+JSStaticFunction	weap_zoom_functions[]={
+							{"enter",				js_weap_zoom_enter_func,					kJSPropertyAttributeDontDelete},
+							{"exit",				js_weap_zoom_exit_func,						kJSPropertyAttributeDontDelete},
+							{"goto",				js_weap_zoom_goto_func,						kJSPropertyAttributeDontDelete},
+							{0,0,0}};
+
 JSClassRef			weap_zoom_class;
 
 /* =======================================================
@@ -80,7 +90,7 @@ JSClassRef			weap_zoom_class;
 
 void script_init_weap_zoom_object(void)
 {
-	weap_zoom_class=script_create_class("weap_zoom_class",weap_zoom_props,NULL);
+	weap_zoom_class=script_create_class("weap_zoom_class",weap_zoom_props,weap_zoom_functions);
 }
 
 void script_free_weap_zoom_object(void)
@@ -294,6 +304,60 @@ bool js_weap_zoom_set_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	return(TRUE);
 }
 
+/* =======================================================
 
+      Functions
+      
+======================================================= */
+
+JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	weapon_type		*weap;
+
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(weap->obj_uid);
+
+	weapon_zoom_enter(obj,weap);
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	weapon_type		*weap;
+
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(weap->obj_uid);
+
+	weapon_zoom_exit(obj,weap);
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_weap_zoom_goto_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				step;
+	obj_type		*obj;
+	weapon_type		*weap;
+
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(weap->obj_uid);
+
+	step=script_value_to_int(cx,argv[1]);
+	if (step<0) step=0;
+	if (step>(weap->zoom.step_count-1)) step=weap->zoom.step_count-1;
+
+	weap->zoom.current_step=step;
+
+	return(script_null_to_value(cx));
+}
 
 

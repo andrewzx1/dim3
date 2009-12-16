@@ -86,7 +86,7 @@ void render_opaque_mesh_simple(void)
 
 		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
 		if ((mesh->lmap_txt_idx!=-1) && (!dim3_debug)) continue;
-		
+
 			// run through the polys
 			
 		poly=mesh->polys;
