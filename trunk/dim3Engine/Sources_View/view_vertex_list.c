@@ -385,7 +385,6 @@ bool view_compile_mesh_gl_lists(int tick)
 
 			// if the mesh has some non-shaders in it,
 			// recalculate the lighting
-			// supergumba -- this needs to be optimized 
 
 		else {
 
