@@ -205,7 +205,7 @@ void render_transparent_mode_switch(int mode,bool additive)
 			// simple and light map need color pointer
 			
 		if ((trans_cur_mode==render_map_transparent_mode_simple) || (trans_cur_mode==render_map_transparent_mode_light_map)) {
-			if ((mode==render_map_transparent_mode_shader) || (mode==render_map_transparent_mode_glow)) {
+			if ((mode==render_map_transparent_mode_none) || (mode==render_map_transparent_mode_shader) || (mode==render_map_transparent_mode_glow)) {
 				view_compile_gl_list_disable_color();
 			}
 		}
