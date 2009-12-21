@@ -348,12 +348,10 @@ void gl_shader_attach_map(void)
 void gl_shader_attach_model(model_type *mdl)
 {
 	int					n;
-	bool				shader_on,has_no_shader;
+	bool				shader_on;
 	texture_type		*texture;
 	
 	shader_on=gl_check_shader_ok();
-
-	has_no_shader=TRUE;
 
 	texture=mdl->textures;
 	
@@ -367,14 +365,10 @@ void gl_shader_attach_model(model_type *mdl)
 			else {
 				texture->shader_idx=gl_user_shader_find(texture->shader_name);
 			}
-			
-			if (texture->shader_idx!=-1) has_no_shader=FALSE;
 		}
 		
 		texture++;
 	}
-
-	mdl->has_no_shader=has_no_shader;
 }
 
 /* =======================================================

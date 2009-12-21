@@ -451,9 +451,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>267CE8B210D5CC8C00AF4721</string>
+				<string>26C922A910DF370D00B2A81F</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>267CE8B310D5CC8C00AF4721</string>
+				<string>26C922AA10DF370D00B2A81F</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -574,7 +574,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>282447067.61462301</real>
+	<real>283064077.838211</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -631,8 +631,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -672,7 +670,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>267CE8AF10D5CC8600AF4721</string>
+				<string>26C922A610DF36BE00B2A81F</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -888,8 +886,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>267CE84B10D5633B00AF4721</string>
-				<string>267CE84C10D5633B00AF4721</string>
+				<string>26C9210710DDB46B00B2A81F</string>
+				<string>26C9210810DDB46B00B2A81F</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

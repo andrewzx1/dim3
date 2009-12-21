@@ -93,13 +93,12 @@ bool map_textures_read(map_type *map)
 		mesh=map->mesh.meshes;
 		
 		for (n=0;n!=map->mesh.nmesh;n++) {
-
-			if (mesh->lmap_txt_idx!=-1) txt_ok[mesh->lmap_txt_idx]=TRUE;
 			
 			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
 				txt_ok[poly->txt_idx]=TRUE;
+				if (poly->lmap_txt_idx!=-1) txt_ok[poly->lmap_txt_idx]=TRUE;
 				poly++;
 			}
 			

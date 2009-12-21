@@ -380,7 +380,6 @@ void write_single_mesh_poly_uv(map_mesh_poly_type *poly,int uv_index)
 	char			str[32];
 
 	if (uv_index==0) {
-		xml_add_attribute_int("txt",poly->txt_idx);
 		xml_add_attribute_float_array("x",poly->uv[0].x,poly->ptsz);
 		xml_add_attribute_float_array("y",poly->uv[0].y,poly->ptsz);
 		if ((poly->x_shift!=0) || (poly->y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->x_shift,poly->y_shift);
@@ -405,7 +404,6 @@ void write_single_mesh(map_mesh_type *mesh)
     xml_add_tagstart("Mesh");
 
   	if (mesh->group_idx!=-1) xml_add_attribute_int("group",mesh->group_idx);
-  	if (mesh->lmap_txt_idx!=-1) xml_add_attribute_int("lmap_txt_idx",mesh->lmap_txt_idx);
 
 	xml_add_attribute_boolean("off",!mesh->flag.on);
 	xml_add_attribute_boolean("pass",mesh->flag.pass_through);
@@ -417,6 +415,7 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("never_obscure",mesh->flag.never_obscure);
 	xml_add_attribute_boolean("rot_independent",mesh->flag.rot_independent);
 	xml_add_attribute_boolean("shadow",mesh->flag.shadow);
+	xml_add_attribute_boolean("no_light_map",mesh->flag.no_light_map);
 
 	if (mesh->hide_mode!=mesh_hide_mode_never) xml_add_attribute_list("hide",(char*)mesh_hide_mode_str,mesh->hide_mode);
 	if ((mesh->rot_off.x!=0.0f) || (mesh->rot_off.y!=0.0f) || (mesh->rot_off.z!=0.0f)) xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);
@@ -486,6 +485,9 @@ void write_single_mesh(map_mesh_type *mesh)
 		xml_add_tagstart("p");
 		
 		xml_add_attribute_int_array("v",poly->v,poly->ptsz,FALSE);
+		
+		xml_add_attribute_int("txt",poly->txt_idx);
+		if (poly->lmap_txt_idx!=-1) xml_add_attribute_int("lmap_txt_idx",poly->lmap_txt_idx);
 
 		for (k=0;k!=mesh->nuv;k++) {
 			write_single_mesh_poly_uv(poly,k);

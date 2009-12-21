@@ -79,7 +79,10 @@ int texture_palette_get_selected_texture(void)
 	select_get(0,&type,&main_idx,&poly_idx);
 	
 	if (type==liquid_piece) return(map.liquid.liquids[main_idx].txt_idx);
-	if (type==mesh_piece) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
+	if (type==mesh_piece) {
+		if (main_wind_uv_layer==0) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
+		return(map.mesh.meshes[main_idx].polys[poly_idx].lmap_txt_idx);
+	}
 	
 	return(-1);
 }
@@ -112,7 +115,12 @@ void texture_palette_put_selected_texture(int txt_idx)
 			// only set polygon
 			
 		if (drag_mode==drag_mode_polygon) {
-			mesh->polys[poly_idx].txt_idx=txt_idx;
+			if (main_wind_uv_layer==0) {
+				mesh->polys[poly_idx].txt_idx=txt_idx;
+			}
+			else {
+				mesh->polys[poly_idx].lmap_txt_idx=txt_idx;
+			}
 		}
 		
 			// set all mesh
@@ -122,7 +130,12 @@ void texture_palette_put_selected_texture(int txt_idx)
 			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
-				poly->txt_idx=txt_idx;
+				if (main_wind_uv_layer==0) {
+					poly->txt_idx=txt_idx;
+				}
+				else {
+					poly->lmap_txt_idx=txt_idx;
+				}
 				poly++;
 			}
 		

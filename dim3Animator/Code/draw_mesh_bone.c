@@ -196,6 +196,8 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 	d3ang					ang,rot;
 	d3col					col;
 	model_draw_bone_type	*draw_bone,*parent_bone;
+	
+	glDisable(GL_DEPTH_TEST);
 
 		// draw the bones
 
@@ -240,7 +242,7 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 	glLineWidth(1);
         
         // bones
-        
+		
 	draw_bone=draw_setup->bones;
 	
 	bone_drag_handle_offset=draw_model_bones_drag_handle_offset(model);
@@ -264,14 +266,12 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 			glColor4f(1,0,1,1);
 			
 			glBegin(GL_POINTS);
-			glVertex3f(x,y,(z-10));
+			glVertex3f(x,y,z);
 			glEnd();
 		
 				// draw drag handles
 				
 			if (cur_pose!=-1) {
-				glDisable(GL_DEPTH_TEST);
-				
 				draw_model_bones_get_handle_rot(model,draw_setup,n,&rot);
 					
 				vct.x=bone_drag_handle_offset;
@@ -306,8 +306,6 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 				col.g=0;
 				col.b=1;
 				draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
-				
-				glEnable(GL_DEPTH_TEST);
 			}
 		}
 		else {
@@ -318,7 +316,7 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 			glColor4f(1,0,0,1);
 			
 			glBegin(GL_POINTS);
-			glVertex3f(x,y,(z-10));
+			glVertex3f(x,y,z);
 			glEnd();
 		}
 		
@@ -326,5 +324,7 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 	}
 	
 	glPointSize(1);
+	
+	glEnable(GL_DEPTH_TEST);
 }
 

@@ -40,7 +40,8 @@ typedef struct		{
 					} light_map_texture_type;
 					
 typedef struct		{
-						int							x[8],y[8],
+						int							txt_idx,
+													x[8],y[8],
 													x_shift,y_shift,
 													x_sz,y_sz;
 						bool						has_light;
@@ -48,7 +49,6 @@ typedef struct		{
 					} light_map_mesh_poly_type;
 					
 typedef struct		{
-						int							txt_idx;
 						light_map_mesh_poly_type	*polys;
 					} light_map_mesh_type;
 
@@ -123,12 +123,12 @@ int light_map_textures_create(void)
 	lmap->pixel_touch=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_touch,sz);
 	
-		// all light maps have the very
+		// first light map has the very
 		// first block reserved and set to black so polygons
 		// that have no light can be optimized to
 		// have their light map here
 		
-	*lmap->block=0x1;
+	if (idx==0) *lmap->block=0x1;
 	
 	return(idx);
 }
@@ -382,10 +382,14 @@ bool light_map_mesh_poly_start(char *err_str)
 	
 		// poly memory
 		
-	mesh=map.mesh.meshes;
-	lm_mesh=light_map_meshes;
-	
 	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		mesh=&map.mesh.meshes[n];
+		lm_mesh=&light_map_meshes[n];
+		
+			// no light map mesh?
+			
+		if (mesh->flag.no_light_map) continue;
 	
 			// prepare meshes
 			
@@ -442,12 +446,15 @@ bool light_map_mesh_poly_start(char *err_str)
 void light_map_mesh_poly_free(void)
 {
 	int							n;
+	map_mesh_type				*mesh;
 	light_map_mesh_type			*lm_mesh;
 	
+	mesh=map.mesh.meshes;
 	lm_mesh=light_map_meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		free(lm_mesh->polys);
+		if (!mesh->flag.no_light_map) free(lm_mesh->polys);
+		mesh++;
 		lm_mesh++;
 	}
 	
@@ -460,7 +467,7 @@ void light_map_mesh_poly_free(void)
       
 ======================================================= */
 
-bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *box,unsigned char blk,light_map_texture_type *lmap)
+bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *box,light_map_texture_type *lmap)
 {
 	int				x,y,bx,by,block_count,b_x_sz,b_y_sz;
 	bool			hit;
@@ -514,7 +521,7 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 			for (by=y;by<(y+b_y_sz);by++) {
 				bptr=lmap->block+((by*block_count)+x);
 				for (bx=x;bx<(x+b_x_sz);bx++) {
-					*bptr++=blk;
+					*bptr++=0x1;
 				}
 			}
 			
@@ -542,22 +549,6 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 	}
 
 	return(FALSE);
-}
-
-void light_map_texture_clear_block_type(unsigned char blk,light_map_texture_type *lmap)
-{
-	int				n,block_count;
-	unsigned char	*bptr;
-	
-	block_count=map.settings.light_map_size/light_map_texture_block_size;
-	block_count*=block_count;
-		
-	bptr=lmap->block;
-	
-	for (n=0;n!=block_count;n++) {
-		if ((*bptr)==blk) *bptr=0x0;
-		bptr++;
-	}
 }
 
 /* =======================================================
@@ -959,107 +950,33 @@ bool light_map_render_poly(int mesh_idx,int poly_idx,light_map_texture_type *lma
       
 ======================================================= */
 
-void light_map_create_mesh_poly(int mesh_idx,int poly_idx,light_map_texture_type *lmap)
+bool light_map_create_mesh_poly(int mesh_idx,int poly_idx,char *err_str)
 {
-	int							x,y;
+	int							n,x,y,txt_idx;
 	d3rect						box;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	light_map_mesh_type			*lm_mesh;
 	light_map_mesh_poly_type	*lm_poly;
+	light_map_texture_type		*lmap;
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 	
 	lm_mesh=&light_map_meshes[mesh_idx];
 	lm_poly=&lm_mesh->polys[poly_idx];
-
-		// if all black, skip rendering
-		
-	if (!lm_poly->has_light) return;
 	
-		// get rendering spot (need to get again as this
-		// might be a new texture and block it off
-		// from further rendering
+		// detect if this poly is all in dark
 		
-	if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,0x1,lmap)) return;
-		
-		// remember the shift for creating the UVs
-		
-	lm_poly->x_shift=x;
-	lm_poly->y_shift=y;
-	
-	memmove(&lm_poly->box,&box,sizeof(d3rect));
-
-		// render the polygon
-		
-	light_map_render_poly(mesh_idx,poly_idx,lmap);
-}
-
-bool light_map_create_mesh_fit_texture(int mesh_idx,light_map_texture_type *lmap)
-{
-	int							k,x,y;
-	bool						txt_ok;
-	map_mesh_type				*mesh;
-	light_map_mesh_type			*lm_mesh;
-	light_map_mesh_poly_type	*lm_poly;
-	
-	mesh=&map.mesh.meshes[mesh_idx];
-	lm_mesh=&light_map_meshes[mesh_idx];
-
-		// try to block out the meshes using 0x2 (so not
-		// to interfere with previous 0x1 blocks) 
-		
-	txt_ok=TRUE;
-	lm_poly=lm_mesh->polys;
-	
-	for (k=0;k!=mesh->npoly;k++) {
-		if (lm_poly->has_light) {
-			if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,NULL,0x2,lmap)) {
-				txt_ok=FALSE;
-				break;
-			}
-		}
-		
-		lm_poly++;
-	}
-	
-	light_map_texture_clear_block_type(0x2,lmap);
-
-	return(txt_ok);
-}
-
-bool light_map_create_mesh(int mesh_idx,char *err_str)
-{
-	int							n,txt_idx;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	light_map_mesh_poly_type	*lm_poly;
-	light_map_mesh_type			*lm_mesh;
-	light_map_texture_type		*lmap;
-	
-	mesh=&map.mesh.meshes[mesh_idx];
-	lm_mesh=&light_map_meshes[mesh_idx];
-	
-		// run through all the polys and
-		// lock off the ones that aren't touched
-		// by any light
-		
-	poly=mesh->polys;
-	lm_poly=lm_mesh->polys;
-	
-	for (n=0;n!=mesh->npoly;n++) {
+	lm_poly->has_light=light_map_render_poly(mesh_idx,poly_idx,NULL);
+	if (!lm_poly->has_light) {
 		lm_poly->x_shift=lm_poly->y_shift=0;
-		lm_poly->has_light=light_map_render_poly(mesh_idx,n,NULL);
-		poly++;
-		lm_poly++;
+		lm_poly->txt_idx=0;
+		return(TRUE);
 	}
-
-		// find if it can fit in any of the
-		// existing light map textures
-		
-		// go through the light maps blocking off with 0x2
-		// so it can be cleared at the end of the test
+	
+		// can this polygon fit in any of the current
+		// light maps?
 		
 	txt_idx=-1;
 	
@@ -1067,13 +984,13 @@ bool light_map_create_mesh(int mesh_idx,char *err_str)
 		lmap=&light_map_textures[n];
 		if (lmap->pixel_data==NULL) continue;
 		
-		if (light_map_create_mesh_fit_texture(mesh_idx,lmap)) {
+		if (light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lmap)) {
 			txt_idx=n;
 			break;
 		}
 	}
 
-		// need to create a new one?
+		// need to create a new light map?
 		
 	if (txt_idx==-1) {
 	
@@ -1085,22 +1002,47 @@ bool light_map_create_mesh(int mesh_idx,char *err_str)
 		
 			// are we too big to fit this mesh in a single texture?
 			
-		if (!light_map_create_mesh_fit_texture(mesh_idx,&light_map_textures[txt_idx])) {
+		lmap=&light_map_textures[txt_idx];
+			
+		if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lmap)) {
 			sprintf(err_str,"The quality is too high and will cause a mesh %d to not be able to fit within a single light map",mesh_idx);
 			return(FALSE);
 		}
 	}
-	
-	lmap=&light_map_textures[txt_idx];
-	
-		// remember this light map
 		
-	lm_mesh->txt_idx=txt_idx;
+		// remember the shift for creating the UVs
+		
+	lm_poly->x_shift=x;
+	lm_poly->y_shift=y;
 	
-		// create the light map for each poly
+	memmove(&lm_poly->box,&box,sizeof(d3rect));
+	
+	lm_poly->txt_idx=txt_idx;
 
+		// render the polygon
+		
+	lmap=&light_map_textures[txt_idx];
+	light_map_render_poly(mesh_idx,poly_idx,lmap);
+	
+	return(TRUE);
+}
+
+bool light_map_create_mesh(int mesh_idx,char *err_str)
+{
+	int							n;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	light_map_mesh_poly_type	*lm_poly;
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	
+	poly=mesh->polys;
+	lm_poly=light_map_meshes[mesh_idx].polys;
+	
 	for (n=0;n!=mesh->npoly;n++) {
-		light_map_create_mesh_poly(mesh_idx,n,lmap);
+		if (!light_map_create_mesh_poly(mesh_idx,n,err_str)) return(FALSE);
+		poly++;
+		lm_poly++;
 	}
 	
 	return(TRUE);
@@ -1118,10 +1060,6 @@ void light_map_finialize_mesh(int mesh_idx)
 	mesh=&map.mesh.meshes[mesh_idx];
 	lm_mesh=&light_map_meshes[mesh_idx];
 	
-		// set light map texture
-		
-	mesh->lmap_txt_idx=(max_map_texture-max_light_map_textures)+lm_mesh->txt_idx;
-	
 		// make sure there are two UVs
 		
 	mesh->nuv=2;
@@ -1134,6 +1072,10 @@ void light_map_finialize_mesh(int mesh_idx)
 	lm_poly=lm_mesh->polys;
 	
 	for (n=0;n!=mesh->npoly;n++) {
+		
+			// set light map texture
+		
+		poly->lmap_txt_idx=(max_map_texture-max_light_map_textures)+lm_poly->txt_idx;
 	
 			// if no light, use special black
 			// block in all light maps
@@ -1165,7 +1107,7 @@ void light_map_finialize_mesh(int mesh_idx)
       
 ======================================================= */
 
-bool light_maps_create(char *err_str)
+bool light_maps_create_process(char *err_str)
 {
 	int				n;
 	char			base_path[1024],dir_path[1024];
@@ -1182,6 +1124,8 @@ bool light_maps_create(char *err_str)
 		// clear the textures and
 		// start mesh-poly setup
 		
+	dialog_progress_next();
+		
 	if (!light_map_textures_start(err_str)) return(FALSE);
 	if (!light_map_mesh_poly_start(err_str)) {
 		light_map_textures_free();
@@ -1191,6 +1135,10 @@ bool light_maps_create(char *err_str)
 		// run all the meshes through
 		
 	for (n=0;n!=map.mesh.nmesh;n++) {
+		
+		dialog_progress_next();
+	
+		if (map.mesh.meshes[n].flag.no_light_map) continue;
 	
 		if (!light_map_create_mesh(n,err_str)) {
 			light_map_textures_free();
@@ -1202,6 +1150,8 @@ bool light_maps_create(char *err_str)
 	
 		// write all the textures
 		
+	dialog_progress_next();
+		
 	light_map_textures_blur_edges();
 	light_map_textures_save(base_path);
 	
@@ -1209,16 +1159,36 @@ bool light_maps_create(char *err_str)
 		// set alternate texture)
 		
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		light_map_finialize_mesh(n);
+		dialog_progress_next();
+		
+		if (!map.mesh.meshes[n].flag.no_light_map) {
+			light_map_finialize_mesh(n);
+		}
+		else {
+			map.mesh.meshes[n].nuv=1;			// no light map UV
+		}
 	}
 	
 		// free textures and polys
 		
+	dialog_progress_next();
+
 	light_map_textures_free();
 	light_map_mesh_poly_free();
 	
 	main_wind_draw();
 	
 	return(TRUE);
+}
+
+bool light_maps_create(char *err_str)
+{
+	bool			ok;
+	
+	dialog_progress_start("Generating Light Maps...",4+(map.mesh.nmesh*2));
+	ok=light_maps_create_process(err_str);
+	dialog_progress_end();
+	
+	return(ok);
 }
 

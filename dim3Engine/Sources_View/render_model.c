@@ -57,10 +57,6 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 	d3col			col;
 	model_mesh_type	*mesh;
 
-		// if only shaders, then no color list required
-
-	if ((!dim3_debug) && (!mdl->has_no_shader)) return;
-
 		// setup vertex calcing
 
 	only_ambient=!gl_lights_calc_vertex_setup_model(draw);
@@ -69,8 +65,14 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
+		
+			// shaders don't need color lists
 
 		mesh=&mdl->meshes[n];
+		if ((!dim3_debug) && (!mesh->draw.has_no_shader)) continue;
+		
+			// setup color list
+			
 		cp=draw->setup.mesh_arrays[n].gl_color_array;
 
 			// debug draw
@@ -362,6 +364,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	model_material_type		*material;
 	
 	mesh=&mdl->meshes[mesh_idx];
+	if ((!dim3_debug) && (mesh->draw.only_shaders)) return;
 	
 		// setup correct mesh pointers
 
@@ -442,6 +445,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	model_material_type		*material;
 	
 	mesh=&mdl->meshes[mesh_idx];
+	if ((dim3_debug) || (mesh->draw.has_no_shader)) return;
 
 		// setup correct mesh pointers
 
@@ -523,6 +527,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 	model_material_type		*material;
 
 	mesh=&mdl->meshes[mesh_idx];
+	if ((!dim3_debug) && (mesh->draw.only_shaders)) return;
 
 		// setup correct mesh pointers
 
@@ -621,6 +626,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 	model_material_type		*material;
 
 	mesh=&mdl->meshes[mesh_idx];
+	if ((dim3_debug) || (mesh->draw.has_no_shader)) return;
 
 		// setup correct mesh pointers
 
@@ -783,6 +789,7 @@ void render_model_setup(int tick,model_draw *draw)
 	int					n,t,frame;
 	float				alpha;
 	model_type			*mdl;
+	model_mesh_type		*mesh;
     texture_type		*texture;
 	
 		// get model
@@ -813,6 +820,12 @@ void render_model_setup(int tick,model_draw *draw)
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
 		
 			// check for any transparent textures
+			// or shaders
+		
+		mesh=&mdl->meshes[n];
+			
+		mesh->draw.has_no_shader=TRUE;
+		mesh->draw.only_shaders=TRUE;
 			
 		texture=mdl->textures;
 		
@@ -836,7 +849,7 @@ void render_model_setup(int tick,model_draw *draw)
 				frame=texture->animate.current_frame;
 			}
 			else {
-			frame=(int)draw->cur_texture_frame[t];
+				frame=(int)draw->cur_texture_frame[t];
 			}
 	
 			if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) {
@@ -846,8 +859,19 @@ void render_model_setup(int tick,model_draw *draw)
 				draw->has_opaque=TRUE;
 			}
 			
+				// check for shaders
+				
+			if (texture->shader_idx!=-1) {
+				mesh->draw.has_no_shader=FALSE;
+			}
+			else {
+				mesh->draw.only_shaders=FALSE;
+			}
+			
 			texture++;
 		}
+		
+		if (mesh->draw.has_no_shader) mesh->draw.only_shaders=FALSE;
 		
 		if ((draw->has_transparent) && (draw->has_opaque)) break;
 	}

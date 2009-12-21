@@ -229,7 +229,7 @@ typedef struct		{
 					} map_mesh_poly_uv_type;
 
 typedef struct		{
-						int									txt_idx,ptsz,v[8];
+						int									txt_idx,lmap_txt_idx,ptsz,v[8];
 						float								x_shift,y_shift,dark_factor,alpha;
 						char								camera[name_str_len];
 						map_mesh_poly_uv_type				uv[max_mesh_poly_uv_layer];
@@ -252,7 +252,7 @@ typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
 															lock_uv,lock_move,never_obscure,
-															rot_independent,shadow,
+															rot_independent,shadow,no_light_map,
 															touched;
 					} map_mesh_flag_type;
 
@@ -266,12 +266,13 @@ typedef struct		{
 typedef struct		{
 						int									vertex_offset;
 						bool								moved,has_opaque,has_transparent,
-															has_shader,has_no_shader,has_glow;
+															has_shader,has_no_shader,has_glow,
+															has_light_map;
 					} map_mesh_draw_type;
 					
 typedef struct		{
 						int									nvertex,npoly,nuv,group_idx,
-															lmap_txt_idx,hide_mode;
+															hide_mode;
 						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
