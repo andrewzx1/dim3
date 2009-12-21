@@ -296,7 +296,7 @@ void render_transparent_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly
 
 	if (!dim3_debug) {
 		if (poly->draw.shader_on) return;
-		if (mesh->lmap_txt_idx!=-1) return;
+		if (mesh->draw.has_light_map) return;
 	}
 	
 		// time to turn on some gl pointers?
@@ -320,17 +320,15 @@ void render_transparent_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *p
 
 	if (!dim3_debug) {
 		if (poly->draw.shader_on) return;
-		if (mesh->lmap_txt_idx==-1) return;
+		if (!mesh->draw.has_light_map) return;
 	}
 	
 		// time to turn on some gl pointers?
 
 	texture=&map.textures[poly->txt_idx];
-	render_transparent_mode_switch(render_map_transparent_mode_light_map,texture->additive);
+	lm_texture=&map.textures[poly->lmap_txt_idx];
 
-		// get light map texture
-		
-	lm_texture=&map.textures[mesh->lmap_txt_idx];
+	render_transparent_mode_switch(render_map_transparent_mode_light_map,texture->additive);
 
 		// draw the polygon
 
@@ -356,10 +354,10 @@ void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_po
 
 	if (!mesh->flag.hilite) {
 		gl_lights_build_from_poly(mesh_idx,poly,&light_list);
-		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->lmap_txt_idx,poly->dark_factor,poly->alpha,&light_list,NULL,NULL,FALSE);
+		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,poly->dark_factor,poly->alpha,&light_list,NULL,NULL,FALSE);
 	}
 	else {
-		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->lmap_txt_idx,poly->dark_factor,poly->alpha,NULL,&poly->box.mid,NULL,FALSE);
+		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,poly->dark_factor,poly->alpha,NULL,&poly->box.mid,NULL,FALSE);
 	}
 
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);

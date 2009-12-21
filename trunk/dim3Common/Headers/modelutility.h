@@ -151,9 +151,14 @@ typedef struct		{
 					} model_material_type;
 
 typedef struct		{
+						bool							has_no_shader,only_shaders;
+					} model_mesh_draw_type;
+					
+typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
 						bool							no_lighting,blend_add,tintable;
+						model_mesh_draw_type			draw;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;
 						model_material_type				*materials;
@@ -281,7 +286,6 @@ typedef struct		{
 														nmesh,nbone,npose,nanimate,nhit_box,
 														deform_mode;
 						char							name[name_str_len],load_base_path[1024];
-						bool							has_no_shader;
 						d3pnt							center;
 						model_box_type					view_box;
 						model_tags						tags;

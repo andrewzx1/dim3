@@ -37,6 +37,9 @@ and can be sold or given away.
 
 extern file_path_setup_type			file_path_setup;
 
+int									dialog_progress_value,dialog_progress_count;
+WindowRef							dialog_progress_wind;
+
 /* =======================================================
 
       Open Dialogs
@@ -1028,6 +1031,57 @@ int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none)
 	
 	if (idx==0) return(-1);
 	return(idx-2);
+}
+
+/* =======================================================
+
+      Progress Dialog
+      
+======================================================= */
+
+void dialog_progress_next(void)
+{
+	int			prog;
+	
+		// next step
+		
+	dialog_progress_value++;
+	if (dialog_progress_value>=dialog_progress_count) {
+		prog=100;
+	}
+	else {
+		prog=(100*dialog_progress_value)/dialog_progress_count;
+	}
+	
+		// redraw progress
+		
+	dialog_set_value(dialog_progress_wind,FOUR_CHAR_CODE('prog'),0,prog);
+	dialog_redraw(dialog_progress_wind,FOUR_CHAR_CODE('prog'),0);
+
+	QDFlushPortBuffer(GetWindowPort(dialog_progress_wind),NULL);
+}
+
+void dialog_progress_start(char *title,int count)
+{
+		// progress size
+		
+	dialog_progress_value=0;
+	dialog_progress_count=count;
+	
+		// open progress wind
+		
+	dialog_open(&dialog_progress_wind,"Progress");
+	dialog_set_text(dialog_progress_wind,FOUR_CHAR_CODE('titl'),0,title);
+
+	ShowWindow(dialog_progress_wind);
+	
+	SetThemeCursor(kThemeWatchCursor);
+}
+
+void dialog_progress_end(void)
+{
+	SetThemeCursor(kThemeArrowCursor);
+	DisposeWindow(dialog_progress_wind);
 }
 
 /* =======================================================

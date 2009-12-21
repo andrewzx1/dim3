@@ -66,7 +66,6 @@ int map_mesh_add(map_type *map)
 	mesh=&map->mesh.meshes[mesh_idx];
 
 	mesh->group_idx=-1;
-	mesh->lmap_txt_idx=-1;
 		
 	mesh->flag.on=TRUE;
 	mesh->flag.pass_through=FALSE;
@@ -79,6 +78,7 @@ int map_mesh_add(map_type *map)
 	mesh->flag.never_obscure=FALSE;
 	mesh->flag.rot_independent=FALSE;
 	mesh->flag.shadow=FALSE;
+	mesh->flag.no_light_map=FALSE;
 
 	mesh->hide_mode=mesh_hide_mode_never;
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
@@ -258,7 +258,6 @@ int map_mesh_duplicate(map_type *map,int mesh_idx)
 		
 	new_mesh->group_idx=mesh->group_idx;
 	new_mesh->nuv=mesh->nuv;
-	new_mesh->lmap_txt_idx=mesh->lmap_txt_idx;
 	memmove(&new_mesh->rot_off,&mesh->rot_off,sizeof(d3pnt));
 	memmove(&new_mesh->flag,&mesh->flag,sizeof(map_mesh_flag_type));
 	memmove(&new_mesh->msg,&mesh->msg,sizeof(map_mesh_message_type));
@@ -367,6 +366,7 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 		
 	poly->ptsz=ptsz;
 	poly->txt_idx=txt_idx;
+	poly->lmap_txt_idx=-1;
 	
 	poly->x_shift=0.0f;
 	poly->y_shift=0.0f;

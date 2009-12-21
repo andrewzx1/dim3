@@ -39,19 +39,18 @@ extern map_type				map;
 bool dialog_save_run(void)
 {
 	bool				dialog_save_ok;
-	WindowRef			dialog_save_wind;
 
 	SetThemeCursor(kThemeWatchCursor);
 
-	dialog_open(&dialog_save_wind,"Save");
-	ShowWindow(dialog_save_wind);
-
+	dialog_progress_start("Save",2);
+	
+	dialog_progress_next();
 	node_path_rebuild();
+	
+	dialog_progress_next();
 	dialog_save_ok=map_save(&map);
 	
-	DisposeWindow(dialog_save_wind);
-	
-	SetThemeCursor(kThemeArrowCursor);
+	dialog_progress_end();
 	
 	return(dialog_save_ok);
 }

@@ -226,8 +226,8 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 				
 			texture=&map.textures[mesh_poly->txt_idx];
 			if (main_wind_uv_layer!=0) {
-				if (mesh->lmap_txt_idx!=-1) {
-					texture=&map.textures[mesh->lmap_txt_idx];
+				if (mesh_poly->lmap_txt_idx!=-1) {
+					texture=&map.textures[mesh_poly->lmap_txt_idx];
 				}
 			}
 		

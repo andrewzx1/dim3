@@ -36,7 +36,7 @@ extern map_type				map;
 #define kLightMapBlurCount					FOUR_CHAR_CODE('blur')
 
 bool						dialog_light_map_cancel;
-WindowRef					dialog_light_map_wind,dialog_light_map_generate_wind;
+WindowRef					dialog_light_map_wind;
 
 extern bool light_maps_create(char *err_str);
 
@@ -142,16 +142,8 @@ bool dialog_light_map_run(void)
 	map.settings.light_map_quality=quality;
 	map.settings.light_map_smear_count=smear_count;
 	map.settings.light_map_blur_count=blur_count;
-		
-	dialog_open(&dialog_light_map_generate_wind,"LightMapGenerate");
-	ShowWindow(dialog_light_map_generate_wind);
 
-	SetThemeCursor(kThemeWatchCursor);
 	ok=light_maps_create(err_str);
-	SetThemeCursor(kThemeArrowCursor);
-	
-	DisposeWindow(dialog_light_map_generate_wind);
-		
 	if (!ok) dialog_alert("Can not build light maps",err_str);
 	
 	return(ok);

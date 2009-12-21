@@ -85,7 +85,7 @@ void render_opaque_mesh_simple(void)
 			// unless debug is on
 
 		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
-		if ((mesh->lmap_txt_idx!=-1) && (!dim3_debug)) continue;
+		if ((mesh->draw.has_light_map) && (!dim3_debug)) continue;
 
 			// run through the polys
 			
@@ -161,12 +161,7 @@ void render_opaque_mesh_light_map(void)
 			// unless debug is on
 
 		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
-		if ((mesh->lmap_txt_idx==-1) || (dim3_debug)) continue;
-		
-			// get light map id
-			
-		texture=&map.textures[mesh->lmap_txt_idx];
-		lmap_gl_id=texture->frames[0].bitmap.gl_id;
+		if ((!mesh->draw.has_light_map) || (dim3_debug)) continue;
 		
 			// run through the polys
 			
@@ -198,6 +193,8 @@ void render_opaque_mesh_light_map(void)
 				gl_id=texture->frames[poly->draw.frame].bitmap.gl_id;
 			}
 
+			
+			lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
 
 			gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);
 
@@ -271,10 +268,10 @@ void render_opaque_mesh_shader(void)
 
 			if (!mesh->flag.hilite) {
 				gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,&light_list);
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->lmap_txt_idx,poly->dark_factor,1.0f,&light_list,NULL,NULL,FALSE);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,poly->dark_factor,1.0f,&light_list,NULL,NULL,FALSE);
 			}
 			else {
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->lmap_txt_idx,poly->dark_factor,1.0f,NULL,&poly->box.mid,NULL,FALSE);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,poly->dark_factor,1.0f,NULL,&poly->box.mid,NULL,FALSE);
 			}
 
 				// fix texture if any back rendering

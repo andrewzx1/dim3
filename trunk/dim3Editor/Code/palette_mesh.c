@@ -43,13 +43,13 @@ and can be sold or given away.
 #define kMeshSettingShadow						FOUR_CHAR_CODE('shad')
 #define kMeshSettingNeverObscure				FOUR_CHAR_CODE('nvob')
 #define kMeshSettingRotIndependent				FOUR_CHAR_CODE('rtip')
+#define kMeshSettingNoLightMap					FOUR_CHAR_CODE('nlmp')
 
 #define kMeshSettingRotX						FOUR_CHAR_CODE('rotx')
 #define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
 #define kMeshSettingRotZ						FOUR_CHAR_CODE('rotz')
 
 #define kMeshSettingGroup						FOUR_CHAR_CODE('grop')
-#define kMeshSettingLightMapTexture				FOUR_CHAR_CODE('etxt')
 #define kMeshSettingHideMode					FOUR_CHAR_CODE('hdmd')
 
 #define kMeshSendMessageEnter					FOUR_CHAR_CODE('smen')
@@ -95,6 +95,7 @@ void palette_mesh_load(void)
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingShadow,0,mesh->flag.shadow);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingNeverObscure,0,mesh->flag.never_obscure);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingRotIndependent,0,mesh->flag.rot_independent);
+	dialog_set_boolean(palette_mesh_wind,kMeshSettingNoLightMap,0,mesh->flag.no_light_map);
 
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotX,0,mesh->rot_off.x);
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotY,0,mesh->rot_off.y);
@@ -102,7 +103,6 @@ void palette_mesh_load(void)
 	
 	dialog_fill_group_combo(palette_mesh_wind,kMeshSettingGroup,0,mesh->group_idx);
 	dialog_set_combo(palette_mesh_wind,kMeshSettingHideMode,0,mesh->hide_mode);
-	dialog_fill_texture_combo(palette_mesh_wind,kMeshSettingLightMapTexture,0,TRUE,mesh->lmap_txt_idx);
 	
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageEnter,0,mesh->msg.entry_on);
 	dialog_set_int(palette_mesh_wind,kMeshSendMessageEnterId,0,mesh->msg.entry_id);
@@ -140,6 +140,7 @@ void palette_mesh_save(void)
 	mesh->flag.shadow=dialog_get_boolean(palette_mesh_wind,kMeshSettingShadow,0);
 	mesh->flag.never_obscure=dialog_get_boolean(palette_mesh_wind,kMeshSettingNeverObscure,0);
 	mesh->flag.rot_independent=dialog_get_boolean(palette_mesh_wind,kMeshSettingRotIndependent,0);
+	mesh->flag.no_light_map=dialog_get_boolean(palette_mesh_wind,kMeshSettingNoLightMap,0);
 	
 	mesh->rot_off.x=dialog_get_int(palette_mesh_wind,kMeshSettingRotX,0);
 	mesh->rot_off.y=dialog_get_int(palette_mesh_wind,kMeshSettingRotY,0);
@@ -147,7 +148,6 @@ void palette_mesh_save(void)
 	
 	mesh->group_idx=dialog_get_group_combo(palette_mesh_wind,kMeshSettingGroup,0);
 	mesh->hide_mode=dialog_get_combo(palette_mesh_wind,kMeshSettingHideMode,0);
-	mesh->lmap_txt_idx=dialog_get_texture_combo(palette_mesh_wind,kMeshSettingLightMapTexture,0,TRUE);
 	
 	mesh->msg.entry_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageEnter,0);
 	mesh->msg.entry_id=dialog_get_int(palette_mesh_wind,kMeshSendMessageEnterId,0);

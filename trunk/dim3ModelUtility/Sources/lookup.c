@@ -94,7 +94,7 @@ int model_find_mesh(model_type *model,char *mesh_name)
 	mesh=model->meshes;
 	
 	for (n=0;n!=nmesh;n++) {
-		if (strcmp(mesh->name,mesh_name)==0) return(n);
+		if (strcasecmp(mesh->name,mesh_name)==0) return(n);
 		mesh++;
 	}
 	
@@ -128,7 +128,7 @@ int model_find_pose(model_type *model,char *pose_name)
 	pose=model->poses;
 	
 	for (n=0;n!=npose;n++) {
-		if (strcmp(pose->name,pose_name)==0) return(n);
+		if (strcasecmp(pose->name,pose_name)==0) return(n);
 		pose++;
 	}
 	
@@ -144,7 +144,7 @@ int model_find_animate(model_type *model,char *animate_name)
 	animate=model->animates;
 	
 	for (n=0;n!=nanimate;n++) {
-		if (strcmp(animate->name,animate_name)==0) return(n);
+		if (strcasecmp(animate->name,animate_name)==0) return(n);
 		animate++;
 	}
 	

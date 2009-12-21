@@ -188,7 +188,6 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
 			draw_model(model,mesh_idx,draw_setup);
 			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
-			glClear(GL_DEPTH_BUFFER_BIT);
 			draw_model_bones(model,draw_setup,cur_bone);
 			break;
 		case dt_mesh_bones:

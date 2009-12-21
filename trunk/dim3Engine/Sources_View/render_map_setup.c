@@ -72,6 +72,7 @@ void render_map_setup(void)
 		mesh->draw.has_opaque=FALSE;
 		mesh->draw.has_transparent=FALSE;
 		mesh->draw.has_glow=FALSE;
+		mesh->draw.has_light_map=FALSE;
 		
 			// run through the polys
 
@@ -98,6 +99,7 @@ void render_map_setup(void)
 			mesh->draw.has_shader|=poly->draw.shader_on;
 			mesh->draw.has_no_shader|=(!poly->draw.shader_on);
 			mesh->draw.has_glow|=poly->draw.glow_on;
+			mesh->draw.has_light_map|=(poly->lmap_txt_idx!=-1);
 
 			poly++;
 		}
