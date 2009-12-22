@@ -881,7 +881,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Resources/Info-dim3_Editor.plist";
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../dim3Common/Libraries",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../dim3Common/MPG123\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PER_ARCH_CFLAGS_i386 = "-msse2 -fno-omit-frame-pointer";
 				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -mcpu=G4";

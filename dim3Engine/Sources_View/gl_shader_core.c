@@ -117,6 +117,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	strcat(buf,";\n");
 
 	strcat(buf,"uniform float dim3Alpha");
+	if (light_map) strcat(buf,",dim3LightMapBoost");
 	if (!diffuse) strcat(buf,",dim3DarkFactor");
 	if (bump) strcat(buf,",dim3BumpFactor");
 	if (spec) strcat(buf,",dim3SpecularFactor");
@@ -153,6 +154,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	strcat(buf,";\n");
 
 	strcat(buf,"vec3 ambient=dim3AmbientColor");
+	if (light_map) strcat(buf,",lmap");
 	if (diffuse) strcat(buf,",diffuse,lightNormal");
 	if ((bump) || (diffuse)) strcat(buf,",combineLightVector=vec3(0.0,0.0,0.0)");
 	if (bump) strcat(buf,",bumpVector,bumpMap");
@@ -164,8 +166,11 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 
 		// the light map
 
-	if (light_map) strcat(buf,"ambient+=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
-
+	if (light_map) {
+		strcat(buf,"lmap=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
+		strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
+	}
+	
 		// the texture lighting
 		
 	for (n=0;n!=nlight;n++) {
