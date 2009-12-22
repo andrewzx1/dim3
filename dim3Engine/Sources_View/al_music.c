@@ -141,13 +141,13 @@ SDL_AudioSpec *SDL_LoadMP3(const char *file, SDL_AudioSpec *spec, Uint8 **audio_
 	mh=mpg123_new(NULL,&err);
 	if (mh==NULL) return(FALSE);
 	
-	if (mp123_open(mh,file)!=MPG123_OK) {
+	if (mpg123_open(mh,file)!=MPG123_OK) {
 		mpg123_delete(mh);
 		mpg123_exit();			// supergumba -- move this!
 		return(FALSE);
 	}
 		
-	if (mp123_getformat(mh,&rate,&channels,&encoding)!=MPG123_OK) {
+	if (mpg123_getformat(mh,&rate,&channels,&encoding)!=MPG123_OK) {
 		mpg123_close(mh);
 		mpg123_delete(mh);
 		mpg123_exit();			// supergumba -- move this!
@@ -176,7 +176,6 @@ SDL_AudioSpec *SDL_LoadMP3(const char *file, SDL_AudioSpec *spec, Uint8 **audio_
 
 }
 */
-
 
 /*
 int al_open_buffer2(char *name,char *path,int min_dist,int max_dist)
