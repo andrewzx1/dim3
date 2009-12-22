@@ -113,7 +113,6 @@ void intro_open_add_button(hud_intro_button_type *btn,char *name,int id)
 void intro_open(void)
 {
 	bool		start_music;
-	char		wave_path[1024];
 
 		// intro UI
 		
@@ -164,10 +163,7 @@ void intro_open(void)
 			}
 		}
 		
-		if (start_music) {
-			file_paths_data(&setup.file_path_setup,wave_path,"Music",hud.intro_music,"wav");
-			al_music_play(hud.intro_music,wave_path);
-		}
+		if (start_music) al_music_play(hud.intro_music);
 	}
 }
 

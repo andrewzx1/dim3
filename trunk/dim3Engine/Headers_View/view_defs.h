@@ -239,7 +239,7 @@ typedef struct		{
 typedef struct		{
 						GLint								dim3TimeMillisec,dim3FrequencySecond,
 															dim3CameraPosition,dim3AmbientColor,
-															dim3BumpFactor,dim3SpecularFactor,
+															dim3LightMapBoost,dim3BumpFactor,dim3SpecularFactor,
 															dim3TexColor,dim3LightPosition,
 															dim3LightColor,dim3LightIntensity,
 															dim3LightExponent,dim3LightDirection,

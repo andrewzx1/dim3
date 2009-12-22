@@ -120,8 +120,6 @@ void map_media_start(map_media_type *media)
 
 void map_music_start(map_music_type *music)
 {
-	char			wave_path[1024];
-	
 	if (music->name[0]==0x0) return;
 	
 		// stop old music
@@ -130,13 +128,11 @@ void map_music_start(map_music_type *music)
 	
 		// start new music
 	
-	file_paths_data(&setup.file_path_setup,wave_path,"Music",music->name,"wav");
-	
 	if (music->fade_msec==0) {
-		al_music_play(music->name,wave_path);
+		al_music_play(music->name);
 	}
 	else {
-		al_music_fade_in(server.time.run_tick,music->name,wave_path,music->fade_msec);
+		al_music_fade_in(server.time.run_tick,music->name,music->fade_msec);
 	}
 }
 
