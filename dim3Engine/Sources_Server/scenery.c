@@ -53,6 +53,11 @@ void scenery_create(void)
 	map_scenery=map.sceneries;
 
 	for (n=0;n!=map.nscenery;n++) {
+		map_scenery=&map.sceneries[n];
+	
+			// no object is no model
+			
+		if (map_scenery->model_name[0]==0x0) continue;
 
 			// create new object
 
@@ -98,6 +103,8 @@ void scenery_create(void)
 			
 		if (!model_load_and_init(&obj->draw,"Scenery",obj->name,err_str)) {
 			console_add_error(err_str);
+			object_dispose_single(object_find_index_uid(obj->uid));
+			continue;
 		}
 		
 			// check if there are no hit boxes
@@ -112,8 +119,6 @@ void scenery_create(void)
 				if (model->nhit_box==0) obj->hit_box.on=FALSE;
 			}
 		}
-
-		map_scenery++;
 	}
 }
 
