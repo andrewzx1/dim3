@@ -1032,7 +1032,9 @@ void spot_start_attach(void)
 
 		type_idx=spot_get_type_idx_from_type_str(spot->attach_type);
 		 
-		object_start(spot,type_idx,bt_map,-1,err_str);
+		if (object_start(spot,type_idx,bt_map,-1,err_str)==-1) {
+			console_add_error(err_str);
+		}
 	}
 }
 

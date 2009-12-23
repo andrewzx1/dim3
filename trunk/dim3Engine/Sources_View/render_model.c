@@ -69,7 +69,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			// shaders don't need color lists
 
 		mesh=&mdl->meshes[n];
-		if ((!dim3_debug) && (!mesh->draw.has_no_shader)) continue;
+		if ((!dim3_debug) && (mesh->draw.only_shaders)) continue;
 		
 			// setup color list
 			
