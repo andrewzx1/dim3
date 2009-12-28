@@ -69,7 +69,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
     if (tag!=-1) {
         map->settings.light_map_quality=xml_get_attribute_int_default(tag,"light_map_quality",50);
         map->settings.light_map_size=xml_get_attribute_int_default(tag,"light_map_size",1024);
-        map->settings.light_map_smear_count=xml_get_attribute_int_default(tag,"light_map_smear_count",6);
+        map->settings.light_map_pixel_border_count=xml_get_attribute_int_default(tag,"light_map_pixel_border_count",6);
         map->settings.light_map_blur_count=xml_get_attribute_int_default(tag,"light_map_blur_count",3);
         map->settings.gravity=xml_get_attribute_float_default(tag,"gravity",1);
         map->settings.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32);

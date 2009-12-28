@@ -93,6 +93,7 @@ void palette_light_save(void)
 	dialog_get_color(palette_light_wind,kLightColor,0,&light->col);
 	light->light_map=dialog_get_boolean(palette_light_wind,kLightLightMap,0);
 	
+	main_wind_tool_fill_light_combo();
 	main_wind_draw();
 }
 

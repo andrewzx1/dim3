@@ -590,7 +590,7 @@ void view_add_model_halo(model_draw *draw,int obj_uid)
 				if (draw->no_rot.on) gl_project_fix_rotation(&x,&y,&z);
 			}
 			
-			halo_draw_add(x,z,y,obj_uid,halo);
+			halo_draw_add(x,y,z,obj_uid,halo);
 		}
 
 		halo++;
@@ -604,21 +604,22 @@ void view_add_halos(void)
 	proj_type			*proj;
 
 		// halos from objects and their weapons
-	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
-		view_add_model_halo(&obj->draw,obj->uid);
-		obj++;
-	}
-	
-		// halos from projectiles
+		
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
-	proj=server.projs;
-	
-	for (n=0;n!=server.count.proj;n++) {
-		view_add_model_halo(&proj->draw,-1);
-		proj++;
+		switch (view.render->draw_list.items[n].type) {
+
+			case view_render_type_object:
+				obj=&server.objs[view.render->draw_list.items[n].idx];
+				view_add_model_halo(&obj->draw,obj->uid);
+				break;
+
+			case view_render_type_projectile:
+				proj=&server.projs[view.render->draw_list.items[n].idx];
+				view_add_model_halo(&proj->draw,-1);
+				break;
+
+		}
 	}
 }
 

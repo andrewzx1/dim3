@@ -53,11 +53,14 @@ EventHandlerUPP			main_wind_upp;
 ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],magnify_slider;
 ControlActionUPP		magnify_proc;
 IconRef					tool_icon_ref[tool_count],piece_icon_ref[piece_count];
-MenuRef					grid_menu,spot_menu,scenery_menu,node_menu;
+MenuRef					grid_menu,spot_menu,light_menu,sound_menu,particle_menu,scenery_menu,node_menu;
 
 AGLContext				ctx;
 
 int						spot_combo_lookup[max_spot],
+						light_combo_lookup[max_map_light],
+						sound_combo_lookup[max_map_sound],
+						particle_combo_lookup[max_map_particle],
 						scenery_combo_lookup[max_map_scenery],
 						node_combo_lookup[max_node];
 
@@ -306,15 +309,87 @@ void main_wind_control_piece(int piece_idx)
 			break;
 			
 		case 1:
-			piece_create_light();
+			GetBevelButtonMenuValue(piece_ctrl[1],&menu_idx);
+			
+				// create a light
+				
+			if (menu_idx==1) {
+				piece_create_light();
+				break;
+			}
+			
+				// find a light
+			
+			if (menu_idx>2) {
+				dp_lightsoundparticle=TRUE;
+				
+				idx=light_combo_lookup[menu_idx-3];
+			
+				view_pnt.x=map.lights[idx].pnt.x;
+				view_pnt.y=map.lights[idx].pnt.y-500;
+				view_pnt.z=map.lights[idx].pnt.z;
+				
+				select_clear();
+				select_add(light_piece,idx,-1);
+				
+				main_wind_draw();	
+			}
 			break;
 			
 		case 2:
-			piece_create_sound();
+			GetBevelButtonMenuValue(piece_ctrl[2],&menu_idx);
+			
+				// create a sound
+				
+			if (menu_idx==1) {
+				piece_create_sound();
+				break;
+			}
+			
+				// find a sound
+			
+			if (menu_idx>2) {
+				dp_lightsoundparticle=TRUE;
+				
+				idx=sound_combo_lookup[menu_idx-3];
+			
+				view_pnt.x=map.sounds[idx].pnt.x;
+				view_pnt.y=map.sounds[idx].pnt.y-500;
+				view_pnt.z=map.sounds[idx].pnt.z;
+				
+				select_clear();
+				select_add(sound_piece,idx,-1);
+				
+				main_wind_draw();	
+			}
 			break;
 			
 		case 3:
-			piece_create_particle();
+			GetBevelButtonMenuValue(piece_ctrl[3],&menu_idx);
+			
+				// create a particle
+				
+			if (menu_idx==1) {
+				piece_create_particle();
+				break;
+			}
+			
+				// find a particle
+			
+			if (menu_idx>2) {
+				dp_lightsoundparticle=TRUE;
+				
+				idx=particle_combo_lookup[menu_idx-3];
+			
+				view_pnt.x=map.particles[idx].pnt.x;
+				view_pnt.y=map.particles[idx].pnt.y-500;
+				view_pnt.z=map.particles[idx].pnt.z;
+				
+				select_clear();
+				select_add(particle_piece,idx,-1);
+				
+				main_wind_draw();	
+			}
 			break;
 			
 		case 4:
@@ -775,6 +850,30 @@ void main_wind_open(void)
 				menu_id=tool_spot_menu_id;
 				break;
 				
+				// light menu
+			
+			case 1:
+				CreateNewMenu(tool_light_menu_id,kMenuAttrExcludesMarkColumn,&light_menu);
+				InsertMenu(light_menu,kInsertHierarchicalMenu);
+				menu_id=tool_light_menu_id;
+				break;
+				
+				// sound menu
+			
+			case 2:
+				CreateNewMenu(tool_sound_menu_id,kMenuAttrExcludesMarkColumn,&sound_menu);
+				InsertMenu(sound_menu,kInsertHierarchicalMenu);
+				menu_id=tool_sound_menu_id;
+				break;
+				
+				// particle menu
+			
+			case 3:
+				CreateNewMenu(tool_particle_menu_id,kMenuAttrExcludesMarkColumn,&particle_menu);
+				InsertMenu(particle_menu,kInsertHierarchicalMenu);
+				menu_id=tool_particle_menu_id;
+				break;
+				
 				// scenery menu
 			
 			case 4:
@@ -928,6 +1027,15 @@ void main_wind_close(void)
 	DeleteMenu(tool_spot_menu_id);
 	DisposeMenu(spot_menu);
 	
+	DeleteMenu(tool_light_menu_id);
+	DisposeMenu(light_menu);
+	
+	DeleteMenu(tool_sound_menu_id);
+	DisposeMenu(sound_menu);
+	
+	DeleteMenu(tool_particle_menu_id);
+	DisposeMenu(particle_menu);
+	
 	DeleteMenu(tool_scenery_menu_id);
 	DisposeMenu(scenery_menu);
 
@@ -1023,6 +1131,7 @@ void main_wind_set_uv_layer(int uv_layer)
 {
 	main_wind_uv_layer=uv_layer;
 	menu_set_uv_check(uv_layer);
+	palette_reset();			// in case polygon palette is up
 }
 
 /* =======================================================
@@ -1964,7 +2073,7 @@ void main_wind_tool_fill_spot_combo(void)
 	
 		// add item
 		
-	AppendMenuItemTextWithCFString(spot_menu,CFSTR("Add Spot"),0,FOUR_CHAR_CODE('sp00'),NULL);
+	AppendMenuItemTextWithCFString(spot_menu,CFSTR("Add Spot"),0,0,NULL);
 	AppendMenuItemTextWithCFString(spot_menu,NULL,kMenuItemAttrSeparator,0,NULL);
 	
 		// spots
@@ -1993,11 +2102,158 @@ void main_wind_tool_fill_spot_combo(void)
 		if (idx==-1) break;
 		
 		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.spots[idx].name,kCFStringEncodingMacRoman);
-		AppendMenuItemTextWithCFString(spot_menu,cf_str,0,FOUR_CHAR_CODE('sp00'),NULL);
+		AppendMenuItemTextWithCFString(spot_menu,cf_str,0,0,NULL);
 		CFRelease(cf_str);
 		
 		spot_combo_lookup[cnt++]=idx;
 		spot_hit[idx]=TRUE;
+	}
+}
+
+void main_wind_tool_fill_light_combo(void)
+{
+	int					n,cnt,idx;
+	bool				light_hit[max_map_light];
+	CFStringRef			cf_str;
+	
+		// delete old items
+		
+	DeleteMenuItems(light_menu,1,CountMenuItems(light_menu));
+	
+		// add item
+		
+	AppendMenuItemTextWithCFString(light_menu,CFSTR("Add Light"),0,0,NULL);
+	AppendMenuItemTextWithCFString(light_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+	
+		// lights
+	
+	cnt=0;
+	
+	for (n=0;n<map.nlight;n++) {
+		light_hit[n]=FALSE;
+	}
+
+	while (TRUE) {
+	
+		idx=-1;
+		
+		for (n=0;n<map.nlight;n++) {
+			if ((map.lights[n].name[0]!=0x0) && (!light_hit[n])) {
+				if (idx==-1) {
+					idx=n;
+				}
+				else {
+					if (strcasecmp(map.lights[idx].name,map.lights[n].name)>0) idx=n;
+				}
+			}
+		}
+		
+		if (idx==-1) break;
+		
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.lights[idx].name,kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(light_menu,cf_str,0,0,NULL);
+		CFRelease(cf_str);
+		
+		light_combo_lookup[cnt++]=idx;
+		light_hit[idx]=TRUE;
+	}
+}
+
+void main_wind_tool_fill_sound_combo(void)
+{
+	int					n,cnt,idx;
+	bool				sound_hit[max_map_sound];
+	CFStringRef			cf_str;
+	
+		// delete old items
+		
+	DeleteMenuItems(sound_menu,1,CountMenuItems(sound_menu));
+	
+		// add item
+		
+	AppendMenuItemTextWithCFString(sound_menu,CFSTR("Add Sound"),0,0,NULL);
+	AppendMenuItemTextWithCFString(sound_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+	
+		// sound
+	
+	cnt=0;
+	
+	for (n=0;n<map.nsound;n++) {
+		sound_hit[n]=FALSE;
+	}
+
+	while (TRUE) {
+	
+		idx=-1;
+		
+		for (n=0;n<map.nsound;n++) {
+			if ((map.sounds[n].name[0]!=0x0) && (!sound_hit[n])) {
+				if (idx==-1) {
+					idx=n;
+				}
+				else {
+					if (strcasecmp(map.sounds[idx].name,map.sounds[n].name)>0) idx=n;
+				}
+			}
+		}
+		
+		if (idx==-1) break;
+		
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.sounds[idx].name,kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(sound_menu,cf_str,0,0,NULL);
+		CFRelease(cf_str);
+		
+		sound_combo_lookup[cnt++]=idx;
+		sound_hit[idx]=TRUE;
+	}
+}
+
+void main_wind_tool_fill_particle_combo(void)
+{
+	int					n,cnt,idx;
+	bool				particle_hit[max_map_particle];
+	CFStringRef			cf_str;
+	
+		// delete old items
+		
+	DeleteMenuItems(particle_menu,1,CountMenuItems(particle_menu));
+	
+		// add item
+		
+	AppendMenuItemTextWithCFString(particle_menu,CFSTR("Add Particle"),0,0,NULL);
+	AppendMenuItemTextWithCFString(particle_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+	
+		// particles
+	
+	cnt=0;
+	
+	for (n=0;n<map.nparticle;n++) {
+		particle_hit[n]=FALSE;
+	}
+
+	while (TRUE) {
+	
+		idx=-1;
+		
+		for (n=0;n<map.nparticle;n++) {
+			if ((map.particles[n].name[0]!=0x0) && (!particle_hit[n])) {
+				if (idx==-1) {
+					idx=n;
+				}
+				else {
+					if (strcasecmp(map.particles[idx].name,map.particles[n].name)>0) idx=n;
+				}
+			}
+		}
+		
+		if (idx==-1) break;
+		
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.particles[idx].name,kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(particle_menu,cf_str,0,0,NULL);
+		CFRelease(cf_str);
+		
+		particle_combo_lookup[cnt++]=idx;
+		particle_hit[idx]=TRUE;
 	}
 }
 
@@ -2013,7 +2269,7 @@ void main_wind_tool_fill_scenery_combo(void)
 	
 		// add item
 		
-	AppendMenuItemTextWithCFString(scenery_menu,CFSTR("Add Scenery"),0,FOUR_CHAR_CODE('sc00'),NULL);
+	AppendMenuItemTextWithCFString(scenery_menu,CFSTR("Add Scenery"),0,0,NULL);
 	AppendMenuItemTextWithCFString(scenery_menu,NULL,kMenuItemAttrSeparator,0,NULL);
 	
 		// scenery
@@ -2042,7 +2298,7 @@ void main_wind_tool_fill_scenery_combo(void)
 		if (idx==-1) break;
 		
 		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.sceneries[idx].model_name,kCFStringEncodingMacRoman);
-		AppendMenuItemTextWithCFString(scenery_menu,cf_str,0,FOUR_CHAR_CODE('sc00'),NULL);
+		AppendMenuItemTextWithCFString(scenery_menu,cf_str,0,0,NULL);
 		CFRelease(cf_str);
 		
 		scenery_combo_lookup[cnt++]=idx;
@@ -2062,7 +2318,7 @@ void main_wind_tool_fill_node_combo(void)
 	
 		// add item
 		
-	AppendMenuItemTextWithCFString(node_menu,CFSTR("Add Node"),0,'nd00',NULL);
+	AppendMenuItemTextWithCFString(node_menu,CFSTR("Add Node"),0,0,NULL);
 	AppendMenuItemTextWithCFString(node_menu,NULL,kMenuItemAttrSeparator,0,NULL);
 	
 		// nodes
@@ -2091,12 +2347,22 @@ void main_wind_tool_fill_node_combo(void)
 		if (idx==-1) break;
 		
 		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.nodes[idx].name,kCFStringEncodingMacRoman);
-		AppendMenuItemTextWithCFString(node_menu,cf_str,0,'nd00',NULL);
+		AppendMenuItemTextWithCFString(node_menu,cf_str,0,0,NULL);
 		CFRelease(cf_str);
 		
 		node_combo_lookup[cnt++]=idx;
 		node_hit[idx]=TRUE;
 	}
+}
+
+void main_wind_tool_fill_tool_combos(void)
+{
+	main_wind_tool_fill_spot_combo();
+	main_wind_tool_fill_light_combo();
+	main_wind_tool_fill_sound_combo();
+	main_wind_tool_fill_particle_combo();
+	main_wind_tool_fill_scenery_combo();
+	main_wind_tool_fill_node_combo();
 }
 
 /* =======================================================

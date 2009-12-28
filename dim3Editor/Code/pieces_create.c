@@ -224,6 +224,8 @@ void piece_create_light(void)
 	
 	main_wind_draw();
 	menu_set_show_hide_check();
+	
+	main_wind_tool_fill_light_combo();
 }
 
 /* =======================================================
@@ -264,6 +266,8 @@ void piece_create_sound(void)
 	
 	main_wind_draw();
 	menu_set_show_hide_check();
+	
+	main_wind_tool_fill_sound_combo();
 }
 
 /* =======================================================
@@ -305,6 +309,8 @@ void piece_create_particle(void)
 	
 	main_wind_draw();
 	menu_set_show_hide_check();
+	
+	main_wind_tool_fill_particle_combo();
 }
 
 /* =======================================================

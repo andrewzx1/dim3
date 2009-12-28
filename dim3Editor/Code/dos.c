@@ -168,9 +168,7 @@ bool file_new_map(void)
     
 	redraw_windows();
 	
-	main_wind_tool_fill_spot_combo();
-	main_wind_tool_fill_scenery_combo();
-	main_wind_tool_fill_node_combo();
+	main_wind_tool_fill_tool_combos();
 	
 	return(TRUE);
 }
@@ -214,9 +212,7 @@ bool file_open_map(void)
 	
 		// fill in the combos
 		
-	main_wind_tool_fill_spot_combo();
-	main_wind_tool_fill_scenery_combo();
-	main_wind_tool_fill_node_combo();
+	main_wind_tool_fill_tool_combos();
 	
 		// start models
 		

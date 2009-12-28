@@ -67,7 +67,7 @@ bool map_new(map_type *map,char *name)
 		
 	map->settings.light_map_quality=50;
 	map->settings.light_map_quality=1024;
-	map->settings.light_map_smear_count=6;
+	map->settings.light_map_pixel_border_count=6;
 	map->settings.light_map_blur_count=3;
 	map->settings.gravity=1;
 	map->settings.gravity_max_power=32;

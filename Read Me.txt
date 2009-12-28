@@ -7,6 +7,7 @@ For OS X Compile:
 
 /dim3Common/Frameworks/JS.framework (Webkit JS framework)
 /dim3Common/Frameworks/PNG.framework (PNG library)
+/dim3Common/Frameworks/mpg123.framework (MP3 library)
 /dim3Common/Frameworks/SDL.framework (SDL library)
 
 The OS X compile requires no additional external libraries.
@@ -19,6 +20,7 @@ For Win32 Compile:
 /winBuild/Libraries/GLEW (GLEW lib and headers)
 /winBuild/Libraries/JavaScriptCore (Webkit JS lib and headers)
 /winBuild/Libraries/PNG (PNG lib and headers)
+/winBuild/Libraries/MPG123 (mpg123 lib and headers)
 /winBuild/Libraries/SDL (SDL lib and headers)
 /winBuild/Libraries/ZLib (ZLib lib and headers)
 
@@ -32,6 +34,7 @@ libpng13.dll (for PNG)
 pthreadVC2.dll (for JS)
 SDL.dll (for SDL)
 zlib1.dll (for ZLib)
+mpg123.dll (for MPG123)
 
 
 

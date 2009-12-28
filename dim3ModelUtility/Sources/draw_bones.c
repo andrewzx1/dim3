@@ -42,7 +42,7 @@ void model_create_draw_bone_from_neutral(model_type *model,model_draw_setup *dra
 	model_bone_type				*bone;
 	model_draw_bone_type		*draw_bone;
 	model_draw_alter_bone_type	*alter_bone;
-
+	
 	bone=model->bones;
 	draw_bone=draw_bones;
 	alter_bone=draw_setup->alter_bones;

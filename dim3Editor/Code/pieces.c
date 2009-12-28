@@ -166,6 +166,8 @@ void piece_duplicate(void)
 				map.lights[map.nlight].pnt.z+=zadd;
 				select_duplicate_add(light_piece,map.nlight,0);
 				map.nlight++;
+				
+				main_wind_tool_fill_light_combo();
 				break;
 				
 			case sound_piece:
@@ -181,6 +183,8 @@ void piece_duplicate(void)
 				map.sounds[map.nsound].pnt.z+=zadd;
 				select_duplicate_add(sound_piece,map.nsound,0);
 				map.nsound++;
+				
+				main_wind_tool_fill_sound_combo();
 				break;
 				
 			case particle_piece:
@@ -196,6 +200,8 @@ void piece_duplicate(void)
 				map.particles[map.nparticle].pnt.z+=zadd;
 				select_duplicate_add(particle_piece,map.nparticle,0);
 				map.nparticle++;
+				
+				main_wind_tool_fill_particle_combo();
 				break;
 				
 			case area_piece:

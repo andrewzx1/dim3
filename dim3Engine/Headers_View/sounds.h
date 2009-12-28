@@ -25,6 +25,12 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_OS_MAC
+	#include <mpg123/mpg123.h>
+#else
+	#include "mpg123.h"
+#endif
+
 extern bool al_initialize(char *err_str);
 extern void al_shutdown(void);
 extern void al_set_volume(float sound_volume);
@@ -43,15 +49,15 @@ extern void al_stop_source(int source_idx);
 
 extern bool al_music_initialize(char *err_str);
 extern void al_music_shutdown(void);
-extern bool al_music_play(char *name);
+extern bool al_music_play(char *name,char *err_str);
 extern void al_music_stop(void);
 extern bool al_music_playing(void);
 extern bool al_music_playing_is_name(char *name);
 extern void al_music_set_volume(float music_volume);
 extern void al_music_set_state(bool music_on);
-extern bool al_music_fade_in(int tick,char *name,int msec);
+extern bool al_music_fade_in(int tick,char *name,int msec,char *err_str);
 extern void al_music_fade_out(int tick,int msec);
-extern bool al_music_fade_out_fade_in(int tick,char *name,int fade_out_msec,int fade_in_msec);
+extern bool al_music_fade_out_fade_in(int tick,char *name,int fade_out_msec,int fade_in_msec,char *err_str);
 extern void al_music_run(int tick);
 
 extern void al_stop_all_sources(void);
