@@ -474,7 +474,7 @@ typedef struct		{
 					
 typedef struct		{
 						int									light_map_quality,light_map_size,
-															light_map_smear_count,light_map_blur_count;
+															light_map_pixel_border_count,light_map_blur_count;
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance,txt_scale_x,txt_scale_y;
 						bool								editor_link_always_start;
@@ -638,8 +638,8 @@ extern void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);
-extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
-extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
+extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,int uv_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
+extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,int uv_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
 extern void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang);
 extern void map_mesh_flip_poly_uv(map_type *map,int mesh_idx,int poly_idx,bool flip_u,bool flip_v);
 extern void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx);

@@ -51,7 +51,7 @@ void halo_draw_clear(void)
 	view.render->halo_draw.count=0;
 }
 
-void halo_draw_add(int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo)
+void halo_draw_add(int x,int y,int z,int obj_uid,model_draw_halo *mdl_halo)
 {
 	halo_draw_type		*halo_draw;
 	
@@ -66,8 +66,8 @@ void halo_draw_add(int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo)
 	halo_draw->obj_uid=obj_uid;
 	
 	halo_draw->pnt.x=x;
-	halo_draw->pnt.z=z;
 	halo_draw->pnt.y=y;
+	halo_draw->pnt.z=z;
 	
 	halo_draw->min_dist=mdl_halo->min_dist;
 	halo_draw->max_dist=mdl_halo->max_dist;

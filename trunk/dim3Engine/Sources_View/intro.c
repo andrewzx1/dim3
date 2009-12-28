@@ -113,6 +113,7 @@ void intro_open_add_button(hud_intro_button_type *btn,char *name,int id)
 void intro_open(void)
 {
 	bool		start_music;
+	char		err_str[256];
 
 		// intro UI
 		
@@ -163,7 +164,7 @@ void intro_open(void)
 			}
 		}
 		
-		if (start_music) al_music_play(hud.intro_music);
+		if (start_music) al_music_play(hud.intro_music,err_str);
 	}
 }
 

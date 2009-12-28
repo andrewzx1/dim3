@@ -120,6 +120,9 @@ void map_media_start(map_media_type *media)
 
 void map_music_start(map_music_type *music)
 {
+	bool			ok;
+	char			err_str[256];
+	
 	if (music->name[0]==0x0) return;
 	
 		// stop old music
@@ -129,11 +132,15 @@ void map_music_start(map_music_type *music)
 		// start new music
 	
 	if (music->fade_msec==0) {
-		al_music_play(music->name);
+		ok=al_music_play(music->name,err_str);
 	}
 	else {
-		al_music_fade_in(server.time.run_tick,music->name,music->fade_msec);
+		ok=al_music_fade_in(server.time.run_tick,music->name,music->fade_msec,err_str);
 	}
+	
+		// report any errors
+		
+	if (!ok) console_add_error(err_str);
 }
 
 /* =======================================================

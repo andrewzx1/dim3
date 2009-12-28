@@ -32,13 +32,15 @@ and can be sold or given away.
 #include "sounds.h"
 
 int						audio_buffer_count,
-						audio_global_sound_volume,audio_global_music_volume,
-						audio_music_buffer_idx;
+						audio_global_sound_volume,audio_global_music_volume;
 float					audio_listener_ang_y,audio_music_stream_pos;
 bool					audio_music_playing;
 d3pnt					audio_listener_pnt;
 audio_buffer_type		audio_buffers[audio_max_buffer];
 audio_play_type			audio_plays[audio_max_play];
+
+extern float			audio_music_f_sample_len,audio_music_freq_factor;
+extern short			*audio_music_data;
 
 /* =======================================================
 
@@ -191,18 +193,16 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			// add in the music
 
 		if (audio_music_playing) {
-			buffer=&audio_buffers[audio_music_buffer_idx];
-
 			pos=(int)audio_music_stream_pos;
 
-			data=(int)(*(buffer->data+pos));
-			vol=(data*audio_global_music_volume)>>10;
+			data=(int)(*(audio_music_data+pos));
+			left_channel+=((data*audio_global_music_volume)>>10);
+			
+			data=(int)(*(audio_music_data+(pos+1)));
+			right_channel+=((data*audio_global_music_volume)>>10);
 
-			left_channel+=vol;
-			right_channel+=vol;
-
-			audio_music_stream_pos+=buffer->freq_factor;
-			if (audio_music_stream_pos>=buffer->f_sample_len) audio_music_stream_pos=audio_music_stream_pos-buffer->f_sample_len;
+			audio_music_stream_pos+=audio_music_freq_factor;		// in sterio
+			if (audio_music_stream_pos>=audio_music_f_sample_len) audio_music_stream_pos=audio_music_stream_pos-audio_music_f_sample_len;
 		}
 
 			// fix any overflow
@@ -268,6 +268,10 @@ bool al_initialize(char *err_str)
 
 	audio_global_sound_volume=512;
 	audio_global_music_volume=512;
+	
+		// music setup
+		
+	if (!al_music_initialize(err_str)) return(FALSE);
 
 		// start loop
 
@@ -279,6 +283,9 @@ bool al_initialize(char *err_str)
 void al_shutdown(void)
 {
 	SDL_PauseAudio(1);
+
+	al_music_shutdown();
+	
 	SDL_CloseAudio();
 }
 

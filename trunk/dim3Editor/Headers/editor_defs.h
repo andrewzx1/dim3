@@ -35,9 +35,12 @@ and can be sold or given away.
 #define tool_button_size						32
 
 #define tool_spot_menu_id						160
-#define tool_scenery_menu_id					161
-#define tool_node_menu_id						162
-#define tool_grid_menu_id						163
+#define tool_light_menu_id						161
+#define tool_sound_menu_id						162
+#define tool_particle_menu_id					163
+#define tool_scenery_menu_id					164
+#define tool_node_menu_id						165
+#define tool_grid_menu_id						166
 
 #define toolbar_high							32
 #define info_high								16

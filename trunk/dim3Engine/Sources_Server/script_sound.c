@@ -269,7 +269,7 @@ JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSO
 
 JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
@@ -277,8 +277,8 @@ JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 		script_value_to_string(cx,argv[0],name,name_str_len);
 
-		if (!al_music_play(name)) {
-			*exception=js_sound_music_name_exception(cx,name);
+		if (!al_music_play(name,err_str)) {
+			*exception=script_create_exception(cx,err_str);
 		}
 	}
 
@@ -297,7 +297,7 @@ JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				msec;
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -306,8 +306,8 @@ JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObject
 		script_value_to_string(cx,argv[0],name,name_str_len);
 		msec=script_value_to_int(cx,argv[1]);
 
-		if (!al_music_fade_in(js.time.current_tick,name,msec)) {
-			*exception=js_sound_music_name_exception(cx,name);
+		if (!al_music_fade_in(js.time.current_tick,name,msec,err_str)) {
+			*exception=script_create_exception(cx,err_str);
 		}
 	}
 
@@ -332,7 +332,7 @@ JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjec
 JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int					fade_out_msec,fade_in_msec;
-	char				name[name_str_len];
+	char				name[name_str_len],err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
@@ -342,8 +342,8 @@ JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func
 		fade_out_msec=script_value_to_int(cx,argv[1]);
 		fade_in_msec=script_value_to_int(cx,argv[2]);
 
-		if (!al_music_fade_out_fade_in(js.time.current_tick,name,fade_out_msec,fade_in_msec)) {
-			*exception=js_sound_music_name_exception(cx,name);
+		if (!al_music_fade_out_fade_in(js.time.current_tick,name,fade_out_msec,fade_in_msec,err_str)) {
+			*exception=script_create_exception(cx,err_str);
 		}
 	}
 

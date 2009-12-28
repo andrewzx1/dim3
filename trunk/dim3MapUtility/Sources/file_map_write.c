@@ -147,7 +147,7 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagstart("Settings");
     xml_add_attribute_int("light_map_quality",map->settings.light_map_quality);
     xml_add_attribute_int("light_map_size",map->settings.light_map_size);
-    xml_add_attribute_int("light_map_smear_count",map->settings.light_map_smear_count);
+    xml_add_attribute_int("light_map_pixel_border_count",map->settings.light_map_pixel_border_count);
     xml_add_attribute_int("light_map_blur_count",map->settings.light_map_blur_count);
     xml_add_attribute_float("gravity",map->settings.gravity);
 	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
