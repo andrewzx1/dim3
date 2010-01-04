@@ -55,7 +55,7 @@ extern hud_type				hud;
 extern setup_type			setup;
 
 char						*file_table_data,*file_name_data;
-bool						file_start_trigger;
+bool						file_start_trigger,file_is_save;
 			
 /* =======================================================
 
@@ -193,13 +193,8 @@ void file_save_selected(void)
 		
 	if (idx==-1) {
 
-		if (server.map_open) {
-			element_hide(file_button_save_id,FALSE);
-			element_hide(file_button_load_id,TRUE);
-		}
-		else {
-			element_hide(file_button_save_id,TRUE);
-			element_hide(file_button_load_id,FALSE);
+		if (!file_is_save) {
+			element_enable(file_button_load_id,FALSE);
 			element_enable(file_button_load_id,FALSE);
 		}
 
@@ -209,9 +204,7 @@ void file_save_selected(void)
 	
 		// save game selected
 
-	element_hide(file_button_save_id,TRUE);
-	element_hide(file_button_load_id,FALSE);
-	element_enable(file_button_load_id,TRUE);
+	if (!file_is_save) element_enable(file_button_load_id,TRUE);
 	element_enable(file_button_delete_id,TRUE);
 }
 
@@ -259,21 +252,29 @@ void file_save_delete(void)
       
 ======================================================= */
 
-void file_open(void)
+void file_open(bool is_save)
 {
-	int					x,y,wid,high,padding;
+	int					x,y,wid,high,margin,padding;
+	char				save_tab_list[][name_str_len]={"Save"},
+						load_tab_list[][name_str_len]={"Load"};
 	element_column_type	cols[4];
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","file",FALSE);
+	gui_initialize(NULL,NULL,TRUE);
 	
-		// title
+		// remember type
 		
-	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.09f);
-
-	element_text_add("Load Saved Game",-1,x,y,hud.font.text_size_large,tx_left,FALSE,FALSE);
+	file_is_save=is_save;
+	
+		// the tabs
+		
+	if (is_save) {
+		element_tab_add((char*)save_tab_list,0,-1,1);
+	}
+	else {
+		element_tab_add((char*)load_tab_list,0,-1,1);
+	}
 	
 		// make the file list
 		
@@ -281,11 +282,14 @@ void file_open(void)
 	
 		// files
 		
-	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.12f);
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+	
+	x=margin+padding;
+	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.88f)-y;
+	wid=hud.scale_x-((margin+padding)*2);
+	high=(int)(((float)hud.scale_y)*0.84f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;
@@ -298,28 +302,25 @@ void file_open(void)
 	
 		// buttons
 		
-	padding=element_get_padding();
-	
 	wid=(int)(((float)hud.scale_x)*0.1f);
 	high=(int)(((float)hud.scale_x)*0.05f);
 	
-	x=hud.scale_x-padding;
-	y=hud.scale_y-padding;
+	element_get_button_bottom_right(&x,&y,wid,high);
 	
-	element_button_text_add("Save",file_button_save_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-	element_hide(file_button_save_id,!server.map_open);
-	
-	element_button_text_add("Load",file_button_load_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-	element_enable(file_button_load_id,FALSE);
-	element_hide(file_button_load_id,server.map_open);
+	if (is_save) {
+		element_button_text_add("Save",file_button_save_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+		x=element_get_x_position(file_button_save_id)-padding;
+	}
+	else {
+		element_button_text_add("Load",file_button_load_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+		element_enable(file_button_load_id,FALSE);
+		x=element_get_x_position(file_button_load_id)-padding;
+	}
 
-	x=element_get_x_position(file_button_load_id)-padding;
-	
 	element_button_text_add("Delete",file_button_delete_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 	element_enable(file_button_delete_id,FALSE);
 	
 	x=element_get_x_position(file_button_delete_id)-padding;
-
 	element_button_text_add("Cancel",file_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 
 		// in file chooser
@@ -340,27 +341,6 @@ void file_return_to_game(void)
 
 /* =======================================================
 
-      File Triggers
-      
-======================================================= */
-
-void file_trigger_clear(void)
-{
-	file_start_trigger=FALSE;
-}
-
-void file_trigger_check(void)
-{
-	if (file_start_trigger) file_open();
-}	
-
-void file_trigger_set(void)
-{
-	if (server.state==gs_running) file_start_trigger=TRUE;
-}
-
-/* =======================================================
-
       File Input
       
 ======================================================= */
@@ -369,10 +349,16 @@ void file_input(void)
 {
 	char		err_str[256];
 	
-	if (input_action_get_state_single(nc_save_load)) {
-		file_open();
+	if (input_action_get_state_single(nc_save)) {
+		file_open(TRUE);
 		return;
 	}
+	
+	if (input_action_get_state_single(nc_load)) {
+		file_open(FALSE);
+		return;
+	}
+	
 	if (input_action_get_state_single(nc_quick_save)) {
 		if (!game_file_save(err_str)) console_add_error(err_str);
 		return;

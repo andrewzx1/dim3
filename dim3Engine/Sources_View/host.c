@@ -188,8 +188,12 @@ void host_get_last_map(void)
 
 void host_game_pane(void)
 {
-	int						n,x,y,wid,high;
+	int						n,x,y,wid,high,margin,padding,control_y_add;
 	element_column_type		cols[1];
+	
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+	control_y_add=element_get_control_high();
 	
 		// game type
 
@@ -198,17 +202,17 @@ void host_game_pane(void)
 	}
 	net_game_types[hud.net_game.ngame][0]=0x0;
 
-	x=(int)(((float)hud.scale_x)*0.15f);
-	y=(int)(((float)hud.scale_y)*0.17f);
+	x=(int)(((float)hud.scale_x)*0.20f);
+	y=((margin+element_get_tab_control_high())+padding)+control_y_add;
 	
 	element_combo_add("Game Type",(char*)net_game_types,setup.network.game_type,host_game_type_id,x,y,TRUE);
-	y+=element_get_padding();
 
 		// hosts table
 		
-	x=(int)(((float)hud.scale_x)*0.03f);
+	x=margin+padding;
+	y+=padding;
 
-	wid=hud.scale_x-(x*2);
+	wid=hud.scale_x-((margin+padding)*2);
 	high=(int)(((float)hud.scale_y)*0.83f)-y;
 
 	strcpy(cols[0].name,"Map");
@@ -227,7 +231,7 @@ void host_game_pane(void)
 
 void host_options_pane(void)
 {
-	int							n,k,x,y,control_y_add,separate_y_add,control_y_sz;
+	int							n,k,x,y,control_y_add,control_y_sz;
 	char						str[32];
 	bool						on;
 	hud_net_option_type			*option;
@@ -235,9 +239,7 @@ void host_options_pane(void)
 		// panel sizes
 
 	control_y_add=element_get_control_high();
-	separate_y_add=element_get_separator_high();
-
-	control_y_sz=(control_y_add+(control_y_add*hud.net_option.noption))+separate_y_add;
+	control_y_sz=(control_y_add+(control_y_add*hud.net_option.noption));
 	if (hud.net_bot.on) control_y_sz+=(control_y_add*2);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
@@ -258,17 +260,17 @@ void host_options_pane(void)
 		bot_count_list[max_net_bot+1][0]=0x0;
 		
 		element_combo_add("Bot Count",(char*)bot_count_list,setup.network.bot.count,host_game_bot_count_id,x,y,TRUE);
-		y+=element_get_control_high();
+		y+=control_y_add;
 
 		element_combo_add("Bot Skill",(char*)bot_skill_list,setup.network.bot.skill,host_game_bot_skill_id,x,y,TRUE);
-		y+=element_get_control_high();
+		y+=control_y_add;
 	}
 
 		// score limit
 
 	sprintf(str,"%d",setup.network.score_limit);
 	element_text_field_add("Score Limit:",str,32,host_game_score_limit_id,x,y,TRUE);
-	y+=element_get_control_high();
+	y+=control_y_add;
 
 		// project options
 
@@ -288,7 +290,7 @@ void host_options_pane(void)
 		}
 
 		element_checkbox_add(option->descript,on,(host_game_option_base+n),x,y,TRUE);
-		y+=element_get_control_high();
+		y+=control_y_add;
 
 		option++;
 	}
@@ -296,8 +298,7 @@ void host_options_pane(void)
 
 void host_create_pane(void)
 {
-	int			x,y,wid,high,yadd,padding,
-				tab_list_wid,tab_pane_high,pane;
+	int			x,y,wid,high,pane;
 	char		str[256],str2[256],
 				tab_list[][32]={"Host Game","Options"};
 							
@@ -305,15 +306,7 @@ void host_create_pane(void)
 	
 		// tabs
 		
-	padding=element_get_padding();
-	
-	wid=hud.scale_x;
-	yadd=(int)(((float)hud.scale_y)*0.015f);
-	high=(int)(((float)hud.scale_y)*0.065f);
-	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
-	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
-	
-	element_tab_add((char*)tab_list,host_tab_value,host_tab_id,2,0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
+	element_tab_add((char*)tab_list,host_tab_value,host_tab_id,2);
 	
 		// status
 		// start with IP information
@@ -336,23 +329,20 @@ void host_create_pane(void)
 	sprintf(str2,"; %s; %s:%d-%d",net_setup.host.name,net_setup.host.ip_resolve,net_port_host,net_port_host_query);
 	strcat(str,str2);
 
-	padding=element_get_padding();
-	high=(int)(((float)hud.scale_x)*0.05f);
-		
-	y=hud.scale_y-((padding+(high/2))-(element_get_control_high()/2));
-	element_text_add(str,host_status_id,15,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
+	element_get_button_bottom_left(&x,&y,0,0);
+	y-=element_get_padding();
+
+	element_text_add(str,host_status_id,x,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
 	
 		// buttons
 		
 	wid=(int)(((float)hud.scale_x)*0.1f);
+	high=(int)(((float)hud.scale_x)*0.05f);
 
-	x=hud.scale_x-padding;
-	y=hud.scale_y-padding;
-	
+	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 
-	x=element_get_x_position(host_button_host_id)-padding;
-
+	x=element_get_x_position(host_button_host_id)-element_get_padding();
 	element_button_text_add("Cancel",host_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 	
 		// specific pane controls
@@ -387,7 +377,7 @@ void host_open(void)
 
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	gui_initialize(NULL,NULL,TRUE);
 
 		// start with first tab
 		

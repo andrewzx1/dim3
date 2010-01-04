@@ -852,6 +852,52 @@ bool player_message_input(int tick,obj_type *obj)
 	return(TRUE);
 }
 
+
+
+
+
+
+
+
+
+/* supergumba
+
+void player_fpp_input(void)
+{
+		// start with no movement
+		
+    obj->forward_move.moving=FALSE;
+	obj->side_move.moving=FALSE;
+	obj->vert_move.moving=FALSE;
+	
+		// don't move if ducked and crawling disabled
+		
+	if ((!obj->crawl) && (obj->duck.mode!=dm_stand)) return;
+	
+		// get proper movement
+	
+	switch (obj->input_mode) {
+	
+		case im_fpp:
+			player_movement_fpp_xz_input(obj);
+			if ((obj->fly) || (obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
+				player_movement_fly_swim_y_input(obj);
+			}
+			else {
+				player_movement_fpp_y_input(obj);
+				player_movement_ladder_y_input(obj);
+			}
+
+
+}
+
+*/
+
+
+
+
+
+
 /* =======================================================
 
       Get Player Input
@@ -878,12 +924,38 @@ void player_get_input(int tick)
         
 	if ((obj->hidden) || (obj->input_freeze)) return;
 	
+		// proper movement routines
+	
+/* supergumba
+	switch (obj->input_mode) {
+	
+		case im_fpp:
+			player_fpp_input(obj);
+			break;
+			
+		case im_side_scroll:
+			break;
+			
+		case im_top_down:
+			break;
+
+		case im_fly:
+			break;
+
+		case im_thrust:
+			break;
+	
+	}
+
+	*/
+	
+	
 		// get turning movement
 
 	joystick_mode=setup.joystick_mode;
 	if (!input_check_joystick_ok()) joystick_mode=joystick_mode_not_used;
 		
-	switch (setup.joystick_mode) {
+	switch (joystick_mode) {
 
 		case joystick_mode_turn_only:
 		case joystick_mode_turn_move:
@@ -907,7 +979,7 @@ void player_get_input(int tick)
 	player_turn_key_input(obj);
 	player_look_mouse_input(obj,mouse_y);
 	player_movement_input(obj);
-    	
+
         // jump and duck
 		
 	player_jump_duck_input(obj);

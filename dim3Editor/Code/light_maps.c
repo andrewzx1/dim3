@@ -52,12 +52,14 @@ typedef struct		{
 typedef struct		{
 						light_map_mesh_poly_type	*polys;
 					} light_map_mesh_type;
+					
+typedef struct		{
+						unsigned char				*data;
+					} light_map_map_texture_alpha_type;
 
-GLuint							light_map_bitmap_trans_check_txt_idx;
-unsigned char					*light_map_bitmap_trans_check_data;
-
-light_map_texture_type			*light_map_textures;
-light_map_mesh_type				*light_map_meshes;
+light_map_texture_type				*light_map_textures;
+light_map_mesh_type					*light_map_meshes;
+light_map_map_texture_alpha_type	light_map_map_texture_alphas[max_map_texture];
 
 /* =======================================================
 
@@ -161,6 +163,8 @@ void light_map_textures_save(char *base_path)
 	txt_idx=max_map_texture-max_light_map_textures;
 	
 	for (n=0;n!=max_light_map_textures;n++) {
+		dialog_progress_next();
+		
 		if (light_map_textures[n].pixel_data==NULL) break;
 		
 			// save bitmap
@@ -301,6 +305,21 @@ void light_map_texture_single_pixel_border(light_map_texture_type *lmap,int pixe
 	free(back_pixel_touch);
 }
 
+void light_map_textures_pixel_border(void)
+{
+	int							n;
+	light_map_texture_type		*lmap;
+	
+	lmap=light_map_textures;
+	
+	for (n=0;n!=max_light_map_textures;n++) {
+		dialog_progress_next();
+		if (lmap->pixel_data!=NULL) light_map_texture_single_pixel_border(lmap,map.settings.light_map_pixel_border_count);
+		lmap++;
+	}
+}
+
+
 void light_map_texture_single_blur(light_map_texture_type *lmap,int blur_count)
 {
 	int				n,x,y,cx,cy,sz,i_col[3],col_count;
@@ -378,24 +397,16 @@ void light_map_texture_single_blur(light_map_texture_type *lmap,int blur_count)
 	free(back_pixel_data);
 }
 
-void light_map_textures_blur_edges(void)
+void light_map_textures_blur(void)
 {
 	int							n;
 	light_map_texture_type		*lmap;
 	
-		// this is a two-step process.  First we smear the texture
-		// by using out touch flag as a mask and smearing the touched
-		// values.  This eliminates the polygon edge gray areas
-		// second, we blur the entire light map to fix any stark light changes
-		// within the light map itself
-	
 	lmap=light_map_textures;
 	
 	for (n=0;n!=max_light_map_textures;n++) {
-		if (lmap->pixel_data!=NULL) {
-			light_map_texture_single_pixel_border(lmap,map.settings.light_map_pixel_border_count);
-			light_map_texture_single_blur(lmap,map.settings.light_map_blur_count);
-		}
+		dialog_progress_next();
+		if (lmap->pixel_data!=NULL) light_map_texture_single_blur(lmap,map.settings.light_map_blur_count);
 		lmap++;
 	}
 }
@@ -631,64 +642,59 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 
 void light_map_bitmap_transparency_start(void)
 {
-	light_map_bitmap_trans_check_txt_idx=-1;
-	light_map_bitmap_trans_check_data=NULL;
+	int				n;
+	
+	for (n=0;n!=max_map_texture;n++) {
+		light_map_map_texture_alphas[n].data=NULL;
+	}
 }
 
 void light_map_bitmap_transparency_free(void)
 {
-	if (light_map_bitmap_trans_check_data!=NULL) free(light_map_bitmap_trans_check_data);
+	int				n;
+	
+	for (n=0;n!=max_map_texture;n++) {
+		if (light_map_map_texture_alphas[n].data!=NULL) free(light_map_map_texture_alphas[n].data);
+	}
 }
 
-bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_poly_type *poly,int *px,int *py,int *pz,float *gx,float *gy,float hit_t,float hit_u,float hit_v)
+bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly,float hit_t)
 {
-	int				n,txt_idx,txt_sz,x,y,min_x,max_x,min_y,max_y;
+	int				n,txt_idx,txt_sz,x,y,
+					lft_idx,rgt_idx,top_idx,bot_idx;
 	float			fx,fy,min_gx,max_gx,min_gy,max_gy;
+	double			dx,dz,d1,d2;
 	unsigned char	*aptr;
 	d3pnt			hpt;
+	d3pnt			*pt;
 	bitmap_type		*bitmap;
-	
-	
-	int				ty,by;
-	float			f,gx_1,gy_1,gx_2,gy_2;
 	
 		// any per-polygon alpha is a immediately a miss
 		
 	if (poly->alpha!=1.0f) return(FALSE);
 	
-		// if no alpha, it's immediately a hit
+		// get texture
 		
 	txt_idx=poly->txt_idx;
-	bitmap=&map.textures[txt_idx].frames[0].bitmap;
+	if ((txt_idx<0) || (txt_idx>=max_map_texture)) return(TRUE);
 	
-	if (bitmap->alpha_mode==alpha_mode_none) return(TRUE);
+	bitmap=&map.textures[txt_idx].frames[0].bitmap;
+
+		// if no alpha or not loaded for some reason, it's immediately a hit
+	
+	if ((bitmap->gl_id==-1) || (bitmap->alpha_mode==alpha_mode_none)) return(TRUE);
 	
 		// need to load up this bitmap
 		
-	if (light_map_bitmap_trans_check_txt_idx!=txt_idx) {
-		light_map_bitmap_trans_check_txt_idx=txt_idx;
-		
+	if (light_map_map_texture_alphas[txt_idx].data==NULL) {
+	
 		txt_sz=bitmap->wid*bitmap->high;
-		light_map_bitmap_trans_check_data=(unsigned char*)malloc(txt_sz);
+		light_map_map_texture_alphas[txt_idx].data=(unsigned char*)malloc(txt_sz);
+		bzero(light_map_map_texture_alphas[txt_idx].data,txt_sz);
 		
 		glBindTexture(GL_TEXTURE_2D,bitmap->gl_id);
-		glGetTexImage(GL_TEXTURE_2D,0,GL_ALPHA,GL_UNSIGNED_BYTE,(GLvoid*)light_map_bitmap_trans_check_data);
-/*
-		for (y=0;y!=bitmap->high;y++) {
-			for (x=0;x!=bitmap->wid;x++) {
-				aptr=light_map_bitmap_trans_check_data+(x+(y*bitmap->wid));
-				if (((y>50) && (y<100)) || ((y>150) && (y<200))) {
-					*aptr=0xFF;
-				}
-				else {
-					*aptr=0x0;
-				}
-			}
-		}
-*/
+		glGetTexImage(GL_TEXTURE_2D,0,GL_ALPHA,GL_UNSIGNED_BYTE,(GLvoid*)light_map_map_texture_alphas[txt_idx].data);
 	}
-	
-		// need to check actual hit for transparency
 	
 		// get the hit point
 		
@@ -696,128 +702,77 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_poly_typ
 	hpt.y=spt->y+(int)(vct->y*hit_t);
 	hpt.z=spt->z+(int)(vct->z*hit_t);
 	
-		// find the UV
-		/*
+		// hits on wall like polygons
+		
 	if (poly->box.wall_like) {
-	//	dx=(double)(pt->x-poly->line.lx);
-	//	dz=(double)(pt->z-poly->line.lz);
 	
-		min_x=max_x=px[0];
-		min_gx=max_gx=gx[0];
-	
-		min_y=max_y=py[0];
-		min_gy=max_gy=gy[0];
-		
-		for (n=1;n!=3;n++) {
-			if (px[n]<min_x) {
-				min_x=px[n];
-				min_gx=gx[n];
-			}
-			if (px[n]>max_x) {
-				max_x=px[n];
-				max_gx=gx[n];
-			}
-			if (py[n]<min_y) {
-				min_y=py[n];
-				min_gy=gy[n];
-			}
-			if (py[n]>max_y) {
-				max_y=py[n];
-				max_gy=gy[n];
-			}
-		}
-		
-	//	hit_u=0.0f;
-	//	hit_v=(float)(hpt.y-min_y)/(float)(max_y-min_y);
-		
-
-		
-	//	*px=(int)sqrt((dx*dx)+(dz*dz));
-	//	*py=;
-	}
-	else {
-		min_x=max_x=px[0];
-		min_gx=max_gx=gx[0];
-	
-		min_y=max_y=pz[0];
-		min_gy=max_gy=gy[0];
-		
-		for (n=1;n!=3;n++) {
-			if (px[n]<min_x) {
-				min_x=px[n];
-				min_gx=gx[n];
-			}
-			if (px[n]>max_x) {
-				max_x=px[n];
-				max_gx=gx[n];
-			}
-			if (pz[n]<min_y) {
-				min_y=pz[n];
-				min_gy=gy[n];
-			}
-			if (pz[n]>max_y) {
-				max_y=pz[n];
-				max_gy=gy[n];
-			}
-		}
-		
-	//	hit_u=(float)(hpt.x-min_x)/(float)(max_x-min_x);
-	//	hit_v=(float)(hpt.z-min_y)/(float)(max_y-min_y);
-	}
-
-	
-		// find the bounds
-		
-		min_gx=max_gx=gx[0];
-		min_gy=max_gy=gy[0];
-		
-		for (n=1;n!=3;n++) {
-			if (gx[n]<min_gx) min_gx=gx[n];
-			if (gx[n]>max_gx) max_gx=gx[n];
-			if (gy[n]<min_gy) min_gy=gy[n];
-			if (gy[n]>max_gy) max_gy=gy[n];
-		}
-		*/
-		
-		min_gx=gx[0];
-		max_gx=gx[1];
-		min_gy=gy[0];
-		max_gy=gy[2];
-		
-//	if (poly->box.wall_like) {
-
-/*
-		min_gx=gx[0];
-		if (gx[1]<min_gx) min_gx=gx[1];
-		if (gx[2]<min_gx) min_gx=gx[2];
-		max_gx=gx[0];
-		if (gx[1]>max_gx) max_gx=gx[1];
-		if (gx[2]>max_gx) max_gx=gx[2];
-		min_gy=gy[0];
-		if (gy[1]<min_gy) min_gy=gy[1];
-		if (gy[2]<min_gy) min_gy=gy[2];
-		max_gy=gy[0];
-		if (gy[1]>max_gy) max_gy=gy[1];
-		if (gy[2]>max_gy) max_gy=gy[2];
-		*/
-		
-		// if wall like, then find the
-		// Y intersection in the triangle
-		
-//	hit_v=1.0f-hit_v;
-	
-		// find the UV section
+			// find points for uv extents
 			
-	fx=(min_gx+(hit_u*fabs(max_gx-min_gx)));
-	fy=(min_gy+(hit_v*fabs(max_gy-min_gy)));
+		lft_idx=rgt_idx=0;
+		top_idx=bot_idx=0;
+		
+		for (n=1;n<poly->ptsz;n++) {
+			pt=&mesh->vertexes[poly->v[n]];
+			if ((pt->x==poly->line.lx) && (pt->z==poly->line.lz)) lft_idx=n;
+			if ((pt->x==poly->line.rx) && (pt->z==poly->line.rz)) rgt_idx=n;
+			if (pt->y==poly->box.min.y) top_idx=n;
+			if (pt->y==poly->box.max.y) bot_idx=n;
+		}
+		
+			// find distances that hit point is on
+			// wall x/z plane
+			
+		dx=(double)(poly->line.rx-poly->line.lx);
+		dz=(double)(poly->line.rz-poly->line.lz);
+		d1=sqrt((dx*dx)+(dz*dz));
+		
+		dx=(double)(hpt.x-poly->line.lx);
+		dz=(double)(hpt.z-poly->line.lz);
+		d2=sqrt((dx*dx)+(dz*dz));
+		
+		fx=(float)(d2/d1);
+		fx=poly->uv[0].x[lft_idx]+(fx*(poly->uv[0].x[rgt_idx]-poly->uv[0].x[lft_idx]));
+		
+			// find the distances for hit point on y plane
+			
+		fy=(float)(hpt.y-poly->box.min.y)/(float)(poly->box.max.y-poly->box.min.y);
+		fy=poly->uv[0].y[top_idx]+(fy*(poly->uv[0].y[bot_idx]-poly->uv[0].y[top_idx]));
+	}
 	
+		// hits on floor like polygons
+		
+	else {
+	
+			// find points for uv extents
+			
+		min_gx=max_gx=poly->uv[0].x[0];
+		min_gy=max_gy=poly->uv[0].y[0];
+		
+		for (n=1;n<poly->ptsz;n++) {
+			if (poly->uv[0].x[n]<min_gx) min_gx=poly->uv[0].x[n];
+			if (poly->uv[0].x[n]>max_gx) max_gx=poly->uv[0].x[n];
+			if (poly->uv[0].y[n]<min_gx) min_gy=poly->uv[0].y[n];
+			if (poly->uv[0].y[n]>max_gx) max_gy=poly->uv[0].y[n];
+		}
+		
+			// find the hit points in the box
+			
+		fx=(float)(hpt.x-poly->box.min.x)/(float)(poly->box.max.x-poly->box.min.x);
+		fx=min_gx+(fx*(max_gx-min_gx));
+	
+		fy=(float)(hpt.z-poly->box.min.z)/(float)(poly->box.max.z-poly->box.min.z);
+		fy=min_gy+(fy*(max_gy-min_gy));
+	}
+
+		// get the alpha
+
 	fx-=floor(fx);
 	fy-=floor(fy);
-	
+
 	x=(int)(((float)bitmap->wid)*fx);
 	y=(int)(((float)bitmap->high)*fy);
 	
-	aptr=light_map_bitmap_trans_check_data+(x+(y*bitmap->wid));
+	aptr=light_map_map_texture_alphas[txt_idx].data+(x+(y*bitmap->wid));
 	return(*aptr==0x0);	
 }
 
@@ -846,7 +801,7 @@ inline float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
 	return((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
 }
 
-float light_map_ray_trace_triangle(d3pnt *spt,d3vct *vct,int *x,int *y,int *z,float *hit_u,float *hit_v)
+float light_map_ray_trace_triangle(d3pnt *spt,d3vct *vct,int *x,int *y,int *z)
 {
 	float				det,invDet,t,u,v;
 	d3vct				perpVector,lineToTrigPointVector,lineToTrigPerpVector,v1,v2;
@@ -889,9 +844,6 @@ float light_map_ray_trace_triangle(d3pnt *spt,d3vct *vct,int *x,int *y,int *z,fl
 	
 		// a hit!
 		
-	*hit_u=u;
-	*hit_v=v;
-		
 	return(t);
 }
 
@@ -899,7 +851,7 @@ bool light_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,
 {
 	int			n,trig_count;
 	int			px[3],py[3],pz[3];
-	float		hit_t,hit_u,hit_v,gx[3],gy[3];
+	float		hit_t;
 	d3pnt		*m_pt;
 	
 		// first vertex is always 0
@@ -910,9 +862,6 @@ bool light_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,
 	py[0]=m_pt->y;
 	pz[0]=m_pt->z;
 	
-	gx[0]=poly->uv[0].x[0];
-	gy[0]=poly->uv[0].y[0];
-	
 		// run through all the triangles of the polygon
 		
 	trig_count=poly->ptsz-2;
@@ -922,27 +871,21 @@ bool light_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,
 		px[1]=m_pt->x;
 		py[1]=m_pt->y;
 		pz[1]=m_pt->z;
-		
-		gx[1]=poly->uv[0].x[n+1];
-		gy[1]=poly->uv[0].y[n+1];
 
 		m_pt=&mesh->vertexes[poly->v[n+2]];
 		px[2]=m_pt->x;
 		py[2]=m_pt->y;
 		pz[2]=m_pt->z;
 		
-		gx[2]=poly->uv[0].x[n+2];
-		gy[2]=poly->uv[0].y[n+2];
-		
 			// check for hit
 			
-		hit_t=light_map_ray_trace_triangle(spt,vct,px,py,pz,&hit_u,&hit_v);
+		hit_t=light_map_ray_trace_triangle(spt,vct,px,py,pz);
 		
 			// ignore 0.0 hits to stop edge to edge polygon
 			// collisions
 		
 		if ((hit_t>0.0f) && (hit_t<=1.0f)) {
-			if (light_map_bitmap_transparency_check(spt,vct,poly,px,py,pz,gx,gy,hit_t,hit_u,hit_v)) return(TRUE);
+			if (light_map_bitmap_transparency_check(spt,vct,mesh,poly,hit_t)) return(TRUE);
 		}
 	}
 	
@@ -1078,7 +1021,7 @@ void light_map_render_poly_get_point_add_margin(map_mesh_type *mesh,map_mesh_pol
 	int			n;
 	d3pnt		mpt;
 	
-		// get points and center
+		// get extents and center
 	
 	mpt.x=mpt.y=mpt.z=0;
 	
@@ -1179,10 +1122,10 @@ bool light_map_render_poly(int mesh_idx,int poly_idx,light_map_texture_type *lma
 	zero_check=0;
 
 		// scan through the polygon
-
+		
 	ty=py[top_idx];
 	by=py[bot_idx];
-
+	
 	for (y=ty;y<=by;y++) {
 		
 			// have the lines changed?
@@ -1308,13 +1251,12 @@ bool light_map_create_mesh_poly(int mesh_idx,int poly_idx,char *err_str)
 	lm_poly=&lm_mesh->polys[poly_idx];
 	
 		// detect if this poly is all in dark
+	
+	lm_poly->x_shift=lm_poly->y_shift=0;
+	lm_poly->txt_idx=0;
 		
 	lm_poly->has_light=light_map_render_poly(mesh_idx,poly_idx,NULL);
-	if (!lm_poly->has_light) {
-		lm_poly->x_shift=lm_poly->y_shift=0;
-		lm_poly->txt_idx=0;
-		return(TRUE);
-	}
+	if (!lm_poly->has_light) return(TRUE);
 	
 		// can this polygon fit in any of the current
 		// light maps?
@@ -1478,11 +1420,10 @@ bool light_maps_create_process(char *err_str)
 		// run all the meshes through
 		
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		
 		dialog_progress_next();
-	
+		
 		if (map.mesh.meshes[n].flag.no_light_map) continue;
-	
+		
 		if (!light_map_create_mesh(n,err_str)) {
 			light_map_bitmap_transparency_free();
 			light_map_textures_free();
@@ -1492,11 +1433,16 @@ bool light_maps_create_process(char *err_str)
 		
 	}
 	
+		// borders and blue
+		
+	light_map_textures_pixel_border();
+	
+	dialog_progress_next();
+	light_map_textures_blur();
+	
 		// write all the textures
 		
 	dialog_progress_next();
-		
-	light_map_textures_blur_edges();
 	light_map_textures_save(base_path);
 	
 		// fix all meshes (add UVs and
@@ -1530,7 +1476,7 @@ bool light_maps_create(char *err_str)
 {
 	bool			ok;
 	
-	dialog_progress_start("Generating Light Maps...",4+(map.mesh.nmesh*2));
+	dialog_progress_start("Generating Light Maps...",(3+(max_light_map_textures*3)+(map.mesh.nmesh*2)));
 	ok=light_maps_create_process(err_str);
 	dialog_progress_end();
 	

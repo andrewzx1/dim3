@@ -82,9 +82,8 @@ and can be sold or given away.
 #define text_medium_wid_factor					0.025f
 #define text_large_wid_factor					0.038f
 
-#define element_control_high_factor				1.5f
-#define element_control_separator_factor		0.6f
-#define element_control_padding_factor			0.025f
+#define element_control_high_factor				1.25f
+#define element_control_padding_factor			0.01f
 
 #define element_control_draw_height				0.025f
 #define element_control_draw_long_width			0.4f
@@ -155,7 +154,7 @@ typedef struct		{
 					} element_table_type;
 
 typedef struct		{
-						int						ntab,list_wid,ext_high;
+						int						ntab;
 						char					name[max_element_tab][name_str_len];
 					} element_tab_type;
 
@@ -246,9 +245,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						d3col					base,header,disabled,mouse_over,hilite,outline,
-												gradient_text,gradient_start,gradient_end,default_tint;
-						d3col					tints[max_tint_color];
+						d3col					dialog_base,dialog_dimmed,dialog_outline,
+												control_label,control_text,control_fill,
+												control_header,control_outline,
+												control_mouse_over,control_hilite,control_disabled,
+												default_tint,tints[max_tint_color];
 					} hud_color_type;
 
 typedef struct		{

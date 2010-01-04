@@ -403,7 +403,7 @@ void join_ping_thread_end(void)
 
 void join_news_pane(void)
 {
-	int			x,y,wid,high;
+	int			x,y,wid,high,margin,padding;
 	
 		// show and hide proper elements
 		
@@ -413,18 +413,21 @@ void join_news_pane(void)
 
 		// news
 		
-	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.15f);
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+	
+	x=margin+padding;
+	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.83f)-y;
+	wid=hud.scale_x-((margin+padding)*2);
+	high=(int)(((float)hud.scale_y)*0.84f)-y;
 
 	element_text_box_add(net_get_news(),join_news_id,x,y,wid,high);
 }
 
 void join_lan_internet_pane(bool lan)
 {
-	int						x,y,wid,high;
+	int						x,y,wid,high,margin,padding;
 	element_column_type		cols[4];
 
 		// show and hide proper elements
@@ -436,11 +439,14 @@ void join_lan_internet_pane(bool lan)
 	
 		// hosts table
 		
-	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.15f);
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+	
+	x=margin+padding;
+	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.83f)-y;
+	wid=hud.scale_x-((margin+padding)*2);
+	high=(int)(((float)hud.scale_y)*0.84f)-y;
 
 	strcpy(cols[0].name,"Name");
 	cols[0].percent_size=0.45f;
@@ -461,8 +467,7 @@ void join_lan_internet_pane(bool lan)
 
 void join_create_pane(void)
 {
-	int						x,y,yadd,wid,high,padding,tab_idx,pane,
-							tab_list_wid,tab_pane_high;
+	int						x,y,wid,high,tab_idx,pane;
 	char					tab_list[][32]={"News","LAN","Internet"};
 	
 		// turn off any scanning threads
@@ -475,47 +480,37 @@ void join_create_pane(void)
 	
 		// tabs
 		
-	padding=element_get_padding();
-	
-	wid=hud.scale_x;
-	yadd=(int)(((float)hud.scale_y)*0.015f);
-	high=(int)(((float)hud.scale_y)*0.065f);
-	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
-	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
-	
 	tab_idx=0;
 	if (hud.net_news.host[0]==0x0) {
 		tab_idx=1;
 		if (join_tab_value==join_pane_news) join_tab_value=join_pane_lan;
 	}
 	
-	element_tab_add((char*)(tab_list[tab_idx]),join_tab_value,join_tab_id,(3-tab_idx),0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
-
-		// status
-
-	padding=element_get_padding();
-	high=(int)(((float)hud.scale_x)*0.05f);
-		
-	y=hud.scale_y-((padding+(high/2))-(element_get_control_high()/2));
-	element_text_add("",join_status_id,15,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
+	element_tab_add((char*)(tab_list[tab_idx]),join_tab_value,join_tab_id,(3-tab_idx));
 	
 		// buttons
 		
-	x=padding;
-	y=hud.scale_y-padding;
-	
 	wid=(int)(((float)hud.scale_x)*0.2f);
+	high=(int)(((float)hud.scale_x)*0.05f);
 
+	element_get_button_bottom_left(&x,&y,wid,high);
 	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,wid,high,element_pos_left,element_pos_bottom);
 	
-	x=hud.scale_x-padding;
 	wid=(int)(((float)hud.scale_x)*0.1f);
 
+	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("Join",join_button_join_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 
-	x=element_get_x_position(join_button_join_id)-padding;
-
+	x=element_get_x_position(join_button_join_id)-element_get_padding();
 	element_button_text_add("Cancel",join_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+
+		// status
+
+	wid=(int)(((float)hud.scale_x)*0.2f);
+	x=(element_get_x_position(join_button_rescan_id)+wid)+element_get_padding();
+	y-=element_get_padding();
+	
+	element_text_add("",join_status_id,x,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
 
 		// specific pane controls
 		
@@ -573,7 +568,7 @@ void join_open(bool local)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	gui_initialize(NULL,NULL,TRUE);
 	
 		// start with first tab
 		

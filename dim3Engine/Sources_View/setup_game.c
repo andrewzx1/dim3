@@ -124,11 +124,10 @@ action_display_type			action_display[ncontrol];
 void setup_game_video_pane(void)
 {
 	int			n,idx,wid,high,
-				x,y,control_y_add,separate_y_add,control_y_sz;
+				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*8)+(separate_y_add*3);
+	control_y_sz=control_y_add*8;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -154,12 +153,12 @@ void setup_game_video_pane(void)
 	element_enable(ctrl_fsaa_id,gl_check_fsaa_ok());
 	y+=control_y_add;
 	element_checkbox_add("Lock FPS to Refresh Rate",setup.lock_fps_refresh,ctrl_lock_fps_refresh_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
+	y+=control_y_add;
 
 	element_checkbox_add("Decals",setup.decal_on,ctrl_decal_on_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Shadow",setup.shadow_on,ctrl_shadow_on_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
+	y+=control_y_add;
 
 	element_combo_add("Anisotropic Filtering",(char*)setup_anisotropic_mode_list,setup.anisotropic_mode,ctrl_anisotropic_id,x,y,TRUE);
 	element_enable(ctrl_anisotropic_id,gl_check_texture_anisotropic_filter_ok());
@@ -168,24 +167,23 @@ void setup_game_video_pane(void)
 	y+=control_y_add;
 	element_checkbox_add("Texture Compression",setup.compress_on,ctrl_compress_id,x,y,TRUE);
 	element_enable(ctrl_compress_id,gl_check_texture_compress_ok());
-	y+=control_y_add+separate_y_add;
+	y+=control_y_add;
 
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
 }
 
 void setup_game_audio_pane(void)
 {
-	int			x,y,control_y_add,separate_y_add,control_y_sz;
+	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*2)+separate_y_add;
+	control_y_sz=control_y_add*2;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
 	
 	element_slider_add("Sound Volume",setup.sound_volume,0.0f,1.0f,ctrl_sound_volume_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
+	y+=control_y_add;
 
 	element_checkbox_add("Music",setup.music_on,ctrl_music_on_id,x,y,TRUE);
 	y+=control_y_add;
@@ -194,11 +192,10 @@ void setup_game_audio_pane(void)
 
 void setup_game_mouse_pane(void)
 {
-	int			x,y,control_y_add,separate_y_add,control_y_sz;
+	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	separate_y_add=element_get_separator_high();
-	control_y_sz=(10*control_y_add)+(3*separate_y_add);
+	control_y_sz=10*control_y_add;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -206,12 +203,12 @@ void setup_game_mouse_pane(void)
 	element_checkbox_add("Always Run",setup.always_run,ctrl_always_run_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Toggle Run",setup.toggle_run,ctrl_toggle_run_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
+	y+=control_y_add;
 	
 	element_checkbox_add("Invert Look",setup.invert_look,ctrl_invert_look_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Mouse Smoothing",setup.mouse_smooth,ctrl_mouse_smooth_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
+	y+=control_y_add;
 
 	element_slider_add("Mouse X Speed",setup.mouse_x.speed,setup.mouse_x.speed_min,setup.mouse_x.speed_max,ctrl_mouse_x_speed_id,x,y,TRUE);
 	y+=control_y_add;
@@ -220,7 +217,7 @@ void setup_game_mouse_pane(void)
 	element_slider_add("Mouse Y Speed",setup.mouse_y.speed,setup.mouse_y.speed_min,setup.mouse_y.speed_max,ctrl_mouse_y_speed_id,x,y,TRUE);
 	y+=control_y_add;
 	element_slider_add("Mouse Y Acceleration",setup.mouse_y.acceleration,setup.mouse_y.acceleration_min,setup.mouse_y.acceleration_max,ctrl_mouse_y_accel_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
+	y+=control_y_add;
 
 	element_combo_add("Joystick Mode",(char*)setup_joystick_mode_list,setup.joystick_mode,ctrl_joystick_mode_id,x,y,TRUE);
 	element_enable(ctrl_joystick_mode_id,input_check_joystick_ok());
@@ -232,14 +229,18 @@ void setup_game_mouse_pane(void)
 
 void setup_game_action_pane(void)
 {
-	int					n,k,list_cnt,idx,x,y,wid,high,padding;
+	int					n,k,list_cnt,idx,x,y,wid,high,
+						margin,padding;
 	element_column_type	cols[2];
 	
-	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.15f);
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+	
+	x=margin+padding;
+	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.75f)-y;
+	wid=hud.scale_x-((margin+padding)*2);
+	high=(int)(((float)hud.scale_y)*0.8f)-y;
 	
 		// setup action list
 		
@@ -305,10 +306,9 @@ void setup_game_action_pane(void)
 
 void setup_game_debug_pane(void)
 {
-	int			x,y,control_y_add,separate_y_add,control_y_sz;
+	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	separate_y_add=element_get_separator_high();
 	control_y_sz=control_y_add*5;
 	
 	x=(int)(((float)hud.scale_x)*0.5f);
@@ -327,8 +327,7 @@ void setup_game_debug_pane(void)
 
 void setup_game_create_pane(void)
 {
-	int			x,y,wid,high,yadd,padding,
-				tab_list_wid,tab_pane_high,ntab,stab,pane;
+	int			x,y,wid,high,ntab,stab,pane;
 	char		tab_list[][name_str_len]={"Video","Audio","Control","Actions","Debug"};
 							
 	element_clear();
@@ -349,33 +348,22 @@ void setup_game_create_pane(void)
 		ntab=3;
 	}
 	
-	padding=element_get_padding();
-	
-	wid=hud.scale_x;
-	yadd=(int)(((float)hud.scale_y)*0.015f);
-	high=(int)(((float)hud.scale_y)*0.065f);
-	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
-	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
-	
-	element_tab_add((char*)&tab_list[stab][0],setup_tab_value,ctrl_tab_id,ntab,0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
+	element_tab_add((char*)&tab_list[stab][0],setup_tab_value,ctrl_tab_id,ntab);
 	
 		// buttons
 		
 	wid=(int)(((float)hud.scale_x)*0.2f);
 	high=(int)(((float)hud.scale_x)*0.05f);
 	
-	x=padding;
-	y=hud.scale_y-padding;
-
+	element_get_button_bottom_left(&x,&y,wid,high);
 	element_button_text_add("Default",setup_game_default_button,x,y,wid,high,element_pos_left,element_pos_bottom);
 
 	wid=(int)(((float)hud.scale_x)*0.1f);
-	x=hud.scale_x-padding;
-
+	
+	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("OK",setup_game_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
 
-	x=element_get_x_position(setup_game_ok_button)-padding;
-
+	x=element_get_x_position(setup_game_ok_button)-element_get_padding();
 	element_button_text_add("Cancel",setup_game_cancel_button,x,y,wid,high,element_pos_right,element_pos_bottom);
 	
 		// specific pane controls
@@ -547,7 +535,7 @@ void setup_game_open(bool in_game)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	gui_initialize(NULL,NULL,TRUE);
 	
 		// waiting for an action flag
 		

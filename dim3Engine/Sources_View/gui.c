@@ -204,6 +204,9 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 		gui_background_bitmap.gl_id=-1;
 		gui_background_load(background_path,bitmap_name);
 	}
+	else {
+		gui_screenshot_load();
+	}
 	
 	gui_frame.on=FALSE;
 	
@@ -224,6 +227,9 @@ void gui_shutdown(void)
 		
 	if (!gui_show_view) {
 		bitmap_close(&gui_background_bitmap);
+	}
+	else {
+		gui_screenshot_free();
 	}
 	
 		// release cursor and elements
@@ -423,7 +429,7 @@ void gui_draw_message(char *txt)
 	
 		// draw the band
 		
-	view_draw_next_vertex_object_2D_color_quad(&hud.color.header,1.0f,lx,rx,ty,by);
+	view_draw_next_vertex_object_2D_color_quad(&hud.color.control_header,1.0f,lx,rx,ty,by);
 	
 		// draw the text
 		

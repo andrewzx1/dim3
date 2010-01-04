@@ -27,7 +27,8 @@
 		265B377D0D7F8D3A004AE124 /* group_change.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377C0D7F8D3A004AE124 /* group_change.c */; };
 		265B377F0D7F8D58004AE124 /* script_map_group.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377E0D7F8D58004AE124 /* script_map_group.c */; };
 		267345E30ECB95E80048BD10 /* script_weap_target.c in Sources */ = {isa = PBXBuildFile; fileRef = 267345E20ECB95E80048BD10 /* script_weap_target.c */; };
-		268483C010E064C500AD5C48 /* mpg123.h in Headers */ = {isa = PBXBuildFile; fileRef = 268483BF10E064C500AD5C48 /* mpg123.h */; };
+		268C3E5310E2E83500235824 /* mpg123.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 268C3E5210E2E83500235824 /* mpg123.framework */; };
+		268C404C10E2FA4F00235824 /* mpg123.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 268C3E5210E2E83500235824 /* mpg123.framework */; };
 		268CBC8C0DD2AA6700CF0256 /* network.h in Headers */ = {isa = PBXBuildFile; fileRef = 268CBC8B0DD2AA6700CF0256 /* network.h */; };
 		268CBC910DD2AA7D00CF0256 /* net_client_join_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 268CBC8D0DD2AA7D00CF0256 /* net_client_join_host.c */; };
 		268CBC920DD2AA7D00CF0256 /* net_client_receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 268CBC8E0DD2AA7D00CF0256 /* net_client_receive.c */; };
@@ -371,6 +372,7 @@
 				F5FEF6ED0BB4ECEF00198897 /* libModelUtility.dylib in Copy Frameworks */,
 				F5C5A76E092AC9AB0012DD78 /* SDL.framework in Copy Frameworks */,
 				F5D830B6099E575C005D1A6E /* PNG.framework in Copy Frameworks */,
+				268C404C10E2FA4F00235824 /* mpg123.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,7 +414,7 @@
 		265B377C0D7F8D3A004AE124 /* group_change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_change.c; path = Sources_Server/group_change.c; sourceTree = "<group>"; };
 		265B377E0D7F8D58004AE124 /* script_map_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_group.c; path = Sources_Server/script_map_group.c; sourceTree = "<group>"; };
 		267345E20ECB95E80048BD10 /* script_weap_target.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_target.c; path = Sources_Server/script_weap_target.c; sourceTree = "<group>"; };
-		268483BF10E064C500AD5C48 /* mpg123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mpg123.h; path = ../dim3Common/MPG123/mpg123.h; sourceTree = SOURCE_ROOT; };
+		268C3E5210E2E83500235824 /* mpg123.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mpg123.framework; path = ../dim3Common/Frameworks/mpg123.framework; sourceTree = SOURCE_ROOT; };
 		268CBC8B0DD2AA6700CF0256 /* network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network.h; path = Headers_Network/network.h; sourceTree = "<group>"; };
 		268CBC8D0DD2AA7D00CF0256 /* net_client_join_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_client_join_host.c; path = Sources_Network/net_client_join_host.c; sourceTree = "<group>"; };
 		268CBC8E0DD2AA7D00CF0256 /* net_client_receive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_client_receive.c; path = Sources_Network/net_client_receive.c; sourceTree = "<group>"; };
@@ -753,6 +755,7 @@
 				F5AD547C0BBE2155001C7C04 /* libBaseUtility.dylib in Frameworks */,
 				F52E82410C1632E6003D4818 /* OpenGL.framework in Frameworks */,
 				26D94410102F3D19004E5BB3 /* JavaScriptCore.framework in Frameworks */,
+				268C3E5310E2E83500235824 /* mpg123.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1294,7 +1297,6 @@
 		F5AA681808FC8A9200794C2C /* Sound */ = {
 			isa = PBXGroup;
 			children = (
-				268483BF10E064C500AD5C48 /* mpg123.h */,
 				F5DD1AA109085D9900721649 /* al_setup.c */,
 				F5DD1AA309085D9900721649 /* al_buffer.c */,
 				F5DD1AA509085D9900721649 /* al_play.c */,
@@ -1388,9 +1390,10 @@
 		F5D6E1BC0930D78D0011F994 /* Private Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				26D9440F102F3D19004E5BB3 /* JavaScriptCore.framework */,
 				F5C5A50A092AC9260012DD78 /* SDL.framework */,
 				F5D830A2099E5744005D1A6E /* PNG.framework */,
+				268C3E5210E2E83500235824 /* mpg123.framework */,
+				26D9440F102F3D19004E5BB3 /* JavaScriptCore.framework */,
 			);
 			name = "Private Frameworks";
 			sourceTree = "<group>";
@@ -1577,7 +1580,6 @@
 				F5FD3CFA0C865C4E00087C1C /* physics.h in Headers */,
 				26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */,
 				268CBC8C0DD2AA6700CF0256 /* network.h in Headers */,
-				268483C010E064C500AD5C48 /* mpg123.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1967,7 +1969,8 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

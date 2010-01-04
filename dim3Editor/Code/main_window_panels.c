@@ -284,7 +284,7 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
-	view_setup->clip_on=FALSE;
+	view_setup->clip_on=TRUE;
 }
 
 void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
