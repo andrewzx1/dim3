@@ -88,26 +88,22 @@ void default_settings_interface(void)
 	
 		// colors
 		
-	hud.color.base.r=hud.color.base.g=hud.color.base.b=1.0f;
+	hud.color.dialog_base.r=hud.color.dialog_base.g=hud.color.dialog_base.b=0.6f;
+	hud.color.dialog_dimmed.r=hud.color.dialog_dimmed.g=hud.color.dialog_dimmed.b=0.4f;
+	hud.color.dialog_outline.r=hud.color.dialog_outline.g=hud.color.dialog_outline.b=0.8f;
 	
-	hud.color.header.r=hud.color.header.b=1.0f;
-	hud.color.header.g=0.3f;
+	hud.color.control_label.r=hud.color.control_label.g=hud.color.control_label.b=0.8f;
+	hud.color.control_text.r=hud.color.control_text.g=hud.color.control_text.b=0.0f;
+	hud.color.control_fill.r=hud.color.control_fill.g=hud.color.control_fill.b=0.6f;
+	hud.color.control_header.r=hud.color.control_header.b=1.0f;
+	hud.color.control_header.g=0.3f;
+	hud.color.control_outline.r=hud.color.control_outline.g=hud.color.control_outline.b=0.0f;
 	
-	hud.color.disabled.r=hud.color.disabled.g=hud.color.disabled.b=0.3f;
-	
-	hud.color.mouse_over.b=1.0f;
-	hud.color.mouse_over.r=hud.color.mouse_over.g=0.3f;
-	
-	hud.color.hilite.g=0.6f;
-	hud.color.hilite.r=hud.color.hilite.b=0.0f;
-	
-	hud.color.outline.r=hud.color.outline.g=hud.color.outline.b=0.8f;
-
-	hud.color.gradient_text.r=hud.color.gradient_text.g=hud.color.gradient_text.b=0.0f;
-	hud.color.gradient_start.r=hud.color.gradient_start.g=0.6f;
-	hud.color.gradient_start.b=0.7f;
-	hud.color.gradient_end.r=hud.color.gradient_end.g=0.2f;
-	hud.color.gradient_end.b=0.3f;
+	hud.color.control_mouse_over.b=1.0f;
+	hud.color.control_mouse_over.r=hud.color.control_mouse_over.g=0.3f;
+	hud.color.control_hilite.r=hud.color.control_hilite.b=1.0f;
+	hud.color.control_hilite.g=0.3f;
+	hud.color.control_disabled.r=hud.color.control_disabled.g=hud.color.control_disabled.b=0.3f;
 	
 	hud.color.default_tint.r=hud.color.default_tint.g=hud.color.default_tint.b=1.0f;
 
@@ -865,15 +861,17 @@ void read_settings_interface(void)
 		
 	color_tag=xml_findfirstchild("Color",interface_head_tag);
 	if (color_tag!=-1) {
-		xml_get_attribute_color(color_tag,"base",&hud.color.base);
-		xml_get_attribute_color(color_tag,"header",&hud.color.header);
-		xml_get_attribute_color(color_tag,"disabled",&hud.color.disabled);
-		xml_get_attribute_color(color_tag,"mouse_over",&hud.color.mouse_over);
-		xml_get_attribute_color(color_tag,"hilite",&hud.color.hilite);
-		xml_get_attribute_color(color_tag,"outline",&hud.color.outline);
-		xml_get_attribute_color(color_tag,"gradient_text",&hud.color.gradient_text);
-		xml_get_attribute_color(color_tag,"gradient_start",&hud.color.gradient_start);
-		xml_get_attribute_color(color_tag,"gradient_end",&hud.color.gradient_end);
+		xml_get_attribute_color(color_tag,"dialog_base",&hud.color.dialog_base);
+		xml_get_attribute_color(color_tag,"dialog_dimmed",&hud.color.dialog_dimmed);
+		xml_get_attribute_color(color_tag,"dialog_outline",&hud.color.dialog_outline);
+		xml_get_attribute_color(color_tag,"control_label",&hud.color.control_label);
+		xml_get_attribute_color(color_tag,"control_text",&hud.color.control_text);
+		xml_get_attribute_color(color_tag,"control_fill",&hud.color.control_fill);
+		xml_get_attribute_color(color_tag,"control_header",&hud.color.control_header);
+		xml_get_attribute_color(color_tag,"control_outline",&hud.color.control_outline);
+		xml_get_attribute_color(color_tag,"control_mouse_over",&hud.color.control_mouse_over);
+		xml_get_attribute_color(color_tag,"control_hilite",&hud.color.control_hilite);
+		xml_get_attribute_color(color_tag,"control_disabled",&hud.color.control_disabled);
 		xml_get_attribute_color(color_tag,"default_tint",&hud.color.default_tint);
 	}
 

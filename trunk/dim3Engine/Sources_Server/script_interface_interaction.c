@@ -158,7 +158,7 @@ JSValueRef js_interface_interaction_start_save_load_func(JSContextRef cx,JSObjec
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	file_trigger_set();
+	// this has been depreciated -- supergumba -- delete later
 	return(script_null_to_value(cx));
 }
 

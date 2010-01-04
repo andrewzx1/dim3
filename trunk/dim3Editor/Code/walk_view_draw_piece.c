@@ -291,9 +291,10 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void walk_view_draw_meshes_line(bool opaque)
+void walk_view_draw_meshes_line(int clip_y,bool opaque)
 {
 	int					n,k,t;
+	bool				clip_ok;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
@@ -318,6 +319,8 @@ void walk_view_draw_meshes_line(bool opaque)
 		
 			mesh_poly=&mesh->polys[k];
 			texture=&map.textures[mesh_poly->txt_idx];
+			
+				// opaque or transparent flag
 		
 			if (opaque) {
 				if ((mesh_poly->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;
@@ -325,6 +328,23 @@ void walk_view_draw_meshes_line(bool opaque)
 			else {
 				if ((mesh_poly->alpha==1.0f) && (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) continue;
 			}
+			
+				// y clipping
+				
+			if (clip_y!=-1) {
+			
+				clip_ok=TRUE;
+				
+				for (t=0;t!=mesh_poly->ptsz;t++) {
+					if (mesh->vertexes[mesh_poly->v[t]].y>=clip_y) {
+						clip_ok=FALSE;
+						break;
+					}
+				}
+				
+				if (clip_ok) continue;
+			}
+		
 		
 			glBegin(GL_LINE_LOOP);
 			
@@ -822,7 +842,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		// push view forward to better z-buffer lines
 		
 	main_wind_set_3D_projection(view_setup,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
-	walk_view_draw_meshes_line(TRUE);
+	walk_view_draw_meshes_line(clip_y,TRUE);
 
         // draw transparent parts of portals in sight path
         
@@ -835,7 +855,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		// push view forward to better z-buffer lines
         
 	main_wind_set_3D_projection(view_setup,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
-	walk_view_draw_meshes_line(TRUE);
+	walk_view_draw_meshes_line(clip_y,TRUE);
 	
 		// draw areas
 		

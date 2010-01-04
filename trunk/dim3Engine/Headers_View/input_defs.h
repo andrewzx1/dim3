@@ -59,7 +59,7 @@ and can be sold or given away.
 								 "player_5","player_6","player_7","player_8","player_9", \
 								 "player_10","player_11","player_12","player_13","player_14", \
 								 "player_15","player_16","player_17","player_18","player_19", \
-								 "console","menu","quick_save","save_load","message", "network_score", \
+								 "console","menu","quick_save","save","load","message", "network_score", \
 								 "debug_status","debug_game","debug_screenshot","debug_map", \
 								 ""}
 
@@ -67,7 +67,7 @@ and can be sold or given away.
 // configurable controls
 //
 
-#define ncontrol					93				// total number of controls
+#define ncontrol					94				// total number of controls
 
 #define nc_move_forward				0
 #define nc_move_backward			1
@@ -168,15 +168,16 @@ and can be sold or given away.
 #define nc_console					83
 #define nc_menu						84
 #define nc_quick_save				85
-#define nc_save_load				86
+#define nc_save						86
+#define nc_load						87
 
-#define nc_message					87
-#define nc_score					88
+#define nc_message					88
+#define nc_score					89
 
-#define nc_debug_status				89
-#define nc_debug_game				90
-#define nc_debug_screenshot			91
-#define nc_debug_map				92
+#define nc_debug_status				90
+#define nc_debug_game				91
+#define nc_debug_screenshot			92
+#define nc_debug_map				93
 
 //
 // control ranges

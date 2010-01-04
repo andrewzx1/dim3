@@ -74,7 +74,7 @@ void input_joystick_shutdown(void)
       
 ======================================================= */
 
-bool input_check_joystick_ok(void)
+inline bool input_check_joystick_ok(void)
 {
 	return(input_joystick!=NULL);
 }

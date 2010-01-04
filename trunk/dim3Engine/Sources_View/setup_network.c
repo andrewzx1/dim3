@@ -114,18 +114,20 @@ void setup_network_create_host_list(void)
 
 void setup_network_player_pane(void)
 {
-	int						x,y,wid,high,
-							control_y_add,separate_y_add,control_y_sz;
+	int						x,y,wid,high,margin,padding,
+							control_y_add,control_y_sz;
 	element_column_type		cols[1];
 
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+
 	control_y_add=element_get_control_high();
-	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*3);
+	control_y_sz=control_y_add*3;
 	
 	x=(int)(((float)hud.scale_x)*0.35f);
 	
 	if (hud.character.ncharacter!=0) {
-		y=(int)(((float)hud.scale_y)*0.18f);
+		y=((margin+element_get_tab_control_high())+padding)+control_y_add;
 	}
 	else {
 		y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -138,7 +140,6 @@ void setup_network_player_pane(void)
 	element_checkbox_add("Show Names",setup.network.show_names,ctrl_network_show_names_id,x,y,TRUE);
 	y+=control_y_add;
 	element_color_add("Color",setup.network.tint_color_idx,ctrl_color_id,x,y,TRUE);
-	y+=control_y_add;
 	
 		// character table
 
@@ -146,9 +147,10 @@ void setup_network_player_pane(void)
 	
 			// make table
 			
-		x=(int)(((float)hud.scale_x)*0.03f);
+		x=margin+padding;
+		y+=padding;
 
-		wid=hud.scale_x-(x*2);
+		wid=hud.scale_x-((margin+padding)*2);
 		high=(int)(((float)hud.scale_y)*0.83f)-y;
 
 		strcpy(cols[0].name,"Characters");
@@ -167,14 +169,17 @@ void setup_network_player_pane(void)
 
 void setup_network_host_pane(void)
 {
-	int						x,y,wid,high,padding,control_y_add;
+	int						x,y,wid,high,margin,padding,control_y_add;
 	element_column_type		cols[2];
 
-	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.15f);
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+	
+	x=margin+padding;
+	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.64f)-y;
+	wid=hud.scale_x-((margin+padding)*2);
+	high=(int)(((float)hud.scale_y)*0.72f)-y;
 
 	control_y_add=element_get_control_high();
 
@@ -222,37 +227,24 @@ void setup_network_host_pane(void)
 
 void setup_network_create_pane(void)
 {
-	int			x,y,wid,high,yadd,padding,
-				tab_list_wid,tab_pane_high,pane;
+	int			x,y,wid,high,pane;
 	char		tab_list[][32]={"Player","Hosts"};
 							
 	element_clear();
 	
 		// tabs
 		
-	padding=element_get_padding();;
-	
-	wid=hud.scale_x;
-	yadd=(int)(((float)hud.scale_y)*0.015f);
-	high=(int)(((float)hud.scale_y)*0.065f);
-	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
-	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
-	
-	element_tab_add((char*)tab_list,setup_network_tab_value,ctrl_network_tab_id,2,0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
+	element_tab_add((char*)tab_list,setup_network_tab_value,ctrl_network_tab_id,2);
 	
 		// buttons
 		
-	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.05f);
-	
 	wid=(int)(((float)hud.scale_x)*0.1f);
-	x=hud.scale_x-padding;
-	y=hud.scale_y-padding;
+	high=(int)(((float)hud.scale_x)*0.05f);
 
+	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("OK",setup_network_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
 
-	x=element_get_x_position(setup_network_ok_button)-padding;
-
+	x=element_get_x_position(setup_network_ok_button)-element_get_padding();
 	element_button_text_add("Cancel",setup_network_cancel_button,x,y,wid,high,element_pos_right,element_pos_bottom);
 	
 		// specific pane controls
@@ -279,7 +271,7 @@ void setup_network_open(void)
 {	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	gui_initialize(NULL,NULL,TRUE);
 
 		// start with first tab
 		

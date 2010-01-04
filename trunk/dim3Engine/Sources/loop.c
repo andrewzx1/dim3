@@ -247,7 +247,6 @@ bool loop_main(char *err_str)
 	movie_trigger_clear();
 	setup_game_trigger_clear();
 	menu_trigger_clear();
-	file_trigger_clear();
 	map_pick_trigger_clear();
 	score_limit_trigger_clear();
 	console_trigger_clear();
@@ -344,30 +343,13 @@ bool loop_main(char *err_str)
 	movie_trigger_check();
 	setup_game_trigger_check();
 	menu_trigger_check();
-	file_trigger_check();
 	map_pick_trigger_check();
 	score_limit_trigger_check();
 	console_trigger_check();
 		
-		// if we are changing state from game
-		// play to interface element, capture screen
-		// for background and stop fps counter
+		// reset fps counter on state change
 		
-		// if we are going to a game element, clear
-		// the screenshot and reset counter
-		
-		// except for console (which doesn't have background)
-
-	if ((server.state!=gs_running) && (old_state==gs_running)) {
-		view.fps.last_time=-1;
-		if (server.state!=gs_console) gui_screenshot_load();
-	}
-	else {
-		if ((server.state==gs_running) && (old_state!=gs_running)) {
-			view.fps.last_time=-1;
-			if (old_state!=gs_console) gui_screenshot_free();
-		}
-	}
+	if (server.state!=old_state) view.fps.last_time=-1;
 	
 	return(TRUE);
 }

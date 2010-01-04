@@ -1002,10 +1002,10 @@ void dialog_progress_next(void)
 		
 	dialog_progress_value++;
 	if (dialog_progress_value>=dialog_progress_count) {
-		prog=100;
+		prog=1000;
 	}
 	else {
-		prog=(100*dialog_progress_value)/dialog_progress_count;
+		prog=(1000*dialog_progress_value)/dialog_progress_count;
 	}
 	
 		// redraw progress

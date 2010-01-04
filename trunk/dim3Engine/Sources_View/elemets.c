@@ -134,14 +134,31 @@ inline int element_get_control_high(void)
 	return((int)(((float)gl_text_get_char_height(hud.font.text_size_small))*element_control_high_factor));
 }
 
-inline int element_get_separator_high(void)
-{
-	return((int)(((float)gl_text_get_char_height(hud.font.text_size_small))*element_control_separator_factor));
-}
-
 inline int element_get_padding(void)
 {
 	return((int)(((float)hud.scale_x)*element_control_padding_factor));
+}
+
+inline int element_get_tab_margin(void)
+{
+	return((int)(((float)hud.scale_x)*0.05f));
+}
+
+inline int element_get_tab_control_high(void)
+{
+	return(gl_text_get_char_height(hud.font.text_size_small));
+}
+
+inline void element_get_button_bottom_left(int *x,int *y,int wid,int high)
+{
+	*x=element_get_tab_margin()+element_get_padding();
+	*y=hud.scale_y-(element_get_tab_margin()+element_get_padding());
+}
+
+inline void element_get_button_bottom_right(int *x,int *y,int wid,int high)
+{
+	*x=hud.scale_x-(element_get_tab_margin()+element_get_padding());
+	*y=hud.scale_y-(element_get_tab_margin()+element_get_padding());
 }
 
 /* =======================================================
@@ -548,9 +565,9 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high)
+void element_tab_add(char *tab_list,int value,int id,int ntab)
 {
-	int				n;
+	int				n,margin;
 	element_type	*element;
 
 	SDL_mutexP(element_thread_lock);
@@ -561,12 +578,14 @@ void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wi
 	element->id=id;
 	element->type=element_type_tab;
 	
-	element->x=x;
-	element->y=y;
-	element->wid=wid;
-	element->high=high;
-	element->setup.tab.list_wid=list_wid;
-	element->setup.tab.ext_high=ext_high;
+		// tab elements are special as they fit the screen
+		// so set the box to just the tab part
+		
+	margin=element_get_tab_margin();
+	element->x=margin;
+	element->y=margin;
+	element->wid=hud.scale_x-(margin*2);
+	element->high=gl_text_get_char_height(hud.font.text_size_small);
 	
 	element->selectable=TRUE;
 	element->enabled=TRUE;
@@ -810,43 +829,50 @@ void element_draw_button_text(element_type *element,int sel_id)
 {
 	int				x,y,lft,rgt,top,bot,slant_add;
 	float			alpha;
-	d3col			txt_col,outline_col,col;
+	d3col			txt_col,outline_col,col,gradient_start,gradient_end;
 	
 	if (element->enabled) {
 		alpha=1.0f;
 		if (element->id==sel_id) {
-			memmove(&outline_col,&hud.color.mouse_over,sizeof(d3col));
-			memmove(&txt_col,&hud.color.mouse_over,sizeof(d3col));
+			memmove(&outline_col,&hud.color.control_mouse_over,sizeof(d3col));
+			memmove(&txt_col,&hud.color.control_mouse_over,sizeof(d3col));
 		}
 		else {
-			outline_col.r=outline_col.g=outline_col.b=0.2f;
-			memmove(&txt_col,&hud.color.gradient_text,sizeof(d3col));
+			memmove(&outline_col,&hud.color.control_outline,sizeof(d3col));
+			memmove(&txt_col,&hud.color.control_text,sizeof(d3col));
 		}
 	}
 	else {
 		alpha=0.3f;
-		outline_col.r=outline_col.g=outline_col.b=0.0f;
-		memmove(&txt_col,&hud.color.gradient_text,sizeof(d3col));
+		memmove(&outline_col,&hud.color.control_outline,sizeof(d3col));
+		memmove(&txt_col,&hud.color.control_disabled,sizeof(d3col));
 	}
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	slant_add=(int)(((float)hud.scale_x)*0.008f);
 	
+		// gradients
+		
+	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
+	gradient_end.r=gradient_start.r*0.5f;
+	gradient_end.g=gradient_start.g*0.5f;
+	gradient_end.b=gradient_start.b*0.5f;
+	
 		// button background
 
-	view_draw_next_vertex_object_2D_color_poly(lft,bot,&hud.color.gradient_end,lft,top,&hud.color.gradient_end,(lft+slant_add),(top+slant_add),&hud.color.gradient_start,(lft+slant_add),(bot-slant_add),&hud.color.gradient_start,alpha);
-	view_draw_next_vertex_object_2D_color_poly(rgt,bot,&hud.color.gradient_end,rgt,top,&hud.color.gradient_end,(rgt-slant_add),(top+slant_add),&hud.color.gradient_start,(rgt-slant_add),(bot-slant_add),&hud.color.gradient_start,alpha);
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.gradient_end,rgt,top,&hud.color.gradient_end,(rgt-slant_add),(top+slant_add),&hud.color.gradient_start,(lft+slant_add),(top+slant_add),&hud.color.gradient_start,alpha);
-	view_draw_next_vertex_object_2D_color_poly(lft,bot,&hud.color.gradient_end,rgt,bot,&hud.color.gradient_end,(rgt-slant_add),(bot-slant_add),&hud.color.gradient_start,(lft+slant_add),(bot-slant_add),&hud.color.gradient_start,alpha);
-	view_draw_next_vertex_object_2D_color_poly((lft+slant_add),(top+slant_add),&hud.color.gradient_start,(rgt-slant_add),(top+slant_add),&hud.color.gradient_start,(rgt-slant_add),(bot-slant_add),&hud.color.gradient_start,(lft+slant_add),(bot-slant_add),&hud.color.gradient_start,alpha);
+	view_draw_next_vertex_object_2D_color_poly(lft,bot,&gradient_end,lft,top,&gradient_end,(lft+slant_add),(top+slant_add),&gradient_start,(lft+slant_add),(bot-slant_add),&gradient_start,alpha);
+	view_draw_next_vertex_object_2D_color_poly(rgt,bot,&gradient_end,rgt,top,&gradient_end,(rgt-slant_add),(top+slant_add),&gradient_start,(rgt-slant_add),(bot-slant_add),&gradient_start,alpha);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_end,rgt,top,&gradient_end,(rgt-slant_add),(top+slant_add),&gradient_start,(lft+slant_add),(top+slant_add),&gradient_start,alpha);
+	view_draw_next_vertex_object_2D_color_poly(lft,bot,&gradient_end,rgt,bot,&gradient_end,(rgt-slant_add),(bot-slant_add),&gradient_start,(lft+slant_add),(bot-slant_add),&gradient_start,alpha);
+	view_draw_next_vertex_object_2D_color_poly((lft+slant_add),(top+slant_add),&gradient_start,(rgt-slant_add),(top+slant_add),&gradient_start,(rgt-slant_add),(bot-slant_add),&gradient_start,(lft+slant_add),(bot-slant_add),&gradient_start,alpha);
 
 		// button outlines
 
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,alpha,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,rgt,top,bot);
 
-	col.r=(hud.color.gradient_start.r+hud.color.gradient_end.r)*0.5f;
-	col.g=(hud.color.gradient_start.g+hud.color.gradient_end.g)*0.5f;
-	col.b=(hud.color.gradient_start.b+hud.color.gradient_end.b)*0.5f;
+	col.r=(gradient_start.r+gradient_end.r)*0.5f;
+	col.g=(gradient_start.g+gradient_end.g)*0.5f;
+	col.b=(gradient_start.b+gradient_end.b)*0.5f;
 
 	view_draw_next_vertex_object_2D_line_quad(&col,alpha,((lft-1)+slant_add),((rgt+1)-slant_add),((top-1)+slant_add),((bot+1)-slant_add));
 	
@@ -917,7 +943,7 @@ void element_draw_bitmap(element_type *element)
 		// the frame
 		
 	if (element->framed) {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,1.0f,lft,rgt,top,bot);
 	}
 }
 
@@ -941,14 +967,14 @@ void element_draw_text(element_type *element,int sel_id)
 	}
 	else {
 		if (!element->enabled) {
-			memmove(&col,&hud.color.disabled,sizeof(d3col));
+			memmove(&col,&hud.color.control_disabled,sizeof(d3col));
 		}
 		else {
 			if ((element->id!=-1) && (element->id==sel_id)) {
-				memmove(&col,&hud.color.mouse_over,sizeof(d3col));
+				memmove(&col,&hud.color.control_mouse_over,sizeof(d3col));
 			}
 			else {
-				memmove(&col,&hud.color.base,sizeof(d3col));
+				memmove(&col,&hud.color.control_label,sizeof(d3col));
 			}
 		}
 	}
@@ -1027,8 +1053,8 @@ void element_draw_text_field(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 		
 	gl_text_start(hud.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
 		
 		// control box
@@ -1048,10 +1074,10 @@ void element_draw_text_field(element_type *element,int sel_id)
 		// outline
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.mouse_over,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,rgt,top,bot);
 	}
 
 		// control text
@@ -1063,14 +1089,14 @@ void element_draw_text_field(element_type *element,int sel_id)
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
-			gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.mouse_over,1.0f);
+			gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.control_mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.base,1.0f);
+			gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.control_text,1.0f);
 		}
 	}
 	else {
-		gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.disabled,1.0f);
+		gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.control_disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1092,7 +1118,7 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	int				x,y,ky,lft,rgt,top,bot,
 					lft2,rgt2,top2,bot2,margin;
 	float			alpha;
-	d3col			col;
+	d3col			col,gradient_start,gradient_end;
 	
 	x=element->x;
 	y=element->y;
@@ -1102,8 +1128,8 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 
 	gl_text_start(hud.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
 	
 		// checkbox
@@ -1116,8 +1142,13 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	alpha=(element->enabled?1.0f:0.3f);
 
 		// background
+		
+	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
+	gradient_end.r=gradient_start.r*0.5f;
+	gradient_end.g=gradient_start.g*0.5f;
+	gradient_end.b=gradient_start.b*0.5f;
 
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.gradient_start,rgt,top,&hud.color.gradient_start,rgt,bot,&hud.color.gradient_end,lft,bot,&hud.color.gradient_end,alpha);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,alpha);
 
 		// check
 
@@ -1130,20 +1161,20 @@ void element_draw_checkbox(element_type *element,int sel_id)
 		rgt2=(rgt-1)-margin;
 		bot2=(bot-1)-margin;
 
-		col.r=hud.color.hilite.r*0.5f;
-		col.g=hud.color.hilite.g*0.5f;
-		col.b=hud.color.hilite.b*0.5f;
+		col.r=hud.color.control_hilite.r*0.5f;
+		col.g=hud.color.control_hilite.g*0.5f;
+		col.b=hud.color.control_hilite.b*0.5f;
 
-		view_draw_next_vertex_object_2D_color_poly(lft2,top2,&col,rgt2,top2,&col,rgt2,bot2,&hud.color.hilite,lft2,bot2,&hud.color.hilite,1.0f);
+		view_draw_next_vertex_object_2D_color_poly(lft2,top2,&col,rgt2,top2,&col,rgt2,bot2,&hud.color.control_hilite,lft2,bot2,&hud.color.control_hilite,1.0f);
 	}
 
 		// outline
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.mouse_over,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,rgt,top,bot);
 	}
 }
 
@@ -1222,7 +1253,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	int				x,y,sz,kx,ky,lft,rgt,top,bot;
 	char			str[256];
 	float			alpha;
-	d3col			col;
+	d3col			col,gradient_start,gradient_end;
 	
 	x=element->x;
 	y=element->y;
@@ -1232,8 +1263,8 @@ void element_draw_combo(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 
 	gl_text_start(hud.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
 		
 		// combo box
@@ -1246,21 +1277,26 @@ void element_draw_combo(element_type *element,int sel_id)
 	alpha=(element->enabled?1.0f:0.3f);
 
 		// background
+		
+	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
+	gradient_end.r=gradient_start.r*0.5f;
+	gradient_end.g=gradient_start.g*0.5f;
+	gradient_end.b=gradient_start.b*0.5f;
 
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.gradient_start,rgt,top,&hud.color.gradient_start,rgt,bot,&hud.color.gradient_end,lft,bot,&hud.color.gradient_end,alpha);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,alpha);
 
 		// outline
 
 	sz=(bot-top)-8;
 	kx=(rgt-8)-sz;
 
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,alpha,kx,rgt,top,bot);
-
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.mouse_over,alpha,lft,kx,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,kx,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,kx,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,alpha,lft,kx,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,kx,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,kx,rgt,top,bot);
 	}
 
 		// arrow
@@ -1271,10 +1307,10 @@ void element_draw_combo(element_type *element,int sel_id)
 	bot-=4;
 
 	if ((element->id==element_open_combo_id) || ((element->id==sel_id) && (element->enabled))) {
-		view_draw_next_vertex_object_2D_color_trig(&hud.color.mouse_over,alpha,lft,rgt,top,bot,FALSE);
+		view_draw_next_vertex_object_2D_color_trig(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot,FALSE);
 	}
 	else {
-		view_draw_next_vertex_object_2D_color_trig(&hud.color.hilite,alpha,lft,rgt,top,bot,FALSE);
+		view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,FALSE);
 	}
 
 	col.r=col.g=col.b=0.0f;
@@ -1285,7 +1321,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	strcpy(str,(element->data+(element->value*32)));
 
 	gl_text_start(hud.font.text_size_small);
-	gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.gradient_text,alpha);
+	gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.control_text,alpha);
 	gl_text_end();
 }
 
@@ -1293,6 +1329,7 @@ void element_draw_combo_open(element_type *element)
 {
 	int				x,y,n,cnt,lft,rgt,top,bot,sel_item_idx;
 	char			str[256];
+	d3col			gradient_start,gradient_end;
 	
 		// combo count
 
@@ -1319,10 +1356,15 @@ void element_draw_combo_open(element_type *element)
 	top=y-element->high;
 
 		// background
+		
+	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
+	gradient_end.r=gradient_start.r*0.5f;
+	gradient_end.g=gradient_start.g*0.5f;
+	gradient_end.b=gradient_start.b*0.5f;
 
 	bot=top+(cnt*element->high);
 
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.gradient_start,rgt,top,&hud.color.gradient_start,rgt,bot,&hud.color.gradient_end,lft,bot,&hud.color.gradient_end,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,1.0f);
 
 		// combo items
 
@@ -1332,7 +1374,7 @@ void element_draw_combo_open(element_type *element)
 
 			// selection
 
-		if (element->value==n) view_draw_next_vertex_object_2D_color_quad(&hud.color.hilite,1.0f,lft,rgt,top,bot);
+		if (element->value==n) view_draw_next_vertex_object_2D_color_quad(&hud.color.control_hilite,1.0f,lft,rgt,top,bot);
 
 			// text
 
@@ -1340,10 +1382,10 @@ void element_draw_combo_open(element_type *element)
 		strcpy(str,(element->data+(n*32)));
 
 		if (sel_item_idx==n) {
-			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.mouse_over,1.0f);
+			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.control_mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.gradient_text,1.0f);
+			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.control_text,1.0f);
 		}
 
 		gl_text_end();
@@ -1356,7 +1398,7 @@ void element_draw_combo_open(element_type *element)
 	top=y-element->high;
 	bot=top+(cnt*element->high);
 
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,1.0f,lft,rgt,top,bot);
 }
 
 /* =======================================================
@@ -1384,10 +1426,9 @@ void element_move_slider(element_type *element,int x,int y)
 
 void element_draw_slider(element_type *element,int sel_id)
 {
-	int				x,y,ky,lft,rgt,top,bot,mid,
-					top2,bot2,margin;
+	int				x,y,ky,lft,rgt,top,bot,mid,margin;
 	float			alpha;
-	d3col			col,col2;
+	d3col			col2,gradient_start,gradient_end;
 	
 	x=element->x;
 	y=element->y;
@@ -1397,8 +1438,8 @@ void element_draw_slider(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 
 	gl_text_start(hud.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
 	
 		// slider size
@@ -1411,41 +1452,50 @@ void element_draw_slider(element_type *element,int sel_id)
 	mid=lft+(int)(((float)element->wid)*element->setup.slider.value);
 
 	alpha=(element->enabled?1.0f:0.3f);
+	
+		// background
+		
+	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
+	gradient_end.r=gradient_start.r*0.5f;
+	gradient_end.g=gradient_start.g*0.5f;
+	gradient_end.b=gradient_start.b*0.5f;
+
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,1.0f);
 
 		// slider value
 		
 	if (element->enabled) {
-		col2.r=hud.color.hilite.r*0.7f;
-		col2.g=hud.color.hilite.g*0.7f;
-		col2.b=hud.color.hilite.b*0.7f;
+		col2.r=hud.color.control_hilite.r*0.5f;
+		col2.g=hud.color.control_hilite.g*0.5f;
+		col2.b=hud.color.control_hilite.b*0.5f;
+		
+		margin=(bot-top)/10;
+		if (margin<3) margin=3;
 
-		view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.hilite,mid,top,&hud.color.hilite,mid,(bot-2),&col2,lft,(bot-2),&col2,alpha);
+		view_draw_next_vertex_object_2D_color_poly(lft,(top+margin),&hud.color.control_hilite,mid,(top+margin),&hud.color.control_hilite,mid,(bot-(margin+1)),&col2,lft,(bot-(margin+1)),&col2,alpha);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,mid,(top+margin),(bot-(margin+1)));
 	}
 
 		// outline
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.mouse_over,alpha,lft,rgt,top,(bot-2));
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,alpha,lft,rgt,top,(bot-2));
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,rgt,top,bot);
 	}
 
 		// slider drag
 
 	if ((mid+16)>rgt) mid=rgt-16;
 
-	margin=(bot-top)/8;
-	if (margin<2) margin=2;
+	col2.r=hud.color.control_hilite.r*0.5f;
+	col2.g=hud.color.control_hilite.g*0.5f;
+	col2.b=hud.color.control_hilite.b*0.5f;
 
-	top2=top-margin;
-	bot2=(bot-1)+margin;
+	view_draw_next_vertex_object_2D_color_poly(mid,top,&hud.color.control_hilite,(mid+16),top,&hud.color.control_hilite,(mid+16),bot,&col2,mid,bot,&col2,alpha);
 
-	col.r=col.g=col.b=0.6f;
-	col2.r=col2.g=col2.b=0.3f;
-	view_draw_next_vertex_object_2D_color_poly(mid,top2,&col,(mid+16),top2,&col,(mid+16),bot2,&col2,mid,bot2,&col2,alpha);
-
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,alpha,mid,(mid+16),top2,bot2);
+	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,mid,(mid+16),top,bot);
 }
 
 /* =======================================================
@@ -1541,9 +1591,9 @@ void element_draw_table_row_column_lines(element_type *element,int ty,int by,flo
 	x=element->x;
 	f_wid=(float)(element->wid-30);
 	
-	col.r=hud.color.outline.r*col_factor;
-	col.g=hud.color.outline.g*col_factor;
-	col.b=hud.color.outline.b*col_factor;
+	col.r=hud.color.control_outline.r*col_factor;
+	col.g=hud.color.control_outline.g*col_factor;
+	col.b=hud.color.control_outline.b*col_factor;
 
 	for (n=1;n<element->setup.table.ncolumn;n++) {
 		x+=(int)(element->setup.table.cols[n-1].percent_size*f_wid);
@@ -1563,12 +1613,12 @@ void element_draw_table_header_fill(element_type *element,int high)
 	bot=(top+high)+4;
 	y=(top+bot)>>1;
 	
-	col2.r=hud.color.header.r*0.5f;
-	col2.g=hud.color.header.g*0.5f;
-	col2.b=hud.color.header.b*0.5f;
+	col2.r=hud.color.control_header.r*0.5f;
+	col2.g=hud.color.control_header.g*0.5f;
+	col2.b=hud.color.control_header.b*0.5f;
 	
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.header,rgt,top,&hud.color.header,rgt,y,&col2,lft,y,&col2,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,bot,&hud.color.header,lft,bot,&hud.color.header,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.control_header,rgt,top,&hud.color.control_header,rgt,y,&col2,lft,y,&col2,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,bot,&hud.color.control_header,lft,bot,&hud.color.control_header,1.0f);
 	
 	element_draw_table_row_column_lines(element,top,bot,1.0f);
 }
@@ -1684,7 +1734,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 			if (gl_id!=-1) {
 				view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size),0.0f,0.0f);
-				view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
+				view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
 			}
 
 				// missing graphic
@@ -1695,7 +1745,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				col2.r=col2.g=col2.b=0.4f;
 
 				view_draw_next_vertex_object_2D_color_poly(dx,(y+1),&col,(dx+element_table_bitmap_size),(y+1),&col,(dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size),&col2,dx,((y+1)+element_table_bitmap_size),&col2,1.0f);
-				view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
+				view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
 
 				col.r=col.g=col.b=1.0f;
 
@@ -1782,7 +1832,7 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	
 	view_draw_next_vertex_object_2D_color_poly(lft,bot,&col,lft,top,&col,x,top,&col2,x,bot,&col2,1.0f);
 	view_draw_next_vertex_object_2D_color_poly(x,bot,&col2,x,top,&col2,rgt,top,&col,rgt,bot,&col,1.0f);
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,1.0f,lft,rgt,top,bot);
 	
 	pos_my=(top+bot)/2;
 	
@@ -1791,19 +1841,19 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
 
-	view_draw_next_vertex_object_2D_line(&hud.color.outline,1.0f,lft,top,lft,bot);
+	view_draw_next_vertex_object_2D_line(&hud.color.control_outline,1.0f,lft,top,lft,bot);
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
 	top+=(high+24);
 	
-	view_draw_next_vertex_object_2D_line(&hud.color.outline,1.0f,lft,top,rgt,top);
+	view_draw_next_vertex_object_2D_line(&hud.color.control_outline,1.0f,lft,top,rgt,top);
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
 	bot-=24;
 
-	view_draw_next_vertex_object_2D_line(&hud.color.outline,1.0f,lft,bot,rgt,bot);
+	view_draw_next_vertex_object_2D_line(&hud.color.control_outline,1.0f,lft,bot,rgt,bot);
 	
 		// scroll up
 
@@ -1814,7 +1864,7 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	bot=top+16;
 
 	alpha=up_ok?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&hud.color.hilite,alpha,lft,rgt,top,bot,TRUE);
+	view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,TRUE);
 
 	col.r=col.g=col.b=0.0f;
 	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,TRUE);
@@ -1828,7 +1878,7 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	top=bot-16;
 
 	alpha=down_ok?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&hud.color.hilite,alpha,lft,rgt,top,bot,FALSE);
+	view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,FALSE);
 
 	col.r=col.g=col.b=0.0f;
 	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,FALSE);
@@ -1867,12 +1917,12 @@ void element_draw_table(element_type *element,int sel_id)
 		// outline
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,1.0f,lft,rgt,top,bot);
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	top+=(high+4);
 
-	view_draw_next_vertex_object_2D_line(&hud.color.outline,1.0f,lft,top,rgt,top);
+	view_draw_next_vertex_object_2D_line(&hud.color.control_outline,1.0f,lft,top,rgt,top);
 
 		// text positions
 		
@@ -1897,7 +1947,7 @@ void element_draw_table(element_type *element,int sel_id)
 				// selection or background
 				
 			if ((n+element->offset)==element->value) {
-				memmove(&col,&hud.color.hilite,sizeof(d3col));
+				memmove(&col,&hud.color.control_hilite,sizeof(d3col));
 				col2.r=col.r*0.5f;
 				col2.g=col.g*0.5f;
 				col2.b=col.b*0.5f;
@@ -1928,7 +1978,7 @@ void element_draw_table(element_type *element,int sel_id)
 			
 				// table line data
 				
-			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&hud.color.base,c);
+			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&hud.color.control_text,c);
 			
 			c+=128;
 			y+=row_high;
@@ -1946,9 +1996,9 @@ void element_draw_table(element_type *element,int sel_id)
 	lft+=10;
 	rgt-=35;
 	
-	col.r=hud.color.hilite.r*0.5f;
-	col.g=hud.color.hilite.g*0.5f;
-	col.b=hud.color.hilite.b*0.5f;
+	col.r=hud.color.control_hilite.r*0.5f;
+	col.g=hud.color.control_hilite.g*0.5f;
+	col.b=hud.color.control_hilite.b*0.5f;
 	
 	if (element->setup.table.busy_count!=0) {
 	
@@ -1981,35 +2031,36 @@ void element_draw_table(element_type *element,int sel_id)
       
 ======================================================= */
 
-int element_mouse_over_tab(element_type *element,int x)
+int element_mouse_over_tab(element_type *element,int x,int y)
 {
-	int				lft,rgt,max_sz,xadd,idx;
+	int				margin,high,max_sz,xadd,idx;
 	
 		// within tab box?
 		
-	lft=element->x+(int)(((float)hud.scale_x)*0.02f);
-	rgt=lft+element->setup.tab.list_wid;
+	margin=element_get_tab_margin();
+	if ((x<margin) || (x>(hud.scale_x-margin))) return(-1);
 	
-	if ((x<lft) || (x>rgt)) return(-1);
+	high=element_get_tab_control_high();
+	if ((y<margin) || (y>(margin+high))) return(-1);
 	
 		// select value
 		
-	xadd=element->setup.tab.list_wid/element->setup.tab.ntab;
-
+	xadd=(hud.scale_x-(margin*2))/element->setup.tab.ntab;
+	
 	max_sz=(int)(((float)hud.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
 
-	idx=(x-lft)/xadd;
+	idx=(x-margin)/xadd;
 	if ((idx<0) || (idx>=element->setup.tab.ntab)) return(-1);
 
 	return(idx);
 }
 
-bool element_click_tab(element_type *element,int x)
+bool element_click_tab(element_type *element,int x,int y)
 {
 	int				value;
 	
-	value=element_mouse_over_tab(element,x);
+	value=element_mouse_over_tab(element,x,y);
 	if (value==-1) return(FALSE);
 	
 	element->value=value;
@@ -2017,56 +2068,31 @@ bool element_click_tab(element_type *element,int x)
 	return(TRUE);
 }
 
-void element_draw_tab(element_type *element,int sel_id,int x)
+void element_draw_tab(element_type *element,int sel_id,int x,int y)
 {
-	int				n,ky,xstart,xadd,x_slant,x_overlap,
-					high,max_sz,top_add,mouse_idx,tab_idx,
-					lft,rgt,top,bot,lx,rx,ty,by,
-					klft,krgt,ktop;
+	int				n,kx,xadd,x_slant,x_overlap,y_push,
+					high,max_sz,mouse_idx,tab_idx,
+					lx,rx,ty,by,margin;
 	int				tab_draw_list[max_element_tab];
-	float			col_base;
-	d3col			txt_col;
+	d3col			col;
 	
 	high=gl_text_get_char_height(hud.font.text_size_small);
 		
 		// sizes
 	
-	element_get_box(element,&lft,&rgt,&top,&bot);
-
-	xadd=element->setup.tab.list_wid/element->setup.tab.ntab;
-
+	margin=element_get_tab_margin();
+	
+	xadd=(hud.scale_x-(margin*2))/element->setup.tab.ntab;
+	
 	max_sz=(int)(((float)hud.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
-
-		// top and bottom borders
-
-	lx=lft;
-	rx=rgt;
-
-	klft=0;
-	krgt=xadd;
-	ktop=top;
-
-	ky=bot;
-	view_draw_next_vertex_object_2D_color_poly(lx,(ky-3),&hud.color.gradient_start,rx,(ky-3),&hud.color.gradient_start,rx,ky,&hud.color.gradient_end,lx,ky,&hud.color.gradient_end,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lx,ky,&hud.color.gradient_end,rx,ky,&hud.color.gradient_end,rx,(ky+3),&hud.color.gradient_start,lx,(ky+3),&hud.color.gradient_start,1.0f);
-
-	ky=top+element->setup.tab.ext_high;
-	view_draw_next_vertex_object_2D_color_poly(lx,(ky-3),&hud.color.gradient_start,rx,(ky-3),&hud.color.gradient_start,rx,ky,&hud.color.gradient_end,lx,ky,&hud.color.gradient_end,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lx,ky,&hud.color.gradient_end,rx,ky,&hud.color.gradient_end,rx,(ky+3),&hud.color.gradient_start,lx,(ky+3),&hud.color.gradient_start,1.0f);
-
-	ky=bot;
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,lx,rx,(ky-3),(ky+3));
-	
-	ky=top+element->setup.tab.ext_high;
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,lx,rx,(ky-3),(ky+3));
 
 		// get mouse over element
 	
 	mouse_idx=-1;
 	
 	if (element->id==sel_id) {
-		mouse_idx=element_mouse_over_tab(element,x);
+		mouse_idx=element_mouse_over_tab(element,x,y);
 	}
 	
 		// pick drawing order (last to first, selected always on top)
@@ -2081,51 +2107,78 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	
 		// tabs
 		
-	xstart=lft+(int)(((float)hud.scale_x)*0.02f);
-	top_add=(int)(((float)hud.scale_x)*0.01f);
-	x_slant=xadd/15;
-	x_overlap=x_slant/2;
+	x_slant=(int)(((float)xadd)*0.025f);
+	y_push=(int)(((float)high)*0.3f);
+	
+	by=margin+high;
 	
 	for (n=0;n!=element->setup.tab.ntab;n++) {
 	
 		tab_idx=tab_draw_list[n];
 
-		lx=xstart+(xadd*tab_idx);
+		lx=margin+(xadd*tab_idx);
 		rx=lx+xadd;
 		
-		if (element->value!=tab_idx) {
-			ty=top+(int)(((float)top_add)*1.5f);
-			by=bot-3;
-			col_base=0.25f;
+		if (tab_idx!=(element->setup.tab.ntab-1)) {
+			x_overlap=x_slant/2;
 		}
 		else {
-			ty=top;
-			by=bot+3;
-			col_base=0.35f;
+			x_overlap=0;
 		}
 		
-		view_draw_next_vertex_object_2D_color_poly((lx+x_slant),ty,&hud.color.gradient_start,(rx+x_overlap),ty,&hud.color.gradient_start,(rx+x_overlap),by,&hud.color.gradient_end,lx,by,&hud.color.gradient_end,1.0f);
-
-		if (mouse_idx==tab_idx) {
-			view_draw_next_vertex_object_2D_line_poly(&hud.color.mouse_over,1.0f,(lx+x_slant),ty,(rx+x_overlap),ty,(rx+x_overlap),by,lx,by);
+		if (element->value!=tab_idx) {
+			ty=margin;
+			memmove(&col,&hud.color.dialog_dimmed,sizeof(d3col));
 		}
-		else { 
-			view_draw_next_vertex_object_2D_line_poly(&hud.color.outline,1.0f,(lx+x_slant),ty,(rx+x_overlap),ty,(rx+x_overlap),by,lx,by);
+		else {
+			ty=margin-y_push;
+			memmove(&col,&hud.color.dialog_base,sizeof(d3col));
 		}
+		
+		view_draw_next_vertex_object_2D_color_poly((lx+x_slant),ty,&col,((rx-x_slant)+x_overlap),ty,&col,(rx+x_overlap),by,&col,lx,by,&col,1.0f);
 
-		memmove(&txt_col,&hud.color.gradient_text,sizeof(d3col));
+		view_draw_next_vertex_object_2D_line(&hud.color.dialog_outline,1.0f,lx,by,(lx+x_slant),ty);
+		view_draw_next_vertex_object_2D_line(&hud.color.dialog_outline,1.0f,(lx+x_slant),ty,((rx-x_slant)+x_overlap),ty);
+		view_draw_next_vertex_object_2D_line(&hud.color.dialog_outline,1.0f,((rx-x_slant)+x_overlap),ty,(rx+x_overlap),by);
+
+		memmove(&col,&hud.color.control_label,sizeof(d3col));
 		
 		if (element->value==tab_idx) {
-			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
+			memmove(&col,&hud.color.control_hilite,sizeof(d3col));
 		}
 		
 		if (mouse_idx==tab_idx) {
-			memmove(&txt_col,&hud.color.mouse_over,sizeof(d3col));
+			memmove(&col,&hud.color.control_mouse_over,sizeof(d3col));
 		}
 
-		gl_text_start(hud.font.text_size_medium);
-		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[tab_idx],tx_center,TRUE,&txt_col,1.0f);
+		gl_text_start(hud.font.text_size_small);
+		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[tab_idx],tx_center,TRUE,&col,1.0f);
 		gl_text_end();
+	}
+
+		// tab dialog
+		
+	lx=margin;
+	rx=hud.scale_x-margin;
+	ty=high+margin;
+	by=hud.scale_y-margin;
+	
+	view_draw_next_vertex_object_2D_color_quad(&hud.color.dialog_base,1.0f,lx,rx,by,ty);
+	
+		// outside line
+		
+	view_draw_next_vertex_object_2D_line(&hud.color.dialog_outline,1.0f,lx,ty,lx,by);
+	view_draw_next_vertex_object_2D_line(&hud.color.dialog_outline,1.0f,lx,by,rx,by);
+	view_draw_next_vertex_object_2D_line(&hud.color.dialog_outline,1.0f,rx,by,rx,ty);
+	
+		// top line
+		
+	kx=margin+(element->value*xadd);
+	if (element->value!=0) {
+		view_draw_next_vertex_object_2D_line(&hud.color.dialog_outline,1.0f,lx,ty,kx,ty);
+	}
+	if (element->value!=(element->setup.tab.ntab-1)) {
+		view_draw_next_vertex_object_2D_line(&hud.color.dialog_outline,1.0f,(kx+xadd+x_overlap),ty,rx,ty);
 	}
 
 	glDisable(GL_BLEND);
@@ -2163,8 +2216,8 @@ void element_draw_color(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 
 	gl_text_start(hud.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
 
 		// color size
@@ -2206,10 +2259,10 @@ void element_draw_color(element_type *element,int sel_id)
 		// outline and selection
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.mouse_over,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,rgt,top,bot);
 	}
 
 	col.r=col.g=col.b=0.0f;
@@ -2311,7 +2364,7 @@ void element_draw_text_box(element_type *element)
 		if (*c==0x0) {
 			if ((y<bot) && (line_offset==0)) {
 				str[idx]=0x0;
-				gl_text_draw(lft,y,str,tx_left,FALSE,&hud.color.base,1.0f);
+				gl_text_draw(lft,y,str,tx_left,FALSE,&hud.color.control_text,1.0f);
 			}
 			line_count++;
 			break;
@@ -2355,7 +2408,7 @@ void element_draw_text_box(element_type *element)
 		
 		if (line_break) {
 		
-			if ((y<bot) && (line_offset==0)) gl_text_draw(x,y,str,tx_left,FALSE,&hud.color.base,1.0f);
+			if ((y<bot) && (line_offset==0)) gl_text_draw(x,y,str,tx_left,FALSE,&hud.color.control_text,1.0f);
 		
 			idx=0;
 			last_space_idx=-1;
@@ -2397,7 +2450,7 @@ void element_draw_text_box(element_type *element)
 	
 		// outline
 
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,1.0f,lft,rgt,top,bot);
 }
 
 /* =======================================================
@@ -2490,7 +2543,7 @@ void element_draw_lock(bool cursor_hilite)
 				element_draw_table(element,id);
 				break;
 			case element_type_tab:
-				element_draw_tab(element,id,x);
+				element_draw_tab(element,id,x,y);
 				break;
 			case element_type_color:
 				element_draw_color(element,id);
@@ -2626,7 +2679,7 @@ int element_click_up_lock(int x,int y)
 			element_click_table(element,x,y);
 			break;
 		case element_type_tab:
-			if (!element_click_tab(element,x)) {
+			if (!element_click_tab(element,x,y)) {
 				element_click_down_id=-1;
 				return(-1);
 			}

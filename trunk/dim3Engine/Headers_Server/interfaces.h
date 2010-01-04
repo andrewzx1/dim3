@@ -64,8 +64,11 @@ extern void element_shutdown(void);
 extern void element_clear(void);
 
 extern int element_get_control_high(void);
-extern int element_get_separator_high(void);
 extern int element_get_padding(void);
+extern int element_get_tab_margin(void);
+extern int element_get_tab_control_high(void);
+extern void element_get_button_bottom_left(int *x,int *y,int wid,int high);
+extern void element_get_button_bottom_right(int *x,int *y,int wid,int high);
 
 extern void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
@@ -76,7 +79,7 @@ extern void element_checkbox_add(char *str,int value,int id,int x,int y,bool sel
 extern void element_combo_add(char *str,char *combo_data,int value,int id,int x,int y,bool selectable);
 extern void element_slider_add(char *str,float value,float value_min,float value_max,int id,int x,int y,bool selectable);
 extern void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,int bitmap_mode);
-extern void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high);
+extern void element_tab_add(char *tab_list,int value,int id,int ntab);
 extern void element_color_add(char *str,int value,int id,int x,int y,bool selectable);
 extern void element_text_box_add(char *data,int id,int x,int y,int wid,int high);
 
@@ -165,9 +168,6 @@ extern void setup_game_run(void);
 
 extern void setup_network_run(void);
 
-extern void file_trigger_clear(void);
-extern void file_trigger_check(void);
-extern void file_trigger_set(void);
 extern void file_run(void);
 
 extern void join_run(void);

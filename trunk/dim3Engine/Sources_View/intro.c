@@ -51,7 +51,7 @@ and can be sold or given away.
 
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
-extern void file_open(void);
+extern void file_open(bool is_save);
 extern void setup_game_open(bool in_game);
 extern void setup_network_open(void);
 extern void title_set_open(char *dir,char *name,char *sound_name,bool show_view);
@@ -216,7 +216,7 @@ void intro_click_load(void)
 	net_setup.host.hosting=FALSE;
 	net_setup.client.joined=FALSE;
 
-	file_open();
+	file_open(FALSE);
 }
 
 void intro_click(void)
