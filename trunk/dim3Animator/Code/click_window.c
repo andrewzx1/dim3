@@ -474,7 +474,133 @@ bool drag_bone_model_wind(Point start_pt)
 
 	return(TRUE);
 }
+
+/* =======================================================
+
+      Model Window Hit Box Clicks
+      
+======================================================= */
+
+bool drag_hit_box_handle_model_wind(Point start_pt)
+{
+	int						n,k,box_idx,pt_idx,xsz,zsz,ysz,offx,offz,offy,
+							kx,ky,kz,x[8],y[8],z[8];
+	bool					model_hit_box_drag_on;
+	d3pnt					org_pt,org_cnt;
+	Point					last_pt,pt;
+	model_box_type			*box;
+	MouseTrackingResult		track;
 	
+	model_wind_play(FALSE,FALSE);
+	
+		// setup the draw pose
+		
+	draw_model_setup_pose(&model,&draw_setup,cur_pose);
+	model_create_draw_bones(&model,&draw_setup);
+	
+		// setup transforms
+		
+	draw_model_gl_setup(&model);
+
+		// find a click
+		
+	box_idx=pt_idx=-1;
+		
+	for (n=0;n<model.nhit_box;n++) {
+		box=&model.hit_boxes[n].box;
+
+		xsz=box->size.x/2;
+		offx=box->offset.x;
+		zsz=box->size.z/2;
+		offz=box->offset.z;
+		ysz=box->size.y;
+		offy=box->offset.y;
+		
+		x[0]=x[1]=x[4]=x[5]=offx-xsz;
+		x[2]=x[3]=x[6]=x[7]=offx+xsz;
+		y[0]=y[1]=y[2]=y[3]=offy-ysz;
+		y[4]=y[5]=y[6]=y[7]=offy;
+		z[0]=z[3]=z[4]=z[7]=offz-zsz;
+		z[1]=z[2]=z[5]=z[6]=offz+zsz;
+	
+		for (k=0;k!=8;k++) {
+			model_get_point_position(&draw_setup,&x[k],&y[k],&z[k]);
+			if (draw_bone_model_wind_click_box(start_pt,x[k],y[k],z[k])) {
+				box_idx=n;
+				pt_idx=k;
+				break;
+			}
+		}
+		
+		if (box_idx!=-1) break;
+	}
+	
+	if (box_idx==-1) return(FALSE);
+	
+		// get original size
+		
+	box=&model.hit_boxes[box_idx].box;
+	memmove(&org_pt,&box->size,sizeof(d3pnt));
+	memmove(&org_cnt,&box->offset,sizeof(d3pnt));
+	
+		// drag handle
+		
+	model_hit_box_drag_on=FALSE;
+
+	last_pt.h=last_pt.v=-1;
+	
+	SetThemeCursor(kThemeClosedHandCursor);
+		
+	do {
+		TrackMouseLocation(NULL,&pt,&track);
+		model_wind_offset_click(&pt);
+		
+		if (memcmp(&last_pt,&pt,sizeof(Point))==0) continue;
+	
+		memmove(&last_pt,&pt,sizeof(Point));
+		
+		kx=(pt.h-start_pt.h)*5;
+		ky=(pt.v-start_pt.v)*5;
+		kz=0;
+		
+		rotate_point_center(&kx,&ky,&kz,ang_x,ang_y,0.0f);
+
+		if ((pt_idx==0) || (pt_idx==1) || (pt_idx==4) || (pt_idx==5)) {
+			box->size.x=org_pt.x-kx;
+		}
+		else {
+			box->size.x=org_pt.x+kx;
+		}
+		if ((pt_idx==0) || (pt_idx==1) || (pt_idx==2) || (pt_idx==3)) {
+			box->size.y=org_pt.y-ky;
+		}
+		else {
+			box->size.y=org_pt.y+ky;
+			box->offset.y=org_cnt.y+ky;
+		}
+		if ((pt_idx==0) || (pt_idx==3) || (pt_idx==4) || (pt_idx==7)) {
+			box->size.z=org_pt.z-kz;
+		}
+		else {
+			box->size.z=org_pt.z+kz;
+		}
+		
+			// draw the model
+			
+		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		model_hit_box_drag_on=TRUE;
+
+	} while (track!=kMouseTrackingMouseReleased);
+
+	SetThemeCursor(kThemeArrowCursor);
+
+		// redraw model
+		
+	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+
+	return(model_hit_box_drag_on);
+}
+
 /* =======================================================
 
       Model Window Clicks
@@ -492,6 +618,11 @@ void click_model_wind(Point pt,unsigned long modifiers)
 	
 	if ((draw_type==dt_bones) || (draw_type==dt_model_bones) || (draw_type==dt_mesh_bones)) {
 		if (drag_bone_model_wind(pt)) return;
+	}
+	
+	if (draw_type==dt_mesh_hit_boxes) {
+		drag_hit_box_handle_model_wind(pt);
+		return;
 	}
 		
 	select_model_wind(pt,modifiers);

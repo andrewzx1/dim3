@@ -78,7 +78,7 @@ void doinit(void)
 	
 		// setup paths
 
-	file_paths_setup(&file_path_setup,TRUE);
+	file_paths_setup(&file_path_setup);
 	
 		// setup XML
 		

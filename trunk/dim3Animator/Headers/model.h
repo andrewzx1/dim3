@@ -32,7 +32,8 @@ extern void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *dra
 extern void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bone_idx);
 
 extern void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
-extern void draw_model_boxes(model_type *model,model_draw_setup *draw_setup);
+extern void draw_model_box_view(model_type *model,model_draw_setup *draw_setup);
+extern void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_setup);
 extern void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_axis(model_type *model);
 

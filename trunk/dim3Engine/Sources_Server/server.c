@@ -229,6 +229,10 @@ bool server_initialize(char *err_str)
 	read_settings_halo();
 	read_settings_mark();
 	read_settings_crosshair();
+
+		// setup project name
+		
+	file_paths_set_project_name(&setup.file_path_setup,hud.proj_name);
 	
 		// game states
 		

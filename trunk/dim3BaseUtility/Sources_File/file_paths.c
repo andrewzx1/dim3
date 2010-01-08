@@ -35,7 +35,7 @@ and can be sold or given away.
             
 ======================================================= */
 
-bool file_paths_setup(file_path_setup_type *file_path_setup,bool app_name_override)
+bool file_paths_setup(file_path_setup_type *file_path_setup)
 {
 	struct stat		sb;
 
@@ -108,15 +108,9 @@ bool file_paths_setup(file_path_setup_type *file_path_setup,bool app_name_overri
 	
 #endif
 
-		// app_name_override is used when this is being called from
-		// outside dim3 Engine app.  At this point it can only look
-		// inside the engine if the name remains the dim3 Engine.app
+		// proj name defaults to the app name
 
-	strcpy(file_path_setup->org_app_name,file_path_setup->app_name);
-	
-	if (app_name_override) {
-		strcpy(file_path_setup->app_name,"dim3 Engine");
-	}
+	strcpy(file_path_setup->proj_name,file_path_setup->app_name);
 
 		// check all the possible paths
 	
@@ -140,6 +134,11 @@ bool file_paths_setup(file_path_setup_type *file_path_setup,bool app_name_overri
 	if (stat(file_path_setup->path_data_2,&sb)!=0) file_path_setup->path_data_2[0]=0x0;
 	
 	return((file_path_setup->path_app[0]!=0x0) || (file_path_setup->path_data[0]!=0x0) || (file_path_setup->path_data_2[0]!=0x0));
+}
+
+void file_paths_set_project_name(file_path_setup_type *file_path_setup,char *proj_name)
+{
+	strcpy(file_path_setup->proj_name,proj_name);
 }
 
 /* =======================================================
@@ -234,7 +233,7 @@ void file_paths_app(file_path_setup_type *file_path_setup,char *path,char *sub_p
 {
 	strcpy(path,file_path_setup->path_base);
 	strcat(path,"/");
-	strcat(path,file_path_setup->org_app_name);
+	strcat(path,file_path_setup->app_name);
 	strcat(path,".app");
 	
 	if (sub_path!=NULL) {
@@ -288,7 +287,7 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 #ifdef D3_OS_MAC
 	FSRef		fsref;
 	
-	FSFindFolder(kUserDomain,kDocumentsFolderType,kDontCreateFolder,&fsref);
+	FSFindFolder(kUserDomain,kApplicationSupportFolderType,kDontCreateFolder,&fsref);
 	FSRefMakePath(&fsref,(unsigned char*)path,1024);
 #endif
 
@@ -300,11 +299,16 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 	SHGetSpecialFolderPath(NULL,path,CSIDL_PERSONAL,FALSE);
 #endif
 
+		// get the dim3 path and create if necessary
+		
+	strcat(path,"/dim3");
+	file_paths_create_directory(path);
+		
 		// get game's document directory based
 		// on application name and create if necessary
 		
 	strcat(path,"/");
-	strcat(path,file_path_setup->app_name);
+	strcat(path,file_path_setup->proj_name);
 		
 	file_paths_create_directory(path);
 	

@@ -129,12 +129,17 @@ int light_map_textures_create(void)
 	lmap->pixel_touch=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_touch,sz);
 	
-		// first light map has the very
-		// first block reserved and set to black so polygons
+		// first light map has a block of 4 blocks
+		// reserved and set to black so polygons
 		// that have no light can be optimized to
 		// have their light map here
 		
-	if (idx==0) *lmap->block=0x1;
+	if (idx==0) {
+		*lmap->block=0x1;
+		*(lmap->block+1)=0x1;
+		*(lmap->block+map.settings.light_map_size)=0x1;
+		*(lmap->block+map.settings.light_map_size+1)=0x1;
+	}
 	
 	return(idx);
 }
@@ -417,37 +422,95 @@ void light_map_textures_blur(void)
       
 ======================================================= */
 
-void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,int v_idx,int *px,int *py)
+void light_map_create_mesh_poly_flatten_setup_size(map_mesh_poly_type *poly,light_map_mesh_poly_type *lm_poly)
 {
+	int				n;
+	
+	lm_poly->x_sz=0;
+	lm_poly->y_sz=0;
+	
+	for (n=0;n!=poly->ptsz;n++) {
+		if (lm_poly->x[n]>lm_poly->x_sz) lm_poly->x_sz=lm_poly->x[n];
+		if (lm_poly->y[n]>lm_poly->y_sz) lm_poly->y_sz=lm_poly->y[n];
+	}
+}
+
+void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_mesh_poly_type *lm_poly)
+{
+	int					n,x,y,max_sz,min_x,min_y;
 	float				factor;
 	double				dx,dz;
 	d3pnt				*pt;
 	
-	pt=&mesh->vertexes[poly->v[v_idx]];
-
-	if (poly->box.wall_like) {
-		dx=(double)(pt->x-poly->line.lx);
-		dz=(double)(pt->z-poly->line.lz);
+		// flatten the poly
 		
-		*px=(int)sqrt((dx*dx)+(dz*dz));
-		*py=pt->y-poly->box.min.y;
-	}
-	else {
-		*px=pt->x-poly->box.min.x;
-		*py=pt->z-poly->box.min.z;
+	for (n=0;n!=poly->ptsz;n++) {
+	
+		pt=&mesh->vertexes[poly->v[n]];
+
+		if (poly->box.wall_like) {
+			dx=(double)(pt->x-poly->line.lx);
+			dz=(double)(pt->z-poly->line.lz);
+			
+			x=(int)sqrt((dx*dx)+(dz*dz));
+			y=pt->y-poly->box.min.y;
+		}
+		else {
+			x=pt->x-poly->box.min.x;
+			y=pt->z-poly->box.min.z;
+		}
+		
+			// reduce to pixel factor (size of render)
+			
+		factor=((float)map.settings.light_map_quality)/light_map_quality_to_pixel_factor;
+			
+		lm_poly->x[n]=(int)((float)x*factor);
+		lm_poly->y[n]=(int)((float)y*factor);
 	}
 	
-		// reduce to pixel factor (size of render)
+		// get the poly size
 		
-	factor=((float)map.settings.light_map_quality)/light_map_quality_to_pixel_factor;
+	light_map_create_mesh_poly_flatten_setup_size(poly,lm_poly);
+	
+		// largest poly is 1/4 of texture size
 		
-	*px=(int)((float)(*px)*factor);
-	*py=(int)((float)(*py)*factor);
+	max_sz=map.settings.light_map_size>>2;
+	if ((lm_poly->x_sz<=max_sz) && (lm_poly->y_sz<=max_sz)) return;
+	
+		// reduce to 1/4 size
+		
+	if (lm_poly->x_sz>lm_poly->y_sz) {
+		factor=(float)max_sz/(float)lm_poly->x_sz;
+	}
+	else {
+		factor=(float)max_sz/(float)lm_poly->y_sz;
+	}
+	
+	min_x=lm_poly->x_sz;
+	min_y=lm_poly->y_sz;
+	
+	for (n=0;n!=poly->ptsz;n++) {
+		lm_poly->x[n]=(int)(((float)lm_poly->x[n])*factor);
+		lm_poly->y[n]=(int)(((float)lm_poly->y[n])*factor);
+	
+		if (lm_poly->x[n]<min_x) min_x=lm_poly->x[n];
+		if (lm_poly->y[n]<min_y) min_y=lm_poly->y[n];
+	}
+	
+		// push reduced polygon back to top-left
+		// and rebuild poly size
+		
+	for (n=0;n!=poly->ptsz;n++) {
+		lm_poly->x[n]-=min_x;
+		lm_poly->y[n]-=min_y;
+	}
+	
+	light_map_create_mesh_poly_flatten_setup_size(poly,lm_poly);
 }
 
 bool light_map_mesh_poly_start(char *err_str)
 {
-	int							n,k,t,sz;
+	int							n,k,sz;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	light_map_mesh_type			*lm_mesh;
@@ -497,23 +560,9 @@ bool light_map_mesh_poly_start(char *err_str)
 		for (k=0;k!=mesh->npoly;k++) {
 			map_prepare_mesh_poly(mesh,poly);
 			
-				// flatten the poly and get size
+				// flatten the poly
 				
-			lm_poly->x_sz=0;
-			lm_poly->y_sz=0;
-			
-			for (t=0;t!=poly->ptsz;t++) {
-				light_map_create_mesh_poly_flatten(mesh,poly,t,&lm_poly->x[t],&lm_poly->y[t]);
-				if (lm_poly->x[t]>lm_poly->x_sz) lm_poly->x_sz=lm_poly->x[t];
-				if (lm_poly->y[t]>lm_poly->y_sz) lm_poly->y_sz=lm_poly->y[t];
-			}
-			
-				// can this poly by itself fit in map?
-				
-			if ((lm_poly->x_sz>=map.settings.light_map_size) || (lm_poly->y_sz>=map.settings.light_map_size)) {
-				sprintf(err_str,"Mesh poly (%d.%d) is too big to fit within a single light map texture",n,k);
-				return(FALSE);
-			}
+			light_map_create_mesh_poly_flatten(mesh,poly,lm_poly);
 
 			poly++;
 			lm_poly++;
