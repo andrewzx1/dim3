@@ -189,7 +189,7 @@ int main(int argc,char *argv[])
 	
 		// setup paths
 
-	if (!file_paths_setup(&setup.file_path_setup,FALSE)) {
+	if (!file_paths_setup(&setup.file_path_setup)) {
 		app_report_error("dim3 requires a data folder with project files.");
 		return(0);
 	}

@@ -74,7 +74,7 @@ void default_settings_interface(void)
 	
 		// project setup
 		
-	strcpy(hud.proj_name,"noname");
+	strcpy(hud.proj_name,"dim3 Engine");
 	hud.skill=FALSE;
 	
 		// sounds and music

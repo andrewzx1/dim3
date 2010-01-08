@@ -258,7 +258,7 @@ extern void string_convert_float(char *str,float f);
 
 typedef struct	{
 					char							app_name[256],
-													org_app_name[256],
+													proj_name[256],
 													path_base[1024],
 													path_app[1024],
 													path_data[1024],
@@ -283,7 +283,8 @@ typedef struct	{
 // file path routines
 //
 
-extern bool file_paths_setup(file_path_setup_type *file_path_setup,bool app_name_override);
+extern bool file_paths_setup(file_path_setup_type *file_path_setup);
+extern void file_paths_set_project_name(file_path_setup_type *file_path_setup,char *proj_name);
 
 extern void file_paths_data(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
 extern void file_paths_data_default(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
