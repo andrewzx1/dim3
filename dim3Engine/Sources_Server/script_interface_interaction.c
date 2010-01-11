@@ -38,7 +38,8 @@ JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef
 JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_interface_interaction_start_save_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_interaction_start_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_interaction_start_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_setup_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -48,7 +49,8 @@ JSStaticFunction	interface_interaction_functions[]={
 							{"startTitle",			js_interface_interaction_start_title_func,				kJSPropertyAttributeDontDelete},
 							{"startMovie",			js_interface_interaction_start_movie_func,				kJSPropertyAttributeDontDelete},
 							{"startChooser",		js_interface_interaction_start_chooser_func,			kJSPropertyAttributeDontDelete},
-							{"startSaveLoad",		js_interface_interaction_start_save_load_func,			kJSPropertyAttributeDontDelete},
+							{"startSave",			js_interface_interaction_start_save_func,				kJSPropertyAttributeDontDelete},
+							{"startLoad",			js_interface_interaction_start_load_func,				kJSPropertyAttributeDontDelete},
 							{"startSetup",			js_interface_interaction_start_setup_func,				kJSPropertyAttributeDontDelete},
 							{"startMenu",			js_interface_interaction_start_menu_func,				kJSPropertyAttributeDontDelete},
 							{"quit",				js_interface_interaction_quit_func,						kJSPropertyAttributeDontDelete},
@@ -154,11 +156,19 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_interface_interaction_start_save_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_interface_interaction_start_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	// this has been depreciated -- supergumba -- delete later
+	file_trigger_set(TRUE);
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_interface_interaction_start_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
+	file_trigger_set(FALSE);
 	return(script_null_to_value(cx));
 }
 

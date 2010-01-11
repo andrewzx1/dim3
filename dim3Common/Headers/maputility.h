@@ -252,7 +252,8 @@ typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
 															lock_uv,lock_move,never_obscure,
-															rot_independent,shadow,no_light_map,
+															rot_independent,shadow,
+															no_light_map,skip_light_map_trace,
 															touched;
 					} map_mesh_flag_type;
 

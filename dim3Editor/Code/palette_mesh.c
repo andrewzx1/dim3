@@ -44,6 +44,7 @@ and can be sold or given away.
 #define kMeshSettingNeverObscure				FOUR_CHAR_CODE('nvob')
 #define kMeshSettingRotIndependent				FOUR_CHAR_CODE('rtip')
 #define kMeshSettingNoLightMap					FOUR_CHAR_CODE('nlmp')
+#define kMeshSettingSkipLightMapTrace			FOUR_CHAR_CODE('skrt')
 
 #define kMeshSettingRotX						FOUR_CHAR_CODE('rotx')
 #define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
@@ -96,6 +97,7 @@ void palette_mesh_load(void)
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingNeverObscure,0,mesh->flag.never_obscure);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingRotIndependent,0,mesh->flag.rot_independent);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingNoLightMap,0,mesh->flag.no_light_map);
+	dialog_set_boolean(palette_mesh_wind,kMeshSettingSkipLightMapTrace,0,mesh->flag.skip_light_map_trace);
 
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotX,0,mesh->rot_off.x);
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotY,0,mesh->rot_off.y);
@@ -141,6 +143,7 @@ void palette_mesh_save(void)
 	mesh->flag.never_obscure=dialog_get_boolean(palette_mesh_wind,kMeshSettingNeverObscure,0);
 	mesh->flag.rot_independent=dialog_get_boolean(palette_mesh_wind,kMeshSettingRotIndependent,0);
 	mesh->flag.no_light_map=dialog_get_boolean(palette_mesh_wind,kMeshSettingNoLightMap,0);
+	mesh->flag.skip_light_map_trace=dialog_get_boolean(palette_mesh_wind,kMeshSettingSkipLightMapTrace,0);
 	
 	mesh->rot_off.x=dialog_get_int(palette_mesh_wind,kMeshSettingRotX,0);
 	mesh->rot_off.y=dialog_get_int(palette_mesh_wind,kMeshSettingRotY,0);

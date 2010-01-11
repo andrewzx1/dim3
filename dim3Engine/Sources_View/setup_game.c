@@ -293,7 +293,7 @@ void setup_game_action_pane(void)
 	y+=high;
 	
 	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.05f);
+	high=(int)(((float)hud.scale_x)*0.04f);
 	
 	y+=((padding/2)+(high/2));
 	
@@ -353,7 +353,7 @@ void setup_game_create_pane(void)
 		// buttons
 		
 	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.05f);
+	high=(int)(((float)hud.scale_x)*0.04f);
 	
 	element_get_button_bottom_left(&x,&y,wid,high);
 	element_button_text_add("Default",setup_game_default_button,x,y,wid,high,element_pos_left,element_pos_bottom);

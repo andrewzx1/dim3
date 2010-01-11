@@ -417,6 +417,7 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("rot_independent",mesh->flag.rot_independent);
 	xml_add_attribute_boolean("shadow",mesh->flag.shadow);
 	xml_add_attribute_boolean("no_light_map",mesh->flag.no_light_map);
+	xml_add_attribute_boolean("skip_light_map_trace",mesh->flag.skip_light_map_trace);
 
 	if (mesh->hide_mode!=mesh_hide_mode_never) xml_add_attribute_list("hide",(char*)mesh_hide_mode_str,mesh->hide_mode);
 	if ((mesh->rot_off.x!=0.0f) || (mesh->rot_off.y!=0.0f) || (mesh->rot_off.z!=0.0f)) xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);

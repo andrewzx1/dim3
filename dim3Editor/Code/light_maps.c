@@ -991,6 +991,8 @@ bool light_map_ray_trace_map(int mesh_idx,int poly_idx,d3pnt *spt,d3pnt *ept)
 		if ((mesh->box.min.x>max.x) || (mesh->box.max.x<min.x)) continue;
 		if ((mesh->box.min.y>max.y) || (mesh->box.max.y<min.y)) continue;
 		if ((mesh->box.min.z>max.z) || (mesh->box.max.z<min.z)) continue;
+		
+		if (mesh->flag.skip_light_map_trace) continue;
 			
 		for (k=0;k!=mesh->npoly;k++) {
 			poly=&mesh->polys[k];
@@ -1015,7 +1017,6 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 	d3col				col;
 	double				d,d_intensity,dist,dx,dy,dz;
 	map_light_type		*lit;
-	
 	
 		// check the lights
 		
@@ -1136,7 +1137,7 @@ bool light_map_render_poly(int mesh_idx,int poly_idx,light_map_texture_type *lma
 	
 	lm_mesh=&light_map_meshes[mesh_idx];
 	lm_poly=&lm_mesh->polys[poly_idx];
-	
+		
 		// create the 2D drawing points and
 		// determine the top and bottom vertex of the polygon
 		
@@ -1525,9 +1526,14 @@ bool light_maps_create(char *err_str)
 {
 	bool			ok;
 	
+	int tick;
+	tick=TickCount();
+	
 	dialog_progress_start("Generating Light Maps...",(3+(max_light_map_textures*3)+(map.mesh.nmesh*2)));
 	ok=light_maps_create_process(err_str);
 	dialog_progress_end();
+	
+	fprintf(stdout,"time = %d\n",(int)(TickCount()-tick));
 	
 	return(ok);
 }

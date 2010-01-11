@@ -182,6 +182,29 @@ void vertex_invert_normal_sel_vertexes(int mesh_idx)
 
 /* =======================================================
 
+      Clear Bones From Vertexes
+      
+======================================================= */
+
+void vertex_clear_bone_attachments_sel_vertexes(int mesh_idx)
+{
+	int					i,nt;
+	model_vertex_type	*vertex;
+	
+	nt=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
+	
+	for (i=0;i!=nt;i++) {
+		if (vertex_check_sel_mask(mesh_idx,i)) {
+			vertex->major_bone_idx=-1;
+			vertex->minor_bone_idx=-1;
+		}
+		vertex++;
+	}
+}
+
+/* =======================================================
+
       Remove Vertexes
       
 ======================================================= */

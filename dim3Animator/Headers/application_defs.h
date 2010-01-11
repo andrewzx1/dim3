@@ -99,6 +99,7 @@
 #define kCommandVertexScale				FOUR_CHAR_CODE('vscl')
 #define kCommandVertexRotate			FOUR_CHAR_CODE('vrot')
 #define kCommandVertexInvertNormals		FOUR_CHAR_CODE('vinm')
+#define kCommandVertexClearBones		FOUR_CHAR_CODE('vcba')
 #define kCommandVertexHideSelected		FOUR_CHAR_CODE('vhsl')
 #define kCommandVertexHideNonSelected	FOUR_CHAR_CODE('vhns')
 #define kCommandVertexShowAll			FOUR_CHAR_CODE('vsal')

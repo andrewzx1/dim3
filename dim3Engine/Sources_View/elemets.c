@@ -68,18 +68,18 @@ void element_release_control_memory(void)
 		switch (element->type) {
 		
 			case element_type_button:
-				bitmap_close(&element->setup.button.bitmap);
-				bitmap_close(&element->setup.button.bitmap_select);
+				view_images_free_single(element->setup.button.image_idx);
+				view_images_free_single(element->setup.button.image_select_idx);
 				break;
 				
 			case element_type_bitmap:
-				bitmap_close(&element->setup.button.bitmap);
+				view_images_free_single(element->setup.button.image_idx);
 				break;
 				
 			case element_type_table:
 				if (element->data!=NULL) free(element->data);
 				for (k=0;k!=element_table_max_image;k++) {
-					if (element->setup.table.images[k].path[0]!=0x0) bitmap_close(&element->setup.table.images[k].bitmap);
+					view_images_free_single(element->setup.table.images[k].image_idx);
 				}
 				break;
 				
@@ -189,6 +189,9 @@ void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int 
 	element->setup.button.text_only=TRUE;
 	strcpy(element->setup.button.name,name);
 	
+	element->setup.button.image_idx=-1;
+	element->setup.button.image_select_idx=-1;
+	
 	element->wid=wid;
 	element->high=high;
 	
@@ -216,6 +219,7 @@ void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int 
 void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos)
 {
 	element_type	*element;
+	bitmap_type		*bitmap;
 
 	SDL_mutexP(element_thread_lock);
 	
@@ -234,27 +238,21 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 
 	element->setup.button.text_only=FALSE;
 	
-		// skip button if graphic is missing to avoid crash
+		// get button graphics
+		
+	element->setup.button.image_idx=view_images_load_single(path,TRUE);
+	element->setup.button.image_select_idx=view_images_load_single(path2,TRUE);
 
-	if (!bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE)) {
-		nelement--;
-		SDL_mutexV(element_thread_lock);
-		return;
-	}
-
-		// if no selected button, then just use the regular one
-
-	if (!bitmap_open(&element->setup.button.bitmap_select,path2,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE)) {
-		bitmap_open(&element->setup.button.bitmap_select,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
-	}
-
+		// setup size and position
+		
 	if ((wid!=-1) && (high!=-1)) {
 		element->wid=wid;
 		element->high=high;
 	}
 	else {
-		element->wid=element->setup.button.bitmap.wid;
-		element->high=element->setup.button.bitmap.high;
+		bitmap=view_images_get_bitmap(element->setup.button.image_idx);
+		element->wid=bitmap->wid;
+		element->high=bitmap->high;
 	}
 	
 	switch (x_pos) {
@@ -281,6 +279,7 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool framed)
 {
 	element_type	*element;
+	bitmap_type		*bitmap;
 
 	SDL_mutexP(element_thread_lock);
 	
@@ -290,24 +289,15 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	element->id=id;
 	element->type=element_type_bitmap;
 	
-	if (path==NULL) {
-		element->setup.button.bitmap.gl_id=-1;
-	}
-	else {
-		bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
-	}
+	element->setup.button.image_idx=view_images_load_single(path,TRUE);
 	
 	element->x=x;
 	element->y=y;
 	
 	if ((wid==-1) || (high==-1)) {
-		if (element->setup.button.bitmap.gl_id!=-1) {
-			element->wid=element->setup.button.bitmap.wid;
-			element->high=element->setup.button.bitmap.high;
-		}
-		else {
-			element->wid=element->high=0;
-		}
+		bitmap=view_images_get_bitmap(element->setup.button.image_idx);
+		element->wid=bitmap->wid;
+		element->high=bitmap->high;
 	}
 	else {
 		element->wid=wid;
@@ -557,7 +547,7 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	element->setup.table.bitmap_mode=bitmap_mode;
 	
 	for (n=0;n!=element_table_max_image;n++) {
-		element->setup.table.images[n].path[0]=0x0;
+		element->setup.table.images[n].image_idx=-1;
 	}
 	
 	element->setup.table.next_image_idx=0;
@@ -827,9 +817,9 @@ int element_find_for_xy(int x,int y)
 
 void element_draw_button_text(element_type *element,int sel_id)
 {
-	int				x,y,lft,rgt,top,bot,slant_add;
+	int				x,y,lft,rgt,top,bot;
 	float			alpha;
-	d3col			txt_col,outline_col,col,gradient_start,gradient_end;
+	d3col			txt_col,outline_col;
 	
 	if (element->enabled) {
 		alpha=1.0f;
@@ -838,51 +828,30 @@ void element_draw_button_text(element_type *element,int sel_id)
 			memmove(&txt_col,&hud.color.control_mouse_over,sizeof(d3col));
 		}
 		else {
-			memmove(&outline_col,&hud.color.control_outline,sizeof(d3col));
-			memmove(&txt_col,&hud.color.control_text,sizeof(d3col));
+			memmove(&outline_col,&hud.color.button_outline,sizeof(d3col));
+			memmove(&txt_col,&hud.color.button_text,sizeof(d3col));
 		}
 	}
 	else {
 		alpha=0.3f;
-		memmove(&outline_col,&hud.color.control_outline,sizeof(d3col));
-		memmove(&txt_col,&hud.color.control_disabled,sizeof(d3col));
+		memmove(&outline_col,&hud.color.button_outline,sizeof(d3col));
+		memmove(&txt_col,&hud.color.button_text,sizeof(d3col));
 	}
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
-	slant_add=(int)(((float)hud.scale_x)*0.008f);
 	
-		// gradients
-		
-	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
-	gradient_end.r=gradient_start.r*0.5f;
-	gradient_end.g=gradient_start.g*0.5f;
-	gradient_end.b=gradient_start.b*0.5f;
-	
-		// button background
+		// button background and outline
 
-	view_draw_next_vertex_object_2D_color_poly(lft,bot,&gradient_end,lft,top,&gradient_end,(lft+slant_add),(top+slant_add),&gradient_start,(lft+slant_add),(bot-slant_add),&gradient_start,alpha);
-	view_draw_next_vertex_object_2D_color_poly(rgt,bot,&gradient_end,rgt,top,&gradient_end,(rgt-slant_add),(top+slant_add),&gradient_start,(rgt-slant_add),(bot-slant_add),&gradient_start,alpha);
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_end,rgt,top,&gradient_end,(rgt-slant_add),(top+slant_add),&gradient_start,(lft+slant_add),(top+slant_add),&gradient_start,alpha);
-	view_draw_next_vertex_object_2D_color_poly(lft,bot,&gradient_end,rgt,bot,&gradient_end,(rgt-slant_add),(bot-slant_add),&gradient_start,(lft+slant_add),(bot-slant_add),&gradient_start,alpha);
-	view_draw_next_vertex_object_2D_color_poly((lft+slant_add),(top+slant_add),&gradient_start,(rgt-slant_add),(top+slant_add),&gradient_start,(rgt-slant_add),(bot-slant_add),&gradient_start,(lft+slant_add),(bot-slant_add),&gradient_start,alpha);
-
-		// button outlines
-
-	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,rgt,top,bot);
-
-	col.r=(gradient_start.r+gradient_end.r)*0.5f;
-	col.g=(gradient_start.g+gradient_end.g)*0.5f;
-	col.b=(gradient_start.b+gradient_end.b)*0.5f;
-
-	view_draw_next_vertex_object_2D_line_quad(&col,alpha,((lft-1)+slant_add),((rgt+1)-slant_add),((top-1)+slant_add),((bot+1)-slant_add));
+	view_draw_next_vertex_object_2D_color_quad(&hud.color.button_fill,alpha,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
 	
 		// button text
 
 	x=(lft+rgt)>>1;
-	y=((top+bot)>>1)-(hud.font.text_size_medium/10);
+	y=((top+bot)>>1)-(hud.font.text_size_small/10);
 
-	gl_text_start(hud.font.text_size_medium);
-	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&txt_col,1.0f);
+	gl_text_start(hud.font.text_size_small);
+	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&txt_col,alpha);
 	gl_text_end();
 }
 
@@ -894,16 +863,16 @@ void element_draw_button_bitmap(element_type *element,int sel_id)
 	
 	if (element->enabled) {
 		if (element->id==sel_id) {
-			gl_id=element->setup.button.bitmap_select.gl_id;
+			gl_id=view_images_get_gl_id(element->setup.button.image_select_idx);
 			alpha=1.0f;
 		}
 		else {
-			gl_id=element->setup.button.bitmap.gl_id;
+			gl_id=view_images_get_gl_id(element->setup.button.image_idx);
 			alpha=1.0f;
 		}
 	}
 	else {
-		gl_id=element->setup.button.bitmap.gl_id;
+		gl_id=view_images_get_gl_id(element->setup.button.image_idx);
 		alpha=0.5f;
 	}
 	
@@ -931,14 +900,14 @@ void element_draw_button(element_type *element,int sel_id)
 void element_draw_bitmap(element_type *element)
 {
 	int				lft,rgt,top,bot;
+	GLuint			gl_id;
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 
 		// the picture
 		
-	if (element->setup.button.bitmap.gl_id!=-1) {
-		view_draw_next_vertex_object_2D_texture_quad(element->setup.button.bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,0.0f);
-	}
+	gl_id=view_images_get_gl_id(element->setup.button.image_idx);
+	view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,0.0f);
 	
 		// the frame
 		
@@ -1672,7 +1641,8 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		// is it already loaded?
 		
 	for (n=0;n!=element_table_max_image;n++) {
-		if (strcmp(element->setup.table.images[n].path,path)==0) return(element->setup.table.images[n].bitmap.gl_id);
+		if (element->setup.table.images[n].image_idx==-1) continue;
+		if (strcmp(element->setup.table.images[n].path,path)==0) return(view_images_get_gl_id(element->setup.table.images[n].image_idx));
 	}
 	
 		// need to load, find open bitmap
@@ -1680,7 +1650,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 	idx=-1;
 	
 	for (n=0;n!=element_table_max_image;n++) {
-		if (element->setup.table.images[n].path[0]==0x0) {
+		if (element->setup.table.images[n].image_idx!=-1) {
 			idx=n;
 			break;
 		}
@@ -1697,9 +1667,9 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		// open
 		
 	strcpy(element->setup.table.images[idx].path,path);
-	bitmap_open(&element->setup.table.images[idx].bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+	element->setup.table.images[idx].image_idx=view_images_load_single(path,TRUE);
 
-	return(element->setup.table.images[idx].bitmap.gl_id);
+	return(view_images_get_gl_id(element->setup.table.images[idx].image_idx));
 }
 
 void element_draw_table_line_data(element_type *element,int x,int y,int row,int wid,int row_high,d3col *txt_col,char *data)
@@ -2926,14 +2896,8 @@ void element_set_bitmap(int id,char *path)
 
 	element=element_find(id);
 	if (element!=NULL) {
-		if (element->setup.button.bitmap.gl_id!=-1) bitmap_close(&element->setup.button.bitmap);
-		
-		if (path==NULL) {
-			element->setup.button.bitmap.gl_id=-1;
-		}
-		else {
-			bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
-		}
+		view_images_free_single(element->setup.button.image_idx);
+		element->setup.button.image_idx=view_images_load_single(path,TRUE);
 	}
 
 	SDL_mutexV(element_thread_lock);
