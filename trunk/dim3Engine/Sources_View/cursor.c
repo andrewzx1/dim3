@@ -35,7 +35,7 @@ and can be sold or given away.
 extern hud_type				hud;
 extern setup_type			setup;
 
-bitmap_type					cursor_bitmap;
+int							cursor_image_idx;
 
 /* =======================================================
 
@@ -48,12 +48,12 @@ void cursor_initialize(void)
 	char		path[1024];
 	
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
-	bitmap_open(&cursor_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+	cursor_image_idx=view_images_load_single(path,TRUE);
 }
 
 void cursor_shutdown(void)
 {
-	bitmap_close(&cursor_bitmap);
+	view_images_free_single(cursor_image_idx);
 }
 
 /* =======================================================
@@ -65,6 +65,7 @@ void cursor_shutdown(void)
 void cursor_draw(void)
 {
 	int				x,y,sz,lft,top,rgt,bot;
+	GLuint			gl_id;
 	
 		// get cursor position
 		
@@ -79,7 +80,8 @@ void cursor_draw(void)
 
 		// draw mouse
 		
-	view_draw_next_vertex_object_2D_texture_quad(cursor_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,0.0f);
+	gl_id=view_images_get_gl_id(cursor_image_idx);
+	view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,0.0f);
 }
 
 

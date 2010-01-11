@@ -289,7 +289,7 @@ void file_open(bool is_save)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.84f)-y;
+	high=(int)(((float)hud.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;
@@ -303,7 +303,7 @@ void file_open(bool is_save)
 		// buttons
 		
 	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.05f);
+	high=(int)(((float)hud.scale_x)*0.04f);
 	
 	element_get_button_bottom_right(&x,&y,wid,high);
 	
@@ -337,6 +337,30 @@ void file_close(void)
 void file_return_to_game(void)
 {
 	server.state=gs_running;
+}
+
+/* =======================================================
+
+      File Triggers
+      
+======================================================= */
+
+void file_trigger_clear(void)
+{
+	file_start_trigger=FALSE;
+}
+
+void file_trigger_check(void)
+{
+	if (file_start_trigger) file_open(file_is_save);
+}	
+
+void file_trigger_set(bool is_save)
+{
+	if (server.state!=gs_running) return;
+
+	file_is_save=is_save;
+	file_start_trigger=TRUE;
 }
 
 /* =======================================================

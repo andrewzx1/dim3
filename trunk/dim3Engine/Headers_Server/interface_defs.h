@@ -121,9 +121,9 @@ and can be sold or given away.
 //
 
 typedef struct		{
+						int						image_idx,image_select_idx;
 						char					name[name_str_len];
 						bool					text_only;
-						bitmap_type				bitmap,bitmap_select;
 					} element_button_type;
 
 typedef struct		{
@@ -141,8 +141,8 @@ typedef struct		{
 					} element_column_type;
 
 typedef struct		{
+						int						image_idx;
 						char					path[1024];
-						bitmap_type				bitmap;
 					} element_image_type;
 
 typedef struct		{
@@ -249,6 +249,7 @@ typedef struct		{
 												control_label,control_text,control_fill,
 												control_header,control_outline,
 												control_mouse_over,control_hilite,control_disabled,
+												button_fill,button_text,button_outline,
 												default_tint,tints[max_tint_color];
 					} hud_color_type;
 

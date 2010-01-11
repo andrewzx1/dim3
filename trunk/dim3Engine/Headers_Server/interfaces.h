@@ -168,6 +168,9 @@ extern void setup_game_run(void);
 
 extern void setup_network_run(void);
 
+extern void file_trigger_clear(void);
+extern void file_trigger_check(void);
+extern void file_trigger_set(bool is_save);
 extern void file_run(void);
 
 extern void join_run(void);

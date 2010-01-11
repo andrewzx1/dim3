@@ -420,7 +420,7 @@ void join_news_pane(void)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.84f)-y;
+	high=(int)(((float)hud.scale_y)*0.85f)-y;
 
 	element_text_box_add(net_get_news(),join_news_id,x,y,wid,high);
 }
@@ -446,7 +446,7 @@ void join_lan_internet_pane(bool lan)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.84f)-y;
+	high=(int)(((float)hud.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Name");
 	cols[0].percent_size=0.45f;
@@ -491,7 +491,7 @@ void join_create_pane(void)
 		// buttons
 		
 	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.05f);
+	high=(int)(((float)hud.scale_x)*0.04f);
 
 	element_get_button_bottom_left(&x,&y,wid,high);
 	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,wid,high,element_pos_left,element_pos_bottom);

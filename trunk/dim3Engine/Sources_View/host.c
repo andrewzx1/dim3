@@ -213,7 +213,7 @@ void host_game_pane(void)
 	y+=padding;
 
 	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.83f)-y;
+	high=(int)(((float)hud.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -337,7 +337,7 @@ void host_create_pane(void)
 		// buttons
 		
 	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.05f);
+	high=(int)(((float)hud.scale_x)*0.04f);
 
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);

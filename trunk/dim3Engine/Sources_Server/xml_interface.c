@@ -104,6 +104,10 @@ void default_settings_interface(void)
 	hud.color.control_hilite.r=hud.color.control_hilite.b=1.0f;
 	hud.color.control_hilite.g=0.3f;
 	hud.color.control_disabled.r=hud.color.control_disabled.g=hud.color.control_disabled.b=0.3f;
+
+	hud.color.button_fill.r=hud.color.button_fill.g=hud.color.button_fill.b=0.6f;
+	hud.color.button_text.r=hud.color.button_text.g=hud.color.button_text.b=0.0f;
+	hud.color.button_outline.r=hud.color.button_outline.g=hud.color.button_outline.b=0.0f;
 	
 	hud.color.default_tint.r=hud.color.default_tint.g=hud.color.default_tint.b=1.0f;
 
@@ -872,6 +876,9 @@ void read_settings_interface(void)
 		xml_get_attribute_color(color_tag,"control_mouse_over",&hud.color.control_mouse_over);
 		xml_get_attribute_color(color_tag,"control_hilite",&hud.color.control_hilite);
 		xml_get_attribute_color(color_tag,"control_disabled",&hud.color.control_disabled);
+		xml_get_attribute_color(color_tag,"button_fill",&hud.color.button_fill);
+		xml_get_attribute_color(color_tag,"button_text",&hud.color.button_text);
+		xml_get_attribute_color(color_tag,"button_outline",&hud.color.button_outline);
 		xml_get_attribute_color(color_tag,"default_tint",&hud.color.default_tint);
 	}
 

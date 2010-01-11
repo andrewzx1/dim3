@@ -910,7 +910,13 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			vertex_invert_normal_sel_vertexes(cur_mesh);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
-			
+		
+		case kCommandVertexClearBones:
+			vertex_clear_bone_attachments_sel_vertexes(cur_mesh);
+			reset_vertex_tab();
+			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			return(noErr);
+				
 		case kCommandVertexHideSelected:
 			vertex_hide_mask_set_sel_vertexes(cur_mesh);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);

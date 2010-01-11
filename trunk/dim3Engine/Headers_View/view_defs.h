@@ -29,8 +29,6 @@ and can be sold or given away.
 // view maximums
 //
 
-#define max_view_image										1024
-
 #define max_view_render_item								5120
 
 #define max_light_spot										128				// maximum number of lights in a scene
@@ -128,9 +126,18 @@ and can be sold or given away.
 // image structures
 //
 
+#define max_view_image										1024
+#define max_view_image_bitmap								32
+
 typedef struct		{
-						char								path[1024];
+						int									msec;
 						bitmap_type							bitmap;
+					} view_image_bitmap_type;
+
+typedef struct		{
+						int									nbitmap,total_msec;
+						char								path[1024];
+						view_image_bitmap_type				bitmaps[max_view_image_bitmap];
 					} view_image_type;
 
 //
@@ -305,20 +312,11 @@ typedef struct		{
 					} view_render_type;
 
 //
-// count structure
-//
-
-typedef struct		{
-						int									image;
-					} view_count_type;
-
-//
 // main view structure
 //
  
 typedef struct		{
 						view_render_type					*render;
-						view_count_type						count;
 						view_time_type						time;
 						view_fps_type						fps;
 						view_image_type						*images;

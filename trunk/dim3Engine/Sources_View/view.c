@@ -320,6 +320,10 @@ bool view_initialize(char *err_str)
 	al_music_set_volume(setup.music_volume);
 	al_music_set_state(setup.music_on);
 	
+		// intialize the view bitmap lists
+		
+	view_images_initialize();
+	
 		// read in the sounds
 		
 	read_settings_sound();
@@ -351,6 +355,7 @@ void view_shutdown(void)
 
 	input_shutdown();
 	al_shutdown();
+	view_images_shutdown();
 	view_shutdown_display();
 
 		// shutdown SDL
@@ -378,7 +383,7 @@ void view_game_start(void)
 		// load images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
-	view_images_load();
+	view_images_cached_load();
 
 		// precalculate particles
 
@@ -398,7 +403,7 @@ void view_game_stop(void)
 		// free images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
-	view_images_free();
+	view_images_cached_free();
 }
 
 /* =======================================================

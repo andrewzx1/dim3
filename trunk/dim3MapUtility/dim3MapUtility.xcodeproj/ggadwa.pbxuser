@@ -16,9 +16,9 @@
 	};
 	2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6604}}";
-			sepNavSelRange = "{3486, 0}";
-			sepNavVisRange = "{1945, 2121}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6617}}";
+			sepNavSelRange = "{2691, 0}";
+			sepNavVisRange = "{1945, 2214}";
 			sepNavWindowFrame = "{{300, 194}, {1041, 747}}";
 		};
 	};
@@ -56,9 +56,9 @@
 	};
 	2683177A0E4A8B1900BBCDCA /* map_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10374}}";
-			sepNavSelRange = "{2121, 0}";
-			sepNavVisRange = "{1518, 1240}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10387}}";
+			sepNavSelRange = "{2170, 0}";
+			sepNavVisRange = "{1551, 1248}";
 			sepNavWindowFrame = "{{445, 193}, {1041, 747}}";
 		};
 	};
@@ -170,10 +170,10 @@
 	};
 	F5A8B1B005229DA4008D4331 /* file_map_write.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10387}}";
-			sepNavSelRange = "{3023, 0}";
-			sepNavVisRange = "{2839, 2211}";
-			sepNavWindowFrame = "{{373, 140}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1244, 10166}}";
+			sepNavSelRange = "{13098, 0}";
+			sepNavVisRange = "{12217, 2289}";
+			sepNavWindowFrame = "{{316, 94}, {1041, 747}}";
 		};
 	};
 	F5A8B1B105229DA4008D4331 /* map_main.c */ = {
@@ -255,8 +255,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 284616916;
-			PBXWorkspaceStateSaveDate = 284616916;
+			PBXPerProjectTemplateStateSaveDate = 284779221;
+			PBXWorkspaceStateSaveDate = 284779221;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -272,9 +272,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1118, 7761}}";
-			sepNavSelRange = "{19218, 0}";
-			sepNavVisRange = "{18076, 3066}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9217}}";
+			sepNavSelRange = "{6970, 0}";
+			sepNavVisRange = "{6395, 1516}";
 			sepNavWindowFrame = "{{378, 100}, {1041, 691}}";
 		};
 	};

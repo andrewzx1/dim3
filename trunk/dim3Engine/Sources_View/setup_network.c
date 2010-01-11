@@ -151,7 +151,7 @@ void setup_network_player_pane(void)
 		y+=padding;
 
 		wid=hud.scale_x-((margin+padding)*2);
-		high=(int)(((float)hud.scale_y)*0.83f)-y;
+		high=(int)(((float)hud.scale_y)*0.85f)-y;
 
 		strcpy(cols[0].name,"Characters");
 		cols[0].percent_size=1.0f;
@@ -212,7 +212,7 @@ void setup_network_host_pane(void)
 	x=hud.scale_x>>1;
 	
 	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.05f);
+	high=(int)(((float)hud.scale_x)*0.04f);
 	
 	y+=(padding+(high/2));
 
@@ -239,7 +239,7 @@ void setup_network_create_pane(void)
 		// buttons
 		
 	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.05f);
+	high=(int)(((float)hud.scale_x)*0.04f);
 
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("OK",setup_network_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
