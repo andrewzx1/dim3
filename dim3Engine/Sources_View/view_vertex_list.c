@@ -38,6 +38,150 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
+
+
+
+
+void test_me(void)
+{
+	int					n,k,t,i,j,idx,
+						max_vertex_cnt,vertex_cnt,mesh_vertex_cnt;
+	float				*pv,*pc,*pp,
+						*mesh_pv,*mesh_pp,*cv,*cp;
+	bool				hit;
+	unsigned char		*data;
+	d3pnt				*pnt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	
+		// find the maximum number of
+		// vertexes if every one was unique
+		
+	max_vertex_cnt=0;
+		
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+			// setup moved flag here
+
+		mesh->draw.moved=FALSE;
+
+			// poly vertexes and uv counts
+			
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			max_vertex_cnt+=poly->ptsz;
+			poly++;
+		}
+		
+		mesh++;
+	}
+	
+		// get memory for vertexes
+		// and UVs.  Need 3 for vertex,
+		// 3 for color, and 2 for each
+		// uv layer
+		
+	data=(unsigned char*)malloc((max_vertex_cnt*(3+3+(max_mesh_poly_uv_layer*2)))*sizeof(float));
+
+	pv=(float*)data;
+	pc=pv+(max_vertex_cnt*3);
+	pp=pv+(max_vertex_cnt*(3+3));
+	
+		// find any combinations
+		// where a vertex and all UVs
+		// are the same
+	
+	vertex_cnt=0;
+	
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		mesh_pv=pv;
+		mesh_pp=pp;
+		
+		mesh_vertex_cnt=0;
+	
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+		//	dark_factor=poly->dark_factor;
+
+			for (t=0;t!=poly->ptsz;t++) {
+			
+				pnt=&mesh->vertexes[poly->v[t]];
+				
+					// check for equal vertex/uvs
+					
+				idx=-1;
+
+				for (j=0;j!=mesh_vertex_cnt;j++) {
+				
+					cv=mesh_pv+(j*3);
+					if (*cv!=pnt->x) continue;
+					if (*(cv+1)!=pnt->y) continue;
+					if (*(cv+2)!=pnt->z) continue;
+
+					hit=TRUE;
+					
+					for (i=0;i!=mesh->nuv;i++) {
+						cp=mesh_pp+(((i*max_vertex_cnt)+j)*2);
+						if (*cp!=poly->uv[i].x[t]) {
+							hit=FALSE;
+							break;
+						}
+						if (*(cp+1)!=poly->uv[i].y[t]) {
+							hit=FALSE;
+							break;
+						}
+					}
+					
+					if (!hit) continue;
+					
+						// we found a vertex/uvs that
+						// are equal
+						
+					continue;		// supergumba -- handle here
+				}
+
+					// no similiar vertex/uvs, we need
+					// to add a new one
+				
+				*pv++=(float)pnt->x;
+				*pv++=(float)pnt->y;
+				*pv++=(float)pnt->z;
+				
+				cp=pp;
+				
+				for (i=0;i!=mesh->nuv;i++) {
+					*cp=poly->uv[i].x[t];
+					*(cp+1)=poly->uv[i].y[t];
+					
+					cp+=(max_vertex_cnt*2);
+				}
+				
+				pp+=2;
+				
+				vertex_cnt++;
+				mesh_vertex_cnt++;
+			}
+
+			poly++;
+		}
+		
+		mesh++;
+	}
+	
+
+	fprintf(stdout,"MAX = %d\n",max_vertex_cnt);
+	fprintf(stdout,"MIN = %d\n",vertex_cnt);
+}
+
+
 /* =======================================================
 
       Setup Vertex, UV, and possible Color List for Meshes
@@ -54,6 +198,8 @@ bool view_compile_mesh_gl_list_init(void)
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
+	
+	test_me();
 
 		// get total number of vertexes and indexes
 		// and their offsets to setup vertex object for map

@@ -39,6 +39,7 @@ and can be sold or given away.
 
 #define host_pane_game					0
 #define host_pane_options				1
+#define host_pane_info					2
 
 #define host_tab_id						0
 
@@ -296,24 +297,19 @@ void host_options_pane(void)
 	}
 }
 
-void host_create_pane(void)
+void host_info_pane(void)
 {
-	int			x,y,wid,high,pane;
-	char		str[256],str2[256],
-				tab_list[][32]={"Host Game","Options"};
-							
-	element_clear();
+	int			x,y,control_y_add,control_y_sz;
+	char		str[256];
 	
-		// tabs
+	control_y_add=element_get_control_high();
+	control_y_sz=10*control_y_add;
+	
+	x=(int)(((float)hud.scale_x)*0.4f);
+	y=(hud.scale_y>>1)-(control_y_sz>>1);
+	
+		// type
 		
-	element_tab_add((char*)tab_list,host_tab_value,host_tab_id,2);
-	
-		// status
-		// start with IP information
-
-	if (net_setup.host.name[0]==0x0) net_get_host_name(net_setup.host.name);
-	net_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
-
 	if (strcmp(net_setup.host.ip_resolve,"127.0.0.1")==0) {
 		strcpy(str,"Local Machine");
 	}
@@ -325,14 +321,41 @@ void host_create_pane(void)
 			strcpy(str,"Internet");
 		}
 	}
+		
+	element_info_field_add("Type",str,-1,x,y);
+	y+=control_y_add;
+	
+		// host name and IP
+	
+	element_info_field_add("Host Name",net_setup.host.name,-1,x,y);
+	y+=control_y_add;
+	element_info_field_add("Host IP",net_setup.host.ip_resolve,-1,x,y);
+	y+=control_y_add;
 
-	sprintf(str2,"; %s; %s:%d-%d",net_setup.host.name,net_setup.host.ip_resolve,net_port_host,net_port_host_query);
-	strcat(str,str2);
+	sprintf(str,"%d",net_port_host);
+	element_info_field_add("Host Port",str,-1,x,y);
+	y+=control_y_add;
 
-	element_get_button_bottom_left(&x,&y,0,0);
-	y-=element_get_padding();
+	sprintf(str,"%d",net_port_host_query);
+	element_info_field_add("Host Query Port",str,-1,x,y);
+	y+=control_y_add;
+}
 
-	element_text_add(str,host_status_id,x,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
+void host_create_pane(void)
+{
+	int			x,y,wid,high,pane;
+	char		tab_list[][32]={"Host Game","Options","Info"};
+							
+	element_clear();
+	
+		// tabs
+		
+	element_tab_add((char*)tab_list,host_tab_value,host_tab_id,3);
+	
+		// setup some IP information
+		
+	if (net_setup.host.name[0]==0x0) net_get_host_name(net_setup.host.name);
+	net_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
 	
 		// buttons
 		
@@ -355,6 +378,9 @@ void host_create_pane(void)
 			break;
 		case host_pane_options:
 			host_options_pane();
+			break;
+		case host_pane_info:
+			host_info_pane();
 			break;
 	}
 	

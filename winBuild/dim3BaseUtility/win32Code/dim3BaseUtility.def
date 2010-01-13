@@ -98,7 +98,6 @@ EXPORTS
 
 
 	file_paths_setup							@250
-	file_paths_set_project_name					@251
 
 	file_paths_data								@260
 	file_paths_data_default						@261

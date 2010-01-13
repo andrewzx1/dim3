@@ -133,16 +133,16 @@ int view_images_find_first_free(void)
       
 ======================================================= */
 
-bool view_images_load_single_normal(view_image_type *image,char *path,bool simple)
+bool view_images_load_single_normal(view_image_type *image,char *path,bool rectangle,bool simple)
 {
 	image->nbitmap=1;
 	image->total_msec=0;
 	
-	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE));
-	return(bitmap_open(&image->bitmaps[0].bitmap,path,setup.anisotropic_mode,setup.mipmap_mode,FALSE,FALSE,FALSE,FALSE));
+	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,rectangle,FALSE,FALSE));
+	return(bitmap_open(&image->bitmaps[0].bitmap,path,setup.anisotropic_mode,setup.mipmap_mode,FALSE,rectangle,FALSE,FALSE));
 }
 
-bool view_images_load_single_animated(view_image_type *image,char *path,bool simple)
+bool view_images_load_single_animated(view_image_type *image,char *path,bool rectangle,bool simple)
 {
 	int				n,animations_head_tag,animation_tag;
 	char			*c,xml_path[1024],bitmap_path[1024],name[256];
@@ -176,10 +176,10 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool sim
 		sprintf(bitmap_path,"%s/%s.png",path,name);
 		
 		if (simple) {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,anisotropic_mode_none,mipmap_mode_none,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
 		}
 		else {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,setup.anisotropic_mode,setup.mipmap_mode,FALSE,FALSE,FALSE,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,setup.anisotropic_mode,setup.mipmap_mode,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
 		}
 		
 		image->bitmaps[n].msec=xml_get_attribute_int(animation_tag,"msec");
@@ -191,7 +191,7 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool sim
 	return(TRUE);
 }
 
-int view_images_load_single(char *path,bool simple)
+int view_images_load_single(char *path,bool rectangle,bool simple)
 {
 	int					idx;
 	FILE				*file;
@@ -220,7 +220,7 @@ int view_images_load_single(char *path,bool simple)
 		
 	file=fopen(path,"rb");
 	if (file==NULL) {
-		if (!view_images_load_single_animated(image,path,simple)) {
+		if (!view_images_load_single_animated(image,path,rectangle,simple)) {
 			image->path[0]=0x0;
 			return(0);
 		}
@@ -232,7 +232,7 @@ int view_images_load_single(char *path,bool simple)
 	
 		// normal non-animated file
 		
-	if (!view_images_load_single_normal(image,path,simple)) {
+	if (!view_images_load_single_normal(image,path,rectangle,simple)) {
 		image->path[0]=0x0;
 		return(0);
 	}
@@ -288,7 +288,7 @@ void view_images_cached_load(void)
 	
 	for (n=0;n!=hud.count.bitmap;n++) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",hud_bitmap->filename,"png");
-		hud_bitmap->image_idx=view_images_load_single(path,TRUE);
+		hud_bitmap->image_idx=view_images_load_single(path,FALSE,TRUE);
 		hud_bitmap++;
 	}
 
@@ -299,7 +299,7 @@ void view_images_cached_load(void)
 			// radar background
 
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",hud.radar.background_bitmap_name,"png");
-		hud.radar.background_image_idx=view_images_load_single(path,TRUE);
+		hud.radar.background_image_idx=view_images_load_single(path,FALSE,TRUE);
 
 			// radar icons
 		
@@ -307,7 +307,7 @@ void view_images_cached_load(void)
 		
 		for (n=0;n!=hud.radar.nicon;n++) {
 			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",icon->bitmap_name,"png");
-			icon->image_idx=view_images_load_single(path,TRUE);
+			icon->image_idx=view_images_load_single(path,FALSE,TRUE);
 			icon++;
 		}
 	}
@@ -318,7 +318,7 @@ void view_images_cached_load(void)
 	
 	for (n=0;n!=server.count.halo;n++) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
-		halo->image_idx=view_images_load_single(path,FALSE);
+		halo->image_idx=view_images_load_single(path,FALSE,FALSE);
 		halo++;
 	}
 
@@ -328,7 +328,7 @@ void view_images_cached_load(void)
 	
 	for (n=0;n!=server.count.mark;n++) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
-		mark->image_idx=view_images_load_single(path,FALSE);
+		mark->image_idx=view_images_load_single(path,FALSE,FALSE);
 		mark++;
 	}
 
@@ -338,7 +338,7 @@ void view_images_cached_load(void)
 	
 	for (n=0;n!=server.count.crosshair;n++) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
-		crosshair->image_idx=view_images_load_single(path,TRUE);
+		crosshair->image_idx=view_images_load_single(path,FALSE,TRUE);
 		crosshair++;
 	}
 
@@ -348,7 +348,7 @@ void view_images_cached_load(void)
 	
 	for (n=0;n!=server.count.particle;n++) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
-		particle->image_idx=view_images_load_single(path,FALSE);
+		particle->image_idx=view_images_load_single(path,FALSE,FALSE);
 		particle++;
 	}
 	
@@ -358,7 +358,7 @@ void view_images_cached_load(void)
 	
 	for (n=0;n!=server.count.ring;n++) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
-		ring->image_idx=view_images_load_single(path,FALSE);
+		ring->image_idx=view_images_load_single(path,FALSE,FALSE);
 		ring++;
 	}
 
@@ -366,10 +366,10 @@ void view_images_cached_load(void)
 
 	if (net_setup.client.joined) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Network","slow","png");
-		remote_slow_image_idx=view_images_load_single(path,TRUE);
+		remote_slow_image_idx=view_images_load_single(path,FALSE,TRUE);
 	
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Network","talk","png");
-		remote_talk_image_idx=view_images_load_single(path,TRUE);
+		remote_talk_image_idx=view_images_load_single(path,FALSE,TRUE);
 	}
 }
 
@@ -469,6 +469,11 @@ void view_images_cached_free(void)
       
 ======================================================= */
 
+inline bool view_images_is_empty(int idx)
+{
+	return(idx==0);
+}
+
 bitmap_type* view_images_get_bitmap(int idx)
 {
 	int						n,tick,msec;
@@ -511,7 +516,7 @@ bitmap_type* view_images_get_bitmap(int idx)
 	return(&image->bitmaps[0].bitmap);
 }
 
-unsigned long view_images_get_gl_id(int idx)
+inline unsigned long view_images_get_gl_id(int idx)
 {
 	bitmap_type			*bitmap;
 	

@@ -48,7 +48,7 @@ void cursor_initialize(void)
 	char		path[1024];
 	
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
-	cursor_image_idx=view_images_load_single(path,TRUE);
+	cursor_image_idx=view_images_load_single(path,FALSE,TRUE);
 }
 
 void cursor_shutdown(void)
