@@ -40,9 +40,10 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern render_info_type		render_info;
 
+int							gui_background_image_idx;
 char						gui_last_key;
 bool						gui_show_view;
-bitmap_type					gui_background_bitmap,gui_screenshot_bitmap;
+bitmap_type					gui_screenshot_bitmap;
 chooser_frame_type			gui_frame;
 
 extern void game_time_pause_start(void);
@@ -170,7 +171,7 @@ void gui_background_load(char *background_path,char *bitmap_name)
 	char		path[1024];
 
 	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
+	gui_background_image_idx=view_images_load_single(path,gl_check_texture_rectangle_ok(),TRUE);
 }
 
 /* =======================================================
@@ -201,7 +202,6 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 	gui_show_view=show_view;
 	
 	if (!gui_show_view) {
-		gui_background_bitmap.gl_id=-1;
 		gui_background_load(background_path,bitmap_name);
 	}
 	else {
@@ -226,7 +226,7 @@ void gui_shutdown(void)
 		// close background bitmap
 		
 	if (!gui_show_view) {
-		bitmap_close(&gui_background_bitmap);
+		view_images_free_single(gui_background_image_idx);
 	}
 	else {
 		gui_screenshot_free();
@@ -260,13 +260,15 @@ void gui_draw_background(float alpha)
 {
 	int				p_wid,p_high;
 	GLuint			gl_id;
+	bitmap_type		*bitmap;
 
 		// no background at all?
 
 	if (!gui_show_view) {
-		gl_id=gui_background_bitmap.gl_id;
-		p_wid=gui_background_bitmap.wid;
-		p_high=gui_background_bitmap.high;
+		bitmap=view_images_get_bitmap(gui_background_image_idx);
+		gl_id=bitmap->gl_id;
+		p_wid=bitmap->wid;
+		p_high=bitmap->high;
 	}
 	else {
 		gl_id=gui_screenshot_bitmap.gl_id;

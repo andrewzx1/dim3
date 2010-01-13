@@ -95,7 +95,6 @@ _string_convert_float
 
 
 _file_paths_setup
-_file_paths_set_project_name
 
 _file_paths_data
 _file_paths_data_default

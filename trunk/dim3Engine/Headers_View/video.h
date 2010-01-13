@@ -223,7 +223,10 @@ extern void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,
 
 extern void view_images_initialize(void);
 extern void view_images_shutdown(void);
+extern int view_images_load_single(char *path,bool rectangle,bool simple);
+extern void view_images_free_single(int idx);
 extern void view_images_cached_load(void);
 extern void view_images_cached_free(void);
+extern bool view_images_is_empty(int idx);
 extern bitmap_type* view_images_get_bitmap(int idx);
 extern unsigned long view_images_get_gl_id(int idx);

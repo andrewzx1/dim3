@@ -50,6 +50,7 @@ and can be sold or given away.
 #define element_type_tab						8
 #define element_type_color						9
 #define element_type_text_box					10
+#define element_type_info_field					11
 
 //
 // GUI position mode

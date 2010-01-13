@@ -240,8 +240,8 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 	
 		// get button graphics
 		
-	element->setup.button.image_idx=view_images_load_single(path,TRUE);
-	element->setup.button.image_select_idx=view_images_load_single(path2,TRUE);
+	element->setup.button.image_idx=view_images_load_single(path,FALSE,TRUE);
+	element->setup.button.image_select_idx=view_images_load_single(path2,FALSE,TRUE);
 
 		// setup size and position
 		
@@ -289,7 +289,7 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	element->id=id;
 	element->type=element_type_bitmap;
 	
-	element->setup.button.image_idx=view_images_load_single(path,TRUE);
+	element->setup.button.image_idx=view_images_load_single(path,FALSE,TRUE);
 	
 	element->x=x;
 	element->y=y;
@@ -661,6 +661,35 @@ void element_text_box_add(char *data,int id,int x,int y,int wid,int high)
 	SDL_mutexV(element_thread_lock);
 }
 
+void element_info_field_add(char *str,char *value_str,int id,int x,int y)
+{
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_info_field;
+	
+	element->x=x;
+	element->y=y;
+
+	element->wid=(int)(((float)hud.scale_x)*element_control_draw_long_width);
+	element->high=(int)(((float)hud.scale_x)*element_control_draw_height);
+	
+	element->selectable=FALSE;
+	element->enabled=TRUE;
+	element->hidden=FALSE;
+	
+	strcpy(element->str,str);
+	strncpy(element->value_str,value_str,max_element_value_str_len);
+	element->value_str[max_element_value_str_len-1]=0x0;
+
+	SDL_mutexV(element_thread_lock);
+}
+
 /* =======================================================
 
       Change Elements
@@ -773,6 +802,7 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 		case element_type_combo:
 		case element_type_slider:
 		case element_type_color:
+		case element_type_info_field:
 			*lft=element->x+5;
 			*rgt=(element->x+10)+element->wid;
 			*top=(element->y-element->high)-1;
@@ -862,7 +892,7 @@ void element_draw_button_bitmap(element_type *element,int sel_id)
 	GLuint			gl_id;
 	
 	if (element->enabled) {
-		if (element->id==sel_id) {
+		if ((element->id==sel_id) && (!view_images_is_empty(element->setup.button.image_select_idx))) {
 			gl_id=view_images_get_gl_id(element->setup.button.image_select_idx);
 			alpha=1.0f;
 		}
@@ -1667,7 +1697,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		// open
 		
 	strcpy(element->setup.table.images[idx].path,path);
-	element->setup.table.images[idx].image_idx=view_images_load_single(path,TRUE);
+	element->setup.table.images[idx].image_idx=view_images_load_single(path,FALSE,TRUE);
 
 	return(view_images_get_gl_id(element->setup.table.images[idx].image_idx));
 }
@@ -2425,6 +2455,28 @@ void element_draw_text_box(element_type *element)
 
 /* =======================================================
 
+      Info Field Elements
+      
+======================================================= */
+
+void element_draw_info_field(element_type *element)
+{
+	int				x,y,ky;
+	
+	x=element->x;
+	y=element->y;
+	
+	ky=y-(element->high>>1);
+		
+	gl_text_start(hud.font.text_size_small);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
+	gl_text_draw((x+5),ky,element->value_str,tx_left,TRUE,&hud.color.control_label,1.0f);
+	gl_text_end();
+}
+
+/* =======================================================
+
       Draw Elements
       
 ======================================================= */
@@ -2520,6 +2572,9 @@ void element_draw_lock(bool cursor_hilite)
 				break;
 			case element_type_text_box:
 				element_draw_text_box(element);
+				break;
+			case element_type_info_field:
+				element_draw_info_field(element);
 				break;
 				
 		}
@@ -2897,7 +2952,7 @@ void element_set_bitmap(int id,char *path)
 	element=element_find(id);
 	if (element!=NULL) {
 		view_images_free_single(element->setup.button.image_idx);
-		element->setup.button.image_idx=view_images_load_single(path,TRUE);
+		element->setup.button.image_idx=view_images_load_single(path,FALSE,TRUE);
 	}
 
 	SDL_mutexV(element_thread_lock);

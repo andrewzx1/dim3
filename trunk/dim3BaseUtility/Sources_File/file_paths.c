@@ -108,10 +108,6 @@ bool file_paths_setup(file_path_setup_type *file_path_setup)
 	
 #endif
 
-		// proj name defaults to the app name
-
-	strcpy(file_path_setup->proj_name,file_path_setup->app_name);
-
 		// check all the possible paths
 	
 		// app data path
@@ -134,11 +130,6 @@ bool file_paths_setup(file_path_setup_type *file_path_setup)
 	if (stat(file_path_setup->path_data_2,&sb)!=0) file_path_setup->path_data_2[0]=0x0;
 	
 	return((file_path_setup->path_app[0]!=0x0) || (file_path_setup->path_data[0]!=0x0) || (file_path_setup->path_data_2[0]!=0x0));
-}
-
-void file_paths_set_project_name(file_path_setup_type *file_path_setup,char *proj_name)
-{
-	strcpy(file_path_setup->proj_name,proj_name);
 }
 
 /* =======================================================
@@ -308,7 +299,7 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 		// on application name and create if necessary
 		
 	strcat(path,"/");
-	strcat(path,file_path_setup->proj_name);
+	strcat(path,file_path_setup->app_name);
 		
 	file_paths_create_directory(path);
 	
