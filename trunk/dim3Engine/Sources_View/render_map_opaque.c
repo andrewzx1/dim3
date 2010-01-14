@@ -268,10 +268,10 @@ void render_opaque_mesh_shader(void)
 
 			if (!mesh->flag.hilite) {
 				gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,&light_list);
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,poly->dark_factor,1.0f,&light_list,NULL,NULL,FALSE);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,FALSE);
 			}
 			else {
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,poly->dark_factor,1.0f,NULL,&poly->box.mid,NULL,FALSE);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,1.0f,NULL,&poly->box.mid,NULL,FALSE);
 			}
 
 				// fix texture if any back rendering

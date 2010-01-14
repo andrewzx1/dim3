@@ -307,7 +307,7 @@ void render_transparent_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly
 
 		// draw the polygon
 
-	gl_texture_transparent_set(texture->frames[poly->draw.frame].bitmap.gl_id,poly->alpha);
+	gl_texture_transparent_set(texture->frames[poly->draw.frame].bitmap.gl_id,1.0f);
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }
 
@@ -332,7 +332,7 @@ void render_transparent_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *p
 
 		// draw the polygon
 
-	gl_texture_transparent_light_map_set(texture->frames[poly->draw.frame].bitmap.gl_id,lm_texture->frames[0].bitmap.gl_id,poly->alpha);
+	gl_texture_transparent_light_map_set(texture->frames[poly->draw.frame].bitmap.gl_id,lm_texture->frames[0].bitmap.gl_id,1.0f);
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }
 
@@ -354,10 +354,10 @@ void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_po
 
 	if (!mesh->flag.hilite) {
 		gl_lights_build_from_poly(mesh_idx,poly,&light_list);
-		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,poly->dark_factor,poly->alpha,&light_list,NULL,NULL,FALSE);
+		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,FALSE);
 	}
 	else {
-		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,poly->dark_factor,poly->alpha,NULL,&poly->box.mid,NULL,FALSE);
+		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,1.0f,NULL,&poly->box.mid,NULL,FALSE);
 	}
 
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);

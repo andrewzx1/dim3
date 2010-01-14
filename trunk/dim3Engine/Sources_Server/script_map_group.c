@@ -38,14 +38,12 @@ extern void group_show(int group_idx,bool show);
 extern void group_solid(int group_idx,bool solid);
 extern void group_texture(int group_idx,int index);
 extern void group_texture_shift(int group_idx,float x_shift,float y_shift);
-extern void group_texture_alpha(int group_idx,float alpha);
 
 JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_group_set_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_group_set_solid_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_group_set_texture_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_group_set_texture_shift_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_group_set_texture_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	map_group_functions[]={
 							{"getCenter",			js_map_group_get_center_func,			kJSPropertyAttributeDontDelete},
@@ -53,7 +51,6 @@ JSStaticFunction	map_group_functions[]={
 							{"setSolid",			js_map_group_set_solid_func,			kJSPropertyAttributeDontDelete},
 							{"setTexture",			js_map_group_set_texture_func,			kJSPropertyAttributeDontDelete},
 							{"setTextureShift",		js_map_group_set_texture_shift_func,	kJSPropertyAttributeDontDelete},
-							{"setTextureAlpha",		js_map_group_set_texture_alpha_func,	kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			map_group_class;
@@ -162,16 +159,3 @@ JSValueRef js_map_group_set_texture_shift_func(JSContextRef cx,JSObjectRef func,
 
 	return(script_null_to_value(cx));
 }
-
-JSValueRef js_map_group_set_texture_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
-{
-	int				group_idx;
-	
-	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	
-	group_idx=script_find_group_from_name(cx,argv[0],exception);
-	if (group_idx!=-1) group_texture_alpha(group_idx,script_value_to_float(cx,argv[1]));
-
-	return(script_null_to_value(cx));
-}
-

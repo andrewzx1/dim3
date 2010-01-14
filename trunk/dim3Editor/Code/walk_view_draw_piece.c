@@ -167,7 +167,6 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 {
 	int					n,k,t;
 	unsigned long		old_gl_id;
-	float				dark_factor;
 	bool				clip_ok;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
@@ -199,7 +198,6 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	old_gl_id=-1;
-	dark_factor=1.0f;
 
 		// draw meshes
 		
@@ -234,10 +232,10 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 				// opaque or transparent flag
 				
 			if (opaque) {
-				if ((mesh_poly->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;
+				if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
 			}
 			else {
-				if ((mesh_poly->alpha==1.0f) && (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) continue;
+				if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 			}
 			
 				// y clipping
@@ -261,13 +259,6 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 			if (texture->frames[0].bitmap.gl_id!=old_gl_id) {
 				old_gl_id=texture->frames[0].bitmap.gl_id;
 				glBindTexture(GL_TEXTURE_2D,old_gl_id);
-			}
-			
-				// darking
-				
-			if (mesh_poly->dark_factor!=dark_factor) {
-				dark_factor=mesh_poly->dark_factor;
-				glColor4f(dark_factor,dark_factor,dark_factor,1.0f);
 			}
 		
 				// draw polygon
@@ -323,10 +314,10 @@ void walk_view_draw_meshes_line(int clip_y,bool opaque)
 				// opaque or transparent flag
 		
 			if (opaque) {
-				if ((mesh_poly->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;
+				if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
 			}
 			else {
-				if ((mesh_poly->alpha==1.0f) && (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) continue;
+				if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 			}
 			
 				// y clipping
@@ -404,29 +395,26 @@ void walk_view_draw_liquids(bool opaque)
 	nliquid=map.liquid.nliquid;
 	
 	glEnable(GL_TEXTURE_2D);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	for (n=0;n!=nliquid;n++) {
 		liquid=&map.liquid.liquids[n];
 	
 			// textures
 			
-		glColor4f(1.0f,1.0f,1.0f,1.0f);
-
 		texture=&map.textures[liquid->txt_idx];
 	
 		if (opaque) {
-			if ((liquid->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;
+			if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
 		}
 		else {
-			if ((liquid->alpha==1.0f) && (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) continue;
+			if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 		}
 		
 		if (texture->frames[0].bitmap.gl_id!=old_gl_id) {
 			old_gl_id=texture->frames[0].bitmap.gl_id;
 			glBindTexture(GL_TEXTURE_2D,old_gl_id);
 		}
-		
-		glColor4f(1.0f,1.0f,1.0f,liquid->alpha);
 		
 			// dimensions
 			

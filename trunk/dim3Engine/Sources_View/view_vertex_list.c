@@ -41,7 +41,7 @@ extern setup_type			setup;
 
 
 
-
+// supergumba
 void test_me(void)
 {
 	int					n,k,t,i,j,idx,
@@ -108,8 +108,6 @@ void test_me(void)
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-		
-		//	dark_factor=poly->dark_factor;
 
 			for (t=0;t!=poly->ptsz;t++) {
 			
@@ -122,9 +120,9 @@ void test_me(void)
 				for (j=0;j!=mesh_vertex_cnt;j++) {
 				
 					cv=mesh_pv+(j*3);
-					if (*cv!=pnt->x) continue;
-					if (*(cv+1)!=pnt->y) continue;
-					if (*(cv+2)!=pnt->z) continue;
+					if (*cv!=(float)pnt->x) continue;
+					if (*(cv+1)!=(float)pnt->y) continue;
+					if (*(cv+2)!=(float)pnt->z) continue;
 
 					hit=TRUE;
 					
@@ -141,12 +139,15 @@ void test_me(void)
 					}
 					
 					if (!hit) continue;
-					
+
 						// we found a vertex/uvs that
 						// are equal
 						
-					continue;		// supergumba -- handle here
+					idx=0;
+					break;		// supergumba -- handle here
 				}
+				
+				if (idx!=-1) continue;
 
 					// no similiar vertex/uvs, we need
 					// to add a new one
@@ -193,13 +194,13 @@ bool view_compile_mesh_gl_list_init(void)
 	int					n,k,t,uv_idx,vertex_cnt,i_idx;
 	unsigned int		v_poly_start_idx;
 	unsigned int		*index_ptr;
-	float				x_shift_offset,y_shift_offset,dark_factor;
+	float				x_shift_offset,y_shift_offset;
 	float				*vertex_ptr,*pv,*pp,*pc;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-	test_me();
+//	test_me();
 
 		// get total number of vertexes and indexes
 		// and their offsets to setup vertex object for map
@@ -263,8 +264,6 @@ bool view_compile_mesh_gl_list_init(void)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			dark_factor=poly->dark_factor;
-
 			for (t=0;t!=poly->ptsz;t++) {
 			
 				pnt=&mesh->vertexes[poly->v[t]];
@@ -273,9 +272,9 @@ bool view_compile_mesh_gl_list_init(void)
 				*pv++=(float)pnt->y;
 				*pv++=(float)pnt->z;
 
-				*pc++=dark_factor;
-				*pc++=dark_factor;
-				*pc++=dark_factor;
+				*pc++=1.0f;
+				*pc++=1.0f;
+				*pc++=1.0f;
 			}
 
 			poly++;
@@ -416,7 +415,7 @@ void view_compile_mesh_gl_list_free(void)
 bool view_compile_mesh_gl_lists(int tick)
 {
 	int							n,k,t,uv_idx,vertex_cnt;
-	float						x_shift_offset,y_shift_offset,dark_factor;
+	float						x_shift_offset,y_shift_offset;
 	float						*vertex_ptr,*pv,*pp,*pc,*pc2;
 	bool						only_ambient;
 	d3col						col;
@@ -517,12 +516,10 @@ bool view_compile_mesh_gl_lists(int tick)
 				
 			for (k=0;k!=mesh->npoly;k++) {
 			
-				dark_factor=poly->dark_factor;
-				
 				for (t=0;t!=poly->ptsz;t++) {
-					*pc++=dark_factor;
-					*pc++=dark_factor;
-					*pc++=dark_factor;
+					*pc++=1.0f;
+					*pc++=1.0f;
+					*pc++=1.0f;
 				}
 				
 				poly++;
@@ -574,13 +571,11 @@ bool view_compile_mesh_gl_lists(int tick)
 				
 				for (k=0;k!=mesh->npoly;k++) {
 				
-					dark_factor=poly->dark_factor;
-
 					for (t=0;t!=poly->ptsz;t++) {
 						pc2=mesh->colors_cache+(poly->v[t]*3);
-						*pc++=(*pc2++)*dark_factor;
-						*pc++=(*pc2++)*dark_factor;
-						*pc++=(*pc2)*dark_factor;
+						*pc++=*pc2++;
+						*pc++=*pc2++;
+						*pc++=*pc2;
 					}
 
 					poly++;

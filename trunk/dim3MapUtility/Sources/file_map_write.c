@@ -494,9 +494,6 @@ void write_single_mesh(map_mesh_type *mesh)
 		for (k=0;k!=mesh->nuv;k++) {
 			write_single_mesh_poly_uv(poly,k);
 		}
-
-		if (poly->dark_factor!=1.0f) xml_add_attribute_float("dark_fct",poly->dark_factor);
-		if (poly->alpha!=1.0f) xml_add_attribute_float("alpha",poly->alpha);
 		
 		if (poly->camera[0]!=0x0) xml_add_attribute_text("camera",poly->camera);
 
@@ -529,7 +526,6 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_2_coord_float("uv_off",liq->x_txtoff,liq->y_txtoff);
 	xml_add_attribute_2_coord_float("uv_size",liq->x_txtfact,liq->y_txtfact);
 	xml_add_attribute_color("rgb",&liq->col);
-	xml_add_attribute_float("alpha",liq->alpha);
 	xml_add_attribute_float("tint_alpha",liq->tint_alpha);
 	if ((liq->x_shift!=0) || (liq->y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->x_shift,liq->y_shift);
 	xml_add_tagend(TRUE);

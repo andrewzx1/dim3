@@ -33,8 +33,6 @@ and can be sold or given away.
 #define kMeshPolySettingOffY					FOUR_CHAR_CODE('offy')
 #define kMeshPolySettingSizeX					FOUR_CHAR_CODE('sizx')
 #define kMeshPolySettingSizeY					FOUR_CHAR_CODE('sizy')
-#define kMeshPolySettingAlpha					FOUR_CHAR_CODE('alph')
-#define kMeshPolySettingDark					FOUR_CHAR_CODE('dark')
 #define kMeshPolySettingShiftX					FOUR_CHAR_CODE('sftx')
 #define kMeshPolySettingShiftY					FOUR_CHAR_CODE('sfty')
 #define kMeshPolySettingCamera					FOUR_CHAR_CODE('cnde')
@@ -73,8 +71,6 @@ void palette_polygon_load(void)
 		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeX,0,x_txtfact);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeY,0,y_txtfact);
 		
-		dialog_set_float(palette_poly_wind,kMeshPolySettingAlpha,0,poly->alpha);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingDark,0,poly->dark_factor);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,poly->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,poly->y_shift);
 		
@@ -86,7 +82,6 @@ void palette_polygon_load(void)
 	else {
 		liq=&map.liquid.liquids[main_idx];
 		
-		dialog_enable(palette_poly_wind,kMeshPolySettingDark,0,FALSE);
 		dialog_enable(palette_poly_wind,kMeshPolySettingCamera,0,FALSE);
 		
 		dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,liq->x_txtoff);
@@ -94,7 +89,6 @@ void palette_polygon_load(void)
 		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeX,0,liq->x_txtfact);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeY,0,liq->y_txtfact);
 
-		dialog_set_float(palette_poly_wind,kMeshPolySettingAlpha,0,liq->alpha);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,liq->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,liq->y_shift);
 	}
@@ -125,8 +119,6 @@ void palette_polygon_save(void)
 
 		if ((x_txtfact>0.0f) && (y_txtfact>0.0f)) map_mesh_set_poly_uv_as_box(&map,main_idx,poly_idx,main_wind_uv_layer,x_txtoff,y_txtoff,x_txtfact,y_txtfact);
 
-		poly->dark_factor=dialog_get_float(palette_poly_wind,kMeshPolySettingDark,0);
-		poly->alpha=dialog_get_float(palette_poly_wind,kMeshPolySettingAlpha,0);
 		poly->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		poly->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
 		
@@ -143,7 +135,6 @@ void palette_polygon_save(void)
 		liq->x_txtfact=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
 		liq->y_txtfact=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeY,0);
 		
-		liq->alpha=dialog_get_float(palette_poly_wind,kMeshPolySettingAlpha,0);
 		liq->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		liq->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
 	}
@@ -185,8 +176,6 @@ void palette_polygon_open(int x,int y)
 	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingOffY,0);
 	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingSizeX,0);
 	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingSizeY,0);
-	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingAlpha,0);
-	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingDark,0);
 	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingShiftX,0);
 	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingShiftY,0);
 

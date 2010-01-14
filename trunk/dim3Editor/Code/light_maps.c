@@ -718,10 +718,6 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *me
 	d3pnt			*pt;
 	bitmap_type		*bitmap;
 	
-		// any per-polygon alpha is a immediately a miss
-		
-	if (poly->alpha!=1.0f) return(FALSE);
-	
 		// get texture
 		
 	txt_idx=poly->txt_idx;
