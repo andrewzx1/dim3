@@ -230,7 +230,7 @@ typedef struct		{
 
 typedef struct		{
 						int									txt_idx,lmap_txt_idx,ptsz,v[8];
-						float								x_shift,y_shift,dark_factor,alpha;
+						float								x_shift,y_shift;
 						char								camera[name_str_len];
 						map_mesh_poly_uv_type				uv[max_mesh_poly_uv_layer];
 						map_mesh_poly_box_type				box;
@@ -304,7 +304,7 @@ typedef struct		{
 
 typedef struct		{
 						int									y,depth,lft,rgt,top,bot,txt_idx,group_idx;
-						float								alpha,speed_alter,tint_alpha,
+						float								speed_alter,tint_alpha,
 															x_txtfact,y_txtfact,x_txtoff,y_txtoff,
 															x_shift,y_shift;
 						bool								never_obscure;

@@ -89,7 +89,7 @@ void render_map_setup(void)
 
 			poly->draw.frame=frame;
 			poly->draw.shader_on=(texture->shader_idx!=-1)&&(!view.render->no_shader);
-			poly->draw.transparent_on=((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f));
+			poly->draw.transparent_on=(texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent);
 			poly->draw.glow_on=(texture->frames[frame].glowmap.gl_id!=-1);
 
 				// or to the mesh flags

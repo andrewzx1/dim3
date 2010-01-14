@@ -187,36 +187,3 @@ void group_texture_shift(int group_idx,float x_shift,float y_shift)
 	}
 }
 
-void group_texture_alpha(int group_idx,float alpha)
-{
-	int					n,k,unit_cnt;
-	group_type			*group;
-	group_unit_type		*unit_list;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-
-	group=&map.groups[group_idx];
-	
-	unit_cnt=group->unit_count;
-	unit_list=group->unit_list;
-	
-	for (n=0;n!=unit_cnt;n++) {
-
-		if (unit_list->type!=group_type_mesh) {
-			unit_list++;
-			continue;
-		}
-
-		mesh=&map.mesh.meshes[unit_list->idx];
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-			poly->alpha=alpha;
-			poly++;
-		}
-
-		unit_list++;
-	}
-}
-

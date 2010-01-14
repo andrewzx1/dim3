@@ -250,13 +250,13 @@ typedef struct		{
 															dim3TexColor,dim3LightPosition,
 															dim3LightColor,dim3LightIntensity,
 															dim3LightExponent,dim3LightDirection,
-															dim3TintColor,dim3DarkFactor,dim3Alpha;
+															dim3TintColor,dim3Alpha;
 					} shader_cached_var_loc;
 
 typedef struct		{
 						int									start_tick,
 															cur_nlight,cur_light_idx[max_shader_light];
-						float								cur_dark_factor,cur_alpha;
+						float								cur_alpha;
 						char								name[name_str_len],
 															vertex_name[file_str_len],fragment_name[file_str_len];
 						bool								per_scene_vars_set,cur_in_hilite;

@@ -118,7 +118,6 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 
 	strcat(buf,"uniform float dim3Alpha");
 	if (light_map) strcat(buf,",dim3LightMapBoost");
-	if (!diffuse) strcat(buf,",dim3DarkFactor");
 	if (bump) strcat(buf,",dim3BumpFactor");
 	if (spec) strcat(buf,",dim3SpecularFactor");
 	strcat(buf,";\n");
@@ -249,12 +248,8 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
-	if (diffuse) {
-		strcat(buf,"*diffuse;\n");
-	}
-	else {
-		strcat(buf,"*dim3DarkFactor;\n");
-	}
+	if (diffuse) strcat(buf,"*diffuse");
+	strcat(buf,";\n");
 	
 	if (fog) {
 		strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");

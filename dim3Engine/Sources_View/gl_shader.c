@@ -127,7 +127,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3LightExponent=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
 	shader->var_locs.dim3LightDirection=glGetUniformLocationARB(shader->program_obj,"dim3LightDirection");
 	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
-	shader->var_locs.dim3DarkFactor=glGetUniformLocationARB(shader->program_obj,"dim3DarkFactor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 }
 
@@ -403,7 +402,7 @@ void gl_shader_set_texture_variables(shader_type *shader,texture_type *texture)
 	if (shader->var_locs.dim3TexColor!=-1) glUniform3fARB(shader->var_locs.dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
-void gl_shader_set_poly_variables(shader_type *shader,float dark_factor,float alpha,view_light_list_type *light_list,d3col *tint_col)
+void gl_shader_set_poly_variables(shader_type *shader,float alpha,view_light_list_type *light_list,d3col *tint_col)
 {
 	if (light_list!=NULL) {
 		if (shader->var_locs.dim3LightPosition!=-1) glUniform3fvARB(shader->var_locs.dim3LightPosition,max_shader_light,light_list->gl_var.pos);
@@ -431,15 +430,8 @@ void gl_shader_set_poly_variables(shader_type *shader,float dark_factor,float al
 		}
 	}
 	
-		// set dark and alpha if they've changed
-
-	if (shader->var_locs.dim3DarkFactor!=-1) {
-		if (shader->cur_dark_factor!=dark_factor) {
-			shader->cur_dark_factor=dark_factor;
-			glUniform1fARB(shader->var_locs.dim3DarkFactor,dark_factor);
-		}
-	}
-	
+		// alpha
+		
 	if (shader->var_locs.dim3Alpha!=-1) {
 		if (shader->cur_alpha!=alpha) {
 			shader->cur_alpha=alpha;
@@ -468,7 +460,6 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 	shader->cur_nlight=-1;
 	shader->cur_in_hilite=FALSE;
 	shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=-1.0f;
-	shader->cur_dark_factor=-1.0f;
 	shader->cur_alpha=-1.0f;
 }
 
@@ -614,7 +605,7 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float dark_factor,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse)
+void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse)
 {
 	int							n,set_light_count;
 	bool						light_change;
@@ -687,11 +678,11 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		shader->cur_in_hilite=FALSE;
 		
 		if (!light_change) {
-			gl_shader_set_poly_variables(shader,dark_factor,alpha,NULL,tint_col);
+			gl_shader_set_poly_variables(shader,alpha,NULL,tint_col);
 		}
 		else {
 			gl_lights_fill_light_list(light_list);
-			gl_shader_set_poly_variables(shader,dark_factor,alpha,light_list,tint_col);
+			gl_shader_set_poly_variables(shader,alpha,light_list,tint_col);
 		}
 	}
 
@@ -703,7 +694,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 			// already in hilite?
 			
 		if (shader->cur_in_hilite) {
-			gl_shader_set_poly_variables(shader,dark_factor,alpha,NULL,tint_col);
+			gl_shader_set_poly_variables(shader,alpha,NULL,tint_col);
 		}
 		else {
 			bzero(&hi_light_list.gl_var,sizeof(view_light_list_gl_var_type));
@@ -723,7 +714,7 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 			
 			shader->cur_in_hilite=TRUE;
 			
-			gl_shader_set_poly_variables(shader,dark_factor,alpha,&hi_light_list,tint_col);
+			gl_shader_set_poly_variables(shader,alpha,&hi_light_list,tint_col);
 		}
 	}
 }

@@ -499,14 +499,14 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,n,frame,-1,1.0f,1.0f,light_list,NULL,&draw->tint,TRUE);
+			gl_shader_draw_execute(texture,n,frame,-1,1.0f,light_list,NULL,&draw->tint,TRUE);
 		}
 		else {
 			if (mesh->tintable) {
-				gl_shader_draw_execute(texture,n,frame,-1,1.0f,1.0f,NULL,&draw->pnt,&draw->tint,TRUE);
+				gl_shader_draw_execute(texture,n,frame,-1,1.0f,NULL,&draw->pnt,&draw->tint,TRUE);
 			}
 			else {
-				gl_shader_draw_execute(texture,n,frame,-1,1.0f,1.0f,NULL,&draw->pnt,NULL,TRUE);
+				gl_shader_draw_execute(texture,n,frame,-1,1.0f,NULL,&draw->pnt,NULL,TRUE);
 			}
 		}
 		
@@ -698,14 +698,14 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,n,frame,-1,1.0f,alpha,light_list,NULL,&draw->tint,TRUE);
+			gl_shader_draw_execute(texture,n,frame,-1,alpha,light_list,NULL,&draw->tint,TRUE);
 		}
 		else {
 			if (mesh->tintable) {
-				gl_shader_draw_execute(texture,n,frame,-1,1.0f,alpha,NULL,&draw->pnt,&draw->tint,TRUE);
+				gl_shader_draw_execute(texture,n,frame,-1,alpha,NULL,&draw->pnt,&draw->tint,TRUE);
 			}
 			else {
-				gl_shader_draw_execute(texture,n,frame,-1,1.0f,alpha,NULL,&draw->pnt,NULL,TRUE);
+				gl_shader_draw_execute(texture,n,frame,-1,alpha,NULL,&draw->pnt,NULL,TRUE);
 			}
 		}
 		

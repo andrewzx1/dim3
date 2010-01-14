@@ -102,7 +102,7 @@ bool liquid_is_transparent(map_liquid_type *liq)
 	texture_type				*texture;
 
 	texture=&map.textures[liq->txt_idx];
-	return((texture->frames[texture->animate.current_frame&max_texture_frame_mask].bitmap.alpha_mode==alpha_mode_transparent) || (liq->alpha!=1.0f));
+	return(texture->frames[texture->animate.current_frame&max_texture_frame_mask].bitmap.alpha_mode==alpha_mode_transparent);
 }
 
 /* =======================================================
@@ -383,7 +383,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		gl_lights_build_from_liquid(liq,&light_list);
 
 		gl_shader_draw_start();
-		gl_shader_draw_execute(texture,liq->txt_idx,frame,-1,1.0f,liq->alpha,&light_list,NULL,NULL,FALSE);
+		gl_shader_draw_execute(texture,liq->txt_idx,frame,-1,1.0f,&light_list,NULL,NULL,FALSE);
 
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 		
@@ -403,7 +403,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 			// draw texture
 
 		gl_texture_transparent_start();
-		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,liq->alpha);
+		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,1.0f);
 
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 
