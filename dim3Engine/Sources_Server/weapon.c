@@ -232,6 +232,8 @@ bool weapon_create(obj_type *obj,char *name)
 	weap->zoom.fov_max=30.0f;
 	weap->zoom.step_count=3;
 	weap->zoom.current_step=0;
+	weap->zoom.sway_factor=1.0f;
+	weap->zoom.crawl_sway_factor=0.5f;
 	weap->zoom.turn_factor=0.3f;
 	weap->zoom.crawl_turn_factor=0.1f;
 	weap->zoom.look_factor=0.5f;

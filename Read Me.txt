@@ -31,10 +31,10 @@ glew32.dll (for GLEW)
 icudt40.dll icuin40.dll icuuc40.dll (for JS)
 JavaScriptCore.dll (for JS)
 libpng13.dll (for PNG)
+libmpg123.dll (for MPG123)
 pthreadVC2.dll (for JS)
 SDL.dll (for SDL)
 zlib1.dll (for ZLib)
-mpg123.dll (for MPG123)
 
 
 

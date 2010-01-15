@@ -193,7 +193,6 @@ void render_opaque_mesh_light_map(void)
 				gl_id=texture->frames[poly->draw.frame].bitmap.gl_id;
 			}
 
-			
 			lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
 
 			gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);

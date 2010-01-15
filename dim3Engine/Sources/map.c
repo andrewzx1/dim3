@@ -73,6 +73,7 @@ extern void view_compile_mesh_gl_list_free(void);
 extern bool render_transparent_create_sort_list(void);
 extern void render_transparent_dispose_sort_list(void);
 extern void map_multiplayer_show_hide_meshes(void);
+extern void view_clear_fps(void);
 
 /* =======================================================
 
@@ -123,6 +124,7 @@ void map_music_start(map_music_type *music)
 	bool			ok;
 	char			err_str[256];
 	
+	if (!setup.music_on) return;
 	if (music->name[0]==0x0) return;
 	
 		// stop old music
@@ -362,9 +364,7 @@ bool map_start(bool skip_media,char *err_str)
 	view.time.run_tick=tick;
 	js.time.timer_tick=tick;
 
-	view.fps.tick=view.fps.count=0;
-	view.fps.last_time=-1;
-	view.fps.total=0;
+	view_clear_fps();
 
 		// clear all input
 		

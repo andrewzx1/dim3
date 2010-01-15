@@ -63,6 +63,8 @@ extern bool map_need_rebuild(void);
 extern bool map_rebuild_changes(char *err_str);
 extern void game_end(void);
 extern void map_end(void);
+extern void view_clear_fps(void);
+extern void view_calculate_fps(int tick);
 
 /* =======================================================
 
@@ -143,16 +145,7 @@ void loop_game_run(int tick)
 	
 		// calculate fps
 
-	if (view.fps.last_time!=-1) {
-		view.fps.tick+=(tick-view.fps.last_time);
-
-		if (view.fps.tick>=1000) {						// average fps over 1 second
-			view.fps.total=((float)view.fps.count*1000)/(float)view.fps.tick;
-			view.fps.tick=view.fps.count=0;
-		}
-	}
-	
-	view.fps.last_time=tick;
+	view_calculate_fps(tick);
 }
 
 /* =======================================================
@@ -351,7 +344,7 @@ bool loop_main(char *err_str)
 		
 		// reset fps counter on state change
 		
-	if (server.state!=old_state) view.fps.last_time=-1;
+	if (server.state!=old_state) view_clear_fps();
 	
 	return(TRUE);
 }

@@ -493,6 +493,7 @@ void weapon_zoom_enter(obj_type *obj,weapon_type *weap)
 
 	obj->zoom_draw.old_camera_mode=camera.mode;
 	obj->zoom_draw.start_tick=game_time_get();
+	obj->zoom_draw.sway_reset=TRUE;
 	
 	camera.mode=cv_fpp;
 
