@@ -1522,14 +1522,11 @@ bool light_maps_create(char *err_str)
 {
 	bool			ok;
 	
-	int tick;
-	tick=TickCount();
-	
 	dialog_progress_start("Generating Light Maps...",(3+(max_light_map_textures*3)+(map.mesh.nmesh*2)));
 	ok=light_maps_create_process(err_str);
 	dialog_progress_end();
 	
-	fprintf(stdout,"time = %d\n",(int)(TickCount()-tick));
+	if (ok) file_save_map();
 	
 	return(ok);
 }
