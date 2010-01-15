@@ -131,7 +131,7 @@ void element_clear(void)
 
 inline int element_get_control_high(void)
 {
-	return((int)(((float)gl_text_get_char_height(hud.font.text_size_small))*element_control_high_factor));
+	return((int)(((float)hud.scale_x)*element_control_draw_height)+5);
 }
 
 inline int element_get_padding(void)

@@ -107,9 +107,6 @@ bool al_open_music(char *name,char *err_str)
 	if (audio_music_data!=NULL) {
 		if (strcmp(audio_music_name,name)==0) return(TRUE);
 	}
-	
-		// default error
-		
 
 		// load mp3
 		

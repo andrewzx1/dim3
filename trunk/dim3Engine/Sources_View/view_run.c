@@ -51,6 +51,39 @@ extern void map_clear_ambient(void);
 
 /* =======================================================
 
+      FPS
+      
+======================================================= */
+
+void view_clear_fps(void)
+{
+	view.fps.tick=view.fps.count=0;
+	view.fps.last_time=-1;
+	view.fps.total=0.0f;
+	view.fps.first_skip=TRUE;
+}
+
+void view_calculate_fps(int tick)
+{
+	if (view.fps.last_time!=-1) {
+		view.fps.tick+=(tick-view.fps.last_time);
+
+			// average the fps over 1 second
+			// we always skip the first one as we might
+			// be dealing with remaining change activity
+
+		if (view.fps.tick>=1000) {
+			if (!view.fps.first_skip) view.fps.total=(((float)view.fps.count)*1000.0f)/(float)view.fps.tick;
+			view.fps.first_skip=FALSE;
+			view.fps.tick=view.fps.count=0;
+		}
+	}
+	
+	view.fps.last_time=tick;
+}
+
+/* =======================================================
+
       Run View Processes
       
 ======================================================= */

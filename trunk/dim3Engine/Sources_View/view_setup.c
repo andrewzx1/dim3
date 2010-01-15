@@ -631,7 +631,8 @@ void view_add_halos(void)
 
 void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj)
 {
-	float			f_step,f_max_step,f_zoom;
+	float			f_step,f_max_step,f_zoom,
+					sway_add,sway_max;
 	weapon_type		*weap;
 	
 		// is object the camera object?
@@ -684,6 +685,56 @@ void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj)
 		// change perspective
 	
 	view.render->camera.fov+=f_zoom;
+
+		// no sways until zoom modes is on
+
+	if (weap->zoom.mode!=zoom_mode_on) return;
+	if (weap->zoom.sway_factor==0.0f) return;
+
+	sway_add=0.025f*weap->zoom.sway_factor;
+	sway_max=3.0f*weap->zoom.sway_factor;
+
+		// first time start of sways
+
+	if (obj->zoom_draw.sway_reset) {
+		obj->zoom_draw.sway_reset=FALSE;
+		obj->zoom_draw.sway_ang.x=obj->zoom_draw.sway_ang.y=0.0f;
+		obj->zoom_draw.sway_next.x=random_float(sway_max)-(sway_max/2.0f);
+		obj->zoom_draw.sway_next.y=random_float(sway_max)-(sway_max/2.0f);
+	}
+
+		// calculate any sways
+
+	if (obj->zoom_draw.sway_next.x<obj->zoom_draw.sway_ang.x) {
+		obj->zoom_draw.sway_ang.x-=sway_add;
+		if (obj->zoom_draw.sway_next.x>=obj->zoom_draw.sway_ang.x) {
+			obj->zoom_draw.sway_next.x=random_float(sway_max)-(sway_max/2.0f);
+		}
+	}
+	else {
+		obj->zoom_draw.sway_ang.x+=sway_add;
+		if (obj->zoom_draw.sway_next.x<=obj->zoom_draw.sway_ang.x) {
+			obj->zoom_draw.sway_next.x=random_float(sway_max)-(sway_max/2.0f);
+		}
+	}
+
+	if (obj->zoom_draw.sway_next.y<obj->zoom_draw.sway_ang.y) {
+		obj->zoom_draw.sway_ang.y-=sway_add;
+		if (obj->zoom_draw.sway_next.y>=obj->zoom_draw.sway_ang.y) {
+			obj->zoom_draw.sway_next.y=random_float(sway_max)-(sway_max/2.0f);
+		}
+	}
+	else {
+		obj->zoom_draw.sway_ang.y+=sway_add;
+		if (obj->zoom_draw.sway_next.y<=obj->zoom_draw.sway_ang.y) {
+			obj->zoom_draw.sway_next.y=random_float(sway_max)-(sway_max/2.0f);
+		}
+	}
+
+		// set sways
+
+	view.render->camera.ang.x+=obj->zoom_draw.sway_ang.x;
+	view.render->camera.ang.y+=obj->zoom_draw.sway_ang.y;
 }
 
 void view_calculate_recoil(obj_type *obj)

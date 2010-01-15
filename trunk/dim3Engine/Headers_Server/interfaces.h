@@ -82,6 +82,7 @@ extern void element_table_add(element_column_type* cols,char *row_data,int id,in
 extern void element_tab_add(char *tab_list,int value,int id,int ntab);
 extern void element_color_add(char *str,int value,int id,int x,int y,bool selectable);
 extern void element_text_box_add(char *data,int id,int x,int y,int wid,int high);
+extern void element_info_field_add(char *str,char *value_str,int id,int x,int y);
 
 extern int element_get_selected(void);
 

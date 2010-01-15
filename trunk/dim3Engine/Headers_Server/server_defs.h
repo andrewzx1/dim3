@@ -666,7 +666,8 @@ typedef struct		{
 					
 typedef struct		{
 						int						x,y,old_camera_mode,start_tick;
-						bool					on;
+						bool					on,sway_reset;
+						d3ang					sway_ang,sway_next;
 					} obj_zoom_draw;
 
 //
@@ -775,7 +776,7 @@ typedef struct		{
 					
 typedef struct		{
 						int						mode,mask_idx,tick,step_count,current_step;
-						float					fov_min,fov_max,
+						float					fov_min,fov_max,sway_factor,crawl_sway_factor,
 												turn_factor,crawl_turn_factor,look_factor;
 						char					mask_name[name_str_len];
 						bool					on,show_weapon;

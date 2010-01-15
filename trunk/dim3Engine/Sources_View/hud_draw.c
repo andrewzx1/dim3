@@ -314,7 +314,7 @@ void hud_bitmaps_draw(int tick)
 
 void hud_texts_fps(char *data)
 {
-	if (view.fps.total==0) {
+	if (view.fps.total==0.0f) {
 		strcpy(data,"--.--");
 	}
 	else {
@@ -545,7 +545,7 @@ void hud_metrics_draw(void)
 
 		// fps
 
-	if (view.fps.total==0) {
+	if (view.fps.total==0.0f) {
 		strcpy(str,"--.--");
 	}
 	else {
