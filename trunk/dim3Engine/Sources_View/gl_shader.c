@@ -118,7 +118,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3CameraPosition=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
 	shader->var_locs.dim3AmbientColor=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
 	shader->var_locs.dim3LightMapBoost=glGetUniformLocationARB(shader->program_obj,"dim3LightMapBoost");
-	shader->var_locs.dim3BumpFactor=glGetUniformLocationARB(shader->program_obj,"dim3BumpFactor");
 	shader->var_locs.dim3SpecularFactor=glGetUniformLocationARB(shader->program_obj,"dim3SpecularFactor");
 	shader->var_locs.dim3TexColor=glGetUniformLocationARB(shader->program_obj,"dim3TexColor");
 	shader->var_locs.dim3LightPosition=glGetUniformLocationARB(shader->program_obj,"dim3LightPosition");
@@ -397,7 +396,6 @@ void gl_shader_set_scene_variables(shader_type *shader,view_light_list_type *lig
 
 void gl_shader_set_texture_variables(shader_type *shader,texture_type *texture)
 {
-	if (shader->var_locs.dim3BumpFactor!=-1) glUniform1fARB(shader->var_locs.dim3BumpFactor,texture->bump_factor);
 	if (shader->var_locs.dim3SpecularFactor!=-1) glUniform1fARB(shader->var_locs.dim3SpecularFactor,texture->specular_factor);
 	if (shader->var_locs.dim3TexColor!=-1) glUniform3fARB(shader->var_locs.dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }

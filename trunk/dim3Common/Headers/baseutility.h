@@ -475,7 +475,7 @@ typedef struct		{
 typedef struct		{
 						int						shader_idx;
 						float					txt_scale_x,txt_scale_y,
-												bump_factor,specular_factor;
+												specular_factor;
 						bool					additive,pixelated;
 						char					material_name[name_str_len],
 												shader_name[name_str_len];
