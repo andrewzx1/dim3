@@ -61,7 +61,7 @@ extern void view_compile_gl_list_dettach(void);
 
 void render_opaque_mesh_simple(void)
 {
-	int							n,k;
+	int							n,k,frame;
 	bool						first_draw;
 	GLuint						gl_id;
 	map_mesh_type				*mesh;
@@ -112,9 +112,10 @@ void render_opaque_mesh_simple(void)
 				// get texture
 				
 			texture=&map.textures[poly->txt_idx];
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
-				gl_id=texture->frames[poly->draw.frame].bitmap.gl_id;
+				gl_id=texture->frames[frame].bitmap.gl_id;
 			}
 
 			gl_texture_opaque_set(gl_id);
@@ -137,7 +138,7 @@ void render_opaque_mesh_simple(void)
 
 void render_opaque_mesh_light_map(void)
 {
-	int							n,k;
+	int							n,k,frame;
 	bool						first_draw;
 	GLuint						gl_id,lmap_gl_id;
 	map_mesh_type				*mesh;
@@ -188,9 +189,10 @@ void render_opaque_mesh_light_map(void)
 				// get texture
 				
 			texture=&map.textures[poly->txt_idx];
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
-				gl_id=texture->frames[poly->draw.frame].bitmap.gl_id;
+				gl_id=texture->frames[frame].bitmap.gl_id;
 			}
 
 			lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
@@ -215,7 +217,7 @@ void render_opaque_mesh_light_map(void)
 
 void render_opaque_mesh_shader(void)
 {
-	int						n,k;
+	int						n,k,frame;
 	bool					first_draw;
 	GLuint					gl_id;
 	map_mesh_type			*mesh;
@@ -264,13 +266,14 @@ void render_opaque_mesh_shader(void)
 				// setup shader
 
 			texture=&map.textures[poly->txt_idx];
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 			if (!mesh->flag.hilite) {
 				gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,&light_list);
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,FALSE);
+				gl_shader_draw_execute(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,FALSE);
 			}
 			else {
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,1.0f,NULL,&poly->box.mid,NULL,FALSE);
+				gl_shader_draw_execute(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,NULL,&poly->box.mid,NULL,FALSE);
 			}
 
 				// fix texture if any back rendering
@@ -294,7 +297,7 @@ void render_opaque_mesh_shader(void)
 
 void render_opaque_mesh_glow(void)
 {
-	int					n,k;
+	int					n,k,frame;
 	bool				first_draw;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -341,10 +344,11 @@ void render_opaque_mesh_glow(void)
 				// get texture
 
 			texture=&map.textures[poly->txt_idx];
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 				// draw glow
 
-			gl_texture_glow_set(texture->frames[poly->draw.frame].bitmap.gl_id,texture->frames[poly->draw.frame].glowmap.gl_id,texture->glow.current_color);
+			gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;

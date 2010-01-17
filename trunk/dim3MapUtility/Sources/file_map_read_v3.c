@@ -467,7 +467,6 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 
 			xml_get_attribute_3_coord_float(node_tag,"angle",&node->ang.x,&node->ang.y,&node->ang.z);
 			node->follow_camera=xml_get_attribute_boolean(node_tag,"follow_camera");
-			node->use_shader=xml_get_attribute_boolean(node_tag,"user_shader");
 
 			xml_get_attribute_text(node_tag,"name",node->name,name_str_len);
 			node->event_id=xml_get_attribute_int_default(node_tag,"event_id",0);

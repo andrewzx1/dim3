@@ -329,7 +329,7 @@ bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,
 	float					xoff,yoff,zoff;
 	d3pnt					ppt;
 	d3ang					ang;
-	matrix_type				mat_x,mat_y;
+	matrix_type				mat;
 	particle_type			*particle;
 	
 	particle=&server.particles[particle_idx];
@@ -343,8 +343,7 @@ bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,
 		// get offset to camera position
 
 	camera_get_angle_from(pt,&ang);
-	matrix_rotate_x(&mat_x,ang.x);
-	matrix_rotate_y(&mat_y,ang.y);
+	matrix_rotate_xy(&mat,ang.x,ang.y);
 
 		// groups of particles
 
@@ -364,8 +363,7 @@ bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,
 		if (shift!=0) {
 			xoff=yoff=0.0f;
 			zoff=-(float)shift;
-			matrix_vertex_multiply(&mat_x,&xoff,&yoff,&zoff);
-			matrix_vertex_multiply(&mat_y,&xoff,&yoff,&zoff);
+			matrix_vertex_multiply(&mat,&xoff,&yoff,&zoff);
 			
 			ppt.x+=(int)xoff;
 			ppt.y+=(int)yoff;

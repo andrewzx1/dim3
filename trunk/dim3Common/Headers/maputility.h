@@ -218,7 +218,7 @@ typedef struct		{
 
 typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
-															frame,txt_frame_offset,
+															txt_frame_offset,
 															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
 						float								x_shift_offset,y_shift_offset;
 						bool								bump_ok,shift_on,shader_on,transparent_on,glow_on;
@@ -266,7 +266,8 @@ typedef struct		{
 
 typedef struct		{
 						int									vertex_offset;
-						bool								moved,has_opaque,has_transparent,
+						bool								moved,cur_ambient_only,
+															has_opaque,has_transparent,
 															has_shader,has_no_shader,has_glow,
 															has_light_map;
 					} map_mesh_draw_type;
@@ -416,7 +417,7 @@ typedef struct		{
 						short								link[max_node_link],
 															path_hint[max_node];
 						char								name[name_str_len];
-						bool								follow_camera,use_shader;
+						bool								follow_camera;
 						d3pnt								pnt;
 						d3ang								ang;
 						node_back_render_type				back_render;

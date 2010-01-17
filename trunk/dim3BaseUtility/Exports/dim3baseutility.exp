@@ -15,6 +15,7 @@ _matrix_angle_multiply
 _matrix_rotate_x
 _matrix_rotate_y
 _matrix_rotate_z
+_matrix_rotate_xy
 _matrix_rotate_xyz
 _matrix_rotate_zyx
 _matrix_rotate_xzy

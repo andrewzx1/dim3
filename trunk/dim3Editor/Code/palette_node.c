@@ -35,7 +35,6 @@ and can be sold or given away.
 #define kNodeAngleY						FOUR_CHAR_CODE('angy')
 #define kNodeAngleZ						FOUR_CHAR_CODE('angz')
 #define kNodeFollowCamera				FOUR_CHAR_CODE('fcam')
-#define kNodeUseShader					FOUR_CHAR_CODE('ushd')
 
 extern map_type				map;
 
@@ -65,7 +64,6 @@ void palette_node_load(void)
 	dialog_set_float(palette_node_wind,kNodeAngleY,0,node->ang.y);
 	dialog_set_float(palette_node_wind,kNodeAngleZ,0,node->ang.z);
 	dialog_set_boolean(palette_node_wind,kNodeFollowCamera,0,node->follow_camera);
-	dialog_set_boolean(palette_node_wind,kNodeUseShader,0,node->use_shader);
 	
 	DrawControls(palette_node_wind);
 }
@@ -88,7 +86,6 @@ void palette_node_save(void)
 	node->ang.y=dialog_get_float(palette_node_wind,kNodeAngleY,0);
 	node->ang.z=dialog_get_float(palette_node_wind,kNodeAngleZ,0);
 	node->follow_camera=dialog_get_boolean(palette_node_wind,kNodeFollowCamera,0);
-	node->use_shader=dialog_get_boolean(palette_node_wind,kNodeUseShader,0);
 	
 		// need to reset node combo
 		
