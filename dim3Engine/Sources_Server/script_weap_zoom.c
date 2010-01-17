@@ -43,6 +43,8 @@ JSValueRef js_weap_zoom_get_fovSteps(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_weap_zoom_get_turnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_zoom_get_crawlTurnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_zoom_get_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_swayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_zoom_get_crawlSwayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_zoom_get_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_zoom_get_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_zoom_get_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -53,6 +55,8 @@ bool js_weap_zoom_set_fovSteps(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 bool js_weap_zoom_set_turnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_crawlTurnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_zoom_set_swayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_zoom_set_crawlSwayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
@@ -69,6 +73,8 @@ JSStaticValue 		weap_zoom_props[]={
 							{"turnFactor",			js_weap_zoom_get_turnFactor,				js_weap_zoom_set_turnFactor,		kJSPropertyAttributeDontDelete},
 							{"crawlTurnFactor",		js_weap_zoom_get_crawlTurnFactor,			js_weap_zoom_set_crawlTurnFactor,	kJSPropertyAttributeDontDelete},
 							{"lookFactor",			js_weap_zoom_get_lookFactor,				js_weap_zoom_set_lookFactor,		kJSPropertyAttributeDontDelete},
+							{"swayFactor",			js_weap_zoom_get_swayFactor,				js_weap_zoom_set_swayFactor,		kJSPropertyAttributeDontDelete},
+							{"crawlSwayFactor",		js_weap_zoom_get_crawlSwayFactor,			js_weap_zoom_set_crawlSwayFactor,	kJSPropertyAttributeDontDelete},
 							{"maskName",			js_weap_zoom_get_maskName,					js_weap_zoom_set_maskName,			kJSPropertyAttributeDontDelete},
 							{"showWeapon",			js_weap_zoom_get_showWeapon,				js_weap_zoom_set_showWeapon,		kJSPropertyAttributeDontDelete},
 							{"tick",				js_weap_zoom_get_tick,						js_weap_zoom_set_tick,				kJSPropertyAttributeDontDelete},
@@ -173,6 +179,22 @@ JSValueRef js_weap_zoom_get_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStrin
 	return(script_float_to_value(cx,weap->zoom.look_factor));
 }
 
+JSValueRef js_weap_zoom_get_swayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	return(script_float_to_value(cx,weap->zoom.sway_factor));
+}
+
+JSValueRef js_weap_zoom_get_crawlSwayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	return(script_float_to_value(cx,weap->zoom.crawl_sway_factor));
+}
+
 JSValueRef js_weap_zoom_get_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
@@ -269,6 +291,26 @@ bool js_weap_zoom_set_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	weap->zoom.look_factor=script_value_to_float(cx,vp);
+
+	return(TRUE);
+}
+
+bool js_weap_zoom_set_swayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->zoom.sway_factor=script_value_to_float(cx,vp);
+
+	return(TRUE);
+}
+
+bool js_weap_zoom_set_crawlSwayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->zoom.crawl_sway_factor=script_value_to_float(cx,vp);
 
 	return(TRUE);
 }

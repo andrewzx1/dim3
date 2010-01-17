@@ -155,6 +155,7 @@ extern void matrix_angle_multiply(matrix_type *mat,float *x,float *y,float *z);
 extern void matrix_rotate_x(matrix_type *mat,float ang);
 extern void matrix_rotate_y(matrix_type *mat,float ang);
 extern void matrix_rotate_z(matrix_type *mat,float ang);
+extern void matrix_rotate_xy(matrix_type *mat,float x_ang,float y_ang);
 extern void matrix_rotate_xyz(matrix_type *mat,float x_ang,float y_ang,float z_ang);
 extern void matrix_rotate_zyx(matrix_type *mat,float x_ang,float y_ang,float z_ang);
 extern void matrix_rotate_xzy(matrix_type *mat,float x_ang,float y_ang,float z_ang);

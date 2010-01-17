@@ -147,7 +147,7 @@ void map_music_start(map_music_type *music)
 
 /* =======================================================
 
-      Cache Some Map Lookups
+      Cache Lookups and Map Draw Flags
       
 ======================================================= */
 
@@ -169,6 +169,71 @@ void map_lookups_setup(void)
 	for (n=0;n!=map.nparticle;n++) {
 		particle->particle_idx=particle_find_index(particle->name);
 		particle++;
+	}
+}
+
+void map_mesh_polygon_draw_flag_setup(void)
+{
+	int					n,k;
+	bool				has_opaque,has_transparent,
+						has_shader,has_no_shader,
+						has_glow,has_light_map;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	texture_type		*texture;
+	
+		// run through the meshes
+		// and setup mesh and polygon draw flags
+		
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		
+			// clear mesh flags
+
+		has_opaque=FALSE;
+		has_transparent=FALSE;
+		has_shader=FALSE;
+		has_no_shader=FALSE;
+		has_glow=FALSE;
+		has_light_map=FALSE;
+		
+			// run through the polys
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// get texture and frame
+
+			texture=&map.textures[poly->txt_idx];
+
+				// set the flags
+
+			poly->draw.shader_on=(texture->shader_idx!=-1);
+			poly->draw.transparent_on=(texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent);
+			poly->draw.glow_on=(texture->frames[0].glowmap.gl_id!=-1);
+
+				// or to the mesh flags
+
+			has_opaque|=(!poly->draw.transparent_on);
+			has_transparent|=poly->draw.transparent_on;
+			has_shader|=poly->draw.shader_on;
+			has_no_shader|=(!poly->draw.shader_on);
+			has_glow|=poly->draw.glow_on;
+			has_light_map|=(poly->lmap_txt_idx!=-1);
+
+			poly++;
+		}
+		
+		mesh->draw.has_opaque=has_opaque;
+		mesh->draw.has_transparent=has_transparent;
+		mesh->draw.has_shader=has_shader;
+		mesh->draw.has_no_shader=has_no_shader;
+		mesh->draw.has_glow=has_glow;
+		mesh->draw.has_light_map=has_light_map;
+		
+		mesh++;
 	}
 }
 
@@ -326,6 +391,8 @@ bool map_start(bool skip_media,char *err_str)
 	
 	map_movements_initialize();
 	map_lookups_setup();
+	map_mesh_polygon_draw_flag_setup();
+	
 	gl_back_render_map_start();
 	
 		// map start event

@@ -35,9 +35,7 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-int							cur_vbo_cache_idx,cur_vbo_cache_index_idx,
-							vbo_cache_sz[view_vertex_object_count],
-							vbo_cache_index_sz[view_vertex_object_count];
+int							cur_vbo_cache_idx,cur_vbo_cache_index_idx;
 GLuint						vbo_map,vbo_map_index,
 							vbo_liquid,vbo_liquid_index,
 							vbo_sky,
@@ -69,14 +67,12 @@ void view_create_vertex_objects(void)
 	glGenBuffersARB(view_vertex_object_count,vbo_cache);
 	glGenBuffersARB(view_vertex_object_count,vbo_cache_index);
 
-		// initial sizes
-		// we only remap the buffer is the size is greater
-		// while this cost us memory, we don't get the cost of
-		// reseting these buffers constantly
-
 	for (n=0;n!=view_vertex_object_count;n++) {
-		vbo_cache_sz[n]=-1;
-		vbo_cache_index_sz[n]=-1;
+		glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[n]);
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sizeof(float),NULL,GL_STREAM_DRAW_ARB);
+		
+		glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache_index[n]);
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sizeof(float),NULL,GL_STREAM_DRAW_ARB);
 	}
 
 		// start at first misc vbo
@@ -351,30 +347,17 @@ float* view_bind_map_next_vertex_object(int sz)
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
 
-		// resize it if more memory needed
-		// we only grow up, this *might* be a problem
-		// but it seems more optimal for now.  Will require
-		// more testing
+		// supergumba -- this checks to see if the buffer is in
+		// use and stalls.  The OpenGL drivers should be smart
+		// enough to not require this but it's here just in case
 
-		// size is in floats
+	// vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	// glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+
+		// change size of buffer
 
 	sz*=sizeof(float);
-
-	if (sz>vbo_cache_sz[cur_vbo_cache_idx]) {
-
-			// we need to grab the pointer first so if the data
-			// is still being used then we'll be stalled
-
-		if (vbo_cache_sz[cur_vbo_cache_idx]!=-1) {
-			vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-			glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
-		}
-
-			// now we can change the size
-
-		vbo_cache_sz[cur_vbo_cache_idx]=sz;
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
-	}
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 		// map pointer
 
@@ -410,25 +393,17 @@ unsigned short* view_bind_map_next_index_object(int sz)
 
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_cache_index[cur_vbo_cache_index_idx]);
 
-		// size is in unsigned short
+		// supergumba -- this checks to see if the buffer is in
+		// use and stalls.  The OpenGL drivers should be smart
+		// enough to not require this but it's here just in case
+
+	// index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	// glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
+
+		// change size of buffer
 
 	sz*=sizeof(unsigned short);
-
-	if (sz>vbo_cache_index_sz[cur_vbo_cache_index_idx]) {
-
-			// we need to grab the pointer first so if the data
-			// is still being used then we'll be stalled
-
-		if (vbo_cache_index_sz[cur_vbo_cache_index_idx]!=-1) {
-			index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-			glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
-		}
-
-			// now we can change the size
-
-		vbo_cache_index_sz[cur_vbo_cache_index_idx]=sz;
-		glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
-	}
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 		// map pointer
 

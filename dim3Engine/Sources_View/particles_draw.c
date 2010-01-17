@@ -125,19 +125,17 @@ void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
       
 ======================================================= */
 
-int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *mat_x,matrix_type *mat_y,float gravity,float f_count,int particle_count,particle_piece_type *pps,float gx,float gy,float g_size)
+int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *pixel_mat,float gravity,float f_count,int particle_count,particle_piece_type *pps,float gx,float gy,float g_size)
 {
 	int					n,k;
 	float				fx,fy,fz,px[4],py[4],pz[4];
 	float				*pv,*pt;
-	matrix_type			rot_x_mat,rot_z_mat,rot_y_mat;
+	matrix_type			rot_mat;
 	
 		// if move angle, setup matrixes
 		
 	if (rot_ang!=NULL) {
-		matrix_rotate_x(&rot_x_mat,rot_ang->x);
-		matrix_rotate_z(&rot_z_mat,rot_ang->z);
-		matrix_rotate_y(&rot_y_mat,rot_ang->y);
+		matrix_rotate_xzy(&rot_mat,rot_ang->x,rot_ang->y,rot_ang->z);
 	}
 	
 		// get particle box
@@ -149,8 +147,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 	pz[0]=pz[1]=pz[2]=pz[3]=0.0f;
 	
 	for (k=0;k!=4;k++) {
-		matrix_vertex_multiply(mat_x,&px[k],&py[k],&pz[k]);
-		matrix_vertex_multiply(mat_y,&px[k],&py[k],&pz[k]);
+		matrix_vertex_multiply(pixel_mat,&px[k],&py[k],&pz[k]);
 	}
 	
 		// fill particle arrays
@@ -167,9 +164,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 			fy=pps->vct.y;
 			fz=pps->vct.z;
 			
-			matrix_vertex_multiply(&rot_x_mat,&fx,&fy,&fz);
-			matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
-			matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
+			matrix_vertex_multiply(&rot_mat,&fx,&fy,&fz);
 		
 			fx=(float)(mx+pps->pt.x)+(fx*f_count);
 			fy=(float)(my+pps->pt.y)+((fy*f_count)+gravity);
@@ -245,7 +240,7 @@ void particle_draw(effect_type *effect,int count)
 	d3col					col,ambient_col;
 	particle_type			*particle;
 	particle_effect_data	*eff_particle;
-	matrix_type				pixel_mat_x,pixel_mat_y;
+	matrix_type				pixel_mat;
 
 	eff_particle=&effect->data.particle;
 	particle=&server.particles[eff_particle->particle_idx];
@@ -300,8 +295,7 @@ void particle_draw(effect_type *effect,int count)
 
 		// particle sprite rotation
 
-	matrix_rotate_x(&pixel_mat_x,view.render->camera.ang.x);
-	matrix_rotate_y(&pixel_mat_y,view.render->camera.ang.y);
+	matrix_rotate_xy(&pixel_mat,view.render->camera.ang.x,view.render->camera.ang.y);
 	
 		// reverse
 		
@@ -378,7 +372,7 @@ void particle_draw(effect_type *effect,int count)
 
 			// draw pixels
 
-		idx=particle_fill_array_quad_single(vertex_ptr,idx,nvertex,mx,my,mz,rot_ang,pixel_sz,&pixel_mat_x,&pixel_mat_y,gravity,f_count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
+		idx=particle_fill_array_quad_single(vertex_ptr,idx,nvertex,mx,my,mz,rot_ang,pixel_sz,&pixel_mat,gravity,f_count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
 
 			// reduce pixel sizes and counts for trails
 			

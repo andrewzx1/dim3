@@ -174,6 +174,16 @@ void matrix_rotate_z(matrix_type *mat,float ang)
 	mat->data[1][1]=r_cos;
 }
 
+void matrix_rotate_xy(matrix_type *mat,float x_ang,float y_ang)
+{
+	matrix_type		y_mat;
+	
+	matrix_rotate_x(mat,x_ang);
+
+	matrix_rotate_y(&y_mat,y_ang);
+	matrix_multiply(mat,&y_mat);
+}
+
 void matrix_rotate_xyz(matrix_type *mat,float x_ang,float y_ang,float z_ang)
 {
 	matrix_type		y_mat,z_mat;

@@ -1384,7 +1384,6 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					node->pnt.z=(node->pnt.z*map_enlarge)+(portal->z*map_enlarge);
 
 					node->follow_camera=FALSE;
-					node->use_shader=FALSE;
 					
 					node_tag=xml_findnextchild(node_tag);
 				}

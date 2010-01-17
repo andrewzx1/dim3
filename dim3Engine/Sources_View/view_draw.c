@@ -58,7 +58,6 @@ extern void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap);
 extern void draw_background(void);
 extern void draw_sky(int tick);
 extern void model_calc_pose_bones(model_draw *draw);
-extern void render_map_setup(void);
 extern void render_map_mesh_opaque(void);
 extern void render_map_mesh_transparent(void);
 extern void rain_draw(int tick);
@@ -429,10 +428,6 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 	
 	if (!view_compile_mesh_gl_lists(tick)) return;
 
-		// setup some map polygon drawing flags
-
-	render_map_setup();
-
 		// draw opaque scene items
 
 	render_map_mesh_opaque();
@@ -518,7 +513,6 @@ void view_draw(int tick)
 	view.render->camera.under_liquid_idx=camera_check_liquid(obj,&view.render->camera.pnt);
 	view.render->camera.z_adjust=obj->camera_z_adjust;
 	
-	view.render->no_shader=FALSE;
 	view.render->force_camera_obj=FALSE;
 
 		// camera adjustments
@@ -586,7 +580,6 @@ bool view_draw_node(int tick,node_type *node)
 	view.render->camera.under_liquid_idx=-1;
 	view.render->camera.z_adjust=0;
 	
-	view.render->no_shader=!node->use_shader;
 	view.render->force_camera_obj=TRUE;
 
 		// clear the frame

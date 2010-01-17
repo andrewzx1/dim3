@@ -289,7 +289,8 @@ void render_transparent_mode_switch(int mode,bool additive)
 
 void render_transparent_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	texture_type				*texture;
+	int						frame;
+	texture_type			*texture;
 
 		// skip meshes or polys with shaders
 		// or light maps unless debug is on
@@ -302,18 +303,20 @@ void render_transparent_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly
 		// time to turn on some gl pointers?
 		
 	texture=&map.textures[poly->txt_idx];
-
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+	
 	render_transparent_mode_switch(render_map_transparent_mode_simple,texture->additive);
 
 		// draw the polygon
 
-	gl_texture_transparent_set(texture->frames[poly->draw.frame].bitmap.gl_id,1.0f);
+	gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,1.0f);
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }
 
 void render_transparent_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	texture_type				*texture,*lm_texture;
+	int						frame;
+	texture_type			*texture,*lm_texture;
 
 		// skip meshes or polys with no shaders
 		// unless debug is on
@@ -327,17 +330,19 @@ void render_transparent_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *p
 
 	texture=&map.textures[poly->txt_idx];
 	lm_texture=&map.textures[poly->lmap_txt_idx];
-
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+	
 	render_transparent_mode_switch(render_map_transparent_mode_light_map,texture->additive);
 
 		// draw the polygon
 
-	gl_texture_transparent_light_map_set(texture->frames[poly->draw.frame].bitmap.gl_id,lm_texture->frames[0].bitmap.gl_id,1.0f);
+	gl_texture_transparent_light_map_set(texture->frames[frame].bitmap.gl_id,lm_texture->frames[0].bitmap.gl_id,1.0f);
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }
 
 void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
+	int						frame;
 	texture_type			*texture;
 	view_light_list_type	light_list;
 
@@ -348,16 +353,18 @@ void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_po
 		// time to turn on some gl pointers?
 
 	texture=&map.textures[poly->txt_idx];
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+	
 	render_transparent_mode_switch(render_map_transparent_mode_shader,texture->additive);
 
 		// draw shader
 
 	if (!mesh->flag.hilite) {
 		gl_lights_build_from_poly(mesh_idx,poly,&light_list);
-		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,FALSE);
+		gl_shader_draw_execute(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,FALSE);
 	}
 	else {
-		gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->lmap_txt_idx,1.0f,NULL,&poly->box.mid,NULL,FALSE);
+		gl_shader_draw_execute(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,NULL,&poly->box.mid,NULL,FALSE);
 	}
 
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
@@ -365,6 +372,7 @@ void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_po
 
 void render_transparent_mesh_glow(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
+	int						frame;
 	texture_type			*texture;
 
 		// skip meshes or polys with no glows
@@ -374,11 +382,13 @@ void render_transparent_mesh_glow(map_mesh_type *mesh,map_mesh_poly_type *poly)
 		// time to turn on some gl pointers?
 
 	texture=&map.textures[poly->txt_idx];
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
 	render_transparent_mode_switch(render_map_transparent_mode_glow,FALSE);
 	
 		// draw glow
 
-	gl_texture_glow_set(texture->frames[poly->draw.frame].bitmap.gl_id,texture->frames[poly->draw.frame].glowmap.gl_id,texture->glow.current_color);
+	gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }
 

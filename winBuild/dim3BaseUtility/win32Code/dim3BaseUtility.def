@@ -18,12 +18,13 @@ EXPORTS
 	matrix_rotate_x								@125
 	matrix_rotate_y								@126
 	matrix_rotate_z								@127
-	matrix_rotate_xyz							@128
-	matrix_rotate_zyx							@129
-	matrix_rotate_xzy							@130
-	matrix_has_rotation							@131
-	matrix_translate							@132
-	matrix_average								@133
+	matrix_rotate_xy							@128
+	matrix_rotate_xyz							@129
+	matrix_rotate_zyx							@130
+	matrix_rotate_xzy							@131
+	matrix_has_rotation							@132
+	matrix_translate							@133
+	matrix_average								@134
 
 	vector_normalize							@140
 	vector_create								@141

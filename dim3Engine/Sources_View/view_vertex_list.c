@@ -38,151 +38,6 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-
-
-
-// supergumba
-void test_me(void)
-{
-	int					n,k,t,i,j,idx,
-						max_vertex_cnt,vertex_cnt,mesh_vertex_cnt;
-	float				*pv,*pc,*pp,
-						*mesh_pv,*mesh_pp,*cv,*cp;
-	bool				hit;
-	unsigned char		*data;
-	d3pnt				*pnt;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	
-		// find the maximum number of
-		// vertexes if every one was unique
-		
-	max_vertex_cnt=0;
-		
-	mesh=map.mesh.meshes;
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-
-			// setup moved flag here
-
-		mesh->draw.moved=FALSE;
-
-			// poly vertexes and uv counts
-			
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-			max_vertex_cnt+=poly->ptsz;
-			poly++;
-		}
-		
-		mesh++;
-	}
-	
-		// get memory for vertexes
-		// and UVs.  Need 3 for vertex,
-		// 3 for color, and 2 for each
-		// uv layer
-		
-	data=(unsigned char*)malloc((max_vertex_cnt*(3+3+(max_mesh_poly_uv_layer*2)))*sizeof(float));
-
-	pv=(float*)data;
-	pc=pv+(max_vertex_cnt*3);
-	pp=pv+(max_vertex_cnt*(3+3));
-	
-		// find any combinations
-		// where a vertex and all UVs
-		// are the same
-	
-	vertex_cnt=0;
-	
-	mesh=map.mesh.meshes;
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-	
-		mesh_pv=pv;
-		mesh_pp=pp;
-		
-		mesh_vertex_cnt=0;
-	
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			for (t=0;t!=poly->ptsz;t++) {
-			
-				pnt=&mesh->vertexes[poly->v[t]];
-				
-					// check for equal vertex/uvs
-					
-				idx=-1;
-
-				for (j=0;j!=mesh_vertex_cnt;j++) {
-				
-					cv=mesh_pv+(j*3);
-					if (*cv!=(float)pnt->x) continue;
-					if (*(cv+1)!=(float)pnt->y) continue;
-					if (*(cv+2)!=(float)pnt->z) continue;
-
-					hit=TRUE;
-					
-					for (i=0;i!=mesh->nuv;i++) {
-						cp=mesh_pp+(((i*max_vertex_cnt)+j)*2);
-						if (*cp!=poly->uv[i].x[t]) {
-							hit=FALSE;
-							break;
-						}
-						if (*(cp+1)!=poly->uv[i].y[t]) {
-							hit=FALSE;
-							break;
-						}
-					}
-					
-					if (!hit) continue;
-
-						// we found a vertex/uvs that
-						// are equal
-						
-					idx=0;
-					break;		// supergumba -- handle here
-				}
-				
-				if (idx!=-1) continue;
-
-					// no similiar vertex/uvs, we need
-					// to add a new one
-				
-				*pv++=(float)pnt->x;
-				*pv++=(float)pnt->y;
-				*pv++=(float)pnt->z;
-				
-				cp=pp;
-				
-				for (i=0;i!=mesh->nuv;i++) {
-					*cp=poly->uv[i].x[t];
-					*(cp+1)=poly->uv[i].y[t];
-					
-					cp+=(max_vertex_cnt*2);
-				}
-				
-				pp+=2;
-				
-				vertex_cnt++;
-				mesh_vertex_cnt++;
-			}
-
-			poly++;
-		}
-		
-		mesh++;
-	}
-	
-
-	fprintf(stdout,"MAX = %d\n",max_vertex_cnt);
-	fprintf(stdout,"MIN = %d\n",vertex_cnt);
-}
-
-
 /* =======================================================
 
       Setup Vertex, UV, and possible Color List for Meshes
@@ -200,8 +55,6 @@ bool view_compile_mesh_gl_list_init(void)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-//	test_me();
-
 		// get total number of vertexes and indexes
 		// and their offsets to setup vertex object for map
 		
@@ -216,6 +69,7 @@ bool view_compile_mesh_gl_list_init(void)
 			// mesh has not been moved
 
 		mesh->draw.moved=FALSE;
+		mesh->draw.cur_ambient_only=FALSE;
 
 			// setup offsets
 
@@ -417,21 +271,20 @@ bool view_compile_mesh_gl_lists(int tick)
 	int							n,k,t,uv_idx,vertex_cnt;
 	float						x_shift_offset,y_shift_offset;
 	float						*vertex_ptr,*pv,*pp,*pc,*pc2;
-	bool						only_ambient;
+	bool						vbo_mapped,only_ambient;
 	d3col						col;
 	d3pnt						*pnt;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
-
+	
 		// total number of vertexes
 
 	vertex_cnt=map.mesh.vbo_vertex_count;
-
-		// map VBO to memory
-
-	vertex_ptr=view_bind_map_map_vertex_object();
-	if (vertex_ptr==NULL) return(FALSE);
 	
+		// only map VBO is necessary
+		
+	vbo_mapped=FALSE;
+
 		// run throught the meshes
 		// in this scene and update any
 		// relevant data
@@ -446,6 +299,12 @@ bool view_compile_mesh_gl_lists(int tick)
 			// mesh is moving
 
 		if (mesh->draw.moved) {
+		
+			if (!vbo_mapped) {
+				vbo_mapped=TRUE;
+				vertex_ptr=view_bind_map_map_vertex_object();
+				if (vertex_ptr==NULL) return(FALSE);
+			}
 
 			pv=vertex_ptr+(mesh->draw.vertex_offset*3);
 
@@ -472,6 +331,12 @@ bool view_compile_mesh_gl_lists(int tick)
 			// mesh has shiftable uvs
 
 		if (mesh->flag.shiftable) {
+		
+			if (!vbo_mapped) {
+				vbo_mapped=TRUE;
+				vertex_ptr=view_bind_map_map_vertex_object();
+				if (vertex_ptr==NULL) return(FALSE);
+			}
 
 				// the UV layers
 			
@@ -505,81 +370,80 @@ bool view_compile_mesh_gl_lists(int tick)
 			}
 		}
 
-			// if in debug, we are using high lighting,
-			// so recalculate the lights for the mesh
+			// high lighted and shader only meshes are skipped
+			// otherwise only recalculate if lights have changed
 
-		if ((dim3_debug) || (mesh->flag.hilite)) {
+		if ((mesh->draw.has_no_shader) && (!mesh->flag.hilite)) {
+
+				// special check for debug on
+				
+			if (dim3_debug) {
+				only_ambient=TRUE;
+				col.r=col.g=col.b=1.0f;
+			}
+
+				// create colors for each vertexes
+				// we have a special flag to tell if we've already
+				// set it to ambient only the last draw and then skip it
+
+			else {
+				only_ambient=!gl_lights_calc_vertex_setup_mesh(mesh);
+				if (only_ambient) {
+					if (mesh->draw.cur_ambient_only) continue;
+					
+					mesh->draw.cur_ambient_only=TRUE;
+					gl_lights_get_ambient(&col,TRUE);
+				}
+			}
 			
+				// set the colors
+				
+			if (!vbo_mapped) {
+				vbo_mapped=TRUE;
+				vertex_ptr=view_bind_map_map_vertex_object();
+				if (vertex_ptr==NULL) return(FALSE);
+			}
+
+			pc=mesh->colors_cache;
+			
+				// colors when only ambient lighting
+				
+			if (only_ambient) {
+				for (k=0;k!=mesh->nvertex;k++) {
+					*pc++=col.r;
+					*pc++=col.g;
+					*pc++=col.b;
+				}
+			}
+			
+				// colors hit by lights
+				
+			else {
+				pnt=mesh->vertexes;
+
+				for (k=0;k!=mesh->nvertex;k++) {
+					gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,TRUE,pc);
+					pc+=3;
+					pnt++;
+				}
+			}
+			
+				// create per poly colors
+
 			pc=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*3));
 
 			poly=mesh->polys;
-				
+			
 			for (k=0;k!=mesh->npoly;k++) {
 			
 				for (t=0;t!=poly->ptsz;t++) {
-					*pc++=1.0f;
-					*pc++=1.0f;
-					*pc++=1.0f;
+					pc2=mesh->colors_cache+(poly->v[t]*3);
+					*pc++=*pc2++;
+					*pc++=*pc2++;
+					*pc++=*pc2;
 				}
-				
+
 				poly++;
-			}
-		}
-
-			// if the mesh has some non-shaders in it,
-			// recalculate the lighting
-
-		else {
-
-			if (mesh->draw.has_no_shader) {
-
-					// create colors for each vertexes
-
-				only_ambient=!gl_lights_calc_vertex_setup_mesh(mesh);
-
-				pc=mesh->colors_cache;
-				
-					// colors when only ambient lighting
-					
-				if (only_ambient) {
-					gl_lights_get_ambient(&col,TRUE);
-					
-					for (k=0;k!=mesh->nvertex;k++) {
-						*pc++=col.r;
-						*pc++=col.g;
-						*pc++=col.b;
-					}
-				}
-				
-					// colors hit by lights
-					
-				else {
-					pnt=mesh->vertexes;
-
-					for (k=0;k!=mesh->nvertex;k++) {
-						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,TRUE,pc);
-						pc+=3;
-						pnt++;
-					}
-				}
-				
-					// create per poly colors
-
-				pc=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*3));
-
-				poly=mesh->polys;
-				
-				for (k=0;k!=mesh->npoly;k++) {
-				
-					for (t=0;t!=poly->ptsz;t++) {
-						pc2=mesh->colors_cache+(poly->v[t]*3);
-						*pc++=*pc2++;
-						*pc++=*pc2++;
-						*pc++=*pc2;
-					}
-
-					poly++;
-				}
 			}
 		}
 
@@ -593,9 +457,11 @@ bool view_compile_mesh_gl_lists(int tick)
 	}
 
 		// unmap VBO
-
-	view_unmap_map_vertex_object();
-	view_unbind_map_vertex_object();
+	
+	if (vbo_mapped) {
+		view_unmap_map_vertex_object();
+		view_unbind_map_vertex_object();
+	}
 	
 	return(TRUE);
 }
