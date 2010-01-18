@@ -807,7 +807,6 @@ bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,s
 
 		// memory for vertex and primitive lists
 		// just use enough vertexes to cover most maps,
-		// supergumba -- need to do this in a more proper way
 
 	vlist_sz=sizeof(d3pnt)*10000;
 

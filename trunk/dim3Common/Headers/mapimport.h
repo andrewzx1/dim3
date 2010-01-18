@@ -47,14 +47,16 @@ and can be sold or given away.
 #define ag_ceiling_lower_pos_z						4
 
 //
-// auto-generate types
+// auto-generate corridor types
 //
 
-#define ag_corridor_type_count						3
-
-#define ag_corridor_type_normal						0
+#define ag_corridor_type_box						0
 #define ag_corridor_type_slanted_ceiling			1
 #define ag_corridor_type_octagon					2
+
+//
+// auto-generate stair directions
+//
 
 #define ag_stair_neg_z								0
 #define ag_stair_pos_z								1
@@ -118,8 +120,6 @@ and can be sold or given away.
 // auto-generate stair types
 //
 
-#define ag_stair_type_count							2
-
 #define ag_stair_type_stair							0
 #define ag_stair_type_lift							1
 
@@ -127,21 +127,10 @@ and can be sold or given away.
 // auto-generate doors
 //
 
-#define ag_door_type_count							3
-
-#define ag_door_type_slide							0
-#define ag_door_type_split							1
-#define ag_door_type_swing							2
-
-//
-// auto-generate lights
-//
-
-#define ag_light_type_count							3
-
-#define ag_light_type_include						0
-#define ag_light_type_tint							1
-#define ag_light_type_animated						2
+#define ag_door_type_none							0
+#define ag_door_type_slide							1
+#define ag_door_type_split							2
+#define ag_door_type_swing							3
 
 //
 // auto-generate steps type
@@ -342,13 +331,10 @@ typedef struct	{
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
-					int										seed,type,flow;
-					unsigned char							ceiling_type_on[ag_ceiling_type_count],
-															corridor_type_on[ag_corridor_type_count],
-															stair_type_on[ag_stair_type_count],
-															door_type_on[ag_door_type_count],
-															light_type_on[ag_light_type_count];
-					bool									second_story,window,frame;
+					int										seed,type,flow,
+															ceiling_type,corridor_type,door_type,stair_type;
+					float									light_boost;
+					bool									light_map,second_story,window,frame;
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_sound_type		sound;
 					auto_generate_setting_texture_type		texture;
@@ -361,15 +347,10 @@ typedef struct	{
 #define max_ag_box											256
 
 typedef struct	{
-					bool									on,left,right,top,bottom,middle_horz,middle_vert,
-															org_left,org_right,org_top,org_bottom;
-				} auto_generate_box_story_type;
-
-typedef struct	{
 					int										mesh_idx,corridor_connect_box_idx[2],
-															corridor_flag,corridor_type,ceiling_type;
+															corridor_flag;
+					bool									second_story;
 					d3pnt									min,max;
-					auto_generate_box_story_type			story;
 				} auto_generate_box_type;
 
 //

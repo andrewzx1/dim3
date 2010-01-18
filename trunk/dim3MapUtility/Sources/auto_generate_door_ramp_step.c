@@ -45,9 +45,6 @@ extern void map_auto_generate_poly_from_top_trig_wall(int lx,int lz,int rx,int r
 extern void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy);
 extern void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy);
 
-extern int map_auto_generate_get_door_type(auto_generate_settings_type *ags);
-extern bool map_auto_generate_has_door_type(auto_generate_settings_type *ags);
-
 extern int								ag_box_count,map_ag_mesh_idx;
 
 extern auto_generate_settings_type		ag_settings;
@@ -904,13 +901,13 @@ void map_auto_generate_doors(map_type *map)
 {
 	int						n,x,z,xsz,zsz,ty,by,x_rot_off,z_rot_off,
 							door_cnt,group_idx,reverse_group_idx,
-							door_type,movement_idx,move_idx;
+							movement_idx,move_idx;
 	char					name[name_str_len];
 	auto_generate_box_type	*portal;
 	movement_type			*movement;
 	movement_move_type		*move;
 	
-	if (!map_auto_generate_has_door_type(&ag_settings)) return;
+	if (ag_settings.door_type==ag_door_type_none) return;
 	
 		// run through corridors
 		
@@ -928,10 +925,6 @@ void map_auto_generate_doors(map_type *map)
 				
 		if (map_auto_generate_random_int(100)>(int)(ag_constant_door_percentage*100.0f)) continue;
 		
-			// door type
-
-		door_type=map_auto_generate_get_door_type(&ag_settings);
-			
 			// enough groups and movements?
 			
 		if (map->ngroup>=max_group) return;
@@ -956,7 +949,7 @@ void map_auto_generate_doors(map_type *map)
 		if (portal->corridor_flag==ag_corridor_flag_horizontal) {
 			x=map_auto_generate_doors_get_position(xsz);
 			
-			switch (door_type) {
+			switch (ag_settings.door_type) {
 				case ag_door_type_slide:
 					group_idx=map_auto_generate_doors_horizontal(map,n,x,0,zsz,0,ty,by,name,NULL);
 					break;
@@ -972,7 +965,7 @@ void map_auto_generate_doors(map_type *map)
 		else {
 			z=map_auto_generate_doors_get_position(zsz);
 
-			switch (door_type) {
+			switch (ag_settings.door_type) {
 				case ag_door_type_slide:
 					group_idx=map_auto_generate_doors_vertical(map,n,z,0,xsz,0,ty,by,name,NULL);
 					break;
@@ -1001,7 +994,7 @@ void map_auto_generate_doors(map_type *map)
 		move_idx=map_movement_move_add(map,movement_idx);
 		move=&movement->moves[move_idx];
 		
-		switch (door_type) {
+		switch (ag_settings.door_type) {
 
 			case ag_door_type_slide:
 				move->mov.y=-(portal->max.y-portal->min.y)-(map_enlarge>>1);

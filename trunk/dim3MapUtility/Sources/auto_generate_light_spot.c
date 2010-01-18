@@ -44,16 +44,12 @@ extern auto_generate_box_type			ag_boxes[max_ag_box];
 
 void map_auto_generate_lights(map_type *map)
 {
-	int						n,x,z,y,l_idx,intensity,lt_type;
-	float					r,g,b,
-							r_array[8]={1.0f,1.0f,0.2f,0.2f,1.0f,1.0f,0.2f,1.0f},
-							g_array[8]={1.0f,0.2f,1.0f,0.2f,1.0f,1.0f,1.0f,0.2f},
-							b_array[8]={1.0f,0.2f,0.2f,1.0f,1.0f,0.2f,1.0f,1.0f};
+	int						n,x,z,y,intensity;
 	double					dx,dz;
 	auto_generate_box_type	*portal;
 	map_light_type			*lit;
 	
-	if (ag_settings.light_type_on[ag_light_type_include]==0) return;
+	if (ag_settings.light_boost==0.0f) return;
 
 	portal=ag_boxes;
 	
@@ -71,45 +67,8 @@ void map_auto_generate_lights(map_type *map)
 			
 		dx=(portal->max.x-portal->min.x);
 		dz=(portal->max.z-portal->min.z);
-		intensity=((int)sqrt((dx*dx)+(dz*dz)))>>1;			// radius, so use half
-		if (intensity<100) intensity=100;
-		
-			// get the color
-			
-		r=g=b=1.0f;
-		
-			// tinting
-			// tinted lights on in portals
-			
-		if ((ag_settings.light_type_on[ag_light_type_tint]!=0) && (portal->corridor_flag==ag_corridor_flag_portal)) {
-			
-			l_idx=map_auto_generate_random_int(8);
-			r=r_array[l_idx];
-			g=g_array[l_idx];
-			b=b_array[l_idx];
-		}
-		
-			// get the type
-			// animated lights on in rooms
-			
-		lt_type=lt_normal;
-		
-		if ((ag_settings.light_type_on[ag_light_type_animated]!=0) && (portal->corridor_flag==ag_corridor_flag_portal)) {
-		
-			if (map_auto_generate_random_int(100)<(int)(ag_constant_light_animate_percentage*100.0f)) {
-				switch (map_auto_generate_random_int(3)) {
-					case 0:
-						lt_type=lt_glow;
-						break;
-					case 1:
-						lt_type=lt_pulse;
-						break;
-					case 2:
-						lt_type=lt_flicker;
-						break;
-				}
-			}
-		}
+		intensity=(int)(((float)sqrt((dx*dx)+(dz*dz)))*ag_settings.light_boost);
+		if (intensity<0) continue;
 		
 			// create the light
 	
@@ -120,11 +79,9 @@ void map_auto_generate_lights(map_type *map)
 		lit->pnt.y=y;
 		lit->pnt.z=z;
 		lit->type=lt_normal;
-		lit->light_map=TRUE;
+		lit->light_map=ag_settings.light_map;
 		lit->direction=ld_all;
-		lit->col.r=r;
-		lit->col.g=g;
-		lit->col.b=b;
+		lit->col.r=lit->col.g=lit->col.b=1.0f;
 		lit->intensity=intensity;
 		lit->exponent=1.0f;
 		lit->name[0]=0x0;
