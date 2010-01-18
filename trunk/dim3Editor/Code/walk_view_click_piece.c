@@ -67,17 +67,9 @@ void walk_view_click_setup_project(editor_3D_view_setup *view_setup)
 	glGetIntegerv(GL_VIEWPORT,(GLint*)walk_view_vport);
 }
 
-bool walk_view_click_rotate_polygon_behind_z(int x,int y,int z)
+bool walk_view_click_rotate_polygon_in_z(int x,int y,int z)
 {
-	int				rz;
-	double			dx,dy,dz;
-	
-	dx=(double)x;
-	dy=(double)y;
-	dz=(double)z;
-	
-	rz=(int)((dx*walk_view_mod_matrix[2])+(dy*walk_view_mod_matrix[6])+(dz*walk_view_mod_matrix[10])+walk_view_mod_matrix[14]);
-	return(rz<=walk_view_near_z);
+	return(((((double)x)*walk_view_mod_matrix[2])+(((double)y)*walk_view_mod_matrix[6])+(((double)z)*walk_view_mod_matrix[10])+walk_view_mod_matrix[14])>0.0);
 }
 
 void walk_view_click_project_point(d3rect *box,int *x,int *y,int *z)
@@ -88,6 +80,18 @@ void walk_view_click_project_point(d3rect *box,int *x,int *y,int *z)
 	*x=((int)dx)-box->lx;
 	*y=(main_wind_box.by-((int)dy))-box->ty;
 	*z=(int)((dz)*10000.0f);
+}
+
+
+// supergumba
+float walk_view_click_project_point2(d3rect *box,int *x,int *y, int *z)
+{
+	double		dx,dy,dz;
+	
+	gluProject(*x,*y,*z,walk_view_mod_matrix,walk_view_proj_matrix,(GLint*)walk_view_vport,&dx,&dy,&dz);
+	*x=((int)dx)-box->lx;
+	*y=(main_wind_box.by-((int)dy))-box->ty;
+	return((float)dz);
 }
 
 /* =======================================================
@@ -263,7 +267,7 @@ void walk_view_click_snap_mesh(int mesh_idx,d3pnt *old_pts,d3pnt *mpt)
 bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z)
 {
 	int					t,fz,px[8],py[8],pz[8];
-	bool				clip_ok,   off_left,off_right,off_top,off_bottom;
+	bool				clip_ok,behind_z,off_left,off_right,off_top,off_bottom;
 	d3pnt				*pt;
 	map_mesh_poly_type	*mesh_poly;
 	
@@ -288,6 +292,7 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 		// translate the points
 
 	fz=0;
+	behind_z=TRUE;
 
 	for (t=0;t!=mesh_poly->ptsz;t++) {
 		pt=&mesh->vertexes[mesh_poly->v[t]];
@@ -295,10 +300,29 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 		py[t]=pt->y;
 		pz[t]=pt->z;
 		
-		if (walk_view_click_rotate_polygon_behind_z(px[t],py[t],pz[t])) return(FALSE);
+		if ((mesh==&map.mesh.meshes[0]) && (poly_idx==118)) {
+			fprintf(stdout,"118: Point %d: Behind_z=%d (%.2f)\n",t,walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t]),walk_view_click_project_point2(&view_setup->box,&px[t],&py[t],&pz[t]));
+			px[t]=pt->x;
+			py[t]=pt->y;
+		}
+
+		
+		behind_z=behind_z&&(!walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t]));
 				
 		walk_view_click_project_point(&view_setup->box,&px[t],&py[t],&pz[t]);
 		fz+=pz[t];
+		if ((mesh==&map.mesh.meshes[0]) && (poly_idx==118)) {
+			fprintf(stdout,"118: Point %d: z=%d\n",t,pz[t]);
+		}
+	}
+	
+	if (behind_z) return(FALSE);
+	
+	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==204)) {
+		fprintf(stdout,"checked 204\n");
+	}
+	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==118)) {
+		fprintf(stdout,"checked 118\n");
 	}
 	
 		// check if outside box
@@ -312,7 +336,14 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 		off_bottom=off_bottom&&(py[t]>(view_setup->box.by-view_setup->box.ty));
 	}
 	
+	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==204)) {
+		fprintf(stdout,"%d %d %d %d\n",off_left,off_right,off_top,off_bottom);
+	}
+	
 	if ((off_left) || (off_right) || (off_top) || (off_bottom)) return(FALSE);
+	if (poly_idx==204) {
+		fprintf(stdout,"(%d,%d) -> (%d,%d)-(%d,%d)-(%d,%d)-(%d,%d)\n",click_pt->x,click_pt->y,px[0],py[0],px[1],py[1],px[2],py[2],px[3],py[3]);
+	}
 	
 		// check hits
 		
@@ -331,7 +362,7 @@ bool walk_view_quad_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	fz=0;
 
 	for (t=0;t!=4;t++) {
-		if (walk_view_click_rotate_polygon_behind_z(px[t],py[t],pz[t])) return(FALSE);
+		if (!walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t])) return(FALSE);
 		walk_view_click_project_point(&view_setup->box,&px[t],&py[t],&pz[t]);
 		fz+=pz[t];
 	}
@@ -465,7 +496,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	hit_z=100000;
 		
 		// meshes
-	
+		
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {

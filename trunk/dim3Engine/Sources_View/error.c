@@ -36,7 +36,7 @@ and can be sold or given away.
 #include "inputs.h"
 #include "video.h"
 
-#define error_icon_close_id			0
+#define error_close_id				0
 
 extern server_type			server;
 extern setup_type			setup;
@@ -53,38 +53,44 @@ extern void intro_open(void);
 
 void error_open(char *err_str,char *err_str_2)
 {
-	int				x,y;
-	char			path[1024],path2[1024];
-	
-		// setup
-		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	int					x,y,wid,high,control_y_add;
+	char				tab_list[][name_str_len]={"Error"};
 
-		// error
-		
-	x=hud.scale_x/2;
-	
-	y=(hud.scale_y/2)-5;
-	element_text_add("[Error]",-1,x,y,hud.font.text_size_large,tx_center,FALSE,TRUE);
-
-	y+=gl_text_get_char_height(hud.font.text_size_small)+5;
-	element_text_add(err_str,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
-	
-	y+=gl_text_get_char_height(hud.font.text_size_small)+3;
-	element_text_add(err_str_2,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
-
-		// close button
-
-	y+=5;
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","icon_close","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","icon_close_selected","png");
-	element_button_bitmap_add(path,path2,error_icon_close_id,x,y,-1,-1,element_pos_center,element_pos_top);
-	
 		// make sure error isn't interrupted by
 		// pending console open
 		
 	console_trigger_clear();
+	
+		// setup gui
+		
+	gui_initialize(NULL,NULL,TRUE);
+	
+		// the dialog
+		
+	element_tab_add((char*)tab_list,0,-1,1);
+
+		// the text
+		
+	control_y_add=element_get_control_high();
+
+	x=hud.scale_x/2;
+	y=(hud.scale_y/2)-control_y_add;
+	element_text_add("[Error]",-1,x,y,hud.font.text_size_large,tx_center,FALSE,TRUE);
+
+	y+=control_y_add;
+	element_text_add(err_str,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
+	
+	y+=control_y_add;
+	element_text_add(err_str_2,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
+	
+		// buttons
+		
+	wid=(int)(((float)hud.scale_x)*0.1f);
+	high=(int)(((float)hud.scale_x)*0.04f);
+	
+	element_get_button_bottom_right(&x,&y,wid,high);
+	
+	element_button_text_add("Close",error_close_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 
 		// running error
 		
@@ -114,7 +120,7 @@ void error_run(void)
 	
 	hud_click();
 	
-	if (id==error_icon_close_id) error_close();
+	if (id==error_close_id) error_close();
 }
 
 
