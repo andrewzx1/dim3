@@ -129,7 +129,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		y=py[n];
 		z=pz[n];
 		
-		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
+		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
 			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
@@ -541,7 +541,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		y=dpt->y;
 		z=dpt->z;
 		
-		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
+		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
 			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
@@ -667,7 +667,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 		y=py[n];
 		z=pz[n];
 		
-		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
+		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
 			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
@@ -808,7 +808,7 @@ bool walk_view_click_drag_area_vertex(editor_3D_view_setup *view_setup,d3pnt *pt
 		y=py[n];
 		z=pz[n];
 		
-		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
+		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
 			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
