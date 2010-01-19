@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Auto-Generate Doors, Steps, and Ramps
+ Usage: Auto-Generate Doors, Steps, Ramps, and Windows
 
 ***************************** License ********************************
 
@@ -36,6 +36,9 @@ extern int map_auto_generate_mesh_change_texture(int txt_idx);
 extern void map_auto_generate_mesh_set_lock(map_type *map);
 extern void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
+extern void map_auto_generate_mesh_get_last_poly_index(map_type *map,int *mesh_idx,int *poly_idx);
+extern void map_auto_generate_mesh_get_poly_points(map_type *map,int mesh_idx,int poly_idx,int *ptsz,int *px,int *py,int *pz);
+extern void map_auto_generate_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int x,int z,int txt_idx);
 
 extern void map_auto_generate_mesh_save_current(void);
 extern void map_auto_generate_mesh_restore_current(void);
@@ -50,6 +53,7 @@ extern int								ag_box_count,map_ag_mesh_idx;
 extern auto_generate_settings_type		ag_settings;
 extern auto_generate_box_type			ag_boxes[max_ag_box];
 
+auto_generate_window_wall_type			ag_window_wall_list[ag_max_window_per_portal];
 
 /* =======================================================
 
@@ -481,7 +485,7 @@ void map_auto_generate_ramps(map_type *map)
       
 ======================================================= */
 
-void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int frame_sz,bool reverse,bool full_frame)
+void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int frame_sz,bool reverse,bool full_frame,bool window)
 {
 	int							zadd,y,y2,oy,lx,rx,px[8],py[8],pz[8];
 	float						gx[8],gy[8];
@@ -563,10 +567,24 @@ void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 	}
 
+		// optional window texture
+
+	if (window) {
+		map_auto_generate_mesh_change_texture(ag_settings.texture.window);
+
+		map_auto_generate_poly_from_square_wall(lx,z,rx,z,ty,by,px,py,pz,gx,gy);
+		gx[0]=gx[3]=gy[0]=gy[1]=0.0f;
+		gx[1]=gx[2]=gy[2]=gy[3]=1.0f;
+
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	}
+
+		// restore mesh
+
 	map_auto_generate_mesh_restore_current();
 }
 
-void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int frame_sz,bool reverse,bool full_frame)
+void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int frame_sz,bool reverse,bool full_frame,bool window)
 {
 	int							xadd,y,y2,oy,lz,rz,px[8],py[8],pz[8];
 	float						gx[8],gy[8];
@@ -648,6 +666,20 @@ void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 	}
 
+		// optional window texture
+
+	if (window) {
+		map_auto_generate_mesh_change_texture(ag_settings.texture.window);
+
+		map_auto_generate_poly_from_square_wall(x,lz,x,rz,ty,by,px,py,pz,gx,gy);
+		gx[0]=gx[3]=gy[0]=gy[1]=0.0f;
+		gx[1]=gx[2]=gy[2]=gy[3]=1.0f;
+
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	}
+
+		// restore mesh
+
 	map_auto_generate_mesh_restore_current();
 }
 
@@ -701,16 +733,16 @@ void map_auto_generate_corridor_to_portal_connections(map_type *map)
 				x=(chk_portal->min.x-portal->min.x)-ag_constant_door_frame_depth;
 				door_sz=(chk_portal->max.x-chk_portal->min.x)+(ag_constant_door_frame_depth<<1);
 
-				if (chk_portal->max.z==portal->min.z) map_auto_generate_vert_frame_mesh(map,n,chk_portal->min.y,chk_portal->max.y,x,0,door_sz,FALSE,FALSE);
-				if (chk_portal->min.z==portal->max.z) map_auto_generate_vert_frame_mesh(map,n,chk_portal->min.y,chk_portal->max.y,x,(portal->max.z-portal->min.z),door_sz,TRUE,FALSE);
+				if (chk_portal->max.z==portal->min.z) map_auto_generate_vert_frame_mesh(map,n,chk_portal->min.y,chk_portal->max.y,x,0,door_sz,FALSE,FALSE,FALSE);
+				if (chk_portal->min.z==portal->max.z) map_auto_generate_vert_frame_mesh(map,n,chk_portal->min.y,chk_portal->max.y,x,(portal->max.z-portal->min.z),door_sz,TRUE,FALSE,FALSE);
 			}
 			
 			if ((chk_portal->min.z>=portal->min.z) && (chk_portal->min.z<=chk_portal->max.z)) {
 				z=(chk_portal->min.z-portal->min.z)-ag_constant_door_frame_depth;
 				door_sz=(chk_portal->max.z-chk_portal->min.z)+(ag_constant_door_frame_depth<<1);
 
-				if (chk_portal->max.x==portal->min.x) map_auto_generate_horz_frame_mesh(map,n,chk_portal->min.y,chk_portal->max.y,0,z,door_sz,FALSE,FALSE);
-				if (chk_portal->min.x==portal->max.x) map_auto_generate_horz_frame_mesh(map,n,chk_portal->min.y,chk_portal->max.y,(portal->max.x-portal->min.x),z,door_sz,TRUE,FALSE);
+				if (chk_portal->max.x==portal->min.x) map_auto_generate_horz_frame_mesh(map,n,chk_portal->min.y,chk_portal->max.y,0,z,door_sz,FALSE,FALSE,FALSE);
+				if (chk_portal->min.x==portal->max.x) map_auto_generate_horz_frame_mesh(map,n,chk_portal->min.y,chk_portal->max.y,(portal->max.x-portal->min.x),z,door_sz,TRUE,FALSE,FALSE);
 			}
 
 		}
@@ -1024,3 +1056,153 @@ void map_auto_generate_doors(map_type *map)
 	}
 }
 
+/* =======================================================
+
+      Windows
+      
+======================================================= */
+
+void map_auto_generate_mesh_clear_window_list(auto_generate_window_wall_type *window_wall_list)
+{
+	int				n;
+
+	for (n=0;n!=ag_max_window_per_portal;n++) {
+		ag_window_wall_list[n].mesh_idx=-1;
+	}
+}
+
+void map_auto_generate_mesh_last_poly_add_window_list(map_type *map,bool window_ok,int rn,int x,int z,int ty,int by,int direction)
+{
+	int				n,idx;
+
+		// is this a polygon with a window?
+
+	if (!window_ok) return;
+	if (!ag_settings.window) return;
+	if (map_auto_generate_random_int(100)>(int)(100.0f*ag_constant_window_percent)) return;
+
+		// get next empty spot
+
+	idx=-1;
+
+	for (n=0;n!=ag_max_window_per_portal;n++) {
+		if (ag_window_wall_list[n].mesh_idx==-1) {
+			idx=n;
+			break;
+		}
+	}
+
+	if (idx==-1) return;
+
+		// add to list
+
+	map_auto_generate_mesh_get_last_poly_index(map,&ag_window_wall_list[idx].mesh_idx,&ag_window_wall_list[idx].poly_idx);
+
+	ag_window_wall_list[idx].rn=rn;
+	ag_window_wall_list[idx].x=x;
+	ag_window_wall_list[idx].z=z;
+	ag_window_wall_list[idx].ty=ty;
+	ag_window_wall_list[idx].by=by;
+	ag_window_wall_list[idx].direction=direction;
+}
+
+void map_auto_generate_mesh_window_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int wid,bool reverse)
+{
+	int			high;
+
+	x+=wid>>2;
+	wid=wid>>1;
+
+	x-=ag_constant_door_frame_depth;
+	wid+=(ag_constant_door_frame_depth<<1);
+
+	high=(by-ty)>>2;
+	ty+=high;
+	by-=high;
+
+	map_auto_generate_vert_frame_mesh(map,rn,ty,by,x,z,wid,reverse,TRUE,TRUE);
+}
+
+void map_auto_generate_mesh_window_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int wid,bool reverse)
+{
+	int			high;
+
+	z+=wid>>2;
+	wid=wid>>1;
+
+	z-=ag_constant_door_frame_depth;
+	wid+=(ag_constant_door_frame_depth<<1);
+
+	high=(by-ty)>>2;
+	ty+=high;
+	by-=high;
+
+	map_auto_generate_horz_frame_mesh(map,rn,ty,by,x,z,wid,reverse,TRUE,TRUE);
+}
+
+void map_auto_generate_mesh_add_windows(map_type *map)
+{
+	int				n,rn,x,z,ty,by,mesh_idx,poly_idx,poly_offset,
+					portal_sz,split_factor;
+
+		// get the creation factors
+
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
+
+		// punching holes removes the original poly
+		// and adds the new polys to the end of the list
+		// so we need to offset the polys as we move through them
+
+	poly_offset=0;
+
+		// run through the window list
+
+	for (n=0;n!=ag_max_window_per_portal;n++) {
+
+			// out of windows?
+
+		if (ag_window_wall_list[n].mesh_idx==-1) break;
+
+			// get settings
+
+		rn=ag_window_wall_list[n].rn;
+		x=ag_window_wall_list[n].x;
+		z=ag_window_wall_list[n].z;
+		ty=ag_window_wall_list[n].ty;
+		by=ag_window_wall_list[n].by;
+
+		mesh_idx=ag_window_wall_list[n].mesh_idx;
+		poly_idx=ag_window_wall_list[n].poly_idx-poly_offset;
+
+			// build window
+
+		switch (ag_window_wall_list[n].direction) {
+
+			case ag_window_direction_left:
+				map_auto_generate_mesh_poly_punch_hole(map,mesh_idx,poly_idx,-ag_constant_window_depth,0,ag_settings.texture.frame);
+				map_auto_generate_mesh_window_horz_frame_mesh(map,rn,ty,by,x,z,split_factor,FALSE);
+				break;
+
+			case ag_window_direction_right:
+				map_auto_generate_mesh_poly_punch_hole(map,mesh_idx,poly_idx,ag_constant_window_depth,0,ag_settings.texture.frame);
+				map_auto_generate_mesh_window_horz_frame_mesh(map,rn,ty,by,x,z,split_factor,TRUE);
+				break;
+
+			case ag_window_direction_top:
+				map_auto_generate_mesh_poly_punch_hole(map,mesh_idx,poly_idx,0,-ag_constant_window_depth,ag_settings.texture.frame);
+				map_auto_generate_mesh_window_vert_frame_mesh(map,rn,ty,by,x,z,split_factor,FALSE);
+				break;
+
+			case ag_window_direction_bottom:
+				map_auto_generate_mesh_poly_punch_hole(map,mesh_idx,poly_idx,0,ag_constant_window_depth,ag_settings.texture.frame);
+				map_auto_generate_mesh_window_vert_frame_mesh(map,rn,ty,by,x,z,split_factor,TRUE);
+				break;
+		}
+
+			// fix next poly_idx for the removed poly
+
+		poly_offset++;
+	}
+
+}

@@ -310,6 +310,23 @@ and can be sold or given away.
 #define ag_constant_window_depth							(8*map_enlarge)
 
 //
+// auto-generate window-wall markers
+//
+
+#define ag_max_window_per_portal							32
+
+#define ag_window_direction_left							0
+#define ag_window_direction_right							1
+#define ag_window_direction_top								2
+#define ag_window_direction_bottom							3
+
+typedef struct	{
+					int										rn,mesh_idx,poly_idx,
+															x,z,ty,by,direction;
+					bool									reverse;
+				} auto_generate_window_wall_type;
+
+//
 // auto-generate setup structure
 //
 

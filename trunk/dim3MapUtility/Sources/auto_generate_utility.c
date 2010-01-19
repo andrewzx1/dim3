@@ -580,16 +580,45 @@ bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z
 	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,y,pz,gx,gy,map_ag_poly_txt_idx)!=-1);
 }
 
-void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z,int txt_idx)
+void map_auto_generate_mesh_get_last_poly_index(map_type *map,int *mesh_idx,int *poly_idx)
+{
+	map_mesh_type	*mesh;
+
+	*mesh_idx=map_ag_mesh_idx;
+
+	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+	*poly_idx=mesh->npoly-1;
+}
+
+void map_auto_generate_mesh_get_poly_points(map_type *map,int mesh_idx,int poly_idx,int *ptsz,int *px,int *py,int *pz)
+{
+	int					n;
+	d3pnt				*pt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		px[0]=pt->x;
+		py[0]=pt->y;
+		pz[0]=pt->z;
+	}
+
+	*ptsz=poly->ptsz;
+}
+
+void map_auto_generate_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int x,int z,int txt_idx)
 {
 	int				n,start_idx;
 	d3pnt			extrude_pnt;
 	map_mesh_type	*mesh;
 
-
 		// remember last poly
 
-	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	start_idx=mesh->npoly+3;
 
 		// punch the hole
@@ -598,9 +627,9 @@ void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z,int t
 	extrude_pnt.y=0;
 	extrude_pnt.z=z;
 	
-	map_mesh_poly_punch_hole(map,map_ag_mesh_idx,(mesh->npoly-1),&extrude_pnt);
+	map_mesh_poly_punch_hole(map,mesh_idx,poly_idx,&extrude_pnt);
 
-		// fix the textures
+		// fix the textures in new hole
 
 	for (n=start_idx;n<mesh->npoly;n++) {
 		mesh->polys[n].txt_idx=txt_idx;
