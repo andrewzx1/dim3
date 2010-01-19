@@ -344,6 +344,8 @@ void map_auto_generate_second_story(map_type *map)
 
 			// second story pillars
 
+		ty+=ag_constant_story_floor_high;
+
 		map_auto_generate_second_story_pillar(map,n,split_factor,split_factor,(split_factor+split_factor),(split_factor+split_factor),ty,by);
 		map_auto_generate_second_story_pillar(map,n,(xsz-sz),split_factor,((xsz-sz)+split_factor),(split_factor+split_factor),ty,by);
 		map_auto_generate_second_story_pillar(map,n,split_factor,(zsz-sz),(split_factor+split_factor),((zsz-sz)+split_factor),ty,by);
