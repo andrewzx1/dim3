@@ -163,7 +163,7 @@ void walk_view_draw_circle(d3pnt *pnt,d3col *col,int dist)
       
 ======================================================= */
 
-void walk_view_draw_meshes_texture(int clip_y,bool opaque)
+void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 {
 	int					n,k,t;
 	unsigned long		old_gl_id;
@@ -240,12 +240,12 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 			
 				// y clipping
 				
-			if (clip_y!=-1) {
+			if (view_setup->clip_on) {
 			
 				clip_ok=TRUE;
 				
 				for (t=0;t!=mesh_poly->ptsz;t++) {
-					if (mesh->vertexes[mesh_poly->v[t]].y>=clip_y) {
+					if (mesh->vertexes[mesh_poly->v[t]].y>=view_setup->clip_y) {
 						clip_ok=FALSE;
 						break;
 					}
@@ -282,7 +282,7 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void walk_view_draw_meshes_line(int clip_y,bool opaque)
+void walk_view_draw_meshes_line(editor_3D_view_setup *view_setup,bool opaque)
 {
 	int					n,k,t;
 	bool				clip_ok;
@@ -322,12 +322,12 @@ void walk_view_draw_meshes_line(int clip_y,bool opaque)
 			
 				// y clipping
 				
-			if (clip_y!=-1) {
+			if (view_setup->clip_on) {
 			
 				clip_ok=TRUE;
 				
 				for (t=0;t!=mesh_poly->ptsz;t++) {
-					if (mesh->vertexes[mesh_poly->v[t]].y>=clip_y) {
+					if (mesh->vertexes[mesh_poly->v[t]].y>=view_setup->clip_y) {
 						clip_ok=FALSE;
 						break;
 					}
@@ -803,8 +803,6 @@ void walk_view_draw_position(editor_3D_view_setup *view_setup)
 
 void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 {
-	int			clip_y;
-	
        // 3D view
         
 	main_wind_set_viewport(&view_setup->box,TRUE,TRUE);
@@ -812,15 +810,10 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	
-		// y cipping
-		
-	clip_y=-1;
-	if (view_setup->clip_on) clip_y=view_setup->clip_y;
 
         // draw opaque parts of portals in sight path
         
-	if (!view_setup->mesh_only) walk_view_draw_meshes_texture(clip_y,TRUE);
+	if (!view_setup->mesh_only) walk_view_draw_meshes_texture(view_setup,TRUE);
 	walk_view_draw_nodes(&view_setup->cpt);
 	walk_view_draw_spots_scenery(&view_setup->cpt);
 	walk_view_draw_lights_sounds_particles(&view_setup->cpt,view_setup->draw_light_circle);
@@ -830,20 +823,20 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		// push view forward to better z-buffer lines
 		
 	main_wind_set_3D_projection(view_setup,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
-	walk_view_draw_meshes_line(clip_y,TRUE);
+	walk_view_draw_meshes_line(view_setup,TRUE);
 
         // draw transparent parts of portals in sight path
         
 	main_wind_set_3D_projection(view_setup,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 
-	if (!view_setup->mesh_only) walk_view_draw_meshes_texture(clip_y,FALSE);
+	if (!view_setup->mesh_only) walk_view_draw_meshes_texture(view_setup,FALSE);
 	walk_view_draw_liquids(FALSE);
  	
         // draw transparent mesh lines
 		// push view forward to better z-buffer lines
         
 	main_wind_set_3D_projection(view_setup,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
-	walk_view_draw_meshes_line(clip_y,TRUE);
+	walk_view_draw_meshes_line(view_setup,TRUE);
 	
 		// draw areas
 		

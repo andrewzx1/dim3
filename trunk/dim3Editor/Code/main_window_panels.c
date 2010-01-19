@@ -62,7 +62,7 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y;
 	view_setup->cpt.z=view_pnt.z;
-
+	
 	view_setup->ang.x=0.0f;
 	view_setup->ang.y=swap_panel_forward?180.0f:0.0f;
 	view_setup->ang.z=0.0f;
@@ -234,7 +234,6 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->cpt.z=view_pnt.z;
 	
 	view_setup->clip_y=view_pnt.y;
-	view_setup->portal_y=view_pnt.y;
 	
 	view_setup->ang.x=swap_panel_top?(90.0f):(-90.0f);
 	view_setup->ang.y=0.0f;
@@ -271,7 +270,6 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->cpt.z=view_pnt.z;
 	
 	view_setup->clip_y=view_pnt.y;
-	view_setup->portal_y=view_pnt.y;
 
 	view_setup->ang.x=-90.0f;
 	view_setup->ang.y=0.0f;
@@ -306,7 +304,6 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	view_setup->cpt.z=view_pnt.z;
 	
 	view_setup->clip_y=view_pnt.y;
-	view_setup->portal_y=view_pnt.y;
 
 	view_setup->ang.x=-90.0f;
 	view_setup->ang.y=0.0f;

@@ -69,7 +69,7 @@ void walk_view_click_setup_project(editor_3D_view_setup *view_setup)
 
 bool walk_view_click_rotate_polygon_in_z(int x,int y,int z)
 {
-	return(((((double)x)*walk_view_mod_matrix[2])+(((double)y)*walk_view_mod_matrix[6])+(((double)z)*walk_view_mod_matrix[10])+walk_view_mod_matrix[14])>0.0);
+	return(((((double)x)*walk_view_mod_matrix[2])+(((double)y)*walk_view_mod_matrix[6])+(((double)z)*walk_view_mod_matrix[10])+walk_view_mod_matrix[14])>(float)walk_view_near_offset);
 }
 
 void walk_view_click_project_point(d3rect *box,int *x,int *y,int *z)
@@ -267,6 +267,7 @@ void walk_view_click_snap_mesh(int mesh_idx,d3pnt *old_pts,d3pnt *mpt)
 bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z)
 {
 	int					t,fz,px[8],py[8],pz[8];
+	double				dx,dy,dz,d;
 	bool				clip_ok,behind_z,off_left,off_right,off_top,off_bottom;
 	d3pnt				*pt;
 	map_mesh_poly_type	*mesh_poly;
@@ -300,29 +301,33 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 		py[t]=pt->y;
 		pz[t]=pt->z;
 		
+		if ((mesh==&map.mesh.meshes[0]) && (poly_idx==46)) {
+			fprintf(stdout,"(%d,%d,%d) - %d: (%d,%d,%d)\n",view_setup->cpt.x,view_setup->cpt.y,view_setup->cpt.z,t,pt->x,pt->y,pt->z);
+		}
+		
 		if ((mesh==&map.mesh.meshes[0]) && (poly_idx==118)) {
-			fprintf(stdout,"118: Point %d: Behind_z=%d (%.2f)\n",t,walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t]),walk_view_click_project_point2(&view_setup->box,&px[t],&py[t],&pz[t]));
+		//	fprintf(stdout,"118: Point %d: Behind_z=%d (%.2f)\n",t,walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t]),walk_view_click_project_point2(&view_setup->box,&px[t],&py[t],&pz[t]));
 			px[t]=pt->x;
 			py[t]=pt->y;
 		}
 
 		
 		behind_z=behind_z&&(!walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t]));
+		
+		// supergumba test
+		if (!walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t])) return(FALSE);
 				
 		walk_view_click_project_point(&view_setup->box,&px[t],&py[t],&pz[t]);
 		fz+=pz[t];
 		if ((mesh==&map.mesh.meshes[0]) && (poly_idx==118)) {
-			fprintf(stdout,"118: Point %d: z=%d\n",t,pz[t]);
+		//	fprintf(stdout,"118: Point %d: z=%d\n",t,pz[t]);
 		}
 	}
 	
 	if (behind_z) return(FALSE);
 	
-	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==204)) {
-		fprintf(stdout,"checked 204\n");
-	}
-	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==118)) {
-		fprintf(stdout,"checked 118\n");
+	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==46)) {
+		fprintf(stdout,"checked 46\n");
 	}
 	
 		// check if outside box
@@ -336,12 +341,12 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 		off_bottom=off_bottom&&(py[t]>(view_setup->box.by-view_setup->box.ty));
 	}
 	
-	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==204)) {
-		fprintf(stdout,"%d %d %d %d\n",off_left,off_right,off_top,off_bottom);
+	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==46)) {
+		fprintf(stdout,"46: %d %d %d %d (%d,%d)\n",off_left,off_right,off_top,off_bottom,click_pt->x,click_pt->y);
 	}
 	
 	if ((off_left) || (off_right) || (off_top) || (off_bottom)) return(FALSE);
-	if (poly_idx==204) {
+	if ((mesh==&map.mesh.meshes[0]) && (poly_idx==46)) {
 		fprintf(stdout,"(%d,%d) -> (%d,%d)-(%d,%d)-(%d,%d)-(%d,%d)\n",click_pt->x,click_pt->y,px[0],py[0],px[1],py[1],px[2],py[2],px[3],py[3]);
 	}
 	
@@ -349,7 +354,21 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 		
 	if (!polygon_2D_point_inside(mesh_poly->ptsz,px,py,click_pt->x,click_pt->y)) return(FALSE);
 	
-	*hit_z=fz/mesh_poly->ptsz;
+		// hit z is the average distance
+		// to camera point
+		
+	d=0.0;
+	
+	for (t=0;t!=mesh_poly->ptsz;t++) {
+		pt=&mesh->vertexes[mesh_poly->v[t]];
+		dx=(double)(view_setup->cpt.x-pt->x);
+		dy=(double)(view_setup->cpt.y-pt->y);
+		dz=(double)(view_setup->cpt.z-pt->z);
+		
+		d+=sqrt((dx*dx)+(dy*dy)+(dz*dz));
+	}
+	
+	*hit_z=(int)(d/(double)mesh_poly->ptsz);
 	
 	return(TRUE);
 }
