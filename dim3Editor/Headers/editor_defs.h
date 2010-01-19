@@ -189,7 +189,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						proj_type,clip_y,portal_y;
+						int						proj_type,clip_y;
 						d3rect					box;
 						d3pnt					cpt;
 						d3ang					ang;

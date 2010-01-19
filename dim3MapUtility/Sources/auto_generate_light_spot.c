@@ -67,7 +67,7 @@ void map_auto_generate_lights(map_type *map)
 			
 		dx=(portal->max.x-portal->min.x);
 		dz=(portal->max.z-portal->min.z);
-		intensity=(int)(((float)sqrt((dx*dx)+(dz*dz)))*ag_settings.light_boost);
+		intensity=(int)((float)(sqrt((dx*dx)+(dz*dz)))*ag_settings.light_boost);
 		if (intensity<0) continue;
 		
 			// create the light
