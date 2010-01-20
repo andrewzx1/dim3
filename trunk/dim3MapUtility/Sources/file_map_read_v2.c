@@ -140,8 +140,8 @@ void read_single_liquid_v2(map_type *map,portal_type *portal,int liquid_idx,int 
 		liq->txt_idx=xml_get_attribute_int(tag,"txt");
 		xml_get_attribute_3_coord_int(tag,"v1",&liq->lft,&liq->y,&liq->top);
 		xml_get_attribute_3_coord_int(tag,"v2",&liq->rgt,&liq->y,&liq->bot);
-		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->x_txtoff,&liq->y_txtoff);
-		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->x_txtfact,&liq->y_txtfact);
+		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->uv[0].x_offset,&liq->uv[0].y_offset);
+		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->uv[0].x_size,&liq->uv[0].y_size);
 		xml_get_attribute_color(tag,"rgb",&liq->col);
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);

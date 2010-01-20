@@ -406,8 +406,8 @@ void piece_create_liquid(void)
 	
 	liq->col.r=liq->col.g=liq->col.b=1.0f;
 	
-	liq->x_txtoff=liq->y_txtoff=0.0f;
-	liq->x_txtfact=liq->y_txtfact=1.0f;
+	liq->uv[0].x_offset=liq->uv[0].y_offset=0.0f;
+	liq->uv[0].x_size=liq->uv[0].y_size=1.0f;
     liq->x_shift=liq->y_shift=0.0f;
 	
 	liq->tide.rate=1000;

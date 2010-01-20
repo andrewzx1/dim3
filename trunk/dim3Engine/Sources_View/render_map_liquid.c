@@ -158,11 +158,11 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 	
 	x_txtoff=f_tick*liq->x_shift;
 	k=(int)x_txtoff;
-	x_txtoff=liq->x_txtoff+(x_txtoff-(float)k);
+	x_txtoff=liq->uv[0].x_offset+(x_txtoff-(float)k);
 	
 	y_txtoff=f_tick*liq->y_shift;
 	k=(int)y_txtoff;
-	y_txtoff=liq->y_txtoff+(y_txtoff-(float)k);
+	y_txtoff=liq->uv[0].y_offset+(y_txtoff-(float)k);
 		
 		// setup vertex calcing
 
@@ -221,8 +221,8 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 			*vl++=fy-(f_tide_high*sn);
 			*vl++=(float)z;
 
-			*uv++=x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
-			*uv++=y_txtoff+((liq->y_txtfact*(float)(z-liq->top))/fgy);
+			*uv++=x_txtoff+((liq->uv[0].x_size*(float)(x-liq->lft))/fgx);
+			*uv++=y_txtoff+((liq->uv[0].y_size*(float)(z-liq->top))/fgy);
 			
 			v_cnt++;
 			

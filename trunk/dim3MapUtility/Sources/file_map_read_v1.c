@@ -160,10 +160,10 @@ void map_convert_liquid(map_type *map,portal_type *portal,segment_type *seg)
 	liquid->speed_alter=seg->data.liquid.speed_alter;
 	liquid->tint_alpha=seg->data.liquid.tint_alpha;
 	
-	liquid->x_txtfact=seg->x_txtfact;
-	liquid->y_txtfact=seg->y_txtfact;
-	liquid->x_txtoff=seg->x_txtoff;
-	liquid->y_txtoff=seg->y_txtoff;
+	liquid->uv[0].x_size=seg->x_txtfact;
+	liquid->uv[0].y_size=seg->y_txtfact;
+	liquid->uv[0].x_offset=seg->x_txtoff;
+	liquid->uv[0].y_offset=seg->y_txtoff;
 	liquid->x_shift=seg->x_shift;
 	liquid->y_shift=seg->y_shift;
 	

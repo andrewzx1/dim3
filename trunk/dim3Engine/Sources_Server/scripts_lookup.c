@@ -75,7 +75,7 @@ weapon_type* script_find_weapon_from_name_arg(JSContextRef cx,obj_type *obj,JSVa
 	weap=weapon_find_name(obj,name);
 	if (weap==NULL) {
 		sprintf(err_str,"Named weapon does not exist in object: %s",name);
-		*exception=script_string_to_value(cx,err_str);
+		*exception=script_create_exception(cx,err_str);
 		return(NULL);
 	}
 	

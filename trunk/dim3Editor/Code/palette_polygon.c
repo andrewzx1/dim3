@@ -84,10 +84,10 @@ void palette_polygon_load(void)
 		
 		dialog_enable(palette_poly_wind,kMeshPolySettingCamera,0,FALSE);
 		
-		dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,liq->x_txtoff);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingOffY,0,liq->y_txtoff);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeX,0,liq->x_txtfact);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeY,0,liq->y_txtfact);
+		dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,liq->uv[0].x_offset);
+		dialog_set_float(palette_poly_wind,kMeshPolySettingOffY,0,liq->uv[0].y_offset);
+		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeX,0,liq->uv[0].x_size);
+		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeY,0,liq->uv[0].y_size);
 
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,liq->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,liq->y_shift);
@@ -130,10 +130,10 @@ void palette_polygon_save(void)
 	else {
 		liq=&map.liquid.liquids[main_idx];
 
-		liq->x_txtoff=dialog_get_float(palette_poly_wind,kMeshPolySettingOffX,0);
-		liq->y_txtoff=dialog_get_float(palette_poly_wind,kMeshPolySettingOffY,0);
-		liq->x_txtfact=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
-		liq->y_txtfact=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeY,0);
+		liq->uv[0].x_offset=dialog_get_float(palette_poly_wind,kMeshPolySettingOffX,0);
+		liq->uv[0].y_offset=dialog_get_float(palette_poly_wind,kMeshPolySettingOffY,0);
+		liq->uv[0].x_size=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
+		liq->uv[0].y_size=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeY,0);
 		
 		liq->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		liq->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
