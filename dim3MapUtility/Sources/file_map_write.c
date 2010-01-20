@@ -523,8 +523,8 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_3_coord_int("v1",liq->lft,liq->y,liq->top);
 	xml_add_attribute_3_coord_int("v2",liq->rgt,liq->y,liq->bot);
 	xml_add_attribute_int("depth",liq->depth);
-	xml_add_attribute_2_coord_float("uv_off",liq->x_txtoff,liq->y_txtoff);
-	xml_add_attribute_2_coord_float("uv_size",liq->x_txtfact,liq->y_txtfact);
+	xml_add_attribute_2_coord_float("uv_off",liq->uv[0].x_offset,liq->uv[0].y_offset);
+	xml_add_attribute_2_coord_float("uv_size",liq->uv[0].x_size,liq->uv[0].y_size);
 	xml_add_attribute_color("rgb",&liq->col);
 	xml_add_attribute_float("tint_alpha",liq->tint_alpha);
 	if ((liq->x_shift!=0) || (liq->y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->x_shift,liq->y_shift);

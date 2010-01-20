@@ -291,6 +291,11 @@ typedef struct		{
 //
 
 typedef struct		{
+						float								x_offset,x_size,
+															y_offset,y_size;
+					} map_liquid_uv_type;
+
+typedef struct		{
 						int									in_harm,drown_harm,drown_tick;
 					} map_liquid_harm_type;
 
@@ -304,12 +309,13 @@ typedef struct		{
 					} map_liquid_draw_type;
 
 typedef struct		{
-						int									y,depth,lft,rgt,top,bot,txt_idx,group_idx;
+						int									y,depth,lft,rgt,top,bot,group_idx,
+															txt_idx,lmap_txt_idx;
 						float								speed_alter,tint_alpha,
-															x_txtfact,y_txtfact,x_txtoff,y_txtoff,
 															x_shift,y_shift;
 						bool								never_obscure;
 						d3col								col;
+						map_liquid_uv_type					uv[max_mesh_poly_uv_layer];
 						map_liquid_harm_type				harm;
 						map_liquid_tide_type				tide;
 						map_liquid_draw_type				draw;

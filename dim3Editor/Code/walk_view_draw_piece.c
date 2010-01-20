@@ -430,24 +430,24 @@ void walk_view_draw_liquids(bool opaque)
 		
 			// bottom
 			
-		glTexCoord2f(liquid->x_txtoff,liquid->y_txtoff);
+		glTexCoord2f(liquid->uv[0].x_offset,liquid->uv[0].y_offset);
 		glVertex3i(lx,y2,tz);
-		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),liquid->y_txtoff);
+		glTexCoord2f((liquid->uv[0].x_offset+liquid->uv[0].x_size),liquid->uv[0].y_offset);
 		glVertex3i(rx,y2,tz);
-		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),(liquid->y_txtoff+liquid->y_txtfact));
+		glTexCoord2f((liquid->uv[0].x_offset+liquid->uv[0].x_size),(liquid->uv[0].y_offset+liquid->uv[0].y_size));
 		glVertex3i(rx,y2,bz);
-		glTexCoord2f(liquid->x_txtoff,(liquid->y_txtoff+liquid->y_txtfact));
+		glTexCoord2f(liquid->uv[0].x_offset,(liquid->uv[0].y_offset+liquid->uv[0].y_size));
 		glVertex3i(lx,y2,bz);
 
 			// top
 			
-		glTexCoord2f(liquid->x_txtoff,liquid->y_txtoff);
+		glTexCoord2f(liquid->uv[0].x_offset,liquid->uv[0].y_offset);
 		glVertex3i(lx,y,tz);
-		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),liquid->y_txtoff);
+		glTexCoord2f((liquid->uv[0].x_offset+liquid->uv[0].x_size),liquid->uv[0].y_offset);
 		glVertex3i(rx,y,tz);
-		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),(liquid->y_txtoff+liquid->y_txtfact));
+		glTexCoord2f((liquid->uv[0].x_offset+liquid->uv[0].x_size),(liquid->uv[0].y_offset+liquid->uv[0].y_size));
 		glVertex3i(rx,y,bz);
-		glTexCoord2f(liquid->x_txtoff,(liquid->y_txtoff+liquid->y_txtfact));
+		glTexCoord2f(liquid->uv[0].x_offset,(liquid->uv[0].y_offset+liquid->uv[0].y_size));
 		glVertex3i(lx,y,bz);
 
 		glEnd();

@@ -256,7 +256,7 @@ JSValueRef js_obj_weapon_get_ammo_count_func(JSContextRef cx,JSObjectRef func,JS
 {
     obj_type		*obj;
 	weapon_type		*weap;
-
+	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
