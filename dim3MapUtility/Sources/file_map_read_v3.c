@@ -206,11 +206,20 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
     tag=xml_findfirstchild("Poly",liquid_tag);
     if (tag!=-1) {
 		liq->txt_idx=xml_get_attribute_int(tag,"txt");
+		liq->lmap_txt_idx=xml_get_attribute_int_default(tag,"lmap_txt_idx",-1);
 		xml_get_attribute_3_coord_int(tag,"v1",&liq->lft,&liq->y,&liq->top);
 		xml_get_attribute_3_coord_int(tag,"v2",&liq->rgt,&liq->y,&liq->bot);
 		liq->depth=xml_get_attribute_int(tag,"depth");
 		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->uv[0].x_offset,&liq->uv[0].y_offset);
 		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->uv[0].x_size,&liq->uv[0].y_size);
+		if (liq->lmap_txt_idx!=-1) {
+			xml_get_attribute_2_coord_float(tag,"uv_1_off",&liq->uv[1].x_offset,&liq->uv[1].y_offset);
+			xml_get_attribute_2_coord_float(tag,"uv_1_size",&liq->uv[1].x_size,&liq->uv[1].y_size);
+		}
+		else {
+			liq->uv[1].x_offset=liq->uv[1].y_offset=0.0f;
+			liq->uv[1].x_size=liq->uv[1].y_size=1.0f;
+		}
 		xml_get_attribute_color(tag,"rgb",&liq->col);
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
