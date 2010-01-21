@@ -78,7 +78,11 @@ int texture_palette_get_selected_texture(void)
 	
 	select_get(0,&type,&main_idx,&poly_idx);
 	
-	if (type==liquid_piece) return(map.liquid.liquids[main_idx].txt_idx);
+	if (type==liquid_piece) {
+		if (main_wind_uv_layer==0) return(map.liquid.liquids[main_idx].txt_idx);
+		return(map.liquid.liquids[main_idx].lmap_txt_idx);
+	}
+	
 	if (type==mesh_piece) {
 		if (main_wind_uv_layer==0) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
 		return(map.mesh.meshes[main_idx].polys[poly_idx].lmap_txt_idx);
@@ -102,7 +106,12 @@ void texture_palette_put_selected_texture(int txt_idx)
 			// liquids
 			
 		if (type==liquid_piece) {
-			map.liquid.liquids[main_idx].txt_idx=txt_idx;
+			if (main_wind_uv_layer==0) {
+				map.liquid.liquids[main_idx].txt_idx=txt_idx;
+			}
+			else {
+				map.liquid.liquids[main_idx].lmap_txt_idx=txt_idx;
+			}
 			continue;
 		}
 		
