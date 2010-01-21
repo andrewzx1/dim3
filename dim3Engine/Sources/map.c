@@ -267,19 +267,19 @@ bool map_start(bool skip_media,char *err_str)
 	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.compress_on,TRUE,gl_check_shader_ok());
 
 // supergumba -- auto generator testing
-/*
+
 	if (!map_auto_generate_test(&map)) {
 		progress_shutdown();
 		sprintf(err_str,"Could not open map: %s",map.info.name);
 		return(FALSE);
 	}
-*/
+/*
 	if (!map_open(&map,map.info.name)) {
 		progress_shutdown();
 		sprintf(err_str,"Could not open map: %s.  If this map is from an older version of dim3, use Editor to upgrade it.",map.info.name);
 		return(FALSE);
 	}
-
+*/
 	gl_shader_attach_map();
 
 		// prepare map surfaces
