@@ -122,6 +122,7 @@ bool read_animate_xml(model_type *model)
 			pose_move->flash.intensity=xml_get_attribute_int(tag,"flash_intensity");
 			pose_move->flash.flash_msec=xml_get_attribute_int(tag,"flash_time");
 			pose_move->flash.fade_msec=xml_get_attribute_int(tag,"flash_fade_time");
+			pose_move->flash.exponent=xml_get_attribute_float_default(tag,"flash_exponent",1.0f);
 			xml_get_attribute_color(tag,"flash_color",&pose_move->flash.col);
 			
 			if (!xml_get_attribute_text(tag,"flash_bone",str,256)) {	// check for older flash defs and increase intensity
@@ -302,6 +303,7 @@ bool write_animate_xml(model_type *model)
 			xml_add_attribute_int("flash_intensity",pose_move->flash.intensity);
 			xml_add_attribute_int("flash_time",pose_move->flash.flash_msec);
 			xml_add_attribute_int("flash_fade_time",pose_move->flash.fade_msec);
+			xml_add_attribute_float("flash_exponent",pose_move->flash.exponent);
 			xml_add_attribute_color("flash_color",&pose_move->flash.col);
 			
 			xml_add_attribute_int("shake_distance",pose_move->shake.distance);

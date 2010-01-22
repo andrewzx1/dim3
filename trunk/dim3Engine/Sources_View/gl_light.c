@@ -232,7 +232,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 		}
 	}
 	
-	gl_lights_compile_add(tick,&effect->pnt,lt_normal,FALSE,intensity,1.0f,ld_all,&flash->col);
+	gl_lights_compile_add(tick,&effect->pnt,lt_normal,FALSE,intensity,flash->exponent,ld_all,&flash->col);
 }
 
 void gl_lights_compile(int tick)

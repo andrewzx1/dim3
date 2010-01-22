@@ -118,7 +118,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 
 	strcat(buf,"uniform float dim3Alpha");
 	if (light_map) strcat(buf,",dim3LightMapBoost");
-	if (spec) strcat(buf,",dim3SpecularFactor");
+	if (spec) strcat(buf,",dim3SpecularWhitePoint");
 	strcat(buf,";\n");
 	
 	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
@@ -226,11 +226,12 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		// but ok effect of the surface becoming more shiny
 		
 	if (spec) {
-		strcat(buf,"spec=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb*dim3SpecularFactor*pixelAtt;\n");
+		strcat(buf,"spec=(texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb*pixelAtt)+dim3SpecularWhitePoint;\n");
 		sprintf(strchr(buf,0),"shineFactor=1.0-(distance(gl_FragCoord.xy,vec2(%d.0,%d.0))/%d.0);\n",(setup.screen.x_sz>>1),(setup.screen.y_sz>>1),(int)(sqrt((setup.screen.x_sz*setup.screen.x_sz)+(setup.screen.y_sz+setup.screen.y_sz))*0.25));
-		strcat(buf,"spec=(spec+clamp((spec*shineFactor),0.0,1.0))");
-		if (bump) strcat(buf,"*bump");
-		strcat(buf,";\n");
+	//	strcat(buf,"spec=(spec+clamp((spec*shineFactor),0.0,1.0))");
+	//	if (bump) strcat(buf,"*bump");
+	//	strcat(buf,";\n");
+		// supergumba -- work out spec, shine should be added in?  Bump after that.
 	}
 
 		// output the fragment

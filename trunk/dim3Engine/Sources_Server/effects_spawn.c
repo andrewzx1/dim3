@@ -41,7 +41,7 @@ extern server_type			server;
       
 ======================================================= */
 
-bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,int flash_msec,int fade_msec)
+bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent,int flash_msec,int fade_msec)
 {
 	effect_type			*effect;
 	flash_effect_data	*flash;
@@ -54,6 +54,7 @@ bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,int flash_msec,int fa
 	flash=&effect->data.flash;
 	memmove(&flash->col,col,sizeof(d3col));
 	flash->intensity=intensity;
+	flash->exponent=exponent;
 	flash->mid_tick=flash_msec;
 	
 	effect->size=0;

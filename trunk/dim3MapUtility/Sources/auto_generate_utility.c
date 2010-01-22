@@ -83,7 +83,7 @@ int map_auto_generate_random_int(int max)
       
 ======================================================= */
 
-bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx)
+bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx,bool corridor_only)
 {
 	int						n;
 	auto_generate_box_type	*portal;
@@ -92,6 +92,10 @@ bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx)
 		if (skip_idx==n) continue;
 
 		portal=&ag_boxes[n];
+
+		if (corridor_only) {
+			if (portal->corridor_flag==ag_corridor_flag_portal) continue;
+		}
 
 		if (ez<=portal->min.z) continue;
 		if (ex<=portal->min.x) continue;
