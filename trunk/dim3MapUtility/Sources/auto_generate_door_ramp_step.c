@@ -1062,7 +1062,7 @@ void map_auto_generate_doors(map_type *map)
       
 ======================================================= */
 
-void map_auto_generate_mesh_clear_window_list(auto_generate_window_wall_type *window_wall_list)
+void map_auto_generate_mesh_clear_window_list(void)
 {
 	int				n;
 
