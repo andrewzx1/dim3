@@ -237,6 +237,7 @@ typedef struct		{
 					
 typedef struct		{
 						int								bone_idx,intensity,flash_msec,fade_msec;
+						float							exponent;
 						d3col							col;
 					} model_pose_move_flash_type;
 					

@@ -28,7 +28,7 @@ and can be sold or given away.
 extern void effect_start(void);
 extern effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick);
 extern void effect_dispose(void);
-extern bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,int flash_msec,int fade_msec);
+extern bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent,int flash_msec,int fade_msec);
 extern bool effect_spawn_lightning(int tick,d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec);
 extern bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,int life_msec);
 extern bool effect_spawn_shake(d3pnt *pt,int distance,int size,int life_msec);

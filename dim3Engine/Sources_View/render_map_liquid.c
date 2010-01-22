@@ -87,7 +87,7 @@ void liquid_gl_list_init(void)
 		liq++;
 	}
 
-	view_init_liquid_vertex_object(v_sz*(3+2+3));
+	view_init_liquid_vertex_object(v_sz*(3+2+3+2));
 	view_init_liquid_index_object(v_sz*4);
 }
 
@@ -117,10 +117,11 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 					v_cnt,tide_split,tide_split_half,
 					tide_high,tide_rate;
 	float			fy,fgx,fgy,x_txtoff,y_txtoff,
+					x_2_txtoff,y_2_txtoff,
 					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
 	bool			x_break,z_break;
-	float			*vertex_ptr,*vl,*uv,*cl;
+	float			*vertex_ptr,*vl,*uv,*uv2,*cl;
 	
 	y=liq->y;
 	fy=(float)y;
@@ -133,6 +134,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
 	cl=vertex_ptr+(v_sz*(3+2));
+	if (liq->lmap_txt_idx!=-1) uv2=vertex_ptr+(v_sz*(3+2+3));
 
 		// setup tiding
 
@@ -163,7 +165,12 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 	y_txtoff=f_tick*liq->y_shift;
 	k=(int)y_txtoff;
 	y_txtoff=liq->uv[0].y_offset+(y_txtoff-(float)k);
-		
+	
+	if (liq->lmap_txt_idx!=-1) {
+		x_2_txtoff=liq->uv[1].x_offset;
+		y_2_txtoff=liq->uv[1].y_offset;
+	}
+
 		// setup vertex calcing
 
 	gl_lights_calc_vertex_setup_liquid(liq);
@@ -223,7 +230,12 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 
 			*uv++=x_txtoff+((liq->uv[0].x_size*(float)(x-liq->lft))/fgx);
 			*uv++=y_txtoff+((liq->uv[0].y_size*(float)(z-liq->top))/fgy);
-			
+
+			if (liq->lmap_txt_idx!=-1) {
+				*uv2++=x_2_txtoff+((liq->uv[1].x_size*(float)(x-liq->lft))/fgx);
+				*uv2++=y_2_txtoff+((liq->uv[1].y_size*(float)(z-liq->top))/fgy);
+			}
+
 			v_cnt++;
 			
 			x_sz++;
@@ -335,7 +347,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int						v_sz,quad_cnt,frame;
 	bool					shader_on;
-	texture_type			*texture;
+	texture_type			*texture,*lmap_texture;
 	view_light_list_type	light_list;
 
 		// setup texture
@@ -375,7 +387,14 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
-		
+	
+	if (liq->lmap_txt_idx!=-1) {
+		glClientActiveTexture(GL_TEXTURE1);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*(3+2+3))*sizeof(float)));
+		glClientActiveTexture(GL_TEXTURE0);
+	}
+
 		// shader drawing
 
 	if (shader_on) {
@@ -383,7 +402,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		gl_lights_build_from_liquid(liq,&light_list);
 
 		gl_shader_draw_start();
-		gl_shader_draw_execute(texture,liq->txt_idx,frame,-1,1.0f,&light_list,NULL,NULL,FALSE);
+		gl_shader_draw_execute(texture,liq->txt_idx,frame,liq->lmap_txt_idx,1.0f,&light_list,NULL,NULL,FALSE);
 
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 		
@@ -391,7 +410,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 	}
 
-		// regular simple texture drawing
+		// simple, non-shader drawing
 
 	else {
 
@@ -400,14 +419,25 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		glEnableClientState(GL_COLOR_ARRAY);
 		glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
 
-			// draw texture
+			// simple light map drawing
 
-		gl_texture_transparent_start();
-		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,1.0f);
+		if (liq->lmap_txt_idx!=-1) {
+			lmap_texture=&map.textures[liq->lmap_txt_idx];
 
-		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
+			gl_texture_transparent_light_map_start();
+			gl_texture_transparent_light_map_set(texture->frames[frame].bitmap.gl_id,lmap_texture->frames[0].bitmap.gl_id,1.0f);
+			glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
+			gl_texture_transparent_light_map_end();
+		}
 
-		gl_texture_transparent_end();
+			// simple drawing
+
+		else {
+			gl_texture_transparent_start();
+			gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,1.0f);
+			glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
+			gl_texture_transparent_end();
+		}
 
 			// disable color array
 
@@ -415,6 +445,12 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	}
 
 		// end arrays
+
+	if (liq->lmap_txt_idx!=-1) {
+		glClientActiveTexture(GL_TEXTURE1);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glClientActiveTexture(GL_TEXTURE0);
+	}
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

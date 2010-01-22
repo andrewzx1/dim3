@@ -31,6 +31,7 @@ and can be sold or given away.
 
 extern int map_auto_generate_random_int(int max);
 
+extern bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx,bool corridor_only);
 extern bool map_auto_generate_portal_horz_edge_touch(int skip_portal_idx,int z,int ez,int x);
 extern bool map_auto_generate_portal_vert_edge_touch(int skip_portal_idx,int x,int ex,int z);
 extern bool map_auto_generate_portal_horz_edge_block(int skip_portal_idx,int z,int ez,int x);
@@ -203,7 +204,7 @@ void map_auto_generate_second_story_pillar(map_type *map,int rn,int lx,int lz,in
 void map_auto_generate_second_story(map_type *map)
 {
 	int							n,portal_high,extra_ty,split_factor,step_wid,step_len,sz,
-								x,z,ty,by,xsz,zsz,portal_sz,pillar_factor,px[8],py[8],pz[8];
+								x,z,ty,by,xsz,zsz,portal_sz,px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	auto_generate_box_type		*portal;
 	
@@ -237,18 +238,44 @@ void map_auto_generate_second_story(map_type *map)
 
 		if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.second_story,FALSE,TRUE)) return;
 
-			// floors and ceilings
+			// floors and ceilings corners
 
-		map_auto_generate_poly_from_square_floor(0,0,xsz,sz,ty,px,py,pz,gx,gy);
+		map_auto_generate_poly_from_square_floor(0,0,sz,sz,ty,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-		map_auto_generate_poly_from_square_floor(0,0,xsz,sz,by,px,py,pz,gx,gy);
+		map_auto_generate_poly_from_square_floor(0,0,sz,sz,by,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-		map_auto_generate_poly_from_square_floor(0,(zsz-sz),xsz,zsz,ty,px,py,pz,gx,gy);
+		map_auto_generate_poly_from_square_floor((xsz-sz),0,xsz,sz,ty,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-		map_auto_generate_poly_from_square_floor(0,(zsz-sz),xsz,zsz,by,px,py,pz,gx,gy);
+		map_auto_generate_poly_from_square_floor((xsz-sz),0,xsz,sz,by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		map_auto_generate_poly_from_square_floor(0,(zsz-sz),sz,zsz,ty,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		map_auto_generate_poly_from_square_floor(0,(zsz-sz),sz,zsz,by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		map_auto_generate_poly_from_square_floor((xsz-sz),(zsz-sz),xsz,zsz,ty,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		map_auto_generate_poly_from_square_floor((xsz-sz),(zsz-sz),xsz,zsz,by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+			// floors and ceilings sides
+
+		map_auto_generate_poly_from_square_floor(sz,0,(xsz-sz),sz,ty,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		map_auto_generate_poly_from_square_floor(sz,0,(xsz-sz),sz,by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		map_auto_generate_poly_from_square_floor(sz,(zsz-sz),(xsz-sz),zsz,ty,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		map_auto_generate_poly_from_square_floor(sz,(zsz-sz),(xsz-sz),zsz,by,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(0,sz,sz,(zsz-sz),ty,px,py,pz,gx,gy);
@@ -342,44 +369,34 @@ void map_auto_generate_second_story(map_type *map)
 			map_auto_generate_lift(map,n,ag_constant_step_story_high,ty,by,x,(x+step_wid),z,(z+step_wid));
 		}
 
-			// second story pillars
-			// only create a pillar if there is six corner walls around it
+			// add first story pillars
+			// don't put a pillar if it is too near a corridoor
 
 		ty+=ag_constant_story_floor_high;
-		pillar_factor=split_factor*3;
 
 			// top-left
 
-		if (!map_auto_generate_portal_horz_edge_block(n,portal->min.z,(portal->min.z+pillar_factor),portal->min.x)) {
-			if (!map_auto_generate_portal_vert_edge_block(n,portal->min.x,(portal->min.x+pillar_factor),portal->min.z)) {
-				map_auto_generate_second_story_pillar(map,n,split_factor,split_factor,(split_factor+split_factor),(split_factor+split_factor),ty,by);
-			}
+		if (!map_auto_generate_portal_collision((portal->min.x-split_factor),(portal->min.z-split_factor),(portal->min.x+(split_factor*3)),(portal->min.z+(split_factor*3)),n,TRUE)) {
+			map_auto_generate_second_story_pillar(map,n,split_factor,split_factor,(split_factor+split_factor),(split_factor+split_factor),ty,by);
 		}
 
 			// top-right
 
-		if (!map_auto_generate_portal_horz_edge_block(n,portal->min.z,(portal->min.z+pillar_factor),portal->max.x)) {
-			if (!map_auto_generate_portal_vert_edge_block(n,(portal->max.x-pillar_factor),portal->max.x,portal->min.z)) {
-				map_auto_generate_second_story_pillar(map,n,(xsz-sz),split_factor,((xsz-sz)+split_factor),(split_factor+split_factor),ty,by);
-			}
+		if (!map_auto_generate_portal_collision((portal->max.x-(split_factor*3)),(portal->min.z-split_factor),(portal->max.x+split_factor),(portal->min.z+(split_factor*3)),n,TRUE)) {
+			map_auto_generate_second_story_pillar(map,n,(xsz-sz),split_factor,((xsz-sz)+split_factor),(split_factor+split_factor),ty,by);
 		}
 
 			// bottom-left
 
-		if (!map_auto_generate_portal_horz_edge_block(n,(portal->max.z-pillar_factor),portal->max.z,portal->min.x)) {
-			if (!map_auto_generate_portal_vert_edge_block(n,portal->min.x,(portal->min.x+pillar_factor),portal->max.z)) {
-				map_auto_generate_second_story_pillar(map,n,split_factor,(zsz-sz),(split_factor+split_factor),((zsz-sz)+split_factor),ty,by);
-			}
+		if (!map_auto_generate_portal_collision((portal->min.x-split_factor),(portal->max.z-(split_factor*3)),(portal->min.x+(split_factor*3)),(portal->max.z+split_factor),n,TRUE)) {
+			map_auto_generate_second_story_pillar(map,n,split_factor,(zsz-sz),(split_factor+split_factor),((zsz-sz)+split_factor),ty,by);
 		}
 
 			// bottom-right
 
-		if (!map_auto_generate_portal_horz_edge_block(n,(portal->max.z-pillar_factor),portal->max.z,portal->max.x)) {
-			if (!map_auto_generate_portal_vert_edge_block(n,(portal->max.x-pillar_factor),portal->max.x,portal->max.z)) {
-				map_auto_generate_second_story_pillar(map,n,(xsz-sz),(zsz-sz),((xsz-sz)+split_factor),((zsz-sz)+split_factor),ty,by);
-			}
+		if (!map_auto_generate_portal_collision((portal->max.x-(split_factor*3)),(portal->max.z-(split_factor*3)),(portal->max.x+split_factor),(portal->max.z+split_factor),n,TRUE)) {
+			map_auto_generate_second_story_pillar(map,n,(xsz-sz),(zsz-sz),((xsz-sz)+split_factor),((zsz-sz)+split_factor),ty,by);
 		}
-
 	}
 }
 

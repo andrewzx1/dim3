@@ -289,7 +289,7 @@ JSValueRef js_spawn_flash_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_on
 	flash_msec=script_value_to_int(cx,argv[7]);
 	fade_msec=script_value_to_int(cx,argv[8]);
 
-	script_bool_to_value(cx,effect_spawn_flash(&pt,&col,intensity,flash_msec,fade_msec));
+	script_bool_to_value(cx,effect_spawn_flash(&pt,&col,intensity,1.0f,flash_msec,fade_msec));
     
 	return(script_null_to_value(cx));
 }

@@ -248,7 +248,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		
 	if (pose_move->flash.intensity!=0) {
 		model_animation_effect_launch_bone_position(draw,animate_idx,pose_move->pose_idx,pose_move->flash.bone_idx,&pt);
-		effect_spawn_flash(&pt,&pose_move->flash.col,pose_move->flash.intensity,pose_move->flash.flash_msec,pose_move->flash.fade_msec);
+		effect_spawn_flash(&pt,&pose_move->flash.col,pose_move->flash.intensity,pose_move->flash.exponent,pose_move->flash.flash_msec,pose_move->flash.fade_msec);
 	}
 	
 		// shake

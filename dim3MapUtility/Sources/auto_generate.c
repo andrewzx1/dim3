@@ -32,7 +32,7 @@ and can be sold or given away.
 extern void map_auto_generate_random_seed(int seed);
 extern int map_auto_generate_random_int(int max);
 
-extern bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx);
+extern bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx,bool corridor_only);
 extern bool map_auto_generate_portal_horz_edge_block(int skip_portal_idx,int z,int ez,int x);
 extern bool map_auto_generate_portal_vert_edge_block(int skip_portal_idx,int x,int ex,int z);
 extern bool map_auto_generate_portal_horz_edge_touch(int skip_portal_idx,int z,int ez,int x);
@@ -159,7 +159,7 @@ void map_auto_generate_initial_portals(map_type *map)
 
 				// check for collisions
 
-			if ((!map_auto_generate_block_collision(&ag_settings,x,z,ex,ez,FALSE)) && (!map_auto_generate_portal_collision(x,z,ex,ez,-1))) break;
+			if ((!map_auto_generate_block_collision(&ag_settings,x,z,ex,ez,FALSE)) && (!map_auto_generate_portal_collision(x,z,ex,ez,-1,FALSE))) break;
 			
 				// try to much?
 				
@@ -230,7 +230,7 @@ void map_auto_generate_merge_portals(void)
 
 				dist=merge_portal->min.x-chk_portal->max.x;
 				if ((dist>0) && (dist<=portal_merge_distance)) {
-					if (!map_auto_generate_portal_collision((merge_portal->min.x-split_factor),merge_portal->min.z,merge_portal->max.x,merge_portal->max.z,k)) {
+					if (!map_auto_generate_portal_collision((merge_portal->min.x-split_factor),merge_portal->min.z,merge_portal->max.x,merge_portal->max.z,k,FALSE)) {
 						merge_portal->min.x-=split_factor;
 						moved=TRUE;
 						break;
@@ -241,7 +241,7 @@ void map_auto_generate_merge_portals(void)
 
 				dist=chk_portal->min.x-merge_portal->max.x;
 				if ((dist>0) && (dist<=portal_merge_distance)) {
-					if (!map_auto_generate_portal_collision(merge_portal->min.x,merge_portal->min.z,(merge_portal->max.x+split_factor),merge_portal->max.z,k)) {
+					if (!map_auto_generate_portal_collision(merge_portal->min.x,merge_portal->min.z,(merge_portal->max.x+split_factor),merge_portal->max.z,k,FALSE)) {
 						merge_portal->max.x+=split_factor;
 						moved=TRUE;
 						break;
@@ -252,7 +252,7 @@ void map_auto_generate_merge_portals(void)
 
 				dist=merge_portal->min.z-chk_portal->max.z;
 				if ((dist>0) && (dist<=portal_merge_distance)) {
-					if (!map_auto_generate_portal_collision(merge_portal->min.x,(merge_portal->min.z-split_factor),merge_portal->max.x,merge_portal->max.z,k)) {
+					if (!map_auto_generate_portal_collision(merge_portal->min.x,(merge_portal->min.z-split_factor),merge_portal->max.x,merge_portal->max.z,k,FALSE)) {
 						merge_portal->min.z-=split_factor;
 						moved=TRUE;
 						break;
@@ -263,7 +263,7 @@ void map_auto_generate_merge_portals(void)
 
 				dist=chk_portal->min.z-merge_portal->max.z;
 				if ((dist>0) && (dist<=portal_merge_distance)) {
-					if (!map_auto_generate_portal_collision(merge_portal->min.x,merge_portal->min.z,merge_portal->max.x,(merge_portal->max.z+split_factor),k)) {
+					if (!map_auto_generate_portal_collision(merge_portal->min.x,merge_portal->min.z,merge_portal->max.x,(merge_portal->max.z+split_factor),k,FALSE)) {
 						merge_portal->max.z+=split_factor;
 						moved=TRUE;
 						break;
@@ -338,7 +338,7 @@ void map_auto_generate_merge_portals_center(void)
 			z=(portal->min.z+portal->max.z)>>1;
 
 			if (((xadd[n]>0) && (x<cx)) || ((xadd[n]<0) && (x>cx))) {
-				if (!map_auto_generate_portal_collision((portal->min.x+xadd[n]),portal->min.z,(portal->max.x+xadd[n]),portal->max.z,n)) {
+				if (!map_auto_generate_portal_collision((portal->min.x+xadd[n]),portal->min.z,(portal->max.x+xadd[n]),portal->max.z,n,FALSE)) {
 					portal->min.x+=xadd[n];
 					portal->max.x+=xadd[n];
 					moved=TRUE;
@@ -346,7 +346,7 @@ void map_auto_generate_merge_portals_center(void)
 			}
 
 			if (((zadd[n]>0) && (z<cz)) || ((zadd[n]<0) && (z>cz))) {
-				if (!map_auto_generate_portal_collision(portal->min.x,(portal->min.z+zadd[n]),portal->max.x,(portal->max.z+zadd[n]),n)) {
+				if (!map_auto_generate_portal_collision(portal->min.x,(portal->min.z+zadd[n]),portal->max.x,(portal->max.z+zadd[n]),n,FALSE)) {
 					portal->min.z+=zadd[n];
 					portal->max.z+=zadd[n];
 					moved=TRUE;
@@ -459,7 +459,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			z2=z-split_factor;
 			ez2=ez+split_factor;			// don't create if z's will touch other portals, then it's no longer a corridor
 
-			if ((map_auto_generate_block_collision(&ag_settings,x,z2,ex,ez2,TRUE)) || (map_auto_generate_portal_collision(x,z2,ex,ez2,-1))) continue;
+			if ((map_auto_generate_block_collision(&ag_settings,x,z2,ex,ez2,TRUE)) || (map_auto_generate_portal_collision(x,z2,ex,ez2,-1,FALSE))) continue;
 
 				// create portal
 
@@ -547,7 +547,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			x2=x-split_factor;
 			ex2=ex+split_factor;			// don't create if x's will touch other portals, then it's no longer a corridor
 
-			if ((map_auto_generate_block_collision(&ag_settings,x2,z,ex2,ez,TRUE)) || (map_auto_generate_portal_collision(x2,z,ex2,ez,-1))) continue;
+			if ((map_auto_generate_block_collision(&ag_settings,x2,z,ex2,ez,TRUE)) || (map_auto_generate_portal_collision(x2,z,ex2,ez,-1,FALSE))) continue;
 
 				// create portal
 				

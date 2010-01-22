@@ -912,6 +912,7 @@ typedef struct		{
 
 typedef struct		{
 						int						intensity,mid_tick;
+						float					exponent;
 						d3col					col;
 					} flash_effect_data;
 

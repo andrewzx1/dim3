@@ -174,6 +174,7 @@ int model_animate_pose_insert(model_type *model,int animate_idx,int animate_pose
  	animate->pose_moves[k].flash.flash_msec=0;
  	animate->pose_moves[k].flash.fade_msec=0;
  	animate->pose_moves[k].flash.intensity=0;
+	animate->pose_moves[k].flash.exponent=1.0f;
  	animate->pose_moves[k].flash.col.r=1.0f;
  	animate->pose_moves[k].flash.col.g=1.0f;
  	animate->pose_moves[k].flash.col.b=1.0f;
