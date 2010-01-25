@@ -376,27 +376,9 @@ void write_single_vertex(int x,int y,int z)
     xml_add_tagend(TRUE);
 }
 
-void write_single_mesh_poly_uv(map_mesh_poly_type *poly,int uv_index)
-{
-	char			str[32];
-
-	if (uv_index==0) {
-		xml_add_attribute_float_array("x",poly->uv[0].x,poly->ptsz);
-		xml_add_attribute_float_array("y",poly->uv[0].y,poly->ptsz);
-		if ((poly->x_shift!=0) || (poly->y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->x_shift,poly->y_shift);
-		return;
-	}
-
-	sprintf(str,"x_%d",uv_index);
-	xml_add_attribute_float_array(str,poly->uv[uv_index].x,poly->ptsz);
-
-	sprintf(str,"y_%d",uv_index);
-	xml_add_attribute_float_array(str,poly->uv[uv_index].y,poly->ptsz);
-}
-
 void write_single_mesh(map_mesh_type *mesh)
 {
-	int					n,k,nvertex,npoly;
+	int					n,nvertex,npoly;
 	d3pnt				*pt;
 	map_mesh_poly_type	*poly;
 
@@ -421,8 +403,6 @@ void write_single_mesh(map_mesh_type *mesh)
 
 	if (mesh->hide_mode!=mesh_hide_mode_never) xml_add_attribute_list("hide",(char*)mesh_hide_mode_str,mesh->hide_mode);
 	if ((mesh->rot_off.x!=0.0f) || (mesh->rot_off.y!=0.0f) || (mesh->rot_off.z!=0.0f)) xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);
-	
-	xml_add_attribute_int("uv_count",mesh->nuv);
 
 	xml_add_tagend(FALSE);
 
@@ -491,10 +471,14 @@ void write_single_mesh(map_mesh_type *mesh)
 		xml_add_attribute_int("txt",poly->txt_idx);
 		if (poly->lmap_txt_idx!=-1) xml_add_attribute_int("lmap_txt_idx",poly->lmap_txt_idx);
 
-		for (k=0;k!=mesh->nuv;k++) {
-			write_single_mesh_poly_uv(poly,k);
+		xml_add_attribute_float_array("x",poly->main_uv.x,poly->ptsz);
+		xml_add_attribute_float_array("y",poly->main_uv.y,poly->ptsz);
+		if ((poly->x_shift!=0) || (poly->y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->x_shift,poly->y_shift);
+		if (poly->lmap_txt_idx!=-1) {
+			xml_add_attribute_float_array("x_1",poly->lmap_uv.x,poly->ptsz);
+			xml_add_attribute_float_array("y_1",poly->lmap_uv.y,poly->ptsz);
 		}
-		
+
 		if (poly->camera[0]!=0x0) xml_add_attribute_text("camera",poly->camera);
 
 		xml_add_tagend(TRUE);
@@ -524,10 +508,14 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_3_coord_int("v1",liq->lft,liq->y,liq->top);
 	xml_add_attribute_3_coord_int("v2",liq->rgt,liq->y,liq->bot);
 	xml_add_attribute_int("depth",liq->depth);
-	xml_add_attribute_2_coord_float("uv_off",liq->uv[0].x_offset,liq->uv[0].y_offset);
-	xml_add_attribute_2_coord_float("uv_size",liq->uv[0].x_size,liq->uv[0].y_size);
-	xml_add_attribute_2_coord_float("uv_1_off",liq->uv[1].x_offset,liq->uv[1].y_offset);
-	xml_add_attribute_2_coord_float("uv_1_size",liq->uv[1].x_size,liq->uv[1].y_size);
+
+	xml_add_attribute_2_coord_float("uv_off",liq->main_uv.x_offset,liq->main_uv.y_offset);
+	xml_add_attribute_2_coord_float("uv_size",liq->main_uv.x_size,liq->main_uv.y_size);
+	if (liq->lmap_txt_idx!=-1) {
+		xml_add_attribute_2_coord_float("uv_1_off",liq->lmap_uv.x_offset,liq->lmap_uv.y_offset);
+		xml_add_attribute_2_coord_float("uv_1_size",liq->lmap_uv.x_size,liq->lmap_uv.y_size);
+	}
+
 	xml_add_attribute_color("rgb",&liq->col);
 	xml_add_attribute_float("tint_alpha",liq->tint_alpha);
 	if ((liq->x_shift!=0) || (liq->y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->x_shift,liq->y_shift);

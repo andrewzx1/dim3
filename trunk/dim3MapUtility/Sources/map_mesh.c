@@ -109,8 +109,6 @@ int map_mesh_add(map_type *map)
 	mesh->npoly=0;
 	mesh->polys=NULL;
 
-	mesh->nuv=1;
-
 	return(mesh_idx);
 }
 
@@ -258,7 +256,7 @@ int map_mesh_duplicate(map_type *map,int mesh_idx)
 		// mesh setup
 		
 	new_mesh->group_idx=mesh->group_idx;
-	new_mesh->nuv=mesh->nuv;
+
 	memmove(&new_mesh->rot_off,&mesh->rot_off,sizeof(d3pnt));
 	memmove(&new_mesh->flag,&mesh->flag,sizeof(map_mesh_flag_type));
 	memmove(&new_mesh->msg,&mesh->msg,sizeof(map_mesh_message_type));
@@ -359,8 +357,8 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 		
 			// add in UV coords
 			
-		poly->uv[0].x[t]=gx[t];
-		poly->uv[0].y[t]=gy[t];
+		poly->main_uv.x[t]=gx[t];
+		poly->main_uv.y[t]=gy[t];
 	}
 	
 		// finish up
@@ -664,8 +662,8 @@ void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy
 	for (n=0;n!=mesh->npoly;n++) {
 
 		for (k=0;k!=poly->ptsz;k++) {
-			kx+=poly->uv[0].x[k];
-			ky+=poly->uv[0].y[k];
+			kx+=poly->main_uv.x[k];
+			ky+=poly->main_uv.y[k];
 		}
 
 		cnt+=poly->ptsz;

@@ -46,10 +46,9 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,uv_idx,vertex_cnt,i_idx;
+	int					n,k,t,vertex_cnt,i_idx;
 	unsigned int		v_poly_start_idx;
 	unsigned int		*index_ptr;
-	float				x_shift_offset,y_shift_offset;
 	float				*vertex_ptr,*pv,*pp,*pc;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
@@ -93,9 +92,9 @@ bool view_compile_mesh_gl_list_init(void)
 	map.mesh.vbo_vertex_count=vertex_cnt;
 
 		// initial vertex VBO
-		// we need a UV list for every possible layer
+		// we need a UV list for both main and lmap UVs
 		
-	view_init_map_vertex_object((vertex_cnt*(3+3))+((vertex_cnt*max_mesh_poly_uv_layer)*2));
+	view_init_map_vertex_object((vertex_cnt*(3+3))+((vertex_cnt*2)*2));
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
@@ -111,8 +110,6 @@ bool view_compile_mesh_gl_list_init(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-	
-			// vertexes and colors
 
 		poly=mesh->polys;
 		
@@ -137,55 +134,46 @@ bool view_compile_mesh_gl_list_init(void)
 		mesh++;
 	}
 	
-		// uvs
-				
-	for (uv_idx=0;uv_idx!=max_mesh_poly_uv_layer;uv_idx++) {
+		// main UVs
 
-		mesh=map.mesh.meshes;
+	mesh=map.mesh.meshes;
 
-		for (n=0;n!=map.mesh.nmesh;n++) {
-		
-			poly=mesh->polys;
-
-				// mesh has a UV for this layer
-
-			if (mesh->nuv>uv_idx) {
-				
-				for (k=0;k!=mesh->npoly;k++) {
-				
-					if (uv_idx==0) {
-						x_shift_offset=poly->draw.x_shift_offset;
-						y_shift_offset=poly->draw.y_shift_offset;
-					}
-					else {
-						x_shift_offset=y_shift_offset=0.0f;
-					}
-					
-					for (t=0;t!=poly->ptsz;t++) {
-						*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
-						*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
-					}
-
-					poly++;
-				}
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		poly=mesh->polys;
+			
+		for (k=0;k!=mesh->npoly;k++) {
+			
+			for (t=0;t!=poly->ptsz;t++) {
+				*pp++=poly->main_uv.x[t]+poly->draw.x_shift_offset;
+				*pp++=poly->main_uv.y[t]+poly->draw.y_shift_offset;
 			}
 
-				// mesh does not have a UV for this layer
-
-			else {
-
-				for (k=0;k!=mesh->npoly;k++) {
-					for (t=0;t!=poly->ptsz;t++) {
-						*pp++=0.0f;
-						*pp++=0.0f;
-					}
-
-					poly++;
-				}
-			}
-
-			mesh++;
+			poly++;
 		}
+
+		mesh++;
+	}
+
+		// light map UVs
+
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		poly=mesh->polys;
+			
+		for (k=0;k!=mesh->npoly;k++) {
+			
+			for (t=0;t!=poly->ptsz;t++) {
+				*pp++=poly->lmap_uv.x[t];
+				*pp++=poly->lmap_uv.y[t];
+			}
+
+			poly++;
+		}
+
+		mesh++;
 	}
 
 		// unmap vertex VBO
@@ -268,7 +256,7 @@ void view_compile_mesh_gl_list_free(void)
 
 bool view_compile_mesh_gl_lists(int tick)
 {
-	int							n,k,t,uv_idx,vertex_cnt;
+	int							n,k,t,vertex_cnt;
 	float						x_shift_offset,y_shift_offset;
 	float						*vertex_ptr,*pv,*pp,*pc,*pc2;
 	bool						vbo_mapped,only_ambient;
@@ -338,35 +326,22 @@ bool view_compile_mesh_gl_lists(int tick)
 				if (vertex_ptr==NULL) return(FALSE);
 			}
 
-				// the UV layers
-			
-			for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
-			
-					// only redo layers that are in use
+				// only shift main UVs (not light mapped ones)
 
-				if (mesh->nuv>uv_idx) {
-					
-					pp=vertex_ptr+((vertex_cnt*(3*3))+((vertex_cnt*uv_idx)*2))+(mesh->draw.vertex_offset*2);
-					poly=mesh->polys;
+			pp=vertex_ptr+((vertex_cnt*(3*3))+(mesh->draw.vertex_offset*2));
+			poly=mesh->polys;
 
-					for (k=0;k!=mesh->npoly;k++) {
+			for (k=0;k!=mesh->npoly;k++) {
 
-						if (uv_idx==0) {
-							x_shift_offset=poly->draw.x_shift_offset;
-							y_shift_offset=poly->draw.y_shift_offset;
-						}
-						else {
-							x_shift_offset=y_shift_offset=0.0f;
-						}
+				x_shift_offset=poly->draw.x_shift_offset;
+				y_shift_offset=poly->draw.y_shift_offset;
 
-						for (t=0;t!=poly->ptsz;t++) {
-							*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
-							*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
-						}
-
-						poly++;
-					}
+				for (t=0;t!=poly->ptsz;t++) {
+					*pp++=poly->main_uv.x[t]+x_shift_offset;
+					*pp++=poly->main_uv.y[t]+y_shift_offset;
 				}
+
+				poly++;
 			}
 		}
 
