@@ -117,8 +117,8 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 		mesh_poly->v[n]=(short)map_convert_segment_to_mesh_find_point_vlist(map_mesh->nvertex,map_mesh->vertexes,x[n],y[n],z[n]);
 	}
 	
-	memmove(mesh_poly->uv[0].x,gx,(sizeof(float)*ptsz));
-	memmove(mesh_poly->uv[0].y,gy,(sizeof(float)*ptsz));
+	memmove(mesh_poly->main_uv.x,gx,(sizeof(float)*ptsz));
+	memmove(mesh_poly->main_uv.y,gy,(sizeof(float)*ptsz));
 	
 	mesh_poly->x_shift=seg->x_shift;
 	mesh_poly->y_shift=seg->y_shift;
@@ -129,6 +129,7 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 
 	mesh_poly->ptsz=ptsz;
 	mesh_poly->txt_idx=seg->fill;
+	mesh_poly->lmap_txt_idx=-1;
 
 	map_mesh->npoly++;
 }
@@ -160,14 +161,15 @@ void map_convert_liquid(map_type *map,portal_type *portal,segment_type *seg)
 	liquid->speed_alter=seg->data.liquid.speed_alter;
 	liquid->tint_alpha=seg->data.liquid.tint_alpha;
 	
-	liquid->uv[0].x_size=seg->x_txtfact;
-	liquid->uv[0].y_size=seg->y_txtfact;
-	liquid->uv[0].x_offset=seg->x_txtoff;
-	liquid->uv[0].y_offset=seg->y_txtoff;
+	liquid->main_uv.x_size=seg->x_txtfact;
+	liquid->main_uv.y_size=seg->y_txtfact;
+	liquid->main_uv.x_offset=seg->x_txtoff;
+	liquid->main_uv.y_offset=seg->y_txtoff;
 	liquid->x_shift=seg->x_shift;
 	liquid->y_shift=seg->y_shift;
 	
 	liquid->txt_idx=seg->fill;
+	liquid->lmap_txt_idx=-1;
 	liquid->group_idx=seg->group_idx;
 
 	memmove(&liquid->col,&seg->data.liquid.col,sizeof(d3col));

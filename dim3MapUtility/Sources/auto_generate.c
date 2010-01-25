@@ -581,8 +581,8 @@ void map_auto_generate_connect_portals(map_type *map)
 
 void map_auto_generate_portal_y(void)
 {
-	int							n,by_add,portal_high,portal_high_story_add,
-								corridor_high,y,ty,by,extra_ty,extra_by,portal_sz;
+	int							n,by_add,portal_high,portal_high_story_add,story_y_add,
+								corridor_high,y,y2,ty,by,extra_ty,extra_by,portal_sz;
 	auto_generate_box_type		*portal;
 	
 		// portal sizes
@@ -599,12 +599,14 @@ void map_auto_generate_portal_y(void)
 	extra_ty=(int)(((float)portal_high)*ag_constant_portal_high_extra_top);
 	extra_by=(int)(((float)portal_high)*ag_constant_portal_high_extra_bottom);
 
-		// create room portals
+		// run through portals
 
 	portal=ag_boxes;
 
 	for (n=0;n!=ag_box_count;n++) {
-	
+		
+			// room portals
+
 		if (portal->corridor_flag==ag_corridor_flag_portal) {
 		
 			portal->min.y=ty-map_auto_generate_random_int(extra_ty);
@@ -635,22 +637,27 @@ void map_auto_generate_portal_y(void)
 			portal->max.y*=map_enlarge;
 		}
 
-		portal++;
-	}
+			// corridor portals
 
-		// create corridor portals
+		else {
 
-	portal=ag_boxes;
+				// possibly put corridor on second story
 
-	for (n=0;n!=ag_box_count;n++) {
-	
-		if (portal->corridor_flag!=ag_corridor_flag_portal) {
+			story_y_add=0;
+
+			if ((map_auto_generate_second_story_exist(portal->corridor_connect_box_idx[0])) && (map_auto_generate_second_story_exist(portal->corridor_connect_box_idx[1]))) {
+				if ((((float)map_auto_generate_random_int(100))/100.0f)>(1.0f-ag_corridor_first_story_percent)) {
+					story_y_add=-((portal_high>>1)+ag_constant_step_story_size);
+				}
+			}
 
 				// corridor stick to highest
 				// room on one of their sides
 
-			y=ag_boxes[portal->corridor_connect_box_idx[0]].max.y;
-			if (ag_boxes[portal->corridor_connect_box_idx[1]].max.y<y) y=ag_boxes[portal->corridor_connect_box_idx[1]].max.y;
+			y=ag_boxes[portal->corridor_connect_box_idx[0]].max.y+story_y_add;
+			y2=ag_boxes[portal->corridor_connect_box_idx[1]].max.y+story_y_add;
+
+			if (y2<y) y=y2;
 
 			portal->min.y=y-corridor_high;
 			portal->max.y=y;

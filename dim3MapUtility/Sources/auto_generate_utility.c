@@ -651,13 +651,13 @@ void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float
 	poly=&mesh->polys[mesh->npoly-1];
 
 	for (n=0;n!=poly->ptsz;n++) {
-		poly->uv[0].x[n]*=mult_x;
-		poly->uv[0].y[n]*=mult_y;
+		poly->main_uv.x[n]*=mult_x;
+		poly->main_uv.y[n]*=mult_y;
 
 		if (rot) {
-			f=poly->uv[0].x[n];
-			poly->uv[0].x[n]=poly->uv[0].y[n];
-			poly->uv[0].y[n]=f;
+			f=poly->main_uv.x[n];
+			poly->main_uv.x[n]=poly->main_uv.y[n];
+			poly->main_uv.y[n]=f;
 		}
 	}
 }

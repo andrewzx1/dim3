@@ -48,27 +48,9 @@ extern char				media_type_str[][32],
       
 ======================================================= */
 
-void read_single_mesh_poly_uv_v3(int poly_tag,map_mesh_poly_type *poly,int uv_index)
-{
-	char			str[32];
-
-	if (uv_index==0) {
-		xml_get_attribute_float_array(poly_tag,"x",poly->uv[0].x,8);
-		xml_get_attribute_float_array(poly_tag,"y",poly->uv[0].y,8);
-		xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->x_shift,&poly->y_shift);
-		return;
-	}
-
-	sprintf(str,"x_%d",uv_index);
-	xml_get_attribute_float_array(poly_tag,str,poly->uv[uv_index].x,8);
-
-	sprintf(str,"y_%d",uv_index);
-	xml_get_attribute_float_array(poly_tag,str,poly->uv[uv_index].y,8);
-}
-
 bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 {
-	int					n,k,nvertex,npoly,old_mesh_lmap_txt_idx,
+	int					n,nvertex,npoly,old_mesh_lmap_txt_idx,
 						msg_tag,main_vertex_tag,vertex_tag,main_poly_tag,poly_tag,tag;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
@@ -101,8 +83,6 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	
 	mesh->hide_mode=xml_get_attribute_list(mesh_tag,"hide",(char*)mesh_hide_mode_str);
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
-
-	mesh->nuv=xml_get_attribute_int_default(mesh_tag,"uv_count",1);
 
 		// messages
 
@@ -175,8 +155,13 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			poly->txt_idx=xml_get_attribute_int(poly_tag,"txt");
 			poly->lmap_txt_idx=xml_get_attribute_int_default(poly_tag,"lmap_txt_idx",old_mesh_lmap_txt_idx);
 
-			for (k=0;k!=mesh->nuv;k++) {
-				read_single_mesh_poly_uv_v3(poly_tag,poly,k);
+			xml_get_attribute_float_array(poly_tag,"x",poly->main_uv.x,8);
+			xml_get_attribute_float_array(poly_tag,"y",poly->main_uv.y,8);
+			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->x_shift,&poly->y_shift);
+
+			if (poly->lmap_txt_idx!=-1) {
+				xml_get_attribute_float_array(poly_tag,"x_1",poly->lmap_uv.x,8);
+				xml_get_attribute_float_array(poly_tag,"y_1",poly->lmap_uv.y,8);
 			}
 
 			xml_get_attribute_text(poly_tag,"camera",poly->camera,name_str_len);
@@ -210,16 +195,14 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		xml_get_attribute_3_coord_int(tag,"v1",&liq->lft,&liq->y,&liq->top);
 		xml_get_attribute_3_coord_int(tag,"v2",&liq->rgt,&liq->y,&liq->bot);
 		liq->depth=xml_get_attribute_int(tag,"depth");
-		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->uv[0].x_offset,&liq->uv[0].y_offset);
-		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->uv[0].x_size,&liq->uv[0].y_size);
+
+		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->main_uv.x_offset,&liq->main_uv.y_offset);
+		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->main_uv.x_size,&liq->main_uv.y_size);
 		if (liq->lmap_txt_idx!=-1) {
-			xml_get_attribute_2_coord_float(tag,"uv_1_off",&liq->uv[1].x_offset,&liq->uv[1].y_offset);
-			xml_get_attribute_2_coord_float(tag,"uv_1_size",&liq->uv[1].x_size,&liq->uv[1].y_size);
+			xml_get_attribute_2_coord_float(tag,"uv_1_off",&liq->lmap_uv.x_offset,&liq->lmap_uv.y_offset);
+			xml_get_attribute_2_coord_float(tag,"uv_1_size",&liq->lmap_uv.x_size,&liq->lmap_uv.y_size);
 		}
-		else {
-			liq->uv[1].x_offset=liq->uv[1].y_offset=0.0f;
-			liq->uv[1].x_size=liq->uv[1].y_size=1.0f;
-		}
+
 		xml_get_attribute_color(tag,"rgb",&liq->col);
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);

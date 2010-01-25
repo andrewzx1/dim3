@@ -309,6 +309,8 @@ and can be sold or given away.
 #define ag_constant_window_percent							0.3f
 #define ag_constant_window_depth							(8*map_enlarge)
 
+#define ag_corridor_first_story_percent						0.25f
+
 //
 // auto-generate window-wall markers
 //

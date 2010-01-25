@@ -72,8 +72,6 @@ extern char light_type_str[][32];
 
 #define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
-#define max_mesh_poly_uv_layer								2				// maximum number of uv layers
-
 //
 // strings
 //
@@ -232,7 +230,7 @@ typedef struct		{
 						int									txt_idx,lmap_txt_idx,ptsz,v[8];
 						float								x_shift,y_shift;
 						char								camera[name_str_len];
-						map_mesh_poly_uv_type				uv[max_mesh_poly_uv_layer];
+						map_mesh_poly_uv_type				main_uv,lmap_uv;
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
@@ -273,7 +271,7 @@ typedef struct		{
 					} map_mesh_draw_type;
 					
 typedef struct		{
-						int									nvertex,npoly,nuv,group_idx,
+						int									nvertex,npoly,group_idx,
 															hide_mode;
 						float								*colors_cache;
 						d3pnt								rot_off;
@@ -315,7 +313,7 @@ typedef struct		{
 															x_shift,y_shift;
 						bool								never_obscure;
 						d3col								col;
-						map_liquid_uv_type					uv[max_mesh_poly_uv_layer];
+						map_liquid_uv_type					main_uv,lmap_uv;
 						map_liquid_harm_type				harm;
 						map_liquid_tide_type				tide;
 						map_liquid_draw_type				draw;
@@ -646,8 +644,8 @@ extern void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);
-extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,int uv_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
-extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,int uv_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
+extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,bool light_map_uv,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
+extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,bool light_map_uv,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
 extern void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang);
 extern void map_mesh_flip_poly_uv(map_type *map,int mesh_idx,int poly_idx,bool flip_u,bool flip_v);
 extern void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx);

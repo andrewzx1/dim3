@@ -160,15 +160,15 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 	
 	x_txtoff=f_tick*liq->x_shift;
 	k=(int)x_txtoff;
-	x_txtoff=liq->uv[0].x_offset+(x_txtoff-(float)k);
+	x_txtoff=liq->main_uv.x_offset+(x_txtoff-(float)k);
 	
 	y_txtoff=f_tick*liq->y_shift;
 	k=(int)y_txtoff;
-	y_txtoff=liq->uv[0].y_offset+(y_txtoff-(float)k);
+	y_txtoff=liq->main_uv.y_offset+(y_txtoff-(float)k);
 	
 	if (liq->lmap_txt_idx!=-1) {
-		x_2_txtoff=liq->uv[1].x_offset;
-		y_2_txtoff=liq->uv[1].y_offset;
+		x_2_txtoff=liq->lmap_uv.x_offset;
+		y_2_txtoff=liq->lmap_uv.y_offset;
 	}
 
 		// setup vertex calcing
@@ -228,12 +228,12 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 			*vl++=fy-(f_tide_high*sn);
 			*vl++=(float)z;
 
-			*uv++=x_txtoff+((liq->uv[0].x_size*(float)(x-liq->lft))/fgx);
-			*uv++=y_txtoff+((liq->uv[0].y_size*(float)(z-liq->top))/fgy);
+			*uv++=x_txtoff+((liq->main_uv.x_size*(float)(x-liq->lft))/fgx);
+			*uv++=y_txtoff+((liq->main_uv.y_size*(float)(z-liq->top))/fgy);
 
 			if (liq->lmap_txt_idx!=-1) {
-				*uv2++=x_2_txtoff+((liq->uv[1].x_size*(float)(x-liq->lft))/fgx);
-				*uv2++=y_2_txtoff+((liq->uv[1].y_size*(float)(z-liq->top))/fgy);
+				*uv2++=x_2_txtoff+((liq->lmap_uv.x_size*(float)(x-liq->lft))/fgx);
+				*uv2++=y_2_txtoff+((liq->lmap_uv.y_size*(float)(z-liq->top))/fgy);
 			}
 
 			v_cnt++;

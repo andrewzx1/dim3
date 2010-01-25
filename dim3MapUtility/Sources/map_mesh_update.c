@@ -476,13 +476,13 @@ bool map_mesh_tesselate(map_type *map,int mesh_idx)
 			trig_poly->v[1]=poly->v[k+1];
 			trig_poly->v[2]=poly->v[k+2];
 			
-			trig_poly->uv[0].x[0]=poly->uv[0].x[0];
-			trig_poly->uv[0].x[1]=poly->uv[0].x[k+1];
-			trig_poly->uv[0].x[2]=poly->uv[0].x[k+2];
+			trig_poly->main_uv.x[0]=poly->main_uv.x[0];
+			trig_poly->main_uv.x[1]=poly->main_uv.x[k+1];
+			trig_poly->main_uv.x[2]=poly->main_uv.x[k+2];
 			
-			trig_poly->uv[0].y[0]=poly->uv[0].y[0];
-			trig_poly->uv[0].y[1]=poly->uv[0].y[k+1];
-			trig_poly->uv[0].y[2]=poly->uv[0].y[k+2];
+			trig_poly->main_uv.y[0]=poly->main_uv.y[0];
+			trig_poly->main_uv.y[1]=poly->main_uv.y[k+1];
+			trig_poly->main_uv.y[2]=poly->main_uv.y[k+2];
 			
 			trig_poly++;
 		}
@@ -534,8 +534,8 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 		py[n]=pt->y;
 		pz[n]=pt->z;
 
-		gx[n]=poly->uv[0].x[n];
-		gy[n]=poly->uv[0].y[n];
+		gx[n]=poly->main_uv.x[n];
+		gy[n]=poly->main_uv.y[n];
 
 		mx+=pt->x;
 		my+=pt->y;
@@ -588,11 +588,11 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 		ky[3]=py[n];
 		kz[3]=pz[n];
 
-		k_gx[0]=poly->uv[0].x[n];
-		k_gy[0]=poly->uv[0].y[n];
+		k_gx[0]=poly->main_uv.x[n];
+		k_gy[0]=poly->main_uv.y[n];
 
-		k_gx[1]=poly->uv[0].x[k];
-		k_gy[1]=poly->uv[0].y[k];
+		k_gx[1]=poly->main_uv.x[k];
+		k_gy[1]=poly->main_uv.y[k];
 
 		k_gx[2]=gx[k];
 		k_gy[2]=gy[k];
@@ -731,26 +731,34 @@ float map_get_texture_round_coord(float f)
 	return(((float)i)/100);
 }
 
-void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,int uv_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact)
+void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,bool light_map_uv,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact)
 {
 	int						n;
 	float					gx_min,gx_max,gy_min,gy_max;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
+	map_mesh_poly_uv_type	*uv;
 
 	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 
+	if (!light_map_uv) {
+		uv=&poly->main_uv;
+	}
+	else {
+		uv=&poly->lmap_uv;
+	}
+
 		// get UV extends
 
-	gx_min=gx_max=poly->uv[uv_idx].x[0];
-	gy_min=gy_max=poly->uv[uv_idx].y[0];
+	gx_min=gx_max=uv->x[0];
+	gy_min=gy_max=uv->y[0];
 
 	for (n=1;n<poly->ptsz;n++) {
-		if (poly->uv[uv_idx].x[n]<gx_min) gx_min=poly->uv[uv_idx].x[n];
-		if (poly->uv[uv_idx].x[n]>gx_max) gx_max=poly->uv[uv_idx].x[n];
-		if (poly->uv[uv_idx].y[n]<gy_min) gy_min=poly->uv[uv_idx].y[n];
-		if (poly->uv[uv_idx].y[n]>gy_max) gy_max=poly->uv[uv_idx].y[n];
+		if (uv->x[n]<gx_min) gx_min=uv->x[n];
+		if (uv->x[n]>gx_max) gx_max=uv->x[n];
+		if (uv->y[n]<gy_min) gy_min=uv->y[n];
+		if (uv->y[n]>gy_max) gy_max=uv->y[n];
 	}
 
 		// create boxed coordinates
@@ -762,52 +770,60 @@ void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,int uv_
 	*y_txtfact=map_get_texture_round_coord(gy_max-gy_min);
 }
 
-void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,int uv_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact)
+void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,bool light_map_uv,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact)
 {
 	int						n;
 	float					gx,gy,
 							org_x_txtoff,org_y_txtoff,org_x_txtfact,org_y_txtfact;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
+	map_mesh_poly_uv_type	*uv;
 
 	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 
+	if (!light_map_uv) {
+		uv=&poly->main_uv;
+	}
+	else {
+		uv=&poly->lmap_uv;
+	}
+
 		// get current box coordinates
 
-	map_mesh_get_poly_uv_as_box(map,mesh_idx,poly_idx,uv_idx,&org_x_txtoff,&org_y_txtoff,&org_x_txtfact,&org_y_txtfact);
+	map_mesh_get_poly_uv_as_box(map,mesh_idx,poly_idx,light_map_uv,&org_x_txtoff,&org_y_txtoff,&org_x_txtfact,&org_y_txtfact);
 
 		// reset to new coordinates
 
 	for (n=0;n!=poly->ptsz;n++) {
 	
-		if (poly->uv[uv_idx].x[n]==org_x_txtoff) {
-			poly->uv[uv_idx].x[n]=x_txtoff;
+		if (uv->x[n]==org_x_txtoff) {
+			uv->x[n]=x_txtoff;
 		}
 		else {
-			if (poly->uv[uv_idx].x[n]==(org_x_txtoff+org_x_txtfact)) {
-				poly->uv[uv_idx].x[n]=x_txtoff+x_txtfact;
+			if (uv->x[n]==(org_x_txtoff+org_x_txtfact)) {
+				uv->x[n]=x_txtoff+x_txtfact;
 			}
 			else {
-				gx=poly->uv[uv_idx].x[n]-org_x_txtoff;
+				gx=uv->x[n]-org_x_txtoff;
 				gx/=org_x_txtfact;
 				gx*=x_txtfact;
-				poly->uv[uv_idx].x[n]=x_txtoff+gx;
+				uv->x[n]=x_txtoff+gx;
 			}
 		}
 		
-		if (poly->uv[uv_idx].y[n]==org_y_txtoff) {
-			poly->uv[uv_idx].y[n]=y_txtoff;
+		if (uv->y[n]==org_y_txtoff) {
+			uv->y[n]=y_txtoff;
 		}
 		else {
-			if (poly->uv[uv_idx].y[n]==(org_y_txtoff+org_y_txtfact)) {
-				poly->uv[uv_idx].y[n]=y_txtoff+y_txtfact;
+			if (uv->y[n]==(org_y_txtoff+org_y_txtfact)) {
+				uv->y[n]=y_txtoff+y_txtfact;
 			}
 			else {
-				gy=poly->uv[uv_idx].y[n]-org_y_txtoff;
+				gy=uv->y[n]-org_y_txtoff;
 				gy/=org_y_txtfact;
 				gy*=y_txtfact;
-				poly->uv[uv_idx].y[n]=y_txtoff+gy;
+				uv->y[n]=y_txtoff+gy;
 			}
 		}
 	}
@@ -836,20 +852,20 @@ void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang
 		switch (rot_ang) {
 		
 			case 90:
-				g=poly->uv[0].x[n];
-				poly->uv[0].x[n]=poly->uv[0].y[n];
-				poly->uv[0].y[n]=-g;
+				g=poly->main_uv.x[n];
+				poly->main_uv.x[n]=poly->main_uv.y[n];
+				poly->main_uv.y[n]=-g;
 				break;
 				
 			case 180:
-				poly->uv[0].x[n]=-poly->uv[0].x[n];
-				poly->uv[0].y[n]=-poly->uv[0].y[n];
+				poly->main_uv.x[n]=-poly->main_uv.x[n];
+				poly->main_uv.y[n]=-poly->main_uv.y[n];
 				break;
 				
 			case 270:
-				g=poly->uv[0].x[n];
-				poly->uv[0].x[n]=-poly->uv[0].y[n];
-				poly->uv[0].y[n]=g;
+				g=poly->main_uv.x[n];
+				poly->main_uv.x[n]=-poly->main_uv.y[n];
+				poly->main_uv.y[n]=g;
 				break;
 		
 		}
@@ -868,14 +884,14 @@ void map_mesh_flip_poly_uv(map_type *map,int mesh_idx,int poly_idx,bool flip_u,b
 	
 		// get min and max
 		
-	min_gx=max_gx=poly->uv[0].x[0];
-	min_gy=max_gy=poly->uv[0].y[0];
+	min_gx=max_gx=poly->main_uv.x[0];
+	min_gy=max_gy=poly->main_uv.y[0];
 	
 	for (n=1;n<poly->ptsz;n++) {
-		if (poly->uv[0].x[n]<min_gx) min_gx=poly->uv[0].x[n];
-		if (poly->uv[0].x[n]>max_gx) max_gx=poly->uv[0].x[n];
-		if (poly->uv[0].y[n]<min_gy) min_gy=poly->uv[0].y[n];
-		if (poly->uv[0].y[n]>max_gy) max_gy=poly->uv[0].y[n];
+		if (poly->main_uv.x[n]<min_gx) min_gx=poly->main_uv.x[n];
+		if (poly->main_uv.x[n]>max_gx) max_gx=poly->main_uv.x[n];
+		if (poly->main_uv.y[n]<min_gy) min_gy=poly->main_uv.y[n];
+		if (poly->main_uv.y[n]>max_gy) max_gy=poly->main_uv.y[n];
 	}
 	
 	if ((flip_u) && (max_gx==min_gx)) return;
@@ -886,13 +902,13 @@ void map_mesh_flip_poly_uv(map_type *map,int mesh_idx,int poly_idx,bool flip_u,b
 	for (n=0;n!=poly->ptsz;n++) {
 		
 		if (flip_u) {
-			g=1.0f-((poly->uv[0].x[n]-min_gx)/(max_gx-min_gx));
-			poly->uv[0].x[n]=min_gx+((max_gx-min_gx)*g);
+			g=1.0f-((poly->main_uv.x[n]-min_gx)/(max_gx-min_gx));
+			poly->main_uv.x[n]=min_gx+((max_gx-min_gx)*g);
 		}
 			
 		if (flip_v) {
-			g=1.0f-((poly->uv[0].y[n]-min_gy)/(max_gy-min_gy));
-			poly->uv[0].y[n]=min_gy+((max_gy-min_gy)*g);
+			g=1.0f-((poly->main_uv.y[n]-min_gy)/(max_gy-min_gy));
+			poly->main_uv.y[n]=min_gy+((max_gy-min_gy)*g);
 		}
 	}
 }
@@ -996,8 +1012,8 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 			fx=f_dist_1/f_dist_2;
 			fy=(float)ky/(float)(poly->box.max.y-poly->box.min.y);
 
-			poly->uv[0].x[n]=x_txtoff+(x_txtfact*fx);
-			poly->uv[0].y[n]=y_txtoff+(y_txtfact*fy);
+			poly->main_uv.x[n]=x_txtoff+(x_txtfact*fx);
+			poly->main_uv.y[n]=y_txtoff+(y_txtfact*fy);
 		}
 		
 		return;
@@ -1035,8 +1051,8 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 		fx=(float)kx/(float)(poly->box.max.x-poly->box.min.x);
 		fz=(float)kz/(float)(poly->box.max.z-poly->box.min.z);
 
-		poly->uv[0].x[n]=x_txtoff+(x_txtfact*fx);
-		poly->uv[0].y[n]=y_txtoff+(y_txtfact*fz);
+		poly->main_uv.x[n]=x_txtoff+(x_txtfact*fx);
+		poly->main_uv.y[n]=y_txtoff+(y_txtfact*fz);
 	}
 }
 
@@ -1070,8 +1086,8 @@ void map_mesh_whole_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	poly=&mesh->polys[poly_idx];
 
 	for (n=0;n!=poly->ptsz;n++) {
-		poly->uv[0].x[n]=(float)floor(poly->uv[0].x[n]);
-		poly->uv[0].y[n]=(float)floor(poly->uv[0].y[n]);
+		poly->main_uv.x[n]=(float)floor(poly->main_uv.x[n]);
+		poly->main_uv.y[n]=(float)floor(poly->main_uv.y[n]);
 	}
 }
 
@@ -1110,8 +1126,8 @@ void map_mesh_single_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	m_gx=m_gy=0.0f;
 
 	for (n=0;n!=poly->ptsz;n++) {
-		m_gx+=poly->uv[0].x[n];
-		m_gy+=poly->uv[0].y[n];
+		m_gx+=poly->main_uv.x[n];
+		m_gy+=poly->main_uv.y[n];
 	}
 
 	m_gx=m_gx/(float)poly->ptsz;
@@ -1121,18 +1137,18 @@ void map_mesh_single_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 
 	for (n=0;n!=poly->ptsz;n++) {
 
-		if (poly->uv[0].x[n]<m_gx) {
-			poly->uv[0].x[n]=0.0f;
+		if (poly->main_uv.x[n]<m_gx) {
+			poly->main_uv.x[n]=0.0f;
 		}
 		else {
-			poly->uv[0].x[n]=1.0f;
+			poly->main_uv.x[n]=1.0f;
 		}
 
-		if (poly->uv[0].y[n]<m_gy) {
-			poly->uv[0].y[n]=0.0f;
+		if (poly->main_uv.y[n]<m_gy) {
+			poly->main_uv.y[n]=0.0f;
 		}
 		else {
-			poly->uv[0].y[n]=1.0f;
+			poly->main_uv.y[n]=1.0f;
 		}
 	}
 }
