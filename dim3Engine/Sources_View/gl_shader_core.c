@@ -226,8 +226,10 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		// but ok effect of the surface becoming more shiny
 		
 	if (spec) {
-		strcat(buf,"spec=(texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb*pixelAtt)+dim3SpecularWhitePoint;\n");
-		sprintf(strchr(buf,0),"shineFactor=1.0-(distance(gl_FragCoord.xy,vec2(%d.0,%d.0))/%d.0);\n",(setup.screen.x_sz>>1),(setup.screen.y_sz>>1),(int)(sqrt((setup.screen.x_sz*setup.screen.x_sz)+(setup.screen.y_sz+setup.screen.y_sz))*0.25));
+		strcat(buf,"spec=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb-0.0;\n");
+		strcat(buf,"spec=vec3(0.0,0.0,0.0);\n");
+//		strcat(buf,"spec=(texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb*pixelAtt)-dim3SpecularWhitePoint;\n");
+//		sprintf(strchr(buf,0),"shineFactor=1.0-(distance(gl_FragCoord.xy,vec2(%d.0,%d.0))/%d.0);\n",(setup.screen.x_sz>>1),(setup.screen.y_sz>>1),(int)(sqrt((setup.screen.x_sz*setup.screen.x_sz)+(setup.screen.y_sz+setup.screen.y_sz))*0.25));
 	//	strcat(buf,"spec=(spec+clamp((spec*shineFactor),0.0,1.0))");
 	//	if (bump) strcat(buf,"*bump");
 	//	strcat(buf,";\n");

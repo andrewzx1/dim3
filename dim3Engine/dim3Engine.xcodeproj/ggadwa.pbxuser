@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 285654937;
-			PBXWorkspaceStateSaveDate = 285654937;
+			PBXPerProjectTemplateStateSaveDate = 285893523;
+			PBXWorkspaceStateSaveDate = 285893523;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -139,9 +139,9 @@
 	};
 	26100DEA10BB5156002B3FA1 /* gl_shader_core.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1699, 7943}}";
-			sepNavSelRange = "{3226, 0}";
-			sepNavVisRange = "{5440, 1922}";
+			sepNavIntBoundsRect = "{{0, 0}, {1699, 7956}}";
+			sepNavSelRange = "{6908, 0}";
+			sepNavVisRange = "{6178, 1857}";
 			sepNavWindowFrame = "{{357, 172}, {1078, 758}}";
 		};
 	};
@@ -187,9 +187,9 @@
 	};
 	2625D0360F54C9960023B0D3 /* render_map_liquid.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 6682}}";
-			sepNavSelRange = "{5122, 0}";
-			sepNavVisRange = "{4544, 928}";
+			sepNavIntBoundsRect = "{{0, 0}, {908, 6864}}";
+			sepNavSelRange = "{9282, 0}";
+			sepNavVisRange = "{9123, 418}";
 			sepNavWindowFrame = "{{566, 83}, {999, 779}}";
 		};
 	};
@@ -1988,7 +1988,7 @@
 	};
 	F5C5EB100913264E00F94729 /* map.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7293}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7306}}";
 			sepNavSelRange = "{6748, 0}";
 			sepNavVisRange = "{5886, 1138}";
 			sepNavWindowFrame = "{{468, 180}, {1041, 747}}";

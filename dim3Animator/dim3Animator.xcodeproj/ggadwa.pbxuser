@@ -121,12 +121,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 285657194;
-			PBXWorkspaceStateSaveDate = 285657194;
+			PBXPerProjectTemplateStateSaveDate = 285893035;
+			PBXWorkspaceStateSaveDate = 285893035;
 		};
 		perUserProjectItems = {
-			262FFA9D110259C900D33C99 /* PBXTextBookmark */ = 262FFA9D110259C900D33C99 /* PBXTextBookmark */;
-			26F0DB7C1106CB5600FB3A48 /* PBXTextBookmark */ = 26F0DB7C1106CB5600FB3A48 /* PBXTextBookmark */;
+			26A2DCA31107F72200A49CFB /* PBXTextBookmark */ = 26A2DCA31107F72200A49CFB /* PBXTextBookmark */;
+			26B0842F110A621E005FAF92 /* PBXTextBookmark */ = 26B0842F110A621E005FAF92 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -262,7 +262,12 @@
 			sepNavWindowFrame = "{{493, 173}, {1041, 747}}";
 		};
 	};
-	262FFA9D110259C900D33C99 /* PBXTextBookmark */ = {
+	266C5AA610523868006FD9D1 /* Tool Normals.icns */ = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{15, 265}, {1078, 758}}";
+		};
+	};
+	26A2DCA31107F72200A49CFB /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -271,11 +276,6 @@
 		rType = 0;
 		vrLen = 0;
 		vrLoc = 0;
-	};
-	266C5AA610523868006FD9D1 /* Tool Normals.icns */ = {
-		uiCtxt = {
-			sepNavWindowFrame = "{{15, 265}, {1078, 758}}";
-		};
 	};
 	26A59FA40F327FB5007C6209 /* mesh_list.c */ = {
 		uiCtxt = {
@@ -301,15 +301,7 @@
 			sepNavWindowFrame = "{{247, 201}, {1041, 747}}";
 		};
 	};
-	26CC06B10F02C88E00807FEA /* bone_list.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5850}}";
-			sepNavSelRange = "{12530, 0}";
-			sepNavVisRange = "{11105, 1585}";
-			sepNavWindowFrame = "{{498, 115}, {1041, 747}}";
-		};
-	};
-	26F0DB7C1106CB5600FB3A48 /* PBXTextBookmark */ = {
+	26B0842F110A621E005FAF92 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -318,6 +310,14 @@
 		rType = 0;
 		vrLen = 0;
 		vrLoc = 0;
+	};
+	26CC06B10F02C88E00807FEA /* bone_list.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5850}}";
+			sepNavSelRange = "{12530, 0}";
+			sepNavVisRange = "{11105, 1585}";
+			sepNavWindowFrame = "{{498, 115}, {1041, 747}}";
+		};
 	};
 	F503D2560981A35B00DEDC74 /* draw_model.c */ = {
 		uiCtxt = {
@@ -511,9 +511,9 @@
 	};
 	F5AF0C9C09638E9700F99950 /* dialog_texture_setting.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7748}}";
-			sepNavSelRange = "{16408, 0}";
-			sepNavVisRange = "{14548, 2170}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7956}}";
+			sepNavSelRange = "{2005, 0}";
+			sepNavVisRange = "{287, 2176}";
 			sepNavWindowFrame = "{{232, 175}, {1041, 747}}";
 		};
 	};

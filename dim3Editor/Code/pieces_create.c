@@ -398,6 +398,7 @@ void piece_create_liquid(void)
 	liq->depth=5000;
 	
 	liq->txt_idx=0;
+	liq->lmap_txt_idx=-1;
 	liq->group_idx=-1;
 	liq->never_obscure=FALSE;
 	
