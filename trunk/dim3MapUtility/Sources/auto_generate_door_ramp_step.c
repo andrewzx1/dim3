@@ -709,7 +709,7 @@ void map_auto_generate_corridor_to_portal_connections(map_type *map)
 			
 				// steps
 
-			if (chk_portal->max.y<portal->max.y) {
+			if ((chk_portal->max.y<portal->max.y) && (!chk_portal->corridor_second_story)) {
 				if ((chk_portal->min.x>=portal->min.x) && (chk_portal->min.x<=portal->max.x)) {
 					x=(chk_portal->min.x-portal->min.x)-ag_constant_door_frame_depth;
 					door_sz=(chk_portal->max.x-chk_portal->min.x)+(ag_constant_door_frame_depth<<1);
