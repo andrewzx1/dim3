@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "walk_view.h"
 #include "import.h"
 
-extern int				drag_mode,main_wind_uv_layer;
+extern int				drag_mode;
 extern bool				done,map_opened,
 						dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area;
 
@@ -155,9 +155,8 @@ void menu_set_perspective_check(int perspective)
 
 void menu_set_uv_check(int uv_layer)
 {
-	CheckMenuItem(GetMenuHandle(app_menu_view),9,(uv_layer==0));
-	CheckMenuItem(GetMenuHandle(app_menu_view),10,(uv_layer==1));
-	CheckMenuItem(GetMenuHandle(app_menu_view),11,(uv_layer==2));
+	CheckMenuItem(GetMenuHandle(app_menu_view),9,(uv_layer==uv_layer_normal));
+	CheckMenuItem(GetMenuHandle(app_menu_view),10,(uv_layer==uv_layer_light_map));
 }
 
 void menu_set_show_hide_check(void)
@@ -296,12 +295,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandViewUVLayer1:
-			main_wind_set_uv_layer(0);
+			main_wind_set_uv_layer(uv_layer_normal);
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandViewUVLayer2:
-			main_wind_set_uv_layer(1);
+			main_wind_set_uv_layer(uv_layer_light_map);
 			main_wind_draw();
 			return(noErr);
 			
@@ -377,7 +376,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandBuildLightMaps:
 			if (dialog_light_map_run()) {
-				main_wind_set_uv_layer(1);
+				main_wind_set_uv_layer(uv_layer_light_map);
 				main_wind_draw();
 			}
 			return(noErr);

@@ -440,14 +440,15 @@ void piece_add_obj_mesh(void)
 
 void piece_add_obj_mesh_uv(void)
 {
-	int					n,k,type,nline,nvertex,npoly,nuv,npt,uv_idx,
-						mesh_idx,poly_idx;
-	char				*c,txt[256],vstr[256],uvstr[256],path[1024];
-	float				fx,fy,fz;
-	float				*uvs,*uv;
-	d3fpnt				min,max;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
+	int						n,k,type,nline,nvertex,npoly,nuv,npt,uv_idx,
+							mesh_idx,poly_idx;
+	char					*c,txt[256],vstr[256],uvstr[256],path[1024];
+	float					fx,fy,fz;
+	float					*uvs,*uv;
+	d3fpnt					min,max;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	map_mesh_poly_uv_type	*uv_ptr;
 	
 		// get mesh to replace UVs on
 		
@@ -567,6 +568,13 @@ void piece_add_obj_mesh_uv(void)
             // get the face points
         
         npt=0;
+		
+		if (main_wind_uv_layer==uv_layer_normal) {
+			uv_ptr=&poly->main_uv;
+		}
+		else {
+			uv_ptr=&poly->lmap_uv;
+		}
         
         for (k=0;k!=8;k++) {
             textdecode_get_piece(n,(k+1),txt);
@@ -584,14 +592,14 @@ void piece_add_obj_mesh_uv(void)
             if (c!=NULL) *c=0x0;
             
 			if (uvstr[0]==0x0) {
-				poly->uv[main_wind_uv_layer].x[npt]=poly->uv[main_wind_uv_layer].y[npt]=0.0f;
+				uv_ptr->x[npt]=uv_ptr->y[npt]=0.0f;
 			}
 			else {
 				uv_idx=atoi(uvstr)-1;
 				
 				uv=uvs+(uv_idx*2);
-                poly->uv[main_wind_uv_layer].x[npt]=*uv++;
-                poly->uv[main_wind_uv_layer].y[npt]=*uv;
+                uv_ptr->x[npt]=*uv++;
+                uv_ptr->y[npt]=*uv;
             }
 			
             npt++;
@@ -601,10 +609,6 @@ void piece_add_obj_mesh_uv(void)
 	free(uvs);
 	
 	textdecode_close();
-	
-		// activate this UV
-		
-	if (mesh->nuv<(main_wind_uv_layer+1)) mesh->nuv=main_wind_uv_layer+1;
 	
 		// finish up
 		
@@ -1030,7 +1034,7 @@ void piece_split_mesh(void)
 			z[k]=pt->z;
 		}
 		
-		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->uv[main_wind_uv_layer].x,poly->uv[main_wind_uv_layer].y,poly->txt_idx);
+		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->main_uv.x,poly->main_uv.y,poly->txt_idx);
 		
 			// delete poly from mesh
 			

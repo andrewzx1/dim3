@@ -184,6 +184,9 @@ and can be sold or given away.
 #define light_map_texture_block_size			8
 #define light_map_quality_to_pixel_factor		10000.0f
 
+#define uv_layer_normal							0
+#define uv_layer_light_map						1
+
 //
 // draw passing struct
 //

@@ -64,7 +64,7 @@ void palette_polygon_load(void)
 		mesh=&map.mesh.meshes[main_idx];
 		poly=&mesh->polys[poly_idx];
 
-		map_mesh_get_poly_uv_as_box(&map,main_idx,poly_idx,main_wind_uv_layer,&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+		map_mesh_get_poly_uv_as_box(&map,main_idx,poly_idx,(main_wind_uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
 		
 		dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,x_txtoff);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingOffY,0,y_txtoff);
@@ -84,11 +84,19 @@ void palette_polygon_load(void)
 		
 		dialog_enable(palette_poly_wind,kMeshPolySettingCamera,0,FALSE);
 		
-		dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,liq->uv[main_wind_uv_layer].x_offset);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingOffY,0,liq->uv[main_wind_uv_layer].y_offset);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeX,0,liq->uv[main_wind_uv_layer].x_size);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingSizeY,0,liq->uv[main_wind_uv_layer].y_size);
-
+		if (main_wind_uv_layer==uv_layer_normal) {
+			dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,liq->main_uv.x_offset);
+			dialog_set_float(palette_poly_wind,kMeshPolySettingOffY,0,liq->main_uv.y_offset);
+			dialog_set_float(palette_poly_wind,kMeshPolySettingSizeX,0,liq->main_uv.x_size);
+			dialog_set_float(palette_poly_wind,kMeshPolySettingSizeY,0,liq->main_uv.y_size);
+		}
+		else {
+			dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,liq->lmap_uv.x_offset);
+			dialog_set_float(palette_poly_wind,kMeshPolySettingOffY,0,liq->lmap_uv.y_offset);
+			dialog_set_float(palette_poly_wind,kMeshPolySettingSizeX,0,liq->lmap_uv.x_size);
+			dialog_set_float(palette_poly_wind,kMeshPolySettingSizeY,0,liq->lmap_uv.y_size);
+		}
+		
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,liq->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,liq->y_shift);
 	}
@@ -117,7 +125,7 @@ void palette_polygon_save(void)
 		x_txtfact=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
 		y_txtfact=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeY,0);
 
-		if ((x_txtfact>0.0f) && (y_txtfact>0.0f)) map_mesh_set_poly_uv_as_box(&map,main_idx,poly_idx,main_wind_uv_layer,x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+		if ((x_txtfact>0.0f) && (y_txtfact>0.0f)) map_mesh_set_poly_uv_as_box(&map,main_idx,poly_idx,(main_wind_uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
 
 		poly->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		poly->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
@@ -130,10 +138,18 @@ void palette_polygon_save(void)
 	else {
 		liq=&map.liquid.liquids[main_idx];
 
-		liq->uv[main_wind_uv_layer].x_offset=dialog_get_float(palette_poly_wind,kMeshPolySettingOffX,0);
-		liq->uv[main_wind_uv_layer].y_offset=dialog_get_float(palette_poly_wind,kMeshPolySettingOffY,0);
-		liq->uv[main_wind_uv_layer].x_size=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
-		liq->uv[main_wind_uv_layer].y_size=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeY,0);
+		if (main_wind_uv_layer==uv_layer_normal) {
+			liq->main_uv.x_offset=dialog_get_float(palette_poly_wind,kMeshPolySettingOffX,0);
+			liq->main_uv.y_offset=dialog_get_float(palette_poly_wind,kMeshPolySettingOffY,0);
+			liq->main_uv.x_size=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
+			liq->main_uv.y_size=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeY,0);
+		}
+		else {
+			liq->lmap_uv.x_offset=dialog_get_float(palette_poly_wind,kMeshPolySettingOffX,0);
+			liq->lmap_uv.y_offset=dialog_get_float(palette_poly_wind,kMeshPolySettingOffY,0);
+			liq->lmap_uv.x_size=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
+			liq->lmap_uv.y_size=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeY,0);
+		}
 		
 		liq->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		liq->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
