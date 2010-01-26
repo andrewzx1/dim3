@@ -78,6 +78,7 @@ extern model_type		model;
 
 #define kAnimationFlashBone					FOUR_CHAR_CODE('fbne')
 #define kAnimationFlashIntensity			FOUR_CHAR_CODE('fint')
+#define kAnimationFlashExponent				FOUR_CHAR_CODE('fexp')
 #define kAnimationFlashColor				FOUR_CHAR_CODE('fcol')
 #define kAnimationFlashColorEdit			FOUR_CHAR_CODE('colb')
 #define kAnimationFlashLiveTime				FOUR_CHAR_CODE('flvt')
@@ -144,6 +145,7 @@ void dialog_pose_move_settings_load(void)
 	
 	dialog_set_bone_combo(dialog_animation_settings_wind,kAnimationFlashBone,0,pose_move->flash.bone_idx);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashIntensity,0,pose_move->flash.intensity);
+	dialog_set_float(dialog_animation_settings_wind,kAnimationFlashExponent,0,pose_move->flash.exponent);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashLiveTime,0,pose_move->flash.flash_msec);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashFadeTime,0,pose_move->flash.fade_msec);
 	
@@ -193,6 +195,7 @@ void dialog_pose_move_settings_save(void)
 	pose_move->sound.no_position=dialog_get_boolean(dialog_animation_settings_wind,kAnimationSoundGlobal,0);
 	
 	pose_move->flash.intensity=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashIntensity,0);
+	pose_move->flash.exponent=dialog_get_float(dialog_animation_settings_wind,kAnimationFlashExponent,0);
 	pose_move->flash.flash_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashLiveTime,0);
 	pose_move->flash.fade_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashFadeTime,0);
 	

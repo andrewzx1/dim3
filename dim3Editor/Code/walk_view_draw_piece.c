@@ -165,13 +165,14 @@ void walk_view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 
 void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 {
-	int					n,k,t;
-	unsigned long		old_gl_id;
-	bool				clip_ok;
-	d3pnt				*pt;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*mesh_poly;
-	texture_type		*texture;
+	int						n,k,t;
+	unsigned long			old_gl_id;
+	bool					clip_ok;
+	d3pnt					*pt;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*mesh_poly;
+	map_mesh_poly_uv_type	*uv;
+	texture_type			*texture;
 							
 		// no depth buffer for transparent segments
 		
@@ -206,9 +207,9 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
 			// skip any meshes that don't have
-			// the correct UV level
+			// light maps if on light maps
 			
-		if (main_wind_uv_layer>=mesh->nuv) {
+		if ((main_wind_uv_layer==uv_layer_light_map) && (mesh->flag.no_light_map)) {
 			mesh++;
 			continue;
 		}
@@ -219,14 +220,20 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 		
 			mesh_poly=&mesh->polys[k];
 			
+				// no light map?
+				
+			if ((main_wind_uv_layer==uv_layer_light_map) && (mesh_poly->lmap_txt_idx==-1)) continue;
+			
 				// get texture.  If in second UV, we use light map
 				// texture for display if it exists
 				
-			texture=&map.textures[mesh_poly->txt_idx];
-			if (main_wind_uv_layer!=0) {
-				if (mesh_poly->lmap_txt_idx!=-1) {
-					texture=&map.textures[mesh_poly->lmap_txt_idx];
-				}
+			if (main_wind_uv_layer==uv_layer_normal) {
+				texture=&map.textures[mesh_poly->txt_idx];
+				uv=&mesh_poly->main_uv;
+			}
+			else {
+				texture=&map.textures[mesh_poly->lmap_txt_idx];
+				uv=&mesh_poly->lmap_uv;
 			}
 		
 				// opaque or transparent flag
@@ -267,7 +274,7 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 			
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
-				glTexCoord2f(mesh_poly->uv[main_wind_uv_layer].x[t],mesh_poly->uv[main_wind_uv_layer].y[t]);
+				glTexCoord2f(uv->x[t],uv->y[t]);
 				glVertex3i(pt->x,pt->y,pt->z);
 			}
 			
@@ -363,6 +370,7 @@ void walk_view_draw_liquids(bool opaque)
 	unsigned long		old_gl_id;
 	texture_type		*texture;
 	map_liquid_type		*liquid;
+	map_liquid_uv_type	*uv;
 	
 	if (!dp_liquid) return;
 	
@@ -399,10 +407,22 @@ void walk_view_draw_liquids(bool opaque)
 	
 	for (n=0;n!=nliquid;n++) {
 		liquid=&map.liquid.liquids[n];
-	
-			// textures
+		
+			// no light map?
+				
+		if ((main_wind_uv_layer==uv_layer_light_map) && (liquid->lmap_txt_idx==-1)) continue;
 			
-		texture=&map.textures[liquid->txt_idx];
+			// get texture.  If in second UV, we use light map
+			// texture for display if it exists
+			
+		if (main_wind_uv_layer==uv_layer_normal) {
+			texture=&map.textures[liquid->txt_idx];
+			uv=&liquid->main_uv;
+		}
+		else {
+			texture=&map.textures[liquid->lmap_txt_idx];
+			uv=&liquid->lmap_uv;
+		}
 	
 		if (opaque) {
 			if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
@@ -430,24 +450,24 @@ void walk_view_draw_liquids(bool opaque)
 		
 			// bottom
 			
-		glTexCoord2f(liquid->uv[0].x_offset,liquid->uv[0].y_offset);
+		glTexCoord2f(uv->x_offset,uv->y_offset);
 		glVertex3i(lx,y2,tz);
-		glTexCoord2f((liquid->uv[0].x_offset+liquid->uv[0].x_size),liquid->uv[0].y_offset);
+		glTexCoord2f((uv->x_offset+uv->x_size),uv->y_offset);
 		glVertex3i(rx,y2,tz);
-		glTexCoord2f((liquid->uv[0].x_offset+liquid->uv[0].x_size),(liquid->uv[0].y_offset+liquid->uv[0].y_size));
+		glTexCoord2f((uv->x_offset+uv->x_size),(uv->y_offset+uv->y_size));
 		glVertex3i(rx,y2,bz);
-		glTexCoord2f(liquid->uv[0].x_offset,(liquid->uv[0].y_offset+liquid->uv[0].y_size));
+		glTexCoord2f(uv->x_offset,(uv->y_offset+uv->y_size));
 		glVertex3i(lx,y2,bz);
 
 			// top
 			
-		glTexCoord2f(liquid->uv[0].x_offset,liquid->uv[0].y_offset);
+		glTexCoord2f(uv->x_offset,uv->y_offset);
 		glVertex3i(lx,y,tz);
-		glTexCoord2f((liquid->uv[0].x_offset+liquid->uv[0].x_size),liquid->uv[0].y_offset);
+		glTexCoord2f((uv->x_offset+uv->x_size),uv->y_offset);
 		glVertex3i(rx,y,tz);
-		glTexCoord2f((liquid->uv[0].x_offset+liquid->uv[0].x_size),(liquid->uv[0].y_offset+liquid->uv[0].y_size));
+		glTexCoord2f((uv->x_offset+uv->x_size),(uv->y_offset+uv->y_size));
 		glVertex3i(rx,y,bz);
-		glTexCoord2f(liquid->uv[0].x_offset,(liquid->uv[0].y_offset+liquid->uv[0].y_size));
+		glTexCoord2f(uv->x_offset,(uv->y_offset+uv->y_size));
 		glVertex3i(lx,y,bz);
 
 		glEnd();

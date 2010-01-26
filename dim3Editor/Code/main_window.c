@@ -973,7 +973,7 @@ void main_wind_open(void)
 	
 	drag_handle_idx=-1;
 	
-	main_wind_set_uv_layer(0);
+	main_wind_set_uv_layer(uv_layer_normal);
 	menu_set_show_hide_check();
 	
         // events
