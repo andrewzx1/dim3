@@ -368,7 +368,7 @@ typedef struct	{
 typedef struct	{
 					int										mesh_idx,corridor_connect_box_idx[2],
 															corridor_flag;
-					bool									second_story;
+					bool									second_story,corridor_second_story;
 					d3pnt									min,max;
 				} auto_generate_box_type;
 

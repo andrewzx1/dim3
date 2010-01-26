@@ -581,7 +581,7 @@ void map_auto_generate_connect_portals(map_type *map)
 
 void map_auto_generate_portal_y(void)
 {
-	int							n,by_add,portal_high,portal_high_story_add,story_y_add,
+	int							n,by_add,portal_high,portal_high_story_add,
 								corridor_high,y,y2,ty,by,extra_ty,extra_by,portal_sz;
 	auto_generate_box_type		*portal;
 	
@@ -643,21 +643,26 @@ void map_auto_generate_portal_y(void)
 
 				// possibly put corridor on second story
 
-			story_y_add=0;
+			portal->corridor_second_story=FALSE;
 
 			if ((map_auto_generate_second_story_exist(portal->corridor_connect_box_idx[0])) && (map_auto_generate_second_story_exist(portal->corridor_connect_box_idx[1]))) {
-				if ((((float)map_auto_generate_random_int(100))/100.0f)>(1.0f-ag_corridor_first_story_percent)) {
-					story_y_add=-((portal_high>>1)+ag_constant_step_story_size);
-				}
+				portal->corridor_second_story=(map_auto_generate_random_int(100)>50);
 			}
 
-				// corridor stick to highest
+				// regular corridor stick to highest
 				// room on one of their sides
 
-			y=ag_boxes[portal->corridor_connect_box_idx[0]].max.y+story_y_add;
-			y2=ag_boxes[portal->corridor_connect_box_idx[1]].max.y+story_y_add;
+			if (!portal->corridor_second_story) {
+				y=ag_boxes[portal->corridor_connect_box_idx[0]].max.y;
+				y2=ag_boxes[portal->corridor_connect_box_idx[1]].max.y;
+				if (y2<y) y=y2;
+			}
 
-			if (y2<y) y=y2;
+				// second story start directly on second story
+
+			else {
+				y=((map_max_size>>1)-((portal_high>>1)+ag_constant_step_story_size))+map_enlarge;
+			}
 
 			portal->min.y=y-corridor_high;
 			portal->max.y=y;
@@ -889,7 +894,7 @@ void map_auto_generate_walls(map_type *map)
 
 void map_auto_generate_height_walls(map_type *map)
 {
-	int							n,k,x,ex,kx,z,ez,kz,xsz,zsz,split_factor,txt_idx,portal_sz,
+	int							n,k,x,ex,kx,z,ez,kz,xsz,zsz,split_factor,portal_sz,
 								px[8],py[8],pz[8];
 	auto_generate_box_type		*portal,*chk_portal;
 
@@ -903,6 +908,13 @@ void map_auto_generate_height_walls(map_type *map)
 	portal=ag_boxes;
 
 	for (n=0;n!=ag_box_count;n++) {
+
+			// only do this to rooms, not corridors
+
+		if (portal->corridor_flag!=ag_corridor_flag_portal) {
+			portal++;
+			continue;
+		}
 		
 			// portal size
 
@@ -913,16 +925,19 @@ void map_auto_generate_height_walls(map_type *map)
 	
 		for (k=0;k!=ag_box_count;k++) {
 			if (k==n) continue;
+
+				// skip corridors
+
+			chk_portal=&ag_boxes[k];
+			if (chk_portal!=ag_corridor_flag_portal) continue;
 			
 				// only put height connecting walls in rooms that are higher
 				
-			chk_portal=&ag_boxes[k];
 			if (portal->min.y>=chk_portal->min.y) continue;
 			
 				// texture
 			
-			txt_idx=(portal->corridor_flag==ag_corridor_flag_portal)?ag_settings.texture.portal_wall:ag_settings.texture.corridor;
-			if (!map_auto_generate_mesh_start(map,n,-1,txt_idx,FALSE,FALSE)) return;
+			if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
 			
 				// portals touching top
 				
