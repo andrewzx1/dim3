@@ -78,7 +78,7 @@ extern void element_text_field_add(char *str,char *value_str,int max_value_str_s
 extern void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable);
 extern void element_combo_add(char *str,char *combo_data,int value,int id,int x,int y,bool selectable);
 extern void element_slider_add(char *str,float value,float value_min,float value_max,int id,int x,int y,bool selectable);
-extern void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,int bitmap_mode);
+extern void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,bool checkbox,int bitmap_mode);
 extern void element_tab_add(char *tab_list,int value,int id,int ntab);
 extern void element_color_add(char *str,int value,int id,int x,int y,bool selectable);
 extern void element_text_box_add(char *data,int id,int x,int y,int wid,int high);
@@ -98,6 +98,8 @@ extern void element_table_busy(int id,char *str,int count,int total_count);
 extern void element_text_change(int id,char *str);
 extern void element_set_table_data(int id,char *row_data);
 extern void element_set_bitmap(int id,char *path);
+extern void element_set_table_checkbox(int id,int idx,bool on);
+extern bool element_get_table_checkbox(int id,int idx);
 extern int element_get_scroll_position(int id);
 extern void element_set_scroll_position(int id,int pos);
 extern void element_make_selection_visible(int id);

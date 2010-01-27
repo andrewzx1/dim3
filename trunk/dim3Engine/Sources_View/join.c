@@ -457,7 +457,7 @@ void join_lan_internet_pane(bool lan)
 	strcpy(cols[3].name,"Ping");
 	cols[3].percent_size=0.8f;
 
-	element_table_add(cols,NULL,join_table_id,4,x,y,wid,high,element_table_bitmap_data);
+	element_table_add(cols,NULL,join_table_id,4,x,y,wid,high,FALSE,element_table_bitmap_data);
 	element_table_busy(join_table_id,NULL,0,1);
 
 		// start the thread to build the table

@@ -505,7 +505,7 @@ int element_table_add_get_data_size(char *row_data)
 	return((count+1)*128);
 }
 
-void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,int bitmap_mode)
+void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,bool checkbox,int bitmap_mode)
 {
 	int				n,sz;
 	element_type	*element;
@@ -518,7 +518,6 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	element->id=id;
 	element->type=element_type_table;
 	
-	element->setup.table.ncolumn=ncolumn;
 	element->setup.table.busy_count=element->setup.table.busy_total_count=-1;
 	
 	element->x=x;
@@ -529,8 +528,6 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	element->selectable=TRUE;
 	element->enabled=TRUE;
 	element->hidden=FALSE;
-	
-	memmove(element->setup.table.cols,cols,(sizeof(element_column_type)*ncolumn));
 	
 	element->value=-1;
 	element->offset=0;
@@ -544,13 +541,34 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 		memmove(element->data,row_data,sz);
 	}
 
+	element->setup.table.checkbox=checkbox;
 	element->setup.table.bitmap_mode=bitmap_mode;
+
+	bzero(element->setup.table.checks,element_table_max_check);
 	
 	for (n=0;n!=element_table_max_image;n++) {
 		element->setup.table.images[n].image_idx=-1;
 	}
 	
 	element->setup.table.next_image_idx=0;
+
+		// if checkbox is on, we need to
+		// add the checkbox column and remove
+		// that space from the first column
+
+	if (!checkbox) {
+		element->setup.table.ncolumn=ncolumn;
+		memmove(element->setup.table.cols,cols,(sizeof(element_column_type)*ncolumn));
+	}
+	else {
+		element->setup.table.ncolumn=ncolumn+1;
+		memmove(&element->setup.table.cols[1],cols,(sizeof(element_column_type)*ncolumn));
+
+		element->setup.table.cols[0].percent_size=element_table_check_column_size;
+		element->setup.table.cols[0].name[0]=0x0;
+
+		element->setup.table.cols[1].percent_size-=element_table_check_column_size;
+	}
 	
 	SDL_mutexV(element_thread_lock);
 }
@@ -1707,13 +1725,26 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	int				n,dx,dy;
 	unsigned long	gl_id;
 	char			*c,*c2,txt[256];
+	bool			first_col;
 	d3col			col,col2;
 
+	dx=x+4;
 	dy=y+((row_high>>1)-1);
-	
+
+		// data column
+
 	c=data;
+	first_col=TRUE;
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
+
+			// checkboxes
+
+		if ((element->setup.table.checkbox) && (n==0)) {
+
+			dx+=(int)(element->setup.table.cols[n].percent_size*(float)wid);
+			continue;
+		}
 	
 			// get current data
 			
@@ -1724,9 +1755,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 			// draw any bitmaps
 
-		dx=x+4;
-
-		if ((element->setup.table.bitmap_mode!=element_table_bitmap_none) && (n==0)) {
+		if ((element->setup.table.bitmap_mode!=element_table_bitmap_none) && (first_col)) {
 
 				// draw bitmap
 
@@ -1766,6 +1795,8 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 			dx+=(element_table_bitmap_size+4);
 		}
+
+		first_col=FALSE;
 		
 			// draw text
 			
@@ -1779,7 +1810,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 		if (c==NULL) break;
 		c++;
 		
-		x+=(int)(element->setup.table.cols[n].percent_size*(float)wid);
+		dx+=(int)(element->setup.table.cols[n].percent_size*(float)wid);
 	}
 }
 
@@ -2914,6 +2945,12 @@ void element_set_value_string(int id,char *str)
 	SDL_mutexV(element_thread_lock);
 }
 
+/* =======================================================
+
+      Table Data
+      
+======================================================= */
+
 void element_set_table_data(int id,char *row_data)
 {
 	int				idx,sz;
@@ -2957,6 +2994,41 @@ void element_set_bitmap(int id,char *path)
 
 	SDL_mutexV(element_thread_lock);
 }
+
+void element_set_table_checkbox(int id,int idx,bool on)
+{
+	element_type	*element;
+	
+	SDL_mutexP(element_thread_lock);
+
+	element=element_find(id);
+	if (element!=NULL) element->setup.table.checks[idx]=(on?0x1:0x0);
+	
+	SDL_mutexV(element_thread_lock);
+}
+
+bool element_get_table_checkbox(int id,int idx)
+{
+	bool			on;
+	element_type	*element;
+	
+	on=FALSE;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=element_find(id);
+	if (element!=NULL) on=(element->setup.table.checks[idx]!=0x0);
+	
+	SDL_mutexV(element_thread_lock);
+
+	return(on);
+}
+
+/* =======================================================
+
+      Position/Scrolling
+      
+======================================================= */
 
 int element_get_scroll_position(int id)
 {

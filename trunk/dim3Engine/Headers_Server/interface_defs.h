@@ -90,6 +90,8 @@ and can be sold or given away.
 
 #define element_table_max_image					16
 #define element_table_bitmap_size				64
+#define element_table_max_check					128
+#define element_table_check_column_size			0.05f
 
 //
 // GUI text
@@ -148,7 +150,8 @@ typedef struct		{
 typedef struct		{
 						int						ncolumn,next_image_idx,bitmap_mode,
 												busy_count,busy_total_count;
-						char					busy_str[256];
+						char					busy_str[256],checks[element_table_max_check];
+						bool					checkbox;
 						element_column_type		cols[max_element_column];
 						element_image_type		images[element_table_max_image];
 					} element_table_type;

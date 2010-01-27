@@ -47,7 +47,8 @@ and can be sold or given away.
 #define host_button_cancel_id			11
 #define host_game_type_id				12
 #define host_table_id					13
-#define host_status_id					14
+#define host_dedicated_id				14
+#define host_status_id					15
 
 #define host_game_bot_count_id			20
 #define host_game_bot_skill_id			21
@@ -207,11 +208,16 @@ void host_game_pane(void)
 	y=((margin+element_get_tab_control_high())+padding)+control_y_add;
 	
 	element_combo_add("Game Type",(char*)net_game_types,setup.network.game_type,host_game_type_id,x,y,TRUE);
+	y+=control_y_add;
+
+		// dedicated checkbox
+
+	element_checkbox_add("Dedicated",setup.network.dedicated,host_dedicated_id,x,y,TRUE);
+	y+=padding;
 
 		// hosts table
 		
 	x=margin+padding;
-	y+=padding;
 
 	wid=hud.scale_x-((margin+padding)*2);
 	high=(int)(((float)hud.scale_y)*0.85f)-y;
@@ -219,7 +225,7 @@ void host_game_pane(void)
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,NULL,host_table_id,1,x,y,wid,high,element_table_bitmap_data);
+	element_table_add(cols,NULL,host_table_id,1,x,y,wid,high,TRUE,element_table_bitmap_data);
 	
 		// fill table with maps
 
@@ -614,6 +620,10 @@ void host_handle_click(int id)
 			host_map_idx=element_get_value(host_table_id);
 			element_enable(host_button_host_id,(host_map_idx!=-1));
 			host_get_last_map();
+			break;
+
+		case host_dedicated_id:
+			setup.network.dedicated=(element_get_value(host_dedicated_id)!=0);
 			break;
 
 		case host_game_bot_count_id:

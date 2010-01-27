@@ -298,7 +298,7 @@ void file_open(bool is_save)
 	strcpy(cols[2].name,"Elapsed Time");
 	cols[2].percent_size=0.18f;
 
-	element_table_add(cols,file_table_data,file_directory_id,3,x,y,wid,high,element_table_bitmap_document);
+	element_table_add(cols,file_table_data,file_directory_id,3,x,y,wid,high,FALSE,element_table_bitmap_document);
 	
 		// buttons
 		
