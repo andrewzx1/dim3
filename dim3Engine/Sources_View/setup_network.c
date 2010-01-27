@@ -156,7 +156,7 @@ void setup_network_player_pane(void)
 		strcpy(cols[0].name,"Characters");
 		cols[0].percent_size=1.0f;
 
-		element_table_add(cols,NULL,ctrl_character_id,1,x,y,wid,high,element_table_bitmap_data);
+		element_table_add(cols,NULL,ctrl_character_id,1,x,y,wid,high,FALSE,element_table_bitmap_data);
 	
 			// fill and select table
 
@@ -193,7 +193,7 @@ void setup_network_host_pane(void)
 	strcpy(cols[1].name,"Address");
 	cols[1].percent_size=0.5f;
 	
-	element_table_add(cols,(char*)setup_host_list,ctrl_network_host_id,2,x,y,wid,high,element_table_bitmap_none);
+	element_table_add(cols,(char*)setup_host_list,ctrl_network_host_id,2,x,y,wid,high,FALSE,element_table_bitmap_none);
 
 		// host editing
 

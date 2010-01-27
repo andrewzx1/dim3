@@ -124,7 +124,7 @@ typedef struct		{
 						int							game_type,score_limit,
 													character_idx,tint_color_idx;
 						char						name[name_str_len],last_map[name_str_len];
-						bool						show_names;
+						bool						show_names,dedicated;
 						setup_network_hosts_type	host;
 						setup_network_bot_type		bot;
 						setup_network_options_type	option;
