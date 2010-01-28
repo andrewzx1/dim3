@@ -385,14 +385,30 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,0);
 		
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
-	
-	if (liq->lmap_txt_idx!=-1) {
-		glClientActiveTexture(GL_TEXTURE1);
+	if (liq->lmap_txt_idx==-1) {
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*(3+2+3))*sizeof(float)));
-		glClientActiveTexture(GL_TEXTURE0);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
+	}
+	else {
+	
+		if (shader_on) {
+			glClientActiveTexture(GL_TEXTURE1);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*(3+2+3))*sizeof(float)));
+		
+			glClientActiveTexture(GL_TEXTURE0);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
+		}
+		else {
+			glClientActiveTexture(GL_TEXTURE1);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
+		
+			glClientActiveTexture(GL_TEXTURE0);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*(3+2+3))*sizeof(float)));
+		}
 	}
 
 		// shader drawing

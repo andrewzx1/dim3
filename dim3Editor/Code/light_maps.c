@@ -441,30 +441,77 @@ void light_map_textures_blur(void)
 
 /* =======================================================
 
-      Create Mesh Poly Light Map Polys
+      Create Mesh Light Map Polys
       
 ======================================================= */
 
-void light_map_create_mesh_poly_flatten_setup_size(map_mesh_poly_type *poly,light_map_poly_type *lm_poly)
+void light_map_create_mesh_poly_flatten_setup_size(light_map_poly_type *lm_poly)
 {
 	int				n;
 	
 	lm_poly->x_sz=0;
 	lm_poly->y_sz=0;
 	
-	for (n=0;n!=poly->ptsz;n++) {
+	for (n=0;n!=lm_poly->ptsz;n++) {
 		if (lm_poly->x[n]>lm_poly->x_sz) lm_poly->x_sz=lm_poly->x[n];
 		if (lm_poly->y[n]>lm_poly->y_sz) lm_poly->y_sz=lm_poly->y[n];
 	}
 }
 
+void light_map_create_poly_flatten(light_map_poly_type *lm_poly)
+{
+	int				n,max_sz,min_x,min_y;
+	float			factor;
+	
+		// flatten
+		
+	light_map_create_mesh_poly_flatten_setup_size(lm_poly);
+	
+		// largest poly is 1/4 of texture size
+		
+	max_sz=map.settings.light_map_size>>2;
+	if ((lm_poly->x_sz<=max_sz) && (lm_poly->y_sz<=max_sz)) return;
+	
+		// reduce to 1/4 size
+		
+	if (lm_poly->x_sz>lm_poly->y_sz) {
+		factor=(float)max_sz/(float)lm_poly->x_sz;
+	}
+	else {
+		factor=(float)max_sz/(float)lm_poly->y_sz;
+	}
+	
+	min_x=lm_poly->x_sz;
+	min_y=lm_poly->y_sz;
+	
+	for (n=0;n!=lm_poly->ptsz;n++) {
+		lm_poly->x[n]=(int)(((float)lm_poly->x[n])*factor);
+		lm_poly->y[n]=(int)(((float)lm_poly->y[n])*factor);
+	
+		if (lm_poly->x[n]<min_x) min_x=lm_poly->x[n];
+		if (lm_poly->y[n]<min_y) min_y=lm_poly->y[n];
+	}
+	
+		// push reduced polygon back to top-left
+		// and rebuild poly size
+		
+	for (n=0;n!=lm_poly->ptsz;n++) {
+		lm_poly->x[n]-=min_x;
+		lm_poly->y[n]-=min_y;
+	}
+	
+	light_map_create_mesh_poly_flatten_setup_size(lm_poly);
+}
+
 void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_poly_type *lm_poly)
 {
-	int					n,x,y,max_sz,min_x,min_y;
+	int					n,x,y;
 	float				factor;
 	double				dx,dz;
 	d3pnt				*pt;
 	
+	factor=((float)map.settings.light_map_quality)/light_map_quality_to_pixel_factor;
+			
 		// flatten the poly
 		// and get 3D points
 	
@@ -489,67 +536,33 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 		
 			// reduce to pixel factor (size of render)
 			
-		factor=((float)map.settings.light_map_quality)/light_map_quality_to_pixel_factor;
-			
 		lm_poly->x[n]=(int)((float)x*factor);
 		lm_poly->y[n]=(int)((float)y*factor);
 	}
-	
-		// get the poly size
-		
-	light_map_create_mesh_poly_flatten_setup_size(poly,lm_poly);
-	
-		// largest poly is 1/4 of texture size
-		
-	max_sz=map.settings.light_map_size>>2;
-	if ((lm_poly->x_sz<=max_sz) && (lm_poly->y_sz<=max_sz)) return;
-	
-		// reduce to 1/4 size
-		
-	if (lm_poly->x_sz>lm_poly->y_sz) {
-		factor=(float)max_sz/(float)lm_poly->x_sz;
-	}
-	else {
-		factor=(float)max_sz/(float)lm_poly->y_sz;
-	}
-	
-	min_x=lm_poly->x_sz;
-	min_y=lm_poly->y_sz;
-	
-	for (n=0;n!=poly->ptsz;n++) {
-		lm_poly->x[n]=(int)(((float)lm_poly->x[n])*factor);
-		lm_poly->y[n]=(int)(((float)lm_poly->y[n])*factor);
-	
-		if (lm_poly->x[n]<min_x) min_x=lm_poly->x[n];
-		if (lm_poly->y[n]<min_y) min_y=lm_poly->y[n];
-	}
-	
-		// push reduced polygon back to top-left
-		// and rebuild poly size
-		
-	for (n=0;n!=poly->ptsz;n++) {
-		lm_poly->x[n]-=min_x;
-		lm_poly->y[n]-=min_y;
-	}
-	
-	light_map_create_mesh_poly_flatten_setup_size(poly,lm_poly);
 }
-
-/* =======================================================
-
-      Create Liquid LM Polys
-      
-======================================================= */
 
 void light_map_create_liquid_poly_flatten(map_liquid_type *liq,light_map_poly_type *lm_poly)
 {
+	float				factor;
+	
+	factor=((float)map.settings.light_map_quality)/light_map_quality_to_pixel_factor;
+			
+		// flatten the poly
+		// and get 3D points
+	
+	lm_poly->ptsz=4;
+	
+	lm_poly->pt[0].x=lm_poly->pt[3].x=liq->lft;
+	lm_poly->pt[1].x=lm_poly->pt[2].x=liq->rgt;
+	lm_poly->pt[0].z=lm_poly->pt[1].z=liq->top;
+	lm_poly->pt[2].z=lm_poly->pt[3].z=liq->bot;
+	lm_poly->pt[0].y=lm_poly->pt[1].y=lm_poly->pt[2].y=lm_poly->pt[3].y=liq->y;
+	
+	lm_poly->x[0]=lm_poly->x[3]=0.0f;
+	lm_poly->x[1]=lm_poly->x[2]=(int)((float)(liq->rgt-liq->lft)*factor);
+	lm_poly->y[0]=lm_poly->y[1]=0.0f;
+	lm_poly->y[2]=lm_poly->y[3]=(int)((float)(liq->bot-liq->top)*factor);
 }
-
-/* =======================================================
-
-      Light Maps Poly Setup
-      
-======================================================= */
 
 int light_map_get_poly_count(void)
 {
@@ -569,7 +582,7 @@ int light_map_get_poly_count(void)
 	
 		// liquids
 		
-//	count+=map.liquid.nliquid;	// supergumba
+	count+=map.liquid.nliquid;
 	
 	return(count);
 }
@@ -634,6 +647,7 @@ bool light_map_polys_start(char *err_str)
 				
 			map_prepare_mesh_poly(mesh,poly);
 			light_map_create_mesh_poly_flatten(mesh,poly,lm_poly);
+			light_map_create_poly_flatten(lm_poly);
 
 			poly++;
 			lm_poly++;
@@ -642,7 +656,6 @@ bool light_map_polys_start(char *err_str)
 	
 		// liquid polys
 
-/* supergumba		
 	liq=map.liquid.liquids;
 	
 	for (n=0;n!=map.liquid.nliquid;n++) {
@@ -660,11 +673,12 @@ bool light_map_polys_start(char *err_str)
 			// flatten the poly
 			
 		light_map_create_liquid_poly_flatten(liq,lm_poly);
+		light_map_create_poly_flatten(lm_poly);
 
 		liq++;
 		lm_poly++;
 	}
-*/	
+
 	return(TRUE);
 }
 
@@ -1449,20 +1463,15 @@ void light_map_add_solid_color(unsigned char *col,int txt_idx,int x,int y)
       
 ======================================================= */
 
-bool light_map_create_poly(int lm_poly_idx,char *err_str)
+bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 {
 	int							n,x,y,txt_idx;
 	unsigned char				solid_col[3];
 	d3rect						box;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
 	light_map_poly_type			*lm_poly;
 	light_map_texture_type		*lmap;
 
 	lm_poly=&light_map_polys[lm_poly_idx];
-	
-	mesh=&map.mesh.meshes[lm_poly->mesh_idx];
-	poly=&mesh->polys[lm_poly->poly_idx];
 	
 		// detect if this poly's
 		// light map is a solid color
@@ -1543,16 +1552,19 @@ bool light_map_create_poly(int lm_poly_idx,char *err_str)
 	return(TRUE);
 }
 
-void light_map_finialize_poly(int lm_poly_idx)
+/* =======================================================
+
+      Set UVs and Textures
+      
+======================================================= */
+
+void light_map_set_texture_uv_mesh_poly(light_map_poly_type *lm_poly)
 {
 	int							n;
 	float						f_pixel_size,gx,gy;
-	light_map_poly_type			*lm_poly;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 
-	lm_poly=&light_map_polys[lm_poly_idx];
-	
 	mesh=&map.mesh.meshes[lm_poly->mesh_idx];
 	poly=&mesh->polys[lm_poly->poly_idx];
 			
@@ -1588,6 +1600,53 @@ void light_map_finialize_poly(int lm_poly_idx)
 	}
 }
 
+void light_map_set_texture_uv_liquid(light_map_poly_type *lm_poly)
+{
+	float						f_pixel_size;
+	map_liquid_type				*liq;
+
+	liq=&map.liquid.liquids[lm_poly->liquid_idx];
+			
+		// set light map texture
+	
+	liq->lmap_txt_idx=(max_map_texture-max_light_map_textures)+lm_poly->txt_idx;
+	
+		// UVs across the light map texture size
+		
+	f_pixel_size=(float)map.settings.light_map_size;
+
+		// solid color maps
+		// put the UV in the center of the block
+		
+	if (lm_poly->solid_color) {
+		liq->lmap_uv.x_offset=(float)(lm_poly->x_shift+(light_map_texture_block_size>>1))/f_pixel_size;
+		liq->lmap_uv.y_offset=(float)(lm_poly->y_shift+(light_map_texture_block_size>>1))/f_pixel_size;
+		liq->lmap_uv.x_size=liq->lmap_uv.y_size=0.0f;
+		return;
+	}
+	
+		// regular light mapping uvs
+		
+	liq->lmap_uv.x_offset=((float)(lm_poly->x[0]+lm_poly->x_shift))/f_pixel_size;
+	liq->lmap_uv.y_offset=((float)(lm_poly->y[0]+lm_poly->y_shift))/f_pixel_size;
+	liq->lmap_uv.x_size=((float)(lm_poly->x[1]-lm_poly->x[0]))/f_pixel_size;
+	liq->lmap_uv.y_size=((float)(lm_poly->y[3]-lm_poly->y[0]))/f_pixel_size;
+}
+
+void light_map_set_texture_uv(int lm_poly_idx)
+{
+	light_map_poly_type			*lm_poly;
+
+	lm_poly=&light_map_polys[lm_poly_idx];
+
+	if (lm_poly->mesh_idx!=-1) {
+		light_map_set_texture_uv_mesh_poly(lm_poly);
+		return;
+	}
+	
+	light_map_set_texture_uv_liquid(lm_poly);
+}
+
 /* =======================================================
 
       Run Light Maps
@@ -1609,11 +1668,12 @@ bool light_maps_create_process(char *err_str)
 	mkdir(dir_path,S_IRWXU|S_IRWXG|S_IRWXO);
 		
 		// clear the textures and
-		// start mesh-poly setup
+		// start mesh-poly and/or liquid setup
 		
 	dialog_progress_next();
 		
 	if (!light_map_textures_start(err_str)) return(FALSE);
+	
 	if (!light_map_polys_start(err_str)) {
 		light_map_textures_free();
 		return(FALSE);
@@ -1621,12 +1681,13 @@ bool light_maps_create_process(char *err_str)
 	
 	light_map_bitmap_transparency_start();
 	
-		// ray trace all the polys
+		// create a ray traced light map
+		// for all the polys
 		
 	for (n=0;n!=light_map_poly_count;n++) {
 		if ((n%20)==0) dialog_progress_next();
 		
-		if (!light_map_create_poly(n,err_str)) {
+		if (!light_map_run_for_poly(n,err_str)) {
 			light_map_bitmap_transparency_free();
 			light_map_textures_free();
 			light_map_polys_free();
@@ -1635,7 +1696,7 @@ bool light_maps_create_process(char *err_str)
 		
 	}
 	
-		// borders and blue
+		// borders and blur
 		
 	light_map_textures_pixel_border();
 	
@@ -1647,12 +1708,12 @@ bool light_maps_create_process(char *err_str)
 	dialog_progress_next();
 	light_map_textures_save(base_path);
 	
-		// fix all polys (add UVs and
-		// set alternate texture)
+		// set light map textures
+		// and UVs
 		
 	for (n=0;n!=light_map_poly_count;n++) {
 		if ((n%20)==0) dialog_progress_next();
-		light_map_finialize_poly(n);
+		light_map_set_texture_uv(n);
 	}
 	
 		// free textures and polys
