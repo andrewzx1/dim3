@@ -108,7 +108,7 @@ bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx,b
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_horz_edge_block(int skip_portal_idx,int z,int ez,int x)
+int map_auto_generate_portal_horz_edge_block(int skip_portal_idx,int z,int ez,int x)
 {
 	int						n;
 	auto_generate_box_type	*portal;
@@ -119,14 +119,14 @@ bool map_auto_generate_portal_horz_edge_block(int skip_portal_idx,int z,int ez,i
 		portal=&ag_boxes[n];
 
 		if ((portal->min.x!=x) && (portal->max.x!=x)) continue;
-		if ((z>=portal->min.z) && (z<portal->max.z)) return(TRUE);
-		if ((ez>portal->min.z) && (ez<=portal->max.z)) return(TRUE);
+		if ((z>=portal->min.z) && (z<portal->max.z)) return(n);
+		if ((ez>portal->min.z) && (ez<=portal->max.z)) return(n);
 	}
 
-	return(FALSE);
+	return(-1);
 }
 
-bool map_auto_generate_portal_vert_edge_block(int skip_portal_idx,int x,int ex,int z)
+int map_auto_generate_portal_vert_edge_block(int skip_portal_idx,int x,int ex,int z)
 {
 	int						n;
 	auto_generate_box_type	*portal;
@@ -137,11 +137,11 @@ bool map_auto_generate_portal_vert_edge_block(int skip_portal_idx,int x,int ex,i
 		portal=&ag_boxes[n];
 
 		if ((portal->min.z!=z) && (portal->max.z!=z)) continue;
-		if ((x>=portal->min.x) && (x<portal->max.x)) return(TRUE);
-		if ((ex>portal->min.x) && (ex<=portal->max.x)) return(TRUE);
+		if ((x>=portal->min.x) && (x<portal->max.x)) return(n);
+		if ((ex>portal->min.x) && (ex<=portal->max.x)) return(n);
 	}
 
-	return(FALSE);
+	return(-1);
 }
 
 bool map_auto_generate_portal_horz_edge_touch(int skip_portal_idx,int z,int ez,int x)

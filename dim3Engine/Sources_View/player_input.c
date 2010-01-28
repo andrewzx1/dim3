@@ -204,7 +204,7 @@ void player_movement_fpp_xz_input(obj_type *obj)
 
 		// forward or backwards movement keys
 
-	joy_ok=(input_check_joystick_ok()) && (setup.joystick_mode==joystick_mode_turn_move);
+	joy_ok=input_check_joystick_ok();
 
 	key_backward=FALSE;
 	key_forward=input_action_get_state(nc_move_forward);
@@ -906,8 +906,7 @@ void player_fpp_input(void)
 
 void player_get_input(int tick)
 {
-	int				joystick_mode;
-	float			mouse_x,mouse_y,temp_x,temp_y;
+	float			mouse_x,mouse_y;
 	obj_type		*obj;
 	
 	obj=object_find_uid(server.player_obj_uid);
@@ -927,6 +926,7 @@ void player_get_input(int tick)
 		// proper movement routines
 	
 /* supergumba
+//	if (!input_check_joystick_ok()) joystick_mode=joystick_mode_not_used;
 	switch (obj->input_mode) {
 	
 		case im_fpp:
@@ -952,26 +952,8 @@ void player_get_input(int tick)
 	
 		// get turning movement
 
-	joystick_mode=setup.joystick_mode;
-	if (!input_check_joystick_ok()) joystick_mode=joystick_mode_not_used;
-		
-	switch (joystick_mode) {
-
-		case joystick_mode_turn_only:
-		case joystick_mode_turn_move:
-			input_get_joystick_movement(&mouse_x,&temp_y);
-			input_get_mouse_movement(tick,&temp_x,&mouse_y);
-			break;
-
-		case joystick_mode_turn_look:
-			input_get_joystick_movement(&mouse_x,&mouse_y);
-			break;
-
-		default:
-			input_get_mouse_movement(tick,&mouse_x,&mouse_y);
-			break;
-
-	}
+	
+	input_get_mouse_movement(tick,&mouse_x,&mouse_y);
 
 		// turning and movement
 		

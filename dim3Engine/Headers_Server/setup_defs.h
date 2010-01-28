@@ -49,13 +49,6 @@ and can be sold or given away.
 
 #define setup_fsaa_mode_list_def					{"None","2x","4x","8x",""}
 
-#define setup_joystick_mode_list_def				{"Not Used","Turn Only","Turning and Moving","Turning and Looking",""}
-
-#define joystick_mode_not_used						0
-#define joystick_mode_turn_only						1
-#define joystick_mode_turn_move						2
-#define joystick_mode_turn_look						3
-
 //
 // setup paths
 //
@@ -147,8 +140,7 @@ typedef struct		{
 					
 typedef struct		{
 						int							screen_wid,screen_high,
-													anisotropic_mode,mipmap_mode,fsaa_mode,
-													joystick_mode;
+													anisotropic_mode,mipmap_mode,fsaa_mode;
 						float						gamma,sound_volume,music_volume;
 						bool						lock_fps_refresh,compress_on,
 													decal_on,lightmap_on,shadow_on,

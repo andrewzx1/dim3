@@ -34,8 +34,6 @@ extern int map_auto_generate_random_int(int max);
 extern bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx,bool corridor_only);
 extern bool map_auto_generate_portal_horz_edge_touch(int skip_portal_idx,int z,int ez,int x);
 extern bool map_auto_generate_portal_vert_edge_touch(int skip_portal_idx,int x,int ex,int z);
-extern bool map_auto_generate_portal_horz_edge_block(int skip_portal_idx,int z,int ez,int x);
-extern bool map_auto_generate_portal_vert_edge_block(int skip_portal_idx,int x,int ex,int z);
 extern bool map_auto_generate_portal_touching_left(int portal_idx);
 extern bool map_auto_generate_portal_touching_right(int portal_idx);
 extern bool map_auto_generate_portal_touching_top(int portal_idx);
