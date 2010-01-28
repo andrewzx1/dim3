@@ -716,7 +716,7 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 	glColor4f(col->r,col->g,col->b,alpha);
 
 		// draw the quad
-		
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 

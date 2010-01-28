@@ -1130,12 +1130,79 @@ void element_click_checkbox(element_type *element)
 	element->value=element->value^0x1;
 }
 
+void element_draw_checkbox_control(int x,int y,int draw_sz,bool checked,bool enabled,bool hilite)
+{
+	int			lft,rgt,top,bot,px[4],py[4];
+	float		alpha,f;
+	d3col		col,col2,gradient_start,gradient_end;
+
+		// checkbox
+
+	lft=x;
+	rgt=lft+draw_sz;
+	top=y-(draw_sz>>1);
+	bot=top+draw_sz;
+
+	alpha=(enabled?1.0f:0.3f);
+
+		// background
+		
+	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
+	gradient_end.r=gradient_start.r*element_gradient_factor;
+	gradient_end.g=gradient_start.g*element_gradient_factor;
+	gradient_end.b=gradient_start.b*element_gradient_factor;
+
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,alpha);
+
+		// check
+
+	if (checked) {
+		col.r=hud.color.control_hilite.r*element_gradient_factor;
+		col.g=hud.color.control_hilite.g*element_gradient_factor;
+		col.b=hud.color.control_hilite.b*element_gradient_factor;
+
+		f=element_gradient_factor*1.5f;
+
+		col2.r=hud.color.control_hilite.r*f;
+		col2.g=hud.color.control_hilite.g*f;
+		col2.b=hud.color.control_hilite.b*f;
+
+		px[0]=lft;
+		py[0]=bot-((bot-top)/3);
+		px[1]=lft+((rgt-lft)/8);
+		py[1]=top+((bot-top)/3);
+		px[2]=lft+((rgt-lft)/3);
+		py[2]=bot-((bot-top)/3);
+		px[3]=lft+((rgt-lft)/3);
+		py[3]=bot;
+
+		view_draw_next_vertex_object_2D_color_poly(px[0],py[0],&col,px[1],py[1],&col,px[2],py[2],&col2,px[3],py[3],&hud.color.control_hilite,alpha);
+
+		px[0]=lft+((rgt-lft)/3);
+		py[0]=bot-((bot-top)/3);
+		px[1]=rgt-((rgt-lft)/4);
+		py[1]=top;
+		px[2]=rgt;
+		py[2]=top+((bot-top)/4);
+		px[3]=lft+((rgt-lft)/3);
+		py[3]=bot;
+
+		view_draw_next_vertex_object_2D_color_poly(px[0],py[0],&col2,px[1],py[1],&col,px[2],py[2],&hud.color.control_hilite,px[3],py[3],&hud.color.control_hilite,alpha);
+	}
+
+		// outline
+
+	if ((hilite) && (enabled)) {
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot);
+	}
+	else {
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,rgt,top,bot);
+	}
+}
+
 void element_draw_checkbox(element_type *element,int sel_id)
 {
-	int				x,y,ky,lft,rgt,top,bot,
-					lft2,rgt2,top2,bot2,margin;
-	float			alpha;
-	d3col			col,gradient_start,gradient_end;
+	int				x,y,ky;
 	
 	x=element->x;
 	y=element->y;
@@ -1150,49 +1217,8 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	gl_text_end();
 	
 		// checkbox
-		
-	lft=x+10;
-	rgt=lft+element->high;
-	top=ky-(element->high>>1);
-	bot=top+element->high;
 
-	alpha=(element->enabled?1.0f:0.3f);
-
-		// background
-		
-	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
-	gradient_end.r=gradient_start.r*0.5f;
-	gradient_end.g=gradient_start.g*0.5f;
-	gradient_end.b=gradient_start.b*0.5f;
-
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,alpha);
-
-		// check
-
-	if (element->value!=0) {
-		margin=(rgt-lft)/8;
-		if (margin<2) margin=2;
-
-		lft2=lft+margin;
-		top2=top+margin;
-		rgt2=(rgt-1)-margin;
-		bot2=(bot-1)-margin;
-
-		col.r=hud.color.control_hilite.r*0.5f;
-		col.g=hud.color.control_hilite.g*0.5f;
-		col.b=hud.color.control_hilite.b*0.5f;
-
-		view_draw_next_vertex_object_2D_color_poly(lft2,top2,&col,rgt2,top2,&col,rgt2,bot2,&hud.color.control_hilite,lft2,bot2,&hud.color.control_hilite,1.0f);
-	}
-
-		// outline
-
-	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot);
-	}
-	else {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,rgt,top,bot);
-	}
+	element_draw_checkbox_control((x+10),ky,element->high,(element->value!=0),element->enabled,(element->id==sel_id));
 }
 
 /* =======================================================
@@ -1296,9 +1322,9 @@ void element_draw_combo(element_type *element,int sel_id)
 		// background
 		
 	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
-	gradient_end.r=gradient_start.r*0.5f;
-	gradient_end.g=gradient_start.g*0.5f;
-	gradient_end.b=gradient_start.b*0.5f;
+	gradient_end.r=gradient_start.r*element_gradient_factor;
+	gradient_end.g=gradient_start.g*element_gradient_factor;
+	gradient_end.b=gradient_start.b*element_gradient_factor;
 
 	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,alpha);
 
@@ -1375,9 +1401,9 @@ void element_draw_combo_open(element_type *element)
 		// background
 		
 	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
-	gradient_end.r=gradient_start.r*0.5f;
-	gradient_end.g=gradient_start.g*0.5f;
-	gradient_end.b=gradient_start.b*0.5f;
+	gradient_end.r=gradient_start.r*element_gradient_factor;
+	gradient_end.g=gradient_start.g*element_gradient_factor;
+	gradient_end.b=gradient_start.b*element_gradient_factor;
 
 	bot=top+(cnt*element->high);
 
@@ -1473,9 +1499,9 @@ void element_draw_slider(element_type *element,int sel_id)
 		// background
 		
 	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
-	gradient_end.r=gradient_start.r*0.5f;
-	gradient_end.g=gradient_start.g*0.5f;
-	gradient_end.b=gradient_start.b*0.5f;
+	gradient_end.r=gradient_start.r*element_gradient_factor;
+	gradient_end.g=gradient_start.g*element_gradient_factor;
+	gradient_end.b=gradient_start.b*element_gradient_factor;
 
 	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,1.0f);
 
@@ -1510,7 +1536,8 @@ void element_draw_slider(element_type *element,int sel_id)
 	col2.g=hud.color.control_hilite.g*0.5f;
 	col2.b=hud.color.control_hilite.b*0.5f;
 
-	view_draw_next_vertex_object_2D_color_poly(mid,top,&hud.color.control_hilite,(mid+16),top,&hud.color.control_hilite,(mid+16),bot,&col2,mid,bot,&col2,alpha);
+	view_draw_next_vertex_object_2D_color_poly(mid,top,&hud.color.control_hilite,(mid+8),top,&col2,(mid+8),bot,&col2,mid,bot,&hud.color.control_hilite,alpha);
+	view_draw_next_vertex_object_2D_color_poly((mid+8),top,&col2,(mid+16),top,&hud.color.control_hilite,(mid+16),bot,&hud.color.control_hilite,(mid+8),bot,&col2,alpha);
 
 	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,mid,(mid+16),top,bot);
 }
@@ -1722,7 +1749,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 
 void element_draw_table_line_data(element_type *element,int x,int y,int row,int wid,int row_high,d3col *txt_col,char *data)
 {
-	int				n,dx,dy;
+	int				n,dx,dy,col_wid,ctrl_sz;
 	unsigned long	gl_id;
 	char			*c,*c2,txt[256];
 	bool			first_col;
@@ -1742,7 +1769,12 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 		if ((element->setup.table.checkbox) && (n==0)) {
 
-			dx+=(int)(element->setup.table.cols[n].percent_size*(float)wid);
+			col_wid=(int)(element->setup.table.cols[n].percent_size*(float)wid);
+			ctrl_sz=col_wid>>1;
+
+			element_draw_checkbox_control((((dx-4)+(col_wid>>1))-(ctrl_sz>>1)),dy,ctrl_sz,FALSE,TRUE,FALSE);
+
+			dx+=col_wid;
 			continue;
 		}
 	

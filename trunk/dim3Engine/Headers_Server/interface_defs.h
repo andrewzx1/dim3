@@ -94,6 +94,12 @@ and can be sold or given away.
 #define element_table_check_column_size			0.05f
 
 //
+// Gradients
+//
+
+#define element_gradient_factor					0.75f
+
+//
 // GUI text
 //
 

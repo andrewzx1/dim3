@@ -146,8 +146,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	if ((bump) || (spec) || (diffuse)) strcat(buf,"int combineCount=0;\n");
 	
 	strcat(buf,"float att,dist");
-	if ((bump) || (spec)) strcat(buf,",pixelAtt");
-	if (bump) strcat(buf,",bump");
+	if (bump) strcat(buf,",pixelAtt,bump");
 	if (spec) strcat(buf,",shineFactor");
 	strcat(buf,";\n");
 
@@ -188,7 +187,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 
 		// the factor for bump/spec effect based on light
 
-	if ((bump) || (spec)) strcat(buf,"pixelAtt=min(((ambient.r+ambient.g+ambient.b)*0.33),1.0);\n");
+	if (bump) strcat(buf,"pixelAtt=min(((ambient.r+ambient.g+ambient.b)*0.33),1.0);\n");
 	
 		// normalize the combined light vec3
 		
@@ -230,7 +229,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		if (bump) strcat(buf,"(");
 		strcat(buf,"(texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb+dim3SpecularWhitePoint)");
 		if (bump) strcat(buf,"*bump)");
-		strcat(buf,"*pixelAtt;\n");
+		strcat(buf,"*ambient;\n");
 		
 		
 		
