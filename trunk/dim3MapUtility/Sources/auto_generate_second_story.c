@@ -202,7 +202,7 @@ void map_auto_generate_second_story_pillar(map_type *map,int rn,int lx,int lz,in
 void map_auto_generate_second_story(map_type *map)
 {
 	int							n,portal_high,extra_ty,split_factor,step_wid,step_len,sz,
-								x,z,ty,by,xsz,zsz,portal_sz,px[8],py[8],pz[8];
+								x,z,ty,by,s_ty,xsz,zsz,portal_sz,px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	auto_generate_box_type		*portal;
 	
@@ -306,6 +306,7 @@ void map_auto_generate_second_story(map_type *map)
 			// part of the portal and randonly against an edge
 			// lifts are always in the corner
 
+		s_ty=ty+(ag_constant_story_floor_high>>1);
 		by=portal->max.y;
 
 		step_wid=split_factor*ag_constant_story_steps_split_factor;
@@ -320,11 +321,11 @@ void map_auto_generate_second_story(map_type *map)
 
 				if (map_auto_generate_random_int(100)<50) {
 					x=split_factor*2;
-					map_auto_generate_steps_mesh(map,n,ag_step_second_story,step_wid,ag_constant_step_story_high,(ty+ag_constant_story_floor_high),by,x,z,270.0f);
+					map_auto_generate_steps_mesh(map,n,ag_step_second_story,step_wid,ag_constant_step_story_high,s_ty,by,x,z,270.0f);
 				}
 				else {
 					x=xsz-(split_factor*2);
-					map_auto_generate_steps_mesh(map,n,ag_step_second_story,step_wid,ag_constant_step_story_high,(ty+ag_constant_story_floor_high),by,x,z,90.0f);
+					map_auto_generate_steps_mesh(map,n,ag_step_second_story,step_wid,ag_constant_step_story_high,s_ty,by,x,z,90.0f);
 				}
 			}
 			else {
@@ -332,11 +333,11 @@ void map_auto_generate_second_story(map_type *map)
 
 				if (map_auto_generate_random_int(100)<50) {
 					z=split_factor*2;
-					map_auto_generate_steps_mesh(map,n,ag_step_second_story,step_wid,ag_constant_step_story_high,(ty+ag_constant_story_floor_high),by,x,z,0.0f);
+					map_auto_generate_steps_mesh(map,n,ag_step_second_story,step_wid,ag_constant_step_story_high,s_ty,by,x,z,0.0f);
 				}
 				else {
 					z=zsz-(split_factor*2);
-					map_auto_generate_steps_mesh(map,n,ag_step_second_story,step_wid,ag_constant_step_story_high,(ty+ag_constant_story_floor_high),by,x,z,180.0f);
+					map_auto_generate_steps_mesh(map,n,ag_step_second_story,step_wid,ag_constant_step_story_high,s_ty,by,x,z,180.0f);
 				}
 			}
 		}

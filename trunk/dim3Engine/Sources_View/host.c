@@ -69,8 +69,8 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							host_tab_value,host_map_idx;
-char						*net_host_file_list;
+int							host_tab_value,host_map_count,host_first_map_idx;
+char						*host_file_list;
 char						net_game_types[max_net_game+1][name_str_len],
 							bot_count_list[max_net_bot+2][name_str_len],
 							bot_skill_list[6][32]={"Very Easy","Easy","Normal","Hard","Very Hard",""};
@@ -100,10 +100,10 @@ void host_fill_map_table(char *game_type)
 	if (nfile>0) {
 		sz=(nfile+1)*128;
 		
-		net_host_file_list=malloc(sz);
-		bzero(net_host_file_list,sz);
+		host_file_list=malloc(sz);
+		bzero(host_file_list,sz);
 
-		c=net_host_file_list;
+		c=host_file_list;
 		
 		for (n=0;n!=nfile;n++) {
 			if (map_check_game_type(game_type,map_pick_fpd->files[n].file_name,info_name)) {
@@ -111,11 +111,14 @@ void host_fill_map_table(char *game_type)
 				c+=128;
 			}
 		}
+
+		host_map_count=nfile;
 		
-		element_set_table_data(host_table_id,net_host_file_list);
+		element_set_table_data(host_table_id,host_file_list);
 	}
 	else {
-		net_host_file_list=NULL;
+		host_map_count=0;
+		host_file_list=NULL;
 	}
 
 	file_paths_close_directory(map_pick_fpd);
@@ -129,18 +132,59 @@ void host_fill_map_table(char *game_type)
 
 void host_set_last_map(void)
 {
-	int				idx;
-	char			*list,*c;
+	int				n,k;
+	char			*c;
 	char			str[256];
-	
-	idx=0;
-	list=net_host_file_list;
-	
-	while (TRUE) {
-		if (*list==0x0) break;
+	bool			checked;
+
+	host_first_map_idx=-1;
+
+	for (n=0;n!=host_map_count;n++) {
+
+			// get map name
+
+		c=host_file_list+(n*128);
 		
-		c=list;
-		list+=128;
+		c=strchr(c,';');
+		if (c!=NULL) {
+			strcpy(str,(c+1));
+			c=strchr(str,';');
+			if (c!=NULL) *c=0x0;
+		}
+
+			// find if map is in list
+
+		checked=FALSE;
+
+		for (k=0;k!=setup.network.map.count;k++) {
+			if (strcasecmp(setup.network.map.maps[k].name,str)==0) {
+				checked=TRUE;
+				break;
+			}
+		}
+	
+		element_set_table_checkbox(host_table_id,n,checked);
+
+			// always scroll to first selected map
+
+		if (host_first_map_idx==-1) host_first_map_idx=n;
+	}
+
+	if (host_first_map_idx==-1) host_first_map_idx=0;
+}
+
+void host_get_last_map(void)
+{
+	int				n,cnt;
+	char			*c;
+	char			str[256];
+
+	cnt=0;
+
+	for (n=0;n!=host_map_count;n++) {
+		if (!element_get_table_checkbox(host_table_id,n)) continue;
+	
+		c=host_file_list+(n*128);
 		
 		c=strchr(c,';');
 		if (c!=NULL) {
@@ -149,37 +193,11 @@ void host_set_last_map(void)
 			if (c!=NULL) *c=0x0;
 		}
 		
-		if (strcasecmp(setup.network.last_map,str)==0) {
-			host_map_idx=idx;
-			return;
-		}
-		
-		idx++;
+		strcpy(setup.network.map.maps[cnt].name,str);
+		cnt++;
 	}
-	
-	host_map_idx=-1;
-}
 
-void host_get_last_map(void)
-{
-	char			*c;
-	char			str[256];
-	
-	if (host_map_idx==-1) {
-		setup.network.last_map[0]=0x0;
-		return;
-	}
-	
-	c=net_host_file_list+(host_map_idx*128);
-	
-	c=strchr(c,';');
-	if (c!=NULL) {
-		strcpy(str,(c+1));
-		c=strchr(str,';');
-		if (c!=NULL) *c=0x0;
-	}
-	
-	strcpy(setup.network.last_map,str);
+	setup.network.map.count=cnt;
 }
 
 /* =======================================================
@@ -232,7 +250,7 @@ void host_game_pane(void)
 	host_fill_map_table(hud.net_game.games[setup.network.game_type].name);
 	host_set_last_map();
 
-	element_set_value(host_table_id,host_map_idx);
+	element_set_value(host_table_id,host_first_map_idx);
 	element_make_selection_visible(host_table_id);
 }
 
@@ -392,7 +410,7 @@ void host_create_pane(void)
 	
 		// enable host button
 		
-	element_enable(host_button_host_id,(host_map_idx!=-1));
+	element_enable(host_button_host_id,(setup.network.map.count!=0));
 }
 
 /* =======================================================
@@ -414,7 +432,8 @@ void host_open(void)
 		// start with first tab
 		
 	host_tab_value=0;
-	host_map_idx=-1;
+	host_map_count=0;
+	host_first_map_idx=-1;
 
 	host_create_pane();
 
@@ -429,7 +448,7 @@ void host_close(bool stop_music)
 		if (al_music_playing()) al_music_stop();
 	}
 
-	if (net_host_file_list!=NULL) free(net_host_file_list);
+	if (host_file_list!=NULL) free(host_file_list);
 	gui_shutdown();
 }
 
@@ -465,7 +484,7 @@ void host_game_setup(void)
 		
 	net_setup.host.map_name[0]=0x0;
 				
-	c=net_host_file_list+(host_map_idx*128);
+	c=host_file_list+(host_first_map_idx*128);
 	
 	c=strchr(c,';');
 	if (c!=NULL) {
@@ -610,16 +629,15 @@ void host_handle_click(int id)
 				setup.network.game_type=idx;
 				host_fill_map_table(hud.net_game.games[idx].name);
 				host_set_last_map();
-				element_set_value(host_table_id,host_map_idx);
+				element_set_value(host_table_id,host_first_map_idx);
 				element_make_selection_visible(host_table_id);
-				element_enable(host_button_host_id,(host_map_idx!=-1));
+				element_enable(host_button_host_id,(host_first_map_idx!=0));
 			}
 			break;
 
 		case host_table_id:
-			host_map_idx=element_get_value(host_table_id);
-			element_enable(host_button_host_id,(host_map_idx!=-1));
 			host_get_last_map();
+			element_enable(host_button_host_id,(setup.network.map.count!=0));
 			break;
 
 		case host_dedicated_id:

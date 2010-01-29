@@ -66,7 +66,6 @@ extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
 extern void fade_screen_start(int tick);
 extern void group_move_clear_all(void);
-extern void liquid_gl_list_init(void);
 extern void draw_sky_init(void);
 extern bool view_compile_mesh_gl_list_init(void);
 extern void view_compile_mesh_gl_list_free(void);
@@ -311,7 +310,6 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	liquid_gl_list_init();
 	draw_sky_init();
 
 		// start map ambients

@@ -224,7 +224,6 @@ extern void player_clear_input(void);
 extern void player_command_input(obj_type *obj);
 extern void player_turn_input(obj_type *obj,float mouse_x);
 extern void player_look_input(obj_type *obj,float mouse_y);
-extern void player_movement_input(obj_type *obj);
 extern void player_jump_duck_input(obj_type *obj);
 extern void player_weapon_zoom_input(obj_type *obj,weapon_type *weap);
 extern void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap);

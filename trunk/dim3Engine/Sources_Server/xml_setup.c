@@ -101,18 +101,16 @@ void setup_xml_default(void)
 	setup.network.tint_color_idx=0;
 	setup.network.show_names=TRUE;
 	setup.network.dedicated=FALSE;
-
-	setup.network.last_map[0]=0x0;
 	
 	setup.network.host.count=0;
 	
 	setup.network.bot.count=0;
 	setup.network.bot.skill=2;
 	
+	setup.network.map.count=0;
 	setup.network.option.count=0;
 
 	setup.network.game_type=0;
-	setup.network.last_map[0]=0x0;
 	setup.network.score_limit=20;
 	
 	setup.debug_console=FALSE;
@@ -145,7 +143,7 @@ void setup_xml_fix_axis(setup_axis_type *axis)
 bool setup_xml_read_path(char *path)
 {
 	int							n,k,naction,nhost,
-								setup_tag,actions_tag,hosts_tag,options_tag,tag;
+								setup_tag,actions_tag,hosts_tag,maps_tag,options_tag,tag;
 	char						tag_name[32];
 	setup_action_type			*action;
 	setup_network_host_type		*host;
@@ -210,7 +208,6 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
     xml_key_read_int(setup_tag,"Character",&setup.network.character_idx);
     xml_key_read_int(setup_tag,"Tint",&setup.network.tint_color_idx);
-	xml_key_read_text(setup_tag,"Network_Last_Map",setup.network.last_map,name_str_len);
 	xml_key_read_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
 	xml_key_read_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
 	xml_key_read_int(setup_tag,"Host_Game_Type",&setup.network.game_type);
@@ -271,6 +268,20 @@ bool setup_xml_read_path(char *path)
 			tag=xml_findnextchild(tag);
 			host++;
         }
+	}
+
+ 		// maps
+		
+    maps_tag=xml_findfirstchild("Maps",setup_tag);
+    if (maps_tag!=-1) {
+	
+		setup.network.map.count=xml_countchildren(maps_tag);
+		tag=xml_findfirstchild("Map",maps_tag);
+		
+        for (n=0;n!=setup.network.map.count;n++) {
+			xml_get_attribute_text(tag,"name",setup.network.map.maps[n].name,name_str_len);
+			tag=xml_findnextchild(tag);
+ 		}
 	}
 	
  		// options
@@ -384,7 +395,6 @@ bool setup_xml_write(void)
 	xml_key_write_text("Network_Name",setup.network.name);
 	xml_key_write_int("Character",setup.network.character_idx);
 	xml_key_write_int("Tint",setup.network.tint_color_idx);
-	xml_key_write_text("Network_Last_Map",setup.network.last_map);
 	xml_key_write_int("Host_Bot_Count",setup.network.bot.count);
 	xml_key_write_int("Host_Bot_Skill",setup.network.bot.skill);
 	xml_key_write_int("Host_Game_Type",setup.network.game_type);
@@ -437,6 +447,19 @@ bool setup_xml_write(void)
 	}
 
     xml_add_tagclose("Hosts");
+
+		// maps
+		
+    xml_add_tagstart("Maps");
+    xml_add_tagend(FALSE);
+	
+	for (n=0;n!=setup.network.map.count;n++) {
+		xml_add_tagstart("Map");
+		xml_add_attribute_text("name",setup.network.map.maps[n].name);
+		xml_add_tagend(TRUE);
+	}
+
+    xml_add_tagclose("Maps");
 	
 		// options
 		

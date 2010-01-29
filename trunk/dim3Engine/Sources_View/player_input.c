@@ -139,154 +139,10 @@ void player_command_input(obj_type *obj)
 
 /* =======================================================
 
-      Player Movement Input
+      Y Movements 
       
 ======================================================= */
 
-float player_mouse_smooth(float mouse_ang,float turn_ang)
-{
-	if (!setup.mouse_smooth) return(mouse_ang);
-	
-	if (mouse_ang>0) {
-		if ((mouse_ang<turn_ang) && (turn_ang>=0)) {
-			return(turn_ang/2.0f);
-		}
-		
-		return(mouse_ang);
-	}
-
-	if (mouse_ang<0) {
-		if ((mouse_ang>turn_ang) && (turn_ang<=0)) {
-			return(turn_ang/2.0f);
-		}
-		
-		return(mouse_ang);
-	}
-	
-	return(mouse_ang);
-}
-
-void player_turn_mouse_input(obj_type *obj,float mouse_x)
-{
-		// only turn in fpp and no mouse ignores
-		
-	if (((obj->input_mode!=im_fpp) && (obj->input_mode!=im_fly) && (obj->input_mode!=im_thrust)) || (obj->turn.ignore_mouse)) {
-		obj->turn.ang_add.y=0;
-		return;
-	}
-
-		// set the turning
-
-	obj->turn.ang_add.y=player_mouse_smooth(mouse_x,obj->turn.ang_add.y);
-}
-
-void player_turn_key_input(obj_type *obj)
-{
-	if ((obj->input_mode!=im_fpp) && (obj->input_mode!=im_fly) && (obj->input_mode!=im_thrust)) return;
-	
-	if (input_action_get_state(nc_turn_left)) obj->turn.ang_add.y=-obj->turn.key_speed;
-	if (input_action_get_state(nc_turn_right)) obj->turn.ang_add.y=obj->turn.key_speed;
-}
-
-void player_look_mouse_input(obj_type *obj,float mouse_y)
-{
-	if (obj->turn.ignore_mouse) {
-		obj->look.ang_add=0;
-		return;
-	}
-	
-	obj->look.ang_add=player_mouse_smooth(mouse_y,obj->look.ang_add);
-}
-
-void player_movement_fpp_xz_input(obj_type *obj)
-{
-	bool			key_forward,key_backward,joy_ok;
-
-		// forward or backwards movement keys
-
-	joy_ok=input_check_joystick_ok();
-
-	key_backward=FALSE;
-	key_forward=input_action_get_state(nc_move_forward);
-	if (joy_ok) key_forward=input_get_joystick_move_forward();
-
-	if (!key_forward) {
-		key_backward=input_action_get_state(nc_move_backward);
-		if (joy_ok) key_backward=input_get_joystick_move_backward();
-	}
-
-		// no quick reverse locks
-
-	if (!obj->quick_reverse) {
-		if (key_forward) {
-			if ((obj->forward_move.reverse) && (obj->forward_move.speed!=0)) key_forward=FALSE;
-		}
-
-		if (key_backward) {
-			if ((!obj->forward_move.reverse) && (obj->forward_move.speed!=0)) key_backward=FALSE;
-		}
-	}
-
-		// forward movement
-
-	if (key_forward) {
-		obj->forward_move.moving=TRUE;
-		if (obj->forward_move.reverse) {
-			obj->forward_move.speed=0;
-		}
-		obj->forward_move.reverse=FALSE;
-	}
-
-	if (key_backward) {
-		obj->forward_move.moving=TRUE;
-		if (!obj->forward_move.reverse) {
-			obj->forward_move.speed=0;
-		}
-		obj->forward_move.reverse=TRUE;
-	}
-
-		// run, walk
-	
-	if (obj->single_speed) {
-		obj->forward_move.running=FALSE;
-	}
-	else {
-	
-		if (!setup.toggle_run) {
-			toggle_run_state=input_action_get_state(nc_run);
-		}
-		else {
-			if (input_action_get_state_single(nc_run)) toggle_run_state=!toggle_run_state;
-		}
-		
-		if (setup.always_run) {
-			obj->forward_move.running=!toggle_run_state;
-		}
-		else {
-			obj->forward_move.running=toggle_run_state;
-		}
-	}
-
-		// side movement
-	
-	if (input_action_get_state(nc_sidestep_left)) {
-		obj->side_move.moving=TRUE;
-		if (obj->side_move.reverse) {
-			obj->side_move.speed=0;
-		}
-		obj->side_move.reverse=FALSE;
-	}
-	else {
-		if (input_action_get_state(nc_sidestep_right)) {
-			obj->side_move.moving=TRUE;
-			if (!obj->side_move.reverse) {
-				obj->side_move.speed=0;
-			}
-			obj->side_move.reverse=TRUE;
-		}
-	}
-}
-	
 void player_movement_fpp_y_input(obj_type *obj)
 {
     if (input_action_get_state(nc_down)) {
@@ -339,146 +195,6 @@ void player_movement_ladder_y_input(obj_type *obj)
         if (!obj->vert_move.reverse==obj->forward_move.reverse) obj->vert_move.speed=0;
         obj->vert_move.reverse=obj->forward_move.reverse;
 		return;
-    }
-}
-
-void player_movement_side_scroll_input(obj_type *obj)
-{
-		// left-right movement
-		
-	if (input_action_get_state(nc_turn_left)) {
-		object_player_turn_direct(obj,270);
-	}
-	else {
-		if (input_action_get_state(nc_turn_right)) {
-			object_player_turn_direct(obj,90);
-		}
-	}
-	
-		// up-down movement
-	
-    if (input_action_get_state(nc_down)) {
-        obj->vert_move.moving=TRUE;
-        if (obj->vert_move.reverse) {
-            obj->vert_move.speed=0;
-        }
-        obj->vert_move.reverse=FALSE;
-    }
-    else {
-        if (input_action_get_state(nc_up)) {
-            obj->vert_move.moving=TRUE;
-            if (!obj->vert_move.reverse) {
-                obj->vert_move.speed=0;
-            }
-            obj->vert_move.reverse=TRUE;
-        }
-    }
-}
-
-void player_movement_top_down_input(obj_type *obj)
-{
-	bool				left,right,up,down;
-	
-	left=input_action_get_state(nc_turn_left);
-	right=input_action_get_state(nc_turn_right);
-	up=input_action_get_state(nc_move_forward);
-	down=input_action_get_state(nc_move_backward);
-	
-		// all the movements
-		
-	if (left) {
-		if (up) {
-			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,315.0f));
-			return;
-		}
-		if (down) {
-			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,225.0f));
-			return;
-		}
-		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,270.0f));
-		return;
-	}
-	
-	if (right) {
-		if (up) {
-			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,45.0f));
-			return;
-		}
-		if (down) {
-			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,135.0f));
-			return;
-		}
-		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,90.0f));
-		return;
-	}
-	
-	if (up) {
-		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,0.0f));
-		return;
-	}
-	
-	if (down) {
-		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,180.0f));
-		return;
-	}
-}
-
-void player_movement_input(obj_type *obj)
-{
-		// start with no movement
-		
-    obj->forward_move.moving=FALSE;
-	obj->side_move.moving=FALSE;
-	obj->vert_move.moving=FALSE;
-	
-		// don't move if ducked and crawling disabled
-		
-	if ((!obj->crawl) && (obj->duck.mode!=dm_stand)) return;
-	
-		// get proper movement
-	
-	switch (obj->input_mode) {
-	
-		case im_fpp:
-			player_movement_fpp_xz_input(obj);
-			if ((obj->fly) || (obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
-				player_movement_fly_swim_y_input(obj);
-			}
-			else {
-				player_movement_fpp_y_input(obj);
-				player_movement_ladder_y_input(obj);
-			}
-			break;
-			
-		case im_side_scroll:
-			player_movement_side_scroll_input(obj);
-			break;
-			
-		case im_top_down:
-			player_movement_top_down_input(obj);
-			break;
-
-		case im_fly:
-			player_movement_fpp_xz_input(obj);
-			player_movement_fly_swim_y_input(obj);
-			break;
-
-		case im_thrust:
-			player_movement_fpp_xz_input(obj);
-			break;
-	
-	}
-}
-
-void player_jump_duck_input(obj_type *obj)
-{
-	if (input_action_get_state(nc_jump)) object_start_jump(obj);
-    
-	if (input_action_get_state(nc_duck)) {
-        object_start_duck(obj);
-    }
-    else {
-        object_start_stand(obj);
     }
 }
 
@@ -852,51 +568,379 @@ bool player_message_input(int tick,obj_type *obj)
 	return(TRUE);
 }
 
+/* =======================================================
 
+      Input Utilities
+      
+======================================================= */
 
-
-
-
-
-
-
-/* supergumba
-
-void player_fpp_input(void)
+float player_mouse_smooth(float mouse_ang,float turn_ang)
 {
+	if (!setup.mouse_smooth) return(mouse_ang);
+	
+	if (mouse_ang>0) {
+		if ((mouse_ang<turn_ang) && (turn_ang>=0)) {
+			return(turn_ang/2.0f);
+		}
+		
+		return(mouse_ang);
+	}
+
+	if (mouse_ang<0) {
+		if ((mouse_ang>turn_ang) && (turn_ang<=0)) {
+			return(turn_ang/2.0f);
+		}
+		
+		return(mouse_ang);
+	}
+	
+	return(mouse_ang);
+}
+
+void player_get_6_way_input(int tick,obj_type *obj,float *mouse_x,float *mouse_y,bool *go_forward,bool *go_backward,bool *go_side_left,bool *go_side_right)
+{
+		// get input
+
+	if (!obj->turn.ignore_mouse) {
+		input_get_mouse_movement(tick,mouse_x,mouse_y);
+	}
+	else {
+		*mouse_x=*mouse_y=0.0f;
+	}
+
+	*go_forward=input_action_get_state(nc_move_forward);
+	*go_backward=input_action_get_state(nc_move_backward);
+	*go_side_left=input_action_get_state(nc_sidestep_left);
+	*go_side_right=input_action_get_state(nc_sidestep_right);
+
+	if (input_check_joystick_ok()) {
+		(*mouse_x)+=input_get_joystick_axis(2);
+		(*mouse_y)+=input_get_joystick_axis(3);
+
+		(*go_forward)|=input_get_joystick_axis_as_button_min(1);
+		(*go_backward)|=input_get_joystick_axis_as_button_max(1);
+		(*go_side_left)|=input_get_joystick_axis_as_button_min(0);
+		(*go_side_right)|=input_get_joystick_axis_as_button_max(0);
+	}
+
+	if (input_action_get_state(nc_turn_left)) (*mouse_x)-=obj->turn.key_speed;
+	if (input_action_get_state(nc_turn_right)) (*mouse_x)+=obj->turn.key_speed;
+
+	if (*go_forward) *go_backward=FALSE;
+	if (*go_side_left) *go_side_right=FALSE;
+
+		// quick reverse locks
+
+	if (!obj->quick_reverse) {
+		if (*go_forward) {
+			if ((obj->forward_move.reverse) && (obj->forward_move.speed!=0)) *go_forward=FALSE;
+		}
+
+		if (*go_backward) {
+			if ((!obj->forward_move.reverse) && (obj->forward_move.speed!=0)) *go_backward=FALSE;
+		}
+	}
+}
+
+void player_get_4_way_input(bool *go_left,bool *go_right,bool *go_up,bool *go_down)
+{
+	*go_left=input_action_get_state(nc_turn_left);
+	*go_right=input_action_get_state(nc_turn_right);
+	*go_up=input_action_get_state(nc_up);
+	*go_down=input_action_get_state(nc_down);
+
+	if (input_check_joystick_ok()) {
+		(*go_left)|=input_get_joystick_axis_as_button_min(0);
+		(*go_right)|=input_get_joystick_axis_as_button_max(0);
+		(*go_up)|=input_get_joystick_axis_as_button_min(1);
+		(*go_down)|=input_get_joystick_axis_as_button_max(1);
+	}
+
+	if (*go_right) *go_left=FALSE;
+	if (*go_down) *go_up=FALSE;
+}
+
+/* =======================================================
+
+      Input Run/Walk State
+      
+======================================================= */
+
+void player_set_run_walk_state(obj_type *obj)
+{
+	if (obj->single_speed) {
+		obj->forward_move.running=FALSE;
+		return;
+	}
+
+	if (!setup.toggle_run) {
+		toggle_run_state=input_action_get_state(nc_run);
+	}
+	else {
+		if (input_action_get_state_single(nc_run)) toggle_run_state=!toggle_run_state;
+	}
+	
+	if (setup.always_run) {
+		obj->forward_move.running=!toggle_run_state;
+	}
+	else {
+		obj->forward_move.running=toggle_run_state;
+	}
+}
+
+/* =======================================================
+
+      FPP Input Type
+      
+======================================================= */
+
+void player_fpp_input(int tick,obj_type *obj)
+{
+	float			mouse_x,mouse_y;
+	bool			go_forward,go_backward,go_side_left,go_side_right;
+
 		// start with no movement
 		
     obj->forward_move.moving=FALSE;
 	obj->side_move.moving=FALSE;
 	obj->vert_move.moving=FALSE;
+
+		// get input
+
+	player_get_6_way_input(tick,obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
+
+		// turning and looking
+
+	obj->turn.ang_add.y=player_mouse_smooth(mouse_x,obj->turn.ang_add.y);
+	obj->look.ang_add=player_mouse_smooth(mouse_y,obj->look.ang_add);
 	
 		// don't move if ducked and crawling disabled
 		
 	if ((!obj->crawl) && (obj->duck.mode!=dm_stand)) return;
-	
-		// get proper movement
-	
-	switch (obj->input_mode) {
-	
-		case im_fpp:
-			player_movement_fpp_xz_input(obj);
-			if ((obj->fly) || (obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
-				player_movement_fly_swim_y_input(obj);
-			}
-			else {
-				player_movement_fpp_y_input(obj);
-				player_movement_ladder_y_input(obj);
-			}
 
+		// forward/backwards movement
 
+	if (go_forward) {
+		obj->forward_move.moving=TRUE;
+		if (obj->forward_move.reverse) obj->forward_move.speed=0;
+		obj->forward_move.reverse=FALSE;
+	}
+
+	if (go_backward) {
+		obj->forward_move.moving=TRUE;
+		if (!obj->forward_move.reverse) obj->forward_move.speed=0;
+		obj->forward_move.reverse=TRUE;
+	}
+
+		// run and walk state
+
+	player_set_run_walk_state(obj);
+
+		// side movement
+	
+	if (go_side_left) {
+		obj->side_move.moving=TRUE;
+		if (obj->side_move.reverse) obj->side_move.speed=0;
+		obj->side_move.reverse=FALSE;
+	}
+
+	if (go_side_right) {
+		obj->side_move.moving=TRUE;
+		if (!obj->side_move.reverse) obj->side_move.speed=0;
+		obj->side_move.reverse=TRUE;
+	}
+
+		// y movement
+
+	if ((obj->fly) || (obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
+		player_movement_fly_swim_y_input(obj);
+	}
+	else {
+		player_movement_fpp_y_input(obj);
+		player_movement_ladder_y_input(obj);
+	}
 }
 
-*/
+/* =======================================================
 
+      Side Scroll Input Type
+      
+======================================================= */
 
+void player_side_scroll_input(obj_type *obj)
+{
+	bool			go_left,go_right,go_up,go_down;
 
+		// get input
 
+	player_get_4_way_input(&go_left,&go_right,&go_up,&go_down);
 
+		// left-right movement
+		
+	if (go_left) object_player_turn_direct(obj,270);
+	if (go_right) object_player_turn_direct(obj,90);
+	
+		// up-down movement
+	
+    if (go_down) {
+        obj->vert_move.moving=TRUE;
+        if (obj->vert_move.reverse) obj->vert_move.speed=0;
+        obj->vert_move.reverse=FALSE;
+    }
+
+	if (go_up) {
+        obj->vert_move.moving=TRUE;
+        if (!obj->vert_move.reverse) obj->vert_move.speed=0;
+        obj->vert_move.reverse=TRUE;
+    }
+}
+
+/* =======================================================
+
+      Top-Down Input Type
+      
+======================================================= */
+
+void player_top_down_input(obj_type *obj)
+{
+	bool			go_left,go_right,go_up,go_down;
+
+		// get input
+
+	player_get_4_way_input(&go_left,&go_right,&go_up,&go_down);
+	
+		// all the movements
+		
+	if (go_left) {
+		if (go_up) {
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,315.0f));
+			return;
+		}
+		if (go_down) {
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,225.0f));
+			return;
+		}
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,270.0f));
+		return;
+	}
+	
+	if (go_right) {
+		if (go_up) {
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,45.0f));
+			return;
+		}
+		if (go_down) {
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,135.0f));
+			return;
+		}
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,90.0f));
+		return;
+	}
+	
+	if (go_up) {
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,0.0f));
+		return;
+	}
+	
+	if (go_down) {
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,180.0f));
+		return;
+	}
+}
+
+/* =======================================================
+
+      Fly Input Type
+      
+======================================================= */
+
+void player_fly_input(int tick,obj_type *obj)
+{
+	float			mouse_x,mouse_y;
+	bool			go_forward,go_backward,go_side_left,go_side_right;
+
+		// start with no movement
+		
+    obj->forward_move.moving=FALSE;
+	obj->side_move.moving=FALSE;
+	obj->vert_move.moving=FALSE;
+
+		// get input
+
+	player_get_6_way_input(tick,obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
+
+		// turning and looking
+
+	obj->turn.ang_add.y=player_mouse_smooth(mouse_x,obj->turn.ang_add.y);
+	obj->look.ang_add=player_mouse_smooth(mouse_y,obj->look.ang_add);
+
+		// forward/backwards movement
+
+	if (go_forward) {
+		obj->forward_move.moving=TRUE;
+		if (obj->forward_move.reverse) obj->forward_move.speed=0;
+		obj->forward_move.reverse=FALSE;
+	}
+
+	if (go_backward) {
+		obj->forward_move.moving=TRUE;
+		if (!obj->forward_move.reverse) obj->forward_move.speed=0;
+		obj->forward_move.reverse=TRUE;
+	}
+
+		// flying has a single speed
+
+	obj->forward_move.running=FALSE;
+
+		// y movement
+
+	player_movement_fly_swim_y_input(obj);
+}
+
+/* =======================================================
+
+      Thrust Input Type
+      
+======================================================= */
+
+void player_thrust_input(int tick,obj_type *obj)
+{
+	float			mouse_x,mouse_y;
+	bool			go_forward,go_backward,go_side_left,go_side_right;
+
+		// start with no movement
+		
+    obj->forward_move.moving=FALSE;
+	obj->side_move.moving=FALSE;
+	obj->vert_move.moving=FALSE;
+
+		// get input
+
+	player_get_6_way_input(tick,obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
+
+		// turning and looking
+
+	obj->turn.ang_add.y=player_mouse_smooth(mouse_x,obj->turn.ang_add.y);
+	obj->look.ang_add=player_mouse_smooth(mouse_y,obj->look.ang_add);
+
+		// forward/backwards movement
+
+	if (go_forward) {
+		obj->forward_move.moving=TRUE;
+		if (obj->forward_move.reverse) obj->forward_move.speed=0;
+		obj->forward_move.reverse=FALSE;
+	}
+
+	if (go_backward) {
+		obj->forward_move.moving=TRUE;
+		if (!obj->forward_move.reverse) obj->forward_move.speed=0;
+		obj->forward_move.reverse=TRUE;
+	}
+
+		// thrusting has a single speed
+
+	obj->forward_move.running=FALSE;
+}
 
 /* =======================================================
 
@@ -906,7 +950,6 @@ void player_fpp_input(void)
 
 void player_get_input(int tick)
 {
-	float			mouse_x,mouse_y;
 	obj_type		*obj;
 	
 	obj=object_find_uid(server.player_obj_uid);
@@ -919,52 +962,46 @@ void player_get_input(int tick)
 		
 	player_command_input(obj);
 	
-        // check for no-movement states
+        // check for non-input states
         
 	if ((obj->hidden) || (obj->input_freeze)) return;
 	
 		// proper movement routines
 	
-/* supergumba
-//	if (!input_check_joystick_ok()) joystick_mode=joystick_mode_not_used;
 	switch (obj->input_mode) {
 	
 		case im_fpp:
-			player_fpp_input(obj);
+			player_fpp_input(tick,obj);
 			break;
 			
 		case im_side_scroll:
+			player_side_scroll_input(obj);
 			break;
 			
 		case im_top_down:
+			player_top_down_input(obj);
 			break;
 
 		case im_fly:
+			player_fly_input(tick,obj);
 			break;
 
 		case im_thrust:
+			player_thrust_input(tick,obj);
 			break;
 	
 	}
 
-	*/
-	
-	
-		// get turning movement
-
-	
-	input_get_mouse_movement(tick,&mouse_x,&mouse_y);
-
-		// turning and movement
-		
-	player_turn_mouse_input(obj,mouse_x);
-	player_turn_key_input(obj);
-	player_look_mouse_input(obj,mouse_y);
-	player_movement_input(obj);
-
         // jump and duck
 		
-	player_jump_duck_input(obj);
+	if (input_action_get_state(nc_jump)) object_start_jump(obj);
+    
+	if (input_action_get_state(nc_duck)) {
+        object_start_duck(obj);
+    }
+    else {
+        object_start_stand(obj);
+    }
 	
         // weapons
     

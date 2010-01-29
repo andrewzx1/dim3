@@ -61,7 +61,7 @@ void map_auto_generate_lights(map_type *map)
 			
 		x=(portal->max.x+portal->min.x)>>1;
 		z=(portal->max.z+portal->min.z)>>1;
-		y=portal->min.y+((portal->max.y-portal->min.y)>>1);
+		y=portal->min.y+((portal->max.y-portal->min.y)>>2);		// near top of room
 		
 			// get intensity
 			

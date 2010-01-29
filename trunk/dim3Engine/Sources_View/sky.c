@@ -103,7 +103,7 @@ void draw_sky_dome_panoramic_setup(void)
 	
 		// construct VBO
 
-	vertex_ptr=view_bind_map_sky_vertex_object();
+	vertex_ptr=view_bind_map_sky_vertex_object(((120*4)*(3+2)));
 	if (vertex_ptr==NULL) return;
 
 	uv_ptr=vertex_ptr+((120*4)*3);
@@ -306,7 +306,7 @@ void draw_sky_dome_hemisphere_setup(void)
 
 		// construct VBO
 
-	vertex_ptr=view_bind_map_sky_vertex_object();
+	vertex_ptr=view_bind_map_sky_vertex_object(((200*4)*(3+2)));
 	if (vertex_ptr==NULL) return;
 
 	uv_ptr=vertex_ptr+((200*4)*3);
@@ -521,7 +521,7 @@ void draw_sky_cube_setup(void)
 
 		// construct VBO
 
-	vertex_ptr=view_bind_map_sky_vertex_object();
+	vertex_ptr=view_bind_map_sky_vertex_object(((6*4)*(3+2)));
 	if (vertex_ptr==NULL) return;
 
 	uv_ptr=vertex_ptr+((6*4)*3);
@@ -879,17 +879,14 @@ void draw_sky_init(void)
 	switch (map.sky.type) {
 	
 		case st_dome_panoramic:
-			view_init_sky_vertex_object(((120*4)*(3+2)));
 			draw_sky_dome_panoramic_setup();
 			break;
 
 		case st_dome_hemisphere:
-			view_init_sky_vertex_object(((200*4)*(3+2)));
 			draw_sky_dome_hemisphere_setup();
 			break;
 			
 		case st_cube:
-			view_init_sky_vertex_object(((6*4)*(3+2)));
 			draw_sky_cube_setup();
 			break;
 	
