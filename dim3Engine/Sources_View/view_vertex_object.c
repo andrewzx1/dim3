@@ -50,8 +50,6 @@ GLuint						vbo_map,vbo_map_index,
 
 void view_create_vertex_objects(void)
 {
-	int			n;
-
 		// map, liquid and sky vbo
 
 	glGenBuffersARB(1,&vbo_map);
@@ -66,14 +64,6 @@ void view_create_vertex_objects(void)
 
 	glGenBuffersARB(view_vertex_object_count,vbo_cache);
 	glGenBuffersARB(view_vertex_object_count,vbo_cache_index);
-
-	for (n=0;n!=view_vertex_object_count;n++) {
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[n]);
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sizeof(float),NULL,GL_STREAM_DRAW_ARB);
-		
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache_index[n]);
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sizeof(float),NULL,GL_STREAM_DRAW_ARB);
-	}
 
 		// start at first misc vbo
 
@@ -199,25 +189,18 @@ inline void view_unbind_map_index_object(void)
       
 ======================================================= */
 
-void view_init_liquid_vertex_object(int sz)
-{
-		// create liquid geometery buffer
-
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_liquid);
-
-	sz*=sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
-
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-}
-
-inline float* view_bind_map_liquid_vertex_object(void)
+inline float* view_bind_map_liquid_vertex_object(int sz)
 {
 	float		*vertex_ptr;
 
 		// bind to liquid specific VBO
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_liquid);
+
+		// resize VBO
+
+	sz*=sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 		// map pointer
 
@@ -240,25 +223,18 @@ inline void view_unbind_liquid_vertex_object(void)
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }
 
-void view_init_liquid_index_object(int sz)
-{
-		// create liquid index buffer
-
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_liquid_index);
-
-	sz*=sizeof(unsigned int);
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
-
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-}
-
-inline unsigned int* view_bind_map_liquid_index_object(void)
+inline unsigned int* view_bind_map_liquid_index_object(int sz)
 {
 	unsigned int		*index_ptr;
 
 		// bind to liquid specific VBO
 
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_liquid_index);
+
+		// resize VBO
+
+	sz*=sizeof(unsigned int);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 		// map pointer
 
@@ -287,25 +263,18 @@ inline void view_unbind_liquid_index_object(void)
       
 ======================================================= */
 
-void view_init_sky_vertex_object(int sz)
-{
-		// create sky geometery buffer
-
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_sky);
-
-	sz*=sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
-
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-}
-
-inline float* view_bind_map_sky_vertex_object(void)
+inline float* view_bind_map_sky_vertex_object(int sz)
 {
 	float		*vertex_ptr;
 
 		// bind to sky specific VBO
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_sky);
+
+		// resize VBO
+
+	sz*=sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STATIC_DRAW_ARB);
 
 		// map pointer
 

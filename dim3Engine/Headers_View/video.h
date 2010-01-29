@@ -84,17 +84,14 @@ extern void view_bind_map_index_object(void);
 extern void view_unmap_map_index_object(void);
 extern void view_unbind_map_index_object(void);
 
-extern void view_init_liquid_vertex_object(int sz);
-extern float* view_bind_map_liquid_vertex_object(void);
+extern float* view_bind_map_liquid_vertex_object(int sz);
 extern void view_unmap_liquid_vertex_object(void);
 extern void view_unbind_liquid_vertex_object(void);
-extern void view_init_liquid_index_object(int sz);
-extern unsigned int* view_bind_map_liquid_index_object(void);
+extern unsigned int* view_bind_map_liquid_index_object(int sz);
 extern void view_unmap_liquid_index_object(void);
 extern void view_unbind_liquid_index_object(void);
 
-extern void view_init_sky_vertex_object(int sz);
-extern float* view_bind_map_sky_vertex_object(void);
+extern float* view_bind_map_sky_vertex_object(int sz);
 extern void view_bind_sky_vertex_object(void);
 extern void view_unmap_sky_vertex_object(void);
 extern void view_unbind_sky_vertex_object(void);

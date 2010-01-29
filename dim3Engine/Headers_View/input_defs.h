@@ -253,14 +253,6 @@ and can be sold or given away.
 											}
 
 //
-// joystick axis points
-//
-
-#define joystick_axis_quarter_value			8192
-#define joystick_axis_half_value			16384
-#define joystick_axis_max_value				32768
-
-//
 // action structures
 //
 

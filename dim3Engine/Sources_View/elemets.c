@@ -1624,6 +1624,10 @@ void element_click_table(element_type *element,int x,int y)
 	if ((element->value<0) || (element->value>=row_cnt)) {
 		element->value=-1;
 	}
+
+		// flip any check boxes
+
+	if ((element->setup.table.checkbox) && (element->value>=0) && (element->value<element_table_max_check)) element->setup.table.checks[element->value]^=0x1;
 }
 
 void element_draw_table_row_column_lines(element_type *element,int ty,int by,float col_factor)
@@ -1752,7 +1756,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	int				n,dx,dy,col_wid,ctrl_sz;
 	unsigned long	gl_id;
 	char			*c,*c2,txt[256];
-	bool			first_col;
+	bool			first_col,checked;
 	d3col			col,col2;
 
 	dx=x+4;
@@ -1772,7 +1776,10 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 			col_wid=(int)(element->setup.table.cols[n].percent_size*(float)wid);
 			ctrl_sz=col_wid>>1;
 
-			element_draw_checkbox_control((((dx-4)+(col_wid>>1))-(ctrl_sz>>1)),dy,ctrl_sz,FALSE,TRUE,FALSE);
+			checked=FALSE;
+			if ((row>=0) && (row<element_table_max_check)) checked=element->setup.table.checks[row];
+
+			element_draw_checkbox_control((((dx-4)+(col_wid>>1))-(ctrl_sz>>1)),dy,ctrl_sz,checked,TRUE,FALSE);
 
 			dx+=col_wid;
 			continue;

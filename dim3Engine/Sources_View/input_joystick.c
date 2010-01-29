@@ -85,33 +85,19 @@ inline bool input_check_joystick_ok(void)
       
 ======================================================= */
 
-void input_get_joystick_movement(float *x,float *y)
+inline float input_get_joystick_axis(int axis)
 {
-	int			kx,ky;
-	
-		// only consider movement past the quarter point
-		
-	kx=SDL_JoystickGetAxis(input_joystick,0);
-	if (abs(kx)<joystick_axis_quarter_value) kx=0;
-
-	ky=SDL_JoystickGetAxis(input_joystick,1);
-	if (abs(ky)<joystick_axis_quarter_value) ky=0;
-	
-		// use the factor to get the joystick movements
-		// within the same range as the mouse
-
-	*x=(((float)kx)*0.004f)*setup.joystick_x.speed;
-	*y=(((float)ky)*0.004f)*setup.joystick_y.speed;
+	return(((float)SDL_JoystickGetAxis(input_joystick,axis))/32768.0f);
 }
 
-bool input_get_joystick_move_forward(void)
+inline bool input_get_joystick_axis_as_button_min(int axis)
 {
-	return(SDL_JoystickGetAxis(input_joystick,1)<-joystick_axis_half_value);
+	return(SDL_JoystickGetAxis(input_joystick,axis)<-16384);
 }
 
-bool input_get_joystick_move_backward(void)
+inline bool input_get_joystick_axis_as_button_max(int axis)
 {
-	return(SDL_JoystickGetAxis(input_joystick,1)>joystick_axis_half_value);
+	return(SDL_JoystickGetAxis(input_joystick,axis)>16384);
 }
 
 bool input_get_joystick_button(int button_idx)
@@ -129,16 +115,16 @@ bool input_get_joystick_button(int button_idx)
 	switch (button_idx) {
 
 		case input_joystick_button_left:
-			return(SDL_JoystickGetAxis(input_joystick,0)<-joystick_axis_half_value);
+			return(SDL_JoystickGetAxis(input_joystick,0)<-16384);
 
 		case input_joystick_button_right:
-			return(SDL_JoystickGetAxis(input_joystick,0)>joystick_axis_half_value);
+			return(SDL_JoystickGetAxis(input_joystick,0)>16384);
 
 		case input_joystick_button_up:
-			return(SDL_JoystickGetAxis(input_joystick,1)<-joystick_axis_half_value);
+			return(SDL_JoystickGetAxis(input_joystick,1)<-16384);
 
 		case input_joystick_button_down:
-			return(SDL_JoystickGetAxis(input_joystick,1)>joystick_axis_half_value);
+			return(SDL_JoystickGetAxis(input_joystick,1)>16384);
 
 	}
 	

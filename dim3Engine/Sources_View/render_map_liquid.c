@@ -72,25 +72,6 @@ inline int liquid_render_liquid_get_max_vertex(map_liquid_type *liq)
 	return(x_sz*z_sz);
 }
 
-void liquid_gl_list_init(void)
-{
-	int					n,v_sz,sz;
-	map_liquid_type		*liq;
-
-	sz=0;
-
-	liq=map.liquid.liquids;
-
-	for (n=0;n!=map.liquid.nliquid;n++) {
-		v_sz=liquid_render_liquid_get_max_vertex(liq);
-		if (v_sz>sz) sz=v_sz;
-		liq++;
-	}
-
-	view_init_liquid_vertex_object(v_sz*(3+2+3+2));
-	view_init_liquid_index_object(v_sz*4);
-}
-
 /* =======================================================
 
       Check if Liquid is Transparent
@@ -128,7 +109,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 
 		// setup vbo
 
-	vertex_ptr=view_bind_map_liquid_vertex_object();
+	vertex_ptr=view_bind_map_liquid_vertex_object(v_sz*(3+2+3+2));
 	if (vertex_ptr==NULL) return;
 	
 	vl=vertex_ptr;
@@ -274,7 +255,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 	liq->draw.z_sz=z_sz;
 }
 
-int liquid_render_liquid_create_quads(map_liquid_type *liq)
+int liquid_render_liquid_create_quads(map_liquid_type *liq,int v_sz)
 {
 	int				x,z,x_sz,z_sz,quad_cnt,
 					tz,bz,tz_add,top_row,bot_row,
@@ -293,7 +274,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 
 		// setup index vbo
 
-	index_ptr=view_bind_map_liquid_index_object();
+	index_ptr=view_bind_map_liquid_index_object(v_sz*4);
 	if (index_ptr==NULL) return(0);
 
 		// create the draw indexes
@@ -374,7 +355,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		// create quads
 
-	quad_cnt=liquid_render_liquid_create_quads(liq);
+	quad_cnt=liquid_render_liquid_create_quads(liq,v_sz);
 	if (quad_cnt==0) {
 		view_unbind_liquid_vertex_object();
 		return;
