@@ -308,6 +308,8 @@ bool drag_bone_model_wind(Point start_pt)
 	model_draw_bone_type	*draw_bone;
 	MouseTrackingResult		track;
 	
+	if (model.nbone==0) return(FALSE);
+	
 	model_wind_play(FALSE,FALSE);
 	
 		// setup the draw pose

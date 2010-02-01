@@ -160,11 +160,11 @@ void input_get_mouse_movement(int tick,float *x,float *y)
 
 		// calculate speed and acceleration
 
-	fx*=setup.mouse_x.speed;
-	*x=fx+(fx*setup.mouse_x.acceleration);
+	fx*=setup.mouse.speed;
+	*x=fx+(fx*setup.mouse.acceleration);
 
-	fy*=setup.mouse_y.speed;
-	*y=fy+(fy*setup.mouse_y.acceleration);
+	fy*=setup.mouse.speed;
+	*y=fy+(fy*setup.mouse.acceleration);
 }
 
 bool input_get_mouse_button(int button_idx)

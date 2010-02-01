@@ -96,7 +96,7 @@ int texture_find_free(void)
 int texture_pick(char *material_name,char *err_str)
 {
 	int				idx;
-    char			path[1024],path2[1024],sub_path[1024],txt[256];
+    char			path[1024],path2[1024],sub_path[1024],title[256];
 	texture_type	*texture;
 	
 		// find a free texture
@@ -106,8 +106,8 @@ int texture_pick(char *material_name,char *err_str)
 	
 		// pick a bitmap
 		
-	sprintf(txt,"A material named '%s' has been found.  Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).",material_name);
-	dialog_alert("Material Found - Select Bitmap",txt);
+	sprintf(title,"Material %s Found - Select Bitmap",material_name);
+	dialog_alert(title,"Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
 	
 	if (!nav_open_file("png",path)) {
 		strcpy(err_str,"No texture was choosen.");

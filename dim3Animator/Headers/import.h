@@ -35,9 +35,9 @@ extern void textdecode_linestarts(void);
 extern bool textdecode_open(char *path,char p_piece_break);
 extern void textdecode_close(void);
 extern int textdecode_count(void);
-extern int textdecode_find(int str_line,char *txt);
-extern void textdecode_get_line(int i,char *txt,int len);
-extern void textdecode_get_piece(int i,int k,char *txt);
+extern int textdecode_find(int line_idx,char *txt);
+extern void textdecode_get_line(int line_idx,char *txt,int len);
+extern void textdecode_get_piece(int line_idx,int piece_idx,char *txt);
 
 extern void clear_materials(void);
 extern int texture_count(void);

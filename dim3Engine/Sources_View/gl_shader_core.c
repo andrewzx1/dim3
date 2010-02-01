@@ -126,6 +126,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	if (nlight>0) {
 		sprintf(strchr(buf,0),"uniform float dim3LightIntensity[%d],dim3LightExponent[%d];\n",nlight,nlight);
 		sprintf(strchr(buf,0),"uniform vec3 dim3LightColor[%d],dim3LightDirection[%d];\n",nlight,nlight);
+		sprintf(strchr(buf,0),"uniform bool dim3LightLightMap[%d];\n",nlight);
 	}
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
@@ -174,9 +175,11 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		sprintf(strchr(buf,0),"dist=length(lightVector[%d]);\n",n);
 		sprintf(strchr(buf,0),"if (dist<dim3LightIntensity[%d]) {\n",n);
 		sprintf(strchr(buf,0)," if (dot(lightVector[%d],dim3LightDirection[%d])>=0.0) {\n",n,n);
-		sprintf(strchr(buf,0),"  att=1.0-(dist/dim3LightIntensity[%d]);\n",n);
-		sprintf(strchr(buf,0),"  att+=pow(att,dim3LightExponent[%d]);\n",n);
-		sprintf(strchr(buf,0),"  ambient+=(dim3LightColor[%d]*att);\n",n);
+		sprintf(strchr(buf,0),"  if (!dim3LightLightMap[%d]) {\n",n);
+		sprintf(strchr(buf,0),"   att=1.0-(dist/dim3LightIntensity[%d]);\n",n);
+		sprintf(strchr(buf,0),"   att+=pow(att,dim3LightExponent[%d]);\n",n);
+		sprintf(strchr(buf,0),"   ambient+=(dim3LightColor[%d]*att);\n",n);
+		strcat(buf,"  }\n");
 		if ((bump) || (diffuse)) {
 			sprintf(strchr(buf,0),"  combineLightVector+=lightVector[%d];\n",n);
 			strcat(buf,"  combineCount++;\n");
@@ -213,6 +216,10 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	if (bump) {
 		strcat(buf,"bumpVector=max(abs(combineLightVector),0.5);\n");
 		strcat(buf,"bumpVector=normalize((bumpVector*pixelAtt)+(vec3(0.5,0.5,0.5)*(1.0-pixelAtt)));\n");
+	
+		if (nlight>0) strcat(buf,"bumpVector=lightVector[0];\n");
+		
+		
 		strcat(buf,"bumpMap=texture2D(dim3TexBump,gl_TexCoord[0].st).rgb;\n");
 		strcat(buf,"bumpMap=(bumpMap-0.5)*2.0;\n");
 		strcat(buf,"bump=max(dot(bumpMap,bumpVector),0.0);\n");
@@ -222,14 +229,20 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		
 		// we are doing this a cheap and quick way.  We calculate a center of screen area
 		// (i.e., looking directly at surface) to light surface more.  This gives a simple
-		// but ok effect of the surface becoming more shiny
+		// but ok effect of the surface becoming more shiny as we don't have the normals
+		// to calc it right (at this moment)
 		
 	if (spec) {
-		strcat(buf,"spec=");
-		if (bump) strcat(buf,"(");
-		strcat(buf,"(texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb+dim3SpecularWhitePoint)");
-		if (bump) strcat(buf,"*bump)");
-		strcat(buf,"*ambient;\n");
+		strcat(buf,"spec=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb;\n");
+		
+		sprintf(strchr(buf,0),"shineFactor=1.0-(distance(gl_FragCoord.xy,vec2(%d.0,%d.0))/%d.0);\n",(setup.screen.x_sz>>1),(setup.screen.y_sz>>1),(int)(sqrt((setup.screen.x_sz*setup.screen.x_sz)+(setup.screen.y_sz+setup.screen.y_sz))*0.25));
+		sprintf(strchr(buf,0),"shineFactor=max((1.0-(abs(gl_FragCoord.x-%d.0)/%d.0)),0.0);\n",(setup.screen.x_sz>>1),(setup.screen.x_sz>>3));
+		sprintf(strchr(buf,0),"shineFactor*=max((1.0-(abs(gl_FragCoord.y-%d.0)/%d.0)),0.0);\n",(setup.screen.y_sz>>1),(setup.screen.y_sz>>1));
+	//	strcat(buf,"shineFactor=clamp(shineFactor,0.0,1.0);\n");
+	//	strcat(buf,"spec=max((spec+(spec*pow(shineFactor,0.0))),0.0);\n");
+		strcat(buf,"spec=max((spec*pow(max(shineFactor,0.0),0.8)),0.0);\n");
+		
+
 		
 		
 		
@@ -251,12 +264,14 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	}
 	
 	if (bump) strcat(buf,"(");
-	if (spec) strcat(buf,"(");
+//	if (spec) strcat(buf,"(");
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
-	if (spec) strcat(buf,"+spec)");
+//	if (spec) strcat(buf,"+spec)");
 	if (diffuse) strcat(buf,"*diffuse");
 	strcat(buf,";\n");
+	
+//	if (spec) strcat(buf,"gl_FragColor.rgb=vec3(pow(max(shineFactor,0.0),0.2));\n");
 	
 	if (fog) {
 		strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
@@ -278,6 +293,8 @@ bool gl_core_shader_create(shader_type *shader,int nlight,bool fog,bool light_ma
 {
 	char				*vertex_data,*fragment_data;
 	bool				ok;
+	
+	bump=spec=FALSE;		// supergumba -- turn off for now
 
 		// create the shader code
 

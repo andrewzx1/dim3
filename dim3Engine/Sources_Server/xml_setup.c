@@ -66,33 +66,11 @@ void setup_xml_default(void)
 	setup.invert_look=FALSE;
 	setup.mouse_smooth=TRUE;
 
-	setup.mouse_x.speed=0.03f;
-	setup.mouse_x.speed_min=0.0f;
-	setup.mouse_x.speed_max=0.1f;
-	setup.mouse_x.acceleration=0.6f;
-	setup.mouse_x.acceleration_min=0.0f;
-	setup.mouse_x.acceleration_max=1.0f;
+	setup.mouse.speed=0.03f;
+	setup.mouse.acceleration=0.6f;
 
-	setup.mouse_y.speed=0.03f;
-	setup.mouse_y.speed_min=0.0f;
-	setup.mouse_y.speed_max=0.1f;
-	setup.mouse_y.acceleration=0.6f;
-	setup.mouse_y.acceleration_min=0.0f;
-	setup.mouse_y.acceleration_max=1.0f;
-
-	setup.joystick_x.speed=0.03f;
-	setup.joystick_x.speed_min=0.0f;
-	setup.joystick_x.speed_max=0.1f;
-	setup.joystick_x.acceleration=0.6f;
-	setup.joystick_x.acceleration_min=0.0f;
-	setup.joystick_x.acceleration_max=1.0f;
-
-	setup.joystick_y.speed=0.03f;
-	setup.joystick_y.speed_min=0.0f;
-	setup.joystick_y.speed_max=0.1f;
-	setup.joystick_y.acceleration=0.6f;
-	setup.joystick_y.acceleration_min=0.0f;
-	setup.joystick_y.acceleration_max=1.0f;
+	setup.joystick.speed=0.03f;
+	setup.joystick.acceleration=0.6f;
 
 	setup.action_list.naction=0;
 
@@ -118,20 +96,6 @@ void setup_xml_default(void)
 	setup.window_editor=TRUE;
 	setup.metrics_on=FALSE;
 	setup.disable_shaders=FALSE;
-}
-
-/* =======================================================
-
-      Setup Value Fixes
-      
-======================================================= */
-
-void setup_xml_fix_axis(setup_axis_type *axis)
-{
-	if (axis->speed<axis->speed_min) axis->speed=axis->speed_min;
-	if (axis->speed>axis->speed_max) axis->speed=axis->speed_max;
-	if (axis->acceleration<axis->acceleration_min) axis->acceleration=axis->acceleration_min;
-	if (axis->acceleration>axis->acceleration_max) axis->acceleration=axis->acceleration_max;
 }
 
 /* =======================================================
@@ -181,30 +145,10 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Toggle_Run",&setup.toggle_run);
 	xml_key_read_boolean(setup_tag,"Invert_Look",&setup.invert_look);
 	xml_key_read_boolean(setup_tag,"Mouse_Smooth",&setup.mouse_smooth);
-	xml_key_read_float(setup_tag,"Mouse_X_Speed",&setup.mouse_x.speed);
-	xml_key_read_float(setup_tag,"Mouse_X_Speed_Min",&setup.mouse_x.speed_min);
-	xml_key_read_float(setup_tag,"Mouse_X_Speed_Max",&setup.mouse_x.speed_max);
-	xml_key_read_float(setup_tag,"Mouse_X_Acceleration",&setup.mouse_x.acceleration);
-	xml_key_read_float(setup_tag,"Mouse_X_Acceleration_Min",&setup.mouse_x.acceleration_min);
-	xml_key_read_float(setup_tag,"Mouse_X_Acceleration_Max",&setup.mouse_x.acceleration_max);
-	xml_key_read_float(setup_tag,"Mouse_Y_Speed",&setup.mouse_y.speed);
-	xml_key_read_float(setup_tag,"Mouse_Y_Speed_Min",&setup.mouse_y.speed_min);
-	xml_key_read_float(setup_tag,"Mouse_Y_Speed_Max",&setup.mouse_y.speed_max);
-	xml_key_read_float(setup_tag,"Mouse_Y_Acceleration",&setup.mouse_y.acceleration);
-	xml_key_read_float(setup_tag,"Mouse_Y_Acceleration_Min",&setup.mouse_y.acceleration_min);
-	xml_key_read_float(setup_tag,"Mouse_Y_Acceleration_Max",&setup.mouse_y.acceleration_max);
-	xml_key_read_float(setup_tag,"Joystick_X_Speed",&setup.joystick_x.speed);
-	xml_key_read_float(setup_tag,"Joystick_X_Speed_Min",&setup.joystick_x.speed_min);
-	xml_key_read_float(setup_tag,"Joystick_X_Speed_Max",&setup.joystick_x.speed_max);
-	xml_key_read_float(setup_tag,"Joystick_X_Acceleration",&setup.joystick_x.acceleration);
-	xml_key_read_float(setup_tag,"Joystick_X_Acceleration_Min",&setup.joystick_x.acceleration_min);
-	xml_key_read_float(setup_tag,"Joystick_X_Acceleration_Max",&setup.joystick_x.acceleration_max);
-	xml_key_read_float(setup_tag,"Joystick_Y_Speed",&setup.joystick_y.speed);
-	xml_key_read_float(setup_tag,"Joystick_Y_Speed_Min",&setup.joystick_y.speed_min);
-	xml_key_read_float(setup_tag,"Joystick_Y_Speed_Max",&setup.joystick_y.speed_max);
-	xml_key_read_float(setup_tag,"Joystick_Y_Acceleration",&setup.joystick_y.acceleration);
-	xml_key_read_float(setup_tag,"Joystick_Y_Acceleration_Min",&setup.joystick_y.acceleration_min);
-	xml_key_read_float(setup_tag,"Joystick_Y_Acceleration_Max",&setup.joystick_y.acceleration_max);
+	xml_key_read_float(setup_tag,"Mouse_Speed",&setup.mouse.speed);
+	xml_key_read_float(setup_tag,"Mouse_Acceleration",&setup.mouse.acceleration);
+	xml_key_read_float(setup_tag,"Joystick_Speed",&setup.joystick.speed);
+	xml_key_read_float(setup_tag,"Joystick_Acceleration",&setup.joystick.acceleration);
 	xml_key_read_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
     xml_key_read_int(setup_tag,"Character",&setup.network.character_idx);
     xml_key_read_int(setup_tag,"Tint",&setup.network.tint_color_idx);
@@ -220,11 +164,6 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Metrics_On",&setup.metrics_on);
 	xml_key_read_boolean(setup_tag,"Disable_Shaders",&setup.disable_shaders);
 
-		// fix some items
-
-	setup_xml_fix_axis(&setup.mouse_x);
-	setup_xml_fix_axis(&setup.mouse_y);
-	
 		// actions
 
     actions_tag=xml_findfirstchild("Actions",setup_tag);
@@ -368,30 +307,10 @@ bool setup_xml_write(void)
 	xml_key_write_boolean("Toggle_Run",setup.toggle_run);
 	xml_key_write_boolean("Invert_Look",setup.invert_look);
 	xml_key_write_boolean("Mouse_Smooth",setup.mouse_smooth);
-	xml_key_write_float("Mouse_X_Speed",setup.mouse_x.speed);
-	xml_key_write_float("Mouse_X_Speed_Min",setup.mouse_x.speed_min);
-	xml_key_write_float("Mouse_X_Speed_Max",setup.mouse_x.speed_max);
-	xml_key_write_float("Mouse_X_Acceleration",setup.mouse_x.acceleration);
-	xml_key_write_float("Mouse_X_Acceleration_Min",setup.mouse_x.acceleration_min);
-	xml_key_write_float("Mouse_X_Acceleration_Max",setup.mouse_x.acceleration_max);
-	xml_key_write_float("Mouse_Y_Speed",setup.mouse_y.speed);
-	xml_key_write_float("Mouse_Y_Speed_Min",setup.mouse_y.speed_min);
-	xml_key_write_float("Mouse_Y_Speed_Max",setup.mouse_y.speed_max);
-	xml_key_write_float("Mouse_Y_Acceleration",setup.mouse_y.acceleration);
-	xml_key_write_float("Mouse_Y_Acceleration_Min",setup.mouse_y.acceleration_min);
-	xml_key_write_float("Mouse_Y_Acceleration_Max",setup.mouse_y.acceleration_max);
-	xml_key_write_float("Joystick_X_Speed",setup.joystick_x.speed);
-	xml_key_write_float("Joystick_X_Speed_Min",setup.joystick_x.speed_min);
-	xml_key_write_float("Joystick_X_Speed_Max",setup.joystick_x.speed_max);
-	xml_key_write_float("Joystick_X_Acceleration",setup.joystick_x.acceleration);
-	xml_key_write_float("Joystick_X_Acceleration_Min",setup.joystick_x.acceleration_min);
-	xml_key_write_float("Joystick_X_Acceleration_Max",setup.joystick_x.acceleration_max);
-	xml_key_write_float("Joystick_Y_Speed",setup.joystick_y.speed);
-	xml_key_write_float("Joystick_Y_Speed_Min",setup.joystick_y.speed_min);
-	xml_key_write_float("Joystick_Y_Speed_Max",setup.joystick_y.speed_max);
-	xml_key_write_float("Joystick_Y_Acceleration",setup.joystick_y.acceleration);
-	xml_key_write_float("Joystick_Y_Acceleration_Min",setup.joystick_y.acceleration_min);
-	xml_key_write_float("Joystick_Y_Acceleration_Max",setup.joystick_y.acceleration_max);
+	xml_key_write_float("Mouse_Speed",setup.mouse.speed);
+	xml_key_write_float("Mouse_Acceleration",setup.mouse.acceleration);
+	xml_key_write_float("Joystick_Speed",setup.joystick.speed);
+	xml_key_write_float("Joystick_Acceleration",setup.joystick.acceleration);
 	xml_key_write_text("Network_Name",setup.network.name);
 	xml_key_write_int("Character",setup.network.character_idx);
 	xml_key_write_int("Tint",setup.network.tint_color_idx);

@@ -55,6 +55,7 @@ bool input_joystick_initialize(void)
 		// start up events
 
 	SDL_JoystickEventState(SDL_ENABLE);
+	
 	return(TRUE);
 }
 
@@ -87,17 +88,27 @@ inline bool input_check_joystick_ok(void)
 
 inline float input_get_joystick_axis(int axis)
 {
-	return(((float)SDL_JoystickGetAxis(input_joystick,axis))/32768.0f);
+	float				f;
+	
+		// get joystick to be between 1 and 20
+		
+	f=(float)SDL_JoystickGetAxis(input_joystick,axis);
+	if ((f>-8192) && (f<8192)) return(0.0f);
+	
+	f/=(32768.0f/20.0f);
+	
+	f*=setup.joystick.speed;
+	return(f+(f*setup.joystick.acceleration));
 }
 
 inline bool input_get_joystick_axis_as_button_min(int axis)
 {
-	return(SDL_JoystickGetAxis(input_joystick,axis)<-16384);
+	return(SDL_JoystickGetAxis(input_joystick,axis)<-8192);
 }
 
 inline bool input_get_joystick_axis_as_button_max(int axis)
 {
-	return(SDL_JoystickGetAxis(input_joystick,axis)>16384);
+	return(SDL_JoystickGetAxis(input_joystick,axis)>8192);
 }
 
 bool input_get_joystick_button(int button_idx)
@@ -106,7 +117,6 @@ bool input_get_joystick_button(int button_idx)
 		
 	if ((button_idx>=input_joystick_button_1) && (button_idx<=input_joystick_button_16)) {
 		return(SDL_JoystickGetButton(input_joystick,(button_idx-input_joystick_button_1))!=0);
-	
 	}
 
 		// these inputs are hard left/right/up/down on an axis
@@ -115,16 +125,16 @@ bool input_get_joystick_button(int button_idx)
 	switch (button_idx) {
 
 		case input_joystick_button_left:
-			return(SDL_JoystickGetAxis(input_joystick,0)<-16384);
+			return(SDL_JoystickGetAxis(input_joystick,0)<-8192);
 
 		case input_joystick_button_right:
-			return(SDL_JoystickGetAxis(input_joystick,0)>16384);
+			return(SDL_JoystickGetAxis(input_joystick,0)>8192);
 
 		case input_joystick_button_up:
-			return(SDL_JoystickGetAxis(input_joystick,1)<-16384);
+			return(SDL_JoystickGetAxis(input_joystick,1)<-8192);
 
 		case input_joystick_button_down:
-			return(SDL_JoystickGetAxis(input_joystick,1)>16384);
+			return(SDL_JoystickGetAxis(input_joystick,1)>8192);
 
 	}
 	

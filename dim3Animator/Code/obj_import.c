@@ -34,6 +34,7 @@ extern int						cur_mesh;
 extern model_type				model;
 
 float							obj_gx[max_model_vertex],obj_gy[max_model_vertex];
+d3vct							obj_normals[max_model_vertex];
 
 /* =======================================================
 
@@ -43,15 +44,17 @@ float							obj_gx[max_model_vertex],obj_gy[max_model_vertex];
 
 bool import_obj(char *path,bool *found_normals,char *err_str)
 {
-	int						i,k,t,nvertex,ntrig,nobj_uv,nobj_normal,nline,ntexture,texture_idx,
+	int						n,k,t,nvertex,ntrig,nobj_uv,nobj_normal,nline,ntexture,texture_idx,
 							pvtx[obj_max_face_vertex],npt;
-	char					txt[256],*c,vstr[256],vtstr[256],material_name[256],last_material_name[256];
+	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
+							material_name[256],last_material_name[256];
     float					*gx,*gy,pgx[obj_max_face_vertex],pgy[obj_max_face_vertex];
 	bool					single_material,first_material;
-	model_vertex_type		*vertex,*normal_vertex;
+	model_vertex_type		*vertex;
     model_trig_type			*trig;
 	model_material_type		*material;
-		
+	d3vct					*normal;
+	
 		// clear mesh materials
     
     clear_materials();
@@ -69,8 +72,8 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		
 	ntexture=0;
 	
-    for (i=0;i!=nline;i++) {
-        textdecode_get_piece(i,0,txt);
+    for (n=0;n!=nline;n++) {
+        textdecode_get_piece(n,0,txt);
         if (strcmp(txt,"usemtl")==0) ntexture++;
 	}
 
@@ -100,12 +103,12 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
     gy=obj_gy;
 	
 	nobj_normal=0;
-	normal_vertex=model.meshes[cur_mesh].vertexes;
+	normal=obj_normals;
    
-    for ((i=0);(i!=nline);i++) {
+    for (n=0;n!=nline;n++) {
 
-        textdecode_get_piece(i,0,txt);
-        
+        textdecode_get_piece(n,0,txt);
+      
             // a vertex
             
         if (strcmp(txt,"v")==0) {
@@ -114,16 +117,18 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 				sprintf(err_str,"Too many vertexes, models can have a maximum of %d vertexes.",max_model_vertex);
 				return(FALSE);
 			}
-        
-			textdecode_get_piece(i,1,txt);
+
+			textdecode_get_piece(n,1,txt);
 			vertex->pnt.x=-(int)(strtod(txt,NULL)*import_scale_factor);
-			textdecode_get_piece(i,2,txt);
+			textdecode_get_piece(n,2,txt);
 			vertex->pnt.y=-(int)(strtod(txt,NULL)*import_scale_factor);
-			textdecode_get_piece(i,3,txt);
+			textdecode_get_piece(n,3,txt);
 			vertex->pnt.z=-(int)(strtod(txt,NULL)*import_scale_factor);
             
             vertex->major_bone_idx=vertex->minor_bone_idx=-1;
             vertex->bone_factor=1;
+			
+			vertex->normal.x=vertex->normal.y=vertex->normal.z=0.0f;
         
             vertex++;
             nvertex++;
@@ -134,10 +139,10 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             
             if (strcmp(txt,"vt")==0) {
                 if (nobj_uv>=max_model_vertex) continue;
-            
-                textdecode_get_piece(i,1,txt);
+
+                textdecode_get_piece(n,1,txt);
                 *gx++=strtod(txt,NULL);
-                textdecode_get_piece(i,2,txt);
+                textdecode_get_piece(n,2,txt);
                 *gy++=strtod(txt,NULL);
                 
                 nobj_uv++;
@@ -148,15 +153,15 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 				
 				if (strcmp(txt,"vn")==0) {
 					if (nobj_normal>=max_model_vertex) continue;
-				
-					textdecode_get_piece(i,1,txt);
-					normal_vertex->normal.x=-strtod(txt,NULL);
-					textdecode_get_piece(i,2,txt);
-					normal_vertex->normal.y=-strtod(txt,NULL);
-					textdecode_get_piece(i,2,txt);
-					normal_vertex->normal.z=-strtod(txt,NULL);
+
+					textdecode_get_piece(n,1,txt);
+					normal->x=-strtod(txt,NULL);
+					textdecode_get_piece(n,2,txt);
+					normal->y=-strtod(txt,NULL);
+					textdecode_get_piece(n,2,txt);
+					normal->z=-strtod(txt,NULL);
 					
-					normal_vertex++;
+					normal++;
 					nobj_normal++;
 				}
 			}
@@ -195,15 +200,15 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 	
 	last_material_name[0]=0x0;
         
-    for (i=0;i!=nline;i++) {
+    for (n=0;n!=nline;n++) {
 
-        textdecode_get_piece(i,0,txt);
+        textdecode_get_piece(n,0,txt);
         
             // material change
             
         if (strcmp(txt,"usemtl")==0) {
 		
-            textdecode_get_piece(i,1,material_name);
+            textdecode_get_piece(n,1,material_name);
 		
 			if (!first_material) {
 			
@@ -249,10 +254,13 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
         npt=0;
         
         for (k=0;k!=obj_max_face_vertex;k++) {
-            textdecode_get_piece(i,(k+1),txt);
+            textdecode_get_piece(n,(k+1),txt);
             if (txt[0]==0x0) break;
             
+				// seperate into vertex, UV, and normal
+				
             vtstr[0]=0x0;
+			vnstr[0]=0x0;
             
             strcpy(vstr,txt);
             c=strchr(vstr,'/');
@@ -261,8 +269,11 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
                 *c=0x0;
             }
             c=strchr(vtstr,'/');
-            if (c!=NULL) *c=0x0;
-            
+            if (c!=NULL) {
+				strcpy(vnstr,(c+1));
+				*c=0x0;
+            }
+			
             pvtx[npt]=atoi(vstr)-1;
             
 			if (vtstr[0]==0x0) {
@@ -273,6 +284,14 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 				pgx[npt]=obj_gx[t];
 				pgy[npt]=1-obj_gy[t];
             }
+			
+				// if the face point had a normal, use that
+				// to override the vertexe normal
+				
+			if (vnstr[0]!=0x0) {
+				t=atoi(vnstr)-1;
+				memmove(&model.meshes[cur_mesh].vertexes[pvtx[npt]].normal,&obj_normals[t],sizeof(d3vct));
+			}
 			
             npt++;
         }

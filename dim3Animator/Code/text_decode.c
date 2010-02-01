@@ -38,41 +38,41 @@ int				*text_line_starts;
 
 int textdecode_count_linestarts(void)
 {
-	int			i,k,offset;
+	int			n,cnt,offset;
 	char		*c;
 	
-	k=offset=0;
+	cnt=offset=0;
 	c=text_data;
 	
-	for (i=0;i!=text_data_sz;i++) {
+	for (n=0;n!=text_data_sz;n++) {
 		if ((*c==0xD) || (*c==0xA)) {
-			if ((i-offset)>0) k++;
-			offset=i+1;
+			if ((n-offset)>0) cnt++;
+			offset=n+1;
 		}
 		c++;
 	}
 	
-	return(k);
+	return(cnt);
 }
 
 void textdecode_linestarts(void)
 {
-	int			i,k,offset;
+	int			n,idx,offset;
 	char		*c;
 	
-	k=offset=0;
+	idx=offset=0;
 	c=text_data;
 	
-	for (i=0;i!=text_data_sz;i++) {
+	for (n=0;n!=text_data_sz;n++) {
 		if ((*c==0xD) || (*c==0xA)) {
 			*c=0x0;
-			if ((i-offset)>0) text_line_starts[k++]=offset;
-			offset=i+1;
+			if ((n-offset)>0) text_line_starts[idx++]=offset;
+			offset=n+1;
 		}
 		c++;
 	}
 	
-	text_line_starts[k]=offset;
+	text_line_starts[idx]=offset;
 }
 
 /* =======================================================
@@ -143,16 +143,16 @@ int textdecode_count(void)
 	return(text_nline);
 }
 
-int textdecode_find(int str_line,char *txt)
+int textdecode_find(int line_idx,char *txt)
 {
-	int			i,sz;
+	int			n,sz;
 	char		*c;
 	
 	sz=strlen(txt);
 	
-	for (i=str_line;i!=text_nline;i++) {
-		c=text_data+text_line_starts[i];
-		if (strncasecmp(c,txt,sz)==0) return(i);
+	for (n=line_idx;n!=text_nline;n++) {
+		c=text_data+text_line_starts[n];
+		if (strncasecmp(c,txt,sz)==0) return(n);
 	}
 	
 	return(-1);
@@ -164,19 +164,21 @@ int textdecode_find(int str_line,char *txt)
       
 ======================================================= */
 
-void textdecode_get_line(int i,char *txt,int len)
+void textdecode_get_line(int line_idx,char *txt,int len)
 {
-	strncpy(txt,(text_data+text_line_starts[i]),len);
+	bzero(txt,len);
+	
+	strncpy(txt,(text_data+text_line_starts[line_idx]),len);
 	txt[len-1]=0x0;
 }
 
-void textdecode_get_piece(int i,int k,char *txt)
+void textdecode_get_piece(int line_idx,int piece_idx,char *txt)
 {
-	int			t;
+	int			n;
 	char		line[1024];
 	char		*c;
 	
-	textdecode_get_line(i,line,1024);
+	textdecode_get_line(line_idx,line,1024);
 	
 	txt[0]=0x0;
 	
@@ -184,7 +186,7 @@ void textdecode_get_piece(int i,int k,char *txt)
 		
 	c=line;
 	
-	for (t=0;t!=k;t++) {
+	for (n=0;n!=piece_idx;n++) {
 		c=strchr(c,piece_break);
 		if (c==NULL) return;
 		c++;
@@ -194,7 +196,8 @@ void textdecode_get_piece(int i,int k,char *txt)
 	
 		// find end of token
 		
-	strcpy(txt,c);
+	strncpy(txt,c,256);
+	txt[255]=0x0;
 		
 	c=strchr(txt,piece_break);
 	if (c!=NULL) *c=0x0;

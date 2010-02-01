@@ -84,8 +84,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						float						speed,speed_min,speed_max,
-													acceleration,acceleration_min,acceleration_max;
+						float						speed,acceleration;
 					} setup_axis_type;
 
 //
@@ -160,7 +159,7 @@ typedef struct		{
 													metrics_on,disable_shaders;
 						setup_path_type				path;
 						setup_screen_type			screen;
-						setup_axis_type				mouse_x,mouse_y,joystick_x,joystick_y;
+						setup_axis_type				mouse,joystick;
 						setup_action_list_type		action_list;
 						setup_network_type			network;
 						file_path_setup_type		file_path_setup;
