@@ -57,7 +57,6 @@ extern void game_file_initialize(void);
 extern void menu_input(void);
 extern void file_input(void);
 extern void debug_input(void);
-extern void view_run(int tick);
 extern void view_draw(int tick);
 extern int game_time_get(void);
 extern void chat_clear_messages(void);
@@ -437,7 +436,7 @@ void view_loop_input(int tick)
 
 /* =======================================================
 
-      View Draw for Play Loop
+      Normal Playing View Draw
       
 ======================================================= */
 
@@ -470,6 +469,22 @@ void view_loop_draw(int tick)
 	gl_frame_swap();
 
 	view.fps.count++;
+}
+
+/* =======================================================
+
+      Dedicated Host View Draw
+      
+======================================================= */
+
+void view_loop_draw_dedicated(int tick)
+{
+	if (tick<view.time.draw_tick) return;
+	view.time.draw_tick=tick+view.time.draw_time;
+
+	gl_frame_clear(FALSE);
+	network_draw(tick);
+	gl_frame_swap();
 }
 
 /* =======================================================
@@ -514,24 +529,3 @@ void view_pause_draw(void)
 	gl_frame_swap();
 }
 
-/* =======================================================
-
-      View Loop
-      
-======================================================= */
-
-void view_loop(int tick)
-{
-		// run the input
-		
-	view_loop_input(tick);
-	
-		// early exit from input changing state
-		
-	if ((server.state!=gs_running) && (server.state!=gs_score_limit)) return;
-		
-		// run the view
-		
-	view_run(tick);
-	view_loop_draw(tick);
-}

@@ -61,6 +61,27 @@ void vector_create(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2)
 	vector_normalize(v);
 }
 
+void vector_scalar_multiply(d3vct *v,d3vct *v1,float f)
+{
+	v->x=v1->x*f;
+	v->y=v1->y*f;
+	v->z=v1->z*f;
+}
+
+void vector_add(d3vct *v,d3vct *v1,d3vct *v2)
+{
+	v->x=v1->x+v2->x;
+	v->y=v1->y+v2->y;
+	v->z=v1->z+v2->z;
+}
+
+void vector_subtract(d3vct *v,d3vct *v1,d3vct *v2)
+{
+	v->x=v1->x-v2->x;
+	v->y=v1->y-v2->y;
+	v->z=v1->z-v2->z;
+}
+
 void vector_cross_product(d3vct *v,d3vct *v1,d3vct *v2)
 {
 	v->x=(v1->y*v2->z)-(v2->y*v1->z);

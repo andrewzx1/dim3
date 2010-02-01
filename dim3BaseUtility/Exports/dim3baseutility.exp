@@ -25,6 +25,9 @@ _matrix_average
 
 _vector_normalize
 _vector_create
+_vector_scalar_multiply
+_vector_add
+_vector_subtract
 _vector_cross_product
 _vector_dot_product
 

@@ -56,7 +56,10 @@ extern void server_shutdown(void);
 extern void server_loop(int tick);
 extern bool view_initialize(char *err_str);
 extern void view_shutdown(void);
-extern void view_loop(int tick);
+extern void view_loop_input(int tick);
+extern void view_run(int tick);
+extern void view_loop_draw(int tick);
+extern void view_loop_draw_dedicated(int tick);
 extern void view_pause_draw(void);
 extern void map_clear_changes(void);
 extern bool map_need_rebuild(void);
@@ -130,9 +133,22 @@ void loop_game_run(int tick)
 
 	}
 
+		// view input
+
+	view_loop_input(tick);
+
 		// draw the view
 
-	view_loop(tick);
+	if ((server.state==gs_running) || (server.state==gs_score_limit)) {
+
+		if ((setup.network.dedicated) && (net_setup.host.hosting)) {
+			view_loop_draw_dedicated(tick);
+		}
+		else {
+			view_run(tick);
+			view_loop_draw(tick);
+		}
+	}
 
 		// check interface quits
 		
@@ -258,7 +274,7 @@ bool loop_main(char *err_str)
 		case gs_running:
 			loop_game_run(tick);
 			break;
-			
+
 		case gs_intro:
 			intro_run();
 			break;

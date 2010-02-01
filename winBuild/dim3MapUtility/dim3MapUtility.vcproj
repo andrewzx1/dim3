@@ -338,6 +338,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\dim3MapUtility\Sources\map_normals.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3MapUtility\Sources\movements.c"
 					>
 					<FileConfiguration

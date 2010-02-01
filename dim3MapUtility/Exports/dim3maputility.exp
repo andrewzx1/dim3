@@ -105,3 +105,6 @@ _map_auto_generate_reset_UVs
 
 _map_auto_generate
 _map_auto_generate_test
+
+_map_recalc_normals_mesh
+_map_recalc_normals
