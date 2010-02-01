@@ -165,6 +165,9 @@ extern void matrix_average(matrix_type *mat,int nmatrix,matrix_type *mats);
 
 extern void vector_normalize(d3vct *v);
 extern void vector_create(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2);
+extern void vector_scalar_multiply(d3vct *v,d3vct *v1,float f);
+extern void vector_add(d3vct *v,d3vct *v1,d3vct *v2);
+extern void vector_subtract(d3vct *v,d3vct *v1,d3vct *v2);
 extern void vector_cross_product(d3vct *v,d3vct *v1,d3vct *v2);
 extern float vector_dot_product(d3vct *v1,d3vct *v2);
 

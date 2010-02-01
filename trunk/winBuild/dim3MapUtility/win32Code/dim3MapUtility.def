@@ -108,3 +108,6 @@ EXPORTS
 
 	map_auto_generate								@330
 	map_auto_generate_test							@331
+
+	map_recalc_normals_mesh							@340
+	map_recalc_normals								@341

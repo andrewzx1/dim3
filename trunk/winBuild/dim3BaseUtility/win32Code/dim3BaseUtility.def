@@ -28,8 +28,11 @@ EXPORTS
 
 	vector_normalize							@140
 	vector_create								@141
-	vector_cross_product						@142
-	vector_dot_product							@143
+	vector_scalar_multiply						@142
+	vector_add									@143
+	vector_subtract								@144
+	vector_cross_product						@145
+	vector_dot_product							@146
 
 	fast_trig_setup								@150
 	fast_atan2f									@151
