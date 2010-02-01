@@ -614,7 +614,7 @@ void player_get_6_way_input(int tick,obj_type *obj,float *mouse_x,float *mouse_y
 	*go_side_right=input_action_get_state(nc_sidestep_right);
 
 	if (input_check_joystick_ok()) {
-		(*mouse_x)+=input_get_joystick_axis(2);
+		(*mouse_x)-=input_get_joystick_axis(2);
 		(*mouse_y)+=input_get_joystick_axis(3);
 
 		(*go_forward)|=input_get_joystick_axis_as_button_min(1);

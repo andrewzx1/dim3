@@ -58,13 +58,11 @@ and can be sold or given away.
 #define ctrl_always_run_id					40
 #define ctrl_toggle_run_id					41
 #define ctrl_invert_look_id					42
-#define ctrl_mouse_x_speed_id				43
-#define ctrl_mouse_x_accel_id				44
-#define ctrl_mouse_y_speed_id				45
-#define ctrl_mouse_y_accel_id				46
-#define ctrl_mouse_smooth_id				47
-#define ctrl_joystick_x_speed_id			48
-#define ctrl_joystick_y_speed_id			49
+#define ctrl_mouse_speed_id					43
+#define ctrl_mouse_accel_id					44
+#define ctrl_mouse_smooth_id				45
+#define ctrl_joystick_speed_id				46
+#define ctrl_joystick_accel_id				47
 
 #define ctrl_action_id						60
 
@@ -193,7 +191,7 @@ void setup_game_mouse_pane(void)
 	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=10*control_y_add;
+	control_y_sz=8*control_y_add;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -208,18 +206,14 @@ void setup_game_mouse_pane(void)
 	element_checkbox_add("Mouse Smoothing",setup.mouse_smooth,ctrl_mouse_smooth_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_slider_add("Mouse X Speed",setup.mouse_x.speed,setup.mouse_x.speed_min,setup.mouse_x.speed_max,ctrl_mouse_x_speed_id,x,y,TRUE);
+	element_slider_add("Mouse Speed",setup.mouse.speed,0.0f,0.1f,ctrl_mouse_speed_id,x,y,TRUE);
 	y+=control_y_add;
-	element_slider_add("Mouse X Acceleration",setup.mouse_x.acceleration,setup.mouse_x.acceleration_min,setup.mouse_x.acceleration_max,ctrl_mouse_x_accel_id,x,y,TRUE);
-	y+=control_y_add;
-	element_slider_add("Mouse Y Speed",setup.mouse_y.speed,setup.mouse_y.speed_min,setup.mouse_y.speed_max,ctrl_mouse_y_speed_id,x,y,TRUE);
-	y+=control_y_add;
-	element_slider_add("Mouse Y Acceleration",setup.mouse_y.acceleration,setup.mouse_y.acceleration_min,setup.mouse_y.acceleration_max,ctrl_mouse_y_accel_id,x,y,TRUE);
+	element_slider_add("Mouse Acceleration",setup.mouse.acceleration,0.0f,1.0f,ctrl_mouse_accel_id,x,y,TRUE);
 	y+=control_y_add;
 
-	element_slider_add("Joystick X Speed",setup.joystick_x.speed,setup.joystick_x.speed_min,setup.joystick_x.speed_max,ctrl_joystick_x_speed_id,x,y,TRUE);
+	element_slider_add("Joystick Speed",setup.joystick.speed,0.0f,0.1f,ctrl_joystick_speed_id,x,y,TRUE);
 	y+=control_y_add;
-	element_slider_add("Joystick Y Speed",setup.joystick_y.speed,setup.joystick_y.speed_min,setup.joystick_y.speed_max,ctrl_joystick_y_speed_id,x,y,TRUE);
+	element_slider_add("Joystick Acceleration",setup.joystick.acceleration,0.0f,1.0f,ctrl_joystick_accel_id,x,y,TRUE);
 }
 
 void setup_game_action_pane(void)
@@ -764,28 +758,20 @@ void setup_game_handle_click(int id)
 			setup.mouse_smooth=element_get_value(ctrl_mouse_smooth_id);
 			break;
 			
-		case ctrl_mouse_x_speed_id:
-			setup.mouse_x.speed=element_get_slider_value(ctrl_mouse_x_speed_id);
+		case ctrl_mouse_speed_id:
+			setup.mouse.speed=element_get_slider_value(ctrl_mouse_speed_id);
 			break;
 			
-		case ctrl_mouse_x_accel_id:
-			setup.mouse_x.acceleration=element_get_slider_value(ctrl_mouse_x_accel_id);
+		case ctrl_mouse_accel_id:
+			setup.mouse.acceleration=element_get_slider_value(ctrl_mouse_accel_id);
 			break;
 			
-		case ctrl_mouse_y_speed_id:
-			setup.mouse_y.speed=element_get_slider_value(ctrl_mouse_y_speed_id);
+		case ctrl_joystick_speed_id:
+			setup.joystick.speed=element_get_slider_value(ctrl_joystick_speed_id);
 			break;
 
-		case ctrl_mouse_y_accel_id:
-			setup.mouse_y.acceleration=element_get_slider_value(ctrl_mouse_y_accel_id);
-			break;
-
-		case ctrl_joystick_x_speed_id:
-			setup.joystick_x.speed=element_get_slider_value(ctrl_joystick_x_speed_id);
-			break;
-
-		case ctrl_joystick_y_speed_id:
-			setup.joystick_y.speed=element_get_slider_value(ctrl_joystick_y_speed_id);
+		case ctrl_joystick_accel_id:
+			setup.joystick.acceleration=element_get_slider_value(ctrl_joystick_accel_id);
 			break;
 		
 			// action pane

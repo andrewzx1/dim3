@@ -23,9 +23,9 @@
 	};
 	0123D86600C0AFD57F000001 /* menu.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7319}}";
-			sepNavSelRange = "{9730, 0}";
-			sepNavVisRange = "{9141, 992}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6487}}";
+			sepNavSelRange = "{996, 0}";
+			sepNavVisRange = "{2652, 1416}";
 			sepNavWindowFrame = "{{453, 164}, {1041, 747}}";
 		};
 	};
@@ -63,7 +63,7 @@
 		breakpoints = (
 			2630149C0D73978900564E2C /* main_window.c:1212 */,
 			2614C5D31058891B00B09EAB /* main_window.c:812 */,
-			26184ADD10AA3F9F002C81BE /* light_maps.c:1064 */,
+			26184ADD10AA3F9F002C81BE /* light_maps.c:1137 */,
 		);
 		codeSenseManager = 260AFF060D4050B200F6C42F /* Code sense */;
 		executables = (
@@ -145,8 +145,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 286006074;
-			PBXWorkspaceStateSaveDate = 286006074;
+			PBXPerProjectTemplateStateSaveDate = 286520310;
+			PBXWorkspaceStateSaveDate = 286520310;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -268,7 +268,7 @@
 		originalNumberOfMultipleMatches = 0;
 		state = 1;
 	};
-	26184ADD10AA3F9F002C81BE /* light_maps.c:1064 */ = {
+	26184ADD10AA3F9F002C81BE /* light_maps.c:1137 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -279,7 +279,7 @@
 		fileReference = 2681880210A3A28A000B2CD8 /* light_maps.c */;
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 1064;
+		lineNumber = 1137;
 		modificationTime = 279593062.084233;
 		originalNumberOfMultipleMatches = 0;
 		state = 1;
@@ -327,9 +327,9 @@
 	};
 	263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2016}}";
-			sepNavSelRange = "{3088, 0}";
-			sepNavVisRange = "{2148, 987}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1690}}";
+			sepNavSelRange = "{1138, 0}";
+			sepNavVisRange = "{343, 1429}";
 			sepNavWindowFrame = "{{432, 161}, {1041, 747}}";
 		};
 	};
@@ -415,9 +415,9 @@
 	};
 	265DCEFA0F6D6A3E00C1E65D /* palette_polygon.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 2665}}";
-			sepNavSelRange = "{2878, 18}";
-			sepNavVisRange = "{1849, 1832}";
+			sepNavIntBoundsRect = "{{0, 0}, {1279, 2730}}";
+			sepNavSelRange = "{3231, 16}";
+			sepNavVisRange = "{1871, 2091}";
 			sepNavWindowFrame = "{{433, 103}, {999, 779}}";
 		};
 	};
@@ -447,17 +447,17 @@
 	};
 	2681880210A3A28A000B2CD8 /* light_maps.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1063, 21424}}";
-			sepNavSelRange = "{37985, 0}";
-			sepNavVisRange = "{37710, 1044}";
+			sepNavIntBoundsRect = "{{0, 0}, {1063, 22685}}";
+			sepNavSelRange = "{14433, 0}";
+			sepNavVisRange = "{13345, 1316}";
 			sepNavWindowFrame = "{{258, 153}, {1078, 758}}";
 		};
 	};
 	26899FA80F1EBF25007860EB /* editor_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1041, 2821}}";
-			sepNavSelRange = "{3819, 0}";
-			sepNavVisRange = "{2912, 1107}";
+			sepNavIntBoundsRect = "{{0, 0}, {1041, 2912}}";
+			sepNavSelRange = "{3748, 15}";
+			sepNavVisRange = "{2909, 1118}";
 			sepNavWindowFrame = "{{328, 112}, {1056, 814}}";
 		};
 	};
@@ -490,17 +490,17 @@
 	};
 	26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 14105}}";
-			sepNavSelRange = "{13821, 8}";
-			sepNavVisRange = "{13180, 992}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 14079}}";
+			sepNavSelRange = "{21544, 0}";
+			sepNavVisRange = "{20564, 1284}";
 			sepNavWindowFrame = "{{275, 209}, {1041, 747}}";
 		};
 	};
 	26AFB4D10D9615C00004805A /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9282}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9620}}";
 			sepNavSelRange = "{8532, 0}";
-			sepNavVisRange = "{7484, 1361}";
+			sepNavVisRange = "{7580, 1296}";
 			sepNavWindowFrame = "{{339, 198}, {1041, 747}}";
 		};
 	};
@@ -578,9 +578,9 @@
 	};
 	F51ABADA048DACFE00B78D6A /* application_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1456}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1469}}";
 			sepNavSelRange = "{2900, 22}";
-			sepNavVisRange = "{874, 2124}";
+			sepNavVisRange = "{2215, 2514}";
 			sepNavWindowFrame = "{{202, 250}, {1041, 747}}";
 		};
 	};
@@ -635,8 +635,8 @@
 	F54583E3094F868300CBE89A /* pieces_create.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 6539}}";
-			sepNavSelRange = "{8101, 0}";
-			sepNavVisRange = "{7767, 1015}";
+			sepNavSelRange = "{8326, 0}";
+			sepNavVisRange = "{7767, 1022}";
 			sepNavWindowFrame = "{{333, 114}, {1041, 747}}";
 		};
 	};
@@ -666,9 +666,9 @@
 	};
 	F54CD2090233430101250BB8 /* main_window.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 31096}}";
-			sepNavSelRange = "{39119, 29}";
-			sepNavVisRange = "{38653, 1665}";
+			sepNavIntBoundsRect = "{{0, 0}, {1153, 31408}}";
+			sepNavSelRange = "{27469, 18}";
+			sepNavVisRange = "{26807, 1071}";
 			sepNavWindowFrame = "{{407, 93}, {1041, 747}}";
 		};
 	};
@@ -714,10 +714,10 @@
 	};
 	F57CACA60C38B76200B595F4 /* texture_palette.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4563}}";
-			sepNavSelRange = "{3002, 0}";
-			sepNavVisRange = "{2176, 1146}";
-			sepNavWindowFrame = "{{322, 172}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4745}}";
+			sepNavSelRange = "{3523, 0}";
+			sepNavVisRange = "{2747, 895}";
+			sepNavWindowFrame = "{{589, 176}, {1041, 747}}";
 		};
 	};
 	F58D0FAF05B8C0A800DBBDC5 /* walk_view_click_piece.c */ = {
@@ -824,10 +824,10 @@
 	};
 	F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11414}}";
-			sepNavSelRange = "{10103, 0}";
-			sepNavVisRange = "{8903, 1452}";
-			sepNavWindowFrame = "{{343, 228}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11271}}";
+			sepNavSelRange = "{9253, 0}";
+			sepNavVisRange = "{8575, 1130}";
+			sepNavWindowFrame = "{{358, 218}, {1041, 747}}";
 		};
 	};
 	F5DD757A092CFD8700465E14 /* launch.c */ = {

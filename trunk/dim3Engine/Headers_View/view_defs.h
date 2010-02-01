@@ -157,6 +157,7 @@ typedef struct		{
 					} view_light_spot_type;
 
 typedef struct		{
+						int									light_map[max_shader_light];
 						float								pos[3*max_shader_light],
 															col[3*max_shader_light],												
 															intensity[max_shader_light],
@@ -251,7 +252,7 @@ typedef struct		{
 															dim3TexColor,dim3LightPosition,
 															dim3LightColor,dim3LightIntensity,
 															dim3LightExponent,dim3LightDirection,
-															dim3TintColor,dim3Alpha;
+															dim3LightLightMap,dim3TintColor,dim3Alpha;
 					} shader_cached_var_loc;
 
 typedef struct		{

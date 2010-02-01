@@ -125,6 +125,7 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3LightIntensity=glGetUniformLocationARB(shader->program_obj,"dim3LightIntensity");
 	shader->var_locs.dim3LightExponent=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
 	shader->var_locs.dim3LightDirection=glGetUniformLocationARB(shader->program_obj,"dim3LightDirection");
+	shader->var_locs.dim3LightLightMap=glGetUniformLocationARB(shader->program_obj,"dim3LightLightMap");
 	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 }
@@ -408,6 +409,7 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha,view_light_lis
 		if (shader->var_locs.dim3LightIntensity!=-1) glUniform1fvARB(shader->var_locs.dim3LightIntensity,max_shader_light,light_list->gl_var.intensity);
 		if (shader->var_locs.dim3LightExponent!=-1) glUniform1fvARB(shader->var_locs.dim3LightExponent,max_shader_light,light_list->gl_var.exponent);
 		if (shader->var_locs.dim3LightDirection!=-1) glUniform3fvARB(shader->var_locs.dim3LightDirection,max_shader_light,light_list->gl_var.direction);
+		if (shader->var_locs.dim3LightLightMap!=-1) glUniform1ivARB(shader->var_locs.dim3LightLightMap,max_shader_light,(GLint*)light_list->gl_var.light_map);
 	}
 	
 		// set tint color

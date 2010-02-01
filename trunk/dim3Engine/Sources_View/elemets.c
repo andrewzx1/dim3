@@ -1469,7 +1469,7 @@ void element_move_slider(element_type *element,int x,int y)
 
 void element_draw_slider(element_type *element,int sel_id)
 {
-	int				x,y,ky,lft,rgt,top,bot,mid,margin;
+	int				x,y,ky,lft,rgt,top,bot,mid;
 	float			alpha;
 	d3col			col2,gradient_start,gradient_end;
 	
@@ -1511,12 +1511,8 @@ void element_draw_slider(element_type *element,int sel_id)
 		col2.r=hud.color.control_hilite.r*0.5f;
 		col2.g=hud.color.control_hilite.g*0.5f;
 		col2.b=hud.color.control_hilite.b*0.5f;
-		
-		margin=(bot-top)/10;
-		if (margin<3) margin=3;
 
-		view_draw_next_vertex_object_2D_color_poly(lft,(top+margin),&hud.color.control_hilite,mid,(top+margin),&hud.color.control_hilite,mid,(bot-(margin+1)),&col2,lft,(bot-(margin+1)),&col2,alpha);
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,mid,(top+margin),(bot-(margin+1)));
+		view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.color.control_hilite,mid,top,&hud.color.control_hilite,mid,bot,&col2,lft,bot,&col2,alpha);
 	}
 
 		// outline
