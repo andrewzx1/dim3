@@ -39,27 +39,13 @@ extern maputility_settings_type		maputility_settings;
 
 void map_textures_new(map_type *map)
 {
-	int					n,k;
+	int					n;
 	texture_type		*texture;
-	texture_frame_type	*frame;
 	
 	texture=map->textures;
 	
 	for (n=0;n!=max_map_texture;n++) {
-	
-		texture->shader_idx=-1;
-	
-		frame=texture->frames;
-		
-		for (k=0;k!=max_texture_frame;k++) {
-			bitmap_new(&frame->bitmap);
-			bitmap_new(&frame->bumpmap);
-			bitmap_new(&frame->specularmap);
-			bitmap_new(&frame->glowmap);
-			
-			frame++;
-		}
-		
+		bitmap_texture_clear(texture);
 		texture++;
 	}
 }

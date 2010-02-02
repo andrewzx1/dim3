@@ -39,27 +39,13 @@ extern modelutility_settings_type		modelutility_settings;
 
 void model_textures_clear(model_type *model)
 {
-	int						n,k;
+	int						n;
     texture_type			*texture;
-	texture_frame_type		*frame;
 	
     texture=model->textures;
     
 	for (n=0;n!=max_model_texture;n++) {
-	
-		texture->shader_idx=-1;
-    
-		frame=texture->frames;
-    
-        for (k=0;k!=max_texture_frame;k++) {
-			bitmap_new(&frame->bitmap);
-			bitmap_new(&frame->bumpmap);
-			bitmap_new(&frame->specularmap);
-			bitmap_new(&frame->glowmap);
-			
-			frame++;
-        }
-        
+		bitmap_texture_clear(texture);
         texture++;
 	}
 }

@@ -478,8 +478,7 @@ typedef struct		{
 
 typedef struct		{
 						int						shader_idx;
-						float					txt_scale_x,txt_scale_y,
-												specular_white_point;
+						float					shine_factor;
 						bool					additive,pixelated;
 						char					material_name[name_str_len],
 												shader_name[name_str_len];
@@ -503,6 +502,7 @@ extern void bitmap_close(bitmap_type *bitmap);
 extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,int tick);
 extern void bitmap_texture_recalc_animation(texture_type *texture);
 
+extern void bitmap_texture_clear(texture_type *texture);
 extern void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale);
 extern void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_scale);
 

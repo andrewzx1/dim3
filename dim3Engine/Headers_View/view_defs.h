@@ -248,11 +248,12 @@ typedef struct		{
 typedef struct		{
 						GLint								dim3TimeMillisec,dim3FrequencySecond,
 															dim3CameraPosition,dim3AmbientColor,
-															dim3LightMapBoost,dim3SpecularWhitePoint,
+															dim3LightMapBoost,dim3ShineFactor,
 															dim3TexColor,dim3LightPosition,
 															dim3LightColor,dim3LightIntensity,
 															dim3LightExponent,dim3LightDirection,
-															dim3LightLightMap,dim3TintColor,dim3Alpha;
+															dim3LightLightMap,dim3TintColor,dim3Alpha,
+															dim3Tangent,dim3Binormal,dim3Normal;
 					} shader_cached_var_loc;
 
 typedef struct		{
