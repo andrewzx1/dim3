@@ -198,6 +198,7 @@ _bitmap_close
 _bitmap_texture_setup_animation
 _bitmap_texture_recalc_animation
 
+_bitmap_texture_clear
 _bitmap_texture_read_xml
 _bitmap_texture_write_xml
 

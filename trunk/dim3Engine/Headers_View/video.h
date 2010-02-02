@@ -128,7 +128,7 @@ extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id);
-extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse);
+extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse,map_mesh_poly_tangent_space_type *tangent_space);
 
 	// core shaders
 

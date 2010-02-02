@@ -58,10 +58,11 @@ char* gl_core_shader_build_vert(int nlight,bool fog,bool light_map,bool diffuse,
 
 	bzero(buf,max_core_shader_data_sz);
 
-		// built vert shader
+		// build vert shader
 
 	strcat(buf,"uniform vec3 dim3CameraPosition");
 	if (nlight>0) sprintf(strchr(buf,0),",dim3LightPosition[%d]",nlight);
+	if ((bump) || (spec)) strcat(buf,"dim3Tangent,dim3Binormal,dim3Normal");
 	strcat(buf,";\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
@@ -118,7 +119,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 
 	strcat(buf,"uniform float dim3Alpha");
 	if (light_map) strcat(buf,",dim3LightMapBoost");
-	if (spec) strcat(buf,",dim3SpecularWhitePoint");
+	if (spec) strcat(buf,",dim3ShineFactor");
 	strcat(buf,";\n");
 	
 	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
@@ -246,7 +247,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		
 		
 		
-//		strcat(buf,"spec=(texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb*pixelAtt)-dim3SpecularWhitePoint;\n");
+//		strcat(buf,"spec=(texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb*pixelAtt)-dim3ShineFactor;\n");
 //		sprintf(strchr(buf,0),"shineFactor=1.0-(distance(gl_FragCoord.xy,vec2(%d.0,%d.0))/%d.0);\n",(setup.screen.x_sz>>1),(setup.screen.y_sz>>1),(int)(sqrt((setup.screen.x_sz*setup.screen.x_sz)+(setup.screen.y_sz+setup.screen.y_sz))*0.25));
 	//	strcat(buf,"spec=(spec+clamp((spec*shineFactor),0.0,1.0))");
 	//	if (bump) strcat(buf,"*bump");

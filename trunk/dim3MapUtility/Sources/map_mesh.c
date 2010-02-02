@@ -366,6 +366,10 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 	poly->ptsz=ptsz;
 	poly->txt_idx=txt_idx;
 	poly->lmap_txt_idx=-1;
+
+	poly->tangent_space.tangent.x=poly->tangent_space.tangent.y=poly->tangent_space.tangent.z=0.0f;
+	poly->tangent_space.binormal.x=poly->tangent_space.binormal.y=poly->tangent_space.binormal.z=0.0f;
+	poly->tangent_space.normal.x=poly->tangent_space.normal.y=poly->tangent_space.normal.z=0.0f;
 	
 	poly->x_shift=0.0f;
 	poly->y_shift=0.0f;
