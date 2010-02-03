@@ -35,7 +35,7 @@ and can be sold or given away.
 
 extern int				cy,main_wind_uv_layer,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area,dp_textured;
+extern bool				dp_normals,dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area,dp_textured;
 extern d3pnt			view_pnt;
 
 extern AGLContext		ctx;
@@ -511,6 +511,73 @@ void walk_view_draw_liquids(bool opaque)
 
 /* =======================================================
 
+      Walk View Normal Drawing
+      
+======================================================= */
+
+void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
+{
+	int					n,k,t;
+	bool				clip_ok;
+	d3pnt				*pt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+							
+	glDisable(GL_TEXTURE_2D);
+
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
+	
+	glColor4f(1.0f,0.0f,1.0f,1.0f);
+	glLineWidth(2.0f);
+	
+	mesh=map.mesh.meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		
+			// draw polys
+	
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			poly=&mesh->polys[k];
+			
+				// y clipping
+				
+			if (view_setup->clip_on) {
+			
+				clip_ok=TRUE;
+				
+				for (t=0;t!=poly->ptsz;t++) {
+					if (mesh->vertexes[poly->v[t]].y>=view_setup->clip_y) {
+						clip_ok=FALSE;
+						break;
+					}
+				}
+				
+				if (clip_ok) continue;
+			}
+			
+				// draw normal
+				
+			for (t=0;t!=poly->ptsz;t++) {
+				pt=&mesh->vertexes[poly->v[t]];
+		
+				glBegin(GL_LINES);
+				glVertex3i(pt->x,pt->y,pt->z);
+				glVertex3i((pt->x+(int)(poly->tangent_space.normal.x*normal_vector_scale)),(pt->y+(int)(poly->tangent_space.normal.y*normal_vector_scale)),(pt->z+(int)(poly->tangent_space.normal.z*normal_vector_scale)));
+				glEnd();
+				
+			}
+		}
+	
+		mesh++;
+	}
+	
+	glLineWidth(1.0f);
+}
+
+/* =======================================================
+
       Walk View Area Drawing
       
 ======================================================= */
@@ -857,6 +924,14 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
         
 	main_wind_set_3D_projection(view_setup,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
 	walk_view_draw_meshes_line(view_setup,TRUE);
+	
+        // draw normals mesh lines
+		// push view forward to better z-buffer lines
+      
+	if (dp_normals) {
+		main_wind_set_3D_projection(view_setup,(walk_view_near_z+20),(walk_view_far_z-20),walk_view_near_offset);
+		walk_view_draw_meshes_normals(view_setup);
+	}
 	
 		// draw areas
 		

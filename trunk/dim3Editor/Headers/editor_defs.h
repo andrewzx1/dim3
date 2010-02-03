@@ -29,7 +29,7 @@ and can be sold or given away.
 // UI sizes
 //
 
-#define tool_count								17
+#define tool_count								18
 #define piece_count								13
 
 #define tool_button_size						32
@@ -186,6 +186,12 @@ and can be sold or given away.
 
 #define uv_layer_normal							0
 #define uv_layer_light_map						1
+
+//
+// normals
+//
+
+#define normal_vector_scale						300.0f
 
 //
 // draw passing struct

@@ -73,6 +73,7 @@ and can be sold or given away.
 #define kCommandMapCenter					FOUR_CHAR_CODE('mctr')
 #define kCommandMapResetUV					FOUR_CHAR_CODE('mpuv')
 #define kCommandMapOptimize					FOUR_CHAR_CODE('mopt')
+#define kCommandMapCreateNormals			FOUR_CHAR_CODE('rmnm')
 #define kCommandBuildLightMaps				FOUR_CHAR_CODE('lmap')
 #define kCommandRun							FOUR_CHAR_CODE('mrun')
 
@@ -96,12 +97,15 @@ and can be sold or given away.
 #define kCommandMeshResetUV					FOUR_CHAR_CODE('mruv')
 #define kCommandMeshWholeUV					FOUR_CHAR_CODE('mrwv')
 #define kCommandMeshSingleUV				FOUR_CHAR_CODE('mrss')
+#define kCommandMeshCreateNormals			FOUR_CHAR_CODE('rsnm')
+#define kCommandMeshInvertNormals			FOUR_CHAR_CODE('isnm')
 
 #define kCommandPolygonHole					FOUR_CHAR_CODE('fhl1')
 #define kCommandPolygonSnapToGrid			FOUR_CHAR_CODE('psnp')
 #define kCommandPolygonRotateUV				FOUR_CHAR_CODE('pyru')
 #define kCommandPolygonFlipU				FOUR_CHAR_CODE('pyfu')
 #define kCommandPolygonFlipV				FOUR_CHAR_CODE('pyfv')
+#define kCommandPolygonInvertNormal			FOUR_CHAR_CODE('inrm')
 #define kCommandPolygonResetUV				FOUR_CHAR_CODE('pyuv')
 #define kCommandPolygonWholeUV				FOUR_CHAR_CODE('pywv')
 #define kCommandPolygonSingleUV				FOUR_CHAR_CODE('pyss')

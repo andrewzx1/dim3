@@ -227,15 +227,11 @@ typedef struct		{
 					} map_mesh_poly_uv_type;
 
 typedef struct		{
-						d3vct								tangent,binormal,normal;
-					} map_mesh_poly_tangent_space_type;
-
-typedef struct		{
 						int									txt_idx,lmap_txt_idx,ptsz,v[8];
 						float								x_shift,y_shift;
 						char								camera[name_str_len];
+						tangent_space_type					tangent_space;
 						map_mesh_poly_uv_type				main_uv,lmap_uv;
-						map_mesh_poly_tangent_space_type	tangent_space;
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
@@ -684,6 +680,6 @@ extern bool map_delete_texture_frame(map_type *map,int txt);
 extern bool map_replace_texture(map_type *map,int txt,char *bitmap_name);
 extern bool map_delete_texture(map_type *map,int start_txt,int end_txt);
 
-extern void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh);
-extern void map_recalc_normals(map_type *map);
+extern void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal);
+extern void map_recalc_normals(map_type *map,bool only_tangent_binormal);
 

@@ -374,6 +374,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			undo_clear();
 			return(noErr);
 			
+		case kCommandMapCreateNormals:
+			map_recalc_normals(&map,FALSE);
+			main_wind_draw();
+			undo_clear();
+			return(noErr);
+			
 		case kCommandBuildLightMaps:
 			if (dialog_light_map_run()) {
 				main_wind_set_uv_layer(uv_layer_light_map);
@@ -477,6 +483,19 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
+		case kCommandMeshCreateNormals:
+			piece_mesh_recalc_normals();
+			main_wind_draw();
+			undo_clear();
+			return(noErr);
+			
+		case kCommandMeshInvertNormals:
+			piece_mesh_invert_normals(FALSE);
+			main_wind_draw();
+			undo_clear();
+			return(noErr);
+			
+			
 			// polygon menu
 			
 		case kCommandPolygonHole:
@@ -500,6 +519,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandPolygonFlipV:
 			piece_flip_uvs(FALSE,TRUE);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandPolygonInvertNormal:
+			piece_mesh_invert_normals(TRUE);
 			main_wind_draw();
 			return(noErr);
 
