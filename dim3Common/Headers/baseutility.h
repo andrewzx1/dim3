@@ -426,6 +426,14 @@ extern void xml_key_write_color(char *name,d3col *value);
 #define max_texture_frame_mask					0x1F			// mask for maximum number of textures frames
 
 //
+// tangent space
+//
+
+typedef struct		{
+						d3vct					tangent,binormal,normal;
+					} tangent_space_type;
+
+//
 // bitmap structures
 //
 

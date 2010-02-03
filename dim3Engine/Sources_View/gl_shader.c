@@ -404,7 +404,7 @@ void gl_shader_set_texture_variables(shader_type *shader,texture_type *texture)
 	if (shader->var_locs.dim3TexColor!=-1) glUniform3fARB(shader->var_locs.dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
-void gl_shader_set_poly_variables(shader_type *shader,float alpha,view_light_list_type *light_list,d3col *tint_col,map_mesh_poly_tangent_space_type *tangent_space)
+void gl_shader_set_poly_variables(shader_type *shader,float alpha,view_light_list_type *light_list,d3col *tint_col,tangent_space_type *tangent_space)
 {
 	if (light_list!=NULL) {
 		if (shader->var_locs.dim3LightPosition!=-1) glUniform3fvARB(shader->var_locs.dim3LightPosition,max_shader_light,light_list->gl_var.pos);
@@ -616,7 +616,7 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse,map_mesh_poly_tangent_space_type *tangent_space)
+void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse,tangent_space_type *tangent_space)
 {
 	int							n,set_light_count;
 	bool						light_change;

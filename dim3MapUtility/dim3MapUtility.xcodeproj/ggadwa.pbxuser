@@ -70,6 +70,14 @@
 			sepNavWindowFrame = "{{325, 118}, {1041, 747}}";
 		};
 	};
+	269B2A6911178C7000E3FDA8 /* map_normals.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1547}}";
+			sepNavSelRange = "{3446, 0}";
+			sepNavVisRange = "{1601, 1845}";
+			sepNavWindowFrame = "{{272, 83}, {1041, 945}}";
+		};
+	};
 	26A276F30FC64E9B006B2157 /* auto_generate_second_story.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1146, 4680}}";
@@ -255,8 +263,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 286519826;
-			PBXWorkspaceStateSaveDate = 286519826;
+			PBXPerProjectTemplateStateSaveDate = 286843847;
+			PBXWorkspaceStateSaveDate = 286843847;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -272,9 +280,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9256}}";
-			sepNavSelRange = "{5770, 0}";
-			sepNavVisRange = "{5371, 1358}";
+			sepNavIntBoundsRect = "{{0, 0}, {1167, 7878}}";
+			sepNavSelRange = "{21357, 0}";
+			sepNavVisRange = "{18393, 3042}";
 			sepNavWindowFrame = "{{378, 100}, {1041, 691}}";
 		};
 	};

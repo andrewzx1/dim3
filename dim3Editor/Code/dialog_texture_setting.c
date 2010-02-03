@@ -44,7 +44,7 @@ and can be sold or given away.
 #define kTextureSettingGlowRate						FOUR_CHAR_CODE('grtm')
 #define kTextureSettingGlowMin						FOUR_CHAR_CODE('grmn')
 #define kTextureSettingGlowMax						FOUR_CHAR_CODE('grmx')
-#define kTextureSettingSpecularWhitePoint			FOUR_CHAR_CODE('sfct')
+#define kTextureSettingShineFactor					FOUR_CHAR_CODE('sfct')
 #define kTextureSettingMaterialName					FOUR_CHAR_CODE('mtrl')
 #define kTextureSettingScaleX						FOUR_CHAR_CODE('tsxf')
 #define kTextureSettingScaleY						FOUR_CHAR_CODE('tsyf')
@@ -592,7 +592,7 @@ void dialog_texture_setting_run(int txt)
 	dialog_set_int(dialog_texture_wind,kTextureSettingGlowRate,0,texture->glow.rate);
 	dialog_set_float(dialog_texture_wind,kTextureSettingGlowMin,0,texture->glow.min);
 	dialog_set_float(dialog_texture_wind,kTextureSettingGlowMax,0,texture->glow.max);
-	dialog_set_float(dialog_texture_wind,kTextureSettingSpecularWhitePoint,0,texture->specular_white_point);
+	dialog_set_float(dialog_texture_wind,kTextureSettingShineFactor,0,texture->shine_factor);
 	dialog_set_text(dialog_texture_wind,kTextureSettingMaterialName,0,texture->material_name);
 	dialog_set_float(dialog_texture_wind,kTextureSettingScaleX,0,texture->scale.x);
 	dialog_set_float(dialog_texture_wind,kTextureSettingScaleY,0,texture->scale.y);
@@ -624,7 +624,7 @@ void dialog_texture_setting_run(int txt)
 	texture->glow.rate=dialog_get_int(dialog_texture_wind,kTextureSettingGlowRate,0);
 	texture->glow.min=dialog_get_float(dialog_texture_wind,kTextureSettingGlowMin,0);
 	texture->glow.max=dialog_get_float(dialog_texture_wind,kTextureSettingGlowMax,0);
-	texture->specular_white_point=dialog_get_float(dialog_texture_wind,kTextureSettingSpecularWhitePoint,0);
+	texture->shine_factor=dialog_get_float(dialog_texture_wind,kTextureSettingShineFactor,0);
 	dialog_get_text(dialog_texture_wind,kTextureSettingMaterialName,0,texture->material_name,name_str_len);
 	texture->scale.x=dialog_get_float(dialog_texture_wind,kTextureSettingScaleX,0);
 	texture->scale.y=dialog_get_float(dialog_texture_wind,kTextureSettingScaleY,0);

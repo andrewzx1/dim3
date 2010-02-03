@@ -42,7 +42,7 @@ extern setup_type				setup;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
 						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer,drag_handle_idx,node_mode;
-bool					select_toggle_mode,dp_auto_texture,dp_liquid,
+bool					select_toggle_mode,dp_auto_texture,dp_liquid,dp_normals,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,dp_area,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
 d3rect					main_wind_box;
@@ -81,6 +81,7 @@ char					tool_icns_file_name[tool_count][64]=
 									"Tool Node Select",
 									"Tool Node Link",
 									"Tool Node Remove Link",
+									"Tool Normals",
 									"Tool Edit Map Script",
 									"Tool Run Map"
 								};
@@ -102,6 +103,7 @@ char					tool_tooltip_str[tool_count][64]=
 									"Node Selects by Click",
 									"Node Links by Click",
 									"Node Removes Links by Click",
+									"Show Normals",
 									"Edit Map Script",
 									"Run Map In Engine"
 								};
@@ -255,14 +257,21 @@ void main_wind_control_tool(int tool_idx)
 			SetControlValue(tool_ctrl[17],1);
 			break;
 			
-			// script and run buttons
+			// normals
 			
 		case 15:
+			dp_normals=!dp_normals;
+			if (dp_normals) map_recalc_normals(&map,FALSE);		// supergumba -- testing
+			break;
+			
+			// script and run buttons
+			
+		case 16:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_map_script_editor();
 			break;
 			
-		case 16:
+		case 17:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_engine();
 			break;
@@ -826,7 +835,7 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==6) || (n==9) || (n==12) || (n==14)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==6) || (n==9) || (n==12) || (n==14) || (n==15)) OffsetRect(&box,3,0);
 	}
 	
 
@@ -2022,6 +2031,7 @@ void main_wind_tool_default(void)
 	node_mode=node_mode_select;
 	
 	dp_liquid=dp_object=dp_lightsoundparticle=TRUE;
+	dp_normals=FALSE;
 	dp_node=FALSE;
 	dp_textured=TRUE;
 	dp_y_hide=FALSE;

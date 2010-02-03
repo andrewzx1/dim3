@@ -933,6 +933,59 @@ void piece_flip_uvs(bool flip_u,bool flip_v)
 
 /* =======================================================
 
+      Piece Normals
+      
+======================================================= */
+
+void piece_mesh_recalc_normals(void)
+{
+	int				n,sel_count,type,mesh_idx,poly_idx;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
+	}
+	
+	main_wind_draw();
+}
+
+void piece_mesh_poly_invert_normals(map_mesh_poly_type *poly)
+{
+	poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
+	poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
+	poly->tangent_space.normal.z=-poly->tangent_space.normal.z;
+}
+	
+void piece_mesh_invert_normals(bool poly_only)
+{
+	int				n,k,sel_count,type,mesh_idx,poly_idx;
+	map_mesh_type	*mesh;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		mesh=&map.mesh.meshes[mesh_idx];
+		
+		if (poly_only) {
+			piece_mesh_poly_invert_normals(&mesh->polys[poly_idx]);
+		}
+		else {
+			for (k=0;k!=mesh->npoly;k++) {
+				piece_mesh_poly_invert_normals(&mesh->polys[k]);
+			}
+		}
+	}
+	
+	main_wind_draw();
+}
+
+/* =======================================================
+
       Piece Holes
       
 ======================================================= */

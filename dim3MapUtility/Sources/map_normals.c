@@ -31,34 +31,11 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Calculate Normals for Map
+      Calculate Normals
       
 ======================================================= */
 
-/*
-void vector_scalar_multiply(d3vct *v,d3vct *v1,float f)
-{
-	v->x=v1->x*f;
-	v->y=v1->y*f;
-	v->z=v1->z*f;
-}
-
-void vector_add(d3vct *v,d3vct *v1,d3vct *v2)
-{
-	v->x=v1->x+v2->x;
-	v->y=v1->y+v2->y;
-	v->z=v1->z+v2->z;
-}
-
-void vector_subtract(d3vct *v,d3vct *v1,d3vct *v2)
-{
-	v->x=v1->x-v2->x;
-	v->y=v1->y-v2->y;
-	v->z=v1->z-v2->z;
-}
-*/
-
-void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh)
+void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 {
 	int					n;
 	float				u10,u20,v10,v20,f_denom;
@@ -118,13 +95,15 @@ void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh)
 			// calculate the normal
 			// T cross B (cross routine automatically normalizes)
 
-		vector_cross_product(&poly->tangent_space.normal,&poly->tangent_space.tangent,&poly->tangent_space.binormal);
-
+		if (!only_tangent_binormal) {
+			vector_cross_product(&poly->tangent_space.normal,&poly->tangent_space.tangent,&poly->tangent_space.binormal);
+		}
+		
 		poly++;
 	}
 }
 
-void map_recalc_normals(map_type *map)
+void map_recalc_normals(map_type *map,bool only_tangent_binormal)
 {
 	int					n;
 	map_mesh_type		*mesh;
@@ -132,7 +111,7 @@ void map_recalc_normals(map_type *map)
 	mesh=map->mesh.meshes;
 
 	for (n=0;n!=map->mesh.nmesh;n++) {
-		map_recalc_normals_mesh(map,mesh);
+		map_recalc_normals_mesh(mesh,only_tangent_binormal);
 		mesh++;
 	}
 }
