@@ -29,6 +29,30 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+#define normal_min_size_auto_out			350000
+
+/* =======================================================
+
+      Normal In/Out
+      
+======================================================= */
+
+int map_recalc_normals_get_auto_mode(map_mesh_type *mesh)
+{
+	if ((mesh->box.max.x-mesh->box.min.x)<normal_min_size_auto_out) return(mesh_normal_mode_out);
+	if ((mesh->box.max.y-mesh->box.min.y)<normal_min_size_auto_out) return(mesh_normal_mode_out);
+	if ((mesh->box.max.z-mesh->box.min.z)<normal_min_size_auto_out) return(mesh_normal_mode_out);
+
+	return(mesh_normal_mode_in);
+}
+
+bool map_recalc_normals_compare_sign(float f1,float f2)
+{
+	if ((f1<0.0f) && (f2<0.0f)) return(TRUE);
+	if ((f1>=0.0f) && (f2>=0.0f)) return(TRUE);
+	return(FALSE);
+}
+
 /* =======================================================
 
       Calculate Normals
@@ -37,9 +61,11 @@ and can be sold or given away.
 
 void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 {
-	int					n;
+	int					n,mode;
 	float				u10,u20,v10,v20,f_denom;
-	d3vct				p10,p20,vlft,vrgt,v_num;
+	bool				is_out,invert;
+	d3vct				p10,p20,vlft,vrgt,v_num,
+						dvct;
 	d3pnt				*pt,*pt_1,*pt_2;
 	map_mesh_poly_type	*poly;
 
@@ -97,6 +123,55 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 
 		if (!only_tangent_binormal) {
 			vector_cross_product(&poly->tangent_space.normal,&poly->tangent_space.tangent,&poly->tangent_space.binormal);
+		}
+		
+		poly++;
+	}
+	
+		// setup mesh boxes
+		
+	map_prepare_mesh_box(mesh);
+	
+		// check for inversions
+		
+	mode=mesh->normal_mode;
+	
+	if (mode==mesh_normal_mode_auto) mode=map_recalc_normals_get_auto_mode(mesh);
+	
+	poly=mesh->polys;
+
+	for (n=0;n!=mesh->npoly;n++) {
+		map_prepare_mesh_poly(mesh,poly);
+		
+		is_out=FALSE;
+		
+		dvct.x=fabs(poly->box.mid.x-mesh->box.mid.x);
+		dvct.y=fabs(poly->box.mid.y-mesh->box.mid.y);
+		dvct.z=fabs(poly->box.mid.z-mesh->box.mid.z);
+		
+		if ((dvct.y>dvct.x) && (dvct.y>dvct.z)) {
+			is_out=map_recalc_normals_compare_sign((poly->box.mid.y-mesh->box.mid.y),poly->tangent_space.normal.y);
+		}
+		else {
+			if (dvct.x>dvct.z) {
+				is_out=map_recalc_normals_compare_sign((poly->box.mid.x-mesh->box.mid.x),poly->tangent_space.normal.x);
+			}
+			else {
+				is_out=map_recalc_normals_compare_sign((poly->box.mid.z-mesh->box.mid.z),poly->tangent_space.normal.z);
+			}
+		}
+		
+		if (mode==mesh_normal_mode_in) {
+			invert=is_out;
+		}
+		else {
+			invert=!is_out;
+		}
+		
+		if (invert) {
+			poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
+			poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
+			poly->tangent_space.normal.z=-poly->tangent_space.normal.z;
 		}
 		
 		poly++;

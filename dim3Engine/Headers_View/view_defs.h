@@ -260,8 +260,8 @@ typedef struct		{
 						int									start_tick,
 															cur_nlight,cur_light_idx[max_shader_light];
 						float								cur_alpha;
-						char								name[name_str_len],
-															vertex_name[file_str_len],fragment_name[file_str_len];
+						char								name[64],
+															vertex_name[64],fragment_name[64];
 						bool								per_scene_vars_set,cur_in_hilite;
 						d3col								cur_tint_col;
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;

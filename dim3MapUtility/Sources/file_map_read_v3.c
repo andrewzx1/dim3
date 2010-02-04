@@ -35,6 +35,7 @@ extern char				media_type_str[][32],
 						sky_type_str[][32],
 						gl_fog_type_str[][32],
 						mesh_hide_mode_str[][32],
+						mesh_normal_mode_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
 						light_direction_str[][32],
@@ -82,6 +83,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->flag.skip_light_map_trace=xml_get_attribute_boolean(mesh_tag,"skip_light_map_trace");
 	
 	mesh->hide_mode=xml_get_attribute_list(mesh_tag,"hide",(char*)mesh_hide_mode_str);
+	mesh->normal_mode=xml_get_attribute_list(mesh_tag,"normal",(char*)mesh_normal_mode_str);
+
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
 
 		// messages
