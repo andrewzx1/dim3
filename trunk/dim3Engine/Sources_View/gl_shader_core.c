@@ -62,26 +62,42 @@ char* gl_core_shader_build_vert(int nlight,bool fog,bool light_map,bool diffuse,
 
 	strcat(buf,"uniform vec3 dim3CameraPosition");
 	if (nlight>0) sprintf(strchr(buf,0),",dim3LightPosition[%d]",nlight);
-	if ((bump) || (spec)) strcat(buf,"dim3Tangent,dim3Binormal,dim3Normal");
+	if ((bump) || (spec)) strcat(buf,",dim3Tangent,dim3Binormal,dim3Normal");
 	strcat(buf,";\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 
-	if ((diffuse) || (nlight>0)) {
+	if ((diffuse) || (bump) || (nlight>0)) {
 		strcat(buf,"varying vec3 ");
 		if (diffuse) strcat(buf,"normal");
 		if (nlight>0) {
 			if (diffuse) strcat(buf,",");
-			sprintf(strchr(buf,0),"lightVector[%d]",nlight);
+			sprintf(strchr(buf,0),"lightVector[%d],lightTSVector[%d]",nlight,nlight);
 		}
 		strcat(buf,";\n");
 	}
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
-
-	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"lightVector[%d]=dim3LightPosition[%d]-gl_Vertex.xyz;\n",n,n);
+	
+	if (nlight!=0) {
+		strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
+		if (bump) {
+			strcat(buf,"vec3 tangentSpaceTangent=gl_NormalMatrix*dim3Tangent;\n");
+			strcat(buf,"vec3 tangentSpaceBinormal=gl_NormalMatrix*dim3Binormal;\n");
+			strcat(buf,"vec3 tangentSpaceNormal=gl_NormalMatrix*dim3Normal;\n");
+		}
+		
+		for (n=0;n!=nlight;n++) {
+			sprintf(strchr(buf,0),"lightVector[%d]=dim3LightPosition[%d]-vtx;\n",n,n);
+			if (bump) {
+				sprintf(strchr(buf,0),"lightTSVector[%d].x=dot(lightVector[%d],tangentSpaceTangent);\n",n,n);
+				sprintf(strchr(buf,0),"lightTSVector[%d].y=dot(lightVector[%d],tangentSpaceBinormal);\n",n,n);
+				sprintf(strchr(buf,0),"lightTSVector[%d].z=dot(lightVector[%d],tangentSpaceNormal);\n",n,n);
+			}
+		}
+		
+	//	strcat(buf,"lightTSVector[0]=vec3(100.0,0.0,0.0);\n");
 	}
 	
 	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(gl_Vertex.xyz,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
@@ -137,7 +153,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		if (diffuse) strcat(buf,"normal");
 		if (nlight>0) {
 			if (diffuse) strcat(buf,",");
-			sprintf(strchr(buf,0),"lightVector[%d]",nlight);
+			sprintf(strchr(buf,0),"lightVector[%d],lightTSVector[%d]",nlight,nlight);
 		}
 		strcat(buf,";\n");
 	}
@@ -156,7 +172,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	if (light_map) strcat(buf,",lmap");
 	if (diffuse) strcat(buf,",diffuse,lightNormal");
 	if ((bump) || (diffuse)) strcat(buf,",combineLightVector=vec3(0.0,0.0,0.0)");
-	if (bump) strcat(buf,",bumpVector,bumpMap");
+	if (bump) strcat(buf,",bumpTSVector,bumpMap");
 	if (spec) strcat(buf,",spec");
 	if (fog) strcat(buf,",frag");
 	strcat(buf,";\n");
@@ -182,6 +198,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		sprintf(strchr(buf,0),"   ambient+=(dim3LightColor[%d]*att);\n",n);
 		strcat(buf,"  }\n");
 		if ((bump) || (diffuse)) {
+			if (bump) sprintf(strchr(buf,0),"  bumpTSVector+=lightTSVector[%d];\n",n);
 			sprintf(strchr(buf,0),"  combineLightVector+=lightVector[%d];\n",n);
 			strcat(buf,"  combineCount++;\n");
 		}
@@ -196,6 +213,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		// normalize the combined light vec3
 		
 	if ((bump) || (diffuse)) strcat(buf,"if (combineCount!=0) combineLightVector=normalize(combineLightVector/float(combineCount));\n");
+	if (bump) strcat(buf,"if (combineCount!=0) bumpTSVector=normalize(bumpTSVector/float(combineCount));\n");
 	
 		// texture
 		
@@ -215,15 +233,14 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		// create a smooth transition between areas with no bumps vs bumps
 		
 	if (bump) {
-		strcat(buf,"bumpVector=max(abs(combineLightVector),0.5);\n");
-		strcat(buf,"bumpVector=normalize((bumpVector*pixelAtt)+(vec3(0.5,0.5,0.5)*(1.0-pixelAtt)));\n");
+	//	strcat(buf,"bumpVector=max(abs(combineLightVector),0.5);\n");
+	//	strcat(buf,"bumpVector=normalize((bumpVector*pixelAtt)+(vec3(0.5,0.5,0.5)*(1.0-pixelAtt)));\n");
 	
-		if (nlight>0) strcat(buf,"bumpVector=lightVector[0];\n");
+		if (nlight>0) strcat(buf,"bumpTSVector=normalize(lightTSVector[0]);\n");
 		
 		
-		strcat(buf,"bumpMap=texture2D(dim3TexBump,gl_TexCoord[0].st).rgb;\n");
-		strcat(buf,"bumpMap=(bumpMap-0.5)*2.0;\n");
-		strcat(buf,"bump=max(dot(bumpMap,bumpVector),0.0);\n");
+		strcat(buf,"bumpMap=(texture2D(dim3TexBump,gl_TexCoord[0].st).rgb*2.0)-1.0;\n");
+		strcat(buf,"bump=max(dot(bumpTSVector,bumpMap),0.0);\n");
 	}
 
 		// specular
@@ -272,7 +289,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 	if (diffuse) strcat(buf,"*diffuse");
 	strcat(buf,";\n");
 	
-//	if (spec) strcat(buf,"gl_FragColor.rgb=vec3(pow(max(shineFactor,0.0),0.2));\n");
+	if (bump) strcat(buf,"gl_FragColor.rgb=vec3(bump);\n");
 	
 	if (fog) {
 		strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
@@ -295,8 +312,6 @@ bool gl_core_shader_create(shader_type *shader,int nlight,bool fog,bool light_ma
 	char				*vertex_data,*fragment_data;
 	bool				ok;
 	
-	bump=spec=FALSE;		// supergumba -- turn off for now
-
 		// create the shader code
 
 	vertex_data=gl_core_shader_build_vert(nlight,fog,light_map,diffuse,bump,spec);
@@ -312,7 +327,15 @@ bool gl_core_shader_create(shader_type *shader,int nlight,bool fog,bool light_ma
 		return(FALSE);
 	}
 	
-	sprintf(shader->name,"core_%d_%s_%s_%s_%s",nlight,(light_map?"T":"F"),(diffuse?"T":"F"),(bump?"T":"F"),(spec?"T":"F"));
+		// create the name
+		
+	sprintf(shader->name,"core_light:%d",nlight);
+	if (fog) strcat(shader->name,"_fog");
+	if (light_map) strcat(shader->name,"_lightmap");
+	if (diffuse) strcat(shader->name,"_diffuse");
+	if (bump) strcat(shader->name,"_bump");
+	if (spec) strcat(shader->name,"_spec");
+	
 	sprintf(shader->vertex_name,"%s_vert",shader->name);
 	sprintf(shader->fragment_name,"%s_frag",shader->name);
 	

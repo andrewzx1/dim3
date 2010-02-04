@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "dialog.h"
 
-#define kMeshSettingTabCount					2
+#define kMeshSettingTabCount					3
 #define kMeshSettingTab							FOUR_CHAR_CODE('tabb')
 
 #define kMeshSettingOn							FOUR_CHAR_CODE('fson')
@@ -52,6 +52,7 @@ and can be sold or given away.
 
 #define kMeshSettingGroup						FOUR_CHAR_CODE('grop')
 #define kMeshSettingHideMode					FOUR_CHAR_CODE('hdmd')
+#define kMeshSettingNormalMode					FOUR_CHAR_CODE('nlmd')
 
 #define kMeshSendMessageEnter					FOUR_CHAR_CODE('smen')
 #define kMeshSendMessageEnterId					FOUR_CHAR_CODE('meid')
@@ -104,7 +105,6 @@ void palette_mesh_load(void)
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotZ,0,mesh->rot_off.z);
 	
 	dialog_fill_group_combo(palette_mesh_wind,kMeshSettingGroup,0,mesh->group_idx);
-	dialog_set_combo(palette_mesh_wind,kMeshSettingHideMode,0,mesh->hide_mode);
 	
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageEnter,0,mesh->msg.entry_on);
 	dialog_set_int(palette_mesh_wind,kMeshSendMessageEnterId,0,mesh->msg.entry_id);
@@ -116,6 +116,9 @@ void palette_mesh_load(void)
 	dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type);
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageBase,0,mesh->msg.base_on);
 	dialog_set_combo(palette_mesh_wind,kMeshSendMessageBaseTeam,0,mesh->msg.base_team);
+	
+	dialog_set_combo(palette_mesh_wind,kMeshSettingHideMode,0,mesh->hide_mode);
+	dialog_set_combo(palette_mesh_wind,kMeshSettingNormalMode,0,mesh->normal_mode);
 
 	DrawControls(palette_mesh_wind);
 }
@@ -150,7 +153,6 @@ void palette_mesh_save(void)
 	mesh->rot_off.z=dialog_get_int(palette_mesh_wind,kMeshSettingRotZ,0);
 	
 	mesh->group_idx=dialog_get_group_combo(palette_mesh_wind,kMeshSettingGroup,0);
-	mesh->hide_mode=dialog_get_combo(palette_mesh_wind,kMeshSettingHideMode,0);
 	
 	mesh->msg.entry_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageEnter,0);
 	mesh->msg.entry_id=dialog_get_int(palette_mesh_wind,kMeshSendMessageEnterId,0);
@@ -162,6 +164,9 @@ void palette_mesh_save(void)
 	dialog_get_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type,name_str_len);
 	mesh->msg.base_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageBase,0);
 	mesh->msg.base_team=dialog_get_combo(palette_mesh_wind,kMeshSendMessageBaseTeam,0);
+	
+	mesh->hide_mode=dialog_get_combo(palette_mesh_wind,kMeshSettingHideMode,0);
+	mesh->normal_mode=dialog_get_combo(palette_mesh_wind,kMeshSettingNormalMode,0);
 }
 
 static pascal OSStatus palette_mesh_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)

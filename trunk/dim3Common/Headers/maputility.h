@@ -96,6 +96,14 @@ extern char light_type_str[][32];
 #define proj_bounce_min_speed								10.0f			// minimum speed before bounces cancel
 
 //
+// per mesh normal creation
+//
+
+#define mesh_normal_mode_auto								0
+#define mesh_normal_mode_in									1
+#define mesh_normal_mode_out								2
+
+//
 // lights
 //
 
@@ -273,7 +281,7 @@ typedef struct		{
 					
 typedef struct		{
 						int									nvertex,npoly,group_idx,
-															hide_mode;
+															hide_mode,normal_mode;
 						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
