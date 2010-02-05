@@ -130,15 +130,17 @@ void piece_add_obj_mesh_replace(d3pnt *r_min,d3pnt *r_max)
 
 void piece_add_obj_mesh(void)
 {
-	int					n,k,nline,nvertex,npoly,nuv,npt,v_idx,uv_idx,
-						mesh_idx,txt_idx,x,y,z;
+	int					n,k,nline,nvertex,npoly,nuv,nnormal,npt,
+						v_idx,uv_idx,normal_idx,normal_count,
+						mesh_idx,poly_idx,txt_idx,x,y,z;
 	int					px[8],py[8],pz[8];
-	char				*c,txt[256],vstr[256],uvstr[256],path[1024];
+	char				*c,txt[256],vstr[256],uvstr[256],normalstr[256],path[1024];
 	float				fx,fy,fz,fsz,f_scale,gx[8],gy[8];
-	float				*uvs,*uv;
+	float				*uvs,*uv,*normals,*normal;
 	bool				replace,mesh_add;
 	d3pnt				*vertexes,*dpt,pnt,r_min,r_max;
 	d3fpnt				min,max,scale;
+	d3vct				v_n;
 	map_mesh_type		*mesh;
 	
 	if (!piece_create_texture_ok()) return;
@@ -158,12 +160,13 @@ void piece_add_obj_mesh(void)
 	
     nline=textdecode_count();
 	
-		// count vertexes and faces
+		// count vertexes, faces, uvs, and normals
 		// also determine the vertex extents for initial scaling size
 		
 	nvertex=0;
 	npoly=0;
 	nuv=0;
+	nnormal=0;
 	
 	min.x=min.y=min.z=0.0f;
 	max.x=max.y=max.z=0.0f;
@@ -203,6 +206,11 @@ void piece_add_obj_mesh(void)
 			else {
 				if (strcmp(txt,"vt")==0) {
 					nuv++;
+				}
+				else {
+					if (strcmp(txt,"vn")==0) {
+						nnormal++;
+					}
 				}
 			}
 		}
@@ -335,6 +343,31 @@ void piece_add_obj_mesh(void)
 		}
 	}
 
+		// get the normals
+		
+	if (nnormal!=0) {
+		normals=(float*)malloc(sizeof(float)*(3*nnormal));
+		if (normals==NULL) {
+			textdecode_close();
+			dialog_alert("Import Failed","Out of Memory.");
+			return;
+		}
+
+		normal=normals;
+
+		for (n=0;n!=nline;n++) {
+			textdecode_get_piece(n,0,txt);
+			if (strcmp(txt,"vn")!=0) continue;
+					
+			textdecode_get_piece(n,1,normalstr);
+			*normal++=strtod(normalstr,NULL);
+			textdecode_get_piece(n,2,normalstr);
+			*normal++=strtod(normalstr,NULL);
+			textdecode_get_piece(n,3,normalstr);
+			*normal++=strtod(normalstr,NULL);
+		}
+	}
+
 		// need to split up meshes by materials
 		
 	mesh=NULL;
@@ -378,12 +411,16 @@ void piece_add_obj_mesh(void)
             // get the face points
         
         npt=0;
+
+		v_n.x=v_n.y=v_n.z=0.0f;
+		normal_count=0;
         
         for (k=0;k!=8;k++) {
             textdecode_get_piece(n,(k+1),txt);
             if (txt[0]==0x0) break;
             
-            uvstr[0]=0x0;
+			uvstr[0]=0x0;
+			normalstr[0]=0x0;
             
             strcpy(vstr,txt);
             c=strchr(vstr,'/');
@@ -392,8 +429,13 @@ void piece_add_obj_mesh(void)
                 *c=0x0;
             }
             c=strchr(uvstr,'/');
-            if (c!=NULL) *c=0x0;
+            if (c!=NULL) {
+				strcpy(normalstr,(c+1));
+				*c=0x0;
+            }
             
+				// the vertex
+
             v_idx=atoi(vstr)-1;
 			dpt=vertexes+v_idx;
 			
@@ -401,6 +443,8 @@ void piece_add_obj_mesh(void)
 			py[npt]=dpt->y;
 			pz[npt]=dpt->z;
             
+				// the UV
+
 			if ((uvstr[0]==0x0) || (nuv==0)) {
 				gx[npt]=gy[npt]=0.0f;
 			}
@@ -411,15 +455,41 @@ void piece_add_obj_mesh(void)
                 gx[npt]=*uv++;
                 gy[npt]=*uv;
             }
+
+				// the normal
+
+			if ((normalstr[0]!=0x0) && (nnormal!=)) {
+				normal_idx=atoi(normalstr)-1;
+
+				normal=normals+(normal_idx*3);
+				n_v.x+=*normal++;
+				n_v.y+=*normal++;
+				n_v.z+=*normal;
+
+				normal_count++;
+			}
 			
             npt++;
         }
 		
-		map_mesh_add_poly(&map,mesh_idx,npt,px,py,pz,gx,gy,txt_idx);
+			// create the poly
+
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,npt,px,py,pz,gx,gy,txt_idx);
+
+			// set the normal
+
+		n_v.x/=(float)normal_count;
+		n_v.y/=(float)normal_count;
+		n_v.z/=(float)normal_count;
+	
+		vector_normalize(&n_v);
+
+		memmove(&map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal,&n_v,sizeof(d3vct));
 	}
 	
 	free(vertexes);
-	free(uvs);
+	if (nuv!=0) free(uvs);
+	if (nnormal!=0) free(normals);
 	
 	textdecode_close();
 	
@@ -430,6 +500,10 @@ void piece_add_obj_mesh(void)
 		// if no uvs, force auto-texture
 		
 	if (nuv==0) map_mesh_reset_uv(&map,mesh_idx);
+
+		// calc the normals
+
+	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(nnormal!=0));
 }
 
 /* =======================================================

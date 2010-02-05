@@ -145,19 +145,19 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 		
 		is_out=FALSE;
 		
-		dvct.x=fabs(poly->box.mid.x-mesh->box.mid.x);
-		dvct.y=fabs(poly->box.mid.y-mesh->box.mid.y);
-		dvct.z=fabs(poly->box.mid.z-mesh->box.mid.z);
+		dvct.x=(float)fabs(poly->box.mid.x-mesh->box.mid.x);
+		dvct.y=(float)fabs(poly->box.mid.y-mesh->box.mid.y);
+		dvct.z=(float)fabs(poly->box.mid.z-mesh->box.mid.z);
 		
 		if ((dvct.y>dvct.x) && (dvct.y>dvct.z)) {
-			is_out=map_recalc_normals_compare_sign((poly->box.mid.y-mesh->box.mid.y),poly->tangent_space.normal.y);
+			is_out=map_recalc_normals_compare_sign((float)(poly->box.mid.y-mesh->box.mid.y),poly->tangent_space.normal.y);
 		}
 		else {
 			if (dvct.x>dvct.z) {
-				is_out=map_recalc_normals_compare_sign((poly->box.mid.x-mesh->box.mid.x),poly->tangent_space.normal.x);
+				is_out=map_recalc_normals_compare_sign((float)(poly->box.mid.x-mesh->box.mid.x),poly->tangent_space.normal.x);
 			}
 			else {
-				is_out=map_recalc_normals_compare_sign((poly->box.mid.z-mesh->box.mid.z),poly->tangent_space.normal.z);
+				is_out=map_recalc_normals_compare_sign((float)(poly->box.mid.z-mesh->box.mid.z),poly->tangent_space.normal.z);
 			}
 		}
 		
