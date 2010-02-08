@@ -52,9 +52,7 @@ extern bool gl_check_shader_ok(void);
 
 	// lights
 
-
 extern void gl_lights_compile(int tick);
-extern void gl_lights_fill_light_list(view_light_list_type *light_list);
 extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
 
 extern void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf);
@@ -176,6 +174,7 @@ extern void gl_project_point(int *x,int *y,int *z);
 extern void gl_project_poly(int ptsz,int *x,int *y,int *z);
 extern float gl_project_get_depth(int x,int y,int z);
 extern void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z);
+extern void gl_project_to_eye_coordinates(float *x,float *y,float *z);
 extern void gl_project_fix_rotation(int *x,int *y,int *z);
 
 	// textures

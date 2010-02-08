@@ -42,32 +42,26 @@ and can be sold or given away.
 
 #define max_core_shader_data_sz								10240
 
-#define max_core_shader										24
+#define max_core_shader										18
 
 #define gl_core_shader_light								0
 #define gl_core_shader_light_bump							1
-#define gl_core_shader_light_spec							2
-#define gl_core_shader_light_bump_spec						3
-#define gl_core_shader_light_map							4
-#define gl_core_shader_light_map_bump						5
-#define gl_core_shader_light_map_spec						6
-#define gl_core_shader_light_map_bump_spec					7
-#define gl_core_shader_light_diffuse						8
-#define gl_core_shader_light_diffuse_bump					9
-#define gl_core_shader_light_diffuse_spec					10
-#define gl_core_shader_light_diffuse_bump_spec				11
-#define gl_core_shader_fog_light							12
-#define gl_core_shader_fog_light_bump						13
-#define gl_core_shader_fog_light_spec						14
-#define gl_core_shader_fog_light_bump_spec					15
-#define gl_core_shader_fog_light_map						16
-#define gl_core_shader_fog_light_map_bump					17
-#define gl_core_shader_fog_light_map_spec					18
-#define gl_core_shader_fog_light_map_bump_spec				19
-#define gl_core_shader_fog_light_diffuse					20
-#define gl_core_shader_fog_light_diffuse_bump				21
-#define gl_core_shader_fog_light_diffuse_spec				22
-#define gl_core_shader_fog_light_diffuse_bump_spec			23
+#define gl_core_shader_light_bump_spec						2
+#define gl_core_shader_light_map							3
+#define gl_core_shader_light_map_bump						4
+#define gl_core_shader_light_map_bump_spec					5
+#define gl_core_shader_light_diffuse						6
+#define gl_core_shader_light_diffuse_bump					7
+#define gl_core_shader_light_diffuse_bump_spec				8
+#define gl_core_shader_fog_light							9
+#define gl_core_shader_fog_light_bump						10
+#define gl_core_shader_fog_light_bump_spec					11
+#define gl_core_shader_fog_light_map						12
+#define gl_core_shader_fog_light_map_bump					13
+#define gl_core_shader_fog_light_map_bump_spec				14
+#define gl_core_shader_fog_light_diffuse					15
+#define gl_core_shader_fog_light_diffuse_bump				16
+#define gl_core_shader_fog_light_diffuse_bump_spec			17
 
 #define max_user_shader										64
 
@@ -157,18 +151,8 @@ typedef struct		{
 					} view_light_spot_type;
 
 typedef struct		{
-						int									light_map[max_shader_light];
-						float								pos[3*max_shader_light],
-															col[3*max_shader_light],												
-															intensity[max_shader_light],
-															exponent[max_shader_light],
-															direction[3*max_shader_light];
-					} view_light_list_gl_var_type;
-
-typedef struct		{
 						int									nlight,light_idx[max_shader_light];
 						d3col								ambient;
-						view_light_list_gl_var_type			gl_var;
 					} view_light_list_type;
 
 //
@@ -246,14 +230,18 @@ typedef struct		{
 					} shader_custom_var_list_type;
 
 typedef struct		{
+						GLint								position,color,
+															intensity,exponent,
+															direction,inLightMap;					
+					} shader_cached_var_light_loc;
+					
+typedef struct		{
 						GLint								dim3TimeMillisec,dim3FrequencySecond,
 															dim3CameraPosition,dim3AmbientColor,
 															dim3LightMapBoost,dim3ShineFactor,
-															dim3TexColor,dim3LightPosition,
-															dim3LightColor,dim3LightIntensity,
-															dim3LightExponent,dim3LightDirection,
-															dim3LightLightMap,dim3TintColor,dim3Alpha,
+															dim3TexColor,dim3TintColor,dim3Alpha,
 															dim3Tangent,dim3Binormal,dim3Normal;
+						shader_cached_var_light_loc			dim3Lights[max_shader_light];
 					} shader_cached_var_loc;
 
 typedef struct		{

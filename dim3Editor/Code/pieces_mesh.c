@@ -140,7 +140,7 @@ void piece_add_obj_mesh(void)
 	bool				replace,mesh_add;
 	d3pnt				*vertexes,*dpt,pnt,r_min,r_max;
 	d3fpnt				min,max,scale;
-	d3vct				v_n;
+	d3vct				n_v;
 	map_mesh_type		*mesh;
 	
 	if (!piece_create_texture_ok()) return;
@@ -412,7 +412,7 @@ void piece_add_obj_mesh(void)
         
         npt=0;
 
-		v_n.x=v_n.y=v_n.z=0.0f;
+		n_v.x=n_v.y=n_v.z=0.0f;
 		normal_count=0;
         
         for (k=0;k!=8;k++) {
@@ -458,7 +458,7 @@ void piece_add_obj_mesh(void)
 
 				// the normal
 
-			if ((normalstr[0]!=0x0) && (nnormal!=)) {
+			if ((normalstr[0]!=0x0) && (nnormal!=0)) {
 				normal_idx=atoi(normalstr)-1;
 
 				normal=normals+(normal_idx*3);

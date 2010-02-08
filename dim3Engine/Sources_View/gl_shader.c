@@ -48,6 +48,8 @@ shader_type					*gl_shader_current;
 extern int					nuser_shader;
 extern shader_type			user_shaders[max_user_shader];
 
+extern float				light_shader_direction[7][3];
+
 /* =======================================================
 
       Setup Shader Variables
@@ -113,6 +115,9 @@ void gl_shader_set_instance_variables(shader_type *shader)
 
 void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 {
+	int				n;
+	char			var_name[256];
+	
 	shader->var_locs.dim3TimeMillisec=glGetUniformLocationARB(shader->program_obj,"dim3TimeMillisec");
 	shader->var_locs.dim3FrequencySecond=glGetUniformLocationARB(shader->program_obj,"dim3FrequencySecond");
 	shader->var_locs.dim3CameraPosition=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
@@ -120,17 +125,26 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3LightMapBoost=glGetUniformLocationARB(shader->program_obj,"dim3LightMapBoost");
 	shader->var_locs.dim3ShineFactor=glGetUniformLocationARB(shader->program_obj,"dim3ShineFactor");
 	shader->var_locs.dim3TexColor=glGetUniformLocationARB(shader->program_obj,"dim3TexColor");
-	shader->var_locs.dim3LightPosition=glGetUniformLocationARB(shader->program_obj,"dim3LightPosition");
-	shader->var_locs.dim3LightColor=glGetUniformLocationARB(shader->program_obj,"dim3LightColor");
-	shader->var_locs.dim3LightIntensity=glGetUniformLocationARB(shader->program_obj,"dim3LightIntensity");
-	shader->var_locs.dim3LightExponent=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
-	shader->var_locs.dim3LightDirection=glGetUniformLocationARB(shader->program_obj,"dim3LightDirection");
-	shader->var_locs.dim3LightLightMap=glGetUniformLocationARB(shader->program_obj,"dim3LightLightMap");
 	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 	shader->var_locs.dim3Tangent=glGetUniformLocationARB(shader->program_obj,"dim3Tangent");
 	shader->var_locs.dim3Binormal=glGetUniformLocationARB(shader->program_obj,"dim3Binormal");
 	shader->var_locs.dim3Normal=glGetUniformLocationARB(shader->program_obj,"dim3Normal");
+	
+	for (n=0;n!=max_shader_light;n++) {
+		sprintf(var_name,"dim3Light_%d.position",n);
+		shader->var_locs.dim3Lights[n].position=glGetUniformLocationARB(shader->program_obj,var_name);
+		sprintf(var_name,"dim3Light_%d.color",n);
+		shader->var_locs.dim3Lights[n].color=glGetUniformLocationARB(shader->program_obj,var_name);
+		sprintf(var_name,"dim3Light_%d.intensity",n);
+		shader->var_locs.dim3Lights[n].intensity=glGetUniformLocationARB(shader->program_obj,var_name);
+		sprintf(var_name,"dim3Light_%d.exponent",n);
+		shader->var_locs.dim3Lights[n].exponent=glGetUniformLocationARB(shader->program_obj,var_name);
+		sprintf(var_name,"dim3Light_%d.direction",n);
+		shader->var_locs.dim3Lights[n].direction=glGetUniformLocationARB(shader->program_obj,var_name);
+		sprintf(var_name,"dim3Light_%d.inLightMap",n);
+		shader->var_locs.dim3Lights[n].inLightMap=glGetUniformLocationARB(shader->program_obj,var_name);
+	}
 }
 
 /* =======================================================
@@ -404,17 +418,70 @@ void gl_shader_set_texture_variables(shader_type *shader,texture_type *texture)
 	if (shader->var_locs.dim3TexColor!=-1) glUniform3fARB(shader->var_locs.dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
-void gl_shader_set_poly_variables(shader_type *shader,float alpha,view_light_list_type *light_list,d3col *tint_col,tangent_space_type *tangent_space)
+void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_type *light_list)
 {
-	if (light_list!=NULL) {
-		if (shader->var_locs.dim3LightPosition!=-1) glUniform3fvARB(shader->var_locs.dim3LightPosition,max_shader_light,light_list->gl_var.pos);
-		if (shader->var_locs.dim3LightColor!=-1) glUniform3fvARB(shader->var_locs.dim3LightColor,max_shader_light,light_list->gl_var.col);
-		if (shader->var_locs.dim3LightIntensity!=-1) glUniform1fvARB(shader->var_locs.dim3LightIntensity,max_shader_light,light_list->gl_var.intensity);
-		if (shader->var_locs.dim3LightExponent!=-1) glUniform1fvARB(shader->var_locs.dim3LightExponent,max_shader_light,light_list->gl_var.exponent);
-		if (shader->var_locs.dim3LightDirection!=-1) glUniform3fvARB(shader->var_locs.dim3LightDirection,max_shader_light,light_list->gl_var.direction);
-		if (shader->var_locs.dim3LightLightMap!=-1) glUniform1ivARB(shader->var_locs.dim3LightLightMap,max_shader_light,(GLint*)light_list->gl_var.light_map);
-	}
+	int						n;
+	float					fx,fy,fz;
+	view_light_spot_type	*lspot;
 	
+	for (n=0;n!=max_shader_light;n++) {
+	
+			// intensity of 0 = light off
+			
+		if (n>=light_list->nlight) {
+			if (shader->var_locs.dim3Lights[n].intensity!=-1) glUniform1fARB(shader->var_locs.dim3Lights[n].intensity,0.0f);
+		}
+		
+			// set regular light
+			
+		else {
+			lspot=&view.render->light.spots[light_list->light_idx[n]];
+			
+			fx=lspot->f_x;
+			fy=lspot->f_y;
+			fz=lspot->f_z;
+			
+			gl_project_to_eye_coordinates(&fx,&fy,&fz);		// lights need to be in eye coordinates
+			
+			if (shader->var_locs.dim3Lights[n].position!=-1) glUniform3fARB(shader->var_locs.dim3Lights[n].position,fx,fy,fz);
+			if (shader->var_locs.dim3Lights[n].color!=-1) glUniform3fARB(shader->var_locs.dim3Lights[n].color,lspot->col.r,lspot->col.g,lspot->col.b);
+			if (shader->var_locs.dim3Lights[n].intensity!=-1) glUniform1fARB(shader->var_locs.dim3Lights[n].intensity,(float)lspot->intensity);
+			if (shader->var_locs.dim3Lights[n].exponent!=-1) glUniform1fARB(shader->var_locs.dim3Lights[n].exponent,lspot->exponent);
+			if (shader->var_locs.dim3Lights[n].direction!=-1) glUniform3fvARB(shader->var_locs.dim3Lights[n].direction,3,light_shader_direction[lspot->direction]);
+			if (shader->var_locs.dim3Lights[n].inLightMap!=-1) glUniform1iARB(shader->var_locs.dim3Lights[n].inLightMap,(lspot->light_map?0x1:0x0));
+		}
+	}
+}
+
+void gl_shader_set_light_hilite_variables(shader_type *shader,d3pnt *pnt)
+{
+	int						n;
+	float					fx,fy,fz;
+	
+		// use one big light for hilite
+		
+	fx=(float)pnt->x;
+	fy=(float)pnt->y;
+	fz=(float)pnt->z;
+	
+	gl_project_to_eye_coordinates(&fx,&fy,&fz);		// lights need to be in eye coordinates
+	
+	if (shader->var_locs.dim3Lights[0].position!=-1) glUniform3fARB(shader->var_locs.dim3Lights[0].position,fx,fy,fz);
+	if (shader->var_locs.dim3Lights[0].color!=-1) glUniform3fARB(shader->var_locs.dim3Lights[0].color,1.0f,1.0f,1.0f);
+	if (shader->var_locs.dim3Lights[0].intensity!=-1) glUniform1fARB(shader->var_locs.dim3Lights[0].intensity,(float)map_max_size);
+	if (shader->var_locs.dim3Lights[0].exponent!=-1) glUniform1fARB(shader->var_locs.dim3Lights[0].exponent,0.0f);
+	if (shader->var_locs.dim3Lights[0].direction!=-1) glUniform3fARB(shader->var_locs.dim3Lights[0].direction,0.0f,0.0f,0.0f);
+	if (shader->var_locs.dim3Lights[0].inLightMap!=-1) glUniform1iARB(shader->var_locs.dim3Lights[0].inLightMap,0x0);
+	
+		// all other lights off
+		
+	for (n=1;n!=max_shader_light;n++) {
+		if (shader->var_locs.dim3Lights[n].intensity!=-1) glUniform1fARB(shader->var_locs.dim3Lights[n].intensity,0.0f);
+	}
+}
+
+void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_col,tangent_space_type *tangent_space)
+{
 		// set tint color
 		
 	if (shader->var_locs.dim3TintColor!=-1) {
@@ -621,14 +688,13 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 	int							n,set_light_count;
 	bool						light_change;
 	shader_type					*shader;
-	view_light_list_type		hi_light_list;
 	
 		// get shader based on number
-		// of lights.  If no shader, then use
-		// default and always set all lights
+		// of lights.  If the light list is NULL,
+		// we are looking at a highlighting
 		
 	if (light_list==NULL) {
-		set_light_count=0;
+		set_light_count=1;
 	}
 	else {
 		set_light_count=light_list->nlight;
@@ -688,44 +754,18 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		shader->cur_nlight=light_list->nlight;
 		shader->cur_in_hilite=FALSE;
 		
-		if (!light_change) {
-			gl_shader_set_poly_variables(shader,alpha,NULL,tint_col,tangent_space);
-		}
-		else {
-			gl_lights_fill_light_list(light_list);
-			gl_shader_set_poly_variables(shader,alpha,light_list,tint_col,tangent_space);
-		}
+		if (light_change) gl_shader_set_light_normal_variables(shader,light_list);
+		
+		gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space);
 	}
 
 		// lighting by highlight
 		// this version uses a single large light
 
 	else {
+		if (!shader->cur_in_hilite) gl_shader_set_light_hilite_variables(shader,pnt);
+		shader->cur_in_hilite=TRUE;
 		
-			// already in hilite?
-			
-		if (shader->cur_in_hilite) {
-			gl_shader_set_poly_variables(shader,alpha,NULL,tint_col,tangent_space);
-		}
-		else {
-			bzero(&hi_light_list.gl_var,sizeof(view_light_list_gl_var_type));
-
-			hi_light_list.gl_var.pos[0]=(float)view.render->camera.pnt.x;
-			hi_light_list.gl_var.pos[1]=(float)view.render->camera.pnt.y;
-			hi_light_list.gl_var.pos[2]=(float)view.render->camera.pnt.z;
-			
-			hi_light_list.gl_var.col[0]=hi_light_list.gl_var.col[1]=hi_light_list.gl_var.col[2]=1.0f;
-
-			hi_light_list.gl_var.intensity[0]=(float)map_max_size;
-			hi_light_list.gl_var.exponent[0]=0.0f;		// hard light
-
-			hi_light_list.gl_var.direction[0]=0.0f;
-			hi_light_list.gl_var.direction[1]=0.0f;
-			hi_light_list.gl_var.direction[2]=0.0f;
-			
-			shader->cur_in_hilite=TRUE;
-			
-			gl_shader_set_poly_variables(shader,alpha,&hi_light_list,tint_col,tangent_space);
-		}
+		gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space);
 	}
 }
