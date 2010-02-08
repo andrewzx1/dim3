@@ -295,52 +295,6 @@ void gl_lights_compile(int tick)
 
 /* =======================================================
 
-      Turn Indexed list of Lights into Array
-      
-======================================================= */
-
-void gl_lights_fill_light_list(view_light_list_type *light_list)
-{
-	int						n,idx;
-	view_light_spot_type	*lspot;
-	
-		// start with all lights off
-		//
-		// a intensity of 0 effectively says a light is off
-		
-	bzero(&light_list->gl_var,sizeof(view_light_list_gl_var_type));
-
-		// setup the lights that are on
-		
-	idx=0;
-	
-	for (n=0;n!=light_list->nlight;n++) {
-
-		lspot=&view.render->light.spots[light_list->light_idx[n]];
-		
-		light_list->gl_var.pos[idx]=lspot->f_x;
-		light_list->gl_var.pos[idx+1]=lspot->f_y;
-		light_list->gl_var.pos[idx+2]=lspot->f_z;
-		
-		light_list->gl_var.col[idx]=lspot->col.r;
-		light_list->gl_var.col[idx+1]=lspot->col.g;
-		light_list->gl_var.col[idx+2]=lspot->col.b;
-		
-		light_list->gl_var.intensity[n]=(float)lspot->intensity;
-		light_list->gl_var.exponent[n]=lspot->exponent;
-
-		light_list->gl_var.direction[idx]=light_shader_direction[lspot->direction][0];
-		light_list->gl_var.direction[idx+1]=light_shader_direction[lspot->direction][1];
-		light_list->gl_var.direction[idx+2]=light_shader_direction[lspot->direction][2];
-		
-		light_list->gl_var.light_map[n]=(lspot->light_map?0x1:0x0);
-		
-		idx+=3;
-	}
-}
-
-/* =======================================================
-
       Light Direction Elimination
       
 ======================================================= */
