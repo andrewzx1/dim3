@@ -102,6 +102,7 @@ extern char light_type_str[][32];
 #define mesh_normal_mode_auto								0
 #define mesh_normal_mode_in									1
 #define mesh_normal_mode_out								2
+#define mesh_normal_mode_lock								3
 
 //
 // lights

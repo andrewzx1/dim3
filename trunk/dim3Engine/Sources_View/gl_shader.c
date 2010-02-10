@@ -736,6 +736,10 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		
 	gl_shader_texture_set(shader,texture,txt_idx,lmap_txt_idx,frame);
 	
+		// per polygon variables
+		
+	gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space);
+	
 		// lighting variables
 		// this version is for shaders lite by view lights
 		
@@ -756,7 +760,6 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 		
 		if (light_change) gl_shader_set_light_normal_variables(shader,light_list);
 		
-		gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space);
 	}
 
 		// lighting by highlight
@@ -765,7 +768,5 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 	else {
 		if (!shader->cur_in_hilite) gl_shader_set_light_hilite_variables(shader,pnt);
 		shader->cur_in_hilite=TRUE;
-		
-		gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space);
 	}
 }

@@ -209,7 +209,7 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 				// set the flags
 
-			poly->draw.shader_on=(texture->shader_idx!=-1);
+			poly->draw.shader_on=(texture->shader_idx!=-1)&&(!mesh->flag.hilite);
 			poly->draw.transparent_on=(texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent);
 			poly->draw.glow_on=(texture->frames[0].glowmap.gl_id!=-1);
 
@@ -224,6 +224,15 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 			poly++;
 		}
+		
+			// hilited meshes don't run shaders
+			
+		if (mesh->flag.hilite) {
+			has_shader=FALSE;
+			has_no_shader=TRUE;
+		}
+		
+			// set mesh level flags
 		
 		mesh->draw.has_opaque=has_opaque;
 		mesh->draw.has_transparent=has_transparent;

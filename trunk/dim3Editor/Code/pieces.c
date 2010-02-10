@@ -969,6 +969,8 @@ void piece_mesh_invert_normals(bool poly_only)
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 		
+			// invert the poly
+			
 		mesh=&map.mesh.meshes[mesh_idx];
 		
 		if (poly_only) {
@@ -979,6 +981,10 @@ void piece_mesh_invert_normals(bool poly_only)
 				piece_mesh_poly_invert_normals(&mesh->polys[k]);
 			}
 		}
+		
+			// always lock inverted polys
+			
+		mesh->normal_mode=mesh_normal_mode_lock;
 	}
 	
 	main_wind_draw();

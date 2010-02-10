@@ -1733,9 +1733,6 @@ bool light_maps_create(char *err_str)
 {
 	int				npoly;
 	bool			ok;
-	int	tick;
-	
-	tick=TickCount();
 	
 	npoly=light_map_get_poly_count();
 	
@@ -1743,10 +1740,34 @@ bool light_maps_create(char *err_str)
 	ok=light_maps_create_process(err_str);
 	dialog_progress_end();
 	
-	fprintf(stdout,"tick = %d\n",(int)(TickCount()-tick));
-	
 	if (ok) file_save_map();
 	
 	return(ok);
 }
 
+void light_maps_clear(void)
+{
+	int					n,k;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+		// delete old textures
+		
+	map_delete_texture(&map,(max_map_texture-max_light_map_textures),max_map_texture);
+
+		// clear polys
+	
+	mesh=map.mesh.meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+				
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			poly->lmap_txt_idx=-1;
+			poly++;
+		}
+		
+		mesh++;
+	}
+}

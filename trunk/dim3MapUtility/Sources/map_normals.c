@@ -68,6 +68,10 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 						dvct;
 	d3pnt				*pt,*pt_1,*pt_2;
 	map_mesh_poly_type	*poly;
+	
+		// skip locked normals
+		
+	if (mesh->normal_mode==mesh_normal_mode_lock) return;
 
 		// expect polys to be flat (not twisted)
 		// this would cause all sorts of rendering

@@ -37,6 +37,8 @@ extern bool				done,map_opened,
 
 extern map_type			map;
 
+extern void light_maps_clear(void);
+
 /* =======================================================
 
       Misc. Dialog Routines
@@ -378,6 +380,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			map_recalc_normals(&map,FALSE);
 			main_wind_draw();
 			undo_clear();
+			return(noErr);
+			
+		case kCommandClearLightMaps:
+			light_maps_clear();
+			main_wind_set_uv_layer(uv_layer_normal);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandBuildLightMaps:

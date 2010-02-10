@@ -157,8 +157,9 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 		// if held weapon, fix rotation
 		
 	if (draw->no_rot.on) {
-		memmove(&old_ang,&draw->setup.ang,sizeof(d3ang));
-		memmove(&draw->setup.ang,&draw->no_rot.ang,sizeof(d3ang));
+	//	memmove(&old_ang,&draw->setup.ang,sizeof(d3ang));
+	//	memmove(&draw->setup.ang,&draw->no_rot.ang,sizeof(d3ang));
+	// supergumba -- need to figure this all out -- but probably don't need this
 	}
 	
 		// create the normals
@@ -171,7 +172,7 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 		// restore rotation
 		
 	if (draw->no_rot.on) {
-		memmove(&draw->setup.ang,&old_ang,sizeof(d3ang));
+	//	memmove(&draw->setup.ang,&old_ang,sizeof(d3ang));
 	}
 }
 
@@ -394,7 +395,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 
 			// skip shader textures
 
-		if ((!dim3_debug) && (texture->shader_idx!=-1)) continue;
+		if ((!dim3_debug) && (!mesh->no_lighting) && (texture->shader_idx!=-1)) continue;
 	
 			// any opaque trigs?
 			
@@ -473,7 +474,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 
 			// skip non-shader textures
 
-		if (texture->shader_idx==-1) continue;
+		if ((texture->shader_idx==-1) || (mesh->no_lighting)) continue;
 		
 			// any opaque trigs?
 			
@@ -561,7 +562,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 
 			// skip shader textures
 
-		if ((!dim3_debug) && (texture->shader_idx!=-1)) continue;
+		if ((!dim3_debug) && (!mesh->no_lighting) && (texture->shader_idx!=-1)) continue;
 	
 			// any transparent trigs?
 			
@@ -659,7 +660,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 
 			// skip non-shader textures
 
-		if (texture->shader_idx==-1) continue;
+		if ((texture->shader_idx==-1) || (mesh->no_lighting)) continue;
 		
 			// any transparent trigs?
 			
@@ -861,7 +862,7 @@ void render_model_setup(int tick,model_draw *draw)
 			
 				// check for shaders
 				
-			if (texture->shader_idx!=-1) {
+			if ((texture->shader_idx!=-1) && (!mesh->no_lighting)) {
 				mesh->draw.has_no_shader=FALSE;
 			}
 			else {
