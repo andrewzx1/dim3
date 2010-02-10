@@ -235,9 +235,9 @@ void gl_project_to_eye_coordinates(float *x,float *y,float *z)
 	fy=*y;
 	fz=*z;
 	
-	*x=(fx*mod_matrix[0])+(fy*mod_matrix[4])+(fz*mod_matrix[8])+mod_matrix[12];
-	*y=(fx*mod_matrix[1])+(fy*mod_matrix[5])+(fz*mod_matrix[9])+mod_matrix[13];
-	*z=(fx*mod_matrix[2])+(fy*mod_matrix[6])+(fz*mod_matrix[10])+mod_matrix[14];
+	*x=(float)((fx*mod_matrix[0])+(fy*mod_matrix[4])+(fz*mod_matrix[8])+mod_matrix[12]);
+	*y=(float)((fx*mod_matrix[1])+(fy*mod_matrix[5])+(fz*mod_matrix[9])+mod_matrix[13]);
+	*z=(float)((fx*mod_matrix[2])+(fy*mod_matrix[6])+(fz*mod_matrix[10])+mod_matrix[14]);
 }
 
 void gl_project_fix_rotation(int *x,int *y,int *z)
