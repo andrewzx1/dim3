@@ -359,13 +359,8 @@ void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_po
 
 		// draw shader
 
-	if (!mesh->flag.hilite) {
-		gl_lights_build_from_poly(mesh_idx,poly,&light_list);
-		gl_shader_draw_execute(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,FALSE,&poly->tangent_space);
-	}
-	else {
-		gl_shader_draw_execute(texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,NULL,&poly->box.mid,NULL,FALSE,&poly->tangent_space);
-	}
+	gl_lights_build_from_poly(mesh_idx,poly,&light_list);
+	gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space);
 
 	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }

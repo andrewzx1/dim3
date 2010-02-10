@@ -453,33 +453,6 @@ void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_ty
 	}
 }
 
-void gl_shader_set_light_hilite_variables(shader_type *shader,d3pnt *pnt)
-{
-	int						n;
-	float					fx,fy,fz;
-	
-		// use one big light for hilite
-		
-	fx=(float)pnt->x;
-	fy=(float)pnt->y;
-	fz=(float)pnt->z;
-	
-	gl_project_to_eye_coordinates(&fx,&fy,&fz);		// lights need to be in eye coordinates
-	
-	if (shader->var_locs.dim3Lights[0].position!=-1) glUniform3fARB(shader->var_locs.dim3Lights[0].position,fx,fy,fz);
-	if (shader->var_locs.dim3Lights[0].color!=-1) glUniform3fARB(shader->var_locs.dim3Lights[0].color,1.0f,1.0f,1.0f);
-	if (shader->var_locs.dim3Lights[0].intensity!=-1) glUniform1fARB(shader->var_locs.dim3Lights[0].intensity,(float)map_max_size);
-	if (shader->var_locs.dim3Lights[0].exponent!=-1) glUniform1fARB(shader->var_locs.dim3Lights[0].exponent,0.0f);
-	if (shader->var_locs.dim3Lights[0].direction!=-1) glUniform3fARB(shader->var_locs.dim3Lights[0].direction,0.0f,0.0f,0.0f);
-	if (shader->var_locs.dim3Lights[0].inLightMap!=-1) glUniform1iARB(shader->var_locs.dim3Lights[0].inLightMap,0x0);
-	
-		// all other lights off
-		
-	for (n=1;n!=max_shader_light;n++) {
-		if (shader->var_locs.dim3Lights[n].intensity!=-1) glUniform1fARB(shader->var_locs.dim3Lights[n].intensity,0.0f);
-	}
-}
-
 void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_col,tangent_space_type *tangent_space)
 {
 		// set tint color
@@ -536,7 +509,6 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 		// so we can skip setting if the values haven't changed
 
 	shader->cur_nlight=-1;
-	shader->cur_in_hilite=FALSE;
 	shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=-1.0f;
 	shader->cur_alpha=-1.0f;
 }
@@ -683,25 +655,16 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,bool diffuse,tangent_space_type *tangent_space)
+void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space)
 {
-	int							n,set_light_count;
+	int							n;
 	bool						light_change;
 	shader_type					*shader;
 	
-		// get shader based on number
-		// of lights.  If the light list is NULL,
-		// we are looking at a highlighting
+		// get shader based on number of lights.
 		
-	if (light_list==NULL) {
-		set_light_count=1;
-	}
-	else {
-		set_light_count=light_list->nlight;
-	}
-
 	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(set_light_count,texture,diffuse,(lmap_txt_idx!=-1));
+		shader=gl_core_shader_find_ptr(light_list->nlight,map_shader,texture,(lmap_txt_idx!=-1));
 	}
 	else {
 		shader=&user_shaders[texture->shader_idx];
@@ -741,32 +704,15 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int lmap
 	gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space);
 	
 		// lighting variables
-		// this version is for shaders lite by view lights
-		
-	if (light_list!=NULL) {
-	
-			// any changes in lighting (different
-			// light list or coming out of a hilite)
 			
-		light_change=((shader->cur_in_hilite) || (light_list->nlight!=shader->cur_nlight));
-		
-		for (n=0;n!=light_list->nlight;n++) {
-			if (shader->cur_light_idx[n]!=light_list->light_idx[n]) light_change=TRUE;
-			shader->cur_light_idx[n]=light_list->light_idx[n];
-		}
-		
-		shader->cur_nlight=light_list->nlight;
-		shader->cur_in_hilite=FALSE;
-		
-		if (light_change) gl_shader_set_light_normal_variables(shader,light_list);
-		
+	light_change=(light_list->nlight!=shader->cur_nlight);
+	
+	for (n=0;n!=light_list->nlight;n++) {
+		if (shader->cur_light_idx[n]!=light_list->light_idx[n]) light_change=TRUE;
+		shader->cur_light_idx[n]=light_list->light_idx[n];
 	}
-
-		// lighting by highlight
-		// this version uses a single large light
-
-	else {
-		if (!shader->cur_in_hilite) gl_shader_set_light_hilite_variables(shader,pnt);
-		shader->cur_in_hilite=TRUE;
-	}
+	
+	shader->cur_nlight=light_list->nlight;
+	
+	if (light_change) gl_shader_set_light_normal_variables(shader,light_list);
 }
