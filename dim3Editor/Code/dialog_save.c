@@ -42,10 +42,13 @@ bool dialog_save_run(void)
 
 	SetThemeCursor(kThemeWatchCursor);
 
-	dialog_progress_start("Saving...",2);
+	dialog_progress_start("Saving...",3);
 	
 	dialog_progress_next();
 	node_path_rebuild();
+	
+	dialog_progress_next();
+	map_recalc_normals(&map,FALSE);
 	
 	dialog_progress_next();
 	dialog_save_ok=map_save(&map);

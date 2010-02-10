@@ -74,6 +74,7 @@ and can be sold or given away.
 #define kCommandMapResetUV					FOUR_CHAR_CODE('mpuv')
 #define kCommandMapOptimize					FOUR_CHAR_CODE('mopt')
 #define kCommandMapCreateNormals			FOUR_CHAR_CODE('rmnm')
+#define kCommandClearLightMaps				FOUR_CHAR_CODE('clmp')
 #define kCommandBuildLightMaps				FOUR_CHAR_CODE('lmap')
 #define kCommandRun							FOUR_CHAR_CODE('mrun')
 

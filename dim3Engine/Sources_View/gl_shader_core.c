@@ -38,7 +38,7 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-shader_type					core_shaders[3][max_core_shader];
+shader_type					core_shaders[max_shader_light][max_core_shader];
 
 /* =======================================================
 
@@ -144,7 +144,7 @@ char* gl_core_shader_build_vert(int nlight,bool fog,bool light_map,bool diffuse,
 	
 	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(gl_Vertex.xyz,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
 	
-	if (diffuse) strcat(buf,"normal=normalize(gl_Normal);\n");
+	if (diffuse) strcat(buf,"normal=normalize(gl_NormalMatrix*gl_Normal);\n");
 	
 	strcat(buf,"}\n");
 
@@ -286,7 +286,7 @@ char* gl_core_shader_build_frag(int nlight,bool fog,bool light_map,bool diffuse,
 		strcat(buf,"specHalfVector=normalize(normalize(eyeVector)+bumpVertexVector);\n");
 		strcat(buf,"specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb;\n");
 		strcat(buf,"specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
-		strcat(buf,"spec=(specMap*pow(specFactor,10.0))*pixelAtt;\n");
+		strcat(buf,"spec=(specMap*pow(specFactor,dim3ShineFactor))*pixelAtt;\n");
 	}
 
 		// output the fragment
@@ -374,150 +374,133 @@ bool gl_core_shader_create(shader_type *shader,int nlight,bool fog,bool light_ma
       
 ======================================================= */
 
-bool gl_core_shader_initialize_per_light(int idx,int nlight,char *err_str)
+bool gl_core_shader_initialize_per_light(int nlight,char *err_str)
 {
 		// gl_core_shader_light
 
-	if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light],nlight,FALSE,FALSE,FALSE,FALSE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light],nlight,FALSE,FALSE,FALSE,FALSE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
-	
-	if (nlight!=0) {
 
-			// gl_core_shader_light_bump
+		// gl_core_shader_light_bump
 
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light_bump],nlight,FALSE,FALSE,FALSE,TRUE,FALSE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
-
-			// gl_core_shader_light_bump_spec
-
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light_bump_spec],nlight,FALSE,FALSE,FALSE,TRUE,TRUE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light_bump],nlight,FALSE,FALSE,FALSE,TRUE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
 	}
+
+		// gl_core_shader_light_bump_spec
+
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light_bump_spec],nlight,FALSE,FALSE,FALSE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
 	
 		// gl_core_shader_light_map
 
-	if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light_map],nlight,FALSE,TRUE,FALSE,FALSE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light_map],nlight,FALSE,TRUE,FALSE,FALSE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+	
+		// gl_core_shader_light_map_bump
+
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light_map_bump],nlight,FALSE,TRUE,FALSE,TRUE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
-	if (nlight!=0) {
-	
-			// gl_core_shader_light_map_bump
+		// gl_core_shader_light_map_bump_spec
 
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light_map_bump],nlight,FALSE,TRUE,FALSE,TRUE,FALSE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
-
-			// gl_core_shader_light_map_bump_spec
-
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light_map_bump_spec],nlight,FALSE,TRUE,FALSE,TRUE,TRUE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light_map_bump_spec],nlight,FALSE,TRUE,FALSE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
 	}
 
 		// gl_core_shader_light_diffuse
 
-	if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light_diffuse],nlight,FALSE,FALSE,TRUE,FALSE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light_diffuse],nlight,FALSE,FALSE,TRUE,FALSE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 	
-	if (nlight!=0) {
+		// gl_core_shader_light_diffuse_bump
 
-			// gl_core_shader_light_diffuse_bump
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light_diffuse_bump],nlight,FALSE,FALSE,TRUE,TRUE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
 
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light_diffuse_bump],nlight,FALSE,FALSE,TRUE,TRUE,FALSE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+		// gl_core_shader_light_diffuse_bump_spec
 
-			// gl_core_shader_light_diffuse_bump_spec
-
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_light_diffuse_bump_spec],nlight,FALSE,FALSE,TRUE,TRUE,TRUE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_light_diffuse_bump_spec],nlight,FALSE,FALSE,TRUE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
 	}
 
 		// gl_core_shader_fog_light
 
-	if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light],nlight,TRUE,FALSE,FALSE,FALSE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light],nlight,TRUE,FALSE,FALSE,FALSE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 	
-	if (nlight!=0) {
+		// gl_core_shader_fog_light_bump
 
-			// gl_core_shader_fog_light_bump
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light_bump],nlight,TRUE,FALSE,FALSE,TRUE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
 
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light_bump],nlight,TRUE,FALSE,FALSE,TRUE,FALSE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+		// gl_core_shader_fog_light_bump_spec
 
-			// gl_core_shader_fog_light_bump_spec
-
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light_bump_spec],nlight,TRUE,FALSE,FALSE,TRUE,TRUE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light_bump_spec],nlight,TRUE,FALSE,FALSE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
 	}
 
 		// gl_core_shader_fog_light_map
 
-	if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light_map],nlight,TRUE,TRUE,FALSE,FALSE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light_map],nlight,TRUE,TRUE,FALSE,FALSE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+	
+		// gl_core_shader_fog_light_map_bump
+
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light_map_bump],nlight,TRUE,TRUE,FALSE,TRUE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
-	if (nlight!=0) {
-	
-			// gl_core_shader_fog_light_map_bump
+		// gl_core_shader_fog_light_map_bump_spec
 
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light_map_bump],nlight,TRUE,TRUE,FALSE,TRUE,FALSE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
-
-			// gl_core_shader_fog_light_map_bump_spec
-
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light_map_bump_spec],nlight,TRUE,TRUE,FALSE,TRUE,TRUE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light_map_bump_spec],nlight,TRUE,TRUE,FALSE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
 	}
 
 		// gl_core_shader_fog_light_diffuse
 
-	if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light_diffuse],nlight,TRUE,FALSE,TRUE,FALSE,FALSE,err_str)) {
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light_diffuse],nlight,TRUE,FALSE,TRUE,FALSE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
-	if (nlight!=0) {
-	
-			// gl_core_shader_fog_light_diffuse_bump
+		// gl_core_shader_fog_light_diffuse_bump
 
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light_diffuse_bump],nlight,TRUE,FALSE,TRUE,TRUE,FALSE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light_diffuse_bump],nlight,TRUE,FALSE,TRUE,TRUE,FALSE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
 
-			// gl_core_shader_fog_light_diffuse_bump_spec
+		// gl_core_shader_fog_light_diffuse_bump_spec
 
-		if (!gl_core_shader_create(&core_shaders[idx][gl_core_shader_fog_light_diffuse_bump_spec],nlight,TRUE,FALSE,TRUE,TRUE,TRUE,err_str)) {
-			gl_core_shader_shutdown();
-			return(FALSE);
-		}
+	if (!gl_core_shader_create(&core_shaders[nlight][gl_core_shader_fog_light_diffuse_bump_spec],nlight,TRUE,FALSE,TRUE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
 	}
 	
 	return(TRUE);
@@ -531,20 +514,17 @@ bool gl_core_shader_initialize(char *err_str)
 
 		// clear core shaders
 
-	for (k=0;k!=3;k++) {
+	for (k=0;k!=max_shader_light;k++) {
 		for (n=0;n!=max_core_shader;n++) {
 			gl_shader_code_clear(&core_shaders[k][n]);
 		}
 	}
 
-		// initialize light varients of shaders
-		// idx = 0 is ambient only
-		// idx = 1 is half of max lights
-		// idx = 2 is all lights
+		// initialize light varients of shaders		
 		
-	if (!gl_core_shader_initialize_per_light(0,0,err_str)) return(FALSE);
-	if (!gl_core_shader_initialize_per_light(1,(max_shader_light/2),err_str)) return(FALSE);
-	if (!gl_core_shader_initialize_per_light(2,max_shader_light,err_str)) return(FALSE);
+	for (k=0;k!=max_shader_light;k++) {
+		if (!gl_core_shader_initialize_per_light(k,err_str)) return(FALSE);
+	}	
 	
 	return(TRUE);
 }
@@ -557,7 +537,7 @@ void gl_core_shader_shutdown(void)
 
 		// shutdown shaders
 
-	for (k=0;k!=3;k++) {
+	for (k=0;k!=max_shader_light;k++) {
 		for (n=0;n!=max_core_shader;n++) {
 			gl_shader_code_shutdown(&core_shaders[k][n]);
 		}
@@ -574,7 +554,7 @@ void gl_core_shader_draw_scene_initialize(void)
 {
 	int					n,k;
 	
-	for (k=0;k!=3;k++) {
+	for (k=0;k!=max_shader_light;k++) {
 		for (n=0;n!=max_core_shader;n++) {
 			gl_shader_draw_scene_initialize_code(&core_shaders[k][n]);
 		}
@@ -587,13 +567,6 @@ void gl_core_shader_draw_scene_initialize(void)
       
 ======================================================= */
 
-inline int gl_core_shader_find_for_light(int nlight)
-{
-	if (nlight==0) return(0);
-	if (nlight<=(max_shader_light/2)) return(1);
-	return(2);
-}
-
 inline int gl_core_shader_find_for_mode(texture_type *texture,int nlight,bool diffuse,bool light_map)
 {
 	bool				bump,spec;
@@ -602,10 +575,6 @@ inline int gl_core_shader_find_for_mode(texture_type *texture,int nlight,bool di
 		
 	bump=(texture->frames[0].bumpmap.gl_id!=-1);
 	spec=(texture->frames[0].specularmap.gl_id!=-1);
-	
-		// no lights, no bumps, specs, or diffuse
-		
-	if (nlight==0) bump=spec=diffuse=FALSE;
 	
 		// need spec for bump
 		
@@ -654,11 +623,10 @@ inline int gl_core_shader_find_for_mode(texture_type *texture,int nlight,bool di
 
 shader_type* gl_core_shader_find_ptr(int nlight,texture_type *texture,bool diffuse,bool light_map)
 {
-	int				which_light,which_varient;
+	int				which_varient;
 	
-	which_light=gl_core_shader_find_for_light(nlight);
 	which_varient=gl_core_shader_find_for_mode(texture,nlight,diffuse,light_map);
 	
-	return(&core_shaders[which_light][which_varient]);
+	return(&core_shaders[nlight][which_varient]);
 }
 

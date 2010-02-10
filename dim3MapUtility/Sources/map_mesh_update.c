@@ -340,10 +340,11 @@ void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
 
 void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z)
 {
-	int						n,nvertex;
+	int						n,nvertex,npoly;
 	d3pnt					mpt;
 	d3pnt					*pt;
 	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
 
 		// get center
 
@@ -361,6 +362,30 @@ void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_
 		if (flip_y) pt->y=mpt.y-(pt->y-mpt.y);
 		if (flip_z) pt->z=mpt.z-(pt->z-mpt.z);
 		pt++;
+	}
+	
+		// flip polys
+		
+	npoly=mesh->npoly;
+	poly=mesh->polys;
+	
+	for (n=0;n!=npoly;n++) {
+		if (flip_x) {
+			poly->tangent_space.tangent.x=-poly->tangent_space.tangent.x;
+			poly->tangent_space.binormal.x=-poly->tangent_space.binormal.x;
+			poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
+		}
+		if (flip_y) {
+			poly->tangent_space.tangent.y=-poly->tangent_space.tangent.y;
+			poly->tangent_space.binormal.y=-poly->tangent_space.binormal.y;
+			poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
+		}
+		if (flip_z) {
+			poly->tangent_space.tangent.z=-poly->tangent_space.tangent.z;
+			poly->tangent_space.binormal.z=-poly->tangent_space.binormal.z;
+			poly->tangent_space.normal.z=-poly->tangent_space.normal.z;
+		}
+		poly++;
 	}
 }
 
@@ -409,6 +434,18 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 		pt->z=(int)(fz+f_mpt.z);
 
 		pt++;
+	}
+	
+		// rotate normals
+		
+	npoly=mesh->npoly;
+	poly=mesh->polys;
+	
+	for (n=0;n!=npoly;n++) {
+		matrix_vertex_multiply(&mat,&poly->tangent_space.tangent.x,&poly->tangent_space.tangent.y,&poly->tangent_space.tangent.z);
+		matrix_vertex_multiply(&mat,&poly->tangent_space.binormal.x,&poly->tangent_space.binormal.y,&poly->tangent_space.binormal.z);
+		matrix_vertex_multiply(&mat,&poly->tangent_space.normal.x,&poly->tangent_space.normal.y,&poly->tangent_space.normal.z);
+		poly++;
 	}
 
 		// fix boxes

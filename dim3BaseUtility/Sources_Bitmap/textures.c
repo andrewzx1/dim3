@@ -269,7 +269,7 @@ void bitmap_texture_clear(texture_type *texture)
 	texture->shader_idx=-1;
 	strcpy(texture->shader_name,"Default");
 
-	texture->shine_factor=0.0f;
+	texture->shine_factor=10.0f;
 	texture->additive=texture->pixelated=FALSE;
 	texture->material_name[0]=0x0;
 	texture->col.r=texture->col.g=texture->col.b=0.0f;
@@ -313,7 +313,7 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	texture->additive=xml_get_attribute_boolean(main_tag,"additive");
 	texture->pixelated=xml_get_attribute_boolean(main_tag,"pixelated");
 
-	texture->shine_factor=xml_get_attribute_float_default(main_tag,"shine_factor",0.0f);
+	texture->shine_factor=xml_get_attribute_float_default(main_tag,"shine_factor",10.0f);
 
 	texture->glow.rate=xml_get_attribute_int(main_tag,"glow_rate");
 	texture->glow.min=xml_get_attribute_float_default(main_tag,"glow_min",0.25f);

@@ -502,8 +502,10 @@ void piece_add_obj_mesh(void)
 	if (nuv==0) map_mesh_reset_uv(&map,mesh_idx);
 
 		// calc the normals
+		// and lock if this import had normals
 
 	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(nnormal!=0));
+	if (nnormal!=0) map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_lock;
 }
 
 /* =======================================================

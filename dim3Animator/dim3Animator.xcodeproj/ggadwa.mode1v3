@@ -402,10 +402,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>269B2B901118E22300E3FDA8</string>
+										<string>26100F591121D84800A5AEEE</string>
 										<key>history</key>
 										<array>
-											<string>269B2B0C1117B02500E3FDA8</string>
+											<string>269B2B901118E22300E3FDA8</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -463,9 +463,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>269B2B771118E16700E3FDA8</string>
+				<string>26100F5A1121D84800A5AEEE</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>269B2B781118E16700E3FDA8</string>
+				<string>26100F5B1121D84800A5AEEE</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -586,7 +586,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>286843427.20972198</real>
+	<real>287430728.67319202</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -601,11 +601,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>269B2B8D1118E21A00E3FDA8</string>
-		<string>269B2B8E1118E21A00E3FDA8</string>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>269B2B8F1118E21A00E3FDA8</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -689,7 +684,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>269B2B791118E16700E3FDA8</string>
+				<string>26100F4E1121D83800A5AEEE</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
