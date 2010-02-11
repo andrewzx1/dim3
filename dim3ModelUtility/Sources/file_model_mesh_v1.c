@@ -130,7 +130,10 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
     
     for (i=0;i!=model->meshes[0].nvertex;i++) {
         xml_get_attribute_3_coord_int(tag,"c3",&vertex->pnt.x,&vertex->pnt.y,&vertex->pnt.z);
-        xml_get_attribute_3_coord_float(tag,"n3",&vertex->normal.x,&vertex->normal.y,&vertex->normal.z);
+
+		vertex->tangent_space.tangent.x=vertex->tangent_space.tangent.y=vertex->tangent_space.tangent.z=0.0f;
+ 		vertex->tangent_space.binormal.x=vertex->tangent_space.binormal.y=vertex->tangent_space.binormal.z=0.0f;
+       xml_get_attribute_3_coord_float(tag,"n3",&vertex->tangent_space.normal.x,&vertex->tangent_space.normal.y,&vertex->tangent_space.normal.z);
 		
         major_bone_tag[i]=xml_get_attribute_model_tag(tag,"major");
         minor_bone_tag[i]=xml_get_attribute_model_tag(tag,"minor");

@@ -235,7 +235,10 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		
 		for (i=0;i!=mesh->nvertex;i++) {
 			xml_get_attribute_3_coord_int(tag,"c3",&vertex->pnt.x,&vertex->pnt.y,&vertex->pnt.z);
-			xml_get_attribute_3_coord_float(tag,"n3",&vertex->normal.x,&vertex->normal.y,&vertex->normal.z);
+
+			xml_get_attribute_3_coord_float(tag,"t3",&vertex->tangent_space.tangent.x,&vertex->tangent_space.tangent.y,&vertex->tangent_space.tangent.z);
+			xml_get_attribute_3_coord_float(tag,"b3",&vertex->tangent_space.binormal.x,&vertex->tangent_space.binormal.y,&vertex->tangent_space.binormal.z);
+			xml_get_attribute_3_coord_float(tag,"n3",&vertex->tangent_space.normal.x,&vertex->tangent_space.normal.y,&vertex->tangent_space.normal.z);
 			
 			major_bone_tag[i]=xml_get_attribute_model_tag(tag,"major");
 			minor_bone_tag[i]=xml_get_attribute_model_tag(tag,"minor");
@@ -469,7 +472,10 @@ void encode_mesh_v2_xml(model_type *model)
 			xml_add_tagstart("v");
 			
 			xml_add_attribute_3_coord_int("c3",vertex->pnt.x,vertex->pnt.y,vertex->pnt.z);
-			xml_add_attribute_3_coord_float("n3",vertex->normal.x,vertex->normal.y,vertex->normal.z);
+
+			xml_add_attribute_3_coord_float("t3",vertex->tangent_space.tangent.x,vertex->tangent_space.tangent.y,vertex->tangent_space.tangent.z);
+			xml_add_attribute_3_coord_float("b3",vertex->tangent_space.binormal.x,vertex->tangent_space.binormal.y,vertex->tangent_space.binormal.z);
+			xml_add_attribute_3_coord_float("n3",vertex->tangent_space.normal.x,vertex->tangent_space.normal.y,vertex->tangent_space.normal.z);
 
 			if (vertex->major_bone_idx!=-1) {
 				xml_add_attribute_model_tag("major",model->bones[vertex->major_bone_idx].tag);

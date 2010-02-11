@@ -651,6 +651,24 @@ void gl_shader_texture_override(GLuint gl_id)
 
 /* =======================================================
 
+      Setup Tangent Space Pointers
+      
+======================================================= */
+
+void gl_shader_tangent_space_start(int count,float *tangent,float *binormal,float *normal)
+{
+
+	void glEnableVertexAttribArrayARB(GLint loc); 
+	void glVertexAttribPointerARB(GLint loc, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer); 
+}
+
+void gl_shader_tangent_space_stop(void)
+{
+
+}
+
+/* =======================================================
+
       Execute Shader
       
 ======================================================= */

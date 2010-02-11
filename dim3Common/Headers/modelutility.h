@@ -101,8 +101,16 @@ typedef struct		{
 typedef struct		{
 						float							*gl_vertex_array,
 														*gl_color_array,
-														*gl_normal_array;
+														*gl_tangent_array,
+														*gl_binormal_array,
+														*gl_normal_array,
 					} model_draw_mesh_array_type;
+
+typedef struct		{
+						float							*gl_tangent_array,
+														*gl_binormal_array,
+														*gl_normal_array;
+					} model_draw_array_type;
 
 typedef struct		{
 						d3pnt							center;
@@ -113,6 +121,7 @@ typedef struct		{
 						model_draw_bone_type			bones[max_model_bone];
 						model_draw_alter_bone_type		alter_bones[max_model_bone];
 						model_draw_mesh_array_type		mesh_arrays[max_model_mesh];
+						model_draw_array_type			draw_array;
                     } model_draw_setup;
 
 //
@@ -137,8 +146,8 @@ typedef struct		{
 						int								major_bone_idx,minor_bone_idx;
 						float							bone_factor;
 						d3pnt							pnt;
-						d3vct							normal;
 						d3vct							major_dist,minor_dist;
+						tangent_space_type				tangent_space;
 					} model_vertex_type;
 					
 typedef struct		{
@@ -348,7 +357,7 @@ extern void model_setup_animated_textures(model_type *model,int tick);
 extern bool model_add_texture_frame(model_type *model,int txt,char *bitmap_name);
 extern bool model_delete_texture_frame(model_type *model,int txt);
 
-extern bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,bool normals);
+extern bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,bool tangent_space);
 extern void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup);
 extern void model_draw_setup_clear(model_type *model,model_draw_setup *draw_setup);
 
@@ -377,7 +386,7 @@ extern void model_get_vertex_extent_all(model_type *model,int *p_minx,int *p_max
 extern void model_get_view_complex_bounding_box(model_type *model,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz);
 extern void model_recalc_boxes(model_type *model);
 
-extern void model_recalc_normals(model_type *model,int mesh_idx);
+extern void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binormal);
 
 extern void model_rescale_box(model_box_type *mbox,float x_fact,float z_fact,float y_fact);
 extern void model_scale(model_type *model,int mesh_idx,float x_fact,float y_fact,float z_fact);
