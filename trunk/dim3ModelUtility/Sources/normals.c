@@ -35,54 +35,80 @@ and can be sold or given away.
       
 ======================================================= */
 
-float model_find_normal_angle(float nx1,float nz1,float ny1,float nx2,float nz2,float ny2)
+void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binormal)
 {
-    float			f,f2,f3;
-    
-    f=(nx1*nx2)+(nz1*nz2)+(ny1*ny2);
-    f2=sqrtf((nx1*nx1)+(nz1*nz1)+(ny1*ny1));
-    f3=sqrtf((nx2*nx2)+(nz2*nz2)+(ny2*ny2));
-        
-	return((float)acos((double)(f/(f2*f3)))*(180.0f/TRIG_PI));
-}
-
-void model_recalc_normals(model_type *model,int mesh_idx)
-{
-	int					i,k,nt,ntrig,cnt,
-                        x[3],z[3],y[3];
-    float				f,fx,fz,fy;
-	d3vct				v1,v2,v[max_model_trig];
+	int					i,k,nt,ntrig,cnt;
+    float				u10,u20,v10,v20,f_denom,f;
+	d3vct				p10,p20,vlft,vrgt,v_num;
+	d3pnt				*pt,*pt_1,*pt_2;
 	model_mesh_type		*mesh;
     model_vertex_type	*vertex;
 	model_trig_type		*trig;
+	tangent_space_type	*space,avg_space;
 
 	mesh=&model->meshes[mesh_idx];
+
+		// memory for tangent space
+
+	space=(tangent_space_type*)malloc(mesh->nvertex*sizeof(tangent_space_type));
+	if (space==NULL) return;
 	
-        // find polygon normals
+        // find tangent space for triangles
         
 	ntrig=mesh->ntrig;
 	
 	for (i=0;i!=ntrig;i++) {
         trig=&mesh->trigs[i];
     
-            // get the vertexes
-        
-        for (k=0;k!=3;k++) {
-            vertex=&mesh->vertexes[trig->v[k]];
-            x[k]=vertex->pnt.x;
-            z[k]=vertex->pnt.z;
-            y[k]=vertex->pnt.y;
-        }
-		
-			// get the vectors cross product
-			
-		vector_create(&v1,x[1],y[1],z[1],x[0],y[0],z[0]);
-		vector_create(&v2,x[2],y[2],z[2],x[0],y[0],z[0]);
-		
-		vector_cross_product(&v[i],&v1,&v2);
+			// get the side vectors (p1-p0) and (p2-p0)
+
+		pt=&mesh->vertexes[trig->v[0]].pnt;
+		pt_1=&mesh->vertexes[trig->v[1]].pnt;
+		pt_2=&mesh->vertexes[trig->v[2]].pnt;
+
+		vector_create(&p10,pt_1->x,pt_1->y,pt_1->z,pt->x,pt->y,pt->z);
+		vector_create(&p20,pt_2->x,pt_2->y,pt_2->z,pt->x,pt->y,pt->z);
+
+			// get the UV scalars (u1-u0), (u2-u0), (v1-v0), (v2-v0)
+
+		u10=trig->gx[1]-trig->gx[0];
+		u20=trig->gx[2]-trig->gx[0];
+		v10=trig->gy[1]-trig->gy[0];
+		v20=trig->gy[2]-trig->gy[0];
+
+			// calculate the tangent
+			// (v20xp10)-(v10xp20) / (u10*v20)-(v10*u20)
+
+		vector_scalar_multiply(&vlft,&p10,v20);
+		vector_scalar_multiply(&vrgt,&p20,v10);
+		vector_subtract(&v_num,&vlft,&vrgt);
+
+		f_denom=(u10*v20)-(v10*u20);
+
+		vector_scalar_multiply(&space->tangent,&v_num,(1.0f/f_denom));
+		vector_normalize(&space->tangent);
+
+			// calculate the binormal
+			// (u20xp10)-(u10xp20) / (v10*u20)-(u10*v20)
+
+		vector_scalar_multiply(&vlft,&p10,u20);
+		vector_scalar_multiply(&vrgt,&p20,u10);
+		vector_subtract(&v_num,&vlft,&vrgt);
+
+		f_denom=(v10*u20)-(u10*v20);
+
+		vector_scalar_multiply(&space->binormal,&v_num,(1.0f/f_denom));
+		vector_normalize(&space->binormal);
+
+			// calculate the normal
+			// T cross B (cross routine automatically normalizes)
+
+		if (!only_tangent_binormal) {
+			vector_cross_product(&space->normal,&space->tangent,&space->binormal);
+		}
 	}
     
-		// average polygon normals into vertexes
+		// average tangent spaces into vertexes
 		
 	nt=mesh->nvertex;
 	vertex=mesh->vertexes;
@@ -93,30 +119,60 @@ void model_recalc_normals(model_type *model,int mesh_idx)
 		
 		cnt=0;
 		trig=mesh->trigs;
-		
-		fx=fz=fy=0;
+
+		avg_space.tangent.x=avg_space.tangent.y=avg_space.tangent.z=0.0f;
+		avg_space.binormal.x=avg_space.binormal.y=avg_space.binormal.z=0.0f;
+		avg_space.normal.x=avg_space.normal.y=avg_space.normal.z=0.0f;
 		
 		for (k=0;k!=ntrig;k++) {
+
 			if ((trig->v[0]==i) || (trig->v[1]==i) || (trig->v[2]==i)) {
-                fx+=v[k].x;
-                fz+=v[k].z;
-                fy+=v[k].y;
+				avg_space.tangent.x+=space[k].tangent.x;
+				avg_space.tangent.y+=space[k].tangent.y;
+				avg_space.tangent.z+=space[k].tangent.z;
+				
+				avg_space.binormal.x+=space[k].binormal.x;
+				avg_space.binormal.y+=space[k].binormal.y;
+				avg_space.binormal.z+=space[k].binormal.z;
+
+				avg_space.normal.x+=space[k].normal.x;
+				avg_space.normal.y+=space[k].normal.y;
+				avg_space.normal.z+=space[k].normal.z;
+
                 cnt++;
 			}
+
 			trig++;
 		}
 		
 		if (cnt==0) {
-			vertex->normal.x=vertex->normal.z=vertex->normal.y=0.0f;
+			vertex->tangent_space.tangent.x=vertex->tangent_space.tangent.z=vertex->tangent_space.tangent.y=0.0f;
+			vertex->tangent_space.binormal.x=vertex->tangent_space.binormal.z=vertex->tangent_space.binormal.y=0.0f;
+			if (!only_tangent_binormal) vertex->tangent_space.normal.x=vertex->tangent_space.normal.z=vertex->tangent_space.normal.y=0.0f;
 		}
 		else {
 			f=(float)cnt;
-			vertex->normal.x=-(fx/f);
-			vertex->normal.z=-(fz/f);
-			vertex->normal.y=-(fy/f);
+
+			vertex->tangent_space.tangent.x=avg_space.tangent.x/f;
+			vertex->tangent_space.tangent.y=avg_space.tangent.y/f;
+			vertex->tangent_space.tangent.z=avg_space.tangent.z/f;
+
+			vertex->tangent_space.binormal.x=avg_space.binormal.x/f;
+			vertex->tangent_space.binormal.y=avg_space.binormal.y/f;
+			vertex->tangent_space.binormal.z=avg_space.binormal.z/f;
+
+			if (!only_tangent_binormal) {
+				vertex->tangent_space.normal.x=-(avg_space.normal.x/f);
+				vertex->tangent_space.normal.y=-(avg_space.normal.y/f);
+				vertex->tangent_space.normal.z=-(avg_space.normal.z/f);
+			}
 		}
 		
 		vertex++;
 	}
+
+		// free the tangent spaces
+
+	free(space);
 }
 

@@ -117,17 +117,23 @@ void model_flip(model_type *model,int mesh_idx,bool flip_x,bool flip_y,bool flip
 	
 		if (flip_x) {
 			vertex->pnt.x=-vertex->pnt.x;
-			vertex->normal.x=-vertex->normal.x;
+			vertex->tangent_space.tangent.x=-vertex->tangent_space.tangent.x;
+			vertex->tangent_space.binormal.x=-vertex->tangent_space.binormal.x;
+			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
 		}
 		
 		if (flip_y) {
 			vertex->pnt.y=-vertex->pnt.y;
-			vertex->normal.y=-vertex->normal.y;
+			vertex->tangent_space.tangent.y=-vertex->tangent_space.tangent.y;
+			vertex->tangent_space.binormal.y=-vertex->tangent_space.binormal.y;
+			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
 		}
 		
 		if (flip_z) {
 			vertex->pnt.z=-vertex->pnt.z;
-			vertex->normal.z=-vertex->normal.z;
+			vertex->tangent_space.tangent.z=-vertex->tangent_space.tangent.z;
+			vertex->tangent_space.binormal.z=-vertex->tangent_space.binormal.z;
+			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
 		}
 		
 		vertex++;
@@ -217,9 +223,17 @@ void model_swap_xz(model_type *model,int mesh_idx)
 		vertex->pnt.x=vertex->pnt.z;
 		vertex->pnt.z=k;
 
-		f=vertex->normal.x;
-		vertex->normal.x=vertex->normal.z;
-		vertex->normal.z=f;
+		f=vertex->tangent_space.tangent.x;
+		vertex->tangent_space.tangent.x=vertex->tangent_space.tangent.z;
+		vertex->tangent_space.tangent.z=f;
+
+		f=vertex->tangent_space.binormal.x;
+		vertex->tangent_space.binormal.x=vertex->tangent_space.binormal.z;
+		vertex->tangent_space.binormal.z=f;
+
+		f=vertex->tangent_space.normal.x;
+		vertex->tangent_space.normal.x=vertex->tangent_space.normal.z;
+		vertex->tangent_space.normal.z=f;
 
 		vertex++;
 	}
@@ -295,9 +309,17 @@ void model_swap_yz(model_type *model,int mesh_idx)
 		vertex->pnt.y=vertex->pnt.z;
 		vertex->pnt.z=k;
 
-		f=vertex->normal.y;
-		vertex->normal.y=vertex->normal.z;
-		vertex->normal.z=f;
+		f=vertex->tangent_space.tangent.y;
+		vertex->tangent_space.tangent.y=vertex->tangent_space.tangent.z;
+		vertex->tangent_space.tangent.z=f;
+
+		f=vertex->tangent_space.binormal.y;
+		vertex->tangent_space.binormal.y=vertex->tangent_space.binormal.z;
+		vertex->tangent_space.binormal.z=f;
+
+		f=vertex->tangent_space.normal.y;
+		vertex->tangent_space.normal.y=vertex->tangent_space.normal.z;
+		vertex->tangent_space.normal.z=f;
 
 		vertex++;
 	}

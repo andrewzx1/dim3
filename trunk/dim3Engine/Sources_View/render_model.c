@@ -151,28 +151,9 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
-	int				n;
-	d3ang			old_ang;
-	
-		// if held weapon, fix rotation
-		
-	if (draw->no_rot.on) {
-	//	memmove(&old_ang,&draw->setup.ang,sizeof(d3ang));
-	//	memmove(&draw->setup.ang,&draw->no_rot.ang,sizeof(d3ang));
-	// supergumba -- need to figure this all out -- but probably don't need this
-	}
-	
-		// create the normals
-		
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
 		model_create_draw_normals(mdl,n,&draw->setup);
-	}
-	
-		// restore rotation
-		
-	if (draw->no_rot.on) {
-	//	memmove(&draw->setup.ang,&old_ang,sizeof(d3ang));
 	}
 }
 
@@ -184,10 +165,12 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 
 bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 {
-	int				n,k,offset,t_idx;
-	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*gx,*gy,
-					*vp_start,*cp_start,*np_start,*vertex_ptr,
-					*vertex_array,*coord_array;
+	int				n,k,t,offset,t_idx;
+	float			*vl,*ul,*cl,*tl,*bl,*nl,
+					*vp,*cp,*tp,*bp,*np,*gx,*gy,
+					*vp_start,*cp_start,
+					*tp_start,*bp_start,*np_start,
+					*vertex_ptr;
     model_trig_type	*trig;
 	model_mesh_type	*mesh;
 	
@@ -196,12 +179,17 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3+3)));
 	if (vertex_ptr==NULL) return(FALSE);
 
-		// build the vertexes and indexes
+		// build the vertexes, indexes, and colors
+		// into the VBO, and the tangent space as
+		// pointers
 
-	vl=vertex_array=vertex_ptr;
-	tl=coord_array=vertex_ptr+((draw->vbo_ptr.ntrig*3)*3);
-	cl=coord_array=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2));
-	nl=coord_array=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2+3));
+	vl=vertex_ptr;
+	ul=vertex_ptr+((draw->vbo_ptr.ntrig*3)*3);
+	cl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2));
+
+	tl=draw->setup.draw_array.gl_tangent_array;
+	bl=draw->setup.draw_array.gl_binormal_array;
+	nl=draw->setup.draw_array.gl_normal_array;
 
 	t_idx=0;
 
@@ -213,6 +201,9 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 		
 		vp_start=draw->setup.mesh_arrays[n].gl_vertex_array;
 		cp_start=draw->setup.mesh_arrays[n].gl_color_array;
+
+		tp_start=draw->setup.mesh_arrays[n].gl_tangent_array;
+		bp_start=draw->setup.mesh_arrays[n].gl_binormal_array;
 		np_start=draw->setup.mesh_arrays[n].gl_normal_array;
 
 		draw->vbo_ptr.index_offset[n]=t_idx;
@@ -222,71 +213,38 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 			gx=trig->gx;
 			gy=trig->gy;
 
-				// vertex 0
+			for (t=0;t!=3;t++) {
+				offset=trig->v[t]*3;
+				vp=vp_start+offset;
+				cp=cp_start+offset;
 
-			offset=trig->v[0]*3;
-			vp=vp_start+offset;
-			cp=cp_start+offset;
-			np=np_start+offset;
+				*vl++=*vp++;
+				*vl++=*vp++;
+				*vl++=*vp;
 
-			*vl++=*vp++;
-			*vl++=*vp++;
-			*vl++=*vp;
+				*ul++=*gx++;
+				*ul++=*gy++;
 
-			*tl++=*gx++;
-			*tl++=*gy++;
+				*cl++=*cp++;
+				*cl++=*cp++;
+				*cl++=*cp;
 
-			*cl++=*cp++;
-			*cl++=*cp++;
-			*cl++=*cp;
-			
-			*nl++=*np++;
-			*nl++=*np++;
-			*nl++=*np;
+				tp=tp_start+offset;
+				bp=bp_start+offset;
+				np=np_start+offset;
+				
+				*tl++=*tp++;
+				*tl++=*tp++;
+				*tl++=*tp;
 
-				// vertex 1
+				*bl++=*bp++;
+				*bl++=*bp++;
+				*bl++=*bp;
 
-			offset=trig->v[1]*3;
-			vp=vp_start+offset;
-			cp=cp_start+offset;
-			np=np_start+offset;
-
-			*vl++=*vp++;
-			*vl++=*vp++;
-			*vl++=*vp;
-
-			*tl++=*gx++;
-			*tl++=*gy++;
-
-			*cl++=*cp++;
-			*cl++=*cp++;
-			*cl++=*cp;
-
-			*nl++=*np++;
-			*nl++=*np++;
-			*nl++=*np;
-
-				// vertex 2
-
-			offset=trig->v[2]*3;
-			vp=vp_start+offset;
-			cp=cp_start+offset;
-			np=np_start+offset;
-
-			*vl++=*vp++;
-			*vl++=*vp++;
-			*vl++=*vp;
-
-			*tl++=*gx;
-			*tl++=*gy;
-
-			*cl++=*cp++;
-			*cl++=*cp++;
-			*cl++=*cp;
-
-			*nl++=*np++;
-			*nl++=*np++;
-			*nl++=*np;
+				*nl++=*np++;
+				*nl++=*np++;
+				*nl++=*np;
+			}
 
 			trig++;
 		}
@@ -314,6 +272,8 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glNormalPointer(GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
+
+	gl_shader_tangent_space_start(t_idx,draw->setup.draw_array.gl_tangent_array,draw->setup.draw_array.gl_binormal_array,draw->setup.draw_array.gl_normal_array);
 
 	return(TRUE);
 }
@@ -346,6 +306,8 @@ void render_model_release_vertex_objects(void)
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_vertex_object();
+
+	gl_shader_tangent_space_stop();
 }
 
 /* =======================================================

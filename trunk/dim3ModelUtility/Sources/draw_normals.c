@@ -35,29 +35,19 @@ and can be sold or given away.
       
 ======================================================= */
 
-void model_move_single_normal(model_draw_bone_type *draw_bones,model_vertex_type *vertex,float *nx,float *ny,float *nz)
+void model_move_single_tangent_space_vector(model_draw_bone_type *draw_bones,model_vertex_type *vertex,d3vct *v)
 {
-	int						n;
 	float					bone_factor,
-							majx,majz,majy,minx,minz,miny;
+							majx,majy,majz,minx,miny,minz;
 	model_draw_bone_type	*major_bone,*minor_bone;
 
-		// find rotations
-		
-	n=vertex->major_bone_idx;
-	if (n==-1) {
-		*nx=vertex->normal.x;
-		*ny=vertex->normal.y;
-		*nz=vertex->normal.z;
-		return;
-	}
-	major_bone=&draw_bones[n];
-
 		// find major bone rotation
+
+	major_bone=&draw_bones[vertex->major_bone_idx];
 	
-	majx=vertex->normal.x;
-	majy=vertex->normal.y;
-	majz=vertex->normal.z;
+	majx=v->x;
+	majy=v->y;
+	majz=v->z;
 	
 	matrix_vertex_multiply_ignore_transform(&major_bone->rot_mat,&majx,&majy,&majz);	// commulative has a transform that needs to be ignored
 
@@ -65,32 +55,55 @@ void model_move_single_normal(model_draw_bone_type *draw_bones,model_vertex_type
 		
 	bone_factor=vertex->bone_factor;
 		
-	n=vertex->minor_bone_idx;
-	if ((n==-1) || (bone_factor==1)) {
-		*nx=majx;
-		*ny=majy;
-		*nz=majz;
+	if ((vertex->minor_bone_idx==-1) || (bone_factor==1)) {
+		v->x=majx;
+		v->y=majy;
+		v->z=majz;
 		return;
 	}
-	minor_bone=&draw_bones[n];
 		
 		// find minor bone rotation
 		
-	minx=vertex->normal.x;
-	miny=vertex->normal.y;
-	minz=vertex->normal.z;
-	
-	minor_bone->rot_mat.data[0][3]=0;
-	minor_bone->rot_mat.data[1][3]=0;
-	minor_bone->rot_mat.data[2][3]=0;
+	minor_bone=&draw_bones[vertex->minor_bone_idx];
+
+	minx=v->x;
+	miny=v->y;
+	minz=v->z;
 	
 	matrix_vertex_multiply_ignore_transform(&minor_bone->rot_mat,&minx,&miny,&minz);	// commulative has a transform that needs to be ignored
 
 		// average the points
 		
-	*nx=minx+((majx-minx)*bone_factor);
-	*nz=minz+((majz-minz)*bone_factor);
-	*ny=miny+((majy-miny)*bone_factor);
+	v->x=minx+((majx-minx)*bone_factor);
+	v->y=miny+((majy-miny)*bone_factor);
+	v->z=minz+((majz-minz)*bone_factor);
+}
+
+void model_move_single_tangent_space(model_draw_bone_type *draw_bones,model_vertex_type *vertex,tangent_space_type *space)
+{
+		// start with original space
+
+	space->tangent.x=vertex->tangent_space.tangent.x;
+	space->tangent.y=vertex->tangent_space.tangent.y;
+	space->tangent.z=vertex->tangent_space.tangent.z;
+
+	space->binormal.x=vertex->tangent_space.binormal.x;
+	space->binormal.y=vertex->tangent_space.binormal.y;
+	space->binormal.z=vertex->tangent_space.binormal.z;
+
+	space->normal.x=vertex->tangent_space.normal.x;
+	space->normal.y=vertex->tangent_space.normal.y;
+	space->normal.z=vertex->tangent_space.normal.z;
+
+		// if no major bone, then no rotation
+		
+	if (vertex->major_bone_idx==-1) return;
+
+		// move the space
+
+	model_move_single_tangent_space_vector(draw_bones,vertex,&space->tangent);
+	model_move_single_tangent_space_vector(draw_bones,vertex,&space->binormal);
+	model_move_single_tangent_space_vector(draw_bones,vertex,&space->normal);
 }
 
 /* =======================================================
@@ -101,13 +114,13 @@ void model_move_single_normal(model_draw_bone_type *draw_bones,model_vertex_type
 
 void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
-	int						i,nt;
-	float					x,y,z;
-	float					*pn;
+	int						n,nt;
+	float					*pt,*pb,*pn;
 	bool					no_sway;
 	model_mesh_type			*mesh;
 	model_vertex_type		*vertex;
 	matrix_type				rot_mat,sway_mat;
+	tangent_space_type		space;
 	
 	mesh=&model->meshes[mesh_idx];
 	
@@ -119,6 +132,9 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 		
 	nt=mesh->nvertex;
 	vertex=mesh->vertexes;
+
+	pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array;
+	pb=draw_setup->mesh_arrays[mesh_idx].gl_binormal_array;
 	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
 
 		// normals with sways
@@ -129,14 +145,28 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	
 		matrix_rotate_zyx(&sway_mat,draw_setup->sway.x,draw_setup->sway.y,draw_setup->sway.z);
 		
-		for (i=0;i!=nt;i++) {
-			model_move_single_normal(draw_setup->bones,vertex,&x,&y,&z);
-			matrix_vertex_multiply(&sway_mat,&x,&z,&y);
-			matrix_vertex_multiply(&rot_mat,&x,&y,&z);
+		for (n=0;n!=nt;n++) {
+			model_move_single_tangent_space(draw_setup->bones,vertex,&space);
 
-			*pn++=x;
-			*pn++=y;
-			*pn++=z;
+			matrix_vertex_multiply(&sway_mat,&space.tangent.x,&space.tangent.y,&space.tangent.z);
+			matrix_vertex_multiply(&sway_mat,&space.binormal.x,&space.binormal.y,&space.binormal.z);
+			matrix_vertex_multiply(&sway_mat,&space.normal.x,&space.normal.y,&space.normal.z);
+
+			matrix_vertex_multiply(&rot_mat,&space.tangent.x,&space.tangent.y,&space.tangent.z);
+			matrix_vertex_multiply(&rot_mat,&space.binormal.x,&space.binormal.y,&space.binormal.z);
+			matrix_vertex_multiply(&rot_mat,&space.normal.x,&space.normal.y,&space.normal.z);
+
+			*pt++=space.tangent.x;
+			*pt++=space.tangent.y;
+			*pt++=space.tangent.z;
+
+			*pb++=space.binormal.x;
+			*pb++=space.binormal.y;
+			*pb++=space.binormal.z;
+
+			*pn++=space.normal.x;
+			*pn++=space.normal.y;
+			*pn++=space.normal.z;
 			
 			vertex++;
 		}
@@ -146,13 +176,24 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 
 		// normals with no sways
 		
-	for (i=0;i!=nt;i++) {
-		model_move_single_normal(draw_setup->bones,vertex,&x,&y,&z);
-		matrix_vertex_multiply(&rot_mat,&x,&y,&z);
+	for (n=0;n!=nt;n++) {
+		model_move_single_tangent_space(draw_setup->bones,vertex,&space);
 
-		*pn++=x;
-		*pn++=y;
-		*pn++=z;
+		matrix_vertex_multiply(&rot_mat,&space.tangent.x,&space.tangent.y,&space.tangent.z);
+		matrix_vertex_multiply(&rot_mat,&space.binormal.x,&space.binormal.y,&space.binormal.z);
+		matrix_vertex_multiply(&rot_mat,&space.normal.x,&space.normal.y,&space.normal.z);
+
+		*pt++=space.tangent.x;
+		*pt++=space.tangent.y;
+		*pt++=space.tangent.z;
+
+		*pb++=space.binormal.x;
+		*pb++=space.binormal.y;
+		*pb++=space.binormal.z;
+
+		*pn++=space.normal.x;
+		*pn++=space.normal.y;
+		*pn++=space.normal.z;
 
 		vertex++;
 	}
