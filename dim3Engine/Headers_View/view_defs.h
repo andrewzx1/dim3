@@ -240,7 +240,8 @@ typedef struct		{
 															dim3CameraPosition,dim3AmbientColor,
 															dim3LightMapBoost,dim3ShineFactor,
 															dim3TexColor,dim3TintColor,dim3Alpha,
-															dim3Tangent,dim3Binormal,dim3Normal;
+															dim3Tangent,dim3Binormal,dim3Normal,
+															dim3VertexTangent,dim3VertexBinormal,dim3VertexNormal;
 						shader_cached_var_light_loc			dim3Lights[max_shader_light];
 					} shader_cached_var_loc;
 
@@ -250,7 +251,7 @@ typedef struct		{
 						float								cur_alpha;
 						char								name[64],
 															vertex_name[64],fragment_name[64];
-						bool								per_scene_vars_set;
+						bool								per_scene_vars_set,normal_vertex_attrib_active;
 						d3col								cur_tint_col;
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
 						shader_cached_var_loc				var_locs;

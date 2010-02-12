@@ -151,9 +151,10 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
+	int				n;
+
 	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))==0) continue;
-		model_create_draw_normals(mdl,n,&draw->setup);
+		if ((mesh_mask&(0x1<<n))!=0) model_create_draw_normals(mdl,n,&draw->setup);
 	}
 }
 
@@ -176,7 +177,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	
  		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3+3)));
+	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3)));
 	if (vertex_ptr==NULL) return(FALSE);
 
 		// build the vertexes, indexes, and colors
@@ -270,11 +271,6 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*3)*sizeof(float)));
 
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glNormalPointer(GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
-
-	gl_shader_tangent_space_start(t_idx,draw->setup.draw_array.gl_tangent_array,draw->setup.draw_array.gl_binormal_array,draw->setup.draw_array.gl_normal_array);
-
 	return(TRUE);
 }
 
@@ -302,12 +298,9 @@ void render_model_release_vertex_objects(void)
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_vertex_object();
-
-	gl_shader_tangent_space_stop();
 }
 
 /* =======================================================
@@ -461,7 +454,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,NULL,&draw->tint,NULL);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,NULL,&draw->tint,NULL,&draw->setup.draw_array);
 		
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
@@ -650,7 +643,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,alpha,light_list,NULL,&draw->tint,NULL);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,alpha,light_list,NULL,&draw->tint,NULL,&draw->setup.draw_array);
 		
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}

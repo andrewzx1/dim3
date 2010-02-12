@@ -269,7 +269,7 @@ void render_opaque_mesh_shader(void)
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 			gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,&light_list);
-			gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space);
+			gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
 
 				// fix texture if any back rendering
 
