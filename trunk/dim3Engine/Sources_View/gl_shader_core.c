@@ -113,7 +113,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	
 	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
 	
-	if (bump) {
+	if ((bump) || (spec)) {
 		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3Tangent);\n");
 		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3Binormal);\n");
 		strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3Normal);\n");
@@ -342,13 +342,15 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
-	strcat(buf,"uniform vec3 dim3CameraPosition");
-	if ((bump) || (spec)) strcat(buf,",dim3Tangent,dim3Binormal,dim3Normal");
+	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
+
+	strcat(buf,"attribute vec3 dim3VertexNormal");
+	if ((bump) || (spec)) strcat(buf,",dim3TangentNormal,dim3Binormal");
 	strcat(buf,";\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
-	sprintf(strchr(buf,0),"varying vec3 normal,lightVector[%d]",max_shader_light);
+	sprintf(strchr(buf,0),"varying vec3 tangentSpaceNormal,lightVector[%d]",max_shader_light);
 	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
 	if (spec) strcat(buf,",eyeVector");
 	strcat(buf,";\n");
@@ -361,11 +363,12 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	
 	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
 	
-	if (bump) {
-		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3Tangent);\n");
-		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3Binormal);\n");
-		strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3Normal);\n");
+	if ((bump) || (spec)) {
+		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
+		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3VertexBinormal);\n");
 	}
+	
+	strcat(buf,"tangentSpaceNormal=normalize(gl_NormalMatrix*dim3VertexNormal);\n");	// always need normal for diffuse
 	
 	if (spec) {
 		strcat(buf,"eyeVector.x=dot(-vtx,tangentSpaceTangent);\n");
@@ -384,8 +387,6 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	}
 	
 	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(gl_Vertex.xyz,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
-	
-	strcat(buf,"normal=normalize(gl_NormalMatrix*gl_Normal);\n");
 	
 	strcat(buf,"}\n");
 
@@ -421,7 +422,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
-	sprintf(strchr(buf,0),"varying vec3 normal,lightVector[%d]",max_shader_light);
+	sprintf(strchr(buf,0),"varying vec3 tangentSpaceNormal,lightVector[%d]",max_shader_light);
 	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
 	if (spec) strcat(buf,",eyeVector");
 	strcat(buf,";\n");
@@ -481,7 +482,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	
 		// diffuse
 		
-	strcat(buf,"diffuse=vec3(max(dot(normal,combineLightVector),0.0));\n");
+	strcat(buf,"diffuse=vec3(max(dot(tangentSpaceNormal,combineLightVector),0.0));\n");
 	strcat(buf,"diffuse=max((diffuse*1.2),dim3AmbientColor);\n");
 	strcat(buf,"diffuse=clamp(diffuse,0.0,1.0);\n");
 	

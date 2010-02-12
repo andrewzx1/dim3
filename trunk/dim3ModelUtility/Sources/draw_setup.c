@@ -37,7 +37,7 @@ and can be sold or given away.
 
 bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,bool tangent_space)
 {
-	int				n,sz;
+	int				n,sz,ntrig;
 	model_mesh_type	*mesh;
 		
 		// clear per-mesh arrays
@@ -58,6 +58,7 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 	
 		// setup per-mesh arrays
 
+	ntrig=0;
 	mesh=model->meshes;
 	
 	for (n=0;n!=model->nmesh;n++) {
@@ -84,6 +85,8 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 			if (draw_setup->mesh_arrays[n].gl_normal_array==NULL) return(FALSE);
 			bzero(draw_setup->mesh_arrays[n].gl_normal_array,sz);
 		}
+
+		ntrig+=mesh->ntrig;
 		
 		mesh++;
 	}
@@ -91,7 +94,7 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 		// setup per model arrays
 
 	if (tangent_space) {
-		sz=(mesh->ntrig*(3+3))*sizeof(float);
+		sz=(ntrig*(3+3))*sizeof(float);
 
 		draw_setup->draw_array.gl_tangent_array=(float*)malloc(sz);
 		if (draw_setup->draw_array.gl_tangent_array==NULL) return(FALSE);

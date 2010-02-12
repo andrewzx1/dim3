@@ -127,9 +127,14 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3TexColor=glGetUniformLocationARB(shader->program_obj,"dim3TexColor");
 	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
+
 	shader->var_locs.dim3Tangent=glGetUniformLocationARB(shader->program_obj,"dim3Tangent");
 	shader->var_locs.dim3Binormal=glGetUniformLocationARB(shader->program_obj,"dim3Binormal");
 	shader->var_locs.dim3Normal=glGetUniformLocationARB(shader->program_obj,"dim3Normal");
+
+	shader->var_locs.dim3VertexTangent=glGetUniformLocationARB(shader->program_obj,"dim3VertexTangent");
+	shader->var_locs.dim3VertexBinormal=glGetUniformLocationARB(shader->program_obj,"dim3VertexBinormal");
+	shader->var_locs.dim3VertexNormal=glGetUniformLocationARB(shader->program_obj,"dim3VertexNormal");
 	
 	for (n=0;n!=max_shader_light;n++) {
 		sprintf(var_name,"dim3Light_%d.position",n);
@@ -453,7 +458,7 @@ void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_ty
 	}
 }
 
-void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_col,tangent_space_type *tangent_space)
+void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_col,tangent_space_type *tangent_space,model_draw_array_type *model_draw_array)
 {
 		// set tint color
 		
@@ -482,12 +487,33 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_co
 		}
 	}
 
-		// tangent space
+		// tangent spaces
 
 	if (tangent_space!=NULL) {
 		if (shader->var_locs.dim3Tangent!=-1) glUniform3fARB(shader->var_locs.dim3Tangent,tangent_space->tangent.x,tangent_space->tangent.y,tangent_space->tangent.z);
 		if (shader->var_locs.dim3Binormal!=-1) glUniform3fARB(shader->var_locs.dim3Binormal,tangent_space->binormal.x,tangent_space->binormal.y,tangent_space->binormal.z);
 		if (shader->var_locs.dim3Normal!=-1) glUniform3fARB(shader->var_locs.dim3Normal,tangent_space->normal.x,tangent_space->normal.y,tangent_space->normal.z);
+	}
+
+	if (model_draw_array!=NULL) {
+		if (!shader->normal_vertex_attrib_active) {
+			shader->normal_vertex_attrib_active=TRUE;
+			if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent); 
+			if (shader->var_locs.dim3VertexBinormal!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexBinormal); 
+			if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal); 
+		}
+
+		if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,0,0,model_draw_array->gl_tangent_array);
+		if (shader->var_locs.dim3VertexBinormal!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexBinormal,3,GL_FLOAT,0,0,model_draw_array->gl_binormal_array);
+		if (shader->var_locs.dim3VertexNormal!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,0,0,model_draw_array->gl_normal_array);
+	}
+	else {
+		if (shader->normal_vertex_attrib_active) {
+			shader->normal_vertex_attrib_active=FALSE;
+			if (shader->var_locs.dim3VertexTangent!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent); 
+			if (shader->var_locs.dim3VertexBinormal!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexBinormal); 
+			if (shader->var_locs.dim3VertexNormal!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
+		}
 	}
 }
 
@@ -511,6 +537,7 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 	shader->cur_nlight=-1;
 	shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=-1.0f;
 	shader->cur_alpha=-1.0f;
+	shader->normal_vertex_attrib_active=FALSE;
 }
 
 void gl_shader_draw_scene_initialize(void)
@@ -651,29 +678,11 @@ void gl_shader_texture_override(GLuint gl_id)
 
 /* =======================================================
 
-      Setup Tangent Space Pointers
-      
-======================================================= */
-
-void gl_shader_tangent_space_start(int count,float *tangent,float *binormal,float *normal)
-{
-
-	void glEnableVertexAttribArrayARB(GLint loc); 
-	void glVertexAttribPointerARB(GLint loc, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer); 
-}
-
-void gl_shader_tangent_space_stop(void)
-{
-
-}
-
-/* =======================================================
-
       Execute Shader
       
 ======================================================= */
 
-void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space)
+void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_array_type *model_draw_array)
 {
 	int							n;
 	bool						light_change;
@@ -719,7 +728,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// per polygon variables
 		
-	gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space);
+	gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space,model_draw_array);
 	
 		// lighting variables
 			
