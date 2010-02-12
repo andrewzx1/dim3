@@ -53,6 +53,35 @@ bool map_recalc_normals_compare_sign(float f1,float f2)
 	return(FALSE);
 }
 
+bool map_recalc_normals_poly_is_outside(map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	int				n;
+	d3pnt			*pt,in_min,in_max;
+	
+		// get inside min/max
+		
+	in_min.x=mesh->box.min.x+(((mesh->box.mid.x-mesh->box.min.x)*10)/100);
+	in_min.y=mesh->box.min.y+(((mesh->box.mid.y-mesh->box.min.y)*10)/100);
+	in_min.z=mesh->box.min.z+(((mesh->box.mid.z-mesh->box.min.z)*10)/100);
+	
+	in_max.x=mesh->box.max.x+(((mesh->box.mid.x-mesh->box.max.x)*10)/100);
+	in_max.y=mesh->box.max.y+(((mesh->box.mid.y-mesh->box.max.y)*10)/100);
+	in_max.z=mesh->box.max.z+(((mesh->box.mid.z-mesh->box.max.z)*10)/100);
+	
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		
+		if ((pt->x>=mesh->box.min.x) && (pt->x<in_min.x)) return(TRUE);
+		if ((pt->x<=mesh->box.max.x) && (pt->x>in_max.x)) return(TRUE);
+		if ((pt->y>=mesh->box.min.y) && (pt->x<in_min.y)) return(TRUE);
+		if ((pt->y<=mesh->box.max.y) && (pt->x>in_max.y)) return(TRUE);
+		if ((pt->z>=mesh->box.min.z) && (pt->x<in_min.z)) return(TRUE);
+		if ((pt->z<=mesh->box.max.z) && (pt->x>in_max.z)) return(TRUE);
+	}
+	
+	return(FALSE);
+}
+
 /* =======================================================
 
       Calculate Normals
@@ -165,11 +194,23 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 			}
 		}
 		
-		if (mode==mesh_normal_mode_in) {
-			invert=is_out;
-		}
-		else {
-			invert=!is_out;
+		switch (mode) {
+		
+			case mesh_normal_mode_in:
+				invert=is_out;
+				break;
+			case mesh_normal_mode_out:
+				invert=!is_out;
+				break;
+			case mesh_normal_mode_in_out:
+				if (map_recalc_normals_poly_is_outside(mesh,poly)) {
+					invert=!is_out;
+				}
+				else {
+					invert=is_out;
+				}
+				break;
+				
 		}
 		
 		if (invert) {

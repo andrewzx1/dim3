@@ -99,12 +99,10 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 
-	if (((bump) || (spec)) && (nlight>0)) {
-		sprintf(strchr(buf,0),"varying vec3 lightVector[%d]",nlight);
-		if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",nlight);
-		if (spec) strcat(buf,",eyeVector");
-		strcat(buf,";\n");
-	}
+	sprintf(strchr(buf,0),"varying vec3 lightVector[%d]",max_shader_light);
+	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
+	if (spec) strcat(buf,",eyeVector");
+	strcat(buf,";\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -113,30 +111,27 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
 	if (light_map) strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
 	
-	if (nlight!=0) {
+	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
 	
-		strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
+	if (bump) {
+		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3Tangent);\n");
+		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3Binormal);\n");
+		strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3Normal);\n");
+	}
+	
+	if (spec) {
+		strcat(buf,"eyeVector.x=dot(-vtx,tangentSpaceTangent);\n");
+		strcat(buf,"eyeVector.y=dot(-vtx,tangentSpaceBinormal);\n");
+		strcat(buf,"eyeVector.z=dot(-vtx,tangentSpaceNormal);\n");
+	}
+	
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"lightVector[%d]=dim3Light_%d.position-vtx;\n",n,n);
 		
 		if (bump) {
-			strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3Tangent);\n");
-			strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3Binormal);\n");
-			strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3Normal);\n");
-		}
-		
-		if (spec) {
-			strcat(buf,"eyeVector.x=dot(-vtx,tangentSpaceTangent);\n");
-			strcat(buf,"eyeVector.y=dot(-vtx,tangentSpaceBinormal);\n");
-			strcat(buf,"eyeVector.z=dot(-vtx,tangentSpaceNormal);\n");
-		}
-		
-		for (n=0;n!=nlight;n++) {
-			sprintf(strchr(buf,0),"lightVector[%d]=dim3Light_%d.position-vtx;\n",n,n);
-			
-			if (bump) {
-				sprintf(strchr(buf,0),"lightVertexVector[%d].x=dot(lightVector[%d],tangentSpaceTangent);\n",n,n);
-				sprintf(strchr(buf,0),"lightVertexVector[%d].y=dot(lightVector[%d],tangentSpaceBinormal);\n",n,n);
-				sprintf(strchr(buf,0),"lightVertexVector[%d].z=dot(lightVector[%d],tangentSpaceNormal);\n",n,n);
-			}
+			sprintf(strchr(buf,0),"lightVertexVector[%d].x=dot(lightVector[%d],tangentSpaceTangent);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector[%d].y=dot(lightVector[%d],tangentSpaceBinormal);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector[%d].z=dot(lightVector[%d],tangentSpaceNormal);\n",n,n);
 		}
 	}
 	
@@ -178,12 +173,10 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
-	if (((bump) || (spec)) && (nlight>0)) {
-		sprintf(strchr(buf,0),"varying vec3 lightVector[%d]",nlight);
-		if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",nlight);
-		if (spec) strcat(buf,",eyeVector");
-		strcat(buf,";\n");
-	}
+	sprintf(strchr(buf,0),"varying vec3 lightVector[%d]",max_shader_light);
+	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
+	if (spec) strcat(buf,",eyeVector");
+	strcat(buf,";\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -355,14 +348,9 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
-	strcat(buf,"varying vec3 normal");
-
-	if (((bump) || (spec)) && (nlight>0)) {
-		sprintf(strchr(buf,0),",lightVector[%d]",nlight);
-		if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",nlight);
-		if (spec) strcat(buf,",eyeVector");
-	}
-		
+	sprintf(strchr(buf,0),"varying vec3 normal,lightVector[%d]",max_shader_light);
+	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
+	if (spec) strcat(buf,",eyeVector");
 	strcat(buf,";\n");
 	
 	strcat(buf,"void main(void)\n");
@@ -371,30 +359,27 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"gl_Position=ftransform();\n");
 	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
 	
-	if (nlight!=0) {
+	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
 	
-		strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
+	if (bump) {
+		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3Tangent);\n");
+		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3Binormal);\n");
+		strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3Normal);\n");
+	}
+	
+	if (spec) {
+		strcat(buf,"eyeVector.x=dot(-vtx,tangentSpaceTangent);\n");
+		strcat(buf,"eyeVector.y=dot(-vtx,tangentSpaceBinormal);\n");
+		strcat(buf,"eyeVector.z=dot(-vtx,tangentSpaceNormal);\n");
+	}
+	
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"lightVector[%d]=dim3Light_%d.position-vtx;\n",n,n);
 		
 		if (bump) {
-			strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3Tangent);\n");
-			strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3Binormal);\n");
-			strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3Normal);\n");
-		}
-		
-		if (spec) {
-			strcat(buf,"eyeVector.x=dot(-vtx,tangentSpaceTangent);\n");
-			strcat(buf,"eyeVector.y=dot(-vtx,tangentSpaceBinormal);\n");
-			strcat(buf,"eyeVector.z=dot(-vtx,tangentSpaceNormal);\n");
-		}
-		
-		for (n=0;n!=nlight;n++) {
-			sprintf(strchr(buf,0),"lightVector[%d]=dim3Light_%d.position-vtx;\n",n,n);
-			
-			if (bump) {
-				sprintf(strchr(buf,0),"lightVertexVector[%d].x=dot(lightVector[%d],tangentSpaceTangent);\n",n,n);
-				sprintf(strchr(buf,0),"lightVertexVector[%d].y=dot(lightVector[%d],tangentSpaceBinormal);\n",n,n);
-				sprintf(strchr(buf,0),"lightVertexVector[%d].z=dot(lightVector[%d],tangentSpaceNormal);\n",n,n);
-			}
+			sprintf(strchr(buf,0),"lightVertexVector[%d].x=dot(lightVector[%d],tangentSpaceTangent);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector[%d].y=dot(lightVector[%d],tangentSpaceBinormal);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector[%d].z=dot(lightVector[%d],tangentSpaceNormal);\n",n,n);
 		}
 	}
 	
@@ -436,14 +421,9 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
-	strcat(buf,"varying vec3 normal");
-	
-	if (((bump) || (spec)) && (nlight>0)) {
-		sprintf(strchr(buf,0),",lightVector[%d]",nlight);
-		if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",nlight);
-		if (spec) strcat(buf,",eyeVector");
-	}
-		
+	sprintf(strchr(buf,0),"varying vec3 normal,lightVector[%d]",max_shader_light);
+	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
+	if (spec) strcat(buf,",eyeVector");
 	strcat(buf,";\n");
 	
 	strcat(buf,"void main(void)\n");
