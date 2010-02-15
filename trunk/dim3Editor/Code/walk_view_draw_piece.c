@@ -519,7 +519,7 @@ void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
 {
 	int					n,k,t;
 	bool				clip_ok;
-	d3pnt				*pt;
+	d3pnt				*pt,cnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 							
@@ -528,7 +528,6 @@ void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
 	
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
 	glLineWidth(2.0f);
 	
 	mesh=map.mesh.meshes;
@@ -557,17 +556,51 @@ void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
 				if (clip_ok) continue;
 			}
 			
-				// draw normal
+				// get center
 				
+			
+			cnt.x=cnt.y=cnt.z=0;
+			
 			for (t=0;t!=poly->ptsz;t++) {
 				pt=&mesh->vertexes[poly->v[t]];
-		
-				glBegin(GL_LINES);
-				glVertex3i(pt->x,pt->y,pt->z);
-				glVertex3i((pt->x+(int)(poly->tangent_space.normal.x*normal_vector_scale)),(pt->y+(int)(poly->tangent_space.normal.y*normal_vector_scale)),(pt->z+(int)(poly->tangent_space.normal.z*normal_vector_scale)));
-				glEnd();
-				
+				cnt.x+=pt->x;
+				cnt.y+=pt->y;
+				cnt.z+=pt->z;
 			}
+			
+			cnt.x/=poly->ptsz;
+			cnt.y/=poly->ptsz;
+			cnt.z/=poly->ptsz;
+			
+				// draw the tangent
+				
+			/* supergumba -- for testing
+			
+			glColor4f(1.0f,0.0f,0.0f,1.0f);
+			
+			glBegin(GL_LINES);
+			glVertex3i(cnt.x,cnt.y,cnt.z);
+			glVertex3i((cnt.x+(int)(poly->tangent_space.tangent.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.tangent.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.tangent.z*normal_vector_scale)));
+			glEnd();
+			
+				// draw the binormal
+				
+			glColor4f(0.0f,0.0f,1.0f,1.0f);
+			
+			glBegin(GL_LINES);
+			glVertex3i(cnt.x,cnt.y,cnt.z);
+			glVertex3i((cnt.x+(int)(poly->tangent_space.binormal.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.binormal.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.binormal.z*normal_vector_scale)));
+			glEnd();
+			*/
+			
+				// draw normal
+				
+			glColor4f(1.0f,0.0f,1.0f,1.0f);
+			
+			glBegin(GL_LINES);
+			glVertex3i(cnt.x,cnt.y,cnt.z);
+			glVertex3i((cnt.x+(int)(poly->tangent_space.normal.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.normal.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.normal.z*normal_vector_scale)));
+			glEnd();
 		}
 	
 		mesh++;

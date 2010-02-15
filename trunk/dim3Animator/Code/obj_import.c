@@ -128,7 +128,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             vertex->major_bone_idx=vertex->minor_bone_idx=-1;
             vertex->bone_factor=1;
 			
-			vertex->normal.x=vertex->normal.y=vertex->normal.z=0.0f;
+			vertex->tangent_space.normal.x=vertex->tangent_space.normal.y=vertex->tangent_space.normal.z=0.0f;
         
             vertex++;
             nvertex++;
@@ -290,7 +290,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 				
 			if (vnstr[0]!=0x0) {
 				t=atoi(vnstr)-1;
-				memmove(&model.meshes[cur_mesh].vertexes[pvtx[npt]].normal,&obj_normals[t],sizeof(d3vct));
+				memmove(&model.meshes[cur_mesh].vertexes[pvtx[npt]].tangent_space.normal,&obj_normals[t],sizeof(d3vct));
 			}
 			
             npt++;

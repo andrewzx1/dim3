@@ -107,10 +107,11 @@ typedef struct		{
 					} model_draw_mesh_array_type;
 
 typedef struct		{
-						float							*gl_tangent_array,
-														*gl_binormal_array,
-														*gl_normal_array;
-					} model_draw_array_type;
+						int								color,
+														tangent,
+														binormal,
+														normal;
+					} model_draw_vbo_offset_type;
 
 typedef struct		{
 						d3pnt							center;
@@ -121,7 +122,7 @@ typedef struct		{
 						model_draw_bone_type			bones[max_model_bone];
 						model_draw_alter_bone_type		alter_bones[max_model_bone];
 						model_draw_mesh_array_type		mesh_arrays[max_model_mesh];
-						model_draw_array_type			draw_array;
+						model_draw_vbo_offset_type		vbo_offset;
                     } model_draw_setup;
 
 //

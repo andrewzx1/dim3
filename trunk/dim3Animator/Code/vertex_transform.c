@@ -172,9 +172,17 @@ void vertex_invert_normal_sel_vertexes(int mesh_idx)
 	
 	for (i=0;i!=nt;i++) {
 		if (vertex_check_sel_mask(mesh_idx,i)) {
-			vertex->normal.x=-vertex->normal.x;
-			vertex->normal.y=-vertex->normal.y;
-			vertex->normal.z=-vertex->normal.z;
+			vertex->tangent_space.tangent.x=-vertex->tangent_space.tangent.x;
+			vertex->tangent_space.tangent.y=-vertex->tangent_space.tangent.y;
+			vertex->tangent_space.tangent.z=-vertex->tangent_space.tangent.z;
+
+			vertex->tangent_space.binormal.x=-vertex->tangent_space.binormal.x;
+			vertex->tangent_space.binormal.y=-vertex->tangent_space.binormal.y;
+			vertex->tangent_space.binormal.z=-vertex->tangent_space.binormal.z;
+
+			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
+			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
+			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
 		}
 		vertex++;
 	}

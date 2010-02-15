@@ -163,9 +163,9 @@ bool dialog_vertex_settings_run(model_vertex_type *vertex)
 	dialog_set_int(dialog_vertex_settings_wind,kVertexX,0,vertex->pnt.x);
 	dialog_set_int(dialog_vertex_settings_wind,kVertexY,0,vertex->pnt.y);
 	dialog_set_int(dialog_vertex_settings_wind,kVertexZ,0,vertex->pnt.z);
-	dialog_set_int(dialog_vertex_settings_wind,kVertexNormalX,0,vertex->normal.x);
-	dialog_set_int(dialog_vertex_settings_wind,kVertexNormalY,0,vertex->normal.y);
-	dialog_set_int(dialog_vertex_settings_wind,kVertexNormalZ,0,vertex->normal.z);
+	dialog_set_int(dialog_vertex_settings_wind,kVertexNormalX,0,vertex->tangent_space.normal.x);
+	dialog_set_int(dialog_vertex_settings_wind,kVertexNormalY,0,vertex->tangent_space.normal.y);
+	dialog_set_int(dialog_vertex_settings_wind,kVertexNormalZ,0,vertex->tangent_space.normal.z);
 	dialog_set_bone_combo(dialog_vertex_settings_wind,kVertexMajorBone,0,vertex->major_bone_idx);
 	dialog_set_bone_combo(dialog_vertex_settings_wind,kVertexMinorBone,0,vertex->minor_bone_idx);
 	dialog_set_int(dialog_vertex_settings_wind,kVertexPercentage,0,(int)(vertex->bone_factor*100.0));
@@ -192,9 +192,9 @@ bool dialog_vertex_settings_run(model_vertex_type *vertex)
 		vertex->pnt.x=dialog_get_int(dialog_vertex_settings_wind,kVertexX,0);
 		vertex->pnt.y=dialog_get_int(dialog_vertex_settings_wind,kVertexY,0);
 		vertex->pnt.z=dialog_get_int(dialog_vertex_settings_wind,kVertexZ,0);
-		vertex->normal.x=dialog_get_int(dialog_vertex_settings_wind,kVertexNormalX,0);
-		vertex->normal.y=dialog_get_int(dialog_vertex_settings_wind,kVertexNormalY,0);
-		vertex->normal.z=dialog_get_int(dialog_vertex_settings_wind,kVertexNormalZ,0);
+		vertex->tangent_space.normal.x=dialog_get_int(dialog_vertex_settings_wind,kVertexNormalX,0);
+		vertex->tangent_space.normal.y=dialog_get_int(dialog_vertex_settings_wind,kVertexNormalY,0);
+		vertex->tangent_space.normal.z=dialog_get_int(dialog_vertex_settings_wind,kVertexNormalZ,0);
 		vertex->major_bone_idx=dialog_get_bone_combo(dialog_vertex_settings_wind,kVertexMajorBone,0);
 		vertex->minor_bone_idx=dialog_get_bone_combo(dialog_vertex_settings_wind,kVertexMinorBone,0);
 		vertex->bone_factor=((float)dialog_get_int(dialog_vertex_settings_wind,kVertexPercentage,0))/100.0;

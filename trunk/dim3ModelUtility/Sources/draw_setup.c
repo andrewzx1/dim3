@@ -37,7 +37,7 @@ and can be sold or given away.
 
 bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,bool tangent_space)
 {
-	int				n,sz,ntrig;
+	int				n,sz;
 	model_mesh_type	*mesh;
 		
 		// clear per-mesh arrays
@@ -49,16 +49,9 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 		draw_setup->mesh_arrays[n].gl_binormal_array=NULL;
 		draw_setup->mesh_arrays[n].gl_normal_array=NULL;
 	}
-
-		// clear per model arrays
-
-	draw_setup->draw_array.gl_tangent_array=NULL;
-	draw_setup->draw_array.gl_binormal_array=NULL;
-	draw_setup->draw_array.gl_normal_array=NULL;
 	
 		// setup per-mesh arrays
 
-	ntrig=0;
 	mesh=model->meshes;
 	
 	for (n=0;n!=model->nmesh;n++) {
@@ -85,28 +78,8 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 			if (draw_setup->mesh_arrays[n].gl_normal_array==NULL) return(FALSE);
 			bzero(draw_setup->mesh_arrays[n].gl_normal_array,sz);
 		}
-
-		ntrig+=mesh->ntrig;
 		
 		mesh++;
-	}
-
-		// setup per model arrays
-
-	if (tangent_space) {
-		sz=(ntrig*(3+3))*sizeof(float);
-
-		draw_setup->draw_array.gl_tangent_array=(float*)malloc(sz);
-		if (draw_setup->draw_array.gl_tangent_array==NULL) return(FALSE);
-		bzero(draw_setup->draw_array.gl_tangent_array,sz);
-
-		draw_setup->draw_array.gl_binormal_array=(float*)malloc(sz);
-		if (draw_setup->draw_array.gl_binormal_array==NULL) return(FALSE);
-		bzero(draw_setup->draw_array.gl_binormal_array,sz);
-
-		draw_setup->draw_array.gl_normal_array=(float*)malloc(sz);
-		if (draw_setup->draw_array.gl_normal_array==NULL) return(FALSE);
-		bzero(draw_setup->draw_array.gl_normal_array,sz);
 	}
 	
 	return(TRUE);
@@ -125,12 +98,6 @@ void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup)
 		if (draw_setup->mesh_arrays[n].gl_binormal_array!=NULL) free(draw_setup->mesh_arrays[n].gl_binormal_array);
 		if (draw_setup->mesh_arrays[n].gl_normal_array!=NULL) free(draw_setup->mesh_arrays[n].gl_normal_array);
 	}
-
-		// free per model arrays
-
-	if (draw_setup->draw_array.gl_tangent_array!=NULL) free(draw_setup->draw_array.gl_tangent_array);
-	if (draw_setup->draw_array.gl_binormal_array!=NULL) free(draw_setup->draw_array.gl_binormal_array);
-	if (draw_setup->draw_array.gl_normal_array!=NULL) free(draw_setup->draw_array.gl_normal_array);
 }
 
 /* =======================================================
