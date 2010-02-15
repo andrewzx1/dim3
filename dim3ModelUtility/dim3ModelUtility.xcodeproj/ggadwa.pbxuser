@@ -24,9 +24,9 @@
 	};
 	F50BF8AA05717CFE000499EB /* normals.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1599}}";
-			sepNavSelRange = "{1526, 57}";
-			sepNavVisRange = "{988, 1372}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2353}}";
+			sepNavSelRange = "{1197, 84}";
+			sepNavVisRange = "{973, 1469}";
 			sepNavWindowFrame = "{{327, 153}, {1041, 747}}";
 		};
 	};
@@ -155,8 +155,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 287619904;
-			PBXWorkspaceStateSaveDate = 287619904;
+			PBXPerProjectTemplateStateSaveDate = 287896475;
+			PBXWorkspaceStateSaveDate = 287896475;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -196,9 +196,9 @@
 	};
 	F56D96E80502F83C00143299 /* file_model_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1638}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1534}}";
 			sepNavSelRange = "{2098, 18}";
-			sepNavVisRange = "{1407, 1000}";
+			sepNavVisRange = "{218, 1603}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
@@ -220,9 +220,9 @@
 	};
 	F59413200978BC6600223F2A /* draw_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 1729}}";
-			sepNavSelRange = "{1162, 27}";
-			sepNavVisRange = "{1090, 1725}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 1937}}";
+			sepNavSelRange = "{3483, 0}";
+			sepNavVisRange = "{2133, 1888}";
 			sepNavWindowFrame = "{{240, 221}, {999, 779}}";
 		};
 	};
@@ -252,10 +252,10 @@
 	};
 	F5941503097A003000223F2A /* file_model_mesh_v2.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7700}}";
-			sepNavSelRange = "{9530, 0}";
-			sepNavVisRange = "{8955, 1273}";
-			sepNavWindowFrame = "{{339, 196}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1167, 7579}}";
+			sepNavSelRange = "{8978, 0}";
+			sepNavVisRange = "{8153, 1135}";
+			sepNavWindowFrame = "{{383, 216}, {1041, 747}}";
 		};
 	};
 	F5A31C2C0C5EDC52002470A9 /* model_transform.c */ = {

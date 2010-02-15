@@ -48,6 +48,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 							tag,hit_box_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
+	bool					had_tangent;
 	char					tag_name[32];
 	model_hit_box_type		*hit_box;
 	model_mesh_type			*mesh;
@@ -187,6 +188,8 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 	
 		// meshes
 		
+	had_tangent=FALSE;
+		
 	meshes_tag=xml_findfirstchild("Meshes",model_head);
 
     nmesh=xml_countchildren(meshes_tag);
@@ -236,7 +239,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		for (i=0;i!=mesh->nvertex;i++) {
 			xml_get_attribute_3_coord_int(tag,"c3",&vertex->pnt.x,&vertex->pnt.y,&vertex->pnt.z);
 
-			xml_get_attribute_3_coord_float(tag,"t3",&vertex->tangent_space.tangent.x,&vertex->tangent_space.tangent.y,&vertex->tangent_space.tangent.z);
+			had_tangent=xml_get_attribute_3_coord_float(tag,"t3",&vertex->tangent_space.tangent.x,&vertex->tangent_space.tangent.y,&vertex->tangent_space.tangent.z);
 			xml_get_attribute_3_coord_float(tag,"b3",&vertex->tangent_space.binormal.x,&vertex->tangent_space.binormal.y,&vertex->tangent_space.binormal.z);
 			xml_get_attribute_3_coord_float(tag,"n3",&vertex->tangent_space.normal.x,&vertex->tangent_space.normal.y,&vertex->tangent_space.normal.z);
 			
@@ -326,6 +329,14 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		
 		fill_tag=xml_findnextchild(fill_tag);
     }
+	
+		// older versions only had normals
+		
+	if (!had_tangent) {
+		for (n=0;n!=model->nmesh;n++) {
+			model_recalc_normals(model,n,TRUE);
+		}
+	}
 }
 
 /* =======================================================

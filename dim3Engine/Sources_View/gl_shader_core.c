@@ -345,7 +345,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 
 	strcat(buf,"attribute vec3 dim3VertexNormal");
-	if ((bump) || (spec)) strcat(buf,",dim3TangentNormal,dim3Binormal");
+	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent,dim3VertexBinormal");
 	strcat(buf,";\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");

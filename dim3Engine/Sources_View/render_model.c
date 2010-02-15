@@ -43,6 +43,8 @@ extern setup_type		setup;
 
 extern bool fog_solid_on(void);
 
+int	t_offset,b_offset,n_offset;
+
 /* =======================================================
 
       Model Colors and Normals
@@ -177,9 +179,16 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	
  		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3)));
+	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3+3+3+3)));
 	if (vertex_ptr==NULL) return(FALSE);
-
+	
+		// remember some offsets
+		
+	draw->setup.vbo_offset.color=((draw->vbo_ptr.ntrig*3)*(3+2))*sizeof(float);
+	draw->setup.vbo_offset.tangent=((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float);
+	draw->setup.vbo_offset.binormal=((draw->vbo_ptr.ntrig*3)*(3+2+3+3))*sizeof(float);
+	draw->setup.vbo_offset.normal=((draw->vbo_ptr.ntrig*3)*(3+2+3+3+3))*sizeof(float);
+	
 		// build the vertexes, indexes, and colors
 		// into the VBO, and the tangent space as
 		// pointers
@@ -187,10 +196,10 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	vl=vertex_ptr;
 	ul=vertex_ptr+((draw->vbo_ptr.ntrig*3)*3);
 	cl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2));
-
-	tl=draw->setup.draw_array.gl_tangent_array;
-	bl=draw->setup.draw_array.gl_binormal_array;
-	nl=draw->setup.draw_array.gl_normal_array;
+	
+	tl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2+3));
+	bl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2+3+3));
+	nl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2+3+3+3));
 
 	t_idx=0;
 
@@ -216,6 +225,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 
 			for (t=0;t!=3;t++) {
 				offset=trig->v[t]*3;
+				
 				vp=vp_start+offset;
 				cp=cp_start+offset;
 
@@ -233,7 +243,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 				tp=tp_start+offset;
 				bp=bp_start+offset;
 				np=np_start+offset;
-				
+
 				*tl++=*tp++;
 				*tl++=*tp++;
 				*tl++=*tp;
@@ -282,7 +292,7 @@ inline int render_model_set_vertex_objects(model_type *mdl,int mesh_idx,model_dr
 inline void render_model_enable_color_array(model_draw *draw)
 {
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2))*sizeof(float)));
+	glColorPointer(3,GL_FLOAT,0,(void*)draw->setup.vbo_offset.color);
 }
 
 inline void render_model_disable_color_array(void)
@@ -454,7 +464,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,NULL,&draw->tint,NULL,&draw->setup.draw_array);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
@@ -643,7 +653,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,alpha,light_list,NULL,&draw->tint,NULL,&draw->setup.draw_array);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,alpha,light_list,NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
