@@ -330,6 +330,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	bool					shader_on;
 	texture_type			*texture,*lmap_texture;
 	view_light_list_type	light_list;
+	tangent_space_type		tangent_space;
 
 		// setup texture
 
@@ -398,8 +399,15 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		gl_lights_build_from_liquid(liq,&light_list);
 
+		tangent_space.tangent.x=1.0f;
+		tangent_space.tangent.y=tangent_space.tangent.z=0.0f;
+		tangent_space.binormal.z=1.0f;
+		tangent_space.binormal.x=tangent_space.binormal.y=0.0f;
+		tangent_space.normal.y=-1.0f;
+		tangent_space.normal.x=tangent_space.normal.z=0.0f;
+
 		gl_shader_draw_start();
-		gl_shader_draw_execute(TRUE,texture,liq->txt_idx,frame,liq->lmap_txt_idx,1.0f,&light_list,NULL,NULL,NULL,NULL);
+		gl_shader_draw_execute(TRUE,texture,liq->txt_idx,frame,liq->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&tangent_space,NULL);
 
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 		

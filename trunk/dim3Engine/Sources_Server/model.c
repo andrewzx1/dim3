@@ -110,7 +110,7 @@ model_type* model_find(char *name)
 model_type* model_load_single(char *name)
 {
 	model_type		*mdl,*ptr;
-	
+
 		// has model been already loaded?
 		// if so, return model and increment reference count
 	

@@ -264,7 +264,7 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 	network_request_object_add	*obj_add;
 	
 		// initialize lists
-		
+
 	model_initialize();
 		
 	object_initialize_list();
@@ -323,7 +323,7 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 			obj_add++;
 		}
 	}
-	
+
 		// start player object
 	
 	server.player_obj_uid=object_start(NULL,object_type_player,bt_game,-1,err_str);
