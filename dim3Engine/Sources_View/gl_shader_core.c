@@ -38,7 +38,7 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-shader_type					core_shaders[max_shader_light][max_core_shader];
+shader_type					core_shaders[max_shader_light+1][max_core_shader];
 
 /* =======================================================
 
@@ -110,7 +110,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	strcat(buf,"gl_Position=ftransform();\n");
 	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
 	if (light_map) strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
-	
+
 	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
 	
 	if ((bump) || (spec)) {
@@ -136,7 +136,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	}
 	
 	if (fog) strcat(buf,"fogFactor=clamp(((gl_Fog.end-distance(gl_Vertex.xyz,dim3CameraPosition))*gl_Fog.scale),0.0,1.0);\n");
-	
+
 	strcat(buf,"}\n");
 
 	return(buf);
@@ -711,10 +711,14 @@ bool gl_core_shader_initialize(char *err_str)
 	int					n,k;
 
 	if (!gl_check_shader_ok()) return(TRUE);
+	
+		// note: we use max_shader_light+1 as
+		// the first spot is 0 lights, and then 1
+		// through max_shader_light
 
 		// clear core shaders
 
-	for (k=0;k!=max_shader_light;k++) {
+	for (k=0;k!=(max_shader_light+1);k++) {
 		for (n=0;n!=max_core_shader;n++) {
 			gl_shader_code_clear(&core_shaders[k][n]);
 		}
@@ -722,7 +726,7 @@ bool gl_core_shader_initialize(char *err_str)
 
 		// initialize light varients of shaders		
 		
-	for (k=0;k!=max_shader_light;k++) {
+	for (k=0;k!=(max_shader_light+1);k++) {
 		if (!gl_core_shader_initialize_per_light(k,err_str)) return(FALSE);
 	}	
 	
@@ -737,7 +741,7 @@ void gl_core_shader_shutdown(void)
 
 		// shutdown shaders
 
-	for (k=0;k!=max_shader_light;k++) {
+	for (k=0;k!=(max_shader_light+1);k++) {
 		for (n=0;n!=max_core_shader;n++) {
 			gl_shader_code_shutdown(&core_shaders[k][n]);
 		}
@@ -754,7 +758,7 @@ void gl_core_shader_draw_scene_initialize(void)
 {
 	int					n,k;
 	
-	for (k=0;k!=max_shader_light;k++) {
+	for (k=0;k!=(max_shader_light+1);k++) {
 		for (n=0;n!=max_core_shader;n++) {
 			gl_shader_draw_scene_initialize_code(&core_shaders[k][n]);
 		}
@@ -767,7 +771,7 @@ void gl_core_shader_draw_scene_initialize(void)
       
 ======================================================= */
 
-inline int gl_core_shader_find_for_mode(int nlight,bool map_shader,texture_type *texture,bool light_map)
+inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture,bool light_map)
 {
 	bool				bump,spec;
 	
@@ -823,7 +827,7 @@ shader_type* gl_core_shader_find_ptr(int nlight,bool map_shader,texture_type *te
 {
 	int				which_varient;
 	
-	which_varient=gl_core_shader_find_for_mode(nlight,map_shader,texture,light_map);
+	which_varient=gl_core_shader_find_for_mode(map_shader,texture,light_map);
 	return(&core_shaders[nlight][which_varient]);
 }
 

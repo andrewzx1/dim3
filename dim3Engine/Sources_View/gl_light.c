@@ -490,6 +490,7 @@ void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf)
 	for (n=0;n!=light_spot_reduce_count;n++) {
 
 		lspot=&view.render->light.spots[light_spot_reduce_idx[n]];
+		if ((is_mesh) && (lspot->light_map)) continue;
 
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;

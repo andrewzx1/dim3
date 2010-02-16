@@ -153,6 +153,8 @@ bool file_new_map(void)
 	
 		// start the map
 		
+	select_clear();
+		
     map_new(&map,file_name);
 	
 	map_opened=TRUE;
@@ -191,6 +193,8 @@ bool file_open_map(void)
 		// open the map
 		
 	SetThemeCursor(kThemeWatchCursor);
+	
+	select_clear();
 	
 	main_wind_open();
 	main_wind_set_title(file_name);
