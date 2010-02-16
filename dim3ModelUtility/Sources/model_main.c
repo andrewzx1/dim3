@@ -138,7 +138,7 @@ bool model_new(model_type *model,char *name)
 bool model_open(model_type *model,char *name,bool load_bitmaps)
 {
 	char			sub_path[1024];
-	
+
 		// create model
 		
 	if (!model_new(model,name)) return(FALSE);

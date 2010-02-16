@@ -37,7 +37,7 @@ and can be sold or given away.
 
 void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binormal)
 {
-	int					i,k,nt,ntrig,cnt;
+	int					n,k,nt,ntrig,space_idx,cnt;
     float				u10,u20,v10,v20,f_denom,f;
 	d3vct				p10,p20,vlft,vrgt,v_num;
 	d3pnt				*pt,*pt_1,*pt_2;
@@ -47,18 +47,19 @@ void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binor
 	tangent_space_type	*space,avg_space;
 
 	mesh=&model->meshes[mesh_idx];
+	if ((mesh->nvertex==0) || (mesh->ntrig==0)) return;
 
 		// memory for tangent space
 
-	space=(tangent_space_type*)malloc(mesh->nvertex*sizeof(tangent_space_type));
+	space=(tangent_space_type*)malloc(mesh->ntrig*sizeof(tangent_space_type));
 	if (space==NULL) return;
 	
         // find tangent space for triangles
         
 	ntrig=mesh->ntrig;
 	
-	for (i=0;i!=ntrig;i++) {
-        trig=&mesh->trigs[i];
+	for (n=0;n!=ntrig;n++) {
+        trig=&mesh->trigs[n];
     
 			// get the side vectors (p1-p0) and (p2-p0)
 
@@ -85,8 +86,8 @@ void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binor
 
 		f_denom=(u10*v20)-(v10*u20);
 
-		vector_scalar_multiply(&space->tangent,&v_num,(1.0f/f_denom));
-		vector_normalize(&space->tangent);
+		vector_scalar_multiply(&space[n].tangent,&v_num,(1.0f/f_denom));
+		vector_normalize(&space[n].tangent);
 
 			// calculate the binormal
 			// (u20xp10)-(u10xp20) / (v10*u20)-(u10*v20)
@@ -97,14 +98,14 @@ void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binor
 
 		f_denom=(v10*u20)-(u10*v20);
 
-		vector_scalar_multiply(&space->binormal,&v_num,(1.0f/f_denom));
-		vector_normalize(&space->binormal);
+		vector_scalar_multiply(&space[n].binormal,&v_num,(1.0f/f_denom));
+		vector_normalize(&space[n].binormal);
 
 			// calculate the normal
 			// T cross B (cross routine automatically normalizes)
 
 		if (!only_tangent_binormal) {
-			vector_cross_product(&space->normal,&space->tangent,&space->binormal);
+			vector_cross_product(&space[n].normal,&space[n].tangent,&space[n].binormal);
 		}
 	}
     
@@ -113,7 +114,7 @@ void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binor
 	nt=mesh->nvertex;
 	vertex=mesh->vertexes;
 
-	for (i=0;i!=nt;i++) {
+	for (n=0;n!=nt;n++) {
 	
 			// find all trigs that share this vertex
 		
@@ -126,7 +127,7 @@ void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binor
 		
 		for (k=0;k!=ntrig;k++) {
 
-			if ((trig->v[0]==i) || (trig->v[1]==i) || (trig->v[2]==i)) {
+			if ((trig->v[0]==n) || (trig->v[1]==n) || (trig->v[2]==n)) {
 				avg_space.tangent.x+=space[k].tangent.x;
 				avg_space.tangent.y+=space[k].tangent.y;
 				avg_space.tangent.z+=space[k].tangent.z;

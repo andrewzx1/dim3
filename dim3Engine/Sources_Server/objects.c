@@ -778,7 +778,7 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		strcpy(err_str,"Out of memory");
 		return(-1);
 	}
-		
+
 			// player default setup
 		
 	if (type_idx==object_type_player) {
@@ -857,11 +857,9 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 
 		weap=&server.weapons[n];
 		if (weap->obj_uid!=obj->uid) continue;
-		
-		if (!weapon_start(weap)) {
-			weapon_dispose(n);
-		}
-    }
+	
+		if (!weapon_start(weap)) weapon_dispose(n);
+	}
 
 		// start projectiles
 
