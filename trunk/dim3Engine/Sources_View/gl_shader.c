@@ -694,7 +694,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	bool						light_change;
 	shader_type					*shader;
 	
-		// get shader based on number of lights.
+		// get shader based on number of lights
 		
 	if (texture->shader_idx==gl_shader_core_index) {
 		shader=gl_core_shader_find_ptr(light_list->nlight,map_shader,texture,(lmap_txt_idx!=-1));

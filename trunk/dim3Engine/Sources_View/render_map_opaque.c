@@ -280,7 +280,7 @@ void render_opaque_mesh_shader(void)
 				// draw polygon
 
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-			
+
 			poly++;
 		}
 	}
