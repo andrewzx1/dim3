@@ -114,25 +114,14 @@ void net_udp_set_broadcast_flag(d3socket sock)
 #endif
 }
 
-bool net_udp_send_broadcast_single(d3socket sock,char *broad_ip,int broad_port,char *msg,int msg_len)
-{
-	struct sockaddr_in	addr;
-
-	addr.sin_family=AF_INET;
-	addr.sin_port=htons((short)broad_port);
-	addr.sin_addr.s_addr=inet_addr(broad_ip);
-
-	return(sendto(sock,msg,msg_len,0,(struct sockaddr*)&addr,sizeof(struct sockaddr_in))==msg_len);
-}
-
 bool net_udp_send_broadcast(char *ip,int port)
 {
 	char				msg[24];
 	bool				snd_ok;
+	struct sockaddr_in	addr;
 	d3socket			sock;
 	
 		// broadcast will be the IP of this machine
-		// as a return address to reply to broadcasts
 		
 	bzero(msg,24);
 	sprintf(msg,"dim3_%s",ip);
@@ -147,8 +136,12 @@ bool net_udp_send_broadcast(char *ip,int port)
 		// send broadcast to all address broadcast,
 		// sub-address broadcasts, and this address
 		// itself
-		
-	snd_ok=net_udp_send_broadcast_single(sock,"255.255.255.255",port,msg,24);
+	
+	addr.sin_family=AF_INET;
+	addr.sin_port=htons((short)port);
+	addr.sin_addr.s_addr=INADDR_BROADCAST;
+
+	snd_ok=(sendto(sock,msg,24,0,(struct sockaddr*)&addr,sizeof(struct sockaddr_in))==24);
 
 		// close socket
 		

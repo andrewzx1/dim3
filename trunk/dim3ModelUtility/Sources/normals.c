@@ -44,7 +44,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 	model_mesh_type		*mesh;
     model_vertex_type	*vertex;
 	model_trig_type		*trig;
-	tangent_space_type	*space,avg_space;
+	tangent_space_type	*space,*spc,avg_space;
 
 	mesh=&model->meshes[mesh_idx];
 	if ((mesh->nvertex==0) || (mesh->ntrig==0)) return;
@@ -57,6 +57,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
         // find tangent and binormal for triangles
         
 	trig=mesh->trigs;
+	spc=space;
 	
 	for (n=0;n!=mesh->ntrig;n++) {
     
@@ -85,8 +86,8 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 		f_denom=(u10*v20)-(v10*u20);
 
-		vector_scalar_multiply(&space[n].tangent,&v_num,(1.0f/f_denom));
-		vector_normalize(&space[n].tangent);
+		vector_scalar_multiply(&spc->tangent,&v_num,(1.0f/f_denom));
+		vector_normalize(&spc->tangent);
 
 			// calculate the binormal
 			// (u20xp10)-(u10xp20) / (v10*u20)-(u10*v20)
@@ -97,14 +98,15 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 		f_denom=(v10*u20)-(u10*v20);
 
-		vector_scalar_multiply(&space[n].binormal,&v_num,(1.0f/f_denom));
-		vector_normalize(&space[n].binormal);
+		vector_scalar_multiply(&spc->binormal,&v_num,(1.0f/f_denom));
+		vector_normalize(&spc->binormal);
 		
 			// normal is cross T and B
 			
-		vector_cross_product(&space[n].normal,&space[n].tangent,&space[n].binormal);
+		vector_cross_product(&spc->normal,&spc->tangent,&spc->binormal);
 			
 		trig++;
+		spc++;
 	}
     
 		// average tangent and binormal for vertexes
@@ -123,48 +125,49 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		avg_space.normal.x=avg_space.normal.y=avg_space.normal.z=0.0f;
 		
 		trig=mesh->trigs;
+		spc=space;
 		
 		for (k=0;k!=mesh->ntrig;k++) {
 
 			if ((trig->v[0]==n) || (trig->v[1]==n) || (trig->v[2]==n)) {
-				avg_space.tangent.x+=space[k].tangent.x;
-				avg_space.tangent.y+=space[k].tangent.y;
-				avg_space.tangent.z+=space[k].tangent.z;
+				avg_space.tangent.x+=spc->tangent.x;
+				avg_space.tangent.y+=spc->tangent.y;
+				avg_space.tangent.z+=spc->tangent.z;
 				
-				avg_space.binormal.x+=space[k].binormal.x;
-				avg_space.binormal.y+=space[k].binormal.y;
-				avg_space.binormal.z+=space[k].binormal.z;
+				avg_space.binormal.x+=spc->binormal.x;
+				avg_space.binormal.y+=spc->binormal.y;
+				avg_space.binormal.z+=spc->binormal.z;
 				
-				avg_space.normal.x+=1.0f; // space[k].normal.x;
-				avg_space.normal.y+=0.0f; // space[k].normal.y;
-				avg_space.normal.z+=0.0f; // space[k].normal.z;
+				avg_space.normal.x+=spc->normal.x;
+				avg_space.normal.y+=spc->normal.y;
+				avg_space.normal.z+=spc->normal.z;
 
                 cnt++;
 			}
 
 			trig++;
+			spc++;
 		}
 		
 		if (cnt!=0) {
 			f=(float)cnt;
 
-			vertex->tangent_space.tangent.x=avg_space.tangent.x/f;
-			vertex->tangent_space.tangent.y=avg_space.tangent.y/f;
-			vertex->tangent_space.tangent.z=avg_space.tangent.z/f;
+			avg_space.tangent.x/=f;
+			avg_space.tangent.y/=f;
+			avg_space.tangent.z/=f;
 
-			vertex->tangent_space.binormal.x=avg_space.binormal.x/f;
-			vertex->tangent_space.binormal.y=avg_space.binormal.y/f;
-			vertex->tangent_space.binormal.z=avg_space.binormal.z/f;
+			avg_space.binormal.x/=f;
+			avg_space.binormal.y/=f;
+			avg_space.binormal.z/=f;
 			
-			vertex->tangent_space.normal.x=avg_space.normal.x/f;
-			vertex->tangent_space.normal.y=avg_space.normal.y/f;
-			vertex->tangent_space.normal.z=avg_space.normal.z/f;
+			avg_space.normal.x/=f;
+			avg_space.normal.y/=f;
+			avg_space.normal.z/=f;
 		}
-		
-	//	vector_normalize(&vertex->tangent_space.tangent);
-	//	vector_normalize(&vertex->tangent_space.binormal);
-//
-	//	if (!only_tangent_binormal) vector_cross_product(&vertex->tangent_space.normal,&vertex->tangent_space.tangent,&vertex->tangent_space.binormal);
+
+		memmove(&vertex->tangent_space.tangent,&avg_space.tangent,sizeof(d3vct));
+		memmove(&vertex->tangent_space.binormal,&avg_space.binormal,sizeof(d3vct));
+		if (!only_tangent_binormal) memmove(&vertex->tangent_space.normal,&avg_space.normal,sizeof(d3vct));
 		
 		vertex++;
 	}

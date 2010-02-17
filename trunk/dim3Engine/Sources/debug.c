@@ -482,7 +482,7 @@ void debug_game(void)
 
 void debug_screenshot(void)
 {
-	char				path[1024],file_name[256];
+	char				path[1024],file_name[256],str[256];
 	struct tm			*tm;
 	time_t				curtime;
 	
@@ -497,7 +497,10 @@ void debug_screenshot(void)
 		return;
 	}
 	
-	console_add_system("Screenshot taken");
+	snprintf(str,256,"Screenshot: %s",path);
+	str[255]=0x0;
+
+	console_add_system(str);
 }
 
 /* =======================================================

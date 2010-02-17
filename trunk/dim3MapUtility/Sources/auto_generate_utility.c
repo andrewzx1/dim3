@@ -32,10 +32,7 @@ and can be sold or given away.
 extern int								ag_box_count;
 extern auto_generate_box_type			ag_boxes[max_ag_box];
 
-int										map_ag_box_idx,map_ag_mesh_idx,map_ag_poly_txt_idx,
-										map_ag_seg_group_idx,map_ag_seg_primitive_uid,map_ag_seg_fill,
-										old_map_ag_box_idx,old_map_ag_poly_txt_idx,old_map_ag_mesh_idx;
-bool									map_ag_seg_moveable;
+int										map_ag_mesh_idx;
 
 /* =======================================================
 
@@ -499,42 +496,25 @@ void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,
       
 ======================================================= */
 
-bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int txt_idx,bool moveable,bool new_mesh)
+bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,bool moveable)
 {
 	map_mesh_type			*mesh;
 
-	map_ag_box_idx=box_idx;
-	map_ag_poly_txt_idx=txt_idx;
+		// create a new mesh
 
-		// need a new mesh?
+	map_ag_mesh_idx=map_mesh_add(map);
+	if (map_ag_mesh_idx==-1) return(FALSE);
 
-	if ((new_mesh) || (map->mesh.nmesh==0)) {
-		map_ag_mesh_idx=map_mesh_add(map);
-		if (map_ag_mesh_idx==-1) return(FALSE);
-
-		mesh=&map->mesh.meshes[map_ag_mesh_idx];
-		mesh->group_idx=group_idx;
-		mesh->flag.moveable=moveable;
-	}
-	else {
-		map_ag_mesh_idx=ag_boxes[box_idx].mesh_idx;
-	}
+	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+	mesh->group_idx=group_idx;
+	mesh->flag.moveable=moveable;
 
 	return(TRUE);
 }
 
-void map_auto_generate_mesh_save_current(void)
+void map_auto_generate_mesh_set_portal_mesh(int box_idx)
 {
-	old_map_ag_box_idx=map_ag_box_idx;
-	old_map_ag_poly_txt_idx=map_ag_poly_txt_idx;
-	old_map_ag_mesh_idx=map_ag_mesh_idx;
-}
-
-void map_auto_generate_mesh_restore_current(void)
-{
-	map_ag_box_idx=old_map_ag_box_idx;
-	map_ag_poly_txt_idx=old_map_ag_poly_txt_idx;
-	map_ag_mesh_idx=old_map_ag_mesh_idx;
+	map_ag_mesh_idx=ag_boxes[box_idx].mesh_idx;
 }
 
 void map_auto_generate_mesh_set_lock(map_type *map)
@@ -555,24 +535,14 @@ void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z)
 	mesh->flag.rot_independent=FALSE;
 }
 
-int map_auto_generate_mesh_change_texture(int txt_idx)
-{
-	int				old_txt_idx;
-	
-	old_txt_idx=map_ag_poly_txt_idx;
-	map_ag_poly_txt_idx=txt_idx;
-	
-	return(old_txt_idx);
-}
-
-bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
+bool map_auto_generate_mesh_add_poly(map_type *map,int box_idx,int txt_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
 {
 	int						n,px[8],pz[8];
 	auto_generate_box_type	*box;
 
 		// move within x/z bounds
 		
-	box=&ag_boxes[map_ag_box_idx];
+	box=&ag_boxes[box_idx];
 
 	for (n=0;n!=ptsz;n++) {
 		px[n]=x[n]+box->min.x;
@@ -581,7 +551,7 @@ bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z
 
 		// add the mesh
 		
-	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,y,pz,gx,gy,map_ag_poly_txt_idx)!=-1);
+	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,y,pz,gx,gy,txt_idx)!=-1);
 }
 
 void map_auto_generate_mesh_get_last_poly_index(map_type *map,int *mesh_idx,int *poly_idx)

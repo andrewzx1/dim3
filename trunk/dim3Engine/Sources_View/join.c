@@ -119,20 +119,17 @@ void join_ping_thread_done(void)
       
 ======================================================= */
 
-int join_ping_thread_lan_accept_read(void *arg)
+void join_ping_thread_lan_accept_read(d3socket sock)
 {
 	int					msec;
 	unsigned char		data[net_max_msg_size];
 	char				*row_data;
 	network_reply_info	*reply_info;
-	d3socket			sock;
 	join_server_info	*info;
 
 	msec=time_get()-join_start_tick_local;
 	
 		// read reply and add to list
-		
-	sock=(d3socket)arg;
 	
 	net_socket_blocking(sock,TRUE);
 		
@@ -170,10 +167,6 @@ int join_ping_thread_lan_accept_read(void *arg)
 			SDL_mutexV(join_thread_lock);
 		}
 	}
-	
-	net_close_socket(&sock);
-
-	return(0);
 }
 
 int join_ping_thread_lan_accept(void *arg)
@@ -192,9 +185,8 @@ int join_ping_thread_lan_accept(void *arg)
 		sock=accept(broadcast_reply_sock,&addr,&addr_len);
 		if (sock==-1) break;				// accept ending means socket has been closed and host shutting down
 		
-			// spawn a thread to deal with replies
-			
-		join_thread_accept=SDL_CreateThread(join_ping_thread_lan_accept_read,(void*)sock);
+		join_ping_thread_lan_accept_read(sock);
+		net_close_socket(&sock);
 	}
 
 	return(0);
