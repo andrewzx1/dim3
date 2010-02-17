@@ -196,7 +196,7 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 		fy=*pv++;
 		fz=*pv++;
 		glVertex3f(fx,fy,fz);
-
+		
 		fx+=((*pn++)*flsz);
 		fy+=((*pn++)*flsz);
 		fz+=((*pn++)*flsz);
