@@ -156,7 +156,15 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 	int				n;
 
 	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))!=0) model_create_draw_normals(mdl,n,&draw->setup);
+		if ((mesh_mask&(0x1<<n))==0) continue;
+
+			// non-shader drawing doesn't need normals
+
+		if ((dim3_debug) || (mdl->meshes[n].draw.has_no_shader)) continue;
+
+			// create the normals for the pose
+
+		model_create_draw_normals(mdl,n,&draw->setup);
 	}
 }
 
@@ -212,52 +220,86 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 		vp_start=draw->setup.mesh_arrays[n].gl_vertex_array;
 		cp_start=draw->setup.mesh_arrays[n].gl_color_array;
 
-		tp_start=draw->setup.mesh_arrays[n].gl_tangent_array;
-		bp_start=draw->setup.mesh_arrays[n].gl_binormal_array;
-		np_start=draw->setup.mesh_arrays[n].gl_normal_array;
-
 		draw->vbo_ptr.index_offset[n]=t_idx;
 
-		for (k=0;k!=mesh->ntrig;k++) {
-		
-			gx=trig->gx;
-			gy=trig->gy;
+			// non-shader drawing requires
+			// vertexes, UVs, and colors
 
-			for (t=0;t!=3;t++) {
-				offset=trig->v[t]*3;
-				
-				vp=vp_start+offset;
-				cp=cp_start+offset;
+		if (mesh->draw.has_no_shader) {
 
-				*vl++=*vp++;
-				*vl++=*vp++;
-				*vl++=*vp;
+			for (k=0;k!=mesh->ntrig;k++) {
+			
+				gx=trig->gx;
+				gy=trig->gy;
 
-				*ul++=*gx++;
-				*ul++=*gy++;
+				for (t=0;t!=3;t++) {
+					offset=trig->v[t]*3;
+					
+					vp=vp_start+offset;
+					cp=cp_start+offset;
 
-				*cl++=*cp++;
-				*cl++=*cp++;
-				*cl++=*cp;
+					*vl++=*vp++;
+					*vl++=*vp++;
+					*vl++=*vp;
 
-				tp=tp_start+offset;
-				bp=bp_start+offset;
-				np=np_start+offset;
+					*ul++=*gx++;
+					*ul++=*gy++;
 
-				*tl++=*tp++;
-				*tl++=*tp++;
-				*tl++=*tp;
+					*cl++=*cp++;
+					*cl++=*cp++;
+					*cl++=*cp;
+				}
 
-				*bl++=*bp++;
-				*bl++=*bp++;
-				*bl++=*bp;
-
-				*nl++=*np++;
-				*nl++=*np++;
-				*nl++=*np;
+				trig++;
 			}
+		}
 
-			trig++;
+			// shader drawing requires
+			// vertexes, UVs, and tangent space
+
+		else {
+
+			tp_start=draw->setup.mesh_arrays[n].gl_tangent_array;
+			bp_start=draw->setup.mesh_arrays[n].gl_binormal_array;
+			np_start=draw->setup.mesh_arrays[n].gl_normal_array;
+
+			for (k=0;k!=mesh->ntrig;k++) {
+			
+				gx=trig->gx;
+				gy=trig->gy;
+
+				for (t=0;t!=3;t++) {
+					offset=trig->v[t]*3;
+					
+					vp=vp_start+offset;
+					cp=cp_start+offset;
+
+					*vl++=*vp++;
+					*vl++=*vp++;
+					*vl++=*vp;
+
+					*ul++=*gx++;
+					*ul++=*gy++;
+
+					tp=tp_start+offset;
+					bp=bp_start+offset;
+					np=np_start+offset;
+
+					*tl++=*tp++;
+					*tl++=*tp++;
+					*tl++=*tp;
+
+					*bl++=*bp++;
+					*bl++=*bp++;
+					*bl++=*bp;
+
+					*nl++=*np++;
+					*nl++=*np++;
+					*nl++=*np;
+				}
+
+				trig++;
+			}
 		}
 		
 		t_idx+=(mesh->ntrig*3);

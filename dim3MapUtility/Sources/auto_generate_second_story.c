@@ -42,10 +42,9 @@ extern bool map_auto_generate_portal_touching_bottom(int portal_idx);
 extern void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy);
 extern void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy);
 
-extern bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int txt_idx,bool moveable,bool new_mesh);
+extern bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,bool moveable);
 extern void map_auto_generate_mesh_set_lock(map_type *map);
-extern int map_auto_generate_mesh_change_texture(int txt_idx);
-extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
+extern bool map_auto_generate_mesh_add_poly(map_type *map,int box_idx,int txt_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
 extern void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float mult_y,bool rot);
 
 extern int map_auto_generate_steps_get_length(int ty,int by,int step_size,int step_high);
@@ -119,59 +118,55 @@ void map_auto_generate_second_story_pillar(map_type *map,int rn,int lx,int lz,in
 	p_ty=ty+k;
 	p_by=by-k;
 
-	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.column,FALSE,TRUE)) return;
+	if (!map_auto_generate_mesh_start(map,rn,-1,FALSE)) return;
 	map_auto_generate_mesh_set_lock(map);
 
 		// top of pillar
 		
-	map_auto_generate_mesh_change_texture(ag_settings.texture.column_base);
-
 	map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,ty,p_ty,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,ty,p_ty,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,ty,p_ty,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,ty,p_ty,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,p_ty,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,2,FALSE);
 
 		// bottom of pillar
 
 	map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,p_by,by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,p_by,by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,p_by,by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,p_by,by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,p_by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column_base,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,2,2,FALSE);
 
 		// pillar
 
-	map_auto_generate_mesh_change_texture(ag_settings.texture.column);
-	
 	k=(rx-lx)>>3;
 	lx+=k;
 	rx-=k;
@@ -181,16 +176,16 @@ void map_auto_generate_second_story_pillar(map_type *map,int rn,int lx,int lz,in
 	rz-=k;
 
 	map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,p_ty,p_by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column,4,px,py,pz,gx,gy);
 
 	map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,p_ty,p_by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column,4,px,py,pz,gx,gy);
 
 	map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,p_ty,p_by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column,4,px,py,pz,gx,gy);
 
 	map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,p_ty,p_by,px,py,pz,gx,gy);
-	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.column,4,px,py,pz,gx,gy);
 }
 
 /* =======================================================
@@ -234,73 +229,73 @@ void map_auto_generate_second_story(map_type *map)
 
 		sz=split_factor*2;
 
-		if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.second_story,FALSE,TRUE)) return;
+		if (!map_auto_generate_mesh_start(map,n,-1,FALSE)) return;
 
 			// floors and ceilings corners
 
 		map_auto_generate_poly_from_square_floor(0,0,sz,sz,ty,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(0,0,sz,sz,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor((xsz-sz),0,xsz,sz,ty,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor((xsz-sz),0,xsz,sz,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(0,(zsz-sz),sz,zsz,ty,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(0,(zsz-sz),sz,zsz,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor((xsz-sz),(zsz-sz),xsz,zsz,ty,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor((xsz-sz),(zsz-sz),xsz,zsz,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 			// floors and ceilings sides
 
 		map_auto_generate_poly_from_square_floor(sz,0,(xsz-sz),sz,ty,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(sz,0,(xsz-sz),sz,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(sz,(zsz-sz),(xsz-sz),zsz,ty,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(sz,(zsz-sz),(xsz-sz),zsz,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(0,sz,sz,(zsz-sz),ty,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor(0,sz,sz,(zsz-sz),by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor((xsz-sz),sz,xsz,(zsz-sz),ty,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_floor((xsz-sz),sz,xsz,(zsz-sz),by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 			// walls
 
 		map_auto_generate_poly_from_square_wall(sz,sz,(xsz-sz),sz,ty,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_wall(sz,(zsz-sz),(xsz-sz),(zsz-sz),ty,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_wall(sz,sz,sz,(zsz-sz),ty,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 		map_auto_generate_poly_from_square_wall((xsz-sz),sz,(xsz-sz),(zsz-sz),ty,by,px,py,pz,gx,gy);
-		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
 
 			// position steps so they follow the longest
 			// part of the portal and randonly against an edge
