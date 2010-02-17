@@ -332,11 +332,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 	
 		// older versions only had normals
 		
-	if (!had_tangent) {
-		for (n=0;n!=model->nmesh;n++) {
-			model_recalc_normals(model,n,TRUE);
-		}
-	}
+	if (!had_tangent) model_recalc_normals(model,TRUE);
 }
 
 /* =======================================================

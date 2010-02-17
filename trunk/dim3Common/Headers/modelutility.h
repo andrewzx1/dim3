@@ -387,7 +387,7 @@ extern void model_get_vertex_extent_all(model_type *model,int *p_minx,int *p_max
 extern void model_get_view_complex_bounding_box(model_type *model,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz);
 extern void model_recalc_boxes(model_type *model);
 
-extern void model_recalc_normals(model_type *model,int mesh_idx,bool only_tangent_binormal);
+extern void model_recalc_normals(model_type *model,bool only_tangent_binormal);
 
 extern void model_rescale_box(model_box_type *mbox,float x_fact,float z_fact,float y_fact);
 extern void model_scale(model_type *model,int mesh_idx,float x_fact,float y_fact,float z_fact);

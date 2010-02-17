@@ -334,7 +334,7 @@ void import_mesh_obj(void)
 	model_center_xz(&model,cur_mesh);
 	model_floor(&model,cur_mesh);
 	model_recalc_boxes(&model);
-    model_recalc_normals(&model,cur_mesh,found_normals);
+    model_recalc_normals(&model,found_normals);
 	
 	reset_vertex_tab();
 	reset_pose_list();
@@ -369,7 +369,7 @@ void import_mesh_lightwave(void)
     model_center_xz(&model,cur_mesh);
     model_floor(&model,cur_mesh);
     model_recalc_boxes(&model);
-    model_recalc_normals(&model,cur_mesh,FALSE);
+    model_recalc_normals(&model,FALSE);
 	
 	reset_vertex_tab();
 	reset_pose_list();
@@ -404,7 +404,7 @@ void import_mesh_c4d_xml(void)
     model_center_xz_all(&model);
     model_floor_all(&model);
     model_recalc_boxes(&model);
-    model_recalc_normals(&model,cur_mesh,FALSE);
+    model_recalc_normals(&model,FALSE);
 	
 	reset_vertex_tab();
 	reset_pose_list();
@@ -639,7 +639,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			return(noErr);
             
 		case kCommandCalcNormals:
-            model_recalc_normals(&model,cur_mesh,FALSE);
+            model_recalc_normals(&model,FALSE);
             redraw_model();
 			return(noErr);
            
