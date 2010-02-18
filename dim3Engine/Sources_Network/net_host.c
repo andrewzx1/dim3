@@ -107,7 +107,7 @@ int net_host_thread(void *arg)
 	
 		// create host socket
 		
-	host_socket=net_open_socket();
+	host_socket=net_open_tcp_socket();
 	if (host_socket==D3_NULL_SOCKET) {
 		strcpy(host_err_str,"Networking: Unable to open socket");
 		host_complete=TRUE;

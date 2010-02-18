@@ -83,7 +83,7 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
 	
 		// create client socket
 		
-	client_socket=net_open_socket();
+	client_socket=net_open_tcp_socket();
 	if (client_socket==D3_NULL_SOCKET) {
 		strcpy(status,"Unreachable");
 		return(FALSE);
@@ -178,7 +178,7 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 	
 		// create client socket
 		
-	client_socket=net_open_socket();
+	client_socket=net_open_tcp_socket();
 	if (client_socket==D3_NULL_SOCKET) {
 		strcpy(err_str,"Networking: Unable to open socket");
 		return(FALSE);

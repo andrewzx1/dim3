@@ -48,7 +48,7 @@ extern void net_ip_local_broadcast(char *ip,char *broad_ip);
 // sockets
 //
 
-extern d3socket net_open_socket(void);
+extern d3socket net_open_tcp_socket(void);
 extern d3socket net_open_socket_udp(void);
 extern void net_close_socket(d3socket *sock);
 extern void net_socket_blocking(d3socket sock,bool blocking);
