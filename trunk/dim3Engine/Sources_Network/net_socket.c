@@ -31,11 +31,11 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Socket Utilities
+      Socket Open/Close
       
 ======================================================= */
 
-d3socket net_open_socket(void)
+d3socket net_open_tcp_socket(void)
 {
 	d3socket		sock;
 #ifndef D3_OS_WINDOWS
@@ -60,6 +60,11 @@ d3socket net_open_socket(void)
 #endif
 
 	return(sock);
+}
+
+d3socket net_open_udp_socket(void)
+{
+	return(socket(AF_INET,SOCK_DGRAM,0));
 }
 
 void net_close_socket(d3socket *sock)
@@ -385,7 +390,7 @@ char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 
 		// connect to server
 
-	sock=net_open_socket();
+	sock=net_open_tcp_socket();
 	if (sock==D3_NULL_SOCKET) {
 		strcpy(err_str,"Unable to create socket");
 		return(NULL);
@@ -406,6 +411,7 @@ char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 	strcat(http,"\r\n");
 	strcat(http,"User-Agent: dim3\r\n");
 	strcat(http,"Accept: text/plain\r\n");
+	strcat(http,"Connection: close\r\n");
 	strcat(http,"\r\n");
 
 	len=strlen(http);

@@ -68,7 +68,7 @@ bool						join_thread_started,join_thread_quit;
 SDL_Thread					*join_thread,*join_thread_accept;
 SDL_mutex					*join_thread_lock;
 
-int							join_count,join_start_tick_local;
+int							join_count;
 join_server_info			join_list[max_setup_network_host];
 setup_network_hosts_type	join_combine_host;
 			
@@ -119,21 +119,21 @@ void join_ping_thread_done(void)
       
 ======================================================= */
 
-void join_ping_thread_lan_accept_read(d3socket sock)
+void join_ping_thread_lan_read(d3socket sock)
 {
 	int					msec;
 	unsigned char		data[net_max_msg_size];
 	char				*row_data;
 	network_reply_info	*reply_info;
 	join_server_info	*info;
-
-	msec=time_get()-join_start_tick_local;
 	
 		// read reply and add to list
 	
 	net_socket_blocking(sock,TRUE);
 		
 		// wait for data
+
+	msec=time_get();
 	
 	if (net_queue_block_single_message(sock,-1,0,NULL,0,net_action_reply_info,data,sizeof(network_reply_info))) {
 		
@@ -156,7 +156,7 @@ void join_ping_thread_lan_accept_read(d3socket sock)
 			info->local=TRUE;
 			info->player_count=(int)ntohs(reply_info->player_count);
 			info->player_max_count=(int)ntohs(reply_info->player_max_count);
-			info->ping_msec=msec;
+			info->ping_msec=time_get()-msec;
 
 				// rebuild list
 
@@ -169,46 +169,22 @@ void join_ping_thread_lan_accept_read(d3socket sock)
 	}
 }
 
-int join_ping_thread_lan_accept(void *arg)
+int join_ping_thread_lan(void *arg)
 {
-	d3socket			broadcast_reply_sock,sock;
+	int					start_tick,max_tick;
+	char				ip_name[256],ip_resolve[256],err_str[256];
+	d3socket			sock,broadcast_reply_sock;
 	socklen_t			addr_len;
 	struct sockaddr		addr;
 	
-	broadcast_reply_sock=(d3socket)arg;
-
-		// wait for server replies
-		
-	addr_len=sizeof(struct sockaddr);
-	
-	while (TRUE) {
-		sock=accept(broadcast_reply_sock,&addr,&addr_len);
-		if (sock==-1) break;				// accept ending means socket has been closed and host shutting down
-		
-		join_ping_thread_lan_accept_read(sock);
-		net_close_socket(&sock);
-	}
-
-	return(0);
-}
-
-int join_ping_thread_lan(void *arg)
-{
-	int			count,count_tenth_sec;
-	char		ip_name[256],ip_resolve[256],err_str[256];
-	d3socket	broadcast_reply_sock;
-	
-	join_start_tick_local=time_get();
-	
 	net_get_host_ip(ip_name,ip_resolve);
 	
-		// spawn another thread to wait for replies
-		// we do this on another thread so we can
-		// cancel it under a certain time limit
-		// by closing the socket
+		// we'll do everything in this thread
+		// as we're just gathering a list of
+		// servers and it doesn't need to be in real time
 
-	broadcast_reply_sock=net_open_socket();
-	net_socket_blocking(broadcast_reply_sock,TRUE);
+	broadcast_reply_sock=net_open_tcp_socket();
+	net_socket_blocking(broadcast_reply_sock,FALSE);
 
 	if (!net_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) {
 		join_ping_thread_done();
@@ -220,27 +196,35 @@ int join_ping_thread_lan(void *arg)
 		join_ping_thread_done();
 		return(0);
 	}
-
-		// run thread and wait for accepts to start
-		
-	join_thread_accept=SDL_CreateThread(join_ping_thread_lan_accept,(void*)broadcast_reply_sock);
 	
 		// send broadcast to all network nodes
 		// asking for connections from hosts
 		
-	join_start_tick_local=time_get();
-		
 	if (net_udp_send_broadcast(ip_resolve,net_port_host_broadcast)) {
 	
-		count=0;
-		count_tenth_sec=client_timeout_wait_seconds*10;
+		start_tick=time_get();
+		max_tick=client_timeout_wait_seconds*1000;
 		
-		while ((count<count_tenth_sec) && (!join_thread_quit)) {
+		while (((start_tick+max_tick)<time_get()) && (!join_thread_quit)) {
+
+				// any connection to accept?
+
+			if (net_receive_ready(broadcast_reply_sock)) {
+				addr_len=sizeof(struct sockaddr);
+				sock=accept(broadcast_reply_sock,&addr,&addr_len);
+				if (sock==-1) break;
 		
-			usleep(100000);
-			count++;
+				join_ping_thread_lan_read(sock);
+				net_close_socket(&sock);
+			}
+
+				// if not sleep 10th of a second
+
+			else {
+				usleep(100000);
+			}
 			
-			element_table_busy(join_table_id,"Looking for LAN Clients",count,count_tenth_sec);
+			element_table_busy(join_table_id,"Looking for LAN Clients",(time_get()-start_tick),max_tick);
 		}
 		
 	}
@@ -251,7 +235,7 @@ int join_ping_thread_lan(void *arg)
 		
 	join_ping_thread_done();
 	
-		// close the socket to cancel the accept and
+		// close the socket and
 		// join the thread to wait for end
 		
 	net_close_socket(&broadcast_reply_sock);

@@ -139,7 +139,7 @@ int net_host_broadcast_thread(void *arg)
 		
 		uc_ptr=(unsigned char*)&r_addr;
 		
-		sock=net_open_socket();
+		sock=net_open_tcp_socket();
 		if (sock==D3_NULL_SOCKET) continue;
 		
 		uc_ptr=(unsigned char*)&r_addr;

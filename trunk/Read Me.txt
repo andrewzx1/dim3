@@ -10,6 +10,8 @@ For OS X Compile:
 /dim3Common/Frameworks/mpg123.framework (MP3 library)
 /dim3Common/Frameworks/SDL.framework (SDL library)
 
+A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/OSX_Frameworks.zip
+
 The OS X compile requires no additional external libraries.
 
 
@@ -24,6 +26,8 @@ For Win32 Compile:
 /winBuild/Libraries/SDL (SDL lib and headers)
 /winBuild/Libraries/ZLib (ZLib lib and headers)
 
+A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/Win32_Libraries.zip
+
 Currently, the win32 compile requires these DLLs:
 
 CFLite.dll (for JS)
@@ -36,6 +40,7 @@ pthreadVC2.dll (for JS)
 SDL.dll (for SDL)
 zlib1.dll (for ZLib)
 
+You can get these by downloading the current win32 version of dim3.
 
 
 ============================================================================================
