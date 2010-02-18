@@ -42,7 +42,7 @@ extern bool map_auto_generate_portal_touching_bottom(int portal_idx);
 extern void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy);
 extern void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy);
 
-extern bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,bool moveable);
+extern bool map_auto_generate_mesh_start(map_type *map,int group_idx,bool moveable);
 extern void map_auto_generate_mesh_set_lock(map_type *map);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int box_idx,int txt_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
 extern void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float mult_y,bool rot);
@@ -118,7 +118,7 @@ void map_auto_generate_second_story_pillar(map_type *map,int rn,int lx,int lz,in
 	p_ty=ty+k;
 	p_by=by-k;
 
-	if (!map_auto_generate_mesh_start(map,rn,-1,FALSE)) return;
+	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 	map_auto_generate_mesh_set_lock(map);
 
 		// top of pillar
@@ -229,7 +229,7 @@ void map_auto_generate_second_story(map_type *map)
 
 		sz=split_factor*2;
 
-		if (!map_auto_generate_mesh_start(map,n,-1,FALSE)) return;
+		if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 			// floors and ceilings corners
 
