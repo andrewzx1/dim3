@@ -31,7 +31,7 @@ and can be sold or given away.
 
 extern int map_auto_generate_random_int(int max);
 
-extern bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,bool moveable);
+extern bool map_auto_generate_mesh_start(map_type *map,int group_idx,bool moveable);
 extern void map_auto_generate_mesh_set_portal_mesh(int box_idx);
 extern void map_auto_generate_mesh_set_lock(map_type *map);
 extern void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z);
@@ -76,7 +76,7 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 
 		// create new mesh for steps
 
-	if (!map_auto_generate_mesh_start(map,rn,-1,FALSE)) return;
+	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 		
 	step_wid=step_sz-ag_constant_step_side_wid;
 
@@ -364,7 +364,7 @@ void map_auto_generate_ramps(map_type *map)
 					// ramp
 
 				if (high>=ag_constant_ramp_min_high) {
-					if (!map_auto_generate_mesh_start(map,n,-1,FALSE)) return;
+					if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 					map_auto_generate_ramps_position(&x,&ex);
 					map_auto_generate_steps_mesh(map,n,ag_step_ramp,(ex-x),ag_constant_step_story_high,chk_portal->max.y,portal->max.y,x,0,0.0f);
@@ -397,7 +397,7 @@ void map_auto_generate_ramps(map_type *map)
 					// ramp
 
 				if (high>=ag_constant_ramp_min_high) {
-					if (!map_auto_generate_mesh_start(map,n,-1,FALSE)) return;
+					if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 					map_auto_generate_ramps_position(&x,&ex);
 					map_auto_generate_steps_mesh(map,n,ag_step_ramp,(ex-x),ag_constant_step_story_high,chk_portal->max.y,portal->max.y,x,(portal->max.z-portal->min.z),180.0f);
@@ -430,7 +430,7 @@ void map_auto_generate_ramps(map_type *map)
 					// ramp
 
 				if (high>=ag_constant_ramp_min_high) {
-					if (!map_auto_generate_mesh_start(map,n,-1,FALSE)) return;
+					if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 					map_auto_generate_ramps_position(&z,&ez);
 					map_auto_generate_steps_mesh(map,n,ag_step_ramp,(ez-z),ag_constant_step_story_high,chk_portal->max.y,portal->max.y,0,z,270.0f);
@@ -463,7 +463,7 @@ void map_auto_generate_ramps(map_type *map)
 					// ramp
 
 				if (high>=ag_constant_ramp_min_high) {
-					if (!map_auto_generate_mesh_start(map,n,-1,FALSE)) return;
+					if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 					map_auto_generate_ramps_position(&z,&ez);
 					map_auto_generate_steps_mesh(map,n,ag_step_ramp,(ez-z),ag_constant_step_story_high,chk_portal->max.y,portal->max.y,(portal->max.x-portal->min.x),z,90.0f);
@@ -493,7 +493,7 @@ void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 
 		// create mesh
 
-	if (!map_auto_generate_mesh_start(map,rn,-1,FALSE)) return;
+	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 		// direction
 
@@ -585,7 +585,7 @@ void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 
 		// create mesh
 
-	if (!map_auto_generate_mesh_start(map,rn,-1,FALSE)) return;
+	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 		// direction
 
@@ -766,7 +766,7 @@ void map_auto_generate_lift(map_type *map,int rn,int step_high,int ty,int by,int
 	ty+=high;
 	by+=high;
 
-	if (!map_auto_generate_mesh_start(map,rn,group_idx,TRUE)) return;
+	if (!map_auto_generate_mesh_start(map,group_idx,TRUE)) return;
 
 	map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,ty,by,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.steps,4,px,py,pz,gx,gy);
@@ -841,7 +841,7 @@ int map_auto_generate_doors_horizontal(map_type *map,int rn,int x,int lz,int rz,
 
 		// mesh
 
-	if (!map_auto_generate_mesh_start(map,rn,group_idx,TRUE)) return(-1);
+	if (!map_auto_generate_mesh_start(map,group_idx,TRUE)) return(-1);
 	map_auto_generate_mesh_set_lock(map);
 	map_auto_generate_mesh_set_rot_offset(map,0,0,rot_off_z);
 
@@ -885,7 +885,7 @@ int map_auto_generate_doors_vertical(map_type *map,int rn,int z,int lx,int rx,in
 
 		// mesh
 
-	if (!map_auto_generate_mesh_start(map,rn,group_idx,TRUE)) return(-1);
+	if (!map_auto_generate_mesh_start(map,group_idx,TRUE)) return(-1);
 	map_auto_generate_mesh_set_lock(map);
 	map_auto_generate_mesh_set_rot_offset(map,rot_off_x,0,0);
 

@@ -496,7 +496,7 @@ void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,
       
 ======================================================= */
 
-bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,bool moveable)
+bool map_auto_generate_mesh_start(map_type *map,int group_idx,bool moveable)
 {
 	map_mesh_type			*mesh;
 
