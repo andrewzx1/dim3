@@ -4213,19 +4213,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Sources_Network\net_socket_udp.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Sources_Network\net_utility.c"
 					>
 					<FileConfiguration
