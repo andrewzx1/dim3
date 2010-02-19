@@ -62,7 +62,7 @@ extern network_setup_type	net_setup;
 
 extern int					client_timeout_values[];
 
-int							join_tab_value;
+int							join_tab_value,join_thread_lan_start_tick;
 char						*join_table_data;
 bool						join_thread_started,join_thread_quit;
 SDL_Thread					*join_thread,*join_thread_accept;
@@ -119,71 +119,81 @@ void join_ping_thread_done(void)
       
 ======================================================= */
 
-void join_ping_thread_lan_read(d3socket sock)
+void join_ping_thread_lan_server(d3socket sock)
 {
-	int					msec;
+	int					len;
 	unsigned char		data[net_max_msg_size];
 	char				*row_data;
-	network_reply_info	*reply_info;
+	network_header		head;
+	network_reply_info	reply_info;
 	join_server_info	*info;
 	
-		// read reply and add to list
+		// get the reply
 	
 	net_socket_blocking(sock,TRUE);
-		
-		// wait for data
-
-	msec=time_get();
 	
-	if (net_queue_block_single_message(sock,-1,0,NULL,0,net_action_reply_info,data,sizeof(network_reply_info))) {
-		
-		reply_info=(network_reply_info*)data;
-		
-			// is it the same dim3 project?
+	len=recv(sock,data,net_max_msg_size,0);
+	if (len<=0) return;
 
-		if (strcasecmp(reply_info->proj_name,hud.proj_name)==0) {
+		// right message?
+
+	memmove(&head,data,sizeof(network_header));
+	if (head.action!=net_action_reply_info) return;
+
+	memmove(&reply_info,(data+sizeof(network_header)),sizeof(network_reply_info));
+
+		// is it the right project?
+
+	if (strcasecmp(reply_info.proj_name,hud.proj_name)!=0) return;
+		
+		// add to list
 	
-			SDL_mutexP(join_thread_lock);
+	SDL_mutexP(join_thread_lock);
 
-				// setup info
+	info=&join_list[join_count++];
 
-			info=&join_list[join_count++];
+	strcpy(info->name,reply_info.host_name);
+	strcpy(info->ip,reply_info.host_ip_resolve);
+	strcpy(info->game_name,reply_info.game_name);
+	strcpy(info->map_name,reply_info.map_name);
+	info->player_count=(int)ntohs(reply_info.player_count);
+	info->player_max_count=(int)ntohs(reply_info.player_max_count);
+	info->ping_msec=time_get()-join_thread_lan_start_tick;
 
-			strcpy(info->name,reply_info->host_name);
-			strcpy(info->ip,reply_info->host_ip_resolve);
-			strcpy(info->game_name,reply_info->game_name);
-			strcpy(info->map_name,reply_info->map_name);
-			info->local=TRUE;
-			info->player_count=(int)ntohs(reply_info->player_count);
-			info->player_max_count=(int)ntohs(reply_info->player_max_count);
-			info->ping_msec=time_get()-msec;
+		// rebuild list
 
-				// rebuild list
-
-			row_data=join_create_list();
-			element_set_table_data(join_table_id,row_data);
-			free(row_data);
-			
-			SDL_mutexV(join_thread_lock);
-		}
-	}
+	row_data=join_create_list();
+	element_set_table_data(join_table_id,row_data);
+	free(row_data);
+	
+	SDL_mutexV(join_thread_lock);
 }
 
 int join_ping_thread_lan(void *arg)
 {
-	int					start_tick,max_tick;
-	char				ip_name[256],ip_resolve[256],err_str[256];
-	d3socket			sock,broadcast_reply_sock;
+	int					max_tick;
+	char				ip_name[256],ip_resolve[256],err_str[256],
+						broadcast_msg[24];
+	d3socket			sock,broadcast_send_sock,broadcast_reply_sock;
 	socklen_t			addr_len;
 	struct sockaddr		addr;
+	struct sockaddr_in	addr_in;
 	
 	net_get_host_ip(ip_name,ip_resolve);
 	
-		// we'll do everything in this thread
-		// as we're just gathering a list of
-		// servers and it doesn't need to be in real time
+		// broadcast message will be the IP of this machine
+		
+	bzero(broadcast_msg,24);
+	sprintf(broadcast_msg,"dim3_%s",ip_resolve);
+	
+		// setup a socket to start listening
+		// for replies from the broadcast
 
-	broadcast_reply_sock=net_open_tcp_socket();
+		// we'll do all this work in one thread
+		// as it's not time sensitive and we can
+		// queue the incoming host replies
+
+	broadcast_reply_sock=net_open_udp_socket();
 	net_socket_blocking(broadcast_reply_sock,FALSE);
 
 	if (!net_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) {
@@ -196,37 +206,58 @@ int join_ping_thread_lan(void *arg)
 		join_ping_thread_done();
 		return(0);
 	}
+		
+		// open socket
+		// and set broadcast flag
+		
+	broadcast_send_sock=net_open_udp_socket();
+	if (broadcast_send_sock==D3_NULL_SOCKET) {
+		net_close_socket(&broadcast_reply_sock);
+		join_ping_thread_done();
+		return(0);
+	}
+
+	net_socket_enable_broadcast(broadcast_send_sock);
+
+		// send broadcast to all address broadcast,
+		// sub-address broadcasts, and this address
+		// itself
 	
-		// send broadcast to all network nodes
-		// asking for connections from hosts
+	addr_in.sin_family=AF_INET;
+	addr_in.sin_port=htons((short)net_port_host_broadcast);
+	addr_in.sin_addr.s_addr=INADDR_BROADCAST;
+
+	sendto(broadcast_send_sock,broadcast_msg,24,0,(struct sockaddr*)&addr_in,sizeof(struct sockaddr_in));
+
+		// close socket
 		
-	if (net_udp_send_broadcast(ip_resolve,net_port_host_broadcast)) {
+	net_close_socket(&broadcast_send_sock);
+
+		// now wait for any replies
 	
-		start_tick=time_get();
-		max_tick=client_timeout_wait_seconds*1000;
-		
-		while (((start_tick+max_tick)<time_get()) && (!join_thread_quit)) {
+	join_thread_lan_start_tick=time_get();
+	max_tick=client_timeout_wait_seconds*1000;
+	
+	while (((join_thread_lan_start_tick+max_tick)<time_get()) && (!join_thread_quit)) {
 
-				// any connection to accept?
+			// any connection to accept?
 
-			if (net_receive_ready(broadcast_reply_sock)) {
-				addr_len=sizeof(struct sockaddr);
-				sock=accept(broadcast_reply_sock,&addr,&addr_len);
-				if (sock==-1) break;
-		
-				join_ping_thread_lan_read(sock);
-				net_close_socket(&sock);
-			}
+		if (net_receive_ready(broadcast_reply_sock)) {
+			addr_len=sizeof(struct sockaddr);
+			sock=accept(broadcast_reply_sock,&addr,&addr_len);
+			if (sock==-1) break;
+	
+			join_ping_thread_lan_server(sock);
+			net_close_socket(&sock);
+		}
 
-				// if not sleep 10th of a second
+			// if not sleep 10th of a second
 
-			else {
-				usleep(100000);
-			}
-			
-			element_table_busy(join_table_id,"Looking for LAN Clients",(time_get()-start_tick),max_tick);
+		else {
+			usleep(100000);
 		}
 		
+		element_table_busy(join_table_id,"Looking for LAN Clients",(time_get()-join_thread_lan_start_tick),max_tick);
 	}
 	
 	element_table_busy(join_table_id,NULL,1,1);
@@ -250,25 +281,95 @@ int join_ping_thread_lan(void *arg)
       
 ======================================================= */
 
+void join_ping_thread_internet_server(char *ip)
+{
+	int						len,msec;
+	unsigned char			data[net_max_msg_size];
+	char					err_str[256];
+	char					*row_data;
+	d3socket				sock;
+	network_header			head;
+	network_reply_info		reply_info;
+	join_server_info		*info;
+
+	msec=time_get();
+	
+		// connect to host
+		
+	sock=net_open_udp_socket();
+	if (sock==D3_NULL_SOCKET) return;
+	
+	if (!net_connect(sock,ip,net_port_host,client_timeout_wait_seconds,err_str)) {
+		net_close_socket(&sock);
+		return;
+	}
+
+		// send the request
+	
+	net_send_message(sock,net_action_request_info,net_remote_uid_none,NULL,0);
+
+		// get the reply
+	
+	net_socket_blocking(sock,TRUE);
+	len=recv(sock,data,net_max_msg_size,0);
+	
+		// close socket
+		
+	net_close_socket(&sock);
+
+	if (len<=0) return;
+
+		// right message?
+
+	memmove(&head,data,sizeof(network_header));
+	if (head.action!=net_action_reply_info) {
+		net_close_socket(&sock);
+		return;
+	}
+
+	memmove(&reply_info,(data+sizeof(network_header)),sizeof(network_reply_info));
+
+		// is it the right project?
+
+	if (strcasecmp(reply_info.proj_name,hud.proj_name)!=0) return;
+		
+		// add to list
+	
+	SDL_mutexP(join_thread_lock);
+
+	info=&join_list[join_count++];
+
+	strcpy(info->name,reply_info.host_name);
+	strcpy(info->ip,reply_info.host_ip_resolve);
+	strcpy(info->game_name,reply_info.game_name);
+	strcpy(info->map_name,reply_info.map_name);
+	info->player_count=(int)ntohs(reply_info.player_count);
+	info->player_max_count=(int)ntohs(reply_info.player_max_count);
+	info->ping_msec=time_get()-msec;
+
+		// rebuild list
+
+	row_data=join_create_list();
+	element_set_table_data(join_table_id,row_data);
+	free(row_data);
+	
+	SDL_mutexV(join_thread_lock);
+}
+
 int join_ping_thread_internet(void *arg)
 {
-	int							idx,player_count,player_max_count,ping_msec;
-	char						status[32],host_name[name_str_len],str[256],
-								proj_name[name_str_len],game_name[name_str_len],map_name[name_str_len];
-	char						*row_data;
+	int							n;
+	char						str[256];
 	setup_network_host_type		*host;
-	join_server_info			*info;
 	
 		// run ping until finished or
 		// join page ends
 
-	idx=0;
-
-	while ((!join_thread_quit) && (idx<join_combine_host.count)) {
+	for (n=0;n!=join_combine_host.count;n++) {
 
 			// progress
 
-		host=&join_combine_host.hosts[idx];
+		host=&join_combine_host.hosts[n];
 		
 		if (host->name[0]!=0x0) {
 			sprintf(str,"Querying %s",host->name);
@@ -277,42 +378,11 @@ int join_ping_thread_internet(void *arg)
 			sprintf(str,"Querying %s",host->ip);
 		}
 		
-		element_table_busy(join_table_id,str,idx,join_combine_host.count);
+		element_table_busy(join_table_id,str,n,join_combine_host.count);
 
 			// ping host
-			
-		if (net_client_ping_host(host->ip,status,host_name,proj_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
 
-				// is this reply the same dim3 project?
-				
-			if (strcasecmp(proj_name,hud.proj_name)==0) {
-
-				SDL_mutexP(join_thread_lock);
-				
-					// setup info
-
-				info=&join_list[join_count++];
-			
-				strcpy(info->name,host_name);
-				strcpy(info->ip,host->ip);
-				strcpy(info->game_name,game_name);
-				strcpy(info->map_name,map_name);
-				info->local=FALSE;
-				info->player_count=player_count;
-				info->player_max_count=player_max_count;
-				info->ping_msec=ping_msec;
-
-					// rebuild list
-
-				row_data=join_create_list();
-				element_set_table_data(join_table_id,row_data);
-				free(row_data);
-				
-				SDL_mutexV(join_thread_lock);
-			}
-		}
-		
-		idx++;
+		join_ping_thread_internet_server(host->ip);
 	}
 	
 	element_table_busy(join_table_id,NULL,1,1);

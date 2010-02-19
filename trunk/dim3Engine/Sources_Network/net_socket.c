@@ -86,7 +86,7 @@ void net_close_socket(d3socket *sock)
 
 /* =======================================================
 
-      Network Connect Utilities
+      Socket Options
       
 ======================================================= */
 
@@ -117,11 +117,32 @@ void net_socket_blocking(d3socket sock,bool blocking)
 #endif
 }
 
-bool net_connect_start(d3socket sock,char *ip,int port,char *err_str)
+void net_socket_enable_broadcast(d3socket sock)
 {
-	int					err;
+	int				val;
+
+#ifndef D3_OS_WINDOWS
+	val=1;
+	setsockopt(sock,SOL_SOCKET,SO_BROADCAST,&val,sizeof(int));
+#else
+	val=TRUE;
+	setsockopt(sock,SOL_SOCKET,SO_BROADCAST,(const char*)&val,sizeof(BOOL));
+#endif
+}
+
+/* =======================================================
+
+      Network Connections
+      
+======================================================= */
+
+bool net_connect(d3socket sock,char *ip,int port,int secs,char *err_str)
+{
+	int					err,count;
 	unsigned long		ns_addr;
-	bool				in_progress;
+	bool				in_progress,connect_ok;
+	socklen_t			len;
+	struct sockaddr		name;
 	struct sockaddr_in	addr;
 	
 		// setup host
@@ -160,36 +181,16 @@ bool net_connect_start(d3socket sock,char *ip,int port,char *err_str)
 		}
 	}
 	
-	return(TRUE);
-}
+		// we figure out if we've connected
+		// when we can get the peer name
 
-bool net_connect_check(d3socket sock)
-{
-	socklen_t			len;
-	struct sockaddr		name;
-	
-	len=sizeof(name);
-	return(getpeername(sock,&name,&len)==0);
-}
-
-void net_connect_end(d3socket sock)
-{
-	net_socket_blocking(sock,TRUE);
-}
-
-bool net_connect_block(d3socket sock,char *ip,int port,int secs,char *err_str)
-{
-	int					count;
-	bool				connect_ok;
-	
-	if (!net_connect_start(sock,ip,port,err_str)) return(FALSE);
-	
 	count=secs*1000;
 	connect_ok=FALSE;
 	
 	while (count>0) {
 	
-		if (net_connect_check(sock)) {
+		len=sizeof(name);
+		if (getpeername(sock,&name,&len)==0) {
 			connect_ok=TRUE;
 			break;
 		}
@@ -198,8 +199,12 @@ bool net_connect_block(d3socket sock,char *ip,int port,int secs,char *err_str)
 		count--;
 	}
 
-	net_connect_end(sock);
+		// put socket back into blocking mode
+
+	net_socket_blocking(sock,TRUE);
 	
+		// return connection state
+
 	if (!connect_ok) {
 		sprintf(err_str,"Networking: No connection to %s:%d",ip,port);
 		return(FALSE);
@@ -245,6 +250,30 @@ bool net_bind(d3socket sock,char *ip,int port,char *err_str)
 	return(TRUE);
 }
 
+bool net_bind_any(d3socket sock,int port,char *err_str)
+{
+	int					err;
+	struct sockaddr_in	addr;
+	
+		// setup address
+		
+	memset(&addr,0x0,sizeof(struct sockaddr_in));
+		
+	addr.sin_family=AF_INET;
+	addr.sin_port=htons((short)port);
+	addr.sin_addr.s_addr=INADDR_ANY;
+	
+		// bind socket
+		
+	err=bind(sock,(struct sockaddr*)&addr,sizeof(struct sockaddr_in));
+	if (err<0) {
+		sprintf(err_str,"Networking: Could not bind to port INADDR_ANY:%d",port);
+		return(FALSE);
+	}
+	
+	return(TRUE);
+}
+
 /* =======================================================
 
       Network Status Utilities
@@ -255,8 +284,6 @@ bool net_receive_ready(d3socket sock)
 {
 	fd_set					fd;
 	struct timeval			timeout;
-
-	if (sock==D3_NULL_SOCKET) return(FALSE);
 	
 	timeout.tv_sec=0;
 	timeout.tv_usec=0;
@@ -277,8 +304,6 @@ bool net_send_ready(d3socket sock)
 {
 	fd_set					fd;
 	struct timeval			timeout;
-
-	if (sock==D3_NULL_SOCKET) return(FALSE);
 	
 	timeout.tv_sec=0;
 	timeout.tv_usec=0;
@@ -333,33 +358,26 @@ int net_send_data(d3socket sock,unsigned char *data,int len)
 	return(total_len);
 }
 
-bool net_send_message(d3socket sock,int action,int net_node_uid,unsigned char *data,int len)
+void net_send_message(d3socket sock,int action,int net_node_uid,unsigned char *data,int len)
 {
-	int					sent_len;
-	network_header		head;
-	
-	if (sock==D3_NULL_SOCKET) return(FALSE);
-
-		// tag (check recieve for explination)
-
-	sent_len=net_send_data(sock,(unsigned char*)net_header_tag,net_header_tag_size);
-	if (sent_len<net_header_tag_size) return(FALSE);
+	unsigned char		net_data[net_max_msg_size];
+	network_header		*head;
 
 		// header
 
-	head.len=htons((short)len);
-	head.action=htons((short)action);
-	head.net_node_uid=htons((short)net_node_uid);
+	head=(network_header*)net_data;
 
-	sent_len=net_send_data(sock,(unsigned char*)&head,sizeof(network_header));
-	if (sent_len<sizeof(network_header)) return(FALSE);
+	head->len=htons((short)len);
+	head->action=htons((short)action);
+	head->net_node_uid=htons((short)net_node_uid);
 
-	if (data==NULL) return(TRUE);
-	
-		// data
+		// the data
 
-	sent_len=net_send_data(sock,data,len);
-	return(len==sent_len);										// only OK if entire data is sent
+	if (len!=0) memmove((net_data+sizeof(network_header)),data,len);
+
+		// send the data
+
+	net_send_data(sock,net_data,(sizeof(network_header)+len));
 }
 
 /* =======================================================
@@ -396,7 +414,7 @@ char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 		return(NULL);
 	}
 
-	if (!net_connect_block(sock,ip,port,5,err_str)) {
+	if (!net_connect(sock,ip,port,5,err_str)) {
 		net_close_socket(&sock);
 		return(NULL);
 	}

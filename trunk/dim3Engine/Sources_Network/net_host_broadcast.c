@@ -96,7 +96,8 @@ void net_host_broadcast_shutdown(void)
 
 int net_host_broadcast_thread(void *arg)
 {
-	char				ip[32],err_str[256];
+	int					sz;
+	char				ip[32],err_str[256],msg[24];
 	unsigned char		*uc_ptr;
 	unsigned long		r_addr;
 	d3socket			sock;
@@ -107,19 +108,22 @@ int net_host_broadcast_thread(void *arg)
 	
 		// create host socket
 		
-	broadcast_listen_socket=net_udp_open_socket();
+	broadcast_listen_socket=net_open_udp_socket();
 	if (broadcast_listen_socket==D3_NULL_SOCKET) {
 		strcpy(broadcast_listen_err_str,"Networking: Unable to open socket");
 		broadcast_listen_complete=TRUE;
 		return(0);
 	}
 		
+		// we'll block so the host just waits for
+		// data to come in
+
 	net_socket_blocking(broadcast_listen_socket,TRUE);
 
 		// bind to the "any" IP to gather
-		// any broadcast messages
+		// broadcast messages from any server
 
-	if (!net_udp_bind_broadcast(broadcast_listen_socket,net_port_host_broadcast,broadcast_listen_err_str)) {
+	if (!net_bind_any(broadcast_listen_socket,net_port_host_broadcast,broadcast_listen_err_str)) {
 		net_close_socket(&broadcast_listen_socket);
 		broadcast_listen_complete=TRUE;
 		return(0);
@@ -132,20 +136,27 @@ int net_host_broadcast_thread(void *arg)
 		// start listening
 		
 	while (TRUE) {
-		r_addr=net_udp_receive_broadcast(broadcast_listen_socket);
-		if (r_addr==-1) break;
+
+			// anybody sent us a message?
+
+		sz=(int)recvfrom(broadcast_listen_socket,msg,24,0,NULL,0);
+		if (sz!=24) break;
+	
+			// convert to long address
+		
+		r_addr=inet_addr((char*)&msg[5]);
 		
 			// connect and reply that we are a server
 		
 		uc_ptr=(unsigned char*)&r_addr;
 		
-		sock=net_open_tcp_socket();
+		sock=net_open_udp_socket();
 		if (sock==D3_NULL_SOCKET) continue;
 		
 		uc_ptr=(unsigned char*)&r_addr;
 		sprintf(ip,"%d.%d.%d.%d",uc_ptr[0],uc_ptr[1],uc_ptr[2],uc_ptr[3]);
 		
-		if (net_connect_block(sock,ip,net_port_host_broadcast_reply,client_timeout_wait_seconds,err_str)) {
+		if (net_connect(sock,ip,net_port_host_broadcast_reply,client_timeout_wait_seconds,err_str)) {
 			net_host_client_handle_info(sock);
 		}
 		

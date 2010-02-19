@@ -76,28 +76,21 @@ and can be sold or given away.
 // queue defines
 //
 
-#define net_queue_max_data_size							10240
-#define net_queue_chunk_read_size						1024
+#define net_queue_max_message							64
 
 //
-// read queues
+// network queues
 //
 
 typedef struct		{
-						int								len;
+						int								count;
 						unsigned char					*data;
 						SDL_mutex						*lock;
 					} net_queue_type;
 
 //
-// network headers, messages, and tags
+// network headers and messages
 //
-// the tag is used to make sure that we are really into a dim3 message block
-// to work around any garbles or corruptions in the transmission
-//
-
-#define net_header_tag_size								8
-#define net_header_tag									"dim3blck"
 
 #define net_max_msg_size								2048
 

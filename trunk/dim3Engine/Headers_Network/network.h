@@ -49,28 +49,18 @@ extern void net_ip_local_broadcast(char *ip,char *broad_ip);
 //
 
 extern d3socket net_open_tcp_socket(void);
-extern d3socket net_open_socket_udp(void);
+extern d3socket net_open_udp_socket(void);
 extern void net_close_socket(d3socket *sock);
 extern void net_socket_blocking(d3socket sock,bool blocking);
-extern bool net_connect_start(d3socket sock,char *ip,int port,char *err_str);
-extern bool net_connect_check(d3socket sock);
-extern void net_connect_end(d3socket sock);
-extern bool net_connect_block(d3socket sock,char *ip,int port,int secs,char *err_str);
+extern void net_socket_enable_broadcast(d3socket sock);
+extern bool net_connect(d3socket sock,char *ip,int port,int secs,char *err_str);
 extern bool net_bind(d3socket sock,char *ip,int port,char *err_str);
+extern bool net_bind_any(d3socket sock,int port,char *err_str);
 extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);
-extern bool net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
+extern void net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
 
 extern char* net_get_http_file(char *host_name,int port,char *url,char *err_str);
-
-//
-// udp sockets
-//
-
-extern d3socket net_udp_open_socket(void);
-extern bool net_udp_bind_broadcast(d3socket sock,int port,char *err_str);
-extern unsigned long net_udp_receive_broadcast(int sock);
-extern bool net_udp_send_broadcast(char *ip,int port);
 
 //
 // read queues
@@ -78,11 +68,9 @@ extern bool net_udp_send_broadcast(char *ip,int port);
 
 extern bool net_queue_initialize(net_queue_type *queue);
 extern void net_queue_shutdown(net_queue_type *queue);
-extern bool net_queue_feed_socket_has_data(d3socket sock);
 extern bool net_queue_feed(d3socket sock,net_queue_type *queue);
 extern bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsigned char *msg_data,int msg_len);
 extern bool net_queue_check_message(net_queue_type *queue,int *action,int *net_node_uid,unsigned char *msg_data,int *msg_data_len);
-extern bool net_queue_block_single_message(d3socket sock,int req_action,int req_remote_uid,unsigned char *req_msg_data,int req_msg_len,int rep_desired_action,unsigned char *rep_msg_data,int rep_msg_len);
 
 //
 // hosting
@@ -136,7 +124,6 @@ extern void net_host_player_update(network_request_remote_update *update);
 // client host pinging and joining
 //
 
-extern bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,char *game_name,char *map_name,int *player_count,int *player_max_count,int *ping_msec);
 extern bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes);
 extern void net_client_join_host_end(void);
 
