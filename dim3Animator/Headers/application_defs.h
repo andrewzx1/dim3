@@ -138,6 +138,7 @@
 
 #define kVertexPosDBColumn				1060
 #define kVertexBoneDBColumn				1061
+#define kVertexNormalDBColumn			1062
 
 #define kBoneTagDBColumn				1070
 #define kBonePosDBColumn				1071
