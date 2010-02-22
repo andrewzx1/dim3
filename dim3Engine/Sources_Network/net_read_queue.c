@@ -60,6 +60,11 @@ bool net_queue_initialize(net_queue_type *queue)
 	return(TRUE);
 }
 
+void net_queue_initialize_empty(net_queue_type *queue)
+{
+	queue->data=NULL;
+}
+
 void net_queue_shutdown(net_queue_type *queue)
 {
 	if (queue->data==NULL) return;

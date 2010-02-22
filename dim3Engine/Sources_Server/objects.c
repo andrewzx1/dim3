@@ -843,7 +843,7 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		server.count.obj--;			// wait until real delete to move memory around
 		return(-1);
 	}
-	
+
 		// load object model
 
 	if (!model_load_and_init(&obj->draw,"Object",obj->name,err_str)) {
@@ -1019,7 +1019,7 @@ void spot_start_attach(void)
 		// check if a spot was attached by a
 		// script.  If it was, and the skill levels
 		// and spawn type are OK, spawn this object into the map
-		
+
 	for (n=0;n!=map.nspot;n++) {
 	
 		spot=&map.spots[n];
@@ -1029,7 +1029,7 @@ void spot_start_attach(void)
 		if ((spot->spawn==spawn_multiplayer_only) && (!net_setup.client.joined)) continue;
 
 		type_idx=spot_get_type_idx_from_type_str(spot->attach_type);
-		 
+
 		if (object_start(spot,type_idx,bt_map,-1,err_str)==-1) {
 			console_add_error(err_str);
 		}

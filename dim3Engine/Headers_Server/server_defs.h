@@ -288,10 +288,6 @@ typedef struct		{
 					} model_draw_mesh_fade;
 
 typedef struct		{
-						int								ntrig,index_offset[max_model_mesh];
-					} model_draw_vbo_ptr;
-
-typedef struct		{
 						int								uid,spin_tick,
 														mesh_mask,render_mesh_mask,
 														script_animation_idx,
@@ -315,7 +311,6 @@ typedef struct		{
 						model_draw_fade					fade;
 						model_draw_no_rot				no_rot;
 						model_draw_remote_name			remote_name;
-						model_draw_vbo_ptr				vbo_ptr;
 						model_draw_setup				setup;
 					} model_draw;
 

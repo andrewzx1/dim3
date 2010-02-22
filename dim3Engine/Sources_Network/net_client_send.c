@@ -51,7 +51,7 @@ extern network_setup_type		net_setup;
 void net_client_send_ready(void)
 {
 	if (net_setup.host.hosting) {
-		net_host_node_ready(net_setup.net_node_uid);
+		net_host_player_ready(net_setup.net_node_uid);
 	}
 	else {
 		net_send_message(client_socket,net_action_request_ready,net_setup.net_node_uid,NULL,0);
@@ -270,7 +270,7 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 	}
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death));
+		net_host_player_send_message_others(net_setup.net_node_uid,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_death,net_setup.net_node_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
@@ -291,7 +291,7 @@ void net_client_send_chat(obj_type *obj,char *str)
 	strcpy(chat.str,str);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat));
+		net_host_player_send_message_others(net_setup.net_node_uid,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_chat,net_setup.net_node_uid,(unsigned char*)&chat,sizeof(network_request_remote_chat));
@@ -311,7 +311,7 @@ void net_client_send_sound(d3pnt *pnt,float pitch,char *name)
 	strcpy(sound.name,name);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_sound,(unsigned char*)&sound,sizeof(network_request_remote_sound));
+		net_host_player_send_message_others(net_setup.net_node_uid,net_action_request_remote_sound,(unsigned char*)&sound,sizeof(network_request_remote_sound));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_sound,net_setup.net_node_uid,(unsigned char*)&sound,sizeof(network_request_remote_sound));
@@ -348,7 +348,7 @@ void net_client_send_projectile_add(obj_type *obj,char *weap_name,char *proj_set
 	fire.force=0;
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_host_player_send_message_others(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_fire,net_setup.net_node_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
@@ -379,7 +379,7 @@ void net_client_send_hitscan_add(obj_type *obj,char *weap_name,char *proj_setup_
 	fire.force=0;
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_host_player_send_message_others(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_fire,net_setup.net_node_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
@@ -410,7 +410,7 @@ void net_client_send_melee_add(obj_type *obj,char *weap_name,int radius,int dist
 	fire.force=htons((short)force);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_host_player_send_message_others(net_setup.net_node_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_fire,net_setup.net_node_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
@@ -464,7 +464,7 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 void net_client_send_pickup(network_request_remote_pickup *pickup)
 {
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_pickup,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
+		net_host_player_send_message_others(net_setup.net_node_uid,net_action_request_remote_pickup,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_pickup,net_setup.net_node_uid,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
@@ -492,7 +492,7 @@ void net_client_send_click(obj_type *obj,d3pnt *pt,d3ang *ang)
 	click.fp_ang_z=htonf(ang->z);
 	
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(net_setup.net_node_uid,net_action_request_remote_click,(unsigned char*)&click,sizeof(network_request_remote_click));
+		net_host_player_send_message_others(net_setup.net_node_uid,net_action_request_remote_click,(unsigned char*)&click,sizeof(network_request_remote_click));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_click,net_setup.net_node_uid,(unsigned char*)&click,sizeof(network_request_remote_click));

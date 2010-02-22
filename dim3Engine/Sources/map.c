@@ -366,7 +366,7 @@ bool map_start(bool skip_media,char *err_str)
 
 		// create the attached objects
 		// and scenery
-		
+
 	progress_draw(70);
 
 	spot_start_attach();
