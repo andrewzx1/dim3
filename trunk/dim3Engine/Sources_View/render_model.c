@@ -174,149 +174,128 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
       
 ======================================================= */
 
-bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
+bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int				n,k,t,offset,t_idx;
+	int				n,k,offset,mem_sz;
 	float			*vl,*ul,*cl,*tl,*bl,*nl,
-					*vp,*cp,*tp,*bp,*np,*gx,*gy,
+					*vp,*cp,*gx,*gy,
 					*vp_start,*cp_start,
-					*tp_start,*bp_start,*np_start,
 					*vertex_ptr;
     model_trig_type	*trig;
 	model_mesh_type	*mesh;
 	
  		// construct VBO
+		// non-shaders have vertex, uv, color
+		// shaders have vertex, uv, tangent space
 
-	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3+3+3+3)));
+		// also remember some offsets for later pointer work
+
+	mesh=&mdl->meshes[mesh_idx];
+
+	if (mesh->draw.has_no_shader) {
+		mem_sz=(mesh->ntrig*3)*(3+2+3);
+
+		draw->setup.vbo_offset.color=((mesh->ntrig*3)*(3+2))*sizeof(float);
+		draw->setup.vbo_offset.tangent=0;
+		draw->setup.vbo_offset.binormal=0;
+		draw->setup.vbo_offset.normal=0;
+	}
+	else {
+		mem_sz=(mesh->ntrig*3)*(3+2+3+3+3);
+
+		draw->setup.vbo_offset.color=0;
+		draw->setup.vbo_offset.tangent=((mesh->ntrig*3)*(3+2))*sizeof(float);
+		draw->setup.vbo_offset.binormal=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
+		draw->setup.vbo_offset.normal=((mesh->ntrig*3)*(3+2+3+3))*sizeof(float);
+	}
+
+	vertex_ptr=view_bind_map_next_vertex_object(mem_sz);
 	if (vertex_ptr==NULL) return(FALSE);
-	
-		// remember some offsets
-		
-	draw->setup.vbo_offset.color=((draw->vbo_ptr.ntrig*3)*(3+2))*sizeof(float);
-	draw->setup.vbo_offset.tangent=((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float);
-	draw->setup.vbo_offset.binormal=((draw->vbo_ptr.ntrig*3)*(3+2+3+3))*sizeof(float);
-	draw->setup.vbo_offset.normal=((draw->vbo_ptr.ntrig*3)*(3+2+3+3+3))*sizeof(float);
 	
 		// build the vertexes, indexes, and colors
 		// into the VBO, and the tangent space as
 		// pointers
 
 	vl=vertex_ptr;
-	ul=vertex_ptr+((draw->vbo_ptr.ntrig*3)*3);
-	cl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2));
-	
-	tl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2+3));
-	bl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2+3+3));
-	nl=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2+3+3+3));
+	ul=vertex_ptr+((mesh->ntrig*3)*3);
 
-	t_idx=0;
+	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
+	cp_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
 
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+		// non-shader drawing requires
+		// vertexes, UVs, and colors
 
-		mesh=&mdl->meshes[n];
-		trig=mesh->trigs;
+	trig=mesh->trigs;
+
+	if (mesh->draw.has_no_shader) {
+
+		cl=vertex_ptr+((mesh->ntrig*3)*(3+2));
+
+		for (n=0;n!=mesh->ntrig;n++) {
 		
-		vp_start=draw->setup.mesh_arrays[n].gl_vertex_array;
-		cp_start=draw->setup.mesh_arrays[n].gl_color_array;
+			gx=trig->gx;
+			gy=trig->gy;
 
-		draw->vbo_ptr.index_offset[n]=t_idx;
+			for (k=0;k!=3;k++) {
+				offset=trig->v[k]*3;
+				
+				vp=vp_start+offset;
+				cp=cp_start+offset;
 
-			// non-shader drawing requires
-			// vertexes, UVs, and colors
+				*vl++=*vp++;
+				*vl++=*vp++;
+				*vl++=*vp;
 
-		if (mesh->draw.has_no_shader) {
+				*ul++=*gx++;
+				*ul++=*gy++;
 
-			for (k=0;k!=mesh->ntrig;k++) {
-			
-				gx=trig->gx;
-				gy=trig->gy;
-
-				for (t=0;t!=3;t++) {
-					offset=trig->v[t]*3;
-					
-					vp=vp_start+offset;
-					cp=cp_start+offset;
-
-					*vl++=*vp++;
-					*vl++=*vp++;
-					*vl++=*vp;
-
-					*ul++=*gx++;
-					*ul++=*gy++;
-
-					*cl++=*cp++;
-					*cl++=*cp++;
-					*cl++=*cp;
-				}
-
-				trig++;
+				*cl++=*cp++;
+				*cl++=*cp++;
+				*cl++=*cp;
 			}
+
+			trig++;
+		}
+	}
+
+		// shader drawing requires
+		// vertexes, UVs, and tangent space
+
+	else {
+
+		for (n=0;n!=mesh->ntrig;n++) {
+		
+			gx=trig->gx;
+			gy=trig->gy;
+
+			for (k=0;k!=3;k++) {
+				offset=trig->v[k]*3;
+				
+				vp=vp_start+offset;
+
+				*vl++=*vp++;
+				*vl++=*vp++;
+				*vl++=*vp;
+
+				*ul++=*gx++;
+				*ul++=*gy++;
+			}
+
+			trig++;
 		}
 
-			// shader drawing requires
-			// vertexes, UVs, and tangent space
+			// tangent space already in trig-vertex array
 
-		else {
+		mem_sz=(mesh->ntrig*(3*3))*sizeof(float);
 
-			tp_start=draw->setup.mesh_arrays[n].gl_tangent_array;
-			bp_start=draw->setup.mesh_arrays[n].gl_binormal_array;
-			np_start=draw->setup.mesh_arrays[n].gl_normal_array;
+		tl=vertex_ptr+((mesh->ntrig*3)*(3+2));
+		memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);
 
-			for (k=0;k!=mesh->ntrig;k++) {
-			
-				gx=trig->gx;
-				gy=trig->gy;
+		bl=vertex_ptr+((mesh->ntrig*3)*(3+2+3));
+		memmove(bl,draw->setup.mesh_arrays[mesh_idx].gl_binormal_array,mem_sz);
 
-				for (t=0;t!=3;t++) {
-					offset=trig->v[t]*3;
-					
-					vp=vp_start+offset;
-
-					*vl++=*vp++;
-					*vl++=*vp++;
-					*vl++=*vp;
-
-					*ul++=*gx++;
-					*ul++=*gy++;
-
-					tp=tp_start+offset;
-					bp=bp_start+offset;
-					np=np_start+offset;
-
-/*
-					*tl++=1.0f;
-					*tl++=0.0f;
-					*tl++=0.0f;
-
-					*bl++=0.0f;
-					*bl++=1.0f;
-					*bl++=0.0f;
-
-					*nl++=0.0f;
-					*nl++=0.0f;
-					*nl++=1.0f;
-					
-*/
-					*tl++=*tp++;
-					*tl++=*tp++;
-					*tl++=*tp;
-
-					*bl++=*bp++;
-					*bl++=*bp++;
-					*bl++=*bp;
-
-					*nl++=*np++;
-					*nl++=*np++;
-					*nl++=*np;
-
-				}
-
-				trig++;
-			}
-		}
-		
-		t_idx+=(mesh->ntrig*3);
+		nl=vertex_ptr+((mesh->ntrig*3)*(3+2+3+3));
+		memmove(nl,draw->setup.mesh_arrays[mesh_idx].gl_normal_array,mem_sz);
 	}
 
 		// unmap VBO
@@ -331,18 +310,13 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((mesh->ntrig*3)*3)*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((mesh->ntrig*3)*3)*sizeof(float)));
 
 	return(TRUE);
-}
-
-inline int render_model_set_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
-{
-	return(draw->vbo_ptr.index_offset[mesh_idx]);
 }
 
 inline void render_model_enable_color_array(model_draw *draw)
@@ -377,8 +351,7 @@ void render_model_release_vertex_objects(void)
 
 void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						n,frame,trig_count,
-							trig_start_idx,trig_idx;
+	int						n,frame,trig_count,trig_idx;
 	float					alpha;
 	bool					enabled;
 	model_mesh_type			*mesh;
@@ -387,10 +360,6 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	
 	mesh=&mdl->meshes[mesh_idx];
 	if ((!dim3_debug) && (mesh->draw.only_shaders)) return;
-	
-		// setup correct mesh pointers
-
-	trig_start_idx=render_model_set_vertex_objects(mdl,mesh_idx,draw);
 	
 		// setup drawing
 
@@ -437,7 +406,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		trig_count=material->trig_count;
 		if (trig_count==0) continue;
 
-		trig_idx=trig_start_idx+(material->trig_start*3);
+		trig_idx=material->trig_start*3;
 
 			// first color pointer enable?
 
@@ -459,8 +428,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 
 void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
-	int						n,trig_count,frame,
-							trig_start_idx,trig_idx;
+	int						n,trig_count,frame,trig_idx;
 	float					alpha;
 	model_mesh_type			*mesh;
     texture_type			*texture;
@@ -468,10 +436,6 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	
 	mesh=&mdl->meshes[mesh_idx];
 	if ((dim3_debug) || (mesh->draw.has_no_shader)) return;
-
-		// setup correct mesh pointers
-
-	trig_start_idx=render_model_set_vertex_objects(mdl,mesh_idx,draw);
 	
 		// setup drawing
 
@@ -516,7 +480,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		trig_count=material->trig_count;
 		if (trig_count==0) continue;
 
-		trig_idx=trig_start_idx+(material->trig_start*3);
+		trig_idx=material->trig_start*3;
 		
 			// run the shader
 			
@@ -530,8 +494,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 
 void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						n,frame,trig_count,
-							trig_start_idx,trig_idx;
+	int						n,frame,trig_count,trig_idx;
 	float					alpha;
 	bool					enabled,cur_additive,is_additive;
 	model_mesh_type			*mesh;
@@ -540,10 +503,6 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 
 	mesh=&mdl->meshes[mesh_idx];
 	if ((!dim3_debug) && (mesh->draw.only_shaders)) return;
-
-		// setup correct mesh pointers
-
-	trig_start_idx=render_model_set_vertex_objects(mdl,mesh_idx,draw);
 
 		// setup drawing
 
@@ -594,7 +553,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 		trig_count=material->trig_count;
 		if (trig_count==0) continue;
 
-		trig_idx=trig_start_idx+(material->trig_start*3);
+		trig_idx=material->trig_start*3;
 		
 			// transparent textures
 			
@@ -629,8 +588,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 
 void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
-	int						n,frame,trig_count,
-							trig_start_idx,trig_idx;
+	int						n,frame,trig_count,trig_idx;
 	float					alpha;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
@@ -639,10 +597,6 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 
 	mesh=&mdl->meshes[mesh_idx];
 	if ((dim3_debug) || (mesh->draw.has_no_shader)) return;
-
-		// setup correct mesh pointers
-
-	trig_start_idx=render_model_set_vertex_objects(mdl,mesh_idx,draw);
 
 		// setup drawing
 
@@ -692,7 +646,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 		trig_count=material->trig_count;
 		if (trig_count==0) continue;
 
-		trig_idx=trig_start_idx+(material->trig_start*3);
+		trig_idx=material->trig_start*3;
 		
 			// transparent textures
 			
@@ -719,17 +673,12 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 
 void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						n,frame,trig_count,
-							trig_start_idx,trig_idx;
+	int						n,frame,trig_count,trig_idx;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
 	
 	mesh=&mdl->meshes[mesh_idx];
-
-		// setup correct mesh pointers
-
-	trig_start_idx=render_model_set_vertex_objects(mdl,mesh_idx,draw);
 
 		// setup drawing
 
@@ -768,7 +717,7 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		trig_count=material->trig_count;
 		if (trig_count==0) continue;
 
-		trig_idx=trig_start_idx+(material->trig_start*3);
+		trig_idx=material->trig_start*3;
 
 			// draw glow texture
 		
@@ -909,15 +858,6 @@ void render_model_build_vertex_lists(model_draw *draw)
 
 	render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
 	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
-
-		// get the total number of trigs
-
-	draw->vbo_ptr.ntrig=0;
-
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
-		draw->vbo_ptr.ntrig+=mdl->meshes[n].ntrig;
-	}
 }
 
 /* =======================================================
@@ -945,30 +885,26 @@ void render_model_opaque(model_draw *draw)
 
 	gl_lights_build_from_model(draw,&light_list);
 
-		// setup the vbo
-
-	if (!render_model_initialize_vertex_objects(mdl,draw)) return;
-
 		// draw opaque materials
 
 	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))!=0) {
-			render_model_opaque_simple_trigs(mdl,n,draw);
-			if (!dim3_debug) render_model_opaque_shader_trigs(mdl,n,draw,&light_list);
-		}
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+
+			// create VBO for this mesh
+
+		if (!render_model_initialize_vertex_objects(mdl,n,draw)) return;
+
+			// render opaque segments
+
+		render_model_opaque_simple_trigs(mdl,n,draw);
+		if (!dim3_debug) render_model_opaque_shader_trigs(mdl,n,draw,&light_list);
+
+			// render glow segments
+
+		render_model_glow_trigs(mdl,n,draw);
+
+		render_model_release_vertex_objects();
 	}
-
-		// draw glow materials
-
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))!=0) {
-			render_model_glow_trigs(mdl,n,draw);
-		}
-	}
-
-		// release the vbo
-
-	render_model_release_vertex_objects();
 }
 
 void render_model_transparent(model_draw *draw)
@@ -990,22 +926,24 @@ void render_model_transparent(model_draw *draw)
 
 	gl_lights_build_from_model(draw,&light_list);
 
-		// setup the vbo
-
-	if (!render_model_initialize_vertex_objects(mdl,draw)) return;	
-	
 		// draw transparent materials
 
 	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))!=0) {
-			render_model_transparent_simple_trigs(mdl,n,draw);
-			if (!dim3_debug) render_model_transparent_shader_trigs(mdl,n,draw,&light_list);
-		}
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+
+			// setup the VBO
+
+		if (!render_model_initialize_vertex_objects(mdl,n,draw)) return;	
+
+			// draw transparent mesh
+
+		render_model_transparent_simple_trigs(mdl,n,draw);
+		if (!dim3_debug) render_model_transparent_shader_trigs(mdl,n,draw,&light_list);
+			
+			// release the vbo
+
+		render_model_release_vertex_objects();
 	}
-
-		// release the vbo
-
-	render_model_release_vertex_objects();
 }
 
 /* =======================================================

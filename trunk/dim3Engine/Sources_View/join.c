@@ -157,7 +157,7 @@ void join_ping_thread_lan_run(void)
 {
 	int					max_tick,action,net_node_uid;
 	char				ip_name[256],ip_resolve[256],err_str[256];
-	unsigned char		data[net_max_msg_size];
+	unsigned char		msg[net_max_msg_size];
 	bool				good_reply,send_ok;
 	d3socket			broadcast_send_sock,broadcast_recv_sock;
 	
@@ -198,9 +198,9 @@ void join_ping_thread_lan_run(void)
 			
 		good_reply=FALSE;
 		
-		if (net_recvfrom_mesage(broadcast_recv_sock,NULL,NULL,&action,&net_node_uid,data)) {
+		if (net_recvfrom_mesage(broadcast_recv_sock,NULL,NULL,&action,&net_node_uid,msg,NULL)) {
 			if (action==net_action_reply_info) {
-				good_reply=join_ping_thread_lan_server((network_reply_info*)data);
+				good_reply=join_ping_thread_lan_server((network_reply_info*)msg);
 			}
 		}
 		
@@ -240,7 +240,7 @@ void join_ping_thread_internet_server(char *ip)
 {
 	int						action,net_node_uid,msec,max_tick;
 	unsigned long			ip_addr,recv_ip_addr;
-	unsigned char			data[net_max_msg_size];
+	unsigned char			msg[net_max_msg_size];
 	char					*row_data;
 	bool					got_reply;
 	d3socket				sock;
@@ -271,7 +271,7 @@ void join_ping_thread_internet_server(char *ip)
 	max_tick=client_timeout_wait_seconds*1000;
 	
 	while (((msec+max_tick)>time_get()) && (!join_thread_quit)) {
-		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&net_node_uid,data)) {
+		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&net_node_uid,msg,NULL)) {
 			if ((recv_ip_addr==ip_addr) && (action==net_action_reply_info)) {
 				got_reply=TRUE;
 				break;
@@ -287,7 +287,7 @@ void join_ping_thread_internet_server(char *ip)
 
 		// is it the right project?
 
-	reply_info=(network_reply_info*)data;
+	reply_info=(network_reply_info*)msg;
 	
 	if (strcasecmp(reply_info->proj_name,hud.proj_name)!=0) return;
 		

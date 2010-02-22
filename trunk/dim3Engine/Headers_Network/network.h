@@ -60,7 +60,7 @@ extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);
 extern void net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
 
-extern bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_node_uid,unsigned char *msg);
+extern bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_node_uid,unsigned char *msg,int *msg_len);
 extern bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len);
 
 
@@ -71,6 +71,7 @@ extern char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
 //
 
 extern bool net_queue_initialize(net_queue_type *queue);
+extern void net_queue_initialize_empty(net_queue_type *queue);
 extern void net_queue_shutdown(net_queue_type *queue);
 extern bool net_queue_feed(d3socket sock,net_queue_type *queue);
 extern bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsigned char *msg_data,int msg_len);
@@ -83,10 +84,6 @@ extern bool net_queue_check_message(net_queue_type *queue,int *action,int *net_n
 extern bool net_host_initialize(char *err_str);
 extern void net_host_shutdown(void);
 extern int net_host_thread(void *arg);
-
-extern bool net_host_broadcast_initialize(char *err_str);
-extern void net_host_broadcast_shutdown(void);
-extern int net_host_broadcast_thread(void *arg);
 
 extern void net_host_client_handle_leave(int net_node_uid);
 extern void net_host_client_handle_set_team(int net_node_uid,network_request_team *team);
@@ -111,15 +108,20 @@ extern void net_host_player_initialize(void);
 extern void net_host_player_shutdown(void);
 
 extern int net_host_player_find(int remote_uid);
+extern int net_host_player_find_ip_addr(unsigned long ip_addr,int port);
+extern bool net_host_player_join_ok(char *name,char *deny_reason);
 
-extern int net_host_node_join(d3socket sock,char *name,int tint_color_idx,int character_idx,char *deny_reason);
-extern void net_host_node_ready(int net_node_uid);
-extern void net_host_node_leave(int net_node_uid);
-extern int net_host_bot_join(obj_type *obj);
+extern void net_host_player_route_msg(unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len);
+
+extern int net_host_player_join(unsigned long ip_addr,int port,bool local,char *name,int tint_color_idx,int character_idx);
+extern int net_host_player_join_bot(obj_type *obj);
+extern void net_host_player_ready(int net_node_uid);
+extern void net_host_player_leave(int net_node_uid);
 extern void net_host_player_add_bots_to_list(void);
 extern void net_host_player_create_remote_list(int player_remote_uid,network_reply_join_remotes *remotes);
-extern void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len);
-extern void net_host_player_send_all_packet(int action,unsigned char *data,int len);
+
+extern void net_host_player_send_message_others(int player_remote_uid,int action,unsigned char *msg,int msg_len);
+extern void net_host_player_send_message_all(int action,unsigned char *data,int len);
 
 extern void net_host_player_update_team(network_request_team *team);
 extern void net_host_player_update(network_request_remote_update *update);

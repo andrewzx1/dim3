@@ -104,13 +104,21 @@ typedef struct		{
 //
 
 typedef struct		{
+						int								port;
+						unsigned long					ip_addr;
+						bool							local,bot;
 						d3socket						sock;
+					} net_host_player_connect_type;
+
+typedef struct		{
 						int								remote_uid,team_idx,
 														tint_color_idx,character_idx,
 														score;
 						char							name[name_str_len];
-						bool							ready,bot;
+						bool							ready;
 						d3pnt							pnt;
+						net_host_player_connect_type	connect;
+						net_queue_type					queue;
 					} net_host_player_type;
 
 //

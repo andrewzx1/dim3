@@ -326,7 +326,7 @@ bool net_send_ready(d3socket sock)
       
 ======================================================= */
 
-bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_node_uid,unsigned char *msg)
+bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_node_uid,unsigned char *msg,int *msg_len)
 {
 	int						len;
 	unsigned char			data[net_max_msg_size];
@@ -360,8 +360,13 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 	head=(network_header*)data;
 	*action=head->action;
 	*net_node_uid=head->net_node_uid;
+
+	len=head->len;
+	if (len>net_max_msg_size) len=net_max_msg_size;
 	
-	memmove(msg,(data+sizeof(network_header)),head->len);
+	memmove(msg,(data+sizeof(network_header)),len);
+
+	if (msg_len!=NULL) *msg_len=len;
 
 	return(TRUE);
 }

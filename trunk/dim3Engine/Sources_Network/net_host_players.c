@@ -81,49 +81,42 @@ int net_host_player_find(int remote_uid)
 	return(-1);
 }
 
-bool net_host_player_find_name(int remote_uid,char *name)
+int net_host_player_find_ip_addr(unsigned long ip_addr,int port)
 {
-	int				idx;
-	bool			hit;
+	int						n;
+	net_host_player_type	*player;
 	
-	hit=FALSE;
-
-	SDL_mutexP(net_host_player_lock);
-
-	idx=net_host_player_find(remote_uid);
+	player=net_host_players;
 	
-	if (idx!=-1) {
-		strcpy(name,net_host_players[idx].name);
-		hit=TRUE;
+	for (n=0;n!=net_host_player_count;n++) {
+		if ((player->connect.ip_addr==ip_addr) && (player->connect.port==port)) return(n);
+		player++;
 	}
 	
-	SDL_mutexV(net_host_player_lock);
-	
-	return(hit);
+	return(-1);
 }
 
 /* =======================================================
 
-      Join and Leave Players
+      Player Join OK?
       
 ======================================================= */
 
-int net_host_node_join(d3socket sock,char *name,int tint_color_idx,int character_idx,char *deny_reason)
+bool net_host_player_join_ok(char *name,char *deny_reason)
 {
-	int						n,net_node_uid;
+	int						n;
 	net_host_player_type	*player;
 
-		// lock all player operations
-		
-	SDL_mutexP(net_host_player_lock);
-	
 		// host full?
 		
 	if (net_host_player_count==host_max_remote_count) {
 		strcpy(deny_reason,"Server is full");
-		SDL_mutexV(net_host_player_lock);
-		return(-1);
+		return(FALSE);
 	}
+
+		// lock all player operations
+		
+	SDL_mutexP(net_host_player_lock);
 
 		// id in use?
 
@@ -133,40 +126,169 @@ int net_host_node_join(d3socket sock,char *name,int tint_color_idx,int character
 		if (strcasecmp(player->name,name)==0) {
 			sprintf(deny_reason,"Player name '%s' already in use",name);
 			SDL_mutexV(net_host_player_lock);
-			return(-1);
+			return(FALSE);
 		}
 		player++;
 	}
+
+		// unlock player operation
+
+	SDL_mutexV(net_host_player_lock);
+
+	return(TRUE);
+}
+
+/* =======================================================
+
+      Message Routing
+      
+======================================================= */
+
+void net_host_player_route_msg(unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len)
+{
+	/*
+		// lock all player operations
+		
+	SDL_mutexP(net_host_player_lock);
+
+		// find player
+
+	idx=net_host_player_find_ip_addr(ip_addr,port);
+
+		// new player?
+
+	if (idx!=-1) {
+
+		// -> set idx here
+		
+	}
+
+		// put on queue
+
+	net_queue_push_message(net_host_players[idx].queue,action,net_node_uid,msg,msg_len);
+
+		// unlock player operation
+
+	SDL_mutexV(net_host_player_lock);
+	*/
+}
+
+
+/* =======================================================
+
+      Join and Leave Players
+      
+======================================================= */
+
+int net_host_player_join(unsigned long ip_addr,int port,bool local,char *name,int tint_color_idx,int character_idx)
+{
+	int							n;
+	net_host_player_type		*player;
+	network_reply_join			reply_join;
+	network_request_object_add	remote_add;
+
+		// lock all player operations
+		
+	SDL_mutexP(net_host_player_lock);
 	
 		// create new player
 		
 	player=&net_host_players[net_host_player_count];
-	
+
+		// players start in a non-ready state
+
+	player->ready=FALSE;
+
+		// connections
+		// includes a personal socket for sending to other clients
+
+	player->connect.sock=net_open_udp_socket();
+	if (player->connect.sock==D3_NULL_SOCKET) {
+		SDL_mutexV(net_host_player_lock);
+		return(-1);
+	}
+
+	player->connect.ip_addr=ip_addr;
+	player->connect.port=port;
+	player->connect.local=local;
+	player->connect.bot=FALSE;
+
+		// initialize the queue
+
+	net_queue_initialize(&player->queue);
+
+		// settings
+
 	player->remote_uid=server_next_remote_uid;
-	player->sock=sock;
 	player->score=0;
 	strcpy(player->name,name);
 	player->team_idx=net_team_none;
 	player->tint_color_idx=tint_color_idx;
 	player->character_idx=character_idx;
-
-	player->bot=FALSE;
 	
 	player->pnt.x=player->pnt.y=player->pnt.z=0;
-	
-	player->ready=FALSE;
 	
 	server_next_remote_uid++;
 	net_host_player_count++;
 	
-	net_node_uid=player->remote_uid;
+		// unlock player operations
+
+	SDL_mutexV(net_host_player_lock);
+	
+	return(player->remote_uid);
+}
+
+int net_host_player_join_bot(obj_type *obj)
+{
+	int						remote_uid;
+	net_host_player_type	*player;
+
+		// lock all player operations
+		
+	SDL_mutexP(net_host_player_lock);
+
+		// create new player
+		
+	player=&net_host_players[net_host_player_count];
+
+		// bots have no connections
+
+	player->connect.sock=D3_NULL_SOCKET;
+	player->connect.ip_addr=ip_addr;
+	player->connect.port=port;
+	player->connect.local=TRUE;
+	player->connect.bot=TRUE;
+
+		// bots don't use queues
+
+	net_queue_initialize_empty(queue);
+
+		// settings
+
+	player->remote_uid=server_next_remote_uid;
+	player->score=obj->score.score;
+	strcpy(player->name,obj->name);
+	player->team_idx=obj->team_idx;
+	player->tint_color_idx=0;
+	player->character_idx=0;
+	
+	memmove(&player->pnt,&obj->pnt,sizeof(d3pnt));
+	
+		// bots are automatically read
+
+	player->ready=TRUE;
+	
+	server_next_remote_uid++;
+	net_host_player_count++;
+
+		// unlock player operations
 	
 	SDL_mutexV(net_host_player_lock);
 	
-	return(net_node_uid);
+	return(player->remote_uid);
 }
 
-void net_host_node_ready(int net_node_uid)
+void net_host_player_ready(int net_node_uid)
 {
 	int				idx;
 	
@@ -184,7 +306,7 @@ void net_host_node_ready(int net_node_uid)
 	SDL_mutexV(net_host_player_lock);
 }
 
-void net_host_node_leave(int net_node_uid)
+void net_host_player_leave(int net_node_uid)
 {
 	int				idx;
 	char			name[name_str_len];
@@ -201,6 +323,10 @@ void net_host_node_leave(int net_node_uid)
 		return;
 	}
 
+		// shutdown the queue
+
+	net_queue_shutdown(&queue);
+
 		// remember name
 
 	strcpy(name,net_host_players[idx].name);
@@ -214,56 +340,6 @@ void net_host_node_leave(int net_node_uid)
 	net_host_player_count--;
 	
 	SDL_mutexV(net_host_player_lock);
-}
-
-/* =======================================================
-
-      Join Bots
-      
-======================================================= */
-
-int net_host_bot_join(obj_type *obj)
-{
-	int						remote_uid;
-	net_host_player_type	*player;
-
-		// lock all player operations
-		
-	SDL_mutexP(net_host_player_lock);
-	
-		// host full?
-		
-	if (net_host_player_count==host_max_remote_count) {
-		SDL_mutexV(net_host_player_lock);
-		return(-1);
-	}
-
-		// create new player
-		
-	player=&net_host_players[net_host_player_count];
-	
-	player->remote_uid=server_next_remote_uid;
-	player->sock=D3_NULL_SOCKET;
-	player->score=obj->score.score;
-	strcpy(player->name,obj->name);
-	player->team_idx=obj->team_idx;
-	player->tint_color_idx=0;
-	player->character_idx=0;
-	
-	player->bot=TRUE;
-	
-	memmove(&player->pnt,&obj->pnt,sizeof(d3pnt));
-	
-	player->ready=TRUE;		// bots are automatically ready
-	
-	server_next_remote_uid++;
-	net_host_player_count++;
-	
-	remote_uid=player->remote_uid;
-	
-	SDL_mutexV(net_host_player_lock);
-	
-	return(remote_uid);
 }
 
 /* =======================================================
@@ -362,12 +438,17 @@ void net_host_player_update(network_request_remote_update *update)
 void net_host_player_add_bots_to_list(void)
 {
 	int				n;
+	char			deny_reason[256];
 	obj_type		*obj;
 
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->type_idx==object_type_bot_multiplayer) obj->remote.uid=net_host_bot_join(obj);
+		if (obj->type_idx==object_type_bot_multiplayer) {
+			if (net_host_player_join_ok(obj->name,deny_reason)) {
+				obj->remote.uid=net_host_player_join_bot(obj);
+			}
+		}
 		obj++;
 	}
 }
@@ -426,52 +507,49 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 
 /* =======================================================
 
-      Send Packet to Other or All Players
+      Send Messages to Other or All Players
       
 ======================================================= */
 
-void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len)
+void net_host_player_send_message_others(int player_remote_uid,int action,unsigned char *msg,int msg_len)
 {
-	int						n,nsock;
-	d3socket				socks[host_max_remote_count];
+	int						n;
 	net_host_player_type	*player;
 	
-		// we build the list of other player's sockets
-		// inside the lock to deal with changing player list
-		// we then send outside the lock so we don't hold
-		// the lock too long
-		
 	SDL_mutexP(net_host_player_lock);
 	
-	nsock=0;
 	player=net_host_players;
 	
 	for (n=0;n!=net_host_player_count;n++) {
-		if ((player->remote_uid!=player_remote_uid) && (player->ready) && (!player->bot)) socks[nsock++]=player->sock;
+
+		if ((player->remote_uid!=player_remote_uid) && (player->ready)) {
+
+				// local -- supergumba
+
+			if (player->connect.local) {
+
+					// skip local bots
+
+				if (!player->connect.bot) {
+				//	net_client_push_queue_local(action,player_remote_uid,msg,msg_len);
+				}
+			}
+
+				// remote -- supergumba!
+
+			else {
+				//	if (net_send_ready(socks[n])) net_send_message(socks[n],action,player_remote_uid,msg,msg_len);
+			}
+
+		}
+
 		player++;
 	}
 	
 	SDL_mutexV(net_host_player_lock);
-	
-		// send to all other players
-	
-	for (n=0;n!=nsock;n++) {
-	
-			// local (hosting) player
-			
-		if (socks[n]==D3_NULL_SOCKET) {
-			net_client_push_queue_local(action,player_remote_uid,data,len);
-		}
-		
-			// remote joined players
-			
-		else {
-			if (net_send_ready(socks[n])) net_send_message(socks[n],action,player_remote_uid,data,len);
-		}
-	}
 }
 
-void net_host_player_send_all_packet(int action,unsigned char *data,int len)
+void net_host_player_send_message_all(int action,unsigned char *msg,int msg_len)
 {
-	net_host_player_send_others_packet(-1,action,data,len);
+	net_host_player_send_message_others(-1,action,msg,msg_len);
 }
