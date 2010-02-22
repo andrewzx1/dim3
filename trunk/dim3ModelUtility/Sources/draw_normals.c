@@ -126,7 +126,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	
 		// rotations and sways
 		
-	matrix_rotate_zyx(&rot_mat,draw_setup->ang.x,draw_setup->ang.y,draw_setup->ang.z);
+	matrix_rotate_xzy(&rot_mat,draw_setup->ang.x,draw_setup->ang.y,draw_setup->ang.z);
 		
 		// setup list
 		

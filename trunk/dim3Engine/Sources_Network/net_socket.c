@@ -322,10 +322,88 @@ bool net_send_ready(d3socket sock)
 
 /* =======================================================
 
+      Network Send and Recv Utilities
+      
+======================================================= */
+
+bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_node_uid,unsigned char *msg)
+{
+	int						len;
+	unsigned char			data[net_max_msg_size];
+	network_header			*head;
+	socklen_t				addr_in_len;
+	struct sockaddr_in		addr_in;
+
+		// read next datagram
+		
+	addr_in_len=sizeof(addr_in);
+	len=(int)recvfrom(sock,data,net_max_msg_size,0,(struct sockaddr*)&addr_in,&addr_in_len);
+	
+		// sock has closed
+		
+	if (len<0) return(FALSE);
+	
+		// setup return address
+		
+	if (ip_addr!=NULL) *ip_addr=addr_in.sin_addr.s_addr;
+	if (port!=NULL) *port=(int)ntohs(addr_in.sin_port);
+	
+		// no data?
+		
+	if (len==0) {
+		*action=-1;
+		return(TRUE);
+	}
+	
+		// get header and data
+		
+	head=(network_header*)data;
+	*action=head->action;
+	*net_node_uid=head->net_node_uid;
+	
+	memmove(msg,(data+sizeof(network_header)),head->len);
+
+	return(TRUE);
+}
+
+bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len)
+{
+	int						send_sz;
+	unsigned char			data[net_max_msg_size];
+	network_header			*head;
+	struct sockaddr_in		addr_in;
+	
+		// the header
+		
+	head=(network_header*)data;
+
+	head->len=htons((short)msg_len);
+	head->action=htons((short)action);
+	head->net_node_uid=htons((short)net_node_uid);
+	
+		// the data
+
+	if (msg_len!=0) memmove((data+sizeof(network_header)),data,msg_len);
+
+		// send message
+		
+	addr_in.sin_family=AF_INET;
+	addr_in.sin_port=htons((short)port);
+	addr_in.sin_addr.s_addr=ip_addr;
+	
+	send_sz=sizeof(network_header)+msg_len;
+		
+	return(sendto(sock,data,send_sz,0,(struct sockaddr*)&addr_in,sizeof(struct sockaddr_in))==send_sz);
+}
+
+/* =======================================================
+
       Network Send Utilities
       
 ======================================================= */
 
+
+// supergumba -- delete all this after fixing HTML sender
 int net_send_data(d3socket sock,unsigned char *data,int len)
 {
 	int				sent_len,total_len,retry_count;

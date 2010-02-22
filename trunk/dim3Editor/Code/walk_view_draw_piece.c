@@ -573,9 +573,7 @@ void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
 			cnt.z/=poly->ptsz;
 			
 				// draw the tangent
-				
-			/* supergumba -- for testing
-			
+			/*	
 			glColor4f(1.0f,0.0f,0.0f,1.0f);
 			
 			glBegin(GL_LINES);
@@ -592,7 +590,6 @@ void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
 			glVertex3i((cnt.x+(int)(poly->tangent_space.binormal.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.binormal.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.binormal.z*normal_vector_scale)));
 			glEnd();
 			*/
-			
 				// draw normal
 				
 			glColor4f(1.0f,0.0f,1.0f,1.0f);

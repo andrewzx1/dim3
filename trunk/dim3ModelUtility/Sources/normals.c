@@ -35,13 +35,21 @@ and can be sold or given away.
       
 ======================================================= */
 
+bool model_recalc_normals_compare_sign(float f1,float f2)
+{
+	if ((f1<0.0f) && (f2<0.0f)) return(TRUE);
+	if ((f1>=0.0f) && (f2>=0.0f)) return(TRUE);
+	return(FALSE);
+}
+
 void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_binormal)
 {
 	int					n,k,cnt;
     float				u10,u20,v10,v20,f_denom,f;
-	d3vct				p10,p20,vlft,vrgt,v_num;
+	bool				is_out;
+	d3vct				p10,p20,vlft,vrgt,v_num,dvct;
 	d3vct				*tangents,*tptr,*binormals,*bptr;
-	d3pnt				*pt,*pt_1,*pt_2;
+	d3pnt				*pt,*pt_1,*pt_2,center;
 	model_mesh_type		*mesh;
     model_vertex_type	*vertex;
 	model_trig_type		*trig;
@@ -94,15 +102,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		vector_subtract(&v_num,&vlft,&vrgt);
 
 		f_denom=(u10*v20)-(v10*u20);
-		
-		if (f_denom==0.0f) {
-			memmove(tptr,&v_num,sizeof(d3vct));
-		}
-		else {
-			vector_scalar_multiply(tptr,&v_num,(1.0f/f_denom));
-		}
-		
-		vector_normalize(tptr);
+		vector_scalar_multiply(tptr,&v_num,(1.0f/f_denom));
 
 			// calculate the binormal
 			// (u20xp10)-(u10xp20) / (v10*u20)-(u10*v20)
@@ -112,16 +112,8 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		vector_subtract(&v_num,&vlft,&vrgt);
 
 		f_denom=(v10*u20)-(u10*v20);
-
-		if (f_denom==0.0f) {
-			memmove(bptr,&v_num,sizeof(d3vct));
-		}
-		else {
-			vector_scalar_multiply(bptr,&v_num,(1.0f/f_denom));
-		}
-		
-		vector_normalize(bptr);
-			
+		vector_scalar_multiply(bptr,&v_num,(1.0f/f_denom));
+ 			
 		trig++;
 		tptr++;
 		bptr++;
@@ -165,7 +157,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 			bptr++;
 		}
 		
-		if (cnt!=0) {
+		if (cnt>1) {
 			f=(float)cnt;
 
 			avg_space.tangent.x/=f;
@@ -192,6 +184,59 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 	free(tangents);
 	free(binormals);
+	
+		// determine in-out to map flips
+		// skip if not calculating normals
+		
+	if (only_tangent_binormal) return;
+	
+		// determine center
+		
+	center.x=center.y=center.z=0;
+	vertex=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		center.x+=vertex->pnt.x;
+		center.y+=vertex->pnt.y;
+		center.z+=vertex->pnt.z;
+		vertex++;
+	}
+	
+	center.x/=mesh->nvertex;
+	center.y/=mesh->nvertex;
+	center.z/=mesh->nvertex;
+
+		// determine in/out and invert
+		
+	vertex=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+	
+		dvct.x=(float)fabs(vertex->pnt.x-center.x);
+		dvct.y=(float)fabs(vertex->pnt.y-center.y);
+		dvct.z=(float)fabs(vertex->pnt.z-center.z);
+		
+		if ((dvct.y>dvct.x) && (dvct.y>dvct.z)) {
+			is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.y-center.y),vertex->tangent_space.normal.y);
+		}
+		else {
+			if (dvct.x>dvct.z) {
+				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.x-center.x),vertex->tangent_space.normal.x);
+			}
+			else {
+				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.z-center.z),vertex->tangent_space.normal.z);
+			}
+		}
+		
+		if (!is_out) {
+			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
+			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
+			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
+		}
+		
+		vertex++;
+	}
+
 }
 
 void model_recalc_normals(model_type *model,bool only_tangent_binormal)

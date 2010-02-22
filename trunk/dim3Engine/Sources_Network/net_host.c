@@ -31,8 +31,11 @@ and can be sold or given away.
 
 #include "network.h"
 
+extern int					net_host_player_count;
+
 extern server_type			server;
 extern network_setup_type	net_setup;
+extern hud_type				hud;
 
 d3socket					host_socket;
 bool						host_complete;
@@ -93,12 +96,36 @@ void net_host_shutdown(void)
       
 ======================================================= */
 
+void net_host_info_request(unsigned long ip_addr,int port)
+{
+	network_reply_info		info;
+	
+	info.player_count=htons((short)net_host_player_count);
+	info.player_max_count=htons((short)host_max_remote_count);
+	strcpy(info.host_name,net_setup.host.name);
+	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
+	strcpy(info.proj_name,hud.proj_name);
+	strcpy(info.game_name,hud.net_game.games[net_setup.game_idx].name);
+	strcpy(info.map_name,net_setup.host.map_name);
+	
+	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_info,-1,(unsigned char*)&info,sizeof(network_reply_info));
+}
+
+/* =======================================================
+
+      Host Networking Listener Thread
+      
+======================================================= */
+
 int net_host_thread(void *arg)
 {
+	int					action,net_node_uid,port,len,err;
+	unsigned long		ip_addr;
+	unsigned char		data[net_max_msg_size];
 	d3socket			sock;
-	int					err;
-	socklen_t			addr_len;
-	struct sockaddr		addr;
+	socklen_t			addr_in_len;
+	struct sockaddr_in	addr_in;
+	network_header		*head;
 	SDL_Thread			*message_thread;
 	
 		// use host err_str to flag if errors occured
@@ -113,8 +140,6 @@ int net_host_thread(void *arg)
 		host_complete=TRUE;
 		return(0);
 	}
-	
-	net_socket_blocking(host_socket,TRUE);
 		
 		// bind
 
@@ -124,25 +149,35 @@ int net_host_thread(void *arg)
 		return(0);
 	}
 
-		// start listening
-		
-	err=listen(host_socket,256);
-	if (err!=0) {
-		net_close_socket(&host_socket);
-		sprintf(host_err_str,"Networking: Could not start listener on %s (error: %d)",net_setup.host.ip_resolve,errno);
-		host_complete=TRUE;
-		return(0);
-	}
-
 		// host is OK, free thread to run independantly
 		
 	host_complete=TRUE;
 	
-		// begin accepting clients
-		
-	addr_len=sizeof(struct sockaddr);
+		// begin waiting for messages
+		// we'll let it block until we have real data
+	
+	net_socket_blocking(host_socket,TRUE);
 	
 	while (TRUE) {
+	
+			// get message
+			// false return = host shutting down
+			
+		if (!net_recvfrom_mesage(host_socket,&ip_addr,&port,&action,&net_node_uid,data)) break;
+		
+			// reply to all info request
+			
+		if (action==net_action_request_info) {
+			net_host_info_request(ip_addr,port);
+			continue;
+		}
+		
+			// is there a player thread for this?
+			
+		// if not, make a thread, otherwise drop in proper queue
+		
+	
+/*
 		sock=accept(host_socket,&addr,&addr_len);
 		if (sock==-1) break;				// accept ending means socket has been closed and host shutting down
 		
@@ -152,6 +187,7 @@ int net_host_thread(void *arg)
 		
 		message_thread=SDL_CreateThread(net_host_client_handler_thread,(void*)sock);
 		if (message_thread==NULL) net_close_socket(&sock);
+		*/
 	}
 	
 	return(0);

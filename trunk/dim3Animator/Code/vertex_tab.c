@@ -169,14 +169,6 @@ static pascal OSStatus vertex_list_item_proc(ControlRef ctrl,DataBrowserItemID i
 			CFRelease(cfstr);
 			return(noErr);
 			
-		case kVertexNormalDBColumn:
-			i=itemID-1;
-			sprintf(txt,"(%.2f,%.2f,%.2f)",mesh->vertexes[i].tangent_space.normal.x,mesh->vertexes[i].tangent_space.normal.y,mesh->vertexes[i].tangent_space.normal.z);
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-			
 	}
 
 	return(errDataBrowserPropertyNotSupported);
@@ -262,8 +254,7 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 		// columns
 
 	add_db_column(vertex_list,"Vertexes",kVertexPosDBColumn,kDataBrowserTextType,150,0);
-	add_db_column(vertex_list,"Bones",kVertexBoneDBColumn,kDataBrowserTextType,150,1);
-	add_db_column(vertex_list,"Normals",kVertexNormalDBColumn,kDataBrowserTextType,150,2);
+	add_db_column(vertex_list,"Bones",kVertexBoneDBColumn,kDataBrowserTextType,300,1);
 	
 	vertex_list_notify_ignore=FALSE;
 }

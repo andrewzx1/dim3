@@ -283,9 +283,13 @@ void piece_add_obj_mesh(void)
 			dpt->z=(int)(fz*scale.z);
 		}
 		else {
-			dpt->x=r_min.x+(int)(((fx-min.x)/(max.x-min.x))*(float)(r_max.x-r_min.x));
-			dpt->y=r_min.y+(int)(((fy-min.y)/(max.y-min.y))*(float)(r_max.y-r_min.y));
-			dpt->z=r_min.z+(int)(((fz-min.z)/(max.z-min.z))*(float)(r_max.z-r_min.z));
+			dpt->x=r_min.x;
+			dpt->y=r_min.y;
+			dpt->z=r_min.z;
+			
+			if (max.x!=min.x) dpt->x=r_min.x+(int)(((fx-min.x)/(max.x-min.x))*(float)(r_max.x-r_min.x));
+			if (max.y!=min.y) dpt->y=r_min.y+(int)(((fy-min.y)/(max.y-min.y))*(float)(r_max.y-r_min.y));
+			if (max.z!=min.z) dpt->z=r_min.z+(int)(((fz-min.z)/(max.z-min.z))*(float)(r_max.z-r_min.z));
 		}
 		
 		dpt++;

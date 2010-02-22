@@ -48,6 +48,10 @@ extern void net_host_client_handle_info(int sock);
 
 bool net_host_broadcast_initialize(char *err_str)
 {
+	// supergumba -- can do away with all of this
+	
+	return(TRUE);
+	
 		// begin listener thread
 		
 	broadcast_listen_complete=FALSE;
@@ -78,6 +82,9 @@ bool net_host_broadcast_initialize(char *err_str)
 
 void net_host_broadcast_shutdown(void)
 {
+
+	return;		// supergumba
+	
 		// did broadcast listener never start?
 
 	if (broadcast_listen_socket==D3_NULL_SOCKET) return;
@@ -138,7 +145,7 @@ int net_host_broadcast_thread(void *arg)
 	while (TRUE) {
 
 			// anybody sent us a message?
-
+			
 		sz=(int)recvfrom(broadcast_listen_socket,msg,24,0,NULL,0);
 		if (sz!=24) break;
 	

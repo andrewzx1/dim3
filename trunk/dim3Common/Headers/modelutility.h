@@ -148,12 +148,12 @@ typedef struct		{
 						float							bone_factor;
 						d3pnt							pnt;
 						d3vct							major_dist,minor_dist;
-						tangent_space_type				tangent_space;
 					} model_vertex_type;
 					
 typedef struct		{
 						short							v[3];
 						float							gx[3],gy[3];
+						tangent_space_type				tangent_space[3];
 					} model_trig_type;
 					
 typedef struct		{

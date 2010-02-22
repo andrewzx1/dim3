@@ -272,7 +272,6 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 					offset=trig->v[t]*3;
 					
 					vp=vp_start+offset;
-					cp=cp_start+offset;
 
 					*vl++=*vp++;
 					*vl++=*vp++;
@@ -285,6 +284,20 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 					bp=bp_start+offset;
 					np=np_start+offset;
 
+/*
+					*tl++=1.0f;
+					*tl++=0.0f;
+					*tl++=0.0f;
+
+					*bl++=0.0f;
+					*bl++=1.0f;
+					*bl++=0.0f;
+
+					*nl++=0.0f;
+					*nl++=0.0f;
+					*nl++=1.0f;
+					
+*/
 					*tl++=*tp++;
 					*tl++=*tp++;
 					*tl++=*tp;
@@ -296,6 +309,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 					*nl++=*np++;
 					*nl++=*np++;
 					*nl++=*np;
+
 				}
 
 				trig++;
