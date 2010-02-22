@@ -2081,14 +2081,13 @@ void element_draw_table(element_type *element,int sel_id)
 	}
 	
 	if (element->setup.table.busy_str[0]!=0x0) {
-		col.r=col.g=col.b=1.0f;
+		col.r=col.g=col.b=0.0f;
 		gl_text_start(hud.font.text_size_small);
 		gl_text_draw(((lft+rgt)>>1),((top+bot)>>1),element->setup.table.busy_str,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
 	
-	col.r=col.g=col.b=0.8f;
-	view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,1.0f,lft,rgt,top,bot);
 }
 
 /* =======================================================
@@ -2359,7 +2358,7 @@ void element_click_text_box(element_type *element,int x,int y)
 		// get page sizes
 		
 	high=gl_text_get_char_height(hud.font.text_size_small);
-	page_count=element->high/high;
+	page_count=(element->high-5)/high;
 	
 		// is up and down OK?
 

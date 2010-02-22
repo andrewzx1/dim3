@@ -163,7 +163,7 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 	int				n,nvertex,
 					sx,sy,sz,lsz;
 	float			fx,fy,fz,flsz;
-	float			*pv,*pn;
+	float			*pv,*pt,*pb,*pn;
 	
 		// find normal line size
 		
@@ -176,21 +176,58 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 	
 		// draw normals
 	
-	glColor4f(1,0,1,1);
-	glLineWidth(2);
+	glLineWidth(2.0f);
 	
 	nvertex=model->meshes[mesh_idx].nvertex;
 	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
+	pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array;
+	pb=draw_setup->mesh_arrays[mesh_idx].gl_binormal_array;
 	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
 
-	glBegin(GL_LINES);
+	glColor4f(1,0,1,1);
 	
+	glBegin(GL_LINES);
+
 	for (n=0;n!=nvertex;n++) {
 		if (vertex_check_hide_mask(mesh_idx,n)) {
 			pv+=3;
+			pt+=3;
+			pb+=3;
 			pn+=3;
 			continue;
 		}
+/*		
+			// tangent
+
+		glColor4f(1.0f,0.0f,0.0f,1.0f);
+		
+		fx=*pv;
+		fy=*(pv+1);
+		fz=*(pv+2);
+		glVertex3f(fx,fy,fz);
+		
+		fx+=((*pt++)*flsz);
+		fy+=((*pt++)*flsz);
+		fz+=((*pt++)*flsz);
+		glVertex3f(fx,fy,fz);
+		
+			// binormal
+			
+		glColor4f(0.0f,0.0f,1.0f,1.0f);
+		
+		fx=*pv;
+		fy=*(pv+1);
+		fz=*(pv+2);
+		glVertex3f(fx,fy,fz);
+		
+		fx+=((*pb++)*flsz);
+		fy+=((*pb++)*flsz);
+		fz+=((*pb++)*flsz);
+		glVertex3f(fx,fy,fz);
+*/
+			// normal
+			
+		glColor4f(1.0f,0.0f,1.0f,1.0f);
 		
 		fx=*pv++;
 		fy=*pv++;
@@ -204,7 +241,8 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 	}
 	
 	glEnd();
-	glLineWidth(1);
+	
+	glLineWidth(1.0f);
 }
 
 /* =======================================================

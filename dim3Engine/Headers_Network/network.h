@@ -60,6 +60,10 @@ extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);
 extern void net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
 
+extern bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_node_uid,unsigned char *msg);
+extern bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len);
+
+
 extern char* net_get_http_file(char *host_name,int port,char *url,char *err_str);
 
 //
