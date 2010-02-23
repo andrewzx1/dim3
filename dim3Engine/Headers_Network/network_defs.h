@@ -95,8 +95,7 @@ typedef struct		{
 #define net_max_msg_size								2048
 
 typedef struct		{
-						short							len,action,
-														net_node_uid;
+						short							len,action,player_uid;
 					} network_header;
 
 //
@@ -104,18 +103,16 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								port;
+						int								uid,port;
 						unsigned long					ip_addr;
-						bool							local,bot;
+						bool							local,bot,ready;
 						d3socket						sock;
 					} net_host_player_connect_type;
 
 typedef struct		{
-						int								remote_uid,team_idx,
-														tint_color_idx,character_idx,
-														score;
+						int								team_idx,tint_color_idx,
+														character_idx,score;
 						char							name[name_str_len];
-						bool							ready;
 						d3pnt							pnt;
 						net_host_player_connect_type	connect;
 						net_queue_type					queue;
@@ -139,7 +136,7 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
-						int								net_node_uid,
+						int								player_uid,
 														game_idx,option_flags;
 						network_setup_host_type			host;
 						network_setup_client_type		client;
@@ -149,10 +146,10 @@ typedef struct		{
 // special remote unqiue IDs
 //
 
-#define net_remote_uid_host								0
-#define net_remote_uid_none								1
-#define net_remote_uid_client_start						1000
-#define net_remote_uid_map_bot_start					2000
+#define net_player_uid_none								0
+#define net_player_uid_host								1
+#define net_player_uid_client_start						1000
+#define net_player_uid_map_bot_start					2000
 
 //
 // messages actions
@@ -226,7 +223,7 @@ typedef struct		{
 
 typedef struct		{
 						int								pnt_x,pnt_y,pnt_z;
-						short							remote_obj_uid,bot,score,
+						short							player_uid,bot,score,
 														team_idx,tint_color_idx,character_idx;
 						char							name[name_str_len];
 					} network_request_object_add;
@@ -256,7 +253,7 @@ typedef struct		{
 
 typedef struct		{
 						int								map_tick,option_flags;
-						short							join_uid,remote_count,bot_count;
+						short							player_uid,remote_count,bot_count;
 						char							game_name[name_str_len],map_name[name_str_len],
 														deny_reason[64];
 						network_reply_join_remotes		remotes;

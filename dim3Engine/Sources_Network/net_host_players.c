@@ -36,7 +36,7 @@ extern char team_colors[][16];
 extern server_type		server;
 extern hud_type			hud;
 
-int						net_host_player_count,server_next_remote_uid;
+int						net_host_player_count,net_host_next_uid;
 net_host_player_type	net_host_players[host_max_remote_count];
 
 SDL_mutex				*net_host_player_lock;
@@ -50,7 +50,7 @@ SDL_mutex				*net_host_player_lock;
 void net_host_player_initialize(void)
 {
 	net_host_player_count=0;
-	server_next_remote_uid=net_remote_uid_client_start;
+	net_host_next_uid=net_player_uid_client_start;
 	
 	net_host_player_lock=SDL_CreateMutex();
 }
@@ -66,7 +66,7 @@ void net_host_player_shutdown(void)
       
 ======================================================= */
 
-int net_host_player_find(int remote_uid)
+int net_host_player_find(int player_uid)
 {
 	int						n;
 	net_host_player_type	*player;
@@ -74,7 +74,7 @@ int net_host_player_find(int remote_uid)
 	player=net_host_players;
 	
 	for (n=0;n!=net_host_player_count;n++) {
-		if (player->remote_uid==remote_uid) return(n);
+		if (player->connect.uid==player_uid) return(n);
 		player++;
 	}
 	
@@ -98,11 +98,11 @@ int net_host_player_find_ip_addr(unsigned long ip_addr,int port)
 
 /* =======================================================
 
-      Player Join OK?
+      Player Add OK?
       
 ======================================================= */
 
-bool net_host_player_join_ok(char *name,char *deny_reason)
+bool net_host_player_add_ok(char *name,char *deny_reason)
 {
 	int						n;
 	net_host_player_type	*player;
@@ -110,7 +110,7 @@ bool net_host_player_join_ok(char *name,char *deny_reason)
 		// host full?
 		
 	if (net_host_player_count==host_max_remote_count) {
-		strcpy(deny_reason,"Server is full");
+		strcpy(deny_reason,"Host is full");
 		return(FALSE);
 	}
 
@@ -140,52 +140,13 @@ bool net_host_player_join_ok(char *name,char *deny_reason)
 
 /* =======================================================
 
-      Message Routing
+      Add and Remove Players
       
 ======================================================= */
 
-void net_host_player_route_msg(unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len)
+int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,int tint_color_idx,int character_idx)
 {
-	/*
-		// lock all player operations
-		
-	SDL_mutexP(net_host_player_lock);
-
-		// find player
-
-	idx=net_host_player_find_ip_addr(ip_addr,port);
-
-		// new player?
-
-	if (idx!=-1) {
-
-		// -> set idx here
-		
-	}
-
-		// put on queue
-
-	net_queue_push_message(net_host_players[idx].queue,action,net_node_uid,msg,msg_len);
-
-		// unlock player operation
-
-	SDL_mutexV(net_host_player_lock);
-	*/
-}
-
-
-/* =======================================================
-
-      Join and Leave Players
-      
-======================================================= */
-
-int net_host_player_join(unsigned long ip_addr,int port,bool local,char *name,int tint_color_idx,int character_idx)
-{
-	int							n;
 	net_host_player_type		*player;
-	network_reply_join			reply_join;
-	network_request_object_add	remote_add;
 
 		// lock all player operations
 		
@@ -197,7 +158,7 @@ int net_host_player_join(unsigned long ip_addr,int port,bool local,char *name,in
 
 		// players start in a non-ready state
 
-	player->ready=FALSE;
+	player->connect.ready=FALSE;
 
 		// connections
 		// includes a personal socket for sending to other clients
@@ -212,6 +173,7 @@ int net_host_player_join(unsigned long ip_addr,int port,bool local,char *name,in
 	player->connect.port=port;
 	player->connect.local=local;
 	player->connect.bot=FALSE;
+	player->connect.uid=net_host_next_uid;
 
 		// initialize the queue
 
@@ -219,7 +181,6 @@ int net_host_player_join(unsigned long ip_addr,int port,bool local,char *name,in
 
 		// settings
 
-	player->remote_uid=server_next_remote_uid;
 	player->score=0;
 	strcpy(player->name,name);
 	player->team_idx=net_team_none;
@@ -228,19 +189,18 @@ int net_host_player_join(unsigned long ip_addr,int port,bool local,char *name,in
 	
 	player->pnt.x=player->pnt.y=player->pnt.z=0;
 	
-	server_next_remote_uid++;
+	net_host_next_uid++;
 	net_host_player_count++;
 	
 		// unlock player operations
 
 	SDL_mutexV(net_host_player_lock);
 	
-	return(player->remote_uid);
+	return(player->connect.uid);
 }
 
-int net_host_player_join_bot(obj_type *obj)
+int net_host_player_add_bot(obj_type *obj)
 {
-	int						remote_uid;
 	net_host_player_type	*player;
 
 		// lock all player operations
@@ -258,6 +218,7 @@ int net_host_player_join_bot(obj_type *obj)
 	player->connect.port=-1;
 	player->connect.local=TRUE;
 	player->connect.bot=TRUE;
+	player->connect.uid=net_host_next_uid;
 
 		// bots don't use queues
 
@@ -265,7 +226,6 @@ int net_host_player_join_bot(obj_type *obj)
 
 		// settings
 
-	player->remote_uid=server_next_remote_uid;
 	player->score=obj->score.score;
 	strcpy(player->name,obj->name);
 	player->team_idx=obj->team_idx;
@@ -276,37 +236,19 @@ int net_host_player_join_bot(obj_type *obj)
 	
 		// bots are automatically read
 
-	player->ready=TRUE;
+	player->connect.ready=TRUE;
 	
-	server_next_remote_uid++;
+	net_host_next_uid++;
 	net_host_player_count++;
 
 		// unlock player operations
 	
 	SDL_mutexV(net_host_player_lock);
 	
-	return(player->remote_uid);
+	return(player->connect.uid);
 }
 
-void net_host_player_ready(int net_node_uid)
-{
-	int				idx;
-	
-		// lock all player operations
-		
-	SDL_mutexP(net_host_player_lock);
-		
-		// set player ready state
-		
-	idx=net_host_player_find(net_node_uid);
-	if (idx!=-1) net_host_players[idx].ready=TRUE;
-	
-		// unlock player operation
-		
-	SDL_mutexV(net_host_player_lock);
-}
-
-void net_host_player_leave(int net_node_uid)
+void net_host_player_remove(int player_uid)
 {
 	int						idx;
 	char					name[name_str_len];
@@ -318,7 +260,7 @@ void net_host_player_leave(int net_node_uid)
 		
 		// find player
 		
-	idx=net_host_player_find(net_node_uid);
+	idx=net_host_player_find(player_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -342,6 +284,30 @@ void net_host_player_leave(int net_node_uid)
 	
 	net_host_player_count--;
 	
+	SDL_mutexV(net_host_player_lock);
+}
+
+/* =======================================================
+
+      Player Ready State
+      
+======================================================= */
+
+void net_host_player_ready(int net_node_uid)
+{
+	int				idx;
+	
+		// lock all player operations
+		
+	SDL_mutexP(net_host_player_lock);
+		
+		// set player ready state
+		
+	idx=net_host_player_find(net_node_uid);
+	if (idx!=-1) net_host_players[idx].connect.ready=TRUE;
+	
+		// unlock player operation
+		
 	SDL_mutexV(net_host_player_lock);
 }
 
@@ -434,35 +400,11 @@ void net_host_player_update(network_request_remote_update *update)
 
 /* =======================================================
 
-      Add bots to player list
-      
-======================================================= */
-
-void net_host_player_add_bots_to_list(void)
-{
-	int				n;
-	char			deny_reason[256];
-	obj_type		*obj;
-
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
-		if (obj->type_idx==object_type_bot_multiplayer) {
-			if (net_host_player_join_ok(obj->name,deny_reason)) {
-				obj->remote.uid=net_host_player_join_bot(obj);
-			}
-		}
-		obj++;
-	}
-}
-
-/* =======================================================
-
       Build Remote List for Join Replies
       
 ======================================================= */
 
-void net_host_player_create_remote_list(int player_remote_uid,network_reply_join_remotes *remotes)
+void net_host_player_create_remote_list(int player_uid,network_reply_join_remotes *remotes)
 {
 	int							n,cnt;
 	net_host_player_type		*player;
@@ -481,9 +423,9 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 	
 	for (n=0;n!=net_host_player_count;n++) {
 
-		if (player->remote_uid!=player_remote_uid) {
+		if (player->connect.uid!=player_uid) {
 
-			obj_add->remote_obj_uid=htons((short)player->remote_uid);
+			obj_add->player_uid=htons((short)player->connect.uid);
 			strcpy(obj_add->name,player->name);
 			obj_add->bot=htons((short)(player->connect.bot?1:0));
 			obj_add->team_idx=htons((short)player->team_idx);
@@ -510,11 +452,79 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 
 /* =======================================================
 
+      Message Routing
+      
+======================================================= */
+
+void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int msg_len)
+{
+	int				idx;
+
+		// lock all player operations
+		
+	SDL_mutexP(net_host_player_lock);
+
+		// find player
+
+	idx=net_host_player_find(player_uid);
+	if (idx!=-1) {
+		SDL_mutexV(net_host_player_lock);
+		return;
+	}
+		// put on queue
+
+	net_queue_push_message(&net_host_players[idx].queue,action,player_uid,msg,msg_len);
+
+		// unlock player operation
+
+	SDL_mutexV(net_host_player_lock);
+}
+
+bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int *msg_len)
+{
+	int				idx,queue_player_uid;
+	bool			has_msg;
+
+		// lock all player operations
+		
+	SDL_mutexP(net_host_player_lock);
+
+		// find player
+
+	idx=net_host_player_find(player_uid);
+	if (idx!=-1) {
+		SDL_mutexV(net_host_player_lock);
+		return(FALSE);
+	}
+		// read from queue
+
+	has_msg=net_queue_check_message(&net_host_players[idx].queue,action,&queue_player_uid,msg,msg_len);
+
+		// unlock player operation
+
+	SDL_mutexV(net_host_player_lock);
+
+	return(has_msg);
+}
+
+/* =======================================================
+
+      Player Thread
+      
+======================================================= */
+
+void net_host_player_start_thread(int player_uid)
+{
+	SDL_CreateThread(net_host_client_handler_thread,(void*)player_uid);
+}
+
+/* =======================================================
+
       Send Messages to Other or All Players
       
 ======================================================= */
 
-void net_host_player_send_message_others(int player_remote_uid,int action,unsigned char *msg,int msg_len)
+void net_host_player_send_message_others(int player_uid,int action,unsigned char *msg,int msg_len)
 {
 	int						n;
 	net_host_player_type	*player;
@@ -525,7 +535,7 @@ void net_host_player_send_message_others(int player_remote_uid,int action,unsign
 	
 	for (n=0;n!=net_host_player_count;n++) {
 
-		if ((player->remote_uid!=player_remote_uid) && (player->ready)) {
+		if ((player->connect.uid!=player_uid) && (player->connect.ready)) {
 
 				// local -- supergumba
 

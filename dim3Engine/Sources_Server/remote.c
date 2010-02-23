@@ -96,7 +96,7 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	obj->pnt.y=ntohl(add->pnt_y);
 	obj->pnt.z=ntohl(add->pnt_z);
 
-	obj->remote.uid=(signed short)ntohs(add->remote_obj_uid);
+	obj->remote.uid=(signed short)ntohs(add->player_uid);
 	obj->remote.last_update=game_time_get();
 	obj->remote.talking=FALSE;
 	
@@ -929,7 +929,7 @@ void remote_add_map_bots(void)
 	
 		// create remote IDs
 		
-	uid=net_remote_uid_map_bot_start;
+	uid=net_player_uid_map_bot_start;
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {

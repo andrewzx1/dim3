@@ -48,21 +48,18 @@ extern void net_ip_local_broadcast(char *ip,char *broad_ip);
 // sockets
 //
 
-extern d3socket net_open_tcp_socket(void);
 extern d3socket net_open_udp_socket(void);
 extern void net_close_socket(d3socket *sock);
 extern void net_socket_blocking(d3socket sock,bool blocking);
 extern void net_socket_enable_broadcast(d3socket sock);
-extern bool net_connect(d3socket sock,char *ip,int port,int secs,char *err_str);
 extern bool net_bind(d3socket sock,char *ip,int port,char *err_str);
 extern bool net_bind_any(d3socket sock,int port,char *err_str);
 extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);
 extern void net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
 
-extern bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_node_uid,unsigned char *msg,int *msg_len);
-extern bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len);
-
+extern bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *player_uid,unsigned char *msg,int *msg_len);
+extern bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int player_uid,unsigned char *msg,int msg_len);
 
 extern char* net_get_http_file(char *host_name,int port,char *url,char *err_str);
 
@@ -75,7 +72,7 @@ extern void net_queue_initialize_empty(net_queue_type *queue);
 extern void net_queue_shutdown(net_queue_type *queue);
 extern bool net_queue_feed(d3socket sock,net_queue_type *queue);
 extern bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsigned char *msg_data,int msg_len);
-extern bool net_queue_check_message(net_queue_type *queue,int *action,int *net_node_uid,unsigned char *msg_data,int *msg_data_len);
+extern bool net_queue_check_message(net_queue_type *queue,int *action,int *player_uid,unsigned char *msg_data,int *msg_data_len);
 
 //
 // hosting
@@ -83,7 +80,8 @@ extern bool net_queue_check_message(net_queue_type *queue,int *action,int *net_n
 
 extern bool net_host_initialize(char *err_str);
 extern void net_host_shutdown(void);
-extern int net_host_thread(void *arg);
+
+extern void net_host_player_add_bots(void);
 
 extern void net_host_client_handle_leave(int net_node_uid);
 extern void net_host_client_handle_set_team(int net_node_uid,network_request_team *team);
@@ -107,20 +105,22 @@ extern int net_host_client_handle_local_join(network_request_join *request_join,
 extern void net_host_player_initialize(void);
 extern void net_host_player_shutdown(void);
 
-extern int net_host_player_find(int remote_uid);
+extern int net_host_player_find(int player_uid);
 extern int net_host_player_find_ip_addr(unsigned long ip_addr,int port);
-extern bool net_host_player_join_ok(char *name,char *deny_reason);
 
-extern void net_host_player_route_msg(unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len);
+extern bool net_host_player_add_ok(char *name,char *deny_reason);
+extern int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,int tint_color_idx,int character_idx);
+extern int net_host_player_add_bot(obj_type *obj);
+extern void net_host_player_remove(int player_uid);
 
-extern int net_host_player_join(unsigned long ip_addr,int port,bool local,char *name,int tint_color_idx,int character_idx);
-extern int net_host_player_join_bot(obj_type *obj);
 extern void net_host_player_ready(int net_node_uid);
-extern void net_host_player_leave(int net_node_uid);
-extern void net_host_player_add_bots_to_list(void);
-extern void net_host_player_create_remote_list(int player_remote_uid,network_reply_join_remotes *remotes);
+extern void net_host_player_create_remote_list(int player_uid,network_reply_join_remotes *remotes);
 
-extern void net_host_player_send_message_others(int player_remote_uid,int action,unsigned char *msg,int msg_len);
+extern void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int msg_len);
+extern bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int *msg_len);
+extern void net_host_player_start_thread(int player_uid);
+
+extern void net_host_player_send_message_others(int player_uid,int action,unsigned char *msg,int msg_len);
 extern void net_host_player_send_message_all(int action,unsigned char *data,int len);
 
 extern void net_host_player_update_team(network_request_team *team);
@@ -130,7 +130,7 @@ extern void net_host_player_update(network_request_remote_update *update);
 // client host pinging and joining
 //
 
-extern bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes);
+extern int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes);
 extern void net_client_join_host_end(void);
 
 //
