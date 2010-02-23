@@ -160,10 +160,11 @@ void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_setup)
 
 void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
-	int				n,nvertex,
+	int				n,k,ntrig,
 					sx,sy,sz,lsz;
 	float			fx,fy,fz,flsz;
 	float			*pv,*pt,*pb,*pn;
+	model_trig_type	*trig;
 	
 		// find normal line size
 		
@@ -178,8 +179,6 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 	
 	glLineWidth(2.0f);
 	
-	nvertex=model->meshes[mesh_idx].nvertex;
-	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
 	pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array;
 	pb=draw_setup->mesh_arrays[mesh_idx].gl_binormal_array;
 	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
@@ -187,57 +186,66 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 	glColor4f(1,0,1,1);
 	
 	glBegin(GL_LINES);
+	
+	ntrig=model->meshes[mesh_idx].ntrig;
+	trig=model->meshes[mesh_idx].trigs;
 
-	for (n=0;n!=nvertex;n++) {
-		if (vertex_check_hide_mask(mesh_idx,n)) {
-			pv+=3;
-			pt+=3;
-			pb+=3;
-			pn+=3;
-			continue;
-		}
+	for (n=0;n!=ntrig;n++) {
+	
+		for (k=0;k!=3;k++) {
+		
+				// vertex hidden?
+				
+			if (vertex_check_hide_mask(mesh_idx,trig->v[k])) {
+				pt+=3;
+				pb+=3;
+				pn+=3;
+				continue;
+			}
+			
+				// vertex
+				
+			pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
+			fx=*pv++;
+			fy=*pv++;
+			fz=*pv;
+			
 /*		
-			// tangent
+				// tangent
 
-		glColor4f(1.0f,0.0f,0.0f,1.0f);
-		
-		fx=*pv;
-		fy=*(pv+1);
-		fz=*(pv+2);
-		glVertex3f(fx,fy,fz);
-		
-		fx+=((*pt++)*flsz);
-		fy+=((*pt++)*flsz);
-		fz+=((*pt++)*flsz);
-		glVertex3f(fx,fy,fz);
-		
-			// binormal
+			glColor4f(1.0f,0.0f,0.0f,1.0f);
 			
-		glColor4f(0.0f,0.0f,1.0f,1.0f);
-		
-		fx=*pv;
-		fy=*(pv+1);
-		fz=*(pv+2);
-		glVertex3f(fx,fy,fz);
-		
-		fx+=((*pb++)*flsz);
-		fy+=((*pb++)*flsz);
-		fz+=((*pb++)*flsz);
-		glVertex3f(fx,fy,fz);
-*/
-			// normal
+			glVertex3f(fx,fy,fz);
 			
-		glColor4f(1.0f,0.0f,1.0f,1.0f);
+			fx+=((*pt++)*flsz);
+			fy+=((*pt++)*flsz);
+			fz+=((*pt++)*flsz);
+			glVertex3f(fx,fy,fz);
+			
+				// binormal
+				
+			glColor4f(0.0f,0.0f,1.0f,1.0f);
+			
+			glVertex3f(fx,fy,fz);
+			
+			fx+=((*pb++)*flsz);
+			fy+=((*pb++)*flsz);
+			fz+=((*pb++)*flsz);
+			glVertex3f(fx,fy,fz);
+	*/
+				// normal
+				
+			glColor4f(1.0f,0.0f,1.0f,1.0f);
+			
+			glVertex3f(fx,fy,fz);
+			
+			fx+=((*pn++)*flsz);
+			fy+=((*pn++)*flsz);
+			fz+=((*pn++)*flsz);
+			glVertex3f(fx,fy,fz);
+		}
 		
-		fx=*pv++;
-		fy=*pv++;
-		fz=*pv++;
-		glVertex3f(fx,fy,fz);
-		
-		fx+=((*pn++)*flsz);
-		fy+=((*pn++)*flsz);
-		fz+=((*pn++)*flsz);
-		glVertex3f(fx,fy,fz);
+		trig++;
 	}
 	
 	glEnd();

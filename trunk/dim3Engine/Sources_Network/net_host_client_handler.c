@@ -134,7 +134,7 @@ int net_host_client_handler_thread(void *arg)
 	
 		// get player from argument
 		
-	player=(net_host_player_type)arg;
+	player=(net_host_player_type*)arg;
 	
 		// no network node until join request
 		

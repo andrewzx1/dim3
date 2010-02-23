@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern int					net_host_player_count;
 
+extern map_type				map;
 extern server_type			server;
 extern network_setup_type	net_setup;
 extern hud_type				hud;
@@ -192,8 +193,7 @@ void net_host_join_request(unsigned long ip_addr,int port,network_request_join *
 	}
 
 	return(net_node_uid);
-
-
+}
 
 /* =======================================================
 
@@ -203,7 +203,7 @@ void net_host_join_request(unsigned long ip_addr,int port,network_request_join *
 
 int net_host_thread(void *arg)
 {
-	int					action,net_node_uid,port,len,err;
+	int					action,net_node_uid,port,msg_len,err;
 	unsigned long		ip_addr;
 	unsigned char		msg[net_max_msg_size];
 	d3socket			sock;

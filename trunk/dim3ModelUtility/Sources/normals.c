@@ -229,7 +229,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 	free(tangents);
 	free(binormals);
 
-	/* supergumba
 		// determine in-out to map flips
 		// skip if not calculating normals
 		
@@ -253,35 +252,39 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 		// determine in/out and invert
 		
-	vertex=mesh->vertexes;
+	trig=mesh->trigs;
 
-	for (n=0;n!=mesh->nvertex;n++) {
+	for (n=0;n!=mesh->ntrig;n++) {
 	
-		dvct.x=(float)fabs(vertex->pnt.x-center.x);
-		dvct.y=(float)fabs(vertex->pnt.y-center.y);
-		dvct.z=(float)fabs(vertex->pnt.z-center.z);
+		for (k=0;k!=3;k++) {
 		
-		if ((dvct.y>dvct.x) && (dvct.y>dvct.z)) {
-			is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.y-center.y),vertex->tangent_space.normal.y);
-		}
-		else {
-			if (dvct.x>dvct.z) {
-				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.x-center.x),vertex->tangent_space.normal.x);
+			vertex=&mesh->vertexes[trig->v[k]];
+	
+			dvct.x=(float)fabs(vertex->pnt.x-center.x);
+			dvct.y=(float)fabs(vertex->pnt.y-center.y);
+			dvct.z=(float)fabs(vertex->pnt.z-center.z);
+			
+			if ((dvct.y>dvct.x) && (dvct.y>dvct.z)) {
+				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.y-center.y),trig->tangent_space[k].normal.y);
 			}
 			else {
-				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.z-center.z),vertex->tangent_space.normal.z);
+				if (dvct.x>dvct.z) {
+					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.x-center.x),trig->tangent_space[k].normal.x);
+				}
+				else {
+					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.z-center.z),trig->tangent_space[k].normal.z);
+				}
+			}
+			
+			if (!is_out) {
+				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
+				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
+				trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
 			}
 		}
 		
-		if (!is_out) {
-			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
-			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
-			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
-		}
-		
-		vertex++;
+		trig++;
 	}
-	*/
 }
 
 void model_recalc_normals(model_type *model,bool only_tangent_binormal)

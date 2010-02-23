@@ -53,7 +53,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 	model_vertex_type		*vertex;
     model_trig_type			*trig;
 	model_material_type		*material;
-	d3vct					*normal;
+	d3vct					*normal,pnormal[obj_max_face_vertex];
 	
 		// clear mesh materials
     
@@ -127,8 +127,6 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             
             vertex->major_bone_idx=vertex->minor_bone_idx=-1;
             vertex->bone_factor=1;
-			
-			vertex->tangent_space.normal.x=vertex->tangent_space.normal.y=vertex->tangent_space.normal.z=0.0f;
         
             vertex++;
             nvertex++;
@@ -284,13 +282,10 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 				pgx[npt]=obj_gx[t];
 				pgy[npt]=1-obj_gy[t];
             }
-			
-				// if the face point had a normal, use that
-				// to override the vertexe normal
 				
 			if (vnstr[0]!=0x0) {
 				t=atoi(vnstr)-1;
-				memmove(&model.meshes[cur_mesh].vertexes[pvtx[npt]].tangent_space.normal,&obj_normals[t],sizeof(d3vct));
+				memmove(&pnormal[npt],&obj_normals[t],sizeof(d3vct));
 			}
 			
             npt++;
@@ -314,6 +309,10 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             trig->gy[0]=pgy[0];
             trig->gy[1]=pgy[k+1];
             trig->gy[2]=pgy[k+2];
+			
+			memmove(&trig->tangent_space[0].normal,&pnormal[0],sizeof(d3vct));
+			memmove(&trig->tangent_space[1].normal,&pnormal[k+1],sizeof(d3vct));
+			memmove(&trig->tangent_space[2].normal,&pnormal[k+2],sizeof(d3vct));
             
             trig++;
             ntrig++;

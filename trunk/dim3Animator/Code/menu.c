@@ -37,7 +37,7 @@ extern int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
 								shift_x,shift_y,magnify_z,drag_bone_mode,
 								play_animate_blend_idx[max_model_blend_animation];
 extern float					ang_y,ang_x;
-extern bool						done,fileopen,model_box_on,model_bump_on,model_normal_on,
+extern bool						done,fileopen,model_box_on,model_normal_on,
 								model_bone_drag_on,play_animate,play_animate_blend,model_show_first_mesh;
 							
 extern model_type				model;
@@ -71,7 +71,6 @@ void menu_start(void)
 	draw_type=dt_model;
 	model_show_first_mesh=FALSE;
     model_box_on=TRUE;
-	model_bump_on=TRUE;
 	model_normal_on=FALSE;
 	model_bone_drag_on=FALSE;
 	drag_bone_mode=drag_bone_mode_rotate;

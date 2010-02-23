@@ -482,7 +482,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	
 		// diffuse
 		
-	strcat(buf,"diffuse=vec3(max(dot(tangentSpaceNormal,combineLightVector),0.0));\n");
+	strcat(buf,"diffuse=vec3(max(dot(combineLightVector,tangentSpaceNormal),0.0));\n");
 	strcat(buf,"diffuse=max((diffuse*1.2),dim3AmbientColor);\n");
 	strcat(buf,"diffuse=clamp(diffuse,0.0,1.0);\n");
 	
