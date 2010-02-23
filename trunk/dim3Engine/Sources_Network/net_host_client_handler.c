@@ -61,7 +61,7 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 	tint_color_idx=htons((short)request_join->tint_color_idx);
 	character_idx=htons((short)request_join->character_idx);
 
-	net_node_uid=net_host_player_join(-1,-1,TRUE,request_join->name,tint_color_idx,character_idx);
+	net_node_uid=net_host_player_add(-1,-1,TRUE,request_join->name,tint_color_idx,character_idx);
 	if (net_node_uid==-1) return(-1);
 
 		// send all other players on host the new player for remote add
@@ -73,20 +73,21 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 	remote_add.character_idx=htons((short)request_join->character_idx);
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
+
 	net_host_player_send_message_others(net_node_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
 
 	return(net_node_uid);
 }
 
-void net_host_client_handle_leave(int net_node_uid)
+void net_host_client_handle_leave(int player_uid)
 {
 		// leave the host
 		
-	net_host_player_leave(net_node_uid);
+	net_host_player_remove(player_uid);
 	
 		// now send all other players on host the remote remove
 		
-	net_host_player_send_message_others(net_node_uid,net_action_request_remote_remove,NULL,0);
+	net_host_player_send_message_others(player_uid,net_action_request_remote_remove,NULL,0);
 }
 
 void net_host_client_handle_set_team(int net_node_uid,network_request_team *team)
@@ -113,7 +114,7 @@ void net_host_client_handle_group_synch(int sock)
 
 		if (map.groups[n].move.was_moved) {
 			group_moves_synch_with_client(n,&reply_synch);
-			net_send_message(sock,net_action_reply_group_synch,net_remote_uid_host,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
+			net_send_message(sock,net_action_reply_group_synch,net_player_uid_host,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
 		}
 
 	}
@@ -127,32 +128,20 @@ void net_host_client_handle_group_synch(int sock)
 
 int net_host_client_handler_thread(void *arg)
 {
-	d3socket				sock;
-	int						net_node_uid,action,len;
-	unsigned char			data[net_max_msg_size];
-	net_host_player_type	*player;
+	int						player_uid,action,msg_len;
+	unsigned char			msg[net_max_msg_size];
 	
-		// get player from argument
+		// get player uid from argument
 		
-	player=(net_host_player_type*)arg;
-	
-		// no network node until join request
-		
-	net_node_uid=-1;
+	player_uid=(int)arg;
 	
 		// wait for messages
 		
 	while (TRUE) {
 
-			// feed the queue and get messages
-		// supergumba -- feed from outside
-		if (!net_queue_feed(sock,&player->queue)) {
-			if (net_node_uid!=-1) net_host_client_handle_leave(net_node_uid);
-			net_node_uid=-1;
-			break;
-		}
-			
-		if (!net_queue_check_message(&player->queue,&action,&net_node_uid,data,&len)) {
+			// check player queue
+
+		if (!net_host_player_check_msg(player_uid,&action,msg,&msg_len)) {
 			usleep(host_no_data_u_wait);
 			continue;
 		}
@@ -162,20 +151,20 @@ int net_host_client_handler_thread(void *arg)
 		switch (action) {
 		
 			case net_action_request_ready:
-				net_host_player_ready(net_node_uid);
+				net_host_player_ready(player_uid);
 				break;
 				
 			case net_action_request_team:
-				net_host_client_handle_set_team(net_node_uid,(network_request_team*)data);
+				net_host_client_handle_set_team(player_uid,(network_request_team*)msg);
 				break;
 				
 			case net_action_request_leave:
-				net_host_client_handle_leave(net_node_uid);
-				net_node_uid=-1;
+				net_host_client_handle_leave(player_uid);
+				player_uid=-1;
 				break;
 				
 			case net_action_request_remote_update:
-				net_host_client_handle_update(net_node_uid,(network_request_remote_update*)data);
+				net_host_client_handle_update(player_uid,(network_request_remote_update*)msg);
 				break;
 				
 			case net_action_request_remote_death:
@@ -184,25 +173,26 @@ int net_host_client_handler_thread(void *arg)
 			case net_action_request_remote_fire:
 			case net_action_request_remote_pickup:
 			case net_action_request_remote_click:
-				net_host_player_send_message_others(net_node_uid,action,data,len);
+				net_host_player_send_message_others(player_uid,action,msg,msg_len);
 				break;
 
 			case net_action_request_latency_ping:
-				net_send_message(sock,action,net_remote_uid_host,NULL,0);
+			// supergumba
+			//	net_send_message(sock,action,net_remote_uid_host,NULL,0);
 				break;
 
 			case net_action_request_group_synch:
-				net_host_client_handle_group_synch(sock);
+			// supergumba
+			//	net_host_client_handle_group_synch(sock);
 				break;
 
 		}
-		
-			// if no player attached, close socket and exit thread
-			
-		if (net_node_uid==-1) break;
+
+			// if player_uid is reset to -1
+			// then remote has exited
+
+		if (player_uid==-1) break;
 	}
-	
-	net_close_socket(&sock);
 	
 	return(0);
 }

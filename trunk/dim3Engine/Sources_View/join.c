@@ -155,7 +155,7 @@ bool join_ping_thread_lan_server(network_reply_info *reply_info)
 
 void join_ping_thread_lan_run(void)
 {
-	int					max_tick,action,net_node_uid;
+	int					max_tick,action,player_uid;
 	char				ip_name[256],ip_resolve[256],err_str[256];
 	unsigned char		msg[net_max_msg_size];
 	bool				good_reply,send_ok;
@@ -181,7 +181,7 @@ void join_ping_thread_lan_run(void)
 
 	net_socket_enable_broadcast(broadcast_send_sock);
 	
-	send_ok=net_sendto_msg(broadcast_send_sock,INADDR_BROADCAST,net_port_host,net_action_request_info,net_remote_uid_none,NULL,0);
+	send_ok=net_sendto_msg(broadcast_send_sock,INADDR_BROADCAST,net_port_host,net_action_request_info,net_player_uid_none,NULL,0);
 		
 	net_close_socket(&broadcast_send_sock);
 	
@@ -198,7 +198,7 @@ void join_ping_thread_lan_run(void)
 			
 		good_reply=FALSE;
 		
-		if (net_recvfrom_mesage(broadcast_recv_sock,NULL,NULL,&action,&net_node_uid,msg,NULL)) {
+		if (net_recvfrom_mesage(broadcast_recv_sock,NULL,NULL,&action,&player_uid,msg,NULL)) {
 			if (action==net_action_reply_info) {
 				good_reply=join_ping_thread_lan_server((network_reply_info*)msg);
 			}
@@ -238,7 +238,7 @@ int join_ping_thread_lan(void *arg)
 
 void join_ping_thread_internet_server(char *ip)
 {
-	int						action,net_node_uid,msec,max_tick;
+	int						action,player_uid,msec,max_tick;
 	unsigned long			ip_addr,recv_ip_addr;
 	unsigned char			msg[net_max_msg_size];
 	char					*row_data;
@@ -259,7 +259,7 @@ void join_ping_thread_internet_server(char *ip)
 	ip_addr=inet_addr(ip);
 	if (ip_addr==INADDR_NONE) return;
 	
-	if (!net_sendto_msg(sock,ip_addr,net_port_host,net_action_request_info,net_remote_uid_none,NULL,0)) {
+	if (!net_sendto_msg(sock,ip_addr,net_port_host,net_action_request_info,net_player_uid_none,NULL,0)) {
 		net_close_socket(&sock);
 		return;
 	}
@@ -271,7 +271,7 @@ void join_ping_thread_internet_server(char *ip)
 	max_tick=client_timeout_wait_seconds*1000;
 	
 	while (((msec+max_tick)>time_get()) && (!join_thread_quit)) {
-		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&net_node_uid,msg,NULL)) {
+		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&player_uid,msg,NULL)) {
 			if ((recv_ip_addr==ip_addr) && (action==net_action_reply_info)) {
 				got_reply=TRUE;
 				break;
@@ -639,7 +639,7 @@ void join_activity_complete(bool single,char *msg)
 
 void join_game(void)
 {
-	int							idx,net_node_uid,tick_offset,option_flags;
+	int							idx,player_uid,tick_offset,option_flags;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
 	network_reply_join_remotes	remotes;
@@ -658,7 +658,8 @@ void join_game(void)
 							
 		// attempt to join
 
-	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&net_node_uid,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes)) {
+	player_uid=net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes);
+	if (player_uid==-1) {
 		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
@@ -671,7 +672,7 @@ void join_game(void)
 	
 	net_setup.client.joined=TRUE;
 	net_setup.client.latency=0;
-	net_setup.net_node_uid=net_node_uid;
+	net_setup.player_uid=player_uid;
 	
 		// setup game type
 
@@ -709,10 +710,9 @@ void join_game(void)
 		return;
 	}
 	
-		// player can use the same unique
-		// node ID
+		// set players remote uid
 		
-	object_player_set_remote_uid(net_node_uid);
+	object_player_set_remote_uid(player_uid);
 	
 		// start client network thread
 		
@@ -729,7 +729,7 @@ void join_game(void)
 
 		// request moving group synchs
 
-	net_client_request_group_synch_ping(net_node_uid);
+	net_client_request_group_synch_ping(player_uid);
 	
 		// game is running
 	

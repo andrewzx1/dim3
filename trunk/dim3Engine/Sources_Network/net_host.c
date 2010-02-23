@@ -43,6 +43,10 @@ bool						host_complete;
 char						host_err_str[256];
 SDL_Thread					*host_thread;
 
+extern int game_time_get(void);
+
+int net_host_thread(void *arg);		// forward reference for main thread
+
 /* =======================================================
 
       Initialize and Shutdown Host Networking
@@ -93,6 +97,30 @@ void net_host_shutdown(void)
 
 /* =======================================================
 
+      Add Bots to a Host
+      
+======================================================= */
+
+void net_host_player_add_bots(void)
+{
+	int				n;
+	char			deny_reason[256];
+	obj_type		*obj;
+
+	obj=server.objs;
+
+	for (n=0;n!=server.count.obj;n++) {
+		if (obj->type_idx==object_type_bot_multiplayer) {
+			if (net_host_player_add_ok(obj->name,deny_reason)) {
+				obj->remote.uid=net_host_player_add_bot(obj);
+			}
+		}
+		obj++;
+	}
+}
+
+/* =======================================================
+
       Host Info Responses
       
 ======================================================= */
@@ -109,7 +137,7 @@ void net_host_info_request(unsigned long ip_addr,int port)
 	strcpy(info.game_name,hud.net_game.games[net_setup.game_idx].name);
 	strcpy(info.map_name,net_setup.host.map_name);
 	
-	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_info,-1,(unsigned char*)&info,sizeof(network_reply_info));
+	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_info,net_player_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
 }
 
 /* =======================================================
@@ -118,9 +146,9 @@ void net_host_info_request(unsigned long ip_addr,int port)
       
 ======================================================= */
 
-void net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
+int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
 {
-	int							net_node_uid,
+	int							player_uid,
 								tint_color_idx,character_idx;
 	bool						allow;
 	network_reply_join			reply_join;
@@ -142,20 +170,20 @@ void net_host_join_request(unsigned long ip_addr,int port,network_request_join *
 		sprintf(reply_join.deny_reason,"Client version (%s) differs from Host version (%s)",request_join->vers,dim3_version);
 	}
 
-		// name and host full?
+		// name conflict or host full?
 
-	if (!net_host_player_join_ok(request_join->name,reply_join.deny_reason)) {
+	if (!net_host_player_add_ok(request_join->name,reply_join.deny_reason)) {
 		allow=FALSE;
 	}
 
 		// join to host
 	
-	net_node_uid=-1;
+	player_uid=-1;
 
 	if (allow) {
 		tint_color_idx=htons((short)request_join->tint_color_idx);
 		character_idx=htons((short)request_join->character_idx);
-		net_node_uid=net_host_player_join(ip_addr,port,FALSE,request_join->name,tint_color_idx,character_idx);
+		player_uid=net_host_player_add(ip_addr,port,FALSE,request_join->name,tint_color_idx,character_idx);
 	}
 
 		// construct the reply
@@ -164,10 +192,10 @@ void net_host_join_request(unsigned long ip_addr,int port,network_request_join *
 	strcpy(reply_join.map_name,net_setup.host.map_name);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
 	reply_join.option_flags=htonl(net_setup.option_flags);
-	reply_join.join_uid=htons((short)net_node_uid);
+	reply_join.player_uid=htons((short)player_uid);
 	
-	if (net_node_uid!=-1) {
-		net_host_player_create_remote_list(net_node_uid,&reply_join.remotes);
+	if (player_uid!=-1) {
+		net_host_player_create_remote_list(player_uid,&reply_join.remotes);
 	}
 	else {
 		reply_join.remotes.count=htons(0);
@@ -175,12 +203,12 @@ void net_host_join_request(unsigned long ip_addr,int port,network_request_join *
 	
 		// send reply
 
-	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_join,net_remote_uid_host,(unsigned char*)&reply_join,sizeof(network_reply_join));
+	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_join,net_player_uid_host,(unsigned char*)&reply_join,sizeof(network_reply_join));
 	
 		// send all other players on host the new player for remote add
 		
-	if (net_node_uid!=-1) {
-		remote_add.remote_obj_uid=htons((short)net_node_uid);
+	if (player_uid!=-1) {
+		remote_add.player_uid=htons((short)player_uid);
 		strncpy(remote_add.name,request_join->name,name_str_len);
 		remote_add.name[name_str_len-1]=0x0;
 		remote_add.team_idx=htons((short)net_team_none);
@@ -189,10 +217,10 @@ void net_host_join_request(unsigned long ip_addr,int port,network_request_join *
 		remote_add.score=0;
 		remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 
-		net_host_player_send_message_others(net_node_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
+		net_host_player_send_message_others(player_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
 	}
 
-	return(net_node_uid);
+	return(player_uid);
 }
 
 /* =======================================================
@@ -203,14 +231,9 @@ void net_host_join_request(unsigned long ip_addr,int port,network_request_join *
 
 int net_host_thread(void *arg)
 {
-	int					action,net_node_uid,port,msg_len,err;
+	int					action,player_uid,port,msg_len;
 	unsigned long		ip_addr;
 	unsigned char		msg[net_max_msg_size];
-	d3socket			sock;
-	socklen_t			addr_in_len;
-	struct sockaddr_in	addr_in;
-	network_header		*head;
-	SDL_Thread			*message_thread;
 	
 		// use host err_str to flag if errors occured
 		
@@ -220,7 +243,7 @@ int net_host_thread(void *arg)
 		
 	host_socket=net_open_udp_socket();
 	if (host_socket==D3_NULL_SOCKET) {
-		strcpy(host_err_str,"Networking: Unable to open socket");
+		strcpy(host_err_str,"Hosting: Unable to open socket");
 		host_complete=TRUE;
 		return(0);
 	}
@@ -238,7 +261,7 @@ int net_host_thread(void *arg)
 	host_complete=TRUE;
 	
 		// begin waiting for messages
-		// we'll let it block until we have real data
+		// we'll let the socket block for us
 	
 	net_socket_blocking(host_socket,TRUE);
 	
@@ -247,7 +270,7 @@ int net_host_thread(void *arg)
 			// get message
 			// false return = host shutting down
 			
-		if (!net_recvfrom_mesage(host_socket,&ip_addr,&port,&action,&net_node_uid,msg,&msg_len)) break;
+		if (!net_recvfrom_mesage(host_socket,&ip_addr,&port,&action,&player_uid,msg,&msg_len)) break;
 		
 			// reply to all info request
 			
@@ -256,31 +279,18 @@ int net_host_thread(void *arg)
 			continue;
 		}
 
-			// join actions create players
+			// reply to all join requests
 
 		if (action==net_action_request_join) {
-			net_host_join_request(ip_addr,port,(network_request_join*)msg);
+			player_uid=net_host_join_request(ip_addr,port,(network_request_join*)msg);
+			if (player_uid!=-1) net_host_player_start_thread(player_uid);
 			continue;
 		}
 		
-			// route message to player queues
+			// all other requests are routed to
+			// player queues
 
-		net_host_player_route_msg(ip_addr,port,action,net_node_uid,msg,msg_len);
-			
-		// supergumba -- working on all of this
-		
-	
-/*
-		sock=accept(host_socket,&addr,&addr_len);
-		if (sock==-1) break;				// accept ending means socket has been closed and host shutting down
-		
-			// spawn thread for client
-			
-		net_socket_blocking(sock,FALSE);
-		
-		message_thread=SDL_CreateThread(net_host_client_handler_thread,(void*)sock);
-		if (message_thread==NULL) net_close_socket(&sock);
-		*/
+		net_host_player_route_msg(player_uid,action,msg,msg_len);
 	}
 	
 	return(0);

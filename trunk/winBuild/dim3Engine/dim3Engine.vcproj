@@ -4174,17 +4174,12 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Sources_Network\net_read_queue.c"
+					RelativePath="..\..\dim3Engine\Sources_Network\net_http.c"
 					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Sources_Network\net_queue.c"
+					>
 				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Sources_Network\net_socket.c"

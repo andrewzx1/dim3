@@ -35,39 +35,12 @@ and can be sold or given away.
       
 ======================================================= */
 
-d3socket net_open_tcp_socket(void)
-{
-	d3socket		sock;
-#ifndef D3_OS_WINDOWS
-	int				val;
-#else
-	BOOL			val;
-#endif
-	
-		// get socket
-		
-	sock=socket(AF_INET,SOCK_STREAM,0);
-	if (sock==D3_NULL_SOCKET) return(D3_NULL_SOCKET);
-	
-		// turn off nagel algorithm
-	
-#ifndef D3_OS_WINDOWS
-	val=1;
-	setsockopt(sock,IPPROTO_TCP,TCP_NODELAY,&val,sizeof(int));
-#else
-	val=TRUE;
-	setsockopt(sock,IPPROTO_TCP,TCP_NODELAY,(const char*)&val,sizeof(BOOL));
-#endif
-
-	return(sock);
-}
-
-d3socket net_open_udp_socket(void)
+inline d3socket net_open_udp_socket(void)
 {
 	return(socket(AF_INET,SOCK_DGRAM,0));
 }
 
-void net_close_socket(d3socket *sock)
+inline void net_close_socket(d3socket *sock)
 {
 		// shutdown any more sending or receiving
 
@@ -90,7 +63,7 @@ void net_close_socket(d3socket *sock)
       
 ======================================================= */
 
-void net_socket_blocking(d3socket sock,bool blocking)
+inline void net_socket_blocking(d3socket sock,bool blocking)
 {
 #ifndef D3_OS_WINDOWS
 
@@ -117,7 +90,7 @@ void net_socket_blocking(d3socket sock,bool blocking)
 #endif
 }
 
-void net_socket_enable_broadcast(d3socket sock)
+inline void net_socket_enable_broadcast(d3socket sock)
 {
 	int				val;
 
@@ -128,89 +101,6 @@ void net_socket_enable_broadcast(d3socket sock)
 	val=TRUE;
 	setsockopt(sock,SOL_SOCKET,SO_BROADCAST,(const char*)&val,sizeof(BOOL));
 #endif
-}
-
-/* =======================================================
-
-      Network Connections
-      
-======================================================= */
-
-bool net_connect(d3socket sock,char *ip,int port,int secs,char *err_str)
-{
-	int					err,count;
-	unsigned long		ns_addr;
-	bool				in_progress,connect_ok;
-	socklen_t			len;
-	struct sockaddr		name;
-	struct sockaddr_in	addr;
-	
-		// setup host
-		
-	ns_addr=inet_addr(ip);
-	if (ns_addr==INADDR_NONE) {
-		sprintf(err_str,"Networking: Could not create address for %s",ip);
-		return(FALSE);
-	}
-
-	memset(&addr,0x0,sizeof(struct sockaddr_in));
-		
-	addr.sin_family=AF_INET;
-	addr.sin_port=htons((short)port);
-	addr.sin_addr.s_addr=ns_addr;
-	
-		// put socket into non-blocking
-		
-	net_socket_blocking(sock,FALSE);
-	
-		// try to connect
-	
-	err=connect(sock,(struct sockaddr*)&addr,sizeof(struct sockaddr_in));
-	if (err<0) {
-
-#ifndef D3_OS_WINDOWS
-		in_progress=(errno==EINPROGRESS);
-#else
-		in_progress=(WSAGetLastError()==WSAEINPROGRESS);
-#endif
-
-		if (!in_progress) {
-			net_socket_blocking(sock,TRUE);
-			sprintf(err_str,"Networking: Could not connect to %s:%d",ip,port);
-			return(FALSE);
-		}
-	}
-	
-		// we figure out if we've connected
-		// when we can get the peer name
-
-	count=secs*1000;
-	connect_ok=FALSE;
-	
-	while (count>0) {
-	
-		len=sizeof(name);
-		if (getpeername(sock,&name,&len)==0) {
-			connect_ok=TRUE;
-			break;
-		}
-	
-		usleep(1000);
-		count--;
-	}
-
-		// put socket back into blocking mode
-
-	net_socket_blocking(sock,TRUE);
-	
-		// return connection state
-
-	if (!connect_ok) {
-		sprintf(err_str,"Networking: No connection to %s:%d",ip,port);
-		return(FALSE);
-	}
-	
-	return(TRUE);
 }
 
 /* =======================================================
@@ -326,7 +216,7 @@ bool net_send_ready(d3socket sock)
       
 ======================================================= */
 
-bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_node_uid,unsigned char *msg,int *msg_len)
+bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *player_uid,unsigned char *msg,int *msg_len)
 {
 	int						len;
 	unsigned char			data[net_max_msg_size];
@@ -359,7 +249,7 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 		
 	head=(network_header*)data;
 	*action=head->action;
-	*net_node_uid=head->net_node_uid;
+	*player_uid=head->player_uid;
 
 	len=head->len;
 	if (len>net_max_msg_size) len=net_max_msg_size;
@@ -371,7 +261,7 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 	return(TRUE);
 }
 
-bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int net_node_uid,unsigned char *msg,int msg_len)
+bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int player_uid,unsigned char *msg,int msg_len)
 {
 	int						send_sz;
 	unsigned char			data[net_max_msg_size];
@@ -384,7 +274,7 @@ bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int 
 
 	head->len=htons((short)msg_len);
 	head->action=htons((short)action);
-	head->net_node_uid=htons((short)net_node_uid);
+	head->player_uid=htons((short)player_uid);
 	
 		// the data
 
@@ -452,7 +342,7 @@ void net_send_message(d3socket sock,int action,int net_node_uid,unsigned char *d
 
 	head->len=htons((short)len);
 	head->action=htons((short)action);
-	head->net_node_uid=htons((short)net_node_uid);
+	head->player_uid=htons((short)net_node_uid);
 
 		// the data
 
@@ -463,185 +353,3 @@ void net_send_message(d3socket sock,int action,int net_node_uid,unsigned char *d
 	net_send_data(sock,net_data,(sizeof(network_header)+len));
 }
 
-/* =======================================================
-
-      Network HTTP File
-      
-======================================================= */
-
-char* net_get_http_file(char *host_name,int port,char *url,char *err_str)
-{
-	int				len,sent_len,max_len,
-					rcv_size,rbyte,content_offset,content_length;
-	char			*ip,http[1024],str[256];
-	char			*c,*data,*content_data;
-	bool			ok;
-	struct hostent	*hent;
-	d3socket		sock;
-
-		// get IP address
-		
-	hent=gethostbyname(host_name);
-	if (hent==NULL) {
-		sprintf(err_str,"Could not resolve host name %s",host_name);
-		return(NULL);
-	}
-	
-	ip=inet_ntoa(*(struct in_addr*)(hent->h_addr_list[0]));
-
-		// connect to server
-
-	sock=net_open_tcp_socket();
-	if (sock==D3_NULL_SOCKET) {
-		strcpy(err_str,"Unable to create socket");
-		return(NULL);
-	}
-
-	if (!net_connect(sock,ip,port,5,err_str)) {
-		net_close_socket(&sock);
-		return(NULL);
-	}
-
-		// send the get
-
-	strcpy(http,"GET ");
-	strcat(http,url);
-	strcat(http," HTTP/1.1\r\n");
-	strcat(http,"Host: ");
-	strcat(http,host_name);
-	strcat(http,"\r\n");
-	strcat(http,"User-Agent: dim3\r\n");
-	strcat(http,"Accept: text/plain\r\n");
-	strcat(http,"Connection: close\r\n");
-	strcat(http,"\r\n");
-
-	len=strlen(http);
-
-	sent_len=net_send_data(sock,(unsigned char*)http,len);
-	if (sent_len!=len) {
-		strcpy(err_str,"Unable to retrieve file");
-		net_close_socket(&sock);
-		return(NULL);
-	}
-
-		// retrieve the data
-
-	max_len=10*1024;			// only get up to 10K
-
-	data=malloc(max_len+1);
-	if (data==NULL) {
-		strcpy(err_str,"Out of memory");
-		net_close_socket(&sock);
-		return(NULL);
-	}
-
-	rcv_size=0;
-	ok=FALSE;
-	content_offset=content_length=-1;
-
-	while (TRUE) {
-
-		if (!net_receive_ready(sock)) {
-			usleep(1000);
-			continue;
-		}
-
-		rbyte=recv(sock,(data+rcv_size),(max_len-rcv_size),0);
-		if (rbyte<=0) break;
-
-		rcv_size+=rbyte;
-		if (rcv_size>=max_len) break;
-
-		*(data+rcv_size)=0x0;
-		
-			// check for 200 OK
-		
-		if (!ok) {
-			c=strchr(data,'\n');
-			if (c!=NULL) {
-				strncpy(str,data,256);
-				str[255]=0x0;
-				
-				c=strchr(str,'\n');
-				if (c!=NULL) {
-					*c=0x0;
-					if (strstr(str,"200 OK")==NULL) {
-						strcpy(err_str,"File not found");
-						net_close_socket(&sock);
-						return(NULL);
-					}
-					
-					ok=TRUE;
-				}
-			}
-		}
-				
-			// check for content length
-
-		if (content_offset==-1) {
-			c=strstr(data,"\r\n\r\n");
-			if (c!=NULL) content_offset=(int)((c+4)-data);
-		}
-
-		if ((content_offset!=-1) && (content_length==-1)) {
-			c=strstr(data,"Content-Length: ");
-			if (c!=NULL) {
-				c+=16;
-				strncpy(str,c,32);
-				str[31]=0x0;
-				c=strchr(str,'\r');
-				if (c!=NULL) {
-					*c=0x0;
-					content_length=atoi(str);
-
-						// check for wild content lengths
-
-					if ((content_length<0) || (content_length>(max_len-content_offset))) {
-						strcpy(err_str,"Unable to retrieve file");
-						net_close_socket(&sock);
-						return(NULL);
-					}
-						
-				}
-			}
-		}
-
-			// are we at content length?
-
-		if ((content_offset!=-1) && (content_length!=-1)) {
-			if (rcv_size>=(content_offset+content_length)) break;
-		}
-
-		usleep(1000);
-	}
-	
-	*(data+rcv_size)=0x0;
-
-		// did we ever get content?
-
-	if (content_length==-1) {
-		strcpy(err_str,"Unable to retrieve file");
-		net_close_socket(&sock);
-		return(NULL);
-	}
-
-		// get the content data
-
-	content_data=malloc(content_length+1);
-	if (content_data==NULL) {
-		strcpy(err_str,"Unable to retrieve file");
-		net_close_socket(&sock);
-		return(NULL);
-	}
-
-	memmove(content_data,(data+content_offset),content_length);
-	content_data[content_length]=0x0;
-	
-	free(data);
-
-		// close the socket
-
-	net_close_socket(&sock);
-
-	return(content_data);
-}

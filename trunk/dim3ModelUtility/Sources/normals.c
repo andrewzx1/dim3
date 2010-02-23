@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3modelutility.h"
 #endif
 
+#define normal_near_vertex_center_dist		250
+
 /* =======================================================
 
       Calculate Normals for Model
@@ -69,7 +71,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 	bool				is_out;
 	d3vct				p10,p20,vlft,vrgt,v_num,dvct;
 	d3vct				*tangents,*tptr,*binormals,*bptr;
-	d3pnt				*pt,*pt_1,*pt_2,center;
+	d3pnt				*pt,*pt_1,*pt_2,t_center,v_center;
 	model_mesh_type		*mesh;
     model_vertex_type	*vertex;
 	model_trig_type		*trig,*chk_trig;
@@ -233,46 +235,67 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		// skip if not calculating normals
 		
 	if (only_tangent_binormal) return;
-	
-		// determine center
-		
-	center.x=center.y=center.z=0;
-	vertex=mesh->vertexes;
-
-	for (n=0;n!=mesh->nvertex;n++) {
-		center.x+=vertex->pnt.x;
-		center.y+=vertex->pnt.y;
-		center.z+=vertex->pnt.z;
-		vertex++;
-	}
-	
-	center.x/=mesh->nvertex;
-	center.y/=mesh->nvertex;
-	center.z/=mesh->nvertex;
 
 		// determine in/out and invert
 		
 	trig=mesh->trigs;
 
 	for (n=0;n!=mesh->ntrig;n++) {
+
+			// for each trig, we only want to consider
+			// the center being around near points, not
+			// the entire model, as a lot of models have
+			// various appendages
+
+			// trig center
+
+		t_center.x=(mesh->vertexes[trig->v[0]].pnt.x+mesh->vertexes[trig->v[1]].pnt.x+mesh->vertexes[trig->v[2]].pnt.x)/3;
+		t_center.y=(mesh->vertexes[trig->v[0]].pnt.y+mesh->vertexes[trig->v[1]].pnt.y+mesh->vertexes[trig->v[2]].pnt.y)/3;
+		t_center.z=(mesh->vertexes[trig->v[0]].pnt.z+mesh->vertexes[trig->v[1]].pnt.z+mesh->vertexes[trig->v[2]].pnt.z)/3;
+
+			// points around trig
+
+		cnt=0;
+		v_center.x=v_center.y=v_center.z=0;
+
+		vertex=mesh->vertexes;
+
+		for (k=0;k!=mesh->nvertex;k++) {
+			if (distance_get(vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,t_center.x,t_center.y,t_center.z)<=normal_near_vertex_center_dist) {
+				v_center.x+=vertex->pnt.x;
+				v_center.y+=vertex->pnt.y;
+				v_center.z+=vertex->pnt.z;
+				cnt++;
+			}
+			vertex++;
+		}
+		
+		if (cnt>1) {
+			v_center.x/=cnt;
+			v_center.y/=cnt;
+			v_center.z/=cnt;
+		}
+
+			// determine if it's facing in or out
+			// from this center
 	
 		for (k=0;k!=3;k++) {
 		
 			vertex=&mesh->vertexes[trig->v[k]];
 	
-			dvct.x=(float)fabs(vertex->pnt.x-center.x);
-			dvct.y=(float)fabs(vertex->pnt.y-center.y);
-			dvct.z=(float)fabs(vertex->pnt.z-center.z);
+			dvct.x=(float)fabs(vertex->pnt.x-v_center.x);
+			dvct.y=(float)fabs(vertex->pnt.y-v_center.y);
+			dvct.z=(float)fabs(vertex->pnt.z-v_center.z);
 			
 			if ((dvct.y>dvct.x) && (dvct.y>dvct.z)) {
-				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.y-center.y),trig->tangent_space[k].normal.y);
+				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.y-v_center.y),trig->tangent_space[k].normal.y);
 			}
 			else {
 				if (dvct.x>dvct.z) {
-					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.x-center.x),trig->tangent_space[k].normal.x);
+					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.x-v_center.x),trig->tangent_space[k].normal.x);
 				}
 				else {
-					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.z-center.z),trig->tangent_space[k].normal.z);
+					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.z-v_center.z),trig->tangent_space[k].normal.z);
 				}
 			}
 			

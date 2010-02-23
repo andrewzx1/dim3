@@ -2,7 +2,7 @@
 
 Module: dim3 Base Utility
 Author: Brian Barnes
- Usage: Network Reading and Queues
+ Usage: Network Queues
 
 ***************************** License ********************************
 
@@ -128,7 +128,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
       
 ======================================================= */
 
-bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsigned char *msg_data,int msg_len)
+bool net_queue_push_message(net_queue_type *queue,int action,int player_uid,unsigned char *msg_data,int msg_len)
 {
 	unsigned char		*ptr;
 	network_header		head;
@@ -148,8 +148,7 @@ bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsi
 	
 	head.len=htons((short)msg_len);
 	head.action=htons((short)action);
-// supergumba -- get all this in order and figure out why I had this commented out
-//	head.net_node_uid=htons((short)remote_uid);
+	head.player_uid=htons((short)player_uid);
 
 	memmove(ptr,&head,sizeof(network_header));
 	ptr+=sizeof(network_header);
@@ -171,7 +170,7 @@ bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsi
       
 ======================================================= */
 
-bool net_queue_check_message(net_queue_type *queue,int *action,int *net_node_uid,unsigned char *msg_data,int *msg_data_len)
+bool net_queue_check_message(net_queue_type *queue,int *action,int *player_uid,unsigned char *msg_data,int *msg_data_len)
 {
 	int					msg_len;
 	unsigned char		*ptr;
@@ -197,7 +196,7 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *net_node_uid
 	
 	msg_len=(int)ntohs(head.len);
 	*action=(int)ntohs(head.action);
-	*net_node_uid=(int)ntohs(head.net_node_uid);
+	*player_uid=(int)ntohs(head.player_uid);
 
 		// get message data
 		

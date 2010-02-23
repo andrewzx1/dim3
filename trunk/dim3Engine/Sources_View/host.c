@@ -496,7 +496,7 @@ void host_game_setup(void)
 
 void host_game(void)
 {
-	int						net_node_uid;
+	int						player_uid;
 	char					err_str[256];
 	network_request_join	request_join;
 	
@@ -514,8 +514,8 @@ void host_game(void)
 	request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
 	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
 
-	net_node_uid=net_host_client_handle_local_join(&request_join,err_str);
-	if (net_node_uid==-1) {
+	player_uid=net_host_client_handle_local_join(&request_join,err_str);
+	if (player_uid==-1) {
 		net_host_game_end();
 		error_open(err_str,"Hosting Game Canceled");
 		return;
@@ -526,7 +526,7 @@ void host_game(void)
 	net_setup.host.hosting=TRUE;
 	net_setup.client.joined=TRUE;
 	net_setup.client.latency=0;
-	net_setup.net_node_uid=net_node_uid;
+	net_setup.player_uid=player_uid;
 
 	strcpy(net_setup.client.joined_ip,"127.0.0.1");
 
@@ -551,14 +551,13 @@ void host_game(void)
 		return;
 	}
 	
-		// player can use the same unique
-		// node ID
+		// set player's remote UID
 
-	object_player_set_remote_uid(net_node_uid);
+	object_player_set_remote_uid(player_uid);
 
-		// add bots to player list
+		// add bots to host
 
-	net_host_player_add_bots_to_list();
+	net_host_player_add_bots();
 
 		// start local client network queue
 		
