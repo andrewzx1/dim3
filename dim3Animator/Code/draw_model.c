@@ -28,7 +28,7 @@ and can be sold or given away.
 #include "model.h"
 
 extern float					ang_y;
-extern bool						play_animate,model_bump_on;
+extern bool						play_animate;
 
 /* =======================================================
 
@@ -38,8 +38,7 @@ extern bool						play_animate,model_bump_on;
 
 void model_start_texture(texture_type *texture)
 {
-	int			bitmap_gl_id,bumpmap_gl_id;
-	GLfloat		col4[4];
+	int			bitmap_gl_id;
 	
 		// blending
 		
@@ -54,75 +53,23 @@ void model_start_texture(texture_type *texture)
 		
 	if (play_animate) {
 		bitmap_gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
-		bumpmap_gl_id=texture->frames[texture->animate.current_frame].bumpmap.gl_id;
 	}
 	else {
 		bitmap_gl_id=texture->frames[0].bitmap.gl_id;
-		bumpmap_gl_id=texture->frames[0].bumpmap.gl_id;
 	}
 	
-		// no bump maps
-		
-	if ((texture->frames[0].bumpmap.gl_id==-1) || (!model_bump_on)) {
-		glActiveTexture(GL_TEXTURE0);
-		glEnable(GL_TEXTURE_2D);
-		
-        glBindTexture(GL_TEXTURE_2D,bitmap_gl_id);
-		
-		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-		
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-		
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-		
-		return;
-	}
-	
-		// dot3 bump maps in texture unit 0
+		// setup texturing
 		
 	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	
-	glBindTexture(GL_TEXTURE_2D,bumpmap_gl_id);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_DOT3_RGB);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_CONSTANT);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-	
-		// fake normals from rotations
-		
-	col4[0]=(float)sin(ang_y*ANG_to_RAD);
-	col4[1]=0;
-	col4[2]=1;
-	col4[3]=1;
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
-
-		// regular texture in texture unit 1
-		
-	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 	
 	glBindTexture(GL_TEXTURE_2D,bitmap_gl_id);
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 	
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PREVIOUS);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
@@ -135,19 +82,8 @@ void model_end_texture(texture_type *texture)
 		
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-		// no bump maps
+		// turn off texturing
 		
-	if (texture->frames[0].bumpmap.gl_id==-1) {
-		glActiveTexture(GL_TEXTURE0);
-		glDisable(GL_TEXTURE_2D);
-		return;
-	}
-	
-		// bump maps
-		
-	glActiveTexture(GL_TEXTURE1);
-	glDisable(GL_TEXTURE_2D);
-	
 	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
 	
@@ -210,7 +146,6 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	mesh=&model->meshes[mesh_idx];
 	
 	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
-	glNormalPointer(GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_normal_array);
 		
 	glLockArraysEXT(0,mesh->nvertex);
 	
@@ -280,7 +215,6 @@ void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setu
 	mesh=&model->meshes[mesh_idx];
 	
 	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
-	glNormalPointer(GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_normal_array);
 		
 	glLockArraysEXT(0,mesh->nvertex);
 	

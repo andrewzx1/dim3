@@ -164,27 +164,34 @@ void vertex_rotate_sel_vertexes(int mesh_idx,float ang_x,float ang_y,float ang_z
 
 void vertex_invert_normal_sel_vertexes(int mesh_idx)
 {
-	int					i,nt;
-	model_vertex_type	*vertex;
+	int					n,k,ntrig;
+	model_trig_type		*trig;
 	
-	nt=model.meshes[mesh_idx].nvertex;
-	vertex=model.meshes[mesh_idx].vertexes;
+	ntrig=model.meshes[mesh_idx].ntrig;
+	trig=model.meshes[mesh_idx].trigs;
 	
-	for (i=0;i!=nt;i++) {
-		if (vertex_check_sel_mask(mesh_idx,i)) {
-			vertex->tangent_space.tangent.x=-vertex->tangent_space.tangent.x;
-			vertex->tangent_space.tangent.y=-vertex->tangent_space.tangent.y;
-			vertex->tangent_space.tangent.z=-vertex->tangent_space.tangent.z;
+	for (n=0;n!=ntrig;n++) {
+	
+		for (k=0;k!=3;k++) {
+		
+				// this triangle vertex in the select list?
+				
+			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
+			
+			trig->tangent_space[k].tangent.x=-trig->tangent_space[k].tangent.x;
+			trig->tangent_space[k].tangent.y=-trig->tangent_space[k].tangent.y;
+			trig->tangent_space[k].tangent.z=-trig->tangent_space[k].tangent.z;
 
-			vertex->tangent_space.binormal.x=-vertex->tangent_space.binormal.x;
-			vertex->tangent_space.binormal.y=-vertex->tangent_space.binormal.y;
-			vertex->tangent_space.binormal.z=-vertex->tangent_space.binormal.z;
+			trig->tangent_space[k].binormal.x=-trig->tangent_space[k].binormal.x;
+			trig->tangent_space[k].binormal.y=-trig->tangent_space[k].binormal.y;
+			trig->tangent_space[k].binormal.z=-trig->tangent_space[k].binormal.z;
 
-			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
-			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
-			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
+			trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
+			trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
+			trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
 		}
-		vertex++;
+		
+		trig++;
 	}
 }
 

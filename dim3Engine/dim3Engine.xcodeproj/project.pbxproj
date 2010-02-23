@@ -37,10 +37,8 @@
 		2694E59A0F91A36F004B672A /* script_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2694E5990F91A36F004B672A /* script_multiplayer.c */; };
 		2694E5A30F91A501004B672A /* script_multiplayer_bot.c in Sources */ = {isa = PBXBuildFile; fileRef = 2694E5A20F91A501004B672A /* script_multiplayer_bot.c */; };
 		2696A1F60EF1EB8B005359BF /* script_weap_dual.c in Sources */ = {isa = PBXBuildFile; fileRef = 2696A1F50EF1EB8B005359BF /* script_weap_dual.c */; };
-		26A4B6440DAF028100E40F35 /* net_host_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A4B6430DAF028100E40F35 /* net_host_broadcast.c */; };
 		26A561B70EF6974B00D38FC0 /* net_read_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A561B60EF6974B00D38FC0 /* net_read_queue.c */; };
 		26A562590EF6D0AB00D38FC0 /* net_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562580EF6D0AB00D38FC0 /* net_socket.c */; };
-		26A5625B0EF6D0B000D38FC0 /* net_socket_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */; };
 		26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562B80EF6D50D00D38FC0 /* net_utility.c */; };
 		26ABEE820E72F0700029469D /* script_obj_object_thrust.c in Sources */ = {isa = PBXBuildFile; fileRef = 26ABEE810E72F0700029469D /* script_obj_object_thrust.c */; };
 		26BE14280F44FA57008DB7DB /* score_limit.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE14270F44FA57008DB7DB /* score_limit.c */; };
@@ -422,10 +420,8 @@
 		2694E5990F91A36F004B672A /* script_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer.c; path = Sources_Server/script_multiplayer.c; sourceTree = "<group>"; };
 		2694E5A20F91A501004B672A /* script_multiplayer_bot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer_bot.c; path = Sources_Server/script_multiplayer_bot.c; sourceTree = "<group>"; };
 		2696A1F50EF1EB8B005359BF /* script_weap_dual.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_dual.c; path = Sources_Server/script_weap_dual.c; sourceTree = "<group>"; };
-		26A4B6430DAF028100E40F35 /* net_host_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_broadcast.c; path = Sources_Network/net_host_broadcast.c; sourceTree = "<group>"; };
 		26A561B60EF6974B00D38FC0 /* net_read_queue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_read_queue.c; path = Sources_Network/net_read_queue.c; sourceTree = "<group>"; };
 		26A562580EF6D0AB00D38FC0 /* net_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket.c; path = Sources_Network/net_socket.c; sourceTree = "<group>"; };
-		26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket_udp.c; path = Sources_Network/net_socket_udp.c; sourceTree = "<group>"; };
 		26A562B80EF6D50D00D38FC0 /* net_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_utility.c; path = Sources_Network/net_utility.c; sourceTree = "<group>"; };
 		26ABEE810E72F0700029469D /* script_obj_object_thrust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_obj_object_thrust.c; path = Sources_Server/script_obj_object_thrust.c; sourceTree = "<group>"; };
 		26BE14270F44FA57008DB7DB /* score_limit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = score_limit.c; path = Sources_View/score_limit.c; sourceTree = "<group>"; };
@@ -1008,7 +1004,6 @@
 			children = (
 				26A562B80EF6D50D00D38FC0 /* net_utility.c */,
 				26A562580EF6D0AB00D38FC0 /* net_socket.c */,
-				26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */,
 				26A561B60EF6974B00D38FC0 /* net_read_queue.c */,
 			);
 			name = Utility;
@@ -1038,7 +1033,6 @@
 			isa = PBXGroup;
 			children = (
 				26F08C9E0DAC7DB50097E249 /* net_host.c */,
-				26A4B6430DAF028100E40F35 /* net_host_broadcast.c */,
 				268CBC900DD2AA7D00CF0256 /* net_host_client_handler.c */,
 				26F08CA00DAC7DB50097E249 /* net_host_players.c */,
 			);
@@ -1907,7 +1901,6 @@
 				26D109610DAC797D006666F2 /* host.c in Sources */,
 				26F08CA20DAC7DB50097E249 /* net_host.c in Sources */,
 				26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */,
-				26A4B6440DAF028100E40F35 /* net_host_broadcast.c in Sources */,
 				2657380E0DB07F650061E1B4 /* setup_network.c in Sources */,
 				2657380F0DB07F650061E1B4 /* setup_game.c in Sources */,
 				268CBC910DD2AA7D00CF0256 /* net_client_join_host.c in Sources */,
@@ -1923,7 +1916,6 @@
 				2696A1F60EF1EB8B005359BF /* script_weap_dual.c in Sources */,
 				26A561B70EF6974B00D38FC0 /* net_read_queue.c in Sources */,
 				26A562590EF6D0AB00D38FC0 /* net_socket.c in Sources */,
-				26A5625B0EF6D0B000D38FC0 /* net_socket_udp.c in Sources */,
 				26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */,
 				26BE14280F44FA57008DB7DB /* score_limit.c in Sources */,
 				26FE82370F4E1D5C00B659D8 /* gl_light.c in Sources */,
@@ -1965,7 +1957,8 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

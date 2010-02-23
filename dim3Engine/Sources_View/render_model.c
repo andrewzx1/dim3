@@ -286,7 +286,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 			// tangent space already in trig-vertex array
 
-		mem_sz=(mesh->ntrig*(3*3))*sizeof(float);
+		mem_sz=((mesh->ntrig*3)*3)*sizeof(float);
 
 		tl=vertex_ptr+((mesh->ntrig*3)*(3+2));
 		memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);

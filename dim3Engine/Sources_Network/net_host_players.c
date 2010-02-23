@@ -254,14 +254,14 @@ int net_host_player_join_bot(obj_type *obj)
 		// bots have no connections
 
 	player->connect.sock=D3_NULL_SOCKET;
-	player->connect.ip_addr=ip_addr;
-	player->connect.port=port;
+	player->connect.ip_addr=-1;
+	player->connect.port=-1;
 	player->connect.local=TRUE;
 	player->connect.bot=TRUE;
 
 		// bots don't use queues
 
-	net_queue_initialize_empty(queue);
+	net_queue_initialize_empty(&player->queue);
 
 		// settings
 
@@ -308,8 +308,9 @@ void net_host_player_ready(int net_node_uid)
 
 void net_host_player_leave(int net_node_uid)
 {
-	int				idx;
-	char			name[name_str_len];
+	int						idx;
+	char					name[name_str_len];
+	net_host_player_type	*player;
 	
 		// lock all player operations
 		
@@ -322,14 +323,16 @@ void net_host_player_leave(int net_node_uid)
 		SDL_mutexV(net_host_player_lock);
 		return;
 	}
+	
+	player=&net_host_players[idx];
 
 		// shutdown the queue
 
-	net_queue_shutdown(&queue);
+	net_queue_shutdown(&player->queue);
 
 		// remember name
 
-	strcpy(name,net_host_players[idx].name);
+	strcpy(name,player->name);
 
 		// exit player
 	
@@ -482,7 +485,7 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 
 			obj_add->remote_obj_uid=htons((short)player->remote_uid);
 			strcpy(obj_add->name,player->name);
-			obj_add->bot=htons((short)(player->bot?1:0));
+			obj_add->bot=htons((short)(player->connect.bot?1:0));
 			obj_add->team_idx=htons((short)player->team_idx);
 			obj_add->tint_color_idx=htons((short)player->tint_color_idx);
 			obj_add->character_idx=htons((short)player->character_idx);

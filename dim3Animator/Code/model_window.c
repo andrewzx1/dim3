@@ -48,7 +48,6 @@ char							tool_icns_file_name[tool_count][64]=
 										"Tool Mesh Hit Boxes",
 										"Tool Show First Mesh",
 										"Tool Boxes",
-										"Tool Bump Mapping",
 										"Tool Normals",
 										"Tool Rotate Mode",
 										"Tool Move Mode",
@@ -65,7 +64,6 @@ char							tool_tooltip_str[tool_count][64]=
 										"Edit Hit Boxes",
 										"Always Show First Mesh",
 										"Show View Box",
-										"Show Bump-Mapping",
 										"Show Normals",
 										"Rotate Bones Mode",
 										"Stretch Bones Mode",
@@ -81,7 +79,7 @@ int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
 float					ang_y,ang_x;
 bool					play_animate,play_animate_blend,
 						model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
-						model_box_on,model_bump_on,model_normal_on,model_bone_drag_on,model_show_first_mesh;
+						model_box_on,model_normal_on,model_bone_drag_on,model_show_first_mesh;
 Rect					drag_sel_box;
 AGLContext				ctx,texture_ctx;
 
@@ -295,26 +293,22 @@ bool model_wind_control(ControlRef ctrl)
 			break;
 			
 		case 8:
-			model_bump_on=!model_bump_on;
-			break;
-			
-		case 9:
 			model_normal_on=!model_normal_on;
 			break;
 			
-		case 10:
+		case 9:
 			drag_bone_mode=drag_bone_mode_rotate;
 			SetControlValue(tool_ctrl[10],1);
 			SetControlValue(tool_ctrl[11],0);
 			break;
 			
-		case 11:
+		case 10:
 			drag_bone_mode=drag_bone_mode_stretch;
 			SetControlValue(tool_ctrl[10],0);
 			SetControlValue(tool_ctrl[11],1);
 			break;
 			
-		case 12:
+		case 11:
 			model_wind_play(!play_animate,FALSE);
 			break;
 	}
@@ -1006,13 +1000,12 @@ void model_wind_reset_tools(void)
     
 	SetControlValue(tool_ctrl[6],model_show_first_mesh?1:0);
 	SetControlValue(tool_ctrl[7],model_box_on?1:0);
-	SetControlValue(tool_ctrl[8],model_bump_on?1:0);
-	SetControlValue(tool_ctrl[9],model_normal_on?1:0);
+	SetControlValue(tool_ctrl[8],model_normal_on?1:0);
 	
-	SetControlValue(tool_ctrl[10],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
-	SetControlValue(tool_ctrl[11],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
+	SetControlValue(tool_ctrl[9],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
+	SetControlValue(tool_ctrl[10],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
 
-	SetControlValue(tool_ctrl[12],play_animate?1:0);
+	SetControlValue(tool_ctrl[11],play_animate?1:0);
 }
 
 void model_wind_switch_mesh_mode(void)
