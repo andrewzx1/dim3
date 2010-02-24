@@ -951,6 +951,12 @@ void player_thrust_input(int tick,obj_type *obj)
 void player_get_input(int tick)
 {
 	obj_type		*obj;
+
+		// no input if menu is on
+
+	if (view.menu.active) return;
+
+		// get player object
 	
 	obj=object_find_uid(server.player_obj_uid);
 	

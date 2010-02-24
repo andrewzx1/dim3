@@ -783,8 +783,8 @@ void remote_click(network_request_remote_click *click)
 
 bool remote_network_get_updates(int tick)
 {
-	int										action,net_node_uid,count;
-	unsigned char							data[net_max_msg_size];
+	int						action,player_uid,count;
+	unsigned char			msg[net_max_msg_size];
 
 	count=0;
 	
@@ -792,7 +792,7 @@ bool remote_network_get_updates(int tick)
 	
 			// check for messages
 
-		if (!net_client_check_message_queue(&action,&net_node_uid,data)) return(TRUE);
+		if (!net_client_check_message_queue(&action,&player_uid,msg)) return(TRUE);
 		
 			// run message
 		
@@ -803,43 +803,43 @@ bool remote_network_get_updates(int tick)
 				break;
 				
 			case net_action_request_team:
-				remote_team((network_request_team*)data,TRUE);
+				remote_team((network_request_team*)msg,TRUE);
 				break;
 
 			case net_action_request_remote_add:
-				remote_add((network_request_object_add*)data,TRUE);
+				remote_add((network_request_object_add*)msg,TRUE);
 				break;
 				
 			case net_action_request_remote_remove:
-				remote_remove(net_node_uid,TRUE);
+				remote_remove(player_uid,TRUE);
 				break;
 			
 			case net_action_request_remote_update:
-				remote_update((network_request_remote_update*)data);
+				remote_update((network_request_remote_update*)msg);
 				break;
 				
 			case net_action_request_remote_death:
-				remote_death((network_request_remote_death*)data);
+				remote_death((network_request_remote_death*)msg);
 				break;
 				
 			case net_action_request_remote_chat:
-				remote_chat((network_request_remote_chat*)data);
+				remote_chat((network_request_remote_chat*)msg);
 				break;
 				
 			case net_action_request_remote_sound:
-				remote_sound((network_request_remote_sound*)data);
+				remote_sound((network_request_remote_sound*)msg);
 				break;
 
 			case net_action_request_remote_fire:
-				remote_fire((network_request_remote_fire*)data);
+				remote_fire((network_request_remote_fire*)msg);
 				break;
 
 			case net_action_request_remote_pickup:
-				remote_pickup((network_request_remote_pickup*)data);
+				remote_pickup((network_request_remote_pickup*)msg);
 				break;
 
 			case net_action_request_remote_click:
-				remote_click((network_request_remote_click*)data);
+				remote_click((network_request_remote_click*)msg);
 				break;
 
 			case net_action_reply_latency_ping:
@@ -851,7 +851,7 @@ bool remote_network_get_updates(int tick)
 				return(FALSE);				// break out of all the loops and exit client game
 
 			case net_action_reply_group_synch:
-				group_moves_synch_with_host((network_reply_group_synch*)data);
+				group_moves_synch_with_host((network_reply_group_synch*)msg);
 				break;
 				
 			case net_action_request_game_score_limit:

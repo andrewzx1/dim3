@@ -293,7 +293,7 @@ void net_host_player_remove(int player_uid)
       
 ======================================================= */
 
-void net_host_player_ready(int net_node_uid)
+void net_host_player_ready(int player_uid)
 {
 	int				idx;
 	
@@ -303,7 +303,7 @@ void net_host_player_ready(int net_node_uid)
 		
 		// set player ready state
 		
-	idx=net_host_player_find(net_node_uid);
+	idx=net_host_player_find(player_uid);
 	if (idx!=-1) net_host_players[idx].connect.ready=TRUE;
 	
 		// unlock player operation
@@ -524,7 +524,42 @@ void net_host_player_start_thread(int player_uid)
       
 ======================================================= */
 
-void net_host_player_send_message_others(int player_uid,int action,unsigned char *msg,int msg_len)
+void net_host_player_send_message_single(int to_player_uid,int action,int from_player_uid,unsigned char *msg,int msg_len)
+{
+	int						idx;
+	net_host_player_type	*player;
+
+	SDL_mutexP(net_host_player_lock);
+
+		// find player
+
+	idx=net_host_player_find(to_player_uid);
+	if (idx!=-1) {
+		SDL_mutexV(net_host_player_lock);
+		return;
+	}
+
+	player=&net_host_players[idx];
+
+		// send message
+
+	if ((player->connect.ready) && (!player->connect.bot)) {
+			if (player->connect.local) {
+
+				//	net_client_push_queue_local(action,from_player_uid,msg,msg_len);
+			}
+
+				// remote -- supergumba!
+
+			else {
+				//	if (net_send_ready(socks[n])) net_send_message(socks[n],action,from_player_uid,msg,msg_len);
+			}
+	}
+
+	SDL_mutexV(net_host_player_lock);
+}
+
+void net_host_player_send_message_others(int skip_player_uid,int action,int from_player_uid,unsigned char *msg,int msg_len)
 {
 	int						n;
 	net_host_player_type	*player;
@@ -535,23 +570,19 @@ void net_host_player_send_message_others(int player_uid,int action,unsigned char
 	
 	for (n=0;n!=net_host_player_count;n++) {
 
-		if ((player->connect.uid!=player_uid) && (player->connect.ready)) {
+		if ((player->connect.uid!=skip_player_uid) && (player->connect.ready) && (!player->connect.bot)) {
 
 				// local -- supergumba
 
 			if (player->connect.local) {
 
-					// skip local bots
-
-				if (!player->connect.bot) {
-				//	net_client_push_queue_local(action,player_remote_uid,msg,msg_len);
-				}
+				//	net_client_push_queue_local(action,from_player_uid,msg,msg_len);
 			}
 
 				// remote -- supergumba!
 
 			else {
-				//	if (net_send_ready(socks[n])) net_send_message(socks[n],action,player_remote_uid,msg,msg_len);
+				//	if (net_send_ready(socks[n])) net_send_message(socks[n],action,from_player_uid,msg,msg_len);
 			}
 
 		}
@@ -562,7 +593,7 @@ void net_host_player_send_message_others(int player_uid,int action,unsigned char
 	SDL_mutexV(net_host_player_lock);
 }
 
-void net_host_player_send_message_all(int action,unsigned char *msg,int msg_len)
+void net_host_player_send_message_all(int action,int from_player_uid,unsigned char *msg,int msg_len)
 {
-	net_host_player_send_message_others(-1,action,msg,msg_len);
+	net_host_player_send_message_others(-1,action,from_player_uid,msg,msg_len);
 }

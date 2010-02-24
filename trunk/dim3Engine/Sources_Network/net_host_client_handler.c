@@ -52,7 +52,7 @@ extern void group_moves_synch_with_client(int group_idx,network_reply_group_sync
 
 int net_host_client_handle_local_join(network_request_join *request_join,char *err_str)
 {
-	int							net_node_uid,
+	int							player_uid,
 								tint_color_idx,character_idx;
 	network_request_object_add	remote_add;
 
@@ -61,8 +61,8 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 	tint_color_idx=htons((short)request_join->tint_color_idx);
 	character_idx=htons((short)request_join->character_idx);
 
-	net_node_uid=net_host_player_add(-1,-1,TRUE,request_join->name,tint_color_idx,character_idx);
-	if (net_node_uid==-1) return(-1);
+	player_uid=net_host_player_add(-1,-1,TRUE,request_join->name,tint_color_idx,character_idx);
+	if (player_uid==-1) return(-1);
 
 		// send all other players on host the new player for remote add
 		
@@ -74,9 +74,9 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 
-	net_host_player_send_message_others(net_node_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
+	net_host_player_send_message_others(player_uid,net_action_request_remote_add,net_player_uid_host,(unsigned char*)&remote_add,sizeof(network_request_object_add));
 
-	return(net_node_uid);
+	return(player_uid);
 }
 
 void net_host_client_handle_leave(int player_uid)
@@ -87,22 +87,22 @@ void net_host_client_handle_leave(int player_uid)
 	
 		// now send all other players on host the remote remove
 		
-	net_host_player_send_message_others(player_uid,net_action_request_remote_remove,NULL,0);
+	net_host_player_send_message_others(player_uid,net_action_request_remote_remove,player_uid,NULL,0);
 }
 
-void net_host_client_handle_set_team(int net_node_uid,network_request_team *team)
+void net_host_client_handle_set_team(int player_uid,network_request_team *team)
 {
 	net_host_player_update_team(team);
-	net_host_player_send_message_others(net_node_uid,net_action_request_team,(unsigned char*)team,sizeof(network_request_team));
+	net_host_player_send_message_others(player_uid,net_action_request_team,player_uid,(unsigned char*)team,sizeof(network_request_team));
 }
 
-void net_host_client_handle_update(int net_node_uid,network_request_remote_update *update)
+void net_host_client_handle_update(int player_uid,network_request_remote_update *update)
 {
 	net_host_player_update(update);
-	net_host_player_send_message_others(net_node_uid,net_action_request_remote_update,(unsigned char*)update,sizeof(network_request_remote_update));
+	net_host_player_send_message_others(player_uid,net_action_request_remote_update,player_uid,(unsigned char*)update,sizeof(network_request_remote_update));
 }
 
-void net_host_client_handle_group_synch(int sock)
+void net_host_client_handle_group_synch(int player_uid)
 {
 	int								n;
 	network_reply_group_synch		reply_synch;
@@ -114,7 +114,7 @@ void net_host_client_handle_group_synch(int sock)
 
 		if (map.groups[n].move.was_moved) {
 			group_moves_synch_with_client(n,&reply_synch);
-			net_send_message(sock,net_action_reply_group_synch,net_player_uid_host,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
+			net_host_player_send_message_single(player_uid,net_action_reply_group_synch,net_player_uid_host,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
 		}
 
 	}
@@ -173,17 +173,15 @@ int net_host_client_handler_thread(void *arg)
 			case net_action_request_remote_fire:
 			case net_action_request_remote_pickup:
 			case net_action_request_remote_click:
-				net_host_player_send_message_others(player_uid,action,msg,msg_len);
+				net_host_player_send_message_others(player_uid,action,player_uid,msg,msg_len);
 				break;
 
 			case net_action_request_latency_ping:
-			// supergumba
-			//	net_send_message(sock,action,net_remote_uid_host,NULL,0);
+				net_host_player_send_message_single(player_uid,net_action_reply_latency_ping,net_player_uid_host,NULL,0);
 				break;
 
 			case net_action_request_group_synch:
-			// supergumba
-			//	net_host_client_handle_group_synch(sock);
+				net_host_client_handle_group_synch(player_uid);
 				break;
 
 		}
