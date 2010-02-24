@@ -331,7 +331,8 @@ int net_send_data(d3socket sock,unsigned char *data,int len)
 	return(total_len);
 }
 
-void net_send_message(d3socket sock,int action,int net_node_uid,unsigned char *data,int len)
+// supergumba -- remove all these and put in regular message sends
+void net_send_message(d3socket sock,int action,int player_uid,unsigned char *data,int len)
 {
 	unsigned char		net_data[net_max_msg_size];
 	network_header		*head;
@@ -342,7 +343,7 @@ void net_send_message(d3socket sock,int action,int net_node_uid,unsigned char *d
 
 	head->len=htons((short)len);
 	head->action=htons((short)action);
-	head->player_uid=htons((short)net_node_uid);
+	head->player_uid=htons((short)player_uid);
 
 		// the data
 

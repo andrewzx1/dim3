@@ -217,7 +217,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		remote_add.score=0;
 		remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 
-		net_host_player_send_message_others(player_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
+		net_host_player_send_message_others(player_uid,net_action_request_remote_add,net_player_uid_host,(unsigned char*)&remote_add,sizeof(network_request_object_add));
 	}
 
 	return(player_uid);
@@ -327,7 +327,7 @@ void net_host_game_end(void)
 {
 		// inform all player of server shutdown
 
-	net_host_player_send_message_all(net_action_request_host_exit,NULL,0);
+	net_host_player_send_message_all(net_action_request_host_exit,net_player_uid_host,NULL,0);
 
 		// shutdown server
 

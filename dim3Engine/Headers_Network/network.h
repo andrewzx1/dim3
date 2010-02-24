@@ -83,9 +83,9 @@ extern void net_host_shutdown(void);
 
 extern void net_host_player_add_bots(void);
 
-extern void net_host_client_handle_leave(int net_node_uid);
-extern void net_host_client_handle_set_team(int net_node_uid,network_request_team *team);
-extern void net_host_client_handle_update(int net_node_uid,network_request_remote_update *update);
+extern void net_host_client_handle_leave(int player_uid);
+extern void net_host_client_handle_set_team(int player_uid,network_request_team *team);
+extern void net_host_client_handle_update(int player_uid,network_request_remote_update *update);
 
 extern int net_host_client_handler_thread(void *arg);
 
@@ -113,15 +113,16 @@ extern int net_host_player_add(unsigned long ip_addr,int port,bool local,char *n
 extern int net_host_player_add_bot(obj_type *obj);
 extern void net_host_player_remove(int player_uid);
 
-extern void net_host_player_ready(int net_node_uid);
+extern void net_host_player_ready(int player_uid);
 extern void net_host_player_create_remote_list(int player_uid,network_reply_join_remotes *remotes);
 
 extern void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int msg_len);
 extern bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int *msg_len);
 extern void net_host_player_start_thread(int player_uid);
 
-extern void net_host_player_send_message_others(int player_uid,int action,unsigned char *msg,int msg_len);
-extern void net_host_player_send_message_all(int action,unsigned char *data,int len);
+extern void net_host_player_send_message_single(int to_player_uid,int action,int from_player_uid,unsigned char *msg,int msg_len);
+extern void net_host_player_send_message_others(int skip_player_uid,int action,int from_player_uid,unsigned char *msg,int msg_len);
+extern void net_host_player_send_message_all(int action,int from_player_uid,unsigned char *data,int len);
 
 extern void net_host_player_update_team(network_request_team *team);
 extern void net_host_player_update(network_request_remote_update *update);
@@ -141,7 +142,7 @@ extern bool net_client_start_message_queue(char *err_str);
 extern void net_client_end_message_queue(void);
 extern bool net_client_start_message_queue_local(char *err_str);
 extern void net_client_end_message_queue_local(void);
-extern bool net_client_check_message_queue(int *action,int *net_node_uid,unsigned char *data);
+extern bool net_client_check_message_queue(int *action,int *player_uid,unsigned char *data);
 
 //
 // client sending messages

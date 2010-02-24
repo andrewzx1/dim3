@@ -207,7 +207,7 @@ void game_reset(void)
 		// force all remotes to update
 		
 	obj=object_find_uid(server.player_obj_uid);
-	net_host_player_send_message_others(obj->remote.uid,net_action_request_game_reset,NULL,0);
+	net_host_player_send_message_others(obj->remote.uid,net_action_request_game_reset,net_player_uid_host,NULL,0);
 }
 
 

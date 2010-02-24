@@ -102,7 +102,7 @@ void score_limit_trigger_set(void)
 		
 	if (net_setup.host.hosting) {
 		obj=object_find_uid(server.player_obj_uid);
-		net_host_player_send_message_others(obj->remote.uid,net_action_request_game_score_limit,NULL,0);
+		net_host_player_send_message_others(obj->remote.uid,net_action_request_game_score_limit,net_player_uid_host,NULL,0);
 	}
 }
 

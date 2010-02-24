@@ -54,7 +54,7 @@ extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 extern void game_file_initialize(void);
-extern void menu_input(void);
+extern void menu_input(int tick);
 extern void file_input(void);
 extern void debug_input(void);
 extern void view_draw(int tick);
@@ -333,6 +333,10 @@ bool view_initialize(char *err_str)
 	
 	input_initialize(gl_in_window_mode());
 	setup_to_input();
+
+		// states
+
+	view.menu.active=FALSE;
 	
 		// draw timing
 		
@@ -429,7 +433,7 @@ void view_loop_input(int tick)
 		// system input
 	
 	console_input();
-	menu_input();
+	menu_input(tick);
 	file_input();
 	debug_input();
 }
