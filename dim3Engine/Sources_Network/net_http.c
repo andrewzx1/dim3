@@ -166,11 +166,11 @@ bool net_get_http_file_send(d3socket sock,char *host_name,char *url)
 	return(sent_len==len);
 }
 
-unsigned char* net_get_http_file_get(d3socket sock,char *err_str)
+char* net_get_http_file_get(d3socket sock,char *err_str)
 {
 	int					max_len,rcv_size,rbyte,content_offset,content_length;
 	bool				ok;
-	unsigned char		*c,*data,*content_data;
+	char				*c,*data,*content_data;
 	char				str[256];
 	fd_set				fd;
 	struct timeval		timeout;

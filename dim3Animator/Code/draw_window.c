@@ -27,14 +27,15 @@ and can be sold or given away.
 
 #include "model.h"
 
-extern int					draw_type,cur_mesh,cur_bone,shift_x,shift_y,magnify_z,
+extern int					cur_mesh,cur_bone,shift_x,shift_y,magnify_z,
 							gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size;
 extern float				ang_y,ang_x;
-extern bool					fileopen,play_animate,model_normal_on,model_bone_drag_on,model_show_first_mesh,
-							model_box_on,drag_sel_on;
+extern bool					fileopen,play_animate,model_bone_drag_on,drag_sel_on;
 extern Rect					drag_sel_box;
 extern AGLContext			ctx;
 extern WindowRef			model_wind;
+
+extern display_type			display;
 
 extern model_draw_setup		draw_setup;
 
@@ -123,7 +124,7 @@ void draw_model_setup_bones_vertexes(model_type *model,int mesh_idx,model_draw_s
 	
 		// calculate vertexes for first mesh if "show first mesh" is on
 		
-	if ((model_show_first_mesh) && (mesh_idx!=0)) {
+	if ((display.first_mesh) && (mesh_idx!=0)) {
 		model_create_draw_vertexes(model,0,draw_setup);
 		model_create_draw_normals(model,0,draw_setup);
 	}
@@ -170,46 +171,28 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 		// draw the mesh(es) in the current view
 	
-	switch (draw_type) {	
-		case dt_model:
-			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
-			draw_model(model,mesh_idx,draw_setup);
-			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
-			break;
-		case dt_mesh:
-			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
-			draw_model_mesh(model,mesh_idx,draw_setup);
-			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
-			break;
-		case dt_bones:
-			draw_model_bones(model,draw_setup,cur_bone);
-			break;
-		case dt_model_bones:
-			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
-			draw_model(model,mesh_idx,draw_setup);
-			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
-			draw_model_bones(model,draw_setup,cur_bone);
-			break;
-		case dt_mesh_bones:
-			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
-			draw_model_mesh(model,mesh_idx,draw_setup);
-			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
-			draw_model_bones(model,draw_setup,cur_bone);
-			break;
-		case dt_mesh_hit_boxes:
-			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
-			draw_model(model,mesh_idx,draw_setup);
-			draw_model_box_hit_boxes(model,draw_setup);
-			break;
+	if (display.texture) {
+		if ((display.first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
+		draw_model(model,mesh_idx,draw_setup);
+		draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 	}
 	
-		// draw the normals
+	if (display.mesh) {
+		if ((display.first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
+		draw_model_mesh(model,mesh_idx,draw_setup);
+	}
+	
+	if (display.bone) draw_model_bones(model,draw_setup,cur_bone);
+	
+	if ((display.texture) || (display.mesh)) {
+		draw_model_selected_vertexes(model,mesh_idx,draw_setup);
+	}
+	
+		// boxes and normals
 		
-	if (model_normal_on) draw_model_normals(model,mesh_idx,draw_setup);
-  
-        // draw the view, shadow, and hit boxes
-    
-    if (model_box_on) draw_model_box_view(model,draw_setup);
+	if (display.hit_box) draw_model_box_hit_boxes(model,draw_setup);
+	if (display.normal) draw_model_normals(model,mesh_idx,draw_setup);
+	if (display.view_box) draw_model_box_view(model,draw_setup);
 	
 		// draw the drag selection
 		

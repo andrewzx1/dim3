@@ -35,6 +35,8 @@ extern float					ang_y,ang_x;
 extern bool						shift_on,rotate_on,size_on,play_animate,drag_sel_on,model_bone_drag_on;
 extern Rect						drag_sel_box;
 
+extern display_type				display;
+
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 
@@ -618,11 +620,11 @@ void click_model_wind(Point pt,unsigned long modifiers)
 		return;
 	}
 	
-	if ((draw_type==dt_bones) || (draw_type==dt_model_bones) || (draw_type==dt_mesh_bones)) {
+	if (display.bone) {
 		if (drag_bone_model_wind(pt)) return;
 	}
 	
-	if (draw_type==dt_mesh_hit_boxes) {
+	if (display.hit_box) {
 		drag_hit_box_handle_model_wind(pt);
 		return;
 	}
