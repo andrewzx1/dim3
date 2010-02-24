@@ -11,7 +11,7 @@
 //
 
 #define tool_button_size				32
-#define tool_count						12
+#define tool_count						10
 #define tool_height						33
 
 #define model_view_min_size				512
@@ -188,3 +188,19 @@
 //
 
 #define import_scale_factor				100000.0f
+
+//
+// display
+//
+
+typedef struct		{
+						bool			texture,
+										mesh,
+										bone,
+										hit_box,
+										normal,
+										view_box,
+										first_mesh;
+					} display_type;
+
+

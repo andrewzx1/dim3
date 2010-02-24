@@ -41,6 +41,8 @@ void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup
     model_trig_type		*trig;
 	model_mesh_type		*mesh;
 	
+	glDisable(GL_DEPTH_TEST);
+	
 		// draw the mesh
 		
 	mesh=&model->meshes[mesh_idx];
@@ -67,6 +69,8 @@ void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup
     }
     
 	glUnlockArraysEXT();
+	
+	glEnable(GL_DEPTH_TEST);
 }
 
 /* =======================================================

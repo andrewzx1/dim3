@@ -33,13 +33,15 @@ and can be sold or given away.
 
 char							filename[256];
 
-extern int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
+extern int						cur_mesh,cur_bone,cur_pose,cur_animate,
 								shift_x,shift_y,magnify_z,drag_bone_mode,
 								play_animate_blend_idx[max_model_blend_animation];
 extern float					ang_y,ang_x;
-extern bool						done,fileopen,model_box_on,model_normal_on,
+extern bool						done,fileopen,
 								model_bone_drag_on,play_animate,play_animate_blend,model_show_first_mesh;
-							
+
+extern display_type				display;
+
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 
@@ -68,10 +70,14 @@ void menu_start(void)
 	
 	DisposeNibReference(nib);
 	
-	draw_type=dt_model;
-	model_show_first_mesh=FALSE;
-    model_box_on=TRUE;
-	model_normal_on=FALSE;
+	display.texture=TRUE;
+	display.mesh=FALSE;
+	display.bone=FALSE;
+    display.hit_box=FALSE;
+	display.normal=FALSE;
+	display.view_box=FALSE;
+	display.first_mesh=FALSE;
+	
 	model_bone_drag_on=FALSE;
 	drag_bone_mode=drag_bone_mode_rotate;
 	

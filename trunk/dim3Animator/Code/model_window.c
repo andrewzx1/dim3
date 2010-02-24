@@ -43,12 +43,10 @@ char							tool_icns_file_name[tool_count][64]=
 										"Tool Textured",
 										"Tool Mesh",
 										"Tool Bones",
-										"Tool Texture Bones",
-										"Tool Mesh Bones",
 										"Tool Mesh Hit Boxes",
-										"Tool Show First Mesh",
 										"Tool Boxes",
 										"Tool Normals",
+										"Tool Show First Mesh",
 										"Tool Rotate Mode",
 										"Tool Move Mode",
 										"Tool Play"
@@ -56,15 +54,13 @@ char							tool_icns_file_name[tool_count][64]=
 									
 char							tool_tooltip_str[tool_count][64]=
 									{
-										"Edit Textured Model",
-										"Edit Mesh",
-										"Edit Bones",
-										"Edit Textured Model and Bones",
-										"Edit Mesh and Bones",
-										"Edit Hit Boxes",
-										"Always Show First Mesh",
-										"Show View Box",
+										"Show Textured Model",
+										"Show Mesh",
+										"Show Bones",
+										"Show Hit Boxes",
+										"Show View Boxes",
 										"Show Normals",
+										"Always Show First Mesh",
 										"Rotate Bones Mode",
 										"Stretch Bones Mode",
 										"Play Current Animation"
@@ -79,9 +75,11 @@ int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
 float					ang_y,ang_x;
 bool					play_animate,play_animate_blend,
 						model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
-						model_box_on,model_normal_on,model_bone_drag_on,model_show_first_mesh;
+						model_bone_drag_on;
 Rect					drag_sel_box;
 AGLContext				ctx,texture_ctx;
+
+display_type			display;
 
 model_type				model;
 model_draw_setup		draw_setup;
@@ -219,96 +217,46 @@ bool model_wind_control(ControlRef ctrl)
 	switch (idx) {
 	
 		case 0:
-			SetControlValue(tool_ctrl[0],1);
-			SetControlValue(tool_ctrl[1],0);
-			SetControlValue(tool_ctrl[2],0);
-			SetControlValue(tool_ctrl[3],0);
-			SetControlValue(tool_ctrl[4],0);
-			SetControlValue(tool_ctrl[5],0);
-			draw_type=dt_model;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			display.texture=!display.texture;
 			break;
 			
 		case 1:
-			SetControlValue(tool_ctrl[0],0);
-			SetControlValue(tool_ctrl[1],1);
-			SetControlValue(tool_ctrl[2],0);
-			SetControlValue(tool_ctrl[3],0);
-			SetControlValue(tool_ctrl[4],0);
-			SetControlValue(tool_ctrl[5],0);
-			draw_type=dt_mesh;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			display.mesh=!display.mesh;
 			break;
 			
 		case 2:
-			SetControlValue(tool_ctrl[0],0);
-			SetControlValue(tool_ctrl[1],0);
-			SetControlValue(tool_ctrl[2],1);
-			SetControlValue(tool_ctrl[3],0);
-			SetControlValue(tool_ctrl[4],0);
-			SetControlValue(tool_ctrl[5],0);
-			draw_type=dt_bones;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			display.bone=!display.bone;
 			break;
 			
 		case 3:
-			SetControlValue(tool_ctrl[0],0);
-			SetControlValue(tool_ctrl[1],0);
-			SetControlValue(tool_ctrl[2],0);
-			SetControlValue(tool_ctrl[3],1);
-			SetControlValue(tool_ctrl[4],0);
-			SetControlValue(tool_ctrl[5],0);
-			draw_type=dt_model_bones;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			display.hit_box=!display.hit_box;
 			break;
 			
 		case 4:
-			SetControlValue(tool_ctrl[0],0);
-			SetControlValue(tool_ctrl[1],0);
-			SetControlValue(tool_ctrl[2],0);
-			SetControlValue(tool_ctrl[3],0);
-			SetControlValue(tool_ctrl[4],1);
-			SetControlValue(tool_ctrl[5],0);
-			draw_type=dt_mesh_bones;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			display.view_box=!display.view_box;
 			break;
 			
 		case 5:
-			SetControlValue(tool_ctrl[0],0);
-			SetControlValue(tool_ctrl[1],0);
-			SetControlValue(tool_ctrl[2],0);
-			SetControlValue(tool_ctrl[3],0);
-			SetControlValue(tool_ctrl[4],0);
-			SetControlValue(tool_ctrl[5],1);
-			draw_type=dt_mesh_hit_boxes;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			display.normal=!display.normal;
 			break;
 			
 		case 6:
-			model_show_first_mesh=!model_show_first_mesh;
+			display.first_mesh=!display.first_mesh;
 			break;
 			
 		case 7:
-			model_box_on=!model_box_on;
-			break;
-			
-		case 8:
-			model_normal_on=!model_normal_on;
-			break;
-			
-		case 9:
 			drag_bone_mode=drag_bone_mode_rotate;
 			SetControlValue(tool_ctrl[10],1);
 			SetControlValue(tool_ctrl[11],0);
 			break;
 			
-		case 10:
+		case 8:
 			drag_bone_mode=drag_bone_mode_stretch;
 			SetControlValue(tool_ctrl[10],0);
 			SetControlValue(tool_ctrl[11],1);
 			break;
 			
-		case 11:
+		case 9:
 			model_wind_play(!play_animate,FALSE);
 			break;
 	}
@@ -488,12 +436,6 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					
 					GetEventParameter(event,kEventParamKeyModifiers,typeUInt32,NULL,sizeof(unsigned long),NULL,&modifiers);
 					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
-					
-					if (btn==kEventMouseButtonTertiary) {		// shortcut for mesh mode change
-						model_wind_switch_mesh_mode();
-						draw_model_wind_pose(&model,cur_mesh,cur_pose);
-						return(noErr);
-					}
 					
 					click_model_wind(pt,modifiers);
 					model_wind_reset_modifiers();
@@ -856,7 +798,7 @@ void model_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==5) || (n==9) || (n==11)) OffsetRect(&box,5,0);
+		if ((n==2) || (n==5) || (n==6) || (n==8)) OffsetRect(&box,5,0);
 	}
 	
 		// magnify slider
@@ -991,33 +933,19 @@ void model_wind_set_title(char *title)
 
 void model_wind_reset_tools(void)
 {
-	SetControlValue(tool_ctrl[0],(draw_type==dt_model)?1:0);
-	SetControlValue(tool_ctrl[1],(draw_type==dt_mesh)?1:0);
-	SetControlValue(tool_ctrl[2],(draw_type==dt_bones)?1:0);
-	SetControlValue(tool_ctrl[3],(draw_type==dt_model_bones)?1:0);
-	SetControlValue(tool_ctrl[4],(draw_type==dt_mesh_bones)?1:0);
-	SetControlValue(tool_ctrl[5],(draw_type==dt_mesh_hit_boxes)?1:0);
-    
-	SetControlValue(tool_ctrl[6],model_show_first_mesh?1:0);
-	SetControlValue(tool_ctrl[7],model_box_on?1:0);
-	SetControlValue(tool_ctrl[8],model_normal_on?1:0);
+	SetControlValue(tool_ctrl[0],display.texture?1:0);
+	SetControlValue(tool_ctrl[1],display.mesh?1:0);
+	SetControlValue(tool_ctrl[2],display.bone?1:0);
 	
-	SetControlValue(tool_ctrl[9],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
-	SetControlValue(tool_ctrl[10],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
-
-	SetControlValue(tool_ctrl[11],play_animate?1:0);
-}
-
-void model_wind_switch_mesh_mode(void)
-{
-	draw_type++;
-	if (draw_type>dt_mesh_bones) draw_type=dt_model;
+	SetControlValue(tool_ctrl[3],display.hit_box?1:0);
+	SetControlValue(tool_ctrl[4],display.view_box?1:0);
+	SetControlValue(tool_ctrl[5],display.normal?1:0);
 	
-	SetControlValue(tool_ctrl[0],(draw_type==dt_model)?1:0);
-	SetControlValue(tool_ctrl[1],(draw_type==dt_mesh)?1:0);
-	SetControlValue(tool_ctrl[2],(draw_type==dt_bones)?1:0);
-	SetControlValue(tool_ctrl[3],(draw_type==dt_model_bones)?1:0);
-	SetControlValue(tool_ctrl[4],(draw_type==dt_mesh_bones)?1:0);
-	SetControlValue(tool_ctrl[5],(draw_type==dt_mesh_hit_boxes)?1:0);
+	SetControlValue(tool_ctrl[6],display.first_mesh?1:0);
+	
+	SetControlValue(tool_ctrl[7],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
+	SetControlValue(tool_ctrl[8],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
+
+	SetControlValue(tool_ctrl[9],play_animate?1:0);
 }
 
