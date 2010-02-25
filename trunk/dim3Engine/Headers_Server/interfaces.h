@@ -187,11 +187,6 @@ extern void chooser_trigger_check(void);
 extern void chooser_trigger_set(char *name,char *sub_txt);
 extern void chooser_run(void);
 
-extern void menu_trigger_clear(void);
-extern void menu_trigger_check(void);
-extern void menu_trigger_set(void);
-extern void menu_run(void);
-
 extern void title_trigger_clear(void);
 extern void title_trigger_check(void);
 extern void title_trigger_set(char *dir,char *name,char *sound_name,int event_id);
