@@ -255,7 +255,6 @@ bool loop_main(char *err_str)
 	chooser_trigger_clear();
 	movie_trigger_clear();
 	setup_game_trigger_clear();
-	menu_trigger_clear();
 	file_trigger_clear();
 	map_pick_trigger_clear();
 	score_limit_trigger_clear();
@@ -285,10 +284,6 @@ bool loop_main(char *err_str)
 
 		case gs_host:
 			host_run();
-			break;
-			
-		case gs_menu:
-			menu_run();
 			break;
 			
 		case gs_chooser:
@@ -352,7 +347,6 @@ bool loop_main(char *err_str)
 	chooser_trigger_check();
 	movie_trigger_check();
 	setup_game_trigger_check();
-	menu_trigger_check();
 	file_trigger_check();
 	map_pick_trigger_check();
 	score_limit_trigger_check();
