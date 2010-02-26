@@ -37,12 +37,12 @@ and can be sold or given away.
 #include "xmls.h"
 #include "network.h"
 #include "physics.h"
+#include "timing.h"
 
 extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern void game_time_initialize(void);
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
 extern void server_loop(int tick);

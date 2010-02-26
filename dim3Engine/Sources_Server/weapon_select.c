@@ -33,11 +33,10 @@ and can be sold or given away.
 #include "objects.h"
 #include "weapons.h"
 #include "models.h"
+#include "timing.h"
 
 extern server_type				server;
 extern camera_type				camera;
-
-extern int game_time_get(void);
 
 /* =======================================================
 

@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Remote Functions Header
+ Usage: Timing Functions
 
 ***************************** License ********************************
 
@@ -25,20 +25,14 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern bool remote_add(network_request_object_add *add,bool send_event);
-extern void remote_remove(int remote_uid,bool send_event);
+extern void game_time_initialize(void);
+extern void game_time_calculate(void);
+extern void game_time_reset(void);
 
-extern bool remote_timed_out(obj_type *obj);
+extern int game_time_get(void);
 
-extern void remote_predict_move(obj_type *obj);
+extern void game_time_set(int tick);
+extern float game_time_fequency_second_get(int start_tick);
 
-extern bool remote_network_get_updates(void);
-extern void remote_network_send_updates(int tick);
-extern void remote_network_send_group_synch(void);
-extern void remote_network_send_latency_ping(int tick);
-extern void remote_add_map_bots(void);
-
-extern void remote_draw_status(obj_type *obj);
-
-extern void remote_draw_names_setup(void);
-extern void remote_draw_names_render(void);
+extern void game_time_pause_start(void);
+extern void game_time_pause_end(void);

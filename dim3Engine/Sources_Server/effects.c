@@ -30,12 +30,11 @@ and can be sold or given away.
 #endif
 
 #include "effects.h"
+#include "consoles.h"
+#include "timing.h"
 
 extern map_type		map;
 extern server_type  server;
-
-extern void console_add_error(char *txt);
-extern int game_time_get(void);
 
 /* =======================================================
 

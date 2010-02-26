@@ -43,6 +43,7 @@ and can be sold or given away.
 #include "sounds.h"
 #include "inputs.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type				map;
 extern view_type			view;
@@ -59,7 +60,6 @@ extern void map_clear_changes(void);
 extern void map_start_ambient(void);
 extern void map_set_ambient(char *name,float pitch);
 extern void map_end_ambient(void);
-extern int game_time_get(void);
 extern void spot_start_attach(void);
 extern void spot_add_multiplayer_bots(void);
 extern bool gl_check_shader_ok(void);

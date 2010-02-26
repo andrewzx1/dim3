@@ -42,6 +42,7 @@ and can be sold or given away.
 #include "video.h"
 #include "sounds.h"
 #include "inputs.h"
+#include "timing.h"
 
 view_type					view;
 view_render_type			view_camera_render,view_node_render;
@@ -58,11 +59,11 @@ extern void menu_input(int tick);
 extern void file_input(void);
 extern void debug_input(void);
 extern void view_draw(int tick);
-extern int game_time_get(void);
 extern void chat_clear_messages(void);
 extern bool fog_solid_on(void);
 extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
+extern void menu_draw(int tick);
 
 /* =======================================================
 
@@ -467,6 +468,7 @@ void view_loop_draw(int tick)
 	hud_draw(tick);
 	radar_draw(tick);
 	network_draw(tick);
+	menu_draw(tick);
 
 		// swap frame buffers
 	
@@ -488,6 +490,7 @@ void view_loop_draw_dedicated(int tick)
 
 	gl_frame_clear(FALSE);
 	network_draw(tick);
+	menu_draw(tick);
 	gl_frame_swap();
 }
 

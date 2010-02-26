@@ -33,12 +33,11 @@ and can be sold or given away.
 #include "consoles.h"
 #include "lights.h"
 #include "video.h"
+#include "timing.h"
 
 extern server_type				server;
 extern view_type				view;
 extern map_type					map;
-
-extern int game_time_get(void);
 
 /* =======================================================
 

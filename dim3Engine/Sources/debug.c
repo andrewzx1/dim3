@@ -36,6 +36,8 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 #include "interfaces.h"
+#include "consoles.h"
+#include "timing.h"
 
 extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2;
 extern char					arch_type[64];
@@ -52,9 +54,6 @@ char						bind_type_str[][16]={"Game","Map","Remote"},
 							effect_type_str[][16]={"Flash","Particle","Lightning","Ray","Globe","Shake"};
 bool						dim3_debug=FALSE;
 FILE						*debug_log_file=NULL;
-
-extern void console_add_system(char *txt);
-extern int game_time_get(void);
 
 /* =======================================================
 

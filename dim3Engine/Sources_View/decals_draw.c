@@ -33,13 +33,13 @@ and can be sold or given away.
 #include "consoles.h"
 #include "lights.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type			map;
 extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-extern int game_time_get(void);
 extern bool view_mesh_in_draw_list(int mesh_idx);
 
 /* =======================================================

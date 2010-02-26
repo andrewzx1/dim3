@@ -34,6 +34,7 @@ and can be sold or given away.
 #endif
 
 #include "network.h"
+#include "timing.h"
 
 extern int					net_host_player_count;
 
@@ -41,7 +42,6 @@ extern map_type				map;
 extern hud_type				hud;
 extern network_setup_type	net_setup;
 
-extern int game_time_get(void);
 extern void group_moves_synch_with_client(int group_idx,network_reply_group_synch *synch);
 
 /* =======================================================

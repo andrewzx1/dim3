@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "network.h"
+#include "timing.h"
 
 extern int					net_host_player_count;
 
@@ -42,8 +43,6 @@ d3socket					host_socket;
 bool						host_complete;
 char						host_err_str[256];
 SDL_Thread					*host_thread;
-
-extern int game_time_get(void);
 
 int net_host_thread(void *arg);		// forward reference for main thread
 

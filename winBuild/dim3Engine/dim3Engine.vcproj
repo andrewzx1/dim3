@@ -428,6 +428,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Engine\Headers_Server\timing.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Headers_Server\weapons.h"
 					>
 				</File>
