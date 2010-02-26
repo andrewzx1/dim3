@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "interfaces.h"
 #include "models.h"
+#include "timing.h"
 
 typedef struct		{
 						int					tick;
@@ -50,14 +51,9 @@ unsigned long			game_file_sz,game_file_pos;
 char					game_file_last_save_name[256];
 unsigned char			*game_file_data;
 
-extern void game_time_pause_start(void);
-extern void game_time_pause_end(void);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
-extern void game_time_reset(void);
-extern int game_time_get(void);
-extern void game_time_set(int tick);
 extern void view_capture_draw(char *path);
 extern void group_moves_synch_with_load(void);
 extern void fade_screen_cancel(void);

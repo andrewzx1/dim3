@@ -31,8 +31,7 @@ and can be sold or given away.
 
 #include "objects.h"
 #include "cameras.h"
-
-extern int game_time_get(void);
+#include "timing.h"
 
 extern map_type				map;
 

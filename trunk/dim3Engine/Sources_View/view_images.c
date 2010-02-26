@@ -35,8 +35,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "effects.h"
 #include "video.h"
-
-extern int game_time_get(void);
+#include "timing.h"
 
 extern server_type			server;
 extern view_type			view;

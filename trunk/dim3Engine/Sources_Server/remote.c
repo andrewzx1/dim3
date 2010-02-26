@@ -40,6 +40,7 @@ and can be sold or given away.
 #include "sounds.h"
 #include "interfaces.h"
 #include "consoles.h"
+#include "timing.h"
 
 extern map_type				map;
 extern view_type			view;
@@ -51,7 +52,6 @@ extern network_setup_type	net_setup;
 
 extern bool					game_loop_quit;
 
-extern int game_time_get(void);
 extern void game_reset(void);
 extern void chat_add_message(int tick,char *name,char *str,d3col *col);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
@@ -781,7 +781,7 @@ void remote_click(network_request_remote_click *click)
       
 ======================================================= */
 
-bool remote_network_get_updates(int tick)
+bool remote_network_get_updates(void)
 {
 	int						action,player_uid,count;
 	unsigned char			msg[net_max_msg_size];
@@ -843,7 +843,7 @@ bool remote_network_get_updates(int tick)
 				break;
 
 			case net_action_reply_latency_ping:
-				net_setup.client.latency=(tick-net_setup.client.latency_ping_tick)>>1;		// latency is half of round trip as client-client
+				net_setup.client.latency=(game_time_get()-net_setup.client.latency_ping_tick)>>1;		// latency is half of round trip as client-client
 				break;
 
 			case net_action_request_host_exit:

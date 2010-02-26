@@ -55,18 +55,16 @@ void game_time_initialize(void)
       
 ======================================================= */
 
-int game_time_calculate(void)
+void game_time_calculate(void)
 {
 	int			current_time;
 	
-	if (server.time.paused) return(game_tick);
+	if (server.time.paused) return;
 	
 	current_time=time_get();
 	game_tick+=(current_time-game_last_tick);
 	
 	game_last_tick=current_time;
-	
-	return(game_tick);
 }
 
 void game_time_reset(void)

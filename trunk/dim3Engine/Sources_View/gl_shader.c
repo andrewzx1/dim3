@@ -33,11 +33,7 @@ and can be sold or given away.
 #include "cameras.h"
 #include "consoles.h"
 #include "video.h"
-
-extern int t_offset,b_offset,n_offset;	// supergumba
-
-extern int game_time_get(void);
-extern float game_time_fequency_second_get(int start_tick);
+#include "timing.h"
 
 extern map_type				map;
 extern view_type			view;

@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "inputs.h"
 #include "video.h"
 #include "consoles.h"
+#include "timing.h"
 
 extern bool					game_loop_pause;
 
@@ -45,12 +46,6 @@ extern network_setup_type	net_setup;
 
 bool						interface_quit,game_loop_pause_button_down;
 
-extern void game_time_initialize(void);
-extern int game_time_calculate(void);
-extern void game_time_pause_start(void);
-extern void game_time_pause_end(void);
-extern int time_get(void);
-extern int game_time_get(void);
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
 extern void server_loop(int tick);
@@ -96,12 +91,16 @@ bool interface_quit_trigger_check(void)
       
 ======================================================= */
 
-void loop_game_run(int tick)
+void loop_game_run(void)
 {
+	int			tick;
+
+	tick=game_time_get();		// supergumba -- next move spot
+
 		// receive networking updates
 		
 	if (net_setup.client.joined) {
-		if (!remote_network_get_updates(tick)) return;
+		if (!remote_network_get_updates()) return;
 	}
 	
 		// mark for interface quits
@@ -148,6 +147,7 @@ void loop_game_run(int tick)
 			view_run(tick);
 			view_loop_draw(tick);
 		}
+
 	}
 
 		// check interface quits
@@ -238,7 +238,7 @@ bool loop_pause(void)
 
 bool loop_main(char *err_str)
 {
-	int				tick,old_state;
+	int				old_state;
 
 		// paused?
 
@@ -246,7 +246,7 @@ bool loop_main(char *err_str)
 	
 		// calculate timing
 		
-	tick=game_time_calculate();
+	game_time_calculate();
 	
 		// clear all triggers
 		
@@ -271,7 +271,7 @@ bool loop_main(char *err_str)
 	switch (server.state) {
 	
 		case gs_running:
-			loop_game_run(tick);
+			loop_game_run();
 			break;
 
 		case gs_intro:

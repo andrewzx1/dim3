@@ -30,8 +30,8 @@ and can be sold or given away.
 #endif
 
 #include "video.h"
+#include "timing.h"
 
-extern int game_time_get(void);
 extern void gl_shader_set_scene_variables(shader_type *shader);
 
 extern map_type				map;

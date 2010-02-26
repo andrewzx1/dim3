@@ -42,7 +42,6 @@ extern setup_type		setup;
 extern camera_type		camera;
 extern view_type		view;
 
-extern int game_time_get(void);
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
 extern void view_compile_gl_list_attach_uv_simple(void);

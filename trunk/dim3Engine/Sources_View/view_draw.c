@@ -95,7 +95,6 @@ extern void view_calculate_sways(int tick,obj_type *obj);
 extern void view_calculate_bump(obj_type *obj);
 extern void shadow_render_model(int item_type,int item_idx,model_draw *draw);
 extern void shadow_render_mesh(int mesh_idx);
-extern void menu_draw(int tick);
 
 /* =======================================================
 
@@ -548,10 +547,6 @@ void view_draw(int tick)
 
 	fade_screen_draw(tick);
 	fade_object_draw(tick,obj);
-
-		// any running menu
-
-	menu_draw(tick);
 
 //	test_rays();		// supergumba
 }

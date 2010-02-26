@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "video.h"
 #include "inputs.h"
+#include "consoles.h"
 
 #define max_file_count					256
 
@@ -44,7 +45,6 @@ and can be sold or given away.
 extern bool game_file_save(char *err_str);
 extern bool game_file_quick_save(char *err_str);
 extern bool game_file_load(char *file_name,char *err_str);
-extern void console_add_error(char *txt);
 extern void intro_open(void);
 extern void map_end(void);
 extern void game_end(void);
