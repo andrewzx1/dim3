@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "sounds.h"
+#include "timing.h"
 
 int							audio_music_fade_mode,audio_music_fade_start_tick,audio_music_fade_msec,
 							audio_music_fade_next_msec,audio_music_original_volume;
@@ -375,9 +376,9 @@ bool al_music_fade_out_fade_in(int tick,char *name,int fade_out_msec,int fade_in
 	return(TRUE);
 }
 
-void al_music_run(int tick)
+void al_music_run(void)
 {
-	int				dif;
+	int				tick,dif;
 	char			err_str[256];
 	
 		// is there a fade on?
@@ -393,6 +394,8 @@ void al_music_run(int tick)
 	}
 	
 		// time to stop fade?
+
+	tick=game_time_get();
 		
 	dif=tick-audio_music_fade_start_tick;
 	if (dif>=audio_music_fade_msec) {

@@ -39,6 +39,7 @@ and can be sold or given away.
 #include "models.h"
 #include "effects.h"
 #include "cameras.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -134,7 +135,7 @@ void run_object_single(obj_type *obj,int tick)
 				object_turn(obj);
 			}
 		}
-		object_fs_effect_run(tick,obj);
+		object_fs_effect_run(obj);
 	}
 	else {
 		if (!obj->suspend) {
@@ -378,8 +379,9 @@ void run_projectiles_no_slice(int tick)
       
 ======================================================= */
 
-void server_run(int tick)
+void server_run(void)
 {
+	int				tick;
 	obj_type		*obj;
 
 		// get player object
@@ -387,7 +389,9 @@ void server_run(int tick)
 	obj=object_find_uid(server.player_obj_uid);
 	
 		// time to run tasks
-		
+
+	tick=game_time_get();
+
 	if (tick>=server.time.run_tick) {
 	
 			// tasks that require 1/100th of

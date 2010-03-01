@@ -1162,19 +1162,6 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\script_interface_fade.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_interface_interaction.c"
 						>
 						<FileConfiguration

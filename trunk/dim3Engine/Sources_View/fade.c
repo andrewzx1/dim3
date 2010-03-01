@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 #include "interfaces.h"
+#include "timing.h"
 
 int							fade_screen_tick;
 
@@ -44,29 +45,30 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void fade_screen_start(int tick)
+void view_draw_fade_start(void)
 {
 	if (hud.fade.map_msec<=0) {
 		fade_screen_tick=-1;
 		return;
 	}
 
-	fade_screen_tick=tick;
+	fade_screen_tick=game_time_get();
 }
 
-void fade_screen_cancel(void)
+void view_draw_fade_cancel(void)
 {
 	fade_screen_tick=-1;
 }
 
-void fade_screen_draw(int tick)
+void view_draw_fade_draw(void)
 {
+	int				tick;
 	float			alpha;
 	d3col			col;
 
 	if (fade_screen_tick==-1) return;
 
-	tick-=fade_screen_tick;
+	tick=game_time_get()-fade_screen_tick;
 	if (tick>hud.fade.map_msec) {
 		fade_screen_tick=-1;
 		return;
@@ -83,78 +85,5 @@ void fade_screen_draw(int tick)
 
 	col.r=col.g=col.b=0.0f;
 	view_draw_next_vertex_object_2D_color_quad(&col,alpha,0,setup.screen.x_sz,0,setup.screen.y_sz);
-}
-
-/* =======================================================
-
-      Objects Fade
-      
-======================================================= */
-
-void fade_object_draw(int tick,obj_type *obj)
-{
-	int					i,x,y,sz,alpha_sz,r;
-	float				fsz;
-	obj_fs_fade			*fade;
-	GLUquadricObj		*quadric;
-	
-	fade=&obj->fs_effect.fade;
-	
-		// fades on?
-		
-	if (!fade->on) return;
-	
-		// get fade size
-		
-	tick-=fade->start_tick;
-	if (tick>fade->life_tick) {
-		fsz=fade->end_size;
-	}
-	else {
-		fsz=fade->start_size+((fade->end_size-fade->start_size)*((float)tick/(float)fade->life_tick));
-	}
-	
-	sz=(int)(((float)setup.screen.x_sz)*fsz);
-	
-		// center point
-
-	x=fade->center_x;
-	y=fade->center_y;
-
-		// draw fade
-
-	gl_2D_view_screen();
-
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-
-	glMatrixMode(GL_MODELVIEW);
-	glTranslatef((float)x,(float)y,0.0f);
-	
-		// faded disk
-		
-	alpha_sz=80;
-	if (sz<80) alpha_sz=sz;
-	
-	for (i=0;i<alpha_sz;i+=2) {
-		glColor4f(0.0f,0.0f,0.0f,(((float)i)*0.025f));
-	
-		r=(sz+i);
-		quadric=gluNewQuadric();
-		gluDisk(quadric,r,(r+2),24,24);
-		gluDeleteQuadric(quadric);
-	}
-	
-		// rest of black disk
-		
-	sz+=alpha_sz;
-	if (sz<setup.screen.x_sz) {
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-
-		quadric=gluNewQuadric();
-		gluDisk(quadric,sz,setup.screen.x_sz,24,24);
-		gluDeleteQuadric(quadric);
-	}
 }
 

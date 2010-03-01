@@ -38,6 +38,7 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 #include "network.h"
+#include "timing.h"
 
 extern bool					game_loop_quit;
 
@@ -64,7 +65,7 @@ void score_limit_open(void)
 {
 	gui_initialize(NULL,NULL,TRUE);
 	
-	score_limit_start_tick=time_get();
+	score_limit_start_tick=game_time_get_raw();
 	
 	server.state=gs_score_limit;
 }
@@ -176,17 +177,17 @@ void score_limit_trigger_set_check_scores(void)
 
 void score_limit_run(void)
 {
-	int			tick;
+	int			raw_tick;
 	
-		// we are paused so use regular ticks
+		// we could be paused so use raw ticks
 		
-	tick=time_get();
+	raw_tick=game_time_get_raw();
 	
 		// draw score limit
 
 	gl_frame_clear(FALSE);
 	gui_draw_background(1.0f);
-	network_draw(tick);
+	network_draw();
 	gl_frame_swap();
 	
 		// pump events since we aren't calling
@@ -201,7 +202,7 @@ void score_limit_run(void)
 		
 			// check for time exit or escape exit
 			
-		if ((tick>(score_limit_start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
+		if ((raw_tick>(score_limit_start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
 			game_reset();
 			score_limit_close();
 		}
@@ -213,7 +214,7 @@ void score_limit_run(void)
 		// get an update in the time + 10 seconds,
 		// they auto-quit the game
 		
-	if (tick>(score_limit_start_tick+((SCORE_LIMIT_SECOND_PAUSE+10)*1000))) {
+	if (raw_tick>(score_limit_start_tick+((SCORE_LIMIT_SECOND_PAUSE+10)*1000))) {
 		score_limit_close();
 		remote_host_exit();
 	}

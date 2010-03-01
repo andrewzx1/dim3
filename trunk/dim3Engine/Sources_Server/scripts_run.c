@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "projectiles.h"
 #include "scripts.h"
+#include "timing.h"
 
 extern js_type				js;
 
@@ -40,11 +41,20 @@ extern js_type				js;
       
 ======================================================= */
 
-void scripts_run(int tick)
+void scripts_run(void)
 {
-	js.time.current_tick=tick;					// internal script tick
+	int				tick;
+
+		// set internal script tick
+
+	tick=game_time_get();
+	js.time.current_tick=tick;
 	
-	if (tick<js.time.timer_tick) return;				// scripts run 10 times a second
+		// scripts run 10 times a second
+
+	if (tick<js.time.timer_tick) return;
+
+		// run scripts
 	
 	while (tick>=js.time.timer_tick) {
 		js.time.timer_tick+=100;

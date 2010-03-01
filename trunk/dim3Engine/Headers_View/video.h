@@ -157,7 +157,7 @@ extern void gl_back_render_initialize(void);
 extern void gl_back_render_shutdown(void);
 extern void gl_back_render_map_start(void);
 extern void gl_back_render_map_end(void);
-extern void gl_back_render_frame_start(int tick);
+extern void gl_back_render_frame_start(void);
 extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id);
 
 	// view

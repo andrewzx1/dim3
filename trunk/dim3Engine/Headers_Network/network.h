@@ -153,7 +153,7 @@ extern void net_client_send_set_team(obj_type *obj);
 extern void net_client_send_leave_host(void);
 extern void net_client_send_latency_ping(int remote_uid);
 extern void net_client_request_group_synch_ping(int remote_uid);
-extern void net_client_send_remote_update(int tick,obj_type *obj,bool chat_on);
+extern void net_client_send_remote_update(obj_type *obj,bool chat_on);
 extern void net_client_send_death(obj_type *obj,bool telefrag);
 extern void net_client_send_chat(obj_type *obj,char *str);
 extern void net_client_send_sound(d3pnt *pnt,float pitch,char *name);

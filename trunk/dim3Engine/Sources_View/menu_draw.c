@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "video.h"
 #include "inputs.h"
+#include "timing.h"
 
 extern bool					game_loop_quit;
 
@@ -56,7 +57,7 @@ extern void debug_game(void);
       
 ======================================================= */
 
-void menu_draw_start(int tick)
+void menu_draw_start(void)
 {
 	/* pausing -- supergumba
 	game_time_pause_start();
@@ -67,7 +68,7 @@ void menu_draw_start(int tick)
 	view.menu.fade_out=FALSE;
 	view.menu.active=FALSE;
 
-	view.menu.fade_start_tick=tick;
+	view.menu.fade_start_tick=game_time_get_raw();
 
 	view.menu.menu_idx=0;
 	view.menu.click_item_idx=-1;
@@ -76,13 +77,13 @@ void menu_draw_start(int tick)
 	cursor_initialize();
 }
 
-void menu_draw_end(int tick,bool fade)
+void menu_draw_end(bool fade)
 {
 	view.menu.fade_in=FALSE;
 	view.menu.fade_out=fade;
 	view.menu.active=FALSE;
 
-	view.menu.fade_start_tick=tick;
+	view.menu.fade_start_tick=game_time_get_raw();
 
 	cursor_shutdown();
 	
@@ -99,7 +100,7 @@ void menu_draw_end(int tick,bool fade)
       
 ======================================================= */
 
-bool menu_select(int tick)
+bool menu_select(void)
 {
 	int				sub_idx;
 	menu_type		*menu;
@@ -122,7 +123,7 @@ bool menu_select(int tick)
 	
 		// exit menus
 		
-	menu_draw_end(tick,FALSE);
+	menu_draw_end(FALSE);
 			
 		// quit item
 		
@@ -147,7 +148,7 @@ bool menu_select(int tick)
 	return(TRUE);
 }
 
-void menu_input(int tick)
+void menu_input(void)
 {
 		// turn on/off menu
 
@@ -156,10 +157,10 @@ void menu_input(int tick)
 		if ((view.menu.fade_in) || (view.menu.fade_out)) return;
 		
 		if (!view.menu.active) {
-			menu_draw_start(tick);
+			menu_draw_start();
 		}
 		else {
-			menu_draw_end(tick,TRUE);
+			menu_draw_end(TRUE);
 		}
 
 		return;
@@ -172,7 +173,7 @@ void menu_input(int tick)
 	if (input_gui_get_mouse_left_button_down()) {
 	
 		if (!view.menu.mouse_down) {
-			menu_select(tick);
+			menu_select();
 			view.menu.mouse_down=TRUE;
 		}
 		
@@ -189,9 +190,9 @@ void menu_input(int tick)
       
 ======================================================= */
 
-void menu_draw(int tick)
+void menu_draw(void)
 {
-	int					n,x,y,kx,ky,
+	int					n,raw_tick,x,y,kx,ky,
 						wid,high,half_high;
 	float				alpha;
 	d3col				*col;
@@ -208,27 +209,29 @@ void menu_draw(int tick)
 
 		// get the alpha
 
+	raw_tick=game_get_time_raw();
+
 	alpha=1.0f;
 
 	if (view.menu.fade_in) {
-		tick-=view.menu.fade_start_tick;
-		if (tick>=300) {
+		raw_tick-=view.menu.fade_start_tick;
+		if (raw_tick>=300) {
 			view.menu.fade_in=FALSE;
 			view.menu.active=TRUE;
 		}
 		else {
-			alpha=((float)tick)/300.0f;
+			alpha=((float)raw_tick)/300.0f;
 		}
 	}
 	
 	if (view.menu.fade_out) {
-		tick-=view.menu.fade_start_tick;
-		if (tick>=300) {
+		raw_tick-=view.menu.fade_start_tick;
+		if (raw_tick>=300) {
 			view.menu.fade_out=FALSE;
 			return;
 		}
 		else {
-			alpha=1.0f-(((float)tick)/300.0f);
+			alpha=1.0f-(((float)raw_tick)/300.0f);
 		}
 	}
 

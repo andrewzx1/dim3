@@ -109,8 +109,8 @@ extern void object_shove_direct(obj_type *obj,d3vct *vct);
 extern bool object_is_targetted(obj_type *obj,d3col *col);
 extern bool object_set_radar_icon(obj_type *obj,char *err_str);
 
-extern void object_fs_tint_start(int tick,obj_type *obj,float r,float g,float b,float alpha,int fade_in_msec,int life_msec,int fade_out_msec);
-extern void object_fs_effect_run(int tick,obj_type *obj);
+extern void object_fs_tint_start(obj_type *obj,float r,float g,float b,float alpha,int fade_in_msec,int life_msec,int fade_out_msec);
+extern void object_fs_effect_run(obj_type *obj);
 
 extern void get_motion_movement(float ang,obj_movement *move,float *xmove,float *zmove);
 extern void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove);
@@ -232,5 +232,5 @@ extern void player_weapon_input(int tick,obj_type *obj);
 extern void player_enter_vehicle(obj_type *obj);
 extern void player_exit_vehicle(obj_type *obj);
 extern void player_enter_exit_input(obj_type *obj);
-extern bool player_message_input(int tick,obj_type *obj);
-extern void player_get_input(int tick);
+extern bool player_message_input(obj_type *obj);
+extern void player_get_input(void);

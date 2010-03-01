@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "interfaces.h"
 #include "video.h"
+#include "timing.h"
 
 extern server_type			server;
 extern view_type			view;
@@ -48,9 +49,9 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-void radar_draw(int tick)
+void radar_draw(void)
 {
-	int						n,x,y,lx,rx,ty,by,px[4],py[4],
+	int						n,tick,x,y,lx,rx,ty,by,px[4],py[4],
 							dist,max_dist,fade_dist,fade_count,radar_sz;
 	unsigned long			cur_gl_id,gl_id;
 	float					alpha,cur_alpha,fade_mult;
@@ -114,6 +115,10 @@ void radar_draw(int tick)
 	glTexCoord2f(0.0f,1.0f);
 	glVertex2i(lx,by);
 	glEnd();
+
+		// ticks for fades
+
+	tick=game_time_get();
 
 		// draw radar objects
 		

@@ -31,6 +31,18 @@ and can be sold or given away.
 
 #include "consoles.h"
 #include "video.h"
+#include "timing.h"
+
+/* supergumba
+typedef struct		{
+						int						start_tick,
+												fade_in_tick,life_tick,fade_out_tick;
+						float					alpha;
+						bool					on;
+						d3col					col;
+					} hud_tint_type;
+*/
+int							tint_start_tick;
 
 extern map_type				map;
 extern setup_type			setup;
@@ -73,10 +85,16 @@ void view_draw_liquid_tint(int liquid_idx)
       
 ======================================================= */
 
-void view_draw_effect_tint(int tick,obj_type *obj)
+void view_draw_tint_start(void)
 {
-	float		alpha;
-	obj_fs_tint	*tint;
+
+}
+
+void view_draw_effect_tint(obj_type *obj)
+{
+	int				tick;
+	float			alpha;
+	obj_fs_tint		*tint;
 	
 	tint=&obj->fs_effect.tint;
 	
@@ -86,7 +104,7 @@ void view_draw_effect_tint(int tick,obj_type *obj)
 	
 		// get color and alpha
 		
-	tick-=tint->start_tick;
+	tick=game_time_get()-tint->start_tick;
 	
 	if (tick>(tint->fade_in_tick+tint->life_tick)) {
 		alpha=1.0f-((float)(tick-(tint->fade_in_tick+tint->life_tick))/(float)tint->fade_out_tick);

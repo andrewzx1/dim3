@@ -28,10 +28,10 @@ and can be sold or given away.
 extern void game_time_initialize(void);
 extern void game_time_calculate(void);
 extern void game_time_reset(void);
-
-extern int game_time_get(void);
-
 extern void game_time_set(int tick);
+
+extern int game_time_get_raw(void);
+extern int game_time_get(void);
 extern float game_time_fequency_second_get(int start_tick);
 
 extern void game_time_pause_start(void);

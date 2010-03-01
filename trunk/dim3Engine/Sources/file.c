@@ -56,7 +56,7 @@ extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
 extern void view_capture_draw(char *path);
 extern void group_moves_synch_with_load(void);
-extern void fade_screen_cancel(void);
+extern void view_draw_fade_cancel(void);
 
 /* =======================================================
 
@@ -544,7 +544,7 @@ bool game_file_load(char *file_name,char *err_str)
 		// fix some necessary functions
 
 	map.rain.reset=TRUE;
-	fade_screen_cancel();
+	view_draw_fade_cancel();
 		
 		 // return to old game time
 

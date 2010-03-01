@@ -64,7 +64,7 @@ extern void spot_start_attach(void);
 extern void spot_add_multiplayer_bots(void);
 extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
-extern void fade_screen_start(int tick);
+extern void view_draw_fade_start(void);
 extern void group_move_clear_all(void);
 extern void draw_sky_init(void);
 extern bool view_compile_mesh_gl_list_init(void);
@@ -453,7 +453,7 @@ bool map_start(bool skip_media,char *err_str)
 
 		// start any map fades
 
-	fade_screen_start(tick);
+	view_draw_fade_start();
 	
 	return(TRUE);
 }

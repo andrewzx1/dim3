@@ -51,7 +51,7 @@ bool						weapon_change_key_down,weapon_target_key_down,weapon_zoom_key_down,
 							enter_exit_key_down,network_score_key_down,toggle_run_state,
 							fire_key_down[4],command_key_down[20],player_key_down[20];
 
-extern void chat_add_message(int tick,char *name,char *str,d3col *col);
+extern void chat_add_message(char *name,char *str,d3col *col);
 
 /* =======================================================
 
@@ -448,7 +448,7 @@ void player_enter_exit_input(obj_type *obj)
       
 ======================================================= */
 
-bool player_message_input(int tick,obj_type *obj)
+bool player_message_input(obj_type *obj)
 {
 	int				len;
 	char			ch,nstr[chat_str_len];
@@ -500,7 +500,7 @@ bool player_message_input(int tick,obj_type *obj)
 				msg[len-1]=0x0;
 				net_client_send_chat(obj,msg);
 				object_get_tint(obj,&col);
-				chat_add_message(tick,obj->name,msg,&col);
+				chat_add_message(obj->name,msg,&col);
 			}
 			return(FALSE);
 		}
@@ -537,7 +537,7 @@ bool player_message_input(int tick,obj_type *obj)
 			msg[len-1]=0x0;
 			net_client_send_chat(obj,msg);
 			object_get_tint(obj,&col);
-			chat_add_message(tick,obj->name,msg,&col);
+			chat_add_message(obj->name,msg,&col);
 			
 			strcpy(msg,nstr);
 			len=strlen(msg);
@@ -948,7 +948,7 @@ void player_thrust_input(int tick,obj_type *obj)
       
 ======================================================= */
 
-void player_get_input(int tick)
+void player_get_input(void)
 {
 	obj_type		*obj;
 	
@@ -969,7 +969,7 @@ void player_get_input(int tick)
 
 		// message inputs
 		
-	if (!player_message_input(tick,obj)) return;
+	if (!player_message_input(obj)) return;
 		
 		// commands (game and player)
 		

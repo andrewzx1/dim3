@@ -45,7 +45,6 @@ extern network_setup_type	net_setup;
 
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
-extern void server_loop(int tick);
 extern bool view_initialize(char *err_str);
 extern void view_shutdown(void);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);

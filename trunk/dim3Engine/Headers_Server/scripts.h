@@ -44,7 +44,7 @@ extern bool scripts_execute(attach_type *attach,script_type *script,char *err_st
 extern bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str);
 extern void scripts_dispose(int uid);
 
-extern void scripts_run(int tick);
+extern void scripts_run(void);
 
 extern void script_defines_create_constants(script_type *script);
 extern void script_load_user_defines(void);
@@ -138,7 +138,6 @@ extern void script_init_global_interface_object(void);
 extern void script_init_interface_bar_object(void);
 extern void script_init_interface_bitmap_object(void);
 extern void script_init_interface_console_object(void);
-extern void script_init_interface_fade_object(void);
 extern void script_init_interface_interaction_object(void);
 extern void script_init_interface_radar_object(void);
 extern void script_init_interface_screen_object(void);
@@ -282,7 +281,6 @@ extern void script_free_global_interface_object(void);
 extern void script_free_interface_bar_object(void);
 extern void script_free_interface_bitmap_object(void);
 extern void script_free_interface_console_object(void);
-extern void script_free_interface_fade_object(void);
 extern void script_free_interface_interaction_object(void);
 extern void script_free_interface_radar_object(void);
 extern void script_free_interface_screen_object(void);
@@ -426,7 +424,6 @@ extern JSObjectRef script_add_global_interface_object(JSContextRef cx,JSObjectRe
 extern JSObjectRef script_add_interface_bar_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_interface_bitmap_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_interface_console_object(JSContextRef cx,JSObjectRef parent_obj);
-extern JSObjectRef script_add_interface_fade_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_interface_interaction_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_interface_radar_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef parent_obj);

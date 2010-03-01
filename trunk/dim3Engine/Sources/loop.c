@@ -48,13 +48,13 @@ bool						interface_quit,game_loop_pause_button_down;
 
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
-extern void server_loop(int tick);
+extern void server_loop(void);
 extern bool view_initialize(char *err_str);
 extern void view_shutdown(void);
-extern void view_loop_input(int tick);
-extern void view_run(int tick);
-extern void view_loop_draw(int tick);
-extern void view_loop_draw_dedicated(int tick);
+extern void view_loop_input(void);
+extern void view_run(void);
+extern void view_loop_draw(void);
+extern void view_loop_draw_dedicated_host(void);
 extern void view_pause_draw(void);
 extern void map_clear_changes(void);
 extern bool map_need_rebuild(void);
@@ -62,7 +62,7 @@ extern bool map_rebuild_changes(char *err_str);
 extern void game_end(void);
 extern void map_end(void);
 extern void view_clear_fps(void);
-extern void view_calculate_fps(int tick);
+extern void view_calculate_fps(void);
 
 /* =======================================================
 
@@ -93,10 +93,6 @@ bool interface_quit_trigger_check(void)
 
 void loop_game_run(void)
 {
-	int			tick;
-
-	tick=game_time_get();		// supergumba -- next move spot
-
 		// receive networking updates
 		
 	if (net_setup.client.joined) {
@@ -109,43 +105,30 @@ void loop_game_run(void)
 	
 		// run game
 
-	server_loop(tick);
+	server_loop();
 	
 		// sending network updates
 
 	if (net_setup.client.joined) {
-
-		if (tick>=server.time.network_update_tick) {
-			server.time.network_update_tick=tick+client_communication_update_msec_rate;
-			remote_network_send_updates(tick);
-		}
-		
-		if (tick>=server.time.network_group_synch_tick) {
-			server.time.network_group_synch_tick=tick+client_communication_group_synch_msec_rate;
-			remote_network_send_group_synch();
-		}
-
-		if (tick>=server.time.network_latency_ping_tick) {
-			server.time.network_latency_ping_tick=tick+client_communication_latency_ping_msec_rate;
-			remote_network_send_latency_ping(tick);
-		}
-
+		remote_network_send_updates();
+		remote_network_send_group_synch();
+		remote_network_send_latency_ping();
 	}
 
 		// view input
 
-	view_loop_input(tick);
+	view_loop_input();
 
 		// draw the view
 
 	if ((server.state==gs_running) || (server.state==gs_score_limit)) {
 
 		if ((setup.network.dedicated) && (net_setup.host.hosting)) {
-			view_loop_draw_dedicated(tick);
+			view_loop_draw_dedicated_host();
 		}
 		else {
-			view_run(tick);
-			view_loop_draw(tick);
+			view_run();
+			view_loop_draw();
 		}
 
 	}
@@ -161,7 +144,7 @@ void loop_game_run(void)
 	
 		// calculate fps
 
-	view_calculate_fps(tick);
+	view_calculate_fps();
 }
 
 /* =======================================================

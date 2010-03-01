@@ -48,7 +48,7 @@ hud_type					hud;
 
 extern setup_type			setup;
 
-extern void server_run(int tick);
+extern void server_run(void);
 
 /* =======================================================
 
@@ -367,7 +367,7 @@ void server_game_stop(void)
       
 ======================================================= */
 
-void server_loop(int tick)
+void server_loop(void)
 {
 		// prepare for any script based spawns
 
@@ -375,8 +375,8 @@ void server_loop(int tick)
 
 		// run all server functions
 
-	scripts_run(tick);
-	server_run(tick);
+	scripts_run();
+	server_run();
 
 		// finish spawning any script based objects
 

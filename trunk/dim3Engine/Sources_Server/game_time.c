@@ -29,7 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-int							game_tick,game_last_tick;
+int							raw_tick,raw_last_tick,
+							game_tick,game_last_tick;
 
 extern server_type			server;
 
@@ -42,29 +43,39 @@ extern server_type			server;
 void game_time_initialize(void)
 {
 	time_start();
-	
-	game_tick=0;
-	game_last_tick=time_get();
+
+	raw_tick=game_tick=0;
+	raw_last_tick=game_last_tick=time_get();
 	
 	server.time.paused=FALSE;
 }
 
 /* =======================================================
 
-      Set Game Tick
+      Calculate and Set Game Tick
       
 ======================================================= */
 
 void game_time_calculate(void)
 {
 	int			current_time;
-	
-	if (server.time.paused) return;
-	
+
 	current_time=time_get();
-	game_tick+=(current_time-game_last_tick);
+
+		// raw ticks can't be paused
+		// used for view drawing and input which
+		// can work through a pause
+
+	raw_tick+=(current_time-raw_last_tick);
+	raw_last_tick=current_time;
 	
-	game_last_tick=current_time;
+		// server ticks can be paused, used
+		// for physics, scripts, etc
+
+	if (!server.time.paused) {
+		game_tick+=(current_time-game_last_tick);
+		game_last_tick=current_time;
+	}
 }
 
 void game_time_reset(void)
@@ -72,21 +83,32 @@ void game_time_reset(void)
 	game_last_tick=time_get();
 }
 
+void game_time_set(int tick)
+{
+	game_tick=tick;
+}
+
+/* =======================================================
+
+      Get Game Tick
+      
+======================================================= */
+
 inline int game_time_get(void)
 {
 	return(game_tick);
 }
 
-void game_time_set(int tick)
+inline int game_time_get_raw(void)
 {
-	game_tick=tick;
+	return(raw_tick);
 }
 
 float game_time_fequency_second_get(int start_tick)
 {
 	int				k;
 	
-	k=(game_tick-start_tick)%2000;
+	k=(raw_tick-start_tick)%2000;
 	if (k>=1000) k=2000-k;
 	
 	return(((float)k)/1000.0f);
