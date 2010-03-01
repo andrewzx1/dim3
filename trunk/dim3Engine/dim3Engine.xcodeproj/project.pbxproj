@@ -53,6 +53,7 @@
 		26F08CA20DAC7DB50097E249 /* net_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */; };
 		26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08CA00DAC7DB50097E249 /* net_host_players.c */; };
 		26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F08CB90DAC7E990097E249 /* network_defs.h */; };
+		26FDC442113A45A6002D987E /* timing.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FDC441113A45A6002D987E /* timing.h */; };
 		26FE82370F4E1D5C00B659D8 /* gl_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FE82350F4E1D5C00B659D8 /* gl_light.c */; };
 		F500CC680C27942200F7C8CC /* gl_check.c in Sources */ = {isa = PBXBuildFile; fileRef = F500CC670C27942200F7C8CC /* gl_check.c */; };
 		F503D43809830CD100DEDC74 /* model_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D43709830CD100DEDC74 /* model_mesh.c */; };
@@ -437,6 +438,7 @@
 		26F08C9E0DAC7DB50097E249 /* net_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host.c; path = Sources_Network/net_host.c; sourceTree = "<group>"; };
 		26F08CA00DAC7DB50097E249 /* net_host_players.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_players.c; path = Sources_Network/net_host_players.c; sourceTree = "<group>"; };
 		26F08CB90DAC7E990097E249 /* network_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network_defs.h; path = Headers_Network/network_defs.h; sourceTree = "<group>"; };
+		26FDC441113A45A6002D987E /* timing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = timing.h; path = Headers_Server/timing.h; sourceTree = "<group>"; };
 		26FE82350F4E1D5C00B659D8 /* gl_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_light.c; path = Sources_View/gl_light.c; sourceTree = "<group>"; };
 		F500CC670C27942200F7C8CC /* gl_check.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_check.c; path = Sources_View/gl_check.c; sourceTree = "<group>"; };
 		F503D43709830CD100DEDC74 /* model_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_mesh.c; path = Sources_Server/model_mesh.c; sourceTree = "<group>"; };
@@ -1269,6 +1271,7 @@
 				F5A58241090B512000BE7C36 /* effects.h */,
 				F5A58246090B512000BE7C36 /* cameras.h */,
 				F5A58242090B512000BE7C36 /* consoles.h */,
+				26FDC441113A45A6002D987E /* timing.h */,
 				F5A58285090B589C00BE7C36 /* interfaces.h */,
 				F5A58240090B512000BE7C36 /* xmls.h */,
 			);
@@ -1574,6 +1577,7 @@
 				F5FD3CFA0C865C4E00087C1C /* physics.h in Headers */,
 				26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */,
 				268CBC8C0DD2AA6700CF0256 /* network.h in Headers */,
+				26FDC442113A45A6002D987E /* timing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1961,8 +1965,7 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

@@ -168,6 +168,7 @@ void draw_sky_dome_panoramic_setup(void)
 	}
 
 		// create the cap vertexes
+		// cap gets color from pixel at 0,0
 
 	rxz=0.0f;
 
@@ -191,6 +192,15 @@ void draw_sky_dome_panoramic_setup(void)
 		*vertex_ptr++=0.0f;
 		*vertex_ptr++=f_ty;
 		*vertex_ptr++=0.0f;
+		
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
+		
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
+		
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
 
 		rxz+=r_add;
 	}
@@ -223,14 +233,15 @@ void draw_sky_dome_panoramic(int tick)
 	gl_3D_rotate(NULL,&view.render->camera.ang);
 	gl_setup_project();
 	
-		// construct VBO
+		// construct vbo
 
 	view_bind_sky_vertex_object();
 
-		// both outside and cap need vertex list
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((120*4)*3)*sizeof(float)));
 
 		// draw textured dome
 		
@@ -248,25 +259,16 @@ void draw_sky_dome_panoramic(int tick)
 	
 	gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((120*4)*3)*sizeof(float)));
-
-	glDrawArrays(GL_QUADS,0,(100*4));
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDrawArrays(GL_QUADS,0,(120*4));
 		
 	glMatrixMode(GL_TEXTURE);
 	glLoadIdentity();
 		
 	gl_texture_simple_end();
 
-		// draw colored cap
+		// disable vbo
 
-	glColor4f(texture->col.r,texture->col.g,texture->col.b,1.0f);
-	glDrawArrays(GL_TRIANGLES,(100*4),(20*3));
-
-		// disable vertex array
-
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// unbind the vbo

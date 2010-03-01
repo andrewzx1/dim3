@@ -156,7 +156,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 					normal->x=-strtod(txt,NULL);
 					textdecode_get_piece(n,2,txt);
 					normal->y=-strtod(txt,NULL);
-					textdecode_get_piece(n,2,txt);
+					textdecode_get_piece(n,3,txt);
 					normal->z=-strtod(txt,NULL);
 					
 					normal++;
