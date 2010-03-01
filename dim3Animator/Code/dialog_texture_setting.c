@@ -36,7 +36,6 @@ and can be sold or given away.
 #define kTextureSettingFrameGlowmap					FOUR_CHAR_CODE('gwmp')
 #define kTextureSettingFrameWait					FOUR_CHAR_CODE('watm')
 #define kTextureSettingFrameInfo					FOUR_CHAR_CODE('info')
-#define kTextureSettingColor						FOUR_CHAR_CODE('colr')
 #define kTextureSettingShader						FOUR_CHAR_CODE('shdr')
 #define kTextureSettingAnimate						FOUR_CHAR_CODE('anmt')
 #define kTextureSettingAlphaAdditive				FOUR_CHAR_CODE('addv')
@@ -583,8 +582,6 @@ void dialog_texture_setting_run(int txt)
 	
 		// other dialog controls
 		
-	dialog_set_color(dialog_texture_wind,kTextureSettingColor,0,&texture->col);
-		
 	dialog_special_combo_fill_shader(dialog_texture_wind,kTextureSettingShader,0,texture->shader_name);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAnimate,0,texture->animate.on);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0,texture->additive);
@@ -611,8 +608,6 @@ void dialog_texture_setting_run(int txt)
 
 	texture_setting_frame_save();
 	
-	dialog_get_color(dialog_texture_wind,kTextureSettingColor,0,&texture->col);
-		
 	dialog_special_combo_get_shader(dialog_texture_wind,kTextureSettingShader,0,texture->shader_name,name_str_len);
 	texture->animate.on=dialog_get_boolean(dialog_texture_wind,kTextureSettingAnimate,0);
 	texture->additive=dialog_get_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0);

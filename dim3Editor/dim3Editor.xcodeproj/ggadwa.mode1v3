@@ -347,8 +347,9 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>94</integer>
-									<integer>93</integer>
+									<integer>86</integer>
+									<integer>83</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -371,7 +372,7 @@
 							<real>297</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>4 172 319 847 0 0 1680 1028 </string>
+						<string>11 171 319 847 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -408,7 +409,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>4 172 319 847 0 0 1680 1028 </string>
+								<string>11 171 319 847 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -428,7 +429,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 801}}</string>
 								<key>RubberWindowFrame</key>
-								<string>4 172 319 847 0 0 1680 1028 </string>
+								<string>11 171 319 847 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -452,9 +453,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26F864071133773500206072</string>
+				<string>26FDC4E7113ADB37002D987E</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26F864081133773500206072</string>
+				<string>26FDC4E8113ADB37002D987E</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -575,7 +576,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>288585555.28110999</real>
+	<real>289069971.61484498</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -590,15 +591,16 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26F864111133773500206072</string>
-		<string>26F864121133773500206072</string>
+		<string>26FDC508113ADB82002D987E</string>
+		<string>26FDC509113ADB82002D987E</string>
 		<string>1C78EAAD065D492600B07095</string>
 		<string>1CD10A99069EF8BA00B06720</string>
+		<string>26FDC50A113ADB82002D987E</string>
 		<string>260AFEFF0D4050AF00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>4 172 319 847 0 0 1680 1028 </string>
+	<string>11 171 319 847 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -677,7 +679,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEFF0D4050AF00F6C42F</string>
-				<string>26F864021133771B00206072</string>
+				<string>26FDC4E9113ADB37002D987E</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -797,13 +799,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>26F864091133773500206072</string>
+				<string>26FDC500113ADB82002D987E</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>26F8640A1133773500206072</string>
-				<string>26F8640B1133773500206072</string>
-				<string>26F8640C1133773500206072</string>
-				<string>26F8640D1133773500206072</string>
-				<string>26F8640E1133773500206072</string>
+				<string>26FDC501113ADB82002D987E</string>
+				<string>26FDC502113ADB82002D987E</string>
+				<string>26FDC503113ADB82002D987E</string>
+				<string>26FDC504113ADB82002D987E</string>
+				<string>26FDC505113ADB82002D987E</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -957,7 +959,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>26F8640F1133773500206072</string>
+				<string>26FDC506113ADB82002D987E</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

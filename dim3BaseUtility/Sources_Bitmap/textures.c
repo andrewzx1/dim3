@@ -272,7 +272,6 @@ void bitmap_texture_clear(texture_type *texture)
 	texture->shine_factor=10.0f;
 	texture->additive=texture->pixelated=FALSE;
 	texture->material_name[0]=0x0;
-	texture->col.r=texture->col.g=texture->col.b=0.0f;
 
 	texture->animate.on=FALSE;
 	texture->glow.rate=100;
@@ -329,8 +328,6 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 		texture->scale.lock_offset=xml_get_attribute_boolean(main_tag,"txt_scale_lock_offset");
 	}
 	
-	xml_get_attribute_color(main_tag,"col",&texture->col);
-	
 		// images
 		
 	main_image_tag=xml_findfirstchild("Images",main_tag);
@@ -378,7 +375,6 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 		xml_add_attribute_boolean("txt_scale_lock_offset",texture->scale.lock_offset);
 	}
 	
-	xml_add_attribute_color("col",&texture->col);
 	xml_add_tagend(FALSE);
 	
 		// images

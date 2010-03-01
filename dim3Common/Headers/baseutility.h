@@ -490,7 +490,6 @@ typedef struct		{
 						bool					additive,pixelated;
 						char					material_name[name_str_len],
 												shader_name[name_str_len];
-						d3col					col;
 						texture_animate_type	animate;
 						texture_glow_type		glow;
 						texture_scale_type		scale;

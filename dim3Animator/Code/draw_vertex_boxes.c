@@ -162,7 +162,7 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 {
 	int				n,k,ntrig,
 					sx,sy,sz,lsz;
-	float			fx,fy,fz,flsz;
+	float			fx,fy,fz,fx2,fy2,fz2,flsz;
 	float			*pv,*pt,*pb,*pn;
 	model_trig_type	*trig;
 	
@@ -179,29 +179,26 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 	
 	glLineWidth(2.0f);
 	
-	pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array;
-	pb=draw_setup->mesh_arrays[mesh_idx].gl_binormal_array;
-	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
-
 	glColor4f(1,0,1,1);
 	
 	glBegin(GL_LINES);
 	
 	ntrig=model->meshes[mesh_idx].ntrig;
-	trig=model->meshes[mesh_idx].trigs;
 
 	for (n=0;n!=ntrig;n++) {
 	
-		for (k=0;k!=3;k++) {
+		trig=&model->meshes[mesh_idx].trigs[n];
+	
+			// only show normals for triangles
+			// with all vertexes showing
+			
+		if (vertex_check_hide_mask_trig(mesh_idx,trig)) continue;
 		
-				// vertex hidden?
-				
-			if (vertex_check_hide_mask(mesh_idx,trig->v[k])) {
-				pt+=3;
-				pb+=3;
-				pn+=3;
-				continue;
-			}
+		pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array+(n*9);
+		pb=draw_setup->mesh_arrays[mesh_idx].gl_binormal_array+(n*9);
+		pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array+(n*9);
+
+		for (k=0;k!=3;k++) {
 			
 				// vertex
 				
@@ -217,10 +214,10 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 			
 			glVertex3f(fx,fy,fz);
 			
-			fx+=((*pt++)*flsz);
-			fy+=((*pt++)*flsz);
-			fz+=((*pt++)*flsz);
-			glVertex3f(fx,fy,fz);
+			fx2=fx+((*pt++)*flsz);
+			fy2=fy+((*pt++)*flsz);
+			fz2=fz+((*pt++)*flsz);
+			glVertex3f(fx2,fy2,fz2);
 			
 				// binormal
 				
@@ -228,10 +225,10 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 			
 			glVertex3f(fx,fy,fz);
 			
-			fx+=((*pb++)*flsz);
-			fy+=((*pb++)*flsz);
-			fz+=((*pb++)*flsz);
-			glVertex3f(fx,fy,fz);
+			fx2=fx+((*pb++)*flsz);
+			fy2=fy+((*pb++)*flsz);
+			fz2=fz+((*pb++)*flsz);
+			glVertex3f(fx2,fy2,fz2);
 	*/
 				// normal
 				
@@ -239,13 +236,11 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 			
 			glVertex3f(fx,fy,fz);
 			
-			fx+=((*pn++)*flsz);
-			fy+=((*pn++)*flsz);
-			fz+=((*pn++)*flsz);
-			glVertex3f(fx,fy,fz);
+			fx2=fx+((*pn++)*flsz);
+			fy2=fy+((*pn++)*flsz);
+			fz2=fz+((*pn++)*flsz);
+			glVertex3f(fx2,fy2,fz2);
 		}
-		
-		trig++;
 	}
 	
 	glEnd();

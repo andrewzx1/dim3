@@ -56,9 +56,7 @@ extern float				light_shader_direction[7][3];
 
 void gl_shader_set_instance_variables(shader_type *shader)
 {
-	int						n;
 	GLint					var;
-	shader_custom_var_type	*cvar;
 	
 		// need to use program before calling these
 		
@@ -77,34 +75,6 @@ void gl_shader_set_instance_variables(shader_type *shader)
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3TexLightMap");
 	if (var!=-1) glUniform1iARB(var,3);
-
-		// custom variables
-		
-	for (n=0;n!=shader->custom_var_list.nvar;n++) {
-		cvar=&shader->custom_var_list.vars[n];
-		
-		var=glGetUniformLocationARB(shader->program_obj,cvar->name);
-		if (var==-1) continue;
-		
-		switch (cvar->var_type) {
-		
-			case shader_var_type_int:
-				glUniform1iARB(var,cvar->value.i);
-				break;
-				
-			case shader_var_type_float:
-				glUniform1fARB(var,cvar->value.f);
-				break;
-				
-			case shader_var_type_vec3:
-				glUniform3fARB(var,cvar->value.vec3[0],cvar->value.vec3[1],cvar->value.vec3[2]);
-				break;
-				
-			case shader_var_type_vec4:
-				glUniform4fARB(var,cvar->value.vec4[0],cvar->value.vec4[1],cvar->value.vec4[2],cvar->value.vec4[3]);
-				break;
-		}
-	}
 	
 		// cancel program
 		
@@ -116,13 +86,11 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	int				n;
 	char			var_name[256];
 	
-	shader->var_locs.dim3TimeMillisec=glGetUniformLocationARB(shader->program_obj,"dim3TimeMillisec");
 	shader->var_locs.dim3FrequencySecond=glGetUniformLocationARB(shader->program_obj,"dim3FrequencySecond");
 	shader->var_locs.dim3CameraPosition=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
 	shader->var_locs.dim3AmbientColor=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
 	shader->var_locs.dim3LightMapBoost=glGetUniformLocationARB(shader->program_obj,"dim3LightMapBoost");
 	shader->var_locs.dim3ShineFactor=glGetUniformLocationARB(shader->program_obj,"dim3ShineFactor");
-	shader->var_locs.dim3TexColor=glGetUniformLocationARB(shader->program_obj,"dim3TexColor");
 	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 
@@ -399,7 +367,6 @@ void gl_shader_attach_model(model_type *mdl)
 
 void gl_shader_set_scene_variables(shader_type *shader,view_light_list_type *light_list)
 {
-	if (shader->var_locs.dim3TimeMillisec!=-1) glUniform1iARB(shader->var_locs.dim3TimeMillisec,(game_time_get()-shader->start_tick));
 	if (shader->var_locs.dim3FrequencySecond!=-1) glUniform1fARB(shader->var_locs.dim3FrequencySecond,game_time_fequency_second_get(shader->start_tick));
 	if (shader->var_locs.dim3CameraPosition!=-1) glUniform3fARB(shader->var_locs.dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
 
@@ -413,12 +380,6 @@ void gl_shader_set_scene_variables(shader_type *shader,view_light_list_type *lig
 	}
 	
 	if (shader->var_locs.dim3LightMapBoost!=-1) glUniform1fARB(shader->var_locs.dim3LightMapBoost,map.ambient.light_map_boost);
-}
-
-void gl_shader_set_texture_variables(shader_type *shader,texture_type *texture)
-{
-	if (shader->var_locs.dim3ShineFactor!=-1) glUniform1fARB(shader->var_locs.dim3ShineFactor,texture->shine_factor);
-	if (shader->var_locs.dim3TexColor!=-1) glUniform3fARB(shader->var_locs.dim3TexColor,texture->col.r,texture->col.g,texture->col.b);
 }
 
 void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_type *light_list)
@@ -459,18 +420,12 @@ void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_ty
 void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
 {
 		// set tint color
+		// only for model shaders
 		
-	if (shader->var_locs.dim3TintColor!=-1) {
-	
-		if (tint_col==NULL) {
-			if ((shader->cur_tint_col.r!=1.0f) || (shader->cur_tint_col.g!=1.0f) || (shader->cur_tint_col.b!=1.0f)) {
-				shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=1.0f;
-				glUniform3fARB(shader->var_locs.dim3TintColor,1.0f,1.0f,1.0f);
-			}
-		}
-		else {
-			if ((shader->cur_tint_col.r!=tint_col->r) || (shader->cur_tint_col.g!=tint_col->g) || (shader->cur_tint_col.b!=tint_col->b)) {
-				memmove(&shader->cur_tint_col,tint_col,sizeof(d3col));
+	if (tint_col!=NULL) {
+		if (shader->var_locs.dim3TintColor!=-1) {
+			if ((shader->var_values.tint_col.r!=tint_col->r) || (shader->var_values.tint_col.g!=tint_col->g) || (shader->var_values.tint_col.b!=tint_col->b)) {
+				memmove(&shader->var_values.tint_col,tint_col,sizeof(d3col));
 				glUniform3fARB(shader->var_locs.dim3TintColor,tint_col->r,tint_col->g,tint_col->b);
 			}
 		}
@@ -479,8 +434,8 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_co
 		// alpha
 		
 	if (shader->var_locs.dim3Alpha!=-1) {
-		if (shader->cur_alpha!=alpha) {
-			shader->cur_alpha=alpha;
+		if (shader->var_values.alpha!=alpha) {
+			shader->var_values.alpha=alpha;
 			glUniform1fARB(shader->var_locs.dim3Alpha,alpha);
 		}
 	}
@@ -532,9 +487,10 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
 
-	shader->cur_nlight=-1;
-	shader->cur_tint_col.r=shader->cur_tint_col.g=shader->cur_tint_col.b=-1.0f;
-	shader->cur_alpha=-1.0f;
+	shader->var_values.nlight=-1;
+	shader->var_values.alpha=-1.0f;
+	shader->var_values.shine_factor=-1.0f;
+	shader->var_values.tint_col.r=shader->var_values.tint_col.g=shader->var_values.tint_col.b=-1.0f;
 	
 		// check if the model tangent space attributes
 		// have been attached
@@ -639,6 +595,11 @@ void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx
 	if (gl_id!=-1) {
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D,gl_id);
+		
+		if (shader->var_values.shine_factor!=texture->shine_factor) {
+			shader->var_values.shine_factor=texture->shine_factor;
+			if (shader->var_locs.dim3ShineFactor!=-1) glUniform1fARB(shader->var_locs.dim3ShineFactor,texture->shine_factor);
+		}
 	}
 
 		// bump map
@@ -658,10 +619,6 @@ void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D,gl_id);
 	}
-
-		// set per-texture specific variables
-
-	gl_shader_set_texture_variables(shader,texture);
 }
 
 void gl_shader_texture_override(GLuint gl_id)
@@ -734,14 +691,14 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// lighting variables
 			
-	light_change=(light_list->nlight!=shader->cur_nlight);
+	light_change=(light_list->nlight!=shader->var_values.nlight);
 	
 	for (n=0;n!=light_list->nlight;n++) {
-		if (shader->cur_light_idx[n]!=light_list->light_idx[n]) light_change=TRUE;
-		shader->cur_light_idx[n]=light_list->light_idx[n];
+		if (shader->var_values.light_idx[n]!=light_list->light_idx[n]) light_change=TRUE;
+		shader->var_values.light_idx[n]=light_list->light_idx[n];
 	}
 	
-	shader->cur_nlight=light_list->nlight;
+	shader->var_values.nlight=light_list->nlight;
 	
 	if (light_change) gl_shader_set_light_normal_variables(shader,light_list);
 }

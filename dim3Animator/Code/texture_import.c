@@ -89,6 +89,37 @@ int texture_find_free(void)
 
 /* =======================================================
 
+      Texture Copy
+      
+======================================================= */
+
+void texture_copy(char *path,char *name,char *sub_name)
+{
+    char			*c,dest_name[256],srce_path[1024],dest_path[1024],
+					sub_path[1024];
+
+	strcpy(srce_path,path);
+	
+	if (sub_name!=NULL) {
+		c=strrchr(srce_path,'.');
+		if (c==NULL) return;
+		
+		*c=0x0;
+		strcat(srce_path,sub_name);
+		strcat(srce_path,".png");
+	}
+	
+	strcpy(dest_name,name);
+	
+	if (sub_name!=NULL) strcat(dest_name,sub_name);
+	
+	sprintf(sub_path,"Models/%s/Textures",model.name);
+	file_paths_data_default(&file_path_setup,dest_path,sub_path,dest_name,"png");
+	bitmap_copy(srce_path,dest_path);
+}
+
+/* =======================================================
+
       Texture Pick
       
 ======================================================= */
@@ -96,7 +127,7 @@ int texture_find_free(void)
 int texture_pick(char *material_name,char *err_str)
 {
 	int				idx;
-    char			path[1024],path2[1024],sub_path[1024],title[256];
+    char			path[1024],title[256];
 	texture_type	*texture;
 	
 		// find a free texture
@@ -118,21 +149,19 @@ int texture_pick(char *material_name,char *err_str)
 		
 	if (!bitmap_check(path,err_str)) return(-1);
 	
-		// open texture
-	
-	if (!bitmap_open(&texture->frames[0].bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,texture->pixelated,FALSE)) {
-		strcpy(err_str,"Unable to open bitmap.");
-		return(-1);
-	}
-	
-	strcpy(texture->frames[0].name,material_name);
-	
-		// copy bitmap to model folder
+		// copy bitmaps to model folder
+		// copy selected bitmap and any addition _n, _s, or _g files
 		
-	sprintf(sub_path,"Models/%s/Textures",model.name);
-	file_paths_data_default(&file_path_setup,path2,sub_path,texture->frames[0].name,"png");
+	strcpy(texture->frames[0].name,material_name);
+		
+	texture_copy(path,texture->frames[0].name,NULL);
+	texture_copy(path,texture->frames[0].name,"_n");
+	texture_copy(path,texture->frames[0].name,"_s");
+	texture_copy(path,texture->frames[0].name,"_g");
 	
-	bitmap_copy(path,path2);
+		// open the textures
+		
+	model_refresh_textures(&model);
 
 	return(idx);
 }

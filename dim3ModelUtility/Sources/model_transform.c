@@ -133,24 +133,9 @@ void model_flip(model_type *model,int mesh_idx,bool flip_x,bool flip_y,bool flip
 	for (n=0;n!=ntrig;n++) {
 
 		for (k=0;k!=3;k++) {
-	
-			if (flip_x) {
-				trig->tangent_space[k].tangent.x=-trig->tangent_space[k].tangent.x;
-				trig->tangent_space[k].binormal.x=-trig->tangent_space[k].binormal.x;
-				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
-			}
-			
-			if (flip_y) {
-				trig->tangent_space[k].tangent.y=-trig->tangent_space[k].tangent.y;
-				trig->tangent_space[k].binormal.y=-trig->tangent_space[k].binormal.y;
-				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
-			}
-			
-			if (flip_z) {
-				trig->tangent_space[k].tangent.z=-trig->tangent_space[k].tangent.z;
-				trig->tangent_space[k].binormal.z=-trig->tangent_space[k].binormal.z;
-				trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
-			}
+			if (flip_x) trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
+			if (flip_y) trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
+			if (flip_z) trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
 		}
 		
 		trig++;
@@ -254,14 +239,6 @@ void model_swap_xz(model_type *model,int mesh_idx)
 	for (n=0;n!=ntrig;n++) {
 
 		for (k=0;k!=3;k++) {
-			f=trig->tangent_space[k].tangent.x;
-			trig->tangent_space[k].tangent.x=trig->tangent_space[k].tangent.z;
-			trig->tangent_space[k].tangent.z=f;
-
-			f=trig->tangent_space[k].binormal.x;
-			trig->tangent_space[k].binormal.x=trig->tangent_space[k].binormal.z;
-			trig->tangent_space[k].binormal.z=f;
-
 			f=trig->tangent_space[k].normal.x;
 			trig->tangent_space[k].normal.x=trig->tangent_space[k].normal.z;
 			trig->tangent_space[k].normal.z=f;
@@ -355,14 +332,6 @@ void model_swap_yz(model_type *model,int mesh_idx)
 	for (n=0;n!=ntrig;n++) {
 
 		for (k=0;k!=3;k++) {
-			f=trig->tangent_space[k].tangent.y;
-			trig->tangent_space[k].tangent.y=trig->tangent_space[k].tangent.z;
-			trig->tangent_space[k].tangent.z=f;
-
-			f=trig->tangent_space[k].binormal.y;
-			trig->tangent_space[k].binormal.y=trig->tangent_space[k].binormal.z;
-			trig->tangent_space[k].binormal.z=f;
-
 			f=trig->tangent_space[k].normal.y;
 			trig->tangent_space[k].normal.y=trig->tangent_space[k].normal.z;
 			trig->tangent_space[k].normal.z=f;

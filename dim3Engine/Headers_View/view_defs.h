@@ -32,7 +32,7 @@ and can be sold or given away.
 #define max_view_render_item								5120
 
 #define max_light_spot										128				// maximum number of lights in a scene
-#define max_shader_light									4				// maximum number of lights passed to a shader
+#define max_shader_light									3				// maximum number of lights passed to a shader
 
 //
 // shaders
@@ -224,37 +224,35 @@ typedef struct		{
 					} shader_custom_var_type;
 
 typedef struct		{
-						int									nvar;
-						shader_custom_var_type				vars[max_shader_custom_vars];
-					} shader_custom_var_list_type;
-
-typedef struct		{
 						GLint								position,color,
 															intensity,exponent,
 															direction,inLightMap;					
 					} shader_cached_var_light_loc;
 					
 typedef struct		{
-						GLint								dim3TimeMillisec,dim3FrequencySecond,
+						GLint								dim3FrequencySecond,
 															dim3CameraPosition,dim3AmbientColor,
 															dim3LightMapBoost,dim3ShineFactor,
-															dim3TexColor,dim3TintColor,dim3Alpha,
+															dim3TintColor,dim3Alpha,
 															dim3Tangent,dim3Binormal,dim3Normal,
 															dim3VertexTangent,dim3VertexBinormal,dim3VertexNormal;
 						shader_cached_var_light_loc			dim3Lights[max_shader_light];
 					} shader_cached_var_loc;
+					
+typedef struct		{
+						int									nlight,light_idx[max_shader_light];
+						float								alpha,shine_factor;
+						d3col								tint_col;
+					} shader_current_var_value;
 
 typedef struct		{
-						int									start_tick,
-															cur_nlight,cur_light_idx[max_shader_light];
-						float								cur_alpha;
+						int									start_tick;
 						char								name[64],
 															vertex_name[64],fragment_name[64];
 						bool								per_scene_vars_set,normal_vertex_attrib_active;
-						d3col								cur_tint_col;
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
 						shader_cached_var_loc				var_locs;
-						shader_custom_var_list_type			custom_var_list;
+						shader_current_var_value			var_values;
 					} shader_type;
 
 //
