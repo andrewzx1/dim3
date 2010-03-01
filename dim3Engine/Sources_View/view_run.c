@@ -38,6 +38,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "interfaces.h"
 #include "sounds.h"
+#include "timing.h"
 
 extern server_type			server;
 extern view_type			view;
@@ -63,8 +64,12 @@ void view_clear_fps(void)
 	view.fps.first_skip=TRUE;
 }
 
-void view_calculate_fps(int tick)
+void view_calculate_fps(void)
 {
+	int				tick;
+
+	tick=game_time_get();
+
 	if (view.fps.last_time!=-1) {
 		view.fps.tick+=(tick-view.fps.last_time);
 
@@ -88,10 +93,13 @@ void view_calculate_fps(int tick)
       
 ======================================================= */
 
-void view_run(int tick)
+void view_run(void)
 {
+	int				tick;
 	obj_type		*obj;
 	
+	tick=game_time_get();
+
 		// run-tick objects
 		
 	if (tick>=view.time.run_tick) {
@@ -119,7 +127,7 @@ void view_run(int tick)
 
 			// music
 
-		al_music_run(tick);
+		al_music_run();
 	}
 }
 

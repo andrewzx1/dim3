@@ -39,7 +39,7 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
-extern bool view_draw_node(int tick,node_type *node);
+extern bool view_draw_node(node_type *node);
 
 /* =======================================================
 
@@ -195,7 +195,7 @@ GLuint gl_back_render_create_texture(void)
       
 ======================================================= */
 
-void gl_back_render_frame_node(int tick,char *node_name)
+void gl_back_render_frame_node(char *node_name)
 {
 	int				node_idx;
 	GLint			old_vport[4],old_fbo;
@@ -241,7 +241,7 @@ void gl_back_render_frame_node(int tick,char *node_name)
 
 		// draw back buffer
 		
-	view_draw_node(tick,node);
+	view_draw_node(node);
 	
 	glFlush();
 	
@@ -262,7 +262,7 @@ void gl_back_render_frame_node(int tick,char *node_name)
 	node->back_render.render=TRUE;
 }
 
-void gl_back_render_frame_start(int tick)
+void gl_back_render_frame_start(void)
 {
 	int					n,k,mesh_idx;
 	node_type			*node;
@@ -291,7 +291,7 @@ void gl_back_render_frame_start(int tick)
 		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
-			if (poly->camera[0]!=0x0) gl_back_render_frame_node(tick,poly->camera);
+			if (poly->camera[0]!=0x0) gl_back_render_frame_node(poly->camera);
 			poly++;
 		}
 	}

@@ -55,15 +55,15 @@ extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 extern void game_file_initialize(void);
-extern void menu_input(int tick);
+extern void menu_input(void);
 extern void file_input(void);
 extern void debug_input(void);
-extern void view_draw(int tick);
+extern void view_draw(void);
 extern void chat_clear_messages(void);
 extern bool fog_solid_on(void);
 extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
-extern void menu_draw(int tick);
+extern void menu_draw(void);
 
 /* =======================================================
 
@@ -277,7 +277,7 @@ bool view_reset_display(char *err_str)
 
 bool view_initialize(char *err_str)
 {
-	int				rate;
+	int				tick,rate;
 	
 		// clear view structure
 		
@@ -339,10 +339,14 @@ bool view_initialize(char *err_str)
 
 	view.menu.active=FALSE;
 	
-		// draw timing
+		// draw and input timing
+		// we use raw timing so input and
+		// view can work through pauses
 		
-	view.time.input_tick=game_time_get();
-	view.time.draw_tick=game_time_get();
+	tick=game_time_get_raw();
+
+	view.time.input_tick=tick;
+	view.time.draw_tick=tick;
 	
 	rate=render_info.monitor_refresh_rate;
 	if (!setup.lock_fps_refresh) rate=max_fps;
@@ -416,12 +420,17 @@ void view_game_stop(void)
       
 ======================================================= */
 
-void view_loop_input(int tick)
+void view_loop_input(void)
 {
-		// timing
+	int				raw_tick;
+
+		// time to check input?
+		// use raw ticks so it works through pauses
 		
-	if (tick<view.time.input_tick) return;
-	view.time.input_tick=tick+input_tick_rate;
+	raw_tick=game_time_get_raw();
+	if (raw_tick<view.time.input_tick) return;
+
+	view.time.input_tick=raw_tick+input_tick_rate;
 	
 		// pump input
 		
@@ -429,12 +438,12 @@ void view_loop_input(int tick)
 
 		// player input
 	
-	player_get_input(tick);
+	player_get_input();
 	
 		// system input
 	
 	console_input();
-	menu_input(tick);
+	menu_input();
 	file_input();
 	debug_input();
 }
@@ -445,13 +454,22 @@ void view_loop_input(int tick)
       
 ======================================================= */
 
-void view_loop_draw(int tick)
+void view_loop_draw(void)
 {
-	if (tick<view.time.draw_tick) return;
-	view.time.draw_tick=tick+view.time.draw_time;
+	int			raw_tick,tick;
+
+		// time for view draw?
+		// use raw ticks so it works through pauses
+
+	raw_tick=game_time_get_raw();
+	if (raw_tick<view.time.draw_tick) return;
+
+	view.time.draw_tick=raw_tick+view.time.draw_time;
 	
 		// texture setup
 	
+	tick=game_time_get();
+
 	map_setup_animated_textures(&map,tick);
 	map_mesh_poly_run_shifts(&map,tick);
 
@@ -461,14 +479,14 @@ void view_loop_draw(int tick)
 
 		// draw view
 
-	view_draw(tick);
+	view_draw();
 
 		// draw hud and interface elements
 
-	hud_draw(tick);
-	radar_draw(tick);
-	network_draw(tick);
-	menu_draw(tick);
+	hud_draw();
+	radar_draw();
+	network_draw();
+	menu_draw();
 
 		// swap frame buffers
 	
@@ -483,14 +501,23 @@ void view_loop_draw(int tick)
       
 ======================================================= */
 
-void view_loop_draw_dedicated(int tick)
+void view_loop_draw_dedicated_host(int tick)
 {
-	if (tick<view.time.draw_tick) return;
-	view.time.draw_tick=tick+view.time.draw_time;
+	int				raw_tick;
+
+		// time for dedicate host draw
+		// use raw ticks so it works through pauses
+
+	raw_tick=game_time_get_raw();
+	if (raw_tick<view.time.draw_tick) return;
+
+	view.time.draw_tick=raw_tick+view.time.draw_time;
+
+		// draw dedicated host screen
 
 	gl_frame_clear(FALSE);
-	network_draw(tick);
-	menu_draw(tick);
+	network_draw();
+	menu_draw();
 	gl_frame_swap();
 }
 
@@ -502,12 +529,8 @@ void view_loop_draw_dedicated(int tick)
 
 void view_capture_draw(char *path)
 {
-	int			tick;
-
-	tick=game_time_get();
-
 	gl_frame_clear(FALSE);
-	view_draw(tick);
+	view_draw();
 	
 	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
 }

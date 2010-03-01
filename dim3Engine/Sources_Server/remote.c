@@ -53,7 +53,7 @@ extern network_setup_type	net_setup;
 extern bool					game_loop_quit;
 
 extern void game_reset(void);
-extern void chat_add_message(int tick,char *name,char *str,d3col *col);
+extern void chat_add_message(char *name,char *str,d3col *col);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
@@ -529,7 +529,7 @@ void remote_chat(network_request_remote_chat *chat)
 		// update chat
 
 	object_get_tint(obj,&col);
-	chat_add_message(game_time_get(),obj->name,chat->str,&col);
+	chat_add_message(obj->name,chat->str,&col);
 }
 
 void remote_sound(network_request_remote_sound *sound)
@@ -870,16 +870,25 @@ bool remote_network_get_updates(void)
       
 ======================================================= */
 
-void remote_network_send_updates(int tick)
+void remote_network_send_updates(void)
 {
-	int					n;
+	int					n,tick;
 	bool				coop;
 	obj_type			*obj;
 
-	obj=object_find_uid(server.player_obj_uid);
-	net_client_send_remote_update(tick,obj,hud.chat.type_on);
+		// time for an update
 
-		// update any multiplayer bots if hosting
+	tick=game_time_get();
+	if (tick<server.time.network_update_tick) return;
+
+	server.time.network_update_tick=tick+client_communication_update_msec_rate;
+
+		// update the player
+
+	obj=object_find_uid(server.player_obj_uid);
+	net_client_send_remote_update(obj,hud.chat.type_on);
+
+		// update any co-op bots if hosting
 
 	if (net_setup.host.hosting) {
 	
@@ -889,7 +898,7 @@ void remote_network_send_updates(int tick)
 
 		for (n=0;n!=server.count.obj;n++) {
 			if ((obj->type_idx==object_type_bot_multiplayer) || ((obj->type_idx==object_type_bot_map) && (coop))) {
-				net_client_send_remote_update(tick,obj,FALSE);
+				net_client_send_remote_update(obj,FALSE);
 			}
 			obj++;
 		}
@@ -898,11 +907,33 @@ void remote_network_send_updates(int tick)
 
 void remote_network_send_group_synch(void)
 {
+	int				tick;
+
+		// time for group synch?
+
+	tick=game_time_get();
+	if (tick<server.time.network_group_synch_tick) return;
+
+	server.time.network_group_synch_tick=tick+client_communication_group_synch_msec_rate;
+
+		// run group synch
+
 	net_client_request_group_synch_ping(object_player_get_remote_uid());
 }
 
-void remote_network_send_latency_ping(int tick)
+void remote_network_send_latency_ping(void)
 {
+	int				tick;
+
+		// time for latency ping?
+
+	tick=game_time_get();
+	if (tick<server.time.network_latency_ping_tick) return;
+	
+	server.time.network_latency_ping_tick=tick+client_communication_latency_ping_msec_rate;
+
+		// latency ping
+
 	net_setup.client.latency_ping_tick=tick;
 	net_client_send_latency_ping(object_player_get_remote_uid());
 }

@@ -134,15 +134,15 @@ extern void hud_texts_hide_all(void);
 extern void hud_bars_hide_all(void);
 
 extern void hud_click(void);
-extern void hud_draw(int tick);
+extern void hud_draw(void);
 
-extern void network_draw(int tick);
+extern void network_draw(void);
 
 //
 // radar
 //
 
-extern void radar_draw(int tick);
+extern void radar_draw(void);
 
 //
 // crosshairs

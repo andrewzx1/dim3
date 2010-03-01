@@ -35,6 +35,7 @@ and can be sold or given away.
 #include "remotes.h"
 #include "models.h"
 #include "physics.h"
+#include "timing.h"
 
 extern int					game_obj_rule_uid;
 
@@ -699,7 +700,7 @@ bool object_set_radar_icon(obj_type *obj,char *err_str)
       
 ======================================================= */
 
-void object_fs_tint_start(int tick,obj_type *obj,float r,float g,float b,float alpha,int fade_in_msec,int life_msec,int fade_out_msec)
+void object_fs_tint_start(obj_type *obj,float r,float g,float b,float alpha,int fade_in_msec,int life_msec,int fade_out_msec)
 {
 	obj_fs_tint		*tint;
 
@@ -710,7 +711,7 @@ void object_fs_tint_start(int tick,obj_type *obj,float r,float g,float b,float a
 	tint=&obj->fs_effect.tint;
 
     tint->on=TRUE;
-    tint->start_tick=tick;
+    tint->start_tick=game_time_get();
     tint->fade_in_tick=fade_in_msec;
     tint->life_tick=life_msec;
 	tint->fade_out_tick=fade_out_msec;
@@ -720,48 +721,16 @@ void object_fs_tint_start(int tick,obj_type *obj,float r,float g,float b,float a
     tint->col.b=b;
 }
 
-void object_fade_start(int tick,obj_type *obj,int x,int y,float start_sz,float end_sz,int life_msec,bool auto_clear)
-{
-	obj_fs_fade		*fade;
-
-	if (life_msec<=0) life_msec=1;
-
-	fade=&obj->fs_effect.fade;
-
-    fade->on=TRUE;
-    fade->start_tick=tick;
-    fade->life_tick=life_msec;
-    fade->center_x=x;
-    fade->center_y=y;
-    fade->start_size=start_sz;
-    fade->end_size=end_sz;
-	fade->auto_clear=auto_clear;
-}
-
-void object_fade_clear(obj_type *obj)
-{
-	obj->fs_effect.fade.on=FALSE;
-}
-
-void object_fs_effect_run(int tick,obj_type *obj)
+void object_fs_effect_run(obj_type *obj)
 {
 	obj_fs_tint		*tint;
-	obj_fs_fade		*fade;
 
 		// run tint
 		
 	tint=&obj->fs_effect.tint;
 
 	if (tint->on) {
-		if ((tick-tint->start_tick)>=(tint->fade_in_tick+tint->life_tick+tint->fade_out_tick)) tint->on=FALSE;
-	}
-	
-		// run fade
-	
-	fade=&obj->fs_effect.fade;
-
-	if ((fade->on) && (fade->auto_clear)) {
-		if ((tick-fade->start_tick)>=fade->life_tick) fade->on=FALSE;
+		if ((game_time_get()-tint->start_tick)>=(tint->fade_in_tick+tint->life_tick+tint->fade_out_tick)) tint->on=FALSE;
 	}
 }
 

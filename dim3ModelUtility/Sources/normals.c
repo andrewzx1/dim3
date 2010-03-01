@@ -69,9 +69,9 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 	int					n,k,t,j,cnt,trig_material_idx;
     float				u10,u20,v10,v20,f_denom,f;
 	bool				is_out;
-	d3vct				p10,p20,vlft,vrgt,v_num,dvct;
+	d3vct				p10,p20,vlft,vrgt,v_num;
 	d3vct				*tangents,*tptr,*binormals,*bptr;
-	d3pnt				*pt,*pt_1,*pt_2,t_center,v_center;
+	d3pnt				*pt,*pt_1,*pt_2,v_center;
 	model_mesh_type		*mesh;
     model_vertex_type	*vertex;
 	model_trig_type		*trig,*chk_trig;
@@ -242,32 +242,29 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 	for (n=0;n!=mesh->ntrig;n++) {
 
+			// get the material for the trig
+
+		trig_material_idx=model_recalc_normals_find_material(model,mesh_idx,n);
+
 			// for each trig, we only want to consider
-			// the center being around near points, not
-			// the entire model, as a lot of models have
-			// various appendages
-
-			// trig center
-
-		t_center.x=(mesh->vertexes[trig->v[0]].pnt.x+mesh->vertexes[trig->v[1]].pnt.x+mesh->vertexes[trig->v[2]].pnt.x)/3;
-		t_center.y=(mesh->vertexes[trig->v[0]].pnt.y+mesh->vertexes[trig->v[1]].pnt.y+mesh->vertexes[trig->v[2]].pnt.y)/3;
-		t_center.z=(mesh->vertexes[trig->v[0]].pnt.z+mesh->vertexes[trig->v[1]].pnt.z+mesh->vertexes[trig->v[2]].pnt.z)/3;
-
-			// points around trig
+			// the center being around vertexes connected
+			// to the same material
 
 		cnt=0;
 		v_center.x=v_center.y=v_center.z=0;
 
-		vertex=mesh->vertexes;
+		chk_trig=mesh->trigs;
 
-		for (k=0;k!=mesh->nvertex;k++) {
-			if (distance_get(vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,t_center.x,t_center.y,t_center.z)<=normal_near_vertex_center_dist) {
-				v_center.x+=vertex->pnt.x;
-				v_center.y+=vertex->pnt.y;
-				v_center.z+=vertex->pnt.z;
-				cnt++;
+		for (k=0;k!=mesh->ntrig;k++) {
+			if (model_recalc_normals_find_material(model,mesh_idx,k)==trig_material_idx) {
+				for (j=0;j!=3;j++) {
+					v_center.x+=mesh->vertexes[chk_trig->v[j]].pnt.x;
+					v_center.y+=mesh->vertexes[chk_trig->v[j]].pnt.y;
+					v_center.z+=mesh->vertexes[chk_trig->v[j]].pnt.z;
+					cnt++;
+				}
 			}
-			vertex++;
+			chk_trig++;
 		}
 		
 		if (cnt>1) {
@@ -282,16 +279,12 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		for (k=0;k!=3;k++) {
 		
 			vertex=&mesh->vertexes[trig->v[k]];
-	
-			dvct.x=(float)fabs(vertex->pnt.x-v_center.x);
-			dvct.y=(float)fabs(vertex->pnt.y-v_center.y);
-			dvct.z=(float)fabs(vertex->pnt.z-v_center.z);
 			
-			if ((dvct.y>dvct.x) && (dvct.y>dvct.z)) {
+			if ((trig->tangent_space[k].normal.y>trig->tangent_space[k].normal.x) && (trig->tangent_space[k].normal.y>trig->tangent_space[k].normal.z)) {
 				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.y-v_center.y),trig->tangent_space[k].normal.y);
 			}
 			else {
-				if (dvct.x>dvct.z) {
+				if (trig->tangent_space[k].normal.x>trig->tangent_space[k].normal.z) {
 					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.x-v_center.x),trig->tangent_space[k].normal.x);
 				}
 				else {

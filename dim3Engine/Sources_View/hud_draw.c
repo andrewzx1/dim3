@@ -36,6 +36,7 @@ and can be sold or given away.
 #include "effects.h"
 #include "video.h"
 #include "sounds.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -51,7 +52,7 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-bool hud_item_fade_run(int tick,hud_item_fade_type *fade,float *alpha)
+bool hud_item_fade_run(hud_item_fade_type *fade,float *alpha)
 {
 	int			fade_tick;
 	float		achg;
@@ -62,7 +63,7 @@ bool hud_item_fade_run(int tick,hud_item_fade_type *fade,float *alpha)
 	
 		// fade still on?
 		
-	fade_tick=tick-fade->start_tick;
+	fade_tick=game_time_get()-fade->start_tick;
 	
 	if (fade_tick>=(fade->fade_in_tick+fade->life_tick+fade->fade_out_tick)) {
 		fade->on=FALSE;
@@ -92,9 +93,9 @@ bool hud_item_fade_run(int tick,hud_item_fade_type *fade,float *alpha)
       
 ======================================================= */
 
-void hud_bitmaps_draw(int tick)
+void hud_bitmaps_draw(void)
 {
-	int							n,r,wrap_count,
+	int							n,tick,r,wrap_count,
 								px[4],py[4],sx,sy,rx,ry,
 								wid,high,repeat_count;
 	float						gx,gy,gx2,gy2,g_size,alpha,cur_alpha;
@@ -117,6 +118,10 @@ void hud_bitmaps_draw(int tick)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	gl_texture_simple_start();
+
+		// timing for flashes and fades
+
+	tick=game_time_get();
 	
 		// draw bitmaps
 		
@@ -133,7 +138,7 @@ void hud_bitmaps_draw(int tick)
 			// fading?
 			
 		alpha=bitmap->alpha;
-		if (hud_item_fade_run(tick,&bitmap->fade,&alpha)) {
+		if (hud_item_fade_run(&bitmap->fade,&alpha)) {
 			bitmap->show=FALSE;			// a fade has turned off bitmap
 			continue;
 		}
@@ -348,7 +353,7 @@ void hud_texts_draw_return(int x,int y,int ysz,char *data,int just,d3col *col,fl
 	}
 }
 
-void hud_texts_draw(int tick)
+void hud_texts_draw(void)
 {
 	int				n,high,cur_size;
 	float			alpha;
@@ -374,7 +379,7 @@ void hud_texts_draw(int tick)
 				// fading?
 		
 			alpha=text->alpha;
-			if (hud_item_fade_run(tick,&text->fade,&alpha)) {
+			if (hud_item_fade_run(&text->fade,&alpha)) {
 				text->show=FALSE;			// a fade has turned off bitmap
 				continue;
 			}
@@ -694,7 +699,7 @@ void hud_click(void)
       
 ======================================================= */
 
-void hud_draw(int tick)
+void hud_draw(void)
 {
 		// set up view
 		
@@ -707,9 +712,9 @@ void hud_draw(int tick)
 	
 		// draw the bitmaps, bars, and text
 		
-	hud_bitmaps_draw(tick);
+	hud_bitmaps_draw();
 	hud_bars_draw();
-	hud_texts_draw(tick);
+	hud_texts_draw();
 	if (setup.metrics_on) hud_metrics_draw();
 	
 		// reset any color changes

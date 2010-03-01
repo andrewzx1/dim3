@@ -76,7 +76,6 @@ void script_initialize_classes(void)
 	script_init_interface_bar_object();
 	script_init_interface_bitmap_object();
 	script_init_interface_console_object();
-	script_init_interface_fade_object();
 	script_init_interface_interaction_object();
 	script_init_interface_radar_object();
 	script_init_interface_screen_object();
@@ -219,7 +218,6 @@ void script_release_classes(void)
 	script_free_interface_bar_object();
 	script_free_interface_bitmap_object();
 	script_free_interface_console_object();
-	script_free_interface_fade_object();
 	script_free_interface_interaction_object();
 	script_free_interface_radar_object();
 	script_free_interface_screen_object();
@@ -419,7 +417,6 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_interface_bitmap_object(script->cx,j_sub_obj);
 	script_add_interface_bar_object(script->cx,j_sub_obj);
 	script_add_interface_radar_object(script->cx,j_sub_obj);
-	script_add_interface_fade_object(script->cx,j_sub_obj);
 	script_add_interface_interaction_object(script->cx,j_sub_obj);
 
 		// data, sound, and spawn objects

@@ -589,30 +589,6 @@ typedef struct		{
 					} obj_kickback;
 
 //
-// full screen effects
-//
-
-typedef struct		{
-						int						start_tick,
-												fade_in_tick,life_tick,fade_out_tick;
-						float					alpha;
-						bool					on;
-						d3col					col;
-					} obj_fs_tint;
-					
-typedef struct		{
-						int						start_tick,life_tick,
-												center_x,center_y;
-						float					start_size,end_size;
-						bool					on,auto_clear;
-					} obj_fs_fade;
-
-typedef struct		{
-						obj_fs_tint				tint;
-						obj_fs_fade				fade;
-					} obj_fs_effect;
-					
-//
 // remote players
 //
 
@@ -857,7 +833,6 @@ typedef struct		{
 						obj_radar				radar;
 						obj_force				force;
 						obj_kickback			kickback;
-						obj_fs_effect			fs_effect;
 						obj_status				status;
 						obj_contact				contact;
 						obj_touch				touch;

@@ -40,6 +40,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "interfaces.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type				map;
 extern camera_type			camera;
@@ -73,9 +74,8 @@ extern void render_model_opaque(model_draw *draw);
 extern void render_model_transparent(model_draw *draw);
 extern void render_model_target(model_draw *draw,d3col *col);
 extern void view_draw_liquid_tint(int liquid_idx);
-extern void view_draw_effect_tint(int tick,obj_type *obj);
-extern void fade_screen_draw(int tick);
-extern void fade_object_draw(int tick,obj_type *obj);
+extern void view_draw_effect_tint(obj_type *obj);
+extern void view_draw_fade_draw(void);
 extern void render_map_liquid_opaque(int tick);
 extern void render_map_liquid_transparent(int tick);
 extern void decal_render(void);
@@ -88,10 +88,10 @@ extern void view_setup_projectiles(int tick);
 extern void view_add_effect_draw_list(int tick);
 extern void view_add_halos(void);
 extern bool view_compile_mesh_gl_lists(int tick);
-extern void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj);
+extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
 extern void view_calculate_recoil(obj_type *obj);
-extern void view_calculate_shakes(int tick,obj_type *obj);
-extern void view_calculate_sways(int tick,obj_type *obj);
+extern void view_calculate_shakes(obj_type *obj);
+extern void view_calculate_sways(obj_type *obj);
 extern void view_calculate_bump(obj_type *obj);
 extern void shadow_render_model(int item_type,int item_idx,model_draw *draw);
 extern void shadow_render_mesh(int mesh_idx);
@@ -365,8 +365,12 @@ void view_draw_models_final(int tick)
       
 ======================================================= */
 
-void view_draw_scene_build(int tick)
+void view_draw_scene_build(void)
 {
+	int			tick;
+
+	tick=game_time_get();		// supergumba -- move these ticks around
+
 		// setup projection
 
 	gl_3D_view();
@@ -403,7 +407,7 @@ void view_draw_scene_build(int tick)
 	view_add_halos();
 }
 
-void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
+void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 {
 		// setup projection
 
@@ -489,7 +493,7 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 	}
 }
 
-void view_draw(int tick)
+void view_draw(void)
 {
 	obj_type		*obj,*camera_obj;
 	weapon_type		*weap;
@@ -518,40 +522,38 @@ void view_draw(int tick)
 		// camera adjustments
 	
 	if (camera.mode==cv_fpp) {
-		view_calculate_scope(tick,obj,camera_obj);
+		view_calculate_scope(obj,camera_obj);
 		view_calculate_recoil(obj);
 	}
 	
-	view_calculate_shakes(tick,obj);
-	view_calculate_sways(tick,obj);
+	view_calculate_shakes(obj);
+	view_calculate_sways(obj);
 	view_calculate_bump(obj);
 	
 		// build the scene
 		
-	view_draw_scene_build(tick);
+	view_draw_scene_build();
 	
 		// do any back frame rendering
 		
-	gl_back_render_frame_start(tick);
+	gl_back_render_frame_start();
 
 		// render the scene
 
 	gl_fs_shader_render_begin();
-	view_draw_scene_render(tick,obj,weap);
+	view_draw_scene_render(obj,weap);
 	gl_fs_shader_render_finish();
 
 		// draw tints and fades
 		
 	view_draw_liquid_tint(view.render->camera.under_liquid_idx);
-	view_draw_effect_tint(tick,obj);
-
-	fade_screen_draw(tick);
-	fade_object_draw(tick,obj);
+	view_draw_effect_tint(obj);
+	view_draw_fade_draw();
 
 //	test_rays();		// supergumba
 }
 
-bool view_draw_node(int tick,node_type *node)
+bool view_draw_node(node_type *node)
 {
 	d3pnt			pnt;
 	d3ang			ang;
@@ -588,11 +590,11 @@ bool view_draw_node(int tick,node_type *node)
 		
 		// build the scene
 		
-	view_draw_scene_build(tick);
+	view_draw_scene_build();
 
 		// render the scene
 
-	view_draw_scene_render(tick,NULL,NULL);
+	view_draw_scene_render(NULL,NULL);
 
 		// restore the old rendering
 		

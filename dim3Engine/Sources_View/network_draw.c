@@ -36,6 +36,7 @@ and can be sold or given away.
 #include "effects.h"
 #include "video.h"
 #include "sounds.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -45,7 +46,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern render_info_type		render_info;
 
-extern void chat_time_out(int tick);
+extern void chat_time_out(void);
 
 /* =======================================================
 
@@ -297,7 +298,7 @@ int network_score_teams_draw(void)
 	return(net_team_blue);
 }
 
-void network_score_draw(int tick)
+void network_score_draw(void)
 {
 	int				k,y,win_idx;
 	float			f_flash;
@@ -348,7 +349,7 @@ void network_score_draw(int tick)
 		
 			// flash won message
 			
-		k=tick%2000;
+		k=game_time_get()%2000;
 		if (k>=1000) k=2000-k;
 		f_flash=0.5f*((float)k/1000.0f);
 		
@@ -384,7 +385,7 @@ void network_score_draw(int tick)
       
 ======================================================= */
 
-void network_chat_draw(int tick)
+void network_chat_draw(void)
 {
 	int					n,x,y,yadd,ntop;
 	char				txt[chat_str_len+name_str_len+4];
@@ -412,7 +413,7 @@ void network_chat_draw(int tick)
 
 		// run chat time outs
 		
-	chat_time_out(tick);
+	chat_time_out();
 	
 		// history lines
 
@@ -435,7 +436,7 @@ void network_chat_draw(int tick)
       
 ======================================================= */
 
-void network_draw(int tick)
+void network_draw(void)
 {
 	if (!net_setup.client.joined) return;
 	
@@ -450,8 +451,8 @@ void network_draw(int tick)
 	
 		// draw the score and chat
 		
-	network_score_draw(tick);
-	network_chat_draw(tick);
+	network_score_draw();
+	network_chat_draw();
 	
 		// reset any color changes
 		

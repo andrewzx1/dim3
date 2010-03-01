@@ -58,7 +58,7 @@ extern void al_music_set_state(bool music_on);
 extern bool al_music_fade_in(int tick,char *name,int msec,char *err_str);
 extern void al_music_fade_out(int tick,int msec);
 extern bool al_music_fade_out_fade_in(int tick,char *name,int fade_out_msec,int fade_in_msec,char *err_str);
-extern void al_music_run(int tick);
+extern void al_music_run(void);
 
 extern void al_stop_all_sources(void);
 extern void al_stop_all_looping_sources(void);

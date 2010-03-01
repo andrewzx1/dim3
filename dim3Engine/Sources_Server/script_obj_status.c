@@ -211,6 +211,6 @@ JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjec
 	b=script_value_to_float(cx,argv[2]);
 
 	obj=object_find_uid(js.attach.thing_uid);
-	object_fs_tint_start(js.time.current_tick,obj,r,g,b,script_value_to_float(cx,argv[3]),script_value_to_int(cx,argv[4]),script_value_to_int(cx,argv[5]),script_value_to_int(cx,argv[6]));
+	object_fs_tint_start(obj,r,g,b,script_value_to_float(cx,argv[3]),script_value_to_int(cx,argv[4]),script_value_to_int(cx,argv[5]),script_value_to_int(cx,argv[6]));
     return(script_bool_to_value(cx,TRUE));
 }

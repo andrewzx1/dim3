@@ -40,6 +40,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "interfaces.h"
 #include "video.h"
+#include "timing.h"
 
 extern bool					shadow_on;
 
@@ -629,8 +630,9 @@ void view_add_halos(void)
       
 ======================================================= */
 
-void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj)
+void view_calculate_scope(obj_type *obj,obj_type *camera_obj)
 {
+	int				tick;
 	float			f_step,f_max_step,f_zoom,
 					sway_add,sway_max;
 	weapon_type		*weap;
@@ -659,6 +661,8 @@ void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj)
 	f_zoom=(weap->zoom.fov_max-(((weap->zoom.fov_max-weap->zoom.fov_min)/f_max_step)*f_step))-view.render->camera.fov;
 	
 		// zoom look down sites
+
+	tick=game_time_get();
 
 	switch (weap->zoom.mode) {
 
@@ -753,7 +757,7 @@ void view_calculate_recoil(obj_type *obj)
       
 ======================================================= */
 
-void view_calculate_shakes(int tick,obj_type *obj)
+void view_calculate_shakes(obj_type *obj)
 {
 	int					n,k,d,shake_sz,shake_cnt;
 	float				shake_freq;
@@ -791,19 +795,19 @@ void view_calculate_shakes(int tick,obj_type *obj)
 	
 		// do shake
 		
-	k=(int)((float)(tick-effect->start_tick)*shake_freq)%shake_sz;
+	k=(int)((float)(game_time_get()-effect->start_tick)*shake_freq)%shake_sz;
 	if (k>(shake_sz>>1)) k=shake_sz-k;
 	
 	view.render->camera.ang.x=view.render->camera.ang.x+((float)k/25.0f);
 }
 
-void view_calculate_sways(int tick,obj_type *obj)
+void view_calculate_sways(obj_type *obj)
 {
 	float				f;
 
 	return;
 
-	f=(float)(((tick>>4)%12)-6);
+	f=(float)(((game_time_get()>>4)%12)-6);
 	view.render->camera.ang.z+=f;
 
 	// supergumba -- work on sways

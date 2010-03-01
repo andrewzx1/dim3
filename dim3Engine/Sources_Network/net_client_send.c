@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "interfaces.h"
 #include "network.h"
+#include "timing.h"
 
 extern map_type					map;
 extern server_type				server;
@@ -109,9 +110,9 @@ void net_client_request_group_synch_ping(int remote_uid)
       
 ======================================================= */
 
-void net_client_send_remote_update(int tick,obj_type *obj,bool chat_on)
+void net_client_send_remote_update(obj_type *obj,bool chat_on)
 {
-	int								n,flags;
+	int								n,tick,flags;
 	model_draw						*draw;
 	model_draw_animation			*animation;
 	model_draw_dynamic_bone			*dyn_bone;
@@ -181,6 +182,8 @@ void net_client_send_remote_update(int tick,obj_type *obj,bool chat_on)
 
 	animation=draw->animations;
 	net_animation=update.animation;
+
+	tick=game_time_get();
 	
 	for (n=0;n!=max_model_blend_animation;n++) {
 		net_animation->model_tick=htonl(animation->tick-tick);

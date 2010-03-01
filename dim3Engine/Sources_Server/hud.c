@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "timing.h"
+
 extern hud_type				hud;
 
 /* =======================================================
@@ -171,7 +173,7 @@ void chat_clear_messages(void)
 	hud.chat.nline=0;
 }
 
-void chat_add_message(int tick,char *name,char *str,d3col *col)
+void chat_add_message(char *name,char *str,d3col *col)
 {
 	int					idx;
 	hud_chat_line_type	*line;
@@ -197,11 +199,14 @@ void chat_add_message(int tick,char *name,char *str,d3col *col)
 	
 		// last addition tick
 		
-	hud.chat.remove_tick=tick+(hud.chat.last_add_life_sec*1000);
+	hud.chat.remove_tick=game_time_get()+(hud.chat.last_add_life_sec*1000);
 }
 
-void chat_time_out(int tick)
+void chat_time_out(void)
 {
+	int				tick;
+
+	tick=game_time_get();
 	if ((hud.chat.nline==0) || (hud.chat.remove_tick>tick)) return;
 	
 	memmove(&hud.chat.lines[0],&hud.chat.lines[1],(sizeof(hud_chat_line_type)*(max_chat_lines-1)));
