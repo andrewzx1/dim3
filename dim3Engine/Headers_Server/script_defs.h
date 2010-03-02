@@ -398,7 +398,7 @@ typedef struct		{
 					} script_count_type;
 					
 typedef struct		{
-						int								timer_tick,current_tick;
+						int								timer_tick;
 					} script_time_type;
 		
 //

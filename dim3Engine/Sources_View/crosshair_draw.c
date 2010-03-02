@@ -36,6 +36,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "interfaces.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type				map;
 extern camera_type			camera;
@@ -60,7 +61,7 @@ void crosshair_show_alt(obj_type *obj)
       
 ======================================================= */
 
-bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_uid,int *dist)
+bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_uid,int *dist)
 {
 	int						tx,ty,tz;
 	d3pnt					fpt,hpt;
@@ -73,12 +74,12 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 
 		case ct_bone_tracking:
 		case ct_bone_tracking_resizing:
-			if (!weapon_get_projectile_position_angle_weapon_model(tick,obj,weap,&fpt,&ang,NULL)) return(FALSE);
+			if (!weapon_get_projectile_position_angle_weapon_model(obj,weap,&fpt,&ang,NULL)) return(FALSE);
 			break;
 
 		case ct_barrel_tracking:
 		case ct_barrel_tracking_resizing:
-			if (!weapon_get_projectile_position_angle_weapon_barrel(tick,obj,weap,&fpt,&ang,NULL)) return(FALSE);
+			if (!weapon_get_projectile_position_angle_weapon_barrel(obj,weap,&fpt,&ang,NULL)) return(FALSE);
 			break;
 
 		default:
@@ -132,7 +133,7 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
       
 ======================================================= */
 
-void crosshair_setup_click(int tick,obj_type *obj)
+void crosshair_setup_click(obj_type *obj)
 {
 	unsigned long		idx;
 	obj_crosshair_draw	*crosshair_draw;
@@ -155,7 +156,7 @@ void crosshair_setup_click(int tick,obj_type *obj)
 
 		// clicking down?
 
-	if (crosshair_draw->alt_tick>tick) {
+	if (crosshair_draw->alt_tick>game_time_get()) {
 		idx=obj->click.crosshair_down_idx;
 	}
 	else {
@@ -170,7 +171,7 @@ void crosshair_setup_click(int tick,obj_type *obj)
 	crosshair_draw->gl_id=view_images_get_gl_id(server.crosshairs[idx].image_idx);
 }
 
-void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
+void crosshair_setup_weapon(obj_type *obj,weapon_type *weap)
 {
 	int					x,y,sz,dist,obj_uid,
 						item_count,weap_mode,move_tick,swap_tick;
@@ -190,7 +191,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 	
 		// get crosshair location
 
-	if (!crosshair_get_location(tick,obj,weap,&x,&y,&obj_uid,&dist)) return;
+	if (!crosshair_get_location(obj,weap,&x,&y,&obj_uid,&dist)) return;
 	
 	crosshair_draw->on=TRUE;
 	crosshair_draw->aim_obj_uid=obj_uid;
@@ -233,7 +234,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 	
 	alpha=1;
 	
-	move_tick=tick;
+	move_tick=game_time_get();
 	
     if (weap_mode==wm_lower) {
         move_tick-=swap_tick;
@@ -266,11 +267,11 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 	}
 }
 
-void crosshair_setup(int tick,obj_type *obj,weapon_type *weap)
+void crosshair_setup(obj_type *obj,weapon_type *weap)
 {
 		// setup crosshair
 		
-	crosshair_setup_weapon(tick,obj,weap);
+	crosshair_setup_weapon(obj,weap);
 	
 		// if there an object to click?
 		
@@ -278,7 +279,7 @@ void crosshair_setup(int tick,obj_type *obj,weapon_type *weap)
 	
 		// change to click crosshair
 		
-	crosshair_setup_click(tick,obj);
+	crosshair_setup_click(obj);
 }
 
 /* =======================================================

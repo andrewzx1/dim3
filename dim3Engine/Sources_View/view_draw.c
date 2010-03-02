@@ -55,20 +55,20 @@ extern view_render_type		view_camera_render,view_node_render;
 
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 
-extern void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap);
+extern void draw_weapon_hand(obj_type *obj,weapon_type *weap);
 extern void draw_background(void);
 extern void draw_sky(void);
 extern void model_calc_pose_bones(model_draw *draw);
 extern void render_map_mesh_opaque(void);
 extern void render_map_mesh_transparent(void);
-extern void rain_draw(int tick);
+extern void rain_draw(void);
 extern bool fog_solid_on(void);
-extern void fog_draw_textured(int tick);
+extern void fog_draw_textured(void);
 extern void fog_solid_start(void);
 extern void fog_solid_end(void);
 extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
-extern void render_model_setup(int tick,model_draw *draw);
+extern void render_model_setup(model_draw *draw);
 extern void render_model_build_vertex_lists(model_draw *draw);
 extern void render_model_opaque(model_draw *draw);
 extern void render_model_transparent(model_draw *draw);
@@ -76,8 +76,8 @@ extern void render_model_target(model_draw *draw,d3col *col);
 extern void view_draw_liquid_tint(int liquid_idx);
 extern void view_draw_effect_tint(void);
 extern void view_draw_fade_draw(void);
-extern void render_map_liquid_opaque(int tick);
-extern void render_map_liquid_transparent(int tick);
+extern void render_map_liquid_opaque(void);
+extern void render_map_liquid_transparent(void);
 extern void decal_render(void);
 extern void view_create_area_mask(void);
 extern void view_start_draw_list(void);
@@ -87,7 +87,7 @@ extern void view_setup_objects(int tick);
 extern void view_setup_projectiles(int tick);
 extern void view_add_effect_draw_list(int tick);
 extern void view_add_halos(void);
-extern bool view_compile_mesh_gl_lists(int tick);
+extern bool view_compile_mesh_gl_lists(void);
 extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
 extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(obj_type *obj);
@@ -213,7 +213,7 @@ void view_draw_mesh_shadows(void)
       
 ======================================================= */
 
-void view_draw_model_opaque(int tick)
+void view_draw_model_opaque(void)
 {
 	int					n;
 	obj_type			*obj;
@@ -254,7 +254,7 @@ void view_draw_model_opaque(int tick)
 	}
 }
 
-void view_draw_model_transparent(int tick)
+void view_draw_model_transparent(void)
 {
 	int					n;
 	obj_type			*obj;
@@ -296,7 +296,7 @@ void view_draw_model_transparent(int tick)
 	}
 }
 
-void view_draw_models_final(int tick)
+void view_draw_models_final(void)
 {
 	int					n;
 	bool				shadow_on;
@@ -348,7 +348,7 @@ void view_draw_models_final(int tick)
 				proj=&server.projs[view.render->draw_list.items[n].idx];
 				if ((shadow_on) && (proj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
-						render_model_setup(tick,&proj->draw);
+						render_model_setup(&proj->draw);
 						render_model_build_vertex_lists(&proj->draw);
 						shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw);
 					}
@@ -430,25 +430,25 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 
 		// compile meshes for drawing
 	
-	if (!view_compile_mesh_gl_lists(tick)) return;
+	if (!view_compile_mesh_gl_lists()) return;
 
 		// draw opaque scene items
 
 	render_map_mesh_opaque();
-	render_map_liquid_opaque(tick);
-	view_draw_model_opaque(tick);
+	render_map_liquid_opaque();
+	view_draw_model_opaque();
 	
 		// additional mesh and model drawing
 		// shadows, remote names, etc
 
 	view_draw_mesh_shadows();
-	view_draw_models_final(tick);
+	view_draw_models_final();
 	
 		// draw transparent scene items
 
 	render_map_mesh_transparent();
-	view_draw_model_transparent(tick);
-	render_map_liquid_transparent(tick);
+	view_draw_model_transparent();
+	render_map_liquid_transparent();
 
 		// draw decals
 
@@ -456,16 +456,12 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 
 		// effects
 
-	effect_draw(tick);
+	effect_draw();
 	
-		// draw rain
+		// rain and fog
 		
-	rain_draw(tick);
-
-		// draw fog
-
-	fog_draw_textured(tick);
-	
+	rain_draw();
+	fog_draw_textured();
 	if (fog_solid_on()) fog_solid_end();
 	
 		// setup halos, crosshairs, zoom masks
@@ -474,12 +470,12 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	halo_draw_setup();
 	
 	if ((obj!=NULL) && (weap!=NULL)) {
-		crosshair_setup(tick,obj,weap);
-		zoom_setup(tick,obj,weap);
+		crosshair_setup(obj,weap);
+		zoom_setup(obj,weap);
 	
 			// draw the weapons in hand
 
-		if (camera.mode==cv_fpp) draw_weapon_hand(tick,obj,weap);
+		if (camera.mode==cv_fpp) draw_weapon_hand(obj,weap);
 	}
 
 		// draw the remote names, halos, crosshairs, and zoom masks

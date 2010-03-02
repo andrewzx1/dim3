@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "timing.h"
 
 JSValueRef js_model_spin_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_spin_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -112,7 +113,7 @@ bool js_model_spin_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 	draw=script_find_model_draw();
 
 	draw->spin.x=script_value_to_float(cx,vp);
-	draw->spin_tick=js.time.current_tick;
+	draw->spin_tick=game_time_get();
 	
 	return(TRUE);
 }
@@ -124,7 +125,7 @@ bool js_model_spin_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 	draw=script_find_model_draw();
 
 	draw->spin.y=script_value_to_float(cx,vp);
-	draw->spin_tick=js.time.current_tick;
+	draw->spin_tick=game_time_get();
 	
 	return(TRUE);
 }
@@ -136,7 +137,7 @@ bool js_model_spin_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 	draw=script_find_model_draw();
 
 	draw->spin.z=script_value_to_float(cx,vp);
-	draw->spin_tick=js.time.current_tick;
+	draw->spin_tick=game_time_get();
 	
 	return(TRUE);
 }

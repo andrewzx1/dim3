@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 #include "physics.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -123,9 +124,9 @@ float object_liquid_alter_speed(obj_type *obj)
       
 ======================================================= */
 
-void object_liquid(int tick,obj_type *obj)
+void object_liquid(obj_type *obj)
 {
-	int					harm,old_liquid_mode,tide_split_half,
+	int					tick,harm,old_liquid_mode,tide_split_half,
 						bob_y_move;
 	float				sn,f_time,f_break;
 	map_liquid_type		*liq;
@@ -142,6 +143,8 @@ void object_liquid(int tick,obj_type *obj)
     }
 
 		// setup bobbing
+
+	tick=game_time_get();
 
     liq=&map.liquid.liquids[obj->contact.liquid_idx];
 

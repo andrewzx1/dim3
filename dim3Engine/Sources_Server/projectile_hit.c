@@ -35,6 +35,7 @@ and can be sold or given away.
 #include "projectiles.h"
 #include "effects.h"
 #include "physics.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -116,7 +117,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
       
 ======================================================= */
 
-bool projectile_hit(int tick,proj_type *proj,bool hit_scan)
+bool projectile_hit(proj_type *proj,bool hit_scan)
 {
 	int					uid;
 	bool				auto_hit,wall_hit;
@@ -128,7 +129,7 @@ bool projectile_hit(int tick,proj_type *proj,bool hit_scan)
 		
 	auto_hit=FALSE;
 	if (proj->action.hit_tick!=0) {
-		auto_hit=((proj->start_tick+proj->action.hit_tick)<=tick);
+		auto_hit=((proj->start_tick+proj->action.hit_tick)<=game_time_get());
 	}
 	
 		// hits?

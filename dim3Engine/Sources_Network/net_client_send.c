@@ -304,7 +304,7 @@ void net_client_send_chat(obj_type *obj,char *str)
 void net_client_send_sound(d3pnt *pnt,float pitch,char *name)
 {
 	network_request_remote_sound	sound;
-	
+
 	sound.pnt_x=htonl(pnt->x);
 	sound.pnt_y=htonl(pnt->y);
 	sound.pnt_z=htonl(pnt->z);

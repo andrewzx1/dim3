@@ -161,7 +161,7 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
       
 ======================================================= */
 
-bool melee_strike_position_weapon_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str)
+bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str)
 {
 	int						pose_idx,bone_idx;
 	model_type				*mdl;
@@ -191,7 +191,7 @@ bool melee_strike_position_weapon_model(int tick,obj_type *obj,weapon_type *weap
 		return(FALSE);
 	}
 
-	model_draw_setup_weapon(tick,obj,weap,TRUE,FALSE);
+	model_draw_setup_weapon(obj,weap,TRUE,FALSE);
 
 	setup=&weap->draw.setup;
 
@@ -211,7 +211,7 @@ bool melee_strike_position_weapon_model(int tick,obj_type *obj,weapon_type *weap
 	return(TRUE);
 }
 
-bool melee_strike_position_object_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str)
+bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str)
 {
 	int						pose_idx,bone_idx;
 	melee_type				*melee;
@@ -251,7 +251,7 @@ bool melee_strike_position_object_model(int tick,obj_type *obj,weapon_type *weap
 		return(FALSE);
 	}
 	
-	model_draw_setup_object(tick,obj);
+	model_draw_setup_object(obj);
 
 	setup=&obj->draw.setup;
 
@@ -271,7 +271,7 @@ bool melee_strike_position_object_model(int tick,obj_type *obj,weapon_type *weap
 	return(TRUE);
 }
 
-bool melee_strike_position_projectile_model(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str)
+bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str)
 {
 	int						pose_idx,bone_idx;
 	model_type				*mdl;
@@ -301,7 +301,7 @@ bool melee_strike_position_projectile_model(int tick,obj_type *obj,weapon_type *
 		return(FALSE);
 	}
 
-	model_draw_setup_projectile(tick,proj);
+	model_draw_setup_projectile(proj);
 
 	setup=&proj->draw.setup;
 
@@ -327,13 +327,13 @@ bool melee_strike_position_projectile_model(int tick,obj_type *obj,weapon_type *
       
 ======================================================= */
 
-bool melee_script_spawn_weapon_model(int tick,obj_type *obj,weapon_type *weap,char *err_str)
+bool melee_script_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *err_str)
 {
 	d3pnt				pt;
 
 		// get strike position
 
-	if (!melee_strike_position_weapon_model(tick,obj,weap,&pt,err_str)) return(FALSE);
+	if (!melee_strike_position_weapon_model(obj,weap,&pt,err_str)) return(FALSE);
 
 		// add melee
 		
@@ -342,13 +342,13 @@ bool melee_script_spawn_weapon_model(int tick,obj_type *obj,weapon_type *weap,ch
 	return(TRUE);
 }
 
-bool melee_script_spawn_object_model(int tick,obj_type *obj,weapon_type *weap,char *err_str)
+bool melee_script_spawn_object_model(obj_type *obj,weapon_type *weap,char *err_str)
 {
 	d3pnt				pt;
 
 		// get strike position
 
-	if (!melee_strike_position_object_model(tick,obj,weap,&pt,err_str)) return(FALSE);
+	if (!melee_strike_position_object_model(obj,weap,&pt,err_str)) return(FALSE);
 
 		// add melee
 	
@@ -362,13 +362,13 @@ bool melee_script_spawn_object_model(int tick,obj_type *obj,weapon_type *weap,ch
 	return(TRUE);
 }
 
-bool melee_script_spawn_projectile_model(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,char *err_str)
+bool melee_script_spawn_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,char *err_str)
 {
 	d3pnt				pt;
 	
 		// get strike position
 
-	if (!melee_strike_position_projectile_model(tick,obj,weap,proj_setup,proj,&pt,err_str)) return(FALSE);
+	if (!melee_strike_position_projectile_model(obj,weap,proj_setup,proj,&pt,err_str)) return(FALSE);
 
 		// add melee
 		

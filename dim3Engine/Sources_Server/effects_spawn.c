@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "lights.h"
 #include "effects.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -68,7 +69,7 @@ bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent,int fl
       
 ======================================================= */
 
-bool effect_spawn_lightning(int tick,d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec)
+bool effect_spawn_lightning(d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec)
 {
 	effect_type				*effect;
 	lightning_effect_data	*lightning;
@@ -82,7 +83,7 @@ bool effect_spawn_lightning(int tick,d3pnt *start_pt,d3pnt *end_pt,int wid,float
 	memmove(&lightning->end_pnt,end_pt,sizeof(d3pnt));
 	
 	lightning->wid=wid;
-	lightning->line_offset=tick&0xF;
+	lightning->line_offset=game_time_get()&0xF;
 	lightning->varient=varient;
 	
 	memmove(&lightning->col,col,sizeof(d3col));

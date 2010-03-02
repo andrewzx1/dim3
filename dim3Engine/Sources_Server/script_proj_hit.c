@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 #include "projectiles.h"
+#include "timing.h"
 
 extern map_type			map;
 extern server_type		server;
@@ -93,7 +94,7 @@ int js_get_proj_hit_type(proj_type *proj)
 		// check auto hits
 		
 	if (proj->action.hit_tick!=0) {
-		if ((proj->start_tick+proj->action.hit_tick)<=js.time.current_tick) return(sd_proj_hit_type_auto);
+		if ((proj->start_tick+proj->action.hit_tick)<=game_time_get()) return(sd_proj_hit_type_auto);
 	}
 
 		// object or projectile hits

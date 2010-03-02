@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "weapons.h"
 #include "models.h"
 #include "effects.h"
+#include "timing.h"
 
 extern server_type			server;
 extern view_type			view;
@@ -94,9 +95,9 @@ void model_draw_setup_dynamic_bones(model_type *mdl,model_draw *draw,model_draw_
       
 ======================================================= */
 
-void model_draw_setup_object(int tick,obj_type *obj)
+void model_draw_setup_object(obj_type *obj)
 {
-	int					model_bounce_cnt;
+	int					tick,model_bounce_cnt;
 	float				spin_ang;
 	model_draw			*draw;
 	model_draw_setup	*setup;
@@ -142,6 +143,10 @@ void model_draw_setup_object(int tick,obj_type *obj)
 		// rigid body offsets
 
 	if (obj->rigid_body.on) draw->pnt.y+=obj->rigid_body.draw_offset_y;
+
+		// timing for bounces and spins
+
+	tick=game_time_get();
 	
 		// bounces
 
@@ -200,9 +205,9 @@ void model_draw_setup_object(int tick,obj_type *obj)
       
 ======================================================= */
 
-void model_draw_setup_projectile(int tick,proj_type *proj)
+void model_draw_setup_projectile(proj_type *proj)
 {
-	int					model_bounce_cnt;
+	int					tick,model_bounce_cnt;
 	float				spin_ang;
 	model_draw			*draw;
 	model_draw_setup	*setup;
@@ -243,6 +248,10 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 	draw->connect.motion_vct.x=proj->motion.vct.x;
 	draw->connect.motion_vct.y=proj->motion.vct.y;
 	draw->connect.motion_vct.z=proj->motion.vct.z;
+
+		// timing for bounces and spins
+
+	tick=game_time_get();
 	
 		// bounces
 
@@ -294,7 +303,7 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
       
 ======================================================= */
 
-void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand)
+void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand)
 {
 	int					swap_yadd,weap_mode,
 						move_tick,swap_tick,y_shift;
@@ -329,7 +338,7 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	swap_tick=obj->held_weapon.swap_tick;
 	
     swap_yadd=0;
-	move_tick=tick;
+	move_tick=game_time_get();
 
 	if (weap_mode==wm_lower) {
 		move_tick-=swap_tick;

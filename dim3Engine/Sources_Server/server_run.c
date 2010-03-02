@@ -109,7 +109,7 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
   
 ======================================================= */
 
-void run_object_single(obj_type *obj,int tick)
+void run_object_single(obj_type *obj)
 {
 		// spawning
 		
@@ -170,7 +170,7 @@ void run_object_single(obj_type *obj,int tick)
 		object_ducking(obj);
 
 		object_touch(obj);
-		object_liquid(tick,obj);
+		object_liquid(obj);
 
 		object_crush(obj,FALSE);
 
@@ -198,7 +198,7 @@ void run_object_single(obj_type *obj,int tick)
   
 ======================================================= */
 
-inline void run_objects_slice_single(obj_type *obj,int tick)
+inline void run_objects_slice_single(obj_type *obj)
 {
 		// remotes get predicted
 		
@@ -217,10 +217,10 @@ inline void run_objects_slice_single(obj_type *obj,int tick)
 	
 		// everything else is a regular move
 	
-	run_object_single(obj,tick);
+	run_object_single(obj);
 }
 
-void run_objects_slice(int tick)
+void run_objects_slice(void)
 {
 	int				n,mesh_idx;
 	d3pnt			old_pnt;
@@ -243,7 +243,7 @@ void run_objects_slice(int tick)
 
 				// run objects
 				
-			run_objects_slice_single(obj,tick);
+			run_objects_slice_single(obj);
 
 				// trigger any mesh changes if not suspended
 				// remotes handle triggers on their own
@@ -266,7 +266,7 @@ void run_objects_slice(int tick)
 	}
 }
 
-void run_objects_no_slice(int tick)
+void run_objects_no_slice(void)
 {
 	int				n;
 	obj_type		*obj;
@@ -278,23 +278,23 @@ void run_objects_no_slice(int tick)
 
 		if (!obj->hidden) {
 			
-			model_draw_setup_object(tick,obj);
+			model_draw_setup_object(obj);
 			model_run_animation(&obj->draw);
 
 			if (!obj->scenery.on) {
 
 					// fades
 
-				model_fade_run(tick,&obj->draw);
-				model_mesh_fade_run(tick,&obj->draw);
+				model_fade_run(&obj->draw);
+				model_mesh_fade_run(&obj->draw);
 
 					// held weapons
 
 				if (obj->type_idx==object_type_player) {
 					weap=weapon_find_current(obj);
 					if (weap!=NULL) {
-						model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);
-						weapon_run_hand(obj,tick);
+						model_draw_setup_weapon(obj,weap,FALSE,FALSE);
+						weapon_run_hand(obj);
 					}
 				}
 
@@ -311,7 +311,7 @@ void run_objects_no_slice(int tick)
       
 ======================================================= */
 
-void run_projectiles_slice(int tick)
+void run_projectiles_slice(void)
 {
 	int				n;
 	proj_type		*proj;
@@ -348,7 +348,7 @@ void run_projectiles_slice(int tick)
 		
 		projectile_collision(proj);
 		
-		if (projectile_hit(tick,proj,FALSE)) {
+		if (projectile_hit(proj,FALSE)) {
 			projectile_mark_dispose(proj);
 		}
 	}
@@ -356,7 +356,7 @@ void run_projectiles_slice(int tick)
 	projectile_dispose();
 }
 
-void run_projectiles_no_slice(int tick)
+void run_projectiles_no_slice(void)
 {
 	int				n;
 	proj_type		*proj;
@@ -365,10 +365,10 @@ void run_projectiles_no_slice(int tick)
 		proj=&server.projs[n];
 		if (proj->dispose) continue;
 	
-		model_draw_setup_projectile(tick,proj);
+		model_draw_setup_projectile(proj);
 		model_run_animation(&proj->draw);
-		model_fade_run(tick,&proj->draw);
-		model_mesh_fade_run(tick,&proj->draw);
+		model_fade_run(&proj->draw);
+		model_mesh_fade_run(&proj->draw);
 	}
 }
 
@@ -401,8 +401,8 @@ void server_run(void)
 
 			group_moves_run(TRUE);
 			
-			run_objects_slice(tick);
-			run_projectiles_slice(tick);
+			run_objects_slice();
+			run_projectiles_slice();
 			
 			map_movements_auto_open();
 			
@@ -416,8 +416,8 @@ void server_run(void)
 			// 1/100th of an operation but a specific
 			// tick count
 
-		run_objects_no_slice(tick);
-		run_projectiles_no_slice(tick);
+		run_objects_no_slice();
+		run_projectiles_no_slice();
 
 			// effects and decal time-outs
 		

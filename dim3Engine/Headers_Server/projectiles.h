@@ -27,7 +27,7 @@ and can be sold or given away.
 
 extern void projectile_start(void);
 
-extern proj_type* projectile_create(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
+extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
 
 extern proj_type* projectile_find_uid(int uid);
 
@@ -70,6 +70,6 @@ extern void projectile_reflect_vector(proj_type *proj,d3vct *vct);
 extern void projectile_stick(proj_type *proj);
 extern void projectile_collision(proj_type *proj);
 extern void projectile_decals(proj_type *proj,proj_setup_type *proj_setup);
-extern bool projectile_hit(int tick,proj_type *proj,bool hit_scan);
+extern bool projectile_hit(proj_type *proj,bool hit_scan);
 
-extern void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang);
+extern void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang);

@@ -51,7 +51,7 @@ extern server_type			server;
 extern setup_type			setup;
 
 extern bool fog_solid_on(void);
-extern void render_model_setup(int tick,model_draw *draw);
+extern void render_model_setup(model_draw *draw);
 extern bool mesh_inview(map_mesh_type *mesh);
 extern bool mesh_shadow_inview(map_mesh_type *mesh);
 extern bool model_inview(model_draw *draw);
@@ -416,7 +416,7 @@ void view_setup_objects(int tick)
 			
 		object_rigid_body_reset_angle(obj);
 		object_fly_reset_angle(obj);
-		model_draw_setup_object(tick,obj);
+		model_draw_setup_object(obj);
 	
 			// detect if model or shadow is in view
 			
@@ -449,7 +449,7 @@ void view_setup_objects(int tick)
 		
 		model_calc_animation(&obj->draw);
 		model_calc_draw_bones(&obj->draw);
-		render_model_setup(tick,&obj->draw);
+		render_model_setup(&obj->draw);
 		
 			// setup held weapon model
 
@@ -457,7 +457,7 @@ void view_setup_objects(int tick)
 
 			weap=weapon_find_uid(obj->held_weapon.current_uid);
 			if (weap!=NULL) {
-				model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);
+				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 				view_setup_model_in_view(&weap->draw,obj->mesh.cur_mesh_idx);
 			}
 		}
@@ -476,7 +476,7 @@ void view_setup_projectiles(int tick)
 			// setup model positions
 			
 		projectile_reset_angle_for_flight(proj);
-		model_draw_setup_projectile(tick,proj);
+		model_draw_setup_projectile(proj);
 		
 			// find model and shadows in view
 			
@@ -505,7 +505,7 @@ void view_setup_projectiles(int tick)
 			
 		model_calc_animation(&proj->draw);
 		model_calc_draw_bones(&proj->draw);
-		render_model_setup(tick,&proj->draw);
+		render_model_setup(&proj->draw);
 	}
 }
 

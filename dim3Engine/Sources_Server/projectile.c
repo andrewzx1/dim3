@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "projectiles.h"
 #include "physics.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -55,7 +56,7 @@ void projectile_start(void)
       
 ======================================================= */
 
-proj_type* projectile_create(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup)
+proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup)
 {
 	proj_type			*proj;
 
@@ -73,7 +74,7 @@ proj_type* projectile_create(int tick,obj_type *obj,weapon_type *weap,proj_setup
 	proj->weap_uid=weap->uid;
 	proj->proj_setup_uid=proj_setup->uid;
 
-	proj->start_tick=tick;
+	proj->start_tick=game_time_get();
 	
 	object_clear_position(&proj->pnt);
 	object_clear_angle(&proj->ang);

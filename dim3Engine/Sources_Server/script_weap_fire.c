@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "weapons.h"
+#include "timing.h"
 
 extern js_type			js;
 
@@ -120,7 +121,7 @@ JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSO
 		last_fire_tick=weap->fire.last_fire_dual_tick;
 	}
 
-	return(script_bool_to_value(cx,js.time.current_tick>(last_fire_tick+script_value_to_int(cx,argv[0]))));
+	return(script_bool_to_value(cx,(game_time_get()>(last_fire_tick+script_value_to_int(cx,argv[0])))));
 }
 
 JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -132,10 +133,10 @@ JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JS
 	weap=weapon_find_uid(js.attach.thing_uid);
 	
 	if (!weap->dual.in_dual) {
-		weap->fire.last_fire_tick=js.time.current_tick;
+		weap->fire.last_fire_tick=game_time_get();
 	}
 	else {
-		weap->fire.last_fire_dual_tick=js.time.current_tick;
+		weap->fire.last_fire_dual_tick=game_time_get();
 	}
     
 	return(script_null_to_value(cx));

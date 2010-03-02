@@ -171,7 +171,7 @@ JSValueRef js_obj_weapon_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
 	if (weap==NULL) return(script_null_to_value(cx));
 
-	return(script_bool_to_value(cx,weapon_script_fire(js.time.current_tick,obj,weap,script_value_to_int(cx,argv[1]))));
+	return(script_bool_to_value(cx,weapon_script_fire(obj,weap,script_value_to_int(cx,argv[1]))));
 }
 
 /* =======================================================

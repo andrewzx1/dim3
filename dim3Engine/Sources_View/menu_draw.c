@@ -209,7 +209,7 @@ void menu_draw(void)
 
 		// get the alpha
 
-	raw_tick=game_get_time_raw();
+	raw_tick=game_time_get_raw();
 
 	alpha=1.0f;
 

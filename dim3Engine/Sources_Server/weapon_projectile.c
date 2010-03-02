@@ -40,6 +40,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "consoles.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -82,7 +83,7 @@ void weapon_setup_fire(weapon_type *weap,int method)
       
 ======================================================= */
 
-bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
+bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
 {
 	d3pnt					spt,ept,hpt;
 	proj_type				*proj;
@@ -90,7 +91,7 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 	
 		// create new projectile
 		
-	proj=projectile_create(tick,obj,weap,proj_setup);
+	proj=projectile_create(obj,weap,proj_setup);
 	if (proj==NULL) return(FALSE);
 
 	projectile_spawn_position(proj,pt,ang,obj);
@@ -143,7 +144,7 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		proj->contact.obj_uid=contact.obj.uid;
 		proj->contact.proj_uid=-1;
 
-		projectile_hit(tick,proj,FALSE);
+		projectile_hit(proj,FALSE);
 	}
 
 	return(TRUE);
@@ -155,7 +156,7 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
       
 ======================================================= */
 
-bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str)
+bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str)
 {
 	int						pose_idx,bone_idx;
 	model_type				*mdl;
@@ -186,7 +187,7 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 		return(FALSE);
 	}
 
-	model_draw_setup_weapon(tick,obj,weap,TRUE,weap->dual.in_dual);
+	model_draw_setup_weapon(obj,weap,TRUE,weap->dual.in_dual);
 
 	if (weap->dual.in_dual) {
 		draw=&weap->draw_dual;
@@ -221,7 +222,7 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 	return(TRUE);
 }
 
-bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str)
+bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str)
 {
 	int						pose_idx,bone_idx,dist;
 	d3pnt					barrel_pnt;
@@ -253,7 +254,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 		return(FALSE);
 	}
 
-	model_draw_setup_weapon(tick,obj,weap,TRUE,weap->dual.in_dual);
+	model_draw_setup_weapon(obj,weap,TRUE,weap->dual.in_dual);
 
 	if (weap->dual.in_dual) {
 		draw=&weap->draw_dual;
@@ -305,7 +306,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 	return(TRUE);
 }
 
-bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str)
+bool weapon_get_projectile_position_angle_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str)
 {
 	int						pose_idx,bone_idx;
 	model_type				*mdl;
@@ -335,7 +336,7 @@ bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,we
 		return(FALSE);
 	}
 
-	model_draw_setup_object(tick,obj);
+	model_draw_setup_object(obj);
 
 	setup=&obj->draw.setup;
 
@@ -393,7 +394,7 @@ void weapon_get_projectile_position_angle_add_offset(d3ang *ang,d3ang *off_ang)
       
 ======================================================= */
 
-bool weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method)
+bool weapon_script_fire(obj_type *obj,weapon_type *weap,int method)
 {
 		// fail under liquid?
 
@@ -407,10 +408,10 @@ bool weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method)
 	if (weap->fire.cancel) return(FALSE);
 
 	if (!weap->dual.in_dual) {
-		weap->fire.last_fire_tick=tick;
+		weap->fire.last_fire_tick=game_time_get();
 	}
 	else {
-		weap->fire.last_fire_dual_tick=tick;
+		weap->fire.last_fire_dual_tick=game_time_get();
 	}
 	
 	return(TRUE);
@@ -422,7 +423,7 @@ bool weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method)
       
 ======================================================= */
 
-bool weapon_script_projectile_spawn(int tick,obj_type *obj,weapon_type *weap,char *proj_name,d3pnt *pt,d3ang *ang,int count,float slop,char *err_str)
+bool weapon_script_projectile_spawn(obj_type *obj,weapon_type *weap,char *proj_name,d3pnt *pt,d3ang *ang,int count,float slop,char *err_str)
 {
 	int					n;
 	float				r_slop;
@@ -459,14 +460,14 @@ bool weapon_script_projectile_spawn(int tick,obj_type *obj,weapon_type *weap,cha
 			// hit-scan fires
 			
 		if (proj_setup->hitscan.on) {
-			projectile_hitscan(tick,obj,weap,proj_setup,pt,&proj_ang);
+			projectile_hitscan(obj,weap,proj_setup,pt,&proj_ang);
 		}
 		
 			// projectile fires
 			
 		else {
 
-			if (!weapon_add_projectile(tick,obj,weap,proj_setup,pt,&proj_ang)) {
+			if (!weapon_add_projectile(obj,weap,proj_setup,pt,&proj_ang)) {
 				strcpy(err_str,"No more spots to spawn projectiles");
 				return(FALSE);
 			}
@@ -483,20 +484,20 @@ bool weapon_script_projectile_spawn(int tick,obj_type *obj,weapon_type *weap,cha
       
 ======================================================= */
 
-bool weapon_script_projectile_spawn_object_model(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str)
+bool weapon_script_projectile_spawn_object_model(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str)
 {
 	d3pnt			pt;
 	d3ang			ang;
 
 		// get fire position and angle
 
-	if (!weapon_get_projectile_position_angle_object_model(tick,obj,weap,&pt,&ang,err_str)) return(FALSE);
+	if (!weapon_get_projectile_position_angle_object_model(obj,weap,&pt,&ang,err_str)) return(FALSE);
 
 	weapon_get_projectile_position_angle_add_offset(&ang,off_ang);
 
 		// spawn projectile
 		
-	return(weapon_script_projectile_spawn(tick,obj,weap,proj_name,&pt,&ang,count,slop,err_str));
+	return(weapon_script_projectile_spawn(obj,weap,proj_name,&pt,&ang,count,slop,err_str));
 }
 
 /* =======================================================
@@ -505,13 +506,13 @@ bool weapon_script_projectile_spawn_object_model(int tick,obj_type *obj,weapon_t
       
 ======================================================= */
 
-bool weapon_script_projectile_spawn_center(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str)
+bool weapon_script_projectile_spawn_center(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str)
 {
 	d3pnt			pt;
 	d3ang			ang;
 
 	weapon_get_projectile_position_center(obj,weap,&pt,&ang);
-	return(weapon_script_projectile_spawn(tick,obj,weap,proj_name,&pt,&ang,count,slop,err_str));
+	return(weapon_script_projectile_spawn(obj,weap,proj_name,&pt,&ang,count,slop,err_str));
 }
 
 /* =======================================================
@@ -520,7 +521,7 @@ bool weapon_script_projectile_spawn_center(int tick,obj_type *obj,weapon_type *w
       
 ======================================================= */
 
-bool weapon_script_projectile_spawn_weapon_model(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str)
+bool weapon_script_projectile_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str)
 {
 	d3pnt			pt;
 	d3ang			ang;
@@ -528,21 +529,21 @@ bool weapon_script_projectile_spawn_weapon_model(int tick,obj_type *obj,weapon_t
 		// if not in fpp, auto-switch to center spawn
 
 	if (camera.mode!=cv_fpp) {
-		return(weapon_script_projectile_spawn_center(tick,obj,weap,proj_name,count,slop,off_ang,err_str));
+		return(weapon_script_projectile_spawn_center(obj,weap,proj_name,count,slop,off_ang,err_str));
 	}
 
 		// get fire position and angle
 
-	if (!weapon_get_projectile_position_angle_weapon_model(tick,obj,weap,&pt,&ang,err_str)) return(FALSE);
+	if (!weapon_get_projectile_position_angle_weapon_model(obj,weap,&pt,&ang,err_str)) return(FALSE);
 
 	weapon_get_projectile_position_angle_add_offset(&ang,off_ang);
 
 		// spawn projectile
 		
-	return(weapon_script_projectile_spawn(tick,obj,weap,proj_name,&pt,&ang,count,slop,err_str));
+	return(weapon_script_projectile_spawn(obj,weap,proj_name,&pt,&ang,count,slop,err_str));
 }
 
-bool weapon_script_projectile_spawn_weapon_barrel(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str)
+bool weapon_script_projectile_spawn_weapon_barrel(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str)
 {
 	d3pnt			pt;
 	d3ang			ang;
@@ -550,18 +551,18 @@ bool weapon_script_projectile_spawn_weapon_barrel(int tick,obj_type *obj,weapon_
 		// if not in fpp, auto-switch to center spawn
 
 	if (camera.mode!=cv_fpp) {
-		return(weapon_script_projectile_spawn_center(tick,obj,weap,proj_name,count,slop,off_ang,err_str));
+		return(weapon_script_projectile_spawn_center(obj,weap,proj_name,count,slop,off_ang,err_str));
 	}
 	
 		// get fire position and angle
 
-	if (!weapon_get_projectile_position_angle_weapon_barrel(tick,obj,weap,&pt,&ang,err_str)) return(FALSE);
+	if (!weapon_get_projectile_position_angle_weapon_barrel(obj,weap,&pt,&ang,err_str)) return(FALSE);
 	
 	weapon_get_projectile_position_angle_add_offset(&ang,off_ang);
 
 		// spawn projectile
 
-	return(weapon_script_projectile_spawn(tick,obj,weap,proj_name,&pt,&ang,count,slop,err_str));
+	return(weapon_script_projectile_spawn(obj,weap,proj_name,&pt,&ang,count,slop,err_str));
 }
 
 /* =======================================================
@@ -719,7 +720,7 @@ void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method)
       
 ======================================================= */
 
-void weapon_kickback(int tick,obj_type *obj,weapon_type *weap)
+void weapon_kickback(obj_type *obj,weapon_type *weap)
 {
 	d3ang			ang;
 

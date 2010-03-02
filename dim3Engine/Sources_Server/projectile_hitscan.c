@@ -47,7 +47,7 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
-void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
+void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
 {
 	d3pnt					spt,hpt;
 	proj_type				*proj,*hit_proj;
@@ -55,7 +55,7 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 	
 		// setup projectile
 		
-	proj=projectile_create(tick,obj,weap,proj_setup);
+	proj=projectile_create(obj,weap,proj_setup);
     if (proj==NULL) return;
 
 	projectile_set_position(proj,pt,ang);
@@ -109,14 +109,14 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 	if (contact.proj.uid!=-1) {
 		hit_proj=projectile_find_uid(contact.proj.uid);
 		hit_proj->contact.proj_uid=proj->uid;
-		if (projectile_hit(tick,hit_proj,TRUE)) {				// force other projectile into hit mode
+		if (projectile_hit(hit_proj,TRUE)) {				// force other projectile into hit mode
 			projectile_mark_dispose(hit_proj);
 		}
 	}
 
 		// hit projectile
 			
-	projectile_hit(tick,proj,TRUE);
+	projectile_hit(proj,TRUE);
 	
 		// destroy projectile
 	

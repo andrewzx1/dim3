@@ -84,25 +84,43 @@ int al_play_source(int buffer_idx,d3pnt *pnt,float pitch,bool loop,bool ambient,
 
 	SDL_LockAudio();
 
+	idx=-1;
+
+		// if this sound is already playing, then
+		// replace it
+
+	play=audio_plays;
+
+	for (n=0;n!=audio_max_play;n++) {
+		if ((play->used) && (play->buffer_idx==buffer_idx) && (play->pitch==pitch) && (!play->ambient) && (!play->loop)) {
+			idx=n;
+			break;
+		}
+		play++;
+	}
+
 		// find an open play structure
 		// also find first non no_cancel
 		// source in case we need to replace one
 
-	idx=non_no_cancel_idx=-1;
-	play=audio_plays;
+	if (idx==-1) {
 
-	for (n=0;n!=audio_max_play;n++) {
-		if (!play->used) {
-			idx=n;
-			break;
+		non_no_cancel_idx=-1;
+		play=audio_plays;
+
+		for (n=0;n!=audio_max_play;n++) {
+			if (!play->used) {
+				idx=n;
+				break;
+			}
+			if ((non_no_cancel_idx==-1) && (!play->no_cancel)) non_no_cancel_idx=n;
+			play++;
 		}
-		if ((non_no_cancel_idx==-1) && (!play->no_cancel)) non_no_cancel_idx=n;
-		play++;
+		
+			// if possible, replace another sound
+
+		if (idx==-1) idx=non_no_cancel_idx;
 	}
-
-		// if possible, replace another sound
-
-	if (idx==-1) idx=non_no_cancel_idx;
 
 		// no place, can't place sound
 

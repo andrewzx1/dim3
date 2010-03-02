@@ -92,18 +92,18 @@ model_draw* script_bone_function_setup(JSContextRef cx,JSValueRef *exception)
 	
 		case thing_type_object:
 			obj=object_find_uid(js.attach.thing_uid);
-			model_draw_setup_object(js.time.current_tick,obj);
+			model_draw_setup_object(obj);
 			return(&obj->draw);
 			
 		case thing_type_weapon:
 			weap=weapon_find_uid(js.attach.thing_uid);
 			obj=object_find_uid(weap->obj_uid);
-			model_draw_setup_weapon(js.time.current_tick,obj,weap,FALSE,FALSE);
+			model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 			return(&weap->draw);
 			
 		case thing_type_projectile:
 			proj=projectile_find_uid(js.attach.thing_uid);
-			model_draw_setup_projectile(js.time.current_tick,proj);
+			model_draw_setup_projectile(proj);
 			return(&proj->draw);
 			
 		case thing_type_projectile_setup:
