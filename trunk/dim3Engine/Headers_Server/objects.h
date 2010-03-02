@@ -109,9 +109,6 @@ extern void object_shove_direct(obj_type *obj,d3vct *vct);
 extern bool object_is_targetted(obj_type *obj,d3col *col);
 extern bool object_set_radar_icon(obj_type *obj,char *err_str);
 
-extern void object_fs_tint_start(obj_type *obj,float r,float g,float b,float alpha,int fade_in_msec,int life_msec,int fade_out_msec);
-extern void object_fs_effect_run(obj_type *obj);
-
 extern void get_motion_movement(float ang,obj_movement *move,float *xmove,float *zmove);
 extern void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove);
 extern void object_movement(obj_type *obj,obj_movement *move);
@@ -226,9 +223,9 @@ extern void player_turn_input(obj_type *obj,float mouse_x);
 extern void player_look_input(obj_type *obj,float mouse_y);
 extern void player_jump_duck_input(obj_type *obj);
 extern void player_weapon_zoom_input(obj_type *obj,weapon_type *weap);
-extern void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap);
-extern void player_weapon_fire_input(int tick,obj_type *obj,weapon_type *weap);
-extern void player_weapon_input(int tick,obj_type *obj);
+extern void player_weapon_change_input(obj_type *obj,weapon_type *weap);
+extern void player_weapon_fire_input(obj_type *obj,weapon_type *weap);
+extern void player_weapon_input(obj_type *obj);
 extern void player_enter_vehicle(obj_type *obj);
 extern void player_exit_vehicle(obj_type *obj);
 extern void player_enter_exit_input(obj_type *obj);

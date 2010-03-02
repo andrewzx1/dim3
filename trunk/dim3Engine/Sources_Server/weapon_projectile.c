@@ -570,9 +570,9 @@ bool weapon_script_projectile_spawn_weapon_barrel(int tick,obj_type *obj,weapon_
       
 ======================================================= */
 
-void weapon_player_fire_down(int tick,obj_type *obj,weapon_type *weap,int method)
+void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method)
 {
-	int			clicked_obj_uid;
+	int			tick,clicked_obj_uid;
 	obj_type	*clicked_obj;
 	
 		// if no weapon, send message directly to object
@@ -592,7 +592,7 @@ void weapon_player_fire_down(int tick,obj_type *obj,weapon_type *weap,int method
 	if (clicked_obj_uid!=-1) {
 		clicked_obj=object_find_uid(clicked_obj_uid);
 		object_click(clicked_obj,obj);
-		crosshair_show_alt(tick,obj);
+		crosshair_show_alt(obj);
 		return;
 	}
 
@@ -601,6 +601,8 @@ void weapon_player_fire_down(int tick,obj_type *obj,weapon_type *weap,int method
 	if ((weap->fail_in_liquid) && (obj->liquid.mode==lm_under)) return;
 	
 		// handle weapon fire down
+		
+	tick=game_time_get();
 		
 	weap->proj.next_repeat_tick=tick+weap->proj.repeat_tick;
 	
@@ -628,8 +630,10 @@ void weapon_player_fire_down(int tick,obj_type *obj,weapon_type *weap,int method
 	scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_down,0);
 }
 
-void weapon_player_fire_repeat(int tick,obj_type *obj,weapon_type *weap)
+void weapon_player_fire_repeat(obj_type *obj,weapon_type *weap)
 {
+	int				tick;
+	
 		// if no weapon then no repeat
 		
 	if (weap==NULL) return;
@@ -647,7 +651,9 @@ void weapon_player_fire_repeat(int tick,obj_type *obj,weapon_type *weap)
 	if ((weap->fail_in_liquid) && (obj->liquid.mode==lm_under)) return;
 	
 		// time to repeat?
-		
+	
+	tick=game_time_get();
+	
 	if (tick<weap->proj.next_repeat_tick) return;
 	weap->proj.next_repeat_tick+=weap->proj.repeat_tick;
 	

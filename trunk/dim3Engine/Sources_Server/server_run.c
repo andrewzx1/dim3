@@ -135,7 +135,6 @@ void run_object_single(obj_type *obj,int tick)
 				object_turn(obj);
 			}
 		}
-		object_fs_effect_run(obj);
 	}
 	else {
 		if (!obj->suspend) {

@@ -136,8 +136,9 @@ void input_event_mouse_motion(int x,int y)
       
 ======================================================= */
 
-void input_get_mouse_movement(int tick,float *x,float *y)
-{
+void input_get_mouse_movement(float *x,float *y)
+{	
+	int			tick;
 	float		fx,fy,f_tick;
 	
 		// get movement and clear
@@ -149,6 +150,8 @@ void input_get_mouse_movement(int tick,float *x,float *y)
 	mouse_motion_y=0;
 
 		// calculate time change
+		
+	tick=game_time_get_raw();
 
 	if (mouse_tick!=-1) {
 		f_tick=(float)input_tick_rate/(float)(tick-mouse_tick);

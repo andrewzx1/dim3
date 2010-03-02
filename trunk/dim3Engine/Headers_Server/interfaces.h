@@ -151,7 +151,7 @@ extern void radar_draw(void);
 extern void crosshair_initialize(void);
 
 extern int crosshair_find(char *name);
-extern void crosshair_show_alt(int tick,obj_type *obj);
+extern void crosshair_show_alt(obj_type *obj);
 
 extern bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_uid,int *dist);
 extern void crosshair_setup(int tick,obj_type *obj,weapon_type *weap);

@@ -289,7 +289,7 @@ void player_weapon_zoom_input(obj_type *obj,weapon_type *weap)
 	}
 }
 
-void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap)
+void player_weapon_change_input(obj_type *obj,weapon_type *weap)
 {
 	int				i,k;
 	bool			down_key,weapon_key[(nc_weapon_end-nc_weapon_start)+1],
@@ -340,13 +340,13 @@ void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap)
 	if (weap->target.on) weapon_target_end(obj,weap);
 
 	if (next_weapon_key) {
-		weapon_switch(tick,obj,1);
+		weapon_switch(obj,1);
 		weapon_change_key_down=TRUE;
 		return;
 	}
 
 	if (previous_weapon_key) {
-		weapon_switch(tick,obj,-1);
+		weapon_switch(obj,-1);
 		weapon_change_key_down=TRUE;
 		return;
 	}
@@ -354,14 +354,14 @@ void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap)
 	for ((i=nc_weapon_start);(i<=nc_weapon_end);i++) {
 		k=i-nc_weapon_start;
 		if (weapon_key[k]) {
-			weapon_pick(tick,obj,k);
+			weapon_pick(obj,k);
 			weapon_change_key_down=TRUE;
 			return;
 		}
 	}
 }
 
-void player_weapon_fire_input(int tick,obj_type *obj,weapon_type *weap)
+void player_weapon_fire_input(obj_type *obj,weapon_type *weap)
 {
 	int					i,method;
 	
@@ -378,10 +378,10 @@ void player_weapon_fire_input(int tick,obj_type *obj,weapon_type *weap)
 		if (input_action_get_state(i)) {
 			if (!fire_key_down[method]) {
 				fire_key_down[method]=TRUE;
-				weapon_player_fire_down(tick,obj,weap,method);
+				weapon_player_fire_down(obj,weap,method);
 			}
 			else {
-				weapon_player_fire_repeat(tick,obj,weap);
+				weapon_player_fire_repeat(obj,weap);
 			}
 		}
 		else {
@@ -393,7 +393,7 @@ void player_weapon_fire_input(int tick,obj_type *obj,weapon_type *weap)
 	}
 }
 
-void player_weapon_input(int tick,obj_type *obj)
+void player_weapon_input(obj_type *obj)
 {
 	weapon_type			*weap;
 	
@@ -407,10 +407,10 @@ void player_weapon_input(int tick,obj_type *obj)
 	if ((obj->held_weapon.mode==wm_held) && (weap!=NULL)) {
 		player_weapon_target_input(obj,weap);
 		player_weapon_zoom_input(obj,weap);
-		player_weapon_fire_input(tick,obj,weap);
+		player_weapon_fire_input(obj,weap);
 	}
 
-	player_weapon_change_input(tick,obj,weap);
+	player_weapon_change_input(obj,weap);
 }
 
 /* =======================================================
@@ -597,12 +597,12 @@ float player_mouse_smooth(float mouse_ang,float turn_ang)
 	return(mouse_ang);
 }
 
-void player_get_6_way_input(int tick,obj_type *obj,float *mouse_x,float *mouse_y,bool *go_forward,bool *go_backward,bool *go_side_left,bool *go_side_right)
+void player_get_6_way_input(obj_type *obj,float *mouse_x,float *mouse_y,bool *go_forward,bool *go_backward,bool *go_side_left,bool *go_side_right)
 {
 		// get input
 
 	if (!obj->turn.ignore_mouse) {
-		input_get_mouse_movement(tick,mouse_x,mouse_y);
+		input_get_mouse_movement(mouse_x,mouse_y);
 	}
 	else {
 		*mouse_x=*mouse_y=0.0f;
@@ -694,7 +694,7 @@ void player_set_run_walk_state(obj_type *obj)
       
 ======================================================= */
 
-void player_fpp_input(int tick,obj_type *obj)
+void player_fpp_input(obj_type *obj)
 {
 	float			mouse_x,mouse_y;
 	bool			go_forward,go_backward,go_side_left,go_side_right;
@@ -707,7 +707,7 @@ void player_fpp_input(int tick,obj_type *obj)
 
 		// get input
 
-	player_get_6_way_input(tick,obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
+	player_get_6_way_input(obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
 
 		// turning and looking
 
@@ -854,7 +854,7 @@ void player_top_down_input(obj_type *obj)
       
 ======================================================= */
 
-void player_fly_input(int tick,obj_type *obj)
+void player_fly_input(obj_type *obj)
 {
 	float			mouse_x,mouse_y;
 	bool			go_forward,go_backward,go_side_left,go_side_right;
@@ -867,7 +867,7 @@ void player_fly_input(int tick,obj_type *obj)
 
 		// get input
 
-	player_get_6_way_input(tick,obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
+	player_get_6_way_input(obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
 
 		// turning and looking
 
@@ -903,7 +903,7 @@ void player_fly_input(int tick,obj_type *obj)
       
 ======================================================= */
 
-void player_thrust_input(int tick,obj_type *obj)
+void player_thrust_input(obj_type *obj)
 {
 	float			mouse_x,mouse_y;
 	bool			go_forward,go_backward,go_side_left,go_side_right;
@@ -916,7 +916,7 @@ void player_thrust_input(int tick,obj_type *obj)
 
 		// get input
 
-	player_get_6_way_input(tick,obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
+	player_get_6_way_input(obj,&mouse_x,&mouse_y,&go_forward,&go_backward,&go_side_left,&go_side_right);
 
 		// turning and looking
 
@@ -984,7 +984,7 @@ void player_get_input(void)
 	switch (obj->input_mode) {
 	
 		case im_fpp:
-			player_fpp_input(tick,obj);
+			player_fpp_input(obj);
 			break;
 			
 		case im_side_scroll:
@@ -996,11 +996,11 @@ void player_get_input(void)
 			break;
 
 		case im_fly:
-			player_fly_input(tick,obj);
+			player_fly_input(obj);
 			break;
 
 		case im_thrust:
-			player_thrust_input(tick,obj);
+			player_thrust_input(obj);
 			break;
 	
 	}
@@ -1018,7 +1018,7 @@ void player_get_input(void)
 	
         // weapons
     
-	player_weapon_input(tick,obj);
+	player_weapon_input(obj);
 	
 		// enter and exit
 		

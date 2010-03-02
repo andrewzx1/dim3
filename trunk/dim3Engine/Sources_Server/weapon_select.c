@@ -150,12 +150,12 @@ void weapon_clear_state(obj_type *obj)
       
 ======================================================= */
 
-void weapon_lower(int tick,obj_type *obj)
+void weapon_lower(obj_type *obj)
 {
 	weapon_type			*weap;
 	
 	obj->held_weapon.mode=wm_lower;
-	obj->held_weapon.swap_tick=tick;
+	obj->held_weapon.swap_tick=game_time_get();
     
 	weap=weapon_find_current(obj);
 	if (weap==NULL) return;
@@ -163,12 +163,12 @@ void weapon_lower(int tick,obj_type *obj)
 	scripts_post_event_console(&weap->attach,sd_event_animation_weapon,sd_event_animation_weapon_lower,0);
 }
 
-void weapon_raise(int tick,obj_type *obj)
+void weapon_raise(obj_type *obj)
 {
 	weapon_type			*weap;
 	
     obj->held_weapon.mode=wm_raise;
- 	obj->held_weapon.swap_tick=tick;
+ 	obj->held_weapon.swap_tick=game_time_get();
    
 	weap=weapon_find_current(obj);
 	if (weap==NULL) return;
@@ -204,7 +204,7 @@ void weapon_cur_weapon_recoil_copy(obj_type *obj,int copy_weap_uid)
 	weapon_recoil_copy(to_weap,cur_weap);
 }
 
-void weapon_goto(int tick,obj_type *obj,weapon_type *weap)
+void weapon_goto(obj_type *obj,weapon_type *weap)
 {
 		// copy any recoils
 
@@ -225,10 +225,10 @@ void weapon_goto(int tick,obj_type *obj,weapon_type *weap)
         
         // start hand swap
 
-    if (obj->held_weapon.mode!=wm_lower) weapon_lower(tick,obj);
+    if (obj->held_weapon.mode!=wm_lower) weapon_lower(obj);
 }
 
-void weapon_switch(int tick,obj_type *obj,int dir)
+void weapon_switch(obj_type *obj,int dir)
 {
     int				weap_mode,weap_uid,weap_idx;
     weapon_type		*weap;
@@ -269,10 +269,10 @@ void weapon_switch(int tick,obj_type *obj,int dir)
         if (weap->obj_uid==obj->uid) break;
     }
     
-    weapon_goto(tick,obj,weap);
+    weapon_goto(obj,weap);
 }
 
-void weapon_pick(int tick,obj_type *obj,int offset)
+void weapon_pick(obj_type *obj,int offset)
 {
     weapon_type			*weap;
 	
@@ -286,7 +286,7 @@ void weapon_pick(int tick,obj_type *obj,int offset)
 	
 		// set weapon
     
-    weapon_goto(tick,obj,weap);
+    weapon_goto(obj,weap);
 }
     
 /* =======================================================
@@ -575,7 +575,7 @@ void weapon_run_hand(obj_type *obj,int tick)
         if (swap_tick>weap->hand.lower_tick) {
 			weapon_cur_weapon_recoil_copy(obj,obj->held_weapon.next_uid);
             obj->held_weapon.current_uid=obj->held_weapon.next_uid;
-            weapon_raise(tick,obj);
+            weapon_raise(obj);
         }
         return;
     }

@@ -35,6 +35,8 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
+extern void view_draw_tint_start(d3col *col,float alpha,int fade_in_msec,int life_msec,int fade_out_msec);
+
 JSValueRef js_obj_status_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_moving(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_running(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -201,16 +203,15 @@ JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSOb
 
 JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	float			r,g,b;
-	obj_type		*obj;
+	d3col			col;
 	
 	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
 	
-	r=script_value_to_float(cx,argv[0]);
-	g=script_value_to_float(cx,argv[1]);
-	b=script_value_to_float(cx,argv[2]);
+	col.r=script_value_to_float(cx,argv[0]);
+	col.g=script_value_to_float(cx,argv[1]);
+	col.b=script_value_to_float(cx,argv[2]);
 
-	obj=object_find_uid(js.attach.thing_uid);
-	object_fs_tint_start(obj,r,g,b,script_value_to_float(cx,argv[3]),script_value_to_int(cx,argv[4]),script_value_to_int(cx,argv[5]),script_value_to_int(cx,argv[6]));
-    return(script_bool_to_value(cx,TRUE));
+	view_draw_tint_start(&col,script_value_to_float(cx,argv[3]),script_value_to_int(cx,argv[4]),script_value_to_int(cx,argv[5]),script_value_to_int(cx,argv[6]));
+ 
+	return(script_bool_to_value(cx,TRUE));
 }

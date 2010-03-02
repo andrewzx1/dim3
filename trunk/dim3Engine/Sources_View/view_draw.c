@@ -57,7 +57,7 @@ float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 
 extern void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap);
 extern void draw_background(void);
-extern void draw_sky(int tick);
+extern void draw_sky(void);
 extern void model_calc_pose_bones(model_draw *draw);
 extern void render_map_mesh_opaque(void);
 extern void render_map_mesh_transparent(void);
@@ -74,7 +74,7 @@ extern void render_model_opaque(model_draw *draw);
 extern void render_model_transparent(model_draw *draw);
 extern void render_model_target(model_draw *draw,d3col *col);
 extern void view_draw_liquid_tint(int liquid_idx);
-extern void view_draw_effect_tint(obj_type *obj);
+extern void view_draw_effect_tint(void);
 extern void view_draw_fade_draw(void);
 extern void render_map_liquid_opaque(int tick);
 extern void render_map_liquid_transparent(int tick);
@@ -418,7 +418,7 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 		// draw background and sky
 	
 	draw_background();
-	draw_sky(tick);
+	draw_sky();
 	
 		// turn on obscuring fog
 	
@@ -547,7 +547,7 @@ void view_draw(void)
 		// draw tints and fades
 		
 	view_draw_liquid_tint(view.render->camera.under_liquid_idx);
-	view_draw_effect_tint(obj);
+	view_draw_effect_tint();
 	view_draw_fade_draw();
 
 //	test_rays();		// supergumba

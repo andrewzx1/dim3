@@ -211,13 +211,15 @@ void draw_sky_dome_panoramic_setup(void)
 	view_unbind_sky_vertex_object();
 }
 
-void draw_sky_dome_panoramic(int tick)
+void draw_sky_dome_panoramic(void)
 {
-    int					k,txt_id;
+    int					k,tick,txt_id;
 	float				txt_x_shift,txt_y_shift;
 	texture_type		*texture;
 	
 		// texture sizes
+		
+	tick=game_time_get();
 		
 	txt_x_shift=((float)tick*0.0005f)*map.sky.txt_x_shift;
 	k=(int)txt_x_shift;
@@ -437,13 +439,15 @@ void draw_sky_dome_hemisphere_setup(void)
 }
 
 
-void draw_sky_dome_hemisphere(int tick)
+void draw_sky_dome_hemisphere(void)
 {
-    int					k,txt_id,dome_cnt,trig_cnt;
+    int					k,tick,txt_id,dome_cnt,trig_cnt;
 	float				txt_x_shift,txt_y_shift;
 	texture_type		*texture;
 
 		// texture sizes
+		
+	tick=game_time_get();
 		
 	txt_x_shift=((float)tick*0.0005f)*map.sky.txt_x_shift;
 	k=(int)txt_x_shift;
@@ -733,13 +737,15 @@ void draw_sky_cube_setup(void)
 	view_unbind_sky_vertex_object();
 }
 
-void draw_sky_cube(int tick)
+void draw_sky_cube(void)
 {
-    int					k,txt_id,offset;
+    int					k,tick,txt_id,offset;
     float				txt_fact,txt_x_shift,txt_y_shift;
 	texture_type		*texture;
 					
 		// texture sizes
+		
+	tick=game_time_get();
 		
 	txt_fact=map.sky.txt_fact;
 	
@@ -901,7 +907,7 @@ void draw_sky_init(void)
       
 ======================================================= */
 
-void draw_sky(int tick)
+void draw_sky(void)
 {
 		// is there a sky?
 	
@@ -912,15 +918,15 @@ void draw_sky(int tick)
 	switch (map.sky.type) {
 	
 		case st_dome_panoramic:
-			draw_sky_dome_panoramic(tick);
+			draw_sky_dome_panoramic();
 			break;
 
 		case st_dome_hemisphere:
-			draw_sky_dome_hemisphere(tick);
+			draw_sky_dome_hemisphere();
 			break;
 			
 		case st_cube:
-			draw_sky_cube(tick);
+			draw_sky_cube();
 			break;
 	
 	}
