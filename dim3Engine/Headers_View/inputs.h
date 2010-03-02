@@ -47,7 +47,7 @@ extern void input_mouse_resume(void);
 extern void input_event_mouse_button_down(int button);
 extern void input_event_mouse_motion(int x,int y);
 extern bool input_get_mouse_button(int button_idx);
-extern void input_get_mouse_movement(int tick,float *x,float *y);
+extern void input_get_mouse_movement(float *x,float *y);
 extern void input_clear_mouse_wheel_state(void);
 
 extern void input_gui_set_mouse(int x,int y);

@@ -49,9 +49,9 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void crosshair_show_alt(int tick,obj_type *obj)
+void crosshair_show_alt(obj_type *obj)
 {
-	obj->crosshair_draw.alt_tick=tick+200;
+	obj->crosshair_draw.alt_tick=game_time_get()+200;
 }
 
 /* =======================================================

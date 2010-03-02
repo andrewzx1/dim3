@@ -43,6 +43,11 @@ typedef struct		{
 					} hud_tint_type;
 */
 int							tint_start_tick;
+							tint_fade_in_tick,
+							tint_life_tick,
+							tint_fade_out_tick;
+float						tint_alpha;
+d3col						tint_col;
 
 extern map_type				map;
 extern setup_type			setup;
@@ -85,36 +90,50 @@ void view_draw_liquid_tint(int liquid_idx)
       
 ======================================================= */
 
-void view_draw_tint_start(void)
+void view_draw_tint_start(d3col *col,float alpha,int fade_in_msec,int life_msec,int fade_out_msec)
 {
+	if (fade_in_msec<=0) fade_in_msec=1;
+	if (life_msec<=0) life_msec=1;
+	if (fade_out_msec<=0) fade_out_msec=1;
 
+    tint_start_tick=game_time_get();
+    tint_fade_in_tick=fade_in_msec;
+    tint_life_tick=life_msec;
+	tint_fade_out_tick=fade_out_msec;
+	tint_alpha=alpha;
+    
+	memmove(&tint_col,col,sizeof(d3col));
 }
 
-void view_draw_effect_tint(obj_type *obj)
+void view_draw_effect_tint(void)
 {
 	int				tick;
 	float			alpha;
-	obj_fs_tint		*tint;
-	
-	tint=&obj->fs_effect.tint;
 	
 		// is flash on?
 		
-	if (!tint->on) return;
+	if (tint_start_tick==-1) return;
+	
+		// is flash over?
+		
+	tick=game_time_get()-tint_start_tick;
+		
+	if (tick>=(tint_fade_in_tick+tint_life_tick+tint_fade_out_tick)) {
+		tint_start_tick=-1;
+		return;
+	}
 	
 		// get color and alpha
 		
-	tick=game_time_get()-tint->start_tick;
-	
-	if (tick>(tint->fade_in_tick+tint->life_tick)) {
-		alpha=1.0f-((float)(tick-(tint->fade_in_tick+tint->life_tick))/(float)tint->fade_out_tick);
+	if (tick>(tint_fade_in_tick+tint_life_tick)) {
+		alpha=1.0f-((float)(tick-(tint_fade_in_tick+tint_life_tick))/(float)tint_fade_out_tick);
 	}
 	else {
-		if (tick>tint->fade_in_tick) {
+		if (tick>tint_fade_in_tick) {
 			alpha=1.0f;
 		}
 		else {
-			alpha=(float)tick/(float)tint->fade_in_tick;
+			alpha=(float)tick/(float)tint_fade_in_tick;
 		}
 	}
 	
@@ -128,7 +147,7 @@ void view_draw_effect_tint(obj_type *obj)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
-	glColor4f(tint->col.r,tint->col.g,tint->col.b,(alpha*tint->alpha));
+	glColor4f(tint_col.r,tint_col.g,tint_col.b,(alpha*tint_alpha));
 	view_draw_next_vertex_object_2D_tint_screen();
 }
 

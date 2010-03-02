@@ -47,12 +47,12 @@ extern void weapon_set(obj_type *obj,weapon_type *weap);
 
 extern void weapon_clear_state(obj_type *obj);
 
-extern void weapon_lower(int tick,obj_type *obj);
-extern void weapon_raise(int tick,obj_type *obj);
+extern void weapon_lower(obj_type *obj);
+extern void weapon_raise(obj_type *obj);
 extern void weapon_held(obj_type *obj);
-extern void weapon_goto(int tick,obj_type *obj,weapon_type *weap);
-extern void weapon_switch(int tick,obj_type *obj,int dir);
-extern void weapon_pick(int tick,obj_type *obj,int offset);
+extern void weapon_goto(obj_type *obj,weapon_type *weap);
+extern void weapon_switch(obj_type *obj,int dir);
+extern void weapon_pick(obj_type *obj,int offset);
 
 extern void weapon_target_next_object(obj_type *obj,weapon_type *weap);
 extern void weapon_target_previous_object(obj_type *obj,weapon_type *weap);
@@ -81,8 +81,8 @@ extern bool weapon_script_projectile_spawn_weapon_model(int tick,obj_type *obj,w
 extern bool weapon_script_projectile_spawn_weapon_barrel(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
 extern bool weapon_script_projectile_spawn_object_model(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
 extern bool weapon_script_projectile_spawn_center(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
-extern void weapon_player_fire_down(int tick,obj_type *obj,weapon_type *weap,int method);
-extern void weapon_player_fire_repeat(int tick,obj_type *obj,weapon_type *weap);
+extern void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method);
+extern void weapon_player_fire_repeat(obj_type *obj,weapon_type *weap);
 extern void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method);
 
 extern void weapon_kickback(int tick,obj_type *obj,weapon_type *weap);
