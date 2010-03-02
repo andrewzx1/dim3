@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "models.h"
 #include "lights.h"
 #include "video.h"
+#include "timing.h"
 
 extern bool				dim3_debug;
 
@@ -735,7 +736,7 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
       
 ======================================================= */
 
-void render_model_setup(int tick,model_draw *draw)
+void render_model_setup(model_draw *draw)
 {
 	int					n,t,frame;
 	float				alpha;
@@ -750,7 +751,7 @@ void render_model_setup(int tick,model_draw *draw)
 
 		// setup animated textures
 
-	model_setup_animated_textures(mdl,tick);
+	model_setup_animated_textures(mdl,game_time_get());
 
 		// setup the rendering mesh mask
 

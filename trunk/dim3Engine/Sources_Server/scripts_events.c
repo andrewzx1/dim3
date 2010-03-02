@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "consoles.h"
 #include "interfaces.h"
+#include "timing.h"
 
 extern server_type			server;
 extern js_type				js;
@@ -137,7 +138,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	argv[1]=script_int_to_value(script->cx,main_event);
 	argv[2]=script_int_to_value(script->cx,sub_event);
 	argv[3]=script_int_to_value(script->cx,id);
-	argv[4]=script_int_to_value(script->cx,js.time.current_tick);
+	argv[4]=script_int_to_value(script->cx,game_time_get());
 
 // supergumba -- testing for bugs	
 //	fprintf(stdout,"Event (script:%s) (id:%d.%d)\n",script->name,main_event,sub_event);
@@ -218,7 +219,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 		// run the event function
 		
 	argv[0]=(JSValueRef)script->obj;
-	argv[1]=script_int_to_value(script->cx,js.time.current_tick);
+	argv[1]=script_int_to_value(script->cx,game_time_get());
 
 	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,2,argv,&exception);
 	if (rval==NULL) {

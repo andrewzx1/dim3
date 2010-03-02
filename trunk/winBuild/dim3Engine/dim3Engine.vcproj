@@ -392,6 +392,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Engine\Headers_Server\models.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Headers_Server\objects.h"
 					>
 				</File>

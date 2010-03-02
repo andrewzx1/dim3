@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 #include "lights.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -92,9 +93,9 @@ bool liquid_is_transparent(map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,bool shader_on)
+void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz,bool shader_on)
 {
-	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
+	int				tick,x,y,z,k,x_add,z_add,x_sz,z_sz,
 					v_cnt,tide_split,tide_split_half,
 					tide_high,tide_rate;
 	float			fy,fgx,fgy,x_txtoff,y_txtoff,
@@ -118,6 +119,8 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 	if (liq->lmap_txt_idx!=-1) uv2=vertex_ptr+(v_sz*(3+2+3));
 
 		// setup tiding
+
+	tick=game_time_get();
 
 	tide_split=liquid_render_liquid_get_tide_split(liq);
 	
@@ -324,7 +327,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq,int v_sz)
       
 ======================================================= */
 
-void liquid_render_liquid(int tick,map_liquid_type *liq)
+void liquid_render_liquid(map_liquid_type *liq)
 {
 	int						v_sz,quad_cnt,frame;
 	bool					shader_on;
@@ -352,7 +355,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 	v_sz=liquid_render_liquid_get_max_vertex(liq);
 
-	liquid_render_liquid_create_vertex(tick,liq,v_sz,shader_on);
+	liquid_render_liquid_create_vertex(liq,v_sz,shader_on);
 
 		// create quads
 
@@ -472,7 +475,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
       
 ======================================================= */
 
-void render_map_liquid_opaque(int tick)
+void render_map_liquid_opaque(void)
 {
 	int					n;
 	map_liquid_type		*liq;
@@ -500,13 +503,13 @@ void render_map_liquid_opaque(int tick)
 		if (view.render->draw_list.items[n].type==view_render_type_liquid) {
 			liq=&map.liquid.liquids[view.render->draw_list.items[n].idx];
 			if (!liquid_is_transparent(liq)) {
-				liquid_render_liquid(tick,liq);
+				liquid_render_liquid(liq);
 			}
 		}
 	}
 }
 
-void render_map_liquid_transparent(int tick)
+void render_map_liquid_transparent(void)
 {
 	int					n;
 	map_liquid_type		*liq;
@@ -535,7 +538,7 @@ void render_map_liquid_transparent(int tick)
 		if (view.render->draw_list.items[n].type==view_render_type_liquid) {
 			liq=&map.liquid.liquids[view.render->draw_list.items[n].idx];
 			if (liquid_is_transparent(liq)) {
-				liquid_render_liquid(tick,liq);
+				liquid_render_liquid(liq);
 			}
 		}
 	}

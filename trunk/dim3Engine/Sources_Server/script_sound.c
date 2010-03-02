@@ -306,7 +306,7 @@ JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObject
 		script_value_to_string(cx,argv[0],name,name_str_len);
 		msec=script_value_to_int(cx,argv[1]);
 
-		if (!al_music_fade_in(js.time.current_tick,name,msec,err_str)) {
+		if (!al_music_fade_in(name,msec,err_str)) {
 			*exception=script_create_exception(cx,err_str);
 		}
 	}
@@ -323,7 +323,7 @@ JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjec
 	if (setup.music_on) {
 
 		msec=script_value_to_int(cx,argv[0]);
-		al_music_fade_out(js.time.current_tick,msec);
+		al_music_fade_out(msec);
 	}
 
 	return(script_null_to_value(cx));
@@ -342,7 +342,7 @@ JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func
 		fade_out_msec=script_value_to_int(cx,argv[1]);
 		fade_in_msec=script_value_to_int(cx,argv[2]);
 
-		if (!al_music_fade_out_fade_in(js.time.current_tick,name,fade_out_msec,fade_in_msec,err_str)) {
+		if (!al_music_fade_out_fade_in(name,fade_out_msec,fade_in_msec,err_str)) {
 			*exception=script_create_exception(cx,err_str);
 		}
 	}

@@ -254,7 +254,7 @@ void view_compile_mesh_gl_list_free(void)
       
 ======================================================= */
 
-bool view_compile_mesh_gl_lists(int tick)
+bool view_compile_mesh_gl_lists(void)
 {
 	int							n,k,t,vertex_cnt;
 	float						x_shift_offset,y_shift_offset;

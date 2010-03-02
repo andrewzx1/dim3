@@ -64,28 +64,28 @@ extern void weapon_zoom_exit(obj_type *obj,weapon_type *weap);
 extern void weapon_zoom_off(obj_type *obj,weapon_type *weap);
 extern void weapon_zoom_key(obj_type *obj,weapon_type *weap);
 
-extern void weapon_run_hand(obj_type *obj,int tick);
+extern void weapon_run_hand(obj_type *obj);
 extern void weapon_hand_bounce(obj_type *obj);
 extern int weapon_get_bounce(obj_type *obj,weapon_type *weap);
 
 extern void weapon_setup_fire(weapon_type *weap,int method);
-extern bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang);
-extern bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
-extern bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
-extern bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
+extern bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang);
+extern bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
+extern bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
+extern bool weapon_get_projectile_position_angle_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
 extern void weapon_get_projectile_position_center(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang);
 extern void weapon_get_projectile_position_angle_add_offset(d3ang *ang,d3ang *off_ang);
-extern bool weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method);
-extern bool weapon_script_projectile_spawn(int tick,obj_type *obj,weapon_type *weap,char *proj_name,d3pnt *pt,d3ang *ang,int count,float slop,char *err_str);
-extern bool weapon_script_projectile_spawn_weapon_model(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
-extern bool weapon_script_projectile_spawn_weapon_barrel(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
-extern bool weapon_script_projectile_spawn_object_model(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
-extern bool weapon_script_projectile_spawn_center(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
+extern bool weapon_script_fire(obj_type *obj,weapon_type *weap,int method);
+extern bool weapon_script_projectile_spawn(obj_type *obj,weapon_type *weap,char *proj_name,d3pnt *pt,d3ang *ang,int count,float slop,char *err_str);
+extern bool weapon_script_projectile_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
+extern bool weapon_script_projectile_spawn_weapon_barrel(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
+extern bool weapon_script_projectile_spawn_object_model(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
+extern bool weapon_script_projectile_spawn_center(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
 extern void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method);
 extern void weapon_player_fire_repeat(obj_type *obj,weapon_type *weap);
 extern void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method);
 
-extern void weapon_kickback(int tick,obj_type *obj,weapon_type *weap);
+extern void weapon_kickback(obj_type *obj,weapon_type *weap);
 extern void weapon_recoil_clear(weapon_type *weap);
 extern void weapon_recoil_copy(weapon_type *to_weap,weapon_type *from_weap);
 extern void weapon_recoil_run(obj_type *obj,weapon_type *weap);
@@ -93,11 +93,11 @@ extern void weapon_recoil_add(obj_type *obj,weapon_type *weap,d3ang *ang);
 extern void weapon_recoil(obj_type *obj,weapon_type *weap);
 
 extern void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *melee,int ignore_uid);
-extern bool melee_strike_position_weapon_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str);
-extern bool melee_strike_position_object_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str);
-extern bool melee_strike_position_projectile_model(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str);
-extern bool melee_script_spawn_weapon_model(int tick,obj_type *obj,weapon_type *weap,char *err_str);
-extern bool melee_script_spawn_object_model(int tick,obj_type *obj,weapon_type *weap,char *err_str);
-extern bool melee_script_spawn_projectile_model(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,char *err_str);
+extern bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str);
+extern bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str);
+extern bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str);
+extern bool melee_script_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *err_str);
+extern bool melee_script_spawn_object_model(obj_type *obj,weapon_type *weap,char *err_str);
+extern bool melee_script_spawn_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,char *err_str);
 
 

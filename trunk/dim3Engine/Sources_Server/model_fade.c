@@ -60,13 +60,16 @@ void model_fade_start(model_draw *draw,int fade_msec,float end_alpha)
 	fade->on=TRUE;
 }
 
-void model_fade_run(int tick,model_draw *draw)
+void model_fade_run(model_draw *draw)
 {
+	int					tick;
 	float				fct;
 	model_draw_fade		*fade;
 
 	fade=&draw->fade;
 	if (!fade->on) return;
+
+	tick=game_time_get();
 
 		// time up?
 
@@ -110,9 +113,9 @@ void model_mesh_fade_start(model_draw *draw,int mesh_idx,int fade_in_msec,int fa
 	mesh_fade->alpha=0.0f;
 }
 
-void model_mesh_fade_run(int tick,model_draw *draw)
+void model_mesh_fade_run(model_draw *draw)
 {
-	int						n,nmesh,curtick;
+	int						n,tick,nmesh,curtick;
 	model_type				*mdl;
 	model_draw_mesh_fade	*mesh_fade;
 
@@ -120,6 +123,8 @@ void model_mesh_fade_run(int tick,model_draw *draw)
 
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
+
+	tick=game_time_get();
 
 	nmesh=mdl->nmesh;
 	mesh_fade=draw->mesh_fades;

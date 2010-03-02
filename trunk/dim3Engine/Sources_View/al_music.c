@@ -303,7 +303,7 @@ void al_music_set_state(bool music_on)
       
 ======================================================= */
 
-bool al_music_fade_in(int tick,char *name,int msec,char *err_str)
+bool al_music_fade_in(char *name,int msec,char *err_str)
 {
 		// start music
 
@@ -319,7 +319,7 @@ bool al_music_fade_in(int tick,char *name,int msec,char *err_str)
 		// start fade in
 
 	audio_music_fade_mode=music_fade_mode_in;
-	audio_music_fade_start_tick=tick;
+	audio_music_fade_start_tick=game_time_get();
 	audio_music_fade_msec=msec;
 	
 	audio_music_original_volume=audio_global_music_volume;
@@ -328,7 +328,7 @@ bool al_music_fade_in(int tick,char *name,int msec,char *err_str)
 	return(TRUE);
 }
 
-void al_music_fade_out(int tick,int msec)
+void al_music_fade_out(int msec)
 {
 		// if no music playing, no fade out
 
@@ -348,18 +348,18 @@ void al_music_fade_out(int tick,int msec)
 		// start fade out
 
 	audio_music_fade_mode=music_fade_mode_out;
-	audio_music_fade_start_tick=tick;
+	audio_music_fade_start_tick=game_time_get();
 	audio_music_fade_msec=msec;
 	
 	audio_music_original_volume=audio_global_music_volume;
 }
 
-bool al_music_fade_out_fade_in(int tick,char *name,int fade_out_msec,int fade_in_msec,char *err_str)
+bool al_music_fade_out_fade_in(char *name,int fade_out_msec,int fade_in_msec,char *err_str)
 {
 		// if no fade out or no music playing, go directly to fade in
 
 	if ((fade_out_msec<=0) || (!audio_music_playing)) {
-		return(al_music_fade_in(tick,name,fade_in_msec,err_str));
+		return(al_music_fade_in(name,fade_in_msec,err_str));
 	}
 
 		// setup next music for fade in
@@ -369,7 +369,7 @@ bool al_music_fade_out_fade_in(int tick,char *name,int fade_out_msec,int fade_in
 
 		// start fade
 
-	al_music_fade_out(tick,fade_out_msec);
+	al_music_fade_out(fade_out_msec);
 
 	audio_music_fade_mode=music_fade_mode_out_fade_in;		// switch to fade out/fade in mode
 
@@ -414,7 +414,7 @@ void al_music_run(void)
 				break;
 
 			case music_fade_mode_out_fade_in:
-				al_music_fade_in(tick,audio_music_fade_next_name,audio_music_fade_next_msec,err_str);
+				al_music_fade_in(audio_music_fade_next_name,audio_music_fade_next_msec,err_str);
 				break;
 
 		}

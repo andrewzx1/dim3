@@ -582,7 +582,7 @@ void remote_projectile_add(network_request_remote_fire *proj_add)
 	ang.y=ntohf(proj_add->fp_ang_y);
 	ang.z=ntohf(proj_add->fp_ang_z);
 
-	weapon_add_projectile(game_time_get(),obj,weap,proj_setup,&pt,&ang);
+	weapon_add_projectile(obj,weap,proj_setup,&pt,&ang);
 }
 
 void remote_hit_scan_add(network_request_remote_fire *hitscan_add)
@@ -613,7 +613,7 @@ void remote_hit_scan_add(network_request_remote_fire *hitscan_add)
 	ang.y=ntohf(hitscan_add->fp_ang_y);
 	ang.z=ntohf(hitscan_add->fp_ang_z);
 	
-	projectile_hitscan(game_time_get(),obj,weap,proj_setup,&pt,&ang);
+	projectile_hitscan(obj,weap,proj_setup,&pt,&ang);
 }
 
 void remote_melee_add(network_request_remote_fire *rem_melee)

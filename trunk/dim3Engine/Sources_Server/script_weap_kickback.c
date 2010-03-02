@@ -116,7 +116,7 @@ JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 	
-	weapon_kickback(js.time.current_tick,obj,weap);
+	weapon_kickback(obj,weap);
 
 	return(script_null_to_value(cx));
 }

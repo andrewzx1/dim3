@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "scripts.h"
 #include "interfaces.h"
+#include "timing.h"
 
 extern js_type			js;
 
@@ -256,7 +257,7 @@ JSValueRef js_interface_text_start_fade_func(JSContextRef cx,JSObjectRef func,JS
 	if (text!=NULL) {
 		text->show=TRUE;
 		text->fade.on=TRUE;
-		text->fade.start_tick=js.time.current_tick;
+		text->fade.start_tick=game_time_get();
 	}
 
 	return(script_null_to_value(cx));
@@ -276,7 +277,7 @@ JSValueRef js_interface_text_set_text_and_fade_func(JSContextRef cx,JSObjectRef 
 		
 		text->show=TRUE;
 		text->fade.on=TRUE;
-		text->fade.start_tick=js.time.current_tick;
+		text->fade.start_tick=game_time_get();
 	}
 
 	return(script_null_to_value(cx));

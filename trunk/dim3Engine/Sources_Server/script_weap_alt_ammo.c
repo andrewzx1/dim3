@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 #include "weapons.h"
+#include "timing.h"
 
 extern js_type				js;
 
@@ -393,11 +394,11 @@ JSValueRef js_weap_alt_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JS
 		
 	if (weap->dual.in_dual) {
 		alt_ammo->count_dual=alt_ammo->max_count;
-		alt_ammo->last_reload_dual_tick=js.time.current_tick;
+		alt_ammo->last_reload_dual_tick=game_time_get();
 	}
 	else {
 		alt_ammo->count=alt_ammo->max_count;
-		alt_ammo->last_reload_tick=js.time.current_tick;
+		alt_ammo->last_reload_tick=game_time_get();
 	}
 	
 	alt_ammo->clip_count--;

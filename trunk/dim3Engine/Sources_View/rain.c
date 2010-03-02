@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "consoles.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type				map;
 extern view_type			view;
@@ -67,18 +68,18 @@ void rain_setup_single_reset(rain_draw_type *rain_draw,int cx,int cy,int cz)
 	rain_draw->by=cy+map.rain.height;
 }
 
-void rain_setup_next_slant(int tick)
+void rain_setup_next_slant(void)
 {
 	if (map.rain.slant_time_msec==0) return;
 	
 	rain_slant_next_add=random_int(map.rain.slant_add);
 	rain_slant_next_ang_y=random_float(360);
 
-	rain_slant_next_start_tick=tick+random_int(map.rain.slant_time_msec);
+	rain_slant_next_start_tick=game_time_get()+random_int(map.rain.slant_time_msec);
 	rain_slant_next_end_tick=rain_slant_next_start_tick+map.rain.slant_change_msec;
 }
 
-void rain_setup(int tick,int cx,int cy,int cz)
+void rain_setup(int cx,int cy,int cz)
 {
 	int				n;
 	rain_draw_type	*rain_draw;
@@ -90,12 +91,12 @@ void rain_setup(int tick,int cx,int cy,int cz)
 		rain_draw++;
 	}
 	
-	rain_last_tick=tick;
+	rain_last_tick=game_time_get();
 	
 	rain_slant_add=random_int(map.rain.slant_add);
 	rain_slant_ang_y=random_float(360);
 	
-	rain_setup_next_slant(tick);
+	rain_setup_next_slant();
 }
 
 /* =======================================================
@@ -104,9 +105,9 @@ void rain_setup(int tick,int cx,int cy,int cz)
       
 ======================================================= */
 
-void rain_draw(int tick)
+void rain_draw(void)
 {
-	int				n,xadd,yadd,zadd,density,
+	int				n,tick,xadd,yadd,zadd,density,
 					slant_add,slant_mult,slant_div;
 	float			slant_ang_y;
 	float			*vertex_ptr,*col_ptr;
@@ -121,10 +122,12 @@ void rain_draw(int tick)
 		
 	if (map.rain.reset) {
 		map.rain.reset=FALSE;
-		rain_setup(tick,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+		rain_setup(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
 	}
 	
 		// rain slant
+
+	tick=game_time_get();
 		
 	slant_add=rain_slant_add;
 	slant_ang_y=rain_slant_ang_y;
@@ -136,7 +139,7 @@ void rain_draw(int tick)
 		if (tick>rain_slant_next_end_tick) {
 			rain_slant_add=slant_add=rain_slant_next_add;
 			rain_slant_ang_y=slant_ang_y=rain_slant_next_ang_y;
-			rain_setup_next_slant(tick);
+			rain_setup_next_slant();
 		}
 		else {
 		

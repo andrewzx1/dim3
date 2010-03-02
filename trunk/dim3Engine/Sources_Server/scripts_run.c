@@ -48,7 +48,6 @@ void scripts_run(void)
 		// set internal script tick
 
 	tick=game_time_get();
-	js.time.current_tick=tick;
 	
 		// scripts run 10 times a second
 

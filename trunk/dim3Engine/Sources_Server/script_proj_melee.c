@@ -275,7 +275,7 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
     obj=object_find_uid(proj_setup->obj_uid);
 	weap=weapon_find_uid(proj_setup->weap_uid);
 
-	if (!melee_script_spawn_projectile_model(js.time.current_tick,obj,weap,proj_setup,proj,err_str)) {
+	if (!melee_script_spawn_projectile_model(obj,weap,proj_setup,proj,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 

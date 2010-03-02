@@ -326,7 +326,7 @@ JSValueRef js_spawn_lightning_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 	life_msec=script_value_to_int(cx,argv[11]);
 
-	script_bool_to_value(cx,effect_spawn_lightning(js.time.current_tick,&start_pt,&end_pt,wid,varient,&col,life_msec));
+	script_bool_to_value(cx,effect_spawn_lightning(&start_pt,&end_pt,wid,varient,&col,life_msec));
     
 	return(script_null_to_value(cx));
 }

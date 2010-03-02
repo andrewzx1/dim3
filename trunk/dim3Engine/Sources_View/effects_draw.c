@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "effects.h"
 #include "consoles.h"
 #include "video.h"
+#include "timing.h"
 
 float					line_zag[16]={1.0f,0.5f,0.8f,-0.2f,0.3f,-1.0f,-0.7f,0.1f,-0.4f,0.6f,-0.4f,0.5f,-0.6f,0.2f,-0.8f,-0.4f};
 
@@ -77,7 +78,7 @@ void effect_draw_lightning_lines(int nline,float varient,int k,int sx,int sz,int
 	glEnd();
 }
 
-void effect_draw_lightning(int tick,effect_type *effect)
+void effect_draw_lightning(effect_type *effect)
 {
 	int						k,nline,wid,x,z,y,
                             sx,sz,sy,ex,ez,ey,xadd,zadd,yadd;
@@ -115,7 +116,7 @@ void effect_draw_lightning(int tick,effect_type *effect)
 	
         // line varients
         
-	k=((tick>>5)+lightning->line_offset)&0xF;
+	k=((game_time_get()>>5)+lightning->line_offset)&0xF;
 	varient=lightning->varient;
 	
 		// line colors
@@ -313,9 +314,9 @@ void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *g
       
 ======================================================= */
 
-void effect_draw(int tick)
+void effect_draw(void)
 {
-	int				n,count;
+	int				n,tick,count;
 	effect_type		*effect;
 
 		// setup view
@@ -330,6 +331,8 @@ void effect_draw(int tick)
 		
 		// draw effects
 		// draw backwards to sort back to front
+
+	tick=game_time_get();
 
 	for (n=(view.render->draw_list.count-1);n>=0;n--) {
 		if (view.render->draw_list.items[n].type!=view_render_type_effect) continue;
@@ -349,7 +352,7 @@ void effect_draw(int tick)
 				break;
 				
 			case ef_lightning:
-				effect_draw_lightning(tick,effect);
+				effect_draw_lightning(effect);
 				break;
 				
 			case ef_ray:

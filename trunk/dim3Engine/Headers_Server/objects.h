@@ -147,7 +147,7 @@ extern void object_move_with_standing_object(obj_type *obj,int xmove,int zmove);
 extern void object_rotate_with_standing_object(obj_type *obj,float y);
 
 extern float object_liquid_alter_speed(obj_type *obj);
-extern void object_liquid(int tick,obj_type *obj);
+extern void object_liquid(obj_type *obj);
 
 extern void object_rigid_body_reset_angle(obj_type *obj);
 extern void object_fly_reset_angle(obj_type *obj);

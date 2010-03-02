@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "inputs.h"
+#include "timing.h"
 
 extern hud_type				hud;
 extern setup_type			setup;

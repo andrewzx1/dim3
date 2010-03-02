@@ -136,7 +136,7 @@ void map_music_start(map_music_type *music)
 		ok=al_music_play(music->name,err_str);
 	}
 	else {
-		ok=al_music_fade_in(server.time.run_tick,music->name,music->fade_msec,err_str);
+		ok=al_music_fade_in(music->name,music->fade_msec,err_str);
 	}
 	
 		// report any errors

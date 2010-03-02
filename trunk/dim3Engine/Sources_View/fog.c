@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "consoles.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -43,9 +44,9 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void fog_draw_textured(int tick)
+void fog_draw_textured(void)
 {
-	int					n,k,count,outer_radius,inner_radius,
+	int					n,k,tick,count,outer_radius,inner_radius,
 						radius_add,radius,frame;
 	unsigned long		gl_id;
 	float				r_ang,r_ang_2,r_add,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
@@ -85,6 +86,8 @@ void fog_draw_textured(int tick)
 	uv_ptr=vertex_ptr+(((8*4)*count)*3);
 
 		// get drawing setup
+
+	tick=game_time_get();
 
 	txt_x_off=((float)(tick>>7))*map.fog.speed;
 	txt_x_turn=(map.fog.txt_x_fact*(view.render->camera.ang.y/360.0f));			// change texture offset with camera rotation

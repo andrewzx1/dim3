@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "interfaces.h"
+#include "timing.h"
 
 extern js_type			js;
 
@@ -98,7 +99,7 @@ JSValueRef js_interface_bitmap_show_func(JSContextRef cx,JSObjectRef func,JSObje
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
 		bitmap->show=TRUE;
-		bitmap->show_tick=js.time.current_tick;		// use to synch animations with shows
+		bitmap->show_tick=game_time_get();		// use to synch animations with shows
 	}
 
 	return(script_null_to_value(cx));
@@ -227,7 +228,7 @@ JSValueRef js_interface_bitmap_start_fade_func(JSContextRef cx,JSObjectRef func,
 	if (bitmap!=NULL) {
 		bitmap->show=TRUE;
 		bitmap->fade.on=TRUE;
-		bitmap->fade.start_tick=js.time.current_tick;
+		bitmap->fade.start_tick=game_time_get();
 	}
 
 	return(script_null_to_value(cx));

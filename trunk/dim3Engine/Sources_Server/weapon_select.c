@@ -542,7 +542,7 @@ void weapon_zoom_key(obj_type *obj,weapon_type *weap)
       
 ======================================================= */
 
-void weapon_run_hand(obj_type *obj,int tick)
+void weapon_run_hand(obj_type *obj)
 {
     int					weap_mode,swap_tick;
 	weapon_type			*weap;
@@ -553,13 +553,13 @@ void weapon_run_hand(obj_type *obj,int tick)
         // model animations
        
 	model_run_animation(&weap->draw);
-	model_fade_run(tick,&weap->draw);
-	model_mesh_fade_run(tick,&weap->draw);
+	model_fade_run(&weap->draw);
+	model_mesh_fade_run(&weap->draw);
 
 	if ((weap->dual.on) && (weap->dual.active)) {
 		model_run_animation(&weap->draw_dual);
-		model_fade_run(tick,&weap->draw_dual);
-		model_mesh_fade_run(tick,&weap->draw_dual);
+		model_fade_run(&weap->draw_dual);
+		model_mesh_fade_run(&weap->draw_dual);
 	}
 
 		// recoil changes
@@ -569,7 +569,7 @@ void weapon_run_hand(obj_type *obj,int tick)
         // raising or lowering models
 	
 	weap_mode=obj->held_weapon.mode;
-    swap_tick=tick-obj->held_weapon.swap_tick;
+    swap_tick=game_time_get()-obj->held_weapon.swap_tick;
         
     if (weap_mode==wm_lower) {
         if (swap_tick>weap->hand.lower_tick) {

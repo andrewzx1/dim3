@@ -299,7 +299,7 @@ JSValueRef js_weap_melee_spawn_from_weapon_bone_func(JSContextRef cx,JSObjectRef
 	weap=weapon_find_uid(js.attach.thing_uid);
     obj=object_find_uid(weap->obj_uid);
 
-	if (!melee_script_spawn_weapon_model(js.time.current_tick,obj,weap,err_str)) {
+	if (!melee_script_spawn_weapon_model(obj,weap,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 
@@ -317,7 +317,7 @@ JSValueRef js_weap_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef
 	weap=weapon_find_uid(js.attach.thing_uid);
     obj=object_find_uid(weap->obj_uid);
 
-	if (!melee_script_spawn_object_model(js.time.current_tick,obj,weap,err_str)) {
+	if (!melee_script_spawn_object_model(obj,weap,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 

@@ -35,6 +35,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "interfaces.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type				map;
 extern camera_type			camera;
@@ -48,7 +49,7 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
+void zoom_setup(obj_type *obj,weapon_type *weap)
 {
 	int					tx,ty,old_x,old_y;
 	obj_zoom_draw		*zoom_draw;
@@ -73,11 +74,11 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 	
 		// iron sites effect masking
 				
-	if (tick<(zoom_draw->start_tick+weap->zoom.tick)) return;
+	if (game_time_get()<(zoom_draw->start_tick+weap->zoom.tick)) return;
 		
 		// get the zoom place
 		
-	if (!crosshair_get_location(tick,obj,weap,&tx,&ty,NULL,NULL)) return;
+	if (!crosshair_get_location(obj,weap,&tx,&ty,NULL,NULL)) return;
 	
 	zoom_draw->on=TRUE;
 	
