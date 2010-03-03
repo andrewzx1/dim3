@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-#define normal_min_size_auto_out			350000
+#define normal_min_size_auto_out			1000
 
 #define calc_normal_dir_neg_x				0
 #define calc_normal_dir_pos_x				1
@@ -46,9 +46,17 @@ and can be sold or given away.
 
 int map_recalc_normals_get_auto_mode(map_mesh_type *mesh)
 {
-	if ((mesh->box.max.x-mesh->box.min.x)<normal_min_size_auto_out) return(mesh_normal_mode_out);
-	if ((mesh->box.max.y-mesh->box.min.y)<normal_min_size_auto_out) return(mesh_normal_mode_out);
-	if ((mesh->box.max.z-mesh->box.min.z)<normal_min_size_auto_out) return(mesh_normal_mode_out);
+	double			dx,dy,dz;
+	
+		// find square footage
+		
+	dx=(double)(mesh->box.max.x-mesh->box.min.x)/1000.0;
+	dy=(double)(mesh->box.max.y-mesh->box.min.y)/1000.0;
+	dz=(double)(mesh->box.max.z-mesh->box.min.z)/1000.0;
+	
+		// compare square footage
+		
+	if ((dx*dy*dz)<normal_min_size_auto_out) return(mesh_normal_mode_out);
 
 	return(mesh_normal_mode_in);
 }
@@ -196,8 +204,7 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 	int					n,mode;
 	float				u10,u20,v10,v20,f_denom;
 	bool				is_out,invert;
-	d3vct				p10,p20,vlft,vrgt,v_num,
-						dvct;
+	d3vct				p10,p20,vlft,vrgt,v_num;
 	d3pnt				*pt,*pt_1,*pt_2;
 	map_mesh_poly_type	*poly;
 	
@@ -287,15 +294,11 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 		
 		is_out=FALSE;
 		
-		dvct.x=(float)fabs(poly->box.mid.x-mesh->box.mid.x);
-		dvct.y=(float)fabs(poly->box.mid.y-mesh->box.mid.y);
-		dvct.z=(float)fabs(poly->box.mid.z-mesh->box.mid.z);
-		
-		if ((dvct.y>dvct.x) && (dvct.y>dvct.z)) {
+		if ((fabs(poly->tangent_space.normal.y)>fabs(poly->tangent_space.normal.x)) && (fabs(poly->tangent_space.normal.y)>fabs(poly->tangent_space.normal.z))) {
 			is_out=map_recalc_normals_compare_sign((float)(poly->box.mid.y-mesh->box.mid.y),poly->tangent_space.normal.y);
 		}
 		else {
-			if (dvct.x>dvct.z) {
+			if (fabs(poly->tangent_space.normal.x)>fabs(poly->tangent_space.normal.z)) {
 				is_out=map_recalc_normals_compare_sign((float)(poly->box.mid.x-mesh->box.mid.x),poly->tangent_space.normal.x);
 			}
 			else {

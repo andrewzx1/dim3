@@ -33,16 +33,7 @@ and can be sold or given away.
 #include "video.h"
 #include "timing.h"
 
-/* supergumba
-typedef struct		{
-						int						start_tick,
-												fade_in_tick,life_tick,fade_out_tick;
-						float					alpha;
-						bool					on;
-						d3col					col;
-					} hud_tint_type;
-*/
-int							tint_start_tick;
+int							tint_start_tick,
 							tint_fade_in_tick,
 							tint_life_tick,
 							tint_fade_out_tick;

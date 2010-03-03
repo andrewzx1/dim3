@@ -94,7 +94,7 @@ void info_status_line_mesh(char *txt,int mesh_idx,int poly_idx)
 		poly=&mesh->polys[poly_idx];
 		map_prepare_mesh_poly(mesh,poly);
 		
-		sprintf(txt,"Poly: %d/%d (%d,%d,%d) ",mesh_idx,poly_idx,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+		sprintf(txt,"Poly: %d/%d (%d,%d,%d) ",mesh_idx,poly_idx,(poly->box.max.x-poly->box.min.x),(poly->box.max.y-poly->box.min.y),(poly->box.max.z-poly->box.min.z));
 		
 		if (poly->box.wall_like) {
 			strcat(txt,"W");
@@ -111,7 +111,7 @@ void info_status_line_mesh(char *txt,int mesh_idx,int poly_idx)
 		
 	map_prepare_mesh_box(mesh);
 		
-	sprintf(txt,"Mesh: %d (%d,%d,%d)-(%d,%d,%d) (%d,%d,%d) ",mesh_idx,mesh->box.min.x,mesh->box.min.y,mesh->box.min.z,mesh->box.max.x,mesh->box.max.y,mesh->box.max.z,mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z);
+	sprintf(txt,"Mesh: %d (%d,%d,%d)-(%d,%d,%d) (%d,%d,%d) ",mesh_idx,mesh->box.min.x,mesh->box.min.y,mesh->box.min.z,mesh->box.max.x,mesh->box.max.y,mesh->box.max.z,(mesh->box.max.x-mesh->box.min.x),(mesh->box.max.y-mesh->box.min.y),(mesh->box.max.z-mesh->box.min.z));
 }
 
 /* =======================================================
