@@ -67,54 +67,8 @@ and can be sold or given away.
 // auto-generate ceiling types
 //
 
-#define ag_ceiling_type_count						7
-
 #define ag_ceiling_type_closed						0
 #define ag_ceiling_type_open						1
-#define ag_ceiling_type_cross						2
-#define ag_ceiling_type_a_frame_horz_bar			3
-#define ag_ceiling_type_a_frame_vert_bar			4
-#define ag_ceiling_type_horz_bar					5
-#define ag_ceiling_type_vert_bar					6
-
-#define ag_ceiling_outer_ring						0
-#define ag_ceiling_top_left							1
-#define ag_ceiling_top_middle						2
-#define ag_ceiling_top_right						3
-#define ag_ceiling_middle_left						4
-#define ag_ceiling_middle_middle					5
-#define ag_ceiling_middle_right						6
-#define ag_ceiling_bottom_left						7
-#define ag_ceiling_bottom_middle					8
-#define ag_ceiling_bottom_right						9
-#define ag_ceiling_slant							10
-
-#define ag_ceiling_wall_outer_ring					0
-#define ag_ceiling_wall_horizontal					1
-#define ag_ceiling_wall_vertical					2
-#define ag_ceiling_wall_slant						3
-#define ag_ceiling_central_pillar					4
-#define ag_ceiling_corner_pillars					5
-
-#define ag_ceiling_data_bytes						{ \
-													 {1,1,1,1,1,1,1,1,1,1,0}, \
-													 {1,0,0,0,0,0,0,0,0,0,0}, \
-													 {1,0,1,0,1,1,1,0,1,0,0}, \
-													 {1,0,0,0,1,1,1,0,0,0,1}, \
-													 {1,0,1,0,0,1,0,0,1,0,1}, \
-													 {1,0,0,0,1,1,1,0,0,0,0}, \
-													 {1,0,1,0,0,1,0,0,1,0,0} \
-													}
-
-#define ag_ceiling_wall_data_bytes					{ \
-													 {0,0,0,0,0,0}, \
-													 {1,0,0,0,0,0}, \
-													 {1,1,1,0,1,0}, \
-													 {0,1,0,1,0,1}, \
-													 {0,0,1,1,0,1}, \
-													 {1,1,0,0,1,0}, \
-													 {1,0,1,0,1,0} \
-													}
 
 //
 // auto-generate stair types
@@ -274,7 +228,7 @@ and can be sold or given away.
 #define ag_constant_portal_split_factor_percent				0.1f
 
 #define ag_constant_portal_high_extra_top					0.75f
-#define ag_constant_portal_high_extra_bottom				0.65f
+#define ag_constant_portal_high_extra_bottom				0.50f
 #define ag_constant_portal_high_slop_y						0.10f
 #define ag_constant_portal_rough_floor_percent				0.025f
 #define ag_constant_portal_ceiling_slant_percent			0.40f

@@ -79,9 +79,6 @@ extern void map_auto_generate_second_story(map_type *map);
 
 int									ag_box_count;
 
-unsigned char						ag_ceiling_data[ag_ceiling_type_count][11]=ag_ceiling_data_bytes,
-									ag_ceiling_wall_data[ag_ceiling_type_count][6]=ag_ceiling_wall_data_bytes;
-
 auto_generate_settings_type			ag_settings;
 auto_generate_box_type				ag_boxes[max_ag_box];
 
@@ -175,6 +172,7 @@ void map_auto_generate_initial_portals(map_type *map)
 		
 		ag_boxes[ag_box_count].corridor_flag=ag_corridor_flag_portal;
 		ag_boxes[ag_box_count].mesh_idx=map_mesh_add(map);
+		map->mesh.meshes[ag_boxes[ag_box_count].mesh_idx].normal_mode=mesh_normal_mode_in;
 
 		ag_box_count++;
 	}
@@ -470,6 +468,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			ag_boxes[ag_box_count].corridor_flag=ag_corridor_flag_horizontal;
 			
 			ag_boxes[ag_box_count].mesh_idx=map_mesh_add(map);
+			map->mesh.meshes[ag_boxes[ag_box_count].mesh_idx].normal_mode=mesh_normal_mode_in;
 
 			ag_boxes[ag_box_count].corridor_connect_box_idx[0]=n;
 			ag_boxes[ag_box_count].corridor_connect_box_idx[1]=k;
@@ -558,6 +557,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			ag_boxes[ag_box_count].corridor_flag=ag_corridor_flag_vertical;
 
 			ag_boxes[ag_box_count].mesh_idx=map_mesh_add(map);
+			map->mesh.meshes[ag_boxes[ag_box_count].mesh_idx].normal_mode=mesh_normal_mode_in;
 
 			ag_boxes[ag_box_count].corridor_connect_box_idx[0]=n;
 			ag_boxes[ag_box_count].corridor_connect_box_idx[1]=k;
@@ -581,7 +581,7 @@ void map_auto_generate_connect_portals(map_type *map)
 void map_auto_generate_portal_y(void)
 {
 	int							n,by_add,portal_high,portal_high_story_add,
-								corridor_high,y,y2,ty,by,extra_ty,extra_by,portal_sz;
+								corridor_high,y,y2,ty,by,ss_ty,extra_ty,extra_by,portal_sz;
 	auto_generate_box_type		*portal;
 	
 		// portal sizes
@@ -598,6 +598,10 @@ void map_auto_generate_portal_y(void)
 	extra_ty=(int)(((float)portal_high)*ag_constant_portal_high_extra_top);
 	extra_by=(int)(((float)portal_high)*ag_constant_portal_high_extra_bottom);
 
+		// all second story portals have same height
+
+	ss_ty=ty-(map_auto_generate_random_int(extra_ty)+portal_high_story_add);
+
 		// run through portals
 
 	portal=ag_boxes;
@@ -607,13 +611,14 @@ void map_auto_generate_portal_y(void)
 			// room portals
 
 		if (portal->corridor_flag==ag_corridor_flag_portal) {
-		
-			portal->min.y=ty-map_auto_generate_random_int(extra_ty);
 
 				// touching rooms get second stories
 				
 			if ((map_auto_generate_portal_touching_any(n)) && (ag_settings.second_story)) {
-				portal->min.y-=portal_high_story_add;
+				portal->min.y=ss_ty;
+			}
+			else {
+				portal->min.y=ty-map_auto_generate_random_int(extra_ty);
 			}
 			
 			by_add=map_auto_generate_random_int(extra_by);
@@ -1173,6 +1178,7 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 
 bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int rx,int rz,int lx2,int lz2,int rx2,int rz2)
 {
+	/*
 	int			k,portal_sz,split_factor,mx,mz;
 
 		// in outer ring?
@@ -1201,7 +1207,7 @@ bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int r
 	if ((rx2<=mx) && (lz2>mz)) return(data[ag_ceiling_bottom_left]!=0);
 	if ((lx2==mx) && (lz2>mz)) return(data[ag_ceiling_bottom_middle]!=0);
 	if ((lx2>mx) && (lz2>mz)) return(data[ag_ceiling_bottom_right]!=0);
-
+*/
 	return(FALSE);
 }
 
@@ -1221,7 +1227,40 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
 	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	wall_sz=(int)((float)(portal->max.y-portal->min.y)*ag_constant_portal_ceiling_slant_percent);
+
+		// ceilings are part of room
+
+	map_auto_generate_mesh_set_portal_mesh(rn);
+
+		// create the outer ring ceiling
 	
+	map_auto_generate_poly_from_square_floor(lx,lz,(lx+split_factor),rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor((rx-split_factor),lz,rx,rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor(lx,lz,rx,(lz+split_factor),ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor(lx,(rz-split_factor),rx,rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,4,px,py,pz,gx,gy);
+
+		// create the outer ring walls
+
+	map_auto_generate_poly_from_square_wall((lx+split_factor),(lz+split_factor),(lx+split_factor),(rz-split_factor),(portal->min.y-wall_sz),portal->min.y,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall((rx-split_factor),(lz+split_factor),(rx-split_factor),(rz-split_factor),(portal->min.y-wall_sz),portal->min.y,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall((lx+split_factor),(lz+split_factor),(rx-split_factor),(lz+split_factor),(portal->min.y-wall_sz),portal->min.y,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall((lx+split_factor),(rz-split_factor),(rx-split_factor),(rz-split_factor),(portal->min.y-wall_sz),portal->min.y,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,4,px,py,pz,gx,gy);
+
+	/*
 		// create ceiling polys
 
 	data=(unsigned char*)ag_ceiling_data[ag_settings.ceiling_type];
@@ -1298,6 +1337,9 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 	if (data[ag_ceiling_wall_horizontal]!=0) {
 
+		//		if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
+
+
 		map_auto_generate_mesh_set_portal_mesh(rn);
 
 		k=((rz-lz)>>1)/split_factor;
@@ -1353,6 +1395,7 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 		map_auto_generate_poly_from_top_trig_wall(mx,(rz-split_factor),(rx-split_factor),(rz-split_factor),(ty-wall_sz),ty,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling,3,px,py,pz,gx,gy);
 	}
+	*/
 }
 
 void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
@@ -1703,6 +1746,10 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 		// center map
 		
 	map_center(map);
+
+		// calculate the normals
+
+	map_recalc_normals(map,FALSE);
 }
 
 /* =======================================================
@@ -1760,7 +1807,7 @@ bool map_auto_generate_test(map_type *map)
 	ags.window=TRUE;
 	ags.frame=TRUE;
 
-	ags.ceiling_type=ag_ceiling_type_cross;
+	ags.ceiling_type=ag_ceiling_type_open;
 	ags.corridor_type=ag_corridor_type_octagon;
 	ags.door_type=ag_door_type_split;
 	ags.stair_type=ag_stair_type_stair;
