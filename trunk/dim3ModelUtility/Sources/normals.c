@@ -280,11 +280,11 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		
 			vertex=&mesh->vertexes[trig->v[k]];
 			
-			if ((trig->tangent_space[k].normal.y>trig->tangent_space[k].normal.x) && (trig->tangent_space[k].normal.y>trig->tangent_space[k].normal.z)) {
+			if ((fabs(trig->tangent_space[k].normal.y)>fabs(trig->tangent_space[k].normal.x)) && (fabs(trig->tangent_space[k].normal.y)>fabs(trig->tangent_space[k].normal.z))) {
 				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.y-v_center.y),trig->tangent_space[k].normal.y);
 			}
 			else {
-				if (trig->tangent_space[k].normal.x>trig->tangent_space[k].normal.z) {
+				if (fabs(trig->tangent_space[k].normal.x)>fabs(trig->tangent_space[k].normal.z)) {
 					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.x-v_center.x),trig->tangent_space[k].normal.x);
 				}
 				else {
