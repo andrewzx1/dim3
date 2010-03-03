@@ -509,6 +509,11 @@ bool map_auto_generate_mesh_start(map_type *map,int group_idx,bool moveable)
 	mesh->group_idx=group_idx;
 	mesh->flag.moveable=moveable;
 
+		// consider everything created through
+		// this routine to have out-facing normals
+
+	mesh->normal_mode=mesh_normal_mode_out;
+
 	return(TRUE);
 }
 
