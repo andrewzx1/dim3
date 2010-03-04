@@ -190,6 +190,130 @@ void map_auto_generate_second_story_pillar(map_type *map,int rn,int lx,int lz,in
 
 /* =======================================================
 
+      Second Story Railings
+      
+======================================================= */
+
+void map_auto_generate_railings_support(map_type *map,int rn,int x,int z,int by)
+{
+	int							ty,px[8],py[8],pz[8];
+	float						gx[8],gy[8];
+
+	ty=by-ag_constant_rail_high;
+
+	map_auto_generate_poly_from_square_wall(x,z,x,(z+ag_constant_rail_size),ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall((x+ag_constant_rail_size),z,(x+ag_constant_rail_size),(z+ag_constant_rail_size),ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(x,z,(x+ag_constant_rail_size),z,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(x,(z+ag_constant_rail_size),(x+ag_constant_rail_size),(z+ag_constant_rail_size),ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+}
+
+void map_auto_generate_railings_bar(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
+{
+	int							ty,px[8],py[8],pz[8];
+	float						gx[8],gy[8];
+
+	by-=ag_constant_rail_high;
+	ty=by-ag_constant_rail_size;
+
+	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.rails,4,px,py,pz,gx,gy);
+}
+
+void map_auto_generate_railings(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
+{
+	int							x,z,sz,m_lx,m_rx,m_lz,m_rz;
+
+	if (!ag_settings.rails) return;
+
+		// inside edges of supports
+
+	sz=ag_constant_step_story_size+(ag_constant_step_side_wid*2)+ag_constant_rail_size;
+
+	m_lx=m_rx=(lx+rx)>>1;
+	m_lx-=sz;
+	m_rx+=sz;
+
+	m_lz=m_rz=(lz+rz)>>1;
+	m_lz-=sz;
+	m_rz+=sz;
+
+		// top z rails
+
+	z=lz-(ag_constant_rail_size*2);
+
+	map_auto_generate_railings_support(map,rn,(lx+sz),z,by);
+	map_auto_generate_railings_support(map,rn,(m_lx-(ag_constant_rail_size*2)),z,by);
+
+	map_auto_generate_railings_support(map,rn,(m_rx+ag_constant_rail_size),z,by);
+	map_auto_generate_railings_support(map,rn,(rx-(sz+ag_constant_rail_size)),z,by);
+
+	map_auto_generate_railings_bar(map,rn,((lx+sz)-ag_constant_rail_size),z,m_lx,(z+ag_constant_rail_size),by);
+	map_auto_generate_railings_bar(map,rn,(m_rx-ag_constant_rail_size),z,((rx-sz)+ag_constant_rail_size),(z+ag_constant_rail_size),by);
+
+		// bottom z rails
+
+	z=rz+ag_constant_rail_size;
+
+	map_auto_generate_railings_support(map,rn,(lx+sz),z,by);
+	map_auto_generate_railings_support(map,rn,(m_lx-(ag_constant_rail_size*2)),z,by);
+
+	map_auto_generate_railings_support(map,rn,(m_rx+ag_constant_rail_size),z,by);
+	map_auto_generate_railings_support(map,rn,(rx-(sz+ag_constant_rail_size)),z,by);
+
+	map_auto_generate_railings_bar(map,rn,((lx+sz)-ag_constant_rail_size),z,m_lx,(z+ag_constant_rail_size),by);
+	map_auto_generate_railings_bar(map,rn,(m_rx-ag_constant_rail_size),z,((rx-sz)+ag_constant_rail_size),(z+ag_constant_rail_size),by);
+
+		// left x rails
+
+	x=lx-(ag_constant_rail_size*2);
+
+	map_auto_generate_railings_support(map,rn,x,(lz+sz),by);
+	map_auto_generate_railings_support(map,rn,x,(m_lz-(ag_constant_rail_size*2)),by);
+
+	map_auto_generate_railings_support(map,rn,x,(m_rz+ag_constant_rail_size),by);
+	map_auto_generate_railings_support(map,rn,x,(rz-(sz+ag_constant_rail_size)),by);
+
+	map_auto_generate_railings_bar(map,rn,x,((lz+sz)-ag_constant_rail_size),(x+ag_constant_rail_size),m_lz,by);
+	map_auto_generate_railings_bar(map,rn,x,(m_rz-ag_constant_rail_size),(x+ag_constant_rail_size),((rz-sz)+ag_constant_rail_size),by);
+
+		// right x rails
+
+	x=rx+(ag_constant_rail_size*2);
+
+	map_auto_generate_railings_support(map,rn,x,(lz+sz),by);
+	map_auto_generate_railings_support(map,rn,x,(m_lz-(ag_constant_rail_size*2)),by);
+
+	map_auto_generate_railings_support(map,rn,x,(m_rz+ag_constant_rail_size),by);
+	map_auto_generate_railings_support(map,rn,x,(rz-(sz+ag_constant_rail_size)),by);
+
+	map_auto_generate_railings_bar(map,rn,x,((lz+sz)-ag_constant_rail_size),(x+ag_constant_rail_size),m_lz,by);
+	map_auto_generate_railings_bar(map,rn,x,(m_rz-ag_constant_rail_size),(x+ag_constant_rail_size),((rz-sz)+ag_constant_rail_size),by);
+}
+
+/* =======================================================
+
       Second Story Generate
       
 ======================================================= */
@@ -296,6 +420,10 @@ void map_auto_generate_second_story(map_type *map)
 
 		map_auto_generate_poly_from_square_wall((xsz-sz),sz,(xsz-sz),(zsz-sz),ty,by,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.second_story,4,px,py,pz,gx,gy);
+
+			// railings
+
+		map_auto_generate_railings(map,n,sz,sz,(xsz-sz),(zsz-sz),ty);
 
 			// position steps so they follow the longest
 			// part of the portal and randonly against an edge
