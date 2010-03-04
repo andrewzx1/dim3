@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 extern int map_auto_generate_random_int(int max);
+extern bool map_auto_generate_second_story_exist(int rn);
 
 extern int								ag_box_count;
 
@@ -126,9 +127,19 @@ void map_auto_generate_nodes_add(map_type *map,int x,int y,int z)
 
 void map_auto_generate_nodes(map_type *map)
 {
-	int						n,x,y,z,x_sz,z_sz;
+	int						n,x,y,z,x_sz,z_sz,
+							portal_sz,portal_high,split_factor,ss_ty;
 	auto_generate_box_type	*portal;
-	
+
+		// some factors
+
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	portal_high=(int)(((float)portal_sz)*ag_constant_portal_high_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
+	ss_ty=(map_max_size>>1)-((portal_high>>1)+ag_constant_step_story_size);
+
+		// create the nodes
+
 	portal=ag_boxes;
 	
 	for (n=0;n!=ag_box_count;n++) {
@@ -143,9 +154,12 @@ void map_auto_generate_nodes(map_type *map)
 			map_auto_generate_nodes_add(map,x,y,z);
 		}
 
-			// rooms get 4 nodes
+			// rooms get multiple nodes
 
 		else {
+
+				// first story nodes
+
 			x_sz=(portal->max.x-portal->min.x)>>2;
 			z_sz=(portal->max.z-portal->min.z)>>2;
 
@@ -155,6 +169,28 @@ void map_auto_generate_nodes(map_type *map)
 			map_auto_generate_nodes_add(map,(portal->max.x-x_sz),y,(portal->min.z+z_sz));
 			map_auto_generate_nodes_add(map,(portal->min.x+x_sz),y,(portal->max.z-z_sz));
 			map_auto_generate_nodes_add(map,(portal->max.x-x_sz),y,(portal->max.z-z_sz));
+
+				// second story nodes
+
+			if ((ag_settings.second_story) && (map_auto_generate_second_story_exist(n))) {
+
+				map_auto_generate_nodes_add(map,(portal->min.x+split_factor),ss_ty,(portal->min.z+split_factor));
+				map_auto_generate_nodes_add(map,((portal->min.x+portal->max.x)>>1),ss_ty,(portal->min.z+split_factor));
+				map_auto_generate_nodes_add(map,(portal->max.x-split_factor),ss_ty,(portal->min.z+split_factor));
+
+				map_auto_generate_nodes_add(map,(portal->min.x+split_factor),ss_ty,(portal->max.z-split_factor));
+				map_auto_generate_nodes_add(map,((portal->min.x+portal->max.x)>>1),ss_ty,(portal->max.z-split_factor));
+				map_auto_generate_nodes_add(map,(portal->max.x-split_factor),ss_ty,(portal->max.z-split_factor));
+
+				map_auto_generate_nodes_add(map,(portal->min.x+split_factor),ss_ty,(portal->min.z+split_factor));
+				map_auto_generate_nodes_add(map,(portal->min.x+split_factor),ss_ty,((portal->min.z+portal->max.z)>>1));
+				map_auto_generate_nodes_add(map,(portal->min.x+split_factor),ss_ty,(portal->max.z-split_factor));
+
+				map_auto_generate_nodes_add(map,(portal->max.x-split_factor),ss_ty,(portal->min.z+split_factor));
+				map_auto_generate_nodes_add(map,(portal->max.x-split_factor),ss_ty,((portal->min.z+portal->max.z)>>1));
+				map_auto_generate_nodes_add(map,(portal->max.x-split_factor),ss_ty,(portal->max.z-split_factor));
+
+			}
 		}
 
 		portal++;

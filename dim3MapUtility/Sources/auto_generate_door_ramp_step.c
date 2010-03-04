@@ -914,15 +914,60 @@ int map_auto_generate_doors_vertical(map_type *map,int rn,int z,int lx,int rx,in
 	return(group_idx);
 }
 
+void map_auto_generate_door_create_movement(map_type *map,int rn,char *name,int group_idx,int reverse_group_idx)
+{
+	int						movement_idx,move_idx;
+	movement_type			*movement;
+	movement_move_type		*move;
+	auto_generate_box_type	*portal;
+	
+	portal=&ag_boxes[rn];
+
+			// create the movement
+		
+	movement_idx=map_movement_add(map);
+	movement=&map->movements[movement_idx];
+	
+	strcpy(movement->name,name);
+	movement->group_idx=group_idx;
+	if (reverse_group_idx!=-1) movement->reverse_group_idx=reverse_group_idx;
+	movement->auto_open=TRUE;
+	movement->auto_open_distance=20000;
+		
+	move_idx=map_movement_move_add(map,movement_idx);
+	move=&movement->moves[move_idx];
+	
+	switch (ag_settings.door_type) {
+
+		case ag_door_type_slide:
+			move->mov.y=-(portal->max.y-portal->min.y)-(map_enlarge>>1);
+			break;
+
+		case ag_door_type_split:
+			if (portal->corridor_flag==ag_corridor_flag_horizontal) {
+				move->mov.z=-((portal->max.z-portal->min.z)>>1)-(map_enlarge>>1);
+			}
+			else {
+				move->mov.x=-((portal->max.x-portal->min.x)>>1)-(map_enlarge>>1);
+			}
+			break;
+
+		case ag_door_type_swing:
+			move->rot.y=90.0f;
+			break;
+
+	}
+
+	move->msec=ag_constant_door_open_millisec;
+	strcpy(move->sound_name,ag_settings.sound.door);
+}
+
 void map_auto_generate_doors(map_type *map)
 {
 	int						n,x,z,xsz,zsz,ty,by,x_rot_off,z_rot_off,
-							door_cnt,group_idx,reverse_group_idx,
-							movement_idx,move_idx;
+							door_cnt,group_idx,reverse_group_idx;
 	char					name[name_str_len];
 	auto_generate_box_type	*portal;
-	movement_type			*movement;
-	movement_move_type		*move;
 	
 	if (ag_settings.door_type==ag_door_type_none) return;
 	
@@ -937,10 +982,6 @@ void map_auto_generate_doors(map_type *map)
 			// is this a corridor?
 			
 		if (portal->corridor_flag==ag_corridor_flag_portal) continue;
-			
-			// percentage correct?
-				
-		if (map_auto_generate_random_int(100)>(int)(ag_constant_door_percentage*100.0f)) continue;
 		
 			// enough groups and movements?
 			
@@ -969,12 +1010,14 @@ void map_auto_generate_doors(map_type *map)
 			switch (ag_settings.door_type) {
 				case ag_door_type_slide:
 					group_idx=map_auto_generate_doors_horizontal(map,n,x,0,zsz,0,ty,by,name,NULL);
+					map_auto_generate_door_create_movement(map,n,name,group_idx,-1);
 					break;
 				case ag_door_type_split:
 				case ag_door_type_swing:
 					z_rot_off=zsz/6;
 					group_idx=map_auto_generate_doors_horizontal(map,n,x,0,(zsz>>1),-z_rot_off,ty,by,name,"_1");
 					reverse_group_idx=map_auto_generate_doors_horizontal(map,n,x,(zsz>>1),zsz,z_rot_off,ty,by,name,"_2");
+					map_auto_generate_door_create_movement(map,n,name,group_idx,reverse_group_idx);
 					break;
 			}
 
@@ -985,55 +1028,17 @@ void map_auto_generate_doors(map_type *map)
 			switch (ag_settings.door_type) {
 				case ag_door_type_slide:
 					group_idx=map_auto_generate_doors_vertical(map,n,z,0,xsz,0,ty,by,name,NULL);
+					map_auto_generate_door_create_movement(map,n,name,group_idx,-1);
 					break;
 				case ag_door_type_split:
 				case ag_door_type_swing:
 					x_rot_off=xsz/6;
 					group_idx=map_auto_generate_doors_vertical(map,n,z,0,(xsz>>1),-x_rot_off,ty,by,name,"_1");
 					reverse_group_idx=map_auto_generate_doors_vertical(map,n,z,(xsz>>1),xsz,x_rot_off,ty,by,name,"_2");
+					map_auto_generate_door_create_movement(map,n,name,group_idx,reverse_group_idx);
 					break;
 			}
 		}
-
-		if (group_idx==-1) return;
-		
-			// create the movement
-			
-		movement_idx=map_movement_add(map);
-		movement=&map->movements[movement_idx];
-		
-		strcpy(movement->name,name);
-		movement->group_idx=group_idx;
-		if (reverse_group_idx!=-1) movement->reverse_group_idx=reverse_group_idx;
-		movement->auto_open=TRUE;
-		movement->auto_open_distance=20000;
-			
-		move_idx=map_movement_move_add(map,movement_idx);
-		move=&movement->moves[move_idx];
-		
-		switch (ag_settings.door_type) {
-
-			case ag_door_type_slide:
-				move->mov.y=-(portal->max.y-portal->min.y)-(map_enlarge>>1);
-				break;
-
-			case ag_door_type_split:
-				if (portal->corridor_flag==ag_corridor_flag_horizontal) {
-					move->mov.z=-((portal->max.z-portal->min.z)>>1)-(map_enlarge>>1);
-				}
-				else {
-					move->mov.x=-((portal->max.x-portal->min.x)>>1)-(map_enlarge>>1);
-				}
-				break;
-
-			case ag_door_type_swing:
-				move->rot.y=90.0f;
-				break;
-
-		}
-
-		move->msec=ag_constant_door_open_millisec;
-		strcpy(move->sound_name,ag_settings.sound.door);
 		
 			// next door
 			

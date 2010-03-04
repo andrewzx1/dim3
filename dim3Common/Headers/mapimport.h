@@ -240,7 +240,6 @@ and can be sold or given away.
 #define ag_constant_corridor_random_percent					0.5f
 #define ag_constant_corridor_high_percent					0.07f
 
-#define ag_constant_door_percentage							0.5f
 #define ag_constant_door_width								(2*map_enlarge)
 #define ag_constant_door_open_millisec						500
 
@@ -252,8 +251,10 @@ and can be sold or given away.
 #define ag_constant_step_corridor_high						(3*map_enlarge)
 #define ag_constant_step_story_size							(10*map_enlarge)
 #define ag_constant_step_story_high							(5*map_enlarge)
-
 #define ag_constant_step_side_wid							(4*map_enlarge)
+
+#define ag_constant_rail_high								(8*map_enlarge)
+#define ag_constant_rail_size								(map_enlarge*2)
 
 #define ag_constant_door_frame_depth						(4*map_enlarge)
 
@@ -299,14 +300,14 @@ typedef struct	{
 															portal_floor,portal_ceiling_1,portal_ceiling_2,
 															corridor_wall_ceiling,corridor_floor,
 															second_story,frame,door,window,
-															steps,ramp,column,column_base;
+															steps,ramp,column,column_base,rails;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
 					int										seed,type,flow,
 															ceiling_type,corridor_type,door_type,stair_type;
 					float									light_boost;
-					bool									light_map,second_story,window,frame;
+					bool									light_map,second_story,window,frame,rails;
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_sound_type		sound;
 					auto_generate_setting_texture_type		texture;

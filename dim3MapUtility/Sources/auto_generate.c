@@ -1337,56 +1337,12 @@ void map_auto_generate_ceilings(map_type *map)
 
 void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
-	int							split_factor,lx2,rx2,lz2,rz2,
-								xadd,zadd,portal_sz,
-								px[8],py[8],pz[8];
+	int							px[8],py[8],pz[8];
 	float						gx[8],gy[8];
-	auto_generate_box_type		*portal;
 		
-	portal=&ag_boxes[rn];
-	
-		// get sizes
-		
-	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
-	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
-	
-		// create floor polys
-
-	zadd=0;
-	lz2=lz;
-
-	while (lz2<rz) {
-
-		rz2=lz2+split_factor;
-
-		xadd=0;
-		lx2=lx;
-
-		while (lx2<rx) {
-
-			rx2=lx2+split_factor;
-
-			map_auto_generate_mesh_set_portal_mesh(rn);
-
-				// create flat polygon
-
-			map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,by,px,py,pz,gx,gy);
-
-				// rebuild the Ys
-
-			py[0]=py[1]=py[2]=py[3]=by;
-
-				// generate polygon
-
-			map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_floor,4,px,py,pz,gx,gy);
-
-			lx2=rx2;
-			xadd++;
-		}
-		
-		lz2=rz2;
-		zadd++;
-	}
+	map_auto_generate_mesh_set_portal_mesh(rn);
+	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_floor,4,px,py,pz,gx,gy);
 }
 
 void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
@@ -1639,6 +1595,7 @@ bool map_auto_generate_test(map_type *map)
 	ags.second_story=TRUE;
 	ags.window=TRUE;
 	ags.frame=TRUE;
+	ags.rails=TRUE;
 
 	ags.ceiling_type=ag_ceiling_type_open;
 	ags.corridor_type=ag_corridor_type_octagon;
@@ -1660,6 +1617,7 @@ bool map_auto_generate_test(map_type *map)
 	ags.texture.door=6;
 	ags.texture.second_story=4;
 	ags.texture.frame=11;
+	ags.texture.rails=11;
 	
 	strcpy(ags.sound.door,"Door");
 	strcpy(ags.sound.lift,"Lift");
