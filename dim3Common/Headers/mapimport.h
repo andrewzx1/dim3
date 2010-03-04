@@ -296,9 +296,10 @@ typedef struct	{
 
 typedef struct	{
 					int										portal_wall,portal_wall_2,
-															portal_floor,portal_ceiling,
-															corridor,corridor_floor,second_story,window,
-															door,steps,ramp,column,column_base,frame;
+															portal_floor,portal_ceiling_1,portal_ceiling_2,
+															corridor_wall_ceiling,corridor_floor,
+															second_story,frame,door,window,
+															steps,ramp,column,column_base;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
