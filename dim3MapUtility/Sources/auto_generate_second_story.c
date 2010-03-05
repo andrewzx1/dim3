@@ -262,6 +262,8 @@ void map_auto_generate_railings(map_type *map,int rn,int lx,int lz,int rx,int rz
 		// top z rails
 
 	z=lz-(ag_constant_rail_size*2);
+	
+	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 	map_auto_generate_railings_support(map,rn,(lx+sz),z,by);
 	map_auto_generate_railings_support(map,rn,(m_lx-(ag_constant_rail_size*2)),z,by);
@@ -275,6 +277,8 @@ void map_auto_generate_railings(map_type *map,int rn,int lx,int lz,int rx,int rz
 		// bottom z rails
 
 	z=rz+ag_constant_rail_size;
+	
+	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 	map_auto_generate_railings_support(map,rn,(lx+sz),z,by);
 	map_auto_generate_railings_support(map,rn,(m_lx-(ag_constant_rail_size*2)),z,by);
@@ -288,6 +292,8 @@ void map_auto_generate_railings(map_type *map,int rn,int lx,int lz,int rx,int rz
 		// left x rails
 
 	x=lx-(ag_constant_rail_size*2);
+	
+	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 	map_auto_generate_railings_support(map,rn,x,(lz+sz),by);
 	map_auto_generate_railings_support(map,rn,x,(m_lz-(ag_constant_rail_size*2)),by);
@@ -301,6 +307,8 @@ void map_auto_generate_railings(map_type *map,int rn,int lx,int lz,int rx,int rz
 		// right x rails
 
 	x=rx+(ag_constant_rail_size*2);
+	
+	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
 	map_auto_generate_railings_support(map,rn,x,(lz+sz),by);
 	map_auto_generate_railings_support(map,rn,x,(m_lz-(ag_constant_rail_size*2)),by);
