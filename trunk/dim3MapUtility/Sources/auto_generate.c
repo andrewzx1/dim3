@@ -1197,16 +1197,30 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 		// create the outer ring ceiling
 	
-	map_auto_generate_poly_from_square_floor(lx,lz,(lx+split_factor),rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_poly_from_square_floor(lx,(lz+split_factor),(lx+split_factor),(rz-split_factor),ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling_1,4,px,py,pz,gx,gy);
 
-	map_auto_generate_poly_from_square_floor((rx-split_factor),lz,rx,rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_poly_from_square_floor((rx-split_factor),(lz+split_factor),rx,(rz-split_factor),ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling_1,4,px,py,pz,gx,gy);
 
-	map_auto_generate_poly_from_square_floor(lx,lz,rx,(lz+split_factor),ty,px,py,pz,gx,gy);
+	map_auto_generate_poly_from_square_floor((lx+split_factor),lz,(rx-split_factor),(lz+split_factor),ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling_1,4,px,py,pz,gx,gy);
 
-	map_auto_generate_poly_from_square_floor(lx,(rz-split_factor),rx,rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_poly_from_square_floor((lx+split_factor),(rz-split_factor),(rx-split_factor),rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling_1,4,px,py,pz,gx,gy);
+
+		// the corners
+	
+	map_auto_generate_poly_from_square_floor(lx,lz,(lx+split_factor),(lz+split_factor),ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling_1,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor(lx,(rz-split_factor),(lx+split_factor),rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling_1,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor((rx-split_factor),lz,rx,(lz+split_factor),ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling_1,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor((rx-split_factor),(rz-split_factor),rx,rz,ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.portal_ceiling_1,4,px,py,pz,gx,gy);
 
 		// create the outer ring walls

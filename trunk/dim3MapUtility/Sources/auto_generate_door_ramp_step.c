@@ -1008,13 +1008,27 @@ void map_auto_generate_doors(map_type *map)
 			x=map_auto_generate_doors_get_position(xsz);
 			
 			switch (ag_settings.door_type) {
+
 				case ag_door_type_slide:
+					x=ag_constant_door_width*4;
+					group_idx=map_auto_generate_doors_horizontal(map,n,x,0,zsz,0,ty,by,name,NULL);
+					map_auto_generate_door_create_movement(map,n,name,group_idx,-1);
+
+					x=xsz-(ag_constant_door_width*4);
 					group_idx=map_auto_generate_doors_horizontal(map,n,x,0,zsz,0,ty,by,name,NULL);
 					map_auto_generate_door_create_movement(map,n,name,group_idx,-1);
 					break;
+
 				case ag_door_type_split:
 				case ag_door_type_swing:
 					z_rot_off=zsz/6;
+
+					x=ag_constant_door_width*4;
+					group_idx=map_auto_generate_doors_horizontal(map,n,x,0,(zsz>>1),-z_rot_off,ty,by,name,"_1");
+					reverse_group_idx=map_auto_generate_doors_horizontal(map,n,x,(zsz>>1),zsz,z_rot_off,ty,by,name,"_2");
+					map_auto_generate_door_create_movement(map,n,name,group_idx,reverse_group_idx);
+
+					x=xsz-(ag_constant_door_width*4);
 					group_idx=map_auto_generate_doors_horizontal(map,n,x,0,(zsz>>1),-z_rot_off,ty,by,name,"_1");
 					reverse_group_idx=map_auto_generate_doors_horizontal(map,n,x,(zsz>>1),zsz,z_rot_off,ty,by,name,"_2");
 					map_auto_generate_door_create_movement(map,n,name,group_idx,reverse_group_idx);
@@ -1026,13 +1040,27 @@ void map_auto_generate_doors(map_type *map)
 			z=map_auto_generate_doors_get_position(zsz);
 
 			switch (ag_settings.door_type) {
+
 				case ag_door_type_slide:
+					z=ag_constant_door_width*4;
+					group_idx=map_auto_generate_doors_vertical(map,n,z,0,xsz,0,ty,by,name,NULL);
+					map_auto_generate_door_create_movement(map,n,name,group_idx,-1);
+
+					z=zsz-(ag_constant_door_width*4);
 					group_idx=map_auto_generate_doors_vertical(map,n,z,0,xsz,0,ty,by,name,NULL);
 					map_auto_generate_door_create_movement(map,n,name,group_idx,-1);
 					break;
+
 				case ag_door_type_split:
 				case ag_door_type_swing:
 					x_rot_off=xsz/6;
+
+					z=ag_constant_door_width*4;
+					group_idx=map_auto_generate_doors_vertical(map,n,z,0,(xsz>>1),-x_rot_off,ty,by,name,"_1");
+					reverse_group_idx=map_auto_generate_doors_vertical(map,n,z,(xsz>>1),xsz,x_rot_off,ty,by,name,"_2");
+					map_auto_generate_door_create_movement(map,n,name,group_idx,reverse_group_idx);
+
+					z=zsz-(ag_constant_door_width*4);
 					group_idx=map_auto_generate_doors_vertical(map,n,z,0,(xsz>>1),-x_rot_off,ty,by,name,"_1");
 					reverse_group_idx=map_auto_generate_doors_vertical(map,n,z,(xsz>>1),xsz,x_rot_off,ty,by,name,"_2");
 					map_auto_generate_door_create_movement(map,n,name,group_idx,reverse_group_idx);

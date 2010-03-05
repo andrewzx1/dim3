@@ -55,9 +55,11 @@ int	t_offset,b_offset,n_offset;
 void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n,k;
-	float			*cp,*vp;
+	float			*cp,*vp,fx,fy,fz;
 	bool			only_ambient;
+	d3fpnt			cnt;
 	d3col			col;
+	matrix_type		mat;
 	model_mesh_type	*mesh;
 
 		// setup vertex calcing
@@ -120,23 +122,50 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			gl_lights_get_ambient(&col,FALSE);
 		
 			for (k=0;k!=mesh->nvertex;k++) {
-				*cp++=col.r;
-				*cp++=col.g;
-				*cp++=col.b;
+				*cp++=col.r*draw->tint.r;
+				*cp++=col.g*draw->tint.g;
+				*cp++=col.b*draw->tint.b;
 			}
 			
 			continue;
 		}
 
-			// vertex lit
+			// vertex lighting
+
+			// if it's a no rotation model, we need
+			// to re-apply the rotation so the lighting is
+			// in the right space
 
 		vp=draw->setup.mesh_arrays[n].gl_vertex_array;
 
-		for (k=0;k!=mesh->nvertex;k++) {
-			gl_lights_calc_vertex((double)*vp,(double)*(vp+1),(double)*(vp+2),FALSE,cp);
-			cp+=3;
-			vp+=3;
+		if (!draw->no_rot.on) {
+
+			for (k=0;k!=mesh->nvertex;k++) {
+				gl_lights_calc_vertex((double)*vp,(double)*(vp+1),(double)*(vp+2),FALSE,cp);
+				cp+=3;
+				vp+=3;
+			}
+
 		}
+		else {
+			cnt.x=(float)draw->no_rot.center.x;
+			cnt.y=(float)draw->no_rot.center.y;
+			cnt.z=(float)draw->no_rot.center.z;
+
+			matrix_rotate_xzy(&mat,draw->no_rot.ang.x,draw->no_rot.ang.y,draw->no_rot.ang.z);
+
+			for (k=0;k!=mesh->nvertex;k++) {
+				fx=(*vp++)-cnt.x;
+				fy=(*vp++)-cnt.y;
+				fz=(*vp++)-cnt.z;
+				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+				
+				gl_lights_calc_vertex((double)(fx+cnt.x),(double)(fy+cnt.y),(double)(fz+cnt.z),FALSE,cp);
+				cp+=3;
+			}
+		}
+
+			// tints
 
 		if (mesh->tintable) {
 
@@ -154,7 +183,9 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
-	int				n;
+	int				n,k,ts_count;
+	float			*tl,*bl,*nl;
+	matrix_type		mat;
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
@@ -166,6 +197,29 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 			// create the normals for the pose
 
 		model_create_draw_normals(mdl,n,&draw->setup);
+
+			// no rotate models (hand weapons)
+			// need to fix tangent space
+
+		if (draw->no_rot.on) {
+
+			matrix_rotate_xzy(&mat,draw->no_rot.ang.x,draw->no_rot.ang.y,draw->no_rot.ang.z);
+
+			tl=draw->setup.mesh_arrays[n].gl_tangent_array;
+			bl=draw->setup.mesh_arrays[n].gl_binormal_array;
+			nl=draw->setup.mesh_arrays[n].gl_normal_array;
+
+			ts_count=mdl->meshes[n].ntrig*3;
+
+			for (k=0;k!=ts_count;k++) {
+				matrix_vertex_multiply(&mat,tl,(tl+1),(tl+2));
+				matrix_vertex_multiply(&mat,bl,(bl+1),(bl+2));
+				matrix_vertex_multiply(&mat,nl,(nl+1),(nl+2));
+				tl+=3;
+				bl+=3;
+				nl+=3;
+			}
+		}
 	}
 }
 
