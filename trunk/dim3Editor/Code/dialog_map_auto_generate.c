@@ -45,6 +45,7 @@ and can be sold or given away.
 #define kMapGenerateSecondStory						FOUR_CHAR_CODE('stry')
 #define kMapGenerateWindow							FOUR_CHAR_CODE('wind')
 #define kMapGenerateFrame							FOUR_CHAR_CODE('frme')
+#define kMapGenerateRail							FOUR_CHAR_CODE('rail')
 
 #define kMapGenerateLightBoost						FOUR_CHAR_CODE('brgt')
 #define kMapGenerateLightMap						FOUR_CHAR_CODE('lmap')
@@ -67,6 +68,7 @@ and can be sold or given away.
 #define kMapGenerateTextureRamp						FOUR_CHAR_CODE('rmtx')
 #define kMapGenerateTextureColumn					FOUR_CHAR_CODE('cltx')
 #define kMapGenerateTextureColumnBase				FOUR_CHAR_CODE('cbtx')
+#define kMapGenerateTextureRail						FOUR_CHAR_CODE('rltx')
 
 #define kMapGenerateNewSeed							FOUR_CHAR_CODE('nsed')
 
@@ -191,6 +193,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateSecondStory,0,ag_settings.second_story);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateWindow,0,ag_settings.window);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateFrame,0,ag_settings.frame);
+		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateRail,0,ag_settings.rails);
 		
 		dialog_set_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.sound.door);
 		dialog_set_text(dialog_map_generate_wind,kMapGenerateLiftSound,0,ag_settings.sound.lift);
@@ -210,6 +213,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,ag_settings.texture.ramp);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE,ag_settings.texture.column);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumnBase,0,FALSE,ag_settings.texture.column_base);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRail,0,FALSE,ag_settings.texture.rails);
 	}
 	else {
 	
@@ -234,6 +238,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,12);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE,13);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumnBase,0,FALSE,14);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRail,0,FALSE,15);
 	}
 	
 		// show window
@@ -269,6 +274,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.second_story=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateSecondStory,0);
 	ag_settings.window=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateWindow,0);
 	ag_settings.frame=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateFrame,0);
+	ag_settings.rails=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateRail,0);
 	
 	dialog_get_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.sound.door,name_str_len);
 	dialog_get_text(dialog_map_generate_wind,kMapGenerateLiftSound,0,ag_settings.sound.lift,name_str_len);
@@ -288,6 +294,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.texture.ramp=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE);
 	ag_settings.texture.column=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE);
 	ag_settings.texture.column_base=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumnBase,0,FALSE);
+	ag_settings.texture.rails=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRail,0,FALSE);
 	
 		// close window
 		
