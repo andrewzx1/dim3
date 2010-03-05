@@ -259,65 +259,67 @@ void map_auto_generate_railings(map_type *map,int rn,int lx,int lz,int rx,int rz
 	m_lz-=sz;
 	m_rz+=sz;
 
-		// top z rails
+		// x rails
 
-	z=lz-(ag_constant_rail_size*2);
+	if ((m_lx-lx)>=(ag_constant_rail_size*15)) {
+
+		z=lz-(ag_constant_rail_size*2);
+		
+		if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
+
+		map_auto_generate_railings_support(map,rn,(lx+sz),z,by);
+		map_auto_generate_railings_support(map,rn,(m_lx-(ag_constant_rail_size*2)),z,by);
+
+		map_auto_generate_railings_support(map,rn,(m_rx+ag_constant_rail_size),z,by);
+		map_auto_generate_railings_support(map,rn,(rx-(sz+ag_constant_rail_size)),z,by);
+
+		map_auto_generate_railings_bar(map,rn,((lx+sz)-ag_constant_rail_size),z,m_lx,(z+ag_constant_rail_size),by);
+		map_auto_generate_railings_bar(map,rn,m_rx,z,((rx-sz)+ag_constant_rail_size),(z+ag_constant_rail_size),by);
+
+		z=rz+ag_constant_rail_size;
+		
+		if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
+
+		map_auto_generate_railings_support(map,rn,(lx+sz),z,by);
+		map_auto_generate_railings_support(map,rn,(m_lx-(ag_constant_rail_size*2)),z,by);
+
+		map_auto_generate_railings_support(map,rn,(m_rx+ag_constant_rail_size),z,by);
+		map_auto_generate_railings_support(map,rn,(rx-(sz+ag_constant_rail_size)),z,by);
+
+		map_auto_generate_railings_bar(map,rn,((lx+sz)-ag_constant_rail_size),z,m_lx,(z+ag_constant_rail_size),by);
+		map_auto_generate_railings_bar(map,rn,m_rx,z,((rx-sz)+ag_constant_rail_size),(z+ag_constant_rail_size),by);
+	}
+
+		// z rails
+
+	if ((m_lz-lz)>=(ag_constant_rail_size*15)) {
 	
-	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
+		x=lx-(ag_constant_rail_size*2);
+		
+		if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
-	map_auto_generate_railings_support(map,rn,(lx+sz),z,by);
-	map_auto_generate_railings_support(map,rn,(m_lx-(ag_constant_rail_size*2)),z,by);
+		map_auto_generate_railings_support(map,rn,x,(lz+sz),by);
+		map_auto_generate_railings_support(map,rn,x,(m_lz-(ag_constant_rail_size*2)),by);
 
-	map_auto_generate_railings_support(map,rn,(m_rx+ag_constant_rail_size),z,by);
-	map_auto_generate_railings_support(map,rn,(rx-(sz+ag_constant_rail_size)),z,by);
+		map_auto_generate_railings_support(map,rn,x,(m_rz+ag_constant_rail_size),by);
+		map_auto_generate_railings_support(map,rn,x,(rz-(sz+ag_constant_rail_size)),by);
 
-	map_auto_generate_railings_bar(map,rn,((lx+sz)-ag_constant_rail_size),z,m_lx,(z+ag_constant_rail_size),by);
-	map_auto_generate_railings_bar(map,rn,(m_rx-ag_constant_rail_size),z,((rx-sz)+ag_constant_rail_size),(z+ag_constant_rail_size),by);
+		map_auto_generate_railings_bar(map,rn,x,((lz+sz)-ag_constant_rail_size),(x+ag_constant_rail_size),m_lz,by);
+		map_auto_generate_railings_bar(map,rn,x,m_rz,(x+ag_constant_rail_size),((rz-sz)+ag_constant_rail_size),by);
 
-		// bottom z rails
+		x=rx+(ag_constant_rail_size*2);
+		
+		if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
 
-	z=rz+ag_constant_rail_size;
-	
-	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
+		map_auto_generate_railings_support(map,rn,x,(lz+sz),by);
+		map_auto_generate_railings_support(map,rn,x,(m_lz-(ag_constant_rail_size*2)),by);
 
-	map_auto_generate_railings_support(map,rn,(lx+sz),z,by);
-	map_auto_generate_railings_support(map,rn,(m_lx-(ag_constant_rail_size*2)),z,by);
+		map_auto_generate_railings_support(map,rn,x,(m_rz+ag_constant_rail_size),by);
+		map_auto_generate_railings_support(map,rn,x,(rz-(sz+ag_constant_rail_size)),by);
 
-	map_auto_generate_railings_support(map,rn,(m_rx+ag_constant_rail_size),z,by);
-	map_auto_generate_railings_support(map,rn,(rx-(sz+ag_constant_rail_size)),z,by);
-
-	map_auto_generate_railings_bar(map,rn,((lx+sz)-ag_constant_rail_size),z,m_lx,(z+ag_constant_rail_size),by);
-	map_auto_generate_railings_bar(map,rn,(m_rx-ag_constant_rail_size),z,((rx-sz)+ag_constant_rail_size),(z+ag_constant_rail_size),by);
-
-		// left x rails
-
-	x=lx-(ag_constant_rail_size*2);
-	
-	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
-
-	map_auto_generate_railings_support(map,rn,x,(lz+sz),by);
-	map_auto_generate_railings_support(map,rn,x,(m_lz-(ag_constant_rail_size*2)),by);
-
-	map_auto_generate_railings_support(map,rn,x,(m_rz+ag_constant_rail_size),by);
-	map_auto_generate_railings_support(map,rn,x,(rz-(sz+ag_constant_rail_size)),by);
-
-	map_auto_generate_railings_bar(map,rn,x,((lz+sz)-ag_constant_rail_size),(x+ag_constant_rail_size),m_lz,by);
-	map_auto_generate_railings_bar(map,rn,x,(m_rz-ag_constant_rail_size),(x+ag_constant_rail_size),((rz-sz)+ag_constant_rail_size),by);
-
-		// right x rails
-
-	x=rx+(ag_constant_rail_size*2);
-	
-	if (!map_auto_generate_mesh_start(map,-1,FALSE)) return;
-
-	map_auto_generate_railings_support(map,rn,x,(lz+sz),by);
-	map_auto_generate_railings_support(map,rn,x,(m_lz-(ag_constant_rail_size*2)),by);
-
-	map_auto_generate_railings_support(map,rn,x,(m_rz+ag_constant_rail_size),by);
-	map_auto_generate_railings_support(map,rn,x,(rz-(sz+ag_constant_rail_size)),by);
-
-	map_auto_generate_railings_bar(map,rn,x,((lz+sz)-ag_constant_rail_size),(x+ag_constant_rail_size),m_lz,by);
-	map_auto_generate_railings_bar(map,rn,x,(m_rz-ag_constant_rail_size),(x+ag_constant_rail_size),((rz-sz)+ag_constant_rail_size),by);
+		map_auto_generate_railings_bar(map,rn,x,((lz+sz)-ag_constant_rail_size),(x+ag_constant_rail_size),m_lz,by);
+		map_auto_generate_railings_bar(map,rn,x,m_rz,(x+ag_constant_rail_size),((rz-sz)+ag_constant_rail_size),by);
+	}
 }
 
 /* =======================================================
