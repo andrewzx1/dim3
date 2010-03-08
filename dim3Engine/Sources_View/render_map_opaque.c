@@ -269,6 +269,10 @@ void render_opaque_mesh_shader(void)
 
 			gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,&light_list);
 			gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
+			
+			if ((view.render->draw_list.items[n].idx==2) && (k==1)) {
+				fprintf(stdout,"2.1 = %d\n",light_list.nlight);	// supergumba
+			}
 
 				// fix texture if any back rendering
 

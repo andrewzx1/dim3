@@ -263,7 +263,7 @@ void view_add_mesh_draw_list(void)
 			if ((n!=start_mesh_idx) && (view.render->has_area)) {
 				if (!view_area_check_mesh(mesh)) continue;
 			}
-
+			
 				// auto-eliminate meshes drawn outside the obscure distance
 				
 			d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
