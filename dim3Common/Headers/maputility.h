@@ -278,7 +278,7 @@ typedef struct		{
 						bool								moved,cur_ambient_only,
 															has_opaque,has_transparent,
 															has_shader,has_no_shader,has_glow,
-															has_light_map;
+															has_light_map,dist_shader_override;
 					} map_mesh_draw_type;
 					
 typedef struct		{
