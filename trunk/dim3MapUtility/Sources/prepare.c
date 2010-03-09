@@ -179,16 +179,21 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 
 bool map_prepare_mesh_poly_bump_check_floor_hit(map_mesh_type *mesh,d3pnt *p1,d3pnt *p2)
 {
-	int					n,k;
+	int					n,k,t,z;
 	bool				p1_ok,p2_ok;
-	d3pnt				*pt;
+	d3pnt				*pt,*pt2;
 	map_mesh_poly_type	*poly;
 	
 	for (n=0;n!=mesh->npoly;n++) {
 		poly=&mesh->polys[n];
+
+			// is this poly a flat floor?
+
 		if (poly->box.wall_like) continue;
 		if (!poly->box.flat) continue;
 		
+			// any equal or close to equal points?
+
 		p1_ok=p2_ok=FALSE;
 		
 		for (k=0;k!=poly->ptsz;k++) {
@@ -198,6 +203,30 @@ bool map_prepare_mesh_poly_bump_check_floor_hit(map_mesh_type *mesh,d3pnt *p1,d3
 			p2_ok|=((abs(pt->x-p2->x)<25) && (abs(pt->y-p2->y)<25) && (abs(pt->z-p2->z)<25));
 		}
 		
+		if ((p1_ok) && (p2_ok)) return(TRUE);
+
+			// any points on line?
+
+		p1_ok=p2_ok=FALSE;
+		
+		for (k=0;k!=poly->ptsz;k++) {
+
+				// get line points
+
+			pt=&mesh->vertexes[poly->v[k]];
+			t=k+1;
+			if (t==poly->ptsz) t=0;
+			pt2=&mesh->vertexes[poly->v[t]];
+
+				// solve line equation
+
+			z=pt->z+(int)((float)(pt2->z-pt->z)*((float)(pt2->x-p1->x)/(float)(pt2->x-pt->x)));
+			p1_ok|=(abs(z-p1->z)<25);
+
+			z=pt->z+(int)((float)(pt2->z-pt->z)*((float)(pt2->x-p2->x)/(float)(pt2->x-pt->x)));
+			p2_ok|=(abs(z-p1->z)<25);
+		}
+
 		if ((p1_ok) && (p2_ok)) return(TRUE);
 	}
 	
@@ -244,7 +273,7 @@ void map_prepare_mesh_poly_bump(map_type *map,map_mesh_type *mesh)
 			// to a flat floor polygon
 			
 			// check current mesh first, then all others
-			
+
 		bump_ok=FALSE;
 		
 		memmove(&p1,&mesh->vertexes[p1_idx],sizeof(d3pnt));

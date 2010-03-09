@@ -384,35 +384,79 @@ void gl_shader_set_scene_variables(shader_type *shader,view_light_list_type *lig
 
 void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_type *light_list)
 {
-	int						n;
-	float					fx,fy,fz;
-	view_light_spot_type	*lspot;
+	int								n,in_light_map;
+	view_light_spot_type			*lspot;
+	shader_cached_var_light_loc		*loc_light;
+	shader_current_var_light_value	*cur_light;
 	
 	for (n=0;n!=max_shader_light;n++) {
+
+		loc_light=&shader->var_locs.dim3Lights[n];
+		cur_light=&shader->var_values.lights[n];
 	
-			// intensity of 0 = light off
+			// lights that are off
+			// have intensity of 0
 			
 		if (n>=light_list->nlight) {
-			if (shader->var_locs.dim3Lights[n].intensity!=-1) glUniform1fARB(shader->var_locs.dim3Lights[n].intensity,0.0f);
+			if (loc_light->intensity==-1) continue;
+
+			if (cur_light->intensity!=0.0f) {
+				cur_light->intensity=0.0f;
+				glUniform1fARB(loc_light->intensity,0.0f);
+			}
+
+			continue;
 		}
 		
 			// set regular light
 			
-		else {
-			lspot=&view.render->light.spots[light_list->light_idx[n]];
-			
-			fx=lspot->f_x;
-			fy=lspot->f_y;
-			fz=lspot->f_z;
-			
-			gl_project_to_eye_coordinates(&fx,&fy,&fz);		// lights need to be in eye coordinates
-			
-			if (shader->var_locs.dim3Lights[n].position!=-1) glUniform3fARB(shader->var_locs.dim3Lights[n].position,fx,fy,fz);
-			if (shader->var_locs.dim3Lights[n].color!=-1) glUniform3fARB(shader->var_locs.dim3Lights[n].color,lspot->col.r,lspot->col.g,lspot->col.b);
-			if (shader->var_locs.dim3Lights[n].intensity!=-1) glUniform1fARB(shader->var_locs.dim3Lights[n].intensity,(float)lspot->intensity);
-			if (shader->var_locs.dim3Lights[n].exponent!=-1) glUniform1fARB(shader->var_locs.dim3Lights[n].exponent,lspot->exponent);
-			if (shader->var_locs.dim3Lights[n].direction!=-1) glUniform3fvARB(shader->var_locs.dim3Lights[n].direction,3,light_shader_direction[lspot->direction]);
-			if (shader->var_locs.dim3Lights[n].inLightMap!=-1) glUniform1iARB(shader->var_locs.dim3Lights[n].inLightMap,(lspot->light_map?0x1:0x0));
+		lspot=&view.render->light.spots[light_list->light_idx[n]];
+		
+		if (loc_light->position!=-1) {
+			if ((cur_light->position.x!=lspot->pnt_eye_space.x) || (cur_light->position.y!=lspot->pnt_eye_space.y) || (cur_light->position.z!=lspot->pnt_eye_space.z)) {
+				cur_light->position.x=lspot->pnt_eye_space.x;
+				cur_light->position.y=lspot->pnt_eye_space.y;
+				cur_light->position.z=lspot->pnt_eye_space.z;
+				glUniform3fARB(loc_light->position,lspot->pnt_eye_space.x,lspot->pnt_eye_space.y,lspot->pnt_eye_space.z);
+			}
+		}
+
+		if (loc_light->color!=-1) {
+			if ((cur_light->color.r!=lspot->col.r) || (cur_light->color.g!=lspot->col.g) || (cur_light->color.b!=lspot->col.b)) {
+				cur_light->color.r=lspot->col.r;
+				cur_light->color.g=lspot->col.g;
+				cur_light->color.b=lspot->col.b;
+				glUniform3fARB(loc_light->color,lspot->col.r,lspot->col.g,lspot->col.b);
+			}
+		}
+
+		if (loc_light->intensity!=-1) {
+			if (cur_light->intensity!=lspot->f_intensity) {
+				cur_light->intensity=lspot->f_intensity;
+				glUniform1fARB(loc_light->intensity,lspot->f_intensity);
+			}
+		}
+
+		if (loc_light->exponent!=-1) {
+			if (cur_light->exponent!=lspot->exponent) {
+				cur_light->exponent=lspot->exponent;
+				glUniform1fARB(loc_light->exponent,lspot->exponent);
+			}
+		}
+
+		if (loc_light->direction!=-1) {
+			if (cur_light->direction!=lspot->direction) {
+				cur_light->direction=lspot->direction;
+				glUniform3fvARB(loc_light->direction,3,light_shader_direction[lspot->direction]);
+			}
+		}
+
+		if (loc_light->inLightMap!=-1) {
+			in_light_map=(lspot->light_map?1:0);
+			if (cur_light->light_map!=in_light_map) {
+				cur_light->light_map=in_light_map;
+				glUniform1iARB(loc_light->inLightMap,in_light_map);
+			}
 		}
 	}
 }
@@ -478,6 +522,8 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_co
 
 void gl_shader_draw_scene_initialize_code(shader_type *shader)
 {
+	int					n;
+
 		// use this flag to mark scene only variables
 		// as needing a load.  In this way we optimize
 		// out the amount of variable setting we need to do
@@ -487,10 +533,22 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
 
-	shader->var_values.nlight=-1;
 	shader->var_values.alpha=-1.0f;
 	shader->var_values.shine_factor=-1.0f;
 	shader->var_values.tint_col.r=shader->var_values.tint_col.g=shader->var_values.tint_col.b=-1.0f;
+
+	for (n=0;n!=max_shader_light;n++) {
+		shader->var_values.lights[n].light_map=-1;
+		shader->var_values.lights[n].intensity=-1.0f;
+		shader->var_values.lights[n].exponent=-1.0f;
+		shader->var_values.lights[n].position.x=-1.0f;
+		shader->var_values.lights[n].position.y=-1.0f;
+		shader->var_values.lights[n].position.z=-1.0f;
+		shader->var_values.lights[n].direction=-1;
+		shader->var_values.lights[n].color.r=-1.0f;
+		shader->var_values.lights[n].color.g=-1.0f;
+		shader->var_values.lights[n].color.b=-1.0f;
+	}
 	
 		// check if the model tangent space attributes
 		// have been attached
@@ -643,8 +701,6 @@ void gl_shader_texture_override(GLuint gl_id)
 
 void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
 {
-	int							n;
-	bool						light_change;
 	shader_type					*shader;
 	
 		// get shader based on number of lights
@@ -691,14 +747,5 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// lighting variables
 			
-	light_change=(light_list->nlight!=shader->var_values.nlight);
-	
-	for (n=0;n!=light_list->nlight;n++) {
-		if (shader->var_values.light_idx[n]!=light_list->light_idx[n]) light_change=TRUE;
-		shader->var_values.light_idx[n]=light_list->light_idx[n];
-	}
-	
-	shader->var_values.nlight=light_list->nlight;
-	
-	if (light_change) gl_shader_set_light_normal_variables(shader,light_list);
+	gl_shader_set_light_normal_variables(shader,light_list);
 }

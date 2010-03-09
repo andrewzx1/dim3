@@ -141,6 +141,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 	if (lspot->intensity<=0) return;
 
 	lspot->i_intensity=(int)lspot->intensity;			// need alternate versions of data to speed up later calculations
+	lspot->f_intensity=(float)lspot->intensity;
 	
 	lspot->light_map=light_map;
 	lspot->exponent=exponent;
@@ -167,6 +168,14 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 	lspot->d_col_r=(double)lspot->col.r;
 	lspot->d_col_g=(double)lspot->col.g;
 	lspot->d_col_b=(double)lspot->col.b;
+
+		// eye space for shaders
+
+	lspot->pnt_eye_space.x=lspot->f_x;
+	lspot->pnt_eye_space.y=lspot->f_y;
+	lspot->pnt_eye_space.z=lspot->f_z;
+		
+	gl_project_to_eye_coordinates(&lspot->pnt_eye_space.x,&lspot->pnt_eye_space.y,&lspot->pnt_eye_space.z);
 
 	view.render->light.count++;
 }

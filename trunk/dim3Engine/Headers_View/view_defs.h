@@ -141,12 +141,13 @@ typedef struct		{
 typedef struct		{
 						int									direction,i_intensity;
 						bool								light_map;
-						float								exponent,f_x,f_y,f_z;
+						float								exponent,f_x,f_y,f_z,f_intensity;
 						double								d_x,d_y,d_z,
 															intensity,inv_intensity,
 															d_intensity,d_inv_intensity,
 															d_col_r,d_col_g,d_col_b;
 						d3pnt								pnt;
+						d3vct								pnt_eye_space;
 						d3col								col;
 					} view_light_spot_type;
 
@@ -238,11 +239,18 @@ typedef struct		{
 															dim3VertexTangent,dim3VertexBinormal,dim3VertexNormal;
 						shader_cached_var_light_loc			dim3Lights[max_shader_light];
 					} shader_cached_var_loc;
-					
+
 typedef struct		{
-						int									nlight,light_idx[max_shader_light];
+						int									light_map,direction;
+						float								intensity,exponent;
+						d3fpnt								position;
+						d3col								color;
+					} shader_current_var_light_value;
+
+typedef struct		{
 						float								alpha,shine_factor;
 						d3col								tint_col;
+						shader_current_var_light_value		lights[max_shader_light];
 					} shader_current_var_value;
 
 typedef struct		{
