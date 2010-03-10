@@ -65,10 +65,7 @@ bool map_new(map_type *map,char *name)
 	
 		// settings
 		
-	map->settings.light_map_quality=50;
-	map->settings.light_map_quality=1024;
-	map->settings.light_map_pixel_border_count=6;
-	map->settings.light_map_blur_count=3;
+	map->settings.optimize_distance=100000;
 	map->settings.gravity=1;
 	map->settings.gravity_max_power=32;
 	map->settings.gravity_max_speed=400;
@@ -77,6 +74,11 @@ bool map_new(map_type *map,char *name)
 	map->settings.txt_scale_y=0.04f;
 	map->settings.editor_link_always_start=FALSE;
 	map->settings.network_game_list[0]=0x0;
+
+	map->settings.light_map.quality=50;
+	map->settings.light_map.quality=1024;
+	map->settings.light_map.pixel_border_count=6;
+	map->settings.light_map.blur_count=3;
 	
 		// media
 		

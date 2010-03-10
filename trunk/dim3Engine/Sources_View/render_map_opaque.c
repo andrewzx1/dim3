@@ -51,6 +51,8 @@ extern void view_compile_gl_list_attach_uv_glow(void);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
+
+int m_simple_count,m_light_map_count,m_shader_count;		// supergumba -- testing
 		
 /* =======================================================
 
@@ -80,11 +82,15 @@ void render_opaque_mesh_simple(void)
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
-			// skip meshes with no opaques and all non-shaders
-			// unless debug is on
+			// only work on meshes that are opaque, have no
+			// light maps, and no shaders.  This method
+			// is also the catch all for debug mode
 
-		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
-		if ((mesh->draw.has_light_map) && (!dim3_debug)) continue;
+		if (!mesh->draw.has_opaque) continue;
+		if (!dim3_debug) {
+			if (mesh->draw.has_light_map) continue;
+			if ((!mesh->draw.has_no_shader) && (!mesh->draw.dist_shader_override)) continue;
+		}
 
 			// run through the polys
 			
@@ -124,6 +130,8 @@ void render_opaque_mesh_simple(void)
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
+
+			m_simple_count++;
 		}
 	}
 
@@ -157,11 +165,14 @@ void render_opaque_mesh_light_map(void)
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
-			// skip meshes with no opaques and all non-shaders
-			// unless debug is on
+			// only work on meshes that are opaque, have a
+			// light map, and no shaders.
 
-		if ((!mesh->draw.has_opaque) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
-		if ((!mesh->draw.has_light_map) || (dim3_debug)) continue;
+		if (!mesh->draw.has_opaque) continue;
+		if (dim3_debug) continue;
+
+		if (!mesh->draw.has_light_map) continue;
+		if ((!mesh->draw.has_no_shader) && (!mesh->draw.dist_shader_override)) continue;
 		
 			// run through the polys
 			
@@ -203,6 +214,8 @@ void render_opaque_mesh_light_map(void)
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
+
+			m_light_map_count++;
 		}
 	}
 
@@ -237,9 +250,12 @@ void render_opaque_mesh_shader(void)
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
-			// skip meshes with no shaders or opaques
+			// only work on meshes that are opaque and
+			// have a shader
 
-		if ((!mesh->draw.has_opaque) || (!mesh->draw.has_shader)) continue;
+		if (!mesh->draw.has_opaque) continue;
+		if (dim3_debug) continue;
+		if ((!mesh->draw.has_shader) || (mesh->draw.dist_shader_override)) continue;
 
 			// run through the polys
 			
@@ -285,6 +301,8 @@ void render_opaque_mesh_shader(void)
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
+
+			m_shader_count++;
 		}
 	}
 
@@ -388,12 +406,16 @@ void render_map_mesh_opaque(void)
 
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
+
+	m_simple_count=m_light_map_count=m_shader_count=0;
 	
 	render_opaque_mesh_simple();
 	if (!dim3_debug) {
 		render_opaque_mesh_light_map();
 		render_opaque_mesh_shader();
 	}
+
+	fprintf(stdout,"s=%d lm=%d shader=%d\n",m_simple_count,m_light_map_count,m_shader_count);
 	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_FALSE);

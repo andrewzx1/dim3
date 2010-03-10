@@ -358,7 +358,6 @@ void net_host_game_end(void)
 		// shutdown server
 
 	net_host_shutdown();
-	
 	net_host_player_shutdown();
 	
 		// make sure hosting flags are off

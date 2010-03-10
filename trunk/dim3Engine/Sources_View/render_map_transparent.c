@@ -296,8 +296,8 @@ void render_transparent_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly
 		// or light maps unless debug is on
 
 	if (!dim3_debug) {
-		if (poly->draw.shader_on) return;
 		if (mesh->draw.has_light_map) return;
+		if ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)) return;
 	}
 	
 		// time to turn on some gl pointers?
@@ -322,8 +322,8 @@ void render_transparent_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *p
 		// unless debug is on
 
 	if (!dim3_debug) {
-		if (poly->draw.shader_on) return;
 		if (!mesh->draw.has_light_map) return;
+		if ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)) return;
 	}
 	
 		// time to turn on some gl pointers?
@@ -348,7 +348,7 @@ void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_po
 
 		// skip meshes or polys with no shaders
 
-	if (!poly->draw.shader_on) return;
+	if ((!poly->draw.shader_on) || (mesh->draw.dist_shader_override)) return;
 
 		// time to turn on some gl pointers?
 
