@@ -71,6 +71,11 @@ bool player_attach_object(char *err_str)
 			}
 		}
 		else {
+			
+			strcpy(err_str,"Could not find spot: *-Spawn");	// supergumba -- test
+			return(FALSE);
+
+
 			if (obj->spawn_spot_name[0]==0x0) {
 				spot_idx=map_find_random_spot(&map,NULL,"Spawn");
 				if (spot_idx==-1) {

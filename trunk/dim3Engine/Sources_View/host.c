@@ -58,7 +58,7 @@ and can be sold or given away.
 #define host_game_option_base			100
 
 extern void intro_open(void);
-extern bool net_host_game_start(char *err_str);
+extern int net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
@@ -498,37 +498,14 @@ void host_game(void)
 {
 	int						player_uid;
 	char					err_str[256];
-	network_request_join	request_join;
 	
 		// start hosting
 
-	if (!net_host_game_start(err_str)) {
-		error_open(err_str,"Hosting Game Canceled");
-		return;
-	}
-	
-		// attempt to connect to local server
-
-	strcpy(request_join.name,setup.network.name);
-	strcpy(request_join.vers,dim3_version);
-	request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
-	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
-
-	player_uid=net_host_client_handle_local_join(&request_join,err_str);
+	player_uid=net_host_game_start(err_str);
 	if (player_uid==-1) {
-		net_host_game_end();
 		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
-
-		// connected
-
-	net_setup.host.hosting=TRUE;
-	net_setup.client.joined=TRUE;
-	net_setup.client.latency=0;
-	net_setup.player_uid=player_uid;
-
-	strcpy(net_setup.client.joined_ip,"127.0.0.1");
 
 		// setup game from host
 		

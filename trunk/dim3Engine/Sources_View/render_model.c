@@ -184,7 +184,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n,k,ts_count;
-	float			*tl,*bl,*nl;
+	float			*tl,*nl;
 	matrix_type		mat;
 
 	for (n=0;n!=mdl->nmesh;n++) {
@@ -206,17 +206,14 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 			matrix_rotate_xzy(&mat,draw->no_rot.ang.x,draw->no_rot.ang.y,draw->no_rot.ang.z);
 
 			tl=draw->setup.mesh_arrays[n].gl_tangent_array;
-			bl=draw->setup.mesh_arrays[n].gl_binormal_array;
 			nl=draw->setup.mesh_arrays[n].gl_normal_array;
 
 			ts_count=mdl->meshes[n].ntrig*3;
 
 			for (k=0;k!=ts_count;k++) {
 				matrix_vertex_multiply(&mat,tl,(tl+1),(tl+2));
-				matrix_vertex_multiply(&mat,bl,(bl+1),(bl+2));
 				matrix_vertex_multiply(&mat,nl,(nl+1),(nl+2));
 				tl+=3;
-				bl+=3;
 				nl+=3;
 			}
 		}
@@ -232,7 +229,7 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int				n,k,offset,mem_sz;
-	float			*vl,*ul,*cl,*tl,*bl,*nl,
+	float			*vl,*ul,*cl,*tl,*nl,
 					*vp,*cp,*gx,*gy,
 					*vp_start,*cp_start,
 					*vertex_ptr;
@@ -252,16 +249,14 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 		draw->setup.vbo_offset.color=((mesh->ntrig*3)*(3+2))*sizeof(float);
 		draw->setup.vbo_offset.tangent=0;
-		draw->setup.vbo_offset.binormal=0;
 		draw->setup.vbo_offset.normal=0;
 	}
 	else {
-		mem_sz=(mesh->ntrig*3)*(3+2+3+3+3);
+		mem_sz=(mesh->ntrig*3)*(3+2+3+3);
 
 		draw->setup.vbo_offset.color=0;
 		draw->setup.vbo_offset.tangent=((mesh->ntrig*3)*(3+2))*sizeof(float);
-		draw->setup.vbo_offset.binormal=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
-		draw->setup.vbo_offset.normal=((mesh->ntrig*3)*(3+2+3+3))*sizeof(float);
+		draw->setup.vbo_offset.normal=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
 	}
 
 	vertex_ptr=view_bind_map_next_vertex_object(mem_sz);
@@ -346,10 +341,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		tl=vertex_ptr+((mesh->ntrig*3)*(3+2));
 		memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);
 
-		bl=vertex_ptr+((mesh->ntrig*3)*(3+2+3));
-		memmove(bl,draw->setup.mesh_arrays[mesh_idx].gl_binormal_array,mem_sz);
-
-		nl=vertex_ptr+((mesh->ntrig*3)*(3+2+3+3));
+		nl=vertex_ptr+((mesh->ntrig*3)*(3+2+3));
 		memmove(nl,draw->setup.mesh_arrays[mesh_idx].gl_normal_array,mem_sz);
 	}
 

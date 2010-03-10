@@ -102,14 +102,12 @@ typedef struct		{
 						float							*gl_vertex_array,
 														*gl_color_array,
 														*gl_tangent_array,
-														*gl_binormal_array,
 														*gl_normal_array;
 					} model_draw_mesh_array_type;
 
 typedef struct		{
 						int								color,
 														tangent,
-														binormal,
 														normal;
 					} model_draw_vbo_offset_type;
 

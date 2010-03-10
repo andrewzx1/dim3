@@ -134,7 +134,6 @@ bool app_start(char *err_str)
 
 void app_end(void)
 {
-		
 	if (server.map_open) map_end();
 	if (server.game_open) game_end();
 	

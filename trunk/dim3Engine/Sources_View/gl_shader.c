@@ -95,11 +95,9 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 
 	shader->var_locs.dim3Tangent=glGetUniformLocationARB(shader->program_obj,"dim3Tangent");
-	shader->var_locs.dim3Binormal=glGetUniformLocationARB(shader->program_obj,"dim3Binormal");
 	shader->var_locs.dim3Normal=glGetUniformLocationARB(shader->program_obj,"dim3Normal");
 
 	shader->var_locs.dim3VertexTangent=glGetAttribLocationARB(shader->program_obj,"dim3VertexTangent");
-	shader->var_locs.dim3VertexBinormal=glGetAttribLocationARB(shader->program_obj,"dim3VertexBinormal");
 	shader->var_locs.dim3VertexNormal=glGetAttribLocationARB(shader->program_obj,"dim3VertexNormal");
 	
 	for (n=0;n!=max_shader_light;n++) {
@@ -487,28 +485,40 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_co
 		// tangent spaces
 
 	if (tangent_space!=NULL) {
-		if (shader->var_locs.dim3Tangent!=-1) glUniform3fARB(shader->var_locs.dim3Tangent,tangent_space->tangent.x,tangent_space->tangent.y,tangent_space->tangent.z);
-		if (shader->var_locs.dim3Binormal!=-1) glUniform3fARB(shader->var_locs.dim3Binormal,tangent_space->binormal.x,tangent_space->binormal.y,tangent_space->binormal.z);
-		if (shader->var_locs.dim3Normal!=-1) glUniform3fARB(shader->var_locs.dim3Normal,tangent_space->normal.x,tangent_space->normal.y,tangent_space->normal.z);
+	
+		if (shader->var_locs.dim3Tangent!=-1) {
+			if ((shader->var_values.tangent.x!=tangent_space->tangent.x) || (shader->var_values.tangent.y!=tangent_space->tangent.y) || (shader->var_values.tangent.z!=tangent_space->tangent.z)) {
+				shader->var_values.tangent.x=tangent_space->tangent.x;
+				shader->var_values.tangent.y=tangent_space->tangent.y;
+				shader->var_values.tangent.z=tangent_space->tangent.z;
+				glUniform3fARB(shader->var_locs.dim3Tangent,tangent_space->tangent.x,tangent_space->tangent.y,tangent_space->tangent.z);
+			}
+		}
+		
+		if (shader->var_locs.dim3Normal!=-1) {
+			if ((shader->var_values.normal.x!=tangent_space->normal.x) || (shader->var_values.normal.y!=tangent_space->normal.y) || (shader->var_values.normal.z!=tangent_space->normal.z)) {
+				shader->var_values.normal.x=tangent_space->normal.x;
+				shader->var_values.normal.y=tangent_space->normal.y;
+				shader->var_values.normal.z=tangent_space->normal.z;
+				glUniform3fARB(shader->var_locs.dim3Normal,tangent_space->normal.x,tangent_space->normal.y,tangent_space->normal.z);
+			}
+		}
 	}
 
 	if (vbo_offset!=NULL) {
 		if (!shader->normal_vertex_attrib_active) {
 			shader->normal_vertex_attrib_active=TRUE;
 			if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent); 
-			if (shader->var_locs.dim3VertexBinormal!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexBinormal); 
 			if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal); 
 		}
 
 		if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,0,0,(void*)vbo_offset->tangent);
-		if (shader->var_locs.dim3VertexBinormal!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexBinormal,3,GL_FLOAT,0,0,(void*)vbo_offset->binormal);
 		if (shader->var_locs.dim3VertexNormal!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,0,0,(void*)vbo_offset->normal);
 	}
 	else {
 		if (shader->normal_vertex_attrib_active) {
 			shader->normal_vertex_attrib_active=FALSE;
 			if (shader->var_locs.dim3VertexTangent!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent); 
-			if (shader->var_locs.dim3VertexBinormal!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexBinormal); 
 			if (shader->var_locs.dim3VertexNormal!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
 		}
 	}
@@ -536,6 +546,9 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 	shader->var_values.alpha=-1.0f;
 	shader->var_values.shine_factor=-1.0f;
 	shader->var_values.tint_col.r=shader->var_values.tint_col.g=shader->var_values.tint_col.b=-1.0f;
+	
+	shader->var_values.tangent.x=shader->var_values.tangent.y=shader->var_values.tangent.z=0.0f;
+	shader->var_values.normal.x=shader->var_values.normal.y=shader->var_values.normal.z=0.0f;
 
 	for (n=0;n!=max_shader_light;n++) {
 		shader->var_values.lights[n].light_map=-1;
