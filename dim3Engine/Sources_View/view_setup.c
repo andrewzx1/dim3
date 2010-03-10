@@ -230,7 +230,7 @@ bool view_mesh_in_draw_list(int mesh_idx)
 
 void view_add_mesh_draw_list(void)
 {
-	int					n,start_mesh_idx;
+	int					n,op_dist,start_mesh_idx;
 	double				d,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
 	
@@ -279,10 +279,21 @@ void view_add_mesh_draw_list(void)
 		else {
 			d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
 		}
-		
+
 			// sort meshes into drawing list
 
 		view_add_draw_list(view_render_type_mesh,n,d,0x0);
+
+			// setup override distance
+
+		if (!setup.distance_optimize_on) {
+			mesh->draw.dist_shader_override=FALSE;
+		}
+		else {
+			op_dist=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+			mesh->draw.dist_shader_override=(op_dist>map.settings.optimize_distance);
+		}
+
 	}
 }
 

@@ -488,14 +488,19 @@ typedef struct		{
 															load_path[1024];
 						bool								in_load;
 					} map_info_type;
-					
+
 typedef struct		{
-						int									light_map_quality,light_map_size,
-															light_map_pixel_border_count,light_map_blur_count;
+						int									quality,size,
+															pixel_border_count,blur_count;
+					} map_settings_light_map_type;
+
+typedef struct		{
+						int									optimize_distance;
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance,txt_scale_x,txt_scale_y;
 						bool								editor_link_always_start;
 						char								network_game_list[256];
+						map_settings_light_map_type			light_map;
 					} map_settings_type;
 					
 typedef struct		{

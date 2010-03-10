@@ -49,7 +49,8 @@ and can be sold or given away.
 #define ctrl_anisotropic_id					6
 #define ctrl_mipmap_id						7
 #define ctrl_compress_id					8
-#define ctrl_gamma_id						9
+#define ctrl_distance_optimize_id			9
+#define ctrl_gamma_id						10
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -163,6 +164,9 @@ void setup_game_video_pane(void)
 	y+=control_y_add;
 	element_checkbox_add("Texture Compression",setup.compress_on,ctrl_compress_id,x,y,TRUE);
 	element_enable(ctrl_compress_id,gl_check_texture_compress_ok());
+	y+=control_y_add;
+
+	element_checkbox_add("Distance Optimizations",setup.distance_optimize_on,ctrl_distance_optimize_id,x,y,TRUE);
 	y+=control_y_add;
 
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
@@ -720,6 +724,10 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_compress_id:
 			setup.compress_on=element_get_value(ctrl_compress_id);
+			break;
+
+		case ctrl_distance_optimize_id:
+			setup.distance_optimize_on=element_get_value(ctrl_distance_optimize_id);
 			break;
 
 		case ctrl_gamma_id:
