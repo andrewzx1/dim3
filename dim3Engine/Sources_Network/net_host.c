@@ -36,6 +36,7 @@ extern int					net_host_player_count;
 
 extern map_type				map;
 extern server_type			server;
+extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern hud_type				hud;
 
@@ -301,8 +302,11 @@ int net_host_thread(void *arg)
       
 ======================================================= */
 
-bool net_host_game_start(char *err_str)
+int net_host_game_start(char *err_str)
 {
+	int						player_uid;
+	network_request_join	request_join;
+
 		// initialize players
 		
 	net_host_player_initialize();
@@ -316,10 +320,33 @@ bool net_host_game_start(char *err_str)
 
 	if (!net_host_initialize(err_str)) {
 		net_host_player_shutdown();
-		return(FALSE);
+		return(-1);
 	}
+	
+		// attempt to connect to local server
 
-	return(TRUE);
+	strcpy(request_join.name,setup.network.name);
+	strcpy(request_join.vers,dim3_version);
+	request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
+	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
+
+	player_uid=net_host_client_handle_local_join(&request_join,err_str);
+	if (player_uid==-1) {
+		net_host_shutdown();
+		net_host_player_shutdown();
+		return(-1);
+	}
+	
+		// setup hosting flags
+
+	net_setup.host.hosting=TRUE;
+	net_setup.client.joined=TRUE;
+	net_setup.client.latency=0;
+	net_setup.player_uid=player_uid;
+
+	strcpy(net_setup.client.joined_ip,"127.0.0.1");
+
+	return(-1);
 }
 
 void net_host_game_end(void)
@@ -333,5 +360,10 @@ void net_host_game_end(void)
 	net_host_shutdown();
 	
 	net_host_player_shutdown();
+	
+		// make sure hosting flags are off
+		
+	net_setup.host.hosting=FALSE;
+	net_setup.client.joined=FALSE;
 }
 

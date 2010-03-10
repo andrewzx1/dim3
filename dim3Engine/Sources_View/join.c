@@ -665,14 +665,6 @@ void join_game(void)
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
-
-		// mark remote and joined
-		
-	net_setup.host.hosting=FALSE;
-	
-	net_setup.client.joined=TRUE;
-	net_setup.client.latency=0;
-	net_setup.player_uid=player_uid;
 	
 		// setup game type
 

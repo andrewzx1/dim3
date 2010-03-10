@@ -235,8 +235,8 @@ typedef struct		{
 															dim3CameraPosition,dim3AmbientColor,
 															dim3LightMapBoost,dim3ShineFactor,
 															dim3TintColor,dim3Alpha,
-															dim3Tangent,dim3Binormal,dim3Normal,
-															dim3VertexTangent,dim3VertexBinormal,dim3VertexNormal;
+															dim3Tangent,dim3Normal,
+															dim3VertexTangent,dim3VertexNormal;
 						shader_cached_var_light_loc			dim3Lights[max_shader_light];
 					} shader_cached_var_loc;
 
@@ -250,6 +250,7 @@ typedef struct		{
 typedef struct		{
 						float								alpha,shine_factor;
 						d3col								tint_col;
+						d3vct								tangent,normal;
 						shader_current_var_light_value		lights[max_shader_light];
 					} shader_current_var_value;
 

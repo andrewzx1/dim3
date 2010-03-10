@@ -148,6 +148,13 @@ int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_nam
 
 	remotes->count=(int)ntohs((short)reply_join.remotes.count);
 	if (remotes->count!=0) memmove(remotes->objects,reply_join.remotes.objects,(sizeof(network_request_object_add)*remotes->count));
+
+		// setup client joined flags
+		
+	net_setup.host.hosting=FALSE;
+	net_setup.client.joined=TRUE;
+	net_setup.client.latency=0;
+	net_setup.player_uid=player_uid;
 	
 	return(player_uid);
 }
@@ -155,4 +162,9 @@ int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_nam
 void net_client_join_host_end(void)
 {
 	net_close_socket(&client_socket);
+	
+		// turn off client joined flags
+		
+	net_setup.host.hosting=FALSE;
+	net_setup.client.joined=FALSE;
 }

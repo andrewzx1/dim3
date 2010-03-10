@@ -93,10 +93,6 @@ void model_move_single_tangent_space(model_mesh_type *mesh,model_draw_bone_type 
 	space->tangent.y=trig->tangent_space[idx].tangent.y;
 	space->tangent.z=trig->tangent_space[idx].tangent.z;
 
-	space->binormal.x=trig->tangent_space[idx].binormal.x;
-	space->binormal.y=trig->tangent_space[idx].binormal.y;
-	space->binormal.z=trig->tangent_space[idx].binormal.z;
-
 	space->normal.x=trig->tangent_space[idx].normal.x;
 	space->normal.y=trig->tangent_space[idx].normal.y;
 	space->normal.z=trig->tangent_space[idx].normal.z;
@@ -108,7 +104,6 @@ void model_move_single_tangent_space(model_mesh_type *mesh,model_draw_bone_type 
 		// move the space
 
 	model_move_single_tangent_space_vector(draw_bones,vertex,&space->tangent);
-	model_move_single_tangent_space_vector(draw_bones,vertex,&space->binormal);
 	model_move_single_tangent_space_vector(draw_bones,vertex,&space->normal);
 }
 
@@ -121,7 +116,7 @@ void model_move_single_tangent_space(model_mesh_type *mesh,model_draw_bone_type 
 void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
 	int						n,k,ntrig;
-	float					*pt,*pb,*pn;
+	float					*pt,*pn;
 	bool					no_sway;
 	model_mesh_type			*mesh;
 	model_trig_type			*trig;
@@ -140,7 +135,6 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	trig=mesh->trigs;
 
 	pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array;
-	pb=draw_setup->mesh_arrays[mesh_idx].gl_binormal_array;
 	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
 
 		// normals with sways
@@ -157,20 +151,14 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 				model_move_single_tangent_space(mesh,draw_setup->bones,trig,k,&space);
 
 				matrix_vertex_multiply(&sway_mat,&space.tangent.x,&space.tangent.y,&space.tangent.z);
-				matrix_vertex_multiply(&sway_mat,&space.binormal.x,&space.binormal.y,&space.binormal.z);
 				matrix_vertex_multiply(&sway_mat,&space.normal.x,&space.normal.y,&space.normal.z);
 
 				matrix_vertex_multiply(&rot_mat,&space.tangent.x,&space.tangent.y,&space.tangent.z);
-				matrix_vertex_multiply(&rot_mat,&space.binormal.x,&space.binormal.y,&space.binormal.z);
 				matrix_vertex_multiply(&rot_mat,&space.normal.x,&space.normal.y,&space.normal.z);
 
 				*pt++=space.tangent.x;
 				*pt++=space.tangent.y;
 				*pt++=space.tangent.z;
-
-				*pb++=space.binormal.x;
-				*pb++=space.binormal.y;
-				*pb++=space.binormal.z;
 
 				*pn++=space.normal.x;
 				*pn++=space.normal.y;
@@ -191,16 +179,11 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 			model_move_single_tangent_space(mesh,draw_setup->bones,trig,k,&space);
 
 			matrix_vertex_multiply(&rot_mat,&space.tangent.x,&space.tangent.y,&space.tangent.z);
-			matrix_vertex_multiply(&rot_mat,&space.binormal.x,&space.binormal.y,&space.binormal.z);
 			matrix_vertex_multiply(&rot_mat,&space.normal.x,&space.normal.y,&space.normal.z);
 
 			*pt++=space.tangent.x;
 			*pt++=space.tangent.y;
 			*pt++=space.tangent.z;
-
-			*pb++=space.binormal.x;
-			*pb++=space.binormal.y;
-			*pb++=space.binormal.z;
 
 			*pn++=space.normal.x;
 			*pn++=space.normal.y;

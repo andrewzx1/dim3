@@ -94,7 +94,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
 	strcat(buf,"uniform vec3 dim3CameraPosition");
-	if ((bump) || (spec)) strcat(buf,",dim3Tangent,dim3Binormal,dim3Normal");
+	if ((bump) || (spec)) strcat(buf,",dim3Tangent,dim3Normal");
 	strcat(buf,";\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
@@ -115,7 +115,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	
 	if ((bump) || (spec)) {
 		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3Tangent);\n");
-		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3Binormal);\n");
+		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*cross(dim3Normal,dim3Tangent));\n");
 		strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3Normal);\n");
 	}
 	
@@ -354,7 +354,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
 
 	strcat(buf,"attribute vec3 dim3VertexNormal");
-	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent,dim3VertexBinormal");
+	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
 	strcat(buf,";\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
@@ -374,7 +374,7 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	
 	if ((bump) || (spec)) {
 		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
-		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*dim3VertexBinormal);\n");
+		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*cross(dim3VertexNormal,dim3VertexTangent));\n");
 	}
 	
 	strcat(buf,"tangentSpaceNormal=normalize(gl_NormalMatrix*dim3VertexNormal);\n");	// always need normal for diffuse
