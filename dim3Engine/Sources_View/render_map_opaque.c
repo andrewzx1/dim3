@@ -51,8 +51,6 @@ extern void view_compile_gl_list_attach_uv_glow(void);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
-
-int m_simple_count,m_light_map_count,m_shader_count;		// supergumba -- testing
 		
 /* =======================================================
 
@@ -100,7 +98,7 @@ void render_opaque_mesh_simple(void)
 
 				// skip transparent or shader polys
 
-			if ((poly->draw.transparent_on) || ((!dim3_debug) && (poly->draw.shader_on))) {
+			if ((poly->draw.transparent_on) || ((!dim3_debug) && ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)))) {
 				poly++;
 				continue;
 			}
@@ -130,8 +128,6 @@ void render_opaque_mesh_simple(void)
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
-
-			m_simple_count++;
 		}
 	}
 
@@ -182,7 +178,7 @@ void render_opaque_mesh_light_map(void)
 
 				// skip transparent or shader polys
 
-			if ((poly->draw.transparent_on) || ((!dim3_debug) && (poly->draw.shader_on))) {
+			if ((poly->draw.transparent_on) || ((!dim3_debug) && ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)))) {
 				poly++;
 				continue;
 			}
@@ -214,8 +210,6 @@ void render_opaque_mesh_light_map(void)
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
-
-			m_light_map_count++;
 		}
 	}
 
@@ -265,7 +259,7 @@ void render_opaque_mesh_shader(void)
 
 				// skip transparent or non-shader polys
 
-			if ((poly->draw.transparent_on) || (!poly->draw.shader_on)) {
+			if ((poly->draw.transparent_on) || (!poly->draw.shader_on) || (mesh->draw.dist_shader_override)) {
 				poly++;
 				continue;
 			}
@@ -301,8 +295,6 @@ void render_opaque_mesh_shader(void)
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
-
-			m_shader_count++;
 		}
 	}
 
@@ -407,15 +399,11 @@ void render_map_mesh_opaque(void)
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 
-	m_simple_count=m_light_map_count=m_shader_count=0;
-	
 	render_opaque_mesh_simple();
 	if (!dim3_debug) {
 		render_opaque_mesh_light_map();
 		render_opaque_mesh_shader();
 	}
-
-	fprintf(stdout,"s=%d lm=%d shader=%d\n",m_simple_count,m_light_map_count,m_shader_count);
 	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_FALSE);
