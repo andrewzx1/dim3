@@ -477,7 +477,8 @@ typedef struct		{
 
 typedef struct		{
 						char					name[file_str_len];
-						bitmap_type				bitmap,bumpmap,specularmap,glowmap;
+						bitmap_type				bitmap,bumpmap,specularmap,glowmap,
+												combinemap;
 					} texture_frame_type;
 
 //

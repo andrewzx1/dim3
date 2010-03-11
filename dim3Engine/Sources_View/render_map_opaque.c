@@ -34,6 +34,12 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 
+#define render_map_opaque_mode_none					0
+#define render_map_opaque_mode_simple				1
+#define render_map_opaque_mode_light_map			2
+#define render_map_opaque_mode_shader				3
+#define render_map_opaque_mode_glow					4
+
 extern bool				dim3_debug;
 
 extern map_type			map;
@@ -41,6 +47,8 @@ extern server_type		server;
 extern setup_type		setup;
 extern camera_type		camera;
 extern view_type		view;
+
+int						opaque_cur_mode;
 
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
@@ -52,320 +60,303 @@ extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
 		
+
+
+// supergumba -- combined map
+
+unsigned char* bitmap_read_rgba_image(bitmap_type *bitmap)
+{
+	int						n,wid,high,sz;
+	unsigned char			*data,*data2,
+							*srce,*dest;
+
+		// memory for read
+
+	wid=bitmap->wid;
+	high=bitmap->high;
+
+	data=(unsigned char*)malloc((wid<<2)*high);
+	if (data==NULL) return(NULL);
+
+		// grab the texture
+
+	gl_texture_bind(0,bitmap->gl_id);		// supergumba -- don't use this when it's moved
+
+	if (bitmap->alpha_mode==alpha_mode_none) {
+		glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_UNSIGNED_BYTE,data);
+	}
+	else {
+		glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	}
+
+	gl_texture_clear(0);		// supergumba -- don't use this when it's moved
+
+		// if it already has an alpha,
+		// then return
+
+	if (bitmap->alpha_mode!=alpha_mode_none) return(data);
+
+		// create alpha
+
+	data2=(unsigned char*)malloc((wid<<2)*high);
+	if (data2==NULL) {
+		free(data);
+		return(NULL);
+	}
+
+	srce=data;
+	dest=data2;
+
+	sz=wid*high;
+
+	for (n=0;n!=sz;n++) {
+		/*
+		*dest++=*srce++;
+		*dest++=*srce++;
+		*dest++=*srce++;
+		*dest++=0xFF;
+		*/
+		*dest++=0x0;
+		*dest++=0xFF;
+		*dest++=0x0;
+		*dest++=0xFF;
+	}
+
+	free(data);
+
+	return(data2);
+}
+
+void test_create_combine(texture_type *texture,int frame,int anisotropic_mode,int mipmap_mode,bool compress_on)
+{
+	int						wid,high;
+	unsigned char			*col_data;
+
+
+		// get original texture sizes
+
+	wid=texture->frames[frame].bitmap.wid;
+	high=texture->frames[frame].bitmap.high;
+
+		// get color map
+
+	col_data=bitmap_read_rgba_image(&texture->frames[frame].bitmap);
+	if (col_data==NULL) return;
+
+
+
+		// if original had no alpha
+		// then strip it
+
+
+
+
+		// create new texture
+
+	bitmap_data(&texture->frames[frame].combinemap,col_data,wid,high,TRUE,anisotropic_mode,mipmap_mode,compress_on,FALSE);
+
+	free(col_data);
+
+}
+
+
+
+/* =======================================================
+
+      Enable and Disable Modes
+      
+======================================================= */
+
+void render_opaque_mode_switch(int mode)
+{
+		// change mode
+		
+	if (opaque_cur_mode!=mode) {
+		
+			// simple and light map need color pointer
+			
+		if ((opaque_cur_mode==render_map_opaque_mode_simple) || (opaque_cur_mode==render_map_opaque_mode_light_map)) {
+			if ((mode==render_map_opaque_mode_none) || (mode==render_map_opaque_mode_shader) || (mode==render_map_opaque_mode_glow)) {
+				view_compile_gl_list_disable_color();
+			}
+		}
+		else {
+			if ((mode==render_map_opaque_mode_simple) || (mode==render_map_opaque_mode_light_map)) {
+				view_compile_gl_list_enable_color();
+			}
+		}
+	
+			// turn off old mode
+		
+		switch (opaque_cur_mode) {
+		
+			case render_map_opaque_mode_simple:
+				gl_texture_opaque_end();
+				break;
+				
+			case render_map_opaque_mode_light_map:
+				gl_texture_opaque_light_map_end();
+				break;
+				
+			case render_map_opaque_mode_shader:
+				gl_shader_draw_end();
+				break;
+				
+			case render_map_opaque_mode_glow:
+				gl_texture_glow_end();
+				glDepthMask(GL_TRUE);
+				break;
+				
+		}
+			
+			// turn on new mode
+			
+		switch (mode) {
+		
+			case render_map_opaque_mode_simple:
+				gl_texture_opaque_start();
+				view_compile_gl_list_attach_uv_simple();
+				break;
+				
+			case render_map_opaque_mode_light_map:
+				gl_texture_opaque_light_map_start();
+				view_compile_gl_list_attach_uv_light_map();
+				break;
+				
+			case render_map_opaque_mode_shader:
+				gl_shader_draw_start();
+				view_compile_gl_list_attach_uv_shader();
+				break;
+				
+			case render_map_opaque_mode_glow:
+				gl_texture_glow_start();
+				view_compile_gl_list_attach_uv_glow();
+				glDepthMask(GL_FALSE);
+				break;
+				
+		}
+		
+		opaque_cur_mode=mode;
+	}
+}
+
 /* =======================================================
 
       Opaque Map Shaders
       
 ======================================================= */
 
-void render_opaque_mesh_simple(void)
+void render_opaque_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int							n,k,frame;
-	bool						first_draw;
+	int							frame;
 	GLuint						gl_id;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
 	texture_type				*texture;
 	
-		// only setup drawing if we actually
-		// have something to draw
+		// mode switch
 
-	first_draw=TRUE;
-	
-		// run through the meshes
+	render_opaque_mode_switch(render_map_opaque_mode_simple);
 
-	for (n=0;n!=view.render->draw_list.count;n++) {
-
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-
-		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
-
-			// only work on meshes that are opaque, have no
-			// light maps, and no shaders.  This method
-			// is also the catch all for debug mode
-
-		if (!mesh->draw.has_opaque) continue;
-		if (!dim3_debug) {
-			if (mesh->draw.has_light_map) continue;
-			if ((!mesh->draw.has_no_shader) && (!mesh->draw.dist_shader_override)) continue;
-		}
-
-			// run through the polys
-			
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// skip transparent or shader polys
-
-			if ((poly->draw.transparent_on) || ((!dim3_debug) && ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)))) {
-				poly++;
-				continue;
-			}
-
-				// time to turn on some gl pointers?
-
-			if (first_draw) {
-				first_draw=FALSE;
-				gl_texture_opaque_start();
-				view_compile_gl_list_attach_uv_simple();
-				view_compile_gl_list_enable_color();
-			}
-
-				// get texture
-				
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
-				gl_id=texture->frames[frame].bitmap.gl_id;
-			}
-
-			gl_texture_opaque_set(gl_id);
-
-				// draw polygon
-				
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-
-			poly++;
-		}
-	}
-
-		// was drawing started?
-
-	if (!first_draw) {
-		view_compile_gl_list_disable_color();
-		gl_texture_opaque_end();
-	}
-}
-
-void render_opaque_mesh_light_map(void)
-{
-	int							n,k,frame;
-	bool						first_draw;
-	GLuint						gl_id,lmap_gl_id;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	texture_type				*texture;
-	
-		// only setup drawing if we actually
-		// have something to draw
-
-	first_draw=TRUE;
-	
-		// run through the meshes
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-
-		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
-
-			// only work on meshes that are opaque, have a
-			// light map, and no shaders.
-
-		if (!mesh->draw.has_opaque) continue;
-		if (dim3_debug) continue;
-
-		if (!mesh->draw.has_light_map) continue;
-		if ((!mesh->draw.has_no_shader) && (!mesh->draw.dist_shader_override)) continue;
+		// get texture
 		
-			// run through the polys
-			
-		poly=mesh->polys;
+	texture=&map.textures[poly->txt_idx];
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// skip transparent or shader polys
-
-			if ((poly->draw.transparent_on) || ((!dim3_debug) && ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)))) {
-				poly++;
-				continue;
-			}
-
-				// time to turn on some gl pointers?
-
-			if (first_draw) {
-				first_draw=FALSE;
-				gl_texture_opaque_light_map_start();
-				view_compile_gl_list_attach_uv_light_map();
-				view_compile_gl_list_enable_color();
-			}
-
-				// get texture
-				
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
-				gl_id=texture->frames[frame].bitmap.gl_id;
-			}
-
-			lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
-
-			gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);
-
-				// draw polygon
-
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-
-			poly++;
-		}
+	if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
+		gl_id=texture->frames[frame].bitmap.gl_id;
 	}
 
-		// was drawing started?
+	gl_texture_opaque_set(gl_id);
 
-	if (!first_draw) {
-		view_compile_gl_list_disable_color();
-		gl_texture_opaque_light_map_end();
-	}
+		// draw polygon
+		
+	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }
 
-void render_opaque_mesh_shader(void)
+void render_opaque_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int						n,k,frame;
-	bool					first_draw;
+	int							frame;
+	GLuint						gl_id,lmap_gl_id;
+	texture_type				*texture;
+	
+		// mode switch
+
+	render_opaque_mode_switch(render_map_opaque_mode_light_map);
+
+		// get texture
+		
+	texture=&map.textures[poly->txt_idx];
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+	lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
+
+	if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
+		gl_id=texture->frames[frame].bitmap.gl_id;
+	}
+
+
+		// supergumba -- test!
+	if (texture->frames[frame].combinemap.gl_id==-1) {
+		test_create_combine(texture,frame,setup.anisotropic_mode,setup.mipmap_mode,setup.compress_on);
+	}
+	gl_id=texture->frames[frame].combinemap.gl_id;
+
+
+
+	gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);
+
+		// draw polygon
+
+	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+}
+
+void render_opaque_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	int						frame;
 	GLuint					gl_id;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
 	texture_type			*texture;
 	view_light_list_type	light_list;
 
-		// only setup drawing if we actually
-		// have something to draw
+		// mode switch
 
-	first_draw=TRUE;
-	
-		// run through the meshes
+	render_opaque_mode_switch(render_map_opaque_mode_shader);
 
-	for (n=0;n!=view.render->draw_list.count;n++) {
+		// setup shader
 
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+	texture=&map.textures[poly->txt_idx];
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+	gl_lights_build_from_poly(mesh_idx,poly,&light_list);
+	gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
 
-			// only work on meshes that are opaque and
-			// have a shader
+		// fix texture if any back rendering
 
-		if (!mesh->draw.has_opaque) continue;
-		if (dim3_debug) continue;
-		if ((!mesh->draw.has_shader) || (mesh->draw.dist_shader_override)) continue;
-
-			// run through the polys
-			
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// skip transparent or non-shader polys
-
-			if ((poly->draw.transparent_on) || (!poly->draw.shader_on) || (mesh->draw.dist_shader_override)) {
-				poly++;
-				continue;
-			}
-
-				// time to turn on some gl pointers?
-
-			if (first_draw) {
-				first_draw=FALSE;
-				gl_shader_draw_start();
-				view_compile_gl_list_attach_uv_shader();
-			}
-
-				// setup shader
-
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			gl_lights_build_from_poly(view.render->draw_list.items[n].idx,poly,&light_list);
-			gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
-			
-			if ((view.render->draw_list.items[n].idx==2) && (k==1)) {
-				fprintf(stdout,"2.1 = %d\n",light_list.nlight);	// supergumba
-			}
-
-				// fix texture if any back rendering
-
-			if (gl_back_render_get_texture(poly->camera,&gl_id)) {
-				gl_shader_texture_override(gl_id);
-			}
-
-				// draw polygon
-
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-
-			poly++;
-		}
+	if (gl_back_render_get_texture(poly->camera,&gl_id)) {
+		gl_shader_texture_override(gl_id);
 	}
 
-		// was drawing started?
+		// draw polygon
 
-	if (!first_draw) gl_shader_draw_end();
+	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }
 
-void render_opaque_mesh_glow(void)
+void render_opaque_mesh_glow(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int					n,k,frame;
-	bool				first_draw;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
+	int					frame;
 	texture_type		*texture;
 	
-		// only setup drawing if we actually
-		// have something to draw
+		// mode switch
 
-	first_draw=TRUE;
-	
-		// run through the meshes
+	render_opaque_mode_switch(render_map_opaque_mode_glow);
 
-	for (n=0;n!=view.render->draw_list.count;n++) {
+		// get texture
 
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+	texture=&map.textures[poly->txt_idx];
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+		// draw glow
 
-			// skip meshes with no glows or opaques
-
-		if ((!mesh->draw.has_opaque) || (!mesh->draw.has_glow)) continue;
-
-			// run through the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// skip transparent or non-glow polys
-
-			if ((poly->draw.transparent_on) || (!poly->draw.glow_on)) {
-				poly++;
-				continue;
-			}
-
-				// time to turn on some gl pointers?
-
-			if (first_draw) {
-				first_draw=FALSE;
-				gl_texture_glow_start();
-				view_compile_gl_list_attach_uv_glow();
-			}
-
-				// get texture
-
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-				// draw glow
-
-			gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-
-			poly++;
-		}
-	}
-
-		// was drawing started?
-
-	if (!first_draw) gl_texture_glow_end();
+	gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
+	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 }
 
 /* =======================================================
@@ -376,6 +367,10 @@ void render_opaque_mesh_glow(void)
 
 void render_map_mesh_opaque(void)
 {
+	int					n,k;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
 		// setup view
 
 	gl_3D_view();
@@ -393,24 +388,66 @@ void render_map_mesh_opaque(void)
 
 	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);
+
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
+
+		// remember current modes to
+		// reduce number of state switches
 		
-		// opaque meshes
+	opaque_cur_mode=render_map_opaque_mode_none;
 
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
+		// run through the polys
 
-	render_opaque_mesh_simple();
-	if (!dim3_debug) {
-		render_opaque_mesh_light_map();
-		render_opaque_mesh_shader();
+	for (n=0;n!=view.render->draw_list.count;n++) {
+
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+			// skip meshes with no opaques
+
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+		if (!mesh->draw.has_opaque) continue;
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// skip transparent polys
+
+			if (poly->draw.transparent_on) {
+				poly++;
+				continue;
+			}
+
+				// render the poly
+
+			if (dim3_debug) {
+				render_opaque_mesh_simple(mesh,poly);
+			}
+			else {
+				if ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)) {
+					render_opaque_mesh_shader(view.render->draw_list.items[n].idx,mesh,poly);
+				}
+				else {
+					if (poly->lmap_txt_idx!=-1) {
+						render_opaque_mesh_light_map(mesh,poly);
+					}
+					else {
+						render_opaque_mesh_simple(mesh,poly);
+					}
+				}
+			}
+
+			if (poly->draw.glow_on) render_opaque_mesh_glow(mesh,poly);
+
+			poly++;
+		}
 	}
-	
-	glDisable(GL_BLEND);
-	glDepthMask(GL_FALSE);
 
-	render_opaque_mesh_glow();
-
-	glDepthMask(GL_TRUE);
+		// turn off any mode left on
+		// from rendering
+		
+	render_opaque_mode_switch(render_map_opaque_mode_none);
 
 		// dettach any attached lists
 

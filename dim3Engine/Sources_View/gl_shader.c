@@ -39,8 +39,6 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-int							gl_shader_current_txt_idx,gl_shader_current_frame,
-							gl_shader_current_lmap_txt_idx;
 shader_type					*gl_shader_current;
 
 extern int					nuser_shader;
@@ -581,13 +579,6 @@ void gl_shader_draw_start(void)
 
 	gl_shader_current=NULL;
 
-		// only reset textures when
-		// needed
-	
-	gl_shader_current_txt_idx=-1;
-	gl_shader_current_frame=-1;
-	gl_shader_current_lmap_txt_idx=-1;
-
 		// make all textures replace
 		
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
@@ -640,23 +631,11 @@ void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx
 {
 	GLuint			gl_id;
 
-		// any changes?
-
-	if ((gl_shader_current_txt_idx==txt_idx) && (gl_shader_current_frame==frame) && (gl_shader_current_lmap_txt_idx==lmap_txt_idx)) return;
-
-	gl_shader_current_txt_idx=txt_idx;
-	gl_shader_current_frame=frame;
-	gl_shader_current_lmap_txt_idx=lmap_txt_idx;
-	
 		// extra texture map
 
 	if (lmap_txt_idx!=-1) {
 		gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
-
-		if (gl_id!=-1) {
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D,gl_id);
-		}
+		if (gl_id!=-1) gl_texture_bind(3,gl_id);
 	}
 	
 		// spec map
@@ -664,8 +643,7 @@ void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx
 	gl_id=texture->frames[frame].specularmap.gl_id;
 
 	if (gl_id!=-1) {
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D,gl_id);
+		gl_texture_bind(2,gl_id);
 		
 		if (shader->var_values.shine_factor!=texture->shine_factor) {
 			shader->var_values.shine_factor=texture->shine_factor;
@@ -676,34 +654,19 @@ void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx
 		// bump map
 
 	gl_id=texture->frames[frame].bumpmap.gl_id;
-
-	if (gl_id!=-1) {
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D,gl_id);
-	}
+	if (gl_id!=-1) gl_texture_bind(1,gl_id);
 	
 		// color map
 
 	gl_id=texture->frames[frame].bitmap.gl_id;
-
-	if (gl_id!=-1) {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,gl_id);
-	}
+	if (gl_id!=-1) gl_texture_bind(0,gl_id);
 }
 
 void gl_shader_texture_override(GLuint gl_id)
 {
 		// normally used to override for back rendering
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,gl_id);
-
-		// need to force a reset for next time
-
-	gl_shader_current_txt_idx=-1;
-	gl_shader_current_frame=-1;
-	gl_shader_current_lmap_txt_idx=-1;
+	gl_texture_bind(0,gl_id);
 }
 
 /* =======================================================
@@ -742,12 +705,6 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 			shader->per_scene_vars_set=TRUE;
 			gl_shader_set_scene_variables(shader,light_list);
 		}
-
-			// a shader change will force a texture
-			// change as certain variables might not
-			// be loaded in the texture
-
-		gl_shader_current_txt_idx=-1;
 	}
 	
 		// textures and per-texture variables

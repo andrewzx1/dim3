@@ -181,6 +181,8 @@ extern void gl_project_fix_rotation(int *x,int *y,int *z);
 	
 extern void gl_texture_initialize(void);
 extern void gl_texture_shutdown(void);
+extern void gl_texture_bind(int unit,GLuint txt_id);
+extern void gl_texture_clear(int unit);
 extern void gl_texture_opaque_start(void);
 extern void gl_texture_opaque_end(void);
 extern void gl_texture_opaque_set(GLuint txt_id);

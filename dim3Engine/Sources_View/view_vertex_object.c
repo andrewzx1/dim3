@@ -1024,7 +1024,7 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glBindTexture(GL_TEXTURE_2D,gl_id);
+	gl_texture_bind(0,gl_id);
 
 		// draw the quad
 
@@ -1041,7 +1041,6 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 
 		// finish texture draw
 	
-	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);
 
 	glDisable(GL_BLEND);
