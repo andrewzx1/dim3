@@ -137,7 +137,7 @@ GLuint gl_back_render_create_texture(void)
 	GLuint				gl_id;
 	
 	glGenTextures(1,&gl_id);
-	glBindTexture(GL_TEXTURE_2D,gl_id);
+	gl_texture_bind(0,gl_id);
 	
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
 
@@ -184,7 +184,7 @@ GLuint gl_back_render_create_texture(void)
 			
 	}
 	
-	glBindTexture(GL_TEXTURE_2D,0);
+	gl_texture_clear(0);
 	
 	return(gl_id);
 }
@@ -253,9 +253,9 @@ void gl_back_render_frame_node(char *node_name)
 
 		// generate mipmaps
 		
-	glBindTexture(GL_TEXTURE_2D,node->back_render.txt_id);
+	gl_texture_bind(0,node->back_render.txt_id);
 	glGenerateMipmapEXT(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,0);
+	gl_texture_clear(GL_TEXTURE_2D);
 	
 		// mark as rendered for this frame
 		

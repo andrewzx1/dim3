@@ -86,7 +86,7 @@ void gl_fs_shader_initialize(void)
 
 	glGenTextures(1,&fs_shader_txt_id);
 	
-	glBindTexture(GL_TEXTURE_2D,0);
+	gl_texture_clear(0);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id);
 	
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_RGBA,setup.screen.x_sz,setup.screen.y_sz,0,GL_RGBA,GL_UNSIGNED_BYTE,0);

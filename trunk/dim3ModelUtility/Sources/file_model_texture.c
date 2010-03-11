@@ -78,6 +78,7 @@ void model_textures_read(model_type *model)
 			bitmap_new(&frame->bumpmap);
 			bitmap_new(&frame->specularmap);
 			bitmap_new(&frame->glowmap);
+			bitmap_new(&frame->combinemap);
 			
 			frame++;
         }
@@ -94,7 +95,7 @@ void model_textures_read(model_type *model)
 				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,frame->name,"png");
 				bitmap_open(&frame->bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compress_on,FALSE,texture->pixelated,FALSE);
 
-				if ((!modelutility_settings.in_engine) || (modelutility_settings.glsl_ok)) {
+				if (!modelutility_settings.in_engine) {
 				
 						// bumpmap
 

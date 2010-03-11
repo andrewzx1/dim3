@@ -123,6 +123,7 @@ bool map_textures_read(map_type *map)
 			bitmap_new(&frame->bumpmap);
 			bitmap_new(&frame->specularmap);
 			bitmap_new(&frame->glowmap);
+			bitmap_new(&frame->combinemap);
 			
 			frame++;
 		}
@@ -142,7 +143,7 @@ bool map_textures_read(map_type *map)
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
 				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compress_on,FALSE,texture->pixelated,FALSE);
 			
-				if ((!maputility_settings.in_engine) || (maputility_settings.glsl_ok)) {
+				if (!maputility_settings.in_engine) {
 				
 						// bumpmap
 						

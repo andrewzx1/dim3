@@ -292,15 +292,7 @@ void render_transparent_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly
 	int						frame;
 	texture_type			*texture;
 
-		// skip meshes or polys with shaders
-		// or light maps unless debug is on
-
-	if (!dim3_debug) {
-		if (mesh->draw.has_light_map) return;
-		if ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)) return;
-	}
-	
-		// time to turn on some gl pointers?
+		// mode switches
 		
 	texture=&map.textures[poly->txt_idx];
 	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
@@ -318,15 +310,7 @@ void render_transparent_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *p
 	int						frame;
 	texture_type			*texture,*lm_texture;
 
-		// skip meshes or polys with no shaders
-		// unless debug is on
-
-	if (!dim3_debug) {
-		if (!mesh->draw.has_light_map) return;
-		if ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)) return;
-	}
-	
-		// time to turn on some gl pointers?
+		// mode switches
 
 	texture=&map.textures[poly->txt_idx];
 	lm_texture=&map.textures[poly->lmap_txt_idx];
@@ -346,11 +330,7 @@ void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_po
 	texture_type			*texture;
 	view_light_list_type	light_list;
 
-		// skip meshes or polys with no shaders
-
-	if ((!poly->draw.shader_on) || (mesh->draw.dist_shader_override)) return;
-
-		// time to turn on some gl pointers?
+		// mode switches
 
 	texture=&map.textures[poly->txt_idx];
 	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
@@ -370,11 +350,7 @@ void render_transparent_mesh_glow(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	int						frame;
 	texture_type			*texture;
 
-		// skip meshes or polys with no glows
-
-	if ((!mesh->draw.has_glow) || (!poly->draw.glow_on)) return;
-
-		// time to turn on some gl pointers?
+		// mode switches
 
 	texture=&map.textures[poly->txt_idx];
 	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
@@ -433,6 +409,8 @@ void render_map_mesh_transparent(void)
 	trans_cur_additive=FALSE;
 	
 		// run through the sorted meshes
+		// sorted polys are only transparent, so
+		// we don't need to check that
 		
 	sort_cnt=trans_sort.count;
 	sort_list=trans_sort.list;
@@ -441,13 +419,24 @@ void render_map_mesh_transparent(void)
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
 
-		render_transparent_mesh_simple(mesh,poly);
-		if (!dim3_debug) {
-			render_transparent_mesh_light_map(mesh,poly);
-			render_transparent_mesh_shader(sort_list[n].mesh_idx,mesh,poly);
+		if (dim3_debug) {
+			render_transparent_mesh_simple(mesh,poly);
 		}
-		
-		render_transparent_mesh_glow(mesh,poly);
+		else {
+			if ((poly->draw.shader_on) && (!mesh->draw.dist_shader_override)) {
+				render_transparent_mesh_shader(sort_list[n].mesh_idx,mesh,poly);
+			}
+			else {
+				if (poly->lmap_txt_idx!=-1) {
+					render_transparent_mesh_light_map(mesh,poly);
+				}
+				else {
+					render_transparent_mesh_simple(mesh,poly);
+				}
+			}
+		}
+
+		if (poly->draw.glow_on) render_transparent_mesh_glow(mesh,poly);
 	}
 	
 		// turn off any mode left on

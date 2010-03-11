@@ -39,8 +39,7 @@ extern render_info_type		render_info;
 bitmap_type					null_bitmap;
 
 float						gl_texture_current_alpha,gl_texture_current_glow_color;
-GLuint						gl_texture_current_txt_id,gl_texture_current_lmap_txt_id,
-							gl_texture_current_glow_id;
+GLuint						gl_texture_current_binds[4];
 
 /* =======================================================
 
@@ -50,15 +49,47 @@ GLuint						gl_texture_current_txt_id,gl_texture_current_lmap_txt_id,
 
 void gl_texture_initialize(void)
 {
+	int				n;
 	d3col			col;
 	
+		// a null bitmap for certain rendering
+		// operations
+
 	col.r=col.b=col.g=0.0f;
 	bitmap_color(&null_bitmap,&col);
+
+		// we keep track of all bound textures
+		// to reduce the number of bindings
+
+	for (n=0;n!=4;n++) {
+		gl_texture_current_binds[n]=-1;
+	}
 }
 
 void gl_texture_shutdown(void)
 {
 	bitmap_close(&null_bitmap);
+}
+
+/* =======================================================
+
+      Texture Binding
+      
+======================================================= */
+
+inline void gl_texture_bind(int unit,GLuint txt_id)
+{
+	if (gl_texture_current_binds[unit]==txt_id) return;
+
+	gl_texture_current_binds[unit]=txt_id;
+
+	glActiveTexture(GL_TEXTURE0+unit);
+	glBindTexture(GL_TEXTURE_2D,txt_id);
+}
+
+inline void gl_texture_clear(int unit)
+{
+	gl_texture_bind(unit,0);
 }
 
 /* =======================================================
@@ -75,8 +106,6 @@ inline void gl_texture_opaque_start(void)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-
-	gl_texture_current_txt_id=-1;
 }
 
 inline void gl_texture_opaque_end(void)
@@ -88,10 +117,7 @@ inline void gl_texture_opaque_end(void)
 
 inline void gl_texture_opaque_set(GLuint txt_id)
 {
-	if (txt_id!=gl_texture_current_txt_id) {
-		gl_texture_current_txt_id=txt_id;
-		glBindTexture(GL_TEXTURE_2D,txt_id);
-	}
+	gl_texture_bind(0,txt_id);
 }
 
 /* =======================================================
@@ -137,9 +163,6 @@ inline void gl_texture_opaque_light_map_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-
-	gl_texture_current_txt_id=-1;
-	gl_texture_current_lmap_txt_id=-1;
 }
 
 inline void gl_texture_opaque_light_map_end(void)
@@ -155,19 +178,8 @@ inline void gl_texture_opaque_light_map_end(void)
 
 inline void gl_texture_opaque_light_map_set(GLuint txt_id,GLuint lmap_txt_id)
 {
-	if (lmap_txt_id!=gl_texture_current_lmap_txt_id) {
-		gl_texture_current_lmap_txt_id=lmap_txt_id;
-		
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,lmap_txt_id);
-	}
-
-	if (txt_id!=gl_texture_current_txt_id) {
-		gl_texture_current_txt_id=txt_id;
-
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D,txt_id);
-	}
+	gl_texture_bind(0,lmap_txt_id);
+	gl_texture_bind(1,txt_id);
 }
 
 /* =======================================================
@@ -198,7 +210,6 @@ inline void gl_texture_transparent_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
 
-	gl_texture_current_txt_id=-1;
 	gl_texture_current_alpha=-1.0f;
 }
 
@@ -212,10 +223,7 @@ inline void gl_texture_transparent_set(GLuint txt_id,float alpha)
 {
 	GLfloat			col4[4];
 	
-	if (txt_id!=gl_texture_current_txt_id) {
-		gl_texture_current_txt_id=txt_id;
-		glBindTexture(GL_TEXTURE_2D,txt_id);
-	}
+	gl_texture_bind(0,txt_id);
 	
 	if (alpha!=gl_texture_current_alpha) {
 		gl_texture_current_alpha=alpha;
@@ -273,8 +281,6 @@ inline void gl_texture_transparent_light_map_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
 
-	gl_texture_current_txt_id=-1;
-	gl_texture_current_lmap_txt_id=-1;
 	gl_texture_current_alpha=-1.0f;
 }
 
@@ -293,19 +299,8 @@ inline void gl_texture_transparent_light_map_set(GLuint txt_id,GLuint lmap_txt_i
 {
 	GLfloat			col4[4];
 
-	if (lmap_txt_id!=gl_texture_current_lmap_txt_id) {
-		gl_texture_current_lmap_txt_id=lmap_txt_id;
-		
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,lmap_txt_id);
-	}
-
-	if (txt_id!=gl_texture_current_txt_id) {
-		gl_texture_current_txt_id=txt_id;
-
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D,txt_id);
-	}
+	gl_texture_bind(0,lmap_txt_id);
+	gl_texture_bind(1,txt_id);
 	
 	if (alpha!=gl_texture_current_alpha) {
 		gl_texture_current_alpha=alpha;
@@ -364,8 +359,6 @@ inline void gl_texture_glow_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_PREVIOUS);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
 
-	gl_texture_current_txt_id=-1;
-	gl_texture_current_glow_id=-1;
 	gl_texture_current_glow_color=-1.0f;
 }
 
@@ -386,17 +379,8 @@ inline void gl_texture_glow_set(GLuint txt_id,GLuint glow_id,float glow_color)
 {
 	GLfloat			col4[4];
 
-	if (glow_id!=gl_texture_current_glow_id) {
-		gl_texture_current_glow_id=glow_id;
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D,glow_id);
-	}
-
-	if (txt_id!=gl_texture_current_txt_id) {
-		gl_texture_current_txt_id=txt_id;
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D,txt_id);
-	}
+	gl_texture_bind(0,glow_id);
+	gl_texture_bind(1,txt_id);
 	
 	if (glow_color!=gl_texture_current_glow_color) {
 		gl_texture_current_glow_color=glow_color;
@@ -436,8 +420,6 @@ void gl_texture_decal_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
-
-	gl_texture_current_txt_id=-1;
 }
 
 void gl_texture_decal_end(void)
@@ -451,10 +433,7 @@ inline void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alp
 
 		// texture
 
-	if (txt_id!=gl_texture_current_txt_id) {
-		gl_texture_current_txt_id=txt_id;
-		glBindTexture(GL_TEXTURE_2D,txt_id);
-	}
+	gl_texture_bind(0,txt_id);
 	
 		// color and alpha
 	 
@@ -511,7 +490,7 @@ void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,floa
 	
 		// set the texture
 		
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(0,txt_id);
 	
 		// set the clamping
 		
@@ -548,7 +527,7 @@ void gl_texture_movie_start(GLuint txt_id)
 	
 		// movie texture
 		
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(0,txt_id);
 	
 		// texture combines
 	
