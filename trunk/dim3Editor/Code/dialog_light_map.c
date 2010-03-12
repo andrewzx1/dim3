@@ -98,16 +98,16 @@ bool dialog_light_map_run(void)
 	
 	size=0;
 	for (n=0;n!=4;n++) {
-		if (map.settings.light_map_size==size_list[n]) {
+		if (map.settings.light_map.size==size_list[n]) {
 			size=n;
 			break;
 		}
 	}
 	
 	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,size);
-	dialog_set_value(dialog_light_map_wind,kLightMapQuality,0,map.settings.light_map_quality);
-	dialog_set_value(dialog_light_map_wind,kLightMapSmearCount,0,map.settings.light_map_pixel_border_count);
-	dialog_set_value(dialog_light_map_wind,kLightMapBlurCount,0,map.settings.light_map_blur_count);
+	dialog_set_value(dialog_light_map_wind,kLightMapQuality,0,map.settings.light_map.quality);
+	dialog_set_value(dialog_light_map_wind,kLightMapSmearCount,0,map.settings.light_map.pixel_border_count);
+	dialog_set_value(dialog_light_map_wind,kLightMapBlurCount,0,map.settings.light_map.blur_count);
 	
 		// show window
 		
@@ -138,10 +138,10 @@ bool dialog_light_map_run(void)
 	
 		// run the light map generate
 		
-	map.settings.light_map_size=size;
-	map.settings.light_map_quality=quality;
-	map.settings.light_map_pixel_border_count=pixel_border_count;
-	map.settings.light_map_blur_count=blur_count;
+	map.settings.light_map.size=size;
+	map.settings.light_map.quality=quality;
+	map.settings.light_map.pixel_border_count=pixel_border_count;
+	map.settings.light_map.blur_count=blur_count;
 
 	ok=light_maps_create(err_str);
 	if (!ok) dialog_alert("Can not build light maps",err_str);
