@@ -506,6 +506,8 @@ extern void bitmap_new(bitmap_type *bitmap);
 extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle,bool pixelated,bool scrub_black_to_alpha,bool keep_pixel_data);
 extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
 extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle);
+extern void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bumpmap,bitmap_type *specularmap,int anisotropic_mode,int mipmap_mode,bool compress_on);
+extern void bitmap_free_pixel_data(bitmap_type *bitmap);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,int tick);

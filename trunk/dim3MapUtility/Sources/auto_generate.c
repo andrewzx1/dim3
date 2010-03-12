@@ -1574,21 +1574,24 @@ bool map_auto_generate_test(map_type *map)
 
 		// setup textures
 
-	strcpy(map->textures[0].frames[0].name,"demo_main_wall");
-	strcpy(map->textures[1].frames[0].name,"demo_main_floor");
-	strcpy(map->textures[2].frames[0].name,"demo_ceiling");
-	strcpy(map->textures[3].frames[0].name,"demo_corridor_wall");
-	strcpy(map->textures[4].frames[0].name,"demo_second_story");
-	strcpy(map->textures[5].frames[0].name,"demo_chain_link");
-	strcpy(map->textures[6].frames[0].name,"demo_door");
-	strcpy(map->textures[7].frames[0].name,"demo_steps");
-	strcpy(map->textures[8].frames[0].name,"demo_ramp");
-	strcpy(map->textures[9].frames[0].name,"demo_column");
-	strcpy(map->textures[10].frames[0].name,"demo_column_base");
-	strcpy(map->textures[11].frames[0].name,"demo_frame");
-	strcpy(map->textures[12].frames[0].name,"demo_corridor_floor");
-	strcpy(map->textures[13].frames[0].name,"demo_water");
-	strcpy(map->textures[14].frames[0].name,"demo_sky");
+	strcpy(map->textures[0].frames[0].name,"Walls/wall_1");
+	strcpy(map->textures[1].frames[0].name,"Walls/wall_2");
+	strcpy(map->textures[2].frames[0].name,"Floors/floor_1");
+	strcpy(map->textures[3].frames[0].name,"Ceilings/ceiling_1");
+	strcpy(map->textures[4].frames[0].name,"Ceilings/ceiling_2");
+	strcpy(map->textures[5].frames[0].name,"Walls/wall_3");
+	strcpy(map->textures[6].frames[0].name,"Floors/floor_3");
+	strcpy(map->textures[7].frames[0].name,"Floors/floor_2");
+	strcpy(map->textures[8].frames[0].name,"Misc/frame");
+	strcpy(map->textures[9].frames[0].name,"Misc/door");
+	strcpy(map->textures[10].frames[0].name,"Misc/chain_link");
+	strcpy(map->textures[11].frames[0].name,"Misc/stairs");
+	strcpy(map->textures[12].frames[0].name,"Misc/ramp");
+	strcpy(map->textures[13].frames[0].name,"Misc/column");
+	strcpy(map->textures[14].frames[0].name,"Misc/column_base");
+	strcpy(map->textures[15].frames[0].name,"Misc/rails");
+	strcpy(map->textures[16].frames[0].name,"Misc/water");
+	strcpy(map->textures[31].frames[0].name,"Misc/sky");
 
 		// setup auto generation values
 
@@ -1617,21 +1620,21 @@ bool map_auto_generate_test(map_type *map)
 	ags.stair_type=ag_stair_type_stair;
 	
 	ags.texture.portal_wall=0;
-	ags.texture.portal_wall_2=10;
-	ags.texture.portal_floor=1;
-	ags.texture.portal_ceiling_1=2;
-	ags.texture.portal_ceiling_2=2;
-	ags.texture.steps=7;
-	ags.texture.ramp=8;
-	ags.texture.column=9;
-	ags.texture.column_base=10;
-	ags.texture.corridor_wall_ceiling=3;
-	ags.texture.corridor_floor=12;
-	ags.texture.window=5;
-	ags.texture.door=6;
-	ags.texture.second_story=4;
-	ags.texture.frame=11;
-	ags.texture.rails=11;
+	ags.texture.portal_wall_2=1;
+	ags.texture.portal_floor=2;
+	ags.texture.portal_ceiling_1=3;
+	ags.texture.portal_ceiling_2=4;
+	ags.texture.corridor_wall_ceiling=5;
+	ags.texture.corridor_floor=6;
+	ags.texture.second_story=7;
+	ags.texture.frame=8;
+	ags.texture.door=9;
+	ags.texture.window=10;
+	ags.texture.steps=11;
+	ags.texture.ramp=12;
+	ags.texture.column=13;
+	ags.texture.column_base=14;
+	ags.texture.rails=15;
 	
 	strcpy(ags.sound.door,"Door");
 	strcpy(ags.sound.lift,"Lift");

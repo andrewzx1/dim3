@@ -59,107 +59,6 @@ extern void view_compile_gl_list_attach_uv_glow(void);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
-		
-
-
-// supergumba -- combined map
-
-unsigned char* bitmap_read_rgba_image(bitmap_type *bitmap)
-{
-	int						n,wid,high,sz;
-	unsigned char			*data,*data2,
-							*srce,*dest;
-
-		// memory for read
-
-	wid=bitmap->wid;
-	high=bitmap->high;
-
-	data=(unsigned char*)malloc((wid<<2)*high);
-	if (data==NULL) return(NULL);
-
-		// grab the texture
-
-	gl_texture_bind(0,bitmap->gl_id);		// supergumba -- don't use this when it's moved
-
-	if (bitmap->alpha_mode==alpha_mode_none) {
-		glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_UNSIGNED_BYTE,data);
-	}
-	else {
-		glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
-	}
-
-	gl_texture_clear(0);		// supergumba -- don't use this when it's moved
-
-		// if it already has an alpha,
-		// then return
-
-	if (bitmap->alpha_mode!=alpha_mode_none) return(data);
-
-		// create alpha
-
-	data2=(unsigned char*)malloc((wid<<2)*high);
-	if (data2==NULL) {
-		free(data);
-		return(NULL);
-	}
-
-	srce=data;
-	dest=data2;
-
-	sz=wid*high;
-
-	for (n=0;n!=sz;n++) {
-		/*
-		*dest++=*srce++;
-		*dest++=*srce++;
-		*dest++=*srce++;
-		*dest++=0xFF;
-		*/
-		*dest++=0x0;
-		*dest++=0xFF;
-		*dest++=0x0;
-		*dest++=0xFF;
-	}
-
-	free(data);
-
-	return(data2);
-}
-
-void test_create_combine(texture_type *texture,int frame,int anisotropic_mode,int mipmap_mode,bool compress_on)
-{
-	int						wid,high;
-	unsigned char			*col_data;
-
-
-		// get original texture sizes
-
-	wid=texture->frames[frame].bitmap.wid;
-	high=texture->frames[frame].bitmap.high;
-
-		// get color map
-
-	col_data=bitmap_read_rgba_image(&texture->frames[frame].bitmap);
-	if (col_data==NULL) return;
-
-
-
-		// if original had no alpha
-		// then strip it
-
-
-
-
-		// create new texture
-
-	bitmap_data(&texture->frames[frame].combinemap,col_data,wid,high,TRUE,anisotropic_mode,mipmap_mode,compress_on,FALSE);
-
-	free(col_data);
-
-}
-
-
 
 /* =======================================================
 
@@ -262,7 +161,12 @@ void render_opaque_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 	if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
-		gl_id=texture->frames[frame].bitmap.gl_id;
+		if (texture->frames[frame].combinemap.gl_id==-1) {
+			gl_id=texture->frames[frame].bitmap.gl_id;
+		}
+		else {
+			gl_id=texture->frames[frame].combinemap.gl_id;
+		}
 	}
 
 	gl_texture_opaque_set(gl_id);
@@ -290,17 +194,13 @@ void render_opaque_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
 
 	if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
-		gl_id=texture->frames[frame].bitmap.gl_id;
+		if (texture->frames[frame].combinemap.gl_id==-1) {
+			gl_id=texture->frames[frame].bitmap.gl_id;
+		}
+		else {
+			gl_id=texture->frames[frame].combinemap.gl_id;
+		}
 	}
-
-
-		// supergumba -- test!
-
-	if (texture->frames[frame].combinemap.gl_id==-1) {
-		test_create_combine(texture,frame,setup.anisotropic_mode,setup.mipmap_mode,setup.compress_on);
-	}
-	gl_id=texture->frames[frame].combinemap.gl_id;
-
 
 	gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);
 
