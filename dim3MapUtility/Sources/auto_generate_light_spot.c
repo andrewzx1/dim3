@@ -46,6 +46,7 @@ extern auto_generate_box_type			ag_boxes[max_ag_box];
 void map_auto_generate_lights(map_type *map)
 {
 	int						n,x,z,y,intensity;
+	float					exp;
 	double					dx,dz;
 	auto_generate_box_type	*portal;
 	map_light_type			*lit;
@@ -65,10 +66,26 @@ void map_auto_generate_lights(map_type *map)
 		y=portal->min.y+((portal->max.y-portal->min.y)>>2);		// near top of room
 		
 			// get intensity
+			// corridors always stay within corridor
+			// and have hard lights
 			
 		dx=(portal->max.x-portal->min.x);
 		dz=(portal->max.z-portal->min.z);
-		intensity=(int)((float)(sqrt((dx*dx)+(dz*dz)))*ag_settings.light_boost);
+
+		if (portal->corridor_flag!=ag_corridor_flag_portal) {
+			if (dx>dz) {
+				intensity=(int)(((float)dx)*0.45f);
+			}
+			else {
+				intensity=(int)(((float)dz)*0.45f);
+			}
+			exp=0.0f;
+		}
+		else {
+			intensity=(int)((float)(sqrt((dx*dx)+(dz*dz)))*ag_settings.light_boost);
+			exp=1.0f;
+		}
+
 		if (intensity<0) continue;
 		
 			// create the light
@@ -84,7 +101,7 @@ void map_auto_generate_lights(map_type *map)
 		lit->direction=ld_all;
 		lit->col.r=lit->col.g=lit->col.b=1.0f;
 		lit->intensity=intensity;
-		lit->exponent=1.0f;
+		lit->exponent=exp;
 		lit->name[0]=0x0;
 		lit->on=TRUE;
 

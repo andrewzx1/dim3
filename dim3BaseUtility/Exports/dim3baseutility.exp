@@ -193,6 +193,8 @@ _bitmap_new
 _bitmap_open
 _bitmap_color
 _bitmap_data
+_bitmap_combine
+_bitmap_free_pixel_data
 _bitmap_close
 
 _bitmap_texture_setup_animation

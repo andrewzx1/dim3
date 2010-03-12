@@ -326,17 +326,133 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 
 /* =======================================================
 
+      Combine Bitmaps
+      
+======================================================= */
+
+void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bumpmap,bitmap_type *specularmap,int anisotropic_mode,int mipmap_mode,bool compress_on)
+{
+	int					n,k,wid,high,pixel_cnt,data_sz,pi;
+	float				f,pf[3];
+	unsigned char		*data,*srce,*dest;
+	d3vct				normal,bump;
+
+		// only works if all maps have
+		// same width/height
+
+	wid=bitmap->wid;
+	high=bitmap->high;
+
+	if (bumpmap->gl_id!=-1) {
+		if ((bumpmap->wid!=wid) || (bumpmap->high!=high)) return;
+	}
+	if (specularmap->gl_id!=-1) {
+		if ((specularmap->wid!=wid) || (specularmap->high!=high)) return;
+	}
+
+		// create combined texture
+		// this is used for simple non-shader drawing
+
+	pixel_cnt=wid*high;
+
+	if (bitmap->alpha_mode!=alpha_mode_none) {
+		data_sz=pixel_cnt*4;
+	}
+	else {
+		data_sz=pixel_cnt*3;
+	}
+
+	data=(unsigned char*)malloc(data_sz);
+	if (data==NULL) return;
+
+		// the bitmap
+
+	memmove(data,bitmap->pixel_data,data_sz);
+
+		// the bump
+
+	if (bumpmap->gl_id!=-1) {
+		
+			// our fake normal
+
+		normal.x=normal.y=0.0f;
+		normal.z=1.0f;
+
+		dest=data;
+		srce=bumpmap->pixel_data;
+
+		for (n=0;n!=pixel_cnt;n++) {
+
+				// unpack the bump normal
+
+			bump.x=((((float)*srce++)/255.0f)*2.0f)-1.0f;
+			bump.y=((((float)*srce++)/255.0f)*2.0f)-1.0f;
+			bump.z=((((float)*srce++)/255.0f)*2.0f)-1.0f;
+			vector_normalize(&bump);
+
+			if (bumpmap->alpha_mode!=alpha_mode_none) srce++;
+
+				// get the dot3
+
+			f=vector_dot_product(&normal,&bump);
+
+				// multiply it into bitmap
+
+			pf[0]=((float)*dest)/255.0f;
+			pf[1]=((float)*(dest+1))/255.0f;
+			pf[2]=((float)*(dest+2))/255.0f;
+
+			*dest++=(int)((pf[0]*f)*255.0f);
+			*dest++=(int)((pf[1]*f)*255.0f);
+			*dest++=(int)((pf[2]*f)*255.0f);
+
+			if (bitmap->alpha_mode!=alpha_mode_none) dest++;
+		}
+	}
+
+		// the specular
+
+	if (specularmap->gl_id!=-1) {
+
+		dest=data;
+		srce=specularmap->pixel_data;
+
+		for (n=0;n!=pixel_cnt;n++) {
+
+			for (k=0;k!=3;k++) {
+				pi=((int)*dest)+((int)*srce++);
+				if (pi>255) pi=255;
+				*dest++=(unsigned char)pi;
+			}
+
+			if (specularmap->alpha_mode!=alpha_mode_none) srce++;
+			if (bitmap->alpha_mode!=alpha_mode_none) dest++;
+		}
+	}
+
+		// and finally make the combine bitmap
+
+	bitmap_data(combinemap,data,wid,high,(bitmap->alpha_mode!=alpha_mode_none),anisotropic_mode,mipmap_mode,compress_on,FALSE);
+}
+
+/* =======================================================
+
       Close Bitmaps
       
 ======================================================= */
 
+void bitmap_free_pixel_data(bitmap_type *bitmap)
+{
+	if (bitmap->pixel_data!=NULL) free(bitmap->pixel_data);
+	bitmap->pixel_data=NULL;
+}
+
 void bitmap_close(bitmap_type *bitmap)
 {
+	bitmap_free_pixel_data(bitmap);
+
 	if (bitmap->gl_id!=-1) bitmap_texture_close(bitmap);
-	if (bitmap->pixel_data!=NULL) free(bitmap->pixel_data);
-	
 	bitmap->gl_id=-1;
-	bitmap->pixel_data=NULL;
 }
 
 /* =======================================================
