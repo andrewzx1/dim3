@@ -38,6 +38,8 @@ and can be sold or given away.
 void bitmap_new(bitmap_type *bitmap)
 {
 	bitmap->wid=bitmap->high=0;
+	bitmap->pixel_data=NULL;
+	bitmap->alpha_mode=alpha_mode_none;
 	bitmap->gl_id=-1;
 }
 
@@ -196,7 +198,7 @@ unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned ch
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle,bool pixelated,bool scrub_black_to_alpha,bool keep_pixel_data)
 {
 	unsigned char		*png_data,*strip_data;
 	bool				ok,alpha_channel;
@@ -243,7 +245,16 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 		
 	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,compress_on,rectangle,pixelated);
 
-	free(png_data);
+		// can return pixel data if requested,
+		// otherwise free it
+		
+	if (keep_pixel_data) {
+		bitmap->pixel_data=png_data;
+	}
+	else {
+		bitmap->pixel_data=NULL;
+		free(png_data);
+	}
 	
 	return(ok);
 }
@@ -261,6 +272,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
 	bool			ok;
 	
 	bitmap->wid=bitmap->high=32;
+	bitmap->pixel_data=NULL;
 	bitmap->alpha_mode=alpha_mode_none;
 	
 	png_data=malloc((32*32)*3);
@@ -295,6 +307,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 {
 	bitmap->wid=wid;
 	bitmap->high=high;
+	bitmap->pixel_data=NULL;
 
 		// if not a rectangle, fix size
 		// if not a power of two
@@ -320,8 +333,10 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 void bitmap_close(bitmap_type *bitmap)
 {
 	if (bitmap->gl_id!=-1) bitmap_texture_close(bitmap);
+	if (bitmap->pixel_data!=NULL) free(bitmap->pixel_data);
 	
 	bitmap->gl_id=-1;
+	bitmap->pixel_data=NULL;
 }
 
 /* =======================================================

@@ -45,6 +45,7 @@ extern map_type				map;
 #define kMapResistance								FOUR_CHAR_CODE('rest')
 #define kMapTextureXFactor							FOUR_CHAR_CODE('trxf')
 #define kMapTextureYFactor							FOUR_CHAR_CODE('tryf')
+#define kMapOptimizeDistance						FOUR_CHAR_CODE('opdt')
 #define kMapGameTypeList							FOUR_CHAR_CODE('gtyp')
 #define kMapEditorLinkStartAlways					FOUR_CHAR_CODE('elss')
 
@@ -201,6 +202,7 @@ bool dialog_map_settings_run(void)
 	dialog_set_float(dialog_map_settings_wind,kMapResistance,0,map.settings.resistance);
 	dialog_set_float(dialog_map_settings_wind,kMapTextureXFactor,0,map.settings.txt_scale_x);
 	dialog_set_float(dialog_map_settings_wind,kMapTextureYFactor,0,map.settings.txt_scale_y);
+	dialog_set_int(dialog_map_settings_wind,kMapOptimizeDistance,0,map.settings.optimize_distance);
 	dialog_set_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list);
 	dialog_set_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0,map.settings.editor_link_always_start);
 	
@@ -323,6 +325,7 @@ bool dialog_map_settings_run(void)
 		map.settings.resistance=dialog_get_float(dialog_map_settings_wind,kMapResistance,0);
 		map.settings.txt_scale_x=dialog_get_float(dialog_map_settings_wind,kMapTextureXFactor,0);
 		map.settings.txt_scale_y=dialog_get_float(dialog_map_settings_wind,kMapTextureYFactor,0);
+		map.settings.optimize_distance=dialog_get_int(dialog_map_settings_wind,kMapOptimizeDistance,0);
 		dialog_get_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list,256);
 		map.settings.editor_link_always_start=dialog_get_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0);
 		

@@ -163,7 +163,7 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 	int				n,k,ntrig,
 					sx,sy,sz,lsz;
 	float			fx,fy,fz,fx2,fy2,fz2,flsz;
-	float			*pv,*pt,*pb,*pn;
+	float			*pv,*pt,*pn;
 	model_trig_type	*trig;
 	
 		// find normal line size
@@ -195,7 +195,6 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 		if (vertex_check_hide_mask_trig(mesh_idx,trig)) continue;
 		
 		pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array+(n*9);
-		pb=draw_setup->mesh_arrays[mesh_idx].gl_binormal_array+(n*9);
 		pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array+(n*9);
 
 		for (k=0;k!=3;k++) {

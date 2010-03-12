@@ -295,11 +295,11 @@ void render_opaque_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *poly)
 
 
 		// supergumba -- test!
+
 	if (texture->frames[frame].combinemap.gl_id==-1) {
 		test_create_combine(texture,frame,setup.anisotropic_mode,setup.mipmap_mode,setup.compress_on);
 	}
 	gl_id=texture->frames[frame].combinemap.gl_id;
-
 
 
 	gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);
