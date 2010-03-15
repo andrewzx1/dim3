@@ -46,7 +46,7 @@ bitmap_type					progress_bitmap;
       
 ======================================================= */
 
-void progress_initialize(char *action)
+void progress_initialize(char *action,char *map_name)
 {
 	char			path[1024];
 	bool			bitmap_ok;
@@ -60,8 +60,8 @@ void progress_initialize(char *action)
 		
 	bitmap_ok=FALSE;
 		
-	if (server.map_open) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds_Map",map.info.name,"png");
+	if (map_name!=NULL) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds_Map",map_name,"png");
 		bitmap_ok=bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE,FALSE);
 	}
 	

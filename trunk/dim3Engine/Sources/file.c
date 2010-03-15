@@ -261,7 +261,7 @@ bool game_file_save(char *err_str)
 	bool				ok;
 	file_save_header	head;
 	
-	progress_initialize("Saving");
+	progress_initialize("Saving",NULL);
 	progress_draw(5);
 	
 		// get saved data file names
@@ -399,7 +399,7 @@ bool game_file_load(char *file_name,char *err_str)
 	
 	game_file_pos=0;
 
-	progress_initialize("Loading");
+	progress_initialize("Loading",NULL);
 
 		// if game isn't running, then start
 		

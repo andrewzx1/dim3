@@ -496,8 +496,8 @@ void host_game_setup(void)
 
 void host_game(void)
 {
-	int						player_uid;
-	char					err_str[256];
+	int				player_uid;
+	char			err_str[256];
 	
 		// start hosting
 

@@ -181,14 +181,8 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 	
-	strcat(buf,"float att,dist");
-	if (bump) strcat(buf,",bump=0.0");
-	if (spec) strcat(buf,",specFactor=0.0");
-	strcat(buf,";\n");
-
-	strcat(buf,"vec3 ambient=dim3AmbientColor");
-	if (spec) strcat(buf,",specHalfVector,spec");
-	strcat(buf,";\n");
+	strcat(buf,"float att,dist;\n");
+	strcat(buf,"vec3 ambient=dim3AmbientColor;\n");
 
 		// the light map
 
@@ -206,12 +200,15 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 	if (bump) {
 		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,gl_TexCoord[0].st).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
+		strcat(buf,"float bump=0.0;\n");
+		strcat(buf,"float defBump=max(dot(vec3(0.0,0.0,0.5),bumpMap),0.0);\n");
 	}
 	
 		// the spec map
 		
 	if (spec) {
 		strcat(buf,"vec3 specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb;\n");
+		strcat(buf,"float specFactor=0.0;\n");
 	}
 	
 		// the texture lighting
@@ -225,42 +222,27 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 		sprintf(strchr(buf,0),"   att+=pow(att,dim3Light_%d.exponent);\n",n);
 		sprintf(strchr(buf,0),"   ambient+=(dim3Light_%d.color*att);\n",n);
 		strcat(buf,"  }\n");
-		
-			// bump
-			
-		if (bump) {
-			sprintf(strchr(buf,0),"   bump+=max(dot(normalize(lightVertexVector[%d]),bumpMap),0.0);\n",n);
-		}
-
-			// specular
-			
-		if (spec) {
-			sprintf(strchr(buf,0),"specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
-			strcat(buf,"specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
-			
-		}
-		
 		strcat(buf," }\n");
 		strcat(buf,"}\n");
-	}
-	
-		// special no light bump/spec
 		
-	if (nlight==0) {
-		if (bump) {
-			strcat(buf,"bump=max(dot(vec3(0.0,0.0,1.0),bumpMap),0.0);\n");
-		}
-		if (spec) {
-			strcat(buf,"specHalfVector=normalize(normalize(eyeVector)+vec3(0.0,0.0,1.0));\n");
-			strcat(buf,"specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
+			// bump and spec
+			
+		if (n==0) {
+			if (bump) sprintf(strchr(buf,0),"bump=max(dot(normalize(lightVertexVector[%d]),bumpMap),0.0);\n",n);
+			if (spec) {
+				sprintf(strchr(buf,0),"vec3 specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
+				strcat(buf,"specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
+			}
 		}
 	}
 	
 		// finish the spec
 		// need a pixel darkening to help even out
-		// switches between light sources
+		// switches between lights and no lights
 		
-	if (spec) strcat(buf,"spec=(specMap*pow(specFactor,dim3ShineFactor))*((ambient.r+ambient.g+ambient.b)*0.33);\n");
+	if ((bump) || (spec))  strcat(buf,"float litFact=(ambient.r+ambient.g+ambient.b)*0.33;\n");
+	if (bump) strcat(buf,"bump=(litFact*bump)+((1.0-litFact)*defBump);\n");
+	if (spec) strcat(buf,"vec3 spec=(specMap*pow(specFactor,dim3ShineFactor))*litFact;\n");
 
 		// output the fragment
 
@@ -271,8 +253,8 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 		strcat(buf,"vec3 frag=");
 	}
 	
-	if (bump) strcat(buf,"(");
 	if (spec) strcat(buf,"(");
+	if (bump) strcat(buf,"(");
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
@@ -439,30 +421,27 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
 	
-	strcat(buf,"float att,dist");
-	if (bump) strcat(buf,",bump=0.0");
-	if (spec) strcat(buf,",specFactor=0.0");
-	strcat(buf,";\n");
-
-	strcat(buf,"vec3 ambient=dim3AmbientColor");
-	if (spec) strcat(buf,",specHalfVector,spec");
-	strcat(buf,";\n");
+	strcat(buf,"float att,dist;\n");
+	strcat(buf,"vec3 ambient=dim3AmbientColor;\n");
 	
 		// the texture map
 		
 	strcat(buf,"vec4 tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
-		
+	
 		// the bump map
 		
 	if (bump) {
 		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,gl_TexCoord[0].st).rgb*2.0)-1.0);\n");
 		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
+		strcat(buf,"float bump=0.0;\n");
+		strcat(buf,"float defBump=max(dot(vec3(0.0,0.0,0.5),bumpMap),0.0);\n");
 	}
 	
 		// the spec map
 		
 	if (spec) {
 		strcat(buf,"vec3 specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb;\n");
+		strcat(buf,"float specFactor=0.0;\n");
 	}
 			
 		// diffuse
@@ -482,42 +461,27 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		sprintf(strchr(buf,0),"  att=1.0-(dist/dim3Light_%d.intensity);\n",n);
 		sprintf(strchr(buf,0),"  att+=pow(att,dim3Light_%d.exponent);\n",n);
 		sprintf(strchr(buf,0),"  ambient+=(dim3Light_%d.color*att);\n",n);
-		
-			// bump
-			
-		if (bump) {
-			sprintf(strchr(buf,0),"  bump+=max(dot(normalize(lightVertexVector[%d]),bumpMap),0.0);\n",n);
-		}
-
-			// specular
-			
-		if (spec) {
-			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
-			strcat(buf,"  specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
-			
-		}
-		
 		strcat(buf," }\n");
 		strcat(buf,"}\n");
-	}
-	
-		// special no light bump/spec
 		
-	if (nlight==0) {
-		if (bump) {
-			strcat(buf,"bump=max(dot(vec3(0.0,0.0,1.0),bumpMap),0.0);\n");
-		}
-		if (spec) {
-			strcat(buf,"specHalfVector=normalize(normalize(eyeVector)+vec3(0.0,0.0,1.0));\n");
-			strcat(buf,"specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
+			// bump and spec
+			
+		if (n==0) {
+			if (bump) sprintf(strchr(buf,0),"bump=max(dot(normalize(lightVertexVector[%d]),bumpMap),0.0);\n",n);
+			if (spec) {
+				sprintf(strchr(buf,0),"vec3 specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
+				strcat(buf,"specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
+			}
 		}
 	}
 	
 		// finish the spec
 		// need a pixel darkening to help even out
-		// switches between light sources
+		// switches between lights and no lights
 		
-	if (spec) strcat(buf,"spec=(specMap*pow(specFactor,dim3ShineFactor))*((ambient.r+ambient.g+ambient.b)*0.33);\n");
+	if ((bump) || (spec))  strcat(buf,"float litFact=(ambient.r+ambient.g+ambient.b)*0.33;\n");
+	if (bump) strcat(buf,"bump=(litFact*bump)+((1.0-litFact)*defBump);\n");
+	if (spec) strcat(buf,"vec3 spec=(specMap*pow(specFactor,dim3ShineFactor))*litFact;\n");
 
 		// output the fragment
 

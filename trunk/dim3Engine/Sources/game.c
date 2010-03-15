@@ -69,9 +69,6 @@ bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str)
 		// start progress
 	
 	console_add_system("Starting Game");
-		
-	progress_initialize("Starting");
-	progress_draw(0);
 
 		// start server
 	
@@ -99,11 +96,6 @@ bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str)
 void game_end(void)
 {
 	console_add_system("Closing Game");
-	
-		// blank progress
-		
-	progress_initialize("Ending");
-	progress_draw(0);
 	
 		// close any network joins or hosting
 	

@@ -68,7 +68,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
     
     tag=xml_findfirstchild("Settings",map_head);
     if (tag!=-1) {
-		map->settings.optimize_distance=xml_get_attribute_int_default(tag,"optimize_distance",100000);
+		map->settings.optimize_distance=xml_get_attribute_int_default(tag,"optimize_distance",150000);
 		map->settings.gravity=xml_get_attribute_float_default(tag,"gravity",1);
         map->settings.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32);
 		map->settings.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400);
