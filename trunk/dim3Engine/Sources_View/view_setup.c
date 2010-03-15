@@ -78,8 +78,8 @@ void view_create_area_mask(void)
 	for (n=0;n!=map.narea;n++) {
 		area=&map.areas[n];
 
-		if ((view.render->camera.pnt.x<area->lft) || (view.render->camera.pnt.x>area->rgt)) continue;
-		if ((view.render->camera.pnt.z<area->top) || (view.render->camera.pnt.z>area->bot)) continue;
+		if ((view.render->camera.pnt.x<area->min.x) || (view.render->camera.pnt.x>area->max.x)) continue;
+		if ((view.render->camera.pnt.z<area->min.z) || (view.render->camera.pnt.z>area->max.z)) continue;
 
 			// mark this area
 
@@ -93,7 +93,7 @@ void view_create_area_mask(void)
 		for (k=0;k!=map.narea;k++) {
 
 			if (k!=n) {
-				if ((area2->col.r==area->col.r) && (area2->col.g==area->col.g) && (area2->col.b==area->col.b)) view.render->area_mask[k]=0x1;
+				if ((area2->col_type==area->col_type)) view.render->area_mask[k]=0x1;
 			}
 
 			area2++;
@@ -113,14 +113,14 @@ bool view_area_check_mesh(map_mesh_type *mesh)
 
 		area=&map.areas[n];
 
-		if (((mesh->box.min.x>=area->lft) && (mesh->box.min.x<=area->rgt)) || ((mesh->box.max.x>=area->lft) && (mesh->box.max.x<=area->rgt))) {
-			if ((mesh->box.min.z>=area->top) && (mesh->box.min.z<=area->bot)) return(TRUE);
-			if ((mesh->box.max.z>=area->top) && (mesh->box.max.z<=area->bot)) return(TRUE);
+		if (((mesh->box.min.x>=area->min.x) && (mesh->box.min.x<=area->max.x)) || ((mesh->box.max.x>=area->min.x) && (mesh->box.max.x<=area->max.x))) {
+			if ((mesh->box.min.z>=area->min.z) && (mesh->box.min.z<=area->max.z)) return(TRUE);
+			if ((mesh->box.max.z>=area->min.z) && (mesh->box.max.z<=area->max.z)) return(TRUE);
 		}
 		
-		if (((area->lft>=mesh->box.min.x) && (area->lft<=mesh->box.max.x)) || ((area->rgt>=mesh->box.min.x) && (area->rgt<=mesh->box.max.x))) {
-			if ((area->top>=mesh->box.min.z) && (area->top<=mesh->box.max.z)) return(TRUE);
-			if ((area->bot>=mesh->box.min.z) && (area->bot<=mesh->box.max.z)) return(TRUE);
+		if (((area->min.x>=mesh->box.min.x) && (area->min.x<=mesh->box.max.x)) || ((area->max.x>=mesh->box.min.x) && (area->max.x<=mesh->box.max.x))) {
+			if ((area->min.z>=mesh->box.min.z) && (area->min.z<=mesh->box.max.z)) return(TRUE);
+			if ((area->max.z>=mesh->box.min.z) && (area->max.z<=mesh->box.max.z)) return(TRUE);
 		}
 	}
 
@@ -139,14 +139,14 @@ bool view_area_check_liquid(map_liquid_type *liq)
 
 		area=&map.areas[n];
 
-		if (((liq->lft>=area->lft) && (liq->lft<=area->rgt)) || ((liq->rgt>=area->lft) && (liq->rgt<=area->rgt))) {
-			if ((liq->top>=area->top) && (liq->top<=area->bot)) return(TRUE);
-			if ((liq->bot>=area->top) && (liq->bot<=area->bot)) return(TRUE);
+		if (((liq->lft>=area->min.x) && (liq->lft<=area->max.x)) || ((liq->rgt>=area->min.x) && (liq->rgt<=area->max.x))) {
+			if ((liq->top>=area->min.z) && (liq->top<=area->max.z)) return(TRUE);
+			if ((liq->bot>=area->min.z) && (liq->bot<=area->max.z)) return(TRUE);
 		}
 		
-		if (((area->lft>=liq->lft) && (area->lft<=liq->rgt)) || ((area->rgt>=liq->lft) && (area->rgt<=liq->rgt))) {
-			if ((area->top>=liq->top) && (area->top<=liq->bot)) return(TRUE);
-			if ((area->bot>=liq->top) && (area->bot<=liq->bot)) return(TRUE);
+		if (((area->min.x>=liq->lft) && (area->min.x<=liq->rgt)) || ((area->max.x>=liq->lft) && (area->max.x<=liq->rgt))) {
+			if ((area->min.z>=liq->top) && (area->min.z<=liq->bot)) return(TRUE);
+			if ((area->max.z>=liq->top) && (area->max.z<=liq->bot)) return(TRUE);
 		}
 	}
 
