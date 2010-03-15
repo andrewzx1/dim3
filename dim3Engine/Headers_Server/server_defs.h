@@ -199,10 +199,18 @@ and can be sold or given away.
 #define zoom_mode_out							3
 
 //
+// ray collision values
+//
+
+#define collide_obj_ray_half_sweep				40.0f
+#define collide_obj_ray_spindle_count			5
+#define collide_obj_ray_count					(collide_obj_ray_spindle_count*5)
+#define collide_obj_ray_spindle_size			((collide_obj_ray_half_sweep*2)/(collide_obj_ray_spindle_count-1))
+
+//
 // misc settings
 //
 
-#define ws_step_factor							4					// how much to reduce movement when wall sliding
 #define pd_parent_grace							100					// how long till projectile can strike parent again
 #define ci_object_click_angle					20.0f				// angle at which you can click an object
 
@@ -641,6 +649,15 @@ typedef struct		{
 					} obj_zoom_draw;
 
 //
+// object debug
+//
+
+typedef struct		{
+						d3pnt					collide_spt[collide_obj_ray_count],
+												collide_ept[collide_obj_ray_count];
+					} obj_debug;
+
+//
 // weapon/project common structures
 //
  
@@ -852,6 +869,7 @@ typedef struct		{
 						obj_remote				remote;
 						obj_score				score;
 						obj_scenery				scenery;
+						obj_debug				debug;
 					} obj_type;
 
 //

@@ -102,7 +102,7 @@ extern void shadow_render_mesh(int mesh_idx);
       
 ======================================================= */
 
-void view_draw_debug_bounding_box(obj_type *obj)
+void view_draw_object_debug_bounding_box(obj_type *obj)
 {
 	int				n,xsz,ysz,zsz,px[8],py[8],pz[8];
 	float			fx,fy,fz;
@@ -161,7 +161,7 @@ void view_draw_debug_bounding_box(obj_type *obj)
 	glLineWidth(1.0f);
 }
 
-void view_draw_object_path(obj_type *obj)
+void view_draw_object_debug_path(obj_type *obj)
 {
 	int				yadd;
 	d3pnt			pnt;
@@ -176,6 +176,32 @@ void view_draw_object_path(obj_type *obj)
 
 	glLineWidth(2.0f);
 	view_draw_next_vertex_object_3D_line(&col,1.0f,obj->pnt.x,(obj->pnt.y-yadd),obj->pnt.z,pnt.x,(pnt.y-yadd),pnt.z);
+	glLineWidth(1.0f);
+}
+
+void view_draw_object_debug_collision_ray(obj_type *obj)
+{
+	int			n;
+	d3pnt		*spt,*ept;
+	d3col		col;
+
+	if (obj->suspend) return;
+	if ((!obj->forward_move.moving) && (!obj->side_move.moving)) return;
+
+	col.r=col.b=1.0f;
+	col.g=0.0f;
+
+	spt=obj->debug.collide_spt;
+	ept=obj->debug.collide_ept;
+
+	glLineWidth(2.0f);
+
+	for (n=0;n!=collide_obj_ray_count;n++) {
+		view_draw_next_vertex_object_3D_line(&col,1.0f,spt->x,spt->y,spt->z,ept->x,ept->y,ept->z);
+		spt++;
+		ept++;
+	}
+
 	glLineWidth(1.0f);
 }
 
@@ -338,8 +364,9 @@ void view_draw_models_final(void)
 					if (obj->type_idx==object_type_remote) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
 					if (dim3_debug) {
-						view_draw_debug_bounding_box(obj);
-						view_draw_object_path(obj);
+						view_draw_object_debug_bounding_box(obj);
+						view_draw_object_debug_path(obj);
+						view_draw_object_debug_collision_ray(obj);
 					}
 				}
 				break;
@@ -545,8 +572,6 @@ void view_draw(void)
 	view_draw_liquid_tint(view.render->camera.under_liquid_idx);
 	view_draw_effect_tint();
 	view_draw_fade_draw();
-
-//	test_rays();		// supergumba
 }
 
 bool view_draw_node(node_type *node)

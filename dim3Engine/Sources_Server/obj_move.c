@@ -649,9 +649,10 @@ void object_move_y_fly(obj_type *obj,int ymove)
 
 bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int lx,int rx,int lz,int rz)
 {
-	int					n,xadd2,yadd2,zadd2,mx,mz;
-	float				f,ang,rang;
-	bool				hit,cwise;
+	int					xadd2,yadd2,zadd2,mv,mv_x,mv_z;
+	float				f,ang;
+	double				dx,dz;
+	bool				hit;
 	d3vct				line_vct,obj_vct;
 
 		// special check for horizontal/vertical walls
@@ -717,69 +718,53 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 	ang=angle_find(lx,lz,rx,rz);
 	if (f<90.0f) ang=angle_add(ang,180.0f);
 
-		// change the motion to reflect the angle of the wall
-		// uses facing instead of motion to check so we
-		// don't get motion build up from sliding against a wall
-		
-	rang=obj->ang.y;
-	if (obj->forward_move.reverse) rang=angle_add(rang,180.0f);
+		// get total movement
 
-	if (angle_dif(rang,ang,&cwise)<90.0f) {
-		if (!obj->forward_move.reverse) {
-			obj->motion.ang.y=ang;
-		}
-		else {
-			obj->motion.ang.y=angle_add(ang,180.0f);
-		}
-	}
+	dx=(double)*xadd;
+	dz=(double)*zadd;
+	mv=(int)sqrt((dx*dx)+(dz*dz));
 
-		// reduce movement to slide against the walls
+		// translate to wall angle
 
-	mz=*zadd/ws_step_factor;
-	mx=*xadd/ws_step_factor;
+	angle_get_movement(ang,mv,&mv_x,&mv_z);
 
-	for (n=0;n!=ws_step_factor;n++) {
+	xadd2=0;
+	yadd2=0;
+	zadd2=mv_z;
 
-			// try z then x movement first
+	hit=collide_object_to_map(obj,&xadd2,&yadd2,&zadd2);
+	
+	if (!hit) {
+		obj->pnt.z+=zadd2;
 
-		xadd2=0;
-		yadd2=0;
-		zadd2=mz;
-
-		hit=collide_object_to_map(obj,&xadd2,&yadd2,&zadd2);
-		
-		if (!hit) {
-			obj->pnt.z+=zadd2;
-
-			xadd2=mx;
-			yadd2=0;
-			zadd2=0;
-
-			if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
-				obj->pnt.x+=xadd2;
-			}
-
-			continue;
-		}
-
-			// try x then z movement next
-
-		xadd2=mx;
+		xadd2=mv_x;
 		yadd2=0;
 		zadd2=0;
 
-		hit=collide_object_to_map(obj,&xadd2,&yadd2,&zadd2);
-
-		if (!hit) {
+		if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
 			obj->pnt.x+=xadd2;
+		}
 
-			xadd2=0;
-			yadd2=0;
-			zadd2=mz;
+		return(FALSE);
+	}
 
-			if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
-				obj->pnt.z+=zadd2;
-			}
+		// try x then z movement next
+
+	xadd2=mv_x;
+	yadd2=0;
+	zadd2=0;
+
+	hit=collide_object_to_map(obj,&xadd2,&yadd2,&zadd2);
+
+	if (!hit) {
+		obj->pnt.x+=xadd2;
+
+		xadd2=0;
+		yadd2=0;
+		zadd2=mv_z;
+
+		if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
+			obj->pnt.z+=zadd2;
 		}
 	}
 	

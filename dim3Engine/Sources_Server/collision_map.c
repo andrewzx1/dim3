@@ -29,58 +29,16 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#define collide_obj_ray_half_sweep		40.0f
-#define collide_obj_ray_spindle_count	5
-#define collide_obj_ray_count			(collide_obj_ray_spindle_count*5)
-#define collide_obj_ray_spindle_size	((collide_obj_ray_half_sweep*2)/(collide_obj_ray_spindle_count-1))
-
 #include "scripts.h"
 #include "objects.h"
 #include "projectiles.h"
 #include "models.h"
 #include "physics.h"
 
+extern bool				dim3_debug;
+
 extern map_type			map;
 extern server_type		server;
-
-
-// supergumba
-
-/*
-extern view_type		view;
-
-d3pnt					test_spt[collide_obj_ray_count],test_ept[collide_obj_ray_count];
-
-void test_rays(void)
-{
-	int			n;
-	d3pnt		*spt,*ept;
-
-	
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
-
-	spt=test_spt;
-	ept=test_ept;
-
-	glColor4f(0,1,0,1);
-	glLineWidth(2.0f);
-
-	glBegin(GL_LINES);
-
-	for (n=0;n!=collide_obj_ray_count;n++) {
-		glVertex3i(spt->x,spt->y,spt->z);
-		glVertex3i(ept->x,ept->y,ept->z);
-		spt++;
-		ept++;
-	}
-
-	glEnd();
-
-	glLineWidth(1.0f);
-}
-*/
 
 /* =======================================================
 
@@ -193,14 +151,12 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		}
 	}
 
+		// collision debugging
 
-	// supergumba
-/*	
-	if (obj->type_idx==object_type_player) {
-		memmove(test_spt,spt,(sizeof(d3pnt)*collide_obj_ray_count));
-		memmove(test_ept,ept,(sizeof(d3pnt)*collide_obj_ray_count));
+	if (dim3_debug) {
+		memmove(obj->debug.collide_spt,spt,(sizeof(d3pnt)*collide_obj_ray_count));
+		memmove(obj->debug.collide_ept,ept,(sizeof(d3pnt)*collide_obj_ray_count));
 	}
-*/	
 
 		// set the collisions and run the
 		// ray tracing
