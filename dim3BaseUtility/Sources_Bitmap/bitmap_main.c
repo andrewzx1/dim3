@@ -376,7 +376,7 @@ void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bum
 			// our fake normal
 
 		normal.x=normal.y=0.0f;
-		normal.z=1.0f;
+		normal.z=0.5f;
 
 		dest=data;
 		srce=bumpmap->pixel_data;
@@ -420,7 +420,7 @@ void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bum
 		for (n=0;n!=pixel_cnt;n++) {
 
 			for (k=0;k!=3;k++) {
-				pi=((int)*dest)+((int)*srce++);
+				pi=((int)*dest)+(((int)*srce++)>>1);
 				if (pi>255) pi=255;
 				*dest++=(unsigned char)pi;
 			}

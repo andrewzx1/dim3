@@ -230,9 +230,10 @@ bool view_mesh_in_draw_list(int mesh_idx)
 
 void view_add_mesh_draw_list(void)
 {
-	int					n,op_dist,start_mesh_idx;
+	int					n,k,op_dist,start_mesh_idx;
 	double				d,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
+	map_mesh_poly_type	*poly;
 	
 		// get mesh camera is in
 
@@ -286,12 +287,20 @@ void view_add_mesh_draw_list(void)
 
 			// setup override distance
 
+		poly=mesh->polys;
+		
 		if (!setup.distance_optimize_on) {
-			mesh->draw.dist_shader_override=FALSE;
+			for (k=0;k!=mesh->npoly;k++) {
+				poly->draw.dist_shader_override=FALSE;
+				poly++;
+			}
 		}
 		else {
-			op_dist=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-			mesh->draw.dist_shader_override=(op_dist>map.settings.optimize_distance);
+			for (k=0;k!=mesh->npoly;k++) {
+				op_dist=distance_get(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+				poly->draw.dist_shader_override=(op_dist>map.settings.optimize_distance);
+				poly++;
+			}
 		}
 
 	}

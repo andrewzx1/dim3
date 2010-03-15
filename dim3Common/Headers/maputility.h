@@ -229,7 +229,8 @@ typedef struct		{
 															txt_frame_offset,
 															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
 						float								x_shift_offset,y_shift_offset;
-						bool								bump_ok,shift_on,shader_on,transparent_on,glow_on;
+						bool								bump_ok,shift_on,shader_on,transparent_on,glow_on,
+															dist_shader_override;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -278,7 +279,7 @@ typedef struct		{
 						bool								moved,cur_ambient_only,
 															has_opaque,has_transparent,
 															has_shader,has_no_shader,has_glow,
-															has_light_map,dist_shader_override;
+															has_light_map;
 					} map_mesh_draw_type;
 					
 typedef struct		{

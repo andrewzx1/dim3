@@ -261,7 +261,7 @@ bool map_start(bool skip_media,char *err_str)
 
 		// start progress
 		
-	progress_initialize("Opening");
+	progress_initialize("Opening",map.info.name);
 	progress_draw(10);
 	
 	current_map_spawn_idx=0;
@@ -470,7 +470,7 @@ void map_end(void)
 		
 		// setup progress
 		
-	progress_initialize("Closing");
+	progress_initialize("Closing",current_map_name);
 	progress_draw(5);
 	
 	console_add_system("Closing Map");

@@ -988,10 +988,10 @@ void map_auto_generate_doors(map_type *map)
 			// skip corridors that are too short
 
 		if (portal->corridor_flag==ag_corridor_flag_horizontal) {
-			if (xsz<(ag_constant_door_width*50)) continue;
+			if (xsz<ag_constant_corridor_is_small_size) continue;
 		}
 		else {
-			if (zsz<(ag_constant_door_width*50)) continue;
+			if (zsz<ag_constant_corridor_is_small_size) continue;
 		}
 		
 			// create door mesh

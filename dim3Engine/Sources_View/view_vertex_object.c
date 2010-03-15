@@ -1099,6 +1099,8 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 	glDisable(GL_DEPTH_TEST);
 
 	glColor4f(1.0f,0.0f,1.0f,alpha);
+	
+	gl_texture_clear(0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_RECTANGLE_ARB);

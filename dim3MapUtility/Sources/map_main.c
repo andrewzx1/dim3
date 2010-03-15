@@ -64,7 +64,7 @@ bool map_new(map_type *map,char *name)
 	
 		// settings
 		
-	map->settings.optimize_distance=100000;
+	map->settings.optimize_distance=150000;
 	map->settings.gravity=1;
 	map->settings.gravity_max_power=32;
 	map->settings.gravity_max_speed=400;

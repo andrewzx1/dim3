@@ -115,7 +115,7 @@ extern int element_key(char ch);
 // progress
 //
 
-extern void progress_initialize(char *action);
+extern void progress_initialize(char *action,char *map_name);
 extern void progress_shutdown(void);
 extern void progress_draw(float percentage);
 

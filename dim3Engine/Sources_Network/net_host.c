@@ -346,7 +346,7 @@ int net_host_game_start(char *err_str)
 
 	strcpy(net_setup.client.joined_ip,"127.0.0.1");
 
-	return(-1);
+	return(player_uid);
 }
 
 void net_host_game_end(void)
