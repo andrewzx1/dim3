@@ -35,6 +35,8 @@ and can be sold or given away.
 #include "sounds.h"
 #include "inputs.h"
 
+extern bool					game_app_active;
+
 extern server_type			server;
 extern hud_type				hud;
 extern setup_type			setup;
@@ -394,7 +396,9 @@ void gui_draw(float background_alpha,bool cursor)
 
 	element_draw(TRUE);
 
-	if (cursor) cursor_draw();
+		// no cursor if no active
+
+	if ((cursor) && (game_app_active)) cursor_draw();
 
 		// end frame
 
@@ -457,6 +461,12 @@ int gui_click(void)
 {
 	int				x,y;
 
+		// no clicking if paused
+
+	if (!game_app_active) return(-1);
+
+		// get click location
+
 	input_gui_get_mouse_position(&x,&y);
 	
 		// button down
@@ -480,6 +490,10 @@ int gui_click(void)
 int gui_keyboard(void)
 {
 	char		ch;
+
+		// no keys if paused
+
+	if (!game_app_active) return(-1);
 
 		// key press?
 

@@ -40,8 +40,6 @@ and can be sold or given away.
 #define render_map_transparent_mode_shader			3
 #define render_map_transparent_mode_glow			4
 
-extern bool				dim3_debug;
-
 extern map_type			map;
 extern server_type		server;
 extern view_type		view;
@@ -419,7 +417,7 @@ void render_map_mesh_transparent(void)
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
 
-		if (dim3_debug) {
+		if (view.debug.on) {
 			render_transparent_mesh_simple(mesh,poly);
 		}
 		else {

@@ -35,8 +35,6 @@ and can be sold or given away.
 #include "video.h"
 #include "timing.h"
 
-extern bool				dim3_debug;
-
 extern map_type			map;
 extern server_type		server;
 extern view_type		view;
@@ -74,7 +72,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			// shaders don't need color lists
 
 		mesh=&mdl->meshes[n];
-		if ((!dim3_debug) && (mesh->draw.only_shaders)) continue;
+		if ((!view.debug.on) && (mesh->draw.only_shaders)) continue;
 		
 			// setup color list
 			
@@ -82,7 +80,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 			// debug draw
 			
-		if (dim3_debug) {
+		if (view.debug.on) {
 		
 			for (k=0;k!=mesh->nvertex;k++) {
 				*cp++=1.0f;
@@ -192,7 +190,7 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 
 			// non-shader drawing doesn't need normals
 
-		if ((dim3_debug) || (mdl->meshes[n].draw.has_no_shader)) continue;
+		if ((view.debug.on) || (mdl->meshes[n].draw.has_no_shader)) continue;
 
 			// create the normals for the pose
 
@@ -406,7 +404,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	model_material_type		*material;
 	
 	mesh=&mdl->meshes[mesh_idx];
-	if ((!dim3_debug) && (mesh->draw.only_shaders)) return;
+	if ((!view.debug.on) && (mesh->draw.only_shaders)) return;
 	
 		// setup drawing
 
@@ -432,7 +430,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 
 			// skip shader textures
 
-		if ((!dim3_debug) && (!mesh->no_lighting) && (texture->shader_idx!=-1)) continue;
+		if ((!view.debug.on) && (!mesh->no_lighting) && (texture->shader_idx!=-1)) continue;
 	
 			// any opaque trigs?
 			
@@ -482,7 +480,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	model_material_type		*material;
 	
 	mesh=&mdl->meshes[mesh_idx];
-	if ((dim3_debug) || (mesh->draw.has_no_shader)) return;
+	if ((view.debug.on) || (mesh->draw.has_no_shader)) return;
 	
 		// setup drawing
 
@@ -549,7 +547,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 	model_material_type		*material;
 
 	mesh=&mdl->meshes[mesh_idx];
-	if ((!dim3_debug) && (mesh->draw.only_shaders)) return;
+	if ((!view.debug.on) && (mesh->draw.only_shaders)) return;
 
 		// setup drawing
 
@@ -579,7 +577,7 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 
 			// skip shader textures
 
-		if ((!dim3_debug) && (!mesh->no_lighting) && (texture->shader_idx!=-1)) continue;
+		if ((!view.debug.on) && (!mesh->no_lighting) && (texture->shader_idx!=-1)) continue;
 	
 			// any transparent trigs?
 			
@@ -643,7 +641,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 	model_material_type		*material;
 
 	mesh=&mdl->meshes[mesh_idx];
-	if ((dim3_debug) || (mesh->draw.has_no_shader)) return;
+	if ((view.debug.on) || (mesh->draw.has_no_shader)) return;
 
 		// setup drawing
 
@@ -944,7 +942,7 @@ void render_model_opaque(model_draw *draw)
 			// render opaque segments
 
 		render_model_opaque_simple_trigs(mdl,n,draw);
-		if (!dim3_debug) render_model_opaque_shader_trigs(mdl,n,draw,&light_list);
+		if (!view.debug.on) render_model_opaque_shader_trigs(mdl,n,draw,&light_list);
 
 			// render glow segments
 
@@ -985,7 +983,7 @@ void render_model_transparent(model_draw *draw)
 			// draw transparent mesh
 
 		render_model_transparent_simple_trigs(mdl,n,draw);
-		if (!dim3_debug) render_model_transparent_shader_trigs(mdl,n,draw,&light_list);
+		if (!view.debug.on) render_model_transparent_shader_trigs(mdl,n,draw,&light_list);
 			
 			// release the vbo
 

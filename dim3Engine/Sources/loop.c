@@ -36,7 +36,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "timing.h"
 
-extern bool					game_loop_pause;
+extern bool					game_app_active;
 
 extern map_type				map;
 extern server_type			server;
@@ -44,7 +44,7 @@ extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-bool						interface_quit,game_loop_pause_button_down;
+bool						interface_quit;
 
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
@@ -55,7 +55,6 @@ extern void view_loop_input(void);
 extern void view_run(void);
 extern void view_loop_draw(void);
 extern void view_loop_draw_dedicated_host(void);
-extern void view_pause_draw(void);
 extern void map_clear_changes(void);
 extern bool map_need_rebuild(void);
 extern bool map_rebuild_changes(char *err_str);
@@ -63,6 +62,7 @@ extern void game_end(void);
 extern void map_end(void);
 extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
+extern void menu_draw_start(void);
 
 /* =======================================================
 
@@ -149,68 +149,41 @@ void loop_game_run(void)
 
 /* =======================================================
 
-      Pausing
+      App Activate/Deactivate
       
 ======================================================= */
 
-bool loop_pause(void)
+void loop_app_active(void)
 {
-	bool		unpause;
+		// only windowed versions can go inactive
 
-		// only windowed versions can pause
+	if (!gl_in_window_mode()) return;
 
-	if (!gl_in_window_mode()) return(FALSE);
+		// going inactive?
 
-		// current not paused
+	if (game_app_active) {
+		if (input_app_active()) return;
 
-	if (!game_loop_pause) {
-		if (input_app_active()) return(FALSE);
+		game_app_active=FALSE;
 
-			// pause game
-
-		game_loop_pause=TRUE;
-		game_loop_pause_button_down=FALSE;
-
+		input_clear();
 		input_mouse_pause();
-		game_time_pause_start();
 
-		return(TRUE);
+		if (!net_setup.host.hosting) game_time_pause_start();
+
+		return;
 	}
 
-		// paused
+		// becoming active?
 
-	input_event_pump();
+	if (!input_app_active()) return;
 
-	view_pause_draw();
-
-		// are we clicking to unpause
-
-	unpause=FALSE;
-
-	if (input_app_active()) {
-		if (game_loop_pause_button_down) {
-			unpause=!input_gui_get_mouse_left_button_down();
-		}
-		else {
-			game_loop_pause_button_down=input_gui_get_mouse_left_button_down();
-		}
-	}
-
-	if (!unpause) {
-		usleep(10000);
-		return(TRUE);
-	}
-
-		// unpause game
-
-	game_loop_pause=FALSE;
-
+	game_app_active=TRUE;
+	
 	input_clear();
 	input_mouse_resume();
 
-	game_time_pause_end();
-
-	return(FALSE);
+	if (!net_setup.host.hosting) game_time_pause_end();
 }
 
 /* =======================================================
@@ -223,9 +196,9 @@ bool loop_main(char *err_str)
 {
 	int				old_state;
 
-		// paused?
+		// check for app activation changes
 
-	if (loop_pause()) return(TRUE);
+	loop_app_active();
 	
 		// calculate timing
 		

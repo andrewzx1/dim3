@@ -35,9 +35,8 @@ and can be sold or given away.
 #include "models.h"
 #include "physics.h"
 
-extern bool				dim3_debug;
-
 extern map_type			map;
+extern view_type		view;
 extern server_type		server;
 
 /* =======================================================
@@ -153,7 +152,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		// collision debugging
 
-	if (dim3_debug) {
+	if (view.debug.on) {
 		memmove(obj->debug.collide_spt,spt,(sizeof(d3pnt)*collide_obj_ray_count));
 		memmove(obj->debug.collide_ept,ept,(sizeof(d3pnt)*collide_obj_ray_count));
 	}

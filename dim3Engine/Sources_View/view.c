@@ -48,6 +48,8 @@ view_type					view;
 view_render_type			view_camera_render,view_node_render;
 render_info_type			render_info;
 
+extern bool					game_app_active;
+
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
@@ -90,6 +92,10 @@ bool view_memory_allocate(void)
 
 	bzero(view.images,(max_view_image*sizeof(view_image_type)));
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
+
+		// start with debug off
+
+	view.debug.on=FALSE;
 			
 	return(TRUE);
 }
@@ -533,29 +539,5 @@ void view_capture_draw(char *path)
 	view_draw();
 	
 	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
-}
-
-/* =======================================================
-
-      View Pause Draw
-      
-======================================================= */
-
-void view_pause_draw(void)
-{
-	d3col		col;
-
-	gl_frame_clear(FALSE);
-
-	gl_2D_view_screen();
-
-	col.r=col.g=col.b=1.0f;
-			
-	gl_text_start(hud.font.text_size_small);
-	gl_text_draw(2,(setup.screen.y_sz-2),"[paused]",tx_left,FALSE,&col,1.0f);
-	gl_text_draw((setup.screen.x_sz-2),(setup.screen.y_sz-2),"[click to resume]",tx_right,FALSE,&col,1.0f);
-	gl_text_end();
-	
-	gl_frame_swap();
 }
 

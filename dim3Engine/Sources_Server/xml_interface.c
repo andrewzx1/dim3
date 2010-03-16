@@ -164,6 +164,7 @@ void default_settings_interface(void)
 	hud.progress.hilite_color_end.r=hud.progress.hilite_color_end.b=0.0f;
 	hud.progress.text_size=20;
 	hud.progress.text_color.r=hud.progress.text_color.g=hud.progress.text_color.b=0.0f;
+	hud.progress.outline_color.r=hud.progress.outline_color.g=hud.progress.outline_color.b=1.0f;
 	
 		// chat
 		
@@ -909,6 +910,7 @@ void read_settings_interface(void)
 		xml_get_attribute_color(progress_tag,"hilite_color_start",&hud.progress.hilite_color_start);
 		xml_get_attribute_color(progress_tag,"hilite_color_end",&hud.progress.hilite_color_end);
 		xml_get_attribute_color(progress_tag,"text_color",&hud.progress.text_color);
+		xml_get_attribute_color(progress_tag,"outline_color",&hud.progress.outline_color);
 	}
 	
 		// chat

@@ -50,7 +50,6 @@ extern setup_type			setup;
 extern hud_type				hud;
 extern render_info_type		render_info;
 
-extern bool					dim3_debug;
 extern view_render_type		view_camera_render,view_node_render;
 
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
@@ -363,7 +362,7 @@ void view_draw_models_final(void)
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
 					if (obj->type_idx==object_type_remote) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
-					if (dim3_debug) {
+					if (view.debug.on) {
 						view_draw_object_debug_bounding_box(obj);
 						view_draw_object_debug_path(obj);
 						view_draw_object_debug_collision_ray(obj);

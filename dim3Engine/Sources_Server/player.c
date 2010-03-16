@@ -100,7 +100,7 @@ bool player_attach_object(char *err_str)
 			// if editor override then try to start at editor
 			// cursor position
 
-		if ((setup.editor_override.on) && (!map.settings.editor_link_always_start)) {
+		if ((setup.editor_override.on) && (!map.settings.editor.link_always_start)) {
 			x=setup.editor_override.pt.x;
 			y=setup.editor_override.pt.y-obj->size.eye_offset;
 			z=setup.editor_override.pt.z;

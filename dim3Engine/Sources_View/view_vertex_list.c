@@ -32,8 +32,6 @@ and can be sold or given away.
 #include "lights.h"
 #include "video.h"
 
-extern bool					dim3_debug;
-
 extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
@@ -352,7 +350,7 @@ bool view_compile_mesh_gl_lists(void)
 
 				// special check for debug on
 				
-			if (dim3_debug) {
+			if (view.debug.on) {
 				only_ambient=TRUE;
 				col.r=col.g=col.b=1.0f;
 			}

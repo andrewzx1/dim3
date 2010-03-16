@@ -29,6 +29,10 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "video.h"
+
+extern bool					game_app_active;
+
 extern hud_type				hud;
 extern setup_type			setup;
 extern render_info_type		render_info;
@@ -42,34 +46,6 @@ double						mod_matrix[16],proj_matrix[16],
 							fix_rot_camera_x,fix_rot_camera_y,fix_rot_camera_z;
 
 extern bool fog_solid_on(void);
-
-/* =======================================================
-
-      Start and End a Drawing Session
-      
-======================================================= */
-
-void gl_frame_clear(bool in_view)
-{
-		// if obscuring fog on, then background = fog color
-
-	if ((!fog_solid_on()) || (!in_view)) {
-		glClearColor(0.0f,0.0f,0.0f,0.0f);
-	}
-	else {
-		glClearColor(map.fog.col.r,map.fog.col.g,map.fog.col.b,0.0f);
-	}
-
-		// clear the frame
-
-	glDepthMask(GL_TRUE);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
-}
-
-void gl_frame_swap(void)
-{
-	SDL_GL_SwapBuffers();
-}
 
 /* =======================================================
 
@@ -170,6 +146,51 @@ void gl_2D_view_interface(void)
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+/* =======================================================
+
+      Start and End a Drawing Session
+      
+======================================================= */
+
+void gl_frame_clear(bool in_view)
+{
+		// if obscuring fog on, then background = fog color
+
+	if ((!fog_solid_on()) || (!in_view)) {
+		glClearColor(0.0f,0.0f,0.0f,0.0f);
+	}
+	else {
+		glClearColor(map.fog.col.r,map.fog.col.g,map.fog.col.b,0.0f);
+	}
+
+		// clear the frame
+
+	glDepthMask(GL_TRUE);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+}
+
+void gl_frame_swap(void)
+{
+		// is this app deactivated?
+
+	if (!game_app_active) {
+		gl_2D_view_screen();
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_DEPTH_TEST);
+
+		glColor4f(0.0f,0.0f,0.0f,0.5f);
+		view_draw_next_vertex_object_2D_tint_screen();
+	}
+
+		// swap buffer
+
+	SDL_GL_SwapBuffers();
 }
 
 /* =======================================================

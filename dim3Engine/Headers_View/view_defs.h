@@ -309,12 +309,20 @@ typedef struct		{
 						view_render_halo_type				halo_draw;
 					} view_render_type;
 
+//
+// menus and debug
+//
+
 typedef struct		{
 						int									fade_start_tick,menu_idx,
 															click_item_idx;
 						bool								fade_in,fade_out,active,
 															mouse_down;
 					} view_menu_type;
+
+typedef struct		{
+						bool								on;
+					} view_debug_type;
 
 //
 // main view structure
@@ -327,6 +335,7 @@ typedef struct		{
 						view_image_type						*images;
 						rain_draw_type						*rain_draws;
 						view_menu_type						menu;
+						view_debug_type						debug;
 					} view_type;
 
 
