@@ -88,7 +88,7 @@ void progress_shutdown(void)
 
 void progress_draw(float percentage)
 {
-	int					lft,rgt,top,bot,mid,rgt2,x,y;
+	int				lft,rgt,top,bot,mid,rgt2,x,y;
 
 		// any change?
 		
@@ -122,8 +122,8 @@ void progress_draw(float percentage)
 
 	mid=(top+bot)>>1;
 
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.base_color_start,rgt,top,&hud.progress.base_color_start,rgt,mid,&hud.progress.base_color_end,lft,mid,&hud.progress.base_color_end,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.base_color_end,rgt,mid,&hud.progress.base_color_end,rgt,bot,&hud.progress.base_color_start,lft,bot,&hud.progress.base_color_start,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.base_color_end,rgt,top,&hud.progress.base_color_end,rgt,mid,&hud.progress.base_color_start,lft,mid,&hud.progress.base_color_start,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.base_color_start,rgt,mid,&hud.progress.base_color_start,rgt,bot,&hud.progress.base_color_end,lft,bot,&hud.progress.base_color_end,1.0f);
 	
 		// draw the progress foreground
 	
@@ -131,6 +131,10 @@ void progress_draw(float percentage)
 	
 	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.hilite_color_start,rgt2,top,&hud.progress.hilite_color_start,rgt2,mid,&hud.progress.hilite_color_end,lft,mid,&hud.progress.hilite_color_end,1.0f);
 	view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.hilite_color_end,rgt2,mid,&hud.progress.hilite_color_end,rgt2,bot,&hud.progress.hilite_color_start,lft,bot,&hud.progress.hilite_color_start,1.0f);
+	
+		// progress outline
+
+	view_draw_next_vertex_object_2D_line_quad(&hud.progress.outline_color,1.0f,lft,rgt,top,bot);
 
 		// progress text
 

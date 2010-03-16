@@ -40,7 +40,7 @@ long						os_vers_hex;
 bool						arch_ppc_g3;
 char						arch_type[64];
 
-bool						game_loop_pause,game_loop_quit;
+bool						game_app_active,game_loop_quit;
 
 extern setup_type			setup;
 
@@ -213,7 +213,7 @@ int main(int argc,char *argv[])
 	app_start_ok=app_start(err_str);
 	if (app_start_ok) {
 
-		game_loop_pause=FALSE;
+		game_app_active=TRUE;
 		game_loop_quit=FALSE;
 		
 		while (!game_loop_quit) {

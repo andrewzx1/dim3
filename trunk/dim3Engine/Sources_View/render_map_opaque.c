@@ -40,8 +40,6 @@ and can be sold or given away.
 #define render_map_opaque_mode_shader				3
 #define render_map_opaque_mode_glow					4
 
-extern bool				dim3_debug;
-
 extern map_type			map;
 extern server_type		server;
 extern setup_type		setup;
@@ -321,7 +319,7 @@ void render_map_mesh_opaque(void)
 
 				// render the poly
 
-			if (dim3_debug) {
+			if (view.debug.on) {
 				render_opaque_mesh_simple(mesh,poly);
 			}
 			else {

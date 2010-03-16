@@ -39,8 +39,6 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
-extern bool					dim3_debug;
-
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
 /* =======================================================
@@ -184,7 +182,7 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz,bool shade
 
 				// color
 
-			if ((dim3_debug) || (shader_on)) {
+			if ((view.debug.on) || (shader_on)) {
 				*cl=*(cl+1)=*(cl+2)=1.0f;
 			}
 			else {
@@ -349,7 +347,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// determine if shader in use
 
-	shader_on=(!dim3_debug) && (texture->shader_idx!=-1);
+	shader_on=(!view.debug.on) && (texture->shader_idx!=-1);
 
 		// create vertexes
 

@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 
+extern bool					game_app_active;
+
 extern hud_type				hud;
 extern setup_type			setup;
 
@@ -2552,10 +2554,11 @@ void element_draw_lock(bool cursor_hilite)
 	element_type		*element;
 	
 		// get element under cursor
+		// only works if app active
 
 	id=-1;
 
-	if (cursor_hilite) {
+	if ((cursor_hilite) && (game_app_active)) {
 
 			// find hilited item
 

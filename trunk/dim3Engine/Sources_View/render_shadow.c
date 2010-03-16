@@ -35,8 +35,6 @@ and can be sold or given away.
 #include "video.h"
 #include "physics.h"
 
-extern bool				dim3_debug;
-
 extern map_type			map;
 extern server_type		server;
 extern view_type		view;

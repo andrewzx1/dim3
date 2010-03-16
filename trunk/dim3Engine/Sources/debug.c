@@ -44,6 +44,7 @@ extern char					arch_type[64];
 
 extern render_info_type		render_info;
 extern map_type				map;
+extern view_type			view;
 extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
@@ -52,8 +53,6 @@ extern network_setup_type	net_setup;
 
 char						bind_type_str[][16]={"Game","Map","Remote"},
 							effect_type_str[][16]={"Flash","Particle","Lightning","Ray","Globe","Shake"};
-bool						dim3_debug=FALSE;
-FILE						*debug_log_file=NULL;
 
 /* =======================================================
 
@@ -444,33 +443,13 @@ void debug_dump(void)
 
 /* =======================================================
 
-      Debug Log
-      
-======================================================= */
-
-void debug_log(char *str)
-{
-	char			path[1024];
-	
-	if (debug_log_file==NULL) {
-		file_paths_documents(&setup.file_path_setup,path,"Settings","Log","txt");
-		debug_log_file=fopen(path,"w");
-		if (debug_log_file==NULL) return;
-	}
-		
-	fwrite(str,1,strlen(str),debug_log_file);
-	fwrite("\n",1,1,debug_log_file);
-	fflush(debug_log_file);
-}
-/* =======================================================
-
       Debug Game
       
 ======================================================= */
 
 void debug_game(void)
 {
-	dim3_debug=!dim3_debug;
+	view.debug.on=!view.debug.on;
 }
 
 /* =======================================================

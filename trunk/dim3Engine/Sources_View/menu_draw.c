@@ -33,9 +33,10 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "video.h"
 #include "inputs.h"
+#include "sounds.h"
 #include "timing.h"
 
-extern bool					game_loop_quit;
+extern bool					game_app_active,game_loop_quit;
 
 extern server_type			server;
 extern map_type				map;
@@ -50,6 +51,7 @@ extern void map_end(void);
 extern void game_end(void);
 extern void intro_open(void);
 extern void debug_game(void);
+extern void map_restart_ambient(void);
 
 /* =======================================================
 
@@ -59,11 +61,17 @@ extern void debug_game(void);
 
 void menu_draw_start(void)
 {
-	/* pausing -- supergumba
-	game_time_pause_start();
+		// if not hosting, pause
+
+	if (!net_setup.host.hosting) game_time_pause_start();
+
+		// clear input and stop sounds
+
+	input_clear();
 	al_stop_all_looping_sources();
-	*/
 	
+		// go into pause menu
+
 	view.menu.fade_in=TRUE;
 	view.menu.fade_out=FALSE;
 	view.menu.active=FALSE;
@@ -74,11 +82,16 @@ void menu_draw_start(void)
 	view.menu.click_item_idx=-1;
 	view.menu.mouse_down=FALSE;
 	
+		// setup cursor
+
 	cursor_initialize();
+	input_gui_set_mouse((hud.scale_x>>1),(hud.scale_y>>1));
 }
 
 void menu_draw_end(bool fade)
 {
+		// leave menu
+
 	view.menu.fade_in=FALSE;
 	view.menu.fade_out=fade;
 	view.menu.active=FALSE;
@@ -86,12 +99,15 @@ void menu_draw_end(bool fade)
 	view.menu.fade_start_tick=game_time_get_raw();
 
 	cursor_shutdown();
-	
-	/* pausing -- supergumba
+
+		// clear input and restart sounds
+
 	input_clear();
 	if (server.map_open) map_restart_ambient();
-	game_time_pause_end();
-	*/
+	
+		// if not hosting, unpause
+
+	if (!net_setup.host.hosting) game_time_pause_end();
 }
 
 /* =======================================================
@@ -167,21 +183,20 @@ void menu_input(void)
 	}
 
 		// active menu clicking
+		// only click on mouse ups so we don't get
+		// the mouse down travelling through to the game
 
 	if (!view.menu.active) return;
 
 	if (input_gui_get_mouse_left_button_down()) {
-	
-		if (!view.menu.mouse_down) {
-			menu_select();
-			view.menu.mouse_down=TRUE;
-		}
-		
+		view.menu.mouse_down=TRUE;
 		return;
-		
 	}
-
-	view.menu.mouse_down=FALSE;
+	
+	if (view.menu.mouse_down) {
+		view.menu.mouse_down=FALSE;
+		menu_select();
+	}
 }
 
 /* =======================================================
@@ -245,21 +260,25 @@ void menu_draw(void)
 	x=hud.scale_x>>1;
 	y=(hud.scale_y-((high+5)*menu->nitem))>>1;
 
-	input_gui_get_mouse_position(&kx,&ky);
-
 	view.menu.click_item_idx=-1;
-	item=menu->items;
 
-	for (n=0;n!=menu->nitem;n++) {
-		wid=gl_text_get_string_width(hud.font.text_size_large,item->data)>>1;
-		
-		if ((kx>=(x-wid)) && (kx<=(x+wid)) && (ky>=(y-half_high)) && (ky<=(y+half_high))) {
-			view.menu.click_item_idx=n;
-			break;
+	if (game_app_active) {
+
+		input_gui_get_mouse_position(&kx,&ky);
+
+		item=menu->items;
+
+		for (n=0;n!=menu->nitem;n++) {
+			wid=gl_text_get_string_width(hud.font.text_size_large,item->data)>>1;
+			
+			if ((kx>=(x-wid)) && (kx<=(x+wid)) && (ky>=(y-half_high)) && (ky<=(y+half_high))) {
+				view.menu.click_item_idx=n;
+				break;
+			}
+
+			y+=(high+5);
+			item++;
 		}
-
-		y+=(high+5);
-		item++;
 	}
 	
 		// draw the menus
@@ -294,19 +313,9 @@ void menu_draw(void)
 
 	gl_text_end();
 
-		// clicks and cursor
+		// cursor
 
-	if (view.menu.active) cursor_draw();
-
-	if (input_gui_get_mouse_left_button_down()) {
-		if (!view.menu.mouse_down) {
-
-		}
-	}
-	else {
-		view.menu.mouse_down=FALSE;
-	}
-
+	if ((view.menu.active) && (game_app_active)) cursor_draw();
 }
 
 
