@@ -873,7 +873,7 @@ void walk_view_draw_lights_sounds_particles(d3pnt *cpt,bool draw_light_circle)
 void walk_view_gl_setup(editor_3D_view_setup *view_setup)
 {
 	main_wind_set_viewport(&view_setup->box,TRUE,TRUE);
-	main_wind_set_3D_projection(view_setup,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+	main_wind_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -923,7 +923,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
        // 3D view
         
 	main_wind_set_viewport(&view_setup->box,TRUE,TRUE);
-	main_wind_set_3D_projection(view_setup,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+	main_wind_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -939,12 +939,12 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		// draw opaque mesh lines
 		// push view forward to better z-buffer lines
 		
-	main_wind_set_3D_projection(view_setup,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
+	main_wind_set_3D_projection(view_setup,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
 	walk_view_draw_meshes_line(view_setup,TRUE);
 
         // draw transparent parts of portals in sight path
         
-	main_wind_set_3D_projection(view_setup,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+	main_wind_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 
 	if (!view_setup->mesh_only) walk_view_draw_meshes_texture(view_setup,FALSE);
 	walk_view_draw_liquids(FALSE);
@@ -952,14 +952,14 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
         // draw transparent mesh lines
 		// push view forward to better z-buffer lines
         
-	main_wind_set_3D_projection(view_setup,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
+	main_wind_set_3D_projection(view_setup,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
 	walk_view_draw_meshes_line(view_setup,TRUE);
 	
         // draw normals mesh lines
 		// push view forward to better z-buffer lines
       
 	if (dp_normals) {
-		main_wind_set_3D_projection(view_setup,(walk_view_near_z+20),(walk_view_far_z-20),walk_view_near_offset);
+		main_wind_set_3D_projection(view_setup,(map.settings.editor.view_near_dist+20),(map.settings.editor.view_far_dist-20),walk_view_near_offset);
 		walk_view_draw_meshes_normals(view_setup);
 	}
 	
@@ -973,7 +973,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 
 		// position
 		
-	main_wind_set_3D_projection(view_setup,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+	main_wind_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 
 	if (draw_position) walk_view_draw_position(view_setup);
 }

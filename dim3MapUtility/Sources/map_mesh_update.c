@@ -950,8 +950,8 @@ void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,f
 
 	texture=&map->textures[txt_idx];
 	if (!texture->scale.on) {
-		*txt_scale_x=map->settings.txt_scale_x/(float)map_enlarge;			// need to reflect original scale
-		*txt_scale_y=map->settings.txt_scale_y/(float)map_enlarge;
+		*txt_scale_x=map->settings.editor.txt_scale_x/(float)map_enlarge;			// need to reflect original scale
+		*txt_scale_y=map->settings.editor.txt_scale_y/(float)map_enlarge;
 		return;
 	}
 	

@@ -502,14 +502,20 @@ typedef struct		{
 						int									quality,size,
 															pixel_border_count,blur_count;
 					} map_settings_light_map_type;
+					
+typedef struct		{
+						int									view_near_dist,view_far_dist;
+						float								txt_scale_x,txt_scale_y;
+						bool								link_always_start;
+					} map_settings_editor_type;
 
 typedef struct		{
 						int									optimize_distance;
 						float								gravity,gravity_max_power,gravity_max_speed,
-															resistance,txt_scale_x,txt_scale_y;
-						bool								editor_link_always_start;
+															resistance;
 						char								network_game_list[256];
 						map_settings_light_map_type			light_map;
+						map_settings_editor_type			editor;
 					} map_settings_type;
 					
 typedef struct		{

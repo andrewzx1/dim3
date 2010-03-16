@@ -151,15 +151,20 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
 	xml_add_attribute_float("gravity_max_speed",map->settings.gravity_max_speed);
     xml_add_attribute_float("resistance",map->settings.resistance);
-	xml_add_attribute_float("txt_scale_x",map->settings.txt_scale_x);
-	xml_add_attribute_float("txt_scale_y",map->settings.txt_scale_y);
-	xml_add_attribute_boolean("editor_link_always_start",map->settings.editor_link_always_start);
 	xml_add_attribute_text("network_game_list",map->settings.network_game_list);
 
     xml_add_attribute_int("light_map_quality",map->settings.light_map.quality);
     xml_add_attribute_int("light_map_size",map->settings.light_map.size);
     xml_add_attribute_int("light_map_pixel_border_count",map->settings.light_map.pixel_border_count);
     xml_add_attribute_int("light_map_blur_count",map->settings.light_map.blur_count);
+	xml_add_tagend(TRUE);
+
+    xml_add_tagstart("Editor");
+	xml_add_attribute_float("txt_scale_x",map->settings.editor.txt_scale_x);
+	xml_add_attribute_float("txt_scale_y",map->settings.editor.txt_scale_y);
+	xml_add_attribute_int("view_near_dist",map->settings.editor.view_near_dist);
+	xml_add_attribute_int("view_far_dist",map->settings.editor.view_far_dist);
+	xml_add_attribute_boolean("link_always_start",map->settings.editor.link_always_start);
 	xml_add_tagend(TRUE);
 	
     xml_add_tagstart("Media");
