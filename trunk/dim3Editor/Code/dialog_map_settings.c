@@ -30,7 +30,7 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kMapSettingTabCount							5
+#define kMapSettingTabCount							6
 #define kMapSettingTab								FOUR_CHAR_CODE('tabb')
 
 	// general
@@ -43,11 +43,8 @@ extern map_type				map;
 #define kMapGravityPower							FOUR_CHAR_CODE('gpwr')
 #define kMapGravitySpeed							FOUR_CHAR_CODE('gspd')
 #define kMapResistance								FOUR_CHAR_CODE('rest')
-#define kMapTextureXFactor							FOUR_CHAR_CODE('trxf')
-#define kMapTextureYFactor							FOUR_CHAR_CODE('tryf')
 #define kMapOptimizeDistance						FOUR_CHAR_CODE('opdt')
 #define kMapGameTypeList							FOUR_CHAR_CODE('gtyp')
-#define kMapEditorLinkStartAlways					FOUR_CHAR_CODE('elss')
 
 	// ambients
 	
@@ -117,6 +114,14 @@ extern map_type				map;
 #define kRainSlantTimeMSec							FOUR_CHAR_CODE('slms')
 #define kRainSlantChangeMSec						FOUR_CHAR_CODE('slct')
 #define kRainOn										FOUR_CHAR_CODE('rnon')
+
+	// editor
+	
+#define kMapTextureXFactor							FOUR_CHAR_CODE('trxf')
+#define kMapTextureYFactor							FOUR_CHAR_CODE('tryf')
+#define kMapEditorViewNearZ							FOUR_CHAR_CODE('enrz')
+#define kMapEditorViewFarZ							FOUR_CHAR_CODE('efrz')
+#define kMapEditorLinkStartAlways					FOUR_CHAR_CODE('elss')
 
 bool						dialog_map_settings_cancel;
 WindowRef					dialog_map_settings_wind;
@@ -200,11 +205,8 @@ bool dialog_map_settings_run(void)
 	dialog_set_float(dialog_map_settings_wind,kMapGravityPower,0,map.settings.gravity_max_power);
 	dialog_set_float(dialog_map_settings_wind,kMapGravitySpeed,0,map.settings.gravity_max_speed);
 	dialog_set_float(dialog_map_settings_wind,kMapResistance,0,map.settings.resistance);
-	dialog_set_float(dialog_map_settings_wind,kMapTextureXFactor,0,map.settings.txt_scale_x);
-	dialog_set_float(dialog_map_settings_wind,kMapTextureYFactor,0,map.settings.txt_scale_y);
 	dialog_set_int(dialog_map_settings_wind,kMapOptimizeDistance,0,map.settings.optimize_distance);
 	dialog_set_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list);
-	dialog_set_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0,map.settings.editor_link_always_start);
 	
 		// set ambient controls
 		
@@ -283,6 +285,16 @@ bool dialog_map_settings_run(void)
 	dialog_set_color(dialog_map_settings_wind,kRainEndColor,0,&map.rain.end_color);
 	
 	dialog_set_boolean(dialog_map_settings_wind,kRainOn,0,map.rain.on);
+	
+		// editor
+		
+	dialog_set_float(dialog_map_settings_wind,kMapTextureXFactor,0,map.settings.editor.txt_scale_x);
+	dialog_set_float(dialog_map_settings_wind,kMapTextureYFactor,0,map.settings.editor.txt_scale_y);
+	
+	dialog_set_int(dialog_map_settings_wind,kMapEditorViewNearZ,0,map.settings.editor.view_near_dist);
+	dialog_set_int(dialog_map_settings_wind,kMapEditorViewFarZ,0,map.settings.editor.view_far_dist);
+	
+	dialog_set_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0,map.settings.editor.link_always_start);
 
 		// counts
 		
@@ -323,11 +335,8 @@ bool dialog_map_settings_run(void)
 		map.settings.gravity_max_power=dialog_get_float(dialog_map_settings_wind,kMapGravityPower,0);
 		map.settings.gravity_max_speed=dialog_get_float(dialog_map_settings_wind,kMapGravitySpeed,0);
 		map.settings.resistance=dialog_get_float(dialog_map_settings_wind,kMapResistance,0);
-		map.settings.txt_scale_x=dialog_get_float(dialog_map_settings_wind,kMapTextureXFactor,0);
-		map.settings.txt_scale_y=dialog_get_float(dialog_map_settings_wind,kMapTextureYFactor,0);
 		map.settings.optimize_distance=dialog_get_int(dialog_map_settings_wind,kMapOptimizeDistance,0);
 		dialog_get_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list,256);
-		map.settings.editor_link_always_start=dialog_get_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0);
 		
 			// ambient controls
 			
@@ -404,6 +413,16 @@ bool dialog_map_settings_run(void)
 		map.rain.slant_change_msec=dialog_get_int(dialog_map_settings_wind,kRainSlantChangeMSec,0);
 		
 		map.rain.on=dialog_get_boolean(dialog_map_settings_wind,kRainOn,0);
+		
+			// editor
+			
+		map.settings.editor.txt_scale_x=dialog_get_float(dialog_map_settings_wind,kMapTextureXFactor,0);
+		map.settings.editor.txt_scale_y=dialog_get_float(dialog_map_settings_wind,kMapTextureYFactor,0);
+		
+		map.settings.editor.view_near_dist=dialog_get_int(dialog_map_settings_wind,kMapEditorViewNearZ,0);
+		map.settings.editor.view_far_dist=dialog_get_int(dialog_map_settings_wind,kMapEditorViewFarZ,0);
+		
+		map.settings.editor.link_always_start=dialog_get_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0);
 	}
 
 		// close window

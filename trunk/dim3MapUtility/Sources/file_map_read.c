@@ -73,15 +73,21 @@ void decode_map_settings_xml(map_type *map,int map_head)
         map->settings.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32);
 		map->settings.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400);
 		map->settings.resistance=xml_get_attribute_float_default(tag,"resistance",1);
-		map->settings.txt_scale_x=xml_get_attribute_float_default(tag,"txt_scale_x",0.04f);
-		map->settings.txt_scale_y=xml_get_attribute_float_default(tag,"txt_scale_y",0.04f);
-		map->settings.editor_link_always_start=xml_get_attribute_boolean(tag,"editor_link_always_start");
         xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
 
         map->settings.light_map.quality=xml_get_attribute_int_default(tag,"light_map_quality",50);
         map->settings.light_map.size=xml_get_attribute_int_default(tag,"light_map_size",1024);
         map->settings.light_map.pixel_border_count=xml_get_attribute_int_default(tag,"light_map_pixel_border_count",6);
         map->settings.light_map.blur_count=xml_get_attribute_int_default(tag,"light_map_blur_count",3);
+	}
+	
+    tag=xml_findfirstchild("Editor",map_head);
+    if (tag!=-1) {
+		map->settings.editor.txt_scale_x=xml_get_attribute_float_default(tag,"txt_scale_x",0.04f);
+		map->settings.editor.txt_scale_y=xml_get_attribute_float_default(tag,"txt_scale_y",0.04f);
+		map->settings.editor.view_near_dist=xml_get_attribute_int_default(tag,"view_near_dist",(6*map_enlarge));
+		map->settings.editor.view_far_dist=xml_get_attribute_int_default(tag,"view_far_dist",(2000*map_enlarge));
+		map->settings.editor.link_always_start=xml_get_attribute_boolean(tag,"link_always_start");
 	}
 	
     tag=xml_findfirstchild("Media",map_head);
