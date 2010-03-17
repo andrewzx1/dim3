@@ -53,7 +53,7 @@ void palette_area_load(void)
 	
 		// set controls
 	
-	dialog_set_color(palette_area_wind,kAreaColor,0,&area->col);
+	dialog_set_combo(palette_area_wind,kAreaColor,0,area->col_type);
 	
 	DrawControls(palette_area_wind);
 }
@@ -70,7 +70,7 @@ void palette_area_save(void)
 	
 		// save data
 		
-	dialog_get_color(palette_area_wind,kAreaColor,0,&area->col);
+	area->col_type=dialog_get_combo(palette_area_wind,kAreaColor,0);
 	
 	main_wind_draw();
 }

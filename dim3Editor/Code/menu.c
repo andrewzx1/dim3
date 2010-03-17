@@ -33,7 +33,7 @@ and can be sold or given away.
 
 extern int				drag_mode;
 extern bool				done,map_opened,
-						dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area;
+						dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 
 extern map_type			map;
 
@@ -167,7 +167,6 @@ void menu_set_show_hide_check(void)
 	CheckMenuItem(GetMenuHandle(app_menu_view),13,dp_object);
 	CheckMenuItem(GetMenuHandle(app_menu_view),14,dp_lightsoundparticle);
 	CheckMenuItem(GetMenuHandle(app_menu_view),15,dp_node);
-	CheckMenuItem(GetMenuHandle(app_menu_view),16,dp_area);
 }
 
 /* =======================================================
@@ -333,12 +332,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandViewShowHideNodes:
 			select_remove_type(node_piece);
 			dp_node=!dp_node;
-			menu_set_show_hide_check();
-			main_wind_draw();
-			break;
-			
-		case kCommandViewShowHideAreas:
-			dp_area=!dp_area;
 			menu_set_show_hide_check();
 			main_wind_draw();
 			break;

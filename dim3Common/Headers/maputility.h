@@ -188,7 +188,7 @@ extern char light_type_str[][32];
 
 #define area_color_count									16
 #define area_color_names									{"Red","Green","Blue","Yellow","Orange","Light Purple","Dark Purple","Light Blue","Yellow Green","Brown","Pink","Gold","Dark Red","Dark Green","Light Gray","Dark Gray"}
-#define area_color_colors									{0xFF0000,0x00FF00,0x0000FF,0xFFFF00,0xFF7F00,0xFF00FF,0x7F00FF,0x00FFFF,0xB0FF00,0xC03300,FF6090,7F7F00,0x7F0000,0x007F00,0xC0C0C0,0x606060}
+#define area_color_colors									{0xFF0000,0x00FF00,0x0000FF,0xFFFF00,0xFF7F00,0xFF00FF,0x7F00FF,0x00FFFF,0xB0FF00,0xC03300,0xFF6090,0x7F7F00,0x7F0000,0x007F00,0xC0C0C0,0x606060}
 
 //
 // group structure

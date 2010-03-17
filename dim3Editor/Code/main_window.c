@@ -41,9 +41,10 @@ extern map_type					map;
 extern setup_type				setup;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
-						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer,drag_handle_idx,node_mode;
+						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer,drag_handle_idx,
+						node_mode,area_col_type;
 bool					select_toggle_mode,dp_auto_texture,dp_liquid,dp_normals,
-						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,dp_area,
+						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
 d3rect					main_wind_box;
 
@@ -53,7 +54,8 @@ EventHandlerUPP			main_wind_upp;
 ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],magnify_slider;
 ControlActionUPP		magnify_proc;
 IconRef					tool_icon_ref[tool_count],piece_icon_ref[piece_count];
-MenuRef					grid_menu,spot_menu,light_menu,sound_menu,particle_menu,scenery_menu,node_menu;
+MenuRef					grid_menu,spot_menu,light_menu,sound_menu,particle_menu,
+						scenery_menu,node_menu,area_menu;
 
 AGLContext				ctx;
 
@@ -482,7 +484,21 @@ void main_wind_control_piece(int piece_idx)
 			break;
 			
 		case 12:
-			piece_create_area();
+			GetBevelButtonMenuValue(piece_ctrl[12],&menu_idx);
+			
+				// create a area
+				
+			if (menu_idx==1) {
+				piece_create_area();
+				break;
+			}
+			
+				// turn on/off areas
+			
+			if (menu_idx>2) {
+				area_col_type=menu_idx-3;
+				main_wind_draw();	
+			}
 			break;
 			
 	}
@@ -900,6 +916,13 @@ void main_wind_open(void)
 				menu_id=tool_node_menu_id;
 				break;
 				
+				// area menu
+			
+			case 12:
+				CreateNewMenu(tool_area_menu_id,kMenuAttrExcludesMarkColumn,&area_menu);
+				InsertMenu(area_menu,kInsertHierarchicalMenu);
+				menu_id=tool_area_menu_id;
+				break;
 		}
 			
 			// create button
@@ -1050,6 +1073,9 @@ void main_wind_close(void)
 
 	DeleteMenu(tool_node_menu_id);
 	DisposeMenu(node_menu);
+	
+	DeleteMenu(tool_area_menu_id);
+	DisposeMenu(area_menu);
 
         // dispose of events and window
         
@@ -2365,6 +2391,28 @@ void main_wind_tool_fill_node_combo(void)
 	}
 }
 
+void main_wind_tool_fill_area_combo(void)
+{
+	int					n;
+	char				color_names[area_color_count][32]=area_color_names;
+	CFStringRef			cf_str;
+	
+		// delete old items
+		
+	DeleteMenuItems(area_menu,1,CountMenuItems(area_menu));
+	
+		// add items
+		
+	AppendMenuItemTextWithCFString(area_menu,CFSTR("Add Area"),0,0,NULL);
+	AppendMenuItemTextWithCFString(area_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+	
+	for (n=0;n<area_color_count;n++) {
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,color_names[n],kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(area_menu,cf_str,0,0,NULL);
+		CFRelease(cf_str);
+	}
+}
+
 void main_wind_tool_fill_tool_combos(void)
 {
 	main_wind_tool_fill_spot_combo();
@@ -2373,6 +2421,7 @@ void main_wind_tool_fill_tool_combos(void)
 	main_wind_tool_fill_particle_combo();
 	main_wind_tool_fill_scenery_combo();
 	main_wind_tool_fill_node_combo();
+	main_wind_tool_fill_area_combo();
 }
 
 /* =======================================================

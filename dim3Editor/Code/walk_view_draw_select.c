@@ -294,10 +294,10 @@ void walk_view_draw_select_area_get_grow_handles(int area_idx,int *px,int *py,in
 	
 	area=&map.areas[area_idx];
 	
-	px[0]=px[3]=area->lft;
-	px[1]=px[2]=area->rgt;
-	pz[0]=pz[1]=area->top;
-	pz[2]=pz[3]=area->bot;
+	px[0]=px[3]=area->min.x;
+	px[1]=px[2]=area->max.x;
+	pz[0]=pz[1]=area->min.z;
+	pz[2]=pz[3]=area->max.z;
 	py[0]=py[1]=py[2]=py[3]=view_pnt.y;
 }
 

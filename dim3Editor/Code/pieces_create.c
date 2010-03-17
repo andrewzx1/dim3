@@ -30,8 +30,8 @@ and can be sold or given away.
 #include "common_view.h"
 
 extern d3pnt					view_pnt;
-extern int						drag_mode;
-extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid,dp_area;
+extern int						drag_mode,area_col_type;
+extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -443,8 +443,6 @@ void piece_create_area(void)
 {
 	int				index,sz;
 	map_area_type	*area;
-	Point			pt;
-	RGBColor		color;
 	
 		// create the area
 		
@@ -455,27 +453,20 @@ void piece_create_area(void)
 	
 	index=map.narea;
 	
-	color.red=color.green=color.blue=0xFFFF;
-	
-	pt.h=pt.v=-1;
-	if (!GetColor(pt,"\pChoose the Area Color:",&color,&color)) return;
-
 	area=&map.areas[index];
 	map.narea++;
 	
 	sz=map_enlarge*10;
-	area->lft=view_pnt.x-sz;
-	area->rgt=view_pnt.x+sz;
-	area->top=view_pnt.z-sz;
-	area->bot=view_pnt.z+sz;
+	area->min.x=view_pnt.x-sz;
+	area->max.x=view_pnt.x+sz;
+	area->min.z=view_pnt.z-sz;
+	area->max.z=view_pnt.z+sz;
 
-	area->col.r=((float)color.red/(float)0xFFFF);
-	area->col.g=((float)color.green/(float)0xFFFF);
-	area->col.b=((float)color.blue/(float)0xFFFF);
+	area->col_type=0;
 
 		// select the liquid
 		
-	dp_area=TRUE;
+	area_col_type=0;
 	select_clear();
 	select_add(area_piece,index,-1);
 

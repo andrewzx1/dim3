@@ -33,9 +33,9 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cy,main_wind_uv_layer,txt_palette_high;
+extern int				cy,main_wind_uv_layer,txt_palette_high,area_col_type;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-extern bool				dp_normals,dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area,dp_textured;
+extern bool				dp_normals,dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_textured;
 extern d3pnt			view_pnt;
 
 extern AGLContext		ctx;
@@ -44,6 +44,8 @@ extern map_type			map;
 extern setup_type		setup;
 extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 						light_bitmap,sound_bitmap,particle_bitmap;
+						
+int						area_colors[area_color_count]=area_color_colors;
 
 extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
 
@@ -614,38 +616,19 @@ void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
 
 void walk_view_draw_areas(void)
 {
-	int					n,k,y,lx,rx,tz,bz;
-	char				area_flags[max_area];
-	map_area_type		*area,*area2;
+	int					n,y,icol;
+	d3col				col;
+	map_area_type		*area;
 	
-	if (!dp_area) return;
+	if (area_col_type==-1) return;
 	
-		// get a list of all selected areas
+		// get color
 		
-	bzero(area_flags,max_area);
-
-	for (n=0;n!=map.narea;n++) {
+	icol=area_colors[area_col_type];
 	
-		if (!select_check(area_piece,n,-1)) continue;
-		
-			// area selected
-				
-		area_flags[n]=0x1;
-
-			// join with any areas with the same color
-
-		area=&map.areas[n];
-		area2=map.areas;
-
-		for (k=0;k!=map.narea;k++) {
-
-			if (k!=n) {
-				if ((area2->col.r==area->col.r) && (area2->col.g==area->col.g) && (area2->col.b==area->col.b)) area_flags[k]=0x1;
-			}
-
-			area2++;
-		}
-	}
+	col.r=((float)((icol>>16)&0xFF))/255.0f;
+	col.g=((float)((icol>>8)&0xFF))/255.0f;
+	col.b=((float)(icol&0xFF))/255.0f;
 	
 		// transparent area draw
 		
@@ -653,35 +636,25 @@ void walk_view_draw_areas(void)
 	glEnable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
+	
+		// areas are 2D
+		
+	y=view_pnt.y;
 
 		// area colors
+				
+	glColor4f(col.r,col.g,col.b,0.5f);
 		
 	area=map.areas;
 	
 	for (n=0;n!=map.narea;n++) {
 	
-			// only draw color for selection
-			
-		if (area_flags[n]!=0x0) {
-	
-				// color
-				
-			glColor4f(area->col.r,area->col.g,area->col.b,0.5f);
-			
-				// dimensions
-				
-			y=view_pnt.y;
-			
-			lx=area->lft;
-			rx=area->rgt;
-			tz=area->top;
-			bz=area->bot;
-			
+		if (area->col_type==area_col_type) {
 			glBegin(GL_QUADS);
-			glVertex3i(lx,y,tz);
-			glVertex3i(rx,y,tz);
-			glVertex3i(rx,y,bz);
-			glVertex3i(lx,y,bz);
+			glVertex3i(area->min.x,y,area->min.z);
+			glVertex3i(area->max.x,y,area->min.z);
+			glVertex3i(area->max.x,y,area->max.z);
+			glVertex3i(area->min.x,y,area->max.z);
 			glEnd();
 		}
 		
@@ -689,37 +662,24 @@ void walk_view_draw_areas(void)
 	}
 	
 		// area boxes
-		
-	glLineWidth(4.0f);
+
+	glColor4f((col.r*0.7f),(col.g*0.7f),(col.b*0.7f),1.0f);
 
 	area=map.areas;
 	
 	for (n=0;n!=map.narea;n++) {
-	
-			// color
-			
-		glColor4f(area->col.r,area->col.g,area->col.b,1.0f);
 		
-			// dimensions
-			
-		y=view_pnt.y;
-		
-		lx=area->lft;
-		rx=area->rgt;
-		tz=area->top;
-		bz=area->bot;
-		
-		glBegin(GL_LINE_LOOP);
-		glVertex3i(lx,y,tz);
-		glVertex3i(rx,y,tz);
-		glVertex3i(rx,y,bz);
-		glVertex3i(lx,y,bz);
-		glEnd();
+		if (area->col_type==area_col_type) {
+			glBegin(GL_LINE_LOOP);
+			glVertex3i(area->min.x,y,area->min.z);
+			glVertex3i(area->max.x,y,area->min.z);
+			glVertex3i(area->max.x,y,area->max.z);
+			glVertex3i(area->min.x,y,area->max.z);
+			glEnd();
+		}
 		
 		area++;
 	}
-	
-	glLineWidth(1.0f);
 	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);

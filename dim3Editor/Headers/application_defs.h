@@ -65,7 +65,6 @@ and can be sold or given away.
 #define kCommandViewShowHideSpots			FOUR_CHAR_CODE('shss')
 #define kCommandViewShowHideLights			FOUR_CHAR_CODE('shls')
 #define kCommandViewShowHideNodes			FOUR_CHAR_CODE('shnd')
-#define kCommandViewShowHideAreas			FOUR_CHAR_CODE('shar')
 
 #define kCommandMapSettings					FOUR_CHAR_CODE('mset')
 #define kCommandMapRaiseY					FOUR_CHAR_CODE('mrsy')
