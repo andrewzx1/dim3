@@ -872,20 +872,20 @@ bool walk_view_click_drag_area_vertex(editor_3D_view_setup *view_setup,d3pnt *pt
 			
 		switch (vertex_idx) {
 			case 0:
-				area->lft=old_dpt.x+mpt.x;
-				area->top=old_dpt.z+mpt.z;
+				area->min.x=old_dpt.x+mpt.x;
+				area->min.z=old_dpt.z+mpt.z;
 				break;
 			case 1:
-				area->rgt=old_dpt.x+mpt.x;
-				area->top=old_dpt.z+mpt.z;
+				area->max.x=old_dpt.x+mpt.x;
+				area->min.z=old_dpt.z+mpt.z;
 				break;
 			case 2:
-				area->rgt=old_dpt.x+mpt.x;
-				area->bot=old_dpt.z+mpt.z;
+				area->max.x=old_dpt.x+mpt.x;
+				area->max.z=old_dpt.z+mpt.z;
 				break;
 			case 3:
-				area->lft=old_dpt.x+mpt.x;
-				area->bot=old_dpt.z+mpt.z;
+				area->min.x=old_dpt.x+mpt.x;
+				area->max.z=old_dpt.z+mpt.z;
 				break;
 		}
 
@@ -894,16 +894,16 @@ bool walk_view_click_drag_area_vertex(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 		// fix any left/right swaps
 		
-	if (area->lft>area->rgt) {
-		chk_x=area->lft;
-		area->lft=area->rgt;
-		area->rgt=chk_x;
+	if (area->min.x>area->max.x) {
+		chk_x=area->min.x;
+		area->min.x=area->max.x;
+		area->max.x=chk_x;
 	}
 	
-	if (area->top>area->bot) {
-		chk_z=area->top;
-		area->top=area->bot;
-		area->bot=chk_z;
+	if (area->min.z>area->max.z) {
+		chk_z=area->min.z;
+		area->min.z=area->max.z;
+		area->max.z=chk_z;
 	}
 	
 	os_set_arrow_cursor();
@@ -1126,10 +1126,10 @@ bool walk_view_click_drag_area(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 
 	first_drag=TRUE;
 	
-	old_lft=area->lft;
-	old_rgt=area->rgt;
-	old_top=area->top;
-	old_bot=area->bot;
+	old_lft=area->min.x;
+	old_rgt=area->max.x;
+	old_top=area->min.z;
+	old_bot=area->max.z;
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
@@ -1167,10 +1167,10 @@ bool walk_view_click_drag_area(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		
 			// move area
 			
-		area->lft=old_lft+mpt.x;
-		area->rgt=old_rgt+mpt.x;
-		area->top=old_top+mpt.z;
-		area->bot=old_bot+mpt.z;
+		area->min.x=old_lft+mpt.x;
+		area->max.x=old_rgt+mpt.x;
+		area->min.z=old_top+mpt.z;
+		area->max.z=old_bot+mpt.z;
 
         main_wind_draw();
 	}

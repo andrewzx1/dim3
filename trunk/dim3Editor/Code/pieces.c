@@ -213,10 +213,10 @@ void piece_duplicate(void)
 				piece_duplicate_offset(&xadd,&zadd);
 
 				map.areas[map.narea]=map.areas[main_idx];
-				map.areas[map.narea].lft+=xadd;
-				map.areas[map.narea].rgt+=xadd;
-				map.areas[map.narea].top+=zadd;
-				map.areas[map.narea].bot+=zadd;
+				map.areas[map.narea].min.x+=xadd;
+				map.areas[map.narea].max.x+=xadd;
+				map.areas[map.narea].min.z+=zadd;
+				map.areas[map.narea].max.z+=zadd;
 				select_duplicate_add(area_piece,map.narea,0);
 				map.narea++;
 				break;

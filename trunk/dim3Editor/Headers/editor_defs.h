@@ -40,7 +40,8 @@ and can be sold or given away.
 #define tool_particle_menu_id					163
 #define tool_scenery_menu_id					164
 #define tool_node_menu_id						165
-#define tool_grid_menu_id						166
+#define tool_area_menu_id						166
+#define tool_grid_menu_id						167
 
 #define toolbar_high							32
 #define info_high								16

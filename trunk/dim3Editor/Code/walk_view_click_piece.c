@@ -34,8 +34,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					magnify_factor,vertex_mode,drag_mode,grid_mode;
-extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area;
+extern int					magnify_factor,vertex_mode,drag_mode,grid_mode,area_col_type;
+extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern d3pnt				view_pnt;
 extern d3rect				main_wind_box;
 
@@ -451,11 +451,11 @@ bool walk_view_area_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_a
 {
 	int				px[4],py[4],pz[4];
 
-	px[0]=px[3]=area->lft;
-	px[1]=px[2]=area->rgt;
+	px[0]=px[3]=area->min.x;
+	px[1]=px[2]=area->max.x;
 	py[0]=py[1]=py[2]=py[3]=view_pnt.y;
-	pz[0]=pz[1]=area->top;
-	pz[2]=pz[3]=area->bot;
+	pz[0]=pz[1]=area->min.z;
+	pz[2]=pz[3]=area->max.z;
 	
 	return(walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
@@ -528,15 +528,17 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 		// areas
 		
-	if (dp_area) {
+	if (area_col_type!=-1) {
 			
 		for (n=0;n!=map.narea;n++) {
-			if (walk_view_area_click(view_setup,click_pt,&map.areas[n],&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=area_piece;
-					*main_idx=n;
-					*sub_idx=-1;
+			if (map.areas[n].col_type==area_col_type) {
+				if (walk_view_area_click(view_setup,click_pt,&map.areas[n],&fz)) {
+					if (fz<hit_z) {
+						hit_z=fz;
+						*type=area_piece;
+						*main_idx=n;
+						*sub_idx=-1;
+					}
 				}
 			}
 		}
