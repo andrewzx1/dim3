@@ -54,7 +54,6 @@ extern char light_type_str[][32];
 #define max_map_texture										256				// maximum number of textures in a map
 
 #define max_group											128				// maximum number of mesh groups
-#define max_area											128				// maximum number of sight view areas
 
 #define max_map_scenery										1024			// maximum number of ambient scenery
 #define max_map_scenery_model_texture_frame					8				// maximum number of changable texture frames
@@ -181,14 +180,6 @@ extern char light_type_str[][32];
 #define mesh_hide_mode_never								0
 #define mesh_hide_mode_single_player						1
 #define mesh_hide_mode_multiplayer							2
-
-//
-// area types
-//
-
-#define area_color_count									16
-#define area_color_names									{"Red","Green","Blue","Yellow","Orange","Light Purple","Dark Purple","Light Blue","Yellow Green","Brown","Pink","Gold","Dark Red","Dark Green","Light Gray","Dark Gray"}
-#define area_color_colors									{0xFF0000,0x00FF00,0x0000FF,0xFFFF00,0xFF7F00,0xFF00FF,0x7F00FF,0x00FFFF,0xB0FF00,0xC03300,0xFF6090,0x7F7F00,0x7F0000,0x007F00,0xC0C0C0,0x606060}
 
 //
 // group structure
@@ -557,15 +548,6 @@ typedef struct		{
 					} map_fog_type;
 
 //
-// area structures
-//
-
-typedef struct		{
-						int									col_type;
-						d3pnt								min,max;
-					} map_area_type;
-
-//
 // main map structure
 //
 
@@ -598,7 +580,6 @@ typedef struct		{
 						
 						movement_type						*movements;
 						group_type							*groups;
-						map_area_type						*areas;
 	
 						map_mesh_collection_type			mesh;
 						map_liquid_collection_type			liquid;

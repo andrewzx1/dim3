@@ -50,7 +50,6 @@ void map_auto_generate_clear(map_type *map)
 	map->nparticle=0;
 	map->nmovement=0;
 	map->ngroup=0;
-	map->narea=0;
 	map->mesh.nmesh=0;
 	map->liquid.nliquid=0;
 }

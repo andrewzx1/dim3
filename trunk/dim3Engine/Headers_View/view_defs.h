@@ -301,8 +301,7 @@ typedef struct		{
 					} view_render_halo_type;
 
 typedef struct		{
-						bool								has_area,force_camera_obj;
-						char								area_mask[max_area];
+						bool								force_camera_obj;
 						view_render_camera_type				camera;
 						view_render_draw_list_type			draw_list;
 						view_render_light_type				light;

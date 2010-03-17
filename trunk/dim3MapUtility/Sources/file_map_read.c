@@ -269,36 +269,6 @@ void decode_map_movements_xml(map_type *map,int map_head)
 	}
 }
 
-void decode_map_areas_xml(map_type *map,int map_head)
-{
-	int				n,narea,main_area_tag,area_tag;
-	map_area_type	*area;
-
-    main_area_tag=xml_findfirstchild("Areas",map_head);
-    if (main_area_tag==-1) return;
-    
-    narea=xml_countchildren(main_area_tag);
-	area_tag=xml_findfirstchild("Area",main_area_tag);
-
-	map->narea=0;
-
-    for (n=0;n!=narea;n++) {
-		area=&map->areas[map->narea];
-
-			// area has changed, we detect if the change has happened and delete
-			// supergumba -- can remove this after next version
-
-		area->col_type=xml_get_attribute_int_default(area_tag,"col_type",-1);
-		if (area->col_type!=-1) {
-			xml_get_attribute_3_coord_int(area_tag,"v1",&area->min.x,&area->min.y,&area->min.z);
-			xml_get_attribute_3_coord_int(area_tag,"v2",&area->max.x,&area->max.y,&area->max.z);
-			map->narea++;
-		}
-
-		area_tag=xml_findnextchild(area_tag);
-	}
-}
-
 /* =======================================================
 
       Check Map Network Game Types
@@ -426,7 +396,6 @@ bool read_map_xml(map_type *map)
 	decode_map_groups_xml(map,map_head);
 	decode_map_textures_xml(map,map_head);
 	decode_map_movements_xml(map,map_head);
-	decode_map_areas_xml(map,map_head);
 	
 		// decode
 
