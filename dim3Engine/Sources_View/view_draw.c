@@ -78,10 +78,8 @@ extern void view_draw_fade_draw(void);
 extern void render_map_liquid_opaque(void);
 extern void render_map_liquid_transparent(void);
 extern void decal_render(void);
-extern void view_create_area_mask(void);
 extern void view_start_draw_list(void);
-extern void view_add_mesh_draw_list(void);
-extern void view_add_liquid_draw_list(void);
+extern void view_add_mesh_liquid_draw_list(void);
 extern void view_setup_objects(int tick);
 extern void view_setup_projectiles(int tick);
 extern void view_add_effect_draw_list(int tick);
@@ -409,13 +407,11 @@ void view_draw_scene_build(void)
 
 		// setup draw lists
 
-	view_create_area_mask();
 	view_start_draw_list();
 
 		// add mesh and liquids to draw list
 
-	view_add_mesh_draw_list();
-	view_add_liquid_draw_list();
+	view_add_mesh_liquid_draw_list();
 	
 		// setup objects and projectiles
 		// and add to draw list

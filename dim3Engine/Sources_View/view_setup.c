@@ -60,97 +60,184 @@ extern double distance_to_view_center(int x,int y,int z);
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 extern bool effect_inview(effect_type *effect,int count);
 
+
+// supergumba
+
+#define obscure_grid_division	100
+
+int							obscure_grid_x,obscure_grid_z,
+							obscure_grid_x_size,obscure_grid_z_size;
+bool						obscure_grid_calc=FALSE;
+unsigned char				obscure_grid[obscure_grid_division][obscure_grid_division];
+
 /* =======================================================
 
-      View Areas
+      Map Visibility Obscuring
       
 ======================================================= */
 
-void view_create_area_mask(void)
+void view_visibility_check_calculate(void)
 {
-	int				n,k;
-	map_area_type	*area,*area2;
+	int				n,x,z,lft,rgt,top,bot;
+	d3pnt			map_min,map_max;
+	map_mesh_type	*mesh;
 
-	bzero(view.render->area_mask,max_area);
+		// get total map size
 
-	view.render->has_area=FALSE;
+	mesh=map.mesh.meshes;
 
-	for (n=0;n!=map.narea;n++) {
-		area=&map.areas[n];
+	memmove(&map_min,&mesh->box.min,sizeof(d3pnt));
+	memmove(&map_max,&mesh->box.max,sizeof(d3pnt));
+	mesh++;
 
-		if ((view.render->camera.pnt.x<area->min.x) || (view.render->camera.pnt.x>area->max.x)) continue;
-		if ((view.render->camera.pnt.z<area->min.z) || (view.render->camera.pnt.z>area->max.z)) continue;
+	for (n=1;n<map.mesh.nmesh;n++) {
+		if (mesh->box.min.x<map_min.x) map_min.x=mesh->box.min.x;
+		if (mesh->box.max.x>map_max.x) map_max.x=mesh->box.max.x;
+		if (mesh->box.min.z<map_min.z) map_min.z=mesh->box.min.z;
+		if (mesh->box.max.z>map_max.z) map_max.z=mesh->box.max.z;
+		mesh++;
+	}
 
-			// mark this area
+		// get grid size
 
-		view.render->area_mask[n]=0x1;
-		view.render->has_area=TRUE;
+	obscure_grid_x_size=(map_max.x-map_min.x)/obscure_grid_division;
+	obscure_grid_z_size=(map_max.z-map_min.z)/obscure_grid_division;
 
-			// join with any areas with the same color
+	obscure_grid_x=map_min.x;
+	obscure_grid_z=map_min.z;
 
-		area2=map.areas;
+		// find obscuring points
 
-		for (k=0;k!=map.narea;k++) {
+	bzero(obscure_grid,(obscure_grid_division*obscure_grid_division));
 
-			if (k!=n) {
-				if ((area2->col_type==area->col_type)) view.render->area_mask[k]=0x1;
+	for (z=0;z!=obscure_grid_division;z++) {
+
+		top=obscure_grid_z+(z*obscure_grid_z_size);
+		bot=top+obscure_grid_z_size;
+
+		for (x=0;x!=obscure_grid_division;x++) {
+			
+			lft=obscure_grid_x+(x*obscure_grid_x_size);
+			rgt=lft+obscure_grid_x_size;
+
+			mesh=map.mesh.meshes;
+
+			for (n=0;n!=map.mesh.nmesh;n++) {
+				if ((lft>mesh->box.max.x) || (top>mesh->box.max.z) || (rgt<mesh->box.min.x) || (bot<mesh->box.min.z)) {
+					mesh++;
+					continue;
+				}
+				obscure_grid[x][z]=0x1;
+				break;
 			}
-
-			area2++;
 		}
 	}
 }
 
-bool view_area_check_mesh(map_mesh_type *mesh)
+bool view_visibility_check_obscure_line(d3pnt *pt1,d3pnt *pt2)
 {
-	int				n;
-	map_area_type	*area;
+	int			n,x,z,x2,z2,kx,kz,count;
+	float		fx,fz,xadd,zadd;
 
-	for (n=0;n!=map.narea;n++) {
-		if (view.render->area_mask[n]==0x0) continue;
+		// get points in obscure space
 
-			// is mesh in this area?
+	x=(pt1->x-obscure_grid_x)/obscure_grid_x_size;
+	z=(pt1->z-obscure_grid_z)/obscure_grid_z_size;
 
-		area=&map.areas[n];
+	x2=(pt2->x-obscure_grid_x)/obscure_grid_x_size;
+	z2=(pt2->z-obscure_grid_z)/obscure_grid_z_size;
 
-		if (((mesh->box.min.x>=area->min.x) && (mesh->box.min.x<=area->max.x)) || ((mesh->box.max.x>=area->min.x) && (mesh->box.max.x<=area->max.x))) {
-			if ((mesh->box.min.z>=area->min.z) && (mesh->box.min.z<=area->max.z)) return(TRUE);
-			if ((mesh->box.max.z>=area->min.z) && (mesh->box.max.z<=area->max.z)) return(TRUE);
-		}
-		
-		if (((area->min.x>=mesh->box.min.x) && (area->min.x<=mesh->box.max.x)) || ((area->max.x>=mesh->box.min.x) && (area->max.x<=mesh->box.max.x))) {
-			if ((area->min.z>=mesh->box.min.z) && (area->min.z<=mesh->box.max.z)) return(TRUE);
-			if ((area->max.z>=mesh->box.min.z) && (area->max.z<=mesh->box.max.z)) return(TRUE);
-		}
+		// automatically OK points next to
+		// on another
+
+	kx=abs(x-x2);
+	kz=abs(z-z2);
+
+	if ((kx<=1) && (kz<=1)) return(TRUE);
+
+		// trace the line looking for obscure
+		// points (0x0) in grid
+
+	if (kx>kz) {
+		xadd=1.0f;
+		zadd=((float)kz)/((float)kx);
+		count=kx;
+	}
+	else {
+		xadd=((float)kx)/((float)kz);
+		zadd=1.0f;
+		count=kz;
 	}
 
-	return(FALSE);
+	if (x2<x) xadd=-xadd;
+	if (z2<z) zadd=-zadd;
+
+	fx=(float)x;
+	fz=(float)z;
+
+	for (n=0;n!=count;n++) {
+		if (obscure_grid[(int)fx][(int)fz]==0x0) return(FALSE);
+
+		fx+=xadd;
+		fz+=zadd;
+	}
+
+		// no hit, view lines don't pass through
+		// obscured point
+
+	return(TRUE);
 }
 
-bool view_area_check_liquid(map_liquid_type *liq)
+bool view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)
 {
-	int				n;
-	map_area_type	*area;
+	d3pnt			pt;
 
-	for (n=0;n!=map.narea;n++) {
-		if (view.render->area_mask[n]==0x0) continue;
+		// see if we can trace to the corner points
+		// of a mesh (in 2D) without hitting any
+		// obscure zones (0x0 in grid.)  If we can't
+		// get to any corner without being blocked,
+		// then elimate the mesh
 
-			// is mesh in this area?
+	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&mesh->box.mid)) return(TRUE);
+	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&mesh->box.min)) return(TRUE);
+	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&mesh->box.max)) return(TRUE);
 
-		area=&map.areas[n];
+	pt.y=view.render->camera.pnt.y;
 
-		if (((liq->lft>=area->min.x) && (liq->lft<=area->max.x)) || ((liq->rgt>=area->min.x) && (liq->rgt<=area->max.x))) {
-			if ((liq->top>=area->min.z) && (liq->top<=area->max.z)) return(TRUE);
-			if ((liq->bot>=area->min.z) && (liq->bot<=area->max.z)) return(TRUE);
-		}
-		
-		if (((area->min.x>=liq->lft) && (area->min.x<=liq->rgt)) || ((area->max.x>=liq->lft) && (area->max.x<=liq->rgt))) {
-			if ((area->min.z>=liq->top) && (area->min.z<=liq->bot)) return(TRUE);
-			if ((area->max.z>=liq->top) && (area->max.z<=liq->bot)) return(TRUE);
-		}
-	}
+	pt.x=mesh->box.min.x;
+	pt.z=mesh->box.max.z;
+	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
 
-	return(FALSE);
+	pt.x=mesh->box.max.x;
+	pt.z=mesh->box.min.z;
+	return(view_visibility_check_obscure_line(&view.render->camera.pnt,&pt));
+}
+
+bool view_visibility_check_liquid(int eye_mesh_idx,map_liquid_type *liq)
+{
+	d3pnt			pt;
+
+	pt.y=view.render->camera.pnt.y;
+
+	pt.x=(liq->lft+liq->rgt)>>1;
+	pt.z=(liq->top+liq->bot)>>1;
+	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
+
+	pt.x=liq->lft;
+	pt.z=liq->top;
+	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
+
+	pt.x=liq->rgt;
+	pt.z=liq->bot;
+	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
+
+	pt.x=liq->lft;
+	pt.z=liq->bot;
+	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
+
+	pt.x=liq->rgt;
+	pt.z=liq->top;
+	return(view_visibility_check_obscure_line(&view.render->camera.pnt,&pt));
 }
 
 /* =======================================================
@@ -228,16 +315,13 @@ bool view_mesh_in_draw_list(int mesh_idx)
       
 ======================================================= */
 
-void view_add_mesh_draw_list(void)
+void view_add_mesh_draw_list(int start_mesh_idx)
 {
-	int					n,k,op_dist,start_mesh_idx;
+	int					n,k,op_dist;
 	double				d,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
 	map_mesh_poly_type	*poly;
 	
-		// get mesh camera is in
-
-	start_mesh_idx=map_mesh_find_always(&map,&view.render->camera.pnt);
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
 
 		// obscure distance -- normally is the opengl projection
@@ -261,8 +345,8 @@ void view_add_mesh_draw_list(void)
 
 				// is this mesh visible?
 
-			if ((n!=start_mesh_idx) && (view.render->has_area)) {
-				if (!view_area_check_mesh(mesh)) continue;
+			if (n!=start_mesh_idx) {
+				if (!view_visibility_check_mesh(start_mesh_idx,mesh)) continue;
 			}
 			
 				// auto-eliminate meshes drawn outside the obscure distance
@@ -306,7 +390,7 @@ void view_add_mesh_draw_list(void)
 	}
 }
 
-void view_add_liquid_draw_list(void)
+void view_add_liquid_draw_list(int start_mesh_idx)
 {
 	int					n;
 	double				d,obscure_dist;
@@ -332,9 +416,7 @@ void view_add_liquid_draw_list(void)
 			
 				// is this liquid visible?
 
-			if (view.render->has_area) {
-				if (!view_area_check_liquid(liq)) continue;
-			}
+			if (!view_visibility_check_liquid(start_mesh_idx,liq)) continue;
 
 				// auto-eliminate liquids drawn outside the obscure distance
 					
@@ -355,6 +437,23 @@ void view_add_liquid_draw_list(void)
 	}
 }
 
+void view_add_mesh_liquid_draw_list(void)
+{
+	int				start_mesh_idx;
+
+		// get mesh camera is in
+
+	start_mesh_idx=map_mesh_find_always(&map,&view.render->camera.pnt);
+
+		// add meshes
+
+	view_add_mesh_draw_list(start_mesh_idx);
+
+		// add liquids
+
+	view_add_liquid_draw_list(start_mesh_idx);
+}
+
 /* =======================================================
 
       Model Setup and Draw List
@@ -369,7 +468,7 @@ bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 
 		// is model in a mesh that's in the mesh draw list?
 
-	if ((mesh_idx!=-1) && (view.render->has_area)) {
+	if (mesh_idx!=-1) {
 		if (!view_mesh_in_draw_list(mesh_idx)) return(FALSE);
 	}
 	
@@ -398,7 +497,7 @@ bool view_setup_shadow_in_view(model_draw *draw,int mesh_idx)
 
 		// is model in a mesh that's in the mesh draw list?
 
-	if ((mesh_idx!=-1) && (view.render->has_area)) {
+	if (mesh_idx!=-1) {
 		if (!view_mesh_in_draw_list(mesh_idx)) return(FALSE);
 	}
 	
@@ -559,7 +658,7 @@ void view_add_effect_draw_list(int tick)
 
 			// effect inside a mesh that's hidden?
 
-		if ((effect->mesh_idx!=-1) && (view.render->has_area)) {
+		if (effect->mesh_idx!=-1) {
 			if (!view_mesh_in_draw_list(effect->mesh_idx)) continue;
 		}
 

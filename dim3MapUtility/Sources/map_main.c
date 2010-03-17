@@ -209,9 +209,6 @@ bool map_new(map_type *map,char *name)
 	map->groups=(group_type*)malloc(max_group*sizeof(group_type));
 	if (map->groups==NULL) return(FALSE);
 
-	map->areas=(map_area_type*)malloc(max_area*sizeof(map_area_type));
-	if (map->areas==NULL) return(FALSE);
-
 		// zero memory
 		
 	bzero(map->textures,(max_map_texture*sizeof(texture_type)));
@@ -223,7 +220,6 @@ bool map_new(map_type *map,char *name)
 	bzero(map->sounds,(max_map_sound*sizeof(map_sound_type)));
 	bzero(map->particles,(max_map_particle*sizeof(map_particle_type)));
 	bzero(map->groups,(max_group*sizeof(group_type)));
-	bzero(map->areas,(max_area*sizeof(map_area_type)));
 	
 		// bitmaps
 		
@@ -314,7 +310,6 @@ void map_close(map_type *map)
 	free(map->sounds);
 	free(map->particles);
 	free(map->groups);
-	free(map->areas);
 }
 
 /* =======================================================
