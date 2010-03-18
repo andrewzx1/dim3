@@ -30,7 +30,7 @@ and can be sold or given away.
 #include "common_view.h"
 
 extern d3pnt					view_pnt;
-extern int						drag_mode,area_col_type;
+extern int						drag_mode;
 extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid;
 
 extern file_path_setup_type		file_path_setup;
@@ -426,49 +426,6 @@ void piece_create_liquid(void)
 	dp_liquid=TRUE;
 	select_clear();
 	select_add(liquid_piece,index,-1);
-
-	main_wind_draw();
-	
-	menu_set_show_hide_check();
-	main_wind_tool_reset();
-}
-
-/* =======================================================
-
-      Create Area
-	        
-======================================================= */
-
-void piece_create_area(void)
-{
-	int				index,sz;
-	map_area_type	*area;
-	
-		// create the area
-		
-	if (map.narea>max_area) {
-		dialog_alert("Can Not Create Area","Reach maximum number of areas.");
-		return;
-	}
-	
-	index=map.narea;
-	
-	area=&map.areas[index];
-	map.narea++;
-	
-	sz=map_enlarge*10;
-	area->min.x=view_pnt.x-sz;
-	area->max.x=view_pnt.x+sz;
-	area->min.z=view_pnt.z-sz;
-	area->max.z=view_pnt.z+sz;
-
-	area->col_type=0;
-
-		// select the liquid
-		
-	area_col_type=0;
-	select_clear();
-	select_add(area_piece,index,-1);
 
 	main_wind_draw();
 	

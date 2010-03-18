@@ -124,7 +124,6 @@ char					piece_icns_file_name[piece_count][64]=
 									"Piece Grid",
 									"Piece Polygon",
 									"Piece Liquid",
-									"Piece Area"
 								};
 								
 char					piece_tooltip_str[piece_count][64]=
@@ -134,7 +133,6 @@ char					piece_tooltip_str[piece_count][64]=
 									"Add OBJ Mesh","Replace Mesh UV",
 									"Add Height Map Mesh","Add Grid Mesh",
 									"Add Single Polygon Mesh","Add Liquid Volume",
-									"Add Area"
 								};
 
 /* =======================================================
@@ -481,24 +479,6 @@ void main_wind_control_piece(int piece_idx)
 			
 		case 11:
 			piece_create_liquid();
-			break;
-			
-		case 12:
-			GetBevelButtonMenuValue(piece_ctrl[12],&menu_idx);
-			
-				// create a area
-				
-			if (menu_idx==1) {
-				piece_create_area();
-				break;
-			}
-			
-				// turn on/off areas
-			
-			if (menu_idx>2) {
-				area_col_type=menu_idx-3;
-				main_wind_draw();	
-			}
 			break;
 			
 	}
@@ -2391,28 +2371,6 @@ void main_wind_tool_fill_node_combo(void)
 	}
 }
 
-void main_wind_tool_fill_area_combo(void)
-{
-	int					n;
-	char				color_names[area_color_count][32]=area_color_names;
-	CFStringRef			cf_str;
-	
-		// delete old items
-		
-	DeleteMenuItems(area_menu,1,CountMenuItems(area_menu));
-	
-		// add items
-		
-	AppendMenuItemTextWithCFString(area_menu,CFSTR("Add Area"),0,0,NULL);
-	AppendMenuItemTextWithCFString(area_menu,NULL,kMenuItemAttrSeparator,0,NULL);
-	
-	for (n=0;n<area_color_count;n++) {
-		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,color_names[n],kCFStringEncodingMacRoman);
-		AppendMenuItemTextWithCFString(area_menu,cf_str,0,0,NULL);
-		CFRelease(cf_str);
-	}
-}
-
 void main_wind_tool_fill_tool_combos(void)
 {
 	main_wind_tool_fill_spot_combo();
@@ -2421,7 +2379,6 @@ void main_wind_tool_fill_tool_combos(void)
 	main_wind_tool_fill_particle_combo();
 	main_wind_tool_fill_scenery_combo();
 	main_wind_tool_fill_node_combo();
-	main_wind_tool_fill_area_combo();
 }
 
 /* =======================================================

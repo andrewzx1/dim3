@@ -39,7 +39,6 @@ and can be sold or given away.
 #define palette_type_sound				7
 #define palette_type_particle			8
 #define palette_type_node				9
-#define palette_type_area				10
 
 extern int				drag_mode;
 
@@ -115,10 +114,6 @@ void palette_close(void)
 			palette_node_close(&palette_x,&palette_y);
 			break;
 			
-		case palette_type_area:
-			palette_area_close(&palette_x,&palette_y);
-			break;
-	
 	}
 
 	palette_cur_type=palette_type_none;
@@ -189,10 +184,6 @@ void palette_reset(void)
 			
 		case node_piece:
 			cur_type=palette_type_node;
-			break;
-			
-		case area_piece:
-			cur_type=palette_type_area;
 			break;
 			
 	}
@@ -308,16 +299,6 @@ void palette_reset(void)
 			palette_node_load();
 			return;
 			
-		case palette_type_area:
-		
-			if (palette_cur_type!=palette_type_area) {
-				palette_close();
-				palette_cur_type=palette_type_area;
-				palette_area_open(palette_x,palette_y);
-			}
-			
-			palette_area_load();
-			return;
 	}
 }
 

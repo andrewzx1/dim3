@@ -204,23 +204,6 @@ void piece_duplicate(void)
 				main_wind_tool_fill_particle_combo();
 				break;
 				
-			case area_piece:
-				if (map.narea==max_area) {
-					dialog_alert("Can Not Create Area","You've reached the maximum number of areas for a map.");
-					return;
-				}
-
-				piece_duplicate_offset(&xadd,&zadd);
-
-				map.areas[map.narea]=map.areas[main_idx];
-				map.areas[map.narea].min.x+=xadd;
-				map.areas[map.narea].max.x+=xadd;
-				map.areas[map.narea].min.z+=zadd;
-				map.areas[map.narea].max.z+=zadd;
-				select_duplicate_add(area_piece,map.narea,0);
-				map.narea++;
-				break;
-				
 		}
     }
 	
@@ -331,13 +314,6 @@ void piece_delete(void)
 					map.particles[i]=map.particles[i+1];
 				}
 				map.nparticle--;
-				break;
-				
-			case area_piece:
-				for (i=main_idx;i<map.narea;i++) {
-					map.areas[i]=map.areas[i+1];
-				}
-				map.narea--;
 				break;
 				
 		}

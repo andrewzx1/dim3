@@ -284,48 +284,6 @@ void walk_view_draw_select_sprite(d3pnt *pnt)
 
 /* =======================================================
 
-      Draw Selection for Area
-      
-======================================================= */
-
-void walk_view_draw_select_area_get_grow_handles(int area_idx,int *px,int *py,int *pz)
-{
-	map_area_type			*area;
-	
-	area=&map.areas[area_idx];
-	
-	px[0]=px[3]=area->min.x;
-	px[1]=px[2]=area->max.x;
-	pz[0]=pz[1]=area->min.z;
-	pz[2]=pz[3]=area->max.z;
-	py[0]=py[1]=py[2]=py[3]=view_pnt.y;
-}
-
-void walk_view_draw_select_area(int area_idx)
-{
-	int						n,px[4],py[4],pz[4];
-	map_area_type			*area;
-	
-	area=&map.areas[area_idx];
-	
-	glEnable(GL_DEPTH_TEST);
-
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	glPointSize(walk_view_handle_size);
-		
-	walk_view_draw_select_area_get_grow_handles(area_idx,px,py,pz);
-		
-	glBegin(GL_POINTS);
-
-	for (n=0;n!=4;n++) {
-		glVertex3i(px[n],py[n],pz[n]);
-	}
-
-	glEnd();
-}
-
-/* =======================================================
-
       Draw Selections for Map
       
 ======================================================= */
@@ -395,10 +353,7 @@ void walk_view_draw_select(d3pnt *cpt,bool draw_area)
 			case particle_piece:
 				walk_view_draw_select_sprite(&map.particles[main_idx].pnt);
 				break;
-				
-			case area_piece:
-				if (draw_area) walk_view_draw_select_area(main_idx);
-				break;
+
 		}
 	}
 	
