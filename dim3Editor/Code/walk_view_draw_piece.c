@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cy,main_wind_uv_layer,txt_palette_high,area_col_type;
+extern int				cy,main_wind_uv_layer,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 extern bool				dp_normals,dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_textured;
 extern d3pnt			view_pnt;
@@ -45,8 +45,6 @@ extern setup_type		setup;
 extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 						light_bitmap,sound_bitmap,particle_bitmap;
 						
-int						area_colors[area_color_count]=area_color_colors;
-
 extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
 
 /* =======================================================
@@ -610,85 +608,6 @@ void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
 
 /* =======================================================
 
-      Walk View Area Drawing
-      
-======================================================= */
-
-void walk_view_draw_areas(void)
-{
-	int					n,y,icol;
-	d3col				col;
-	map_area_type		*area;
-	
-	if (area_col_type==-1) return;
-	
-		// get color
-		
-	icol=area_colors[area_col_type];
-	
-	col.r=((float)((icol>>16)&0xFF))/255.0f;
-	col.g=((float)((icol>>8)&0xFF))/255.0f;
-	col.b=((float)(icol&0xFF))/255.0f;
-	
-		// transparent area draw
-		
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-	
-		// areas are 2D
-		
-	y=view_pnt.y;
-
-		// area colors
-				
-	glColor4f(col.r,col.g,col.b,0.5f);
-		
-	area=map.areas;
-	
-	for (n=0;n!=map.narea;n++) {
-	
-		if (area->col_type==area_col_type) {
-			glBegin(GL_QUADS);
-			glVertex3i(area->min.x,y,area->min.z);
-			glVertex3i(area->max.x,y,area->min.z);
-			glVertex3i(area->max.x,y,area->max.z);
-			glVertex3i(area->min.x,y,area->max.z);
-			glEnd();
-		}
-		
-		area++;
-	}
-	
-		// area boxes
-
-	glColor4f((col.r*0.7f),(col.g*0.7f),(col.b*0.7f),1.0f);
-
-	area=map.areas;
-	
-	for (n=0;n!=map.narea;n++) {
-		
-		if (area->col_type==area_col_type) {
-			glBegin(GL_LINE_LOOP);
-			glVertex3i(area->min.x,y,area->min.z);
-			glVertex3i(area->max.x,y,area->min.z);
-			glVertex3i(area->max.x,y,area->max.z);
-			glVertex3i(area->min.x,y,area->max.z);
-			glEnd();
-		}
-		
-		area++;
-	}
-	
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-	
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-}
-
-/* =======================================================
-
       Walk View Nodes, Scenery, etc Drawing
       
 ======================================================= */
@@ -922,10 +841,6 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		main_wind_set_3D_projection(view_setup,(map.settings.editor.view_near_dist+20),(map.settings.editor.view_far_dist-20),walk_view_near_offset);
 		walk_view_draw_meshes_normals(view_setup);
 	}
-	
-		// draw areas
-		
-	if (view_setup->draw_area) walk_view_draw_areas();
 		
 		// draw selection
 		

@@ -447,19 +447,6 @@ bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,map
 	return(walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
 
-bool walk_view_area_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_area_type *area,int *hit_z)
-{
-	int				px[4],py[4],pz[4];
-
-	px[0]=px[3]=area->min.x;
-	px[1]=px[2]=area->max.x;
-	py[0]=py[1]=py[2]=py[3]=view_pnt.y;
-	pz[0]=pz[1]=area->min.z;
-	pz[2]=pz[3]=area->max.z;
-	
-	return(walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
-}
-
 /* =======================================================
 
       View Piece Get Clicked Index
@@ -521,24 +508,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 					*type=liquid_piece;
 					*main_idx=n;
 					*sub_idx=-1;
-				}
-			}
-		}
-	}
-	
-		// areas
-		
-	if (area_col_type!=-1) {
-			
-		for (n=0;n!=map.narea;n++) {
-			if (map.areas[n].col_type==area_col_type) {
-				if (walk_view_area_click(view_setup,click_pt,&map.areas[n],&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=area_piece;
-						*main_idx=n;
-						*sub_idx=-1;
-					}
 				}
 			}
 		}
@@ -713,10 +682,6 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	pt->x-=view_setup->box.lx;
 	pt->y-=view_setup->box.ty;
 	
-		// area vertex drags
-
-	if (walk_view_click_drag_area_vertex(view_setup,pt,view_move_dir)) return;
-	
 		// liquid vertex drags
 		
 	if (walk_view_click_drag_liquid_vertex(view_setup,pt,view_move_dir)) return;
@@ -742,10 +707,6 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		// changes in palette
 		
 	palette_reset();
-	
-		// area drags
-		
-	if (walk_view_click_drag_area(view_setup,pt,view_move_dir)) return;
 	
 		// item drags
 			
