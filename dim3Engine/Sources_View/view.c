@@ -79,6 +79,7 @@ bool view_memory_allocate(void)
 		
 	view.images=NULL;
 	view.rain_draws=NULL;
+	view.obscure.grid=NULL;
 	
 		// view pointers
 
@@ -87,6 +88,9 @@ bool view_memory_allocate(void)
 
 	view.rain_draws=(rain_draw_type*)malloc(max_rain_density*sizeof(rain_draw_type));
 	if (view.rain_draws==NULL) return(FALSE);
+
+	view.obscure.grid=(unsigned char*)malloc(obscure_grid_byte_size);
+	if (view.obscure.grid==NULL) return(FALSE);
 	
 		// clear pointers
 
@@ -104,6 +108,7 @@ void view_memory_release(void)
 {
 	if (view.images!=NULL) free(view.images);
 	if (view.rain_draws!=NULL) free(view.rain_draws);
+	if (view.obscure.grid!=NULL) free(view.obscure.grid);
 }
 
 /* =======================================================

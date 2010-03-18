@@ -372,7 +372,7 @@ void hud_texts_draw(void)
 			if (text->size!=cur_size) {
 				cur_size=text->size;
 
-				gl_text_start(cur_size);
+				gl_text_start(font_hud_index,cur_size);
 				high=gl_text_get_char_height(cur_size);
 			}
 
@@ -544,7 +544,7 @@ void hud_metrics_draw(void)
 
 		// start text
 		
-	gl_text_start(txt_sz);
+	gl_text_start(font_hud_index,txt_sz);
 
 	y=(high+2)+5;
 

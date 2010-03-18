@@ -72,6 +72,13 @@ and can be sold or given away.
 #define element_table_bitmap_document			2
 
 //
+// font selection
+//
+
+#define font_interface_index					0
+#define font_hud_index							1
+
+//
 // GUI scaling factors
 //
 
@@ -264,7 +271,8 @@ typedef struct		{
 
 typedef struct		{
 						int						text_size_small,text_size_medium,text_size_large;
-						char					name[name_str_len],alt_name[name_str_len];
+						char					interface_name[name_str_len],alt_interface_name[name_str_len],
+												hud_name[name_str_len],alt_hud_name[name_str_len];
 					} hud_font_type;
 
 //

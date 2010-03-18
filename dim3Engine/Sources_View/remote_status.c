@@ -295,7 +295,7 @@ void remote_draw_names_render(void)
 				
 			if (text_size!=obj->draw.remote_name.size) {
 				text_size=obj->draw.remote_name.size;
-				gl_text_start(text_size);
+				gl_text_start(font_hud_index,text_size);
 			}
 
 			object_get_tint(obj,&col);

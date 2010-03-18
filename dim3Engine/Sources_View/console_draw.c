@@ -148,7 +148,7 @@ void console_draw_header(void)
 	col.r=col.g=col.b=0.75f;
 	view_draw_next_vertex_object_2D_color_quad(&col,1.0f,lx,rx,ty,by);
 	
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	col.r=col.g=col.b=0.0f;
 	
 		// text
@@ -174,7 +174,7 @@ void console_draw_lines(void)
 
 	y=(y_add*2)+2;
 		
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	
 	cline=console_line;
 	

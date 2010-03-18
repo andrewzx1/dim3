@@ -34,19 +34,23 @@ and can be sold or given away.
 extern hud_type				hud;
 extern setup_type			setup;
 
-int							font_size;
-float						font_char_size[90];
-bitmap_type					font_bitmap;
+typedef struct				{
+								float						char_size[90];
+								bitmap_type					bitmap;
+							} dim3_font_type;
+
+int							font_index,font_size;
+dim3_font_type				fonts[2];
 
 /* =======================================================
 
-      Setup Text Drawing
+      Create Font Texture
       
 ======================================================= */
 
 #ifdef D3_OS_MAC
 
-void gl_text_initialize(void)
+void gl_text_create_bitmap(dim3_font_type *d3_font,unsigned char *name,unsigned char *alt_name)
 {
 	int					n,x,y,data_sz,row_add;
 	char				ch;
@@ -98,14 +102,14 @@ void gl_text_initialize(void)
 		// setup the correct font
 		// this is depreciated code, but there's no replacement for 10.4
 
-	strcpy((char*)&p_str[1],hud.font.name);
-	p_str[0]=(unsigned char)strlen(hud.font.name);
+	strcpy((char*)&p_str[1],name);
+	p_str[0]=(unsigned char)strlen(name);
 	
 	if (FMGetFontFamilyFromName(p_str)!=kInvalidFontFamily) {
-		CGContextSelectFont(bitmap_ctx,hud.font.name,font_bitmap_point,kCGEncodingMacRoman);
+		CGContextSelectFont(bitmap_ctx,name,font_bitmap_point,kCGEncodingMacRoman);
 	}
 	else {
-		CGContextSelectFont(bitmap_ctx,hud.font.alt_name,font_bitmap_point,kCGEncodingMacRoman);
+		CGContextSelectFont(bitmap_ctx,alt_name,font_bitmap_point,kCGEncodingMacRoman);
 	}
 		
 		// draw the characters
@@ -125,7 +129,7 @@ void gl_text_initialize(void)
 			
 		txt_pt=CGContextGetTextPosition(bitmap_ctx);
 
-		font_char_size[n]=(txt_pt.x-(float)x)/(float)font_bitmap_char_wid;
+		d3_font->char_size[n]=(txt_pt.x-(float)x)/(float)font_bitmap_char_wid;
 	}
 
 		// texture data
@@ -157,7 +161,7 @@ void gl_text_initialize(void)
 		}
 	}
 	
-	bitmap_data(&font_bitmap,txt_data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	bitmap_data(&d3_font->bitmap,txt_data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 
 	free(txt_data);
 	
@@ -171,7 +175,7 @@ void gl_text_initialize(void)
 
 #ifdef D3_OS_WINDOWS
 
-void gl_text_initialize(void)
+void gl_text_create_bitmap(dim3_font_type *d3_font,unsigned char *name,unsigned char *alt_name)
 {
 	int				n,x,y;
 	unsigned char	ch;
@@ -203,9 +207,9 @@ void gl_text_initialize(void)
 
 		// draw the characters
 
-	font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,hud.font.name);
+	font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
 	if (font==NULL) {
-		font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,hud.font.alt_name);
+		font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,alt_name);
 	}
 
 	SelectObject(dc,font);
@@ -225,7 +229,7 @@ void gl_text_initialize(void)
 			// get the spacing information
 
 		GetTextExtentPoint32(dc,(char*)&ch,1,&chsz);
-		font_char_size[n]=(float)chsz.cx/(float)font_bitmap_char_wid;
+		d3_font->char_size[n]=(float)chsz.cx/(float)font_bitmap_char_wid;
 	}
 
 	DeleteObject(font);
@@ -249,7 +253,7 @@ void gl_text_initialize(void)
 		}
 	}
 
-	bitmap_data(&font_bitmap,data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	bitmap_data(&d3_font->bitmap,data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 
 	free(data);
 
@@ -262,9 +266,22 @@ void gl_text_initialize(void)
 
 #endif
 
+/* =======================================================
+
+      Initialize/Shutdown Text Drawing
+      
+======================================================= */
+
+void gl_text_initialize(void)
+{
+	gl_text_create_bitmap(&fonts[font_interface_index],hud.font.interface_name,hud.font.alt_interface_name);
+	gl_text_create_bitmap(&fonts[font_hud_index],hud.font.hud_name,hud.font.alt_hud_name);
+}
+
 void gl_text_shutdown(void)
 {
-	bitmap_close(&font_bitmap);
+	bitmap_close(&fonts[font_interface_index].bitmap);
+	bitmap_close(&fonts[font_hud_index].bitmap);
 }
 
 /* =======================================================
@@ -278,7 +295,7 @@ inline int gl_text_get_char_height(int text_size)
 	return((int)(((float)text_size)*text_height_factor));
 }
 
-int gl_text_get_string_width(int text_size,char *str)
+int gl_text_get_string_width(int text_font,int text_size,char *str)
 {
 	int			i,ch,len;
 	float		fx,f_wid;
@@ -296,7 +313,7 @@ int gl_text_get_string_width(int text_size,char *str)
 
 		if ((ch>='!') && (ch<='z')) {
 			ch-='!';
-			fx+=(f_wid*font_char_size[ch]);
+			fx+=(f_wid*fonts[text_font].char_size[ch]);
 		}
 		else {
 			fx+=(f_wid/3.0f);
@@ -312,12 +329,13 @@ int gl_text_get_string_width(int text_size,char *str)
       
 ======================================================= */
 
-void gl_text_start(int text_size)
+void gl_text_start(int text_font,int text_size)
 {
 	GLfloat				fct[4];
 
 		// remember font size
 		
+	font_index=text_font;
 	font_size=text_size;
 	
 		// setup texture
@@ -325,7 +343,7 @@ void gl_text_start(int text_size)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(0,font_bitmap.gl_id);
+	gl_texture_bind(0,fonts[font_index].bitmap.gl_id);
 	
 		// texture combines
 		
@@ -400,10 +418,10 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
         
 	switch (just) {
 		case tx_center:
-			x-=(gl_text_get_string_width(font_size,txt)>>1);
+			x-=(gl_text_get_string_width(font_index,font_size,txt)>>1);
 			break;
 		case tx_right:
-			x-=gl_text_get_string_width(font_size,txt);
+			x-=gl_text_get_string_width(font_index,font_size,txt);
 			break;
 	}
 	
@@ -459,7 +477,7 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 			*vertex_ptr++=f_lft;
 			*vertex_ptr++=f_bot;
 
-			f_lft+=(f_wid*font_char_size[ch]);
+			f_lft+=(f_wid*fonts[font_index].char_size[ch]);
 
 				// the UVs
 

@@ -98,7 +98,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	
 	sprintf(txt,"%d",score);
 		
-	gl_text_start(fnt_sz);
+	gl_text_start(font_hud_index,fnt_sz);
 	gl_text_draw((lx+5),(by+1),name,tx_left,FALSE,&col2,0.75f);
 	gl_text_draw((rx-5),(by+1),txt,tx_right,FALSE,&col2,0.75f);
 	gl_text_end();
@@ -366,7 +366,7 @@ void network_score_draw(void)
 		
 	y=gl_text_get_char_height(hud.font.text_size_large);
 	
-	gl_text_start(hud.font.text_size_large);
+	gl_text_start(font_hud_index,hud.font.text_size_large);
 	
 	if (str[0]!=0x0) {
 		gl_text_draw((hud.scale_x>>1),y,str,tx_center,TRUE,&col,1.0f);
@@ -401,7 +401,7 @@ void network_chat_draw(void)
 
 		// draw text
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_hud_index,hud.font.text_size_small);
 
 		// currently typing?
 

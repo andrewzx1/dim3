@@ -193,13 +193,20 @@ void draw_sky_dome_panoramic_setup(void)
 		*vertex_ptr++=0.0f;
 		*vertex_ptr++=f_ty;
 		*vertex_ptr++=0.0f;
-		
+
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=f_ty;
+		*vertex_ptr++=0.0f;
+	
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
 		
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
 		
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
+
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
 

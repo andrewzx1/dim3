@@ -212,8 +212,8 @@ extern void gl_texture_movie_end(void);
 extern void gl_text_initialize(void);
 extern void gl_text_shutdown(void);
 extern int gl_text_get_char_height(int text_size);
-extern int gl_text_get_string_width(int text_size,char *str);
-extern void gl_text_start(int text_size);
+extern int gl_text_get_string_width(int text_font,int text_size,char *str);
+extern void gl_text_start(int text_font,int text_size);
 extern void gl_text_end(void);
 extern void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha);
 

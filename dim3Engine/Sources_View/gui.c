@@ -345,7 +345,7 @@ void gui_draw_dialog(void)
 
 		col.r=col.g=col.b=1.0f;
 		
-		gl_text_start(hud.font.text_size_medium);
+		gl_text_start(font_interface_index,hud.font.text_size_medium);
 		gl_text_draw(((lft+rgt)/2),y,gui_frame.title,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
@@ -444,7 +444,7 @@ void gui_draw_message(char *txt)
 	
 	col.r=col.g=col.b=0.0f;
 	
-	gl_text_start(hud.font.text_size_large);
+	gl_text_start(font_interface_index,hud.font.text_size_large);
 	gl_text_draw(x,y,txt,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	

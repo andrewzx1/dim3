@@ -354,7 +354,7 @@ void element_text_add(char *str,int id,int x,int y,int size,int just,bool select
 		c2=strstr(c,"{r}");
 		if (c2!=NULL) *c2=0x0;
 		
-		wid=gl_text_get_string_width(size,c);
+		wid=gl_text_get_string_width(font_interface_index,size,c);
 		if (wid>element->wid) element->wid=wid;
 		
 		if (c2==NULL) break;
@@ -900,7 +900,7 @@ void element_draw_button_text(element_type *element,int sel_id)
 	x=(lft+rgt)>>1;
 	y=((top+bot)>>1)-(hud.font.text_size_small/10);
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&txt_col,alpha);
 	gl_text_end();
 }
@@ -1005,7 +1005,7 @@ void element_draw_text(element_type *element,int sel_id)
 
 		// draw text
 
-	gl_text_start(element->setup.text.size);
+	gl_text_start(font_interface_index,element->setup.text.size);
 
 	c=element->str;
 	
@@ -1071,7 +1071,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 	ky=y-(element->high>>1);
 		
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
@@ -1104,7 +1104,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 	strcpy(txt,element->value_str);
 	if (element_open_text_field_id==element->id) strcat(txt,"_");
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
@@ -1213,7 +1213,7 @@ void element_draw_checkbox(element_type *element,int sel_id)
 
 	ky=y-(element->high>>1);
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
@@ -1307,7 +1307,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	
 	ky=y-(element->high>>1);
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
@@ -1365,7 +1365,7 @@ void element_draw_combo(element_type *element,int sel_id)
 
 	strcpy(str,(element->data+(element->value*32)));
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.control_text,alpha);
 	gl_text_end();
 }
@@ -1423,7 +1423,7 @@ void element_draw_combo_open(element_type *element)
 
 			// text
 
-		gl_text_start(hud.font.text_size_small);
+		gl_text_start(font_interface_index,hud.font.text_size_small);
 		strcpy(str,(element->data+(n*32)));
 
 		if (sel_item_idx==n) {
@@ -1482,7 +1482,7 @@ void element_draw_slider(element_type *element,int sel_id)
 	
 	ky=y-(element->high>>1);
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
@@ -1679,7 +1679,7 @@ void element_draw_table_line_header(element_type *element,int x,int y,int wid,in
 	y+=((row_high>>1)-1);
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
-		gl_text_start(hud.font.text_size_small);
+		gl_text_start(font_interface_index,hud.font.text_size_small);
 		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,TRUE,&col,1.0f);
 		gl_text_end();
 		
@@ -1815,7 +1815,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 				col.r=col.g=col.b=1.0f;
 
-				gl_text_start(hud.font.text_size_large);
+				gl_text_start(font_interface_index,hud.font.text_size_large);
 				gl_text_draw((dx+(element_table_bitmap_size>>1)),(y+(element_table_bitmap_size>>1)),"?",tx_center,TRUE,&col,1.0f);
 				gl_text_end();
 			}
@@ -1837,7 +1837,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 		
 			// draw text
 			
-		gl_text_start(hud.font.text_size_small);
+		gl_text_start(font_interface_index,hud.font.text_size_small);
 		gl_text_draw(dx,dy,txt,tx_left,TRUE,txt_col,1.0f);
 		gl_text_end();
 		
@@ -2084,7 +2084,7 @@ void element_draw_table(element_type *element,int sel_id)
 	
 	if (element->setup.table.busy_str[0]!=0x0) {
 		col.r=col.g=col.b=0.0f;
-		gl_text_start(hud.font.text_size_small);
+		gl_text_start(font_interface_index,hud.font.text_size_small);
 		gl_text_draw(((lft+rgt)>>1),((top+bot)>>1),element->setup.table.busy_str,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
@@ -2218,7 +2218,7 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 			memmove(&col,&hud.color.control_mouse_over,sizeof(d3col));
 		}
 
-		gl_text_start(hud.font.text_size_small);
+		gl_text_start(font_interface_index,hud.font.text_size_small);
 		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[tab_idx],tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
@@ -2282,7 +2282,7 @@ void element_draw_color(element_type *element,int sel_id)
 	
 	ky=y-(element->high>>1);
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_end();
@@ -2414,7 +2414,7 @@ void element_draw_text_box(element_type *element)
 	x=lft+5;
 	y=element->y+(high+5);
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 
 	idx=0;
 	last_space_idx=-1;
@@ -2455,7 +2455,7 @@ void element_draw_text_box(element_type *element)
 			
 		str[idx]=0x0;
 		
-		wid=gl_text_get_string_width(hud.font.text_size_small,str);
+		wid=gl_text_get_string_width(font_interface_index,hud.font.text_size_small,str);
 		
 		if (wid>=(element->wid-30)) {
 			line_break=TRUE;
@@ -2535,7 +2535,7 @@ void element_draw_info_field(element_type *element)
 	
 	ky=y-(element->high>>1);
 		
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(font_interface_index,hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
 	gl_text_draw((x+5),ky,element->value_str,tx_left,TRUE,&hud.color.control_label,1.0f);

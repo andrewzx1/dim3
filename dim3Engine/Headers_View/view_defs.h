@@ -101,11 +101,12 @@ and can be sold or given away.
 #define view_render_type_effect								4
 
 //
-// sorting types
+// obscure settings
 //
 
-#define view_sort_object									0
-#define view_sort_projectile								1
+#define obscure_grid_division								256
+#define obscure_grid_byte_row_size							(obscure_grid_division>>3)
+#define obscure_grid_byte_size								(obscure_grid_byte_row_size*obscure_grid_division)
 
 //
 // shader variable types
@@ -309,6 +310,16 @@ typedef struct		{
 					} view_render_type;
 
 //
+// obscuring
+//
+
+typedef struct		{
+						int									x_start,z_start,
+															x_size,z_size;
+						char								*grid;
+					} view_obscure_type;
+
+//
 // menus and debug
 //
 
@@ -333,6 +344,7 @@ typedef struct		{
 						view_fps_type						fps;
 						view_image_type						*images;
 						rain_draw_type						*rain_draws;
+						view_obscure_type					obscure;
 						view_menu_type						menu;
 						view_debug_type						debug;
 					} view_type;

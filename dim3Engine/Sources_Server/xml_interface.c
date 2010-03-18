@@ -145,8 +145,11 @@ void default_settings_interface(void)
 
 		// fonts
 
-	strcpy(hud.font.name,"Arial");
-	strcpy(hud.font.alt_name,"Courier");
+	strcpy(hud.font.interface_name,"Arial");
+	strcpy(hud.font.alt_interface_name,"Courier");
+
+	strcpy(hud.font.hud_name,"Arial");
+	strcpy(hud.font.alt_hud_name,"Courier");
 	
 		// progress
 		
@@ -891,10 +894,12 @@ void read_settings_interface(void)
 
 	font_tag=xml_findfirstchild("Font",interface_head_tag);
 	if (font_tag!=-1) {
-		xml_get_attribute_text(font_tag,"name",hud.font.name,name_str_len);
-		xml_get_attribute_text(font_tag,"alt_name",hud.font.alt_name,name_str_len);
-	}
+		xml_get_attribute_text(font_tag,"name",hud.font.interface_name,name_str_len);
+		xml_get_attribute_text(font_tag,"alt_name",hud.font.alt_interface_name,name_str_len);
 
+		xml_get_attribute_text(font_tag,"hud_name",hud.font.hud_name,name_str_len);
+		xml_get_attribute_text(font_tag,"alt_hud_name",hud.font.alt_hud_name,name_str_len);
+	}
 	
 		// progress
 
