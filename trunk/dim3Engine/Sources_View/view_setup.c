@@ -60,27 +60,51 @@ extern double distance_to_view_center(int x,int y,int z);
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 extern bool effect_inview(effect_type *effect,int count);
 
-
-// supergumba
-
-#define obscure_grid_division	100
-
-int							obscure_grid_x,obscure_grid_z,
-							obscure_grid_x_size,obscure_grid_z_size;
-bool						obscure_grid_calc=FALSE;
-unsigned char				obscure_grid[obscure_grid_division][obscure_grid_division];
-
 /* =======================================================
 
       Map Visibility Obscuring
       
 ======================================================= */
 
+inline void view_visibility_check_clear(void)
+{
+	bzero(view.obscure.grid,obscure_grid_byte_size);
+}
+
+inline bool view_visibility_check_get(int x,int z)
+{
+	int				idx,offset;
+	unsigned char	*byte;
+
+	idx=(x>>3)+(z*obscure_grid_byte_row_size);
+	offset=x&0x7;
+
+	byte=view.obscure.grid+idx;
+	return(((*byte)&(0x1<<offset))==0x0);
+}
+
+inline void view_visibility_check_set(int x,int z)
+{
+	int				idx,offset;
+	unsigned char	*byte;
+
+	idx=(x>>3)+(z*obscure_grid_byte_row_size);
+	offset=x&0x7;
+
+	byte=view.obscure.grid+idx;
+	*byte=(*byte)|(0x1<<offset);
+}
+
 void view_visibility_check_calculate(void)
 {
 	int				n,x,z,lft,rgt,top,bot;
 	d3pnt			map_min,map_max;
 	map_mesh_type	*mesh;
+
+		// build a grid of spots
+		// that represent blank areas (areas with no
+		// meshes) in the map.  These areas will obscure
+		// meshes behind them
 
 		// get total map size
 
@@ -100,25 +124,25 @@ void view_visibility_check_calculate(void)
 
 		// get grid size
 
-	obscure_grid_x_size=(map_max.x-map_min.x)/obscure_grid_division;
-	obscure_grid_z_size=(map_max.z-map_min.z)/obscure_grid_division;
+	view.obscure.x_size=(map_max.x-map_min.x)/obscure_grid_division;
+	view.obscure.z_size=(map_max.z-map_min.z)/obscure_grid_division;
 
-	obscure_grid_x=map_min.x;
-	obscure_grid_z=map_min.z;
+	view.obscure.x_start=map_min.x;
+	view.obscure.z_start=map_min.z;
 
 		// find obscuring points
 
-	bzero(obscure_grid,(obscure_grid_division*obscure_grid_division));
+	view_visibility_check_clear();
 
 	for (z=0;z!=obscure_grid_division;z++) {
 
-		top=obscure_grid_z+(z*obscure_grid_z_size);
-		bot=top+obscure_grid_z_size;
+		top=view.obscure.z_start+(z*view.obscure.z_size);
+		bot=top+view.obscure.z_size;
 
 		for (x=0;x!=obscure_grid_division;x++) {
 			
-			lft=obscure_grid_x+(x*obscure_grid_x_size);
-			rgt=lft+obscure_grid_x_size;
+			lft=view.obscure.x_start+(x*view.obscure.x_size);
+			rgt=lft+view.obscure.x_size;
 
 			mesh=map.mesh.meshes;
 
@@ -127,7 +151,7 @@ void view_visibility_check_calculate(void)
 					mesh++;
 					continue;
 				}
-				obscure_grid[x][z]=0x1;
+				view_visibility_check_set(x,z);
 				break;
 			}
 		}
@@ -141,11 +165,11 @@ bool view_visibility_check_obscure_line(d3pnt *pt1,d3pnt *pt2)
 
 		// get points in obscure space
 
-	x=(pt1->x-obscure_grid_x)/obscure_grid_x_size;
-	z=(pt1->z-obscure_grid_z)/obscure_grid_z_size;
+	x=(pt1->x-view.obscure.x_start)/view.obscure.x_size;
+	z=(pt1->z-view.obscure.z_start)/view.obscure.z_size;
 
-	x2=(pt2->x-obscure_grid_x)/obscure_grid_x_size;
-	z2=(pt2->z-obscure_grid_z)/obscure_grid_z_size;
+	x2=(pt2->x-view.obscure.x_start)/view.obscure.x_size;
+	z2=(pt2->z-view.obscure.z_start)/view.obscure.z_size;
 
 		// automatically OK points next to
 		// on another
@@ -176,7 +200,7 @@ bool view_visibility_check_obscure_line(d3pnt *pt1,d3pnt *pt2)
 	fz=(float)z;
 
 	for (n=0;n!=count;n++) {
-		if (obscure_grid[(int)fx][(int)fz]==0x0) return(FALSE);
+		if (view_visibility_check_get((int)fx,(int)fz)) return(FALSE);
 
 		fx+=xadd;
 		fz+=zadd;
@@ -188,7 +212,7 @@ bool view_visibility_check_obscure_line(d3pnt *pt1,d3pnt *pt2)
 	return(TRUE);
 }
 
-bool view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)
+bool view_visibility_check_box_for_point(d3pnt *eye_pnt,d3pnt *mid,d3pnt *min,d3pnt *max)
 {
 	d3pnt			pt;
 
@@ -198,46 +222,76 @@ bool view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)
 		// get to any corner without being blocked,
 		// then elimate the mesh
 
-	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&mesh->box.mid)) return(TRUE);
-	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&mesh->box.min)) return(TRUE);
-	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&mesh->box.max)) return(TRUE);
+		// middle
+
+	if (view_visibility_check_obscure_line(eye_pnt,mid)) return(TRUE);
+
+		// four corners
+
+	if (view_visibility_check_obscure_line(eye_pnt,min)) return(TRUE);
+	if (view_visibility_check_obscure_line(eye_pnt,max)) return(TRUE);
 
 	pt.y=view.render->camera.pnt.y;
 
-	pt.x=mesh->box.min.x;
-	pt.z=mesh->box.max.z;
-	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
+	pt.x=min->x;
+	pt.z=max->z;
+	if (view_visibility_check_obscure_line(eye_pnt,&pt)) return(TRUE);
 
-	pt.x=mesh->box.max.x;
-	pt.z=mesh->box.min.z;
-	return(view_visibility_check_obscure_line(&view.render->camera.pnt,&pt));
+	pt.x=max->x;
+	pt.z=min->z;
+	return(view_visibility_check_obscure_line(eye_pnt,&pt));
+}
+
+bool view_visibility_check_box(d3pnt *mid,d3pnt *min,d3pnt *max)
+{
+	int				sz,xadd,zadd;
+	d3pnt			eye_pt;
+
+		// check camera to box
+
+	if (view_visibility_check_box_for_point(&view.render->camera.pnt,mid,min,max)) return(TRUE);
+
+		// check slightly left and
+		// slightly right to catch field of vision
+		// corner look arounds
+	
+	sz=map_enlarge*((int)(camera.plane.fov))>>1;
+
+	angle_get_movement(angle_add(view.render->camera.ang.y,90.0f),sz,&xadd,&zadd);
+
+	eye_pt.x=view.render->camera.pnt.x+xadd;
+	eye_pt.y=view.render->camera.pnt.y;
+	eye_pt.z=view.render->camera.pnt.z+zadd;
+	if (view_visibility_check_box_for_point(&eye_pt,mid,min,max)) return(TRUE);
+
+	eye_pt.x=view.render->camera.pnt.x-xadd;
+	eye_pt.y=view.render->camera.pnt.y;
+	eye_pt.z=view.render->camera.pnt.z-zadd;
+	return(view_visibility_check_box_for_point(&eye_pt,mid,min,max));
+}
+
+inline view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)
+{
+	return(view_visibility_check_box(&mesh->box.mid,&mesh->box.min,&mesh->box.max));
 }
 
 bool view_visibility_check_liquid(int eye_mesh_idx,map_liquid_type *liq)
 {
-	d3pnt			pt;
+	d3pnt			mid,min,max;
 
-	pt.y=view.render->camera.pnt.y;
+	mid.x=(liq->lft+liq->rgt)>>1;
+	mid.y=liq->y;
+	mid.z=(liq->top+liq->bot)>>1;
 
-	pt.x=(liq->lft+liq->rgt)>>1;
-	pt.z=(liq->top+liq->bot)>>1;
-	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
+	min.x=liq->lft;
+	min.y=liq->y;
+	min.z=liq->top;
 
-	pt.x=liq->lft;
-	pt.z=liq->top;
-	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
+	max.x=liq->rgt;
+	max.y=liq->y;
+	max.z=liq->bot;
 
-	pt.x=liq->rgt;
-	pt.z=liq->bot;
-	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
-
-	pt.x=liq->lft;
-	pt.z=liq->bot;
-	if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
-
-	pt.x=liq->rgt;
-	pt.z=liq->top;
-	return(view_visibility_check_obscure_line(&view.render->camera.pnt,&pt));
+	return(view_visibility_check_box(&mid,&min,&max));
 }
 
 /* =======================================================
