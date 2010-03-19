@@ -316,7 +316,7 @@ typedef struct		{
 typedef struct		{
 						int									x_start,z_start,
 															x_size,z_size;
-						char								*grid;
+						unsigned char						*grid;
 					} view_obscure_type;
 
 //

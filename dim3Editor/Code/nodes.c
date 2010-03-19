@@ -52,10 +52,11 @@ int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_p
 	
 	node_idx=-1;
 	hit_z=100000;
+	
+	node=map.nodes;
 
 	for (n=0;n!=map.nnode;n++) {
 	
-		node=&map.nodes[n];
 		walk_view_sprite_select_size(&node->pnt,px,py,pz);
 		
 		if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
@@ -64,6 +65,8 @@ int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_p
 				node_idx=n;
 			}
 		}
+		
+		node++;
 	}
 	
 	return(node_idx);
@@ -125,8 +128,8 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 	click_pt.y=pt->y-view_setup->box.ty;
 		
 	next_idx=node_link_find_node_by_point(view_setup,&click_pt);
-    if ((next_idx==node_idx) || (next_idx==-1)) return(FALSE);
-	
+   if ((next_idx==node_idx) || (next_idx==-1)) return(FALSE);
+		
 		// remove link mode
 		
 	if (node_mode==node_mode_remove_link) {
@@ -145,6 +148,9 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 				map.nodes[next_idx].link[max_node_link-1]=-1;
 			}
 		}
+		
+		select_clear();
+		select_add(node_piece,next_idx,-1);		// move selection to next node
 		
 		main_wind_tool_fill_node_combo();
 		main_wind_draw();

@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_count								18
-#define piece_count								13
+#define piece_count								12
 
 #define tool_button_size						32
 
@@ -139,7 +139,6 @@ and can be sold or given away.
 #define light_piece								105
 #define sound_piece								106
 #define particle_piece							107
-#define area_piece								108
 
 //
 // view mouse scales
