@@ -270,7 +270,7 @@ bool view_visibility_check_box(d3pnt *mid,d3pnt *min,d3pnt *max)
 	return(view_visibility_check_box_for_point(&eye_pt,mid,min,max));
 }
 
-inline view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)
+inline bool view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)
 {
 	return(view_visibility_check_box(&mesh->box.mid,&mesh->box.min,&mesh->box.max));
 }

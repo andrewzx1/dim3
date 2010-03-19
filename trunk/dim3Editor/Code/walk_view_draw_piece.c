@@ -364,7 +364,7 @@ void walk_view_draw_meshes_line(editor_3D_view_setup *view_setup,bool opaque)
       
 ======================================================= */
 
-void walk_view_draw_liquids(bool opaque)
+void walk_view_draw_liquids(editor_3D_view_setup *view_setup,bool opaque)
 {
 	int					n,nliquid,x,y,z,y2,lx,rx,tz,bz;
 	unsigned long		old_gl_id;
@@ -407,6 +407,12 @@ void walk_view_draw_liquids(bool opaque)
 	
 	for (n=0;n!=nliquid;n++) {
 		liquid=&map.liquid.liquids[n];
+		
+			// y clipping
+				
+		if (view_setup->clip_on) {
+			if (liquid->y<view_setup->clip_y) continue;
+		}
 		
 			// no light map?
 				
@@ -612,7 +618,7 @@ void walk_view_draw_meshes_normals(editor_3D_view_setup *view_setup)
       
 ======================================================= */
 
-void walk_view_draw_nodes(d3pnt *cpt)
+void walk_view_draw_nodes(editor_3D_view_setup *view_setup)
 {
 	int			n,k;
 	float		fx,fy,fz;
@@ -631,9 +637,12 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	
 	glBegin(GL_LINES);
 		
-	node=map.nodes;
-	
 	for (n=0;n!=map.nnode;n++) {
+		node=&map.nodes[n];
+	
+		if (view_setup->clip_on) {
+			if (node->pnt.y<view_setup->clip_y) continue;
+		}
 	
 		fx=0.0f;
 		fy=0.0f;
@@ -644,8 +653,6 @@ void walk_view_draw_nodes(d3pnt *cpt)
 			
 		glVertex3i(node->pnt.x,(node->pnt.y-(map_enlarge*2)),node->pnt.z);
 		glVertex3i((node->pnt.x+(int)fx),((node->pnt.y-(map_enlarge*2))+(int)fy),(node->pnt.z+(int)fz));
-		
-		node++;
 	}
 	
 	glEnd();
@@ -656,9 +663,12 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	
 	glBegin(GL_LINES);
 		
-	node=map.nodes;
-	
 	for (n=0;n!=map.nnode;n++) {
+		node=&map.nodes[n];
+	
+		if (view_setup->clip_on) {
+			if (node->pnt.y<view_setup->clip_y) continue;
+		}
 			
 		for (k=0;k!=max_node_link;k++) {
 		
@@ -668,8 +678,6 @@ void walk_view_draw_nodes(d3pnt *cpt)
 				glVertex3i(lnode->pnt.x,(lnode->pnt.y-(map_enlarge*2)),lnode->pnt.z);
 			}
 		}
-		
-		node++;
 	}
 	
 	glEnd();
@@ -679,20 +687,23 @@ void walk_view_draw_nodes(d3pnt *cpt)
 		
 		// nodes
 	
-	node=map.nodes;
-	
 	for (n=0;n!=map.nnode;n++) {
+		node=&map.nodes[n];
+		
+		if (view_setup->clip_on) {
+			if (node->pnt.y<view_setup->clip_y) continue;
+		}
+		
 		if (node->name[0]==0x0) {
 			walk_view_draw_sprite(&node->pnt,0.0f,node_bitmap.gl_id);
 		}
 		else {
 			walk_view_draw_sprite(&node->pnt,0.0f,node_defined_bitmap.gl_id);
 		}
-		node++;
 	}
 }
 
-void walk_view_draw_spots_scenery(d3pnt *cpt)
+void walk_view_draw_spots_scenery(editor_3D_view_setup *view_setup)
 {
 	int					n;
 	spot_type			*spot;
@@ -700,45 +711,62 @@ void walk_view_draw_spots_scenery(d3pnt *cpt)
 	
     if (!dp_object) return;
     
-	spot=map.spots;
-	
 	for (n=0;n!=map.nspot;n++) {
+		spot=&map.spots[n];
+	
+		if (view_setup->clip_on) {
+			if (spot->pnt.y<view_setup->clip_y) continue;
+		}
 	
 		if (!walk_view_model_draw(&spot->pnt,&spot->ang,spot->display_model,NULL,0)) {
 			walk_view_draw_sprite(&spot->pnt,spot->ang.y,spot_bitmap.gl_id);
 		}
-		
-		spot++;
 	}		
     
-	scenery=map.sceneries;
-	
 	for (n=0;n!=map.nscenery;n++) {
+		scenery=&map.sceneries[n];
+		
+		if (view_setup->clip_on) {
+			if (spot->pnt.y<view_setup->clip_y) continue;
+		}
 	
 		if (!walk_view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
 			walk_view_draw_sprite(&scenery->pnt,scenery->ang.y,scenery_bitmap.gl_id);
 		}
-		
-		scenery++;
 	}		
 }
 
-void walk_view_draw_lights_sounds_particles(d3pnt *cpt,bool draw_light_circle)
+void walk_view_draw_lights_sounds_particles(editor_3D_view_setup *view_setup)
 {
 	int				n;
 	
 	if (!dp_lightsoundparticle) return;
 	
 	for (n=0;n!=map.nlight;n++) {
-		if (draw_light_circle) walk_view_draw_circle(&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
+	
+		if (view_setup->clip_on) {
+			if (map.lights[n].pnt.y<view_setup->clip_y) continue;
+		}
+		
+		if (view_setup->draw_light_circle) walk_view_draw_circle(&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
 		walk_view_draw_sprite(&map.lights[n].pnt,0.0f,light_bitmap.gl_id);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
+	
+		if (view_setup->clip_on) {
+			if (map.sounds[n].pnt.y<view_setup->clip_y) continue;
+		}
+		
 		walk_view_draw_sprite(&map.sounds[n].pnt,0.0f,sound_bitmap.gl_id);
 	}
 	
 	for (n=0;n!=map.nparticle;n++) {
+	
+		if (view_setup->clip_on) {
+			if (map.particles[n].pnt.y<view_setup->clip_y) continue;
+		}
+		
 		walk_view_draw_sprite(&map.particles[n].pnt,0.0f,particle_bitmap.gl_id);
 	}
 }
@@ -810,10 +838,10 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
         // draw opaque parts of portals in sight path
         
 	if (!view_setup->mesh_only) walk_view_draw_meshes_texture(view_setup,TRUE);
-	walk_view_draw_nodes(&view_setup->cpt);
-	walk_view_draw_spots_scenery(&view_setup->cpt);
-	walk_view_draw_lights_sounds_particles(&view_setup->cpt,view_setup->draw_light_circle);
-	walk_view_draw_liquids(TRUE);
+	walk_view_draw_nodes(view_setup);
+	walk_view_draw_spots_scenery(view_setup);
+	walk_view_draw_lights_sounds_particles(view_setup);
+	walk_view_draw_liquids(view_setup,TRUE);
 	
 		// draw opaque mesh lines
 		// push view forward to better z-buffer lines
@@ -826,7 +854,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 	main_wind_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 
 	if (!view_setup->mesh_only) walk_view_draw_meshes_texture(view_setup,FALSE);
-	walk_view_draw_liquids(FALSE);
+	walk_view_draw_liquids(view_setup,FALSE);
  	
         // draw transparent mesh lines
 		// push view forward to better z-buffer lines

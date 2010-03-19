@@ -50,7 +50,7 @@ dim3_font_type				fonts[2];
 
 #ifdef D3_OS_MAC
 
-void gl_text_create_bitmap(dim3_font_type *d3_font,unsigned char *name,unsigned char *alt_name)
+void gl_text_create_bitmap(dim3_font_type *d3_font,char *name,char *alt_name)
 {
 	int					n,x,y,data_sz,row_add;
 	char				ch;
@@ -175,7 +175,7 @@ void gl_text_create_bitmap(dim3_font_type *d3_font,unsigned char *name,unsigned 
 
 #ifdef D3_OS_WINDOWS
 
-void gl_text_create_bitmap(dim3_font_type *d3_font,unsigned char *name,unsigned char *alt_name)
+void gl_text_create_bitmap(dim3_font_type *d3_font,char *name,char *alt_name)
 {
 	int				n,x,y;
 	unsigned char	ch;

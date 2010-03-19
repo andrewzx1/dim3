@@ -237,24 +237,30 @@ void main_wind_control_tool(int tool_idx)
 			// node editing
 			
 		case 12:
+			dp_node=TRUE;
+			menu_set_show_hide_check();
 			node_mode=node_mode_select;
-			SetControlValue(tool_ctrl[15],1);
-			SetControlValue(tool_ctrl[16],0);
-			SetControlValue(tool_ctrl[17],0);
+			SetControlValue(tool_ctrl[12],1);
+			SetControlValue(tool_ctrl[13],0);
+			SetControlValue(tool_ctrl[14],0);
 			break;
 			
 		case 13:
+			dp_node=TRUE;
+			menu_set_show_hide_check();
 			node_mode=node_mode_link;
-			SetControlValue(tool_ctrl[15],0);
-			SetControlValue(tool_ctrl[16],1);
-			SetControlValue(tool_ctrl[17],0);
+			SetControlValue(tool_ctrl[12],0);
+			SetControlValue(tool_ctrl[13],1);
+			SetControlValue(tool_ctrl[14],0);
 			break;
 			
 		case 14:
+			dp_node=TRUE;
+			menu_set_show_hide_check();
 			node_mode=node_mode_remove_link;
-			SetControlValue(tool_ctrl[15],0);
-			SetControlValue(tool_ctrl[16],0);
-			SetControlValue(tool_ctrl[17],1);
+			SetControlValue(tool_ctrl[12],0);
+			SetControlValue(tool_ctrl[13],0);
+			SetControlValue(tool_ctrl[14],1);
 			break;
 			
 			// normals
@@ -831,7 +837,7 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==6) || (n==9) || (n==12) || (n==14) || (n==15)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==6) || (n==9) || (n==11) || (n==14) || (n==15)) OffsetRect(&box,3,0);
 	}
 	
 
