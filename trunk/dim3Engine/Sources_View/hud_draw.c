@@ -567,7 +567,7 @@ void hud_metrics_draw(void)
 
 		// latency
 
-	if (!net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_client) {
 		strcpy(str,"---");
 	}
 	else {

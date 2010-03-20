@@ -455,7 +455,7 @@ bool player_message_input(obj_type *obj)
 	char			*c,*msg;
 	d3col			col;
 	
-	if (!net_setup.client.joined) return(TRUE);
+	if (net_setup.mode==net_mode_none) return(TRUE);
 	
 		// scores
 		

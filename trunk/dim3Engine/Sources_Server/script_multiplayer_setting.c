@@ -88,26 +88,26 @@ JSObjectRef script_add_multiplayer_setting_object(JSContextRef cx,JSObjectRef pa
 
 JSValueRef js_multiplayer_setting_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_bool_to_value(cx,net_setup.client.joined));
+	return(script_bool_to_value(cx,net_setup.mode!=net_mode_none));
 }
 
 JSValueRef js_multiplayer_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
- 	if (!net_setup.client.joined) return(script_null_to_value(cx));
+ 	if (net_setup.mode==net_mode_none) return(script_null_to_value(cx));
 
 	return(script_string_to_value(cx,hud.net_game.games[net_setup.game_idx].name));
 }
 
 JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
- 	if (!net_setup.client.joined) return(script_bool_to_value(cx,FALSE));
+ 	if (net_setup.mode==net_mode_none) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,hud.net_game.games[net_setup.game_idx].use_teams));
 }
 
 JSValueRef js_multiplayer_setting_get_monsters(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
- 	if (!net_setup.client.joined) return(script_bool_to_value(cx,FALSE));
+ 	if (net_setup.mode==net_mode_none) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,hud.net_game.games[net_setup.game_idx].monsters));
 }
@@ -128,7 +128,7 @@ JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef 
 	
 		// all options are false if not in networking
 		
-	if (!net_setup.client.joined) return(script_bool_to_value(cx,FALSE));
+	if (net_setup.mode==net_mode_none) return(script_bool_to_value(cx,FALSE));
 
 		// find if option is on
 

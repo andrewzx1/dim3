@@ -67,12 +67,12 @@ int net_client_find_game(char *game_name)
       
 ======================================================= */
 
-int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes)
+int net_client_join_host_start(char *name,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes)
 {
-	int						player_uid,len;
-	unsigned char			data[net_max_msg_size];
+	int						action,player_uid;
+	unsigned char			msg[net_max_msg_size];
 	char					err_str[256];
-	network_header			head;
+	bool					reply_ok;
 	network_request_join	request_join;
 	network_reply_join		reply_join;
 	
@@ -84,14 +84,6 @@ int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_nam
 		return(-1);
 	}
 
-		// connect
-/* don't connect!		
-	if (!net_connect(client_socket,ip,net_port_host,client_timeout_wait_seconds,err_str)) {
-		strcpy(deny_reason,"Host Unreachable (No connection)");
-		net_close_socket(&client_socket);
-		return(-1);
-	}
-*/	
 		// send join request
 		
 	strcpy(request_join.name,name);
@@ -100,16 +92,15 @@ int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_nam
 	request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
 	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
 
-	// supergumba
-//	net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int player_uid,unsigned char *msg,int msg_len)
-
-	net_send_message(client_socket,net_action_request_join,net_player_uid_none,(unsigned char*)&request_join,sizeof(network_request_join));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_join,net_player_uid_none,(unsigned char*)&request_join,sizeof(network_request_join));
 
 		// get the reply
 	
 	net_socket_blocking(client_socket,TRUE);
-	len=recv(client_socket,data,net_max_msg_size,0);
-	if (len<=0) {
+	reply_ok=net_recvfrom_mesage(client_socket,NULL,NULL,&action,&player_uid,msg,NULL);
+	net_socket_blocking(client_socket,FALSE);
+
+	if (!reply_ok) {
 		strcpy(deny_reason,"Host Unreachable (Bad Read)");
 		net_close_socket(&client_socket);
 		return(-1);
@@ -117,14 +108,13 @@ int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_nam
 
 		// right message?
 
-	memmove(&head,data,sizeof(network_header));
-	if (head.action!=net_action_reply_join) {
+	if (action!=net_action_reply_join) {
 		strcpy(deny_reason,"Host Unreachable (Bad Return)");
 		net_close_socket(&client_socket);
 		return(-1);
 	}
 
-	memmove(&reply_join,(data+sizeof(network_header)),sizeof(network_reply_join));
+	memmove(&reply_join,msg,sizeof(network_reply_join));
 	
 		// check for denial
 		
@@ -151,10 +141,9 @@ int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_nam
 
 		// setup client joined flags
 		
-	net_setup.host.hosting=FALSE;
-	net_setup.client.joined=TRUE;
-	net_setup.client.latency=0;
+	net_setup.mode=net_mode_client;
 	net_setup.player_uid=player_uid;
+	net_setup.client.latency=0;
 	
 	return(player_uid);
 }
@@ -165,6 +154,5 @@ void net_client_join_host_end(void)
 	
 		// turn off client joined flags
 		
-	net_setup.host.hosting=FALSE;
-	net_setup.client.joined=FALSE;
+	net_setup.mode=net_mode_none;
 }

@@ -95,7 +95,7 @@ void loop_game_run(void)
 {
 		// receive networking updates
 		
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		if (!remote_network_get_updates()) return;
 	}
 	
@@ -109,7 +109,7 @@ void loop_game_run(void)
 	
 		// sending network updates
 
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		remote_network_send_updates();
 		remote_network_send_group_synch();
 		remote_network_send_latency_ping();
@@ -117,13 +117,15 @@ void loop_game_run(void)
 
 		// view input
 
-	view_loop_input();
+	if (net_setup.mode!=net_mode_host_dedicated) {
+		view_loop_input();
+	}
 
 		// draw the view
 
 	if ((server.state==gs_running) || (server.state==gs_score_limit)) {
 
-		if ((setup.network.dedicated) && (net_setup.host.hosting)) {
+		if (net_setup.mode==net_mode_host_dedicated) {
 			view_loop_draw_dedicated_host();
 		}
 		else {
@@ -169,7 +171,9 @@ void loop_app_active(void)
 		input_clear();
 		input_mouse_pause();
 
-		if (!net_setup.host.hosting) game_time_pause_start();
+			// don't pause if this game is a host
+
+		if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_start();
 
 		return;
 	}
@@ -183,7 +187,9 @@ void loop_app_active(void)
 	input_clear();
 	input_mouse_resume();
 
-	if (!net_setup.host.hosting) game_time_pause_end();
+		// host games weren't paused
+
+	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_end();
 }
 
 /* =======================================================

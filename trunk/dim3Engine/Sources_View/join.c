@@ -647,18 +647,26 @@ void join_game(void)
 		// get game to join
 		
 	join_activity_start();
-	
-	idx=element_get_value(join_table_id);
-	strcpy(net_setup.client.joined_ip,join_list[idx].ip);
 							
 		// status
 		
 	element_text_change(join_status_id,"Joining ...");
 	gui_draw(1.0f,FALSE);
+
+		// get the ul ip address
+
+	idx=element_get_value(join_table_id);
+
+	if (!net_ip_to_address(join_list[idx].ip,&net_setup.client.host_ip_addr,err_str)) {
+		join_close(TRUE);
+		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
+		error_open(err_str,"Network Game Canceled");
+		return;
+	}
 							
 		// attempt to join
 
-	player_uid=net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes);
+	player_uid=net_client_join_host_start(setup.network.name,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes);
 	if (player_uid==-1) {
 		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);

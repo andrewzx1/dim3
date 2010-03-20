@@ -47,6 +47,7 @@ js_type						js;
 hud_type					hud;
 
 extern setup_type			setup;
+extern network_setup_type	net_setup;
 
 extern void server_run(void);
 
@@ -324,18 +325,23 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 		}
 	}
 
-		// start player object
+		// create player object
+
+	if (net_setup.mode!=net_mode_host_dedicated) {
 	
-	server.player_obj_uid=object_start(NULL,object_type_player,bt_game,-1,err_str);
-	if (server.player_obj_uid==-1) {
-		scripts_dispose(js.game_attach.script_uid);
-		return(FALSE);
-	}
+			// create object
+
+		server.player_obj_uid=object_start(NULL,object_type_player,bt_game,-1,err_str);
+		if (server.player_obj_uid==-1) {
+			scripts_dispose(js.game_attach.script_uid);
+			return(FALSE);
+		}
+				
+			// force player to auto-spawn
+			// spawing of player needs to happen before map_start events
 			
-		// force player to auto-spawn
-		// spawing of player needs to happen before map_start events
-		
-	object_spawn(object_find_uid(server.player_obj_uid));
+		object_spawn(object_find_uid(server.player_obj_uid));
+	}
 
 		// finish any script based spawns
 

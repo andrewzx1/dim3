@@ -99,16 +99,17 @@ void game_end(void)
 	
 		// close any network joins or hosting
 	
-	if (net_setup.client.joined) {
-		if (!net_setup.host.hosting) {
+	switch (net_setup.mode) {
+		case net_mode_client:
 			net_client_send_leave_host();
 			net_client_end_message_queue();
 			net_client_join_host_end();
-		}
-		else {
+			break;
+		case net_mode_host:
+		case net_mode_host_dedicated:
 			net_host_game_end();
 			net_client_end_message_queue_local();
-		}
+			break;
 	}
 	
 		// stop view
@@ -167,7 +168,7 @@ void game_reset(void)
 		// if a remote player, then just reset yourself and
 		// hide all other players until and update
 		
-	if (!net_setup.host.hosting) {
+	if (net_setup.mode==net_mode_client) {
 	
 		obj=server.objs;
 

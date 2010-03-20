@@ -408,7 +408,7 @@ void object_get_tint(obj_type *obj,d3col *tint)
 		// if in multiplayer and using teams,
 		// then get team tint
 
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		if (hud.net_game.games[net_setup.game_idx].use_teams) {
 			object_team_get_tint(obj->team_idx,tint);
 			return;
@@ -422,6 +422,28 @@ void object_get_tint(obj_type *obj,d3col *tint)
 	tint->r=col->r;
 	tint->g=col->g;
 	tint->b=col->b;
+}
+
+/* =======================================================
+
+      Check if Object Sends Network Messages
+      
+======================================================= */
+
+bool object_networkable(obj_type *obj)
+{
+		// players and bots always send messages
+
+	if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer)) return(TRUE);
+	
+		// map type bots only send messages if
+		// this process is the host
+
+	if (obj->type_idx==object_type_bot_map) {
+		return((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated));
+	}
+	
+	return(FALSE);
 }
 
 /* =======================================================
@@ -819,12 +841,14 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		// if networked player or multiplayer bot, run rules
 		// and send choosen team to other clients
 	
-	if (((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) && (net_setup.client.joined)) {
-		game_obj_rule_uid=obj->uid;
-		scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
-		game_obj_rule_uid=-1;
+	if (net_setup.mode!=net_mode_none) {
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) {
+			game_obj_rule_uid=obj->uid;
+			scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
+			game_obj_rule_uid=-1;
 
-		net_client_send_set_team(obj);
+			net_client_send_set_team(obj);
+		}
 	}
 		
 		// start script
@@ -1022,8 +1046,8 @@ void spot_start_attach(void)
 		spot=&map.spots[n];
 		if (!spot->attach) continue;
 		if (spot->skill>server.skill) continue;
-		if ((spot->spawn==spawn_single_player_only) && (net_setup.client.joined)) continue;
-		if ((spot->spawn==spawn_multiplayer_only) && (!net_setup.client.joined)) continue;
+		if ((spot->spawn==spawn_single_player_only) && (net_setup.mode!=net_mode_none)) continue;
+		if ((spot->spawn==spawn_multiplayer_only) && (net_setup.mode==net_mode_none)) continue;
 
 		type_idx=spot_get_type_idx_from_type_str(spot->attach_type);
 
@@ -1042,7 +1066,7 @@ void spot_add_multiplayer_bots(void)
 
 		// only spawn on hosts
 
-	if (!net_setup.host.hosting) return;
+	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) return;
 
 		// are bots allowed in this game?
 

@@ -234,7 +234,7 @@ int net_host_player_add_bot(obj_type *obj)
 	
 	memmove(&player->pnt,&obj->pnt,sizeof(d3pnt));
 	
-		// bots are automatically read
+		// bots are automatically ready
 
 	player->connect.ready=TRUE;
 	
@@ -271,6 +271,10 @@ void net_host_player_remove(int player_uid)
 		// shutdown the queue
 
 	net_queue_shutdown(&player->queue);
+
+		// close the socket
+
+	if (player->connect.sock!=D3_NULL_SOCKET) net_close_socket(&player->connect.sock);
 
 		// remember name
 
@@ -542,18 +546,16 @@ void net_host_player_send_message_single(int to_player_uid,int action,int from_p
 	player=&net_host_players[idx];
 
 		// send message
+		// only players in a ready state can
+		// get messages.  bots never get messages
 
 	if ((player->connect.ready) && (!player->connect.bot)) {
-			if (player->connect.local) {
-
-				//	net_client_push_queue_local(action,from_player_uid,msg,msg_len);
-			}
-
-				// remote -- supergumba!
-
-			else {
-				//	if (net_send_ready(socks[n])) net_send_message(socks[n],action,from_player_uid,msg,msg_len);
-			}
+		if (player->connect.local) {
+			net_client_push_queue_local(action,from_player_uid,msg,msg_len);
+		}
+		else {
+			net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,from_player_uid,msg,msg_len);
+		}
 	}
 
 	SDL_mutexV(net_host_player_lock);
@@ -570,21 +572,16 @@ void net_host_player_send_message_others(int skip_player_uid,int action,int from
 	
 	for (n=0;n!=net_host_player_count;n++) {
 
+			// only players in a ready state can
+			// get messages.  bots never get messages
+
 		if ((player->connect.uid!=skip_player_uid) && (player->connect.ready) && (!player->connect.bot)) {
-
-				// local -- supergumba
-
 			if (player->connect.local) {
-
-				//	net_client_push_queue_local(action,from_player_uid,msg,msg_len);
+				net_client_push_queue_local(action,from_player_uid,msg,msg_len);
 			}
-
-				// remote -- supergumba!
-
 			else {
-				//	if (net_send_ready(socks[n])) net_send_message(socks[n],action,from_player_uid,msg,msg_len);
+				net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,from_player_uid,msg,msg_len);
 			}
-
 		}
 
 		player++;

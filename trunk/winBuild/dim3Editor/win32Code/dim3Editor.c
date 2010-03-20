@@ -233,7 +233,7 @@ void editor_pump(void)
 
 bool editor_setup(char *err_str)
 {
-	if (!file_paths_setup(&file_path_setup,TRUE)) {
+	if (!file_paths_setup(&file_path_setup)) {
 		strcpy(err_str,"No data folder");
 		return(FALSE);
 	}
@@ -245,9 +245,9 @@ bool editor_open_map(char *err_str)
 {
 		// open map
 
-	map_setup(&file_path_setup,anisotropic_mode_high,mipmap_mode_trilinear,FALSE);
+	map_setup(&file_path_setup,anisotropic_mode_high,mipmap_mode_trilinear,FALSE,FALSE);
 
-	if (!map_open(&map,"Bot Test",FALSE,FALSE)) {
+	if (!map_open(&map,"DM Map")) {
 		strcpy(err_str,"Could not open map");
 		return(FALSE);
 	}

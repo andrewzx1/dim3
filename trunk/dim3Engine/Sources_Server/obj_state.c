@@ -154,7 +154,7 @@ void object_death(obj_type *obj)
 	
 		// send death if joined and is player or multiplayer bot
 		
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) net_client_send_death(obj,FALSE);
 	}
 }
@@ -210,7 +210,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 
 				// send network message to telefrag
 
-			if (net_setup.client.joined) {
+			if (net_setup.mode!=net_mode_none) {
 				if ((check_obj->uid==server.player_obj_uid) || (check_obj->type_idx==object_type_bot_multiplayer)) {
 					check_obj->damage_obj_uid=obj->uid;
 					net_client_send_death(check_obj,TRUE);
@@ -375,7 +375,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 
 		// and any network events
 
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		if ((from_obj->uid==server.player_obj_uid) || (from_obj->type_idx==object_type_bot_multiplayer)) net_client_send_click(from_obj,&from_obj->pnt,&from_obj->ang);
 	}
 }

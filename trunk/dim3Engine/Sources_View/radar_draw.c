@@ -94,7 +94,7 @@ void radar_draw(void)
 		tint.r=tint.g=tint.b=1.0f;
 	}
 	else {
-		if (!net_setup.client.joined) {
+		if (net_setup.mode==net_mode_none) {
 			memmove(&tint,&hud.color.default_tint,sizeof(d3col));
 		}
 		else {

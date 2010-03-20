@@ -116,7 +116,7 @@ int network_score_players_draw(bool use_teams)
 	short			s_score,
 					sort_idx[max_object],sort_score[max_object];
 	d3col			col;
-	obj_type		*obj,*player_obj;
+	obj_type		*obj;
 
 		// sort player scores
 
@@ -153,11 +153,6 @@ int network_score_players_draw(bool use_teams)
 		obj++;
 	}
 	
-		// get player tint
-		
-	player_obj=object_find_uid(server.player_obj_uid);
-	object_get_tint(player_obj,&col);
-
 		// sizes
 
 	lx=hud.scale_x>>2;
@@ -172,6 +167,7 @@ int network_score_players_draw(bool use_teams)
 	
 	for (n=0;n!=nscore;n++) {
 		obj=&server.objs[sort_idx[n]];
+		object_get_tint(obj,&col);
 		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),&col,fnt_sz,FALSE);
 		y+=(yadd+3);
 	}
@@ -307,14 +303,17 @@ void network_score_draw(void)
 	d3col			col;
 	obj_type		*player_obj;
 
-		// only draw if game is at it's score
-		// limit, the player is dead or
-		// score set to show
+		// always draw if a dedicated host,
+		// the game is at it's score limit,
+		// the player is dead or score display
+		// is on
 		
-	if (server.state!=gs_score_limit) {
-		if (!hud.score.on) {
-			player_obj=object_find_uid(server.player_obj_uid);
-			if (player_obj->status.health!=0) return;
+	if (net_setup.mode!=net_mode_host_dedicated) {
+		if (server.state!=gs_score_limit) {
+			if (!hud.score.on) {
+				player_obj=object_find_uid(server.player_obj_uid);
+				if (player_obj->status.health!=0) return;
+			}
 		}
 	}
 	
@@ -390,7 +389,11 @@ void network_chat_draw(void)
 	int					n,x,y,yadd,ntop;
 	char				txt[chat_str_len+name_str_len+4];
 	hud_chat_line_type	*line;
-	d3col			col;
+	d3col				col;
+
+		// dedicated hosts don't chat
+
+	if (net_setup.mode==net_mode_host_dedicated) return;
 
 		// draw position
 
@@ -438,7 +441,7 @@ void network_chat_draw(void)
 
 void network_draw(void)
 {
-	if (!net_setup.client.joined) return;
+	if (net_setup.mode==net_mode_none) return;
 	
 		// set up view
 		

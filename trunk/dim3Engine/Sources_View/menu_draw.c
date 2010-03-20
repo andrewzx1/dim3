@@ -63,7 +63,7 @@ void menu_draw_start(void)
 {
 		// if not hosting, pause
 
-	if (!net_setup.host.hosting) game_time_pause_start();
+	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_start();
 
 		// clear input and stop sounds
 
@@ -107,7 +107,7 @@ void menu_draw_end(bool fade)
 	
 		// if not hosting, unpause
 
-	if (!net_setup.host.hosting) game_time_pause_end();
+	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_end();
 }
 
 /* =======================================================
@@ -293,7 +293,7 @@ void menu_draw(void)
 
 			// color
 
-		if ((net_setup.client.joined) && (item->multiplayer_disable)) {
+		if ((net_setup.mode!=net_mode_none) && (item->multiplayer_disable)) {
 			col=&hud.color.control_disabled;
 		}
 		else {

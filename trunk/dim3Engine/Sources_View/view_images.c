@@ -363,7 +363,7 @@ void view_images_cached_load(void)
 
 		// remote bitmaps
 
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Network","slow","png");
 		remote_slow_image_idx=view_images_load_single(path,FALSE,TRUE);
 	
@@ -456,7 +456,7 @@ void view_images_cached_free(void)
 
 		// remote bitmaps
 
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		view_images_free_single(remote_slow_image_idx);
 		view_images_free_single(remote_talk_image_idx);
 	}

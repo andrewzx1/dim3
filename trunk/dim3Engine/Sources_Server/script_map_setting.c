@@ -113,12 +113,12 @@ JSValueRef js_map_setting_get_resistance(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 JSValueRef js_map_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_bool_to_value(cx,net_setup.client.joined));
+	return(script_bool_to_value(cx,(net_setup.mode!=net_mode_none)));
 }
 
 JSValueRef js_map_setting_get_multiplayerType(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	if (!net_setup.client.joined) return(script_null_to_value(cx));
+	if (net_setup.mode==net_mode_none) return(script_null_to_value(cx));
 
 	return(script_string_to_value(cx,hud.net_game.games[net_setup.game_idx].name));
 }

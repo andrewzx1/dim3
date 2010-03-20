@@ -312,7 +312,7 @@ int object_find_uid_by_stood_on_object_uid(int stand_obj_uid)
 
 int object_find_network_spawn_spot(obj_type *obj)
 {
-	if (!net_setup.client.joined) return(map_find_random_spot(&map,map.info.player_start_name,map.info.player_start_type));
+	if (net_setup.mode!=net_mode_none) return(map_find_random_spot(&map,map.info.player_start_name,map.info.player_start_type));
 	if (obj->spawn_spot_name[0]==0x0) return(map_find_random_spot(&map,NULL,"Spawn"));
 	return(map_find_random_spot(&map,obj->spawn_spot_name,"Spawn"));
 }

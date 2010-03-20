@@ -158,7 +158,7 @@ JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 		// have we hit a network score limit?
 
-	if (net_setup.client.joined) score_limit_trigger_set_check_scores();
+	if (net_setup.mode!=net_mode_none) score_limit_trigger_set_check_scores();
 
 	return(script_null_to_value(cx));
 }
