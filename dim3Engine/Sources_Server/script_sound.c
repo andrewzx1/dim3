@@ -157,7 +157,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 	
 		// detect if sound should be remoted
 		
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 	
 		remote_ok=FALSE;
 		
@@ -165,14 +165,14 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 		
 			case thing_type_object:
 				obj=object_find_uid(js.attach.thing_uid);
-				if (obj!=NULL) remote_ok=((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer) || ((obj->type_idx==object_type_bot_map) && (net_setup.host.hosting)));
+				if (obj!=NULL) remote_ok=object_networkable(obj);
 				break;
 				
 			case thing_type_weapon:
 				weap=weapon_find_uid(js.attach.thing_uid);
 				if (weap!=NULL) {
 					obj=object_find_uid(weap->obj_uid);
-					if (obj!=NULL) remote_ok=((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer) || ((obj->type_idx==object_type_bot_map) && (net_setup.host.hosting)));
+					if (obj!=NULL) remote_ok=object_networkable(obj);
 				}
 				break;
 		}

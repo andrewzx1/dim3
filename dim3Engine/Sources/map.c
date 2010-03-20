@@ -50,6 +50,7 @@ extern view_type			view;
 extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
+extern network_setup_type	net_setup;
 
 int							current_map_spawn_idx;
 char						current_map_name[name_str_len];
@@ -383,17 +384,22 @@ bool map_start(bool skip_media,char *err_str)
 
 	progress_draw(80);
 
-	if (!player_attach_object(err_str)) {
-		progress_shutdown();
-		return(FALSE);
-	}
+	if (net_setup.mode!=net_mode_host_dedicated) {
 
-	player_clear_input();
-	
-		// connect camera to player
+				// attach player
+
+		if (!player_attach_object(err_str)) {
+			progress_shutdown();
+			return(FALSE);
+		}
+
+		player_clear_input();
 		
-	obj=object_find_uid(server.player_obj_uid);
-	camera_connect(obj);
+			// connect camera to player
+			
+		obj=object_find_uid(server.player_obj_uid);
+		camera_connect(obj);
+	}
 	
 		// initialize movements and lookups
 
@@ -411,7 +417,10 @@ bool map_start(bool skip_media,char *err_str)
 
 	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_open,0);
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_open,0);
-	scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_open,0);
+
+	if (net_setup.mode!=net_mode_host_dedicated) {
+		scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_open,0);
+	}
 
 		// finish any script based spawns
 
@@ -469,8 +478,10 @@ void map_end(void)
 	
 		// detach player
 		
-	player_detach_object();
-		
+	if (net_setup.mode!=net_mode_host_dedicated) {
+		player_detach_object();
+	}
+
 		// setup progress
 		
 	progress_initialize("Closing",current_map_name);
@@ -478,13 +489,15 @@ void map_end(void)
 	
 	console_add_system("Closing Map");
 	
-	obj=object_find_uid(server.player_obj_uid);
-	
 		// map close event
 		
 	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_close,0);
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_close,0);
-	scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_close,0);
+
+	if (net_setup.mode!=net_mode_host_dedicated) {
+		obj=object_find_uid(server.player_obj_uid);
+		scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_close,0);
+	}
 
 		// clear all back buffers
 

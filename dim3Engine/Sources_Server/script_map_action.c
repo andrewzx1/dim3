@@ -86,9 +86,9 @@ JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-		// clients can not set maps
+		// networked games can not call this API
 		
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		*exception=script_create_exception(cx,"setMap() illegal for client games");
 		return(script_null_to_value(cx));
 	}
@@ -109,9 +109,9 @@ JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-		// clients can not set maps
+		// non-network games can not call this API
 
-	if (!net_setup.client.joined) {
+	if (net_setup.mode==net_mode_none) {
 		*exception=script_create_exception(cx,"setHostMap() illegal for normal games");
 		return(script_null_to_value(cx));
 	}
@@ -132,9 +132,9 @@ JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObj
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-		// clients can not restart maps
+		// networked games can not call this API
 		
-	if (net_setup.client.joined) {
+	if (net_setup.mode!=net_mode_none) {
 		*exception=script_create_exception(cx,"restartMap() illegal for client games");
 		return(script_null_to_value(cx));
 	}
@@ -153,9 +153,9 @@ JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-		// clients can not restart maps from saves
+		// networked games can not call this API
 		
-	if (net_setup.host.hosting) {
+	if (net_setup.mode!=net_mode_none) {
 		*exception=script_create_exception(cx,"restartMapFromSave() illegal for client games");
 		return(script_null_to_value(cx));
 	}

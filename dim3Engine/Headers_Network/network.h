@@ -52,14 +52,17 @@ extern d3socket net_open_udp_socket(void);
 extern void net_close_socket(d3socket *sock);
 extern void net_socket_blocking(d3socket sock,bool blocking);
 extern void net_socket_enable_broadcast(d3socket sock);
+extern bool net_ip_to_address(char *ip,unsigned long *ip_addr,char *err_str);
 extern bool net_bind(d3socket sock,char *ip,int port,char *err_str);
 extern bool net_bind_any(d3socket sock,int port,char *err_str);
 extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);
-extern void net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
-
 extern bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *player_uid,unsigned char *msg,int *msg_len);
 extern bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int player_uid,unsigned char *msg,int msg_len);
+
+//
+// http reads
+//
 
 extern char* net_get_http_file(char *host_name,int port,char *url,char *err_str);
 
@@ -131,7 +134,7 @@ extern void net_host_player_update(network_request_remote_update *update);
 // client host pinging and joining
 //
 
-extern int net_client_join_host_start(char *ip,char *name,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes);
+extern int net_client_join_host_start(char *name,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes);
 extern void net_client_join_host_end(void);
 
 //

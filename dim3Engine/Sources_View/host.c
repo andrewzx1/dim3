@@ -58,7 +58,7 @@ and can be sold or given away.
 #define host_game_option_base			100
 
 extern void intro_open(void);
-extern int net_host_game_start(char *err_str);
+extern bool net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
@@ -496,13 +496,11 @@ void host_game_setup(void)
 
 void host_game(void)
 {
-	int				player_uid;
 	char			err_str[256];
 	
 		// start hosting
 
-	player_uid=net_host_game_start(err_str);
-	if (player_uid==-1) {
+	if (!net_host_game_start(err_str)) {
 		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
@@ -528,25 +526,30 @@ void host_game(void)
 		return;
 	}
 	
-		// set player's remote UID
-
-	object_player_set_remote_uid(player_uid);
-
 		// add bots to host
 
 	net_host_player_add_bots();
 
-		// start local client network queue
-		
-	if (!net_client_start_message_queue_local(err_str)) {
-		net_host_game_end();
-		error_open(err_str,"Hosting Game Canceled");
-		return;
-	}
+		// player on host setup
 
-		// mark node as ready to receive data from host
+	if (net_setup.mode!=net_mode_host_dedicated) {
+
+			// set remote UID
+
+		object_player_set_remote_uid(net_setup.player_uid);
+			
+			// start local queue
+
+		if (!net_client_start_message_queue_local(err_str)) {
+			net_host_game_end();
+			error_open(err_str,"Hosting Game Canceled");
+			return;
+		}
+
+			// mark node as ready to receive data from host
 		
-	net_client_send_ready();
+		net_client_send_ready();
+	}
 
 		// game is running
 	
@@ -650,7 +653,6 @@ void host_handle_click(int id)
 			break;
 	}
 }
-
 
 void host_keyboard(void)
 {

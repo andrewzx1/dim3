@@ -130,7 +130,7 @@ void remote_draw_names_setup(void)
 	model_type				*mdl;
 	ray_trace_contact_type	contact;
 	
-	if (!net_setup.client.joined) return;
+	if (net_setup.mode==net_mode_none) return;
 	if (!setup.network.show_names) return;
 	
 		// clear all name draws
@@ -264,7 +264,7 @@ void remote_draw_names_render(void)
 	d3col				col;
 	obj_type			*obj;
 	
-	if (!net_setup.client.joined) return;
+	if (net_setup.mode==net_mode_none) return;
 	if (!setup.network.show_names) return;
 
 	gl_2D_view_interface();

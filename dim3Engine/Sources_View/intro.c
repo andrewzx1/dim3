@@ -195,8 +195,11 @@ void intro_click_game(int skill)
 
 	intro_close(TRUE,TRUE);
 
-	net_setup.host.hosting=FALSE;
-	net_setup.client.joined=FALSE;
+		// not in networking
+
+	net_setup.mode=net_mode_none;
+
+		// start game
 
 	if (!game_start(skill,NULL,err_str)) {
 		error_open(err_str,"Game Start Canceled");
@@ -213,8 +216,7 @@ void intro_click_load(void)
 {
 	intro_close(TRUE,FALSE);
 
-	net_setup.host.hosting=FALSE;
-	net_setup.client.joined=FALSE;
+	net_setup.mode=net_mode_none;
 
 	file_open(FALSE);
 }

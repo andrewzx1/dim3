@@ -56,11 +56,11 @@ void map_multiplayer_show_hide_meshes(void)
 		switch (mesh->hide_mode) {
 
 			case mesh_hide_mode_single_player:
-				mesh->flag.on=net_setup.client.joined;
+				mesh->flag.on=(net_setup.mode!=net_mode_none);
 				break;
 
 			case mesh_hide_mode_multiplayer:
-				mesh->flag.on=!net_setup.client.joined;
+				mesh->flag.on=(net_setup.mode==net_mode_none);
 				break;
 
 		}

@@ -88,8 +88,7 @@ bool app_start(char *err_str)
 	
 		// client network defaults
 		
-	net_setup.host.hosting=FALSE;
-	net_setup.client.joined=FALSE;
+	net_setup.mode=net_mode_none;
 	
 		// initialize server
 		

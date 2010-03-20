@@ -105,10 +105,26 @@ inline void net_socket_enable_broadcast(d3socket sock)
 
 /* =======================================================
 
+      Network IP Resolves
+      
+======================================================= */
+
+bool net_ip_to_address(char *ip,unsigned long *ip_addr,char *err_str)
+{
+	*ip_addr=inet_addr(ip);
+	if ((*ip_addr)!=INADDR_NONE) return(TRUE);
+
+	sprintf(err_str,"Networking: Could not create address for %s",ip);
+	return(FALSE);
+}
+
+/* =======================================================
+
       Network Binds
       
 ======================================================= */
 
+// supergumba -- are these necessary anymore?
 bool net_bind(d3socket sock,char *ip,int port,char *err_str)
 {
 	int					err;
@@ -289,68 +305,5 @@ bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int 
 	send_sz=sizeof(network_header)+msg_len;
 		
 	return(sendto(sock,data,send_sz,0,(struct sockaddr*)&addr_in,sizeof(struct sockaddr_in))==send_sz);
-}
-
-/* =======================================================
-
-      Network Send Utilities
-      
-======================================================= */
-
-
-// supergumba -- delete all this after fixing HTML sender
-int net_send_data(d3socket sock,unsigned char *data,int len)
-{
-	int				sent_len,total_len,retry_count;
-
-	retry_count=0;
-	total_len=0;
-
-	while (TRUE) {
-
-			// if not able to send, retry a number of times
-
-		if (!net_send_ready(sock)) {
-			retry_count++;
-			if (retry_count>socket_no_data_retry) return(total_len);
-			usleep(socket_no_data_u_wait);
-			continue;
-		}
-	
-			// send the data
-			
-		sent_len=send(sock,(data+total_len),(len-total_len),0);
-		if (sent_len==-1) return(-1);
-		
-			// add up to next data
-		
-		total_len+=sent_len;
-		if (total_len>=len) return(total_len);
-	}
-	
-	return(total_len);
-}
-
-// supergumba -- remove all these and put in regular message sends
-void net_send_message(d3socket sock,int action,int player_uid,unsigned char *data,int len)
-{
-	unsigned char		net_data[net_max_msg_size];
-	network_header		*head;
-
-		// header
-
-	head=(network_header*)net_data;
-
-	head->len=htons((short)len);
-	head->action=htons((short)action);
-	head->player_uid=htons((short)player_uid);
-
-		// the data
-
-	if (len!=0) memmove((net_data+sizeof(network_header)),data,len);
-
-		// send the data
-
-	net_send_data(sock,net_data,(sizeof(network_header)+len));
 }
 

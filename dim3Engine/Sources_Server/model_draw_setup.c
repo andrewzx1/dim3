@@ -191,7 +191,7 @@ void model_draw_setup_object(obj_type *obj)
 
 	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
 	if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
-		if (net_setup.client.joined) {
+		if (net_setup.mode!=net_mode_none) {
 			if (hud.net_game.games[net_setup.game_idx].use_teams) {
 				object_team_get_tint(obj->team_idx,&draw->tint);
 			}

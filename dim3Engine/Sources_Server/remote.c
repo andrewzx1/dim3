@@ -890,7 +890,7 @@ void remote_network_send_updates(void)
 
 		// update any co-op bots if hosting
 
-	if (net_setup.host.hosting) {
+	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
 	
 		coop=hud.net_game.games[net_setup.game_idx].monsters;
 
@@ -952,7 +952,7 @@ void remote_add_map_bots(void)
 
 		// nothing to do if not a network game
 		
-	if (!net_setup.client.joined) return;
+	if (net_setup.mode==net_mode_none) return;
 	
 		// is it co-op mode?
 		

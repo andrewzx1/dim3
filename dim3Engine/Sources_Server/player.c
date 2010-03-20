@@ -63,7 +63,7 @@ bool player_attach_object(char *err_str)
 	
 			// get spawn spot
 
-		if (!net_setup.client.joined) {
+		if (net_setup.mode==net_mode_none) {
 			spot_idx=map_find_random_spot(&map,map.info.player_start_name,map.info.player_start_type);
 			if (spot_idx==-1) {
 				sprintf(err_str,"Could not find spot: %s-%s",map.info.player_start_name,map.info.player_start_type);

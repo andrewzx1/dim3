@@ -101,7 +101,7 @@ void score_limit_trigger_set(void)
 	
 		// if on the host, trigger all remotes to reach game limit
 		
-	if (net_setup.host.hosting) {
+	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
 		obj=object_find_uid(server.player_obj_uid);
 		net_host_player_send_message_others(obj->remote.uid,net_action_request_game_score_limit,net_player_uid_host,NULL,0);
 	}
@@ -198,7 +198,7 @@ void score_limit_run(void)
 		// if we are hosting, we can exit early
 		// and send the reset message to clients
 		
-	if (net_setup.host.hosting) {
+	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
 		
 			// check for time exit or escape exit
 			

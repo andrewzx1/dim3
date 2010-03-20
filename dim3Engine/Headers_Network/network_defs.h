@@ -73,6 +73,15 @@ and can be sold or given away.
 #define client_communication_timeout_msec				1000
 
 //
+// network modes
+//
+
+#define net_mode_none									0
+#define net_mode_client									1
+#define net_mode_host									2
+#define net_mode_host_dedicated							3
+
+//
 // queue defines
 //
 
@@ -119,24 +128,22 @@ typedef struct		{
 					} net_host_player_type;
 
 //
-// setup structures
+// network setup structures
 //
 
 typedef struct		{
 						char							name[name_str_len],
 														ip_name[256],ip_resolve[64],
 														map_name[name_str_len];
-						bool							hosting;
 					} network_setup_host_type;
 
 typedef struct		{
 						int								latency,latency_ping_tick;
-						char							joined_ip[32],game_name2[name_str_len];
-						bool							joined;
+						unsigned long					host_ip_addr;
 					} network_setup_client_type;
 
 typedef struct		{
-						int								player_uid,
+						int								mode,player_uid,
 														game_idx,option_flags;
 						network_setup_host_type			host;
 						network_setup_client_type		client;

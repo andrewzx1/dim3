@@ -302,7 +302,7 @@ int net_host_thread(void *arg)
       
 ======================================================= */
 
-int net_host_game_start(char *err_str)
+bool net_host_game_start(char *err_str)
 {
 	int						player_uid;
 	network_request_join	request_join;
@@ -320,33 +320,42 @@ int net_host_game_start(char *err_str)
 
 	if (!net_host_initialize(err_str)) {
 		net_host_player_shutdown();
-		return(-1);
+		return(FALSE);
 	}
 	
-		// attempt to connect to local server
+		// attempt to add local player to host
 
-	strcpy(request_join.name,setup.network.name);
-	strcpy(request_join.vers,dim3_version);
-	request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
-	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
+	player_uid=-1;
 
-	player_uid=net_host_client_handle_local_join(&request_join,err_str);
-	if (player_uid==-1) {
-		net_host_shutdown();
-		net_host_player_shutdown();
-		return(-1);
+	if (!setup.network.dedicated) {
+		strcpy(request_join.name,setup.network.name);
+		strcpy(request_join.vers,dim3_version);
+		request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
+		request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
+
+		player_uid=net_host_client_handle_local_join(&request_join,err_str);
+		if (player_uid==-1) {
+			net_host_shutdown();
+			net_host_player_shutdown();
+			return(FALSE);
+		}
 	}
 	
 		// setup hosting flags
 
-	net_setup.host.hosting=TRUE;
-	net_setup.client.joined=TRUE;
-	net_setup.client.latency=0;
+	if (setup.network.dedicated) {
+		net_setup.mode=net_mode_host_dedicated;
+	}
+	else {
+		net_setup.mode=net_mode_host;
+	}
+
 	net_setup.player_uid=player_uid;
 
-	strcpy(net_setup.client.joined_ip,"127.0.0.1");
+	net_setup.client.latency=0;
+	net_setup.client.host_ip_addr=0;
 
-	return(player_uid);
+	return(TRUE);
 }
 
 void net_host_game_end(void)
@@ -362,7 +371,6 @@ void net_host_game_end(void)
 	
 		// make sure hosting flags are off
 		
-	net_setup.host.hosting=FALSE;
-	net_setup.client.joined=FALSE;
+	net_setup.mode=net_mode_none;
 }
 

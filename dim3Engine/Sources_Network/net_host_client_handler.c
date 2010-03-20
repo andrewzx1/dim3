@@ -116,7 +116,6 @@ void net_host_client_handle_group_synch(int player_uid)
 			group_moves_synch_with_client(n,&reply_synch);
 			net_host_player_send_message_single(player_uid,net_action_reply_group_synch,net_player_uid_host,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
 		}
-
 	}
 }
 
