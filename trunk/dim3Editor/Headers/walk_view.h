@@ -41,7 +41,7 @@ extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,cha
 
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
 extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
-extern void walk_view_draw_select(d3pnt *cpt,bool draw_area);
+extern void walk_view_draw_select(d3pnt *cpt,bool rot_on);
 
 //
 // walk view click
@@ -91,4 +91,5 @@ extern void walk_view_models_close(void);
 extern void walk_view_models_reset(void);
 extern bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count);
 extern bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz);
+extern int walk_view_model_rot_y_size(d3pnt *pnt,d3ang *ang,char *name);
 extern bool walk_view_model_draw_select(d3pnt *pnt,d3ang *ang,char *name);

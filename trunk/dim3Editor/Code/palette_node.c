@@ -31,10 +31,8 @@ and can be sold or given away.
 
 #define kNodeName						FOUR_CHAR_CODE('name')
 #define kNodeEventID					FOUR_CHAR_CODE('vale')
-#define kNodeAngleX						FOUR_CHAR_CODE('angx')
-#define kNodeAngleY						FOUR_CHAR_CODE('angy')
-#define kNodeAngleZ						FOUR_CHAR_CODE('angz')
 #define kNodeFollowCamera				FOUR_CHAR_CODE('fcam')
+#define kNodeAlpha						FOUR_CHAR_CODE('apha')
 
 extern map_type				map;
 
@@ -60,10 +58,8 @@ void palette_node_load(void)
 		
 	dialog_set_text(palette_node_wind,kNodeName,0,node->name);
 	dialog_set_int(palette_node_wind,kNodeEventID,0,node->event_id);
-	dialog_set_float(palette_node_wind,kNodeAngleX,0,node->ang.x);
-	dialog_set_float(palette_node_wind,kNodeAngleY,0,node->ang.y);
-	dialog_set_float(palette_node_wind,kNodeAngleZ,0,node->ang.z);
 	dialog_set_boolean(palette_node_wind,kNodeFollowCamera,0,node->follow_camera);
+	dialog_set_float(palette_node_wind,kNodeAlpha,0,node->alpha);
 	
 	DrawControls(palette_node_wind);
 }
@@ -82,10 +78,8 @@ void palette_node_save(void)
 	
 	dialog_get_text(palette_node_wind,kNodeName,0,node->name,name_str_len);
 	node->event_id=dialog_get_int(palette_node_wind,kNodeEventID,0);
-	node->ang.x=dialog_get_float(palette_node_wind,kNodeAngleX,0);
-	node->ang.y=dialog_get_float(palette_node_wind,kNodeAngleY,0);
-	node->ang.z=dialog_get_float(palette_node_wind,kNodeAngleZ,0);
 	node->follow_camera=dialog_get_boolean(palette_node_wind,kNodeFollowCamera,0);
+	node->alpha=dialog_get_float(palette_node_wind,kNodeAlpha,0);
 	
 		// need to reset node combo
 		

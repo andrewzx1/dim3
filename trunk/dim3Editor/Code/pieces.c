@@ -51,7 +51,7 @@ void piece_duplicate(void)
 					index,xadd,zadd;
 	d3pnt			mpt,mov_pt;
 
-	undo_clear();
+	undo_push();
 	
 		// duplicate selection
 		
@@ -227,7 +227,7 @@ void piece_delete(void)
 	int				n,i,k,nsel_count,
 					type,main_idx,sub_idx;
 	
-	undo_save();
+	undo_push();
 	
 		// sort segment so higher indexes are deleted first
 		

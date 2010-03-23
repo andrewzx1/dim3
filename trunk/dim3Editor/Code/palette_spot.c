@@ -36,7 +36,6 @@ and can be sold or given away.
 #define kSpotType								FOUR_CHAR_CODE('type')
 #define kSpotScript								FOUR_CHAR_CODE('scpt')
 #define kSpotParams								FOUR_CHAR_CODE('parm')
-#define kSpotAngle								FOUR_CHAR_CODE('ange')
 #define kSpotSkill								FOUR_CHAR_CODE('skil')
 #define kSpotSpawn								FOUR_CHAR_CODE('spwn')
 #define kSpotDisplayModel						FOUR_CHAR_CODE('dspm')
@@ -127,7 +126,6 @@ void palette_spot_load(void)
 	dialog_set_text(palette_spot_wind,kSpotName,0,spot->name);
 	dialog_set_text(palette_spot_wind,kSpotType,0,spot->type);
 	dialog_special_combo_fill_script(palette_spot_wind,kSpotScript,0,spot->script);
-	dialog_set_float(palette_spot_wind,kSpotAngle,0,spot->ang.y);
 	dialog_set_combo(palette_spot_wind,kSpotSkill,0,spot->skill);
 	dialog_set_combo(palette_spot_wind,kSpotSpawn,0,spot->spawn);
 	
@@ -153,7 +151,6 @@ void palette_spot_save(void)
 	dialog_get_text(palette_spot_wind,kSpotName,0,spot->name,name_str_len);
 	dialog_get_text(palette_spot_wind,kSpotType,0,spot->type,name_str_len);
 	dialog_special_combo_get_script(palette_spot_wind,kSpotScript,0,spot->script,name_str_len);
-	spot->ang.y=dialog_get_float(palette_spot_wind,kSpotAngle,0);
 	spot->skill=dialog_get_combo(palette_spot_wind,kSpotSkill,0);
 	spot->spawn=dialog_get_combo(palette_spot_wind,kSpotSpawn,0);
 	
@@ -250,10 +247,6 @@ void palette_spot_open(int x,int y)
 	
 	tab_event_upp=NewEventHandlerUPP(palette_spot_tab_proc);
 	InstallControlEventHandler(palette_spot_tab,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,palette_spot_wind,NULL);
-	
-		// numeric only controls
-
-	palette_control_numeric_only(palette_spot_wind,kSpotAngle,0);
 
 		// show palette
 		

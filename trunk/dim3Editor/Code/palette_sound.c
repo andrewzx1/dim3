@@ -116,7 +116,7 @@ void palette_sound_open(int x,int y)
 	
 		// numeric only controls
 
-	palette_control_numeric_only(palette_sound_wind,kSoundPitch,0);
+	dialog_set_numeric_only(palette_sound_wind,kSoundPitch,0);
 
 		// show palette
 		

@@ -328,7 +328,9 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq,int v_sz)
 void liquid_render_liquid(map_liquid_type *liq)
 {
 	int						v_sz,quad_cnt,frame;
+	float					alpha;
 	bool					shader_on;
+	GLuint					gl_id;
 	texture_type			*texture,*lmap_texture;
 	view_light_list_type	light_list;
 	tangent_space_type		tangent_space;
@@ -409,7 +411,15 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		gl_shader_draw_start();
 		gl_shader_draw_execute(TRUE,texture,liq->txt_idx,frame,liq->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&tangent_space,NULL);
+				
+			// fix texture if any back rendering
 
+		if (gl_back_render_get_texture(liq->camera,&gl_id,&alpha)) {
+			gl_shader_texture_override(gl_id,alpha);
+		}
+		
+			// draw liquid
+		
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 		
 		gl_shader_draw_end();
@@ -419,6 +429,14 @@ void liquid_render_liquid(map_liquid_type *liq)
 		// simple, non-shader drawing
 
 	else {
+	
+			// back rendering overrides
+			
+		alpha=1.0f;
+			
+		if (!gl_back_render_get_texture(liq->camera,&gl_id,&alpha)) {
+			gl_id=texture->frames[frame].bitmap.gl_id;
+		}
 
 			// need color pointers for simple drawing
 
@@ -431,7 +449,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 			lmap_texture=&map.textures[liq->lmap_txt_idx];
 
 			gl_texture_transparent_light_map_start();
-			gl_texture_transparent_light_map_set(texture->frames[frame].bitmap.gl_id,lmap_texture->frames[0].bitmap.gl_id,1.0f);
+			gl_texture_transparent_light_map_set(gl_id,lmap_texture->frames[0].bitmap.gl_id,alpha);
 			glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 			gl_texture_transparent_light_map_end();
 		}
@@ -440,7 +458,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		else {
 			gl_texture_transparent_start();
-			gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,1.0f);
+			gl_texture_transparent_set(gl_id,alpha);
 			glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 			gl_texture_transparent_end();
 		}

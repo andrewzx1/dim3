@@ -509,6 +509,8 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_color("rgb",&liq->col);
 	xml_add_attribute_float("tint_alpha",liq->tint_alpha);
 	if ((liq->x_shift!=0) || (liq->y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->x_shift,liq->y_shift);
+
+	if (liq->camera[0]!=0x0) xml_add_attribute_text("camera",liq->camera);
 	xml_add_tagend(TRUE);
 
 		// physics
@@ -703,6 +705,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_3_coord_int("c3",node->pnt.x,node->pnt.y,node->pnt.z);
 		xml_add_attribute_3_coord_float("angle",node->ang.x,node->ang.y,node->ang.z);
 		xml_add_attribute_boolean("follow_camera",node->follow_camera);
+		xml_add_attribute_float("alpha",node->alpha);
 		xml_add_attribute_text("name",node->name);
 		xml_add_attribute_int("event_id",node->event_id);
 		xml_add_tagend(FALSE);

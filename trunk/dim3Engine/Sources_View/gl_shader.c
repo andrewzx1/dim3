@@ -662,11 +662,25 @@ void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx
 	if (gl_id!=-1) gl_texture_bind(0,gl_id);
 }
 
-void gl_shader_texture_override(GLuint gl_id)
+void gl_shader_texture_override(GLuint gl_id,float alpha)
 {
 		// normally used to override for back rendering
 
 	gl_texture_bind(0,gl_id);
+	
+		// nodes can override alpha
+		// multiply in alpha so fade effects still work
+		
+	if (alpha==1.0f) return;
+	
+	if (gl_shader_current->var_locs.dim3Alpha!=-1) {
+		alpha*=gl_shader_current->var_values.alpha;
+		if (gl_shader_current->var_values.alpha!=alpha) {
+			gl_shader_current->var_values.alpha=alpha;
+			glUniform1fARB(gl_shader_current->var_locs.dim3Alpha,alpha);
+		}
+	}
+
 }
 
 /* =======================================================

@@ -60,8 +60,8 @@ void menu_start(void)
 
 	DisposeNibReference(nib);
 
+	undo_initialize();
 	menu_fix_enable();
-	undo_clear();
 }
 
 /* =======================================================
@@ -221,12 +221,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandNew:
 			file_new_map();
-			undo_clear();
 			return(noErr);
 			
 		case kCommandOpen:
 			file_open_map();
-			undo_clear();
 			return(noErr);
 			
 		case kCommandClose:
@@ -234,7 +232,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 				if (!menu_save_changes_dialog()) return(noErr);
 				file_close_map();
 			}
-			undo_clear();
 			return(noErr);
 
 		case kCommandSave:
@@ -248,7 +245,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			// edit menu
 			
 		case kCommandUndo:
-			undo_run();
+			undo_pull();
 			return(noErr);
 			
 		case kCommandDelete:
@@ -360,19 +357,16 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandMapResetUV:
 			map_mesh_reset_uv_all();
 			main_wind_draw();
-			undo_clear();
 			return(noErr);
 			
 		case kCommandMapOptimize:
 			map_optimize();
 			main_wind_draw();
-			undo_clear();
 			return(noErr);
 			
 		case kCommandMapCreateNormals:
 			map_recalc_normals(&map,FALSE);
 			main_wind_draw();
-			undo_clear();
 			return(noErr);
 			
 		case kCommandClearLightMaps:
@@ -487,13 +481,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandMeshCreateNormals:
 			piece_mesh_recalc_normals();
 			main_wind_draw();
-			undo_clear();
 			return(noErr);
 			
 		case kCommandMeshInvertNormals:
 			piece_mesh_invert_normals(FALSE);
 			main_wind_draw();
-			undo_clear();
 			return(noErr);
 			
 			

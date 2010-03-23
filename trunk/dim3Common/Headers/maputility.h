@@ -323,6 +323,7 @@ typedef struct		{
 						float								speed_alter,tint_alpha,
 															x_shift,y_shift;
 						bool								never_obscure;
+						char								camera[name_str_len];
 						d3col								col;
 						map_liquid_uv_type					main_uv,lmap_uv;
 						map_liquid_harm_type				harm;
@@ -431,6 +432,7 @@ typedef struct		{
 						int									idx,event_id;
 						short								link[max_node_link],
 															path_hint[max_node];
+						float								alpha;
 						char								name[name_str_len];
 						bool								follow_camera;
 						d3pnt								pnt;

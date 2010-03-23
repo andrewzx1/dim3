@@ -30,11 +30,10 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "dialog.h"
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					magnify_factor,vertex_mode,drag_mode,grid_mode,area_col_type;
+extern int					magnify_factor,vertex_mode,drag_mode,grid_mode,node_mode;
 extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern d3pnt				view_pnt;
 extern d3rect				main_wind_box;
@@ -80,18 +79,6 @@ void walk_view_click_project_point(d3rect *box,int *x,int *y,int *z)
 	*x=((int)dx)-box->lx;
 	*y=(main_wind_box.by-((int)dy))-box->ty;
 	*z=(int)((dz)*10000.0f);
-}
-
-
-// supergumba
-float walk_view_click_project_point2(d3rect *box,int *x,int *y, int *z)
-{
-	double		dx,dy,dz;
-	
-	gluProject(*x,*y,*z,walk_view_mod_matrix,walk_view_proj_matrix,(GLint*)walk_view_vport,&dx,&dy,&dz);
-	*x=((int)dx)-box->lx;
-	*y=(main_wind_box.by-((int)dy))-box->ty;
-	return((float)dz);
 }
 
 /* =======================================================
@@ -256,6 +243,187 @@ void walk_view_click_snap_mesh(int mesh_idx,d3pnt *old_pts,d3pnt *mpt)
 			memmove(mpt,&hpt,sizeof(d3pnt));
 		}
 	}
+}
+
+/* =======================================================
+
+      View Rotation Handles Clicking
+      
+======================================================= */
+
+bool walk_view_click_item_single_rot_handles(editor_3D_view_setup *view_setup,d3pnt *click_pt,d3pnt *pnt,d3vct *vct,d3ang *ang,int y_size)
+{
+	int				x,y,z,sz;
+	matrix_type		mat;
+
+		// y location
+		
+	y=pnt->y-y_size;
+	
+		// rotations
+	
+	if (ang->x!=0) {
+		matrix_rotate_x(&mat,ang->x);
+		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+	}
+	
+	if (ang->y!=0) {
+		matrix_rotate_y(&mat,ang->y);
+		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+	}
+	
+	if (ang->z!=0) {
+		matrix_rotate_z(&mat,ang->z);
+		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+	}
+	
+		// click in position
+		
+	x=pnt->x+(int)vct->x;
+	y=y+(int)vct->y;
+	z=pnt->z+(int)vct->z;
+	
+	sz=(int)walk_view_handle_size;
+	
+	if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
+		walk_view_click_project_point(&view_setup->box,&x,&y,&z);
+		if ((click_pt->x>=(x-sz)) && (click_pt->x<=(x+sz)) && (click_pt->y>=(y-sz)) && (click_pt->y<=(y+sz))) return(TRUE);
+	}
+	
+	return(FALSE);
+}
+
+int walk_view_click_item_rot_handles(editor_3D_view_setup *view_setup,d3pnt *click_pt,d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
+{
+	float			len;
+	d3vct			vct;
+	
+	len=(float)(map_enlarge*4);
+	
+		// x rot
+		
+	if (!y_only) {
+		vct.x=len;
+		vct.y=0.0f;
+		vct.z=0.0f;
+		
+		if (walk_view_click_item_single_rot_handles(view_setup,click_pt,pnt,&vct,ang,y_size)) return(0);
+	}
+	
+		// y rot
+		
+	vct.x=0.0f;
+	vct.y=-len;
+	vct.z=0.0f;
+	
+	if (walk_view_click_item_single_rot_handles(view_setup,click_pt,pnt,&vct,ang,y_size)) return(1);
+	
+		// z rot
+	
+	if (!y_only) {
+		vct.x=0.0f;
+		vct.y=0.0f;
+		vct.z=len;
+		
+		if (walk_view_click_item_single_rot_handles(view_setup,click_pt,pnt,&vct,ang,y_size)) return(2);
+	}
+	
+	return(-1);
+}
+
+bool walk_view_click_rot_handles(editor_3D_view_setup *view_setup,d3pnt *click_pt)
+{
+	int			n,ncount,type,main_idx,sub_idx,
+				y_size,which_axis;
+	float		ang_add;
+	bool		first_drag;
+	d3pnt		pt;
+	d3ang		*ang,old_ang;
+	
+	if (!view_setup->rot_on) return(FALSE);
+	
+		// check drags for all selections
+		
+	ncount=select_count();
+
+	which_axis=-1;
+	
+	for (n=0;n!=ncount;n++) {
+		select_get(n,&type,&main_idx,&sub_idx);
+		
+		which_axis=-1;
+		
+		switch (type) {
+		
+			case node_piece:
+				ang=&map.nodes[main_idx].ang;
+				y_size=map_enlarge*5;
+				which_axis=walk_view_click_item_rot_handles(view_setup,click_pt,&map.nodes[main_idx].pnt,ang,y_size,FALSE);
+				break;
+				
+			case spot_piece:
+				ang=&map.spots[main_idx].ang;
+				y_size=walk_view_model_rot_y_size(&map.spots[main_idx].pnt,ang,map.spots[main_idx].display_model);
+				which_axis=walk_view_click_item_rot_handles(view_setup,click_pt,&map.spots[main_idx].pnt,ang,y_size,TRUE);
+				break;
+				
+			case scenery_piece:
+				ang=&map.sceneries[main_idx].ang;
+				y_size=walk_view_model_rot_y_size(&map.sceneries[main_idx].pnt,ang,map.sceneries[main_idx].model_name);
+				which_axis=walk_view_click_item_rot_handles(view_setup,click_pt,&map.sceneries[main_idx].pnt,ang,y_size,FALSE);
+				break;
+				
+		}
+		
+		if (which_axis!=-1) break;
+	}
+	
+		// had a selection?
+		
+	if (which_axis==-1) return(FALSE);
+	
+		// handle drag
+	
+    if (!os_button_down()) return(FALSE);
+	
+	undo_push();
+
+	first_drag=TRUE;
+	
+	memmove(&old_ang,ang,sizeof(d3ang));
+	
+	while (!os_track_mouse_location(&pt,&view_setup->box)) {
+		
+		ang_add=(float)(click_pt->x-pt.x);		
+		if (ang_add==0.0f) continue;
+		
+			// turn on drag cursor
+			
+		if (first_drag) {
+			os_set_drag_cursor();
+			first_drag=FALSE;
+		}
+
+			// move vertex
+			
+		switch (which_axis) {
+			case 0:
+				ang->x=angle_add(old_ang.x,ang_add);
+				break;
+			case 1:
+				ang->y=angle_add(old_ang.y,ang_add);
+				break;
+			case 2:
+				ang->z=angle_add(old_ang.z,ang_add);
+				break;
+		}
+
+        main_wind_draw();
+	}
+	
+	os_set_arrow_cursor();
+	
+	return(!first_drag);
 }
 
 /* =======================================================
@@ -471,7 +639,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	box_high=view_setup->box.by-view_setup->box.ty;
 	
 	*type=-1;
-	hit_z=100000;
+	hit_z=walk_view_max_z_click;
 		
 		// meshes
 		
@@ -640,6 +808,11 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 		
 	walk_view_mesh_click_index(view_setup,pt,&type,&main_idx,&sub_idx,FALSE);
 	
+		// if a node, check link
+		// connections
+		
+	if ((type==node_piece) && (node_mode!=node_mode_select)) node_link_click(main_idx);
+	
 		// regular or toggle selection
 		
 	toggle_select=main_wind_shift_down() || select_toggle_mode;
@@ -681,6 +854,10 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	
 	pt->x-=view_setup->box.lx;
 	pt->y-=view_setup->box.ty;
+	
+		// rotation handles
+		
+	if (walk_view_click_rot_handles(view_setup,pt)) return;
 	
 		// liquid vertex drags
 		

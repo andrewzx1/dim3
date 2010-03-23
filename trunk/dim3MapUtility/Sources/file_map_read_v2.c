@@ -484,6 +484,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					node->pnt.z+=portal->z;
 
 					node->follow_camera=FALSE;
+					node->alpha=1.0f;
 					
 					node_tag=xml_findnextchild(node_tag);
 				}

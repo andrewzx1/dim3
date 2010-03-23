@@ -38,8 +38,6 @@ extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 extern bool				dp_normals,dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_textured;
 extern d3pnt			view_pnt;
 
-extern AGLContext		ctx;
-
 extern map_type			map;
 extern setup_type		setup;
 extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
@@ -872,7 +870,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		
 		// draw selection
 		
-	walk_view_draw_select(&view_setup->cpt,view_setup->draw_area);
+	walk_view_draw_select(&view_setup->cpt,view_setup->rot_on);
 
 		// position
 		

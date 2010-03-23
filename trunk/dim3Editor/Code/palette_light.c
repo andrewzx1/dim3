@@ -127,8 +127,8 @@ void palette_light_open(int x,int y)
 	
 		// numeric only controls
 
-	palette_control_numeric_only(palette_light_wind,kLightIntensity,0);
-	palette_control_numeric_only(palette_light_wind,kLightExponent,0);
+	dialog_set_numeric_only(palette_light_wind,kLightIntensity,0);
+	dialog_set_numeric_only(palette_light_wind,kLightExponent,0);
 	
 		// show palette
 		

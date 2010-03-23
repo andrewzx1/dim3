@@ -264,10 +264,11 @@ void gl_back_render_frame_node(char *node_name)
 
 void gl_back_render_frame_start(void)
 {
-	int					n,k,mesh_idx;
+	int					n,k;
 	node_type			*node;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
+	map_liquid_type		*liq;
 	
 	if (!back_render_on) return;
 
@@ -280,19 +281,26 @@ void gl_back_render_frame_start(void)
 		node++;
 	}
 	
-		// run through all the meshes
+		// run through all the meshes or liquids
 	
 	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+		
+		switch (view.render->draw_list.items[n].type) {
+		
+			case view_render_type_mesh:
+				mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+				poly=mesh->polys;
 
-		mesh_idx=view.render->draw_list.items[n].idx;
-
-		mesh=&map.mesh.meshes[mesh_idx];
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-			if (poly->camera[0]!=0x0) gl_back_render_frame_node(poly->camera);
-			poly++;
+				for (k=0;k!=mesh->npoly;k++) {
+					if (poly->camera[0]!=0x0) gl_back_render_frame_node(poly->camera);
+					poly++;
+				}
+				break;
+				
+			case view_render_type_liquid:
+				liq=&map.liquid.liquids[view.render->draw_list.items[n].idx];
+				if (liq->camera[0]!=0x0) gl_back_render_frame_node(liq->camera);
+				break;
 		}
 	}
 }
@@ -303,7 +311,7 @@ void gl_back_render_frame_start(void)
       
 ======================================================= */
 
-bool gl_back_render_get_texture(char *node_name,GLuint *txt_id)
+bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha)
 {
 	int				node_idx;
 	node_type		*node;
@@ -322,6 +330,8 @@ bool gl_back_render_get_texture(char *node_name,GLuint *txt_id)
 	if (!node->back_render.render) return(FALSE);
 
 	*txt_id=node->back_render.txt_id;
+	*alpha=node->alpha;
+	
 	return(TRUE);
 }
 

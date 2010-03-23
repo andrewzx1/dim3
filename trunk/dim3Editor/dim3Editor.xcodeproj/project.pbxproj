@@ -12,7 +12,6 @@
 		2630141E0D72844300564E2C /* walk_view_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = 2630141D0D72844300564E2C /* walk_view_swap.c */; };
 		263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263614450DC41DF6002345C0 /* walk_view_click_texture.c */; };
 		263B67380F7072EE0065AB38 /* palette_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 263B67370F7072EE0065AB38 /* palette_spot.c */; };
-		263B683C0F730FA40065AB38 /* palette_area.c in Sources */ = {isa = PBXBuildFile; fileRef = 263B683B0F730FA40065AB38 /* palette_area.c */; };
 		2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = 2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
 		264A46FB0F75C1D80054BAA6 /* palette_scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A46FA0F75C1D80054BAA6 /* palette_scenery.c */; };
@@ -225,7 +224,6 @@
 		2630141D0D72844300564E2C /* walk_view_swap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_swap.c; path = Code/walk_view_swap.c; sourceTree = "<group>"; };
 		263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_texture.c; path = Code/walk_view_click_texture.c; sourceTree = "<group>"; };
 		263B67370F7072EE0065AB38 /* palette_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_spot.c; path = Code/palette_spot.c; sourceTree = "<group>"; };
-		263B683B0F730FA40065AB38 /* palette_area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_area.c; path = Code/palette_area.c; sourceTree = "<group>"; };
 		2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_scale.c; path = Code/dialog_mesh_scale.c; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
 		264A46FA0F75C1D80054BAA6 /* palette_scenery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_scenery.c; path = Code/palette_scenery.c; sourceTree = "<group>"; };
@@ -504,7 +502,6 @@
 				264A478A0F760CCA0054BAA6 /* palette_sound.c */,
 				264A47610F760AD40054BAA6 /* palette_particle.c */,
 				264A47100F75FB6D0054BAA6 /* palette_node.c */,
-				263B683B0F730FA40065AB38 /* palette_area.c */,
 			);
 			name = Palettes;
 			sourceTree = "<group>";
@@ -819,7 +816,6 @@
 				265DCEFB0F6D6A3E00C1E65D /* palette_polygon.c in Sources */,
 				265DCF4D0F6DBF9D00C1E65D /* palette_liquid.c in Sources */,
 				263B67380F7072EE0065AB38 /* palette_spot.c in Sources */,
-				263B683C0F730FA40065AB38 /* palette_area.c in Sources */,
 				264A46FB0F75C1D80054BAA6 /* palette_scenery.c in Sources */,
 				264A47110F75FB6D0054BAA6 /* palette_node.c in Sources */,
 				264A47620F760AD40054BAA6 /* palette_particle.c in Sources */,
@@ -847,7 +843,8 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

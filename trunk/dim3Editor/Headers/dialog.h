@@ -53,6 +53,7 @@ extern void dialog_get_color(WindowRef wind,unsigned long sig,int id,d3col *col)
 extern void dialog_set_focus(WindowRef wind,unsigned long sig,int id);
 extern void dialog_enable(WindowRef wind,unsigned long sig,int id,bool enable);
 extern void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show);
+extern void dialog_set_numeric_only(WindowRef wind,int sig,int id);
 extern void dialog_redraw(WindowRef wind,unsigned long sig,int id);
 extern void dialog_special_combo_fill_sound(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_particle(WindowRef wind,unsigned long sig,int id,char *sel_name);

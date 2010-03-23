@@ -70,11 +70,11 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_forward_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=swap_panel_forward;
 	view_setup->clip_on=FALSE;
+	view_setup->rot_on=TRUE;
 }
 
 void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
@@ -101,11 +101,11 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_forward_fov;
 	
 	view_setup->mesh_only=TRUE;
-	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=swap_panel_forward;
 	view_setup->clip_on=FALSE;
+	view_setup->rot_on=TRUE;
 }
 
 void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
@@ -132,11 +132,11 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_forward_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=FALSE;
 	view_setup->clip_on=FALSE;
+	view_setup->rot_on=TRUE;
 }
 
 /* =======================================================
@@ -169,11 +169,11 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_side_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=swap_panel_side;
 	view_setup->clip_on=FALSE;
+	view_setup->rot_on=TRUE;
 }
 
 void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
@@ -200,11 +200,11 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_side_fov;
 	
 	view_setup->mesh_only=TRUE;
-	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=swap_panel_side;
 	view_setup->clip_on=FALSE;
+	view_setup->rot_on=TRUE;
 }
 
 /* =======================================================
@@ -242,11 +242,11 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->fov=top_view_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_area=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
 	view_setup->clip_on=TRUE;
+	view_setup->rot_on=FALSE;
 }
 
 void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
@@ -278,11 +278,11 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->fov=top_view_fov;
 	
 	view_setup->mesh_only=TRUE;
-	view_setup->draw_area=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
 	view_setup->clip_on=TRUE;
+	view_setup->rot_on=FALSE;
 }
 
 void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
@@ -312,11 +312,11 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	view_setup->fov=top_view_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_area=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=FALSE;
 	view_setup->clip_on=TRUE;
+	view_setup->rot_on=FALSE;
 }
 
 /* =======================================================
@@ -349,10 +349,10 @@ void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_forward_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=FALSE;
 	view_setup->clip_on=FALSE;
+	view_setup->rot_on=TRUE;
 }
 

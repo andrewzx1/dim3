@@ -203,7 +203,19 @@ void walk_view_draw_select_liquid(int liquid_idx)
 	
 	glEnable(GL_DEPTH_TEST);
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+	
+		// outline
+		
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(liq->lft,liq->y,liq->top);
+	glVertex3i(liq->rgt,liq->y,liq->top);
+	glVertex3i(liq->rgt,liq->y,liq->bot);
+	glVertex3i(liq->lft,liq->y,liq->bot);
+	glEnd();
+	
+		// handles
+
 	glPointSize(walk_view_handle_size);
 		
 	walk_view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
@@ -284,13 +296,122 @@ void walk_view_draw_select_sprite(d3pnt *pnt)
 
 /* =======================================================
 
+      Draw Rotation Handles
+      
+======================================================= */
+
+void walk_view_draw_select_single_rot_handles(d3pnt *pnt,d3vct *vct,d3ang *ang,int y_size,d3col *col)
+{
+	int				y;
+	matrix_type		mat;
+
+		// y location
+		
+	y=pnt->y-y_size;
+	
+		// rotations
+	
+	if (ang->x!=0) {
+		matrix_rotate_x(&mat,ang->x);
+		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+	}
+	
+	if (ang->y!=0) {
+		matrix_rotate_y(&mat,ang->y);
+		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+	}
+	
+	if (ang->z!=0) {
+		matrix_rotate_z(&mat,ang->z);
+		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
+	}
+	
+		// draw line
+		
+    glLineWidth(2);
+	
+	glColor4f(col->r,col->g,col->b,1.0f);
+	
+	glBegin(GL_LINES);
+	glVertex3i(pnt->x,y,pnt->z);
+	glVertex3i((pnt->x+(int)vct->x),(y+(int)vct->y),(pnt->z+(int)vct->z));
+	glEnd();
+	
+	glPointSize(10);
+	
+	glBegin(GL_POINTS);
+	glVertex3i((pnt->x+(int)vct->x),(y+(int)vct->y),(pnt->z+(int)vct->z));
+	glEnd();
+	
+	glPointSize(1);
+	
+    glLineWidth(1);
+}
+
+void walk_view_draw_select_rot_handles(d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
+{
+	float			len;
+	d3vct			vct;
+	d3col			col;
+	
+	len=(float)(map_enlarge*4);
+	
+		// x rot
+		
+	vct.x=len;
+	vct.y=0.0f;
+	vct.z=0.0f;
+	
+	if (y_only) {
+		col.r=col.g=col.b=0.5f;
+	}
+	else {
+		col.r=1.0f;
+		col.g=0.0f;
+		col.b=0.0f;
+	}
+	
+	walk_view_draw_select_single_rot_handles(pnt,&vct,ang,y_size,&col);
+	
+		// y rot
+		
+	vct.x=0.0f;
+	vct.y=-len;
+	vct.z=0.0f;
+	
+	col.r=0.0f;
+	col.g=1.0f;
+	col.b=0.0f;
+	
+	walk_view_draw_select_single_rot_handles(pnt,&vct,ang,y_size,&col);
+	
+		// z rot
+	
+	vct.x=0.0f;
+	vct.y=0.0f;
+	vct.z=len;
+	
+	if (y_only) {
+		col.r=col.g=col.b=0.5f;
+	}
+	else {
+		col.r=0.0f;
+		col.g=0.0f;
+		col.b=1.0f;
+	}
+	
+	walk_view_draw_select_single_rot_handles(pnt,&vct,ang,y_size,&col);
+}
+
+/* =======================================================
+
       Draw Selections for Map
       
 ======================================================= */
 
-void walk_view_draw_select(d3pnt *cpt,bool draw_area)
+void walk_view_draw_select(d3pnt *cpt,bool rot_on)
 {
-	int						n,sel_count,
+	int						n,sel_count,y_size,
 							type,main_idx,sub_idx;
 	unsigned char			draw_mesh_once[max_mesh];
 	
@@ -328,18 +449,24 @@ void walk_view_draw_select(d3pnt *cpt,bool draw_area)
 				
 			case node_piece:
 				walk_view_draw_select_sprite(&map.nodes[main_idx].pnt);
+				y_size=map_enlarge*5;
+				if (rot_on) walk_view_draw_select_rot_handles(&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,y_size,FALSE);
 				break;
 				
 			case spot_piece:
 				if (!walk_view_model_draw_select(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model)) {
 					walk_view_draw_select_sprite(&map.spots[main_idx].pnt);
 				}
+				y_size=walk_view_model_rot_y_size(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model);
+				if (rot_on) walk_view_draw_select_rot_handles(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,y_size,TRUE);
 				break;
 				
 			case scenery_piece:
 				if (!walk_view_model_draw_select(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name)) {
 					walk_view_draw_select_sprite(&map.sceneries[main_idx].pnt);
 				}
+				y_size=walk_view_model_rot_y_size(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name);
+				if (rot_on) walk_view_draw_select_rot_handles(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,y_size,FALSE);
 				break;
 				
 			case light_piece:

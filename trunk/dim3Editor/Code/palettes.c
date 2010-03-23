@@ -302,38 +302,3 @@ void palette_reset(void)
 	}
 }
 
-/* =======================================================
-
-      Palette Utilities
-      
-======================================================= */
-
-static pascal OSStatus palette_numeric_only_proc(EventHandlerCallRef handler,EventRef event,void *data)
-{
-	char			ch;
-	
-	GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
-	if (((ch>='0') && (ch<='9')) || (ch=='.') || ((ch<' ') && (ch!=0xD))) return(eventNotHandledErr);
-	
-	return(noErr);
-}
-
-
-void palette_control_numeric_only(WindowRef wind,int sig,int id)
-{
-	ControlRef				ctrl;
-	ControlID				ctrl_id;
-	EventHandlerUPP			ctrl_event_upp;
-	EventTypeSpec			ctrl_event_list[]={{kEventClassKeyboard,kEventRawKeyDown}};
-
-		// instal numeric only event handler
-
-	ctrl_id.signature=sig;
-	ctrl_id.id=id;
-	GetControlByID(wind,&ctrl_id,&ctrl);
-	
-	ctrl_event_upp=NewEventHandlerUPP(palette_numeric_only_proc);
-	InstallControlEventHandler(ctrl,ctrl_event_upp,GetEventTypeCount(ctrl_event_list),ctrl_event_list,wind,NULL);
-}
-
-

@@ -168,6 +168,12 @@ and can be sold or given away.
 #define top_view_fov							30
 
 //
+// clicking
+//
+
+#define walk_view_max_z_click					1000000
+
+//
 // walk view opengl settings
 //
 
@@ -200,7 +206,7 @@ typedef struct		{
 						d3pnt					cpt;
 						d3ang					ang;
 						float					fov;
-						bool					mesh_only,draw_area,draw_light_circle,
-												swap_on,clip_on;
+						bool					mesh_only,draw_light_circle,
+												swap_on,clip_on,rot_on;
 					} editor_3D_view_setup;
 

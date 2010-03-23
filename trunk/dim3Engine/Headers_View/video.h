@@ -125,7 +125,7 @@ extern void gl_shader_draw_scene_initialize_code(shader_type *shader);
 extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
-extern void gl_shader_texture_override(GLuint gl_id);
+extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 extern void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset);
 
 	// core shaders
@@ -158,7 +158,7 @@ extern void gl_back_render_shutdown(void);
 extern void gl_back_render_map_start(void);
 extern void gl_back_render_map_end(void);
 extern void gl_back_render_frame_start(void);
-extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id);
+extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha);
 
 	// view
 	

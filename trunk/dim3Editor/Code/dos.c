@@ -154,6 +154,7 @@ bool file_new_map(void)
 		// start the map
 		
 	select_clear();
+	undo_clear_all();
 		
     map_new(&map,file_name);
 	
@@ -213,6 +214,7 @@ bool file_open_map(void)
 		// clear selection
 		
 	select_clear();
+	undo_clear_all();
 	
 		// fill in the combos
 		
@@ -263,5 +265,7 @@ void file_close_map(void)
 	walk_view_models_close();
 	
     close_windows();
+	
+	undo_clear_all();
 }
 

@@ -213,6 +213,8 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		xml_get_attribute_color(tag,"rgb",&liq->col);
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
+		
+		xml_get_attribute_text(tag,"camera",liq->camera,name_str_len);
 	}
 
 		// physics
@@ -466,6 +468,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 
 			xml_get_attribute_3_coord_float(node_tag,"angle",&node->ang.x,&node->ang.y,&node->ang.z);
 			node->follow_camera=xml_get_attribute_boolean(node_tag,"follow_camera");
+			node->alpha=xml_get_attribute_float_default(node_tag,"alpha",1.0f);
 
 			xml_get_attribute_text(node_tag,"name",node->name,name_str_len);
 			node->event_id=xml_get_attribute_int_default(node_tag,"event_id",0);

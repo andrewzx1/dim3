@@ -342,6 +342,9 @@ void piece_create_node(void)
 	node->ang.z=0.0f;
 	node->name[0]=0x0;
 	node->event_id=0;
+	
+	node->follow_camera=FALSE;
+	node->alpha=1.0f;
 
 	for (i=0;i!=max_node_link;i++) {
 		node->link[i]=-1;

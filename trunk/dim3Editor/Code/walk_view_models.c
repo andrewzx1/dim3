@@ -412,6 +412,20 @@ bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,
 
 /* =======================================================
 
+      Get Rot Handle Position
+      
+======================================================= */
+
+int walk_view_model_rot_y_size(d3pnt *pnt,d3ang *ang,char *name)
+{
+	int				px[8],py[8],pz[8];
+	
+	if (!walk_view_model_click_select_size(name,pnt,ang,px,py,pz)) return(map_enlarge*5);
+	return((py[7]-py[0])+map_enlarge);
+}
+
+/* =======================================================
+
       Draw Model Select
       
 ======================================================= */

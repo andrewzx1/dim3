@@ -158,7 +158,7 @@ void render_opaque_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	texture=&map.textures[poly->txt_idx];
 	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-	if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
+	if (!gl_back_render_get_texture(poly->camera,&gl_id,NULL)) {
 		if (texture->frames[frame].combinemap.gl_id==-1) {
 			gl_id=texture->frames[frame].bitmap.gl_id;
 		}
@@ -191,7 +191,7 @@ void render_opaque_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *poly)
 
 	lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
 
-	if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
+	if (!gl_back_render_get_texture(poly->camera,&gl_id,NULL)) {
 		if (texture->frames[frame].combinemap.gl_id==-1) {
 			gl_id=texture->frames[frame].bitmap.gl_id;
 		}
@@ -210,6 +210,7 @@ void render_opaque_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *poly)
 void render_opaque_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int						frame;
+	float					alpha;
 	GLuint					gl_id;
 	texture_type			*texture;
 	view_light_list_type	light_list;
@@ -228,8 +229,8 @@ void render_opaque_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_poly_ty
 
 		// fix texture if any back rendering
 
-	if (gl_back_render_get_texture(poly->camera,&gl_id)) {
-		gl_shader_texture_override(gl_id);
+	if (gl_back_render_get_texture(poly->camera,&gl_id,&alpha)) {
+		gl_shader_texture_override(gl_id,alpha);
 	}
 
 		// draw polygon
