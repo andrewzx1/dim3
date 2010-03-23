@@ -42,7 +42,7 @@ extern setup_type				setup;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
 						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer,drag_handle_idx,
-						node_mode,area_col_type;
+						node_mode;
 bool					select_toggle_mode,dp_auto_texture,dp_liquid,dp_normals,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
@@ -144,8 +144,6 @@ char					piece_tooltip_str[piece_count][64]=
 void main_wind_control_tool(int tool_idx)
 {
 	short		menu_idx;
-	
-	undo_clear();
 	
 	switch (tool_idx) {
 	
@@ -1216,7 +1214,7 @@ void main_wind_set_2D_projection(editor_3D_view_setup *view_setup)
 	glLoadIdentity();
 }
 
-void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,float near_z,float far_z,float near_z_offset)
+void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int far_z,int near_z_offset)
 {
 	int				x_sz,y_sz;
 	float			ratio;
@@ -1226,12 +1224,12 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,float near_z,f
 	
 	if (main_wind_perspective==ps_perspective) {
 		ratio=(float)(view_setup->box.rx-view_setup->box.lx)/(float)(view_setup->box.by-view_setup->box.ty);
-		gluPerspective(view_setup->fov,ratio,near_z,far_z);
+		gluPerspective(view_setup->fov,ratio,(GLdouble)near_z,(GLdouble)far_z);
 	}
 	else {
 		x_sz=(view_setup->box.rx-view_setup->box.lx)*(map_enlarge>>2);
 		y_sz=(view_setup->box.by-view_setup->box.ty)*(map_enlarge>>2);
-		glOrtho((GLdouble)-x_sz,(GLdouble)x_sz,(GLdouble)-y_sz,(GLdouble)y_sz,near_z,far_z);
+		glOrtho((GLdouble)-x_sz,(GLdouble)x_sz,(GLdouble)-y_sz,(GLdouble)y_sz,(GLdouble)near_z,(GLdouble)far_z);
 	}
 	
 	glScalef(-1.0f,-1.0f,-1.0f);
@@ -1271,7 +1269,7 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,float near_z,f
 			
 	}
 	
-	glTranslatef(-view_setup->cpt.x,-view_setup->cpt.y,(-view_setup->cpt.z)+near_z_offset);
+	glTranslatef(-view_setup->cpt.x,-view_setup->cpt.y,((-view_setup->cpt.z)+near_z_offset));
 }
 
 /* =======================================================
@@ -2030,6 +2028,10 @@ void main_wind_tool_reset(void)
 	SetControlValue(tool_ctrl[12],(node_mode==node_mode_select)?1:0);
 	SetControlValue(tool_ctrl[13],(node_mode==node_mode_link)?1:0);
 	SetControlValue(tool_ctrl[14],(node_mode==node_mode_remove_link)?1:0);
+	
+		// grid mode
+		
+	SetBevelButtonMenuValue(tool_ctrl[10],(grid_mode+1));
 }
 
 void main_wind_tool_default(void)

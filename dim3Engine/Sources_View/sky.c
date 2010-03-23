@@ -294,7 +294,7 @@ void draw_sky_dome_panoramic(void)
 
 void draw_sky_dome_hemisphere_setup(void)
 {
-    int					i,n,radius;
+    int					i,n,radius,sz;
 	float				f_ty,f_by,f_ty2,f_by2,gx1,gx2,tgy,bgy;
 	float				*vertex_ptr,*uv_ptr;
 	double				top_reduce,bot_reduce,d_radius,
@@ -317,11 +317,14 @@ void draw_sky_dome_hemisphere_setup(void)
 	r_add=ANG_to_RAD*(360/20);
 
 		// construct VBO
+		
+	sz=(5*20)*4;
+	if (map.sky.dome_mirror) sz*=2;
 
-	vertex_ptr=view_bind_map_sky_vertex_object(((200*4)*(3+2)));
+	vertex_ptr=view_bind_map_sky_vertex_object((sz*(3+2)));
 	if (vertex_ptr==NULL) return;
 
-	uv_ptr=vertex_ptr+((200*4)*3);
+	uv_ptr=vertex_ptr+(sz*3);
 
 		// create the dome vertexes
 
@@ -385,7 +388,14 @@ void draw_sky_dome_hemisphere_setup(void)
 				*uv_ptr++=tgy;
 			}
 			else {
-				*vertex_ptr++=0.0f;			// squeeze tops down to triangles
+				*vertex_ptr++=0.0f;
+				*vertex_ptr++=f_ty;
+				*vertex_ptr++=0.0f;
+
+				*uv_ptr++=0.5f;
+				*uv_ptr++=0.01f;
+				
+				*vertex_ptr++=0.0f;
 				*vertex_ptr++=f_ty;
 				*vertex_ptr++=0.0f;
 
@@ -427,7 +437,14 @@ void draw_sky_dome_hemisphere_setup(void)
 					*uv_ptr++=tgy;
 				}
 				else {
-					*vertex_ptr++=0.0f;			// squeeze tops down to triangles
+					*vertex_ptr++=0.0f;
+					*vertex_ptr++=f_ty2;
+					*vertex_ptr++=0.0f;
+
+					*uv_ptr++=0.5f;
+					*uv_ptr++=0.01f;
+					
+					*vertex_ptr++=0.0f;
 					*vertex_ptr++=f_ty2;
 					*vertex_ptr++=0.0f;
 
@@ -449,7 +466,7 @@ void draw_sky_dome_hemisphere_setup(void)
 
 void draw_sky_dome_hemisphere(void)
 {
-    int					k,tick,txt_id,dome_cnt,trig_cnt;
+    int					k,tick,txt_id,dome_cnt;
 	float				txt_x_shift,txt_y_shift;
 	texture_type		*texture;
 
@@ -491,10 +508,10 @@ void draw_sky_dome_hemisphere(void)
 
 	view_bind_sky_vertex_object();
 
-		// quad and trig counts
+		// quad counts
 
-	dome_cnt=(20*4)*4;
-	trig_cnt=20*3;
+	dome_cnt=(5*20)*4;
+	if (map.sky.dome_mirror) dome_cnt*=2;
 
 		// draw the dome
 	
@@ -502,10 +519,9 @@ void draw_sky_dome_hemisphere(void)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((200*4)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((dome_cnt*3)*sizeof(float)));
 
 	glDrawArrays(GL_QUADS,0,dome_cnt);
-	glDrawArrays(GL_TRIANGLES,dome_cnt,trig_cnt);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

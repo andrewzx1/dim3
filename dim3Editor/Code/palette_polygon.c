@@ -82,8 +82,6 @@ void palette_polygon_load(void)
 	else {
 		liq=&map.liquid.liquids[main_idx];
 		
-		dialog_enable(palette_poly_wind,kMeshPolySettingCamera,0,FALSE);
-		
 		if (main_wind_uv_layer==uv_layer_normal) {
 			dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,liq->main_uv.x_offset);
 			dialog_set_float(palette_poly_wind,kMeshPolySettingOffY,0,liq->main_uv.y_offset);
@@ -99,6 +97,8 @@ void palette_polygon_load(void)
 		
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,liq->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,liq->y_shift);
+		
+		dialog_special_combo_fill_node(palette_poly_wind,kMeshPolySettingCamera,0,liq->camera);
 	}
 	
 	DrawControls(palette_poly_wind);
@@ -153,6 +153,8 @@ void palette_polygon_save(void)
 		
 		liq->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		liq->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
+		
+		dialog_special_combo_get_node(palette_poly_wind,kMeshPolySettingCamera,0,liq->camera,name_str_len);
 	}
 	
 	main_wind_draw();
@@ -188,12 +190,12 @@ void palette_polygon_open(int x,int y)
 	
 		// numeric only controls
 
-	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingOffX,0);
-	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingOffY,0);
-	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingSizeX,0);
-	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingSizeY,0);
-	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingShiftX,0);
-	palette_control_numeric_only(palette_poly_wind,kMeshPolySettingShiftY,0);
+	dialog_set_numeric_only(palette_poly_wind,kMeshPolySettingOffX,0);
+	dialog_set_numeric_only(palette_poly_wind,kMeshPolySettingOffY,0);
+	dialog_set_numeric_only(palette_poly_wind,kMeshPolySettingSizeX,0);
+	dialog_set_numeric_only(palette_poly_wind,kMeshPolySettingSizeY,0);
+	dialog_set_numeric_only(palette_poly_wind,kMeshPolySettingShiftX,0);
+	dialog_set_numeric_only(palette_poly_wind,kMeshPolySettingShiftY,0);
 
 		// show palette
 		

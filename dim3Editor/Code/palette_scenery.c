@@ -33,9 +33,6 @@ and can be sold or given away.
 
 #define kSceneryModelName					FOUR_CHAR_CODE('mnme')
 #define kSceneryAnimationName				FOUR_CHAR_CODE('anme')
-#define kSceneryAngleX						FOUR_CHAR_CODE('angx')
-#define kSceneryAngleY						FOUR_CHAR_CODE('angy')
-#define kSceneryAngleZ						FOUR_CHAR_CODE('angz')
 #define kSceneryResize						FOUR_CHAR_CODE('resz')
 #define kSceneryContactObject				FOUR_CHAR_CODE('cnct')
 #define kSceneryContactProjectile			FOUR_CHAR_CODE('cnpj')
@@ -69,9 +66,6 @@ void palette_scenery_load(void)
 	
 	dialog_special_combo_fill_model(palette_scenery_wind,kSceneryModelName,0,scenery->model_name);
 	dialog_set_text(palette_scenery_wind,kSceneryAnimationName,0,scenery->animation_name);
-	dialog_set_float(palette_scenery_wind,kSceneryAngleX,0,scenery->ang.x);
-	dialog_set_float(palette_scenery_wind,kSceneryAngleY,0,scenery->ang.y);
-	dialog_set_float(palette_scenery_wind,kSceneryAngleZ,0,scenery->ang.z);
 	dialog_set_float(palette_scenery_wind,kSceneryResize,0,scenery->resize);
 	dialog_set_boolean(palette_scenery_wind,kSceneryContactObject,0,scenery->contact_object_on);
 	dialog_set_boolean(palette_scenery_wind,kSceneryContactProjectile,0,scenery->contact_projectile_on);
@@ -100,9 +94,6 @@ void palette_scenery_save(void)
 
 	dialog_special_combo_get_model(palette_scenery_wind,kSceneryModelName,0,scenery->model_name,name_str_len);
 	dialog_get_text(palette_scenery_wind,kSceneryAnimationName,0,scenery->animation_name,name_str_len);
-	scenery->ang.x=dialog_get_float(palette_scenery_wind,kSceneryAngleX,0);
-	scenery->ang.y=dialog_get_float(palette_scenery_wind,kSceneryAngleY,0);
-	scenery->ang.z=dialog_get_float(palette_scenery_wind,kSceneryAngleZ,0);
 	scenery->resize=dialog_get_float(palette_scenery_wind,kSceneryResize,0);
 	scenery->contact_object_on=dialog_get_boolean(palette_scenery_wind,kSceneryContactObject,0);
 	scenery->contact_projectile_on=dialog_get_boolean(palette_scenery_wind,kSceneryContactProjectile,0);
@@ -169,13 +160,10 @@ void palette_scenery_open(int x,int y)
 	
 		// numeric only controls
 
-	palette_control_numeric_only(palette_scenery_wind,kSceneryAngleX,0);
-	palette_control_numeric_only(palette_scenery_wind,kSceneryAngleY,0);
-	palette_control_numeric_only(palette_scenery_wind,kSceneryAngleZ,0);
-	palette_control_numeric_only(palette_scenery_wind,kSceneryResize,0);
+	dialog_set_numeric_only(palette_scenery_wind,kSceneryResize,0);
 	
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
-		palette_control_numeric_only(palette_scenery_wind,kSceneryFrame,n);
+		dialog_set_numeric_only(palette_scenery_wind,kSceneryFrame,n);
 	}
 	
 		// show palette

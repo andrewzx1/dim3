@@ -159,15 +159,15 @@ void info_status_line_draw(void)
 				break;
 		
 			case node_piece:
-				sprintf(txt,"Node: %d/%d %s (%d,%d,%d)",main_idx,map.nnode,map.nodes[main_idx].name,map.nodes[main_idx].pnt.x,map.nodes[main_idx].pnt.y,map.nodes[main_idx].pnt.z);
+				sprintf(txt,"Node: %d/%d %s (%d,%d,%d) (%d,%d,%d)",main_idx,map.nnode,map.nodes[main_idx].name,map.nodes[main_idx].pnt.x,map.nodes[main_idx].pnt.y,map.nodes[main_idx].pnt.z,(int)map.nodes[main_idx].ang.x,(int)map.nodes[main_idx].ang.y,(int)map.nodes[main_idx].ang.z);
 				break;
 				
 			case spot_piece:
-				sprintf(txt,"Spot: %d/%d %s (%d,%d,%d)",main_idx,map.nspot,map.spots[main_idx].name,map.spots[main_idx].pnt.x,map.spots[main_idx].pnt.y,map.spots[main_idx].pnt.z);
+				sprintf(txt,"Spot: %d/%d %s (%d,%d,%d) (%d)",main_idx,map.nspot,map.spots[main_idx].name,map.spots[main_idx].pnt.x,map.spots[main_idx].pnt.y,map.spots[main_idx].pnt.z,(int)map.spots[main_idx].ang.y);
 				break;
 				
 			case scenery_piece:
-				sprintf(txt,"Scenery: %d/%d %s (%d,%d,%d)",main_idx,map.nscenery,map.sceneries[main_idx].model_name,map.sceneries[main_idx].pnt.x,map.sceneries[main_idx].pnt.y,map.sceneries[main_idx].pnt.z);
+				sprintf(txt,"Scenery: %d/%d %s (%d,%d,%d) (%d%d,%d)",main_idx,map.nscenery,map.sceneries[main_idx].model_name,map.sceneries[main_idx].pnt.x,map.sceneries[main_idx].pnt.y,map.sceneries[main_idx].pnt.z,(int)map.sceneries[main_idx].ang.x,(int)map.sceneries[main_idx].ang.y,(int)map.sceneries[main_idx].ang.z);
 				break;
 				
 			case light_piece:

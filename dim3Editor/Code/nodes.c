@@ -51,7 +51,7 @@ int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_p
 	node_type		*node;
 	
 	node_idx=-1;
-	hit_z=100000;
+	hit_z=walk_view_max_z_click;
 	
 	node=map.nodes;
 
@@ -112,77 +112,56 @@ bool node_link_has_link(int node_idx,int link_node_idx)
 	return(FALSE);
 }
 
-bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
+void node_link_click(int node_idx)
 {
-	int			n,node_idx,next_idx,k1,k2,sz;
-	d3pnt		click_pt;
+	int			n,org_node_idx,k1,k2,sz;
 	
-		// is a node selected?
+		// get original node
 		
-	node_idx=node_link_is_node_link_selected();
-	if (node_idx==-1) return(FALSE);
+	org_node_idx=node_link_is_node_link_selected();
+	if (org_node_idx==-1) return;
 	
-		// are we clicking on a new node?
-		
-	click_pt.x=pt->x-view_setup->box.lx;
-	click_pt.y=pt->y-view_setup->box.ty;
-		
-	next_idx=node_link_find_node_by_point(view_setup,&click_pt);
-   if ((next_idx==node_idx) || (next_idx==-1)) return(FALSE);
-		
 		// remove link mode
 		
 	if (node_mode==node_mode_remove_link) {
 			
 		for (n=0;n!=max_node_link;n++) {
 		
-			if (map.nodes[node_idx].link[n]==next_idx) {
+			if (map.nodes[org_node_idx].link[n]==node_idx) {
+				sz=(max_node_link-n)-1;
+				if (sz>0) memmove(&map.nodes[org_node_idx].link[n],&map.nodes[org_node_idx].link[n+1],(sz*sizeof(short)));
+				map.nodes[org_node_idx].link[max_node_link-1]=-1;
+			}
+			
+			if (map.nodes[node_idx].link[n]==org_node_idx) {
 				sz=(max_node_link-n)-1;
 				if (sz>0) memmove(&map.nodes[node_idx].link[n],&map.nodes[node_idx].link[n+1],(sz*sizeof(short)));
 				map.nodes[node_idx].link[max_node_link-1]=-1;
 			}
-			
-			if (map.nodes[next_idx].link[n]==node_idx) {
-				sz=(max_node_link-n)-1;
-				if (sz>0) memmove(&map.nodes[next_idx].link[n],&map.nodes[next_idx].link[n+1],(sz*sizeof(short)));
-				map.nodes[next_idx].link[max_node_link-1]=-1;
-			}
 		}
 		
-		select_clear();
-		select_add(node_piece,next_idx,-1);		// move selection to next node
-		
-		main_wind_tool_fill_node_combo();
-		main_wind_draw();
-		
-		return(TRUE);
+		return;
 	}
 	
 		// add link mode
 		
 	if (node_mode==node_mode_link) {
 		
-		k1=node_link_get_free_link(node_idx);
-		k2=node_link_get_free_link(next_idx);
+		k1=node_link_get_free_link(org_node_idx);
+		k2=node_link_get_free_link(node_idx);
 		
 		if ((k1==-1) || (k2==-1)) {
 			dialog_alert("Can not connect nodes","You've reached the maximum number of connected nodes for this node.");
-			return(TRUE);
+			return;
 		}
 		
-		if (!node_link_has_link(node_idx,next_idx)) map.nodes[node_idx].link[k1]=next_idx;
-		if (!node_link_has_link(next_idx,node_idx)) map.nodes[next_idx].link[k2]=node_idx;
+		if (!node_link_has_link(org_node_idx,node_idx)) map.nodes[org_node_idx].link[k1]=node_idx;
+		if (!node_link_has_link(node_idx,org_node_idx)) map.nodes[node_idx].link[k2]=org_node_idx;
 		
-		select_clear();
-		select_add(node_piece,next_idx,-1);		// move selection to next node
-		
-		main_wind_tool_fill_node_combo();
-		main_wind_draw();
-		
-		return(TRUE);
+		return;
 	}
 	
-	return(FALSE);
+	return;
 }
 
 /* =======================================================

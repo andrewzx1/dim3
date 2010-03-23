@@ -1731,9 +1731,27 @@ bool light_maps_create_process(char *err_str)
 
 bool light_maps_create(char *err_str)
 {
-	int				npoly;
+	int				n,npoly;
 	bool			ok;
 	
+		// see if there are any lights
+		
+	ok=FALSE;
+	
+	for (n=0;n!=map.nlight;n++) {
+		if (map.lights[n].light_map) {
+			ok=TRUE;
+			break;
+		}
+	}
+	
+	if (!ok) {
+		strcpy(err_str,"There are no map lights set to generate light maps in this map.");
+		return(FALSE);
+	}
+	
+		// generate the light maps
+		
 	npoly=light_map_get_poly_count();
 	
 	dialog_progress_start("Generating Light Maps...",(3+(max_light_map_textures*3)+((npoly/20)*2)));

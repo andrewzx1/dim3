@@ -36,9 +36,10 @@ extern void menu_set_perspective_check(int perspective);
 extern void menu_set_uv_check(int uv_layer);
 extern bool menu_save_changes_dialog(void);
 
-extern void undo_clear(void);
-extern void undo_save(void);
-extern void undo_run(void);
+extern void undo_initialize(void);
+extern void undo_clear_all(void);
+extern void undo_push(void);
+extern void undo_pull(void);
 
 //
 // texture palette
@@ -50,7 +51,6 @@ extern void texture_palette_put_selected_texture(int txt_idx);
 extern void texture_palette_draw(void);
 extern void texture_palette_reset(void);
 extern void texture_palette_click(d3pnt *pnt,bool dbl_click);
-extern void palette_control_numeric_only(WindowRef wind,int sig,int id);
 
 //
 // info status line
@@ -81,7 +81,7 @@ extern void main_wind_set_perspective(int perspective);
 extern void main_wind_set_uv_layer(int uv_layer);
 extern void main_wind_rotate_view(void);
 extern void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background);
-extern void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,float near_z,float far_z,float near_z_offset);
+extern void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int far_z,int near_z_offset);
 extern void main_wind_draw(void);
 extern void main_wind_center_position_in_map(void);
 extern bool main_wind_click_check_box(d3pnt *pt,d3rect *box);

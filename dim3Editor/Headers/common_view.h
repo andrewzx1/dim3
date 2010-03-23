@@ -178,5 +178,5 @@ extern void map_optimize(void);
 // node routines
 //
 
-extern bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt);
+extern void node_link_click(int node_idx);
 extern void node_path_rebuild(void);

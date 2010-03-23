@@ -30,129 +30,439 @@ and can be sold or given away.
 
 extern map_type						map;
 
-int									undo_type,undo_nmesh;
-map_mesh_type						*undo_meshes=NULL;
+// supergumba -- move this
+
+#define max_undo_level				8
+
+typedef struct		{
+						int						nmesh,nliquid,
+												nspot,nscenery,nnode,
+												nlight,nsound,nparticle;
+						map_mesh_type			*meshes;
+						map_liquid_type			*liquids;
+						spot_type				*spots;
+						map_scenery_type		*sceneries;
+						node_type				*nodes;
+						map_light_type			*lights;
+						map_sound_type			*sounds;
+						map_particle_type		*particles;
+					} undo_type;
+
+int					undo_level=0;
+undo_type			undos[max_undo_level];
 
 /* =======================================================
 
-      Map Undo
+      Initialize Undo
       
 ======================================================= */
 
-void undo_clear(void)
+void undo_initialize(void)
+{
+	int			n;
+	undo_type	*undo;
+	
+	undo_level=0;
+	
+	undo=undos;
+	
+	for (n=0;n!=max_undo_level;n++) {
+		undo->nmesh=0;
+		undo->nliquid=0;
+		undo->nspot=0;
+		undo->nscenery=0;
+		undo->nnode=0;
+		undo->nlight=0;
+		undo->nsound=0;
+		undo->nparticle=0;
+
+		undo->meshes=NULL;
+		undo->liquids=NULL;
+		undo->spots=NULL;
+		undo->sceneries=NULL;
+		undo->nodes=NULL;
+		undo->lights=NULL;
+		undo->sounds=NULL;
+		undo->particles=NULL;
+	}
+}
+
+/* =======================================================
+
+      Clear Undos
+      
+======================================================= */
+
+void undo_clear(int idx)
 {
 	int				n;
+	undo_type		*undo;
 	map_mesh_type	*mesh;
 	
-		// disable menu item
+	undo=&undos[idx];
+	
+		// clear meshes
+	
+	if (undo->meshes!=NULL) {
+	
+		mesh=undo->meshes;
 		
-	DisableMenuItem(GetMenuRef(app_menu_edit),1);
-	
-		// clear old backup
-	
-	if (undo_meshes==NULL) return;
-	
-	mesh=undo_meshes;
-	
-	for (n=0;n!=undo_nmesh;n++) {
-		if (mesh->vertexes!=NULL) free(mesh->vertexes);
-		if (mesh->polys!=NULL) free(mesh->polys);
+		for (n=0;n!=undo->nmesh;n++) {
+			if (mesh->vertexes!=NULL) free(mesh->vertexes);
+			if (mesh->polys!=NULL) free(mesh->polys);
+			
+			mesh++;
+		}
 		
-		mesh++;
+		free(undo->meshes);
+		
+		undo->nmesh=0;
+		undo->meshes=NULL;
 	}
 	
-	free(undo_meshes);
-	undo_meshes=NULL;
+		// clear spots, scenery, nodes
+		
+	if (undo->spots!=NULL) {
+		free(undo->spots);
+		undo->nspot=0;
+		undo->spots=NULL;
+	}
+	
+	if (undo->sceneries!=NULL) {
+		free(undo->sceneries);
+		undo->nscenery=0;
+		undo->sceneries=NULL;
+	}
+	
+	if (undo->nodes!=NULL) {
+		free(undo->nodes);
+		undo->nnode=0;
+		undo->nodes=NULL;
+	}
 }
 
-void undo_save(void)
+void undo_clear_all(void)
+{
+	int			n;
+	
+	for (n=0;n!=max_undo_level;n++) {
+		undo_clear(n);
+	}
+	
+	DisableMenuItem(GetMenuRef(app_menu_edit),1);
+}
+
+/* =======================================================
+
+      Copy Undos
+      
+======================================================= */
+
+void undo_copy(int srce_idx,int dest_idx)
+{
+	undo_type		*srce_undo,*dest_undo;
+	
+	srce_undo=&undos[srce_idx];
+	dest_undo=&undos[dest_idx];
+	
+	dest_undo->nmesh=srce_undo->nmesh;
+	dest_undo->meshes=srce_undo->meshes;
+	
+	dest_undo->nliquid=srce_undo->nliquid;
+	dest_undo->liquids=srce_undo->liquids;
+	
+	dest_undo->nspot=srce_undo->nspot;
+	dest_undo->spots=srce_undo->spots;
+
+	dest_undo->nscenery=srce_undo->nscenery;
+	dest_undo->sceneries=srce_undo->sceneries;
+
+	dest_undo->nnode=srce_undo->nnode;
+	dest_undo->nodes=srce_undo->nodes;
+
+	dest_undo->nlight=srce_undo->nlight;
+	dest_undo->lights=srce_undo->lights;
+
+	dest_undo->nsound=srce_undo->nsound;
+	dest_undo->sounds=srce_undo->sounds;
+
+	dest_undo->nparticle=srce_undo->nparticle;
+	dest_undo->particles=srce_undo->particles;
+}
+
+/* =======================================================
+
+      Push Undo
+      
+======================================================= */
+
+bool undo_push_internal(void)
 {
 	int				n,nmesh;
+	undo_type		*undo;
 	map_mesh_type	*org_mesh,*mesh;
 	
-	undo_clear();
+		// clear last undo
 	
-		// save all meshes in portal
+	undo_clear(max_undo_level-1);
+	
+		// push undo stack down
+		
+	for (n=(max_undo_level-2);n>=0;n--) {
+		undo_copy(n,(n+1));
+	}
+	
+		// start with clear
+		
+	undo=&undos[0];
+	
+	undo->nmesh=0;
+	undo->meshes=NULL;
+	
+	undo->nliquid=0;
+	undo->liquids=NULL;
+	
+	undo->nspot=0;
+	undo->spots=NULL;
+	
+	undo->nscenery=0;
+	undo->sceneries=NULL;
+	
+	undo->nnode=0;
+	undo->nodes=NULL;
+	
+	undo->nlight=0;
+	undo->lights=NULL;
+
+	undo->nsound=0;
+	undo->sounds=NULL;
+
+	undo->nparticle=0;
+	undo->particles=NULL;
+	
+		// save all meshes
 		
 	nmesh=map.mesh.nmesh;
-	if (nmesh==0) return;
+	if (nmesh!=0) {
 	
-	undo_meshes=(map_mesh_type*)malloc(nmesh*sizeof(map_mesh_type));
-	if (undo_meshes==NULL) return;
-	
-	org_mesh=map.mesh.meshes;
-	mesh=undo_meshes;
-	
-	for (n=0;n!=nmesh;n++) {
-	
-		memmove(mesh,org_mesh,sizeof(map_mesh_type));
+		undo->meshes=(map_mesh_type*)malloc(nmesh*sizeof(map_mesh_type));
+		if (undo->meshes==NULL) return(FALSE);
+				
+		org_mesh=map.mesh.meshes;
+		mesh=undo->meshes;
 		
-			// need to dup the vertexes and polygons
+		for (n=0;n!=nmesh;n++) {
+		
+			memmove(mesh,org_mesh,sizeof(map_mesh_type));
 			
-		mesh->vertexes=(d3pnt*)malloc(org_mesh->nvertex*sizeof(d3pnt));
-		if (mesh->vertexes==NULL) {
-			free(undo_meshes);
-			undo_meshes=NULL;
+				// need to dup the vertexes and polygons
+				
+			mesh->vertexes=(d3pnt*)malloc(org_mesh->nvertex*sizeof(d3pnt));
+			if (mesh->vertexes==NULL) {
+				free(undo->meshes);
+				undo->meshes=NULL;
+				return(FALSE);
+			}
+			
+			memmove(mesh->vertexes,org_mesh->vertexes,(org_mesh->nvertex*sizeof(d3pnt)));
+			
+			mesh->polys=(map_mesh_poly_type*)malloc(org_mesh->npoly*sizeof(map_mesh_poly_type));
+			if (mesh->polys==NULL) {
+				free(undo->meshes);
+				undo->meshes=NULL;
+				return(FALSE);
+			}
+			
+			memmove(mesh->polys,org_mesh->polys,(org_mesh->npoly*sizeof(map_mesh_poly_type)));
+						
+			org_mesh++;
+			mesh++;
 		}
 		
-		memmove(mesh->vertexes,org_mesh->vertexes,(org_mesh->nvertex*sizeof(d3pnt)));
-		
-		mesh->polys=(map_mesh_poly_type*)malloc(org_mesh->npoly*sizeof(map_mesh_poly_type));
-		if (mesh->polys==NULL) {
-			free(undo_meshes);
-			undo_meshes=NULL;
-		}
-		
-		memmove(mesh->polys,org_mesh->polys,(org_mesh->npoly*sizeof(map_mesh_poly_type)));
-					
-		org_mesh++;
-		mesh++;
+		undo->nmesh=nmesh;
 	}
 	
-	undo_nmesh=nmesh;
-
-		// enable undo
+		// liquids
 		
-	EnableMenuItem(GetMenuRef(app_menu_edit),1);
+	if (map.liquid.nliquid!=0) {
+		undo->liquids=(map_liquid_type*)malloc(map.liquid.nliquid*sizeof(map_liquid_type));
+		if (undo->liquids==NULL) return(FALSE);
+		
+		memmove(undo->liquids,map.liquid.liquids,(map.liquid.nliquid*sizeof(map_liquid_type)));
+		undo->nliquid=map.liquid.nliquid;
+	}
+	
+		// save spots, scenery,nodes, lights, sounds, and particles
+		
+	if (map.nspot!=0) {
+		undo->spots=(spot_type*)malloc(map.nspot*sizeof(spot_type));
+		if (undo->spots==NULL) return(FALSE);
+		
+		memmove(undo->spots,map.spots,(map.nspot*sizeof(spot_type)));
+		undo->nspot=map.nspot;
+	}
+			
+	if (map.nscenery!=0) {
+		undo->sceneries=(map_scenery_type*)malloc(map.nscenery*sizeof(map_scenery_type));
+		if (undo->sceneries==NULL) return(FALSE);
+		
+		memmove(undo->sceneries,map.sceneries,(map.nscenery*sizeof(map_scenery_type)));
+		undo->nscenery=map.nscenery;
+	}
+	
+	if (map.nnode!=0) {
+		undo->nodes=(node_type*)malloc(map.nnode*sizeof(node_type));
+		if (undo->nodes==NULL) return(FALSE);
+		
+		memmove(undo->nodes,map.nodes,(map.nnode*sizeof(node_type)));
+		undo->nnode=map.nnode;
+	}
+
+	if (map.nlight!=0) {
+		undo->lights=(map_light_type*)malloc(map.nlight*sizeof(map_light_type));
+		if (undo->lights==NULL) return(FALSE);
+		
+		memmove(undo->lights,map.lights,(map.nlight*sizeof(map_light_type)));
+		undo->nlight=map.nlight;
+	}
+
+	if (map.nsound!=0) {
+		undo->sounds=(map_sound_type*)malloc(map.nsound*sizeof(map_sound_type));
+		if (undo->sounds==NULL) return(FALSE);
+		
+		memmove(undo->sounds,map.sounds,(map.nsound*sizeof(map_sound_type)));
+		undo->nsound=map.nsound;
+	}
+
+	if (map.nparticle!=0) {
+		undo->particles=(map_particle_type*)malloc(map.nparticle*sizeof(map_particle_type));
+		if (undo->particles==NULL) return(FALSE);
+		
+		memmove(undo->particles,map.particles,(map.nparticle*sizeof(map_particle_type)));
+		undo->nparticle=map.nparticle;
+	}
+	
+		// move up undo level
+		
+	undo_level++;
+	if (undo_level>max_undo_level) undo_level=max_undo_level;
+	
+	return(TRUE);
 }
 
-void undo_restore(void)
+void undo_push(void)
+{
+	if (undo_push_internal()) {
+		EnableMenuItem(GetMenuRef(app_menu_edit),1);
+		return;
+	}
+	
+	dialog_alert("Undo","Not enough memory to setup undo");
+	undo_clear_all();
+	
+	DisableMenuItem(GetMenuRef(app_menu_edit),1);
+}
+
+/* =======================================================
+
+      Push Undo
+      
+======================================================= */
+
+void undo_pull(void)
 {
 	int				n;
+	undo_type		*undo;
 	map_mesh_type	*org_mesh,*mesh;
 	
-		// restore all meshes in portal
+	if (undo_level==0) return;
+	
+	undo=&undos[0];
+	
+		// restore all meshes
 		
-	if (undo_nmesh==0) return;
-	
-	mesh=map.mesh.meshes;
-	org_mesh=undo_meshes;
-	
-	for (n=0;n!=undo_nmesh;n++) {
-	
-			// just copy over from backup mesh
-			// and then null out the pointers
-			
-		memmove(mesh,org_mesh,sizeof(map_mesh_type));
+	if (undo->nmesh!=0) {
+		mesh=map.mesh.meshes;
+		org_mesh=undo->meshes;
+		
+		for (n=0;n!=undo->nmesh;n++) {
+		
+				// just copy over from backup mesh
+				// and then null out the pointers
+				// so close doesn't erase them
+				
+			if (mesh->vertexes!=NULL) free(mesh->vertexes);
+			if (mesh->polys!=NULL) free(mesh->polys);
+				
+			memmove(mesh,org_mesh,sizeof(map_mesh_type));
 
-		org_mesh->vertexes=NULL;
-		org_mesh->polys=NULL;
-					
-		org_mesh++;
-		mesh++;
+			org_mesh->vertexes=NULL;
+			org_mesh->polys=NULL;
+						
+			org_mesh++;
+			mesh++;
+		}
+		
+		map.mesh.nmesh=undo->nmesh;
 	}
 	
-	map.mesh.nmesh=undo_nmesh;
-
-		// clear undo
+		// restore liquids
 		
-	undo_clear();
-}
+	if (undo->nliquid!=0) {
+		map.liquid.nliquid=undo->nliquid;
+		memmove(map.liquid.liquids,undo->liquids,(undo->nliquid*sizeof(map_liquid_type)));
+	}
+	
+		// restore spots, scenery, nodes, lights, sounds, and particles
+		
+	if (undo->nspot!=0) {
+		map.nspot=undo->nspot;
+		memmove(map.spots,undo->spots,(undo->nspot*sizeof(spot_type)));
+	}
+	
+	if (undo->nscenery!=0) {
+		map.nscenery=undo->nscenery;
+		memmove(map.sceneries,undo->sceneries,(undo->nscenery*sizeof(map_scenery_type)));
+	}
+	
+	if (undo->nnode!=0) {
+		map.nnode=undo->nnode;
+		memmove(map.nodes,undo->nodes,(undo->nnode*sizeof(node_type)));
+	}
 
-void undo_run(void)
-{
-	undo_restore();
+	if (undo->nlight!=0) {
+		map.nlight=undo->nlight;
+		memmove(map.lights,undo->lights,(undo->nlight*sizeof(spot_type)));
+	}
+
+	if (undo->nsound!=0) {
+		map.nsound=undo->nsound;
+		memmove(map.sounds,undo->sounds,(undo->nsound*sizeof(spot_type)));
+	}
+
+	if (undo->nparticle!=0) {
+		map.nparticle=undo->nparticle;
+		memmove(map.particles,undo->particles,(undo->nparticle*sizeof(spot_type)));
+	}
+	
+		// clear level
+		// and move stack up
+		
+	undo_clear(0);
+	
+	for (n=1;n!=max_undo_level;n++) {
+		undo_copy(n,(n-1));
+	}
+	
+		// move down undo level
+		
+	undo_level--;
+	if (undo_level==0) {
+		DisableMenuItem(GetMenuRef(app_menu_edit),1);
+	}
+	
+		// redraw windows
+		
 	palette_reset();
 	main_wind_draw();
 }
-

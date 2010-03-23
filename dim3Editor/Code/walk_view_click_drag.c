@@ -118,7 +118,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		// are we clicking in the grow handles?
 		
 	handle_idx=-1;
-	hit_z=100000;
+	hit_z=walk_view_max_z_click;
 
 	sz=(int)(walk_view_handle_size/2);
 	
@@ -147,7 +147,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		
     if (!os_button_down()) return(FALSE);
 	
-	undo_save();
+	undo_push();
 	
 		// hilite the drag handle
 		
@@ -302,7 +302,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		
     if (!os_button_down()) return(FALSE);
 	
-	undo_save();
+	undo_push();
 	
 		// save old vertexes
 		
@@ -437,7 +437,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 		
     if (!os_button_down()) return(FALSE);
 	
-	undo_save();
+	undo_push();
 			
 	first_drag=TRUE;
 	
@@ -530,7 +530,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	if (mesh->flag.lock_move) return(FALSE);
 		
 	vertex_idx=-1;
-	hit_z=100000;
+	hit_z=walk_view_max_z_click;
 
 	sz=(int)(walk_view_handle_size/2);
 	
@@ -561,7 +561,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
     if (!os_button_down()) return(FALSE);
 	
-	undo_save();
+	undo_push();
 	
 		// turn on hilite
 		
@@ -658,7 +658,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 	walk_view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
 		
 	vertex_idx=-1;
-	hit_z=100000;
+	hit_z=walk_view_max_z_click;
 
 	sz=(int)(walk_view_handle_size/2);
 	
@@ -685,7 +685,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 	
     if (!os_button_down()) return(FALSE);
 	
-	undo_save();
+	undo_push();
 
 	first_drag=TRUE;
 	
@@ -774,103 +774,6 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 
 /* =======================================================
 
-      Drag Item
-      
-======================================================= */
-
-bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
-{
-	int						x,y,mx,my,mz,xadd,zadd,yadd,
-							type,main_idx,sub_idx;
-	d3pnt					*pnt,old_pt,old_pnt,mpt;
-	bool					first_drag;
-	
-    if (select_count()!=1) return(FALSE);
-	
-	select_get(0,&type,&main_idx,&sub_idx);
-	
-		// get item pos
-		
-	pnt=NULL;
-	
-	switch (type) {
-		case node_piece:
-			pnt=&map.nodes[main_idx].pnt;
-			break;
-		case spot_piece:
-			pnt=&map.spots[main_idx].pnt;
-			break;
-		case scenery_piece:
-			pnt=&map.sceneries[main_idx].pnt;
-			break;
-		case light_piece:
-			pnt=&map.lights[main_idx].pnt;
-			break;
-		case sound_piece:
-			pnt=&map.sounds[main_idx].pnt;
-			break;
-		case particle_piece:
-			pnt=&map.particles[main_idx].pnt;
-			break;
-	}
-	
-	if (pnt==NULL) return(FALSE);
-		
-		// drag item
-	
-    if (!os_button_down()) return(FALSE);
-
-	first_drag=TRUE;
-	
-	memmove(&old_pt,pt,sizeof(d3pnt));
-	memmove(&old_pnt,pnt,sizeof(d3pnt));
-	
-	mx=my=mz=0;
-	
-	while (!os_track_mouse_location(pt,&view_setup->box)) {
-		
-		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
-		
-		x=old_pt.x-pt->x;
-		y=old_pt.y-pt->y;
-		
-		memmove(&old_pt,pt,sizeof(d3pnt));
-		
-			// turn on drag cursor
-			
-		if (first_drag) {
-			os_set_drag_cursor();
-			first_drag=FALSE;
-		}
-		
-			// get movement
-
-		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
-			
-		mx+=xadd;
-		my+=yadd;
-		mz+=zadd;
-		
-		mpt.x=mx;
-		mpt.y=my;
-		mpt.z=mz;
-		
-		walk_view_click_grid(&mpt);
-		
-		pnt->x=old_pnt.x+mpt.x;
-		pnt->y=old_pnt.y+mpt.y;
-		pnt->z=old_pnt.z+mpt.z;
-
-        main_wind_draw();
-	}
-	
-	os_set_arrow_cursor();
-	
-	return(!first_drag);
-}
-
-/* =======================================================
-
       Drag Liquid
       
 ======================================================= */
@@ -895,7 +798,7 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
     if (!os_button_down()) return(FALSE);
 	
-	undo_save();
+	undo_push();
 
 	first_drag=TRUE;
 	
@@ -948,6 +851,105 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		liq->y=old_y+mpt.y;
 
 		if (dp_auto_texture) map_liquid_reset_uv(&map,main_idx);
+
+        main_wind_draw();
+	}
+	
+	os_set_arrow_cursor();
+	
+	return(!first_drag);
+}
+
+/* =======================================================
+
+      Drag Item
+      
+======================================================= */
+
+bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+{
+	int						x,y,mx,my,mz,xadd,zadd,yadd,
+							type,main_idx,sub_idx;
+	d3pnt					*pnt,old_pt,old_pnt,mpt;
+	bool					first_drag;
+	
+    if (select_count()!=1) return(FALSE);
+	
+	select_get(0,&type,&main_idx,&sub_idx);
+	
+		// get item pos
+		
+	pnt=NULL;
+	
+	switch (type) {
+		case node_piece:
+			pnt=&map.nodes[main_idx].pnt;
+			break;
+		case spot_piece:
+			pnt=&map.spots[main_idx].pnt;
+			break;
+		case scenery_piece:
+			pnt=&map.sceneries[main_idx].pnt;
+			break;
+		case light_piece:
+			pnt=&map.lights[main_idx].pnt;
+			break;
+		case sound_piece:
+			pnt=&map.sounds[main_idx].pnt;
+			break;
+		case particle_piece:
+			pnt=&map.particles[main_idx].pnt;
+			break;
+	}
+	
+	if (pnt==NULL) return(FALSE);
+		
+		// drag item
+	
+    if (!os_button_down()) return(FALSE);
+	
+	undo_push();
+
+	first_drag=TRUE;
+	
+	memmove(&old_pt,pt,sizeof(d3pnt));
+	memmove(&old_pnt,pnt,sizeof(d3pnt));
+	
+	mx=my=mz=0;
+	
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
+		
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
+		
+			// turn on drag cursor
+			
+		if (first_drag) {
+			os_set_drag_cursor();
+			first_drag=FALSE;
+		}
+		
+			// get movement
+
+		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+			
+		mx+=xadd;
+		my+=yadd;
+		mz+=zadd;
+		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
+		pnt->x=old_pnt.x+mpt.x;
+		pnt->y=old_pnt.y+mpt.y;
+		pnt->z=old_pnt.z+mpt.z;
 
         main_wind_draw();
 	}

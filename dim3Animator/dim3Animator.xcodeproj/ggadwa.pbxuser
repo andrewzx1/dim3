@@ -129,12 +129,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 290061366;
-			PBXWorkspaceStateSaveDate = 290061366;
+			PBXPerProjectTemplateStateSaveDate = 290994595;
+			PBXWorkspaceStateSaveDate = 290994595;
 		};
 		perUserProjectItems = {
-			2645C57C1143732100E34A38 /* PBXTextBookmark */ = 2645C57C1143732100E34A38 /* PBXTextBookmark */;
-			26EA3B771149FC9400504533 /* PBXTextBookmark */ = 26EA3B771149FC9400504533 /* PBXTextBookmark */;
+			268BEBF011556F67001A0B3E /* PBXTextBookmark */ = 268BEBF011556F67001A0B3E /* PBXTextBookmark */;
+			268BEF26115839C2001A0B3E /* PBXTextBookmark */ = 268BEF26115839C2001A0B3E /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -270,7 +270,12 @@
 			sepNavWindowFrame = "{{493, 173}, {1041, 747}}";
 		};
 	};
-	2645C57C1143732100E34A38 /* PBXTextBookmark */ = {
+	266C5AA610523868006FD9D1 /* Tool Normals.icns */ = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{15, 265}, {1078, 758}}";
+		};
+	};
+	268BEBF011556F67001A0B3E /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -280,10 +285,15 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
-	266C5AA610523868006FD9D1 /* Tool Normals.icns */ = {
-		uiCtxt = {
-			sepNavWindowFrame = "{{15, 265}, {1078, 758}}";
-		};
+	268BEF26115839C2001A0B3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	26A59FA40F327FB5007C6209 /* mesh_list.c */ = {
 		uiCtxt = {
@@ -317,16 +327,6 @@
 			sepNavWindowFrame = "{{498, 115}, {1041, 747}}";
 		};
 	};
-	26EA3B771149FC9400504533 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	F503D2560981A35B00DEDC74 /* draw_model.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 3185}}";
@@ -337,9 +337,9 @@
 	};
 	F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4160}}";
-			sepNavSelRange = "{1472, 0}";
-			sepNavVisRange = "{1065, 1072}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4290}}";
+			sepNavSelRange = "{2446, 378}";
+			sepNavVisRange = "{2313, 975}";
 			sepNavWindowFrame = "{{517, 91}, {1041, 747}}";
 		};
 	};

@@ -102,12 +102,6 @@ void walk_view_shutdown(void)
 
 void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick)
 {
-		// node connection changes
-		// override some scrolling keys so we
-		// need to check them first
-		
-	if (node_link_click(view_setup,pt)) return;
-
        // scrolling and movement keys
         
     if (main_wind_space_down()) {

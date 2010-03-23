@@ -118,8 +118,8 @@ void palette_particle_open(int x,int y)
 
 		// numeric only controls
 
-	palette_control_numeric_only(palette_particle_wind,kParticleSpawnTick,0);
-	palette_control_numeric_only(palette_particle_wind,kParticleSlopTick,0);
+	dialog_set_numeric_only(palette_particle_wind,kParticleSpawnTick,0);
+	dialog_set_numeric_only(palette_particle_wind,kParticleSlopTick,0);
 
 		// show palette
 		

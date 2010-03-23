@@ -174,11 +174,11 @@ void palette_liquid_open(int x,int y)
 
 		// numeric only controls
 
-	palette_control_numeric_only(palette_liquid_wind,kLiquidHarm,0);
-	palette_control_numeric_only(palette_liquid_wind,kLiquidDrownTick,0);
-	palette_control_numeric_only(palette_liquid_wind,kLiquidDrownHarm,0);
-	palette_control_numeric_only(palette_liquid_wind,kLiquidTintAlpha,0);
-	palette_control_numeric_only(palette_liquid_wind,kLiquidDepth,0);
+	dialog_set_numeric_only(palette_liquid_wind,kLiquidHarm,0);
+	dialog_set_numeric_only(palette_liquid_wind,kLiquidDrownTick,0);
+	dialog_set_numeric_only(palette_liquid_wind,kLiquidDrownHarm,0);
+	dialog_set_numeric_only(palette_liquid_wind,kLiquidTintAlpha,0);
+	dialog_set_numeric_only(palette_liquid_wind,kLiquidDepth,0);
 
 		// show palette
 		
