@@ -332,7 +332,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 
 void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bumpmap,bitmap_type *specularmap,int anisotropic_mode,int mipmap_mode,bool compress_on)
 {
-	int					n,k,wid,high,pixel_cnt,data_sz,pi;
+	int					n,wid,high,pixel_cnt,data_sz;
 	float				f,pf[3];
 	unsigned char		*data,*srce,*dest;
 	d3vct				normal,bump;
@@ -393,8 +393,11 @@ void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bum
 			if (bumpmap->alpha_mode!=alpha_mode_none) srce++;
 
 				// get the dot3
+				// we make sure it never gets too
+				// dark for this simple version
 
 			f=vector_dot_product(&normal,&bump);
+			if (f<0.75f) f=0.75f;
 
 				// multiply it into bitmap
 
@@ -410,7 +413,10 @@ void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bum
 		}
 	}
 
+/*
 		// the specular
+		// NOTE: not using this, keeping around code in
+		// case it makes a comeback
 
 	if (specularmap->gl_id!=-1) {
 
@@ -429,6 +435,7 @@ void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bum
 			if (bitmap->alpha_mode!=alpha_mode_none) dest++;
 		}
 	}
+*/
 
 		// and finally make the combine bitmap
 
