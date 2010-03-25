@@ -916,6 +916,10 @@ void render_model_opaque(model_draw *draw)
 	int						n;
 	model_type				*mdl;
 	view_light_list_type	light_list;
+	
+		// count model
+		
+	view.count.model++;
 
 		// any opaque?
 

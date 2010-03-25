@@ -690,6 +690,10 @@ void shadow_render_generic(shadow_render_type *shad)
 		
 	glDepthMask(GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
+	
+		// count the shadow
+		
+	view.count.shadow++;
 }
 
 /* =======================================================

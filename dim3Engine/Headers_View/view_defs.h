@@ -266,6 +266,14 @@ typedef struct		{
 					} shader_type;
 
 //
+// view counts
+//
+
+typedef struct		{
+						int									poly,liquid,model,shadow,effect;
+					} view_count_type;
+
+//
 // view rendering structure
 //
 
@@ -339,6 +347,7 @@ typedef struct		{
 //
  
 typedef struct		{
+						view_count_type						count;
 						view_render_type					*render;
 						view_time_type						time;
 						view_fps_type						fps;
