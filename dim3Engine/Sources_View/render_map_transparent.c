@@ -421,7 +421,7 @@ void render_map_mesh_transparent(void)
 			render_transparent_mesh_simple(mesh,poly);
 		}
 		else {
-			if ((poly->draw.shader_on) && (!poly->draw.dist_shader_override)) {
+			if (poly->draw.shader_on) {
 				render_transparent_mesh_shader(sort_list[n].mesh_idx,mesh,poly);
 			}
 			else {

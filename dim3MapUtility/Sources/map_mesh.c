@@ -70,7 +70,6 @@ int map_mesh_add(map_type *map)
 	mesh->flag.on=TRUE;
 	mesh->flag.pass_through=FALSE;
 	mesh->flag.moveable=FALSE;
-	mesh->flag.climbable=FALSE;
 	mesh->flag.hilite=FALSE;
 	mesh->flag.touched=FALSE;
 	mesh->flag.lock_uv=FALSE;
@@ -374,6 +373,8 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 	
 	poly->x_shift=0.0f;
 	poly->y_shift=0.0f;
+
+	poly->climbable=FALSE;
 	
 	poly->camera[0]=0x0;
 

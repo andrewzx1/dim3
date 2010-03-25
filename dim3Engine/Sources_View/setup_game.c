@@ -49,7 +49,6 @@ and can be sold or given away.
 #define ctrl_anisotropic_id					6
 #define ctrl_mipmap_id						7
 #define ctrl_compress_id					8
-#define ctrl_distance_optimize_id			9
 #define ctrl_gamma_id						10
 
 #define ctrl_sound_volume_id				30
@@ -124,7 +123,7 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*8;
+	control_y_sz=control_y_add*9;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -164,9 +163,6 @@ void setup_game_video_pane(void)
 	y+=control_y_add;
 	element_checkbox_add("Texture Compression",setup.compress_on,ctrl_compress_id,x,y,TRUE);
 	element_enable(ctrl_compress_id,gl_check_texture_compress_ok());
-	y+=control_y_add;
-
-	element_checkbox_add("Distance Optimizations",setup.distance_optimize_on,ctrl_distance_optimize_id,x,y,TRUE);
 	y+=control_y_add;
 
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
@@ -724,10 +720,6 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_compress_id:
 			setup.compress_on=element_get_value(ctrl_compress_id);
-			break;
-
-		case ctrl_distance_optimize_id:
-			setup.distance_optimize_on=element_get_value(ctrl_distance_optimize_id);
 			break;
 
 		case ctrl_gamma_id:

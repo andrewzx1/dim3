@@ -72,7 +72,6 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->flag.on=!xml_get_attribute_boolean(mesh_tag,"off");
 	mesh->flag.pass_through=xml_get_attribute_boolean(mesh_tag,"pass");
 	mesh->flag.moveable=xml_get_attribute_boolean(mesh_tag,"moveable");
-	mesh->flag.climbable=xml_get_attribute_boolean(mesh_tag,"climbable");
 	mesh->flag.hilite=xml_get_attribute_boolean(mesh_tag,"hilite");
 	mesh->flag.lock_uv=xml_get_attribute_boolean(mesh_tag,"lock_uv");
 	mesh->flag.lock_move=xml_get_attribute_boolean(mesh_tag,"lock_move");
@@ -171,7 +170,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 				xml_get_attribute_float_array(poly_tag,"y_1",poly->lmap_uv.y,8);
 			}
 
-			xml_get_attribute_text(poly_tag,"camera",poly->camera,name_str_len);
+			poly->climbable=xml_get_attribute_boolean(poly_tag,"climbable");
+			xml_get_attribute_text_default_blank(poly_tag,"camera",poly->camera,name_str_len);
 
 			poly++;
 			poly_tag=xml_findnextchild(poly_tag);
@@ -214,7 +214,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
 		
-		xml_get_attribute_text(tag,"camera",liq->camera,name_str_len);
+		xml_get_attribute_text_default_blank(tag,"camera",liq->camera,name_str_len);
 	}
 
 		// physics
@@ -387,6 +387,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			xml_get_attribute_color(light_tag,"rgb",&light->col);
 
 			light->on=!xml_get_attribute_boolean(light_tag,"off");
+			light->never_obscure=xml_get_attribute_boolean(light_tag,"never_obscure");
 			
 			if (light->intensity<0) light->intensity=1;
 		

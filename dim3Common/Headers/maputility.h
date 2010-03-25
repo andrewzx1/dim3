@@ -228,8 +228,7 @@ typedef struct		{
 															txt_frame_offset,
 															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
 						float								x_shift_offset,y_shift_offset;
-						bool								bump_ok,shift_on,shader_on,transparent_on,glow_on,
-															dist_shader_override;
+						bool								bump_ok,shift_on,shader_on,transparent_on,glow_on;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -239,6 +238,7 @@ typedef struct		{
 typedef struct		{
 						int									txt_idx,lmap_txt_idx,ptsz,v[8];
 						float								x_shift,y_shift;
+						bool								climbable;
 						char								camera[name_str_len];
 						tangent_space_type					tangent_space;
 						map_mesh_poly_uv_type				main_uv,lmap_uv;
@@ -259,7 +259,7 @@ typedef struct		{
 
 typedef struct		{
 						bool								on,pass_through,moveable,
-															hilite,climbable,shiftable,
+															hilite,shiftable,
 															lock_uv,lock_move,never_obscure,
 															rot_independent,shadow,
 															no_light_map,skip_light_map_trace,
@@ -377,7 +377,7 @@ typedef struct		{
 typedef struct		{
 						int									type,direction,intensity;
 						float								exponent;
-						bool								on,light_map;
+						bool								on,light_map,never_obscure;
 						char								name[name_str_len];
 						d3pnt								pnt;
 						d3col								col;
@@ -503,7 +503,6 @@ typedef struct		{
 					} map_settings_editor_type;
 
 typedef struct		{
-						int									optimize_distance;
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance;
 						char								network_game_list[256];

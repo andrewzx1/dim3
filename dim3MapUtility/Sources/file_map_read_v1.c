@@ -125,7 +125,7 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 
 	if (seg->pass_through || (seg->type==sg_ambient_wall) || (seg->type==sg_ambient_fc)) map_mesh->flag.pass_through=TRUE;
 	if (seg->moveable) map_mesh->flag.moveable=TRUE;
-	if (seg->climbable) map_mesh->flag.climbable=TRUE;
+	if (seg->climbable) mesh_poly->climbable=TRUE;
 
 	mesh_poly->ptsz=ptsz;
 	mesh_poly->txt_idx=seg->fill;
