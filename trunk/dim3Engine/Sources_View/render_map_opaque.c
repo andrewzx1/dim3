@@ -333,7 +333,7 @@ void render_map_mesh_opaque(void)
 				render_opaque_mesh_simple(mesh,poly);
 			}
 			else {
-				if ((poly->draw.shader_on) && (!poly->draw.dist_shader_override)) {
+				if (poly->draw.shader_on) {
 					render_opaque_mesh_shader(view.render->draw_list.items[n].idx,mesh,poly);
 				}
 				else {

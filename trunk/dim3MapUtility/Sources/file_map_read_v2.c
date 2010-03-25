@@ -62,7 +62,6 @@ bool read_single_mesh_v2(map_type *map,portal_type *portal,int mesh_idx,int mesh
 	mesh->flag.on=!xml_get_attribute_boolean(mesh_tag,"off");
 	mesh->flag.pass_through=xml_get_attribute_boolean(mesh_tag,"pass");
 	mesh->flag.moveable=xml_get_attribute_boolean(mesh_tag,"moveable");
-	mesh->flag.climbable=xml_get_attribute_boolean(mesh_tag,"climbable");
 	mesh->flag.hilite=xml_get_attribute_boolean(mesh_tag,"hilite");
 	mesh->flag.lock_uv=xml_get_attribute_boolean(mesh_tag,"lock_uv");
 	
@@ -110,6 +109,8 @@ bool read_single_mesh_v2(map_type *map,portal_type *portal,int mesh_idx,int mesh
 			xml_get_attribute_float_array(poly_tag,"y",poly->main_uv.y,8);
 
 			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->x_shift,&poly->y_shift);
+
+			poly->climbable=FALSE;
 
 			poly++;
 			poly_tag=xml_findnextchild(poly_tag);

@@ -1311,13 +1311,14 @@ void object_move_climb_check(obj_type *obj)
 		
 		if (obj->contact.hit_poly.mesh_idx!=-1) {
 		
-			if (map.mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable) {
+			poly=&map.mesh.meshes[obj->climb.poly_ptr.mesh_idx].polys[obj->climb.poly_ptr.poly_idx];
+
+			if (poly->climbable) {
 				obj->climb.on=TRUE;
 				obj->climb.step_off_ready=FALSE;
 				
 				memmove(&obj->climb.poly_ptr,&obj->contact.hit_poly,sizeof(poly_pointer_type));
 				
-				poly=&map.mesh.meshes[obj->climb.poly_ptr.mesh_idx].polys[obj->climb.poly_ptr.poly_idx];
 				obj->climb.y_ang=angle_find(obj->pnt.x,obj->pnt.z,poly->box.mid.x,poly->box.mid.z);
 			}
 		}

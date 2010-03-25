@@ -146,7 +146,6 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagend(TRUE);
     
     xml_add_tagstart("Settings");
-    xml_add_attribute_int("optimize_distance",map->settings.optimize_distance);
     xml_add_attribute_float("gravity",map->settings.gravity);
 	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
 	xml_add_attribute_float("gravity_max_speed",map->settings.gravity_max_speed);
@@ -376,7 +375,6 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("off",!mesh->flag.on);
 	xml_add_attribute_boolean("pass",mesh->flag.pass_through);
 	xml_add_attribute_boolean("moveable",mesh->flag.moveable);
-	xml_add_attribute_boolean("climbable",mesh->flag.climbable);
 	xml_add_attribute_boolean("hilite",mesh->flag.hilite);
 	xml_add_attribute_boolean("lock_uv",mesh->flag.lock_uv);
 	xml_add_attribute_boolean("lock_move",mesh->flag.lock_move);
@@ -468,7 +466,8 @@ void write_single_mesh(map_mesh_type *mesh)
 			xml_add_attribute_float_array("x_1",poly->lmap_uv.x,poly->ptsz);
 			xml_add_attribute_float_array("y_1",poly->lmap_uv.y,poly->ptsz);
 		}
-
+		
+		xml_add_attribute_boolean("climbable",poly->climbable);
 		if (poly->camera[0]!=0x0) xml_add_attribute_text("camera",poly->camera);
 
 		xml_add_tagend(TRUE);
@@ -650,6 +649,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_float("exponent",light->exponent);
 		xml_add_attribute_color("rgb",&light->col);
 		xml_add_attribute_boolean("off",!light->on);
+		xml_add_attribute_boolean("never_obscure",light->never_obscure);
 		xml_add_tagend(TRUE);
 	}
 	
