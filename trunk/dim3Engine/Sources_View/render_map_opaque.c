@@ -267,6 +267,7 @@ void render_opaque_mesh_glow(map_mesh_type *mesh,map_mesh_poly_type *poly)
 void render_map_mesh_opaque(void)
 {
 	int					n,k;
+	d3vct				face_vct;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
@@ -317,6 +318,14 @@ void render_map_mesh_opaque(void)
 				poly++;
 				continue;
 			}
+			
+				// skip polys with away facing normals
+				
+			vector_create(&face_vct,poly->box.min.x,poly->box.min.y,poly->box.min.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+			if (vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f) {
+				poly++;
+				continue;
+			}
 
 				// render the poly
 
@@ -338,6 +347,8 @@ void render_map_mesh_opaque(void)
 			}
 
 			if (poly->draw.glow_on) render_opaque_mesh_glow(mesh,poly);
+			
+			view.count.poly++;
 
 			poly++;
 		}

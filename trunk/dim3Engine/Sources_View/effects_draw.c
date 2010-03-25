@@ -360,6 +360,10 @@ void effect_draw(void)
 				break;
 				
 		}
+		
+			// count effect
+			
+		view.count.effect++;
 	}
 }
 

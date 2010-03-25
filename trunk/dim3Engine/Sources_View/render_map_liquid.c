@@ -483,6 +483,10 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 	view_unbind_liquid_index_object();
 	view_unbind_liquid_vertex_object();
+	
+		// count the liquid
+		
+	view.count.liquid++;
 }
 
 /* =======================================================

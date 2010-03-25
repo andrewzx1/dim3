@@ -435,6 +435,8 @@ void render_map_mesh_transparent(void)
 		}
 
 		if (poly->draw.glow_on) render_transparent_mesh_glow(mesh,poly);
+		
+		view.count.poly++;
 	}
 	
 		// turn off any mode left on

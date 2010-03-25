@@ -490,44 +490,10 @@ void hud_metrics_draw_single(int y,char *title,char *data)
 
 void hud_metrics_draw(void)
 {
-	int					n,y,high,txt_sz,rgt,bot,
-						nmesh,npoly,nmesh_shadow,nmodel,nmodel_shadow,
-						nliquid,neffect;
+	int					y,high,txt_sz,rgt,bot;
 	char				str[256],str2[256];
 	d3col				col;
 	obj_type			*obj;
-	map_mesh_type		*mesh;
-
-		// gather some info
-
-	nmesh=npoly=nmesh_shadow=nmodel=nmodel_shadow=nliquid=neffect=0;
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-
-		switch (view.render->draw_list.items[n].type) {
-			
-			case view_render_type_mesh:
-				nmesh++;
-				mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
-				npoly+=mesh->npoly;
-				if (mesh->flag.shadow) nmesh_shadow++;
-				break;
-
-			case view_render_type_object:
-			case view_render_type_projectile:
-				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) nmodel++;
-				if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) nmodel_shadow++;
-				break;
-
-			case view_render_type_liquid:
-				nliquid++;
-				break;
-
-			case view_render_type_effect:
-				neffect++;
-				break;
-		}
-	}
 
 		// text sizes
 
@@ -584,28 +550,28 @@ void hud_metrics_draw(void)
 
 		// meshes and polys and mesh shadows
 
-	sprintf(str,"%d %d %d",nmesh,npoly,nmesh_shadow);
+	sprintf(str,"%d",view.count.poly);
 
-	hud_metrics_draw_single(y,"Meshes:",str);
+	hud_metrics_draw_single(y,"Polys:",str);
 	y+=high;
 
 		// liquids
 
-	sprintf(str,"%d",nliquid);
+	sprintf(str,"%d",view.count.liquid);
 
 	hud_metrics_draw_single(y,"Liquids:",str);
 	y+=high;
 
 		// models and model shadows
 
-	sprintf(str,"%d %d",nmodel,nmodel_shadow);
+	sprintf(str,"%d %d",view.count.model,view.count.shadow);
 
 	hud_metrics_draw_single(y,"Models:",str);
 	y+=high;
 
 		// effects
 
-	sprintf(str,"%d",neffect);
+	sprintf(str,"%d",view.count.effect);
 
 	hud_metrics_draw_single(y,"Effects:",str);
 	y+=high;
