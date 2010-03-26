@@ -1311,7 +1311,7 @@ void object_move_climb_check(obj_type *obj)
 		
 		if (obj->contact.hit_poly.mesh_idx!=-1) {
 		
-			poly=&map.mesh.meshes[obj->climb.poly_ptr.mesh_idx].polys[obj->climb.poly_ptr.poly_idx];
+			poly=&map.mesh.meshes[obj->contact.hit_poly.mesh_idx].polys[obj->contact.hit_poly.poly_idx];
 
 			if (poly->climbable) {
 				obj->climb.on=TRUE;

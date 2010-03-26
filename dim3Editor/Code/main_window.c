@@ -84,6 +84,7 @@ char					tool_icns_file_name[tool_count][64]=
 									"Tool Node Link",
 									"Tool Node Remove Link",
 									"Tool Normals",
+									"Tool Cull",
 									"Tool Edit Map Script",
 									"Tool Run Map"
 								};
@@ -105,7 +106,8 @@ char					tool_tooltip_str[tool_count][64]=
 									"Node Selects by Click",
 									"Node Links by Click",
 									"Node Removes Links by Click",
-									"Show Normals",
+									"Show or Hide Normals",
+									"Show or Hide Backface Culling",
 									"Edit Map Script",
 									"Run Map In Engine"
 								};
@@ -265,17 +267,19 @@ void main_wind_control_tool(int tool_idx)
 			
 		case 15:
 			dp_normals=!dp_normals;
-			if (dp_normals) map_recalc_normals(&map,FALSE);		// supergumba -- testing
+			break;
+			
+		case 16:
 			break;
 			
 			// script and run buttons
 			
-		case 16:
+		case 17:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_map_script_editor();
 			break;
 			
-		case 17:
+		case 18:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_engine();
 			break;
@@ -835,7 +839,7 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==6) || (n==9) || (n==11) || (n==14) || (n==15)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==6) || (n==9) || (n==11) || (n==14) || (n==16)) OffsetRect(&box,3,0);
 	}
 	
 

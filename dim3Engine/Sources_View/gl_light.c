@@ -118,7 +118,7 @@ double gl_light_get_intensity(int tick,int light_type,int intensity)
       
 ======================================================= */
 
-void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int intensity,float exponent,int direction,d3col *col)
+void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,bool never_obscure,int intensity,float exponent,int direction,d3col *col)
 {
 	view_light_spot_type			*lspot;
 	
@@ -129,8 +129,10 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 
 		// is light in view?
 
-	if (!light_inview(pnt,intensity)) return;
-
+	if (!never_obscure) {
+		if (!light_inview(pnt,intensity)) return;
+	}
+	
 		// create light
 
 	lspot=&view.render->light.spots[view.render->light.count];
@@ -206,7 +208,7 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 				if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			gl_lights_compile_add(tick,&pnt,light->type,FALSE,light->intensity,light->exponent,light->direction,&light->col);
+			gl_lights_compile_add(tick,&pnt,light->type,FALSE,FALSE,light->intensity,light->exponent,light->direction,&light->col);
 		}
 
 		light++;
@@ -241,7 +243,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 		}
 	}
 	
-	gl_lights_compile_add(tick,&effect->pnt,lt_normal,FALSE,intensity,flash->exponent,ld_all,&flash->col);
+	gl_lights_compile_add(tick,&effect->pnt,lt_normal,FALSE,FALSE,intensity,flash->exponent,ld_all,&flash->col);
 }
 
 void gl_lights_compile(int tick)
@@ -260,7 +262,7 @@ void gl_lights_compile(int tick)
 	maplight=map.lights;
 		
 	for (n=0;n!=map.nlight;n++) {
-		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->light_map,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
+		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->light_map,maplight->never_obscure,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
 		maplight++;
 	}	
 
