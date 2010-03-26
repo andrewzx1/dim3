@@ -36,6 +36,7 @@ and can be sold or given away.
 #define kMeshPolySettingShiftX					FOUR_CHAR_CODE('sftx')
 #define kMeshPolySettingShiftY					FOUR_CHAR_CODE('sfty')
 #define kMeshPolySettingCamera					FOUR_CHAR_CODE('cnde')
+#define kMeshPolySettingClimbable				FOUR_CHAR_CODE('fclb')
 
 extern int					main_wind_uv_layer;
 extern map_type				map;
@@ -75,6 +76,9 @@ void palette_polygon_load(void)
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,poly->y_shift);
 		
 		dialog_special_combo_fill_node(palette_poly_wind,kMeshPolySettingCamera,0,poly->camera);
+		
+		dialog_enable(palette_poly_wind,kMeshPolySettingClimbable,0,TRUE);
+		dialog_set_boolean(palette_poly_wind,kMeshPolySettingClimbable,0,poly->climbable);
 	}
 	
 		// liquid data
@@ -99,6 +103,9 @@ void palette_polygon_load(void)
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,liq->y_shift);
 		
 		dialog_special_combo_fill_node(palette_poly_wind,kMeshPolySettingCamera,0,liq->camera);
+		
+		dialog_enable(palette_poly_wind,kMeshPolySettingClimbable,0,FALSE);
+		dialog_set_boolean(palette_poly_wind,kMeshPolySettingClimbable,0,FALSE);
 	}
 	
 	DrawControls(palette_poly_wind);
@@ -131,6 +138,7 @@ void palette_polygon_save(void)
 		poly->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
 		
 		dialog_special_combo_get_node(palette_poly_wind,kMeshPolySettingCamera,0,poly->camera,name_str_len);
+		poly->climbable=dialog_get_boolean(palette_poly_wind,kMeshPolySettingClimbable,0);
 	}
 	
 		// liquid data

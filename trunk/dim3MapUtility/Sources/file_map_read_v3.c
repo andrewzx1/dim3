@@ -53,6 +53,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 {
 	int					n,nvertex,npoly,old_mesh_lmap_txt_idx,
 						msg_tag,main_vertex_tag,vertex_tag,main_poly_tag,poly_tag,tag;
+	bool				mesh_climbable;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -85,6 +86,11 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->normal_mode=xml_get_attribute_list(mesh_tag,"normal",(char*)mesh_normal_mode_str);
 
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
+	
+		// old version of climbable at mesh level
+		// push it to polys if it's still there
+		
+	mesh_climbable=xml_get_attribute_boolean(mesh_tag,"climbable");
 
 		// messages
 
@@ -170,7 +176,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 				xml_get_attribute_float_array(poly_tag,"y_1",poly->lmap_uv.y,8);
 			}
 
-			poly->climbable=xml_get_attribute_boolean(poly_tag,"climbable");
+			poly->climbable=xml_get_attribute_boolean(poly_tag,"climbable") || (mesh_climbable);
 			xml_get_attribute_text_default_blank(poly_tag,"camera",poly->camera,name_str_len);
 
 			poly++;

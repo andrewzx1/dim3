@@ -36,7 +36,6 @@ and can be sold or given away.
 #define kMeshSettingPassThrough					FOUR_CHAR_CODE('fpth')
 #define kMeshSettingMovable						FOUR_CHAR_CODE('fmov')
 #define kMeshSettingShiftable					FOUR_CHAR_CODE('fsht')
-#define kMeshSettingClimbable					FOUR_CHAR_CODE('fclb')
 #define kMeshSettingHilite						FOUR_CHAR_CODE('hilt')
 #define kMeshSettingLockUV						FOUR_CHAR_CODE('lkuv')
 #define kMeshSettingLockMove					FOUR_CHAR_CODE('lkps')
@@ -90,7 +89,6 @@ void palette_mesh_load(void)
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingOn,0,mesh->flag.on);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingPassThrough,0,mesh->flag.pass_through);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingMovable,0,mesh->flag.moveable);
-	dialog_set_boolean(palette_mesh_wind,kMeshSettingClimbable,0,mesh->flag.climbable);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingHilite,0,mesh->flag.hilite);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingLockUV,0,mesh->flag.lock_uv);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingLockMove,0,mesh->flag.lock_move);
@@ -138,7 +136,6 @@ void palette_mesh_save(void)
 	mesh->flag.on=dialog_get_boolean(palette_mesh_wind,kMeshSettingOn,0);
 	mesh->flag.pass_through=dialog_get_boolean(palette_mesh_wind,kMeshSettingPassThrough,0);
 	mesh->flag.moveable=dialog_get_boolean(palette_mesh_wind,kMeshSettingMovable,0);
-	mesh->flag.climbable=dialog_get_boolean(palette_mesh_wind,kMeshSettingClimbable,0);
 	mesh->flag.hilite=dialog_get_boolean(palette_mesh_wind,kMeshSettingHilite,0);
 	mesh->flag.lock_uv=dialog_get_boolean(palette_mesh_wind,kMeshSettingLockUV,0);
 	mesh->flag.lock_move=dialog_get_boolean(palette_mesh_wind,kMeshSettingLockMove,0);

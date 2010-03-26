@@ -11,6 +11,7 @@
 		263013CB0D713B7E00564E2C /* main_window_panels.c in Sources */ = {isa = PBXBuildFile; fileRef = 263013CA0D713B7E00564E2C /* main_window_panels.c */; };
 		2630141E0D72844300564E2C /* walk_view_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = 2630141D0D72844300564E2C /* walk_view_swap.c */; };
 		263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263614450DC41DF6002345C0 /* walk_view_click_texture.c */; };
+		263A519F115C62B40059859F /* Tool Cull.icns in Resources */ = {isa = PBXBuildFile; fileRef = 263A519E115C62B40059859F /* Tool Cull.icns */; };
 		263B67380F7072EE0065AB38 /* palette_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 263B67370F7072EE0065AB38 /* palette_spot.c */; };
 		2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = 2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
@@ -223,6 +224,7 @@
 		263013CA0D713B7E00564E2C /* main_window_panels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window_panels.c; path = Code/main_window_panels.c; sourceTree = "<group>"; };
 		2630141D0D72844300564E2C /* walk_view_swap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_swap.c; path = Code/walk_view_swap.c; sourceTree = "<group>"; };
 		263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_texture.c; path = Code/walk_view_click_texture.c; sourceTree = "<group>"; };
+		263A519E115C62B40059859F /* Tool Cull.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Cull.icns"; path = "Resources/Tool Cull.icns"; sourceTree = "<group>"; };
 		263B67370F7072EE0065AB38 /* palette_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_spot.c; path = Code/palette_spot.c; sourceTree = "<group>"; };
 		2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_scale.c; path = Code/dialog_mesh_scale.c; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
@@ -451,6 +453,7 @@
 		264B31A81050D24000067D2F /* UI Icons */ = {
 			isa = PBXGroup;
 			children = (
+				263A519E115C62B40059859F /* Tool Cull.icns */,
 				269B2A8811178EE800E3FDA8 /* Tool Normals.icns */,
 				26EB4DFD105590B700E0FAE6 /* Tool Node Link.icns */,
 				26EB4DFE105590B700E0FAE6 /* Tool Node Remove Link.icns */,
@@ -741,6 +744,7 @@
 				26EB4E01105590B700E0FAE6 /* Tool Node Remove Link.icns in Resources */,
 				26EB4E02105590B700E0FAE6 /* Tool Node Select.icns in Resources */,
 				269B2A8911178EE800E3FDA8 /* Tool Normals.icns in Resources */,
+				263A519F115C62B40059859F /* Tool Cull.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -843,8 +847,7 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

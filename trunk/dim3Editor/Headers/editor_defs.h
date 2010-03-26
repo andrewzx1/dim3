@@ -29,7 +29,7 @@ and can be sold or given away.
 // UI sizes
 //
 
-#define tool_count								18
+#define tool_count								19
 #define piece_count								12
 
 #define tool_button_size						32
