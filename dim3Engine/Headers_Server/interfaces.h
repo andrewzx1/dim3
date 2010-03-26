@@ -206,10 +206,9 @@ extern void interface_quit_trigger_clear(void);
 extern void interface_quit_trigger_set(void);
 extern bool interface_quit_trigger_check(void);
 
-extern void score_limit_trigger_clear(void);
-extern void score_limit_trigger_check(void);
-extern void score_limit_trigger_set(void);
-extern void score_limit_trigger_set_check_scores(void);
+extern void score_limit_start(void);
+extern void score_limit_end(void);
+extern void score_limit_check_scores(void);
 extern void score_limit_run(void);
 
 extern void error_open(char *err_str,char *err_str_2);

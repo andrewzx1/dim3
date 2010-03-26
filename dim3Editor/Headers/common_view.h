@@ -65,6 +65,11 @@ extern void os_set_wait_cursor(void);
 extern void os_set_hand_cursor(void);
 extern void os_set_drag_cursor(void);
 extern void os_set_resize_cursor(void);
+extern bool os_key_space_down(void);
+extern bool os_key_option_down(void);
+extern bool os_key_control_down(void);
+extern bool os_key_command_down(void);
+extern bool os_key_shift_down(void);
 extern bool os_button_down(void);
 extern bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box);
 

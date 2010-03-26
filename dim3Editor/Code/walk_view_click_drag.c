@@ -49,7 +49,7 @@ void walk_view_click_drag_constraint_axis(int *x,int *y)
 {
 	int			ax,ay;
 	
-	if (!main_wind_shift_down()) return;
+	if (!os_key_shift_down()) return;
 	
 	ax=abs(*x);
 	ay=abs(*y);

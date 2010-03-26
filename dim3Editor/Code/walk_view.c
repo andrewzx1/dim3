@@ -104,17 +104,17 @@ void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_di
 {
        // scrolling and movement keys
         
-    if (main_wind_space_down()) {
+    if (os_key_space_down()) {
         walk_view_mouse_xy_movement(view_setup,pt,view_move_dir);
         return;
     }
 
-    if (main_wind_option_down()) {
+    if (os_key_option_down()) {
         walk_view_mouse_yz_movement(view_setup,pt,view_move_dir);
         return;
     }
 
-    if ((main_wind_command_down()) && (rot_ok)) {
+    if ((os_key_command_down()) && (rot_ok)) {
         walk_view_mouse_turn(pt);
         return;
     }
@@ -132,15 +132,15 @@ void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_di
 
 void walk_view_cursor(bool rot_ok)
 {
-    if (main_wind_space_down()) {
+    if (os_key_space_down()) {
         os_set_hand_cursor();
         return;
     }
-    if ((main_wind_option_down()) && ((!main_wind_control_down()) && (!main_wind_shift_down()))) {
+    if ((os_key_option_down()) && ((!os_key_control_down()) && (!os_key_shift_down()))) {
         os_set_drag_cursor();
         return;
     }
-    if ((main_wind_command_down()) && (rot_ok)) {
+    if ((os_key_command_down()) && (rot_ok)) {
         os_set_drag_cursor();
         return;
     }

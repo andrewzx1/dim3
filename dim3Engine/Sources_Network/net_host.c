@@ -354,6 +354,8 @@ bool net_host_game_start(char *err_str)
 
 	net_setup.client.latency=0;
 	net_setup.client.host_ip_addr=0;
+	
+	net_setup.score_limit.on=FALSE;
 
 	return(TRUE);
 }

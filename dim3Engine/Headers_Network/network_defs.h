@@ -143,10 +143,16 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
+						int								start_tick;
+						bool							on;
+					} network_setup_score_limit_type;
+
+typedef struct		{
 						int								mode,player_uid,
 														game_idx,option_flags;
 						network_setup_host_type			host;
 						network_setup_client_type		client;
+						network_setup_score_limit_type	score_limit;
 					} network_setup_type;
 
 //

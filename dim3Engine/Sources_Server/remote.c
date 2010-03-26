@@ -271,13 +271,7 @@ void remote_predict_move(obj_type *obj)
 
 void remote_game_reset(void)
 {
-		// force a reset on the objects
-		
 	game_reset();
-	
-		// close the score limit UI
-		
-	if (server.state==gs_score_limit) score_limit_close();
 }
 
 void remote_host_exit(void)
@@ -855,7 +849,7 @@ bool remote_network_get_updates(void)
 				break;
 				
 			case net_action_request_game_score_limit:
-				score_limit_trigger_set();
+				score_limit_start();
 				break;
 				
 		}

@@ -144,6 +144,7 @@ int net_client_join_host_start(char *name,char *game_name,char *map_name,int *ti
 	net_setup.mode=net_mode_client;
 	net_setup.player_uid=player_uid;
 	net_setup.client.latency=0;
+	net_setup.score_limit.on=FALSE;
 	
 	return(player_uid);
 }
