@@ -121,18 +121,19 @@ void loop_game_run(void)
 		view_loop_input();
 	}
 
+		// score limits and game changes
+
+	score_limit_check_scores();
+	score_limit_run();
+
 		// draw the view
 
-	if ((server.state==gs_running) || (server.state==gs_score_limit)) {
-
-		if (net_setup.mode==net_mode_host_dedicated) {
-			view_loop_draw_dedicated_host();
-		}
-		else {
-			view_run();
-			view_loop_draw();
-		}
-
+	if (net_setup.mode==net_mode_host_dedicated) {
+		view_loop_draw_dedicated_host();
+	}
+	else {
+		view_run();
+		view_loop_draw();
 	}
 
 		// check interface quits
@@ -219,7 +220,6 @@ bool loop_main(char *err_str)
 	setup_game_trigger_clear();
 	file_trigger_clear();
 	map_pick_trigger_clear();
-	score_limit_trigger_clear();
 	console_trigger_clear();
 	
 		// clear map changes
@@ -284,10 +284,6 @@ bool loop_main(char *err_str)
 			map_pick_run();
 			break;
 
-		case gs_score_limit:
-			score_limit_run();
-			break;
-
 		case gs_console:
 			console_run();
 			break;
@@ -311,7 +307,6 @@ bool loop_main(char *err_str)
 	setup_game_trigger_check();
 	file_trigger_check();
 	map_pick_trigger_check();
-	score_limit_trigger_check();
 	console_trigger_check();
 		
 		// reset fps counter on state change

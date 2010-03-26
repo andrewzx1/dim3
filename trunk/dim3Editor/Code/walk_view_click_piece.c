@@ -815,7 +815,7 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 	
 		// regular or toggle selection
 		
-	toggle_select=main_wind_shift_down() || select_toggle_mode;
+	toggle_select=os_key_shift_down() || select_toggle_mode;
 	
 		// clear or add to selection
 		
@@ -898,7 +898,7 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	switch (drag_mode) {
 	
 		case drag_mode_mesh:
-			if (!main_wind_control_down()) {
+			if (!os_key_control_down()) {
 				walk_view_click_drag_mesh(view_setup,pt,view_move_dir);
 			}
 			else {
@@ -907,7 +907,7 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 			break;
 
 		case drag_mode_polygon:
-			if (!main_wind_control_down()) {
+			if (!os_key_control_down()) {
 				walk_view_click_drag_mesh_poly(view_setup,pt,view_move_dir);
 			}
 			else {

@@ -20,6 +20,8 @@ HWND					wnd;
 HDC						wnd_gl_dc;
 HGLRC					wnd_gl_ctx;
 
+HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize;
+
 int						mouse_last_x,mouse_last_y,mouse_last_view;
 bool					mouse_down,mouse_forward,quit;
 d3pnt					view_pnt;
@@ -89,6 +91,14 @@ bool editor_start(char *err_str)
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
 	HINSTANCE				hInst;
+
+		// load cursors
+
+	cur_arrow=LoadCursor(NULL,IDC_ARROW);
+	cur_wait=LoadCursor(NULL,IDC_WAIT);
+	cur_hand=LoadCursor(NULL,IDC_HAND);
+	cur_drag=LoadCursor(NULL,IDC_HAND);
+	cur_resize=LoadCursor(NULL,IDC_SIZEALL);
 
 		// create window
 
@@ -185,13 +195,25 @@ bool editor_start(char *err_str)
 
 void editor_end(void)
 {
+		// close opengl
+
 	wglMakeCurrent(NULL,NULL);
 	wglDeleteContext(wnd_gl_ctx);
 	ReleaseDC(wnd,wnd_gl_dc);
 
+		// delete window
+
 	DeleteObject(fnt);
 	DestroyWindow(wnd);
 	UnregisterClass("dim3ServerWindowClass",GetModuleHandle(NULL));
+
+		// destroy cursors
+
+	DestroyCursor(cur_arrow);
+	DestroyCursor(cur_wait);
+	DestroyCursor(cur_hand);
+	DestroyCursor(cur_drag);
+	DestroyCursor(cur_resize);
 }
 
 /* =======================================================
@@ -536,7 +558,7 @@ void editor_mouse_move(int x,int y)
 
 /* =======================================================
 
-      Utility Routines
+      OS Specific Utility Routines
       
 ======================================================= */
 
@@ -554,42 +576,52 @@ void os_get_window_box(d3rect *box)
 
 void os_set_arrow_cursor(void)
 {
+	SetCursor(cur_arrow);
 }
 
 void os_set_wait_cursor(void)
 {
+	SetCursor(cur_wait);
 }
 
 void os_set_hand_cursor(void)
 {
+	SetCursor(cur_hand);
 }
 
 void os_set_drag_cursor(void)
 {
-}
-
-void os_set_rotate_cursor(void)
-{
-}
-
-void os_set_toward_cursor(void)
-{
-}
-
-void os_set_forward_cursor(void)
-{
+	SetCursor(cur_drag);
 }
 
 void os_set_resize_cursor(void)
 {
+	SetCursor(cur_resize);
 }
 
-void os_set_add_cursor(void)
+bool os_key_space_down(void)
 {
+	return(GetKeyState(VK_SPACE)!=0);
 }
 
-void os_set_cut_cursor(void)
+bool os_key_option_down(void)
 {
+	return((GetKeyState(VK_LWIN)!=0)||(GetKeyState(VK_RWIN)!=0));
+}
+
+bool os_key_control_down(void)
+{
+	return(GetKeyState(VK_CONTROL)!=0);
+}
+
+bool os_key_command_down(void)
+{
+	return(GetKeyState(VK_MENU)!=0);
+}
+
+bool os_key_shift_down(void)
+{
+	return(GetKeyState(VK_SHIFT)!=0);
 }
 
 bool os_button_down(void)

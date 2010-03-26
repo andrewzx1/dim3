@@ -235,6 +235,10 @@
 				Name="EditorSources"
 				>
 				<File
+					RelativePath="..\..\dim3Editor\Code\selection.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\walk_view.c"
 					>
 					<FileConfiguration

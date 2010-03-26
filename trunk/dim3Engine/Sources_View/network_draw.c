@@ -309,7 +309,7 @@ void network_score_draw(void)
 		// is on
 		
 	if (net_setup.mode!=net_mode_host_dedicated) {
-		if (server.state!=gs_score_limit) {
+		if (!net_setup.score_limit.on) {
 			if (!hud.score.on) {
 				player_obj=object_find_uid(server.player_obj_uid);
 				if (player_obj->status.health!=0) return;
@@ -334,7 +334,7 @@ void network_score_draw(void)
 	str[0]=0x0;
 	col.r=col.g=col.b=1.0f;
 	
-	if (server.state==gs_score_limit) {
+	if (net_setup.score_limit.on) {
 	
 		if (!use_teams) {
 			sprintf(str,"Player %s Won!",server.objs[win_idx].name);
