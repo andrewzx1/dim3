@@ -280,6 +280,27 @@ bool map_recalc_normals_poly_is_outside(map_mesh_type *mesh,int poly_idx)
 	return(TRUE);
 }
 
+bool map_recalc_normals_poly_is_outside_edge(map_mesh_type *mesh,int poly_idx)
+{
+	int					n;
+	d3pnt				*pt;
+	map_mesh_poly_type	*poly;
+	
+	poly=&mesh->polys[poly_idx];
+	
+		// if any point is on any edge, it counts
+		// as outside
+		
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		if ((pt->x==mesh->box.min.x) || (pt->x==mesh->box.max.x)) return(TRUE);
+		if ((pt->y==mesh->box.min.y) || (pt->y==mesh->box.max.y)) return(TRUE);
+		if ((pt->z==mesh->box.min.z) || (pt->z==mesh->box.max.z)) return(TRUE);
+	}
+
+	return(FALSE);
+}
+
 /* =======================================================
 
       Calculate Normals
@@ -406,7 +427,14 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 					invert=is_out;
 				}
 				break;
-				
+			case mesh_normal_mode_edge:
+				if (map_recalc_normals_poly_is_outside_edge(mesh,n)) {
+					invert=!is_out;
+				}
+				else {
+					invert=is_out;
+				}
+				break;
 		}
 		
 		if (invert) {

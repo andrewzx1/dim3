@@ -1,5 +1,6 @@
 #include "dim3Editor.h"
 
+#include "common_view.h"
 
 #define EDITOR_WIN_X			10
 #define EDITOR_WIN_Y			40
@@ -26,8 +27,13 @@ int						mouse_last_x,mouse_last_y,mouse_last_view;
 bool					mouse_down,mouse_forward,quit;
 d3pnt					view_pnt;
 
-file_path_setup_type	file_path_setup;
 map_type				map;
+file_path_setup_type	file_path_setup;
+setup_type				setup;
+editor_state_type		state;
+
+d3rect					main_wind_box;
+
 
 extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
 void editor_button_down(int x,int y,bool forward);
@@ -189,6 +195,13 @@ bool editor_start(char *err_str)
 		// mouse setup
 
 	mouse_down=FALSE;
+
+		// main wind box
+
+	main_wind_box.lx=0;
+	main_wind_box.rx=(wbox.right-wbox.left)-palette_wid;
+	main_wind_box.ty=toolbar_high;
+	main_wind_box.by=(wbox.bottom-wbox.top)-info_high;
 
 	return(TRUE);
 }
@@ -447,6 +460,11 @@ void editor_draw(void)
 	editor_gl_swap();
 }
 
+void main_wind_draw(void)
+{
+	editor_draw();
+}
+
 /* =======================================================
 
       Mouse Move
@@ -599,6 +617,23 @@ void os_set_resize_cursor(void)
 	SetCursor(cur_resize);
 }
 
+void os_enable_menu_item_undo(bool enable)
+{
+	/* supergumba -- reactivate when we have menus
+
+	HMENU			menu;
+
+	menu=GetSubMenu([MAIN MENU HERE],menu_idx);
+
+	if (enable) {
+		EnableMenuItem(menu,0,MF_BYPOSITION|MF_ENABLED);
+	}
+	else {
+		EnableMenuItem(menu,0,MF_BYPOSITION|MF_GRAYED);
+	}
+	*/
+}
+
 bool os_key_space_down(void)
 {
 	return(GetKeyState(VK_SPACE)!=0);
@@ -650,6 +685,17 @@ bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
 	return(track==kMouseTrackingMouseReleased);
 	*/
 	return(TRUE);
+}
+
+/* =======================================================
+
+      Dialogs
+      
+======================================================= */
+
+void dialog_alert(char *a,char *b)
+{
+	// supergumba -- temporary
 }
 
 /* =======================================================

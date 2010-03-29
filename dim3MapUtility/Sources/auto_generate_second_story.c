@@ -359,7 +359,7 @@ void map_auto_generate_second_story(map_type *map)
 
 		sz=split_factor*2;
 
-		if (!map_auto_generate_mesh_start(map,-1,mesh_normal_mode_in_out,FALSE)) return;
+		if (!map_auto_generate_mesh_start(map,-1,mesh_normal_mode_edge,FALSE)) return;
 
 			// floors and ceilings corners
 
