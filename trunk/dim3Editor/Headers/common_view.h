@@ -65,6 +65,7 @@ extern void os_set_wait_cursor(void);
 extern void os_set_hand_cursor(void);
 extern void os_set_drag_cursor(void);
 extern void os_set_resize_cursor(void);
+extern void os_enable_menu_item_undo(bool enable);
 extern bool os_key_space_down(void);
 extern bool os_key_option_down(void);
 extern bool os_key_control_down(void);

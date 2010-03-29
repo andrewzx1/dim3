@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "common_view.h"
 #include "interface.h"
 
@@ -149,7 +153,7 @@ void undo_clear_all(void)
 		undo_clear(n);
 	}
 	
-	DisableMenuItem(GetMenuRef(app_menu_edit),1);
+	os_enable_menu_item_undo(FALSE);
 }
 
 /* =======================================================
@@ -353,14 +357,14 @@ bool undo_push_internal(void)
 void undo_push(void)
 {
 	if (undo_push_internal()) {
-		EnableMenuItem(GetMenuRef(app_menu_edit),1);
+		os_enable_menu_item_undo(TRUE);
 		return;
 	}
 	
 	dialog_alert("Undo","Not enough memory to setup undo");
 	undo_clear_all();
 	
-	DisableMenuItem(GetMenuRef(app_menu_edit),1);
+	os_enable_menu_item_undo(FALSE);
 }
 
 /* =======================================================
@@ -457,9 +461,7 @@ void undo_pull(void)
 		// move down undo level
 		
 	undo_level--;
-	if (undo_level==0) {
-		DisableMenuItem(GetMenuRef(app_menu_edit),1);
-	}
+	if (undo_level==0) os_enable_menu_item_undo(FALSE);
 	
 		// redraw windows
 		

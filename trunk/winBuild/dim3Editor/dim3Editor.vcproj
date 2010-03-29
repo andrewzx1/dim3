@@ -239,6 +239,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\undo.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\walk_view.c"
 					>
 					<FileConfiguration

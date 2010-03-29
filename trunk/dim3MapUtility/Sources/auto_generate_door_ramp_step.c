@@ -68,10 +68,12 @@ int map_auto_generate_steps_get_length(int ty,int by,int step_size,int step_high
 
 void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz,int step_high,int ty,int by,int kx,int kz,float ang_y)
 {
-	int				txt_idx,y,y2,ty2,z,ez,step_wid,px[8],py[8],pz[8];
+	int				n,txt_idx,y,y2,ty2,z,ez,step_wid,step_cnt,poly_idx,
+					px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 	d3pnt			pt;
 	d3ang			ang;
+	d3vct			wall_normal,floor_normal;
 	map_mesh_type	*mesh;
 
 		// create new mesh for steps
@@ -85,6 +87,8 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 	if (step_type!=ag_step_ramp) {
 		z=0;
 		y=ty;
+		
+		step_cnt=0;
 
 		while (TRUE) {
 			y2=y+step_high;
@@ -96,6 +100,7 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 			map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.steps,4,px,py,pz,gx,gy);
 
 			z+=ag_constant_step_story_size;
+			step_cnt++;
 
 			if (y2>=by) break;
 
@@ -248,6 +253,59 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 	pt.z=kz;
 		
 	map_mesh_move(map,map_ag_mesh_idx,&pt);
+
+		// steps need hand crafted normals,
+		// so generate the normals, lock it, and fix the
+		// ones needing fixing
+
+		// steps are wall, floor, etc order
+
+	if (step_type!=ag_step_ramp) {
+
+			// default normals
+
+		map_recalc_normals_mesh(&map->mesh.meshes[map_ag_mesh_idx],FALSE);
+
+			// new normals
+		
+		wall_normal.y=0.0f;
+
+		switch ((int)ang_y) {
+			case 0:
+				wall_normal.x=0.0f;
+				wall_normal.z=-1.0f;
+				break;
+			case 90:
+				wall_normal.x=1.0f;
+				wall_normal.z=0.0f;
+				break;
+			case 180:
+				wall_normal.x=0.0f;
+				wall_normal.z=1.0f;
+				break;
+			case 270:
+				wall_normal.x=-1.0f;
+				wall_normal.z=0.0f;
+				break;
+		}
+
+		floor_normal.x=0.0f;
+		floor_normal.y=-1.0f;
+		floor_normal.z=0.0f;
+
+			// fix the steps
+
+		poly_idx=0;
+
+		for (n=0;n!=step_cnt;n++) {
+			memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx++].tangent_space.normal,&wall_normal,sizeof(d3vct));
+			memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx++].tangent_space.normal,&floor_normal,sizeof(d3vct));
+		}
+
+			// now lock it
+
+		map->mesh.meshes[map_ag_mesh_idx].normal_mode=mesh_normal_mode_lock;
+	}
 }
 
 /* =======================================================
