@@ -197,6 +197,20 @@ and can be sold or given away.
 #define normal_vector_scale						300.0f
 
 //
+// mode struct
+//
+
+typedef struct		{
+						int						view,focus,perspective,uv_layer,
+												vertex_mode,drag_mode,grid_mode,node_mode,
+												magnify_factor,drag_handle_idx;
+						bool					map_opened,select_toggle_mode,auto_texture,
+												show_liquid,show_normals,show_node,show_object,
+												show_lightsoundparticle,cull,
+												swap_panel_forward,swap_panel_side,swap_panel_top;
+					} editor_state_type;
+					
+//
 // draw passing struct
 //
 

@@ -32,11 +32,9 @@ and can be sold or given away.
 
 extern WindowRef				mainwind;
 
-extern int						magnify_factor;
-extern bool						map_opened;
-
 extern file_path_setup_type		file_path_setup;
 extern setup_type				setup;
+extern editor_state_type		state;
 
 map_type						map;
 
@@ -55,7 +53,7 @@ void redraw_windows(void)
 
         // some defaults
         
-	magnify_factor=magnify_factor_default;
+	state.magnify_factor=magnify_factor_default;
 	main_wind_set_view(vw_3_panel);
 	main_wind_set_perspective(ps_perspective);
 	
@@ -158,7 +156,7 @@ bool file_new_map(void)
 		
     map_new(&map,file_name);
 	
-	map_opened=TRUE;
+	state.map_opened=TRUE;
     
     main_wind_open();
 	main_wind_set_title(file_name);
@@ -227,7 +225,7 @@ bool file_open_map(void)
 	
 		// set flags as opened
 		
-	map_opened=TRUE;
+	state.map_opened=TRUE;
 	
 	redraw_windows();
 	
@@ -255,12 +253,12 @@ void file_save_map(void)
 
 void file_close_map(void)
 {
-	if (!map_opened) return;
+	if (!state.map_opened) return;
 	
 	SetThemeCursor(kThemeArrowCursor);
 	map_close(&map);
 	
-	map_opened=FALSE;
+	state.map_opened=FALSE;
 	
 	walk_view_models_close();
 	

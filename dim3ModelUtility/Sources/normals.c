@@ -69,7 +69,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 	int					n,k,t,j,cnt,trig_material_idx;
     float				u10,u20,v10,v20,f_denom,f;
 	bool				is_out;
-	d3vct				p10,p20,vlft,vrgt,v_num;
+	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
 	d3vct				*tangents,*tptr,*binormals,*bptr;
 	d3pnt				*pt,*pt_1,*pt_2,v_center;
 	model_mesh_type		*mesh;
@@ -280,18 +280,9 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		
 			vertex=&mesh->vertexes[trig->v[k]];
 			
-			if ((fabs(trig->tangent_space[k].normal.y)>fabs(trig->tangent_space[k].normal.x)) && (fabs(trig->tangent_space[k].normal.y)>fabs(trig->tangent_space[k].normal.z))) {
-				is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.y-v_center.y),trig->tangent_space[k].normal.y);
-			}
-			else {
-				if (fabs(trig->tangent_space[k].normal.x)>fabs(trig->tangent_space[k].normal.z)) {
-					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.x-v_center.x),trig->tangent_space[k].normal.x);
-				}
-				else {
-					is_out=model_recalc_normals_compare_sign((float)(vertex->pnt.z-v_center.z),trig->tangent_space[k].normal.z);
-				}
-			}
-			
+			vector_create(&face_vct,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,v_center.x,v_center.y,v_center.z);
+			is_out=(vector_dot_product(&trig->tangent_space[k].normal,&face_vct)>0.0f);
+
 			if (!is_out) {
 				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
 				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;

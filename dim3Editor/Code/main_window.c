@@ -29,23 +29,13 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern d3pnt					view_pnt;
-extern int						vertex_mode,magnify_factor,
-								txt_palette_y,txt_palette_high;
-extern float					walk_view_y_angle,walk_view_x_angle;
-extern bool						map_opened;
+extern d3pnt			view_pnt;
+extern d3ang			view_ang;
+extern int				txt_palette_y,txt_palette_high;
 
-extern file_path_setup_type		file_path_setup;
+extern map_type			map;
+extern setup_type		setup;
 
-extern map_type					map;
-extern setup_type				setup;
-
-int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
-						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer,drag_handle_idx,
-						node_mode;
-bool					select_toggle_mode,dp_auto_texture,dp_liquid,dp_normals,
-						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,
-						swap_panel_forward,swap_panel_side,swap_panel_top;
 d3rect					main_wind_box;
 
 WindowRef				mainwind;
@@ -58,6 +48,9 @@ MenuRef					grid_menu,spot_menu,light_menu,sound_menu,particle_menu,
 						scenery_menu,node_menu,area_menu;
 
 AGLContext				ctx;
+
+file_path_setup_type	file_path_setup;
+editor_state_type		state;
 
 int						spot_combo_lookup[max_spot],
 						light_combo_lookup[max_map_light],
@@ -152,21 +145,21 @@ void main_wind_control_tool(int tool_idx)
 			// vertex mode
 			
 		case 0:
-			vertex_mode=vertex_mode_none;
+			state.vertex_mode=vertex_mode_none;
 			SetControlValue(tool_ctrl[0],1);
 			SetControlValue(tool_ctrl[1],0);
 			SetControlValue(tool_ctrl[2],0);
 			break;
 			
 		case 1:
-			vertex_mode=vertex_mode_lock;
+			state.vertex_mode=vertex_mode_lock;
 			SetControlValue(tool_ctrl[0],0);
 			SetControlValue(tool_ctrl[1],1);
 			SetControlValue(tool_ctrl[2],0);
 			break;
 			
 		case 2:
-			vertex_mode=vertex_mode_snap;
+			state.vertex_mode=vertex_mode_snap;
 			SetControlValue(tool_ctrl[0],0);
 			SetControlValue(tool_ctrl[1],0);
 			SetControlValue(tool_ctrl[2],1);
@@ -175,13 +168,13 @@ void main_wind_control_tool(int tool_idx)
 			// select toggle mode
 			
 		case 3:
-			select_toggle_mode=!select_toggle_mode;
+			state.select_toggle_mode=!state.select_toggle_mode;
 			break;
 			
 			// drag mode buttons
 			
 		case 4:
-			drag_mode=drag_mode_mesh;
+			state.drag_mode=drag_mode_mesh;
 			SetControlValue(tool_ctrl[4],1);
 			SetControlValue(tool_ctrl[5],0);
 			SetControlValue(tool_ctrl[6],0);
@@ -189,7 +182,7 @@ void main_wind_control_tool(int tool_idx)
 			break;
 			
 		case 5:
-			drag_mode=drag_mode_polygon;
+			state.drag_mode=drag_mode_polygon;
 			SetControlValue(tool_ctrl[4],0);
 			SetControlValue(tool_ctrl[5],1);
 			SetControlValue(tool_ctrl[6],0);
@@ -197,7 +190,7 @@ void main_wind_control_tool(int tool_idx)
 			break;
 			
 		case 6:
-			drag_mode=drag_mode_vertex;
+			state.drag_mode=drag_mode_vertex;
 			SetControlValue(tool_ctrl[4],0);
 			SetControlValue(tool_ctrl[5],0);
 			SetControlValue(tool_ctrl[6],1);
@@ -226,38 +219,38 @@ void main_wind_control_tool(int tool_idx)
 			
 		case 10:
 			GetBevelButtonMenuValue(tool_ctrl[tool_idx],&menu_idx);
-			grid_mode=((int)menu_idx)-1;
+			state.grid_mode=((int)menu_idx)-1;
 			SetControlValue(tool_ctrl[tool_idx],0);
 			break;
 			
 		case 11:
-			dp_auto_texture=!dp_auto_texture;
+			state.auto_texture=!state.auto_texture;
 			break;
 			
 			// node editing
 			
 		case 12:
-			dp_node=TRUE;
+			state.show_node=TRUE;
 			menu_set_show_hide_check();
-			node_mode=node_mode_select;
+			state.node_mode=node_mode_select;
 			SetControlValue(tool_ctrl[12],1);
 			SetControlValue(tool_ctrl[13],0);
 			SetControlValue(tool_ctrl[14],0);
 			break;
 			
 		case 13:
-			dp_node=TRUE;
+			state.show_node=TRUE;
 			menu_set_show_hide_check();
-			node_mode=node_mode_link;
+			state.node_mode=node_mode_link;
 			SetControlValue(tool_ctrl[12],0);
 			SetControlValue(tool_ctrl[13],1);
 			SetControlValue(tool_ctrl[14],0);
 			break;
 			
 		case 14:
-			dp_node=TRUE;
+			state.show_node=TRUE;
 			menu_set_show_hide_check();
-			node_mode=node_mode_remove_link;
+			state.node_mode=node_mode_remove_link;
 			SetControlValue(tool_ctrl[12],0);
 			SetControlValue(tool_ctrl[13],0);
 			SetControlValue(tool_ctrl[14],1);
@@ -266,10 +259,11 @@ void main_wind_control_tool(int tool_idx)
 			// normals
 			
 		case 15:
-			dp_normals=!dp_normals;
+			state.show_normals=!state.show_normals;
 			break;
 			
 		case 16:
+			state.cull=!state.cull;
 			break;
 			
 			// script and run buttons
@@ -310,7 +304,7 @@ void main_wind_control_piece(int piece_idx)
 				// find a spot
 			
 			if (menu_idx>2) {
-				dp_object=TRUE;
+				state.show_object=TRUE;
 				
 				idx=spot_combo_lookup[menu_idx-3];
 			
@@ -338,7 +332,7 @@ void main_wind_control_piece(int piece_idx)
 				// find a light
 			
 			if (menu_idx>2) {
-				dp_lightsoundparticle=TRUE;
+				state.show_lightsoundparticle=TRUE;
 				
 				idx=light_combo_lookup[menu_idx-3];
 			
@@ -366,7 +360,7 @@ void main_wind_control_piece(int piece_idx)
 				// find a sound
 			
 			if (menu_idx>2) {
-				dp_lightsoundparticle=TRUE;
+				state.show_lightsoundparticle=TRUE;
 				
 				idx=sound_combo_lookup[menu_idx-3];
 			
@@ -394,7 +388,7 @@ void main_wind_control_piece(int piece_idx)
 				// find a particle
 			
 			if (menu_idx>2) {
-				dp_lightsoundparticle=TRUE;
+				state.show_lightsoundparticle=TRUE;
 				
 				idx=particle_combo_lookup[menu_idx-3];
 			
@@ -422,7 +416,7 @@ void main_wind_control_piece(int piece_idx)
 				// find a spot
 			
 			if (menu_idx>2) {
-				dp_object=TRUE;
+				state.show_object=TRUE;
 				
 				idx=scenery_combo_lookup[menu_idx-3];
 			
@@ -450,7 +444,7 @@ void main_wind_control_piece(int piece_idx)
 				// find a node
 			
 			if (menu_idx>2) {
-				dp_node=TRUE;
+				state.show_node=TRUE;
 				
 				idx=node_combo_lookup[menu_idx-3];
 			
@@ -524,12 +518,12 @@ void main_wind_control(ControlRef ctrl)
 
 void main_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
 {
-	int				s;
+	int				i;
 	
-	s=GetControlValue(ctrl);
-	if (s==magnify_factor) return;
+	i=GetControlValue(ctrl);
+	if (i==state.magnify_factor) return;
 	
-	magnify_factor=s;
+	state.magnify_factor=i;
     main_wind_draw();
 }
 
@@ -615,7 +609,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					return(noErr);
 				
 				case kEventWindowClose:
-					if (map_opened) {
+					if (state.map_opened) {
 						if (!menu_save_changes_dialog()) return(noErr);
 						file_close_map();
 					}
@@ -688,11 +682,11 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 
 void main_wind_magnify_scroll(int delta)
 {
-	magnify_factor-=delta;
-	if (magnify_factor<magnify_factor_min) magnify_factor=magnify_factor_min;
-	if (magnify_factor>magnify_factor_max) magnify_factor=magnify_factor_max;
+	state.magnify_factor-=delta;
+	if (state.magnify_factor<magnify_factor_min) state.magnify_factor=magnify_factor_min;
+	if (state.magnify_factor>magnify_factor_max) state.magnify_factor=magnify_factor_max;
 	
-	SetControlValue(magnify_slider,magnify_factor);
+	SetControlValue(magnify_slider,state.magnify_factor);
 	
     main_wind_draw();
 }
@@ -982,16 +976,19 @@ void main_wind_open(void)
    
         // misc setup
         
-	walk_view_y_angle=0.0f;
-	walk_view_x_angle=0.0f;
+	view_ang.y=0.0f;
+	view_ang.x=0.0f;
 	
-	swap_panel_forward=swap_panel_side=swap_panel_top=FALSE;
+	state.swap_panel_forward=FALSE;
+	state.swap_panel_side=FALSE;
+	state.swap_panel_top=FALSE;
 	
-	drag_mode=drag_mode_mesh;
-	grid_mode=grid_mode_small;
-	select_toggle_mode=FALSE;
+	state.vertex_mode=vertex_mode_none;
+	state.drag_mode=drag_mode_mesh;
+	state.grid_mode=grid_mode_small;
+	state.select_toggle_mode=FALSE;
 	
-	drag_handle_idx=-1;
+	state.drag_handle_idx=-1;
 	
 	main_wind_set_uv_layer(uv_layer_normal);
 	menu_set_show_hide_check();
@@ -1126,7 +1123,7 @@ void main_wind_resize(void)
 	main_wind_setup();
 	main_wind_resize_buttons();
 	DrawControls(mainwind);
-	main_wind_set_view(main_wind_view);
+	main_wind_set_view(state.view);
 	main_wind_draw();
 }
 
@@ -1138,21 +1135,21 @@ void main_wind_resize(void)
 
 void main_wind_set_view(int view)
 {
-	main_wind_view=view;
-	main_wind_panel_focus=kf_panel_top;
+	state.view=view;
+	state.focus=kf_panel_top;
 	
 	menu_set_view_check(view);
 }
 
 void main_wind_set_perspective(int perspective)
 {
-	main_wind_perspective=perspective;
+	state.perspective=perspective;
 	menu_set_perspective_check(perspective);
 }
 
 void main_wind_set_uv_layer(int uv_layer)
 {
-	main_wind_uv_layer=uv_layer;
+	state.uv_layer=uv_layer;
 	menu_set_uv_check(uv_layer);
 	palette_reset();			// in case polygon palette is up
 }
@@ -1226,7 +1223,7 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-	if (main_wind_perspective==ps_perspective) {
+	if (state.perspective==ps_perspective) {
 		ratio=(float)(view_setup->box.rx-view_setup->box.lx)/(float)(view_setup->box.by-view_setup->box.ty);
 		gluPerspective(view_setup->fov,ratio,(GLdouble)near_z,(GLdouble)far_z);
 	}
@@ -1244,7 +1241,7 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int
 	switch (view_setup->proj_type) {
 	
 		case walk_view_proj_type_forward:
-			if (swap_panel_forward) {
+			if (state.swap_panel_forward) {
 				glRotatef(0.0f,0.0f,1.0f,0.0f);
 			}
 			else {
@@ -1253,7 +1250,7 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int
 			break;
 			
 		case walk_view_proj_type_side:
-			if (swap_panel_side) {
+			if (state.swap_panel_side) {
 				glRotatef(90.0f,0.0f,1.0f,0.0f);
 			}
 			else {
@@ -1267,8 +1264,8 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int
 			break;
 
 		case walk_view_proj_type_walk:
-			glRotatef(-walk_view_x_angle,1.0f,0.0f,0.0f);
-			glRotatef(-angle_add(walk_view_y_angle,180.0f),0.0f,1.0f,0.0f);
+			glRotatef(-view_ang.x,1.0f,0.0f,0.0f);
+			glRotatef(-angle_add(view_ang.y,180.0f),0.0f,1.0f,0.0f);
 			break;
 			
 	}
@@ -1351,7 +1348,7 @@ void main_wind_draw_3_panel_dividers(void)
 
 	glLineWidth(2.0f);
 	
-	switch (main_wind_panel_focus) {
+	switch (state.focus) {
 	
 		case kf_panel_forward:
 			main_wind_setup_panel_side(&view_setup);
@@ -1403,7 +1400,7 @@ void main_wind_draw_4_panel_dividers(void)
 
 	glLineWidth(2.0f);
 	
-	switch (main_wind_panel_focus) {
+	switch (state.focus) {
 	
 		case kf_panel_forward:
 			main_wind_setup_panel_side_frame(&view_setup);
@@ -1488,7 +1485,7 @@ void main_wind_draw(void)
     
         // the views
 		
-	switch (main_wind_view) {
+	switch (state.view) {
 	
 		case vw_3_panel:
 			main_wind_setup_panel_forward(&view_setup);
@@ -1555,8 +1552,8 @@ void main_wind_draw(void)
 
 void main_wind_set_focus(int focus)
 {
-	if (main_wind_panel_focus!=focus) {
-		main_wind_panel_focus=focus;
+	if (state.focus!=focus) {
+		state.focus=focus;
 		main_wind_draw();
 	}
 }
@@ -1574,8 +1571,8 @@ void main_wind_center_position_in_map(void)
 	
 		// view angles
 		
-	walk_view_y_angle=0.0f;
-	walk_view_x_angle=0.0f;
+	view_ang.y=0.0f;
+	view_ang.x=0.0f;
 	
 		// look for player spot first
 		
@@ -1625,13 +1622,13 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 {
 	editor_3D_view_setup	view_setup;
 
-	switch (main_wind_view) {
+	switch (state.view) {
 	
 		case vw_3_panel:
 			main_wind_setup_panel_forward(&view_setup);
 			if (main_wind_click_check_box(pt,&view_setup.box)) {
 				main_wind_set_focus(kf_panel_forward);
-				if (walk_view_swap_click(&view_setup,pt,&swap_panel_forward)) return(TRUE);
+				if (walk_view_swap_click(&view_setup,pt,&state.swap_panel_forward)) return(TRUE);
 				walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
 				return(TRUE);
 			}
@@ -1639,7 +1636,7 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 			main_wind_setup_panel_side(&view_setup);
 			if (main_wind_click_check_box(pt,&view_setup.box)) {
 				main_wind_set_focus(kf_panel_side);
-				if (walk_view_swap_click(&view_setup,pt,&swap_panel_side)) return(TRUE);
+				if (walk_view_swap_click(&view_setup,pt,&state.swap_panel_side)) return(TRUE);
 				walk_view_click(&view_setup,pt,vm_dir_side,FALSE,dblclick);
 				return(TRUE);
 			}
@@ -1656,7 +1653,7 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 			main_wind_setup_panel_forward_frame(&view_setup);
 			if (main_wind_click_check_box(pt,&view_setup.box)) {
 				main_wind_set_focus(kf_panel_forward);
-				if (walk_view_swap_click(&view_setup,pt,&swap_panel_forward)) return(TRUE);
+				if (walk_view_swap_click(&view_setup,pt,&state.swap_panel_forward)) return(TRUE);
 				walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
 				return(TRUE);
 			}
@@ -1664,7 +1661,7 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 			main_wind_setup_panel_side_frame(&view_setup);
 			if (main_wind_click_check_box(pt,&view_setup.box)) {
 				main_wind_set_focus(kf_panel_side);
-				if (walk_view_swap_click(&view_setup,pt,&swap_panel_side)) return(TRUE);
+				if (walk_view_swap_click(&view_setup,pt,&state.swap_panel_side)) return(TRUE);
 				walk_view_click(&view_setup,pt,vm_dir_side,FALSE,dblclick);
 				return(TRUE);
 			}
@@ -1707,43 +1704,6 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 
 /* =======================================================
 
-      Key Presses
-      
-======================================================= */
-
-bool main_wind_space_down(void)
-{
-	KeyMap			map;
-	unsigned char	*c;
-	
-	GetKeys(map);
-	c=(unsigned char*)map;
-	
-	return((c[6]&0x02)!=0);
-}
-
-bool main_wind_option_down(void)
-{
-	return((GetCurrentKeyModifiers()&optionKey)!=0);
-}
-
-bool main_wind_control_down(void)
-{
-	return((GetCurrentKeyModifiers()&controlKey)!=0);
-}
-
-bool main_wind_command_down(void)
-{
-	return((GetCurrentKeyModifiers()&cmdKey)!=0);
-}
-
-bool main_wind_shift_down(void)
-{
-	return((GetCurrentKeyModifiers()&shiftKey)!=0);
-}
-
-/* =======================================================
-
       Cursors
       
 ======================================================= */
@@ -1752,7 +1712,7 @@ void main_wind_cursor(d3pnt *pt)
 {
 	editor_3D_view_setup	view_setup;
 
-	switch (main_wind_view) {
+	switch (state.view) {
 	
 		case vw_3_panel:
 			main_wind_setup_panel_forward(&view_setup);
@@ -1815,14 +1775,14 @@ void main_wind_key_down(char ch)
 		
 	if (ch==0x9) {
 	
-		switch (main_wind_view) {
+		switch (state.view) {
 			case vw_3_panel:
-				main_wind_panel_focus++;
-				if (main_wind_panel_focus==3) main_wind_panel_focus=0;
+				state.focus++;
+				if (state.focus==3) state.focus=0;
 				break;
 			case vw_4_panel:
-				main_wind_panel_focus++;
-				if (main_wind_panel_focus==4) main_wind_panel_focus=0;
+				state.focus++;
+				if (state.focus==4) state.focus=0;
 				break;
 		}
 		
@@ -1857,12 +1817,12 @@ void main_wind_key_down(char ch)
 	
 		// send keys to proper panel
 		
-	switch (main_wind_view) {
+	switch (state.view) {
 	
 		case vw_3_panel:
 		case vw_4_panel:
 		
-			switch (main_wind_panel_focus) {
+			switch (state.focus) {
 			
 				case kf_panel_forward:
 				case kf_panel_walk:
@@ -1908,7 +1868,7 @@ void main_wind_scroll_wheel(d3pnt *pt,int delta)
 		// check if over a panel and switch
 		// to that panel
 		
-	switch (main_wind_view) {
+	switch (state.view) {
 	
 		case vw_3_panel:
 			main_wind_setup_panel_forward(&view_setup);
@@ -1960,12 +1920,12 @@ void main_wind_scroll_wheel(d3pnt *pt,int delta)
 
 		// run wheel change
 	
-	switch (main_wind_view) {
+	switch (state.view) {
 	
 		case vw_3_panel:
 		case vw_4_panel:
 		
-			switch (main_wind_panel_focus) {
+			switch (state.focus) {
 				case kf_panel_forward:
 					main_wind_setup_panel_forward(&view_setup);
 					walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_forward);
@@ -2009,50 +1969,56 @@ void main_wind_tool_reset(void)
 {
 		// vertex mode
 		
-	SetControlValue(tool_ctrl[0],(vertex_mode==vertex_mode_none)?1:0);
-	SetControlValue(tool_ctrl[1],(vertex_mode==vertex_mode_lock)?1:0);
-	SetControlValue(tool_ctrl[2],(vertex_mode==vertex_mode_snap)?1:0);
+	SetControlValue(tool_ctrl[0],(state.vertex_mode==vertex_mode_none)?1:0);
+	SetControlValue(tool_ctrl[1],(state.vertex_mode==vertex_mode_lock)?1:0);
+	SetControlValue(tool_ctrl[2],(state.vertex_mode==vertex_mode_snap)?1:0);
 	
 		// select toggle mode
 		
-	SetControlValue(tool_ctrl[3],select_toggle_mode?1:0);
+	SetControlValue(tool_ctrl[3],state.select_toggle_mode?1:0);
 	
 		// drag mode
 		
-	SetControlValue(tool_ctrl[4],(drag_mode==drag_mode_mesh)?1:0);
-	SetControlValue(tool_ctrl[5],(drag_mode==drag_mode_polygon)?1:0);
-	SetControlValue(tool_ctrl[6],(drag_mode==drag_mode_vertex)?1:0);
+	SetControlValue(tool_ctrl[4],(state.drag_mode==drag_mode_mesh)?1:0);
+	SetControlValue(tool_ctrl[5],(state.drag_mode==drag_mode_polygon)?1:0);
+	SetControlValue(tool_ctrl[6],(state.drag_mode==drag_mode_vertex)?1:0);
 	
 		// auto-texture
 		
-	SetControlValue(tool_ctrl[11],dp_auto_texture?1:0);
+	SetControlValue(tool_ctrl[11],state.auto_texture?1:0);
 	
 		// node mode
 		
-	SetControlValue(tool_ctrl[12],(node_mode==node_mode_select)?1:0);
-	SetControlValue(tool_ctrl[13],(node_mode==node_mode_link)?1:0);
-	SetControlValue(tool_ctrl[14],(node_mode==node_mode_remove_link)?1:0);
+	SetControlValue(tool_ctrl[12],(state.node_mode==node_mode_select)?1:0);
+	SetControlValue(tool_ctrl[13],(state.node_mode==node_mode_link)?1:0);
+	SetControlValue(tool_ctrl[14],(state.node_mode==node_mode_remove_link)?1:0);
+	
+		// normals
+		
+	SetControlValue(tool_ctrl[15],(state.show_normals)?1:0);
+	SetControlValue(tool_ctrl[16],(state.cull)?1:0);
 	
 		// grid mode
 		
-	SetBevelButtonMenuValue(tool_ctrl[10],(grid_mode+1));
+	SetBevelButtonMenuValue(tool_ctrl[10],(state.grid_mode+1));
 }
 
 void main_wind_tool_default(void)
 {
-    vertex_mode=vertex_mode_none;
-	drag_mode=drag_mode_mesh;
-	grid_mode=grid_mode_small;
+    state.vertex_mode=vertex_mode_none;
+	state.drag_mode=drag_mode_mesh;
+	state.grid_mode=grid_mode_small;
+	state.node_mode=node_mode_select;
 	
-	dp_auto_texture=setup.auto_texture;
+	state.auto_texture=setup.auto_texture;
 	
-	node_mode=node_mode_select;
+	state.show_liquid=TRUE;
+	state.show_object=TRUE;
+	state.show_lightsoundparticle=TRUE;
+	state.show_node=FALSE;
 	
-	dp_liquid=dp_object=dp_lightsoundparticle=TRUE;
-	dp_normals=FALSE;
-	dp_node=FALSE;
-	dp_textured=TRUE;
-	dp_y_hide=FALSE;
+	state.show_normals=FALSE;
+	state.cull=FALSE;
     
 	menu_set_show_hide_check();
     main_wind_tool_reset();
@@ -2060,16 +2026,16 @@ void main_wind_tool_default(void)
 
 void main_wind_tool_switch_vertex_mode(void)
 {
-	vertex_mode++;
-	if (vertex_mode>vertex_mode_snap) vertex_mode=vertex_mode_none;
+	state.vertex_mode++;
+	if (state.vertex_mode>vertex_mode_snap) state.vertex_mode=vertex_mode_none;
 	
 	main_wind_tool_reset();
 }
 
 void main_wind_tool_switch_drag_mode(void)
 {
-	drag_mode++;
-	if (drag_mode>drag_mode_vertex) drag_mode=drag_mode_mesh;
+	state.drag_mode++;
+	if (state.drag_mode>drag_mode_vertex) state.drag_mode=drag_mode_mesh;
 
 	main_wind_tool_reset();
 	main_wind_draw();
@@ -2077,8 +2043,8 @@ void main_wind_tool_switch_drag_mode(void)
 
 void main_wind_tool_switch_grid_mode(void)
 {
-	grid_mode++;
-	if (grid_mode>grid_mode_large) grid_mode=grid_mode_none;
+	state.grid_mode++;
+	if (state.grid_mode>grid_mode_large) state.grid_mode=grid_mode_none;
 
 	main_wind_tool_reset();
 }
@@ -2395,7 +2361,7 @@ void main_wind_tool_fill_tool_combos(void)
 
 /* =======================================================
 
-      Utility Routines
+      OS Specific Utility Routines
       
 ======================================================= */
 
@@ -2439,6 +2405,37 @@ void os_set_resize_cursor(void)
 bool os_button_down(void)
 {
 	return(Button());
+}
+
+bool os_key_space_down(void)
+{
+	KeyMap			map;
+	unsigned char	*c;
+	
+	GetKeys(map);
+	c=(unsigned char*)map;
+	
+	return((c[6]&0x02)!=0);
+}
+
+bool os_key_option_down(void)
+{
+	return((GetCurrentKeyModifiers()&optionKey)!=0);
+}
+
+bool os_key_control_down(void)
+{
+	return((GetCurrentKeyModifiers()&controlKey)!=0);
+}
+
+bool os_key_command_down(void)
+{
+	return((GetCurrentKeyModifiers()&cmdKey)!=0);
+}
+
+bool os_key_shift_down(void)
+{
+	return((GetCurrentKeyModifiers()&shiftKey)!=0);
 }
 
 bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)

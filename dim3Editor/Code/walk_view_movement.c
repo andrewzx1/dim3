@@ -34,10 +34,10 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern d3pnt					view_pnt;
-extern int						magnify_factor;
-extern float					walk_view_y_angle,walk_view_x_angle;
+extern d3ang					view_ang;
 
 extern map_type					map;
+extern editor_state_type		state;
 
 /* =======================================================
 
@@ -77,7 +77,7 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 				rotate_2D_point_center(&xadd,&zadd,view_setup->ang.y);
 				break;
 			case vm_dir_top:
-				sz=(int)((float)(magnify_factor_max-magnify_factor)*mouse_top_view_drag_scale);
+				sz=(int)((float)(magnify_factor_max-state.magnify_factor)*mouse_top_view_drag_scale);
 				if (sz<1) sz=1;
 				xadd=x*sz;
 				yadd=0;
@@ -154,7 +154,7 @@ void walk_view_mouse_yz_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 			
 		if (view_move_dir==vm_dir_forward) {
 			if (labs(x)>5) {
-				walk_view_y_angle=angle_add(walk_view_y_angle,(float)(x/5));
+				view_ang.y=angle_add(view_ang.y,(float)(x/5));
 			}
 		}
 
@@ -196,7 +196,7 @@ void walk_view_scroll_wheel_rot_z_movement(editor_3D_view_setup *view_setup,int 
 	yadd=0;
 	zadd=delta*10;
 	
-	rotate_point_center(&xadd,&yadd,&zadd,0.0f,walk_view_y_angle,0.0f);
+	rotate_point_center(&xadd,&yadd,&zadd,0.0f,view_ang.y,0.0f);
 	
 	view_pnt.x-=(xadd*32);
 	view_pnt.y+=(yadd*32);
@@ -233,7 +233,7 @@ void walk_view_mouse_turn(d3pnt *pt)
 		if (labs(x)>5) {
 			old_pt.x=pt->x;
 			
-			walk_view_y_angle=angle_add(walk_view_y_angle,(float)(x/5));
+			view_ang.y=angle_add(view_ang.y,(float)(x/5));
 
 			redraw=TRUE;
 		}
@@ -243,9 +243,9 @@ void walk_view_mouse_turn(d3pnt *pt)
 		if (labs(y)>5) {
 			old_pt.y=pt->y;
 			
-			walk_view_x_angle+=(float)(y/5);
-			if (walk_view_x_angle<-30.0f) walk_view_x_angle=-30.0f;
-			if (walk_view_x_angle>30.0f) walk_view_x_angle=30.0f;
+			view_ang.x+=(float)(y/5);
+			if (view_ang.x<-30.0f) view_ang.x=-30.0f;
+			if (view_ang.x>30.0f) view_ang.x=30.0f;
 
 			redraw=TRUE;
 		}

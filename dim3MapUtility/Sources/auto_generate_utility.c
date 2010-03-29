@@ -406,8 +406,10 @@ void map_auto_generate_poly_from_top_trig_wall(int lx,int lz,int rx,int rz,int t
 	y[0]=ty;
 	y[1]=y[2]=by;
 
-	gx[0]=gx[1]=gx[2]=0.0f;
-	gy[0]=gy[1]=gy[2]=0.0f;
+	gx[0]=gx[2]=0.0f;
+	gx[1]=1.0f;
+	gy[0]=0.0f;
+	gy[1]=gy[2]=1.0f;
 }
 
 void map_auto_generate_poly_from_bot_trig_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
@@ -420,8 +422,10 @@ void map_auto_generate_poly_from_bot_trig_wall(int lx,int lz,int rx,int rz,int t
 	y[0]=by;
 	y[1]=y[2]=ty;
 
-	gx[0]=gx[1]=gx[2]=0.0f;
-	gy[0]=gy[1]=gy[2]=0.0f;
+	gx[0]=gx[2]=0.0f;
+	gx[1]=1.0f;
+	gy[0]=0.0f;
+	gy[1]=gy[2]=1.0f;
 }
 
 void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy)
@@ -495,7 +499,7 @@ void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,
       
 ======================================================= */
 
-bool map_auto_generate_mesh_start(map_type *map,int group_idx,bool moveable)
+bool map_auto_generate_mesh_start(map_type *map,int group_idx,int normal_mode,bool moveable)
 {
 	map_mesh_type			*mesh;
 
@@ -506,12 +510,8 @@ bool map_auto_generate_mesh_start(map_type *map,int group_idx,bool moveable)
 
 	mesh=&map->mesh.meshes[map_ag_mesh_idx];
 	mesh->group_idx=group_idx;
+	mesh->normal_mode=normal_mode;
 	mesh->flag.moveable=moveable;
-
-		// consider everything created through
-		// this routine to have out-facing normals
-
-	mesh->normal_mode=mesh_normal_mode_out;
 
 	return(TRUE);
 }
@@ -588,10 +588,9 @@ void map_auto_generate_mesh_get_poly_points(map_type *map,int mesh_idx,int poly_
 	*ptsz=poly->ptsz;
 }
 
-void map_auto_generate_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int x,int z,int txt_idx)
+void map_auto_generate_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int txt_idx)
 {
 	int				n,start_idx;
-	d3pnt			extrude_pnt;
 	map_mesh_type	*mesh;
 
 		// remember last poly
@@ -601,11 +600,7 @@ void map_auto_generate_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_
 
 		// punch the hole
 
-	extrude_pnt.x=x;
-	extrude_pnt.y=0;
-	extrude_pnt.z=z;
-	
-	map_mesh_poly_punch_hole(map,mesh_idx,poly_idx,&extrude_pnt);
+	map_mesh_poly_punch_hole(map,mesh_idx,poly_idx,NULL);
 
 		// fix the textures in new hole
 

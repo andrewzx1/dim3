@@ -39,9 +39,7 @@ extern file_path_setup_type		file_path_setup;
 extern map_type					map;
 
 d3pnt							view_pnt;
-int								walk_view_last_rn;
-int								magnify_factor=magnify_size;
-float							walk_view_fov,walk_view_y_angle,walk_view_x_angle;
+d3ang							view_ang;
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
 

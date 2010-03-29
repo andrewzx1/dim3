@@ -28,10 +28,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "common_view.h"
 
-extern int					drag_mode;
-
 extern map_type				map;
 extern setup_type			setup;
+extern editor_state_type	state;
 
 /* =======================================================
 
@@ -243,12 +242,12 @@ void piece_delete(void)
 		switch (type) {
 			
 			case mesh_piece:
-				if (drag_mode==drag_mode_polygon) {
+				if (state.drag_mode==drag_mode_polygon) {
 					map_mesh_delete_poly(&map,main_idx,sub_idx);
 					select_delete_move_index(mesh_piece,main_idx,sub_idx);
 					break;
 				}
-				if (drag_mode==drag_mode_mesh) {
+				if (state.drag_mode==drag_mode_mesh) {
 					map_mesh_delete(&map,main_idx);
 					break;
 				}
@@ -1011,7 +1010,7 @@ void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 		// nudge keys movement
 	
 	mv=walk_view_get_grid();
-	if (!main_wind_shift_down()) mv/=10;
+	if (!os_key_shift_down()) mv/=10;
 	
 	if (mv<1) mv=1;
 	

@@ -40,6 +40,93 @@ and can be sold or given away.
 
 /* =======================================================
 
+      Mesh Centers for Normal
+      
+======================================================= */
+
+void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_mesh_type *mesh,int poly_idx,unsigned char *vertex_mask)
+{
+	int					n,k,t,vertex_idx;
+	map_mesh_poly_type	*poly,*chk_poly;
+	
+		// mark all vertexes
+		// touched by this poly
+		
+	poly=&mesh->polys[poly_idx];
+	
+	for (n=0;n!=poly->ptsz;n++) {
+	
+		vertex_idx=poly->v[n];
+		if (vertex_mask[vertex_idx]==0x1) continue;
+		
+		vertex_mask[poly->v[n]]=0x1;
+		
+			// find any other polys touching
+			// vertexes to build proper vertexes
+			
+		chk_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			if (k!=poly_idx) {
+				for (t=0;t!=chk_poly->ptsz;t++) {
+					if (chk_poly->v[t]==vertex_idx) {
+						map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,k,vertex_mask);
+						break;
+					}
+				}
+			}
+			chk_poly++;
+		}
+	}
+}
+
+void map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_idx,d3pnt *center)
+{
+	int					n,cnt;
+	unsigned char		*vertex_mask;
+	d3pnt				*pt;
+	
+		// mesh centers for normals are all the points that are
+		// connected to this polygon by other polygons.  This
+		// helps separate meshes into smaller units when they are composed
+		// of distinct primitive like meshes
+		
+	center->x=center->y=center->z=0;
+	
+		// find all common vertexes
+		// by recursively adding vertexes
+		// for polys touching them
+		
+	vertex_mask=(unsigned char*)malloc(mesh->nvertex);
+	if (vertex_mask==NULL) return;
+	
+	bzero(vertex_mask,mesh->nvertex);
+	
+	map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,poly_idx,vertex_mask);
+	
+		// find center
+		
+	cnt=0;
+	
+	for (n=0;n!=mesh->nvertex;n++) {
+		if (vertex_mask[n]!=0x0) {
+			pt=&mesh->vertexes[n];
+			center->x+=pt->x;
+			center->y+=pt->y;
+			center->z+=pt->z;
+			cnt++;
+		}
+	}
+	
+	if (cnt!=0) {
+		center->x/=cnt;
+		center->y/=cnt;
+		center->z/=cnt;
+	}
+}
+
+/* =======================================================
+
       Normal In/Out
       
 ======================================================= */
@@ -204,8 +291,8 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 	int					n,mode;
 	float				u10,u20,v10,v20,f_denom;
 	bool				is_out,invert;
-	d3vct				p10,p20,vlft,vrgt,v_num;
-	d3pnt				*pt,*pt_1,*pt_2;
+	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
+	d3pnt				*pt,*pt_1,*pt_2,center;
 	map_mesh_poly_type	*poly;
 	
 		// skip locked normals
@@ -291,20 +378,17 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
+	
+			// get center for polys connected to
+			// this poly.  Happens in meshes where there
+			// are distinct primitives
+			
+		map_recalc_normals_find_mesh_center_for_poly(mesh,n,&center);
 		
-		is_out=FALSE;
+			// determine if poly is facing 'out'
 		
-		if ((fabs(poly->tangent_space.normal.y)>fabs(poly->tangent_space.normal.x)) && (fabs(poly->tangent_space.normal.y)>fabs(poly->tangent_space.normal.z))) {
-			is_out=map_recalc_normals_compare_sign((float)(poly->box.mid.y-mesh->box.mid.y),poly->tangent_space.normal.y);
-		}
-		else {
-			if (fabs(poly->tangent_space.normal.x)>fabs(poly->tangent_space.normal.z)) {
-				is_out=map_recalc_normals_compare_sign((float)(poly->box.mid.x-mesh->box.mid.x),poly->tangent_space.normal.x);
-			}
-			else {
-				is_out=map_recalc_normals_compare_sign((float)(poly->box.mid.z-mesh->box.mid.z),poly->tangent_space.normal.z);
-			}
-		}
+		vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,center.x,center.y,center.z);
+		is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
 		
 		switch (mode) {
 		

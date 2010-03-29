@@ -29,11 +29,12 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-extern d3pnt			view_pnt;
-extern int				drag_mode;
-extern map_type			map;
+extern d3pnt				view_pnt;
 
-extern WindowRef		mainwind;
+extern map_type				map;
+extern editor_state_type	state;
+
+extern WindowRef			mainwind;
 
 GrafPtr					info_status_saveport;
 
@@ -89,7 +90,7 @@ void info_status_line_mesh(char *txt,int mesh_idx,int poly_idx)
 	
 		// polygon selection
 		
-	if (drag_mode==drag_mode_polygon) {
+	if (state.drag_mode==drag_mode_polygon) {
 	
 		poly=&mesh->polys[poly_idx];
 		map_prepare_mesh_poly(mesh,poly);

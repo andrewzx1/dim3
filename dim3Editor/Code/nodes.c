@@ -28,16 +28,15 @@ and can be sold or given away.
 #include "interface.h"
 #include "common_view.h"
 
-extern int				node_mode;
+extern map_type					map;
+extern editor_state_type		state;
 
-extern map_type			map;
+typedef struct					{
+									int					win_link_idx,win_dist,
+														link_dist[max_node_link];
+								} node_scan_type;
 
-typedef struct			{
-							int					win_link_idx,win_dist,
-												link_dist[max_node_link];
-						} node_scan_type;
-
-node_scan_type			node_scan[max_node];
+node_scan_type					node_scan[max_node];
 
 /* =======================================================
 
@@ -123,7 +122,7 @@ void node_link_click(int node_idx)
 	
 		// remove link mode
 		
-	if (node_mode==node_mode_remove_link) {
+	if (state.node_mode==node_mode_remove_link) {
 			
 		for (n=0;n!=max_node_link;n++) {
 		
@@ -145,7 +144,7 @@ void node_link_click(int node_idx)
 	
 		// add link mode
 		
-	if (node_mode==node_mode_link) {
+	if (state.node_mode==node_mode_link) {
 		
 		k1=node_link_get_free_link(org_node_idx);
 		k2=node_link_get_free_link(node_idx);

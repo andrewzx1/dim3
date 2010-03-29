@@ -33,13 +33,12 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					magnify_factor,vertex_mode,drag_mode,grid_mode,node_mode;
-extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern d3pnt				view_pnt;
 extern d3rect				main_wind_box;
 
 extern map_type				map;
 extern setup_type			setup;
+extern editor_state_type	state;
 
 int							walk_view_vport[4];
 double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
@@ -108,7 +107,7 @@ void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_mov
 			return;
 			
 		case vm_dir_top:
-			sz=(int)((float)(magnify_factor_max-magnify_factor)*mouse_top_view_scale);
+			sz=(int)((float)(magnify_factor_max-state.magnify_factor)*mouse_top_view_scale);
 			if (sz<10) sz=10;
 			
 			*xadd=-(x*sz);
@@ -125,7 +124,7 @@ void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_mov
 
 int walk_view_get_grid(void)
 {
-	switch (grid_mode) {
+	switch (state.grid_mode) {
 		case grid_mode_small:
 			return(map_enlarge);
 		case grid_mode_medium:
@@ -158,7 +157,7 @@ void walk_view_click_snap(int mesh_idx,d3pnt *pt,d3pnt *mpt)
 	d3pnt			*dpt;
 	map_mesh_type	*mesh;
 	
-	if (vertex_mode!=vertex_mode_snap) return;
+	if (state.vertex_mode!=vertex_mode_snap) return;
 	
 		// get snap vertex
 		
@@ -667,7 +666,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 		// liquids
 		
-	if (dp_liquid) {
+	if (state.show_liquid) {
 			
 		for (n=0;n!=map.liquid.nliquid;n++) {
 			if (walk_view_liquid_click(view_setup,click_pt,&map.liquid.liquids[n],&fz)) {
@@ -681,7 +680,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		}
 	}
 	
-	if (dp_object) {
+	if (state.show_object) {
 	
 			// spots
 			
@@ -720,7 +719,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		}
 	}
 	
-	if (dp_lightsoundparticle) {
+	if (state.show_lightsoundparticle) {
 	
 			// map lights
 			
@@ -777,7 +776,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		}
 	}
 	
-	if (dp_node) {
+	if (state.show_node) {
 	
 			// map nodes
 			
@@ -811,11 +810,11 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 		// if a node, check link
 		// connections
 		
-	if ((type==node_piece) && (node_mode!=node_mode_select)) node_link_click(main_idx);
+	if ((type==node_piece) && (state.node_mode!=node_mode_select)) node_link_click(main_idx);
 	
 		// regular or toggle selection
 		
-	toggle_select=os_key_shift_down() || select_toggle_mode;
+	toggle_select=os_key_shift_down() || state.select_toggle_mode;
 	
 		// clear or add to selection
 		
@@ -865,7 +864,7 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	
 		// mesh vertex drags
 		
-	switch (drag_mode) {
+	switch (state.drag_mode) {
 	
 		case drag_mode_vertex:
 			if (walk_view_click_drag_vertex(view_setup,pt,view_move_dir)) return;
@@ -895,7 +894,7 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	
 		// mesh or poly drags
 		
-	switch (drag_mode) {
+	switch (state.drag_mode) {
 	
 		case drag_mode_mesh:
 			if (!os_key_control_down()) {

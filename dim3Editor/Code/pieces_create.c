@@ -30,11 +30,10 @@ and can be sold or given away.
 #include "common_view.h"
 
 extern d3pnt					view_pnt;
-extern int						drag_mode;
-extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
+extern editor_state_type		state;
 
 /* =======================================================
 
@@ -112,7 +111,7 @@ void piece_create_spot(void)
     
 		// select spot
 		
-    dp_object=TRUE;
+    state.show_object=TRUE;
 	
 	select_clear();
 	select_add(spot_piece,index,-1);
@@ -169,7 +168,7 @@ void piece_create_scenery(void)
     
 		// select spot
 		
-    dp_object=TRUE;
+    state.show_object=TRUE;
 	
 	select_clear();
 	select_add(scenery_piece,index,-1);
@@ -217,7 +216,7 @@ void piece_create_light(void)
 	
 		// select light
 		
-	dp_lightsoundparticle=TRUE;
+	state.show_lightsoundparticle=TRUE;
 	
 	select_clear();
 	select_add(light_piece,index,-1);
@@ -259,7 +258,7 @@ void piece_create_sound(void)
 	
 		// select sound
 		
-    dp_lightsoundparticle=TRUE;
+    state.show_lightsoundparticle=TRUE;
 	
 	select_clear();
 	select_add(sound_piece,index,-1);
@@ -302,7 +301,7 @@ void piece_create_particle(void)
 	
 		// select particle
 		
-    dp_lightsoundparticle=TRUE;
+    state.show_lightsoundparticle=TRUE;
 	
 	select_clear();
 	select_add(particle_piece,index,-1);
@@ -352,7 +351,7 @@ void piece_create_node(void)
 
 		// select sound
 		
-	dp_node=TRUE;
+	state.show_node=TRUE;
 	
 	select_clear();
 	select_add(node_piece,index,-1);
@@ -426,7 +425,7 @@ void piece_create_liquid(void)
 
 		// select the liquid
 		
-	dp_liquid=TRUE;
+	state.show_liquid=TRUE;
 	select_clear();
 	select_add(liquid_piece,index,-1);
 

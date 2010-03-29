@@ -29,9 +29,10 @@ and can be sold or given away.
 #include "common_view.h"
 #include "dialog.h"
 
-bool					done,map_opened;
+bool							done;
 
-file_path_setup_type	file_path_setup;
+extern file_path_setup_type		file_path_setup;
+extern editor_state_type		state;
 
 extern bool setup_xml_read(void);
 extern OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
@@ -74,7 +75,7 @@ void doinit(void)
 
 	HMSetTagDelay(250);
     
-	map_opened=FALSE;
+	state.map_opened=FALSE;
 	
 		// setup paths
 
