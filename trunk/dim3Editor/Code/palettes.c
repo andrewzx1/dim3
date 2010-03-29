@@ -40,9 +40,9 @@ and can be sold or given away.
 #define palette_type_particle			8
 #define palette_type_node				9
 
-extern int				drag_mode;
+extern editor_state_type	state;
 
-int						palette_cur_type,palette_x,palette_y;
+int							palette_cur_type,palette_x,palette_y;
 
 /* =======================================================
 
@@ -145,7 +145,7 @@ void palette_reset(void)
 	switch (type) {
 		
 		case mesh_piece:
-			if (drag_mode==drag_mode_polygon) {
+			if (state.drag_mode==drag_mode_polygon) {
 				cur_type=palette_type_polygon;
 			}
 			else {
@@ -154,7 +154,7 @@ void palette_reset(void)
 			break;
 			
 		case liquid_piece:
-			if (drag_mode==drag_mode_polygon) {
+			if (state.drag_mode==drag_mode_polygon) {
 				cur_type=palette_type_polygon;
 			}
 			else {

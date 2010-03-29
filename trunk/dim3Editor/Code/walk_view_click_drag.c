@@ -33,11 +33,10 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					vertex_mode,drag_handle_idx;
-extern bool					dp_auto_texture;
-extern d3pnt				view_pnt;
+extern d3pnt					view_pnt;
 
-extern map_type				map;
+extern map_type					map;
+extern editor_state_type		state;
 
 /* =======================================================
 
@@ -151,7 +150,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 		// hilite the drag handle
 		
-	drag_handle_idx=handle_idx;
+	state.drag_handle_idx=handle_idx;
 	main_wind_draw();
 	
 		// backup all the vertexes
@@ -233,7 +232,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		memmove(mesh->vertexes,old_dpt,(mesh->nvertex*sizeof(d3pnt)));
 		map_mesh_resize(&map,mesh_idx,&min,&max);
 		
-		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
+		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
         main_wind_draw();
 	}
@@ -244,7 +243,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 		// turn off hilite
 		
-	drag_handle_idx=-1;
+	state.drag_handle_idx=-1;
 	main_wind_draw();
 	
 	return(TRUE);
@@ -389,7 +388,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 				old_dpt_ptr++;
 			}
 			
-			if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
+			if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 		}
 		
         main_wind_draw();
@@ -492,7 +491,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 			dpt->z=old_dpt[n].z+mpt.z;
 		}
 
-		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_poly_uv(&map,mesh_idx,poly_idx);
+		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_poly_uv(&map,mesh_idx,poly_idx);
 
         main_wind_draw();
 	}
@@ -565,7 +564,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 		// turn on hilite
 		
-	drag_handle_idx=vertex_idx;
+	state.drag_handle_idx=vertex_idx;
 	main_wind_draw();
 
 		// drag
@@ -616,7 +615,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		dpt->y=old_dpt.y+mpt.y;
 		dpt->z=old_dpt.z+mpt.z;
 		
-		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
+		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
         main_wind_draw();
 	}
@@ -625,7 +624,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 		// turn off hilite
 		
-	drag_handle_idx=-1;
+	state.drag_handle_idx=-1;
 	main_wind_draw();
 	
 	return(TRUE);
@@ -748,7 +747,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 				break;
 		}
 		
-		if (dp_auto_texture) map_liquid_reset_uv(&map,liquid_idx);
+		if (state.auto_texture) map_liquid_reset_uv(&map,liquid_idx);
 
         main_wind_draw();
 	}
@@ -850,7 +849,7 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		liq->bot=old_bot+mpt.z;
 		liq->y=old_y+mpt.y;
 
-		if (dp_auto_texture) map_liquid_reset_uv(&map,main_idx);
+		if (state.auto_texture) map_liquid_reset_uv(&map,main_idx);
 
         main_wind_draw();
 	}

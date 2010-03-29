@@ -29,16 +29,13 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern d3pnt			view_pnt;
-extern int				vertex_mode,magnify_factor,
-						txt_palette_y,txt_palette_high;
-extern float			walk_view_y_angle,walk_view_x_angle;
-extern bool				map_opened,swap_panel_forward,swap_panel_side,swap_panel_top,
-						dp_auto_texture,
-						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide;
+extern d3pnt					view_pnt;
+extern d3ang					view_ang;
+extern int						txt_palette_y,txt_palette_high;
 
-extern map_type			map;
-extern setup_type		setup;
+extern map_type					map;
+extern setup_type				setup;
+extern editor_state_type		state;
 
 /* =======================================================
 
@@ -64,7 +61,7 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	view_setup->cpt.z=view_pnt.z;
 	
 	view_setup->ang.x=0.0f;
-	view_setup->ang.y=swap_panel_forward?180.0f:0.0f;
+	view_setup->ang.y=state.swap_panel_forward?180.0f:0.0f;
 	view_setup->ang.z=0.0f;
 	
 	view_setup->fov=walk_view_forward_fov;
@@ -72,7 +69,7 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
-	view_setup->swap_on=swap_panel_forward;
+	view_setup->swap_on=state.swap_panel_forward;
 	view_setup->clip_on=FALSE;
 	view_setup->rot_on=TRUE;
 }
@@ -95,7 +92,7 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=0.0f;
-	view_setup->ang.y=swap_panel_forward?180.0f:0.0f;
+	view_setup->ang.y=state.swap_panel_forward?180.0f:0.0f;
 	view_setup->ang.z=0.0f;
 	
 	view_setup->fov=walk_view_forward_fov;
@@ -103,7 +100,7 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_light_circle=FALSE;
 
-	view_setup->swap_on=swap_panel_forward;
+	view_setup->swap_on=state.swap_panel_forward;
 	view_setup->clip_on=FALSE;
 	view_setup->rot_on=TRUE;
 }
@@ -125,8 +122,8 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 	view_setup->cpt.y=view_pnt.y;
 	view_setup->cpt.z=view_pnt.z;
 
-	view_setup->ang.x=walk_view_x_angle;
-	view_setup->ang.y=walk_view_y_angle;
+	view_setup->ang.x=view_ang.x;
+	view_setup->ang.y=view_ang.y;
 	view_setup->ang.z=0.0f;
 	
 	view_setup->fov=walk_view_forward_fov;
@@ -163,7 +160,7 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=0.0f;
-	view_setup->ang.y=swap_panel_side?90.0f:270.0f;
+	view_setup->ang.y=state.swap_panel_side?90.0f:270.0f;
 	view_setup->ang.z=0.0f;
 	
 	view_setup->fov=walk_view_side_fov;
@@ -171,7 +168,7 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
-	view_setup->swap_on=swap_panel_side;
+	view_setup->swap_on=state.swap_panel_side;
 	view_setup->clip_on=FALSE;
 	view_setup->rot_on=TRUE;
 }
@@ -194,7 +191,7 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=0.0f;
-	view_setup->ang.y=swap_panel_side?90.0f:270.0f;
+	view_setup->ang.y=state.swap_panel_side?90.0f:270.0f;
 	view_setup->ang.z=0.0f;
 	
 	view_setup->fov=walk_view_side_fov;
@@ -202,7 +199,7 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_light_circle=FALSE;
 	
-	view_setup->swap_on=swap_panel_side;
+	view_setup->swap_on=state.swap_panel_side;
 	view_setup->clip_on=FALSE;
 	view_setup->rot_on=TRUE;
 }
@@ -227,7 +224,7 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->box.lx=wbox.lx+2;
 	view_setup->box.rx=wbox.rx-(palette_wid+2);
 	
-	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
+	mag_sz=(magnify_factor_max-state.magnify_factor)*(map_enlarge<<1);
 	
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y-mag_sz;
@@ -235,7 +232,7 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	
 	view_setup->clip_y=view_pnt.y;
 	
-	view_setup->ang.x=swap_panel_top?(90.0f):(-90.0f);
+	view_setup->ang.x=state.swap_panel_top?(90.0f):(-90.0f);
 	view_setup->ang.y=0.0f;
 	view_setup->ang.z=0.0f;
 	
@@ -244,7 +241,7 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_light_circle=TRUE;
 	
-	view_setup->swap_on=swap_panel_top;
+	view_setup->swap_on=state.swap_panel_top;
 	view_setup->clip_on=TRUE;
 	view_setup->rot_on=FALSE;
 }
@@ -263,7 +260,7 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->box.lx=wbox.lx+2;
 	view_setup->box.rx=(wbox.rx-palette_wid)-(((wbox.rx-palette_wid)-wbox.lx)/2);
 	
-	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
+	mag_sz=(magnify_factor_max-state.magnify_factor)*(map_enlarge<<1);
 	
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y-mag_sz;
@@ -280,7 +277,7 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
-	view_setup->swap_on=swap_panel_top;
+	view_setup->swap_on=state.swap_panel_top;
 	view_setup->clip_on=TRUE;
 	view_setup->rot_on=FALSE;
 }
@@ -297,7 +294,7 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	view_setup->box.by-=(txt_palette_high+info_high);
 	view_setup->box.rx-=palette_wid;
 
-	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
+	mag_sz=(magnify_factor_max-state.magnify_factor)*(map_enlarge<<1);
 
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y-mag_sz;
@@ -342,8 +339,8 @@ void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 	view_setup->cpt.y=view_pnt.y;
 	view_setup->cpt.z=view_pnt.z;
 
-	view_setup->ang.x=walk_view_x_angle;
-	view_setup->ang.y=walk_view_y_angle;
+	view_setup->ang.x=view_ang.x;
+	view_setup->ang.y=view_ang.y;
 	view_setup->ang.z=0.0f;
 	
 	view_setup->fov=walk_view_forward_fov;

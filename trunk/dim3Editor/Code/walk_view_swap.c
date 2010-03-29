@@ -39,7 +39,6 @@ and can be sold or given away.
 #define view_swap_triangle_size			8
 
 extern int				edit_view;
-extern float			walk_view_y_angle,walk_view_x_angle;
 
 extern map_type			map;
 

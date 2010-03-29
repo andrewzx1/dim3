@@ -31,11 +31,10 @@ and can be sold or given away.
 #include "walk_view.h"
 #include "import.h"
 
-extern int				drag_mode;
-extern bool				done,map_opened,
-						dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
+extern bool					done;
 
-extern map_type			map;
+extern map_type				map;
+extern editor_state_type	state;
 
 extern void light_maps_clear(void);
 
@@ -72,7 +71,7 @@ void menu_start(void)
 
 void menu_fix_enable(void)
 {
-	if (!map_opened) {
+	if (!state.map_opened) {
 		EnableMenuItem(GetMenuHandle(app_menu_file),1);
 		EnableMenuItem(GetMenuHandle(app_menu_file),2);
 		DisableMenuItem(GetMenuHandle(app_menu_file),3);
@@ -112,13 +111,13 @@ void menu_fix_enable(void)
         
 		if (select_has_type(mesh_piece)) {
 			EnableMenuItem(GetMenuHandle(app_menu_mesh),0);
-			if (drag_mode==drag_mode_polygon) {
+			if (state.drag_mode==drag_mode_polygon) {
 				EnableMenuItem(GetMenuHandle(app_menu_polygon),0);
 			}
 			else {
 				DisableMenuItem(GetMenuHandle(app_menu_polygon),0);
 			}
-			if (drag_mode==drag_mode_vertex) {
+			if (state.drag_mode==drag_mode_vertex) {
 				EnableMenuItem(GetMenuHandle(app_menu_vertex),0);
 			}
 			else {
@@ -163,10 +162,10 @@ void menu_set_uv_check(int uv_layer)
 
 void menu_set_show_hide_check(void)
 {
-	CheckMenuItem(GetMenuHandle(app_menu_view),12,dp_liquid);
-	CheckMenuItem(GetMenuHandle(app_menu_view),13,dp_object);
-	CheckMenuItem(GetMenuHandle(app_menu_view),14,dp_lightsoundparticle);
-	CheckMenuItem(GetMenuHandle(app_menu_view),15,dp_node);
+	CheckMenuItem(GetMenuHandle(app_menu_view),12,state.show_liquid);
+	CheckMenuItem(GetMenuHandle(app_menu_view),13,state.show_object);
+	CheckMenuItem(GetMenuHandle(app_menu_view),14,state.show_lightsoundparticle);
+	CheckMenuItem(GetMenuHandle(app_menu_view),15,state.show_node);
 }
 
 /* =======================================================
@@ -210,7 +209,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
             return(noErr);
             
 		case kHICommandQuit:
-			if (map_opened) {
+			if (state.map_opened) {
 				if (!menu_save_changes_dialog()) return(noErr);
 				file_close_map();
 			}
@@ -228,7 +227,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandClose:
-			if (map_opened) {
+			if (state.map_opened) {
 				if (!menu_save_changes_dialog()) return(noErr);
 				file_close_map();
 			}
@@ -304,7 +303,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandViewShowHideLiquids:
 			select_remove_type(liquid_piece);
-			dp_liquid=!dp_liquid;
+			state.show_liquid=!state.show_liquid;
 			menu_set_show_hide_check();
 			main_wind_draw();
 			break;
@@ -312,7 +311,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandViewShowHideSpots:
 			select_remove_type(spot_piece);
 			select_remove_type(scenery_piece);
-			dp_object=!dp_object;
+			state.show_object=!state.show_object;
 			menu_set_show_hide_check();
 			main_wind_draw();
 			break;
@@ -321,14 +320,14 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			select_remove_type(light_piece);
 			select_remove_type(sound_piece);
 			select_remove_type(particle_piece);
-			dp_lightsoundparticle=!dp_lightsoundparticle;
+			state.show_lightsoundparticle=!state.show_lightsoundparticle;
 			menu_set_show_hide_check();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewShowHideNodes:
 			select_remove_type(node_piece);
-			dp_node=!dp_node;
+			state.show_node=!state.show_node;
 			menu_set_show_hide_check();
 			main_wind_draw();
 			break;

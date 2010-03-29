@@ -270,7 +270,128 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>26B8BF08115F0CDE0019DC20</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>map_normals.c</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>26B8BF09115F0CDE0019DC20</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>map_normals.c</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>26B8BFA2116060CC0019DC20</string>
+						<key>history</key>
+						<array>
+							<string>26B8BF30115FD2B40019DC20</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1041, 904}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>364 83 1041 945 0 0 1680 1028 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>26B8BF36115FD2C20019DC20</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>file_map_read.c</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>26B8BF37115FD2C20019DC20</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>file_map_read.c</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>26B8BFA3116060CC0019DC20</string>
+						<key>history</key>
+						<array>
+							<string>26B8BF29115FB5F90019DC20</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1041, 706}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>461 181 1041 747 0 0 1680 1028 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>26B8BF39115FD2C20019DC20</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>file_map_read_v3.c</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>26B8BF3A115FD2C20019DC20</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>file_map_read_v3.c</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>26B8BFA4116060CC0019DC20</string>
+						<key>history</key>
+						<array>
+							<string>26B8BF28115FB4C90019DC20</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1041, 706}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>297 133 1041 747 0 0 1680 1028 </string>
+			</dict>
+		</dict>
+	</array>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -352,7 +473,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {284, 692}}</string>
+							<string>{{0, 104}, {284, 692}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -452,9 +573,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>263A5186115C60180059859F</string>
+				<string>26B8BEBF115EEABE0019DC20</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>263A5187115C60180059859F</string>
+				<string>26B8BEC0115EEABE0019DC20</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -575,7 +696,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>291266584.67378199</real>
+	<real>291528908.30166698</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -590,9 +711,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>263A5188115C60180059859F</string>
 		<string>260AFEBC0D404E7500F6C42F</string>
+		<string>26B8BF39115FD2C20019DC20</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>26B8BF36115FD2C20019DC20</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
+		<string>26B8BF08115F0CDE0019DC20</string>
 	</array>
 	<key>WindowString</key>
 	<string>1258 258 306 751 0 0 1680 1028 </string>
@@ -633,6 +757,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -672,7 +798,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>263A5180115C5F8A0059859F</string>
+				<string>26B8BEB7115EEAA50019DC20</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -888,8 +1014,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>268BEE811157CE35001A0B3E</string>
-				<string>268BEE821157CE35001A0B3E</string>
+				<string>26B8BEB9115EEAA50019DC20</string>
+				<string>26B8BEBA115EEAA50019DC20</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -898,7 +1024,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

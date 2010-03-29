@@ -33,15 +33,14 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cy,main_wind_uv_layer,txt_palette_high;
-extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-extern bool				dp_normals,dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_textured;
-extern d3pnt			view_pnt;
+extern int					txt_palette_high;
+extern d3pnt				view_pnt;
 
-extern map_type			map;
-extern setup_type		setup;
-extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
-						light_bitmap,sound_bitmap,particle_bitmap;
+extern map_type				map;
+extern setup_type			setup;
+extern editor_state_type	state;
+extern bitmap_type			spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
+							light_bitmap,sound_bitmap,particle_bitmap;
 						
 extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
 
@@ -157,6 +156,41 @@ void walk_view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 
 /* =======================================================
 
+      Poly Culling
+      
+======================================================= */
+
+bool walk_view_draw_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	int			n;
+	d3pnt		center;
+	d3vct		face_vct;
+	
+	if (!state.cull) return(FALSE);
+	if (poly->ptsz==0) return(FALSE);
+	
+		// get center
+		
+	center.x=center.y=center.z=0;
+	
+	for (n=0;n!=poly->ptsz;n++) {
+		center.x+=mesh->vertexes[poly->v[n]].x;
+		center.y+=mesh->vertexes[poly->v[n]].y;
+		center.z+=mesh->vertexes[poly->v[n]].z;
+	}
+	
+	center.x/=poly->ptsz;
+	center.y/=poly->ptsz;
+	center.z/=poly->ptsz;
+	
+		// is normal facing away?
+		
+	vector_create(&face_vct,center.x,center.y,center.z,view_pnt.x,view_pnt.y,view_pnt.z);
+	return(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
+}
+
+/* =======================================================
+
       Walk View Mesh Drawing
       
 ======================================================= */
@@ -207,7 +241,7 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 			// skip any meshes that don't have
 			// light maps if on light maps
 			
-		if ((main_wind_uv_layer==uv_layer_light_map) && (mesh->flag.no_light_map)) {
+		if ((state.uv_layer==uv_layer_light_map) && (mesh->flag.no_light_map)) {
 			mesh++;
 			continue;
 		}
@@ -220,12 +254,16 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 			
 				// no light map?
 				
-			if ((main_wind_uv_layer==uv_layer_light_map) && (mesh_poly->lmap_txt_idx==-1)) continue;
+			if ((state.uv_layer==uv_layer_light_map) && (mesh_poly->lmap_txt_idx==-1)) continue;
+		
+				// culling
+			
+			if (walk_view_draw_cull_poly(mesh,mesh_poly)) continue;
 			
 				// get texture.  If in second UV, we use light map
 				// texture for display if it exists
 				
-			if (main_wind_uv_layer==uv_layer_normal) {
+			if (state.uv_layer==uv_layer_normal) {
 				texture=&map.textures[mesh_poly->txt_idx];
 				uv=&mesh_poly->main_uv;
 			}
@@ -370,7 +408,7 @@ void walk_view_draw_liquids(editor_3D_view_setup *view_setup,bool opaque)
 	map_liquid_type		*liquid;
 	map_liquid_uv_type	*uv;
 	
-	if (!dp_liquid) return;
+	if (!state.show_liquid) return;
 	
 		// no depth buffer for transparent segments
 		
@@ -414,12 +452,12 @@ void walk_view_draw_liquids(editor_3D_view_setup *view_setup,bool opaque)
 		
 			// no light map?
 				
-		if ((main_wind_uv_layer==uv_layer_light_map) && (liquid->lmap_txt_idx==-1)) continue;
+		if ((state.uv_layer==uv_layer_light_map) && (liquid->lmap_txt_idx==-1)) continue;
 			
 			// get texture.  If in second UV, we use light map
 			// texture for display if it exists
 			
-		if (main_wind_uv_layer==uv_layer_normal) {
+		if (state.uv_layer==uv_layer_normal) {
 			texture=&map.textures[liquid->txt_idx];
 			uv=&liquid->main_uv;
 		}
@@ -623,7 +661,7 @@ void walk_view_draw_nodes(editor_3D_view_setup *view_setup)
 	node_type	*node,*lnode;
 	matrix_type	mat;
 
-	if (!dp_node) return;
+	if (!state.show_node) return;
 	
 		// angles
 		
@@ -707,7 +745,7 @@ void walk_view_draw_spots_scenery(editor_3D_view_setup *view_setup)
 	spot_type			*spot;
 	map_scenery_type	*scenery;
 	
-    if (!dp_object) return;
+    if (!state.show_object) return;
     
 	for (n=0;n!=map.nspot;n++) {
 		spot=&map.spots[n];
@@ -738,7 +776,7 @@ void walk_view_draw_lights_sounds_particles(editor_3D_view_setup *view_setup)
 {
 	int				n;
 	
-	if (!dp_lightsoundparticle) return;
+	if (!state.show_lightsoundparticle) return;
 	
 	for (n=0;n!=map.nlight;n++) {
 	
@@ -863,7 +901,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
         // draw normals mesh lines
 		// push view forward to better z-buffer lines
       
-	if (dp_normals) {
+	if (state.show_normals) {
 		main_wind_set_3D_projection(view_setup,(map.settings.editor.view_near_dist+20),(map.settings.editor.view_far_dist-20),walk_view_near_offset);
 		walk_view_draw_meshes_normals(view_setup);
 	}

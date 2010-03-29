@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "interface.h"
 
 extern d3pnt					view_pnt;
-extern float					walk_view_y_angle;
+extern d3ang					view_ang;
 
 extern file_path_setup_type		file_path_setup;
 extern setup_type				setup;
@@ -87,7 +87,7 @@ void launch_engine(void)
 	pt.y=view_pnt.y;
 	pt.z=view_pnt.z;
 	ang.x=0.0f;
-	ang.y=walk_view_y_angle;
+	ang.y=view_ang.y;
 	ang.z=0.0f;
 		
 	fwrite(&pt,1,sizeof(d3pnt),file);

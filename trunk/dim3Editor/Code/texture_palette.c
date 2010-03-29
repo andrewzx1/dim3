@@ -31,15 +31,14 @@ and can be sold or given away.
 
 #define txt_wind_per_page_count		32
 
-extern int				drag_mode,main_wind_uv_layer;
+extern map_type				map;
+extern editor_state_type	state;
 
-extern map_type			map;
+int							txt_page,txt_offset,
+							txt_palette_y,txt_palette_high,txt_pixel_sz;
+d3rect						txt_palette_box;
 
-int						txt_page,txt_offset,
-						txt_palette_y,txt_palette_high,txt_pixel_sz;
-d3rect					txt_palette_box;
-
-extern WindowRef		mainwind;
+extern WindowRef			mainwind;
 
 /* =======================================================
 
@@ -79,12 +78,12 @@ int texture_palette_get_selected_texture(void)
 	select_get(0,&type,&main_idx,&poly_idx);
 	
 	if (type==liquid_piece) {
-		if (main_wind_uv_layer==uv_layer_normal) return(map.liquid.liquids[main_idx].txt_idx);
+		if (state.uv_layer==uv_layer_normal) return(map.liquid.liquids[main_idx].txt_idx);
 		return(map.liquid.liquids[main_idx].lmap_txt_idx);
 	}
 	
 	if (type==mesh_piece) {
-		if (main_wind_uv_layer==uv_layer_normal) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
+		if (state.uv_layer==uv_layer_normal) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
 		return(map.mesh.meshes[main_idx].polys[poly_idx].lmap_txt_idx);
 	}
 	
@@ -106,7 +105,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 			// liquids
 			
 		if (type==liquid_piece) {
-			if (main_wind_uv_layer==uv_layer_normal) {
+			if (state.uv_layer==uv_layer_normal) {
 				map.liquid.liquids[main_idx].txt_idx=txt_idx;
 			}
 			else {
@@ -123,8 +122,8 @@ void texture_palette_put_selected_texture(int txt_idx)
 		
 			// only set polygon
 			
-		if (drag_mode==drag_mode_polygon) {
-			if (main_wind_uv_layer==uv_layer_normal) {
+		if (state.drag_mode==drag_mode_polygon) {
+			if (state.uv_layer==uv_layer_normal) {
 				mesh->polys[poly_idx].txt_idx=txt_idx;
 			}
 			else {
@@ -139,7 +138,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
-				if (main_wind_uv_layer==uv_layer_normal) {
+				if (state.uv_layer==uv_layer_normal) {
 					poly->txt_idx=txt_idx;
 				}
 				else {

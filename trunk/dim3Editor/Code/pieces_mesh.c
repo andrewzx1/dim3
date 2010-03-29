@@ -32,10 +32,8 @@ and can be sold or given away.
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
 
-extern int								drag_mode,main_wind_uv_layer;
-extern bool								dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
-
-extern map_type							map;
+extern map_type					map;
+extern editor_state_type		state;
 
 /* =======================================================
 
@@ -54,9 +52,9 @@ void piece_add_mesh_finish(int mesh_idx)
 
 		// change mode to move entire mesh
 		
-	drag_mode=drag_mode_mesh;
+	state.drag_mode=drag_mode_mesh;
 	
-	if (dp_auto_texture) {
+	if (state.auto_texture) {
 		map_mesh_reset_uv(&map,mesh_idx);
 	}
 	else {
@@ -649,7 +647,7 @@ void piece_add_obj_mesh_uv(void)
         
         npt=0;
 		
-		if (main_wind_uv_layer==uv_layer_normal) {
+		if (state.uv_layer==uv_layer_normal) {
 			uv_ptr=&poly->main_uv;
 		}
 		else {
@@ -1136,7 +1134,7 @@ void piece_split_mesh(void)
 	
 		// auto-switch to mesh drag mode
 		
-	drag_mode=drag_mode_mesh;
+	state.drag_mode=drag_mode_mesh;
 
 	main_wind_tool_reset();
 }

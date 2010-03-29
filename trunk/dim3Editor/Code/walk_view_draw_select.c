@@ -32,11 +32,11 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					drag_mode,drag_handle_idx;
-extern d3pnt				view_pnt;
+extern d3pnt					view_pnt;
 
-extern map_type				map;
-extern setup_type			setup;
+extern map_type					map;
+extern setup_type				setup;
+extern editor_state_type		state;
 
 /* =======================================================
 
@@ -91,7 +91,7 @@ void walk_view_draw_select_mesh(int mesh_idx)
 	
 		// is mesh only, draw resize handles
 		
-	if (drag_mode==drag_mode_mesh) {
+	if (state.drag_mode==drag_mode_mesh) {
 	
 		glEnable(GL_DEPTH_TEST);
 
@@ -102,7 +102,7 @@ void walk_view_draw_select_mesh(int mesh_idx)
 		glBegin(GL_POINTS);
 
 		for (n=0;n!=8;n++) {
-			if (drag_handle_idx==n) {
+			if (state.drag_handle_idx==n) {
 				glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
 			}
 			else {
@@ -133,7 +133,7 @@ void walk_view_draw_select_mesh_vertex(int mesh_idx)
 	glBegin(GL_POINTS);
 
 	for (n=0;n!=mesh->nvertex;n++) {
-		if (drag_handle_idx==n) {
+		if (state.drag_handle_idx==n) {
 			glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
 		}
 		else {
@@ -488,7 +488,7 @@ void walk_view_draw_select(d3pnt *cpt,bool rot_on)
 		// draw afterwards so mesh highlighting doesn't
 		// effect selection
 		
-	if (drag_mode==drag_mode_polygon) {
+	if (state.drag_mode==drag_mode_polygon) {
 	
 		for (n=(sel_count-1);n>=0;n--) {
 		
@@ -502,7 +502,7 @@ void walk_view_draw_select(d3pnt *cpt,bool rot_on)
 	
 		// finish with selecte mesh vertexes
 		
-	if (drag_mode==drag_mode_vertex) {
+	if (state.drag_mode==drag_mode_vertex) {
 
 		memset(draw_mesh_once,0x0,max_mesh);
 			

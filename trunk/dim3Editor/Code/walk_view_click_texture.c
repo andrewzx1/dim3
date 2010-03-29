@@ -35,10 +35,8 @@ and can be sold or given away.
 
 #define drag_texture_shift_factor		100.0f
 
-extern int					vertex_mode;
-extern bool					dp_auto_texture;
-
-extern map_type				map;
+extern map_type					map;
+extern editor_state_type		state;
 
 /* =======================================================
 

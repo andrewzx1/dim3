@@ -1101,30 +1101,30 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 		
 			if (portal->corridor_flag==ag_corridor_flag_horizontal) {
 				map_auto_generate_poly_from_bot_trig_wall(0,0,0,clip_sz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_bot_trig_wall(0,zsz,0,(zsz-clip_sz),ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_bot_trig_wall(xsz,0,xsz,clip_sz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_bot_trig_wall(xsz,zsz,xsz,(zsz-clip_sz),ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 			}
 
 			if (portal->corridor_flag==ag_corridor_flag_vertical) {
 				map_auto_generate_poly_from_bot_trig_wall(0,0,clip_sz,0,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_bot_trig_wall(xsz,0,(xsz-clip_sz),0,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 				
 				map_auto_generate_poly_from_bot_trig_wall(0,zsz,clip_sz,zsz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_bot_trig_wall(xsz,zsz,(xsz-clip_sz),zsz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 			}
 
 		}
@@ -1138,30 +1138,30 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 		
 			if (portal->corridor_flag==ag_corridor_flag_horizontal) {
 				map_auto_generate_poly_from_top_trig_wall(0,0,0,clip_sz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_top_trig_wall(0,zsz,0,(zsz-clip_sz),ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_top_trig_wall(xsz,0,xsz,clip_sz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_top_trig_wall(xsz,zsz,xsz,(zsz-clip_sz),ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 			}
 
 			if (portal->corridor_flag==ag_corridor_flag_vertical) {
 				map_auto_generate_poly_from_top_trig_wall(0,0,clip_sz,0,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_top_trig_wall(xsz,0,(xsz-clip_sz),0,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 				
 				map_auto_generate_poly_from_top_trig_wall(0,zsz,clip_sz,zsz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 
 				map_auto_generate_poly_from_top_trig_wall(xsz,zsz,(xsz-clip_sz),zsz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.frame,3,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,n,ag_settings.texture.corridor_wall_ceiling,3,px,py,pz,gx,gy);
 			}
 
 		}
