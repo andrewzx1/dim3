@@ -2402,6 +2402,16 @@ void os_set_resize_cursor(void)
    SetThemeCursor(kThemeResizeUpDownCursor);
 }
 
+void os_enable_menu_item_undo(bool enable)
+{
+	if (enable) {
+		EnableMenuItem(GetMenuRef(app_menu_edit),1);
+	}
+	else {
+		DisableMenuItem(GetMenuRef(app_menu_edit),1);
+	}
+}
+
 bool os_button_down(void)
 {
 	return(Button());

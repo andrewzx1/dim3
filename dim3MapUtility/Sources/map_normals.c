@@ -282,20 +282,24 @@ bool map_recalc_normals_poly_is_outside(map_mesh_type *mesh,int poly_idx)
 
 bool map_recalc_normals_poly_is_outside_edge(map_mesh_type *mesh,int poly_idx)
 {
-	int					n;
+	int					n,cnt;
 	d3pnt				*pt;
 	map_mesh_poly_type	*poly;
 	
 	poly=&mesh->polys[poly_idx];
 	
-		// if any point is on any edge, it counts
+		// if any point is on any 2 edges, it counts
 		// as outside
 		
 	for (n=0;n!=poly->ptsz;n++) {
+		cnt=0;
+		
 		pt=&mesh->vertexes[poly->v[n]];
-		if ((pt->x==mesh->box.min.x) || (pt->x==mesh->box.max.x)) return(TRUE);
-		if ((pt->y==mesh->box.min.y) || (pt->y==mesh->box.max.y)) return(TRUE);
-		if ((pt->z==mesh->box.min.z) || (pt->z==mesh->box.max.z)) return(TRUE);
+		if ((pt->x==mesh->box.min.x) || (pt->x==mesh->box.max.x)) cnt++;
+		if ((pt->y==mesh->box.min.y) || (pt->y==mesh->box.max.y)) cnt++;
+		if ((pt->z==mesh->box.min.z) || (pt->z==mesh->box.max.z)) cnt++;
+		
+		if (cnt>=2) return(TRUE);
 	}
 
 	return(FALSE);
