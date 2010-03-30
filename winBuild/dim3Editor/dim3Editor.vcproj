@@ -376,6 +376,10 @@
 						/>
 					</FileConfiguration>
 				</File>
+				<File
+					RelativePath=".\win32Code\dim3Editor_win32_glue.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 	</Files>
