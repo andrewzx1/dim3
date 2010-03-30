@@ -273,18 +273,18 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 		switch ((int)ang_y) {
 			case 0:
 				wall_normal.x=0.0f;
-				wall_normal.z=-1.0f;
+				wall_normal.z=1.0f;
 				break;
 			case 90:
-				wall_normal.x=1.0f;
+				wall_normal.x=-1.0f;
 				wall_normal.z=0.0f;
 				break;
 			case 180:
 				wall_normal.x=0.0f;
-				wall_normal.z=1.0f;
+				wall_normal.z=-1.0f;
 				break;
 			case 270:
-				wall_normal.x=-1.0f;
+				wall_normal.x=1.0f;
 				wall_normal.z=0.0f;
 				break;
 		}

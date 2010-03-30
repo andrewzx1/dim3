@@ -123,7 +123,7 @@ void palette_mesh_load(void)
 
 void palette_mesh_save(void)
 {
-	int						type,mesh_idx,poly_idx;
+	int						type,mesh_idx,poly_idx,normal_mode;
 	map_mesh_type			*mesh;
 
 		// get mesh
@@ -163,7 +163,14 @@ void palette_mesh_save(void)
 	mesh->msg.base_team=dialog_get_combo(palette_mesh_wind,kMeshSendMessageBaseTeam,0);
 	
 	mesh->hide_mode=dialog_get_combo(palette_mesh_wind,kMeshSettingHideMode,0);
+	
+	normal_mode=mesh->normal_mode;
 	mesh->normal_mode=dialog_get_combo(palette_mesh_wind,kMeshSettingNormalMode,0);
+	
+	if ((normal_mode!=mesh->normal_mode) && (mesh->normal_mode!=mesh_normal_mode_lock)) {
+		map_recalc_normals_mesh(mesh,FALSE);
+		main_wind_draw();
+	}
 }
 
 static pascal OSStatus palette_mesh_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)

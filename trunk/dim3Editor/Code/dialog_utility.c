@@ -552,7 +552,7 @@ static pascal OSStatus dialog_numeric_only_proc(EventHandlerCallRef handler,Even
 	char			ch;
 	
 	GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
-	if (((ch>='0') && (ch<='9')) || (ch=='.') || ((ch<' ') && (ch!=0xD))) return(eventNotHandledErr);
+	if (((ch>='0') && (ch<='9')) || (ch=='.') || (ch=='-') || ((ch<' ') && (ch!=0xD))) return(eventNotHandledErr);
 	
 	return(noErr);
 }
