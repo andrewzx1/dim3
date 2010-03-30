@@ -73,7 +73,7 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 	float			gx[8],gy[8];
 	d3pnt			pt;
 	d3ang			ang;
-	d3vct			wall_normal,floor_normal;
+	d3vct			wall_normal,floor_normal,border_normal;
 	map_mesh_type	*mesh;
 
 		// create new mesh for steps
@@ -269,23 +269,32 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 			// new normals
 		
 		wall_normal.y=0.0f;
+		border_normal.y=0.0f;
 
 		switch ((int)ang_y) {
 			case 0:
 				wall_normal.x=0.0f;
 				wall_normal.z=1.0f;
+				border_normal.x=1.0f;
+				border_normal.z=0.0f;
 				break;
 			case 90:
 				wall_normal.x=-1.0f;
 				wall_normal.z=0.0f;
+				border_normal.x=0.0f;
+				border_normal.z=-1.0f;
 				break;
 			case 180:
 				wall_normal.x=0.0f;
 				wall_normal.z=-1.0f;
+				border_normal.x=-1.0f;
+				border_normal.z=0.0f;
 				break;
 			case 270:
 				wall_normal.x=1.0f;
 				wall_normal.z=0.0f;
+				border_normal.x=0.0f;
+				border_normal.z=1.0f;
 				break;
 		}
 
@@ -301,6 +310,16 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 			memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx++].tangent_space.normal,&wall_normal,sizeof(d3vct));
 			memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx++].tangent_space.normal,&floor_normal,sizeof(d3vct));
 		}
+
+			// fix the inside walls
+
+		poly_idx+=3;
+		memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
+
+		poly_idx+=5;
+		border_normal.x=-border_normal.x;
+		border_normal.z=-border_normal.z;
+		memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
 
 			// now lock it
 
@@ -544,8 +563,9 @@ void map_auto_generate_ramps(map_type *map)
 
 void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int frame_sz,bool reverse,bool full_frame,bool window)
 {
-	int							zadd,y,y2,oy,lz,lx,rx,px[8],py[8],pz[8];
-	float						gx[8],gy[8];
+	int				zadd,y,y2,oy,lz,lx,rx,poly_idx,
+					px[8],py[8],pz[8];
+	float			gx[8],gy[8];
 
 	if (!ag_settings.frame) return;
 
@@ -629,6 +649,8 @@ void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 	}
 
 		// optional window texture
+		// if there's a window texture, we need to hand
+		// craft one normal and then lock mesh
 
 	if (window) {
 		map_auto_generate_poly_from_square_wall(lx,z,rx,z,ty,by,px,py,pz,gx,gy);
@@ -636,13 +658,27 @@ void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 		gx[1]=gx[2]=gy[2]=gy[3]=1.0f;
 
 		map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.window,4,px,py,pz,gx,gy);
+
+			// default normals
+
+		map_recalc_normals_mesh(&map->mesh.meshes[map_ag_mesh_idx],FALSE);
+
+		poly_idx=map->mesh.meshes[map_ag_mesh_idx].npoly-1;
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x=0.0f;
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.y=0.0f;
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z=(reverse?(1.0f):(-1.0f));
+
+			// now lock it
+
+		map->mesh.meshes[map_ag_mesh_idx].normal_mode=mesh_normal_mode_lock;
 	}
 }
 
 void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int frame_sz,bool reverse,bool full_frame,bool window)
 {
-	int							xadd,y,y2,oy,lx,lz,rz,px[8],py[8],pz[8];
-	float						gx[8],gy[8];
+	int				xadd,y,y2,oy,lx,lz,rz,
+					poly_idx,px[8],py[8],pz[8];
+	float			gx[8],gy[8];
 
 	if (!ag_settings.frame) return;
 
@@ -726,6 +762,8 @@ void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 	}
 
 		// optional window texture
+		// if there's a window texture, we need to hand
+		// craft one normal and then lock mesh
 
 	if (window) {
 		map_auto_generate_poly_from_square_wall(x,lz,x,rz,ty,by,px,py,pz,gx,gy);
@@ -733,6 +771,19 @@ void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 		gx[1]=gx[2]=gy[2]=gy[3]=1.0f;
 
 		map_auto_generate_mesh_add_poly(map,rn,ag_settings.texture.window,4,px,py,pz,gx,gy);
+
+			// default normals
+
+		map_recalc_normals_mesh(&map->mesh.meshes[map_ag_mesh_idx],FALSE);
+
+		poly_idx=map->mesh.meshes[map_ag_mesh_idx].npoly-1;
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x=(reverse?(1.0f):(-1.0f));
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.y=0.0f;
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z=0.0f;
+
+			// now lock it
+
+		map->mesh.meshes[map_ag_mesh_idx].normal_mode=mesh_normal_mode_lock;
 	}
 }
 
