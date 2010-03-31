@@ -395,12 +395,6 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 		if (!mesh->flag.on) continue;
 			
 		if (!mesh->flag.never_obscure) {
-
-				// is this mesh visible?
-
-			if (n!=start_mesh_idx) {
-				if (!view_visibility_check_mesh(start_mesh_idx,mesh)) continue;
-			}
 			
 				// auto-eliminate meshes drawn outside the obscure distance
 				
@@ -412,6 +406,12 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 			if (!mesh_inview(mesh)) {
 				if (!mesh->flag.shadow) continue;
 				if (!mesh_shadow_inview(mesh)) continue;
+			}
+
+				// check if obscured by other meshes
+
+			if (n!=start_mesh_idx) {
+				if (!view_visibility_check_mesh(start_mesh_idx,mesh)) continue;
 			}
 		}
 		else {
@@ -447,10 +447,6 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 		liq=&map.liquid.liquids[n];
 		
 		if (!liq->never_obscure) {
-			
-				// is this liquid visible?
-
-			if (!view_visibility_check_liquid(start_mesh_idx,liq)) continue;
 
 				// auto-eliminate liquids drawn outside the obscure distance
 					
@@ -460,6 +456,10 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 				// check if liquid within bound box
 
 			if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) continue;
+			
+				// check if obscured by other meshes
+
+			if (!view_visibility_check_liquid(start_mesh_idx,liq)) continue;
 		}
 		else {
 			d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
