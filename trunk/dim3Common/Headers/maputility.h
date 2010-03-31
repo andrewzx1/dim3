@@ -278,8 +278,7 @@ typedef struct		{
 						int									vertex_offset;
 						bool								moved,cur_ambient_only,
 															has_opaque,has_transparent,
-															has_shader,has_no_shader,has_glow,
-															has_light_map;
+															has_no_shader;
 					} map_mesh_draw_type;
 					
 typedef struct		{

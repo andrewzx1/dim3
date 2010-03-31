@@ -68,7 +68,8 @@ int map_auto_generate_steps_get_length(int ty,int by,int step_size,int step_high
 
 void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz,int step_high,int ty,int by,int kx,int kz,float ang_y)
 {
-	int				n,txt_idx,y,y2,ty2,z,ez,step_wid,step_cnt,poly_idx,
+	int				n,txt_idx,y,y2,ty2,z,ez,step_wid,step_cnt,
+					poly_idx,lft_poly_idx,rgt_poly_idx,
 					px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 	d3pnt			pt;
@@ -296,7 +297,7 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 
 		// step specific normals
 		
-	if (step_type!=ag_step_ramp) {
+	if ((step_type==ag_step_second_story) || (step_type==ag_step_corridor)) {
 		floor_normal.x=0.0f;
 		floor_normal.y=-1.0f;
 		floor_normal.z=0.0f;
@@ -308,6 +309,14 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 			memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx++].tangent_space.normal,&floor_normal,sizeof(d3vct));
 		}
 
+		if (step_type==ag_step_second_story) {
+			lft_poly_idx=poly_idx+3;
+			rgt_poly_idx=poly_idx+7;
+		}
+		else {
+			lft_poly_idx=poly_idx+2;
+			rgt_poly_idx=poly_idx+5;
+		}
 	}
 	
 		// ramp specific normals
@@ -316,17 +325,18 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x=-map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x;
 		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.y=-map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.y;
 		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z=-map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z;
+
+		lft_poly_idx=3;
+		rgt_poly_idx=7;
 	}
 		
 		// fix the inside walls
 
-	poly_idx+=3;
-	memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
+	memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[lft_poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
 
-	poly_idx+=4;
 	border_normal.x=-border_normal.x;
 	border_normal.z=-border_normal.z;
-	memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
+	memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[rgt_poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
 
 		// now lock it
 
