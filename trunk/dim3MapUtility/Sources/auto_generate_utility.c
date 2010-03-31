@@ -640,6 +640,7 @@ void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float
 void map_auto_generate_add_simple_lights(map_type *map)
 {
 	int							n,x,z,y,intensity;
+	float						exponent;
 	double						dx,dz;
 	auto_generate_box_type		*portal;
 	map_light_type				*lit;
@@ -665,6 +666,11 @@ void map_auto_generate_add_simple_lights(map_type *map)
 		intensity/=2;								// radius, so use half
 		if (intensity<100) intensity=100;
 		
+			// corridors get hard lights
+			
+		exponent=1.0f;
+		if (portal->corridor_flag!=ag_corridor_flag_portal) exponent=0.0f;
+		
 			// create the light
 	
 		lit=&map->lights[map->nlight];
@@ -678,7 +684,7 @@ void map_auto_generate_add_simple_lights(map_type *map)
 		lit->direction=ld_all;
 		lit->col.r=lit->col.g=lit->col.b=1.0f;
 		lit->intensity=intensity;
-		lit->exponent=1.0f;
+		lit->exponent=exponent;
 		lit->name[0]=0x0;
 		lit->on=TRUE;
 

@@ -254,77 +254,83 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 		
 	map_mesh_move(map,map_ag_mesh_idx,&pt);
 
-		// steps need hand crafted normals,
+		// steps and ramps need hand crafted normals,
 		// so generate the normals, lock it, and fix the
 		// ones needing fixing
 
-		// steps are wall, floor, etc order
+	map_recalc_normals_mesh(&map->mesh.meshes[map_ag_mesh_idx],FALSE);
 
-	if (step_type!=ag_step_ramp) {
+		// new normals
+	
+	wall_normal.y=0.0f;
+	border_normal.y=0.0f;
 
-			// default normals
+	switch ((int)ang_y) {
+		case 0:
+			wall_normal.x=0.0f;
+			wall_normal.z=1.0f;
+			border_normal.x=1.0f;
+			border_normal.z=0.0f;
+			break;
+		case 90:
+			wall_normal.x=-1.0f;
+			wall_normal.z=0.0f;
+			border_normal.x=0.0f;
+			border_normal.z=1.0f;
+			break;
+		case 180:
+			wall_normal.x=0.0f;
+			wall_normal.z=-1.0f;
+			border_normal.x=-1.0f;
+			border_normal.z=0.0f;
+			break;
+		case 270:
+			wall_normal.x=1.0f;
+			wall_normal.z=0.0f;
+			border_normal.x=0.0f;
+			border_normal.z=-1.0f;
+			break;
+	}
+	
+	poly_idx=0;
 
-		map_recalc_normals_mesh(&map->mesh.meshes[map_ag_mesh_idx],FALSE);
-
-			// new normals
+		// step specific normals
 		
-		wall_normal.y=0.0f;
-		border_normal.y=0.0f;
-
-		switch ((int)ang_y) {
-			case 0:
-				wall_normal.x=0.0f;
-				wall_normal.z=1.0f;
-				border_normal.x=1.0f;
-				border_normal.z=0.0f;
-				break;
-			case 90:
-				wall_normal.x=-1.0f;
-				wall_normal.z=0.0f;
-				border_normal.x=0.0f;
-				border_normal.z=-1.0f;
-				break;
-			case 180:
-				wall_normal.x=0.0f;
-				wall_normal.z=-1.0f;
-				border_normal.x=-1.0f;
-				border_normal.z=0.0f;
-				break;
-			case 270:
-				wall_normal.x=1.0f;
-				wall_normal.z=0.0f;
-				border_normal.x=0.0f;
-				border_normal.z=1.0f;
-				break;
-		}
-
+	if (step_type!=ag_step_ramp) {
 		floor_normal.x=0.0f;
 		floor_normal.y=-1.0f;
 		floor_normal.z=0.0f;
 
 			// fix the steps
 
-		poly_idx=0;
-
 		for (n=0;n!=step_cnt;n++) {
 			memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx++].tangent_space.normal,&wall_normal,sizeof(d3vct));
 			memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx++].tangent_space.normal,&floor_normal,sizeof(d3vct));
 		}
 
-			// fix the inside walls
-
-		poly_idx+=3;
-		memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
-
-		poly_idx+=5;
-		border_normal.x=-border_normal.x;
-		border_normal.z=-border_normal.z;
-		memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
-
-			// now lock it
-
-		map->mesh.meshes[map_ag_mesh_idx].normal_mode=mesh_normal_mode_lock;
 	}
+	
+		// ramp specific normals
+		
+	else {
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x=-map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x;
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.y=-map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.y;
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z=-map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z;
+	}
+		
+		// fix the inside walls
+
+	poly_idx+=3;
+	memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
+
+	poly_idx+=4;
+	border_normal.x=-border_normal.x;
+	border_normal.z=-border_normal.z;
+	memmove(&map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal,&border_normal,sizeof(d3vct));
+
+		// now lock it
+
+	map->mesh.meshes[map_ag_mesh_idx].normal_mode=mesh_normal_mode_lock;
 }
 
 /* =======================================================
@@ -666,7 +672,7 @@ void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 		poly_idx=map->mesh.meshes[map_ag_mesh_idx].npoly-1;
 		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x=0.0f;
 		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.y=0.0f;
-		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z=(reverse?(1.0f):(-1.0f));
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z=(reverse?(-1.0f):(1.0f));
 
 			// now lock it
 
@@ -777,7 +783,7 @@ void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 		map_recalc_normals_mesh(&map->mesh.meshes[map_ag_mesh_idx],FALSE);
 
 		poly_idx=map->mesh.meshes[map_ag_mesh_idx].npoly-1;
-		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x=(reverse?(1.0f):(-1.0f));
+		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.x=(reverse?(-1.0f):(1.0f));
 		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.y=0.0f;
 		map->mesh.meshes[map_ag_mesh_idx].polys[poly_idx].tangent_space.normal.z=0.0f;
 

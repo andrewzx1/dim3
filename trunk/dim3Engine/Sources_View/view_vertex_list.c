@@ -326,7 +326,7 @@ bool view_compile_mesh_gl_lists(void)
 
 				// only shift main UVs (not light mapped ones)
 
-			pp=vertex_ptr+((vertex_cnt*(3*3))+(mesh->draw.vertex_offset*2));
+			pp=vertex_ptr+((vertex_cnt*(3+3))+(mesh->draw.vertex_offset*2));
 			poly=mesh->polys;
 
 			for (k=0;k!=mesh->npoly;k++) {
