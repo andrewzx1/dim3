@@ -117,8 +117,12 @@ void loop_game_run(void)
 
 		// view input
 
+		// it's possible we could exit here, so
+		// make sure to jump out if state changes
+
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		view_loop_input();
+		if (server.state!=gs_running) return;
 	}
 
 		// score limits and game changes
