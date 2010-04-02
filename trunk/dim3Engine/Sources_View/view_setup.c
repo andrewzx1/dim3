@@ -446,6 +446,11 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 
 		liq=&map.liquid.liquids[n];
 		
+			// no draw liquids are volume only, so skip
+			// any drawing
+			
+		if (liq->no_draw) continue;
+		
 		if (!liq->never_obscure) {
 
 				// auto-eliminate liquids drawn outside the obscure distance

@@ -151,19 +151,13 @@ void walk_view_click_grid(d3pnt *pt)
 	pt->z*=sz;
 }
 
-void walk_view_click_snap(int mesh_idx,d3pnt *pt,d3pnt *mpt)
+bool walk_view_click_snap(int mesh_idx,d3pnt *pt)
 {
-	int				n,t,chk_x,chk_y,chk_z;
+	int				n,t;
 	d3pnt			*dpt;
 	map_mesh_type	*mesh;
 	
-	if (state.vertex_mode!=vertex_mode_snap) return;
-	
-		// get snap vertex
-		
-	chk_x=pt->x+mpt->x;
-	chk_y=pt->y+mpt->y;
-	chk_z=pt->z+mpt->z;
+	if (state.vertex_mode!=vertex_mode_snap) return(FALSE);
 	
 		// any vertexes to snap to?
 		
@@ -180,11 +174,9 @@ void walk_view_click_snap(int mesh_idx,d3pnt *pt,d3pnt *mpt)
 		
 		for (t=0;t!=mesh->nvertex;t++) {
 		
-			if (distance_get(dpt->x,dpt->y,dpt->z,chk_x,chk_y,chk_z)<(setup.snap_size*map_enlarge)) {
-				mpt->x=dpt->x-pt->x;
-				mpt->y=dpt->y-pt->y;
-				mpt->z=dpt->z-pt->z;
-				return;
+			if (distance_get(dpt->x,dpt->y,dpt->z,pt->x,pt->y,pt->z)<(setup.snap_size*map_enlarge)) {
+				memmove(pt,dpt,sizeof(d3pnt));
+				return(TRUE);
 			}
 			
 			dpt++;
@@ -192,9 +184,11 @@ void walk_view_click_snap(int mesh_idx,d3pnt *pt,d3pnt *mpt)
 	
 		mesh++;
 	}
+	
+	return(FALSE);
 }
 
-void walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *old_pts,d3pnt *mpt)
+bool walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 {
 	int					n,d,cur_dist;
 	d3pnt				hpt;
@@ -207,20 +201,23 @@ void walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *old_pts,d3pnt *m
 	poly=&mesh->polys[poly_idx];
 	
 	for (n=0;n!=poly->ptsz;n++) {
-		memmove(&hpt,mpt,sizeof(d3pnt));
+		memmove(&hpt,pt,sizeof(d3pnt));
 		
-		walk_view_click_snap(mesh_idx,&old_pts[n],&hpt);
-		d=distance_get(0,0,0,hpt.x,hpt.y,hpt.z);
-		if (d>(setup.snap_size*map_enlarge)) continue;
-		
-		if ((d<cur_dist) || (cur_dist<0)) {
-			cur_dist=d;
-			memmove(mpt,&hpt,sizeof(d3pnt));
+		if (walk_view_click_snap(mesh_idx,&hpt)) {
+			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
+			if (d>(setup.snap_size*map_enlarge)) continue;
+			
+			if ((d<cur_dist) || (cur_dist<0)) {
+				cur_dist=d;
+				memmove(pt,&hpt,sizeof(d3pnt));
+			}
 		}
 	}
+	
+	return(cur_dist!=-1);
 }
 
-void walk_view_click_snap_mesh(int mesh_idx,d3pnt *old_pts,d3pnt *mpt)
+bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt)
 {
 	int					n,d,cur_dist;
 	d3pnt				hpt;
@@ -231,17 +228,20 @@ void walk_view_click_snap_mesh(int mesh_idx,d3pnt *old_pts,d3pnt *mpt)
 	mesh=&map.mesh.meshes[mesh_idx];
 	
 	for (n=0;n!=mesh->nvertex;n++) {
-		memmove(&hpt,mpt,sizeof(d3pnt));
+		memmove(&hpt,pt,sizeof(d3pnt));
 		
-		walk_view_click_snap(mesh_idx,&old_pts[n],&hpt);
-		d=distance_get(0,0,0,hpt.x,hpt.y,hpt.z);
-		if (d>(setup.snap_size*map_enlarge)) continue;
-		
-		if ((d<cur_dist) || (cur_dist<0)) {
-			cur_dist=d;
-			memmove(mpt,&hpt,sizeof(d3pnt));
+		if (walk_view_click_snap(mesh_idx,&hpt)) {
+			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
+			if (d>(setup.snap_size*map_enlarge)) continue;
+			
+			if ((d<cur_dist) || (cur_dist<0)) {
+				cur_dist=d;
+				memmove(pt,&hpt,sizeof(d3pnt));
+			}
 		}
 	}
+	
+	return(cur_dist!=-1);
 }
 
 /* =======================================================

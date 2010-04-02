@@ -40,6 +40,7 @@ and can be sold or given away.
 #define kLiquidWaveFlat						FOUR_CHAR_CODE('wflt')
 #define kLiquidGroup						FOUR_CHAR_CODE('grop')
 #define kLiquidNeverObscure					FOUR_CHAR_CODE('nvob')
+#define kLiquidNoDraw						FOUR_CHAR_CODE('ndrw')
 
 #define kLiquidHarm							FOUR_CHAR_CODE('harm')
 #define kLiquidDrownTick					FOUR_CHAR_CODE('dwat')
@@ -87,6 +88,7 @@ void palette_liquid_load(void)
 	
 	dialog_fill_group_combo(palette_liquid_wind,kLiquidGroup,0,liq->group_idx);
 	dialog_set_boolean(palette_liquid_wind,kLiquidNeverObscure,0,liq->never_obscure);
+	dialog_set_boolean(palette_liquid_wind,kLiquidNoDraw,0,liq->no_draw);
 	
 	dialog_set_float(palette_liquid_wind,kLiquidTintAlpha,0,liq->tint_alpha);
 	dialog_set_int(palette_liquid_wind,kLiquidDepth,0,liq->depth);
@@ -96,7 +98,7 @@ void palette_liquid_load(void)
 
 void palette_liquid_save(void)
 {
-	int						type,liq_idx,poly_idx;
+	int						type,liq_idx,poly_idx,old_depth;
 	map_liquid_type			*liq;
 
 		// get liquid
@@ -122,9 +124,14 @@ void palette_liquid_save(void)
 	
 	liq->group_idx=dialog_get_group_combo(palette_liquid_wind,kLiquidGroup,0);
 	liq->never_obscure=dialog_get_boolean(palette_liquid_wind,kLiquidNeverObscure,0);
+	liq->no_draw=dialog_get_boolean(palette_liquid_wind,kLiquidNoDraw,0);
 	
 	liq->tint_alpha=dialog_get_float(palette_liquid_wind,kLiquidTintAlpha,0);
+	
+	old_depth=liq->depth;
 	liq->depth=dialog_get_int(palette_liquid_wind,kLiquidDepth,0);
+	
+	if (old_depth!=liq->depth) main_wind_draw();
 }
 
 static pascal OSStatus palette_liquid_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)

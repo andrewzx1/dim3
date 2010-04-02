@@ -487,6 +487,7 @@ void write_single_liquid(map_liquid_type *liq)
     xml_add_tagstart("Liquid");
   	if (liq->group_idx!=-1) xml_add_attribute_int("group",liq->group_idx);
 	xml_add_attribute_boolean("never_obscure",liq->never_obscure);
+	xml_add_attribute_boolean("no_draw",liq->no_draw);
 	xml_add_tagend(FALSE);
 
 		// polygon
