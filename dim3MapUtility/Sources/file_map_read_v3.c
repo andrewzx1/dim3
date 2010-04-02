@@ -198,6 +198,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 
 	liq->group_idx=xml_get_attribute_int_default(liquid_tag,"group",-1);
 	liq->never_obscure=xml_get_attribute_boolean(liquid_tag,"never_obscure");
+	liq->no_draw=xml_get_attribute_boolean(liquid_tag,"no_draw");
 
 		// polygon
 

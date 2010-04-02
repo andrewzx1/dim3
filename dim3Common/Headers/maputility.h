@@ -280,7 +280,7 @@ typedef struct		{
 															has_opaque,has_transparent,
 															has_no_shader;
 					} map_mesh_draw_type;
-					
+
 typedef struct		{
 						int									nvertex,npoly,group_idx,
 															hide_mode,normal_mode;
@@ -322,7 +322,7 @@ typedef struct		{
 															txt_idx,lmap_txt_idx;
 						float								speed_alter,tint_alpha,
 															x_shift,y_shift;
-						bool								never_obscure;
+						bool								never_obscure,no_draw;
 						char								camera[name_str_len];
 						d3col								col;
 						map_liquid_uv_type					main_uv,lmap_uv;

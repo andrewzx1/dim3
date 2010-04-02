@@ -32,8 +32,6 @@ and can be sold or given away.
 extern int								ag_box_count;
 extern auto_generate_box_type			ag_boxes[max_ag_box];
 
-int										map_ag_mesh_idx;
-
 /* =======================================================
 
       Import Map Clear
@@ -499,38 +497,34 @@ void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,
       
 ======================================================= */
 
-bool map_auto_generate_mesh_start(map_type *map,int group_idx,int normal_mode,bool moveable)
+int map_auto_generate_mesh_start(map_type *map,int group_idx,int normal_mode,bool moveable)
 {
+	int						mesh_idx;
 	map_mesh_type			*mesh;
 
 		// create a new mesh
 
-	map_ag_mesh_idx=map_mesh_add(map);
-	if (map_ag_mesh_idx==-1) return(FALSE);
+	mesh_idx=map_mesh_add(map);
+	if (mesh_idx==-1) return(-1);
 
-	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	mesh->group_idx=group_idx;
 	mesh->normal_mode=normal_mode;
 	mesh->flag.moveable=moveable;
 
-	return(TRUE);
+	return(mesh_idx);
 }
 
-void map_auto_generate_mesh_set_portal_mesh(int box_idx)
+void map_auto_generate_mesh_set_lock(map_type *map,int mesh_idx)
 {
-	map_ag_mesh_idx=ag_boxes[box_idx].mesh_idx;
+	map->mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
 }
 
-void map_auto_generate_mesh_set_lock(map_type *map)
-{
-	map->mesh.meshes[map_ag_mesh_idx].flag.lock_uv=TRUE;
-}
-
-void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z)
+void map_auto_generate_mesh_set_rot_offset(map_type *map,int mesh_idx,int x,int y,int z)
 {
 	map_mesh_type			*mesh;
 
-	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	mesh->rot_off.x=x;
 	mesh->rot_off.y=y;
@@ -539,7 +533,7 @@ void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z)
 	mesh->flag.rot_independent=FALSE;
 }
 
-bool map_auto_generate_mesh_add_poly(map_type *map,int box_idx,int txt_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
+bool map_auto_generate_mesh_add_poly(map_type *map,int mesh_idx,int box_idx,int txt_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
 {
 	int						n,px[8],pz[8];
 	auto_generate_box_type	*box;
@@ -555,17 +549,7 @@ bool map_auto_generate_mesh_add_poly(map_type *map,int box_idx,int txt_idx,int p
 
 		// add the mesh
 		
-	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,y,pz,gx,gy,txt_idx)!=-1);
-}
-
-void map_auto_generate_mesh_get_last_poly_index(map_type *map,int *mesh_idx,int *poly_idx)
-{
-	map_mesh_type	*mesh;
-
-	*mesh_idx=map_ag_mesh_idx;
-
-	mesh=&map->mesh.meshes[map_ag_mesh_idx];
-	*poly_idx=mesh->npoly-1;
+	return(map_mesh_add_poly(map,mesh_idx,ptsz,px,y,pz,gx,gy,txt_idx)!=-1);
 }
 
 void map_auto_generate_mesh_get_poly_points(map_type *map,int mesh_idx,int poly_idx,int *ptsz,int *px,int *py,int *pz)
@@ -609,14 +593,14 @@ void map_auto_generate_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_
 	}
 }
 
-void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float mult_y,bool rot)
+void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,int mesh_idx,float mult_x,float mult_y,bool rot)
 {
 	int						n;
 	float					f;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[mesh->npoly-1];
 
 	for (n=0;n!=poly->ptsz;n++) {

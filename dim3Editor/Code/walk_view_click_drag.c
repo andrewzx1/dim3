@@ -259,8 +259,8 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 {
 	int						n,k,x,y,mx,my,mz,xadd,yadd,zadd,nsel,nvertex,
 							type,mesh_idx,poly_idx,fz;
-	bool					hit,first_drag;
-	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,mpt;
+	bool					hit,first_drag,snap_hit;
+	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,mpt,spt;
 	map_mesh_type			*mesh;
 	
 		// any selection?
@@ -365,8 +365,50 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		mpt.y=my;
 		mpt.z=mz;
 		
+			// if there is a grid, use first vertex
+			// for grid
+			
+		mpt.x+=old_dpt[0].x;
+		mpt.y+=old_dpt[0].y;
+		mpt.z+=old_dpt[0].z;
+
 		walk_view_click_grid(&mpt);
-		walk_view_click_snap_mesh(mesh_idx,old_dpt,&mpt);
+		
+		mpt.x-=old_dpt[0].x;
+		mpt.y-=old_dpt[0].y;
+		mpt.z-=old_dpt[0].z;
+		
+			// check all vertexes for snaps
+			// and stop on first hit
+
+		snap_hit=FALSE;
+		
+		old_dpt_ptr=old_dpt;
+		
+		for (k=0;k!=nsel;k++) {
+			select_get(k,&type,&mesh_idx,&poly_idx);
+			if (type!=mesh_piece) continue;
+			
+			mesh=&map.mesh.meshes[mesh_idx];
+		
+			for (n=0;n!=mesh->nvertex;n++) {
+				spt.x=old_dpt_ptr->x+mpt.x;
+				spt.y=old_dpt_ptr->y+mpt.y;
+				spt.z=old_dpt_ptr->z+mpt.z;
+				
+				if (walk_view_click_snap_mesh(mesh_idx,&spt)) {
+					mpt.x=spt.x-old_dpt_ptr->x;
+					mpt.y=spt.y-old_dpt_ptr->y;
+					mpt.z=spt.z-old_dpt_ptr->z;
+					snap_hit=TRUE;
+					break;
+				}
+				
+				old_dpt_ptr++;
+			}
+			
+			if (snap_hit) break;
+		}
 
 			// move vertexes
 		
@@ -412,7 +454,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	int						n,x,y,mx,my,mz,xadd,yadd,zadd,
 							type,mesh_idx,poly_idx,fz;
 	bool					first_drag;
-	d3pnt					old_pt,*dpt,*old_dpt,mpt;
+	d3pnt					old_pt,*dpt,*old_dpt,mpt,spt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
 	
@@ -479,9 +521,34 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 		mpt.y=my;
 		mpt.z=mz;
 		
+			// if there is a grid, use first vertex
+			// for grid
+			
+		mpt.x+=old_dpt[0].x;
+		mpt.y+=old_dpt[0].y;
+		mpt.z+=old_dpt[0].z;
+
 		walk_view_click_grid(&mpt);
-		walk_view_click_snap_poly(mesh_idx,poly_idx,old_dpt,&mpt);
 		
+		mpt.x-=old_dpt[0].x;
+		mpt.y-=old_dpt[0].y;
+		mpt.z-=old_dpt[0].z;
+		
+			// check all vertexes for snaps
+			// and stop on first hit
+
+		for (n=0;n!=mesh_poly->ptsz;n++) {
+			spt.x=old_dpt[n].x+mpt.x;
+			spt.y=old_dpt[n].y+mpt.y;
+			spt.z=old_dpt[n].z+mpt.z;
+				
+			if (walk_view_click_snap_poly(mesh_idx,poly_idx,&spt)) {
+				mpt.x=spt.x-old_dpt[n].x;
+				mpt.y=spt.y-old_dpt[n].y;
+				mpt.z=spt.z-old_dpt[n].z;
+				break;
+			}
+		}
 			// move vertexes
 			
 		for (n=0;n!=mesh_poly->ptsz;n++) {
@@ -606,15 +673,17 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		mpt.y=my;
 		mpt.z=mz;
 		
-		walk_view_click_grid(&mpt);
-		walk_view_click_snap(mesh_idx,&old_dpt,&mpt);
-		
 			// move vertex
 			
 		dpt->x=old_dpt.x+mpt.x;
 		dpt->y=old_dpt.y+mpt.y;
 		dpt->z=old_dpt.z+mpt.z;
-		
+			
+			// grid and snap
+			
+		walk_view_click_grid(dpt);
+		walk_view_click_snap(mesh_idx,dpt);
+	
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
         main_wind_draw();

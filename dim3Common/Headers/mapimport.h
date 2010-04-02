@@ -277,7 +277,7 @@ and can be sold or given away.
 #define ag_window_direction_bottom							3
 
 typedef struct	{
-					int										rn,mesh_idx,poly_idx,
+					int										box_idx,mesh_idx,poly_idx,
 															x,z,ty,by,direction;
 					bool									reverse;
 				} auto_generate_window_wall_type;

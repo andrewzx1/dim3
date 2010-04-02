@@ -177,8 +177,7 @@ void map_mesh_polygon_draw_flag_setup(void)
 {
 	int					n,k;
 	bool				has_opaque,has_transparent,
-						has_shader,has_no_shader,
-						has_glow,has_light_map;
+						has_no_shader;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -194,10 +193,7 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 		has_opaque=FALSE;
 		has_transparent=FALSE;
-		has_shader=FALSE;
 		has_no_shader=FALSE;
-		has_glow=FALSE;
-		has_light_map=FALSE;
 		
 			// run through the polys
 
@@ -219,29 +215,16 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 			has_opaque|=(!poly->draw.transparent_on);
 			has_transparent|=poly->draw.transparent_on;
-			has_shader|=poly->draw.shader_on;
 			has_no_shader|=(!poly->draw.shader_on);
-			has_glow|=poly->draw.glow_on;
-			has_light_map|=(poly->lmap_txt_idx!=-1);
 
 			poly++;
-		}
-		
-			// hilited meshes don't run shaders
-			
-		if (mesh->flag.hilite) {
-			has_shader=FALSE;
-			has_no_shader=TRUE;
 		}
 		
 			// set mesh level flags
 		
 		mesh->draw.has_opaque=has_opaque;
 		mesh->draw.has_transparent=has_transparent;
-		mesh->draw.has_shader=has_shader;
 		mesh->draw.has_no_shader=has_no_shader;
-		mesh->draw.has_glow=has_glow;
-		mesh->draw.has_light_map=has_light_map;
 		
 		mesh++;
 	}
