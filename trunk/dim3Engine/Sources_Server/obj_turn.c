@@ -270,7 +270,7 @@ void object_player_look(obj_type *obj)
 	weapon_type		*weap;
 	
 	look_add=obj->look.ang_add;
-    if (look_add==0) return;
+    if (look_add==0.0f) return;
 	
 		// inverted looking
 		

@@ -38,7 +38,7 @@ and can be sold or given away.
 int map_liquid_add(map_type *map)
 {
 	int					liquid_idx;
-	map_liquid_type		*nptr;
+	map_liquid_type		*nptr,*liq;
 	
 	liquid_idx=map->liquid.nliquid;
 
@@ -57,6 +57,15 @@ int map_liquid_add(map_type *map)
 
 		map->liquid.liquids=nptr;
 	}
+	
+	liq=&map->liquid.liquids[liquid_idx];
+	
+	liq->never_obscure=FALSE;
+	liq->never_cull=FALSE;
+	liq->no_draw=FALSE;
+	
+	liq->camera[0]=0x0;
+	liq->ambient.sound_name[0]=0x0;
 	
 	map->liquid.nliquid++;
 

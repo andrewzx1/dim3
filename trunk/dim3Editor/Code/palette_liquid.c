@@ -48,6 +48,7 @@ and can be sold or given away.
 #define kLiquidColor						FOUR_CHAR_CODE('colr')
 #define kLiquidTintAlpha					FOUR_CHAR_CODE('talh')
 #define kLiquidDepth						FOUR_CHAR_CODE('dept')
+#define kLiquidSoundName					FOUR_CHAR_CODE('snam')
 
 extern map_type				map;
 
@@ -92,6 +93,8 @@ void palette_liquid_load(void)
 	
 	dialog_set_float(palette_liquid_wind,kLiquidTintAlpha,0,liq->tint_alpha);
 	dialog_set_int(palette_liquid_wind,kLiquidDepth,0,liq->depth);
+	
+	dialog_special_combo_fill_sound(palette_liquid_wind,kLiquidSoundName,0,liq->ambient.sound_name);
 
 	DrawControls(palette_liquid_wind);
 }
@@ -130,8 +133,9 @@ void palette_liquid_save(void)
 	
 	old_depth=liq->depth;
 	liq->depth=dialog_get_int(palette_liquid_wind,kLiquidDepth,0);
-	
 	if (old_depth!=liq->depth) main_wind_draw();
+	
+	dialog_special_combo_get_sound(palette_liquid_wind,kLiquidSoundName,0,liq->ambient.sound_name,name_str_len);
 }
 
 static pascal OSStatus palette_liquid_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)

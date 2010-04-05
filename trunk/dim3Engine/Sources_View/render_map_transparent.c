@@ -143,9 +143,11 @@ void render_transparent_sort(void)
 						
 				// skip polys with away facing normals
 				
-			vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-			if (vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f) continue;
-
+			if (!poly->never_cull) {
+				vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+				if (vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f) continue;
+			}
+			
 				// find distance from camera
 
 			dist=render_transparent_poly_far_z(mesh,poly);

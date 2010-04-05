@@ -958,7 +958,7 @@ void player_get_input(void)
 
 		// no input if menu is on
 
-	if (view.menu.active) {
+	if ((view.menu.active) || (view.menu.fade_in) || (view.menu.fade_out)) {
 	    obj->forward_move.moving=FALSE;
 		obj->side_move.moving=FALSE;
 		obj->vert_move.moving=FALSE;

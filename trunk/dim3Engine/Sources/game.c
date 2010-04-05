@@ -134,6 +134,7 @@ void game_end(void)
 void game_reset_single_object(obj_type *obj,bool reposition)
 {
 	int				idx;
+	char			err_str[256];
 	spot_type		*spot;
 
 	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
@@ -145,7 +146,7 @@ void game_reset_single_object(obj_type *obj,bool reposition)
 	object_stop(obj);
 	
 	if (reposition) {
-		idx=object_find_network_spawn_spot(obj);
+		idx=object_find_network_spawn_spot(obj,err_str);
 		if (idx!=-1) {
 			spot=&map.spots[idx];
 			object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);

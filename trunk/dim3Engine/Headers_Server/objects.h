@@ -82,7 +82,7 @@ extern int object_count_team(int team_idx,int ignore_obj_uid);
 extern void object_set_even_team(obj_type *obj);
 extern int object_find_uid_click_object(obj_type *obj);
 extern int object_find_uid_by_stood_on_object_uid(int stand_obj_uid);
-extern int object_find_network_spawn_spot(obj_type *obj);
+extern int object_find_network_spawn_spot(obj_type *obj,char *err_str);
 extern bool object_sight_test_object(obj_type *obj,int test_obj_uid);
 
 extern void object_attach_click_crosshair_up(obj_type *obj);

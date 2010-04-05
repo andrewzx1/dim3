@@ -155,8 +155,16 @@ void map_music_start(map_music_type *music)
 void map_lookups_setup(void)
 {
 	int					n;
+	map_liquid_type		*liq;
 	map_sound_type		*sound;
 	map_particle_type	*particle;
+	
+	liq=map.liquid.liquids;
+	
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		liq->ambient.buffer_idx=al_find_buffer(liq->ambient.sound_name);
+		liq++;
+	}
 
 	sound=map.sounds;
 	

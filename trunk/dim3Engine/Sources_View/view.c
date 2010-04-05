@@ -345,6 +345,12 @@ bool view_initialize(char *err_str)
 	
 	input_initialize(gl_in_window_mode());
 	setup_to_input();
+	
+		// hook up current render
+		// to camera render -- some routines like face
+		// forward need this to be valid
+		
+	view.render=&view_camera_render;
 
 		// states
 

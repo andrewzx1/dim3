@@ -70,8 +70,8 @@ bool map_new(map_type *map,char *name)
 	map->settings.resistance=1;
 	map->settings.network_game_list[0]=0x0;
 
-	map->settings.light_map.quality=50;
-	map->settings.light_map.quality=1024;
+	map->settings.light_map.quality=70;
+	map->settings.light_map.quality=512;
 	map->settings.light_map.pixel_border_count=6;
 	map->settings.light_map.blur_count=3;
 	

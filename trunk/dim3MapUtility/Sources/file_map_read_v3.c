@@ -177,6 +177,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			}
 
 			poly->climbable=xml_get_attribute_boolean(poly_tag,"climbable") || (mesh_climbable);
+			poly->never_cull=xml_get_attribute_boolean(poly_tag,"never_cull");
+
 			xml_get_attribute_text_default_blank(poly_tag,"camera",poly->camera,name_str_len);
 
 			poly++;
@@ -198,6 +200,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 
 	liq->group_idx=xml_get_attribute_int_default(liquid_tag,"group",-1);
 	liq->never_obscure=xml_get_attribute_boolean(liquid_tag,"never_obscure");
+	liq->never_cull=xml_get_attribute_boolean(liquid_tag,"never_cull");
 	liq->no_draw=xml_get_attribute_boolean(liquid_tag,"no_draw");
 
 		// polygon
@@ -222,6 +225,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
 		
 		xml_get_attribute_text_default_blank(tag,"camera",liq->camera,name_str_len);
+		xml_get_attribute_text_default_blank(tag,"ambient_sound_name",liq->ambient.sound_name,name_str_len);
 	}
 
 		// physics
