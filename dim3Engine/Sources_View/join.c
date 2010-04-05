@@ -97,7 +97,7 @@ char* join_create_list(void)
 	c=row_data;
 	
 	for (n=0;n!=join_count;n++) {
-		snprintf(c,128,"Maps;%s;%s\t%s @ %s\t%d/%d\t%dms",info->map_name,info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
+		snprintf(c,128,"Bitmaps/Icons_Map;%s;%s\t%s @ %s\t%d/%d\t%dms",info->map_name,info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
 		c[127]=0x0;
 		
 		c+=128;
@@ -125,7 +125,7 @@ bool join_ping_thread_lan_server(network_reply_info *reply_info)
 	join_server_info	*info;
 	
 		// is it the right project?
-
+		
 	if (strcasecmp(reply_info->proj_name,hud.proj_name)!=0) return(FALSE);
 		
 		// add to list
@@ -156,41 +156,32 @@ bool join_ping_thread_lan_server(network_reply_info *reply_info)
 void join_ping_thread_lan_run(void)
 {
 	int					max_tick,action,player_uid;
-	char				ip_name[256],ip_resolve[256],err_str[256];
 	unsigned char		msg[net_max_msg_size];
-	bool				good_reply,send_ok;
-	d3socket			broadcast_send_sock,broadcast_recv_sock;
-	
-		// setup a socket to start receiving
-		// replies from the broadcast
-	
-	net_get_host_ip(ip_name,ip_resolve);
-		
-	broadcast_recv_sock=net_open_udp_socket();
-	if (broadcast_recv_sock==D3_NULL_SOCKET) return;
+	bool				good_reply;
+	d3socket			broadcast_sock;
 
-	net_socket_blocking(broadcast_recv_sock,FALSE);
-
-	if (!net_bind(broadcast_recv_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) return;
+		// create a socket and send out a broadcast
+		// to all addresses on this subnet, looking for
+		// replies from a dim3 server
 		
-		// send out the broadcast to all addresses
-		// on this subnet
-		
-	broadcast_send_sock=net_open_udp_socket();
-	if (broadcast_send_sock==D3_NULL_SOCKET) return;
+	broadcast_sock=net_open_udp_socket();
+	if (broadcast_sock==D3_NULL_SOCKET) return;
 
-	net_socket_enable_broadcast(broadcast_send_sock);
+	net_socket_enable_broadcast(broadcast_sock);
 	
-	send_ok=net_sendto_msg(broadcast_send_sock,INADDR_BROADCAST,net_port_host,net_action_request_info,net_player_uid_none,NULL,0);
-		
-	net_close_socket(&broadcast_send_sock);
+	if (!net_sendto_msg(broadcast_sock,INADDR_BROADCAST,net_port_host,net_action_request_info,net_player_uid_none,NULL,0)) {
+		net_close_socket(&broadcast_sock);
+		return;
+	}
 	
-	if (!send_ok) return;
-
 		// now wait for any replies
 	
 	join_thread_lan_start_tick=time_get();
 	max_tick=client_timeout_wait_seconds*1000;
+	
+		// put socket in non-blocking so UI runs
+		
+	net_socket_blocking(broadcast_sock,FALSE);
 	
 	while (((join_thread_lan_start_tick+max_tick)>time_get()) && (!join_thread_quit)) {
 
@@ -198,7 +189,7 @@ void join_ping_thread_lan_run(void)
 			
 		good_reply=FALSE;
 		
-		if (net_recvfrom_mesage(broadcast_recv_sock,NULL,NULL,&action,&player_uid,msg,NULL)) {
+		if (net_recvfrom_mesage(broadcast_sock,NULL,NULL,&action,&player_uid,msg,NULL)) {
 			if (action==net_action_reply_info) {
 				good_reply=join_ping_thread_lan_server((network_reply_info*)msg);
 			}
@@ -213,7 +204,7 @@ void join_ping_thread_lan_run(void)
 		element_table_busy(join_table_id,"Looking for LAN Clients",(time_get()-join_thread_lan_start_tick),max_tick);
 	}
 	
-	net_close_socket(&broadcast_recv_sock);
+	net_close_socket(&broadcast_sock);
 }
 
 int join_ping_thread_lan(void *arg)

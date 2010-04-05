@@ -145,8 +145,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 291847263;
-			PBXWorkspaceStateSaveDate = 291847263;
+			PBXPerProjectTemplateStateSaveDate = 292106540;
+			PBXWorkspaceStateSaveDate = 292106540;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -391,9 +391,9 @@
 	};
 	264A478A0F760CCA0054BAA6 /* palette_sound.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 1742}}";
-			sepNavSelRange = "{3237, 0}";
-			sepNavVisRange = "{2005, 1383}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 1729}}";
+			sepNavSelRange = "{1848, 0}";
+			sepNavVisRange = "{1180, 1343}";
 			sepNavWindowFrame = "{{130, 139}, {999, 779}}";
 		};
 	};
@@ -407,17 +407,17 @@
 	};
 	265DCEFA0F6D6A3E00C1E65D /* palette_polygon.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1251, 2743}}";
-			sepNavSelRange = "{5370, 0}";
-			sepNavVisRange = "{4029, 2143}";
-			sepNavWindowFrame = "{{704, 158}, {999, 779}}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 3133}}";
+			sepNavSelRange = "{1525, 0}";
+			sepNavVisRange = "{72, 1767}";
+			sepNavWindowFrame = "{{402, 180}, {999, 779}}";
 		};
 	};
 	265DCF4C0F6DBF9D00C1E65D /* palette_liquid.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 2561}}";
-			sepNavSelRange = "{4382, 0}";
-			sepNavVisRange = "{3004, 2045}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 2665}}";
+			sepNavSelRange = "{5157, 0}";
+			sepNavVisRange = "{3755, 2073}";
 			sepNavWindowFrame = "{{441, 156}, {999, 779}}";
 		};
 	};
@@ -482,10 +482,10 @@
 	};
 	26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 15054}}";
-			sepNavSelRange = "{1494, 9}";
-			sepNavVisRange = "{957, 1079}";
-			sepNavWindowFrame = "{{607, 234}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 15756}}";
+			sepNavSelRange = "{3404, 0}";
+			sepNavVisRange = "{2838, 1113}";
+			sepNavWindowFrame = "{{352, 202}, {1041, 747}}";
 		};
 	};
 	26AFB4D10D9615C00004805A /* maputility.h */ = {

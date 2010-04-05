@@ -127,9 +127,8 @@ spot_type* script_find_network_spot(JSContextRef cx,obj_type *obj,JSValueRef *ex
 	int				idx;
 	char			err_str[256];
 	
-	idx=object_find_network_spawn_spot(obj);
+	idx=object_find_network_spawn_spot(obj,err_str);
 	if (idx==-1) {
-		sprintf(err_str,"Could not find a new network spawn spot");
 		*exception=script_create_exception(cx,err_str);
 		return(NULL);
 	}

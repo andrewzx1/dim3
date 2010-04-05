@@ -133,6 +133,7 @@ void piece_add_obj_mesh(void)
 						mesh_idx,poly_idx,txt_idx,x,y,z;
 	int					px[8],py[8],pz[8];
 	char				*c,txt[256],vstr[256],uvstr[256],normalstr[256],path[1024];
+	unsigned char		*vertex_mark;
 	float				fx,fy,fz,fsz,f_scale,gx[8],gy[8];
 	float				*uvs,*uv,*normals,*normal;
 	bool				replace,mesh_add;
@@ -159,42 +160,16 @@ void piece_add_obj_mesh(void)
     nline=textdecode_count();
 	
 		// count vertexes, faces, uvs, and normals
-		// also determine the vertex extents for initial scaling size
 		
 	nvertex=0;
 	npoly=0;
 	nuv=0;
 	nnormal=0;
 	
-	min.x=min.y=min.z=0.0f;
-	max.x=max.y=max.z=0.0f;
-	
     for (n=0;n!=nline;n++) {
         textdecode_get_piece(n,0,txt);
         
         if (strcmp(txt,"v")==0) {
-			
-			textdecode_get_piece(n,1,txt);
-			fx=strtod(txt,NULL);
-			textdecode_get_piece(n,2,txt);
-			fy=-strtod(txt,NULL);
-			textdecode_get_piece(n,3,txt);
-			fz=strtod(txt,NULL);
-			
-			if (nvertex==0) {
-				min.x=max.x=fx;
-				min.y=max.y=fy;
-				min.z=max.z=fz;
-			}
-			else {
-				if (fx<min.x) min.x=fx;
-				if (fx>max.x) max.x=fx;
-				if (fy<min.y) min.y=fy;
-				if (fy>max.y) max.y=fy;
-				if (fz<min.z) min.z=fz;
-				if (fz>max.z) max.z=fz;
-			}
-			
 			nvertex++;
 		}
 		else {
@@ -226,6 +201,80 @@ void piece_add_obj_mesh(void)
 		dialog_alert("Import Failed","No faces in OBJ.");
 		return;
     }
+	
+		// some OBJ creators -- especially blender --
+		// like to leave this unconnected and crazy vertexes
+		// in the OBJs.  We need to scan for them.
+		
+	vertex_mark=(unsigned char*)malloc(nvertex);
+	bzero(vertex_mark,nvertex);
+		
+    for (n=0;n!=nline;n++) {
+        textdecode_get_piece(n,0,txt);
+        
+        if (strcmp(txt,"f")==0) {
+		
+			for (k=0;k!=8;k++) {
+				textdecode_get_piece(n,(k+1),vstr);
+				if (vstr[0]==0x0) break;
+            
+				c=strchr(vstr,'/');
+				if (c!=NULL) *c=0x0;
+
+				v_idx=atoi(vstr)-1;
+				vertex_mark[v_idx]=0x1;
+			}
+		}
+	}
+	
+		// let's find total size -- we ignore
+		// any non-connected stray vertexes
+		
+		// mesh add will actually eliminate these
+		// vertexes but we need to keep them around for
+		// now so face numbers line up
+		
+	min.x=min.y=min.z=0.0f;
+	max.x=max.y=max.z=0.0f;
+	
+	v_idx=0;
+	
+	for (n=0;n!=nline;n++) {
+		textdecode_get_piece(n,0,txt);
+		
+		if (strcmp(txt,"v")==0) {
+			
+			if (vertex_mark[v_idx]==0x0) {
+				v_idx++;
+				continue;
+			}
+			
+			textdecode_get_piece(n,1,txt);
+			fx=strtod(txt,NULL);
+			textdecode_get_piece(n,2,txt);
+			fy=-strtod(txt,NULL);
+			textdecode_get_piece(n,3,txt);
+			fz=strtod(txt,NULL);
+			
+			if (v_idx==0) {
+				min.x=max.x=fx;
+				min.y=max.y=fy;
+				min.z=max.z=fz;
+			}
+			else {
+				if (fx<min.x) min.x=fx;
+				if (fx>max.x) max.x=fx;
+				if (fy<min.y) min.y=fy;
+				if (fy>max.y) max.y=fy;
+				if (fz<min.z) min.z=fz;
+				if (fz>max.z) max.z=fz;
+			}
+			
+			v_idx++;
+		}
+	}
+	
+	free(vertex_mark);
 	
 		// get default scale
 		
@@ -268,10 +317,8 @@ void piece_add_obj_mesh(void)
 				
 		textdecode_get_piece(n,1,txt);
 		fx=strtod(txt,NULL);
-		
 		textdecode_get_piece(n,2,txt);
 		fy=-strtod(txt,NULL);
-		
 		textdecode_get_piece(n,3,txt);
 		fz=strtod(txt,NULL);
 		

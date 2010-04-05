@@ -45,8 +45,9 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern void run_objects_animations(void);
-extern void ambient_add_objects(void);
 extern void ambient_add_map_sounds(void);
+extern void ambient_add_objects(void);
+extern void ambient_add_liquids(void);
 extern void map_set_ambient(char *name,float pitch);
 extern void map_clear_ambient(void);
 
@@ -122,6 +123,7 @@ void view_run(void)
 		al_ambient_list_clear();
 		ambient_add_map_sounds();
 		ambient_add_objects();
+		ambient_add_liquids();
 		
 		al_ambients_run();
 

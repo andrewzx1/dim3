@@ -139,6 +139,8 @@ int al_find_buffer(char *name)
 {
 	int					n;
 	audio_buffer_type	*buffer;
+	
+	if (name[0]==0x0) return(-1);
     
 	buffer=audio_buffers;
 	

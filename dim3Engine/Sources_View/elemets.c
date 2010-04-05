@@ -1751,7 +1751,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 
 void element_draw_table_line_data(element_type *element,int x,int y,int row,int wid,int row_high,d3col *txt_col,char *data)
 {
-	int				n,dx,dy,col_wid,ctrl_sz;
+	int				n,dx,dy,tx,col_wid,ctrl_sz;
 	unsigned long	gl_id;
 	char			*c,*c2,txt[256];
 	bool			first_col,checked;
@@ -1789,6 +1789,10 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 		txt[255]=0x0;
 		c2=strchr(txt,'\t');
 		if (c2!=NULL) *c2=0x0;
+		
+			// text draw spot
+			
+		tx=dx;
 
 			// draw any bitmaps
 
@@ -1830,7 +1834,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				}
 			}
 
-			dx+=(element_table_bitmap_size+4);
+			tx+=(element_table_bitmap_size+4);
 		}
 
 		first_col=FALSE;
@@ -1838,7 +1842,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 			// draw text
 			
 		gl_text_start(font_interface_index,hud.font.text_size_small);
-		gl_text_draw(dx,dy,txt,tx_left,TRUE,txt_col,1.0f);
+		gl_text_draw(tx,dy,txt,tx_left,TRUE,txt_col,1.0f);
 		gl_text_end();
 		
 			// get next data

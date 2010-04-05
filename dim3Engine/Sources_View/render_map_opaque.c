@@ -321,12 +321,14 @@ void render_map_mesh_opaque(void)
 			
 				// skip polys with away facing normals
 				
-			vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-			if (vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f) {
-				poly++;
-				continue;
+			if (!poly->never_cull) {
+				vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+				if (vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f) {
+					poly++;
+					continue;
+				}
 			}
-
+			
 				// render the poly
 
 			if (view.debug.on) {

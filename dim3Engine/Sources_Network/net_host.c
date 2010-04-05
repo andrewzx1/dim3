@@ -248,9 +248,10 @@ int net_host_thread(void *arg)
 		return(0);
 	}
 		
-		// bind
+		// bind -- use any IP on this machine to
+		// get traffic
 
-	if (!net_bind(host_socket,net_setup.host.ip_resolve,net_port_host,host_err_str)) {
+	if (!net_bind_any(host_socket,net_port_host,host_err_str)) {
 		net_close_socket(&host_socket);
 		host_complete=TRUE;
 		return(0);

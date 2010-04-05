@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "sounds.h"
 
 int							map_ambient_idx,map_ambient_buffer_idx;
@@ -40,9 +41,24 @@ extern server_type			server;
 
 /* =======================================================
 
-      Object Sounds
+      Ambients for Map, Objects, and Liquids
       
 ======================================================= */
+
+void ambient_add_map_sounds(void)
+{
+	int					n;
+	map_sound_type		*mapsound;
+		
+	mapsound=map.sounds;
+		
+	for (n=0;n!=map.nsound;n++) {
+		if ((mapsound->on) && (mapsound->buffer_idx!=-1)) {
+			al_ambient_list_add(mapsound->buffer_idx,&mapsound->pnt,mapsound->pitch);
+		}
+		mapsound++;
+	}
+}
 
 void ambient_add_objects(void)
 {
@@ -61,25 +77,20 @@ void ambient_add_objects(void)
 	}
 }
 
-/* =======================================================
-
-      Map Sounds
-      
-======================================================= */
-
-void ambient_add_map_sounds(void)
+void ambient_add_liquids(void)
 {
-	int					n;
-	map_sound_type		*mapsound;
-		
-	mapsound=map.sounds;
-		
-	for (n=0;n!=map.nsound;n++) {
-		if ((mapsound->on) && (mapsound->buffer_idx!=-1)) {
-			al_ambient_list_add(mapsound->buffer_idx,&mapsound->pnt,mapsound->pitch);
-		}
-		mapsound++;
-	}
+	obj_type			*player_obj;
+	map_liquid_type		*liq;
+	
+	player_obj=object_find_uid(server.player_obj_uid);
+	if (player_obj==NULL) return;
+	
+	if ((player_obj->liquid.mode!=lm_under) || (player_obj->contact.liquid_idx==-1)) return;
+	
+	liq=&map.liquid.liquids[player_obj->contact.liquid_idx];
+	if (liq->ambient.buffer_idx==-1) return;
+	
+	al_ambient_list_add(liq->ambient.buffer_idx,&player_obj->pnt,1.0f);
 }
 
 /* =======================================================

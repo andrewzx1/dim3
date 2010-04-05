@@ -239,7 +239,7 @@ typedef struct		{
 typedef struct		{
 						int									txt_idx,lmap_txt_idx,ptsz,v[8];
 						float								x_shift,y_shift;
-						bool								climbable;
+						bool								climbable,never_cull;
 						char								camera[name_str_len];
 						tangent_space_type					tangent_space;
 						map_mesh_poly_uv_type				main_uv,lmap_uv;
@@ -316,18 +316,24 @@ typedef struct		{
 typedef struct		{
 						int									v_cnt,x_sz,z_sz;
 					} map_liquid_draw_type;
+					
+typedef struct		{
+						int									buffer_idx;
+						char								sound_name[name_str_len];
+					} map_liquid_ambient_type;
 
 typedef struct		{
 						int									y,depth,lft,rgt,top,bot,group_idx,
 															txt_idx,lmap_txt_idx;
 						float								speed_alter,tint_alpha,
 															x_shift,y_shift;
-						bool								never_obscure,no_draw;
+						bool								never_obscure,never_cull,no_draw;
 						char								camera[name_str_len];
 						d3col								col;
 						map_liquid_uv_type					main_uv,lmap_uv;
 						map_liquid_harm_type				harm;
 						map_liquid_tide_type				tide;
+						map_liquid_ambient_type				ambient;
 						map_liquid_draw_type				draw;
 					} map_liquid_type;
 

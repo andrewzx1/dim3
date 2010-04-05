@@ -143,7 +143,7 @@ bool net_bind(d3socket sock,char *ip,int port,char *err_str)
 		
 	addr.sin_family=AF_INET;
 	addr.sin_port=htons((short)port);
-	addr.sin_addr.s_addr=ns_addr;
+	addr.sin_addr.s_addr=htonl(ns_addr);
 	
 		// bind socket
 		
@@ -167,7 +167,7 @@ bool net_bind_any(d3socket sock,int port,char *err_str)
 		
 	addr.sin_family=AF_INET;
 	addr.sin_port=htons((short)port);
-	addr.sin_addr.s_addr=INADDR_ANY;
+	addr.sin_addr.s_addr=htonl(INADDR_ANY);
 	
 		// bind socket
 		
@@ -251,7 +251,7 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 	
 		// setup return address
 		
-	if (ip_addr!=NULL) *ip_addr=addr_in.sin_addr.s_addr;
+	if (ip_addr!=NULL) *ip_addr=ntohl(addr_in.sin_addr.s_addr);
 	if (port!=NULL) *port=(int)ntohs(addr_in.sin_port);
 	
 		// no data?
@@ -264,10 +264,10 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 		// get header and data
 		
 	head=(network_header*)data;
-	*action=head->action;
-	*player_uid=head->player_uid;
-
-	len=head->len;
+	*action=(int)ntohs(head->action);
+	*player_uid=(int)ntohs(head->player_uid);
+	
+	len=(int)ntohs(head->len);
 	if (len>net_max_msg_size) len=net_max_msg_size;
 	
 	memmove(msg,(data+sizeof(network_header)),len);
@@ -294,13 +294,13 @@ bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int 
 	
 		// the data
 
-	if (msg_len!=0) memmove((data+sizeof(network_header)),data,msg_len);
+	if (msg_len!=0) memmove((data+sizeof(network_header)),msg,msg_len);
 
 		// send message
 		
 	addr_in.sin_family=AF_INET;
 	addr_in.sin_port=htons((short)port);
-	addr_in.sin_addr.s_addr=ip_addr;
+	addr_in.sin_addr.s_addr=htonl(ip_addr);
 	
 	send_sz=sizeof(network_header)+msg_len;
 		

@@ -468,6 +468,8 @@ void write_single_mesh(map_mesh_type *mesh)
 		}
 		
 		xml_add_attribute_boolean("climbable",poly->climbable);
+		xml_add_attribute_boolean("never_cull",poly->never_cull);
+		
 		if (poly->camera[0]!=0x0) xml_add_attribute_text("camera",poly->camera);
 
 		xml_add_tagend(TRUE);
@@ -487,6 +489,7 @@ void write_single_liquid(map_liquid_type *liq)
     xml_add_tagstart("Liquid");
   	if (liq->group_idx!=-1) xml_add_attribute_int("group",liq->group_idx);
 	xml_add_attribute_boolean("never_obscure",liq->never_obscure);
+	xml_add_attribute_boolean("never_cull",liq->never_cull);
 	xml_add_attribute_boolean("no_draw",liq->no_draw);
 	xml_add_tagend(FALSE);
 
@@ -511,6 +514,7 @@ void write_single_liquid(map_liquid_type *liq)
 	if ((liq->x_shift!=0) || (liq->y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->x_shift,liq->y_shift);
 
 	if (liq->camera[0]!=0x0) xml_add_attribute_text("camera",liq->camera);
+	if (liq->ambient.sound_name[0]!=0x0) xml_add_attribute_text("ambient_sound_name",liq->ambient.sound_name);
 	xml_add_tagend(TRUE);
 
 		// physics
