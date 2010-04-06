@@ -265,7 +265,7 @@ bool map_start(bool skip_media,char *err_str)
 	sprintf(txt,"Opening %s",map.info.name);
 	console_add_system(txt);
 	
-	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.compress_on,TRUE);
+	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,setup.compress_on,TRUE);
 
 // supergumba -- auto generator testing
 /*

@@ -141,25 +141,25 @@ bool map_textures_read(map_type *map)
 					// bitmap
 					
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
-				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compress_on,FALSE,texture->pixelated,FALSE,TRUE);
+				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.texture_quality_mode,maputility_settings.compress_on,FALSE,texture->pixelated,FALSE,TRUE);
 				
 					// bumpmap
 					
 				sprintf(name,"%s_n",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");		// compresses messes up normals
-				bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,FALSE,FALSE,texture->pixelated,FALSE,TRUE);
+				bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.texture_quality_mode,FALSE,FALSE,texture->pixelated,FALSE,TRUE);
 								
 					// specular map
 					
 				sprintf(name,"%s_s",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compress_on,FALSE,texture->pixelated,FALSE,TRUE);
+				bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.texture_quality_mode,maputility_settings.compress_on,FALSE,texture->pixelated,FALSE,TRUE);
 				
 					// glow map
 					
 				sprintf(name,"%s_g",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compress_on,FALSE,texture->pixelated,TRUE,FALSE);
+				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.texture_quality_mode,maputility_settings.compress_on,FALSE,texture->pixelated,TRUE,FALSE);
 
 					// combined version
 					// this is a special version for simplified/non-shader drawing
