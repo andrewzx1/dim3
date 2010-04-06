@@ -48,7 +48,8 @@ and can be sold or given away.
 #define ctrl_shadow_on_id					5
 #define ctrl_anisotropic_id					6
 #define ctrl_mipmap_id						7
-#define ctrl_compress_id					8
+#define ctrl_texture_quality_id				8
+#define ctrl_compress_id					9
 #define ctrl_gamma_id						10
 
 #define ctrl_sound_volume_id				30
@@ -101,6 +102,7 @@ int							setup_tab_value,setup_action_scroll_pos,
 char						setup_screen_size_list[max_screen_size][32],
 							setup_anisotropic_mode_list[][32]=anisotropic_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
+							setup_texture_quality_mode_list[][32]=texture_quality_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
 							setup_control_names[][32]=control_names,
 							setup_action_list[ncontrol+1][128];
@@ -123,7 +125,7 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*9;
+	control_y_sz=control_y_add*10;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -160,6 +162,8 @@ void setup_game_video_pane(void)
 	element_enable(ctrl_anisotropic_id,gl_check_texture_anisotropic_filter_ok());
 	y+=control_y_add;
 	element_combo_add("MipMap Filtering",(char*)setup_mipmap_mode_list,setup.mipmap_mode,ctrl_mipmap_id,x,y,TRUE);
+	y+=control_y_add;
+	element_combo_add("Texture Quality",(char*)setup_texture_quality_mode_list,setup.texture_quality_mode,ctrl_texture_quality_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Texture Compression",setup.compress_on,ctrl_compress_id,x,y,TRUE);
 	element_enable(ctrl_compress_id,gl_check_texture_compress_ok());
@@ -712,6 +716,10 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_mipmap_id:
 			setup.mipmap_mode=element_get_value(ctrl_mipmap_id);
+			break;
+			
+		case ctrl_texture_quality_id:
+			setup.texture_quality_mode=element_get_value(ctrl_texture_quality_id);
 			break;
 
 		case ctrl_fsaa_id:

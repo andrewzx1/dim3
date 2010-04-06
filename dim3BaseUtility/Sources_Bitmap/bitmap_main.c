@@ -198,7 +198,7 @@ unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned ch
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle,bool pixelated,bool scrub_black_to_alpha,bool keep_pixel_data)
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress_on,bool rectangle,bool pixelated,bool scrub_black_to_alpha,bool keep_pixel_data)
 {
 	unsigned char		*png_data,*strip_data;
 	bool				ok,alpha_channel;

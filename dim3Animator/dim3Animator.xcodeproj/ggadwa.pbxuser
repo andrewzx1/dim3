@@ -18,9 +18,9 @@
 	};
 	0111608D00BE2A8F7F000001 /* menu.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1755, 16003}}";
-			sepNavSelRange = "{5460, 0}";
-			sepNavVisRange = "{5377, 833}";
+			sepNavIntBoundsRect = "{{0, 0}, {1755, 16042}}";
+			sepNavSelRange = "{5864, 0}";
+			sepNavVisRange = "{5366, 877}";
 			sepNavWindowFrame = "{{498, 130}, {1041, 747}}";
 		};
 	};
@@ -129,11 +129,11 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 291961686;
-			PBXWorkspaceStateSaveDate = 291961686;
+			PBXPerProjectTemplateStateSaveDate = 292192706;
+			PBXWorkspaceStateSaveDate = 292192706;
 		};
 		perUserProjectItems = {
-			2673BF271163FA030053A338 /* PBXTextBookmark */ = 2673BF271163FA030053A338 /* PBXTextBookmark */;
+			26A7D434116A821F00FE94E5 /* PBXTextBookmark */ = 26A7D434116A821F00FE94E5 /* PBXTextBookmark */;
 			26DB46991166FB6F00FFD055 /* PBXTextBookmark */ = 26DB46991166FB6F00FFD055 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
@@ -275,7 +275,15 @@
 			sepNavWindowFrame = "{{15, 265}, {1078, 758}}";
 		};
 	};
-	2673BF271163FA030053A338 /* PBXTextBookmark */ = {
+	26A59FA40F327FB5007C6209 /* mesh_list.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1181, 2769}}";
+			sepNavSelRange = "{4157, 0}";
+			sepNavVisRange = "{3448, 1720}";
+			sepNavWindowFrame = "{{403, 131}, {1056, 814}}";
+		};
+	};
+	26A7D434116A821F00FE94E5 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -284,14 +292,6 @@
 		rType = 0;
 		vrLen = 0;
 		vrLoc = 0;
-	};
-	26A59FA40F327FB5007C6209 /* mesh_list.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1181, 2769}}";
-			sepNavSelRange = "{4157, 0}";
-			sepNavVisRange = "{3448, 1720}";
-			sepNavWindowFrame = "{{403, 131}, {1056, 814}}";
-		};
 	};
 	26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {
 		uiCtxt = {
@@ -434,8 +434,8 @@
 	F579A01D07DFDF8400DB4213 /* insert.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 2444}}";
-			sepNavSelRange = "{1174, 0}";
-			sepNavVisRange = "{949, 1316}";
+			sepNavSelRange = "{1703, 0}";
+			sepNavVisRange = "{949, 1342}";
 			sepNavWindowFrame = "{{371, 227}, {1041, 747}}";
 		};
 	};

@@ -428,7 +428,6 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 {
 	int					n,mx,mz;
 	double				d,obscure_dist;
-	d3vct				normal,face_vct;
 	map_liquid_type		*liq;
 
 		// obscure distance -- normally is the opengl projection
@@ -455,16 +454,17 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 		if (!liq->never_obscure) {
 		
 				// skip liquids with away facing normals
+				// do dot product between normal and vector
+				// from liq mid-eye point
+				// liquid normal is always facing up (0,-1,0)
+				// so this calculation is realitively easy
 				
 			if (!liq->never_cull) {
 				mx=(liq->lft+liq->rgt)>>1;
 				mz=(liq->top+liq->bot)>>1;
-				vector_create(&face_vct,mx,liq->y,mz,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-				normal.x=normal.z=0.0f;
-				normal.y=-1.0f;
-				if (vector_dot_product(&normal,&face_vct)>0.0f) continue;
+				
+				if ((-1.0f*(float)(liq->y-view.render->camera.pnt.y))>0.0f) continue;
 			}
-
 
 				// auto-eliminate liquids drawn outside the obscure distance
 					

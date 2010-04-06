@@ -146,9 +146,9 @@
 	};
 	F56B6200080C885A00E9D08B /* mapprivate.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2314}}";
-			sepNavSelRange = "{4255, 0}";
-			sepNavVisRange = "{3291, 1266}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2366}}";
+			sepNavSelRange = "{1067, 0}";
+			sepNavVisRange = "{3317, 1266}";
 			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
 		};
 	};
@@ -162,9 +162,9 @@
 	};
 	F5A10B6C052D294C006A2E68 /* file_map_texture.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1356, 2613}}";
-			sepNavSelRange = "{3766, 672}";
-			sepNavVisRange = "{3026, 1855}";
+			sepNavIntBoundsRect = "{{0, 0}, {1636, 2496}}";
+			sepNavSelRange = "{4865, 0}";
+			sepNavVisRange = "{2997, 2306}";
 			sepNavWindowFrame = "{{481, 195}, {1041, 747}}";
 		};
 	};
@@ -186,9 +186,9 @@
 	};
 	F5A8B1B105229DA4008D4331 /* map_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4082}}";
-			sepNavSelRange = "{2215, 0}";
-			sepNavVisRange = "{1508, 1260}";
+			sepNavIntBoundsRect = "{{0, 0}, {1041, 4134}}";
+			sepNavSelRange = "{1595, 0}";
+			sepNavVisRange = "{468, 1627}";
 			sepNavWindowFrame = "{{552, 215}, {1041, 747}}";
 		};
 	};
@@ -263,8 +263,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 292106436;
-			PBXWorkspaceStateSaveDate = 292106436;
+			PBXPerProjectTemplateStateSaveDate = 292192652;
+			PBXWorkspaceStateSaveDate = 292192652;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -280,10 +280,10 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9893}}";
-			sepNavSelRange = "{8822, 0}";
-			sepNavVisRange = "{8106, 1193}";
-			sepNavWindowFrame = "{{543, 82}, {1041, 691}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1097, 8866}}";
+			sepNavSelRange = "{16088, 0}";
+			sepNavVisRange = "{15846, 2355}";
+			sepNavWindowFrame = "{{543, 83}, {1041, 691}}";
 		};
 	};
 	F5CE96BD0D23584100512EE1 /* mapimport.h */ = {

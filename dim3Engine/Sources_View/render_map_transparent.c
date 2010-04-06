@@ -118,7 +118,6 @@ void render_transparent_sort(void)
 {
 	int							n,k,i,sort_cnt,sort_idx;
 	float						dist;
-	d3vct						face_vct;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	map_poly_sort_item_type		*sort_list;
@@ -142,10 +141,11 @@ void render_transparent_sort(void)
 			if (!poly->draw.transparent_on) continue;
 						
 				// skip polys with away facing normals
+				// do dot product between normal and vector
+				// from poly mid-eye point
 				
 			if (!poly->never_cull) {
-				vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
-				if (vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f) continue;
+				if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>0.0f) continue;
 			}
 			
 				// find distance from camera
