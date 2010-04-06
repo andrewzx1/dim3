@@ -29,6 +29,10 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+
+// supergumba
+#define max_cache_light_per_mesh			16
+
 #include "weapons.h"
 #include "models.h"
 #include "lights.h"
@@ -69,54 +73,198 @@ double						light_flicker_value[64]={
 
 extern bool light_inview(d3pnt *pnt,int intensity);
 
+// supergumba
+
+/*
+typedef struct		{
+						int							intensity;
+						float						exponent;
+						bool						light_map;
+						d3vct						direction;
+						d3pnt						pnt;
+						d3vct						pnt_eye_space;
+						d3col						col;
+					} test_light_spot_type;
+
+test_light_spot_type		light_spot_list[max_light_spot];
+*/
+
+bool						gl_light_changed;
+
 /* =======================================================
 
       Get Light Intensity For Type
       
 ======================================================= */
 
-double gl_light_get_intensity(int tick,int light_type,int intensity)
+int gl_light_get_intensity(int tick,int light_type,int intensity)
 {
-	double			d_tick,d_intensity;
-	
-	d_intensity=(double)intensity;
-	
 	switch (light_type) {
 	
 		case lt_normal:
-			return(d_intensity);
+			return(intensity);
 	
 		case lt_blink:
-			if ((tick&0x100)==0) return(d_intensity);
+			if ((tick&0x100)==0) return(intensity);
 			return(0);
 			
 		case lt_glow:
-			d_tick=(double)(tick&0x7FF);
-			if (d_tick>1024) d_tick=2048-d_tick;
-			return(d_intensity*(0.75+(d_tick/4096)));
+			tick=tick&0x7FF;
+			if (tick>1024) tick=2048-tick;
+			return((int)((float)intensity*(0.75f+(((float)tick)*0.0003f))));
 			
 		case lt_pulse:
-			d_tick=(double)(tick&0x3FF);
-			if (d_tick>512) d_tick=1024-d_tick;
-			return(d_intensity*(0.5+(d_tick/1024)));
+			tick=tick&0x3FF;
+			if (tick>512) tick=1024-tick;
+			return((int)((float)intensity*(0.5f+(((float)tick)*0.001f))));
 			
 		case lt_flicker:
-			d_intensity*=light_flicker_value[(tick>>7)&0x3F];
+			return((int)((float)intensity*light_flicker_value[(tick>>7)&0x3F]));
 			break;
 			
 		case lt_failing:
-			d_intensity*=light_fail_value[(tick>>7)&0x3F];
+			return((int)((float)intensity*light_fail_value[(tick>>7)&0x3F]));
 			break;
 	}
 	
-	return(d_intensity);
+	return(intensity);
 }
+
+/* =======================================================
+
+      Light Mesh/Poly/Liquid Collisions
+      
+======================================================= */
+
+// supergumba -- more testing
+void gl_lights_cache_mesh_setup(map_mesh_type *mesh)
+{
+	int							n,k,low_idx,count;
+	double						d,dx,dy,dz,low_dist;
+	map_mesh_poly_type			*poly;
+	map_light_cache_list_type	mesh_list[max_cache_light_per_mesh];
+	view_light_spot_type		*lspot;
+
+		// find all lights which contact this mesh
+
+	count=0;
+
+	for (n=0;n!=view.render->light.count;n++) {
+		lspot=&view.render->light.spots[n];
+
+			// box hit?
+
+		if ((lspot->pnt.x+lspot->intensity)<mesh->box.min.x) continue;
+		if ((lspot->pnt.x-lspot->intensity)>mesh->box.max.x) continue;
+		if ((lspot->pnt.y+lspot->intensity)<mesh->box.min.y) continue;
+		if ((lspot->pnt.y-lspot->intensity)>mesh->box.max.y) continue;
+		if ((lspot->pnt.z+lspot->intensity)<mesh->box.min.z) continue;
+		if ((lspot->pnt.z-lspot->intensity)>mesh->box.max.z) continue;
+
+			// get distance
+			// skip square root as we are comparing
+			// them against other distances
+
+		dx=mesh->box.mid.x-lspot->pnt.x;
+		dy=mesh->box.mid.y-lspot->pnt.y;
+		dz=mesh->box.mid.z-lspot->pnt.z;
+
+		d=((dx*dx)+(dy*dy)+(dz*dz));
+
+			// put in list
+
+		if (count<max_cache_light_per_mesh) {
+			mesh_list[count].idx=n;
+			mesh_list[count].distance=d;
+			count++;
+		}
+		else {
+			low_idx=0;
+			low_dist=mesh_list[0].distance;
+
+			for (k=1;k<count;k++) {
+				if (mesh_list[k].distance<low_dist) {
+					low_idx=k;
+					low_dist=mesh_list[k].distance;
+				}
+			}
+
+			if (d>low_dist) {
+				mesh_list[low_idx].idx=n;
+				mesh_list[low_idx].distance=d;
+			}
+		}
+	}
+
+		// now setup all polygons
+
+	poly=mesh->polys;
+
+	for (n=0;n!=mesh->npoly;n++) {
+
+		poly->light_cache.count=0;
+
+		for (k=0;k!=count;k++) {
+			lspot=&view.render->light.spots[mesh_list[k].idx];
+
+				// box hit?
+
+			if ((lspot->pnt.x+lspot->intensity)<poly->box.min.x) continue;
+			if ((lspot->pnt.x-lspot->intensity)>poly->box.max.x) continue;
+			if ((lspot->pnt.y+lspot->intensity)<poly->box.min.y) continue;
+			if ((lspot->pnt.y-lspot->intensity)>poly->box.max.y) continue;
+			if ((lspot->pnt.z+lspot->intensity)<poly->box.min.z) continue;
+			if ((lspot->pnt.z-lspot->intensity)>poly->box.max.z) continue;
+
+				// get distance
+				// skip square root as we are comparing
+				// them against other distances
+
+			dx=mesh->box.mid.x-lspot->pnt.x;
+			dy=mesh->box.mid.y-lspot->pnt.y;
+			dz=mesh->box.mid.z-lspot->pnt.z;
+
+			d=((dx*dx)+(dy*dy)+(dz*dz));
+
+				// put in list
+
+			if (poly->light_cache.count<max_shader_light) {
+				poly->light_cache.list[poly->light_cache.count].idx=n;
+				poly->light_cache.list[poly->light_cache.count].distance=d;
+				poly->light_cache.count++;
+			}
+			else {
+				low_idx=0;
+				low_dist=poly->light_cache.list[0].distance;
+
+				for (k=1;k<poly->light_cache.count;k++) {
+					if (poly->light_cache.list[k].distance<low_dist) {
+						low_idx=k;
+						low_dist=poly->light_cache.list[k].distance;
+					}
+				}
+
+				if (d>low_dist) {
+					poly->light_cache.list[low_idx].idx=n;
+					poly->light_cache.list[low_idx].distance=d;
+				}
+			}
+		}
+
+		poly++;
+	}
+}
+
+
+
 
 /* =======================================================
 
       Compile Light List
       
 ======================================================= */
+
+// supergumba -- need an initialization for all this, to clear out lspot list
 
 void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,bool never_obscure,int intensity,float exponent,int direction,d3col *col)
 {
@@ -125,22 +273,34 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,boo
 		// already too many lights?
 
 	if (view.render->light.count==max_light_spot) return;
+
+		// calculate intensity
+
+	intensity=gl_light_get_intensity(tick,light_type,intensity);
 	if (intensity<=0) return;
 
 		// is light in view?
 
+	/* supergumba -- never obscure might need to go, we should probably consider all lights
+
 	if (!never_obscure) {
 		if (!light_inview(pnt,intensity)) return;
 	}
+	*/
 	
 		// create light
 
 	lspot=&view.render->light.spots[view.render->light.count];
+
+		// has light changed?
+		// position is all that matters, because everything
+		// else will be handled inside the shaders or vertex lighting
+
+	gl_light_changed=((lspot->pnt.x!=pnt->x) || (lspot->pnt.y!=pnt->y) || (lspot->pnt.z!=pnt->z));
 	
 		// create intensity for light type
 		
-	lspot->intensity=gl_light_get_intensity(tick,light_type,intensity);
-	if (lspot->intensity<=0) return;
+	lspot->intensity=intensity;
 
 	lspot->i_intensity=(int)lspot->intensity;			// need alternate versions of data to speed up later calculations
 	lspot->f_intensity=(float)lspot->intensity;
@@ -257,6 +417,8 @@ void gl_lights_compile(int tick)
 	
 	view.render->light.count=0;
 
+	gl_light_changed=FALSE;
+
 		// map lights
 		
 	maplight=map.lights;
@@ -296,6 +458,25 @@ void gl_lights_compile(int tick)
 		gl_lights_compile_effect_add(tick,effect);		
 		effect++;
 	}
+
+		// if the lights have changed, recalc the
+		// cached light list
+
+	/* supergumba
+	if (gl_light_changed) {
+
+		for (n=0;n!=view.render->draw_list.count;n++) {
+
+			switch (view.render->draw_list.items[n].type) {
+
+				case view_render_type_mesh:
+					gl_lights_cache_mesh_setup(&map.mesh.meshes[view.render->draw_list.items[n].idx]);
+					break;
+			}
+
+		}
+	}
+	*/
 
 		// this flag allows us to reduce
 		// the amount of lights as we work through

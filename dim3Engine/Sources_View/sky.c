@@ -463,7 +463,6 @@ void draw_sky_dome_hemisphere_setup(void)
 	view_unbind_sky_vertex_object();
 }
 
-
 void draw_sky_dome_hemisphere(void)
 {
     int					k,tick,txt_id,dome_cnt;

@@ -46,6 +46,8 @@ extern shader_type			user_shaders[max_user_shader];
 
 extern float				light_shader_direction[7][3];
 
+extern bitmap_type			lmap_hilite_bitmap;
+
 /* =======================================================
 
       Setup Shader Variables
@@ -633,10 +635,13 @@ void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx
 
 		// extra texture map
 
-	if (lmap_txt_idx!=-1) {
-		gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
-		if (gl_id!=-1) gl_texture_bind(3,gl_id);
+	if ((lmap_txt_idx!=-1) || (view.debug.on)) {
+		gl_id=lmap_hilite_bitmap.gl_id;
 	}
+	else {
+		gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
+	}
+	if (gl_id!=-1) gl_texture_bind(3,gl_id);
 	
 		// spec map
 

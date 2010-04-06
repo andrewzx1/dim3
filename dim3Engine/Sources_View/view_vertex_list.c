@@ -42,6 +42,8 @@ extern setup_type			setup;
       
 ======================================================= */
 
+// supergumba -- if view.shader_on, then NO COLOR LIST!
+
 bool view_compile_mesh_gl_list_init(void)
 {
 	int					n,k,t,vertex_cnt,i_idx;
@@ -284,7 +286,7 @@ bool view_compile_mesh_gl_lists(void)
 			// recalculate the vertexes if this
 			// mesh is moving
 
-		if (mesh->draw.moved) {
+		if ((mesh->flag.moveable) && (mesh->draw.moved)) {
 		
 			if (!vbo_mapped) {
 				vbo_mapped=TRUE;
@@ -343,30 +345,31 @@ bool view_compile_mesh_gl_lists(void)
 			}
 		}
 
-			// high lighted and shader only meshes are skipped
+			// shaders don't have light calculations
 			// otherwise only recalculate if lights have changed
 
-		if ((mesh->draw.has_no_shader) && (!mesh->flag.hilite)) {
+		if (!view.shader_on) {
 
-				// special check for debug on
+				// get the lights for this mesh
+				// we have a special check for ambient only
+				// lighting which can skip a number of stages
 				
 			if (view.debug.on) {
 				only_ambient=TRUE;
 				col.r=col.g=col.b=1.0f;
 			}
+			else {
+				only_ambient=!gl_lights_calc_vertex_setup_mesh(mesh);
+			}
 
-				// create colors for each vertexes
 				// we have a special flag to tell if we've already
 				// set it to ambient only the last draw and then skip it
 
-			else {
-				only_ambient=!gl_lights_calc_vertex_setup_mesh(mesh);
-				if (only_ambient) {
-					if (mesh->draw.cur_ambient_only) continue;
+			if (only_ambient) {
+				if (mesh->draw.cur_ambient_only) continue;
 					
-					mesh->draw.cur_ambient_only=TRUE;
-					gl_lights_get_ambient(&col,TRUE);
-				}
+				mesh->draw.cur_ambient_only=TRUE;
+				gl_lights_get_ambient(&col,TRUE);
 			}
 			
 				// set the colors

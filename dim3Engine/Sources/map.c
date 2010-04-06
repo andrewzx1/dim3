@@ -181,15 +181,21 @@ void map_lookups_setup(void)
 	}
 }
 
+// supergumba
+void map_shader_setup(void)
+{
+	view.shader_on=(!setup.disable_shaders)&&gl_check_shader_ok();
+}
+
 void map_mesh_polygon_draw_flag_setup(void)
 {
 	int					n,k;
-	bool				has_opaque,has_transparent,
+	bool				has_opaque,has_transparent,has_glow,
 						has_no_shader;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
-	
+
 		// run through the meshes
 		// and setup mesh and polygon draw flags
 		
@@ -201,6 +207,7 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 		has_opaque=FALSE;
 		has_transparent=FALSE;
+		has_glow=FALSE;
 		has_no_shader=FALSE;
 		
 			// run through the polys
@@ -223,6 +230,7 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 			has_opaque|=(!poly->draw.transparent_on);
 			has_transparent|=poly->draw.transparent_on;
+			has_glow|=poly->draw.glow_on;
 			has_no_shader|=(!poly->draw.shader_on);
 
 			poly++;
@@ -232,6 +240,7 @@ void map_mesh_polygon_draw_flag_setup(void)
 		
 		mesh->draw.has_opaque=has_opaque;
 		mesh->draw.has_transparent=has_transparent;
+		mesh->draw.has_glow=has_glow;
 		mesh->draw.has_no_shader=has_no_shader;
 		
 		mesh++;
@@ -280,6 +289,8 @@ bool map_start(bool skip_media,char *err_str)
 		sprintf(err_str,"Could not open map: %s.  If this map is from an older version of dim3, use Editor to upgrade it.",map.info.name);
 		return(FALSE);
 	}
+
+	map_shader_setup();
 
 	gl_shader_attach_map();
 
