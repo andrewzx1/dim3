@@ -347,6 +347,7 @@ typedef struct		{
 //
  
 typedef struct		{
+						bool								shader_on;
 						view_count_type						count;
 						view_render_type					*render;
 						view_time_type						time;

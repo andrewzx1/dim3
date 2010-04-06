@@ -400,10 +400,6 @@ void view_draw_scene_build(void)
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
-	
-		// compile all lights in map
-		
-	gl_lights_compile(tick);
 
 		// setup draw lists
 
@@ -427,6 +423,10 @@ void view_draw_scene_build(void)
 		
 	halo_draw_clear();
 	view_add_halos();
+	
+		// compile all lights in map
+		
+	gl_lights_compile(tick);
 }
 
 void view_draw_scene_render(obj_type *obj,weapon_type *weap)

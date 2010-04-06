@@ -135,9 +135,9 @@ int bitmap_find_nearest_power_2(int sz)
 	return(1024);
 }
 
-unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned char *png_data)
+unsigned char* bitmap_fix_power_2_and_quality(bitmap_type *bitmap,bool has_alpha,int texture_quality_mode,unsigned char *png_data)
 {
-	int				wid,high,byte_sz,x,y,dsz;
+	int				max_sz,wid,high,byte_sz,x,y,dsz;
 	float			x_skip,y_skip;
 	unsigned char	*data,*sptr,*dptr;
 
@@ -145,6 +145,18 @@ unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned ch
 
 	wid=bitmap_find_nearest_power_2(bitmap->wid);
 	high=bitmap_find_nearest_power_2(bitmap->high);
+
+			// get quality
+
+	if (texture_quality_mode!=texture_quality_mode_high) {
+		max_sz=256;
+		if (texture_quality_mode==texture_quality_mode_low) max_sz=128;
+
+		if (wid>max_sz) wid=max_sz;
+		if (high>max_sz) high=max_sz;
+	}
+
+		// any changes?
 
 	if ((wid==bitmap->wid) && (high==bitmap->high)) return(png_data);
 
@@ -211,9 +223,10 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 	if (png_data==NULL) return(FALSE);
 
 		// if not a rectangle, fix size
-		// if not a power of two
+		// if not a power of two and do any
+		// texture quality changes
 
-	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
+	if (!rectangle) png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
 	
 		// set alphas and scrubbing
 		
@@ -312,7 +325,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 		// if not a rectangle, fix size
 		// if not a power of two
 
-	if (!rectangle) data=bitmap_fix_power_2(bitmap,alpha_channel,data);
+	if (!rectangle) data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode_high,data);
 	
 		// find if bitmap has transparencies
 	

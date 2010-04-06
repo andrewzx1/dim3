@@ -34,17 +34,13 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 
-#define render_map_transparent_mode_none			0
-#define render_map_transparent_mode_simple			1
-#define render_map_transparent_mode_light_map		2
-#define render_map_transparent_mode_shader			3
-#define render_map_transparent_mode_glow			4
-
 extern map_type			map;
 extern server_type		server;
 extern view_type		view;
 extern camera_type		camera;
 extern setup_type		setup;
+
+extern bitmap_type		lmap_hilite_bitmap;
 
 int						trans_cur_mode;
 bool					trans_cur_additive;
@@ -187,186 +183,169 @@ void render_transparent_sort(void)
 
 /* =======================================================
 
-      Enable and Disable Modes
-      
-======================================================= */
-
-void render_transparent_mode_switch(int mode,bool additive)
-{
-		// change mode
-		
-	if (trans_cur_mode!=mode) {
-	
-			// only glow effects the blending mode
-			
-		if (trans_cur_mode==render_map_transparent_mode_glow) {
-			glEnable(GL_BLEND);
-		}
-		else {
-			if (mode==render_map_transparent_mode_glow) {
-				glDisable(GL_BLEND);
-			}
-		}
-		
-			// simple and light map need color pointer
-			
-		if ((trans_cur_mode==render_map_transparent_mode_simple) || (trans_cur_mode==render_map_transparent_mode_light_map)) {
-			if ((mode==render_map_transparent_mode_none) || (mode==render_map_transparent_mode_shader) || (mode==render_map_transparent_mode_glow)) {
-				view_compile_gl_list_disable_color();
-			}
-		}
-		else {
-			if ((mode==render_map_transparent_mode_simple) || (mode==render_map_transparent_mode_light_map)) {
-				view_compile_gl_list_enable_color();
-			}
-		}
-	
-			// turn off old mode
-		
-		switch (trans_cur_mode) {
-		
-			case render_map_transparent_mode_simple:
-				gl_texture_transparent_end();
-				break;
-				
-			case render_map_transparent_mode_light_map:
-				gl_texture_transparent_light_map_end();
-				break;
-				
-			case render_map_transparent_mode_shader:
-				gl_shader_draw_end();
-				break;
-				
-			case render_map_transparent_mode_glow:
-				gl_texture_glow_end();
-				break;
-				
-		}
-			
-			// turn on new mode
-			
-		switch (mode) {
-		
-			case render_map_transparent_mode_simple:
-				gl_texture_transparent_start();
-				view_compile_gl_list_attach_uv_simple();
-				break;
-				
-			case render_map_transparent_mode_light_map:
-				gl_texture_transparent_light_map_start();
-				view_compile_gl_list_attach_uv_light_map();
-				break;
-				
-			case render_map_transparent_mode_shader:
-				gl_shader_draw_start();
-				view_compile_gl_list_attach_uv_shader();
-				break;
-				
-			case render_map_transparent_mode_glow:
-				gl_texture_glow_start();
-				view_compile_gl_list_attach_uv_glow();
-				break;
-				
-		}
-		
-		trans_cur_mode=mode;
-	}
-	
-		// change additive
-		
-	if (trans_cur_additive!=additive) {
-	
-		if (additive) {
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-		}
-		else {
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		}
-		
-		trans_cur_additive=additive;
-	}
-}
-
-/* =======================================================
-
       Transparent Mesh Drawing
       
 ======================================================= */
 
-void render_transparent_mesh_simple(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void render_transparent_mesh_normal(void)
 {
-	int						frame;
+	int						n,frame;
+	bool					first_draw,in_additive;
+	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
 
-		// mode switches
+	first_draw=TRUE;
+	in_additive=FALSE;
+
+	for (n=0;n!=trans_sort.count;n++) {
+		mesh=&map.mesh.meshes[trans_sort.list[n].mesh_idx];
+		poly=&mesh->polys[trans_sort.list[n].poly_idx];
+
+			// mode switches
+
+		if (first_draw) {
+			first_draw=FALSE;
+			gl_texture_transparent_light_map_start();
+			view_compile_gl_list_attach_uv_light_map();
+			view_compile_gl_list_enable_color();
+		}
+
+			// textures
+
+		texture=&map.textures[poly->txt_idx];
+		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+		gl_id=texture->frames[frame].bitmap.gl_id;
+
+		if (poly->lmap_txt_idx==-1) {
+			lmap_gl_id=lmap_hilite_bitmap.gl_id;
+		}
+		else {
+			lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[frame].bitmap.gl_id;
+		}
+
+		if (texture->additive!=in_additive) {
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			in_additive=TRUE;
+		}
+		else {
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			in_additive=FALSE;
+		}
+
+			// draw the polygon
+
+		gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,1.0f);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	
+		view.count.poly++;
+	}
+
+	if (!first_draw) {
+		gl_texture_transparent_light_map_end();
+		view_compile_gl_list_disable_color();
 		
-	texture=&map.textures[poly->txt_idx];
-	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-	
-	render_transparent_mode_switch(render_map_transparent_mode_simple,texture->additive);
-
-		// draw the polygon
-
-	gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,1.0f);
-	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	}
 }
 
-void render_transparent_mesh_light_map(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void render_transparent_mesh_shader(void)
 {
-	int						frame;
-	texture_type			*texture,*lm_texture;
-
-		// mode switches
-
-	texture=&map.textures[poly->txt_idx];
-	lm_texture=&map.textures[poly->lmap_txt_idx];
-	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-	
-	render_transparent_mode_switch(render_map_transparent_mode_light_map,texture->additive);
-
-		// draw the polygon
-
-	gl_texture_transparent_light_map_set(texture->frames[frame].bitmap.gl_id,lm_texture->frames[0].bitmap.gl_id,1.0f);
-	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-}
-
-void render_transparent_mesh_shader(int mesh_idx,map_mesh_type *mesh,map_mesh_poly_type *poly)
-{
-	int						frame;
+	int						n,mesh_idx,frame;
+	bool					first_draw,in_additive;
 	texture_type			*texture;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
 	view_light_list_type	light_list;
 
-		// mode switches
+	first_draw=TRUE;
+	in_additive=FALSE;
 
-	texture=&map.textures[poly->txt_idx];
-	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+	for (n=0;n!=trans_sort.count;n++) {
+
+		mesh_idx=trans_sort.list[n].mesh_idx;
+		mesh=&map.mesh.meshes[mesh_idx];
+		poly=&mesh->polys[trans_sort.list[n].poly_idx];
+
+			// mode switches
+
+		if (first_draw) {
+			first_draw=FALSE;
+			gl_shader_draw_start();
+			view_compile_gl_list_attach_uv_shader();
+		}
+
+			// textures
+
+		texture=&map.textures[poly->txt_idx];
+		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+		if (texture->additive!=in_additive) {
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			in_additive=TRUE;
+		}
+		else {
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			in_additive=FALSE;
+		}
+
+			// draw the polygon
+
+		gl_lights_build_from_poly(mesh_idx,poly,&light_list);
+		gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
+
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	
-	render_transparent_mode_switch(render_map_transparent_mode_shader,texture->additive);
+		view.count.poly++;
+	}
 
-		// draw shader
-
-	gl_lights_build_from_poly(mesh_idx,poly,&light_list);
-	gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
-
-	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	if (!first_draw) {
+		gl_shader_draw_end();
+		
+		if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	}
 }
 
-void render_transparent_mesh_glow(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void render_transparent_mesh_glow(void)
 {
-	int						frame;
+	int						n,frame;
+	bool					first_draw;
 	texture_type			*texture;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
 
-		// mode switches
+	first_draw=TRUE;
 
-	texture=&map.textures[poly->txt_idx];
-	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+	for (n=0;n!=trans_sort.count;n++) {
+		mesh=&map.mesh.meshes[trans_sort.list[n].mesh_idx];
+		poly=&mesh->polys[trans_sort.list[n].poly_idx];
 
-	render_transparent_mode_switch(render_map_transparent_mode_glow,FALSE);
+			// mode switches
+
+		if (first_draw) {
+			first_draw=FALSE;
+			gl_texture_glow_start();
+			view_compile_gl_list_attach_uv_glow();
+		}
+
+			// textures
+
+		texture=&map.textures[poly->txt_idx];
+		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+			// draw glow
+
+		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	
-		// draw glow
+		view.count.poly++;
+	}
 
-	gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-	glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	if (!first_draw) {
+		gl_texture_glow_end();
+	}
 }
 
 /* =======================================================
@@ -376,12 +355,7 @@ void render_transparent_mesh_glow(map_mesh_type *mesh,map_mesh_poly_type *poly)
 ======================================================= */
 
 void render_map_mesh_transparent(void)
-{
-	int						n,sort_cnt;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_poly_sort_item_type	*sort_list;
-	
+{	
 		// setup view
 
 	gl_3D_view();
@@ -407,54 +381,23 @@ void render_map_mesh_transparent(void)
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	
-		// remember current modes to
-		// reduce number of state switches
-		
-	trans_cur_mode=render_map_transparent_mode_none;
-	trans_cur_additive=FALSE;
-	
-		// run through the sorted meshes
-		// sorted polys are only transparent, so
-		// we don't need to check that
-		
-	sort_cnt=trans_sort.count;
-	sort_list=trans_sort.list;
-		
-	for (n=0;n!=sort_cnt;n++) {
-		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
-		poly=&mesh->polys[sort_list[n].poly_idx];
 
-		if (view.debug.on) {
-			render_transparent_mesh_simple(mesh,poly);
-		}
-		else {
-			if (poly->draw.shader_on) {
-				render_transparent_mesh_shader(sort_list[n].mesh_idx,mesh,poly);
-			}
-			else {
-				if (poly->lmap_txt_idx!=-1) {
-					render_transparent_mesh_light_map(mesh,poly);
-				}
-				else {
-					render_transparent_mesh_simple(mesh,poly);
-				}
-			}
-		}
+		// draw the polygons
 
-		if (poly->draw.glow_on) render_transparent_mesh_glow(mesh,poly);
-		
-		view.count.poly++;
+	if (view.shader_on) {
+		render_transparent_mesh_shader();
 	}
-	
-		// turn off any mode left on
-		// from rendering
-		
-	render_transparent_mode_switch(render_map_transparent_mode_none,FALSE);
+	else {
+		render_transparent_mesh_normal();
+	}
 
+	render_transparent_mesh_glow();
+
+		// put depth mask back
+		
 	glDepthMask(GL_TRUE);
 
-		// dettach any attached lists
+		// dettach any lists
 
 	view_compile_gl_list_dettach();
 }
