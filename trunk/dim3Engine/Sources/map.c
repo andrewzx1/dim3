@@ -190,8 +190,7 @@ void map_shader_setup(void)
 void map_mesh_polygon_draw_flag_setup(void)
 {
 	int					n,k;
-	bool				has_opaque,has_transparent,has_glow,
-						has_no_shader;
+	bool				has_opaque,has_transparent,has_glow;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -208,7 +207,6 @@ void map_mesh_polygon_draw_flag_setup(void)
 		has_opaque=FALSE;
 		has_transparent=FALSE;
 		has_glow=FALSE;
-		has_no_shader=FALSE;
 		
 			// run through the polys
 
@@ -222,7 +220,6 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 				// set the flags
 
-			poly->draw.shader_on=(texture->shader_idx!=-1)&&(!mesh->flag.hilite);
 			poly->draw.transparent_on=(texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent);
 			poly->draw.glow_on=(texture->frames[0].glowmap.gl_id!=-1);
 
@@ -231,7 +228,6 @@ void map_mesh_polygon_draw_flag_setup(void)
 			has_opaque|=(!poly->draw.transparent_on);
 			has_transparent|=poly->draw.transparent_on;
 			has_glow|=poly->draw.glow_on;
-			has_no_shader|=(!poly->draw.shader_on);
 
 			poly++;
 		}
@@ -241,7 +237,6 @@ void map_mesh_polygon_draw_flag_setup(void)
 		mesh->draw.has_opaque=has_opaque;
 		mesh->draw.has_transparent=has_transparent;
 		mesh->draw.has_glow=has_glow;
-		mesh->draw.has_no_shader=has_no_shader;
 		
 		mesh++;
 	}

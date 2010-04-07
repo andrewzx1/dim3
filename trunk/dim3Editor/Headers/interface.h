@@ -102,6 +102,7 @@ extern void main_wind_tool_default(void);
 extern void main_wind_tool_switch_vertex_mode(void);
 extern void main_wind_tool_switch_drag_mode(void);
 extern void main_wind_tool_switch_grid_mode(void);
+extern void main_wind_tool_switch_node_mode(void);
 
 //
 // main window panels

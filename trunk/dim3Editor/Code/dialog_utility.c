@@ -796,10 +796,7 @@ void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,int id,ch
 	int					shader_count,head_tag,tag;
 	char				path[1024],shader_names[256][file_str_len];
 
-	strcpy(shader_names[0],"Default");
-	strcpy(shader_names[1],"-");
-	
-	shader_count=2;
+	shader_count=0;
 	
 	file_paths_data(&file_path_setup,path,"Settings","Shaders","xml");
 	if (xml_open_file(path)) {

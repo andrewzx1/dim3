@@ -42,11 +42,9 @@ extern setup_type			setup;
       
 ======================================================= */
 
-// supergumba -- if view.shader_on, then NO COLOR LIST!
-
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,vertex_cnt,i_idx;
+	int					n,k,t,vertex_cnt,list_cnt,i_idx;
 	unsigned int		v_poly_start_idx;
 	unsigned int		*index_ptr;
 	float				*vertex_ptr,*pv,*pp,*pc;
@@ -94,14 +92,20 @@ bool view_compile_mesh_gl_list_init(void)
 		// initial vertex VBO
 		// we need a UV list for both main and lmap UVs
 		
-	view_init_map_vertex_object((vertex_cnt*(3+3))+((vertex_cnt*2)*2));
+		// list has vertexes and two sets of UVs
+		// if in fixed function, then also add in a color list
+		
+	list_cnt=(vertex_cnt*3)+((vertex_cnt*2)*2);
+	if (!view.shader_on) list_cnt+=(vertex_cnt*3);
+		
+	view_init_map_vertex_object(list_cnt);
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
 
 	pv=vertex_ptr;
-	pc=pv+(vertex_cnt*3);
-	pp=pv+(vertex_cnt*(3+3));
+	pp=pv+(vertex_cnt*3);
+	if (!view.shader_on) pc=pv+((vertex_cnt*3)+((vertex_cnt*2)*2));
 	
 		// vertexes and color
 		// we run this separate from the UVs
@@ -123,9 +127,11 @@ bool view_compile_mesh_gl_list_init(void)
 				*pv++=(float)pnt->y;
 				*pv++=(float)pnt->z;
 
-				*pc++=1.0f;
-				*pc++=1.0f;
-				*pc++=1.0f;
+				if (!view.shader_on) {
+					*pc++=1.0f;
+					*pc++=1.0f;
+					*pc++=1.0f;
+				}
 			}
 
 			poly++;
@@ -328,7 +334,7 @@ bool view_compile_mesh_gl_lists(void)
 
 				// only shift main UVs (not light mapped ones)
 
-			pp=vertex_ptr+((vertex_cnt*(3+3))+(mesh->draw.vertex_offset*2));
+			pp=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*2));
 			poly=mesh->polys;
 
 			for (k=0;k!=mesh->npoly;k++) {
@@ -406,7 +412,7 @@ bool view_compile_mesh_gl_lists(void)
 			
 				// create per poly colors
 
-			pc=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*3));
+			pc=vertex_ptr+((vertex_cnt*3)+((vertex_cnt*2)*2)+(mesh->draw.vertex_offset*3));
 
 			poly=mesh->polys;
 			
@@ -473,28 +479,17 @@ void view_compile_gl_list_attach(void)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 }
 
-void view_compile_gl_list_attach_uv_simple(void)
-{
-	int			offset;
-
-	offset=(map.mesh.vbo_vertex_count*(3+3))*sizeof(float);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-}
-
 void view_compile_gl_list_attach_uv_light_map(void)
 {
 	int			offset;
 
-	offset=(map.mesh.vbo_vertex_count*(3+3))*sizeof(float);
+	offset=(map.mesh.vbo_vertex_count*3)*sizeof(float);
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
 	
-	offset=((map.mesh.vbo_vertex_count*(3+3))+(map.mesh.vbo_vertex_count*2))*sizeof(float);
+	offset=((map.mesh.vbo_vertex_count*3)+(map.mesh.vbo_vertex_count*2))*sizeof(float);
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -505,13 +500,13 @@ void view_compile_gl_list_attach_uv_shader(void)
 {
 	int			offset;
 
-	offset=((map.mesh.vbo_vertex_count*(3+3))+(map.mesh.vbo_vertex_count*2))*sizeof(float);
+	offset=((map.mesh.vbo_vertex_count*3)+(map.mesh.vbo_vertex_count*2))*sizeof(float);
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
 	
-	offset=(map.mesh.vbo_vertex_count*(3+3))*sizeof(float);
+	offset=(map.mesh.vbo_vertex_count*3)*sizeof(float);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -522,7 +517,7 @@ void view_compile_gl_list_attach_uv_glow(void)
 {
 	int			offset;
 
-	offset=(map.mesh.vbo_vertex_count*(3+3))*sizeof(float);
+	offset=(map.mesh.vbo_vertex_count*3)*sizeof(float);
 	
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -537,7 +532,7 @@ void view_compile_gl_list_enable_color(void)
 {
 	int			offset;
 
-	offset=(map.mesh.vbo_vertex_count*3)*sizeof(float);
+	offset=((map.mesh.vbo_vertex_count*3)+((map.mesh.vbo_vertex_count*2)*2))*sizeof(float);
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,(void*)offset);

@@ -83,8 +83,7 @@ static pascal OSStatus light_map_event_proc(EventHandlerCallRef handler,EventRef
 
 bool dialog_light_map_run(void)
 {
-	int						n,size,quality,pixel_border_count,blur_count,
-							size_list[4]={256,512,1024,2048};
+	int						size,quality,pixel_border_count,blur_count;
 	bool					ok;
 	char					err_str[256];
 	EventHandlerUPP			event_upp;
@@ -96,15 +95,7 @@ bool dialog_light_map_run(void)
 	
 		// set controls
 	
-	size=0;
-	for (n=0;n!=4;n++) {
-		if (map.settings.light_map.size==size_list[n]) {
-			size=n;
-			break;
-		}
-	}
-	
-	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,size);
+	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,((map.settings.light_map.size/256)-1));
 	dialog_set_value(dialog_light_map_wind,kLightMapQuality,0,map.settings.light_map.quality);
 	dialog_set_value(dialog_light_map_wind,kLightMapSmearCount,0,map.settings.light_map.pixel_border_count);
 	dialog_set_value(dialog_light_map_wind,kLightMapBlurCount,0,map.settings.light_map.blur_count);
@@ -125,7 +116,7 @@ bool dialog_light_map_run(void)
 	
 		// dialog to data
 		
-	size=size_list[dialog_get_combo(dialog_light_map_wind,kLightMapSize,0)];
+	size=dialog_get_combo(dialog_light_map_wind,kLightMapSize,0);
 	quality=dialog_get_value(dialog_light_map_wind,kLightMapQuality,0);
 	pixel_border_count=dialog_get_value(dialog_light_map_wind,kLightMapSmearCount,0);
 	blur_count=dialog_get_value(dialog_light_map_wind,kLightMapBlurCount,0);
@@ -138,7 +129,7 @@ bool dialog_light_map_run(void)
 	
 		// run the light map generate
 		
-	map.settings.light_map.size=size;
+	map.settings.light_map.size=(size+1)*256;
 	map.settings.light_map.quality=quality;
 	map.settings.light_map.pixel_border_count=pixel_border_count;
 	map.settings.light_map.blur_count=blur_count;

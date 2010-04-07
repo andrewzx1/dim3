@@ -201,5 +201,5 @@ int gl_user_shader_find(char *name)
 		shader++;
 	}
 	
-	return(-1);
+	return(gl_shader_core_index);
 }

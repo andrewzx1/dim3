@@ -462,9 +462,8 @@ void gl_lights_compile(int tick)
 		// if the lights have changed, recalc the
 		// cached light list
 
-	/* supergumba
 	if (gl_light_changed) {
-
+/*
 		for (n=0;n!=view.render->draw_list.count;n++) {
 
 			switch (view.render->draw_list.items[n].type) {
@@ -475,8 +474,8 @@ void gl_lights_compile(int tick)
 			}
 
 		}
+*/
 	}
-	*/
 
 		// this flag allows us to reduce
 		// the amount of lights as we work through

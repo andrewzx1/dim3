@@ -1475,11 +1475,25 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	
 		// detect if this poly's
 		// light map is a solid color
+		
+		// hilited meshes automatically get
+		// a solid color of white
 	
 	lm_poly->x_shift=lm_poly->y_shift=0;
 	lm_poly->txt_idx=0;
 		
-	lm_poly->solid_color=light_map_render_poly(lm_poly_idx,solid_col,NULL);
+	lm_poly->solid_color=FALSE;
+	
+	if (lm_poly->mesh_idx!=-1) {
+		if (map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) {
+			lm_poly->solid_color=TRUE;
+			solid_col[0]=solid_col[1]=solid_col[2]=0xFF;
+		}
+	}
+	
+	if (!lm_poly->solid_color) {
+		lm_poly->solid_color=light_map_render_poly(lm_poly_idx,solid_col,NULL);
+	}
 	
 		// solid color lightmaps only take 1 block
 		// check to see if we already made a solid block

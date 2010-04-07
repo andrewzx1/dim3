@@ -529,7 +529,7 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,FALSE,1.0f,light_list,NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
@@ -708,7 +708,7 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,alpha,light_list,NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,FALSE,alpha,light_list,NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}

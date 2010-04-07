@@ -245,7 +245,7 @@ typedef struct		{
 															txt_frame_offset,
 															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
 						float								x_shift_offset,y_shift_offset;
-						bool								bump_ok,shift_on,shader_on,transparent_on,glow_on;
+						bool								bump_ok,shift_on,transparent_on,glow_on;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -294,8 +294,7 @@ typedef struct		{
 typedef struct		{
 						int									vertex_offset;
 						bool								moved,cur_ambient_only,
-															has_opaque,has_transparent,has_glow,
-															has_no_shader;
+															has_opaque,has_transparent,has_glow;
 					} map_mesh_draw_type;
 
 typedef struct		{

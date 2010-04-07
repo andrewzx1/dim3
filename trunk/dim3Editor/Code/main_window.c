@@ -96,9 +96,9 @@ char					tool_tooltip_str[tool_count][64]=
 									"Tesselate Mesh",
 									"Grid\nSwitch Mode with E",
 									"Auto-Texture Meshes",
-									"Node Selects by Click",
-									"Node Links by Click",
-									"Node Removes Links by Click",
+									"Node Selects by Click\nSwith Mode with R",
+									"Node Links by Click\nSwith Mode with R",
+									"Node Removes Links by Click\nSwith Mode with R",
 									"Show or Hide Normals",
 									"Show or Hide Backface Culling",
 									"Edit Map Script",
@@ -1815,6 +1815,11 @@ void main_wind_key_down(char ch)
 		return;
 	}
 	
+	if ((ch=='r') || (ch=='R')) {
+		main_wind_tool_switch_node_mode();
+		return;
+	}
+	
 		// send keys to proper panel
 		
 	switch (state.view) {
@@ -2045,6 +2050,14 @@ void main_wind_tool_switch_grid_mode(void)
 {
 	state.grid_mode++;
 	if (state.grid_mode>grid_mode_large) state.grid_mode=grid_mode_none;
+
+	main_wind_tool_reset();
+}
+
+void main_wind_tool_switch_node_mode(void)
+{
+	state.node_mode++;
+	if (state.node_mode>node_mode_remove_link) state.node_mode=node_mode_select;
 
 	main_wind_tool_reset();
 }

@@ -42,13 +42,10 @@ extern setup_type		setup;
 
 extern bitmap_type		lmap_hilite_bitmap;
 
-int						trans_cur_mode;
-bool					trans_cur_additive;
 map_poly_sort_type		trans_sort;
 
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
-extern void view_compile_gl_list_attach_uv_simple(void);
 extern void view_compile_gl_list_attach_uv_light_map(void);
 extern void view_compile_gl_list_attach_uv_shader(void);
 extern void view_compile_gl_list_attach_uv_glow(void);
@@ -294,7 +291,7 @@ void render_transparent_mesh_shader(void)
 			// draw the polygon
 
 		gl_lights_build_from_poly(mesh_idx,poly,&light_list);
-		gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
+		gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,TRUE,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	
@@ -321,6 +318,8 @@ void render_transparent_mesh_glow(void)
 	for (n=0;n!=trans_sort.count;n++) {
 		mesh=&map.mesh.meshes[trans_sort.list[n].mesh_idx];
 		poly=&mesh->polys[trans_sort.list[n].poly_idx];
+		
+		if (!poly->draw.glow_on) continue;
 
 			// mode switches
 
@@ -355,7 +354,7 @@ void render_transparent_mesh_glow(void)
 ======================================================= */
 
 void render_map_mesh_transparent(void)
-{	
+{
 		// setup view
 
 	gl_3D_view();
