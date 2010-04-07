@@ -71,8 +71,6 @@ extern char light_type_str[][32];
 
 #define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
-#define max_map_light_cache_list							3				// how many lights can be cached on a poly
-
 //
 // strings
 //
@@ -210,20 +208,6 @@ typedef struct		{
 					} group_type;
 
 //
-// poly light cache structures
-//
-
-typedef struct		{
-						int									idx;
-						double								distance;
-					} map_light_cache_list_type;
-
-typedef struct		{
-						int									count;
-						map_light_cache_list_type			list[max_map_light_cache_list];
-					} map_light_cache_type;
-
-//
 // mesh structures
 //
 
@@ -263,7 +247,6 @@ typedef struct		{
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
 						map_mesh_poly_draw_type				draw;
-						map_light_cache_type				light_cache;
 					} map_mesh_poly_type;
 
 typedef struct		{
@@ -351,7 +334,6 @@ typedef struct		{
 						map_liquid_tide_type				tide;
 						map_liquid_ambient_type				ambient;
 						map_liquid_draw_type				draw;
-						map_light_cache_type				light_cache;
 					} map_liquid_type;
 
 //

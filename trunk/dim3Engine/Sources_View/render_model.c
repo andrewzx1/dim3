@@ -117,7 +117,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			
 		if (only_ambient) {
 		
-			gl_lights_get_ambient(&col,FALSE);
+			gl_lights_calc_ambient_color(&col,FALSE);
 		
 			for (k=0;k!=mesh->nvertex;k++) {
 				*cp++=col.r*draw->tint.r;

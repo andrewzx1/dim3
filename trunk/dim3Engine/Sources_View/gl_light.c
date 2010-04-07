@@ -73,23 +73,24 @@ double						light_flicker_value[64]={
 
 extern bool light_inview(d3pnt *pnt,int intensity);
 
-// supergumba
+//
+// supergumba!
+//
 
-/*
+
+#define max_light_cache_list								8
+
 typedef struct		{
-						int							intensity;
-						float						exponent;
-						bool						light_map;
-						d3vct						direction;
-						d3pnt						pnt;
-						d3vct						pnt_eye_space;
-						d3col						col;
-					} test_light_spot_type;
+						int									idx;
+						double								distance;
+					} light_cache_list_type;
 
-test_light_spot_type		light_spot_list[max_light_spot];
-*/
+typedef struct		{
+						int									count;
+						light_cache_list_type				list[max_light_cache_list];
+					} light_cache_type;
 
-bool						gl_light_changed;
+
 
 /* =======================================================
 
@@ -136,7 +137,8 @@ int gl_light_get_intensity(int tick,int light_type,int intensity)
       
 ======================================================= */
 
-// supergumba -- more testing
+// supergumba -- delete this after code is moved
+
 void gl_lights_cache_mesh_setup(map_mesh_type *mesh)
 {
 	int							n,k,low_idx,count;
@@ -291,12 +293,6 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,boo
 		// create light
 
 	lspot=&view.render->light.spots[view.render->light.count];
-
-		// has light changed?
-		// position is all that matters, because everything
-		// else will be handled inside the shaders or vertex lighting
-
-	gl_light_changed=((lspot->pnt.x!=pnt->x) || (lspot->pnt.y!=pnt->y) || (lspot->pnt.z!=pnt->z));
 	
 		// create intensity for light type
 		
@@ -417,8 +413,6 @@ void gl_lights_compile(int tick)
 	
 	view.render->light.count=0;
 
-	gl_light_changed=FALSE;
-
 		// map lights
 		
 	maplight=map.lights;
@@ -459,29 +453,12 @@ void gl_lights_compile(int tick)
 		effect++;
 	}
 
-		// if the lights have changed, recalc the
-		// cached light list
-
-	if (gl_light_changed) {
-/*
-		for (n=0;n!=view.render->draw_list.count;n++) {
-
-			switch (view.render->draw_list.items[n].type) {
-
-				case view_render_type_mesh:
-					gl_lights_cache_mesh_setup(&map.mesh.meshes[view.render->draw_list.items[n].idx]);
-					break;
-			}
-
-		}
-*/
-	}
-
 		// this flag allows us to reduce
 		// the amount of lights as we work through
 		// the polygons of a mesh for shader lights
 
 	light_cur_mesh_reduce_idx=-1;
+	// supergumba -- delete
 }
 
 /* =======================================================
@@ -664,9 +641,198 @@ void gl_lights_spot_reduce_box(d3pnt *min,d3pnt *max)
 
 /* =======================================================
 
-      Per Vertex non GLSL Lighting
+      Setup Meshes, Liquids, and Models for
+	  Lighting Calculations (get a list of hit lights)
       
 ======================================================= */
+
+// supergumba
+// need to find hits here and store in mesh
+
+bool gl_lights_setup_mesh(map_mesh_type *mesh)
+{
+	int							n,k,low_idx,count;
+	double						d,dx,dy,dz,low_dist;
+	map_mesh_poly_type			*poly;
+	map_light_cache_list_type	mesh_list[max_cache_light_per_mesh];
+	view_light_spot_type		*lspot;
+
+		// find all lights which contact this mesh
+
+	count=0;
+
+	for (n=0;n!=view.render->light.count;n++) {
+		lspot=&view.render->light.spots[n];
+
+			// box hit?
+
+		if ((lspot->pnt.x+lspot->intensity)<mesh->box.min.x) continue;
+		if ((lspot->pnt.x-lspot->intensity)>mesh->box.max.x) continue;
+		if ((lspot->pnt.y+lspot->intensity)<mesh->box.min.y) continue;
+		if ((lspot->pnt.y-lspot->intensity)>mesh->box.max.y) continue;
+		if ((lspot->pnt.z+lspot->intensity)<mesh->box.min.z) continue;
+		if ((lspot->pnt.z-lspot->intensity)>mesh->box.max.z) continue;
+
+			// get distance
+			// skip square root as we are comparing
+			// them against other distances
+
+		dx=mesh->box.mid.x-lspot->pnt.x;
+		dy=mesh->box.mid.y-lspot->pnt.y;
+		dz=mesh->box.mid.z-lspot->pnt.z;
+
+		d=((dx*dx)+(dy*dy)+(dz*dz));
+
+			// put in list
+
+		if (count<max_cache_light_per_mesh) {
+			mesh_list[count].idx=n;
+			mesh_list[count].distance=d;
+			count++;
+		}
+		else {
+			low_idx=0;
+			low_dist=mesh_list[0].distance;
+
+			for (k=1;k<count;k++) {
+				if (mesh_list[k].distance<low_dist) {
+					low_idx=k;
+					low_dist=mesh_list[k].distance;
+				}
+			}
+
+			if (d>low_dist) {
+				mesh_list[low_idx].idx=n;
+				mesh_list[low_idx].distance=d;
+			}
+		}
+	}
+
+// return if there is only ambients here
+//	gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max);
+//	return(light_spot_reduce_count!=0);
+}
+
+/* =======================================================
+
+      Calculate Ambient Only Lighting
+      
+======================================================= */
+
+void gl_lights_calc_ambient_color(d3col *col,bool is_mesh)
+{
+	if ((is_mesh) && (map.ambient.light_ignore_mesh)) {
+		col->r=col->g=col->b=setup.gamma;
+		return;
+	}
+	
+	col->r=map.ambient.light_color.r+setup.gamma;
+	col->g=map.ambient.light_color.g+setup.gamma;
+	col->b=map.ambient.light_color.b+setup.gamma;
+}
+
+/* =======================================================
+
+      Calculate Lighting at a Point
+      
+======================================================= */
+
+void gl_lights_calc_color(double x,double y,double z,float *cf)
+{
+	int						n;
+	double					dx,dz,dy,r,g,b,d,mult;
+	view_light_spot_type	*lspot;
+
+		// combine all light spots attenuated for distance
+		
+	r=g=b=0.0;
+
+	lspot=view.render->light.spots;
+	
+	for (n=0;n!=view.render->light.count;n++) {
+
+		dx=lspot->d_x-x;
+		dy=lspot->d_y-y;
+		dz=lspot->d_z-z;
+		
+		d=(dx*dx)+(dz*dz)+(dy*dy);
+
+		if (d<=lspot->d_intensity) {
+			if (gl_lights_direction_ok(x,y,z,lspot)) {
+
+				mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+				
+				mult+=pow(mult,lspot->exponent);
+
+				r+=(lspot->d_col_r*mult);
+				g+=(lspot->d_col_g*mult);
+				b+=(lspot->d_col_b*mult);
+			}
+		}
+
+		lspot++;
+	}
+
+		// set light value
+
+	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
+	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
+	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
+}
+
+void gl_lights_calc_color_mesh(map_mesh_type *mesh,double x,double y,double z,float *cf)
+{
+	int						n;
+	double					dx,dz,dy,r,g,b,d,mult;
+	view_light_spot_type	*lspot;
+
+		// combine all light spots attenuated for distance
+		
+	r=g=b=0.0;
+	
+	lspot=view.render->light.spots;
+	
+	for (n=0;n!=view.render->light.count;n++) {
+
+		if (lspot->light_map) {
+			lspot++;
+			continue;
+		}
+
+		dx=lspot->d_x-x;
+		dy=lspot->d_y-y;
+		dz=lspot->d_z-z;
+		
+		d=(dx*dx)+(dz*dz)+(dy*dy);
+
+		if (d<=lspot->d_intensity) {
+
+			if (gl_lights_direction_ok(x,y,z,lspot)) {
+
+				mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+				
+				mult+=pow(mult,lspot->exponent);
+
+				r+=(lspot->d_col_r*mult);
+				g+=(lspot->d_col_g*mult);
+				b+=(lspot->d_col_b*mult);
+			}
+		}
+	}
+
+		// set light value
+
+	if (map.ambient.light_ignore_mesh) {
+		*cf++=setup.gamma+(float)r;
+		*cf++=setup.gamma+(float)g;
+		*cf=setup.gamma+(float)b;
+		return;
+	}
+	
+	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
+	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
+	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
+}
 
 void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf)
 {
@@ -718,28 +884,6 @@ void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf)
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
 }
 
-void gl_lights_get_ambient(d3col *col,bool is_mesh)
-{
-	if ((is_mesh) && (map.ambient.light_ignore_mesh)) {
-		col->r=col->g=col->b=setup.gamma;
-		return;
-	}
-	
-	col->r=map.ambient.light_color.r+setup.gamma;
-	col->g=map.ambient.light_color.g+setup.gamma;
-	col->b=map.ambient.light_color.b+setup.gamma;
-}
-
-void gl_lights_calc_vertex_setup_none(void)
-{
-	gl_lights_spot_reduce_none();
-}
-
-bool gl_lights_calc_vertex_setup_mesh(map_mesh_type *mesh)
-{
-	gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max);
-	return(light_spot_reduce_count!=0);
-}
 
 bool gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
 {
@@ -888,7 +1032,7 @@ void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_light_
 	}
 
 	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_list);
-	gl_lights_get_ambient(&light_list->ambient,TRUE);
+	gl_lights_calc_ambient_color(&light_list->ambient,TRUE);
 }
 
 void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *light_list)
@@ -911,7 +1055,7 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *ligh
 	
 	gl_lights_spot_reduce_box(&min,&max);
 	gl_lights_build_from_box(&mid,&min,&max,light_list);
-	gl_lights_get_ambient(&light_list->ambient,TRUE);
+	gl_lights_calc_ambient_color(&light_list->ambient,TRUE);
 }
 
 void gl_lights_build_from_model(model_draw *draw,view_light_list_type *light_list)
@@ -923,6 +1067,6 @@ void gl_lights_build_from_model(model_draw *draw,view_light_list_type *light_lis
 	model_get_view_min_max(draw,&mid,&min,&max);
 	gl_lights_spot_reduce_box(&min,&max);
 	gl_lights_build_from_box(&mid,&min,&max,light_list);
-	gl_lights_get_ambient(&light_list->ambient,FALSE);
+	gl_lights_calc_ambient_color(&light_list->ambient,FALSE);
 }
 

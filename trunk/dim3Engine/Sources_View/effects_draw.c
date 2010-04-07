@@ -324,10 +324,6 @@ void effect_draw(void)
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
-	
-		// no lighting spot reductions for effects
-		
-	gl_lights_calc_vertex_setup_none();
 		
 		// draw effects
 		// draw backwards to sort back to front
