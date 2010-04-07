@@ -365,7 +365,7 @@ bool view_compile_mesh_gl_lists(void)
 				col.r=col.g=col.b=1.0f;
 			}
 			else {
-				only_ambient=!gl_lights_calc_vertex_setup_mesh(mesh);
+				only_ambient=!gl_lights_setup_mesh(mesh);
 			}
 
 				// we have a special flag to tell if we've already
@@ -375,7 +375,7 @@ bool view_compile_mesh_gl_lists(void)
 				if (mesh->draw.cur_ambient_only) continue;
 					
 				mesh->draw.cur_ambient_only=TRUE;
-				gl_lights_get_ambient(&col,TRUE);
+				gl_lights_calc_ambient_color(&col,TRUE);
 			}
 			
 				// set the colors
@@ -404,7 +404,7 @@ bool view_compile_mesh_gl_lists(void)
 				pnt=mesh->vertexes;
 
 				for (k=0;k!=mesh->nvertex;k++) {
-					gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,TRUE,pc);
+					gl_lights_calc_color_mesh(mesh,(double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
 					pc+=3;
 					pnt++;
 				}
