@@ -39,6 +39,8 @@ bool						gl_check_value_frame_buffer,
 							gl_check_value_texture_rectangle,
 							gl_check_value_shader;
 
+extern bool					arch_is_ppc;
+
 extern setup_type			setup;
 extern render_info_type		render_info;
 
@@ -54,7 +56,9 @@ bool gl_check_initialize_shader(void)
 	GLint			fragGPU,vertGPU;
 #endif
 
-	if (setup.disable_shaders) return(FALSE);
+		// don't run shaders on PPC machines
+		
+	if (arch_is_ppc) return(FALSE);
 
 		// check GL string
 		

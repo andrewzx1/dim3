@@ -308,23 +308,17 @@ void gl_shader_code_shutdown(shader_type *shader)
 void gl_shader_attach_map(void)
 {
 	int					n;
-	bool				shader_on;
 	texture_type		*texture;
 	
-	shader_on=gl_check_shader_ok();
+	if (!view.shader_on) return;
 
 	texture=map.textures;
 	
 	for (n=0;n!=max_map_texture;n++) {
-		texture->shader_idx=-1;
+		texture->shader_idx=gl_shader_core_index;
 		
-		if ((shader_on) && (texture->shader_name[0]!=0x0)) {
-			if (strcasecmp(texture->shader_name,"default")==0) {
-				texture->shader_idx=gl_shader_core_index;
-			}
-			else {
-				texture->shader_idx=gl_user_shader_find(texture->shader_name);
-			}
+		if (texture->shader_name[0]!=0x0) {
+			texture->shader_idx=gl_user_shader_find(texture->shader_name);
 		}
 		
 		texture++;
@@ -334,23 +328,17 @@ void gl_shader_attach_map(void)
 void gl_shader_attach_model(model_type *mdl)
 {
 	int					n;
-	bool				shader_on;
 	texture_type		*texture;
 	
-	shader_on=gl_check_shader_ok();
+	if (!view.shader_on) return;
 
 	texture=mdl->textures;
 	
 	for (n=0;n!=max_model_texture;n++) {
-		texture->shader_idx=-1;
+		texture->shader_idx=gl_shader_core_index;
 		
-		if ((shader_on) && (texture->shader_name[0]!=0x0)) {
-			if (strcasecmp(texture->shader_name,"default")==0) {
-				texture->shader_idx=gl_shader_core_index;
-			}
-			else {
-				texture->shader_idx=gl_user_shader_find(texture->shader_name);
-			}
+		if (texture->shader_name[0]!=0x0) {
+			texture->shader_idx=gl_user_shader_find(texture->shader_name);
 		}
 		
 		texture++;
@@ -629,19 +617,21 @@ void gl_shader_draw_end(void)
       
 ======================================================= */
 
-void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
+void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx,int lmap_txt_idx,bool light_map,int frame)
 {
 	GLuint			gl_id;
 
 		// extra texture map
 
-	if ((lmap_txt_idx!=-1) || (view.debug.on)) {
-		gl_id=lmap_hilite_bitmap.gl_id;
+	if (light_map) {
+		if ((lmap_txt_idx==-1) || (view.debug.on)) {
+			gl_id=lmap_hilite_bitmap.gl_id;
+		}
+		else {
+			gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
+		}
+		if (gl_id!=-1) gl_texture_bind(3,gl_id);
 	}
-	else {
-		gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
-	}
-	if (gl_id!=-1) gl_texture_bind(3,gl_id);
 	
 		// spec map
 
@@ -694,14 +684,14 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
       
 ======================================================= */
 
-void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
+void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,bool light_map,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
 {
 	shader_type					*shader;
 	
 		// get shader based on number of lights
 		
 	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(light_list->nlight,map_shader,texture,(lmap_txt_idx!=-1));
+		shader=gl_core_shader_find_ptr(light_list->nlight,map_shader,texture,light_map);
 	}
 	else {
 		shader=&user_shaders[texture->shader_idx];
@@ -728,7 +718,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// textures and per-texture variables
 		
-	gl_shader_texture_set(shader,texture,txt_idx,lmap_txt_idx,frame);
+	gl_shader_texture_set(shader,texture,txt_idx,lmap_txt_idx,light_map,frame);
 	
 		// per polygon variables
 		

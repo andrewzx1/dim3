@@ -315,7 +315,7 @@ void setup_game_debug_pane(void)
 	y+=control_y_add;
 	element_checkbox_add("Display Metrics",setup.metrics_on,ctrl_debug_metrics_on_id,x,y,TRUE);
 	y+=control_y_add;
-	element_checkbox_add("Disable Shaders (requires restart)",setup.disable_shaders,ctrl_debug_disable_shaders_id,x,y,TRUE);
+	element_checkbox_add("Disable Shaders",setup.disable_shaders,ctrl_debug_disable_shaders_id,x,y,TRUE);
 }
 
 void setup_game_create_pane(void)
