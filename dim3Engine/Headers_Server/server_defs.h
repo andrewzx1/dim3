@@ -72,6 +72,8 @@ and can be sold or given away.
 
 #define max_object_bit_mask						32
 
+#define max_model_light_cache_index				8
+
 //
 // binding types
 //
@@ -219,7 +221,7 @@ and can be sold or given away.
 // dynamic bones
 //
 
-#define max_model_dynamic_bone							4
+#define max_model_dynamic_bone					4
 
 //
 // models
@@ -294,6 +296,11 @@ typedef struct		{
 					} model_draw_mesh_fade;
 
 typedef struct		{
+						int								count,
+														indexes[max_model_light_cache_index];
+					} model_light_cache;
+
+typedef struct		{
 						int								uid,spin_tick,
 														mesh_mask,render_mesh_mask,
 														script_animation_idx,
@@ -317,6 +324,7 @@ typedef struct		{
 						model_draw_fade					fade;
 						model_draw_no_rot				no_rot;
 						model_draw_remote_name			remote_name;
+						model_light_cache				light_cache;
 						model_draw_setup				setup;
 					} model_draw;
 

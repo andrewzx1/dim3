@@ -95,7 +95,7 @@ bool dialog_light_map_run(void)
 	
 		// set controls
 	
-	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,((map.settings.light_map.size/256)-1));
+	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,(log2(map.settings.light_map.size)-8));
 	dialog_set_value(dialog_light_map_wind,kLightMapQuality,0,map.settings.light_map.quality);
 	dialog_set_value(dialog_light_map_wind,kLightMapSmearCount,0,map.settings.light_map.pixel_border_count);
 	dialog_set_value(dialog_light_map_wind,kLightMapBlurCount,0,map.settings.light_map.blur_count);
@@ -129,7 +129,7 @@ bool dialog_light_map_run(void)
 	
 		// run the light map generate
 		
-	map.settings.light_map.size=(size+1)*256;
+	map.settings.light_map.size=pow(2,(size+8));
 	map.settings.light_map.quality=quality;
 	map.settings.light_map.pixel_border_count=pixel_border_count;
 	map.settings.light_map.blur_count=blur_count;
