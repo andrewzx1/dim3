@@ -365,7 +365,7 @@ bool view_compile_mesh_gl_lists(void)
 				col.r=col.g=col.b=1.0f;
 			}
 			else {
-				only_ambient=!gl_lights_setup_mesh(mesh);
+				only_ambient=(mesh->light_cache.count==0);
 			}
 
 				// we have a special flag to tell if we've already
