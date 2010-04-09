@@ -54,15 +54,10 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 {
 	int				n,k;
 	float			*cp,*vp,fx,fy,fz;
-	bool			only_ambient;
 	d3fpnt			cnt;
 	d3col			col;
 	matrix_type		mat;
 	model_mesh_type	*mesh;
-
-		// setup vertex calcing
-
-	only_ambient=!gl_lights_calc_vertex_setup_model(draw);
 
 		// need color lists
 
@@ -115,7 +110,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 		
 			// ambient only
 			
-		if (only_ambient) {
+		if (draw->light_cache.count==0) {
 		
 			gl_lights_calc_ambient_color(&col);
 		
@@ -139,7 +134,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 		if (!draw->no_rot.on) {
 
 			for (k=0;k!=mesh->nvertex;k++) {
-				gl_lights_calc_vertex((double)*vp,(double)*(vp+1),(double)*(vp+2),cp);
+				gl_lights_calc_color_light_cache(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)*vp,(double)*(vp+1),(double)*(vp+2),cp);
 				cp+=3;
 				vp+=3;
 			}
@@ -158,7 +153,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 				fz=(*vp++)-cnt.z;
 				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 				
-				gl_lights_calc_vertex((double)(fx+cnt.x),(double)(fy+cnt.y),(double)(fz+cnt.z),cp);
+				gl_lights_calc_color_light_cache(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)(fx+cnt.x),(double)(fy+cnt.y),(double)(fz+cnt.z),cp);
 				cp+=3;
 			}
 		}
@@ -932,7 +927,7 @@ void render_model_opaque(model_draw *draw)
 
 		// start lighting
 
-	gl_lights_build_from_model(draw,&light_list);
+	gl_lights_build_model_light_list(draw,&light_list);
 
 		// draw opaque materials
 
@@ -973,7 +968,7 @@ void render_model_transparent(model_draw *draw)
 	
 		// start lighting
 
-	gl_lights_build_from_model(draw,&light_list);
+	gl_lights_build_model_light_list(draw,&light_list);
 
 		// draw transparent materials
 

@@ -345,7 +345,7 @@ typedef struct		{
 						map_liquid_tide_type				tide;
 						map_liquid_ambient_type				ambient;
 						map_liquid_draw_type				draw;
-						map_light_cache_type				light_cahce;
+						map_light_cache_type				light_cache;
 					} map_liquid_type;
 
 //
@@ -394,7 +394,7 @@ typedef struct		{
 typedef struct		{
 						int									type,direction,intensity;
 						float								exponent;
-						bool								on,light_map,never_obscure;
+						bool								on,light_map;
 						char								name[name_str_len];
 						d3pnt								pnt;
 						d3col								col;

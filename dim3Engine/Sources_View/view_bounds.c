@@ -160,20 +160,6 @@ bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
       
 ======================================================= */
 
-bool light_inview(d3pnt *pnt,int intensity)
-{
-	int			x,z,ex,ez,ty,by;
-
-	x=pnt->x-intensity;
-	ex=pnt->x+intensity;
-	z=pnt->z-intensity;
-	ez=pnt->z+intensity;
-	ty=pnt->y-intensity;
-	by=pnt->y+intensity;
-
-	return(boundbox_inview(x,z,ex,ez,ty,by));
-}
-
 bool mesh_inview(map_mesh_type *mesh)
 {
 	return(boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y));
