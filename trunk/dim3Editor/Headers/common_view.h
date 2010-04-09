@@ -30,7 +30,8 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						d3col					mesh_line,mesh_sel,poly_sel,background;
+						d3col					mesh_line,mesh_sel,poly_sel,poly_cull,
+												background;
 					} setup_col_type;
 
 typedef struct		{

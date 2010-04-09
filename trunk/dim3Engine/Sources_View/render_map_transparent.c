@@ -290,7 +290,7 @@ void render_transparent_mesh_shader(void)
 
 			// draw the polygon
 
-		gl_lights_build_from_poly(mesh_idx,poly,&light_list);
+		gl_lights_build_poly_light_list(mesh_idx,poly,&light_list);
 		gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,TRUE,1.0f,&light_list,NULL,NULL,&poly->tangent_space,NULL);
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);

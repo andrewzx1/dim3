@@ -48,7 +48,6 @@ extern map_type				map;
 	// ambients
 	
 #define kMapLightColor								FOUR_CHAR_CODE('camb')
-#define kMapLightIgnoreMesh							FOUR_CHAR_CODE('abim')
 #define kMapLightMapBoost							FOUR_CHAR_CODE('lmbs')
 #define kMapSoundName								FOUR_CHAR_CODE('samb')
 #define kMapSoundPitch								FOUR_CHAR_CODE('pith')
@@ -210,7 +209,6 @@ bool dialog_map_settings_run(void)
 		
 	dialog_set_tab(dialog_map_settings_wind,kMapSettingTab,0,1,kMapSettingTabCount);
 	dialog_set_color(dialog_map_settings_wind,kMapLightColor,0,&map.ambient.light_color);
-	dialog_set_boolean(dialog_map_settings_wind,kMapLightIgnoreMesh,0,map.ambient.light_ignore_mesh);
 	dialog_set_float(dialog_map_settings_wind,kMapLightMapBoost,0,map.ambient.light_map_boost);
 	dialog_special_combo_fill_sound(dialog_map_settings_wind,kMapSoundName,0,map.ambient.sound_name);
 	dialog_set_float(dialog_map_settings_wind,kMapSoundPitch,0,map.ambient.sound_pitch);
@@ -338,7 +336,6 @@ bool dialog_map_settings_run(void)
 			// ambient controls
 			
 		dialog_get_color(dialog_map_settings_wind,kMapLightColor,0,&map.ambient.light_color);
-		map.ambient.light_ignore_mesh=dialog_get_boolean(dialog_map_settings_wind,kMapLightIgnoreMesh,0);
 		map.ambient.light_map_boost=dialog_get_float(dialog_map_settings_wind,kMapLightMapBoost,0);
 		dialog_special_combo_get_sound(dialog_map_settings_wind,kMapSoundName,0,map.ambient.sound_name,name_str_len);
 		map.ambient.sound_pitch=dialog_get_float(dialog_map_settings_wind,kMapSoundPitch,0);

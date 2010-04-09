@@ -154,7 +154,6 @@ typedef struct		{
 
 typedef struct		{
 						int									nlight,light_idx[max_shader_light];
-						d3col								ambient;
 					} view_light_list_type;
 
 //
@@ -249,6 +248,7 @@ typedef struct		{
 					} shader_current_var_light_value;
 
 typedef struct		{
+						int									nlight,light_idx[max_shader_light];
 						float								alpha,shine_factor;
 						d3col								tint_col;
 						d3vct								tangent,normal;

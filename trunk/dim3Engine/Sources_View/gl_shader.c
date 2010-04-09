@@ -351,18 +351,16 @@ void gl_shader_attach_model(model_type *mdl)
       
 ======================================================= */
 
-void gl_shader_set_scene_variables(shader_type *shader,view_light_list_type *light_list)
+void gl_shader_set_scene_variables(shader_type *shader)
 {
+	d3col			col;
+	
 	if (shader->var_locs.dim3FrequencySecond!=-1) glUniform1fARB(shader->var_locs.dim3FrequencySecond,game_time_fequency_second_get(shader->start_tick));
 	if (shader->var_locs.dim3CameraPosition!=-1) glUniform3fARB(shader->var_locs.dim3CameraPosition,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
 
 	if (shader->var_locs.dim3AmbientColor!=-1) {
-		if (light_list!=NULL) {
-			glUniform3fARB(shader->var_locs.dim3AmbientColor,light_list->ambient.r,light_list->ambient.g,light_list->ambient.b);
-		}
-		else {
-			glUniform3fARB(shader->var_locs.dim3AmbientColor,0.0f,0.0f,0.0f);
-		}
+		gl_lights_calc_ambient_color(&col);
+		glUniform3fARB(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
 	}
 	
 	if (shader->var_locs.dim3LightMapBoost!=-1) glUniform1fARB(shader->var_locs.dim3LightMapBoost,map.ambient.light_map_boost);
@@ -370,11 +368,39 @@ void gl_shader_set_scene_variables(shader_type *shader,view_light_list_type *lig
 
 void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_type *light_list)
 {
-	int								n,in_light_map;
+	int								n,k,count,in_light_map;
 	view_light_spot_type			*lspot;
 	shader_cached_var_light_loc		*loc_light;
 	shader_current_var_light_value	*cur_light;
 	
+		// have lights changed?
+		
+	if (light_list->nlight==shader->var_values.nlight) {
+		
+		count=0;
+	
+		for (n=0;n!=light_list->nlight;n++) {
+			for (k=0;k!=shader->var_values.nlight;k++) {
+				if (light_list->light_idx[n]==shader->var_values.light_idx[k]) {
+					count++;
+					break;
+				}
+			}
+		}
+		
+		if (count==light_list->nlight) return;
+	}
+	
+		// light changed, remember it for next time
+		
+	for (n=0;n!=light_list->nlight;n++) {
+		shader->var_values.light_idx[n]=light_list->light_idx[n];
+	}
+	
+	shader->var_values.nlight=light_list->nlight;
+	
+		// set the lights uniforms
+		
 	for (n=0;n!=max_shader_light;n++) {
 
 		loc_light=&shader->var_locs.dim3Lights[n];
@@ -531,6 +557,7 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
 
+	shader->var_values.nlight=-1;
 	shader->var_values.alpha=-1.0f;
 	shader->var_values.shine_factor=-1.0f;
 	shader->var_values.tint_col.r=shader->var_values.tint_col.g=shader->var_values.tint_col.b=-1.0f;
@@ -712,7 +739,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 		
 		if (!shader->per_scene_vars_set) {
 			shader->per_scene_vars_set=TRUE;
-			gl_shader_set_scene_variables(shader,light_list);
+			gl_shader_set_scene_variables(shader);
 		}
 	}
 	

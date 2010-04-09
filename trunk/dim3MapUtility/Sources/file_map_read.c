@@ -105,7 +105,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
 	main_ambient_light_tag=xml_findfirstchild("Ambient_Light",map_head);
     if (main_ambient_light_tag!=-1) {
 		xml_get_attribute_color(main_ambient_light_tag,"rgb",&map->ambient.light_color);
-		map->ambient.light_ignore_mesh=xml_get_attribute_boolean(main_ambient_light_tag,"ignore_mesh");
 		map->ambient.light_map_boost=xml_get_attribute_float_default(main_ambient_light_tag,"light_map_boost",0.0f);
 	}
 	

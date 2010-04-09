@@ -375,7 +375,7 @@ bool view_compile_mesh_gl_lists(void)
 				if (mesh->draw.cur_ambient_only) continue;
 					
 				mesh->draw.cur_ambient_only=TRUE;
-				gl_lights_calc_ambient_color(&col,TRUE);
+				gl_lights_calc_ambient_color(&col);
 			}
 			
 				// set the colors

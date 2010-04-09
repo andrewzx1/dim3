@@ -59,6 +59,10 @@ void setup_xml_default(void)
 	setup.col.poly_sel.g=0.0f;
 	setup.col.poly_sel.b=0.0f;
 	
+	setup.col.poly_cull.r=0.9f;
+	setup.col.poly_cull.g=0.9f;
+	setup.col.poly_cull.b=0.9f;
+	
 	setup.col.background.r=0.75f;
 	setup.col.background.g=0.75f;
 	setup.col.background.b=0.75f;
@@ -102,6 +106,7 @@ bool setup_xml_read(void)
 	xml_key_read_color(setup_tag,"Color_Mesh_Line",&setup.col.mesh_line);
 	xml_key_read_color(setup_tag,"Color_Mesh_Sel",&setup.col.mesh_sel);
 	xml_key_read_color(setup_tag,"Color_Poly_Sel",&setup.col.poly_sel);
+	xml_key_read_color(setup_tag,"Color_Poly_Cull",&setup.col.poly_cull);
 	xml_key_read_color(setup_tag,"Color_Background",&setup.col.background);
   
 	xml_close_file();
@@ -137,6 +142,7 @@ bool setup_xml_write(void)
 	xml_key_write_color("Color_Mesh_Line",&setup.col.mesh_line);
 	xml_key_write_color("Color_Mesh_Sel",&setup.col.mesh_sel);
 	xml_key_write_color("Color_Poly_Sel",&setup.col.poly_sel);
+	xml_key_write_color("Color_Poly_Cull",&setup.col.poly_cull);
 	xml_key_write_color("Color_Background",&setup.col.background);
 
         // save the setup

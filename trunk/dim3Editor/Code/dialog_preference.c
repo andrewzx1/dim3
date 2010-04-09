@@ -38,6 +38,7 @@ and can be sold or given away.
 #define kPrefLineColor						FOUR_CHAR_CODE('lcol')
 #define kPrefMeshSelColor					FOUR_CHAR_CODE('scol')
 #define kPrefPolySelColor					FOUR_CHAR_CODE('pcol')
+#define kPrefPolyCullColor					FOUR_CHAR_CODE('ccol')
 
 extern map_type				map;
 extern setup_type			setup;
@@ -109,6 +110,7 @@ void dialog_preference_run(void)
 	dialog_set_color(dialog_preference_wind,kPrefLineColor,0,&setup.col.mesh_line);
 	dialog_set_color(dialog_preference_wind,kPrefMeshSelColor,0,&setup.col.mesh_sel);
 	dialog_set_color(dialog_preference_wind,kPrefPolySelColor,0,&setup.col.poly_sel);
+	dialog_set_color(dialog_preference_wind,kPrefPolyCullColor,0,&setup.col.poly_cull);
 	
 		// show window
 	
@@ -137,6 +139,7 @@ void dialog_preference_run(void)
 		dialog_get_color(dialog_preference_wind,kPrefLineColor,0,&setup.col.mesh_line);
 		dialog_get_color(dialog_preference_wind,kPrefMeshSelColor,0,&setup.col.mesh_sel);
 		dialog_get_color(dialog_preference_wind,kPrefPolySelColor,0,&setup.col.poly_sel);
+		dialog_get_color(dialog_preference_wind,kPrefPolyCullColor,0,&setup.col.poly_cull);
 		
 		setup_xml_write();
 	}
