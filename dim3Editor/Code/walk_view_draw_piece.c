@@ -168,6 +168,7 @@ bool walk_view_draw_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	
 	if (!state.cull) return(FALSE);
 	if (poly->ptsz==0) return(FALSE);
+	if (poly->never_cull) return(FALSE);
 	
 		// get center
 		
@@ -199,7 +200,7 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 {
 	int						n,k,t;
 	unsigned long			old_gl_id;
-	bool					clip_ok;
+	bool					clip_ok,culled;
 	d3pnt					*pt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
@@ -255,10 +256,6 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 				// no light map?
 				
 			if ((state.uv_layer==uv_layer_light_map) && (mesh_poly->lmap_txt_idx==-1)) continue;
-		
-				// culling
-			
-			if (walk_view_draw_cull_poly(mesh,mesh_poly)) continue;
 			
 				// get texture.  If in second UV, we use light map
 				// texture for display if it exists
@@ -297,11 +294,21 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 				if (clip_ok) continue;
 			}
 		
+				// culling
+			
+			culled=walk_view_draw_cull_poly(mesh,mesh_poly);
+		
 				// setup texture
 				
-			if (texture->frames[0].bitmap.gl_id!=old_gl_id) {
-				old_gl_id=texture->frames[0].bitmap.gl_id;
-				glBindTexture(GL_TEXTURE_2D,old_gl_id);
+			if (!culled) {
+				if (texture->frames[0].bitmap.gl_id!=old_gl_id) {
+					old_gl_id=texture->frames[0].bitmap.gl_id;
+					glBindTexture(GL_TEXTURE_2D,old_gl_id);
+				}
+			}
+			else {
+				glDisable(GL_TEXTURE_2D);
+				glColor4f(0.9f,0.9f,0.9f,1.0f);
 			}
 		
 				// draw polygon
@@ -315,6 +322,13 @@ void walk_view_draw_meshes_texture(editor_3D_view_setup *view_setup,bool opaque)
 			}
 			
 			glEnd();
+			
+				// if culled, turn back on texture
+				
+			if (culled) {
+				glEnable(GL_TEXTURE_2D);
+				glColor4f(1.0f,1.0f,1.0f,1.0f);
+			}
 		}
 	
 		mesh++;

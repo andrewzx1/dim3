@@ -530,7 +530,6 @@ typedef struct		{
 typedef struct		{
 						float								sound_pitch,light_map_boost;
 						char								sound_name[name_str_len];
-						bool								light_ignore_mesh;
 						d3col								light_color;
 					} map_ambient_type;					
 

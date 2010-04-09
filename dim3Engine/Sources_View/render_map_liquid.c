@@ -186,7 +186,7 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz,bool shade
 				*cl=*(cl+1)=*(cl+2)=1.0f;
 			}
 			else {
-				gl_lights_calc_vertex((double)x,(double)y,(double)z,TRUE,cl);
+				gl_lights_calc_vertex((double)x,(double)y,(double)z,cl);
 			}
 			
 			cl+=3;

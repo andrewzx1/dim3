@@ -45,8 +45,8 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-int							light_cur_mesh_reduce_idx,
-							light_spot_reduce_count,light_spot_reduce_idx[max_light_spot];
+// supergumba -- delete all this
+int							light_spot_reduce_count,light_spot_reduce_idx[max_light_spot];
 
 float						light_shader_direction[7][3]={{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}};
 
@@ -471,12 +471,6 @@ void gl_lights_compile(int tick)
 	// supergumba -- need to do liquids and models here!
 
 
-		// this flag allows us to reduce
-		// the amount of lights as we work through
-		// the polygons of a mesh for shader lights
-
-	light_cur_mesh_reduce_idx=-1;
-	// supergumba -- delete
 }
 
 /* =======================================================
@@ -611,13 +605,8 @@ void gl_lights_spot_reduce_box(d3pnt *min,d3pnt *max)
       
 ======================================================= */
 
-void gl_lights_calc_ambient_color(d3col *col,bool is_mesh)
+void gl_lights_calc_ambient_color(d3col *col)
 {
-	if ((is_mesh) && (map.ambient.light_ignore_mesh)) {
-		col->r=col->g=col->b=setup.gamma;
-		return;
-	}
-	
 	col->r=map.ambient.light_color.r+setup.gamma;
 	col->g=map.ambient.light_color.g+setup.gamma;
 	col->b=map.ambient.light_color.b+setup.gamma;
@@ -710,19 +699,12 @@ void gl_lights_calc_color_mesh(map_mesh_type *mesh,double x,double y,double z,fl
 
 		// set light value
 
-	if (map.ambient.light_ignore_mesh) {
-		*cf++=setup.gamma+(float)r;
-		*cf++=setup.gamma+(float)g;
-		*cf=setup.gamma+(float)b;
-		return;
-	}
-	
 	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
 	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
 }
 
-void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf)
+void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 {
 	int						n;
 	double					dx,dz,dy,r,g,b,d,mult;
@@ -735,7 +717,8 @@ void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf)
 	for (n=0;n!=light_spot_reduce_count;n++) {
 
 		lspot=&view.render->light.spots[light_spot_reduce_idx[n]];
-		if ((is_mesh) && (lspot->light_map)) continue;
+		// supergumba -- need this for liquids!
+	//	if ((is_mesh) && (lspot->light_map)) continue;
 
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;
@@ -760,13 +743,6 @@ void gl_lights_calc_vertex(double x,double y,double z,bool is_mesh,float *cf)
 
 		// set light value
 
-	if ((is_mesh) && (map.ambient.light_ignore_mesh)) {
-		*cf++=setup.gamma+(float)r;
-		*cf++=setup.gamma+(float)g;
-		*cf=setup.gamma+(float)b;
-		return;
-	}
-	
 	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
 	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
@@ -805,6 +781,87 @@ bool gl_lights_calc_vertex_setup_model(model_draw *draw)
       GLSL Lights
       
 ======================================================= */
+
+
+
+
+void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list)
+{
+	int						n,k,count,low_idx;
+	double					d,dx,dy,dz,low_dist,
+							list_dist[max_shader_light];
+	map_mesh_type			*mesh;
+	view_light_spot_type	*lspot;
+
+		// meshes already have a reduced light list
+		
+	mesh=&map.mesh.meshes[mesh_idx];
+	
+		// if the mesh already has <= max_shader_light
+		// lights, just use them
+
+	if (mesh->light_cache.count<max_shader_light) {
+		light_list->nlight=mesh->light_cache.count;
+		
+		for (n=0;n!=light_list->nlight;n++) {
+			light_list->light_idx[n]=mesh->light_cache.indexes[n];
+		}
+		
+		return;
+	}
+
+		// otherwise we need to calc the
+		// closest from the list
+		
+	count=0;
+		
+	for (n=0;n!=mesh->light_cache.count;n++) {
+		lspot=&view.render->light.spots[mesh->light_cache.indexes[n]];
+
+			// box hit?
+			
+		if (!gl_lights_collide_with_box(lspot,&poly->box.min,&poly->box.max)) continue;
+
+			// get distance
+			// skip square root as we are comparing
+			// them against other distances
+
+		dx=poly->box.mid.x-lspot->pnt.x;
+		dy=poly->box.mid.y-lspot->pnt.y;
+		dz=poly->box.mid.z-lspot->pnt.z;
+
+		d=((dx*dx)+(dy*dy)+(dz*dz));
+
+			// put in list
+
+		if (count<max_shader_light) {
+			light_list->light_idx[count]=mesh->light_cache.indexes[n];
+			list_dist[count]=d;
+			count++;
+		}
+		else {
+			low_idx=0;
+			low_dist=list_dist[0];
+
+			for (k=1;k<count;k++) {
+				if (list_dist[k]<low_dist) {
+					low_idx=k;
+					low_dist=list_dist[k];
+				}
+			}
+
+			if (d>low_dist) {
+				light_list->light_idx[low_idx]=mesh->light_cache.indexes[n];
+				list_dist[low_idx]=d;
+			}
+		}
+	}
+		
+	light_list->nlight=count;
+}
+
+
+
 
 void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_light_list_type *light_list)
 {
@@ -908,27 +965,11 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_light_list_t
 	}
 }
 
-void gl_lights_build_from_poly(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list)
-{
-	map_mesh_type		*mesh;
-
-	if (light_cur_mesh_reduce_idx!=mesh_idx) {
-		light_cur_mesh_reduce_idx=mesh_idx;
-
-		mesh=&map.mesh.meshes[mesh_idx];
-		gl_lights_spot_reduce_box(&mesh->box.min,&mesh->box.max);
-	}
-
-	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_list);
-	gl_lights_calc_ambient_color(&light_list->ambient,TRUE);
-}
 
 void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *light_list)
 {
 	d3pnt			mid,min,max;
 
-	light_cur_mesh_reduce_idx=-1;
-	
 	mid.x=(liq->lft+liq->rgt)>>1;
 	mid.y=liq->y;
 	mid.z=(liq->top+liq->bot)>>1;
@@ -943,18 +984,14 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *ligh
 	
 	gl_lights_spot_reduce_box(&min,&max);
 	gl_lights_build_from_box(&mid,&min,&max,light_list);
-	gl_lights_calc_ambient_color(&light_list->ambient,TRUE);
 }
 
 void gl_lights_build_from_model(model_draw *draw,view_light_list_type *light_list)
 {
 	d3pnt			mid,min,max;
 
-	light_cur_mesh_reduce_idx=-1;
-	
 	model_get_view_min_max(draw,&mid,&min,&max);
 	gl_lights_spot_reduce_box(&min,&max);
 	gl_lights_build_from_box(&mid,&min,&max,light_list);
-	gl_lights_calc_ambient_color(&light_list->ambient,FALSE);
 }
 
