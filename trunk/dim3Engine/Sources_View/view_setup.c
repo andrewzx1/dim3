@@ -623,9 +623,9 @@ void view_setup_objects(int tick)
 		render_model_setup(&obj->draw);
 		
 			// setup held weapon model
+			// if player
 
-		if (obj->held_weapon.current_uid!=-1) {
-
+		if ((obj->uid==server.player_obj_uid) && (obj->held_weapon.current_uid!=-1)) {
 			weap=weapon_find_uid(obj->held_weapon.current_uid);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);

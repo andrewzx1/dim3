@@ -404,7 +404,7 @@ bool view_compile_mesh_gl_lists(void)
 				pnt=mesh->vertexes;
 
 				for (k=0;k!=mesh->nvertex;k++) {
-					gl_lights_calc_color_mesh(mesh,(double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
+					gl_lights_calc_color_light_cache(mesh->light_cache.count,mesh->light_cache.indexes,TRUE,(double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
 					pc+=3;
 					pnt++;
 				}

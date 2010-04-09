@@ -398,7 +398,6 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			xml_get_attribute_color(light_tag,"rgb",&light->col);
 
 			light->on=!xml_get_attribute_boolean(light_tag,"off");
-			light->never_obscure=xml_get_attribute_boolean(light_tag,"never_obscure");
 			
 			if (light->intensity<0) light->intensity=1;
 		

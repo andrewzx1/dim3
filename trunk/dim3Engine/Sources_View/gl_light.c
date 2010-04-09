@@ -71,27 +71,6 @@ double						light_flicker_value[64]={
 														0.00,0.15,0.45,0.15,0.00,0.00,0.00,0.00
 													};
 
-extern bool light_inview(d3pnt *pnt,int intensity);
-
-//
-// supergumba!
-//
-
-
-#define max_light_cache_list								8
-
-typedef struct		{
-						int									idx;
-						double								distance;
-					} light_cache_list_type;
-
-typedef struct		{
-						int									count;
-						light_cache_list_type				list[max_light_cache_list];
-					} light_cache_type;
-
-
-
 /* =======================================================
 
       Get Light Intensity For Type
@@ -131,14 +110,13 @@ int gl_light_get_intensity(int tick,int light_type,int intensity)
 	return(intensity);
 }
 
-
 /* =======================================================
 
-      Create Light Lists For Mesh
+      Light Collisions and Directions
       
 ======================================================= */
 
-bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt *min,d3pnt *max)
+inline bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt *min,d3pnt *max)
 {
 	int				i_add;
 	
@@ -186,6 +164,36 @@ bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt *min,d3pnt *ma
 	return(TRUE);
 }
 
+inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_type *lspot)
+{
+	switch (lspot->direction) {
+
+		case ld_all:
+			return(TRUE);
+
+		case ld_neg_x:
+			return(x<=lspot->d_x);
+
+		case ld_pos_x:
+			return(x>=lspot->d_x);
+
+		case ld_neg_y:
+			return(y<=lspot->d_y);
+
+		case ld_pos_y:
+			return(y>=lspot->d_y);
+
+		case ld_neg_z:
+			return(z<=lspot->d_z);
+
+		case ld_pos_z:
+			return(z>=lspot->d_z);
+
+	}
+
+	return(TRUE);
+}
+
 /* =======================================================
 
       Setup Meshes, Liquids, and Models for
@@ -194,13 +202,9 @@ bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt *min,d3pnt *ma
       
 ======================================================= */
 
-// supergumba
-// need to find hits here and store in mesh
-
-void gl_lights_setup_mesh(map_mesh_type *mesh)
+int gl_lights_setup_box(d3pnt *mid,d3pnt *min,d3pnt *max,int max_list_idx,int *list_idx)
 {
-	int							n,k,low_idx,count,
-								list_idx[max_map_light_cache_index];
+	int							n,k,low_idx,count;
 	double						d,dx,dy,dz,low_dist,
 								list_dist[max_map_light_cache_index];
 	view_light_spot_type		*lspot;
@@ -214,21 +218,21 @@ void gl_lights_setup_mesh(map_mesh_type *mesh)
 
 			// box hit?
 			
-		if (!gl_lights_collide_with_box(lspot,&mesh->box.min,&mesh->box.max)) continue;
+		if (!gl_lights_collide_with_box(lspot,min,max)) continue;
 
 			// get distance
 			// skip square root as we are comparing
 			// them against other distances
 
-		dx=mesh->box.mid.x-lspot->pnt.x;
-		dy=mesh->box.mid.y-lspot->pnt.y;
-		dz=mesh->box.mid.z-lspot->pnt.z;
+		dx=mid->x-lspot->pnt.x;
+		dy=mid->y-lspot->pnt.y;
+		dz=mid->z-lspot->pnt.z;
 
 		d=((dx*dx)+(dy*dy)+(dz*dz));
 
 			// put in list
 
-		if (count<max_map_light_cache_index) {
+		if (count<max_list_idx) {
 			list_idx[count]=n;
 			list_dist[count]=d;
 			count++;
@@ -250,16 +254,83 @@ void gl_lights_setup_mesh(map_mesh_type *mesh)
 			}
 		}
 	}
-	
-		// set the light cache
-		
-	mesh->light_cache.count=count;
-	
-	for (n=0;n!=count;n++) {
-		mesh->light_cache.indexes[n]=list_idx[n];
-	}
+
+	return(count);
 }
 
+void gl_lights_setup_liquid(map_liquid_type *liq)
+{
+	d3pnt			mid,min,max;
+
+	mid.x=(liq->lft+liq->rgt)>>1;
+	mid.y=liq->y;
+	mid.z=(liq->top+liq->bot)>>1;
+	
+	min.x=liq->lft;
+	min.y=liq->y;
+	min.z=liq->top;
+	
+	max.x=liq->rgt;
+	max.y=liq->y;
+	max.z=liq->bot;
+
+	liq->light_cache.count=gl_lights_setup_box(&mid,&min,&max,max_shader_light,liq->light_cache.indexes);
+}
+
+void gl_lights_setup_model(model_draw *draw)
+{
+	d3pnt				mid,min,max;
+
+	model_get_view_min_max(draw,&mid,&min,&max);
+	draw->light_cache.count=gl_lights_setup_box(&mid,&min,&max,max_shader_light,draw->light_cache.indexes);
+}
+
+void gl_lights_setup_cache(void)
+{
+	int					n;
+	obj_type			*obj;
+	proj_type			*proj;
+	weapon_type			*weap;
+	map_mesh_type		*mesh;
+	
+		// cache all the lights for the meshes, liquids,
+		// and models in this view
+
+		// meshes remember all lights hitting them
+		// so polygons have a better list.  Everything else
+		// just gets max shader lights
+		
+	for (n=0;n!=view.render->draw_list.count;n++) {
+
+		switch (view.render->draw_list.items[n].type) {
+			
+			case view_render_type_mesh:
+				mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+				mesh->light_cache.count=gl_lights_setup_box(&mesh->box.mid,&mesh->box.min,&mesh->box.max,max_map_light_cache_index,mesh->light_cache.indexes);
+				break;
+
+			case view_render_type_liquid:
+				gl_lights_setup_liquid(&map.liquid.liquids[view.render->draw_list.items[n].idx]);
+				break;
+
+			case view_render_type_object:
+				obj=&server.objs[view.render->draw_list.items[n].idx];
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&obj->draw);
+				
+				if ((obj->uid==server.player_obj_uid) && (obj->held_weapon.current_uid!=-1)) {
+					weap=weapon_find_uid(obj->held_weapon.current_uid);
+					if (weap!=NULL) gl_lights_setup_model(&weap->draw);
+				}
+				break;
+
+			case view_render_type_projectile:
+				proj=&server.projs[view.render->draw_list.items[n].idx];
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&proj->draw);
+				break;
+				
+		}
+	}
+}
 
 /* =======================================================
 
@@ -267,9 +338,7 @@ void gl_lights_setup_mesh(map_mesh_type *mesh)
       
 ======================================================= */
 
-// supergumba -- need an initialization for all this, to clear out lspot list
-
-void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,bool never_obscure,int intensity,float exponent,int direction,d3col *col)
+void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int intensity,float exponent,int direction,d3col *col)
 {
 	view_light_spot_type			*lspot;
 	
@@ -281,15 +350,6 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,boo
 
 	intensity=gl_light_get_intensity(tick,light_type,intensity);
 	if (intensity<=0) return;
-
-		// is light in view?
-
-	/* supergumba -- never obscure might need to go, we should probably consider all lights
-
-	if (!never_obscure) {
-		if (!light_inview(pnt,intensity)) return;
-	}
-	*/
 	
 		// create light
 
@@ -365,7 +425,7 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 				if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			gl_lights_compile_add(tick,&pnt,light->type,FALSE,FALSE,light->intensity,light->exponent,light->direction,&light->col);
+			gl_lights_compile_add(tick,&pnt,light->type,FALSE,light->intensity,light->exponent,light->direction,&light->col);
 		}
 
 		light++;
@@ -400,7 +460,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 		}
 	}
 	
-	gl_lights_compile_add(tick,&effect->pnt,lt_normal,FALSE,FALSE,intensity,flash->exponent,ld_all,&flash->col);
+	gl_lights_compile_add(tick,&effect->pnt,lt_normal,FALSE,intensity,flash->exponent,ld_all,&flash->col);
 }
 
 void gl_lights_compile(int tick)
@@ -419,7 +479,7 @@ void gl_lights_compile(int tick)
 	maplight=map.lights;
 		
 	for (n=0;n!=map.nlight;n++) {
-		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->light_map,maplight->never_obscure,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
+		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->light_map,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
 		maplight++;
 	}	
 
@@ -454,59 +514,9 @@ void gl_lights_compile(int tick)
 		effect++;
 	}
 	
-		// cache all the lights for the meshes, liquids,
-		// and models in this view
-		
-	for (n=0;n!=view.render->draw_list.count;n++) {
+		// setup per render item caches
 
-		switch (view.render->draw_list.items[n].type) {
-			
-			case view_render_type_mesh:
-				gl_lights_setup_mesh(&map.mesh.meshes[view.render->draw_list.items[n].idx]);
-				break;
-				
-		}
-		
-	}
-	// supergumba -- need to do liquids and models here!
-
-
-}
-
-/* =======================================================
-
-      Light Direction Elimination
-      
-======================================================= */
-
-inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_type *lspot)
-{
-	switch (lspot->direction) {
-
-		case ld_all:
-			return(TRUE);
-
-		case ld_neg_x:
-			return(x<=lspot->d_x);
-
-		case ld_pos_x:
-			return(x>=lspot->d_x);
-
-		case ld_neg_y:
-			return(y<=lspot->d_y);
-
-		case ld_pos_y:
-			return(y>=lspot->d_y);
-
-		case ld_neg_z:
-			return(z<=lspot->d_z);
-
-		case ld_pos_z:
-			return(z>=lspot->d_z);
-
-	}
-
-	return(TRUE);
+	gl_lights_setup_cache();
 }
 
 /* =======================================================
@@ -565,39 +575,6 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
 
 	return(&view.render->light.spots[k]);
 }
-
-
-/* =======================================================
-
-      Light Spot Reductions
-      
-======================================================= */
-
-void gl_lights_spot_reduce_none(void)
-{
-	int				n;
-
-	light_spot_reduce_count=view.render->light.count;
-	
-	for (n=0;n!=light_spot_reduce_count;n++) {
-		light_spot_reduce_idx[n]=n;
-	}
-}
-
-void gl_lights_spot_reduce_box(d3pnt *min,d3pnt *max)
-{
-	int				n;
-
-	light_spot_reduce_count=0;
-
-	for (n=0;n!=view.render->light.count;n++) {
-		if (gl_lights_collide_with_box(&view.render->light.spots[n],min,max)) {
-			light_spot_reduce_idx[light_spot_reduce_count]=n;
-			light_spot_reduce_count++;
-		}
-	}
-}
-
 
 /* =======================================================
 
@@ -661,7 +638,7 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
 }
 
-void gl_lights_calc_color_mesh(map_mesh_type *mesh,double x,double y,double z,float *cf)
+void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cf)
 {
 	int						n;
 	double					dx,dz,dy,r,g,b,d,mult;
@@ -671,10 +648,10 @@ void gl_lights_calc_color_mesh(map_mesh_type *mesh,double x,double y,double z,fl
 		
 	r=g=b=0.0;
 	
-	for (n=0;n!=mesh->light_cache.count;n++) {
+	for (n=0;n!=count;n++) {
 	
-		lspot=&view.render->light.spots[mesh->light_cache.indexes[n]];
-		if (lspot->light_map)continue;
+		lspot=&view.render->light.spots[indexes[n]];
+		if ((skip_light_map) && (lspot->light_map)) continue;
 
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;
@@ -702,88 +679,13 @@ void gl_lights_calc_color_mesh(map_mesh_type *mesh,double x,double y,double z,fl
 	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
 	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
-}
-
-void gl_lights_calc_vertex(double x,double y,double z,float *cf)
-{
-	int						n;
-	double					dx,dz,dy,r,g,b,d,mult;
-	view_light_spot_type	*lspot;
-
-		// combine all light spots attenuated for distance
-		
-	r=g=b=0.0;
-	
-	for (n=0;n!=light_spot_reduce_count;n++) {
-
-		lspot=&view.render->light.spots[light_spot_reduce_idx[n]];
-		// supergumba -- need this for liquids!
-	//	if ((is_mesh) && (lspot->light_map)) continue;
-
-		dx=lspot->d_x-x;
-		dy=lspot->d_y-y;
-		dz=lspot->d_z-z;
-		
-		d=(dx*dx)+(dz*dz)+(dy*dy);
-
-		if (d<=lspot->d_intensity) {
-
-			if (gl_lights_direction_ok(x,y,z,lspot)) {
-
-				mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
-				
-				mult+=pow(mult,lspot->exponent);
-
-				r+=(lspot->d_col_r*mult);
-				g+=(lspot->d_col_g*mult);
-				b+=(lspot->d_col_b*mult);
-			}
-		}
-	}
-
-		// set light value
-
-	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
-	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
-	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
-}
-
-
-bool gl_lights_calc_vertex_setup_liquid(map_liquid_type *liq)
-{
-	d3pnt			min,max;
-	
-	min.x=liq->lft;
-	min.y=liq->y;
-	min.z=liq->top;
-	
-	max.x=liq->rgt;
-	max.y=liq->y;
-	max.z=liq->bot;
-
-	gl_lights_spot_reduce_box(&min,&max);
-	
-	return(light_spot_reduce_count!=0);
-}
-
-bool gl_lights_calc_vertex_setup_model(model_draw *draw)
-{
-	d3pnt			pnt,min,max;
-
-	model_get_view_min_max(draw,&pnt,&min,&max);
-	gl_lights_spot_reduce_box(&min,&max);
-	
-	return(light_spot_reduce_count!=0);
 }
 
 /* =======================================================
 
-      GLSL Lights
+      GLSL Light Lists
       
 ======================================================= */
-
-
-
 
 void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list)
 {
@@ -860,138 +762,25 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 	light_list->nlight=count;
 }
 
-
-
-
-void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_light_list_type *light_list)
+void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type *light_list)
 {
-	int						n,k,
-							idx,cnt,sort_list[max_light_spot];
-	double					d,dx,dy,dz,sort_dist[max_light_spot];
-	view_light_spot_type	*lspot;
-	
-		// start with no lights
+	int				n;
+
+	light_list->nlight=liq->light_cache.count;
 		
-	light_list->nlight=0;
-	
-		// special check for single light
-		
-	if (light_spot_reduce_count==1) {
-		lspot=&view.render->light.spots[light_spot_reduce_idx[0]];
-		if (!gl_lights_collide_with_box(lspot,min,max)) return;
-		
-		light_list->nlight=1;
-		light_list->light_idx[0]=light_spot_reduce_idx[0];
-
-		return;
-	}
-	
-		// multiple lights on poly
-		// sort the light spots, only using
-		// top max_shader_light
-
-	cnt=0;
-
-	for (n=0;n!=light_spot_reduce_count;n++) {
-
-		lspot=&view.render->light.spots[light_spot_reduce_idx[n]];
-		
-			// does light hit this box?
-			
-		if (!gl_lights_collide_with_box(lspot,min,max)) continue;
-
-			// get distance
-			// don't need square root as we are only comparing them
-			// against one another
-
-		dx=(double)(lspot->pnt.x-mid->x);
-		dy=(double)(lspot->pnt.y-mid->y);
-		dz=(double)(lspot->pnt.z-mid->z);
-
-		d=(dx*dx)+(dy*dy)+(dz*dz);
-		
-			// special check for first light
-			
-		if (cnt==0) {
-			sort_dist[cnt]=d;
-			sort_list[cnt]=light_spot_reduce_idx[n];
-			cnt++;
-			continue;
-		}
-
-			// find position in list (top is closest)
-
-		idx=-1;
-	
-		for (k=0;k!=cnt;k++) {
-			if (sort_dist[k]>d) {
-				idx=k;
-				break;
-			}
-		}
-
-			// since we can only use max_shader_light lights,
-			// ignore all lights that sort beyond max_shader_light
-
-		if ((idx>=max_shader_light) || ((idx==-1) && (cnt>=max_shader_light))) continue;
-	
-			// insert at end of list
-			
-		if (idx==-1) {
-			sort_dist[cnt]=d;
-			sort_list[cnt]=light_spot_reduce_idx[n];
-			cnt++;
-			continue;
-		}
-		
-			// insert in list
-			
-		memmove(&sort_dist[idx+1],&sort_dist[idx],(sizeof(double)*(cnt-idx)));
-		memmove(&sort_list[idx+1],&sort_list[idx],(sizeof(int)*(cnt-idx)));
-		
-		sort_dist[idx]=d;
-		sort_list[idx]=light_spot_reduce_idx[n];
-		
-		cnt++;
-		if (cnt>=max_shader_light) cnt=max_shader_light;
-	}
-	
-		// create the light list
-		
-	light_list->nlight=cnt;
-
-	for (n=0;n!=cnt;n++) {
-		light_list->light_idx[n]=sort_list[n];
+	for (n=0;n!=light_list->nlight;n++) {
+		light_list->light_idx[n]=liq->light_cache.indexes[n];
 	}
 }
 
-
-void gl_lights_build_from_liquid(map_liquid_type *liq,view_light_list_type *light_list)
+void gl_lights_build_model_light_list(model_draw *draw,view_light_list_type *light_list)
 {
-	d3pnt			mid,min,max;
+	int				n;
 
-	mid.x=(liq->lft+liq->rgt)>>1;
-	mid.y=liq->y;
-	mid.z=(liq->top+liq->bot)>>1;
-	
-	min.x=liq->lft;
-	min.y=liq->y;
-	min.z=liq->top;
-	
-	max.x=liq->rgt;
-	max.y=liq->y;
-	max.z=liq->bot;
-	
-	gl_lights_spot_reduce_box(&min,&max);
-	gl_lights_build_from_box(&mid,&min,&max,light_list);
-}
-
-void gl_lights_build_from_model(model_draw *draw,view_light_list_type *light_list)
-{
-	d3pnt			mid,min,max;
-
-	model_get_view_min_max(draw,&mid,&min,&max);
-	gl_lights_spot_reduce_box(&min,&max);
-	gl_lights_build_from_box(&mid,&min,&max,light_list);
+	light_list->nlight=draw->light_cache.count;
+		
+	for (n=0;n!=light_list->nlight;n++) {
+		light_list->light_idx[n]=draw->light_cache.indexes[n];
+	}
 }
 
