@@ -121,14 +121,14 @@ extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
-extern void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,bool light_map,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset);
+extern void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,bool hilite,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset);
 
 	// core shaders
 
 extern bool gl_core_shader_initialize(char *err_str);
 extern void gl_core_shader_shutdown(void);
 extern void gl_core_shader_draw_scene_initialize(void);
-extern shader_type* gl_core_shader_find_ptr(int nlight,bool map_shader,texture_type *texture,bool light_map);
+extern shader_type* gl_core_shader_find_ptr(int nlight,bool map_shader,texture_type *texture);
 
 	// user shaders
 

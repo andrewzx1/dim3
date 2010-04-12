@@ -42,8 +42,6 @@ extern setup_type		setup;
 
 extern bool fog_solid_on(void);
 
-int	t_offset,b_offset,n_offset;
-
 /* =======================================================
 
       Model Colors and Normals
@@ -67,7 +65,6 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			// shaders don't need color lists
 
 		mesh=&mdl->meshes[n];
-		if ((!view.debug.on) && (mesh->draw.only_shaders)) continue;
 		
 			// setup color list
 			
@@ -183,10 +180,6 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
 
-			// non-shader drawing doesn't need normals
-
-		if ((view.debug.on) || (mdl->meshes[n].draw.has_no_shader)) continue;
-
 			// create the normals for the pose
 
 		model_create_draw_normals(mdl,n,&draw->setup);
@@ -237,7 +230,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 	mesh=&mdl->meshes[mesh_idx];
 
-	if (mesh->draw.has_no_shader) {
+	if (!view.shader_on) {
 		mem_sz=(mesh->ntrig*3)*(3+2+3);
 
 		draw->setup.vbo_offset.color=((mesh->ntrig*3)*(3+2))*sizeof(float);
@@ -270,7 +263,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 	trig=mesh->trigs;
 
-	if (mesh->draw.has_no_shader) {
+	if (!view.shader_on) {
 
 		cl=vertex_ptr+((mesh->ntrig*3)*(3+2));
 
@@ -389,17 +382,15 @@ void render_model_release_vertex_objects(void)
       
 ======================================================= */
 
-void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
+void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,trig_count,trig_idx;
-	float					alpha;
 	bool					enabled;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
 	
 	mesh=&mdl->meshes[mesh_idx];
-	if ((!view.debug.on) && (mesh->draw.only_shaders)) return;
 	
 		// setup drawing
 
@@ -420,26 +411,16 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 
 	for (n=0;n!=max_model_texture;n++) {
 	
-		texture=&mdl->textures[n];
-		material=&mesh->materials[n];
-
-			// skip shader textures
-
-		if ((!view.debug.on) && (!mesh->no_lighting) && (texture->shader_idx!=-1)) continue;
-	
 			// any opaque trigs?
 			
-		if (texture->animate.on) {
-			frame=texture->animate.current_frame;
-		}
-		else {
-			frame=(int)draw->cur_texture_frame[n];
-		}
-		
-		alpha=draw->alpha;
-		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
+		if (mesh->draw.materials[n].is_transparent) continue;
+	
+			// get texture
 			
-		if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) continue;
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
+		
+		frame=mesh->draw.materials[n].frame;
 
 			// trig count
 
@@ -466,16 +447,14 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	gl_texture_opaque_end();
 }
 
-void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
+void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
 	int						n,trig_count,frame,trig_idx;
-	float					alpha;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
 	
 	mesh=&mdl->meshes[mesh_idx];
-	if ((view.debug.on) || (mesh->draw.has_no_shader)) return;
 	
 		// setup drawing
 
@@ -494,28 +473,18 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 
 	for (n=0;n!=max_model_texture;n++) {
 	
-		texture=&mdl->textures[n];
-		material=&mesh->materials[n];
-
-			// skip non-shader textures
-
-		if ((texture->shader_idx==-1) || (mesh->no_lighting)) continue;
-		
 			// any opaque trigs?
 			
-		if (texture->animate.on) {
-			frame=texture->animate.current_frame;
-		}
-		else {
-			frame=(int)draw->cur_texture_frame[n];
-		}
-		
-		alpha=draw->alpha;
-		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
+		if (mesh->draw.materials[n].is_transparent) continue;
+	
+			// get texture
 			
-		if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) continue;
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
+		
+		frame=mesh->draw.materials[n].frame;
 
-			// don't draw if no trigs
+			// trig count
 
 		trig_count=material->trig_count;
 		if (trig_count==0) continue;
@@ -523,16 +492,15 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		trig_idx=material->trig_start*3;
 		
 			// run the shader
-			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,FALSE,1.0f,light_list,NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,(mesh->no_lighting),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 			
 	gl_shader_draw_end();
 }
 
-void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
+void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,trig_count,trig_idx;
 	float					alpha;
@@ -542,7 +510,6 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 	model_material_type		*material;
 
 	mesh=&mdl->meshes[mesh_idx];
-	if ((!view.debug.on) && (mesh->draw.only_shaders)) return;
 
 		// setup drawing
 
@@ -567,28 +534,18 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 
 	for (n=0;n!=max_model_texture;n++) {
 	
-		texture=&mdl->textures[n];
-		material=&mesh->materials[n];
-
-			// skip shader textures
-
-		if ((!view.debug.on) && (!mesh->no_lighting) && (texture->shader_idx!=-1)) continue;
-	
 			// any transparent trigs?
 			
-		if (texture->animate.on) {
-			frame=texture->animate.current_frame;
-		}
-		else {
-			frame=(int)draw->cur_texture_frame[n];
-		}
-		
-		alpha=draw->alpha;
-		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
-		
-		if (!((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0))) continue;
+		if (!mesh->draw.materials[n].is_transparent) continue;
 	
-			// don't draw if no trigs
+			// get texture
+			
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
+		
+		frame=mesh->draw.materials[n].frame;
+	
+			// trig count
 
 		trig_count=material->trig_count;
 		if (trig_count==0) continue;
@@ -620,13 +577,14 @@ void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_dr
 		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,alpha);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
-
+	
+	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	if (enabled) render_model_disable_color_array();
 
 	gl_texture_transparent_end();
 }
 
-void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
+void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
 	int						n,frame,trig_count,trig_idx;
 	float					alpha;
@@ -636,7 +594,6 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 	model_material_type		*material;
 
 	mesh=&mdl->meshes[mesh_idx];
-	if ((view.debug.on) || (mesh->draw.has_no_shader)) return;
 
 		// setup drawing
 
@@ -660,28 +617,18 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 
 	for (n=0;n!=max_model_texture;n++) {
 	
-		texture=&mdl->textures[n];
-		material=&mesh->materials[n];
-
-			// skip non-shader textures
-
-		if ((texture->shader_idx==-1) || (mesh->no_lighting)) continue;
-		
 			// any transparent trigs?
 			
-		if (texture->animate.on) {
-			frame=texture->animate.current_frame;
-		}
-		else {
-			frame=(int)draw->cur_texture_frame[n];
-		}
-		
-		alpha=draw->alpha;
-		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
+		if (!mesh->draw.materials[n].is_transparent) continue;
+	
+			// get texture
 			
-		if (!((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0))) continue;
-
-			// don't draw if no trigs
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
+		
+		frame=mesh->draw.materials[n].frame;
+	
+			// trig count
 
 		trig_count=material->trig_count;
 		if (trig_count==0) continue;
@@ -703,15 +650,16 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,FALSE,alpha,light_list,NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
-		
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,alpha,light_list,(mesh->no_lighting),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
+	
+	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			
 	gl_shader_draw_end();
 }
 
-void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
+void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,trig_count,trig_idx;
 	model_mesh_type			*mesh;
@@ -737,21 +685,17 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 	for (n=0;n!=max_model_texture;n++) {
 	
-			// only draw glow textures
-
-		texture=&mdl->textures[n];
-		
-		if (texture->animate.on) {
-			frame=texture->animate.current_frame;
-		}
-		else {
-			frame=(int)draw->cur_texture_frame[n];
-		}
-
-		if (texture->frames[frame].glowmap.gl_id==-1) continue;
-
-		material=&mesh->materials[n];
+			// any glow trigs?
+			
+		if (!mesh->draw.materials[n].is_glow) continue;
 	
+			// get texture
+			
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
+		
+		frame=mesh->draw.materials[n].frame;
+		
 			// trig count
 
 		trig_count=material->trig_count;
@@ -762,7 +706,6 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// draw glow texture
 		
 		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-		
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 	
@@ -806,6 +749,7 @@ void render_model_setup(model_draw *draw)
 
 	draw->has_opaque=FALSE;
 	draw->has_transparent=FALSE;
+	draw->has_glow=FALSE;
 	
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
@@ -814,9 +758,6 @@ void render_model_setup(model_draw *draw)
 			// or shaders
 		
 		mesh=&mdl->meshes[n];
-			
-		mesh->draw.has_no_shader=TRUE;
-		mesh->draw.only_shaders=TRUE;
 			
 		texture=mdl->textures;
 		
@@ -842,29 +783,31 @@ void render_model_setup(model_draw *draw)
 			else {
 				frame=(int)draw->cur_texture_frame[t];
 			}
+			
+			mesh->draw.materials[t].frame=frame;
+			mesh->draw.materials[t].alpha=alpha;
+			
+			if (texture->frames[frame].glowmap.gl_id!=-1) {
+				mesh->draw.materials[t].is_glow=TRUE;
+				draw->has_glow=TRUE;
+			}
+			else {
+				mesh->draw.materials[t].is_glow=FALSE;
+			}
 	
 			if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) {
+				mesh->draw.materials[t].is_transparent=TRUE;
+				mesh->draw.has_transparent=TRUE;
 				draw->has_transparent=TRUE;
 			}
 			else {
+				mesh->draw.materials[t].is_transparent=FALSE;
+				mesh->draw.has_opaque=TRUE;
 				draw->has_opaque=TRUE;
-			}
-			
-				// check for shaders
-				
-			if ((texture->shader_idx!=-1) && (!mesh->no_lighting)) {
-				mesh->draw.has_no_shader=FALSE;
-			}
-			else {
-				mesh->draw.only_shaders=FALSE;
 			}
 			
 			texture++;
 		}
-		
-		if (mesh->draw.has_no_shader) mesh->draw.only_shaders=FALSE;
-		
-		if ((draw->has_transparent) && (draw->has_opaque)) break;
 	}
 }
 
@@ -895,9 +838,14 @@ void render_model_build_vertex_lists(model_draw *draw)
 	}
 
 		// setup the colors and normals
+		// shaders need only normals, FF needs only colors
 
-	render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
-	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
+	if (view.shader_on) {
+		render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
+	}
+	else {
+		render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
+	}
 }
 
 /* =======================================================
@@ -933,6 +881,7 @@ void render_model_opaque(model_draw *draw)
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+		if (!mdl->meshes[n].draw.has_opaque) continue;
 
 			// create VBO for this mesh
 
@@ -940,12 +889,16 @@ void render_model_opaque(model_draw *draw)
 
 			// render opaque segments
 
-		render_model_opaque_simple_trigs(mdl,n,draw);
-		if (!view.debug.on) render_model_opaque_shader_trigs(mdl,n,draw,&light_list);
-
+		if (!view.shader_on) {
+			render_model_opaque_normal(mdl,n,draw);
+		}
+		else {
+			render_model_opaque_shader(mdl,n,draw,&light_list);
+		}
+		
 			// render glow segments
 
-		render_model_glow_trigs(mdl,n,draw);
+		if (mdl->meshes[n].draw.has_glow) render_model_glow(mdl,n,draw);
 
 		render_model_release_vertex_objects();
 	}
@@ -974,6 +927,7 @@ void render_model_transparent(model_draw *draw)
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+		if (!mdl->meshes[n].draw.has_transparent) continue;
 
 			// setup the VBO
 
@@ -981,8 +935,12 @@ void render_model_transparent(model_draw *draw)
 
 			// draw transparent mesh
 
-		render_model_transparent_simple_trigs(mdl,n,draw);
-		if (!view.debug.on) render_model_transparent_shader_trigs(mdl,n,draw,&light_list);
+		if (!view.shader_on) {
+			render_model_transparent_normal(mdl,n,draw);
+		}
+		else {
+			render_model_transparent_shader(mdl,n,draw,&light_list);
+		}
 			
 			// release the vbo
 

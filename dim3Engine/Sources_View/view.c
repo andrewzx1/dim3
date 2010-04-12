@@ -405,6 +405,11 @@ void view_game_start(void)
     camera_initialize();
 	game_file_initialize();
 	
+		// shortcut for game being in
+		// shader of fixed-function mode
+		
+	view.shader_on=(!setup.disable_shaders)&&gl_check_shader_ok();
+	
 		// load images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	

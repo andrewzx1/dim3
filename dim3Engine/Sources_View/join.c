@@ -268,6 +268,7 @@ void join_ping_thread_internet_server(char *ip)
 				break;
 			}
 		}
+		usleep(100000);
 	}
 	
 		// close socket
@@ -605,6 +606,12 @@ void join_close(bool stop_music)
 
 void join_activity_start(void)
 {
+		// stop any pinging
+		
+	join_ping_thread_end();
+		
+		// disable buttons and redraw
+		
 	element_enable(join_button_join_id,FALSE);
 	element_enable(join_button_cancel_id,FALSE);
 	

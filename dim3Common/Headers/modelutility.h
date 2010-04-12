@@ -157,11 +157,18 @@ typedef struct		{
 typedef struct		{
 						int								trig_start,trig_count;
 					} model_material_type;
+					
+typedef struct		{
+						int								frame;
+						float							alpha;
+						bool							is_transparent,is_glow;
+					} model_mesh_draw_material_type;
 
 typedef struct		{
-						bool							has_no_shader,only_shaders;
+						bool							has_opaque,has_transparent,has_glow;
+						model_mesh_draw_material_type	materials[max_model_texture];
 					} model_mesh_draw_type;
-					
+
 typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];

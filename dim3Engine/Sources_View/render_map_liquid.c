@@ -392,7 +392,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 		tangent_space.normal.x=tangent_space.normal.z=0.0f;
 
 		gl_shader_draw_start();
-		gl_shader_draw_execute(TRUE,texture,liq->txt_idx,frame,liq->lmap_txt_idx,TRUE,1.0f,&light_list,NULL,NULL,&tangent_space,NULL);
+		gl_shader_draw_execute(TRUE,texture,liq->txt_idx,frame,liq->lmap_txt_idx,1.0f,&light_list,FALSE,NULL,NULL,&tangent_space,NULL);
 				
 			// fix texture if any back rendering
 

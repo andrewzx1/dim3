@@ -471,7 +471,7 @@ void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int 
 		// find player
 
 	idx=net_host_player_find(player_uid);
-	if (idx!=-1) {
+	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
 	}

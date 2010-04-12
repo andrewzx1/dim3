@@ -308,7 +308,7 @@ typedef struct		{
 						char							name[name_str_len];
 						float							alpha,resize,normal[3];
 						double							draw_dist;
-						bool							on,flip_x,has_opaque,has_transparent,
+						bool							on,flip_x,has_opaque,has_transparent,has_glow,
 														bounce,face_forward,player,built_vertex_list;
 						unsigned char					cur_texture_frame[max_model_texture];
 						d3pnt							pnt,size,center,offset;
