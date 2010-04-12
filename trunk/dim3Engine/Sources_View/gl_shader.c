@@ -310,8 +310,6 @@ void gl_shader_attach_map(void)
 	int					n;
 	texture_type		*texture;
 	
-	if (!view.shader_on) return;
-
 	texture=map.textures;
 	
 	for (n=0;n!=max_map_texture;n++) {
@@ -330,8 +328,6 @@ void gl_shader_attach_model(model_type *mdl)
 	int					n;
 	texture_type		*texture;
 	
-	if (!view.shader_on) return;
-
 	texture=mdl->textures;
 	
 	for (n=0;n!=max_model_texture;n++) {
@@ -366,12 +362,32 @@ void gl_shader_set_scene_variables(shader_type *shader)
 	if (shader->var_locs.dim3LightMapBoost!=-1) glUniform1fARB(shader->var_locs.dim3LightMapBoost,map.ambient.light_map_boost);
 }
 
-void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_type *light_list)
+void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
 {
-	int								n,k,count,in_light_map;
+	d3col			col;
+	
+	if (shader->var_locs.dim3AmbientColor==-1) return;
+	
+	if (hilite) {
+		glUniform3fARB(shader->var_locs.dim3AmbientColor,1.0f,1.0f,1.0f);
+		return;
+	}
+	
+	gl_lights_calc_ambient_color(&col);
+	glUniform3fARB(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
+}
+
+void gl_shader_set_light_normal_variables(shader_type *shader,bool is_core,view_light_list_type *light_list)
+{
+	int								n,k,count,in_light_map,max_light;
 	view_light_spot_type			*lspot;
 	shader_cached_var_light_loc		*loc_light;
 	shader_current_var_light_value	*cur_light;
+	
+		// if in core and no lights,
+		// skip all this as core shaders ignore lights
+		
+	if ((is_core) && (light_list->nlight==0)) return;
 	
 		// have lights changed?
 		
@@ -399,9 +415,20 @@ void gl_shader_set_light_normal_variables(shader_type *shader,view_light_list_ty
 	
 	shader->var_values.nlight=light_list->nlight;
 	
+		// core shaders ignore lights outside their
+		// range, so we don't need to look through max
+		// lights for core shaders
+		
+	if (is_core) {
+		max_light=light_list->nlight;
+	}
+	else {
+		max_light=max_shader_light;
+	}
+	
 		// set the lights uniforms
 		
-	for (n=0;n!=max_shader_light;n++) {
+	for (n=0;n!=max_light;n++) {
 
 		loc_light=&shader->var_locs.dim3Lights[n];
 		cur_light=&shader->var_values.lights[n];
@@ -553,6 +580,12 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 		// out the amount of variable setting we need to do
 	
 	shader->per_scene_vars_set=FALSE;
+	
+		// some model drawings can override the ambient
+		// for a highlight effect, need to remember
+		// when we are in that mode
+		
+	shader->in_hilite=FALSE;
 		
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
@@ -644,13 +677,13 @@ void gl_shader_draw_end(void)
       
 ======================================================= */
 
-void gl_shader_texture_set(shader_type *shader,texture_type *texture,int txt_idx,int lmap_txt_idx,bool light_map,int frame)
+void gl_shader_texture_set(shader_type *shader,bool map_shader,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
 {
 	GLuint			gl_id;
 
 		// extra texture map
 
-	if (light_map) {
+	if (map_shader) {
 		if ((lmap_txt_idx==-1) || (view.debug.on)) {
 			gl_id=lmap_hilite_bitmap.gl_id;
 		}
@@ -702,7 +735,6 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
 			glUniform1fARB(gl_shader_current->var_locs.dim3Alpha,alpha);
 		}
 	}
-
 }
 
 /* =======================================================
@@ -711,17 +743,20 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
       
 ======================================================= */
 
-void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,bool light_map,float alpha,view_light_list_type *light_list,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
+void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,bool hilite,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
 {
+	bool						is_core;
 	shader_type					*shader;
 	
 		// get shader based on number of lights
 		
 	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(light_list->nlight,map_shader,texture,light_map);
+		shader=gl_core_shader_find_ptr(light_list->nlight,map_shader,texture);
+		is_core=TRUE;
 	}
 	else {
 		shader=&user_shaders[texture->shader_idx];
+		is_core=FALSE;
 	}
 	
 		// if we are not in this shader, then
@@ -743,9 +778,22 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 		}
 	}
 	
+		// hiliting
+		
+	if ((!map_shader) && (hilite)) {
+		shader->in_hilite=TRUE;
+		gl_shader_ambient_hilite_override(shader,TRUE);
+	}
+	else {
+		if (shader->in_hilite) {
+			shader->in_hilite=FALSE;
+			gl_shader_ambient_hilite_override(shader,FALSE);
+		}
+	}
+	
 		// textures and per-texture variables
 		
-	gl_shader_texture_set(shader,texture,txt_idx,lmap_txt_idx,light_map,frame);
+	gl_shader_texture_set(shader,map_shader,texture,txt_idx,lmap_txt_idx,frame);
 	
 		// per polygon variables
 		
@@ -753,5 +801,5 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// lighting variables
 			
-	gl_shader_set_light_normal_variables(shader,light_list);
+	gl_shader_set_light_normal_variables(shader,is_core,light_list);
 }

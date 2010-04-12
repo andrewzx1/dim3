@@ -42,26 +42,20 @@ and can be sold or given away.
 
 #define max_core_shader_data_sz								10240
 
-#define max_core_shader										18
+#define max_core_shader										12
 
-#define gl_core_map_shader_light							0
-#define gl_core_map_shader_light_bump						1
-#define gl_core_map_shader_light_bump_spec					2
-#define gl_core_map_shader_light_map						3
-#define gl_core_map_shader_light_map_bump					4
-#define gl_core_map_shader_light_map_bump_spec				5
-#define gl_core_model_shader_light							6
-#define gl_core_model_shader_light_bump						7
-#define gl_core_model_shader_light_bump_spec				8
-#define gl_core_map_shader_fog_light						9
-#define gl_core_map_shader_fog_light_bump					10
-#define gl_core_map_shader_fog_light_bump_spec				11
-#define gl_core_map_shader_fog_light_map					12
-#define gl_core_map_shader_fog_light_map_bump				13
-#define gl_core_map_shader_fog_light_map_bump_spec			14
-#define gl_core_model_shader_fog_light						15
-#define gl_core_model_shader_fog_light_bump					16
-#define gl_core_model_shader_fog_light_bump_spec			17
+#define gl_core_map_shader_light_map						0
+#define gl_core_map_shader_light_map_bump					1
+#define gl_core_map_shader_light_map_bump_spec				2
+#define gl_core_model_shader_light							3
+#define gl_core_model_shader_light_bump						4
+#define gl_core_model_shader_light_bump_spec				5
+#define gl_core_map_shader_fog_light_map					6
+#define gl_core_map_shader_fog_light_map_bump				7
+#define gl_core_map_shader_fog_light_map_bump_spec			8
+#define gl_core_model_shader_fog_light						9
+#define gl_core_model_shader_fog_light_bump					10
+#define gl_core_model_shader_fog_light_bump_spec			11
 
 #define max_user_shader										64
 
@@ -259,7 +253,8 @@ typedef struct		{
 						int									start_tick;
 						char								name[64],
 															vertex_name[64],fragment_name[64];
-						bool								per_scene_vars_set,normal_vertex_attrib_active;
+						bool								per_scene_vars_set,in_hilite,
+															normal_vertex_attrib_active;
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
 						shader_cached_var_loc				var_locs;
 						shader_current_var_value			var_values;

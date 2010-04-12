@@ -554,27 +554,6 @@ bool gl_core_model_shader_create(shader_type *shader,int nlight,bool fog,bool bu
 
 bool gl_core_shader_initialize_per_light(int nlight,char *err_str)
 {
-		// gl_core_map_shader_light
-
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light],nlight,FALSE,FALSE,FALSE,FALSE,err_str)) {
-		gl_core_shader_shutdown();
-		return(FALSE);
-	}
-
-		// gl_core_map_shader_light_bump
-
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_bump],nlight,FALSE,FALSE,TRUE,FALSE,err_str)) {
-		gl_core_shader_shutdown();
-		return(FALSE);
-	}
-
-		// gl_core_map_shader_light_bump_spec
-
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_bump_spec],nlight,FALSE,FALSE,TRUE,TRUE,err_str)) {
-		gl_core_shader_shutdown();
-		return(FALSE);
-	}
-	
 		// gl_core_map_shader_light_map
 
 	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_map],nlight,FALSE,TRUE,FALSE,FALSE,err_str)) {
@@ -613,27 +592,6 @@ bool gl_core_shader_initialize_per_light(int nlight,char *err_str)
 		// gl_core_model_shader_light_bump_spec
 
 	if (!gl_core_model_shader_create(&core_shaders[nlight][gl_core_model_shader_light_bump_spec],nlight,FALSE,TRUE,TRUE,err_str)) {
-		gl_core_shader_shutdown();
-		return(FALSE);
-	}
-
-		// gl_core_map_shader_fog_light
-
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light],nlight,TRUE,FALSE,FALSE,FALSE,err_str)) {
-		gl_core_shader_shutdown();
-		return(FALSE);
-	}
-	
-		// gl_core_map_shader_fog_light_bump
-
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light_bump],nlight,TRUE,FALSE,TRUE,FALSE,err_str)) {
-		gl_core_shader_shutdown();
-		return(FALSE);
-	}
-
-		// gl_core_map_shader_fog_light_bump_spec
-
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light_bump_spec],nlight,TRUE,FALSE,TRUE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
@@ -748,7 +706,7 @@ void gl_core_shader_draw_scene_initialize(void)
       
 ======================================================= */
 
-inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture,bool light_map)
+inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture)
 {
 	bool				bump,spec;
 	
@@ -770,15 +728,9 @@ inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture,bo
 			return(gl_core_model_shader_light);
 		}
 
-		if (light_map) {
-			if ((bump) && (spec)) return(gl_core_map_shader_light_map_bump_spec);
-			if ((bump) && (!spec)) return(gl_core_map_shader_light_map_bump);
-			return(gl_core_map_shader_light_map);
-		}
-
-		if ((bump) && (spec)) return(gl_core_map_shader_light_bump_spec);
-		if ((bump) && (!spec)) return(gl_core_map_shader_light_bump);
-		return(gl_core_map_shader_light);
+		if ((bump) && (spec)) return(gl_core_map_shader_light_map_bump_spec);
+		if ((bump) && (!spec)) return(gl_core_map_shader_light_map_bump);
+		return(gl_core_map_shader_light_map);
 	}
 	
 		// fog shaders
@@ -789,22 +741,16 @@ inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture,bo
 		return(gl_core_model_shader_fog_light);
 	}
 
-	if (light_map) {
-		if ((bump) && (spec)) return(gl_core_map_shader_fog_light_map_bump_spec);
-		if ((bump) && (!spec)) return(gl_core_map_shader_fog_light_map_bump);
-		return(gl_core_map_shader_fog_light_map);
-	}
-
-	if ((bump) && (spec)) return(gl_core_map_shader_fog_light_bump_spec);
-	if ((bump) && (!spec)) return(gl_core_map_shader_fog_light_bump);
-	return(gl_core_map_shader_fog_light);
+	if ((bump) && (spec)) return(gl_core_map_shader_fog_light_map_bump_spec);
+	if ((bump) && (!spec)) return(gl_core_map_shader_fog_light_map_bump);
+	return(gl_core_map_shader_fog_light_map);
 }
 
-shader_type* gl_core_shader_find_ptr(int nlight,bool map_shader,texture_type *texture,bool light_map)
+shader_type* gl_core_shader_find_ptr(int nlight,bool map_shader,texture_type *texture)
 {
 	int				which_varient;
 	
-	which_varient=gl_core_shader_find_for_mode(map_shader,texture,light_map);
+	which_varient=gl_core_shader_find_for_mode(map_shader,texture);
 	return(&core_shaders[nlight][which_varient]);
 }
 

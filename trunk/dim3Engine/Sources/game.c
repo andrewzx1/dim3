@@ -73,7 +73,7 @@ bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str)
 		// start server
 	
 	if (!server_game_start("Game",skill,remotes,err_str)) return(FALSE);
-	
+
 		// start view
 		
 	view_game_start();

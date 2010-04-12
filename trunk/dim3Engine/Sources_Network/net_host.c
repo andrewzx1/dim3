@@ -146,41 +146,40 @@ void net_host_info_request(unsigned long ip_addr,int port)
       
 ======================================================= */
 
-int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
+bool net_host_join_request_ok(network_request_join *request_join,network_reply_join *reply_join)
 {
-	int							player_uid,
-								tint_color_idx,character_idx;
-	bool						allow;
-	network_reply_join			reply_join;
-	network_request_object_add	remote_add;
-
 		// refuse join if hash is different
 
-	allow=TRUE;
-
 	if (htonl(request_join->hash)!=net_get_project_hash()) {
-		allow=FALSE;
-		sprintf(reply_join.deny_reason,"Project files have been modified");
+		sprintf(reply_join->deny_reason,"Client Game Data has been Modified");
+		return(FALSE);
 	}
 
 		// refuse join if versions are different
 
 	if (strncmp(request_join->vers,dim3_version,name_str_len)!=0) {
-		allow=FALSE;
-		sprintf(reply_join.deny_reason,"Client version (%s) differs from Host version (%s)",request_join->vers,dim3_version);
+		sprintf(reply_join->deny_reason,"Wrong Version (Client: %s; Host: %s)",request_join->vers,dim3_version);
+		return(FALSE);
 	}
 
 		// name conflict or host full?
 
-	if (!net_host_player_add_ok(request_join->name,reply_join.deny_reason)) {
-		allow=FALSE;
-	}
+	return(net_host_player_add_ok(request_join->name,reply_join->deny_reason));
+}
 
-		// join to host
+int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
+{
+	int							player_uid,
+								tint_color_idx,character_idx;
+	network_reply_join			reply_join;
+	network_request_object_add	remote_add;
+	
+		// check if join is OK
 	
 	player_uid=-1;
+	reply_join.deny_reason[0]=0x0;
 
-	if (allow) {
+	if (net_host_join_request_ok(request_join,&reply_join)) {
 		tint_color_idx=htons((short)request_join->tint_color_idx);
 		character_idx=htons((short)request_join->character_idx);
 		player_uid=net_host_player_add(ip_addr,port,FALSE,request_join->name,tint_color_idx,character_idx);
@@ -203,22 +202,27 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	
 		// send reply
 
-	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_join,net_player_uid_host,(unsigned char*)&reply_join,sizeof(network_reply_join));
+	if (!net_sendto_msg(host_socket,ip_addr,port,net_action_reply_join,net_player_uid_host,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
+		if (player_uid!=-1) net_host_player_remove(player_uid);
+		return(FALSE);
+	}
+	
+		// if no player uid, then player was rejected
+		
+	if (player_uid==-1) return(FALSE);
 	
 		// send all other players on host the new player for remote add
 		
-	if (player_uid!=-1) {
-		remote_add.player_uid=htons((short)player_uid);
-		strncpy(remote_add.name,request_join->name,name_str_len);
-		remote_add.name[name_str_len-1]=0x0;
-		remote_add.team_idx=htons((short)net_team_none);
-		remote_add.tint_color_idx=request_join->tint_color_idx;		// already in network byte order
-		remote_add.character_idx=request_join->character_idx;		// already in network byte order
-		remote_add.score=0;
-		remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
+	remote_add.player_uid=htons((short)player_uid);
+	strncpy(remote_add.name,request_join->name,name_str_len);
+	remote_add.name[name_str_len-1]=0x0;
+	remote_add.team_idx=htons((short)net_team_none);
+	remote_add.tint_color_idx=request_join->tint_color_idx;		// already in network byte order
+	remote_add.character_idx=request_join->character_idx;		// already in network byte order
+	remote_add.score=0;
+	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 
-		net_host_player_send_message_others(player_uid,net_action_request_remote_add,net_player_uid_host,(unsigned char*)&remote_add,sizeof(network_request_object_add));
-	}
+	net_host_player_send_message_others(player_uid,net_action_request_remote_add,net_player_uid_host,(unsigned char*)&remote_add,sizeof(network_request_object_add));
 
 	return(player_uid);
 }
@@ -272,6 +276,8 @@ int net_host_thread(void *arg)
 			// false return = host shutting down
 			
 		if (!net_recvfrom_mesage(host_socket,&ip_addr,&port,&action,&player_uid,msg,&msg_len)) break;
+// supergumba		
+//		fprintf(stdout,"msg %d from %d (%X %d)\n",action,player_uid,(int)ip_addr,port);
 		
 			// reply to all info request
 			

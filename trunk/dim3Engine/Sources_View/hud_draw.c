@@ -515,18 +515,8 @@ void hud_metrics_draw(void)
 	y=(high+2)+5;
 
 		// fps
-
-	if (view.fps.total==0.0f) {
-		strcpy(str,"--.--");
-	}
-	else {
-		if ((setup.lock_fps_refresh) && (view.fps.total>render_info.monitor_refresh_rate)) {
-			sprintf(str,"%d.00",render_info.monitor_refresh_rate);
-		}
-		else {
-			sprintf(str,"%.2f",view.fps.total);
-		}
-	}
+		
+	hud_texts_fps(str);
 
 	hud_metrics_draw_single(y,"FPS:",str);
 	y+=high;

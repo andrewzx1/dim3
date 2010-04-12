@@ -181,12 +181,6 @@ void map_lookups_setup(void)
 	}
 }
 
-// supergumba
-void map_shader_setup(void)
-{
-	view.shader_on=(!setup.disable_shaders)&&gl_check_shader_ok();
-}
-
 void map_mesh_polygon_draw_flag_setup(void)
 {
 	int					n,k;
@@ -284,8 +278,6 @@ bool map_start(bool skip_media,char *err_str)
 		sprintf(err_str,"Could not open map: %s.  If this map is from an older version of dim3, use Editor to upgrade it.",map.info.name);
 		return(FALSE);
 	}
-
-	map_shader_setup();
 
 	gl_shader_attach_map();
 

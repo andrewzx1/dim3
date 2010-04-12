@@ -245,9 +245,22 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 	addr_in_len=sizeof(addr_in);
 	len=(int)recvfrom(sock,data,net_max_msg_size,0,(struct sockaddr*)&addr_in,&addr_in_len);
 	
-		// sock has closed
+		// check for errors
 		
-	if (len<0) return(FALSE);
+	if (len<0) {
+	
+		// ignore would block errors as we
+		// are almost always out of blocking
+		
+		if (errno==EWOULDBLOCK) {
+			*action=-1;
+			return(TRUE);
+		}
+		
+			// other errors mean socket has closed
+			
+		return(FALSE);
+	}
 	
 		// setup return address
 		
