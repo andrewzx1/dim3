@@ -37,7 +37,6 @@ and can be sold or given away.
 #define kLightColor									FOUR_CHAR_CODE('colr')
 #define kLightOn									FOUR_CHAR_CODE('lgon')
 #define kLightLightMap								FOUR_CHAR_CODE('lmap')
-#define kLightNeverObscure							FOUR_CHAR_CODE('nobs')
 
 extern map_type				map;
 
@@ -69,7 +68,6 @@ void palette_light_load(void)
 	dialog_set_boolean(palette_light_wind,kLightOn,0,light->on);
 	dialog_set_color(palette_light_wind,kLightColor,0,&light->col);
 	dialog_set_boolean(palette_light_wind,kLightLightMap,0,light->light_map);
-	dialog_set_boolean(palette_light_wind,kLightNeverObscure,0,light->never_obscure);
 	
 	DrawControls(palette_light_wind);
 }
@@ -94,7 +92,6 @@ void palette_light_save(void)
 	light->on=dialog_get_boolean(palette_light_wind,kLightOn,0);
 	dialog_get_color(palette_light_wind,kLightColor,0,&light->col);
 	light->light_map=dialog_get_boolean(palette_light_wind,kLightLightMap,0);
-	light->never_obscure=dialog_get_boolean(palette_light_wind,kLightNeverObscure,0);
 	
 	main_wind_tool_fill_light_combo();
 	main_wind_draw();

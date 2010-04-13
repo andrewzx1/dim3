@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 292542838;
-			PBXWorkspaceStateSaveDate = 292542838;
+			PBXPerProjectTemplateStateSaveDate = 292808770;
+			PBXWorkspaceStateSaveDate = 292808770;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -388,9 +388,9 @@
 	};
 	268CBC900DD2AA7D00CF0256 /* net_host_client_handler.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1048, 2743}}";
-			sepNavSelRange = "{4220, 0}";
-			sepNavVisRange = "{3480, 1238}";
+			sepNavIntBoundsRect = "{{0, 0}, {1216, 2535}}";
+			sepNavSelRange = "{5631, 0}";
+			sepNavVisRange = "{2548, 1606}";
 			sepNavWindowFrame = "{{289, 204}, {1041, 747}}";
 		};
 	};
@@ -506,20 +506,28 @@
 			sepNavWindowFrame = "{{358, 219}, {950, 757}}";
 		};
 	};
+	26E2008A1134C6E100E9055A /* net_queue.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {935, 3029}}";
+			sepNavSelRange = "{2554, 0}";
+			sepNavVisRange = "{2511, 983}";
+			sepNavWindowFrame = "{{363, 152}, {950, 757}}";
+		};
+	};
 	26F08C9E0DAC7DB50097E249 /* net_host.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1167, 5018}}";
-			sepNavSelRange = "{7653, 7}";
-			sepNavVisRange = "{7029, 1203}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4927}}";
+			sepNavSelRange = "{4271, 0}";
+			sepNavVisRange = "{3646, 1665}";
 			sepNavWindowFrame = "{{158, 168}, {1041, 747}}";
 		};
 	};
 	26F08CA00DAC7DB50097E249 /* net_host_players.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7800}}";
-			sepNavSelRange = "{10153, 0}";
-			sepNavVisRange = "{9316, 1159}";
-			sepNavWindowFrame = "{{230, 275}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7735}}";
+			sepNavSelRange = "{10660, 0}";
+			sepNavVisRange = "{10086, 1045}";
+			sepNavWindowFrame = "{{116, 206}, {1041, 747}}";
 		};
 	};
 	26F08CB90DAC7E990097E249 /* network_defs.h */ = {
@@ -2463,9 +2471,9 @@
 	};
 	F5DD1A7909085BC600721649 /* join.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10608}}";
-			sepNavSelRange = "{15236, 26}";
-			sepNavVisRange = "{14094, 1358}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10439}}";
+			sepNavSelRange = "{14095, 21}";
+			sepNavVisRange = "{13372, 1001}";
 			sepNavWindowFrame = "{{229, 260}, {1041, 747}}";
 		};
 	};

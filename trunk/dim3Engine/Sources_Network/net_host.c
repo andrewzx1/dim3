@@ -151,14 +151,14 @@ bool net_host_join_request_ok(network_request_join *request_join,network_reply_j
 		// refuse join if hash is different
 
 	if (htonl(request_join->hash)!=net_get_project_hash()) {
-		sprintf(reply_join->deny_reason,"Client Game Data has been Modified");
+		sprintf(reply_join->deny_reason,"Client game data has been modified");
 		return(FALSE);
 	}
 
 		// refuse join if versions are different
 
 	if (strncmp(request_join->vers,dim3_version,name_str_len)!=0) {
-		sprintf(reply_join->deny_reason,"Wrong Version (Client: %s; Host: %s)",request_join->vers,dim3_version);
+		sprintf(reply_join->deny_reason,"Client and host version differ (%s; %s)",request_join->vers,dim3_version);
 		return(FALSE);
 	}
 
@@ -276,8 +276,6 @@ int net_host_thread(void *arg)
 			// false return = host shutting down
 			
 		if (!net_recvfrom_mesage(host_socket,&ip_addr,&port,&action,&player_uid,msg,&msg_len)) break;
-// supergumba		
-//		fprintf(stdout,"msg %d from %d (%X %d)\n",action,player_uid,(int)ip_addr,port);
 		
 			// reply to all info request
 			
