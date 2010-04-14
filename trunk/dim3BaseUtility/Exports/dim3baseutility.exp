@@ -113,6 +113,7 @@ _file_paths_read_directory_data
 _file_paths_read_directory_data_dir
 _file_paths_read_directory_document
 _file_paths_close_directory
+_file_paths_count_children
 
 _file_paths_project_hash
 

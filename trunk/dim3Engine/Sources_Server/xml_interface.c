@@ -88,6 +88,7 @@ void default_settings_interface(void)
 	
 		// colors
 		
+	hud.color.dialog_background.r=hud.color.dialog_background.g=hud.color.dialog_background.b=0.0f;
 	hud.color.dialog_base.r=hud.color.dialog_base.g=hud.color.dialog_base.b=0.6f;
 	hud.color.dialog_dimmed.r=hud.color.dialog_dimmed.g=hud.color.dialog_dimmed.b=0.4f;
 	hud.color.dialog_outline.r=hud.color.dialog_outline.g=hud.color.dialog_outline.b=0.8f;
@@ -157,6 +158,7 @@ void default_settings_interface(void)
 	hud.progress.rx=640;
 	hud.progress.ty=450;
 	hud.progress.by=470;
+	hud.progress.outline=TRUE;
 	hud.progress.base_color_start.r=0.4f;
 	hud.progress.base_color_start.g=hud.progress.base_color_start.b=0.0f;
 	hud.progress.base_color_end.r=1.0f;
@@ -869,6 +871,7 @@ void read_settings_interface(void)
 		
 	color_tag=xml_findfirstchild("Color",interface_head_tag);
 	if (color_tag!=-1) {
+		xml_get_attribute_color(color_tag,"dialog_background",&hud.color.dialog_background);
 		xml_get_attribute_color(color_tag,"dialog_base",&hud.color.dialog_base);
 		xml_get_attribute_color(color_tag,"dialog_dimmed",&hud.color.dialog_dimmed);
 		xml_get_attribute_color(color_tag,"dialog_outline",&hud.color.dialog_outline);
@@ -910,6 +913,7 @@ void read_settings_interface(void)
 		hud.progress.ty=xml_get_attribute_int(progress_tag,"top_y");
 		hud.progress.by=xml_get_attribute_int(progress_tag,"bottom_y");
 		hud.progress.text_size=xml_get_attribute_int(progress_tag,"text_size");
+		hud.progress.outline=xml_get_attribute_boolean(proj_tag,"outline");
 		xml_get_attribute_color(progress_tag,"base_color_start",&hud.progress.base_color_start);
 		xml_get_attribute_color(progress_tag,"base_color_end",&hud.progress.base_color_end);
 		xml_get_attribute_color(progress_tag,"hilite_color_start",&hud.progress.hilite_color_start);

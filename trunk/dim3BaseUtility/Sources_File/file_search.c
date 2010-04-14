@@ -258,7 +258,7 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,int parent_idx
 void file_paths_read_directory_files(file_path_directory_type *fpd,int parent_idx,char *path,char *path_add,char *ext_name)
 {
 	int					next_parent_idx;
-	char				*c,path2[1024],path_add2[1024],file_name[file_str_len];
+	char				*c,path2[1024],path_add2[1024];
 	bool				find_first;
 	WIN32_FIND_DATA		find_data;
 	HANDLE				find_hand;
@@ -292,7 +292,7 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,int parent_id
 			
 				// add directory to file list
 				
-			next_parent_idx=file_paths_add_file(fpd,find_data.cFileName,TRUE,FALSE);
+			next_parent_idx=file_paths_add_file(fpd,parent_idx,find_data.cFileName,TRUE,FALSE);
 			if (next_parent_idx==-1) break;
 		
 				// into next path
@@ -325,8 +325,8 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,int parent_id
 
 void file_paths_read_directory_dirs(file_path_directory_type *fpd,int parent_idx,char *path,char *path_add,char *required_file_name)
 {
-	int					next_path_idx;
-	char				path2[1024],path_add2[1024],file_name[file_str_len];
+	int					next_parent_idx;
+	char				path2[1024],path_add2[1024];
 	bool				find_first;
 	WIN32_FIND_DATA		find_data;
 	HANDLE				find_hand;
@@ -532,6 +532,25 @@ file_path_directory_type* file_paths_read_directory_document(file_path_setup_typ
 void file_paths_close_directory(file_path_directory_type *fpd)
 {
 	if (fpd!=NULL) free(fpd);
+}
+
+/* =======================================================
+
+      File Path Utilities
+            
+======================================================= */
+
+int file_paths_count_children(file_path_directory_type *fpd,int index)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=fpd->nfile;n++) {
+		if (fpd->files[n].parent_idx==index) count++;
+	}
+
+	return(count);
 }
 
 /* =======================================================

@@ -106,6 +106,10 @@
 					>
 				</File>
 				<File
+					RelativePath="win32Code\dim3ModelUtility.def"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Common\Headers\modelutility.h"
 					>
 				</File>
@@ -130,14 +134,6 @@
 		<Filter
 			Name="dim3ModelUtility"
 			>
-			<Filter
-				Name="win32Code"
-				>
-				<File
-					RelativePath="win32Code\dim3ModelUtility.def"
-					>
-				</File>
-			</Filter>
 			<Filter
 				Name="ModelHeaders"
 				>

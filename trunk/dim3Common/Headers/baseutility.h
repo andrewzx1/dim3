@@ -247,13 +247,6 @@ extern void string_convert_float(char *str,float f);
 
 #define file_paths_max_directory_file		1024
 
-#define file_paths_loc_type_count			4
-
-#define file_paths_loc_type_app				0
-#define file_paths_loc_type_data			1
-#define file_paths_loc_type_data2			2
-#define file_paths_loc_type_documents		3
-
 //
 // file path structure
 //
@@ -271,7 +264,7 @@ typedef struct	{
 //
 
 typedef struct	{
-					int								loc_type,parent_idx;
+					int								parent_idx;
 					bool							is_dir;
 					char							file_name[file_str_len];
 				} file_path_directory_file_type;
@@ -300,6 +293,8 @@ extern file_path_directory_type* file_paths_read_directory_data(file_path_setup_
 extern file_path_directory_type* file_paths_read_directory_data_dir(file_path_setup_type *file_path_setup,char *sub_path,char *required_file_name);
 extern file_path_directory_type* file_paths_read_directory_document(file_path_setup_type *file_path_setup,char *sub_path,char *ext_name);
 extern void file_paths_close_directory(file_path_directory_type *fpd);
+
+extern int file_paths_count_children(file_path_directory_type *fpd,int index);
 
 extern int file_paths_project_hash(char *path);
 
