@@ -104,8 +104,7 @@ static pascal OSStatus file_open_list_item_proc(ControlRef ctrl,DataBrowserItemI
 
 		case kFileOpenListNameColumn:
 			idx=itemID-1;
-			file_paths_descript_directory_file(dir_name,fpd->files[idx].dir_type);
-			sprintf(str,"%s/%s",dir_name,fpd->files[idx].file_name);
+			sprintf(str,"%s",fpd->files[idx].file_name);
 			str[255]=0x0;
 			
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
