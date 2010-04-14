@@ -279,6 +279,15 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
+		// don't run blank maps
+
+	if ((map.mesh.nmesh==0) || (map.nspot==0)) {
+		map_close(&map);
+		progress_shutdown();
+		sprintf(err_str,"Could not open map: %s.  This map contains no meshes or spots.",map.info.name);
+		return(FALSE);
+	}
+
 	gl_shader_attach_map();
 
 		// prepare map surfaces

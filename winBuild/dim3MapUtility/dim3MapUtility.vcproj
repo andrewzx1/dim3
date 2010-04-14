@@ -104,6 +104,10 @@
 					>
 				</File>
 				<File
+					RelativePath="win32Code\dim3MapUtility.def"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Common\Headers\mapimport.h"
 					>
 				</File>
@@ -132,14 +136,6 @@
 		<Filter
 			Name="dim3MapUtility"
 			>
-			<Filter
-				Name="win32Code"
-				>
-				<File
-					RelativePath="win32Code\dim3MapUtility.def"
-					>
-				</File>
-			</Filter>
 			<Filter
 				Name="MapHeaders"
 				>

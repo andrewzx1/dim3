@@ -106,6 +106,10 @@
 					>
 				</File>
 				<File
+					RelativePath="win32Code\dim3BaseUtility.def"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Common\Headers\os_defs.h"
 					>
 				</File>
@@ -162,14 +166,6 @@
 		<Filter
 			Name="dim3BaseUtility"
 			>
-			<Filter
-				Name="win32Code"
-				>
-				<File
-					RelativePath="win32Code\dim3BaseUtility.def"
-					>
-				</File>
-			</Filter>
 			<Filter
 				Name="BaseHeaders"
 				>

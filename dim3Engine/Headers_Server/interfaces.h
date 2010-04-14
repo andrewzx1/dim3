@@ -39,14 +39,6 @@ extern int gui_click(void);
 extern int gui_keyboard(void);
 
 //
-// screenshots backgrounds
-//
-
-extern void gui_screenshot_initialize(void);
-extern void gui_screenshot_load(void);
-extern void gui_screenshot_free(void);
-
-//
 // cursors
 //
 

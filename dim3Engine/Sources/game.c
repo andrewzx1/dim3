@@ -77,11 +77,6 @@ bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str)
 		// start view
 		
 	view_game_start();
-	
-		// no gui screenshot taken yet
-		// need to have running screenshot for mode switches
-		
-	gui_screenshot_initialize();
 
 		// game in running state
 		

@@ -44,123 +44,11 @@ extern render_info_type		render_info;
 
 int							gui_background_image_idx;
 char						gui_last_key;
-bool						gui_show_view;
-bitmap_type					gui_screenshot_bitmap;
 chooser_frame_type			gui_frame;
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
 extern void map_restart_ambient(void);
-
-/* =======================================================
-
-      GUI Screenshots
-      
-======================================================= */
-
-void gui_screenshot_initialize(void)
-{
-	gui_screenshot_bitmap.gl_id=-1;
-}
-
-void gui_screenshot_load_blur_pixel(unsigned char *data,unsigned char *data2,int x,int y,int x2,int y2)
-{
-	int				cnt,r,g,b;
-	unsigned char	*ptr;
-	
-	cnt=0;
-	r=g=b=0;
-
-	if (x>0) {
-		ptr=data+((y*(setup.screen.x_sz*3))+((x-1)*3));
-		r+=(int)*ptr++;
-		g+=(int)*ptr++;
-		b+=(int)*ptr++;
-		cnt++;
-	}
-	if (x<(setup.screen.x_sz-1)) {
-		ptr=data+((y*(setup.screen.x_sz*3))+((x+1)*3));
-		r+=(int)*ptr++;
-		g+=(int)*ptr++;
-		b+=(int)*ptr++;
-		cnt++;
-	}
-	if (y>0) {
-		ptr=data+(((y-1)*(setup.screen.x_sz*3))+(x*3));
-		r+=(int)*ptr++;
-		g+=(int)*ptr++;
-		b+=(int)*ptr++;
-		cnt++;
-	}
-	if (y<(setup.screen.y_sz-1)) {
-		ptr=data+(((y+1)*(setup.screen.x_sz*3))+(x*3));
-		r+=(int)*ptr++;
-		g+=(int)*ptr++;
-		b+=(int)*ptr++;
-		cnt++;
-	}
-
-	ptr=data+((y*(setup.screen.x_sz*3))+(x*3));
-	r+=(int)*ptr++;
-	g+=(int)*ptr++;
-	b+=(int)*ptr++;
-	cnt++;
-	
-	ptr=data2+((y2*(setup.screen.x_sz*3))+(x2*3));
-	*ptr++=(unsigned char)(r/cnt);
-	*ptr++=(unsigned char)(g/cnt);
-	*ptr++=(unsigned char)(b/cnt);
-}
-
-void gui_screenshot_load(void)
-{
-	int					n,x,y,y2,dsz;
-	unsigned char		*data,*data2;
-	
-	dsz=((setup.screen.x_sz*3)*setup.screen.y_sz);
-
-	data=(unsigned char*)malloc(dsz);
-	if (data==NULL) return;
-	
-	glReadPixels(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,GL_RGB,GL_UNSIGNED_BYTE,data);
-	
-		// blur the data
-
-	data2=(unsigned char*)malloc(dsz);
-	if (data2==NULL) {
-		free(data);
-		return;
-	}
-	
-	for (n=0;n!=gui_screenshot_blur_count;n++) {
-	
-		for (y=0;y!=setup.screen.y_sz;y++) {
-
-			y2=y;
-			if (n==(gui_screenshot_blur_count-1)) y2=(setup.screen.y_sz-1)-y;		// flip the data on the last blur
-
-			for (x=0;x!=setup.screen.x_sz;x++) {
-				gui_screenshot_load_blur_pixel(data,data2,x,y,x,y2);
-			}
-		}
-		
-		memmove(data,data2,dsz);
-	}
-
-	free(data2);
-
-		// save screenshot
-
-	bitmap_data(&gui_screenshot_bitmap,data,setup.screen.x_sz,setup.screen.y_sz,FALSE,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok());
-	
-	free(data);
-}
-
-void gui_screenshot_free(void)
-{
-	bitmap_close(&gui_screenshot_bitmap);
-	gui_screenshot_bitmap.gl_id=-1;
-}
 
 /* =======================================================
 
@@ -201,14 +89,9 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 	
 		// load up the proper background bitmap
 		
-	gui_show_view=show_view;
+	gui_background_image_idx=-1;
 	
-	if (!gui_show_view) {
-		gui_background_load(background_path,bitmap_name);
-	}
-	else {
-		gui_screenshot_load();
-	}
+	if (!show_view) gui_background_load(background_path,bitmap_name);
 	
 	gui_frame.on=FALSE;
 	
@@ -227,12 +110,7 @@ void gui_shutdown(void)
 {
 		// close background bitmap
 		
-	if (!gui_show_view) {
-		view_images_free_single(gui_background_image_idx);
-	}
-	else {
-		gui_screenshot_free();
-	}
+	if (gui_background_image_idx!=-1) view_images_free_single(gui_background_image_idx);
 	
 		// release cursor and elements
 		
@@ -260,35 +138,26 @@ void gui_shutdown(void)
 
 void gui_draw_background(float alpha)
 {
-	int				p_wid,p_high;
-	GLuint			gl_id;
 	bitmap_type		*bitmap;
 
-		// no background at all?
+		// background color
 
-	if (!gui_show_view) {
-		bitmap=view_images_get_bitmap(gui_background_image_idx);
-		gl_id=bitmap->gl_id;
-		p_wid=bitmap->wid;
-		p_high=bitmap->high;
-	}
-	else {
-		gl_id=gui_screenshot_bitmap.gl_id;
-		p_wid=gui_screenshot_bitmap.wid;
-		p_high=gui_screenshot_bitmap.high;
+	if (gui_background_image_idx==-1) {
+		view_draw_next_vertex_object_2D_color_quad(&hud.color.dialog_background,1.0f,0,hud.scale_x,0,hud.scale_y);
+		return;
 	}
 
-	if (gl_id==-1) return;
-
-		// 2D draw setup
+		// background image
 
 	gl_2D_view_interface();
 
+	bitmap=view_images_get_bitmap(gui_background_image_idx);
+
 	if (gl_check_texture_rectangle_ok()) {
-		view_draw_next_vertex_object_2D_texture_quad_rectangle(gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,p_wid,p_high);
+		view_draw_next_vertex_object_2D_texture_quad_rectangle(bitmap->gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,bitmap->wid,bitmap->high);
 	}
 	else {
-		view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,0.0f);
+		view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,0.0f);
 	}
 }
 

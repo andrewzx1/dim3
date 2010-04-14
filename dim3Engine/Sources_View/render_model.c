@@ -503,7 +503,6 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,trig_count,trig_idx;
-	float					alpha;
 	bool					enabled,cur_additive,is_additive;
 	model_mesh_type			*mesh;
     texture_type			*texture;
@@ -574,7 +573,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 
 			// draw texture
 
-		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,alpha);
+		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,mesh->draw.materials[n].alpha);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 	
@@ -587,7 +586,6 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
 	int						n,frame,trig_count,trig_idx;
-	float					alpha;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
     texture_type			*texture;
@@ -650,7 +648,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,alpha,light_list,(mesh->no_lighting),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,mesh->draw.materials[n].alpha,light_list,(mesh->no_lighting),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 	

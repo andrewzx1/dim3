@@ -84,3 +84,4 @@ typedef int						socklen_t;
 #define stat					_stat
 
 #define D3_NULL_SOCKET			INVALID_SOCKET
+#define EWOULDBLOCK				WSAEWOULDBLOCK

@@ -261,7 +261,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						d3col					dialog_base,dialog_dimmed,dialog_outline,
+						d3col					dialog_background,dialog_base,dialog_dimmed,dialog_outline,
 												control_label,control_text,control_fill,
 												control_header,control_outline,
 												control_mouse_over,control_hilite,control_disabled,
@@ -398,6 +398,7 @@ typedef struct		{
 
 typedef struct		{
 						int						lx,rx,ty,by,text_size;
+						bool					outline;
 						d3col					base_color_start,base_color_end,
 												hilite_color_start,hilite_color_end,
 												text_color,outline_color;

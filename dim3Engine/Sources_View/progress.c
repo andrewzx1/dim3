@@ -134,7 +134,7 @@ void progress_draw(float percentage)
 	
 		// progress outline
 
-	view_draw_next_vertex_object_2D_line_quad(&hud.progress.outline_color,1.0f,lft,rgt,top,bot);
+	if (hud.progress.outline) view_draw_next_vertex_object_2D_line_quad(&hud.progress.outline_color,1.0f,lft,rgt,top,bot);
 
 		// progress text
 
