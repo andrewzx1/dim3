@@ -31,16 +31,24 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Search Utilities
+      Add files to Path Directory List
             
 ======================================================= */
 
-bool file_paths_add_file(file_path_directory_type *fpd,char *path_add,char *file_name,int dir_type,bool remove_subfile)
+int file_paths_add_file(file_path_directory_type *fpd,int parent_idx,char *name,bool is_dir,bool remove_subfile)
 {
 	int				n,k,idx,sz;
-	char			*c;
+	char			*c,file_name[file_str_len];
 	
+		// any more spots?
+		
+	if (fpd->nfile>=file_paths_max_directory_file) return(-1);
+	
+		// copy the name and
 		// remove the extension
+		
+	strncpy(file_name,name,file_str_len);
+	file_name[file_str_len-1]=0x0;
 		
 	c=strrchr(file_name,'.');
 	if (c!=NULL) *c=0x0;
@@ -51,7 +59,7 @@ bool file_paths_add_file(file_path_directory_type *fpd,char *path_add,char *file
 		k=strlen(file_name);
 		if (k>2) {
 			if (file_name[k-2]=='_') {
-				if ((file_name[k-1]=='n') || (file_name[k-1]=='s') || (file_name[k-1]=='g')) return(TRUE);
+				if ((file_name[k-1]=='n') || (file_name[k-1]=='s') || (file_name[k-1]=='g')) return(-1);
 			}
 		}
 	}
@@ -78,19 +86,20 @@ bool file_paths_add_file(file_path_directory_type *fpd,char *path_add,char *file
 	
 		// add new one
 		
-	fpd->files[fpd->nfile].dir_type=dir_type;
-	
-	if (path_add!=NULL) {
-		sprintf(fpd->files[fpd->nfile].file_name,"%s/%s",path_add,file_name);
-	}
-	else {
-		strcpy(fpd->files[fpd->nfile].file_name,file_name);
-	}
+	fpd->files[fpd->nfile].parent_idx=parent_idx;
+	fpd->files[fpd->nfile].is_dir=is_dir;
+	strcpy(fpd->files[fpd->nfile].file_name,file_name);
 	
 	fpd->nfile++;
 	
-	return(fpd->nfile<file_paths_max_directory_file);
+	return(fpd->nfile-1);
 }
+
+/* =======================================================
+
+      Determine if Directory has Required File
+            
+======================================================= */
 
 bool file_paths_check_required_file(char *path,char *path_add,char *dir_name,char *required_file_name)
 {
@@ -115,9 +124,10 @@ bool file_paths_check_required_file(char *path,char *path_add,char *dir_name,cha
 
 #ifndef D3_OS_WINDOWS
 
-void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,char *path_add,char *ext_name,int dir_type)
+void file_paths_read_directory_files(file_path_directory_type *fpd,int parent_idx,char *path,char *path_add,char *ext_name)
 {
-	char					*c,path2[1024],path_add2[1024],file_name[file_str_len];
+	int						next_parent_idx;
+	char					*c,path2[1024],path_add2[1024];
 	DIR						*dir;
 	struct dirent			*de;
 	
@@ -145,6 +155,13 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,ch
 
 		if (c==NULL) {
 		
+				// add directory to file list
+				
+			next_parent_idx=file_paths_add_file(fpd,parent_idx,de->d_name,TRUE,FALSE);
+			if (next_parent_idx==-1) break;
+		
+				// into next path
+				
 			if (path_add!=NULL) {
 				sprintf(path_add2,"%s/%s",path_add,de->d_name);
 			}
@@ -152,7 +169,7 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,ch
 				strcpy(path_add2,de->d_name);
 			}
 			
-			file_paths_read_directory_files(fpd,path,path_add2,ext_name,dir_type);
+			file_paths_read_directory_files(fpd,next_parent_idx,path,path_add2,ext_name);
 			continue;
 		}
 		
@@ -162,18 +179,16 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,ch
 		
 			// add file
 			
-		strncpy(file_name,de->d_name,file_str_len);
-		file_name[file_str_len-1]=0x0;
-
-		if (!file_paths_add_file(fpd,path_add,file_name,dir_type,TRUE)) break;
+		if (file_paths_add_file(fpd,parent_idx,de->d_name,FALSE,TRUE)==-1) break;
 	}
 	
 	closedir(dir);
 }
 
-void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,char *path_add,char *required_file_name,int dir_type)
+void file_paths_read_directory_dirs(file_path_directory_type *fpd,int parent_idx,char *path,char *path_add,char *required_file_name)
 {
-	char					*c,path2[1024],path_add2[1024],file_name[file_str_len];
+	int						next_parent_idx;
+	char					*c,path2[1024],path_add2[1024];
 	DIR						*dir;
 	struct dirent			*de;
 	
@@ -203,6 +218,13 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,cha
 			// otherwise recurse further
 			
 		if (!file_paths_check_required_file(path,path_add,de->d_name,required_file_name)) {
+		
+				// add directory to file list
+				
+			next_parent_idx=file_paths_add_file(fpd,parent_idx,de->d_name,TRUE,FALSE);
+			if (next_parent_idx==-1) break;
+		
+				// into next path
 			
 			if (path_add!=NULL) {
 				sprintf(path_add2,"%s/%s",path_add,de->d_name);
@@ -211,16 +233,13 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,cha
 				strcpy(path_add2,de->d_name);
 			}
 			
-			file_paths_read_directory_dirs(fpd,path,path_add2,required_file_name,dir_type);
+			file_paths_read_directory_dirs(fpd,next_parent_idx,path,path_add2,required_file_name);
 			continue;
 		}
 		
 			// add file
 			
-		strncpy(file_name,de->d_name,file_str_len);
-		file_name[file_str_len-1]=0x0;
-
-		if (!file_paths_add_file(fpd,path_add,file_name,dir_type,FALSE)) break;
+		if (file_paths_add_file(fpd,parent_idx,de->d_name,FALSE,FALSE)==-1) break;
 	}
 	
 	closedir(dir);
@@ -236,8 +255,9 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,cha
 
 #ifdef D3_OS_WINDOWS
 
-void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,char *path_add,char *ext_name,int dir_type)
+void file_paths_read_directory_files(file_path_directory_type *fpd,int parent_idx,char *path,char *path_add,char *ext_name)
 {
+	int					next_parent_idx;
 	char				*c,path2[1024],path_add2[1024],file_name[file_str_len];
 	bool				find_first;
 	WIN32_FIND_DATA		find_data;
@@ -269,7 +289,14 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,ch
 			// go deeper into directories
 
 		if ((find_data.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)!=0) {
+			
+				// add directory to file list
+				
+			next_parent_idx=file_paths_add_file(fpd,find_data.cFileName,TRUE,FALSE);
+			if (next_parent_idx==-1) break;
 		
+				// into next path
+				
 			if (path_add!=NULL) {
 				sprintf(path_add2,"%s\\%s",path_add,find_data.cFileName);
 			}
@@ -277,7 +304,7 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,ch
 				strcpy(path_add2,find_data.cFileName);
 			}
 
-			file_paths_read_directory_files(fpd,path,path_add2,ext_name,dir_type);
+			file_paths_read_directory_files(fpd,next_parent_idx,path,path_add2,ext_name);
 			continue;
 		}
 
@@ -290,17 +317,15 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,ch
 
 			// add file to list
 		
-		strncpy(file_name,find_data.cFileName,file_str_len);
-		file_name[file_str_len-1]=0x0;
-	
-		if (!file_paths_add_file(fpd,path_add,file_name,dir_type,TRUE)) break;
+		if (file_paths_add_file(fpd,parent_idx,find_data.cFileName,FALSE,TRUE)==-1) break;
 	}
 
 	FindClose(find_hand);
 }
 
-void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,char *path_add,char *required_file_name,int dir_type)
+void file_paths_read_directory_dirs(file_path_directory_type *fpd,int parent_idx,char *path,char *path_add,char *required_file_name)
 {
+	int					next_path_idx;
 	char				path2[1024],path_add2[1024],file_name[file_str_len];
 	bool				find_first;
 	WIN32_FIND_DATA		find_data;
@@ -339,6 +364,13 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,cha
 			
 		if (!file_paths_check_required_file(path,path_add,find_data.cFileName,required_file_name)) {
 		
+				// add directory to file list
+				
+			next_parent_idx=file_paths_add_file(fpd,parent_idx,find_data.cFileName,TRUE,FALSE);
+			if (next_parent_idx==-1) break;
+		
+				// into next path
+		
 			if (path_add!=NULL) {
 				sprintf(path_add2,"%s\\%s",path_add,find_data.cFileName);
 			}
@@ -346,16 +378,13 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,cha
 				strcpy(path_add2,find_data.cFileName);
 			}
 
-			file_paths_read_directory_dirs(fpd,path,path_add2,required_file_name,dir_type);
+			file_paths_read_directory_dirs(fpd,next_parent_idx,path,path_add2,required_file_name);
 			continue;
 		}
 
 			// add file to list
 		
-		strncpy(file_name,find_data.cFileName,file_str_len);
-		file_name[file_str_len-1]=0x0;
-	
-		if (!file_paths_add_file(fpd,path_add,file_name,dir_type,TRUE)) break;
+		if (file_paths_add_file(fpd,parent_idx,find_data.cFileName,FALSE,FALSE)==-1) break;
 	}
 
 	FindClose(find_hand);
@@ -371,6 +400,7 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,cha
 
 file_path_directory_type* file_paths_read_directory_data(file_path_setup_type *file_path_setup,char *sub_path,char *ext_name)
 {
+	int							parent_idx;
 	char						path[1024];
 	file_path_directory_type	*fpd;
 	
@@ -381,7 +411,8 @@ file_path_directory_type* file_paths_read_directory_data(file_path_setup_type *f
 	
 	fpd->nfile=0;
 
-		// run through the dim3 directories
+		// run through the possible dim3
+		// data directories (inside app, data, data2)
 
 	if (file_path_setup->path_app[0]!=0x0) {
 	
@@ -391,7 +422,8 @@ file_path_directory_type* file_paths_read_directory_data(file_path_setup_type *f
 			strcat(path,sub_path);
 		}
 		
-		file_paths_read_directory_files(fpd,path,NULL,ext_name,file_paths_dir_type_app);
+		parent_idx=file_paths_add_file(fpd,-1,"App",TRUE,FALSE);
+		file_paths_read_directory_files(fpd,parent_idx,path,NULL,ext_name);
 	}
 	
 	if (file_path_setup->path_data[0]!=0x0) {
@@ -402,7 +434,8 @@ file_path_directory_type* file_paths_read_directory_data(file_path_setup_type *f
 			strcat(path,sub_path);
 		}
 		
-		file_paths_read_directory_files(fpd,path,NULL,ext_name,file_paths_dir_type_data);
+		parent_idx=file_paths_add_file(fpd,-1,"Data",TRUE,FALSE);
+		file_paths_read_directory_files(fpd,parent_idx,path,NULL,ext_name);
 	}
 	
 	if (file_path_setup->path_data_2[0]!=0x0) {
@@ -413,7 +446,8 @@ file_path_directory_type* file_paths_read_directory_data(file_path_setup_type *f
 			strcat(path,sub_path);
 		}
 		
-		file_paths_read_directory_files(fpd,path,NULL,ext_name,file_paths_dir_type_data2);
+		parent_idx=file_paths_add_file(fpd,-1,"Data2",TRUE,FALSE);
+		file_paths_read_directory_files(fpd,parent_idx,path,NULL,ext_name);
 	}
 
 	return(fpd);
@@ -421,6 +455,7 @@ file_path_directory_type* file_paths_read_directory_data(file_path_setup_type *f
 
 file_path_directory_type* file_paths_read_directory_data_dir(file_path_setup_type *file_path_setup,char *sub_path,char *required_file_name)
 {
+	int							parent_idx;
 	char						path[1024];
 	file_path_directory_type	*fpd;
 	
@@ -441,7 +476,8 @@ file_path_directory_type* file_paths_read_directory_data_dir(file_path_setup_typ
 			strcat(path,sub_path);
 		}
 		
-		file_paths_read_directory_dirs(fpd,path,NULL,required_file_name,file_paths_dir_type_app);
+		parent_idx=file_paths_add_file(fpd,-1,"App",TRUE,FALSE);
+		file_paths_read_directory_dirs(fpd,parent_idx,path,NULL,required_file_name);
 	}
 	
 	if (file_path_setup->path_data[0]!=0x0) {
@@ -452,7 +488,8 @@ file_path_directory_type* file_paths_read_directory_data_dir(file_path_setup_typ
 			strcat(path,sub_path);
 		}
 		
-		file_paths_read_directory_dirs(fpd,path,NULL,required_file_name,file_paths_dir_type_data);
+		parent_idx=file_paths_add_file(fpd,-1,"Data",TRUE,FALSE);
+		file_paths_read_directory_dirs(fpd,parent_idx,path,NULL,required_file_name);
 	}
 	
 	if (file_path_setup->path_data_2[0]!=0x0) {
@@ -463,7 +500,8 @@ file_path_directory_type* file_paths_read_directory_data_dir(file_path_setup_typ
 			strcat(path,sub_path);
 		}
 		
-		file_paths_read_directory_dirs(fpd,path,NULL,required_file_name,file_paths_dir_type_data2);
+		parent_idx=file_paths_add_file(fpd,-1,"Data2",TRUE,FALSE);
+		file_paths_read_directory_dirs(fpd,parent_idx,path,NULL,required_file_name);
 	}
 
 	return(fpd);
@@ -471,6 +509,7 @@ file_path_directory_type* file_paths_read_directory_data_dir(file_path_setup_typ
 
 file_path_directory_type* file_paths_read_directory_document(file_path_setup_type *file_path_setup,char *sub_path,char *ext_name)
 {
+	int							parent_idx;
 	char						path[1024];
 	file_path_directory_type	*fpd;
 	
@@ -484,7 +523,8 @@ file_path_directory_type* file_paths_read_directory_document(file_path_setup_typ
 		// read the files
 		
 	file_paths_documents(file_path_setup,path,sub_path,NULL,NULL);
-	file_paths_read_directory_files(fpd,path,NULL,ext_name,file_paths_dir_type_documents);
+	parent_idx=file_paths_add_file(fpd,-1,"Documents",TRUE,FALSE);
+	file_paths_read_directory_files(fpd,parent_idx,path,NULL,ext_name);
 
 	return(fpd);
 }
@@ -492,13 +532,6 @@ file_path_directory_type* file_paths_read_directory_document(file_path_setup_typ
 void file_paths_close_directory(file_path_directory_type *fpd)
 {
 	if (fpd!=NULL) free(fpd);
-}
-
-void file_paths_descript_directory_file(char *descript,int dir_type)
-{
-	char names[file_paths_dir_type_count][32]=file_paths_dir_names;
-	
-	strcpy(descript,names[dir_type]);
 }
 
 /* =======================================================
