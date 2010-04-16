@@ -29,10 +29,6 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-
-// supergumba
-#define max_cache_light_per_mesh			16
-
 #include "weapons.h"
 #include "models.h"
 #include "lights.h"
@@ -44,9 +40,6 @@ extern map_type				map;
 extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
-
-// supergumba -- delete all this
-int							light_spot_reduce_count,light_spot_reduce_idx[max_light_spot];
 
 float						light_shader_direction[7][3]={{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}};
 

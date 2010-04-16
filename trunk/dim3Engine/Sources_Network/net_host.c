@@ -135,7 +135,7 @@ void net_host_info_request(unsigned long ip_addr,int port)
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
 	strcpy(info.proj_name,hud.proj_name);
 	strcpy(info.game_name,hud.net_game.games[net_setup.game_idx].name);
-	strcpy(info.map_name,net_setup.host.map_name);
+	strcpy(info.map_name,map.info.name);
 	
 	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_info,net_player_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
 }
@@ -188,7 +188,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		// construct the reply
 	
 	strcpy(reply_join.game_name,hud.net_game.games[net_setup.game_idx].name);
-	strcpy(reply_join.map_name,net_setup.host.map_name);
+	strcpy(reply_join.map_name,map.info.name);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
 	reply_join.option_flags=htonl(net_setup.option_flags);
 	reply_join.player_uid=htons((short)player_uid);

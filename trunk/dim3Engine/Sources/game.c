@@ -49,6 +49,7 @@ extern void server_game_stop(void);
 extern void view_game_start(void);
 extern void view_game_stop(void);
 extern void net_host_game_end(void);
+extern bool map_rebuild_changes(char *err_str);
 
 /* =======================================================
 
@@ -153,50 +154,35 @@ void game_reset_single_object(obj_type *obj,bool reposition)
 
 void game_reset(void)
 {
-	int				n;
-	obj_type		*obj;
-	
-		// reset projectiles, effects, etc
-		
-	projectile_start();
-	effect_start();
-	
-		// if a remote player, then just reset yourself and
-		// hide all other players until and update
-		
-	if (net_setup.mode==net_mode_client) {
-	
-		obj=server.objs;
+	obj_type					*player_obj;
+	char						err_str[256];
+	network_request_game_reset	reset;
 
-		for (n=0;n!=server.count.obj;n++) {
-			if (obj->uid==server.player_obj_uid) {
-				game_reset_single_object(obj,FALSE);
-			}
-			else {
-				if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
-					obj->hidden=TRUE;
-				}
-			}
-			
-			obj++;
-		}
-	
+		// switch to next map
+
+	net_setup.host.current_map_idx++;
+	if (net_setup.host.current_map_idx>=setup.network.map.count) net_setup.host.current_map_idx=0;
+
+	strcpy(map.info.name,setup.network.map.maps[net_setup.host.current_map_idx].name);
+	map.info.player_start_name[0]=0x0;
+	map.info.player_start_type[0]=0x0;
+	map.info.in_load=FALSE;
+
+	if (!map_rebuild_changes(err_str)) {
+		game_end();
+		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
-	
-		// force all players and multiplayer bots to respawn
 
-	obj=server.objs;
+		// respawn this object
 
-	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) game_reset_single_object(obj,TRUE);
-		obj++;
-	}
-	
-		// force all remotes to update
-		
-	obj=object_find_uid(server.player_obj_uid);
-	net_host_player_send_message_others(obj->remote.uid,net_action_request_game_reset,net_player_uid_host,NULL,0);
+	player_obj=object_find_uid(server.player_obj_uid);
+	object_spawn_reset(player_obj);
+
+		// signal remotes to reset
+
+	strcpy(reset.map_name,map.info.name);
+	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_game_reset,net_player_uid_host,(unsigned char*)&reset,sizeof(network_request_game_reset));
 }
 
 

@@ -58,6 +58,7 @@ extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_s
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
+extern bool map_rebuild_changes(char *err_str);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 extern void group_moves_synch_with_host(network_reply_group_synch *synch);
 extern void score_limit_close(void);
@@ -269,9 +270,28 @@ void remote_predict_move(obj_type *obj)
       
 ======================================================= */
 
-void remote_game_reset(void)
+void remote_game_reset(network_request_game_reset *reset)
 {
-	game_reset();
+	char				err_str[256];
+	obj_type			*player_obj;
+
+		// switch map
+
+	strcpy(map.info.name,reset->map_name);
+	map.info.player_start_name[0]=0x0;
+	map.info.player_start_type[0]=0x0;
+	map.info.in_load=FALSE;
+
+	if (!map_rebuild_changes(err_str)) {
+		game_end();
+		error_open(err_str,"Network Game Canceled");
+		return;
+	}
+
+		// respawn the player
+
+	player_obj=object_find_uid(server.player_obj_uid);
+	object_spawn_reset(player_obj);
 }
 
 void remote_host_exit(void)
@@ -793,7 +813,7 @@ bool remote_network_get_updates(void)
 		switch (action) {
 		
 			case net_action_request_game_reset:
-				remote_game_reset();
+				remote_game_reset((network_request_game_reset*)msg);
 				break;
 				
 			case net_action_request_team:

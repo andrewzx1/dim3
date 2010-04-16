@@ -39,6 +39,8 @@ extern int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,ch
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 
+extern void object_spawn_reset(obj_type *obj);
+
 extern void object_script_spawn_start(void);
 extern void object_script_spawn_finish(void);
 extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
