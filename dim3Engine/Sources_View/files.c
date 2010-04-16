@@ -261,7 +261,7 @@ void file_open(bool is_save)
 	
 		// setup gui
 		
-	gui_initialize(NULL,NULL,TRUE);
+	gui_initialize(NULL,NULL);
 	
 		// remember type
 		

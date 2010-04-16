@@ -126,7 +126,7 @@ void story_get_page_count(void)
 
 void story_open(void)
 {
-	gui_initialize(NULL,NULL,TRUE);
+	gui_initialize(NULL,NULL);
 	story_setup_control();
 	
 	server.state=gs_story;

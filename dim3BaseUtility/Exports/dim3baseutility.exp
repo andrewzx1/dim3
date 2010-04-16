@@ -114,6 +114,7 @@ _file_paths_read_directory_data_dir
 _file_paths_read_directory_document
 _file_paths_close_directory
 _file_paths_count_children
+_file_paths_get_complete_path_from_index
 
 _file_paths_project_hash
 

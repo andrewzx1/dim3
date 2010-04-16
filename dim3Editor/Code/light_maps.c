@@ -164,17 +164,10 @@ int light_map_textures_create(void)
 	return(idx);
 }
 
-void light_map_textures_save(char *base_path)
+void light_map_texture_map_folder_name(char *map_name)
 {
-	int						n,txt_idx;
-	char					*c,map_name[256],bitmap_name[256],path[1024];
+	char			*c;
 	
-		// delete any old textures
-		
-	map_delete_texture(&map,(max_map_texture-max_light_map_textures),max_map_texture);
-	
-		// get better name
-		
 	strcpy(map_name,map.info.name);
 	
 	while (TRUE) {
@@ -182,6 +175,21 @@ void light_map_textures_save(char *base_path)
 		if (c==NULL) break;
 		*c='_';
 	}
+
+}
+
+void light_map_textures_save(char *base_path)
+{
+	int				n,txt_idx;
+	char			map_name[256],bitmap_name[256],path[1024];
+	
+		// delete any old textures
+		
+	map_delete_texture(&map,(max_map_texture-max_light_map_textures),max_map_texture);
+	
+		// get better name
+		
+	light_map_texture_map_folder_name(map_name);
 	
 		// write textures
 		
@@ -194,7 +202,7 @@ void light_map_textures_save(char *base_path)
 		
 			// save bitmap
 		
-		sprintf(bitmap_name,"LightMaps/lm_%s_%d",map_name,n);
+		sprintf(bitmap_name,"LightMaps/%s/lm%.3d",map_name,n);
 		sprintf(path,"%s/%s.png",base_path,bitmap_name);
 		bitmap_write_png_data(light_map_textures[n].pixel_data,map.settings.light_map.size,map.settings.light_map.size,FALSE,path);
 		
@@ -1670,15 +1678,21 @@ void light_map_set_texture_uv(int lm_poly_idx)
 bool light_maps_create_process(char *err_str)
 {
 	int				n;
-	char			base_path[1024],dir_path[1024];
+	char			base_path[1024],dir_path[1024],
+					map_name[256];
 	
 		// base path
 		
 	file_paths_data_default(&file_path_setup,base_path,"Bitmaps/Textures",NULL,NULL);
 	
-		// create folder if it doesn't exist
+		// create folders if they don't exist
 		
 	sprintf(dir_path,"%s/LightMaps",base_path);
+	mkdir(dir_path,S_IRWXU|S_IRWXG|S_IRWXO);
+	
+	light_map_texture_map_folder_name(map_name);
+	
+	sprintf(dir_path,"%s/LightMaps/%s",base_path,map_name);
 	mkdir(dir_path,S_IRWXU|S_IRWXG|S_IRWXO);
 		
 		// clear the textures and

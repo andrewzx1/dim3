@@ -29,7 +29,7 @@ and can be sold or given away.
 // gui
 //
 
-extern void gui_initialize(char *background_path,char *bitmap_name,bool show_view);
+extern void gui_initialize(char *background_path,char *bitmap_name);
 extern void gui_shutdown(void);
 extern void gui_set_frame(chooser_frame_type *frame);
 extern void gui_draw_background(float alpha);

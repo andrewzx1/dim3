@@ -295,6 +295,7 @@ extern file_path_directory_type* file_paths_read_directory_document(file_path_se
 extern void file_paths_close_directory(file_path_directory_type *fpd);
 
 extern int file_paths_count_children(file_path_directory_type *fpd,int index);
+extern void file_paths_get_complete_path_from_index(file_path_directory_type *fpd,int idx,char *file_name);
 
 extern int file_paths_project_hash(char *path);
 
