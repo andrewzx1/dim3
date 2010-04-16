@@ -1105,6 +1105,35 @@ void spot_add_multiplayer_bots(void)
 
 /* =======================================================
 
+      Game Reset (Map Change) Spawning
+      
+======================================================= */
+
+void object_spawn_reset(obj_type *obj)
+{
+	int				idx;
+	char			err_str[256];
+	spot_type		*spot;
+
+	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
+	obj->spawning=TRUE;
+	
+	obj->input_freeze=FALSE;
+	obj->death_trigger=FALSE;
+	
+	object_stop(obj);
+	
+	idx=object_find_network_spawn_spot(obj,err_str);
+	if (idx!=-1) {
+		spot=&map.spots[idx];
+		object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
+	}
+
+	object_spawn(obj);
+}
+
+/* =======================================================
+
       Script Object Spawn/Remove
 
 	  Spawning can make changes in the obj list, throwing

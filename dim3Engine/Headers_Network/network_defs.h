@@ -132,9 +132,9 @@ typedef struct		{
 //
 
 typedef struct		{
+						int								current_map_idx;
 						char							name[name_str_len],
-														ip_name[256],ip_resolve[64],
-														map_name[name_str_len];
+														ip_name[256],ip_resolve[64];
 					} network_setup_host_type;
 
 typedef struct		{
@@ -275,6 +275,14 @@ typedef struct		{
 typedef struct		{
 						short							remote_obj_uid,team_idx;
 					} network_request_team;
+
+//
+// game reset messages
+//
+
+typedef struct		{
+						char							map_name[name_str_len];
+					} network_request_game_reset;
 
 //
 // in game messages

@@ -126,11 +126,11 @@ void host_fill_map_table(char *game_type)
 
 /* =======================================================
 
-      Set and Get Last Host Map
+      Set and Get Map List
       
 ======================================================= */
 
-void host_set_last_map(void)
+void host_map_list_to_table(void)
 {
 	int				n,k;
 	char			*c;
@@ -173,13 +173,13 @@ void host_set_last_map(void)
 	if (host_first_map_idx==-1) host_first_map_idx=0;
 }
 
-void host_get_last_map(void)
+void host_map_table_to_list(void)
 {
-	int				n,cnt;
+	int				n,count;
 	char			*c;
 	char			str[256];
-
-	cnt=0;
+	
+	count=0;
 
 	for (n=0;n!=host_map_count;n++) {
 		if (!element_get_table_checkbox(host_table_id,n)) continue;
@@ -193,11 +193,10 @@ void host_get_last_map(void)
 			if (c!=NULL) *c=0x0;
 		}
 		
-		strcpy(setup.network.map.maps[cnt].name,str);
-		cnt++;
+		strcpy(setup.network.map.maps[count++].name,str);
 	}
 
-	setup.network.map.count=cnt;
+	setup.network.map.count=count;
 }
 
 /* =======================================================
@@ -248,7 +247,7 @@ void host_game_pane(void)
 		// fill table with maps
 
 	host_fill_map_table(hud.net_game.games[setup.network.game_type].name);
-	host_set_last_map();
+	host_map_list_to_table();
 
 	element_set_value(host_table_id,host_first_map_idx);
 	element_make_selection_visible(host_table_id);
@@ -461,7 +460,6 @@ void host_close(bool stop_music)
 void host_game_setup(void)
 {
 	int				n,k;
-	char			*c;
 	
 		// game type
 		
@@ -479,19 +477,12 @@ void host_game_setup(void)
 			}
 		}
 	}
-	
-		// use graphic name to get to original map name
-		
-	net_setup.host.map_name[0]=0x0;
-				
-	c=host_file_list+(host_first_map_idx*128);
-	
-	c=strchr(c,';');
-	if (c!=NULL) {
-		strcpy(net_setup.host.map_name,(c+1));
-		c=strchr(net_setup.host.map_name,';');
-		if (c!=NULL) *c=0x0;
-	}
+
+		// game maps
+
+	host_map_table_to_list();
+
+	net_setup.host.current_map_idx=0;
 }
 
 void host_game(void)
@@ -505,10 +496,10 @@ void host_game(void)
 		return;
 	}
 
-		// setup game from host
+		// setup map
 		
 	map.info.name[0]=0x0;
-	strcpy(map.info.host_name,net_setup.host.map_name);
+	strcpy(map.info.host_name,setup.network.map.maps[net_setup.host.current_map_idx].name);
 	
 		// start game
 	
@@ -607,7 +598,7 @@ void host_handle_click(int id)
 			if (idx!=setup.network.game_type) {
 				setup.network.game_type=idx;
 				host_fill_map_table(hud.net_game.games[idx].name);
-				host_set_last_map();
+				host_map_list_to_table();
 				element_set_value(host_table_id,host_first_map_idx);
 				element_make_selection_visible(host_table_id);
 				element_enable(host_button_host_id,(host_first_map_idx!=0));
@@ -615,7 +606,7 @@ void host_handle_click(int id)
 			break;
 
 		case host_table_id:
-			host_get_last_map();
+			host_map_table_to_list();
 			element_enable(host_button_host_id,(setup.network.map.count!=0));
 			break;
 

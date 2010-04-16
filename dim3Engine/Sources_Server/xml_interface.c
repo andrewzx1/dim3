@@ -913,7 +913,7 @@ void read_settings_interface(void)
 		hud.progress.ty=xml_get_attribute_int(progress_tag,"top_y");
 		hud.progress.by=xml_get_attribute_int(progress_tag,"bottom_y");
 		hud.progress.text_size=xml_get_attribute_int(progress_tag,"text_size");
-		hud.progress.outline=xml_get_attribute_boolean(proj_tag,"outline");
+		hud.progress.outline=xml_get_attribute_boolean(progress_tag,"outline");
 		xml_get_attribute_color(progress_tag,"base_color_start",&hud.progress.base_color_start);
 		xml_get_attribute_color(progress_tag,"base_color_end",&hud.progress.base_color_end);
 		xml_get_attribute_color(progress_tag,"hilite_color_start",&hud.progress.hilite_color_start);

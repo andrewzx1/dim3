@@ -49,9 +49,6 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							score_limit_start_tick;
-bool						score_limit_start_trigger;
-
 extern void game_reset(void);
 extern void remote_host_exit(void);
 
@@ -179,7 +176,7 @@ void score_limit_check_scores(void)
 
 void score_limit_run(void)
 {
-		// only run score limits
+		// only time out score limits
 		// during network games on the host
 
 	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) return;
@@ -190,7 +187,7 @@ void score_limit_run(void)
 		
 		// cancel by either timeout or menu key
 
-	if ((game_time_get_raw()>(score_limit_start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
+	if ((game_time_get_raw()>(net_setup.score_limit.start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
 		score_limit_end();
 		game_reset();
 	}
