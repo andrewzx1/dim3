@@ -63,7 +63,7 @@ void error_open(char *err_str,char *err_str_2)
 	
 		// setup gui
 		
-	gui_initialize(NULL,NULL,TRUE);
+	gui_initialize(NULL,NULL);
 	
 		// the dialog
 		

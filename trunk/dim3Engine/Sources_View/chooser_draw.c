@@ -122,7 +122,7 @@ void chooser_open(void)
 	
 		// setup gui
 		
-	gui_initialize(NULL,NULL,TRUE);
+	gui_initialize(NULL,NULL);
 	gui_set_frame(&frame);
 		
 		// text

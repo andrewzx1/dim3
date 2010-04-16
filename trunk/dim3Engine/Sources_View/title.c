@@ -45,7 +45,7 @@ extern js_type				js;
 
 int							title_fade_tick,title_fade_mode,title_event_id;
 char						title_dir[name_str_len],title_name[name_str_len],title_sound_name[name_str_len];
-bool						title_start_trigger,title_show_view;
+bool						title_start_trigger;
 
 extern void intro_open(void);
 
@@ -61,7 +61,7 @@ void title_open(void)
 
 		// titles
 		
-	gui_initialize(title_dir,title_name,title_show_view);
+	gui_initialize(title_dir,title_name);
 	
 		// sound
 
@@ -80,12 +80,11 @@ void title_open(void)
 	server.state=gs_title;
 }
 
-void title_set_open(char *dir,char *name,char *sound_name,bool show_view)
+void title_set_open(char *dir,char *name,char *sound_name)
 {
 	strcpy(title_dir,dir);
 	strcpy(title_name,name);
 	strcpy(title_sound_name,sound_name);
-	title_show_view=show_view;
 	title_event_id=-1;
 	
 	title_open();
@@ -128,7 +127,6 @@ void title_trigger_set(char *dir,char *name,char *sound_name,int event_id)
 	strcpy(title_dir,dir);
 	strcpy(title_name,name);
 	strcpy(title_sound_name,sound_name);
-	title_show_view=FALSE;
 	title_event_id=event_id;
 	
 	title_start_trigger=TRUE;

@@ -28,8 +28,10 @@ and can be sold or given away.
 #include "dialog.h"
 
 #define kFileOpenList				FOUR_CHAR_CODE('list')
-#define kFileOpenListNameColumn		FOUR_CHAR_CODE('pnme')
+#define kFileOpenListNameColumn		FOUR_CHAR_CODE('name')
+#define kFileOpenButton				FOUR_CHAR_CODE('open')
 
+int								fp_file_index;
 char							fp_file_name[256];
 bool							fp_cancel;
 file_path_directory_type		*fpd;
@@ -71,45 +73,44 @@ static pascal OSStatus file_open_event_proc(EventHandlerCallRef handler,EventRef
 	return(eventNotHandledErr);
 }
 
-void file_open_enable_open_button(bool enable)
-{
-	ControlRef						ctrl;
-	ControlID						ctrl_id;
-
-	ctrl_id.signature=FOUR_CHAR_CODE('d3ET');
-	ctrl_id.id=1;
-	GetControlByID(dialog_file_open_wind,&ctrl_id,&ctrl);
-	
-	if (enable) {
-		EnableControl(ctrl);
-	}
-	else {
-		DisableControl(ctrl);
-	}
-}
-
 /* =======================================================
 
       File List Event Handlers
       
 ======================================================= */
 
+int file_open_list_build_items_for_parent(int parent_idx,DataBrowserItemID *items)
+{
+	int					n,count;
+	
+	count=0;
+	
+	for (n=0;n!=fpd->nfile;n++) {
+		if (fpd->files[n].parent_idx==parent_idx) {
+			items[count++]=n+1;
+		}
+	}
+
+	return(count);
+}
+
 static pascal OSStatus file_open_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
 {
 	int				idx;
-	char			dir_name[file_str_len],str[256];
 	CFStringRef		cfstr;
 	
 	switch (property) {
 
 		case kFileOpenListNameColumn:
 			idx=itemID-1;
-			sprintf(str,"%s",fpd->files[idx].file_name);
-			str[255]=0x0;
-			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,fpd->files[idx].file_name,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
+			return(noErr);
+			
+		case kDataBrowserItemIsContainerProperty:
+			idx=itemID-1;
+			SetDataBrowserItemDataBooleanValue(itemData,fpd->files[idx].is_dir);
 			return(noErr);
 						
 	}
@@ -119,27 +120,41 @@ static pascal OSStatus file_open_list_item_proc(ControlRef ctrl,DataBrowserItemI
 
 static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
 {
-	int			idx;
-	UInt32		count;
+	int					idx;
+	bool				enable;
+	UInt32				count;
+	DataBrowserItemID	items[file_paths_max_directory_file];
 	
 	switch (message) {
 	
 		case kDataBrowserItemDoubleClicked:
-			idx=itemID-1;
-			strncpy(fp_file_name,fpd->files[idx].file_name,file_str_len);
-			fp_file_name[file_str_len-1]=0x0;
-			QuitAppModalLoopForWindow(dialog_file_open_wind);
+			fp_file_index=itemID-1;
+			if (!fpd->files[fp_file_index].is_dir) QuitAppModalLoopForWindow(dialog_file_open_wind);
 			break;
 
 		case kDataBrowserItemSelected:
+			fp_file_index=itemID-1;
+			break;
+			
+		case kDataBrowserItemDeselected:
+			if (fp_file_index==(itemID-1)) fp_file_index=-1;
+			break;
+			
+		case kDataBrowserContainerOpened:
 			idx=itemID-1;
-			strncpy(fp_file_name,fpd->files[idx].file_name,file_str_len);
-			fp_file_name[file_str_len-1]=0x0;
+			count=file_open_list_build_items_for_parent(idx,items);
+			AddDataBrowserItems(ctrl,itemID,count,items,kDataBrowserItemNoProperty);
 			break;
 	}
+	
+		// enable open button
+		
+	enable=FALSE;
+	if (fp_file_index!=-1) {
+		enable=!fpd->files[fp_file_index].is_dir;
+	}
 
-	GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,FALSE,kDataBrowserItemIsSelected,&count);
-	file_open_enable_open_button(count!=0);
+	dialog_enable(dialog_file_open_wind,kFileOpenButton,0,enable);
 }
 
 /* =======================================================
@@ -150,11 +165,13 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
 
 bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
+	int								n,idx,count;
 	CFStringRef						cfstr;
 	ControlRef						ctrl;
 	ControlID						ctrl_id;
 	DataBrowserCallbacks			dbcall;
 	EventHandlerUPP					event_upp;
+	DataBrowserItemID				items[file_paths_max_directory_file];
 	DataBrowserItemDataUPP			list_item_upp;
 	DataBrowserItemNotificationUPP	list_notify_upp;
 	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -167,19 +184,6 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	SetWindowTitleWithCFString(dialog_file_open_wind,cfstr);
 	CFRelease(cfstr);
 	
-		// disable open
-		
-	file_open_enable_open_button(false);
-		
-		// show window
-	
-	ShowWindow(dialog_file_open_wind);
-	
-		// install event handler
-		
-	event_upp=NewEventHandlerUPP(file_open_event_proc);
-	InstallWindowEventHandler(dialog_file_open_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
-	
 		// scan for files
 		
 	if (extension!=NULL) {
@@ -191,7 +195,7 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	
 		// setup the list
 		
-	ctrl_id.signature=FOUR_CHAR_CODE('d3ET');
+	ctrl_id.signature=kFileOpenList;
 	ctrl_id.id=0;
 	GetControlByID(dialog_file_open_wind,&ctrl_id,&ctrl);
 	
@@ -206,14 +210,40 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	
 	SetDataBrowserCallbacks(ctrl,&dbcall);
 	
-	AddDataBrowserItems(ctrl,kDataBrowserNoItem,fpd->nfile,NULL,kDataBrowserItemNoProperty);
-	Draw1Control(ctrl);
+	SetDataBrowserListViewDisclosureColumn(ctrl,kFileOpenListNameColumn,FALSE);
+
+	count=file_open_list_build_items_for_parent(-1,items);
+	AddDataBrowserItems(ctrl,kDataBrowserNoItem,count,items,kDataBrowserItemNoProperty);
+	
+		// always start with top level items open
+		
+	for (n=0;n!=count;n++) {
+		OpenDataBrowserContainer(ctrl,items[n]);
+	}
+	
+		// disable open
+		
+	dialog_enable(dialog_file_open_wind,kFileOpenButton,0,FALSE);
+		
+		// show window
+	
+	ShowWindow(dialog_file_open_wind);
+	
+		// install event handler
+		
+	event_upp=NewEventHandlerUPP(file_open_event_proc);
+	InstallWindowEventHandler(dialog_file_open_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window
 		
 	fp_cancel=FALSE;
 	
 	RunAppModalLoopForWindow(dialog_file_open_wind);
+	
+		// get file index so deselect
+		// doesn't clear it
+		
+	idx=fp_file_index;
 	
 		// close window
 		
@@ -229,9 +259,11 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 		
 	if (fp_cancel) return(FALSE);
 	
-		// copy file
+		// get selected file
 		
-	strcpy(file_name,fp_file_name);
+	file_paths_get_complete_path_from_index(fpd,idx,file_name);
+	fprintf(stdout,"file=%s\n",file_name);
+
 	return(TRUE);
 }
 

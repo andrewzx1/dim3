@@ -427,7 +427,7 @@ void host_open(void)
 
 		// setup gui
 		
-	gui_initialize(NULL,NULL,TRUE);
+	gui_initialize(NULL,NULL);
 
 		// start with first tab
 		

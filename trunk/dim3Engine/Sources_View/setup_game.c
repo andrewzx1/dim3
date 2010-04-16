@@ -528,7 +528,7 @@ void setup_game_open(bool in_game)
 	
 		// setup gui
 		
-	gui_initialize(NULL,NULL,TRUE);
+	gui_initialize(NULL,NULL);
 	
 		// waiting for an action flag
 		

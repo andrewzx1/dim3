@@ -70,7 +70,7 @@ void gui_background_load(char *background_path,char *bitmap_name)
       
 ======================================================= */
 
-void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
+void gui_initialize(char *background_path,char *bitmap_name)
 {
 	int			x,y;
 	
@@ -90,8 +90,7 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 		// load up the proper background bitmap
 		
 	gui_background_image_idx=-1;
-	
-	if (!show_view) gui_background_load(background_path,bitmap_name);
+	if (bitmap_name!=NULL) gui_background_load(background_path,bitmap_name);
 	
 	gui_frame.on=FALSE;
 	

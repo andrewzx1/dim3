@@ -345,8 +345,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>33</integer>
-									<integer>30</integer>
+									<integer>26</integer>
+									<integer>24</integer>
 									<integer>8</integer>
 									<integer>0</integer>
 								</array>
@@ -452,9 +452,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26B1D803116D3B630055CAC5</string>
+				<string>26CACFC3117819F1005735BC</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26B1D804116D3B630055CAC5</string>
+				<string>26CACFC4117819F1005735BC</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -575,7 +575,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>292371299.65051198</real>
+	<real>293083655.38429803</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -673,7 +673,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>26A5EAC70D404C5F00BB47DE</string>
-				<string>26B1D800116D3B590055CAC5</string>
+				<string>26CACFB5117818DA005735BC</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -818,7 +818,7 @@
 										<key>Frame</key>
 										<string>{{0, 0}, {781, 0}}</string>
 										<key>RubberWindowFrame</key>
-										<string>843 114 781 470 0 0 1680 1028 </string>
+										<string>602 123 781 470 0 0 1680 1028 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXNavigatorGroup</string>
@@ -844,7 +844,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {781, 424}}</string>
 								<key>RubberWindowFrame</key>
-								<string>843 114 781 470 0 0 1680 1028 </string>
+								<string>602 123 781 470 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXProjectFindModule</string>
@@ -867,13 +867,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26A7D39E116A7FAF00FE94E5</string>
-				<string>26A7D39F116A7FAF00FE94E5</string>
+				<string>26CACF6911780BCA005735BC</string>
+				<string>26CACF6A11780BCA005735BC</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
 			<key>WindowString</key>
-			<string>843 114 781 470 0 0 1680 1028 </string>
+			<string>602 123 781 470 0 0 1680 1028 </string>
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>

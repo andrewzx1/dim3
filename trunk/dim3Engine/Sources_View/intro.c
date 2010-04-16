@@ -54,7 +54,7 @@ extern bool map_start(bool skip_media,char *err_str);
 extern void file_open(bool is_save);
 extern void setup_game_open(bool in_game);
 extern void setup_network_open(void);
-extern void title_set_open(char *dir,char *name,char *sound_name,bool show_view);
+extern void title_set_open(char *dir,char *name,char *sound_name);
 extern void join_open(bool local);
 extern void host_open(void);
 
@@ -117,7 +117,7 @@ void intro_open(void)
 
 		// intro UI
 		
-	gui_initialize("Bitmaps/Backgrounds","main",FALSE);
+	gui_initialize("Bitmaps/Backgrounds","main");
 
 	intro_open_add_button(&hud.intro.button_game_new,"button_game_new",intro_button_game_new_id);
 	intro_open_add_button(&hud.intro.button_game_load,"button_game_load",intro_button_game_load_id);
@@ -295,7 +295,7 @@ void intro_click(void)
 			
 		case intro_button_credit_id:
 			intro_close(FALSE,FALSE);
-			title_set_open("Bitmaps/Backgrounds","credit","",FALSE);
+			title_set_open("Bitmaps/Backgrounds","credit","");
 			break;
 
 		case intro_button_quit_id:

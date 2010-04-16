@@ -572,7 +572,7 @@ void join_open(bool local)
 	
 		// setup gui
 		
-	gui_initialize(NULL,NULL,TRUE);
+	gui_initialize(NULL,NULL);
 	
 		// start with first tab
 		
