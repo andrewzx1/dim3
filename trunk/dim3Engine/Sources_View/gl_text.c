@@ -173,6 +173,92 @@ void gl_text_create_bitmap(dim3_font_type *d3_font,char *name,char *alt_name)
 
 #endif
 
+#ifdef D3_OS_LINUX
+
+// code from cyst
+
+void gl_text_create_bitmap(dim3_font_type *d3_font,char *name,char *alt_name)
+{
+	int				n, x, y, font_x, font_y, txt_x, txt_y, error;
+	unsigned char 	*data, *ptr;
+	FcPattern 		*pat, *match;
+	FcResult 		fc_result;
+	char 			*font_filename;
+	FT_Library 		font_library;
+	FT_Face 		face;
+	FT_Bitmap		bitmap;
+	unsigned char	ch;
+	
+	data = malloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
+	if (data==NULL) return;
+
+	// find the font
+	pat = FcPatternCreate();
+	FcPatternAddString(pat, FC_FAMILY, name);
+	FcConfigSubstitute(NULL, pat, FcMatchPattern);
+	FcDefaultSubstitute(pat);
+	match = FcFontMatch(NULL, pat, &fc_result);
+	FcPatternGetString(match, FC_FILE, 0, (FcChar8 **)&font_filename);
+
+	FT_Init_FreeType(&font_library);
+	error = FT_New_Face(font_library,font_filename,0,&face);
+	if (error) {
+		return;
+	}
+
+	error = FT_Set_Char_Size(face,0,font_bitmap_point<<6,0,0);
+	
+	FcPatternDestroy(match);
+	FcPatternDestroy(pat);
+	
+	for (n=0;n!=90;n++) {
+		ch=(unsigned char)(n+'!');
+		x=(n%font_bitmap_char_per_line)*font_bitmap_char_wid;
+		y=((n/font_bitmap_char_per_line)*font_bitmap_char_high)+font_bitmap_char_baseline;
+
+		// get the bitmap
+		FT_Select_Charmap(face, ft_encoding_unicode);
+		FT_UInt glyph_index = FT_Get_Char_Index(face,ch);
+
+		error = FT_Load_Glyph(face,glyph_index,FT_LOAD_NO_HINTING);
+		if (error){
+			continue;
+		}
+		
+		error = FT_Render_Glyph(face->glyph,FT_RENDER_MODE_LIGHT);
+		if (error){
+			continue;
+		}
+		bitmap = face->glyph->bitmap;
+		
+		// draw the bitmap
+		for(font_y=0;font_y<bitmap.rows;font_y++){
+			for(font_x=0;font_x<bitmap.width;font_x++){
+				txt_x = x + font_x + face->glyph->bitmap_left;
+				txt_y = y + font_y - face->glyph->bitmap_top-1;
+				
+				//bail if we are outside of the texture bounds
+				if (
+					(txt_x<0) || (txt_x>font_bitmap_pixel_sz)
+					|| (txt_y<0) || (txt_y>font_bitmap_pixel_sz)
+					) continue;
+				
+				//set the pointer to the (x,y) position in the texture
+				ptr = data + ((txt_y * font_bitmap_pixel_sz + txt_x) << 2);
+				*ptr++=0xFF;
+				*ptr++=0xFF;
+				*ptr++=0xFF;
+				*ptr++=(bitmap.buffer[font_y * bitmap.pitch + font_x]);
+				d3_font->char_size[n]=(float)(1+(face->glyph->advance.x>>6))/(float)font_bitmap_char_wid;
+			}
+		}
+	}
+	bitmap_data(&d3_font->bitmap,data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	free(data);
+}
+
+#endif
+
 #ifdef D3_OS_WINDOWS
 
 void gl_text_create_bitmap(dim3_font_type *d3_font,char *name,char *alt_name)

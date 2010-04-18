@@ -125,11 +125,6 @@ void loop_game_run(void)
 		if (server.state!=gs_running) return;
 	}
 
-		// score limits and game changes
-
-	score_limit_check_scores();
-	score_limit_run();
-
 		// draw the view
 
 	if (net_setup.mode==net_mode_host_dedicated) {
@@ -229,6 +224,10 @@ bool loop_main(char *err_str)
 		// clear map changes
 	
 	map_clear_changes();
+	
+		// check for score limits
+		
+	score_limit_check_scores();
 		
 		// run proper game state
 		
@@ -290,6 +289,10 @@ bool loop_main(char *err_str)
 
 		case gs_console:
 			console_run();
+			break;
+			
+		case gs_score_limit:
+			score_limit_run();
 			break;
 			
 	}

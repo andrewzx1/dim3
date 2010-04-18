@@ -49,6 +49,8 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
+int							score_limit_start_tick;
+
 extern void game_reset(void);
 extern void remote_host_exit(void);
 
@@ -60,17 +62,17 @@ extern void remote_host_exit(void);
 
 void score_limit_start(void)
 {
-	net_setup.score_limit.on=TRUE;
-	net_setup.score_limit.start_tick=game_time_get_raw();
+	server.state=gs_score_limit;
+	score_limit_start_tick=game_time_get_raw();
 
 	game_time_pause_start();
 }
 
 void score_limit_end(void)
 {
-	net_setup.score_limit.on=FALSE;
-
 	game_time_pause_end();
+	
+	server.state=gs_running;
 }
 
 /* =======================================================
@@ -106,7 +108,7 @@ void score_limit_check_scores(void)
 
 		// is limit already on?
 
-	if (net_setup.score_limit.on) return;
+	if (server.state==gs_score_limit) return;
 
 		// get score limit
 		
@@ -176,18 +178,14 @@ void score_limit_check_scores(void)
 
 void score_limit_run(void)
 {
-		// only time out score limits
-		// during network games on the host
+	gl_frame_clear(FALSE);
+	view_draw_next_vertex_object_2D_color_quad(&hud.color.dialog_background,1.0f,0,hud.scale_x,0,hud.scale_y);
+	network_score_draw();
+	gl_frame_swap();
 
-	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) return;
-
-		// is limit not on?
-
-	if (!net_setup.score_limit.on) return;
-		
 		// cancel by either timeout or menu key
 
-	if ((game_time_get_raw()>(net_setup.score_limit.start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
+	if ((game_time_get_raw()>(score_limit_start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
 		score_limit_end();
 		game_reset();
 	}

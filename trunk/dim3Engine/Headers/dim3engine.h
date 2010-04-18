@@ -38,7 +38,7 @@ and can be sold or given away.
 
 #ifdef D3_OS_LINUX
 	#include <SDL/SDL.h>
-	#include <PNG/png.h>
+	#include "png.h"
 #endif
 
 #ifdef D3_OS_WINDOWS

@@ -1643,9 +1643,15 @@ bool map_auto_generate_test(map_type *map)
 
 		// setup auto generation values
 
-#ifndef D3_OS_WINDOWS
+#ifdef D3_OS_MAC
 	ags.seed=TickCount();
-#else
+#endif
+
+#ifdef D3_OS_LINUX
+	ags.seed=clock();
+#endif
+
+#ifdef D3_OS_WINDOWS
 	ags.seed=GetTickCount();
 #endif
 

@@ -61,7 +61,6 @@ extern void map_end(void);
 extern bool map_rebuild_changes(char *err_str);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 extern void group_moves_synch_with_host(network_reply_group_synch *synch);
-extern void score_limit_close(void);
 
 /* =======================================================
 

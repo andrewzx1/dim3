@@ -52,6 +52,10 @@ and can be sold or given away.
 
 #include <pthread.h>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include <fontconfig/fontconfig.h>
+
 #include <GL/glew.h>
 
 #include <zlib.h>
