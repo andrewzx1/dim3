@@ -262,7 +262,6 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 		// get selected file
 		
 	file_paths_get_complete_path_from_index(fpd,idx,file_name);
-	fprintf(stdout,"file=%s\n",file_name);
 
 	return(TRUE);
 }

@@ -44,6 +44,7 @@ and can be sold or given away.
 #define gs_error								12
 #define gs_map_pick								13
 #define gs_console								14
+#define gs_score_limit							15
 
 //
 // maximums

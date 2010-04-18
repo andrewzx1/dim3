@@ -138,6 +138,8 @@ void gui_shutdown(void)
 void gui_draw_background(float alpha)
 {
 	bitmap_type		*bitmap;
+	
+	gl_2D_view_interface();
 
 		// background color
 
@@ -147,8 +149,6 @@ void gui_draw_background(float alpha)
 	}
 
 		// background image
-
-	gl_2D_view_interface();
 
 	bitmap=view_images_get_bitmap(gui_background_image_idx);
 

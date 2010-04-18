@@ -127,36 +127,24 @@ void game_end(void)
       
 ======================================================= */
 
-void game_reset_single_object(obj_type *obj,bool reposition)
-{
-	int				idx;
-	char			err_str[256];
-	spot_type		*spot;
-
-	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
-	obj->spawning=TRUE;
-	
-	obj->input_freeze=FALSE;
-	obj->death_trigger=FALSE;
-	
-	object_stop(obj);
-	
-	if (reposition) {
-		idx=object_find_network_spawn_spot(obj,err_str);
-		if (idx!=-1) {
-			spot=&map.spots[idx];
-			object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
-		}
-	}
-	
-	object_spawn(obj);
-}
-
 void game_reset(void)
 {
-	obj_type					*player_obj;
+	int							n;
 	char						err_str[256];
+	obj_type					*obj,*player_obj;
 	network_request_game_reset	reset;
+	
+		// clear all current scores
+		
+	obj=server.objs;
+
+	for (n=0;n!=server.count.obj;n++) {
+		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
+			obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
+		}
+
+		obj++;
+	}
 
 		// switch to next map
 

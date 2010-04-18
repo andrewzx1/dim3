@@ -74,7 +74,7 @@ bool file_paths_setup(file_path_setup_type *file_path_setup)
 	memset(executable_path,0,PATH_MAX);
 	readlink(proc_pid_exe,executable_path,(PATH_MAX-1));
 
-    *split = strrchr(executable_path, '/');
+	split = strrchr(executable_path, '/');
     ssize_t base_length = split - executable_path;
     
     strncpy(file_path_setup->path_base,executable_path, base_length);
@@ -283,7 +283,9 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 #endif
 
 #ifdef D3_OS_LINUX
-	strcpy(path,file_path_setup->path_base);
+	strcpy(path,getenv("HOME"));
+	strcat(path,"/.dim3");
+	file_paths_create_directory(path);
 #endif
 
 #ifdef D3_OS_WINDOWS
@@ -346,7 +348,9 @@ void file_paths_preferences(char *path,char *file_name,char *ext_name)
 #endif
 
 #ifdef D3_OS_LINUX
-	strcpy(path,file_path_setup->path_base);
+	strcpy(path,getenv("HOME"));
+	strcat(path,"/.dim3");
+	file_paths_create_directory(path);
 #endif
 
 #ifdef D3_OS_WINDOWS
