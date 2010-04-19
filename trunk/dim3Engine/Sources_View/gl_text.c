@@ -31,6 +31,12 @@ and can be sold or given away.
 
 #include "video.h"
 
+#ifdef D3_OS_LINUX
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ #include <fontconfig/fontconfig.h>
+#endif
+
 extern hud_type				hud;
 extern setup_type			setup;
 

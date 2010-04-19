@@ -47,8 +47,6 @@ int							title_fade_tick,title_fade_mode,title_event_id;
 char						title_dir[name_str_len],title_name[name_str_len],title_sound_name[name_str_len];
 bool						title_start_trigger;
 
-extern void intro_open(void);
-
 /* =======================================================
 
       Title Operations
@@ -95,7 +93,7 @@ void title_close(void)
 	gui_shutdown();
 
 	if (!server.map_open) {			// if no map opened, then return to intro
-		intro_open();
+		server.next_state=gs_intro;
 		return;
 	}
 

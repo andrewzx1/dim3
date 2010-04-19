@@ -56,8 +56,6 @@ and can be sold or given away.
 #define setup_network_ok_button				100
 #define setup_network_cancel_button			101
 
-extern void intro_open(void);
-
 extern render_info_type		render_info;
 extern server_type			server;
 extern hud_type				hud;
@@ -297,7 +295,7 @@ void setup_network_cancel_close(void)
 
 	gui_shutdown();
 	
-	intro_open();
+	server.next_state=gs_intro;
 }
 
 void setup_network_save_close(void)
@@ -309,7 +307,7 @@ void setup_network_save_close(void)
 		// return to intro
 	
 	gui_shutdown();
-	intro_open();
+	server.next_state=gs_intro;
 }
 
 /* =======================================================

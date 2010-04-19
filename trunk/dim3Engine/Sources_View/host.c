@@ -57,7 +57,6 @@ and can be sold or given away.
 
 #define host_game_option_base			100
 
-extern void intro_open(void);
 extern bool net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
@@ -640,7 +639,7 @@ void host_handle_click(int id)
 		case host_button_cancel_id:
 			setup_xml_write();
 			host_close(FALSE);
-			intro_open();
+			server.next_state=gs_intro;
 			break;
 	}
 }

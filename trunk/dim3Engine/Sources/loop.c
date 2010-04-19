@@ -114,7 +114,11 @@ void loop_game_run(void)
 		remote_network_send_group_synch();
 		remote_network_send_latency_ping();
 	}
-
+	
+		// check for score limits
+		
+	score_limit_check_scores();
+	
 		// view input
 
 		// it's possible we could exit here, so
@@ -140,7 +144,7 @@ void loop_game_run(void)
 	if (interface_quit_trigger_check()) {
 		map_end();
 		game_end();
-		intro_open();
+		server.next_state=gs_intro;
 		return;
 	}
 	
@@ -194,14 +198,222 @@ void loop_app_active(void)
 
 /* =======================================================
 
+      State Loops
+      
+======================================================= */
+
+void loop_state_run(void)
+{
+	switch (server.state) {
+	
+		case gs_running:
+			loop_game_run();
+			return;
+
+		case gs_intro:
+			intro_run();
+			return;
+			
+		case gs_join:
+			join_run();
+			return;
+
+		case gs_host:
+			host_run();
+			return;
+			
+		case gs_chooser:
+			chooser_run();
+			return;
+			
+		case gs_setup_game:
+			setup_game_run();
+			return;
+			
+		case gs_setup_network:
+			setup_network_run();
+			return;
+			
+		case gs_file:
+			file_run();
+			return;
+			
+		case gs_story:
+			story_run();
+			return;
+			
+		case gs_title:
+			title_run();
+			return;
+			
+		case gs_movie:
+			movie_run();
+			return;
+			
+		case gs_error:
+			error_run();
+			return;
+			
+		case gs_map_pick:
+			map_pick_run();
+			return;
+
+		case gs_console:
+			console_run();
+			return;
+			
+		case gs_score_limit:
+			score_limit_run();
+			return;
+			
+	}
+}
+
+void loop_state_last_close(void)
+{
+	view_clear_fps();
+	
+	// supergumba -- get the rest of these working!
+	switch (server.state) {
+	/*
+		case gs_running:
+			loop_game_run();
+			return;
+*/
+		case gs_intro:
+			intro_close();
+			return;
+/*			
+		case gs_join:
+			join_run();
+			return;
+
+		case gs_host:
+			host_run();
+			return;
+			
+		case gs_chooser:
+			chooser_run();
+			return;
+			
+		case gs_setup_game:
+			setup_game_run();
+			return;
+			
+		case gs_setup_network:
+			setup_network_run();
+			return;
+			
+		case gs_file:
+			file_run();
+			return;
+			
+		case gs_story:
+			story_run();
+			return;
+			
+		case gs_title:
+			title_run();
+			return;
+			
+		case gs_movie:
+			movie_run();
+			return;
+			
+		case gs_error:
+			error_run();
+			return;
+			
+		case gs_map_pick:
+			map_pick_run();
+			return;
+*/
+		case gs_console:
+			console_close();
+			return;
+/*			
+		case gs_score_limit:
+			score_limit_run();
+			return;
+*/
+	}
+}
+
+void loop_state_next_open(void)
+{
+	switch (server.state) {
+/*	
+		case gs_running:
+			loop_game_run();
+			return;
+*/
+		case gs_intro:
+			intro_open();
+			return;
+	/*		
+		case gs_join:
+			join_run();
+			return;
+
+		case gs_host:
+			host_run();
+			return;
+			
+		case gs_chooser:
+			chooser_run();
+			return;
+			
+		case gs_setup_game:
+			setup_game_run();
+			return;
+			
+		case gs_setup_network:
+			setup_network_run();
+			return;
+			
+		case gs_file:
+			file_run();
+			return;
+			
+		case gs_story:
+			story_run();
+			return;
+			
+		case gs_title:
+			title_run();
+			return;
+			
+		case gs_movie:
+			movie_run();
+			return;
+			
+		case gs_error:
+			error_run();
+			return;
+			
+		case gs_map_pick:
+			map_pick_run();
+			return;
+*/
+		case gs_console:
+			console_open();
+			break;
+/*			
+		case gs_score_limit:
+			score_limit_run();
+			return;
+*/			
+	}
+}
+
+/* =======================================================
+
       Main App Loop Run
       
 ======================================================= */
 
 bool loop_main(char *err_str)
 {
-	int				old_state;
-
 		// check for app activation changes
 
 	loop_app_active();
@@ -224,82 +436,25 @@ bool loop_main(char *err_str)
 		// clear map changes
 	
 	map_clear_changes();
-	
-		// check for score limits
-		
-	score_limit_check_scores();
 		
 		// run proper game state
 		
-	old_state=server.state;
-		
-	switch (server.state) {
+	server.next_state=server.state;
 	
-		case gs_running:
-			loop_game_run();
-			break;
-
-		case gs_intro:
-			intro_run();
-			break;
-			
-		case gs_join:
-			join_run();
-			break;
-
-		case gs_host:
-			host_run();
-			break;
-			
-		case gs_chooser:
-			chooser_run();
-			break;
-			
-		case gs_setup_game:
-			setup_game_run();
-			break;
-			
-		case gs_setup_network:
-			setup_network_run();
-			break;
-			
-		case gs_file:
-			file_run();
-			break;
-			
-		case gs_story:
-			story_run();
-			break;
-			
-		case gs_title:
-			title_run();
-			break;
-			
-		case gs_movie:
-			movie_run();
-			break;
-			
-		case gs_error:
-			error_run();
-			break;
-			
-		case gs_map_pick:
-			map_pick_run();
-			break;
-
-		case gs_console:
-			console_run();
-			break;
-			
-		case gs_score_limit:
-			score_limit_run();
-			break;
-			
+	loop_state_run();
+	
+		// switching states
+		
+	if (server.state!=server.next_state) {
+		loop_state_last_close();
+		
+		server.state=server.next_state;
+		loop_state_next_open();
 	}
 	
-		// map changes (never change map if in fatal error)
+		// map changes
 		
-	if (server.state!=gs_error) {
+	if (server.state==gs_running) {
 		if (map_need_rebuild()) {
 			if (!map_rebuild_changes(err_str)) return(FALSE);			// bad map changes is a fatal error
 		}
@@ -315,10 +470,6 @@ bool loop_main(char *err_str)
 	file_trigger_check();
 	map_pick_trigger_check();
 	console_trigger_check();
-		
-		// reset fps counter on state change
-		
-	if (server.state!=old_state) view_clear_fps();
 	
 	return(TRUE);
 }

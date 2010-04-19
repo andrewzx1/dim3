@@ -43,8 +43,6 @@ extern setup_type			setup;
 extern hud_type				hud;
 extern js_type				js;
 
-extern void intro_open(void);
-
 /* =======================================================
 
       Error Operations
@@ -100,7 +98,7 @@ void error_open(char *err_str,char *err_str_2)
 void error_close(void)
 {
 	gui_shutdown();
-	intro_open();
+	server.next_state=gs_intro;
 }
 
 /* =======================================================

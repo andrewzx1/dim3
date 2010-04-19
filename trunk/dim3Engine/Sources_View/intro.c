@@ -144,8 +144,6 @@ void intro_open(void)
 	
 	intro_esc_down=FALSE;
 	
-	server.state=gs_intro;
-	
 		// intro music
 		
 	if ((hud.intro_music[0]!=0x0) && (setup.music_on)) {
@@ -179,8 +177,6 @@ void intro_close(bool in_game,bool stop_music)
 		// shutdown UI
 		
 	gui_shutdown();
-	
-	server.state=gs_running;
 }
 
 /* =======================================================
@@ -194,6 +190,10 @@ void intro_click_game(int skill)
 	char			err_str[256];
 
 	intro_close(TRUE,TRUE);
+	
+		// goto running state
+		
+	server.next_state=gs_running;
 
 		// not in networking
 
