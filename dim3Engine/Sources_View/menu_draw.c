@@ -49,7 +49,6 @@ extern network_setup_type	net_setup;
 extern int menu_find(char *name);
 extern void map_end(void);
 extern void game_end(void);
-extern void intro_open(void);
 extern void debug_game(void);
 extern void map_restart_ambient(void);
 
@@ -151,7 +150,7 @@ bool menu_select(void)
 		else {
 			map_end();
 			game_end();
-			intro_open();
+			server.next_state=gs_intro;
 		}
 
 		return(TRUE);

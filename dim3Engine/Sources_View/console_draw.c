@@ -74,8 +74,8 @@ void console_open(void)
 	input_clear_all_last_raw_key();
 	
 	console_input_str[0]=0x0;
-
-	server.state=gs_console;
+// supergumba
+//	server.state=gs_console;
 }
 
 void console_close(void)
@@ -85,8 +85,8 @@ void console_close(void)
 	input_clear();
 	map_restart_ambient();
 	game_time_pause_end();
-	
-	server.state=gs_running;
+// supergumba	
+//	server.state=gs_running;
 }
 
 /* =======================================================
@@ -97,19 +97,22 @@ void console_close(void)
 
 void console_trigger_clear(void)
 {
-	console_start_trigger=FALSE;
+//	console_start_trigger=FALSE;
 }
 
 void console_trigger_check(void)
 {
-	if (console_start_trigger) console_open();
+//	if (console_start_trigger) console_open();
 }	
 
 void console_trigger_set(void)
 {
 	if (server.state!=gs_running) return;
+	server.next_state=gs_console;
+	
+	fprintf(stdout,"HERE!\n");
 
-	console_start_trigger=TRUE;
+//	console_start_trigger=TRUE;
 }
 
 /* =======================================================

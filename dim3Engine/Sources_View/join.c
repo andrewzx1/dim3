@@ -50,7 +50,6 @@ and can be sold or given away.
 
 #define join_news_id					6
 
-extern void intro_open(void);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 
@@ -767,7 +766,7 @@ void join_click(void)
 			
 		case join_button_cancel_id:
 			join_close(FALSE);
-			intro_open();
+			server.next_state=gs_intro;
 			break;
 			
 		case join_button_rescan_id:

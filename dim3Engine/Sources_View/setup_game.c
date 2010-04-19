@@ -85,7 +85,6 @@ and can be sold or given away.
 extern int view_search_screen_size_list(int wid,int high);
 extern bool view_reset_display(char *err_str);
 extern int setup_find_action_in_setup(int action_idx);
-extern void intro_open(void);
 extern bool setup_xml_reset(void);
 
 extern char					control_names_str[][32];
@@ -563,7 +562,7 @@ void setup_game_cancel_close(void)
 		return;
 	}
 	
-	intro_open();
+	server.next_state=gs_intro;
 }
 
 void setup_game_save_close(void)
@@ -613,7 +612,7 @@ void setup_game_save_close(void)
 		return;
 	}
 	
-	intro_open();
+	server.next_state=gs_intro;
 }
 
 void setup_game_default(void)

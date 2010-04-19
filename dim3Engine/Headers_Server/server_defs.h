@@ -1152,7 +1152,8 @@ typedef struct		{
 //
  
  typedef struct		{
-						int						state,skill,player_obj_uid;
+						int						state,next_state,
+												skill,player_obj_uid;
 						bool					game_open,map_open,map_change,skip_media;
 						server_time_type		time;
 						server_uid_type			uid;
