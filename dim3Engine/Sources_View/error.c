@@ -39,6 +39,7 @@ and can be sold or given away.
 #define error_close_id				0
 
 extern server_type			server;
+extern view_type			view;
 extern setup_type			setup;
 extern hud_type				hud;
 extern js_type				js;
@@ -49,16 +50,19 @@ extern js_type				js;
       
 ======================================================= */
 
-void error_open(char *err_str,char *err_str_2)
+void error_goto(char *err_str,char *err_str_2)
+{
+	strcpy(view.error.str,err_str);
+	strcpy(view.error.str_2,err_str_2);
+	
+	server.next_state=gs_error;
+}
+
+void error_open(void)
 {
 	int					x,y,wid,high,control_y_add;
 	char				tab_list[][name_str_len]={"Error"};
 
-		// make sure error isn't interrupted by
-		// pending console open
-		
-	console_trigger_clear();
-	
 		// setup gui
 		
 	gui_initialize(NULL,NULL);
@@ -76,10 +80,10 @@ void error_open(char *err_str,char *err_str_2)
 	element_text_add("[Error]",-1,x,y,hud.font.text_size_large,tx_center,FALSE,TRUE);
 
 	y+=control_y_add;
-	element_text_add(err_str,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
+	element_text_add(view.error.str,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
 	
 	y+=control_y_add;
-	element_text_add(err_str_2,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
+	element_text_add(view.error.str_2,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
 	
 		// buttons
 		
@@ -89,16 +93,11 @@ void error_open(char *err_str,char *err_str_2)
 	element_get_button_bottom_right(&x,&y,wid,high);
 	
 	element_button_text_add("Close",error_close_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-
-		// running error
-		
-	server.state=gs_error;
 }
 
 void error_close(void)
 {
 	gui_shutdown();
-	server.next_state=gs_intro;
 }
 
 /* =======================================================
@@ -118,7 +117,9 @@ void error_run(void)
 	
 	hud_click();
 	
-	if (id==error_close_id) error_close();
+		// always exit to intro
+		
+	if (id==error_close_id) server.next_state=gs_intro;
 }
 
 

@@ -161,6 +161,6 @@ void console_add_error(char *txt)
 	col.r=1;
 	console_add_line(txt,&col);
 
-	if (setup.debug_console) console_trigger_set();
+	if (setup.debug_console) console_goto();
 }
 

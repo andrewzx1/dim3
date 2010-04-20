@@ -203,7 +203,8 @@ extern void score_limit_end(void);
 extern void score_limit_check_scores(void);
 extern void score_limit_run(void);
 
-extern void error_open(char *err_str,char *err_str_2);
+extern void error_goto(char *err_str,char *err_str_2);
+extern void error_open(void);
 extern void error_run(void);
 
 extern void map_pick_trigger_clear(void);

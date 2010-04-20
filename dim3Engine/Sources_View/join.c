@@ -657,7 +657,7 @@ void join_game(void)
 	if (!net_ip_to_address(join_list[idx].ip,&net_setup.client.host_ip_addr,err_str)) {
 		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
-		error_open(err_str,"Network Game Canceled");
+		error_goto(err_str,"Network Game Canceled");
 		return;
 	}
 							
@@ -667,7 +667,7 @@ void join_game(void)
 	if (player_uid==-1) {
 		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
-		error_open(err_str,"Network Game Canceled");
+		error_goto(err_str,"Network Game Canceled");
 		return;
 	}
 	
@@ -678,7 +678,7 @@ void join_game(void)
 		net_client_send_leave_host();
 		net_client_join_host_end();
 		sprintf(err_str,"Could not find game type: %s",game_name);
-		error_open(err_str,"Network Game Canceled");
+		error_goto(err_str,"Network Game Canceled");
 		return;
 	}
 	
@@ -694,7 +694,7 @@ void join_game(void)
 	if (!game_start(skill_medium,&remotes,err_str)) {
 		net_client_send_leave_host();
 		net_client_join_host_end();
-		error_open(err_str,"Network Game Canceled");
+		error_goto(err_str,"Network Game Canceled");
 		return;
 	}
 	
@@ -703,7 +703,7 @@ void join_game(void)
 	if (!map_start(TRUE,err_str)) {
 		net_client_send_leave_host();
 		net_client_join_host_end();
-		error_open(err_str,"Network Game Canceled");
+		error_goto(err_str,"Network Game Canceled");
 		return;
 	}
 	
@@ -716,7 +716,7 @@ void join_game(void)
 	if (!net_client_start_message_queue(err_str)) {
 		net_client_send_leave_host();
 		net_client_join_host_end();
-		error_open(err_str,"Network Game Canceled");
+		error_goto(err_str,"Network Game Canceled");
 		return;
 	}
 
