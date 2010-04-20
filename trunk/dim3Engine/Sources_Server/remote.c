@@ -283,7 +283,7 @@ void remote_game_reset(network_request_game_reset *reset)
 
 	if (!map_rebuild_changes(err_str)) {
 		game_end();
-		error_open(err_str,"Network Game Canceled");
+		error_goto(err_str,"Network Game Canceled");
 		return;
 	}
 
@@ -302,7 +302,7 @@ void remote_host_exit(void)
 
 		// set error page
 
-	error_open("The network server has been shutdown or stopped responding","Network Game Canceled");
+	error_goto("The network server has been shutdown or stopped responding","Network Game Canceled");
 }
 
 /* =======================================================

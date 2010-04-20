@@ -323,7 +323,7 @@ typedef struct		{
 					} view_obscure_type;
 
 //
-// menus and debug
+// UI states
 //
 
 typedef struct		{
@@ -332,6 +332,10 @@ typedef struct		{
 						bool								fade_in,fade_out,active,
 															mouse_down;
 					} view_menu_type;
+
+typedef struct		{
+						char								str[256],str_2[256];
+					} view_error_type;
 
 typedef struct		{
 						bool								on;
@@ -351,6 +355,7 @@ typedef struct		{
 						rain_draw_type						*rain_draws;
 						view_obscure_type					obscure;
 						view_menu_type						menu;
+						view_error_type						error;
 						view_debug_type						debug;
 					} view_type;
 

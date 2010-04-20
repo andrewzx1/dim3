@@ -427,7 +427,7 @@ void file_click(void)
 			if (server.map_open) map_end();
 			if (server.game_open) game_end();
 
-			error_open(err_str,"Game Load Canceled");
+			error_goto(err_str,"Game Load Canceled");
 			break;
 			
 		case file_button_delete_id:

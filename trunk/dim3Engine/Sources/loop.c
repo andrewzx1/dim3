@@ -319,11 +319,11 @@ void loop_state_last_close(void)
 		case gs_movie:
 			movie_run();
 			return;
-			
+		*/
 		case gs_error:
-			error_run();
+			error_close();
 			return;
-			
+		/*	
 		case gs_map_pick:
 			map_pick_run();
 			return;
@@ -386,11 +386,11 @@ void loop_state_next_open(void)
 		case gs_movie:
 			movie_run();
 			return;
-			
+	*/
 		case gs_error:
-			error_run();
+			error_open();
 			return;
-			
+	/*		
 		case gs_map_pick:
 			map_pick_run();
 			return;
@@ -431,7 +431,6 @@ bool loop_main(char *err_str)
 	setup_game_trigger_clear();
 	file_trigger_clear();
 	map_pick_trigger_clear();
-	console_trigger_clear();
 	
 		// clear map changes
 	
@@ -469,7 +468,6 @@ bool loop_main(char *err_str)
 	setup_game_trigger_check();
 	file_trigger_check();
 	map_pick_trigger_check();
-	console_trigger_check();
 	
 	return(TRUE);
 }

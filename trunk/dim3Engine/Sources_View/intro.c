@@ -166,13 +166,11 @@ void intro_open(void)
 	}
 }
 
-void intro_close(bool in_game,bool stop_music)
+void intro_close(void)
 {
 		// stop music
 		
-	if (stop_music) {
-		if (al_music_playing()) al_music_stop();
-	}
+	if (al_music_playing()) al_music_stop();
 	
 		// shutdown UI
 		
@@ -188,8 +186,6 @@ void intro_close(bool in_game,bool stop_music)
 void intro_click_game(int skill)
 {
 	char			err_str[256];
-
-	intro_close(TRUE,TRUE);
 	
 		// goto running state
 		
@@ -202,19 +198,19 @@ void intro_click_game(int skill)
 		// start game
 
 	if (!game_start(skill,NULL,err_str)) {
-		error_open(err_str,"Game Start Canceled");
+		error_goto(err_str,"Game Start Canceled");
 		return;
 	}
 
 	if (!map_start(FALSE,err_str)) {
-		error_open(err_str,"Game Start Canceled");
+		error_goto(err_str,"Game Start Canceled");
 		return;
 	}
 }
 
 void intro_click_load(void)
 {
-	intro_close(TRUE,FALSE);
+	server.next_state=gs_file;
 
 	net_setup.mode=net_mode_none;
 
@@ -251,7 +247,6 @@ void intro_click(void)
 			break;
 
 		case intro_button_game_setup_id:
-			intro_close(FALSE,FALSE);
 			setup_game_open(FALSE);
 			break;
 
@@ -277,29 +272,24 @@ void intro_click(void)
 			// multiplayer buttons
 
 		case intro_button_multiplayer_host_id:
-			intro_close(TRUE,FALSE);
 			host_open();
 			break;
 
 		case intro_button_multiplayer_join_id:
-			intro_close(TRUE,FALSE);
 			join_open(TRUE);
 			break;
 			
 		case intro_button_multiplayer_setup_id:
-			intro_close(FALSE,FALSE);
 			setup_network_open();
 			break;
 
 			// credit and quit
 			
 		case intro_button_credit_id:
-			intro_close(FALSE,FALSE);
 			title_set_open("Bitmaps/Backgrounds","credit","");
 			break;
 
 		case intro_button_quit_id:
-			intro_close(FALSE,FALSE);
 			game_loop_quit=TRUE;
 			break;
 	}
@@ -333,7 +323,7 @@ void intro_key(void)
 	
 		// or entire game
 		
-	intro_close(FALSE,FALSE);
+	intro_close();
 	game_loop_quit=TRUE;
 }
 
