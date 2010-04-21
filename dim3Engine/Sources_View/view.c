@@ -478,7 +478,7 @@ void view_loop_input(void)
 
 void view_loop_draw(void)
 {
-	int			raw_tick,tick;
+	int			raw_tick,tick,y_add;
 
 		// time for view draw?
 		// use raw ticks so it works through pauses
@@ -498,7 +498,14 @@ void view_loop_draw(void)
 		// start frame
 		
 	gl_frame_clear(TRUE);
-
+	
+		// squish for open console
+		
+	if (view.console.on) {
+		y_add=(int)(((float)setup.screen.y_sz)*console_screen_percent);
+		glViewport(render_info.view_x,(render_info.view_y+y_add),setup.screen.x_sz,(setup.screen.y_sz-y_add));
+	}
+	
 		// draw view
 
 	view_draw();
@@ -509,6 +516,14 @@ void view_loop_draw(void)
 	radar_draw();
 	network_draw();
 	menu_draw();
+	
+		// restore if console open
+		// and draw console
+		
+	if (view.console.on) {
+		glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
+		console_draw();
+	}
 
 		// swap frame buffers
 	

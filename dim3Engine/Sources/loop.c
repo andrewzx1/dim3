@@ -258,10 +258,6 @@ void loop_state_run(void)
 			map_pick_run();
 			return;
 
-		case gs_console:
-			console_run();
-			return;
-			
 		case gs_score_limit:
 			score_limit_run();
 			return;
@@ -327,11 +323,7 @@ void loop_state_last_close(void)
 		case gs_map_pick:
 			map_pick_run();
 			return;
-*/
-		case gs_console:
-			console_close();
-			return;
-/*			
+
 		case gs_score_limit:
 			score_limit_run();
 			return;
@@ -394,11 +386,7 @@ void loop_state_next_open(void)
 		case gs_map_pick:
 			map_pick_run();
 			return;
-*/
-		case gs_console:
-			console_open();
-			break;
-/*			
+
 		case gs_score_limit:
 			score_limit_run();
 			return;
