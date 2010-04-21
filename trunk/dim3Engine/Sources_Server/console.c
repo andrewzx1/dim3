@@ -36,6 +36,7 @@ console_line_type				console_line[max_console_line];
 
 extern setup_type				setup;
 extern server_type				server;
+extern view_type				view;
 
 /* =======================================================
 
@@ -161,6 +162,9 @@ void console_add_error(char *txt)
 	col.r=1;
 	console_add_line(txt,&col);
 
-	if (setup.debug_console) console_goto();
+		// if in debug mode, all errors
+		// pop open the console
+		
+	if (setup.debug_console) view.console.on=TRUE;
 }
 

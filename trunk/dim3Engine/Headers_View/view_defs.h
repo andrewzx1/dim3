@@ -112,6 +112,12 @@ and can be sold or given away.
 #define shader_var_type_vec4								3
 
 //
+// console size
+//
+
+#define console_screen_percent								0.4f
+
+//
 // image structures
 //
 
@@ -334,6 +340,10 @@ typedef struct		{
 					} view_menu_type;
 
 typedef struct		{
+						bool								on;
+					} view_console_type;
+
+typedef struct		{
 						char								str[256],str_2[256];
 					} view_error_type;
 
@@ -355,6 +365,7 @@ typedef struct		{
 						rain_draw_type						*rain_draws;
 						view_obscure_type					obscure;
 						view_menu_type						menu;
+						view_console_type					console;
 						view_error_type						error;
 						view_debug_type						debug;
 					} view_type;

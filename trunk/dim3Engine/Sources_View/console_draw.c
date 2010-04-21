@@ -61,11 +61,6 @@ char							console_input_str[max_console_txt_sz];
       
 ======================================================= */
 
-void console_goto(void)
-{
-	server.next_state=gs_console;
-}
-
 void console_open(void)
 {
 		// pause game and
@@ -98,7 +93,7 @@ void console_close(void)
 	
 void console_input(void)
 {
-	if (input_action_get_state_single(nc_console)) console_goto();
+	if (input_action_get_state_single(nc_console)) view.console.on=!view.console.on;
 }
 
 /* =======================================================
@@ -178,7 +173,7 @@ void console_draw(void)
 {
 		// start frame
 
-	gl_frame_clear(FALSE);
+//	gl_frame_clear(FALSE);
 	gl_2D_view_interface();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
@@ -194,7 +189,7 @@ void console_draw(void)
 
 		// end frame
 
-	gl_frame_swap();
+//	gl_frame_swap();
 }
 
 /* =======================================================

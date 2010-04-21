@@ -36,7 +36,6 @@ extern void console_add_error(char *txt);
 extern void console_input(void);
 extern void console_draw(void);
 
-extern void console_goto(void);
 extern void console_input(void);
 extern void console_run(void);
 
