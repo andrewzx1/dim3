@@ -247,7 +247,7 @@ typedef struct		{
 // console
 //
 
-#define max_console_line						29
+#define max_console_line						19
 #define max_console_txt_sz						128
 
 typedef struct		{

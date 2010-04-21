@@ -37,5 +37,4 @@ extern void console_input(void);
 extern void console_draw(void);
 
 extern void console_input(void);
-extern void console_run(void);
 
