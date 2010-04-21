@@ -63,6 +63,8 @@ extern void map_end(void);
 extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
 extern void menu_draw_start(void);
+extern void intro_close(void);
+extern void error_close(void);
 
 /* =======================================================
 

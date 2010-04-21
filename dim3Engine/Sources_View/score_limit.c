@@ -53,6 +53,7 @@ int							score_limit_start_tick;
 
 extern void game_reset(void);
 extern void remote_host_exit(void);
+extern void network_score_draw(void);
 
 /* =======================================================
 

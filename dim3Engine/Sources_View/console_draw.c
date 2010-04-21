@@ -35,6 +35,7 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 #include "sounds.h"
+#include "timing.h"
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
@@ -102,52 +103,45 @@ void console_input(void)
       
 ======================================================= */
 
-void console_draw_header(void)
+void console_draw(void)
 {
- 	int					y,lx,rx,ty,by,y_add;
-	d3col				col;
-
-	y_add=gl_text_get_char_height(hud.font.text_size_small);
-    
-		// background
-
-	lx=0;
-	rx=hud.scale_x;
-	ty=0;
-	by=y_add;
-
-	y=ty+(y_add+1);
-
-	col.r=col.g=col.b=0.75f;
-	view_draw_next_vertex_object_2D_color_quad(&col,1.0f,lx,rx,ty,by);
-	
-	gl_text_start(font_interface_index,hud.font.text_size_small);
-	col.r=col.g=col.b=0.0f;
-	
-		// text
-
-	gl_text_draw((hud.scale_x>>1),y,hud.proj_name,tx_center,FALSE,&col,1.0f);
-	gl_text_draw((hud.scale_x-5),y,dim3_version,tx_right,FALSE,&col,1.0f);
-
-	gl_text_end();
-}
-
-void console_draw_lines(void)
-{
-	int					n,y,y_add;
+	int					n,y,ty,y_add,txt_size;
 	char				str[256];
 	d3col				col;
 	console_line_type	*cline;
 
-		// setup fonts
-	
-    y_add=gl_text_get_char_height(hud.font.text_size_small);
+		// get text size
+		// need to convert to HUD scale
+
+	y=(int)(((float)setup.screen.y_sz)*(1.0f-console_screen_percent));
+	ty=(y*hud.scale_y)/setup.screen.y_sz;
+
+	txt_size=((hud.scale_y-ty)/(max_console_line+1));
+
+	y_add=gl_text_get_char_height(txt_size);
+
+		// start drawing
+
+	gl_2D_view_interface();
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_DEPTH_TEST);
+
+		// line
+
+	col.r=col.g=col.b=1.0f;
+	view_draw_next_vertex_object_2D_line(&col,1.0f,0,ty,hud.scale_x,ty);
+
+		// setup text drawing
+
+	gl_text_start(font_interface_index,txt_size);
 
 		// console lines
 
-	y=(y_add*2)+2;
-		
-	gl_text_start(font_interface_index,hud.font.text_size_small);
+	y=ty+y_add;
 	
 	cline=console_line;
 	
@@ -161,35 +155,17 @@ void console_draw_lines(void)
 		
 	strcpy(str,"]");
 	strcat(str,console_input_str);
-	if (((time_get()>>3)&0x1)==0x0) strcat(str,"_");
+	if (((game_time_get_raw()>>5)&0x1)==0x0) strcat(str,"_");
 	
 	col.r=col.g=col.b=0.8f;
 	gl_text_draw(5,y,str,tx_left,FALSE,&col,1.0f);
 
+		// version
+
+	sprintf(str,"%s %s",hud.proj_name,dim3_version);
+	gl_text_draw((hud.scale_x-5),(ty+y_add),str,tx_right,FALSE,&col,1.0f);
+
 	gl_text_end();
-}
-
-void console_draw(void)
-{
-		// start frame
-
-//	gl_frame_clear(FALSE);
-	gl_2D_view_interface();
-
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-
-		// draw header and text
-
-	console_draw_header();
-	console_draw_lines();
-
-		// end frame
-
-//	gl_frame_swap();
 }
 
 /* =======================================================
@@ -266,17 +242,4 @@ void console_key(void)
 	console_input_str[len]=ch;
 	console_input_str[len+1]=0x0;
 }
-
-/* =======================================================
-
-      Run Console
-      
-======================================================= */
-
-void console_run(void)
-{
-	console_draw();
-	console_key();
-}
-
 
