@@ -3862,19 +3862,6 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_View\map_pick.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_View\menu_draw.c"
 						>
 						<FileConfiguration

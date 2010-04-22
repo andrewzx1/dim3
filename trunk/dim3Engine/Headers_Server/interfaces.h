@@ -156,9 +156,6 @@ extern void zoom_draw(obj_type *obj,weapon_type *weap);
 // interfaces
 //
 
-extern void setup_game_trigger_clear(void);
-extern void setup_game_trigger_check(void);
-extern void setup_game_trigger_set(void);
 extern void setup_game_run(void);
 
 extern void setup_network_run(void);
@@ -173,6 +170,12 @@ extern void host_run(void);
 
 extern void intro_open(void);
 extern void intro_run(void);
+
+extern void setup_game_open(void);
+extern void setup_game_close(void);
+
+extern void setup_network_open(void);
+extern void setup_network_close(void);
 
 extern void chooser_trigger_clear(void);
 extern void chooser_trigger_check(void);
@@ -206,8 +209,3 @@ extern void score_limit_run(void);
 extern void error_goto(char *err_str,char *err_str_2);
 extern void error_open(void);
 extern void error_run(void);
-
-extern void map_pick_trigger_clear(void);
-extern void map_pick_trigger_check(void);
-extern void map_pick_trigger_set(void);
-extern void map_pick_run(void);

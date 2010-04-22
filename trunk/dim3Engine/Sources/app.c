@@ -51,7 +51,6 @@ extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_s
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
-extern void intro_open(void);
 
 /* =======================================================
 

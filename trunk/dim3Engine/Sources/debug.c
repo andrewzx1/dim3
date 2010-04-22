@@ -509,9 +509,4 @@ void debug_input(void)
 		debug_game();
 		return;
 	}
-	
-	if (input_action_get_state_single(nc_debug_map)) {
-		map_pick_trigger_set();
-		return;
-	}
 }

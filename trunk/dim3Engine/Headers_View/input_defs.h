@@ -67,7 +67,7 @@ and can be sold or given away.
 // configurable controls
 //
 
-#define ncontrol					94				// total number of controls
+#define ncontrol					93				// total number of controls
 
 #define nc_move_forward				0
 #define nc_move_backward			1
@@ -177,7 +177,6 @@ and can be sold or given away.
 #define nc_debug_status				90
 #define nc_debug_game				91
 #define nc_debug_screenshot			92
-#define nc_debug_map				93
 
 //
 // control ranges
