@@ -216,6 +216,14 @@ void loop_state_run(void)
 			intro_run();
 			return;
 			
+		case gs_setup_game:
+			setup_game_run();
+			return;
+			
+		case gs_setup_network:
+			setup_network_run();
+			return;
+			
 		case gs_join:
 			join_run();
 			return;
@@ -226,14 +234,6 @@ void loop_state_run(void)
 			
 		case gs_chooser:
 			chooser_run();
-			return;
-			
-		case gs_setup_game:
-			setup_game_run();
-			return;
-			
-		case gs_setup_network:
-			setup_network_run();
 			return;
 			
 		case gs_file:
@@ -256,10 +256,6 @@ void loop_state_run(void)
 			error_run();
 			return;
 			
-		case gs_map_pick:
-			map_pick_run();
-			return;
-
 		case gs_score_limit:
 			score_limit_run();
 			return;
@@ -281,6 +277,15 @@ void loop_state_last_close(void)
 		case gs_intro:
 			intro_close();
 			return;
+
+		case gs_setup_game:
+			setup_game_close();
+			return;
+			
+		case gs_setup_network:
+			setup_network_close();
+			return;
+			
 /*			
 		case gs_join:
 			join_run();
@@ -292,14 +297,6 @@ void loop_state_last_close(void)
 			
 		case gs_chooser:
 			chooser_run();
-			return;
-			
-		case gs_setup_game:
-			setup_game_run();
-			return;
-			
-		case gs_setup_network:
-			setup_network_run();
 			return;
 			
 		case gs_file:
@@ -322,9 +319,6 @@ void loop_state_last_close(void)
 			error_close();
 			return;
 		/*	
-		case gs_map_pick:
-			map_pick_run();
-			return;
 
 		case gs_score_limit:
 			score_limit_run();
@@ -344,6 +338,15 @@ void loop_state_next_open(void)
 		case gs_intro:
 			intro_open();
 			return;
+
+		case gs_setup_game:
+			setup_game_open();
+			return;
+			
+		case gs_setup_network:
+			setup_network_open();
+			return;
+			
 	/*		
 		case gs_join:
 			join_run();
@@ -355,14 +358,6 @@ void loop_state_next_open(void)
 			
 		case gs_chooser:
 			chooser_run();
-			return;
-			
-		case gs_setup_game:
-			setup_game_run();
-			return;
-			
-		case gs_setup_network:
-			setup_network_run();
 			return;
 			
 		case gs_file:
@@ -385,9 +380,6 @@ void loop_state_next_open(void)
 			error_open();
 			return;
 	/*		
-		case gs_map_pick:
-			map_pick_run();
-			return;
 
 		case gs_score_limit:
 			score_limit_run();
@@ -418,9 +410,7 @@ bool loop_main(char *err_str)
 	title_trigger_clear();
 	chooser_trigger_clear();
 	movie_trigger_clear();
-	setup_game_trigger_clear();
 	file_trigger_clear();
-	map_pick_trigger_clear();
 	
 		// clear map changes
 	
@@ -437,7 +427,9 @@ bool loop_main(char *err_str)
 	if (server.state!=server.next_state) {
 		loop_state_last_close();
 		
+		server.last_state=server.state;
 		server.state=server.next_state;
+
 		loop_state_next_open();
 	}
 	
@@ -455,9 +447,7 @@ bool loop_main(char *err_str)
 	title_trigger_check();
 	chooser_trigger_check();
 	movie_trigger_check();
-	setup_game_trigger_check();
 	file_trigger_check();
-	map_pick_trigger_check();
 	
 	return(TRUE);
 }

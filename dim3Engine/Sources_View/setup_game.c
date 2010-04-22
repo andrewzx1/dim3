@@ -106,7 +106,7 @@ char						setup_screen_size_list[max_screen_size][32],
 							setup_control_names[][32]=control_names,
 							setup_action_list[ncontrol+1][128];
 							
-bool						setup_game_start_trigger,setup_action_set_flag,setup_action_set_last_click,
+bool						setup_action_set_flag,setup_action_set_last_click,
 							setup_in_game;
 setup_type					setup_backup;
 
@@ -521,13 +521,16 @@ void setup_game_action_wait_for_input(void)
       
 ======================================================= */
 
-void setup_game_open(bool in_game)
+void setup_game_open(void)
 {
-	setup_in_game=in_game;
-	
 		// setup gui
 		
 	gui_initialize(NULL,NULL);
+
+		// remember if we came here
+		// from within the game
+
+	setup_in_game=(server.last_state==gs_running);
 	
 		// waiting for an action flag
 		
@@ -541,39 +544,35 @@ void setup_game_open(bool in_game)
 		// save setup
 		
 	memmove(&setup_backup,&setup,sizeof(setup_type));
-	
-		// server in setup
-		
-	server.state=gs_setup_game;
 }
 
-void setup_game_cancel_close(void)
+void setup_game_close(void)
 {
-		// restore old settings
-
-	memmove(&setup,&setup_backup,sizeof(setup_type));
-
-		// shutdown and continue
-
 	gui_shutdown();
-	
-	if (setup_in_game) {
-		server.state=gs_running;
-		return;
-	}
-	
-	server.next_state=gs_intro;
 }
 
-void setup_game_save_close(void)
+void setup_game_done(void)
+{
+		// continue game or intro
+
+	if (setup_in_game) {
+		server.next_state=gs_running;
+	}
+	else {
+		server.next_state=gs_intro;
+	}
+}
+
+void setup_game_restore(void)
+{
+	memmove(&setup,&setup_backup,sizeof(setup_type));
+}
+
+void setup_game_save(void)
 {
 	char			err_str[256];
 	bool			display_reset;
 
-		// shutdown GUI so display reset works properly
-
-	gui_shutdown();
-	
 		// fix control and sound changes
 		
 	setup_to_input();
@@ -593,6 +592,13 @@ void setup_game_save_close(void)
 		display_reset=display_reset || (setup_backup.mipmap_mode!=setup.mipmap_mode);
 	
 		if (display_reset) {
+
+				// need to shutdown GUI before we do this
+
+			gui_shutdown();
+
+				// reset
+
 			if (!view_reset_display(err_str)) {
 				game_loop_quit=TRUE;			// fatal error resetting display
 				return;
@@ -604,42 +610,12 @@ void setup_game_save_close(void)
 		// write setup
 		
 	setup_xml_write();
-
-		// continue with app
-
-	if (setup_in_game) {
-		server.state=gs_running;
-		return;
-	}
-	
-	server.next_state=gs_intro;
 }
 
 void setup_game_default(void)
 {
 	setup_xml_reset();
 	setup_game_create_pane();
-}
-
-/* =======================================================
-
-      Setup Game Triggers
-      
-======================================================= */
-
-void setup_game_trigger_clear(void)
-{
-	setup_game_start_trigger=FALSE;
-}
-
-void setup_game_trigger_check(void)
-{
-	if (setup_game_start_trigger) setup_game_open(TRUE);			// trigger only checked when game running
-}	
-
-void setup_game_trigger_set(void)
-{
-	setup_game_start_trigger=TRUE;
 }
 
 /* =======================================================
@@ -664,11 +640,13 @@ void setup_game_handle_click(int id)
 			// buttons
 			
 		case setup_game_ok_button:
-			setup_game_save_close();
+			setup_game_save();
+			setup_game_done();
 			return;
 			
 		case setup_game_cancel_button:
-			setup_game_cancel_close();
+			setup_game_restore();
+			setup_game_done();
 			return;
 
 		case setup_game_default_button:

@@ -279,35 +279,26 @@ void setup_network_open(void)
 		// save setup
 		
 	memmove(&setup_backup,&setup,sizeof(setup_type));
-	
-		// server in setup
-		
-	server.state=gs_setup_network;
 }
 
 void setup_network_cancel_close(void)
 {
-		// restore old settings
-
-	memmove(&setup,&setup_backup,sizeof(setup_type));
-
-		// shutdown and continue
-
 	gui_shutdown();
-	
+}
+
+void setup_network_done(void)
+{
 	server.next_state=gs_intro;
 }
 
-void setup_network_save_close(void)
+void setup_network_restore(void)
 {
-		// write setup
-		
-	setup_xml_write();
+	memmove(&setup,&setup_backup,sizeof(setup_type));
+}
 
-		// return to intro
-	
-	gui_shutdown();
-	server.next_state=gs_intro;
+void setup_network_save(void)
+{
+	setup_xml_write();
 }
 
 /* =======================================================
@@ -430,11 +421,13 @@ void setup_network_handle_click(int id)
 			// buttons
 			
 		case setup_network_ok_button:
-			setup_network_save_close();
+			setup_network_save();
+			setup_network_done();
 			return;
 			
 		case setup_network_cancel_button:
-			setup_network_cancel_close();
+			setup_network_restore();
+			setup_network_done();
 			return;
 			
 		case setup_network_host_add_button:

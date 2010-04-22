@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "interfaces.h"
 
+extern server_type		server;
 extern js_type			js;
 
 JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -176,7 +177,7 @@ JSValueRef js_interface_interaction_start_setup_func(JSContextRef cx,JSObjectRef
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	setup_game_trigger_set();
+	server.next_state=gs_setup_game;
 	return(script_null_to_value(cx));
 }
 

@@ -81,6 +81,7 @@ typedef int						socklen_t;
 #define bcmp(a,b,c)				memcmp(a,b,(c))
 #define usleep(x)               Sleep((DWORD)((x)/1000))
 #define strcasecmp(a,b)			_stricmp(a,b)
+#define strncasecmp(a,b,c)		_strnicmp(a,b,c)
 #define stat					_stat
 
 #define D3_NULL_SOCKET			INVALID_SOCKET

@@ -52,7 +52,6 @@ and can be sold or given away.
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 extern void file_open(bool is_save);
-extern void setup_game_open(bool in_game);
 extern void setup_network_open(void);
 extern void title_set_open(char *dir,char *name,char *sound_name);
 extern void join_open(bool local);
@@ -247,7 +246,7 @@ void intro_click(void)
 			break;
 
 		case intro_button_game_setup_id:
-			setup_game_open(FALSE);
+			server.next_state=gs_setup_game;
 			break;
 
 			// new game buttons
@@ -280,7 +279,7 @@ void intro_click(void)
 			break;
 			
 		case intro_button_multiplayer_setup_id:
-			setup_network_open();
+			server.next_state=gs_setup_network;
 			break;
 
 			// credit and quit
