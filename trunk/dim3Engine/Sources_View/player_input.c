@@ -956,9 +956,9 @@ void player_get_input(void)
 	
 	obj=object_find_uid(server.player_obj_uid);
 
-		// no input if menu is on
+		// no input if menu or console is on
 
-	if ((view.menu.active) || (view.menu.fade_in) || (view.menu.fade_out)) {
+	if ((view.menu.active) || (view.menu.fade_in) || (view.menu.fade_out) || (view.console.on)) {
 	    obj->forward_move.moving=FALSE;
 		obj->side_move.moving=FALSE;
 		obj->vert_move.moving=FALSE;

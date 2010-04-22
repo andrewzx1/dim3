@@ -40,6 +40,7 @@ and can be sold or given away.
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
 extern void map_restart_ambient(void);
+extern void debug_change_map(char *name);
 
 extern int						console_mode,console_count;
 extern bool						game_loop_quit;
@@ -53,49 +54,7 @@ extern setup_type				setup;
 extern network_setup_type		net_setup;
 extern render_info_type			render_info;
 
-bool							console_start_trigger;
 char							console_input_str[max_console_txt_sz];
-
-/* =======================================================
-
-      Console Operations
-      
-======================================================= */
-
-void console_open(void)
-{
-		// pause game and
-		// stop any sounds
-		
-	game_time_pause_start();
-	al_stop_all_looping_sources();
-	
-		// no input string
-		
-	input_clear_all_last_raw_key();
-	
-	console_input_str[0]=0x0;
-}
-
-void console_close(void)
-{
-		// restart game
-			
-	input_clear();
-	map_restart_ambient();
-	game_time_pause_end();
-}
-
-/* =======================================================
-
-      Console Input
-      
-======================================================= */
-	
-void console_input(void)
-{
-	if (input_action_get_state_single(nc_console)) view.console.on=!view.console.on;
-}
 
 /* =======================================================
 
@@ -110,13 +69,16 @@ void console_draw(void)
 	d3col				col;
 	console_line_type	*cline;
 
-		// get text size
+		// get text size so we can fit
+		// max_console_line in the console
+		
 		// need to convert to HUD scale
+		// and deal with height factor
 
 	y=(int)(((float)setup.screen.y_sz)*(1.0f-console_screen_percent));
 	ty=(y*hud.scale_y)/setup.screen.y_sz;
 
-	txt_size=((hud.scale_y-ty)/(max_console_line+1));
+	txt_size=((int)((float)(hud.scale_y-ty)/text_height_factor)/max_console_line);
 
 	y_add=gl_text_get_char_height(txt_size);
 
@@ -155,7 +117,7 @@ void console_draw(void)
 		
 	strcpy(str,"]");
 	strcat(str,console_input_str);
-	if (((game_time_get_raw()>>5)&0x1)==0x0) strcat(str,"_");
+	if (((game_time_get_raw()>>8)&0x1)==0x0) strcat(str,"_");
 	
 	col.r=col.g=col.b=0.8f;
 	gl_text_draw(5,y,str,tx_left,FALSE,&col,1.0f);
@@ -176,9 +138,20 @@ void console_draw(void)
 
 bool console_builtin_commands(void)
 {
+		// console quit
+		
 	if ((strcasecmp(console_input_str,"quit")==0) || (strcasecmp(console_input_str,"exit")==0)) {
 		game_loop_quit=TRUE;
 		return(TRUE);
+	}
+	
+		// console map
+		
+	if ((hud.debug) && (net_setup.mode==net_mode_none)) {
+		if (strncasecmp(console_input_str,"map ",4)==0) {
+			debug_change_map((char*)&console_input_str[4]);
+			return(TRUE);
+		}
 	}
 	
 	return(FALSE);
@@ -186,21 +159,26 @@ bool console_builtin_commands(void)
 
 /* =======================================================
 
-      Console Key Presses
+      Console Input
       
 ======================================================= */
-
-void console_key(void)
+	
+void console_input(void)
 {
 	int				len;
 	char			ch;
 	
-	input_event_pump();
+		// if console is off, check for on key
+		
+	if (!view.console.on) {
+		if (input_action_get_state_single(nc_console)) view.console.on=TRUE;
+		return;
+	}
 	
 		// console or menu key exits
 		
 	if ((input_action_get_state_single(nc_console)) || (input_action_get_state_single(nc_menu))) {
-		server.next_state=gs_running;
+		view.console.on=FALSE;
 		return;
 	}
 	
