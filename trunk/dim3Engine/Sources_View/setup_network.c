@@ -281,7 +281,7 @@ void setup_network_open(void)
 	memmove(&setup_backup,&setup,sizeof(setup_type));
 }
 
-void setup_network_cancel_close(void)
+void setup_network_close(void)
 {
 	gui_shutdown();
 }

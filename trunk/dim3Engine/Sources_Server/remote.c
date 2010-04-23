@@ -868,7 +868,7 @@ bool remote_network_get_updates(void)
 				break;
 				
 			case net_action_request_game_score_limit:
-				score_limit_start();
+				server.next_state=gs_score_limit;
 				break;
 				
 		}

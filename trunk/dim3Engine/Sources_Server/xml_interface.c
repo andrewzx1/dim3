@@ -36,7 +36,8 @@ extern hud_type					hud;
 extern setup_type				setup;
 extern network_setup_type		net_setup;
 
-char							just_mode_str[][32]={"left","center","right"};
+char							just_mode_str[][32]={"left","center","right"},
+								text_special_str[][32]=text_special_list_def;
 
 extern int menu_add(char *name);
 extern void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multiplayer_disable,bool quit);
@@ -408,7 +409,7 @@ void read_settings_interface_text(int text_tag)
 	text->size=hud.font.text_size_small;
 	text->color.r=text->color.g=text->color.b=1;
 	text->show=TRUE;
-	text->fps=FALSE;
+	text->special=text_special_none;
 	text->just=tx_left;
 	text->alpha=1.0f;
 
@@ -422,7 +423,7 @@ void read_settings_interface_text(int text_tag)
 		xml_get_attribute_color(tag,"color",&text->color);
 		text->just=xml_get_attribute_list(tag,"just",(char*)just_mode_str);
 		text->show=!xml_get_attribute_boolean(tag,"hide");
-		text->fps=xml_get_attribute_boolean(tag,"fps");
+		text->special=xml_get_attribute_list(tag,"special",(char*)text_special_str);
 	}
 
 	text->fade.on=FALSE;
