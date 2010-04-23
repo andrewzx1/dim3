@@ -156,26 +156,30 @@ extern void zoom_draw(obj_type *obj,weapon_type *weap);
 // interfaces
 //
 
-extern void setup_game_run(void);
-
-extern void setup_network_run(void);
-
 extern void file_trigger_clear(void);
 extern void file_trigger_check(void);
 extern void file_trigger_set(bool is_save);
 extern void file_run(void);
 
-extern void join_run(void);
-extern void host_run(void);
-
 extern void intro_open(void);
+extern void intro_close(void);
 extern void intro_run(void);
 
 extern void setup_game_open(void);
 extern void setup_game_close(void);
+extern void setup_game_run(void);
 
 extern void setup_network_open(void);
 extern void setup_network_close(void);
+extern void setup_network_run(void);
+
+extern void join_open(void);
+extern void join_close(void);
+extern void join_run(void);
+
+extern void host_open(void);
+extern void host_close(void);
+extern void host_run(void);
 
 extern void chooser_trigger_clear(void);
 extern void chooser_trigger_check(void);
@@ -201,11 +205,13 @@ extern void interface_quit_trigger_clear(void);
 extern void interface_quit_trigger_set(void);
 extern bool interface_quit_trigger_check(void);
 
-extern void score_limit_start(void);
-extern void score_limit_end(void);
-extern void score_limit_check_scores(void);
-extern void score_limit_run(void);
-
 extern void error_goto(char *err_str,char *err_str_2);
 extern void error_open(void);
+extern void error_close(void);
 extern void error_run(void);
+
+extern void score_limit_check_scores(void);
+extern void score_limit_open(void);
+extern void score_limit_close(void);
+extern void score_limit_run(void);
+

@@ -237,6 +237,18 @@ typedef struct		{
 #define max_net_option							32
 
 //
+// text specials
+//
+
+#define text_special_none						0
+#define text_special_fps						1
+#define text_special_score						2
+#define text_special_place						3
+#define text_special_spread						4
+
+#define text_special_list_def					{"none","fps","score","place","spread",""}
+
+//
 // chat
 //
 
@@ -247,7 +259,7 @@ typedef struct		{
 // console
 //
 
-#define max_console_line						19
+#define max_console_line						14
 #define max_console_txt_sz						128
 
 typedef struct		{
@@ -299,12 +311,12 @@ typedef struct		{
 						image_animation_type	animate;
 						hud_item_fade_type		fade;
 					} hud_bitmap_type;
-					
+
 typedef struct		{
-						int						x,y,size,just;
+						int						x,y,size,just,special;
 						float					alpha;
 						char					name[name_str_len],data[max_hud_text_str_sz];
-						bool					show,fps,has_return;
+						bool					show,has_return;
 						d3col					color;
 						hud_item_fade_type		fade;
 					} hud_text_type;

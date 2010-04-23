@@ -69,7 +69,6 @@
 		F51EE0AC0AEED99E0013EC4A /* script_game_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F51EE0AA0AEED99E0013EC4A /* script_game_setting.c */; };
 		F52036090C0FA1B800B779EC /* obj_grow.c in Sources */ = {isa = PBXBuildFile; fileRef = F52036080C0FA1B800B779EC /* obj_grow.c */; };
 		F52397200AFC08CC00241092 /* obj_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = F523971F0AFC08CC00241092 /* obj_liquid.c */; };
-		F52BF9350C70E55900FDB222 /* map_pick.c in Sources */ = {isa = PBXBuildFile; fileRef = F52BF9340C70E55900FDB222 /* map_pick.c */; };
 		F52C9A970ABB5B9400C63C19 /* script_weap_recoil.c in Sources */ = {isa = PBXBuildFile; fileRef = F52C9A960ABB5B9400C63C19 /* script_weap_recoil.c */; };
 		F52E82410C1632E6003D4818 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52E82400C1632E6003D4818 /* OpenGL.framework */; };
 		F534781B0C23B3A500B34D05 /* script_obj_sight.c in Sources */ = {isa = PBXBuildFile; fileRef = F534781A0C23B3A500B34D05 /* script_obj_sight.c */; };
@@ -453,7 +452,6 @@
 		F51EE0AA0AEED99E0013EC4A /* script_game_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_setting.c; path = Sources_Server/script_game_setting.c; sourceTree = "<group>"; };
 		F52036080C0FA1B800B779EC /* obj_grow.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_grow.c; path = Sources_Server/obj_grow.c; sourceTree = "<group>"; };
 		F523971F0AFC08CC00241092 /* obj_liquid.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_liquid.c; path = Sources_Server/obj_liquid.c; sourceTree = "<group>"; };
-		F52BF9340C70E55900FDB222 /* map_pick.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_pick.c; path = Sources_View/map_pick.c; sourceTree = "<group>"; };
 		F52C9A960ABB5B9400C63C19 /* script_weap_recoil.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_weap_recoil.c; path = Sources_Server/script_weap_recoil.c; sourceTree = "<group>"; };
 		F52E82400C1632E6003D4818 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F534781A0C23B3A500B34D05 /* script_obj_sight.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_obj_sight.c; path = Sources_Server/script_obj_sight.c; sourceTree = "<group>"; };
@@ -1369,7 +1367,6 @@
 				F5DD1A7B09085BC600721649 /* movie.c */,
 				26BE14270F44FA57008DB7DB /* score_limit.c */,
 				F5FD1E470CDECD9500CB5AC7 /* error.c */,
-				F52BF9340C70E55900FDB222 /* map_pick.c */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -1891,7 +1888,6 @@
 				F500CC680C27942200F7C8CC /* gl_check.c in Sources */,
 				F574FAEE0C289AB700D4A2AD /* script_obj_melee.c in Sources */,
 				F585FED80C51D9E30003750B /* script_map_fog_color.c in Sources */,
-				F52BF9350C70E55900FDB222 /* map_pick.c in Sources */,
 				F53CB6A60CD1675A00781059 /* script_interface_radar.c in Sources */,
 				F58B7C080CD2B7A700CEE31F /* network_draw.c in Sources */,
 				F5FD1E480CDECD9500CB5AC7 /* error.c in Sources */,

@@ -510,3 +510,49 @@ void debug_input(void)
 		return;
 	}
 }
+
+/* =======================================================
+
+      Debug Console Map Change
+      
+======================================================= */
+
+void debug_change_map(char *name)
+{
+	int							n;
+	char						str[256];
+	bool						map_ok;
+	file_path_directory_type	*fpd;
+
+		// verify the map
+		
+	map_ok=FALSE;
+	
+	fpd=file_paths_read_directory_data(&setup.file_path_setup,"Maps","xml");
+	
+	for (n=0;n!=fpd->nfile;n++) {
+		if (strcasecmp(fpd->files[n].file_name,name)==0) {
+			map_ok=TRUE;
+			break;
+		}
+	}
+
+	file_paths_close_directory(fpd);
+	
+		// map exists?
+		
+	if (!map_ok) {
+		sprintf(str,"map '%s' does not exist",name);
+		console_add_error(str);
+		return;
+	}
+	
+		// set map
+		
+	strncpy(map.info.name,name,name_str_len);
+	strcpy(map.info.player_start_name,"Start");
+	strcpy(map.info.player_start_type,"Player");
+	map.info.in_load=FALSE;
+	server.map_change=TRUE;
+	server.skip_media=TRUE;
+}

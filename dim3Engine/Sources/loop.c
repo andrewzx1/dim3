@@ -63,8 +63,6 @@ extern void map_end(void);
 extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
 extern void menu_draw_start(void);
-extern void intro_close(void);
-extern void error_close(void);
 
 /* =======================================================
 
@@ -255,7 +253,7 @@ void loop_state_run(void)
 		case gs_error:
 			error_run();
 			return;
-			
+
 		case gs_score_limit:
 			score_limit_run();
 			return;
@@ -269,11 +267,7 @@ void loop_state_last_close(void)
 	
 	// supergumba -- get the rest of these working!
 	switch (server.state) {
-	/*
-		case gs_running:
-			loop_game_run();
-			return;
-*/
+
 		case gs_intro:
 			intro_close();
 			return;
@@ -286,15 +280,14 @@ void loop_state_last_close(void)
 			setup_network_close();
 			return;
 			
-/*			
 		case gs_join:
-			join_run();
+			join_close();
 			return;
 
 		case gs_host:
-			host_run();
+			host_close();
 			return;
-			
+	/*
 		case gs_chooser:
 			chooser_run();
 			return;
@@ -318,23 +311,18 @@ void loop_state_last_close(void)
 		case gs_error:
 			error_close();
 			return;
-		/*	
 
 		case gs_score_limit:
-			score_limit_run();
+			score_limit_close();
 			return;
-*/
+
 	}
 }
 
 void loop_state_next_open(void)
 {
 	switch (server.state) {
-/*	
-		case gs_running:
-			loop_game_run();
-			return;
-*/
+
 		case gs_intro:
 			intro_open();
 			return;
@@ -347,15 +335,14 @@ void loop_state_next_open(void)
 			setup_network_open();
 			return;
 			
-	/*		
 		case gs_join:
-			join_run();
+			join_open();
 			return;
 
 		case gs_host:
-			host_run();
+			host_open();
 			return;
-			
+	/*
 		case gs_chooser:
 			chooser_run();
 			return;
@@ -379,12 +366,10 @@ void loop_state_next_open(void)
 		case gs_error:
 			error_open();
 			return;
-	/*		
 
 		case gs_score_limit:
-			score_limit_run();
+			score_limit_open();
 			return;
-*/			
 	}
 }
 

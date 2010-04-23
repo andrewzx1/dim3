@@ -618,7 +618,7 @@ typedef struct		{
 
 typedef struct		{
 						int						kill,death,suicide,goal,
-												score;
+												score,place;
 					} obj_score;
 
 //

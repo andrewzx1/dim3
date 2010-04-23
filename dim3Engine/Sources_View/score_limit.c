@@ -57,23 +57,20 @@ extern void network_score_draw(void);
 
 /* =======================================================
 
-      Start/End Score Limits
+      Open/Close Score Limits
       
 ======================================================= */
 
-void score_limit_start(void)
+void score_limit_open(void)
 {
-	server.state=gs_score_limit;
 	score_limit_start_tick=game_time_get_raw();
 
 	game_time_pause_start();
 }
 
-void score_limit_end(void)
+void score_limit_close(void)
 {
 	game_time_pause_end();
-	
-	server.state=gs_running;
 }
 
 /* =======================================================
@@ -82,10 +79,14 @@ void score_limit_end(void)
       
 ======================================================= */
 
-void score_limit_push_remotes(void)
+void score_limit_start(void)
 {
 	int					n;
 	obj_type			*obj;
+	
+		// goto score limit state
+		
+	server.next_state=gs_score_limit;
 	
 		// push score limit to all remotes
 
@@ -135,7 +136,6 @@ void score_limit_check_scores(void)
 				red_score+=obj->score.score;
 				if (red_score>=limit) {
 					score_limit_start();
-					score_limit_push_remotes();
 					return;
 				}
 			}
@@ -143,7 +143,6 @@ void score_limit_check_scores(void)
 				blue_score+=obj->score.score;
 				if (blue_score>=limit) {
 					score_limit_start();
-					score_limit_push_remotes();
 					return;
 				}
 			}
@@ -162,7 +161,6 @@ void score_limit_check_scores(void)
 		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
 			if (obj->score.score>=limit) {
 				score_limit_start();
-				score_limit_push_remotes();
 				return;
 			}
 		}
@@ -187,7 +185,7 @@ void score_limit_run(void)
 		// cancel by either timeout or menu key
 
 	if ((game_time_get_raw()>(score_limit_start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
-		score_limit_end();
+		server.next_state=gs_running;
 		game_reset();
 	}
 }

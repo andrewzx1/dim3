@@ -434,18 +434,10 @@ void host_open(void)
 	host_first_map_idx=-1;
 
 	host_create_pane();
-
-		// in host thread
-	
-	server.state=gs_host;
 }
 
-void host_close(bool stop_music)
+void host_close(void)
 {
-	if (stop_music) {
-		if (al_music_playing()) al_music_stop();
-	}
-
 	if (host_file_list!=NULL) free(host_file_list);
 	gui_shutdown();
 }
@@ -543,7 +535,7 @@ void host_game(void)
 
 		// game is running
 	
-	server.state=gs_running;
+	server.next_state=gs_running;
 }
 
 /* =======================================================
@@ -632,13 +624,11 @@ void host_handle_click(int id)
 		case host_button_host_id:
 			setup_xml_write();
 			host_game_setup();
-			host_close(TRUE);
 			host_game();
 			break;
 			
 		case host_button_cancel_id:
 			setup_xml_write();
-			host_close(FALSE);
 			server.next_state=gs_intro;
 			break;
 	}

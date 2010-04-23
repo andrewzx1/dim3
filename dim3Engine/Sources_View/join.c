@@ -556,7 +556,7 @@ void join_add_to_host_list(setup_network_hosts_type *hosts)
       
 ======================================================= */
 
-void join_open(bool local)
+void join_open(void)
 {
 		// get the project hash and news
 
@@ -581,18 +581,10 @@ void join_open(bool local)
 		// create panes
 		
 	join_create_pane();
-
-		// in join thread
-		
-	server.state=gs_join;
 }
 
-void join_close(bool stop_music)
+void join_close(void)
 {
-	if (stop_music) {
-		if (al_music_playing()) al_music_stop();
-	}
-
 	join_ping_thread_end();
 	gui_shutdown();
 }
@@ -655,7 +647,6 @@ void join_game(void)
 	idx=element_get_value(join_table_id);
 
 	if (!net_ip_to_address(join_list[idx].ip,&net_setup.client.host_ip_addr,err_str)) {
-		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_goto(err_str,"Network Game Canceled");
 		return;
@@ -665,7 +656,6 @@ void join_game(void)
 
 	player_uid=net_client_join_host_start(setup.network.name,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes);
 	if (player_uid==-1) {
-		join_close(TRUE);
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_goto(err_str,"Network Game Canceled");
 		return;
@@ -688,8 +678,6 @@ void join_game(void)
 	net_setup.option_flags=option_flags;
 	
 		// start game
-	
-	join_close(TRUE);
 	
 	if (!game_start(skill_medium,&remotes,err_str)) {
 		net_client_send_leave_host();
@@ -730,7 +718,7 @@ void join_game(void)
 	
 		// game is running
 	
-	server.state=gs_running;
+	server.next_state=gs_running;
 }
 
 /* =======================================================
@@ -765,7 +753,6 @@ void join_click(void)
 			break;
 			
 		case join_button_cancel_id:
-			join_close(FALSE);
 			server.next_state=gs_intro;
 			break;
 			

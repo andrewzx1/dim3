@@ -313,7 +313,7 @@ void hud_bitmaps_draw(void)
 
 /* =======================================================
 
-      Draw HUD Text
+      HUD Text Specials
       
 ======================================================= */
 
@@ -331,6 +331,67 @@ void hud_texts_fps(char *data)
 		}
 	}
 }
+
+void hud_texts_score(char *data)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(server.player_obj_uid);
+	sprintf(data,"%d",obj->score.score);
+}
+
+void hud_texts_place(char *data)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(server.player_obj_uid);
+	sprintf(data,"%d",obj->score.place);
+}
+
+void hud_texts_spread(char *data)
+{
+	int				n,spread,find_place;
+	bool			hit;
+	obj_type		*obj,*chk_obj;
+	
+	obj=object_find_uid(server.player_obj_uid);
+	
+		// if in first place, compare with second place
+		// else compare with first place
+		
+	if (obj->score.place==1) {
+		find_place=2;
+	}
+	else {
+		find_place=1;
+	}
+	
+	hit=FALSE;
+
+	for (n=0;n!=server.count.obj;n++) {
+	
+		chk_obj=&server.objs[n];
+		if ((chk_obj->type_idx!=object_type_player) && (chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot_multiplayer)) continue;
+
+		if (chk_obj->score.place==find_place) {
+			hit=TRUE;
+			break;
+		}
+	}
+	
+		// create the spread
+		
+	spread=0;
+	if (hit) spread=obj->score.score-chk_obj->score.score;
+	
+	sprintf(data,"%d",spread);
+}
+
+/* =======================================================
+
+      Draw HUD Text
+      
+======================================================= */
 
 void hud_texts_draw_return(int x,int y,int ysz,char *data,int just,d3col *col,float alpha)
 {
@@ -384,10 +445,30 @@ void hud_texts_draw(void)
 				continue;
 			}
 
+				// any special replacements
+
+			switch (text->special) {
+			
+				case text_special_fps:
+					hud_texts_fps(text->data);
+					break;
+					
+				case text_special_score:
+					hud_texts_score(text->data);
+					break;
+					
+				case text_special_place:
+					hud_texts_place(text->data);
+					break;
+					
+				case text_special_spread:
+					hud_texts_spread(text->data);
+					break;
+
+			}
+
 				// draw text
-
-			if (text->fps) hud_texts_fps(text->data);
-
+				
 			if (text->has_return) {
 				hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
 			}
