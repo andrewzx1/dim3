@@ -41,9 +41,8 @@ extern js_type				js;
 int							movie_bitmap_gl_id,
 							movie_x_offset,movie_y_offset,
 							movie_x_sz,movie_y_sz,
-							movie_event_id;
+							movie_event_id,movie_last_state;
 char						movie_name[name_str_len];
-bool						movie_start_trigger;
 
 /* =======================================================
 
@@ -135,17 +134,17 @@ void movie_draw(void)
 
 void movie_open(void)
 {
+	movie_last_state=server.last_state;
+	
 	gui_initialize(NULL,NULL);
 
 	if (!movie_initialize()) {
 		gui_shutdown();
-		server.state=gs_running;
+		server.next_state=gs_running;
 		return;
 	}
 	
 	movie_draw();
-	
-	server.state=gs_movie;
 }
 
 void movie_close(void)
@@ -153,31 +152,12 @@ void movie_close(void)
 	movie_shutdown();
 	
 	gui_shutdown();
-	server.state=gs_running;
 }
 
-/* =======================================================
-
-      Movie Triggers
-      
-======================================================= */
-
-void movie_trigger_clear(void)
-{
-	movie_start_trigger=FALSE;
-}
-
-void movie_trigger_check(void)
-{
-	if (movie_start_trigger) movie_open();
-}	
-
-void movie_trigger_set(char *name,int event_id)
+void movie_setup(char *name,int event_id)
 {
 	strcpy(movie_name,name);
 	movie_event_id=event_id;
-	
-	movie_start_trigger=TRUE;
 }
 
 /* =======================================================
@@ -191,12 +171,10 @@ void movie_run(void)
 	movie_draw();
 	
 		// movie over or mouse button pushed?
-		
+	
 	if ((!bitmap_movie_playing()) || (input_gui_get_mouse_left_button_down())) {
-
-		movie_close();
 		if (movie_event_id!=-1) scripts_post_event_console(&js.game_attach,sd_event_interface,sd_event_interface_movie_done,movie_event_id);
-
+		server.next_state=movie_last_state;
 	}
 }
 

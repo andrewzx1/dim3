@@ -98,7 +98,7 @@ void object_score_update(obj_type *obj)
 		idx=count;
 			
 		for (k=0;k!=count;k++) {
-			order_obj=&server.objs[k];
+			order_obj=&server.objs[(int)score_order_idx[k]];
 			if (chk_obj->score.score>order_obj->score.score) {
 				idx=k;
 				break;

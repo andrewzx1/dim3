@@ -483,7 +483,8 @@ void host_game(void)
 		// start hosting
 
 	if (!net_host_game_start(err_str)) {
-		error_goto(err_str,"Hosting Game Canceled");
+		error_setup(err_str,"Hosting Game Canceled");
+		server.next_state=gs_error;
 		return;
 	}
 
@@ -496,7 +497,8 @@ void host_game(void)
 	
 	if (!game_start(skill_medium,NULL,err_str)) {
 		net_host_game_end();
-		error_goto(err_str,"Hosting Game Canceled");
+		error_setup(err_str,"Hosting Game Canceled");
+		server.next_state=gs_error;
 		return;
 	}
 	
@@ -504,7 +506,8 @@ void host_game(void)
 		
 	if (!map_start(TRUE,err_str)) {
 		net_host_game_end();
-		error_goto(err_str,"Hosting Game Canceled");
+		error_setup(err_str,"Hosting Game Canceled");
+		server.next_state=gs_error;
 		return;
 	}
 	
@@ -524,7 +527,8 @@ void host_game(void)
 
 		if (!net_client_start_message_queue_local(err_str)) {
 			net_host_game_end();
-			error_goto(err_str,"Hosting Game Canceled");
+			error_setup(err_str,"Hosting Game Canceled");
+			server.next_state=gs_error;
 			return;
 		}
 

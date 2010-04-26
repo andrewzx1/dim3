@@ -93,7 +93,7 @@ void score_limit_start(void)
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->type_idx==object_type_remote) net_host_player_send_message_others(obj->remote.uid,net_action_request_game_score_limit,net_player_uid_host,NULL,0);
+		if (obj->type_idx==object_type_remote) net_host_player_send_message_others(net_setup.player_uid,net_action_request_game_score_limit,net_player_uid_host,NULL,0);
 		obj++;
 	}
 }
@@ -171,6 +171,17 @@ void score_limit_check_scores(void)
 
 /* =======================================================
 
+      Resume Timing
+      
+======================================================= */
+
+int score_limit_get_resume_time(void)
+{
+	return(SCORE_LIMIT_SECOND_PAUSE-((game_time_get_raw()-score_limit_start_tick)/1000));
+}
+
+/* =======================================================
+
       Run Score Limit
       
 ======================================================= */
@@ -183,6 +194,8 @@ void score_limit_run(void)
 	gl_frame_swap();
 
 		// cancel by either timeout or menu key
+		
+	input_event_pump();
 
 	if ((game_time_get_raw()>(score_limit_start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
 		server.next_state=gs_running;

@@ -153,10 +153,10 @@ void gui_draw_background(float alpha)
 	bitmap=view_images_get_bitmap(gui_background_image_idx);
 
 	if (gl_check_texture_rectangle_ok()) {
-		view_draw_next_vertex_object_2D_texture_quad_rectangle(bitmap->gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,bitmap->wid,bitmap->high);
+		view_draw_next_vertex_object_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,hud.scale_x,0,hud.scale_y,bitmap->wid,bitmap->high);
 	}
 	else {
-		view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,0.0f);
+		view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,hud.scale_x,0,hud.scale_y,0.0f,0.0f);
 	}
 }
 

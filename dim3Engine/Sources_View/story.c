@@ -41,9 +41,8 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern js_type				js;
 
-int							story_page,story_page_count,story_event_id;
+int							story_page,story_page_count,story_event_id,story_last_state;
 char						story_name[name_str_len];
-bool						story_start_trigger;
 
 /* =======================================================
 
@@ -113,10 +112,6 @@ void story_setup_control(void)
 		
 	element_bitmap_add(path,-1,x,y,page_sz,page_sz,FALSE);
 }
-
-void story_get_page_count(void)
-{
-}
 	
 /* =======================================================
 
@@ -126,10 +121,10 @@ void story_get_page_count(void)
 
 void story_open(void)
 {
+	story_last_state=server.last_state;
+	
 	gui_initialize(NULL,NULL);
 	story_setup_control();
-	
-	server.state=gs_story;
 }
 
 void story_close(void)
@@ -137,36 +132,14 @@ void story_close(void)
 	gui_shutdown();
 
 	if (story_event_id!=-1) scripts_post_event_console(&js.game_attach,sd_event_interface,sd_event_interface_story_done,story_event_id);
-	
-	server.state=gs_running;
 }
 
-/* =======================================================
-
-      Story Triggers
-      
-======================================================= */
-
-void story_trigger_clear(void)
+void story_setup(char *name,int event_id)
 {
-	story_start_trigger=FALSE;
-}
-
-void story_trigger_check(void)
-{
-	if (story_start_trigger) story_open();
-}	
-
-void story_trigger_set(char *name,int event_id)
-{
-	if (server.state!=gs_running) return;
-
 	story_page=0;
 	story_page_count=1;
 	strcpy(story_name,name);
 	story_event_id=event_id;
-	
-	story_start_trigger=TRUE;
 }
 
 /* =======================================================
@@ -191,7 +164,7 @@ void story_click(void)
 	switch (id) {
 	
 		case story_icon_close_id:
-			story_close();
+			server.next_state=story_last_state;
 			break;
 			
 		case story_icon_back_id:

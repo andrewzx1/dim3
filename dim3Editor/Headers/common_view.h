@@ -185,5 +185,5 @@ extern void map_optimize(void);
 // node routines
 //
 
-extern void node_link_click(int node_idx);
+extern bool node_link_click(int node_idx);
 extern void node_path_rebuild(void);

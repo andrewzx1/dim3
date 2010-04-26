@@ -111,14 +111,14 @@ bool node_link_has_link(int node_idx,int link_node_idx)
 	return(FALSE);
 }
 
-void node_link_click(int node_idx)
+bool node_link_click(int node_idx)
 {
 	int			n,org_node_idx,k1,k2,sz;
 	
 		// get original node
 		
 	org_node_idx=node_link_is_node_link_selected();
-	if (org_node_idx==-1) return;
+	if (org_node_idx==-1) return(FALSE);
 	
 		// remove link mode
 		
@@ -127,19 +127,23 @@ void node_link_click(int node_idx)
 		for (n=0;n!=max_node_link;n++) {
 		
 			if (map.nodes[org_node_idx].link[n]==node_idx) {
+				undo_push();
 				sz=(max_node_link-n)-1;
 				if (sz>0) memmove(&map.nodes[org_node_idx].link[n],&map.nodes[org_node_idx].link[n+1],(sz*sizeof(short)));
 				map.nodes[org_node_idx].link[max_node_link-1]=-1;
+				return(TRUE);
 			}
 			
 			if (map.nodes[node_idx].link[n]==org_node_idx) {
+				undo_push();
 				sz=(max_node_link-n)-1;
 				if (sz>0) memmove(&map.nodes[node_idx].link[n],&map.nodes[node_idx].link[n+1],(sz*sizeof(short)));
 				map.nodes[node_idx].link[max_node_link-1]=-1;
+				return(TRUE);
 			}
 		}
 		
-		return;
+		return(FALSE);
 	}
 	
 		// add link mode
@@ -151,16 +155,18 @@ void node_link_click(int node_idx)
 		
 		if ((k1==-1) || (k2==-1)) {
 			dialog_alert("Can not connect nodes","You've reached the maximum number of connected nodes for this node.");
-			return;
+			return(FALSE);
 		}
+		
+		undo_push();
 		
 		if (!node_link_has_link(org_node_idx,node_idx)) map.nodes[org_node_idx].link[k1]=node_idx;
 		if (!node_link_has_link(node_idx,org_node_idx)) map.nodes[node_idx].link[k2]=org_node_idx;
 		
-		return;
+		return(TRUE);
 	}
 	
-	return;
+	return(FALSE);
 }
 
 /* =======================================================

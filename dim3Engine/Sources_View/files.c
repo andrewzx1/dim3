@@ -53,8 +53,9 @@ extern server_type			server;
 extern hud_type				hud;
 extern setup_type			setup;
 
+int							file_last_state;
 char						*file_table_data,*file_name_data;
-bool						file_start_trigger,file_is_save;
+bool						file_is_save;
 			
 /* =======================================================
 
@@ -131,7 +132,7 @@ void file_dir_name_to_elapsed(char *dir_name,char *elapse_str)
 
 void file_build_list(void)
 {
-	int							n,sz;
+	int							n,cnt,sz;
 	char						*c,name_str[64],time_str[64],elapse_str[64];
 	file_path_directory_type	*fpd;
 	
@@ -150,11 +151,15 @@ void file_build_list(void)
 	fpd=file_paths_read_directory_document(&setup.file_path_setup,"Saved Games","sav");
 	if (fpd==NULL) return;
 	
+	cnt=0;
+	
 	for (n=0;n!=fpd->nfile;n++) {
+	
+		if (fpd->files[n].is_dir) continue;
 	
 			// save name
 			
-		c=file_name_data+(128*n);
+		c=file_name_data+(128*cnt);
 		strcpy(c,fpd->files[n].file_name);
 		
 			// table data
@@ -163,8 +168,10 @@ void file_build_list(void)
 		file_dir_name_to_time(fpd->files[n].file_name,time_str);
 		file_dir_name_to_elapsed(fpd->files[n].file_name,elapse_str);
 		
-		c=file_table_data+(128*n);
+		c=file_table_data+(128*cnt);
 		sprintf(c,"Saved Games;%s;%s\t%s\t%s",fpd->files[n].file_name,name_str,time_str,elapse_str);
+		
+		cnt++;
 	}
 
 	file_paths_close_directory(fpd);
@@ -251,24 +258,22 @@ void file_save_delete(void)
       
 ======================================================= */
 
-void file_open(bool is_save)
+void file_open(void)
 {
 	int					x,y,wid,high,margin,padding;
 	char				save_tab_list[][name_str_len]={"Save"},
 						load_tab_list[][name_str_len]={"Load"};
 	element_column_type	cols[4];
 	
+	file_last_state=server.last_state;
+	
 		// setup gui
 		
 	gui_initialize(NULL,NULL);
 	
-		// remember type
-		
-	file_is_save=is_save;
-	
 		// the tabs
 		
-	if (is_save) {
+	if (file_is_save) {
 		element_tab_add((char*)save_tab_list,0,-1,1);
 	}
 	else {
@@ -306,7 +311,7 @@ void file_open(bool is_save)
 	
 	element_get_button_bottom_right(&x,&y,wid,high);
 	
-	if (is_save) {
+	if (file_is_save) {
 		element_button_text_add("Save",file_button_save_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 		x=element_get_x_position(file_button_save_id)-padding;
 	}
@@ -321,10 +326,6 @@ void file_open(bool is_save)
 	
 	x=element_get_x_position(file_button_delete_id)-padding;
 	element_button_text_add("Cancel",file_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-
-		// in file chooser
-		
-	server.state=gs_file;
 }
 
 void file_close(void)
@@ -333,33 +334,9 @@ void file_close(void)
 	file_close_list();
 }
 
-void file_return_to_game(void)
+void file_setup(bool is_save)
 {
-	server.state=gs_running;
-}
-
-/* =======================================================
-
-      File Triggers
-      
-======================================================= */
-
-void file_trigger_clear(void)
-{
-	file_start_trigger=FALSE;
-}
-
-void file_trigger_check(void)
-{
-	if (file_start_trigger) file_open(file_is_save);
-}	
-
-void file_trigger_set(bool is_save)
-{
-	if (server.state!=gs_running) return;
-
 	file_is_save=is_save;
-	file_start_trigger=TRUE;
 }
 
 /* =======================================================
@@ -373,12 +350,14 @@ void file_input(void)
 	char		err_str[256];
 	
 	if (input_action_get_state_single(nc_save)) {
-		file_open(TRUE);
+		file_setup(TRUE);
+		server.next_state=gs_file;
 		return;
 	}
 	
 	if (input_action_get_state_single(nc_load)) {
-		file_open(FALSE);
+		file_setup(FALSE);
+		server.next_state=gs_file;
 		return;
 	}
 	
@@ -406,8 +385,7 @@ void file_click(void)
 	
 		case file_button_save_id:
 			if (!game_file_save(err_str)) console_add_error(err_str);
-			file_close();
-			file_return_to_game();
+			server.next_state=gs_running;
 			break;
 			
 		case file_button_load_id:
@@ -416,18 +394,18 @@ void file_click(void)
 			
 			strcpy(file_name,(char*)(file_name_data+(128*k)));
 
-			file_close();
+			server.next_state=gs_running;
 
 			if (game_file_load(file_name,err_str)) {
 				game_time_pause_end();
-				file_return_to_game();
 				break;
 			}
 
 			if (server.map_open) map_end();
 			if (server.game_open) game_end();
 
-			error_goto(err_str,"Game Load Canceled");
+			error_setup(err_str,"Game Load Canceled");
+			server.next_state=gs_error;
 			break;
 			
 		case file_button_delete_id:
@@ -435,12 +413,7 @@ void file_click(void)
 			break;
 			
 		case file_button_cancel_id:
-			file_close();
-			if (!server.map_open) {
-				server.next_state=gs_intro;
-				return;
-			}
-			file_return_to_game();
+			server.next_state=file_last_state;
 			break;
 			
 		case file_directory_id:

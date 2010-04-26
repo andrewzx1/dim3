@@ -100,21 +100,18 @@ void map_media_start(map_media_type *media)
 	switch (media->type) {
 	
 		case mi_story:
-			story_trigger_set(media->name,-1);
-			story_trigger_check();
-			story_trigger_clear();
+			story_setup(media->name,-1);
+			server.next_state=gs_story;
 			break;
 			
 		case mi_title:
-			title_trigger_set("Titles",media->name,media->title_sound_name,-1);
-			title_trigger_check();
-			title_trigger_clear();
+			title_setup("Titles",media->name,media->title_sound_name,-1);
+			server.next_state=gs_title;
 			break;
 			
 		case mi_movie:
-			movie_trigger_set(media->name,-1);
-			movie_trigger_check();
-			movie_trigger_clear();
+			movie_setup(media->name,-1);
+			server.next_state=gs_movie;
 			break;
 		
 	}

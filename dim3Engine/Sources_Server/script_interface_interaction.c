@@ -93,7 +93,9 @@ JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	story_trigger_set(name,script_value_to_int(cx,argv[1]));
+	
+	story_setup(name,script_value_to_int(cx,argv[1]));
+	server.next_state=gs_story;
 	
 	return(script_null_to_value(cx));
 }
@@ -107,7 +109,8 @@ JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_value_to_string(cx,argv[1],sound_name,name_str_len);
 	
-	title_trigger_set("Titles",name,sound_name,script_value_to_int(cx,argv[2]));
+	title_setup("Titles",name,sound_name,script_value_to_int(cx,argv[2]));
+	server.next_state=gs_title;
 	
 	return(script_null_to_value(cx));
 }
@@ -119,7 +122,9 @@ JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	movie_trigger_set(name,script_value_to_int(cx,argv[1]));
+	
+	movie_setup(name,script_value_to_int(cx,argv[1]));
+	server.next_state=gs_movie;
 	
 	return(script_null_to_value(cx));
 }
@@ -152,7 +157,8 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 
 		// start chooser
 
-	chooser_trigger_set(name,(char*)sub_txt);
+	chooser_setup(name,(char*)sub_txt);
+	server.next_state=gs_chooser;
 	
 	return(script_null_to_value(cx));
 }
@@ -161,7 +167,9 @@ JSValueRef js_interface_interaction_start_save_func(JSContextRef cx,JSObjectRef 
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	file_trigger_set(TRUE);
+	file_setup(TRUE);
+	server.next_state=gs_file;
+	
 	return(script_null_to_value(cx));
 }
 
@@ -169,7 +177,9 @@ JSValueRef js_interface_interaction_start_load_func(JSContextRef cx,JSObjectRef 
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	file_trigger_set(FALSE);
+	file_setup(FALSE);
+	server.next_state=gs_file;
+	
 	return(script_null_to_value(cx));
 }
 
@@ -193,6 +203,7 @@ JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,J
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	interface_quit_trigger_set();
+	server.next_state=gs_intro;
+	
 	return(script_null_to_value(cx));
 }

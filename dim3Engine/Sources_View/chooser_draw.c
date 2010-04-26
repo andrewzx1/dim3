@@ -38,9 +38,8 @@ extern js_type				js;
 extern hud_type				hud;
 extern setup_type			setup;
 
-int							chooser_idx,old_server_state;
+int							chooser_idx;
 char						chooser_sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
-bool						chooser_start_trigger;
 
 extern int chooser_find(char *name);
 
@@ -163,42 +162,16 @@ void chooser_open(void)
 		element_button_text_add(button->name,button->item_id,button->x,button->y,button->wid,button->high,element_pos_left,element_pos_top);
 		button++;
 	}
-	
-		// change state
-
-	old_server_state=server.state;
-	
-	server.state=gs_chooser;
 }
 
 void chooser_close(void)
 {
 	gui_shutdown();
-	
-	if (server.state==gs_chooser) server.state=old_server_state;			// only reset to running if picked chooser item didn't reset to something else
 }
 
-/* =======================================================
-
-      Chooser Triggers
-      
-======================================================= */
-
-void chooser_trigger_clear(void)
-{
-	chooser_start_trigger=FALSE;
-}
-
-void chooser_trigger_check(void)
-{
-	if (chooser_start_trigger) chooser_open();
-}	
-
-void chooser_trigger_set(char *name,char *sub_txt)
+void chooser_setup(char *name,char *sub_txt)
 {
 	int				n;
-
-	if (server.state!=gs_running) return;
 
 		// find chooser
 
@@ -210,15 +183,11 @@ void chooser_trigger_set(char *name,char *sub_txt)
 	for (n=0;n!=max_chooser_sub_txt;n++) {
 		strcpy(chooser_sub_txt[n],(char*)&sub_txt[max_chooser_text_data_sz*n]);
 	}
-
-		// trigger chooser open
-	
-	chooser_start_trigger=TRUE;
 }
 
 /* =======================================================
 
-      Menu Input
+      Chooser Input
       
 ======================================================= */
 
@@ -251,7 +220,11 @@ void chooser_click(void)
 		
 	hud_click();
 	
-	chooser_close();
+		// set the state here as event
+		// might reset it to something else
+		
+	server.next_state=gs_running;
+	
 	scripts_post_event_console(&js.game_attach,sd_event_chooser,0,id);
 }
 

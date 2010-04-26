@@ -184,8 +184,9 @@ void object_clear_watch(obj_watch *watch)
 	watch->on=FALSE;
 	watch->obj_uid=-1;
 	watch->dist=map_enlarge*50;
-	watch->restrict_on=FALSE;
-	watch->restrict_ang=0.0f;
+	watch->watch_restrict.on=FALSE;
+	watch->watch_restrict.ray_trace=FALSE;
+	watch->watch_restrict.ang=0.0f;
 	memset(watch->obj_flags,0x0,max_object);
 }
 
