@@ -42,13 +42,51 @@ extern js_type				js;
       
 ======================================================= */
 
+bool object_watch_restrict(obj_type *obj,obj_type *watch_obj)
+{
+	float					ang_y,ang_dif;
+	bool					cwise;
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
+		
+		// within angle
+		
+	ang_y=angle_find(obj->pnt.x,obj->pnt.z,watch_obj->pnt.x,watch_obj->pnt.z);
+	ang_dif=angle_dif(ang_y,obj->ang.y,&cwise);
+	if (ang_dif>(obj->watch.watch_restrict.ang*0.5f)) return(FALSE);
+		
+		// is ray tracing on?
+		
+	if (!obj->watch.watch_restrict.ray_trace) return(TRUE);
+	
+		// can ray trace from eye to middle
+
+	contact.obj.on=FALSE;
+	contact.proj.on=FALSE;
+
+	contact.obj.ignore_uid=-1;
+	contact.proj.ignore_uid=-1;
+
+	contact.hit_mode=poly_ray_trace_hit_mode_all;
+	contact.origin=poly_ray_trace_origin_object;
+	
+	spt.x=obj->pnt.x;
+	spt.y=obj->pnt.y+obj->size.eye_offset;
+	spt.z=obj->pnt.z;
+	
+	ept.x=watch_obj->pnt.x;
+	ept.y=watch_obj->pnt.y-(watch_obj->size.y>>1);
+	ept.z=watch_obj->pnt.z;
+
+	return(!ray_trace_map_by_point(&spt,&ept,&hpt,&contact));
+}
+
 void object_watch(obj_type *obj)
 {
-	int			n,dist,x,z,y,kx,kz,ky;
-	float		ang_y,ang_dif;
-	double		dx,dz,dy;
-	bool		is_near,cwise;
-	obj_type	*watch_obj;
+	int						n,dist,x,z,y,kx,kz,ky;
+	double					dx,dz,dy;
+	bool					is_near;
+	obj_type				*watch_obj;
 	
 		// watching on?
 		
@@ -87,13 +125,10 @@ void object_watch(obj_type *obj)
 			}
 		}
 		
-			// check angle
+			// check angle and ray trace
 			
-		if ((is_near) && (obj->watch.restrict_on)) {
-		
-			ang_y=angle_find(obj->pnt.x,obj->pnt.z,watch_obj->pnt.x,watch_obj->pnt.z);
-			ang_dif=angle_dif(ang_y,obj->ang.y,&cwise);
-			if (ang_dif>(obj->watch.restrict_ang*0.5f)) is_near=FALSE;		
+		if ((is_near) && (obj->watch.watch_restrict.on)) {
+			if (!object_watch_restrict(obj,watch_obj)) is_near=FALSE;
 		}
 		
 			// has there been a change

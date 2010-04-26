@@ -263,12 +263,13 @@ JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func
 {
 	obj_type	*obj;
 	
-	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	obj->watch.restrict_on=TRUE;
-	obj->watch.restrict_ang=script_value_to_float(cx,argv[0]);
+	obj->watch.watch_restrict.on=TRUE;
+	obj->watch.watch_restrict.ang=script_value_to_float(cx,argv[0]);
+	obj->watch.watch_restrict.ray_trace=script_value_to_bool(cx,argv[1]);
 	
 	return(script_null_to_value(cx));
 }
@@ -281,7 +282,7 @@ JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef fu
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	obj->watch.restrict_on=FALSE;
+	obj->watch.watch_restrict.on=FALSE;
 	
 	return(script_null_to_value(cx));
 }

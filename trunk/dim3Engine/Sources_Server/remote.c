@@ -283,7 +283,8 @@ void remote_game_reset(network_request_game_reset *reset)
 
 	if (!map_rebuild_changes(err_str)) {
 		game_end();
-		error_goto(err_str,"Network Game Canceled");
+		error_setup(err_str,"Network Game Canceled");
+		server.next_state=gs_error;
 		return;
 	}
 
@@ -302,7 +303,8 @@ void remote_host_exit(void)
 
 		// set error page
 
-	error_goto("The network server has been shutdown or stopped responding","Network Game Canceled");
+	error_setup("The network server has been shutdown or stopped responding","Network Game Canceled");
+	server.next_state=gs_error;
 }
 
 /* =======================================================
@@ -798,7 +800,7 @@ bool remote_network_get_updates(void)
 {
 	int						action,player_uid,count;
 	unsigned char			msg[net_max_msg_size];
-
+	
 	count=0;
 	
 	while (count<client_message_per_loop_count) {
@@ -806,6 +808,12 @@ bool remote_network_get_updates(void)
 			// check for messages
 
 		if (!net_client_check_message_queue(&action,&player_uid,msg)) return(TRUE);
+		
+			// if at score limit, only accept reset messages
+			
+		if (server.state==gs_score_limit) {
+			if (action!=net_action_request_game_reset) continue;
+		}
 		
 			// run message
 		

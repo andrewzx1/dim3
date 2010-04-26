@@ -50,14 +50,6 @@ extern js_type				js;
       
 ======================================================= */
 
-void error_goto(char *err_str,char *err_str_2)
-{
-	strcpy(view.error.str,err_str);
-	strcpy(view.error.str_2,err_str_2);
-	
-	server.next_state=gs_error;
-}
-
 void error_open(void)
 {
 	int					x,y,wid,high,control_y_add;
@@ -98,6 +90,12 @@ void error_open(void)
 void error_close(void)
 {
 	gui_shutdown();
+}
+
+void error_setup(char *err_str,char *err_str_2)
+{
+	strcpy(view.error.str,err_str);
+	strcpy(view.error.str_2,err_str_2);
 }
 
 /* =======================================================

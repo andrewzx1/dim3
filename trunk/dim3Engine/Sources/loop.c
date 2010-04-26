@@ -44,8 +44,6 @@ extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-bool						interface_quit;
-
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
 extern void server_loop(void);
@@ -66,27 +64,6 @@ extern void menu_draw_start(void);
 
 /* =======================================================
 
-      Game Loop Interface Quit
-      
-======================================================= */
-
-void interface_quit_trigger_clear(void)
-{
-	interface_quit=FALSE;
-}
-
-void interface_quit_trigger_set(void)
-{
-	interface_quit=TRUE;
-}
-
-bool interface_quit_trigger_check(void)
-{
-	return(interface_quit);
-}
-
-/* =======================================================
-
       Main Game Loop Run
       
 ======================================================= */
@@ -98,10 +75,6 @@ void loop_game_run(void)
 	if (net_setup.mode!=net_mode_none) {
 		if (!remote_network_get_updates()) return;
 	}
-	
-		// mark for interface quits
-		
-	interface_quit_trigger_clear();
 	
 		// run game
 
@@ -126,8 +99,21 @@ void loop_game_run(void)
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		view_loop_input();
-		if (server.state!=gs_running) return;
 	}
+
+		// if state has changed to intro,
+		// then we must be exiting a running
+		// game
+		
+	if (server.next_state==gs_intro) {
+		map_end();
+		game_end();
+		return;
+	}
+	
+		// any other state change early exists
+		
+	if (server.next_state!=gs_running) return;
 
 		// draw the view
 
@@ -137,15 +123,6 @@ void loop_game_run(void)
 	else {
 		view_run();
 		view_loop_draw();
-	}
-
-		// check interface quits
-		
-	if (interface_quit_trigger_check()) {
-		map_end();
-		game_end();
-		server.next_state=gs_intro;
-		return;
 	}
 	
 		// calculate fps
@@ -230,20 +207,20 @@ void loop_state_run(void)
 			host_run();
 			return;
 			
-		case gs_chooser:
-			chooser_run();
-			return;
-			
 		case gs_file:
 			file_run();
 			return;
 			
-		case gs_story:
-			story_run();
+		case gs_chooser:
+			chooser_run();
 			return;
 			
 		case gs_title:
 			title_run();
+			return;
+			
+		case gs_story:
+			story_run();
 			return;
 			
 		case gs_movie:
@@ -287,27 +264,27 @@ void loop_state_last_close(void)
 		case gs_host:
 			host_close();
 			return;
-	/*
-		case gs_chooser:
-			chooser_run();
-			return;
 			
 		case gs_file:
-			file_run();
+			file_close();
 			return;
-			
-		case gs_story:
-			story_run();
+
+		case gs_chooser:
+			chooser_close();
 			return;
 			
 		case gs_title:
-			title_run();
+			title_close();
+			return;
+			
+		case gs_story:
+			story_close();
 			return;
 			
 		case gs_movie:
-			movie_run();
+			movie_close();
 			return;
-		*/
+
 		case gs_error:
 			error_close();
 			return;
@@ -342,27 +319,27 @@ void loop_state_next_open(void)
 		case gs_host:
 			host_open();
 			return;
-	/*
-		case gs_chooser:
-			chooser_run();
-			return;
 			
 		case gs_file:
-			file_run();
+			file_open();
 			return;
-			
-		case gs_story:
-			story_run();
+
+		case gs_chooser:
+			chooser_open();
 			return;
 			
 		case gs_title:
-			title_run();
+			title_open();
+			return;
+			
+		case gs_story:
+			story_open();
 			return;
 			
 		case gs_movie:
-			movie_run();
+			movie_open();
 			return;
-	*/
+
 		case gs_error:
 			error_open();
 			return;
@@ -388,14 +365,6 @@ bool loop_main(char *err_str)
 		// calculate timing
 		
 	game_time_calculate();
-	
-		// clear all triggers
-		
-	story_trigger_clear();
-	title_trigger_clear();
-	chooser_trigger_clear();
-	movie_trigger_clear();
-	file_trigger_clear();
 	
 		// clear map changes
 	
@@ -425,14 +394,6 @@ bool loop_main(char *err_str)
 			if (!map_rebuild_changes(err_str)) return(FALSE);			// bad map changes is a fatal error
 		}
 	}
-	
-		// check all triggers
-		
-	story_trigger_check();
-	title_trigger_check();
-	chooser_trigger_check();
-	movie_trigger_check();
-	file_trigger_check();
 	
 	return(TRUE);
 }

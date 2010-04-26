@@ -77,6 +77,7 @@ int network_score_get_list_high(int nscore,int *fnt_sz)
 void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,int by,d3col *col,int fnt_sz,bool header)
 {
 	char		txt[256];
+	float		alpha;
 	d3col		col2;
 	
 		// background
@@ -84,8 +85,10 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	col2.r=col->r*0.7f;
 	col2.g=col->g*0.7f;
 	col2.b=col->b*0.7f;
+	
+	alpha=(server.state==gs_score_limit)?1.0f:0.4f;
 
-	view_draw_next_vertex_object_2D_color_poly(lx,ty,col,rx,ty,col,rx,by,&col2,lx,by,&col2,0.4f);
+	view_draw_next_vertex_object_2D_color_poly(lx,ty,col,rx,ty,col,rx,by,&col2,lx,by,&col2,alpha);
 	
 		// text
 		
@@ -99,8 +102,8 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	sprintf(txt,"%d",score);
 		
 	gl_text_start(font_hud_index,fnt_sz);
-	gl_text_draw((lx+5),(by+1),name,tx_left,FALSE,&col2,0.75f);
-	gl_text_draw((rx-5),(by+1),txt,tx_right,FALSE,&col2,0.75f);
+	gl_text_draw((lx+5),(by+1),name,tx_left,FALSE,&col2,1.0f);
+	gl_text_draw((rx-5),(by+1),txt,tx_right,FALSE,&col2,1.0f);
 	gl_text_end();
 }
 
@@ -112,9 +115,8 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 
 int network_score_players_draw(bool use_teams)
 {
-	int				n,k,lx,rx,y,yadd,high,nscore,idx,sz,fnt_sz;
-	short			s_score,
-					sort_idx[max_object],sort_score[max_object];
+	int				n,lx,rx,y,yadd,high,nscore,fnt_sz;
+	short			sort_idx[max_object];
 	d3col			col;
 	obj_type		*obj;
 
@@ -126,28 +128,8 @@ int network_score_players_draw(bool use_teams)
 	for (n=0;n!=server.count.obj;n++) {
 
 		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
-
-			s_score=(short)obj->score.score;
-			
-			idx=nscore;
-
-			for (k=0;k!=nscore;k++) {
-				if (s_score>sort_score[k]) {
-					idx=k;
-					break;
-				}
-			}
-
-			if (idx<nscore) {
-				sz=sizeof(short)*(nscore-idx);
-				memmove(&sort_idx[idx+1],&sort_idx[idx],sz);
-				memmove(&sort_score[idx+1],&sort_score[idx],sz);
-			}
-
-			sort_idx[idx]=(short)n;
-			sort_score[idx]=s_score;
-			nscore++;
-
+			sort_idx[obj->score.place-1]=n;
+			if (obj->score.place>nscore) nscore=obj->score.place;
 		}
 
 		obj++;
@@ -177,9 +159,8 @@ int network_score_players_draw(bool use_teams)
 
 void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_score,d3col *team_col,int lx,int rx,int y,int yadd,int fnt_sz)
 {
-	int				n,k,nscore,idx,sz;
-	short			s_score,
-					sort_idx[max_object],sort_score[max_object];
+	int				n,nscore;
+	short			sort_idx[max_object];
 	obj_type		*obj;
 	
 	network_score_single_name_draw(team_name,team_score,lx,rx,y,(y+yadd),team_col,fnt_sz,TRUE);
@@ -193,27 +174,9 @@ void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_
 		obj=&server.objs[n];
 		if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot_multiplayer)) continue;
 		if (obj->team_idx!=team_idx) continue;
-
-		s_score=(short)obj->score.score;
 		
-		idx=nscore;
-
-		for (k=0;k!=nscore;k++) {
-			if (s_score>sort_score[k]) {
-				idx=k;
-				break;
-			}
-		}
-
-		if (idx<nscore) {
-			sz=sizeof(short)*(nscore-idx);
-			memmove(&sort_idx[idx+1],&sort_idx[idx],sz);
-			memmove(&sort_score[idx+1],&sort_score[idx],sz);
-		}
-
-		sort_idx[idx]=(short)n;
-		sort_score[idx]=s_score;
-		nscore++;
+		sort_idx[obj->score.place-1]=n;
+		if (obj->score.place>nscore) nscore=obj->score.place;
 	}
 	
 	for (n=0;n!=nscore;n++) {
@@ -302,6 +265,10 @@ void network_score_draw(void)
 	bool			use_teams;
 	d3col			col;
 	obj_type		*player_obj;
+	
+		// never draw if menu is on
+		
+	if ((view.menu.active) || (view.menu.fade_in) || (view.menu.fade_out)) return;
 
 		// always draw if a dedicated host,
 		// the game is at it's score limit,
@@ -348,7 +315,7 @@ void network_score_draw(void)
 		
 			// flash won message
 			
-		k=game_time_get()%2000;
+		k=game_time_get_raw()%2000;
 		if (k>=1000) k=2000-k;
 		f_flash=0.5f*((float)k/1000.0f);
 		
@@ -376,6 +343,20 @@ void network_score_draw(void)
 	gl_text_draw((hud.scale_x>>1),y,str2,tx_center,TRUE,&col,1.0f);
 	
 	gl_text_end();
+	
+		// resume
+		
+	if (server.state==gs_score_limit) {
+	
+		sprintf(str,"Resuming in %d seconds...",score_limit_get_resume_time());
+	
+		gl_text_start(font_hud_index,hud.font.text_size_medium);
+		
+		col.r=col.g=col.b=1.0f;
+		gl_text_draw((hud.scale_x-5),(hud.scale_y-5),str,tx_right,FALSE,&col,1.0f);
+		
+		gl_text_end();
+	}
 }
 
 /* =======================================================

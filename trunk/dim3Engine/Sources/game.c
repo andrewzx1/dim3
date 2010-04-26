@@ -158,7 +158,8 @@ void game_reset(void)
 
 	if (!map_rebuild_changes(err_str)) {
 		game_end();
-		error_goto(err_str,"Hosting Game Canceled");
+		error_setup(err_str,"Hosting Game Canceled");
+		server.next_state=gs_error;
 		return;
 	}
 

@@ -81,6 +81,11 @@ void menu_draw_start(void)
 	view.menu.click_item_idx=-1;
 	view.menu.mouse_down=FALSE;
 	
+		// always flip off scores
+		// if they are on
+		
+	hud.score.on=FALSE;
+	
 		// setup cursor
 
 	cursor_initialize();
@@ -148,8 +153,6 @@ bool menu_select(void)
 			game_loop_quit=TRUE;
 		}
 		else {
-			map_end();
-			game_end();
 			server.next_state=gs_intro;
 		}
 

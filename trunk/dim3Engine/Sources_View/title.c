@@ -43,9 +43,8 @@ extern setup_type			setup;
 extern hud_type				hud;
 extern js_type				js;
 
-int							title_fade_tick,title_fade_mode,title_event_id;
+int							title_fade_tick,title_fade_mode,title_event_id,title_last_state;
 char						title_dir[name_str_len],title_name[name_str_len],title_sound_name[name_str_len];
-bool						title_start_trigger;
 
 /* =======================================================
 
@@ -56,6 +55,10 @@ bool						title_start_trigger;
 void title_open(void)
 {
 	int			buffer_idx;
+	
+		// remember last state
+		
+	title_last_state=server.last_state;
 
 		// titles
 		
@@ -70,64 +73,23 @@ void title_open(void)
 
 		// fades
 		
-	title_fade_tick=time_get();
+	title_fade_tick=game_time_get_raw();
 	title_fade_mode=title_fade_mode_in;
-
-		// running title
-		
-	server.state=gs_title;
-}
-
-void title_set_open(char *dir,char *name,char *sound_name)
-{
-	strcpy(title_dir,dir);
-	strcpy(title_name,name);
-	strcpy(title_sound_name,sound_name);
-	title_event_id=-1;
-	
-	title_open();
 }
 
 void title_close(void)
 {
 	gui_shutdown();
 
-	if (!server.map_open) {			// if no map opened, then return to intro
-		server.next_state=gs_intro;
-		return;
-	}
-
 	if (title_event_id!=-1) scripts_post_event_console(&js.game_attach,sd_event_interface,sd_event_interface_title_done,title_event_id);
-	
-	server.state=gs_running;
 }
 
-/* =======================================================
-
-      Title Triggers
-      
-======================================================= */
-
-void title_trigger_clear(void)
+void title_setup(char *dir,char *name,char *sound_name,int event_id)
 {
-	title_start_trigger=FALSE;
-}
-
-void title_trigger_check(void)
-{
-	if (title_start_trigger) title_open();
-}	
-
-void title_trigger_set(char *dir,char *name,char *sound_name,int event_id)
-{
-	if (server.state!=gs_running) return;
-
 	strcpy(title_dir,dir);
 	strcpy(title_name,name);
 	strcpy(title_sound_name,sound_name);
 	title_event_id=event_id;
-	
-	title_start_trigger=TRUE;
 }
 
 /* =======================================================
@@ -140,7 +102,7 @@ void title_run(void)
 {
 	int				tick;
 	float			alpha;
-
+	
 		// get the fade
 
 	alpha=1.0f;
@@ -148,7 +110,7 @@ void title_run(void)
 	switch (title_fade_mode) {
 
 		case title_fade_mode_in:
-			tick=time_get()-title_fade_tick;
+			tick=game_time_get_raw()-title_fade_tick;
 			if (tick>hud.fade.title_msec) {
 				title_fade_mode=title_fade_mode_none;
 				break;
@@ -157,9 +119,9 @@ void title_run(void)
 			break;
 
 		case title_fade_mode_out:
-			tick=time_get()-title_fade_tick;
+			tick=game_time_get_raw()-title_fade_tick;
 			if (tick>hud.fade.title_msec) {
-				title_close();
+				server.next_state=title_last_state;
 				return;
 			}
 			alpha=1.0f-(((float)tick)/(float)hud.fade.title_msec);
@@ -169,9 +131,11 @@ void title_run(void)
 		// run the GUI
 
 	gui_draw(alpha,FALSE);
-
+	
+		// the input
+		
 	if ((title_fade_mode==title_fade_mode_none) && (input_gui_get_mouse_left_button_down())) {
-		title_fade_tick=time_get();
+		title_fade_tick=game_time_get_raw();
 		title_fade_mode=title_fade_mode_out;
 	}
 }

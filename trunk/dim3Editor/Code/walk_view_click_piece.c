@@ -386,7 +386,7 @@ bool walk_view_click_rot_handles(editor_3D_view_setup *view_setup,d3pnt *click_p
     if (!os_button_down()) return(FALSE);
 	
 	undo_push();
-
+	
 	first_drag=TRUE;
 	
 	memmove(&old_ang,ang,sizeof(d3ang));
@@ -798,7 +798,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	}
 }
 	
-void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick)
+bool walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick)
 {
 	int				type,main_idx,sub_idx;
 	bool			toggle_select;
@@ -810,7 +810,12 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 		// if a node, check link
 		// connections
 		
-	if ((type==node_piece) && (state.node_mode!=node_mode_select)) node_link_click(main_idx);
+	if ((type==node_piece) && (state.node_mode!=node_mode_select)) {
+		if (node_link_click(main_idx)) {
+			main_wind_draw();
+			return(TRUE);
+		}
+	}
 	
 		// regular or toggle selection
 		
@@ -839,6 +844,8 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 	
 	main_wind_draw();
 	texture_palette_reset();
+	
+	return(FALSE);
 }
 
 /* =======================================================
@@ -855,7 +862,7 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	pt->y-=view_setup->box.ty;
 	
 		// rotation handles
-		
+
 	if (walk_view_click_rot_handles(view_setup,pt)) return;
 	
 		// liquid vertex drags
@@ -875,10 +882,10 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 			break;
 			
 	}
-		
+
 		// select mesh/polygon
 		
-	walk_view_click_piece_normal(view_setup,pt,dblclick);
+	if (walk_view_click_piece_normal(view_setup,pt,dblclick)) return;
 	
 		// changes in palette
 		

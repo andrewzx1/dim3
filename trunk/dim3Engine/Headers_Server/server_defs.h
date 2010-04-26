@@ -35,10 +35,10 @@ and can be sold or given away.
 #define gs_setup_network						3
 #define gs_join									4
 #define gs_host									5
-#define gs_chooser								6
-#define gs_file									7
-#define gs_story								8
-#define gs_title								9
+#define gs_file									6
+#define gs_chooser								7
+#define gs_title								8
+#define gs_story								9
 #define gs_movie								10
 #define gs_error								11
 #define gs_score_limit							12
@@ -560,12 +560,18 @@ typedef struct		{
 						bool					pause_for_turn;
 						d3pnt					pnt;
 					} obj_auto_walk;
+
+typedef struct		{
+						float					ang;
+						bool					on,ray_trace;
+					} obj_watch_restrict;
 					
 typedef struct		{
 						int						dist,obj_uid,base_team;
 						float					restrict_ang;
 						char					obj_flags[max_object],sound_name[name_str_len];
-						bool					on,restrict_on;
+						bool					on;
+						obj_watch_restrict		watch_restrict;
 					} obj_watch;
 		
 //

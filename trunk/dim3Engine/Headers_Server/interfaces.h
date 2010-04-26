@@ -156,11 +156,6 @@ extern void zoom_draw(obj_type *obj,weapon_type *weap);
 // interfaces
 //
 
-extern void file_trigger_clear(void);
-extern void file_trigger_check(void);
-extern void file_trigger_set(bool is_save);
-extern void file_run(void);
-
 extern void intro_open(void);
 extern void intro_close(void);
 extern void intro_run(void);
@@ -181,37 +176,39 @@ extern void host_open(void);
 extern void host_close(void);
 extern void host_run(void);
 
-extern void chooser_trigger_clear(void);
-extern void chooser_trigger_check(void);
-extern void chooser_trigger_set(char *name,char *sub_txt);
+extern void file_open(void);
+extern void file_close(void);
+extern void file_setup(bool is_save);
+extern void file_run(void);
+
+extern void chooser_open(void);
+extern void chooser_close(void);
+extern void chooser_setup(char *name,char *sub_txt);
 extern void chooser_run(void);
 
-extern void title_trigger_clear(void);
-extern void title_trigger_check(void);
-extern void title_trigger_set(char *dir,char *name,char *sound_name,int event_id);
+extern void title_open(void);
+extern void title_close(void);
+extern void title_setup(char *dir,char *name,char *sound_name,int event_id);
 extern void title_run(void);
 
-extern void story_trigger_clear(void);
-extern void story_trigger_check(void);
-extern void story_trigger_set(char *name,int event_id);
+extern void story_open(void);
+extern void story_close(void);
+extern void story_setup(char *name,int event_id);
 extern void story_run(void);
 
-extern void movie_trigger_clear(void);
-extern void movie_trigger_check(void);
-extern void movie_trigger_set(char *name,int event_id);
+extern void movie_open(void);
+extern void movie_close(void);
+extern void movie_setup(char *name,int event_id);
 extern void movie_run(void);
 
-extern void interface_quit_trigger_clear(void);
-extern void interface_quit_trigger_set(void);
-extern bool interface_quit_trigger_check(void);
-
-extern void error_goto(char *err_str,char *err_str_2);
 extern void error_open(void);
 extern void error_close(void);
+extern void error_setup(char *err_str,char *err_str_2);
 extern void error_run(void);
 
 extern void score_limit_check_scores(void);
 extern void score_limit_open(void);
 extern void score_limit_close(void);
+extern int score_limit_get_resume_time(void);
 extern void score_limit_run(void);
 

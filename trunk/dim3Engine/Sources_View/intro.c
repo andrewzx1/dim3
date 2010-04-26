@@ -51,8 +51,6 @@ and can be sold or given away.
 
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
-extern void file_open(bool is_save);
-extern void title_set_open(char *dir,char *name,char *sound_name);
 
 extern bool					game_loop_quit;
 
@@ -194,23 +192,24 @@ void intro_click_game(int skill)
 		// start game
 
 	if (!game_start(skill,NULL,err_str)) {
-		error_goto(err_str,"Game Start Canceled");
+		error_setup(err_str,"Game Start Canceled");
+		server.next_state=gs_error;
 		return;
 	}
 
 	if (!map_start(FALSE,err_str)) {
-		error_goto(err_str,"Game Start Canceled");
+		error_setup(err_str,"Game Start Canceled");
+		server.next_state=gs_error;
 		return;
 	}
 }
 
 void intro_click_load(void)
 {
-	server.next_state=gs_file;
-
 	net_setup.mode=net_mode_none;
 
-	file_open(FALSE);
+	file_setup(FALSE);
+	server.next_state=gs_file;
 }
 
 void intro_click(void)
@@ -282,7 +281,8 @@ void intro_click(void)
 			// credit and quit
 			
 		case intro_button_credit_id:
-			title_set_open("Bitmaps/Backgrounds","credit","");
+			title_setup("Bitmaps/Backgrounds","credit","",-1);
+			server.next_state=gs_title;
 			break;
 
 		case intro_button_quit_id:
