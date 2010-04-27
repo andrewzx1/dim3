@@ -68,30 +68,18 @@ void object_spawn(obj_type *obj)
       
 ======================================================= */
 
-void object_score_update(obj_type *obj)
+void object_score_recalc_place(void)
 {
 	int				n,k,idx,count,sz;
 	short			score_order_idx[max_object];
-	obj_type		*chk_obj,*order_obj;
+	obj_type		*obj,*order_obj;
 	
-		// only run rules for players or multiplayer bots
-
-	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_bot_multiplayer)) return;
-
-		// run rule to update score
-
-	game_obj_rule_uid=obj->uid;
-	scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_score,0);
-	game_obj_rule_uid=-1;
-	
-		// update placing information
-		
 	count=0;
 	
 	for (n=0;n!=server.count.obj;n++) {
 	
-		chk_obj=&server.objs[n];
-		if ((chk_obj->type_idx!=object_type_player) && (chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot_multiplayer)) continue;
+		obj=&server.objs[n];
+		if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot_multiplayer)) continue;
 		
 			// find place
 			
@@ -99,7 +87,7 @@ void object_score_update(obj_type *obj)
 			
 		for (k=0;k!=count;k++) {
 			order_obj=&server.objs[(int)score_order_idx[k]];
-			if (chk_obj->score.score>order_obj->score.score) {
+			if (obj->score.score>order_obj->score.score) {
 				idx=k;
 				break;
 			}
@@ -112,13 +100,28 @@ void object_score_update(obj_type *obj)
 		
 		score_order_idx[idx]=(short)n;
 		count++;
-
-		chk_obj++;
 	}
 	
 	for (n=0;n!=count;n++) {
 		server.objs[(int)score_order_idx[n]].score.place=n+1;
 	}
+}
+
+void object_score_update(obj_type *obj)
+{
+		// only run rules for players or multiplayer bots
+
+	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_bot_multiplayer)) return;
+
+		// run rule to update score
+
+	game_obj_rule_uid=obj->uid;
+	scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_score,0);
+	game_obj_rule_uid=-1;
+	
+		// update placing information
+		
+	object_score_recalc_place();
 
 		// alert object of score change
 

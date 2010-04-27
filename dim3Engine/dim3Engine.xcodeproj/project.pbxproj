@@ -2004,7 +2004,7 @@
 					"$(SRCROOT)/../dim3Common/Libraries",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../dim3Common/MPG123\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_LDFLAGS = "-lSystemStubs";
 				PER_ARCH_CFLAGS_i386 = "-msse2 -fno-omit-frame-pointer";

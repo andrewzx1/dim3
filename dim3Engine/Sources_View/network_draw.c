@@ -284,6 +284,10 @@ void network_score_draw(void)
 		}
 	}
 	
+		// calculate place
+		
+	object_score_recalc_place();
+	
 		// draw player and team scores
 		// if this game is team type
 

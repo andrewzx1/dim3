@@ -292,7 +292,7 @@ void host_options_pane(void)
 		// score limit
 
 	sprintf(str,"%d",setup.network.score_limit);
-	element_text_field_add("Score Limit:",str,32,host_game_score_limit_id,x,y,TRUE);
+	element_text_field_add("Score Limit",str,32,host_game_score_limit_id,x,y,TRUE);
 	y+=control_y_add;
 
 		// project options

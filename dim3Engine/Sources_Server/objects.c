@@ -690,6 +690,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	object_grow_clear(obj);
 	
 	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
+	obj->score.place=1;
 	
     obj->spawning=TRUE;
 	
