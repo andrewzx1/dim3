@@ -645,7 +645,7 @@ void join_game(void)
 		// get the ul ip address
 
 	idx=element_get_value(join_table_id);
-
+	
 	if (!net_ip_to_address(join_list[idx].ip,&net_setup.client.host_ip_addr,err_str)) {
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_setup(err_str,"Network Game Canceled");
