@@ -124,6 +124,7 @@ script_define_type			script_dim3_defines[]={
 									
 								{sd_event_construct,							"",		"DIM3_EVENT_CONSTRUCT"},
 								{sd_event_spawn,								"",		"DIM3_EVENT_SPAWN"},
+								{sd_event_respawn,								"",		"DIM3_EVENT_RESPAWN"},
 								{sd_event_die,									"",		"DIM3_EVENT_DIE"},
 								{sd_event_telefrag,								"",		"DIM3_EVENT_TELEFRAG"},
 								{sd_event_jump,									"",		"DIM3_EVENT_JUMP"},

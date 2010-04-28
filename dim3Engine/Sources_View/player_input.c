@@ -48,7 +48,7 @@ extern network_setup_type	net_setup;
 
 int							mouse_last_read_tick;
 bool						weapon_change_key_down,weapon_target_key_down,weapon_zoom_key_down,
-							enter_exit_key_down,network_score_key_down,toggle_run_state,
+							enter_exit_key_down,network_score_key_down,toggle_run_state,respawn_key_down,
 							fire_key_down[4],command_key_down[20],player_key_down[20];
 
 extern void chat_add_message(char *name,char *str,d3col *col);
@@ -71,6 +71,7 @@ void player_clear_input(void)
 	enter_exit_key_down=FALSE;
 	network_score_key_down=FALSE;
 	toggle_run_state=FALSE;
+	respawn_key_down=FALSE;
 	
 	for (i=0;i!=4;i++) {
 		fire_key_down[i]=FALSE;
@@ -965,6 +966,23 @@ void player_get_input(void)
 		obj->turn.ang_add.y=0.0f;
 		obj->look.ang_add=0.0f;
 		return;
+	}
+	
+		// respawn
+		
+	if (obj->status.health<=0) {
+		if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
+			if (!respawn_key_down) {
+				object_respawn(obj,FALSE);
+				return;
+			}
+		}
+		else {
+			respawn_key_down=FALSE;
+		}
+	}
+	else {
+		respawn_key_down=TRUE;
 	}
 
 		// message inputs
