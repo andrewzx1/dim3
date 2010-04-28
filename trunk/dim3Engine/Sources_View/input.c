@@ -438,6 +438,17 @@ bool input_action_get_state(int action_index)
 	return(FALSE);
 }
 
+bool input_action_get_state_range(int start_action_index,int end_action_index)
+{
+	int						n;
+	
+	for (n=start_action_index;n<=end_action_index;n++) {
+		if (input_action_get_state(n)) return(TRUE);
+	}
+	
+	return(FALSE);
+}
+
 bool input_action_get_state_single(int action_index)
 {
 	input_action_type		*action;

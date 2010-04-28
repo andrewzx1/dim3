@@ -59,7 +59,8 @@ and can be sold or given away.
 								 "player_5","player_6","player_7","player_8","player_9", \
 								 "player_10","player_11","player_12","player_13","player_14", \
 								 "player_15","player_16","player_17","player_18","player_19", \
-								 "console","menu","quick_save","save","load","message", "network_score", \
+								 "console","menu","quick_save","save","load", \
+								 "message","network_score","respawn", \
 								 "debug_status","debug_game","debug_screenshot","debug_map", \
 								 ""}
 
@@ -181,6 +182,9 @@ and can be sold or given away.
 //
 // control ranges
 //
+
+#define nc_respawn_start			14
+#define nc_respawn_end				17
 
 #define nc_fire_start				14
 #define nc_fire_end					17

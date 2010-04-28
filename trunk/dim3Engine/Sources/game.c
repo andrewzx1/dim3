@@ -134,18 +134,6 @@ void game_reset(void)
 	obj_type					*obj,*player_obj;
 	network_request_game_reset	reset;
 	
-		// clear all current scores
-		
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
-			obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
-		}
-
-		obj++;
-	}
-
 		// switch to next map
 
 	net_setup.host.current_map_idx++;
@@ -163,10 +151,30 @@ void game_reset(void)
 		return;
 	}
 
-		// respawn this object
-
-	player_obj=object_find_uid(server.player_obj_uid);
-	object_spawn_reset(player_obj);
+		// respawn all objects
+		// players get spawned here, remotes get hidden
+		// (until the next update) and bots respawn
+		
+	obj=server.objs;
+	
+	for (n=0;n!=server.count.obj;n++) {
+	
+		switch (obj->type_idx) {
+		
+			case object_type_player:
+			case object_type_bot_multiplayer:
+				object_respawn(obj,TRUE);
+				break;
+				
+			case object_type_remote:
+				object_respawn(obj,TRUE);
+				obj->hidden=TRUE;
+				break;
+				
+		}
+		
+		obj++;
+	}
 
 		// signal remotes to reset
 

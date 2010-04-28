@@ -62,6 +62,78 @@ void object_spawn(obj_type *obj)
 	scripts_post_event_console(&obj->attach,sd_event_spawn,0,0);
 }
 
+void object_respawn(obj_type *obj,bool reset_score)
+{
+	int				idx;
+	char			err_str[256];
+	bool			reload_ok;
+	spot_type		*spot;
+
+		// reset health and weapons
+		
+	obj->status.health=obj->status.start_health;
+	weapon_reset_ammo_object(obj);
+
+		// reset score
+		
+	if (reset_score) {
+		obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
+		obj->score.place=1;
+	}
+	
+		// misc resets
+		
+	obj->spawning=TRUE;
+	
+	obj->input_freeze=FALSE;
+	obj->death_trigger=FALSE;
+	
+		// stop player
+		
+	object_stop(obj);
+	
+		// reposition single player games
+		
+	if (net_setup.mode==net_mode_none) {
+	
+		reload_ok=FALSE;
+	
+			// if there was a saved game,
+			// restart from there
+			
+		if (game_file_reload_ok()) {
+			if (!game_file_reload(err_str)) {
+				game_time_pause_end();			// loaded files are in paused mode
+				reload_ok=TRUE;
+			}
+		}
+		
+			// if no reload, then just
+			// restart at map start
+			
+		if (!reload_ok) {
+			server.map_change=TRUE;
+			server.skip_media=TRUE;
+		}
+	}
+	
+		// reposition network games
+		
+	else {
+		idx=object_find_network_spawn_spot(obj,err_str);
+		if (idx!=-1) {
+			spot=&map.spots[idx];
+			object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
+		}
+	}
+	
+	object_reset_prepare(obj);
+    
+		// call the respawn event
+		
+	scripts_post_event_console(&obj->attach,sd_event_respawn,0,0);
+}
+
 /* =======================================================
 
       Object Scoring

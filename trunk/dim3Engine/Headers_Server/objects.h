@@ -39,8 +39,6 @@ extern int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,ch
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 
-extern void object_spawn_reset(obj_type *obj);
-
 extern void object_script_spawn_start(void);
 extern void object_script_spawn_finish(void);
 extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
@@ -91,6 +89,7 @@ extern void object_attach_click_crosshair_up(obj_type *obj);
 extern void object_attach_click_crosshair_down(obj_type *obj);
 
 extern void object_spawn(obj_type *obj);
+extern void object_respawn(obj_type *obj,bool reset_score);
 extern void object_score_recalc_place(void);
 extern void object_score_update(obj_type *obj);
 extern void object_score_death(obj_type *obj);
