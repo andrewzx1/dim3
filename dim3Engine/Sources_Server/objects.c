@@ -692,8 +692,6 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
 	obj->score.place=1;
 	
-    obj->spawning=TRUE;
-	
 	return(obj);
 }
 
@@ -836,8 +834,6 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 
 		object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
 		obj->turn.ang_to.y=spot->ang.y;
-		
-		object_reset_prepare(obj);
 	}
 
 		// if networked player or multiplayer bot, run rules
@@ -902,6 +898,10 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		weap=weapon_find_uid(obj->held_weapon.current_uid);
 		weapon_set(obj,weap);
 	}
+
+		// run the spawn
+
+	object_spawn(obj,sd_event_spawn_init);
 
 	return(obj->uid);
 }

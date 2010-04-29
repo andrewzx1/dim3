@@ -88,8 +88,7 @@ extern bool object_sight_test_object(obj_type *obj,int test_obj_uid);
 extern void object_attach_click_crosshair_up(obj_type *obj);
 extern void object_attach_click_crosshair_down(obj_type *obj);
 
-extern void object_spawn(obj_type *obj);
-extern void object_respawn(obj_type *obj,bool reset_score);
+extern void object_spawn(obj_type *obj,int sub_event);
 extern void object_score_recalc_place(void);
 extern void object_score_update(obj_type *obj);
 extern void object_score_death(obj_type *obj);

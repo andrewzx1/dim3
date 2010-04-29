@@ -830,7 +830,7 @@ typedef struct		{
 												stand_obj_uid,damage_obj_uid,item_count,
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],type[name_str_len],spawn_spot_name[name_str_len];
-						bool					spawning,hidden,suspend,fly,slope_gravity,
+						bool					hidden,suspend,fly,slope_gravity,
 												side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,
 												find_on,in_collide_event,

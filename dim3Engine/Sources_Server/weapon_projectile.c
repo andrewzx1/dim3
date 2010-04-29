@@ -98,7 +98,7 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 	
 		// call spawn
 		
-	scripts_post_event_console(&proj->attach,sd_event_spawn,0,0);
+	scripts_post_event_console(&proj->attach,sd_event_spawn,sd_event_spawn_init,0);
 	
 		// if this object is the player or multiplayer\map bot,
 		// then spawn projectile in remotes

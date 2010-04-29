@@ -29,8 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#define SCORE_LIMIT_SECOND_PAUSE		10
-#define SCORE_LIMIT_SECOND_FAIL			15
+#define SCORE_LIMIT_SECOND_PAUSE		15
+#define SCORE_LIMIT_SECOND_FAIL			20
 
 #include "objects.h"
 #include "remotes.h"
