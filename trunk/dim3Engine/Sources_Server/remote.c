@@ -291,7 +291,7 @@ void remote_game_reset(network_request_game_reset *reset)
 		// respawn the player
 
 	player_obj=object_find_uid(server.player_obj_uid);
-	object_respawn(player_obj,TRUE);
+	object_spawn(player_obj,sd_event_spawn_game_reset);
 }
 
 void remote_host_exit(void)

@@ -111,10 +111,8 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
 
 void run_object_single(obj_type *obj)
 {
-		// spawning
+		// remember last positions
 		
-	if (obj->spawning) object_spawn(obj);
-	
 	memmove(&obj->last_pnt,&obj->pnt,sizeof(d3pnt));
 	memmove(&obj->last_ang,&obj->ang,sizeof(d3ang));
 

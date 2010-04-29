@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "sounds.h"
 #include "inputs.h"
+#include "timing.h"
 
 #define title_fade_mode_in		0
 #define title_fade_mode_out		1

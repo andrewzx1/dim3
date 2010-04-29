@@ -152,8 +152,9 @@ void game_reset(void)
 	}
 
 		// respawn all objects
-		// players get spawned here, remotes get hidden
-		// (until the next update) and bots respawn
+		// remotes get hidden (until the next update)
+		// the respawn just to update any lists or items
+		// before the client sends in it's next packet
 		
 	obj=server.objs;
 	
@@ -163,11 +164,11 @@ void game_reset(void)
 		
 			case object_type_player:
 			case object_type_bot_multiplayer:
-				object_respawn(obj,TRUE);
+				object_spawn(obj,sd_event_spawn_game_reset);
 				break;
 				
 			case object_type_remote:
-				object_respawn(obj,TRUE);
+				object_spawn(obj,sd_event_spawn_game_reset);
 				obj->hidden=TRUE;
 				break;
 				
@@ -179,6 +180,8 @@ void game_reset(void)
 		// signal remotes to reset
 
 	strcpy(reset.map_name,map.info.name);
+
+	player_obj=object_find_uid(server.player_obj_uid);
 	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_game_reset,net_player_uid_host,(unsigned char*)&reset,sizeof(network_request_game_reset));
 }
 

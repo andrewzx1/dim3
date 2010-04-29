@@ -205,43 +205,42 @@ and can be sold or given away.
 #define sd_event_construct								2000
 #define sd_event_map									2001
 #define sd_event_spawn									2002
-#define sd_event_respawn								2003
-#define sd_event_die									2004
-#define sd_event_telefrag								2005
-#define sd_event_jump									2006
-#define sd_event_fall									2007
-#define sd_event_land									2008
-#define sd_event_collide								2009
-#define sd_event_liquid									2010
-#define sd_event_animation_object						2011
-#define sd_event_animation_weapon						2012
-#define sd_event_timer									2013
-#define sd_event_wait									2014
-#define sd_event_message								2015
-#define sd_event_touch									2016
-#define sd_event_hit									2017
-#define sd_event_click									2018
-#define sd_event_damage									2019
-#define sd_event_crush									2020
-#define sd_event_health									2021
-#define sd_event_pickup									2022
-#define sd_event_add_custom								2023
-#define sd_event_path									2024
-#define sd_event_watch									2025
-#define sd_event_weapon_fire							2026
-#define sd_event_weapon_select							2027
-#define sd_event_projectile								2028
-#define sd_event_melee									2029
-#define sd_event_vehicle								2030
-#define sd_event_move									2031
-#define sd_event_menu									2032
-#define sd_event_chooser								2033
-#define sd_event_console								2034
-#define sd_event_interface								2035
-#define sd_event_state									2036
-#define sd_event_rule									2037
-#define sd_event_remote									2038
-#define sd_event_score									2039
+#define sd_event_die									2003
+#define sd_event_telefrag								2004
+#define sd_event_jump									2005
+#define sd_event_fall									2006
+#define sd_event_land									2007
+#define sd_event_collide								2008
+#define sd_event_liquid									2009
+#define sd_event_animation_object						2010
+#define sd_event_animation_weapon						2011
+#define sd_event_timer									2012
+#define sd_event_wait									2013
+#define sd_event_message								2014
+#define sd_event_touch									2015
+#define sd_event_hit									2016
+#define sd_event_click									2017
+#define sd_event_damage									2018
+#define sd_event_crush									2019
+#define sd_event_health									2020
+#define sd_event_pickup									2021
+#define sd_event_add_custom								2022
+#define sd_event_path									2023
+#define sd_event_watch									2024
+#define sd_event_weapon_fire							2025
+#define sd_event_weapon_select							2026
+#define sd_event_projectile								2027
+#define sd_event_melee									2028
+#define sd_event_vehicle								2029
+#define sd_event_move									2030
+#define sd_event_menu									2031
+#define sd_event_chooser								2032
+#define sd_event_console								2033
+#define sd_event_interface								2034
+#define sd_event_state									2035
+#define sd_event_rule									2036
+#define sd_event_remote									2037
+#define sd_event_score									2038
 
 //
 // sub events constants
@@ -250,107 +249,112 @@ and can be sold or given away.
 #define sd_event_map_open								3000
 #define sd_event_map_close								3001
 
-#define sd_event_liquid_in								3002
-#define sd_event_liquid_out								3003
-#define sd_event_liquid_submerge						3004
-#define sd_event_liquid_surface							3005
+#define sd_event_spawn_init								3002
+#define sd_event_spawn_reborn							3003
+#define sd_event_spawn_game_reset						3004
+#define sd_event_spawn_map_change						3005
 
-#define sd_event_animation_object_walk					3006
-#define sd_event_animation_object_run					3007	
-#define sd_event_animation_object_crawl					3008
+#define sd_event_liquid_in								3006
+#define sd_event_liquid_out								3007
+#define sd_event_liquid_submerge						3008
+#define sd_event_liquid_surface							3009
 
-#define sd_event_animation_object_walk_back				3009
-#define sd_event_animation_object_run_back				3010
-#define sd_event_animation_object_crawl_back			3011
+#define sd_event_animation_object_walk					3010
+#define sd_event_animation_object_run					3011	
+#define sd_event_animation_object_crawl					3012
 
-#define sd_event_animation_object_walk_left				3012
-#define sd_event_animation_object_run_left				3013
-#define sd_event_animation_object_crawl_left			3014
-#define sd_event_animation_object_walk_left_forward		3015
-#define sd_event_animation_object_run_left_forward		3016
-#define sd_event_animation_object_crawl_left_forward	3017
-#define sd_event_animation_object_walk_left_back		3018
-#define sd_event_animation_object_run_left_back			3019
-#define sd_event_animation_object_crawl_left_back		3020
+#define sd_event_animation_object_walk_back				3013
+#define sd_event_animation_object_run_back				3014
+#define sd_event_animation_object_crawl_back			3015
 
-#define sd_event_animation_object_walk_right			3021
-#define sd_event_animation_object_run_right				3022
-#define sd_event_animation_object_crawl_right			3023
-#define sd_event_animation_object_walk_right_forward	3024
-#define sd_event_animation_object_run_right_forward		3025
-#define sd_event_animation_object_crawl_right_forward	3026
-#define sd_event_animation_object_walk_right_back		3027
-#define sd_event_animation_object_run_right_back		3028
-#define sd_event_animation_object_crawl_right_back		3029
+#define sd_event_animation_object_walk_left				3016
+#define sd_event_animation_object_run_left				3017
+#define sd_event_animation_object_crawl_left			3018
+#define sd_event_animation_object_walk_left_forward		3019
+#define sd_event_animation_object_run_left_forward		3020
+#define sd_event_animation_object_crawl_left_forward	3021
+#define sd_event_animation_object_walk_left_back		3022
+#define sd_event_animation_object_run_left_back			3023
+#define sd_event_animation_object_crawl_left_back		3024
 
-#define sd_event_animation_object_turn_left				3030
-#define sd_event_animation_object_turn_right			3031
-#define sd_event_animation_object_turn_stop				3032
+#define sd_event_animation_object_walk_right			3025
+#define sd_event_animation_object_run_right				3026
+#define sd_event_animation_object_crawl_right			3027
+#define sd_event_animation_object_walk_right_forward	3028
+#define sd_event_animation_object_run_right_forward		3029
+#define sd_event_animation_object_crawl_right_forward	3030
+#define sd_event_animation_object_walk_right_back		3031
+#define sd_event_animation_object_run_right_back		3032
+#define sd_event_animation_object_crawl_right_back		3033
 
-#define sd_event_animation_object_stop					3033
-#define sd_event_animation_object_fall					3034
-#define sd_event_animation_object_land					3035
-#define sd_event_animation_object_jump					3036
-#define sd_event_animation_object_duck_down				3037
-#define sd_event_animation_object_ducking				3038
-#define sd_event_animation_object_stand_up				3039
-#define sd_event_animation_object_standing				3040
+#define sd_event_animation_object_turn_left				3034
+#define sd_event_animation_object_turn_right			3035
+#define sd_event_animation_object_turn_stop				3036
 
-#define sd_event_message_from_script					3041
-#define sd_event_message_from_course					3042
-#define sd_event_message_from_key_down					3043
-#define sd_event_message_from_key_up					3044
+#define sd_event_animation_object_stop					3037
+#define sd_event_animation_object_fall					3038
+#define sd_event_animation_object_land					3039
+#define sd_event_animation_object_jump					3040
+#define sd_event_animation_object_duck_down				3041
+#define sd_event_animation_object_ducking				3042
+#define sd_event_animation_object_stand_up				3043
+#define sd_event_animation_object_standing				3044
 
-#define sd_event_animation_weapon_raise					3045
-#define sd_event_animation_weapon_lower					3046
-#define sd_event_animation_weapon_held					3047
+#define sd_event_message_from_script					3045
+#define sd_event_message_from_course					3046
+#define sd_event_message_from_key_down					3047
+#define sd_event_message_from_key_up					3048
 
-#define sd_event_path_node								3048
-#define sd_event_path_done								3049
+#define sd_event_animation_weapon_raise					3049
+#define sd_event_animation_weapon_lower					3050
+#define sd_event_animation_weapon_held					3051
 
-#define sd_event_watch_object_near						3050
-#define sd_event_watch_object_far						3051
-#define sd_event_watch_object_death						3052
-#define sd_event_watch_object_enter_base				3053
-#define sd_event_watch_object_exit_base					3054
-#define sd_event_watch_object_sound						3055
-#define sd_event_watch_object_damage					3056
+#define sd_event_path_node								3052
+#define sd_event_path_done								3053
 
-#define sd_event_weapon_fire_single						3058
-#define sd_event_weapon_fire_up							3059
-#define sd_event_weapon_fire_down						3060
-#define sd_event_weapon_fire_repeat						3061
-#define sd_event_weapon_fire_clip_change				3062
-#define sd_event_weapon_fire_zoom_enter					3063
-#define sd_event_weapon_fire_zoom_exit					3064
+#define sd_event_watch_object_near						3054
+#define sd_event_watch_object_far						3055
+#define sd_event_watch_object_death						3056
+#define sd_event_watch_object_enter_base				3057
+#define sd_event_watch_object_exit_base					3058
+#define sd_event_watch_object_sound						3059
+#define sd_event_watch_object_damage					3060
 
-#define sd_event_projectile_bounce						3065
-#define sd_event_projectile_reflect						3066
+#define sd_event_weapon_fire_single						3061
+#define sd_event_weapon_fire_up							3062
+#define sd_event_weapon_fire_down						3063
+#define sd_event_weapon_fire_repeat						3064
+#define sd_event_weapon_fire_clip_change				3065
+#define sd_event_weapon_fire_zoom_enter					3066
+#define sd_event_weapon_fire_zoom_exit					3067
 
-#define sd_event_melee_hit								3067
+#define sd_event_projectile_bounce						3068
+#define sd_event_projectile_reflect						3069
 
-#define sd_event_vehicle_enter							3068
-#define sd_event_vehicle_exit							3069
+#define sd_event_melee_hit								3070
 
-#define sd_event_move_done								3070
-#define sd_event_move_loop								3071
+#define sd_event_vehicle_enter							3071
+#define sd_event_vehicle_exit							3072
 
-#define sd_event_interface_title_done					3072
-#define sd_event_interface_story_done					3073
-#define sd_event_interface_movie_done					3074
+#define sd_event_move_done								3073
+#define sd_event_move_loop								3074
 
-#define sd_event_state_load								3075
-#define sd_event_state_save								3076
+#define sd_event_interface_title_done					3075
+#define sd_event_interface_story_done					3076
+#define sd_event_interface_movie_done					3077
 
-#define sd_event_rule_join								3077
-#define sd_event_rule_score								3078
+#define sd_event_state_load								3078
+#define sd_event_state_save								3079
 
-#define sd_event_remote_join							3080
-#define sd_event_remote_leave							3081
-#define sd_event_remote_team							3082
-#define sd_event_remote_death							3083
-#define sd_event_remote_suicide							3084
-#define sd_event_remote_telefrag						3085
+#define sd_event_rule_join								3080
+#define sd_event_rule_score								3081
+
+#define sd_event_remote_join							3082
+#define sd_event_remote_leave							3083
+#define sd_event_remote_team							3084
+#define sd_event_remote_death							3085
+#define sd_event_remote_suicide							3086
+#define sd_event_remote_telefrag						3087
 
 //
 // define structure

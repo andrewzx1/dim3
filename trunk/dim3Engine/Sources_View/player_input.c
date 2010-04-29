@@ -973,7 +973,7 @@ void player_get_input(void)
 	if (obj->status.health<=0) {
 		if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
 			if (!respawn_key_down) {
-				object_respawn(obj,FALSE);
+				object_spawn(obj,sd_event_spawn_reborn);
 				return;
 			}
 		}

@@ -138,6 +138,10 @@ bool player_attach_object(char *err_str)
 		// weapon resets
 
 	weapon_clear_state(obj);
+
+		// alert the spawn
+
+	object_spawn(obj,sd_event_spawn_map_change);
 	
 	return(TRUE);
 }
