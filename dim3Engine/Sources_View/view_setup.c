@@ -723,7 +723,7 @@ void view_add_effect_draw_list(int tick)
 
 		if (!effect_inview(effect,(tick-effect->start_tick))) continue;
 		
-			// sort liquids into drawing list
+			// sort effects into drawing list
 
 		view_add_draw_list(view_render_type_effect,n,d,0x0);
 	}

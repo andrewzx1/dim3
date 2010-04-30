@@ -137,8 +137,6 @@ void object_spawn(obj_type *obj,int sub_event)
     
 		// finally call the spawn event
 		
-	fprintf(stdout,"SPAWN %d %s\n",sub_event,obj->name);
-
 	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
 }
 
