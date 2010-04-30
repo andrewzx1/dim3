@@ -1624,8 +1624,12 @@ void element_click_table(element_type *element,int x,int y)
 	}
 
 		// flip any check boxes
+		// and turn off selection
 
-	if ((element->setup.table.checkbox) && (element->value>=0) && (element->value<element_table_max_check)) element->setup.table.checks[element->value]^=0x1;
+	if ((element->setup.table.checkbox) && (element->value>=0) && (element->value<element_table_max_check)) {
+		element->setup.table.checks[element->value]^=0x1;
+		element->value=-1;
+	}
 }
 
 void element_draw_table_row_column_lines(element_type *element,int ty,int by,float col_factor)
@@ -2018,7 +2022,7 @@ void element_draw_table(element_type *element,int sel_id)
 			
 				// selection or background
 				
-			if ((n+element->offset)==element->value) {
+			if (((n+element->offset)==element->value) && (!element->setup.table.checkbox)) {
 				memmove(&col,&hud.color.control_hilite,sizeof(d3col));
 				col2.r=col.r*0.5f;
 				col2.g=col.g*0.5f;
@@ -3063,6 +3067,29 @@ bool element_get_table_checkbox(int id,int idx)
 	SDL_mutexV(element_thread_lock);
 
 	return(on);
+}
+
+bool element_has_table_check(int id)
+{
+	int				n;
+	bool			hit;
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	hit=FALSE;
+	element=element_find(id);
+
+	for (n=0;n!=element_table_max_check;n++) {
+		if (element->setup.table.checks[n]!=0x0) {
+			hit=TRUE;
+			break;
+		}
+	}
+
+	SDL_mutexV(element_thread_lock);
+
+	return(hit);
 }
 
 /* =======================================================

@@ -408,7 +408,7 @@ void host_create_pane(void)
 	
 		// enable host button
 		
-	element_enable(host_button_host_id,(setup.network.map.count!=0));
+	element_enable(host_button_host_id,element_has_table_check(host_table_id));
 }
 
 /* =======================================================
@@ -596,7 +596,7 @@ void host_handle_click(int id)
 				host_map_list_to_table();
 				element_set_value(host_table_id,host_first_map_idx);
 				element_make_selection_visible(host_table_id);
-				element_enable(host_button_host_id,(host_first_map_idx!=0));
+				element_enable(host_button_host_id,element_has_table_check(host_table_id));
 			}
 			break;
 
