@@ -166,7 +166,7 @@ script_define_type			script_dim3_defines[]={
 
 								{sd_event_spawn_init,							"",		"DIM3_EVENT_SPAWN_INIT"},
 								{sd_event_spawn_reborn,							"",		"DIM3_EVENT_SPAWN_REBORN"},
-								{sd_event_spawn_game_reset,						"",		"DIM3_EVENT_SPAWN_RESET"},
+								{sd_event_spawn_game_reset,						"",		"DIM3_EVENT_SPAWN_GAME_RESET"},
 								{sd_event_spawn_map_change,						"",		"DIM3_EVENT_SPAWN_MAP_CHANGE"},
 
 								{sd_event_liquid_in,							"",		"DIM3_EVENT_LIQUID_IN"},
