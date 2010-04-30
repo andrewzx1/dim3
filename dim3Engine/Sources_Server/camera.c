@@ -123,7 +123,7 @@ void camera_get_position(d3pnt *pnt,d3ang *ang)
     
         // always set static camera
         
-	if (camera.mode!=cv_static) camera_static_update(pnt->x,pnt->z,pnt->y);
+	if ((camera.mode!=cv_static) && (camera.mode!=cv_chase_static)) camera_static_update(pnt->x,pnt->z,pnt->y);
 }
 
 void camera_get_angle_from(d3pnt *pt,d3ang *ang)
