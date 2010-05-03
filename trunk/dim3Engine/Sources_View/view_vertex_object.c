@@ -532,7 +532,7 @@ void view_draw_next_vertex_object_2D_color_quad(d3col *col,float alpha,int lft,i
 	view_draw_next_vertex_object_2D_color_poly(lft,top,col,rgt,top,col,rgt,bot,col,lft,bot,col,alpha);
 }
 
-void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,bool up)
+void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
 	float			*vertex_ptr;
 
@@ -541,25 +541,43 @@ void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,i
 
 		// get the vertexes
 
-	if (up) {
-		*vertex_ptr++=(float)lft;
-		*vertex_ptr++=(float)bot;
+	switch (dir) {
 
-		*vertex_ptr++=(float)rgt;
-		*vertex_ptr++=(float)bot;
+		case 0:
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=(float)bot;
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=(float)bot;
+			*vertex_ptr++=((float)(lft+rgt))*0.5f;
+			*vertex_ptr++=(float)top;
+			break;
 
-		*vertex_ptr++=((float)(lft+rgt))*0.5f;
-		*vertex_ptr++=(float)top;
-	}
-	else {
-		*vertex_ptr++=(float)lft;
-		*vertex_ptr++=(float)top;
+		case 1:
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=(float)top;
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=((float)(top+bot))*0.5f;
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=(float)bot;
+			break;
 
-		*vertex_ptr++=(float)rgt;
-		*vertex_ptr++=(float)top;
+		case 2:
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=(float)top;
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=(float)top;
+			*vertex_ptr++=((float)(lft+rgt))*0.5f;
+			*vertex_ptr++=(float)bot;
+			break;
 
-		*vertex_ptr++=((float)(lft+rgt))*0.5f;
-		*vertex_ptr++=(float)bot;
+		case 3:
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=(float)top;
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=((float)(top+bot))*0.5f;
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=(float)bot;
+			break;
 	}
 
   	view_unmap_current_vertex_object();
@@ -708,7 +726,7 @@ void view_draw_next_vertex_object_2D_line_quad(d3col *col,float alpha,int lft,in
 	view_draw_next_vertex_object_2D_line_poly(col,alpha,lft,top,rgt,top,rgt,bot,lft,bot);
 }
 
-void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,bool up)
+void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
 	float			*vertex_ptr;
 
@@ -717,25 +735,43 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 
 		// get the vertexes
 
-	if (up) {
-		*vertex_ptr++=(float)lft;
-		*vertex_ptr++=(float)bot;
+	switch (dir) {
 
-		*vertex_ptr++=(float)rgt;
-		*vertex_ptr++=(float)bot;
+		case 0:
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=(float)bot;
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=(float)bot;
+			*vertex_ptr++=((float)(lft+rgt))*0.5f;
+			*vertex_ptr++=(float)top;
+			break;
 
-		*vertex_ptr++=((float)(lft+rgt))*0.5f;
-		*vertex_ptr++=(float)top;
-	}
-	else {
-		*vertex_ptr++=(float)lft;
-		*vertex_ptr++=(float)top;
+		case 1:
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=(float)top;
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=((float)(top+bot))*0.5f;
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=(float)bot;
+			break;
 
-		*vertex_ptr++=(float)rgt;
-		*vertex_ptr++=(float)top;
+		case 2:
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=(float)top;
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=(float)top;
+			*vertex_ptr++=((float)(lft+rgt))*0.5f;
+			*vertex_ptr++=(float)bot;
+			break;
 
-		*vertex_ptr++=((float)(lft+rgt))*0.5f;
-		*vertex_ptr++=(float)bot;
+		case 3:
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=(float)top;
+			*vertex_ptr++=(float)lft;
+			*vertex_ptr++=((float)(top+bot))*0.5f;
+			*vertex_ptr++=(float)rgt;
+			*vertex_ptr++=(float)bot;
+			break;
 	}
 
   	view_unmap_current_vertex_object();

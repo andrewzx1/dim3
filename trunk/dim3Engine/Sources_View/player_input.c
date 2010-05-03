@@ -959,17 +959,15 @@ void player_death_input(obj_type *obj)
 		// restart key
 		
 	if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
+
 		if (!respawn_key_down) {
 			object_spawn(obj,sd_event_spawn_reborn);
-			return;
 		}
-	}
-	else {
-		respawn_key_down=FALSE;
+
 		return;
 	}
 
-	respawn_key_down=TRUE;
+	respawn_key_down=FALSE;
 }
 
 /* =======================================================
@@ -1003,6 +1001,8 @@ void player_get_input(void)
 		player_death_input(obj);
 		return;
 	}
+	
+	respawn_key_down=TRUE;
 
 		// message inputs
 		

@@ -546,7 +546,6 @@ void host_game(void)
 void host_handle_click(int id)
 {
 	int							n,idx;
-	char						str[32];
 	hud_net_option_type			*option;
 
 		// special option clicks
@@ -613,19 +612,16 @@ void host_handle_click(int id)
 			break;
 
 		case host_game_score_limit_id:
-			element_get_value_string(host_game_score_limit_id,str);
-			setup.network.score_limit=atoi(str);
+			setup.network.score_limit=element_get_value(host_game_score_limit_id);
 			if (setup.network.score_limit<0) setup.network.score_limit=0;
 			break;
 			
 		case host_game_game_reset_secs_id:
-			element_get_value_string(host_game_game_reset_secs_id,str);
-			setup.network.game_reset_secs=atoi(str);
+			setup.network.game_reset_secs=element_get_value(host_game_game_reset_secs_id);
 			break;
 			
 		case host_game_respawn_secs_id:
-			element_get_value_string(host_game_respawn_secs_id,str);
-			setup.network.respawn_secs=atoi(str);
+			setup.network.respawn_secs=element_get_value(host_game_respawn_secs_id);
 			break;
 
 			// buttons
