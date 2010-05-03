@@ -29,8 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#define SCORE_LIMIT_SECOND_PAUSE		15
-#define SCORE_LIMIT_SECOND_FAIL			20
+#define SCORE_LIMIT_EXTRA_SECOND_FAIL	5
 
 #include "objects.h"
 #include "remotes.h"
@@ -180,7 +179,7 @@ int score_limit_get_resume_time(void)
 {
 	int			secs;
 	
-	secs=SCORE_LIMIT_SECOND_PAUSE-((game_time_get_raw()-score_limit_start_tick)/1000);
+	secs=setup.network.game_reset_secs-((game_time_get_raw()-score_limit_start_tick)/1000);
 	if (secs<0) secs=0;
 	
 	return(secs);
@@ -207,7 +206,7 @@ void score_limit_run(void)
 		// or after timeout
 	
 	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
-		if ((game_time_get_raw()>(score_limit_start_tick+(SCORE_LIMIT_SECOND_PAUSE*1000))) || (input_action_get_state_single(nc_menu))) {
+		if ((game_time_get_raw()>(score_limit_start_tick+(setup.network.game_reset_secs*1000))) || (input_action_get_state_single(nc_menu))) {
 			server.next_state=gs_running;
 			game_reset();
 		}
@@ -217,7 +216,7 @@ void score_limit_run(void)
 		// clients either wait for host
 		// message or time out and fail
 		
-	if (game_time_get_raw()>(score_limit_start_tick+(SCORE_LIMIT_SECOND_FAIL*1000))) {
+	if (game_time_get_raw()>(score_limit_start_tick+((setup.network.game_reset_secs+SCORE_LIMIT_EXTRA_SECOND_FAIL)*1000))) {
 		error_setup("Host failed to restart game","Join Canceled");
 		server.next_state=gs_error;
 	}

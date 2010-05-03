@@ -273,6 +273,8 @@ void run_objects_no_slice(void)
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
+	
+		object_check_respawn(obj);
 
 		if (!obj->hidden) {
 			

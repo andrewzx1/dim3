@@ -106,6 +106,12 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 	if (net_setup.mode!=net_mode_none) {
 		if (object_networkable(obj)) net_client_send_projectile_add(obj,weap->name,proj_setup->name,pt,ang);
 	}
+	
+		// setup model drawing, we need
+		// this in case there are effects on
+		// a non-running projectile
+		
+	model_draw_setup_projectile(proj);
 
 		// add in object motion
 
@@ -136,7 +142,7 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 		proj->pnt.x=hpt.x;
 		proj->pnt.y=hpt.y;
 		proj->pnt.z=hpt.z;
-
+		
 		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
 		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
 		proj->contact.obj_uid=contact.obj.uid;

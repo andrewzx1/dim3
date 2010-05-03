@@ -400,6 +400,36 @@ void element_text_field_add(char *str,char *value_str,int max_value_str_sz,int i
 	SDL_mutexV(element_thread_lock);
 }
 
+void element_number_add(char *str,int value,int id,int x,int y,int min,int max)
+{
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_number;
+	
+	element->x=x;
+	element->y=y;
+
+	element->wid=(int)(((float)hud.scale_x)*element_control_draw_short_width);
+	element->high=(int)(((float)hud.scale_x)*element_control_draw_height);
+	
+	element->selectable=TRUE;
+	element->enabled=TRUE;
+	element->hidden=FALSE;
+	
+	strcpy(element->str,str);
+	element->value=value;
+	element->setup.number.min=min;
+	element->setup.number.max=max;
+
+	SDL_mutexV(element_thread_lock);
+}
+
 void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable)
 {
 	element_type	*element;
@@ -819,6 +849,7 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 			return;
 
 		case element_type_text_field:
+		case element_type_number:
 		case element_type_combo:
 		case element_type_slider:
 		case element_type_color:
@@ -1117,6 +1148,101 @@ void element_draw_text_field(element_type *element,int sel_id)
 	else {
 		gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.control_disabled,1.0f);
 	}
+	
+	gl_text_end();
+}
+
+/* =======================================================
+
+      Number Element
+      
+======================================================= */
+
+void element_click_number(element_type *element)
+{
+//	element_open_text_field_id=element->id;
+}
+
+void element_draw_number(element_type *element,int sel_id)
+{
+	int				x,y,ky,lft,lft_mid,rgt,rgt_mid,top,bot;
+	float			alpha;
+	char			txt[256];
+	d3col			gradient_start,gradient_end;
+	
+	x=element->x;
+	y=element->y;
+	
+		// label
+
+	ky=y-(element->high>>1);
+		
+	gl_text_start(font_interface_index,hud.font.text_size_small);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.control_label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.control_label,1.0f);
+	gl_text_end();
+		
+		// control box
+		
+	lft=x+10;
+	rgt=lft+element->wid;
+	top=ky-(element->high>>1);
+	bot=top+element->high;
+	
+	lft_mid=lft+35;
+	rgt_mid=rgt-35;
+	
+	alpha=(element->enabled?1.0f:0.3f);
+
+		// background
+
+	memmove(&gradient_start,&hud.color.control_fill,sizeof(d3col));
+	gradient_end.r=gradient_start.r*element_gradient_factor;
+	gradient_end.g=gradient_start.g*element_gradient_factor;
+	gradient_end.b=gradient_start.b*element_gradient_factor;
+
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,(lft_mid-5),top,&gradient_start,(lft_mid-5),bot,&gradient_end,lft,bot,&gradient_end,alpha);
+	view_draw_next_vertex_object_2D_color_poly(lft_mid,top,&gradient_start,rgt_mid,top,&gradient_start,rgt_mid,bot,&gradient_end,lft_mid,bot,&gradient_end,alpha);
+	view_draw_next_vertex_object_2D_color_poly((rgt_mid+5),top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,(rgt_mid+5),bot,&gradient_end,alpha);
+
+		// outline
+
+	if ((element->id==sel_id) && (element->enabled)) {
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,(lft_mid-5),top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft_mid,rgt_mid,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,(rgt_mid+5),rgt,top,bot);
+	}
+	else {
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,(lft_mid-5),top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft_mid,rgt_mid,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,(rgt_mid+5),rgt,top,bot);
+	}
+
+		// control text
+		
+	x=(lft_mid+rgt_mid)>>1;
+
+	sprintf(txt,"%d",element->value);
+
+	gl_text_start(font_interface_index,hud.font.text_size_small);
+		
+	if (element->enabled) {
+		if (element->id==element_open_text_field_id) {
+			gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&hud.color.control_mouse_over,1.0f);
+		}
+		else {
+			gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&hud.color.control_text,1.0f);
+		}
+	}
+	else {
+		gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&hud.color.control_disabled,1.0f);
+	}
+	
+	x=(lft+(lft_mid-5))>>1;
+	gl_text_draw(x,(ky-1),"-",tx_center,TRUE,&hud.color.control_hilite,1.0f);
+	
+	x=((rgt_mid+5)+rgt)>>1;
+	gl_text_draw(x,(ky-1),"+",tx_center,TRUE,&hud.color.control_hilite,1.0f);
 	
 	gl_text_end();
 }
@@ -2628,6 +2754,9 @@ void element_draw_lock(bool cursor_hilite)
 			case element_type_text_field:
 				element_draw_text_field(element,id);
 				break;
+			case element_type_number:
+				element_draw_number(element,id);
+				break;
 			case element_type_checkbox:
 				element_draw_checkbox(element,id);
 				break;
@@ -2766,6 +2895,9 @@ int element_click_up_lock(int x,int y)
 		
 		case element_type_text_field:
 			element_click_text_field(element);
+			break;
+		case element_type_number:
+			element_click_number(element);
 			break;
 		case element_type_checkbox:
 			element_click_checkbox(element);
@@ -3080,13 +3212,15 @@ bool element_has_table_check(int id)
 	hit=FALSE;
 	element=element_find(id);
 
-	for (n=0;n!=element_table_max_check;n++) {
-		if (element->setup.table.checks[n]!=0x0) {
-			hit=TRUE;
-			break;
+	if (element!=NULL) {
+		for (n=0;n!=element_table_max_check;n++) {
+			if (element->setup.table.checks[n]!=0x0) {
+				hit=TRUE;
+				break;
+			}
 		}
 	}
-
+	
 	SDL_mutexV(element_thread_lock);
 
 	return(hit);

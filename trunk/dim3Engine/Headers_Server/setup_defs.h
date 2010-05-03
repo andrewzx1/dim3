@@ -124,6 +124,7 @@ typedef struct		{
 					
 typedef struct		{
 						int							game_type,score_limit,
+													respawn_secs,game_reset_secs,
 													character_idx,tint_color_idx;
 						char						name[name_str_len];
 						bool						show_names,dedicated;

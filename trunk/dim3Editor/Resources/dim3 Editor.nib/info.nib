@@ -3,13 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>IBFramework Version</key>
-	<string>740</string>
+	<string>762</string>
 	<key>IBLastKnownRelativeProjectPath</key>
 	<string>../dim3Editor.xcodeproj</string>
 	<key>IBOldestOS</key>
 	<integer>4</integer>
 	<key>IBOpenObjects</key>
-	<array/>
+	<array>
+		<integer>10698</integer>
+	</array>
 	<key>IBSystem Version</key>
 	<string>10D573</string>
 	<key>targetFramework</key>
