@@ -118,10 +118,6 @@ bool player_attach_object(char *err_str)
 
 		mesh_idx=map_mesh_find(&map,&obj->pnt);
 		if (mesh_idx!=-1) mesh_triggers(obj,-1,mesh_idx);
-
-			// check for telefrag
-
-		object_telefrag_players(obj,FALSE);
 	}
 	
 		// physic resets

@@ -707,7 +707,7 @@ void view_add_effect_draw_list(int tick)
 	for (n=0;n!=server.count.effect;n++) {
 
 		effect=&server.effects[n];
-
+		
 			// effect inside a mesh that's hidden?
 
 		if (effect->mesh_idx!=-1) {

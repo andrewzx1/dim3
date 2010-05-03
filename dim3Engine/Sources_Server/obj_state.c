@@ -135,9 +135,36 @@ void object_spawn(obj_type *obj,int sub_event)
 	
 	object_reset_prepare(obj);
     
-		// finally call the spawn event
+		// call the spawn event
 		
 	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
+	
+		// and handle any telefragging
+		
+	object_telefrag_players(obj,FALSE);
+}
+
+int object_get_respawn_time(obj_type *obj)
+{
+	int				secs;
+	
+	secs=(obj->status.respawn_tick-game_time_get())/1000;
+	if (secs<0) return(0);
+	
+	return(secs);
+}
+
+void object_check_respawn(obj_type *obj)
+{
+		// auto respawns if dead and in a
+		// network game
+		
+	if (net_setup.mode==net_mode_none) return;
+	if (obj->status.health>0) return;
+	
+	if (obj->status.respawn_tick<game_time_get()) {
+		object_spawn(obj,sd_event_spawn_reborn);
+	}
 }
 
 /* =======================================================
@@ -278,6 +305,10 @@ void object_death(obj_type *obj)
 	if (net_setup.mode!=net_mode_none) {
 		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) net_client_send_death(obj,FALSE);
 	}
+	
+		// setup respawn timer
+		
+	obj->status.respawn_tick=game_time_get()+(setup.network.respawn_secs*1000);
 }
 
 /* =======================================================

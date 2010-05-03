@@ -359,12 +359,22 @@ void network_score_draw(void)
 	
 	gl_text_end();
 	
-		// resume
+		// resuming messages
+		
+	str[0]=0x0;
 		
 	if (server.state==gs_score_limit) {
-	
 		sprintf(str,"Resuming in %d seconds...",score_limit_get_resume_time());
+	}
+	else {
+		player_obj=object_find_uid(server.player_obj_uid);
+		if (player_obj->status.health<=0) {
+			sprintf(str,"Respawning in %d seconds...",object_get_respawn_time(player_obj));
+		
+		}
+	}
 	
+	if (str[0]!=0x0) {
 		gl_text_start(font_hud_index,hud.font.text_size_medium);
 		
 		col.r=col.g=col.b=1.0f;

@@ -945,6 +945,35 @@ void player_thrust_input(obj_type *obj)
 
 /* =======================================================
 
+      Player Death Input
+      
+======================================================= */
+
+void player_death_input(obj_type *obj)
+{
+		// can only respawn by key press
+		// if in single player game
+		
+	if (net_setup.mode!=net_mode_none) return;
+
+		// restart key
+		
+	if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
+		if (!respawn_key_down) {
+			object_spawn(obj,sd_event_spawn_reborn);
+			return;
+		}
+	}
+	else {
+		respawn_key_down=FALSE;
+		return;
+	}
+
+	respawn_key_down=TRUE;
+}
+
+/* =======================================================
+
       Get Player Input
       
 ======================================================= */
@@ -971,18 +1000,8 @@ void player_get_input(void)
 		// respawn
 		
 	if (obj->status.health<=0) {
-		if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
-			if (!respawn_key_down) {
-				object_spawn(obj,sd_event_spawn_reborn);
-				return;
-			}
-		}
-		else {
-			respawn_key_down=FALSE;
-		}
-	}
-	else {
-		respawn_key_down=TRUE;
+		player_death_input(obj);
+		return;
 	}
 
 		// message inputs

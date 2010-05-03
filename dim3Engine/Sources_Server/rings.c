@@ -157,8 +157,13 @@ bool ring_line_spawn(int ring_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int 
 	d3pnt			pt;
 	d3ang			ang;
 
-	if (count<=0) return(TRUE);
-
+		// need more than 1 ring to do effect
+		
+	if (count<=1) {
+		ring_spawn(ring_idx,obj_uid,start_pt,NULL);
+		return(TRUE);
+	}
+	
 		// get angle between lines
 		// right now only do y rotations as two
 		// many rotations can cause math errors
@@ -167,13 +172,19 @@ bool ring_line_spawn(int ring_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int 
 	ang.y=angle_find(start_pt->x,start_pt->z,end_pt->x,end_pt->z);
 	ang.z=0.0f;
 
-		// start rings
+		// create line of rings
+		// we want first ring and last ring
+		// to be at end of lines so divide over
+		// count-1 instead of count
 
 	dx=end_pt->x-start_pt->x;
 	dy=end_pt->y-start_pt->y;
 	dz=end_pt->z-start_pt->z;
+	
+	count--;
 
 	for (n=0;n!=count;n++) {
+		
 		pt.x=start_pt->x+((dx*n)/count);
 		pt.y=start_pt->y+((dy*n)/count);
 		pt.z=start_pt->z+((dz*n)/count);

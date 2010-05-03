@@ -91,6 +91,8 @@ void setup_xml_default(void)
 
 	setup.network.game_type=0;
 	setup.network.score_limit=20;
+	setup.network.game_reset_secs=15;
+	setup.network.respawn_secs=5;
 	
 	setup.debug_console=FALSE;
 	setup.window=FALSE;
@@ -158,6 +160,8 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
 	xml_key_read_int(setup_tag,"Host_Game_Type",&setup.network.game_type);
 	xml_key_read_int(setup_tag,"Host_Score_Limit",&setup.network.score_limit);
+	xml_key_read_int(setup_tag,"Host_Game_Reset_Secs",&setup.network.game_reset_secs);
+	xml_key_read_int(setup_tag,"Host_Respawn_Secs",&setup.network.respawn_secs);
 	xml_key_read_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
 	xml_key_read_boolean(setup_tag,"Network_Dedicated",&setup.network.dedicated);
 	xml_key_read_boolean(setup_tag,"Debug_Console",&setup.debug_console);
@@ -321,6 +325,8 @@ bool setup_xml_write(void)
 	xml_key_write_int("Host_Bot_Skill",setup.network.bot.skill);
 	xml_key_write_int("Host_Game_Type",setup.network.game_type);
 	xml_key_write_int("Host_Score_Limit",setup.network.score_limit);
+	xml_key_write_int("Host_Game_Reset_Secs",setup.network.game_reset_secs);
+	xml_key_write_int("Host_Respawn_Secs",setup.network.respawn_secs);
 	xml_key_write_boolean("Network_Show_Names",setup.network.show_names);
 	xml_key_write_boolean("Network_Dedicated",setup.network.dedicated);
 	xml_key_write_boolean("Debug_Console",setup.debug_console);

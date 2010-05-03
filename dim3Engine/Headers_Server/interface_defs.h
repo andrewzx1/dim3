@@ -43,14 +43,15 @@ and can be sold or given away.
 #define element_type_bitmap						1
 #define element_type_text						2
 #define element_type_text_field					3
-#define element_type_checkbox					4
-#define element_type_combo						5
-#define element_type_slider						6
-#define element_type_table						7
-#define element_type_tab						8
-#define element_type_color						9
-#define element_type_text_box					10
-#define element_type_info_field					11
+#define element_type_number						4
+#define element_type_checkbox					5
+#define element_type_combo						6
+#define element_type_slider						7
+#define element_type_table						8
+#define element_type_tab						9
+#define element_type_color						10
+#define element_type_text_box					11
+#define element_type_info_field					12
 
 //
 // GUI position mode
@@ -93,6 +94,7 @@ and can be sold or given away.
 #define element_control_padding_factor			0.01f
 
 #define element_control_draw_height				0.025f
+#define element_control_draw_short_width		0.15f
 #define element_control_draw_long_width			0.4f
 
 #define element_table_max_image					16
@@ -147,6 +149,10 @@ typedef struct		{
 					} element_text_type;
 
 typedef struct		{
+						int						min,max;
+					} element_number_type;
+					
+typedef struct		{
 						float					value,min,max;
 					} element_slider_type;
 
@@ -178,10 +184,11 @@ typedef struct		{
 						int						line_count,pos_y;
 						bool					scroll_up_ok,scroll_down_ok;
 					} element_text_box_type;
-
+					
 typedef union		{
 						element_button_type		button;
 						element_text_type		text;
+						element_number_type		number;
 						element_slider_type		slider;
 						element_table_type		table;
 						element_tab_type		tab;

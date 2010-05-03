@@ -54,6 +54,8 @@ and can be sold or given away.
 #define host_game_bot_skill_id			21
 
 #define host_game_score_limit_id		22
+#define host_game_game_reset_secs_id	23
+#define host_game_respawn_secs_id		24
 
 #define host_game_option_base			100
 
@@ -71,7 +73,6 @@ extern network_setup_type	net_setup;
 int							host_tab_value,host_map_count,host_first_map_idx;
 char						*host_file_list;
 char						net_game_types[max_net_game+1][name_str_len],
-							bot_count_list[max_net_bot+2][name_str_len],
 							bot_skill_list[6][32]={"Very Easy","Easy","Normal","Hard","Very Hard",""};
 
 /* =======================================================
@@ -255,14 +256,13 @@ void host_game_pane(void)
 void host_options_pane(void)
 {
 	int							n,k,x,y,control_y_add,control_y_sz;
-	char						str[32];
 	bool						on;
 	hud_net_option_type			*option;
 
 		// panel sizes
 
 	control_y_add=element_get_control_high();
-	control_y_sz=(control_y_add+(control_y_add*hud.net_option.noption));
+	control_y_sz=((control_y_add*3)+(control_y_add*hud.net_option.noption));
 	if (hud.net_bot.on) control_y_sz+=(control_y_add*2);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
@@ -272,27 +272,22 @@ void host_options_pane(void)
 
 	if (hud.net_bot.on) {
 
-		for (n=0;n!=(max_net_bot+1);n++) {
-			if (n==0) {
-				strcpy(bot_count_list[n],"None");
-			}
-			else {
-				sprintf(bot_count_list[n],"%d",n);
-			}
-		}
-		bot_count_list[max_net_bot+1][0]=0x0;
-		
-		element_combo_add("Bot Count",(char*)bot_count_list,setup.network.bot.count,host_game_bot_count_id,x,y,TRUE);
+		element_number_add("Bot Count",setup.network.bot.count,host_game_bot_count_id,x,y,0,15);
 		y+=control_y_add;
 
 		element_combo_add("Bot Skill",(char*)bot_skill_list,setup.network.bot.skill,host_game_bot_skill_id,x,y,TRUE);
 		y+=control_y_add;
 	}
 
-		// score limit
+		// score limits and spawn times
 
-	sprintf(str,"%d",setup.network.score_limit);
-	element_text_field_add("Score Limit",str,32,host_game_score_limit_id,x,y,TRUE);
+	element_number_add("Score Limit",setup.network.score_limit,host_game_score_limit_id,x,y,5,100);
+	y+=control_y_add;
+	
+	element_number_add("Game Reset Seconds",setup.network.game_reset_secs,host_game_game_reset_secs_id,x,y,5,30);
+	y+=control_y_add;
+	
+	element_number_add("Respawn Seconds",setup.network.respawn_secs,host_game_respawn_secs_id,x,y,0,30);
 	y+=control_y_add;
 
 		// project options
@@ -325,7 +320,7 @@ void host_info_pane(void)
 	char		str[256];
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=10*control_y_add;
+	control_y_sz=5*control_y_add;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -621,6 +616,16 @@ void host_handle_click(int id)
 			element_get_value_string(host_game_score_limit_id,str);
 			setup.network.score_limit=atoi(str);
 			if (setup.network.score_limit<0) setup.network.score_limit=0;
+			break;
+			
+		case host_game_game_reset_secs_id:
+			element_get_value_string(host_game_game_reset_secs_id,str);
+			setup.network.game_reset_secs=atoi(str);
+			break;
+			
+		case host_game_respawn_secs_id:
+			element_get_value_string(host_game_respawn_secs_id,str);
+			setup.network.respawn_secs=atoi(str);
 			break;
 
 			// buttons
