@@ -1158,9 +1158,27 @@ void element_draw_text_field(element_type *element,int sel_id)
       
 ======================================================= */
 
-void element_click_number(element_type *element)
+void element_click_number(element_type *element,int x,int y)
 {
-//	element_open_text_field_id=element->id;
+	int				lft,lft_mid,rgt,rgt_mid;
+
+		// minus button
+
+	lft=element->x+10;
+	lft_mid=lft+35;
+
+	if ((x>=lft) && (x<=lft_mid)) {
+		if (element->value>element->setup.number.min) element->value--;
+		return;
+	}
+
+	rgt=lft+element->wid;
+	rgt_mid=rgt-35;
+
+	if ((x>=rgt_mid) && (x<=rgt)) {
+		if (element->value<element->setup.number.max) element->value++;
+		return;
+	}
 }
 
 void element_draw_number(element_type *element,int sel_id)
@@ -1168,7 +1186,7 @@ void element_draw_number(element_type *element,int sel_id)
 	int				x,y,ky,lft,lft_mid,rgt,rgt_mid,top,bot;
 	float			alpha;
 	char			txt[256];
-	d3col			gradient_start,gradient_end;
+	d3col			col,gradient_start,gradient_end;
 	
 	x=element->x;
 	y=element->y;
@@ -1189,8 +1207,8 @@ void element_draw_number(element_type *element,int sel_id)
 	top=ky-(element->high>>1);
 	bot=top+element->high;
 	
-	lft_mid=lft+35;
-	rgt_mid=rgt-35;
+	lft_mid=lft+(bot-top);
+	rgt_mid=rgt-(bot-top);
 	
 	alpha=(element->enabled?1.0f:0.3f);
 
@@ -1201,21 +1219,21 @@ void element_draw_number(element_type *element,int sel_id)
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
 
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,(lft_mid-5),top,&gradient_start,(lft_mid-5),bot,&gradient_end,lft,bot,&gradient_end,alpha);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&gradient_start,lft_mid,top,&gradient_start,lft_mid,bot,&gradient_end,lft,bot,&gradient_end,alpha);
 	view_draw_next_vertex_object_2D_color_poly(lft_mid,top,&gradient_start,rgt_mid,top,&gradient_start,rgt_mid,bot,&gradient_end,lft_mid,bot,&gradient_end,alpha);
-	view_draw_next_vertex_object_2D_color_poly((rgt_mid+5),top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,(rgt_mid+5),bot,&gradient_end,alpha);
+	view_draw_next_vertex_object_2D_color_poly(rgt_mid,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,rgt_mid,bot,&gradient_end,alpha);
 
 		// outline
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,(lft_mid-5),top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft,lft_mid,top,bot);
 		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,lft_mid,rgt_mid,top,bot);
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,(rgt_mid+5),rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_mouse_over,alpha,rgt_mid,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,(lft_mid-5),top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft,lft_mid,top,bot);
 		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,lft_mid,rgt_mid,top,bot);
-		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,(rgt_mid+5),rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&hud.color.control_outline,alpha,rgt_mid,rgt,top,bot);
 	}
 
 		// control text
@@ -1238,13 +1256,27 @@ void element_draw_number(element_type *element,int sel_id)
 		gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&hud.color.control_disabled,1.0f);
 	}
 	
-	x=(lft+(lft_mid-5))>>1;
-	gl_text_draw(x,(ky-1),"-",tx_center,TRUE,&hud.color.control_hilite,1.0f);
-	
-	x=((rgt_mid+5)+rgt)>>1;
-	gl_text_draw(x,(ky-1),"+",tx_center,TRUE,&hud.color.control_hilite,1.0f);
-	
 	gl_text_end();
+
+		// arrows
+
+	lft+=4;
+	lft_mid-=4;
+	top+=4;
+	bot-=4;
+
+	col.r=col.g=col.b=0.0f;
+
+	alpha=(element->value>element->setup.number.min)?1.0f:0.1f;
+	view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,lft_mid,top,bot,3);
+	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,lft_mid,top,bot,3);
+
+	rgt_mid+=4;
+	rgt-=4;
+
+	alpha=(element->value<element->setup.number.max)?1.0f:0.1f;
+	view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,rgt_mid,rgt,top,bot,1);
+	view_draw_next_vertex_object_2D_line_trig(&col,alpha,rgt_mid,rgt,top,bot,1);
 }
 
 /* =======================================================
@@ -1478,14 +1510,14 @@ void element_draw_combo(element_type *element,int sel_id)
 	bot-=4;
 
 	if ((element->id==element_open_combo_id) || ((element->id==sel_id) && (element->enabled))) {
-		view_draw_next_vertex_object_2D_color_trig(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot,FALSE);
+		view_draw_next_vertex_object_2D_color_trig(&hud.color.control_mouse_over,alpha,lft,rgt,top,bot,2);
 	}
 	else {
-		view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,FALSE);
+		view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,2);
 	}
 
 	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,FALSE);
+	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,2);
 
 		// control text
 
@@ -2066,10 +2098,10 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	bot=top+16;
 
 	alpha=up_ok?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,TRUE);
+	view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,0);
 
 	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,TRUE);
+	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,0);
 
 		// scroll down
 		
@@ -2080,10 +2112,10 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	top=bot-16;
 
 	alpha=down_ok?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,FALSE);
+	view_draw_next_vertex_object_2D_color_trig(&hud.color.control_hilite,alpha,lft,rgt,top,bot,2);
 
 	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,FALSE);
+	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,2);
 	
 	return(pos_my);
 }
@@ -2897,7 +2929,7 @@ int element_click_up_lock(int x,int y)
 			element_click_text_field(element);
 			break;
 		case element_type_number:
-			element_click_number(element);
+			element_click_number(element,x,y);
 			break;
 		case element_type_checkbox:
 			element_click_checkbox(element);
