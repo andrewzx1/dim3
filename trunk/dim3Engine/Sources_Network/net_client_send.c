@@ -102,6 +102,85 @@ void net_client_request_group_synch_ping(int remote_uid)
 
 /* =======================================================
 
+      Object Death and Spawn Messages
+      
+======================================================= */
+
+void net_client_send_spawn(obj_type *obj,int sub_event)
+{
+	network_request_remote_spawn	spawn;
+
+	spawn.remote_obj_uid=htons((short)obj->remote.uid);
+	
+		// position
+		
+	spawn.pnt_x=htonl(obj->pnt.x);
+	spawn.pnt_y=htonl(obj->pnt.y);
+	spawn.pnt_z=htonl(obj->pnt.z);
+	
+	spawn.fp_ang_x=htonf(obj->ang.x);
+	spawn.fp_ang_y=htonf(obj->ang.y);
+	spawn.fp_ang_z=htonf(obj->ang.z);
+
+		// spawn sub event
+
+	spawn.sub_event=htons((short)sub_event);
+
+		// send spawn
+		
+	if (net_setup.mode==net_mode_client) {
+		net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_spawn,net_setup.player_uid,(unsigned char*)&spawn,sizeof(network_request_remote_spawn));
+		return;
+	}
+
+	net_host_player_send_message_others(net_setup.player_uid,net_action_request_remote_spawn,net_setup.player_uid,(unsigned char*)&spawn,sizeof(network_request_remote_spawn));
+}
+
+void net_client_send_death(obj_type *obj,bool telefrag)
+{
+	int								send_remote_kill_uid;
+	obj_type						*chk_obj;
+	network_request_remote_death	death;
+	
+	death.remote_obj_uid=htons((short)obj->remote.uid);
+	
+		// normal deaths
+
+	if (!telefrag) {
+		send_remote_kill_uid=-1;
+		
+		if (obj->damage_obj_uid!=-1) {
+			chk_obj=object_find_uid(obj->damage_obj_uid);
+			if (chk_obj!=NULL) {
+				if ((chk_obj->type_idx==object_type_player) || (chk_obj->type_idx==object_type_remote)) {
+					send_remote_kill_uid=chk_obj->remote.uid;
+				}
+			}
+		}
+		
+		death.remote_killer_obj_uid=htons((short)send_remote_kill_uid);
+		death.telefrag=htons(0);
+	}
+
+		// telefrag deaths
+
+	else {
+		chk_obj=object_find_uid(obj->damage_obj_uid);		// only remote objects can telefrag each other, so no other checks necessary
+		
+		death.remote_killer_obj_uid=htons((short)chk_obj->remote.uid);
+		death.telefrag=htons(1);
+	}
+
+	if (net_setup.mode==net_mode_client) {
+		net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_death,net_setup.player_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
+		return;
+	}
+
+	net_host_player_send_message_others(net_setup.player_uid,net_action_request_remote_death,net_setup.player_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
+}
+
+/* =======================================================
+
       Object Update Messages
       
 ======================================================= */
@@ -228,49 +307,6 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 	}
 
 	net_host_client_handle_update(net_setup.player_uid,&update);
-}
-
-void net_client_send_death(obj_type *obj,bool telefrag)
-{
-	int								send_remote_kill_uid;
-	obj_type						*chk_obj;
-	network_request_remote_death	death;
-	
-	death.remote_obj_uid=htons((short)obj->remote.uid);
-	
-		// normal deaths
-
-	if (!telefrag) {
-		send_remote_kill_uid=-1;
-		
-		if (obj->damage_obj_uid!=-1) {
-			chk_obj=object_find_uid(obj->damage_obj_uid);
-			if (chk_obj!=NULL) {
-				if ((chk_obj->type_idx==object_type_player) || (chk_obj->type_idx==object_type_remote)) {
-					send_remote_kill_uid=chk_obj->remote.uid;
-				}
-			}
-		}
-		
-		death.remote_killer_obj_uid=htons((short)send_remote_kill_uid);
-		death.telefrag=htons(0);
-	}
-
-		// telefrag deaths
-
-	else {
-		chk_obj=object_find_uid(obj->damage_obj_uid);		// only remote objects can telefrag each other, so no other checks necessary
-		
-		death.remote_killer_obj_uid=htons((short)chk_obj->remote.uid);
-		death.telefrag=htons(1);
-	}
-
-	if (net_setup.mode==net_mode_client) {
-		net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_death,net_setup.player_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
-		return;
-	}
-
-	net_host_player_send_message_others(net_setup.player_uid,net_action_request_remote_death,net_setup.player_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
 }
 
 /* =======================================================
