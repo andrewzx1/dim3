@@ -274,7 +274,7 @@ void run_objects_no_slice(void)
 
 	for (n=0;n!=server.count.obj;n++) {
 	
-		object_check_respawn(obj);
+		if (net_setup.mode!=net_mode_none) object_check_respawn(obj);
 
 		if (!obj->hidden) {
 			

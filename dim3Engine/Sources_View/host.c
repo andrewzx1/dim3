@@ -281,7 +281,7 @@ void host_options_pane(void)
 
 		// score limits and spawn times
 
-	element_number_add("Score Limit",setup.network.score_limit,host_game_score_limit_id,x,y,5,100);
+	element_number_add("Score Limit",setup.network.score_limit,host_game_score_limit_id,x,y,1,100);
 	y+=control_y_add;
 	
 	element_number_add("Game Reset Seconds",setup.network.game_reset_secs,host_game_game_reset_secs_id,x,y,5,30);
@@ -403,7 +403,7 @@ void host_create_pane(void)
 	
 		// enable host button
 		
-	element_enable(host_button_host_id,element_has_table_check(host_table_id));
+	if (pane==host_pane_game) element_enable(host_button_host_id,element_has_table_check(host_table_id));
 }
 
 /* =======================================================
