@@ -166,6 +166,7 @@ int net_host_client_handler_thread(void *arg)
 				net_host_client_handle_update(player_uid,(network_request_remote_update*)msg);
 				break;
 				
+			case net_action_request_remote_spawn:
 			case net_action_request_remote_death:
 			case net_action_request_remote_chat:
 			case net_action_request_remote_sound:

@@ -309,6 +309,108 @@ void remote_host_exit(void)
 
 /* =======================================================
 
+      Remote Spawn and Death
+      
+======================================================= */
+
+void remote_spawn(network_request_remote_spawn *spawn)
+{
+	int								remote_obj_uid,sub_event;
+	obj_type						*obj;
+	
+	remote_obj_uid=(signed short)ntohs(spawn->remote_obj_uid);
+	
+	obj=object_find_remote_uid(remote_obj_uid);
+	if (obj==NULL) return;
+
+		// update position
+
+	obj->pnt.x=ntohl(spawn->pnt_x);
+	obj->pnt.y=ntohl(spawn->pnt_y);
+	obj->pnt.z=ntohl(spawn->pnt_z);
+				
+	obj->ang.x=ntohf(spawn->fp_ang_x);
+	obj->ang.y=ntohf(spawn->fp_ang_y);
+	obj->ang.z=ntohf(spawn->fp_ang_z);
+		
+		// call the spawn
+
+	sub_event=(signed short)ntohs(spawn->sub_event);
+		
+	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
+}
+
+void remote_death(network_request_remote_death *death)
+{
+	int					remote_obj_uid,remote_killer_obj_uid;
+	bool				telefrag;
+	obj_type			*obj,*kill_obj,*telefrag_obj,*player_obj;
+	
+	remote_obj_uid=(signed short)ntohs(death->remote_obj_uid);
+
+	obj=object_find_remote_uid(remote_obj_uid);
+	if (obj==NULL) return;
+	
+		// set health to obj
+		// this stops dead remotes from picking things up
+		
+	obj->status.health=0;
+
+		// normal death
+		
+	telefrag=(ntohs(death->telefrag)!=0);
+
+	if (!telefrag) {
+		
+			// get killing remote uid
+			
+		remote_killer_obj_uid=(signed short)ntohs(death->remote_killer_obj_uid);
+		
+			// find kill object
+			
+		obj->damage_obj_uid=-1;
+		
+		if (remote_killer_obj_uid!=-1) {
+			kill_obj=object_find_remote_uid(remote_killer_obj_uid);
+			if (kill_obj!=NULL) obj->damage_obj_uid=kill_obj->uid;
+		}
+
+			// send death/suicide remote event
+
+		player_obj=object_find_uid(server.player_obj_uid);
+		if ((obj->damage_obj_uid==-1) || (obj->damage_obj_uid==obj->uid)) {
+			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_suicide,obj->uid);
+		}
+		else {
+			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_death,obj->uid);
+		}
+	}
+
+		// telefrag death
+
+	else {
+		remote_killer_obj_uid=(signed short)ntohs(death->remote_killer_obj_uid);
+
+		telefrag_obj=object_find_remote_uid(remote_killer_obj_uid);
+		object_telefrag(telefrag_obj,obj);
+			
+			// send telefrag remote event
+				
+		player_obj=object_find_uid(server.player_obj_uid);
+		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_telefrag,telefrag_obj->uid);
+	}
+		
+		// change the score
+		
+	object_score_death(obj);
+	
+		// send alert to all objects with watches on
+
+	object_watch_death_alert(obj);
+}
+
+/* =======================================================
+
       Remote Updates
       
 ======================================================= */
@@ -453,75 +555,6 @@ void remote_update(network_request_remote_update *update)
 		// triggers
 		
 	remote_update_current_mesh(obj);
-}
-
-void remote_death(network_request_remote_death *death)
-{
-	int					remote_obj_uid,remote_killer_obj_uid;
-	bool				telefrag;
-	obj_type			*obj,*kill_obj,*telefrag_obj,*player_obj;
-	
-	remote_obj_uid=(signed short)ntohs(death->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
-	if (obj==NULL) return;
-	
-		// set health to obj
-		// this stops dead remotes from picking things up
-		
-	obj->status.health=0;
-
-		// normal death
-		
-	telefrag=(ntohs(death->telefrag)!=0);
-
-	if (!telefrag) {
-		
-			// get killing remote uid
-			
-		remote_killer_obj_uid=(signed short)ntohs(death->remote_killer_obj_uid);
-		
-			// find kill object
-			
-		obj->damage_obj_uid=-1;
-		
-		if (remote_killer_obj_uid!=-1) {
-			kill_obj=object_find_remote_uid(remote_killer_obj_uid);
-			if (kill_obj!=NULL) obj->damage_obj_uid=kill_obj->uid;
-		}
-
-			// send death/suicide remote event
-
-		player_obj=object_find_uid(server.player_obj_uid);
-		if ((obj->damage_obj_uid==-1) || (obj->damage_obj_uid==obj->uid)) {
-			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_suicide,obj->uid);
-		}
-		else {
-			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_death,obj->uid);
-		}
-	}
-
-		// telefrag death
-
-	else {
-		remote_killer_obj_uid=(signed short)ntohs(death->remote_killer_obj_uid);
-
-		telefrag_obj=object_find_remote_uid(remote_killer_obj_uid);
-		object_telefrag(telefrag_obj,obj);
-			
-			// send telefrag remote event
-				
-		player_obj=object_find_uid(server.player_obj_uid);
-		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_telefrag,telefrag_obj->uid);
-	}
-		
-		// change the score
-		
-	object_score_death(obj);
-	
-		// send alert to all objects with watches on
-
-	object_watch_death_alert(obj);
 }
 
 /* =======================================================
@@ -834,13 +867,17 @@ bool remote_network_get_updates(void)
 			case net_action_request_remote_remove:
 				remote_remove(player_uid,TRUE);
 				break;
-			
-			case net_action_request_remote_update:
-				remote_update((network_request_remote_update*)msg);
+				
+			case net_action_request_remote_spawn:
+				remote_spawn((network_request_remote_spawn*)msg);
 				break;
 				
 			case net_action_request_remote_death:
 				remote_death((network_request_remote_death*)msg);
+				break;
+			
+			case net_action_request_remote_update:
+				remote_update((network_request_remote_update*)msg);
 				break;
 				
 			case net_action_request_remote_chat:

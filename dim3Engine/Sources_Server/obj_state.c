@@ -138,6 +138,14 @@ void object_spawn(obj_type *obj,int sub_event)
 		// call the spawn event
 		
 	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
+
+		// if this is the player, then make
+		// sure to call the spawn event on other
+		// machines
+
+	if (net_setup.mode!=net_mode_none) {
+		if (obj->uid==server.player_obj_uid) net_client_send_spawn(obj,sub_event);
+	}
 	
 		// and handle any telefragging
 		

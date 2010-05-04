@@ -173,20 +173,21 @@ typedef struct		{
 #define net_action_request_leave						8
 #define net_action_request_remote_add					9
 #define net_action_request_remote_remove				10
-#define net_action_request_remote_update				11
+#define net_action_request_remote_spawn					11
 #define net_action_request_remote_death					12
-#define net_action_request_remote_telefrag				13
-#define net_action_request_remote_chat					14
-#define net_action_request_remote_sound					15
-#define net_action_request_remote_fire					16
-#define net_action_request_remote_pickup				17
-#define net_action_request_remote_click					18
-#define net_action_request_latency_ping					19
-#define net_action_reply_latency_ping					20
-#define net_action_request_host_exit					21
-#define net_action_request_group_synch					22
-#define net_action_reply_group_synch					23
-#define net_action_request_game_score_limit				24
+#define net_action_request_remote_update				13
+#define net_action_request_remote_telefrag				14
+#define net_action_request_remote_chat					15
+#define net_action_request_remote_sound					16
+#define net_action_request_remote_fire					17
+#define net_action_request_remote_pickup				18
+#define net_action_request_remote_click					19
+#define net_action_request_latency_ping					20
+#define net_action_reply_latency_ping					21
+#define net_action_request_host_exit					22
+#define net_action_request_group_synch					23
+#define net_action_reply_group_synch					24
+#define net_action_request_game_score_limit				25
 
 //
 // remote fire types
@@ -283,6 +284,16 @@ typedef struct		{
 //
 				
 typedef struct		{
+						short							remote_obj_uid,sub_event;
+						int								pnt_x,pnt_y,pnt_z,
+														fp_ang_x,fp_ang_y,fp_ang_z;
+					} network_request_remote_spawn;
+
+typedef struct		{
+						short							remote_obj_uid,remote_killer_obj_uid,telefrag;
+					} network_request_remote_death;
+
+typedef struct		{
 						int								model_tick;
 						short							model_mode,
 														model_animate_idx,model_animate_next_idx,model_pose_move_idx,
@@ -308,10 +319,6 @@ typedef struct		{
 						network_request_animation		animation[max_model_blend_animation];
 						network_request_dynamic_bone	dynamic_bones[max_model_dynamic_bone];
 					} network_request_remote_update;
-
-typedef struct		{
-						short							remote_obj_uid,remote_killer_obj_uid,telefrag;
-					} network_request_remote_death;
 					
 typedef struct		{
 						short							remote_obj_uid;
