@@ -375,10 +375,12 @@ void network_score_draw(void)
 	}
 	
 	if (str[0]!=0x0) {
+	//	view_draw_next_vertex_object_2D_color_poly(lx,ty,col,rx,ty,col,rx,by,&col2,lx,by,&col2,alpha);
+
 		gl_text_start(font_hud_index,hud.font.text_size_medium);
 		
 		col.r=col.g=col.b=1.0f;
-		gl_text_draw((hud.scale_x-5),(hud.scale_y-5),str,tx_right,FALSE,&col,1.0f);
+		gl_text_draw((hud.scale_x-10),(hud.scale_y-5),str,tx_right,FALSE,&col,1.0f);
 		
 		gl_text_end();
 	}

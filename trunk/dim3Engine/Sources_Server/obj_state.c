@@ -142,6 +142,10 @@ void object_spawn(obj_type *obj,int sub_event)
 		// and handle any telefragging
 		
 	object_telefrag_players(obj,FALSE);
+	
+		// can't respawn until we die
+		
+	obj->status.respawn_tick=-1;
 }
 
 int object_get_respawn_time(obj_type *obj)
@@ -156,12 +160,17 @@ int object_get_respawn_time(obj_type *obj)
 
 void object_check_respawn(obj_type *obj)
 {
-		// auto respawns if dead and in a
-		// network game
+		// only players and bots
+		// can respawn, remotes handle their own
+		// respawning
 		
-	if (net_setup.mode==net_mode_none) return;
-	if (obj->status.health>0) return;
+	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_bot_multiplayer)) return;
 	
+	if (obj->status.health>0) return;
+	if (obj->status.respawn_tick==-1) return;
+	
+		// time to respawn?
+		
 	if (obj->status.respawn_tick<game_time_get()) {
 		object_spawn(obj,sd_event_spawn_reborn);
 	}
