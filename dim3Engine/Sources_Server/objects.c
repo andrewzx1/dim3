@@ -1062,8 +1062,8 @@ void spot_start_attach(void)
 void spot_add_multiplayer_bots(void)
 {
 	int				n,uid,spot_idx;
-	char			name[name_str_len],err_str[256];
-	spot_type		spot;
+	char			err_str[256];
+	spot_type		spot,*map_spot;
 	obj_type		*obj;
 
 		// only spawn on hosts
@@ -1078,6 +1078,8 @@ void spot_add_multiplayer_bots(void)
 
 	for (n=0;n!=setup.network.bot.count;n++) {
 	
+			// setup a fake spot for object spawning
+			
 		if (hud.net_bot.bots[n].name[0]!=0x0) {
 			strcpy(spot.attach_name,hud.net_bot.bots[n].name);
 		}
@@ -1092,16 +1094,15 @@ void spot_add_multiplayer_bots(void)
 		uid=object_start(&spot,object_type_bot_multiplayer,bt_map,-1,err_str);
 		if (uid==-1) continue;
 		
+			// position the bot for initial place
+			
 		obj=object_find_uid(uid);
 		
-		strcpy(name,"Spawn");
-		if (obj->spawn_spot_name[0]!=0x0) strcpy(name,obj->spawn_spot_name);
-		
-		spot_idx=map_find_random_spot(&map,name,"Spawn");
+		spot_idx=object_find_spawn_spot(obj,err_str);
 		if (spot_idx==-1) continue;
 		
-		memmove(&spot.pnt,&map.spots[spot_idx].pnt,sizeof(d3pnt));
-		memmove(&spot.ang,&map.spots[spot_idx].ang,sizeof(d3ang));
+		map_spot=&map.spots[spot_idx];
+		object_set_position(obj,map_spot->pnt.x,map_spot->pnt.y,map_spot->pnt.z,map_spot->ang.y,0);
 	}
 }
 

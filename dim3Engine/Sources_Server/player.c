@@ -71,20 +71,8 @@ bool player_attach_object(char *err_str)
 			}
 		}
 		else {
-			if (obj->spawn_spot_name[0]==0x0) {
-				spot_idx=map_find_random_spot(&map,NULL,"Spawn");
-				if (spot_idx==-1) {
-					strcpy(err_str,"Could not find spot: *-Spawn");
-					return(FALSE);
-				}
-			}
-			else {
-				spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,"Spawn");
-				if (spot_idx==-1) {
-					sprintf(err_str,"Could not find spot: %s-Spawn",obj->spawn_spot_name);
-					return(FALSE);
-				}
-			}
+			spot_idx=object_find_spawn_spot(obj,err_str);
+			if (spot_idx==-1) return(FALSE);
 		}
 
 			// get spawn spot position

@@ -122,7 +122,7 @@ void object_spawn(obj_type *obj,int sub_event)
 			// reposition network games
 			
 		else {
-			idx=object_find_network_spawn_spot(obj,err_str);
+			idx=object_find_spawn_spot(obj,err_str);
 			if (idx!=-1) {
 				spot=&map.spots[idx];
 				object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
@@ -147,13 +147,13 @@ void object_spawn(obj_type *obj,int sub_event)
 		if (obj->uid==server.player_obj_uid) net_client_send_spawn(obj,sub_event);
 	}
 	
-		// and handle any telefragging
-		
-	object_telefrag_players(obj,FALSE);
-	
 		// can't respawn until we die
 		
 	obj->status.respawn_tick=-1;
+	
+		// and handle any telefragging
+		
+	object_telefrag_players(obj,FALSE);
 }
 
 int object_get_respawn_time(obj_type *obj)

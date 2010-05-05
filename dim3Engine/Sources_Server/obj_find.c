@@ -310,43 +310,54 @@ int object_find_uid_by_stood_on_object_uid(int stand_obj_uid)
       
 ======================================================= */
 
-int object_find_network_spawn_spot(obj_type *obj,char *err_str)
+int object_find_spawn_spot(obj_type *obj,char *err_str)
 {
-	int			idx;
+	int			spot_idx;
 	
-		// network spots
+		// spots when not in a network game
 		
 	if (net_setup.mode==net_mode_none) {
-		idx=map_find_random_spot(&map,map.info.player_start_name,map.info.player_start_type);
-		if (idx==-1) {
-			sprintf(err_str,"Could not find network spawn spot with name-type: %s-%s",map.info.player_start_name,map.info.player_start_type);
+	
+			// if this object is the player, then spawn
+			// at the player start
+		
+		if (obj->uid==server.player_obj_uid) {
+			spot_idx=map_find_random_spot(&map,map.info.player_start_name,map.info.player_start_type);
+			if (spot_idx!=-1) return(spot_idx);
+			
+			sprintf(err_str,"Could not find spot: %s-%s",map.info.player_start_name,map.info.player_start_type);
 			return(-1);
 		}
-		return(idx);
-	}
-		
-		// original spots
-		
-	if (obj->spawn_spot_name[0]==0x0) {
-		idx=map_find_random_spot(&map,NULL,"Spawn");
-		if (idx==-1) {
-			strcpy(err_str,"Could not find network spawn spot with name-type: *-Spawn");
-			return(-1);
-		}
-		return(idx);
-	}
-
 	
-		// random spots
+			// otherwise, any spawn spot
+			
+		spot_idx=map_find_random_spot(&map,NULL,"Spawn");
+		if (spot_idx!=-1) return(spot_idx);
 		
-	idx=map_find_random_spot(&map,obj->spawn_spot_name,"Spawn");
+		strcpy(err_str,"Could not find network spawn spot with name-type: *-Spawn");
+		return(-1);
+	}
 	
-	if (idx==-1) {
+		// spots when in a network game
+		
+		// if we have a spot type (for instance, network games
+		// need to start objects at the right place) then look for that
+		
+	if (obj->spawn_spot_name[0]!=0x0) {
+		spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,"Spawn");
+		if (spot_idx!=-1) return(spot_idx);
+	
 		sprintf(err_str,"Could not find network spawn spot with name-type: %s-Spawn",obj->spawn_spot_name);
 		return(-1);
 	}
 	
-	return(idx);
+		// otherwise any spawn spot
+			
+	spot_idx=map_find_random_spot(&map,NULL,"Spawn");
+	if (spot_idx!=-1) return(spot_idx);
+		
+	strcpy(err_str,"Could not find network spawn spot with name-type: *-Spawn");
+	return(-1);
 }
 
 /* =======================================================
