@@ -74,10 +74,11 @@ int network_score_get_list_high(int nscore,int *fnt_sz)
 	return(high);
 }
 
-void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,int by,d3col *col,int fnt_sz,bool header)
+void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,int by,d3col *col,int fnt_sz,bool header,bool winner)
 {
+	int			x,y,k;
 	char		txt[256];
-	float		alpha;
+	float		alpha,f_flash;
 	d3col		col2;
 	
 		// background
@@ -105,6 +106,29 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	gl_text_draw((lx+5),(by+1),name,tx_left,FALSE,&col2,1.0f);
 	gl_text_draw((rx-5),(by+1),txt,tx_right,FALSE,&col2,1.0f);
 	gl_text_end();
+	
+		// winner status
+			
+	if (!winner) return;
+	
+	lx=(lx+5)+gl_text_get_string_width(font_hud_index,fnt_sz,name);
+	rx=(rx-5)-gl_text_get_string_width(font_hud_index,fnt_sz,txt);
+	
+	k=game_time_get_raw()%2000;
+	if (k>=1000) k=2000-k;
+	f_flash=0.5f*((float)k/1000.0f);
+	
+	col2.r=f_flash;
+	col2.g=f_flash;
+	col2.b=f_flash;
+	
+	x=(lx+rx)>>1;
+	y=(ty+by)>>1;
+	
+	gl_text_start(font_hud_index,((fnt_sz*2)/3));
+	gl_text_draw(x,y,"Winner!",tx_center,TRUE,&col2,1.0f);
+	gl_text_end();
+
 }
 
 /* =======================================================
@@ -150,20 +174,20 @@ int network_score_players_draw(bool use_teams)
 	for (n=0;n!=nscore;n++) {
 		obj=&server.objs[sort_idx[n]];
 		object_get_tint(obj,&col);
-		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),&col,fnt_sz,FALSE);
+		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),&col,fnt_sz,FALSE,((server.state==gs_score_limit)&&(n==0)));
 		y+=(yadd+3);
 	}
 	
 	return(sort_idx[0]);
 }
 
-void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_score,d3col *team_col,int lx,int rx,int y,int yadd,int fnt_sz)
+void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_score,d3col *team_col,int lx,int rx,int y,int yadd,int fnt_sz,bool winner)
 {
 	int				n,nscore;
 	short			sort_idx[max_object];
 	obj_type		*obj;
 	
-	network_score_single_name_draw(team_name,team_score,lx,rx,y,(y+yadd),team_col,fnt_sz,TRUE);
+	network_score_single_name_draw(team_name,team_score,lx,rx,y,(y+yadd),team_col,fnt_sz,TRUE,winner);
 	
 		// clear scores
 		
@@ -192,7 +216,7 @@ void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_
 		if (sort_idx[n]!=-1) {
 			y+=(yadd+3);
 			obj=&server.objs[sort_idx[n]];
-			network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),team_col,fnt_sz,FALSE);
+			network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),team_col,fnt_sz,FALSE,FALSE);
 		}
 	}
 }
@@ -201,6 +225,7 @@ int network_score_teams_draw(void)
 {
 	int				n,lx,rx,y,xadd,xsz,yadd,fnt_sz,
 					red_score,blue_score,red_count,blue_count,max_count;
+	bool			winner;
 	d3col			col;
 	obj_type		*obj;
 
@@ -249,7 +274,8 @@ int network_score_teams_draw(void)
 	col.r=1.0f;
 	col.g=col.b=0.0f;
 	
-	network_score_teams_draw_single_team(net_team_red,"Red Team",red_score,&col,lx,rx,y,yadd,fnt_sz);
+	winner=((server.state==gs_score_limit) && (red_score>blue_score));
+	network_score_teams_draw_single_team(net_team_red,"Red Team",red_score,&col,lx,rx,y,yadd,fnt_sz,winner);
 
 		// blue box
 		
@@ -259,7 +285,8 @@ int network_score_teams_draw(void)
 	col.b=1.0f;
 	col.r=col.g=0.0f;
 	
-	network_score_teams_draw_single_team(net_team_blue,"Blue Team",blue_score,&col,lx,rx,y,yadd,fnt_sz);
+	winner=((server.state==gs_score_limit) && (blue_score>red_score));
+	network_score_teams_draw_single_team(net_team_blue,"Blue Team",blue_score,&col,lx,rx,y,yadd,fnt_sz,winner);
 	
 		// return winning team
 		
@@ -270,9 +297,8 @@ int network_score_teams_draw(void)
 
 void network_score_draw(void)
 {
-	int				k,y,win_idx;
-	float			f_flash;
-	char			str[256],str2[256],team_name[32];
+	int				y,win_idx;
+	char			str[256];
 	bool			use_teams;
 	d3col			col;
 	obj_type		*player_obj;
@@ -311,52 +337,16 @@ void network_score_draw(void)
 		win_idx=network_score_teams_draw();
 	}
 	
-		// won message
-		
-	str[0]=0x0;
-	col.r=col.g=col.b=1.0f;
-	
-	if (server.state==gs_score_limit) {
-	
-		if (!use_teams) {
-			sprintf(str,"Player %s Won!",server.objs[win_idx].name);
-			object_get_tint(&server.objs[win_idx],&col);
-		}
-		else {
-			object_team_get_name(win_idx,team_name);
-			sprintf(str,"%s Team Won!",team_name);
-			object_team_get_tint(win_idx,&col);
-		}
-		
-			// flash won message
-			
-		k=game_time_get_raw()%2000;
-		if (k>=1000) k=2000-k;
-		f_flash=0.5f*((float)k/1000.0f);
-		
-		col.r=col.r+f_flash;
-		col.g=col.g+f_flash;
-		col.b=col.b+f_flash;
-	}
-
 		// map message
 		
-	sprintf(str2,"%s at %s",hud.net_game.games[net_setup.game_idx].name,map.info.name);
-	
-		// titles
-		
 	y=gl_text_get_char_height(hud.font.text_size_large);
-	
-	gl_text_start(font_hud_index,hud.font.text_size_large);
-	
-	if (str[0]!=0x0) {
-		gl_text_draw((hud.scale_x>>1),y,str,tx_center,TRUE,&col,1.0f);
-		y+=y;
-	}
-	
+		
 	col.r=col.g=col.b=1.0f;
-	gl_text_draw((hud.scale_x>>1),y,str2,tx_center,TRUE,&col,1.0f);
-	
+
+	sprintf(str,"%s at %s",hud.net_game.games[net_setup.game_idx].name,map.info.name);
+		
+	gl_text_start(font_hud_index,hud.font.text_size_large);
+	gl_text_draw((hud.scale_x>>1),y,str,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	
 		// resuming messages
@@ -375,13 +365,8 @@ void network_score_draw(void)
 	}
 	
 	if (str[0]!=0x0) {
-	//	view_draw_next_vertex_object_2D_color_poly(lx,ty,col,rx,ty,col,rx,by,&col2,lx,by,&col2,alpha);
-
 		gl_text_start(font_hud_index,hud.font.text_size_medium);
-		
-		col.r=col.g=col.b=1.0f;
-		gl_text_draw((hud.scale_x-10),(hud.scale_y-5),str,tx_right,FALSE,&col,1.0f);
-		
+		gl_text_draw((hud.scale_x>>1),(y+y),str,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
 }
