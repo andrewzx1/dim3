@@ -35,6 +35,7 @@ and can be sold or given away.
 #include "remotes.h"
 #include "weapons.h"
 #include "cameras.h"
+#include "interfaces.h"
 #include "inputs.h"
 
 extern map_type				map;
@@ -52,6 +53,8 @@ bool						weapon_change_key_down,weapon_target_key_down,weapon_zoom_key_down,
 							fire_key_down[4],command_key_down[20],player_key_down[20];
 
 extern void chat_add_message(char *name,char *str,d3col *col);
+extern void game_end(void);
+extern void map_end(void);
 
 /* =======================================================
 
