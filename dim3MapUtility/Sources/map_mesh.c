@@ -93,7 +93,6 @@ int map_mesh_add(map_type *map)
 	mesh->msg.map_change_on=FALSE;
 	mesh->msg.map_name[0]=0x0;
 	mesh->msg.map_spot_name[0]=0x0;
-	mesh->msg.map_spot_type[0]=0x0;
 	
 	mesh->nvertex=0;
 	mesh->vertexes=NULL;

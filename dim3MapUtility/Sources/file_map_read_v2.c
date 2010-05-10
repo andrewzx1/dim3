@@ -36,6 +36,7 @@ extern char				media_type_str[][32],
 						gl_fog_type_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
+						spot_type_str[][32],
 						skill_type_str[][32],
 						map_bump_mode_str[][32];
 
@@ -245,7 +246,6 @@ bool decode_map_v2_xml(map_type *map,int map_head)
             portal->msg.entry_id=portal->msg.exit_id=0;
 			portal->msg.map_name[0]=0x0;
 			strcpy(portal->msg.map_spot_name,"Start");
-			strcpy(portal->msg.map_spot_type,"Player");
             
             msg_tag=xml_findfirstchild("Messages",portal_tag);
             if (msg_tag!=-1) {
@@ -269,7 +269,6 @@ bool decode_map_v2_xml(map_type *map,int map_head)
                     portal->msg.map_change_on=xml_get_attribute_boolean(tag,"on");
 					xml_get_attribute_text(tag,"name", portal->msg.map_name,name_str_len);
 					xml_get_attribute_text(tag,"spot_name", portal->msg.map_spot_name,name_str_len);
-					xml_get_attribute_text(tag,"spot_type", portal->msg.map_spot_type,name_str_len);
                 }
             }
 
@@ -508,7 +507,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					xml_get_attribute_3_coord_int(obj_tag,"c3",&spot->pnt.x,&spot->pnt.y,&spot->pnt.z);
 					
 					xml_get_attribute_text(obj_tag,"name",spot->name,name_str_len);
-					xml_get_attribute_text(obj_tag,"type",spot->type,name_str_len);
+					spot->type=xml_get_attribute_list(obj_tag,"type",(char*)spot_type_str);
 					if (!xml_get_attribute_text(obj_tag,"script",spot->script,name_str_len)) {		// supergumba -- remove later -- here to fix XML from older version
 						strcpy(spot->script,spot->name);
 					}

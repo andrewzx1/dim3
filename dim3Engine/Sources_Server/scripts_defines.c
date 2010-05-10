@@ -119,6 +119,17 @@ script_define_type			script_dim3_defines[]={
 								{sd_skill_easy,									"",		"DIM3_SKILL_EASY"},
 								{sd_skill_medium,								"",		"DIM3_SKILL_MEDIUM"},
 								{sd_skill_hard,									"",		"DIM3_SKILL_HARD"},
+								
+								{sd_spot_type_object,							"",		"DIM3_SPOT_TYPE_OBJECT"},
+								{sd_spot_type_bot,								"",		"DIM3_SPOT_TYPE_BOT"},
+								{sd_spot_type_player,							"",		"DIM3_SPOT_TYPE_PLAYER"},
+								{sd_spot_type_spawn,							"",		"DIM3_SPOT_TYPE_SPAWN"},
+								
+								{sd_object_type_player,							"",		"DIM3_OBJECT_TYPE_PLAYER"},
+								{sd_object_type_remote,							"",		"DIM3_OBJECT_TYPE_REMOTE"},
+								{sd_object_type_bot_multiplayer,				"",		"DIM3_OBJECT_TYPE_BOT_MULTIPLAYER"},
+								{sd_object_type_bot_map,						"",		"DIM3_OBJECT_TYPE_BOT_MAP"},
+								{sd_object_type_object,							"",		"DIM3_OBJECT_TYPE_OBJECT"},
 
 									// main events
 									

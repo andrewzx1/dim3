@@ -39,6 +39,7 @@ extern char				media_type_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
 						light_direction_str[][32],
+						spot_type_str[][32],
 						skill_type_str[][32],
 						spawn_type_str[][32],
 						map_bump_mode_str[][32];
@@ -98,7 +99,6 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
     mesh->msg.entry_id=mesh->msg.exit_id=0;
 	mesh->msg.map_name[0]=0x0;
 	strcpy(mesh->msg.map_spot_name,"Start");
-	strcpy(mesh->msg.map_spot_type,"Player");
     
     msg_tag=xml_findfirstchild("Messages",mesh_tag);
     if (msg_tag!=-1) {
@@ -122,7 +122,6 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
             mesh->msg.map_change_on=xml_get_attribute_boolean(tag,"on");
 			xml_get_attribute_text(tag,"name",mesh->msg.map_name,name_str_len);
 			xml_get_attribute_text(tag,"spot_name",mesh->msg.map_spot_name,name_str_len);
-			xml_get_attribute_text(tag,"spot_type",mesh->msg.map_spot_type,name_str_len);
         }
 	}
 
@@ -511,7 +510,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			xml_get_attribute_3_coord_int(obj_tag,"c3",&spot->pnt.x,&spot->pnt.y,&spot->pnt.z);
 			
 			xml_get_attribute_text(obj_tag,"name",spot->name,name_str_len);
-			xml_get_attribute_text(obj_tag,"type",spot->type,name_str_len);
+			spot->type=xml_get_attribute_list(obj_tag,"type",(char*)spot_type_str);
 			xml_get_attribute_text(obj_tag,"script",spot->script,name_str_len);
 			xml_get_attribute_text(obj_tag,"display_model",spot->display_model,name_str_len);
 			xml_get_attribute_text(obj_tag,"params",spot->params,param_str_len);

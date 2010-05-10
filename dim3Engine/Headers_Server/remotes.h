@@ -36,7 +36,7 @@ extern bool remote_network_get_updates(void);
 extern void remote_network_send_updates(void);
 extern void remote_network_send_group_synch(void);
 extern void remote_network_send_latency_ping(void);
-extern void remote_add_map_bots(void);
+extern void remote_setup_coop_bots(void);
 
 extern void remote_draw_status(obj_type *obj);
 

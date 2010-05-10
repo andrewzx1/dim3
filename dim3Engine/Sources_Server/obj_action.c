@@ -628,8 +628,8 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 		// if this object was the player object, move to vehicle
 
 	if (server.player_obj_uid==obj->uid) {
-		vehicle_obj->type_idx=object_type_player;
-		obj->type_idx=object_type_other;
+		vehicle_obj->type=object_type_player;
+		obj->type=object_type_object;
 		server.player_obj_uid=vehicle_obj->uid;
 	}
 
@@ -718,8 +718,8 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 		// if this vehicle was the player object, move to object
 
 	if (server.player_obj_uid==vehicle_obj->uid) {
-		vehicle_obj->type_idx=object_type_other;
-		orig_obj->type_idx=object_type_player;
+		vehicle_obj->type=object_type_object;
+		orig_obj->type=object_type_player;
 		server.player_obj_uid=orig_obj->uid;
 	}
 

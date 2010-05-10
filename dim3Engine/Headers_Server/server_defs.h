@@ -78,7 +78,6 @@ and can be sold or given away.
 
 #define bt_game									0
 #define bt_map									1
-#define bt_remote								2
 
 //
 // object types
@@ -88,7 +87,7 @@ and can be sold or given away.
 #define object_type_remote						1
 #define object_type_bot_multiplayer				2
 #define object_type_bot_map						3
-#define object_type_other						4
+#define object_type_object						4
 
 //
 // input modes
@@ -339,10 +338,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						uid;
+						int						uid,type;
 						bool					dispose,hide;
-						char					name[name_str_len],type[name_str_len],
-												script[file_str_len],params[param_str_len];
+						char					name[name_str_len],
+												script[file_str_len],
+												params[param_str_len];
 						d3pnt					pnt;
 						d3ang					ang;
 					} delayed_obj_spawn_type;
@@ -768,8 +768,7 @@ typedef struct		{
 
 typedef struct		{
 						int						distance,obj_uid;
-						char					type[name_str_len];
-						bool					on;
+						bool					on,opponent_only;
 						d3col					col;
 					} weap_target_type;
 					
@@ -826,11 +825,12 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						uid,type_idx,bind,team_idx,tint_color_idx,character_idx,spawn_idx,spawn_mesh_idx,
+						int						uid,type,bind,next_spawn_sub_event,
+												team_idx,tint_color_idx,character_idx,
 												count,input_mode,air_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
 												last_move_animation_event,last_turn_animation_event;
-						char					name[name_str_len],type[name_str_len],spawn_spot_name[name_str_len];
+						char					name[name_str_len],spawn_spot_name[name_str_len];
 						bool					hidden,suspend,fly,slope_gravity,
 												side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,

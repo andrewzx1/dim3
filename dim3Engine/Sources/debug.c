@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "weapons.h"
 #include "projectiles.h"
+#include "models.h"
 #include "video.h"
 #include "inputs.h"
 #include "interfaces.h"
@@ -51,7 +52,8 @@ extern setup_type			setup;
 extern hud_type				hud;
 extern network_setup_type	net_setup;
 
-char						bind_type_str[][16]={"Game","Map","Remote"},
+char						object_type_str[][32]={"Player","Remote","Bot Multiplayer","Bot Map","Object"},
+							bind_type_str[][16]={"Game","Map","Remote"},
 							effect_type_str[][16]={"Flash","Particle","Lightning","Ray","Globe","Shake"};
 
 /* =======================================================
@@ -122,7 +124,7 @@ void debug_return(void)
 
 void debug_dump(void)
 {
-	int					i,idx,cnt,mem_sz;
+	int					n,k,i,idx,cnt,mem_sz;
 	obj_type			*obj;
 	effect_type			*effect;
 	proj_type			*proj;
@@ -213,22 +215,44 @@ void debug_dump(void)
 
 	debug_header("Objects",server.count.obj,(sizeof(obj_type)*server.count.obj));
 	
-	debug_space("Name",25);
+	debug_space("Index",6);
+	debug_space("uid",4);
+	debug_space("Name",15);
+	debug_space("Weapon",15);
+	debug_space("Projectile",15);
 	debug_space("Type",15);
+	debug_space("Model",15);
 	debug_space("Script",25);
 	debug_space("Binding",10);
 	debug_return();
-	debug_space("------------------------",25);
-	debug_space("------------------------",15);
+	debug_space("-----",6);
+	debug_space("---",4);
+	debug_space("--------------",15);
+	debug_space("--------------",15);
+	debug_space("--------------",15);
+	debug_space("--------------",15);
+	debug_space("--------------",15);
 	debug_space("------------------------",25);
 	debug_space("---------",10);
 	debug_return();
 	
 	obj=server.objs;
 	
-	for ((i=0);(i!=server.count.obj);i++) {
-		debug_space(obj->name,25);
-		debug_space(obj->type,15);
+	for (n=0;n!=server.count.obj;n++) {
+		debug_int_space(n,6);
+		debug_int_space(obj->uid,4);
+		debug_space(obj->name,15);
+		debug_space("",30);
+		debug_space(object_type_str[obj->type],15);
+		
+		mdl=model_find_uid(obj->draw.uid);
+		if (mdl==NULL) {
+			debug_space("*",15);
+		}
+		else {
+			debug_space(mdl->name,15);
+		}
+		
 		if (!obj->scenery.on) {
 			idx=scripts_find_uid(obj->attach.script_uid);
 			debug_space(js.scripts[idx].name,25);
@@ -236,61 +260,40 @@ void debug_dump(void)
 		else {
 			debug_space("*",25);
 		}
+		
 		debug_space(bind_type_str[obj->bind],10);
 		debug_return();
+		
+			// object weapons
+			
+		weap=server.weapons;
+		
+		for (k=0;k!=server.count.weapon;k++) {
+			if (weap->obj_uid==obj->uid) {
+			
+				debug_space("",25);
+				debug_space(weap->name,15);
+				debug_return();
+				
+					// weapon projectiles
+				
+				proj_setup=server.proj_setups;
+				
+				for (i=0;i!=server.count.proj_setup;i++) {
+					if ((proj_setup->obj_uid==obj->uid) && (proj_setup->weap_uid==weap->uid)) {
+						debug_space("",40);
+						debug_space(proj_setup->name,15);
+						debug_return();
+					}
+					
+					proj_setup++;
+				}
+			}
+			
+			weap++;
+		}
+		
 		obj++;
-	}
-	
-	debug_return();
-	
-		// weapons
-
-	debug_header("Weapons",server.count.weapon,(sizeof(weapon_type)*server.count.weapon));
-	
-	debug_space("Name",20);
-	debug_space("Object",20);
-	debug_return();
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
-	debug_return();
-	
-	weap=server.weapons;
-	
-	for ((i=0);(i!=server.count.weapon);i++) {
-		obj=object_find_uid(weap->obj_uid);
-		
-		debug_space(weap->name,20);
-		debug_space(obj->name,20);
-		debug_return();
-		weap++;
-	}
-	
-	debug_return();
-	
-		// projectile setups
-
-	debug_header("Projectile Setups",server.count.proj_setup,(sizeof(proj_setup_type)*server.count.proj_setup));
-	
-	debug_space("Name",20);
-	debug_space("Object",20);
-	debug_space("Weapon",20);
-	debug_return();
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
-	debug_return();
-	
-	proj_setup=server.proj_setups;
-	
-	for ((i=0);(i!=server.count.proj_setup);i++) {
-		obj=object_find_uid(proj_setup->obj_uid);
-		weap=weapon_find_uid(proj_setup->weap_uid);
-		
-		debug_space(proj_setup->name,20);
-		debug_space(obj->name,20);
-		debug_space(weap->name,20);
-		debug_return();
-		proj_setup++;
 	}
 	
 	debug_return();
@@ -551,7 +554,6 @@ void debug_change_map(char *name)
 		
 	strncpy(map.info.name,name,name_str_len);
 	strcpy(map.info.player_start_name,"Start");
-	strcpy(map.info.player_start_type,"Player");
 	map.info.in_load=FALSE;
 	server.map_change=TRUE;
 	server.skip_media=TRUE;

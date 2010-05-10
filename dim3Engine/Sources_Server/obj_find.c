@@ -104,27 +104,6 @@ int object_find_index_remote_uid(int uid)
 
 /* =======================================================
 
-      Find Objects by Spawning Index
-      
-======================================================= */
-
-obj_type* object_find_spawn_idx(int spawn_idx)
-{
-	int				n;
-	obj_type		*obj;
-	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
-		if (obj->spawn_idx==spawn_idx) return(obj);
-		obj++;
-	}
-	
-	return(NULL);
-}
-
-/* =======================================================
-
       Find Objects by Name and Tag
       
 ======================================================= */
@@ -150,7 +129,7 @@ obj_type* object_find_name(char *name)
       
 ======================================================= */
 
-obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid)
+obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid)
 {
 	int				n,i,d,dist;
 	float			fang;
@@ -167,8 +146,8 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float
 		
 			// player and remotes
 			
-		if ((player) && (obj->type_idx!=object_type_player)) continue;
-		if ((remote) && (obj->type_idx!=object_type_remote)) continue;
+		if ((player) && (obj->type!=object_type_player)) continue;
+		if ((remote) && (obj->type!=object_type_remote)) continue;
 
 		if (obj->uid==skip_obj_uid) continue;
 		
@@ -180,8 +159,8 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float
 		
 			// check type
 			
-		if (type!=NULL) {
-			if (strcasecmp(obj->type,type)!=0) continue;
+		if (type!=-1) {
+			if (obj->type!=type) continue;
 		}
 		
 			// check team
@@ -322,19 +301,19 @@ int object_find_spawn_spot(obj_type *obj,char *err_str)
 			// at the player start
 		
 		if (obj->uid==server.player_obj_uid) {
-			spot_idx=map_find_random_spot(&map,map.info.player_start_name,map.info.player_start_type);
+			spot_idx=map_find_random_spot(&map,map.info.player_start_name,spot_type_player);
 			if (spot_idx!=-1) return(spot_idx);
 			
-			sprintf(err_str,"Could not find spot: %s-%s",map.info.player_start_name,map.info.player_start_type);
+			sprintf(err_str,"Could not find spot: %s-Player",map.info.player_start_name);
 			return(-1);
 		}
 	
 			// otherwise, any spawn spot
 			
-		spot_idx=map_find_random_spot(&map,NULL,"Spawn");
+		spot_idx=map_find_random_spot(&map,NULL,spot_type_spawn);
 		if (spot_idx!=-1) return(spot_idx);
 		
-		strcpy(err_str,"Could not find network spawn spot with name-type: *-Spawn");
+		strcpy(err_str,"Could not find spot: *-Spawn");
 		return(-1);
 	}
 	
@@ -344,19 +323,19 @@ int object_find_spawn_spot(obj_type *obj,char *err_str)
 		// need to start objects at the right place) then look for that
 		
 	if (obj->spawn_spot_name[0]!=0x0) {
-		spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,"Spawn");
+		spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,spot_type_spawn);
 		if (spot_idx!=-1) return(spot_idx);
 	
-		sprintf(err_str,"Could not find network spawn spot with name-type: %s-Spawn",obj->spawn_spot_name);
+		sprintf(err_str,"Could not find spot: %s-Spawn",obj->spawn_spot_name);
 		return(-1);
 	}
 	
 		// otherwise any spawn spot
 			
-	spot_idx=map_find_random_spot(&map,NULL,"Spawn");
+	spot_idx=map_find_random_spot(&map,NULL,spot_type_spawn);
 	if (spot_idx!=-1) return(spot_idx);
 		
-	strcpy(err_str,"Could not find network spawn spot with name-type: *-Spawn");
+	strcpy(err_str,"Could not find spot: *-Spawn");
 	return(-1);
 }
 

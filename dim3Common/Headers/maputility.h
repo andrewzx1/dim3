@@ -72,6 +72,7 @@ extern char light_type_str[][32];
 #define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
 #define max_map_light_cache_index							8
+
 //
 // strings
 //
@@ -158,6 +159,15 @@ extern char light_type_str[][32];
 
 #define group_type_mesh										0
 #define group_type_liquid									1
+
+//
+// spot types
+//
+
+#define spot_type_object									0
+#define spot_type_bot										1
+#define spot_type_player									2
+#define spot_type_spawn										3
 
 //
 // skills
@@ -281,7 +291,7 @@ typedef struct		{
 						int									entry_id,exit_id,base_team;
 						bool								entry_on,exit_on,base_on,map_change_on;
 						char								map_name[file_str_len],
-															map_spot_name[name_str_len],map_spot_type[name_str_len];
+															map_spot_name[name_str_len];
 					} map_mesh_message_type;
 
 typedef struct		{
@@ -421,17 +431,12 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									skill,spawn;
+						int									type,skill,spawn;
 						char								name[name_str_len],
-															type[name_str_len],
 															script[name_str_len],
 															display_model[name_str_len],
-															params[param_str_len],
-															attach_name[name_str_len],
-															attach_type[name_str_len],
-															attach_script[file_str_len],
-															attach_params[param_str_len];
-						bool								attach,random_hit;
+															params[param_str_len];
+						bool								random_hit;
 						d3pnt								pnt;
 						d3ang								ang;
 					} spot_type;
@@ -503,7 +508,6 @@ typedef struct		{
 															author[name_str_len],
 															host_name[name_str_len],
 															player_start_name[name_str_len],
-															player_start_type[name_str_len],
 															load_path[1024];
 						bool								in_load;
 					} map_info_type;
@@ -628,12 +632,10 @@ extern bool map_check_game_type(char *game_type,char *map_name,char *info_name);
 extern bool map_create_vertex_lists(map_type *map);
 extern void map_dispose_vertex_lists(map_type *map);
 
-extern int map_count_spot(map_type *map,char *name,char *type);
-extern int map_find_spot(map_type *map,char *name,char *type);
-extern void map_find_random_spot_clear(map_type *map,char *name,char *type);
-extern int map_find_random_spot(map_type *map,char *name,char *type);
-extern void map_spot_clear_attach(map_type *map);
-extern void map_spot_attach_object(spot_type *spot,char *name,char *type,char *script,char *params);
+extern int map_count_spot(map_type *map,char *name,int type);
+extern int map_find_spot(map_type *map,char *name,int type);
+extern void map_find_random_spot_clear(map_type *map,char *name,int type);
+extern int map_find_random_spot(map_type *map,char *name,int type);
 
 extern int map_find_light(map_type *map,char *name);
 

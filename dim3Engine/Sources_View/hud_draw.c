@@ -371,7 +371,7 @@ void hud_texts_spread(char *data)
 	for (n=0;n!=server.count.obj;n++) {
 	
 		chk_obj=&server.objs[n];
-		if ((chk_obj->type_idx!=object_type_player) && (chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot_multiplayer)) continue;
+		if ((chk_obj->type!=object_type_player) && (chk_obj->type!=object_type_remote) && (chk_obj->type!=object_type_bot_multiplayer)) continue;
 
 		if (chk_obj->score.place==find_place) {
 			hit=TRUE;

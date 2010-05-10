@@ -62,8 +62,6 @@ JSStaticFunction	obj_position_functions[]={
 							{"place",							js_obj_position_place_func,								kJSPropertyAttributeDontDelete},
 							{"placeRandomSpot",					js_obj_position_place_random_spot_func,					kJSPropertyAttributeDontDelete},
 							{"placeNetworkSpot",				js_obj_position_place_network_spot_func,				kJSPropertyAttributeDontDelete},
-							{"placeRandomSpotNoTelefrag",		js_obj_position_place_random_spot_no_telefrag_func,		kJSPropertyAttributeDontDelete},
-							{"placeNetworkSpotNoTelefrag",		js_obj_position_place_network_spot_no_telefrag_func,	kJSPropertyAttributeDontDelete},
 							{"move",							js_obj_position_move_func,								kJSPropertyAttributeDontDelete},
 							{"reset",							js_obj_position_reset_func,								kJSPropertyAttributeDontDelete},
 							{"distanceToPlayer",				js_obj_position_distance_to_player_func,				kJSPropertyAttributeDontDelete},
@@ -148,7 +146,7 @@ JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef fu
 	obj_type		*obj;
 	spot_type		*spot;
 	
-	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	
@@ -184,68 +182,6 @@ JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef f
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
  	object_telefrag_players(obj,FALSE);
    
-    return(script_bool_to_value(cx,TRUE));
-}
-
-JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
-{
-	d3pnt			old_pnt;
-	obj_type		*obj;
-	spot_type		*spot;
-	
-	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	
-	obj=object_find_uid(js.attach.thing_uid);
-		
-		// find spot
-		
-	spot=script_find_spot_from_name_type(cx,argv[0],argv[1],exception);
-	if (spot==NULL) return(script_null_to_value(cx));
-	
-		// can we move without telefragging?
-	
-	memmove(&old_pnt,&obj->pnt,sizeof(d3pnt));
-	memmove(&obj->pnt,&spot->pnt,sizeof(d3pnt));
-
-	if (object_telefrag_players(obj,TRUE)) {
-		memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
-		return(script_bool_to_value(cx,FALSE));
-	}
-
-		// move object
-		
-	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
-    return(script_bool_to_value(cx,TRUE));
-}
-
-JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
-{
-	d3pnt			old_pnt;
-	obj_type		*obj;
-	spot_type		*spot;
-	
-	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
-	
-	obj=object_find_uid(js.attach.thing_uid);
-
-		// get spot
-		
-	spot=script_find_network_spot(cx,obj,exception);
-	if (spot==NULL) return(script_null_to_value(cx));
-	
-		// can we move without telefragging?
-	
-	memmove(&old_pnt,&obj->pnt,sizeof(d3pnt));
-	memmove(&obj->pnt,&spot->pnt,sizeof(d3pnt));
-
-	if (object_telefrag_players(obj,TRUE)) {
-		memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
-		return(script_bool_to_value(cx,FALSE));
-	}
-
-		// move object
-	
-	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
     return(script_bool_to_value(cx,TRUE));
 }
 

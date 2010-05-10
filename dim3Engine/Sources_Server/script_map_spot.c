@@ -101,7 +101,8 @@ JSValueRef js_map_spot_get_count(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 
 JSValueRef js_map_spot_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char		name[name_str_len],type[name_str_len];
+	int			type;
+	char		name[name_str_len];
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -111,16 +112,16 @@ JSValueRef js_map_spot_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 	
 	if ((!script_is_value_null(cx,argv[0])) && (!script_is_value_null(cx,argv[1]))) {
 		script_value_to_string(cx,argv[0],name,name_str_len);
-		script_value_to_string(cx,argv[1],type,name_str_len);
+		type=script_value_to_int(cx,argv[1])-sd_spot_type_object;
 		return(script_int_to_value(cx,map_find_spot(&map,name,type)));
 	}
 	
 	if (!script_is_value_null(cx,argv[0])) {
 		script_value_to_string(cx,argv[0],name,name_str_len);
-		return(script_int_to_value(cx,map_find_spot(&map,name,NULL)));
+		return(script_int_to_value(cx,map_find_spot(&map,name,-1)));
 	}
 		
-	script_value_to_string(cx,argv[1],type,name_str_len);
+	type=script_value_to_int(cx,argv[1])-sd_spot_type_object;
 	return(script_int_to_value(cx,map_find_spot(&map,NULL,type)));
 }
 
@@ -151,7 +152,7 @@ JSValueRef js_map_spot_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);
 	if (spot==NULL) return(script_null_to_value(cx));
 	
-	return(script_string_to_value(cx,spot->type));
+	return(script_int_to_value(cx,spot->type+sd_spot_type_object));
 }
 
 JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -224,6 +225,8 @@ JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	/* supergumba -- depreciated
+	
 	char		name[name_str_len],type[name_str_len],
 				script[file_str_len],params[param_str_len];
 	spot_type   *spot;
@@ -243,7 +246,8 @@ JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObj
 	script_value_to_string(cx,argv[4],params,param_str_len);
 	
 	map_spot_attach_object(spot,name,type,script,params);
-		
+	*/
+	
 	return(script_null_to_value(cx));
 }
 

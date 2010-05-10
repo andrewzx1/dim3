@@ -951,6 +951,8 @@ void player_thrust_input(obj_type *obj)
 
 void player_death_input(obj_type *obj)
 {
+	char			err_str[256];
+	
 		// can only respawn by key press
 		// if in single player game
 		
@@ -961,7 +963,13 @@ void player_death_input(obj_type *obj)
 	if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
 
 		if (!respawn_key_down) {
-			object_spawn(obj,sd_event_spawn_reborn);
+			obj->next_spawn_sub_event=sd_event_spawn_reborn;
+			if (!object_spawn(obj,err_str)) {
+				map_end();
+				game_end();
+				error_setup(err_str,"Network Game Canceled");
+				server.next_state=gs_error;
+			}
 		}
 
 		return;

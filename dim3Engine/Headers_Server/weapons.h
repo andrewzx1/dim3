@@ -56,7 +56,7 @@ extern void weapon_pick(obj_type *obj,int offset);
 
 extern void weapon_target_next_object(obj_type *obj,weapon_type *weap);
 extern void weapon_target_previous_object(obj_type *obj,weapon_type *weap);
-extern bool weapon_target_start(obj_type *obj,weapon_type *weap,char *target_type);
+extern bool weapon_target_start(obj_type *obj,weapon_type *weap,bool opponent_only);
 extern bool weapon_target_end(obj_type *obj,weapon_type *weap);
 
 extern void weapon_zoom_enter(obj_type *obj,weapon_type *weap);

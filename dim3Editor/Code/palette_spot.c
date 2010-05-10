@@ -124,7 +124,7 @@ void palette_spot_load(void)
 		// set controls
 	
 	dialog_set_text(palette_spot_wind,kSpotName,0,spot->name);
-	dialog_set_text(palette_spot_wind,kSpotType,0,spot->type);
+	dialog_set_combo(palette_spot_wind,kSpotType,0,spot->type);
 	dialog_special_combo_fill_script(palette_spot_wind,kSpotScript,0,spot->script);
 	dialog_set_combo(palette_spot_wind,kSpotSkill,0,spot->skill);
 	dialog_set_combo(palette_spot_wind,kSpotSpawn,0,spot->spawn);
@@ -149,7 +149,7 @@ void palette_spot_save(void)
 		// get controls
 
 	dialog_get_text(palette_spot_wind,kSpotName,0,spot->name,name_str_len);
-	dialog_get_text(palette_spot_wind,kSpotType,0,spot->type,name_str_len);
+	spot->type=dialog_get_combo(palette_spot_wind,kSpotType,0);
 	dialog_special_combo_get_script(palette_spot_wind,kSpotScript,0,spot->script,name_str_len);
 	spot->skill=dialog_get_combo(palette_spot_wind,kSpotSkill,0);
 	spot->spawn=dialog_get_combo(palette_spot_wind,kSpotSpawn,0);

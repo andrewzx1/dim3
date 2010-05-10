@@ -712,7 +712,7 @@ void map_auto_generate_add_player_spot(map_type *map)
 	spot->ang.z=0.0f;
 	
 	strcpy(spot->name,"Start");
-	strcpy(spot->type,"Player");
+	spot->type=spot_type_player;
 	strcpy(spot->script,"Player");
 	spot->display_model[0]=0x0;
 	spot->params[0]=0x0;

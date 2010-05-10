@@ -141,7 +141,6 @@ void game_reset(void)
 
 	strcpy(map.info.name,setup.network.map.maps[net_setup.host.current_map_idx].name);
 	map.info.player_start_name[0]=0x0;
-	map.info.player_start_type[0]=0x0;
 	map.info.in_load=FALSE;
 
 	if (!map_rebuild_changes(err_str)) {
@@ -151,7 +150,9 @@ void game_reset(void)
 		return;
 	}
 
-		// respawn all objects
+		// setup all objects to be spawned with game reset
+		// when new map is loaded
+		
 		// remotes get hidden (until the next update)
 		// the respawn just to update any lists or items
 		// before the client sends in it's next packet
@@ -160,15 +161,15 @@ void game_reset(void)
 	
 	for (n=0;n!=server.count.obj;n++) {
 	
-		switch (obj->type_idx) {
+		switch (obj->type) {
 		
 			case object_type_player:
 			case object_type_bot_multiplayer:
-				object_spawn(obj,sd_event_spawn_game_reset);
+				obj->next_spawn_sub_event=sd_event_spawn_game_reset;
 				break;
 				
 			case object_type_remote:
-				object_spawn(obj,sd_event_spawn_game_reset);
+				obj->next_spawn_sub_event=sd_event_spawn_game_reset;
 				obj->hidden=TRUE;
 				break;
 				

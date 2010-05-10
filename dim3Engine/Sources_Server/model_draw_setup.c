@@ -113,7 +113,7 @@ void model_draw_setup_object(obj_type *obj)
 
 		// special player mark
 
-	draw->player=(obj->type_idx==object_type_player);
+	draw->player=(obj->type==object_type_player);
 	
 		// position
 	
@@ -134,7 +134,7 @@ void model_draw_setup_object(obj_type *obj)
 	draw->connect.obj_uid=obj->uid;
 	draw->connect.weap_uid=-1;
 	draw->connect.proj_uid=-1;
-	draw->connect.net_sound=(obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer);
+	draw->connect.net_sound=(obj->uid==server.player_obj_uid) || (obj->type==object_type_bot_multiplayer);
 	draw->connect.net_remote_uid=obj->remote.uid;
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;
@@ -190,7 +190,7 @@ void model_draw_setup_object(obj_type *obj)
 		// team tint
 
 	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
-	if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
+	if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) {
 		if (net_setup.mode!=net_mode_none) {
 			if (hud.net_game.games[net_setup.game_idx].use_teams) {
 				object_team_get_tint(obj->team_idx,&draw->tint);
@@ -330,7 +330,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 
 		// special check for player
 
-	draw->player=(obj->type_idx==object_type_player);
+	draw->player=(obj->type==object_type_player);
 	
         // adjust y for raise/lower modes
 	

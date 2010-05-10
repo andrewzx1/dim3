@@ -52,7 +52,6 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							current_map_spawn_idx;
 char						current_map_name[name_str_len];
 
 extern void game_time_pause_start(void);
@@ -61,8 +60,6 @@ extern void map_clear_changes(void);
 extern void map_start_ambient(void);
 extern void map_set_ambient(char *name,float pitch);
 extern void map_end_ambient(void);
-extern void spot_start_attach(void);
-extern void spot_add_multiplayer_bots(void);
 extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
 extern void view_draw_fade_start(void);
@@ -252,7 +249,6 @@ bool map_start(bool skip_media,char *err_str)
 	progress_initialize("Opening",map.info.name);
 	progress_draw(10);
 	
-	current_map_spawn_idx=0;
 	strcpy(current_map_name,map.info.name);		// remember for close
 	
 		// load the map
@@ -346,8 +342,6 @@ bool map_start(bool skip_media,char *err_str)
         // run the course script
 
 	progress_draw(50);
-
-	map_spot_clear_attach(&map);
 		
 	js.course_attach.thing_type=thing_type_course;
 	js.course_attach.thing_uid=-1;
@@ -363,30 +357,27 @@ bool map_start(bool skip_media,char *err_str)
 
 	object_script_spawn_start();
 
-		// create the attached objects
-		// and scenery
+		// create object and scenery
+		// and call spawn on all the objects
 
 	progress_draw(70);
 
-	spot_start_attach();
-	spot_add_multiplayer_bots();
-	remote_add_map_bots();
+	map_objects_create();
+	remote_setup_coop_bots();
 
 	scenery_create();
 	scenery_start();
+	
+	if (!map_object_attach_all(err_str)) {
+		progress_shutdown();
+		return(FALSE);
+	}
 	
 		// attach player to map
 
 	progress_draw(80);
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
-
-				// attach player
-
-		if (!player_attach_object(err_str)) {
-			progress_shutdown();
-			return(FALSE);
-		}
 
 		player_clear_input();
 		
@@ -471,11 +462,9 @@ void map_end(void)
 	
 	game_time_pause_start();
 	
-		// detach player
+		// detach objects
 		
-	if (net_setup.mode!=net_mode_host_dedicated) {
-		player_detach_object();
-	}
+	map_object_detach_all();
 
 		// setup progress
 		
