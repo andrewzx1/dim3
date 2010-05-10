@@ -84,7 +84,7 @@ JSObjectRef script_add_map_action_object(JSContextRef cx,JSObjectRef parent_obj)
 
 JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 		// networked games can not call this API
 		
@@ -97,7 +97,6 @@ JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectR
 		
 	script_value_to_string(cx,argv[0],map.info.name,name_str_len);
 	script_value_to_string(cx,argv[1],map.info.player_start_name,name_str_len);
-	script_value_to_string(cx,argv[2],map.info.player_start_type,name_str_len);
 	map.info.in_load=FALSE;
 
 	server.map_change=TRUE;
@@ -120,7 +119,6 @@ JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSOb
 		
 	strcpy(map.info.name,map.info.host_name);
 	map.info.player_start_name[0]=0x0;
-	map.info.player_start_type[0]=0x0;
 	map.info.in_load=FALSE;
 
 	server.map_change=TRUE;

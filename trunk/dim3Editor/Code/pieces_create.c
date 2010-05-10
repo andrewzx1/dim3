@@ -104,7 +104,7 @@ void piece_create_spot(void)
     
 	spot->ang.y=0;
 	spot->name[0]=0x0;
-	strcpy(spot->type,"Object");
+	spot->type=spot_type_object;
 	spot->script[0]=0x0;
 	spot->display_model[0]=0x0;
 	spot->params[0]=0x0;

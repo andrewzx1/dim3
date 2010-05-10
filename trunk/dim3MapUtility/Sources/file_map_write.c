@@ -37,6 +37,7 @@ extern char					media_type_str[][32],
 							liquid_tide_direction_str[][32],
 							light_type_str[][32],
 							light_direction_str[][32],
+							spot_type_str[][32],
 							skill_type_str[][32],
 							spawn_type_str[][32],
 							map_bump_mode_str[][32];
@@ -414,7 +415,6 @@ void write_single_mesh(map_mesh_type *mesh)
         xml_add_attribute_boolean("on",mesh->msg.map_change_on);
 		xml_add_attribute_text("name",mesh->msg.map_name);
 		xml_add_attribute_text("spot_name",mesh->msg.map_spot_name);
-		xml_add_attribute_text("spot_type",mesh->msg.map_spot_type);
 		xml_add_tagend(TRUE);
 
         xml_add_tagclose("Messages");
@@ -739,7 +739,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_int("id",k);
 		xml_add_attribute_3_coord_int("c3",spot->pnt.x,spot->pnt.y,spot->pnt.z);
 		xml_add_attribute_text("name",spot->name);
-		xml_add_attribute_text("type",spot->type);
+		xml_add_attribute_list("type",(char*)spot_type_str,spot->type);
 		xml_add_attribute_text("script",spot->script);
 		xml_add_attribute_text("display_model",spot->display_model);
 		xml_add_attribute_text("params",spot->params);

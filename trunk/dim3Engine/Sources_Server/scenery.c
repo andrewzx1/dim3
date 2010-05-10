@@ -61,7 +61,7 @@ void scenery_create(void)
 
 			// create new object
 
-		obj=object_create(bt_map,-1);
+		obj=object_create(map_scenery->model_name,object_type_object,bt_map,-1);
 		if (obj==NULL) break;
 
 			// no scripts, events, etc
@@ -86,8 +86,6 @@ void scenery_create(void)
 		obj->contact.force_on=FALSE;
 		obj->hit_box.on=map_scenery->contact_hit_box;
 
-		strcpy(obj->name,map_scenery->model_name);
-		strcpy(obj->type,"Scenery");
 		strcpy(obj->draw.name,map_scenery->model_name);
 		
 		obj->draw.on=TRUE;
@@ -95,9 +93,9 @@ void scenery_create(void)
 		obj->draw.shadow.on=map_scenery->shadow;
 		obj->draw.resize=map_scenery->resize;
 
-			// needs spawn mesh
+			// needs current mesh
 
-		object_set_spawn_mesh(obj);
+		object_set_current_mesh(obj);
 		
 			// load the model
 			

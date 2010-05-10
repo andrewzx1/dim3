@@ -35,7 +35,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-int map_count_spot(map_type *map,char *name,char *type)
+int map_count_spot(map_type *map,char *name,int type)
 {
 	int				n,nspot,count;
 	spot_type		*spot;
@@ -47,7 +47,7 @@ int map_count_spot(map_type *map,char *name,char *type)
 		spot=&map->spots[n];
 		
 		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
-		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
+		if (type!=-1) if (spot->type!=type) continue;
 		
 		count++;
 	}
@@ -55,7 +55,7 @@ int map_count_spot(map_type *map,char *name,char *type)
 	return(count);
 }
 
-int map_find_spot(map_type *map,char *name,char *type)
+int map_find_spot(map_type *map,char *name,int type)
 {
 	int				n,nspot;
 	spot_type		*spot;
@@ -66,7 +66,7 @@ int map_find_spot(map_type *map,char *name,char *type)
 		spot=&map->spots[n];
 		
 		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
-		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
+		if (type!=-1) if (spot->type!=type) continue;
 		
 		return(n);
 	}
@@ -80,7 +80,7 @@ int map_find_spot(map_type *map,char *name,char *type)
       
 ======================================================= */
 
-void map_find_random_spot_clear(map_type *map,char *name,char *type)
+void map_find_random_spot_clear(map_type *map,char *name,int type)
 {
 	int				n,nspot;
 	spot_type		*spot;
@@ -91,13 +91,13 @@ void map_find_random_spot_clear(map_type *map,char *name,char *type)
 		spot=&map->spots[n];
 		
 		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
-		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
+		if (type!=-1) if (spot->type!=type) continue;
 
 		spot->random_hit=FALSE;
 	}
 }
 
-int map_find_random_spot(map_type *map,char *name,char *type)
+int map_find_random_spot(map_type *map,char *name,int type)
 {
 	int				n,nspot,count,spot_count,free_spot_count;
 	spot_type		*spot;
@@ -113,7 +113,7 @@ int map_find_random_spot(map_type *map,char *name,char *type)
 		spot=&map->spots[n];
 		
 		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
-		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
+		if (type!=-1) if (spot->type!=type) continue;
 		
 		spot_count++;
 		if (!spot->random_hit) free_spot_count++;
@@ -137,7 +137,7 @@ int map_find_random_spot(map_type *map,char *name,char *type)
 		if (spot->random_hit) continue;
 		
 		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
-		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
+		if (type!=-1) if (spot->type!=type) continue;
 		
 		if (count==0) {
 			spot->random_hit=TRUE;
@@ -148,41 +148,6 @@ int map_find_random_spot(map_type *map,char *name,char *type)
 	}
 	
 	return(-1);
-}
-
-/* =======================================================
-
-      Clear Attaches
-      
-======================================================= */
-
-void map_spot_clear_attach(map_type *map)
-{
-	int				i;
-	spot_type		*spot;
-	
-	spot=map->spots;
-	
-	for (i=0;i!=map->nspot;i++) {
-		spot->attach=FALSE;
-		spot++;
-	}
-}
-
-/* =======================================================
-
-      Attach Object to Spot
-      
-======================================================= */
-
-void map_spot_attach_object(spot_type *spot,char *name,char *type,char *script,char *params)
-{
-	strcpy(spot->attach_name,name);
-	strcpy(spot->attach_type,type);
-	strcpy(spot->attach_script,script);
-	strcpy(spot->attach_params,params);
-	
-	spot->attach=TRUE;
 }
 
 /* =======================================================

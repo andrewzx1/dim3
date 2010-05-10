@@ -186,7 +186,7 @@ JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) uids[cnt++]=obj->uid;
+		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) uids[cnt++]=obj->uid;
 		obj++;
 	}
 
@@ -203,9 +203,8 @@ JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,
 
 JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int					min_dist,max_dist;
-	char				*name_ptr,name[name_str_len],
-						*type_ptr,type[name_str_len];
+	int					type,min_dist,max_dist;
+	char				*name_ptr,name[name_str_len];
 	float				ang,ang_sweep;
 	d3pnt				pt;
 	obj_type			*obj;
@@ -228,10 +227,9 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 		// type
 		
-	type_ptr=NULL;
+	type=-1;
 	if (!script_is_value_null(cx,argv[4])) {
-		script_value_to_string(cx,argv[4],type,name_str_len);
-		type_ptr=type;
+		type=script_value_to_int(cx,argv[4]);
 	}
 
 		// angle and sweep
@@ -248,7 +246,7 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 		// find object
 
-	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
+	obj=object_find_nearest(&pt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->uid));
@@ -256,9 +254,8 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int					min_dist,max_dist;
-	char				*name_ptr,name[name_str_len],
-						*type_ptr,type[name_str_len];
+	int					type,min_dist,max_dist;
+	char				*name_ptr,name[name_str_len];
 	float				ang,ang_sweep;
 	d3pnt				pt;
 	obj_type			*obj;
@@ -281,10 +278,9 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	
 		// type
 		
-	type_ptr=NULL;
+	type=-1;
 	if (!script_is_value_null(cx,argv[4])) {
-		script_value_to_string(cx,argv[4],type,name_str_len);
-		type_ptr=type;
+		type=script_value_to_int(cx,argv[4]);
 	}
 
 		// angle and sweep
@@ -301,7 +297,7 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	
 		// find object
 
-	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,script_value_to_int(cx,argv[9]));
+	obj=object_find_nearest(&pt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,script_value_to_int(cx,argv[9]));
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->uid));
@@ -336,7 +332,7 @@ JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JS
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,-1);
+	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->uid));
@@ -371,7 +367,7 @@ JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSOb
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,script_value_to_int(cx,argv[7]));
+	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,script_value_to_int(cx,argv[7]));
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->uid));
@@ -406,7 +402,7 @@ JSValueRef js_map_object_nearest_remote_player_func(JSContextRef cx,JSObjectRef 
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,TRUE,-1);
+	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,TRUE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->uid));
@@ -445,7 +441,7 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
+	obj=object_find_nearest(&pt,NULL,-1,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->uid));
@@ -478,7 +474,7 @@ JSValueRef js_map_object_get_type_func(JSContextRef cx,JSObjectRef func,JSObject
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 
-	return(script_string_to_value(cx,obj->type));
+	return(script_int_to_value(cx,obj->type+sd_object_type_player));
 }
 
 JSValueRef js_map_object_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

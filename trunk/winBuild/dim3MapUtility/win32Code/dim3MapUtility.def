@@ -12,8 +12,6 @@ EXPORTS
 	map_find_spot									@201
 	map_find_random_spot_clear						@202
 	map_find_random_spot							@203
-	map_spot_clear_attach							@204
-	map_spot_attach_object							@205
 
 	map_find_light									@206
 

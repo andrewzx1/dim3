@@ -432,7 +432,6 @@ bool game_file_load(char *file_name,char *err_str)
 		
 		strcpy(map.info.name,head.map_name);
 		map.info.player_start_name[0]=0x0;
-		map.info.player_start_type[0]=0x0;
 		map.info.in_load=TRUE;
 
 		if (!map_start(TRUE,err_str)) {

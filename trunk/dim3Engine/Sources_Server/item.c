@@ -64,7 +64,7 @@ void item_pickup_check(obj_type *obj)
 
 		// dead players can't pickup items
 
-	if ((obj->type_idx==object_type_player) && (obj->status.health==0)) return;
+	if ((obj->type==object_type_player) && (obj->status.health==0)) return;
 
 		// detect if we need to send synch
 		// pickup network messages

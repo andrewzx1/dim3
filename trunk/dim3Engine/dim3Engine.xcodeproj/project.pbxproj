@@ -20,6 +20,7 @@
 		2625D03D0F54C9960023B0D3 /* render_map_transparent.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0390F54C9960023B0D3 /* render_map_transparent.c */; };
 		262955440F9E5C4B00763482 /* render_shadow.c in Sources */ = {isa = PBXBuildFile; fileRef = 262955430F9E5C4B00763482 /* render_shadow.c */; };
 		263EF8C00FD9CFEE00FEB1E5 /* script_multiplayer_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */; };
+		264A29FB1193C66700291FAB /* obj_spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A29FA1193C66700291FAB /* obj_spawn.c */; };
 		264CA5A10F5244D700E90DF2 /* xml_shaders.c in Sources */ = {isa = PBXBuildFile; fileRef = 264CA5A00F5244D700E90DF2 /* xml_shaders.c */; };
 		2657380E0DB07F650061E1B4 /* setup_network.c in Sources */ = {isa = PBXBuildFile; fileRef = 2657380C0DB07F650061E1B4 /* setup_network.c */; };
 		2657380F0DB07F650061E1B4 /* setup_game.c in Sources */ = {isa = PBXBuildFile; fileRef = 2657380D0DB07F650061E1B4 /* setup_game.c */; };
@@ -262,7 +263,6 @@
 		F5DD199009080EA300721649 /* console_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198D09080EA300721649 /* console_draw.c */; };
 		F5DD199109080EA300721649 /* hud_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198E09080EA300721649 /* hud_draw.c */; };
 		F5DD199209080EA300721649 /* crosshair_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198F09080EA300721649 /* crosshair_draw.c */; };
-		F5DD19A60908100700721649 /* player.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19A50908100700721649 /* player.c */; };
 		F5DD19A80908101700721649 /* player_input.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19A70908101700721649 /* player_input.c */; };
 		F5DD19DA090830C800721649 /* server.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19D7090830C800721649 /* server.c */; };
 		F5DD19DC090830C800721649 /* server_run.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19D9090830C800721649 /* server_run.c */; };
@@ -404,6 +404,7 @@
 		2625D0390F54C9960023B0D3 /* render_map_transparent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_transparent.c; path = Sources_View/render_map_transparent.c; sourceTree = "<group>"; };
 		262955430F9E5C4B00763482 /* render_shadow.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_shadow.c; path = Sources_View/render_shadow.c; sourceTree = "<group>"; };
 		263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer_score.c; path = Sources_Server/script_multiplayer_score.c; sourceTree = "<group>"; };
+		264A29FA1193C66700291FAB /* obj_spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = obj_spawn.c; path = Sources_Server/obj_spawn.c; sourceTree = "<group>"; };
 		264CA5A00F5244D700E90DF2 /* xml_shaders.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_shaders.c; path = Sources_View/xml_shaders.c; sourceTree = "<group>"; };
 		2657380C0DB07F650061E1B4 /* setup_network.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = setup_network.c; path = Sources_View/setup_network.c; sourceTree = "<group>"; };
 		2657380D0DB07F650061E1B4 /* setup_game.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = setup_game.c; path = Sources_View/setup_game.c; sourceTree = "<group>"; };
@@ -641,7 +642,6 @@
 		F5DD198D09080EA300721649 /* console_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = console_draw.c; path = Sources_View/console_draw.c; sourceTree = "<group>"; };
 		F5DD198E09080EA300721649 /* hud_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = hud_draw.c; path = Sources_View/hud_draw.c; sourceTree = "<group>"; };
 		F5DD198F09080EA300721649 /* crosshair_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crosshair_draw.c; path = Sources_View/crosshair_draw.c; sourceTree = "<group>"; };
-		F5DD19A50908100700721649 /* player.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = player.c; path = Sources_Server/player.c; sourceTree = "<group>"; };
 		F5DD19A70908101700721649 /* player_input.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = player_input.c; path = Sources_View/player_input.c; sourceTree = "<group>"; };
 		F5DD19D7090830C800721649 /* server.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = server.c; path = Sources_Server/server.c; sourceTree = "<group>"; };
 		F5DD19D9090830C800721649 /* server_run.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = server_run.c; path = Sources_Server/server_run.c; sourceTree = "<group>"; };
@@ -778,6 +778,7 @@
 			isa = PBXGroup;
 			children = (
 				F5DD1A190908580100721649 /* objects.c */,
+				264A29FA1193C66700291FAB /* obj_spawn.c */,
 				F5DD1A140908580100721649 /* obj_find.c */,
 				F5DD1A160908580100721649 /* obj_state.c */,
 				F5DD1A170908580100721649 /* obj_turn.c */,
@@ -1225,7 +1226,6 @@
 				F5A57F0C090AB08A00BE7C36 /* game_time.c */,
 				F5DD19D7090830C800721649 /* server.c */,
 				F5DD19D9090830C800721649 /* server_run.c */,
-				F5DD19A50908100700721649 /* player.c */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -1650,7 +1650,6 @@
 				F5DD199009080EA300721649 /* console_draw.c in Sources */,
 				F5DD199109080EA300721649 /* hud_draw.c in Sources */,
 				F5DD199209080EA300721649 /* crosshair_draw.c in Sources */,
-				F5DD19A60908100700721649 /* player.c in Sources */,
 				F5DD19A80908101700721649 /* player_input.c in Sources */,
 				F5DD19DA090830C800721649 /* server.c in Sources */,
 				F5DD19DC090830C800721649 /* server_run.c in Sources */,
@@ -1937,6 +1936,7 @@
 				26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */,
 				26E2008B1134C6E100E9055A /* net_http.c in Sources */,
 				26E2008C1134C6E100E9055A /* net_queue.c in Sources */,
+				264A29FB1193C66700291FAB /* obj_spawn.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

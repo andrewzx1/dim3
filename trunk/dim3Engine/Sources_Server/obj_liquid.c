@@ -220,10 +220,11 @@ void object_liquid(obj_type *obj)
 			
 	}
 	
-		// no damage objects aren't hurt
-		// by liquids
-		
+		// no damage objects or non-player/bot objects
+		// aren't effected by liquids
+				
 	if ((!obj->damage.on) || (obj->damage.invincible)) return;
+	if ((obj->type!=object_type_player) && (obj->type!=object_type_bot_multiplayer)) return;
 	
 		// downing
 

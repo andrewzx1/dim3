@@ -34,8 +34,8 @@ extern void object_get_tint(obj_type *obj,d3col *tint);
 
 extern bool object_networkable(obj_type *obj);
 
-extern obj_type* object_create(int bind,int reserve_uid);
-extern int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err_str);
+extern obj_type* object_create(char *name,int type,int bind,int reserve_uid);
+extern int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 
@@ -45,7 +45,7 @@ extern int object_script_spawn(char *name,char *type,char *script,char *params,d
 extern bool object_script_remove(int uid,char *err_str);
 
 extern void object_set_radius(obj_type *obj);
-extern void object_set_spawn_mesh(obj_type *obj);
+extern void object_set_current_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
 
@@ -75,9 +75,8 @@ extern obj_type* object_find_uid(int uid);
 extern int object_find_index_uid(int uid);
 extern obj_type* object_find_remote_uid(int uid);
 extern int object_find_index_remote_uid(int uid);
-extern obj_type* object_find_spawn_idx(int spawn_idx);
 extern obj_type* object_find_name(char *name);
-extern obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid);
+extern obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid);
 extern int object_count_team(int team_idx,int ignore_obj_uid);
 extern void object_set_even_team(obj_type *obj);
 extern int object_find_uid_click_object(obj_type *obj);
@@ -88,9 +87,16 @@ extern bool object_sight_test_object(obj_type *obj,int test_obj_uid);
 extern void object_attach_click_crosshair_up(obj_type *obj);
 extern void object_attach_click_crosshair_down(obj_type *obj);
 
-extern void object_spawn(obj_type *obj,int sub_event);
+extern bool object_spawn(obj_type *obj,char *err_str);
 extern int object_get_respawn_time(obj_type *obj);
 extern void object_check_respawn(obj_type *obj);
+extern int game_player_create(char *err_str);
+extern void game_multiplayer_bots_create(void);
+extern void game_remotes_create(network_reply_join_remotes *remotes);
+extern void map_objects_create(void);
+extern bool map_object_attach_all(char *err_str);
+extern void map_object_detach_all(void);
+
 extern void object_score_recalc_place(void);
 extern void object_score_update(obj_type *obj);
 extern void object_score_death(obj_type *obj);
@@ -218,9 +224,6 @@ extern bool item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count);
 extern bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count);
 extern bool item_add_health(obj_type *obj,int add_count);
 extern void item_add_custom(obj_type *obj,int custom_id);
-
-extern bool player_attach_object(char *err_str);
-extern void player_detach_object(void);
 
 extern void player_clear_input(void);
 extern void player_command_input(obj_type *obj);

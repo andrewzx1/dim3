@@ -244,7 +244,7 @@ bool map_open(map_type *map,char *name)
 
 	if (!map_textures_read(map)) return(FALSE);
 
-	map_find_random_spot_clear(map,NULL,NULL);
+	map_find_random_spot_clear(map,NULL,-1);
 	
 	return(TRUE);
 }

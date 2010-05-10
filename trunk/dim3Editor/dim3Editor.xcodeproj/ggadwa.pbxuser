@@ -145,8 +145,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 294437329;
-			PBXWorkspaceStateSaveDate = 294437329;
+			PBXPerProjectTemplateStateSaveDate = 295055100;
+			PBXWorkspaceStateSaveDate = 295055100;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -335,9 +335,9 @@
 	};
 	263B67370F7072EE0065AB38 /* palette_spot.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 3354}}";
-			sepNavSelRange = "{1290, 0}";
-			sepNavVisRange = "{396, 1530}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 3536}}";
+			sepNavSelRange = "{3744, 0}";
+			sepNavVisRange = "{2770, 1654}";
 			sepNavWindowFrame = "{{589, 226}, {999, 779}}";
 		};
 	};
@@ -399,9 +399,9 @@
 	};
 	265DCE9F0F6CC13100C1E65D /* palette_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 2873}}";
-			sepNavSelRange = "{8162, 0}";
-			sepNavVisRange = "{5662, 2936}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 2847}}";
+			sepNavSelRange = "{7385, 0}";
+			sepNavVisRange = "{5499, 2796}";
 			sepNavWindowFrame = "{{304, 128}, {999, 779}}";
 		};
 	};
@@ -626,9 +626,9 @@
 	};
 	F54583E3094F868300CBE89A /* pieces_create.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1524, 5343}}";
-			sepNavSelRange = "{1034, 0}";
-			sepNavVisRange = "{460, 1492}";
+			sepNavIntBoundsRect = "{{0, 0}, {1524, 5421}}";
+			sepNavSelRange = "{2646, 0}";
+			sepNavVisRange = "{2136, 924}";
 			sepNavWindowFrame = "{{333, 114}, {1041, 747}}";
 		};
 	};
@@ -658,9 +658,9 @@
 	};
 	F54CD2090233430101250BB8 /* main_window.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1762, 31278}}";
-			sepNavSelRange = "{57225, 18}";
-			sepNavVisRange = "{57024, 771}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 31369}}";
+			sepNavSelRange = "{3889, 0}";
+			sepNavVisRange = "{3599, 1300}";
 			sepNavWindowFrame = "{{435, 126}, {1041, 747}}";
 		};
 	};

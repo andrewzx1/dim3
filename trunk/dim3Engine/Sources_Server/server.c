@@ -261,9 +261,6 @@ void server_shutdown(void)
 
 bool server_game_start(char *game_script_name,int skill,network_reply_join_remotes *remotes,char *err_str)
 {
-	int							n;
-	network_request_object_add	*obj_add;
-	
 		// initialize lists
 
 	model_initialize();
@@ -284,7 +281,6 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 
 	map.info.name[0]=0x0;
 	map.info.player_start_name[0]=0x0;
-	map.info.player_start_type[0]=0x0;
 	map.info.in_load=FALSE;
 	
 	server.player_obj_uid=-1;
@@ -295,7 +291,7 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 	scripts_clear_attach_data(&js.game_attach);
 	
 	if (!scripts_add(&js.game_attach,"Game",game_script_name,NULL,err_str)) return(FALSE);
-	
+
 		// editor map override?
 		
 	if (setup.editor_override.on) {
@@ -312,29 +308,19 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 		// prepare for any script based spawns
 
 	object_script_spawn_start();
-	
-		// put in additional objects (remotes, bots)
-		
-	if (remotes!=NULL) {
-	
-		obj_add=remotes->objects;
-		
-		for (n=0;n!=remotes->count;n++) {
-			remote_add(obj_add,FALSE);
-			obj_add++;
-		}
-	}
 
-		// create player object
+		// create game based objects
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
-	
-		server.player_obj_uid=object_start(NULL,object_type_player,bt_game,-1,err_str);
+		server.player_obj_uid=game_player_create(err_str);
 		if (server.player_obj_uid==-1) {
 			scripts_dispose(js.game_attach.script_uid);
 			return(FALSE);
 		}
 	}
+
+	game_multiplayer_bots_create();
+	game_remotes_create(remotes);
 
 		// finish any script based spawns
 
@@ -345,10 +331,8 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 
 void server_game_stop(void)
 {
-		// dispose remote and game
-		// bound objects
+		// dispose game bound objects
 
-	object_dispose_2(bt_remote);
 	object_dispose_2(bt_game);
 
 		// dispose game script

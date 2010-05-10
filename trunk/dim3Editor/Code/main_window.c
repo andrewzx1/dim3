@@ -123,7 +123,7 @@ char					piece_icns_file_name[piece_count][64]=
 								
 char					piece_tooltip_str[piece_count][64]=
 								{
-									"Add Script Spot","Add Light","Add Sound",
+									"Add Spot","Add Light","Add Sound",
 									"Add Particle","Add Scenery","Add Node",
 									"Add OBJ Mesh","Replace Mesh UV",
 									"Add Height Map Mesh","Add Grid Mesh",

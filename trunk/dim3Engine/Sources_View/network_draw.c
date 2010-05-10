@@ -151,7 +151,7 @@ int network_score_players_draw(bool use_teams)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_remote) || (obj->type_idx==object_type_bot_multiplayer)) {
+		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) {
 			sort_idx[obj->score.place-1]=n;
 			if (obj->score.place>nscore) nscore=obj->score.place;
 		}
@@ -203,7 +203,7 @@ void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_
 
 	for (n=0;n!=server.count.obj;n++) {
 		obj=&server.objs[n];
-		if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot_multiplayer)) continue;
+		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
 		if (obj->team_idx!=team_idx) continue;
 		
 		sort_idx[obj->score.place-1]=n;
@@ -238,7 +238,7 @@ int network_score_teams_draw(void)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot_multiplayer)) {
+		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) {
 			obj++;
 			continue;
 		}

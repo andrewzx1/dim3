@@ -110,7 +110,7 @@ void net_host_player_add_bots(void)
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->type_idx==object_type_bot_multiplayer) {
+		if (obj->type==object_type_bot_multiplayer) {
 			if (net_host_player_add_ok(obj->name,deny_reason)) {
 				obj->remote.uid=net_host_player_add_bot(obj);
 			}

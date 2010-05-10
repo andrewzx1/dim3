@@ -38,8 +38,6 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "consoles.h"
 
-extern int					current_map_spawn_idx;
-
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
@@ -297,10 +295,9 @@ void object_set_radius(obj_type *obj)
       
 ======================================================= */
 
-void object_set_spawn_mesh(obj_type *obj)
+void object_set_current_mesh(obj_type *obj)
 {
-	obj->mesh.spawn_mesh_idx=map_mesh_find(&map,&obj->pnt);
-	obj->mesh.cur_mesh_idx=obj->mesh.spawn_mesh_idx;
+	obj->mesh.cur_mesh_idx=map_mesh_find(&map,&obj->pnt);
 }
 
 void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove)
@@ -339,7 +336,7 @@ void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove
 	
 	obj->force.gravity=gravity_start_power;
 
-	object_set_spawn_mesh(obj);
+	object_set_current_mesh(obj);
 }
 
 void object_stop(obj_type *obj)
@@ -435,12 +432,12 @@ bool object_networkable(obj_type *obj)
 {
 		// players and bots always send messages
 
-	if ((obj->uid==server.player_obj_uid) || (obj->type_idx==object_type_bot_multiplayer)) return(TRUE);
+	if ((obj->uid==server.player_obj_uid) || (obj->type==object_type_bot_multiplayer)) return(TRUE);
 	
 		// map type bots only send messages if
 		// this process is the host
 
-	if (obj->type_idx==object_type_bot_map) {
+	if (obj->type==object_type_bot_map) {
 		return((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated));
 	}
 	
@@ -463,7 +460,7 @@ int object_reserve_uid(void)
 	return(uid);
 }
 
-obj_type* object_create(int bind,int reserve_uid)
+obj_type* object_create(char *name,int type,int bind,int reserve_uid)
 {
 	obj_type		*obj,*ptr;
 
@@ -486,8 +483,11 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj=&server.objs[server.count.obj];
 	server.count.obj++;
 
-		// uid and bind
+		// initial setup
+		
+	strcpy(obj->name,name);
 
+	obj->type=type;
 	obj->bind=bind;
 
 	if (reserve_uid==-1) {
@@ -496,14 +496,12 @@ obj_type* object_create(int bind,int reserve_uid)
 	else {
 		obj->uid=reserve_uid;
 	}
+	
+	obj->next_spawn_sub_event=sd_event_spawn_init;
 
 		// initialize object
 	
-	obj->spawn_idx=current_map_spawn_idx;
-	current_map_spawn_idx++;
-	
 	obj->hidden=FALSE;
-	obj->type_idx=object_type_other;
 	obj->suspend=FALSE;
 	obj->scenery.on=FALSE;
 	obj->fly=FALSE;
@@ -541,7 +539,6 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->stand_obj_uid=-1;
 	obj->damage_obj_uid=-1;
 	
-	obj->name[0]=0x0;
 	obj->team_idx=net_team_none;
 	obj->spawn_spot_name[0]=0x0;
 
@@ -757,7 +754,7 @@ void object_reset(obj_type *obj)
 	memmove(&obj->ang,&obj->org_ang,sizeof(d3ang));
 	obj->motion.ang.y=obj->turn.ang_to.y=obj->ang.y;
 	
-	object_set_spawn_mesh(obj);
+	object_set_current_mesh(obj);
 }
 
 /* =======================================================
@@ -782,7 +779,7 @@ void object_attach_click_crosshair_down(obj_type *obj)
       
 ======================================================= */
 
-int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err_str)
+int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,char *err_str)
 {
 	int					n;
 	bool				ok;
@@ -792,20 +789,18 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 
 		// create object
 		
-	obj=object_create(bind,reserve_uid);
+	obj=object_create(name,type,bind,reserve_uid);
 	if (obj==NULL) {
 		strcpy(err_str,"Out of memory");
 		return(-1);
 	}
 
-			// player default setup
+		// player default setup
 		
-	if (type_idx==object_type_player) {
-		strcpy(obj->name,setup.network.name);
+	if (obj->type==object_type_player) {
 		obj->team_idx=net_team_none;
 		obj->spawn_spot_name[0]=0x0;
 		
-		obj->type_idx=object_type_player;
 		obj->hidden=FALSE;
 		
 		obj->tint_color_idx=setup.network.tint_color_idx;
@@ -817,10 +812,6 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		// regular object setup
 
 	else {
-		strcpy(obj->name,spot->attach_name);
-		strcpy(obj->type,spot->attach_type);
-		
-		obj->type_idx=type_idx;
 
 			// if there's an editor display model, then
 			// default model to it
@@ -840,7 +831,7 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		// and send choosen team to other clients
 	
 	if (net_setup.mode!=net_mode_none) {
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) {
+		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) {
 			game_obj_rule_uid=obj->uid;
 			scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
 			game_obj_rule_uid=-1;
@@ -851,11 +842,11 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		
 		// start script
 
-	if (obj->type_idx==object_type_player) {
+	if (obj->type==object_type_player) {
 		ok=object_start_script(obj,"Player",NULL,err_str);
 	}
 	else {
-		ok=object_start_script(obj,spot->attach_script,spot->attach_params,err_str);
+		ok=object_start_script(obj,spot->script,spot->params,err_str);
 	}
 
 	if (!ok) {
@@ -898,10 +889,6 @@ int object_start(spot_type *spot,int type_idx,int bind,int reserve_uid,char *err
 		weap=weapon_find_uid(obj->held_weapon.current_uid);
 		weapon_set(obj,weap);
 	}
-
-		// run the spawn
-
-	object_spawn(obj,sd_event_spawn_init);
 
 	return(obj->uid);
 }
@@ -1023,91 +1010,6 @@ void object_dispose_2(int bind)
 
 /* =======================================================
 
-      Spot Spawning
-      
-======================================================= */
-
-int spot_get_type_idx_from_type_str(char *type_str)
-{
-	if (strcasecmp(type_str,"bot")==0) return(object_type_bot_map);
-	return(object_type_other);
-}
-
-void spot_start_attach(void)
-{
-	int					n,type_idx;
-	char				err_str[256];
-	spot_type			*spot;
-	
-		// check if a spot was attached by a
-		// script.  If it was, and the skill levels
-		// and spawn type are OK, spawn this object into the map
-
-	for (n=0;n!=map.nspot;n++) {
-	
-		spot=&map.spots[n];
-		if (!spot->attach) continue;
-		if (spot->skill>server.skill) continue;
-		if ((spot->spawn==spawn_single_player_only) && (net_setup.mode!=net_mode_none)) continue;
-		if ((spot->spawn==spawn_multiplayer_only) && (net_setup.mode==net_mode_none)) continue;
-
-		type_idx=spot_get_type_idx_from_type_str(spot->attach_type);
-
-		if (object_start(spot,type_idx,bt_map,-1,err_str)==-1) {
-			console_add_error(err_str);
-		}
-	}
-}
-
-void spot_add_multiplayer_bots(void)
-{
-	int				n,uid,spot_idx;
-	char			err_str[256];
-	spot_type		spot,*map_spot;
-	obj_type		*obj;
-
-		// only spawn on hosts
-
-	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) return;
-
-		// are bots allowed in this game?
-
-	if (!hud.net_bot.on) return;
-
-		// spawn bots
-
-	for (n=0;n!=setup.network.bot.count;n++) {
-	
-			// setup a fake spot for object spawning
-			
-		if (hud.net_bot.bots[n].name[0]!=0x0) {
-			strcpy(spot.attach_name,hud.net_bot.bots[n].name);
-		}
-		else {
-			sprintf(spot.attach_name,"Bot %d",(n+1));
-		}
-		
-		strcpy(spot.attach_type,"Bot");
-		strcpy(spot.attach_script,"Bot");
-		spot.attach_params[0]=0x0;
-		
-		uid=object_start(&spot,object_type_bot_multiplayer,bt_map,-1,err_str);
-		if (uid==-1) continue;
-		
-			// position the bot for initial place
-			
-		obj=object_find_uid(uid);
-		
-		spot_idx=object_find_spawn_spot(obj,err_str);
-		if (spot_idx==-1) continue;
-		
-		map_spot=&map.spots[spot_idx];
-		object_set_position(obj,map_spot->pnt.x,map_spot->pnt.y,map_spot->pnt.z,map_spot->ang.y,0);
-	}
-}
-
-/* =======================================================
-
       Script Object Spawn/Remove
 
 	  Spawning can make changes in the obj list, throwing
@@ -1124,7 +1026,7 @@ void object_script_spawn_start(void)
 
 void object_script_spawn_finish(void)
 {
-	int						n,idx,type_idx,uid;
+	int						n,idx,uid;
 	char					err_str[256],obj_err_str[256];
 	spot_type				spot;
 	obj_type				*obj;
@@ -1142,19 +1044,16 @@ void object_script_spawn_finish(void)
 
 			bzero(&spot,sizeof(spot_type));
 
-			strcpy(spot.attach_name,spawn->name);
-			strcpy(spot.attach_type,spawn->type);
-			strcpy(spot.attach_script,spawn->script);
-			strcpy(spot.attach_params,spawn->params);
+			strcpy(spot.name,spawn->name);
+			strcpy(spot.script,spawn->script);
+			strcpy(spot.params,spawn->params);
 
 			memmove(&spot.pnt,&spawn->pnt,sizeof(d3pnt));
 			memmove(&spot.ang,&spawn->ang,sizeof(d3ang));
 
-			type_idx=spot_get_type_idx_from_type_str(spawn->type);
-
 				// start object
 
-			uid=object_start(&spot,type_idx,bt_map,spawn->uid,obj_err_str);
+			uid=object_start(&spot,spawn->name,spawn->type,bt_map,spawn->uid,obj_err_str);
 			if (uid==-1) {
 				sprintf(err_str,"Object Spawn Failed: %s",obj_err_str);
 				console_add_error(err_str);
@@ -1202,6 +1101,7 @@ void object_script_spawn_finish(void)
 
 int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str)
 {
+	int						spawn_type;
 	delayed_obj_spawn_type	*spawn;
 
 		// room on list?
@@ -1210,6 +1110,12 @@ int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *p
 		strcpy(err_str,"Not enough memory to spawn object");
 		return(-1);
 	}
+	
+		// get type, only allowed to
+		// spawn objects and bots
+		
+	spawn_type=object_type_object;
+	if (strcasecmp(type,"bot")==0) spawn_type=object_type_bot_map;
 
 		// add to list
 
@@ -1220,7 +1126,7 @@ int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *p
 	spawn->dispose=FALSE;
 
 	strcpy(spawn->name,name);
-	strcpy(spawn->type,type);
+	spawn->type=spawn_type;
 	strcpy(spawn->script,script);
 	strcpy(spawn->params,params);
 	memmove(&spawn->pnt,pnt,sizeof(d3pnt));

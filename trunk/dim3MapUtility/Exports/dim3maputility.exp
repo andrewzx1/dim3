@@ -9,8 +9,6 @@ _map_count_spot
 _map_find_spot
 _map_find_random_spot_clear
 _map_find_random_spot
-_map_spot_clear_attach
-_map_spot_attach_object
 
 _map_find_light
 

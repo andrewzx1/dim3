@@ -37,6 +37,8 @@ and can be sold or given away.
 
 extern int group_find_by_index(char *name);
 
+extern char				object_type_str[][32];
+
 extern map_type			map;
 extern js_type			js;
 
@@ -105,16 +107,15 @@ spot_type* script_find_spot_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueR
 
 spot_type* script_find_spot_from_name_type(JSContextRef cx,JSValueRef arg_0,JSValueRef arg_1,JSValueRef *exception)
 {
-	int				idx;
-	char			name[name_str_len],type[name_str_len],
-					err_str[256];
+	int				idx,spawn_type;
+	char			name[name_str_len],err_str[256];
 
 	script_value_to_string(cx,arg_0,name,name_str_len);
-	script_value_to_string(cx,arg_1,type,name_str_len);
+	spawn_type=script_value_to_int(cx,arg_1);
 	
-	idx=map_find_random_spot(&map,name,type);
+	idx=map_find_random_spot(&map,name,spawn_type);
 	if (idx==-1) {
-		sprintf(err_str,"No spot exists with this name-type: %s-%s",name,type);
+		sprintf(err_str,"No spot exists with this name-type: %s-%s",name,object_type_str[spawn_type]);
 		*exception=script_create_exception(cx,err_str);
 		return(NULL);
 	}

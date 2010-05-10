@@ -313,7 +313,6 @@ typedef struct		{
 														fp_predict_move_x,fp_predict_move_y,fp_predict_move_z,
 														fp_predict_turn_y,model_mesh_mask;
 						short							remote_obj_uid,offset_x,offset_y,offset_z,
-														vehicle_map_spawn_idx,
 														score,health;
 						unsigned char					model_cur_texture_frame[max_model_texture];
 						network_request_animation		animation[max_model_blend_animation];

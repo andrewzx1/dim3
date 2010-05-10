@@ -152,7 +152,7 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 		if (obj->damage_obj_uid!=-1) {
 			chk_obj=object_find_uid(obj->damage_obj_uid);
 			if (chk_obj!=NULL) {
-				if ((chk_obj->type_idx==object_type_player) || (chk_obj->type_idx==object_type_remote)) {
+				if ((chk_obj->type==object_type_player) || (chk_obj->type==object_type_remote)) {
 					send_remote_kill_uid=chk_obj->remote.uid;
 				}
 			}
@@ -243,15 +243,6 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 	update.fp_predict_move_z=htonl(obj->pnt.z-obj->last_pnt.z);
 	
 	update.fp_predict_turn_y=htonf(obj->last_ang.y-obj->ang.y);
-	
-		// vehicles
-		
-	if (obj->vehicle.attach_obj_uid==-1) {
-		update.vehicle_map_spawn_idx=htons(-1);
-	}
-	else {
-		update.vehicle_map_spawn_idx=htons((short)obj->spawn_idx);
-	}
 	
 		// model animations
 

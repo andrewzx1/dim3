@@ -60,7 +60,6 @@ and can be sold or given away.
 #define kMeshSendMessageMapChange				FOUR_CHAR_CODE('samc')
 #define kMeshSendMessageMapChangeName			FOUR_CHAR_CODE('amnm')
 #define kMeshSendMessageMapChangeSpotName		FOUR_CHAR_CODE('amsn')
-#define kMeshSendMessageMapChangeSpotType		FOUR_CHAR_CODE('amst')
 #define kMeshSendMessageBase					FOUR_CHAR_CODE('tbon')
 #define kMeshSendMessageBaseTeam				FOUR_CHAR_CODE('tbtx')
 
@@ -111,7 +110,6 @@ void palette_mesh_load(void)
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageMapChange,0,mesh->msg.map_change_on);
 	dialog_special_combo_fill_map(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name);
 	dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name);
-	dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type);
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageBase,0,mesh->msg.base_on);
 	dialog_set_combo(palette_mesh_wind,kMeshSendMessageBaseTeam,0,mesh->msg.base_team);
 	
@@ -158,7 +156,6 @@ void palette_mesh_save(void)
 	mesh->msg.map_change_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageMapChange,0);
 	dialog_special_combo_get_map(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,file_str_len);
 	dialog_get_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name,name_str_len);
-	dialog_get_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type,name_str_len);
 	mesh->msg.base_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageBase,0);
 	mesh->msg.base_team=dialog_get_combo(palette_mesh_wind,kMeshSendMessageBaseTeam,0);
 	

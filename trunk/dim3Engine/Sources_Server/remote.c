@@ -78,16 +78,11 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	
 		// create new object
 		
-	obj=object_create(bt_remote,-1);
+	obj=object_create(add->name,object_type_remote,bt_game,-1);
     if (obj==NULL) return(FALSE);
 	
 		// setup remote
 		
-	strcpy(obj->name,add->name);
-	
-	strcpy(obj->type,"Remote");
-	obj->type_idx=object_type_remote;
-
 	obj->team_idx=(signed short)ntohs(add->team_idx);
 	obj->tint_color_idx=(signed short)ntohs(add->tint_color_idx);
 	obj->character_idx=(signed short)ntohs(add->character_idx);
@@ -107,8 +102,6 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	obj->remote.predict.turn_y=0.0f;
 	
 	obj->mesh.cur_mesh_idx=-1;
-	
-	obj->bind=bt_remote;
 	
 		// start remote scripts
 		// remember uid as object list might change
@@ -278,7 +271,6 @@ void remote_game_reset(network_request_game_reset *reset)
 
 	strcpy(map.info.name,reset->map_name);
 	map.info.player_start_name[0]=0x0;
-	map.info.player_start_type[0]=0x0;
 	map.info.in_load=FALSE;
 
 	if (!map_rebuild_changes(err_str)) {
@@ -291,7 +283,15 @@ void remote_game_reset(network_request_game_reset *reset)
 		// respawn the player
 
 	player_obj=object_find_uid(server.player_obj_uid);
-	object_spawn(player_obj,sd_event_spawn_game_reset);
+	
+	player_obj->next_spawn_sub_event=sd_event_spawn_game_reset;
+	
+	if (!object_spawn(player_obj,err_str)) {
+		game_end();
+		error_setup(err_str,"Network Game Canceled");
+		server.next_state=gs_error;
+		return;
+	}
 }
 
 void remote_host_exit(void)
@@ -417,7 +417,7 @@ void remote_death(network_request_remote_death *death)
 
 void remote_update(network_request_remote_update *update)
 {
-	int								n,remote_obj_uid,flags,map_spawn_idx,old_score,
+	int								n,remote_obj_uid,flags,old_score,
 									animation_mode,animate_idx,animate_next_idx;
 	d3pnt							org_pnt;
 	obj_type						*obj;
@@ -433,24 +433,6 @@ void remote_update(network_request_remote_update *update)
 	if (obj==NULL) return;
 
 	draw=&obj->draw;
-	
-		// check for vehicles
-		
-	map_spawn_idx=(signed short)ntohs(update->vehicle_map_spawn_idx);
-	if (map_spawn_idx!=-1) {
-		
-			// hide original object
-			
-		obj->hidden=TRUE;
-		obj->contact.object_on=FALSE;
-		obj->contact.projectile_on=FALSE;
-		obj->contact.force_on=FALSE;
-		
-			// switch to vehicle
-			
-		obj=object_find_spawn_idx(map_spawn_idx);
-		if (obj==NULL) return;
-	}
 	
 		// update position
 
@@ -555,6 +537,37 @@ void remote_update(network_request_remote_update *update)
 		// triggers
 		
 	remote_update_current_mesh(obj);
+}
+
+/* =======================================================
+
+      Remote Vehicles
+      
+======================================================= */
+
+void remote_vehicle(network_request_remote_update *update)
+{
+
+	// supergumba -- finish for vehicle support
+/*	
+		// check for vehicles
+		
+	map_spawn_idx=(signed short)ntohs(update->vehicle_map_spawn_idx);
+	if (map_spawn_idx!=-1) {
+		
+			// hide original object
+			
+		obj->hidden=TRUE;
+		obj->contact.object_on=FALSE;
+		obj->contact.projectile_on=FALSE;
+		obj->contact.force_on=FALSE;
+		
+			// switch to vehicle
+			
+		obj=object_find_spawn_idx(map_spawn_idx);
+		if (obj==NULL) return;
+	}
+	*/
 }
 
 /* =======================================================
@@ -955,7 +968,7 @@ void remote_network_send_updates(void)
 		obj=server.objs;
 
 		for (n=0;n!=server.count.obj;n++) {
-			if ((obj->type_idx==object_type_bot_multiplayer) || ((obj->type_idx==object_type_bot_map) && (coop))) {
+			if ((obj->type==object_type_bot_multiplayer) || ((obj->type==object_type_bot_map) && (coop))) {
 				net_client_send_remote_update(obj,FALSE);
 			}
 			obj++;
@@ -1002,7 +1015,7 @@ void remote_network_send_latency_ping(void)
       
 ======================================================= */
 
-void remote_add_map_bots(void)
+void remote_setup_coop_bots(void)
 {
 	int					n,uid;
 	bool				coop;
@@ -1023,7 +1036,7 @@ void remote_add_map_bots(void)
 
 	for (n=0;n!=server.count.obj;n++) {
 	
-		if (obj->type_idx==object_type_bot_map) {
+		if (obj->type==object_type_bot_map) {
 		
 				// if not in coop, then no map bots
 
@@ -1036,10 +1049,8 @@ void remote_add_map_bots(void)
 				// remotes or bots
 
 			else {
-			
 				obj->remote.uid=uid;
 				uid++;
-				
 			}
 
 		}

@@ -199,6 +199,25 @@ and can be sold or given away.
 #define sd_skill_hard									1152
 
 //
+// spot type constants
+//
+
+#define sd_spot_type_object								1160
+#define sd_spot_type_bot								1161
+#define sd_spot_type_player								1162
+#define sd_spot_type_spawn								1163
+
+//
+// object type constants
+//
+
+#define sd_object_type_player							1170
+#define sd_object_type_remote							1171
+#define sd_object_type_bot_multiplayer					1172
+#define sd_object_type_bot_map							1173
+#define sd_object_type_object							1174
+
+//
 // main events constants
 //
 

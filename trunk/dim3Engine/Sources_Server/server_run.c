@@ -75,7 +75,6 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
 		if (mesh->msg.map_change_on) {
 			strcpy(map.info.name,mesh->msg.map_name);
 			strcpy(map.info.player_start_name,mesh->msg.map_spot_name);
-			strcpy(map.info.player_start_type,mesh->msg.map_spot_type);
 			map.info.in_load=FALSE;
 
 			server.map_change=TRUE;
@@ -123,7 +122,7 @@ void run_object_single(obj_type *obj)
 	
 		// turning and looking
 		
-	if (obj->type_idx==object_type_player) {
+	if (obj->type==object_type_player) {
 		if (!obj->input_freeze) {
 			object_player_turn(obj);
 			object_player_look(obj);
@@ -181,7 +180,7 @@ void run_object_single(obj_type *obj)
 	
 		// animation events
 
-	if (obj->type_idx==object_type_player) {
+	if (obj->type==object_type_player) {
 		object_event_animations(obj);
 	}
 	
@@ -200,7 +199,7 @@ inline void run_objects_slice_single(obj_type *obj)
 {
 		// remotes get predicted
 		
-	if (obj->type_idx==object_type_remote) {
+	if (obj->type==object_type_remote) {
 		remote_predict_move(obj);
 		return;
 	}
@@ -208,7 +207,7 @@ inline void run_objects_slice_single(obj_type *obj)
 		// if in network and not host, map bots
 		// get predicted
 		
-	if ((net_setup.mode==net_mode_client) && (obj->type_idx==object_type_bot_map)) {
+	if ((net_setup.mode==net_mode_client) && (obj->type==object_type_bot_map)) {
 		remote_predict_move(obj);
 		return;
 	}
@@ -246,7 +245,7 @@ void run_objects_slice(void)
 				// trigger any mesh changes if not suspended
 				// remotes handle triggers on their own
 			
-			if ((!obj->suspend) && (obj->type_idx!=object_type_remote)) {
+			if ((!obj->suspend) && (obj->type!=object_type_remote)) {
 			
 				if ((old_pnt.x!=obj->pnt.x) || (old_pnt.y!=obj->pnt.y) || (old_pnt.z!=obj->pnt.z)) {
 				
@@ -290,7 +289,7 @@ void run_objects_no_slice(void)
 
 					// held weapons
 
-				if (obj->type_idx==object_type_player) {
+				if (obj->type==object_type_player) {
 					weap=weapon_find_current(obj);
 					if (weap!=NULL) {
 						model_draw_setup_weapon(obj,weap,FALSE,FALSE);

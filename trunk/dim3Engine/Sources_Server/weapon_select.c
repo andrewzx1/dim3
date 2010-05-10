@@ -325,12 +325,9 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 		chk_obj=&server.objs[n];
 		if (chk_obj->hidden) continue;
 
-		if (weap->target.type[0]==0x0) {
+		if (weap->target.opponent_only) {
 			if (chk_obj->status.health==0) continue;
-			if ((chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot_multiplayer) && (chk_obj->type_idx!=object_type_bot_map)) continue;
-		}
-		else {
-			if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
+			if ((chk_obj->type!=object_type_remote) && (chk_obj->type!=object_type_bot_multiplayer) && (chk_obj->type!=object_type_bot_map)) continue;
 		}
 		
 			// outside max distance?
@@ -396,12 +393,9 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 		chk_obj=&server.objs[n];
 		if (chk_obj->hidden) continue;
 
-		if (weap->target.type[0]==0x0) {
+		if (weap->target.opponent_only) {
 			if (chk_obj->status.health==0) continue;
-			if ((chk_obj->type_idx!=object_type_remote) && (chk_obj->type_idx!=object_type_bot_multiplayer) && (chk_obj->type_idx!=object_type_bot_map)) continue;
-		}
-		else {
-			if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
+			if ((chk_obj->type!=object_type_remote) && (chk_obj->type!=object_type_bot_multiplayer) && (chk_obj->type!=object_type_bot_map)) continue;
 		}
 		
 			// outside max distance?
@@ -437,19 +431,11 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 	weap->target.obj_uid=prev_uid;
 }
 
-bool weapon_target_start(obj_type *obj,weapon_type *weap,char *target_type)
+bool weapon_target_start(obj_type *obj,weapon_type *weap,bool opponent_only)
 {
-		// get first targetted object
-		// NULL means any opponent
-
-	if (target_type==NULL) {
-		weap->target.type[0]=0x0;
-	}
-	else {
-		strcpy(weap->target.type,target_type);
-	}
-	
 	weap->target.obj_uid=-1;
+	weap->target.opponent_only=opponent_only;
+	
 	weapon_target_next_object(obj,weap);
 
 		// if no available targets, return false

@@ -47,143 +47,6 @@ extern js_type				js;
 extern hud_type				hud;
 extern network_setup_type	net_setup;
 
-extern bool game_file_reload_ok(void);
-extern bool game_file_reload(char *err_str);
-
-/* =======================================================
-
-      Object Spawning
-      
-======================================================= */
-
-void object_spawn(obj_type *obj,int sub_event)
-{
-	int				idx;
-	bool			reload_ok;
-	char			err_str[256];
-	spot_type		*spot;
-
-		// reset health and weapons
-		// if not map change
-
-	if (sub_event!=sd_event_spawn_map_change) {
-		obj->status.health=obj->status.start_health;
-		weapon_reset_ammo_object(obj);
-	}
-
-		// game resets change scores
-
-	if (sub_event==sd_event_spawn_game_reset) {
-		obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
-		obj->score.place=1;
-	}
-
-		// reborn resets some things that
-		// death flips
-
-	if (sub_event==sd_event_spawn_reborn) {
-		obj->input_freeze=FALSE;
-		obj->death_trigger=FALSE;
-	}
-
-		// make sure to stop all movement
-
-	object_stop(obj);
-
-		// handle repositioning
-
-	if ((sub_event==sd_event_spawn_game_reset) || (sub_event==sd_event_spawn_reborn)) {
-
-			// reposition single player games
-			
-		if (net_setup.mode==net_mode_none) {
-		
-			reload_ok=FALSE;
-		
-				// if there was a saved game,
-				// restart from there
-				
-			if (game_file_reload_ok()) {
-				if (!game_file_reload(err_str)) {
-					game_time_pause_end();			// loaded files are in paused mode
-					reload_ok=TRUE;
-				}
-			}
-			
-				// if no reload, then just
-				// restart at map start
-				
-			if (!reload_ok) {
-				server.map_change=TRUE;
-				server.skip_media=TRUE;
-			}
-		}
-		
-			// reposition network games
-			
-		else {
-			idx=object_find_spawn_spot(obj,err_str);
-			if (idx!=-1) {
-				spot=&map.spots[idx];
-				object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
-			}
-		}
-	}
-
-		// setup script resets
-		// in case we need to return to spawn
-	
-	object_reset_prepare(obj);
-    
-		// call the spawn event
-		
-	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
-
-		// if this is the player, then make
-		// sure to call the spawn event on other
-		// machines
-
-	if (net_setup.mode!=net_mode_none) {
-		if (obj->uid==server.player_obj_uid) net_client_send_spawn(obj,sub_event);
-	}
-	
-		// can't respawn until we die
-		
-	obj->status.respawn_tick=-1;
-	
-		// and handle any telefragging
-		
-	object_telefrag_players(obj,FALSE);
-}
-
-int object_get_respawn_time(obj_type *obj)
-{
-	int				secs;
-	
-	secs=(obj->status.respawn_tick-game_time_get())/1000;
-	if (secs<0) return(0);
-	
-	return(secs);
-}
-
-void object_check_respawn(obj_type *obj)
-{
-		// only players and bots
-		// can respawn, remotes handle their own
-		// respawning
-		
-	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_bot_multiplayer)) return;
-	
-	if (obj->status.health>0) return;
-	if (obj->status.respawn_tick==-1) return;
-	
-		// time to respawn?
-		
-	if (obj->status.respawn_tick<game_time_get()) {
-		object_spawn(obj,sd_event_spawn_reborn);
-	}
-}
-
 /* =======================================================
 
       Object Scoring
@@ -201,7 +64,7 @@ void object_score_recalc_place(void)
 	for (n=0;n!=server.count.obj;n++) {
 	
 		obj=&server.objs[n];
-		if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot_multiplayer)) continue;
+		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
 		
 			// find place
 			
@@ -233,7 +96,7 @@ void object_score_update(obj_type *obj)
 {
 		// only run rules for players or multiplayer bots
 
-	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_bot_multiplayer)) return;
+	if ((obj->type!=object_type_player) && (obj->type!=object_type_bot_multiplayer)) return;
 
 		// run rule to update score
 
@@ -320,7 +183,7 @@ void object_death(obj_type *obj)
 		// send death if joined and is player or multiplayer bot
 		
 	if (net_setup.mode!=net_mode_none) {
-		if ((obj->type_idx==object_type_player) || (obj->type_idx==object_type_bot_multiplayer)) net_client_send_death(obj,FALSE);
+		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) net_client_send_death(obj,FALSE);
 	}
 	
 		// setup respawn timer
@@ -353,7 +216,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 
 		// only players, remotes, and multiplayer bots can telefrag
 
-	if ((obj->type_idx!=object_type_player) && (obj->type_idx!=object_type_remote) && (obj->type_idx!=object_type_bot_multiplayer)) return(FALSE);
+	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) return(FALSE);
 
 		// colliding with remotes
 		
@@ -362,7 +225,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 	for (n=0;n!=server.count.obj;n++) {
 		check_obj=&server.objs[n];
 	
-		if ((check_obj->type_idx!=object_type_player) && (check_obj->type_idx!=object_type_remote) && (check_obj->type_idx!=object_type_bot_multiplayer)) continue;
+		if ((check_obj->type!=object_type_player) && (check_obj->type!=object_type_remote) && (check_obj->type!=object_type_bot_multiplayer)) continue;
 		if ((check_obj->hidden) || (!check_obj->contact.object_on)) continue;
 		if (obj->uid==check_obj->uid) continue;
 		
@@ -380,7 +243,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 				// send network message to telefrag
 
 			if (net_setup.mode!=net_mode_none) {
-				if ((check_obj->uid==server.player_obj_uid) || (check_obj->type_idx==object_type_bot_multiplayer)) {
+				if ((check_obj->uid==server.player_obj_uid) || (check_obj->type==object_type_bot_multiplayer)) {
 					check_obj->damage_obj_uid=obj->uid;
 					net_client_send_death(check_obj,TRUE);
 				}
@@ -441,7 +304,7 @@ void object_touch(obj_type *obj)
 		// send callbacks
 
 	hit_obj=object_find_uid(uid);
-	if (hit_obj->type_idx==object_type_remote) return;
+	if (hit_obj->type==object_type_remote) return;
 		
 	object_setup_touch(hit_obj,obj,FALSE);
 	scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
@@ -545,7 +408,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		// and any network events
 
 	if (net_setup.mode!=net_mode_none) {
-		if ((from_obj->uid==server.player_obj_uid) || (from_obj->type_idx==object_type_bot_multiplayer)) net_client_send_click(from_obj,&from_obj->pnt,&from_obj->ang);
+		if ((from_obj->uid==server.player_obj_uid) || (from_obj->type==object_type_bot_multiplayer)) net_client_send_click(from_obj,&from_obj->pnt,&from_obj->ang);
 	}
 }
 
@@ -557,7 +420,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 
 void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,proj_type *source_proj,d3pnt *melee_hit_pt,int damage)
 {
-	if (obj->type_idx==object_type_remote) return;
+	if (obj->type==object_type_remote) return;
 	if (!obj->damage.on) return;
 	
 		// need to make sure cascading scripts
@@ -579,7 +442,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 		obj->damage_obj_uid=-1;
 		
 		if (source_obj!=NULL) {
-			if ((source_obj->type_idx!=object_type_other) && (source_obj->uid!=obj->uid)) {		// no damage from regular objects and same object
+			if ((source_obj->type!=object_type_object) && (source_obj->uid!=obj->uid)) {		// no damage from regular objects and same object
 				obj->damage_obj_uid=source_obj->uid;
 			}
 
@@ -675,7 +538,7 @@ void object_crush(obj_type *obj,bool auto_crush)
 	
 		// kill if not a remote or invincible
 		
-	if (obj->type_idx==object_type_remote) return;
+	if (obj->type==object_type_remote) return;
 	if (obj->damage.invincible) return;
 
 	obj->damage_obj_uid=-1;
