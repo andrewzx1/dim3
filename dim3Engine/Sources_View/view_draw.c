@@ -393,7 +393,7 @@ void view_draw_scene_build(void)
 {
 	int			tick;
 
-	tick=game_time_get();		// supergumba -- move these ticks around
+	tick=game_time_get();
 
 		// setup projection
 

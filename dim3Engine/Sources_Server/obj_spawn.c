@@ -36,6 +36,7 @@ and can be sold or given away.
 #include "remotes.h"
 #include "models.h"
 #include "physics.h"
+#include "interfaces.h"
 #include "timing.h"
 
 extern int					game_obj_rule_uid;
@@ -49,6 +50,7 @@ extern network_setup_type	net_setup;
 
 extern bool game_file_reload_ok(void);
 extern bool game_file_reload(char *err_str);
+extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 
 /* =======================================================
 
@@ -56,71 +58,87 @@ extern bool game_file_reload(char *err_str);
       
 ======================================================= */
 
+int object_choose_spawn_spot(obj_type *obj,char *err_str)
+{
+	int			spot_idx;
+	
+		// spots when not in a network game
+		
+	if (net_setup.mode==net_mode_none) {
+	
+			// if this object is the player, then spawn
+			// at the player start
+		
+		if (obj->uid==server.player_obj_uid) {
+			spot_idx=map_find_random_spot(&map,map.info.player_start_name,spot_type_player);
+			if (spot_idx!=-1) return(spot_idx);
+			
+			sprintf(err_str,"Could not find spot: %s-Player",map.info.player_start_name);
+			return(-1);
+		}
+	
+			// otherwise, any spawn spot
+			
+		spot_idx=map_find_random_spot(&map,NULL,spot_type_spawn);
+		if (spot_idx!=-1) return(spot_idx);
+		
+		strcpy(err_str,"Could not find spot: *-Spawn");
+		return(-1);
+	}
+	
+		// spots when in a network game
+		
+		// if we have a spot type (for instance, network games
+		// need to start objects at the right place) then look for that
+		
+	if (obj->spawn_spot_name[0]!=0x0) {
+		spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,spot_type_spawn);
+		if (spot_idx!=-1) return(spot_idx);
+	
+		sprintf(err_str,"Could not find spot: %s-Spawn",obj->spawn_spot_name);
+		return(-1);
+	}
+	
+		// otherwise any spawn spot
+			
+	spot_idx=map_find_random_spot(&map,NULL,spot_type_spawn);
+	if (spot_idx!=-1) return(spot_idx);
+		
+	strcpy(err_str,"Could not find spot: *-Spawn");
+	return(-1);
+}
+
 bool object_spawn_position(obj_type *obj,int sub_event,char *err_str)
 {
 	int				idx;
 	bool			reload_ok;
 	spot_type		*spot;
 
-	// supergumba -- do editor override here!
+		// if it's the initial spawn, then we
+		// check to see if there's an editor override,
+		// else we let the spot pick functions deal with
+		// picking the correct spot
+
+	if (sub_event==sd_event_spawn_init) {
 	
-	if (sub_event==sd_event_spawn_init) {		// supergumba -- put this all together
-	
-	/*
-				// if editor override then try to start at editor
-		// cursor position
+			// if editor override then try to start at editor
+			// cursor position
 
-	if ((setup.editor_override.on) && (!map.settings.editor.link_always_start)) {
-		x=setup.editor_override.pt.x;
-		y=setup.editor_override.pt.y-obj->size.eye_offset;
-		z=setup.editor_override.pt.z;
-		ang_y=setup.editor_override.ang.y;
-	}
-*/
-		idx=object_find_spawn_spot(obj,err_str);
-		if (idx==-1) return(FALSE);
-		
-		spot=&map.spots[idx];
-		object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
-	}
-
-	if ((sub_event==sd_event_spawn_game_reset) || (sub_event==sd_event_spawn_reborn)) {
-
-			// reposition single player games
-			
-		if (net_setup.mode==net_mode_none) {
-		
-			reload_ok=FALSE;
-		
-				// if there was a saved game,
-				// restart from there
-				
-			if (game_file_reload_ok()) {
-				if (!game_file_reload(err_str)) {
-					game_time_pause_end();			// loaded files are in paused mode
-					reload_ok=TRUE;
-				}
-			}
-			
-				// if no reload, then just
-				// restart at map start
-				
-			if (!reload_ok) {
-				server.map_change=TRUE;
-				server.skip_media=TRUE;
-			}
+		if ((setup.editor_override.on) && (!map.settings.editor.link_always_start)) {
+			setup.editor_override.on=FALSE;
+			object_set_position(obj,setup.editor_override.pt.x,(setup.editor_override.pt.y-obj->size.eye_offset),setup.editor_override.pt.z,setup.editor_override.ang.y,0);
+			return(TRUE);
 		}
-		
-			// reposition network games
-			
-		else {
-			idx=object_find_spawn_spot(obj,err_str);
-			if (idx==-1) return(FALSE);
-			
-			spot=&map.spots[idx];
-			object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
-		}
+
 	}
+
+		// otherwise spawn at object spot
+
+	idx=object_choose_spawn_spot(obj,err_str);
+	if (idx==-1) return(FALSE);
+		
+	spot=&map.spots[idx];
+	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
 
 	return(TRUE);
 }
@@ -231,6 +249,12 @@ int object_get_respawn_time(obj_type *obj)
 void object_check_respawn(obj_type *obj)
 {
 	char			err_str[256];
+
+		// network respawning is automatic
+		// single player responding happens with
+		// a keypress
+
+	if (net_setup.mode==net_mode_none) return;
 	
 		// only players and bots
 		// can respawn, remotes handle their own

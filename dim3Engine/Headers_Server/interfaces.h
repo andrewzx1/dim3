@@ -158,6 +158,8 @@ extern void zoom_draw(obj_type *obj,weapon_type *weap);
 // interfaces
 //
 
+extern void menu_draw_start(void);
+
 extern void intro_open(void);
 extern void intro_close(void);
 extern void intro_run(void);

@@ -53,7 +53,6 @@ extern void net_close_socket(d3socket *sock);
 extern void net_socket_blocking(d3socket sock,bool blocking);
 extern void net_socket_enable_broadcast(d3socket sock);
 extern bool net_ip_to_address(char *ip,unsigned long *ip_addr,char *err_str);
-extern bool net_bind(d3socket sock,char *ip,int port,char *err_str);
 extern bool net_bind_any(d3socket sock,int port,char *err_str);
 extern bool net_receive_ready(d3socket sock);
 extern bool net_send_ready(d3socket sock);

@@ -124,38 +124,6 @@ bool net_ip_to_address(char *ip,unsigned long *ip_addr,char *err_str)
       
 ======================================================= */
 
-// supergumba -- are these necessary anymore?
-bool net_bind(d3socket sock,char *ip,int port,char *err_str)
-{
-	int					err;
-	unsigned long		ns_addr;
-	struct sockaddr_in	addr;
-	
-		// setup address
-		
-	ns_addr=inet_addr(ip);
-	if (ns_addr==INADDR_NONE) {
-		sprintf(err_str,"Networking: Could not create address for %s",ip);
-		return(FALSE);
-	}
-		
-	memset(&addr,0x0,sizeof(struct sockaddr_in));
-		
-	addr.sin_family=AF_INET;
-	addr.sin_port=htons((short)port);
-	addr.sin_addr.s_addr=htonl(ns_addr);
-	
-		// bind socket
-		
-	err=bind(sock,(struct sockaddr*)&addr,sizeof(struct sockaddr_in));
-	if (err<0) {
-		sprintf(err_str,"Networking: Could not bind to %s:%d",ip,port);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
 bool net_bind_any(d3socket sock,int port,char *err_str)
 {
 	int					err;
