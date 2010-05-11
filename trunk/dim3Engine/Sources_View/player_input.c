@@ -952,6 +952,29 @@ void player_thrust_input(obj_type *obj)
       
 ======================================================= */
 
+void player_restart(obj_type *obj)
+{
+		// spawn event will be reborn
+
+	obj->next_spawn_sub_event=sd_event_spawn_reborn;
+
+		// if there was a saved game,
+		// restart from there
+
+	if (game_file_reload_ok()) {
+		if (!game_file_reload(err_str)) {
+			game_time_pause_end();			// loaded files are in paused mode
+			return;
+		}
+	}
+			
+		// if no reload, then just
+		// restart at map start
+				
+	server.map_change=TRUE;
+	server.skip_media=TRUE;
+}
+
 void player_death_input(obj_type *obj)
 {
 	char			err_str[256];
@@ -964,17 +987,7 @@ void player_death_input(obj_type *obj)
 		// restart key
 		
 	if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
-
-		if (!respawn_key_down) {
-			obj->next_spawn_sub_event=sd_event_spawn_reborn;
-			if (!object_spawn(obj,err_str)) {
-				map_end();
-				game_end();
-				error_setup(err_str,"Network Game Canceled");
-				server.next_state=gs_error;
-			}
-		}
-
+		if (!respawn_key_down) player_restart();
 		return;
 	}
 

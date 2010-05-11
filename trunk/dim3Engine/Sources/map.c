@@ -561,23 +561,6 @@ bool map_need_rebuild(void)
 
 bool map_rebuild_changes(char *err_str)
 {
-	obj_type		*obj;
-	
-		// close existing map
-		
 	if (server.map_open) map_end();
-	
-		// open new map
-		
-	if (!map_start(FALSE,err_str)) return(FALSE);
-	
-		// stop all movement on player object
-		// force current weapon into held position
-		
-	obj=object_find_uid(server.player_obj_uid);
-	object_stop(obj);
-	
-	obj->held_weapon.mode=wm_held;
-	
-	return(TRUE);
+	return(map_start(FALSE,err_str));
 }

@@ -115,7 +115,9 @@ void weapon_clear_state(obj_type *obj)
 		// complete the change
 		
 	if (obj->held_weapon.next_uid!=-1) obj->held_weapon.current_uid=obj->held_weapon.next_uid;
-	
+
+	obj->held_weapon.mode=wm_held;
+
 		// turn off any weapon changing
 
 	obj->held_weapon.next_uid=-1;

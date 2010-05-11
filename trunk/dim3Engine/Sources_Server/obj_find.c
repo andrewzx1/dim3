@@ -289,55 +289,6 @@ int object_find_uid_by_stood_on_object_uid(int stand_obj_uid)
       
 ======================================================= */
 
-int object_find_spawn_spot(obj_type *obj,char *err_str)
-{
-	int			spot_idx;
-	
-		// spots when not in a network game
-		
-	if (net_setup.mode==net_mode_none) {
-	
-			// if this object is the player, then spawn
-			// at the player start
-		
-		if (obj->uid==server.player_obj_uid) {
-			spot_idx=map_find_random_spot(&map,map.info.player_start_name,spot_type_player);
-			if (spot_idx!=-1) return(spot_idx);
-			
-			sprintf(err_str,"Could not find spot: %s-Player",map.info.player_start_name);
-			return(-1);
-		}
-	
-			// otherwise, any spawn spot
-			
-		spot_idx=map_find_random_spot(&map,NULL,spot_type_spawn);
-		if (spot_idx!=-1) return(spot_idx);
-		
-		strcpy(err_str,"Could not find spot: *-Spawn");
-		return(-1);
-	}
-	
-		// spots when in a network game
-		
-		// if we have a spot type (for instance, network games
-		// need to start objects at the right place) then look for that
-		
-	if (obj->spawn_spot_name[0]!=0x0) {
-		spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,spot_type_spawn);
-		if (spot_idx!=-1) return(spot_idx);
-	
-		sprintf(err_str,"Could not find spot: %s-Spawn",obj->spawn_spot_name);
-		return(-1);
-	}
-	
-		// otherwise any spawn spot
-			
-	spot_idx=map_find_random_spot(&map,NULL,spot_type_spawn);
-	if (spot_idx!=-1) return(spot_idx);
-		
-	strcpy(err_str,"Could not find spot: *-Spawn");
-	return(-1);
-}
 
 /* =======================================================
 

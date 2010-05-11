@@ -195,7 +195,8 @@ JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef 
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	// supergumba -- depreciated, delete later
+	menu_draw_start();
+
 	return(script_null_to_value(cx));
 }
 

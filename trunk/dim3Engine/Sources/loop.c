@@ -60,7 +60,6 @@ extern void game_end(void);
 extern void map_end(void);
 extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
-extern void menu_draw_start(void);
 
 /* =======================================================
 
@@ -242,7 +241,6 @@ void loop_state_last_close(void)
 {
 	view_clear_fps();
 	
-	// supergumba -- get the rest of these working!
 	switch (server.state) {
 
 		case gs_intro:

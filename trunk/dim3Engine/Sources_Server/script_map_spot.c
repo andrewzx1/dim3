@@ -42,7 +42,6 @@ JSValueRef js_map_spot_get_script_func(JSContextRef cx,JSObjectRef func,JSObject
 JSValueRef js_map_spot_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_spot_get_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		map_spot_props[]={
 							{"count",				js_map_spot_get_count,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -56,7 +55,6 @@ JSStaticFunction	map_spot_functions[]={
 							{"getParameter",		js_map_spot_get_parameter_func,		kJSPropertyAttributeDontDelete},
 							{"getPosition",			js_map_spot_get_position_func,		kJSPropertyAttributeDontDelete},
 							{"getAngle",			js_map_spot_get_angle_func,			kJSPropertyAttributeDontDelete},
-							{"attachObject",		js_map_spot_attach_object_func,		kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			map_spot_class;
@@ -215,39 +213,5 @@ JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectR
 		// get position
 		
 	return(script_angle_to_value(cx,0,spot->ang.y,0));
-}
-
-/* =======================================================
-
-      Spot Object Attachments
-      
-======================================================= */
-
-JSValueRef js_map_spot_attach_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
-{
-	/* supergumba -- depreciated
-	
-	char		name[name_str_len],type[name_str_len],
-				script[file_str_len],params[param_str_len];
-	spot_type   *spot;
-
-	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
-	
-		// find spot
-	
-	spot=script_find_spot_from_idx_arg(cx,argv[0],exception);
-	if (spot==NULL) return(script_null_to_value(cx));
-
-		// attach
-		
-	script_value_to_string(cx,argv[1],name,name_str_len);
-	script_value_to_string(cx,argv[2],type,name_str_len);
-	script_value_to_string(cx,argv[3],script,file_str_len);
-	script_value_to_string(cx,argv[4],params,param_str_len);
-	
-	map_spot_attach_object(spot,name,type,script,params);
-	*/
-	
-	return(script_null_to_value(cx));
 }
 

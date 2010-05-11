@@ -2652,6 +2652,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\obj_spawn.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\obj_state.c"
 						>
 						<FileConfiguration
@@ -2692,19 +2696,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\objects.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\player.c"
 						>
 						<FileConfiguration
 							Name="Release|Win32"
