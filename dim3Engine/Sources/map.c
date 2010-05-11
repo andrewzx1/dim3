@@ -361,6 +361,8 @@ bool map_start(bool skip_media,char *err_str)
 		// and call spawn on all the objects
 
 	progress_draw(70);
+	
+	map_find_random_spot_clear(&map,NULL,-1);
 
 	map_objects_create();
 	remote_setup_coop_bots();

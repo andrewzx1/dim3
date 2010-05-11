@@ -101,6 +101,7 @@ extern void object_score_recalc_place(void);
 extern void object_score_update(obj_type *obj);
 extern void object_score_death(obj_type *obj);
 extern void object_score_goal(obj_type *obj);
+extern void object_score_reset(obj_type *obj);
 extern void object_death(obj_type *obj);
 extern void object_telefrag(obj_type *obj,obj_type *source_obj);
 extern bool object_telefrag_players(obj_type *obj,bool check_only);
