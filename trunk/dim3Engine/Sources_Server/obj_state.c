@@ -147,6 +147,12 @@ void object_score_goal(obj_type *obj)
 	object_score_update(obj);
 }
 
+void object_score_reset(obj_type *obj)
+{
+	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
+	obj->score.place=1;
+}
+
 /* =======================================================
 
       Object Death

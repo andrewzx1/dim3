@@ -150,8 +150,9 @@ void game_reset(void)
 		return;
 	}
 
-		// setup all objects to be spawned with game reset
-		// when new map is loaded
+		// all objects will be re-spawned when the new map
+		// loads.  We setup the next spawn to be a game
+		// reset and clear the scores
 		
 		// remotes get hidden (until the next update)
 		// the respawn just to update any lists or items
@@ -165,10 +166,12 @@ void game_reset(void)
 		
 			case object_type_player:
 			case object_type_bot_multiplayer:
+				object_score_reset(obj);
 				obj->next_spawn_sub_event=sd_event_spawn_game_reset;
 				break;
 				
 			case object_type_remote:
+				object_score_reset(obj);
 				obj->next_spawn_sub_event=sd_event_spawn_game_reset;
 				obj->hidden=TRUE;
 				break;
