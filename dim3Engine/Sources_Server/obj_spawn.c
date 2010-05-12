@@ -111,7 +111,6 @@ int object_choose_spawn_spot(obj_type *obj,char *err_str)
 bool object_spawn_position(obj_type *obj,int sub_event,char *err_str)
 {
 	int				idx;
-	bool			reload_ok;
 	spot_type		*spot;
 
 		// if it's the initial spawn, then we
