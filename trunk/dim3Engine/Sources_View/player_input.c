@@ -954,6 +954,8 @@ void player_thrust_input(obj_type *obj)
 
 void player_restart(obj_type *obj)
 {
+	char			err_str[256];
+
 		// spawn event will be reborn
 
 	obj->next_spawn_sub_event=sd_event_spawn_reborn;
@@ -977,8 +979,6 @@ void player_restart(obj_type *obj)
 
 void player_death_input(obj_type *obj)
 {
-	char			err_str[256];
-	
 		// can only respawn by key press
 		// if in single player game
 		
@@ -987,7 +987,7 @@ void player_death_input(obj_type *obj)
 		// restart key
 		
 	if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
-		if (!respawn_key_down) player_restart();
+		if (!respawn_key_down) player_restart(obj);
 		return;
 	}
 
