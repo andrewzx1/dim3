@@ -840,63 +840,6 @@ void dialog_special_combo_fill_node(WindowRef wind,unsigned long sig,int id,char
 #endif
 }
 
-void dialog_special_combo_fill_script(WindowRef wind,unsigned long sig,int id,char *sel_name)
-{
-	int							n,script_count;
-	char						script_names[256][file_str_len];
-	file_path_directory_type	*fpd;
-	
-	fpd=file_paths_read_directory_data(&file_path_setup,"Scripts/Objects","js");
-
-	script_count=fpd->nfile;
-	
-	for (n=0;n!=fpd->nfile;n++) {
-		strcpy(script_names[n],fpd->files[n].file_name);
-	}
-	
-	file_paths_close_directory(fpd);
-	
-	dialog_special_combo_fill(wind,sig,id,script_count,(char*)script_names,file_str_len,sel_name);
-}
-
-void dialog_special_combo_fill_map(WindowRef wind,unsigned long sig,int id,char *sel_name)
-{
-	int							n,map_count;
-	char						map_names[256][file_str_len];
-	file_path_directory_type	*fpd;
-	
-	fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
-
-	map_count=fpd->nfile;
-	
-	for (n=0;n!=fpd->nfile;n++) {
-		strcpy(map_names[n],fpd->files[n].file_name);
-	}
-	
-	file_paths_close_directory(fpd);
-	
-	dialog_special_combo_fill(wind,sig,id,map_count,(char*)map_names,file_str_len,sel_name);
-}
-
-void dialog_special_combo_fill_model(WindowRef wind,unsigned long sig,int id,char *sel_name)
-{
-	int							n,model_count;
-	char						model_names[256][file_str_len];
-	file_path_directory_type	*fpd;
-	
-	fpd=file_paths_read_directory_data_dir(&file_path_setup,"Models","Mesh.xml");
-
-	model_count=fpd->nfile;
-	
-	for (n=0;n!=fpd->nfile;n++) {
-		strcpy(model_names[n],fpd->files[n].file_name);
-	}
-	
-	file_paths_close_directory(fpd);
-
-	dialog_special_combo_fill(wind,sig,id,model_count,(char*)model_names,file_str_len,sel_name);
-}
-
 /* =======================================================
 
       Get Special Dialogs
@@ -927,22 +870,6 @@ inline void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int
 {
 	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
 }
-
-inline void dialog_special_combo_get_script(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
-{
-	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
-}
-
-inline void dialog_special_combo_get_map(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
-{
-	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
-}
-
-inline void dialog_special_combo_get_model(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
-{
-	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
-}
-
 
 /* =======================================================
 

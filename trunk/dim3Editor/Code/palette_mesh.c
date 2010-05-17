@@ -63,6 +63,8 @@ and can be sold or given away.
 #define kMeshSendMessageBase					FOUR_CHAR_CODE('tbon')
 #define kMeshSendMessageBaseTeam				FOUR_CHAR_CODE('tbtx')
 
+#define kMeshButtonPickMap						FOUR_CHAR_CODE('pkmn')
+
 extern map_type				map;
 
 WindowRef					palette_mesh_wind;
@@ -108,7 +110,7 @@ void palette_mesh_load(void)
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageExit,0,mesh->msg.exit_on);
 	dialog_set_int(palette_mesh_wind,kMeshSendMessageExitId,0,mesh->msg.exit_id);
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageMapChange,0,mesh->msg.map_change_on);
-	dialog_special_combo_fill_map(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name);
+	dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name);
 	dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name);
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageBase,0,mesh->msg.base_on);
 	dialog_set_combo(palette_mesh_wind,kMeshSendMessageBaseTeam,0,mesh->msg.base_team);
@@ -154,7 +156,7 @@ void palette_mesh_save(void)
 	mesh->msg.exit_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageExit,0);
 	mesh->msg.exit_id=dialog_get_int(palette_mesh_wind,kMeshSendMessageExitId,0);
 	mesh->msg.map_change_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageMapChange,0);
-	dialog_special_combo_get_map(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,file_str_len);
+	dialog_get_text(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,file_str_len);
 	dialog_get_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name,name_str_len);
 	mesh->msg.base_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageBase,0);
 	mesh->msg.base_team=dialog_get_combo(palette_mesh_wind,kMeshSendMessageBaseTeam,0);
@@ -172,6 +174,34 @@ void palette_mesh_save(void)
 
 static pascal OSStatus palette_mesh_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
+	int				event_class,event_kind;
+	char			file_name[file_str_len];
+	HICommand		cmd;
+	
+	event_class=GetEventClass(event);
+	event_kind=GetEventKind(event);
+	
+		// button inside tab
+		
+	if ((event_class==kEventClassCommand) && (event_kind==kEventProcessCommand)) {
+		GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+			
+		switch (cmd.commandID) {
+			
+			case kMeshButtonPickMap:
+				if (dialog_file_open_run("Pick a Map","Maps","xml",NULL,file_name)) {
+					dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeName,0,file_name);
+					dialog_redraw(palette_mesh_wind,kMeshSendMessageMapChangeName,0);
+					palette_mesh_save();
+				}
+				return(noErr);
+		}
+		
+		return(eventNotHandledErr);
+	}
+
+		// control changes
+		
 	palette_mesh_save();
 	
 	if ((GetEventClass(event)==kEventClassControl) && (GetEventKind(event)==kEventControlHit)) {

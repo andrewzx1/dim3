@@ -141,7 +141,6 @@ void game_reset(void)
 
 	strcpy(map.info.name,setup.network.map.maps[net_setup.host.current_map_idx].name);
 	map.info.player_start_name[0]=0x0;
-	map.info.in_load=FALSE;
 
 	if (!map_rebuild_changes(err_str)) {
 		game_end();

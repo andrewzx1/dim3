@@ -54,10 +54,6 @@ extern bool					game_loop_quit;
 
 extern void game_reset(void);
 extern void chat_add_message(char *name,char *str,d3col *col);
-extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
-extern void game_end(void);
-extern bool map_start(bool skip_media,char *err_str);
-extern void map_end(void);
 extern bool map_rebuild_changes(char *err_str);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 extern void group_moves_synch_with_host(network_reply_group_synch *synch);
@@ -271,7 +267,6 @@ void remote_game_reset(network_request_game_reset *reset)
 
 	strcpy(map.info.name,reset->map_name);
 	map.info.player_start_name[0]=0x0;
-	map.info.in_load=FALSE;
 
 	if (!map_rebuild_changes(err_str)) {
 		game_end();

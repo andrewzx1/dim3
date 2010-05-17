@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "scripts.h"
 #include "interfaces.h"
 #include "models.h"
@@ -51,9 +52,6 @@ unsigned long			game_file_sz,game_file_pos;
 char					game_file_last_save_name[256];
 unsigned char			*game_file_data;
 
-extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
-extern bool map_start(bool skip_media,char *err_str);
-extern void map_end(void);
 extern void view_capture_draw(char *path);
 extern void group_moves_synch_with_load(void);
 extern void view_draw_fade_cancel(void);
@@ -399,8 +397,6 @@ bool game_file_load(char *file_name,char *err_str)
 	
 	game_file_pos=0;
 
-	progress_initialize("Loading",NULL);
-
 		// if game isn't running, then start
 		
 	if (!server.game_open) {
@@ -424,21 +420,22 @@ bool game_file_load(char *file_name,char *err_str)
 		
 		// reload map
 
-	progress_draw(10);
-	
 	if ((!server.map_open) || (strcmp(head.map_name,map.info.name)!=0)) {		// need to load a map?
 	
 		if (server.map_open) map_end();
 		
 		strcpy(map.info.name,head.map_name);
 		map.info.player_start_name[0]=0x0;
-		map.info.in_load=TRUE;
 
-		if (!map_start(TRUE,err_str)) {
+		if (!map_start(TRUE,TRUE,err_str)) {
 			free(game_file_data);
 			return(FALSE);
 		}
 	}
+	
+		// start progress
+
+	progress_initialize("Loading",NULL);
 	
 		// timing
 		
@@ -446,7 +443,7 @@ bool game_file_load(char *file_name,char *err_str)
 
 		// view and server objects
 		
-	progress_draw(20);
+	progress_draw(10);
 					
 	game_file_get_chunk(&view.time);
 	game_file_get_chunk(&view.fps);
@@ -459,11 +456,13 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&server.uid);
 	game_file_get_chunk(&server.count);
 	
-	progress_draw(30);
+	progress_draw(20);
 
 	free(server.objs);
 	free(server.weapons);
 	free(server.proj_setups);
+	
+	progress_draw(30);
 
 	server.objs=(obj_type*)game_file_replace_chunk();
 	server.weapons=(weapon_type*)game_file_replace_chunk();

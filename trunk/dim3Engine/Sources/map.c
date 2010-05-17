@@ -236,7 +236,7 @@ void map_mesh_polygon_draw_flag_setup(void)
       
 ======================================================= */
 
-bool map_start(bool skip_media,char *err_str)
+bool map_start(bool file_restore,bool skip_media,char *err_str)
 {
 	int				tick;
 	char			txt[256];
@@ -370,9 +370,14 @@ bool map_start(bool skip_media,char *err_str)
 	scenery_create();
 	scenery_start();
 	
-	if (!map_object_attach_all(err_str)) {
-		progress_shutdown();
-		return(FALSE);
+		// skip the spawn if loading
+		// a previous game
+		
+	if (!file_restore) {
+		if (!map_object_attach_all(err_str)) {
+			progress_shutdown();
+			return(FALSE);
+		}
 	}
 	
 		// attach player to map
@@ -385,8 +390,10 @@ bool map_start(bool skip_media,char *err_str)
 		
 			// connect camera to player
 			
-		obj=object_find_uid(server.player_obj_uid);
-		camera_connect(obj);
+		if (!file_restore) {
+			obj=object_find_uid(server.player_obj_uid);
+			camera_connect(obj);
+		}
 	}
 	
 		// initialize movements and lookups
@@ -403,13 +410,15 @@ bool map_start(bool skip_media,char *err_str)
 		
 	progress_draw(95);
 
-	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_open,0);
-	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_open,0);
+	if (!file_restore) {
+		scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_open,0);
+		scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_open,0);
 
-	if (net_setup.mode!=net_mode_host_dedicated) {
-		scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_open,0);
+		if (net_setup.mode!=net_mode_host_dedicated) {
+			scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_open,0);
+		}
 	}
-
+	
 		// finish any script based spawns
 
 	progress_draw(100);
@@ -453,7 +462,7 @@ bool map_start(bool skip_media,char *err_str)
 
 		// start any map fades
 
-	view_draw_fade_start();
+	if (!file_restore) view_draw_fade_start();
 	
 	return(TRUE);
 }
@@ -562,5 +571,5 @@ bool map_need_rebuild(void)
 bool map_rebuild_changes(char *err_str)
 {
 	if (server.map_open) map_end();
-	return(map_start(FALSE,err_str));
+	return(map_start(FALSE,FALSE,err_str));
 }

@@ -45,8 +45,6 @@ and can be sold or given away.
 extern bool game_file_save(char *err_str);
 extern bool game_file_quick_save(char *err_str);
 extern bool game_file_load(char *file_name,char *err_str);
-extern void map_end(void);
-extern void game_end(void);
 extern void game_time_pause_end(void);
 
 extern server_type			server;

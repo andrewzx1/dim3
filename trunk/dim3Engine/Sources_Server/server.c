@@ -281,7 +281,6 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 
 	map.info.name[0]=0x0;
 	map.info.player_start_name[0]=0x0;
-	map.info.in_load=FALSE;
 	
 	server.player_obj_uid=-1;
 	
