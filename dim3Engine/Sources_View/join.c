@@ -50,9 +50,6 @@ and can be sold or given away.
 
 #define join_news_id					6
 
-extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
-extern bool map_start(bool skip_media,char *err_str);
-
 extern map_type				map;
 extern server_type			server;
 extern hud_type				hud;
@@ -692,7 +689,7 @@ void join_game(void)
 	
 		// start the map
 		
-	if (!map_start(TRUE,err_str)) {
+	if (!map_start(FALSE,TRUE,err_str)) {
 		net_client_send_leave_host();
 		net_client_join_host_end();
 		error_setup(err_str,"Network Game Canceled");

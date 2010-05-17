@@ -47,10 +47,6 @@ extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
 extern bool view_initialize(char *err_str);
 extern void view_shutdown(void);
-extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
-extern void game_end(void);
-extern bool map_start(bool skip_media,char *err_str);
-extern void map_end(void);
 
 /* =======================================================
 
@@ -118,7 +114,7 @@ bool app_start(char *err_str)
 		return(FALSE);
 	}
 	
-	if (!map_start(TRUE,err_str)) {
+	if (!map_start(FALSE,TRUE,err_str)) {
 		game_end();
 		view_shutdown();
 		server_shutdown();

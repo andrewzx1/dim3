@@ -509,7 +509,6 @@ typedef struct		{
 															host_name[name_str_len],
 															player_start_name[name_str_len],
 															load_path[1024];
-						bool								in_load;
 					} map_info_type;
 
 typedef struct		{

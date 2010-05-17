@@ -75,8 +75,6 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
 		if (mesh->msg.map_change_on) {
 			strcpy(map.info.name,mesh->msg.map_name);
 			strcpy(map.info.player_start_name,mesh->msg.map_spot_name);
-			map.info.in_load=FALSE;		// supergumba -- is map.info.in_load necessary anymore?
-
 			server.map_change=TRUE;
 		}
 		

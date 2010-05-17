@@ -61,8 +61,6 @@ and can be sold or given away.
 
 extern bool net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
-extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
-extern bool map_start(bool skip_media,char *err_str);
 
 extern map_type				map;
 extern server_type			server;
@@ -499,7 +497,7 @@ void host_game(void)
 	
 		// start the map
 		
-	if (!map_start(TRUE,err_str)) {
+	if (!map_start(FALSE,TRUE,err_str)) {
 		net_host_game_end();
 		error_setup(err_str,"Hosting Game Canceled");
 		server.next_state=gs_error;

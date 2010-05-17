@@ -221,9 +221,6 @@ bool object_spawn(obj_type *obj,char *err_str)
 		if (obj->uid==server.player_obj_uid) net_client_send_spawn(obj,sub_event);
 	}
 	
-	// supergumba -- testing
-	fprintf(stdout,"%s: spawn=%d\n",obj->name,sub_event);
-	
 		// can't respawn until we die
 		
 	obj->status.respawn_tick=-1;
@@ -393,8 +390,6 @@ bool map_object_attach_all(char *err_str)
 {
 	int				n;
 	obj_type		*obj;
-	
-	// supergumba -- test missing spawn spots
 	
 	obj=server.objs;
 	

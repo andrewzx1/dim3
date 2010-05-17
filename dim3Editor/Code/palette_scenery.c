@@ -41,6 +41,8 @@ and can be sold or given away.
 #define kSceneryShadow						FOUR_CHAR_CODE('shdw')
 #define kSceneryFrame						FOUR_CHAR_CODE('txtf')
 
+#define kSpotButtonPickModel				FOUR_CHAR_CODE('pkmd')
+
 extern map_type				map;
 
 WindowRef					palette_scenery_wind;
@@ -64,7 +66,7 @@ void palette_scenery_load(void)
 
 		// set controls
 	
-	dialog_special_combo_fill_model(palette_scenery_wind,kSceneryModelName,0,scenery->model_name);
+	dialog_set_text(palette_scenery_wind,kSceneryModelName,0,scenery->model_name);
 	dialog_set_text(palette_scenery_wind,kSceneryAnimationName,0,scenery->animation_name);
 	dialog_set_float(palette_scenery_wind,kSceneryResize,0,scenery->resize);
 	dialog_set_boolean(palette_scenery_wind,kSceneryContactObject,0,scenery->contact_object_on);
@@ -92,7 +94,7 @@ void palette_scenery_save(void)
 		
 		// get controls
 
-	dialog_special_combo_get_model(palette_scenery_wind,kSceneryModelName,0,scenery->model_name,name_str_len);
+	dialog_get_text(palette_scenery_wind,kSceneryModelName,0,scenery->model_name,name_str_len);
 	dialog_get_text(palette_scenery_wind,kSceneryAnimationName,0,scenery->animation_name,name_str_len);
 	scenery->resize=dialog_get_float(palette_scenery_wind,kSceneryResize,0);
 	scenery->contact_object_on=dialog_get_boolean(palette_scenery_wind,kSceneryContactObject,0);
@@ -114,16 +116,55 @@ void palette_scenery_save(void)
 
 static pascal OSStatus palette_scenery_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
+	int				event_class,event_kind;
+	char			file_name[file_str_len];
+	HICommand		cmd;
 	ControlRef		ctrl;
 	
-		// save the changes
-		
-	palette_scenery_save();
+	event_class=GetEventClass(event);
+	event_kind=GetEventKind(event);
 	
-		// tab change?
+		// button inside tab
 		
-	GetEventParameter(event,kEventParamDirectObject,typeControlRef,NULL,sizeof(ControlRef),NULL,&ctrl);
-	if (ctrl==palette_scenery_tab) dialog_switch_tab(palette_scenery_wind,kSceneryTab,0,kSceneryTabCount);
+	if ((event_class==kEventClassCommand) && (event_kind==kEventProcessCommand)) {
+		GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+			
+		switch (cmd.commandID) {
+			
+			case kSpotButtonPickModel:
+				if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) {
+					dialog_set_text(palette_scenery_wind,kSceneryModelName,0,file_name);
+					dialog_redraw(palette_scenery_wind,kSceneryModelName,0);
+					palette_scenery_save();
+				}
+				return(noErr);
+		}
+		
+		return(eventNotHandledErr);
+	}
+	
+		// control changes
+		
+	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
+	
+			// save the changes
+			
+		palette_scenery_save();
+		
+			// tab change?
+			
+		GetEventParameter(event,kEventParamDirectObject,typeControlRef,NULL,sizeof(ControlRef),NULL,&ctrl);
+		if (ctrl==palette_scenery_tab) dialog_switch_tab(palette_scenery_wind,kSceneryTab,0,kSceneryTabCount);
+		
+		return(eventNotHandledErr);
+	}
+	
+		// keyboard changes
+		
+	if (event_class==kEventClassKeyboard) {
+		palette_scenery_save();
+		return(eventNotHandledErr);
+	}
 	
 	return(eventNotHandledErr);
 }
@@ -139,7 +180,8 @@ void palette_scenery_open(int x,int y)
 	int						n;
 	ControlID				ctrl_id;
 	EventHandlerUPP			tab_event_upp;
-	EventTypeSpec			tab_event_list[]={{kEventClassControl,kEventControlHit},
+	EventTypeSpec			tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
+											  {kEventClassControl,kEventControlHit},
 											  {kEventClassKeyboard,kEventRawKeyUp}};
 
 		// open the window

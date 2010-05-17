@@ -39,7 +39,10 @@ and can be sold or given away.
 #define kSpotSkill								FOUR_CHAR_CODE('skil')
 #define kSpotSpawn								FOUR_CHAR_CODE('spwn')
 #define kSpotDisplayModel						FOUR_CHAR_CODE('dspm')
-#define kSpotButtonEdit							FOUR_CHAR_CODE('edit')
+
+#define kSpotButtonEditScript					FOUR_CHAR_CODE('edit')
+#define kSpotButtonPickScript					FOUR_CHAR_CODE('pksp')
+#define kSpotButtonPickModel					FOUR_CHAR_CODE('pkmd')
 
 extern map_type				map;
 
@@ -125,11 +128,11 @@ void palette_spot_load(void)
 	
 	dialog_set_text(palette_spot_wind,kSpotName,0,spot->name);
 	dialog_set_combo(palette_spot_wind,kSpotType,0,spot->type);
-	dialog_special_combo_fill_script(palette_spot_wind,kSpotScript,0,spot->script);
+	dialog_set_text(palette_spot_wind,kSpotScript,0,spot->script);
 	dialog_set_combo(palette_spot_wind,kSpotSkill,0,spot->skill);
 	dialog_set_combo(palette_spot_wind,kSpotSpawn,0,spot->spawn);
 	
-	dialog_special_combo_fill_model(palette_spot_wind,kSpotDisplayModel,0,spot->display_model);
+	dialog_set_text(palette_spot_wind,kSpotDisplayModel,0,spot->display_model);
 	
 	palette_spot_setting_break_params(spot->params);
 
@@ -150,11 +153,11 @@ void palette_spot_save(void)
 
 	dialog_get_text(palette_spot_wind,kSpotName,0,spot->name,name_str_len);
 	spot->type=dialog_get_combo(palette_spot_wind,kSpotType,0);
-	dialog_special_combo_get_script(palette_spot_wind,kSpotScript,0,spot->script,name_str_len);
+	dialog_get_text(palette_spot_wind,kSpotScript,0,spot->script,name_str_len);
 	spot->skill=dialog_get_combo(palette_spot_wind,kSpotSkill,0);
 	spot->spawn=dialog_get_combo(palette_spot_wind,kSpotSpawn,0);
 	
-	dialog_special_combo_get_model(palette_spot_wind,kSpotDisplayModel,0,spot->display_model,name_str_len);
+	dialog_get_text(palette_spot_wind,kSpotDisplayModel,0,spot->display_model,name_str_len);
 	
 	palette_spot_setting_combine_params(spot->params);
 	
@@ -168,7 +171,7 @@ void palette_spot_save(void)
 static pascal OSStatus palette_spot_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	int				event_class,event_kind;
-	char			script_name[name_str_len];
+	char			script_name[name_str_len],file_name[file_str_len];
 	HICommand		cmd;
 	ControlRef		ctrl;
 	
@@ -182,10 +185,26 @@ static pascal OSStatus palette_spot_tab_proc(EventHandlerCallRef handler,EventRe
 			
 		switch (cmd.commandID) {
 			
-			case kSpotButtonEdit:
+			case kSpotButtonEditScript:
 				palette_spot_save();
-				dialog_special_combo_get_script(palette_spot_wind,kSpotScript,0,script_name,name_str_len);
+				dialog_get_text(palette_spot_wind,kSpotScript,0,script_name,name_str_len);
 				launch_spot_script_editor(script_name);
+				return(noErr);
+				
+			case kSpotButtonPickScript:
+				if (dialog_file_open_run("Pick a Script","Scripts/Objects","js",NULL,file_name)) {
+					dialog_set_text(palette_spot_wind,kSpotScript,0,file_name);
+					dialog_redraw(palette_spot_wind,kSpotScript,0);
+					palette_spot_save();
+				}
+				return(noErr);
+				
+			case kSpotButtonPickModel:
+				if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) {
+					dialog_set_text(palette_spot_wind,kSpotDisplayModel,0,file_name);
+					dialog_redraw(palette_spot_wind,kSpotDisplayModel,0);
+					palette_spot_save();
+				}
 				return(noErr);
 		}
 		

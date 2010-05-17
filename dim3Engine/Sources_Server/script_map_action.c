@@ -97,7 +97,6 @@ JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectR
 		
 	script_value_to_string(cx,argv[0],map.info.name,name_str_len);
 	script_value_to_string(cx,argv[1],map.info.player_start_name,name_str_len);
-	map.info.in_load=FALSE;
 
 	server.map_change=TRUE;
 	
@@ -119,7 +118,6 @@ JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSOb
 		
 	strcpy(map.info.name,map.info.host_name);
 	map.info.player_start_name[0]=0x0;
-	map.info.in_load=FALSE;
 
 	server.map_change=TRUE;
 	

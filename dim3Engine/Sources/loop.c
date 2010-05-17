@@ -56,8 +56,6 @@ extern void view_loop_draw_dedicated_host(void);
 extern void map_clear_changes(void);
 extern bool map_need_rebuild(void);
 extern bool map_rebuild_changes(char *err_str);
-extern void game_end(void);
-extern void map_end(void);
 extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
 

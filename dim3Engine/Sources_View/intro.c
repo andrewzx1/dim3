@@ -49,9 +49,6 @@ and can be sold or given away.
 #define intro_button_credit_id					30
 #define intro_button_quit_id					31
 
-extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
-extern bool map_start(bool skip_media,char *err_str);
-
 extern bool					game_loop_quit;
 
 extern server_type			server;
@@ -197,7 +194,7 @@ void intro_click_game(int skill)
 		return;
 	}
 
-	if (!map_start(FALSE,err_str)) {
+	if (!map_start(FALSE,FALSE,err_str)) {
 		error_setup(err_str,"Game Start Canceled");
 		server.next_state=gs_error;
 		return;
