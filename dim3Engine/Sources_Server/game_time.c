@@ -80,7 +80,7 @@ void game_time_calculate(void)
 
 void game_time_reset(void)
 {
-	game_last_tick=time_get();
+	raw_last_tick=game_last_tick=time_get();
 }
 
 void game_time_set(int tick)
