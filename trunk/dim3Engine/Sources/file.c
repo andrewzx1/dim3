@@ -399,12 +399,19 @@ bool game_file_load(char *file_name,char *err_str)
 
 		// if game isn't running, then start
 		
+	fprintf(stdout,"1\n");
+	fflush(stdout);
+	
 	if (!server.game_open) {
+	fprintf(stdout,"2\n");
+	fflush(stdout);
 		if (!game_start(skill_medium,NULL,err_str)) {
 			free(game_file_data);
 			return(FALSE);
 		}
 	}
+	fprintf(stdout,"3\n");
+	fflush(stdout);
 
 		// get header
 
@@ -417,12 +424,18 @@ bool game_file_load(char *file_name,char *err_str)
 		free(game_file_data);
 		return(FALSE);
 	}
+	fprintf(stdout,"4\n");
+	fflush(stdout);
 		
 		// reload map
 
 	if ((!server.map_open) || (strcmp(head.map_name,map.info.name)!=0)) {		// need to load a map?
+	fprintf(stdout,"5\n");
+	fflush(stdout);
 	
 		if (server.map_open) map_end();
+	fprintf(stdout,"6\n");
+	fflush(stdout);
 		
 		strcpy(map.info.name,head.map_name);
 		map.info.player_start_name[0]=0x0;
@@ -432,7 +445,9 @@ bool game_file_load(char *file_name,char *err_str)
 			return(FALSE);
 		}
 	}
-	
+		fprintf(stdout,"7\n");
+	fflush(stdout);
+
 		// start progress
 
 	progress_initialize("Loading",NULL);
