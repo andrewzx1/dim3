@@ -27,8 +27,7 @@ and can be sold or given away.
 
 extern void game_time_initialize(void);
 extern void game_time_calculate(void);
-extern void game_time_reset(void);
-extern void game_time_set(int tick);
+extern void game_time_reset(int tick);
 
 extern int game_time_get_raw(void);
 extern int game_time_get(void);
