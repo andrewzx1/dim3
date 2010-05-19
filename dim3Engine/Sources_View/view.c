@@ -438,6 +438,22 @@ void view_game_stop(void)
 
 /* =======================================================
 
+      Reset Timing when Loading Saved Game
+      
+======================================================= */
+
+void view_game_reset_timing(void)
+{
+	int			tick;
+	
+	tick=game_time_get_raw();
+
+	view.time.input_tick=tick;
+	view.time.draw_tick=tick;
+}
+
+/* =======================================================
+
       View Loop Input
       
 ======================================================= */
@@ -482,7 +498,7 @@ void view_loop_draw(void)
 
 		// time for view draw?
 		// use raw ticks so it works through pauses
-
+		
 	raw_tick=game_time_get_raw();
 	if (raw_tick<view.time.draw_tick) return;
 

@@ -489,15 +489,10 @@ bitmap_type* view_images_get_bitmap(int idx)
 		
 	if ((image->nbitmap<=1) || (image->total_msec==0)) return(&image->bitmaps[0].bitmap);
 	
-		// get tick, get it from game
-		// if there (fast) or calculate (slow)
+		// animations use raw tick
+		// so they work through pauses
 	
-	if ((server.time.paused) || (server.state!=gs_running)) {
-		tick=time_get();
-	}
-	else {
-		tick=game_time_get();
-	}
+	tick=game_time_get_raw();
 	
 		// run animation
 		

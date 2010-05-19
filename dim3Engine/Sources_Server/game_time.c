@@ -78,14 +78,10 @@ void game_time_calculate(void)
 	}
 }
 
-void game_time_reset(void)
-{
-	raw_last_tick=game_last_tick=time_get();
-}
-
-void game_time_set(int tick)
+void game_time_reset(int tick)
 {
 	game_tick=tick;
+	game_last_tick=time_get();
 }
 
 /* =======================================================
@@ -129,7 +125,7 @@ void game_time_pause_end(void)
 {
 	if (!server.time.paused) return;
 	
-	game_time_reset();
+	game_last_tick=time_get();
 	server.time.paused=FALSE;
 }
 

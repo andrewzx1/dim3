@@ -160,13 +160,10 @@ void hud_bitmaps_draw(void)
 		sy=bitmap->y;
 		
 		wid=bitmap->x_size;
-		if (wid==-1) {
-			wid=bitmap_data->wid;
-		}
+		if (wid==-1) wid=bitmap_data->wid;
+
 		high=bitmap->y_size;
-		if (high==-1) {
-			high=bitmap_data->high;
-		}
+		if (high==-1) high=bitmap_data->high;
 		
 			// setup images
 			
