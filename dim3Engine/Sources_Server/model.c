@@ -82,7 +82,7 @@ model_type* model_find_uid(int uid)
 		if (mdl->uid==uid) return(mdl);
 		mdl++;
 	}
-	
+
 	return(NULL);
 }
 

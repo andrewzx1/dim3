@@ -185,7 +185,7 @@ void model_draw_setup_object(obj_type *obj)
 
 		// dynamic bones
 
-	model_draw_setup_dynamic_bones(mdl,draw,setup);
+	if (mdl!=NULL) model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 
@@ -290,7 +290,7 @@ void model_draw_setup_projectile(proj_type *proj)
 
 		// dynamic bones
 
-	model_draw_setup_dynamic_bones(mdl,draw,setup);
+	if (mdl!=NULL) model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 
@@ -435,7 +435,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 
 		// dynamic bones
 
-	model_draw_setup_dynamic_bones(mdl,draw,setup);
+	if (mdl!=NULL) model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 
