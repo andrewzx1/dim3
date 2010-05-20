@@ -516,7 +516,7 @@ bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 {
 	double					obscure_dist;
 	
-	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 
 		// is model in a mesh that's in the mesh draw list?
 
@@ -545,7 +545,7 @@ bool view_setup_shadow_in_view(model_draw *draw,int mesh_idx)
 {
 	double					obscure_dist;
 
-	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 
 		// is model in a mesh that's in the mesh draw list?
 
@@ -743,8 +743,9 @@ void view_add_model_halo(model_draw *draw,int obj_uid)
 
 		// any model?
 		
-	mdl=NULL;
-	if ((draw->uid!=-1) && (draw->on)) mdl=model_find_uid(draw->uid);
+	if ((draw->model_idx==-1) || (!draw->on)) return;
+	
+	mdl=&server.models[draw->model_idx];
 	
 		// add halo
 		
@@ -757,10 +758,8 @@ void view_add_model_halo(model_draw *draw,int obj_uid)
 			y=draw->pnt.y;
 			z=draw->pnt.z;
 			
-			if (mdl!=NULL) {
-				model_get_halo_position(mdl,&draw->setup,n,&x,&y,&z);
-				if (draw->no_rot.on) gl_project_fix_rotation(&x,&y,&z);
-			}
+			model_get_halo_position(mdl,&draw->setup,n,&x,&y,&z);
+			if (draw->no_rot.on) gl_project_fix_rotation(&x,&y,&z);
 			
 			halo_draw_add(x,y,z,obj_uid,halo);
 		}

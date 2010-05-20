@@ -169,11 +169,12 @@ bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type
 
 		// get model
 
-	mdl=model_find_uid(weap->draw.uid);
-	if (mdl==NULL) {
+	if (weap->draw.model_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has no model");
 		return(FALSE);
 	}
+
+	mdl=&server.models[weap->draw.model_idx];
 
 		// get current pose
 
@@ -236,11 +237,12 @@ bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_typ
 
 		// get weapon model
 
-	mdl=model_find_uid(weap->draw.uid);
-	if (mdl==NULL) {
+	if (weap->draw.model_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has no model");
 		return(FALSE);
 	}
+
+	mdl=&server.models[weap->draw.model_idx];
 
 		// get current pose
 
@@ -318,11 +320,12 @@ bool weapon_get_projectile_position_angle_object_model(obj_type *obj,weapon_type
 	
 		// get model
 
-	mdl=model_find_uid(obj->draw.uid);
-	if (mdl==NULL) {
+	if (obj->draw.model_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Object has no model");
 		return(FALSE);
 	}
+
+	mdl=&server.models[obj->draw.model_idx];
 
 		// get current pose
 

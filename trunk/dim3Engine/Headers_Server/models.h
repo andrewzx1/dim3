@@ -28,9 +28,10 @@ and can be sold or given away.
 extern void model_initialize(void);
 extern model_type* model_find_uid(int uid);
 extern model_type* model_find(char *name);
-extern bool model_load_and_init(model_draw *draw,char *item_type,char *item_name,char *err_str);
-extern void models_dispose(model_draw *draw);
-extern void models_reset_uid(void);
+extern int model_find_index(char *name);
+extern bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_str);
+extern void model_draw_dispose(model_draw *draw);
+extern void models_reset(void);
 
 extern void model_draw_setup_object(obj_type *obj);
 extern void model_draw_setup_projectile(proj_type *proj);

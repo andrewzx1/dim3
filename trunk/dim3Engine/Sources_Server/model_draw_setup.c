@@ -104,12 +104,14 @@ void model_draw_setup_object(obj_type *obj)
 	model_type			*mdl;
 		
 	draw=&obj->draw;
-	setup=&draw->setup;
+	if (draw->model_idx==-1) return;
+
+	mdl=&server.models[draw->model_idx];
 
 		// clear setup
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) model_draw_setup_clear(mdl,&draw->setup);
+	setup=&draw->setup;
+	model_draw_setup_clear(mdl,&draw->setup);
 
 		// special player mark
 
@@ -185,7 +187,7 @@ void model_draw_setup_object(obj_type *obj)
 
 		// dynamic bones
 
-	if (mdl!=NULL) model_draw_setup_dynamic_bones(mdl,draw,setup);
+	model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 
@@ -214,12 +216,14 @@ void model_draw_setup_projectile(proj_type *proj)
 	model_type			*mdl;
 		
 	draw=&proj->draw;
-	setup=&draw->setup;
+	if (draw->model_idx==-1) return;
+
+	mdl=&server.models[draw->model_idx];
 
 		// clear setup
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) model_draw_setup_clear(mdl,&draw->setup);
+	setup=&draw->setup;
+	model_draw_setup_clear(mdl,&draw->setup);
 
 		// player check flag
 
@@ -290,7 +294,7 @@ void model_draw_setup_projectile(proj_type *proj)
 
 		// dynamic bones
 
-	if (mdl!=NULL) model_draw_setup_dynamic_bones(mdl,draw,setup);
+	model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 

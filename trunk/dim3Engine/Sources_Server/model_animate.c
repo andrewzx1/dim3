@@ -53,8 +53,8 @@ void model_change_fill(model_draw *draw,int wfill,int txt)
     
     if ((wfill<0) || (wfill>=max_model_texture)) return;
     
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	if (draw->model_idx==-1) return;
+	mdl=&server.models[draw->model_idx];
 	
 	count=model_count_texture_frames(mdl,wfill);
     texture=&mdl->textures[wfill];
@@ -76,8 +76,8 @@ void model_get_current_animation_name(model_draw *draw,char *name)
 	
 	name[0]=0x0;
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	if (draw->model_idx==-1) return;
+	mdl=&server.models[draw->model_idx];
 
 	draw_animation=&draw->animations[draw->script_animation_idx];
 	if (draw_animation->animate_idx==-1) return;
@@ -89,10 +89,9 @@ int model_find_animation_from_draw(model_draw *draw,char *name)
 {
 	model_type					*mdl;
 	
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(-1);
+	if (draw->model_idx==-1) return(-1);
 	
-	return(model_find_animate(mdl,name));
+	return(model_find_animate(&server.models[draw->idx],name));
 }
 
 bool model_start_animation(model_draw *draw,char *name)

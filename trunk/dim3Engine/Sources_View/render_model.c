@@ -726,8 +726,7 @@ void render_model_setup(model_draw *draw)
 	
 		// get model
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	mdl=&server.models[draw->model_idx];
 
 		// setup animated textures
 
@@ -816,8 +815,7 @@ void render_model_build_vertex_lists(model_draw *draw)
 	
 		// get model
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	mdl=&server.models[draw->model_idx];
 
 		// create vertex and uv lists
 		
@@ -868,8 +866,7 @@ void render_model_opaque(model_draw *draw)
 	
 		// get model
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	mdl=&server.models[draw->model_idx];
 
 		// start lighting
 
@@ -914,8 +911,7 @@ void render_model_transparent(model_draw *draw)
 	
 		// get model
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	mdl=&server.models[draw->model_idx];
 	
 		// start lighting
 
@@ -961,7 +957,7 @@ void render_model_target(model_draw *draw,d3col *col)
 	
 		// get model
 
-	mdl=model_find_uid(draw->uid);
+	mdl=&server.models[draw->model_idx];
 	if (mdl==NULL) return;
 
 		// get draw coordinates

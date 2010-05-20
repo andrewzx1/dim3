@@ -101,23 +101,39 @@ model_type* model_find(char *name)
 	return(NULL);
 }
 
+int model_find_index(char *name)
+{
+	int				n;
+	model_type		*mdl;
+
+	mdl=server.models;
+	
+	for (n=0;n!=server.count.model;n++) {
+		if (strcasecmp(mdl->name,name)==0) return(n);
+		mdl++;
+	}
+	
+	return(-1);
+}
+
 /* =======================================================
 
       Open Models
       
 ======================================================= */
 
-model_type* model_load_single(char *name)
+int model_load(char *name)
 {
+	int				idx;
 	model_type		*mdl,*ptr;
 
 		// has model been already loaded?
 		// if so, return model and increment reference count
 	
-	mdl=model_find(name);
-	if (mdl!=NULL) {
-		mdl->reference_count++;
-		return(mdl);
+	idx=model_find_index(name);
+	if (idx!=-1) {
+		server.models[idx].reference_count++;
+		return(idx);
 	}
 
 		// only allow a maximum number of models
@@ -136,7 +152,9 @@ model_type* model_load_single(char *name)
 
 	server.models=ptr;
 
-	mdl=&server.models[server.count.model];
+	idx=server.count.model;
+
+	mdl=&server.models[idx];
 	server.count.model++;
 
 		// load model
@@ -145,7 +163,7 @@ model_type* model_load_single(char *name)
 
 	if (!model_open(mdl,name,TRUE)) {
 		server.count.model--;		// error loading, leave memory as is an fix next model load
-		return(NULL);
+		return(-1);
 	}
 
 	gl_shader_attach_model(mdl);
@@ -163,16 +181,16 @@ model_type* model_load_single(char *name)
 	mdl->uid=server.uid.model;
 	server.uid.model++;
 	
-	return(mdl);
+	return(idx);
 }
 
-bool model_load_and_init(model_draw *draw,char *item_type,char *item_name,char *err_str)
+bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_str)
 {
 	int					n;
 	bool				ok;
 	model_type			*mdl;
 
-	draw->uid=-1;
+	draw->model_idx=-1;
 	draw->center.x=draw->center.y=draw->center.z=0;
 	draw->size.x=draw->size.y=draw->size.z=0;
 
@@ -184,15 +202,14 @@ bool model_load_and_init(model_draw *draw,char *item_type,char *item_name,char *
 	mdl=NULL;
 	
 	if (draw->name[0]!=0x0) {
-		mdl=model_load_single(draw->name);
-		if (mdl!=NULL) {
-			draw->uid=mdl->uid;
+		draw->model_idx=model_load(draw->name);
+		if (draw->model_idx!=-1) {
+			mdl=&server.models[draw->model_idx];
 			model_get_size(mdl,&draw->size.x,&draw->size.y,&draw->size.z);
 			memmove(&draw->center,&mdl->center,sizeof(d3pnt));
 		}
 		else {
 			draw->on=FALSE;
-			draw->uid=-1;
 			sprintf(err_str,"Unable to load model named %s for %s: %s",draw->name,item_type,item_name);
 			ok=FALSE;
 		}
@@ -225,25 +242,14 @@ bool model_load_and_init(model_draw *draw,char *item_type,char *item_name,char *
       
 ======================================================= */
 
-void models_dispose(model_draw *draw)
+void models_dispose(int idx)
 {
 	int					idx;
 	model_type			*mdl,*ptr;
 
-		// was model loaded?
-		
-	if (draw->uid==-1) return;
-
 		// find model
-
-	idx=model_find_uid_index(draw->uid);
-	if (idx==-1) return;
-	
-	mdl=&server.models[idx];
-	
-		// clear draw memory
 		
-	model_draw_setup_shutdown(mdl,&draw->setup);
+	mdl=&server.models[idx];
 
 		// decrement reference count
 
@@ -290,59 +296,115 @@ void models_dispose(model_draw *draw)
 	server.count.model--;
 }
 
+void models_draw_dispose(model_draw *draw)
+{
+		// find model
+		
+	if (draw->model_idx==-1) return;
+	
+		// clear draw memory
+		
+	model_draw_setup_shutdown(&server.models[draw->model_idx],&draw->setup);
+
+		// dispose model
+
+	model_dispose(draw->model_idx);
+}
+
 /* =======================================================
 
       Reset Model UIDs after Load
       
 ======================================================= */
 
-void models_reset_uid_single(model_draw *draw)
+void models_reset_single(model_draw *draw)
 {
-	model_type			*mdl;
+	draw->model_idx=model_find_index(draw->name);
 
-	mdl=model_find(draw->name);
-	if (mdl==NULL) {
-		draw->on=FALSE;
-		return;
+		// if model is loaded, update
+		// reference count
+
+	if (draw->model_idx!=-1) {
+		server.models[draw->model_idx].reference_count++;
 	}
 
-	draw->uid=mdl->uid;
+		// try to load it
+
+	else {
+		draw->model_idx=model_load(draw->name);
+		if (draw->model_idx==-1) draw->on=FALSE;
+	}
+
+		// and create the draw setup memory
+
+	if (draw->model_idx!=-1) {
+		model_draw_setup_initialize(&server.models[draw->model_idx],&draw->setup,TRUE);
+	}
 }
 
-void models_reset_uid(void)
+void models_reset(void)
 {
-	int					i;
+	int					n;
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	proj_type			*proj;
+	model_type			*mdl;
+
+		// will need to reset all model
+		// reference counts, we don't know
+		// where they are left off after load
+
+	mdl=server.models;
+	
+	for (n=0;n!=server.count.model;n++) {
+		mdl->reference_count=0;
+		mdl++;
+	}
+
+		// fix model indexes
 	
 	obj=server.objs;
 	
-	for (i=0;i!=server.count.obj;i++) {
-		models_reset_uid_single(&obj->draw);
+	for (n=0;n!=server.count.obj;n++) {
+		models_reset_single(&obj->draw);
 		obj++;
 	}
 
 	weap=server.weapons;
 	
-	for (i=0;i!=server.count.weapon;i++) {
-		models_reset_uid_single(&weap->draw);
+	for (n=0;n!=server.count.weapon;n++) {
+		models_reset_single(&weap->draw);
 		weap++;
 	}
 
 	proj_setup=server.proj_setups;
 	
-    for (i=0;i!=server.count.proj_setup;i++) {
-		models_reset_uid_single(&proj_setup->draw);
+    for (n=0;n!=server.count.proj_setup;n++) {
+		models_reset_single(&proj_setup->draw);
 		proj_setup++;
 	}
 
 	proj=server.projs;
 	
-    for (i=0;i!=server.count.proj;i++) {
-		models_reset_uid_single(&proj->draw);
+    for (n=0;n!=server.count.proj;n++) {
+		models_reset_single(&proj->draw);
 		proj++;
+	}
+
+		// now remove all models with zero
+		// reference count, our loaded file
+		// isn't using them
+
+	n=0;
+
+	while (n<server.count.model) {
+		mdl=&server.models[n];
+		if (mdl->reference_count<=0) {
+			models_dispose(n);
+			continue;
+		}
+		n++;
 	}
 }
 

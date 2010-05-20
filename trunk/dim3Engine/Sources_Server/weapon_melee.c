@@ -169,11 +169,12 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 
 		// get model
 
-	mdl=model_find_uid(weap->draw.uid);
-	if (mdl==NULL) {
+	if (weap->draw.model_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has no model");
 		return(FALSE);
 	}
+
+	mdl=&server.models[weap->draw.model_idx];
 
 		// get current pose
 
@@ -229,11 +230,12 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 
 		// get model
 
-	mdl=model_find_uid(obj->draw.uid);
-	if (mdl==NULL) {
+	if (obj->draw.model_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Object has no model");
 		return(FALSE);
 	}
+
+	mdl=&server.models[obj->draw.model_idx];
 
 		// get current pose
 
@@ -279,11 +281,12 @@ bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj
 
 		// get model
 
-	mdl=model_find_uid(proj->draw.uid);
-	if (mdl==NULL) {
+	if (proj->draw.model_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Projectile has no model");
 		return(FALSE);
 	}
+
+	mdl=&server.models[proj->draw.model_idx];
 
 		// get current pose
 

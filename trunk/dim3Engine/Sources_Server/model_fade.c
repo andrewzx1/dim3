@@ -96,7 +96,7 @@ void model_mesh_fade_start(model_draw *draw,int mesh_idx,int fade_in_msec,int fa
 {
 	model_draw_mesh_fade	*mesh_fade;
 
-	if (draw->uid==-1) return;
+	if (draw->model_idx==-1) return;
 	
 	if (fade_in_msec<1) fade_in_msec=1;
 	if (fade_life_msec<1) fade_life_msec=1;
@@ -119,10 +119,9 @@ void model_mesh_fade_run(model_draw *draw)
 	model_type				*mdl;
 	model_draw_mesh_fade	*mesh_fade;
 
-	if (draw->uid==-1) return;
+	if (draw->model_idx==-1) return;
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	mdl=&server.models[draw->model_idx];
 
 	tick=game_time_get();
 

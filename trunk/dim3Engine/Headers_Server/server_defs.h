@@ -298,7 +298,7 @@ typedef struct		{
 					} model_light_cache;
 
 typedef struct		{
-						int								uid,spin_tick,
+						int								model_idx,spin_tick,
 														mesh_mask,render_mesh_mask,
 														script_animation_idx,
 														script_light_idx,script_halo_idx;

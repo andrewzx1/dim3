@@ -256,7 +256,7 @@ bool proj_setup_start(proj_setup_type *proj_setup)
 		return(FALSE);
 	}
 
-	if (!model_load_and_init(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) {
+	if (!model_draw_load(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) {
 		console_add_error(err_str);
 		return(FALSE);
 	}
@@ -273,7 +273,7 @@ void proj_setup_dispose(int idx)
 		// clear setup
 
 	scripts_dispose(proj_setup->attach.script_uid);
-	models_dispose(&proj_setup->draw);
+	model_draw_dispose(&proj_setup->draw);
 
 		// is the list completely empty?
 

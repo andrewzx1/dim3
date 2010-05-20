@@ -237,14 +237,10 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	hit_box_hit=FALSE;
 
 	if (obj->hit_box.on) {
-
 		draw=&obj->draw;
-		if ((draw->uid!=-1) && (!draw->on)) {
-	
-			model=model_find_uid(draw->uid);
-			if (model!=NULL) {
-				hit_box_hit=TRUE;
-			}
+		if ((draw->model_idx!=-1) && (!draw->on)) {
+			model=&server.models[draw->model_idx];
+			hit_box_hit=TRUE;
 		}
 	}
 

@@ -141,10 +141,9 @@ bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj
 		// check model
 		
 	draw=&obj->draw;
-	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	model=model_find_uid(draw->uid);
-	if (model==NULL) return(FALSE);
+	model=&server.models[draw->model_idx];
 	
 		// check hit boxes
 		
