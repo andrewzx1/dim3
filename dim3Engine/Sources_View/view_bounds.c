@@ -176,28 +176,20 @@ bool mesh_shadow_inview(map_mesh_type *mesh)
 bool model_inview(model_draw *draw)
 {
 	int				px[8],py[8],pz[8];
-	model_type		*mdl;
 
-	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(FALSE);
-		
-	model_get_view_complex_bounding_box(mdl,&draw->pnt,&draw->setup.ang,px,py,pz);
+	model_get_view_complex_bounding_box(&server.models[draw->model_idx],&draw->pnt,&draw->setup.ang,px,py,pz);
 	return(complex_boundbox_inview(px,py,pz));
 }
 
 bool model_shadow_inview(model_draw *draw)
 {
 	int				px[8],py[8],pz[8];
-	model_type		*mdl;
 
-	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(FALSE);
-
-	if (!shadow_get_volume_model(mdl,draw,px,py,pz)) return(FALSE);
+	if (!shadow_get_volume_model(&server.models[draw->model_idx],draw,px,py,pz)) return(FALSE);
 	return(complex_boundbox_inview(px,py,pz));
 }
 

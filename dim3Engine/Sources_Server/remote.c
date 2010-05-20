@@ -115,7 +115,7 @@ bool remote_add(network_request_object_add *add,bool send_event)
 
 		// load models
 		
-	if (!model_load_and_init(&obj->draw,"Remote",obj->name,err_str)) {
+	if (!model_draw_load(&obj->draw,"Remote",obj->name,err_str)) {
 		console_add_error(err_str);
 	}
 

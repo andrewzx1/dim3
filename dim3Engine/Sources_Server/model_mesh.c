@@ -41,12 +41,9 @@ extern server_type				server;
 
 int model_find_mesh_from_draw(model_draw *draw,char *name)
 {
-	model_type					*mdl;
-	
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(-1);
-	
-	return(model_find_mesh(mdl,name));
+	if (draw->model_idx==-1) return(-1);
+
+	return(model_find_mesh(&server.models[draw->model_idx],name));
 }
 
 bool model_show_mesh(model_draw *draw,char *name)

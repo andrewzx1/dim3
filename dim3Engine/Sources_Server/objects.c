@@ -195,7 +195,7 @@ void object_clear_draw(model_draw *draw)
 		// model draw
 		
 	draw->on=FALSE;
-	draw->uid=-1;
+	draw->model_idx=-1;
 	draw->name[0]=0x0;
 	draw->bounce=FALSE;
 	draw->face_forward=FALSE;
@@ -856,7 +856,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,ch
 
 		// load object model
 
-	if (!model_load_and_init(&obj->draw,"Object",obj->name,err_str)) {
+	if (!model_draw_load(&obj->draw,"Object",obj->name,err_str)) {
 		server.count.obj--;			// wait until real delete to move memory around
 		return(-1);
 	}
@@ -947,7 +947,7 @@ void object_dispose_single(int idx)
 		// dispose object
 
 	scripts_dispose(obj->attach.script_uid);
-	models_dispose(&obj->draw);
+	model_draw_dispose(&obj->draw);
 
 		// is the list completely empty?
 

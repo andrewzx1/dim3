@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "interfaces.h"
 #include "models.h"
+#include "inputs.h"
 #include "timing.h"
 
 typedef struct		{
@@ -469,7 +470,7 @@ bool game_file_load(char *file_name,char *err_str)
 		free(game_file_data);
 		return(FALSE);
 	}
-	
+
 	progress_draw(40);
 
 	game_file_get_chunk(server.projs);
@@ -514,11 +515,11 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(js.timers);
 	game_file_get_chunk(js.globals);
 
-		// reset model UIDs
+		// reset model
 
 	progress_draw(90);
 
-	models_reset_uid();
+	models_reset();
 	
 		// send scripts load event
 		// to restore globals

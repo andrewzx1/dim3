@@ -192,10 +192,9 @@ bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,obj_typ
 		// check model
 		
 	draw=&check_obj->draw;
-	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	model=model_find_uid(draw->uid);
-	if (model==NULL) return(FALSE);
+	model=&server.models[draw->model_idx];
 	
 		// check hit boxes
 		// unlike projectiles, we can just take the
@@ -446,10 +445,9 @@ bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,o
 		// check model
 		
 	draw=&obj->draw;
-	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	model=model_find_uid(draw->uid);
-	if (model==NULL) return(FALSE);
+	model=&server.models[draw->model_idx];
 	
 		// check hit boxes
 		

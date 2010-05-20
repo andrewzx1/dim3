@@ -158,19 +158,15 @@ void remote_draw_names_setup(void)
 		
 			// get name point
 		
-		has_tag=FALSE;
+		if ((obj->draw.model_idx==-1) || (!obj->draw.on)) continue;
+		
+		mdl=&server.models[obj->draw.model_idx];
 
-		mdl=NULL;
-		if ((obj->draw.uid!=-1) && (obj->draw.on)) mdl=model_find_uid(obj->draw.uid);
+		x=obj->pnt.x;
+		y=obj->pnt.y;
+		z=obj->pnt.z;
 
-		if (mdl!=NULL) {
-			x=obj->pnt.x;
-			y=obj->pnt.y;
-			z=obj->pnt.z;
-			has_tag=model_get_name_position(mdl,&obj->draw.setup,&x,&y,&z);
-		}
-
-		if (!has_tag) {
+		if (!model_get_name_position(mdl,&obj->draw.setup,&x,&y,&z)) {
 			x=obj->pnt.x;
 			y=(obj->pnt.y-obj->size.y)-map_enlarge;
 			z=obj->pnt.z;

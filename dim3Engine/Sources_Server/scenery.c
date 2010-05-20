@@ -99,7 +99,7 @@ void scenery_create(void)
 		
 			// load the model
 			
-		if (!model_load_and_init(&obj->draw,"Scenery",obj->name,err_str)) {
+		if (!model_draw_load(&obj->draw,"Scenery",obj->name,err_str)) {
 			console_add_error(err_str);
 			object_dispose_single(object_find_index_uid(obj->uid));
 			continue;
@@ -109,11 +109,11 @@ void scenery_create(void)
 			// if so, turn off hit box only checking
 			
 		if (obj->hit_box.on) {
-			model=model_find_uid(obj->draw.uid);
-			if (model==NULL) {
+			if (obj->draw.model_idx==-1) {
 				obj->hit_box.on=FALSE;
 			}
 			else {
+				model=&server.models[obj->draw.model_idx];
 				if (model->nhit_box==0) obj->hit_box.on=FALSE;
 			}
 		}

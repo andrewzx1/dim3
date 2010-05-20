@@ -343,7 +343,7 @@ bool weapon_start(weapon_type *weap)
 		return(FALSE);
 	}
 
-	if (!model_load_and_init(&weap->draw,"Weapon",weap->name,err_str)) {
+	if (!model_draw_load(&weap->draw,"Weapon",weap->name,err_str)) {
 		console_add_error(err_str);
 		return(FALSE);
 	}
@@ -364,7 +364,7 @@ void weapon_dispose(int idx)
 		// clear weapon
 
 	scripts_dispose(weap->attach.script_uid);
-	models_dispose(&weap->draw);
+	model_draw_dispose(&weap->draw);
 
 		// is the list completely empty?
 
