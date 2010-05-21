@@ -577,8 +577,10 @@ void view_setup_objects(int tick)
 	obj_type			*obj;
 	weapon_type			*weap;
 	
-	for (n=0;n!=server.count.obj;n++) {
-		obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if (obj->hidden) continue;
 		
 		is_camera=((camera.mode==cv_fpp) && (obj->uid==camera.obj_uid));
@@ -745,7 +747,7 @@ void view_add_model_halo(model_draw *draw,int obj_uid)
 		
 	if ((draw->model_idx==-1) || (!draw->on)) return;
 	
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 	
 		// add halo
 		
@@ -781,7 +783,7 @@ void view_add_halos(void)
 		switch (view.render->draw_list.items[n].type) {
 
 			case view_render_type_object:
-				obj=&server.objs[view.render->draw_list.items[n].idx];
+				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				view_add_model_halo(&obj->draw,obj->uid);
 				break;
 

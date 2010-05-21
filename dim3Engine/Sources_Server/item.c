@@ -72,15 +72,12 @@ void item_pickup_check(obj_type *obj)
 	network_on=(net_setup.mode!=net_mode_none) && (object_networkable(obj));
 
 		// check for collisions with pickup items
-	
-	item_obj=server.objs;
     
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		item_obj=server.obj_list.objs[n];
+		if (item_obj==NULL) continue;
     
-		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->uid==obj->uid)) {
-			item_obj++;
-			continue;
-		}
+		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->uid==obj->uid)) continue;
 
             // check bounds
 			
@@ -124,8 +121,6 @@ void item_pickup_check(obj_type *obj)
 				
 			obj->item_count=50;
 		}
-		
-		item_obj++;
 	}
 }
 

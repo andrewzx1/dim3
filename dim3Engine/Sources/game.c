@@ -157,9 +157,9 @@ void game_reset(void)
 		// the respawn just to update any lists or items
 		// before the client sends in it's next packet
 		
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 	
 		switch (obj->type) {
 		
@@ -176,8 +176,6 @@ void game_reset(void)
 				break;
 				
 		}
-		
-		obj++;
 	}
 
 		// signal remotes to reset

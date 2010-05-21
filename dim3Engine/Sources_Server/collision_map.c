@@ -239,7 +239,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	if (obj->hit_box.on) {
 		draw=&obj->draw;
 		if ((draw->model_idx!=-1) && (!draw->on)) {
-			model=&server.models[draw->model_idx];
+			model=server.model_list.models[draw->model_idx];
 			hit_box_hit=TRUE;
 		}
 	}
@@ -369,9 +369,10 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
 
 		// check objects
 
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
 
-		check_obj=&server.objs[n];
+		check_obj=server.obj_list.objs[n];
+		if (check_obj==NULL) continue;
 	
 			// any collision?
 

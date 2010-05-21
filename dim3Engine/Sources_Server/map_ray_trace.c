@@ -500,10 +500,9 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face
 		// check model
 		
 	draw=&obj->draw;
-	if ((draw->uid==-1) || (!draw->on)) return(-1.0f);
+	if ((draw->model_idx==-1) || (!draw->on)) return(-1.0f);
 	
-	model=model_find_uid(draw->uid);
-	if (model==NULL) return(-1.0f);
+	model=server.model_list.models[draw->model_idx];
 	
 		// check hit boxes
 
@@ -679,7 +678,7 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 		switch (item->type) {
 
 			case ray_trace_check_item_object:
-				obj=&server.objs[item->index];
+				obj=server.obj_list.objs[item->index];
 
 				t=ray_trace_object(spt,ept,vct,&pt,&hit_face,&hit_box_idx,obj);
 				if (t==-1.0f) break;
@@ -787,9 +786,10 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 
 	if (contact->obj.on) {
 	
-		for (n=0;n!=server.count.obj;n++) {
-		
-			obj=&server.objs[n];
+		for (n=0;n!=max_obj_list;n++) {
+			obj=server.obj_list.objs[n];
+			if (obj==NULL) continue;
+
 			if (!ray_trace_object_bound_check(obj,&min,&max,contact)) continue;
 			
 			t=ray_trace_object(spt,ept,vct,&pt,&hit_face,&hit_box_idx,obj);
@@ -971,9 +971,9 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 
 	if (contact->obj.on) {
 	
-		obj=server.objs;
-		
-		for (n=0;n!=server.count.obj;n++) {
+		for (n=0;n!=max_obj_list;n++) {
+			obj=server.obj_list.objs[n];
+			if (obj==NULL) continue;
 			
 			if (ray_trace_object_bound_check(obj,&min,&max,contact)) {
 				item->type=ray_trace_check_item_object;
@@ -984,8 +984,6 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 			
 				if (ray_item_count==ray_trace_max_check_item) return;
 			}
-			
-			obj++;
 		}
 	}
 	

@@ -177,17 +177,18 @@ JSValueRef js_map_object_find_player_func(JSContextRef cx,JSObjectRef func,JSObj
 
 JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int			n,cnt,uids[max_object];
+	int			n,cnt,uids[max_obj_list];
 	obj_type	*obj;
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	cnt=0;
-	obj=server.objs;
 
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) uids[cnt++]=obj->uid;
-		obj++;
 	}
 
 	if (cnt==0) return(script_null_to_value(cx));

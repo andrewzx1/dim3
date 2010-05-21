@@ -143,7 +143,7 @@ bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj
 	draw=&obj->draw;
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	model=&server.models[draw->model_idx];
+	model=server.model_list.models[draw->model_idx];
 	
 		// check hit boxes
 		
@@ -183,28 +183,20 @@ int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_uid)
 	int			n;
 	obj_type	*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->uid==ignore_obj_uid)) {
-			obj++;
-			continue;
-		}
+		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->uid==ignore_obj_uid)) continue;
 		
 			// projectile hit?
 			
-		if (!collide_projectile_to_object(proj,obj)) {
-			obj++;
-			continue;
-		}
+		if (!collide_projectile_to_object(proj,obj)) continue;
 		
 			// which hit box?
 		
 		if (!obj->hit_box.on) return(obj->uid);
 		if (collide_set_object_hit_box_for_projectile_hit(proj,obj)) return(obj->uid);
-		
-		obj++;
 	}
 	
 	return(-1);
@@ -215,20 +207,15 @@ int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_uid)
 	int			n;
 	obj_type	*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->uid==ignore_obj_uid)) {
-			obj++;
-			continue;
-		}
+		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->uid==ignore_obj_uid)) continue;
 		
 			// projectile hit?
 			
 		if (collide_projectile_to_object(proj,obj))  return(obj->uid);
-		
-		obj++;
 	}
 	
 	return(-1);

@@ -237,14 +237,14 @@ void object_grow_run(obj_type *obj)
 	
 		ypush=-(((float)ymove)/10.0f);
 
-		test_obj=server.objs;
+		for (n=0;n!=max_obj_list;n++) {
+			test_obj=server.obj_list.objs[n];
+			if (test_obj==NULL) continue;
 
-		for (n=0;n!=server.count.obj;n++) {
 			if (test_obj->stand_obj_uid==obj->uid) {
 				object_move_y(test_obj,-ymove);
 				if (test_obj->force.vct.y>ypush) test_obj->force.vct.y+=ypush;
 			}
-			test_obj++;
 		}
 	}
 }

@@ -44,7 +44,7 @@ extern server_type			server;
 
 void scenery_create(void)
 {
-	int					n;
+	int					n,idx;
 	char				err_str[256];
 	map_scenery_type	*map_scenery;
 	obj_type			*obj;
@@ -61,8 +61,10 @@ void scenery_create(void)
 
 			// create new object
 
-		obj=object_create(map_scenery->model_name,object_type_object,bt_map,-1);
-		if (obj==NULL) break;
+		idx=object_create(map_scenery->model_name,object_type_object,bt_map,-1);
+		if (idx==-1) break;
+
+		obj=server.obj_list.objs[idx];
 
 			// no scripts, events, etc
 
@@ -113,7 +115,7 @@ void scenery_create(void)
 				obj->hit_box.on=FALSE;
 			}
 			else {
-				model=&server.models[obj->draw.model_idx];
+				model=server.model_list.models[obj->draw.model_idx];
 				if (model->nhit_box==0) obj->hit_box.on=FALSE;
 			}
 		}
@@ -132,31 +134,28 @@ void scenery_start(void)
 	map_scenery_type	*map_scenery;
 	obj_type			*obj;
 
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 	
-		if (obj->scenery.on) {
+		if (!obj->scenery.on) continue;
 		
-			map_scenery=&map.sceneries[obj->scenery.idx];
-			
-			obj->size.x=obj->draw.size.x;
-			obj->size.y=obj->draw.size.y;
-			obj->size.z=obj->draw.size.z;
+		map_scenery=&map.sceneries[obj->scenery.idx];
 		
-			object_set_radius(obj);
+		obj->size.x=obj->draw.size.x;
+		obj->size.y=obj->draw.size.y;
+		obj->size.z=obj->draw.size.z;
+	
+		object_set_radius(obj);
+		
+			// change texture frames
 			
-				// change texture frames
-				
-			for (k=0;k!=max_map_scenery_model_texture_frame;k++) {
-				obj->draw.cur_texture_frame[k]=(unsigned char)map_scenery->texture_frame[k];
-			}
-				
-				// start scenery animation
-				
-			if (map_scenery->animation_name[0]!=0x0) model_start_animation(&obj->draw,map_scenery->animation_name);
+		for (k=0;k!=max_map_scenery_model_texture_frame;k++) {
+			obj->draw.cur_texture_frame[k]=(unsigned char)map_scenery->texture_frame[k];
 		}
-		
-		obj++;
+			
+			// start scenery animation
+			
+		if (map_scenery->animation_name[0]!=0x0) model_start_animation(&obj->draw,map_scenery->animation_name);
 	}
 }

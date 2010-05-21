@@ -213,7 +213,14 @@ void debug_dump(void)
 	
 		// objects
 
-	debug_header("Objects",server.count.obj,(sizeof(obj_type)*server.count.obj));
+	cnt=0;
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj!=NULL) cnt++;
+	}
+
+	debug_header("Objects",cnt,(sizeof(obj_type)*cnt));
 	
 	debug_space("Index",6);
 	debug_space("uid",4);
@@ -236,21 +243,21 @@ void debug_dump(void)
 	debug_space("---------",10);
 	debug_return();
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		debug_int_space(n,6);
 		debug_int_space(obj->uid,4);
 		debug_space(obj->name,15);
 		debug_space("",30);
 		debug_space(object_type_str[obj->type],15);
 		
-		mdl=model_find_uid(obj->draw.uid);
-		if (mdl==NULL) {
+		if (obj->draw.model_idx==-1) {
 			debug_space("*",15);
 		}
 		else {
-			debug_space(mdl->name,15);
+			debug_space(server.model_list.models[obj->draw.model_idx]->name,15);
 		}
 		
 		if (!obj->scenery.on) {
@@ -292,24 +299,24 @@ void debug_dump(void)
 			
 			weap++;
 		}
-		
-		obj++;
 	}
 	
 	debug_return();
 	
 		// models
 
-	mem_sz=sizeof(model_type)*server.count.model;
+	cnt=0;
+	mem_sz=0;
 
-	mdl=server.models;
-	
-	for (i=0;i!=server.count.model;i++) {
-		mem_sz+=model_memory_size(mdl);
-		mdl++;
+	for (i=0;i!=max_model_list;i++) {
+		mdl=server.model_list.models[i];
+		if (mdl==NULL) continue;
+
+		cnt++;
+		mem_sz+=(sizeof(model_type)+model_memory_size(mdl));
 	}
 		
-	debug_header("Models",server.count.model,mem_sz);
+	debug_header("Models",cnt,mem_sz);
 	
 	debug_space("Name",32);
 	debug_space("Vertexes",10);
@@ -322,9 +329,10 @@ void debug_dump(void)
 	debug_space("---------",10);
 	debug_return();
 
-	mdl=server.models;
-	
-	for (i=0;i!=server.count.model;i++) {
+	for (i=0;i!=max_model_list;i++) {
+		mdl=server.model_list.models[i];
+		if (mdl==NULL) continue;
+
 		debug_space(mdl->name,32);
 		debug_int_space(mdl->meshes[0].nvertex,10);
 		debug_int_space(mdl->meshes[0].ntrig,10);

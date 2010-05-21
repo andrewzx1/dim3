@@ -66,7 +66,7 @@ extern void group_moves_synch_with_host(network_reply_group_synch *synch);
 
 bool remote_add(network_request_object_add *add,bool send_event)
 {
-	int					n,uid;
+	int					n,idx,uid;
 	char				err_str[256];
 	obj_type			*obj,*player_obj;
 	weapon_type			*weap;
@@ -74,8 +74,10 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	
 		// create new object
 		
-	obj=object_create(add->name,object_type_remote,bt_game,-1);
-    if (obj==NULL) return(FALSE);
+	idx=object_create(add->name,object_type_remote,bt_game,-1);
+    if (idx==-1) return(FALSE);
+
+	obj=server.obj_list.objs[idx];
 	
 		// setup remote
 		
@@ -197,7 +199,7 @@ void remote_remove(int remote_uid,bool send_event)
 
 	if (send_event) {
 		player_obj=object_find_uid(server.player_obj_uid);
-		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_leave,server.objs[idx].uid);
+		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_leave,server.obj_list.objs[idx]->uid);
 	}
 	
 		// remove the obj
@@ -960,13 +962,13 @@ void remote_network_send_updates(void)
 	
 		coop=hud.net_game.games[net_setup.game_idx].monsters;
 
-		obj=server.objs;
+		for (n=0;n!=max_obj_list;n++) {
+			obj=server.obj_list.objs[n];
+			if (obj==NULL) continue;
 
-		for (n=0;n!=server.count.obj;n++) {
 			if ((obj->type==object_type_bot_multiplayer) || ((obj->type==object_type_bot_map) && (coop))) {
 				net_client_send_remote_update(obj,FALSE);
 			}
-			obj++;
 		}
 	}
 }
@@ -1027,9 +1029,10 @@ void remote_setup_coop_bots(void)
 		// create remote IDs
 		
 	uid=net_player_uid_map_bot_start;
-	obj=server.objs;
 
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 	
 		if (obj->type==object_type_bot_map) {
 		
@@ -1049,7 +1052,5 @@ void remote_setup_coop_bots(void)
 			}
 
 		}
-		
-		obj++;
 	}
 }

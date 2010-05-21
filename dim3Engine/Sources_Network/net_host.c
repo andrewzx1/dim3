@@ -107,15 +107,15 @@ void net_host_player_add_bots(void)
 	char			deny_reason[256];
 	obj_type		*obj;
 
-	obj=server.objs;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-	for (n=0;n!=server.count.obj;n++) {
 		if (obj->type==object_type_bot_multiplayer) {
 			if (net_host_player_add_ok(obj->name,deny_reason)) {
 				obj->remote.uid=net_host_player_add_bot(obj);
 			}
 		}
-		obj++;
 	}
 }
 

@@ -391,13 +391,13 @@ bool map_object_attach_all(char *err_str)
 	int				n;
 	obj_type		*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if (obj->attach.script_uid!=-1) {
 			if (!object_spawn(obj,err_str)) return(FALSE);
 		}
-		obj++;
 	}
 	
 	return(TRUE);
@@ -408,9 +408,9 @@ void map_object_detach_all(void)
 	int				n;
 	obj_type		*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 	
 		if (obj->attach.script_uid!=-1) {
 		
@@ -421,8 +421,6 @@ void map_object_detach_all(void)
 				object_exit_vehicle(obj,TRUE,NULL);
 			}
 		}
-		
-		obj++;
 	}
 
 }

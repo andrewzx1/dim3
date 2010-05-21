@@ -45,8 +45,11 @@ extern setup_type		setup;
 
 void model_initialize(void)
 {
-	server.models=NULL;
-	server.count.model=0;
+	int				n;
+
+	for (n=0;n!=max_model_list;n++) {
+		server.model_list.models[n]=NULL;
+	}
 }
 
 /* =======================================================
@@ -59,12 +62,12 @@ model_type* model_find(char *name)
 {
 	int				n;
 	model_type		*mdl;
-
-	mdl=server.models;
 	
-	for (n=0;n!=server.count.model;n++) {
+	for (n=0;n!=max_model_list;n++) {
+		mdl=server.model_list.models[n];
+		if (mdl==NULL) continue;
+
 		if (strcasecmp(mdl->name,name)==0) return(mdl);
-		mdl++;
 	}
 	
 	return(NULL);
@@ -75,11 +78,11 @@ int model_find_index(char *name)
 	int				n;
 	model_type		*mdl;
 
-	mdl=server.models;
-	
-	for (n=0;n!=server.count.model;n++) {
+	for (n=0;n!=max_model_list;n++) {
+		mdl=server.model_list.models[n];
+		if (mdl==NULL) continue;
+
 		if (strcasecmp(mdl->name,name)==0) return(n);
-		mdl++;
 	}
 	
 	return(-1);
@@ -93,45 +96,43 @@ int model_find_index(char *name)
 
 int model_load(char *name)
 {
-	int				idx;
-	model_type		*mdl,*ptr;
+	int				n,idx;
+	model_type		*mdl;
 
 		// has model been already loaded?
 		// if so, return model and increment reference count
 	
 	idx=model_find_index(name);
 	if (idx!=-1) {
-		server.models[idx].reference_count++;
+		server.model_list.models[idx]->reference_count++;
 		return(idx);
 	}
 
-		// only allow a maximum number of models
+		// find empty spot
 
-	if (server.count.model>=max_model) return(NULL);
+	idx=-1;
 
-		// create memory for new model
-
-	ptr=(model_type*)malloc(sizeof(model_type)*(server.count.model+1));
-	if (ptr==NULL) return(NULL);
-
-	if (server.models!=NULL) {
-		memmove(ptr,server.models,(sizeof(model_type)*server.count.model));
-		free(server.models);
+	for (n=0;n!=max_model_list;n++) {
+		mdl=server.model_list.models[n];
+		if (mdl==NULL) {
+			idx=n;
+			break;
+		}
 	}
 
-	server.models=ptr;
+	if (idx==-1) return(-1);
 
-	idx=server.count.model;
+		// memory for model
 
-	mdl=&server.models[idx];
-	server.count.model++;
+	mdl=(model_type*)malloc(sizeof(model_type));
+	if (mdl==NULL) return(-1);
 
 		// load model
 
 	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,setup.compress_on,TRUE);
 
 	if (!model_open(mdl,name,TRUE)) {
-		server.count.model--;		// error loading, leave memory as is an fix next model load
+		free(mdl);
 		return(-1);
 	}
 
@@ -145,10 +146,9 @@ int model_load(char *name)
 
 	mdl->reference_count=1;
 
-		// new unique ID
-		
-	mdl->uid=server.uid.model;
-	server.uid.model++;
+		// put in model list
+
+	server.model_list.models[idx]=mdl;
 	
 	return(idx);
 }
@@ -173,7 +173,7 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
 	if (draw->name[0]!=0x0) {
 		draw->model_idx=model_load(draw->name);
 		if (draw->model_idx!=-1) {
-			mdl=&server.models[draw->model_idx];
+			mdl=server.model_list.models[draw->model_idx];
 			model_get_size(mdl,&draw->size.x,&draw->size.y,&draw->size.z);
 			memmove(&draw->center,&mdl->center,sizeof(d3pnt));
 		}
@@ -211,13 +211,13 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
       
 ======================================================= */
 
-void models_dispose(int idx)
+void model_dispose(int idx)
 {
-	model_type			*mdl,*ptr;
+	model_type			*mdl;
 
 		// find model
 		
-	mdl=&server.models[idx];
+	mdl=server.model_list.models[idx];
 
 		// decrement reference count
 
@@ -228,43 +228,14 @@ void models_dispose(int idx)
 
 	model_close(mdl);
 
-		// is the list completely empty?
+		// free the data and fix
+		// the list
 
-	if (server.count.model==1) {
-		free(server.models);
-		server.models=NULL;
-		server.count.model=0;
-		return;
-	}
-
-		// if for some reason we can't create new
-		// memory, just shuffle the list and wait
-		// until next time
-
-	ptr=(model_type*)malloc(sizeof(model_type)*(server.count.model-1));
-
-	if (ptr==NULL) {
-		if (idx<(server.count.model-1)) {
-			memmove(&server.models[idx],&server.models[idx+1],(sizeof(model_type)*((server.count.model-idx)-1)));
-		}
-	}
-	else {
-
-		if (idx>0) {
-			memmove(ptr,server.models,(sizeof(model_type)*idx));
-		}
-		if (idx<(server.count.model-1)) {
-			memmove(&ptr[idx],&server.models[idx+1],(sizeof(model_type)*((server.count.model-idx)-1)));
-		}
-
-		free(server.models);
-		server.models=ptr;
-	}
-	
-	server.count.model--;
+	free(mdl);
+	server.model_list.models[idx]=NULL;
 }
 
-void models_draw_dispose(model_draw *draw)
+void model_draw_dispose(model_draw *draw)
 {
 		// find model
 		
@@ -272,7 +243,7 @@ void models_draw_dispose(model_draw *draw)
 	
 		// clear draw memory
 		
-	model_draw_setup_shutdown(&server.models[draw->model_idx],&draw->setup);
+	model_draw_setup_shutdown(server.model_list.models[draw->model_idx],&draw->setup);
 
 		// dispose model
 
@@ -285,7 +256,7 @@ void models_draw_dispose(model_draw *draw)
       
 ======================================================= */
 
-void models_reset_single(model_draw *draw)
+void model_reset_single(model_draw *draw)
 {
 	draw->model_idx=model_find_index(draw->name);
 
@@ -293,7 +264,7 @@ void models_reset_single(model_draw *draw)
 		// reference count
 
 	if (draw->model_idx!=-1) {
-		server.models[draw->model_idx].reference_count++;
+		server.model_list.models[draw->model_idx]->reference_count++;
 	}
 
 		// try to load it
@@ -306,7 +277,7 @@ void models_reset_single(model_draw *draw)
 		// and create the draw setup memory
 
 	if (draw->model_idx!=-1) {
-		model_draw_setup_initialize(&server.models[draw->model_idx],&draw->setup,TRUE);
+		model_draw_setup_initialize(server.model_list.models[draw->model_idx],&draw->setup,TRUE);
 	}
 }
 
@@ -323,40 +294,36 @@ void models_reset(void)
 		// reference counts, we don't know
 		// where they are left off after load
 
-	mdl=server.models;
-	
-	for (n=0;n!=server.count.model;n++) {
-		mdl->reference_count=0;
-		mdl++;
+	for (n=0;n!=max_model_list;n++) {
+		mdl=server.model_list.models[n];
+		if (mdl!=NULL) mdl->reference_count=0;
 	}
 
 		// fix model indexes
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
-		models_reset_single(&obj->draw);
-		obj++;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj!=NULL) model_reset_single(&obj->draw);
 	}
 
 	weap=server.weapons;
 	
 	for (n=0;n!=server.count.weapon;n++) {
-		models_reset_single(&weap->draw);
+		model_reset_single(&weap->draw);
 		weap++;
 	}
 
 	proj_setup=server.proj_setups;
 	
     for (n=0;n!=server.count.proj_setup;n++) {
-		models_reset_single(&proj_setup->draw);
+		model_reset_single(&proj_setup->draw);
 		proj_setup++;
 	}
 
 	proj=server.projs;
 	
     for (n=0;n!=server.count.proj;n++) {
-		models_reset_single(&proj->draw);
+		model_reset_single(&proj->draw);
 		proj++;
 	}
 
@@ -364,15 +331,11 @@ void models_reset(void)
 		// reference count, our loaded file
 		// isn't using them
 
-	n=0;
-
-	while (n<server.count.model) {
-		mdl=&server.models[n];
-		if (mdl->reference_count<=0) {
-			models_dispose(n);
-			continue;
+	for (n=0;n!=max_model_list;n++) {
+		mdl=server.model_list.models[n];
+		if (mdl!=NULL) {
+			if (mdl->reference_count<=0) model_dispose(n);
 		}
-		n++;
 	}
 }
 

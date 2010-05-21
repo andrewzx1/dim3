@@ -66,14 +66,14 @@ void ambient_add_objects(void)
 	obj_type			*obj;
 	obj_snd_ambient		*ambient;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		ambient=&obj->ambient;
 		if ((ambient->on) && (ambient->buffer_idx!=-1)) {
 			al_ambient_list_add(ambient->buffer_idx,&obj->pnt,ambient->pitch);
 		}
-		obj++;
 	}
 }
 

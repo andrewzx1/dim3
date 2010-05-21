@@ -64,10 +64,9 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 		// weapon model draw
 		
 	draw=&weap->draw;
-	if ((draw->uid==-1) || (!draw->on)) return;
+	if ((draw->model_idx==-1) || (!draw->on)) return;
 	
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	mdl=server.model_list.models[draw->model_idx];
 	
 		// always draw weapons over view
 		// without rotation

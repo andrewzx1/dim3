@@ -84,9 +84,9 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 	
 		// check objects
 		
-	for (n=0;n!=server.count.obj;n++) {
-	
-		hurt_obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		hurt_obj=server.obj_list.objs[n];
+		if (hurt_obj==NULL) continue;
 
         if ((hurt_obj->hidden) || (!hurt_obj->contact.projectile_on) || (hurt_obj->uid==ignore_uid)) continue;
 		
@@ -174,7 +174,7 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 		return(FALSE);
 	}
 
-	mdl=&server.models[weap->draw.model_idx];
+	mdl=server.model_list.models[weap->draw.model_idx];
 
 		// get current pose
 
@@ -235,7 +235,7 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 		return(FALSE);
 	}
 
-	mdl=&server.models[obj->draw.model_idx];
+	mdl=server.model_list.models[obj->draw.model_idx];
 
 		// get current pose
 
@@ -286,7 +286,7 @@ bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj
 		return(FALSE);
 	}
 
-	mdl=&server.models[proj->draw.model_idx];
+	mdl=server.model_list.models[proj->draw.model_idx];
 
 		// get current pose
 
