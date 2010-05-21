@@ -124,7 +124,7 @@ void remote_draw_status(obj_type *obj)
 void remote_draw_names_setup(void)
 {
 	int						n,x,y,z,dist;
-	bool					hit,has_tag;
+	bool					hit;
 	d3pnt					spt,ept,hpt;
 	obj_type				*obj;
 	model_type				*mdl;
