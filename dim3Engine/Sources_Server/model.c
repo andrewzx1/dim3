@@ -47,7 +47,6 @@ void model_initialize(void)
 {
 	server.models=NULL;
 	server.count.model=0;
-	server.uid.model=0;
 }
 
 /* =======================================================
@@ -55,36 +54,6 @@ void model_initialize(void)
       Find Models
       
 ======================================================= */
-
-int model_find_uid_index(int uid)
-{
-	int				n;
-	model_type		*mdl;
-
-	mdl=server.models;
-	
-	for (n=0;n!=server.count.model;n++) {
-		if (mdl->uid==uid) return(n);
-		mdl++;
-	}
-	
-	return(-1);
-}
-
-model_type* model_find_uid(int uid)
-{
-	int				n;
-	model_type		*mdl;
-
-	mdl=server.models;
-	
-	for (n=0;n!=server.count.model;n++) {
-		if (mdl->uid==uid) return(mdl);
-		mdl++;
-	}
-
-	return(NULL);
-}
 
 model_type* model_find(char *name)
 {
@@ -244,7 +213,6 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
 
 void models_dispose(int idx)
 {
-	int					idx;
 	model_type			*mdl,*ptr;
 
 		// find model

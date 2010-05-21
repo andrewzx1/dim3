@@ -26,7 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 extern void model_initialize(void);
-extern model_type* model_find_uid(int uid);
 extern model_type* model_find(char *name);
 extern int model_find_index(char *name);
 extern bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_str);

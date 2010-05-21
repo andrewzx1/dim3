@@ -1137,8 +1137,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						obj,proj,weapon,proj_setup,
-												model;
+						int						obj,proj,weapon,proj_setup;
 					} server_uid_type;
 
 //
