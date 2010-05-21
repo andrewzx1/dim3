@@ -106,7 +106,7 @@ void model_draw_setup_object(obj_type *obj)
 	draw=&obj->draw;
 	if (draw->model_idx==-1) return;
 
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 
 		// clear setup
 
@@ -218,7 +218,7 @@ void model_draw_setup_projectile(proj_type *proj)
 	draw=&proj->draw;
 	if (draw->model_idx==-1) return;
 
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 
 		// clear setup
 
@@ -316,7 +316,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	model_draw_setup	*setup;
 	model_type			*mdl;
 	
-		// get proper draw and setup
+		// get proper draw and model
 		
 	if (!dual_hand) {
 		draw=&weap->draw;
@@ -324,13 +324,15 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	else {
 		draw=&weap->draw_dual;
 	}
-	
-	setup=&draw->setup;
+
+	if (draw->model_idx==-1) return;
+
+	mdl=server.model_list.models[draw->model_idx];
 
 		// clear setup
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) model_draw_setup_clear(mdl,&draw->setup);
+	setup=&draw->setup;
+	model_draw_setup_clear(mdl,&draw->setup);
 
 		// special check for player
 
@@ -439,7 +441,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 
 		// dynamic bones
 
-	if (mdl!=NULL) model_draw_setup_dynamic_bones(mdl,draw,setup);
+	model_draw_setup_dynamic_bones(mdl,draw,setup);
 
 		// team tint
 

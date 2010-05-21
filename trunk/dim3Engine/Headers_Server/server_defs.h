@@ -47,7 +47,6 @@ and can be sold or given away.
 // maximums
 //
 
-#define max_object								2048
 #define max_projectile							256
 #define max_effect								512
 #define max_decal								128
@@ -71,6 +70,13 @@ and can be sold or given away.
 #define max_object_bit_mask						32
 
 #define max_model_light_cache_index				8
+
+//
+// lists
+//
+
+#define max_obj_list							1024
+#define max_model_list							128
 
 //
 // binding types
@@ -570,7 +576,7 @@ typedef struct		{
 typedef struct		{
 						int						dist,obj_uid,base_team;
 						float					restrict_ang;
-						char					obj_flags[max_object],sound_name[name_str_len];
+						char					obj_flags[max_obj_list],sound_name[name_str_len];
 						bool					on;
 						obj_watch_restrict		watch_restrict;
 					} obj_watch;
@@ -825,7 +831,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						uid,type,bind,next_spawn_sub_event,
+						int						index,uid,type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
 												count,input_mode,air_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
@@ -1145,11 +1151,23 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						obj,weapon,proj_setup,proj,
-												effect,decal,model,
+						int						weapon,proj_setup,proj,
+												effect,decal,
 												particle,ring,halo,mark,crosshair;
 					} server_count_type;
-					
+
+//
+// Object Lists
+//
+
+typedef struct		{
+						obj_type*				objs[max_obj_list];
+					} server_obj_list;
+
+typedef struct		{
+						model_type*				models[max_model_list];
+					} server_model_list;
+
 //
 // Main Server Structure
 //
@@ -1161,18 +1179,19 @@ typedef struct		{
 						server_time_type		time;
 						server_uid_type			uid;
 						server_count_type		count;
-						obj_type				*objs;
+					//	obj_type				*objs;		// supergumba
 						weapon_type				*weapons;
 						proj_setup_type			*proj_setups;
 						proj_type				*projs;
 						effect_type				*effects;
 						decal_type				*decals;
-						model_type				*models;
 						particle_type			*particles;
 						ring_type				*rings;
 						halo_type				*halos;
 						mark_type				*marks;
 						crosshair_type			*crosshairs;
+						server_obj_list			obj_list;
+						server_model_list		model_list;
 					} server_type;
 
 

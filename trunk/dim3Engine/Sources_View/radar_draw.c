@@ -128,8 +128,9 @@ void radar_draw(void)
 	max_dist=hud.radar.view_radius;
 	fade_dist=max_dist>>1;
 	
-	for (n=0;n!=server.count.obj;n++) {
-		obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 		if (obj->uid==server.player_obj_uid) continue;
 		if ((obj->hidden) || (!obj->radar.on) || (obj->radar.icon_idx==-1)) continue;

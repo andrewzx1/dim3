@@ -57,10 +57,11 @@ void script_state_save(void)
 	script_state_save_single(&js.game_attach);
 	script_state_save_single(&js.course_attach);
 	
-	obj=server.objs;
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		script_state_save_single(&obj->attach);
-		obj++;
 	}
 	
 	weap=server.weapons;
@@ -99,10 +100,11 @@ void script_state_load(void)
 	script_state_load_single(&js.game_attach);
 	script_state_load_single(&js.course_attach);
 	
-	obj=server.objs;
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		script_state_load_single(&obj->attach);
-		obj++;
 	}
 	
 	weap=server.weapons;

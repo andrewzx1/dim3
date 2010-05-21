@@ -58,9 +58,13 @@ delayed_obj_spawn_type		*delayed_obj_spawns;
 
 void object_initialize_list(void)
 {
-	server.objs=NULL;
-	server.count.obj=0;
-	server.uid.obj=0;
+	int				n;
+
+	for (n=0;n!=max_obj_list;n++) {
+		server.obj_list.objs[n]=NULL;
+	}
+
+	server.uid.obj=0;		// supergumba -- delete uid
 
 		// script based object spawns need to
 		// be delayed so they don't effect the
@@ -185,7 +189,7 @@ void object_clear_watch(obj_watch *watch)
 	watch->watch_restrict.on=FALSE;
 	watch->watch_restrict.ray_trace=FALSE;
 	watch->watch_restrict.ang=0.0f;
-	memset(watch->obj_flags,0x0,max_object);
+	memset(watch->obj_flags,0x0,max_obj_list);
 }
 
 void object_clear_draw(model_draw *draw)
@@ -460,33 +464,38 @@ int object_reserve_uid(void)
 	return(uid);
 }
 
-obj_type* object_create(char *name,int type,int bind,int reserve_uid)
+int object_create(char *name,int type,int bind,int reserve_uid)
 {
-	obj_type		*obj,*ptr;
+	int				n,idx;
+	obj_type		*obj;
 
-		// only allow a maximum number of objects
+		// find a unused object
 
-	if (server.count.obj>=max_object) return(NULL);
+	idx=-1;
+
+	for (n=0;n!=max_obj_list;n++) {
+		if (server.obj_list.objs[n]==NULL) {
+			idx=n;
+			break;
+		}
+	}
+
+	if (idx==-1) return(-1);
 
 		// create memory for new object
 
-	ptr=(obj_type*)malloc(sizeof(obj_type)*(server.count.obj+1));
-	if (ptr==NULL) return(NULL);
+	obj=(obj_type*)malloc(sizeof(obj_type));
+	if (obj==NULL) return(-1);
 
-	if (server.objs!=NULL) {
-		memmove(ptr,server.objs,(sizeof(obj_type)*server.count.obj));
-		free(server.objs);
-	}
+		// put in list
 
-	server.objs=ptr;
-
-	obj=&server.objs[server.count.obj];
-	server.count.obj++;
+	server.obj_list.objs[idx]=obj;
 
 		// initial setup
 		
 	strcpy(obj->name,name);
 
+	obj->index=idx;
 	obj->type=type;
 	obj->bind=bind;
 
@@ -689,7 +698,7 @@ obj_type* object_create(char *name,int type,int bind,int reserve_uid)
 	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
 	obj->score.place=1;
 	
-	return(obj);
+	return(idx);
 }
 
 /* =======================================================
@@ -781,7 +790,7 @@ void object_attach_click_crosshair_down(obj_type *obj)
 
 int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,char *err_str)
 {
-	int					n;
+	int					n,idx;
 	bool				ok;
 	obj_type			*obj;
 	weapon_type			*weap;
@@ -789,11 +798,13 @@ int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,ch
 
 		// create object
 		
-	obj=object_create(name,type,bind,reserve_uid);
-	if (obj==NULL) {
+	idx=object_create(name,type,bind,reserve_uid);
+	if (idx==-1) {
 		strcpy(err_str,"Out of memory");
 		return(-1);
 	}
+
+	obj=server.obj_list.objs[idx];
 
 		// player default setup
 		
@@ -850,14 +861,16 @@ int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,ch
 	}
 
 	if (!ok) {
-		server.count.obj--;			// wait until real delete to move memory around
+		server.obj_list.objs[idx]=NULL;
+		free(obj);
 		return(-1);
 	}
 
 		// load object model
 
 	if (!model_draw_load(&obj->draw,"Object",obj->name,err_str)) {
-		server.count.obj--;			// wait until real delete to move memory around
+		server.obj_list.objs[idx]=NULL;
+		free(obj);
 		return(-1);
 	}
 
@@ -902,13 +915,13 @@ int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,ch
 void object_dispose_single(int idx)
 {
 	int					n;
-	obj_type			*obj,*ptr;
+	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 
-	obj=&server.objs[idx];
+	obj=server.obj_list.objs[idx];
 
-		// dispose projectiles
+		// dispose projectile setups
 
 	n=0;
 	
@@ -949,62 +962,25 @@ void object_dispose_single(int idx)
 	scripts_dispose(obj->attach.script_uid);
 	model_draw_dispose(&obj->draw);
 
-		// is the list completely empty?
+		// free and empty out of list
 
-	if (server.count.obj==1) {
-		free(server.objs);
-		server.objs=NULL;
-		server.count.obj=0;
-		return;
-	}
+	free(obj);
 
-		// if for some reason we can't create new
-		// memory, just shuffle the list and wait
-		// until next time
-
-	ptr=(obj_type*)malloc(sizeof(obj_type)*(server.count.obj-1));
-
-	if (ptr==NULL) {
-		if (idx<(server.count.obj-1)) {
-			memmove(&server.objs[idx],&server.objs[idx+1],(sizeof(obj_type)*((server.count.obj-idx)-1)));
-		}
-	}
-	else {
-
-		if (idx>0) {
-			memmove(ptr,server.objs,(sizeof(obj_type)*idx));
-		}
-		if (idx<(server.count.obj-1)) {
-			memmove(&ptr[idx],&server.objs[idx+1],(sizeof(obj_type)*((server.count.obj-idx)-1)));
-		}
-
-		free(server.objs);
-		server.objs=ptr;
-	}
-	
-	server.count.obj--;
+	server.obj_list.objs[idx]=NULL;
 }
 
 void object_dispose_2(int bind)
 {
-	int				i;
+	int				n;
 	obj_type		*obj;
 	
 		// delete bound objects
-	
-	i=0;
-	
-	while (i<server.count.obj) {
-		obj=&server.objs[i];
-		
-		if (obj->bind!=bind) {
-			i++;
-			continue;
-		}
-		
-		object_dispose_single(i);
 
-		if (server.count.obj==0) break;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+	
+		if (obj->bind==bind) object_dispose_single(n);
 	}
 }
 

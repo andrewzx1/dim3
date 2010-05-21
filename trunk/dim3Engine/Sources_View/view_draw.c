@@ -255,7 +255,7 @@ void view_draw_model_opaque(void)
 		switch (view.render->draw_list.items[n].type) {
 
 			case view_render_type_object:
-				obj=&server.objs[view.render->draw_list.items[n].idx];
+				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (obj->draw.has_opaque)) {
 					if (!obj->draw.built_vertex_list) {
 						obj->draw.built_vertex_list=TRUE;
@@ -297,7 +297,7 @@ void view_draw_model_transparent(void)
 		switch (view.render->draw_list.items[n].type) {
 
 			case view_render_type_object:
-				obj=&server.objs[view.render->draw_list.items[n].idx];
+				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (obj->draw.has_transparent)) {
 					if (!obj->draw.built_vertex_list) {
 						obj->draw.built_vertex_list=TRUE;
@@ -345,7 +345,7 @@ void view_draw_models_final(void)
 		switch (view.render->draw_list.items[n].type) {
 
 			case view_render_type_object:
-				obj=&server.objs[view.render->draw_list.items[n].idx];
+				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				
 				if ((shadow_on) && (obj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {

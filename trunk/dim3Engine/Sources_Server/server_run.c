@@ -221,9 +221,9 @@ void run_objects_slice(void)
 	d3pnt			old_pnt;
 	obj_type		*obj;
 
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 		if ((!obj->scenery.on) && (!obj->hidden)) {
 		
@@ -256,8 +256,6 @@ void run_objects_slice(void)
 				}
 			}
 		}
-		
-		obj++;
 	}
 }
 
@@ -267,9 +265,9 @@ void run_objects_no_slice(void)
 	obj_type		*obj;
 	weapon_type		*weap;
 
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 	
 		object_check_respawn(obj);
 
@@ -297,8 +295,6 @@ void run_objects_no_slice(void)
 
 			}
 		}
-		
-		obj++;
 	}
 }
 

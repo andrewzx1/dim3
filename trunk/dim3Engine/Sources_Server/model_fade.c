@@ -121,7 +121,7 @@ void model_mesh_fade_run(model_draw *draw)
 
 	if (draw->model_idx==-1) return;
 
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 
 	tick=game_time_get();
 

@@ -179,7 +179,7 @@ bool model_inview(model_draw *draw)
 
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	model_get_view_complex_bounding_box(&server.models[draw->model_idx],&draw->pnt,&draw->setup.ang,px,py,pz);
+	model_get_view_complex_bounding_box(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,px,py,pz);
 	return(complex_boundbox_inview(px,py,pz));
 }
 
@@ -189,7 +189,7 @@ bool model_shadow_inview(model_draw *draw)
 
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	if (!shadow_get_volume_model(&server.models[draw->model_idx],draw,px,py,pz)) return(FALSE);
+	if (!shadow_get_volume_model(server.model_list.models[draw->model_idx],draw,px,py,pz)) return(FALSE);
 	return(complex_boundbox_inview(px,py,pz));
 }
 

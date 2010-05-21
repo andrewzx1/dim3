@@ -42,16 +42,17 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
+// supergumba -- eventually delete me
 obj_type* object_find_uid(int uid)
 {
 	int				n;
 	obj_type		*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if (obj->uid==uid) return(obj);
-		obj++;
 	}
 	
 	return(NULL);
@@ -62,11 +63,11 @@ int object_find_index_uid(int uid)
 	int				n;
 	obj_type		*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if (obj->uid==uid) return(n);
-		obj++;
 	}
 	
 	return(-1);
@@ -77,11 +78,11 @@ obj_type* object_find_remote_uid(int uid)
 	int				n;
 	obj_type		*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if (obj->remote.uid==uid) return(obj);
-		obj++;
 	}
 	
 	return(NULL);
@@ -92,11 +93,11 @@ int object_find_index_remote_uid(int uid)
 	int				n;
 	obj_type		*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if (obj->remote.uid==uid) return(n);
-		obj++;
 	}
 	
 	return(-1);
@@ -113,11 +114,11 @@ obj_type* object_find_name(char *name)
 	int			n;
 	obj_type	*obj;
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if (strcasecmp(obj->name,name)==0) return(obj);
-		obj++;
 	}
 	
 	return(NULL);
@@ -138,8 +139,9 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 	i=-1;
     dist=max_dist;
 	
-	for (n=0;n!=server.count.obj;n++) {
-		obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 		
 		if (obj->hidden) continue;
 		if (!obj->find_on) continue;
@@ -188,7 +190,7 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 	
 	if (i==-1) return(NULL);
 	
-	return(&server.objs[i]);
+	return(server.obj_list.objs[i]);
 }
 
 /* =======================================================

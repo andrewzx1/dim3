@@ -332,16 +332,16 @@ void map_movements_auto_open(void)
 
 			map_movements_get_center(movement,&center_pnt);
 
-			obj=server.objs;
+			for (i=0;i!=max_obj_list;i++) {
+				obj=server.obj_list.objs[i];
+				if (obj==NULL) continue;
 
-			for (i=0;i!=server.count.obj;i++) {
 				if (((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->open_doors)) && (obj->status.health!=0)) {
 					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,center_pnt.x,center_pnt.y,center_pnt.z,movement->auto_open_distance)) {
 						obj_in_range=TRUE;
 						break;
 					}
 				}
-				obj++;
 			}
 
 				// check for camera node walks
@@ -357,9 +357,9 @@ void map_movements_auto_open(void)
 
 		if (movement->auto_open_stand) {
 
-			obj=server.objs;
-
-			for (i=0;i!=server.count.obj;i++) {
+			for (i=0;i!=max_obj_list;i++) {
+				obj=server.obj_list.objs[i];
+				if (obj==NULL) continue;
 
 				if (((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->open_doors)) && (obj->status.health!=0)) {
 
@@ -375,8 +375,6 @@ void map_movements_auto_open(void)
 						}
 					}
 				}
-
-				obj++;
 			}
 
 		}

@@ -174,7 +174,7 @@ bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type
 		return(FALSE);
 	}
 
-	mdl=&server.models[weap->draw.model_idx];
+	mdl=server.model_list.models[weap->draw.model_idx];
 
 		// get current pose
 
@@ -242,7 +242,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_typ
 		return(FALSE);
 	}
 
-	mdl=&server.models[weap->draw.model_idx];
+	mdl=server.model_list.models[weap->draw.model_idx];
 
 		// get current pose
 
@@ -325,7 +325,7 @@ bool weapon_get_projectile_position_angle_object_model(obj_type *obj,weapon_type
 		return(FALSE);
 	}
 
-	mdl=&server.models[obj->draw.model_idx];
+	mdl=server.model_list.models[obj->draw.model_idx];
 
 		// get current pose
 

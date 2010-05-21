@@ -307,7 +307,7 @@ void gl_lights_setup_cache(void)
 				break;
 
 			case view_render_type_object:
-				obj=&server.objs[view.render->draw_list.items[n].idx];
+				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&obj->draw);
 				
 				if ((obj->uid==server.player_obj_uid) && (obj->held_weapon.current_uid!=-1)) {
@@ -403,7 +403,7 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 		
 	if ((draw->model_idx==-1) || (!draw->on)) return;
 	
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 	
 		// add lights
 		
@@ -477,15 +477,15 @@ void gl_lights_compile(int tick)
 
 		// lights from objects and their weapons
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		gl_lights_compile_model_add(tick,&obj->draw);
 		if (obj->held_weapon.current_uid!=-1) {
 			weap=weapon_find_uid(obj->held_weapon.current_uid);
 			if (weap!=NULL) gl_lights_compile_model_add(tick,&weap->draw);
 		}
-		obj++;
 	}
 	
 		// lights from projectiles

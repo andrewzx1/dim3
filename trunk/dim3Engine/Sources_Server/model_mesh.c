@@ -43,7 +43,7 @@ int model_find_mesh_from_draw(model_draw *draw,char *name)
 {
 	if (draw->model_idx==-1) return(-1);
 
-	return(model_find_mesh(&server.models[draw->model_idx],name));
+	return(model_find_mesh(server.model_list.models[draw->model_idx],name));
 }
 
 bool model_show_mesh(model_draw *draw,char *name)

@@ -140,23 +140,22 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 int network_score_players_draw(bool use_teams)
 {
 	int				n,lx,rx,y,yadd,high,nscore,fnt_sz;
-	short			sort_idx[max_object];
+	short			sort_idx[max_obj_list];
 	d3col			col;
 	obj_type		*obj;
 
 		// sort player scores
 
 	nscore=0;
-	obj=server.objs;
 
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) {
 			sort_idx[obj->score.place-1]=n;
 			if (obj->score.place>nscore) nscore=obj->score.place;
 		}
-
-		obj++;
 	}
 	
 		// sizes
@@ -172,7 +171,7 @@ int network_score_players_draw(bool use_teams)
 		// player boxes
 	
 	for (n=0;n!=nscore;n++) {
-		obj=&server.objs[sort_idx[n]];
+		obj=server.obj_list.objs[sort_idx[n]];
 		object_get_tint(obj,&col);
 		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),&col,fnt_sz,FALSE,((server.state==gs_score_limit)&&(n==0)));
 		y+=(yadd+3);
@@ -184,14 +183,14 @@ int network_score_players_draw(bool use_teams)
 void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_score,d3col *team_col,int lx,int rx,int y,int yadd,int fnt_sz,bool winner)
 {
 	int				n,nscore;
-	short			sort_idx[max_object];
+	short			sort_idx[max_obj_list];
 	obj_type		*obj;
 	
 	network_score_single_name_draw(team_name,team_score,lx,rx,y,(y+yadd),team_col,fnt_sz,TRUE,winner);
 	
 		// clear scores
 		
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
 		sort_idx[n]=-1;
 	}
 	
@@ -201,8 +200,10 @@ void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_
 
 	nscore=0;
 
-	for (n=0;n!=server.count.obj;n++) {
-		obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
 		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
 		if (obj->team_idx!=team_idx) continue;
 		
@@ -215,7 +216,7 @@ void network_score_teams_draw_single_team(int team_idx,char *team_name,int team_
 	for (n=0;n!=nscore;n++) {
 		if (sort_idx[n]!=-1) {
 			y+=(yadd+3);
-			obj=&server.objs[sort_idx[n]];
+			obj=server.obj_list.objs[sort_idx[n]];
 			network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,(y+yadd),team_col,fnt_sz,FALSE,FALSE);
 		}
 	}
@@ -234,14 +235,11 @@ int network_score_teams_draw(void)
 	red_score=blue_score=0;
 	red_count=blue_count=0;
 
-	obj=server.objs;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-	for (n=0;n!=server.count.obj;n++) {
-
-		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) {
-			obj++;
-			continue;
-		}
+		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
 			
 		if (obj->team_idx==net_team_red) {
 			red_score+=obj->score.score;
@@ -251,8 +249,6 @@ int network_score_teams_draw(void)
 			blue_score+=obj->score.score;
 			blue_count++;
 		}
-
-		obj++;
 	}
 	
 	max_count=red_count;

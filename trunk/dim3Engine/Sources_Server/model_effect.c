@@ -107,7 +107,7 @@ void model_animation_effect_launch_bone_position(model_draw *draw,int animate_id
 		// bone position
 
 	if ((bone_idx!=-1) && (draw->model_idx!=-1)) {
-		mdl=&server.models[draw->model_idx];
+		mdl=server.model_list.models[draw->model_idx];
 
 		model_calc_draw_bone_position(mdl,&draw->setup,pose_idx,bone_idx,&pt->x,&pt->y,&pt->z);
 		pt->x+=draw->pnt.x;
@@ -216,7 +216,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 	if (draw->model_idx==-1) return;
 
 	setup=&draw->setup;
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 	
 	animate=&mdl->animates[animate_idx];
 	if ((pose_idx<0) || (pose_idx>=animate->npose_move)) return;

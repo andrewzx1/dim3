@@ -785,7 +785,7 @@ void shadow_render_model(int item_type,int item_idx,model_draw *draw)
 	
 		// get model
 
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 	
 		// get light
 

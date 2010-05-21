@@ -69,7 +69,6 @@ bool server_memory_allocate(void)
 	server.halos=NULL;
 	server.marks=NULL;
 	server.crosshairs=NULL;
-	server.models=NULL;
 
 	server.projs=NULL;
     server.effects=NULL;
@@ -160,7 +159,6 @@ void server_memory_release(void)
 	if (server.halos!=NULL) free(server.halos);
 	if (server.marks!=NULL) free(server.marks);
 	if (server.crosshairs!=NULL) free(server.crosshairs);
-	if (server.models!=NULL) free(server.models);
 
 		// non-dynamic server pointers
 

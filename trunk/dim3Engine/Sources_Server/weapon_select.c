@@ -322,9 +322,10 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 	next_uid=-1;
 	min_uid=-1;
 
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		chk_obj=server.obj_list.objs[n];
+		if (chk_obj==NULL) continue;
 
-		chk_obj=&server.objs[n];
 		if (chk_obj->hidden) continue;
 
 		if (weap->target.opponent_only) {
@@ -390,9 +391,10 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 	prev_uid=-1;
 	max_uid=-1;
 
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		chk_obj=server.obj_list.objs[n];
+		if (chk_obj==NULL) continue;
 
-		chk_obj=&server.objs[n];
 		if (chk_obj->hidden) continue;
 
 		if (weap->target.opponent_only) {

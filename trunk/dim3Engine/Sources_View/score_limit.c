@@ -90,11 +90,11 @@ void score_limit_start(void)
 	
 		// push score limit to all remotes
 
-	obj=server.objs;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-	for (n=0;n!=server.count.obj;n++) {
 		if (obj->type==object_type_remote) net_host_player_send_message_others(net_setup.player_uid,net_action_request_game_score_limit,net_player_uid_host,NULL,0);
-		obj++;
 	}
 }
 
@@ -123,14 +123,11 @@ void score_limit_check_scores(void)
 		
 		red_score=blue_score=0;
 
-		obj=server.objs;
-
-		for (n=0;n!=server.count.obj;n++) {
+		for (n=0;n!=max_obj_list;n++) {
+			obj=server.obj_list.objs[n];
+			if (obj==NULL) continue;
 		
-			if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) {
-				obj++;
-				continue;
-			}
+			if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
 			
 			if (obj->team_idx==net_team_red) {
 				red_score+=obj->score.score;
@@ -146,8 +143,6 @@ void score_limit_check_scores(void)
 					return;
 				}
 			}
-			
-			obj++;
 		}
 		
 		return;
@@ -155,17 +150,16 @@ void score_limit_check_scores(void)
 	
 		// regular player checks
 
-	obj=server.objs;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-	for (n=0;n!=server.count.obj;n++) {
 		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) {
 			if (obj->score.score>=limit) {
 				score_limit_start();
 				return;
 			}
 		}
-
-		obj++;
 	}
 }
 

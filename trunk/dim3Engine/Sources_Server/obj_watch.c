@@ -103,9 +103,10 @@ void object_watch(obj_type *obj)
 
 		// check object
 	
-	for (n=0;n!=server.count.obj;n++) {
-	
-		watch_obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		watch_obj=server.obj_list.objs[n];
+		if (watch_obj==NULL) continue;
+
 		if ((watch_obj->hidden) || (watch_obj==obj)) continue;
 
             // check dist
@@ -164,14 +165,14 @@ void object_watch_death_alert(obj_type *dead_obj)
 	
 		// notify watching objects of death
 
-	obj=server.objs;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-	for (n=0;n!=server.count.obj;n++) {
 		if (obj->watch.on) {
 			obj->watch.obj_uid=dead_obj->uid;
 			scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_death,0);
 		}
-		obj++;
 	}
 }
 
@@ -182,9 +183,10 @@ void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry)
 	
 		// notify watching objects of base entries/exits
 
-	obj=server.objs;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-	for (n=0;n!=server.count.obj;n++) {
 		if (obj->watch.on) {
 			obj->watch.obj_uid=enter_obj->uid;
 			obj->watch.base_team=mesh->msg.base_team;
@@ -195,7 +197,6 @@ void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry)
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_exit_base,0);
 			}
 		}
-		obj++;
 	}
 }
 
@@ -212,9 +213,9 @@ void object_watch_sound_alert(d3pnt *pnt,int sound_obj_uid,char *sound_name)
 	
 		// notify watching objects of sounds
 
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 		if ((obj->watch.on) && (obj->watch.dist!=0)) {
 
@@ -224,8 +225,6 @@ void object_watch_sound_alert(d3pnt *pnt,int sound_obj_uid,char *sound_name)
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_sound,0);
 			}
 		}
-
-		obj++;
 	}
 }
 
@@ -242,9 +241,9 @@ void object_watch_damage_alert(d3pnt *pnt,int damage_obj_uid)
 	
 		// notify watching objects of damaged objects
 
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 		if ((obj->watch.on) && (obj->watch.dist!=0)) {
 
@@ -253,7 +252,5 @@ void object_watch_damage_alert(d3pnt *pnt,int damage_obj_uid)
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_damage,0);
 			}
 		}
-
-		obj++;
 	}
 }

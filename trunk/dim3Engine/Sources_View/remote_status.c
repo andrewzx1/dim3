@@ -135,11 +135,9 @@ void remote_draw_names_setup(void)
 	
 		// clear all name draws
 	
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
-		obj->draw.remote_name.on=FALSE;
-		obj++;
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
+		server.obj_list.objs[view.render->draw_list.items[n].idx]->draw.remote_name.on=FALSE;
 	}
 
 		// remove names behind z or off-screen
@@ -151,7 +149,7 @@ void remote_draw_names_setup(void)
 	
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
-		obj=&server.objs[view.render->draw_list.items[n].idx];
+		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 		
 		if ((obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
 		if (obj->hidden) continue;
@@ -160,7 +158,7 @@ void remote_draw_names_setup(void)
 		
 		if ((obj->draw.model_idx==-1) || (!obj->draw.on)) continue;
 		
-		mdl=&server.models[obj->draw.model_idx];
+		mdl=server.model_list.models[obj->draw.model_idx];
 
 		x=obj->pnt.x;
 		y=obj->pnt.y;
@@ -221,8 +219,10 @@ void remote_draw_names_setup(void)
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
 
-	for (n=0;n!=server.count.obj;n++) {
-		obj=&server.objs[n];
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
+
+		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 		if (!obj->draw.remote_name.on) continue;
 
 		spt.x=obj->draw.remote_name.pnt.x;
@@ -271,10 +271,10 @@ void remote_draw_names_render(void)
 
 	text_size=-1;
 
-	obj=server.objs;
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
 
-	for (n=0;n!=server.count.obj;n++) {
-	
+		obj=server.obj_list.objs[view.render->draw_list.items[n].idx];	
 		if (obj->draw.remote_name.on) {
 
 				// get 2D position in screen resolution
@@ -297,8 +297,6 @@ void remote_draw_names_render(void)
 			object_get_tint(obj,&col);
 			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->draw.remote_name.fade);
 		}
-		
-		obj++;
 	}
 
 	gl_text_end();		// can call end without a start

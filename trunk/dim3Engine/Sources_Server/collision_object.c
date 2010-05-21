@@ -194,7 +194,7 @@ bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,obj_typ
 	draw=&check_obj->draw;
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	model=&server.models[draw->model_idx];
+	model=server.model_list.models[draw->model_idx];
 	
 		// check hit boxes
 		// unlike projectiles, we can just take the
@@ -221,28 +221,20 @@ int collide_find_object_for_object_move(obj_type *obj,int x,int z)
 	
 	ignore_obj_uid=obj->uid;
 	
-	check_obj=server.objs;
+	for (n=0;n!=max_obj_list;n++) {
+		check_obj=server.obj_list.objs[n];
+		if (check_obj==NULL) continue;
 	
-	for (n=0;n!=server.count.obj;n++) {
-	
-		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->uid==ignore_obj_uid)) {
-			check_obj++;
-			continue;
-		}
+		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->uid==ignore_obj_uid)) continue;
 
 			// object hit?
 			
-		if (!collide_object_to_object(obj,x,z,check_obj,TRUE,FALSE)) {
-			check_obj++;
-			continue;
-		}
+		if (!collide_object_to_object(obj,x,z,check_obj,TRUE,FALSE)) continue;
 		
 			// which hit box?
 		
 		if (!check_obj->hit_box.on) return(check_obj->uid);
 		if (collide_set_object_hit_box_for_object_hit(obj,x,z,check_obj)) return(check_obj->uid);
-		
-		check_obj++;
 	}
 	
 	return(-1);
@@ -270,27 +262,19 @@ int collide_find_object_for_standing_object(obj_type *obj)
 	
 	ignore_obj_uid=obj->uid;
 	
-	stand_obj=server.objs;
+	for (n=0;n!=max_obj_list;n++) {
+		stand_obj=server.obj_list.objs[n];
+		if (stand_obj==NULL) continue;
 	
-	for (n=0;n!=server.count.obj;n++) {
-	
-		if ((stand_obj->uid==ignore_obj_uid) || (stand_obj->hidden) || (!stand_obj->contact.object_on) || (stand_obj->pickup.on)) {
-			stand_obj++;
-			continue;
-		}
+		if ((stand_obj->uid==ignore_obj_uid) || (stand_obj->hidden) || (!stand_obj->contact.object_on) || (stand_obj->pickup.on)) continue;
 		
 		ty=abs(y-(stand_obj->pnt.y-stand_obj->size.y));
-		if (ty>ydist) {
-			stand_obj++;
-			continue;
-		}
+		if (ty>ydist) continue;
 
 		if (collide_object_to_object(obj,0,0,stand_obj,FALSE,FALSE)) {
 			uid=stand_obj->uid;
 			ydist=ty;
 		}
-		
-		stand_obj++;
 	}
 	
 	return(uid);	
@@ -447,7 +431,7 @@ bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,o
 	draw=&obj->draw;
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	model=&server.models[draw->model_idx];
+	model=server.model_list.models[draw->model_idx];
 	
 		// check hit boxes
 		
@@ -587,21 +571,15 @@ void collide_push_objects(int sx,int sy,int sz,int radius,int force)
 	
 		// check objects
 		
-	obj=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
-		if ((obj->hidden) || (obj->suspend) || (!obj->contact.object_on)) {
-			obj++;
-			continue;
-		}
+		if ((obj->hidden) || (obj->suspend) || (!obj->contact.object_on)) continue;
 		
 			// check for collision
 			
-		if (!collide_sphere_to_object(sx,sy,sz,radius,obj)) {
-			obj++;
-			continue;
-		}
+		if (!collide_sphere_to_object(sx,sy,sz,radius,obj)) continue;
 		
 			// add push
 				
@@ -612,7 +590,5 @@ void collide_push_objects(int sx,int sy,int sz,int radius,int force)
 		ang.z=0;
 		
 		object_push(obj,&ang,force,FALSE);
-		
-		obj++;
 	}
 }

@@ -54,7 +54,7 @@ void model_change_fill(model_draw *draw,int wfill,int txt)
     if ((wfill<0) || (wfill>=max_model_texture)) return;
     
 	if (draw->model_idx==-1) return;
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 	
 	count=model_count_texture_frames(mdl,wfill);
     texture=&mdl->textures[wfill];
@@ -77,7 +77,7 @@ void model_get_current_animation_name(model_draw *draw,char *name)
 	name[0]=0x0;
 
 	if (draw->model_idx==-1) return;
-	mdl=&server.models[draw->model_idx];
+	mdl=server.model_list.models[draw->model_idx];
 
 	draw_animation=&draw->animations[draw->script_animation_idx];
 	if (draw_animation->animate_idx==-1) return;
@@ -87,11 +87,9 @@ void model_get_current_animation_name(model_draw *draw,char *name)
 
 int model_find_animation_from_draw(model_draw *draw,char *name)
 {
-	model_type					*mdl;
-	
 	if (draw->model_idx==-1) return(-1);
 	
-	return(model_find_animate(&server.models[draw->idx],name));
+	return(model_find_animate(server.model_list.models[draw->model_idx],name));
 }
 
 bool model_start_animation(model_draw *draw,char *name)
@@ -225,8 +223,9 @@ void model_run_animation_single(model_draw *draw,int animation_idx)
 	
         // get model
         
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	if (draw->model_idx==-1) return;
+
+	mdl=server.model_list.models[draw->model_idx];
 
 		// if no poses, then no animation
 	
@@ -312,7 +311,7 @@ void model_run_animation(model_draw *draw)
    
 		// no model, no animation
 
-	if (draw->uid==-1) return;
+	if (draw->model_idx==-1) return;
 
 		// run all the animations
 
@@ -431,8 +430,9 @@ void model_calc_animation_poses(model_draw *draw)
 
 		// get model
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	if (draw->model_idx==-1) return;
+
+	mdl=server.model_list.models[draw->model_idx];
 
 		// run through all animations
 
@@ -503,8 +503,9 @@ void model_calc_animation_move_sway(model_draw *draw)
 	animation=&draw->animations[0];
     if (animation->mode==am_stopped) return;
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	if (draw->model_idx==-1) return;
+
+	mdl=server.model_list.models[draw->model_idx];
 
 	pose_move_1=model_calc_animation_first_pose(mdl,draw,0);
 	pose_move_2=model_calc_animation_second_pose(mdl,draw,0);
@@ -547,10 +548,7 @@ void model_calc_animation(model_draw *draw)
 
 void model_calc_draw_bones(model_draw *draw)
 {
-	model_type			*mdl;
-		
-	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) model_create_draw_bones(mdl,&draw->setup);
+	if (draw->model_idx!=-1) model_create_draw_bones(server.model_list.models[draw->model_idx],&draw->setup);
 }
 
 /* =======================================================
@@ -574,12 +572,10 @@ int model_get_current_pose(model_draw *draw)
 
 	if ((animate_idx==-1) || (pose_move_idx==-1)) return(-1);
 
-		// get model
-
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(-1);
-
 		// find pose index
+
+	if (draw->model_idx==-1) return(-1);
+	mdl=server.model_list.models[draw->model_idx];
 
 	return(mdl->animates[animate_idx].pose_moves[pose_move_idx].pose_idx);
 }
@@ -596,8 +592,9 @@ bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,int
 	model_tag			tag;
 	model_type			*mdl;
 		
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(FALSE);
+	if (draw->model_idx==-1) return(FALSE);
+
+	mdl=server.model_list.models[draw->model_idx];
 	
 		// get pose index
 		
@@ -639,8 +636,9 @@ bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_id
 	model_type				*mdl;
 	model_draw_animation	*animation;
 		
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(FALSE);
+	if (draw->model_idx==-1) return(FALSE);
+
+	mdl=server.model_list.models[draw->model_idx];
 
 		// get current pose
 
@@ -696,13 +694,12 @@ bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,
 
 model_type* model_dynamic_bone_get_model(model_draw *draw,char *err_str)
 {
-	model_type			*mdl;
+	if (draw->model_idx==-1) {
+		strcpy(err_str,"No model to set bones on");
+		return(NULL);
+	}
 
-	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) return(mdl);
-
-	strcpy(err_str,"No model to set bones on");
-	return(NULL);
+	return(server.model_list.models[draw->model_idx]);
 }
 
 int model_dynamic_bone_get_bone_idx(model_type *mdl,char *bone_tag,char *err_str)

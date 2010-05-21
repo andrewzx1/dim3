@@ -56,14 +56,15 @@ extern network_setup_type	net_setup;
 void object_score_recalc_place(void)
 {
 	int				n,k,idx,count,sz;
-	short			score_order_idx[max_object];
+	short			score_order_idx[max_obj_list];
 	obj_type		*obj,*order_obj;
 	
 	count=0;
 	
-	for (n=0;n!=server.count.obj;n++) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 	
-		obj=&server.objs[n];
 		if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) continue;
 		
 			// find place
@@ -71,7 +72,7 @@ void object_score_recalc_place(void)
 		idx=count;
 			
 		for (k=0;k!=count;k++) {
-			order_obj=&server.objs[(int)score_order_idx[k]];
+			order_obj=server.obj_list.objs[(int)score_order_idx[k]];
 			if (obj->score.score>order_obj->score.score) {
 				idx=k;
 				break;
@@ -88,7 +89,7 @@ void object_score_recalc_place(void)
 	}
 	
 	for (n=0;n!=count;n++) {
-		server.objs[(int)score_order_idx[n]].score.place=n+1;
+		server.obj_list.objs[(int)score_order_idx[n]]->score.place=n+1;
 	}
 }
 
@@ -228,8 +229,9 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 		
 	hit=FALSE;
 	
-	for (n=0;n!=server.count.obj;n++) {
-		check_obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		check_obj=server.obj_list.objs[n];
+		if (check_obj==NULL) continue;
 	
 		if ((check_obj->type!=object_type_player) && (check_obj->type!=object_type_remote) && (check_obj->type!=object_type_bot_multiplayer)) continue;
 		if ((check_obj->hidden) || (!check_obj->contact.object_on)) continue;
@@ -386,7 +388,7 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 	hit->hit_box_name[0]=0x0;
 
 	if ((obj->hit_box.on) && (obj->hit_box.proj_hit_box_idx!=-1) && (obj->draw.model_idx!=-1)) {
-		strcpy(hit->hit_box_name,server.models[obj->draw.model_idx].hit_boxes[obj->hit_box.proj_hit_box_idx].name);
+		strcpy(hit->hit_box_name,server.model_list.models[obj->draw.model_idx]->hit_boxes[obj->hit_box.proj_hit_box_idx].name);
 	}
 }
 

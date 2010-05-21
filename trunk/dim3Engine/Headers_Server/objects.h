@@ -34,7 +34,7 @@ extern void object_get_tint(obj_type *obj,d3col *tint);
 
 extern bool object_networkable(obj_type *obj);
 
-extern obj_type* object_create(char *name,int type,int bind,int reserve_uid);
+extern int object_create(char *name,int type,int bind,int reserve_uid);
 extern int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);

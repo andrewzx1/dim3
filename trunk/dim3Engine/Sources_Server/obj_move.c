@@ -852,7 +852,7 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	draw=&cnt_obj->draw;
 	if ((draw->model_idx==-1) || (!draw->on)) return(TRUE);
 	
-	model=&server.models[draw->model_idx];
+	model=server.model_list.models[draw->model_idx];
 	
 		// check hit boxes
 		
