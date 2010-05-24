@@ -169,7 +169,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 				break;
 				
 			case thing_type_weapon:
-				weap=weapon_find_uid(js.attach.weap_uid);
+				weap=weapon_script_lookup();
 				if (weap!=NULL) {
 					obj=object_find_uid(weap->obj_index);
 					if (obj!=NULL) remote_ok=object_networkable(obj);

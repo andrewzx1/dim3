@@ -273,7 +273,7 @@ typedef struct		{
 					} model_draw_shadow;
 
 typedef struct		{
-						int						obj_uid,weap_uid,proj_uid,
+						int						obj_idx,weap_idx,proj_idx,
 												net_remote_uid;
 						bool					net_sound;
 						d3vct					motion_vct;
@@ -643,7 +643,7 @@ typedef struct		{
  
 typedef struct		{
 						int						mode,swap_tick,bounce_y,
-												current_uid,next_uid;
+												current_index,next_index;
 					} obj_held_weapon;
 					
 typedef struct		{
@@ -905,7 +905,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						uid,obj_index,weap_uid,proj_setup_index,
+						int						uid,obj_index,weap_index,proj_setup_index,
 												count,parent_grace,decel_grace,
 												start_tick;
 						float					speed,decel_speed,decel_min_speed,gravity_add;

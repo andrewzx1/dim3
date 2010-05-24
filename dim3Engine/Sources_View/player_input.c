@@ -404,7 +404,7 @@ void player_weapon_input(obj_type *obj)
 	
 		// get held weapon
 		
-	weap=weapon_find_uid(obj->held_weapon.current_uid);
+	weap=weapon_find_uid(obj->held_weapon.current_index);
 	if (weap==NULL) return;
 
 		// weapon keys

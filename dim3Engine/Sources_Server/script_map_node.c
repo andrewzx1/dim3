@@ -197,9 +197,10 @@ JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,J
 	idx=-1;
 	dist=-1;
 	
-	for (n=0;n!=server.count.weapon;n++) {
-		weap=&server.weapons[n];
-		if (weap->obj_index!=obj->index) continue;
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+
 		if (!weap->hidden) continue;
 		
 		k=map_find_nearest_node_in_path(&map,from_idx,weap->name,&d);

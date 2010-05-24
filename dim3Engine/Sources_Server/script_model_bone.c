@@ -96,7 +96,7 @@ model_draw* script_bone_function_setup(JSContextRef cx,JSValueRef *exception)
 			return(&obj->draw);
 			
 		case thing_type_weapon:
-			weap=weapon_find_uid(js.attach.weap_uid);
+			weap=weapon_script_lookup();
 			obj=object_find_uid(weap->obj_index);
 			model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 			return(&weap->draw);

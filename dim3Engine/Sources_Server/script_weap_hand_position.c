@@ -80,7 +80,7 @@ JSValueRef js_weap_hand_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_int_to_value(cx,weap->hand.shift.x));
 }
 
@@ -88,7 +88,7 @@ JSValueRef js_weap_hand_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_int_to_value(cx,weap->hand.shift.y));
 }
 
@@ -96,7 +96,7 @@ JSValueRef js_weap_hand_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_int_to_value(cx,weap->hand.shift.z));
 }
 
@@ -110,7 +110,7 @@ bool js_weap_hand_position_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	weap->hand.shift.x=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -120,7 +120,7 @@ bool js_weap_hand_position_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	weap->hand.shift.y=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -130,7 +130,7 @@ bool js_weap_hand_position_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	weap->hand.shift.z=script_value_to_int(cx,vp);
 
 	return(TRUE);

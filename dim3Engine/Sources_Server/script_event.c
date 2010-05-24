@@ -349,7 +349,7 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 		return(script_null_to_value(cx));
 	}
 
-	weap=weapon_find_uid(proj->weap_uid);
+	weap=weapon_script_lookup();
 	if (weap==NULL) {
 		*exception=script_create_exception(cx,"Could not find weapon");
 		return(script_null_to_value(cx));

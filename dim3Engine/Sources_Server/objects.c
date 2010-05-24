@@ -612,7 +612,7 @@ int object_create(char *name,int type,int bind)
     
     obj->held_weapon.mode=wm_held;
     obj->held_weapon.swap_tick=0;
-	obj->held_weapon.current_uid=obj->held_weapon.next_uid=-1;
+	obj->held_weapon.current_index=obj->held_weapon.next_index=-1;
 	obj->held_weapon.bounce_y=0;
 	
 	obj->crosshair_draw.on=FALSE;
@@ -758,9 +758,10 @@ void object_attach_click_crosshair_down(obj_type *obj)
 
 int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 {
-	int					idx;
+	int					n,idx;
 	bool				ok;
 	obj_type			*obj;
+	weapon_type			*weap;
 
 		// create object
 		
@@ -804,6 +805,12 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		obj->turn.ang_to.y=spot->ang.y;
 	}
 
+		// clear weapons
+
+	for (n=0;n!=max_weap_list;n++) {
+		obj->weap_list.weaps[n]=NULL;
+	}
+
 		// if networked player or multiplayer bot, run rules
 		// and send choosen team to other clients
 	
@@ -842,8 +849,8 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 
 		// setup held weapon
 
-	if (obj->held_weapon.current_uid!=-1) {
-		weap=weapon_find_uid(obj->held_weapon.current_uid);
+	if (obj->held_weapon.current_index!=-1) {
+		weap=weapon_find_uid(obj->held_weapon.current_index);
 		weapon_set(obj,weap);
 	}
 
@@ -867,7 +874,7 @@ void object_dispose_single(int idx)
 		// dispose weapons
 
 	for (n=0;n!=max_weap_list;n++) {
-		dispose_weapon(obj,n);
+		weapon_dispose(obj,n);
 	}
 
 		// clear scripts and models

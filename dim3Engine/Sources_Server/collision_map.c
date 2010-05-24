@@ -400,9 +400,10 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
 
 bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 {
-	weapon_type				*weap;
 	d3pnt					spt,ept,hpt;
 	ray_trace_contact_type	contact;
+	obj_type				*obj;
+	weapon_type				*weap;
 	proj_setup_type			*proj_setup;
 
 		// setup ray trace
@@ -423,9 +424,10 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 		contact.obj.ignore_uid=-1;
 	}
 	
-	weap=weapon_find_uid(proj->weap_uid);
-
+	obj=server.obj_list.objs[proj->obj_idx];
+	weap=obj->weap_list.weaps[proj->weap_idx];
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
+
 	contact.proj.on=proj_setup->collision;
 	contact.proj.ignore_uid=proj->uid;
 
