@@ -84,7 +84,7 @@ JSValueRef js_obj_motion_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->motion.ang.x));
 }
 
@@ -92,7 +92,7 @@ JSValueRef js_obj_motion_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->motion.ang.y));
 }
 
@@ -100,7 +100,7 @@ JSValueRef js_obj_motion_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->motion.ang.z));
 }
 
@@ -118,7 +118,7 @@ JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef fu
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	
 	obj->turn.ang_to.y=script_value_to_float(cx,argv[0]);
 	if (obj->turn.ang_to.y<0.0f) obj->turn.ang_to.y=360.0f+obj->turn.ang_to.y;
@@ -155,7 +155,7 @@ JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,J
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	object_turn_stop(obj);
 
 	return(script_null_to_value(cx));

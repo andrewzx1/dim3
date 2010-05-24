@@ -378,7 +378,7 @@ void server_run(void)
 
 		// get player object
 		
-	obj=object_find_uid(server.player_obj_uid);
+	obj=object_find_uid(server.player_obj_index);
 	
 		// time to run tasks
 

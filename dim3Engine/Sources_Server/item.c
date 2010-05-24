@@ -77,7 +77,7 @@ void item_pickup_check(obj_type *obj)
 		item_obj=server.obj_list.objs[n];
 		if (item_obj==NULL) continue;
     
-		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->uid==obj->uid)) continue;
+		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->index==obj->index)) continue;
 
             // check bounds
 			
@@ -86,12 +86,12 @@ void item_pickup_check(obj_type *obj)
 				// setup pickup for items
 				
 			item_obj->pickup.item_uid=-1;
-			item_obj->pickup.obj_uid=obj->uid;
+			item_obj->pickup.obj_uid=obj->index;
 			item_obj->pickup.canceled=FALSE;
 
 				// setup pickup for objects
 
-			obj->pickup.item_uid=item_obj->uid;
+			obj->pickup.item_uid=item_obj->index;
 			obj->pickup.obj_uid=-1;
 
 				// need to setup any network messages
@@ -104,10 +104,7 @@ void item_pickup_check(obj_type *obj)
 
 			scripts_post_event_console(&item_obj->attach,sd_event_pickup,0,0);
 			
-			if (item_obj->pickup.canceled) {			// pickup was canceled by script
-				item_obj++;
-				continue;
-			}
+			if (item_obj->pickup.canceled) continue;			// pickup was canceled by script
 		
 				// send pickup event to object
 				

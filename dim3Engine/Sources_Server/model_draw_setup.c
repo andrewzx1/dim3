@@ -133,10 +133,10 @@ void model_draw_setup_object(obj_type *obj)
 	
 		// connection
 
-	draw->connect.obj_uid=obj->uid;
+	draw->connect.obj_uid=obj->index;
 	draw->connect.weap_uid=-1;
 	draw->connect.proj_uid=-1;
-	draw->connect.net_sound=(obj->uid==server.player_obj_uid) || (obj->type==object_type_bot_multiplayer);
+	draw->connect.net_sound=(obj->index==server.player_obj_index) || (obj->type==object_type_bot_multiplayer);
 	draw->connect.net_remote_uid=obj->remote.uid;
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;
@@ -245,7 +245,7 @@ void model_draw_setup_projectile(proj_type *proj)
 	
 		// vector
 		
-	draw->connect.obj_uid=proj->obj_uid;
+	draw->connect.obj_uid=proj->obj_index;
 	draw->connect.weap_uid=proj->weap_uid;
 	draw->connect.proj_uid=proj->uid;
 	draw->connect.net_sound=FALSE;
@@ -385,7 +385,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		// these calcs are sort of loose, but will work
 		// good for lighting and normals
 
-	draw->no_rot.on=((camera.mode==cv_fpp) && (obj->uid==camera.obj_uid));
+	draw->no_rot.on=((camera.mode==cv_fpp) && (obj->index==camera.obj_idx));
 
 	if (draw->no_rot.on) {
 		draw->no_rot.center.x=obj->pnt.x;
@@ -398,10 +398,10 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 
 		// connection
 
-	draw->connect.obj_uid=obj->uid;
-	draw->connect.weap_uid=weap->uid;
+	draw->connect.obj_uid=obj->index;
+	draw->connect.weap_uid=weap->index;
 	draw->connect.proj_uid=-1;
-	draw->connect.net_sound=(obj->uid==server.player_obj_uid);
+	draw->connect.net_sound=(obj->index==server.player_obj_index);
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;
 	draw->connect.motion_vct.z=obj->motion.vct.z;

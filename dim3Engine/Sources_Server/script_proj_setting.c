@@ -117,7 +117,7 @@ JSValueRef js_proj_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(cx,proj->obj_uid));
+	return(script_int_to_value(cx,proj->obj_index));
 }
 
 JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -128,7 +128,7 @@ JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx,JSObjectRef j_obj,JSSt
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_int_to_value(cx,-1));
 
-	obj=object_find_uid(proj->obj_uid);
+	obj=object_find_uid(proj->obj_index);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->team_idx));

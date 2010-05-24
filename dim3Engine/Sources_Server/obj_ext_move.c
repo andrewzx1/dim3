@@ -233,9 +233,9 @@ void object_move_with_mesh(int mesh_idx,int xmove,int zmove)
 	int			n,x,z,cnt;
 	obj_type	*obj;
 
-	for (n=0;n!=server.count.obj;n++) {
-
-		obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 			// if we are standing on mesh, move
 			// with mesh
@@ -287,9 +287,9 @@ void object_rotate_with_mesh(int mesh_idx,float y)
 
 		// check objects interacting with mesh
 
-	for (n=0;n!=server.count.obj;n++) {
-
-		obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 			// if we are standing on mesh, turn
 			// with mesh
@@ -399,13 +399,13 @@ void object_move_with_standing_object(obj_type *obj,int xmove,int zmove)
 	int			n;
 	obj_type	*obj_check;
 
-	obj_check=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
-		if (obj_check->stand_obj_uid==obj->uid) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj_check=server.obj_list.objs[n];
+		if (obj_check==NULL) continue;
+
+		if (obj_check->stand_obj_uid==obj->index) {
 			if (!obj_check->suspend) object_move_with_move(obj_check,xmove,zmove);
 		}
-		obj_check++;
 	}
 }
 
@@ -423,12 +423,12 @@ void object_rotate_with_standing_object(obj_type *obj,float y)
 
 		// turn any object standing on it
 	
-	obj_check=server.objs;
-	
-	for (n=0;n!=server.count.obj;n++) {
-		if (obj_check->stand_obj_uid==obj->uid) {
+	for (n=0;n!=max_obj_list;n++) {
+		obj_check=server.obj_list.objs[n];
+		if (obj_check==NULL) continue;
+
+		if (obj_check->stand_obj_uid==obj->index) {
 			if (!obj_check->suspend) object_turn_with_turn(obj_check,&mpt,y,1.0f);
 		}
-		obj_check++;
 	}
 }

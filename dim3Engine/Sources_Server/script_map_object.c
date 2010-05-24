@@ -159,7 +159,7 @@ JSValueRef js_map_object_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	obj=object_find_name(name);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 
-	return(script_int_to_value(cx,obj->uid));
+	return(script_int_to_value(cx,obj->index));
 }
 
 /* =======================================================
@@ -172,7 +172,7 @@ JSValueRef js_map_object_find_player_func(JSContextRef cx,JSObjectRef func,JSObj
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(cx,server.player_obj_uid));
+	return(script_int_to_value(cx,server.player_obj_index));
 }
 
 JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -188,7 +188,7 @@ JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) uids[cnt++]=obj->uid;
+		if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) uids[cnt++]=obj->index;
 	}
 
 	if (cnt==0) return(script_null_to_value(cx));
@@ -250,7 +250,7 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	obj=object_find_nearest(&pt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(cx,obj->uid));
+	return(script_int_to_value(cx,obj->index));
 }
 
 JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -301,7 +301,7 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	obj=object_find_nearest(&pt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,script_value_to_int(cx,argv[9]));
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(cx,obj->uid));
+	return(script_int_to_value(cx,obj->index));
 }
 
 JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -336,7 +336,7 @@ JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JS
 	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(cx,obj->uid));
+	return(script_int_to_value(cx,obj->index));
 }
 
 JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -371,7 +371,7 @@ JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSOb
 	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,script_value_to_int(cx,argv[7]));
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(cx,obj->uid));
+	return(script_int_to_value(cx,obj->index));
 }
 
 JSValueRef js_map_object_nearest_remote_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -406,7 +406,7 @@ JSValueRef js_map_object_nearest_remote_player_func(JSContextRef cx,JSObjectRef 
 	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,TRUE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(cx,obj->uid));
+	return(script_int_to_value(cx,obj->index));
 }
 
 JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -445,7 +445,7 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj=object_find_nearest(&pt,NULL,-1,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
-	return(script_int_to_value(cx,obj->uid));
+	return(script_int_to_value(cx,obj->index));
 }
 
 /* =======================================================
@@ -1006,7 +1006,7 @@ JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 JSValueRef js_map_object_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				uid;
+	int				idx;
 	char			err_str[256];
 	obj_type		*obj;
 
@@ -1015,9 +1015,9 @@ JSValueRef js_map_object_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 
-	uid=obj->uid;
+	idx=obj->index;
 
-	if (!object_script_remove(uid,err_str)) {
+	if (!object_script_remove(idx,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 

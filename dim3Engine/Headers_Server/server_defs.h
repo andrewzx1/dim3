@@ -44,6 +44,16 @@ and can be sold or given away.
 #define gs_score_limit							12
 
 //
+// lists
+//
+
+#define max_model_list							128
+
+#define max_obj_list							1024
+#define max_weap_list							16
+#define max_proj_setup_list						8
+
+//
 // maximums
 //
 
@@ -52,9 +62,6 @@ and can be sold or given away.
 #define max_decal								128
 
 #define max_weapon								512
-#define max_proj_setup							512
-
-#define max_delayed_obj_spawn					64
 
 #define max_particle							256
 #define max_particle_count						256
@@ -70,13 +77,6 @@ and can be sold or given away.
 #define max_object_bit_mask						32
 
 #define max_model_light_cache_index				8
-
-//
-// lists
-//
-
-#define max_obj_list							1024
-#define max_model_list							128
 
 //
 // binding types
@@ -231,105 +231,113 @@ and can be sold or given away.
 //
  
 typedef struct		{
-						int								tick,mode,
-														animate_idx,animate_next_idx,pose_move_idx,
-														smooth_animate_idx,smooth_pose_move_idx;
+						int						tick,mode,
+												animate_idx,animate_next_idx,pose_move_idx,
+												smooth_animate_idx,smooth_pose_move_idx;
 					} model_draw_animation;
 
 typedef struct		{
-						int								start_tick,tick;
-						float							start_alpha,end_alpha;
-						bool							on;
+						int						start_tick,tick;
+						float					start_alpha,end_alpha;
+						bool					on;
 					} model_draw_fade;
 
 typedef struct		{
-						int								type,direction,intensity;
-						float							exponent;
-						bool							on;
-						d3col							col;
+						int						type,direction,intensity;
+						float					exponent;
+						bool					on;
+						d3col					col;
 					} model_draw_light;
 
 typedef struct		{
-						int								idx,
-														min_dist,max_dist,
-														min_size,max_size;
-						float							min_alpha,max_alpha;
-						bool							on,no_clip_object,no_clip_self;
+						int						idx,
+												min_dist,max_dist,
+												min_size,max_size;
+						float					min_alpha,max_alpha;
+						bool					on,no_clip_object,no_clip_self;
 					} model_draw_halo;
 					
 typedef struct		{
-						int								bone_idx;
-						float							resize;
-						d3vct							mov,rot;
+						int						bone_idx;
+						float					resize;
+						d3vct					mov,rot;
 					} model_draw_dynamic_bone;
 
 typedef struct		{
-						int								texture_idx,high,
-														px[4],pz[4];
-						float							alpha;
-						bool							on;
-						d3pnt							pnt;
-						d3ang							ang;
+						int						texture_idx,high,
+												px[4],pz[4];
+						float					alpha;
+						bool					on;
+						d3pnt					pnt;
+						d3ang					ang;
 					} model_draw_shadow;
 
 typedef struct		{
-						int								obj_uid,weap_uid,proj_uid,
-														net_remote_uid;
-						bool							net_sound;
-						d3vct							motion_vct;
+						int						obj_uid,weap_uid,proj_uid,
+												net_remote_uid;
+						bool					net_sound;
+						d3vct					motion_vct;
 					} model_draw_connect;
 
 typedef struct		{
-						bool							on;
-						d3pnt							center;
-						d3ang							ang;
+						bool					on;
+						d3pnt					center;
+						d3ang					ang;
 					} model_draw_no_rot;
 
 typedef struct		{
-						int								size;
-						float							fade;
-						bool							on;
-						d3pnt							pnt,proj_pnt;
+						int						size;
+						float					fade;
+						bool					on;
+						d3pnt					pnt,proj_pnt;
 					} model_draw_remote_name;
 
 typedef struct		{
-						int								start_tick,fade_in_msec,fade_life_msec,fade_out_msec;
-						float							alpha;
-						bool							on;
+						int						start_tick,fade_in_msec,fade_life_msec,fade_out_msec;
+						float					alpha;
+						bool					on;
 					} model_draw_mesh_fade;
 
 typedef struct		{
-						int								count,
-														indexes[max_model_light_cache_index];
+						int						count,
+												indexes[max_model_light_cache_index];
 					} model_light_cache;
 
 typedef struct		{
-						int								model_idx,spin_tick,
-														mesh_mask,render_mesh_mask,
-														script_animation_idx,
-														script_light_idx,script_halo_idx;
-						char							name[name_str_len];
-						float							alpha,resize,normal[3];
-						double							draw_dist;
-						bool							on,flip_x,has_opaque,has_transparent,has_glow,
-														bounce,face_forward,player,built_vertex_list;
-						unsigned char					cur_texture_frame[max_model_texture];
-						d3pnt							pnt,size,center,offset;
-						d3ang							rot,spin;
-						d3col							tint;
-						model_draw_connect				connect;
-						model_draw_light				lights[max_model_light];
-						model_draw_halo					halos[max_model_halo];
-						model_draw_animation			animations[max_model_blend_animation];
-						model_draw_mesh_fade			mesh_fades[max_model_mesh];
-						model_draw_dynamic_bone			dynamic_bones[max_model_dynamic_bone];
-						model_draw_shadow				shadow;
-						model_draw_fade					fade;
-						model_draw_no_rot				no_rot;
-						model_draw_remote_name			remote_name;
-						model_light_cache				light_cache;
-						model_draw_setup				setup;
+						int						model_idx,spin_tick,
+												mesh_mask,render_mesh_mask,
+												script_animation_idx,
+												script_light_idx,script_halo_idx;
+						char					name[name_str_len];
+						float					alpha,resize,normal[3];
+						double					draw_dist;
+						bool					on,flip_x,has_opaque,has_transparent,has_glow,
+												bounce,face_forward,player,built_vertex_list;
+						unsigned char			cur_texture_frame[max_model_texture];
+						d3pnt					pnt,size,center,offset;
+						d3ang					rot,spin;
+						d3col					tint;
+						model_draw_connect		connect;
+						model_draw_light		lights[max_model_light];
+						model_draw_halo			halos[max_model_halo];
+						model_draw_animation	animations[max_model_blend_animation];
+						model_draw_mesh_fade	mesh_fades[max_model_mesh];
+						model_draw_dynamic_bone	dynamic_bones[max_model_dynamic_bone];
+						model_draw_shadow		shadow;
+						model_draw_fade			fade;
+						model_draw_no_rot		no_rot;
+						model_draw_remote_name	remote_name;
+						model_light_cache		light_cache;
+						model_draw_setup		setup;
 					} model_draw;
+
+//
+// model list
+//
+
+typedef struct		{
+						model_type*				models[max_model_list];
+					} model_list_type;
 
 //
 // map polygon pointer
@@ -338,20 +346,6 @@ typedef struct		{
 typedef struct		{
 						int						mesh_idx,poly_idx;
 					} poly_pointer_type;
-
-//
-// delayed spawn structure
-//
-
-typedef struct		{
-						int						uid,type;
-						bool					dispose,hide;
-						char					name[name_str_len],
-												script[file_str_len],
-												params[param_str_len];
-						d3pnt					pnt;
-						d3ang					ang;
-					} delayed_obj_spawn_type;
 
 //
 // object sounds
@@ -719,8 +713,10 @@ typedef struct		{
 						bool					on;
 					} proj_setup_mark_type;
 			
+			
+			// supergumba -- weap_uid to weap_index
 typedef struct		{
-						int						uid,weap_uid,obj_uid,script_uid,
+						int						index,obj_index,weap_uid,script_uid,
 												damage,decel_grace;
 						char					name[name_str_len];
 						float					speed,decel_speed,decel_min_speed,
@@ -735,6 +731,10 @@ typedef struct		{
 						proj_setup_mark_type	mark;
 						attach_type				attach;
 					} proj_setup_type;
+
+typedef struct		{
+						proj_setup_type*		proj_setups[max_proj_setup_list];
+					} proj_setup_list_type;
 
 //
 // weapons
@@ -808,7 +808,7 @@ typedef struct		{
 					} weap_dual_type;
 					
 typedef struct		{
-						int						uid,obj_uid;
+						int						index,obj_index;
 						char					name[name_str_len];
 						bool					hidden,fail_in_liquid;
 						model_draw				draw,draw_dual;
@@ -823,15 +823,20 @@ typedef struct		{
 						weap_zoom_type			zoom;
 						weap_hand_type			hand;
 						weap_proj_type			proj;
+						proj_setup_list_type	proj_setup_list;
 						attach_type				attach;
 					} weapon_type;
-					
+
+typedef struct		{
+						weapon_type*			weaps[max_weap_list];
+					} weapon_list_type;
+
 //
 // objects
 //
 
 typedef struct		{
-						int						index,uid,type,bind,next_spawn_sub_event,
+						int						index,type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
 												count,input_mode,air_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
@@ -888,14 +893,19 @@ typedef struct		{
 						obj_score				score;
 						obj_scenery				scenery;
 						obj_debug				debug;
+						weapon_list_type		weap_list;
 					} obj_type;
+
+typedef struct		{
+						obj_type*				objs[max_obj_list];
+					} obj_list_type;
 
 //
 // projectiles
 //
 
 typedef struct		{
-						int						uid,obj_uid,weap_uid,proj_setup_uid,
+						int						uid,obj_index,weap_uid,proj_setup_index,
 												count,parent_grace,decel_grace,
 												start_tick;
 						float					speed,decel_speed,decel_min_speed,gravity_add;
@@ -1143,7 +1153,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						obj,proj,weapon,proj_setup;
+						int						proj;		// supergumba -- move this to list!
 					} server_uid_type;
 
 //
@@ -1151,22 +1161,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						weapon,proj_setup,proj,
-												effect,decal,
+						int						proj,effect,decal,
 												particle,ring,halo,mark,crosshair;
 					} server_count_type;
-
-//
-// Object Lists
-//
-
-typedef struct		{
-						obj_type*				objs[max_obj_list];
-					} server_obj_list;
-
-typedef struct		{
-						model_type*				models[max_model_list];
-					} server_model_list;
 
 //
 // Main Server Structure
@@ -1174,14 +1171,13 @@ typedef struct		{
  
  typedef struct		{
 						int						state,next_state,last_state,
-												skill,player_obj_uid;
+												skill,player_obj_index;
 						bool					game_open,map_open,map_change,skip_media;
 						server_time_type		time;
 						server_uid_type			uid;
 						server_count_type		count;
-					//	obj_type				*objs;		// supergumba
-						weapon_type				*weapons;
-						proj_setup_type			*proj_setups;
+						obj_list_type			obj_list;
+						model_list_type			model_list;
 						proj_type				*projs;
 						effect_type				*effects;
 						decal_type				*decals;
@@ -1190,8 +1186,6 @@ typedef struct		{
 						halo_type				*halos;
 						mark_type				*marks;
 						crosshair_type			*crosshairs;
-						server_obj_list			obj_list;
-						server_model_list		model_list;
 					} server_type;
 
 

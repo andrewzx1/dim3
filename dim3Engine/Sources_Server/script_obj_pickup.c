@@ -103,7 +103,7 @@ JSValueRef js_obj_pickup_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_int_to_value(cx,obj->pickup.obj_uid));
 }
 
@@ -111,7 +111,7 @@ JSValueRef js_obj_pickup_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj,*pickup_obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 	pickup_obj=object_find_uid(obj->pickup.obj_uid);
 	if (pickup_obj==NULL) return(script_null_to_value(cx));
@@ -123,15 +123,15 @@ JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
-	return(script_bool_to_value(cx,obj->pickup.obj_uid==server.player_obj_uid));
+	obj=object_find_uid(js.attach.obj_index);
+	return(script_bool_to_value(cx,obj->pickup.obj_uid==server.player_obj_index));
 }
 
 JSValueRef js_obj_pickup_get_itemId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_int_to_value(cx,obj->pickup.item_uid));
 }
 
@@ -139,7 +139,7 @@ JSValueRef js_obj_pickup_get_itemName(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj,*pickup_item;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 	pickup_item=object_find_uid(obj->pickup.item_uid);
 	if (pickup_item==NULL) return(script_null_to_value(cx));
@@ -285,7 +285,7 @@ JSValueRef js_obj_pickup_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	obj->pickup.canceled=TRUE;
 	
 	return(script_null_to_value(cx));

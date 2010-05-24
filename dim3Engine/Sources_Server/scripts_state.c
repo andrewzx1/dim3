@@ -49,7 +49,7 @@ inline void script_state_save_single(attach_type *attach)
 
 void script_state_save(void)
 {
-	int				n;
+	int				n,k,i;
 	obj_type		*obj;
 	weapon_type		*weap;
 	proj_setup_type	*proj_setup;
@@ -62,18 +62,20 @@ void script_state_save(void)
 		if (obj==NULL) continue;
 
 		script_state_save_single(&obj->attach);
-	}
-	
-	weap=server.weapons;
-	for (n=0;n!=server.count.weapon;n++) {
-		script_state_save_single(&weap->attach);
-		weap++;
-	}
-	
-	proj_setup=server.proj_setups;
-	for (n=0;n!=server.count.proj_setup;n++) {
-		script_state_save_single(&proj_setup->attach);
-		proj_setup++;
+
+		for (k=0;k!=max_weap_list;k++) {
+			weap=obj->weap_list.weaps[k];
+			if (weap==NULL) continue;
+			
+			script_state_save_single(&weap->attach);
+		
+			for (i=0;i!=max_proj_setup_list;i++) {
+				proj_setup=weap->proj_setup_list.proj_setups[i];
+				if (proj_setup==NULL) continue;
+				
+				script_state_save_single(&proj_setup->attach);
+			}
+		}
 	}
 }
 
@@ -92,7 +94,7 @@ inline void script_state_load_single(attach_type *attach)
 
 void script_state_load(void)
 {
-	int				n;
+	int				n,k,i;
 	obj_type		*obj;
 	weapon_type		*weap;
 	proj_setup_type	*proj_setup;
@@ -105,18 +107,20 @@ void script_state_load(void)
 		if (obj==NULL) continue;
 
 		script_state_load_single(&obj->attach);
-	}
-	
-	weap=server.weapons;
-	for (n=0;n!=server.count.weapon;n++) {
-		script_state_load_single(&weap->attach);
-		weap++;
-	}
-	
-	proj_setup=server.proj_setups;
-	for (n=0;n!=server.count.proj_setup;n++) {
-		script_state_load_single(&proj_setup->attach);
-		proj_setup++;
+
+		for (k=0;k!=max_weap_list;k++) {
+			weap=obj->weap_list.weaps[k];
+			if (weap==NULL) continue;
+			
+			script_state_load_single(&weap->attach);
+		
+			for (i=0;i!=max_proj_setup_list;i++) {
+				proj_setup=weap->proj_setup_list.proj_setups[i];
+				if (proj_setup==NULL) continue;
+				
+				script_state_load_single(&proj_setup->attach);
+			}
+		}
 	}
 }
 

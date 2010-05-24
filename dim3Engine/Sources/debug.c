@@ -248,7 +248,7 @@ void debug_dump(void)
 		if (obj==NULL) continue;
 
 		debug_int_space(n,6);
-		debug_int_space(obj->uid,4);
+		debug_int_space(obj->index,4);
 		debug_space(obj->name,15);
 		debug_space("",30);
 		debug_space(object_type_str[obj->type],15);
@@ -273,31 +273,24 @@ void debug_dump(void)
 		
 			// object weapons
 			
-		weap=server.weapons;
-		
-		for (k=0;k!=server.count.weapon;k++) {
-			if (weap->obj_uid==obj->uid) {
-			
+		for (k=0;k!=max_weap_list;k++) {
+			weap=obj->weap_list.weaps[k];
+			if (weap!=NULL) {
 				debug_space("",25);
 				debug_space(weap->name,15);
 				debug_return();
 				
 					// weapon projectiles
-				
-				proj_setup=server.proj_setups;
-				
-				for (i=0;i!=server.count.proj_setup;i++) {
-					if ((proj_setup->obj_uid==obj->uid) && (proj_setup->weap_uid==weap->uid)) {
+					
+				for (i=0;i!=max_proj_setup_list;i++) {
+					proj_setup=weap->proj_setup_list.proj_setups[i];
+					if (proj_setup!=NULL) {
 						debug_space("",40);
 						debug_space(proj_setup->name,15);
 						debug_return();
 					}
-					
-					proj_setup++;
 				}
 			}
-			
-			weap++;
 		}
 	}
 	
@@ -359,9 +352,9 @@ void debug_dump(void)
 	proj=server.projs;
 	
 	for ((i=0);(i!=server.count.proj);i++) {
-		obj=object_find_uid(proj->obj_uid);
+		obj=object_find_uid(proj->obj_index);
 		weap=weapon_find_uid(proj->weap_uid);
-		proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
+		proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 		
 		debug_space(proj_setup->name,20);
 		debug_space(obj->name,20);

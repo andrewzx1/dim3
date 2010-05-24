@@ -92,11 +92,11 @@ weapon_type* weapon_find_name(obj_type *obj,char *name)
 	int				n,obj_uid;
 	weapon_type		*weap;
 
-	obj_uid=obj->uid;
+	obj_uid=obj->index;
 	weap=server.weapons;
 	
 	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_uid==obj_uid) {
+		if (weap->obj_index==obj_uid) {
 			if (strcasecmp(weap->name,name)==0) return(weap);
 		}
 		weap++;
@@ -115,12 +115,12 @@ weapon_type* weapon_find_offset(obj_type *obj,int offset)
 	int				n,obj_uid;
 	weapon_type		*weap;
 
-	obj_uid=obj->uid;
+	obj_uid=obj->index;
 	weap=server.weapons;
 	
 	for (n=0;n!=server.count.weapon;n++) {
 	
-		if (weap->obj_uid==obj_uid) {
+		if (weap->obj_index==obj_uid) {
 			offset--;
 			if (offset<0) return(weap);
 		}
@@ -138,11 +138,11 @@ int weapon_held_count(obj_type *obj)
 
 	count=0;
 	
-	obj_uid=obj->uid;
+	obj_uid=obj->index;
 	weap=server.weapons;
 	
 	for (n=0;n!=server.count.weapon;n++) {
-		if ((weap->obj_uid==obj_uid) && (!weap->hidden)) count++;		
+		if ((weap->obj_index==obj_uid) && (!weap->hidden)) count++;		
 		weap++;
 	}
 	
@@ -168,39 +168,40 @@ void weapon_clear_ammo(weap_ammo_type *ammo,bool use)
 
 /* =======================================================
 
-      Add Weapon to List
+      Create and Dispose Weapons
       
 ======================================================= */
 
-bool weapon_create(obj_type *obj,char *name)
+bool weapon_add(obj_type *obj,char *name)
 {
-	weapon_type		*weap,*ptr;
+	int				n,idx;
+	char			err_str[256];
+	bool			ok;
+	weapon_type		*weap;
 	
-		// only allow a maximum number of weapons
-
-	if (server.count.weapon>=max_weapon) return(FALSE);
+		// find a free weapon
+		
+	idx=-1;
+	
+	for (n=0;n!=max_weap_list;n++) {
+		if (obj->weap_list.weaps[n]==NULL) {
+			idx=n;
+			break;
+		}
+	}
+	
+	if (idx==-1) return(FALSE);
 
 		// create memory for new weapon
-
-	ptr=(weapon_type*)malloc(sizeof(weapon_type)*(server.count.weapon+1));
-	if (ptr==NULL) return(FALSE);
-
-	if (server.weapons!=NULL) {
-		memmove(ptr,server.weapons,(sizeof(weapon_type)*server.count.weapon));
-		free(server.weapons);
-	}
-
-	server.weapons=ptr;
-
-	weap=&server.weapons[server.count.weapon];
-	server.count.weapon++;
+		
+	weap=(weapon_type*)malloc(sizeof(weapon_type));
+	if (weap==NULL) return(FALSE);
 
 		// initialize weapon
 	
-	weap->uid=server.uid.weapon;
-	server.uid.weapon++;
+	weap->index=idx;
 	
-	weap->obj_uid=obj->uid;
+	weap->obj_index=obj->index;
 	
 	weap->hidden=FALSE;
 	weap->fail_in_liquid=FALSE;
@@ -302,9 +303,82 @@ bool weapon_create(obj_type *obj,char *name)
 	object_clear_draw(&weap->draw);
 	object_clear_draw(&weap->draw_dual);
 	
+		// add to list
+		
+	obj->weap_list.weaps[idx]=weap;
+	
+		// clear projectile setups
+		
+	for (n=0;n!=max_proj_setup_list;n++) {
+		weap->proj_setup_list.proj_setups[n]=NULL;
+	}
+	
+		// the scripts
+		
 	weap->attach.script_uid=-1;
+	weap->attach.thing_type=thing_type_weapon;
+	weap->attach.obj_index=obj->index;
+	weap->attach.weap_uid=weap->index;		// supergumba -- needs to be index
+	weap->attach.proj_uid=-1;
+	weap->attach.proj_setup_index=-1;
+	
+	scripts_clear_attach_data(&weap->attach);
+
+	ok=FALSE;
+	
+	if (scripts_add(&weap->attach,"Weapons",weap->name,NULL,err_str)) {
+		ok=model_draw_load(&weap->draw,"Weapon",weap->name,err_str);
+	}
+	
+		// there was an error
+		// clean up and remove this weapon and
+		// all it's projectile setups
+		
+	if (!ok) {
+		console_add_error(err_str);
+		
+		for (n=0;n!=max_proj_setup_list;n++) {
+			proj_setup_dispose(weap,n);
+		}
+	
+		free(proj_setup);
+		obj->weap_list.weaps[idx]=NULL;
+		
+		return(FALSE);
+	}
+
+		// duplicate draw settings to dual
+		
+	memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));
+	
+	weapon_reset_ammo(weap);
 	
 	return(TRUE);
+}
+
+void weapon_dispose(obj_type *obj,int idx)
+{
+	int				n;
+	weapon_type		*weap;
+
+	weap=obj->weap_list.weaps[idx];
+	if (weap==NULL) return;
+	
+		// clear projectile setups
+		
+	for (n=0;n!=max_proj_setup_list;n++) {
+		proj_setup_dispose(weap,n);
+	}
+
+		// clear scripts and models
+
+	scripts_dispose(weap->attach.script_uid);
+	model_draw_dispose(&weap->draw);
+	
+		// free and empty from list
+		
+	free(weap);
+	obj->weap_list.weaps[idx]=NULL;
 }
 
 /* =======================================================
@@ -322,83 +396,3 @@ void weapon_attach_zoom_mask(weapon_type *weap)
 {
 	weap->zoom.mask_idx=crosshair_find(weap->zoom.mask_name);
 }
-
-/* =======================================================
-
-      Start/Dispose Weapons
-      
-======================================================= */
-
-bool weapon_start(weapon_type *weap)
-{
-	char		err_str[256];
-
-	weap->attach.thing_type=thing_type_weapon;
-	weap->attach.thing_uid=weap->uid;
-	
-	scripts_clear_attach_data(&weap->attach);
-
-	if (!scripts_add(&weap->attach,"Weapons",weap->name,NULL,err_str)) {
-		console_add_error(err_str);
-		return(FALSE);
-	}
-
-	if (!model_draw_load(&weap->draw,"Weapon",weap->name,err_str)) {
-		console_add_error(err_str);
-		return(FALSE);
-	}
-
-	memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));		// make sure dual is setup the same
-	
-	weapon_reset_ammo(weap);
-
-	return(TRUE);
-}
-
-void weapon_dispose(int idx)
-{
-	weapon_type		*weap,*ptr;
-
-	weap=&server.weapons[idx];
-
-		// clear weapon
-
-	scripts_dispose(weap->attach.script_uid);
-	model_draw_dispose(&weap->draw);
-
-		// is the list completely empty?
-
-	if (server.count.weapon==1) {
-		free(server.weapons);
-		server.weapons=NULL;
-		server.count.weapon=0;
-		return;
-	}
-
-		// if for some reason we can't create new
-		// memory, just shuffle the list and wait
-		// until next time
-
-	ptr=(weapon_type*)malloc(sizeof(weapon_type)*(server.count.weapon-1));
-
-	if (ptr==NULL) {
-		if (idx<(server.count.weapon-1)) {
-			memmove(&server.weapons[idx],&server.weapons[idx+1],(sizeof(weapon_type)*((server.count.weapon-idx)-1)));
-		}
-	}
-	else {
-
-		if (idx>0) {
-			memmove(ptr,server.weapons,(sizeof(weapon_type)*idx));
-		}
-		if (idx<(server.count.weapon-1)) {
-			memmove(&ptr[idx],&server.weapons[idx+1],(sizeof(weapon_type)*((server.count.weapon-idx)-1)));
-		}
-
-		free(server.weapons);
-		server.weapons=ptr;
-	}
-	
-	server.count.weapon--;
-}
-

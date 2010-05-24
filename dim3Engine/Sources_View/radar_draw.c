@@ -65,7 +65,7 @@ void radar_draw(void)
 	
 		// get player object (center of radar)
 		
-	player_obj=object_find_uid(server.player_obj_uid);
+	player_obj=object_find_uid(server.player_obj_index);
 
 		// set up view
 		
@@ -132,7 +132,7 @@ void radar_draw(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (obj->uid==server.player_obj_uid) continue;
+		if (obj->index==server.player_obj_index) continue;
 		if ((obj->hidden) || (!obj->radar.on) || (obj->radar.icon_idx==-1)) continue;
 			
 			// get distance
@@ -220,8 +220,6 @@ void radar_draw(void)
 		glTexCoord2f(0.0f,1.0f);
 		glVertex2i(px[3],py[3]);
 		glEnd();
-
-		obj++;
 	}
 
 	gl_texture_simple_end();

@@ -67,7 +67,7 @@ typedef struct		{
 					
 typedef struct		{
 						int						mode,chase_size,chase_distance,
-												obj_uid;
+												obj_idx;
 						float					chase_track_speed;
 						bool					static_follow;
 						d3pnt					pnt,chase_offset;

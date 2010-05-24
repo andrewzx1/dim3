@@ -323,11 +323,11 @@ JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
-
-	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(proj_setup->weap_uid);
+	weap=weapon_find_uid(proj->weap_uid);
+
+	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 		
 	to_obj=object_find_uid(weap->target.obj_uid);
 	if (to_obj==NULL) return(script_null_to_value(cx));

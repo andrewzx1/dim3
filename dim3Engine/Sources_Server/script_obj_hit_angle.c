@@ -78,7 +78,7 @@ JSValueRef js_obj_hit_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->hit.ang.x));
 }
 
@@ -86,7 +86,7 @@ JSValueRef js_obj_hit_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->hit.ang.y));
 }
 
@@ -94,7 +94,7 @@ JSValueRef js_obj_hit_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->hit.ang.z));
 }
 

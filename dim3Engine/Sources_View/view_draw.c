@@ -518,7 +518,7 @@ void view_draw(void)
 
 		// get player object and held weapon
 		
-	obj=object_find_uid(server.player_obj_uid);
+	obj=object_find_uid(server.player_obj_index);
 	weap=weapon_find_current(obj);
 
 		// camera render
@@ -527,7 +527,7 @@ void view_draw(void)
 	
 		// set view camera
 	
-	camera_obj=object_find_uid(camera.obj_uid);
+	camera_obj=object_find_uid(camera.obj_idx);
 	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang);
 
 	view.render->camera.fov=camera.plane.fov;

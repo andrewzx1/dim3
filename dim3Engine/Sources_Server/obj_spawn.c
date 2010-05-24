@@ -69,7 +69,7 @@ int object_choose_spawn_spot(obj_type *obj,char *err_str)
 			// if this object is the player, then spawn
 			// at the player start
 		
-		if (obj->uid==server.player_obj_uid) {
+		if (obj->index==server.player_obj_index) {
 			spot_idx=map_find_random_spot(&map,map.info.player_start_name,spot_type_player);
 			if (spot_idx!=-1) return(spot_idx);
 			
@@ -195,7 +195,7 @@ bool object_spawn(obj_type *obj,char *err_str)
 		// handle any repositioning
 		// only players and multiplayer bots can reposition
 		
-	if ((obj->uid==server.player_obj_uid) || (obj->type==object_type_bot_multiplayer)) {	
+	if ((obj->index==server.player_obj_index) || (obj->type==object_type_bot_multiplayer)) {	
 		if (!object_spawn_position(obj,sub_event,err_str)) return(FALSE);
 	}
 	
@@ -218,7 +218,7 @@ bool object_spawn(obj_type *obj,char *err_str)
 		// machines
 
 	if (net_setup.mode!=net_mode_none) {
-		if (obj->uid==server.player_obj_uid) net_client_send_spawn(obj,sub_event);
+		if (obj->index==server.player_obj_index) net_client_send_spawn(obj,sub_event);
 	}
 	
 		// can't respawn until we die
@@ -282,7 +282,7 @@ int game_player_create(char *err_str)
 {
 	int			uid;
 	
-	uid=object_start(NULL,setup.network.name,object_type_player,bt_game,-1,err_str);
+	uid=object_start(NULL,setup.network.name,object_type_player,bt_game,err_str);
 	return(uid);
 }
 
@@ -318,7 +318,7 @@ void game_multiplayer_bots_create(void)
 		strcpy(spot.script,"Bot");
 		spot.params[0]=0x0;
 		
-		uid=object_start(&spot,name,object_type_bot_multiplayer,bt_game,-1,err_str);
+		uid=object_start(&spot,name,object_type_bot_multiplayer,bt_game,err_str);
 	}
 }
 
@@ -376,7 +376,7 @@ void map_objects_create(void)
 
 			// create the object
 
-		object_start(spot,spot->name,spawn_type,bt_map,-1,err_str);
+		object_start(spot,spot->name,spawn_type,bt_map,err_str);
 	}
 }
 

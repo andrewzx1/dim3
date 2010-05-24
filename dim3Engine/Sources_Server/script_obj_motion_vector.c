@@ -109,7 +109,7 @@ JSValueRef js_obj_motion_vector_get_x(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->motion.vct.x));
 }
 
@@ -117,7 +117,7 @@ JSValueRef js_obj_motion_vector_get_y(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->motion.vct.y));
 }
 
@@ -125,7 +125,7 @@ JSValueRef js_obj_motion_vector_get_z(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->motion.vct.z));
 }
 
@@ -141,7 +141,7 @@ JSValueRef js_obj_motion_vector_go_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	object_move_start(obj);
 	
 	return(script_null_to_value(cx));
@@ -153,7 +153,7 @@ JSValueRef js_obj_motion_vector_stop_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	object_move_stop(obj);
 	
 	return(script_null_to_value(cx));
@@ -165,7 +165,7 @@ JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	object_start_jump(obj);
 	
 	return(script_null_to_value(cx));
@@ -183,7 +183,7 @@ JSValueRef js_obj_motion_vector_alter_speed_func(JSContextRef cx,JSObjectRef fun
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
     object_alter_speed(obj,script_value_to_float(cx,argv[0]));
 	
 	return(script_null_to_value(cx));
@@ -195,7 +195,7 @@ JSValueRef js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObjectRef f
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
     object_alter_gravity(obj,script_value_to_float(cx,argv[0]));
 	
 	return(script_null_to_value(cx));
@@ -214,7 +214,7 @@ JSValueRef js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObjectRef fu
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	
 		// get node names
 		
@@ -237,7 +237,7 @@ JSValueRef js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObject
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	if (!object_auto_walk_node_setup(obj,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[2]),err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
@@ -252,7 +252,7 @@ JSValueRef js_obj_motion_vector_walk_to_node_resume_func(JSContextRef cx,JSObjec
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	if (!object_auto_walk_node_resume(obj,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
@@ -267,7 +267,7 @@ JSValueRef js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObje
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	if (!object_auto_walk_node_reverse(obj,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
@@ -282,7 +282,7 @@ JSValueRef js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	if (!object_auto_walk_object_setup(obj,script_value_to_int(cx,argv[0]),FALSE,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
@@ -297,7 +297,7 @@ JSValueRef js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	if (!object_auto_walk_player_setup(obj,FALSE,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
@@ -316,7 +316,7 @@ JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRe
 	pnt.z=script_value_to_int(cx,argv[1]);
 	pnt.y=script_value_to_int(cx,argv[2]);
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	object_auto_walk_position_setup(obj,&pnt);
 	
 	return(script_null_to_value(cx));
@@ -335,7 +335,7 @@ JSValueRef js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	if (!object_auto_walk_object_setup(obj,script_value_to_int(cx,argv[0]),TRUE,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
@@ -350,7 +350,7 @@ JSValueRef js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	if (!object_auto_walk_player_setup(obj,TRUE,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}

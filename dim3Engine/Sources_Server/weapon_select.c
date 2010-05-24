@@ -58,11 +58,11 @@ void weapon_reset_ammo_object(obj_type *obj)
     int					n;
 	weapon_type			*weap;
     
-    weap=server.weapons;
-    
-    for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_uid==obj->uid) weapon_reset_ammo(weap);
-        weap++;
+    for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+
+		weapon_reset_ammo(weap);
     }
 }
 	
@@ -268,7 +268,7 @@ void weapon_switch(obj_type *obj,int dir)
 		
 			// is this the right weapon?
 			
-        if (weap->obj_uid==obj->uid) break;
+        if (weap->obj_index==obj->index) break;
     }
     
     weapon_goto(obj,weap);
@@ -342,12 +342,12 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 
 		if ((min_dist==-1) || (dist<min_dist)) {
 			min_dist=dist;
-			min_uid=chk_obj->uid;
+			min_uid=chk_obj->index;
 		}
 
 			// can't re-select same target
 
-		if (chk_obj->uid==weap->target.obj_uid) continue;
+		if (chk_obj->index==weap->target.obj_uid) continue;
 
 			// next further target?
 
@@ -356,7 +356,7 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 
 		if ((cur_dif==-1) || (dif<cur_dif)) {
 			cur_dif=dif;
-			next_uid=chk_obj->uid;
+			next_uid=chk_obj->index;
 		}
 	}
 
@@ -411,12 +411,12 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 
 		if (dist>max_dist) {
 			max_dist=dist;
-			max_uid=chk_obj->uid;
+			max_uid=chk_obj->index;
 		}
 
 			// can't re-select same target
 
-		if (chk_obj->uid==weap->target.obj_uid) continue;
+		if (chk_obj->index==weap->target.obj_uid) continue;
 
 			// next closest target?
 
@@ -425,7 +425,7 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 
 		if ((cur_dif==-1) || (dif<cur_dif)) {
 			cur_dif=dif;
-			prev_uid=chk_obj->uid;
+			prev_uid=chk_obj->index;
 		}
 	}
 

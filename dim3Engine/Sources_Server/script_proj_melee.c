@@ -268,13 +268,13 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
 	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
+	
+    obj=object_find_uid(proj->obj_index);
+	weap=weapon_find_uid(proj->weap_uid);
 
-	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
+	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-    obj=object_find_uid(proj_setup->obj_uid);
-	weap=weapon_find_uid(proj_setup->weap_uid);
-
 	if (!melee_script_spawn_projectile_model(obj,weap,proj_setup,proj,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
@@ -294,12 +294,12 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
-
-	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-    obj=object_find_uid(proj_setup->obj_uid);
-	weap=weapon_find_uid(proj_setup->weap_uid);
+    obj=object_find_uid(proj->obj_index);
+	weap=weapon_find_uid(proj->weap_uid);
+
+	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
+	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	pt.x=script_value_to_int(cx,argv[0]);
 	pt.z=script_value_to_int(cx,argv[1]);

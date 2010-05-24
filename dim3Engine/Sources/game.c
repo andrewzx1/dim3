@@ -182,7 +182,7 @@ void game_reset(void)
 
 	strcpy(reset.map_name,map.info.name);
 
-	player_obj=object_find_uid(server.player_obj_uid);
+	player_obj=object_find_uid(server.player_obj_index);
 	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_game_reset,net_player_uid_host,(unsigned char*)&reset,sizeof(network_request_game_reset));
 }
 

@@ -278,16 +278,16 @@ int script_get_attached_object_uid(void)
 	weapon_type		*weap;
 	proj_type		*proj;
 
-	if (js.attach.thing_type==thing_type_object) return(js.attach.thing_uid);
+	if (js.attach.thing_type==thing_type_object) return(js.attach.obj_index);
 
 	if (js.attach.thing_type==thing_type_weapon) {
-		weap=weapon_find_uid(js.attach.thing_uid);
-		if (weap!=NULL) return(weap->obj_uid);
+		weap=weapon_find_uid(js.attach.weap_uid);
+		if (weap!=NULL) return(weap->obj_index);
 	}
 
 	if (js.attach.thing_type==thing_type_projectile) {
-		proj=projectile_find_uid(js.attach.thing_uid);
-		if (proj!=NULL) return(proj->obj_uid);
+		proj=projectile_find_uid(js.attach.proj_uid);
+		if (proj!=NULL) return(proj->obj_index);
 	}
 
 	return(-1);
@@ -311,20 +311,21 @@ model_draw* script_find_model_draw(void)
 	switch (js.attach.thing_type) {
 	
 		case thing_type_object:
-			obj=object_find_uid(js.attach.thing_uid);
+			obj=object_find_uid(js.attach.obj_index);
 			return(&obj->draw);
 			
 		case thing_type_weapon:
-			weap=weapon_find_uid(js.attach.thing_uid);
+			weap=weapon_find_uid(js.attach.weap_uid);
 			if (weap->dual.in_dual) return(&weap->draw_dual);
 			return(&weap->draw);
 			
 		case thing_type_projectile_setup:
-			proj_setup=proj_setups_find_uid(js.attach.thing_uid);
+			weap=weapon_find_uid(js.attach.weap_uid);
+			proj_setup=proj_setups_find_uid(weap,js.attach.proj_setup_index);
 			return(&proj_setup->draw);
 			
 		case thing_type_projectile:
-			proj=projectile_find_uid(js.attach.thing_uid);
+			proj=projectile_find_uid(js.attach.proj_uid);
 			return(&proj->draw);
 			
 	}

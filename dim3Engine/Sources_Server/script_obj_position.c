@@ -101,7 +101,7 @@ JSValueRef js_obj_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_int_to_value(cx,obj->pnt.x));
 }
 
@@ -109,7 +109,7 @@ JSValueRef js_obj_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_int_to_value(cx,obj->pnt.y));
 }
 
@@ -117,7 +117,7 @@ JSValueRef js_obj_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_int_to_value(cx,obj->pnt.z));
 }
 
@@ -133,7 +133,7 @@ JSValueRef js_obj_position_place_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 	object_set_position(obj,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[2]),script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[3]),0);
 	object_telefrag_players(obj,FALSE);
@@ -148,7 +148,7 @@ JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef fu
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	
 		// find spot
 		
@@ -170,7 +170,7 @@ JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef f
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 		// get spot
 		
@@ -192,7 +192,7 @@ JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	
 	xadd=script_value_to_int(cx,argv[0]);
 	zadd=script_value_to_int(cx,argv[1]);
@@ -210,7 +210,7 @@ JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	object_reset(obj);
 	object_telefrag_players(obj,FALSE);
 	
@@ -229,8 +229,8 @@ JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef f
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
-	player_obj=object_find_uid(server.player_obj_uid);
+	obj=object_find_uid(js.attach.obj_index);
+	player_obj=object_find_uid(server.player_obj_index);
 
 	return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,player_obj->pnt.x,player_obj->pnt.y,player_obj->pnt.z)));
 }
@@ -241,7 +241,7 @@ JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef f
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 	dist_obj=object_find_uid(script_value_to_int(cx,argv[0]));
 	if (dist_obj==NULL) return(script_null_to_value(cx));

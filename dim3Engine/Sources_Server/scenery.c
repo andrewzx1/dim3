@@ -61,7 +61,7 @@ void scenery_create(void)
 
 			// create new object
 
-		idx=object_create(map_scenery->model_name,object_type_object,bt_map,-1);
+		idx=object_create(map_scenery->model_name,object_type_object,bt_map);
 		if (idx==-1) break;
 
 		obj=server.obj_list.objs[idx];
@@ -103,7 +103,7 @@ void scenery_create(void)
 			
 		if (!model_draw_load(&obj->draw,"Scenery",obj->name,err_str)) {
 			console_add_error(err_str);
-			object_dispose_single(object_find_index_uid(obj->uid));
+			object_dispose_single(object_find_index_uid(obj->index));
 			continue;
 		}
 		
