@@ -283,7 +283,7 @@ void model_reset_single(model_draw *draw)
 
 void models_reset(void)
 {
-	int					n,i;
+	int					n,k,i;
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
@@ -303,20 +303,23 @@ void models_reset(void)
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
-		if (obj!=NULL) model_reset_single(&obj->draw);
-	}
-
-	weap=server.weapons;
+		if (obj==NULL) continue;
+		
+		model_reset_single(&obj->draw);
 	
-	for (n=0;n!=server.count.weapon;n++) {
-		model_reset_single(&weap->draw);
+		for (k=0;k!=max_weap_list;k++) {
+			weap=obj->weap_list.weaps[k];
+			if (weap==NULL) continue;
+
+			model_reset_single(&weap->draw);
 		
-		for (i=0;i!=max_proj_setup_list;i++) {
-			proj_setup=weap->proj_setup_list.proj_setups[i];
-			if (proj_setup!=NULL) model_reset_single(&proj_setup->draw);
+			for (i=0;i!=max_proj_setup_list;i++) {
+				proj_setup=weap->proj_setup_list.proj_setups[i];
+				if (proj_setup==NULL) continue;
+				
+				model_reset_single(&proj_setup->draw);
+			}
 		}
-		
-		weap++;
 	}
 
 	proj=server.projs;

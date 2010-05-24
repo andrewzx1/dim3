@@ -133,9 +133,9 @@ void model_draw_setup_object(obj_type *obj)
 	
 		// connection
 
-	draw->connect.obj_uid=obj->index;
-	draw->connect.weap_uid=-1;
-	draw->connect.proj_uid=-1;
+	draw->connect.obj_idx=obj->index;
+	draw->connect.weap_idx=-1;
+	draw->connect.proj_idx=-1;
 	draw->connect.net_sound=(obj->index==server.player_obj_index) || (obj->type==object_type_bot_multiplayer);
 	draw->connect.net_remote_uid=obj->remote.uid;
 	draw->connect.motion_vct.x=obj->motion.vct.x;
@@ -245,9 +245,9 @@ void model_draw_setup_projectile(proj_type *proj)
 	
 		// vector
 		
-	draw->connect.obj_uid=proj->obj_index;
-	draw->connect.weap_uid=proj->weap_uid;
-	draw->connect.proj_uid=proj->uid;
+	draw->connect.obj_idx=proj->obj_index;
+	draw->connect.weap_idx=proj->weap_index;
+	draw->connect.proj_idx=proj->uid;
 	draw->connect.net_sound=FALSE;
 	draw->connect.motion_vct.x=proj->motion.vct.x;
 	draw->connect.motion_vct.y=proj->motion.vct.y;
@@ -398,9 +398,9 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 
 		// connection
 
-	draw->connect.obj_uid=obj->index;
-	draw->connect.weap_uid=weap->index;
-	draw->connect.proj_uid=-1;
+	draw->connect.obj_idx=obj->index;
+	draw->connect.weap_idx=weap->index;
+	draw->connect.proj_idx=-1;
 	draw->connect.net_sound=(obj->index==server.player_obj_index);
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;

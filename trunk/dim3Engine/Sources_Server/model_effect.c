@@ -158,15 +158,15 @@ void model_animation_effect_launch_particle(model_particle_type *particle,d3pnt 
 	}
 
 	if (particle->stick) {
-		motion.obj_uid=connect->obj_uid;
-		motion.weap_uid=connect->weap_uid;
-		motion.proj_uid=connect->proj_uid;
+		motion.obj_uid=connect->obj_idx;
+		motion.weap_uid=connect->weap_idx;
+		motion.proj_uid=connect->proj_idx;
 		motion.bone_idx=bone_idx;
 	}
 
 		// spawn particle
 
-	particle_spawn(particle->particle_idx,connect->obj_uid,&spt,&rot,&motion);
+	particle_spawn(particle->particle_idx,connect->obj_idx,&spt,&rot,&motion);
 }
 
 /* =======================================================
@@ -190,10 +190,10 @@ void model_animation_effect_launch_ring(model_ring_type *ring,d3pnt *pt,d3ang *a
 		// spawn ring
 		
 	if (ring->angle) {
-		ring_spawn(ring->ring_idx,connect->obj_uid,&spt,ang);
+		ring_spawn(ring->ring_idx,connect->obj_idx,&spt,ang);
 	}
 	else {
-		ring_spawn(ring->ring_idx,connect->obj_uid,&spt,NULL);
+		ring_spawn(ring->ring_idx,connect->obj_idx,&spt,NULL);
 	}
 }
 
@@ -232,7 +232,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		if (!draw->player) global=FALSE;
 
 		al_play_source(pose_move->sound.buffer_idx,&pt,pose_move->sound.pitch,FALSE,FALSE,global,draw->player);
-		object_watch_sound_alert(&pt,draw->connect.obj_uid,pose_move->sound.name);	// sound watches
+		object_watch_sound_alert(&pt,draw->connect.obj_idx,pose_move->sound.name);	// sound watches
 
 		if ((net_setup.mode!=net_mode_none) && (draw->connect.net_sound)) net_client_send_sound(&pt,pose_move->sound.pitch,pose_move->sound.name);
 	}

@@ -239,18 +239,13 @@ proj_setup_type* proj_setup_get_attach(void)
 	proj_type			*proj;
 	
 	if (js.attach.thing_type==thing_type_projectile_setup) {
-		weap=weapon_find_uid(js.attach.weap_uid);
+		weap=weapon_script_lookup();
 		return(proj_setups_find_uid(weap,js.attach.proj_setup_index));
 	}
 	
 	if (js.attach.thing_type==thing_type_projectile) {
-	
-		weap=weapon_find_uid(js.attach.weap_uid);
-		if (weap==NULL) return(NULL);
-		
+		weap=weapon_script_lookup();
 		proj=projectile_find_uid(js.attach.proj_uid);
-		if (proj==NULL) return(NULL);
-		
 		return(proj_setups_find_uid(weap,proj->proj_setup_index));
 	}
 	

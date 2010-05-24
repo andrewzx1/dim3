@@ -89,8 +89,8 @@ void weapon_clear_animation(weapon_type *weap)
 
 void weapon_set(obj_type *obj,weapon_type *weap)
 {
-	obj->held_weapon.current_uid=weap->uid;
-	obj->held_weapon.next_uid=weap->uid;
+	obj->held_weapon.current_index=weap->index;
+	obj->held_weapon.next_index=weap->index;
     obj->held_weapon.mode=wm_held;
     
 	weapon_clear_animation(weap);
@@ -114,13 +114,13 @@ void weapon_clear_state(obj_type *obj)
 		// if there was a changing weapon
 		// complete the change
 		
-	if (obj->held_weapon.next_uid!=-1) obj->held_weapon.current_uid=obj->held_weapon.next_uid;
+	if (obj->held_weapon.next_index!=-1) obj->held_weapon.current_index=obj->held_weapon.next_index;
 
 	obj->held_weapon.mode=wm_held;
 
 		// turn off any weapon changing
 
-	obj->held_weapon.next_uid=-1;
+	obj->held_weapon.next_index=-1;
     obj->held_weapon.mode=wm_held;
     obj->held_weapon.swap_tick=0;
 	obj->held_weapon.bounce_y=0;
@@ -190,11 +190,11 @@ void weapon_held(obj_type *obj)
 	scripts_post_event_console(&weap->attach,sd_event_animation_weapon,sd_event_animation_weapon_held,0);
 }
 
-void weapon_cur_weapon_recoil_copy(obj_type *obj,int copy_weap_uid)
+void weapon_cur_weapon_recoil_copy(obj_type *obj,int copy_weap_index)
 {
 	weapon_type		*to_weap,*cur_weap;
 
-	to_weap=weapon_find_uid(copy_weap_uid);
+	to_weap=weapon_find_uid(copy_weap_index);
 	if (to_weap==NULL) return;
 				
 	cur_weap=weapon_find_current(obj);
@@ -210,11 +210,11 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
 {
 		// copy any recoils
 
-	weapon_cur_weapon_recoil_copy(obj,weap->uid);
+	weapon_cur_weapon_recoil_copy(obj,weap->index);
 
 		// set next weapon
 	
-	obj->held_weapon.next_uid=weap->uid;
+	obj->held_weapon.next_index=weap->index;
 
 		// clear any animation smoothing
 
@@ -232,7 +232,7 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
 
 void weapon_switch(obj_type *obj,int dir)
 {
-    int				weap_mode,weap_uid,weap_idx;
+    int				weap_mode,weap_idx;
     weapon_type		*weap;
 
     weap_mode=obj->held_weapon.mode;
@@ -240,50 +240,51 @@ void weapon_switch(obj_type *obj,int dir)
         // already changing weapons?
         
     if (weap_mode!=wm_lower) {
-		weap_uid=obj->held_weapon.current_uid;
+		weap_idx=obj->held_weapon.current_index;
     }
     else {
-		weap_uid=obj->held_weapon.next_uid;
+		weap_idx=obj->held_weapon.next_index;
     }
-	
-	weap_idx=weapon_index_find_uid(weap_uid);
+
 	if (weap_idx==-1) return;
 	
 		// change to new weapon
     
     while (TRUE) {
         weap_idx+=dir;
-        if (weap_idx<0) weap_idx=server.count.weapon-1;
-        if (weap_idx>=server.count.weapon) weap_idx=0;
-		
-		weap=&server.weapons[weap_idx];
+
+			// wrapping at edges
+
+        if (weap_idx<0) weap_idx=max_weap_list-1;
+        if (weap_idx>=max_weap_list) weap_idx=0;
 		
 			// have we wrapped back around?
 			
-		if (weap->uid==obj->held_weapon.current_uid) return;
+		if (weap_idx==obj->held_weapon.current_index) return;
 			
 			// can we select this weapon?
 			
+		weap=obj->weap_list.weaps[weap_idx];
+		if (weap==NULL) continue;
+
 		if (weap->hidden) continue;
-		
-			// is this the right weapon?
-			
-        if (weap->obj_index==obj->index) break;
     }
     
     weapon_goto(obj,weap);
 }
 
-void weapon_pick(obj_type *obj,int offset)
+void weapon_pick(obj_type *obj,int index)
 {
     weapon_type			*weap;
 	
-		// find weapon in list
+		// goto specific weapon
 		
-	weap=weapon_find_offset(obj,offset);
+	weap=obj->weap_list.weaps[index];
 	if (weap==NULL) return;
 	
-    if (weap->uid==obj->held_weapon.current_uid) return;
+		// can we switch?
+
+    if (weap->index==obj->held_weapon.current_index) return;
 	if (weap->hidden) return;
 	
 		// set weapon
@@ -563,8 +564,8 @@ void weapon_run_hand(obj_type *obj)
         
     if (weap_mode==wm_lower) {
         if (swap_tick>weap->hand.lower_tick) {
-			weapon_cur_weapon_recoil_copy(obj,obj->held_weapon.next_uid);
-            obj->held_weapon.current_uid=obj->held_weapon.next_uid;
+			weapon_cur_weapon_recoil_copy(obj,obj->held_weapon.next_index);
+            obj->held_weapon.current_index=obj->held_weapon.next_index;
             weapon_raise(obj);
         }
         return;

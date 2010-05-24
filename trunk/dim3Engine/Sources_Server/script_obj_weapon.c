@@ -134,7 +134,9 @@ JSValueRef js_obj_weapon_get_select_func(JSContextRef cx,JSObjectRef func,JSObje
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
     obj=object_find_uid(js.attach.obj_index);
-	weap=weapon_find_uid(obj->held_weapon.next_uid);
+	if (obj->held_weapon.next_index==-1) return(script_null_to_value(cx));
+
+	weap=obj->weap_list.weaps[obj->held_weapon.next_index];
 	if (weap==NULL) return(script_null_to_value(cx));
 	
     return(script_string_to_value(cx,weap->name));

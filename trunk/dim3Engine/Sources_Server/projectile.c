@@ -71,7 +71,7 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	proj->dispose=FALSE;
 	
 	proj->obj_index=obj->index;
-	proj->weap_uid=weap->index;
+	proj->weap_index=weap->index;
 	proj->proj_setup_index=proj_setup->index;
 
 	proj->start_tick=game_time_get();

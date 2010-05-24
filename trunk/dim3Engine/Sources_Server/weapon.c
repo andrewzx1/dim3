@@ -36,26 +36,23 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "consoles.h"
 
-extern server_type			server;
-
-/* =======================================================
-
-      Initialize Weapon List
-      
-======================================================= */
-
-void weapon_initialize_list(void)
-{
-	server.weapons=NULL;
-	server.count.weapon=0;
-	server.uid.weapon=0;
-}
+extern server_type		server;
+extern js_type			js;
 
 /* =======================================================
 
       Find Weapon
       
 ======================================================= */
+
+inline weapon_type* weapon_script_lookup(void)
+{
+	obj_type		*obj;
+	weapon_type		*weap;
+
+	obj=server.obj_list.objs[attach->obj_index];
+	weap=obj->weap_list.weaps[attach->weap_index];
+}
 
 weapon_type* weapon_find_uid(int uid)
 {
@@ -64,8 +61,8 @@ weapon_type* weapon_find_uid(int uid)
 
 	weap=server.weapons;
 	
-	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->uid==uid) return(weap);
+	for (n=0;n!=max_weap_list;n++) {
+		if (weap->index==uid) return(weap);
 		weap++;
 	}
 	
@@ -80,7 +77,7 @@ int weapon_index_find_uid(int uid)
 	weap=server.weapons;
 	
 	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->uid==uid) return(n);
+		if (weap->index==uid) return(n);
 		weap++;
 	}
 	
@@ -108,27 +105,6 @@ weapon_type* weapon_find_name(obj_type *obj,char *name)
 weapon_type* weapon_find_current(obj_type *obj)
 {
 	return(weapon_find_uid(obj->held_weapon.current_uid));
-}
-
-weapon_type* weapon_find_offset(obj_type *obj,int offset)
-{
-	int				n,obj_uid;
-	weapon_type		*weap;
-
-	obj_uid=obj->index;
-	weap=server.weapons;
-	
-	for (n=0;n!=server.count.weapon;n++) {
-	
-		if (weap->obj_index==obj_uid) {
-			offset--;
-			if (offset<0) return(weap);
-		}
-		
-		weap++;
-	}
-	
-	return(NULL);
 }
 
 int weapon_held_count(obj_type *obj)

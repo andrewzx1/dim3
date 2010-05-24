@@ -258,7 +258,6 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 	model_initialize();
 		
 	object_initialize_list();
-	weapon_initialize_list();
 	
 	scripts_initialize();
 	script_globals_initialize();

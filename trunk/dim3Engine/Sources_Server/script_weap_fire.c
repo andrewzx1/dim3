@@ -85,7 +85,7 @@ JSValueRef js_weap_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_int_to_value(cx,weap->fire.method));
 }
 
@@ -93,7 +93,7 @@ JSValueRef js_weap_fire_get_lastFireTick(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	if (!weap->dual.in_dual) return(script_int_to_value(cx,weap->fire.last_fire_tick));
 
 	return(script_int_to_value(cx,weap->fire.last_fire_dual_tick));
@@ -112,7 +112,7 @@ JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSO
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	
 	if (!weap->dual.in_dual) {
 		last_fire_tick=weap->fire.last_fire_tick;
@@ -130,7 +130,7 @@ JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JS
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	
 	if (!weap->dual.in_dual) {
 		weap->fire.last_fire_tick=game_time_get();
@@ -148,7 +148,7 @@ JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	weap->fire.cancel=TRUE;
     
 	return(script_null_to_value(cx));

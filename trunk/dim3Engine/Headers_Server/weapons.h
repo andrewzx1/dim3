@@ -25,13 +25,11 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void weapon_initialize_list(void);
-
+extern weapon_type* weapon_script_lookup(void);
 extern weapon_type* weapon_find_uid(int uid);
 extern int weapon_index_find_uid(int uid);
 extern weapon_type* weapon_find_name(obj_type *obj,char *name);
 extern weapon_type* weapon_find_current(obj_type *obj);
-extern weapon_type* weapon_find_offset(obj_type *obj,int offset);
 extern int weapon_held_count(obj_type *obj);
 
 extern bool weapon_add(obj_type *obj,char *name);
@@ -51,7 +49,7 @@ extern void weapon_raise(obj_type *obj);
 extern void weapon_held(obj_type *obj);
 extern void weapon_goto(obj_type *obj,weapon_type *weap);
 extern void weapon_switch(obj_type *obj,int dir);
-extern void weapon_pick(obj_type *obj,int offset);
+extern void weapon_pick(obj_type *obj,int index);
 
 extern void weapon_target_next_object(obj_type *obj,weapon_type *weap);
 extern void weapon_target_previous_object(obj_type *obj,weapon_type *weap);

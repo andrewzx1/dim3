@@ -314,7 +314,7 @@ bool game_file_save(char *err_str)
 
 // supergumba -- needs to be different, plus memory in obj->draw, etc	
 //	game_file_add_chunk(server.objs,server.count.obj,sizeof(obj_type));
-	game_file_add_chunk(server.weapons,server.count.weapon,sizeof(weapon_type));
+//	game_file_add_chunk(server.weapons,server.count.weapon,sizeof(weapon_type));
 //	game_file_add_chunk(server.proj_setups,server.count.proj_setup,sizeof(proj_setup_type));
 	
 	progress_draw(40);
@@ -459,13 +459,13 @@ bool game_file_load(char *file_name,char *err_str)
 
 // supergumba -- needs to be different
 //	free(server.objs);
-	free(server.weapons);
+//	free(server.weapons);
 //	free(server.proj_setups);
 	
 	progress_draw(30);
 
 //	server.objs=(obj_type*)game_file_replace_chunk();
-	server.weapons=(weapon_type*)game_file_replace_chunk();
+//	server.weapons=(weapon_type*)game_file_replace_chunk();
 //	server.proj_setups=(proj_setup_type*)game_file_replace_chunk();
 
 //	if ((server.objs==NULL) || (server.weapons==NULL) || (server.proj_setups==NULL)) {

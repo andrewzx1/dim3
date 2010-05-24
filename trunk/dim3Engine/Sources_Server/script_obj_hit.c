@@ -119,7 +119,7 @@ JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 	obj=object_find_uid(js.attach.obj_index);
 
-	hit_weap=weapon_find_uid(obj->hit.weap_uid);
+	hit_weap=weapon_script_lookup();
 	if (hit_weap==NULL) return(script_null_to_value(cx));
 
 	return(script_string_to_value(cx,hit_weap->name));
@@ -137,7 +137,7 @@ JSValueRef js_obj_hit_get_projectileName(JSContextRef cx,JSObjectRef j_obj,JSStr
 	hit_proj=projectile_find_uid(obj->hit.proj_uid);
 	if (hit_proj==NULL) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(hit_proj->weap_uid);
+	weap=weapon_script_lookup();
 
 	hit_proj_setup=proj_setups_find_uid(weap,hit_proj->proj_setup_index);
 	return(script_string_to_value(cx,hit_proj_setup->name));

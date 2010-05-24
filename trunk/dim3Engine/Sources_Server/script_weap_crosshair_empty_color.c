@@ -80,7 +80,7 @@ JSValueRef js_weap_crosshair_empty_color_get_red(JSContextRef cx,JSObjectRef j_o
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_float_to_value(cx,weap->crosshair.empty_col.r));
 }
 
@@ -88,7 +88,7 @@ JSValueRef js_weap_crosshair_empty_color_get_green(JSContextRef cx,JSObjectRef j
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_float_to_value(cx,weap->crosshair.empty_col.g));
 }
 
@@ -96,7 +96,7 @@ JSValueRef js_weap_crosshair_empty_color_get_blue(JSContextRef cx,JSObjectRef j_
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_float_to_value(cx,weap->crosshair.empty_col.b));
 }
 
@@ -110,7 +110,7 @@ bool js_weap_crosshair_empty_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	weap->crosshair.empty_col.r=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -120,7 +120,7 @@ bool js_weap_crosshair_empty_color_set_green(JSContextRef cx,JSObjectRef j_obj,J
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	weap->crosshair.empty_col.g=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -130,7 +130,7 @@ bool js_weap_crosshair_empty_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	weap->crosshair.empty_col.b=script_value_to_float(cx,vp);
 
 	return(TRUE);

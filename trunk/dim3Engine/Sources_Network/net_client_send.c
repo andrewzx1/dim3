@@ -465,22 +465,19 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 	pickup->health=htons((short)obj->status.health);
 
 	idx=0;
-	weap=server.weapons;
 		
-	for (n=0;n!=server.count.weapon;n++) {
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
 
-		if (weap->obj_index==obj->index) {
-			pickup->ammos[idx].hidden=htons((short)(weap->hidden?0:1));
-			pickup->ammos[idx].ammo_count=htons((short)weap->ammo.count);
-			pickup->ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
-			pickup->ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
-			pickup->ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
+		pickup->ammos[idx].hidden=htons((short)(weap->hidden?0:1));
+		pickup->ammos[idx].ammo_count=htons((short)weap->ammo.count);
+		pickup->ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
+		pickup->ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
+		pickup->ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
 
-			idx++;
-			if (idx==net_max_weapon_per_remote) break;
-		}
-
-		weap++;
+		idx++;
+		if (idx==net_max_weapon_per_remote) break;
 	}
 }
 

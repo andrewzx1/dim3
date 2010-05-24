@@ -88,7 +88,7 @@ JSValueRef js_weap_target_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_bool_to_value(cx,weap->target.on));
 }
 
@@ -96,7 +96,7 @@ JSValueRef js_weap_target_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_int_to_value(cx,weap->target.distance));
 }
 
@@ -104,7 +104,7 @@ JSValueRef js_weap_target_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	return(script_int_to_value(cx,weap->target.obj_uid));
 }
 
@@ -118,7 +118,7 @@ bool js_weap_target_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	weap->target.distance=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -137,7 +137,7 @@ JSValueRef js_weap_target_start_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	obj=object_find_uid(weap->obj_index);
 
 	return(script_bool_to_value(cx,weapon_target_start(obj,weap,FALSE)));
@@ -150,7 +150,7 @@ JSValueRef js_weap_target_start_opponent_func(JSContextRef cx,JSObjectRef func,J
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	obj=object_find_uid(weap->obj_index);
 	
 	return(script_bool_to_value(cx,weapon_target_start(obj,weap,TRUE)));
@@ -163,7 +163,7 @@ JSValueRef js_weap_target_end_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.weap_uid);
+	weap=weapon_script_lookup();
 	obj=object_find_uid(weap->obj_index);
 	
 	return(script_bool_to_value(cx,weapon_target_end(obj,weap)));
