@@ -34,15 +34,13 @@ extern void object_get_tint(obj_type *obj,d3col *tint);
 
 extern bool object_networkable(obj_type *obj);
 
-extern int object_create(char *name,int type,int bind,int reserve_uid);
-extern int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,char *err_str);
+extern int object_create(char *name,int type,int bind);
+extern int object_start(spot_type *spot,char *name,int type,int bind,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 
-extern void object_script_spawn_start(void);
-extern void object_script_spawn_finish(void);
 extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
-extern bool object_script_remove(int uid,char *err_str);
+extern bool object_script_remove(int idx,char *err_str);
 
 extern void object_set_radius(obj_type *obj);
 extern void object_set_current_mesh(obj_type *obj);

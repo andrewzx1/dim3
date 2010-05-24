@@ -149,10 +149,6 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 {
 	JSStringRef		j_script_data,j_script_name;
 	JSValueRef		rval,exception;
-
-		// execute
-		
-	memmove(&js.attach,attach,sizeof(attach_type));
 	
 		// make sure UTF8 conversion didn't go crazy
 		// on some hidden characters

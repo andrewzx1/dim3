@@ -45,10 +45,7 @@ extern network_setup_type	net_setup;
 extern hud_type				hud;
 extern js_type				js;
 
-int							ndelayed_obj_spawn,
-							game_obj_rule_uid=-1;
-
-delayed_obj_spawn_type		*delayed_obj_spawns;
+int							game_obj_rule_uid=-1;
 
 /* =======================================================
 
@@ -63,22 +60,10 @@ void object_initialize_list(void)
 	for (n=0;n!=max_obj_list;n++) {
 		server.obj_list.objs[n]=NULL;
 	}
-
-	server.uid.obj=0;		// supergumba -- delete uid
-
-		// script based object spawns need to
-		// be delayed so they don't effect the
-		// object list in loop
-
-	ndelayed_obj_spawn=0;
-	delayed_obj_spawns=(delayed_obj_spawn_type*)malloc(sizeof(delayed_obj_spawn_type)*max_delayed_obj_spawn);
 }
 
 void object_free_list(void)
 {
-	if (delayed_obj_spawns!=NULL) free(delayed_obj_spawns);
-
-	delayed_obj_spawns=NULL;
 }
 
 /* =======================================================
@@ -436,7 +421,7 @@ bool object_networkable(obj_type *obj)
 {
 		// players and bots always send messages
 
-	if ((obj->uid==server.player_obj_uid) || (obj->type==object_type_bot_multiplayer)) return(TRUE);
+	if ((obj->index==server.player_obj_index) || (obj->type==object_type_bot_multiplayer)) return(TRUE);
 	
 		// map type bots only send messages if
 		// this process is the host
@@ -454,17 +439,7 @@ bool object_networkable(obj_type *obj)
       
 ======================================================= */
 
-int object_reserve_uid(void)
-{
-	int				uid;
-
-	uid=server.uid.obj;
-	server.uid.obj++;
-
-	return(uid);
-}
-
-int object_create(char *name,int type,int bind,int reserve_uid)
+int object_create(char *name,int type,int bind)
 {
 	int				n,idx;
 	obj_type		*obj;
@@ -498,13 +473,6 @@ int object_create(char *name,int type,int bind,int reserve_uid)
 	obj->index=idx;
 	obj->type=type;
 	obj->bind=bind;
-
-	if (reserve_uid==-1) {
-		obj->uid=object_reserve_uid();
-	}
-	else {
-		obj->uid=reserve_uid;
-	}
 	
 	obj->next_spawn_sub_event=sd_event_spawn_init;
 
@@ -711,7 +679,7 @@ void object_player_set_remote_uid(int remote_uid)
 {
 	obj_type			*obj;
 	
-	obj=object_find_uid(server.player_obj_uid);
+	obj=object_find_uid(server.player_obj_index);
 	obj->remote.uid=remote_uid;
 }
 
@@ -719,7 +687,7 @@ int object_player_get_remote_uid(void)
 {
 	obj_type			*obj;
 	
-	obj=object_find_uid(server.player_obj_uid);
+	obj=object_find_uid(server.player_obj_index);
 	return(obj->remote.uid);
 }
 
@@ -732,7 +700,7 @@ int object_player_get_remote_uid(void)
 bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
 {
 	obj->attach.thing_type=thing_type_object;
-	obj->attach.thing_uid=obj->uid;
+	obj->attach.obj_index=obj->index;
 
 	scripts_clear_attach_data(&obj->attach);
 
@@ -788,17 +756,15 @@ void object_attach_click_crosshair_down(obj_type *obj)
       
 ======================================================= */
 
-int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,char *err_str)
+int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 {
-	int					n,idx;
+	int					idx;
 	bool				ok;
 	obj_type			*obj;
-	weapon_type			*weap;
-	proj_setup_type		*proj_setup;
 
 		// create object
 		
-	idx=object_create(name,type,bind,reserve_uid);
+	idx=object_create(name,type,bind);
 	if (idx==-1) {
 		strcpy(err_str,"Out of memory");
 		return(-1);
@@ -817,7 +783,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,ch
 		obj->tint_color_idx=setup.network.tint_color_idx;
 		obj->character_idx=setup.network.character_idx;
 
-		server.player_obj_uid=obj->uid;
+		server.player_obj_index=obj->index;
 	}
 
 		// regular object setup
@@ -843,7 +809,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,ch
 	
 	if (net_setup.mode!=net_mode_none) {
 		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) {
-			game_obj_rule_uid=obj->uid;
+			game_obj_rule_uid=obj->index;
 			scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
 			game_obj_rule_uid=-1;
 
@@ -874,28 +840,6 @@ int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,ch
 		return(-1);
 	}
 
-		// start weapons
-
-    for (n=(server.count.weapon-1);n>=0;n--) {
-
-		weap=&server.weapons[n];
-		if (weap->obj_uid!=obj->uid) continue;
-	
-		if (!weapon_start(weap)) weapon_dispose(n);
-	}
-
-		// start projectiles
-
-	for (n=(server.count.proj_setup-1);n>=0;n--) {
-
-		proj_setup=&server.proj_setups[n];
-		if (proj_setup->obj_uid!=obj->uid) continue;
-
-		if (!proj_setup_start(proj_setup)) {
-			proj_setup_dispose(n);
-		}
-    }
-
 		// setup held weapon
 
 	if (obj->held_weapon.current_uid!=-1) {
@@ -903,7 +847,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,int reserve_uid,ch
 		weapon_set(obj,weap);
 	}
 
-	return(obj->uid);
+	return(obj->index);
 }
 
 /* =======================================================
@@ -917,55 +861,23 @@ void object_dispose_single(int idx)
 	int					n;
 	obj_type			*obj;
 	weapon_type			*weap;
-	proj_setup_type		*proj_setup;
 
 	obj=server.obj_list.objs[idx];
 
-		// dispose projectile setups
-
-	n=0;
-	
-	while (n<server.count.proj_setup) {
-		proj_setup=&server.proj_setups[n];
-		
- 		if (proj_setup->obj_uid==obj->uid) {
-			proj_setup_dispose(n);
-		}
-		else {
-			n++;
-		}
-		
-		if (server.count.proj_setup==0) break;
-	}
-
 		// dispose weapons
 
-	weap=server.weapons;
-	
-	n=0;
-	
-	while (n<server.count.weapon) {
-		weap=&server.weapons[n];
-
-		if (weap->obj_uid==obj->uid) {
-			weapon_dispose(n);
-		}
-		else {
-			n++;
-		}
-
-		if (server.count.weapon==0) break;
+	for (n=0;n!=max_weap_list;n++) {
+		dispose_weapon(obj,n);
 	}
 
-		// dispose object
+		// clear scripts and models
 
 	scripts_dispose(obj->attach.script_uid);
 	model_draw_dispose(&obj->draw);
 
-		// free and empty out of list
+		// free and empty from list
 
 	free(obj);
-
 	server.obj_list.objs[idx]=NULL;
 }
 
@@ -987,151 +899,78 @@ void object_dispose_2(int bind)
 /* =======================================================
 
       Script Object Spawn/Remove
-
-	  Spawning can make changes in the obj list, throwing
-	  off any obj pointers and causing a crash.  Because of
-	  this, we need to make sure all script spawns are
-	  cached and then done after everything else
       
 ======================================================= */
 
-void object_script_spawn_start(void)
-{
-	ndelayed_obj_spawn=0;
-}
-
-void object_script_spawn_finish(void)
-{
-	int						n,idx,uid;
-	char					err_str[256],obj_err_str[256];
-	spot_type				spot;
-	obj_type				*obj;
-	delayed_obj_spawn_type	*spawn;
-
-		// do all the adds
-
-	spawn=delayed_obj_spawns;
-
-	for (n=0;n!=ndelayed_obj_spawn;n++) {
-
-		if (!spawn->dispose) {
-
-				// create fake spot
-
-			bzero(&spot,sizeof(spot_type));
-
-			strcpy(spot.name,spawn->name);
-			strcpy(spot.script,spawn->script);
-			strcpy(spot.params,spawn->params);
-
-			memmove(&spot.pnt,&spawn->pnt,sizeof(d3pnt));
-			memmove(&spot.ang,&spawn->ang,sizeof(d3ang));
-
-				// start object
-
-			uid=object_start(&spot,spawn->name,spawn->type,bt_map,spawn->uid,obj_err_str);
-			if (uid==-1) {
-				sprintf(err_str,"Object Spawn Failed: %s",obj_err_str);
-				console_add_error(err_str);
-			}
-
-				// hide object
-
-			if (spawn->hide) {
-				obj=object_find_uid(uid);
-
-				obj->hidden=TRUE;
-				obj->contact.object_on=FALSE;
-				obj->contact.projectile_on=FALSE;
-				obj->contact.force_on=FALSE;
-			}
-
-		}
-		
-		spawn++;
-	}
-
-		// do all the removes
-
-	spawn=delayed_obj_spawns;
-
-	for (n=0;n!=ndelayed_obj_spawn;n++) {
-
-		if (spawn->dispose) {
-
-			idx=object_find_index_uid(spawn->uid);
-			if (idx==-1) {
-				sprintf(err_str,"No object exists with ID: %d",spawn->uid);
-				console_add_error(err_str);
-			}
-			else {
-				object_dispose_single(idx);
-			}
-
-		}
-		
-		spawn++;
-	}
-
-}
-
 int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str)
 {
-	int						spawn_type;
-	delayed_obj_spawn_type	*spawn;
-
-		// room on list?
-
-	if ((ndelayed_obj_spawn>=max_delayed_obj_spawn) || (delayed_obj_spawns==NULL)) {
-		strcpy(err_str,"Not enough memory to spawn object");
-		return(-1);
-	}
+	int					idx,spawn_type;
+	char				obj_err_str[256];
+	spot_type			spot;
+	obj_type			*obj;
 	
 		// get type, only allowed to
 		// spawn objects and bots
 		
 	spawn_type=object_type_object;
 	if (strcasecmp(type,"bot")==0) spawn_type=object_type_bot_map;
+	
+		// create fake spot
 
-		// add to list
+	bzero(&spot,sizeof(spot_type));
 
-	spawn=&delayed_obj_spawns[ndelayed_obj_spawn];
-	ndelayed_obj_spawn++;
+	strcpy(spot.name,name);
+	strcpy(spot.script,script);
+	strcpy(spot.params,params);
 
-	spawn->uid=object_reserve_uid();
-	spawn->dispose=FALSE;
+	memmove(&spot.pnt,&pnt,sizeof(d3pnt));
+	memmove(&spot.ang,&ang,sizeof(d3ang));
 
-	strcpy(spawn->name,name);
-	spawn->type=spawn_type;
-	strcpy(spawn->script,script);
-	strcpy(spawn->params,params);
-	memmove(&spawn->pnt,pnt,sizeof(d3pnt));
-	memmove(&spawn->ang,ang,sizeof(d3ang));
-	spawn->hide=hide;
+		// start object
 
-		// return uid
+	idx=object_start(&spot,name,spawn_type,bt_map,obj_err_str);
+	if (idx==-1) {
+		sprintf(err_str,"Object Spawn Failed: %s",obj_err_str);
+		console_add_error(err_str);
+		
+		return(-1);
+	}
 
-	return(spawn->uid);
+		// hide object
+
+	if (hide) {
+		obj=object_find_uid(idx);
+
+		obj->hidden=TRUE;
+		obj->contact.object_on=FALSE;
+		obj->contact.projectile_on=FALSE;
+		obj->contact.force_on=FALSE;
+	}
+
+		// return index
+
+	return(idx);
 }
 
-bool object_script_remove(int uid,char *err_str)
+bool object_script_remove(int idx,char *err_str)
 {
-	delayed_obj_spawn_type	*spawn;
-
 		// can not dispose player object
 
-	if (uid==server.player_obj_uid) {
+	if (idx==server.player_obj_index) {
 		strcpy(err_str,"Can not dispose player object");
 		return(FALSE);
 	}
+	
+		// does this object exist?
+	
+	if (server.obj_list.objs[idx]==NULL) {
+		sprintf(err_str,"No object exists with ID: %d",idx);
+		return(FALSE);
+	}
 
-		// add to list
+		// dispose object
 
-	spawn=&delayed_obj_spawns[ndelayed_obj_spawn];
-	ndelayed_obj_spawn++;
-
-	spawn->uid=uid;
-	spawn->dispose=TRUE;
+	object_dispose_single(idx);
 
 	return(TRUE);
 }

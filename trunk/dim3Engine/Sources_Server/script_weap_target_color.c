@@ -80,7 +80,7 @@ JSValueRef js_weap_target_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->target.col.r));
 }
 
@@ -88,7 +88,7 @@ JSValueRef js_weap_target_color_get_green(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->target.col.g));
 }
 
@@ -96,7 +96,7 @@ JSValueRef js_weap_target_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->target.col.b));
 }
 
@@ -110,7 +110,7 @@ bool js_weap_target_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->target.col.r=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -120,7 +120,7 @@ bool js_weap_target_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->target.col.g=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -130,7 +130,7 @@ bool js_weap_target_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->target.col.b=script_value_to_float(cx,vp);
 
 	return(TRUE);

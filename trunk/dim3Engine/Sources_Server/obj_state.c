@@ -101,7 +101,7 @@ void object_score_update(obj_type *obj)
 
 		// run rule to update score
 
-	game_obj_rule_uid=obj->uid;
+	game_obj_rule_uid=obj->index;
 	scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_score,0);
 	game_obj_rule_uid=-1;
 	
@@ -120,7 +120,7 @@ void object_score_death(obj_type *obj)
 	
 		// suicide
 		
-	if ((obj->uid==obj->damage_obj_uid) || (obj->damage_obj_uid==-1)) {
+	if ((obj->index==obj->damage_obj_uid) || (obj->damage_obj_uid==-1)) {
 		obj->score.suicide++;
 		object_score_update(obj);
 	}
@@ -210,7 +210,7 @@ void object_telefrag(obj_type *obj,obj_type *source_obj)
 	
 	obj->death_trigger=TRUE;		// trigger death
 	obj->death_telefrag=TRUE;
-	obj->damage_obj_uid=source_obj->uid;
+	obj->damage_obj_uid=source_obj->index;
 	
 	object_death(obj);
 }
@@ -235,7 +235,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 	
 		if ((check_obj->type!=object_type_player) && (check_obj->type!=object_type_remote) && (check_obj->type!=object_type_bot_multiplayer)) continue;
 		if ((check_obj->hidden) || (!check_obj->contact.object_on)) continue;
-		if (obj->uid==check_obj->uid) continue;
+		if (obj->index==check_obj->index) continue;
 		
 		if (collide_object_to_object(obj,0,0,check_obj,TRUE,FALSE)) {
 		
@@ -251,8 +251,8 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 				// send network message to telefrag
 
 			if (net_setup.mode!=net_mode_none) {
-				if ((check_obj->uid==server.player_obj_uid) || (check_obj->type==object_type_bot_multiplayer)) {
-					check_obj->damage_obj_uid=obj->uid;
+				if ((check_obj->index==server.player_obj_index) || (check_obj->type==object_type_bot_multiplayer)) {
+					check_obj->damage_obj_uid=obj->index;
 					net_client_send_death(check_obj,TRUE);
 				}
 			}
@@ -276,7 +276,7 @@ void object_setup_touch(obj_type *obj,obj_type *source_obj,bool stand)
 	
 	touch=&obj->touch;
 	
-	touch->obj_uid=source_obj->uid;
+	touch->obj_uid=source_obj->index;
 	
 	touch->pnt.x=(obj->pnt.x+source_obj->pnt.x)>>1;
 	touch->pnt.y=(obj->pnt.y+source_obj->pnt.y)>>1;
@@ -340,8 +340,8 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 	hit->weap_uid=-1;
 	hit->proj_uid=-1;
 	
-    if (from_obj!=NULL) hit->obj_uid=from_obj->uid;
-	if (from_weap!=NULL) hit->weap_uid=from_weap->uid;
+    if (from_obj!=NULL) hit->obj_uid=from_obj->index;
+	if (from_weap!=NULL) hit->weap_uid=from_weap->index;
 	if (from_proj!=NULL) hit->proj_uid=from_proj->uid;
 	
 		// damage
@@ -405,7 +405,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		// setup click structure
 		
 	click=&obj->click;
-	click->current_click_obj_uid=from_obj->uid;
+	click->current_click_obj_uid=from_obj->index;
 	
 		// post the event
 		
@@ -414,7 +414,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		// and any network events
 
 	if (net_setup.mode!=net_mode_none) {
-		if ((from_obj->uid==server.player_obj_uid) || (from_obj->type==object_type_bot_multiplayer)) net_client_send_click(from_obj,&from_obj->pnt,&from_obj->ang);
+		if ((from_obj->index==server.player_obj_index) || (from_obj->type==object_type_bot_multiplayer)) net_client_send_click(from_obj,&from_obj->pnt,&from_obj->ang);
 	}
 }
 
@@ -448,8 +448,8 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 		obj->damage_obj_uid=-1;
 		
 		if (source_obj!=NULL) {
-			if ((source_obj->type!=object_type_object) && (source_obj->uid!=obj->uid)) {		// no damage from regular objects and same object
-				obj->damage_obj_uid=source_obj->uid;
+			if ((source_obj->type!=object_type_object) && (source_obj->index!=obj->index)) {		// no damage from regular objects and same object
+				obj->damage_obj_uid=source_obj->index;
 			}
 
 		}
@@ -478,7 +478,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 
 		// any watches
 
-	object_watch_damage_alert(&obj->pnt,obj->uid);
+	object_watch_damage_alert(&obj->pnt,obj->index);
 }
 
 /* =======================================================
@@ -686,18 +686,16 @@ bool object_is_targetted(obj_type *obj,d3col *col)
 
 		// look for any targetting on player's weapons
 
-	player_obj=object_find_uid(server.player_obj_uid);
+	player_obj=object_find_uid(server.player_obj_index);
 
-	weap=server.weapons;
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
 		
-	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_uid==player_obj->uid) {
-			if ((weap->target.on) && (weap->target.obj_uid==obj->uid)) {
-				memmove(col,&weap->target.col,sizeof(d3col));
-				return(TRUE);
-			}
+		if ((weap->target.on) && (weap->target.obj_uid==obj->index)) {
+			memmove(col,&weap->target.col,sizeof(d3col));
+			return(TRUE);
 		}
-		weap++;
 	}
 
 	return(FALSE);

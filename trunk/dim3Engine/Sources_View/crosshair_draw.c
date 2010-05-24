@@ -90,7 +90,7 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		// trace to find any clicking or hit objects
 
 	contact.obj.on=TRUE;
-	contact.obj.ignore_uid=obj->uid;
+	contact.obj.ignore_uid=obj->index;
 	contact.proj.on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;

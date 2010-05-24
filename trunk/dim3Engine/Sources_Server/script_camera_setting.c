@@ -85,7 +85,7 @@ JSValueRef js_camera_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSString
 
 JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,camera.obj_uid));
+	return(script_int_to_value(cx,camera.obj_idx));
 }
 
 /* =======================================================

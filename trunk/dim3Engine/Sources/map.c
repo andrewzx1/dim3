@@ -344,7 +344,6 @@ bool map_start(bool file_restore,bool skip_media,char *err_str)
 	progress_draw(50);
 		
 	js.course_attach.thing_type=thing_type_course;
-	js.course_attach.thing_uid=-1;
 
 	scripts_clear_attach_data(&js.course_attach);
 	
@@ -353,10 +352,6 @@ bool map_start(bool file_restore,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 	
-		// prepare for any script based spawns
-
-	object_script_spawn_start();
-
 		// create object and scenery
 		// and call spawn on all the objects
 
@@ -391,7 +386,7 @@ bool map_start(bool file_restore,bool skip_media,char *err_str)
 			// connect camera to player
 			
 		if (!file_restore) {
-			obj=object_find_uid(server.player_obj_uid);
+			obj=object_find_uid(server.player_obj_index);
 			camera_connect(obj);
 		}
 	}
@@ -419,11 +414,9 @@ bool map_start(bool file_restore,bool skip_media,char *err_str)
 		}
 	}
 	
-		// finish any script based spawns
+		// finish up
 
 	progress_draw(100);
-
-	object_script_spawn_finish();
 	
 	progress_shutdown();
 	
@@ -490,7 +483,7 @@ void map_end(void)
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_close,0);
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
-		obj=object_find_uid(server.player_obj_uid);
+		obj=object_find_uid(server.player_obj_index);
 		scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_close,0);
 	}
 

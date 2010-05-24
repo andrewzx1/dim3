@@ -70,9 +70,9 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	
 	proj->dispose=FALSE;
 	
-	proj->obj_uid=obj->uid;
-	proj->weap_uid=weap->uid;
-	proj->proj_setup_uid=proj_setup->uid;
+	proj->obj_index=obj->index;
+	proj->weap_uid=weap->index;
+	proj->proj_setup_index=proj_setup->index;
 
 	proj->start_tick=game_time_get();
 	
@@ -99,7 +99,10 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	memmove(&proj->action,&proj_setup->action,sizeof(proj_action_type));
 	
 	proj->attach.thing_type=thing_type_projectile;
-	proj->attach.thing_uid=proj->uid;
+	proj->attach.obj_index=obj->index;
+	proj->attach.weap_uid=weap->index;
+	proj->attach.proj_uid=proj->uid;
+	proj->attach.proj_setup_index=proj_setup->index;
 	proj->attach.script_uid=proj_setup->attach.script_uid;
 
 	scripts_clear_attach_data(&proj->attach);

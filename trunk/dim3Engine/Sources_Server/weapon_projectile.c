@@ -71,7 +71,7 @@ void weapon_setup_fire(weapon_type *weap,int method)
 	
 		// setup weapon fire in object
 		
-	obj=object_find_uid(weap->obj_uid);
+	obj=object_find_uid(weap->obj_index);
 
 	strcpy(obj->weapon_fire.name,weap->name);
 	obj->weapon_fire.method=method;
@@ -132,7 +132,7 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 	
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
-	contact.obj.ignore_uid=obj->uid;
+	contact.obj.ignore_uid=obj->index;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;

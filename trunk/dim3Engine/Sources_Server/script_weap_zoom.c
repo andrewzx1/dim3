@@ -119,7 +119,7 @@ JSValueRef js_weap_zoom_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_bool_to_value(cx,weap->zoom.on));
 }
 
@@ -127,7 +127,7 @@ JSValueRef js_weap_zoom_get_active(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_bool_to_value(cx,weap->zoom.mode!=zoom_mode_off));
 }
 
@@ -135,7 +135,7 @@ JSValueRef js_weap_zoom_get_fovMinimum(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->zoom.fov_min));
 }
 
@@ -143,7 +143,7 @@ JSValueRef js_weap_zoom_get_fovMaximum(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->zoom.fov_max));
 }
 
@@ -151,7 +151,7 @@ JSValueRef js_weap_zoom_get_fovSteps(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_int_to_value(cx,weap->zoom.step_count));
 }
 
@@ -159,7 +159,7 @@ JSValueRef js_weap_zoom_get_turnFactor(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->zoom.turn_factor));
 }
 
@@ -167,7 +167,7 @@ JSValueRef js_weap_zoom_get_crawlTurnFactor(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->zoom.crawl_turn_factor));
 }
 
@@ -175,7 +175,7 @@ JSValueRef js_weap_zoom_get_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->zoom.look_factor));
 }
 
@@ -183,7 +183,7 @@ JSValueRef js_weap_zoom_get_swayFactor(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->zoom.sway_factor));
 }
 
@@ -191,7 +191,7 @@ JSValueRef js_weap_zoom_get_crawlSwayFactor(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->zoom.crawl_sway_factor));
 }
 
@@ -199,7 +199,7 @@ JSValueRef js_weap_zoom_get_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_string_to_value(cx,weap->zoom.mask_name));
 }
 
@@ -207,7 +207,7 @@ JSValueRef js_weap_zoom_get_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_bool_to_value(cx,weap->zoom.show_weapon));
 }
 
@@ -215,7 +215,7 @@ JSValueRef js_weap_zoom_get_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_int_to_value(cx,weap->zoom.tick));
 }
 
@@ -229,7 +229,7 @@ bool js_weap_zoom_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.on=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -239,7 +239,7 @@ bool js_weap_zoom_set_fovMinimum(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.fov_min=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -249,7 +249,7 @@ bool js_weap_zoom_set_fovMaximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.fov_max=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -259,7 +259,7 @@ bool js_weap_zoom_set_fovSteps(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.step_count=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -269,7 +269,7 @@ bool js_weap_zoom_set_turnFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.turn_factor=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -279,7 +279,7 @@ bool js_weap_zoom_set_crawlTurnFactor(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.crawl_turn_factor=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -289,7 +289,7 @@ bool js_weap_zoom_set_lookFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.look_factor=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -299,7 +299,7 @@ bool js_weap_zoom_set_swayFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.sway_factor=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -309,7 +309,7 @@ bool js_weap_zoom_set_crawlSwayFactor(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.crawl_sway_factor=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -319,7 +319,7 @@ bool js_weap_zoom_set_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	script_value_to_string(cx,vp,weap->zoom.mask_name,name_str_len);
 	weapon_attach_zoom_mask(weap);
 
@@ -330,7 +330,7 @@ bool js_weap_zoom_set_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.show_weapon=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -340,7 +340,7 @@ bool js_weap_zoom_set_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->zoom.tick=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -359,8 +359,8 @@ JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
-	obj=object_find_uid(weap->obj_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
+	obj=object_find_uid(weap->obj_index);
 
 	weapon_zoom_enter(obj,weap);
 
@@ -374,8 +374,8 @@ JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
-	obj=object_find_uid(weap->obj_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
+	obj=object_find_uid(weap->obj_index);
 
 	weapon_zoom_exit(obj,weap);
 
@@ -390,8 +390,8 @@ JSValueRef js_weap_zoom_goto_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
-	weap=weapon_find_uid(js.attach.thing_uid);
-	obj=object_find_uid(weap->obj_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
+	obj=object_find_uid(weap->obj_index);
 
 	step=script_value_to_int(cx,argv[1]);
 	if (step<0) step=0;

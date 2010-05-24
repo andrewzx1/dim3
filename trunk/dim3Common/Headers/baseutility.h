@@ -105,8 +105,8 @@ typedef struct		{
 					} attach_msg_type;
 
 typedef struct		{
-						int							thing_type,thing_uid,
-													script_uid;
+						int							thing_type,script_uid,
+													obj_index,weap_uid,proj_setup_index,proj_uid;
 						attach_msg_type				set_msg_data[max_msg_data],get_msg_data[max_msg_data];
 					} attach_type;
 

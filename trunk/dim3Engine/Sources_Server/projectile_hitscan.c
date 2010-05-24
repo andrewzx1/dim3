@@ -81,7 +81,7 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 	
 	contact.obj.on=TRUE;
 	contact.proj.on=proj_setup->collision;
-	contact.obj.ignore_uid=obj->uid;
+	contact.obj.ignore_uid=obj->index;
 	contact.proj.ignore_uid=proj->uid;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;

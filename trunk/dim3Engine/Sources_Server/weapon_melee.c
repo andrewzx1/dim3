@@ -88,7 +88,7 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		hurt_obj=server.obj_list.objs[n];
 		if (hurt_obj==NULL) continue;
 
-        if ((hurt_obj->hidden) || (!hurt_obj->contact.projectile_on) || (hurt_obj->uid==ignore_uid)) continue;
+        if ((hurt_obj->hidden) || (!hurt_obj->contact.projectile_on) || (hurt_obj->index==ignore_uid)) continue;
 		
 			// melee hit?
 			
@@ -340,7 +340,7 @@ bool melee_script_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *err_s
 
 		// add melee
 		
-	melee_add(obj,weap,&pt,&obj->ang,&weap->melee,obj->uid);
+	melee_add(obj,weap,&pt,&obj->ang,&weap->melee,obj->index);
 
 	return(TRUE);
 }
@@ -356,10 +356,10 @@ bool melee_script_spawn_object_model(obj_type *obj,weapon_type *weap,char *err_s
 		// add melee
 	
 	if (weap==NULL) {
-		melee_add(obj,NULL,&pt,&obj->ang,&obj->melee,obj->uid);
+		melee_add(obj,NULL,&pt,&obj->ang,&obj->melee,obj->index);
 	}
 	else {
-		melee_add(obj,weap,&pt,&obj->ang,&weap->melee,obj->uid);
+		melee_add(obj,weap,&pt,&obj->ang,&weap->melee,obj->index);
 	}
 
 	return(TRUE);

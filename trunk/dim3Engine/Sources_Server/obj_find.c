@@ -52,7 +52,7 @@ obj_type* object_find_uid(int uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (obj->uid==uid) return(obj);
+		if (obj->index==uid) return(obj);
 	}
 	
 	return(NULL);
@@ -67,7 +67,7 @@ int object_find_index_uid(int uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (obj->uid==uid) return(n);
+		if (obj->index==uid) return(n);
 	}
 	
 	return(-1);
@@ -151,7 +151,7 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 		if ((player) && (obj->type!=object_type_player)) continue;
 		if ((remote) && (obj->type!=object_type_remote)) continue;
 
-		if (obj->uid==skip_obj_uid) continue;
+		if (obj->index==skip_obj_uid) continue;
 		
 			// check name
 			
@@ -205,11 +205,12 @@ int object_count_team(int team_idx,int ignore_obj_uid)
 	obj_type		*obj;
 
 	count=0;
-	obj=server.objs;
 
-	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->uid!=ignore_obj_uid) && (obj->team_idx==team_idx)) count++;
-		obj++;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+		
+		if ((obj->index!=ignore_obj_uid) && (obj->team_idx==team_idx)) count++;
 	}
 
 	return(count);
@@ -217,7 +218,7 @@ int object_count_team(int team_idx,int ignore_obj_uid)
 
 void object_set_even_team(obj_type *obj)
 {
-	if (object_count_team(net_team_red,obj->uid)<object_count_team(net_team_blue,obj->uid)) {
+	if (object_count_team(net_team_red,obj->index)<object_count_team(net_team_blue,obj->index)) {
 		obj->team_idx=net_team_red;
 	}
 	else {
@@ -240,8 +241,9 @@ int object_find_uid_click_object(obj_type *obj)
 	uid=-1;
 	dist=0;
 
-	for (n=0;n!=server.count.obj;n++) {
-		click_obj=&server.objs[n];
+	for (n=0;n!=max_obj_list;n++) {
+		click_obj=server.obj_list.objs[n];
+		if (click_obj==NULL) continue;
 		
 		if (click_obj->hidden) continue;
 		if (!click_obj->click.on) continue;
@@ -257,7 +259,7 @@ int object_find_uid_click_object(obj_type *obj)
 		fang=angle_find(obj->pnt.x,obj->pnt.z,click_obj->pnt.x,click_obj->pnt.z);
 		if (angle_dif(fang,obj->ang.y,NULL)>ci_object_click_angle) continue;
 		
-		uid=click_obj->uid;
+		uid=click_obj->index;
 		dist=d;
 	}
 	
@@ -272,14 +274,14 @@ int object_find_uid_click_object(obj_type *obj)
 
 int object_find_uid_by_stood_on_object_uid(int stand_obj_uid)
 {
-	int				i;
+	int				n;
 	obj_type		*obj;
 	
-	obj=server.objs;
-	
-	for (i=0;i!=server.count.obj;i++) {
-		if (obj->stand_obj_uid==stand_obj_uid) return(obj->uid);
-		obj++;
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		if (obj->stand_obj_uid==stand_obj_uid) return(obj->index);
 	}
 	
 	return(-1);
@@ -313,7 +315,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
 
-	contact.obj.ignore_uid=obj->uid;
+	contact.obj.ignore_uid=obj->index;
 	contact.proj.ignore_uid=-1;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;

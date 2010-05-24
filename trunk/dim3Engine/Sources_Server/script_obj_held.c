@@ -82,7 +82,7 @@ JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_o
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_value_to_string(cx,argv[1],type,name_str_len);
@@ -106,7 +106,7 @@ JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 	uid=script_value_to_int(cx,argv[0]);
 	y_ang=script_value_to_float(cx,argv[1]);

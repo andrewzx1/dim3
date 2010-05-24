@@ -87,7 +87,7 @@ JSValueRef js_obj_vehicle_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_bool_to_value(cx,obj->vehicle.on));
 }
 
@@ -95,7 +95,7 @@ JSValueRef js_obj_vehicle_get_hasOccupant(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_bool_to_value(cx,obj->vehicle.attach_obj_uid!=-1));
 }
 
@@ -109,7 +109,7 @@ bool js_obj_vehicle_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	obj->vehicle.on=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -128,7 +128,7 @@ JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 	if (!object_enter_vehicle(obj,err_str)) {
 		*exception=script_create_exception(cx,err_str);
@@ -144,7 +144,7 @@ JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 
 	if (!object_exit_vehicle(obj,FALSE,err_str)) {
 		*exception=script_create_exception(cx,err_str);

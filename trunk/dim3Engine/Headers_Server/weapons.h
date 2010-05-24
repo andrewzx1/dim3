@@ -34,9 +34,8 @@ extern weapon_type* weapon_find_current(obj_type *obj);
 extern weapon_type* weapon_find_offset(obj_type *obj,int offset);
 extern int weapon_held_count(obj_type *obj);
 
-extern bool weapon_create(obj_type *obj,char *name);
-extern bool weapon_start(weapon_type *weap);
-extern void weapon_dispose(int idx);
+extern bool weapon_add(obj_type *obj,char *name);
+extern void weapon_dispose(obj_type *obj,int idx);
 
 extern void weapon_attach_fire_crosshair(weapon_type *weap);
 extern void weapon_attach_zoom_mask(weapon_type *weap);

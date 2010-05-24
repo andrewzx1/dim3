@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
+#include "weapons.h"
 #include "projectiles.h"
 #include "timing.h"
 
@@ -121,6 +122,7 @@ int js_get_proj_hit_type(proj_type *proj)
 void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
 {
 	obj_type			*hit_obj;
+	weapon_type			*hit_weap;
 	proj_type			*hit_proj;
 	proj_setup_type		*hit_proj_setup;
 	
@@ -133,7 +135,8 @@ void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
 		
 		case sd_proj_hit_type_projectile:
 			hit_proj=projectile_find_uid(proj->contact.proj_uid);
-			hit_proj_setup=proj_setups_find_uid(hit_proj->proj_setup_uid);
+			hit_weap=weapon_find_uid(hit_proj->weap_uid);
+			hit_proj_setup=proj_setups_find_uid(hit_weap,hit_proj->proj_setup_index);
 			strcpy(name,hit_proj_setup->name);
 			return;
 		
@@ -214,7 +217,7 @@ JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_bool_to_value(cx,proj->contact.obj_uid==server.player_obj_uid));
+	return(script_bool_to_value(cx,proj->contact.obj_uid==server.player_obj_index));
 }
 
 JSValueRef js_proj_hit_get_startTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

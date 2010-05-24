@@ -193,7 +193,7 @@ void halo_draw_setup(void)
 
 		if (camera.mode==cv_fpp) {
 			if (hit) {
-				if (contact.obj.uid!=server.player_obj_uid) {
+				if (contact.obj.uid!=server.player_obj_index) {
 					halo_draw->in_view=FALSE;
 					continue;
 				}

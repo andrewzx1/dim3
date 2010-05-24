@@ -208,7 +208,7 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	switch (msg_to) {
 	
 		case sd_message_to_player:
-			obj=object_find_uid(server.player_obj_uid);
+			obj=object_find_uid(server.player_obj_index);
 			memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,id);
 			break;
@@ -246,7 +246,7 @@ JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(server.player_obj_uid);
+	obj=object_find_uid(server.player_obj_index);
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
@@ -318,7 +318,7 @@ JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef
 		return(script_null_to_value(cx));
 	}
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	weap=weapon_find_current(obj);
 	if (weap==NULL) {
 		*exception=script_create_exception(cx,"No held weapon");
@@ -343,7 +343,7 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 		return(script_null_to_value(cx));
 	}
 
-	proj=projectile_find_uid(js.attach.thing_uid);
+	proj=projectile_find_uid(js.attach.proj_uid);
 	if (proj==NULL) {
 		*exception=script_create_exception(cx,"Could not find projectile");
 		return(script_null_to_value(cx));

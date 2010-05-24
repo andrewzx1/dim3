@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
+#include "weapons.h"
 #include "projectiles.h"
 #include "models.h"
 #include "physics.h"
@@ -161,7 +162,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		// ray tracing
 
 	base_contact.obj.on=TRUE;
-	base_contact.obj.ignore_uid=obj->uid;
+	base_contact.obj.ignore_uid=obj->index;
 
 	base_contact.proj.on=FALSE;
 	base_contact.proj.ignore_uid=-1;
@@ -376,7 +377,7 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
 	
 			// any collision?
 
-		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->uid==obj->uid)) continue;
+		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->index==obj->index)) continue;
 		if (!collide_object_to_object(obj,xadd,zadd,check_obj,TRUE,FALSE)) continue;
 		
 			// is it a bump up candidate?
@@ -399,6 +400,7 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
 
 bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 {
+	weapon_type				*weap;
 	d3pnt					spt,ept,hpt;
 	ray_trace_contact_type	contact;
 	proj_setup_type			*proj_setup;
@@ -415,13 +417,15 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 
 	contact.obj.on=TRUE;
 	if (proj->parent_grace>0) {
-		contact.obj.ignore_uid=proj->obj_uid;
+		contact.obj.ignore_uid=proj->obj_index;
 	}
 	else {
 		contact.obj.ignore_uid=-1;
 	}
+	
+	weap=weapon_find_uid(proj->weap_uid);
 
-	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
+	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 	contact.proj.on=proj_setup->collision;
 	contact.proj.ignore_uid=proj->uid;
 

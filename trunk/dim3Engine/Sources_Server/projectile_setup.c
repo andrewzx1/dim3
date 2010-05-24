@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
+#include "weapons.h"
 #include "projectiles.h"
 #include "models.h"
 #include "effects.h"
@@ -43,51 +44,27 @@ extern int mark_find(char *name);
 
 /* =======================================================
 
-      Initialize Projectile Setup List
-      
-======================================================= */
-
-void proj_setup_initialize_list(void)
-{
-	server.proj_setups=NULL;
-	server.count.proj_setup=0;
-	server.uid.proj_setup=0;
-}
-
-/* =======================================================
-
       Find Projectile Setup
       
 ======================================================= */
 
-proj_setup_type* proj_setups_find_uid(int uid)
-{
-	int				i;
-	proj_setup_type	*proj_setup;
+// supergumba -- maybe not needed
 
-	proj_setup=server.proj_setups;
-	
-	for (i=0;i!=server.count.proj_setup;i++) {
-		if (proj_setup->uid==uid)  return(proj_setup);
-		proj_setup++;
-	}
-	
-	return(NULL);
+inline proj_setup_type* proj_setups_find_uid(weapon_type *weap,int index)
+{
+	return(weap->proj_setup_list.proj_setups[index]);
 }
 
 proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
 {
-	int				i,weap_uid;
+	int				n;
 	proj_setup_type	*proj_setup;
 
-	weap_uid=weap->uid;
-	proj_setup=server.proj_setups;
-	
-	for (i=0;i!=server.count.proj_setup;i++) {
-		if (proj_setup->weap_uid==weap_uid) {
-			if (strcasecmp(proj_setup->name,name)==0) return(proj_setup);
-		}
-		proj_setup++;
+	for (n=0;n!=max_proj_setup_list;n++) {
+		proj_setup=weap->proj_setup_list.proj_setups[n];
+		if (proj_setup==NULL) continue;
+		
+		if (strcasecmp(proj_setup->name,name)==0) return(proj_setup);
 	}
 	
 	return(NULL);
@@ -95,40 +72,40 @@ proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
 
 /* =======================================================
 
-      Add Projectile Setup to List
+      Create and Dispose Projectile Setup
       
 ======================================================= */
 
-bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name)
+bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 {
-	proj_setup_type		*proj_setup,*ptr;
+	int					n,idx;
+	char				err_str[256];
+	proj_setup_type		*proj_setup;
 	
-		// only allow a maximum number of projectile setups
-
-	if (server.count.proj_setup>=max_proj_setup) return(FALSE);
+		// find a free proj setup
+		
+	idx=-1;
+	
+	for (n=0;n!=max_proj_setup_list;n++) {
+		if (weap->proj_setup_list.proj_setups[n]==NULL) {
+			idx=n;
+			break;
+		}
+	}
+	
+	if (idx==-1) return(FALSE);
 
 		// create memory for new projectile setup
-
-	ptr=(proj_setup_type*)malloc(sizeof(proj_setup_type)*(server.count.proj_setup+1));
-	if (ptr==NULL) return(FALSE);
-
-	if (server.proj_setups!=NULL) {
-		memmove(ptr,server.proj_setups,(sizeof(proj_setup_type)*server.count.proj_setup));
-		free(server.proj_setups);
-	}
-
-	server.proj_setups=ptr;
-
-	proj_setup=&server.proj_setups[server.count.proj_setup];
-	server.count.proj_setup++;
+		
+	proj_setup=(proj_setup_type*)malloc(sizeof(proj_setup_type));
+	if (proj_setup==NULL) return(FALSE);
 
 		// initialize projectile setup
 	
-	proj_setup->uid=server.uid.proj_setup;
-	server.uid.proj_setup++;
+	proj_setup->index=idx;
 	
-	proj_setup->weap_uid=weap->uid;
-	proj_setup->obj_uid=obj->uid;
+	proj_setup->weap_uid=weap->index;
+	proj_setup->obj_index=obj->index;
 	
 	strcpy(proj_setup->name,name);
 	
@@ -172,9 +149,55 @@ bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name)
 	
 	object_clear_draw(&proj_setup->draw);
 	
-	proj_setup->attach.script_uid=-1;
+		// add to list
+		
+	weap->proj_setup_list.proj_setups[idx]=proj_setup;
 	
-	return(TRUE);
+		// start the script
+		// and load the models
+		
+	proj_setup->attach.script_uid=-1;
+	proj_setup->attach.thing_type=thing_type_projectile_setup;
+	proj_setup->attach.obj_index=obj->index;
+	proj_setup->attach.weap_uid=weap->index;
+	proj_setup->attach.proj_uid=-1;
+	proj_setup->attach.proj_setup_index=idx;
+
+	scripts_clear_attach_data(&proj_setup->attach);
+
+	if (scripts_add(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,err_str)) {
+		if (model_draw_load(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) {
+			return(TRUE);
+		}
+	}
+	
+		// there was an error
+		// clean up and remove this projectile setup
+	
+	console_add_error(err_str);
+	
+	free(proj_setup);
+	weap->proj_setup_list.proj_setups[idx]=NULL;
+	
+	return(FALSE);
+}
+
+void proj_setup_dispose(weapon_type *weap,int idx)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=weap->proj_setup_list.proj_setups[idx];
+	if (proj_setup==NULL) return;
+
+		// clear scripts and models
+
+	scripts_dispose(proj_setup->attach.script_uid);
+	model_draw_dispose(&proj_setup->draw);
+	
+		// free and empty from list
+		
+	free(proj_setup);
+	weap->proj_setup_list.proj_setups[idx]=NULL;
 }
 
 /* =======================================================
@@ -212,16 +235,23 @@ void proj_setup_attach_mark(proj_setup_type *proj_setup)
 
 proj_setup_type* proj_setup_get_attach(void)
 {
+	weapon_type			*weap;
 	proj_type			*proj;
 	
 	if (js.attach.thing_type==thing_type_projectile_setup) {
-		return(proj_setups_find_uid(js.attach.thing_uid));
+		weap=weapon_find_uid(js.attach.weap_uid);
+		return(proj_setups_find_uid(weap,js.attach.proj_setup_index));
 	}
 	
 	if (js.attach.thing_type==thing_type_projectile) {
-		proj=projectile_find_uid(js.attach.thing_uid);
+	
+		weap=weapon_find_uid(js.attach.weap_uid);
+		if (weap==NULL) return(NULL);
+		
+		proj=projectile_find_uid(js.attach.proj_uid);
 		if (proj==NULL) return(NULL);
-		return(proj_setups_find_uid(proj->proj_setup_uid));
+		
+		return(proj_setups_find_uid(weap,proj->proj_setup_index));
 	}
 	
 	return(NULL);
@@ -230,84 +260,9 @@ proj_setup_type* proj_setup_get_attach(void)
 proj_type* proj_get_attach(void)
 {
 	if (js.attach.thing_type==thing_type_projectile) {
-		return(projectile_find_uid(js.attach.thing_uid));
+		return(projectile_find_uid(js.attach.proj_uid));
 	}
 	
 	return(NULL);
-}
-
-/* =======================================================
-
-      Start/Dispose Projectile Setups
-      
-======================================================= */
-
-bool proj_setup_start(proj_setup_type *proj_setup)
-{
-	char			err_str[256];
-
-	proj_setup->attach.thing_type=thing_type_projectile_setup;
-	proj_setup->attach.thing_uid=proj_setup->uid;
-
-	scripts_clear_attach_data(&proj_setup->attach);
-
-	if (!scripts_add(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,err_str)) {
-		console_add_error(err_str);
-		return(FALSE);
-	}
-
-	if (!model_draw_load(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) {
-		console_add_error(err_str);
-		return(FALSE);
-	}
-
-	return(TRUE);
-}
-
-void proj_setup_dispose(int idx)
-{
-	proj_setup_type	*proj_setup,*ptr;
-
-	proj_setup=&server.proj_setups[idx];
-
-		// clear setup
-
-	scripts_dispose(proj_setup->attach.script_uid);
-	model_draw_dispose(&proj_setup->draw);
-
-		// is the list completely empty?
-
-	if (server.count.proj_setup==1) {
-		free(server.proj_setups);
-		server.proj_setups=NULL;
-		server.count.proj_setup=0;
-		return;
-	}
-
-		// if for some reason we can't create new
-		// memory, just shuffle the list and wait
-		// until next time
-
-	ptr=(proj_setup_type*)malloc(sizeof(proj_setup_type)*(server.count.proj_setup-1));
-
-	if (ptr==NULL) {
-		if (idx<(server.count.proj_setup-1)) {
-			memmove(&server.proj_setups[idx],&server.proj_setups[idx+1],(sizeof(proj_setup_type)*((server.count.proj_setup-idx)-1)));
-		}
-	}
-	else {
-
-		if (idx>0) {
-			memmove(ptr,server.proj_setups,(sizeof(proj_setup_type)*idx));
-		}
-		if (idx<(server.count.proj_setup-1)) {
-			memmove(&ptr[idx],&server.proj_setups[idx+1],(sizeof(proj_setup_type)*((server.count.proj_setup-idx)-1)));
-		}
-
-		free(server.proj_setups);
-		server.proj_setups=ptr;
-	}
-	
-	server.count.proj_setup--;
 }
 

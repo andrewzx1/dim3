@@ -40,14 +40,11 @@ extern void projectile_mark_dispose(proj_type *proj);
 extern void projectile_dispose(void);
 extern void projectile_dispose_all(void);
 
-extern void proj_setup_initialize_list(void);
-
-extern proj_setup_type* proj_setups_find_uid(int uid);
+extern proj_setup_type* proj_setups_find_uid(weapon_type *weap,int uid);
 extern proj_setup_type* find_proj_setups(weapon_type *weap,char *name);
 
-extern bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name);
-extern bool proj_setup_start(proj_setup_type *proj_setup);
-extern void proj_setup_dispose(int idx);
+extern bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name);
+extern void proj_setup_dispose(weapon_type *weap,int idx);
 
 extern void proj_setup_set_radius(proj_setup_type *proj_setup);
 extern void proj_setup_attach_mark(proj_setup_type *proj_setup);

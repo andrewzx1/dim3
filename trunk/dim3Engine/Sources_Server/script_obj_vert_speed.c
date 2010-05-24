@@ -83,7 +83,7 @@ JSValueRef js_obj_vert_speed_get_normal(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->vert_move.max_walk_speed));
 }
 
@@ -91,7 +91,7 @@ JSValueRef js_obj_vert_speed_get_acceleration(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->vert_move.accelerate));
 }
 
@@ -99,7 +99,7 @@ JSValueRef js_obj_vert_speed_get_deceleration(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->vert_move.decelerate));
 }
 
@@ -107,7 +107,7 @@ JSValueRef js_obj_vert_speed_get_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	return(script_float_to_value(cx,obj->vert_move.slop));
 }
 
@@ -121,7 +121,7 @@ bool js_obj_vert_speed_set_normal(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	obj->vert_move.max_walk_speed=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -131,7 +131,7 @@ bool js_obj_vert_speed_set_acceleration(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	obj->vert_move.accelerate=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -141,7 +141,7 @@ bool js_obj_vert_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	obj->vert_move.decelerate=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -151,7 +151,7 @@ bool js_obj_vert_speed_set_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(js.attach.obj_index);
 	obj->vert_move.slop=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);

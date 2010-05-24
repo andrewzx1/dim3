@@ -84,7 +84,7 @@ void camera_static_get_position(d3pnt *pnt,d3ang *ang)
 		// if following an object, point camera at object
 
     if (camera.static_follow) {
-		obj=object_find_uid(camera.obj_uid);
+		obj=object_find_uid(camera.obj_idx);
         ang->y=angle_find(camera_static_pnt.x,camera_static_pnt.z,obj->pnt.x,obj->pnt.z);
 		ang->x=-(180.0f-angle_find(camera_static_pnt.y,camera_static_pnt.z,obj->pnt.y,obj->pnt.z));
  		ang->z=camera.ang.z;
@@ -178,7 +178,7 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 		// player freeze
 		
 	if (in_freeze) {
-		player_obj=object_find_uid(server.player_obj_uid);
+		player_obj=object_find_uid(server.player_obj_index);
 		object_input_freeze(player_obj,TRUE);
 	}
 
@@ -267,7 +267,7 @@ void camera_static_run(void)
 		// player freeze
 		
 	if (camera.auto_walk.in_freeze) {
-		player_obj=object_find_uid(server.player_obj_uid);
+		player_obj=object_find_uid(server.player_obj_index);
 		object_input_freeze(player_obj,FALSE);
 	}
 	

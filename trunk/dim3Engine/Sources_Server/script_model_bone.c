@@ -91,18 +91,18 @@ model_draw* script_bone_function_setup(JSContextRef cx,JSValueRef *exception)
 	switch (js.attach.thing_type) {
 	
 		case thing_type_object:
-			obj=object_find_uid(js.attach.thing_uid);
+			obj=object_find_uid(js.attach.obj_index);
 			model_draw_setup_object(obj);
 			return(&obj->draw);
 			
 		case thing_type_weapon:
-			weap=weapon_find_uid(js.attach.thing_uid);
-			obj=object_find_uid(weap->obj_uid);
+			weap=weapon_find_uid(js.attach.weap_uid);
+			obj=object_find_uid(weap->obj_index);
 			model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 			return(&weap->draw);
 			
 		case thing_type_projectile:
-			proj=projectile_find_uid(js.attach.thing_uid);
+			proj=projectile_find_uid(js.attach.proj_uid);
 			model_draw_setup_projectile(proj);
 			return(&proj->draw);
 			

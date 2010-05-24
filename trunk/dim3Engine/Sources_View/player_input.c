@@ -1007,7 +1007,7 @@ void player_get_input(void)
 	
 		// get player object
 	
-	obj=object_find_uid(server.player_obj_uid);
+	obj=object_find_uid(server.player_obj_index);
 
 		// no input if menu or console is on
 

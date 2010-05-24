@@ -86,7 +86,7 @@ JSValueRef js_weap_hand_get_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_int_to_value(cx,weap->hand.raise_tick));
 }
 
@@ -94,7 +94,7 @@ JSValueRef js_weap_hand_get_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_int_to_value(cx,weap->hand.lower_tick));
 }
 
@@ -102,7 +102,7 @@ JSValueRef js_weap_hand_get_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_int_to_value(cx,weap->hand.select_shift));
 }
 
@@ -110,7 +110,7 @@ JSValueRef js_weap_hand_get_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->hand.bounce_speed));
 }
 
@@ -118,7 +118,7 @@ JSValueRef js_weap_hand_get_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_float_to_value(cx,weap->hand.bounce_ang));
 }
 
@@ -132,7 +132,7 @@ bool js_weap_hand_set_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->hand.raise_tick=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -142,7 +142,7 @@ bool js_weap_hand_set_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->hand.lower_tick=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -152,7 +152,7 @@ bool js_weap_hand_set_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->hand.select_shift=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -162,7 +162,7 @@ bool js_weap_hand_set_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->hand.bounce_speed=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -172,7 +172,7 @@ bool js_weap_hand_set_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->hand.bounce_ang=script_value_to_float(cx,vp);
 
 	return(TRUE);

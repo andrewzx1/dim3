@@ -80,7 +80,7 @@ JSValueRef js_weap_kickback_get_size(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	return(script_int_to_value(cx,weap->kickback.size));
 }
 
@@ -94,7 +94,7 @@ bool js_weap_kickback_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
 	weap->kickback.size=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -113,8 +113,8 @@ JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_find_uid(js.attach.thing_uid);
-	obj=object_find_uid(weap->obj_uid);
+	weap=weapon_find_uid(js.attach.weap_uid);
+	obj=object_find_uid(weap->obj_index);
 	
 	weapon_kickback(obj,weap);
 

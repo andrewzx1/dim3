@@ -61,9 +61,6 @@ bool server_memory_allocate(void)
 {
 		// initialize pointers
 		
-    server.objs=NULL;
-	server.weapons=NULL;
-	server.proj_setups=NULL;
 	server.particles=NULL;
  	server.rings=NULL;
 	server.halos=NULL;
@@ -151,9 +148,6 @@ void server_memory_release(void)
 {
 		// catch all for dynamic server pointers
 		
-	if (server.objs!=NULL) free(server.objs);
-	if (server.weapons!=NULL) free(server.weapons);
-	if (server.proj_setups!=NULL) free(server.proj_setups);
 	if (server.particles!=NULL) free(server.particles);
 	if (server.rings!=NULL) free(server.rings);
 	if (server.halos!=NULL) free(server.halos);
@@ -265,7 +259,6 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 		
 	object_initialize_list();
 	weapon_initialize_list();
-	proj_setup_initialize_list();
 	
 	scripts_initialize();
 	script_globals_initialize();
@@ -280,10 +273,9 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 	map.info.name[0]=0x0;
 	map.info.player_start_name[0]=0x0;
 	
-	server.player_obj_uid=-1;
+	server.player_obj_index=-1;
 	
 	js.game_attach.thing_type=thing_type_game;
-	js.game_attach.thing_uid=-1;
 
 	scripts_clear_attach_data(&js.game_attach);
 	
@@ -302,15 +294,11 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 		return(FALSE);
 	}
 
-		// prepare for any script based spawns
-
-	object_script_spawn_start();
-
 		// create game based objects
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
-		server.player_obj_uid=game_player_create(err_str);
-		if (server.player_obj_uid==-1) {
+		server.player_obj_index=game_player_create(err_str);
+		if (server.player_obj_index==-1) {
 			scripts_dispose(js.game_attach.script_uid);
 			return(FALSE);
 		}
@@ -318,10 +306,6 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 
 	game_multiplayer_bots_create();
 	game_remotes_create(remotes);
-
-		// finish any script based spawns
-
-	object_script_spawn_finish();
 	
 	return(TRUE);
 }
@@ -349,16 +333,6 @@ void server_game_stop(void)
 
 void server_loop(void)
 {
-		// prepare for any script based spawns
-
-	object_script_spawn_start();
-
-		// run all server functions
-
 	scripts_run();
 	server_run();
-
-		// finish spawning any script based objects
-
-	object_script_spawn_finish();
 }

@@ -564,7 +564,7 @@ inline bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray
 	
 		// object a hit candidate?
 
-	if ((obj->hidden) || (obj->pickup.on) || (obj->uid==contact->obj.ignore_uid)) return(FALSE);
+	if ((obj->hidden) || (obj->pickup.on) || (obj->index==contact->obj.ignore_uid)) return(FALSE);
 	if (((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) || ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on))) return(FALSE);
 	
 		// rough y vector box check
@@ -694,7 +694,7 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 			
 				ray_trace_contact_clear(contact);
 
-				contact->obj.uid=obj->uid;
+				contact->obj.uid=obj->index;
 				contact->obj.hit_face=hit_face;
 				
 				ray_trace_object_set_hitbox(obj,hit_box_idx,contact);
@@ -803,7 +803,7 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 		
 			ray_trace_contact_clear(contact);
 
-			contact->obj.uid=obj->uid;
+			contact->obj.uid=obj->index;
 			contact->obj.hit_face=hit_face;
 			
 			ray_trace_object_set_hitbox(obj,hit_box_idx,contact);

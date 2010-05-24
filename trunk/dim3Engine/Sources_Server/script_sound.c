@@ -124,15 +124,15 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 
 	if (atplayer) {
 		player=TRUE;
-		sound_obj_uid=server.player_obj_uid;
+		sound_obj_uid=server.player_obj_index;
 	}
 	else {
 		player=FALSE;
 		sound_obj_uid=-1;
 
 		if (js.attach.thing_type==thing_type_object) {
-			obj=object_find_uid(js.attach.thing_uid);
-			sound_obj_uid=obj->uid;
+			obj=object_find_uid(js.attach.obj_index);
+			sound_obj_uid=obj->index;
 			player=(obj->type==object_type_player);
 		}
 	}
@@ -164,14 +164,14 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 		switch (js.attach.thing_type) {
 		
 			case thing_type_object:
-				obj=object_find_uid(js.attach.thing_uid);
+				obj=object_find_uid(js.attach.obj_index);
 				if (obj!=NULL) remote_ok=object_networkable(obj);
 				break;
 				
 			case thing_type_weapon:
-				weap=weapon_find_uid(js.attach.thing_uid);
+				weap=weapon_find_uid(js.attach.weap_uid);
 				if (weap!=NULL) {
-					obj=object_find_uid(weap->obj_uid);
+					obj=object_find_uid(weap->obj_index);
 					if (obj!=NULL) remote_ok=object_networkable(obj);
 				}
 				break;

@@ -310,7 +310,7 @@ void gl_lights_setup_cache(void)
 				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&obj->draw);
 				
-				if ((obj->uid==server.player_obj_uid) && (obj->held_weapon.current_uid!=-1)) {
+				if ((obj->index==server.player_obj_index) && (obj->held_weapon.current_uid!=-1)) {
 					weap=weapon_find_uid(obj->held_weapon.current_uid);
 					if (weap!=NULL) gl_lights_setup_model(&weap->draw);
 				}
