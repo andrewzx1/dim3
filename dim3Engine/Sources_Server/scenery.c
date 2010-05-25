@@ -103,7 +103,7 @@ void scenery_create(void)
 			
 		if (!model_draw_load(&obj->draw,"Scenery",obj->name,err_str)) {
 			console_add_error(err_str);
-			object_dispose_single(object_find_index_uid(obj->index));
+			object_dispose_single(idx);
 			continue;
 		}
 		

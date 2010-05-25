@@ -194,7 +194,7 @@ void weapon_cur_weapon_recoil_copy(obj_type *obj,int copy_weap_index)
 {
 	weapon_type		*to_weap,*cur_weap;
 
-	to_weap=weapon_find_uid(copy_weap_index);
+	to_weap=obj->weap_list.weaps[copy_weap_index];
 	if (to_weap==NULL) return;
 				
 	cur_weap=weapon_find_current(obj);
@@ -249,10 +249,10 @@ void weapon_switch(obj_type *obj,int dir)
 	if (weap_idx==-1) return;
 	
 		// change to new weapon
-    
+		
     while (TRUE) {
         weap_idx+=dir;
-
+		
 			// wrapping at edges
 
         if (weap_idx<0) weap_idx=max_weap_list-1;
@@ -265,9 +265,9 @@ void weapon_switch(obj_type *obj,int dir)
 			// can we select this weapon?
 			
 		weap=obj->weap_list.weaps[weap_idx];
-		if (weap==NULL) continue;
-
-		if (weap->hidden) continue;
+		if (weap!=NULL) {
+			if (!weap->hidden) break;
+		}
     }
     
     weapon_goto(obj,weap);

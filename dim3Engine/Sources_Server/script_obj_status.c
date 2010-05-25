@@ -101,7 +101,7 @@ JSValueRef js_obj_status_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->forward_move.speed));
 }
 
@@ -109,7 +109,7 @@ JSValueRef js_obj_status_get_moving(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->forward_move.moving));
 }
 
@@ -117,7 +117,7 @@ JSValueRef js_obj_status_get_running(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->forward_move.running));
 }
 
@@ -125,7 +125,7 @@ JSValueRef js_obj_status_get_backward(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->forward_move.reverse));
 }
 
@@ -133,7 +133,7 @@ JSValueRef js_obj_status_get_sliding(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->side_move.moving));
 }
 
@@ -141,7 +141,7 @@ JSValueRef js_obj_status_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->duck.mode+sd_stand_standing));
 }
 
@@ -149,7 +149,7 @@ JSValueRef js_obj_status_get_air(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->air_mode+sd_air_up));
 }
 
@@ -157,7 +157,7 @@ JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->liquid.mode+sd_liquid_out));
 }
 
@@ -165,7 +165,7 @@ JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx,JSObjectRef j_obj,J
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->stand_obj_uid));
 }
 
@@ -173,7 +173,7 @@ JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_ob
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,object_find_uid_by_stood_on_object_uid(obj->index)));
 }
 
@@ -189,7 +189,7 @@ JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	object_input_freeze(obj,script_value_to_bool(cx,argv[0]));
 
 	return(script_null_to_value(cx));

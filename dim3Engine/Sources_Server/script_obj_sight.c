@@ -94,7 +94,7 @@ JSValueRef js_obj_sight_get_sideFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->sight.side_angle));
 }
 
@@ -102,7 +102,7 @@ JSValueRef js_obj_sight_get_lookFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->sight.look_angle));
 }
 
@@ -110,7 +110,7 @@ JSValueRef js_obj_sight_get_sideFieldDivision(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->sight.side_division));
 }
 
@@ -118,7 +118,7 @@ JSValueRef js_obj_sight_get_lookFieldDivision(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->sight.look_division));
 }
 
@@ -126,7 +126,7 @@ JSValueRef js_obj_sight_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->sight.distance));
 }
 
@@ -140,7 +140,7 @@ bool js_obj_sight_set_sideFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->sight.side_angle=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -150,7 +150,7 @@ bool js_obj_sight_set_lookFieldAngle(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->sight.look_angle=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -160,7 +160,7 @@ bool js_obj_sight_set_sideFieldDivision(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->sight.side_division=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -170,7 +170,7 @@ bool js_obj_sight_set_lookFieldDivision(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->sight.look_division=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -180,7 +180,7 @@ bool js_obj_sight_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->sight.distance=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -199,7 +199,7 @@ JSValueRef js_obj_sight_test_object_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 
 	id=script_value_to_int(cx,argv[0]);
 	return(script_bool_to_value(cx,object_sight_test_object(obj,id)));
@@ -211,6 +211,6 @@ JSValueRef js_obj_sight_test_player_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,object_sight_test_object(obj,server.player_obj_index)));
 }

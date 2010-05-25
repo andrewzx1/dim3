@@ -628,7 +628,7 @@ void view_setup_objects(int tick)
 			// if player
 
 		if ((obj->index==server.player_obj_index) && (obj->held_weapon.current_index!=-1)) {
-			weap=weapon_find_uid(obj->held_weapon.current_index);
+			weap=weapon_find_current(obj);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 				view_setup_model_in_view(&weap->draw,obj->mesh.cur_mesh_idx);

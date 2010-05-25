@@ -35,12 +35,18 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 extern network_setup_type	net_setup;
+extern js_type				js;
 
 /* =======================================================
 
-      Find Objects by Unique ID
+      Find Objects
       
 ======================================================= */
+
+inline obj_type* object_script_lookup(void)
+{
+	return(server.obj_list.objs[js.attach.obj_index]);
+}
 
 // supergumba -- eventually delete me
 obj_type* object_find_uid(int uid)
@@ -58,21 +64,6 @@ obj_type* object_find_uid(int uid)
 	return(NULL);
 }
 
-int object_find_index_uid(int uid)
-{
-	int				n;
-	obj_type		*obj;
-	
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		if (obj->index==uid) return(n);
-	}
-	
-	return(-1);
-}
-
 obj_type* object_find_remote_uid(int uid)
 {
 	int				n;
@@ -86,21 +77,6 @@ obj_type* object_find_remote_uid(int uid)
 	}
 	
 	return(NULL);
-}
-
-int object_find_index_remote_uid(int uid)
-{
-	int				n;
-	obj_type		*obj;
-	
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		if (obj->remote.uid==uid) return(n);
-	}
-	
-	return(-1);
 }
 
 /* =======================================================

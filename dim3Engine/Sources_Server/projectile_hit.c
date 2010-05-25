@@ -65,12 +65,14 @@ void projectile_stick(proj_type *proj)
 
 void projectile_collision(proj_type *proj)
 {
+	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	
 		// projectile collisions on?
-		
-	weap=weapon_find_uid(proj->weap_index);
+	
+	obj=object_find_uid(proj->obj_index);
+	weap=obj->weap_list.weaps[proj->weap_index];
 		
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 	if (!proj_setup->collision) return;
@@ -164,7 +166,7 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
         // object damage
 
 	obj=object_find_uid(proj->obj_index); 
-	weap=weapon_find_uid(proj->weap_index);
+	weap=obj->weap_list.weaps[proj->weap_index];
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 	
 	uid=proj->contact.obj_uid;

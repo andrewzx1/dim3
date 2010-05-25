@@ -77,7 +77,7 @@ JSValueRef js_obj_touch_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->touch.ang.x));
 }
 
@@ -85,7 +85,7 @@ JSValueRef js_obj_touch_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->touch.ang.y));
 }
 
@@ -93,7 +93,7 @@ JSValueRef js_obj_touch_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->touch.ang.z));
 }
 

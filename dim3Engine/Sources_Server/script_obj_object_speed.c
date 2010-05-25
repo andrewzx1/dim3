@@ -92,7 +92,7 @@ JSValueRef js_obj_object_speed_get_jumpHeight(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->jump.y_add));
 }
 
@@ -100,7 +100,7 @@ JSValueRef js_obj_object_speed_get_duckAdd(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->duck.y_add));
 }
 
@@ -108,7 +108,7 @@ JSValueRef js_obj_object_speed_get_duckChange(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->duck.y_change));
 }
 
@@ -116,7 +116,7 @@ JSValueRef js_obj_object_speed_get_bumpHeight(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->bump.high));
 }
 
@@ -124,7 +124,7 @@ JSValueRef js_obj_object_speed_get_bumpSmoothFactor(JSContextRef cx,JSObjectRef 
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->bump.smooth_factor));
 }
 
@@ -132,7 +132,7 @@ JSValueRef js_obj_object_speed_get_bounceFactor(JSContextRef cx,JSObjectRef j_ob
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->bounce.factor));
 }
 
@@ -140,7 +140,7 @@ JSValueRef js_obj_object_speed_get_noSlide(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->no_slide));
 }
 
@@ -154,7 +154,7 @@ bool js_obj_object_speed_set_jumpHeight(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->jump.y_add=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -164,7 +164,7 @@ bool js_obj_object_speed_set_duckAdd(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->duck.y_add=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -174,7 +174,7 @@ bool js_obj_object_speed_set_duckChange(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->duck.y_change=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -184,7 +184,7 @@ bool js_obj_object_speed_set_bumpHeight(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->bump.high=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -194,7 +194,7 @@ bool js_obj_object_speed_set_bumpSmoothFactor(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->bump.smooth_factor=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -204,7 +204,7 @@ bool js_obj_object_speed_set_bounceFactor(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->bounce.factor=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -214,7 +214,7 @@ bool js_obj_object_speed_set_noSlide(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->no_slide=script_value_to_bool(cx,vp);
 	
 	return(TRUE);

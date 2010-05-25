@@ -318,7 +318,7 @@ JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef
 		return(script_null_to_value(cx));
 	}
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	weap=weapon_find_current(obj);
 	if (weap==NULL) {
 		*exception=script_create_exception(cx,"No held weapon");

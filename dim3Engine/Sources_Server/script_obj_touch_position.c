@@ -77,7 +77,7 @@ JSValueRef js_obj_touch_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->touch.pnt.x));
 }
 
@@ -85,7 +85,7 @@ JSValueRef js_obj_touch_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->touch.pnt.y));
 }
 
@@ -93,6 +93,6 @@ JSValueRef js_obj_touch_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->touch.pnt.z));
 }
