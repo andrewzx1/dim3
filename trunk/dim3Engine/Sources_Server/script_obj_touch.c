@@ -80,7 +80,7 @@ JSValueRef js_obj_touch_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->touch.obj_uid));
 }
 
@@ -88,7 +88,7 @@ JSValueRef js_obj_touch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj,*touch_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	touch_obj=object_find_uid(obj->touch.obj_uid);
 	if (touch_obj==NULL) return(script_null_to_value(cx));
@@ -100,7 +100,7 @@ JSValueRef js_obj_touch_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->touch.obj_uid==server.player_obj_index));
 }
 
@@ -108,7 +108,7 @@ JSValueRef js_obj_touch_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->touch.stand));
 }
 

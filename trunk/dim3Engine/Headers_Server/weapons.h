@@ -26,11 +26,8 @@ and can be sold or given away.
 *********************************************************************/
 
 extern weapon_type* weapon_script_lookup(void);
-extern weapon_type* weapon_find_uid(int uid);
-extern int weapon_index_find_uid(int uid);
 extern weapon_type* weapon_find_name(obj_type *obj,char *name);
 extern weapon_type* weapon_find_current(obj_type *obj);
-extern int weapon_held_count(obj_type *obj);
 
 extern bool weapon_add(obj_type *obj,char *name);
 extern void weapon_dispose(obj_type *obj,int idx);

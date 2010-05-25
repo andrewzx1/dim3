@@ -156,13 +156,12 @@ void remote_team(network_request_team *team,bool send_event)
 
 void remote_remove(int remote_uid,bool send_event)
 {
-	int					idx;
-	obj_type			*player_obj;
+	obj_type			*obj,*player_obj;
 	
 		// find remote index
 		
-	idx=object_find_index_remote_uid(remote_uid);
-	if (idx==-1) return;
+	obj=object_find_remote_uid(remote_uid);
+	if (obj==NULL) return;
 
 		// send event to player
 		// do it before dispose so player can
@@ -170,12 +169,12 @@ void remote_remove(int remote_uid,bool send_event)
 
 	if (send_event) {
 		player_obj=object_find_uid(server.player_obj_index);
-		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_leave,server.obj_list.objs[idx]->index);
+		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_leave,obj->index);
 	}
 	
 		// remove the obj
 		
-	object_dispose_single(idx);
+	object_dispose_single(obj->index);
 }
 
 /* =======================================================

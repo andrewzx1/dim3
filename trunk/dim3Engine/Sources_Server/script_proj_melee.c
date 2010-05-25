@@ -270,7 +270,7 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
 	if (proj==NULL) return(script_null_to_value(cx));
 	
     obj=object_find_uid(proj->obj_index);
-	weap=weapon_find_uid(proj->weap_index);
+	weap=obj->weap_list.weaps[proj->weap_index];
 
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
@@ -296,7 +296,7 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	if (proj==NULL) return(script_null_to_value(cx));
 	
     obj=object_find_uid(proj->obj_index);
-	weap=weapon_find_uid(proj->weap_index);
+	weap=obj->weap_list.weaps[proj->weap_index];
 
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 	if (proj_setup==NULL) return(script_null_to_value(cx));

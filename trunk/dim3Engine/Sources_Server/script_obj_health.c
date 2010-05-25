@@ -103,7 +103,7 @@ JSValueRef js_obj_health_get_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->status.max_health));
 }
 
@@ -111,7 +111,7 @@ JSValueRef js_obj_health_get_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->status.start_health));
 }
 
@@ -119,7 +119,7 @@ JSValueRef js_obj_health_get_current(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->status.health));
 }
 
@@ -127,7 +127,7 @@ JSValueRef js_obj_health_get_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->status.health_recover_tick));
 }
 
@@ -135,7 +135,7 @@ JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->status.health_recover_amount));
 }
 
@@ -143,7 +143,7 @@ JSValueRef js_obj_health_get_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->fall.damage_minimum_height));
 }
 
@@ -151,7 +151,7 @@ JSValueRef js_obj_health_get_fallDamageFactor(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->fall.damage_factor));
 }
 
@@ -159,7 +159,7 @@ JSValueRef js_obj_health_get_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->status.health_factor));
 }
 
@@ -173,7 +173,7 @@ bool js_obj_health_set_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->status.max_health=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -183,7 +183,7 @@ bool js_obj_health_set_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->status.start_health=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -193,7 +193,7 @@ bool js_obj_health_set_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->status.health_recover_tick=script_value_to_int(cx,vp);
 	obj->status.health_recover_count=0;			// restart recover count
 	
@@ -204,7 +204,7 @@ bool js_obj_health_set_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->status.health_recover_amount=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -214,7 +214,7 @@ bool js_obj_health_set_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef j_obj
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->fall.damage_minimum_height=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -224,7 +224,7 @@ bool js_obj_health_set_fallDamageFactor(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->fall.damage_factor=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -234,7 +234,7 @@ bool js_obj_health_set_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->status.health_factor=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -253,7 +253,7 @@ JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
     status=&obj->status;
 	
     status->health+=script_value_to_int(cx,argv[0]);
@@ -269,7 +269,7 @@ JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
     status=&obj->status;
 	
 	obj->damage_obj_uid=-1;			// self-inflicted damage
@@ -290,7 +290,7 @@ JSValueRef js_obj_health_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
     status=&obj->status;
 	
 	status->health=status->max_health;

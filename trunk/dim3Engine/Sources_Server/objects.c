@@ -850,7 +850,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		// setup held weapon
 
 	if (obj->held_weapon.current_index!=-1) {
-		weap=weapon_find_uid(obj->held_weapon.current_index);
+		weap=weapon_find_current(obj);
 		weapon_set(obj,weap);
 	}
 
@@ -867,7 +867,6 @@ void object_dispose_single(int idx)
 {
 	int					n;
 	obj_type			*obj;
-	weapon_type			*weap;
 
 	obj=server.obj_list.objs[idx];
 

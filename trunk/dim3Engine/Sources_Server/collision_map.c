@@ -424,8 +424,8 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 		contact.obj.ignore_uid=-1;
 	}
 	
-	obj=server.obj_list.objs[proj->obj_idx];
-	weap=obj->weap_list.weaps[proj->weap_idx];
+	obj=server.obj_list.objs[proj->obj_index];
+	weap=obj->weap_list.weaps[proj->weap_index];
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 
 	contact.proj.on=proj_setup->collision;

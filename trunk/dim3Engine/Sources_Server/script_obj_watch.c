@@ -105,7 +105,7 @@ JSValueRef js_obj_watch_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->watch.obj_uid));
 }
 
@@ -113,7 +113,7 @@ JSValueRef js_obj_watch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj,*watch_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) return(script_null_to_value(cx));
@@ -125,7 +125,7 @@ JSValueRef js_obj_watch_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->watch.obj_uid==server.player_obj_index));
 }
 
@@ -133,7 +133,7 @@ JSValueRef js_obj_watch_get_objectIsRemote(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj,*watch_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
@@ -145,7 +145,7 @@ JSValueRef js_obj_watch_get_objectIsBot(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj,*watch_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
@@ -157,7 +157,7 @@ JSValueRef js_obj_watch_get_objectIsMapBot(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj,*watch_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
@@ -169,7 +169,7 @@ JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef 
 {
 	obj_type		*obj,*watch_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	if (obj->watch.obj_uid==server.player_obj_index) return(script_bool_to_value(cx,TRUE));
 
@@ -183,7 +183,7 @@ JSValueRef js_obj_watch_get_objectIsPlayerRemoteBotMapBot(JSContextRef cx,JSObje
 {
 	obj_type		*obj,*watch_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	if (obj->watch.obj_uid==server.player_obj_index) return(script_bool_to_value(cx,TRUE));
 
@@ -197,7 +197,7 @@ JSValueRef js_obj_watch_get_objectTeam(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj,*watch_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	watch_obj=object_find_uid(obj->watch.obj_uid);
 	if (watch_obj==NULL) return(script_int_to_value(cx,sd_team_none));
@@ -209,7 +209,7 @@ JSValueRef js_obj_watch_get_baseTeam(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->watch.base_team+sd_team_none));
 }
 
@@ -217,7 +217,7 @@ JSValueRef js_obj_watch_get_soundName(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_string_to_value(cx,obj->watch.sound_name));
 }
 
@@ -233,7 +233,7 @@ JSValueRef js_obj_watch_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	obj->watch.on=TRUE;
 	obj->watch.dist=script_value_to_int(cx,argv[0]);
@@ -247,7 +247,7 @@ JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	object_clear_watch(&obj->watch);
 
 	return(script_null_to_value(cx));
@@ -265,7 +265,7 @@ JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	obj->watch.watch_restrict.on=TRUE;
 	obj->watch.watch_restrict.ang=script_value_to_float(cx,argv[0]);
@@ -280,7 +280,7 @@ JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef fu
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	
 	obj->watch.watch_restrict.on=FALSE;
 	

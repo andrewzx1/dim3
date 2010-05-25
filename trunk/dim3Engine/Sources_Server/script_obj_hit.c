@@ -88,7 +88,7 @@ JSValueRef js_obj_hit_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->hit.obj_uid));
 }
 
@@ -96,7 +96,7 @@ JSValueRef js_obj_hit_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type			*obj,*hit_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 
 	hit_obj=object_find_uid(obj->hit.obj_uid);
 	if (hit_obj==NULL) return(script_null_to_value(cx));
@@ -108,7 +108,7 @@ JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->hit.obj_uid==server.player_obj_index));
 }
 
@@ -117,7 +117,7 @@ JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	obj_type			*obj;
 	weapon_type			*hit_weap;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 
 	hit_weap=weapon_script_lookup();
 	if (hit_weap==NULL) return(script_null_to_value(cx));
@@ -132,7 +132,7 @@ JSValueRef js_obj_hit_get_projectileName(JSContextRef cx,JSObjectRef j_obj,JSStr
 	proj_type			*hit_proj;
 	proj_setup_type		*hit_proj_setup;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 
 	hit_proj=projectile_find_uid(obj->hit.proj_uid);
 	if (hit_proj==NULL) return(script_null_to_value(cx));
@@ -147,7 +147,7 @@ JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 
 	if (obj->hit.hit_box_name[0]==0x0) return(script_null_to_value(cx));
 
@@ -158,7 +158,7 @@ JSValueRef js_obj_hit_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->hit.damage));
 }
 

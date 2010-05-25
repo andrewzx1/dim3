@@ -311,7 +311,7 @@ model_draw* script_find_model_draw(void)
 	switch (js.attach.thing_type) {
 	
 		case thing_type_object:
-			obj=object_find_uid(js.attach.obj_index);
+			obj=object_script_lookup();
 			return(&obj->draw);
 			
 		case thing_type_weapon:

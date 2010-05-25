@@ -91,7 +91,7 @@ model_draw* script_bone_function_setup(JSContextRef cx,JSValueRef *exception)
 	switch (js.attach.thing_type) {
 	
 		case thing_type_object:
-			obj=object_find_uid(js.attach.obj_index);
+			obj=object_script_lookup();
 			model_draw_setup_object(obj);
 			return(&obj->draw);
 			

@@ -131,7 +131,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 		sound_obj_uid=-1;
 
 		if (js.attach.thing_type==thing_type_object) {
-			obj=object_find_uid(js.attach.obj_index);
+			obj=object_script_lookup();
 			sound_obj_uid=obj->index;
 			player=(obj->type==object_type_player);
 		}
@@ -164,7 +164,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 		switch (js.attach.thing_type) {
 		
 			case thing_type_object:
-				obj=object_find_uid(js.attach.obj_index);
+				obj=object_script_lookup();
 				if (obj!=NULL) remote_ok=object_networkable(obj);
 				break;
 				

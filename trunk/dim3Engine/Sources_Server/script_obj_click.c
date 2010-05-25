@@ -82,7 +82,7 @@ JSValueRef js_obj_click_get_crosshairUp(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_string_to_value(cx,obj->click.crosshair_up_name));
 }
 
@@ -90,7 +90,7 @@ JSValueRef js_obj_click_get_crosshairDown(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_string_to_value(cx,obj->click.crosshair_down_name));
 }
 
@@ -98,7 +98,7 @@ JSValueRef js_obj_click_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type			*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->click.current_click_obj_uid));
 }
 
@@ -106,7 +106,7 @@ JSValueRef js_obj_click_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type			*obj,*click_obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 
 	if (obj->click.current_click_obj_uid==-1) return(script_null_to_value(cx));
 
@@ -124,7 +124,7 @@ bool js_obj_click_set_crosshairUp(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type			*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	script_value_to_string(cx,vp,obj->click.crosshair_up_name,name_str_len);
 	object_attach_click_crosshair_up(obj);
 	
@@ -135,7 +135,7 @@ bool js_obj_click_set_crosshairDown(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type			*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	script_value_to_string(cx,vp,obj->click.crosshair_down_name,name_str_len);
 	object_attach_click_crosshair_down(obj);
 	

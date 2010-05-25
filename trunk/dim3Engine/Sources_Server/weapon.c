@@ -36,8 +36,8 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "consoles.h"
 
-extern server_type		server;
-extern js_type			js;
+extern server_type			server;
+extern js_type				js;
 
 /* =======================================================
 
@@ -48,81 +48,30 @@ extern js_type			js;
 inline weapon_type* weapon_script_lookup(void)
 {
 	obj_type		*obj;
-	weapon_type		*weap;
 
-	obj=server.obj_list.objs[attach->obj_index];
-	weap=obj->weap_list.weaps[attach->weap_index];
-}
-
-weapon_type* weapon_find_uid(int uid)
-{
-	int				n;
-	weapon_type		*weap;
-
-	weap=server.weapons;
-	
-	for (n=0;n!=max_weap_list;n++) {
-		if (weap->index==uid) return(weap);
-		weap++;
-	}
-	
-	return(NULL);
-}
-
-int weapon_index_find_uid(int uid)
-{
-	int				n;
-	weapon_type		*weap;
-
-	weap=server.weapons;
-	
-	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->index==uid) return(n);
-		weap++;
-	}
-	
-	return(-1);
+	obj=server.obj_list.objs[js.attach.obj_index];
+	return(obj->weap_list.weaps[js.attach.weap_uid]);
 }
 
 weapon_type* weapon_find_name(obj_type *obj,char *name)
 {
-	int				n,obj_uid;
+	int				n;
 	weapon_type		*weap;
 
-	obj_uid=obj->index;
-	weap=server.weapons;
-	
-	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_index==obj_uid) {
-			if (strcasecmp(weap->name,name)==0) return(weap);
-		}
-		weap++;
+	for (n=0;n!=max_weap_list;n++) {
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+		
+		if (strcasecmp(weap->name,name)==0) return(weap);
 	}
 	
 	return(NULL);
 }
 
-weapon_type* weapon_find_current(obj_type *obj)
+inline weapon_type* weapon_find_current(obj_type *obj)
 {
-	return(weapon_find_uid(obj->held_weapon.current_uid));
-}
-
-int weapon_held_count(obj_type *obj)
-{
-	int				n,obj_uid,count;
-	weapon_type		*weap;
-
-	count=0;
-	
-	obj_uid=obj->index;
-	weap=server.weapons;
-	
-	for (n=0;n!=server.count.weapon;n++) {
-		if ((weap->obj_index==obj_uid) && (!weap->hidden)) count++;		
-		weap++;
-	}
-	
-	return(count);
+	if (obj->held_weapon.current_index==-1) return(NULL);
+	return(obj->weap_list.weaps[obj->held_weapon.current_index]);
 }
 
 /* =======================================================
@@ -317,7 +266,7 @@ bool weapon_add(obj_type *obj,char *name)
 			proj_setup_dispose(weap,n);
 		}
 	
-		free(proj_setup);
+		free(weap);
 		obj->weap_list.weaps[idx]=NULL;
 		
 		return(FALSE);

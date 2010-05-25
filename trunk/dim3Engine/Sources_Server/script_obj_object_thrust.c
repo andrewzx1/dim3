@@ -80,7 +80,7 @@ JSValueRef js_obj_thrust_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->thrust.speed));
 }
 
@@ -88,7 +88,7 @@ JSValueRef js_obj_thrust_get_maxSpeed(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_float_to_value(cx,obj->thrust.max_speed));
 }
 
@@ -96,7 +96,7 @@ JSValueRef js_obj_thrust_get_drag(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->thrust.drag));
 }
 
@@ -110,7 +110,7 @@ bool js_obj_thrust_set_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->thrust.speed=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -120,7 +120,7 @@ bool js_obj_thrust_set_maxSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->thrust.max_speed=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -130,7 +130,7 @@ bool js_obj_thrust_set_drag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	obj->thrust.drag=script_value_to_bool(cx,vp);
 	
 	return(TRUE);

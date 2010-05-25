@@ -311,7 +311,7 @@ void gl_lights_setup_cache(void)
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&obj->draw);
 				
 				if ((obj->index==server.player_obj_index) && (obj->held_weapon.current_index!=-1)) {
-					weap=weapon_find_uid(obj->held_weapon.current_index);
+					weap=weapon_find_current(obj);
 					if (weap!=NULL) gl_lights_setup_model(&weap->draw);
 				}
 				break;
@@ -483,7 +483,7 @@ void gl_lights_compile(int tick)
 
 		gl_lights_compile_model_add(tick,&obj->draw);
 		if (obj->held_weapon.current_index!=-1) {
-			weap=weapon_find_uid(obj->held_weapon.current_index);
+			weap=weapon_find_current(obj);
 			if (weap!=NULL) gl_lights_compile_model_add(tick,&weap->draw);
 		}
 	}

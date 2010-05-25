@@ -75,7 +75,7 @@ JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_string_to_value(cx,obj->weapon_fire.name));
 }
 
@@ -83,6 +83,6 @@ JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(js.attach.obj_index);
+	obj=object_script_lookup();
 	return(script_int_to_value(cx,obj->weapon_fire.method));
 }
