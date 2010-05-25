@@ -185,7 +185,7 @@ void halo_draw_setup(void)
 			// close to projecting object
 
 		if (halo_draw->obj_uid!=-1) {
-			obj=object_find_uid(halo_draw->obj_uid);
+			obj=server.obj_list.objs[halo_draw->obj_uid];
 			ray_push_to_end(&spt,&ept,obj->size.radius);
 		}
 

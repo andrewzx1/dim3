@@ -503,7 +503,7 @@ void view_loop_draw(void)
 	if (raw_tick<view.time.draw_tick) return;
 
 	view.time.draw_tick=raw_tick+view.time.draw_time;
-	
+
 		// texture setup
 	
 	tick=game_time_get();

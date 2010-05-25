@@ -110,7 +110,7 @@ JSValueRef js_obj_click_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 	if (obj->click.current_click_obj_uid==-1) return(script_null_to_value(cx));
 
-	click_obj=object_find_uid(obj->click.current_click_obj_uid);
+	click_obj=server.obj_list.objs[obj->click.current_click_obj_uid];
 	return(script_string_to_value(cx,click_obj->name));
 }
 

@@ -32,10 +32,11 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern server_type			server;
 extern js_type				js;
 extern network_setup_type	net_setup;
 
-extern int					game_obj_rule_uid;
+extern int					game_obj_rule_idx;
 
 JSValueRef js_game_join_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_game_join_get_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -95,9 +96,9 @@ JSValueRef js_game_join_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	return(script_string_to_value(cx,obj->name));
 }
 
@@ -105,9 +106,9 @@ JSValueRef js_game_join_get_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
     return(script_int_to_value(cx,obj->team_idx+sd_team_none));
 }
 
@@ -123,9 +124,9 @@ JSValueRef js_game_join_set_team_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	obj->team_idx=script_value_to_int(cx,argv[0])-sd_team_none;
 
 	return(script_null_to_value(cx));
@@ -137,9 +138,9 @@ JSValueRef js_game_join_set_team_even_func(JSContextRef cx,JSObjectRef func,JSOb
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	object_set_even_team(obj);
 
 	return(script_null_to_value(cx));
@@ -151,9 +152,9 @@ JSValueRef js_game_join_clear_team_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	obj->team_idx=net_team_none;
 
 	return(script_null_to_value(cx));
@@ -166,7 +167,7 @@ JSValueRef js_game_join_count_team_func(JSContextRef cx,JSObjectRef func,JSObjec
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	team_idx=script_value_to_int(cx,argv[0])-sd_team_none;
-	return(script_int_to_value(cx,object_count_team(team_idx,game_obj_rule_uid)));
+	return(script_int_to_value(cx,object_count_team(team_idx,game_obj_rule_idx)));
 }
 
 JSValueRef js_game_join_set_spawn_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -175,9 +176,9 @@ JSValueRef js_game_join_set_spawn_spot_func(JSContextRef cx,JSObjectRef func,JSO
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	script_value_to_string(cx,argv[0],obj->spawn_spot_name,name_str_len);
 
 	return(script_null_to_value(cx));
@@ -189,9 +190,9 @@ JSValueRef js_game_join_set_spawn_spot_to_team_func(JSContextRef cx,JSObjectRef 
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	
 	if (obj->team_idx==net_team_red) {
 		strcpy(obj->spawn_spot_name,"Red");
@@ -209,9 +210,9 @@ JSValueRef js_game_join_clear_spawn_spot_func(JSContextRef cx,JSObjectRef func,J
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	obj->spawn_spot_name[0]=0x0;
 
 	return(script_null_to_value(cx));

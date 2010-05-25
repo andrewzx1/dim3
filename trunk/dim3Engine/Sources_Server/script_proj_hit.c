@@ -129,13 +129,13 @@ void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
 	switch (hit_type) {
 	
 		case sd_proj_hit_type_object:
-			hit_obj=object_find_uid(proj->contact.obj_uid);
+			hit_obj=server.obj_list.objs[proj->contact.obj_uid];
 			strcpy(name,hit_obj->name);
 			return;
 		
 		case sd_proj_hit_type_projectile:
 			hit_proj=projectile_find_uid(proj->contact.proj_uid);
-			hit_obj=object_find_uid(proj->contact.obj_uid);
+			hit_obj=server.obj_list.objs[proj->contact.obj_uid];
 			hit_weap=hit_obj->weap_list.weaps[hit_proj->weap_index];
 			hit_proj_setup=proj_setups_find_uid(hit_weap,hit_proj->proj_setup_index);
 			strcpy(name,hit_proj_setup->name);

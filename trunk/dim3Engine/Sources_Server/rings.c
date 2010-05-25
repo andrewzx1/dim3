@@ -144,7 +144,7 @@ bool ring_spawn(int ring_idx,int obj_uid,d3pnt *pt,d3ang *ang)
 	eff_ring->tint.r=eff_ring->tint.g=eff_ring->tint.b=1.0f;
 
 	if ((ring->team_tint) && (obj_uid!=-1)) {
-		obj=object_find_uid(obj_uid);
+		obj=server.obj_list.objs[obj_uid];
 		if (obj!=NULL) object_get_tint(obj,&eff_ring->tint);
 	}
 	

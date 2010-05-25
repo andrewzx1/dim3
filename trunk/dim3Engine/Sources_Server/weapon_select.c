@@ -89,8 +89,8 @@ void weapon_clear_animation(weapon_type *weap)
 
 void weapon_set(obj_type *obj,weapon_type *weap)
 {
-	obj->held_weapon.current_index=weap->index;
-	obj->held_weapon.next_index=weap->index;
+	obj->held_weapon.current_index=weap->idx;
+	obj->held_weapon.next_index=weap->idx;
     obj->held_weapon.mode=wm_held;
     
 	weapon_clear_animation(weap);
@@ -210,11 +210,11 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
 {
 		// copy any recoils
 
-	weapon_cur_weapon_recoil_copy(obj,weap->index);
+	weapon_cur_weapon_recoil_copy(obj,weap->idx);
 
 		// set next weapon
 	
-	obj->held_weapon.next_index=weap->index;
+	obj->held_weapon.next_index=weap->idx;
 
 		// clear any animation smoothing
 
@@ -284,7 +284,7 @@ void weapon_pick(obj_type *obj,int index)
 	
 		// can we switch?
 
-    if (weap->index==obj->held_weapon.current_index) return;
+    if (weap->idx==obj->held_weapon.current_index) return;
 	if (weap->hidden) return;
 	
 		// set weapon
@@ -307,7 +307,7 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 		// get current distance
 
 	if (weap->target.obj_uid!=-1) {
-		chk_obj=object_find_uid(weap->target.obj_uid);
+		chk_obj=server.obj_list.objs[weap->target.obj_uid];
 		cur_dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
 	}
 	else {
@@ -376,7 +376,7 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 		// get current distance
 
 	if (weap->target.obj_uid!=-1) {
-		chk_obj=object_find_uid(weap->target.obj_uid);
+		chk_obj=server.obj_list.objs[weap->target.obj_uid];
 		cur_dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
 	}
 	else {

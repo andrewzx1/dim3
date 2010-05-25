@@ -109,7 +109,7 @@ void hud_bitmaps_draw(void)
 	cur_alpha=1.0f;
 	cur_tint.r=cur_tint.g=cur_tint.b=1.0f;
 	
-	obj=object_find_uid(server.player_obj_index);
+	obj=server.obj_list.objs[server.player_obj_index];
 	object_get_tint(obj,&team_tint);
 	
 	glEnable(GL_BLEND);
@@ -333,7 +333,7 @@ void hud_texts_score(char *data)
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(server.player_obj_index);
+	obj=server.obj_list.objs[server.player_obj_index];
 	sprintf(data,"%d",obj->score.score);
 }
 
@@ -341,7 +341,7 @@ void hud_texts_place(char *data)
 {
 	obj_type		*obj;
 	
-	obj=object_find_uid(server.player_obj_index);
+	obj=server.obj_list.objs[server.player_obj_index];
 	sprintf(data,"%d",obj->score.place);
 }
 
@@ -351,7 +351,7 @@ void hud_texts_spread(char *data)
 	bool			hit;
 	obj_type		*obj,*chk_obj;
 	
-	obj=object_find_uid(server.player_obj_index);
+	obj=server.obj_list.objs[server.player_obj_index];
 	
 		// if in first place, compare with second place
 		// else compare with first place
@@ -654,7 +654,7 @@ void hud_metrics_draw(void)
 
 		// object projectile hits
 
-	obj=object_find_uid(server.player_obj_index);
+	obj=server.obj_list.objs[server.player_obj_index];
 
 	str[0]=0x0;
 

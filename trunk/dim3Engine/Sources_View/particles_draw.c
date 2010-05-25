@@ -65,7 +65,7 @@ model_draw* particle_draw_get_model(particle_motion *motion)
 		// is it a weapon?
 
 	if (motion->weap_uid!=-1) {
-		obj=object_find_uid(motion->obj_uid);
+		obj=server.obj_list.objs[motion->obj_uid];
 		weap=obj->weap_list.weaps[motion->weap_uid];
 		if (weap==NULL) return(NULL);
 		return(&weap->draw);
@@ -73,7 +73,7 @@ model_draw* particle_draw_get_model(particle_motion *motion)
 
 		// is object
 
-	obj=object_find_uid(motion->obj_uid);
+	obj=server.obj_list.objs[motion->obj_uid];
 	if (obj==NULL) return(NULL);
 	return(&obj->draw);
 }

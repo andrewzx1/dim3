@@ -38,7 +38,7 @@ and can be sold or given away.
 #include "physics.h"
 #include "timing.h"
 
-extern int					game_obj_rule_uid;
+extern int					game_obj_rule_idx;
 
 extern map_type				map;
 extern server_type			server;
@@ -101,9 +101,9 @@ void object_score_update(obj_type *obj)
 
 		// run rule to update score
 
-	game_obj_rule_uid=obj->index;
+	game_obj_rule_idx=obj->index;
 	scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_score,0);
-	game_obj_rule_uid=-1;
+	game_obj_rule_idx=-1;
 	
 		// update placing information
 		
@@ -134,7 +134,7 @@ void object_score_death(obj_type *obj)
 			// kill
 		
 		if (obj->damage_obj_uid!=-1) {
-			source_obj=object_find_uid(obj->damage_obj_uid);
+			source_obj=server.obj_list.objs[obj->damage_obj_uid];
 		
 			source_obj->score.kill++;
 			object_score_update(source_obj);
@@ -311,7 +311,7 @@ void object_touch(obj_type *obj)
 
 		// send callbacks
 
-	hit_obj=object_find_uid(uid);
+	hit_obj=server.obj_list.objs[uid];
 	if (hit_obj->type==object_type_remote) return;
 		
 	object_setup_touch(hit_obj,obj,FALSE);
@@ -341,7 +341,7 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 	hit->proj_uid=-1;
 	
     if (from_obj!=NULL) hit->obj_uid=from_obj->index;
-	if (from_weap!=NULL) hit->weap_uid=from_weap->index;
+	if (from_weap!=NULL) hit->weap_uid=from_weap->idx;
 	if (from_proj!=NULL) hit->proj_uid=from_proj->uid;
 	
 		// damage
@@ -686,7 +686,7 @@ bool object_is_targetted(obj_type *obj,d3col *col)
 
 		// look for any targetting on player's weapons
 
-	player_obj=object_find_uid(server.player_obj_index);
+	player_obj=server.obj_list.objs[server.player_obj_index];
 
 	for (n=0;n!=max_weap_list;n++) {
 		weap=obj->weap_list.weaps[n];

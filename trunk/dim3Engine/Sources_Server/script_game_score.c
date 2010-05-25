@@ -33,11 +33,12 @@ and can be sold or given away.
 #include "objects.h"
 #include "interfaces.h"
 
+extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern int				game_obj_rule_uid;
+extern int					game_obj_rule_idx;
 
 JSValueRef js_game_score_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_game_score_get_kill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -91,9 +92,9 @@ JSValueRef js_game_score_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,-1));
+	if (game_obj_rule_idx==-1) return(script_int_to_value(cx,-1));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	return(script_int_to_value(cx,obj->index));
 }
 
@@ -101,9 +102,9 @@ JSValueRef js_game_score_get_kill(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,0));
+	if (game_obj_rule_idx==-1) return(script_int_to_value(cx,0));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	return(script_int_to_value(cx,obj->score.kill));
 }
 
@@ -111,9 +112,9 @@ JSValueRef js_game_score_get_death(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,0));
+	if (game_obj_rule_idx==-1) return(script_int_to_value(cx,0));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	return(script_int_to_value(cx,obj->score.death));
 }
 
@@ -121,9 +122,9 @@ JSValueRef js_game_score_get_suicide(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,0));
+	if (game_obj_rule_idx==-1) return(script_int_to_value(cx,0));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	return(script_int_to_value(cx,obj->score.suicide));
 }
 
@@ -131,9 +132,9 @@ JSValueRef js_game_score_get_goal(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 
-	if (game_obj_rule_uid==-1) return(script_int_to_value(cx,0));
+	if (game_obj_rule_idx==-1) return(script_int_to_value(cx,0));
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	return(script_int_to_value(cx,obj->score.goal));
 }
 
@@ -149,11 +150,11 @@ JSValueRef js_game_score_set_score_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	if (game_obj_rule_uid==-1) return(script_null_to_value(cx));
+	if (game_obj_rule_idx==-1) return(script_null_to_value(cx));
 
 		// update score
 
-	obj=object_find_uid(game_obj_rule_uid);
+	obj=server.obj_list.objs[game_obj_rule_idx];
 	obj->score.score=script_value_to_int(cx,argv[0]);
 
 		// have we hit a network score limit?

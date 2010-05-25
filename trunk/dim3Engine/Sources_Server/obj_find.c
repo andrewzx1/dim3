@@ -45,23 +45,7 @@ extern js_type				js;
 
 inline obj_type* object_script_lookup(void)
 {
-	return(server.obj_list.objs[js.attach.obj_index]);
-}
-
-// supergumba -- eventually delete me
-obj_type* object_find_uid(int uid)
-{
-	int				n;
-	obj_type		*obj;
-	
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		if (obj->index==uid) return(obj);
-	}
-	
-	return(NULL);
+	return(server.obj_list.objs[js.attach.obj_idx]);
 }
 
 obj_type* object_find_remote_uid(int uid)

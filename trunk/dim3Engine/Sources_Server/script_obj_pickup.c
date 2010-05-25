@@ -113,7 +113,7 @@ JSValueRef js_obj_pickup_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 	obj=object_script_lookup();
 
-	pickup_obj=object_find_uid(obj->pickup.obj_uid);
+	pickup_obj=server.obj_list.objs[obj->pickup.obj_uid];
 	if (pickup_obj==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,pickup_obj->name));
@@ -141,7 +141,7 @@ JSValueRef js_obj_pickup_get_itemName(JSContextRef cx,JSObjectRef j_obj,JSString
 
 	obj=object_script_lookup();
 
-	pickup_item=object_find_uid(obj->pickup.item_uid);
+	pickup_item=server.obj_list.objs[obj->pickup.item_uid];
 	if (pickup_item==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,pickup_item->name));

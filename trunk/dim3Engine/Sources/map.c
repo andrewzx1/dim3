@@ -386,7 +386,7 @@ bool map_start(bool file_restore,bool skip_media,char *err_str)
 			// connect camera to player
 			
 		if (!file_restore) {
-			obj=object_find_uid(server.player_obj_index);
+			obj=server.obj_list.objs[server.player_obj_index];
 			camera_connect(obj);
 		}
 	}
@@ -483,7 +483,7 @@ void map_end(void)
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_close,0);
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
-		obj=object_find_uid(server.player_obj_index);
+		obj=server.obj_list.objs[server.player_obj_index];
 		scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_close,0);
 	}
 

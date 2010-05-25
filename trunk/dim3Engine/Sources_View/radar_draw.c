@@ -65,7 +65,7 @@ void radar_draw(void)
 	
 		// get player object (center of radar)
 		
-	player_obj=object_find_uid(server.player_obj_index);
+	player_obj=server.obj_list.objs[server.player_obj_index];
 
 		// set up view
 		

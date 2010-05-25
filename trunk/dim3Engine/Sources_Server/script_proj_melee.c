@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "weapons.h"
 #include "projectiles.h"
 
+extern server_type		server;
 extern js_type			js;
 
 JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -269,7 +270,7 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 	
-    obj=object_find_uid(proj->obj_index);
+    obj=server.obj_list.objs[proj->obj_index];
 	weap=obj->weap_list.weaps[proj->weap_index];
 
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
@@ -295,7 +296,7 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 	
-    obj=object_find_uid(proj->obj_index);
+    obj=server.obj_list.objs[proj->obj_index];
 	weap=obj->weap_list.weaps[proj->weap_index];
 
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
