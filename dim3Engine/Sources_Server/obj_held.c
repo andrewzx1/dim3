@@ -60,7 +60,7 @@ bool object_held_drop(obj_type *obj,int uid,float y_ang,int y_change,char *err_s
 
 		// find object
 
-	held_obj=object_find_uid(uid);
+	held_obj=server.obj_list.objs[uid];
 	if (held_obj==NULL) {
 		strcpy(err_str,"No object with that ID exists");
 		return(FALSE);

@@ -90,7 +90,7 @@ JSValueRef js_obj_touch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 	obj=object_script_lookup();
 	
-	touch_obj=object_find_uid(obj->touch.obj_uid);
+	touch_obj=server.obj_list.objs[obj->touch.obj_uid];
 	if (touch_obj==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,touch_obj->name));

@@ -39,6 +39,7 @@ extern int group_find_by_index(char *name);
 
 extern char				object_type_str[][32];
 
+extern server_type		server;
 extern map_type			map;
 extern js_type			js;
 
@@ -50,15 +51,15 @@ extern js_type			js;
 
 obj_type* script_find_obj_from_uid_arg(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
 {
-	int				uid;
+	int				idx;
 	char			err_str[256];
 	obj_type		*obj;
 
-	uid=script_value_to_int(cx,arg);
+	idx=script_value_to_int(cx,arg);
 	
-	obj=object_find_uid(uid);
+	obj=server.obj_list.objs[idx];
 	if (obj==NULL) {
-		sprintf(err_str,"No object exists with this ID: %d",uid);
+		sprintf(err_str,"No object exists with this ID: %d",idx);
 		*exception=script_create_exception(cx,err_str);
 		return(NULL);
 	}
@@ -278,15 +279,15 @@ int script_get_attached_object_uid(void)
 	weapon_type		*weap;
 	proj_type		*proj;
 
-	if (js.attach.thing_type==thing_type_object) return(js.attach.obj_index);
+	if (js.attach.thing_type==thing_type_object) return(js.attach.obj_idx);
 
 	if (js.attach.thing_type==thing_type_weapon) {
 		weap=weapon_script_lookup();
-		if (weap!=NULL) return(weap->obj_index);
+		if (weap!=NULL) return(weap->obj_idx);
 	}
 
 	if (js.attach.thing_type==thing_type_projectile) {
-		proj=projectile_find_uid(js.attach.proj_uid);
+		proj=projectile_find_uid(js.attach.proj_idx);
 		if (proj!=NULL) return(proj->obj_index);
 	}
 
@@ -321,11 +322,11 @@ model_draw* script_find_model_draw(void)
 			
 		case thing_type_projectile_setup:
 			weap=weapon_script_lookup();
-			proj_setup=proj_setups_find_uid(weap,js.attach.proj_setup_index);
+			proj_setup=proj_setups_find_uid(weap,js.attach.proj_setup_idx);
 			return(&proj_setup->draw);
 			
 		case thing_type_projectile:
-			proj=projectile_find_uid(js.attach.proj_uid);
+			proj=projectile_find_uid(js.attach.proj_idx);
 			return(&proj->draw);
 			
 	}

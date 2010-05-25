@@ -111,7 +111,7 @@ void view_run(void)
 
 			// check clicable objects
 			
-		obj=object_find_uid(server.player_obj_index);
+		obj=server.obj_list.objs[server.player_obj_index];
 		obj->click.current_click_obj_uid=object_find_uid_click_object(obj);
 
 			// listener position

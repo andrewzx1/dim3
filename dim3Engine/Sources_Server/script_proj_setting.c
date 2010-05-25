@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "projectiles.h"
 
+extern server_type		server;
 extern js_type			js;
 
 JSValueRef js_proj_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -128,7 +129,7 @@ JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx,JSObjectRef j_obj,JSSt
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_int_to_value(cx,-1));
 
-	obj=object_find_uid(proj->obj_index);
+	obj=server.obj_list.objs[proj->obj_index];
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->team_idx));

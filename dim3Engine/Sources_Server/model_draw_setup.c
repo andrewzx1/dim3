@@ -399,7 +399,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		// connection
 
 	draw->connect.obj_idx=obj->index;
-	draw->connect.weap_idx=weap->index;
+	draw->connect.weap_idx=weap->idx;
 	draw->connect.proj_idx=-1;
 	draw->connect.net_sound=(obj->index==server.player_obj_index);
 	draw->connect.motion_vct.x=obj->motion.vct.x;

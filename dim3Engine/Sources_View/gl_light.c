@@ -308,6 +308,8 @@ void gl_lights_setup_cache(void)
 
 			case view_render_type_object:
 				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
+
+				obj->draw.light_cache.count=0;
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&obj->draw);
 				
 				if ((obj->index==server.player_obj_index) && (obj->held_weapon.current_index!=-1)) {
@@ -318,6 +320,8 @@ void gl_lights_setup_cache(void)
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
+
+				proj->draw.light_cache.count=0;
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&proj->draw);
 				break;
 				

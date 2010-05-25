@@ -113,8 +113,8 @@ JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 	
 	weapon_kickback(obj,weap);
 

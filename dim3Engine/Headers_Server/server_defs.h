@@ -713,10 +713,8 @@ typedef struct		{
 						bool					on;
 					} proj_setup_mark_type;
 			
-			
-			// supergumba -- weap_uid to weap_index
 typedef struct		{
-						int						index,obj_index,weap_uid,script_uid,
+						int						idx,obj_idx,weap_idx,script_uid,
 												damage,decel_grace;
 						char					name[name_str_len];
 						float					speed,decel_speed,decel_min_speed,
@@ -808,7 +806,7 @@ typedef struct		{
 					} weap_dual_type;
 					
 typedef struct		{
-						int						index,obj_index;
+						int						idx,obj_idx;
 						char					name[name_str_len];
 						bool					hidden,fail_in_liquid;
 						model_draw				draw,draw_dual;

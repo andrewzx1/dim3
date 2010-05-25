@@ -422,10 +422,10 @@ JSValueRef js_weap_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	ammo=&weap->ammo;
 
-	obj=object_find_uid(weap->obj_index);
+	ammo=&weap->ammo;
 	
 		// is this a clip based weapon and enough clips?
 		

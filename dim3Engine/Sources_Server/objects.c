@@ -45,7 +45,7 @@ extern network_setup_type	net_setup;
 extern hud_type				hud;
 extern js_type				js;
 
-int							game_obj_rule_uid=-1;
+int							game_obj_rule_idx;
 
 /* =======================================================
 
@@ -57,9 +57,15 @@ void object_initialize_list(void)
 {
 	int				n;
 
+		// clear all objects
+
 	for (n=0;n!=max_obj_list;n++) {
 		server.obj_list.objs[n]=NULL;
 	}
+
+		// no game rule attachment
+
+	game_obj_rule_idx=-1;
 }
 
 void object_free_list(void)
@@ -679,7 +685,7 @@ void object_player_set_remote_uid(int remote_uid)
 {
 	obj_type			*obj;
 	
-	obj=object_find_uid(server.player_obj_index);
+	obj=server.obj_list.objs[server.player_obj_index];
 	obj->remote.uid=remote_uid;
 }
 
@@ -687,7 +693,7 @@ int object_player_get_remote_uid(void)
 {
 	obj_type			*obj;
 	
-	obj=object_find_uid(server.player_obj_index);
+	obj=server.obj_list.objs[server.player_obj_index];
 	return(obj->remote.uid);
 }
 
@@ -700,7 +706,10 @@ int object_player_get_remote_uid(void)
 bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
 {
 	obj->attach.thing_type=thing_type_object;
-	obj->attach.obj_index=obj->index;
+	obj->attach.obj_idx=obj->index;
+	obj->attach.weap_idx=-1;
+	obj->attach.proj_setup_idx=-1;
+	obj->attach.proj_idx=-1;
 
 	scripts_clear_attach_data(&obj->attach);
 
@@ -816,9 +825,9 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 	
 	if (net_setup.mode!=net_mode_none) {
 		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) {
-			game_obj_rule_uid=obj->index;
+			game_obj_rule_idx=obj->index;
 			scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
-			game_obj_rule_uid=-1;
+			game_obj_rule_idx=-1;
 
 			net_client_send_set_team(obj);
 		}
@@ -945,7 +954,7 @@ int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *p
 		// hide object
 
 	if (hide) {
-		obj=object_find_uid(idx);
+		obj=server.obj_list.objs[idx];
 
 		obj->hidden=TRUE;
 		obj->contact.object_on=FALSE;

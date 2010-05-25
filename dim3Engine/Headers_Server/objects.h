@@ -70,7 +70,6 @@ extern void object_reset_prepare(obj_type *obj);
 extern void object_reset(obj_type *obj);
 
 extern obj_type* object_script_lookup(void);
-extern obj_type* object_find_uid(int uid);
 extern obj_type* object_find_remote_uid(int uid);
 extern obj_type* object_find_name(char *name);
 extern obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid);

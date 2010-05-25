@@ -311,7 +311,7 @@ void network_score_draw(void)
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		if (server.state!=gs_score_limit) {
 			if (!hud.score.on) {
-				player_obj=object_find_uid(server.player_obj_index);
+				player_obj=server.obj_list.objs[server.player_obj_index];
 				if (player_obj->status.health!=0) return;
 			}
 		}
@@ -353,7 +353,7 @@ void network_score_draw(void)
 		sprintf(str,"Resuming in %d seconds...",score_limit_get_resume_time());
 	}
 	else {
-		player_obj=object_find_uid(server.player_obj_index);
+		player_obj=server.obj_list.objs[server.player_obj_index];
 		if (player_obj->status.health<=0) {
 			sprintf(str,"Respawning in %d seconds...",object_get_respawn_time(player_obj));
 		

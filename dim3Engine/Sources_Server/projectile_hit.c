@@ -71,7 +71,7 @@ void projectile_collision(proj_type *proj)
 	
 		// projectile collisions on?
 	
-	obj=object_find_uid(proj->obj_index);
+	obj=server.obj_list.objs[proj->obj_index];
 	weap=obj->weap_list.weaps[proj->weap_index];
 		
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
@@ -165,7 +165,7 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
    
         // object damage
 
-	obj=object_find_uid(proj->obj_index); 
+	obj=server.obj_list.objs[proj->obj_index]; 
 	weap=obj->weap_list.weaps[proj->weap_index];
 	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
 	
@@ -174,7 +174,7 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
 	
 			// damage object
 			
-        hurt_obj=object_find_uid(uid);
+        hurt_obj=server.obj_list.objs[uid];
 		object_damage(hurt_obj,obj,weap,proj,NULL,proj_setup->damage);
 		
 			// push object

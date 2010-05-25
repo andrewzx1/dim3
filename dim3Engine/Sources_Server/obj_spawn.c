@@ -39,8 +39,6 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "timing.h"
 
-extern int					game_obj_rule_uid;
-
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;

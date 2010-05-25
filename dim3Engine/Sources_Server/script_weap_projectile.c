@@ -291,8 +291,8 @@ JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],str,name_str_len);
 
@@ -313,8 +313,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObje
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -334,8 +334,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,J
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -358,8 +358,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContextRe
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -382,8 +382,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -412,8 +412,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_func(JSContextRef cx,JSObje
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -433,8 +433,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_slop_func(JSContextRef cx,J
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -457,8 +457,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContextRe
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -481,8 +481,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -511,8 +511,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_func(JSContextRef cx,JSObjectRef
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -532,8 +532,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_slop_func(JSContextRef cx,JSObje
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -556,8 +556,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContextRef cx,
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -580,8 +580,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContextRef c
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -610,8 +610,8 @@ JSValueRef js_weap_projectile_spawn_from_center_func(JSContextRef cx,JSObjectRef
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -631,8 +631,8 @@ JSValueRef js_weap_projectile_spawn_from_center_slop_func(JSContextRef cx,JSObje
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -655,8 +655,8 @@ JSValueRef js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -679,8 +679,8 @@ JSValueRef js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef c
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 

@@ -267,10 +267,9 @@ void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 	decal->tint.r=decal->tint.g=decal->tint.b=1.0f;
 
 	if ((server.marks[mark_idx].team_tint) && (obj_uid!=-1)) {
-		obj=object_find_uid(obj_uid);
+		obj=server.obj_list.objs[obj_uid];
 		if (obj!=NULL) object_get_tint(obj,&decal->tint);
 	}
-
 
 		// finish decal setup
 

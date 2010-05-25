@@ -393,7 +393,7 @@ JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	obj_uid=script_get_attached_object_uid();
 	if (obj_uid!=-1) {
-		obj=object_find_uid(obj_uid);
+		obj=server.obj_list.objs[obj_uid];
 		if (obj!=NULL) object_get_tint(obj,&col);
 	}
 

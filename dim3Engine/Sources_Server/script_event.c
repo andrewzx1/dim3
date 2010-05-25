@@ -208,7 +208,7 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	switch (msg_to) {
 	
 		case sd_message_to_player:
-			obj=object_find_uid(server.player_obj_index);
+			obj=server.obj_list.objs[server.player_obj_index];
 			memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,id);
 			break;
@@ -246,7 +246,7 @@ JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(server.player_obj_index);
+	obj=server.obj_list.objs[server.player_obj_index];
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
@@ -260,7 +260,7 @@ JSValueRef js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObjectRe
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_find_uid(script_value_to_int(cx,argv[0]));
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
@@ -343,7 +343,7 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 		return(script_null_to_value(cx));
 	}
 
-	proj=projectile_find_uid(js.attach.proj_uid);
+	proj=projectile_find_uid(js.attach.proj_idx);
 	if (proj==NULL) {
 		*exception=script_create_exception(cx,"Could not find projectile");
 		return(script_null_to_value(cx));
@@ -457,7 +457,7 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// get arguments
 
-	obj=object_find_uid(script_value_to_int(cx,argv[0]));
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 
 	script_value_to_string(cx,argv[1],func_name,64);

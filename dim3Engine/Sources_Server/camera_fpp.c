@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "cameras.h"
 
+extern server_type			server;
 extern camera_type			camera;
 extern setup_type			setup;
 
@@ -45,7 +46,7 @@ void camera_fpp_get_position(d3pnt *pnt,d3ang *ang)
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(camera.obj_idx);
+	obj=server.obj_list.objs[camera.obj_idx];
 	
     pnt->x=obj->pnt.x;
     pnt->y=(obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset;

@@ -346,7 +346,7 @@ void view_draw_models_final(void)
 
 			case view_render_type_object:
 				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
-				
+
 				if ((shadow_on) && (obj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
 						if (!obj->draw.built_vertex_list) {
@@ -356,7 +356,7 @@ void view_draw_models_final(void)
 						shadow_render_model(view_render_type_object,view.render->draw_list.items[n].idx,&obj->draw);
 					}
 				}
-				
+
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
 					if (obj->type==object_type_remote) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
@@ -517,8 +517,8 @@ void view_draw(void)
 	weapon_type		*weap;
 
 		// get player object and held weapon
-		
-	obj=object_find_uid(server.player_obj_index);
+	
+	obj=server.obj_list.objs[server.player_obj_index];
 	weap=weapon_find_current(obj);
 
 		// camera render
@@ -527,7 +527,7 @@ void view_draw(void)
 	
 		// set view camera
 	
-	camera_obj=object_find_uid(camera.obj_idx);
+	camera_obj=server.obj_list.objs[camera.obj_idx];
 	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang);
 
 	view.render->camera.fov=camera.plane.fov;

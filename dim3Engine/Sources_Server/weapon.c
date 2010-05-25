@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 #include "weapons.h"
+#include "projectiles.h"
 #include "models.h"
 #include "interfaces.h"
 #include "consoles.h"
@@ -49,8 +50,8 @@ inline weapon_type* weapon_script_lookup(void)
 {
 	obj_type		*obj;
 
-	obj=server.obj_list.objs[js.attach.obj_index];
-	return(obj->weap_list.weaps[js.attach.weap_uid]);
+	obj=server.obj_list.objs[js.attach.obj_idx];
+	return(obj->weap_list.weaps[js.attach.weap_idx]);
 }
 
 weapon_type* weapon_find_name(obj_type *obj,char *name)
@@ -124,9 +125,9 @@ bool weapon_add(obj_type *obj,char *name)
 
 		// initialize weapon
 	
-	weap->index=idx;
+	weap->idx=idx;
 	
-	weap->obj_index=obj->index;
+	weap->obj_idx=obj->index;
 	
 	weap->hidden=FALSE;
 	weap->fail_in_liquid=FALSE;
@@ -242,10 +243,10 @@ bool weapon_add(obj_type *obj,char *name)
 		
 	weap->attach.script_uid=-1;
 	weap->attach.thing_type=thing_type_weapon;
-	weap->attach.obj_index=obj->index;
-	weap->attach.weap_uid=weap->index;		// supergumba -- needs to be index
-	weap->attach.proj_uid=-1;
-	weap->attach.proj_setup_index=-1;
+	weap->attach.obj_idx=obj->index;
+	weap->attach.weap_idx=weap->idx;
+	weap->attach.proj_setup_idx=-1;
+	weap->attach.proj_idx=-1;
 	
 	scripts_clear_attach_data(&weap->attach);
 

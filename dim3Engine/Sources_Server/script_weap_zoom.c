@@ -359,8 +359,8 @@ JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	weapon_zoom_enter(obj,weap);
 
@@ -374,8 +374,8 @@ JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	weapon_zoom_exit(obj,weap);
 
@@ -390,8 +390,8 @@ JSValueRef js_weap_zoom_goto_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
+	obj=object_script_lookup();
 	weap=weapon_script_lookup();
-	obj=object_find_uid(weap->obj_index);
 
 	step=script_value_to_int(cx,argv[1]);
 	if (step<0) step=0;

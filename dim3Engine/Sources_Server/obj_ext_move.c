@@ -349,7 +349,7 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 	
 		// get object to push
 
-	pushed_obj=object_find_uid(obj->contact.obj_uid);
+	pushed_obj=server.obj_list.objs[obj->contact.obj_uid];
 	if (pushed_obj==NULL) return(TRUE);
 
 	if (!pushed_obj->contact.pushable) return(TRUE);

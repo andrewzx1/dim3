@@ -564,7 +564,7 @@ void object_clear_ambient(obj_type *obj)
 
 bool object_enter_vehicle(obj_type *obj,char *err_str)
 {
-	int				uid,x,z,y,sz;
+	int				idx,x,z,y,sz;
 	obj_type		*vehicle_obj;
 	obj_vehicle		*vehicle;
 
@@ -573,14 +573,14 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 	sz=(obj->size.z*3)>>1;
 	
 	angle_get_movement(obj->motion.ang.y,obj->size.z,&x,&z);
-	uid=collide_find_object_for_object_move(obj,x,z);
+	idx=collide_find_object_for_object_move(obj,x,z);
 		
-	if (uid==-1) {
+	if (idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"No object nearby to enter");
 		return(FALSE);
 	}
 
-	vehicle_obj=object_find_uid(uid);
+	vehicle_obj=server.obj_list.objs[idx];
 	if (!vehicle_obj->vehicle.on) {
 		if (err_str!=NULL) strcpy(err_str,"Nearby object is not a vehicle");
 		return(FALSE);
@@ -656,7 +656,7 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 
 		// get original object
 	
-	orig_obj=object_find_uid(vehicle_obj->vehicle.attach_obj_uid);
+	orig_obj=server.obj_list.objs[vehicle_obj->vehicle.attach_obj_uid];
 	
 		// find exit point
 		

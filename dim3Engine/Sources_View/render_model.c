@@ -67,7 +67,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 		mesh=&mdl->meshes[n];
 		
 			// setup color list
-			
+		
 		cp=draw->setup.mesh_arrays[n].gl_color_array;
 
 			// debug draw
@@ -82,7 +82,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			
 			continue;
 		}
-		
+	
 			// hilited meshes
 
 		if (mesh->no_lighting) {
@@ -167,7 +167,6 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 				*cp++=(*cp)*draw->tint.b;
 			}
 		}
-
 	}
 }
 
@@ -812,7 +811,7 @@ void render_model_build_vertex_lists(model_draw *draw)
 {
 	int					n;
 	model_type			*mdl;
-	
+
 		// get model
 
 	mdl=server.model_list.models[draw->model_idx];

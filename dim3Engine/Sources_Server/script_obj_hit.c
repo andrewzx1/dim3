@@ -98,7 +98,7 @@ JSValueRef js_obj_hit_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 	obj=object_script_lookup();
 
-	hit_obj=object_find_uid(obj->hit.obj_uid);
+	hit_obj=server.obj_list.objs[obj->hit.obj_uid];
 	if (hit_obj==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,hit_obj->name));

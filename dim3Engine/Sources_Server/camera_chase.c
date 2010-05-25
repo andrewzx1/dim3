@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "cameras.h"
 #include "physics.h"
 
+extern server_type		server;
 extern map_type			map;
 extern camera_type		camera;
 extern setup_type		setup;
@@ -50,7 +51,7 @@ void camera_chase_connect(void)
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(camera.obj_idx);
+	obj=server.obj_list.objs[camera.obj_idx];
 	
 	memmove(&camera.pnt,&obj->pnt,sizeof(d3pnt));
 	
@@ -91,7 +92,7 @@ void camera_chase_run(void)
 	float			goal_y;
 	obj_type		*obj;
 
-	obj=object_find_uid(camera.obj_idx);
+	obj=server.obj_list.objs[camera.obj_idx];
 	
 	goal_y=angle_add(obj->ang.y,camera.chase_ang.y);
 	camera.cur_chase_ang.y=camera_chase_run_slop(camera.cur_chase_ang.y,goal_y,camera.chase_slop.y,camera.chase_track_speed);
@@ -131,7 +132,7 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 	obj_type				*obj;
 	weapon_type				*weap;
 
-	obj=object_find_uid(camera.obj_idx);
+	obj=server.obj_list.objs[camera.obj_idx];
 	
 		// get maximum camera offset
 		
@@ -248,7 +249,7 @@ void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 {
 	obj_type		*obj;
 
-	obj=object_find_uid(camera.obj_idx);
+	obj=server.obj_list.objs[camera.obj_idx];
 	
         // new camera position
 

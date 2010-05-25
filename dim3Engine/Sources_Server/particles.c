@@ -316,7 +316,7 @@ bool particle_spawn_single(int particle_idx,int obj_uid,d3pnt *pt,particle_rotat
 	eff_particle->tint.r=eff_particle->tint.g=eff_particle->tint.b=1.0f;
 
 	if ((particle->team_tint) && (obj_uid!=-1)) {
-		obj=object_find_uid(obj_uid);
+		obj=server.obj_list.objs[obj_uid];
 		if (obj!=NULL) object_get_tint(obj,&eff_particle->tint);
 	}
 	

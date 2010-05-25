@@ -551,7 +551,7 @@ void object_move_y_fall(obj_type *obj)
 
 	uid=collide_find_object_for_standing_object(obj);
 	if (uid!=-1) {
-		hit_obj=object_find_uid(uid);
+		hit_obj=server.obj_list.objs[uid];
 		
 		obj->contact.obj_uid=uid;
 		obj->pnt.y=hit_obj->pnt.y-hit_obj->size.y;
@@ -830,7 +830,7 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 	if (obj->contact.obj_uid==-1) return(TRUE);
 
-	cnt_obj=object_find_uid(obj->contact.obj_uid);
+	cnt_obj=server.obj_list.objs[obj->contact.obj_uid];
 	if (cnt_obj==NULL) return(FALSE);
 
 		// if it's pushable, then we don't slide

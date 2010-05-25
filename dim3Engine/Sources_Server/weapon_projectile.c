@@ -71,7 +71,7 @@ void weapon_setup_fire(weapon_type *weap,int method)
 	
 		// setup weapon fire in object
 		
-	obj=object_find_uid(weap->obj_index);
+	obj=server.obj_list.objs[weap->obj_idx];
 
 	strcpy(obj->weapon_fire.name,weap->name);
 	obj->weapon_fire.method=method;
@@ -598,7 +598,7 @@ void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method)
 		
 	clicked_obj_uid=obj->click.current_click_obj_uid;
 	if (clicked_obj_uid!=-1) {
-		clicked_obj=object_find_uid(clicked_obj_uid);
+		clicked_obj=server.obj_list.objs[clicked_obj_uid];
 		object_click(clicked_obj,obj);
 		crosshair_show_alt(obj);
 		return;

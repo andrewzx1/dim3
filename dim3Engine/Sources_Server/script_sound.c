@@ -118,7 +118,6 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 	int				buffer_idx,sound_obj_uid;
 	bool			remote_ok,player;
 	obj_type		*obj;
-	weapon_type		*weap;
 
 		// check if this is player
 
@@ -156,6 +155,8 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 	if (sound_obj_uid!=-1) object_watch_sound_alert(pt,sound_obj_uid,name);
 	
 		// detect if sound should be remoted
+		// we check the object for both object and weapon
+		// type scripts, as the object tells if it's networkable
 		
 	if (net_setup.mode!=net_mode_none) {
 	
@@ -164,17 +165,11 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 		switch (js.attach.thing_type) {
 		
 			case thing_type_object:
+			case thing_type_weapon:
 				obj=object_script_lookup();
 				if (obj!=NULL) remote_ok=object_networkable(obj);
 				break;
-				
-			case thing_type_weapon:
-				weap=weapon_script_lookup();
-				if (weap!=NULL) {
-					obj=object_find_uid(weap->obj_index);
-					if (obj!=NULL) remote_ok=object_networkable(obj);
-				}
-				break;
+
 		}
 		
 		if (remote_ok) net_client_send_sound(pt,pitch,name);

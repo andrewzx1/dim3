@@ -352,7 +352,7 @@ void debug_dump(void)
 	proj=server.projs;
 	
 	for ((i=0);(i!=server.count.proj);i++) {
-		obj=object_find_uid(proj->obj_index);
+		obj=server.obj_list.objs[proj->obj_index];
 		weap=obj->weap_list.weaps[proj->weap_index];
 		proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_index];
 		

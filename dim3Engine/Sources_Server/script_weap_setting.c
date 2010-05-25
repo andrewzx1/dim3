@@ -95,7 +95,7 @@ JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,
 	weapon_type		*weap;
 
 	weap=weapon_script_lookup();
-	return(script_int_to_value(cx,weap->obj_index));
+	return(script_int_to_value(cx,weap->obj_idx));
 }
 
 /* =======================================================
