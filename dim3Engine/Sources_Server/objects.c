@@ -672,6 +672,16 @@ int object_create(char *name,int type,int bind)
 	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
 	obj->score.place=1;
 	
+		// connections for animated effects
+		
+	obj->draw.connect.obj_idx=idx;
+	obj->draw.connect.weap_idx=-1;
+	obj->draw.connect.proj_idx=-1;
+	obj->draw.connect.net_sound=FALSE;
+	obj->draw.connect.motion_vct.x=0.0f;
+	obj->draw.connect.motion_vct.y=0.0f;
+	obj->draw.connect.motion_vct.z=0.0f;
+	
 	return(idx);
 }
 

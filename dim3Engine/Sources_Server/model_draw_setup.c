@@ -131,11 +131,8 @@ void model_draw_setup_object(obj_type *obj)
 		
 	draw->flip_x=FALSE;
 	
-		// connection
+		// connection settings
 
-	draw->connect.obj_idx=obj->index;
-	draw->connect.weap_idx=-1;
-	draw->connect.proj_idx=-1;
 	draw->connect.net_sound=(obj->index==server.player_obj_index) || (obj->type==object_type_bot_multiplayer);
 	draw->connect.net_remote_uid=obj->remote.uid;
 	draw->connect.motion_vct.x=obj->motion.vct.x;
@@ -199,106 +196,6 @@ void model_draw_setup_object(obj_type *obj)
 			}
 		}
 	}
-}
-
-/* =======================================================
-
-      Model Draw Setup For Projectiles
-      
-======================================================= */
-
-void model_draw_setup_projectile(proj_type *proj)
-{
-	int					tick,model_bounce_cnt;
-	float				spin_ang;
-	model_draw			*draw;
-	model_draw_setup	*setup;
-	model_type			*mdl;
-		
-	draw=&proj->draw;
-	if (draw->model_idx==-1) return;
-
-	mdl=server.model_list.models[draw->model_idx];
-
-		// clear setup
-
-	setup=&draw->setup;
-	model_draw_setup_clear(mdl,&draw->setup);
-
-		// player check flag
-
-	draw->player=FALSE;
-	
-		// position
-	
-	draw->pnt.x=proj->pnt.x+draw->offset.x;
-	draw->pnt.z=proj->pnt.z+draw->offset.z;
-	draw->pnt.y=proj->pnt.y+draw->offset.y;
-
-		// regular drawing in 3D space
-
-	draw->no_rot.on=FALSE;
-	
-		// no flips
-		
-	draw->flip_x=FALSE;
-	
-		// vector
-		
-	draw->connect.obj_idx=proj->obj_index;
-	draw->connect.weap_idx=proj->weap_index;
-	draw->connect.proj_idx=proj->uid;
-	draw->connect.net_sound=FALSE;
-	draw->connect.motion_vct.x=proj->motion.vct.x;
-	draw->connect.motion_vct.y=proj->motion.vct.y;
-	draw->connect.motion_vct.z=proj->motion.vct.z;
-
-		// timing for bounces and spins
-
-	tick=game_time_get();
-	
-		// bounces
-
-	if (draw->bounce) {
-		model_bounce_cnt=(tick>>4)&0x3F;
-		if (model_bounce_cnt>32) model_bounce_cnt=64-model_bounce_cnt;
-		draw->pnt.y-=model_bounce_cnt;
-	}
-
-		// center
-		
-	setup->center.x=draw->center.x;
-	setup->center.y=draw->center.y;
-	setup->center.z=draw->center.z;
-	
-		// angles
-		
-	if (draw->face_forward) {
-		setup->ang.x=angle_find(view.render->camera.pnt.y,view.render->camera.pnt.z,draw->pnt.y,draw->pnt.z);
-		setup->ang.y=angle_find(view.render->camera.pnt.x,view.render->camera.pnt.z,draw->pnt.x,draw->pnt.z);
-		setup->ang.z=0;
-	}
-	else {
-		setup->ang.x=angle_add(proj->ang.x,draw->rot.x);
-		setup->ang.y=angle_add(proj->ang.y,draw->rot.y);
-		setup->ang.z=angle_add(proj->ang.z,draw->rot.z);
-	
-			// spins
-			
-		spin_ang=(float)(tick>>4);
-
-		if (draw->spin.x!=0) setup->ang.x=angle_add(setup->ang.x,(float)((int)(spin_ang*draw->spin.x)%360));
-		if (draw->spin.z!=0) setup->ang.z=angle_add(setup->ang.z,(float)((int)(spin_ang*draw->spin.z)%360));
-		if (draw->spin.y!=0) setup->ang.y=angle_add(setup->ang.y,(float)((int)(spin_ang*draw->spin.y)%360));
-	}
-
-		// dynamic bones
-
-	model_draw_setup_dynamic_bones(mdl,draw,setup);
-
-		// team tint
-
-	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
 }
 
 /* =======================================================
@@ -396,11 +293,8 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		draw->no_rot.ang.z=angle_add(weap->hand.ang.z,obj->ang.z);
 	}
 
-		// connection
+		// connection settings
 
-	draw->connect.obj_idx=obj->index;
-	draw->connect.weap_idx=weap->idx;
-	draw->connect.proj_idx=-1;
 	draw->connect.net_sound=(obj->index==server.player_obj_index);
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;
@@ -437,6 +331,102 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	}
 	else {
 		draw->flip_x=FALSE;
+	}
+
+		// dynamic bones
+
+	model_draw_setup_dynamic_bones(mdl,draw,setup);
+
+		// team tint
+
+	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
+}
+
+/* =======================================================
+
+      Model Draw Setup For Projectiles
+      
+======================================================= */
+
+void model_draw_setup_projectile(proj_type *proj)
+{
+	int					tick,model_bounce_cnt;
+	float				spin_ang;
+	model_draw			*draw;
+	model_draw_setup	*setup;
+	model_type			*mdl;
+		
+	draw=&proj->draw;
+	if (draw->model_idx==-1) return;
+
+	mdl=server.model_list.models[draw->model_idx];
+
+		// clear setup
+
+	setup=&draw->setup;
+	model_draw_setup_clear(mdl,&draw->setup);
+
+		// player check flag
+
+	draw->player=FALSE;
+	
+		// position
+	
+	draw->pnt.x=proj->pnt.x+draw->offset.x;
+	draw->pnt.z=proj->pnt.z+draw->offset.z;
+	draw->pnt.y=proj->pnt.y+draw->offset.y;
+
+		// regular drawing in 3D space
+
+	draw->no_rot.on=FALSE;
+	
+		// no flips
+		
+	draw->flip_x=FALSE;
+	
+		// connection settings
+		
+	draw->connect.motion_vct.x=proj->motion.vct.x;
+	draw->connect.motion_vct.y=proj->motion.vct.y;
+	draw->connect.motion_vct.z=proj->motion.vct.z;
+
+		// timing for bounces and spins
+
+	tick=game_time_get();
+	
+		// bounces
+
+	if (draw->bounce) {
+		model_bounce_cnt=(tick>>4)&0x3F;
+		if (model_bounce_cnt>32) model_bounce_cnt=64-model_bounce_cnt;
+		draw->pnt.y-=model_bounce_cnt;
+	}
+
+		// center
+		
+	setup->center.x=draw->center.x;
+	setup->center.y=draw->center.y;
+	setup->center.z=draw->center.z;
+	
+		// angles
+		
+	if (draw->face_forward) {
+		setup->ang.x=angle_find(view.render->camera.pnt.y,view.render->camera.pnt.z,draw->pnt.y,draw->pnt.z);
+		setup->ang.y=angle_find(view.render->camera.pnt.x,view.render->camera.pnt.z,draw->pnt.x,draw->pnt.z);
+		setup->ang.z=0;
+	}
+	else {
+		setup->ang.x=angle_add(proj->ang.x,draw->rot.x);
+		setup->ang.y=angle_add(proj->ang.y,draw->rot.y);
+		setup->ang.z=angle_add(proj->ang.z,draw->rot.z);
+	
+			// spins
+			
+		spin_ang=(float)(tick>>4);
+
+		if (draw->spin.x!=0) setup->ang.x=angle_add(setup->ang.x,(float)((int)(spin_ang*draw->spin.x)%360));
+		if (draw->spin.z!=0) setup->ang.z=angle_add(setup->ang.z,(float)((int)(spin_ang*draw->spin.z)%360));
+		if (draw->spin.y!=0) setup->ang.y=angle_add(setup->ang.y,(float)((int)(spin_ang*draw->spin.y)%360));
 	}
 
 		// dynamic bones

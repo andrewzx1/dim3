@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 296452825;
-			PBXWorkspaceStateSaveDate = 296452825;
+			PBXPerProjectTemplateStateSaveDate = 296523294;
+			PBXWorkspaceStateSaveDate = 296523294;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -171,9 +171,9 @@
 	};
 	261B52AE0FA551CE0070CAB0 /* render_model.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 13507}}";
-			sepNavSelRange = "{18644, 14}";
-			sepNavVisRange = "{18142, 1106}";
+			sepNavIntBoundsRect = "{{0, 0}, {1160, 13520}}";
+			sepNavSelRange = "{15419, 18}";
+			sepNavVisRange = "{16312, 1182}";
 			sepNavWindowFrame = "{{401, 211}, {999, 779}}";
 		};
 	};
@@ -596,9 +596,9 @@
 	};
 	F5075AD00A0C368D000196B7 /* models.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1014}}";
-			sepNavSelRange = "{1010, 0}";
-			sepNavVisRange = "{675, 2955}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1027}}";
+			sepNavSelRange = "{1436, 0}";
+			sepNavVisRange = "{675, 2953}";
 			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
 		};
 	};
@@ -1916,18 +1916,18 @@
 	};
 	F5C1BE770A05A2E3002D02AB /* model_effect.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1216, 3575}}";
-			sepNavSelRange = "{4392, 14}";
-			sepNavVisRange = "{3690, 1419}";
+			sepNavIntBoundsRect = "{{0, 0}, {1216, 3809}}";
+			sepNavSelRange = "{4530, 0}";
+			sepNavVisRange = "{3799, 1380}";
 			sepNavWindowFrame = "{{442, 143}, {1041, 747}}";
 		};
 	};
 	F5C1BF7F0A085110002D02AB /* model_draw_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6474}}";
-			sepNavSelRange = "{10283, 0}";
-			sepNavVisRange = "{9592, 1665}";
-			sepNavWindowFrame = "{{307, 223}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6448}}";
+			sepNavSelRange = "{8918, 0}";
+			sepNavVisRange = "{8724, 949}";
+			sepNavWindowFrame = "{{168, 82}, {1041, 747}}";
 		};
 	};
 	F5C5E69E090D910F00F94729 /* halos.c */ = {
@@ -2135,9 +2135,9 @@
 	};
 	F5DD19E00908310200721649 /* view_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 12974}}";
-			sepNavSelRange = "{15360, 0}";
-			sepNavVisRange = "{14558, 1311}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12922}}";
+			sepNavSelRange = "{16656, 18}";
+			sepNavVisRange = "{15327, 1367}";
 			sepNavWindowFrame = "{{410, 142}, {1041, 747}}";
 		};
 	};
@@ -2327,9 +2327,9 @@
 	};
 	F5DD1A190908580100721649 /* objects.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 13195}}";
-			sepNavSelRange = "{18650, 0}";
-			sepNavVisRange = "{3301, 1016}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12948}}";
+			sepNavSelRange = "{14779, 0}";
+			sepNavVisRange = "{14092, 1245}";
 			sepNavWindowFrame = "{{449, 167}, {1041, 747}}";
 		};
 	};
@@ -2360,8 +2360,8 @@
 	F5DD1A2B0908588500721649 /* weapon.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 4147}}";
-			sepNavSelRange = "{1150, 0}";
-			sepNavVisRange = "{1062, 1143}";
+			sepNavSelRange = "{6018, 0}";
+			sepNavVisRange = "{4870, 1441}";
 			sepNavWindowFrame = "{{513, 226}, {1041, 747}}";
 		};
 	};
@@ -2423,18 +2423,18 @@
 	};
 	F5DD1A410908593C00721649 /* projectile.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3367}}";
-			sepNavSelRange = "{2800, 0}";
-			sepNavVisRange = "{1490, 1496}";
-			sepNavWindowFrame = "{{60, 164}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3549}}";
+			sepNavSelRange = "{2798, 0}";
+			sepNavVisRange = "{1915, 1475}";
+			sepNavWindowFrame = "{{639, 182}, {1041, 747}}";
 		};
 	};
 	F5DD1A440908594D00721649 /* particles.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5915}}";
-			sepNavSelRange = "{7747, 0}";
-			sepNavVisRange = "{6769, 1170}";
-			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {740, 6084}}";
+			sepNavSelRange = "{6658, 0}";
+			sepNavVisRange = "{6471, 305}";
+			sepNavWindowFrame = "{{281, 237}, {1041, 747}}";
 		};
 	};
 	F5DD1A4A0908598900721649 /* map_y_check.c */ = {

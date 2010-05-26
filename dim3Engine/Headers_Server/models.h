@@ -33,8 +33,8 @@ extern void model_draw_dispose(model_draw *draw);
 extern void models_reset(void);
 
 extern void model_draw_setup_object(obj_type *obj);
-extern void model_draw_setup_projectile(proj_type *proj);
 extern void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand);
+extern void model_draw_setup_projectile(proj_type *proj);
 extern void model_get_view_min_max(model_draw *draw,d3pnt *pnt,d3pnt *min,d3pnt *max);
 
 extern void model_change_fill(model_draw *draw,int wfill,int txt);
