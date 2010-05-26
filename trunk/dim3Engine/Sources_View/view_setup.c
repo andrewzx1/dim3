@@ -641,7 +641,7 @@ void view_setup_projectiles(int tick)
 {
 	int					n,mesh_idx,flag;
 	proj_type			*proj;
-
+	
 	for (n=0;n!=server.count.proj;n++) {
 		proj=&server.projs[n];
 		if (proj->dispose) continue;

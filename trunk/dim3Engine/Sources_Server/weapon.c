@@ -229,6 +229,16 @@ bool weapon_add(obj_type *obj,char *name)
 	object_clear_draw(&weap->draw);
 	object_clear_draw(&weap->draw_dual);
 	
+		// connections for animated effects
+		
+	weap->draw.connect.obj_idx=obj->index;
+	weap->draw.connect.weap_idx=idx;
+	weap->draw.connect.proj_idx=-1;
+	weap->draw.connect.net_sound=FALSE;
+	weap->draw.connect.motion_vct.x=0.0f;
+	weap->draw.connect.motion_vct.y=0.0f;
+	weap->draw.connect.motion_vct.z=0.0f;
+	
 		// add to list
 		
 	obj->weap_list.weaps[idx]=weap;

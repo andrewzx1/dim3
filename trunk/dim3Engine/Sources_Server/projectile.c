@@ -98,6 +98,18 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	memmove(&proj->draw,&proj_setup->draw,sizeof(model_draw));
 	memmove(&proj->action,&proj_setup->action,sizeof(proj_action_type));
 	
+		// connections for animated effects
+		
+	proj->draw.connect.obj_idx=obj->index;
+	proj->draw.connect.weap_idx=weap->idx;
+	proj->draw.connect.proj_idx=proj->uid;
+	proj->draw.connect.net_sound=FALSE;
+	proj->draw.connect.motion_vct.x=0.0f;
+	proj->draw.connect.motion_vct.y=0.0f;
+	proj->draw.connect.motion_vct.z=0.0f;
+
+		// scripts
+		
 	proj->attach.thing_type=thing_type_projectile;
 	proj->attach.obj_idx=obj->index;
 	proj->attach.weap_idx=weap->idx;
