@@ -229,7 +229,7 @@ void remote_draw_names_setup(void)
 		spt.y=obj->draw.remote_name.pnt.y;
 		spt.z=obj->draw.remote_name.pnt.z;
 
-		contact.obj.ignore_uid=obj->index;
+		contact.obj.ignore_uid=obj->idx;
 		
 		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
 		

@@ -174,7 +174,7 @@ JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_ob
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,object_find_uid_by_stood_on_object_uid(obj->index)));
+	return(script_int_to_value(cx,object_find_uid_by_stood_on_object_uid(obj->idx)));
 }
 
 /* =======================================================

@@ -77,7 +77,7 @@ void item_pickup_check(obj_type *obj)
 		item_obj=server.obj_list.objs[n];
 		if (item_obj==NULL) continue;
     
-		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->index==obj->index)) continue;
+		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->idx==obj->idx)) continue;
 
             // check bounds
 			
@@ -86,12 +86,12 @@ void item_pickup_check(obj_type *obj)
 				// setup pickup for items
 				
 			item_obj->pickup.item_uid=-1;
-			item_obj->pickup.obj_uid=obj->index;
+			item_obj->pickup.obj_uid=obj->idx;
 			item_obj->pickup.canceled=FALSE;
 
 				// setup pickup for objects
 
-			obj->pickup.item_uid=item_obj->index;
+			obj->pickup.item_uid=item_obj->idx;
 			obj->pickup.obj_uid=-1;
 
 				// need to setup any network messages

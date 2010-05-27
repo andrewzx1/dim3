@@ -70,6 +70,11 @@ void object_initialize_list(void)
 
 void object_free_list(void)
 {
+	int				n;
+
+	for (n=0;n!=max_obj_list;n++) {
+		if (server.obj_list.objs[n]!=NULL) free(server.obj_list.objs[n]);
+	}
 }
 
 /* =======================================================
@@ -427,7 +432,7 @@ bool object_networkable(obj_type *obj)
 {
 		// players and bots always send messages
 
-	if ((obj->index==server.player_obj_index) || (obj->type==object_type_bot_multiplayer)) return(TRUE);
+	if ((obj->idx==server.player_obj_index) || (obj->type==object_type_bot_multiplayer)) return(TRUE);
 	
 		// map type bots only send messages if
 		// this process is the host
@@ -476,7 +481,7 @@ int object_create(char *name,int type,int bind)
 		
 	strcpy(obj->name,name);
 
-	obj->index=idx;
+	obj->idx=idx;
 	obj->type=type;
 	obj->bind=bind;
 	
@@ -716,7 +721,7 @@ int object_player_get_remote_uid(void)
 bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
 {
 	obj->attach.thing_type=thing_type_object;
-	obj->attach.obj_idx=obj->index;
+	obj->attach.obj_idx=obj->idx;
 	obj->attach.weap_idx=-1;
 	obj->attach.proj_setup_idx=-1;
 	obj->attach.proj_idx=-1;
@@ -803,7 +808,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		obj->tint_color_idx=setup.network.tint_color_idx;
 		obj->character_idx=setup.network.character_idx;
 
-		server.player_obj_index=obj->index;
+		server.player_obj_index=obj->idx;
 	}
 
 		// regular object setup
@@ -835,7 +840,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 	
 	if (net_setup.mode!=net_mode_none) {
 		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) {
-			game_obj_rule_idx=obj->index;
+			game_obj_rule_idx=obj->idx;
 			scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
 			game_obj_rule_idx=-1;
 
@@ -873,7 +878,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		weapon_set(obj,weap);
 	}
 
-	return(obj->index);
+	return(obj->idx);
 }
 
 /* =======================================================

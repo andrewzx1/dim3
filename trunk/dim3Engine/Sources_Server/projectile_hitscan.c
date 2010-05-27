@@ -81,8 +81,8 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 	
 	contact.obj.on=TRUE;
 	contact.proj.on=proj_setup->collision;
-	contact.obj.ignore_uid=obj->index;
-	contact.proj.ignore_uid=proj->uid;
+	contact.obj.ignore_uid=obj->idx;
+	contact.proj.ignore_uid=proj->idx;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;
@@ -106,7 +106,7 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 			
 	if (contact.proj.uid!=-1) {
 		hit_proj=projectile_find_uid(contact.proj.uid);
-		hit_proj->contact.proj_uid=proj->uid;
+		hit_proj->contact.proj_uid=proj->idx;
 		if (projectile_hit(hit_proj,TRUE)) {				// force other projectile into hit mode
 			projectile_mark_dispose(hit_proj);
 		}

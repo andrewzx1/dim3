@@ -111,7 +111,7 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 		if ((player) && (obj->type!=object_type_player)) continue;
 		if ((remote) && (obj->type!=object_type_remote)) continue;
 
-		if (obj->index==skip_obj_uid) continue;
+		if (obj->idx==skip_obj_uid) continue;
 		
 			// check name
 			
@@ -170,7 +170,7 @@ int object_count_team(int team_idx,int ignore_obj_uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 		
-		if ((obj->index!=ignore_obj_uid) && (obj->team_idx==team_idx)) count++;
+		if ((obj->idx!=ignore_obj_uid) && (obj->team_idx==team_idx)) count++;
 	}
 
 	return(count);
@@ -178,7 +178,7 @@ int object_count_team(int team_idx,int ignore_obj_uid)
 
 void object_set_even_team(obj_type *obj)
 {
-	if (object_count_team(net_team_red,obj->index)<object_count_team(net_team_blue,obj->index)) {
+	if (object_count_team(net_team_red,obj->idx)<object_count_team(net_team_blue,obj->idx)) {
 		obj->team_idx=net_team_red;
 	}
 	else {
@@ -219,7 +219,7 @@ int object_find_uid_click_object(obj_type *obj)
 		fang=angle_find(obj->pnt.x,obj->pnt.z,click_obj->pnt.x,click_obj->pnt.z);
 		if (angle_dif(fang,obj->ang.y,NULL)>ci_object_click_angle) continue;
 		
-		uid=click_obj->index;
+		uid=click_obj->idx;
 		dist=d;
 	}
 	
@@ -241,7 +241,7 @@ int object_find_uid_by_stood_on_object_uid(int stand_obj_uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (obj->stand_obj_uid==stand_obj_uid) return(obj->index);
+		if (obj->stand_obj_uid==stand_obj_uid) return(obj->idx);
 	}
 	
 	return(-1);
@@ -275,7 +275,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
 
-	contact.obj.ignore_uid=obj->index;
+	contact.obj.ignore_uid=obj->idx;
 	contact.proj.ignore_uid=-1;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;

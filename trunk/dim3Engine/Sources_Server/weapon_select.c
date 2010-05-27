@@ -343,12 +343,12 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 
 		if ((min_dist==-1) || (dist<min_dist)) {
 			min_dist=dist;
-			min_uid=chk_obj->index;
+			min_uid=chk_obj->idx;
 		}
 
 			// can't re-select same target
 
-		if (chk_obj->index==weap->target.obj_uid) continue;
+		if (chk_obj->idx==weap->target.obj_uid) continue;
 
 			// next further target?
 
@@ -357,7 +357,7 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 
 		if ((cur_dif==-1) || (dif<cur_dif)) {
 			cur_dif=dif;
-			next_uid=chk_obj->index;
+			next_uid=chk_obj->idx;
 		}
 	}
 
@@ -412,12 +412,12 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 
 		if (dist>max_dist) {
 			max_dist=dist;
-			max_uid=chk_obj->index;
+			max_uid=chk_obj->idx;
 		}
 
 			// can't re-select same target
 
-		if (chk_obj->index==weap->target.obj_uid) continue;
+		if (chk_obj->idx==weap->target.obj_uid) continue;
 
 			// next closest target?
 
@@ -426,7 +426,7 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 
 		if ((cur_dif==-1) || (dif<cur_dif)) {
 			cur_dif=dif;
-			prev_uid=chk_obj->index;
+			prev_uid=chk_obj->idx;
 		}
 	}
 

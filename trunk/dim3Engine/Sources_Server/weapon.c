@@ -127,7 +127,7 @@ bool weapon_add(obj_type *obj,char *name)
 	
 	weap->idx=idx;
 	
-	weap->obj_idx=obj->index;
+	weap->obj_idx=obj->idx;
 	
 	weap->hidden=FALSE;
 	weap->fail_in_liquid=FALSE;
@@ -231,7 +231,7 @@ bool weapon_add(obj_type *obj,char *name)
 	
 		// connections for animated effects
 		
-	weap->draw.connect.obj_idx=obj->index;
+	weap->draw.connect.obj_idx=obj->idx;
 	weap->draw.connect.weap_idx=idx;
 	weap->draw.connect.proj_idx=-1;
 	weap->draw.connect.net_sound=FALSE;
@@ -253,7 +253,7 @@ bool weapon_add(obj_type *obj,char *name)
 		
 	weap->attach.script_uid=-1;
 	weap->attach.thing_type=thing_type_weapon;
-	weap->attach.obj_idx=obj->index;
+	weap->attach.obj_idx=obj->idx;
 	weap->attach.weap_idx=weap->idx;
 	weap->attach.proj_setup_idx=-1;
 	weap->attach.proj_idx=-1;

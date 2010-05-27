@@ -319,7 +319,7 @@ void server_game_stop(void)
 
 	scripts_dispose(js.game_attach.script_uid);
 
-		// finish with object list free
+		// finish with list frees
 
 	object_free_list();
 }

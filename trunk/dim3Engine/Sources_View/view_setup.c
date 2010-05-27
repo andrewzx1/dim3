@@ -583,7 +583,7 @@ void view_setup_objects(int tick)
 
 		if (obj->hidden) continue;
 		
-		is_camera=((camera.mode==cv_fpp) && (obj->index==camera.obj_idx));
+		is_camera=((camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
 		
 			// setup model positions
 			
@@ -627,7 +627,7 @@ void view_setup_objects(int tick)
 			// setup held weapon model
 			// if player
 
-		if ((obj->index==server.player_obj_index) && (obj->held_weapon.current_index!=-1)) {
+		if ((obj->idx==server.player_obj_index) && (obj->held_weapon.current_index!=-1)) {
 			weap=weapon_find_current(obj);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
@@ -784,7 +784,7 @@ void view_add_halos(void)
 
 			case view_render_type_object:
 				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
-				view_add_model_halo(&obj->draw,obj->index);
+				view_add_model_halo(&obj->draw,obj->idx);
 				break;
 
 			case view_render_type_projectile:
@@ -811,7 +811,7 @@ void view_calculate_scope(obj_type *obj,obj_type *camera_obj)
 	
 		// is object the camera object?
 
-	if (camera_obj->index!=obj->index) return;
+	if (camera_obj->idx!=obj->idx) return;
 	
 		// scoped weapon on?
 	

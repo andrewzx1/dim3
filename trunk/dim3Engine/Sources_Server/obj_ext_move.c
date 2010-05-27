@@ -403,7 +403,7 @@ void object_move_with_standing_object(obj_type *obj,int xmove,int zmove)
 		obj_check=server.obj_list.objs[n];
 		if (obj_check==NULL) continue;
 
-		if (obj_check->stand_obj_uid==obj->index) {
+		if (obj_check->stand_obj_uid==obj->idx) {
 			if (!obj_check->suspend) object_move_with_move(obj_check,xmove,zmove);
 		}
 	}
@@ -427,7 +427,7 @@ void object_rotate_with_standing_object(obj_type *obj,float y)
 		obj_check=server.obj_list.objs[n];
 		if (obj_check==NULL) continue;
 
-		if (obj_check->stand_obj_uid==obj->index) {
+		if (obj_check->stand_obj_uid==obj->idx) {
 			if (!obj_check->suspend) object_turn_with_turn(obj_check,&mpt,y,1.0f);
 		}
 	}
