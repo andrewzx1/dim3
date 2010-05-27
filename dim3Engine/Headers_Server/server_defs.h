@@ -53,16 +53,14 @@ and can be sold or given away.
 #define max_weap_list							16
 #define max_proj_setup_list						8
 
+#define max_proj_list							256
+
 //
 // maximums
 //
 
-#define max_projectile							256
 #define max_effect								512
 #define max_decal								128
-
-#define max_weapon								512
-
 #define max_particle							256
 #define max_particle_count						256
 #define max_particle_trail						16
@@ -834,7 +832,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						index,type,bind,next_spawn_sub_event,
+						int						idx,type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
 												count,input_mode,air_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
@@ -903,11 +901,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						uid,obj_index,weap_index,proj_setup_index,
+						int						idx,obj_idx,weap_idx,proj_setup_idx,
 												count,parent_grace,decel_grace,
 												start_tick;
 						float					speed,decel_speed,decel_min_speed,gravity_add;
-						bool					dispose,stick,reset_angle,flag_melee_hit;
+						bool					on,dispose,stick,reset_angle,flag_melee_hit;
 						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang;
 						obj_size				size;
@@ -918,6 +916,10 @@ typedef struct		{
 						proj_action_type		action;
 						attach_type				attach;
 					} proj_type;
+
+typedef struct		{
+						proj_type*				projs[max_proj_list];
+					} proj_list_type;
 
 //
 // effects
@@ -1147,19 +1149,11 @@ typedef struct		{
 					} crosshair_type;
 					
 //
-// Unique IDs
-//
-
-typedef struct		{
-						int						proj;		// supergumba -- move this to list!
-					} server_uid_type;
-
-//
 // Counts
 //
 
 typedef struct		{
-						int						proj,effect,decal,
+						int						effect,decal,
 												particle,ring,halo,mark,crosshair;
 					} server_count_type;
 
@@ -1172,9 +1166,9 @@ typedef struct		{
 												skill,player_obj_index;
 						bool					game_open,map_open,map_change,skip_media;
 						server_time_type		time;
-						server_uid_type			uid;
 						server_count_type		count;
 						obj_list_type			obj_list;
+						proj_list_type			proj_list;
 						model_list_type			model_list;
 						proj_type				*projs;
 						effect_type				*effects;

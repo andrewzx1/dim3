@@ -52,7 +52,7 @@ void projectile_stick(proj_type *proj)
     int				ignore_obj_uid;
 	
 	ignore_obj_uid=-1;
-   	if (proj->parent_grace>0) ignore_obj_uid=proj->obj_index;
+   	if (proj->parent_grace>0) ignore_obj_uid=proj->obj_idx;
     
 	proj->contact.obj_uid=collide_find_object_for_projectile_hit(proj,ignore_obj_uid);
 }	
@@ -71,10 +71,10 @@ void projectile_collision(proj_type *proj)
 	
 		// projectile collisions on?
 	
-	obj=server.obj_list.objs[proj->obj_index];
-	weap=obj->weap_list.weaps[proj->weap_index];
+	obj=server.obj_list.objs[proj->obj_idx];
+	weap=obj->weap_list.weaps[proj->weap_idx];
 		
-	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
+	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	if (!proj_setup->collision) return;
     
         // was there a melee hit?
@@ -113,7 +113,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 	size=proj_setup->mark.size;
 	alpha=proj_setup->mark.alpha;
 	
-	decal_add(proj->obj_index,&proj->pnt,&proj->contact.hit_poly,mark_idx,size,alpha);
+	decal_add(proj->obj_idx,&proj->pnt,&proj->contact.hit_poly,mark_idx,size,alpha);
 }
 
 /* =======================================================
@@ -165,9 +165,9 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
    
         // object damage
 
-	obj=server.obj_list.objs[proj->obj_index]; 
-	weap=obj->weap_list.weaps[proj->weap_index];
-	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
+	obj=server.obj_list.objs[proj->obj_idx]; 
+	weap=obj->weap_list.weaps[proj->weap_idx];
+	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	
 	uid=proj->contact.obj_uid;
     if (uid!=-1) {

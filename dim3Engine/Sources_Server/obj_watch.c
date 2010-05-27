@@ -138,14 +138,14 @@ void object_watch(obj_type *obj)
 		if (is_near) {
 			if (obj->watch.obj_flags[n]==0x0) {
 				obj->watch.obj_flags[n]=0x1;
-				obj->watch.obj_uid=watch_obj->index;
+				obj->watch.obj_uid=watch_obj->idx;
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_near,0);
 			}
 		}
 		else {
 			if (obj->watch.obj_flags[n]==0x1) {
 				obj->watch.obj_flags[n]=0x0;
-				obj->watch.obj_uid=watch_obj->index;
+				obj->watch.obj_uid=watch_obj->idx;
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_far,0);
 			}
 		}
@@ -170,7 +170,7 @@ void object_watch_death_alert(obj_type *dead_obj)
 		if (obj==NULL) continue;
 
 		if (obj->watch.on) {
-			obj->watch.obj_uid=dead_obj->index;
+			obj->watch.obj_uid=dead_obj->idx;
 			scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_death,0);
 		}
 	}
@@ -188,7 +188,7 @@ void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry)
 		if (obj==NULL) continue;
 
 		if (obj->watch.on) {
-			obj->watch.obj_uid=enter_obj->index;
+			obj->watch.obj_uid=enter_obj->idx;
 			obj->watch.base_team=mesh->msg.base_team;
 			if (entry) {
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_enter_base,0);

@@ -91,7 +91,7 @@ void camera_initialize(void)
 
 void camera_connect(obj_type *obj)
 {
-	camera.obj_idx=obj->index;
+	camera.obj_idx=obj->idx;
     
     camera_chase_connect();
     camera_static_connect();

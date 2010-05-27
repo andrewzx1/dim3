@@ -223,7 +223,6 @@ void debug_dump(void)
 	debug_header("Objects",cnt,(sizeof(obj_type)*cnt));
 	
 	debug_space("Index",6);
-	debug_space("uid",4);
 	debug_space("Name",15);
 	debug_space("Weapon",15);
 	debug_space("Projectile",15);
@@ -233,7 +232,6 @@ void debug_dump(void)
 	debug_space("Binding",10);
 	debug_return();
 	debug_space("-----",6);
-	debug_space("---",4);
 	debug_space("--------------",15);
 	debug_space("--------------",15);
 	debug_space("--------------",15);
@@ -248,7 +246,6 @@ void debug_dump(void)
 		if (obj==NULL) continue;
 
 		debug_int_space(n,6);
-		debug_int_space(obj->index,4);
 		debug_space(obj->name,15);
 		debug_space("",30);
 		debug_space(object_type_str[obj->type],15);

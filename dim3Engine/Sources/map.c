@@ -324,7 +324,12 @@ bool map_start(bool file_restore,bool skip_media,char *err_str)
 	map_start_ambient();
 	if (map.ambient.sound_name[0]!=0x0) map_set_ambient(map.ambient.sound_name,map.ambient.sound_pitch);
 
-	projectile_start();
+	if (!projectile_initialize_list()) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
+
 	effect_start();
 	particle_map_initialize();
 
@@ -504,6 +509,7 @@ void map_end(void)
 	progress_draw(25);
 
 	projectile_dispose_all();
+	projectile_list_free();
 
         // end script
 		

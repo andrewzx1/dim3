@@ -162,7 +162,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		// ray tracing
 
 	base_contact.obj.on=TRUE;
-	base_contact.obj.ignore_uid=obj->index;
+	base_contact.obj.ignore_uid=obj->idx;
 
 	base_contact.proj.on=FALSE;
 	base_contact.proj.ignore_uid=-1;
@@ -377,7 +377,7 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
 	
 			// any collision?
 
-		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->index==obj->index)) continue;
+		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->idx==obj->idx)) continue;
 		if (!collide_object_to_object(obj,xadd,zadd,check_obj,TRUE,FALSE)) continue;
 		
 			// is it a bump up candidate?
@@ -418,18 +418,18 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 
 	contact.obj.on=TRUE;
 	if (proj->parent_grace>0) {
-		contact.obj.ignore_uid=proj->obj_index;
+		contact.obj.ignore_uid=proj->obj_idx;
 	}
 	else {
 		contact.obj.ignore_uid=-1;
 	}
 	
-	obj=server.obj_list.objs[proj->obj_index];
-	weap=obj->weap_list.weaps[proj->weap_index];
-	proj_setup=proj_setups_find_uid(weap,proj->proj_setup_index);
+	obj=server.obj_list.objs[proj->obj_idx];
+	weap=obj->weap_list.weaps[proj->weap_idx];
+	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 
 	contact.proj.on=proj_setup->collision;
-	contact.proj.ignore_uid=proj->uid;
+	contact.proj.ignore_uid=proj->idx;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;

@@ -95,7 +95,7 @@ JSValueRef js_game_score_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSString
 	if (game_obj_rule_idx==-1) return(script_int_to_value(cx,-1));
 
 	obj=server.obj_list.objs[game_obj_rule_idx];
-	return(script_int_to_value(cx,obj->index));
+	return(script_int_to_value(cx,obj->idx));
 }
 
 JSValueRef js_game_score_get_kill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

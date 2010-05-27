@@ -619,18 +619,18 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 	
 		// attach object
 
-	vehicle->attach_obj_uid=obj->index;
+	vehicle->attach_obj_uid=obj->idx;
 
 		// if this object was the camera object, then reconnect
 
-	if (camera.obj_idx==obj->index) camera_connect(vehicle_obj);
+	if (camera.obj_idx==obj->idx) camera_connect(vehicle_obj);
 	
 		// if this object was the player object, move to vehicle
 
-	if (server.player_obj_index==obj->index) {
+	if (server.player_obj_index==obj->idx) {
 		vehicle_obj->type=object_type_player;
 		obj->type=object_type_object;
-		server.player_obj_index=vehicle_obj->index;
+		server.player_obj_index=vehicle_obj->idx;
 	}
 
 	return(TRUE);
@@ -689,7 +689,7 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 	
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
-	contact.obj.ignore_uid=vehicle_obj->index;
+	contact.obj.ignore_uid=vehicle_obj->idx;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
@@ -713,14 +713,14 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 
 		// if this vehicle was the camera object, then reconnect
 
-	if (camera.obj_idx==vehicle_obj->index) camera_connect(orig_obj);
+	if (camera.obj_idx==vehicle_obj->idx) camera_connect(orig_obj);
 
 		// if this vehicle was the player object, move to object
 
-	if (server.player_obj_index==vehicle_obj->index) {
+	if (server.player_obj_index==vehicle_obj->idx) {
 		vehicle_obj->type=object_type_object;
 		orig_obj->type=object_type_player;
-		server.player_obj_index=orig_obj->index;
+		server.player_obj_index=orig_obj->idx;
 	}
 
 		// unhide the original object

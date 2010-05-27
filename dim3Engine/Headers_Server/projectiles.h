@@ -25,7 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void projectile_start(void);
+extern bool projectile_initialize_list(void);
+extern void projectile_free_list(void);
 
 extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
 
@@ -40,7 +41,6 @@ extern void projectile_mark_dispose(proj_type *proj);
 extern void projectile_dispose(void);
 extern void projectile_dispose_all(void);
 
-extern proj_setup_type* proj_setups_find_uid(weapon_type *weap,int uid);
 extern proj_setup_type* find_proj_setups(weapon_type *weap,char *name);
 
 extern bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name);

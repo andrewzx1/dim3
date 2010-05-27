@@ -44,10 +44,34 @@ extern server_type			server;
       
 ======================================================= */
 
-void projectile_start(void)
+bool projectile_initialize_list(void)
 {
-	server.count.proj=0;
-	server.uid.proj=0;
+	int				n;
+
+		// pre-alloc all projectiles
+
+	for (n=0;n!=max_proj_list;n++) {
+
+			// memory for projectile
+
+		server.proj_list.projs[n]=(proj_type*)malloc(sizeof(proj_type));
+		if (server.proj_list.projs[n]==NULL) return(FALSE);
+
+			// no used
+
+		server.proj_list.projs[n]->on=FALSE;
+	}
+
+	return(TRUE);
+}
+
+void projectile_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_proj_list;n++) {
+		if (server.proj_list.projs[n]!=NULL) free(server.proj_list.projs[n]);
+	}
 }
 
 /* =======================================================
@@ -58,21 +82,34 @@ void projectile_start(void)
 
 proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup)
 {
+	int					n,idx;
 	proj_type			*proj;
 
-	if (server.count.proj>=max_projectile) return(NULL);
+		// find free projectile
+
+	idx=-1;
+
+	for (n=0;n!=max_proj_list;n++) {
+		if (!server.proj_list.projs[n]->on) {
+			idx=n;
+			break;
+		}
+	}
+
+	if (idx==-1) return;
+
+		// initialize
 	
-	proj=&server.projs[server.count.proj];
-	server.count.proj++;
+	proj=server.proj_list.projs[idx];
 	
-	proj->uid=server.uid.proj;
-	server.uid.proj++;
+	proj->idx=idx;
+	proj->on=TRUE;
 	
 	proj->dispose=FALSE;
 	
-	proj->obj_index=obj->index;
-	proj->weap_index=weap->idx;
-	proj->proj_setup_index=proj_setup->idx;
+	proj->obj_idx=obj->idx;
+	proj->weap_idx=weap->idx;
+	proj->proj_setup_idx=proj_setup->idx;
 
 	proj->start_tick=game_time_get();
 	
@@ -100,9 +137,9 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	
 		// connections for animated effects
 		
-	proj->draw.connect.obj_idx=obj->index;
+	proj->draw.connect.obj_idx=obj->idx;
 	proj->draw.connect.weap_idx=weap->idx;
-	proj->draw.connect.proj_idx=proj->uid;
+	proj->draw.connect.proj_idx=idx;
 	proj->draw.connect.net_sound=FALSE;
 	proj->draw.connect.motion_vct.x=0.0f;
 	proj->draw.connect.motion_vct.y=0.0f;
@@ -111,10 +148,10 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 		// scripts
 		
 	proj->attach.thing_type=thing_type_projectile;
-	proj->attach.obj_idx=obj->index;
+	proj->attach.obj_idx=obj->idx;
 	proj->attach.weap_idx=weap->idx;
 	proj->attach.proj_setup_idx=proj_setup->idx;
-	proj->attach.proj_idx=proj->uid;
+	proj->attach.proj_idx=idx;
 	proj->attach.script_uid=proj_setup->attach.script_uid;
 
 	scripts_clear_attach_data(&proj->attach);
@@ -128,19 +165,10 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
       
 ======================================================= */
 
+// supergumba -- delete
 proj_type* projectile_find_uid(int uid)
 {
-	int				n;
-	proj_type		*proj;
-	
-	proj=server.projs;
-	
-	for (n=0;n!=server.count.proj;n++) {
-		if (proj->uid==uid) return(proj);
-		proj++;
-	}
-	
-	return(NULL);
+	return(server.proj_list.projs[uid]);
 }
 
 /* =======================================================
@@ -242,11 +270,15 @@ void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,i
       
 ======================================================= */
 
+
+// supergumba -- can delete on the spot now
 void projectile_mark_dispose(proj_type *proj)
 {
 	proj->dispose=TRUE;
 }
 
+
+// supergumba -- redo all of this!
 void projectile_dispose(void)
 {
 	int				i;
@@ -256,7 +288,7 @@ void projectile_dispose(void)
 	
 	i=0;
 	
-	while (i<server.count.proj) {
+	while (i<max_proj_list) {
 		proj=&server.projs[i];
 		if (!proj->dispose) {
 			i++;
@@ -268,29 +300,23 @@ void projectile_dispose(void)
 		timers_clear(&proj->attach,timer_mode_repeat);
 		timers_clear(&proj->attach,timer_mode_single);
 	
-			// delete projectile
-			
-		if (i<(server.count.proj-1)) {
-			memmove(&server.projs[i],&server.projs[i+1],(sizeof(proj_type)*((server.count.proj-i)-1)));
-		}
-		
-		server.count.proj--;
-		if (server.count.proj==0) break;
+			// mark as unused
+
+		proj->on=FALSE;
 	}
 }
 
 void projectile_dispose_all(void)
 {
-	int				i;
+	int				n;
 	proj_type		*proj;
 	
 	proj=server.projs;
 	
-	for (i=0;i<server.count.proj;i++) {
+	for (n=0;n!=max_proj_list;n++) {
 		timers_clear(&proj->attach,timer_mode_repeat);
 		timers_clear(&proj->attach,timer_mode_single);
+		proj->on=FALSE;
 		proj++;
 	}
-	
-	server.count.proj=0;
 }
