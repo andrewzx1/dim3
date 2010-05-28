@@ -218,7 +218,7 @@ JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_bool_to_value(cx,proj->contact.obj_uid==server.player_obj_index));
+	return(script_bool_to_value(cx,proj->contact.obj_uid==server.player_obj_idx));
 }
 
 JSValueRef js_proj_hit_get_startTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

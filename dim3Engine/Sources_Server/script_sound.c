@@ -123,7 +123,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 
 	if (atplayer) {
 		player=TRUE;
-		sound_obj_uid=server.player_obj_index;
+		sound_obj_uid=server.player_obj_idx;
 	}
 	else {
 		player=FALSE;

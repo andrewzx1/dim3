@@ -230,7 +230,7 @@ JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef f
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_script_lookup();
-	player_obj=server.obj_list.objs[server.player_obj_index];
+	player_obj=server.obj_list.objs[server.player_obj_idx];
 
 	return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,player_obj->pnt.x,player_obj->pnt.y,player_obj->pnt.z)));
 }

@@ -251,7 +251,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 				// send network message to telefrag
 
 			if (net_setup.mode!=net_mode_none) {
-				if ((check_obj->idx==server.player_obj_index) || (check_obj->type==object_type_bot_multiplayer)) {
+				if ((check_obj->idx==server.player_obj_idx) || (check_obj->type==object_type_bot_multiplayer)) {
 					check_obj->damage_obj_uid=obj->idx;
 					net_client_send_death(check_obj,TRUE);
 				}
@@ -414,7 +414,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		// and any network events
 
 	if (net_setup.mode!=net_mode_none) {
-		if ((from_obj->idx==server.player_obj_index) || (from_obj->type==object_type_bot_multiplayer)) net_client_send_click(from_obj,&from_obj->pnt,&from_obj->ang);
+		if ((from_obj->idx==server.player_obj_idx) || (from_obj->type==object_type_bot_multiplayer)) net_client_send_click(from_obj,&from_obj->pnt,&from_obj->ang);
 	}
 }
 
@@ -686,7 +686,7 @@ bool object_is_targetted(obj_type *obj,d3col *col)
 
 		// look for any targetting on player's weapons
 
-	player_obj=server.obj_list.objs[server.player_obj_index];
+	player_obj=server.obj_list.objs[server.player_obj_idx];
 
 	for (n=0;n!=max_weap_list;n++) {
 		weap=obj->weap_list.weaps[n];

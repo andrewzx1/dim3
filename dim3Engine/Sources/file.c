@@ -304,7 +304,7 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(&camera,1,sizeof(camera_type));
 	
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
-	game_file_add_chunk(&server.player_obj_index,1,sizeof(int));
+	game_file_add_chunk(&server.player_obj_idx,1,sizeof(int));
 	game_file_add_chunk(&server.skill,1,sizeof(int));
 // supergumba	
 //	game_file_add_chunk(&server.uid,1,sizeof(server_uid_type));
@@ -449,7 +449,7 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&camera);
 	
 	game_file_get_chunk(&server.time);
-	game_file_get_chunk(&server.player_obj_index);
+	game_file_get_chunk(&server.player_obj_idx);
 	game_file_get_chunk(&server.skill);
 	
 //	game_file_get_chunk(&server.uid);

@@ -125,7 +125,7 @@ bool remote_add(network_request_object_add *add,bool send_event)
 		// send event to player
 
 	if (send_event) {
-		player_obj=server.obj_list.objs[server.player_obj_index];
+		player_obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_join,obj->idx);
 	}
 	
@@ -149,7 +149,7 @@ void remote_team(network_request_team *team,bool send_event)
 		// send event to player
 
 	if (send_event) {
-		player_obj=server.obj_list.objs[server.player_obj_index];
+		player_obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_team,obj->idx);
 	}
 }
@@ -168,7 +168,7 @@ void remote_remove(int remote_uid,bool send_event)
 		// read the object if it wants to
 
 	if (send_event) {
-		player_obj=server.obj_list.objs[server.player_obj_index];
+		player_obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_leave,obj->idx);
 	}
 	
@@ -249,7 +249,7 @@ void remote_game_reset(network_request_game_reset *reset)
 
 		// respawn the player
 
-	player_obj=server.obj_list.objs[server.player_obj_index];
+	player_obj=server.obj_list.objs[server.player_obj_idx];
 	
 	player_obj->next_spawn_sub_event=sd_event_spawn_game_reset;
 	
@@ -344,7 +344,7 @@ void remote_death(network_request_remote_death *death)
 
 			// send death/suicide remote event
 
-		player_obj=server.obj_list.objs[server.player_obj_index];
+		player_obj=server.obj_list.objs[server.player_obj_idx];
 		if ((obj->damage_obj_uid==-1) || (obj->damage_obj_uid==obj->idx)) {
 			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_suicide,obj->idx);
 		}
@@ -363,7 +363,7 @@ void remote_death(network_request_remote_death *death)
 			
 			// send telefrag remote event
 				
-		player_obj=server.obj_list.objs[server.player_obj_index];
+		player_obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_telefrag,telefrag_obj->idx);
 	}
 		
@@ -920,7 +920,7 @@ void remote_network_send_updates(void)
 
 		// update the player
 
-	obj=server.obj_list.objs[server.player_obj_index];
+	obj=server.obj_list.objs[server.player_obj_idx];
 	net_client_send_remote_update(obj,hud.chat.type_on);
 
 		// update any co-op bots if hosting

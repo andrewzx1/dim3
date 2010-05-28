@@ -235,7 +235,7 @@ void remote_draw_names_setup(void)
 		
 		if (camera.mode==cv_fpp) {
 			if (hit) {
-				if (contact.obj.uid!=server.player_obj_index) {
+				if (contact.obj.uid!=server.player_obj_idx) {
 					obj->draw.remote_name.on=FALSE;
 					continue;
 				}

@@ -82,7 +82,7 @@ void ambient_add_liquids(void)
 	obj_type			*player_obj;
 	map_liquid_type		*liq;
 	
-	player_obj=server.obj_list.objs[server.player_obj_index];
+	player_obj=server.obj_list.objs[server.player_obj_idx];
 	if (player_obj==NULL) return;
 	
 	if ((player_obj->liquid.mode!=lm_under) || (player_obj->contact.liquid_idx==-1)) return;

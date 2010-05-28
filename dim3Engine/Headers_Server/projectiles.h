@@ -37,8 +37,7 @@ extern void projectile_set_origin(proj_type *proj);
 extern void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,int *x,int *y,int *z);
 extern void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj);
 
-extern void projectile_mark_dispose(proj_type *proj);
-extern void projectile_dispose(void);
+extern void projectile_dispose(proj_type *proj);
 extern void projectile_dispose_all(void);
 
 extern proj_setup_type* find_proj_setups(weapon_type *weap,char *name);

@@ -627,10 +627,10 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 	
 		// if this object was the player object, move to vehicle
 
-	if (server.player_obj_index==obj->idx) {
+	if (server.player_obj_idx==obj->idx) {
 		vehicle_obj->type=object_type_player;
 		obj->type=object_type_object;
-		server.player_obj_index=vehicle_obj->idx;
+		server.player_obj_idx=vehicle_obj->idx;
 	}
 
 	return(TRUE);
@@ -717,10 +717,10 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 
 		// if this vehicle was the player object, move to object
 
-	if (server.player_obj_index==vehicle_obj->idx) {
+	if (server.player_obj_idx==vehicle_obj->idx) {
 		vehicle_obj->type=object_type_object;
 		orig_obj->type=object_type_player;
-		server.player_obj_index=orig_obj->idx;
+		server.player_obj_idx=orig_obj->idx;
 	}
 
 		// unhide the original object

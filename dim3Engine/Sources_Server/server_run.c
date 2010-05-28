@@ -327,7 +327,7 @@ void run_projectiles_slice(void)
 			projectile_speed(proj);
 
 			if (projectile_move(proj)) {
-				projectile_mark_dispose(proj);
+				projectile_dispose(proj);
 				continue;
 			}
 			
@@ -343,11 +343,10 @@ void run_projectiles_slice(void)
 		projectile_collision(proj);
 		
 		if (projectile_hit(proj,FALSE)) {
-			projectile_mark_dispose(proj);
+			projectile_dispose(proj);
+			continue;
 		}
 	}
-		
-	projectile_dispose();
 }
 
 void run_projectiles_no_slice(void)
@@ -380,7 +379,7 @@ void server_run(void)
 
 		// get player object
 		
-	obj=server.obj_list.objs[server.player_obj_index];
+	obj=server.obj_list.objs[server.player_obj_idx];
 	
 		// time to run tasks
 

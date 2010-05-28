@@ -172,7 +172,7 @@ JSValueRef js_map_object_find_player_func(JSContextRef cx,JSObjectRef func,JSObj
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	return(script_int_to_value(cx,server.player_obj_index));
+	return(script_int_to_value(cx,server.player_obj_idx));
 }
 
 JSValueRef js_map_object_find_all_players_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
