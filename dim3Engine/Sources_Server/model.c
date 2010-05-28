@@ -322,11 +322,11 @@ void models_reset(void)
 		}
 	}
 
-	proj=server.projs;
-	
-    for (n=0;n!=server.count.proj;n++) {
+    for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+		
 		model_reset_single(&proj->draw);
-		proj++;
 	}
 
 		// now remove all models with zero

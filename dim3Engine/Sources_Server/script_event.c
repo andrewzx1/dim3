@@ -343,8 +343,8 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 		return(script_null_to_value(cx));
 	}
 
-	proj=projectile_find_uid(js.attach.proj_idx);
-	if (proj==NULL) {
+	proj=projectile_script_lookup();
+	if (!proj->on) {
 		*exception=script_create_exception(cx,"Could not find projectile");
 		return(script_null_to_value(cx));
 	}

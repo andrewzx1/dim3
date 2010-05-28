@@ -1170,7 +1170,6 @@ typedef struct		{
 						obj_list_type			obj_list;
 						proj_list_type			proj_list;
 						model_list_type			model_list;
-						proj_type				*projs;
 						effect_type				*effects;
 						decal_type				*decals;
 						particle_type			*particles;

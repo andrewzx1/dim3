@@ -28,9 +28,9 @@ and can be sold or given away.
 extern bool projectile_initialize_list(void);
 extern void projectile_free_list(void);
 
-extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
+extern proj_type* projectile_script_lookup(void);
 
-extern proj_type* projectile_find_uid(int uid);
+extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
 
 extern void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang);
 extern void projectile_set_origin(proj_type *proj);

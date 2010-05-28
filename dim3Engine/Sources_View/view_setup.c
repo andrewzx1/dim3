@@ -642,8 +642,9 @@ void view_setup_projectiles(int tick)
 	int					n,mesh_idx,flag;
 	proj_type			*proj;
 	
-	for (n=0;n!=server.count.proj;n++) {
-		proj=&server.projs[n];
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
 		if (proj->dispose) continue;
 		
 			// setup model positions
@@ -788,7 +789,7 @@ void view_add_halos(void)
 				break;
 
 			case view_render_type_projectile:
-				proj=&server.projs[view.render->draw_list.items[n].idx];
+				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
 				view_add_model_halo(&proj->draw,-1);
 				break;
 

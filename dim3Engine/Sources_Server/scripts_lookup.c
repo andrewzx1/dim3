@@ -287,8 +287,8 @@ int script_get_attached_object_uid(void)
 	}
 
 	if (js.attach.thing_type==thing_type_projectile) {
-		proj=projectile_find_uid(js.attach.proj_idx);
-		if (proj!=NULL) return(proj->obj_idx);
+		proj=projectile_script_lookup();
+		if (proj->on) return(proj->obj_idx);
 	}
 
 	return(-1);
@@ -326,7 +326,7 @@ model_draw* script_find_model_draw(void)
 			return(&proj_setup->draw);
 			
 		case thing_type_projectile:
-			proj=projectile_find_uid(js.attach.proj_idx);
+			proj=projectile_script_lookup();
 			return(&proj->draw);
 			
 	}

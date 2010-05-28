@@ -127,7 +127,6 @@ void debug_dump(void)
 	int					n,k,i,idx,cnt,mem_sz;
 	obj_type			*obj;
 	effect_type			*effect;
-	proj_type			*proj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	model_type			*mdl;
@@ -334,7 +333,8 @@ void debug_dump(void)
 	debug_return();
 	
 		// projectiles
-		
+	
+		/* supergumba -- fix later	
 	debug_header("Projectiles",server.count.proj,(sizeof(proj_type)*max_projectile));
 	
 	debug_space("Name",20);
@@ -361,7 +361,7 @@ void debug_dump(void)
 	}
 	
 	debug_return();
-	
+	*/
 		// effects
 		
 	debug_header("Effects",server.count.effect,(sizeof(effect_type)*max_effect));

@@ -285,20 +285,15 @@ int collide_find_projectile_for_projectile(proj_type *proj)
 	
 	ignore_proj_uid=proj->idx;
 	
-	check_proj=server.projs;
-	
-	for (n=0;n!=server.count.proj;n++) {
+	for (n=0;n!=max_proj_list;n++) {
+		check_proj=server.proj_list.projs[n];
+		if (!check_proj->on) continue;
 
-		if (check_proj->idx==ignore_proj_uid) {
-			proj++;
-			continue;
-		}
+		if (check_proj->idx==ignore_proj_uid) continue;
 		
 			// projectile hit?
 			
 		if (collide_projectile_to_projectile(proj,check_proj))  return(check_proj->idx);
-		
-		proj++;
 	}
 	
 	return(-1);

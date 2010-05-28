@@ -37,6 +37,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern js_type				js;
 
 /* =======================================================
 
@@ -76,6 +77,17 @@ void projectile_free_list(void)
 
 /* =======================================================
 
+      Projectile Lookup
+      
+======================================================= */
+
+inline proj_type* projectile_script_lookup(void)
+{
+	return(server.proj_list.projs[js.attach.proj_idx]);
+}
+
+/* =======================================================
+
       Create Projectile
       
 ======================================================= */
@@ -96,7 +108,7 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 		}
 	}
 
-	if (idx==-1) return;
+	if (idx==-1) return(NULL);
 
 		// initialize
 	
@@ -157,18 +169,6 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	scripts_clear_attach_data(&proj->attach);
 
     return(proj);
-}
-
-/* =======================================================
-
-      Find Projectile by Unique ID
-      
-======================================================= */
-
-// supergumba -- delete
-proj_type* projectile_find_uid(int uid)
-{
-	return(server.proj_list.projs[uid]);
 }
 
 /* =======================================================
@@ -289,7 +289,12 @@ void projectile_dispose(void)
 	i=0;
 	
 	while (i<max_proj_list) {
-		proj=&server.projs[i];
+		proj=server.proj_list.projs[i];
+		if (!proj->on) {
+			i++;
+			continue;
+		}
+		
 		if (!proj->dispose) {
 			i++;
 			continue;
@@ -311,12 +316,12 @@ void projectile_dispose_all(void)
 	int				n;
 	proj_type		*proj;
 	
-	proj=server.projs;
-	
 	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+		
 		timers_clear(&proj->attach,timer_mode_repeat);
 		timers_clear(&proj->attach,timer_mode_single);
 		proj->on=FALSE;
-		proj++;
 	}
 }

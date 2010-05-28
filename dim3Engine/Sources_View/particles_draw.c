@@ -57,8 +57,8 @@ model_draw* particle_draw_get_model(particle_motion *motion)
 		// is it a projectile?
 
 	if (motion->proj_uid!=-1) {
-		proj=projectile_find_uid(motion->proj_uid);
-		if (proj==NULL) return(NULL);
+		proj=server.proj_list.projs[motion->proj_uid];
+		if (!proj->on) return(NULL);
 		return(&proj->draw);
 	}
 

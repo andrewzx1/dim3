@@ -701,7 +701,7 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 				break;
 
 			case ray_trace_check_item_projectile:
-				proj=&server.projs[item->index];
+				proj=server.proj_list.projs[item->index];
 				
 				t=ray_trace_projectile(spt,ept,vct,&pt,&hit_face,proj);
 				if (t==-1.0f) break;
@@ -814,9 +814,10 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 		
 	if (contact->proj.on) {
 	
-		for (n=0;n!=server.count.proj;n++) {
+		for (n=0;n!=max_proj_list;n++) {
+			proj=server.proj_list.projs[n];
+			if (!proj->on) continue;
 
-			proj=&server.projs[n];
 			if (!ray_trace_projectile_bound_check(proj,&min,&max,contact)) continue;
 			
 			t=ray_trace_projectile(spt,ept,vct,&pt,&hit_face,proj);
@@ -991,9 +992,9 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 		
 	if (contact->proj.on) {
 	
-		proj=server.projs;
-		
-		for (n=0;n!=server.count.proj;n++) {
+		for (n=0;n!=max_proj_list;n++) {
+			proj=server.proj_list.projs[n];
+			if (!proj->on) continue;
 
 			if (ray_trace_projectile_bound_check(proj,&min,&max,contact)) {
 				item->type=ray_trace_check_item_projectile;
@@ -1004,8 +1005,6 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 				
 				if (ray_item_count==ray_trace_max_check_item) return;
 			}
-			
-			proj++;
 		}
 	}
 

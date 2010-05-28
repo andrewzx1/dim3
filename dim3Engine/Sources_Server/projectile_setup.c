@@ -238,7 +238,7 @@ proj_setup_type* proj_setup_get_attach(void)
 	
 	if (js.attach.thing_type==thing_type_projectile) {
 		weap=weapon_script_lookup();
-		proj=projectile_find_uid(js.attach.proj_idx);
+		proj=projectile_script_lookup();
 		return(weap->proj_setup_list.proj_setups[proj->proj_setup_idx]);
 	}
 	
@@ -248,7 +248,7 @@ proj_setup_type* proj_setup_get_attach(void)
 proj_type* proj_get_attach(void)
 {
 	if (js.attach.thing_type==thing_type_projectile) {
-		return(projectile_find_uid(js.attach.proj_idx));
+		return(projectile_script_lookup());
 	}
 	
 	return(NULL);
