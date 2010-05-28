@@ -65,7 +65,7 @@ void radar_draw(void)
 	
 		// get player object (center of radar)
 		
-	player_obj=server.obj_list.objs[server.player_obj_index];
+	player_obj=server.obj_list.objs[server.player_obj_idx];
 
 		// set up view
 		
@@ -132,7 +132,7 @@ void radar_draw(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (obj->idx==server.player_obj_index) continue;
+		if (obj->idx==server.player_obj_idx) continue;
 		if ((obj->hidden) || (!obj->radar.on) || (obj->radar.icon_idx==-1)) continue;
 			
 			// get distance

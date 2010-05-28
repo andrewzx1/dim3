@@ -393,7 +393,7 @@ JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObject
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 	
-	projectile_mark_dispose(proj);
+	projectile_dispose(proj);
     
 	return(script_null_to_value(cx));
 }

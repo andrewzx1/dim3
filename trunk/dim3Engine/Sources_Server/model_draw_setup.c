@@ -133,7 +133,7 @@ void model_draw_setup_object(obj_type *obj)
 	
 		// connection settings
 
-	draw->connect.net_sound=(obj->idx==server.player_obj_index) || (obj->type==object_type_bot_multiplayer);
+	draw->connect.net_sound=(obj->idx==server.player_obj_idx) || (obj->type==object_type_bot_multiplayer);
 	draw->connect.net_remote_uid=obj->remote.uid;
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;
@@ -295,7 +295,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 
 		// connection settings
 
-	draw->connect.net_sound=(obj->idx==server.player_obj_index);
+	draw->connect.net_sound=(obj->idx==server.player_obj_idx);
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;
 	draw->connect.motion_vct.z=obj->motion.vct.z;

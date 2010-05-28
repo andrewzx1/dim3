@@ -1007,7 +1007,7 @@ void player_get_input(void)
 	
 		// get player object
 	
-	obj=server.obj_list.objs[server.player_obj_index];
+	obj=server.obj_list.objs[server.player_obj_idx];
 
 		// no input if menu or console is on
 

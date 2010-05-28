@@ -270,45 +270,20 @@ void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,i
       
 ======================================================= */
 
-
-// supergumba -- can delete on the spot now
-void projectile_mark_dispose(proj_type *proj)
+void projectile_dispose(proj_type *proj)
 {
-	proj->dispose=TRUE;
-}
+		// can't dispose if not on
 
+	if (!proj->on) return;
 
-// supergumba -- redo all of this!
-void projectile_dispose(void)
-{
-	int				i;
-	proj_type		*proj;
-	
-		// delete all projectiles marked as disposed
-	
-	i=0;
-	
-	while (i<max_proj_list) {
-		proj=server.proj_list.projs[i];
-		if (!proj->on) {
-			i++;
-			continue;
-		}
-		
-		if (!proj->dispose) {
-			i++;
-			continue;
-		}
-	
-			// delete all timers
+		// delete all timers
 			
-		timers_clear(&proj->attach,timer_mode_repeat);
-		timers_clear(&proj->attach,timer_mode_single);
-	
-			// mark as unused
+	timers_clear(&proj->attach,timer_mode_repeat);
+	timers_clear(&proj->attach,timer_mode_single);
 
-		proj->on=FALSE;
-	}
+		// mark as unused
+
+	proj->on=FALSE;
 }
 
 void projectile_dispose_all(void)
@@ -318,10 +293,6 @@ void projectile_dispose_all(void)
 	
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
-		if (!proj->on) continue;
-		
-		timers_clear(&proj->attach,timer_mode_repeat);
-		timers_clear(&proj->attach,timer_mode_single);
-		proj->on=FALSE;
+		if (proj->on) projectile_dispose(proj);
 	}
 }

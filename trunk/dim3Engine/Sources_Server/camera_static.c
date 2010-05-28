@@ -178,7 +178,7 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 		// player freeze
 		
 	if (in_freeze) {
-		player_obj=server.obj_list.objs[server.player_obj_index];
+		player_obj=server.obj_list.objs[server.player_obj_idx];
 		object_input_freeze(player_obj,TRUE);
 	}
 
@@ -267,7 +267,7 @@ void camera_static_run(void)
 		// player freeze
 		
 	if (camera.auto_walk.in_freeze) {
-		player_obj=server.obj_list.objs[server.player_obj_index];
+		player_obj=server.obj_list.objs[server.player_obj_idx];
 		object_input_freeze(player_obj,FALSE);
 	}
 	

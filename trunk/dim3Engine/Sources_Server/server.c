@@ -266,7 +266,7 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 	map.info.name[0]=0x0;
 	map.info.player_start_name[0]=0x0;
 	
-	server.player_obj_index=-1;
+	server.player_obj_idx=-1;
 	
 	js.game_attach.thing_type=thing_type_game;
 
@@ -290,8 +290,8 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 		// create game based objects
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
-		server.player_obj_index=game_player_create(err_str);
-		if (server.player_obj_index==-1) {
+		server.player_obj_idx=game_player_create(err_str);
+		if (server.player_obj_idx==-1) {
 			scripts_dispose(js.game_attach.script_uid);
 			return(FALSE);
 		}

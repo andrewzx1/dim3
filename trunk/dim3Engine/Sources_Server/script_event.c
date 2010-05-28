@@ -208,7 +208,7 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	switch (msg_to) {
 	
 		case sd_message_to_player:
-			obj=server.obj_list.objs[server.player_obj_index];
+			obj=server.obj_list.objs[server.player_obj_idx];
 			memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,id);
 			break;
@@ -246,7 +246,7 @@ JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=server.obj_list.objs[server.player_obj_index];
+	obj=server.obj_list.objs[server.player_obj_idx];
 
 	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));

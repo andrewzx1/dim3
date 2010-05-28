@@ -124,7 +124,7 @@ JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JS
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_bool_to_value(cx,obj->pickup.obj_uid==server.player_obj_index));
+	return(script_bool_to_value(cx,obj->pickup.obj_uid==server.player_obj_idx));
 }
 
 JSValueRef js_obj_pickup_get_itemId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

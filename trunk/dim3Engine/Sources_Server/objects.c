@@ -432,7 +432,7 @@ bool object_networkable(obj_type *obj)
 {
 		// players and bots always send messages
 
-	if ((obj->idx==server.player_obj_index) || (obj->type==object_type_bot_multiplayer)) return(TRUE);
+	if ((obj->idx==server.player_obj_idx) || (obj->type==object_type_bot_multiplayer)) return(TRUE);
 	
 		// map type bots only send messages if
 		// this process is the host
@@ -700,7 +700,7 @@ void object_player_set_remote_uid(int remote_uid)
 {
 	obj_type			*obj;
 	
-	obj=server.obj_list.objs[server.player_obj_index];
+	obj=server.obj_list.objs[server.player_obj_idx];
 	obj->remote.uid=remote_uid;
 }
 
@@ -708,7 +708,7 @@ int object_player_get_remote_uid(void)
 {
 	obj_type			*obj;
 	
-	obj=server.obj_list.objs[server.player_obj_index];
+	obj=server.obj_list.objs[server.player_obj_idx];
 	return(obj->remote.uid);
 }
 
@@ -808,7 +808,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		obj->tint_color_idx=setup.network.tint_color_idx;
 		obj->character_idx=setup.network.character_idx;
 
-		server.player_obj_index=obj->idx;
+		server.player_obj_idx=obj->idx;
 	}
 
 		// regular object setup
@@ -986,7 +986,7 @@ bool object_script_remove(int idx,char *err_str)
 {
 		// can not dispose player object
 
-	if (idx==server.player_obj_index) {
+	if (idx==server.player_obj_idx) {
 		strcpy(err_str,"Can not dispose player object");
 		return(FALSE);
 	}

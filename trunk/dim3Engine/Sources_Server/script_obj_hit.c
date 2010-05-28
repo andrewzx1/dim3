@@ -109,7 +109,7 @@ JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStr
 	obj_type			*obj;
 
 	obj=object_script_lookup();
-	return(script_bool_to_value(cx,obj->hit.obj_uid==server.player_obj_index));
+	return(script_bool_to_value(cx,obj->hit.obj_uid==server.player_obj_idx));
 }
 
 JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

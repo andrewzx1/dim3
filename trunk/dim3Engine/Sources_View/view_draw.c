@@ -518,7 +518,7 @@ void view_draw(void)
 
 		// get player object and held weapon
 	
-	obj=server.obj_list.objs[server.player_obj_index];
+	obj=server.obj_list.objs[server.player_obj_idx];
 	weap=weapon_find_current(obj);
 
 		// camera render

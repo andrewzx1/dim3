@@ -641,7 +641,7 @@ typedef struct		{
  
 typedef struct		{
 						int						mode,swap_tick,bounce_y,
-												current_index,next_index;
+												current_idx,next_idx;
 					} obj_held_weapon;
 					
 typedef struct		{
@@ -1163,7 +1163,7 @@ typedef struct		{
  
  typedef struct		{
 						int						state,next_state,last_state,
-												skill,player_obj_index;
+												skill,player_obj_idx;
 						bool					game_open,map_open,map_change,skip_media;
 						server_time_type		time;
 						server_count_type		count;

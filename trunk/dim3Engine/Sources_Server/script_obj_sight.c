@@ -212,5 +212,5 @@ JSValueRef js_obj_sight_test_player_func(JSContextRef cx,JSObjectRef func,JSObje
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_script_lookup();
-	return(script_bool_to_value(cx,object_sight_test_object(obj,server.player_obj_index)));
+	return(script_bool_to_value(cx,object_sight_test_object(obj,server.player_obj_idx)));
 }

@@ -53,18 +53,12 @@ void scripts_run(void)
 
 	if (tick<js.time.timer_tick) return;
 
-		// run scripts
+		// run timers
 	
 	while (tick>=js.time.timer_tick) {
 		js.time.timer_tick+=100;
 		
-			// run timers
-			
 		timers_run();
-		
-            // dispose projectiles killed in timers
-
-		projectile_dispose();
 	}
 }
 
