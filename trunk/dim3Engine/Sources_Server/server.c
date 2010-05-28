@@ -67,7 +67,6 @@ bool server_memory_allocate(void)
 	server.marks=NULL;
 	server.crosshairs=NULL;
 
-	server.projs=NULL;
     server.effects=NULL;
     server.decals=NULL;
 	
@@ -86,9 +85,6 @@ bool server_memory_allocate(void)
 		// these are pre-created to speed up
 		// the game
 	
-	server.projs=(proj_type*)malloc(max_projectile*sizeof(proj_type));
-	if (server.projs==NULL) return(FALSE);
-
 	server.effects=(effect_type*)malloc(max_effect*sizeof(effect_type));
 	if (server.effects==NULL) return(FALSE);
 	
@@ -128,7 +124,6 @@ bool server_memory_allocate(void)
 	
 		// zero memory
 		
-	bzero(server.projs,(max_projectile*sizeof(proj_type)));
 	bzero(server.effects,(max_effect*sizeof(effect_type)));
 	bzero(server.decals,(max_decal*sizeof(decal_type)));
 	bzero(js.scripts,(max_scripts*sizeof(script_type)));
@@ -156,7 +151,6 @@ void server_memory_release(void)
 
 		// non-dynamic server pointers
 
-	if (server.projs!=NULL) free(server.projs);
 	if (server.effects!=NULL) free(server.effects);
 	if (server.decals!=NULL) free(server.decals);
 	

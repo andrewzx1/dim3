@@ -130,11 +130,11 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
   
 		// check projectiles
 		
-	proj=server.projs;
-	
-	for (n=0;n!=server.count.proj;n++) {
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+
 		if (collide_sphere_to_projectile(x,y,z,melee->radius,proj)) proj->flag_melee_hit=TRUE;		// flag the melee hit
-		proj++;
 	}
 	
 		// do any pushes

@@ -509,7 +509,7 @@ void map_end(void)
 	progress_draw(25);
 
 	projectile_dispose_all();
-	projectile_list_free();
+	projectile_free_list();
 
         // end script
 		

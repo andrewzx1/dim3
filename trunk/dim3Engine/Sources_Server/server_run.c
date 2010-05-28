@@ -309,8 +309,9 @@ void run_projectiles_slice(void)
 	int				n;
 	proj_type		*proj;
 	
-	for (n=0;n!=server.count.proj;n++) {
-		proj=&server.projs[n];
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
 		if (proj->dispose) continue;
 
 		object_clear_contact(&proj->contact);
@@ -354,8 +355,9 @@ void run_projectiles_no_slice(void)
 	int				n;
 	proj_type		*proj;
 
-	for (n=0;n!=server.count.proj;n++) {
-		proj=&server.projs[n];
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
 		if (proj->dispose) continue;
 	
 		model_draw_setup_projectile(proj);

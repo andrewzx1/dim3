@@ -296,10 +296,10 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 	
-    obj=server.obj_list.objs[proj->obj_index];
-	weap=obj->weap_list.weaps[proj->weap_index];
+    obj=server.obj_list.objs[proj->obj_idx];
+	weap=obj->weap_list.weaps[proj->weap_idx];
 
-	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_index];
+	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	pt.x=script_value_to_int(cx,argv[0]);

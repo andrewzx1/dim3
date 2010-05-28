@@ -306,8 +306,8 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
 	game_file_add_chunk(&server.player_obj_index,1,sizeof(int));
 	game_file_add_chunk(&server.skill,1,sizeof(int));
-	
-	game_file_add_chunk(&server.uid,1,sizeof(server_uid_type));
+// supergumba	
+//	game_file_add_chunk(&server.uid,1,sizeof(server_uid_type));
 	game_file_add_chunk(&server.count,1,sizeof(server_count_type));
 	
 	progress_draw(30);
@@ -319,7 +319,7 @@ bool game_file_save(char *err_str)
 	
 	progress_draw(40);
 	
-	game_file_add_chunk(server.projs,server.count.proj,sizeof(proj_type));
+//	game_file_add_chunk(server.projs,server.count.proj,sizeof(proj_type));
 	game_file_add_chunk(server.effects,server.count.effect,sizeof(effect_type));
 	game_file_add_chunk(server.decals,server.count.decal,sizeof(decal_type));
 	
@@ -452,7 +452,7 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&server.player_obj_index);
 	game_file_get_chunk(&server.skill);
 	
-	game_file_get_chunk(&server.uid);
+//	game_file_get_chunk(&server.uid);
 	game_file_get_chunk(&server.count);
 	
 	progress_draw(20);
@@ -475,7 +475,7 @@ bool game_file_load(char *file_name,char *err_str)
 
 	progress_draw(40);
 
-	game_file_get_chunk(server.projs);
+//	game_file_get_chunk(server.projs);
 	game_file_get_chunk(server.effects);
 	game_file_get_chunk(server.decals);
 

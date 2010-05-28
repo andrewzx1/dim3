@@ -326,7 +326,7 @@ JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	weap=weapon_script_lookup();
 
-	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_index];
+	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 		
 	to_obj=server.obj_list.objs[weap->target.obj_uid];

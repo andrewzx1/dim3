@@ -102,7 +102,7 @@ model_draw* script_bone_function_setup(JSContextRef cx,JSValueRef *exception)
 			return(&weap->draw);
 			
 		case thing_type_projectile:
-			proj=projectile_find_uid(js.attach.proj_idx);
+			proj=projectile_script_lookup();
 			model_draw_setup_projectile(proj);
 			return(&proj->draw);
 			

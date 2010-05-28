@@ -134,12 +134,12 @@ JSValueRef js_obj_hit_get_projectileName(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 	obj=object_script_lookup();
 
-	hit_proj=projectile_find_uid(obj->hit.proj_uid);
+	hit_proj=server.proj_list.projs[obj->hit.proj_uid];
 	if (hit_proj==NULL) return(script_null_to_value(cx));
 	
 	weap=weapon_script_lookup();
 
-	hit_proj_setup=weap->proj_setup_list.proj_setups[hit_proj->proj_setup_index];
+	hit_proj_setup=weap->proj_setup_list.proj_setups[hit_proj->proj_setup_idx];
 	return(script_string_to_value(cx,hit_proj_setup->name));
 }
 

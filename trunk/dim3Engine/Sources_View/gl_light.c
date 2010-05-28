@@ -319,7 +319,7 @@ void gl_lights_setup_cache(void)
 				break;
 
 			case view_render_type_projectile:
-				proj=&server.projs[view.render->draw_list.items[n].idx];
+				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
 
 				proj->draw.light_cache.count=0;
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&proj->draw);
@@ -494,11 +494,11 @@ void gl_lights_compile(int tick)
 	
 		// lights from projectiles
 
-	proj=server.projs;
-	
-	for (n=0;n!=server.count.proj;n++) {
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+		
 		gl_lights_compile_model_add(tick,&proj->draw);
-		proj++;
 	}
 	
 		// lights from effects

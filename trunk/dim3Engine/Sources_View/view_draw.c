@@ -266,7 +266,7 @@ void view_draw_model_opaque(void)
 				break;
 
 			case view_render_type_projectile:
-				proj=&server.projs[view.render->draw_list.items[n].idx];
+				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
 				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (proj->draw.has_opaque)) {
 					render_model_build_vertex_lists(&proj->draw);	// projectiles share vertex lists
 					render_model_opaque(&proj->draw);
@@ -308,7 +308,7 @@ void view_draw_model_transparent(void)
 				break;
 
 			case view_render_type_projectile:
-				proj=&server.projs[view.render->draw_list.items[n].idx];
+				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
 				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (proj->draw.has_transparent)) {
 					render_model_build_vertex_lists(&proj->draw);		// projectiles share draw lists
 					render_model_transparent(&proj->draw);
@@ -369,7 +369,7 @@ void view_draw_models_final(void)
 				break;
 
 			case view_render_type_projectile:
-				proj=&server.projs[view.render->draw_list.items[n].idx];
+				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
 				if ((shadow_on) && (proj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
 						render_model_setup(&proj->draw);
