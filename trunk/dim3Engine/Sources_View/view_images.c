@@ -291,24 +291,19 @@ void view_images_cached_load(void)
 		hud_bitmap++;
 	}
 
-		// radar
+		// radar background
 
-	if (hud.radar.on) {
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",hud.radar.background_bitmap_name,"png");
+	hud.radar.background_image_idx=view_images_load_single(path,FALSE,TRUE);
+
+		// radar icons
 	
-			// radar background
-
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",hud.radar.background_bitmap_name,"png");
-		hud.radar.background_image_idx=view_images_load_single(path,FALSE,TRUE);
-
-			// radar icons
-		
-		icon=hud.radar.icons;
-		
-		for (n=0;n!=hud.radar.nicon;n++) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",icon->bitmap_name,"png");
-			icon->image_idx=view_images_load_single(path,FALSE,TRUE);
-			icon++;
-		}
+	icon=hud.radar.icons;
+	
+	for (n=0;n!=hud.radar.nicon;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",icon->bitmap_name,"png");
+		icon->image_idx=view_images_load_single(path,FALSE,TRUE);
+		icon++;
 	}
 
 		// halos

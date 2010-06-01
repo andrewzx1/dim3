@@ -161,7 +161,7 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
 		
 	scripts_post_event_console(&proj->attach,sd_event_hit,0,0);
 	
-	if (!proj->dispose) return(FALSE);
+	if (!proj->script_dispose) return(FALSE);
    
         // object damage
 
@@ -185,6 +185,10 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
 		// decals
 		
 	projectile_decals(proj,proj_setup);
+	
+		// dispose of projectile
+		
+	projectile_dispose(proj);
 
 	return(TRUE);
 }

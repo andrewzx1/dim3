@@ -117,7 +117,7 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	proj->idx=idx;
 	proj->on=TRUE;
 	
-	proj->dispose=FALSE;
+	proj->script_dispose=FALSE;
 	
 	proj->obj_idx=obj->idx;
 	proj->weap_idx=weap->idx;

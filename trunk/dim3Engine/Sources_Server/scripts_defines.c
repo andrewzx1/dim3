@@ -80,14 +80,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_light_direction_pos_y,						"",		"DIM3_LIGHT_DIRECTION_POS_Y"},
 								{sd_light_direction_neg_z,						"",		"DIM3_LIGHT_DIRECTION_NEG_Z"},
 								{sd_light_direction_pos_z,						"",		"DIM3_LIGHT_DIRECTION_POS_Z"},
-
-								{sd_model_lit_flat,								"",		"DIM3_MODEL_LIT_FLAT"},
-								{sd_model_lit_hilite,							"",		"DIM3_MODEL_LIT_HILITE"},
-								{sd_model_lit_hilite_diffuse,					"",		"DIM3_MODEL_LIT_HILITE_DIFFUSE"},
-								{sd_model_lit_vertex,							"",		"DIM3_MODEL_LIT_VERTEX"},
-								
-								{sd_model_shadow_mode_normal,					"",		"DIM3_MODEL_SHADOW_MODE_NORMAL"},
-								{sd_model_shadow_mode_static,					"",		"DIM3_MODEL_SHADOW_MODE_STATIC"},
 								
 								{sd_message_to_player,							"",		"DIM3_MESSAGE_TO_PLAYER"},
 								{sd_message_to_object,							"",		"DIM3_MESSAGE_TO_OBJECT"},

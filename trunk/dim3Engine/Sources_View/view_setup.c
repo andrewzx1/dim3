@@ -627,7 +627,7 @@ void view_setup_objects(int tick)
 			// setup held weapon model
 			// if player
 
-		if ((obj->idx==server.player_obj_idx) && (obj->held_weapon.current_index!=-1)) {
+		if ((obj->idx==server.player_obj_idx) && (obj->held_weapon.current_idx!=-1)) {
 			weap=weapon_find_current(obj);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
@@ -645,7 +645,6 @@ void view_setup_projectiles(int tick)
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
-		if (proj->dispose) continue;
 		
 			// setup model positions
 			

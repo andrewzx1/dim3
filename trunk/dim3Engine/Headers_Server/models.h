@@ -42,6 +42,7 @@ extern void model_get_current_animation_name(model_draw *draw,char *name);
 extern int model_find_animation_from_draw(model_draw *draw,char *name);
 extern bool model_start_animation(model_draw *draw,char *name);
 extern void model_stop_animation(model_draw *draw);
+extern void model_stop_all_animation(model_draw *draw);
 extern bool model_cancel_animation(model_draw *draw,char *name);
 extern bool model_change_animation(model_draw *draw,char *name);
 extern bool model_interrupt_animation(model_draw *draw,char *name);

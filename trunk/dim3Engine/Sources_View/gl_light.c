@@ -312,7 +312,7 @@ void gl_lights_setup_cache(void)
 				obj->draw.light_cache.count=0;
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&obj->draw);
 				
-				if ((obj->idx==server.player_obj_idx) && (obj->held_weapon.current_index!=-1)) {
+				if ((obj->idx==server.player_obj_idx) && (obj->held_weapon.current_idx!=-1)) {
 					weap=weapon_find_current(obj);
 					if (weap!=NULL) gl_lights_setup_model(&weap->draw);
 				}
@@ -486,7 +486,7 @@ void gl_lights_compile(int tick)
 		if (obj==NULL) continue;
 
 		gl_lights_compile_model_add(tick,&obj->draw);
-		if (obj->held_weapon.current_index!=-1) {
+		if (obj->held_weapon.current_idx!=-1) {
 			weap=weapon_find_current(obj);
 			if (weap!=NULL) gl_lights_compile_model_add(tick,&weap->draw);
 		}
