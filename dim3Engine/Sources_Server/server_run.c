@@ -263,7 +263,6 @@ void run_objects_no_slice(void)
 {
 	int				n;
 	obj_type		*obj;
-	weapon_type		*weap;
 
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
@@ -277,25 +276,16 @@ void run_objects_no_slice(void)
 			model_run_animation(&obj->draw);
 
 			if (!obj->scenery.on) {
-
-					// fades
-
 				model_fade_run(&obj->draw);
 				model_mesh_fade_run(&obj->draw);
-
-					// held weapons
-
-				if (obj->type==object_type_player) {
-					weap=weapon_find_current(obj);
-					if (weap!=NULL) {
-						model_draw_setup_weapon(obj,weap,FALSE,FALSE);
-						weapon_run_hand(obj);
-					}
-				}
-
 			}
 		}
 	}
+	
+		// weapons in hand
+		
+	obj=server.obj_list.objs[server.player_obj_idx];
+	weapon_run_hand(obj);
 }
 
 /* =======================================================
@@ -312,7 +302,6 @@ void run_projectiles_slice(void)
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
-		if (proj->dispose) continue;
 
 		object_clear_contact(&proj->contact);
 	   
@@ -341,11 +330,7 @@ void run_projectiles_slice(void)
 		}
 		
 		projectile_collision(proj);
-		
-		if (projectile_hit(proj,FALSE)) {
-			projectile_dispose(proj);
-			continue;
-		}
+		projectile_hit(proj,FALSE);
 	}
 }
 
@@ -357,7 +342,6 @@ void run_projectiles_no_slice(void)
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
-		if (proj->dispose) continue;
 	
 		model_draw_setup_projectile(proj);
 		model_run_animation(&proj->draw);

@@ -107,16 +107,10 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 	if (contact.proj.uid!=-1) {
 		hit_proj=server.proj_list.projs[contact.proj.uid];
 		hit_proj->contact.proj_uid=proj->idx;
-		if (projectile_hit(hit_proj,TRUE)) {				// force other projectile into hit mode
-			projectile_dispose(hit_proj);
-		}
+		projectile_hit(hit_proj,TRUE);
 	}
 
 		// hit projectile
 			
 	projectile_hit(proj,TRUE);
-	
-		// destroy projectile
-	
-	projectile_dispose(proj);
 }

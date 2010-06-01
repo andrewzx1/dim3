@@ -89,8 +89,8 @@ void weapon_clear_animation(weapon_type *weap)
 
 void weapon_set(obj_type *obj,weapon_type *weap)
 {
-	obj->held_weapon.current_index=weap->idx;
-	obj->held_weapon.next_index=weap->idx;
+	obj->held_weapon.current_idx=weap->idx;
+	obj->held_weapon.next_idx=weap->idx;
     obj->held_weapon.mode=wm_held;
     
 	weapon_clear_animation(weap);
@@ -114,13 +114,13 @@ void weapon_clear_state(obj_type *obj)
 		// if there was a changing weapon
 		// complete the change
 		
-	if (obj->held_weapon.next_index!=-1) obj->held_weapon.current_index=obj->held_weapon.next_index;
+	if (obj->held_weapon.next_idx!=-1) obj->held_weapon.current_idx=obj->held_weapon.next_idx;
 
 	obj->held_weapon.mode=wm_held;
 
 		// turn off any weapon changing
 
-	obj->held_weapon.next_index=-1;
+	obj->held_weapon.next_idx=-1;
     obj->held_weapon.mode=wm_held;
     obj->held_weapon.swap_tick=0;
 	obj->held_weapon.bounce_y=0;
@@ -214,7 +214,7 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
 
 		// set next weapon
 	
-	obj->held_weapon.next_index=weap->idx;
+	obj->held_weapon.next_idx=weap->idx;
 
 		// clear any animation smoothing
 
@@ -240,10 +240,10 @@ void weapon_switch(obj_type *obj,int dir)
         // already changing weapons?
         
     if (weap_mode!=wm_lower) {
-		weap_idx=obj->held_weapon.current_index;
+		weap_idx=obj->held_weapon.current_idx;
     }
     else {
-		weap_idx=obj->held_weapon.next_index;
+		weap_idx=obj->held_weapon.next_idx;
     }
 
 	if (weap_idx==-1) return;
@@ -260,7 +260,7 @@ void weapon_switch(obj_type *obj,int dir)
 		
 			// have we wrapped back around?
 			
-		if (weap_idx==obj->held_weapon.current_index) return;
+		if (weap_idx==obj->held_weapon.current_idx) return;
 			
 			// can we select this weapon?
 			
@@ -284,7 +284,7 @@ void weapon_pick(obj_type *obj,int index)
 	
 		// can we switch?
 
-    if (weap->idx==obj->held_weapon.current_index) return;
+    if (weap->idx==obj->held_weapon.current_idx) return;
 	if (weap->hidden) return;
 	
 		// set weapon
@@ -538,8 +538,20 @@ void weapon_run_hand(obj_type *obj)
     int					weap_mode,swap_tick;
 	weapon_type			*weap;
 	
+		// is player object in
+		// right state?
+		
+	if (obj->hidden) return;
+	if (camera.mode!=cv_fpp) return;
+	
+		// find held weapon
+	
 	weap=weapon_find_current(obj);
 	if (weap==NULL) return;
+	
+		// setup drawing
+		
+	model_draw_setup_weapon(obj,weap,FALSE,FALSE);
     
         // model animations
        
@@ -564,8 +576,8 @@ void weapon_run_hand(obj_type *obj)
         
     if (weap_mode==wm_lower) {
         if (swap_tick>weap->hand.lower_tick) {
-			weapon_cur_weapon_recoil_copy(obj,obj->held_weapon.next_index);
-            obj->held_weapon.current_index=obj->held_weapon.next_index;
+			weapon_cur_weapon_recoil_copy(obj,obj->held_weapon.next_idx);
+            obj->held_weapon.current_idx=obj->held_weapon.next_idx;
             weapon_raise(obj);
         }
         return;

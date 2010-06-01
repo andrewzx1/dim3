@@ -246,14 +246,14 @@ bool model_wind_control(ControlRef ctrl)
 			
 		case 7:
 			drag_bone_mode=drag_bone_mode_rotate;
-			SetControlValue(tool_ctrl[10],1);
-			SetControlValue(tool_ctrl[11],0);
+			SetControlValue(tool_ctrl[7],1);
+			SetControlValue(tool_ctrl[8],0);
 			break;
 			
 		case 8:
 			drag_bone_mode=drag_bone_mode_stretch;
-			SetControlValue(tool_ctrl[10],0);
-			SetControlValue(tool_ctrl[11],1);
+			SetControlValue(tool_ctrl[7],0);
+			SetControlValue(tool_ctrl[8],1);
 			break;
 			
 		case 9:

@@ -255,6 +255,8 @@ int map_mesh_duplicate(map_type *map,int mesh_idx)
 		// mesh setup
 		
 	new_mesh->group_idx=mesh->group_idx;
+	new_mesh->hide_mode=mesh->hide_mode;
+	new_mesh->normal_mode=mesh->normal_mode;
 
 	memmove(&new_mesh->rot_off,&mesh->rot_off,sizeof(d3pnt));
 	memmove(&new_mesh->flag,&mesh->flag,sizeof(map_mesh_flag_type));

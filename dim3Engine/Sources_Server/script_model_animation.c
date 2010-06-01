@@ -38,6 +38,7 @@ JSValueRef js_model_animation_get_playing(JSContextRef cx,JSObjectRef j_obj,JSSt
 bool js_model_animation_set_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_animation_stop_all_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -55,6 +56,7 @@ JSStaticValue 		model_animation_props[]={
 JSStaticFunction	model_animation_functions[]={
 							{"start",					js_model_animation_start_func,					kJSPropertyAttributeDontDelete},
 							{"stop",					js_model_animation_stop_func,					kJSPropertyAttributeDontDelete},
+							{"stopAll",					js_model_animation_stop_all_func,				kJSPropertyAttributeDontDelete},
 							{"cancel",					js_model_animation_cancel_func,					kJSPropertyAttributeDontDelete},
 							{"change",					js_model_animation_change_func,					kJSPropertyAttributeDontDelete},
 							{"interrupt",				js_model_animation_interrupt_func,				kJSPropertyAttributeDontDelete},
@@ -184,6 +186,18 @@ JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	draw=script_find_model_draw();
 	model_stop_animation(draw);
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_model_animation_stop_all_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	model_draw		*draw;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	draw=script_find_model_draw();
+	model_stop_all_animation(draw);
 
 	return(script_null_to_value(cx));
 }

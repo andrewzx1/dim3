@@ -905,7 +905,7 @@ typedef struct		{
 												count,parent_grace,decel_grace,
 												start_tick;
 						float					speed,decel_speed,decel_min_speed,gravity_add;
-						bool					on,dispose,stick,reset_angle,flag_melee_hit;
+						bool					on,script_dispose,stick,reset_angle,flag_melee_hit;
 						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang;
 						obj_size				size;

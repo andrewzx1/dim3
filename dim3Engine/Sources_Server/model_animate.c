@@ -144,6 +144,25 @@ void model_stop_animation(model_draw *draw)
     draw_animation->mode=am_stopped;
 }
 
+void model_stop_all_animation(model_draw *draw)
+{
+	int						n;
+	model_draw_animation	*draw_animation;
+	
+	for (n=0;n!=max_model_blend_animation;n++) {
+		draw_animation=&draw->animations[n];
+		
+		draw_animation->animate_idx=-1;
+		draw_animation->animate_next_idx=-1;
+		draw_animation->pose_move_idx=0;
+
+		draw_animation->smooth_animate_idx=-1;
+		draw_animation->smooth_pose_move_idx=0;
+		
+		draw_animation->mode=am_stopped;
+	}
+}
+
 bool model_cancel_animation(model_draw *draw,char *name)
 {
 	int						idx;

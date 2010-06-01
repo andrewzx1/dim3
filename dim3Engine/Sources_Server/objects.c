@@ -623,7 +623,7 @@ int object_create(char *name,int type,int bind)
     
     obj->held_weapon.mode=wm_held;
     obj->held_weapon.swap_tick=0;
-	obj->held_weapon.current_index=obj->held_weapon.next_index=-1;
+	obj->held_weapon.current_idx=obj->held_weapon.next_idx=-1;
 	obj->held_weapon.bounce_y=0;
 	
 	obj->crosshair_draw.on=FALSE;
@@ -873,7 +873,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 
 		// setup held weapon
 
-	if (obj->held_weapon.current_index!=-1) {
+	if (obj->held_weapon.current_idx!=-1) {
 		weap=weapon_find_current(obj);
 		weapon_set(obj,weap);
 	}

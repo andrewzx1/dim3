@@ -127,18 +127,6 @@ and can be sold or given away.
 #define sd_light_direction_pos_z						1056
 
 //
-// model constants
-//
-
-#define sd_model_lit_flat								1060
-#define sd_model_lit_hilite								1061
-#define sd_model_lit_hilite_diffuse						1062
-#define sd_model_lit_vertex								1063
-
-#define sd_model_shadow_mode_normal						1070
-#define sd_model_shadow_mode_static						1071
-
-//
 // message constants
 //
 

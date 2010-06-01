@@ -84,7 +84,7 @@ JSStaticFunction	map_object_functions[]={
 							{"nearestSkipObjectId",			js_map_object_nearest_skip_object_id_func,			kJSPropertyAttributeDontDelete},
 							{"nearestPlayer",				js_map_object_nearest_player_func,					kJSPropertyAttributeDontDelete},
 							{"nearestPlayerSkipObjectId",	js_map_object_nearest_player_skip_object_id_func,	kJSPropertyAttributeDontDelete},
-							{"nearestRemotePlayer",			js_map_object_nearest_remote_player_func,			kJSPropertyAttributeDontDelete},
+						//	{"nearestRemotePlayer",			js_map_object_nearest_remote_player_func,			kJSPropertyAttributeDontDelete},
 							{"nearestTeam",					js_map_object_nearest_team_func,					kJSPropertyAttributeDontDelete},
 							{"getName",						js_map_object_get_name_func,						kJSPropertyAttributeDontDelete},
 							{"getType",						js_map_object_get_type_func,						kJSPropertyAttributeDontDelete},
