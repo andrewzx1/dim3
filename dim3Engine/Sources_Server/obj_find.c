@@ -90,7 +90,7 @@ obj_type* object_find_name(char *name)
       
 ======================================================= */
 
-obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid)
+obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,int skip_obj_uid)
 {
 	int				n,i,d,dist;
 	float			fang;
@@ -111,7 +111,6 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 		if (player) {
 			if ((obj->type!=object_type_player) && (obj->type!=object_type_bot_multiplayer) && (obj->type!=object_type_remote)) continue;
 		}
-		if ((remote) && (obj->type!=object_type_remote)) continue;
 
 		if (obj->idx==skip_obj_uid) continue;
 		
