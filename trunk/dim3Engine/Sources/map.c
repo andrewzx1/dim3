@@ -330,10 +330,19 @@ bool map_start(bool file_restore,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	effect_start();
-	particle_map_initialize();
+	if (!effect_initialize_list()) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
 
-	decal_clear();
+	if (!decal_initialize_list()) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
+
+	particle_map_initialize();
 	group_move_clear_all();
 	
 		// reset rain
@@ -504,12 +513,15 @@ void map_end(void)
 	map_end_ambient();
 	al_stop_all_sources();
 
-		// end all projectiles
+		// free some lists
 	
 	progress_draw(25);
 
 	projectile_dispose_all();
 	projectile_free_list();
+
+	effect_free_list();
+	decal_free_list();
 
         // end script
 		

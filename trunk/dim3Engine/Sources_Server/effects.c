@@ -38,13 +38,38 @@ extern server_type  server;
 
 /* =======================================================
 
-      Initialize Effects
+      Effect List
       
 ======================================================= */
 
-void effect_start(void)
+bool effect_initialize_list(void)
 {
-	server.count.effect=0;
+	int				n;
+
+		// pre-alloc all effects
+
+	for (n=0;n!=max_effect_list;n++) {
+
+			// memory for effects
+
+		server.effect_list.effects[n]=(effect_type*)malloc(sizeof(effect_type));
+		if (server.effect_list.effects[n]==NULL) return(FALSE);
+
+			// not used
+
+		server.effect_list.effects[n]->on=FALSE;
+	}
+
+	return(TRUE);
+}
+
+void effect_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_effect_list;n++) {
+		if (server.effect_list.effects[n]!=NULL) free(server.effect_list.effects[n]);
+	}
 }
 
 /* =======================================================
@@ -55,6 +80,7 @@ void effect_start(void)
 
 effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 {
+	int				n,idx;
 	effect_type		*effect;
 	
 		// can't spawn 0 time effects
@@ -67,13 +93,23 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 		// any more effect spots?
 		// this is a silent error, as it's not fatal
 		// and not script-based
+
+	idx=-1;
+
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) {
+			idx=n;
+			break;
+		}
+	}
 		
-	if (server.count.effect>=max_effect) return(NULL);
+	if (idx==-1) return(NULL);
 	
 		// create effect
 	
-	effect=&server.effects[server.count.effect];
-	server.count.effect++;
+	effect=server.effect_list.effects[idx];
+	effect->on=TRUE;
 	
 	effect->effecttype=effecttype;
 	
@@ -95,28 +131,23 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 
 void effect_dispose(void)
 {
-	int					i,tick;
+	int					n,tick;
 	effect_type			*effect;
 	
 	tick=game_time_get();
 	
 		// delete all effects that have timed out
+
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) continue;
 	
-	i=0;
-	
-	while (i<server.count.effect) {
-		effect=&server.effects[i];
-		
-		if ((tick-effect->start_tick)<effect->life_tick) {
-			i++;
-			continue;
-		}
-	
-		if (i<(server.count.effect-1)) {
-			memmove(&server.effects[i],&server.effects[i+1],(sizeof(effect_type)*((server.count.effect-i)-1)));
-		}
-			
-		server.count.effect--;
-		if (server.count.effect==0) break;
+			// has it timed out?
+
+		if ((tick-effect->start_tick)<effect->life_tick) continue;
+
+			// turn off effect
+
+		effect->on=FALSE;
 	}
 }

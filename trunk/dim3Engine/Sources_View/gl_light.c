@@ -503,11 +503,11 @@ void gl_lights_compile(int tick)
 	
 		// lights from effects
 		
-	effect=server.effects;
-		
-	for (n=0;n!=server.count.effect;n++) {
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) continue;
+
 		gl_lights_compile_effect_add(tick,effect);		
-		effect++;
 	}
 	
 		// setup per render item caches

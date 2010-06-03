@@ -66,9 +66,6 @@ bool server_memory_allocate(void)
 	server.halos=NULL;
 	server.marks=NULL;
 	server.crosshairs=NULL;
-
-    server.effects=NULL;
-    server.decals=NULL;
 	
 	js.scripts=NULL;
 	js.timers=NULL;
@@ -80,16 +77,6 @@ bool server_memory_allocate(void)
 	hud.menus=NULL;
 	hud.choosers=NULL;
 	hud.chat.lines=NULL;
-
-		// non-dynamic server pointers
-		// these are pre-created to speed up
-		// the game
-	
-	server.effects=(effect_type*)malloc(max_effect*sizeof(effect_type));
-	if (server.effects==NULL) return(FALSE);
-	
-	server.decals=(decal_type*)malloc(max_decal*sizeof(decal_type));
-	if (server.decals==NULL) return(FALSE);
 
 		// js engine pointers
 		
@@ -124,8 +111,6 @@ bool server_memory_allocate(void)
 	
 		// zero memory
 		
-	bzero(server.effects,(max_effect*sizeof(effect_type)));
-	bzero(server.decals,(max_decal*sizeof(decal_type)));
 	bzero(js.scripts,(max_scripts*sizeof(script_type)));
 	bzero(js.timers,(max_timers*sizeof(timer_type)));
 	bzero(js.globals,(max_globals*sizeof(global_type)));
@@ -148,11 +133,6 @@ void server_memory_release(void)
 	if (server.halos!=NULL) free(server.halos);
 	if (server.marks!=NULL) free(server.marks);
 	if (server.crosshairs!=NULL) free(server.crosshairs);
-
-		// non-dynamic server pointers
-
-	if (server.effects!=NULL) free(server.effects);
-	if (server.decals!=NULL) free(server.decals);
 	
 		// js pointers
 		

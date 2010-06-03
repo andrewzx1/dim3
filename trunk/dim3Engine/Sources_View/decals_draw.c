@@ -152,16 +152,14 @@ void decal_render(void)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
 
-	if (server.count.decal==0) return;
-
 		// clear all rendering stencil marks
 		// and detect if in view
 
 	has_decal=FALSE;
 	
-	decal=server.decals;
-
-	for (n=0;n!=server.count.decal;n++) {
+	for (n=0;n!=max_decal_list;n++) {
+		decal=server.decal_list.decals[n];
+		if (!decal->on) continue;
 	
 		decal->in_view=view_mesh_in_draw_list(decal->mesh_idx);
 		
@@ -170,8 +168,6 @@ void decal_render(void)
 			mesh_poly->draw.decal_stencil_idx=0;
 			has_decal=TRUE;
 		}
-		
-		decal++;
 	}
 	
 	if (!has_decal) return;
@@ -198,9 +194,10 @@ void decal_render(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	stencil_idx=stencil_poly_start;
-	decal=server.decals;
 
-	for (n=0;n!=server.count.decal;n++) {
+	for (n=0;n!=max_decal_list;n++) {
+		decal=server.decal_list.decals[n];
+		if (!decal->on) continue;
 
 		if (decal->in_view) {
 			mesh=&map.mesh.meshes[decal->mesh_idx];
@@ -208,8 +205,6 @@ void decal_render(void)
 			decal_render_stencil(mesh,mesh_poly,stencil_idx);
 			stencil_idx++;
 		}
-		
-		decal++;
 	}
 
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
@@ -224,16 +219,14 @@ void decal_render(void)
 			
 	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
 
-	decal=server.decals;
-
-	for (n=0;n!=server.count.decal;n++) {
+	for (n=0;n!=max_decal_list;n++) {
+		decal=server.decal_list.decals[n];
+		if (!decal->on) continue;
 	
 		if (decal->in_view) {
 			mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
 			decal_render_mark(mesh_poly->draw.decal_stencil_idx,decal);
 		}
-		
-		decal++;
 	}
 
 	gl_texture_decal_end();
