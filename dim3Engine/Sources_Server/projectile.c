@@ -41,7 +41,7 @@ extern js_type				js;
 
 /* =======================================================
 
-      Start Projectile List
+      Projectile List
       
 ======================================================= */
 
@@ -58,7 +58,7 @@ bool projectile_initialize_list(void)
 		server.proj_list.projs[n]=(proj_type*)malloc(sizeof(proj_type));
 		if (server.proj_list.projs[n]==NULL) return(FALSE);
 
-			// no used
+			// not used
 
 		server.proj_list.projs[n]->on=FALSE;
 	}

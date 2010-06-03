@@ -25,7 +25,9 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void effect_start(void);
+extern bool effect_initialize_list(void);
+extern void effect_free_list(void);
+
 extern effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick);
 extern void effect_dispose(void);
 extern bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent,int flash_msec,int fade_msec);
@@ -60,7 +62,8 @@ extern void ring_draw(effect_type *effect,int count);
 extern void mark_initialize(void);
 extern int mark_find(char *name);
 
-extern void decal_clear(void);
+extern bool decal_initialize_list(void);
+extern void decal_free_list(void);
 extern void decal_move_with_mesh(int mesh_idx,int xmove,int ymove,int zmove);
 extern void decal_rotate_with_mesh(int mesh_idx,float y);
 extern void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha);

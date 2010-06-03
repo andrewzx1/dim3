@@ -70,13 +70,38 @@ int mark_find(char *name)
 
 /* =======================================================
 
-      Setup Decals
+      Decal List
       
 ======================================================= */
 
-void decal_clear(void)
+bool decal_initialize_list(void)
 {
-	server.count.decal=0;
+	int				n;
+
+		// pre-alloc all decals
+
+	for (n=0;n!=max_decal_list;n++) {
+
+			// memory for decals
+
+		server.decal_list.decals[n]=(decal_type*)malloc(sizeof(decal_type));
+		if (server.decal_list.decals[n]==NULL) return(FALSE);
+
+			// not used
+
+		server.decal_list.decals[n]->on=FALSE;
+	}
+
+	return(TRUE);
+}
+
+void decal_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_decal_list;n++) {
+		if (server.decal_list.decals[n]!=NULL) free(server.decal_list.decals[n]);
+	}
 }
 
 /* =======================================================
@@ -102,9 +127,10 @@ void decal_move_with_mesh(int mesh_idx,int xmove,int ymove,int zmove)
 	int			n,i;
 	decal_type	*decal;
 
-	decal=server.decals;
+	for (n=0;n!=max_decal_list;n++) {
+		decal=server.decal_list.decals[n];
+		if (!decal->on) continue;
 
-	for (n=0;n!=server.count.decal;n++) {
 		if (decal->mesh_idx==mesh_idx) {
 			for (i=0;i!=4;i++) {
 				decal->x[i]+=xmove;
@@ -112,7 +138,6 @@ void decal_move_with_mesh(int mesh_idx,int xmove,int ymove,int zmove)
 				decal->z[i]+=zmove;
 			}
 		}
-		decal++;
 	}
 }
 
@@ -134,13 +159,13 @@ void decal_rotate_with_mesh(int mesh_idx,float y)
 
 		// rotate any decals on it
 
-	decal=server.decals;
+	for (n=0;n!=max_decal_list;n++) {
+		decal=server.decal_list.decals[n];
+		if (!decal->on) continue;
 
-	for (n=0;n!=server.count.decal;n++) {
 		if (decal->mesh_idx==mesh_idx) {
 			rotate_2D_polygon(4,decal->x,decal->z,mpt.x,mpt.z,y);
 		}
-		decal++;
 	}
 }
 
@@ -223,6 +248,7 @@ void decal_add_floor_like(d3pnt *pnt,decal_type *decal,map_mesh_type *mesh,map_m
 
 void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
 {
+	int					n,idx;
 	decal_type			*decal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -235,18 +261,24 @@ void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 	
 	if (!decal_segment_ok(poly,mark_idx)) return;
      
-		// if no more decals, delete the first one
+		// find a free decal
+		// if no more decals, use the first one
 		// in the list as it will be the oldest
 
-	if (server.count.decal>=max_decal) {
-		memmove(&server.decals[0],&server.decals[1],(sizeof(decal_type)*(server.count.decal-1)));
-		server.count.decal--;
+	idx=0;
+
+	for (n=0;n!=max_decal_list;n++) {
+		decal=server.decal_list.decals[n];
+		if (!decal->on) {
+			idx=n;
+			break;
+		}
 	}
    
         // get decal spot
         
-    decal=&server.decals[server.count.decal];
-	server.count.decal++;
+    decal=server.decal_list.decals[idx];
+	decal->on=TRUE;
 	
 	decal->start_tick=game_time_get();
 	
@@ -288,34 +320,26 @@ void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 
 void decal_dispose(void)
 {
-	int					i,tick;
+	int					n,tick;
 	decal_type			*decal;
 	mark_type			*mark;
 	
 	tick=game_time_get();
 	
-		// delete all decals that have timed-out
-	
-	i=0;
-	
-	while (i<server.count.decal) {
-		decal=&server.decals[i];
-		
-		mark=&server.marks[decal->mark_idx];
-		
-		if ((tick-decal->start_tick)<mark->total_msec) {
-			i++;
-			continue;
-		}
+		// turn off all decals that have timed-out
 
-			// remove decal
-			
-		if (i<(server.count.decal-1)) {
-			memmove(&server.decals[i],&server.decals[i+1],(sizeof(decal_type)*((server.count.decal-i)-1)));
-		}
-			
-		server.count.decal--;
-		if (server.count.decal==0) break;
+	for (n=0;n!=max_decal_list;n++) {
+		decal=server.decal_list.decals[n];
+		if (!decal->on) continue;
+
+			// is it timed out?
+
+		mark=&server.marks[decal->mark_idx];
+		if ((tick-decal->start_tick)<mark->total_msec) continue;
+
+			// turn off
+
+		decal->on=FALSE;
 	}
 }
 

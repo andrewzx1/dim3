@@ -363,7 +363,8 @@ void debug_dump(void)
 	debug_return();
 	*/
 		// effects
-		
+	
+	/* supergumba -- fix later
 	debug_header("Effects",server.count.effect,(sizeof(effect_type)*max_effect));
 	
 	debug_space("Type",10);
@@ -383,7 +384,7 @@ void debug_dump(void)
 	}
 	
 	debug_return();
-	
+	*/
 		// scripts
 		
 	script=js.scripts;

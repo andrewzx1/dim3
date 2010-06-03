@@ -55,12 +55,13 @@ and can be sold or given away.
 
 #define max_proj_list							256
 
+#define max_effect_list							512
+#define max_decal_list							128
+
 //
 // maximums
 //
 
-#define max_effect								512
-#define max_decal								128
 #define max_particle							256
 #define max_particle_count						256
 #define max_particle_trail						16
@@ -991,10 +992,15 @@ typedef union		{
 typedef struct		{
 						int						effecttype,mesh_idx,size,
 												start_tick,life_tick;
+						bool					on;
 						d3pnt					pnt;
 						effect_data				data;
 					} effect_type;
-					
+
+typedef struct		{
+						effect_type*			effects[max_effect_list];
+					} effect_list_type;
+
 //
 // decal structures
 //
@@ -1003,9 +1009,13 @@ typedef struct		{
 						int						mark_idx,mesh_idx,poly_idx,
 												start_tick,x[4],z[4],y[4];
                         float					alpha;
-						bool					in_view;
+						bool					on,in_view;
 						d3col					tint;
 					} decal_type;
+
+typedef struct		{
+						decal_type*				decals[max_decal_list];
+					} decal_list_type;
 
 //
 // ray trace structures
@@ -1153,8 +1163,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						effect,decal,
-												particle,ring,halo,mark,crosshair;
+						int						particle,ring,halo,mark,crosshair;
 					} server_count_type;
 
 //
@@ -1170,8 +1179,8 @@ typedef struct		{
 						obj_list_type			obj_list;
 						proj_list_type			proj_list;
 						model_list_type			model_list;
-						effect_type				*effects;
-						decal_type				*decals;
+						effect_list_type		effect_list;
+						decal_list_type			decal_list;
 						particle_type			*particles;
 						ring_type				*rings;
 						halo_type				*halos;

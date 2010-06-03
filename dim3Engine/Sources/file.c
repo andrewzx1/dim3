@@ -320,8 +320,8 @@ bool game_file_save(char *err_str)
 	progress_draw(40);
 	
 //	game_file_add_chunk(server.projs,server.count.proj,sizeof(proj_type));
-	game_file_add_chunk(server.effects,server.count.effect,sizeof(effect_type));
-	game_file_add_chunk(server.decals,server.count.decal,sizeof(decal_type));
+//	game_file_add_chunk(server.effects,server.count.effect,sizeof(effect_type));
+//	game_file_add_chunk(server.decals,server.count.decal,sizeof(decal_type));
 	
 	progress_draw(50);
 	
@@ -476,8 +476,8 @@ bool game_file_load(char *file_name,char *err_str)
 	progress_draw(40);
 
 //	game_file_get_chunk(server.projs);
-	game_file_get_chunk(server.effects);
-	game_file_get_chunk(server.decals);
+//	game_file_get_chunk(server.effects);
+//	game_file_get_chunk(server.decals);
 
 	progress_draw(50);
 

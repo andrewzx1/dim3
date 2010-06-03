@@ -706,9 +706,9 @@ void view_add_effect_draw_list(int tick)
 
 		// find all effects
 
-	for (n=0;n!=server.count.effect;n++) {
-
-		effect=&server.effects[n];
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) continue;
 		
 			// effect inside a mesh that's hidden?
 
@@ -941,9 +941,9 @@ void view_calculate_shakes(obj_type *obj)
 	
 		// find any shake effects
 		
-	effect=server.effects;
-	
-	for (n=0;n!=server.count.effect;n++) {
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) continue;
 	
 		if (effect->effecttype==ef_shake) {
 			
@@ -954,8 +954,6 @@ void view_calculate_shakes(obj_type *obj)
 				shake_cnt++;
 			}
 		}
-		
-		effect++;
 	}
 	
 		// any shake data?

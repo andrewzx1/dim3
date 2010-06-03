@@ -333,7 +333,7 @@ void effect_draw(void)
 	for (n=(view.render->draw_list.count-1);n>=0;n--) {
 		if (view.render->draw_list.items[n].type!=view_render_type_effect) continue;
 
-		effect=&server.effects[view.render->draw_list.items[n].idx];
+		effect=server.effect_list.effects[view.render->draw_list.items[n].idx];
 		
 		count=tick-effect->start_tick;
 
