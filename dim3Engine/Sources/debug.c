@@ -126,7 +126,6 @@ void debug_dump(void)
 {
 	int					n,k,i,idx,cnt,mem_sz;
 	obj_type			*obj;
-	effect_type			*effect;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	model_type			*mdl;
