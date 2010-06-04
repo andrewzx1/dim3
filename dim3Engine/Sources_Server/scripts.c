@@ -320,9 +320,6 @@ void scripts_dispose(int uid)
 	script->used=FALSE;
 }
 
-
-
-
 /* =======================================================
 
       JS Glue Code
