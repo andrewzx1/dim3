@@ -393,7 +393,7 @@ typedef struct		{
 					} timer_type;
 					
 typedef struct		{
-						int								uid,data_len,recursive_count;
+						int								idx,data_len,recursive_count;
 						char							name[file_str_len],params[param_str_len];
 						char							*data;
 						bool							used;
