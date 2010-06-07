@@ -797,7 +797,7 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
     k=script_value_to_int(cx,argv[0]);
     if (k<0) k=0;
     
-    c=js.scripts[obj->attach.script_idx].params;
+    c=js.script_list.scripts[obj->attach.script_idx]->params;
     while (k!=0) {
         c=strchr(c,'|');
         if (c==NULL) break;

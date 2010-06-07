@@ -256,7 +256,7 @@ void debug_dump(void)
 		}
 		
 		if (!obj->scenery.on) {
-			debug_space(js.scripts[obj->attach.script_idx].name,25);
+			debug_space(js.script_list.scripts[obj->attach.script_idx]->name,25);
 		}
 		else {
 			debug_space("*",25);
@@ -385,12 +385,9 @@ void debug_dump(void)
 	*/
 		// scripts
 		
-	script=js.scripts;
-	
 	cnt=0;
-	for ((i=0);(i!=max_scripts);i++) {
-		if (script->used) cnt++;
-		script++;
+	for (n=0;n!=max_script_list;n++) {
+		if (js.script_list.scripts[n]!=NULL) cnt++;
 	}
 		
 	debug_header("Scripts",cnt,-1);
@@ -400,21 +397,26 @@ void debug_dump(void)
 	debug_space("-------------------------------",32);
 	debug_return();
 	
-	script=js.scripts;
-	
-	for ((i=0);(i!=max_scripts);i++) {
-		if (script->used) {
-			debug_space(script->name,32);
-			debug_return();
-		}
-		script++;
+	for (n=0;n!=max_script_list;n++) {
+		script=js.script_list.scripts[n];
+		if (script==NULL) continue;
+
+		debug_space(script->name,32);
+		debug_return();
 	}
 	
 	debug_return();
 	
 		// timers
-		
-	debug_header("Timers",js.count.timer,-1);
+
+	cnt=0;
+
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer!=NULL) cnt++;
+	}
+
+	debug_header("Timers",cnt,-1);
 	
 	debug_space("Script",32);
 	debug_space("Count",10);
@@ -425,10 +427,11 @@ void debug_dump(void)
 	debug_space("---------",10);
 	debug_return();
 	
-	timer=js.timers;
-	
-	for ((i=0);(i!=js.count.timer);i++) {
-		script=&js.scripts[timer->attach.script_idx];
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer==NULL) continue;
+
+		script=js.script_list.scripts[timer->attach.script_idx];
 		debug_space(script->name,32);
 		debug_int_space(timer->count,10);
 		debug_space((timer->mode==timer_mode_repeat)?"Timer":"Wait",10);

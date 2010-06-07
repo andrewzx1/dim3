@@ -39,9 +39,22 @@ extern js_type			js;
       
 ======================================================= */
 
-void script_globals_initialize(void)
+void script_global_initialize_list(void)
 {
-	js.count.global=0;
+	int				n;
+
+	for (n=0;n!=max_global_list;n++) {
+		js.global_list.globals[n]=NULL;
+	}
+}
+
+void script_global_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_global_list;n++) {
+		if (js.global_list.globals[n]!=NULL) free(js.global_list.globals[n]);
+	}
 }
 
 /* =======================================================
@@ -55,13 +68,13 @@ int script_find_global(char *name,int script_idx)
 	int				n;
 	global_type		*global;
 	
-	global=js.globals;
-	
-	for (n=0;n!=js.count.global;n++) {
+	for (n=0;n!=max_global_list;n++) {
+		global=js.global_list.globals[n];
+		if (global==NULL) continue;
+
 		if (strcasecmp(global->name,name)==0) {
 			if (global->script_idx==script_idx) return(n);
 		}
-		global++;
 	}
 	
 	return(-1);
@@ -77,7 +90,7 @@ void script_set_global_by_index(JSContextRef cx,int idx,JSValueRef val)
 {
 	global_type		*global;
 	
-	global=&js.globals[idx];
+	global=js.global_list.globals[idx];
 	
 	if (JSValueIsNumber(cx,val)) {
 		global->type=d3_jsval_type_number;
@@ -114,7 +127,7 @@ JSValueRef script_get_global(JSContextRef cx,char *name,int script_idx)
 	idx=script_find_global(name,script_idx);
 	if (idx==-1) return(script_null_to_value(cx));
 	
-	global=&js.globals[idx];
+	global=js.global_list.globals[idx];
 	
 	switch (global->type) {
 		case d3_jsval_type_number:
@@ -136,7 +149,8 @@ JSValueRef script_get_global(JSContextRef cx,char *name,int script_idx)
 
 bool script_add_global(JSContextRef cx,char *name,int script_idx,JSValueRef val)
 {
-	int				idx;
+	int				n,idx;
+	global_type		*global;
 	
 		// does it already exist?
 		
@@ -146,15 +160,31 @@ bool script_add_global(JSContextRef cx,char *name,int script_idx,JSValueRef val)
 		return(TRUE);
 	}
 	
-		// try to add it
+		// find free global
+
+	idx=-1;
+
+	for (n=0;n!=max_global_list;n++) {
+		global=js.global_list.globals[n];
+		if (global==NULL) {
+			idx=n;
+			break;
+		}
+	}
+
+	if (idx==-1) return(FALSE);
+
+		// create it
+
+	js.global_list.globals[idx]=(global_type*)malloc(sizeof(global_type));
+	if (js.global_list.globals[idx]==NULL) return(FALSE);
+
+		// add it
 	
-	if (js.count.global>=max_globals) return(FALSE);
-	
-	idx=js.count.global;
-	js.count.global++;
-	
-	strcpy(js.globals[idx].name,name);
-	js.globals[idx].script_idx=script_idx;
+	global=js.global_list.globals[idx];
+
+	strcpy(global->name,name);
+	global->script_idx=script_idx;
 	
 	script_set_global_by_index(cx,idx,val);
 	
@@ -165,15 +195,12 @@ void script_delete_global(char *name,int script_idx)
 {
 	int				idx;
 	
-	if (js.count.global==0) return;
-	
 	idx=script_find_global(name,script_idx);
 	if (idx==-1) return;
-	
-	if (idx<(js.count.global-1)) {
-		memmove(&js.globals[idx],&js.globals[idx+1],(sizeof(global_type)*((js.count.global-idx)-1)));
+
+	if (js.global_list.globals[idx]!=NULL) {
+		free(js.global_list.globals[idx]);
+		js.global_list.globals[idx]=NULL;
 	}
-	
-	js.count.global--;
 }
 

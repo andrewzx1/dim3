@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "timing.h"
 
 extern js_type				js;
 
@@ -39,9 +40,22 @@ extern js_type				js;
       
 ======================================================= */
 
-void timers_initialize(void)
+void timers_initialize_list(void)
 {
-	js.count.timer=0;
+	int				n;
+
+	for (n=0;n!=max_timer_list;n++) {
+		js.timer_list.timers[n]=NULL;
+	}
+}
+
+void timers_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_timer_list;n++) {
+		if (js.timer_list.timers[n]!=NULL) free(js.timer_list.timers[n]);
+	}
 }
 
 /* =======================================================
@@ -52,16 +66,16 @@ void timers_initialize(void)
 
 int timers_find(attach_type *attach,int mode)
 {
-	int				i;
+	int				n;
 	timer_type		*timer;
 	
-	timer=js.timers;
-	
-	for (i=0;i!=js.count.timer;i++) {
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer==NULL) continue;
+
 		if (bcmp(&timer->attach,attach,sizeof(attach_type))==0) {
-			if (timer->mode==mode) return(i);
+			if (timer->mode==mode) return(n);
 		}
-		timer++;
 	}
 	
 	return(-1);
@@ -75,31 +89,37 @@ int timers_find(attach_type *attach,int mode)
 
 bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode)
 {
-	int				k;
-	script_type		*script;
+	int				n,idx;
 	timer_type		*timer;
 	
 		// if already timer for this script, mark it as disposed
 		
-	k=timers_find(attach,mode);
-	if (k!=-1) {
-		js.timers[k].mode=timer_mode_dispose;
+	idx=timers_find(attach,mode);
+	if (idx!=-1) js.timer_list.timers[idx]->mode=timer_mode_dispose;
+
+		// find free timer
+
+	idx=-1;
+
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer==NULL) {
+			idx=n;
+			break;
+		}
 	}
-	
-		// create a new timer
-		
-	if (js.count.timer>=max_timers) return(FALSE);
-	
-		// script
-	
-	script=&js.scripts[attach->script_idx];
+
+	if (idx==-1) return(FALSE);
+
+		// create it
+
+	js.timer_list.timers[idx]=(timer_type*)malloc(sizeof(timer_type));
+	if (js.timer_list.timers[idx]==NULL) return(FALSE);
 	
 		// setup timer
 	
-	timer=&js.timers[js.count.timer];
+	timer=js.timer_list.timers[idx];
 	
-	memmove(&timer->attach,attach,sizeof(attach_type));
-
 	timer->mode=mode;
 	
     timer->freq=freq;
@@ -108,8 +128,8 @@ bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,i
     timer->count=timer->freq;
     timer->user_id=user_id;
 	if (chain_func_name!=NULL) strcpy(timer->chain_func_name,chain_func_name);
-	
-	js.count.timer++;
+
+	memmove(&timer->attach,attach,sizeof(attach_type));
 	
 	return(TRUE);
 }
@@ -122,11 +142,10 @@ bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,i
 
 void timers_remove(int idx)
 {
-	if (idx<(js.count.timer-1)) {
-		memmove(&js.timers[idx],&js.timers[idx+1],(sizeof(timer_type)*((js.count.timer-idx)-1)));
+	if (js.timer_list.timers[idx]!=NULL) {
+		free(js.timer_list.timers[idx]);
+		js.timer_list.timers[idx]=NULL;
 	}
-	
-	js.count.timer--;
 }
 
 /* =======================================================
@@ -137,12 +156,10 @@ void timers_remove(int idx)
 
 void timers_clear(attach_type *attach,int mode)
 {
-	int				k;
+	int				idx;
 	
-	k=timers_find(attach,mode);
-	if (k==-1) return;
-	
-	js.timers[k].mode=timer_mode_dispose;
+	idx=timers_find(attach,mode);
+	if (idx==-1) js.timer_list.timers[idx]->mode=timer_mode_dispose;
 }
 
 /* =======================================================
@@ -153,20 +170,14 @@ void timers_clear(attach_type *attach,int mode)
 
 void timers_script_dispose(int script_idx)
 {
-	int				i;
+	int				n;
+	timer_type		*timer;
 	
-	i=0;
-	
-	while (i<js.count.timer) {
-	
-		if (js.timers[i].attach.script_idx==script_idx) {
-			timers_remove(i);
-			if (js.count.timer==0) break;
-		}
-		else {
-			i++;
-		}
-		
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer==NULL) continue;
+
+		if (timer->attach.script_idx==script_idx) timers_remove(n);
 	}
 }
 
@@ -178,66 +189,87 @@ void timers_script_dispose(int script_idx)
 
 void timers_run(void)
 {
-	int				i,ntimer;
+	int				n,ntimer,tick;
+	timer_type*		timers[max_timer_list];
 	timer_type		*timer;
+
+		// time to run timers?
+
+	tick=game_time_get();
+	if (tick<js.timer_tick) return;
 	
 		// only run current timers
 		// don't run new timers created inside these timer calls
+		// as that might lead to an infinite loop
+
+		// also, we can only mark timers as disposed and clean up
+		// at the end so we don't dangle any pointers
 		
-	ntimer=js.count.timer;
+	ntimer=0;
+
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer==NULL) continue;
+
+		timers[ntimer]=js.timer_list.timers[n];
+		ntimer++;
+	}
+
+	if (ntimer==0) return;
 	
 		// run timers
-	
-	for (i=0;i<ntimer;i++) {
-		timer=&js.timers[i];
-		
-			// skip timers in dispose
-			
-		if (timer->mode==timer_mode_dispose) continue;
-	
-			// time to fire?
-			
-		timer->count--;
-		if (timer->count>0) continue;
-		
-			// fire timer
-			
-		switch (timer->mode) {
-		
-			case timer_mode_single:
-				scripts_post_event_console(&timer->attach,sd_event_wait,0,timer->user_id);
-				timer->mode=timer_mode_dispose;		// auto-dispose waits
-				break;
-				
-			case timer_mode_chain:
-				scripts_chain_console(&timer->attach,timer->chain_func_name);
-				timer->mode=timer_mode_dispose;		// auto-dispose chains
-				break;
 
-			case timer_mode_repeat:
-				scripts_post_event_console(&timer->attach,sd_event_timer,0,timer->user_id);
-				break;
-		}
-		
-			// repeat timer
+		// we might need to call multiple times
+		// for guarenteed 1/10th second calling
+
+	while (tick>=js.timer_tick) {
+		js.timer_tick+=100;
+
+		for (n=0;n!=ntimer;n++) {
+			timer=timers[n];
 			
-		timer->count=timer->freq;
+				// skip timers in dispose
+				
+			if (timer->mode==timer_mode_dispose) continue;
+		
+				// time to fire?
+				
+			timer->count--;
+			if (timer->count>0) continue;
+			
+				// fire timer
+				
+			switch (timer->mode) {
+			
+				case timer_mode_single:
+					scripts_post_event_console(&timer->attach,sd_event_wait,0,timer->user_id);
+					timer->mode=timer_mode_dispose;		// auto-dispose waits
+					break;
+					
+				case timer_mode_chain:
+					scripts_chain_console(&timer->attach,timer->chain_func_name);
+					timer->mode=timer_mode_dispose;		// auto-dispose chains
+					break;
+
+				case timer_mode_repeat:
+					scripts_post_event_console(&timer->attach,sd_event_timer,0,timer->user_id);
+					break;
+			}
+			
+				// repeat timer
+				
+			timer->count=timer->freq;
+		}
 	}
 	
-		// remove timers
+		// now we can remove any timers that
+		// were marked as disposed
 		
-	i=0;
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer==NULL) continue;
 	
-	while (i<js.count.timer) {
-		timer=&js.timers[i];
-	
-		if (timer->mode==timer_mode_dispose) {
-			timers_remove(i);
-			if (js.count.timer==0) break;
-		}
-		else {
-			i++;
-		}
+		if (timer->mode==timer_mode_dispose) timers_remove(n);
 	}
 }
 	
