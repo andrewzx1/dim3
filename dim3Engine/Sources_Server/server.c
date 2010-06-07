@@ -67,10 +67,6 @@ bool server_memory_allocate(void)
 	server.marks=NULL;
 	server.crosshairs=NULL;
 	
-	js.scripts=NULL;
-	js.timers=NULL;
-	js.globals=NULL;
-	
 	hud.bitmaps=NULL;
 	hud.texts=NULL;
 	hud.bars=NULL;
@@ -78,17 +74,6 @@ bool server_memory_allocate(void)
 	hud.choosers=NULL;
 	hud.chat.lines=NULL;
 
-		// js engine pointers
-		
-	js.scripts=(script_type*)malloc(max_scripts*sizeof(script_type));
-	if (js.scripts==NULL) return(FALSE);
-	
-	js.timers=(timer_type*)malloc(max_timers*sizeof(timer_type));
-	if (js.timers==NULL) return(FALSE);
-	
-	js.globals=(global_type*)malloc(max_globals*sizeof(global_type));
-	if (js.globals==NULL) return(FALSE);
-	
 		// hud pointers
 
 	hud.bitmaps=(hud_bitmap_type*)malloc(max_hud_bitmap*sizeof(hud_bitmap_type));
@@ -111,9 +96,6 @@ bool server_memory_allocate(void)
 	
 		// zero memory
 		
-	bzero(js.scripts,(max_scripts*sizeof(script_type)));
-	bzero(js.timers,(max_timers*sizeof(timer_type)));
-	bzero(js.globals,(max_globals*sizeof(global_type)));
 	bzero(hud.bitmaps,(max_hud_bitmap*sizeof(hud_bitmap_type)));
 	bzero(hud.texts,(max_hud_text*sizeof(hud_text_type)));
 	bzero(hud.bars,(max_hud_bar*sizeof(hud_bar_type)));
@@ -133,12 +115,6 @@ void server_memory_release(void)
 	if (server.halos!=NULL) free(server.halos);
 	if (server.marks!=NULL) free(server.marks);
 	if (server.crosshairs!=NULL) free(server.crosshairs);
-	
-		// js pointers
-		
-	if (js.scripts!=NULL) free(js.scripts);
-	if (js.timers!=NULL) free(js.timers);
-	if (js.globals!=NULL) free(js.globals);
 	
 		// hud pointers
 		
@@ -233,9 +209,9 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 		
 	object_initialize_list();
 	
-	scripts_initialize();
-	script_globals_initialize();
-	timers_initialize();
+	scripts_initialize_list();
+	script_global_initialize_list();
+	timers_initialize_list();
 
 		// setup skill level
 
@@ -296,6 +272,10 @@ void server_game_stop(void)
 		// finish with list frees
 
 	object_free_list();
+
+	timers_free_list();
+	script_global_free_list();
+	scripts_free_list();
 }
 
 /* =======================================================
@@ -306,6 +286,6 @@ void server_game_stop(void)
 
 void server_loop(void)
 {
-	scripts_run();
+	timers_run();
 	server_run();
 }

@@ -32,7 +32,8 @@ and can be sold or given away.
 extern bool scripts_engine_initialize(char *err_str);
 extern void scripts_engine_shutdown(void);
 
-extern void scripts_initialize(void);
+extern void scripts_initialize_list(void);
+extern void scripts_free_list(void);
 
 extern void scripts_clear_attach_data(attach_type *attach);
 
@@ -40,8 +41,6 @@ extern bool scripts_execute(attach_type *attach,script_type *script,char *err_st
 
 extern bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str);
 extern void scripts_dispose(int idx);
-
-extern void scripts_run(void);
 
 extern void script_defines_create_constants(script_type *script);
 extern void script_load_user_defines(void);
@@ -548,7 +547,8 @@ extern bool script_check_param_at_least_count(JSContextRef cx,JSObjectRef func,i
 extern JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach);
 extern JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name);
 
-extern void script_globals_initialize(void);
+extern void script_global_initialize_list(void);
+extern void script_global_free_list(void);
 extern int script_find_global(char *name,int script_idx);
 extern void script_set_global_by_index(JSContextRef cx,int idx,JSValueRef val);
 extern bool script_set_global(JSContextRef cx,char *name,int script_idx,JSValueRef val);
@@ -559,7 +559,8 @@ extern void script_delete_global(char *name,int script_idx);
 extern void script_state_save(void);
 extern void script_state_load(void);
 
-extern void timers_initialize(void);
+extern void timers_initialize_list(void);
+extern void timers_free_list(void);
 extern int timers_find(attach_type *attach,int mode);
 extern bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode);
 extern void timers_remove(int idx);

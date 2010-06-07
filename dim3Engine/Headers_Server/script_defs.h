@@ -37,11 +37,9 @@ and can be sold or given away.
 // Script Defines
 //
 
-#define max_script_cache								1024
-#define max_scripts										1024
-#define max_timers										1024
-#define max_moves										256
-#define max_globals										1024
+#define max_script_list									1024
+#define max_timer_list									1024
+#define max_global_list									1024
 
 #define js_max_recursive_count							5
 
@@ -382,8 +380,12 @@ typedef struct		{
 						d3_jsval_data_type				data;
 					} global_type;
 
+typedef struct		{
+						global_type*					globals[max_global_list];
+					} global_list_type;
+
 //
-// script structures
+// timer structures
 //
  
 typedef struct		{
@@ -391,24 +393,27 @@ typedef struct		{
 						char							chain_func_name[64];
 						attach_type						attach;
 					} timer_type;
-					
+
+typedef struct		{
+						timer_type*						timers[max_timer_list];
+					} timer_list_type;
+
+//
+// script structures
+//
+
 typedef struct		{
 						int								idx,data_len,recursive_count;
 						char							name[file_str_len],params[param_str_len];
 						char							*data;
-						bool							used;
 						JSGlobalContextRef				cx;
 						JSObjectRef						obj,global_obj,event_func;
 					} script_type;
 
-//
-// count and flag structures
-//
-
 typedef struct		{
-						int								timer,global;
-					} script_count_type;
-		
+						script_type*					scripts[max_script_list];
+					} script_list_type;
+
 //
 // main js engine structure
 //
@@ -420,12 +425,9 @@ typedef struct		{
 						
 						attach_type						game_attach,course_attach;
 						
-						script_count_type				count;
-						
-						script_type						*scripts;
-						timer_type						*timers;
-						global_type						*globals;
-						
+						script_list_type				script_list;
+						timer_list_type					timer_list;
+						global_list_type				global_list;
 					} js_type;
 
 

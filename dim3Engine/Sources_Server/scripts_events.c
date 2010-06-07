@@ -121,7 +121,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		
 	if (attach->script_idx==-1) return(TRUE);
 	
-	script=&js.scripts[attach->script_idx];
+	script=js.script_list.scripts[attach->script_idx];
 
 		// enter recursion
 
@@ -162,16 +162,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	if (main_event==sd_event_weapon_fire) {
 
 
-		fprintf(stdout,"1: %d\n",(int)JSValueCreateJSONString);
-		fflush(stdout);
-		
-		v=JSValueMakeNumber(script->cx,123.456);
-		fprintf(stdout,"2\n");
-		fflush(stdout);
-		js_str=JSValueCreateJSONString(script->cx,v,0,&js_exp);
-		fprintf(stdout,"3\n");
-		fflush(stdout);
-//		js_str=JSValueCreateJSONString(script->cx,(JSValueRef)script->global_obj,0,&js_exp);
+		js_str=JSValueCreateJSONString(script->cx,(JSValueRef)script->global_obj,0,&js_exp);
 
 		
 		if (js_str==NULL) {
@@ -236,7 +227,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 		
 	if (attach->script_idx==-1) return(TRUE);
 	
-	script=&js.scripts[attach->script_idx];
+	script=js.script_list.scripts[attach->script_idx];
 
 		// enter recursion
 
@@ -305,7 +296,7 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 	
 		// find script
 		
-	script=&js.scripts[attach->script_idx];
+	script=js.script_list.scripts[attach->script_idx];
 
 		// enter recursion
 

@@ -66,18 +66,21 @@ void scripts_engine_shutdown(void)
       
 ======================================================= */
 
-void scripts_initialize(void)
+void scripts_initialize_list(void)
 {
 	int			n;
-	script_type	*script;
 	
-		// no scripts slots used
-		
-	script=js.scripts;
+	for (n=0;n!=max_script_list;n++) {
+		js.script_list.scripts[n]=NULL;
+	}
+}
+
+void scripts_free_list(void)
+{
+	int			n;
 	
-	for (n=0;n!=max_scripts;n++) {
-		script->used=FALSE;
-		script++;
+	for (n=0;n!=max_script_list;n++) {
+		if (js.script_list.scripts[n]!=NULL) free(js.script_list.scripts[n]);
 	}
 }
 
@@ -163,14 +166,12 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		
 	idx=-1;
 	
-	script=js.scripts;
-	
-	for (n=0;n!=max_scripts;n++) {
-		if (!script->used) {
+	for (n=0;n!=max_script_list;n++) {
+		script=js.script_list.scripts[n];
+		if (script==NULL) {
 			idx=n;
 			break;
 		}
-		script++;
 	}
 	
 	if (idx==-1) {
@@ -178,12 +179,19 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		return(FALSE);
 	}
 	
-		// start the script
+		// create it
 		
-	script=&js.scripts[idx];
-	
+	js.script_list.scripts[idx]=(script_type*)malloc(sizeof(script_type));
+	if (js.script_list.scripts[idx]==NULL) {
+		strcpy(err_str,"JavaScript Engine: Out of memory");
+		return(FALSE);
+	}
+
+		// add it
+
+	script=js.script_list.scripts[idx];
+
 	script->idx=idx;
-	script->used=TRUE;
 	
 	strcpy(script->name,name);
 	if (params!=NULL) {
@@ -193,7 +201,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		script->params[0]=0x0;
 	}
 
-		// script attachments
+		// original object script attachments
 		
 	attach->script_idx=idx;
 	
@@ -206,7 +214,8 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		// load in script
 
 	if (!script_load_file(script,sub_dir,name,err_str)) {
-		script->used=FALSE;
+		free(js.script_list.scripts[idx]);
+		js.script_list.scripts[idx]=NULL;
 		return(FALSE);
 	}
 	
@@ -214,7 +223,8 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 
 	if (!script_add_global_object(script,err_str)) {
 		script_free_file(script);
-		script->used=FALSE;
+		free(js.script_list.scripts[idx]);
+		js.script_list.scripts[idx]=NULL;
 		return(FALSE);
 	}
 
@@ -228,7 +238,8 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	if (script->obj==NULL) {
 		strcpy(err_str,"JavaScript Engine: Not enough memory to create an object");
 		script_free_file(script);
-		script->used=FALSE;
+		free(js.script_list.scripts[idx]);
+		js.script_list.scripts[idx]=NULL;
 		return(FALSE);
 	}
 	
@@ -238,7 +249,8 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	script_free_file(script);
 	
 	if (!ok) {
-		script->used=FALSE;
+		free(js.script_list.scripts[idx]);
+		js.script_list.scripts[idx]=NULL;
 		return(FALSE);
 	}
 	
@@ -270,7 +282,7 @@ void scripts_dispose(int idx)
 		// unroot the object and clean up
 		// the context
 
-	script=&js.scripts[idx];
+	script=js.script_list.scripts[idx];
 	
 	JSValueUnprotect(script->cx,(JSValueRef)script->obj);
 	JSGlobalContextRelease(script->cx);
@@ -281,7 +293,8 @@ void scripts_dispose(int idx)
 	
 		// script is now free
 		
-	script->used=FALSE;
+	free(js.script_list.scripts[idx]);
+	js.script_list.scripts[idx]=NULL;
 }
 
 /* =======================================================
