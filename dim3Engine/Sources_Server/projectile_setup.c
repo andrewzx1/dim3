@@ -149,7 +149,7 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 		// start the script
 		// and load the models
 		
-	proj_setup->attach.script_uid=-1;
+	proj_setup->attach.script_idx=-1;
 	proj_setup->attach.thing_type=thing_type_projectile_setup;
 	proj_setup->attach.obj_idx=obj->idx;
 	proj_setup->attach.weap_idx=weap->idx;
@@ -184,7 +184,7 @@ void proj_setup_dispose(weapon_type *weap,int idx)
 
 		// clear scripts and models
 
-	scripts_dispose(proj_setup->attach.script_uid);
+	scripts_dispose(proj_setup->attach.script_idx);
 	model_draw_dispose(&proj_setup->draw);
 	
 		// free and empty from list

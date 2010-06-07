@@ -75,7 +75,7 @@ int timers_find(attach_type *attach,int mode)
 
 bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode)
 {
-	int				k,script_idx;
+	int				k;
 	script_type		*script;
 	timer_type		*timer;
 	
@@ -92,8 +92,7 @@ bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,i
 	
 		// script
 	
-	script_idx=scripts_find_uid(attach->script_uid);
-	script=&js.scripts[script_idx];
+	script=&js.scripts[attach->script_idx];
 	
 		// setup timer
 	
@@ -152,7 +151,7 @@ void timers_clear(attach_type *attach,int mode)
       
 ======================================================= */
 
-void timers_script_dispose(int script_uid)
+void timers_script_dispose(int script_idx)
 {
 	int				i;
 	
@@ -160,7 +159,7 @@ void timers_script_dispose(int script_uid)
 	
 	while (i<js.count.timer) {
 	
-		if (js.timers[i].attach.script_uid==script_uid) {
+		if (js.timers[i].attach.script_idx==script_idx) {
 			timers_remove(i);
 			if (js.count.timer==0) break;
 		}

@@ -102,10 +102,16 @@ void scripts_recursion_out(script_type *script)
 
 bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
 {
-	int				idx;
 	JSValueRef		rval,exception,argv[5];
 	script_type		*script;
 	attach_type		old_attach;
+	
+
+/* supergumba -- further testing	
+	JSStringRef	js_str;
+	JSValueRef	js_exp,v;
+	char	str[1024];
+*/
 	
 		// no error
 		
@@ -113,12 +119,9 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	
 		// find script
 		
-	if (attach->script_uid==-1) return(TRUE);
+	if (attach->script_idx==-1) return(TRUE);
 	
-	idx=scripts_find_uid(attach->script_uid);
-	if (idx==-1) return(TRUE);
-	
-	script=&js.scripts[idx];
+	script=&js.scripts[attach->script_idx];
 
 		// enter recursion
 
@@ -143,6 +146,49 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 // supergumba -- testing display
 //	fprintf(stdout,"Event (script:%s) (id:%d.%d)\n",script->name,main_event,sub_event);
 //	fflush(stdout);
+
+
+/* supergumba
+	if (js.attach.thing_type==thing_type_object) {
+		if (js.attach.obj_idx!=0) {
+			fprintf(stdout,"%s: %d\n",server.obj_list.objs[js.attach.obj_idx]->name,main_event);
+			fflush(stdout);
+		}
+	}
+*/
+
+
+/* supergumba -- further testing
+	if (main_event==sd_event_weapon_fire) {
+
+
+		fprintf(stdout,"1: %d\n",(int)JSValueCreateJSONString);
+		fflush(stdout);
+		
+		v=JSValueMakeNumber(script->cx,123.456);
+		fprintf(stdout,"2\n");
+		fflush(stdout);
+		js_str=JSValueCreateJSONString(script->cx,v,0,&js_exp);
+		fprintf(stdout,"3\n");
+		fflush(stdout);
+//		js_str=JSValueCreateJSONString(script->cx,(JSValueRef)script->global_obj,0,&js_exp);
+
+		
+		if (js_str==NULL) {
+			script_exception_to_string(script->cx,js_exp,str,1024);
+		}
+		else {
+			JSStringGetUTF8CString(js_str,str,1024);
+			JSStringRelease(js_str);
+		}
+		
+		str[1024-1]=0x0;
+		
+		fprintf(stdout,"%s\n",str);
+	}
+*/
+
+
 
 	rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
 	if (rval==NULL) {
@@ -177,7 +223,6 @@ void scripts_post_event_console(attach_type *attach,int main_event,int sub_event
 
 bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 {
-	int				idx;
 	JSValueRef		rval,exception,argv[2];
 	JSObjectRef		func_obj;
 	script_type		*script;
@@ -189,12 +234,9 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	
 		// find script
 		
-	if (attach->script_uid==-1) return(TRUE);
+	if (attach->script_idx==-1) return(TRUE);
 	
-	idx=scripts_find_uid(attach->script_uid);
-	if (idx==-1) return(TRUE);
-	
-	script=&js.scripts[idx];
+	script=&js.scripts[attach->script_idx];
 
 		// enter recursion
 
@@ -254,7 +296,7 @@ void scripts_chain_console(attach_type *attach,char *func_name)
 
 JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,JSValueRef *exception)
 {
-	int				n,idx;
+	int				n;
 	char			err_str[256];
 	JSValueRef		rval,argv[5];
 	JSObjectRef		func_obj;
@@ -263,8 +305,7 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 	
 		// find script
 		
-	idx=scripts_find_uid(attach->script_uid);
-	script=&js.scripts[idx];
+	script=&js.scripts[attach->script_idx];
 
 		// enter recursion
 

@@ -377,7 +377,7 @@ typedef struct		{
 //
  
 typedef struct		{
-						int								type,script_uid;
+						int								type,script_idx;
 						char							name[name_str_len];
 						d3_jsval_data_type				data;
 					} global_type;
@@ -408,24 +408,19 @@ typedef struct		{
 typedef struct		{
 						int								timer,global;
 					} script_count_type;
-					
-typedef struct		{
-						int								timer_tick;
-					} script_time_type;
 		
 //
 // main js engine structure
 //
 
 typedef struct		{
-						int								script_current_uid;
+						int								timer_tick;
 						bool							add_property_lock;
 						attach_type						attach;
 						
 						attach_type						game_attach,course_attach;
 						
 						script_count_type				count;
-						script_time_type				time;
 						
 						script_type						*scripts;
 						timer_type						*timers;

@@ -272,7 +272,7 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		server.player_obj_idx=game_player_create(err_str);
 		if (server.player_obj_idx==-1) {
-			scripts_dispose(js.game_attach.script_uid);
+			scripts_dispose(js.game_attach.script_idx);
 			return(FALSE);
 		}
 	}
@@ -291,7 +291,7 @@ void server_game_stop(void)
 
 		// dispose game script
 
-	scripts_dispose(js.game_attach.script_uid);
+	scripts_dispose(js.game_attach.script_idx);
 
 		// finish with list frees
 

@@ -71,10 +71,6 @@ void scripts_initialize(void)
 	int			n;
 	script_type	*script;
 	
-		// current uid
-		
-	js.script_current_uid=0;
-	
 		// no scripts slots used
 		
 	script=js.scripts;
@@ -83,42 +79,6 @@ void scripts_initialize(void)
 		script->used=FALSE;
 		script++;
 	}
-}
-
-/* =======================================================
-
-      Find Scripts
-      
-======================================================= */
-
-int scripts_find_free(void)
-{
-	int				n;
-	script_type		*script;
-	
-	script=js.scripts;
-	
-	for (n=0;n!=max_scripts;n++) {
-		if (!script->used) return(n);
-		script++;
-	}
-	
-	return(-1);
-}
-
-int scripts_find_uid(int uid)
-{
-	int				n;
-	script_type		*script;
-	
-	script=js.scripts;
-	
-	for (n=0;n!=max_scripts;n++) {
-		if ((script->used) && (script->uid==uid)) return(n);
-		script++;
-	}
-	
-	return(-1);
 }
 
 /* =======================================================
@@ -191,17 +151,28 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 	
 bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str)
 {
-	int						idx;
+	int						n,idx;
 	bool					ok;
 	script_type				*script;
 	
 		// no script
 		
-	attach->script_uid=-1;
+	attach->script_idx=-1;
 	
 		// find a unused script
+		
+	idx=-1;
 	
-	idx=scripts_find_free();
+	script=js.scripts;
+	
+	for (n=0;n!=max_scripts;n++) {
+		if (!script->used) {
+			idx=n;
+			break;
+		}
+		script++;
+	}
+	
 	if (idx==-1) {
 		strcpy(err_str,"JavaScript Engine: Reached the maximum number of scripts");
 		return(FALSE);
@@ -210,6 +181,8 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		// start the script
 		
 	script=&js.scripts[idx];
+	
+	script->idx=idx;
 	script->used=TRUE;
 	
 	strcpy(script->name,name);
@@ -222,10 +195,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 
 		// script attachments
 		
-	script->uid=js.script_current_uid;
-	js.script_current_uid++;
-	
-	attach->script_uid=script->uid;
+	attach->script_idx=idx;
 	
 		// create the context
 		// and remember the global object
@@ -285,23 +255,17 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
       
 ======================================================= */
 
-void scripts_dispose(int uid)
+void scripts_dispose(int idx)
 {
-	int			idx;
-	script_type	*script;
+	script_type		*script;
 	
 		// no script loaded
 		
-	if (uid==-1) return;
-	
-		// find script
-
-	idx=scripts_find_uid(uid);
 	if (idx==-1) return;
-
+	
 		// dispose all script timers
 
-	timers_script_dispose(uid);
+	timers_script_dispose(idx);
 
 		// unroot the object and clean up
 		// the context

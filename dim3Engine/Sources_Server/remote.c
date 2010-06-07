@@ -289,6 +289,8 @@ void remote_spawn(network_request_remote_spawn *spawn)
 	
 	obj=object_find_remote_uid(remote_obj_uid);
 	if (obj==NULL) return;
+	
+		// supergumba -- this might not be necessary
 
 		// update position
 
@@ -301,10 +303,10 @@ void remote_spawn(network_request_remote_spawn *spawn)
 	obj->ang.z=ntohf(spawn->fp_ang_z);
 		
 		// call the spawn
-
-	sub_event=(signed short)ntohs(spawn->sub_event);
+// supergumba -- clean up
+//	sub_event=(signed short)ntohs(spawn->sub_event);
 		
-	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
+//	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
 }
 
 void remote_death(network_request_remote_death *death)

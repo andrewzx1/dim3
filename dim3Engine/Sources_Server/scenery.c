@@ -68,7 +68,7 @@ void scenery_create(void)
 
 			// no scripts, events, etc
 
-		obj->attach.script_uid=-1;
+		obj->attach.script_idx=-1;
 
 			// create as scenery
 

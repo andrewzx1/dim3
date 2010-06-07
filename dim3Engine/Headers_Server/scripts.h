@@ -34,15 +34,12 @@ extern void scripts_engine_shutdown(void);
 
 extern void scripts_initialize(void);
 
-extern int scripts_find_free(void);
-extern int scripts_find_uid(int uid);
-
 extern void scripts_clear_attach_data(attach_type *attach);
 
 extern bool scripts_execute(attach_type *attach,script_type *script,char *err_str);
 
 extern bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str);
-extern void scripts_dispose(int uid);
+extern void scripts_dispose(int idx);
 
 extern void scripts_run(void);
 
@@ -552,12 +549,12 @@ extern JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach
 extern JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name);
 
 extern void script_globals_initialize(void);
-extern int script_find_global(char *name,int script_uid);
+extern int script_find_global(char *name,int script_idx);
 extern void script_set_global_by_index(JSContextRef cx,int idx,JSValueRef val);
-extern bool script_set_global(JSContextRef cx,char *name,int script_uid,JSValueRef val);
-extern JSValueRef script_get_global(JSContextRef cx,char *name,int script_uid);
-extern bool script_add_global(JSContextRef cx,char *name,int script_uid,JSValueRef val);
-extern void script_delete_global(char *name,int script_uid);
+extern bool script_set_global(JSContextRef cx,char *name,int script_idx,JSValueRef val);
+extern JSValueRef script_get_global(JSContextRef cx,char *name,int script_idx);
+extern bool script_add_global(JSContextRef cx,char *name,int script_idx,JSValueRef val);
+extern void script_delete_global(char *name,int script_idx);
 
 extern void script_state_save(void);
 extern void script_state_load(void);
@@ -567,5 +564,5 @@ extern int timers_find(attach_type *attach,int mode);
 extern bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode);
 extern void timers_remove(int idx);
 extern void timers_clear(attach_type *attach,int mode);
-extern void timers_script_dispose(int script_uid);
+extern void timers_script_dispose(int script_idx);
 extern void timers_run(void);

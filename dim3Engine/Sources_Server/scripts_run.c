@@ -51,12 +51,12 @@ void scripts_run(void)
 	
 		// scripts run 10 times a second
 
-	if (tick<js.time.timer_tick) return;
+	if (tick<js.timer_tick) return;
 
 		// run timers
 	
-	while (tick>=js.time.timer_tick) {
-		js.time.timer_tick+=100;
+	while (tick>=js.timer_tick) {
+		js.timer_tick+=100;
 		
 		timers_run();
 	}

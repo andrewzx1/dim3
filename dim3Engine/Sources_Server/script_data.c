@@ -135,7 +135,7 @@ JSValueRef js_data_add_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	script_add_global(cx,name,js.attach.script_uid,argv[1]);
+	script_add_global(cx,name,js.attach.script_idx,argv[1]);
 	
 	return(script_null_to_value(cx));
 }
@@ -147,7 +147,7 @@ JSValueRef js_data_sub_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	script_delete_global(name,js.attach.script_uid);
+	script_delete_global(name,js.attach.script_idx);
 	
 	return(script_null_to_value(cx));
 }
@@ -159,7 +159,7 @@ JSValueRef js_data_set_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	script_set_global(cx,name,js.attach.script_uid,argv[1]);
+	script_set_global(cx,name,js.attach.script_idx,argv[1]);
 
 	return(script_null_to_value(cx));
 }
@@ -171,6 +171,6 @@ JSValueRef js_data_get_specific_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	return(script_get_global(cx,name,js.attach.script_uid));
+	return(script_get_global(cx,name,js.attach.script_idx));
 }
 
