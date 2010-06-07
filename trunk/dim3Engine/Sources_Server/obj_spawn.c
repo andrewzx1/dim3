@@ -393,7 +393,7 @@ bool map_object_attach_all(char *err_str)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (obj->attach.script_uid!=-1) {
+		if (obj->attach.script_idx!=-1) {
 			if (!object_spawn(obj,err_str)) return(FALSE);
 		}
 	}
@@ -410,7 +410,7 @@ void map_object_detach_all(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 	
-		if (obj->attach.script_uid!=-1) {
+		if (obj->attach.script_idx!=-1) {
 		
 				// exit any vehicles
 					// supergumba -- test vehicle exiting

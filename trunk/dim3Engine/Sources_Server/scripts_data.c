@@ -50,16 +50,16 @@ void script_globals_initialize(void)
       
 ======================================================= */
 
-int script_find_global(char *name,int script_uid)
+int script_find_global(char *name,int script_idx)
 {
-	int				i;
+	int				n;
 	global_type		*global;
 	
 	global=js.globals;
 	
-	for (i=0;i!=js.count.global;i++) {
+	for (n=0;n!=js.count.global;n++) {
 		if (strcasecmp(global->name,name)==0) {
-			if (global->script_uid==script_uid) return(i);
+			if (global->script_idx==script_idx) return(n);
 		}
 		global++;
 	}
@@ -95,23 +95,23 @@ void script_set_global_by_index(JSContextRef cx,int idx,JSValueRef val)
 	script_value_to_string(cx,val,global->data.d3_string,max_d3_jsval_str_len);
 }
 
-bool script_set_global(JSContextRef cx,char *name,int script_uid,JSValueRef val)
+bool script_set_global(JSContextRef cx,char *name,int script_idx,JSValueRef val)
 {
 	int				idx;
 	
-	idx=script_find_global(name,script_uid);
+	idx=script_find_global(name,script_idx);
 	if (idx==-1) return(FALSE);
 	
 	script_set_global_by_index(cx,idx,val);
 	return(TRUE);
 }
 
-JSValueRef script_get_global(JSContextRef cx,char *name,int script_uid)
+JSValueRef script_get_global(JSContextRef cx,char *name,int script_idx)
 {
 	int				idx;
 	global_type		*global;
 	
-	idx=script_find_global(name,script_uid);
+	idx=script_find_global(name,script_idx);
 	if (idx==-1) return(script_null_to_value(cx));
 	
 	global=&js.globals[idx];
@@ -134,13 +134,13 @@ JSValueRef script_get_global(JSContextRef cx,char *name,int script_uid)
       
 ======================================================= */
 
-bool script_add_global(JSContextRef cx,char *name,int script_uid,JSValueRef val)
+bool script_add_global(JSContextRef cx,char *name,int script_idx,JSValueRef val)
 {
 	int				idx;
 	
 		// does it already exist?
 		
-	idx=script_find_global(name,script_uid);
+	idx=script_find_global(name,script_idx);
 	if (idx!=-1) {
 		script_set_global_by_index(cx,idx,val);
 		return(TRUE);
@@ -154,20 +154,20 @@ bool script_add_global(JSContextRef cx,char *name,int script_uid,JSValueRef val)
 	js.count.global++;
 	
 	strcpy(js.globals[idx].name,name);
-	js.globals[idx].script_uid=script_uid;
+	js.globals[idx].script_idx=script_idx;
 	
 	script_set_global_by_index(cx,idx,val);
 	
 	return(TRUE);
 }
 
-void script_delete_global(char *name,int script_uid)
+void script_delete_global(char *name,int script_idx)
 {
 	int				idx;
 	
 	if (js.count.global==0) return;
 	
-	idx=script_find_global(name,script_uid);
+	idx=script_find_global(name,script_idx);
 	if (idx==-1) return;
 	
 	if (idx<(js.count.global-1)) {

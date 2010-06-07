@@ -124,7 +124,7 @@ void debug_return(void)
 
 void debug_dump(void)
 {
-	int					n,k,i,idx,cnt,mem_sz;
+	int					n,k,i,cnt,mem_sz;
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
@@ -256,8 +256,7 @@ void debug_dump(void)
 		}
 		
 		if (!obj->scenery.on) {
-			idx=scripts_find_uid(obj->attach.script_uid);
-			debug_space(js.scripts[idx].name,25);
+			debug_space(js.scripts[obj->attach.script_idx].name,25);
 		}
 		else {
 			debug_space("*",25);
@@ -429,7 +428,7 @@ void debug_dump(void)
 	timer=js.timers;
 	
 	for ((i=0);(i!=js.count.timer);i++) {
-		script=&js.scripts[scripts_find_uid(timer->attach.script_uid)];
+		script=&js.scripts[timer->attach.script_idx];
 		debug_space(script->name,32);
 		debug_int_space(timer->count,10);
 		debug_space((timer->mode==timer_mode_repeat)?"Timer":"Wait",10);

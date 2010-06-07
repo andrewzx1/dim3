@@ -164,7 +164,7 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	proj->attach.weap_idx=weap->idx;
 	proj->attach.proj_setup_idx=proj_setup->idx;
 	proj->attach.proj_idx=idx;
-	proj->attach.script_uid=proj_setup->attach.script_uid;
+	proj->attach.script_idx=proj_setup->attach.script_idx;
 
 	scripts_clear_attach_data(&proj->attach);
 

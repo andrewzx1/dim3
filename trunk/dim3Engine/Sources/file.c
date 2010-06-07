@@ -349,9 +349,7 @@ bool game_file_save(char *err_str)
 		
 	progress_draw(80);
 	
-	game_file_add_chunk(&js.script_current_uid,1,sizeof(int));
 	game_file_add_chunk(&js.count,1,sizeof(script_count_type));
-	game_file_add_chunk(&js.time,1,sizeof(script_time_type));
 		
 	game_file_add_chunk(js.timers,js.count.timer,sizeof(timer_type));
 	game_file_add_chunk(js.globals,js.count.global,sizeof(global_type));
@@ -510,9 +508,7 @@ bool game_file_load(char *file_name,char *err_str)
 		
 	progress_draw(80);
 
-	game_file_get_chunk(&js.script_current_uid);
 	game_file_get_chunk(&js.count);
-	game_file_get_chunk(&js.time);
 	
 	game_file_get_chunk(js.timers);
 	game_file_get_chunk(js.globals);

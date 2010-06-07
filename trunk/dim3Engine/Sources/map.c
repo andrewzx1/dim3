@@ -452,7 +452,7 @@ bool map_start(bool file_restore,bool skip_media,char *err_str)
 	server.time.network_group_synch_tick=tick;
 	server.time.network_latency_ping_tick=tick;	
 	view.time.run_tick=tick;
-	js.time.timer_tick=tick;
+	js.timer_tick=tick;
 
 	view_clear_fps();
 
@@ -527,7 +527,7 @@ void map_end(void)
 		
 	progress_draw(35);
 
-	scripts_dispose(js.course_attach.script_uid);
+	scripts_dispose(js.course_attach.script_idx);
 
 		// free map bound items
 		

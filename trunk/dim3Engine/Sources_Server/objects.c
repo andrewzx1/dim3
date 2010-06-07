@@ -902,7 +902,7 @@ void object_dispose_single(int idx)
 
 		// clear scripts and models
 
-	scripts_dispose(obj->attach.script_uid);
+	scripts_dispose(obj->attach.script_idx);
 	model_draw_dispose(&obj->draw);
 
 		// free and empty from list

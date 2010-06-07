@@ -251,7 +251,7 @@ bool weapon_add(obj_type *obj,char *name)
 	
 		// the scripts
 		
-	weap->attach.script_uid=-1;
+	weap->attach.script_idx=-1;
 	weap->attach.thing_type=thing_type_weapon;
 	weap->attach.obj_idx=obj->idx;
 	weap->attach.weap_idx=weap->idx;
@@ -308,7 +308,7 @@ void weapon_dispose(obj_type *obj,int idx)
 
 		// clear scripts and models
 
-	scripts_dispose(weap->attach.script_uid);
+	scripts_dispose(weap->attach.script_idx);
 	model_draw_dispose(&weap->draw);
 	
 		// free and empty from list

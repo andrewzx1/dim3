@@ -784,7 +784,7 @@ bool js_obj_setting_set_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 
 JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				idx,k;
+	int				k;
     char			*c,str[256];
 	obj_type		*obj;
 	
@@ -792,13 +792,12 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	obj=object_script_lookup();
 	
-	idx=scripts_find_uid(obj->attach.script_uid);
-	if (idx==-1) return(script_null_to_value(cx));
+	if (obj->attach.script_idx==-1) return(script_null_to_value(cx));
 	
     k=script_value_to_int(cx,argv[0]);
     if (k<0) k=0;
     
-    c=js.scripts[idx].params;
+    c=js.scripts[obj->attach.script_idx].params;
     while (k!=0) {
         c=strchr(c,'|');
         if (c==NULL) break;
