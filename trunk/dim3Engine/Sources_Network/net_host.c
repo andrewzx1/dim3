@@ -97,30 +97,6 @@ void net_host_shutdown(void)
 
 /* =======================================================
 
-      Add Bots to a Host
-      
-======================================================= */
-
-void net_host_player_add_bots(void)
-{
-	int				n;
-	char			deny_reason[256];
-	obj_type		*obj;
-
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		if (obj->type==object_type_bot_multiplayer) {
-			if (net_host_player_add_ok(obj->name,deny_reason)) {
-				obj->remote.uid=net_host_player_add_bot(obj);
-			}
-		}
-	}
-}
-
-/* =======================================================
-
       Host Info Responses
       
 ======================================================= */
@@ -142,7 +118,94 @@ void net_host_info_request(unsigned long ip_addr,int port)
 
 /* =======================================================
 
-      Host Player Join Responses
+      Machine UIDs
+      
+======================================================= */
+
+int net_host_create_machine_uid(void)
+{
+	int			uid;
+
+	uid=net_setup.uid.next_machine_uid;
+	net_setup.uid.next_machine_uid++;
+
+	return(uid);
+}
+
+/* =======================================================
+
+      Join Local Player to Host
+      
+======================================================= */
+
+bool net_host_join_local_player(char *err_str)
+{
+	obj_type					*player_obj;
+	network_request_object_add	remote_add;
+
+		// get local player
+
+	player_obj=server.obj_list.objs[server.player_obj_idx];
+
+		// join directly to host
+
+	player_obj->remote.uid=net_host_player_add(-1,-1,TRUE,net_setup.uid.machine_uid,player_obj->name,player_obj->draw.name,player_obj->tint_color_idx);
+	if (player_obj->remote.uid==-1) {
+		strcpy(err_str,"Unable to add player");
+		return(FALSE);
+	}
+
+		// start the player thread
+
+	net_host_player_start_thread(player_obj->remote.uid);
+
+		// send all other players on host the new player for remote add
+
+	strncpy(remote_add.name,player_obj->name,name_str_len);
+	strncpy(remote_add.draw_name,player_obj->draw.name,name_str_len);
+	remote_add.name[name_str_len-1]=0x0;
+	remote_add.team_idx=htons((short)net_team_none);
+	remote_add.tint_color_idx=htons((short)player_obj->tint_color_idx);
+	remote_add.score=0;
+	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
+
+	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
+
+	return(TRUE);
+}
+
+/* =======================================================
+
+      Join Multiplayer Bots to a Host
+      
+======================================================= */
+
+void net_host_join_multiplayer_bots(void)
+{
+	int				n;
+	char			deny_reason[256];
+	obj_type		*obj;
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		if (obj->type!=object_type_bot_multiplayer) continue;
+		if (!net_host_player_add_ok(obj->name,deny_reason)) continue;
+
+			// add bot
+
+		obj->remote.uid=net_host_player_add_bot(obj);
+			
+			// start the player thread
+
+		net_host_player_start_thread(obj->remote.uid);
+	}
+}
+
+/* =======================================================
+
+      Join Remote Players to Host
       
 ======================================================= */
 
@@ -169,31 +232,41 @@ bool net_host_join_request_ok(network_request_join *request_join,network_reply_j
 
 int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
 {
-	int							player_uid,
+	int							machine_uid,remote_uid,
 								tint_color_idx;
 	network_reply_join			reply_join;
 	network_request_object_add	remote_add;
-	
+
 		// check if join is OK
 	
-	player_uid=-1;
+	machine_uid=-1;
+	remote_uid=-1;
+
 	reply_join.deny_reason[0]=0x0;
 
+		// create machine and remote UID when
+		// adding this new remote player
+
 	if (net_host_join_request_ok(request_join,&reply_join)) {
+
+		machine_uid=net_host_create_machine_uid();
+
 		tint_color_idx=htons((short)request_join->tint_color_idx);
-		player_uid=net_host_player_add(ip_addr,port,FALSE,request_join->name,request_join->draw_name,tint_color_idx);
+		remote_uid=net_host_player_add(ip_addr,port,FALSE,machine_uid,request_join->name,request_join->draw_name,tint_color_idx);
 	}
 
 		// construct the reply
 	
+	reply_join.machine_uid=htons((short)machine_uid);
+	reply_join.remote_uid=htons((short)remote_uid);
+
 	strcpy(reply_join.game_name,hud.net_game.games[net_setup.game_idx].name);
 	strcpy(reply_join.map_name,map.info.name);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
 	reply_join.option_flags=htonl(net_setup.option_flags);
-	reply_join.player_uid=htons((short)player_uid);
 	
-	if (player_uid!=-1) {
-		net_host_player_create_remote_list(player_uid,&reply_join.remotes);
+	if (remote_uid!=-1) {
+		net_host_player_create_remote_list(remote_uid,&reply_join.remotes);
 	}
 	else {
 		reply_join.remotes.count=htons(0);
@@ -202,28 +275,32 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		// send reply
 
 	if (!net_sendto_msg(host_socket,ip_addr,port,net_action_reply_join,net_player_uid_host,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
-		if (player_uid!=-1) net_host_player_remove(player_uid);
+		if (remote_uid!=-1) net_host_player_remove(remote_uid);
 		return(FALSE);
 	}
 	
 		// if no player uid, then player was rejected
 		
-	if (player_uid==-1) return(FALSE);
+	if (remote_uid==-1) return(FALSE);
+
+		// start host's player thread
+
+	net_host_player_start_thread(remote_uid);
 	
 		// send all other players on host the new player for remote add
 		
-	remote_add.player_uid=htons((short)player_uid);
+	remote_add.player_uid=htons((short)remote_uid);
 	strncpy(remote_add.name,request_join->name,name_str_len);
 	strncpy(remote_add.draw_name,request_join->draw_name,name_str_len);
 	remote_add.name[name_str_len-1]=0x0;
 	remote_add.team_idx=htons((short)net_team_none);
-	remote_add.tint_color_idx=request_join->tint_color_idx;		// already in network byte order
+	remote_add.tint_color_idx=htons((short)tint_color_idx);
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 
-	net_host_player_send_message_others(player_uid,net_action_request_remote_add,net_player_uid_host,(unsigned char*)&remote_add,sizeof(network_request_object_add));
+	net_host_player_send_message_others(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
 
-	return(player_uid);
+	return(remote_uid);
 }
 
 /* =======================================================
@@ -286,8 +363,7 @@ int net_host_thread(void *arg)
 			// reply to all join requests
 
 		if (action==net_action_request_join) {
-			player_uid=net_host_join_request(ip_addr,port,(network_request_join*)msg);
-			if (player_uid!=-1) net_host_player_start_thread(player_uid);
+			net_host_join_request(ip_addr,port,(network_request_join*)msg);
 			continue;
 		}
 		
@@ -308,12 +384,10 @@ int net_host_thread(void *arg)
 
 bool net_host_game_start(char *err_str)
 {
-	int						player_uid;
-	network_request_join	request_join;
+		// reset UIDs
 
-		// initialize players
-		
-	net_host_player_initialize();
+	net_setup.uid.next_machine_uid=0;
+	net_setup.uid.next_remote_uid=0;
 	
 		// resolve names to IPs
 		
@@ -322,41 +396,19 @@ bool net_host_game_start(char *err_str)
 
 		// start hosting
 
-	if (!net_host_initialize(err_str)) {
-		net_host_player_shutdown();
-		return(FALSE);
-	}
-	
-		// attempt to add local player to host
+	if (!net_host_initialize(err_str)) return(FALSE);
 
-	player_uid=-1;
+		// give the host a machine uid
 
-	if (!setup.network.dedicated) {
-	
-		strcpy(request_join.name,setup.network.name);
-		strcpy(request_join.vers,dim3_version);
-		request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
-		request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
+	net_setup.uid.machine_uid=net_host_create_machine_uid();
 
-		player_uid=net_host_client_handle_local_join(&request_join,err_str);
-		if (player_uid==-1) {
-			net_host_shutdown();
-			net_host_player_shutdown();
-			return(FALSE);
-		}
-	}
+		// initialize host player list
+		
+	net_host_player_initialize();
 	
 		// setup hosting flags
 
-	if (setup.network.dedicated) {
-		net_setup.mode=net_mode_host_dedicated;
-	}
-	else {
-		net_setup.mode=net_mode_host;
-	}
-
-	net_setup.player_uid=player_uid;
-
+	net_setup.mode=setup.network.dedicated?net_mode_host_dedicated:net_mode_host;
 	net_setup.client.latency=0;
 	net_setup.client.host_ip_addr=0;
 
@@ -367,7 +419,7 @@ void net_host_game_end(void)
 {
 		// inform all player of server shutdown
 
-	net_host_player_send_message_all(net_action_request_host_exit,net_player_uid_host,NULL,0);
+	net_host_player_send_message_all(net_action_request_host_exit,NULL,0);
 
 		// shutdown server
 

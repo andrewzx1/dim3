@@ -98,21 +98,13 @@ typedef struct		{
 					} net_queue_type;
 
 //
-// network headers and messages
-//
-
-#define net_max_msg_size								2048
-
-typedef struct		{
-						short							len,action,player_uid;
-					} network_header;
-
-//
 // host player list
 //
 
 typedef struct		{
-						int								uid,port;
+						int								machine_uid,
+														remote_uid,
+														port;
 						unsigned long					ip_addr;
 						bool							local,bot,ready;
 						d3socket						sock;
@@ -143,10 +135,16 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
-						int								mode,player_uid,
-														game_idx,option_flags;
+						int								machine_uid,
+														next_machine_uid,
+														next_remote_uid;
+					} network_setup_uid;
+
+typedef struct		{
+						int								mode,game_idx,option_flags;
 						network_setup_host_type			host;
 						network_setup_client_type		client;
+						network_setup_uid				uid;
 					} network_setup_type;
 
 //
@@ -225,6 +223,17 @@ typedef struct		{
 #define net_group_synch_flag_main_move					0x00000004
 
 //
+// network headers and messages
+//
+
+#define net_max_msg_size								2048
+
+typedef struct		{
+						short							remote_uid,
+														action,len;
+					} network_header;
+
+//
 // join remotes and bots
 //
 
@@ -263,7 +272,8 @@ typedef struct		{
 
 typedef struct		{
 						int								map_tick,option_flags;
-						short							player_uid,remote_count,bot_count;
+						short							machine_uid,remote_uid,
+														remote_count,bot_count;
 						char							game_name[name_str_len],map_name[name_str_len],
 														deny_reason[64];
 						network_reply_join_remotes		remotes;

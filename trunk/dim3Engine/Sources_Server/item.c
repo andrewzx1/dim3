@@ -112,7 +112,7 @@ void item_pickup_check(obj_type *obj)
 
 				// send network event
 
-			if (network_on) net_client_send_pickup(&pickup);
+			if (network_on) net_client_send_pickup(obj,&pickup);
 			
 				// successfully picked up
 				

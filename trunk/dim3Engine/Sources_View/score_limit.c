@@ -82,7 +82,7 @@ void score_limit_close(void)
 void score_limit_start(void)
 {
 	int					n;
-	obj_type			*obj;
+	obj_type			*player_obj;
 	
 		// goto score limit state
 		
@@ -90,12 +90,8 @@ void score_limit_start(void)
 	
 		// push score limit to all remotes
 
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-
-		if (obj->type==object_type_remote) net_host_player_send_message_others(net_setup.player_uid,net_action_request_game_score_limit,net_player_uid_host,NULL,0);
-	}
+	player_obj=server.obj_list.objs[server.player_obj_idx];
+	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_game_score_limit,NULL,0);
 }
 
 void score_limit_check_scores(void)

@@ -36,7 +36,7 @@ extern char team_colors[][16];
 extern server_type		server;
 extern hud_type			hud;
 
-int						net_host_player_count,net_host_next_uid;
+int						net_host_player_count;
 net_host_player_type	net_host_players[host_max_remote_count];
 
 SDL_mutex				*net_host_player_lock;
@@ -50,7 +50,6 @@ SDL_mutex				*net_host_player_lock;
 void net_host_player_initialize(void)
 {
 	net_host_player_count=0;
-	net_host_next_uid=net_player_uid_client_start;
 	
 	net_host_player_lock=SDL_CreateMutex();
 }
@@ -66,7 +65,7 @@ void net_host_player_shutdown(void)
       
 ======================================================= */
 
-int net_host_player_find(int player_uid)
+int net_host_player_find(int remote_uid)
 {
 	int						n;
 	net_host_player_type	*player;
@@ -74,7 +73,7 @@ int net_host_player_find(int player_uid)
 	player=net_host_players;
 	
 	for (n=0;n!=net_host_player_count;n++) {
-		if (player->connect.uid==player_uid) return(n);
+		if (player->connect.remote_uid==remote_uid) return(n);
 		player++;
 	}
 	
@@ -144,7 +143,7 @@ bool net_host_player_add_ok(char *name,char *deny_reason)
       
 ======================================================= */
 
-int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,char *draw_name,int tint_color_idx)
+int net_host_player_add(unsigned long ip_addr,int port,bool local,int machine_uid,char *name,char *draw_name,int tint_color_idx)
 {
 	net_host_player_type		*player;
 
@@ -173,7 +172,11 @@ int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,cha
 	player->connect.port=port;
 	player->connect.local=local;
 	player->connect.bot=FALSE;
-	player->connect.uid=net_host_next_uid;
+
+	player->connect.remote_uid=net_setup.next_remote_uid;
+	net_setup.next_remote_uid++;
+
+	player->connect.machine_uid=machine_uid;
 
 		// initialize the queue
 
@@ -189,14 +192,13 @@ int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,cha
 	
 	player->pnt.x=player->pnt.y=player->pnt.z=0;
 	
-	net_host_next_uid++;
 	net_host_player_count++;
 	
 		// unlock player operations
 
 	SDL_mutexV(net_host_player_lock);
 	
-	return(player->connect.uid);
+	return(player->connect.remote_uid);
 }
 
 int net_host_player_add_bot(obj_type *obj)
@@ -218,7 +220,11 @@ int net_host_player_add_bot(obj_type *obj)
 	player->connect.port=-1;
 	player->connect.local=TRUE;
 	player->connect.bot=TRUE;
-	player->connect.uid=net_host_next_uid;
+
+	player->connect.remote_uid=net_setup.next_remote_uid;
+	net_setup.next_remote_uid++;
+
+	player->connect.machine_uid=net_setup.uid.machine_uid;
 
 		// bots don't use queues
 
@@ -240,14 +246,13 @@ int net_host_player_add_bot(obj_type *obj)
 
 	player->connect.ready=TRUE;
 	
-	net_host_next_uid++;
 	net_host_player_count++;
 
 		// unlock player operations
 	
 	SDL_mutexV(net_host_player_lock);
 	
-	return(player->connect.uid);
+	return(player->connect.remote_uid);
 }
 
 void net_host_player_remove(int player_uid)
@@ -479,7 +484,7 @@ void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int 
 	}
 		// put on queue
 
-	net_queue_push_message(&net_host_players[idx].queue,action,player_uid,msg,msg_len);
+	net_queue_push_message(&net_host_players[idx].queue,player_uid,action,msg,msg_len);
 
 		// unlock player operation
 
@@ -488,7 +493,7 @@ void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int 
 
 bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int *msg_len)
 {
-	int				idx,queue_player_uid;
+	int				idx,queue_remote_uid;
 	bool			has_msg;
 
 		// lock all player operations
@@ -504,7 +509,7 @@ bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int
 	}
 		// read from queue
 
-	has_msg=net_queue_check_message(&net_host_players[idx].queue,action,&queue_player_uid,msg,msg_len);
+	has_msg=net_queue_check_message(&net_host_players[idx].queue,&queue_remote_uid,action,msg,msg_len);
 
 		// unlock player operation
 
@@ -521,7 +526,7 @@ bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int
 
 void net_host_player_start_thread(int player_uid)
 {
-	SDL_CreateThread(net_host_client_handler_thread,(void*)player_uid);
+	SDL_CreateThread(net_host_player_thread,(void*)player_uid);
 }
 
 /* =======================================================
@@ -530,7 +535,7 @@ void net_host_player_start_thread(int player_uid)
       
 ======================================================= */
 
-void net_host_player_send_message_single(int to_player_uid,int action,int from_player_uid,unsigned char *msg,int msg_len)
+void net_host_player_send_message_single(int player_uid,int action,unsigned char *msg,int msg_len)
 {
 	int						idx;
 	net_host_player_type	*player;
@@ -539,7 +544,7 @@ void net_host_player_send_message_single(int to_player_uid,int action,int from_p
 
 		// find player
 
-	idx=net_host_player_find(to_player_uid);
+	idx=net_host_player_find(player_uid);
 	if (idx!=-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -548,51 +553,62 @@ void net_host_player_send_message_single(int to_player_uid,int action,int from_p
 	player=&net_host_players[idx];
 
 		// send message
-		// only players in a ready state can
-		// get messages.  bots never get messages
 
-	if ((player->connect.ready) && (!player->connect.bot)) {
-		if (player->connect.local) {
-			net_client_push_queue_local(action,from_player_uid,msg,msg_len);
-		}
-		else {
-			net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,from_player_uid,msg,msg_len);
-		}
-	}
+	net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,player_uid,msg,msg_len);
 
 	SDL_mutexV(net_host_player_lock);
 }
 
-void net_host_player_send_message_others(int skip_player_uid,int action,int from_player_uid,unsigned char *msg,int msg_len)
+void net_host_player_send_message_others(int action,unsigned char *msg,int msg_len)
 {
-	int						n;
+	int						n,idx,machine_uid;
 	net_host_player_type	*player;
 	
 	SDL_mutexP(net_host_player_lock);
-	
-	player=net_host_players;
+
+		// find sending player
+
+	idx=net_host_player_find(player_uid);
+	if (idx!=-1) {
+		SDL_mutexV(net_host_player_lock);
+		return;
+	}
+
+	machine_uid=net_host_players[n].machine_uid;
+
+		// send to others
 	
 	for (n=0;n!=net_host_player_count;n++) {
 
+			// skip person sending the message
+
+		if (n==idx) continue;
+
+			// skip the machine it's running on (usually
+			// the same as skipping the player but will
+			// be different when the host relays messages
+			// for bots)
+
+		player=&net_host_players[n];
+
+		if (player->connect.machine_uid==machine_uid) continue;
+
 			// only players in a ready state can
-			// get messages.  bots never get messages
+			// get messages.  bots never get messages,
+			// and locals should never be in this list
+			// but we remove anyway just in case
 
-		if ((player->connect.uid!=skip_player_uid) && (player->connect.ready) && (!player->connect.bot)) {
-			if (player->connect.local) {
-				net_client_push_queue_local(action,from_player_uid,msg,msg_len);
-			}
-			else {
-				net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,from_player_uid,msg,msg_len);
-			}
-		}
+		if ((!player->connect.ready) || (player->connect.bot) || (player->connect.local)) continue;
 
-		player++;
+			// send to network
+
+		net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,from_remote_uid,msg,msg_len);
 	}
 	
 	SDL_mutexV(net_host_player_lock);
 }
 
-void net_host_player_send_message_all(int action,int from_player_uid,unsigned char *msg,int msg_len)
+void net_host_player_send_message_all(int action,unsigned char *msg,int msg_len)
 {
-	net_host_player_send_message_others(-1,action,from_player_uid,msg,msg_len);
+	net_host_player_send_message_others(-1,action,msg,msg_len);
 }

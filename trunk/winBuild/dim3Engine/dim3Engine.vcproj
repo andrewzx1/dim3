@@ -4108,17 +4108,8 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Sources_Network\net_host_client_handler.c"
+					RelativePath="..\..\dim3Engine\Sources_Network\net_host_player_thread.c"
 					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Sources_Network\net_host_players.c"

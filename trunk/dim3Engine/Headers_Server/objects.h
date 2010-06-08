@@ -47,9 +47,6 @@ extern void object_set_current_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
 
-extern void object_player_set_remote_uid(int remote_uid);
-extern int object_player_get_remote_uid(void);
-
 extern bool object_start_script(obj_type *obj,char *name,char *params,char *err_str);
 
 extern void object_clear_size(obj_size *size);
