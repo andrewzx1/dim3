@@ -45,7 +45,6 @@ int net_client_receive_thread(void *arg);			// forward reference
 d3socket					client_socket;
 bool						client_complete;
 SDL_Thread					*client_thread;
-net_queue_type				client_queue;
 
 /* =======================================================
 
@@ -114,7 +113,7 @@ int net_client_receive_thread(void *arg)
 		// if there was an error, put a exit on
 		// the queue
 		
-	if (client_err) net_queue_push_message(&client_queue,net_action_request_host_exit,0,NULL,0);
+	if (client_err) net_queue_push_message(&client_queue,0,net_action_request_host_exit,NULL,0);
 	
 		// exit thread
 	
@@ -123,40 +122,12 @@ int net_client_receive_thread(void *arg)
 
 /* =======================================================
 
-      Client Message Queue Local
-      
-======================================================= */
-
-bool net_client_start_message_queue_local(char *err_str)
-{
-		// create cache
-
-	if (!net_queue_initialize(&client_queue)) {
-		strcpy(err_str,"Networking: Out of memory");
-		return(FALSE);
-	}
-
-	return(TRUE);
-}
-
-void net_client_end_message_queue_local(void)
-{
-	net_queue_shutdown(&client_queue);
-}
-
-inline void net_client_push_queue_local(int action,int remote_uid,unsigned char *data,int len)
-{
-	net_queue_push_message(&client_queue,action,remote_uid,data,len);
-}
-
-/* =======================================================
-
       Check Message Queue
       
 ======================================================= */
 
-inline bool net_client_check_message_queue(int *action,int *player_uid,unsigned char *data)
+inline bool net_client_check_message_queue(int *remote_uid,int *action,unsigned char *data)
 {
-	return(net_queue_check_message(&client_queue,action,player_uid,data,NULL));
+	return(net_queue_check_message(remote_uid,&client_queue,action,data,NULL));
 }
 

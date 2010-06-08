@@ -104,7 +104,6 @@ void game_end(void)
 		case net_mode_host:
 		case net_mode_host_dedicated:
 			net_host_game_end();
-			net_client_end_message_queue_local();
 			break;
 	}
 	
@@ -183,7 +182,7 @@ void game_reset(void)
 	strcpy(reset.map_name,map.info.name);
 
 	player_obj=server.obj_list.objs[server.player_obj_idx];
-	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_game_reset,net_player_uid_host,(unsigned char*)&reset,sizeof(network_request_game_reset));
+	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_game_reset,(unsigned char*)&reset,sizeof(network_request_game_reset));
 }
 
 

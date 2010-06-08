@@ -115,24 +115,23 @@ JSValueRef js_sound_music_name_exception(JSContextRef cx,char *name)
 
 void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool global,bool atplayer,JSValueRef *exception)
 {
-	int				buffer_idx,sound_obj_uid;
-	bool			remote_ok,player;
+	int				buffer_idx,sound_obj_idx;
+	bool			player;
 	obj_type		*obj;
 
 		// check if this is player
 
 	if (atplayer) {
 		player=TRUE;
-		sound_obj_uid=server.player_obj_idx;
+		sound_obj_idx=server.player_obj_idx;
 	}
 	else {
-		player=FALSE;
-		sound_obj_uid=-1;
-
-		if (js.attach.thing_type==thing_type_object) {
-			obj=object_script_lookup();
-			sound_obj_uid=obj->idx;
-			player=(obj->type==object_type_player);
+		sound_obj_idx=script_get_attached_object_uid();
+		if (sound_obj_idx==-1) {
+			player=FALSE;
+		}
+		else {
+			player=(obj->idx==server.player_obj_idx);
 		}
 	}
 	
@@ -152,27 +151,16 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 
 		// run sound watches
 
-	if (sound_obj_uid!=-1) object_watch_sound_alert(pt,sound_obj_uid,name);
+	if (sound_obj_idx!=-1) object_watch_sound_alert(pt,sound_obj_uid,name);
 	
 		// detect if sound should be remoted
-		// we check the object for both object and weapon
-		// type scripts, as the object tells if it's networkable
+		// we check to see if the script had any object attached
+		// (or parented to an object), as the object tells if the
+		// sound is networkable
 		
-	if (net_setup.mode!=net_mode_none) {
-	
-		remote_ok=FALSE;
-		
-		switch (js.attach.thing_type) {
-		
-			case thing_type_object:
-			case thing_type_weapon:
-				obj=object_script_lookup();
-				if (obj!=NULL) remote_ok=object_networkable(obj);
-				break;
-
-		}
-		
-		if (remote_ok) net_client_send_sound(pt,pitch,name);
+	if ((net_setup.mode!=net_mode_none) && (sound_obj_idx!=-1)) {
+		obj=server.obj_list.objs[sound_obj_idx];
+		if (object_networkable(obj)) net_client_send_sound(obj,pt,pitch,name);
 	}
 }
 

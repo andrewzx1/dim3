@@ -781,7 +781,7 @@ void remote_click(network_request_remote_click *click)
 
 bool remote_network_get_updates(void)
 {
-	int						action,player_uid,count;
+	int						remote_uid,action,count;
 	unsigned char			msg[net_max_msg_size];
 	
 	count=0;
@@ -790,7 +790,7 @@ bool remote_network_get_updates(void)
 	
 			// check for messages
 
-		if (!net_client_check_message_queue(&action,&player_uid,msg)) return(TRUE);
+		if (!net_client_check_message_queue(&remote_uid,&action,msg)) return(TRUE);
 		
 			// if at score limit, only accept reset messages
 			
@@ -815,7 +815,7 @@ bool remote_network_get_updates(void)
 				break;
 				
 			case net_action_request_remote_remove:
-				remote_remove(player_uid,TRUE);
+				remote_remove(remote_uid,TRUE);
 				break;
 				
 			case net_action_request_remote_death:
@@ -922,7 +922,7 @@ void remote_network_send_group_synch(void)
 
 		// run group synch
 
-	net_client_request_group_synch_ping(object_player_get_remote_uid());
+	net_client_request_group_synch_ping(server.obj_list.objs[server.player_obj_idx]);
 }
 
 void remote_network_send_latency_ping(void)
@@ -939,7 +939,7 @@ void remote_network_send_latency_ping(void)
 		// latency ping
 
 	net_setup.client.latency_ping_tick=tick;
-	net_client_send_latency_ping(object_player_get_remote_uid());
+	net_client_send_latency_ping(server.obj_list.objs[server.player_obj_idx]);
 }
 
 /* =======================================================

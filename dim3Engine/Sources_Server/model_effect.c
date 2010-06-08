@@ -234,7 +234,9 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		al_play_source(pose_move->sound.buffer_idx,&pt,pose_move->sound.pitch,FALSE,FALSE,global,draw->player);
 		object_watch_sound_alert(&pt,draw->connect.obj_idx,pose_move->sound.name);	// sound watches
 
-		if ((net_setup.mode!=net_mode_none) && (draw->connect.net_sound)) net_client_send_sound(&pt,pose_move->sound.pitch,pose_move->sound.name);
+		if ((net_setup.mode!=net_mode_none) && (draw->connect.net_sound)) {
+			if (draw->connect.obj_idx!=-1) net_client_send_sound(server.obj_list.objs[draw->connect.obj_idx],&pt,pose_move->sound.pitch,pose_move->sound.name);
+		}
 	}
 
 		// mesh fades

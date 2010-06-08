@@ -128,7 +128,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
       
 ======================================================= */
 
-bool net_queue_push_message(net_queue_type *queue,int action,int player_uid,unsigned char *msg_data,int msg_len)
+bool net_queue_push_message(net_queue_type *queue,int remote_uid,int action,unsigned char *msg_data,int msg_len)
 {
 	unsigned char		*ptr;
 	network_header		head;
@@ -146,9 +146,9 @@ bool net_queue_push_message(net_queue_type *queue,int action,int player_uid,unsi
 		
 	ptr=queue->data+(queue->count*net_max_msg_size);
 	
-	head.len=htons((short)msg_len);
+	head.remote_uid=htons((short)remote_uid);
 	head.action=htons((short)action);
-	head.player_uid=htons((short)player_uid);
+	head.len=htons((short)msg_len);
 
 	memmove(ptr,&head,sizeof(network_header));
 	ptr+=sizeof(network_header);
@@ -170,7 +170,7 @@ bool net_queue_push_message(net_queue_type *queue,int action,int player_uid,unsi
       
 ======================================================= */
 
-bool net_queue_check_message(net_queue_type *queue,int *action,int *player_uid,unsigned char *msg_data,int *msg_data_len)
+bool net_queue_check_message(net_queue_type *queue,int *remote_uid,int *action,unsigned char *msg_data,int *msg_data_len)
 {
 	int					msg_len;
 	unsigned char		*ptr;
@@ -194,9 +194,9 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *player_uid,u
 	memmove(&head,ptr,sizeof(network_header));
 	ptr+=sizeof(network_header);
 	
-	msg_len=(int)ntohs(head.len);
+	*remote_uid=(int)ntohs(head.remote_uid);
 	*action=(int)ntohs(head.action);
-	*player_uid=(int)ntohs(head.player_uid);
+	msg_len=(int)ntohs(head.len);
 
 		// get message data
 		

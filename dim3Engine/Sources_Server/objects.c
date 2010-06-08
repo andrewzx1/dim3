@@ -692,28 +692,6 @@ int object_create(char *name,int type,int bind)
 
 /* =======================================================
 
-      Remote UID for Player
-      
-======================================================= */
-
-void object_player_set_remote_uid(int remote_uid)
-{
-	obj_type			*obj;
-	
-	obj=server.obj_list.objs[server.player_obj_idx];
-	obj->remote.uid=remote_uid;
-}
-
-int object_player_get_remote_uid(void)
-{
-	obj_type			*obj;
-	
-	obj=server.obj_list.objs[server.player_obj_idx];
-	return(obj->remote.uid);
-}
-
-/* =======================================================
-
       Scripts for Objects
       
 ======================================================= */

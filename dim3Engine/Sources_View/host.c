@@ -473,14 +473,6 @@ void host_game(void)
 {
 	char			err_str[256];
 	
-		// start hosting
-
-	if (!net_host_game_start(err_str)) {
-		error_setup(err_str,"Hosting Game Canceled");
-		server.next_state=gs_error;
-		return;
-	}
-
 		// setup map
 		
 	map.info.name[0]=0x0;
@@ -503,32 +495,32 @@ void host_game(void)
 		server.next_state=gs_error;
 		return;
 	}
-	
-		// add bots to host
 
-	net_host_player_add_bots();
+		// start hosting
 
-		// player on host setup
-
-	if (net_setup.mode!=net_mode_host_dedicated) {
-
-			// set remote UID
-
-		object_player_set_remote_uid(net_setup.player_uid);
-			
-			// start local queue
-
-		if (!net_client_start_message_queue_local(err_str)) {
-			net_host_game_end();
-			error_setup(err_str,"Hosting Game Canceled");
-			server.next_state=gs_error;
-			return;
-		}
-
-			// mark node as ready to receive data from host
-		
-		net_client_send_ready();
+	if (!net_host_game_start(err_str)) {
+		net_host_game_end();
+		error_setup(err_str,"Hosting Game Canceled");
+		server.next_state=gs_error;
+		return;
 	}
+
+		// add local player to host
+
+	if (!net_host_join_local_player(err_str)) {
+		net_host_game_end();
+		error_setup(err_str,"Hosting Game Canceled");
+		server.next_state=gs_error;
+		return;
+	}
+	
+		// add multiplayer bots to host
+
+	net_host_join_multiplayer_bots();
+
+		// mark node as ready to receive data
+	
+	net_client_send_ready(server.obj_list.objs[server.player_obj_idx]);
 
 		// game is running
 	
