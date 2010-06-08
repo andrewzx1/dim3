@@ -111,7 +111,7 @@ extern int net_host_player_find(int player_uid);
 extern int net_host_player_find_ip_addr(unsigned long ip_addr,int port);
 
 extern bool net_host_player_add_ok(char *name,char *deny_reason);
-extern int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,int tint_color_idx,int character_idx);
+extern int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,char *draw_name,int tint_color_idx);
 extern int net_host_player_add_bot(obj_type *obj);
 extern void net_host_player_remove(int player_uid);
 
@@ -155,7 +155,6 @@ extern void net_client_send_set_team(obj_type *obj);
 extern void net_client_send_leave_host(void);
 extern void net_client_send_latency_ping(int remote_uid);
 extern void net_client_request_group_synch_ping(int remote_uid);
-extern void net_client_send_spawn(obj_type *obj,int sub_event);
 extern void net_client_send_death(obj_type *obj,bool telefrag);
 extern void net_client_send_remote_update(obj_type *obj,bool chat_on);
 extern void net_client_send_chat(obj_type *obj,char *str);

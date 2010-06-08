@@ -210,14 +210,6 @@ bool object_spawn(obj_type *obj,char *err_str)
 		// call the spawn event
 		
 	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
-
-		// if this is the player, then make
-		// sure to call the spawn event on other
-		// machines
-
-	if (net_setup.mode!=net_mode_none) {
-		if (obj->idx==server.player_obj_idx) net_client_send_spawn(obj,sub_event);
-	}
 	
 		// can't respawn until we die
 		

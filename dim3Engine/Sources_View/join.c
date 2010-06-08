@@ -56,8 +56,6 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern int					client_timeout_values[];
-
 int							join_tab_value,join_thread_lan_start_tick;
 char						*join_table_data;
 bool						join_thread_started,join_thread_quit;

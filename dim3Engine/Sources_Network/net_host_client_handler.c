@@ -61,16 +61,16 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 	tint_color_idx=htons((short)request_join->tint_color_idx);
 	character_idx=htons((short)request_join->character_idx);
 
-	player_uid=net_host_player_add(-1,-1,TRUE,request_join->name,tint_color_idx,character_idx);
+	player_uid=net_host_player_add(-1,-1,TRUE,request_join->name,request_join->draw_name,tint_color_idx);
 	if (player_uid==-1) return(-1);
 
 		// send all other players on host the new player for remote add
 		
 	strncpy(remote_add.name,request_join->name,name_str_len);
+	strncpy(remote_add.draw_name,request_join->draw_name,name_str_len);
 	remote_add.name[name_str_len-1]=0x0;
 	remote_add.team_idx=htons((short)net_team_none);
 	remote_add.tint_color_idx=htons((short)request_join->tint_color_idx);
-	remote_add.character_idx=htons((short)request_join->character_idx);
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 
@@ -166,7 +166,6 @@ int net_host_client_handler_thread(void *arg)
 				net_host_client_handle_update(player_uid,(network_request_remote_update*)msg);
 				break;
 				
-			case net_action_request_remote_spawn:
 			case net_action_request_remote_death:
 			case net_action_request_remote_chat:
 			case net_action_request_remote_sound:

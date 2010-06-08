@@ -102,39 +102,9 @@ void net_client_request_group_synch_ping(int remote_uid)
 
 /* =======================================================
 
-      Object Death and Spawn Messages
+      Object Death Messages
       
 ======================================================= */
-
-void net_client_send_spawn(obj_type *obj,int sub_event)
-{
-	network_request_remote_spawn	spawn;
-
-	spawn.remote_obj_uid=htons((short)obj->remote.uid);
-	
-		// position
-		
-	spawn.pnt_x=htonl(obj->pnt.x);
-	spawn.pnt_y=htonl(obj->pnt.y);
-	spawn.pnt_z=htonl(obj->pnt.z);
-	
-	spawn.fp_ang_x=htonf(obj->ang.x);
-	spawn.fp_ang_y=htonf(obj->ang.y);
-	spawn.fp_ang_z=htonf(obj->ang.z);
-
-		// spawn sub event
-
-	spawn.sub_event=htons((short)sub_event);
-
-		// send spawn
-		
-	if (net_setup.mode==net_mode_client) {
-		net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_remote_spawn,net_setup.player_uid,(unsigned char*)&spawn,sizeof(network_request_remote_spawn));
-		return;
-	}
-
-	net_host_player_send_message_others(net_setup.player_uid,net_action_request_remote_spawn,net_setup.player_uid,(unsigned char*)&spawn,sizeof(network_request_remote_spawn));
-}
 
 void net_client_send_death(obj_type *obj,bool telefrag)
 {

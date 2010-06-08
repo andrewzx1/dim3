@@ -81,7 +81,6 @@ bool remote_add(network_request_object_add *add,bool send_event)
 		
 	obj->team_idx=(signed short)ntohs(add->team_idx);
 	obj->tint_color_idx=(signed short)ntohs(add->tint_color_idx);
-	obj->character_idx=(signed short)ntohs(add->character_idx);
 	
 	obj->pnt.x=ntohl(add->pnt_x);
 	obj->pnt.y=ntohl(add->pnt_y);
@@ -99,16 +98,17 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	
 	obj->mesh.cur_mesh_idx=-1;
 	
-		// start remote scripts
-
-	if (ntohs(add->bot)!=0) {
-		object_start_script(obj,"Bot",NULL,err_str);
-	}
-	else {
-		object_start_script(obj,"Player",NULL,err_str);
-	}
+		// remotes have no script
+		
+	obj->attach.script_idx=-1;
+	obj->attach.obj_idx=idx;
+	obj->attach.weap_idx=-1;
+	obj->attach.proj_setup_idx=-1;
+	obj->attach.proj_idx=-1;
 
 		// load models
+		
+	strcpy(obj->draw.name,add->draw_name);
 		
 	if (!model_draw_load(&obj->draw,"Remote",obj->name,err_str)) {
 		console_add_error(err_str);
@@ -276,38 +276,9 @@ void remote_host_exit(void)
 
 /* =======================================================
 
-      Remote Spawn and Death
+      Remote Death
       
 ======================================================= */
-
-void remote_spawn(network_request_remote_spawn *spawn)
-{
-	int								remote_obj_uid,sub_event;
-	obj_type						*obj;
-	
-	remote_obj_uid=(signed short)ntohs(spawn->remote_obj_uid);
-	
-	obj=object_find_remote_uid(remote_obj_uid);
-	if (obj==NULL) return;
-	
-		// supergumba -- this might not be necessary
-
-		// update position
-
-	obj->pnt.x=ntohl(spawn->pnt_x);
-	obj->pnt.y=ntohl(spawn->pnt_y);
-	obj->pnt.z=ntohl(spawn->pnt_z);
-				
-	obj->ang.x=ntohf(spawn->fp_ang_x);
-	obj->ang.y=ntohf(spawn->fp_ang_y);
-	obj->ang.z=ntohf(spawn->fp_ang_z);
-		
-		// call the spawn
-// supergumba -- clean up
-//	sub_event=(signed short)ntohs(spawn->sub_event);
-		
-//	scripts_post_event_console(&obj->attach,sd_event_spawn,sub_event,0);
-}
 
 void remote_death(network_request_remote_death *death)
 {
@@ -845,10 +816,6 @@ bool remote_network_get_updates(void)
 				
 			case net_action_request_remote_remove:
 				remote_remove(player_uid,TRUE);
-				break;
-				
-			case net_action_request_remote_spawn:
-				remote_spawn((network_request_remote_spawn*)msg);
 				break;
 				
 			case net_action_request_remote_death:
