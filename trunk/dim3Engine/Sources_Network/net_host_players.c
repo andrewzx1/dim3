@@ -144,7 +144,7 @@ bool net_host_player_add_ok(char *name,char *deny_reason)
       
 ======================================================= */
 
-int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,int tint_color_idx,int character_idx)
+int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,char *draw_name,int tint_color_idx)
 {
 	net_host_player_type		*player;
 
@@ -183,9 +183,9 @@ int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,int
 
 	player->score=0;
 	strcpy(player->name,name);
+	strcpy(player->draw_name,draw_name);
 	player->team_idx=net_team_none;
 	player->tint_color_idx=tint_color_idx;
-	player->character_idx=character_idx;
 	
 	player->pnt.x=player->pnt.y=player->pnt.z=0;
 	
@@ -227,10 +227,12 @@ int net_host_player_add_bot(obj_type *obj)
 		// settings
 
 	player->score=obj->score.score;
+	
 	strcpy(player->name,obj->name);
+	strcpy(player->draw_name,obj->draw.name);
+	
 	player->team_idx=obj->team_idx;
 	player->tint_color_idx=0;
-	player->character_idx=0;
 	
 	memmove(&player->pnt,&obj->pnt,sizeof(d3pnt));
 	
@@ -431,10 +433,10 @@ void net_host_player_create_remote_list(int player_uid,network_reply_join_remote
 
 			obj_add->player_uid=htons((short)player->connect.uid);
 			strcpy(obj_add->name,player->name);
+			strcpy(obj_add->draw_name,player->draw_name);
 			obj_add->bot=htons((short)(player->connect.bot?1:0));
 			obj_add->team_idx=htons((short)player->team_idx);
 			obj_add->tint_color_idx=htons((short)player->tint_color_idx);
-			obj_add->character_idx=htons((short)player->character_idx);
 			obj_add->score=htons((short)player->score);
 			obj_add->pnt_x=htonl(player->pnt.x);
 			obj_add->pnt_y=htonl(player->pnt.y);

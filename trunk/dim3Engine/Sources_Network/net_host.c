@@ -170,7 +170,7 @@ bool net_host_join_request_ok(network_request_join *request_join,network_reply_j
 int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
 {
 	int							player_uid,
-								tint_color_idx,character_idx;
+								tint_color_idx;
 	network_reply_join			reply_join;
 	network_request_object_add	remote_add;
 	
@@ -181,8 +181,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 	if (net_host_join_request_ok(request_join,&reply_join)) {
 		tint_color_idx=htons((short)request_join->tint_color_idx);
-		character_idx=htons((short)request_join->character_idx);
-		player_uid=net_host_player_add(ip_addr,port,FALSE,request_join->name,tint_color_idx,character_idx);
+		player_uid=net_host_player_add(ip_addr,port,FALSE,request_join->name,request_join->draw_name,tint_color_idx);
 	}
 
 		// construct the reply
@@ -215,10 +214,10 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		
 	remote_add.player_uid=htons((short)player_uid);
 	strncpy(remote_add.name,request_join->name,name_str_len);
+	strncpy(remote_add.draw_name,request_join->draw_name,name_str_len);
 	remote_add.name[name_str_len-1]=0x0;
 	remote_add.team_idx=htons((short)net_team_none);
 	remote_add.tint_color_idx=request_join->tint_color_idx;		// already in network byte order
-	remote_add.character_idx=request_join->character_idx;		// already in network byte order
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 
@@ -333,6 +332,7 @@ bool net_host_game_start(char *err_str)
 	player_uid=-1;
 
 	if (!setup.network.dedicated) {
+	
 		strcpy(request_join.name,setup.network.name);
 		strcpy(request_join.vers,dim3_version);
 		request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);

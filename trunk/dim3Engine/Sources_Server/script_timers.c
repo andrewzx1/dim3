@@ -159,7 +159,7 @@ void timers_clear(attach_type *attach,int mode)
 	int				idx;
 	
 	idx=timers_find(attach,mode);
-	if (idx==-1) js.timer_list.timers[idx]->mode=timer_mode_dispose;
+	if (idx!=-1) js.timer_list.timers[idx]->mode=timer_mode_dispose;
 }
 
 /* =======================================================
