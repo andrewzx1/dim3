@@ -81,8 +81,7 @@ void score_limit_close(void)
 
 void score_limit_start(void)
 {
-	int					n;
-	obj_type			*player_obj;
+	obj_type		*player_obj;
 	
 		// goto score limit state
 		

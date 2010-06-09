@@ -280,7 +280,7 @@ typedef struct		{
 					} network_reply_join;
 	
 typedef struct		{
-						short							remote_obj_uid,team_idx;
+						short							team_idx;
 					} network_request_team;
 
 //
@@ -296,7 +296,7 @@ typedef struct		{
 //
 				
 typedef struct		{
-						short							remote_obj_uid,remote_killer_obj_uid,telefrag;
+						short							remote_killer_obj_uid,telefrag;
 					} network_request_remote_death;
 
 typedef struct		{
@@ -318,7 +318,7 @@ typedef struct		{
 														fp_ang_x,fp_ang_y,fp_ang_z,
 														fp_predict_move_x,fp_predict_move_y,fp_predict_move_z,
 														fp_predict_turn_y,model_mesh_mask;
-						short							remote_obj_uid,offset_x,offset_y,offset_z,
+						short							offset_x,offset_y,offset_z,
 														score,health;
 						unsigned char					model_cur_texture_frame[max_model_texture];
 						network_request_animation		animation[max_model_blend_animation];
@@ -326,7 +326,6 @@ typedef struct		{
 					} network_request_remote_update;
 					
 typedef struct		{
-						short							remote_obj_uid;
 						char							str[64];
 					} network_request_remote_chat;
 					
@@ -338,8 +337,7 @@ typedef struct		{
 typedef struct		{
 						int								pt_x,pt_y,pt_z,
 														fp_ang_x,fp_ang_y,fp_ang_z;
-						short							remote_obj_uid,
-														fire_type,radius,distance,damage,force;
+						short							fire_type,radius,distance,damage,force;
 						char							weap_name[name_str_len],proj_setup_name[name_str_len];
 					} network_request_remote_fire;
 
@@ -350,14 +348,13 @@ typedef struct		{
 
 typedef struct		{
 						int								pt_x,pt_y,pt_z;
-						short							remote_obj_uid,health;
+						short							health;
 						network_request_remote_ammo		ammos[net_max_weapon_per_remote];
 					} network_request_remote_pickup;
 
 typedef struct		{
 						int								pt_x,pt_y,pt_z,
 														fp_ang_x,fp_ang_y,fp_ang_z;
-						short							remote_obj_uid;
 					} network_request_remote_click;
 
 //

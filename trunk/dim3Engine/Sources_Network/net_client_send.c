@@ -81,7 +81,6 @@ void net_client_send_set_team(obj_type *obj)
 {
 	network_request_team	team;
 	
-	team.remote_obj_uid=htons((short)obj->remote.uid);
 	team.team_idx=htons((short)obj->team_idx);
 
 	net_client_send_msg(obj,net_action_request_team,(unsigned char*)&team,sizeof(network_request_team));
@@ -119,8 +118,6 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 	int								send_remote_kill_uid;
 	obj_type						*chk_obj;
 	network_request_remote_death	death;
-	
-	death.remote_obj_uid=htons((short)obj->remote.uid);
 	
 		// normal deaths
 
@@ -175,10 +172,6 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 	}
 
 	draw=&obj->draw;
-	
-		// this object remote UID
-		
-	update.remote_obj_uid=htons((short)obj->remote.uid);
 
 		// create flags
 		
@@ -278,7 +271,6 @@ void net_client_send_chat(obj_type *obj,char *str)
 {
 	network_request_remote_chat		chat;
 	
-	chat.remote_obj_uid=htons((short)obj->remote.uid);
 	strcpy(chat.str,str);
 
 	net_client_send_msg(obj,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat));
@@ -309,7 +301,6 @@ void net_client_send_projectile_add(obj_type *obj,char *weap_name,char *proj_set
 {
 	network_request_remote_fire		fire;
 	
-	fire.remote_obj_uid=htons((short)obj->remote.uid);
 	fire.fire_type=htons(net_remote_fire_type_projectile);
 
 	fire.pt_x=htonl(pt->x);
@@ -335,7 +326,6 @@ void net_client_send_hitscan_add(obj_type *obj,char *weap_name,char *proj_setup_
 {
 	network_request_remote_fire		fire;
 	
-	fire.remote_obj_uid=htons((short)obj->remote.uid);
 	fire.fire_type=htons(net_remote_fire_type_hit_scan);
 	
 	fire.pt_x=htonl(pt->x);
@@ -361,7 +351,6 @@ void net_client_send_melee_add(obj_type *obj,char *weap_name,int radius,int dist
 {
 	network_request_remote_fire		fire;
 	
-	fire.remote_obj_uid=htons((short)obj->remote.uid);
 	fire.fire_type=htons(net_remote_fire_type_melee);
 	
 	fire.pt_x=htonl(pt->x);
@@ -393,10 +382,6 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 {
 	int									n,idx;
 	weapon_type							*weap;
-	
-		// remote obj uid
-		
-	pickup->remote_obj_uid=htons((short)obj->remote.uid);
 	
 		// make sure pickup can work by
 		// moving over settings pickups are concerned with
@@ -439,8 +424,6 @@ void net_client_send_click(obj_type *obj,d3pnt *pt,d3ang *ang)
 {
 	network_request_remote_click		click;
 	
-	click.remote_obj_uid=htons((short)obj->remote.uid);
-
 	click.pt_x=htonl(pt->x);
 	click.pt_y=htonl(pt->y);
 	click.pt_z=htonl(pt->z);
