@@ -92,7 +92,8 @@ int net_client_join_host_start(char *name,char *game_name,char *map_name,int *ti
 	strcpy(request_join.vers,dim3_version);
 	request_join.hash=ntohl(net_get_project_hash());
 	request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
-	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
+// supergumba, add draw name here
+//	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
 
 	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_join,net_player_uid_none,(unsigned char*)&request_join,sizeof(network_request_join));
 
@@ -145,7 +146,7 @@ int net_client_join_host_start(char *name,char *game_name,char *map_name,int *ti
 		// finish setup
 		
 	machine_uid=(int)ntohs(reply_join.machine_uid);
-	player_uid=(int)ntohs(reply_join.player_uid);
+	player_uid=(int)ntohs(reply_join.remote_uid);
 		
 	strcpy(game_name,reply_join.game_name);
 	strcpy(map_name,reply_join.map_name);

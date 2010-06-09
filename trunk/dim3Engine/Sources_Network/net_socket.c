@@ -245,8 +245,9 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 		// get header and data
 		
 	head=(network_header*)data;
+	
+	*player_uid=(int)ntohs(head->remote_uid);
 	*action=(int)ntohs(head->action);
-	*player_uid=(int)ntohs(head->player_uid);
 	
 	len=(int)ntohs(head->len);
 	if (len>net_max_msg_size) len=net_max_msg_size;
@@ -269,9 +270,9 @@ bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int 
 		
 	head=(network_header*)data;
 
-	head->len=htons((short)msg_len);
+	head->remote_uid=htons((short)player_uid);
 	head->action=htons((short)action);
-	head->player_uid=htons((short)player_uid);
+	head->len=htons((short)msg_len);
 	
 		// the data
 

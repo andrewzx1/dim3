@@ -214,8 +214,16 @@ void timers_run(void)
 		timers[ntimer]=js.timer_list.timers[n];
 		ntimer++;
 	}
-
-	if (ntimer==0) return;
+	
+		// no timers
+		
+	if (ntimer==0) {
+		while (tick>=js.timer_tick) {
+			js.timer_tick+=100;
+		}
+	
+		return;
+	}
 	
 		// run timers
 

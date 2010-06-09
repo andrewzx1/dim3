@@ -86,7 +86,7 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	obj->pnt.y=ntohl(add->pnt_y);
 	obj->pnt.z=ntohl(add->pnt_z);
 
-	obj->remote.uid=(signed short)ntohs(add->player_uid);
+	obj->remote.uid=(signed short)ntohs(add->remote_uid);
 	obj->remote.last_update=game_time_get();
 	obj->remote.talking=FALSE;
 	

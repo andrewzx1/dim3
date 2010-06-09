@@ -97,7 +97,7 @@ void game_end(void)
 	
 	switch (net_setup.mode) {
 		case net_mode_client:
-			net_client_send_leave_host();
+			net_client_send_leave_host(server.obj_list.objs[server.player_obj_idx]);
 			net_client_end_message_queue();
 			net_client_join_host_end();
 			break;

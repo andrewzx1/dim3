@@ -289,7 +289,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	
 		// send all other players on host the new player for remote add
 		
-	remote_add.player_uid=htons((short)remote_uid);
+	remote_add.remote_uid=htons((short)remote_uid);
 	strncpy(remote_add.name,request_join->name,name_str_len);
 	strncpy(remote_add.draw_name,request_join->draw_name,name_str_len);
 	remote_add.name[name_str_len-1]=0x0;

@@ -106,7 +106,7 @@ extern int net_host_player_add_bot(obj_type *obj);
 extern void net_host_player_remove(int player_uid);
 
 extern void net_host_player_ready(int player_uid);
-extern void net_host_player_create_remote_list(int player_uid,network_reply_join_remotes *remotes);
+extern void net_host_player_create_remote_list(int remote_uid,network_reply_join_remotes *remotes);
 
 extern void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int msg_len);
 extern bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int *msg_len);
