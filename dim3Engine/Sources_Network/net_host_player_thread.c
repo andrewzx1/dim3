@@ -102,7 +102,7 @@ int net_host_player_thread(void *arg)
 				break;
 				
 			case net_action_request_team:
-				net_host_player_update_team((network_request_team*)msg);
+				net_host_player_update_team(remote_uid,(network_request_team*)msg);
 				net_host_player_send_message_others(remote_uid,net_action_request_team,msg,msg_len);
 				break;
 				
@@ -114,7 +114,7 @@ int net_host_player_thread(void *arg)
 				break;
 				
 			case net_action_request_remote_update:
-				net_host_player_update((network_request_remote_update*)msg);
+				net_host_player_update(remote_uid,(network_request_remote_update*)msg);
 				net_host_player_send_message_others(remote_uid,net_action_request_remote_update,msg,msg_len);
 				break;
 				

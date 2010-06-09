@@ -116,8 +116,8 @@ extern void net_host_player_send_message_single(int remote_uid,int action,unsign
 extern void net_host_player_send_message_others(int remote_uid,int action,unsigned char *msg,int msg_len);
 extern void net_host_player_send_message_all(int action,unsigned char *data,int len);
 
-extern void net_host_player_update_team(network_request_team *team);
-extern void net_host_player_update(network_request_remote_update *update);
+extern void net_host_player_update_team(int remote_uid,network_request_team *team);
+extern void net_host_player_update(int remote_uid,network_request_remote_update *update);
 
 //
 // client host pinging and joining

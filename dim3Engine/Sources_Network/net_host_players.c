@@ -352,16 +352,14 @@ int net_host_player_count_team(int team_idx)
       
 ======================================================= */
 
-void net_host_player_update_team(network_request_team *team)
+void net_host_player_update_team(int remote_uid,network_request_team *team)
 {
-	int							remote_obj_uid,idx;
+	int							idx;
 	net_host_player_type		*player;
-	
-	remote_obj_uid=(signed short)ntohs(team->remote_obj_uid);
 	
 	SDL_mutexP(net_host_player_lock);
 
-	idx=net_host_player_find(remote_obj_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -375,20 +373,19 @@ void net_host_player_update_team(network_request_team *team)
 	SDL_mutexV(net_host_player_lock);
 }
 
-void net_host_player_update(network_request_remote_update *update)
+void net_host_player_update(int remote_uid,network_request_remote_update *update)
 {
-	int							remote_obj_uid,idx,score;
+	int							idx,score;
 	bool						score_update;
 	net_host_player_type		*player;
 
-	remote_obj_uid=(signed short)ntohs(update->remote_obj_uid);
 	score=(signed short)ntohs(update->score);
 	
 		// update score
 		
 	SDL_mutexP(net_host_player_lock);
 
-	idx=net_host_player_find(remote_obj_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;

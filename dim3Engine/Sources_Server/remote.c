@@ -132,16 +132,13 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	return(TRUE);
 }
 
-void remote_team(network_request_team *team,bool send_event)
+void remote_team(int remote_uid,network_request_team *team,bool send_event)
 {
-	int					remote_obj_uid;
 	obj_type			*obj,*player_obj;
 	
 		// change team
 		
-	remote_obj_uid=(signed short)ntohs(team->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 
 	obj->team_idx=(signed short)ntohs(team->team_idx);
@@ -280,15 +277,13 @@ void remote_host_exit(void)
       
 ======================================================= */
 
-void remote_death(network_request_remote_death *death)
+void remote_death(int remote_uid,network_request_remote_death *death)
 {
-	int					remote_obj_uid,remote_killer_obj_uid;
+	int					remote_killer_obj_uid;
 	bool				telefrag;
 	obj_type			*obj,*kill_obj,*telefrag_obj,*player_obj;
 	
-	remote_obj_uid=(signed short)ntohs(death->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 	
 		// set health to obj
@@ -355,9 +350,9 @@ void remote_death(network_request_remote_death *death)
       
 ======================================================= */
 
-void remote_update(network_request_remote_update *update)
+void remote_update(int remote_uid,network_request_remote_update *update)
 {
-	int								n,remote_obj_uid,flags,old_score,
+	int								n,flags,old_score,
 									animation_mode,animate_idx,animate_next_idx;
 	d3pnt							org_pnt;
 	obj_type						*obj;
@@ -367,9 +362,7 @@ void remote_update(network_request_remote_update *update)
 	network_request_dynamic_bone	*net_dyn_bone;
 	network_request_animation		*net_animation;
 	
-	remote_obj_uid=(signed short)ntohs(update->remote_obj_uid);
-	
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 
 	draw=&obj->draw;
@@ -485,7 +478,7 @@ void remote_update(network_request_remote_update *update)
       
 ======================================================= */
 
-void remote_vehicle(network_request_remote_update *update)
+void remote_vehicle(int remote_uid,network_request_remote_update *update)
 {
 
 	// supergumba -- finish for vehicle support
@@ -516,15 +509,12 @@ void remote_vehicle(network_request_remote_update *update)
       
 ======================================================= */
 
-void remote_chat(network_request_remote_chat *chat)
+void remote_chat(int remote_uid,network_request_remote_chat *chat)
 {
-	int					remote_obj_uid;
 	d3col				col;
 	obj_type			*obj;
 	
-	remote_obj_uid=(signed short)ntohs(chat->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 	
 		// update chat
@@ -555,18 +545,15 @@ void remote_sound(network_request_remote_sound *sound)
       
 ======================================================= */
 
-void remote_projectile_add(network_request_remote_fire *proj_add)
+void remote_projectile_add(int remote_uid,network_request_remote_fire *proj_add)
 {
-	int					remote_obj_uid;
 	d3pnt				pt;
 	d3ang				ang;
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	
-	remote_obj_uid=(signed short)ntohs(proj_add->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 	
 	weap=weapon_find_name(obj,proj_add->weap_name);
@@ -586,18 +573,15 @@ void remote_projectile_add(network_request_remote_fire *proj_add)
 	weapon_add_projectile(obj,weap,proj_setup,&pt,&ang);
 }
 
-void remote_hit_scan_add(network_request_remote_fire *hitscan_add)
+void remote_hit_scan_add(int remote_uid,network_request_remote_fire *hitscan_add)
 {
-	int					remote_obj_uid;
 	d3pnt				pt;
 	d3ang				ang;
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	
-	remote_obj_uid=(signed short)ntohs(hitscan_add->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 	
 	weap=weapon_find_name(obj,hitscan_add->weap_name);
@@ -617,18 +601,15 @@ void remote_hit_scan_add(network_request_remote_fire *hitscan_add)
 	projectile_hitscan(obj,weap,proj_setup,&pt,&ang);
 }
 
-void remote_melee_add(network_request_remote_fire *rem_melee)
+void remote_melee_add(int remote_uid,network_request_remote_fire *rem_melee)
 {
-	int					remote_obj_uid;
 	d3pnt				pt;
 	d3ang				ang;
 	obj_type			*obj;
 	weapon_type			*weap;
 	melee_type			melee;
 	
-	remote_obj_uid=(signed short)ntohs(rem_melee->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 	
 	weap=NULL;
@@ -650,7 +631,7 @@ void remote_melee_add(network_request_remote_fire *rem_melee)
 	melee_add(obj,weap,&pt,&ang,&melee,obj->idx);
 }
 
-void remote_fire(network_request_remote_fire *fire)
+void remote_fire(int remote_uid,network_request_remote_fire *fire)
 {
 	int				fire_type;
 
@@ -659,15 +640,15 @@ void remote_fire(network_request_remote_fire *fire)
 	switch (fire_type) {
 
 		case net_remote_fire_type_projectile:
-			remote_projectile_add(fire);
+			remote_projectile_add(remote_uid,fire);
 			break;
 
 		case net_remote_fire_type_hit_scan:
-			remote_hit_scan_add(fire);
+			remote_hit_scan_add(remote_uid,fire);
 			break;
 
 		case net_remote_fire_type_melee:
-			remote_melee_add(fire);
+			remote_melee_add(remote_uid,fire);
 			break;
 	}
 }
@@ -678,16 +659,14 @@ void remote_fire(network_request_remote_fire *fire)
       
 ======================================================= */
 
-void remote_pickup(network_request_remote_pickup *pickup)
+void remote_pickup(int remote_uid,network_request_remote_pickup *pickup)
 {
-	int					n,remote_obj_uid,idx;
+	int					n,idx;
 	d3pnt				org_pnt;
 	obj_type			*obj;
 	weapon_type			*weap;
 	
-	remote_obj_uid=(signed short)ntohs(pickup->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 
 		// make sure pickup is at proper point
@@ -734,16 +713,14 @@ void remote_pickup(network_request_remote_pickup *pickup)
       
 ======================================================= */
 
-void remote_click(network_request_remote_click *click)
+void remote_click(int remote_uid,network_request_remote_click *click)
 {
-	int					remote_obj_uid,clicked_obj_uid;
+	int					clicked_obj_uid;
 	d3pnt				org_pnt;
 	d3ang				org_ang;
 	obj_type			*obj,*clicked_obj;
 	
-	remote_obj_uid=(signed short)ntohs(click->remote_obj_uid);
-
-	obj=object_find_remote_uid(remote_obj_uid);
+	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 
 		// make sure click is at proper point
@@ -807,7 +784,7 @@ bool remote_network_get_updates(void)
 				break;
 				
 			case net_action_request_team:
-				remote_team((network_request_team*)msg,TRUE);
+				remote_team(remote_uid,(network_request_team*)msg,TRUE);
 				break;
 
 			case net_action_request_remote_add:
@@ -819,15 +796,15 @@ bool remote_network_get_updates(void)
 				break;
 				
 			case net_action_request_remote_death:
-				remote_death((network_request_remote_death*)msg);
+				remote_death(remote_uid,(network_request_remote_death*)msg);
 				break;
 			
 			case net_action_request_remote_update:
-				remote_update((network_request_remote_update*)msg);
+				remote_update(remote_uid,(network_request_remote_update*)msg);
 				break;
 				
 			case net_action_request_remote_chat:
-				remote_chat((network_request_remote_chat*)msg);
+				remote_chat(remote_uid,(network_request_remote_chat*)msg);
 				break;
 				
 			case net_action_request_remote_sound:
@@ -835,15 +812,15 @@ bool remote_network_get_updates(void)
 				break;
 
 			case net_action_request_remote_fire:
-				remote_fire((network_request_remote_fire*)msg);
+				remote_fire(remote_uid,(network_request_remote_fire*)msg);
 				break;
 
 			case net_action_request_remote_pickup:
-				remote_pickup((network_request_remote_pickup*)msg);
+				remote_pickup(remote_uid,(network_request_remote_pickup*)msg);
 				break;
 
 			case net_action_request_remote_click:
-				remote_click((network_request_remote_click*)msg);
+				remote_click(remote_uid,(network_request_remote_click*)msg);
 				break;
 
 			case net_action_reply_latency_ping:

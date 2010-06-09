@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "network.h"
+#include "consoles.h"
 #include "timing.h"
 
 extern int					net_host_player_count;
@@ -183,7 +184,7 @@ bool net_host_join_local_player(char *err_str)
 void net_host_join_multiplayer_bots(void)
 {
 	int				n;
-	char			deny_reason[256];
+	char			deny_reason[256],err_str[256];
 	obj_type		*obj;
 
 	for (n=0;n!=max_obj_list;n++) {
@@ -191,7 +192,13 @@ void net_host_join_multiplayer_bots(void)
 		if (obj==NULL) continue;
 
 		if (obj->type!=object_type_bot_multiplayer) continue;
-		if (!net_host_player_add_ok(obj->name,deny_reason)) continue;
+		if (!net_host_player_add_ok(obj->name,deny_reason)) {
+			snprintf(err_str,256,"%s: %s",obj->name,deny_reason);
+			err_str[255]=0x0;
+
+			console_add(err_str);
+			continue;
+		}
 
 			// add bot
 
