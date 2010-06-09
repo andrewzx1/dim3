@@ -206,7 +206,7 @@ void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry)
       
 ======================================================= */
 
-void object_watch_sound_alert(d3pnt *pnt,int sound_obj_uid,char *sound_name)
+void object_watch_sound_alert(d3pnt *pnt,int sound_obj_idx,char *sound_name)
 {
 	int				n;
 	obj_type		*obj;
@@ -220,7 +220,7 @@ void object_watch_sound_alert(d3pnt *pnt,int sound_obj_uid,char *sound_name)
 		if ((obj->watch.on) && (obj->watch.dist!=0)) {
 
 			if (distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
-				obj->watch.obj_uid=sound_obj_uid;
+				obj->watch.obj_uid=sound_obj_idx;
 				strcpy(obj->watch.sound_name,sound_name);
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_sound,0);
 			}
@@ -234,7 +234,7 @@ void object_watch_sound_alert(d3pnt *pnt,int sound_obj_uid,char *sound_name)
       
 ======================================================= */
 
-void object_watch_damage_alert(d3pnt *pnt,int damage_obj_uid)
+void object_watch_damage_alert(d3pnt *pnt,int damage_obj_idx)
 {
 	int				n;
 	obj_type		*obj;
@@ -248,7 +248,7 @@ void object_watch_damage_alert(d3pnt *pnt,int damage_obj_uid)
 		if ((obj->watch.on) && (obj->watch.dist!=0)) {
 
 			if (distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
-				obj->watch.obj_uid=damage_obj_uid;
+				obj->watch.obj_uid=damage_obj_idx;
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_damage,0);
 			}
 		}

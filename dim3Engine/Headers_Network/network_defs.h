@@ -239,7 +239,7 @@ typedef struct		{
 
 typedef struct		{
 						int								pnt_x,pnt_y,pnt_z;
-						short							player_uid,bot,score,
+						short							remote_uid,bot,score,
 														team_idx,tint_color_idx;
 						char							name[name_str_len],
 														draw_name[name_str_len];

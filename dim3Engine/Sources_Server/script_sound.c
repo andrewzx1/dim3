@@ -131,6 +131,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 			player=FALSE;
 		}
 		else {
+			obj=server.obj_list.objs[sound_obj_idx];
 			player=(obj->idx==server.player_obj_idx);
 		}
 	}
@@ -151,7 +152,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 
 		// run sound watches
 
-	if (sound_obj_idx!=-1) object_watch_sound_alert(pt,sound_obj_uid,name);
+	if (sound_obj_idx!=-1) object_watch_sound_alert(pt,sound_obj_idx,name);
 	
 		// detect if sound should be remoted
 		// we check to see if the script had any object attached

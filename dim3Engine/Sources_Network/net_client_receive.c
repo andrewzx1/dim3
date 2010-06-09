@@ -44,6 +44,7 @@ int net_client_receive_thread(void *arg);			// forward reference
 
 d3socket					client_socket;
 bool						client_complete;
+net_queue_type				client_queue;
 SDL_Thread					*client_thread;
 
 /* =======================================================
@@ -128,6 +129,6 @@ int net_client_receive_thread(void *arg)
 
 inline bool net_client_check_message_queue(int *remote_uid,int *action,unsigned char *data)
 {
-	return(net_queue_check_message(remote_uid,&client_queue,action,data,NULL));
+	return(net_queue_check_message(&client_queue,remote_uid,action,data,NULL));
 }
 

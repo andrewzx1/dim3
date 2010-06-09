@@ -33,13 +33,14 @@ and can be sold or given away.
 
 extern char team_colors[][16];
 
-extern server_type		server;
-extern hud_type			hud;
+extern server_type			server;
+extern hud_type				hud;
+extern network_setup_type	net_setup;
 
-int						net_host_player_count;
-net_host_player_type	net_host_players[host_max_remote_count];
+int							net_host_player_count;
+net_host_player_type		net_host_players[host_max_remote_count];
 
-SDL_mutex				*net_host_player_lock;
+SDL_mutex					*net_host_player_lock;
 
 /* =======================================================
 
@@ -173,8 +174,8 @@ int net_host_player_add(unsigned long ip_addr,int port,bool local,int machine_ui
 	player->connect.local=local;
 	player->connect.bot=FALSE;
 
-	player->connect.remote_uid=net_setup.next_remote_uid;
-	net_setup.next_remote_uid++;
+	player->connect.remote_uid=net_setup.uid.next_remote_uid;
+	net_setup.uid.next_remote_uid++;
 
 	player->connect.machine_uid=machine_uid;
 
@@ -221,8 +222,8 @@ int net_host_player_add_bot(obj_type *obj)
 	player->connect.local=TRUE;
 	player->connect.bot=TRUE;
 
-	player->connect.remote_uid=net_setup.next_remote_uid;
-	net_setup.next_remote_uid++;
+	player->connect.remote_uid=net_setup.uid.next_remote_uid;
+	net_setup.uid.next_remote_uid++;
 
 	player->connect.machine_uid=net_setup.uid.machine_uid;
 
@@ -415,7 +416,7 @@ void net_host_player_update(network_request_remote_update *update)
       
 ======================================================= */
 
-void net_host_player_create_remote_list(int player_uid,network_reply_join_remotes *remotes)
+void net_host_player_create_remote_list(int remote_uid,network_reply_join_remotes *remotes)
 {
 	int							n,cnt;
 	net_host_player_type		*player;
@@ -434,9 +435,9 @@ void net_host_player_create_remote_list(int player_uid,network_reply_join_remote
 	
 	for (n=0;n!=net_host_player_count;n++) {
 
-		if (player->connect.uid!=player_uid) {
+		if (player->connect.remote_uid!=remote_uid) {
 
-			obj_add->player_uid=htons((short)player->connect.uid);
+			obj_add->remote_uid=htons((short)player->connect.remote_uid);
 			strcpy(obj_add->name,player->name);
 			strcpy(obj_add->draw_name,player->draw_name);
 			obj_add->bot=htons((short)(player->connect.bot?1:0));
@@ -559,7 +560,7 @@ void net_host_player_send_message_single(int player_uid,int action,unsigned char
 	SDL_mutexV(net_host_player_lock);
 }
 
-void net_host_player_send_message_others(int action,unsigned char *msg,int msg_len)
+void net_host_player_send_message_others(int remote_uid,int action,unsigned char *msg,int msg_len)
 {
 	int						n,idx,machine_uid;
 	net_host_player_type	*player;
@@ -568,13 +569,13 @@ void net_host_player_send_message_others(int action,unsigned char *msg,int msg_l
 
 		// find sending player
 
-	idx=net_host_player_find(player_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx!=-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
 	}
 
-	machine_uid=net_host_players[n].machine_uid;
+	machine_uid=net_host_players[n].connect.machine_uid;
 
 		// send to others
 	
@@ -602,7 +603,7 @@ void net_host_player_send_message_others(int action,unsigned char *msg,int msg_l
 
 			// send to network
 
-		net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,from_remote_uid,msg,msg_len);
+		net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,remote_uid,msg,msg_len);
 	}
 	
 	SDL_mutexV(net_host_player_lock);
