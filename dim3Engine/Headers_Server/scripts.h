@@ -43,6 +43,7 @@ extern bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *param
 extern void scripts_dispose(int idx);
 
 extern void script_defines_create_constants(script_type *script);
+extern bool script_is_prop_define(char *name);
 extern void script_load_user_defines(void);
 extern void script_free_user_defines(void);
 
@@ -529,6 +530,8 @@ extern JSObjectRef script_add_proj_melee_object(JSContextRef cx,JSObjectRef pare
 //
 
 extern bool scripts_setup_events(script_type *script,char *err_str);
+extern void scripts_lock_events(void);
+extern void scripts_unlock_events(void);
 extern bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str);
 extern void scripts_post_event_console(attach_type *attach,int main_event,int sub_event,int id);
 extern bool scripts_chain(attach_type *attach,char *func_name,char *err_str);
@@ -566,4 +569,5 @@ extern bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func
 extern void timers_remove(int idx);
 extern void timers_clear(attach_type *attach,int mode);
 extern void timers_script_dispose(int script_idx);
+extern void timers_fix_script_indexes(void);
 extern void timers_run(void);

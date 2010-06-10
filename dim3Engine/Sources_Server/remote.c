@@ -64,7 +64,7 @@ extern void group_moves_synch_with_host(network_reply_group_synch *synch);
       
 ======================================================= */
 
-bool remote_add(network_request_object_add *add,bool send_event)
+bool remote_add(network_reply_join_remote *remote,bool send_event)
 {
 	int					idx;
 	char				err_str[256];
@@ -72,21 +72,21 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	
 		// create new object
 		
-	idx=object_create(add->name,object_type_remote,bt_game);
+	idx=object_create(remote->name,object_type_remote,bt_game);
     if (idx==-1) return(FALSE);
 
 	obj=server.obj_list.objs[idx];
 	
 		// setup remote
 		
-	obj->team_idx=(signed short)ntohs(add->team_idx);
-	obj->tint_color_idx=(signed short)ntohs(add->tint_color_idx);
+	obj->team_idx=(signed short)ntohs(remote->team_idx);
+	obj->tint_color_idx=(signed short)ntohs(remote->tint_color_idx);
 	
-	obj->pnt.x=ntohl(add->pnt_x);
-	obj->pnt.y=ntohl(add->pnt_y);
-	obj->pnt.z=ntohl(add->pnt_z);
+	obj->pnt.x=ntohl(remote->pnt_x);
+	obj->pnt.y=ntohl(remote->pnt_y);
+	obj->pnt.z=ntohl(remote->pnt_z);
 
-	obj->remote.uid=(signed short)ntohs(add->remote_uid);
+	obj->remote.uid=(signed short)ntohs(remote->remote_uid);
 	obj->remote.last_update=game_time_get();
 	obj->remote.talking=FALSE;
 	
@@ -108,7 +108,7 @@ bool remote_add(network_request_object_add *add,bool send_event)
 
 		// load models
 		
-	strcpy(obj->draw.name,add->draw_name);
+	strcpy(obj->draw.name,remote->draw_name);
 		
 	if (!model_draw_load(&obj->draw,"Remote",obj->name,err_str)) {
 		console_add_error(err_str);
@@ -116,7 +116,7 @@ bool remote_add(network_request_object_add *add,bool send_event)
 	
 		// initial score
 		
-	obj->score.score=(signed short)ntohs(add->score);
+	obj->score.score=(signed short)ntohs(remote->score);
 	
 		// start remotes hidden
 		
@@ -788,7 +788,7 @@ bool remote_network_get_updates(void)
 				break;
 
 			case net_action_request_remote_add:
-				remote_add((network_request_object_add*)msg,TRUE);
+				remote_add((network_reply_join_remote*)msg,TRUE);
 				break;
 				
 			case net_action_request_remote_remove:

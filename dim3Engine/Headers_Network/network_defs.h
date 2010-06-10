@@ -234,6 +234,29 @@ typedef struct		{
 					} network_header;
 
 //
+// info messages
+//
+
+typedef struct		{
+						short							bot,score;
+						char							name[name_str_len];
+					} network_reply_info_player;
+
+typedef struct		{
+						short							count,max_count;
+						network_reply_info_player		players[host_max_remote_count];
+					} network_reply_info_player_list;
+
+typedef struct		{
+						int								option_flags;
+						char							host_name[name_str_len],host_ip_resolve[16],
+														proj_name[name_str_len],
+														game_name[name_str_len],
+														map_name[name_str_len];
+						network_reply_info_player_list	player_list;
+					} network_reply_info;
+
+//
 // join remotes and bots
 //
 
@@ -243,25 +266,17 @@ typedef struct		{
 														team_idx,tint_color_idx;
 						char							name[name_str_len],
 														draw_name[name_str_len];
-					} network_request_object_add;
+					} network_reply_join_remote;
 
 typedef struct		{
 						short							count;
-						network_request_object_add		objects[host_max_remote_count];
-					} network_reply_join_remotes;
+						network_reply_join_remote		remotes[host_max_remote_count];
+					} network_reply_join_remote_list;
 
 //
 // joining messages
 //
 
-typedef struct		{
-						short							player_count,player_max_count;
-						char							host_name[name_str_len],host_ip_resolve[16],
-														proj_name[name_str_len],
-														game_name[name_str_len],
-														map_name[name_str_len];
-					} network_reply_info;
-					
 typedef struct		{
 						int								hash;
 						short							tint_color_idx;
@@ -271,12 +286,10 @@ typedef struct		{
 					} network_request_join;
 
 typedef struct		{
-						int								map_tick,option_flags;
-						short							machine_uid,remote_uid,
-														remote_count,bot_count;
-						char							game_name[name_str_len],map_name[name_str_len],
-														deny_reason[64];
-						network_reply_join_remotes		remotes;
+						int								map_tick;
+						short							machine_uid,remote_uid;
+						char							deny_reason[64];
+						network_reply_join_remote_list	remote_list;
 					} network_reply_join;
 	
 typedef struct		{

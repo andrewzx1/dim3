@@ -201,7 +201,7 @@ void server_shutdown(void)
       
 ======================================================= */
 
-bool server_game_start(char *game_script_name,int skill,network_reply_join_remotes *remotes,char *err_str)
+bool server_game_start(char *game_script_name,int skill,char *err_str)
 {
 		// initialize lists
 
@@ -243,7 +243,7 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 		return(FALSE);
 	}
 
-		// create game based objects
+		// create game player object
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		server.player_obj_idx=game_player_create(err_str);
@@ -252,9 +252,6 @@ bool server_game_start(char *game_script_name,int skill,network_reply_join_remot
 			return(FALSE);
 		}
 	}
-
-	game_multiplayer_bots_create();
-	game_remotes_create(remotes);
 	
 	return(TRUE);
 }

@@ -34,6 +34,8 @@ and can be sold or given away.
 #define max_light_spot										128				// maximum number of lights in a scene
 #define max_shader_light									3				// maximum number of lights passed to a shader
 
+#define join_info_max_players								24				// needs to reflect host_max_remote_count in network_defs.h
+
 //
 // shaders
 //
@@ -161,9 +163,22 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									ping_msec,player_count,player_max_count;
+						int									score;
+						bool								bot;
+						char								name[name_str_len];
+					} join_server_info_player;
+
+typedef struct		{
+						int									count,max_count;
+						join_server_info_player				players[join_info_max_players];
+					} join_server_info_player_list;
+
+typedef struct		{
+						int									ping_msec,player_count,player_max_count,
+															option_flags;
 						char								ip[256],name[name_str_len],
 															game_name[name_str_len],map_name[name_str_len];
+						join_server_info_player_list		player_list;
 					} join_server_info;
 
 //

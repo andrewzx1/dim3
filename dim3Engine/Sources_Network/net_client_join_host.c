@@ -67,9 +67,9 @@ int net_client_find_game(char *game_name)
       
 ======================================================= */
 
-int net_client_join_host_start(char *name,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes)
+int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,network_reply_join_remote_list *remote_list)
 {
-	int						action,machine_uid,player_uid,wait_tick;
+	int						action,machine_uid,remote_uid,wait_tick;
 	unsigned char			msg[net_max_msg_size];
 	char					err_str[256];
 	bool					reply_ok;
@@ -88,12 +88,12 @@ int net_client_join_host_start(char *name,char *game_name,char *map_name,int *ti
 
 		// send join request
 		
-	strcpy(request_join.name,name);
 	strcpy(request_join.vers,dim3_version);
 	request_join.hash=ntohl(net_get_project_hash());
-	request_join.tint_color_idx=(signed short)ntohs((short)setup.network.tint_color_idx);
-// supergumba, add draw name here
-//	request_join.character_idx=(signed short)ntohs((short)setup.network.character_idx);
+
+	strcpy(request_join.name,obj->name);
+	strcpy(request_join.draw_name,obj->draw.name);
+	request_join.tint_color_idx=(signed short)ntohs((short)obj->tint_color_idx);
 
 	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_join,net_player_uid_none,(unsigned char*)&request_join,sizeof(network_request_join));
 
@@ -105,7 +105,7 @@ int net_client_join_host_start(char *name,char *game_name,char *map_name,int *ti
 	wait_tick=time_get()+(client_timeout_wait_seconds*1000);
 
 	while (wait_tick>time_get()) {
-		reply_ok=net_recvfrom_mesage(client_socket,NULL,NULL,&action,&player_uid,msg,NULL);
+		reply_ok=net_recvfrom_mesage(client_socket,NULL,NULL,&action,&remote_uid,msg,NULL);
 		if ((!reply_ok) || (action!=-1)) break;
 		
 		usleep(100000);
@@ -146,18 +146,11 @@ int net_client_join_host_start(char *name,char *game_name,char *map_name,int *ti
 		// finish setup
 		
 	machine_uid=(int)ntohs(reply_join.machine_uid);
-	player_uid=(int)ntohs(reply_join.remote_uid);
-		
-	strcpy(game_name,reply_join.game_name);
-	strcpy(map_name,reply_join.map_name);
+	remote_uid=(int)ntohs(reply_join.remote_uid);
 	
 	*tick_offset=ntohl(reply_join.map_tick);
-	*option_flags=ntohl(reply_join.option_flags);
 
-		// additional objects
-
-	remotes->count=(int)ntohs((short)reply_join.remotes.count);
-	if (remotes->count!=0) memmove(remotes->objects,reply_join.remotes.objects,(sizeof(network_request_object_add)*remotes->count));
+	memmove(remote_list,&reply_join.remote_list,sizeof(network_reply_join_remote_list));
 
 		// setup client joined flags
 		
@@ -165,7 +158,7 @@ int net_client_join_host_start(char *name,char *game_name,char *map_name,int *ti
 	net_setup.uid.machine_uid=machine_uid;
 	net_setup.client.latency=0;
 
-	return(player_uid);
+	return(remote_uid);
 }
 
 void net_client_join_host_end(void)

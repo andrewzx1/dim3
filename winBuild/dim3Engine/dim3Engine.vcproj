@@ -2931,19 +2931,6 @@
 					Name="Scripts"
 					>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\script_timers.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\scripts.c"
 						>
 						<FileConfiguration
@@ -3059,6 +3046,10 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\scripts_timers.c"
+						>
 					</File>
 				</Filter>
 			</Filter>

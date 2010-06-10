@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "scripts.h"
 #include "consoles.h"
 
+extern bool					scripts_event_lock;
+
 extern js_type				js;
 extern setup_type			setup;
 
@@ -50,6 +52,10 @@ bool scripts_engine_initialize(char *err_str)
 		// load up the define file
 		
 	script_load_user_defines();
+
+		// current events are not locked out
+
+	scripts_event_lock=FALSE;
 	
 	return(TRUE);
 }

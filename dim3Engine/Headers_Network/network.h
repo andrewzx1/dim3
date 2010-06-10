@@ -106,7 +106,9 @@ extern int net_host_player_add_bot(obj_type *obj);
 extern void net_host_player_remove(int player_uid);
 
 extern void net_host_player_ready(int player_uid);
-extern void net_host_player_create_remote_list(int remote_uid,network_reply_join_remotes *remotes);
+
+extern void net_host_player_create_join_remote_list(int remote_uid,network_reply_join_remote_list *remote_list);
+extern void net_host_player_create_info_player_list(network_reply_info_player_list *player_list);
 
 extern void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int msg_len);
 extern bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int *msg_len);
@@ -123,7 +125,7 @@ extern void net_host_player_update(int remote_uid,network_request_remote_update 
 // client host pinging and joining
 //
 
-extern int net_client_join_host_start(char *name,char *game_name,char *map_name,int *tick_offset,int *option_flags,char *deny_reason,network_reply_join_remotes *remotes);
+extern int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,network_reply_join_remote_list *remote_list);
 extern void net_client_join_host_end(void);
 
 extern int net_client_find_game(char *game_name);

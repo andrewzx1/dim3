@@ -384,6 +384,7 @@ bool game_file_save(char *err_str)
 
 bool game_file_load(char *file_name,char *err_str)
 {
+	bool				ok;
 	char				*c,path[1024],fname[256];
 	file_save_header	head;
 	
@@ -401,7 +402,12 @@ bool game_file_load(char *file_name,char *err_str)
 		// if game isn't running, then start
 		
 	if (!server.game_open) {
-		if (!game_start(skill_medium,NULL,err_str)) {
+
+		scripts_lock_events();
+		ok=game_start(skill_medium,err_str);
+		scripts_unlock_events();
+		
+		if (!ok) {
 			free(game_file_data);
 			return(FALSE);
 		}
@@ -428,7 +434,11 @@ bool game_file_load(char *file_name,char *err_str)
 		strcpy(map.info.name,head.map_name);
 		map.info.player_start_name[0]=0x0;
 
-		if (!map_start(TRUE,TRUE,err_str)) {
+		scripts_lock_events();
+		ok=map_start(TRUE,err_str);
+		scripts_unlock_events();
+		
+		if (!ok) {
 			free(game_file_data);
 			return(FALSE);
 		}
@@ -519,12 +529,13 @@ bool game_file_load(char *file_name,char *err_str)
 
 	models_reset();
 	
-		// send scripts load event
-		// to restore globals
+		// fix the script state
+		// and reset indexes on timers
 		
 	progress_draw(95);
 	
 	script_state_load();
+	timers_fix_script_indexes();
 
 		// free game data
 		

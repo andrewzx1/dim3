@@ -109,43 +109,71 @@ void join_ping_thread_done(void)
 
 /* =======================================================
 
-      Join Ping LAN Threads
+      Add Host to Info List
       
 ======================================================= */
 
-bool join_ping_thread_lan_server(network_reply_info *reply_info)
+bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply_info)
 {
+	int					n,cnt;
 	char				*row_data;
 	join_server_info	*info;
-	
-		// is it the right project?
-		
+
+		// only add if same project
+
 	if (strcasecmp(reply_info->proj_name,hud.proj_name)!=0) return(FALSE);
-		
+
 		// add to list
-	
+
 	SDL_mutexP(join_thread_lock);
 
 	info=&join_list[join_count++];
 
+		// host
+
 	strcpy(info->name,reply_info->host_name);
 	strcpy(info->ip,reply_info->host_ip_resolve);
+
 	strcpy(info->game_name,reply_info->game_name);
 	strcpy(info->map_name,reply_info->map_name);
-	info->player_count=(int)ntohs(reply_info->player_count);
-	info->player_max_count=(int)ntohs(reply_info->player_max_count);
-	info->ping_msec=time_get()-join_thread_lan_start_tick;
 
-		// rebuild list
+	info->option_flags=ntohl(reply_info->option_flags);
+
+		// players
+
+	info->player_list.count=(int)ntohs(reply_info->player_list.count);
+	info->player_list.max_count=(int)ntohs(reply_info->player_list.max_count);
+
+	cnt=info->player_list.count;
+	if (cnt>join_info_max_players) cnt=join_info_max_players;
+	if (cnt<0) cnt=0;
+
+	for (n=0;n!=cnt;n++) {
+		strcpy(info->player_list.players[n].name,reply_info->player_list.players[n].name);
+		info->player_list.players[n].bot=(((int)ntohs(reply_info->player_list.players[n].bot))!=0);
+		info->player_list.players[n].score=(int)ntohs(reply_info->player_list.players[n].score);
+	}
+
+		// ping time
+
+	info->ping_msec=time_get()-start_tick;
+
+		// update table
 
 	row_data=join_create_list();
 	element_set_table_data(join_table_id,row_data);
 	free(row_data);
-	
+
 	SDL_mutexV(join_thread_lock);
-	
+
 	return(TRUE);
 }
+
+/* =======================================================
+
+      Join Ping LAN Threads
+      
+======================================================= */
 
 void join_ping_thread_lan_run(void)
 {
@@ -185,7 +213,7 @@ void join_ping_thread_lan_run(void)
 		
 		if (net_recvfrom_mesage(broadcast_sock,NULL,NULL,&action,&player_uid,msg,NULL)) {
 			if (action==net_action_reply_info) {
-				good_reply=join_ping_thread_lan_server((network_reply_info*)msg);
+				good_reply=join_ping_thread_add_host_to_table(join_thread_lan_start_tick,(network_reply_info*)msg);
 			}
 		}
 		
@@ -226,11 +254,8 @@ void join_ping_thread_internet_server(char *ip)
 	int						action,player_uid,msec,max_tick;
 	unsigned long			ip_addr,recv_ip_addr;
 	unsigned char			msg[net_max_msg_size];
-	char					*row_data;
 	bool					got_reply;
 	d3socket				sock;
-	network_reply_info		*reply_info;
-	join_server_info		*info;
 
 	msec=time_get();
 	
@@ -271,33 +296,9 @@ void join_ping_thread_internet_server(char *ip)
 
 	if (!got_reply) return;
 
-		// is it the right project?
-
-	reply_info=(network_reply_info*)msg;
-	
-	if (strcasecmp(reply_info->proj_name,hud.proj_name)!=0) return;
-		
 		// add to list
-	
-	SDL_mutexP(join_thread_lock);
 
-	info=&join_list[join_count++];
-
-	strcpy(info->name,reply_info->host_name);
-	strcpy(info->ip,reply_info->host_ip_resolve);
-	strcpy(info->game_name,reply_info->game_name);
-	strcpy(info->map_name,reply_info->map_name);
-	info->player_count=(int)ntohs(reply_info->player_count);
-	info->player_max_count=(int)ntohs(reply_info->player_max_count);
-	info->ping_msec=time_get()-msec;
-
-		// rebuild list
-
-	row_data=join_create_list();
-	element_set_table_data(join_table_id,row_data);
-	free(row_data);
-	
-	SDL_mutexV(join_thread_lock);
+	join_ping_thread_add_host_to_table(msec,(network_reply_info*)msg);
 }
 
 void join_ping_thread_internet_run(void)
@@ -623,61 +624,51 @@ void join_activity_complete(bool single,char *msg)
 
 void join_game(void)
 {
-	int							idx,player_uid,tick_offset,option_flags;
-	char						game_name[name_str_len],map_name[name_str_len],
-								deny_reason[64],err_str[256];
-	network_reply_join_remotes	remotes;
-	
-		// get game to join
-		
-	join_activity_start();
-							
-		// status
-		
-	element_text_change(join_status_id,"Joining ...");
-	gui_draw(1.0f,FALSE);
+	int								idx,remote_uid,tick_offset;
+	char							deny_reason[64],err_str[256];
+	obj_type						*player_obj;
+	join_server_info				*info;
+	network_reply_join_remote_list	remote_list;
 
-		// get the ul ip address
+		// get selected host
 
 	idx=element_get_value(join_table_id);
+	info=&join_list[idx];
+
+		// reject if server is full
+
+	if (info->player_count>=info->player_max_count) {
+		error_setup("Unable to Join Game: Server if Full","Network Game Canceled");
+		server.next_state=gs_error;
+		return;
+	}
+
+		// get the ul ip address
 	
 	if (!net_ip_to_address(join_list[idx].ip,&net_setup.client.host_ip_addr,err_str)) {
-		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;
 	}
-							
-		// attempt to join
 
-	player_uid=net_client_join_host_start(setup.network.name,game_name,map_name,&tick_offset,&option_flags,deny_reason,&remotes);
-	if (player_uid==-1) {
-		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
-		error_setup(err_str,"Network Game Canceled");
-		server.next_state=gs_error;
-		return;
-	}
-	
 		// setup game type
 
-	net_setup.game_idx=net_client_find_game(game_name);
+	net_setup.game_idx=net_client_find_game(info->game_name);
 	if (net_setup.game_idx==-1) {
-		net_client_join_host_end();
-		sprintf(err_str,"Could not find game type: %s",game_name);
+		sprintf(err_str,"Could not find game type: %s",info->game_name);
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;
 	}
 	
 	map.info.name[0]=0x0;
-	strcpy(map.info.host_name,map_name);
+	strcpy(map.info.host_name,info->map_name);
 	
-	net_setup.option_flags=option_flags;
+	net_setup.option_flags=info->option_flags;
 	
 		// start game
 	
-	if (!game_start(skill_medium,&remotes,err_str)) {
-		net_client_join_host_end();
+	if (!game_start(skill_medium,err_str)) {
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;
@@ -685,8 +676,23 @@ void join_game(void)
 	
 		// start the map
 		
-	if (!map_start(FALSE,TRUE,err_str)) {
-		net_client_join_host_end();
+	if (!map_start(TRUE,err_str)) {
+		error_setup(err_str,"Network Game Canceled");
+		server.next_state=gs_error;
+		return;
+	}
+
+		// get player
+
+	player_obj=server.obj_list.objs[server.player_obj_idx];
+							
+		// attempt to join
+
+	remote_uid=net_client_join_host_start(player_obj,&tick_offset,deny_reason,&remote_list);
+	if (remote_uid==-1) {
+		map_end();
+		game_end();
+		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;
@@ -697,18 +703,24 @@ void join_game(void)
 	if (!net_client_start_message_queue(err_str)) {
 		net_client_send_leave_host(server.obj_list.objs[server.player_obj_idx]);
 		net_client_join_host_end();
+		map_end();
+		game_end();
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;
 	}
 
-		// mark node as ready to receive data from host
+		// add in any remotes
 
-	net_client_send_ready(server.obj_list.objs[server.player_obj_idx]);
+	game_remotes_create(&remote_list);
+
+		// mark player as ready to receive data from host
+
+	net_client_send_ready(player_obj);
 
 		// request moving group synchs
 
-	net_client_request_group_synch_ping(server.obj_list.objs[server.player_obj_idx]);
+	net_client_request_group_synch_ping(player_obj);
 	
 		// game is running
 	

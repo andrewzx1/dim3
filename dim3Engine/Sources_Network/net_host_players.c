@@ -409,43 +409,43 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 
 /* =======================================================
 
-      Build Remote List for Join Replies
+      Build Lists for Info/Join Replies
       
 ======================================================= */
 
-void net_host_player_create_remote_list(int remote_uid,network_reply_join_remotes *remotes)
+void net_host_player_create_join_remote_list(int remote_uid,network_reply_join_remote_list *remote_list)
 {
 	int							n,cnt;
 	net_host_player_type		*player;
-	network_request_object_add	*obj_add;
+	network_reply_join_remote	*remote;
 
 		// find all remotes and bots
 	
 	cnt=0;
-	obj_add=remotes->objects;
 	
 		// set up the player remotes
 
 	SDL_mutexP(net_host_player_lock);
 
 	player=net_host_players;
+	remote=remote_list->remotes;
 	
 	for (n=0;n!=net_host_player_count;n++) {
 
 		if (player->connect.remote_uid!=remote_uid) {
 
-			obj_add->remote_uid=htons((short)player->connect.remote_uid);
-			strcpy(obj_add->name,player->name);
-			strcpy(obj_add->draw_name,player->draw_name);
-			obj_add->bot=htons((short)(player->connect.bot?1:0));
-			obj_add->team_idx=htons((short)player->team_idx);
-			obj_add->tint_color_idx=htons((short)player->tint_color_idx);
-			obj_add->score=htons((short)player->score);
-			obj_add->pnt_x=htonl(player->pnt.x);
-			obj_add->pnt_y=htonl(player->pnt.y);
-			obj_add->pnt_z=htonl(player->pnt.z);
+			remote->remote_uid=htons((short)player->connect.remote_uid);
+			strcpy(remote->name,player->name);
+			strcpy(remote->draw_name,player->draw_name);
+			remote->bot=htons((short)(player->connect.bot?1:0));
+			remote->team_idx=htons((short)player->team_idx);
+			remote->tint_color_idx=htons((short)player->tint_color_idx);
+			remote->score=htons((short)player->score);
+			remote->pnt_x=htonl(player->pnt.x);
+			remote->pnt_y=htonl(player->pnt.y);
+			remote->pnt_z=htonl(player->pnt.z);
 
-			obj_add++;
+			remote++;
 			cnt++;
 		}
 		
@@ -456,7 +456,37 @@ void net_host_player_create_remote_list(int remote_uid,network_reply_join_remote
 
 		// finish with the count
 
-	remotes->count=htons((short)cnt);
+	remote_list->count=htons((short)cnt);
+}
+
+void net_host_player_create_info_player_list(network_reply_info_player_list *player_list)
+{
+	int							n;
+	net_host_player_type		*player;
+	network_reply_info_player	*info_player;
+
+		// set up the player info
+
+	SDL_mutexP(net_host_player_lock);
+
+	player=net_host_players;
+	info_player=player_list->players;
+	
+	for (n=0;n!=net_host_player_count;n++) {
+		strcpy(info_player->name,player->name);
+		info_player->score=htons((short)player->score);
+		info_player->bot=htons((short)(player->connect.bot?1:0));
+
+		info_player++;
+		player++;
+	}
+
+		// finish with the count
+
+	player_list->count=htons((short)net_host_player_count);
+	player_list->max_count=htons((short)host_max_remote_count);
+
+	SDL_mutexV(net_host_player_lock);
 }
 
 /* =======================================================
@@ -572,7 +602,7 @@ void net_host_player_send_message_others(int remote_uid,int action,unsigned char
 		return;
 	}
 
-	machine_uid=net_host_players[n].connect.machine_uid;
+	machine_uid=net_host_players[idx].connect.machine_uid;
 
 		// send to others
 	

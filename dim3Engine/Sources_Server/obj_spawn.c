@@ -276,8 +276,6 @@ int game_player_create(char *err_str)
 	return(uid);
 }
 
-
-// supergumba -- move this to host!
 void game_multiplayer_bots_create(void)
 {
 	int				n,uid;
@@ -316,23 +314,23 @@ void game_multiplayer_bots_create(void)
 	}
 }
 
-// supergumba -- move this to client, after join
-void game_remotes_create(network_reply_join_remotes *remotes)
+void game_remotes_create(network_reply_join_remote_list *remote_list)
 {
-	int							n;
-	network_request_object_add	*obj_add;
+	int							n,count;
+	network_reply_join_remote	*remote;
 
-		// only clients add remotes
-		
-	if (net_setup.mode!=net_mode_client) return;
+		// remote lists are network based,
+		// so we need to translate the count
+
+	count=(int)ntohs(remote_list->count);
+
+		// run through the list
+
+	remote=remote_list->remotes;
 	
-		// add remotes from host
-		
-	obj_add=remotes->objects;
-	
-	for (n=0;n!=remotes->count;n++) {
-		remote_add(obj_add,FALSE);
-		obj_add++;
+	for (n=0;n!=count;n++) {
+		remote_add(remote,FALSE);
+		remote++;
 	}
 }
 
