@@ -215,13 +215,11 @@ void timers_run(void)
 		ntimer++;
 	}
 	
-		// no timers
+		// no timers, so skip ahead
 		
 	if (ntimer==0) {
-		while (tick>=js.timer_tick) {
-			js.timer_tick+=100;
-		}
-	
+		tick=((tick-js.timer_tick)/100)+1;
+		js.timer_tick+=(tick*100);
 		return;
 	}
 	
