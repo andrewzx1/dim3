@@ -276,6 +276,8 @@ int game_player_create(char *err_str)
 	return(uid);
 }
 
+
+// supergumba -- move this to host!
 void game_multiplayer_bots_create(void)
 {
 	int				n,uid;
@@ -308,10 +310,13 @@ void game_multiplayer_bots_create(void)
 		strcpy(spot.script,"Bot");
 		spot.params[0]=0x0;
 		
+		fprintf(stdout,"spawning %s\n",name);
+		
 		uid=object_start(&spot,name,object_type_bot_multiplayer,bt_game,err_str);
 	}
 }
 
+// supergumba -- move this to client, after join
 void game_remotes_create(network_reply_join_remotes *remotes)
 {
 	int							n;

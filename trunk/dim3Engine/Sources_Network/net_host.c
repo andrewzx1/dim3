@@ -186,7 +186,7 @@ void net_host_join_multiplayer_bots(void)
 	int				n;
 	char			deny_reason[256],err_str[256];
 	obj_type		*obj;
-
+	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
