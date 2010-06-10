@@ -85,7 +85,7 @@ extern int object_get_respawn_time(obj_type *obj);
 extern void object_check_respawn(obj_type *obj);
 extern int game_player_create(char *err_str);
 extern void game_multiplayer_bots_create(void);
-extern void game_remotes_create(network_reply_join_remotes *remotes);
+extern void game_remotes_create(network_reply_join_remote_list *remote_list);
 extern void map_objects_create(void);
 extern bool map_object_attach_all(char *err_str);
 extern void map_object_detach_all(void);

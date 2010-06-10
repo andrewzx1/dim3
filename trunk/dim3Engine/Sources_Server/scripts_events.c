@@ -34,6 +34,8 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "timing.h"
 
+bool						scripts_event_lock;
+
 extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
@@ -73,6 +75,26 @@ bool scripts_setup_events(script_type *script,char *err_str)
 
 /* =======================================================
 
+      Locking and Unlocking Events
+      
+======================================================= */
+
+inline void scripts_lock_events(void)
+{
+		// force the core to never call events
+		// this is mostly used when restoring a saved
+		// game (need to load game/map but not affect script state)
+
+	scripts_event_lock=TRUE;
+}
+
+inline void scripts_unlock_events(void)
+{
+	scripts_event_lock=FALSE;
+}
+
+/* =======================================================
+
       Scripts Recursion Checks
       
 ======================================================= */
@@ -106,16 +128,14 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	script_type		*script;
 	attach_type		old_attach;
 	
-
-/* supergumba -- further testing	
-	JSStringRef	js_str;
-	JSValueRef	js_exp,v;
-	char	str[1024];
-*/
-	
 		// no error
 		
 	err_str[0]=0x0;
+
+		// are events locked?  If so, don't call
+		// any events, but act as if it was OK
+
+	if (scripts_event_lock) return(TRUE);
 	
 		// find script
 		
@@ -146,40 +166,6 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 // supergumba -- testing display
 //	fprintf(stdout,"Event (script:%s) (id:%d.%d)\n",script->name,main_event,sub_event);
 //	fflush(stdout);
-
-
-/* supergumba
-	if (js.attach.thing_type==thing_type_object) {
-		if (js.attach.obj_idx!=0) {
-			fprintf(stdout,"%s: %d\n",server.obj_list.objs[js.attach.obj_idx]->name,main_event);
-			fflush(stdout);
-		}
-	}
-*/
-
-
-/* supergumba -- further testing
-	if (main_event==sd_event_weapon_fire) {
-
-
-		js_str=JSValueCreateJSONString(script->cx,(JSValueRef)script->global_obj,0,&js_exp);
-
-		
-		if (js_str==NULL) {
-			script_exception_to_string(script->cx,js_exp,str,1024);
-		}
-		else {
-			JSStringGetUTF8CString(js_str,str,1024);
-			JSStringRelease(js_str);
-		}
-		
-		str[1024-1]=0x0;
-		
-		fprintf(stdout,"%s\n",str);
-	}
-*/
-
-
 
 	rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
 	if (rval==NULL) {

@@ -29,10 +29,10 @@ and can be sold or given away.
 // game/map start/end
 //
 
-extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
+extern bool game_start(int skill,char *err_str);
 extern void game_end(void);
 
-extern bool map_start(bool file_restore,bool skip_media,char *err_str);
+extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
 
 //

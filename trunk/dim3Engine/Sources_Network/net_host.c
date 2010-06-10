@@ -33,8 +33,6 @@ and can be sold or given away.
 #include "consoles.h"
 #include "timing.h"
 
-extern int					net_host_player_count;
-
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
@@ -98,27 +96,6 @@ void net_host_shutdown(void)
 
 /* =======================================================
 
-      Host Info Responses
-      
-======================================================= */
-
-void net_host_info_request(unsigned long ip_addr,int port)
-{
-	network_reply_info		info;
-	
-	info.player_count=htons((short)net_host_player_count);
-	info.player_max_count=htons((short)host_max_remote_count);
-	strcpy(info.host_name,net_setup.host.name);
-	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
-	strcpy(info.proj_name,hud.proj_name);
-	strcpy(info.game_name,hud.net_game.games[net_setup.game_idx].name);
-	strcpy(info.map_name,map.info.name);
-	
-	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_info,net_player_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
-}
-
-/* =======================================================
-
       Machine UIDs
       
 ======================================================= */
@@ -142,7 +119,7 @@ int net_host_create_machine_uid(void)
 bool net_host_join_local_player(char *err_str)
 {
 	obj_type					*player_obj;
-	network_request_object_add	remote_add;
+	network_reply_join_remote	remote;
 
 		// get local player
 
@@ -162,15 +139,15 @@ bool net_host_join_local_player(char *err_str)
 
 		// send all other players on host the new player for remote add
 
-	strncpy(remote_add.name,player_obj->name,name_str_len);
-	strncpy(remote_add.draw_name,player_obj->draw.name,name_str_len);
-	remote_add.name[name_str_len-1]=0x0;
-	remote_add.team_idx=htons((short)net_team_none);
-	remote_add.tint_color_idx=htons((short)player_obj->tint_color_idx);
-	remote_add.score=0;
-	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
+	strncpy(remote.name,player_obj->name,name_str_len);
+	strncpy(remote.draw_name,player_obj->draw.name,name_str_len);
+	remote.name[name_str_len-1]=0x0;
+	remote.team_idx=htons((short)net_team_none);
+	remote.tint_color_idx=htons((short)player_obj->tint_color_idx);
+	remote.score=0;
+	remote.pnt_x=remote.pnt_y=remote.pnt_z=0;
 
-	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
+	net_host_player_send_message_others(player_obj->remote.uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_reply_join_remote));
 
 	return(TRUE);
 }
@@ -212,7 +189,31 @@ void net_host_join_multiplayer_bots(void)
 
 /* =======================================================
 
-      Join Remote Players to Host
+      Host Info Reply
+      
+======================================================= */
+
+void net_host_info_request(unsigned long ip_addr,int port)
+{
+	network_reply_info		info;
+	
+	strcpy(info.host_name,net_setup.host.name);
+	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
+
+	strcpy(info.proj_name,hud.proj_name);
+	strcpy(info.game_name,hud.net_game.games[net_setup.game_idx].name);
+	strcpy(info.map_name,map.info.name);
+
+	info.option_flags=htonl(net_setup.option_flags);
+
+	net_host_player_create_info_player_list(&info.player_list);
+
+	net_sendto_msg(host_socket,ip_addr,port,net_action_reply_info,net_player_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
+}
+
+/* =======================================================
+
+      Join Host Reply
       
 ======================================================= */
 
@@ -242,7 +243,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	int							machine_uid,remote_uid,
 								tint_color_idx;
 	network_reply_join			reply_join;
-	network_request_object_add	remote_add;
+	network_reply_join_remote	remote;
 
 		// check if join is OK
 	
@@ -267,16 +268,13 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	reply_join.machine_uid=htons((short)machine_uid);
 	reply_join.remote_uid=htons((short)remote_uid);
 
-	strcpy(reply_join.game_name,hud.net_game.games[net_setup.game_idx].name);
-	strcpy(reply_join.map_name,map.info.name);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
-	reply_join.option_flags=htonl(net_setup.option_flags);
 	
 	if (remote_uid!=-1) {
-		net_host_player_create_remote_list(remote_uid,&reply_join.remotes);
+		net_host_player_create_join_remote_list(remote_uid,&reply_join.remote_list);
 	}
 	else {
-		reply_join.remotes.count=htons(0);
+		reply_join.remote_list.count=htons(0);
 	}
 	
 		// send reply
@@ -296,16 +294,16 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	
 		// send all other players on host the new player for remote add
 		
-	remote_add.remote_uid=htons((short)remote_uid);
-	strncpy(remote_add.name,request_join->name,name_str_len);
-	strncpy(remote_add.draw_name,request_join->draw_name,name_str_len);
-	remote_add.name[name_str_len-1]=0x0;
-	remote_add.team_idx=htons((short)net_team_none);
-	remote_add.tint_color_idx=htons((short)tint_color_idx);
-	remote_add.score=0;
-	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
+	remote.remote_uid=htons((short)remote_uid);
+	strncpy(remote.name,request_join->name,name_str_len);
+	strncpy(remote.draw_name,request_join->draw_name,name_str_len);
+	remote.name[name_str_len-1]=0x0;
+	remote.team_idx=htons((short)net_team_none);
+	remote.tint_color_idx=htons((short)tint_color_idx);
+	remote.score=0;
+	remote.pnt_x=remote.pnt_y=remote.pnt_z=0;
 
-	net_host_player_send_message_others(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
+	net_host_player_send_message_others(remote_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_reply_join_remote));
 
 	return(remote_uid);
 }

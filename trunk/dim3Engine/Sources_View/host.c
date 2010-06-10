@@ -480,7 +480,7 @@ void host_game(void)
 	
 		// start game
 	
-	if (!game_start(skill_medium,NULL,err_str)) {
+	if (!game_start(skill_medium,err_str)) {
 		net_host_game_end();
 		error_setup(err_str,"Hosting Game Canceled");
 		server.next_state=gs_error;
@@ -489,7 +489,7 @@ void host_game(void)
 	
 		// start the map
 		
-	if (!map_start(FALSE,TRUE,err_str)) {
+	if (!map_start(TRUE,err_str)) {
 		net_host_game_end();
 		error_setup(err_str,"Hosting Game Canceled");
 		server.next_state=gs_error;
@@ -516,6 +516,7 @@ void host_game(void)
 	
 		// add multiplayer bots to host
 
+	game_multiplayer_bots_create();
 	net_host_join_multiplayer_bots();
 
 		// mark node as ready to receive data
