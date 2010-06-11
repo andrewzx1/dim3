@@ -227,9 +227,9 @@ int net_host_player_add_bot(obj_type *obj)
 
 	player->connect.machine_uid=net_setup.uid.machine_uid;
 
-		// bots don't use queues
+		// initialize the queue
 
-	net_queue_initialize_empty(&player->queue);
+	net_queue_initialize(&player->queue);
 
 		// settings
 
@@ -511,7 +511,7 @@ void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int 
 		return;
 	}
 		// put on queue
-
+		
 	net_queue_push_message(&net_host_players[idx].queue,player_uid,action,msg,msg_len);
 
 		// unlock player operation
