@@ -754,6 +754,19 @@ void object_attach_click_crosshair_down(obj_type *obj)
 
 /* =======================================================
 
+      Run Game Rules for Objects
+      
+======================================================= */
+
+void object_run_game_rules(obj_type *obj)
+{
+	game_obj_rule_idx=obj->idx;
+	scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
+	game_obj_rule_idx=-1;
+}
+
+/* =======================================================
+
       Start Objects
       
 ======================================================= */
@@ -814,16 +827,10 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 	}
 
 		// if networked player or multiplayer bot, run rules
-		// and send choosen team to other clients
+		// to pick the team
 	
 	if (net_setup.mode!=net_mode_none) {
-		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) {
-			game_obj_rule_idx=obj->idx;
-			scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
-			game_obj_rule_idx=-1;
-
-			net_client_send_set_team(obj);
-		}
+		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) object_run_game_rules(obj);
 	}
 		
 		// start script

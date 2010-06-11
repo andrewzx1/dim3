@@ -59,31 +59,33 @@ void net_client_send_msg(obj_type *obj,int action,unsigned char *msg,int msg_len
 		return;
 	}
 
-		// if we are the host, put all
-		// messages on the host client queue to be
-		// picked up by the host client processing
+		// if we are the host, some of the
+		// actions we route to other players
 
-	net_host_player_route_msg(obj->remote.uid,action,msg,msg_len);
+	switch (action) {
+	
+		case net_action_request_remote_update:
+		case net_action_request_remote_death:
+		case net_action_request_remote_chat:
+		case net_action_request_remote_sound:
+		case net_action_request_remote_fire:
+		case net_action_request_remote_pickup:
+		case net_action_request_remote_click:
+			net_host_player_send_message_others(obj->remote.uid,action,msg,msg_len);
+			break;
+
+	}
 }
 
 /* =======================================================
 
-      Host Join, Leave, Setup Messages
+      Host Join, Leave, Ping Messages
       
 ======================================================= */
 
 void net_client_send_ready(obj_type *obj)
 {
 	net_client_send_msg(obj,net_action_request_ready,NULL,0);
-}
-
-void net_client_send_set_team(obj_type *obj)
-{
-	network_request_team	team;
-	
-	team.team_idx=htons((short)obj->team_idx);
-
-	net_client_send_msg(obj,net_action_request_team,(unsigned char*)&team,sizeof(network_request_team));
 }
 
 void net_client_send_leave_host(obj_type *obj)

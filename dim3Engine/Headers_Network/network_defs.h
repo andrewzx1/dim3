@@ -167,24 +167,23 @@ typedef struct		{
 #define net_action_reply_join							4
 #define net_action_request_game_reset					5
 #define net_action_request_ready						6
-#define net_action_request_team							7
-#define net_action_request_leave						8
-#define net_action_request_remote_add					9
-#define net_action_request_remote_remove				10
-#define net_action_request_remote_death					11
-#define net_action_request_remote_update				12
-#define net_action_request_remote_telefrag				13
-#define net_action_request_remote_chat					14
-#define net_action_request_remote_sound					15
-#define net_action_request_remote_fire					16
-#define net_action_request_remote_pickup				17
-#define net_action_request_remote_click					18
-#define net_action_request_latency_ping					19
-#define net_action_reply_latency_ping					20
-#define net_action_request_host_exit					21
-#define net_action_request_group_synch					22
-#define net_action_reply_group_synch					23
-#define net_action_request_game_score_limit				24
+#define net_action_request_leave						7
+#define net_action_request_remote_add					8
+#define net_action_request_remote_remove				9
+#define net_action_request_remote_death					10
+#define net_action_request_remote_update				11
+#define net_action_request_remote_telefrag				12
+#define net_action_request_remote_chat					13
+#define net_action_request_remote_sound					14
+#define net_action_request_remote_fire					15
+#define net_action_request_remote_pickup				16
+#define net_action_request_remote_click					17
+#define net_action_request_latency_ping					18
+#define net_action_reply_latency_ping					19
+#define net_action_request_host_exit					20
+#define net_action_request_group_synch					21
+#define net_action_reply_group_synch					22
+#define net_action_request_game_score_limit				23
 
 //
 // remote fire types
@@ -287,14 +286,11 @@ typedef struct		{
 
 typedef struct		{
 						int								map_tick;
-						short							machine_uid,remote_uid;
+						short							machine_uid,remote_uid,
+														team_idx;
 						char							deny_reason[64];
 						network_reply_join_remote_list	remote_list;
 					} network_reply_join;
-	
-typedef struct		{
-						short							team_idx;
-					} network_request_team;
 
 //
 // game reset messages

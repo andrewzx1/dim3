@@ -43,14 +43,15 @@ extern char* game_file_get_chunk(void *data);
       
 ======================================================= */
 
-void script_state_save_single(attach_type *attach)
+bool script_state_save_single(attach_type *attach)
 {
-	int						n,count,str_len;
+	int						n,count,prop_name_len,prop_value_len;
 	char					prop_name[256],err_str[256];
-	char					*str;
+	char					*prop_value;
 	script_type				*script;
 	JSPropertyNameArrayRef	js_names;
-	JSStringRef				js_str;
+	JSStringRef				js_prop_name,js_prop_json;
+	JSValueRef				js_prop_value;
 
 		// send save state event
 
@@ -58,116 +59,111 @@ void script_state_save_single(attach_type *attach)
 
 		// get the script
 
-	if (attach->script_idx==-1) return;
+	if (attach->script_idx==-1) return(TRUE);
 
 	script=js.script_list.scripts[attach->script_idx];
 
 		// run through the properities
 
-	fprintf(stdout,"------------------- %s \n",script->name);
-
 	js_names=JSObjectCopyPropertyNames(script->cx,script->global_obj);
 	count=JSPropertyNameArrayGetCount(js_names);
 
 	for (n=0;n!=count;n++) {
 
-		js_str=JSPropertyNameArrayGetNameAtIndex(js_names,n);
-		JSStringGetUTF8CString(js_str,prop_name,256);
-		JSStringRelease(js_str);
+			// get the property name and value
 
+		js_prop_name=JSPropertyNameArrayGetNameAtIndex(js_names,n);
+		js_prop_value=JSObjectGetProperty(script->cx,script->global_obj,js_prop_name,NULL);
+
+			// skip all properties that are functions
+
+		if (js_prop_value!=NULL) {
+			if (JSValueIsObject(script->cx,js_prop_value)) {
+				if (JSObjectIsFunction(script->cx,(JSObjectRef)js_prop_value)) continue;
+			}
+		}
+
+			// skip all API objects or DIM3 defines
+
+		JSStringGetUTF8CString(js_prop_name,prop_name,256);
 		prop_name[255]=0x0;
 
-			// skip all DIM3 defines
-
+		if (script_is_prop_global_object(prop_name)) continue;
 		if (script_is_prop_define(prop_name)) continue;
 
-		// supergumba -- need to remove GLOBALS (iface, etc.)
+			// process the property with JSON
 
-			
+		js_prop_json=JSValueCreateJSONString(script->cx,js_prop_value,0,NULL);
+		if (js_prop_json==NULL) continue;
+		
+		prop_value_len=JSStringGetMaximumUTF8CStringSize(js_prop_json);
+		prop_value=(char*)malloc(prop_value_len);
+		if (prop_value==NULL) {
+			JSStringRelease(js_prop_json);
+			return(FALSE);
+		}
 
-		fprintf(stdout," %d: %s\n",n,prop_name);
+		prop_value_len=JSStringGetUTF8CString(js_prop_json,prop_value,prop_value_len);
+		JSStringRelease(js_prop_json);
+		
+			// save property, we have to write a length
+			// with each of these because they can be of any size
+
+		prop_name_len=strlen(prop_name)+1;
+
+		game_file_add_chunk(&prop_name_len,1,sizeof(int));
+		game_file_add_chunk(prop_name,1,prop_name_len);
+
+		game_file_add_chunk(&prop_value_len,1,sizeof(int));
+		game_file_add_chunk(prop_value,1,prop_value_len);
+
+			// free the property value JSON string
+
+		free(prop_value);
 	}
 
 	JSPropertyNameArrayRelease(js_names);
 
-/*
-		// convert the global into a string using JSON
+		// end each block with a 0 prop name length
 
-	js_str=JSValueCreateJSONString(script->cx,(JSValueRef)script->global_obj,0,NULL);
-	if (js_str==NULL) return;
+	prop_name_len=prop_value_len=0;
+	game_file_add_chunk(&prop_name_len,1,sizeof(int));
 
-	str_len=JSStringGetMaximumUTF8CStringSize(js_str);
-	str=(char*)malloc(str_len);
-	if (str==NULL) {
-		JSStringRelease(js_str);
-		return;
-	}
-
-	str_len=JSStringGetUTF8CString(js_str,str,str_len);
-	JSStringRelease(js_str);
-
-		// save it into file
-
-	if (str[0]==0x0) {
-		str_len=0;
-		game_file_add_chunk(&str_len,1,sizeof(int));
-		return;
-	}
-
-	(&str_len,1,sizeof(int));
-	game_file_add_chunk(str,1,str_len);
-
-		// testing
-
-	fprintf(stdout,"------- %s -------\n",script->name);
-	fprintf(stdout,"%s\n",str);
-	fprintf(stdout,"-------\n");
-
-	js_names=JSObjectCopyPropertyNames(script->cx,script->global_obj);
-	count=JSPropertyNameArrayGetCount(js_names);
-	for (n=0;n!=count;n++) {
-		js_str=JSPropertyNameArrayGetNameAtIndex(js_names,n);
-		str_len=JSStringGetUTF8CString(js_str,name,256);
-		name[255]=0x0;
-		fprintf(stdout," %s\n",name);
-		JSStringRelease(js_str);
-	}
-	JSPropertyNameArrayRelease(js_names);
-
-	fprintf(stdout,"-------\n");
-	*/
+	return(TRUE);
 }
 
-void script_state_save(void)
+bool script_state_save(void)
 {
 	int				n,k,i;
 	obj_type		*obj;
 	weapon_type		*weap;
 	proj_setup_type	*proj_setup;
 
-	script_state_save_single(&js.game_attach);
-	script_state_save_single(&js.course_attach);
+	if (!script_state_save_single(&js.game_attach)) return(FALSE);
+	if (!script_state_save_single(&js.course_attach)) return(FALSE);
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		script_state_save_single(&obj->attach);
+		if (!script_state_save_single(&obj->attach)) return(FALSE);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 			
-			script_state_save_single(&weap->attach);
+			if (!script_state_save_single(&weap->attach)) return(FALSE);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];
 				if (proj_setup==NULL) continue;
 				
-				script_state_save_single(&proj_setup->attach);
+				if (!script_state_save_single(&proj_setup->attach)) return(FALSE);
 			}
 		}
 	}
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -178,12 +174,12 @@ void script_state_save(void)
 
 bool script_state_load_single(attach_type *attach)
 {
-	int				str_len;
-	char			err_str[256];
-	char			*str;
+	int				prop_name_len,prop_value_len;
+	char			prop_name[256],err_str[256];
+	char			*prop_value;
 	script_type		*script;
-	JSStringRef		js_str;
-	JSObjectRef		js_global;
+	JSStringRef		js_prop_name,js_prop_json;
+	JSValueRef		js_prop_value;
 
 		// get the script
 
@@ -191,25 +187,37 @@ bool script_state_load_single(attach_type *attach)
 
 	script=js.script_list.scripts[attach->script_idx];
 
-		// get JSON string from file
+		// run through the properties to replace
+		// a 0 property name length means the end
+		// of properties for this script
 
-	game_file_get_chunk(&str_len);
-	if (str_len==0) return(TRUE);
+	while (TRUE) {
 
-	str=(char*)malloc(str_len);
-	if (str==NULL) return(FALSE);
+			// get the prop name and JSON value
 
-	game_file_get_chunk(str);
+		game_file_get_chunk(&prop_name_len);
+		if (prop_name_len==0) break;
 
-		// reset global object
+		game_file_get_chunk(prop_name);
 
-	js_str=JSStringCreateWithUTF8CString(str);
-	js_global=(JSObjectRef)JSValueMakeFromJSONString(script->cx,js_str);
-	JSStringRelease(js_str);
+		game_file_get_chunk(&prop_value_len);
+		prop_value=(char*)malloc(prop_value_len);
+		if (prop_value==NULL) return(FALSE);
 
-	// supergumba -- what to do?  Copy to global?
+		game_file_get_chunk(prop_value);
 
+			// process the property
 
+		js_prop_name=JSStringCreateWithUTF8CString(prop_name);
+
+		js_prop_json=JSStringCreateWithUTF8CString(prop_value);
+		js_prop_value=JSValueMakeFromJSONString(script->cx,js_prop_json);
+		JSStringRelease(js_prop_json);
+
+		JSObjectSetProperty(script->cx,script->global_obj,js_prop_name,js_prop_value,0,NULL);
+	
+		JSStringRelease(js_prop_name);
+	}
 
 		// send load event to script
 
@@ -218,36 +226,38 @@ bool script_state_load_single(attach_type *attach)
 	return(TRUE);
 }
 
-void script_state_load(void)
+bool script_state_load(void)
 {
 	int				n,k,i;
 	obj_type		*obj;
 	weapon_type		*weap;
 	proj_setup_type	*proj_setup;
 
-	if (!script_state_load_single(&js.game_attach)) return;
-	if (!script_state_load_single(&js.course_attach)) return;
+	if (!script_state_load_single(&js.game_attach)) return(FALSE);
+	if (!script_state_load_single(&js.course_attach)) return(FALSE);
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (!script_state_load_single(&obj->attach)) return;
+		if (!script_state_load_single(&obj->attach)) return(FALSE);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 			
-			if (!script_state_load_single(&weap->attach)) return;
+			if (!script_state_load_single(&weap->attach)) return(FALSE);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];
 				if (proj_setup==NULL) continue;
 				
-				if (!script_state_load_single(&proj_setup->attach)) return;
+				if (!script_state_load_single(&proj_setup->attach)) return(FALSE);
 			}
 		}
 	}
+
+	return(TRUE);
 }
 
 

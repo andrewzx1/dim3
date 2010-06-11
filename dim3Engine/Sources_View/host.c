@@ -520,8 +520,8 @@ void host_game(void)
 	net_host_join_multiplayer_bots();
 
 		// mark node as ready to receive data
-	
-	net_client_send_ready(server.obj_list.objs[server.player_obj_idx]);
+
+	net_host_player_ready(server.obj_list.objs[server.player_obj_idx]->remote.uid);
 
 		// game is running
 	

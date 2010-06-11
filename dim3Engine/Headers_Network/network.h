@@ -88,7 +88,7 @@ extern int net_host_create_machine_uid(void);
 extern bool net_host_join_local_player(char *err_str);
 extern void net_host_join_multiplayer_bots(void);
 
-extern int net_host_player_thread(void *arg);
+extern int net_host_player_remote_thread(void *arg);
 
 //
 // host player lists
@@ -110,15 +110,14 @@ extern void net_host_player_ready(int player_uid);
 extern void net_host_player_create_join_remote_list(int remote_uid,network_reply_join_remote_list *remote_list);
 extern void net_host_player_create_info_player_list(network_reply_info_player_list *player_list);
 
-extern void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int msg_len);
-extern bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int *msg_len);
-extern void net_host_player_start_thread(int player_uid);
+extern void net_host_player_remote_route_msg(int remote_uid,int action,unsigned char *msg,int msg_len);
+extern bool net_host_player_remote_check_msg(int remote_uid,int *action,unsigned char *msg,int *msg_len);
+extern void net_host_player_remote_start_thread(int remote_uid);
 
 extern void net_host_player_send_message_single(int remote_uid,int action,unsigned char *msg,int msg_len);
 extern void net_host_player_send_message_others(int remote_uid,int action,unsigned char *msg,int msg_len);
 extern void net_host_player_send_message_all(int action,unsigned char *data,int len);
 
-extern void net_host_player_update_team(int remote_uid,network_request_team *team);
 extern void net_host_player_update(int remote_uid,network_request_remote_update *update);
 
 //
@@ -143,7 +142,6 @@ extern bool net_client_check_message_queue(int *remote_uid,int *action,unsigned 
 //
 
 extern void net_client_send_ready(obj_type *obj);
-extern void net_client_send_set_team(obj_type *obj);
 extern void net_client_send_leave_host(obj_type *obj);
 extern void net_client_send_latency_ping(obj_type *obj);
 extern void net_client_request_group_synch_ping(obj_type *obj);

@@ -50,7 +50,7 @@ extern void group_moves_synch_with_client(int group_idx,network_reply_group_sync
       
 ======================================================= */
 
-void net_host_player_thread_group_synch(int remote_uid)
+void net_host_player_remote_thread_group_synch(int remote_uid)
 {
 	int								n;
 	network_reply_group_synch		reply_synch;
@@ -73,7 +73,7 @@ void net_host_player_thread_group_synch(int remote_uid)
       
 ======================================================= */
 
-int net_host_player_thread(void *arg)
+int net_host_player_remote_thread(void *arg)
 {
 	int						remote_uid,action,msg_len;
 	unsigned char			msg[net_max_msg_size];
@@ -132,7 +132,7 @@ int net_host_player_thread(void *arg)
 				break;
 
 			case net_action_request_group_synch:
-				net_host_player_thread_group_synch(remote_uid);
+				net_host_player_remote_thread_group_synch(remote_uid);
 				break;
 
 		}

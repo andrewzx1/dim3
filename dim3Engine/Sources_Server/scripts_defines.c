@@ -367,13 +367,25 @@ bool script_is_prop_define(char *name)
 {
 	script_define_type	*define;
 
+		// built in defines
+
 	define=script_dim3_defines;
 		
 	while (TRUE) {
 		if (define->value_int==-1) break;
-
 		if (strcmp(define->name,name)==0) return(TRUE);
+		define++;
+	}
 
+		// user defines
+
+	if (script_user_defines==NULL) return(FALSE);
+
+	define=script_user_defines;
+		
+	while (TRUE) {
+		if (define->value_int==-1) break;
+		if (strcmp(define->name,name)==0) return(TRUE);
 		define++;
 	}
 

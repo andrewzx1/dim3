@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
+#include "remotes.h"
 #include "network.h"
 #include "consoles.h"
 #include "timing.h"
@@ -133,10 +135,6 @@ bool net_host_join_local_player(char *err_str)
 		return(FALSE);
 	}
 
-		// start the player thread
-
-	net_host_player_start_thread(player_obj->remote.uid);
-
 		// send all other players on host the new player for remote add
 
 	strncpy(remote.name,player_obj->name,name_str_len);
@@ -168,11 +166,12 @@ void net_host_join_multiplayer_bots(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
+			// can this bot join the game?
+
 		if (obj->type!=object_type_bot_multiplayer) continue;
 		if (!net_host_player_add_ok(obj->name,deny_reason)) {
 			snprintf(err_str,256,"%s: %s",obj->name,deny_reason);
 			err_str[255]=0x0;
-
 			console_add(err_str);
 			continue;
 		}
@@ -180,10 +179,6 @@ void net_host_join_multiplayer_bots(void)
 			// add bot
 
 		obj->remote.uid=net_host_player_add_bot(obj);
-			
-			// start the player thread
-
-		net_host_player_start_thread(obj->remote.uid);
 	}
 }
 
@@ -242,6 +237,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 {
 	int							machine_uid,remote_uid,
 								tint_color_idx;
+	obj_type					*obj;
 	network_reply_join			reply_join;
 	network_reply_join_remote	remote;
 
@@ -268,6 +264,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	reply_join.machine_uid=htons((short)machine_uid);
 	reply_join.remote_uid=htons((short)remote_uid);
 
+	reply_join.team_idx=htons((short)net_team_none);
 	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
 	
 	if (remote_uid!=-1) {
@@ -276,8 +273,42 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	else {
 		reply_join.remote_list.count=htons(0);
 	}
+
+		// build a remote add request for other
+		// clients in the game
+
+		// so we can add a remote, we start with a fake
+		// team (none), after we add, we can call the game
+		// rules and reset it
+
+	remote.remote_uid=htons((short)remote_uid);
+	strncpy(remote.name,request_join->name,name_str_len);
+	strncpy(remote.draw_name,request_join->draw_name,name_str_len);
+	remote.name[name_str_len-1]=0x0;
+	remote.team_idx=htons((short)net_team_none);
+	remote.tint_color_idx=htons((short)tint_color_idx);
+	remote.score=0;
+	remote.pnt_x=remote.pnt_y=remote.pnt_z=0;
+
+		// create the remote object
+
+	if (!remote_add(&remote,TRUE)) {
+		remote_uid=-1;
+	}
+
+		// run team rule
+
+	if (remote_uid!=-1) {
+		obj=object_find_remote_uid(remote_uid);
+		object_run_game_rules(obj);
+
+			// reset team in reply and remote add
+
+		reply_join.team_idx=htons((short)obj->team_idx);
+		remote.team_idx=htons((short)obj->team_idx);
+	}
 	
-		// send reply
+		// send reply back to client
 
 	if (!net_sendto_msg(host_socket,ip_addr,port,net_action_reply_join,net_player_uid_host,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
 		if (remote_uid!=-1) net_host_player_remove(remote_uid);
@@ -288,20 +319,12 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		
 	if (remote_uid==-1) return(FALSE);
 
-		// start host's player thread
+		// start host thread to get and deal with
+		// messages from this remote
 
-	net_host_player_start_thread(remote_uid);
+	net_host_player_remote_start_thread(remote_uid);
 	
 		// send all other players on host the new player for remote add
-		
-	remote.remote_uid=htons((short)remote_uid);
-	strncpy(remote.name,request_join->name,name_str_len);
-	strncpy(remote.draw_name,request_join->draw_name,name_str_len);
-	remote.name[name_str_len-1]=0x0;
-	remote.team_idx=htons((short)net_team_none);
-	remote.tint_color_idx=htons((short)tint_color_idx);
-	remote.score=0;
-	remote.pnt_x=remote.pnt_y=remote.pnt_z=0;
 
 	net_host_player_send_message_others(remote_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_reply_join_remote));
 
@@ -375,7 +398,7 @@ int net_host_thread(void *arg)
 			// all other requests are routed to
 			// player queues
 
-		net_host_player_route_msg(player_uid,action,msg,msg_len);
+		net_host_player_remote_route_msg(player_uid,action,msg,msg_len);
 	}
 	
 	return(0);
