@@ -132,25 +132,6 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 	return(TRUE);
 }
 
-void remote_team(int remote_uid,network_request_team *team,bool send_event)
-{
-	obj_type			*obj,*player_obj;
-	
-		// change team
-		
-	obj=object_find_remote_uid(remote_uid);
-	if (obj==NULL) return;
-
-	obj->team_idx=(signed short)ntohs(team->team_idx);
-
-		// send event to player
-
-	if (send_event) {
-		player_obj=server.obj_list.objs[server.player_obj_idx];
-		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_team,obj->idx);
-	}
-}
-
 void remote_remove(int remote_uid,bool send_event)
 {
 	obj_type			*obj,*player_obj;
@@ -783,10 +764,6 @@ bool remote_network_get_updates(void)
 				remote_game_reset((network_request_game_reset*)msg);
 				break;
 				
-			case net_action_request_team:
-				remote_team(remote_uid,(network_request_team*)msg,TRUE);
-				break;
-
 			case net_action_request_remote_add:
 				remote_add((network_reply_join_remote*)msg,TRUE);
 				break;

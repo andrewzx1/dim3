@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern char team_colors[][16];
 
+extern map_type				map;
 extern server_type			server;
 extern hud_type				hud;
 extern network_setup_type	net_setup;
@@ -41,6 +42,8 @@ int							net_host_player_count;
 net_host_player_type		net_host_players[host_max_remote_count];
 
 SDL_mutex					*net_host_player_lock;
+
+extern void group_moves_synch_with_client(int group_idx,network_reply_group_synch *synch);
 
 /* =======================================================
 
@@ -227,9 +230,9 @@ int net_host_player_add_bot(obj_type *obj)
 
 	player->connect.machine_uid=net_setup.uid.machine_uid;
 
-		// initialize the queue
+		// bots don't have a queue
 
-	net_queue_initialize(&player->queue);
+	net_queue_initialize_empty(&player->queue);
 
 		// settings
 
@@ -352,27 +355,6 @@ int net_host_player_count_team(int team_idx)
       
 ======================================================= */
 
-void net_host_player_update_team(int remote_uid,network_request_team *team)
-{
-	int							idx;
-	net_host_player_type		*player;
-	
-	SDL_mutexP(net_host_player_lock);
-
-	idx=net_host_player_find(remote_uid);
-	if (idx==-1) {
-		SDL_mutexV(net_host_player_lock);
-		return;
-	}
-
-		// update team
-
-	player=&net_host_players[idx];
-	player->team_idx=(signed short)ntohs(team->team_idx);
-
-	SDL_mutexV(net_host_player_lock);
-}
-
 void net_host_player_update(int remote_uid,network_request_remote_update *update)
 {
 	int							idx,score;
@@ -405,6 +387,29 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 	player->score=score;
 	
 	SDL_mutexV(net_host_player_lock);
+}
+
+/* =======================================================
+
+      Moveable Group Synching
+      
+======================================================= */
+
+void net_host_player_remote_group_synch(int remote_uid)
+{
+	int								n;
+	network_reply_group_synch		reply_synch;
+
+		// send a synch for all groups that were
+		// ever moved
+
+	for (n=0;n!=map.ngroup;n++) {
+
+		if (map.groups[n].move.was_moved) {
+			group_moves_synch_with_client(n,&reply_synch);
+			net_host_player_send_message_single(remote_uid,net_action_reply_group_synch,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
+		}
+	}
 }
 
 /* =======================================================
@@ -495,7 +500,7 @@ void net_host_player_create_info_player_list(network_reply_info_player_list *pla
       
 ======================================================= */
 
-void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int msg_len)
+void net_host_player_remote_route_msg(int remote_uid,int action,unsigned char *msg,int msg_len)
 {
 	int				idx;
 
@@ -505,21 +510,21 @@ void net_host_player_route_msg(int player_uid,int action,unsigned char *msg,int 
 
 		// find player
 
-	idx=net_host_player_find(player_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
 	}
 		// put on queue
 		
-	net_queue_push_message(&net_host_players[idx].queue,player_uid,action,msg,msg_len);
+	net_queue_push_message(&net_host_players[idx].queue,remote_uid,action,msg,msg_len);
 
 		// unlock player operation
 
 	SDL_mutexV(net_host_player_lock);
 }
 
-bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int *msg_len)
+bool net_host_player_remote_check_msg(int remote_uid,int *action,unsigned char *msg,int *msg_len)
 {
 	int				idx,queue_remote_uid;
 	bool			has_msg;
@@ -530,7 +535,7 @@ bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int
 
 		// find player
 
-	idx=net_host_player_find(player_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return(FALSE);
@@ -548,13 +553,81 @@ bool net_host_player_check_msg(int player_uid,int *action,unsigned char *msg,int
 
 /* =======================================================
 
-      Player Thread
+      Remote Threads
       
 ======================================================= */
 
-void net_host_player_start_thread(int player_uid)
+int net_host_player_remote_thread(void *arg)
 {
-	SDL_CreateThread(net_host_player_thread,(void*)player_uid);
+	int						remote_uid,action,msg_len;
+	unsigned char			msg[net_max_msg_size];
+	
+		// get player uid from argument
+		
+	remote_uid=(int)arg;
+	
+		// wait for messages
+		
+	while (TRUE) {
+
+			// check player queue
+
+		if (!net_host_player_remote_check_msg(remote_uid,&action,msg,&msg_len)) {
+			usleep(host_no_data_u_wait);
+			continue;
+		}
+		
+			// route messages
+
+		switch (action) {
+		
+			case net_action_request_ready:
+				net_host_player_ready(remote_uid);
+				break;
+				
+			case net_action_request_leave:
+				net_host_player_remove(remote_uid);
+				net_host_player_send_message_others(remote_uid,net_action_request_remote_remove,NULL,0);
+
+				remote_uid=-1;
+				break;
+				
+			case net_action_request_remote_update:
+				net_host_player_update(remote_uid,(network_request_remote_update*)msg);
+				net_host_player_send_message_others(remote_uid,net_action_request_remote_update,msg,msg_len);
+				break;
+				
+			case net_action_request_remote_death:
+			case net_action_request_remote_chat:
+			case net_action_request_remote_sound:
+			case net_action_request_remote_fire:
+			case net_action_request_remote_pickup:
+			case net_action_request_remote_click:
+				net_host_player_send_message_others(remote_uid,action,msg,msg_len);
+				break;
+
+			case net_action_request_latency_ping:
+				net_host_player_send_message_single(remote_uid,net_action_reply_latency_ping,NULL,0);
+				break;
+
+			case net_action_request_group_synch:
+				net_host_player_remote_group_synch(remote_uid);
+				break;
+
+		}
+
+			// if remote_uid is reset to -1
+			// then remote has exited
+
+		if (remote_uid==-1) break;
+	}
+	
+	return(0);
+}
+
+void net_host_player_remote_start_thread(int remote_uid)
+{
+	SDL_CreateThread(net_host_player_remote_thread,(void*)remote_uid);
 }
 
 /* =======================================================
@@ -563,7 +636,7 @@ void net_host_player_start_thread(int player_uid)
       
 ======================================================= */
 
-void net_host_player_send_message_single(int player_uid,int action,unsigned char *msg,int msg_len)
+void net_host_player_send_message_single(int remote_uid,int action,unsigned char *msg,int msg_len)
 {
 	int						idx;
 	net_host_player_type	*player;
@@ -572,7 +645,7 @@ void net_host_player_send_message_single(int player_uid,int action,unsigned char
 
 		// find player
 
-	idx=net_host_player_find(player_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx!=-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
@@ -582,7 +655,7 @@ void net_host_player_send_message_single(int player_uid,int action,unsigned char
 
 		// send message
 
-	net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,player_uid,msg,msg_len);
+	net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,remote_uid,msg,msg_len);
 
 	SDL_mutexV(net_host_player_lock);
 }

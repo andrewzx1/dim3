@@ -4099,10 +4099,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Sources_Network\net_host_player_thread.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Sources_Network\net_host_players.c"
 					>
 					<FileConfiguration

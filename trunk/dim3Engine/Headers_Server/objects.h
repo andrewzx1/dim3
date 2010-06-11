@@ -79,6 +79,8 @@ extern bool object_sight_test_object(obj_type *obj,int test_obj_uid);
 extern void object_attach_click_crosshair_up(obj_type *obj);
 extern void object_attach_click_crosshair_down(obj_type *obj);
 
+extern void object_run_game_rules(obj_type *obj);
+
 extern int object_choose_spawn_spot(obj_type *obj,char *err_str);
 extern bool object_spawn(obj_type *obj,char *err_str);
 extern int object_get_respawn_time(obj_type *obj);

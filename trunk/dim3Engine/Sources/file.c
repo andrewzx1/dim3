@@ -293,7 +293,15 @@ bool game_file_save(char *err_str)
 		
 	progress_draw(10);
 	
-	script_state_save();
+	if (!script_state_save()) {
+		free(game_file_data);
+		progress_shutdown();
+		return(FALSE);
+	}
+
+	free(game_file_data);
+	progress_shutdown();	// supergumba -- for testing!
+	return(TRUE);
 	
 		// view & server objects
 		
@@ -534,16 +542,19 @@ bool game_file_load(char *file_name,char *err_str)
 		
 	progress_draw(95);
 	
-	script_state_load();
+	if (!script_state_load()) {
+		free(game_file_data);
+		progress_shutdown();
+		return(FALSE);
+	}
+
 	timers_fix_script_indexes();
 
-		// free game data
+		// finish
 		
 	progress_draw(100);
-	free(game_file_data);
-	
-		// finished
 
+	free(game_file_data);
 	progress_shutdown();
 
 		// fix some necessary functions

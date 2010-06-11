@@ -543,6 +543,7 @@ extern void script_release_classes(void);
 extern JSClassRef script_create_class(const char *name,const JSStaticValue *props,const JSStaticFunction *funcs);
 extern void script_free_class(JSClassRef cls);
 extern bool script_add_global_object(script_type *script,char *err_str);
+extern bool script_is_prop_global_object(char *name);
 extern void script_set_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags);
 extern JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name);
 extern bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception);
@@ -559,8 +560,8 @@ extern JSValueRef script_get_global(JSContextRef cx,char *name,int script_idx);
 extern bool script_add_global(JSContextRef cx,char *name,int script_idx,JSValueRef val);
 extern void script_delete_global(char *name,int script_idx);
 
-extern void script_state_save(void);
-extern void script_state_load(void);
+extern bool script_state_save(void);
+extern bool script_state_load(void);
 
 extern void timers_initialize_list(void);
 extern void timers_free_list(void);

@@ -69,7 +69,7 @@ int net_client_find_game(char *game_name)
 
 int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,network_reply_join_remote_list *remote_list)
 {
-	int						action,machine_uid,remote_uid,wait_tick;
+	int						action,wait_tick,remote_uid;
 	unsigned char			msg[net_max_msg_size];
 	char					err_str[256];
 	bool					reply_ok;
@@ -145,8 +145,8 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 	
 		// finish setup
 		
-	machine_uid=(int)ntohs(reply_join.machine_uid);
-	remote_uid=(int)ntohs(reply_join.remote_uid);
+	obj->remote.uid=(signed short)ntohs(reply_join.remote_uid);
+	obj->team_idx=(signed short)ntohs(reply_join.team_idx);
 	
 	*tick_offset=ntohl(reply_join.map_tick);
 
@@ -155,10 +155,10 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 		// setup client joined flags
 		
 	net_setup.mode=net_mode_client;
-	net_setup.uid.machine_uid=machine_uid;
+	net_setup.uid.machine_uid=(signed short)ntohs(reply_join.machine_uid);
 	net_setup.client.latency=0;
 
-	return(remote_uid);
+	return(obj->remote.uid);
 }
 
 void net_client_join_host_end(void)

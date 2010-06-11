@@ -436,6 +436,20 @@ bool script_add_global_object(script_type *script,char *err_str)
 	return(TRUE);
 }
 
+bool script_is_prop_global_object(char *name)
+{
+	if (strcmp(name,"camera")==0) return(TRUE);
+	if (strcmp(name,"data")==0) return(TRUE);
+	if (strcmp(name,"iface")==0) return(TRUE);
+	if (strcmp(name,"map")==0) return(TRUE);
+	if (strcmp(name,"sound")==0) return(TRUE);
+	if (strcmp(name,"spawn")==0) return(TRUE);
+	if (strcmp(name,"utility")==0) return(TRUE);
+	if (strcmp(name,"multiplayer")==0) return(TRUE);
+
+	return(FALSE);
+}
+
 /* =======================================================
 
       Script Property and Function Utilities
