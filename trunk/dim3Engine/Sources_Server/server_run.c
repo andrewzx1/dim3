@@ -134,6 +134,7 @@ void run_object_single(obj_type *obj)
 	else {
 		if (!obj->suspend) {
 			object_turn(obj);
+			object_face(obj);
 		}
 	}
 	

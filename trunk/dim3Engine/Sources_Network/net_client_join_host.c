@@ -154,9 +154,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 
 		// setup client joined flags
 		
-	net_setup.mode=net_mode_client;
 	net_setup.uid.machine_uid=(signed short)ntohs(reply_join.machine_uid);
-	net_setup.client.latency=0;
 
 	return(obj->remote.uid);
 }

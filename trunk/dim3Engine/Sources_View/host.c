@@ -477,7 +477,11 @@ void host_game(void)
 		// setup hosting flags and IPs
 		
 	net_host_game_setup();
-	
+
+	net_setup.mode=setup.network.dedicated?net_mode_host_dedicated:net_mode_host;
+	net_setup.client.latency=0;
+	net_setup.client.host_ip_addr=0;
+
 		// setup map
 		
 	map.info.name[0]=0x0;

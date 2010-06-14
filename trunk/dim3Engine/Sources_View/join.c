@@ -643,7 +643,7 @@ void join_game(void)
 		return;
 	}
 
-		// get the ul ip address
+		// set the network flags
 	
 	if (!net_ip_to_address(join_list[idx].ip,&net_setup.client.host_ip_addr,err_str)) {
 		error_setup(err_str,"Network Game Canceled");
@@ -651,7 +651,11 @@ void join_game(void)
 		return;
 	}
 
-		// setup game type
+	net_setup.mode=net_mode_client;
+	net_setup.client.latency=0;
+	net_setup.option_flags=info->option_flags;
+
+		// setup game type and map
 
 	net_setup.game_idx=net_client_find_game(info->game_name);
 	if (net_setup.game_idx==-1) {
@@ -663,8 +667,6 @@ void join_game(void)
 	
 	map.info.name[0]=0x0;
 	strcpy(map.info.host_name,info->map_name);
-	
-	net_setup.option_flags=info->option_flags;
 	
 		// start game
 	
@@ -697,6 +699,8 @@ void join_game(void)
 		server.next_state=gs_error;
 		return;
 	}
+
+	player_obj->remote.uid=remote_uid;
 	
 		// start client network thread
 		

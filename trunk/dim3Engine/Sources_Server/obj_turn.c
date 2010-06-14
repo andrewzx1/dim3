@@ -166,6 +166,48 @@ void object_fix_motion(obj_type *obj)
 
 /* =======================================================
 
+      Object Facing
+      
+======================================================= */
+
+void object_face(obj_type *obj)
+{
+	float			to_ang;
+	obj_type		*track_obj;
+
+		// no tracking, turn off facing
+
+	if (obj->face.obj_idx==-1) {
+		if (obj->fly) if (obj->face.ang.x!=0.0f) obj->face.ang.x=angle_turn_toward(obj->face.ang.x,0.0f,obj->turn.walk_speed);
+		if (obj->face.ang.y!=0.0f) obj->face.ang.y=angle_turn_toward(obj->face.ang.y,0.0f,obj->turn.walk_speed);
+		return;
+	}
+
+		// track object
+
+	track_obj=server.obj_list.objs[obj->face.obj_idx];
+	
+	if (obj->fly) {
+		to_ang=angle_find(obj->pnt.y,obj->pnt.z,track_obj->pnt.y,track_obj->pnt.z);
+		if (obj->face.ang.x!=to_ang) obj->face.ang.x=angle_turn_toward(obj->face.ang.x,to_ang,obj->turn.walk_speed);
+	}
+
+	to_ang=angle_find(obj->pnt.x,obj->pnt.z,track_obj->pnt.x,track_obj->pnt.z);
+	if (obj->face.ang.y!=to_ang) obj->face.ang.y=angle_turn_toward(obj->face.ang.y,to_ang,obj->turn.walk_speed);
+}
+
+void object_face_object_start(obj_type *obj,obj_type *track_obj)
+{
+	obj->face.obj_idx=track_obj->idx;
+}
+
+void object_face_stop(obj_type *obj)
+{
+	obj->face.obj_idx=-1;
+}
+
+/* =======================================================
+
       Player Turning
       
 ======================================================= */

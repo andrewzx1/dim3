@@ -39,6 +39,8 @@ JSValueRef js_obj_motion_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_obj_motion_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_angle_face_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_angle_face_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_motion_angle_props[]={
 							{"x",					js_obj_motion_angle_get_x,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -49,6 +51,8 @@ JSStaticValue 		obj_motion_angle_props[]={
 JSStaticFunction	obj_motion_angle_functions[]={
 							{"turnToAngle",			js_obj_motion_angle_turn_to_angle_func,	kJSPropertyAttributeDontDelete},
 							{"turnStop",			js_obj_motion_angle_turn_stop_func,		kJSPropertyAttributeDontDelete},
+							{"faceObject",			js_obj_motion_angle_face_object_func,	kJSPropertyAttributeDontDelete},
+							{"faceStop",			js_obj_motion_angle_face_stop_func,		kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 							
 JSClassRef			obj_motion_angle_class;
@@ -157,6 +161,34 @@ JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,J
 	
 	obj=object_script_lookup();
 	object_turn_stop(obj);
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_motion_angle_face_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj,*track_obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	obj=object_script_lookup();
+
+	track_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (track_obj!=NULL) return(script_null_to_value(cx));
+
+	object_face_object_start(obj,track_obj);
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_motion_angle_face_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
+	obj=object_script_lookup();
+	object_face_stop(obj);
 
 	return(script_null_to_value(cx));
 }
