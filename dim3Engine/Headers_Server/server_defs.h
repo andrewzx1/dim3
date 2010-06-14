@@ -489,6 +489,11 @@ typedef struct		{
 					} obj_turn;
 
 typedef struct		{
+						int						obj_idx;
+						d3ang					ang;
+					} obj_face;
+
+typedef struct		{
 						float					speed,max_speed;
 						bool					drag;
 						d3vct					vct;
@@ -850,6 +855,7 @@ typedef struct		{
                         obj_movement			forward_move,side_move,vert_move;
 						obj_lock				lock;
 						obj_turn				turn;
+						obj_face				face;
 						obj_thrust				thrust;
 						obj_mesh				mesh;
 						obj_look				look;

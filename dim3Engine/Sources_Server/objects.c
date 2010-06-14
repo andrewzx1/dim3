@@ -347,6 +347,9 @@ void object_stop(obj_type *obj)
 	object_clear_angle(&obj->turn.ang_to);
 	object_clear_angle(&obj->turn.fix_ang_add);
     obj->look.ang_add=0;
+
+	obj->face.obj_idx=-1;
+	object_clear_angle(&obj->face.ang);
 	
 	obj->forward_move.moving=FALSE;
 	obj->side_move.moving=FALSE;
@@ -578,6 +581,9 @@ int object_create(char *name,int type,int bind)
 	obj->turn.ignore_mouse=FALSE;
 	obj->turn.only_when_moving=FALSE;
 	obj->turn.restrict_player_turning=FALSE;
+
+	obj->face.obj_idx=-1;
+	object_clear_angle(&obj->face.ang);
 	
 	obj->thrust.speed=0.5f;
 	obj->thrust.max_speed=60.0f;
