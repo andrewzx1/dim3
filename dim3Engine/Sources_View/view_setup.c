@@ -580,7 +580,7 @@ void view_setup_objects(int tick)
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
-
+		
 		if (obj->hidden) continue;
 		
 		is_camera=((camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));

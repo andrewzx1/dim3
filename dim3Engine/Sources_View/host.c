@@ -59,6 +59,7 @@ and can be sold or given away.
 
 #define host_game_option_base			100
 
+extern void net_host_game_setup(void);
 extern bool net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
 
@@ -473,6 +474,10 @@ void host_game(void)
 {
 	char			err_str[256];
 	
+		// setup hosting flags and IPs
+		
+	net_host_game_setup();
+	
 		// setup map
 		
 	map.info.name[0]=0x0;
@@ -486,6 +491,10 @@ void host_game(void)
 		server.next_state=gs_error;
 		return;
 	}
+	
+		// add any multiplayer bots
+		
+	game_multiplayer_bots_create();
 	
 		// start the map
 		
@@ -516,7 +525,6 @@ void host_game(void)
 	
 		// add multiplayer bots to host
 
-	game_multiplayer_bots_create();
 	net_host_join_multiplayer_bots();
 
 		// mark node as ready to receive data

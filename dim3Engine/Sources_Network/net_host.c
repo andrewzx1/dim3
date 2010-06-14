@@ -410,7 +410,7 @@ int net_host_thread(void *arg)
       
 ======================================================= */
 
-bool net_host_game_start(char *err_str)
+void net_host_game_setup(void)
 {
 		// reset UIDs
 
@@ -421,7 +421,16 @@ bool net_host_game_start(char *err_str)
 		
 	if (net_setup.host.name[0]==0x0) net_get_host_name(net_setup.host.name);
 	net_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
+	
+		// setup hosting flags
 
+	net_setup.mode=setup.network.dedicated?net_mode_host_dedicated:net_mode_host;
+	net_setup.client.latency=0;
+	net_setup.client.host_ip_addr=0;
+}
+
+bool net_host_game_start(char *err_str)
+{
 		// start hosting
 
 	if (!net_host_initialize(err_str)) return(FALSE);
@@ -433,12 +442,6 @@ bool net_host_game_start(char *err_str)
 		// initialize host player list
 		
 	net_host_player_initialize();
-	
-		// setup hosting flags
-
-	net_setup.mode=setup.network.dedicated?net_mode_host_dedicated:net_mode_host;
-	net_setup.client.latency=0;
-	net_setup.client.host_ip_addr=0;
 
 	return(TRUE);
 }

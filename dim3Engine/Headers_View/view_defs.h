@@ -174,8 +174,7 @@ typedef struct		{
 					} join_server_info_player_list;
 
 typedef struct		{
-						int									ping_msec,player_count,player_max_count,
-															option_flags;
+						int									ping_msec,option_flags;
 						char								ip[256],name[name_str_len],
 															game_name[name_str_len],map_name[name_str_len];
 						join_server_info_player_list		player_list;

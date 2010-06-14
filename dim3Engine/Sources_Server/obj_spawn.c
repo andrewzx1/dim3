@@ -121,7 +121,7 @@ bool object_spawn_position(obj_type *obj,int sub_event,char *err_str)
 			// if editor override then try to start at editor
 			// cursor position
 
-		if ((setup.editor_override.on) && (!map.settings.editor.link_always_start)) {
+		if ((setup.editor_override.on) && (!map.settings.editor.link_always_start) && (obj->idx==server.player_obj_idx)) {
 			setup.editor_override.on=FALSE;
 			object_set_position(obj,setup.editor_override.pt.x,(setup.editor_override.pt.y-obj->size.eye_offset),setup.editor_override.pt.z,setup.editor_override.ang.y,0);
 			return(TRUE);

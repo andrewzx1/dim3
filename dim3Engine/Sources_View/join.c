@@ -91,7 +91,7 @@ char* join_create_list(void)
 	c=row_data;
 	
 	for (n=0;n!=join_count;n++) {
-		snprintf(c,128,"Bitmaps/Icons_Map;%s;%s\t%s @ %s\t%d/%d\t%dms",info->map_name,info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
+		snprintf(c,128,"Bitmaps/Icons_Map;%s;%s\t%s @ %s\t%d/%d\t%dms",info->map_name,info->name,info->game_name,info->map_name,info->player_list.count,info->player_list.max_count,info->ping_msec);
 		c[127]=0x0;
 		
 		c+=128;
@@ -141,8 +141,8 @@ bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply
 
 		// players
 
-	info->player_list.count=(int)ntohs(reply_info->player_list.count);
-	info->player_list.max_count=(int)ntohs(reply_info->player_list.max_count);
+	info->player_list.count=(signed short)ntohs(reply_info->player_list.count);
+	info->player_list.max_count=(signed short)ntohs(reply_info->player_list.max_count);
 
 	cnt=info->player_list.count;
 	if (cnt>join_info_max_players) cnt=join_info_max_players;
@@ -637,7 +637,7 @@ void join_game(void)
 
 		// reject if server is full
 
-	if (info->player_count>=info->player_max_count) {
+	if (info->player_list.count>=info->player_list.max_count) {
 		error_setup("Unable to Join Game: Server if Full","Network Game Canceled");
 		server.next_state=gs_error;
 		return;
