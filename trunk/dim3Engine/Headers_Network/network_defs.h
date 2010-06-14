@@ -156,6 +156,8 @@ typedef struct		{
 #define net_player_uid_client_start						1000
 #define net_player_uid_map_bot_start					2000
 
+// supergumba -- all this above might not be necessary
+
 //
 // messages actions
 //
@@ -225,7 +227,7 @@ typedef struct		{
 // network headers and messages
 //
 
-#define net_max_msg_size								2048
+#define net_max_msg_size								3072
 
 typedef struct		{
 						short							remote_uid,
