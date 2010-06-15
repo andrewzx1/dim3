@@ -172,6 +172,10 @@ void model_draw_setup_object(obj_type *obj)
 		setup->ang.x=angle_add(obj->ang.x,draw->rot.x);
 		setup->ang.y=angle_add(obj->ang.y,draw->rot.y);
 		setup->ang.z=angle_add(obj->ang.z,draw->rot.z);
+		
+		setup->ang.x=angle_add(setup->ang.x,obj->face.ang.x);
+		setup->ang.y=angle_add(setup->ang.y,obj->face.ang.y);
+		setup->ang.z=angle_add(setup->ang.z,obj->face.ang.z);
 	
 			// spins
 			

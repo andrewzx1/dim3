@@ -626,7 +626,7 @@ JSValueRef js_map_object_is_facing_id_func(JSContextRef cx,JSObjectRef func,JSOb
 		
 	ang_y=angle_find(obj->pnt.x,obj->pnt.z,obj2->pnt.x,obj2->pnt.z);
 
-	ang_dif=angle_dif(ang_y,obj->ang.y,&cwise);
+	ang_dif=angle_dif(ang_y,angle_add(obj->ang.y,obj->face.ang.y),&cwise);
 	return(script_bool_to_value(cx,ang_dif<script_value_to_float(cx,argv[2])));
 }
 
@@ -665,7 +665,7 @@ JSValueRef js_map_object_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 		// get angle
 		
-	return(script_angle_to_value(cx,obj->ang.x,obj->ang.y,obj->ang.z));
+	return(script_angle_to_value(cx,angle_add(obj->ang.x,obj->face.ang.x),angle_add(obj->ang.y,obj->face.ang.y),angle_add(obj->ang.z,obj->face.ang.z)));
 }
 
 JSValueRef js_map_object_get_size_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

@@ -53,7 +53,7 @@ bool object_watch_restrict(obj_type *obj,obj_type *watch_obj)
 		// within angle
 		
 	ang_y=angle_find(obj->pnt.x,obj->pnt.z,watch_obj->pnt.x,watch_obj->pnt.z);
-	ang_dif=angle_dif(ang_y,obj->ang.y,&cwise);
+	ang_dif=angle_dif(ang_y,angle_add(obj->ang.y,obj->face.ang.y),&cwise);
 	if (ang_dif>(obj->watch.watch_restrict.ang*0.5f)) return(FALSE);
 		
 		// is ray tracing on?
