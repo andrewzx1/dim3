@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "effects.h"
 #include "xmls.h"
 
 extern server_type			server;
@@ -45,11 +46,6 @@ void read_settings_ring(void)
 	int					nring,ring_head_tag,ring_tag,tag;
 	char				path[1024];
 	ring_type			*ring;
-
-		// no rings yet
-
-	server.rings=NULL;
-	server.count.ring=0;
 
 		// read in rings from setting files
 		
@@ -71,21 +67,21 @@ void read_settings_ring(void)
 		return;
 	}
 
-	server.rings=(ring_type*)malloc(sizeof(ring_type)*nring);
-	if (server.rings==NULL) {
-		xml_close_file();
-		return;
-	}
-
 		// read in the rings
 
 	ring_tag=xml_findfirstchild("Ring",ring_head_tag);
     
 	while (ring_tag!=-1) {
 	
-			// create a new ring
+			// create a new particle
 			
-		ring=&server.rings[server.count.ring];
+		ring=ring_add_list();
+		if (ring==NULL) {
+			xml_close_file();
+			return;
+		}
+		
+			// read in ring
 		
 		xml_get_attribute_text(ring_tag,"name",ring->name,name_str_len);
 		
@@ -165,8 +161,6 @@ void read_settings_ring(void)
 	
 			// move on to next ring
 			
-		server.count.ring++;
-		
 		ring_tag=xml_findnextchild(ring_tag);
 	}
 	

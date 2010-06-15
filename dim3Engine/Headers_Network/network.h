@@ -105,8 +105,6 @@ extern int net_host_player_add(unsigned long ip_addr,int port,bool local,int mac
 extern int net_host_player_add_bot(obj_type *obj);
 extern void net_host_player_remove(int player_uid);
 
-extern void net_host_player_ready(int player_uid);
-
 extern void net_host_player_create_join_remote_list(int remote_uid,network_reply_join_remote_list *remote_list);
 extern void net_host_player_create_info_player_list(network_reply_info_player_list *player_list);
 
@@ -141,7 +139,6 @@ extern bool net_client_check_message_queue(int *remote_uid,int *action,unsigned 
 // client sending messages
 //
 
-extern void net_client_send_ready(obj_type *obj);
 extern void net_client_send_leave_host(obj_type *obj);
 extern void net_client_send_latency_ping(obj_type *obj);
 extern void net_client_request_group_synch_ping(obj_type *obj);

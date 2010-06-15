@@ -244,7 +244,7 @@ void particle_draw(effect_type *effect,int count)
 	matrix_type				pixel_mat;
 
 	eff_particle=&effect->data.particle;
-	particle=&server.particles[eff_particle->particle_idx];
+	particle=server.particle_list.particles[eff_particle->particle_idx];
 
 	f_count=(float)count;
 

@@ -40,13 +40,40 @@ extern network_setup_type	net_setup;
 
 /* =======================================================
 
-      Initialize Particles
+      Particle List
       
 ======================================================= */
 
-void particle_initialize(void)
+void particle_initialize_list(void)
 {
-	server.count.particle=0;
+	int				n;
+
+	for (n=0;n!=max_particle_list;n++) {
+		server.particle_list.particles[n]=NULL;
+	}
+}
+
+void particle_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_particle_list;n++) {
+		if (server.particle_list.particles[n]!=NULL) free(server.particle_list.particles[n]);
+	}
+}
+
+particle_type* particle_add_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_particle_list;n++) {
+		if (server.particle_list.particles[n]==NULL) {
+			server.particle_list.particles[n]=(particle_type*)malloc(sizeof(particle_type));
+			return(server.particle_list.particles[n]);
+		}
+	}
+
+	return(NULL);
 }
 
 /* =======================================================
@@ -189,16 +216,16 @@ void particle_precalculate_all(void)
 	int					n;
 	particle_type		*particle;
 
-	particle=server.particles;
-	
-	for (n=0;n!=server.count.particle;n++) {
+	for (n=0;n!=max_particle_list;n++) {
+		particle=server.particle_list.particles[n];
+		if (particle==NULL) continue;
+
 		if (!particle->globe) {
 			particle_precalculate(particle);
 		}
 		else {
 			particle_globe_precalculate(particle);
 		}
-		particle++;
 	}
 }
 
@@ -213,11 +240,11 @@ particle_type* particle_find(char *name)
 	int				n;
 	particle_type	*particle;
 	
-	particle=server.particles;
-	
-	for (n=0;n!=server.count.particle;n++) {
+	for (n=0;n!=max_particle_list;n++) {
+		particle=server.particle_list.particles[n];
+		if (particle==NULL) continue;
+
 		if (strcasecmp(particle->name,name)==0) return(particle);
-		particle++;
 	}
 	
 	return(NULL);
@@ -228,11 +255,11 @@ int particle_find_index(char *name)
 	int				n;
 	particle_type	*particle;
 	
-	particle=server.particles;
-	
-	for (n=0;n!=server.count.particle;n++) {
+	for (n=0;n!=max_particle_list;n++) {
+		particle=server.particle_list.particles[n];
+		if (particle==NULL) continue;
+
 		if (strcasecmp(particle->name,name)==0) return(n);
-		particle++;
 	}
 	
 	return(-1);
@@ -268,7 +295,7 @@ bool particle_spawn_single(int particle_idx,int obj_uid,d3pnt *pt,particle_rotat
 	particle_effect_data	*eff_particle;
 	particle_type			*particle;
 	
-	particle=&server.particles[particle_idx];
+	particle=server.particle_list.particles[particle_idx];
 		
 		// create particle
 
@@ -332,7 +359,7 @@ bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,
 	matrix_type				mat;
 	particle_type			*particle;
 	
-	particle=&server.particles[particle_idx];
+	particle=server.particle_list.particles[particle_idx];
 
 		// single particles
 
@@ -352,13 +379,14 @@ bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,
 	for (n=0;n!=count;n++) {
 		idx=particle_find_index(particle->group.particles[n].name);
 		if (idx==-1) continue;
-		if (server.particles[idx].group.on) continue;		// don't respawn other groups
+
+		if (server.particle_list.particles[idx]->group.on) continue;		// don't respawn other groups
 
 			// compute shifts
 
 		memmove(&ppt,pt,sizeof(d3pnt));
 
-		shift=server.particles[idx].group.particles[n].shift;
+		shift=server.particle_list.particles[idx]->group.particles[n].shift;
 
 		if (shift!=0) {
 			xoff=yoff=0.0f;

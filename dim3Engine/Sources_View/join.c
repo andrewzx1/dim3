@@ -718,10 +718,6 @@ void join_game(void)
 
 	game_remotes_create(&remote_list);
 
-		// mark player as ready to receive data from host
-
-	net_client_send_ready(player_obj);
-
 		// request moving group synchs
 
 	net_client_request_group_synch_ping(player_obj);

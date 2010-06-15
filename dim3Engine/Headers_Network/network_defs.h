@@ -106,7 +106,7 @@ typedef struct		{
 														remote_uid,
 														port;
 						unsigned long					ip_addr;
-						bool							local,bot,ready;
+						bool							local,bot;
 						d3socket						sock;
 					} net_host_player_connect_type;
 
@@ -168,24 +168,23 @@ typedef struct		{
 #define net_action_request_join							3
 #define net_action_reply_join							4
 #define net_action_request_game_reset					5
-#define net_action_request_ready						6
-#define net_action_request_leave						7
-#define net_action_request_remote_add					8
-#define net_action_request_remote_remove				9
-#define net_action_request_remote_death					10
-#define net_action_request_remote_update				11
-#define net_action_request_remote_telefrag				12
-#define net_action_request_remote_chat					13
-#define net_action_request_remote_sound					14
-#define net_action_request_remote_fire					15
-#define net_action_request_remote_pickup				16
-#define net_action_request_remote_click					17
-#define net_action_request_latency_ping					18
-#define net_action_reply_latency_ping					19
-#define net_action_request_host_exit					20
-#define net_action_request_group_synch					21
-#define net_action_reply_group_synch					22
-#define net_action_request_game_score_limit				23
+#define net_action_request_leave						6
+#define net_action_request_remote_add					7
+#define net_action_request_remote_remove				8
+#define net_action_request_remote_death					9
+#define net_action_request_remote_update				10
+#define net_action_request_remote_telefrag				11
+#define net_action_request_remote_chat					12
+#define net_action_request_remote_sound					13
+#define net_action_request_remote_fire					14
+#define net_action_request_remote_pickup				15
+#define net_action_request_remote_click					16
+#define net_action_request_latency_ping					17
+#define net_action_reply_latency_ping					18
+#define net_action_request_host_exit					19
+#define net_action_request_group_synch					20
+#define net_action_reply_group_synch					21
+#define net_action_request_game_score_limit				22
 
 //
 // remote fire types
