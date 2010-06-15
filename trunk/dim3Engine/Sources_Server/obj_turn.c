@@ -189,10 +189,12 @@ void object_face(obj_type *obj)
 	
 	if (obj->fly) {
 		to_ang=angle_find(obj->pnt.y,obj->pnt.z,track_obj->pnt.y,track_obj->pnt.z);
+		to_ang=angle_add(to_ang,-obj->ang.x);
 		if (obj->face.ang.x!=to_ang) obj->face.ang.x=angle_turn_toward(obj->face.ang.x,to_ang,obj->turn.walk_speed);
 	}
 
 	to_ang=angle_find(obj->pnt.x,obj->pnt.z,track_obj->pnt.x,track_obj->pnt.z);
+	to_ang=angle_add(to_ang,-obj->ang.y);
 	if (obj->face.ang.y!=to_ang) obj->face.ang.y=angle_turn_toward(obj->face.ang.y,to_ang,obj->turn.walk_speed);
 }
 

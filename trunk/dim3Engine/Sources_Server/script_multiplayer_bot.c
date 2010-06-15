@@ -80,7 +80,7 @@ JSObjectRef script_add_multiplayer_bot_object(JSContextRef cx,JSObjectRef parent
 
 JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,server.skill));
+	return(script_int_to_value(cx,setup.network.bot.skill));
 }
 
 /* =======================================================

@@ -40,6 +40,7 @@ extern js_type			js;
 JSValueRef js_obj_hit_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_hit_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_hit_get_isBackAttack(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_hit_get_projectileName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_hit_get_hitBoxName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -49,6 +50,7 @@ JSStaticValue 		obj_hit_props[]={
 							{"objectId",			js_obj_hit_get_objectId,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"objectName",			js_obj_hit_get_objectName,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"objectIsPlayer",		js_obj_hit_get_objectIsPlayer,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"isBackAttack",		js_obj_hit_get_isBackAttack,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"weaponName",			js_obj_hit_get_weaponName,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"projectileName",		js_obj_hit_get_projectileName,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"hitBoxName",			js_obj_hit_get_hitBoxName,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -110,6 +112,20 @@ JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->hit.obj_uid==server.player_obj_idx));
+}
+
+JSValueRef js_obj_hit_get_isBackAttack(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	float				ang;
+	bool				cwise,back_attack;
+	obj_type			*obj;
+
+	obj=object_script_lookup();
+	
+	ang=angle_dif(angle_add(obj->ang.y,obj->face.ang.y),obj->hit.ang.y,&cwise);
+	back_attack=((ang>135.0f) && (ang<225.0f));
+	
+	return(script_bool_to_value(cx,back_attack));
 }
 
 JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
