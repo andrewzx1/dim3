@@ -159,10 +159,6 @@ int net_host_player_add(unsigned long ip_addr,int port,bool local,int machine_ui
 		
 	player=&net_host_players[net_host_player_count];
 
-		// players start in a non-ready state
-
-	player->connect.ready=FALSE;
-
 		// connections
 		// includes a personal socket for sending to other clients
 
@@ -246,10 +242,6 @@ int net_host_player_add_bot(obj_type *obj)
 	
 	memmove(&player->pnt,&obj->pnt,sizeof(d3pnt));
 	
-		// bots are automatically ready
-
-	player->connect.ready=TRUE;
-	
 	net_host_player_count++;
 
 		// unlock player operations
@@ -299,30 +291,6 @@ void net_host_player_remove(int player_uid)
 	
 	net_host_player_count--;
 	
-	SDL_mutexV(net_host_player_lock);
-}
-
-/* =======================================================
-
-      Player Ready State
-      
-======================================================= */
-
-void net_host_player_ready(int player_uid)
-{
-	int				idx;
-	
-		// lock all player operations
-		
-	SDL_mutexP(net_host_player_lock);
-		
-		// set player ready state
-		
-	idx=net_host_player_find(player_uid);
-	if (idx!=-1) net_host_players[idx].connect.ready=TRUE;
-	
-		// unlock player operation
-		
 	SDL_mutexV(net_host_player_lock);
 }
 
@@ -581,10 +549,6 @@ int net_host_player_remote_thread(void *arg)
 
 		switch (action) {
 		
-			case net_action_request_ready:
-				net_host_player_ready(remote_uid);
-				break;
-				
 			case net_action_request_leave:
 				net_host_player_remove(remote_uid);
 				net_host_player_send_message_others(remote_uid,net_action_request_remote_remove,NULL,0);
@@ -694,12 +658,11 @@ void net_host_player_send_message_others(int remote_uid,int action,unsigned char
 
 		if (player->connect.machine_uid==machine_uid) continue;
 
-			// only players in a ready state can
-			// get messages.  bots never get messages,
+			// bots never get messages,
 			// and locals should never be in this list
 			// but we remove anyway just in case
 
-		if ((!player->connect.ready) || (player->connect.bot) || (player->connect.local)) continue;
+		if ((player->connect.bot) || (player->connect.local)) continue;
 
 			// send to network
 

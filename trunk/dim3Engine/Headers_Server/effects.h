@@ -40,7 +40,9 @@ extern void effect_draw_ray(effect_type *effect,int count);
 extern void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *gx,float *gy,float *g_size);
 extern void effect_draw(void);
 
-extern void particle_initialize(void);
+extern void particle_initialize_list(void);
+extern void particle_free_list(void);
+extern particle_type* particle_add_list(void);
 extern void particle_precalculate(particle_type *particle);
 extern void particle_precalculate_all(void);
 extern particle_type* particle_find(char *name);
@@ -52,7 +54,9 @@ extern void particle_map_initialize(void);
 extern void particle_map_run(void);
 extern void particle_draw(effect_type *effect,int count);
 
-extern void ring_initialize(void);
+extern void ring_initialize_list(void);
+extern void ring_free_list(void);
+extern ring_type* ring_add_list(void);
 extern ring_type* ring_find(char *name);
 extern int ring_find_index(char *name);
 extern bool ring_spawn(int ring_idx,int obj_uid,d3pnt *pt,d3ang *ang);

@@ -61,8 +61,6 @@ bool server_memory_allocate(void)
 {
 		// initialize pointers
 		
-	server.particles=NULL;
- 	server.rings=NULL;
 	server.halos=NULL;
 	server.marks=NULL;
 	server.crosshairs=NULL;
@@ -110,8 +108,6 @@ void server_memory_release(void)
 {
 		// catch all for dynamic server pointers
 		
-	if (server.particles!=NULL) free(server.particles);
-	if (server.rings!=NULL) free(server.rings);
 	if (server.halos!=NULL) free(server.halos);
 	if (server.marks!=NULL) free(server.marks);
 	if (server.crosshairs!=NULL) free(server.crosshairs);
@@ -158,8 +154,8 @@ bool server_initialize(char *err_str)
 		// initialize project settings
 		
 	hud_initialize();
-	particle_initialize();
-	ring_initialize();
+	particle_initialize_list();
+	ring_initialize_list();
 	halo_initialize();
 	mark_initialize();
 	crosshair_initialize();
@@ -191,7 +187,10 @@ void server_shutdown(void)
 	scripts_engine_shutdown();
 	
 		// release memory
-		
+	
+	particle_free_list();
+	ring_free_list();
+
 	server_memory_release();
 }
 

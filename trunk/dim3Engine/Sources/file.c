@@ -57,6 +57,8 @@ extern void view_capture_draw(char *path);
 extern void group_moves_synch_with_load(void);
 extern void view_draw_fade_cancel(void);
 extern void view_game_reset_timing(void);
+extern void view_clear_fps(void);
+extern void rain_reset(void);
 
 /* =======================================================
 
@@ -308,14 +310,12 @@ bool game_file_save(char *err_str)
 	progress_draw(20);
 		
 	game_file_add_chunk(&view.time,1,sizeof(view_time_type));
-	game_file_add_chunk(&view.fps,1,sizeof(view_fps_type));
 	game_file_add_chunk(&camera,1,sizeof(camera_type));
 	
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
 	game_file_add_chunk(&server.player_obj_idx,1,sizeof(int));
 	game_file_add_chunk(&server.skill,1,sizeof(int));
-// supergumba	
-//	game_file_add_chunk(&server.uid,1,sizeof(server_uid_type));
+
 	game_file_add_chunk(&server.count,1,sizeof(server_count_type));
 	
 	progress_draw(30);
@@ -343,9 +343,6 @@ bool game_file_save(char *err_str)
 	progress_draw(60);
 
 	game_file_add_chunk(&map.ambient,1,sizeof(map_ambient_type));					
-	game_file_add_chunk(&map.rain,1,sizeof(map_rain_type));					
-	game_file_add_chunk(&map.background,1,sizeof(map_background_type));					
-	game_file_add_chunk(&map.sky,1,sizeof(map_sky_type));
 	game_file_add_chunk(&map.fog,1,sizeof(map_fog_type));
 
 	progress_draw(70);
@@ -380,6 +377,11 @@ bool game_file_save(char *err_str)
 		// finished
 		
 	progress_shutdown();
+
+		// misc initialization
+
+	view_clear_fps();
+	rain_reset();
     
     return(ok);
 }

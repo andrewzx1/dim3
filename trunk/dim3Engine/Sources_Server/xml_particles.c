@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "effects.h"
 #include "xmls.h"
 
 extern server_type			server;
@@ -50,11 +51,6 @@ void read_settings_particle(void)
 	bool				ring_flip;
 	char				path[1024];
 	particle_type		*particle;
-
-		// no particles yet
-
-	server.particles=NULL;
-	server.count.particle=0;
 
 		// read in particles from setting files
 		
@@ -91,12 +87,6 @@ void read_settings_particle(void)
 		return;
 	}
 
-	server.particles=(particle_type*)malloc(sizeof(particle_type)*nparticle);
-	if (server.particles==NULL) {
-		xml_close_file();
-		return;
-	}
-
 		// load regular particles
 
 	particle_tag=xml_findfirstchild("Particle",particle_head_tag);
@@ -105,8 +95,14 @@ void read_settings_particle(void)
 	
 			// create a new particle
 			
-		particle=&server.particles[server.count.particle];
+		particle=particle_add_list();
+		if (particle==NULL) {
+			xml_close_file();
+			return;
+		}
 		
+			// read in particle
+
 		xml_get_attribute_text(particle_tag,"name",particle->name,name_str_len);
 		
 		particle->group.on=FALSE;
@@ -248,8 +244,6 @@ void read_settings_particle(void)
         }
 	
 			// move on to next particle
-			
-		server.count.particle++;
 		
 		particle_tag=xml_findnextchild(particle_tag);
 	}
@@ -267,7 +261,13 @@ void read_settings_particle(void)
 	
 			// create a new particle group
 			
-		particle=&server.particles[server.count.particle];
+		particle=particle_add_list();
+		if (particle==NULL) {
+			xml_close_file();
+			return;
+		}
+		
+			// read in particle group
 		
 		xml_get_attribute_text(particle_group_tag,"name",particle->name,name_str_len);
 		
@@ -290,8 +290,6 @@ void read_settings_particle(void)
 		}
 
 			// move on to next particle group
-			
-		server.count.particle++;
 		
 		particle_group_tag=xml_findnextchild(particle_group_tag);
 	}

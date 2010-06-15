@@ -99,6 +99,11 @@ void rain_setup(int cx,int cy,int cz)
 	rain_setup_next_slant();
 }
 
+void rain_reset(void)
+{
+	if (map.rain.on) map.rain.reset=TRUE;
+}
+
 /* =======================================================
 
       Draw Rain

@@ -54,7 +54,7 @@ void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
 	ring_effect_data	*eff_ring;
 	
 	eff_ring=&effect->data.ring;
-	ring=&server.rings[eff_ring->ring_idx];
+	ring=server.ring_list.rings[eff_ring->ring_idx];
 
 	m_tick=((float)count)/10.0f;
 	
@@ -85,7 +85,7 @@ void ring_draw(effect_type *effect,int count)
 	matrix_type				mat_x,mat_y,mat_z;
 	
 	eff_ring=&effect->data.ring;
-	ring=&server.rings[eff_ring->ring_idx];
+	ring=server.ring_list.rings[eff_ring->ring_idx];
 	
 		// get size
 		

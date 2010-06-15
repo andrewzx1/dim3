@@ -43,9 +43,36 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void ring_initialize(void)
+void ring_initialize_list(void)
 {
-	server.count.ring=0;
+	int				n;
+
+	for (n=0;n!=max_ring_list;n++) {
+		server.ring_list.rings[n]=NULL;
+	}
+}
+
+void ring_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_ring_list;n++) {
+		if (server.ring_list.rings[n]!=NULL) free(server.ring_list.rings[n]);
+	}
+}
+
+ring_type* ring_add_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_ring_list;n++) {
+		if (server.ring_list.rings[n]==NULL) {
+			server.ring_list.rings[n]=(ring_type*)malloc(sizeof(ring_type));
+			return(server.ring_list.rings[n]);
+		}
+	}
+
+	return(NULL);
 }
 
 /* =======================================================
@@ -59,11 +86,11 @@ ring_type* ring_find(char *name)
 	int			n;
 	ring_type	*ring;
 	
-	ring=server.rings;
-	
-	for (n=0;n!=server.count.ring;n++) {
+	for (n=0;n!=max_ring_list;n++) {
+		ring=server.ring_list.rings[n];
+		if (ring==NULL) continue;
+
 		if (strcasecmp(ring->name,name)==0) return(ring);
-		ring++;
 	}
 	
 	return(NULL);
@@ -74,11 +101,11 @@ int ring_find_index(char *name)
 	int			n;
 	ring_type	*ring;
 	
-	ring=server.rings;
-	
-	for (n=0;n!=server.count.ring;n++) {
+	for (n=0;n!=max_ring_list;n++) {
+		ring=server.ring_list.rings[n];
+		if (ring==NULL) continue;
+
 		if (strcasecmp(ring->name,name)==0) return(n);
-		ring++;
 	}
 	
 	return(-1);
@@ -114,7 +141,7 @@ bool ring_spawn(int ring_idx,int obj_uid,d3pnt *pt,d3ang *ang)
 	ring_effect_data		*eff_ring;
 	ring_type				*ring;
 	
-	ring=&server.rings[ring_idx];
+	ring=server.ring_list.rings[ring_idx];
 		
 		// create ring
 

@@ -58,18 +58,20 @@ and can be sold or given away.
 #define max_effect_list							512
 #define max_decal_list							128
 
+#define max_particle_list						128
+#define max_ring_list							64
+
 //
 // maximums
 //
 
-#define max_particle							256
 #define max_particle_count						256
 #define max_particle_trail						16
 #define max_particle_variation					4
 #define max_particle_group						16
-#define max_ring								32
+
 #define max_halo								32
-#define max_mark								256
+#define max_mark								128
 #define max_crosshair							32
 #define max_rain_density						5120
 
@@ -1106,62 +1108,70 @@ typedef struct		{
 					} particle_piece_type;
 
 typedef struct		{
-						int						image_idx,count,trail_count,
-												spread_offset,life_msec,
-												start_pixel_size,end_pixel_size,
-												current_variation_idx;
-						float					start_gravity,gravity_add,
-												start_alpha,end_alpha,reduce_pixel_fact,
-												trail_step,ambient_factor;
-						char					name[name_str_len],bitmap_name[name_str_len];
-						bool					reverse,blend_add,globe,team_tint;
-						d3pnt					pt;
-						d3ang					rot;
-						d3vct					vct,rot_accel;
-						d3col					start_color,end_color;
-						image_animation_type	animate;
-						particle_piece_type		pieces[max_particle_variation][max_particle_count];
-						particle_group_type		group;
+						int								image_idx,count,trail_count,
+														spread_offset,life_msec,
+														start_pixel_size,end_pixel_size,
+														current_variation_idx;
+						float							start_gravity,gravity_add,
+														start_alpha,end_alpha,reduce_pixel_fact,
+														trail_step,ambient_factor;
+						char							name[name_str_len],bitmap_name[name_str_len];
+						bool							reverse,blend_add,globe,team_tint;
+						d3pnt							pt;
+						d3ang							rot;
+						d3vct							vct,rot_accel;
+						d3col							start_color,end_color;
+						image_animation_type			animate;
+						particle_piece_type				pieces[max_particle_variation][max_particle_count];
+						particle_group_type				group;
 					} particle_type;
+
+typedef struct		{
+						particle_type*					particles[max_particle_list];
+					} particle_list_type;
 
 //
 // ring structures
 //
 
 typedef struct		{
-						int						image_idx,life_msec,
-												start_outer_size,end_outer_size,
-												start_inner_size,end_inner_size;
-						float					start_alpha,end_alpha;
-						char					name[name_str_len],bitmap_name[name_str_len];
-						bool					blend_add,team_tint;
-						d3ang					ang,rot;
-						d3vct					vct,rot_accel;
-						d3col					start_color,end_color;
-						image_animation_type	animate;
+						int								image_idx,life_msec,
+														start_outer_size,end_outer_size,
+														start_inner_size,end_inner_size;
+						float							start_alpha,end_alpha;
+						char							name[name_str_len],bitmap_name[name_str_len];
+						bool							blend_add,team_tint;
+						d3ang							ang,rot;
+						d3vct							vct,rot_accel;
+						d3col							start_color,end_color;
+						image_animation_type			animate;
 					} ring_type;
+
+typedef struct		{
+						ring_type*						rings[max_ring_list];
+					} ring_list_type;
 
 //
 // settings structures
 //
 					
 typedef struct		{
-						int						image_idx;
-						char					name[name_str_len],bitmap_name[name_str_len];
+						int								image_idx;
+						char							name[name_str_len],bitmap_name[name_str_len];
 					} halo_type;
 					
 typedef struct		{
-						int						image_idx,
-												fade_in_msec,life_msec,fade_out_msec,total_msec;
-						char					name[name_str_len],bitmap_name[name_str_len];
-						bool					no_rotate,no_transparent,no_opaque,hilite,blend_add,team_tint;
-						d3col					color;
-						image_animation_type	animate;
+						int								image_idx,
+														fade_in_msec,life_msec,fade_out_msec,total_msec;
+						char							name[name_str_len],bitmap_name[name_str_len];
+						bool							no_rotate,no_transparent,no_opaque,hilite,blend_add,team_tint;
+						d3col							color;
+						image_animation_type			animate;
 					} mark_type;
 
 typedef struct		{
-						int						image_idx;
-						char					name[name_str_len],bitmap_name[name_str_len];
+						int								image_idx;
+						char							name[name_str_len],bitmap_name[name_str_len];
 					} crosshair_type;
 					
 //
@@ -1169,7 +1179,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						particle,ring,halo,mark,crosshair;
+						int								halo,mark,crosshair;
 					} server_count_type;
 
 //
@@ -1177,21 +1187,21 @@ typedef struct		{
 //
  
  typedef struct		{
-						int						state,next_state,last_state,
-												skill,player_obj_idx;
-						bool					game_open,map_open,map_change,skip_media;
-						server_time_type		time;
-						server_count_type		count;
-						obj_list_type			obj_list;
-						proj_list_type			proj_list;
-						model_list_type			model_list;
-						effect_list_type		effect_list;
-						decal_list_type			decal_list;
-						particle_type			*particles;
-						ring_type				*rings;
-						halo_type				*halos;
-						mark_type				*marks;
-						crosshair_type			*crosshairs;
+						int								state,next_state,last_state,
+														skill,player_obj_idx;
+						bool							game_open,map_open,map_change,skip_media;
+						server_time_type				time;
+						server_count_type				count;
+						obj_list_type					obj_list;
+						proj_list_type					proj_list;
+						model_list_type					model_list;
+						effect_list_type				effect_list;
+						decal_list_type					decal_list;
+						particle_list_type				particle_list;
+						ring_list_type					ring_list;
+						halo_type						*halos;
+						mark_type						*marks;
+						crosshair_type					*crosshairs;
 					} server_type;
 
 

@@ -211,7 +211,7 @@ bool effect_inview(effect_type *effect,int count)
 			by=y;
 			ty=by-size;
 
-			particle=&server.particles[effect->data.particle.particle_idx];
+			particle=server.particle_list.particles[effect->data.particle.particle_idx];
 			gravity_y=(int)particle_get_gravity(particle,count);
 
 			if (gravity_y<0) {

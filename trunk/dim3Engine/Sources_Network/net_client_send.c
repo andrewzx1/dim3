@@ -79,14 +79,9 @@ void net_client_send_msg(obj_type *obj,int action,unsigned char *msg,int msg_len
 
 /* =======================================================
 
-      Host Join, Leave, Ping Messages
+      Host Leave, Ping Messages
       
 ======================================================= */
-
-void net_client_send_ready(obj_type *obj)
-{
-	net_client_send_msg(obj,net_action_request_ready,NULL,0);
-}
 
 void net_client_send_leave_host(obj_type *obj)
 {

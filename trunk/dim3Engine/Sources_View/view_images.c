@@ -338,22 +338,22 @@ void view_images_cached_load(void)
 
 		// particles
 
-	particle=server.particles;
-	
-	for (n=0;n!=server.count.particle;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
-		particle->image_idx=view_images_load_single(path,FALSE,FALSE);
-		particle++;
+	for (n=0;n!=max_particle_list;n++) {
+		particle=server.particle_list.particles[n];
+		if (particle!=NULL) {
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
+			particle->image_idx=view_images_load_single(path,FALSE,FALSE);
+		}
 	}
 	
 		// rings
 
-	ring=server.rings;
-	
-	for (n=0;n!=server.count.ring;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
-		ring->image_idx=view_images_load_single(path,FALSE,FALSE);
-		ring++;
+	for (n=0;n!=max_ring_list;n++) {
+		ring=server.ring_list.rings[n];
+		if (ring!=NULL) {
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
+			ring->image_idx=view_images_load_single(path,FALSE,FALSE);
+		}
 	}
 
 		// remote bitmaps
@@ -433,20 +433,16 @@ void view_images_cached_free(void)
 
 		// particles
 
-	particle=server.particles;
-	
-	for (n=0;n!=server.count.particle;n++) {
-		view_images_free_single(particle->image_idx);
-		particle++;
+	for (n=0;n!=max_particle_list;n++) {
+		particle=server.particle_list.particles[n];
+		if (particle!=NULL) view_images_free_single(particle->image_idx);
 	}
 	
 		// rings
 
-	ring=server.rings;
-	
-	for (n=0;n!=server.count.ring;n++) {
-		view_images_free_single(ring->image_idx);
-		ring++;
+	for (n=0;n!=max_ring_list;n++) {
+		ring=server.ring_list.rings[n];
+		if (ring!=NULL) view_images_free_single(ring->image_idx);
 	}
 
 		// remote bitmaps
