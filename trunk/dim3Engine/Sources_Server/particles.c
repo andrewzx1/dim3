@@ -220,6 +220,12 @@ void particle_precalculate_all(void)
 		particle=server.particle_list.particles[n];
 		if (particle==NULL) continue;
 
+			// groups have no particles
+
+		if (particle->group.on) continue;
+
+			// precalculate particles
+
 		if (!particle->globe) {
 			particle_precalculate(particle);
 		}

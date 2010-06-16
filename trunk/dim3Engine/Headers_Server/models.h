@@ -25,7 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void model_initialize(void);
+extern void model_initialize_list(void);
+extern void model_free_list(void);
+extern int model_count_list(void);
+
 extern model_type* model_find(char *name);
 extern int model_find_index(char *name);
 extern bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_str);

@@ -283,7 +283,7 @@ void halo_draw_render(void)
 
 			// draw halo
 			
-		gl_texture_simple_set(view_images_get_gl_id(server.halos[halo_draw->idx].image_idx),TRUE,1,1,1,halo_draw->alpha);
+		gl_texture_simple_set(view_images_get_gl_id(server.halo_list.halos[halo_draw->idx]->image_idx),TRUE,1,1,1,halo_draw->alpha);
 
 		glBegin(GL_QUADS);
 		glTexCoord2f(0,0);

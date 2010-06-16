@@ -72,6 +72,19 @@ void effect_free_list(void)
 	}
 }
 
+int effect_count_list(void)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=max_effect_list;n++) {
+		if (server.effect_list.effects[n]!=NULL) count++;
+	}
+
+	return(count);
+}
+
 /* =======================================================
 
       Create a New Effect

@@ -61,6 +61,10 @@ and can be sold or given away.
 #define max_particle_list						128
 #define max_ring_list							64
 
+#define max_halo_list							32
+#define max_mark_list							128
+#define max_crosshair_list						32
+
 //
 // maximums
 //
@@ -70,9 +74,6 @@ and can be sold or given away.
 #define max_particle_variation					4
 #define max_particle_group						16
 
-#define max_halo								32
-#define max_mark								128
-#define max_crosshair							32
 #define max_rain_density						5120
 
 #define max_object_bit_mask						32
@@ -1152,13 +1153,17 @@ typedef struct		{
 					} ring_list_type;
 
 //
-// settings structures
+// misc settings structures
 //
 					
 typedef struct		{
 						int								image_idx;
 						char							name[name_str_len],bitmap_name[name_str_len];
 					} halo_type;
+
+typedef struct		{
+						halo_type*						halos[max_halo_list];
+					} halo_list_type;
 					
 typedef struct		{
 						int								image_idx,
@@ -1170,18 +1175,18 @@ typedef struct		{
 					} mark_type;
 
 typedef struct		{
+						mark_type*						marks[max_mark_list];
+					} mark_list_type;
+
+typedef struct		{
 						int								image_idx;
 						char							name[name_str_len],bitmap_name[name_str_len];
 					} crosshair_type;
-					
-//
-// Counts
-//
 
 typedef struct		{
-						int								halo,mark,crosshair;
-					} server_count_type;
-
+						crosshair_type*					crosshairs[max_crosshair_list];
+					} crosshair_list_type;
+					
 //
 // Main Server Structure
 //
@@ -1191,7 +1196,6 @@ typedef struct		{
 														skill,player_obj_idx;
 						bool							game_open,map_open,map_change,skip_media;
 						server_time_type				time;
-						server_count_type				count;
 						obj_list_type					obj_list;
 						proj_list_type					proj_list;
 						model_list_type					model_list;
@@ -1199,9 +1203,9 @@ typedef struct		{
 						decal_list_type					decal_list;
 						particle_list_type				particle_list;
 						ring_list_type					ring_list;
-						halo_type						*halos;
-						mark_type						*marks;
-						crosshair_type					*crosshairs;
+						halo_list_type					halo_list;
+						mark_list_type					mark_list;
+						crosshair_list_type				crosshair_list;
 					} server_type;
 
 

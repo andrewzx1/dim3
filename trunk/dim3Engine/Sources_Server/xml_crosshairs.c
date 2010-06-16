@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interfaces.h"
 #include "xmls.h"
 
 extern server_type			server;
@@ -46,11 +47,6 @@ void read_settings_crosshair(void)
 	char				path[1024];
 	crosshair_type		*crosshair;
 
-		// no crosshairs yet
-
-	server.crosshairs=NULL;
-	server.count.crosshair=0;
-	
 		// read in crosshairs from setting files
 		
 	file_paths_data(&setup.file_path_setup,path,"Settings","Crosshairs","xml");
@@ -71,12 +67,6 @@ void read_settings_crosshair(void)
 		return;
 	}
 
-	server.crosshairs=(crosshair_type*)malloc(sizeof(crosshair_type)*ncrosshair);
-	if (server.crosshairs==NULL) {
-		xml_close_file();
-		return;
-	}
-
 		// read the crosshairs
 	
 	crosshair_tag=xml_findfirstchild("Crosshair",crosshairs_head_tag);
@@ -84,8 +74,13 @@ void read_settings_crosshair(void)
 	while (crosshair_tag!=-1) {
 	
 			// create a new crosshair
+
+		crosshair=crosshair_add_list();
+		if (crosshair==NULL) {
+			xml_close_file();
+		}
 			
-		crosshair=&server.crosshairs[server.count.crosshair];
+			// read settings
 		
 		xml_get_attribute_text(crosshair_tag,"name",crosshair->name,name_str_len);
 		
@@ -96,8 +91,6 @@ void read_settings_crosshair(void)
 		
 			// move on to next crosshair
 			
-		server.count.crosshair++;
-		
 		crosshair_tag=xml_findnextchild(crosshair_tag);
 	}
 	

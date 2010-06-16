@@ -42,6 +42,25 @@ extern js_type				js;
 
 /* =======================================================
 
+      Weapon Counts
+      
+======================================================= */
+
+int weapon_count_projectile_setups(weapon_type *weap)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=max_proj_setup_list;n++) {
+		if (weap->proj_setup_list.proj_setups[n]!=NULL) count++;
+	}
+
+	return(count);
+}
+
+/* =======================================================
+
       Find Weapon
       
 ======================================================= */

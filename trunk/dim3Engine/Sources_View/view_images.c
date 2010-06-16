@@ -308,32 +308,32 @@ void view_images_cached_load(void)
 
 		// halos
 
-	halo=server.halos;
-	
-	for (n=0;n!=server.count.halo;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
-		halo->image_idx=view_images_load_single(path,FALSE,FALSE);
-		halo++;
+	for (n=0;n!=max_halo_list;n++) {
+		halo=server.halo_list.halos[n];
+		if (halo!=NULL) {
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
+			halo->image_idx=view_images_load_single(path,FALSE,FALSE);
+		}
 	}
 
 		// marks
 
-	mark=server.marks;
-	
-	for (n=0;n!=server.count.mark;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
-		mark->image_idx=view_images_load_single(path,FALSE,FALSE);
-		mark++;
+	for (n=0;n!=max_mark_list;n++) {
+		mark=server.mark_list.marks[n];
+		if (mark!=NULL) {
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
+			mark->image_idx=view_images_load_single(path,FALSE,FALSE);
+		}
 	}
 
 		// crosshairs
 
-	crosshair=server.crosshairs;
-	
-	for (n=0;n!=server.count.crosshair;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
-		crosshair->image_idx=view_images_load_single(path,FALSE,TRUE);
-		crosshair++;
+	for (n=0;n!=max_crosshair_list;n++) {
+		crosshair=server.crosshair_list.crosshairs[n];
+		if (crosshair!=NULL) {
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
+			crosshair->image_idx=view_images_load_single(path,FALSE,TRUE);
+		}
 	}
 
 		// particles
@@ -406,29 +406,23 @@ void view_images_cached_free(void)
 
 		// halos
 
-	halo=server.halos;
-	
-	for (n=0;n!=server.count.halo;n++) {
-		view_images_free_single(halo->image_idx);
-		halo++;
+	for (n=0;n!=max_halo_list;n++) {
+		halo=server.halo_list.halos[n];
+		if (halo!=NULL) view_images_free_single(halo->image_idx);
 	}
 
 		// marks
 
-	mark=server.marks;
-	
-	for (n=0;n!=server.count.mark;n++) {
-		view_images_free_single(mark->image_idx);
-		mark++;
+	for (n=0;n!=max_mark_list;n++) {
+		mark=server.mark_list.marks[n];
+		if (mark!=NULL) view_images_free_single(mark->image_idx);
 	}
 
 		// crosshairs
 
-	crosshair=server.crosshairs;
-	
-	for (n=0;n!=server.count.crosshair;n++) {
-		view_images_free_single(crosshair->image_idx);
-		crosshair++;
+	for (n=0;n!=max_crosshair_list;n++) {
+		crosshair=server.crosshair_list.crosshairs[n];
+		if (crosshair!=NULL) view_images_free_single(crosshair->image_idx);
 	}
 
 		// particles

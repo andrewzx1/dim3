@@ -27,6 +27,7 @@ and can be sold or given away.
 
 extern bool projectile_initialize_list(void);
 extern void projectile_free_list(void);
+extern int projectile_count_list(void);
 
 extern proj_type* projectile_script_lookup(void);
 

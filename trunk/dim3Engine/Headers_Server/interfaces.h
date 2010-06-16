@@ -152,7 +152,9 @@ extern void radar_draw(void);
 // crosshairs
 //
 
-extern void crosshair_initialize(void);
+extern void crosshair_initialize_list(void);
+extern void crosshair_free_list(void);
+extern crosshair_type* crosshair_add_list(void);
 
 extern int crosshair_find(char *name);
 extern void crosshair_show_alt(obj_type *obj);
