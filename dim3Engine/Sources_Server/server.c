@@ -61,10 +61,6 @@ bool server_memory_allocate(void)
 {
 		// initialize pointers
 		
-	server.halos=NULL;
-	server.marks=NULL;
-	server.crosshairs=NULL;
-	
 	hud.bitmaps=NULL;
 	hud.texts=NULL;
 	hud.bars=NULL;
@@ -106,12 +102,6 @@ bool server_memory_allocate(void)
 
 void server_memory_release(void)
 {
-		// catch all for dynamic server pointers
-		
-	if (server.halos!=NULL) free(server.halos);
-	if (server.marks!=NULL) free(server.marks);
-	if (server.crosshairs!=NULL) free(server.crosshairs);
-	
 		// hud pointers
 		
 	if (hud.bitmaps!=NULL) free(hud.bitmaps);
@@ -156,9 +146,9 @@ bool server_initialize(char *err_str)
 	hud_initialize();
 	particle_initialize_list();
 	ring_initialize_list();
-	halo_initialize();
-	mark_initialize();
-	crosshair_initialize();
+	halo_initialize_list();
+	mark_initialize_list();
+	crosshair_initialize_list();
 	
 		// load project XML
 		
@@ -190,6 +180,9 @@ void server_shutdown(void)
 	
 	particle_free_list();
 	ring_free_list();
+	halo_free_list();
+	mark_free_list();
+	crosshair_free_list();
 
 	server_memory_release();
 }
@@ -204,8 +197,7 @@ bool server_game_start(char *game_script_name,int skill,char *err_str)
 {
 		// initialize lists
 
-	model_initialize();
-		
+	model_initialize_list();
 	object_initialize_list();
 	
 	scripts_initialize_list();
@@ -268,6 +260,7 @@ void server_game_stop(void)
 		// finish with list frees
 
 	object_free_list();
+	model_free_list();
 
 	timers_free_list();
 	script_global_free_list();

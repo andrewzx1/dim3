@@ -274,6 +274,8 @@ void read_settings_particle(void)
 		particle->group.on=TRUE;
 		particle->group.count=0;
 
+		particle->count=0;
+
         particle_head_tag=xml_findfirstchild("Particles",particle_group_tag);
         if (particle_head_tag!=-1) {
 

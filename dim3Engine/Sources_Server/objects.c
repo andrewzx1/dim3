@@ -77,6 +77,32 @@ void object_free_list(void)
 	}
 }
 
+int object_count_list(void)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=max_obj_list;n++) {
+		if (server.obj_list.objs[n]!=NULL) count++;
+	}
+
+	return(count);
+}
+
+int object_count_weapons(obj_type *obj)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=max_weap_list;n++) {
+		if (obj->weap_list.weaps[n]!=NULL) count++;
+	}
+
+	return(count);
+}
+
 /* =======================================================
 
       Clear Object Structures

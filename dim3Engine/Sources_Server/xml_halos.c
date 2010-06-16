@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "lights.h"
 #include "xmls.h"
 
 extern server_type			server;
@@ -45,11 +46,6 @@ void read_settings_halo(void)
 	int					nhalo,halos_head_tag,halo_tag,tag;
 	char				path[1024];
 	halo_type			*halo;
-
-		// no halos yet
-
-	server.halos=NULL;
-	server.count.halo=0;
 
 		// read in interface from setting files
 		
@@ -71,12 +67,6 @@ void read_settings_halo(void)
 		return;
 	}
 
-	server.halos=(halo_type*)malloc(sizeof(halo_type)*nhalo);
-	if (server.halos==NULL) {
-		xml_close_file();
-		return;
-	}
-
 		// read the halos
 
 	halo_tag=xml_findfirstchild("Halo",halos_head_tag);
@@ -84,9 +74,14 @@ void read_settings_halo(void)
 	while (halo_tag!=-1) {
 	
 			// create a new halo
+
+		halo=halo_add_list();
+		if (halo==NULL) {
+			xml_close_file();
+		}
 			
-		halo=&server.halos[server.count.halo];
-		
+			// read settings
+			
 		xml_get_attribute_text(halo_tag,"name",halo->name,name_str_len);
 		
 		tag=xml_findfirstchild("Image",halo_tag);
@@ -96,8 +91,6 @@ void read_settings_halo(void)
 		
 			// move on to next halo
 			
-		server.count.halo++;
-
 		halo_tag=xml_findnextchild(halo_tag);
 	}
 	

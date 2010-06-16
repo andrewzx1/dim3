@@ -83,7 +83,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 	
 		// get the alpha
 	
-	mark=&server.marks[decal->mark_idx];
+	mark=server.mark_list.marks[decal->mark_idx];
 		
 	alpha=decal->alpha;
 	tick=game_time_get()-decal->start_tick;
@@ -130,7 +130,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
          // draw the polygon
 			
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
-	gl_texture_decal_set(view_images_get_gl_id(server.marks[decal->mark_idx].image_idx),cf[0],cf[1],cf[2],alpha);
+	gl_texture_decal_set(view_images_get_gl_id(mark->image_idx),cf[0],cf[1],cf[2],alpha);
 	
 	glBegin(GL_QUADS);
     glTexCoord2f(gx,gy);

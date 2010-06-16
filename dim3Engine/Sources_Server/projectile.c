@@ -75,6 +75,19 @@ void projectile_free_list(void)
 	}
 }
 
+int projectile_count_list(void)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=max_proj_list;n++) {
+		if (server.proj_list.projs[n]!=NULL) count++;
+	}
+
+	return(count);
+}
+
 /* =======================================================
 
       Projectile Lookup

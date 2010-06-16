@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "effects.h"
 #include "xmls.h"
 
 extern server_type			server;
@@ -46,11 +47,6 @@ void read_settings_mark(void)
 	char				path[1024];
 	mark_type			*mark;
 
-		// no marks yet
-
-	server.marks=NULL;
-	server.count.mark=0;
-	
 		// read in interface from setting files
 		
 	file_paths_data(&setup.file_path_setup,path,"Settings","Marks","xml");
@@ -71,21 +67,20 @@ void read_settings_mark(void)
 		return;
 	}
 
-	server.marks=(mark_type*)malloc(sizeof(mark_type)*nmark);
-	if (server.marks==NULL) {
-		xml_close_file();
-		return;
-	}
-
 		// read the marks
 	
 	mark_tag=xml_findfirstchild("Mark",marks_head_tag);
 	
 	while (mark_tag!=-1) {
 	
-			// start a new mark
+			// create a new mark
+
+		mark=mark_add_list();
+		if (mark==NULL) {
+			xml_close_file();
+		}
 			
-		mark=&server.marks[server.count.mark];
+			// read settings
 		
 		xml_get_attribute_text(mark_tag,"name",mark->name,name_str_len);
 		
@@ -139,8 +134,6 @@ void read_settings_mark(void)
 
 			// move on to next mark
 			
-		server.count.mark++;
-		
 		mark_tag=xml_findnextchild(mark_tag);
 	}
 	

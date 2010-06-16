@@ -33,13 +33,40 @@ extern server_type				server;
 
 /* =======================================================
 
-      Initialize Crosshairs
+      Crosshairs List
       
 ======================================================= */
 
-void crosshair_initialize(void)
+void crosshair_initialize_list(void)
 {
-	server.count.crosshair=0;
+	int				n;
+
+	for (n=0;n!=max_crosshair_list;n++) {
+		server.crosshair_list.crosshairs[n]=NULL;
+	}
+}
+
+void crosshair_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_crosshair_list;n++) {
+		if (server.crosshair_list.crosshairs[n]!=NULL) free(server.crosshair_list.crosshairs[n]);
+	}
+}
+
+crosshair_type* crosshair_add_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_crosshair_list;n++) {
+		if (server.crosshair_list.crosshairs[n]==NULL) {
+			server.crosshair_list.crosshairs[n]=(crosshair_type*)malloc(sizeof(crosshair_type));
+			return(server.crosshair_list.crosshairs[n]);
+		}
+	}
+
+	return(NULL);
 }
 
 /* =======================================================
@@ -53,11 +80,11 @@ int crosshair_find(char *name)
 	int				n;
 	crosshair_type	*crosshair;
 
-	crosshair=server.crosshairs;
-	
-	for (n=0;n!=server.count.crosshair;n++) {
+	for (n=0;n!=max_crosshair_list;n++) {
+		crosshair=server.crosshair_list.crosshairs[n];
+		if (crosshair==NULL) continue;
+
 		if (strcasecmp(crosshair->name,name)==0)  return(n);
-		crosshair++;
 	}
 	
 	return(-1);

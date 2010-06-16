@@ -258,10 +258,13 @@ void game_file_create_name(int tick,char *file_name)
 
 bool game_file_save(char *err_str)
 {
-	int					tick;
+	int					n,k,t,count,tick;
 	char				path[1024],file_name[256];
 	bool				ok;
 	file_save_header	head;
+	obj_type			*obj;
+	weapon_type			*weap;
+	proj_setup_type		*proj_setup;
 	
 	progress_initialize("Saving",NULL);
 	progress_draw(5);
@@ -300,12 +303,8 @@ bool game_file_save(char *err_str)
 		progress_shutdown();
 		return(FALSE);
 	}
-
-	free(game_file_data);
-	progress_shutdown();	// supergumba -- for testing!
-	return(TRUE);
 	
-		// view & server objects
+		// view & server state
 		
 	progress_draw(20);
 		
@@ -315,21 +314,85 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
 	game_file_add_chunk(&server.player_obj_idx,1,sizeof(int));
 	game_file_add_chunk(&server.skill,1,sizeof(int));
-
-	game_file_add_chunk(&server.count,1,sizeof(server_count_type));
 	
+		// objects, weapons, and projectile setups
+
 	progress_draw(30);
 
-// supergumba -- needs to be different, plus memory in obj->draw, etc	
-//	game_file_add_chunk(server.objs,server.count.obj,sizeof(obj_type));
-//	game_file_add_chunk(server.weapons,server.count.weapon,sizeof(weapon_type));
-//	game_file_add_chunk(server.proj_setups,server.count.proj_setup,sizeof(proj_setup_type));
-	
+	count=object_count_list();
+	game_file_add_chunk(&count,1,sizeof(int));
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		game_file_add_chunk(&n,1,sizeof(int));
+		game_file_add_chunk(obj,1,sizeof(obj_type));
+
+		count=object_count_weapons(obj);
+		game_file_add_chunk(&count,1,sizeof(int));
+
+		for (k=0;k!=max_weap_list;n++) {
+			weap=obj->weap_list.weaps[k];
+			if (weap==NULL) continue;
+
+			game_file_add_chunk(&k,1,sizeof(int));
+			game_file_add_chunk(weap,1,sizeof(weapon_type));
+
+			count=weapon_count_projectile_setups(weap);
+			game_file_add_chunk(&count,1,sizeof(int));
+
+			for (t=0;t!=max_proj_setup_list;t++) {
+				proj_setup=weap->proj_setup_list.proj_setups[t];
+				if (proj_setup==NULL) continue;
+
+				game_file_add_chunk(&t,1,sizeof(int));
+				game_file_add_chunk(proj_setup,1,sizeof(proj_setup_type));
+			}
+		}
+	}
+
+		// projectiles, effects and decals
+
 	progress_draw(40);
+
+	count=projectile_count_list();
+	game_file_add_chunk(&count,1,sizeof(int));
+
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (proj==NULL) continue;
+
+		game_file_add_chunk(&n,1,sizeof(int));
+		game_file_add_chunk(proj,1,sizeof(proj_type));
+	}
+
+	count=effect_count_list();
+	game_file_add_chunk(&count,1,sizeof(int));
+
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (effect==NULL) continue;
+
+		game_file_add_chunk(&n,1,sizeof(int));
+		game_file_add_chunk(effect,1,sizeof(effect_type));
+	}
+
+	count=decal_count_list();
+	game_file_add_chunk(&count,1,sizeof(int));
+
+	for (n=0;n!=max_decal_list;n++) {
+		decal=server.decal_list.decals[n];
+		if (decal==NULL) continue;
+
+		game_file_add_chunk(&n,1,sizeof(int));
+		game_file_add_chunk(decal,1,sizeof(decal_type));
+	}
+
+		// supergumba -- maybe we can do away with the size/count in add_chunk?
+
 	
-//	game_file_add_chunk(server.projs,server.count.proj,sizeof(proj_type));
-//	game_file_add_chunk(server.effects,server.count.effect,sizeof(effect_type));
-//	game_file_add_chunk(server.decals,server.count.decal,sizeof(decal_type));
+	
 	
 	progress_draw(50);
 	
@@ -350,9 +413,10 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(map.groups,1,sizeof(group_type)*map.ngroup);
 	game_file_add_chunk(map.movements,1,sizeof(movement_type)*map.nmovement);
 	
-		// script objects
+		// script timers and globals
 		
 	progress_draw(80);
+
 	
 //	game_file_add_chunk(&js.count,1,sizeof(script_count_type));
 		
@@ -471,16 +535,19 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&server.skill);
 	
 //	game_file_get_chunk(&server.uid);
-	game_file_get_chunk(&server.count);
 	
 	progress_draw(20);
 
 // supergumba -- needs to be different
+
+	// --> object_dispose_single
 //	free(server.objs);
 //	free(server.weapons);
 //	free(server.proj_setups);
 	
 	progress_draw(30);
+
+	// supergumba -- needs to be different, plus memory in obj->draw, etc	
 
 //	server.objs=(obj_type*)game_file_replace_chunk();
 //	server.weapons=(weapon_type*)game_file_replace_chunk();

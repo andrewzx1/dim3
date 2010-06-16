@@ -27,6 +27,7 @@ and can be sold or given away.
 
 extern bool effect_initialize_list(void);
 extern void effect_free_list(void);
+extern int effect_count_list(void);
 
 extern effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick);
 extern void effect_dispose(void);
@@ -63,11 +64,15 @@ extern bool ring_spawn(int ring_idx,int obj_uid,d3pnt *pt,d3ang *ang);
 extern bool ring_line_spawn(int ring_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int count);
 extern void ring_draw(effect_type *effect,int count);
 
-extern void mark_initialize(void);
+extern void mark_initialize_list(void);
+extern void mark_free_list(void);
+extern mark_type* mark_add_list(void);
 extern int mark_find(char *name);
 
 extern bool decal_initialize_list(void);
 extern void decal_free_list(void);
+extern int decal_count_list(void);
+
 extern void decal_move_with_mesh(int mesh_idx,int xmove,int ymove,int zmove);
 extern void decal_rotate_with_mesh(int mesh_idx,float y);
 extern void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha);

@@ -25,6 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
+extern int weapon_count_projectile_setups(weapon_type *weap);
+
 extern weapon_type* weapon_script_lookup(void);
 extern weapon_type* weapon_find_name(obj_type *obj,char *name);
 extern weapon_type* weapon_find_current(obj_type *obj);

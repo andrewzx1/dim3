@@ -39,17 +39,39 @@ extern setup_type		setup;
 
 /* =======================================================
 
-      Start Model Data
+      Model Lists
       
 ======================================================= */
 
-void model_initialize(void)
+void model_initialize_list(void)
 {
 	int				n;
 
 	for (n=0;n!=max_model_list;n++) {
 		server.model_list.models[n]=NULL;
 	}
+}
+
+void model_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_model_list;n++) {
+		if (server.model_list.models[n]==NULL) free(server.model_list.models[n]);
+	}
+}
+
+int model_count_list(void)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=max_model_list;n++) {
+		if (server.model_list.models[n]!=NULL) count++;
+	}
+
+	return(count);
 }
 
 /* =======================================================

@@ -128,7 +128,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	
 		// scope bitmap
 		
-	gl_id=view_images_get_gl_id(server.crosshairs[weap->zoom.mask_idx].image_idx);
+	gl_id=view_images_get_gl_id(server.crosshair_list.crosshairs[weap->zoom.mask_idx]->image_idx);
 	
 		// setup drawing
 		

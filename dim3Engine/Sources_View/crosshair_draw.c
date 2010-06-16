@@ -168,7 +168,7 @@ void crosshair_setup_click(obj_type *obj)
 		return;
 	}
 
-	crosshair_draw->gl_id=view_images_get_gl_id(server.crosshairs[idx].image_idx);
+	crosshair_draw->gl_id=view_images_get_gl_id(server.crosshair_list.crosshairs[idx]->image_idx);
 }
 
 void crosshair_setup_weapon(obj_type *obj,weapon_type *weap)
@@ -249,7 +249,7 @@ void crosshair_setup_weapon(obj_type *obj,weapon_type *weap)
 	
 		// regular weapon crosshair
 		
-	crosshair_draw->gl_id=view_images_get_gl_id(server.crosshairs[weap->crosshair.fire_idx].image_idx);
+	crosshair_draw->gl_id=view_images_get_gl_id(server.crosshair_list.crosshairs[weap->crosshair.fire_idx]->image_idx);
 	
 		// change color if picking up an item or empty
 

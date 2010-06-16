@@ -72,7 +72,7 @@ bool game_start(int skill,char *err_str)
 	console_add_system("Starting Game");
 
 		// start server
-	
+
 	if (!server_game_start("Game",skill,err_str)) return(FALSE);
 
 		// start view

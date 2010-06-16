@@ -27,6 +27,8 @@ and can be sold or given away.
 
 extern void object_initialize_list(void);
 extern void object_free_list(void);
+extern int object_count_list(void);
+int object_count_weapons(obj_type *obj);
 
 extern void object_team_get_name(int team_idx,char *str);
 extern void object_team_get_tint(int team_idx,d3col *tint);

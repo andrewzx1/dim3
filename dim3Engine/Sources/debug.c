@@ -211,12 +211,7 @@ void debug_dump(void)
 	
 		// objects
 
-	cnt=0;
-
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
-		if (obj!=NULL) cnt++;
-	}
+	cnt=object_list_count();
 
 	debug_header("Objects",cnt,(sizeof(obj_type)*cnt));
 	
@@ -292,16 +287,14 @@ void debug_dump(void)
 	
 		// models
 
-	cnt=0;
 	mem_sz=0;
 
 	for (i=0;i!=max_model_list;i++) {
 		mdl=server.model_list.models[i];
-		if (mdl==NULL) continue;
-
-		cnt++;
-		mem_sz+=(sizeof(model_type)+model_memory_size(mdl));
+		if (mdl!=NULL) mem_sz+=(sizeof(model_type)+model_memory_size(mdl));
 	}
+
+	cnt=model_count_list();
 		
 	debug_header("Models",cnt,mem_sz);
 	

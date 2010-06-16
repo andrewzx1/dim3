@@ -34,13 +34,40 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Initialize Halos
+      Halos List
       
 ======================================================= */
 
-void halo_initialize(void)
+void halo_initialize_list(void)
 {
-	server.count.halo=0;
+	int				n;
+
+	for (n=0;n!=max_halo_list;n++) {
+		server.halo_list.halos[n]=NULL;
+	}
+}
+
+void halo_free_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_halo_list;n++) {
+		if (server.halo_list.halos[n]!=NULL) free(server.halo_list.halos[n]);
+	}
+}
+
+halo_type* halo_add_list(void)
+{
+	int				n;
+
+	for (n=0;n!=max_halo_list;n++) {
+		if (server.halo_list.halos[n]==NULL) {
+			server.halo_list.halos[n]=(halo_type*)malloc(sizeof(halo_type));
+			return(server.halo_list.halos[n]);
+		}
+	}
+
+	return(NULL);
 }
 
 /* =======================================================
@@ -54,11 +81,11 @@ int halo_find(char *name)
 	int			n;
 	halo_type	*halo;
 
-	halo=server.halos;
-	
-	for (n=0;n!=server.count.halo;n++) {
+	for (n=0;n!=max_halo_list;n++) {
+		halo=server.halo_list.halos[n];
+		if (halo==NULL) continue;
+
 		if (strcasecmp(halo->name,name)==0)  return(n);
-		halo++;
 	}
 	
 	return(-1);
