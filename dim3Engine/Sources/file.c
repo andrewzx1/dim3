@@ -265,6 +265,9 @@ bool game_file_save(char *err_str)
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
+	proj_type			*proj;
+	effect_type			*effect;
+	decal_type			*decal;
 	
 	progress_initialize("Saving",NULL);
 	progress_draw(5);

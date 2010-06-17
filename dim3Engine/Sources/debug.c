@@ -211,7 +211,7 @@ void debug_dump(void)
 	
 		// objects
 
-	cnt=object_list_count();
+	cnt=object_count_list();
 
 	debug_header("Objects",cnt,(sizeof(obj_type)*cnt));
 	
