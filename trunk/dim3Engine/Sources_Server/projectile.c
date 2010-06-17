@@ -82,7 +82,9 @@ int projectile_count_list(void)
 	count=0;
 
 	for (n=0;n!=max_proj_list;n++) {
-		if (server.proj_list.projs[n]!=NULL) count++;
+		if (server.proj_list.projs[n]!=NULL) {
+			if (server.proj_list.projs[n]->on) count++;
+		}
 	}
 
 	return(count);

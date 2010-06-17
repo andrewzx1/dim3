@@ -188,13 +188,13 @@ void intro_click_game(int skill)
 
 		// start game
 
-	if (!game_start(skill,err_str)) {
+	if (!game_start(FALSE,skill,err_str)) {
 		error_setup(err_str,"Game Start Canceled");
 		server.next_state=gs_error;
 		return;
 	}
 
-	if (!map_start(FALSE,err_str)) {
+	if (!map_start(FALSE,FALSE,err_str)) {
 		error_setup(err_str,"Game Start Canceled");
 		server.next_state=gs_error;
 		return;

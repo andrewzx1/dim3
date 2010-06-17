@@ -670,7 +670,7 @@ void join_game(void)
 	
 		// start game
 	
-	if (!game_start(skill_medium,err_str)) {
+	if (!game_start(FALSE,skill_medium,err_str)) {
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;
@@ -678,7 +678,7 @@ void join_game(void)
 	
 		// start the map
 		
-	if (!map_start(TRUE,err_str)) {
+	if (!map_start(FALSE,TRUE,err_str)) {
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;

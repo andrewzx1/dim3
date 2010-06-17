@@ -61,6 +61,19 @@ void timers_free_list(void)
 	}
 }
 
+int timers_count_list(void)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=max_timer_list;n++) {
+		if (js.timer_list.timers[n]!=NULL) count++;
+	}
+
+	return(count);
+}
+
 /* =======================================================
 
       Find Timer

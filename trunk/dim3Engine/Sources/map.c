@@ -236,7 +236,7 @@ void map_mesh_polygon_draw_flag_setup(void)
       
 ======================================================= */
 
-bool map_start(bool skip_media,char *err_str)
+bool map_start(bool in_file_load,bool skip_media,char *err_str)
 {
 	int				tick;
 	char			txt[256];
@@ -379,11 +379,14 @@ bool map_start(bool skip_media,char *err_str)
 	scenery_create();
 	scenery_start();
 	
-		// spawn into map
+		// if not restoring a existing game,
+		// spawn objects into map
 		
-	if (!map_object_attach_all(err_str)) {
-		progress_shutdown();
-		return(FALSE);
+	if (!in_file_load) {
+		if (!map_object_attach_all(err_str)) {
+			progress_shutdown();
+			return(FALSE);
+		}
 	}
 	
 		// attach player to map
@@ -396,8 +399,10 @@ bool map_start(bool skip_media,char *err_str)
 		
 			// connect camera to player
 			
-		obj=server.obj_list.objs[server.player_obj_idx];
-		camera_connect(obj);
+		if (!in_file_load) {
+			obj=server.obj_list.objs[server.player_obj_idx];
+			camera_connect(obj);
+		}
 	}
 	
 		// initialize movements and lookups
@@ -575,5 +580,5 @@ bool map_need_rebuild(void)
 bool map_rebuild_changes(char *err_str)
 {
 	if (server.map_open) map_end();
-	return(map_start(FALSE,err_str));
+	return(map_start(FALSE,FALSE,err_str));
 }

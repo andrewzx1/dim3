@@ -375,7 +375,7 @@ typedef struct		{
 //
  
 typedef struct		{
-						int								type,script_idx;
+						int								type;
 						char							name[name_str_len];
 						d3_jsval_data_type				data;
 					} global_type;

@@ -138,7 +138,9 @@ int decal_count_list(void)
 	count=0;
 
 	for (n=0;n!=max_decal_list;n++) {
-		if (server.decal_list.decals[n]!=NULL) count++;
+		if (server.decal_list.decals[n]!=NULL) {
+			if (server.decal_list.decals[n]->on) count++;
+		}
 	}
 
 	return(count);

@@ -79,7 +79,9 @@ int effect_count_list(void)
 	count=0;
 
 	for (n=0;n!=max_effect_list;n++) {
-		if (server.effect_list.effects[n]!=NULL) count++;
+		if (server.effect_list.effects[n]!=NULL) {
+			if (server.effect_list.effects[n]->on) count++;
+		}
 	}
 
 	return(count);

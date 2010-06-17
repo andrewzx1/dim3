@@ -40,6 +40,7 @@ extern int object_create(char *name,int type,int bind);
 extern int object_start(spot_type *spot,char *name,int type,int bind,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
+extern void object_dispose_all(void);
 
 extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
 extern bool object_script_remove(int idx,char *err_str);
