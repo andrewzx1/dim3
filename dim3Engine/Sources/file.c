@@ -30,6 +30,9 @@ and can be sold or given away.
 #endif
 
 #include "objects.h"
+#include "weapons.h"
+#include "projectiles.h"
+#include "effects.h"
 #include "scripts.h"
 #include "interfaces.h"
 #include "models.h"
@@ -268,6 +271,8 @@ bool game_file_save(char *err_str)
 	proj_type			*proj;
 	effect_type			*effect;
 	decal_type			*decal;
+	timer_type			*timer;
+	global_type			*global;
 	
 	progress_initialize("Saving",NULL);
 	progress_draw(5);
@@ -296,20 +301,9 @@ bool game_file_save(char *err_str)
 		
 	game_file_add_chunk(&head,1,sizeof(file_save_header));
 	
-		// send scripts save event
-		// to backup globals
-		
-	progress_draw(10);
-	
-	if (!script_state_save()) {
-		free(game_file_data);
-		progress_shutdown();
-		return(FALSE);
-	}
-	
 		// view & server state
 		
-	progress_draw(20);
+	progress_draw(10);
 		
 	game_file_add_chunk(&view.time,1,sizeof(view_time_type));
 	game_file_add_chunk(&camera,1,sizeof(camera_type));
@@ -320,7 +314,7 @@ bool game_file_save(char *err_str)
 	
 		// objects, weapons, and projectile setups
 
-	progress_draw(30);
+	progress_draw(20);
 
 	count=object_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -335,7 +329,7 @@ bool game_file_save(char *err_str)
 		count=object_count_weapons(obj);
 		game_file_add_chunk(&count,1,sizeof(int));
 
-		for (k=0;k!=max_weap_list;n++) {
+		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 
@@ -357,7 +351,7 @@ bool game_file_save(char *err_str)
 
 		// projectiles, effects and decals
 
-	progress_draw(40);
+	progress_draw(30);
 
 	count=projectile_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -365,6 +359,7 @@ bool game_file_save(char *err_str)
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
 		if (proj==NULL) continue;
+		if (!proj->on) continue;
 
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(proj,1,sizeof(proj_type));
@@ -376,6 +371,7 @@ bool game_file_save(char *err_str)
 	for (n=0;n!=max_effect_list;n++) {
 		effect=server.effect_list.effects[n];
 		if (effect==NULL) continue;
+		if (!effect->on) continue;
 
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(effect,1,sizeof(effect_type));
@@ -387,17 +383,13 @@ bool game_file_save(char *err_str)
 	for (n=0;n!=max_decal_list;n++) {
 		decal=server.decal_list.decals[n];
 		if (decal==NULL) continue;
+		if (!decal->on) continue;
 
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(decal,1,sizeof(decal_type));
 	}
-
-		// supergumba -- maybe we can do away with the size/count in add_chunk?
-
 	
-	
-	
-	progress_draw(50);
+	progress_draw(40);
 	
 	game_file_add_chunk(hud.bitmaps,hud.count.bitmap,sizeof(hud_bitmap_type));
 	game_file_add_chunk(hud.texts,hud.count.text,sizeof(hud_text_type));
@@ -406,25 +398,51 @@ bool game_file_save(char *err_str)
 	
 		// map changes
 		
-	progress_draw(60);
+	progress_draw(50);
 
 	game_file_add_chunk(&map.ambient,1,sizeof(map_ambient_type));					
 	game_file_add_chunk(&map.fog,1,sizeof(map_fog_type));
 
-	progress_draw(70);
+	progress_draw(60);
 
 	game_file_add_chunk(map.groups,1,sizeof(group_type)*map.ngroup);
 	game_file_add_chunk(map.movements,1,sizeof(movement_type)*map.nmovement);
 	
-		// script timers and globals
+		// script states
 		
+	progress_draw(70);
+
+	if (!script_state_save()) {
+		free(game_file_data);
+		progress_shutdown();
+		return(FALSE);
+	}
+
+		// timers and script data
+
 	progress_draw(80);
 
-	
-//	game_file_add_chunk(&js.count,1,sizeof(script_count_type));
-		
-//	game_file_add_chunk(js.timers,js.count.timer,sizeof(timer_type));
-//	game_file_add_chunk(js.globals,js.count.global,sizeof(global_type));
+	count=timers_count_list();
+	game_file_add_chunk(&count,1,sizeof(int));
+
+	for (n=0;n!=max_timer_list;n++) {
+		timer=js.timer_list.timers[n];
+		if (timer==NULL) continue;
+
+		game_file_add_chunk(&n,1,sizeof(int));
+		game_file_add_chunk(timer,1,sizeof(timer_type));
+	}
+
+	count=script_global_count_list();
+	game_file_add_chunk(&count,1,sizeof(int));
+
+	for (n=0;n!=max_global_list;n++) {
+		global=js.global_list.globals[n];
+		if (global==NULL) continue;
+
+		game_file_add_chunk(&n,1,sizeof(int));
+		game_file_add_chunk(global,1,sizeof(global_type));
+	}
 
 		// compress and save
 		
@@ -461,9 +479,12 @@ bool game_file_save(char *err_str)
 
 bool game_file_load(char *file_name,char *err_str)
 {
-	bool				ok;
+	int					n,k,t,count,weap_count,proj_setup_count,idx;
+	bool				ok,map_change;
 	char				*c,path[1024],fname[256];
 	file_save_header	head;
+	obj_type			*obj;
+	weapon_type			*weap;
 	
 		// load and expand
 		
@@ -476,12 +497,23 @@ bool game_file_load(char *file_name,char *err_str)
 	
 	game_file_pos=0;
 
+		// get header
+
+	game_file_get_chunk(&head);
+
+		// setup map and determine if it's changed
+
+	map_change=((!server.map_open) || (strcmp(head.map_name,map.info.name)!=0));
+
+	strcpy(map.info.name,head.map_name);
+	map.info.player_start_name[0]=0x0;
+
 		// if game isn't running, then start
 		
 	if (!server.game_open) {
 
 		scripts_lock_events();
-		ok=game_start(skill_medium,err_str);
+		ok=game_start(TRUE,skill_medium,err_str);
 		scripts_unlock_events();
 		
 		if (!ok) {
@@ -489,10 +521,6 @@ bool game_file_load(char *file_name,char *err_str)
 			return(FALSE);
 		}
 	}
-
-		// get header
-
-	game_file_get_chunk(&head);
 
 		// check version
 		
@@ -504,7 +532,7 @@ bool game_file_load(char *file_name,char *err_str)
 		
 		// reload map
 
-	if ((!server.map_open) || (strcmp(head.map_name,map.info.name)!=0)) {		// need to load a map?
+	if (map_change) {
 	
 		if (server.map_open) map_end();
 		
@@ -512,7 +540,7 @@ bool game_file_load(char *file_name,char *err_str)
 		map.info.player_start_name[0]=0x0;
 
 		scripts_lock_events();
-		ok=map_start(TRUE,err_str);
+		ok=map_start(TRUE,TRUE,err_str);
 		scripts_unlock_events();
 		
 		if (!ok) {
@@ -525,49 +553,135 @@ bool game_file_load(char *file_name,char *err_str)
 
 	progress_initialize("Loading",NULL);
 
-		// view and server objects
+		// view & server state
 		
 	progress_draw(10);
 					
 	game_file_get_chunk(&view.time);
-	game_file_get_chunk(&view.fps);
 	game_file_get_chunk(&camera);
 	
 	game_file_get_chunk(&server.time);
 	game_file_get_chunk(&server.player_obj_idx);
 	game_file_get_chunk(&server.skill);
-	
-//	game_file_get_chunk(&server.uid);
+
+		// objects, weapons, and projectile setups
 	
 	progress_draw(20);
 
-// supergumba -- needs to be different
+	object_dispose_all();
+	object_free_list();
+	object_initialize_list();
 
-	// --> object_dispose_single
-//	free(server.objs);
-//	free(server.weapons);
-//	free(server.proj_setups);
+	game_file_get_chunk(&count);
+
+	for (n=0;n!=count;n++) {
+
+		game_file_get_chunk(&idx);
+
+		server.obj_list.objs[idx]=(obj_type*)malloc(sizeof(obj_type));
+		if (server.obj_list.objs[idx]==NULL) {
+			free(game_file_data);
+			progress_shutdown();
+			return(FALSE);
+		}
+
+		game_file_get_chunk(server.obj_list.objs[idx]);
+
+		obj=server.obj_list.objs[idx];
+
+			// object weapons
+
+		game_file_get_chunk(&weap_count);
+
+		for (k=0;k!=weap_count;k++) {
+			
+			game_file_get_chunk(&idx);
+			obj->weap_list.weaps[idx]=(weapon_type*)malloc(sizeof(weapon_type));
+			if (obj->weap_list.weaps[idx]==NULL) {
+				free(game_file_data);
+				progress_shutdown();
+				return(FALSE);
+			}
+
+			game_file_get_chunk(obj->weap_list.weaps[idx]);
+
+			weap=obj->weap_list.weaps[idx];
+
+				// object weapon projectile setups
+
+			game_file_get_chunk(&proj_setup_count);
+
+			for (t=0;t!=proj_setup_count;t++) {
+				
+				game_file_get_chunk(&idx);
+				weap->proj_setup_list.proj_setups[idx]=(proj_setup_type*)malloc(sizeof(proj_setup_type));
+				if (weap->proj_setup_list.proj_setups[idx]==NULL) {
+					free(game_file_data);
+					progress_shutdown();
+					return(FALSE);
+				}
+
+				game_file_get_chunk(weap->proj_setup_list.proj_setups[idx]);
+			}
+		}
+	}
+
+		// projectiles, effects and decals
 	
 	progress_draw(30);
 
-	// supergumba -- needs to be different, plus memory in obj->draw, etc	
+	projectile_free_list();
+	projectile_initialize_list();
 
-//	server.objs=(obj_type*)game_file_replace_chunk();
-//	server.weapons=(weapon_type*)game_file_replace_chunk();
-//	server.proj_setups=(proj_setup_type*)game_file_replace_chunk();
+	game_file_get_chunk(&count);
 
-//	if ((server.objs==NULL) || (server.weapons==NULL) || (server.proj_setups==NULL)) {
-//		free(game_file_data);
-//		return(FALSE);
-//	}
+	for (n=0;n!=count;n++) {
+		game_file_get_chunk(&idx);
+		server.proj_list.projs[idx]=(proj_type*)malloc(sizeof(proj_type));
+		if (server.proj_list.projs[idx]==NULL) {
+			free(game_file_data);
+			progress_shutdown();
+			return(FALSE);
+		}
+
+		game_file_get_chunk(server.proj_list.projs[idx]);
+	}
+
+	effect_free_list();
+	effect_initialize_list();
+
+	game_file_get_chunk(&count);
+
+	for (n=0;n!=count;n++) {
+		game_file_get_chunk(&idx);
+		server.effect_list.effects[idx]=(effect_type*)malloc(sizeof(effect_type));
+		if (server.effect_list.effects[idx]==NULL) {
+			free(game_file_data);
+			progress_shutdown();
+			return(FALSE);
+		}
+
+		game_file_get_chunk(server.effect_list.effects[idx]);
+	}
+
+	decal_free_list();
+	decal_initialize_list();
+
+	game_file_get_chunk(&count);
+
+	for (n=0;n!=count;n++) {
+		game_file_get_chunk(&idx);
+		server.decal_list.decals[idx]=(decal_type*)malloc(sizeof(decal_type));
+		if (server.decal_list.decals[idx]==NULL) {
+			free(game_file_data);
+			progress_shutdown();
+			return(FALSE);
+		}
+
+		game_file_get_chunk(server.decal_list.decals[idx]);
+	}
 
 	progress_draw(40);
-
-//	game_file_get_chunk(server.projs);
-//	game_file_get_chunk(server.effects);
-//	game_file_get_chunk(server.decals);
-
-	progress_draw(50);
 
 	game_file_get_chunk(hud.bitmaps);
 	game_file_get_chunk(hud.texts);
@@ -579,12 +693,9 @@ bool game_file_load(char *file_name,char *err_str)
 	progress_draw(60);
 
 	game_file_get_chunk(&map.ambient);					
-	game_file_get_chunk(&map.rain);					
-	game_file_get_chunk(&map.background);					
-	game_file_get_chunk(&map.sky);
 	game_file_get_chunk(&map.fog);
 
-	progress_draw(70);
+	progress_draw(60);
 	
 	map_group_dispose_unit_list(&map);			// need to destroy and rebuild unit lists
 	game_file_get_chunk(map.groups);
@@ -595,15 +706,60 @@ bool game_file_load(char *file_name,char *err_str)
 	group_moves_synch_with_load();
 	
 		// script objects
+	fprintf(stdout,"script state\n");
+	fflush(stdout);
 		
+	progress_draw(70);
+
+	if (!script_state_load()) {
+		free(game_file_data);
+		progress_shutdown();
+		return(FALSE);
+	}
+
+		// timers and script data
+	fprintf(stdout,"timers and groups\n");
+	fflush(stdout);
+
 	progress_draw(80);
 
-//	game_file_get_chunk(&js.count);
-	
-//	game_file_get_chunk(js.timers);
-//	game_file_get_chunk(js.globals);
+	timers_free_list();
+	timers_initialize_list();
 
-		// reset model
+	game_file_get_chunk(&count);
+
+	for (n=0;n!=count;n++) {
+		game_file_get_chunk(&idx);
+		js.timer_list.timers[idx]=(timer_type*)malloc(sizeof(timer_type));
+		if (js.timer_list.timers[idx]==NULL) {
+			free(game_file_data);
+			progress_shutdown();
+			return(FALSE);
+		}
+
+		game_file_get_chunk(js.timer_list.timers[idx]);
+	}
+
+	script_global_free_list();
+	script_global_initialize_list();
+
+	game_file_get_chunk(&count);
+
+	for (n=0;n!=count;n++) {
+		game_file_get_chunk(&idx);
+		js.global_list.globals[idx]=(global_type*)malloc(sizeof(global_type));
+		if (js.global_list.globals[idx]==NULL) {
+			free(game_file_data);
+			progress_shutdown();
+			return(FALSE);
+		}
+
+		game_file_get_chunk(js.global_list.globals[idx]);
+	}
+
+		// reset models
+		// this fixes the indexes and creates
+		// new model draw memory
 
 	progress_draw(90);
 
@@ -613,12 +769,6 @@ bool game_file_load(char *file_name,char *err_str)
 		// and reset indexes on timers
 		
 	progress_draw(95);
-	
-	if (!script_state_load()) {
-		free(game_file_data);
-		progress_shutdown();
-		return(FALSE);
-	}
 
 	timers_fix_script_indexes();
 

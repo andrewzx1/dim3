@@ -126,7 +126,7 @@ bool script_state_save_single(attach_type *attach)
 
 		// end each block with a 0 prop name length
 
-	prop_name_len=prop_value_len=0;
+	prop_name_len=0;
 	game_file_add_chunk(&prop_name_len,1,sizeof(int));
 
 	return(TRUE);
@@ -187,6 +187,9 @@ bool script_state_load_single(attach_type *attach)
 
 	script=js.script_list.scripts[attach->script_idx];
 
+	fprintf(stdout,"loading %s\n",script->name);
+	fflush(stdout);
+
 		// run through the properties to replace
 		// a 0 property name length means the end
 		// of properties for this script
@@ -199,6 +202,9 @@ bool script_state_load_single(attach_type *attach)
 		if (prop_name_len==0) break;
 
 		game_file_get_chunk(prop_name);
+
+		fprintf(stdout,"  got %s\n",prop_name);
+		fflush(stdout);
 
 		game_file_get_chunk(&prop_value_len);
 		prop_value=(char*)malloc(prop_value_len);
@@ -221,6 +227,9 @@ bool script_state_load_single(attach_type *attach)
 
 		// send load event to script
 
+	fprintf(stdout,"  calling load event\n");
+	fflush(stdout);
+
 	scripts_post_event(attach,sd_event_state,sd_event_state_load,0,err_str);
 
 	return(TRUE);
@@ -236,9 +245,15 @@ bool script_state_load(void)
 	if (!script_state_load_single(&js.game_attach)) return(FALSE);
 	if (!script_state_load_single(&js.course_attach)) return(FALSE);
 	
+	fprintf(stdout,"got here******\n");
+	fflush(stdout);
+
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
+
+		fprintf(stdout,"OBJ: %s\n",obj->name);
+		fflush(stdout);
 
 		if (!script_state_load_single(&obj->attach)) return(FALSE);
 

@@ -943,6 +943,17 @@ void object_dispose_2(int bind)
 	}
 }
 
+void object_dispose_all(void)
+{
+	int				n;
+	obj_type		*obj;
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj!=NULL) object_dispose_single(n);
+	}
+}
+
 /* =======================================================
 
       Script Object Spawn/Remove

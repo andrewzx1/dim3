@@ -553,18 +553,22 @@ extern JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent
 
 extern void script_global_initialize_list(void);
 extern void script_global_free_list(void);
-extern int script_find_global(char *name,int script_idx);
+extern int script_global_count_list(void);
+
+extern int script_find_global(char *name);
 extern void script_set_global_by_index(JSContextRef cx,int idx,JSValueRef val);
-extern bool script_set_global(JSContextRef cx,char *name,int script_idx,JSValueRef val);
-extern JSValueRef script_get_global(JSContextRef cx,char *name,int script_idx);
-extern bool script_add_global(JSContextRef cx,char *name,int script_idx,JSValueRef val);
-extern void script_delete_global(char *name,int script_idx);
+extern bool script_set_global(JSContextRef cx,char *name,JSValueRef val);
+extern JSValueRef script_get_global(JSContextRef cx,char *name);
+extern bool script_add_global(JSContextRef cx,char *name,JSValueRef val);
+extern void script_delete_global(char *name);
 
 extern bool script_state_save(void);
 extern bool script_state_load(void);
 
 extern void timers_initialize_list(void);
 extern void timers_free_list(void);
+extern int timers_count_list(void);
+
 extern int timers_find(attach_type *attach,int mode);
 extern bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode);
 extern void timers_remove(int idx);

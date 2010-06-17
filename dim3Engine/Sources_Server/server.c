@@ -193,7 +193,7 @@ void server_shutdown(void)
       
 ======================================================= */
 
-bool server_game_start(char *game_script_name,int skill,char *err_str)
+bool server_game_start(bool in_file_load,int skill,char *game_script_name,char *err_str)
 {
 		// initialize lists
 
@@ -221,17 +221,23 @@ bool server_game_start(char *game_script_name,int skill,char *err_str)
 	
 	if (!scripts_add(&js.game_attach,"Game",game_script_name,NULL,err_str)) return(FALSE);
 
-		// editor map override?
+		// if not reloading, then check that
+		// a map was set
+
+	if (!in_file_load) {
+
+			// editor map override?
+			
+		if (setup.editor_override.on) {
+			strcpy(map.info.name,setup.editor_override.map);
+		}
 		
-	if (setup.editor_override.on) {
-		strcpy(map.info.name,setup.editor_override.map);
-	}
-	
-		// can't start a game without a map
-	
-	if (map.info.name[0]==0x0) {
-		strcpy(err_str,"Game: No start map specified in game script");
-		return(FALSE);
+			// can't start a game without a map
+		
+		if (map.info.name[0]==0x0) {
+			strcpy(err_str,"Game: No start map specified in game script");
+			return(FALSE);
+		}
 	}
 
 		// create game player object

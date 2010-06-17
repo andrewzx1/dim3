@@ -489,7 +489,7 @@ void host_game(void)
 	
 		// start game
 	
-	if (!game_start(skill_medium,err_str)) {
+	if (!game_start(FALSE,skill_medium,err_str)) {
 		net_host_game_end();
 		error_setup(err_str,"Hosting Game Canceled");
 		server.next_state=gs_error;
@@ -502,7 +502,7 @@ void host_game(void)
 	
 		// start the map
 		
-	if (!map_start(TRUE,err_str)) {
+	if (!map_start(FALSE,TRUE,err_str)) {
 		net_host_game_end();
 		error_setup(err_str,"Hosting Game Canceled");
 		server.next_state=gs_error;
