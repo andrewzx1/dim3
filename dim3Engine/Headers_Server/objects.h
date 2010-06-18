@@ -50,7 +50,7 @@ extern void object_set_current_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
 
-extern bool object_start_script(obj_type *obj,char *name,char *params,char *err_str);
+extern bool object_start_script(obj_type *obj,char *err_str);
 
 extern void object_clear_size(obj_size *size);
 extern void object_clear_position(d3pnt *pnt);

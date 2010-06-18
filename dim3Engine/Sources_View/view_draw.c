@@ -92,115 +92,8 @@ extern void view_calculate_sways(obj_type *obj);
 extern void view_calculate_bump(obj_type *obj);
 extern void shadow_render_model(int item_type,int item_idx,model_draw *draw);
 extern void shadow_render_mesh(int mesh_idx);
-
-/* =======================================================
-
-      Draw Debug Object
-      
-======================================================= */
-
-void view_draw_object_debug_bounding_box(obj_type *obj)
-{
-	int				n,xsz,ysz,zsz,px[8],py[8],pz[8];
-	float			fx,fy,fz;
-	matrix_type		rot_x_mat,rot_y_mat,rot_z_mat;
-	d3col			col;
-
-		// bounding box
-
-	xsz=obj->size.x>>1;
-	zsz=obj->size.z>>1;
-	
-	ysz=obj->size.y;
-	if (obj->duck.mode!=dm_stand) ysz-=obj->duck.y_move;
-	if (obj->liquid.mode==lm_float) ysz+=obj->liquid.bob_y_move;
-
-	px[0]=px[1]=px[4]=px[5]=-xsz;
-	px[2]=px[3]=px[6]=px[7]=xsz;
-
-	py[0]=py[1]=py[2]=py[3]=-ysz;
-	py[4]=py[5]=py[6]=py[7]=0;
-
-	pz[1]=pz[2]=pz[5]=pz[6]=-zsz;
-	pz[0]=pz[3]=pz[4]=pz[7]=zsz;
-
-	matrix_rotate_x(&rot_x_mat,obj->draw.setup.ang.x);
-	matrix_rotate_z(&rot_z_mat,obj->draw.setup.ang.z);
-	matrix_rotate_y(&rot_y_mat,obj->draw.setup.ang.y);
-
-	for (n=0;n!=8;n++) {
-		fx=(float)px[n];
-		fy=(float)py[n];
-		fz=(float)pz[n];
-		
-		matrix_vertex_multiply(&rot_x_mat,&fx,&fy,&fz);
-		matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
-		matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
-		
-		px[n]=(int)fx;
-		py[n]=(int)fy;
-		pz[n]=(int)fz;
-	}
-	
-	for (n=0;n!=8;n++) {
-		px[n]=px[n]+obj->pnt.x;
-		py[n]=py[n]+obj->pnt.y;
-		pz[n]=pz[n]+obj->pnt.z;
-	}
-
-		// draw box
-
-	col.r=col.g=0.2f;
-	col.b=1.0f;
-
-	glLineWidth(2.0f);
-	view_draw_next_vertex_object_3D_line_cube(&col,1.0f,px,py,pz);
-	glLineWidth(1.0f);
-}
-
-void view_draw_object_debug_path(obj_type *obj)
-{
-	int				yadd;
-	d3pnt			pnt;
-	d3col			col;
-
-	if (!object_auto_walk_get_seek_position(obj,&pnt)) return;
-
-	col.r=col.b=0.0f;
-	col.g=1.0f;
-
-	yadd=obj->size.y>>1;
-
-	glLineWidth(2.0f);
-	view_draw_next_vertex_object_3D_line(&col,1.0f,obj->pnt.x,(obj->pnt.y-yadd),obj->pnt.z,pnt.x,(pnt.y-yadd),pnt.z);
-	glLineWidth(1.0f);
-}
-
-void view_draw_object_debug_collision_ray(obj_type *obj)
-{
-	int			n;
-	d3pnt		*spt,*ept;
-	d3col		col;
-
-	if (obj->suspend) return;
-	if ((!obj->forward_move.moving) && (!obj->side_move.moving)) return;
-
-	col.r=col.b=1.0f;
-	col.g=0.0f;
-
-	spt=obj->debug.collide_spt;
-	ept=obj->debug.collide_ept;
-
-	glLineWidth(2.0f);
-
-	for (n=0;n!=collide_obj_ray_count;n++) {
-		view_draw_next_vertex_object_3D_line(&col,1.0f,spt->x,spt->y,spt->z,ept->x,ept->y,ept->z);
-		spt++;
-		ept++;
-	}
-
-	glLineWidth(1.0f);
-}
+extern void view_draw_debug_object(obj_type *obj);
+extern void view_draw_debug_projectile(proj_type *proj);
 
 /* =======================================================
 
@@ -360,22 +253,23 @@ void view_draw_models_final(void)
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
 					if (obj->type==object_type_remote) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
-					if (view.debug.on) {
-						view_draw_object_debug_bounding_box(obj);
-						view_draw_object_debug_path(obj);
-						view_draw_object_debug_collision_ray(obj);
-					}
+					if (view.debug.on) view_draw_debug_object(obj);
 				}
 				break;
 
 			case view_render_type_projectile:
 				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
+
 				if ((shadow_on) && (proj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
 						render_model_setup(&proj->draw);
 						render_model_build_vertex_lists(&proj->draw);
 						shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw);
 					}
+				}
+
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
+					if (view.debug.on) view_draw_debug_projectile(proj);
 				}
 				break;
 

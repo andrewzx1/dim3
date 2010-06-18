@@ -104,6 +104,7 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_set_debug_string_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_setting_props[]={
 							{"id",						js_obj_setting_get_id,						NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -148,6 +149,7 @@ JSStaticFunction	obj_setting_functions[]={
 							{"setAmbient",				js_obj_set_ambient_func,					kJSPropertyAttributeDontDelete},
 							{"changeAmbientPitch",		js_obj_change_ambient_pitch_func,			kJSPropertyAttributeDontDelete},
 							{"clearAmbient",			js_obj_clear_ambient_func,					kJSPropertyAttributeDontDelete},
+							{"setDebugString",			js_obj_set_debug_string_func,				kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			obj_setting_class;
@@ -792,12 +794,10 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	obj=object_script_lookup();
 	
-	if (obj->attach.script_idx==-1) return(script_null_to_value(cx));
-	
     k=script_value_to_int(cx,argv[0]);
     if (k<0) k=0;
     
-    c=js.script_list.scripts[obj->attach.script_idx]->params;
+    c=obj->spot_params;
     while (k!=0) {
         c=strchr(c,'|');
         if (c==NULL) break;
@@ -854,6 +854,19 @@ JSValueRef js_obj_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 	return(script_null_to_value(cx));
 }
+
+JSValueRef js_obj_set_debug_string_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	obj=object_script_lookup();
+	script_value_to_string(cx,argv[0],obj->debug.str,256);
+
+	return(script_null_to_value(cx));
+}
+
 
 
 

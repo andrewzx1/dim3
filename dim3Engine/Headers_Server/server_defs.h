@@ -672,6 +672,7 @@ typedef struct		{
 //
 
 typedef struct		{
+						char					str[256];
 						d3pnt					collide_spt[collide_obj_ray_count],
 												collide_ept[collide_obj_ray_count];
 					} obj_debug;
@@ -846,7 +847,8 @@ typedef struct		{
 												count,input_mode,air_mode,camera_z_adjust,
 												stand_obj_uid,damage_obj_uid,item_count,
 												last_move_animation_event,last_turn_animation_event;
-						char					name[name_str_len],spawn_spot_name[name_str_len];
+						char					name[name_str_len],spawn_spot_name[name_str_len],
+												spot_script[file_str_len],spot_params[param_str_len];
 						bool					hidden,suspend,fly,slope_gravity,
 												side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,

@@ -3965,6 +3965,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\view_draw_debug.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\view_images.c"
 						>
 						<FileConfiguration

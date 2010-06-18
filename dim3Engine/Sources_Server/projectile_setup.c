@@ -65,6 +65,26 @@ proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
 
 /* =======================================================
 
+      Scripts for Projectile Setups
+      
+======================================================= */
+
+bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,char *err_str)
+{
+	proj_setup->attach.script_idx=-1;
+	proj_setup->attach.thing_type=thing_type_projectile_setup;
+	proj_setup->attach.obj_idx=obj->idx;
+	proj_setup->attach.weap_idx=weap->idx;
+	proj_setup->attach.proj_idx=-1;
+	proj_setup->attach.proj_setup_idx=proj_setup->idx;
+
+	scripts_clear_attach_data(&proj_setup->attach);
+
+	return(scripts_add(&proj_setup->attach,"Projectiles",proj_setup->name,err_str));
+}
+
+/* =======================================================
+
       Create and Dispose Projectile Setup
       
 ======================================================= */
@@ -149,19 +169,8 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 		// start the script
 		// and load the models
 		
-	proj_setup->attach.script_idx=-1;
-	proj_setup->attach.thing_type=thing_type_projectile_setup;
-	proj_setup->attach.obj_idx=obj->idx;
-	proj_setup->attach.weap_idx=weap->idx;
-	proj_setup->attach.proj_idx=-1;
-	proj_setup->attach.proj_setup_idx=idx;
-
-	scripts_clear_attach_data(&proj_setup->attach);
-
-	if (scripts_add(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,err_str)) {
-		if (model_draw_load(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) {
-			return(TRUE);
-		}
+	if (proj_setup_start_script(obj,weap,proj_setup,err_str)) {
+		if (model_draw_load(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) return(TRUE);
 	}
 	
 		// there was an error

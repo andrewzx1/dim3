@@ -44,7 +44,7 @@ extern network_setup_type	net_setup;
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
-extern bool server_game_start(bool in_file_load,int skill,char *game_script_name,char *err_str);
+extern bool server_game_start(bool in_file_load,int skill,char *err_str);
 extern void server_game_stop(void);
 extern void view_game_start(void);
 extern void view_game_stop(void);
@@ -73,7 +73,7 @@ bool game_start(bool in_file_load,int skill,char *err_str)
 
 		// start server
 
-	if (!server_game_start(in_file_load,skill,"Game",err_str)) return(FALSE);
+	if (!server_game_start(in_file_load,skill,err_str)) return(FALSE);
 
 		// start view
 		

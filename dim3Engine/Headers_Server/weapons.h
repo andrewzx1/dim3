@@ -31,6 +31,7 @@ extern weapon_type* weapon_script_lookup(void);
 extern weapon_type* weapon_find_name(obj_type *obj,char *name);
 extern weapon_type* weapon_find_current(obj_type *obj);
 
+extern bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str);
 extern bool weapon_add(obj_type *obj,char *name);
 extern void weapon_dispose(obj_type *obj,int idx);
 

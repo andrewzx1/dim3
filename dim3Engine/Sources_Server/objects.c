@@ -695,6 +695,8 @@ int object_create(char *name,int type,int bind)
 	obj->last_turn_animation_event=-1;
 
 	obj->auto_walk.mode=aw_none;
+
+	obj->debug.str[0]=0x0;
 	
 	object_clear_contact(&obj->contact);
 	object_clear_touch(&obj->touch);
@@ -728,7 +730,7 @@ int object_create(char *name,int type,int bind)
       
 ======================================================= */
 
-bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
+bool object_start_script(obj_type *obj,char *err_str)
 {
 	obj->attach.thing_type=thing_type_object;
 	obj->attach.obj_idx=obj->idx;
@@ -738,13 +740,22 @@ bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
 
 	scripts_clear_attach_data(&obj->attach);
 
-	if (!scripts_add(&obj->attach,"Objects",name,params,err_str)) {
-		console_add_error(err_str);
-		obj->hidden=TRUE;			// hide objects if scripts fail to compile
-		return(FALSE);
+		// was it a non-script scenery
+		// this is usually something set when re-loading
+		// state from a saved file
+
+	if (obj->scenery.on) {
+		obj->attach.script_idx=-1;
+		return(TRUE);
 	}
 
-	return(TRUE);
+		// if player, use player script
+
+	if (obj->type==object_type_player) return(scripts_add(&obj->attach,"Objects","Player",err_str));
+
+		// otherwise use script setup by spot
+
+	return(scripts_add(&obj->attach,"Objects",obj->spot_script,err_str));
 }
 
 /* =======================================================
@@ -806,7 +817,6 @@ void object_run_game_rules(obj_type *obj)
 int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 {
 	int					n,idx;
-	bool				ok;
 	obj_type			*obj;
 	weapon_type			*weap;
 
@@ -852,6 +862,15 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		obj->turn.ang_to.y=spot->ang.y;
 	}
 
+		// parameters
+
+	obj->spot_script[0]=0x0;
+	obj->spot_params[0]=0x0;
+	if (spot!=NULL) {
+		strcpy(obj->spot_script,spot->script);
+		strcpy(obj->spot_params,spot->params);
+	}
+
 		// clear weapons
 
 	for (n=0;n!=max_weap_list;n++) {
@@ -867,14 +886,8 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		
 		// start script
 
-	if (obj->type==object_type_player) {
-		ok=object_start_script(obj,"Player",NULL,err_str);
-	}
-	else {
-		ok=object_start_script(obj,spot->script,spot->params,err_str);
-	}
-
-	if (!ok) {
+	if (!object_start_script(obj,err_str)) {
+		console_add_error(err_str);
 		server.obj_list.objs[idx]=NULL;
 		free(obj);
 		return(-1);

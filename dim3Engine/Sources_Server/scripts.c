@@ -158,7 +158,7 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
       
 ======================================================= */
 	
-bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str)
+bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 {
 	int						n,idx;
 	bool					ok;
@@ -200,12 +200,6 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	script->idx=idx;
 	
 	strcpy(script->name,name);
-	if (params!=NULL) {
-		strcpy(script->params,params);
-	}
-	else {
-		script->params[0]=0x0;
-	}
 
 		// original object script attachments
 		
