@@ -37,6 +37,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "models.h"
 #include "inputs.h"
+#include "video.h"
 #include "timing.h"
 
 typedef struct		{
@@ -485,6 +486,7 @@ bool game_file_load(char *file_name,char *err_str)
 	file_save_header	head;
 	obj_type			*obj;
 	weapon_type			*weap;
+	proj_setup_type		*proj_setup;
 	
 		// load and expand
 		
@@ -585,9 +587,20 @@ bool game_file_load(char *file_name,char *err_str)
 			return(FALSE);
 		}
 
-		game_file_get_chunk(server.obj_list.objs[idx]);
-
 		obj=server.obj_list.objs[idx];
+		game_file_get_chunk(obj);
+
+			// rebuild object script
+
+		scripts_lock_events();
+		ok=object_start_script(obj,err_str);
+		scripts_unlock_events();
+
+		if (!ok) {
+			free(game_file_data);
+			progress_shutdown();
+			return(FALSE);
+		}
 
 			// object weapons
 
@@ -603,9 +616,20 @@ bool game_file_load(char *file_name,char *err_str)
 				return(FALSE);
 			}
 
-			game_file_get_chunk(obj->weap_list.weaps[idx]);
-
 			weap=obj->weap_list.weaps[idx];
+			game_file_get_chunk(weap);
+
+				// rebuild weapon script
+
+			scripts_lock_events();
+			ok=weapon_start_script(obj,weap,err_str);
+			scripts_unlock_events();
+			
+			if (!ok) {
+				free(game_file_data);
+				progress_shutdown();
+				return(FALSE);
+			}
 
 				// object weapon projectile setups
 
@@ -621,7 +645,20 @@ bool game_file_load(char *file_name,char *err_str)
 					return(FALSE);
 				}
 
-				game_file_get_chunk(weap->proj_setup_list.proj_setups[idx]);
+				proj_setup=weap->proj_setup_list.proj_setups[idx];
+				game_file_get_chunk(proj_setup);
+
+					// rebuild projectile setup script
+
+				scripts_lock_events();
+				ok=proj_setup_start_script(obj,weap,proj_setup,err_str);
+				scripts_unlock_events();
+
+				if (!ok) {
+					free(game_file_data);
+					progress_shutdown();
+					return(FALSE);
+				}
 			}
 		}
 	}
@@ -706,8 +743,6 @@ bool game_file_load(char *file_name,char *err_str)
 	group_moves_synch_with_load();
 	
 		// script objects
-	fprintf(stdout,"script state\n");
-	fflush(stdout);
 		
 	progress_draw(70);
 
@@ -718,8 +753,6 @@ bool game_file_load(char *file_name,char *err_str)
 	}
 
 		// timers and script data
-	fprintf(stdout,"timers and groups\n");
-	fflush(stdout);
 
 	progress_draw(80);
 
@@ -757,12 +790,20 @@ bool game_file_load(char *file_name,char *err_str)
 		game_file_get_chunk(js.global_list.globals[idx]);
 	}
 
-		// reset models
-		// this fixes the indexes and creates
-		// new model draw memory
+		// reset models and cached images
+
+		// this resets the image cache (as indexes could
+		// have changed) by calling load() again, since images
+		// are shared, this will just return the index of the
+		// already loaded image, or in case the save files are different,
+		// a new image
+	
+		// model_reset() and fixes the model
+		// indexes and creates new model draw memory
 
 	progress_draw(90);
 
+	view_images_cached_load();
 	models_reset();
 	
 		// fix the script state

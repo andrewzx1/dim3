@@ -39,7 +39,7 @@ extern void scripts_clear_attach_data(attach_type *attach);
 
 extern bool scripts_execute(attach_type *attach,script_type *script,char *err_str);
 
-extern bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str);
+extern bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str);
 extern void scripts_dispose(int idx);
 
 extern void script_defines_create_constants(script_type *script);

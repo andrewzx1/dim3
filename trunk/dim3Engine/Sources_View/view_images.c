@@ -265,7 +265,7 @@ void view_images_free_single(int idx)
 
 /* =======================================================
 
-      Load and Free All Cached Images
+      Load and Free All Game Cached Images
       
 ======================================================= */
 

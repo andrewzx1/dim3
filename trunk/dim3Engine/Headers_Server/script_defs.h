@@ -404,7 +404,7 @@ typedef struct		{
 
 typedef struct		{
 						int								idx,data_len,recursive_count;
-						char							name[file_str_len],params[param_str_len];
+						char							name[file_str_len];
 						char							*data;
 						JSGlobalContextRef				cx;
 						JSObjectRef						obj,global_obj,event_func;

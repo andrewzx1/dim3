@@ -193,7 +193,7 @@ void server_shutdown(void)
       
 ======================================================= */
 
-bool server_game_start(bool in_file_load,int skill,char *game_script_name,char *err_str)
+bool server_game_start(bool in_file_load,int skill,char *err_str)
 {
 		// initialize lists
 
@@ -219,7 +219,7 @@ bool server_game_start(bool in_file_load,int skill,char *game_script_name,char *
 
 	scripts_clear_attach_data(&js.game_attach);
 	
-	if (!scripts_add(&js.game_attach,"Game",game_script_name,NULL,err_str)) return(FALSE);
+	if (!scripts_add(&js.game_attach,"Game","Game",err_str)) return(FALSE);
 
 		// if not reloading, then check that
 		// a map was set
