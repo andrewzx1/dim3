@@ -98,22 +98,6 @@ void net_host_shutdown(void)
 
 /* =======================================================
 
-      Machine UIDs
-      
-======================================================= */
-
-int net_host_create_machine_uid(void)
-{
-	int			uid;
-
-	uid=net_setup.uid.next_machine_uid;
-	net_setup.uid.next_machine_uid++;
-
-	return(uid);
-}
-
-/* =======================================================
-
       Join Local Player to Host
       
 ======================================================= */
@@ -129,7 +113,7 @@ bool net_host_join_local_player(char *err_str)
 
 		// join directly to host
 
-	player_obj->remote.uid=net_host_player_add(-1,-1,TRUE,net_setup.uid.machine_uid,player_obj->name,player_obj->draw.name,player_obj->tint_color_idx);
+	player_obj->remote.uid=net_host_player_add(-1,-1,TRUE,player_obj->name,player_obj->draw.name,player_obj->tint_color_idx);
 	if (player_obj->remote.uid==-1) {
 		strcpy(err_str,"Unable to add player");
 		return(FALSE);
@@ -235,7 +219,7 @@ bool net_host_join_request_ok(network_request_join *request_join,network_reply_j
 
 int net_host_join_request(unsigned long ip_addr,int port,network_request_join *request_join)
 {
-	int							machine_uid,remote_uid,
+	int							remote_uid,
 								tint_color_idx;
 	obj_type					*obj;
 	network_reply_join			reply_join;
@@ -243,25 +227,20 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 		// check if join is OK
 	
-	machine_uid=-1;
 	remote_uid=-1;
 
 	reply_join.deny_reason[0]=0x0;
 
-		// create machine and remote UID when
+		// create remote UID when
 		// adding this new remote player
 
 	if (net_host_join_request_ok(request_join,&reply_join)) {
-
-		machine_uid=net_host_create_machine_uid();
-
 		tint_color_idx=htons((short)request_join->tint_color_idx);
-		remote_uid=net_host_player_add(ip_addr,port,FALSE,machine_uid,request_join->name,request_join->draw_name,tint_color_idx);
+		remote_uid=net_host_player_add(ip_addr,port,FALSE,request_join->name,request_join->draw_name,tint_color_idx);
 	}
 
 		// construct the reply
 	
-	reply_join.machine_uid=htons((short)machine_uid);
 	reply_join.remote_uid=htons((short)remote_uid);
 
 	reply_join.team_idx=htons((short)net_team_none);
@@ -327,7 +306,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		// send all other players on host the new player for remote add
 
 	net_host_player_send_message_others(remote_uid,net_action_request_remote_add,(unsigned char*)&remote,sizeof(network_reply_join_remote));
-
+	
 	return(remote_uid);
 }
 
@@ -414,7 +393,6 @@ void net_host_game_setup(void)
 {
 		// reset UIDs
 
-	net_setup.uid.next_machine_uid=0;
 	net_setup.uid.next_remote_uid=0;
 	
 		// resolve names to IPs
@@ -428,10 +406,6 @@ bool net_host_game_start(char *err_str)
 		// start hosting
 
 	if (!net_host_initialize(err_str)) return(FALSE);
-
-		// give the host a machine uid
-
-	net_setup.uid.machine_uid=net_host_create_machine_uid();
 
 		// initialize host player list
 		

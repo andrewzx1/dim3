@@ -102,8 +102,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								machine_uid,
-														remote_uid,
+						int								remote_uid,
 														port;
 						unsigned long					ip_addr;
 						bool							local,bot;
@@ -135,9 +134,7 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
-						int								machine_uid,
-														next_machine_uid,
-														next_remote_uid;
+						int								next_remote_uid;
 					} network_setup_uid;
 
 typedef struct		{
@@ -287,8 +284,7 @@ typedef struct		{
 
 typedef struct		{
 						int								map_tick;
-						short							machine_uid,remote_uid,
-														team_idx;
+						short							remote_uid,team_idx;
 						char							deny_reason[64];
 						network_reply_join_remote_list	remote_list;
 					} network_reply_join;

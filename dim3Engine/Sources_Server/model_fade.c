@@ -102,7 +102,7 @@ void model_mesh_fade_start(model_draw *draw,int mesh_idx,int fade_in_msec,int fa
 	if (fade_life_msec<1) fade_life_msec=1;
 	if (fade_out_msec<1) fade_out_msec=1;		// avoid /0 errors
 
-	mesh_fade=&draw->mesh_fades[mesh_idx];
+	mesh_fade=&draw->meshes[mesh_idx].fade;
 
 	mesh_fade->on=TRUE;
 	mesh_fade->start_tick=game_time_get();
@@ -126,36 +126,33 @@ void model_mesh_fade_run(model_draw *draw)
 	tick=game_time_get();
 
 	nmesh=mdl->nmesh;
-	mesh_fade=draw->mesh_fades;
 
 	for (n=0;n!=nmesh;n++) {
-		if (mesh_fade->on) {
+		mesh_fade=&draw->meshes[n].fade;
+		if (!mesh_fade->on) continue;
 
-				// fade over?
+			// fade over?
 
-			curtick=tick-mesh_fade->start_tick;
+		curtick=tick-mesh_fade->start_tick;
 
-			if (curtick>(mesh_fade->fade_in_msec+mesh_fade->fade_life_msec+mesh_fade->fade_out_msec)) {
-				mesh_fade->on=FALSE;
+		if (curtick>(mesh_fade->fade_in_msec+mesh_fade->fade_life_msec+mesh_fade->fade_out_msec)) {
+			mesh_fade->on=FALSE;
+		}
+
+			// calculate fade
+
+		else {
+			if (curtick<mesh_fade->fade_in_msec) {
+				mesh_fade->alpha=(float)curtick/(float)mesh_fade->fade_in_msec;
 			}
-
-				// calculate fade
-
 			else {
-				if (curtick<mesh_fade->fade_in_msec) {
-					mesh_fade->alpha=(float)curtick/(float)mesh_fade->fade_in_msec;
+				if (curtick<(mesh_fade->fade_in_msec+mesh_fade->fade_life_msec)) {
+					mesh_fade->alpha=1.0f;
 				}
 				else {
-					if (curtick<(mesh_fade->fade_in_msec+mesh_fade->fade_life_msec)) {
-						mesh_fade->alpha=1.0f;
-					}
-					else {
-						mesh_fade->alpha=1.0f-((float)(curtick-(mesh_fade->fade_in_msec+mesh_fade->fade_life_msec))/(float)mesh_fade->fade_out_msec);
-					}
+					mesh_fade->alpha=1.0f-((float)(curtick-(mesh_fade->fade_in_msec+mesh_fade->fade_life_msec))/(float)mesh_fade->fade_out_msec);
 				}
 			}
 		}
-
-		mesh_fade++;
 	}
 }

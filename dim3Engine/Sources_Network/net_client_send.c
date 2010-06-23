@@ -56,24 +56,13 @@ void net_client_send_msg(obj_type *obj,int action,unsigned char *msg,int msg_len
 
 	if (net_setup.mode==net_mode_client) {
 		net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,action,obj->remote.uid,msg,msg_len);
-		return;
 	}
 
 		// if we are the host, some of the
 		// actions we route to other players
 
-	switch (action) {
-	
-		case net_action_request_remote_update:
-		case net_action_request_remote_death:
-		case net_action_request_remote_chat:
-		case net_action_request_remote_sound:
-		case net_action_request_remote_fire:
-		case net_action_request_remote_pickup:
-		case net_action_request_remote_click:
-			net_host_player_send_message_others(obj->remote.uid,action,msg,msg_len);
-			break;
-
+	else {
+		net_host_player_send_message_others(obj->remote.uid,action,msg,msg_len);
 	}
 }
 

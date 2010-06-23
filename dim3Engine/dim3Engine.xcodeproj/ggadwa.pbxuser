@@ -79,19 +79,206 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 298248044;
-			PBXWorkspaceStateSaveDate = 298248044;
+			PBXPerProjectTemplateStateSaveDate = 298921621;
+			PBXWorkspaceStateSaveDate = 298921621;
+		};
+		perUserProjectItems = {
+			260A99C011D12E9100083525 /* PBXTextBookmark */ = 260A99C011D12E9100083525 /* PBXTextBookmark */;
+			260A99C311D12E9100083525 /* PBXTextBookmark */ = 260A99C311D12E9100083525 /* PBXTextBookmark */;
+			260A99C811D12E9100083525 /* PBXTextBookmark */ = 260A99C811D12E9100083525 /* PBXTextBookmark */;
+			260A99C911D12E9100083525 /* PBXTextBookmark */ = 260A99C911D12E9100083525 /* PBXTextBookmark */;
+			260A99CA11D12E9100083525 /* PBXTextBookmark */ = 260A99CA11D12E9100083525 /* PBXTextBookmark */;
+			260A99CB11D12E9100083525 /* PBXTextBookmark */ = 260A99CB11D12E9100083525 /* PBXTextBookmark */;
+			260A99E811D13C9800083525 /* PBXBookmark */ = 260A99E811D13C9800083525 /* PBXBookmark */;
+			260A99F911D1B82200083525 /* PBXBookmark */ = 260A99F911D1B82200083525 /* PBXBookmark */;
+			260A9A0711D1BBD500083525 /* XCBuildMessageTextBookmark */ = 260A9A0711D1BBD500083525 /* XCBuildMessageTextBookmark */;
+			260A9A0E11D1C4E500083525 /* PBXTextBookmark */ = 260A9A0E11D1C4E500083525 /* PBXTextBookmark */;
+			260A9A1111D1C4E500083525 /* PBXTextBookmark */ = 260A9A1111D1C4E500083525 /* PBXTextBookmark */;
+			260A9A1411D1C4E500083525 /* PBXTextBookmark */ = 260A9A1411D1C4E500083525 /* PBXTextBookmark */;
+			260A9A1511D1C4E500083525 /* PBXTextBookmark */ = 260A9A1511D1C4E500083525 /* PBXTextBookmark */;
+			260A9A1611D1C4E500083525 /* PBXTextBookmark */ = 260A9A1611D1C4E500083525 /* PBXTextBookmark */;
+			260A9A1711D1C4E500083525 /* PBXTextBookmark */ = 260A9A1711D1C4E500083525 /* PBXTextBookmark */;
+			260A9A1811D1C4E500083525 /* PBXTextBookmark */ = 260A9A1811D1C4E500083525 /* PBXTextBookmark */;
+			260A9A1911D1C4E500083525 /* PBXTextBookmark */ = 260A9A1911D1C4E500083525 /* PBXTextBookmark */;
+			260A9A1A11D1C4E500083525 /* PBXTextBookmark */ = 260A9A1A11D1C4E500083525 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
 		userBuildSettings = {
 		};
 	};
+	260A99C011D12E9100083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 26F08CB90DAC7E990097E249 /* network_defs.h */;
+		name = "network_defs.h: 287";
+		rLen = 0;
+		rLoc = 7057;
+		rType = 0;
+		vrLen = 1312;
+		vrLoc = 6349;
+	};
+	260A99C311D12E9100083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */;
+		name = "net_host.c: 396";
+		rLen = 0;
+		rLoc = 10132;
+		rType = 0;
+		vrLen = 1076;
+		vrLoc = 9613;
+	};
+	260A99C811D12E9100083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 268CBC8F0DD2AA7D00CF0256 /* net_client_send.c */;
+		name = "net_client_send.c: 102";
+		rLen = 21;
+		rLoc = 2790;
+		rType = 0;
+		vrLen = 1397;
+		vrLoc = 6349;
+	};
+	260A99C911D12E9100083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 26E2008A1134C6E100E9055A /* net_queue.c */;
+		name = "net_queue.c: 89";
+		rLen = 0;
+		rLoc = 2032;
+		rType = 0;
+		vrLen = 1004;
+		vrLoc = 1607;
+	};
+	260A99CA11D12E9100083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 268CBC8E0DD2AA7D00CF0256 /* net_client_receive.c */;
+		name = "net_client_receive.c: 103";
+		rLen = 14;
+		rLoc = 2486;
+		rType = 0;
+		vrLen = 1096;
+		vrLoc = 2103;
+	};
+	260A99CB11D12E9100083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DD1A7909085BC600721649 /* join.c */;
+		name = "join.c: 707";
+		rLen = 30;
+		rLoc = 16201;
+		rType = 0;
+		vrLen = 1181;
+		vrLoc = 15635;
+	};
+	260A99E811D13C9800083525 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = F5DD1A260908583D00721649 /* remote.c */;
+	};
+	260A99F911D1B82200083525 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = F5DD1A2B0908588500721649 /* weapon.c */;
+	};
+	260A9A0711D1BBD500083525 /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "'sever' undeclared (first use in this function)";
+		fRef = F5DD1A190908580100721649 /* objects.c */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 1;
+		rLoc = 930;
+		rType = 1;
+	};
+	260A9A0E11D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DD1A190908580100721649 /* objects.c */;
+		name = "objects.c: 931";
+		rLen = 0;
+		rLoc = 20059;
+		rType = 0;
+		vrLen = 926;
+		vrLoc = 19587;
+	};
+	260A9A1111D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DD1A260908583D00721649 /* remote.c */;
+		name = "remote.c: 103";
+		rLen = 0;
+		rLoc = 2851;
+		rType = 0;
+		vrLen = 1241;
+		vrLoc = 2059;
+	};
+	260A9A1411D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DD1A2B0908588500721649 /* weapon.c */;
+		name = "weapon.c: 304";
+		rLen = 19;
+		rLoc = 7486;
+		rType = 0;
+		vrLen = 1110;
+		vrLoc = 6907;
+	};
+	260A9A1511D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 26F08CB90DAC7E990097E249 /* network_defs.h */;
+		name = "network_defs.h: 287";
+		rLen = 0;
+		rLoc = 7057;
+		rType = 0;
+		vrLen = 1294;
+		vrLoc = 6367;
+	};
+	260A9A1611D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */;
+		name = "net_host.c: 396";
+		rLen = 0;
+		rLoc = 10132;
+		rType = 0;
+		vrLen = 1075;
+		vrLoc = 9613;
+	};
+	260A9A1711D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 268CBC8F0DD2AA7D00CF0256 /* net_client_send.c */;
+		name = "net_client_send.c: 102";
+		rLen = 21;
+		rLoc = 2790;
+		rType = 0;
+		vrLen = 1397;
+		vrLoc = 6349;
+	};
+	260A9A1811D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 26E2008A1134C6E100E9055A /* net_queue.c */;
+		name = "net_queue.c: 89";
+		rLen = 0;
+		rLoc = 2032;
+		rType = 0;
+		vrLen = 1004;
+		vrLoc = 1607;
+	};
+	260A9A1911D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 268CBC8E0DD2AA7D00CF0256 /* net_client_receive.c */;
+		name = "net_client_receive.c: 103";
+		rLen = 14;
+		rLoc = 2486;
+		rType = 0;
+		vrLen = 1095;
+		vrLoc = 2103;
+	};
+	260A9A1A11D1C4E500083525 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DD1A7909085BC600721649 /* join.c */;
+		name = "join.c: 707";
+		rLen = 30;
+		rLoc = 16201;
+		rType = 0;
+		vrLen = 1181;
+		vrLoc = 15635;
+	};
 	260AE9340F832A5B00451942 /* gl_back_render.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 4680}}";
-			sepNavSelRange = "{5359, 20}";
-			sepNavVisRange = "{4696, 1259}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 4290}}";
+			sepNavSelRange = "{1520, 24}";
+			sepNavVisRange = "{818, 1891}";
 			sepNavWindowFrame = "{{373, 201}, {999, 779}}";
 		};
 	};
@@ -171,10 +358,10 @@
 	};
 	261B52AE0FA551CE0070CAB0 /* render_model.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1160, 13520}}";
-			sepNavSelRange = "{15419, 18}";
-			sepNavVisRange = "{16312, 1182}";
-			sepNavWindowFrame = "{{401, 211}, {999, 779}}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 13819}}";
+			sepNavSelRange = "{19710, 0}";
+			sepNavVisRange = "{18722, 1075}";
+			sepNavWindowFrame = "{{212, 200}, {999, 779}}";
 		};
 	};
 	261ED11A1064A0A20035747E /* collision_object.c */ = {
@@ -372,33 +559,33 @@
 	};
 	268CBC8B0DD2AA6700CF0256 /* network.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1202, 2197}}";
-			sepNavSelRange = "{4157, 0}";
-			sepNavVisRange = "{2538, 2216}";
-			sepNavWindowFrame = "{{770, 86}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2119}}";
+			sepNavSelRange = "{3081, 0}";
+			sepNavVisRange = "{2659, 2082}";
+			sepNavWindowFrame = "{{639, 86}, {1041, 747}}";
 		};
 	};
 	268CBC8D0DD2AA7D00CF0256 /* net_client_join_host.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1279, 2249}}";
-			sepNavSelRange = "{2636, 0}";
-			sepNavVisRange = "{1937, 1533}";
+			sepNavIntBoundsRect = "{{0, 0}, {1279, 2262}}";
+			sepNavSelRange = "{4011, 0}";
+			sepNavVisRange = "{3079, 1105}";
 			sepNavWindowFrame = "{{405, 95}, {1041, 747}}";
 		};
 	};
 	268CBC8E0DD2AA7D00CF0256 /* net_client_receive.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1755}}";
-			sepNavSelRange = "{3176, 0}";
-			sepNavVisRange = "{2164, 1035}";
+			sepNavSelRange = "{2486, 14}";
+			sepNavVisRange = "{2103, 1095}";
 			sepNavWindowFrame = "{{385, 127}, {1041, 747}}";
 		};
 	};
 	268CBC8F0DD2AA7D00CF0256 /* net_client_send.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {831, 5733}}";
-			sepNavSelRange = "{1859, 0}";
-			sepNavVisRange = "{1731, 294}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5486}}";
+			sepNavSelRange = "{2790, 21}";
+			sepNavVisRange = "{6349, 1397}";
 			sepNavWindowFrame = "{{305, 115}, {1041, 747}}";
 		};
 	};
@@ -406,15 +593,15 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1251, 1911}}";
 			sepNavSelRange = "{4382, 47}";
-			sepNavVisRange = "{2991, 1803}";
+			sepNavVisRange = "{2994, 1917}";
 			sepNavWindowFrame = "{{352, 190}, {999, 779}}";
 		};
 	};
 	2694E5990F91A36F004B672A /* script_multiplayer.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 826}}";
-			sepNavSelRange = "{1617, 0}";
-			sepNavVisRange = "{221, 1396}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 767}}";
+			sepNavSelRange = "{1344, 0}";
+			sepNavVisRange = "{113, 1504}";
 			sepNavWindowFrame = "{{84, 249}, {999, 779}}";
 		};
 	};
@@ -448,6 +635,14 @@
 			sepNavSelRange = "{5394, 549}";
 			sepNavVisRange = "{876, 870}";
 			sepNavWindowFrame = "{{309, 103}, {1041, 747}}";
+		};
+	};
+	26A60BD411CC1DCF00E9AB33 /* view_draw_debug.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1034, 3536}}";
+			sepNavSelRange = "{5849, 0}";
+			sepNavVisRange = "{5129, 1283}";
+			sepNavWindowFrame = "{{324, 239}, {950, 757}}";
 		};
 	};
 	26ABEE810E72F0700029469D /* script_obj_object_thrust.c */ = {
@@ -492,9 +687,9 @@
 	};
 	26D109600DAC797D006666F2 /* host.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8996}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8931}}";
 			sepNavSelRange = "{13898, 23}";
-			sepNavVisRange = "{13310, 1349}";
+			sepNavVisRange = "{13307, 1253}";
 			sepNavWindowFrame = "{{371, 129}, {1041, 747}}";
 		};
 	};
@@ -524,33 +719,33 @@
 	};
 	26E2008A1134C6E100E9055A /* net_queue.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {935, 3029}}";
-			sepNavSelRange = "{2554, 0}";
-			sepNavVisRange = "{2511, 983}";
+			sepNavIntBoundsRect = "{{0, 0}, {935, 2860}}";
+			sepNavSelRange = "{2032, 0}";
+			sepNavVisRange = "{1607, 1004}";
 			sepNavWindowFrame = "{{363, 152}, {950, 757}}";
 		};
 	};
 	26F08C9E0DAC7DB50097E249 /* net_host.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1055, 5876}}";
-			sepNavSelRange = "{8779, 0}";
-			sepNavVisRange = "{8094, 1326}";
-			sepNavWindowFrame = "{{281, 193}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1055, 5811}}";
+			sepNavSelRange = "{10132, 0}";
+			sepNavVisRange = "{9613, 1075}";
+			sepNavWindowFrame = "{{110, 246}, {1041, 747}}";
 		};
 	};
 	26F08CA00DAC7DB50097E249 /* net_host_players.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1076, 9529}}";
-			sepNavSelRange = "{10826, 0}";
-			sepNavVisRange = "{9952, 1159}";
-			sepNavWindowFrame = "{{441, 181}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8684}}";
+			sepNavSelRange = "{14663, 0}";
+			sepNavVisRange = "{13769, 1145}";
+			sepNavWindowFrame = "{{164, 195}, {1041, 747}}";
 		};
 	};
 	26F08CB90DAC7E990097E249 /* network_defs.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 5070}}";
-			sepNavSelRange = "{5744, 0}";
-			sepNavVisRange = "{5036, 1108}";
+			sepNavSelRange = "{7057, 0}";
+			sepNavVisRange = "{6367, 1294}";
 			sepNavWindowFrame = "{{142, 258}, {1041, 747}}";
 		};
 	};
@@ -572,9 +767,9 @@
 	};
 	F500CC670C27942200F7C8CC /* gl_check.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1768}}";
-			sepNavSelRange = "{1669, 0}";
-			sepNavVisRange = "{1054, 1544}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1755}}";
+			sepNavSelRange = "{2626, 0}";
+			sepNavVisRange = "{1810, 1775}";
 			sepNavWindowFrame = "{{575, 186}, {1041, 747}}";
 		};
 	};
@@ -772,9 +967,9 @@
 	};
 	F58B7C070CD2B7A700CEE31F /* network_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1090, 5980}}";
-			sepNavSelRange = "{5718, 0}";
-			sepNavVisRange = "{5093, 1063}";
+			sepNavIntBoundsRect = "{{0, 0}, {1090, 5785}}";
+			sepNavSelRange = "{9998, 0}";
+			sepNavVisRange = "{4044, 1423}";
 			sepNavWindowFrame = "{{212, 209}, {1041, 747}}";
 		};
 	};
@@ -1308,9 +1503,9 @@
 	};
 	F5A581A8090B433F00BE7C36 /* script_obj_setting.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1083, 11973}}";
-			sepNavSelRange = "{30828, 0}";
-			sepNavVisRange = "{30270, 1212}";
+			sepNavIntBoundsRect = "{{0, 0}, {1083, 12558}}";
+			sepNavSelRange = "{33091, 0}";
+			sepNavVisRange = "{31921, 1348}";
 			sepNavWindowFrame = "{{299, 154}, {1041, 747}}";
 		};
 	};
@@ -1685,8 +1880,8 @@
 	F5A58245090B512000BE7C36 /* remotes.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 675}}";
-			sepNavSelRange = "{1405, 0}";
-			sepNavVisRange = "{0, 1549}";
+			sepNavSelRange = "{1188, 0}";
+			sepNavVisRange = "{0, 1631}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
@@ -1772,9 +1967,9 @@
 	};
 	F5A582BD090C98D500BE7C36 /* server_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 15145}}";
-			sepNavSelRange = "{341, 0}";
-			sepNavVisRange = "{6031, 1559}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 15496}}";
+			sepNavSelRange = "{7355, 17}";
+			sepNavVisRange = "{6311, 1764}";
 			sepNavWindowFrame = "{{395, 238}, {1041, 747}}";
 		};
 	};
@@ -1820,9 +2015,9 @@
 	};
 	F5A5AED10B20EF6100B1901F /* model_fade.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2226}}";
-			sepNavSelRange = "{2937, 10}";
-			sepNavVisRange = "{2651, 991}";
+			sepNavIntBoundsRect = "{{0, 0}, {1027, 2158}}";
+			sepNavSelRange = "{2962, 0}";
+			sepNavVisRange = "{2510, 1150}";
 			sepNavWindowFrame = "{{370, 171}, {1041, 747}}";
 		};
 	};
@@ -1972,17 +2167,17 @@
 	};
 	F5C5EB0D0913264E00F94729 /* file.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7735}}";
-			sepNavSelRange = "{12231, 0}";
-			sepNavVisRange = "{11679, 922}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8723}}";
+			sepNavSelRange = "{6254, 0}";
+			sepNavVisRange = "{5769, 1083}";
 			sepNavWindowFrame = "{{245, 161}, {1041, 747}}";
 		};
 	};
 	F5C5EB0E0913264E00F94729 /* debug.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7215}}";
-			sepNavSelRange = "{3074, 0}";
-			sepNavVisRange = "{2458, 851}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6838}}";
+			sepNavSelRange = "{6200, 0}";
+			sepNavVisRange = "{5505, 1493}";
 			sepNavWindowFrame = "{{373, 122}, {1041, 747}}";
 		};
 	};
@@ -1996,9 +2191,9 @@
 	};
 	F5C5EB100913264E00F94729 /* map.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7670}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7774}}";
 			sepNavSelRange = "{9827, 0}";
-			sepNavVisRange = "{9390, 810}";
+			sepNavVisRange = "{10230, 1041}";
 			sepNavWindowFrame = "{{584, 240}, {1041, 747}}";
 		};
 	};
@@ -2012,10 +2207,10 @@
 	};
 	F5CA4F01051012CF0055C8B8 /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6188}}";
-			sepNavSelRange = "{655, 0}";
-			sepNavVisRange = "{1387, 1456}";
-			sepNavWindowFrame = "{{511, 112}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6201}}";
+			sepNavSelRange = "{4509, 0}";
+			sepNavVisRange = "{4172, 1257}";
+			sepNavWindowFrame = "{{746, 119}, {1041, 747}}";
 		};
 	};
 	F5CD86AF055771B80023AD9B /* dim3 Engine */ = {
@@ -2071,9 +2266,9 @@
 	};
 	F5DD198E09080EA300721649 /* hud_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10088}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9776}}";
 			sepNavSelRange = "{3812, 0}";
-			sepNavVisRange = "{3239, 933}";
+			sepNavVisRange = "{13884, 942}";
 			sepNavWindowFrame = "{{162, 187}, {1041, 747}}";
 		};
 	};
@@ -2127,18 +2322,18 @@
 	};
 	F5DD19E00908310200721649 /* view_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 13026}}";
-			sepNavSelRange = "{14853, 0}";
-			sepNavVisRange = "{13868, 1372}";
-			sepNavWindowFrame = "{{410, 142}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 13104}}";
+			sepNavSelRange = "{12589, 0}";
+			sepNavVisRange = "{12155, 1110}";
+			sepNavWindowFrame = "{{328, 179}, {1041, 747}}";
 		};
 	};
 	F5DD19E10908310200721649 /* view_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7995}}";
-			sepNavSelRange = "{10176, 0}";
-			sepNavVisRange = "{8270, 1416}";
-			sepNavWindowFrame = "{{370, 146}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7306}}";
+			sepNavSelRange = "{11847, 26}";
+			sepNavVisRange = "{11149, 1060}";
+			sepNavWindowFrame = "{{239, 133}, {1041, 747}}";
 		};
 	};
 	F5DD19E20908310200721649 /* view_run.c */ = {
@@ -2207,9 +2402,9 @@
 	};
 	F5DD1A00090831D600721649 /* scripts.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4576}}";
-			sepNavSelRange = "{6756, 0}";
-			sepNavVisRange = "{3775, 943}";
+			sepNavIntBoundsRect = "{{0, 0}, {645, 4810}}";
+			sepNavSelRange = "{6374, 0}";
+			sepNavVisRange = "{6143, 174}";
 			sepNavWindowFrame = "{{566, 193}, {1041, 747}}";
 		};
 	};
@@ -2264,8 +2459,8 @@
 	F5DD1A140908580100721649 /* obj_find.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1090, 4394}}";
-			sepNavSelRange = "{2493, 0}";
-			sepNavVisRange = "{1994, 1081}";
+			sepNavSelRange = "{1396, 22}";
+			sepNavVisRange = "{866, 1014}";
 			sepNavWindowFrame = "{{483, 276}, {1041, 747}}";
 		};
 	};
@@ -2279,9 +2474,9 @@
 	};
 	F5DD1A160908580100721649 /* obj_state.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9581}}";
-			sepNavSelRange = "{8188, 0}";
-			sepNavVisRange = "{7473, 1208}";
+			sepNavIntBoundsRect = "{{0, 0}, {1069, 9503}}";
+			sepNavSelRange = "{6108, 21}";
+			sepNavVisRange = "{5383, 1528}";
 			sepNavWindowFrame = "{{215, 176}, {1041, 747}}";
 		};
 	};
@@ -2303,18 +2498,18 @@
 	};
 	F5DD1A190908580100721649 /* objects.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 12597}}";
-			sepNavSelRange = "{16763, 13}";
-			sepNavVisRange = "{17448, 1200}";
-			sepNavWindowFrame = "{{449, 167}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 14001}}";
+			sepNavSelRange = "{20059, 0}";
+			sepNavVisRange = "{19587, 926}";
+			sepNavWindowFrame = "{{639, 154}, {1041, 747}}";
 		};
 	};
 	F5DD1A260908583D00721649 /* remote.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1083, 12324}}";
-			sepNavSelRange = "{23008, 28}";
-			sepNavVisRange = "{22241, 1143}";
-			sepNavWindowFrame = "{{480, 78}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12272}}";
+			sepNavSelRange = "{2851, 0}";
+			sepNavVisRange = "{2059, 1241}";
+			sepNavWindowFrame = "{{447, 225}, {1041, 747}}";
 		};
 	};
 	F5DD1A290908588500721649 /* weapon_select.c */ = {
@@ -2335,9 +2530,9 @@
 	};
 	F5DD1A2B0908588500721649 /* weapon.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4186}}";
-			sepNavSelRange = "{6352, 0}";
-			sepNavVisRange = "{5755, 1205}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4953}}";
+			sepNavSelRange = "{7486, 19}";
+			sepNavVisRange = "{6907, 1110}";
 			sepNavWindowFrame = "{{513, 226}, {1041, 747}}";
 		};
 	};
@@ -2351,9 +2546,9 @@
 	};
 	F5DD1A31090858B800721649 /* projectile_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {645, 3276}}";
-			sepNavSelRange = "{4571, 0}";
-			sepNavVisRange = "{4456, 306}";
+			sepNavIntBoundsRect = "{{0, 0}, {705, 3523}}";
+			sepNavSelRange = "{4904, 0}";
+			sepNavVisRange = "{4788, 305}";
 			sepNavWindowFrame = "{{465, 120}, {1041, 747}}";
 		};
 	};
@@ -2399,9 +2594,9 @@
 	};
 	F5DD1A410908593C00721649 /* projectile.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3848}}";
-			sepNavSelRange = "{4022, 0}";
-			sepNavVisRange = "{3414, 1205}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4199}}";
+			sepNavSelRange = "{6296, 18}";
+			sepNavVisRange = "{5650, 901}";
 			sepNavWindowFrame = "{{479, 172}, {1041, 747}}";
 		};
 	};
@@ -2471,18 +2666,18 @@
 	};
 	F5DD1A7809085BC600721649 /* intro.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3965}}";
-			sepNavSelRange = "{5659, 11}";
-			sepNavVisRange = "{5031, 867}";
-			sepNavWindowFrame = "{{639, 101}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4186}}";
+			sepNavSelRange = "{6136, 0}";
+			sepNavVisRange = "{5604, 832}";
+			sepNavWindowFrame = "{{393, 223}, {1041, 747}}";
 		};
 	};
 	F5DD1A7909085BC600721649 /* join.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10530}}";
-			sepNavSelRange = "{15463, 0}";
-			sepNavVisRange = "{14867, 1241}";
-			sepNavWindowFrame = "{{773, 29}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10439}}";
+			sepNavSelRange = "{16201, 30}";
+			sepNavVisRange = "{15635, 1181}";
+			sepNavWindowFrame = "{{387, 199}, {1041, 747}}";
 		};
 	};
 	F5DD1A7A09085BC600721649 /* menu_draw.c */ = {
@@ -2671,9 +2866,9 @@
 	};
 	F5DD1AE80908620D00721649 /* model_animate.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11037}}";
-			sepNavSelRange = "{3949, 0}";
-			sepNavVisRange = "{3464, 1232}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11011}}";
+			sepNavSelRange = "{1726, 17}";
+			sepNavVisRange = "{1049, 1293}";
 			sepNavWindowFrame = "{{395, 204}, {1041, 747}}";
 		};
 	};
