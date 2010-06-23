@@ -26,9 +26,9 @@
 	};
 	0111608E00BE2A8F7F000001 /* model_window.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 13065}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 13156}}";
 			sepNavSelRange = "{5816, 0}";
-			sepNavVisRange = "{5140, 919}";
+			sepNavVisRange = "{5150, 909}";
 			sepNavWindowFrame = "{{385, 183}, {1041, 747}}";
 		};
 	};
@@ -129,14 +129,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 296882940;
-			PBXWorkspaceStateSaveDate = 296882940;
+			PBXPerProjectTemplateStateSaveDate = 298702586;
+			PBXWorkspaceStateSaveDate = 298702586;
 		};
 		perUserProjectItems = {
-			26D0D4CB11B21311004FAD36 /* PBXBookmark */ = 26D0D4CB11B21311004FAD36 /* PBXBookmark */;
 			26D0D4D211B21569004FAD36 /* PBXTextBookmark */ = 26D0D4D211B21569004FAD36 /* PBXTextBookmark */;
-			26D0D4D711B21569004FAD36 /* PBXTextBookmark */ = 26D0D4D711B21569004FAD36 /* PBXTextBookmark */;
-			26E01F52119FA5580095004B /* PBXTextBookmark */ = 26E01F52119FA5580095004B /* PBXTextBookmark */;
+			26E47AD111CDD708007D89A7 /* PBXTextBookmark */ = 26E47AD111CDD708007D89A7 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -309,10 +307,6 @@
 			sepNavWindowFrame = "{{498, 115}, {1041, 747}}";
 		};
 	};
-	26D0D4CB11B21311004FAD36 /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 0111608E00BE2A8F7F000001 /* model_window.c */;
-	};
 	26D0D4D211B21569004FAD36 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
@@ -323,17 +317,7 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
-	26D0D4D711B21569004FAD36 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0111608E00BE2A8F7F000001 /* model_window.c */;
-		name = "model_window.c: 256";
-		rLen = 0;
-		rLoc = 5816;
-		rType = 0;
-		vrLen = 919;
-		vrLoc = 5140;
-	};
-	26E01F52119FA5580095004B /* PBXTextBookmark */ = {
+	26E47AD111CDD708007D89A7 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";

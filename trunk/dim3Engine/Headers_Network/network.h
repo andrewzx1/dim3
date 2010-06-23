@@ -83,8 +83,6 @@ extern bool net_queue_check_message(net_queue_type *queue,int *remote_uid,int *a
 extern bool net_host_initialize(char *err_str);
 extern void net_host_shutdown(void);
 
-extern int net_host_create_machine_uid(void);
-
 extern bool net_host_join_local_player(char *err_str);
 extern void net_host_join_multiplayer_bots(void);
 
@@ -101,7 +99,7 @@ extern int net_host_player_find(int remote_uid);
 extern int net_host_player_find_ip_addr(unsigned long ip_addr,int port);
 
 extern bool net_host_player_add_ok(char *name,char *deny_reason);
-extern int net_host_player_add(unsigned long ip_addr,int port,bool local,int machine_uid,char *name,char *draw_name,int tint_color_idx);
+extern int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,char *draw_name,int tint_color_idx);
 extern int net_host_player_add_bot(obj_type *obj);
 extern void net_host_player_remove(int player_uid);
 

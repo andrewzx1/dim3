@@ -51,47 +51,6 @@ extern setup_type			setup;
 extern hud_type				hud;
 extern render_info_type		render_info;
 
-/*
-extern void draw_weapon_hand(obj_type *obj,weapon_type *weap);
-extern void draw_background(void);
-extern void draw_sky(void);
-extern void model_calc_pose_bones(model_draw *draw);
-extern void render_map_mesh_opaque(void);
-extern void render_map_mesh_transparent(void);
-extern void rain_draw(void);
-extern bool fog_solid_on(void);
-extern void fog_draw_textured(void);
-extern void fog_solid_start(void);
-extern void fog_solid_end(void);
-extern void polygon_segment_start(void);
-extern void polygon_segment_end(void);
-extern void render_model_setup(model_draw *draw);
-extern void render_model_build_vertex_lists(model_draw *draw);
-extern void render_model_opaque(model_draw *draw);
-extern void render_model_transparent(model_draw *draw);
-extern void render_model_target(model_draw *draw,d3col *col);
-extern void view_draw_liquid_tint(int liquid_idx);
-extern void view_draw_effect_tint(void);
-extern void view_draw_fade_draw(void);
-extern void render_map_liquid_opaque(void);
-extern void render_map_liquid_transparent(void);
-extern void decal_render(void);
-extern void view_start_draw_list(void);
-extern void view_add_mesh_liquid_draw_list(void);
-extern void view_setup_objects(int tick);
-extern void view_setup_projectiles(int tick);
-extern void view_add_effect_draw_list(int tick);
-extern void view_add_halos(void);
-extern bool view_compile_mesh_gl_lists(void);
-extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
-extern void view_calculate_recoil(obj_type *obj);
-extern void view_calculate_shakes(obj_type *obj);
-extern void view_calculate_sways(obj_type *obj);
-extern void view_calculate_bump(obj_type *obj);
-extern void shadow_render_model(int item_type,int item_idx,model_draw *draw);
-extern void shadow_render_mesh(int mesh_idx);
-*/
-
 /* =======================================================
 
       Debug Model Drawing
@@ -298,7 +257,7 @@ void view_draw_debug_object(obj_type *obj)
 	view_draw_debug_bounding_box(&obj->draw.pnt,&obj->draw.setup.ang,&size);
 
 	view_draw_debug_object_path(obj);
-	view_draw_debug_object_collision_ray(obj);
+//	view_draw_debug_object_collision_ray(obj);
 
 	view_draw_debug_info(obj->name,obj->debug.str,&obj->draw.pnt,&size);
 }

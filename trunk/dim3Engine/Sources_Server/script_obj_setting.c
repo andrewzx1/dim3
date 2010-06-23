@@ -859,7 +859,7 @@ JSValueRef js_obj_set_debug_string_func(JSContextRef cx,JSObjectRef func,JSObjec
 {
 	obj_type		*obj;
 	
-	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_script_lookup();
 	script_value_to_string(cx,argv[0],obj->debug.str,256);

@@ -537,7 +537,7 @@ bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 	if (draw->draw_dist>=obscure_dist) return(FALSE);
 	
 		// is model in view?
-
+	
 	return(model_inview(draw));
 }
 

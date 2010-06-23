@@ -102,6 +102,8 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 
 		len=recv(sock,ptr,net_max_msg_size,0);
 		
+		fprintf(stdout,"msg on queue = %d\n",(int)ptr);
+		
 			// if len=0, then socket has closed on other end
 			// if len<0, then some error, skip read and try again
 			

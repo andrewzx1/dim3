@@ -147,7 +147,7 @@ bool net_host_player_add_ok(char *name,char *deny_reason)
       
 ======================================================= */
 
-int net_host_player_add(unsigned long ip_addr,int port,bool local,int machine_uid,char *name,char *draw_name,int tint_color_idx)
+int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,char *draw_name,int tint_color_idx)
 {
 	net_host_player_type		*player;
 
@@ -175,8 +175,6 @@ int net_host_player_add(unsigned long ip_addr,int port,bool local,int machine_ui
 
 	player->connect.remote_uid=net_setup.uid.next_remote_uid;
 	net_setup.uid.next_remote_uid++;
-
-	player->connect.machine_uid=machine_uid;
 
 		// initialize the queue
 
@@ -223,8 +221,6 @@ int net_host_player_add_bot(obj_type *obj)
 
 	player->connect.remote_uid=net_setup.uid.next_remote_uid;
 	net_setup.uid.next_remote_uid++;
-
-	player->connect.machine_uid=net_setup.uid.machine_uid;
 
 		// bots don't have a queue
 
@@ -584,6 +580,11 @@ int net_host_player_remote_thread(void *arg)
 			// then remote has exited
 
 		if (remote_uid==-1) break;
+		
+			// since this is the host, we need to pass on
+			// the messages to the host remotes
+			
+		if (net_setup.mode!=net_mode_host_dedicated) remote_route_message(remote_uid,action,msg);
 	}
 	
 	return(0);
@@ -626,7 +627,7 @@ void net_host_player_send_message_single(int remote_uid,int action,unsigned char
 
 void net_host_player_send_message_others(int remote_uid,int action,unsigned char *msg,int msg_len)
 {
-	int						n,idx,machine_uid;
+	int						n,idx;
 	net_host_player_type	*player;
 	
 	SDL_mutexP(net_host_player_lock);
@@ -634,12 +635,10 @@ void net_host_player_send_message_others(int remote_uid,int action,unsigned char
 		// find sending player
 
 	idx=net_host_player_find(remote_uid);
-	if (idx!=-1) {
+	if (idx==-1) {
 		SDL_mutexV(net_host_player_lock);
 		return;
 	}
-
-	machine_uid=net_host_players[idx].connect.machine_uid;
 
 		// send to others
 	
@@ -656,16 +655,12 @@ void net_host_player_send_message_others(int remote_uid,int action,unsigned char
 
 		player=&net_host_players[n];
 
-		if (player->connect.machine_uid==machine_uid) continue;
-
 			// bots never get messages,
-			// and locals should never be in this list
-			// but we remove anyway just in case
 
-		if ((player->connect.bot) || (player->connect.local)) continue;
+		if (player->connect.bot) continue;
 
 			// send to network
-
+		
 		net_sendto_msg(player->connect.sock,player->connect.ip_addr,player->connect.port,action,remote_uid,msg,msg_len);
 	}
 	

@@ -99,8 +99,11 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 	obj->mesh.cur_mesh_idx=-1;
 	
 		// remotes have no script
+		// special remote type always reroutes to
+		// regular player scripts
 		
 	obj->attach.script_idx=-1;
+	obj->attach.thing_type=thing_type_object;
 	obj->attach.obj_idx=idx;
 	obj->attach.weap_idx=-1;
 	obj->attach.proj_setup_idx=-1;
@@ -109,6 +112,7 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 		// load models
 		
 	strcpy(obj->draw.name,remote->draw_name);
+	obj->draw.on=TRUE;
 		
 	if (!model_draw_load(&obj->draw,"Remote",obj->name,err_str)) {
 		console_add_error(err_str);
@@ -345,7 +349,7 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
-
+	
 	draw=&obj->draw;
 	
 		// update position
@@ -737,6 +741,71 @@ void remote_click(int remote_uid,network_request_remote_click *click)
       
 ======================================================= */
 
+bool remote_route_message(int remote_uid,int action,unsigned char *msg)
+{
+	switch (action) {
+	
+		case net_action_request_game_reset:
+			remote_game_reset((network_request_game_reset*)msg);
+			return(TRUE);
+			
+		case net_action_request_remote_add:
+			remote_add((network_reply_join_remote*)msg,TRUE);
+			return(TRUE);
+			
+		case net_action_request_remote_remove:
+			remote_remove(remote_uid,TRUE);
+			return(TRUE);
+			
+		case net_action_request_remote_death:
+			remote_death(remote_uid,(network_request_remote_death*)msg);
+			return(TRUE);
+		
+		case net_action_request_remote_update:
+			remote_update(remote_uid,(network_request_remote_update*)msg);
+			return(TRUE);
+			
+		case net_action_request_remote_chat:
+			remote_chat(remote_uid,(network_request_remote_chat*)msg);
+			return(TRUE);
+			
+		case net_action_request_remote_sound:
+			remote_sound((network_request_remote_sound*)msg);
+			return(TRUE);
+
+		case net_action_request_remote_fire:
+			remote_fire(remote_uid,(network_request_remote_fire*)msg);
+			return(TRUE);
+
+		case net_action_request_remote_pickup:
+			remote_pickup(remote_uid,(network_request_remote_pickup*)msg);
+			return(TRUE);
+
+		case net_action_request_remote_click:
+			remote_click(remote_uid,(network_request_remote_click*)msg);
+			return(TRUE);
+
+		case net_action_reply_latency_ping:
+			net_setup.client.latency=(game_time_get()-net_setup.client.latency_ping_tick)>>1;		// latency is half of round trip as client-client
+			return(TRUE);
+
+		case net_action_request_host_exit:
+			remote_host_exit();
+			return(FALSE);				// break out of all the loops and exit client game
+
+		case net_action_reply_group_synch:
+			group_moves_synch_with_host((network_reply_group_synch*)msg);
+			return(TRUE);
+			
+		case net_action_request_game_score_limit:
+			server.next_state=gs_score_limit;
+			return(TRUE);
+			
+	}
+	
+	return(TRUE);
+}
+
 bool remote_network_get_updates(void)
 {
 	int						remote_uid,action,count;
@@ -757,66 +826,9 @@ bool remote_network_get_updates(void)
 		}
 		
 			// run message
-		
-		switch (action) {
-		
-			case net_action_request_game_reset:
-				remote_game_reset((network_request_game_reset*)msg);
-				break;
-				
-			case net_action_request_remote_add:
-				remote_add((network_reply_join_remote*)msg,TRUE);
-				break;
-				
-			case net_action_request_remote_remove:
-				remote_remove(remote_uid,TRUE);
-				break;
-				
-			case net_action_request_remote_death:
-				remote_death(remote_uid,(network_request_remote_death*)msg);
-				break;
 			
-			case net_action_request_remote_update:
-				remote_update(remote_uid,(network_request_remote_update*)msg);
-				break;
-				
-			case net_action_request_remote_chat:
-				remote_chat(remote_uid,(network_request_remote_chat*)msg);
-				break;
-				
-			case net_action_request_remote_sound:
-				remote_sound((network_request_remote_sound*)msg);
-				break;
-
-			case net_action_request_remote_fire:
-				remote_fire(remote_uid,(network_request_remote_fire*)msg);
-				break;
-
-			case net_action_request_remote_pickup:
-				remote_pickup(remote_uid,(network_request_remote_pickup*)msg);
-				break;
-
-			case net_action_request_remote_click:
-				remote_click(remote_uid,(network_request_remote_click*)msg);
-				break;
-
-			case net_action_reply_latency_ping:
-				net_setup.client.latency=(game_time_get()-net_setup.client.latency_ping_tick)>>1;		// latency is half of round trip as client-client
-				break;
-
-			case net_action_request_host_exit:
-				remote_host_exit();
-				return(FALSE);				// break out of all the loops and exit client game
-
-			case net_action_reply_group_synch:
-				group_moves_synch_with_host((network_reply_group_synch*)msg);
-				break;
-				
-			case net_action_request_game_score_limit:
-				server.next_state=gs_score_limit;
-				break;
-				
-		}
+		if (!remote_route_message(remote_uid,action,msg)) return(FALSE);
+		
 	}
 	
 	return(TRUE);

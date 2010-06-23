@@ -82,8 +82,10 @@ void gl_check_initialize(void)
 {
 	gl_check_value_frame_buffer=FALSE;
 	
-	if (strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL) {
-		gl_check_value_frame_buffer=(strstr(render_info.ext_string,"GL_EXT_packed_depth_stencil")!=NULL);
+	if (!arch_is_ppc) {
+		if (strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL) {
+			gl_check_value_frame_buffer=(strstr(render_info.ext_string,"GL_EXT_packed_depth_stencil")!=NULL);
+		}
 	}
 	
 	gl_check_value_texture_compress=(strstr(render_info.ext_string,"GL_ARB_texture_compression")!=NULL);

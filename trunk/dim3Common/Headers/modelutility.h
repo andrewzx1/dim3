@@ -159,21 +159,9 @@ typedef struct		{
 					} model_material_type;
 					
 typedef struct		{
-						int								frame;
-						float							alpha;
-						bool							is_transparent,is_glow;
-					} model_mesh_draw_material_type;
-
-typedef struct		{
-						bool							has_opaque,has_transparent,has_glow;
-						model_mesh_draw_material_type	materials[max_model_texture];
-					} model_mesh_draw_type;
-
-typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
 						bool							no_lighting,blend_add,tintable;
-						model_mesh_draw_type			draw;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;
 						model_material_type				*materials;
