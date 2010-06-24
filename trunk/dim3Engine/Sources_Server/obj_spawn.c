@@ -270,10 +270,7 @@ void object_check_respawn(obj_type *obj)
 
 int game_player_create(char *err_str)
 {
-	int			uid;
-	
-	uid=object_start(NULL,setup.network.name,object_type_player,bt_game,err_str);
-	return(uid);
+	return(object_start(NULL,setup.network.name,object_type_player,bt_game,err_str));
 }
 
 void game_multiplayer_bots_create(void)

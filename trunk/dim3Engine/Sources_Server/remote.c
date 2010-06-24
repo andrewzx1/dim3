@@ -102,20 +102,25 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 		// special remote type always reroutes to
 		// regular player scripts
 		
-	obj->attach.script_idx=-1;
-	obj->attach.thing_type=thing_type_object;
-	obj->attach.obj_idx=idx;
-	obj->attach.weap_idx=-1;
-	obj->attach.proj_setup_idx=-1;
-	obj->attach.proj_idx=-1;
+	if (!object_start_script(obj,err_str)) {
+		console_add_error(err_str);
+		free(server.obj_list.objs[idx]);
+		server.obj_list.objs[idx]=NULL;
+		return(FALSE);
+	}
 
 		// load models
+		// we substitute the model passed through
+		// from the remote instead of the one in the script
 		
 	strcpy(obj->draw.name,remote->draw_name);
 	obj->draw.on=TRUE;
 		
 	if (!model_draw_load(&obj->draw,"Remote",obj->name,err_str)) {
 		console_add_error(err_str);
+		free(server.obj_list.objs[idx]);
+		server.obj_list.objs[idx]=NULL;
+		return(FALSE);
 	}
 	
 		// initial score

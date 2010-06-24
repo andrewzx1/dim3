@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "remotes.h"
 #include "network.h"
 
 extern char team_colors[][16];

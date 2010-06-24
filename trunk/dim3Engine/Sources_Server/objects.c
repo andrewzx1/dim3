@@ -749,9 +749,9 @@ bool object_start_script(obj_type *obj,char *err_str)
 		return(TRUE);
 	}
 
-		// if player, use player script
+		// if player or remote, use player script
 
-	if (obj->type==object_type_player) return(scripts_add(&obj->attach,"Objects","Player",err_str));
+	if ((obj->type==object_type_player) || (obj->type==object_type_remote)) return(scripts_add(&obj->attach,"Objects","Player",err_str));
 
 		// otherwise use script setup by spot
 
