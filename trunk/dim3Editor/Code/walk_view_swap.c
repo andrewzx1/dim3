@@ -48,8 +48,11 @@ extern map_type			map;
 	        
 ======================================================= */
 
+
+// supergumba -- delete all of this
 void walk_view_swap_draw(editor_3D_view_setup *view_setup)
 {
+/*
 	int				lx,rx,mx,ty,by,wid,high;
 	
 	wid=view_setup->box.rx-view_setup->box.lx;
@@ -128,6 +131,7 @@ void walk_view_swap_draw(editor_3D_view_setup *view_setup)
 	glVertex2i(rx,ty);
 	glEnd();
 	glLineWidth(1.0f);
+	*/
 }
 
 /* =======================================================
@@ -138,6 +142,7 @@ void walk_view_swap_draw(editor_3D_view_setup *view_setup)
 
 bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_on)
 {
+/*
 	int				box_left,box_top,
 					lx,rx,ty,by,wid,high;
 	d3rect			click_box;
@@ -188,6 +193,6 @@ bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_
 			return(TRUE);
 		}
 	}
-	
+	*/
 	return(FALSE);
 }

@@ -65,6 +65,8 @@ and can be sold or given away.
 // views
 //
 
+#define max_editor_views						8
+
 #define vw_3_panel								0
 #define vw_4_panel								1
 #define vw_top_only								2
@@ -151,15 +153,6 @@ and can be sold or given away.
 #define mouse_top_view_drag_scale				0.01f
 
 //
-// walk view types
-//
-
-#define walk_view_proj_type_forward				0
-#define walk_view_proj_type_side				1
-#define walk_view_proj_type_top					2
-#define walk_view_proj_type_walk				3
-
-//
 // fovs
 //
 
@@ -215,12 +208,12 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						proj_type,clip_y;
+						int						clip_y;
 						d3rect					box;
-						d3pnt					cpt;
+						d3pnt					pnt;
 						d3ang					ang;
 						float					fov;
 						bool					mesh_only,draw_light_circle,
-												swap_on,clip_on,rot_on;
+												clip_on;
 					} editor_3D_view_setup;
 
