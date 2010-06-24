@@ -31,17 +31,18 @@ and can be sold or given away.
 
 extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
-extern void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick);
 extern void walk_view_cursor(bool rot_ok);
 extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
+extern bool walk_view_click(d3pnt *pt,bool dblclick);
+extern void walk_view_draw(void);
 
 //
 // walk view draw piece
 //
 
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
-extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
-extern void walk_view_draw_select(d3pnt *cpt,bool rot_on);
+extern void walk_view_draw_view(editor_3D_view_setup *view_setup,bool draw_position);
+extern void walk_view_draw_select(d3pnt *cpt);
 
 //
 // walk view click

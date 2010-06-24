@@ -875,7 +875,7 @@ void walk_view_draw_position(editor_3D_view_setup *view_setup)
       
 ======================================================= */
 
-void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
+void walk_view_draw_view(editor_3D_view_setup *view_setup,bool draw_position)
 {
        // 3D view
         
@@ -922,7 +922,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		
 		// draw selection
 		
-	walk_view_draw_select(&view_setup->cpt,view_setup->rot_on);
+	walk_view_draw_select(&view_setup->pnt);
 
 		// position
 		

@@ -94,13 +94,11 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 			case vm_dir_forward:
 				gx_add=((float)x)/drag_texture_shift_factor;
 				gy_add=((float)y)/drag_texture_shift_factor;
-				if (view_setup->swap_on) gx_add=-gx_add;
 				break;
 				
 			case vm_dir_side:
 				gx_add=((float)x)/drag_texture_shift_factor;
 				gy_add=((float)y)/drag_texture_shift_factor;
-				if (view_setup->swap_on) gx_add=-gx_add;
 				break;
 				
 			case vm_dir_top:

@@ -172,13 +172,11 @@ void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delt
 		xadd=0;
 		yadd=0;
 		zadd=delta*10;
-		if (view_setup->swap_on) zadd=-zadd;
 	}
 	else {
 		xadd=-(delta*10);
 		yadd=0;
 		zadd=0;
-		if (view_setup->swap_on) xadd=-xadd;
 	}
 	
 	view_pnt.x+=(xadd*32);

@@ -409,7 +409,7 @@ void walk_view_draw_select_rot_handles(d3pnt *pnt,d3ang *ang,int y_size,bool y_o
       
 ======================================================= */
 
-void walk_view_draw_select(d3pnt *cpt,bool rot_on)
+void walk_view_draw_select(d3pnt *cpt)
 {
 	int						n,sel_count,y_size,
 							type,main_idx,sub_idx;
@@ -450,7 +450,7 @@ void walk_view_draw_select(d3pnt *cpt,bool rot_on)
 			case node_piece:
 				walk_view_draw_select_sprite(&map.nodes[main_idx].pnt);
 				y_size=map_enlarge*5;
-				if (rot_on) walk_view_draw_select_rot_handles(&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,y_size,FALSE);
+				walk_view_draw_select_rot_handles(&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,y_size,FALSE);
 				break;
 				
 			case spot_piece:
@@ -458,7 +458,7 @@ void walk_view_draw_select(d3pnt *cpt,bool rot_on)
 					walk_view_draw_select_sprite(&map.spots[main_idx].pnt);
 				}
 				y_size=walk_view_model_rot_y_size(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model);
-				if (rot_on) walk_view_draw_select_rot_handles(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,y_size,TRUE);
+				walk_view_draw_select_rot_handles(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,y_size,TRUE);
 				break;
 				
 			case scenery_piece:
@@ -466,7 +466,7 @@ void walk_view_draw_select(d3pnt *cpt,bool rot_on)
 					walk_view_draw_select_sprite(&map.sceneries[main_idx].pnt);
 				}
 				y_size=walk_view_model_rot_y_size(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name);
-				if (rot_on) walk_view_draw_select_rot_handles(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,y_size,FALSE);
+				walk_view_draw_select_rot_handles(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,y_size,FALSE);
 				break;
 				
 			case light_piece:

@@ -1156,125 +1156,6 @@ void main_wind_set_uv_layer(int uv_layer)
 
 /* =======================================================
 
-      Viewport and Projection Setup
-      
-======================================================= */
-
-void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background)
-{
-	int				bot_y;
-	Rect			wbox;
-	
-		// set viewport
-		
-	GetWindowPortBounds(mainwind,&wbox);
-	bot_y=wbox.bottom-info_high;
-
-	glEnable(GL_SCISSOR_TEST);
-	glScissor(view_box->lx,(bot_y-view_box->by),(view_box->rx-view_box->lx),(view_box->by-view_box->ty));
-
-	glViewport(view_box->lx,(bot_y-view_box->by),(view_box->rx-view_box->lx),(view_box->by-view_box->ty));
-	
-		// default setup
-		
-	glDisable(GL_DEPTH_TEST);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho((GLdouble)view_box->lx,(GLdouble)view_box->rx,(GLdouble)view_box->by,(GLdouble)view_box->ty,-1.0,1.0);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-		
-		// erase viewport
-		
-	if (!erase) return;
-		
-	if (use_background) {
-		glColor4f(setup.col.background.r,setup.col.background.g,setup.col.background.b,1.0f);
-	}
-	else {
-		glColor4f(1.0f,1.0f,1.0f,1.0f);
-	}
-	
-	glBegin(GL_QUADS);
-	glVertex2i(view_box->lx,view_box->ty);
-	glVertex2i(view_box->rx,view_box->ty);
-	glVertex2i(view_box->rx,view_box->by);
-	glVertex2i(view_box->lx,view_box->by);
-	glEnd();
-}
-
-void main_wind_set_2D_projection(editor_3D_view_setup *view_setup)
-{
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho((GLdouble)view_setup->box.lx,(GLdouble)view_setup->box.rx,(GLdouble)view_setup->box.by,(GLdouble)view_setup->box.ty,-1.0,1.0);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-}
-
-void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int far_z,int near_z_offset)
-{
-	int				x_sz,y_sz;
-	float			ratio;
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	
-	if (state.perspective==ps_perspective) {
-		ratio=(float)(view_setup->box.rx-view_setup->box.lx)/(float)(view_setup->box.by-view_setup->box.ty);
-		gluPerspective(view_setup->fov,ratio,(GLdouble)near_z,(GLdouble)far_z);
-	}
-	else {
-		x_sz=(view_setup->box.rx-view_setup->box.lx)*(map_enlarge>>2);
-		y_sz=(view_setup->box.by-view_setup->box.ty)*(map_enlarge>>2);
-		glOrtho((GLdouble)-x_sz,(GLdouble)x_sz,(GLdouble)-y_sz,(GLdouble)y_sz,(GLdouble)near_z,(GLdouble)far_z);
-	}
-	
-	glScalef(-1.0f,-1.0f,-1.0f);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	switch (view_setup->proj_type) {
-	
-		case walk_view_proj_type_forward:
-			if (state.swap_panel_forward) {
-				glRotatef(0.0f,0.0f,1.0f,0.0f);
-			}
-			else {
-				glRotatef(180.0f,0.0f,1.0f,0.0f);
-			}
-			break;
-			
-		case walk_view_proj_type_side:
-			if (state.swap_panel_side) {
-				glRotatef(90.0f,0.0f,1.0f,0.0f);
-			}
-			else {
-				glRotatef(270.0f,0.0f,1.0f,0.0f);
-			}
-			break;
-
-		case walk_view_proj_type_top:
-			glRotatef(90.0f,1.0f,0.0f,0.0f);
-			glRotatef(180.0f,0.0f,1.0f,0.0f);
-			break;
-
-		case walk_view_proj_type_walk:
-			glRotatef(-view_ang.x,1.0f,0.0f,0.0f);
-			glRotatef(-angle_add(view_ang.y,180.0f),0.0f,1.0f,0.0f);
-			break;
-			
-	}
-	
-	glTranslatef(-view_setup->cpt.x,-view_setup->cpt.y,((-view_setup->cpt.z)+near_z_offset));
-}
-
-/* =======================================================
-
       Divider Drawing
       
 ======================================================= */
@@ -1482,6 +1363,12 @@ void main_wind_draw(void)
 	
 	glClearColor(1.0f,1.0f,1.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+	walk_view_draw();
+	
+
+
+/* supergumba
     
         // the views
 		
@@ -1530,7 +1417,7 @@ void main_wind_draw(void)
 			walk_view_draw(&view_setup,FALSE);
 			break;
 	}
-	
+*/	
 		// texture window
 		
 	texture_palette_draw();
@@ -1621,6 +1508,11 @@ bool main_wind_click_check_box(d3pnt *pt,d3rect *box)
 bool main_wind_click(d3pnt *pt,bool dblclick)
 {
 	editor_3D_view_setup	view_setup;
+	
+	return(walk_view_click(pt,dblclick));
+	
+	
+	/* supergumba
 
 	switch (state.view) {
 	
@@ -1700,6 +1592,7 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 	}
 	    
     return(FALSE);
+	*/
 }
 
 /* =======================================================

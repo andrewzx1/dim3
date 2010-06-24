@@ -339,8 +339,6 @@ bool walk_view_click_rot_handles(editor_3D_view_setup *view_setup,d3pnt *click_p
 	d3pnt		pt;
 	d3ang		*ang,old_ang;
 	
-	if (!view_setup->rot_on) return(FALSE);
-	
 		// check drags for all selections
 		
 	ncount=select_count();
@@ -493,9 +491,9 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 	
 	for (t=0;t!=mesh_poly->ptsz;t++) {
 		pt=&mesh->vertexes[mesh_poly->v[t]];
-		dx=(double)(view_setup->cpt.x-pt->x);
-		dy=(double)(view_setup->cpt.y-pt->y);
-		dz=(double)(view_setup->cpt.z-pt->z);
+		dx=(double)(view_setup->pnt.x-pt->x);
+		dy=(double)(view_setup->pnt.y-pt->y);
+		dz=(double)(view_setup->pnt.z-pt->z);
 		
 		dist=(int)sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		
