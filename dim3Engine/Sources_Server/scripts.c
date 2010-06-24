@@ -163,7 +163,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	int						n,idx;
 	bool					ok;
 	script_type				*script;
-	
+
 		// no script
 		
 	attach->script_idx=-1;
