@@ -158,11 +158,11 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
 	}
 	
 		// call projectile hit
-		
+
 	scripts_post_event_console(&proj->attach,sd_event_hit,0,0);
 	
 	if (!proj->script_dispose) return(FALSE);
-   
+  
         // object damage
 
 	obj=server.obj_list.objs[proj->obj_idx]; 

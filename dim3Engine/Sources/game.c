@@ -92,7 +92,7 @@ bool game_start(bool in_file_load,int skill,char *err_str)
 void game_end(void)
 {
 	console_add_system("Closing Game");
-	
+
 		// close any network joins or hosting
 	
 	switch (net_setup.mode) {
@@ -114,7 +114,7 @@ void game_end(void)
 		// stop server
 		
 	server_game_stop();
-	
+
 		// game closed
 		
 	server.game_open=FALSE;

@@ -49,6 +49,8 @@ bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 int								view_count,view_select_idx;
 editor_3D_view_setup			views[max_editor_views];
 
+// supergumba -- editor should remember last position/views/etc if you saved
+
 /* =======================================================
 
       Initialize and Shutdown Walk View
@@ -58,6 +60,7 @@ editor_3D_view_setup			views[max_editor_views];
 bool walk_view_initialize(void)
 {
 	char			path[1024];
+	d3rect			wbox;
 	
 		// interface textures
 		
@@ -86,12 +89,58 @@ bool walk_view_initialize(void)
 		
 	view_count=2;
 	view_select_idx=0;
-	
-	main_wind_setup_panel_forward_full(&views[0]);
+
+
+	os_get_window_box(&wbox);
+
+	views[0].box.ty=wbox.ty+toolbar_high;
+	views[0].box.by=wbox.by-(txt_palette_high+info_high);
+	views[0].box.lx=wbox.lx;
+	views[0].box.rx=wbox.rx-palette_wid;
 	views[0].box.rx=(views[0].box.lx+views[0].box.rx)>>1;
+
+	views[0].pnt.x=view_pnt.x;
+	views[0].pnt.y=view_pnt.y;
+	views[0].pnt.z=view_pnt.z;
+
+	views[0].ang.x=view_ang.x;
+	views[0].ang.y=view_ang.y;
+	views[0].ang.z=0.0f;
 	
-	main_wind_setup_panel_top_full(&views[1]);
+	views[0].fov=walk_view_forward_fov;
+	
+	views[0].mesh_only=FALSE;
+	views[0].draw_light_circle=FALSE;
+
+	views[0].clip_on=FALSE;
+
+
+
+	os_get_window_box(&views[1].box);
+	
+	views[1].box.ty+=toolbar_high;
+	views[1].box.by-=(txt_palette_high+info_high);
+	views[1].box.rx-=palette_wid;
 	views[1].box.lx=(views[1].box.lx+views[1].box.rx)>>1;
+
+	views[1].pnt.x=view_pnt.x;
+	views[1].pnt.y=view_pnt.y-30000;
+	views[1].pnt.z=view_pnt.z;
+	
+	views[1].clip_y=view_pnt.y;
+
+	views[1].ang.x=-90.0f;
+	views[1].ang.y=0.0f;
+	views[1].ang.z=0.0f;
+	
+	views[1].fov=top_view_fov;
+	
+	views[1].mesh_only=FALSE;
+	views[1].draw_light_circle=TRUE;
+	
+	views[1].clip_on=TRUE;
+
+
 
 	return(TRUE);
 }
@@ -196,7 +245,7 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int
 	glRotatef(-view_setup->ang.x,1.0f,0.0f,0.0f);
 	glRotatef(-angle_add(view_setup->ang.y,180.0f),0.0f,1.0f,0.0f);
 	
-	glTranslatef(-view_setup->pnt.x,-view_setup->pnt.y,((-view_setup->pnt.z)+near_z_offset));
+	glTranslatef((GLfloat)-view_setup->pnt.x,(GLfloat)-view_setup->pnt.y,(GLfloat)((-view_setup->pnt.z)+near_z_offset));
 }
 
 /* =======================================================
@@ -241,32 +290,6 @@ void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
       
 ======================================================= */
 
-/*
-void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick)
-{
-       // scrolling and movement keys
-        
-    if (os_key_space_down()) {
-        walk_view_mouse_xy_movement(view_setup,pt,view_move_dir);
-        return;
-    }
-
-    if (os_key_option_down()) {
-        walk_view_mouse_yz_movement(view_setup,pt,view_move_dir);
-        return;
-    }
-
-    if ((os_key_command_down()) && (rot_ok)) {
-        walk_view_mouse_turn(pt);
-        return;
-    }
-
-        // click the map pieces
-    
-    walk_view_click_piece(view_setup,pt,view_move_dir,dblclick);
-}
-*/
-
 bool walk_view_click(d3pnt *pt,bool dblclick)
 {
 	int						n;
@@ -275,10 +298,6 @@ bool walk_view_click(d3pnt *pt,bool dblclick)
 	for (n=0;n!=view_count;n++) {
 		view=&views[n];
 		
-		view->pnt.x=view_pnt.x;
-		view->pnt.y=view_pnt.y;
-		view->pnt.z=view_pnt.z;
-
 		if (!main_wind_click_check_box(pt,&view->box)) continue;
 		
 		   // scrolling and movement clicks
@@ -335,15 +354,57 @@ void walk_view_draw(void)
 	
 			// draw the view
 			
-		view->pnt.x=view_pnt.x;
-		view->pnt.y=view_pnt.y;
-		view->pnt.z=view_pnt.z;
 		walk_view_draw_view(view,FALSE);
 		
 			// view box
 			
 		main_wind_set_viewport(&main_wind_box,FALSE,FALSE);
 		
+			// selection
+			
+		if (n==view_select_idx) {
+			glEnable(GL_BLEND);
+			
+			glColor4f(0.8f,0.8f,0.8f,0.5f);
+
+			glBegin(GL_QUADS);
+			
+				// top
+				
+			glVertex2i(view->box.lx,view->box.ty);
+			glVertex2i(view->box.rx,view->box.ty);
+			glVertex2i(view->box.rx,(view->box.ty+view_selection_size));
+			glVertex2i(view->box.lx,(view->box.ty+view_selection_size));
+			
+				// bottom
+				
+			glVertex2i(view->box.lx,(view->box.by-view_selection_size));
+			glVertex2i(view->box.rx,(view->box.by-view_selection_size));
+			glVertex2i(view->box.rx,view->box.by);
+			glVertex2i(view->box.lx,view->box.by);
+			
+				// left
+				
+			glVertex2i(view->box.lx,(view->box.ty+view_selection_size));
+			glVertex2i((view->box.lx+view_selection_size),(view->box.ty+view_selection_size));
+			glVertex2i((view->box.lx+view_selection_size),(view->box.by-view_selection_size));
+			glVertex2i(view->box.lx,(view->box.by-view_selection_size));
+
+				// right
+				
+			glVertex2i((view->box.rx-view_selection_size),(view->box.ty+view_selection_size));
+			glVertex2i(view->box.rx,(view->box.ty+view_selection_size));
+			glVertex2i(view->box.rx,(view->box.by-view_selection_size));
+			glVertex2i((view->box.rx-view_selection_size),(view->box.by-view_selection_size));
+
+			glEnd();
+			
+			glDisable(GL_BLEND);
+		}
+
+			// view box outline
+
+		glLineWidth(1.0f);
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 		glBegin(GL_LINE_LOOP);
@@ -353,47 +414,6 @@ void walk_view_draw(void)
 		glVertex2i((view->box.lx-1),(view->box.by+1));
 		glEnd();
 		
-			// selection
-			
-		if (n!=view_select_idx) continue;
-		
-		glEnable(GL_BLEND);
-		
-		glColor4f(0.8f,0.8f,0.8f,0.5f);
-
-		glBegin(GL_QUADS);
-		
-			// top
-			
-		glVertex2i(view->box.lx,view->box.ty);
-		glVertex2i(view->box.rx,view->box.ty);
-		glVertex2i(view->box.rx,(view->box.ty+view_selection_size));
-		glVertex2i(view->box.lx,(view->box.ty+view_selection_size));
-		
-			// bottom
-			
-		glVertex2i(view->box.lx,(view->box.by-view_selection_size));
-		glVertex2i(view->box.rx,(view->box.by-view_selection_size));
-		glVertex2i(view->box.rx,view->box.by);
-		glVertex2i(view->box.lx,view->box.by);
-		
-			// left
-			
-		glVertex2i(view->box.lx,(view->box.ty+view_selection_size));
-		glVertex2i((view->box.lx+view_selection_size),(view->box.ty+view_selection_size));
-		glVertex2i((view->box.lx+view_selection_size),(view->box.by-view_selection_size));
-		glVertex2i(view->box.lx,(view->box.by-view_selection_size));
-
-			// right
-			
-		glVertex2i((view->box.rx-view_selection_size),(view->box.ty+view_selection_size));
-		glVertex2i(view->box.rx,(view->box.ty+view_selection_size));
-		glVertex2i(view->box.rx,(view->box.by-view_selection_size));
-		glVertex2i((view->box.rx-view_selection_size),(view->box.by-view_selection_size));
-
-		glEnd();
-		
-		glDisable(GL_BLEND);
 	}
 }
 

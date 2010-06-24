@@ -924,16 +924,6 @@ void object_dispose_single(int idx)
 	proj_type			*proj;
 
 	obj=server.obj_list.objs[idx];
-	
-		// dispose all projectile
-		
-	for (n=0;n!=max_proj_list;n++) {
-		proj=server.proj_list.projs[n];
-		if (proj==NULL) continue;
-		if (!proj->on) continue;
-		
-		if (proj->obj_idx==idx) projectile_dispose(proj);
-	}
 
 		// dispose weapons
 

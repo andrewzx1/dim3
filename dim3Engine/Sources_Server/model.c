@@ -191,7 +191,7 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
 	
 	ok=TRUE;
 	mdl=NULL;
-	
+
 	if (draw->name[0]!=0x0) {
 		draw->model_idx=model_load(draw->name);
 		if (draw->model_idx!=-1) {

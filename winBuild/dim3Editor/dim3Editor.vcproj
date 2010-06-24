@@ -79,7 +79,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile=".\Release/dim3 Editor.pdb"
-				SubSystem="1"
+				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
@@ -239,6 +239,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\texture_palette.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\undo.c"
 					>
 				</File>
@@ -358,6 +362,10 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\dim3Editor\Code\xml_setup.c"
+					>
 				</File>
 			</Filter>
 			<Filter

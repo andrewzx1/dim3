@@ -1,6 +1,7 @@
 #include "dim3Editor.h"
 
 #include "common_view.h"
+#include "interface.h"
 
 #define EDITOR_WIN_X			10
 #define EDITOR_WIN_Y			40
@@ -32,7 +33,7 @@ editor_state_type		state;
 
 d3rect					main_wind_box;
 
-
+extern bool setup_xml_read(void);
 extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
 void editor_button_down(int x,int y,bool forward);
 void editor_button_up(int x,int y);
@@ -40,6 +41,41 @@ void editor_mouse_move(int x,int y);
 void editor_draw(void);	// supergumba -- testing
 extern void glue_start(void);
 extern void glue_end(void);
+extern void walk_view_draw(void);
+extern bool walk_view_initialize(void);
+extern void walk_view_shutdown(void);
+
+/* =======================================================
+
+      Supergumba -- temporary patches
+      
+======================================================= */
+
+void menu_fix_enable(void)
+{
+}
+
+void palette_reset(void)
+{
+}
+
+bool main_wind_click_check_box(d3pnt *pt,d3rect *box)
+{
+	return(FALSE);
+}
+
+void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
+{
+}
+
+void dialog_texture_setting_run(int txt)
+{
+}
+
+bool node_link_click(int node_idx)
+{
+	return(FALSE);
+}
 
 /* =======================================================
 
@@ -69,7 +105,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_MOUSEMOVE:
-			editor_mouse_move(LOWORD(lParam),HIWORD(lParam));
+		//	editor_mouse_move(LOWORD(lParam),HIWORD(lParam));
 			break;
 
 		case WM_CLOSE:
@@ -101,6 +137,10 @@ bool editor_start(char *err_str)
 		// glue start
 
 	glue_start();
+
+		// settings
+
+	setup_xml_read();
 
 		// create window
 
@@ -199,11 +239,24 @@ bool editor_start(char *err_str)
 	main_wind_box.ty=toolbar_high;
 	main_wind_box.by=(wbox.bottom-wbox.top)-info_high;
 
+		// supergumba -- fake starting point
+
+	view_pnt.x=346000;
+	view_pnt.y=252000;
+	view_pnt.z=354000;
+
+		// initialize walk view
+
+	texture_palette_setup();
+	walk_view_initialize();
+
 	return(TRUE);
 }
 
 void editor_end(void)
 {
+	walk_view_shutdown();
+
 		// close opengl
 
 	wglMakeCurrent(NULL,NULL);
@@ -281,12 +334,6 @@ bool editor_open_map(char *err_str)
 
 //	walk_view_models_start();
 
-		// get starting point
-
-	view_pnt.x=140000;
-	view_pnt.y=247231;
-	view_pnt.z=278760;
-
 	return(TRUE);
 }
 
@@ -295,92 +342,6 @@ void editor_close_map(void)
 //	walk_view_models_close();
 
 	map_close(&map);
-}
-
-/* =======================================================
-
-      View Boxes
-      
-======================================================= */
-
-void editor_get_left_view_box(d3rect *box,d3ang *ang)
-{
-	int				mx,my;
-	RECT			wbox;
-
-	GetClientRect(wnd,&wbox);
-
-	mx=(wbox.left+wbox.right)/2;
-	my=(wbox.top+wbox.bottom)/2;
-
-	box->lx=0;
-	box->rx=mx-1;
-	box->ty=0;
-	box->by=my-1;
-
-	ang->x=0;
-	ang->y=90.0f;
-	ang->z=0;
-}
-
-void editor_get_forward_view_box(d3rect *box,d3ang *ang)
-{
-	int				mx,my;
-	RECT			wbox;
-
-	GetClientRect(wnd,&wbox);
-
-	mx=(wbox.left+wbox.right)/2;
-	my=(wbox.top+wbox.bottom)/2;
-
-	box->lx=mx;
-	box->rx=wbox.right;
-	box->ty=0;
-	box->by=my-1;
-
-	ang->x=0;
-	ang->y=0.0f;
-	ang->z=0;
-}
-
-void editor_get_top_view_box(d3rect *box,d3ang *ang)
-{
-	int				mx,my;
-	RECT			wbox;
-
-	GetClientRect(wnd,&wbox);
-
-	mx=(wbox.left+wbox.right)/2;
-	my=(wbox.top+wbox.bottom)/2;
-
-	box->lx=0;
-	box->rx=mx-1;
-	box->ty=my;
-	box->by=wbox.bottom;
-
-	ang->x=-90.0f;
-	ang->y=0;
-	ang->z=0;
-}
-
-void editor_get_right_view_box(d3rect *box,d3ang *ang)
-{
-	int				mx,my;
-	RECT			wbox;
-
-	GetClientRect(wnd,&wbox);
-
-	mx=(wbox.left+wbox.right)/2;
-	my=(wbox.top+wbox.bottom)/2;
-
-	box->lx=mx;
-	box->rx=wbox.right;
-	box->ty=my;
-	box->by=wbox.bottom;
-
-	ang->x=0.0f;
-	ang->y=-90.0f;
-	ang->z=0;
 }
 
 /* =======================================================
@@ -407,8 +368,6 @@ void editor_draw(void)
 {
 	int				mx,my,wnd_high;
 	RECT			wbox;
-	d3ang			ang;
-	d3rect			box;
 
 	GetClientRect(wnd,&wbox);
 
@@ -427,25 +386,11 @@ void editor_draw(void)
 	glClearColor(0.75f,0.75f,0.75f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-		// left view
+		// draw editor
 
-	editor_get_left_view_box(&box,&ang);
-	edit_view_draw(&view_pnt,&ang,&box,wnd_high,TRUE);
+	walk_view_draw();
 
-		// forward view
-
-	editor_get_forward_view_box(&box,&ang);
-	edit_view_draw(&view_pnt,&ang,&box,wnd_high,FALSE);
-
-		// top view
-
-	editor_get_top_view_box(&box,&ang);
-	edit_view_draw(&view_pnt,&ang,&box,wnd_high,FALSE);
-
-		// right view
-
-	editor_get_right_view_box(&box,&ang);
-	edit_view_draw(&view_pnt,&ang,&box,wnd_high,FALSE);
+	texture_palette_draw();
 
 		// swap buffers
 
@@ -467,6 +412,7 @@ void editor_button_down(int x,int y,bool forward)
 {
 	d3ang		ang;
 	d3rect		box;
+	d3pnt		pnt;
 
 	mouse_down=TRUE;
 	mouse_forward=forward;
@@ -476,16 +422,10 @@ void editor_button_down(int x,int y,bool forward)
 
 		// find view clicked in
 
-	mouse_last_view=EDITOR_VIEW_LEFT;
+	pnt.x=x;
+	pnt.y=y;
 
-	editor_get_forward_view_box(&box,&ang);
-	if ((x>=box.lx) && (x<=box.rx) && (y>=box.ty) && (y<=box.by)) mouse_last_view=EDITOR_VIEW_FORWARD;
-
-	editor_get_top_view_box(&box,&ang);
-	if ((x>=box.lx) && (x<=box.rx) && (y>=box.ty) && (y<=box.by)) mouse_last_view=EDITOR_VIEW_TOP;
-
-	editor_get_right_view_box(&box,&ang);
-	if ((x>=box.lx) && (x<=box.rx) && (y>=box.ty) && (y<=box.by)) mouse_last_view=EDITOR_VIEW_RIGHT;
+	walk_view_click(&pnt,FALSE);
 }
 
 void editor_button_up(int x,int y)
@@ -609,14 +549,3 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	return(0);
 }
 
-//
-// supergumba
-//
-// temporary, here so we can have a console, to remove, go into
-// settings, linker, and in the text box change
-// /subsystem:console back to /subsystem:windows
-
-int main(int ac,char *av[])
-{
-    return WinMain((HINSTANCE)GetModuleHandle(NULL),NULL,"",SW_SHOWNORMAL);
-}
