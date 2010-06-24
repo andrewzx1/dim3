@@ -511,17 +511,21 @@ void map_end(void)
 	map_end_ambient();
 	al_stop_all_sources();
 
-		// free some lists
+		// remove all projectiles
 	
 	progress_draw(25);
 
 	projectile_dispose_all();
-	projectile_free_list();
 
+		// free some map lists
+
+	progress_draw(30);
+
+	projectile_free_list();
 	effect_free_list();
 	decal_free_list();
 
-        // end script
+        // end course script
 		
 	progress_draw(35);
 

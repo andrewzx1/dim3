@@ -159,6 +159,10 @@ void remote_remove(int remote_uid,bool send_event)
 		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_leave,obj->idx);
 	}
 	
+		// remove any projectiles
+
+	projectile_dispose_object(obj);
+
 		// remove the obj
 		
 	object_dispose_single(obj->idx);

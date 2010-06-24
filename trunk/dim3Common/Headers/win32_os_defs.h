@@ -86,3 +86,5 @@ typedef int						socklen_t;
 
 #define D3_NULL_SOCKET			INVALID_SOCKET
 #define EWOULDBLOCK				WSAEWOULDBLOCK
+
+#define WindowRef				HWND

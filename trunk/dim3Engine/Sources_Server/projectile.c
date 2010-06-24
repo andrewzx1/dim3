@@ -71,7 +71,10 @@ void projectile_free_list(void)
 	int				n;
 
 	for (n=0;n!=max_proj_list;n++) {
-		if (server.proj_list.projs[n]!=NULL) free(server.proj_list.projs[n]);
+		if (server.proj_list.projs[n]!=NULL) {
+			free(server.proj_list.projs[n]);
+			server.proj_list.projs[n]=NULL;
+		}
 	}
 }
 
@@ -299,6 +302,19 @@ void projectile_dispose(proj_type *proj)
 		// mark as unused
 
 	proj->on=FALSE;
+}
+
+void projectile_dispose_object(obj_type *obj)
+{
+	int				n;
+	proj_type		*proj;
+	
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+		
+		if (proj->obj_idx==obj->idx) projectile_dispose(proj);
+	}
 }
 
 void projectile_dispose_all(void)

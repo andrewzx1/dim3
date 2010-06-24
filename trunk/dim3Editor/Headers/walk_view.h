@@ -31,6 +31,9 @@ and can be sold or given away.
 
 extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
+extern void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background);
+extern void main_wind_set_2D_projection(editor_3D_view_setup *view_setup);
+extern void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int far_z,int near_z_offset);
 extern void walk_view_cursor(bool rot_ok);
 extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
 extern bool walk_view_click(d3pnt *pt,bool dblclick);

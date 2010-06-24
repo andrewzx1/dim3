@@ -148,7 +148,7 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 	if (!scripts_setup_events(script,err_str)) return(FALSE);
 	
 		// send the construct event
-		
+	
 	return(scripts_post_event(attach,sd_event_construct,0,0,err_str));
 }
 

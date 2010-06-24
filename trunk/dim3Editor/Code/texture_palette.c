@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
@@ -38,8 +42,6 @@ int							txt_page,txt_offset,
 							txt_palette_y,txt_palette_high,txt_pixel_sz;
 d3rect						txt_palette_box;
 
-extern WindowRef			mainwind;
-
 /* =======================================================
 
       Texture Palette Setup
@@ -48,17 +50,17 @@ extern WindowRef			mainwind;
 
 void texture_palette_setup(void)
 {
-	Rect			wbox;
+	d3rect			wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 		
-	txt_pixel_sz=((wbox.right-palette_wid)-(wbox.left+64))/txt_wind_per_page_count;
+	txt_pixel_sz=((wbox.rx-palette_wid)-(wbox.lx+64))/txt_wind_per_page_count;
 	txt_palette_high=txt_pixel_sz;
 	
-	txt_palette_y=(wbox.bottom-txt_palette_high)-info_high;
+	txt_palette_y=(wbox.by-txt_palette_high)-info_high;
 	
-	txt_palette_box.lx=wbox.left;
-	txt_palette_box.rx=wbox.right-palette_wid;
+	txt_palette_box.lx=wbox.lx;
+	txt_palette_box.rx=wbox.rx-palette_wid;
 	txt_palette_box.ty=txt_palette_y;
 	txt_palette_box.by=(txt_palette_box.ty+txt_palette_high)+1;
 }

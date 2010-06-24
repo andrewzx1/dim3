@@ -232,9 +232,14 @@ bool script_state_load(void)
 	obj_type		*obj;
 	weapon_type		*weap;
 	proj_setup_type	*proj_setup;
+	proj_type		*proj;
+
+		// load the game and course
 
 	if (!script_state_load_single(&js.game_attach)) return(FALSE);
 	if (!script_state_load_single(&js.course_attach)) return(FALSE);
+
+		// load the objects
 
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
@@ -255,6 +260,20 @@ bool script_state_load(void)
 				if (!script_state_load_single(&proj_setup->attach)) return(FALSE);
 			}
 		}
+	}
+
+		// reattach any projectiles
+		// to their projectile setup scripts
+
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+
+		obj=server.obj_list.objs[proj->obj_idx];
+		weap=obj->weap_list.weaps[proj->weap_idx];
+		proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
+
+		proj->attach.script_idx=proj_setup->attach.script_idx;
 	}
 
 	return(TRUE);
