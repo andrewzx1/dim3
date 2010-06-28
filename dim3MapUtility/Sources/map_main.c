@@ -158,6 +158,10 @@ bool map_new(map_type *map,char *name)
 	map->fog.col.b=0.5;
 	map->fog.alpha=0.05f;
 	map->fog.use_solid_color=TRUE;
+
+		// editor setup
+
+	map->editor_views.count=0;
 		
 		// pieces
 	

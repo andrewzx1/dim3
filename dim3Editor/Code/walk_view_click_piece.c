@@ -50,7 +50,7 @@ extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
       
 ======================================================= */
 
-void walk_view_click_setup_project(editor_view_setup *view)
+void walk_view_click_setup_project(editor_view_type *view)
 {
 		// setup walk view
 		
@@ -69,7 +69,7 @@ bool walk_view_click_rotate_polygon_in_z(int x,int y,int z)
 	return(((((double)x)*walk_view_mod_matrix[2])+(((double)y)*walk_view_mod_matrix[6])+(((double)z)*walk_view_mod_matrix[10])+walk_view_mod_matrix[14])>(float)walk_view_near_offset);
 }
 
-void walk_view_click_project_point(editor_view_setup *view,int *x,int *y,int *z)
+void walk_view_click_project_point(editor_view_type *view,int *x,int *y,int *z)
 {
 	double		dx,dy,dz;
 	d3rect		box;
@@ -216,7 +216,7 @@ bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt)
       
 ======================================================= */
 
-bool walk_view_click_item_single_rot_handles(editor_view_setup *view_setup,d3pnt *click_pt,d3pnt *pnt,d3vct *vct,d3ang *ang,int y_size)
+bool walk_view_click_item_single_rot_handles(editor_view_type *view_setup,d3pnt *click_pt,d3pnt *pnt,d3vct *vct,d3ang *ang,int y_size)
 {
 	int				x,y,z,sz;
 	matrix_type		mat;
@@ -258,7 +258,7 @@ bool walk_view_click_item_single_rot_handles(editor_view_setup *view_setup,d3pnt
 	return(FALSE);
 }
 
-int walk_view_click_item_rot_handles(editor_view_setup *view_setup,d3pnt *click_pt,d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
+int walk_view_click_item_rot_handles(editor_view_type *view_setup,d3pnt *click_pt,d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
 {
 	float			len;
 	d3vct			vct;
@@ -296,7 +296,7 @@ int walk_view_click_item_rot_handles(editor_view_setup *view_setup,d3pnt *click_
 	return(-1);
 }
 
-bool walk_view_click_rot_handles(editor_view_setup *view_setup,d3pnt *click_pt)
+bool walk_view_click_rot_handles(editor_view_type *view_setup,d3pnt *click_pt)
 {
 	int			n,ncount,type,main_idx,sub_idx,
 				y_size,which_axis;
@@ -397,7 +397,7 @@ bool walk_view_click_rot_handles(editor_view_setup *view_setup,d3pnt *click_pt)
       
 ======================================================= */
 
-bool walk_view_mesh_poly_click_index(editor_view_setup *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z)
+bool walk_view_mesh_poly_click_index(editor_view_type *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z)
 {
 	int					t,dist,hz,px[8],py[8],pz[8];
 	double				dx,dy,dz;
@@ -465,7 +465,7 @@ bool walk_view_mesh_poly_click_index(editor_view_setup *view_setup,d3pnt *click_
 	return(TRUE);
 }
 
-bool walk_view_quad_click_index(editor_view_setup *view_setup,d3pnt *click_pt,int *px,int *py,int *pz,int *hit_z)
+bool walk_view_quad_click_index(editor_view_type *view_setup,d3pnt *click_pt,int *px,int *py,int *pz,int *hit_z)
 {
 	int				t,fz;
 	bool			off_left,off_right,off_top,off_bottom;
@@ -519,7 +519,7 @@ void walk_view_cube_click_index_make_quad(int *x,int *y,int *z,int *px,int *py,i
 	pz[3]=z[v4];
 }
 
-bool walk_view_cube_click_index(editor_view_setup *view_setup,d3pnt *click_pt,int *x,int *y,int *z,int *hit_z)
+bool walk_view_cube_click_index(editor_view_type *view_setup,d3pnt *click_pt,int *x,int *y,int *z,int *hit_z)
 {
 	int					px[4],py[4],pz[4];
 	bool				hit;
@@ -557,7 +557,7 @@ bool walk_view_cube_click_index(editor_view_setup *view_setup,d3pnt *click_pt,in
 	return(hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
 
-bool walk_view_liquid_click(editor_view_setup *view_setup,d3pnt *click_pt,map_liquid_type *liq,int *hit_z)
+bool walk_view_liquid_click(editor_view_type *view_setup,d3pnt *click_pt,map_liquid_type *liq,int *hit_z)
 {
 	int				px[4],py[4],pz[4];
 
@@ -576,7 +576,7 @@ bool walk_view_liquid_click(editor_view_setup *view_setup,d3pnt *click_pt,map_li
       
 ======================================================= */
 
-void walk_view_mesh_click_index(editor_view_setup *view_setup,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
+void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
 {
 	int					n,k,fz,box_wid,box_high,
 						px[8],py[8],pz[8],hit_z;
@@ -756,7 +756,7 @@ void walk_view_mesh_click_index(editor_view_setup *view_setup,d3pnt *click_pt,in
 	}
 }
 	
-bool walk_view_click_piece_normal(editor_view_setup *view_setup,d3pnt *pt,bool dblclick)
+bool walk_view_click_piece_normal(editor_view_type *view_setup,d3pnt *pt,bool dblclick)
 {
 	int				type,main_idx,sub_idx;
 	bool			toggle_select;
@@ -812,7 +812,7 @@ bool walk_view_click_piece_normal(editor_view_setup *view_setup,d3pnt *pt,bool d
       
 ======================================================= */
 
-void walk_view_click_piece(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick)
+void walk_view_click_piece(editor_view_type *view_setup,d3pnt *pt,int view_move_dir,bool dblclick)
 {
 	d3rect				box;
 	

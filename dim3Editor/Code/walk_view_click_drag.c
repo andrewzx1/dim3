@@ -91,7 +91,7 @@ void walk_view_click_drag_constraint(int *x,int *y,int *z,int view_mode_dir)
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh_handle(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh_handle(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						n,x,y,z,mx,my,mz,sz,hit_z,
 							px[8],py[8],pz[8],
@@ -259,7 +259,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_setup *view_setup,d3pnt *pt,in
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						n,k,x,y,mx,my,mz,nsel,nvertex,
 							type,mesh_idx,poly_idx,fz;
@@ -458,7 +458,7 @@ bool walk_view_click_drag_mesh(editor_view_setup *view_setup,d3pnt *pt,int view_
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh_poly(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh_poly(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						n,x,y,mx,my,mz,
 							type,mesh_idx,poly_idx,fz;
@@ -590,7 +590,7 @@ bool walk_view_click_drag_mesh_poly(editor_view_setup *view_setup,d3pnt *pt,int 
       
 ======================================================= */
 
-bool walk_view_click_drag_vertex(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_vertex(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						n,x,y,z,mx,my,mz,hit_z,sz,
 							type,mesh_idx,poly_idx,vertex_idx;
@@ -724,7 +724,7 @@ bool walk_view_click_drag_vertex(editor_view_setup *view_setup,d3pnt *pt,int vie
       
 ======================================================= */
 
-bool walk_view_click_drag_liquid_vertex(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_liquid_vertex(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						n,x,y,z,mx,my,mz,hit_z,sz,chk_x,chk_z,
 							px[4],py[4],pz[4],
@@ -870,7 +870,7 @@ bool walk_view_click_drag_liquid_vertex(editor_view_setup *view_setup,d3pnt *pt,
       
 ======================================================= */
 
-bool walk_view_click_drag_liquid(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_liquid(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						x,y,mx,my,mz,
 							old_lft,old_rgt,old_top,old_bot,old_y,
@@ -963,7 +963,7 @@ bool walk_view_click_drag_liquid(editor_view_setup *view_setup,d3pnt *pt,int vie
       
 ======================================================= */
 
-bool walk_view_click_drag_item(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_item(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						x,y,mx,my,mz,
 							type,main_idx,sub_idx;
