@@ -29,8 +29,6 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-extern d3pnt					view_pnt;
-
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
 extern editor_state_type		state;
@@ -62,9 +60,7 @@ void piece_create_get_spot(d3pnt *pnt)
 		// center in view if no selection
 		
 	if (select_count()==0) {
-		pnt->x=view_pnt.x;
-		pnt->z=view_pnt.z;
-		pnt->y=view_pnt.y;
+		walk_view_get_position(&pnt);
 	}
 	
 		// find place in selection

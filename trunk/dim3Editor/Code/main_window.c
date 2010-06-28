@@ -29,8 +29,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern d3pnt			view_pnt;
-extern d3ang			view_ang;
 extern int				txt_palette_y,txt_palette_high;
 
 extern map_type			map;
@@ -307,10 +305,7 @@ void main_wind_control_piece(int piece_idx)
 				state.show_object=TRUE;
 				
 				idx=spot_combo_lookup[menu_idx-3];
-			
-				view_pnt.x=map.spots[idx].pnt.x;
-				view_pnt.y=map.spots[idx].pnt.y-500;
-				view_pnt.z=map.spots[idx].pnt.z;
+				walk_view_set_position_y_shift(&map.spots[idx].pnt,-500);
 				
 				select_clear();
 				select_add(spot_piece,idx,-1);
@@ -335,10 +330,7 @@ void main_wind_control_piece(int piece_idx)
 				state.show_lightsoundparticle=TRUE;
 				
 				idx=light_combo_lookup[menu_idx-3];
-			
-				view_pnt.x=map.lights[idx].pnt.x;
-				view_pnt.y=map.lights[idx].pnt.y-500;
-				view_pnt.z=map.lights[idx].pnt.z;
+				walk_view_set_position_y_shift(&map.lights[idx].pnt,-500);
 				
 				select_clear();
 				select_add(light_piece,idx,-1);
@@ -363,10 +355,7 @@ void main_wind_control_piece(int piece_idx)
 				state.show_lightsoundparticle=TRUE;
 				
 				idx=sound_combo_lookup[menu_idx-3];
-			
-				view_pnt.x=map.sounds[idx].pnt.x;
-				view_pnt.y=map.sounds[idx].pnt.y-500;
-				view_pnt.z=map.sounds[idx].pnt.z;
+				walk_view_set_position_y_shift(&map.sounds[idx].pnt,-500);			
 				
 				select_clear();
 				select_add(sound_piece,idx,-1);
@@ -391,10 +380,7 @@ void main_wind_control_piece(int piece_idx)
 				state.show_lightsoundparticle=TRUE;
 				
 				idx=particle_combo_lookup[menu_idx-3];
-			
-				view_pnt.x=map.particles[idx].pnt.x;
-				view_pnt.y=map.particles[idx].pnt.y-500;
-				view_pnt.z=map.particles[idx].pnt.z;
+				walk_view_set_position_y_shift(&map.particles[idx].pnt,-500);			
 				
 				select_clear();
 				select_add(particle_piece,idx,-1);
@@ -419,10 +405,7 @@ void main_wind_control_piece(int piece_idx)
 				state.show_object=TRUE;
 				
 				idx=scenery_combo_lookup[menu_idx-3];
-			
-				view_pnt.x=map.sceneries[idx].pnt.x;
-				view_pnt.y=map.sceneries[idx].pnt.y-500;
-				view_pnt.z=map.sceneries[idx].pnt.z;
+				walk_view_set_position_y_shift(&map.sceneries[idx].pnt,-500);			
 				
 				select_clear();
 				select_add(scenery_piece,idx,-1);
@@ -447,10 +430,7 @@ void main_wind_control_piece(int piece_idx)
 				state.show_node=TRUE;
 				
 				idx=node_combo_lookup[menu_idx-3];
-			
-				view_pnt.x=map.nodes[idx].pnt.x;
-				view_pnt.y=map.nodes[idx].pnt.y-500;
-				view_pnt.z=map.nodes[idx].pnt.z;
+				walk_view_set_position_y_shift(&map.nodes[idx].pnt,-500);
 				
 				select_clear();
 				select_add(node_piece,idx,-1);
@@ -561,7 +541,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
                     GlobalToLocal(&pt);
  					dpt.x=pt.h;
 					dpt.y=pt.v;
-					main_wind_cursor(&dpt);
+					walk_view_cursor(&dpt);
                     return(noErr);
 
 				case kEventWindowClickContentRgn:
@@ -576,8 +556,9 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					dpt.y=pt.v;
 					
 						// click in toolbars
+						// supergumba -- will need some editing (possibly) when adding right side properties
 
-					if ((pt.v<toolbar_high) || (pt.h>(wbox.right-palette_wid))) return(eventNotHandledErr);
+					if (pt.v<toolbar_high) return(eventNotHandledErr);
 
 						// middle button vertex change mode
 						
@@ -599,7 +580,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					
 						// click in main window
 						
-                    if (main_wind_click(&dpt,(nclick!=1))) return(noErr);
+                    if (walk_view_click(&dpt,(nclick!=1))) return(noErr);
                     
                     return(eventNotHandledErr);
 					
@@ -707,7 +688,7 @@ void main_wind_setup(void)
 	GetWindowPortBounds(mainwind,&wbox);
 
 	main_wind_box.lx=0;
-	main_wind_box.rx=wbox.right-palette_wid;
+	main_wind_box.rx=wbox.right;
 	main_wind_box.ty=toolbar_high;
 	main_wind_box.by=wbox.bottom-info_high;
 	
@@ -715,7 +696,7 @@ void main_wind_setup(void)
 		
 	rect[0]=0;
 	rect[1]=info_high;
-	rect[2]=(wbox.right-wbox.left)-palette_wid;
+	rect[2]=wbox.right-wbox.left;
 	rect[3]=(wbox.bottom-wbox.top)-(toolbar_high+info_high);
 	
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
@@ -976,13 +957,6 @@ void main_wind_open(void)
    
         // misc setup
         
-	view_ang.y=0.0f;
-	view_ang.x=0.0f;
-	
-	state.swap_panel_forward=FALSE;
-	state.swap_panel_side=FALSE;
-	state.swap_panel_top=FALSE;
-	
 	state.vertex_mode=vertex_mode_none;
 	state.drag_mode=drag_mode_mesh;
 	state.grid_mode=grid_mode_small;
@@ -1120,10 +1094,11 @@ void main_wind_resize(void)
 	aglUpdateContext(ctx);
 
 	texture_palette_setup();
+	
 	main_wind_setup();
 	main_wind_resize_buttons();
 	DrawControls(mainwind);
-	main_wind_set_view(state.view);
+
 	main_wind_draw();
 }
 
@@ -1132,14 +1107,6 @@ void main_wind_resize(void)
       Views
       
 ======================================================= */
-
-void main_wind_set_view(int view)
-{
-	state.view=view;
-	state.focus=kf_panel_top;
-	
-	menu_set_view_check(view);
-}
 
 void main_wind_set_perspective(int perspective)
 {
@@ -1151,197 +1118,7 @@ void main_wind_set_uv_layer(int uv_layer)
 {
 	state.uv_layer=uv_layer;
 	menu_set_uv_check(uv_layer);
-	palette_reset();			// in case polygon palette is up
-}
-
-/* =======================================================
-
-      Divider Drawing
-      
-======================================================= */
-
-void main_wind_draw_dividers_single(d3rect *box,bool selected)
-{
-	
-		// the divider
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
-	glBegin(GL_LINE_LOOP);
-	glVertex2i((box->lx-1),(box->ty-1));
-	glVertex2i((box->rx+1),(box->ty-1));
-	glVertex2i((box->rx+1),(box->by+1));
-	glVertex2i((box->lx-1),(box->by+1));
-	glEnd();
-	
-		// the selection
-		
-	if (!selected) return;
-	
-	glEnable(GL_BLEND);
-	
-	glColor4f(0.8f,0.8f,0.8f,0.5f);
-
-	glBegin(GL_QUADS);
-	
-		// top
-		
-	glVertex2i(box->lx,box->ty);
-	glVertex2i(box->rx,box->ty);
-	glVertex2i(box->rx,(box->ty+view_selection_size));
-	glVertex2i(box->lx,(box->ty+view_selection_size));
-	
-		// bottom
-		
-	glVertex2i(box->lx,(box->by-view_selection_size));
-	glVertex2i(box->rx,(box->by-view_selection_size));
-	glVertex2i(box->rx,box->by);
-	glVertex2i(box->lx,box->by);
-	
-		// left
-		
-	glVertex2i(box->lx,(box->ty+view_selection_size));
-	glVertex2i((box->lx+view_selection_size),(box->ty+view_selection_size));
-	glVertex2i((box->lx+view_selection_size),(box->by-view_selection_size));
-	glVertex2i(box->lx,(box->by-view_selection_size));
-
-		// right
-		
-	glVertex2i((box->rx-view_selection_size),(box->ty+view_selection_size));
-	glVertex2i(box->rx,(box->ty+view_selection_size));
-	glVertex2i(box->rx,(box->by-view_selection_size));
-	glVertex2i((box->rx-view_selection_size),(box->by-view_selection_size));
-
-	glEnd();
-	
-	glDisable(GL_BLEND);
-}
-
-void main_wind_draw_3_panel_dividers(void)
-{
-	editor_3D_view_setup	view_setup;
-	
-		// use full view port
-	
-	main_wind_set_viewport(&main_wind_box,FALSE,FALSE);
-	
-		// draw dividers
-
-	glLineWidth(2.0f);
-	
-	switch (state.focus) {
-	
-		case kf_panel_forward:
-			main_wind_setup_panel_side(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_top(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_forward(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,TRUE);
-			break;
-			
-		case kf_panel_side:
-			main_wind_setup_panel_forward(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_top(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_side(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,TRUE);
-			break;
-			
-		case kf_panel_top:
-			main_wind_setup_panel_forward(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_side(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_top(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,TRUE);
-			break;
-			
-	}
-	
-	glLineWidth(1.0f);
-}
-
-void main_wind_draw_4_panel_dividers(void)
-{
-	editor_3D_view_setup	view_setup;
-	
-		// use full view port
-	
-	main_wind_set_viewport(&main_wind_box,FALSE,FALSE);
-	
-		// draw dividers
-
-	glLineWidth(2.0f);
-	
-	switch (state.focus) {
-	
-		case kf_panel_forward:
-			main_wind_setup_panel_side_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_top_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_walk(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-		
-			main_wind_setup_panel_forward_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,TRUE);
-			break;
-			
-		case kf_panel_side:
-			main_wind_setup_panel_forward_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_top_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_walk(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_side_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,TRUE);
-			break;
-			
-		case kf_panel_top:
-			main_wind_setup_panel_forward_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_side_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_walk(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_top_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,TRUE);
-			break;
-			
-		case kf_panel_walk:
-			main_wind_setup_panel_forward_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_side_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_top_frame(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,FALSE);
-			
-			main_wind_setup_panel_walk(&view_setup);
-			main_wind_draw_dividers_single(&view_setup.box,TRUE);
-			break;
-			
-	}
-	
-	glLineWidth(1.0f);
+	palette_reset();
 }
 
 /* =======================================================
@@ -1352,11 +1129,6 @@ void main_wind_draw_4_panel_dividers(void)
 
 void main_wind_draw(void)
 {
-	Rect					wbox;
-	editor_3D_view_setup	view_setup;
-
-	GetWindowPortBounds(mainwind,&wbox);
-	
 		// clear gl buffer
 		
 	glDisable(GL_SCISSOR_TEST);
@@ -1365,59 +1137,7 @@ void main_wind_draw(void)
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
 	walk_view_draw();
-	
 
-
-/* supergumba
-    
-        // the views
-		
-	switch (state.view) {
-	
-		case vw_3_panel:
-			main_wind_setup_panel_forward(&view_setup);
-			walk_view_draw(&view_setup,FALSE);
-			walk_view_swap_draw(&view_setup);
-			
-			main_wind_setup_panel_side(&view_setup);
-			walk_view_draw(&view_setup,FALSE);
-			walk_view_swap_draw(&view_setup);
-			
-			main_wind_setup_panel_top(&view_setup);
-			walk_view_draw(&view_setup,TRUE);
-
-			main_wind_draw_3_panel_dividers();
-			break;
-			
-		case vw_4_panel:
-			main_wind_setup_panel_forward_frame(&view_setup);
-			walk_view_draw(&view_setup,FALSE);
-			walk_view_swap_draw(&view_setup);
-			
-			main_wind_setup_panel_side_frame(&view_setup);
-			walk_view_draw(&view_setup,FALSE);
-			walk_view_swap_draw(&view_setup);
-			
-			main_wind_setup_panel_top_frame(&view_setup);
-			walk_view_draw(&view_setup,TRUE);
-			
-			main_wind_setup_panel_walk(&view_setup);
-			walk_view_draw(&view_setup,FALSE);
-			
-			main_wind_draw_4_panel_dividers();
-			break;
-			
-		case vw_top_only:
-			main_wind_setup_panel_top_full(&view_setup);
-			walk_view_draw(&view_setup,TRUE);
-			break;
-			
-		case vw_forward_only:
-			main_wind_setup_panel_forward_full(&view_setup);
-			walk_view_draw(&view_setup,FALSE);
-			break;
-	}
-*/	
 		// texture window
 		
 	texture_palette_draw();
@@ -1433,20 +1153,6 @@ void main_wind_draw(void)
 
 /* =======================================================
 
-      Change Keyboard Focus
-	        
-======================================================= */
-
-void main_wind_set_focus(int focus)
-{
-	if (state.focus!=focus) {
-		state.focus=focus;
-		main_wind_draw();
-	}
-}
-
-/* =======================================================
-
       Center Position in Map
 	        
 ======================================================= */
@@ -1454,20 +1160,22 @@ void main_wind_set_focus(int focus)
 void main_wind_center_position_in_map(void)
 {
 	int					n;
-	d3pnt				pt;
+	d3pnt				pnt;
+	d3ang				ang;
 	
 		// view angles
 		
-	view_ang.y=0.0f;
-	view_ang.x=0.0f;
+	ang.x=0.0f;
+	ang.y=0.0f;
+	ang.z=0.0f;
+	
+	walk_view_set_angle(&ang);
 	
 		// look for player spot first
 		
 	for (n=0;n!=map.nspot;n++) {
 		if ((strcasecmp(map.spots[n].name,"start")==0) || (strcasecmp(map.spots[n].script,"player")==0)) {
-			view_pnt.x=map.spots[n].pnt.x;
-			view_pnt.y=map.spots[n].pnt.y-(map_enlarge*20);
-			view_pnt.z=map.spots[n].pnt.z;
+			walk_view_set_position_y_shift(&map.spots[n].pnt,-(map_enlarge*20));
 			return;
 		}
 	}
@@ -1476,169 +1184,18 @@ void main_wind_center_position_in_map(void)
 		
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		if (map.mesh.meshes[n].nvertex!=0) {
-			map_mesh_calculate_center(&map,n,&pt);
-			view_pnt.x=pt.x;
-			view_pnt.y=pt.y;
-			view_pnt.z=pt.z;
+			map_mesh_calculate_center(&map,n,&pnt);
+			walk_view_set_position(&pnt);
 			return;
 		}
 	}
 	
 		// just center in total map size
 		
-	view_pnt.x=map_max_size/2;
-	view_pnt.y=map_max_size/2;
-	view_pnt.z=map_max_size/2;
-}
-
-/* =======================================================
-
-      Clicking
-      
-======================================================= */
-
-bool main_wind_click_check_box(d3pnt *pt,d3rect *box)
-{
-	if (pt->x<box->lx) return(FALSE);
-	if (pt->x>box->rx) return(FALSE);
-	if (pt->y<box->ty) return(FALSE);
-	return(pt->y<=box->by);
-}
-
-bool main_wind_click(d3pnt *pt,bool dblclick)
-{
-	editor_3D_view_setup	view_setup;
-	
-	return(walk_view_click(pt,dblclick));
-	
-	
-	/* supergumba
-
-	switch (state.view) {
-	
-		case vw_3_panel:
-			main_wind_setup_panel_forward(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_forward);
-				if (walk_view_swap_click(&view_setup,pt,&state.swap_panel_forward)) return(TRUE);
-				walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
-				return(TRUE);
-			}
-			
-			main_wind_setup_panel_side(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_side);
-				if (walk_view_swap_click(&view_setup,pt,&state.swap_panel_side)) return(TRUE);
-				walk_view_click(&view_setup,pt,vm_dir_side,FALSE,dblclick);
-				return(TRUE);
-			}
-			
-			main_wind_setup_panel_top(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_top);
-				walk_view_click(&view_setup,pt,vm_dir_top,FALSE,dblclick);
-				return(TRUE);
-			}
-			break;
-			
-		case vw_4_panel:
-			main_wind_setup_panel_forward_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_forward);
-				if (walk_view_swap_click(&view_setup,pt,&state.swap_panel_forward)) return(TRUE);
-				walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
-				return(TRUE);
-			}
-			
-			main_wind_setup_panel_side_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_side);
-				if (walk_view_swap_click(&view_setup,pt,&state.swap_panel_side)) return(TRUE);
-				walk_view_click(&view_setup,pt,vm_dir_side,FALSE,dblclick);
-				return(TRUE);
-			}
-			
-			main_wind_setup_panel_top_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_top);
-				walk_view_click(&view_setup,pt,vm_dir_top,FALSE,dblclick);
-				return(TRUE);
-			}
-			
-			main_wind_setup_panel_walk(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_walk);
-				walk_view_click(&view_setup,pt,vm_dir_forward,TRUE,dblclick);
-				return(TRUE);
-			}
-			break;
-			
-		case vw_top_only:
-			main_wind_setup_panel_top_full(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				walk_view_click(&view_setup,pt,vm_dir_top,FALSE,dblclick);
-				return(TRUE);
-			}
-			break;
-			
-		case vw_forward_only:
-			main_wind_setup_panel_forward_full(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				walk_view_click(&view_setup,pt,vm_dir_forward,TRUE,dblclick);
-				return(TRUE);
-			}
-			break;
-			
-	}
-	    
-    return(FALSE);
-	*/
-}
-
-/* =======================================================
-
-      Cursors
-      
-======================================================= */
-
-void main_wind_cursor(d3pnt *pt)
-{
-	editor_3D_view_setup	view_setup;
-
-	switch (state.view) {
-	
-		case vw_3_panel:
-			main_wind_setup_panel_forward(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
-			
-			main_wind_setup_panel_side(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
-			
-			main_wind_setup_panel_top(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
-			break;
-			
-		case vw_4_panel:
-			main_wind_setup_panel_forward_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
-			
-			main_wind_setup_panel_side_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
-			
-			main_wind_setup_panel_top_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
-			break;
-			
-		case vw_top_only:
-			main_wind_setup_panel_top_full(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
-			break;
-			
-		case vw_forward_only:
-			main_wind_setup_panel_forward_full(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(TRUE);
-			break;
-	}
+	pnt.x=map_max_size/2;
+	pnt.y=map_max_size/2;
+	pnt.z=map_max_size/2;
+	walk_view_set_position(&pnt);
 }
 
 /* =======================================================
@@ -1654,43 +1211,15 @@ void main_wind_key_cursor(void)
 	
 	GetMouse(&pt);
 	GlobalToLocal(&pt);
+	
 	dpt.x=pt.h;
 	dpt.y=pt.v;
 	
-	main_wind_cursor(&dpt);
+	walk_view_cursor(&dpt);
 }
 
 void main_wind_key_down(char ch)
 {
-	editor_3D_view_setup	view_setup;
-
-		// tab key switches panes
-		
-	if (ch==0x9) {
-	
-		switch (state.view) {
-			case vw_3_panel:
-				state.focus++;
-				if (state.focus==3) state.focus=0;
-				break;
-			case vw_4_panel:
-				state.focus++;
-				if (state.focus==4) state.focus=0;
-				break;
-		}
-		
-		main_wind_draw();
-		return;
-	}
-	
-		// esc key deselects
-		
-	if (ch==0x1B) {
-		select_clear();
-		main_wind_draw();
-		return;
-	}
-	
 		// special tool keys
 		
 	if ((ch=='q') || (ch=='Q')) {
@@ -1713,44 +1242,9 @@ void main_wind_key_down(char ch)
 		return;
 	}
 	
-		// send keys to proper panel
+		// panel keys
 		
-	switch (state.view) {
-	
-		case vw_3_panel:
-		case vw_4_panel:
-		
-			switch (state.focus) {
-			
-				case kf_panel_forward:
-				case kf_panel_walk:
-					main_wind_setup_panel_forward(&view_setup);
-					walk_view_key(&view_setup,vm_dir_forward,ch);
-					break;
-					
-				case kf_panel_side:
-					main_wind_setup_panel_side(&view_setup);
-					walk_view_key(&view_setup,vm_dir_side,ch);
-					break;
-					
-				case kf_panel_top:
-					main_wind_setup_panel_top(&view_setup);
-					walk_view_key(&view_setup,vm_dir_top,ch);
-					break;
-			}
-			
-			break;
-			
-		case vw_top_only:
-			main_wind_setup_panel_top_full(&view_setup);
-			walk_view_key(&view_setup,vm_dir_top,ch);
-			break;
-			
-		case vw_forward_only:
-			main_wind_setup_panel_forward_full(&view_setup);
-			walk_view_key(&view_setup,vm_dir_forward,ch);
-			break;
-	}
+	walk_view_key(ch);
 }
 
 /* =======================================================
@@ -1761,100 +1255,13 @@ void main_wind_key_down(char ch)
 
 void main_wind_scroll_wheel(d3pnt *pt,int delta)
 {
-	editor_3D_view_setup		view_setup;
-	
-		// check if over a panel and switch
-		// to that panel
+		// switch to proper pane
 		
-	switch (state.view) {
-	
-		case vw_3_panel:
-			main_wind_setup_panel_forward(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_forward);
-				break;
-			}
-			
-			main_wind_setup_panel_side(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_side);
-				break;
-			}
-			
-			main_wind_setup_panel_top(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_top);
-				break;
-			}
-			break;
-			
-		case vw_4_panel:
-			main_wind_setup_panel_forward_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_forward);
-				break;
-			}
-			
-			main_wind_setup_panel_side_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_side);
-				break;
-			}
-			
-			main_wind_setup_panel_top_frame(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_top);
-				break;
-			}
-			
-			main_wind_setup_panel_walk(&view_setup);
-			if (main_wind_click_check_box(pt,&view_setup.box)) {
-				main_wind_set_focus(kf_panel_walk);
-				break;
-			}
-			break;
-			
-	}
+	walk_view_select_view(pt);
 
 		// run wheel change
 	
-	switch (state.view) {
-	
-		case vw_3_panel:
-		case vw_4_panel:
-		
-			switch (state.focus) {
-				case kf_panel_forward:
-					main_wind_setup_panel_forward(&view_setup);
-					walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_forward);
-					break;
-					
-				case kf_panel_side:
-					main_wind_setup_panel_side(&view_setup);
-					walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_side);
-					break;
-					
-				case kf_panel_top:
-					main_wind_magnify_scroll(delta);
-					break;
-					
-				case kf_panel_walk:
-					main_wind_setup_panel_walk(&view_setup);
-					walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_forward);
-					break;
-			}
-			
-			break;
-			
-		case vw_top_only:
-			main_wind_magnify_scroll(delta);
-			break;
-			
-		case vw_forward_only:
-			main_wind_setup_panel_forward_full(&view_setup);
-			walk_view_scroll_wheel_rot_z_movement(&view_setup,delta);
-			break;
-	}
+	walk_view_scroll_wheel_z_movement(delta);
 }
 
 /* =======================================================

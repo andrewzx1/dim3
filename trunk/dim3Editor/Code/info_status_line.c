@@ -29,8 +29,6 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-extern d3pnt				view_pnt;
-
 extern map_type				map;
 extern editor_state_type	state;
 
@@ -126,6 +124,7 @@ void info_status_line_draw(void)
 	int				type,main_idx,sub_idx,len;
 	char			txt[256];
 	Rect			wbox;
+	d3pnt			pnt;
 	
 	info_status_line_draw_start();
 	
@@ -133,7 +132,8 @@ void info_status_line_draw(void)
 
 		// left info
 	
-	sprintf(txt,"(%d,%d,%d)",view_pnt.x,view_pnt.y,view_pnt.z);
+	walk_view_get_position(&pnt);
+	sprintf(txt,"(%d,%d,%d)",pnt.x,pnt.y,pnt.z);
 	
 	MoveTo((wbox.left+4),(wbox.bottom-4));
 	DrawText(txt,0,strlen(txt));

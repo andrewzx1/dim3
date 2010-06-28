@@ -54,13 +54,13 @@ void texture_palette_setup(void)
 	
 	os_get_window_box(&wbox);
 		
-	txt_pixel_sz=((wbox.rx-palette_wid)-(wbox.lx+64))/txt_wind_per_page_count;
+	txt_pixel_sz=(wbox.rx-(wbox.lx+64))/txt_wind_per_page_count;
 	txt_palette_high=txt_pixel_sz;
 	
 	txt_palette_y=(wbox.by-txt_palette_high)-info_high;
 	
 	txt_palette_box.lx=wbox.lx;
-	txt_palette_box.rx=wbox.rx-palette_wid;
+	txt_palette_box.rx=wbox.rx;
 	txt_palette_box.ty=txt_palette_y;
 	txt_palette_box.by=(txt_palette_box.ty+txt_palette_high)+1;
 }
@@ -167,7 +167,7 @@ void texture_palette_draw(void)
 	
 		// viewport setup
 		
-	main_wind_set_viewport(&txt_palette_box,TRUE,FALSE);
+	walk_view_set_viewport_box(&txt_palette_box,TRUE,FALSE);
 	
 		// texture page switch
 	

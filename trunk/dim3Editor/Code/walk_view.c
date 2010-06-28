@@ -41,15 +41,11 @@ extern map_type					map;
 extern setup_type				setup;
 extern editor_state_type		state;
 
-d3pnt							view_pnt;
-d3ang							view_ang;
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
 								
 int								view_count,view_select_idx;
-editor_3D_view_setup			views[max_editor_views];
-
-// supergumba -- editor should remember last position/views/etc if you saved
+editor_view_setup				views[max_editor_views];
 
 /* =======================================================
 
@@ -60,7 +56,6 @@ editor_3D_view_setup			views[max_editor_views];
 bool walk_view_initialize(void)
 {
 	char			path[1024];
-	d3rect			wbox;
 	
 		// interface textures
 		
@@ -85,63 +80,6 @@ bool walk_view_initialize(void)
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","particle","png");
 	bitmap_open(&particle_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 
-		// supergumba -- testing view setup
-		
-	view_count=2;
-	view_select_idx=0;
-
-
-	os_get_window_box(&wbox);
-
-	views[0].box.ty=wbox.ty+toolbar_high;
-	views[0].box.by=wbox.by-(txt_palette_high+info_high);
-	views[0].box.lx=wbox.lx;
-	views[0].box.rx=wbox.rx-palette_wid;
-	views[0].box.rx=(views[0].box.lx+views[0].box.rx)>>1;
-
-	views[0].pnt.x=view_pnt.x;
-	views[0].pnt.y=view_pnt.y;
-	views[0].pnt.z=view_pnt.z;
-
-	views[0].ang.x=view_ang.x;
-	views[0].ang.y=view_ang.y;
-	views[0].ang.z=0.0f;
-	
-	views[0].fov=walk_view_forward_fov;
-	
-	views[0].mesh_only=FALSE;
-	views[0].draw_light_circle=FALSE;
-
-	views[0].clip_on=FALSE;
-
-
-
-	os_get_window_box(&views[1].box);
-	
-	views[1].box.ty+=toolbar_high;
-	views[1].box.by-=(txt_palette_high+info_high);
-	views[1].box.rx-=palette_wid;
-	views[1].box.lx=(views[1].box.lx+views[1].box.rx)>>1;
-
-	views[1].pnt.x=view_pnt.x;
-	views[1].pnt.y=view_pnt.y-30000;
-	views[1].pnt.z=view_pnt.z;
-	
-	views[1].clip_y=view_pnt.y;
-
-	views[1].ang.x=-90.0f;
-	views[1].ang.y=0.0f;
-	views[1].ang.z=0.0f;
-	
-	views[1].fov=top_view_fov;
-	
-	views[1].mesh_only=FALSE;
-	views[1].draw_light_circle=TRUE;
-	
-	views[1].clip_on=TRUE;
-
-
-
 	return(TRUE);
 }
 
@@ -160,11 +98,112 @@ void walk_view_shutdown(void)
 
 /* =======================================================
 
+      Default View Setup
+      
+======================================================= */
+
+void walk_view_setup_default_views(void)
+{
+	editor_view_setup		*view;
+	
+	view_count=1;
+	view_select_idx=0;
+	
+	view=&views[0];
+	
+	view->box.lft=0.0f;
+	view->box.rgt=1.0f;
+	view->box.top=0.0f;
+	view->box.bot=1.0f;
+
+	view->pnt.x=map_max_size/2;
+	view->pnt.y=map_max_size/2;
+	view->pnt.z=map_max_size/2;
+
+	view->ang.x=0.0f;
+	view->ang.y=0.0f;
+	view->ang.z=0.0f;
+}
+
+/* =======================================================
+
+      Get Panel Box
+      
+======================================================= */
+
+void walk_view_get_pixel_box(editor_view_setup *view,d3rect *box)
+{
+	int				wid,high;
+	d3rect			wbox;
+	
+		// get viewport
+		
+	os_get_window_box(&wbox);
+	
+	wbox.ty+=toolbar_high;
+	wbox.by-=(txt_palette_high+info_high);
+	
+	wid=wbox.rx-wbox.lx;
+	high=wbox.by-wbox.ty;
+	
+		// translate to pixels
+	
+	box->lx=wbox.lx+(wid*view->box.lft);
+	box->rx=wbox.lx+(wid*view->box.rgt);
+	box->ty=wbox.ty+(high*view->box.top);
+	box->by=wbox.ty+(high*view->box.bot);
+}
+
+/* =======================================================
+
+      Split and Remove Views
+      
+======================================================= */
+
+void walk_view_split_horizontal(void)
+{
+	float					mid;
+	editor_view_setup		*old_view,*view;
+	
+	old_view=&views[view_select_idx];
+	
+	view=&views[view_count];
+	
+		// point and angle are the same
+		
+	memmove(&view->pnt,&old_view->pnt,sizeof(d3pnt));
+	memmove(&view->ang,&old_view->ang,sizeof(d3ang));
+	
+		// split horizontal
+		
+	memmove(&view->box,&old_view->box,sizeof(editor_view_box));
+		
+	mid=old_view->box.lft+((old_view->box.rgt-old_view->box.lft)*0.5f);
+	
+	old_view->box.rgt=mid;
+	view->box.lft=mid;
+
+		// select new view
+	
+	view_select_idx=view_count;
+	view_count++;
+}
+
+void walk_view_split_vertical(void)
+{
+}
+
+void walk_view_remove(void)
+{
+}
+
+/* =======================================================
+
       Viewport and Projection Setup
       
 ======================================================= */
 
-void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background)
+void walk_view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 {
 	int				bot_y;
 	d3rect			wbox;
@@ -175,9 +214,9 @@ void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background)
 	bot_y=wbox.by-info_high;
 
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(view_box->lx,(bot_y-view_box->by),(view_box->rx-view_box->lx),(view_box->by-view_box->ty));
+	glScissor(box->lx,(bot_y-box->by),(box->rx-box->lx),(box->by-box->ty));
 
-	glViewport(view_box->lx,(bot_y-view_box->by),(view_box->rx-view_box->lx),(view_box->by-view_box->ty));
+	glViewport(box->lx,(bot_y-box->by),(box->rx-box->lx),(box->by-box->ty));
 	
 		// default setup
 		
@@ -185,7 +224,7 @@ void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background)
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)view_box->lx,(GLdouble)view_box->rx,(GLdouble)view_box->by,(GLdouble)view_box->ty,-1.0,1.0);
+	glOrtho((GLdouble)box->lx,(GLdouble)box->rx,(GLdouble)box->by,(GLdouble)box->ty,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -202,38 +241,53 @@ void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background)
 	}
 	
 	glBegin(GL_QUADS);
-	glVertex2i(view_box->lx,view_box->ty);
-	glVertex2i(view_box->rx,view_box->ty);
-	glVertex2i(view_box->rx,view_box->by);
-	glVertex2i(view_box->lx,view_box->by);
+	glVertex2i(box->lx,box->ty);
+	glVertex2i(box->rx,box->ty);
+	glVertex2i(box->rx,box->by);
+	glVertex2i(box->lx,box->by);
 	glEnd();
 }
 
-void main_wind_set_2D_projection(editor_3D_view_setup *view_setup)
+void walk_view_set_viewport(editor_view_setup *view,bool erase,bool use_background)
 {
+	d3rect			box;
+	
+	walk_view_get_pixel_box(view,&box);
+	walk_view_set_viewport_box(&box,erase,use_background);
+}
+
+void walk_view_set_2D_projection(editor_view_setup *view)
+{
+	d3rect			box;
+	
+	walk_view_get_pixel_box(view,&box);
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)view_setup->box.lx,(GLdouble)view_setup->box.rx,(GLdouble)view_setup->box.by,(GLdouble)view_setup->box.ty,-1.0,1.0);
+	glOrtho((GLdouble)box.lx,(GLdouble)box.rx,(GLdouble)box.by,(GLdouble)box.ty,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
-void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int far_z,int near_z_offset)
+void walk_view_set_3D_projection(editor_view_setup *view,int near_z,int far_z,int near_z_offset)
 {
 	int				x_sz,y_sz;
 	float			ratio;
+	d3rect			box;
+	
+	walk_view_get_pixel_box(view,&box);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
 	if (state.perspective==ps_perspective) {
-		ratio=(float)(view_setup->box.rx-view_setup->box.lx)/(float)(view_setup->box.by-view_setup->box.ty);
-		gluPerspective(view_setup->fov,ratio,(GLdouble)near_z,(GLdouble)far_z);
+		ratio=(float)(box.rx-box.lx)/(float)(box.by-box.ty);
+		gluPerspective(45.0f,ratio,(GLdouble)near_z,(GLdouble)far_z);
 	}
 	else {
-		x_sz=(view_setup->box.rx-view_setup->box.lx)*(map_enlarge>>2);
-		y_sz=(view_setup->box.by-view_setup->box.ty)*(map_enlarge>>2);
+		x_sz=(box.rx-box.lx)*(map_enlarge>>2);
+		y_sz=(box.by-box.ty)*(map_enlarge>>2);
 		glOrtho((GLdouble)-x_sz,(GLdouble)x_sz,(GLdouble)-y_sz,(GLdouble)y_sz,(GLdouble)near_z,(GLdouble)far_z);
 	}
 	
@@ -242,10 +296,28 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glRotatef(-view_setup->ang.x,1.0f,0.0f,0.0f);
-	glRotatef(-angle_add(view_setup->ang.y,180.0f),0.0f,1.0f,0.0f);
+	glRotatef(-view->ang.x,1.0f,0.0f,0.0f);
+	glRotatef(-angle_add(view->ang.y,180.0f),0.0f,1.0f,0.0f);
 	
-	glTranslatef((GLfloat)-view_setup->pnt.x,(GLfloat)-view_setup->pnt.y,(GLfloat)((-view_setup->pnt.z)+near_z_offset));
+	glTranslatef((GLfloat)-view->pnt.x,(GLfloat)-view->pnt.y,(GLfloat)((-view->pnt.z)+near_z_offset));
+}
+
+/* =======================================================
+
+      Check Point in Box
+      
+======================================================= */
+
+bool walk_view_point_in_view(editor_view_setup *view,d3pnt *pnt)
+{
+	d3rect			box;
+	
+	walk_view_get_pixel_box(view,&box);
+	
+	if (pnt->x<box.lx) return(FALSE);
+	if (pnt->x>box.rx) return(FALSE);
+	if (pnt->y<box.ty) return(FALSE);
+	return(pnt->y<=box.by);
 }
 
 /* =======================================================
@@ -254,17 +326,37 @@ void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int
       
 ======================================================= */
 
-void walk_view_cursor(bool rot_ok)
+void walk_view_cursor(d3pnt *pnt)
 {
-    if (os_key_space_down()) {
+ 	int					n;
+	bool				in_view;
+	
+		// only change cursor if in view
+		
+	in_view=FALSE;
+	
+	for (n=0;n!=view_count;n++) {
+		if (walk_view_point_in_view(&views[n],pnt)) {
+			in_view=TRUE;
+			break;
+		}
+	}
+	
+	if (!in_view) return;
+
+		// setup cursor
+		
+	if (os_key_space_down()) {
         os_set_hand_cursor();
         return;
     }
+	
     if ((os_key_option_down()) && ((!os_key_control_down()) && (!os_key_shift_down()))) {
         os_set_drag_cursor();
         return;
     }
-    if ((os_key_command_down()) && (rot_ok)) {
+	
+    if (os_key_command_down()) {
         os_set_drag_cursor();
         return;
     }
@@ -278,11 +370,154 @@ void walk_view_cursor(bool rot_ok)
       
 ======================================================= */
 
-void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
+void walk_view_key(char ch)
 {
-	piece_key(view_setup,view_move_dir,ch);
+		// tab switches view
+		
+	if (ch==0x9) {
+		view_select_idx++;
+		if (view_select_idx>=view_count) view_select_idx=0;
+		walk_view_draw();
+		return;
+	}
+	
+		// esc key deselects
+		
+	if (ch==0x1B) {
+		select_clear();
+		walk_view_draw();
+		return;
+	}
+	
+		// piece movement
+
+	piece_key(ch);
 }
 
+/* =======================================================
+
+      View Position and Angles
+      
+======================================================= */
+
+void walk_view_get_position(d3pnt *pnt)
+{
+	memmove(pnt,&views[view_select_idx].pnt,sizeof(d3pnt));
+}
+
+void walk_view_set_position(d3pnt *pnt)
+{
+	memmove(&views[view_select_idx].pnt,pnt,sizeof(d3pnt));
+}
+
+void walk_view_set_position_y_shift(d3pnt *pnt,int y_shift)
+{
+	memmove(&views[view_select_idx].pnt,pnt,sizeof(d3pnt));
+	views[view_select_idx].pnt.y+=y_shift;
+}
+
+void walk_view_move_position(d3pnt *pnt)
+{
+	views[view_select_idx].pnt.x+=pnt->x;
+	views[view_select_idx].pnt.y+=pnt->y;
+	views[view_select_idx].pnt.z+=pnt->z;
+}
+
+void walk_view_get_angle(d3ang *ang)
+{
+	memmove(ang,&views[view_select_idx].ang,sizeof(d3ang));
+}
+
+void walk_view_set_angle(d3ang *ang)
+{
+	memmove(&views[view_select_idx].ang,ang,sizeof(d3ang));
+}
+
+void walk_view_turn_angle(d3ang *ang)
+{
+	d3ang			*vang;
+	
+	vang=&views[view_select_idx].ang;
+	
+	vang->x=angle_add(vang->x,ang->x);
+	vang->y=angle_add(vang->y,ang->y);
+	vang->z=angle_add(vang->z,ang->z);
+	
+	if ((vang->x>90.0f) && (vang->x<180.0f)) vang->x=90.0f;
+	if ((vang->x<270.0f) && (vang->x>180.0f)) vang->x=270.0f;
+}
+
+/* =======================================================
+
+      View Facing
+      
+======================================================= */
+
+void walk_view_face_front(void)
+{
+	d3ang			ang;
+	
+	ang.x=0.0f;
+	ang.y=0.0f;
+	ang.z=0.0f;
+	
+	walk_view_set_angle(&ang);
+}
+
+void walk_view_face_left(void)
+{
+	d3ang			ang;
+	
+	ang.x=0.0f;
+	ang.y=90.0f;
+	ang.z=0.0f;
+	
+	walk_view_set_angle(&ang);
+}
+
+void walk_view_face_right(void)
+{
+	d3ang			ang;
+	
+	ang.x=0.0f;
+	ang.y=270.0f;
+	ang.z=0.0f;
+	
+	walk_view_set_angle(&ang);
+}
+
+void walk_view_face_back(void)
+{
+	d3ang			ang;
+	
+	ang.x=0.0f;
+	ang.y=180.0f;
+	ang.z=0.0f;
+	
+	walk_view_set_angle(&ang);
+}
+
+void walk_view_face_top(void)
+{
+	d3ang			ang;
+	
+	ang.x=270.0f;
+	ang.y=0.0f;
+	ang.z=0.0f;
+	
+	walk_view_set_angle(&ang);
+}
+
+void walk_view_face_bottom(void)
+{
+	d3ang			ang;
+	
+	ang.x=90.0f;
+	ang.y=0.0f;
+	ang.z=0.0f;
+	
+	walk_view_set_angle(&ang);
+}
 
 /* =======================================================
 
@@ -290,40 +525,49 @@ void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
       
 ======================================================= */
 
-bool walk_view_click(d3pnt *pt,bool dblclick)
+void walk_view_select_view(d3pnt *pnt)
 {
-	int						n;
-	editor_3D_view_setup	*view;
-
+	int					n;
+	
 	for (n=0;n!=view_count;n++) {
-		view=&views[n];
+		if (walk_view_point_in_view(&views[n],pnt)) view_select_idx=n;
+	}
+}
+
+bool walk_view_click(d3pnt *pnt,bool dblclick)
+{
+	editor_view_setup	*view;
+	
+		// select clicking view
 		
-		if (!main_wind_click_check_box(pt,&view->box)) continue;
+	walk_view_select_view(pnt);
+	
+		// handle click
+
+	view=&views[view_select_idx];
+	if (!walk_view_point_in_view(view,pnt)) return(FALSE);
 		
-		   // scrolling and movement clicks
-			
-		if (os_key_space_down()) {
-			walk_view_mouse_xy_movement(view,pt,vm_dir_forward);
-			return(TRUE);
-		}
-
-		if (os_key_option_down()) {
-			walk_view_mouse_yz_movement(view,pt,vm_dir_forward);
-			return(TRUE);
-		}
-
-		if (os_key_command_down()) {
-			walk_view_mouse_turn(pt);
-			return(TRUE);
-		}
-
-			// click the view pieces
-    
-		walk_view_click_piece(view,pt,vm_dir_forward,dblclick);
+		// scrolling and movement clicks
+		
+	if (os_key_space_down()) {
+		walk_view_mouse_scroll_movement(pnt);
 		return(TRUE);
 	}
-	
-	return(FALSE);
+
+	if (os_key_option_down()) {
+		walk_view_mouse_forward_movement(pnt);
+		return(TRUE);
+	}
+
+	if (os_key_command_down()) {
+		walk_view_mouse_turn(pnt);
+		return(TRUE);
+	}
+
+		// click the view pieces
+
+	walk_view_click_piece(view,pnt,vm_dir_forward,dblclick);
+	return(TRUE);
 }
 
 /* =======================================================
@@ -332,88 +576,81 @@ bool walk_view_click(d3pnt *pt,bool dblclick)
       
 ======================================================= */
 
-/* supergumba -- clean a bit of this up, no swap or stuff involved
-typedef struct		{
-						int						clip_y;
-						d3rect					box;
-						d3pnt					pnt;
-						d3ang					ang;
-						float					fov;
-						bool					mesh_only,draw_light_circle,
-												clip_on;
-					} editor_3D_view_setup;
-*/
-
 void walk_view_draw(void)
 {
-	int						n;
-	editor_3D_view_setup	*view;
+	int					n;
+	d3rect				box;
+	editor_view_setup	*view;
 	
+		// draw the views
+		
+	for (n=0;n!=view_count;n++) {
+		walk_view_draw_view(&views[n]);
+	}
+	
+	walk_view_set_viewport_box(&main_wind_box,FALSE,FALSE);
+
+		// view box outlines
+		
 	for (n=0;n!=view_count;n++) {
 		view=&views[n];
-	
-			// draw the view
-			
-		walk_view_draw_view(view,FALSE);
-		
-			// view box
-			
-		main_wind_set_viewport(&main_wind_box,FALSE,FALSE);
-		
-			// selection
-			
-		if (n==view_select_idx) {
-			glEnable(GL_BLEND);
-			
-			glColor4f(0.8f,0.8f,0.8f,0.5f);
-
-			glBegin(GL_QUADS);
-			
-				// top
-				
-			glVertex2i(view->box.lx,view->box.ty);
-			glVertex2i(view->box.rx,view->box.ty);
-			glVertex2i(view->box.rx,(view->box.ty+view_selection_size));
-			glVertex2i(view->box.lx,(view->box.ty+view_selection_size));
-			
-				// bottom
-				
-			glVertex2i(view->box.lx,(view->box.by-view_selection_size));
-			glVertex2i(view->box.rx,(view->box.by-view_selection_size));
-			glVertex2i(view->box.rx,view->box.by);
-			glVertex2i(view->box.lx,view->box.by);
-			
-				// left
-				
-			glVertex2i(view->box.lx,(view->box.ty+view_selection_size));
-			glVertex2i((view->box.lx+view_selection_size),(view->box.ty+view_selection_size));
-			glVertex2i((view->box.lx+view_selection_size),(view->box.by-view_selection_size));
-			glVertex2i(view->box.lx,(view->box.by-view_selection_size));
-
-				// right
-				
-			glVertex2i((view->box.rx-view_selection_size),(view->box.ty+view_selection_size));
-			glVertex2i(view->box.rx,(view->box.ty+view_selection_size));
-			glVertex2i(view->box.rx,(view->box.by-view_selection_size));
-			glVertex2i((view->box.rx-view_selection_size),(view->box.by-view_selection_size));
-
-			glEnd();
-			
-			glDisable(GL_BLEND);
-		}
-
-			// view box outline
+		walk_view_get_pixel_box(view,&box);
 
 		glLineWidth(1.0f);
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 		glBegin(GL_LINE_LOOP);
-		glVertex2i((view->box.lx-1),(view->box.ty-1));
-		glVertex2i((view->box.rx+1),(view->box.ty-1));
-		glVertex2i((view->box.rx+1),(view->box.by+1));
-		glVertex2i((view->box.lx-1),(view->box.by+1));
+		glVertex2i((box.lx+1),(box.ty+1));
+		glVertex2i((box.rx+1),(box.ty+1));
+		glVertex2i((box.rx+1),(box.by+1));
+		glVertex2i((box.lx+1),(box.by+1));
+		glEnd();
+	}
+	
+		// draw the selection
+		
+	if ((view_select_idx>=0) && (view_select_idx<view_count)) {
+	
+		view=&views[view_select_idx];
+		walk_view_get_pixel_box(view,&box);
+		
+		glEnable(GL_BLEND);
+		
+		glColor4f(0.8f,0.8f,0.8f,0.5f);
+
+		glBegin(GL_QUADS);
+		
+			// top
+			
+		glVertex2i(box.lx,box.ty);
+		glVertex2i(box.rx,box.ty);
+		glVertex2i(box.rx,(box.ty+view_selection_size));
+		glVertex2i(box.lx,(box.ty+view_selection_size));
+		
+			// bottom
+			
+		glVertex2i(box.lx,(box.by-view_selection_size));
+		glVertex2i(box.rx,(box.by-view_selection_size));
+		glVertex2i(box.rx,box.by);
+		glVertex2i(box.lx,box.by);
+		
+			// left
+			
+		glVertex2i(box.lx,(box.ty+view_selection_size));
+		glVertex2i((box.lx+view_selection_size),(box.ty+view_selection_size));
+		glVertex2i((box.lx+view_selection_size),(box.by-view_selection_size));
+		glVertex2i(box.lx,(box.by-view_selection_size));
+
+			// right
+			
+		glVertex2i((box.rx-view_selection_size),(box.ty+view_selection_size));
+		glVertex2i(box.rx,(box.ty+view_selection_size));
+		glVertex2i(box.rx,(box.by-view_selection_size));
+		glVertex2i((box.rx-view_selection_size),(box.by-view_selection_size));
+
 		glEnd();
 		
+		glDisable(GL_BLEND);
 	}
 }
 

@@ -31,7 +31,6 @@ and can be sold or given away.
 
 extern void menu_start(void);
 extern void menu_fix_enable(void);
-extern void menu_set_view_check(int view);
 extern void menu_set_perspective_check(int perspective);
 extern void menu_set_uv_check(int uv_layer);
 extern bool menu_save_changes_dialog(void);
@@ -76,17 +75,11 @@ extern void main_wind_close(void);
 extern void main_wind_resize_buttons(void);
 extern void main_wind_resize(void);
 extern void main_wind_set_title(char *file_name);
-extern void main_wind_set_view(int view);
 extern void main_wind_set_perspective(int perspective);
 extern void main_wind_set_uv_layer(int uv_layer);
 extern void main_wind_rotate_view(void);
-extern void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background);
-extern void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int far_z,int near_z_offset);
 extern void main_wind_draw(void);
 extern void main_wind_center_position_in_map(void);
-extern bool main_wind_click_check_box(d3pnt *pt,d3rect *box);
-extern bool main_wind_click(d3pnt *pt,bool dblclick);
-extern void main_wind_cursor(d3pnt *pt);
 extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
 extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
@@ -103,20 +96,6 @@ extern void main_wind_tool_switch_vertex_mode(void);
 extern void main_wind_tool_switch_drag_mode(void);
 extern void main_wind_tool_switch_grid_mode(void);
 extern void main_wind_tool_switch_node_mode(void);
-
-//
-// main window panels
-//
-
-extern void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup);
-extern void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup);
-extern void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup);
-extern void main_wind_setup_panel_side(editor_3D_view_setup *view_setup);
-extern void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup);
-extern void main_wind_setup_panel_top(editor_3D_view_setup *view_setup);
-extern void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup);
-extern void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup);
-extern void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup);
 
 //
 // dos

@@ -28,9 +28,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "interface.h"
 
-extern d3pnt					view_pnt;
-extern d3ang					view_ang;
-
 extern file_path_setup_type		file_path_setup;
 extern setup_type				setup;
 extern map_type					map;
@@ -45,7 +42,7 @@ void launch_engine(void)
 {
 	char					path[1024];
 	unsigned char			uc_len;
-	d3pnt					pt;
+	d3pnt					pnt;
 	d3ang					ang;
 	CFURLRef				cf_url;
 	FSRef					fsref;
@@ -83,14 +80,10 @@ void launch_engine(void)
 	
 		// map position
 		
-	pt.x=view_pnt.x;
-	pt.y=view_pnt.y;
-	pt.z=view_pnt.z;
-	ang.x=0.0f;
-	ang.y=view_ang.y;
-	ang.z=0.0f;
+	walk_view_get_position(&pnt);
+	walk_view_get_angle(&ang);
 		
-	fwrite(&pt,1,sizeof(d3pnt),file);
+	fwrite(&pnt,1,sizeof(d3pnt),file);
 	fwrite(&ang,1,sizeof(d3ang),file);
 	
 	fclose(file);
