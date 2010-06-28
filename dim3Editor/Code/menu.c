@@ -140,32 +140,24 @@ void menu_fix_enable(void)
       
 ======================================================= */
 
-void menu_set_view_check(int view)
-{
-	CheckMenuItem(GetMenuHandle(app_menu_view),1,(view==vw_3_panel));
-	CheckMenuItem(GetMenuHandle(app_menu_view),2,(view==vw_4_panel));
-	CheckMenuItem(GetMenuHandle(app_menu_view),3,(view==vw_top_only));
-	CheckMenuItem(GetMenuHandle(app_menu_view),4,(view==vw_forward_only));
-}
-
 void menu_set_perspective_check(int perspective)
 {
-	CheckMenuItem(GetMenuHandle(app_menu_view),6,(perspective==ps_perspective));
-	CheckMenuItem(GetMenuHandle(app_menu_view),7,(perspective==ps_ortho));
+	CheckMenuItem(GetMenuHandle(app_menu_view),8,(perspective==ps_perspective));
+	CheckMenuItem(GetMenuHandle(app_menu_view),9,(perspective==ps_ortho));
 }
 
 void menu_set_uv_check(int uv_layer)
 {
-	CheckMenuItem(GetMenuHandle(app_menu_view),9,(uv_layer==uv_layer_normal));
-	CheckMenuItem(GetMenuHandle(app_menu_view),10,(uv_layer==uv_layer_light_map));
+	CheckMenuItem(GetMenuHandle(app_menu_view),11,(uv_layer==uv_layer_normal));
+	CheckMenuItem(GetMenuHandle(app_menu_view),12,(uv_layer==uv_layer_light_map));
 }
 
 void menu_set_show_hide_check(void)
 {
-	CheckMenuItem(GetMenuHandle(app_menu_view),12,state.show_liquid);
-	CheckMenuItem(GetMenuHandle(app_menu_view),13,state.show_object);
-	CheckMenuItem(GetMenuHandle(app_menu_view),14,state.show_lightsoundparticle);
-	CheckMenuItem(GetMenuHandle(app_menu_view),15,state.show_node);
+	CheckMenuItem(GetMenuHandle(app_menu_view),14,state.show_liquid);
+	CheckMenuItem(GetMenuHandle(app_menu_view),15,state.show_object);
+	CheckMenuItem(GetMenuHandle(app_menu_view),16,state.show_lightsoundparticle);
+	CheckMenuItem(GetMenuHandle(app_menu_view),17,state.show_node);
 }
 
 /* =======================================================
@@ -261,25 +253,35 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 			// view menu
 			
-		case kCommandView3Panel:
-			main_wind_set_view(vw_3_panel);
+		case kCommandViewFront:
+			walk_view_face_front();
 			main_wind_draw();
-			return(noErr);
+			break;
 			
-		case kCommandView4Panel:
-			main_wind_set_view(vw_4_panel);
+		case kCommandViewLeft:
+			walk_view_face_left();
 			main_wind_draw();
-			return(noErr);
+			break;
 			
-		case kCommandViewTopOnly:
-			main_wind_set_view(vw_top_only);
+		case kCommandViewRight:
+			walk_view_face_right();
 			main_wind_draw();
-			return(noErr);
+			break;
 			
-		case kCommandViewForwardOnly:
-			main_wind_set_view(vw_forward_only);
+		case kCommandViewBack:
+			walk_view_face_back();
 			main_wind_draw();
-			return(noErr);
+			break;
+			
+		case kCommandViewTop:
+			walk_view_face_top();
+			main_wind_draw();
+			break;
+			
+		case kCommandViewBottom:
+			walk_view_face_bottom();
+			main_wind_draw();
+			break;
 
 		case kCommandViewPerspective:
 			main_wind_set_perspective(ps_perspective);
@@ -329,6 +331,21 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			select_remove_type(node_piece);
 			state.show_node=!state.show_node;
 			menu_set_show_hide_check();
+			main_wind_draw();
+			break;
+
+		case kCommandViewSplitHorizontal:
+			walk_view_split_horizontal();
+			main_wind_draw();
+			break;
+			
+		case kCommandViewSplitVertical:
+			walk_view_split_vertical();
+			main_wind_draw();
+			break;
+			
+		case kCommandViewRemoveSplit:
+			walk_view_remove();
 			main_wind_draw();
 			break;
 			

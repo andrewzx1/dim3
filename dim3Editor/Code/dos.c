@@ -54,7 +54,6 @@ void redraw_windows(void)
         // some defaults
         
 	state.magnify_factor=magnify_factor_default;
-	main_wind_set_view(vw_3_panel);
 	main_wind_set_perspective(ps_perspective);
 	
 		// redraw
@@ -157,9 +156,10 @@ bool file_new_map(void)
     map_new(&map,file_name);
 	
 	state.map_opened=TRUE;
-    
+  	
     main_wind_open();
 	main_wind_set_title(file_name);
+	walk_view_setup_default_views();
 	
 		// start models
 		
@@ -197,6 +197,7 @@ bool file_open_map(void)
 	
 	main_wind_open();
 	main_wind_set_title(file_name);
+	walk_view_setup_default_views();
 	
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,texture_quality_mode_high,FALSE,FALSE);
 	

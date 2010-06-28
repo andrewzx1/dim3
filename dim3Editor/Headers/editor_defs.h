@@ -46,8 +46,6 @@ and can be sold or given away.
 #define toolbar_high							32
 #define info_high								16
 
-#define palette_wid								0
-
 #define view_selection_size						10
 
 //
@@ -143,22 +141,16 @@ and can be sold or given away.
 #define particle_piece							107
 
 //
-// view mouse scales
+// movement scales
 //
 
-#define mouse_forward_view_scale				30.0f
-#define mouse_side_view_scale					30.0f
-#define mouse_top_view_scale					0.4f
+#define move_mouse_scale						30
+#define move_mouse_turn_reduce_scale			5
 
-#define mouse_top_view_drag_scale				0.01f
+#define move_scroll_wheel_scale					300
 
-//
-// fovs
-//
-
-#define walk_view_forward_fov					45
-#define walk_view_side_fov						45
-#define top_view_fov							30
+#define move_key_scale							30
+#define move_key_shift_reduce_scale				10
 
 //
 // clicking
@@ -194,13 +186,12 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						view,focus,perspective,uv_layer,
+						int						perspective,uv_layer,
 												vertex_mode,drag_mode,grid_mode,node_mode,
 												magnify_factor,drag_handle_idx;
 						bool					map_opened,select_toggle_mode,auto_texture,
 												show_liquid,show_normals,show_node,show_object,
-												show_lightsoundparticle,cull,
-												swap_panel_forward,swap_panel_side,swap_panel_top;
+												show_lightsoundparticle,cull;
 					} editor_state_type;
 					
 //
@@ -208,12 +199,12 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						clip_y;
-						d3rect					box;
+						float					lft,rgt,top,bot;
+					} editor_view_box;
+					
+typedef struct		{
 						d3pnt					pnt;
 						d3ang					ang;
-						float					fov;
-						bool					mesh_only,draw_light_circle,
-												clip_on;
-					} editor_3D_view_setup;
+						editor_view_box			box;
+					} editor_view_setup;
 

@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		26184B2C10AA56C0002C81BE /* dialog_light_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 26184B2B10AA56C0002C81BE /* dialog_light_map.c */; };
-		263013CB0D713B7E00564E2C /* main_window_panels.c in Sources */ = {isa = PBXBuildFile; fileRef = 263013CA0D713B7E00564E2C /* main_window_panels.c */; };
-		2630141E0D72844300564E2C /* walk_view_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = 2630141D0D72844300564E2C /* walk_view_swap.c */; };
 		263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263614450DC41DF6002345C0 /* walk_view_click_texture.c */; };
 		263A519F115C62B40059859F /* Tool Cull.icns in Resources */ = {isa = PBXBuildFile; fileRef = 263A519E115C62B40059859F /* Tool Cull.icns */; };
 		263B67380F7072EE0065AB38 /* palette_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 263B67370F7072EE0065AB38 /* palette_spot.c */; };
@@ -221,8 +219,6 @@
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		26184B2B10AA56C0002C81BE /* dialog_light_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_light_map.c; path = Code/dialog_light_map.c; sourceTree = "<group>"; };
-		263013CA0D713B7E00564E2C /* main_window_panels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window_panels.c; path = Code/main_window_panels.c; sourceTree = "<group>"; };
-		2630141D0D72844300564E2C /* walk_view_swap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_swap.c; path = Code/walk_view_swap.c; sourceTree = "<group>"; };
 		263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_texture.c; path = Code/walk_view_click_texture.c; sourceTree = "<group>"; };
 		263A519E115C62B40059859F /* Tool Cull.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Cull.icns"; path = "Resources/Tool Cull.icns"; sourceTree = "<group>"; };
 		263B67370F7072EE0065AB38 /* palette_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_spot.c; path = Code/palette_spot.c; sourceTree = "<group>"; };
@@ -525,13 +521,12 @@
 			isa = PBXGroup;
 			children = (
 				F54CD20D0233497001250BB8 /* walk_view.c */,
+				F5498A7B00F7C83E01000001 /* walk_view_movement.c */,
 				F58D0FAF05B8C0A800DBBDC5 /* walk_view_click_piece.c */,
 				26934B100D876A800009F81E /* walk_view_click_drag.c */,
 				263614450DC41DF6002345C0 /* walk_view_click_texture.c */,
 				F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */,
 				0123D87500C0AFD57F000001 /* walk_view_draw_select.c */,
-				2630141D0D72844300564E2C /* walk_view_swap.c */,
-				F5498A7B00F7C83E01000001 /* walk_view_movement.c */,
 				F595F34D0A8C47D2004AB8BA /* walk_view_models.c */,
 			);
 			name = "Walk View";
@@ -626,7 +621,6 @@
 			isa = PBXGroup;
 			children = (
 				F54CD2090233430101250BB8 /* main_window.c */,
-				263013CA0D713B7E00564E2C /* main_window_panels.c */,
 				F57CACA60C38B76200B595F4 /* texture_palette.c */,
 				F5D3312C0C39FF2C00BED1CE /* info_status_line.c */,
 				F510D43D02485F2F01DF5EE2 /* progress_window.c */,
@@ -801,8 +795,6 @@
 				F522DCC90BBC853C00DFF256 /* Course.js in Sources */,
 				F57CACA70C38B76200B595F4 /* texture_palette.c in Sources */,
 				F5D3312D0C39FF2C00BED1CE /* info_status_line.c in Sources */,
-				263013CB0D713B7E00564E2C /* main_window_panels.c in Sources */,
-				2630141E0D72844300564E2C /* walk_view_swap.c in Sources */,
 				26934B110D876A800009F81E /* walk_view_click_drag.c in Sources */,
 				26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */,
 				263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */,

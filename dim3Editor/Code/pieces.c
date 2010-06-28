@@ -993,10 +993,10 @@ void piece_poly_hole(void)
       
 ======================================================= */
 
-void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
+void piece_key(char ch)
 {
-	int				n,sel_count,type,main_idx,sub_idx,mv,xadd,yadd,zadd;
-	d3pnt			pt;
+	int				n,sel_count,type,main_idx,sub_idx,mv;
+	d3pnt			move_pnt;
 	
 		// special check for delete key
 		
@@ -1007,36 +1007,38 @@ void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 		return;
 	}
 	
-		// nudge keys movement
+		// nudge works with grid
 	
-	mv=walk_view_get_grid();
-	if (!os_key_shift_down()) mv/=10;
+	mv=walk_view_get_grid()*move_key_scale;
+	if (!os_key_shift_down()) mv/=move_key_shift_reduce_scale;
 	
 	if (mv<1) mv=1;
 	
-	xadd=yadd=zadd=0;
+		// nudge keys movement
+
+	move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
 	switch (ch) {
 	
 		case 0x1C:
-			walk_view_click_drag_movement(view_setup,view_move_dir,mv,0,&xadd,&yadd,&zadd);
+			walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-mv);
 			break;
 			
 		case 0x1D:
-			walk_view_click_drag_movement(view_setup,view_move_dir,-mv,0,&xadd,&yadd,&zadd);
+			walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,+mv);
 			break;
 			
 		case 0x1E:
-			walk_view_click_drag_movement(view_setup,view_move_dir,0,mv,&xadd,&yadd,&zadd);
+			walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-mv);
 			break;
 			
 		case 0x1F:
-			walk_view_click_drag_movement(view_setup,view_move_dir,0,-mv,&xadd,&yadd,&zadd);
+			walk_view_mouse_get_scroll_vertical_axis(&move_pnt,mv);
 			break;
 			
 	}
 	
-	if ((xadd==0) && (yadd==0) && (zadd==0)) return;
+	if ((move_pnt.x==0) && (move_pnt.y==0) && (move_pnt.z==0)) return;
 	
 		// move selection
 	
@@ -1049,50 +1051,47 @@ void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 		
 			case mesh_piece:
 				if (map.mesh.meshes[main_idx].flag.lock_move) break;
-				pt.x=xadd;
-				pt.y=yadd;
-				pt.z=zadd;
-				map_mesh_move(&map,main_idx,&pt);
+				map_mesh_move(&map,main_idx,&move_pnt);
 				break;
 				
 			case liquid_piece:
-				map_liquid_move(&map,main_idx,xadd,yadd,zadd);
+				map_liquid_move(&map,main_idx,move_pnt.x,move_pnt.y,move_pnt.z);
 				break;
 				
 			case node_piece:
-				map.nodes[main_idx].pnt.x+=xadd;
-				map.nodes[main_idx].pnt.y+=yadd;
-				map.nodes[main_idx].pnt.z+=zadd;
+				map.nodes[main_idx].pnt.x+=move_pnt.x;
+				map.nodes[main_idx].pnt.y+=move_pnt.y;
+				map.nodes[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
 			case spot_piece:
-				map.spots[main_idx].pnt.x+=xadd;
-				map.spots[main_idx].pnt.y+=yadd;
-				map.spots[main_idx].pnt.z+=zadd;
+				map.spots[main_idx].pnt.x+=move_pnt.x;
+				map.spots[main_idx].pnt.y+=move_pnt.y;
+				map.spots[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
 			case scenery_piece:
-				map.sceneries[main_idx].pnt.x+=xadd;
-				map.sceneries[main_idx].pnt.y+=yadd;
-				map.sceneries[main_idx].pnt.z+=zadd;
+				map.sceneries[main_idx].pnt.x+=move_pnt.x;
+				map.sceneries[main_idx].pnt.y+=move_pnt.y;
+				map.sceneries[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
 			case light_piece:
-				map.lights[main_idx].pnt.x+=xadd;
-				map.lights[main_idx].pnt.y+=yadd;
-				map.lights[main_idx].pnt.z+=zadd;
+				map.lights[main_idx].pnt.x+=move_pnt.x;
+				map.lights[main_idx].pnt.y+=move_pnt.y;
+				map.lights[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
 			case sound_piece:
-				map.sounds[main_idx].pnt.x+=xadd;
-				map.sounds[main_idx].pnt.y+=yadd;
-				map.sounds[main_idx].pnt.z+=zadd;
+				map.sounds[main_idx].pnt.x+=move_pnt.x;
+				map.sounds[main_idx].pnt.y+=move_pnt.y;
+				map.sounds[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
 			case particle_piece:
-				map.particles[main_idx].pnt.x+=xadd;
-				map.particles[main_idx].pnt.y+=yadd;
-				map.particles[main_idx].pnt.z+=zadd;
+				map.particles[main_idx].pnt.x+=move_pnt.x;
+				map.particles[main_idx].pnt.y+=move_pnt.y;
+				map.particles[main_idx].pnt.z+=move_pnt.z;
 				break;
 				
 		}

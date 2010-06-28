@@ -33,8 +33,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern d3pnt					view_pnt;
-
 extern map_type					map;
 extern editor_state_type		state;
 
@@ -93,14 +91,15 @@ void walk_view_click_drag_constraint(int *x,int *y,int *z,int view_mode_dir)
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh_handle(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,z,mx,my,mz,xadd,yadd,zadd,sz,hit_z,
+	int						n,x,y,z,mx,my,mz,sz,hit_z,
 							px[8],py[8],pz[8],
 							type,mesh_idx,poly_idx,handle_idx;
 	bool					first_drag;
-	d3pnt					old_pt,*old_dpt,mpt,
+	d3pnt					old_pt,*old_dpt,mpt,move_pnt,
 							org_min,org_max,min,max;
+	d3rect					box;
 	map_mesh_type			*mesh;
 	
 		// any selection?
@@ -129,7 +128,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		z=pz[n];
 		
 		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
-			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
+			walk_view_click_project_point(view_setup,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
 				if (z<hit_z) {
@@ -165,11 +164,13 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	first_drag=TRUE;
 	
 	map_mesh_calculate_extent(&map,mesh_idx,&org_min,&org_max);
+	
+	walk_view_get_pixel_box(view_setup,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
 	
-	while (!os_track_mouse_location(pt,&view_setup->box)) {
+	while (!os_track_mouse_location(pt,&box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -187,11 +188,14 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		
 			// resize mesh
 
-		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+		move_pnt.x=move_pnt.y=move_pnt.z=0;
+		
+		walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-(x*move_mouse_scale));
+		walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-(y*move_mouse_scale));
 
-		mx+=xadd;
-		my+=yadd;
-		mz+=zadd;
+		mx+=move_pnt.x;
+		my+=move_pnt.y;
+		mz+=move_pnt.z;
 			
 		walk_view_click_drag_constraint(&mx,&my,&mz,view_move_dir);
 
@@ -255,12 +259,13 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,k,x,y,mx,my,mz,xadd,yadd,zadd,nsel,nvertex,
+	int						n,k,x,y,mx,my,mz,nsel,nvertex,
 							type,mesh_idx,poly_idx,fz;
 	bool					hit,first_drag,snap_hit;
-	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,mpt,spt;
+	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,move_pnt,mpt,spt;
+	d3rect					box;
 	map_mesh_type			*mesh;
 	
 		// any selection?
@@ -335,9 +340,10 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 			
 	first_drag=TRUE;
 	
+	walk_view_get_pixel_box(view_setup,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	while (!os_track_mouse_location(pt,&view_setup->box)) {
+	while (!os_track_mouse_location(pt,&box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -355,11 +361,14 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		
 			// get movement
 
-		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		mx+=xadd;
-		my+=yadd;
-		mz+=zadd;
+		walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-(x*move_mouse_scale));
+		walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-(y*move_mouse_scale));
+		
+		mx+=move_pnt.x;
+		my+=move_pnt.y;
+		mz+=move_pnt.z;
 		
 		mpt.x=mx;
 		mpt.y=my;
@@ -449,12 +458,13 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh_poly(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,mx,my,mz,xadd,yadd,zadd,
+	int						n,x,y,mx,my,mz,
 							type,mesh_idx,poly_idx,fz;
 	bool					first_drag;
-	d3pnt					old_pt,*dpt,*old_dpt,mpt,spt;
+	d3pnt					old_pt,*dpt,*old_dpt,move_pnt,mpt,spt;
+	d3rect					box;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
 	
@@ -491,9 +501,10 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	
 	mx=my=mz=0;
 	
+	walk_view_get_pixel_box(view_setup,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	while (!os_track_mouse_location(pt,&view_setup->box)) {
+	while (!os_track_mouse_location(pt,&box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -511,11 +522,14 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 		
 			// get vertex movement
 
-		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		mx+=xadd;
-		my+=yadd;
-		mz+=zadd;
+		walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-(x*move_mouse_scale));
+		walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-(y*move_mouse_scale));
+		
+		mx+=move_pnt.x;
+		my+=move_pnt.y;
+		mz+=move_pnt.z;
 		
 		mpt.x=mx;
 		mpt.y=my;
@@ -576,11 +590,12 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
       
 ======================================================= */
 
-bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_vertex(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,
+	int						n,x,y,z,mx,my,mz,hit_z,sz,
 							type,mesh_idx,poly_idx,vertex_idx;
-	d3pnt					old_pt,*dpt,old_dpt,mpt;
+	d3pnt					old_pt,*dpt,old_dpt,move_pnt,mpt;
+	d3rect					box;
 	bool					first_drag;
 	map_mesh_type			*mesh;
 	
@@ -608,7 +623,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		z=dpt->z;
 		
 		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
-			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
+			walk_view_click_project_point(view_setup,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
 				if (z<hit_z) {
@@ -641,11 +656,12 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	dpt=&mesh->vertexes[vertex_idx];
 	memmove(&old_dpt,dpt,sizeof(d3pnt));
 	
+	walk_view_get_pixel_box(view_setup,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
 	
-	while (!os_track_mouse_location(pt,&view_setup->box)) {
+	while (!os_track_mouse_location(pt,&box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -663,11 +679,14 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		
 			// get vertex movement
 
-		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+		move_pnt.x=move_pnt.y=move_pnt.z=0;
+		
+		walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-(x*move_mouse_scale));
+		walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-(y*move_mouse_scale));
 			
-		mx+=xadd;
-		my+=yadd;
-		mz+=zadd;
+		mx+=move_pnt.x;
+		my+=move_pnt.y;
+		mz+=move_pnt.z;
 		
 		mpt.x=mx;
 		mpt.y=my;
@@ -705,12 +724,13 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
       
 ======================================================= */
 
-bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_liquid_vertex(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,chk_x,chk_z,
+	int						n,x,y,z,mx,my,mz,hit_z,sz,chk_x,chk_z,
 							px[4],py[4],pz[4],
 							type,liquid_idx,sub_idx,vertex_idx;
-	d3pnt					old_pt,old_dpt,mpt;
+	d3pnt					old_pt,old_dpt,move_pnt,mpt;
+	d3rect					box;
 	bool					first_drag;
 	map_liquid_type			*liq;
 	
@@ -736,7 +756,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 		z=pz[n];
 		
 		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
-			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
+			walk_view_click_project_point(view_setup,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
 				if (z<hit_z) {
@@ -761,11 +781,12 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 	old_dpt.y=py[vertex_idx];
 	old_dpt.z=pz[vertex_idx];
 	
+	walk_view_get_pixel_box(view_setup,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
 	
-	while (!os_track_mouse_location(pt,&view_setup->box)) {
+	while (!os_track_mouse_location(pt,&box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -783,11 +804,14 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 		
 			// get vertex move (never on Y)
 
-		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+		move_pnt.x=move_pnt.y=move_pnt.z=0;
+		
+		walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-(x*move_mouse_scale));
+		walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-(y*move_mouse_scale));
 			
-		mx+=xadd;
+		mx+=move_pnt.x;
 		my=liq->y;
-		mz+=zadd;
+		mz+=move_pnt.z;
 		
 		mpt.x=mx;
 		mpt.y=my;
@@ -846,12 +870,13 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
       
 ======================================================= */
 
-bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_liquid(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						x,y,mx,my,mz,xadd,zadd,yadd,
+	int						x,y,mx,my,mz,
 							old_lft,old_rgt,old_top,old_bot,old_y,
 							type,main_idx,sub_idx;
-	d3pnt					old_pt,mpt;
+	d3pnt					old_pt,move_pnt,mpt;
+	d3rect					box;
 	bool					first_drag;
 	map_liquid_type			*liq;
 	
@@ -876,11 +901,12 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	old_bot=liq->bot;
 	old_y=liq->y;
 	
+	walk_view_get_pixel_box(view_setup,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
 	
-	while (!os_track_mouse_location(pt,&view_setup->box)) {
+	while (!os_track_mouse_location(pt,&box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -898,11 +924,14 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		
 			// get movement
 
-		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+		move_pnt.x=move_pnt.y=move_pnt.z=0;
+		
+		walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-(x*move_mouse_scale));
+		walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-(y*move_mouse_scale));
 			
-		mx+=xadd;
-		my+=yadd;
-		mz+=zadd;
+		mx+=move_pnt.x;
+		my+=move_pnt.y;
+		mz+=move_pnt.z;
 		
 		mpt.x=mx;
 		mpt.y=my;
@@ -934,11 +963,12 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
       
 ======================================================= */
 
-bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_item(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						x,y,mx,my,mz,xadd,zadd,yadd,
+	int						x,y,mx,my,mz,
 							type,main_idx,sub_idx;
-	d3pnt					*pnt,old_pt,old_pnt,mpt;
+	d3pnt					*pnt,old_pt,old_pnt,move_pnt,mpt;
+	d3rect					box;
 	bool					first_drag;
 	
     if (select_count()!=1) return(FALSE);
@@ -980,12 +1010,13 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 
 	first_drag=TRUE;
 	
+	walk_view_get_pixel_box(view_setup,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
 	
-	while (!os_track_mouse_location(pt,&view_setup->box)) {
+	while (!os_track_mouse_location(pt,&box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -1003,11 +1034,14 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		
 			// get movement
 
-		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+		move_pnt.x=move_pnt.y=move_pnt.z=0;
+		
+		walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-(x*move_mouse_scale));
+		walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-(y*move_mouse_scale));
 			
-		mx+=xadd;
-		my+=yadd;
-		mz+=zadd;
+		mx+=move_pnt.x;
+		my+=move_pnt.y;
+		mz+=move_pnt.z;
 		
 		mpt.x=mx;
 		mpt.y=my;

@@ -31,12 +31,33 @@ and can be sold or given away.
 
 extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
-extern void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background);
-extern void main_wind_set_2D_projection(editor_3D_view_setup *view_setup);
-extern void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,int near_z,int far_z,int near_z_offset);
-extern void walk_view_cursor(bool rot_ok);
-extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
-extern bool walk_view_click(d3pnt *pt,bool dblclick);
+extern void walk_view_setup_default_views(void);
+extern void walk_view_split_horizontal(void);
+extern void walk_view_split_vertical(void);
+extern void walk_view_remove(void);
+extern void walk_view_get_pixel_box(editor_view_setup *view,d3rect *box);
+extern void walk_view_set_viewport_box(d3rect *box,bool erase,bool use_background);
+extern void walk_view_set_viewport(editor_view_setup *view,bool erase,bool use_background);
+extern void walk_view_set_2D_projection(editor_view_setup *view);
+extern void walk_view_set_3D_projection(editor_view_setup *view,int near_z,int far_z,int near_z_offset);
+extern bool walk_view_point_in_view(editor_view_setup *view,d3pnt *pnt);
+extern void walk_view_cursor(d3pnt *pnt);
+extern void walk_view_key(char ch);
+extern void walk_view_get_position(d3pnt *pnt);
+extern void walk_view_set_position(d3pnt *pnt);
+extern void walk_view_set_position_y_shift(d3pnt *pnt,int y_shift);
+extern void walk_view_move_position(d3pnt *pnt);
+extern void walk_view_get_angle(d3ang *ang);
+extern void walk_view_set_angle(d3ang *ang);
+extern void walk_view_turn_angle(d3ang *ang);
+extern void walk_view_face_front(void);
+extern void walk_view_face_left(void);
+extern void walk_view_face_right(void);
+extern void walk_view_face_back(void);
+extern void walk_view_face_top(void);
+extern void walk_view_face_bottom(void);
+extern void walk_view_select_view(d3pnt *pnt);
+extern bool walk_view_click(d3pnt *pnt,bool dblclick);
 extern void walk_view_draw(void);
 
 //
@@ -44,29 +65,28 @@ extern void walk_view_draw(void);
 //
 
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
-extern void walk_view_draw_view(editor_3D_view_setup *view_setup,bool draw_position);
+extern void walk_view_draw_view(editor_view_setup *view_setup);
 extern void walk_view_draw_select(d3pnt *cpt);
 
 //
 // walk view click
 //
 
-extern void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_move_dir,int x,int y,int *xadd,int *yadd,int *zadd);
 extern int walk_view_get_grid(void);
 extern void walk_view_click_grid(d3pnt *pt);
 extern bool walk_view_click_snap(int mesh_idx,d3pnt *pt);
 extern bool walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt);
 extern bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt);
-extern void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick);
-extern bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z);
-extern bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool entire_mesh);
+extern void walk_view_click_piece(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick);
+extern bool walk_view_mesh_poly_click_index(editor_view_setup *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z);
+extern bool walk_view_click_drag_mesh_handle(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_mesh(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_mesh_poly(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_vertex(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_liquid_vertex(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_item(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_liquid(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_texture(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool entire_mesh);
 
 //
 // walk view draw handle
@@ -78,13 +98,10 @@ extern void walk_view_sprite_select_size(d3pnt *pnt,int *px,int *py,int *pz);
 // walk view movement
 //
 
-extern void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern void walk_view_mouse_yz_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
-extern void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delta,int view_move_dir);
-extern void walk_view_scroll_wheel_rot_z_movement(editor_3D_view_setup *view_setup,int delta);
-extern void walk_view_mouse_turn(d3pnt *pt);
-extern void walk_view_swap_draw(editor_3D_view_setup *view_setup);
-extern bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_on);
+extern void walk_view_mouse_scroll_movement(d3pnt *pnt);
+extern void walk_view_mouse_forward_movement(d3pnt *pnt);
+extern void walk_view_scroll_wheel_z_movement(int delta);
+extern void walk_view_mouse_turn(d3pnt *pnt);
 
 //
 // walk view models

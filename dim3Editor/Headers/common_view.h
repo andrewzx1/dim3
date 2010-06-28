@@ -150,7 +150,7 @@ extern void piece_mesh_recalc_normals(void);
 extern void piece_mesh_poly_invert_normals(map_mesh_poly_type *poly);
 extern void piece_mesh_invert_normals(bool poly_only);
 extern void piece_poly_hole(void);
-extern void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
+extern void piece_key(char ch);
 
 //
 // piece create routines
