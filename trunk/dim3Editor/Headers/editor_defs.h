@@ -194,17 +194,3 @@ typedef struct		{
 												show_lightsoundparticle,cull;
 					} editor_state_type;
 					
-//
-// draw passing struct
-//
-
-typedef struct		{
-						float					lft,rgt,top,bot;
-					} editor_view_box;
-					
-typedef struct		{
-						d3pnt					pnt;
-						d3ang					ang;
-						editor_view_box			box;
-					} editor_view_setup;
-

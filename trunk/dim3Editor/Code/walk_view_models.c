@@ -240,7 +240,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
 	model_mesh_type					*mesh;
     register texture_type			*texture;
 	register model_material_type	*material;
-	
+
 	if (name[0]==0x0) return(FALSE);
 	
 	idx=walk_view_models_find_model(name);

@@ -1,5 +1,6 @@
 #include "dim3Editor.h"
 
+#include "walk_view.h"
 #include "common_view.h"
 #include "interface.h"
 
@@ -9,22 +10,13 @@
 #define EDITOR_WIN_HEIGHT		700
 #define EDITOR_WIN_EXTRA_HEIGHT	20
 
-#define EDITOR_MOUSE_FUDGE		5
-
-#define EDITOR_VIEW_LEFT		0
-#define EDITOR_VIEW_FORWARD		1
-#define EDITOR_VIEW_TOP			2
-#define EDITOR_VIEW_RIGHT		3
-
 ATOM					wnd_rg_class;
 HFONT					fnt;
 HWND					wnd;
 HDC						wnd_gl_dc;
 HGLRC					wnd_gl_ctx;
 
-int						mouse_last_x,mouse_last_y,mouse_last_view;
-bool					mouse_down,mouse_forward,quit;
-d3pnt					view_pnt;
+bool					quit;
 
 map_type				map;
 file_path_setup_type	file_path_setup;
@@ -35,9 +27,7 @@ d3rect					main_wind_box;
 
 extern bool setup_xml_read(void);
 extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
-void editor_button_down(int x,int y,bool forward);
-void editor_button_up(int x,int y);
-void editor_mouse_move(int x,int y);
+void editor_button_down(int x,int y);
 void editor_draw(void);	// supergumba -- testing
 extern void glue_start(void);
 extern void glue_end(void);
@@ -64,7 +54,7 @@ bool main_wind_click_check_box(d3pnt *pt,d3rect *box)
 	return(FALSE);
 }
 
-void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
+void piece_key(char ch)
 {
 }
 
@@ -85,27 +75,22 @@ bool node_link_click(int node_idx)
 
 LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
-//	PAINTSTRUCT		ps;
-//	HDC				dc;
+	PAINTSTRUCT		ps;
 
 	switch (msg) {
 
 		case WM_PAINT:
-//			editor_draw();
+			BeginPaint(wnd,&ps);
+			editor_draw();
+			EndPaint(wnd,&ps);
+			break;
+
+		case WM_SIZE:
+			// deal with these, need to check if map is loaded
 			break;
 
 		case WM_LBUTTONDOWN:
-			SetCapture(wnd);
-			editor_button_down(LOWORD(lParam),HIWORD(lParam),((wParam&MK_CONTROL)!=0));
-			break;
-
-		case WM_LBUTTONUP:
-			ReleaseCapture();
-			editor_button_up(LOWORD(lParam),HIWORD(lParam));
-			break;
-
-		case WM_MOUSEMOVE:
-		//	editor_mouse_move(LOWORD(lParam),HIWORD(lParam));
+			editor_button_down(LOWORD(lParam),HIWORD(lParam));
 			break;
 
 		case WM_CLOSE:
@@ -168,7 +153,7 @@ bool editor_start(char *err_str)
 
 	AdjustWindowRect(&wbox,WS_OVERLAPPEDWINDOW,FALSE);
 
-    wnd=CreateWindow("dim3EditorWindowClass","dim3 Server",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,wbox.left,wbox.top,(wbox.right-wbox.left),(wbox.bottom-wbox.top),NULL,NULL,hInst,NULL);
+    wnd=CreateWindow("dim3EditorWindowClass","dim3 Editor",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,wbox.left,wbox.top,(wbox.right-wbox.left),(wbox.bottom-wbox.top),NULL,NULL,hInst,NULL);
 
 		// create font for window
 
@@ -228,22 +213,12 @@ bool editor_start(char *err_str)
 
 	SwapBuffers(wnd_gl_dc);
 
-		// mouse setup
-
-	mouse_down=FALSE;
-
 		// main wind box
 
 	main_wind_box.lx=0;
-	main_wind_box.rx=(wbox.right-wbox.left)-palette_wid;
+	main_wind_box.rx=(wbox.right-wbox.left);
 	main_wind_box.ty=toolbar_high;
 	main_wind_box.by=(wbox.bottom-wbox.top)-info_high;
-
-		// supergumba -- fake starting point
-
-	view_pnt.x=346000;
-	view_pnt.y=252000;
-	view_pnt.z=354000;
 
 		// initialize walk view
 
@@ -323,6 +298,8 @@ bool editor_setup(char *err_str)
 
 bool editor_open_map(char *err_str)
 {
+	d3pnt			pnt;
+
 		// open map
 
 	map_setup(&file_path_setup,anisotropic_mode_high,mipmap_mode_trilinear,texture_quality_mode_normal,FALSE,FALSE);
@@ -332,14 +309,28 @@ bool editor_open_map(char *err_str)
 		return(FALSE);
 	}
 
-//	walk_view_models_start();
+	walk_view_models_start();
+
+		// supergumba -- some temporary state
+
+	state.show_object=TRUE;
+	state.show_lightsoundparticle=TRUE;
+
+		// supergumba -- fake starting point
+
+	pnt.x=346000;
+	pnt.y=252000;
+	pnt.z=354000;
+
+	walk_view_setup_default_views();
+	walk_view_set_position(&pnt);
 
 	return(TRUE);
 }
 
 void editor_close_map(void)
 {
-//	walk_view_models_close();
+	walk_view_models_close();
 
 	map_close(&map);
 }
@@ -404,106 +395,41 @@ void main_wind_draw(void)
 
 /* =======================================================
 
-      Mouse Move
+      Mouse Click
       
 ======================================================= */
 
-void editor_button_down(int x,int y,bool forward)
+void editor_button_down(int x,int y)
 {
-	d3ang		ang;
-	d3rect		box;
 	d3pnt		pnt;
 
-	mouse_down=TRUE;
-	mouse_forward=forward;
-
-	mouse_last_x=x;
-	mouse_last_y=y;
-
-		// find view clicked in
+	SetCapture(wnd);
 
 	pnt.x=x;
 	pnt.y=y;
 
 	walk_view_click(&pnt,FALSE);
+	
+	ReleaseCapture();
 }
 
-void editor_button_up(int x,int y)
+/* =======================================================
+
+      Supergumba -- testing
+      
+======================================================= */
+
+void test_debug(char *str)
 {
-	mouse_down=FALSE;
-}
+	FILE				*file;
+	
+	file=fopen("c:\\test_output.txt","a");
+	if (file==NULL) return;
+	
+	fwrite(str,1,strlen(str),file);
+	fwrite("\r\n",1,2,file);
 
-void editor_mouse_move(int x,int y)
-{
-	int			cx,cy;
-
-	if (!mouse_down) return;
-	if ((mouse_last_x==x) && (mouse_last_y==y)) return;
-
-		// move within editor fudge
-
-	cx=x-mouse_last_x;
-	if (abs(cx)<EDITOR_MOUSE_FUDGE) {
-		cx=0;
-	}
-	else {
-		mouse_last_x=x;
-	}
-
-	cx=cx/EDITOR_MOUSE_FUDGE;
-
-	cy=y-mouse_last_y;
-	if (abs(cy)<EDITOR_MOUSE_FUDGE) {
-		cy=0;
-	}
-	else {
-		mouse_last_y=y;
-	}
-
-	cy=cy/EDITOR_MOUSE_FUDGE;
-
-		// move depending on view
-
-	switch (mouse_last_view) {
-		case EDITOR_VIEW_LEFT:
-			view_pnt.z-=cx;
-			if (!mouse_forward) {
-				view_pnt.y-=cy;
-			}
-			else {
-				view_pnt.x+=cy;
-			}
-			break;
-		case EDITOR_VIEW_FORWARD:
-			view_pnt.x-=cx;
-			if (!mouse_forward) {
-				view_pnt.y-=cy;
-			}
-			else {
-				view_pnt.z-=cy;
-			}
-			break;
-		case EDITOR_VIEW_TOP:
-			view_pnt.x-=cx;
-			if (!mouse_forward) {
-				view_pnt.z-=cy;
-			}
-			else {
-				view_pnt.y+=cy;
-			}
-			break;
-		case EDITOR_VIEW_RIGHT:
-			view_pnt.z+=cx;
-			if (!mouse_forward) {
-				view_pnt.y-=cy;
-			}
-			else {
-				view_pnt.x-=cy;
-			}
-			break;
-	}
-
-	editor_draw();
+	fclose(file);
 }
 
 /* =======================================================
@@ -533,17 +459,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		return(0);
 	}
 
-
-
-
 	editor_draw();
 
-
-
-
 	editor_pump();
-	editor_end();
 
+	editor_end();
 	editor_close_map();
 
 	return(0);

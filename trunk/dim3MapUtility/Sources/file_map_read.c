@@ -270,6 +270,39 @@ void decode_map_movements_xml(map_type *map,int map_head)
 
 /* =======================================================
 
+      Read Editor Views
+      
+======================================================= */
+
+void read_map_editor_views_xml(map_type *map,int map_head)
+{
+	int						n,main_views_tag,view_tag;
+	editor_view_type		*view;
+
+	map->editor_views.count=0;
+
+    main_views_tag=xml_findfirstchild("Editor_Views",map_head);
+    if (main_views_tag==-1) return;
+
+    map->editor_views.count=xml_countchildren(main_views_tag);
+	view_tag=xml_findfirstchild("Editor_View",main_views_tag);
+
+    view=map->editor_views.views;
+    
+    for (n=0;n!=map->editor_views.count;n++) {
+    
+		xml_get_attribute_2_coord_float(view_tag,"box_top_left",&view->box.top,&view->box.lft);
+		xml_get_attribute_2_coord_float(view_tag,"box_bottom_right",&view->box.bot,&view->box.rgt);
+		xml_get_attribute_3_coord_int(view_tag,"pnt",&view->pnt.x,&view->pnt.y,&view->pnt.z);
+		xml_get_attribute_3_coord_float(view_tag,"ang",&view->ang.x,&view->ang.y,&view->ang.z);
+        
+		view_tag=xml_findnextchild(view_tag);
+        view++;
+    }
+}
+
+/* =======================================================
+
       Check Map Network Game Types
       
 ======================================================= */
@@ -395,6 +428,10 @@ bool read_map_xml(map_type *map)
 	decode_map_groups_xml(map,map_head);
 	decode_map_textures_xml(map,map_head);
 	decode_map_movements_xml(map,map_head);
+
+		// editor setup
+
+	read_map_editor_views_xml(map,map_head);
 	
 		// decode
 

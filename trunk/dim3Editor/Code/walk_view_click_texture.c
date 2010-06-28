@@ -44,7 +44,7 @@ extern editor_state_type		state;
       
 ======================================================= */
 
-bool walk_view_click_drag_texture(editor_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool entire_mesh)
+bool walk_view_click_drag_texture(editor_view_type *view_setup,d3pnt *pt,int view_move_dir,bool entire_mesh)
 {
 	int						n,k,x,y,
 							type,mesh_idx,poly_idx;

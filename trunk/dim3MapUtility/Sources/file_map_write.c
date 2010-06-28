@@ -349,6 +349,37 @@ void write_map_movements_xml(map_type *map)
 
 /* =======================================================
 
+      Write Editor Views
+      
+======================================================= */
+
+void write_map_editor_views_xml(map_type *map)
+{
+	int						n;
+	editor_view_type		*view;
+
+	xml_add_tagstart("Editor_Views");
+    xml_add_tagend(FALSE);
+  
+    view=map->editor_views.views;
+    
+    for (n=0;n!=map->editor_views.count;n++) {
+    
+		xml_add_tagstart("Editor_View");
+		xml_add_attribute_2_coord_float("box_top_left",view->box.top,view->box.lft);
+		xml_add_attribute_2_coord_float("box_bottom_right",view->box.bot,view->box.rgt);
+		xml_add_attribute_3_coord_int("pnt",view->pnt.x,view->pnt.y,view->pnt.z);
+		xml_add_attribute_3_coord_float("ang",view->ang.x,view->ang.y,view->ang.z);
+		xml_add_tagclose("Editor_View");
+        
+        view++;
+    }
+    
+    xml_add_tagclose("Editor_Views");
+}
+
+/* =======================================================
+
       Write Vertexes, Meshes, Liquids
       
 ======================================================= */
@@ -579,6 +610,10 @@ bool write_map_xml(map_type *map)
 	write_map_groups_xml(map);
 	write_map_textures_xml(map);
 	write_map_movements_xml(map);
+
+		// editor setup
+
+	write_map_editor_views_xml(map);
 
 		// meshes
 

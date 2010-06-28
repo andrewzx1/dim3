@@ -73,6 +73,8 @@ extern char light_type_str[][32];
 
 #define max_map_light_cache_index							8
 
+#define max_editor_view										8
+
 //
 // strings
 //
@@ -568,6 +570,25 @@ typedef struct		{
 					} map_fog_type;
 
 //
+// map editor structures
+//
+
+typedef struct		{
+						float								lft,rgt,top,bot;
+					} editor_view_box_type;
+					
+typedef struct		{
+						d3pnt								pnt;
+						d3ang								ang;
+						editor_view_box_type				box;
+					} editor_view_type;
+
+typedef struct		{
+						int									count;
+						editor_view_type					views[max_editor_view];
+					} editor_views_type;
+
+//
 // main map structure
 //
 
@@ -588,6 +609,8 @@ typedef struct		{
 						map_settings_type					settings;
 						map_media_type						media;
 						map_music_type						music;
+
+						editor_views_type					editor_views;
 						
 						texture_type						*textures;
 						

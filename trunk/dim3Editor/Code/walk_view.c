@@ -44,8 +44,7 @@ extern editor_state_type		state;
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
 								
-int								view_count,view_select_idx;
-editor_view_setup				views[max_editor_views];
+int								view_select_idx;
 
 /* =======================================================
 
@@ -55,29 +54,39 @@ editor_view_setup				views[max_editor_views];
 
 bool walk_view_initialize(void)
 {
-	char			path[1024];
+	char			sub_path[1024],path[1024];
+
+		// on OS X, icons are stored as resources
+		// in the bundle.  Everywhere else it's a folder
+
+#ifdef D3_OS_MAC
+	strcpy(sub_path,"Contents/Resources/Icons");
+#else
+	strcpy(sub_path,"dim3 Editor Icons");
+#endif
 	
 		// interface textures
 		
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","spot","png");
+	file_paths_app(&file_path_setup,path,sub_path,"spot","png");
+	test_debug(path);
 	bitmap_open(&spot_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","scenery","png");
+	file_paths_app(&file_path_setup,path,sub_path,"scenery","png");
 	bitmap_open(&scenery_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 	
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","node","png");
+	file_paths_app(&file_path_setup,path,sub_path,"node","png");
 	bitmap_open(&node_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 	
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","node_defined","png");
+	file_paths_app(&file_path_setup,path,sub_path,"node_defined","png");
 	bitmap_open(&node_defined_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 	
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","light","png");
+	file_paths_app(&file_path_setup,path,sub_path,"light","png");
 	bitmap_open(&light_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","sound","png");
+	file_paths_app(&file_path_setup,path,sub_path,"sound","png");
 	bitmap_open(&sound_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","particle","png");
+	file_paths_app(&file_path_setup,path,sub_path,"particle","png");
 	bitmap_open(&particle_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 
 	return(TRUE);
@@ -104,12 +113,12 @@ void walk_view_shutdown(void)
 
 void walk_view_setup_default_views(void)
 {
-	editor_view_setup		*view;
+	editor_view_type		*view;
 	
-	view_count=1;
+	map.editor_views.count=1;
 	view_select_idx=0;
 	
-	view=&views[0];
+	view=&map.editor_views.views[0];
 	
 	view->box.lft=0.0f;
 	view->box.rgt=1.0f;
@@ -131,9 +140,9 @@ void walk_view_setup_default_views(void)
       
 ======================================================= */
 
-void walk_view_get_pixel_box(editor_view_setup *view,d3rect *box)
+void walk_view_get_pixel_box(editor_view_type *view,d3rect *box)
 {
-	int				wid,high;
+	float			wid,high;
 	d3rect			wbox;
 	
 		// get viewport
@@ -143,15 +152,15 @@ void walk_view_get_pixel_box(editor_view_setup *view,d3rect *box)
 	wbox.ty+=toolbar_high;
 	wbox.by-=(txt_palette_high+info_high);
 	
-	wid=wbox.rx-wbox.lx;
-	high=wbox.by-wbox.ty;
+	wid=(float)(wbox.rx-wbox.lx);
+	high=(float)(wbox.by-wbox.ty);
 	
 		// translate to pixels
 	
-	box->lx=wbox.lx+(wid*view->box.lft);
-	box->rx=wbox.lx+(wid*view->box.rgt);
-	box->ty=wbox.ty+(high*view->box.top);
-	box->by=wbox.ty+(high*view->box.bot);
+	box->lx=wbox.lx+(int)(wid*view->box.lft);
+	box->rx=wbox.lx+(int)(wid*view->box.rgt);
+	box->ty=wbox.ty+(int)(high*view->box.top);
+	box->by=wbox.ty+(int)(high*view->box.bot);
 }
 
 /* =======================================================
@@ -163,11 +172,11 @@ void walk_view_get_pixel_box(editor_view_setup *view,d3rect *box)
 void walk_view_split_horizontal(void)
 {
 	float					mid;
-	editor_view_setup		*old_view,*view;
+	editor_view_type		*old_view,*view;
 	
-	old_view=&views[view_select_idx];
+	old_view=&map.editor_views.views[view_select_idx];
 	
-	view=&views[view_count];
+	view=&map.editor_views.views[map.editor_views.count];
 	
 		// point and angle are the same
 		
@@ -176,7 +185,7 @@ void walk_view_split_horizontal(void)
 	
 		// split horizontal
 		
-	memmove(&view->box,&old_view->box,sizeof(editor_view_box));
+	memmove(&view->box,&old_view->box,sizeof(editor_view_box_type));
 		
 	mid=old_view->box.lft+((old_view->box.rgt-old_view->box.lft)*0.5f);
 	
@@ -185,16 +194,84 @@ void walk_view_split_horizontal(void)
 
 		// select new view
 	
-	view_select_idx=view_count;
-	view_count++;
+	view_select_idx=map.editor_views.count;
+	map.editor_views.count++;
 }
 
 void walk_view_split_vertical(void)
 {
+	float					mid;
+	editor_view_type		*old_view,*view;
+	
+	old_view=&map.editor_views.views[view_select_idx];
+	
+	view=&map.editor_views.views[map.editor_views.count];
+	
+		// point and angle are the same
+		
+	memmove(&view->pnt,&old_view->pnt,sizeof(d3pnt));
+	memmove(&view->ang,&old_view->ang,sizeof(d3ang));
+	
+		// split horizontal
+		
+	memmove(&view->box,&old_view->box,sizeof(editor_view_box_type));
+		
+	mid=old_view->box.top+((old_view->box.bot-old_view->box.top)*0.5f);
+	
+	old_view->box.bot=mid;
+	view->box.top=mid;
+
+		// select new view
+	
+	view_select_idx=map.editor_views.count;
+	map.editor_views.count++;
 }
 
 void walk_view_remove(void)
 {
+	int						n,move_count;
+	editor_view_type		*view,*del_view;
+
+	if (map.editor_views.count==1) return;
+	
+	del_view=&map.editor_views.views[view_select_idx];
+
+		// move all views that
+		// border this view
+
+	for (n=0;n!=map.editor_views.count;n++) {
+		if (n==view_select_idx) continue;
+
+		view=&map.editor_views.views[n];
+
+		if ((view->box.top>=del_view->box.top) && (view->box.bot<=del_view->box.bot)) {
+			if (view->box.lft=del_view->box.rgt) {
+				view->box.lft=del_view->box.lft;
+				continue;
+			}
+			if (view->box.rgt=del_view->box.lft) {
+				view->box.rgt=del_view->box.rgt;
+				continue;
+			}
+		}
+		if ((view->box.lft>=del_view->box.lft) && (view->box.rgt<=del_view->box.rgt)) {
+			if (view->box.top=del_view->box.bot) {
+				view->box.top=del_view->box.top;
+				continue;
+			}
+			if (view->box.bot=del_view->box.top) {
+				view->box.bot=del_view->box.bot;
+				continue;
+			}
+		}
+	}
+
+		// remove old view
+
+	move_count=(map.editor_views.count-view_select_idx)-1;
+	if (move_count>=1) memmove(&map.editor_views.views[view_select_idx],&map.editor_views.views[view_select_idx+1],(sizeof(editor_view_type)*move_count));
+
+	map.editor_views.count--;
 }
 
 /* =======================================================
@@ -248,7 +325,7 @@ void walk_view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 	glEnd();
 }
 
-void walk_view_set_viewport(editor_view_setup *view,bool erase,bool use_background)
+void walk_view_set_viewport(editor_view_type *view,bool erase,bool use_background)
 {
 	d3rect			box;
 	
@@ -256,7 +333,7 @@ void walk_view_set_viewport(editor_view_setup *view,bool erase,bool use_backgrou
 	walk_view_set_viewport_box(&box,erase,use_background);
 }
 
-void walk_view_set_2D_projection(editor_view_setup *view)
+void walk_view_set_2D_projection(editor_view_type *view)
 {
 	d3rect			box;
 	
@@ -270,7 +347,7 @@ void walk_view_set_2D_projection(editor_view_setup *view)
 	glLoadIdentity();
 }
 
-void walk_view_set_3D_projection(editor_view_setup *view,int near_z,int far_z,int near_z_offset)
+void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near_z_offset)
 {
 	int				x_sz,y_sz;
 	float			ratio;
@@ -308,7 +385,7 @@ void walk_view_set_3D_projection(editor_view_setup *view,int near_z,int far_z,in
       
 ======================================================= */
 
-bool walk_view_point_in_view(editor_view_setup *view,d3pnt *pnt)
+bool walk_view_point_in_view(editor_view_type *view,d3pnt *pnt)
 {
 	d3rect			box;
 	
@@ -335,8 +412,8 @@ void walk_view_cursor(d3pnt *pnt)
 		
 	in_view=FALSE;
 	
-	for (n=0;n!=view_count;n++) {
-		if (walk_view_point_in_view(&views[n],pnt)) {
+	for (n=0;n!=map.editor_views.count;n++) {
+		if (walk_view_point_in_view(&map.editor_views.views[n],pnt)) {
 			in_view=TRUE;
 			break;
 		}
@@ -376,7 +453,7 @@ void walk_view_key(char ch)
 		
 	if (ch==0x9) {
 		view_select_idx++;
-		if (view_select_idx>=view_count) view_select_idx=0;
+		if (view_select_idx>=map.editor_views.count) view_select_idx=0;
 		walk_view_draw();
 		return;
 	}
@@ -402,42 +479,42 @@ void walk_view_key(char ch)
 
 void walk_view_get_position(d3pnt *pnt)
 {
-	memmove(pnt,&views[view_select_idx].pnt,sizeof(d3pnt));
+	memmove(pnt,&map.editor_views.views[view_select_idx].pnt,sizeof(d3pnt));
 }
 
 void walk_view_set_position(d3pnt *pnt)
 {
-	memmove(&views[view_select_idx].pnt,pnt,sizeof(d3pnt));
+	memmove(&map.editor_views.views[view_select_idx].pnt,pnt,sizeof(d3pnt));
 }
 
 void walk_view_set_position_y_shift(d3pnt *pnt,int y_shift)
 {
-	memmove(&views[view_select_idx].pnt,pnt,sizeof(d3pnt));
-	views[view_select_idx].pnt.y+=y_shift;
+	memmove(&map.editor_views.views[view_select_idx].pnt,pnt,sizeof(d3pnt));
+	map.editor_views.views[view_select_idx].pnt.y+=y_shift;
 }
 
 void walk_view_move_position(d3pnt *pnt)
 {
-	views[view_select_idx].pnt.x+=pnt->x;
-	views[view_select_idx].pnt.y+=pnt->y;
-	views[view_select_idx].pnt.z+=pnt->z;
+	map.editor_views.views[view_select_idx].pnt.x+=pnt->x;
+	map.editor_views.views[view_select_idx].pnt.y+=pnt->y;
+	map.editor_views.views[view_select_idx].pnt.z+=pnt->z;
 }
 
 void walk_view_get_angle(d3ang *ang)
 {
-	memmove(ang,&views[view_select_idx].ang,sizeof(d3ang));
+	memmove(ang,&map.editor_views.views[view_select_idx].ang,sizeof(d3ang));
 }
 
 void walk_view_set_angle(d3ang *ang)
 {
-	memmove(&views[view_select_idx].ang,ang,sizeof(d3ang));
+	memmove(&map.editor_views.views[view_select_idx].ang,ang,sizeof(d3ang));
 }
 
 void walk_view_turn_angle(d3ang *ang)
 {
 	d3ang			*vang;
 	
-	vang=&views[view_select_idx].ang;
+	vang=&map.editor_views.views[view_select_idx].ang;
 	
 	vang->x=angle_add(vang->x,ang->x);
 	vang->y=angle_add(vang->y,ang->y);
@@ -529,14 +606,14 @@ void walk_view_select_view(d3pnt *pnt)
 {
 	int					n;
 	
-	for (n=0;n!=view_count;n++) {
-		if (walk_view_point_in_view(&views[n],pnt)) view_select_idx=n;
+	for (n=0;n!=map.editor_views.count;n++) {
+		if (walk_view_point_in_view(&map.editor_views.views[n],pnt)) view_select_idx=n;
 	}
 }
 
 bool walk_view_click(d3pnt *pnt,bool dblclick)
 {
-	editor_view_setup	*view;
+	editor_view_type	*view;
 	
 		// select clicking view
 		
@@ -544,7 +621,7 @@ bool walk_view_click(d3pnt *pnt,bool dblclick)
 	
 		// handle click
 
-	view=&views[view_select_idx];
+	view=&map.editor_views.views[view_select_idx];
 	if (!walk_view_point_in_view(view,pnt)) return(FALSE);
 		
 		// scrolling and movement clicks
@@ -580,20 +657,20 @@ void walk_view_draw(void)
 {
 	int					n;
 	d3rect				box;
-	editor_view_setup	*view;
+	editor_view_type	*view;
 	
 		// draw the views
 		
-	for (n=0;n!=view_count;n++) {
-		walk_view_draw_view(&views[n]);
+	for (n=0;n!=map.editor_views.count;n++) {
+		walk_view_draw_view(&map.editor_views.views[n]);
 	}
 	
 	walk_view_set_viewport_box(&main_wind_box,FALSE,FALSE);
 
 		// view box outlines
 		
-	for (n=0;n!=view_count;n++) {
-		view=&views[n];
+	for (n=0;n!=map.editor_views.count;n++) {
+		view=&map.editor_views.views[n];
 		walk_view_get_pixel_box(view,&box);
 
 		glLineWidth(1.0f);
@@ -609,9 +686,9 @@ void walk_view_draw(void)
 	
 		// draw the selection
 		
-	if ((view_select_idx>=0) && (view_select_idx<view_count)) {
+	if ((view_select_idx>=0) && (view_select_idx<map.editor_views.count)) {
 	
-		view=&views[view_select_idx];
+		view=&map.editor_views.views[view_select_idx];
 		walk_view_get_pixel_box(view,&box);
 		
 		glEnable(GL_BLEND);

@@ -223,10 +223,17 @@ void file_paths_data_default(file_path_setup_type *file_path_setup,char *path,ch
 void file_paths_app(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name)
 {
 	strcpy(path,file_path_setup->path_base);
+
+		// on OS X, we get data from inside the app
+		// on everything else, it's just a normal path
+		// to the app root directory
+
+#ifdef D3_OS_MAC
 	strcat(path,"/");
 	strcat(path,file_path_setup->app_name);
 	strcat(path,".app");
-	
+#endif
+
 	if (sub_path!=NULL) {
 		strcat(path,"/");
 		strcat(path,sub_path);

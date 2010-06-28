@@ -127,24 +127,25 @@ bool os_button_down(void)
 
 bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
 {
-	/*
-	Point					uipt;
-	MouseTrackingResult		track;
+	POINT					ui_pt;
 
-	TrackMouseLocation(NULL,&uipt,&track);
+		// get cursor pos in window
+
+	GetCursorPos(&ui_pt);
+	ScreenToClient(wnd,&ui_pt);
+
+		// add in offsets
 	
 	if (offset_box==NULL) {
-		pt->x=uipt.h;
-		pt->y=uipt.v;
+		pt->x=ui_pt.x;
+		pt->y=ui_pt.y;
 	}
 	else {
-		pt->x=uipt.h-offset_box->lx;
-		pt->y=uipt.v-offset_box->ty;
+		pt->x=ui_pt.x-offset_box->lx;
+		pt->y=ui_pt.y-offset_box->ty;
 	}
 	
-	return(track==kMouseTrackingMouseReleased);
-	*/
-	return(TRUE);
+	return(!os_button_down());
 }
 
 /* =======================================================
