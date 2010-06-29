@@ -131,6 +131,12 @@ void walk_view_setup_default_views(void)
 	view->ang.x=0.0f;
 	view->ang.y=0.0f;
 	view->ang.z=0.0f;
+
+	view->uv_layer=0;
+	view->magnify_factor=magnify_factor_default;
+
+	view->cull=FALSE;
+	view->ortho=FALSE;
 }
 
 /* =======================================================
@@ -172,6 +178,8 @@ void walk_view_split_horizontal(void)
 {
 	float					mid;
 	editor_view_type		*old_view,*view;
+
+	if (map.editor_views.count>=max_editor_view) return;
 	
 	old_view=&map.editor_views.views[view_select_idx];
 	
@@ -201,6 +209,8 @@ void walk_view_split_vertical(void)
 {
 	float					mid;
 	editor_view_type		*old_view,*view;
+
+	if (map.editor_views.count>=max_editor_view) return;
 	
 	old_view=&map.editor_views.views[view_select_idx];
 	
@@ -357,7 +367,7 @@ void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-	if (state.perspective==ps_perspective) {
+	if (!view->ortho) {
 		ratio=(float)(box.rx-box.lx)/(float)(box.by-box.ty);
 		gluPerspective(45.0f,ratio,(GLdouble)near_z,(GLdouble)far_z);
 	}
@@ -380,9 +390,14 @@ void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int
 
 /* =======================================================
 
-      Check Point in Box
+      Find Views
       
 ======================================================= */
+
+editor_view_type* walk_view_get_current_view(void)
+{
+	return(&map.editor_views.views[view_select_idx]);
+}
 
 bool walk_view_point_in_view(editor_view_type *view,d3pnt *pnt)
 {
@@ -642,7 +657,7 @@ bool walk_view_click(d3pnt *pnt,bool dblclick)
 
 		// click the view pieces
 
-	walk_view_click_piece(view,pnt,vm_dir_forward,dblclick);
+	walk_view_click_piece(view,pnt,dblclick);
 	return(TRUE);
 }
 

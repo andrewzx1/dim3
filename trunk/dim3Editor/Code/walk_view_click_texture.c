@@ -44,7 +44,7 @@ extern editor_state_type		state;
       
 ======================================================= */
 
-bool walk_view_click_drag_texture(editor_view_type *view_setup,d3pnt *pt,int view_move_dir,bool entire_mesh)
+bool walk_view_click_drag_texture(editor_view_type *view_setup,d3pnt *pt,bool entire_mesh)
 {
 	int						n,k,x,y,
 							type,mesh_idx,poly_idx;
@@ -91,27 +91,8 @@ bool walk_view_click_drag_texture(editor_view_type *view_setup,d3pnt *pt,int vie
 		
 			// get UV change
 
-		switch (view_move_dir) {
-		
-			case vm_dir_forward:
-				gx_add=((float)x)/drag_texture_shift_factor;
-				gy_add=((float)y)/drag_texture_shift_factor;
-				break;
-				
-			case vm_dir_side:
-				gx_add=((float)x)/drag_texture_shift_factor;
-				gy_add=((float)y)/drag_texture_shift_factor;
-				break;
-				
-			case vm_dir_top:
-				gx_add=((float)x)/drag_texture_shift_factor;
-				gy_add=((float)y)/drag_texture_shift_factor;
-				break;
-				
-			default:
-				gx_add=gy_add=0.0f;
-				break;
-		}
+		gx_add=((float)x)/drag_texture_shift_factor;
+		gy_add=((float)y)/drag_texture_shift_factor;
 		
 			// alter UVs
 			

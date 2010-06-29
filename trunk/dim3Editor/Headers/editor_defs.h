@@ -60,41 +60,6 @@ and can be sold or given away.
 #define magnify_factor_default					800
 
 //
-// views
-//
-
-#define max_editor_views						8
-
-#define vw_3_panel								0
-#define vw_4_panel								1
-#define vw_top_only								2
-#define vw_forward_only							3
-
-//
-// perspective
-//
-
-#define ps_perspective							0
-#define ps_ortho								1
-
-//
-// movement directions
-//
-
-#define vm_dir_forward							0
-#define vm_dir_side								1
-#define vm_dir_top								2
-
-//
-// keyboard panel focus
-//
-
-#define kf_panel_forward						0
-#define kf_panel_side							1
-#define kf_panel_top							2
-#define kf_panel_walk							3
-
-//
 // vertex modes
 //
 
@@ -186,11 +151,10 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						perspective,uv_layer,
-												vertex_mode,drag_mode,grid_mode,node_mode,
-												magnify_factor,drag_handle_idx;
+						int						vertex_mode,drag_mode,grid_mode,node_mode,
+												drag_handle_idx;
 						bool					map_opened,select_toggle_mode,auto_texture,
 												show_liquid,show_normals,show_node,show_object,
-												show_lightsoundparticle,cull;
+												show_lightsoundparticle;
 					} editor_state_type;
 					

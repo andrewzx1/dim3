@@ -295,7 +295,11 @@ void read_map_editor_views_xml(map_type *map,int map_head)
 		xml_get_attribute_2_coord_float(view_tag,"box_bottom_right",&view->box.bot,&view->box.rgt);
 		xml_get_attribute_3_coord_int(view_tag,"pnt",&view->pnt.x,&view->pnt.y,&view->pnt.z);
 		xml_get_attribute_3_coord_float(view_tag,"ang",&view->ang.x,&view->ang.y,&view->ang.z);
-        
+		view->uv_layer=xml_get_attribute_int(view_tag,"uv_layer");
+		view->magnify_factor=xml_get_attribute_int(view_tag,"magnify_factor");
+  		view->ortho=xml_get_attribute_boolean(view_tag,"ortho");
+    	view->cull=xml_get_attribute_boolean(view_tag,"cull");
+     
 		view_tag=xml_findnextchild(view_tag);
         view++;
     }

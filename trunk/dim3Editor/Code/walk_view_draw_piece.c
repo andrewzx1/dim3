@@ -179,13 +179,13 @@ void walk_view_draw_circle(d3pnt *pnt,d3col *col,int dist)
       
 ======================================================= */
 
-bool walk_view_draw_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
+bool walk_view_draw_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			n;
 	d3pnt		center,camera_pnt;
 	d3vct		face_vct;
 	
-	if (!state.cull) return(FALSE);
+	if (!view->cull) return(FALSE);
 	if (poly->ptsz==0) return(FALSE);
 	if (poly->never_cull) return(FALSE);
 	
@@ -217,7 +217,7 @@ bool walk_view_draw_cull_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
       
 ======================================================= */
 
-void walk_view_draw_meshes_texture(editor_view_type *view_setup,bool opaque)
+void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
 {
 	int						n,k,t;
 	unsigned long			old_gl_id;
@@ -263,7 +263,7 @@ void walk_view_draw_meshes_texture(editor_view_type *view_setup,bool opaque)
 			// skip any meshes that don't have
 			// light maps if on light maps
 			
-		if ((state.uv_layer==uv_layer_light_map) && (mesh->flag.no_light_map)) {
+		if ((view->uv_layer==uv_layer_light_map) && (mesh->flag.no_light_map)) {
 			mesh++;
 			continue;
 		}
@@ -276,12 +276,12 @@ void walk_view_draw_meshes_texture(editor_view_type *view_setup,bool opaque)
 			
 				// no light map?
 				
-			if ((state.uv_layer==uv_layer_light_map) && (mesh_poly->lmap_txt_idx==-1)) continue;
+			if ((view->uv_layer==uv_layer_light_map) && (mesh_poly->lmap_txt_idx==-1)) continue;
 			
 				// get texture.  If in second UV, we use light map
 				// texture for display if it exists
 				
-			if (state.uv_layer==uv_layer_normal) {
+			if (view->uv_layer==uv_layer_normal) {
 				texture=&map.textures[mesh_poly->txt_idx];
 				uv=&mesh_poly->main_uv;
 			}
@@ -301,7 +301,7 @@ void walk_view_draw_meshes_texture(editor_view_type *view_setup,bool opaque)
 			
 				// culling
 			
-			culled=walk_view_draw_cull_poly(mesh,mesh_poly);
+			culled=walk_view_draw_cull_poly(view,mesh,mesh_poly);
 		
 				// setup texture
 				
@@ -401,7 +401,7 @@ void walk_view_draw_meshes_line(editor_view_type *view_setup,bool opaque)
       
 ======================================================= */
 
-void walk_view_draw_liquids(editor_view_type *view_setup,bool opaque)
+void walk_view_draw_liquids(editor_view_type *view,bool opaque)
 {
 	int					n,nliquid,x,y,z,y2,lx,rx,tz,bz;
 	unsigned long		old_gl_id;
@@ -447,12 +447,12 @@ void walk_view_draw_liquids(editor_view_type *view_setup,bool opaque)
 		
 			// no light map?
 				
-		if ((state.uv_layer==uv_layer_light_map) && (liquid->lmap_txt_idx==-1)) continue;
+		if ((view->uv_layer==uv_layer_light_map) && (liquid->lmap_txt_idx==-1)) continue;
 			
 			// get texture.  If in second UV, we use light map
 			// texture for display if it exists
 			
-		if (state.uv_layer==uv_layer_normal) {
+		if (view->uv_layer==uv_layer_normal) {
 			texture=&map.textures[liquid->txt_idx];
 			uv=&liquid->main_uv;
 		}
@@ -771,57 +771,57 @@ void walk_view_gl_setup(editor_view_type *view_setup)
       
 ======================================================= */
 
-void walk_view_draw_view(editor_view_type *view_setup)
+void walk_view_draw_view(editor_view_type *view)
 {
        // 3D view
         
-	walk_view_set_viewport(view_setup,TRUE,TRUE);
-	walk_view_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+	walk_view_set_viewport(view,TRUE,TRUE);
+	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
         // draw opaque parts of portals in sight path
         
-	walk_view_draw_meshes_texture(view_setup,TRUE);
-	walk_view_draw_nodes(view_setup);
-	walk_view_draw_spots_scenery(view_setup);
-	walk_view_draw_lights_sounds_particles(view_setup);
-	walk_view_draw_liquids(view_setup,TRUE);
+	walk_view_draw_meshes_texture(view,TRUE);
+	walk_view_draw_nodes(view);
+	walk_view_draw_spots_scenery(view);
+	walk_view_draw_lights_sounds_particles(view);
+	walk_view_draw_liquids(view,TRUE);
 	
 		// draw opaque mesh lines
 		// push view forward to better z-buffer lines
 		
-	walk_view_set_3D_projection(view_setup,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
-	walk_view_draw_meshes_line(view_setup,TRUE);
+	walk_view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
+	walk_view_draw_meshes_line(view,TRUE);
 
         // draw transparent parts of portals in sight path
         
-	walk_view_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 
-	walk_view_draw_meshes_texture(view_setup,FALSE);
-	walk_view_draw_liquids(view_setup,FALSE);
+	walk_view_draw_meshes_texture(view,FALSE);
+	walk_view_draw_liquids(view,FALSE);
  	
         // draw transparent mesh lines
 		// push view forward to better z-buffer lines
         
-	walk_view_set_3D_projection(view_setup,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
-	walk_view_draw_meshes_line(view_setup,TRUE);
+	walk_view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
+	walk_view_draw_meshes_line(view,TRUE);
 	
         // draw normals mesh lines
 		// push view forward to better z-buffer lines
       
 	if (state.show_normals) {
-		walk_view_set_3D_projection(view_setup,(map.settings.editor.view_near_dist+20),(map.settings.editor.view_far_dist-20),walk_view_near_offset);
-		walk_view_draw_meshes_normals(view_setup);
+		walk_view_set_3D_projection(view,(map.settings.editor.view_near_dist+20),(map.settings.editor.view_far_dist-20),walk_view_near_offset);
+		walk_view_draw_meshes_normals(view);
 	}
 		
 		// draw selection
 		
-	walk_view_draw_select(&view_setup->pnt);
+	walk_view_draw_select(&view->pnt);
 
 		// position
 		
-	walk_view_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 }
 

@@ -578,6 +578,8 @@ typedef struct		{
 					} editor_view_box_type;
 					
 typedef struct		{
+						int									uv_layer,magnify_factor;
+						bool								ortho,cull;
 						d3pnt								pnt;
 						d3ang								ang;
 						editor_view_box_type				box;

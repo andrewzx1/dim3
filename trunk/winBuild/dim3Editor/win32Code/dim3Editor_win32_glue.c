@@ -96,27 +96,28 @@ void os_enable_menu_item_undo(bool enable)
 
 bool os_key_space_down(void)
 {
-	return(GetKeyState(VK_SPACE)!=0);
+	return(GetAsyncKeyState(VK_SPACE)!=0x0);
 }
 
 bool os_key_option_down(void)
 {
-	return((GetKeyState(VK_LWIN)!=0)||(GetKeyState(VK_RWIN)!=0));
+	return(FALSE);
+	return((GetAsyncKeyState(VK_LWIN)!=0x0)||(GetAsyncKeyState(VK_RWIN)!=0x0));
 }
 
 bool os_key_control_down(void)
 {
-	return(GetKeyState(VK_CONTROL)!=0);
+	return(GetAsyncKeyState(VK_CONTROL)!=0x0);
 }
 
 bool os_key_command_down(void)
 {
-	return(GetKeyState(VK_MENU)!=0);
+	return(GetAsyncKeyState(VK_MENU)!=0x0);
 }
 
 bool os_key_shift_down(void)
 {
-	return(GetKeyState(VK_SHIFT)!=0);
+	return(GetAsyncKeyState(VK_SHIFT)!=0x0);
 }
 
 bool os_button_down(void)
