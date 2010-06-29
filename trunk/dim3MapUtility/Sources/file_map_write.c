@@ -370,7 +370,7 @@ void write_map_editor_views_xml(map_type *map)
 		xml_add_attribute_2_coord_float("box_bottom_right",view->box.bot,view->box.rgt);
 		xml_add_attribute_3_coord_int("pnt",view->pnt.x,view->pnt.y,view->pnt.z);
 		xml_add_attribute_3_coord_float("ang",view->ang.x,view->ang.y,view->ang.z);
-		xml_add_tagclose("Editor_View");
+		xml_add_tagend(TRUE);
         
         view++;
     }

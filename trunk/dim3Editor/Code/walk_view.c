@@ -68,7 +68,6 @@ bool walk_view_initialize(void)
 		// interface textures
 		
 	file_paths_app(&file_path_setup,path,sub_path,"spot","png");
-	test_debug(path);
 	bitmap_open(&spot_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_app(&file_path_setup,path,sub_path,"scenery","png");
@@ -245,21 +244,21 @@ void walk_view_remove(void)
 		view=&map.editor_views.views[n];
 
 		if ((view->box.top>=del_view->box.top) && (view->box.bot<=del_view->box.bot)) {
-			if (view->box.lft=del_view->box.rgt) {
+			if (view->box.lft==del_view->box.rgt) {
 				view->box.lft=del_view->box.lft;
 				continue;
 			}
-			if (view->box.rgt=del_view->box.lft) {
+			if (view->box.rgt==del_view->box.lft) {
 				view->box.rgt=del_view->box.rgt;
 				continue;
 			}
 		}
 		if ((view->box.lft>=del_view->box.lft) && (view->box.rgt<=del_view->box.rgt)) {
-			if (view->box.top=del_view->box.bot) {
+			if (view->box.top==del_view->box.bot) {
 				view->box.top=del_view->box.top;
 				continue;
 			}
-			if (view->box.bot=del_view->box.top) {
+			if (view->box.bot==del_view->box.top) {
 				view->box.bot=del_view->box.bot;
 				continue;
 			}
