@@ -197,7 +197,6 @@ bool file_open_map(void)
 	
 	main_wind_open();
 	main_wind_set_title(file_name);
-	walk_view_setup_default_views();
 	
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,texture_quality_mode_high,FALSE,FALSE);
 	
@@ -209,6 +208,11 @@ bool file_open_map(void)
 		close_windows();
 		return(FALSE);
 	}
+	
+		// if no views in map, then
+		// set to default
+		
+	if (map.editor_views.count==0) 	walk_view_setup_default_views();
 	
 		// clear selection
 		

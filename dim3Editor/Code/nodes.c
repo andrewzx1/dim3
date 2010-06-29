@@ -44,7 +44,7 @@ node_scan_type					node_scan[max_node];
       
 ======================================================= */
 
-int node_link_find_node_by_point(editor_view_setup *view_setup,d3pnt *click_pt)
+int node_link_find_node_by_point(editor_view_type *view_setup,d3pnt *click_pt)
 {
 	int				n,px[8],py[8],pz[8],fz,hit_z,node_idx;
 	node_type		*node;
