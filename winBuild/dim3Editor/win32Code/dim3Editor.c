@@ -75,6 +75,8 @@ bool node_link_click(int node_idx)
 
 LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
+	int				delta;
+	d3pnt			pnt;
 	PAINTSTRUCT		ps;
 
 	switch (msg) {
@@ -89,8 +91,24 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			// deal with these, need to check if map is loaded
 			break;
 
+		case WM_MOUSEMOVE:
+			pnt.x=LOWORD(lParam);
+			pnt.y=HIWORD(lParam);
+			walk_view_cursor(&pnt);
+			break;
+
 		case WM_LBUTTONDOWN:
-			editor_button_down(LOWORD(lParam),HIWORD(lParam));
+			pnt.x=LOWORD(lParam);
+			pnt.y=HIWORD(lParam);
+			
+			SetCapture(wnd);
+			walk_view_click(&pnt,FALSE);
+			ReleaseCapture();
+			break;
+
+		case WM_MOUSEWHEEL:
+			delta=GET_WHEEL_DELTA_WPARAM(wParam)/60;
+			walk_view_scroll_wheel_z_movement(delta);
 			break;
 
 		case WM_CLOSE:
@@ -173,6 +191,7 @@ bool editor_start(char *err_str)
 	pf.dwFlags=PFD_DRAW_TO_WINDOW|PFD_SUPPORT_OPENGL|PFD_GENERIC_ACCELERATED|PFD_DOUBLEBUFFER;
 	pf.iPixelType=PFD_TYPE_RGBA;
 	pf.cColorBits=24;
+	pf.cAlphaBits=8;
 	pf.cDepthBits=16;
 	
 	format=ChoosePixelFormat(wnd_gl_dc,&pf);
@@ -205,6 +224,8 @@ bool editor_start(char *err_str)
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
+
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 		// initial clear
 
@@ -391,26 +412,6 @@ void editor_draw(void)
 void main_wind_draw(void)
 {
 	editor_draw();
-}
-
-/* =======================================================
-
-      Mouse Click
-      
-======================================================= */
-
-void editor_button_down(int x,int y)
-{
-	d3pnt		pnt;
-
-	SetCapture(wnd);
-
-	pnt.x=x;
-	pnt.y=y;
-
-	walk_view_click(&pnt,FALSE);
-	
-	ReleaseCapture();
 }
 
 /* =======================================================

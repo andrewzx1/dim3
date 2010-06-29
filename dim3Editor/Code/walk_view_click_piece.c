@@ -397,7 +397,7 @@ bool walk_view_click_rot_handles(editor_view_type *view_setup,d3pnt *click_pt)
       
 ======================================================= */
 
-bool walk_view_mesh_poly_click_index(editor_view_type *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z)
+bool walk_view_mesh_poly_click_index(editor_view_type *view,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z)
 {
 	int					t,dist,hz,px[8],py[8],pz[8];
 	double				dx,dy,dz;
@@ -418,12 +418,12 @@ bool walk_view_mesh_poly_click_index(editor_view_type *view_setup,d3pnt *click_p
 
 		if (!walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t])) return(FALSE);
 				
-		walk_view_click_project_point(view_setup,&px[t],&py[t],&pz[t]);
+		walk_view_click_project_point(view,&px[t],&py[t],&pz[t]);
 	}
 	
 		// check if outside box
 		
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 		
 	off_left=off_right=off_top=off_bottom=TRUE;
 	
@@ -446,9 +446,9 @@ bool walk_view_mesh_poly_click_index(editor_view_type *view_setup,d3pnt *click_p
 	
 	for (t=0;t!=mesh_poly->ptsz;t++) {
 		pt=&mesh->vertexes[mesh_poly->v[t]];
-		dx=(double)(view_setup->pnt.x-pt->x);
-		dy=(double)(view_setup->pnt.y-pt->y);
-		dz=(double)(view_setup->pnt.z-pt->z);
+		dx=(double)(view->pnt.x-pt->x);
+		dy=(double)(view->pnt.y-pt->y);
+		dz=(double)(view->pnt.z-pt->z);
 		
 		dist=(int)sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		
@@ -576,7 +576,7 @@ bool walk_view_liquid_click(editor_view_type *view_setup,d3pnt *click_pt,map_liq
       
 ======================================================= */
 
-void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
+void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
 {
 	int					n,k,fz,box_wid,box_high,
 						px[8],py[8],pz[8],hit_z;
@@ -589,9 +589,9 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 	map_particle_type	*map_particle;
 	node_type			*node;
 	
-	walk_view_click_setup_project(view_setup);
+	walk_view_click_setup_project(view);
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	box_wid=box.rx-box.lx;
 	box_high=box.by-box.ty;
 	
@@ -608,7 +608,7 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 			
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			if (walk_view_mesh_poly_click_index(view_setup,click_pt,mesh,k,&fz)) {
+			if (walk_view_mesh_poly_click_index(view,click_pt,mesh,k,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=mesh_piece;
@@ -627,7 +627,7 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 	if (state.show_liquid) {
 			
 		for (n=0;n!=map.liquid.nliquid;n++) {
-			if (walk_view_liquid_click(view_setup,click_pt,&map.liquid.liquids[n],&fz)) {
+			if (walk_view_liquid_click(view,click_pt,&map.liquid.liquids[n],&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=liquid_piece;
@@ -648,7 +648,7 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 			
 			if (!walk_view_model_click_select_size(spot->display_model,&spot->pnt,&spot->ang,px,py,pz)) continue;
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
+			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=spot_piece;
@@ -666,7 +666,7 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 			
 			if (!walk_view_model_click_select_size(scenery->model_name,&scenery->pnt,&scenery->ang,px,py,pz)) continue;
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
+			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=scenery_piece;
@@ -687,7 +687,7 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 			
 			walk_view_sprite_select_size(&map_light->pnt,px,py,pz);
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
+			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=light_piece;
@@ -705,7 +705,7 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 			
 			walk_view_sprite_select_size(&map_sound->pnt,px,py,pz);
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
+			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=sound_piece;
@@ -723,7 +723,7 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 			
 			walk_view_sprite_select_size(&map_particle->pnt,px,py,pz);
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
+			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=particle_piece;
@@ -744,7 +744,7 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 			
 			walk_view_sprite_select_size(&node->pnt,px,py,pz);
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
+			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=node_piece;
@@ -756,14 +756,14 @@ void walk_view_mesh_click_index(editor_view_type *view_setup,d3pnt *click_pt,int
 	}
 }
 	
-bool walk_view_click_piece_normal(editor_view_type *view_setup,d3pnt *pt,bool dblclick)
+bool walk_view_click_piece_normal(editor_view_type *view,d3pnt *pt,bool dblclick)
 {
 	int				type,main_idx,sub_idx;
 	bool			toggle_select;
 	
 		// anything clicked?
 		
-	walk_view_mesh_click_index(view_setup,pt,&type,&main_idx,&sub_idx,FALSE);
+	walk_view_mesh_click_index(view,pt,&type,&main_idx,&sub_idx,FALSE);
 	
 		// if a node, check link
 		// connections
@@ -812,42 +812,42 @@ bool walk_view_click_piece_normal(editor_view_type *view_setup,d3pnt *pt,bool db
       
 ======================================================= */
 
-void walk_view_click_piece(editor_view_type *view_setup,d3pnt *pt,int view_move_dir,bool dblclick)
+void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 {
 	d3rect				box;
 	
 		// put click within box
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	
 	pt->x-=box.lx;
 	pt->y-=box.ty;
 	
 		// rotation handles
 
-	if (walk_view_click_rot_handles(view_setup,pt)) return;
+	if (walk_view_click_rot_handles(view,pt)) return;
 	
 		// liquid vertex drags
 		
-	if (walk_view_click_drag_liquid_vertex(view_setup,pt,view_move_dir)) return;
+	if (walk_view_click_drag_liquid_vertex(view,pt)) return;
 	
 		// mesh vertex drags
 		
 	switch (state.drag_mode) {
 	
 		case drag_mode_vertex:
-			if (walk_view_click_drag_vertex(view_setup,pt,view_move_dir)) return;
+			if (walk_view_click_drag_vertex(view,pt)) return;
 			break;
 	
 		case drag_mode_mesh:
-			if (walk_view_click_drag_mesh_handle(view_setup,pt,view_move_dir)) return;
+			if (walk_view_click_drag_mesh_handle(view,pt)) return;
 			break;
 			
 	}
 
 		// select mesh/polygon
 		
-	if (walk_view_click_piece_normal(view_setup,pt,dblclick)) return;
+	if (walk_view_click_piece_normal(view,pt,dblclick)) return;
 	
 		// changes in palette
 		
@@ -855,11 +855,11 @@ void walk_view_click_piece(editor_view_type *view_setup,d3pnt *pt,int view_move_
 	
 		// item drags
 			
-	if (walk_view_click_drag_item(view_setup,pt,view_move_dir)) return;
+	if (walk_view_click_drag_item(view,pt)) return;
 	
 		// liquid drags
 		
-	if (walk_view_click_drag_liquid(view_setup,pt,view_move_dir)) return;
+	if (walk_view_click_drag_liquid(view,pt)) return;
 	
 		// mesh or poly drags
 		
@@ -867,19 +867,19 @@ void walk_view_click_piece(editor_view_type *view_setup,d3pnt *pt,int view_move_
 	
 		case drag_mode_mesh:
 			if (!os_key_control_down()) {
-				walk_view_click_drag_mesh(view_setup,pt,view_move_dir);
+				walk_view_click_drag_mesh(view,pt);
 			}
 			else {
-				walk_view_click_drag_texture(view_setup,pt,view_move_dir,TRUE);
+				walk_view_click_drag_texture(view,pt,TRUE);
 			}
 			break;
 
 		case drag_mode_polygon:
 			if (!os_key_control_down()) {
-				walk_view_click_drag_mesh_poly(view_setup,pt,view_move_dir);
+				walk_view_click_drag_mesh_poly(view,pt);
 			}
 			else {
-				walk_view_click_drag_texture(view_setup,pt,view_move_dir,FALSE);
+				walk_view_click_drag_texture(view,pt,FALSE);
 			}
 			break;
 			

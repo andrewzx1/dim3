@@ -70,8 +70,10 @@ void walk_view_click_drag_constraint_axis(int *x,int *y)
 	}
 }
 
-void walk_view_click_drag_constraint(int *x,int *y,int *z,int view_mode_dir)
+void walk_view_click_drag_constraint(int *x,int *y,int *z)
 {
+	/* supergumba -- fix constraints
+
 	switch (view_mode_dir) {
 		case vm_dir_forward:
 			walk_view_click_drag_constraint_axis(x,y);
@@ -83,6 +85,7 @@ void walk_view_click_drag_constraint(int *x,int *y,int *z,int view_mode_dir)
 			walk_view_click_drag_constraint_axis(x,z);
 			break;
 	}
+	*/
 }
 
 /* =======================================================
@@ -91,7 +94,7 @@ void walk_view_click_drag_constraint(int *x,int *y,int *z,int view_mode_dir)
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh_handle(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,z,mx,my,mz,sz,hit_z,
 							px[8],py[8],pz[8],
@@ -128,7 +131,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view_setup,d3pnt *pt,int
 		z=pz[n];
 		
 		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
-			walk_view_click_project_point(view_setup,&x,&y,&z);
+			walk_view_click_project_point(view,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
 				if (z<hit_z) {
@@ -165,7 +168,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view_setup,d3pnt *pt,int
 	
 	map_mesh_calculate_extent(&map,mesh_idx,&org_min,&org_max);
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -197,7 +200,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view_setup,d3pnt *pt,int
 		my+=move_pnt.y;
 		mz+=move_pnt.z;
 			
-		walk_view_click_drag_constraint(&mx,&my,&mz,view_move_dir);
+		walk_view_click_drag_constraint(&mx,&my,&mz);
 
 		mpt.x=mx;
 		mpt.y=my;
@@ -259,7 +262,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view_setup,d3pnt *pt,int
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 {
 	int						n,k,x,y,mx,my,mz,nsel,nvertex,
 							type,mesh_idx,poly_idx,fz;
@@ -291,7 +294,7 @@ bool walk_view_click_drag_mesh(editor_view_type *view_setup,d3pnt *pt,int view_m
 		mesh=&map.mesh.meshes[mesh_idx];
 		
 		for (n=0;n!=mesh->npoly;n++) {
-			if (walk_view_mesh_poly_click_index(view_setup,pt,mesh,n,&fz)) {
+			if (walk_view_mesh_poly_click_index(view,pt,mesh,n,&fz)) {
 				hit=TRUE;
 				break;
 			}
@@ -340,7 +343,7 @@ bool walk_view_click_drag_mesh(editor_view_type *view_setup,d3pnt *pt,int view_m
 			
 	first_drag=TRUE;
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pt,&box)) {
@@ -458,7 +461,7 @@ bool walk_view_click_drag_mesh(editor_view_type *view_setup,d3pnt *pt,int view_m
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh_poly(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,
 							type,mesh_idx,poly_idx,fz;
@@ -482,7 +485,7 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view_setup,d3pnt *pt,int v
 	
 	if (mesh->flag.lock_move) return(FALSE);
 	
-	if (!walk_view_mesh_poly_click_index(view_setup,pt,mesh,poly_idx,&fz))  return(FALSE);
+	if (!walk_view_mesh_poly_click_index(view,pt,mesh,poly_idx,&fz))  return(FALSE);
 	
 		// drag
 		
@@ -501,7 +504,7 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view_setup,d3pnt *pt,int v
 	
 	mx=my=mz=0;
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pt,&box)) {
@@ -590,7 +593,7 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view_setup,d3pnt *pt,int v
       
 ======================================================= */
 
-bool walk_view_click_drag_vertex(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,z,mx,my,mz,hit_z,sz,
 							type,mesh_idx,poly_idx,vertex_idx;
@@ -623,7 +626,7 @@ bool walk_view_click_drag_vertex(editor_view_type *view_setup,d3pnt *pt,int view
 		z=dpt->z;
 		
 		if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
-			walk_view_click_project_point(view_setup,&x,&y,&z);
+			walk_view_click_project_point(view,&x,&y,&z);
 			
 			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
 				if (z<hit_z) {
@@ -656,7 +659,7 @@ bool walk_view_click_drag_vertex(editor_view_type *view_setup,d3pnt *pt,int view
 	dpt=&mesh->vertexes[vertex_idx];
 	memmove(&old_dpt,dpt,sizeof(d3pnt));
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -724,7 +727,7 @@ bool walk_view_click_drag_vertex(editor_view_type *view_setup,d3pnt *pt,int view
       
 ======================================================= */
 
-bool walk_view_click_drag_liquid_vertex(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_liquid_vertex(editor_view_type *view_setup,d3pnt *pt)
 {
 	int						n,x,y,z,mx,my,mz,hit_z,sz,chk_x,chk_z,
 							px[4],py[4],pz[4],
@@ -870,7 +873,7 @@ bool walk_view_click_drag_liquid_vertex(editor_view_type *view_setup,d3pnt *pt,i
       
 ======================================================= */
 
-bool walk_view_click_drag_liquid(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 {
 	int						x,y,mx,my,mz,
 							old_lft,old_rgt,old_top,old_bot,old_y,
@@ -901,7 +904,7 @@ bool walk_view_click_drag_liquid(editor_view_type *view_setup,d3pnt *pt,int view
 	old_bot=liq->bot;
 	old_y=liq->y;
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -963,7 +966,7 @@ bool walk_view_click_drag_liquid(editor_view_type *view_setup,d3pnt *pt,int view
       
 ======================================================= */
 
-bool walk_view_click_drag_item(editor_view_type *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt)
 {
 	int						x,y,mx,my,mz,
 							type,main_idx,sub_idx;
@@ -1010,7 +1013,7 @@ bool walk_view_click_drag_item(editor_view_type *view_setup,d3pnt *pt,int view_m
 
 	first_drag=TRUE;
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
 	
