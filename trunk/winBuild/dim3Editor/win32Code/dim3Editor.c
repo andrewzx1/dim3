@@ -67,6 +67,14 @@ bool node_link_click(int node_idx)
 	return(FALSE);
 }
 
+void menu_update_view(void)
+{
+}
+
+void main_wind_tool_reset(void)
+{
+}
+
 /* =======================================================
 
       UI Window Procedure
@@ -88,7 +96,8 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_SIZE:
-			// deal with these, need to check if map is loaded
+			texture_palette_setup();
+			// deal with these, need to check if map is loaded, reset main_wind_box
 			break;
 
 		case WM_MOUSEMOVE:
@@ -109,6 +118,10 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 		case WM_MOUSEWHEEL:
 			delta=GET_WHEEL_DELTA_WPARAM(wParam)/60;
 			walk_view_scroll_wheel_z_movement(delta);
+			break;
+
+		case WM_COMMAND:
+			if (LOWORD(wParam)==100) quit=TRUE;
 			break;
 
 		case WM_CLOSE:
@@ -135,6 +148,7 @@ bool editor_start(char *err_str)
 	RECT					wbox;
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
+	HMENU					menu,sub_menu;
 	HINSTANCE				hInst;
 
 		// glue start
@@ -160,7 +174,7 @@ bool editor_start(char *err_str)
     wcx.hbrBackground=(HBRUSH)GetStockObject(WHITE_BRUSH);
     wcx.lpszMenuName=NULL;
     wcx.lpszClassName="dim3EditorWindowClass";
-    wcx.hIconSm=NULL; 
+    wcx.hIconSm=NULL;
 
     RegisterClassEx(&wcx); 
 
@@ -172,6 +186,15 @@ bool editor_start(char *err_str)
 	AdjustWindowRect(&wbox,WS_OVERLAPPEDWINDOW,FALSE);
 
     wnd=CreateWindow("dim3EditorWindowClass","dim3 Editor",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,wbox.left,wbox.top,(wbox.right-wbox.left),(wbox.bottom-wbox.top),NULL,NULL,hInst,NULL);
+
+		// menu
+
+	menu=CreateMenu();
+	sub_menu=CreatePopupMenu();
+	AppendMenu(sub_menu,MF_STRING,100,"Exit");
+	AppendMenu(menu,(MF_STRING|MF_POPUP),(UINT)sub_menu,"File");
+
+	SetMenu(wnd,menu);
 
 		// create font for window
 
@@ -331,6 +354,7 @@ bool editor_open_map(char *err_str)
 	}
 
 	walk_view_models_start();
+	walk_view_models_reset();
 
 		// supergumba -- some temporary state
 

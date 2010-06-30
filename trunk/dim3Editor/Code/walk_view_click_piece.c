@@ -33,13 +33,21 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
+// supergumba -- move this
+
+typedef struct	{
+					short					type,main_idx,sub_idx;
+					unsigned char			col[3];
+				} view_picker_type;
+
+extern int					txt_pixel_sz;
 extern d3rect				main_wind_box;
 
 extern map_type				map;
 extern setup_type			setup;
 extern editor_state_type	state;
 
-int							walk_view_vport[4];
+int							walk_view_vport[4],walk_view_click_col[3];
 double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
 
 extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
@@ -572,22 +580,146 @@ bool walk_view_liquid_click(editor_view_type *view_setup,d3pnt *click_pt,map_liq
 
 /* =======================================================
 
+      View Click Colors
+      
+======================================================= */
+
+void walk_view_click_color_init(void)
+{
+	walk_view_click_col[0]=0x1;
+	walk_view_click_col[1]=0x0;
+	walk_view_click_col[2]=0x0;
+}
+
+void walk_view_click_color_set(unsigned char *col)
+{
+		// set color
+
+	glColor3ub((unsigned char)walk_view_click_col[0],(unsigned char)walk_view_click_col[1],(unsigned char)walk_view_click_col[2]);
+
+		// remember color in pick list
+
+	col[0]=(unsigned char)walk_view_click_col[0];
+	col[1]=(unsigned char)walk_view_click_col[1];
+	col[2]=(unsigned char)walk_view_click_col[2];
+
+		// next color
+
+	walk_view_click_col[0]++;
+	if (walk_view_click_col[0]>0xFF) {
+		walk_view_click_col[0]=0x0;
+		walk_view_click_col[1]++;
+		if (walk_view_click_col[1]>0xFF) {
+			walk_view_click_col[1]=0x0;
+			walk_view_click_col[2]++;
+		}
+	}
+}
+
+/* =======================================================
+
       View Piece Get Clicked Index
       
 ======================================================= */
 
 void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
 {
-	int					n,k,fz,box_wid,box_high,
+	int					n,k,t,fz,box_wid,box_high,pick_count,
 						px[8],py[8],pz[8],hit_z;
+	unsigned char		pixel[3];
+	d3pnt				*pt;
 	d3rect				box;
 	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 	spot_type			*spot;
 	map_scenery_type	*scenery;
 	map_light_type		*map_light;
 	map_sound_type		*map_sound;
 	map_particle_type	*map_particle;
 	node_type			*node;
+	view_picker_type	*picks,*pick;
+
+		// get picker count
+
+	pick_count=0;
+
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		pick_count+=mesh->npoly;
+		mesh++;
+	}
+
+	picks=(view_picker_type*)malloc(sizeof(view_picker_type)*pick_count);
+	if (picks==NULL) return;
+
+		// start the color lists
+
+	pick_count=0;
+	pick=picks;
+
+		// meshes
+		
+	mesh=map.mesh.meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		poly=mesh->polys;
+	
+		for (k=0;k!=mesh->npoly;k++) {
+
+			pick->type=mesh_piece;
+			pick->main_idx=(short)n;
+			pick->sub_idx=(short)k;
+
+			walk_view_click_color_set(pick->col);
+
+			pick_count++;
+			pick++;
+
+			glBegin(GL_POLYGON);
+			
+			for (t=0;t!=poly->ptsz;t++) {
+				pt=&mesh->vertexes[poly->v[t]];
+				glVertex3i(pt->x,pt->y,pt->z);
+			}
+			
+			glEnd();
+
+			poly++;
+		}
+
+		mesh++;
+	}
+
+		// find clicked color
+
+	os_get_window_box(&box);
+//	walk_view_get_pixel_box(view,&box);
+
+	glReadPixels(click_pt->x,((box.by-(info_high+txt_pixel_sz))-click_pt->y),1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
+//	glReadPixels(click_pt->x,(box.by-click_pt->y),1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
+
+	pick=picks;
+
+	for (n=0;n!=pick_count;n++) {
+
+		if ((pick->col[0]==pixel[0]) && (pick->col[1]==pixel[1]) && (pick->col[2]==pixel[2])) {
+			*type=pick->type;
+			*main_idx=pick->main_idx;
+			*sub_idx=pick->sub_idx;
+			break;
+		}
+
+		pick++;
+	}
+
+	free(picks);
+
+	return;		// supergumba, testing
+
+
+
 	
 	walk_view_click_setup_project(view);
 	
@@ -815,13 +947,27 @@ bool walk_view_click_piece_normal(editor_view_type *view,d3pnt *pt,bool dblclick
 void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 {
 	d3rect				box;
+
+		// detect clicks by colors
+
+	walk_view_set_viewport(view,TRUE,TRUE);
+	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+
+	glClearColor(0.0f,0.0f,0.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
+	walk_view_click_color_init();
 	
 		// put click within box
 	
 	walk_view_get_pixel_box(view,&box);
-	
-	pt->x-=box.lx;
-	pt->y-=box.ty;
+
+	// supergumba
+//	pt->x-=box.lx;
+//	pt->y-=box.ty;
 	
 		// rotation handles
 

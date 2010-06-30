@@ -33,8 +33,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					txt_palette_high;
-
 extern map_type				map;
 extern setup_type			setup;
 extern editor_state_type	state;

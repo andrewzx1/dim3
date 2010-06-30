@@ -39,8 +39,7 @@ and can be sold or given away.
 extern map_type				map;
 extern editor_state_type	state;
 
-int							txt_page,txt_offset,
-							txt_palette_y,txt_palette_high,txt_pixel_sz;
+int							txt_page,txt_offset,txt_pixel_sz;
 d3rect						txt_palette_box;
 
 /* =======================================================
@@ -54,16 +53,13 @@ void texture_palette_setup(void)
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
-		
+
 	txt_pixel_sz=(wbox.rx-(wbox.lx+64))/txt_wind_per_page_count;
-	txt_palette_high=txt_pixel_sz;
-	
-	txt_palette_y=(wbox.by-txt_palette_high)-info_high;
 	
 	txt_palette_box.lx=wbox.lx;
 	txt_palette_box.rx=wbox.rx;
-	txt_palette_box.ty=txt_palette_y;
-	txt_palette_box.by=(txt_palette_box.ty+txt_palette_high)+1;
+	txt_palette_box.ty=(wbox.by-txt_pixel_sz)-info_high;
+	txt_palette_box.by=(txt_palette_box.ty+txt_pixel_sz)+1;
 }
 
 /* =======================================================
@@ -179,7 +175,7 @@ void texture_palette_draw(void)
 		// texture page switch
 	
 	x=0;
-	ty=txt_palette_y;
+	ty=txt_palette_box.ty;
 	by=ty+(txt_pixel_sz>>1);
 
 	for (n=0;n!=8;n++) {
@@ -189,7 +185,7 @@ void texture_palette_draw(void)
 		if (n==4) {
 			x=0;
 			ty=by;
-			by=txt_palette_y+txt_pixel_sz;
+			by=txt_palette_box.ty+txt_pixel_sz;
 		}
 		
 			// draw page
@@ -258,7 +254,7 @@ void texture_palette_draw(void)
 	glEnable(GL_TEXTURE_2D);
 	
 	x=64;
-	ty=txt_palette_y+1;
+	ty=txt_palette_box.ty+1;
 	by=(ty+txt_pixel_sz)-1;
 		
 	for (n=0;n!=txt_wind_per_page_count;n++) {
@@ -353,7 +349,7 @@ void texture_palette_click(d3pnt *pnt,bool dblclick)
 	
 		// move within palette
 		
-	pnt->y-=txt_palette_y;
+	pnt->y-=txt_palette_box.ty;
 	
 		// texture page change
 		

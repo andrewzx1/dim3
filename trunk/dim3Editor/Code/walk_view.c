@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int						top_view_x,top_view_z,txt_palette_high;
+extern int						top_view_x,top_view_z,txt_pixel_sz;
 extern d3rect					main_wind_box;
 
 extern file_path_setup_type		file_path_setup;
@@ -155,7 +155,7 @@ void walk_view_get_pixel_box(editor_view_type *view,d3rect *box)
 	os_get_window_box(&wbox);
 	
 	wbox.ty+=toolbar_high;
-	wbox.by-=(txt_palette_high+info_high);
+	wbox.by-=(txt_pixel_sz+info_high);
 	
 	wid=(float)(wbox.rx-wbox.lx);
 	high=(float)(wbox.by-wbox.ty);
@@ -291,18 +291,16 @@ void walk_view_remove(void)
 
 void walk_view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 {
-	int				bot_y;
 	d3rect			wbox;
 	
 		// set viewport
 		
 	os_get_window_box(&wbox);
-	bot_y=wbox.by-info_high;
 
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(box->lx,(bot_y-box->by),(box->rx-box->lx),(box->by-box->ty));
+	glScissor(box->lx,(wbox.by-box->by),(box->rx-box->lx),(box->by-box->ty));
 
-	glViewport(box->lx,(bot_y-box->by),(box->rx-box->lx),(box->by-box->ty));
+	glViewport(box->lx,(wbox.by-box->by),(box->rx-box->lx),(box->by-box->ty));
 	
 		// default setup
 		
