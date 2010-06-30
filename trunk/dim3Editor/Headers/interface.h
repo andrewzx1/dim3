@@ -31,8 +31,7 @@ and can be sold or given away.
 
 extern void menu_start(void);
 extern void menu_fix_enable(void);
-extern void menu_set_perspective_check(int perspective);
-extern void menu_set_uv_check(int uv_layer);
+extern void menu_update_view(void);
 extern bool menu_save_changes_dialog(void);
 
 extern void undo_initialize(void);
@@ -75,8 +74,6 @@ extern void main_wind_close(void);
 extern void main_wind_resize_buttons(void);
 extern void main_wind_resize(void);
 extern void main_wind_set_title(char *file_name);
-extern void main_wind_set_perspective(int perspective);
-extern void main_wind_set_uv_layer(int uv_layer);
 extern void main_wind_rotate_view(void);
 extern void main_wind_draw(void);
 extern void main_wind_center_position_in_map(void);

@@ -371,7 +371,7 @@
 							<real>284</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>1095 266 306 751 0 0 1680 1028 </string>
+						<string>1089 266 306 751 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -408,7 +408,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1095 266 306 751 0 0 1680 1028 </string>
+								<string>1089 266 306 751 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -428,7 +428,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 705}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1095 266 306 751 0 0 1680 1028 </string>
+								<string>1089 266 306 751 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -452,9 +452,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26BACAD811D96AC2007CDBE0</string>
+				<string>264BD84A11DAC426008D5F88</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26BACAD911D96AC2007CDBE0</string>
+				<string>264BD84B11DAC426008D5F88</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -575,7 +575,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>299461314.12636</real>
+	<real>299549734.66880202</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -594,7 +594,7 @@
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>1095 266 306 751 0 0 1680 1028 </string>
+	<string>1089 266 306 751 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -671,7 +671,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>26BACACC11D96A14007CDBE0</string>
+				<string>264BD83411DAC40F008D5F88</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

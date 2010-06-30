@@ -136,28 +136,42 @@ void menu_fix_enable(void)
 
 /* =======================================================
 
-      Set View Check
+      View Menu Check
       
 ======================================================= */
 
-void menu_set_perspective_check(int perspective)
+void menu_update_view(void)
 {
-	CheckMenuItem(GetMenuHandle(app_menu_view),8,(perspective==ps_perspective));
-	CheckMenuItem(GetMenuHandle(app_menu_view),9,(perspective==ps_ortho));
-}
+	editor_view_type			*view;
+	
+	view=walk_view_get_current_view();
+	
+	CheckMenuItem(GetMenuHandle(app_menu_view),8,(!view->ortho));
+	CheckMenuItem(GetMenuHandle(app_menu_view),9,view->ortho);
+	
+	CheckMenuItem(GetMenuHandle(app_menu_view),11,(view->uv_layer==uv_layer_normal));
+	CheckMenuItem(GetMenuHandle(app_menu_view),12,(view->uv_layer==uv_layer_light_map));
 
-void menu_set_uv_check(int uv_layer)
-{
-	CheckMenuItem(GetMenuHandle(app_menu_view),11,(uv_layer==uv_layer_normal));
-	CheckMenuItem(GetMenuHandle(app_menu_view),12,(uv_layer==uv_layer_light_map));
-}
-
-void menu_set_show_hide_check(void)
-{
 	CheckMenuItem(GetMenuHandle(app_menu_view),14,state.show_liquid);
 	CheckMenuItem(GetMenuHandle(app_menu_view),15,state.show_object);
 	CheckMenuItem(GetMenuHandle(app_menu_view),16,state.show_lightsoundparticle);
 	CheckMenuItem(GetMenuHandle(app_menu_view),17,state.show_node);
+	
+	if (map.editor_views.count<max_editor_view) {
+		EnableMenuItem(GetMenuHandle(app_menu_view),19);
+		EnableMenuItem(GetMenuHandle(app_menu_view),20);
+	}
+	else {
+		DisableMenuItem(GetMenuHandle(app_menu_view),19);
+		DisableMenuItem(GetMenuHandle(app_menu_view),20);
+	}
+	
+	if (map.editor_views.count>1) {
+		EnableMenuItem(GetMenuHandle(app_menu_view),21);
+	}
+	else {
+		DisableMenuItem(GetMenuHandle(app_menu_view),21);
+	}
 }
 
 /* =======================================================
@@ -284,29 +298,33 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			break;
 
 		case kCommandViewPerspective:
-			main_wind_set_perspective(ps_perspective);
+			walk_view_perspective_ortho(FALSE);
+			menu_update_view();
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandViewOrtho:
-			main_wind_set_perspective(ps_ortho);
+			walk_view_perspective_ortho(TRUE);
+			menu_update_view();
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandViewUVLayer1:
-			main_wind_set_uv_layer(uv_layer_normal);
+			walk_view_set_uv_layer(uv_layer_normal);
+			menu_update_view();
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandViewUVLayer2:
-			main_wind_set_uv_layer(uv_layer_light_map);
+			walk_view_set_uv_layer(uv_layer_light_map);
+			menu_update_view();
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandViewShowHideLiquids:
 			select_remove_type(liquid_piece);
 			state.show_liquid=!state.show_liquid;
-			menu_set_show_hide_check();
+			menu_update_view();
 			main_wind_draw();
 			break;
 
@@ -314,7 +332,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			select_remove_type(spot_piece);
 			select_remove_type(scenery_piece);
 			state.show_object=!state.show_object;
-			menu_set_show_hide_check();
+			menu_update_view();
 			main_wind_draw();
 			break;
 			
@@ -323,29 +341,32 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			select_remove_type(sound_piece);
 			select_remove_type(particle_piece);
 			state.show_lightsoundparticle=!state.show_lightsoundparticle;
-			menu_set_show_hide_check();
+			menu_update_view();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewShowHideNodes:
 			select_remove_type(node_piece);
 			state.show_node=!state.show_node;
-			menu_set_show_hide_check();
+			menu_update_view();
 			main_wind_draw();
 			break;
 
 		case kCommandViewSplitHorizontal:
 			walk_view_split_horizontal();
+			menu_update_view();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewSplitVertical:
 			walk_view_split_vertical();
+			menu_update_view();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewRemoveSplit:
 			walk_view_remove();
+			menu_update_view();
 			main_wind_draw();
 			break;
 			
@@ -387,13 +408,13 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandClearLightMaps:
 			light_maps_clear();
-			main_wind_set_uv_layer(uv_layer_normal);
+			walk_view_set_uv_layer(uv_layer_normal);
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandBuildLightMaps:
 			if (dialog_light_map_run()) {
-				main_wind_set_uv_layer(uv_layer_light_map);
+				walk_view_set_uv_layer(uv_layer_light_map);
 				main_wind_draw();
 			}
 			return(noErr);

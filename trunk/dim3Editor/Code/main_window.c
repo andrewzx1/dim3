@@ -229,7 +229,7 @@ void main_wind_control_tool(int tool_idx)
 			
 		case 12:
 			state.show_node=TRUE;
-			menu_set_show_hide_check();
+			menu_update_view();
 			state.node_mode=node_mode_select;
 			SetControlValue(tool_ctrl[12],1);
 			SetControlValue(tool_ctrl[13],0);
@@ -238,7 +238,7 @@ void main_wind_control_tool(int tool_idx)
 			
 		case 13:
 			state.show_node=TRUE;
-			menu_set_show_hide_check();
+			menu_update_view();
 			state.node_mode=node_mode_link;
 			SetControlValue(tool_ctrl[12],0);
 			SetControlValue(tool_ctrl[13],1);
@@ -247,7 +247,7 @@ void main_wind_control_tool(int tool_idx)
 			
 		case 14:
 			state.show_node=TRUE;
-			menu_set_show_hide_check();
+			menu_update_view();
 			state.node_mode=node_mode_remove_link;
 			SetControlValue(tool_ctrl[12],0);
 			SetControlValue(tool_ctrl[13],0);
@@ -261,7 +261,7 @@ void main_wind_control_tool(int tool_idx)
 			break;
 			
 		case 16:
-			state.cull=!state.cull;
+			walk_view_cull(GetControlValue(tool_ctrl[tool_idx])!=0);
 			break;
 			
 			// script and run buttons
@@ -964,8 +964,7 @@ void main_wind_open(void)
 	
 	state.drag_handle_idx=-1;
 	
-	main_wind_set_uv_layer(uv_layer_normal);
-	menu_set_show_hide_check();
+	menu_update_view();
 	
         // events
     
@@ -1100,25 +1099,6 @@ void main_wind_resize(void)
 	DrawControls(mainwind);
 
 	main_wind_draw();
-}
-
-/* =======================================================
-
-      Views
-      
-======================================================= */
-
-void main_wind_set_perspective(int perspective)
-{
-	state.perspective=perspective;
-	menu_set_perspective_check(perspective);
-}
-
-void main_wind_set_uv_layer(int uv_layer)
-{
-	state.uv_layer=uv_layer;
-	menu_set_uv_check(uv_layer);
-	palette_reset();
 }
 
 /* =======================================================
@@ -1272,6 +1252,8 @@ void main_wind_scroll_wheel(d3pnt *pt,int delta)
 
 void main_wind_tool_reset(void)
 {
+	editor_view_type		*view;
+	
 		// vertex mode
 		
 	SetControlValue(tool_ctrl[0],(state.vertex_mode==vertex_mode_none)?1:0);
@@ -1300,8 +1282,10 @@ void main_wind_tool_reset(void)
 	
 		// normals
 		
+	view=walk_view_get_current_view();
+		
 	SetControlValue(tool_ctrl[15],(state.show_normals)?1:0);
-	SetControlValue(tool_ctrl[16],(state.cull)?1:0);
+	SetControlValue(tool_ctrl[16],(view->cull)?1:0);
 	
 		// grid mode
 		
@@ -1323,9 +1307,8 @@ void main_wind_tool_default(void)
 	state.show_node=FALSE;
 	
 	state.show_normals=FALSE;
-	state.cull=FALSE;
     
-	menu_set_show_hide_check();
+	menu_update_view();
     main_wind_tool_reset();
 }
 

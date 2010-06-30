@@ -540,6 +540,42 @@ void walk_view_turn_angle(d3ang *ang)
 
 /* =======================================================
 
+      View Perspective, Cull, UV Layer, Magnify
+      
+======================================================= */
+
+void walk_view_perspective_ortho(bool on)
+{
+	map.editor_views.views[view_select_idx].ortho=on;
+}
+
+void walk_view_cull(bool on)
+{
+	map.editor_views.views[view_select_idx].cull=on;
+}
+
+int walk_view_get_uv_layer(void)
+{
+	return(map.editor_views.views[view_select_idx].uv_layer);
+}
+
+void walk_view_set_uv_layer(int uv_layer)
+{
+	map.editor_views.views[view_select_idx].uv_layer=uv_layer;
+}
+
+int walk_view_get_magnify_factor(void)
+{
+	return(map.editor_views.views[view_select_idx].magnify_factor);
+}
+
+void walk_view_set_magnify_factor(int magnify_factor)
+{
+	map.editor_views.views[view_select_idx].magnify_factor=magnify_factor;
+}
+
+/* =======================================================
+
       View Facing
       
 ======================================================= */
@@ -618,10 +654,25 @@ void walk_view_face_bottom(void)
 
 void walk_view_select_view(d3pnt *pnt)
 {
-	int					n;
+	int					n,old_idx;
+	
+		// find selection
+		
+	old_idx=view_select_idx;
 	
 	for (n=0;n!=map.editor_views.count;n++) {
-		if (walk_view_point_in_view(&map.editor_views.views[n],pnt)) view_select_idx=n;
+		if (walk_view_point_in_view(&map.editor_views.views[n],pnt)) {
+			view_select_idx=n;
+			break;
+		}
+	}
+	
+		// if select changed, we need to update
+		// interface
+		
+	if (view_select_idx!=old_idx) {
+		main_wind_tool_reset();
+		menu_update_view();
 	}
 }
 

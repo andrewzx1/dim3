@@ -50,11 +50,6 @@ void redraw_windows(void)
         
 	select_clear();
 	main_wind_center_position_in_map();
-
-        // some defaults
-        
-	state.magnify_factor=magnify_factor_default;
-	main_wind_set_perspective(ps_perspective);
 	
 		// redraw
 	
