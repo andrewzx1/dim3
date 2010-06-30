@@ -344,7 +344,7 @@ void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void walk_view_draw_meshes_line(editor_view_type *view_setup,bool opaque)
+void walk_view_draw_meshes_line(editor_view_type *view,bool opaque)
 {
 	int					n,k,t;
 	d3pnt				*pt;

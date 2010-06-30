@@ -114,7 +114,7 @@ void piece_create_spot(void)
 	
 	main_wind_draw();
 	
-	menu_set_show_hide_check();
+	menu_update_view();
 	main_wind_tool_reset();
 	
 	main_wind_tool_fill_spot_combo();
@@ -171,7 +171,7 @@ void piece_create_scenery(void)
 	
 	main_wind_draw();
 	
-	menu_set_show_hide_check();
+	menu_update_view();
 	main_wind_tool_reset();
 	
 	main_wind_tool_fill_scenery_combo();
@@ -218,7 +218,7 @@ void piece_create_light(void)
 	select_add(light_piece,index,-1);
 	
 	main_wind_draw();
-	menu_set_show_hide_check();
+	menu_update_view();
 	
 	main_wind_tool_fill_light_combo();
 }
@@ -260,7 +260,7 @@ void piece_create_sound(void)
 	select_add(sound_piece,index,-1);
 	
 	main_wind_draw();
-	menu_set_show_hide_check();
+	menu_update_view();
 	
 	main_wind_tool_fill_sound_combo();
 }
@@ -303,7 +303,7 @@ void piece_create_particle(void)
 	select_add(particle_piece,index,-1);
 	
 	main_wind_draw();
-	menu_set_show_hide_check();
+	menu_update_view();
 	
 	main_wind_tool_fill_particle_combo();
 }
@@ -354,7 +354,7 @@ void piece_create_node(void)
 	
 	main_wind_draw();
 	
-	menu_set_show_hide_check();
+	menu_update_view();
 	main_wind_tool_reset();
 	
 	main_wind_tool_fill_node_combo();
@@ -427,7 +427,7 @@ void piece_create_liquid(void)
 
 	main_wind_draw();
 	
-	menu_set_show_hide_check();
+	menu_update_view();
 	main_wind_tool_reset();
 }
 
