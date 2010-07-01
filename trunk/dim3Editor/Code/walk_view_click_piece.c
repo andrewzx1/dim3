@@ -47,8 +47,11 @@ extern map_type				map;
 extern setup_type			setup;
 extern editor_state_type	state;
 
-int							walk_view_vport[4],walk_view_click_col[3];
+int							walk_view_vport[4];
 double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
+
+int							pick_count,pick_col[3];
+view_picker_type			*picks;
 
 extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
 
@@ -88,6 +91,172 @@ void walk_view_click_project_point(editor_view_type *view,int *x,int *y,int *z)
 	*x=((int)dx)-box.lx;
 	*y=(main_wind_box.by-((int)dy))-box.ty;
 	*z=(int)((dz)*10000.0f);
+}
+
+/* =======================================================
+
+      View Picking
+      
+======================================================= */
+
+bool walk_view_pick_list_start(editor_view_type *view,int count)
+{
+		// start picker list
+
+	picks=(view_picker_type*)malloc(sizeof(view_picker_type)*count);
+	if (picks==NULL) return(FALSE);
+
+		// no picks set yet
+
+	pick_count=0;
+
+		// start the pick color
+
+	pick_col[0]=0x1;
+	pick_col[1]=0x0;
+	pick_col[2]=0x0;
+
+		// start the back buffer drawing
+		// disable smoothing so colors stay true
+
+	walk_view_set_viewport(view,TRUE,TRUE);
+	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+
+	glClearColor(0.0f,0.0f,0.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glDisable(GL_SMOOTH);
+	glDisable(GL_BLEND);
+
+	glDisable(GL_TEXTURE_2D);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
+	glDisable(GL_ALPHA_TEST);
+
+	return(TRUE);
+}
+
+void walk_view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx)
+{
+	int					n;
+	unsigned char		pixel[3];
+	d3pnt				click_pnt;
+	d3rect				box;
+	view_picker_type	*pick;
+
+		// need to make click point global
+		// and swap Y for OpenGL read
+
+	walk_view_get_pixel_box(view,&box);
+
+	click_pnt.x=pnt->x+box.lx;
+	click_pnt.y=pnt->y+box.ty;
+
+	os_get_window_box(&box);
+
+	click_pnt.y=box.by-click_pnt.y;
+
+		// find the color at the clicked point
+
+	glReadPixels(click_pnt.x,click_pnt.y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
+
+		// find which pick it represents
+
+	pick=picks;
+
+	for (n=0;n!=pick_count;n++) {
+
+		if ((pick->col[0]==pixel[0]) && (pick->col[1]==pixel[1]) && (pick->col[2]==pixel[2])) {
+			*type=pick->type;
+			*main_idx=pick->main_idx;
+			*sub_idx=pick->sub_idx;
+			break;
+		}
+
+		pick++;
+	}
+
+	free(picks);
+
+		// restore smoothing
+
+	glEnable(GL_SMOOTH);
+}
+
+void walk_view_pick_list_add(int type,int main_idx,int sub_idx)
+{
+	view_picker_type	*pick;
+
+		// set color
+
+	glColor3ub((unsigned char)pick_col[0],(unsigned char)pick_col[1],(unsigned char)pick_col[2]);
+
+		// remember color in pick list
+
+	pick=&picks[pick_count];
+
+	pick->type=type;
+	pick->main_idx=(short)main_idx;
+	pick->sub_idx=(short)sub_idx;
+
+	pick->col[0]=(unsigned char)pick_col[0];
+	pick->col[1]=(unsigned char)pick_col[1];
+	pick->col[2]=(unsigned char)pick_col[2];
+
+		// next color
+
+	pick_col[0]++;
+	if (pick_col[0]>0xFF) {
+		pick_col[0]=0x0;
+		pick_col[1]++;
+		if (pick_col[1]>0xFF) {
+			pick_col[1]=0x0;
+			pick_col[2]++;
+		}
+	}
+
+		// next picker
+
+	pick_count++;
+}
+
+void walk_view_pick_list_add_cube(int *px,int *py,int *pz,int type,int main_idx,int sub_idx)
+{
+	int				n,idx,quad_list[24]={0,1,2,3,4,5,6,7,3,2,5,6,0,1,4,7,0,7,6,3,1,2,5,4};
+
+		// set the color
+
+	walk_view_pick_list_add(type,main_idx,sub_idx);
+
+		// draw the cube
+
+	glBegin(GL_QUADS);
+	
+	for (n=0;n!=24;n++) {
+		idx=quad_list[n];
+		glVertex3i(px[idx],py[idx],pz[idx]);
+	}
+
+	glEnd();
+}
+
+void walk_view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_idx)
+{
+		// set the color
+
+	walk_view_pick_list_add(type,main_idx,sub_idx);
+
+		// draw the point
+
+	glPointSize(walk_view_handle_size);
+	
+	glBegin(GL_POINTS);
+	glVertex3i(x,y,z);
+	glEnd();
+	
+	glPointSize(1.0f);
 }
 
 /* =======================================================
@@ -224,15 +393,10 @@ bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt)
       
 ======================================================= */
 
-bool walk_view_click_item_single_rot_handles(editor_view_type *view_setup,d3pnt *click_pt,d3pnt *pnt,d3vct *vct,d3ang *ang,int y_size)
+void walk_view_click_item_rot_handles_run_single(editor_view_type *view_setup,int type,int main_idx,int sub_idx,d3pnt *pnt,d3vct *vct,d3ang *ang,int y_size)
 {
-	int				x,y,z,sz;
 	matrix_type		mat;
 
-		// y location
-		
-	y=pnt->y-y_size;
-	
 		// rotations
 	
 	if (ang->x!=0) {
@@ -252,21 +416,10 @@ bool walk_view_click_item_single_rot_handles(editor_view_type *view_setup,d3pnt 
 	
 		// click in position
 		
-	x=pnt->x+(int)vct->x;
-	y=y+(int)vct->y;
-	z=pnt->z+(int)vct->z;
-	
-	sz=(int)walk_view_handle_size;
-	
-	if (walk_view_click_rotate_polygon_in_z(x,y,z)) {
-		walk_view_click_project_point(view_setup,&x,&y,&z);
-		if ((click_pt->x>=(x-sz)) && (click_pt->x<=(x+sz)) && (click_pt->y>=(y-sz)) && (click_pt->y<=(y+sz))) return(TRUE);
-	}
-	
-	return(FALSE);
+	walk_view_pick_list_add_handle((pnt->x+(int)vct->x),((pnt->y-y_size)+(int)vct->y),(pnt->z+(int)vct->z),type,main_idx,sub_idx);
 }
 
-int walk_view_click_item_rot_handles(editor_view_type *view_setup,d3pnt *click_pt,d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
+void walk_view_click_item_rot_handles_run(editor_view_type *view,int type,int main_idx,d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
 {
 	float			len;
 	d3vct			vct;
@@ -279,8 +432,7 @@ int walk_view_click_item_rot_handles(editor_view_type *view_setup,d3pnt *click_p
 		vct.x=len;
 		vct.y=0.0f;
 		vct.z=0.0f;
-		
-		if (walk_view_click_item_single_rot_handles(view_setup,click_pt,pnt,&vct,ang,y_size)) return(0);
+		walk_view_click_item_rot_handles_run_single(view,type,main_idx,0,pnt,&vct,ang,y_size);
 	}
 	
 		// y rot
@@ -289,7 +441,7 @@ int walk_view_click_item_rot_handles(editor_view_type *view_setup,d3pnt *click_p
 	vct.y=-len;
 	vct.z=0.0f;
 	
-	if (walk_view_click_item_single_rot_handles(view_setup,click_pt,pnt,&vct,ang,y_size)) return(1);
+	walk_view_click_item_rot_handles_run_single(view,type,main_idx,1,pnt,&vct,ang,y_size);
 	
 		// z rot
 	
@@ -298,13 +450,11 @@ int walk_view_click_item_rot_handles(editor_view_type *view_setup,d3pnt *click_p
 		vct.y=0.0f;
 		vct.z=len;
 		
-		if (walk_view_click_item_single_rot_handles(view_setup,click_pt,pnt,&vct,ang,y_size)) return(2);
+		walk_view_click_item_rot_handles_run_single(view,type,main_idx,2,pnt,&vct,ang,y_size);
 	}
-	
-	return(-1);
 }
 
-bool walk_view_click_rot_handles(editor_view_type *view_setup,d3pnt *click_pt)
+bool walk_view_click_item_rot_handles(editor_view_type *view,d3pnt *click_pt)
 {
 	int			n,ncount,type,main_idx,sub_idx,
 				y_size,which_axis;
@@ -313,47 +463,68 @@ bool walk_view_click_rot_handles(editor_view_type *view_setup,d3pnt *click_pt)
 	d3pnt		pt;
 	d3ang		*ang,old_ang;
 	d3rect		box;
-	
-		// check drags for all selections
-		
-	ncount=select_count();
 
-	which_axis=-1;
+		// check if any rotatable items is in
+		// the selection
+
+	ncount=select_count();
+	if (ncount==0) return(FALSE);
+
+	if ((!select_has_type(node_piece)) && (!select_has_type(spot_piece)) && (!select_has_type(scenery_piece))) return(FALSE);
+
+		// start pick list
 	
+	walk_view_pick_list_start(view,(ncount*3));
+
+		// draw rot handles for all selected items
+
 	for (n=0;n!=ncount;n++) {
 		select_get(n,&type,&main_idx,&sub_idx);
-		
-		which_axis=-1;
 		
 		switch (type) {
 		
 			case node_piece:
-				ang=&map.nodes[main_idx].ang;
-				y_size=map_enlarge*5;
-				which_axis=walk_view_click_item_rot_handles(view_setup,click_pt,&map.nodes[main_idx].pnt,ang,y_size,FALSE);
+				walk_view_click_item_rot_handles_run(view,type,main_idx,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,(map_enlarge*5),FALSE);
 				break;
 				
 			case spot_piece:
-				ang=&map.spots[main_idx].ang;
-				y_size=walk_view_model_rot_y_size(&map.spots[main_idx].pnt,ang,map.spots[main_idx].display_model);
-				which_axis=walk_view_click_item_rot_handles(view_setup,click_pt,&map.spots[main_idx].pnt,ang,y_size,TRUE);
+				y_size=walk_view_model_rot_y_size(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model);
+				walk_view_click_item_rot_handles_run(view,type,main_idx,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,y_size,TRUE);
 				break;
 				
 			case scenery_piece:
-				ang=&map.sceneries[main_idx].ang;
-				y_size=walk_view_model_rot_y_size(&map.sceneries[main_idx].pnt,ang,map.sceneries[main_idx].model_name);
-				which_axis=walk_view_click_item_rot_handles(view_setup,click_pt,&map.sceneries[main_idx].pnt,ang,y_size,FALSE);
+				y_size=walk_view_model_rot_y_size(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name);
+				walk_view_click_item_rot_handles_run(view,type,main_idx,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,y_size,FALSE);
 				break;
 				
 		}
-		
-		if (which_axis!=-1) break;
 	}
+
+		// get the pick
+
+	type=-1;
+
+	walk_view_pick_list_end(view,click_pt,&type,&main_idx,&which_axis);
+	if (type==-1) return(FALSE);
+
+	ang=NULL;
 	
-		// had a selection?
-		
-	if (which_axis==-1) return(FALSE);
-	
+	switch (type) {
+		case node_piece:
+			ang=&map.nodes[main_idx].ang;
+			break;
+				
+		case spot_piece:
+			ang=&map.spots[main_idx].ang;
+			break;
+				
+		case scenery_piece:
+			ang=&map.sceneries[main_idx].ang;
+			break;
+	}
+
+	if (ang==NULL) return(FALSE);
+
 		// handle drag
 	
     if (!os_button_down()) return(FALSE);
@@ -362,7 +533,7 @@ bool walk_view_click_rot_handles(editor_view_type *view_setup,d3pnt *click_pt)
 	
 	first_drag=TRUE;
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	walk_view_get_pixel_box(view,&box);
 	memmove(&old_ang,ang,sizeof(d3ang));
 	
 	while (!os_track_mouse_location(&pt,&box)) {
@@ -401,238 +572,15 @@ bool walk_view_click_rot_handles(editor_view_type *view_setup,d3pnt *click_pt)
 
 /* =======================================================
 
-      View Piece Clicking Utility
+      Run Pick List for Map Items
       
 ======================================================= */
 
-bool walk_view_mesh_poly_click_index(editor_view_type *view,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z)
+void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
 {
-	int					t,dist,hz,px[8],py[8],pz[8];
-	double				dx,dy,dz;
-	bool				off_left,off_right,off_top,off_bottom;
+	int					n,k,t,count,
+						px[8],py[8],pz[8];
 	d3pnt				*pt;
-	d3rect				box;
-	map_mesh_poly_type	*mesh_poly;
-	
-	mesh_poly=&mesh->polys[poly_idx];
-
-		// translate the points
-
-	for (t=0;t!=mesh_poly->ptsz;t++) {
-		pt=&mesh->vertexes[mesh_poly->v[t]];
-		px[t]=pt->x;
-		py[t]=pt->y;
-		pz[t]=pt->z;
-
-		if (!walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t])) return(FALSE);
-				
-		walk_view_click_project_point(view,&px[t],&py[t],&pz[t]);
-	}
-	
-		// check if outside box
-		
-	walk_view_get_pixel_box(view,&box);
-		
-	off_left=off_right=off_top=off_bottom=TRUE;
-	
-	for (t=0;t!=mesh_poly->ptsz;t++) {
-		off_left=off_left&&(px[t]<0);
-		off_right=off_right&&(px[t]>(box.rx-box.lx));
-		off_top=off_top&&(py[t]<0);
-		off_bottom=off_bottom&&(py[t]>(box.by-box.ty));
-	}
-
-	if ((off_left) || (off_right) || (off_top) || (off_bottom)) return(FALSE);
-	
-		// check hits
-		
-	if (!polygon_2D_point_inside(mesh_poly->ptsz,px,py,click_pt->x,click_pt->y)) return(FALSE);
-	
-		// hit z the closest point to the camera
-		
-	hz=0;
-	
-	for (t=0;t!=mesh_poly->ptsz;t++) {
-		pt=&mesh->vertexes[mesh_poly->v[t]];
-		dx=(double)(view->pnt.x-pt->x);
-		dy=(double)(view->pnt.y-pt->y);
-		dz=(double)(view->pnt.z-pt->z);
-		
-		dist=(int)sqrt((dx*dx)+(dy*dy)+(dz*dz));
-		
-		if (hz==0) {
-			hz=dist;
-			continue;
-		}
-
-		if (hz>dist) hz=dist;
-	}
-	
-	*hit_z=hz;
-	
-	return(TRUE);
-}
-
-bool walk_view_quad_click_index(editor_view_type *view_setup,d3pnt *click_pt,int *px,int *py,int *pz,int *hit_z)
-{
-	int				t,fz;
-	bool			off_left,off_right,off_top,off_bottom;
-	d3rect			box;
-	
-	fz=0;
-
-	for (t=0;t!=4;t++) {
-		if (!walk_view_click_rotate_polygon_in_z(px[t],py[t],pz[t])) return(FALSE);
-		walk_view_click_project_point(view_setup,&px[t],&py[t],&pz[t]);
-		fz+=pz[t];
-	}
-	
-		// check if outside box
-		
-	walk_view_get_pixel_box(view_setup,&box);
-		
-	off_left=off_right=off_top=off_bottom=TRUE;
-	
-	for (t=0;t!=4;t++) {
-		off_left=off_left&&(px[t]<0);
-		off_right=off_right&&(px[t]>(box.rx-box.lx));
-		off_top=off_top&&(py[t]<0);
-		off_bottom=off_bottom&&(py[t]>(box.by-box.ty));
-	}
-	
-	if ((off_left) || (off_right) || (off_top) || (off_bottom)) return(FALSE);
-	
-		// check hits
-		
-	if (!polygon_2D_point_inside(4,px,py,click_pt->x,click_pt->y)) return(FALSE);
-	
-	*hit_z=fz/4;
-	
-	return(TRUE);
-}
-
-void walk_view_cube_click_index_make_quad(int *x,int *y,int *z,int *px,int *py,int *pz,int v1,int v2,int v3,int v4)
-{
-	px[0]=x[v1];
-	px[1]=x[v2];
-	px[2]=x[v3];
-	px[3]=x[v4];
-	py[0]=y[v1];
-	py[1]=y[v2];
-	py[2]=y[v3];
-	py[3]=y[v4];
-	pz[0]=z[v1];
-	pz[1]=z[v2];
-	pz[2]=z[v3];
-	pz[3]=z[v4];
-}
-
-bool walk_view_cube_click_index(editor_view_type *view_setup,d3pnt *click_pt,int *x,int *y,int *z,int *hit_z)
-{
-	int					px[4],py[4],pz[4];
-	bool				hit;
-	
-	hit=FALSE;
-	
-		// top
-		
-	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,0,1,2,3);
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
-	
-		// bottom
-		
-	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,4,5,6,7);
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
-	
-		// front
-		
-	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,3,2,5,6);
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
-
-		// back
-		
-	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,0,1,4,7);
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
-	
-		// left
-		
-	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,0,7,6,3);
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
-
-		// right
-		
-	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,1,2,5,4);
-	return(hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
-}
-
-bool walk_view_liquid_click(editor_view_type *view_setup,d3pnt *click_pt,map_liquid_type *liq,int *hit_z)
-{
-	int				px[4],py[4],pz[4];
-
-	px[0]=px[3]=liq->lft;
-	px[1]=px[2]=liq->rgt;
-	py[0]=py[1]=py[2]=py[3]=liq->y;
-	pz[0]=pz[1]=liq->top;
-	pz[2]=pz[3]=liq->bot;
-	
-	return(walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
-}
-
-/* =======================================================
-
-      View Click Colors
-      
-======================================================= */
-
-void walk_view_click_color_init(void)
-{
-	walk_view_click_col[0]=0x1;
-	walk_view_click_col[1]=0x0;
-	walk_view_click_col[2]=0x0;
-}
-
-void walk_view_click_color_set(int type,int main_idx,int sub_idx,view_picker_type *pick)
-{
-		// set color
-
-	glColor3ub((unsigned char)walk_view_click_col[0],(unsigned char)walk_view_click_col[1],(unsigned char)walk_view_click_col[2]);
-
-		// remember color in pick list
-	
-	pick->type=type;
-	pick->main_idx=(short)main_idx;
-	pick->sub_idx=(short)sub_idx;
-
-	pick->col[0]=(unsigned char)walk_view_click_col[0];
-	pick->col[1]=(unsigned char)walk_view_click_col[1];
-	pick->col[2]=(unsigned char)walk_view_click_col[2];
-
-		// next color
-
-	walk_view_click_col[0]++;
-	if (walk_view_click_col[0]>0xFF) {
-		walk_view_click_col[0]=0x0;
-		walk_view_click_col[1]++;
-		if (walk_view_click_col[1]>0xFF) {
-			walk_view_click_col[1]=0x0;
-			walk_view_click_col[2]++;
-		}
-	}
-}
-
-/* =======================================================
-
-      View Piece Get Clicked Index
-      
-======================================================= */
-
-void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
-{
-	int					n,k,t,fz,box_wid,box_high,pick_count,
-						px[8],py[8],pz[8],hit_z;
-	unsigned char		pixel[3];
-	d3pnt				*pt;
-	d3rect				box;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
@@ -642,48 +590,43 @@ void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type
 	map_sound_type		*map_sound;
 	map_particle_type	*map_particle;
 	node_type			*node;
-	view_picker_type	*picks,*pick;
 
 		// get picker count
 		// we create a list that marks the color
 		// for each item we are going to pick
 		// from
 
-	pick_count=0;
+	count=0;
 
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		pick_count+=mesh->npoly;
+		count+=mesh->npoly;
 		mesh++;
 	}
 	
-	if (state.show_liquid) pick_count+=map.liquid.nliquid;
+	if (state.show_liquid) count+=map.liquid.nliquid;
 	
 	if (state.show_object) {
-		pick_count+=map.nspot;
-		pick_count+=map.nscenery;
+		count+=map.nspot;
+		count+=map.nscenery;
 	}
 	
 	if (state.show_lightsoundparticle) {
-		pick_count+=map.nlight;
-		pick_count+=map.nsound;
-		pick_count+=map.nparticle;
+		count+=map.nlight;
+		count+=map.nsound;
+		count+=map.nparticle;
 	}
 	
-	if (state.show_node) pick_count+=map.nnode;
-	
-		// start picker list
+	if (state.show_node) count+=map.nnode;
 
-	picks=(view_picker_type*)malloc(sizeof(view_picker_type)*pick_count);
-	if (picks==NULL) return;
+		// start the pick list
 
-		// now run through all the items
+	walk_view_pick_list_start(view,count);
+
+		// run through all the items
 		// in the map and draw them to the
 		// back buffer with unique colors
-
-	pick_count=0;
-	pick=picks;
 
 		// meshes
 		
@@ -695,10 +638,7 @@ void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type
 	
 		for (k=0;k!=mesh->npoly;k++) {
 
-			walk_view_click_color_set(mesh_piece,n,k,pick);
-
-			pick_count++;
-			pick++;
+			walk_view_pick_list_add(mesh_piece,n,k);
 
 			glBegin(GL_POLYGON);
 			
@@ -717,228 +657,138 @@ void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type
 
 		// liquids
 		
-	liq=map.liquid.liquids;
-	
-	for (n=0;n!=map.liquid.nliquid;n++) {
-	
-		walk_view_click_color_set(liquid_piece,n,-1,pick);
-
-		pick_count++;
-		pick++;
-
-		glBegin(GL_POLYGON);
-		glVertex3i(liq->lft,liq->y,liq->top);
-		glVertex3i(liq->rgt,liq->y,liq->top);
-		glVertex3i(liq->rgt,liq->y,liq->bot);
-		glVertex3i(liq->lft,liq->y,liq->bot);
-		glEnd();
-		
-		liq++;
-	}
-
-		// now check the back buffer to find
-		// the clicked item
-
-	os_get_window_box(&box);
-
-	glReadPixels(click_pt->x,(box.by-click_pt->y),1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
-
-	pick=picks;
-
-	for (n=0;n!=pick_count;n++) {
-
-		if ((pick->col[0]==pixel[0]) && (pick->col[1]==pixel[1]) && (pick->col[2]==pixel[2])) {
-			*type=pick->type;
-			*main_idx=pick->main_idx;
-			*sub_idx=pick->sub_idx;
-			break;
-		}
-
-		pick++;
-	}
-
-	free(picks);
-
-	return;		// supergumba, testing
-
-
-
-	
-	walk_view_click_setup_project(view);
-	
-	walk_view_get_pixel_box(view,&box);
-	box_wid=box.rx-box.lx;
-	box_high=box.by-box.ty;
-	
-	*type=-1;
-	hit_z=walk_view_max_z_click;
-		
-		// meshes
-		
-	mesh=map.mesh.meshes;
-	
-	for (n=0;n!=map.mesh.nmesh;n++) {
-	
-			// check polygons
-			
-		for (k=0;k!=mesh->npoly;k++) {
-		
-			if (walk_view_mesh_poly_click_index(view,click_pt,mesh,k,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=mesh_piece;
-					*main_idx=n;
-					*sub_idx=k;
-				}
-			}
-
-		}
-	
-		mesh++;
-	}
-	
-		// liquids
-		
 	if (state.show_liquid) {
-			
+
+		liq=map.liquid.liquids;
+		
 		for (n=0;n!=map.liquid.nliquid;n++) {
-			if (walk_view_liquid_click(view,click_pt,&map.liquid.liquids[n],&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=liquid_piece;
-					*main_idx=n;
-					*sub_idx=-1;
-				}
-			}
+		
+			walk_view_pick_list_add(liquid_piece,n,-1);
+
+			glBegin(GL_POLYGON);
+			glVertex3i(liq->lft,liq->y,liq->top);
+			glVertex3i(liq->rgt,liq->y,liq->top);
+			glVertex3i(liq->rgt,liq->y,liq->bot);
+			glVertex3i(liq->lft,liq->y,liq->bot);
+			glEnd();
+			
+			liq++;
 		}
 	}
-	
+
+		// objects and scenery
+
 	if (state.show_object) {
 	
-			// spots
-			
+		spot=map.spots;
+
 		for (n=0;n!=map.nspot;n++) {
-			
-			spot=&map.spots[n];
-			
-			if (!walk_view_model_click_select_size(spot->display_model,&spot->pnt,&spot->ang,px,py,pz)) continue;
-			
-			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=spot_piece;
-					*main_idx=n;
-					*sub_idx=-1;
-				}
+			if (walk_view_model_click_select_size(spot->display_model,&spot->pnt,&spot->ang,px,py,pz)) {
+				walk_view_pick_list_add_cube(px,py,pz,spot_piece,n,-1);
 			}
+			spot++;
 		}
-	
-			// scenery
 			
+		scenery=map.sceneries;
+
 		for (n=0;n!=map.nscenery;n++) {
-			
-			scenery=&map.sceneries[n];
-			
-			if (!walk_view_model_click_select_size(scenery->model_name,&scenery->pnt,&scenery->ang,px,py,pz)) continue;
-			
-			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=scenery_piece;
-					*main_idx=n;
-					*sub_idx=-1;
-				}
+			if (walk_view_model_click_select_size(scenery->model_name,&scenery->pnt,&scenery->ang,px,py,pz)) {
+				walk_view_pick_list_add_cube(px,py,pz,scenery_piece,n,-1);
 			}
+			scenery++;
 		}
 	}
-	
+
+		// lights, sounds, and particles
+
 	if (state.show_lightsoundparticle) {
 	
-			// map lights
-			
+		map_light=map.lights;
+
 		for (n=0;n!=map.nlight;n++) {
-		
-			map_light=&map.lights[n];
-			
 			walk_view_sprite_select_size(&map_light->pnt,px,py,pz);
-			
-			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=light_piece;
-					*main_idx=n;
-					*sub_idx=-1;
-				}
-			}
+			walk_view_pick_list_add_cube(px,py,pz,light_piece,n,-1);
+			map_light++;
 		}
 		
-			// map sounds
-			
+		map_sound=map.sounds;
+
 		for (n=0;n!=map.nsound;n++) {
-		
-			map_sound=&map.sounds[n];
-			
 			walk_view_sprite_select_size(&map_sound->pnt,px,py,pz);
-			
-			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=sound_piece;
-					*main_idx=n;
-					*sub_idx=-1;
-				}
-			}
+			walk_view_pick_list_add_cube(px,py,pz,sound_piece,n,-1);
+			map_sound++;
 		}
 		
-			// map particles
-			
+		map_particle=map.particles;
+
 		for (n=0;n!=map.nparticle;n++) {
-		
-			map_particle=&map.particles[n];
-			
 			walk_view_sprite_select_size(&map_particle->pnt,px,py,pz);
-			
-			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=particle_piece;
-					*main_idx=n;
-					*sub_idx=-1;
-				}
-			}
+			walk_view_pick_list_add_cube(px,py,pz,particle_piece,n,-1);
+			map_particle++;
 		}
 	}
-	
+
+		// nodes
+
 	if (state.show_node) {
-	
-			// map nodes
-			
+		node=map.nodes;
+
 		for (n=0;n!=map.nnode;n++) {
-		
-			node=&map.nodes[n];
-			
 			walk_view_sprite_select_size(&node->pnt,px,py,pz);
-			
-			if (walk_view_cube_click_index(view,click_pt,px,py,pz,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=node_piece;
-					*main_idx=n;
-					*sub_idx=-1;
-				}
-			}
+			walk_view_pick_list_add_cube(px,py,pz,node_piece,n,-1);
+			node++;
 		}
 	}
+	
+		// find the picked item
+
+	walk_view_pick_list_end(view,click_pt,type,main_idx,sub_idx);
 }
 	
-bool walk_view_click_piece_normal(editor_view_type *view,d3pnt *pt,bool dblclick)
+/* =======================================================
+
+      View Map Clicking
+      
+======================================================= */
+
+void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 {
 	int				type,main_idx,sub_idx;
 	bool			toggle_select;
+	d3rect			box;
+
+		// convert point to view
+
+	walk_view_get_pixel_box(view,&box);
+
+	pt->x-=box.lx;
+	pt->y-=box.ty;
+
+		// rotation handles
+
+	if (walk_view_click_item_rot_handles(view,pt)) return;
 	
-		// anything clicked?
+		// liquid vertex drags
 		
-	walk_view_mesh_click_index(view,pt,&type,&main_idx,&sub_idx,FALSE);
+	if (walk_view_click_drag_liquid_vertex(view,pt)) return;
+	
+		// mesh vertex drags
+		
+	switch (state.drag_mode) {
+	
+		case drag_mode_vertex:
+			if (walk_view_click_drag_vertex(view,pt)) return;
+			break;
+	
+		case drag_mode_mesh:
+			if (walk_view_click_drag_mesh_handle(view,pt)) return;
+			break;
+			
+	}
+
+		// pick clicked map item (mesh, liquid, nodes, etc)
+		
+	walk_view_click_piece_map_pick(view,pt,&type,&main_idx,&sub_idx,FALSE);
 	
 		// if a node, check link
 		// connections
@@ -946,7 +796,7 @@ bool walk_view_click_piece_normal(editor_view_type *view,d3pnt *pt,bool dblclick
 	if ((type==node_piece) && (state.node_mode!=node_mode_select)) {
 		if (node_link_click(main_idx)) {
 			main_wind_draw();
-			return(TRUE);
+			return;
 		}
 	}
 	
@@ -971,79 +821,22 @@ bool walk_view_click_piece_normal(editor_view_type *view,d3pnt *pt,bool dblclick
 		}
 	}
 	
-		// redraw
+		// redraw and reset palettes and menus
 		
 	menu_fix_enable();
 	
 	main_wind_draw();
 	texture_palette_reset();
-	
-	return(FALSE);
-}
-
-/* =======================================================
-
-      View Map Clicking
-      
-======================================================= */
-
-void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
-{
-	d3rect				box;
-
-		// detect clicks by colors
-
-	walk_view_set_viewport(view,TRUE,TRUE);
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
-
-	glClearColor(0.0f,0.0f,0.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-
-	walk_view_click_color_init();
-	
-		// put click within box
-	
-	walk_view_get_pixel_box(view,&box);
-
-	// supergumba
-//	pt->x-=box.lx;
-//	pt->y-=box.ty;
-	
-		// rotation handles
-
-	if (walk_view_click_rot_handles(view,pt)) return;
-	
-		// liquid vertex drags
-		
-	if (walk_view_click_drag_liquid_vertex(view,pt)) return;
-	
-		// mesh vertex drags
-		
-	switch (state.drag_mode) {
-	
-		case drag_mode_vertex:
-			if (walk_view_click_drag_vertex(view,pt)) return;
-			break;
-	
-		case drag_mode_mesh:
-			if (walk_view_click_drag_mesh_handle(view,pt)) return;
-			break;
-			
-	}
-
-		// select mesh/polygon
-		
-	if (walk_view_click_piece_normal(view,pt,dblclick)) return;
-	
-		// changes in palette
-		
 	palette_reset();
-	
-		// item drags
-			
+
+		// if no item or item was toggled off,
+		// nothing to drag
+
+	if (type==-1) return;
+	if (!select_check(type,main_idx,sub_idx)) return;
+
+		// item (spots, lights, sounds, etc) drags
+
 	if (walk_view_click_drag_item(view,pt)) return;
 	
 		// liquid drags
@@ -1051,7 +844,7 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 	if (walk_view_click_drag_liquid(view,pt)) return;
 	
 		// mesh or poly drags
-		
+
 	switch (state.drag_mode) {
 	
 		case drag_mode_mesh:

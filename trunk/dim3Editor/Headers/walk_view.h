@@ -88,7 +88,6 @@ extern bool walk_view_click_snap(int mesh_idx,d3pnt *pt);
 extern bool walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt);
 extern bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt);
 extern void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick);
-extern bool walk_view_mesh_poly_click_index(editor_view_type *view,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z);
 extern bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt);
 extern bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt);
 extern bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt);

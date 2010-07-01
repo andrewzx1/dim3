@@ -236,8 +236,7 @@ bool editor_start(char *err_str)
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
 
 	glEnable(GL_SMOOTH);
-	glEnable(GL_POINT_SMOOTH);
-	glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);
+
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 		
@@ -262,7 +261,7 @@ bool editor_start(char *err_str)
 	main_wind_box.lx=0;
 	main_wind_box.rx=(wbox.right-wbox.left);
 	main_wind_box.ty=toolbar_high;
-	main_wind_box.by=(wbox.bottom-wbox.top)-info_high;
+	main_wind_box.by=wbox.bottom-wbox.top;
 
 		// initialize walk view
 
@@ -360,6 +359,7 @@ bool editor_open_map(char *err_str)
 
 	state.show_object=TRUE;
 	state.show_lightsoundparticle=TRUE;
+	state.drag_mode=drag_mode_mesh;
 
 		// supergumba -- fake starting point
 

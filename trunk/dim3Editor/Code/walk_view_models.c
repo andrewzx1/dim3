@@ -402,9 +402,9 @@ bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,
 	}
 	
 	for (n=0;n!=8;n++) {
-		px[n]=px[n]+pnt->x;
-		py[n]=py[n]+pnt->y;
-		pz[n]=pz[n]+pnt->z;
+		px[n]+=pnt->x;
+		py[n]+=pnt->y;
+		pz[n]+=pnt->z;
 	}
 	
 	return(TRUE);

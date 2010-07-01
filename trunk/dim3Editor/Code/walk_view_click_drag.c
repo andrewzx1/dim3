@@ -265,8 +265,8 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 {
 	int						n,k,x,y,mx,my,mz,nsel,nvertex,
-							type,mesh_idx,poly_idx,fz;
-	bool					hit,first_drag,snap_hit;
+							type,mesh_idx,poly_idx;
+	bool					first_drag,snap_hit;
 	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,move_pnt,mpt,spt;
 	d3rect					box;
 	map_mesh_type			*mesh;
@@ -283,28 +283,6 @@ bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 	
 	if (mesh->flag.lock_move) return(FALSE);
 		
-		// are we clicking in a selected mesh
-		
-	hit=FALSE;
-	
-	for (k=0;k!=nsel;k++) {
-		select_get(k,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
-		
-		mesh=&map.mesh.meshes[mesh_idx];
-		
-		for (n=0;n!=mesh->npoly;n++) {
-			if (walk_view_mesh_poly_click_index(view,pt,mesh,n,&fz)) {
-				hit=TRUE;
-				break;
-			}
-		}
-		
-		if (hit) break;
-	}
-	
-	if (!hit) return(FALSE);
-	
 		// start drag
 		
     if (!os_button_down()) return(FALSE);
@@ -464,7 +442,7 @@ bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,
-							type,mesh_idx,poly_idx,fz;
+							type,mesh_idx,poly_idx;
 	bool					first_drag;
 	d3pnt					old_pt,*dpt,*old_dpt,move_pnt,mpt,spt;
 	d3rect					box;
@@ -484,8 +462,6 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 	mesh_poly=&mesh->polys[poly_idx];
 	
 	if (mesh->flag.lock_move) return(FALSE);
-	
-	if (!walk_view_mesh_poly_click_index(view,pt,mesh,poly_idx,&fz))  return(FALSE);
 	
 		// drag
 		
