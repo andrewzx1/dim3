@@ -155,7 +155,7 @@ void walk_view_get_pixel_box(editor_view_type *view,d3rect *box)
 	os_get_window_box(&wbox);
 	
 	wbox.ty+=toolbar_high;
-	wbox.by-=(txt_pixel_sz+info_high);
+	wbox.by-=txt_pixel_sz;
 	
 	wid=(float)(wbox.rx-wbox.lx);
 	high=(float)(wbox.by-wbox.ty);

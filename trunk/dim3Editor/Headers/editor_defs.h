@@ -44,7 +44,6 @@ and can be sold or given away.
 #define tool_grid_menu_id						167
 
 #define toolbar_high							32
-#define info_high								16
 
 #define view_selection_size						10
 

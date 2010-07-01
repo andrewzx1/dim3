@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				txt_palette_y,txt_palette_high;
+extern d3rect			txt_palette_box;
 
 extern map_type			map;
 extern setup_type		setup;
@@ -498,12 +498,12 @@ void main_wind_control(ControlRef ctrl)
 
 void main_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
 {
-	int				i;
+	int				magnify_factor;
 	
-	i=GetControlValue(ctrl);
-	if (i==state.magnify_factor) return;
+	magnify_factor=GetControlValue(ctrl);
+	if (magnify_factor==walk_view_get_magnify_factor()) return;
 	
-	state.magnify_factor=i;
+	walk_view_set_magnify_factor(magnify_factor);
     main_wind_draw();
 }
 
@@ -573,7 +573,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 						
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					
-					if ((pt.v>=txt_palette_y) && (pt.v<=(txt_palette_y+txt_palette_high))) {
+					if ((pt.v>=txt_palette_box.ty) && (pt.v<=txt_palette_box.by)) {
 						texture_palette_click(&dpt,(nclick!=1));
 						return(noErr);
 					}
@@ -657,23 +657,6 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 
 /* =======================================================
 
-      Main Window Magnify
-      
-======================================================= */
-
-void main_wind_magnify_scroll(int delta)
-{
-	state.magnify_factor-=delta;
-	if (state.magnify_factor<magnify_factor_min) state.magnify_factor=magnify_factor_min;
-	if (state.magnify_factor>magnify_factor_max) state.magnify_factor=magnify_factor_max;
-	
-	SetControlValue(magnify_slider,state.magnify_factor);
-	
-    main_wind_draw();
-}
-
-/* =======================================================
-
       Main Window Viewport Coordinates
       
 ======================================================= */
@@ -690,14 +673,14 @@ void main_wind_setup(void)
 	main_wind_box.lx=0;
 	main_wind_box.rx=wbox.right;
 	main_wind_box.ty=toolbar_high;
-	main_wind_box.by=wbox.bottom-info_high;
+	main_wind_box.by=wbox.bottom;
 	
 		// buffer rect clipping
 		
 	rect[0]=0;
-	rect[1]=info_high;
+	rect[1]=0;
 	rect[2]=wbox.right-wbox.left;
-	rect[3]=(wbox.bottom-wbox.top)-(toolbar_high+info_high);
+	rect[3]=(wbox.bottom-wbox.top)-toolbar_high;
 	
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
 	aglEnable(ctx,AGL_BUFFER_RECT);
@@ -1125,10 +1108,6 @@ void main_wind_draw(void)
 		// swap GL buffer
 		
 	aglSwapBuffers(ctx);
-	
-		// status line
-		
-	info_status_line_draw();
 }
 
 /* =======================================================

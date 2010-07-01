@@ -54,11 +54,11 @@ void texture_palette_setup(void)
 	
 	os_get_window_box(&wbox);
 
-	txt_pixel_sz=(wbox.rx-(wbox.lx+64))/txt_wind_per_page_count;
+	txt_pixel_sz=((wbox.rx-16)-(wbox.lx+64))/txt_wind_per_page_count;
 	
 	txt_palette_box.lx=wbox.lx;
 	txt_palette_box.rx=wbox.rx;
-	txt_palette_box.ty=(wbox.by-txt_pixel_sz)-info_high;
+	txt_palette_box.ty=wbox.by-txt_pixel_sz;
 	txt_palette_box.by=(txt_palette_box.ty+txt_pixel_sz)+1;
 }
 
@@ -71,21 +71,18 @@ void texture_palette_setup(void)
 int texture_palette_get_selected_texture(void)
 {
 	int					type,main_idx,poly_idx;
-	editor_view_type	*view;
 	
 	if (select_count()!=1) return(-1);
 	
 	select_get(0,&type,&main_idx,&poly_idx);
-
-	view=walk_view_get_current_view();
 	
 	if (type==liquid_piece) {
-		if (view->uv_layer==uv_layer_normal) return(map.liquid.liquids[main_idx].txt_idx);
+		if (walk_view_get_uv_layer()==uv_layer_normal) return(map.liquid.liquids[main_idx].txt_idx);
 		return(map.liquid.liquids[main_idx].lmap_txt_idx);
 	}
 	
 	if (type==mesh_piece) {
-		if (view->uv_layer==uv_layer_normal) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
+		if (walk_view_get_uv_layer()==uv_layer_normal) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
 		return(map.mesh.meshes[main_idx].polys[poly_idx].lmap_txt_idx);
 	}
 	
@@ -97,9 +94,6 @@ void texture_palette_put_selected_texture(int txt_idx)
 	int					n,k,sel_count,type,main_idx,poly_idx;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-	editor_view_type	*view;
-	
-	view=walk_view_get_current_view();
 
 	sel_count=select_count();
 	
@@ -110,7 +104,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 			// liquids
 			
 		if (type==liquid_piece) {
-			if (view->uv_layer==uv_layer_normal) {
+			if (walk_view_get_uv_layer()==uv_layer_normal) {
 				map.liquid.liquids[main_idx].txt_idx=txt_idx;
 			}
 			else {
@@ -128,7 +122,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 			// only set polygon
 			
 		if (state.drag_mode==drag_mode_polygon) {
-			if (view->uv_layer==uv_layer_normal) {
+			if (walk_view_get_uv_layer()==uv_layer_normal) {
 				mesh->polys[poly_idx].txt_idx=txt_idx;
 			}
 			else {
@@ -143,7 +137,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
-				if (view->uv_layer==uv_layer_normal) {
+				if (walk_view_get_uv_layer()==uv_layer_normal) {
 					poly->txt_idx=txt_idx;
 				}
 				else {
@@ -284,6 +278,17 @@ void texture_palette_draw(void)
 	
 	glDisable(GL_ALPHA_TEST);
 	
+		// right fill
+		
+	glColor4f(0.75f,0.75f,0.75f,1.0f);
+		
+	glBegin(GL_QUADS);
+	glVertex2i(x,ty);
+	glVertex2i(txt_palette_box.rx,ty);
+	glVertex2i(txt_palette_box.rx,by);
+	glVertex2i(x,by);
+	glEnd();
+	
 		// lines
 		
 	x=64;
@@ -302,6 +307,11 @@ void texture_palette_draw(void)
 		
 		x+=txt_pixel_sz;
 	}
+	
+	glBegin(GL_LINES);
+	glVertex2i(txt_palette_box.lx,ty);
+	glVertex2i(txt_palette_box.rx,ty);
+	glEnd();
 	
 		// selection
 		

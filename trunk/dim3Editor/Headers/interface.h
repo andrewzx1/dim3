@@ -51,13 +51,6 @@ extern void texture_palette_reset(void);
 extern void texture_palette_click(d3pnt *pnt,bool dbl_click);
 
 //
-// info status line
-//
-
-extern void info_status_line_draw(void);
-extern void info_status_line_activity(char *str);
-
-//
 // progress window
 //
 

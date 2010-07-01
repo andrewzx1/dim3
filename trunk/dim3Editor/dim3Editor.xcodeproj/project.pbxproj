@@ -127,7 +127,6 @@
 		F5AF0C5709638BC600F99950 /* dialog_texture_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AF0C5609638BC600F99950 /* dialog_texture_setting.c */; };
 		F5C461460970A68600FBB643 /* dialog_about.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C461450970A68600FBB643 /* dialog_about.c */; };
 		F5CA0193098D8E6E00039712 /* dialog_map_auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CA0192098D8E6E00039712 /* dialog_map_auto_generate.c */; };
-		F5D3312D0C39FF2C00BED1CE /* info_status_line.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D3312C0C39FF2C00BED1CE /* info_status_line.c */; };
 		F5D458EE0953160300AF9CE1 /* walk_view_draw_piece.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */; };
 		F5DB0C520856A976005A7CB7 /* dim3 Editor.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5A43266055602E0002DF965 /* dim3 Editor.app */; };
 		F5DD757B092CFD8700465E14 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD757A092CFD8700465E14 /* launch.c */; };
@@ -327,7 +326,6 @@
 		F5AF0C5609638BC600F99950 /* dialog_texture_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_texture_setting.c; path = Code/dialog_texture_setting.c; sourceTree = "<group>"; };
 		F5C461450970A68600FBB643 /* dialog_about.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_about.c; path = Code/dialog_about.c; sourceTree = "<group>"; };
 		F5CA0192098D8E6E00039712 /* dialog_map_auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_auto_generate.c; path = Code/dialog_map_auto_generate.c; sourceTree = "<group>"; };
-		F5D3312C0C39FF2C00BED1CE /* info_status_line.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = info_status_line.c; path = Code/info_status_line.c; sourceTree = "<group>"; };
 		F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_draw_piece.c; path = Code/walk_view_draw_piece.c; sourceTree = "<group>"; };
 		F5DD757A092CFD8700465E14 /* launch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = launch.c; path = Code/launch.c; sourceTree = "<group>"; };
 		F5E388390960AC1D003264F6 /* import.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = import.h; path = Headers/import.h; sourceTree = "<group>"; };
@@ -622,7 +620,6 @@
 			children = (
 				F54CD2090233430101250BB8 /* main_window.c */,
 				F57CACA60C38B76200B595F4 /* texture_palette.c */,
-				F5D3312C0C39FF2C00BED1CE /* info_status_line.c */,
 				F510D43D02485F2F01DF5EE2 /* progress_window.c */,
 			);
 			name = Windows;
@@ -794,7 +791,6 @@
 				F571C8770B34DA6300F979B7 /* xml_setup.c in Sources */,
 				F522DCC90BBC853C00DFF256 /* Course.js in Sources */,
 				F57CACA70C38B76200B595F4 /* texture_palette.c in Sources */,
-				F5D3312D0C39FF2C00BED1CE /* info_status_line.c in Sources */,
 				26934B110D876A800009F81E /* walk_view_click_drag.c in Sources */,
 				26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */,
 				263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */,
