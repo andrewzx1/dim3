@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "dialog.h"
+#include "walk_view.h"
 #include "common_view.h"
 
 #define import_obj_float_to_int			1000.0f
@@ -724,7 +725,7 @@ void piece_add_obj_mesh_uv(void)
         
         npt=0;
 		
-		if (state.uv_layer==uv_layer_normal) {
+		if (walk_view_get_uv_layer()==uv_layer_normal) {
 			uv_ptr=&poly->main_uv;
 		}
 		else {

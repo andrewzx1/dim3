@@ -591,17 +591,21 @@ void walk_view_click_color_init(void)
 	walk_view_click_col[2]=0x0;
 }
 
-void walk_view_click_color_set(unsigned char *col)
+void walk_view_click_color_set(int type,int main_idx,int sub_idx,view_picker_type *pick)
 {
 		// set color
 
 	glColor3ub((unsigned char)walk_view_click_col[0],(unsigned char)walk_view_click_col[1],(unsigned char)walk_view_click_col[2]);
 
 		// remember color in pick list
+	
+	pick->type=type;
+	pick->main_idx=(short)main_idx;
+	pick->sub_idx=(short)sub_idx;
 
-	col[0]=(unsigned char)walk_view_click_col[0];
-	col[1]=(unsigned char)walk_view_click_col[1];
-	col[2]=(unsigned char)walk_view_click_col[2];
+	pick->col[0]=(unsigned char)walk_view_click_col[0];
+	pick->col[1]=(unsigned char)walk_view_click_col[1];
+	pick->col[2]=(unsigned char)walk_view_click_col[2];
 
 		// next color
 
@@ -631,6 +635,7 @@ void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type
 	d3rect				box;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
+	map_liquid_type		*liq;
 	spot_type			*spot;
 	map_scenery_type	*scenery;
 	map_light_type		*map_light;
@@ -640,6 +645,9 @@ void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type
 	view_picker_type	*picks,*pick;
 
 		// get picker count
+		// we create a list that marks the color
+		// for each item we are going to pick
+		// from
 
 	pick_count=0;
 
@@ -649,11 +657,30 @@ void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type
 		pick_count+=mesh->npoly;
 		mesh++;
 	}
+	
+	if (state.show_liquid) pick_count+=map.liquid.nliquid;
+	
+	if (state.show_object) {
+		pick_count+=map.nspot;
+		pick_count+=map.nscenery;
+	}
+	
+	if (state.show_lightsoundparticle) {
+		pick_count+=map.nlight;
+		pick_count+=map.nsound;
+		pick_count+=map.nparticle;
+	}
+	
+	if (state.show_node) pick_count+=map.nnode;
+	
+		// start picker list
 
 	picks=(view_picker_type*)malloc(sizeof(view_picker_type)*pick_count);
 	if (picks==NULL) return;
 
-		// start the color lists
+		// now run through all the items
+		// in the map and draw them to the
+		// back buffer with unique colors
 
 	pick_count=0;
 	pick=picks;
@@ -668,11 +695,7 @@ void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type
 	
 		for (k=0;k!=mesh->npoly;k++) {
 
-			pick->type=mesh_piece;
-			pick->main_idx=(short)n;
-			pick->sub_idx=(short)k;
-
-			walk_view_click_color_set(pick->col);
+			walk_view_click_color_set(mesh_piece,n,k,pick);
 
 			pick_count++;
 			pick++;
@@ -692,13 +715,33 @@ void walk_view_mesh_click_index(editor_view_type *view,d3pnt *click_pt,int *type
 		mesh++;
 	}
 
-		// find clicked color
+		// liquids
+		
+	liq=map.liquid.liquids;
+	
+	for (n=0;n!=map.liquid.nliquid;n++) {
+	
+		walk_view_click_color_set(liquid_piece,n,-1,pick);
+
+		pick_count++;
+		pick++;
+
+		glBegin(GL_POLYGON);
+		glVertex3i(liq->lft,liq->y,liq->top);
+		glVertex3i(liq->rgt,liq->y,liq->top);
+		glVertex3i(liq->rgt,liq->y,liq->bot);
+		glVertex3i(liq->lft,liq->y,liq->bot);
+		glEnd();
+		
+		liq++;
+	}
+
+		// now check the back buffer to find
+		// the clicked item
 
 	os_get_window_box(&box);
-//	walk_view_get_pixel_box(view,&box);
 
-	glReadPixels(click_pt->x,((box.by-(info_high+txt_pixel_sz))-click_pt->y),1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
-//	glReadPixels(click_pt->x,(box.by-click_pt->y),1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
+	glReadPixels(click_pt->x,(box.by-click_pt->y),1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
 
 	pick=picks;
 
