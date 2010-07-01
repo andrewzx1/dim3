@@ -326,7 +326,7 @@ void walk_view_draw_select_single_rot_handles(d3pnt *pnt,d3vct *vct,d3ang *ang,i
 	
 		// draw line
 		
-    glLineWidth(2);
+    glLineWidth(2.0f);
 	
 	glColor4f(col->r,col->g,col->b,1.0f);
 	
@@ -335,15 +335,15 @@ void walk_view_draw_select_single_rot_handles(d3pnt *pnt,d3vct *vct,d3ang *ang,i
 	glVertex3i((pnt->x+(int)vct->x),(y+(int)vct->y),(pnt->z+(int)vct->z));
 	glEnd();
 	
-	glPointSize(10);
+    glLineWidth(1.0f);
+	
+	glPointSize(walk_view_handle_size);
 	
 	glBegin(GL_POINTS);
 	glVertex3i((pnt->x+(int)vct->x),(y+(int)vct->y),(pnt->z+(int)vct->z));
 	glEnd();
 	
-	glPointSize(1);
-	
-    glLineWidth(1);
+	glPointSize(1.0f);
 }
 
 void walk_view_draw_select_rot_handles(d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
