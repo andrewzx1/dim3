@@ -44,33 +44,6 @@ node_scan_type					node_scan[max_node];
       
 ======================================================= */
 
-int node_link_find_node_by_point(editor_view_type *view_setup,d3pnt *click_pt)
-{
-	int				n,px[8],py[8],pz[8],fz,hit_z,node_idx;
-	node_type		*node;
-	
-	node_idx=-1;
-	hit_z=walk_view_max_z_click;
-	
-	node=map.nodes;
-
-	for (n=0;n!=map.nnode;n++) {
-	
-		walk_view_sprite_select_size(&node->pnt,px,py,pz);
-		
-		if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
-			if (fz<hit_z) {
-				hit_z=fz;
-				node_idx=n;
-			}
-		}
-		
-		node++;
-	}
-	
-	return(node_idx);
-}
-
 int node_link_is_node_link_selected(void)
 {
 	int			type,main_idx,sub_idx;
