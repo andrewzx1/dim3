@@ -33,13 +33,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-// supergumba -- move this
-
-typedef struct	{
-					short					type,main_idx,sub_idx;
-					unsigned char			col[3];
-				} view_picker_type;
-
 extern int					txt_pixel_sz;
 extern d3rect				main_wind_box;
 
@@ -52,46 +45,6 @@ double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
 
 int							pick_count,pick_col[3];
 view_picker_type			*picks;
-
-extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
-
-/* =======================================================
-
-      Click Utilities
-      
-======================================================= */
-
-void walk_view_click_setup_project(editor_view_type *view)
-{
-		// setup walk view
-		
-	walk_view_set_viewport(view,TRUE,TRUE);
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
-	
-		// get projection
-		
-	glGetDoublev(GL_MODELVIEW_MATRIX,walk_view_mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,walk_view_proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,(GLint*)walk_view_vport);
-}
-
-bool walk_view_click_rotate_polygon_in_z(int x,int y,int z)
-{
-	return(((((double)x)*walk_view_mod_matrix[2])+(((double)y)*walk_view_mod_matrix[6])+(((double)z)*walk_view_mod_matrix[10])+walk_view_mod_matrix[14])>(float)walk_view_near_offset);
-}
-
-void walk_view_click_project_point(editor_view_type *view,int *x,int *y,int *z)
-{
-	double		dx,dy,dz;
-	d3rect		box;
-	
-	walk_view_get_pixel_box(view,&box);
-	
-	gluProject(*x,*y,*z,walk_view_mod_matrix,walk_view_proj_matrix,(GLint*)walk_view_vport,&dx,&dy,&dz);
-	*x=((int)dx)-box.lx;
-	*y=(main_wind_box.by-((int)dy))-box.ty;
-	*z=(int)((dz)*10000.0f);
-}
 
 /* =======================================================
 
@@ -123,7 +76,7 @@ bool walk_view_pick_list_start(editor_view_type *view,int count)
 	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glDisable(GL_SMOOTH);
 	glDisable(GL_BLEND);
@@ -145,6 +98,10 @@ void walk_view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *ma
 	d3pnt				click_pnt;
 	d3rect				box;
 	view_picker_type	*pick;
+
+		// flush the drawing
+
+	glFinish();
 
 		// need to make click point global
 		// and swap Y for OpenGL read
@@ -679,7 +636,7 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 		// objects and scenery
 
 	if (state.show_object) {
-	
+
 		spot=map.spots;
 
 		for (n=0;n!=map.nspot;n++) {
@@ -697,6 +654,7 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 			}
 			scenery++;
 		}
+
 	}
 
 		// lights, sounds, and particles

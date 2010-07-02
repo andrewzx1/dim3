@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern map_type					map;
+extern setup_type				setup;
 extern editor_state_type		state;
 
 /* =======================================================
@@ -74,78 +75,70 @@ void walk_view_get_direction(d3pnt *pnt)
 	pnt->z=(int)fz;
 }
 
-void walk_view_mouse_get_scroll_horizontal_axis(d3pnt *pnt,int dist)
+void walk_view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *pnt,int dist)
 {
-	d3ang			ang;
-	
-		// always move on axises, find
-		// closest to view angle
-		
-	walk_view_get_angle(&ang);
-	
-	if ((ang.y>=45.0f) && (ang.y<135.0f)) {
-		pnt->z+=-dist;
-		return;
-	}
-	if ((ang.y>=135.0f) && (ang.y<225.0f)) {
-		pnt->x+=-dist;
-		return;
-	}
-	if ((ang.y>=225.0f) && (ang.y<315.0f)) {
-		pnt->z+=dist;
-		return;
-	}
-	
-	pnt->x+=dist;
+	float			fx,fy,fz;
+	matrix_type		mat;
+
+	if (dist==0) return;
+
+	fx=(float)dist;
+	fy=0.0f;
+	fz=0.0f;
+
+	matrix_rotate_y(&mat,view->ang.y);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+	pnt->x+=(int)fx;
+	pnt->z-=(int)fz;
 }
 
-void walk_view_mouse_get_scroll_vertical_axis(d3pnt *pnt,int dist)
+void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,int dist)
 {
-	d3ang			ang;
-	
+	float			fx,fy,fz;
+	matrix_type		mat;
+
+	if (dist==0) return;
+
+
 		// always move on axises, find
 		// closest to view angle
-		
-	walk_view_get_angle(&ang);
 
-	if ((ang.x<=315.0f) && (ang.x>180.0f)) {
-		if ((ang.y>=45.0f) && (ang.y<135.0f)) {
-			pnt->x+=dist;
-			return;
-		}
-		if ((ang.y>=135.0f) && (ang.y<225.0f)) {
-			pnt->z+=-dist;
-			return;
-		}
-		if ((ang.y>=225.0f) && (ang.y<315.0f)) {
-			pnt->x+=-dist;
-			return;
-		}
+		// top
 		
-		pnt->z+=dist;
+	if ((view->ang.x<=315.0f) && (view->ang.x>180.0f)) {
+		fx=0.0f;
+		fy=0.0f;
+		fz=(float)dist;
+
+		matrix_rotate_y(&mat,view->ang.y);
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+		pnt->x-=(int)fx;
+		pnt->z+=(int)fz;
+
 		return;
 	}
 	
-	if ((ang.x>=45.0f) && (ang.x<180.0f)) {
-		if ((ang.y>=45.0f) && (ang.y<135.0f)) {
-			pnt->x+=-dist;
-			return;
-		}
-		if ((ang.y>=135.0f) && (ang.y<225.0f)) {
-			pnt->z+=dist;
-			return;
-		}
-		if ((ang.y>=225.0f) && (ang.y<315.0f)) {
-			pnt->x+=dist;
-			return;
-		}
-		
-		pnt->z+=-dist;
+		// bottom
+
+	if ((view->ang.x>=45.0f) && (view->ang.x<180.0f)) {
+		fx=0.0f;
+		fy=0.0f;
+		fz=-(float)dist;
+
+		matrix_rotate_y(&mat,view->ang.y);
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+		pnt->x-=(int)fx;
+		pnt->z+=(int)fz;
+
 		return;
 	}
 	
+		// forward, backward, left, right
+
 	pnt->y+=dist;
-	
 }
 
 void walk_view_mouse_get_forward_axis(d3pnt *pnt,int dist)
@@ -183,11 +176,13 @@ void walk_view_mouse_get_forward_axis(d3pnt *pnt,int dist)
 	pnt->z+=dist;
 }
 
-
 void walk_view_mouse_scroll_movement(d3pnt *pnt)
 {
 	int						x,y;
 	d3pnt					old_pnt,move_pnt;
+	editor_view_type		*view;
+
+	view=walk_view_get_current_view();
     
     os_set_hand_cursor();
 	
@@ -199,13 +194,18 @@ void walk_view_mouse_scroll_movement(d3pnt *pnt)
 
 		x=old_pnt.x-pnt->x;
 		y=old_pnt.y-pnt->y;
+
+		if (setup.flip_movement) {
+			x=-x;
+			y=-y;
+		}
 		
 		memmove(&old_pnt,pnt,sizeof(d3pnt));
 		
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(&move_pnt,(y*move_mouse_scale));
+		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,(x*move_mouse_scale));
+		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,(y*move_mouse_scale));
 
 		walk_view_move_position(&move_pnt);
 		
@@ -241,9 +241,10 @@ void walk_view_mouse_forward_movement(d3pnt *pnt)
 		
 			// y turn
 			
-		if (labs(x)>5) {
+		if (x!=0) {
 			turn_ang.x=turn_ang.z=0.0f;
-			turn_ang.y=(float)(x/move_mouse_turn_reduce_scale);
+			turn_ang.y=((float)x)/move_mouse_turn_reduce_scale;
+			if (setup.flip_movement) turn_ang.y=-turn_ang.y;
 			walk_view_turn_angle(&turn_ang);
 		}
 
@@ -257,7 +258,7 @@ void walk_view_scroll_wheel_z_movement(int delta)
 
 	move_pnt.x=move_pnt.y=move_pnt.z=0;
 	
-	walk_view_mouse_get_forward_axis(&move_pnt,(delta*move_scroll_wheel_scale));
+	walk_view_mouse_get_forward_axis(&move_pnt,-(delta*move_scroll_wheel_scale));
 	walk_view_move_position(&move_pnt);
 	
 	main_wind_draw();
@@ -284,16 +285,21 @@ void walk_view_mouse_turn(d3pnt *pnt)
 		
 		x=old_pnt.x-pnt->x;
 		y=old_pnt.y-pnt->y;
+
+		if (setup.flip_movement) {
+			x=-x;
+			y=-y;
+		}
 		
 		redraw=FALSE;
 	
 			// y turning
 			
-		if (labs(x)>5) {
+		if (x!=0) {
 			old_pnt.x=pnt->x;
 			
 			turn_ang.x=turn_ang.z=0.0f;
-			turn_ang.y=-(float)(x/move_mouse_turn_reduce_scale);
+			turn_ang.y=-((float)x)/move_mouse_turn_reduce_scale;
 			walk_view_turn_angle(&turn_ang);
 
 			redraw=TRUE;
@@ -301,11 +307,11 @@ void walk_view_mouse_turn(d3pnt *pnt)
 		
 			// x turning
 			
-		if (labs(y)>5) {
+		if (y!=0) {
 			old_pnt.y=pnt->y;
 			
 			turn_ang.y=turn_ang.z=0.0f;
-			turn_ang.x=-(float)(y/move_mouse_turn_reduce_scale);
+			turn_ang.x=-((float)y)/move_mouse_turn_reduce_scale;
 			walk_view_turn_angle(&turn_ang);
 
 			redraw=TRUE;

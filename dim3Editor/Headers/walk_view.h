@@ -80,8 +80,11 @@ extern void walk_view_draw_select(d3pnt *cpt);
 // walk view click
 //
 
-extern bool walk_view_click_rotate_polygon_in_z(int x,int y,int z);
-extern void walk_view_click_project_point(editor_view_type *view,int *x,int *y,int *z);
+extern bool walk_view_pick_list_start(editor_view_type *view,int count);
+extern void walk_view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx);
+extern void walk_view_pick_list_add(int type,int main_idx,int sub_idx);
+extern void walk_view_pick_list_add_cube(int *px,int *py,int *pz,int type,int main_idx,int sub_idx);
+extern void walk_view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_idx);
 extern int walk_view_get_grid(void);
 extern void walk_view_click_grid(d3pnt *pt);
 extern bool walk_view_click_snap(int mesh_idx,d3pnt *pt);
@@ -107,8 +110,8 @@ extern void walk_view_sprite_select_size(d3pnt *pnt,int *px,int *py,int *pz);
 // walk view movement
 //
 
-extern void walk_view_mouse_get_scroll_horizontal_axis(d3pnt *pnt,int dist);
-extern void walk_view_mouse_get_scroll_vertical_axis(d3pnt *pnt,int dist);
+extern void walk_view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *pnt,int dist);
+extern void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,int dist);
 extern void walk_view_mouse_scroll_movement(d3pnt *pnt);
 extern void walk_view_mouse_forward_movement(d3pnt *pnt);
 extern void walk_view_scroll_wheel_z_movement(int delta);

@@ -348,7 +348,7 @@ bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,
 	cx=cy=cz=0;
 
 		// if there is a model, then get size
-		
+
 	if (name!=NULL) {
 		if (name[0]!=0x0) {
 	
@@ -367,7 +367,7 @@ bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,
 			}
 		}
 	}
-	
+
 		// get polygons
 	
 	px[0]=px[3]=px[6]=px[7]=-wid_x;

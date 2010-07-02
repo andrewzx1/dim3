@@ -4,11 +4,31 @@
 #include "common_view.h"
 #include "interface.h"
 
-#define EDITOR_WIN_X			10
-#define EDITOR_WIN_Y			40
-#define EDITOR_WIN_WIDTH		1100
-#define EDITOR_WIN_HEIGHT		700
-#define EDITOR_WIN_EXTRA_HEIGHT	20
+#define kCommandFileQuit					100
+// supergumba -- temporary
+#define kCommandViewFront					200
+#define kCommandViewLeft					201
+#define kCommandViewRight					202
+#define kCommandViewBack					203
+#define kCommandViewTop						204
+#define kCommandViewBottom					205
+#define kCommandViewPerspective				206
+#define kCommandViewOrtho					207
+#define kCommandViewUVLayer1				208
+#define kCommandViewUVLayer2				209
+#define kCommandViewShowHideLiquids			210
+#define kCommandViewShowHideSpots			211
+#define kCommandViewShowHideLights			212
+#define kCommandViewShowHideNodes			213
+#define kCommandViewSplitHorizontal			214
+#define kCommandViewSplitVertical			215
+#define kCommandViewRemoveSplit				216
+
+#define EDITOR_WIN_X					10
+#define EDITOR_WIN_Y					40
+#define EDITOR_WIN_WIDTH				1100
+#define EDITOR_WIN_HEIGHT				700
+#define EDITOR_WIN_EXTRA_HEIGHT			20
 
 ATOM					wnd_rg_class;
 HFONT					fnt;
@@ -77,6 +97,90 @@ void main_wind_tool_reset(void)
 
 /* =======================================================
 
+      Menu Commands
+      
+======================================================= */
+
+// supergumba -- temporary until real menu
+
+void editor_menu_commands(int id)
+{
+	switch (id) {
+
+		case kCommandFileQuit:
+			quit=TRUE;
+			break;
+
+		case kCommandViewFront:
+			walk_view_face_front();
+			main_wind_draw();
+			break;
+
+		case kCommandViewLeft:
+			walk_view_face_left();
+			main_wind_draw();
+			break;
+
+		case kCommandViewRight:
+			walk_view_face_right();
+			main_wind_draw();
+			break;
+
+		case kCommandViewBack:
+			walk_view_face_back();
+			main_wind_draw();
+			break;
+
+		case kCommandViewTop:
+			walk_view_face_top();
+			main_wind_draw();
+			break;
+
+		case kCommandViewBottom:
+			walk_view_face_bottom();
+			main_wind_draw();
+			break;
+
+		case kCommandViewPerspective:
+		case kCommandViewOrtho:
+			break;
+
+		case kCommandViewUVLayer1:
+			walk_view_set_uv_layer(uv_layer_normal);
+			main_wind_draw();
+			break;
+
+		case kCommandViewUVLayer2:
+			walk_view_set_uv_layer(uv_layer_light_map);
+			main_wind_draw();
+			break;
+
+		case kCommandViewShowHideLiquids:
+		case kCommandViewShowHideSpots:
+		case kCommandViewShowHideLights:
+		case kCommandViewShowHideNodes:
+			break;
+
+		case kCommandViewSplitHorizontal:
+			walk_view_split_horizontal();
+			main_wind_draw();
+			break;
+
+		case kCommandViewSplitVertical:
+			walk_view_split_vertical();
+			main_wind_draw();
+			break;
+
+		case kCommandViewRemoveSplit:
+			walk_view_remove();
+			main_wind_draw();
+			break;
+
+	}
+}
+
+/* =======================================================
+
       UI Window Procedure
       
 ======================================================= */
@@ -121,7 +225,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_COMMAND:
-			if (LOWORD(wParam)==100) quit=TRUE;
+			editor_menu_commands(LOWORD(wParam));
 			break;
 
 		case WM_CLOSE:
@@ -190,9 +294,40 @@ bool editor_start(char *err_str)
 		// menu
 
 	menu=CreateMenu();
+
 	sub_menu=CreatePopupMenu();
-	AppendMenu(sub_menu,MF_STRING,100,"Exit");
+
+	AppendMenu(sub_menu,MF_STRING,kCommandFileQuit,"Exit");
 	AppendMenu(menu,(MF_STRING|MF_POPUP),(UINT)sub_menu,"File");
+
+	sub_menu=CreatePopupMenu();
+
+	AppendMenu(sub_menu,MF_STRING,kCommandViewFront,"Front");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewLeft,"Left");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewRight,"Right");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewBack,"Back");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewTop,"Top");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewBottom,"Bottom");
+	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
+
+	AppendMenu(sub_menu,MF_STRING,kCommandViewPerspective,"Perspective");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewOrtho,"Ortho");
+	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
+
+	AppendMenu(sub_menu,MF_STRING,kCommandViewUVLayer1,"Normal Map");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewUVLayer2,"Light Map");
+	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
+
+	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideLiquids,"Show Liquids");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideSpots,"Show Spots");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideLights,"Show Lights");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideNodes,"Show Nodes");
+	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
+
+	AppendMenu(sub_menu,MF_STRING,kCommandViewSplitHorizontal,"Split Horz");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewSplitVertical,"Split Vert");
+	AppendMenu(sub_menu,MF_STRING,kCommandViewRemoveSplit,"Remove");
+	AppendMenu(menu,(MF_STRING|MF_POPUP),(UINT)sub_menu,"View");
 
 	SetMenu(wnd,menu);
 
@@ -357,6 +492,7 @@ bool editor_open_map(char *err_str)
 
 		// supergumba -- some temporary state
 
+	state.show_liquid=TRUE;
 	state.show_object=TRUE;
 	state.show_lightsoundparticle=TRUE;
 	state.drag_mode=drag_mode_mesh;

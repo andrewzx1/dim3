@@ -46,6 +46,7 @@ void setup_xml_default(void)
 	setup.mipmap_mode=mipmap_mode_bilinear;
 	
 	setup.auto_texture=TRUE;
+	setup.flip_movement=FALSE;
 	setup.duplicate_offset=5;
 	setup.snap_size=5;
 	
@@ -104,6 +105,7 @@ bool setup_xml_read(void)
 
     xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
  	xml_key_read_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
+ 	xml_key_read_boolean(setup_tag,"Flip_Movement",&setup.flip_movement);
 	xml_key_read_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
 	xml_key_read_int(setup_tag,"Snap_Size",&setup.snap_size);
 	xml_key_read_text(setup_tag,"Engine_Name",setup.engine_name,256);
@@ -140,6 +142,7 @@ bool setup_xml_write(void)
 		
     xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
  	xml_key_write_boolean("Auto_Texture",setup.auto_texture);
+ 	xml_key_write_boolean("Flip_Movement",setup.flip_movement);
 	xml_key_write_int("Duplicate_Offset",setup.duplicate_offset);
 	xml_key_write_int("Snap_Size",setup.snap_size);
 	xml_key_write_text("Engine_Name",setup.engine_name);
