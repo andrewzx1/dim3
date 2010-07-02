@@ -26,37 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// setups
-//
-
-typedef struct		{
-						d3col					mesh_line,mesh_sel,poly_sel,poly_cull,
-												background;
-					} setup_col_type;
-
-typedef struct		{
-						int						anisotropic_mode,mipmap_mode,
-												duplicate_offset,snap_size;
-						bool					auto_texture;
-						char					engine_name[256];
-						setup_col_type			col;
-					} setup_type;
-
-//
-// selection defines
-//
-
-#define select_max_item							1024
-
-//
-// selection structure
-//
-
-typedef struct		{
-                        int						type,main_idx,sub_idx;
-					} select_item_type;
-
-//
 // os routines
 //
 

@@ -221,6 +221,12 @@ void walk_view_draw_select_liquid(int liquid_idx)
 	glBegin(GL_POINTS);
 
 	for (n=0;n!=4;n++) {
+		if (state.drag_handle_idx==n) {
+			glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+		}
+		else {
+			glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+		}
 		glVertex3i(px[n],py[n],pz[n]);
 	}
 

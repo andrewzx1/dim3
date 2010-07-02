@@ -109,7 +109,7 @@ and can be sold or given away.
 //
 
 #define move_mouse_scale						30
-#define move_mouse_turn_reduce_scale			5
+#define move_mouse_turn_reduce_scale			5.0f
 
 #define move_scroll_wheel_scale					300
 
@@ -144,6 +144,42 @@ and can be sold or given away.
 //
 
 #define normal_vector_scale						300.0f
+
+//
+// setups
+//
+
+typedef struct		{
+						d3col					mesh_line,mesh_sel,poly_sel,poly_cull,
+												background;
+					} setup_col_type;
+
+typedef struct		{
+						int						anisotropic_mode,mipmap_mode,
+												duplicate_offset,snap_size;
+						bool					auto_texture,flip_movement;
+						char					engine_name[256];
+						setup_col_type			col;
+					} setup_type;
+
+//
+// selections
+//
+
+#define select_max_item							1024
+
+typedef struct		{
+                        int						type,main_idx,sub_idx;
+					} select_item_type;
+
+//
+// picker struct
+//
+
+typedef struct		{
+						short					type,main_idx,sub_idx;
+						unsigned char			col[3];
+					} view_picker_type;
 
 //
 // mode struct

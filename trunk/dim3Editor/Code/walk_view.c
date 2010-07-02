@@ -239,40 +239,97 @@ void walk_view_split_vertical(void)
 void walk_view_remove(void)
 {
 	int						n,move_count;
+	bool					moved;
+	editor_view_box_type	box;
 	editor_view_type		*view,*del_view;
 
 	if (map.editor_views.count==1) return;
 	
 	del_view=&map.editor_views.views[view_select_idx];
 
-		// move all views that
-		// border this view
+		// get the view box, and slowly
+		// remove parts of it to move the other
+		// views around
 
-	for (n=0;n!=map.editor_views.count;n++) {
-		if (n==view_select_idx) continue;
+	memmove(&box,&del_view->box,sizeof(editor_view_box_type));
 
-		view=&map.editor_views.views[n];
+	while (TRUE) {
 
-		if ((view->box.top>=del_view->box.top) && (view->box.bot<=del_view->box.bot)) {
-			if (view->box.lft==del_view->box.rgt) {
-				view->box.lft=del_view->box.lft;
-				continue;
+		moved=FALSE;
+
+		for (n=0;n!=map.editor_views.count;n++) {
+			if (n==view_select_idx) continue;
+
+			view=&map.editor_views.views[n];
+
+			if ((view->box.top==box.top) && (view->box.bot<=box.bot)) {
+				if (view->box.lft==box.rgt) {
+					view->box.lft=box.lft;
+					box.top=view->box.bot;
+					moved=TRUE;
+					break;
+				}
+				if (view->box.rgt==box.lft) {
+					view->box.rgt=box.rgt;
+					box.top=view->box.bot;
+					moved=TRUE;
+					break;
+				}
 			}
-			if (view->box.rgt==del_view->box.lft) {
-				view->box.rgt=del_view->box.rgt;
-				continue;
+
+			if ((view->box.top>=box.top) && (view->box.bot==box.bot)) {
+				if (view->box.lft==box.rgt) {
+					view->box.lft=box.lft;
+					box.bot=view->box.top;
+					moved=TRUE;
+					break;
+				}
+				if (view->box.rgt==box.lft) {
+					view->box.rgt=box.rgt;
+					box.bot=view->box.top;
+					moved=TRUE;
+					break;
+				}
+			}
+
+			if ((view->box.lft==box.lft) && (view->box.rgt<=box.rgt)) {
+				if (view->box.top==box.bot) {
+					view->box.top=box.top;
+					box.lft=view->box.rgt;
+					moved=TRUE;
+					break;
+				}
+				if (view->box.bot==box.top) {
+					view->box.bot=box.bot;
+					box.lft=view->box.rgt;
+					moved=TRUE;
+					break;
+				}
+			}
+
+			if ((view->box.lft>=box.lft) && (view->box.rgt==box.rgt)) {
+				if (view->box.top==box.bot) {
+					view->box.top=box.top;
+					box.rgt=view->box.lft;
+					moved=TRUE;
+					break;
+				}
+				if (view->box.bot==box.top) {
+					view->box.bot=box.bot;
+					box.rgt=view->box.lft;
+					moved=TRUE;
+					break;
+				}
 			}
 		}
-		if ((view->box.lft>=del_view->box.lft) && (view->box.rgt<=del_view->box.rgt)) {
-			if (view->box.top==del_view->box.bot) {
-				view->box.top=del_view->box.top;
-				continue;
-			}
-			if (view->box.bot==del_view->box.top) {
-				view->box.bot=del_view->box.bot;
-				continue;
-			}
-		}
+
+			// break if no movement
+
+		if (!moved) break;
+
+			// is box finished?
+
+		if ((box.top==box.bot) || (box.lft==box.rgt)) break;
 	}
 
 		// remove old view
@@ -281,6 +338,10 @@ void walk_view_remove(void)
 	if (move_count>=1) memmove(&map.editor_views.views[view_select_idx],&map.editor_views.views[view_select_idx+1],(sizeof(editor_view_type)*move_count));
 
 	map.editor_views.count--;
+
+		// new selection
+
+	view_select_idx=0;
 }
 
 /* =======================================================
