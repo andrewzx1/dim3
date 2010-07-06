@@ -32,6 +32,7 @@ and can be sold or given away.
 #define kPrefEngineName						FOUR_CHAR_CODE('name')
 #define kPrefMipMapMode						FOUR_CHAR_CODE('mmap')
 #define kPrefAutoTexture					FOUR_CHAR_CODE('auto')
+#define kPrefFlipMovement					FOUR_CHAR_CODE('flip')
 #define kPrefDuplicateOffset				FOUR_CHAR_CODE('doff')
 #define kPrefSnapSize						FOUR_CHAR_CODE('spsz')
 #define kPrefBackgroundColor				FOUR_CHAR_CODE('bcol')
@@ -103,6 +104,7 @@ void dialog_preference_run(void)
 	dialog_set_text(dialog_preference_wind,kPrefEngineName,0,setup.engine_name);
 	dialog_set_combo(dialog_preference_wind,kPrefMipMapMode,0,setup.mipmap_mode);
 	dialog_set_boolean(dialog_preference_wind,kPrefAutoTexture,0,setup.auto_texture);
+	dialog_set_boolean(dialog_preference_wind,kPrefFlipMovement,0,setup.flip_movement);
 	dialog_set_value(dialog_preference_wind,kPrefDuplicateOffset,0,setup.duplicate_offset);
 	dialog_set_value(dialog_preference_wind,kPrefSnapSize,0,setup.snap_size);
 	
@@ -132,6 +134,7 @@ void dialog_preference_run(void)
 		dialog_get_text(dialog_preference_wind,kPrefEngineName,0,setup.engine_name,256);
 		setup.mipmap_mode=dialog_get_combo(dialog_preference_wind,kPrefMipMapMode,0);
 		setup.auto_texture=dialog_get_boolean(dialog_preference_wind,kPrefAutoTexture,0);
+		setup.flip_movement=dialog_get_boolean(dialog_preference_wind,kPrefFlipMovement,0);
 		setup.duplicate_offset=dialog_get_value(dialog_preference_wind,kPrefDuplicateOffset,0);
 		setup.snap_size=dialog_get_value(dialog_preference_wind,kPrefSnapSize,0);
 		

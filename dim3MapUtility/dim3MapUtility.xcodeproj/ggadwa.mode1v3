@@ -345,9 +345,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>17</integer>
-									<integer>10</integer>
-									<integer>9</integer>
+									<integer>6</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -371,7 +370,7 @@
 							<real>284</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>1089 266 306 751 0 0 1680 1028 </string>
+						<string>1199 251 306 751 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -408,7 +407,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1089 266 306 751 0 0 1680 1028 </string>
+								<string>1199 251 306 751 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -428,7 +427,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 705}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1089 266 306 751 0 0 1680 1028 </string>
+								<string>1199 251 306 751 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -452,9 +451,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>264BD84A11DAC426008D5F88</string>
+				<string>26CCE6FB11E0447100F8460C</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>264BD84B11DAC426008D5F88</string>
+				<string>26CCE6FC11E0447100F8460C</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -575,7 +574,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>299549734.66880202</real>
+	<real>299910257.74385601</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -594,7 +593,7 @@
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>1089 266 306 751 0 0 1680 1028 </string>
+	<string>1199 251 306 751 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -671,7 +670,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>264BD83411DAC40F008D5F88</string>
+				<string>26CCE6F811E0446600F8460C</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -887,8 +886,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>2677181311B1B5D700F59963</string>
-				<string>2677181411B1B5D700F59963</string>
+				<string>26E19DDA11DFC9AF00B6F31D</string>
+				<string>26E19DDB11DFC9AF00B6F31D</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

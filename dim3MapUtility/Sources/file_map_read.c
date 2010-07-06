@@ -299,7 +299,8 @@ void read_map_editor_views_xml(map_type *map,int map_head)
 		view->magnify_factor=xml_get_attribute_int(view_tag,"magnify_factor");
   		view->ortho=xml_get_attribute_boolean(view_tag,"ortho");
     	view->cull=xml_get_attribute_boolean(view_tag,"cull");
-     
+     	view->clip=xml_get_attribute_boolean(view_tag,"clip");
+    
 		view_tag=xml_findnextchild(view_tag);
         view++;
     }

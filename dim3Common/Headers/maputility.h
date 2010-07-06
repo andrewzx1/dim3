@@ -579,7 +579,7 @@ typedef struct		{
 					
 typedef struct		{
 						int									uv_layer,magnify_factor;
-						bool								ortho,cull;
+						bool								ortho,cull,clip;
 						d3pnt								pnt;
 						d3ang								ang;
 						editor_view_box_type				box;

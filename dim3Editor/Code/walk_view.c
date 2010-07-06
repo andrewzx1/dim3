@@ -137,6 +137,7 @@ void walk_view_setup_default_views(void)
 
 	view->cull=FALSE;
 	view->ortho=FALSE;
+	view->clip=FALSE;
 }
 
 /* =======================================================
@@ -611,6 +612,16 @@ void walk_view_perspective_ortho(bool on)
 void walk_view_cull(bool on)
 {
 	map.editor_views.views[view_select_idx].cull=on;
+}
+
+void walk_view_clip(bool on)
+{
+	map.editor_views.views[view_select_idx].clip=on;
+}
+
+void walk_view_flip_clip(void)
+{
+	map.editor_views.views[view_select_idx].clip=!map.editor_views.views[view_select_idx].clip;
 }
 
 int walk_view_get_uv_layer(void)

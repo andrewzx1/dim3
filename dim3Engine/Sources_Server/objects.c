@@ -921,7 +921,6 @@ void object_dispose_single(int idx)
 {
 	int					n;
 	obj_type			*obj;
-	proj_type			*proj;
 
 	obj=server.obj_list.objs[idx];
 

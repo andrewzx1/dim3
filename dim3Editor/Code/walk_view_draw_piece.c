@@ -173,11 +173,11 @@ void walk_view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 
 /* =======================================================
 
-      Poly Culling
+      Poly Culling and Clipping
       
 ======================================================= */
 
-bool walk_view_draw_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+bool walk_view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			n;
 	d3pnt		center,camera_pnt;
@@ -207,6 +207,42 @@ bool walk_view_draw_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mes
 	
 	vector_create(&face_vct,center.x,center.y,center.z,camera_pnt.x,camera_pnt.y,camera_pnt.z);
 	return(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
+}
+
+bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	int			n,dist;
+	d3pnt		center;
+
+	if (!view->clip) return(FALSE);
+	
+		// get center
+		
+	center.x=center.y=center.z=0;
+	
+	for (n=0;n!=poly->ptsz;n++) {
+		center.x+=mesh->vertexes[poly->v[n]].x;
+		center.y+=mesh->vertexes[poly->v[n]].y;
+		center.z+=mesh->vertexes[poly->v[n]].z;
+	}
+	
+	center.x/=poly->ptsz;
+	center.y/=poly->ptsz;
+	center.z/=poly->ptsz;
+	
+		// if top or bottom, only clip Y
+		
+	if ((view->ang.x<=270.0f) && (view->ang.x>=45.0f)) {
+		dist=abs(view->pnt.y-center.y);
+	}
+	else {
+		dist=distance_2D_get(view->pnt.x,view->pnt.z,center.x,center.z);
+	}
+	
+		// get distance
+		// supergumba -- make this settable
+		
+	return(dist<(map_enlarge*200));
 }
 
 /* =======================================================
@@ -272,6 +308,10 @@ void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
 		
 			mesh_poly=&mesh->polys[k];
 			
+				// clipping
+				
+			if (walk_view_clip_poly(view,mesh,mesh_poly)) continue;
+			
 				// no light map?
 				
 			if ((view->uv_layer==uv_layer_light_map) && (mesh_poly->lmap_txt_idx==-1)) continue;
@@ -299,7 +339,7 @@ void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			
 				// culling
 			
-			culled=walk_view_draw_cull_poly(view,mesh,mesh_poly);
+			culled=walk_view_cull_poly(view,mesh,mesh_poly);
 		
 				// setup texture
 				
@@ -369,6 +409,10 @@ void walk_view_draw_meshes_line(editor_view_type *view,bool opaque)
 		
 			mesh_poly=&mesh->polys[k];
 			texture=&map.textures[mesh_poly->txt_idx];
+			
+				// clipping
+				
+			if (walk_view_clip_poly(view,mesh,mesh_poly)) continue;
 			
 				// opaque or transparent flag
 		

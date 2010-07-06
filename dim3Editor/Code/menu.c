@@ -152,25 +152,27 @@ void menu_update_view(void)
 	CheckMenuItem(GetMenuHandle(app_menu_view),11,(view->uv_layer==uv_layer_normal));
 	CheckMenuItem(GetMenuHandle(app_menu_view),12,(view->uv_layer==uv_layer_light_map));
 
-	CheckMenuItem(GetMenuHandle(app_menu_view),14,state.show_liquid);
-	CheckMenuItem(GetMenuHandle(app_menu_view),15,state.show_object);
-	CheckMenuItem(GetMenuHandle(app_menu_view),16,state.show_lightsoundparticle);
-	CheckMenuItem(GetMenuHandle(app_menu_view),17,state.show_node);
+	CheckMenuItem(GetMenuHandle(app_menu_view),14,(view->clip));
+
+	CheckMenuItem(GetMenuHandle(app_menu_view),16,state.show_liquid);
+	CheckMenuItem(GetMenuHandle(app_menu_view),17,state.show_object);
+	CheckMenuItem(GetMenuHandle(app_menu_view),18,state.show_lightsoundparticle);
+	CheckMenuItem(GetMenuHandle(app_menu_view),19,state.show_node);
 	
 	if (map.editor_views.count<max_editor_view) {
-		EnableMenuItem(GetMenuHandle(app_menu_view),19);
-		EnableMenuItem(GetMenuHandle(app_menu_view),20);
-	}
-	else {
-		DisableMenuItem(GetMenuHandle(app_menu_view),19);
-		DisableMenuItem(GetMenuHandle(app_menu_view),20);
-	}
-	
-	if (map.editor_views.count>1) {
 		EnableMenuItem(GetMenuHandle(app_menu_view),21);
+		EnableMenuItem(GetMenuHandle(app_menu_view),22);
 	}
 	else {
 		DisableMenuItem(GetMenuHandle(app_menu_view),21);
+		DisableMenuItem(GetMenuHandle(app_menu_view),22);
+	}
+	
+	if (map.editor_views.count>1) {
+		EnableMenuItem(GetMenuHandle(app_menu_view),24);
+	}
+	else {
+		DisableMenuItem(GetMenuHandle(app_menu_view),24);
 	}
 }
 
@@ -317,6 +319,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandViewUVLayer2:
 			walk_view_set_uv_layer(uv_layer_light_map);
+			menu_update_view();
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandViewClip:
+			walk_view_flip_clip();
 			menu_update_view();
 			main_wind_draw();
 			return(noErr);
