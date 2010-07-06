@@ -53,6 +53,8 @@ extern void walk_view_set_angle(d3ang *ang);
 extern void walk_view_turn_angle(d3ang *ang);
 extern void walk_view_perspective_ortho(bool on);
 extern void walk_view_cull(bool on);
+extern void walk_view_clip(bool on);
+extern void walk_view_flip_clip(void);
 extern int walk_view_get_uv_layer(void);
 extern void walk_view_set_uv_layer(int uv_layer);
 extern int walk_view_get_magnify_factor(void);
@@ -71,6 +73,7 @@ extern void walk_view_draw(void);
 // walk view draw piece
 //
 
+extern bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
 extern void walk_view_draw_select_liquid_get_grow_handles(int liquid_idx,int *px,int *py,int *pz);
 extern void walk_view_draw_view(editor_view_type *view);

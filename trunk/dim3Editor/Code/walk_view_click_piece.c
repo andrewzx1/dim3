@@ -594,6 +594,15 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 		poly=mesh->polys;
 	
 		for (k=0;k!=mesh->npoly;k++) {
+					
+				// clipping
+				
+			if (walk_view_clip_poly(view,mesh,poly)) {
+				poly++;
+				continue;
+			}
+			
+				// draw color poly
 
 			walk_view_pick_list_add(mesh_piece,n,k);
 
