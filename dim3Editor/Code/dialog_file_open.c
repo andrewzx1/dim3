@@ -240,10 +240,9 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	
 	RunAppModalLoopForWindow(dialog_file_open_wind);
 	
-		// get file index so deselect
-		// doesn't clear it
+		// get the file
 		
-	idx=fp_file_index;
+	if (!fp_cancel) file_paths_get_complete_path_from_index(fpd,fp_file_index,file_name);
 	
 		// close window
 		
@@ -254,15 +253,7 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 		// clear up memory
 		
 	file_paths_close_directory(fpd);
-	
-		// cancelled?
 		
-	if (fp_cancel) return(FALSE);
-	
-		// get selected file
-		
-	file_paths_get_complete_path_from_index(fpd,idx,file_name);
-
-	return(TRUE);
+	return(!fp_cancel);
 }
 
