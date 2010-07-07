@@ -1361,6 +1361,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_map_polygon.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_map_setting.c"
 						>
 						<FileConfiguration

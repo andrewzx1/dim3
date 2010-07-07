@@ -42,18 +42,19 @@ extern js_type			js;
 void script_initialize_classes(void)
 {
 	script_init_global_map_object();
+	script_init_map_info_object();
+	script_init_map_setting_object();
 	script_init_map_action_object();
 	script_init_map_fog_object();
 	script_init_map_fog_color_object();
 	script_init_map_group_object();
-	script_init_map_info_object();
 	script_init_map_light_color_object();
 	script_init_map_movement_object();
 	script_init_map_node_object();
 	script_init_map_object_object();
-	script_init_map_setting_object();
 	script_init_map_spot_object();
 	script_init_map_light_object();
+	script_init_map_polygon_object();
 
 	script_init_global_multiplayer_object();
 	script_init_multiplayer_bot_object();
@@ -184,18 +185,19 @@ void script_initialize_classes(void)
 void script_release_classes(void)
 {
 	script_free_global_map_object();
+	script_free_map_info_object();
+	script_free_map_setting_object();
 	script_free_map_action_object();
 	script_free_map_fog_object();
 	script_free_map_fog_color_object();
 	script_free_map_group_object();
-	script_free_map_info_object();
 	script_free_map_light_color_object();
 	script_free_map_movement_object();
 	script_free_map_node_object();
 	script_free_map_object_object();
-	script_free_map_setting_object();
 	script_free_map_spot_object();
 	script_free_map_light_object();
+	script_free_map_polygon_object();
 
 	script_free_global_multiplayer_object();
 	script_free_multiplayer_bot_object();
@@ -376,6 +378,7 @@ bool script_add_global_object(script_type *script,char *err_str)
 	j_sub_obj=script_add_global_map_object(script->cx,script->global_obj);
 	script_add_map_info_object(script->cx,j_sub_obj);
 	script_add_map_setting_object(script->cx,j_sub_obj);
+	script_add_map_action_object(script->cx,j_sub_obj);
 	script_add_map_light_color_object(script->cx,j_sub_obj);
 	script_add_map_fog_object(script->cx,j_sub_obj);
 	script_add_map_fog_color_object(script->cx,j_sub_obj);
@@ -384,8 +387,8 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_map_object_object(script->cx,j_sub_obj);
 	script_add_map_group_object(script->cx,j_sub_obj);
 	script_add_map_movement_object(script->cx,j_sub_obj);
-	script_add_map_action_object(script->cx,j_sub_obj);
 	script_add_map_light_object(script->cx,j_sub_obj);
+	script_add_map_polygon_object(script->cx,j_sub_obj);
 
 		// multiplayer object
 		

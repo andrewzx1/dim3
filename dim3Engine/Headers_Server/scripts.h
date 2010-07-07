@@ -113,6 +113,7 @@ extern void script_init_map_object_object(void);
 extern void script_init_map_setting_object(void);
 extern void script_init_map_spot_object(void);
 extern void script_init_map_light_object(void);
+extern void script_init_map_polygon_object(void);
 
 extern void script_init_global_multiplayer_object(void);
 extern void script_init_multiplayer_bot_object(void);
@@ -256,6 +257,7 @@ extern void script_free_map_object_object(void);
 extern void script_free_map_setting_object(void);
 extern void script_free_map_spot_object(void);
 extern void script_free_map_light_object(void);
+extern void script_free_map_polygon_object(void);
 
 extern void script_free_global_multiplayer_object(void);
 extern void script_free_multiplayer_bot_object(void);
@@ -399,6 +401,7 @@ extern JSObjectRef script_add_map_object_object(JSContextRef cx,JSObjectRef pare
 extern JSObjectRef script_add_map_setting_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_map_spot_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_map_light_object(JSContextRef cx,JSObjectRef parent_obj);
+extern JSObjectRef script_add_map_polygon_object(JSContextRef cx,JSObjectRef parent_obj);
 
 extern JSObjectRef script_add_global_multiplayer_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_multiplayer_bot_object(JSContextRef cx,JSObjectRef parent_obj);
