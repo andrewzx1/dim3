@@ -995,8 +995,9 @@ void piece_poly_hole(void)
 
 void piece_key(char ch)
 {
-	int				n,sel_count,type,main_idx,sub_idx,mv;
-	d3pnt			move_pnt;
+	int					n,sel_count,type,main_idx,sub_idx,mv;
+	d3pnt				move_pnt;
+	editor_view_type	*view;
 	
 		// special check for delete key
 		
@@ -1016,24 +1017,25 @@ void piece_key(char ch)
 	
 		// nudge keys movement
 
+	view=walk_view_get_current_view();
 	move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
 	switch (ch) {
 	
 		case 0x1C:
-			walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,-mv);
+			walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-mv);
 			break;
 			
 		case 0x1D:
-			walk_view_mouse_get_scroll_horizontal_axis(&move_pnt,+mv);
+			walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,+mv);
 			break;
 			
 		case 0x1E:
-			walk_view_mouse_get_scroll_vertical_axis(&move_pnt,-mv);
+			walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-mv);
 			break;
 			
 		case 0x1F:
-			walk_view_mouse_get_scroll_vertical_axis(&move_pnt,mv);
+			walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,mv);
 			break;
 			
 	}
