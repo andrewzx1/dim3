@@ -212,62 +212,36 @@ bool view_visibility_check_obscure_line(d3pnt *pt1,d3pnt *pt2)
 	return(TRUE);
 }
 
-bool view_visibility_check_box_for_point(d3pnt *eye_pnt,d3pnt *mid,d3pnt *min,d3pnt *max)
-{
-	d3pnt			pt;
-
-		// see if we can trace to the corner points
-		// of a mesh (in 2D) without hitting any
-		// obscure zones (0x0 in grid.)  If we can't
-		// get to any corner without being blocked,
-		// then elimate the mesh
-
-		// middle
-
-	if (view_visibility_check_obscure_line(eye_pnt,mid)) return(TRUE);
-
-		// four corners
-
-	if (view_visibility_check_obscure_line(eye_pnt,min)) return(TRUE);
-	if (view_visibility_check_obscure_line(eye_pnt,max)) return(TRUE);
-
-	pt.y=view.render->camera.pnt.y;
-
-	pt.x=min->x;
-	pt.z=max->z;
-	if (view_visibility_check_obscure_line(eye_pnt,&pt)) return(TRUE);
-
-	pt.x=max->x;
-	pt.z=min->z;
-	return(view_visibility_check_obscure_line(eye_pnt,&pt));
-}
-
 bool view_visibility_check_box(d3pnt *mid,d3pnt *min,d3pnt *max)
 {
-	int				sz,xadd,zadd;
-	d3pnt			eye_pt;
+	int				x,z,xsz,zsz;
+	d3pnt			pt;
 
-		// check camera to box
+		// find the grid size for box
 
-	if (view_visibility_check_box_for_point(&view.render->camera.pnt,mid,min,max)) return(TRUE);
+	xsz=(max->x-min->x)/view.obscure.x_size;
+	if (xsz<1) xsz=1;
+	if (xsz>obscure_grid_max_box_side_length) xsz=obscure_grid_max_box_side_length;
 
-		// check slightly left and
-		// slightly right to catch field of vision
-		// corner look arounds
-	
-	sz=map_enlarge*((int)(camera.plane.fov))>>1;
+	zsz=(max->z-min->z)/view.obscure.z_size;
+	if (zsz<1) zsz=1;
+	if (zsz>obscure_grid_max_box_side_length) zsz=obscure_grid_max_box_side_length;
 
-	angle_get_movement(angle_add(view.render->camera.ang.y,90.0f),sz,&xadd,&zadd);
+		// see if we can trace to the grid points
+		// of a box (in 2D) without hitting any
+		// obscure zones (0x0 in grid.)  If we can
+		// get to the eyepoint without being blocked,
+		// then use the mesh
 
-	eye_pt.x=view.render->camera.pnt.x+xadd;
-	eye_pt.y=view.render->camera.pnt.y;
-	eye_pt.z=view.render->camera.pnt.z+zadd;
-	if (view_visibility_check_box_for_point(&eye_pt,mid,min,max)) return(TRUE);
+	for (z=0;z<=zsz;z++) {
+		for (x=0;x<=xsz;x++) {
+			pt.x=min->x+(((max->x-min->x)*x)/xsz);
+			pt.z=min->z+(((max->z-min->z)*z)/zsz);
+			if (view_visibility_check_obscure_line(&view.render->camera.pnt,&pt)) return(TRUE);
+		}
+	}
 
-	eye_pt.x=view.render->camera.pnt.x-xadd;
-	eye_pt.y=view.render->camera.pnt.y;
-	eye_pt.z=view.render->camera.pnt.z-zadd;
-	return(view_visibility_check_box_for_point(&eye_pt,mid,min,max));
+	return(FALSE);
 }
 
 inline bool view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)

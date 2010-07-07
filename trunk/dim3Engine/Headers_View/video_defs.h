@@ -38,12 +38,6 @@ and can be sold or given away.
 #define back_render_texture_pixel_size					256
 
 //
-// culling dot product
-//
-
-#define poly_cull_dot_product							1000.0f
-
-//
 // shadows
 //
 

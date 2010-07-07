@@ -16,13 +16,14 @@
 #define kCommandViewOrtho					207
 #define kCommandViewUVLayer1				208
 #define kCommandViewUVLayer2				209
-#define kCommandViewShowHideLiquids			210
-#define kCommandViewShowHideSpots			211
-#define kCommandViewShowHideLights			212
-#define kCommandViewShowHideNodes			213
-#define kCommandViewSplitHorizontal			214
-#define kCommandViewSplitVertical			215
-#define kCommandViewRemoveSplit				216
+#define kCommandViewClip					210
+#define kCommandViewShowHideLiquids			211
+#define kCommandViewShowHideSpots			212
+#define kCommandViewShowHideLights			213
+#define kCommandViewShowHideNodes			214
+#define kCommandViewSplitHorizontal			215
+#define kCommandViewSplitVertical			216
+#define kCommandViewRemoveSplit				217
 
 #define EDITOR_WIN_X					10
 #define EDITOR_WIN_Y					40
@@ -152,6 +153,11 @@ void editor_menu_commands(int id)
 
 		case kCommandViewUVLayer2:
 			walk_view_set_uv_layer(uv_layer_light_map);
+			main_wind_draw();
+			break;
+
+		case kCommandViewClip:
+			walk_view_flip_clip();
 			main_wind_draw();
 			break;
 
@@ -316,6 +322,9 @@ bool editor_start(char *err_str)
 
 	AppendMenu(sub_menu,MF_STRING,kCommandViewUVLayer1,"Normal Map");
 	AppendMenu(sub_menu,MF_STRING,kCommandViewUVLayer2,"Light Map");
+	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
+
+	AppendMenu(sub_menu,MF_STRING,kCommandViewClip,"Clip");
 	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
 
 	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideLiquids,"Show Liquids");

@@ -104,6 +104,8 @@ and can be sold or given away.
 #define obscure_grid_byte_row_size							(obscure_grid_division>>3)
 #define obscure_grid_byte_size								(obscure_grid_byte_row_size*obscure_grid_division)
 
+#define obscure_grid_max_box_side_length					10
+
 //
 // shader variable types
 //
