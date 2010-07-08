@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "physics.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -37,20 +38,18 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern js_type				js;
 
-/*
-JSValueRef js_map_polygon_get_facing_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_polygon_find_faced_by_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_polygon_get_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_polygon_get_hit_point_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_polygon_get_dot_product_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-*/
 
 JSStaticFunction	map_polygon_functions[]={
-	/*
-							{"setMap",				js_map_action_set_map_func,					kJSPropertyAttributeDontDelete},
-							{"setHostMap",			js_map_action_set_host_map_func,			kJSPropertyAttributeDontDelete},
-							{"restartMap",			js_map_action_restart_map_func,				kJSPropertyAttributeDontDelete},
-							{"restartMapFromSave",	js_map_action_restart_map_from_save_func,	kJSPropertyAttributeDontDelete},
-	*/
+							{"findFacedByObject",		js_map_polygon_find_faced_by_object_func,		kJSPropertyAttributeDontDelete},
+							{"getDistanceToObject",		js_map_polygon_get_distance_to_object_func,		kJSPropertyAttributeDontDelete},
+							{"getHitPointToObject",		js_map_polygon_get_hit_point_to_object_func,	kJSPropertyAttributeDontDelete},
+							{"getNormal",				js_map_polygon_get_normal_func,					kJSPropertyAttributeDontDelete},
+							{"getDotProductToObject",	js_map_polygon_get_dot_product_to_object_func,	kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			map_polygon_class;
@@ -82,99 +81,79 @@ JSObjectRef script_add_map_polygon_object(JSContextRef cx,JSObjectRef parent_obj
       
 ======================================================= */
 
-/*
-JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_find_faced_by_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	obj_type	*obj;
+
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
+	
+	return(script_int_to_value(cx,collide_polygon_find_faced_by_object(obj)));
+}
+
+JSValueRef js_map_polygon_get_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int			poly_uid;
+	obj_type	*obj;
+
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-		// networked games can not call this API
-		
-	if (net_setup.mode!=net_mode_none) {
-		*exception=script_create_exception(cx,"setMap() illegal for client games");
-		return(script_null_to_value(cx));
-	}
-	
-		// set the map
-		
-	script_value_to_string(cx,argv[0],map.info.name,name_str_len);
-	script_value_to_string(cx,argv[1],map.info.player_start_name,name_str_len);
+	poly_uid=script_value_to_int(cx,argv[0]);
 
-	server.map_change=TRUE;
+	obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 	
-	return(script_null_to_value(cx));
+	return(script_int_to_value(cx,collide_polygon_distance_to_object(poly_uid,obj)));
 }
 
-JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_get_hit_point_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	int			poly_uid;
+	d3pnt		pt;
+	obj_type	*obj;
+
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-		// non-network games can not call this API
+	poly_uid=script_value_to_int(cx,argv[0]);
 
-	if (net_setup.mode==net_mode_none) {
-		*exception=script_create_exception(cx,"setHostMap() illegal for normal games");
-		return(script_null_to_value(cx));
-	}
+	obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
 
-		// set the map
-		
-	strcpy(map.info.name,map.info.host_name);
-	map.info.player_start_name[0]=0x0;
+	collide_polygon_hit_point_to_object(poly_uid,obj,&pt);
 
-	server.map_change=TRUE;
-	
-	return(script_null_to_value(cx));
+	return(script_point_to_value(cx,pt.x,pt.y,pt.z));
 }
 
-JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	int			poly_uid;
+	d3vct		normal;
+
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-		// networked games can not call this API
-		
-	if (net_setup.mode!=net_mode_none) {
-		*exception=script_create_exception(cx,"restartMap() illegal for client games");
-		return(script_null_to_value(cx));
-	}
+	poly_uid=script_value_to_int(cx,argv[0]);
 	
-		// use the last values to restart
-		
-	server.map_change=TRUE;
-	server.skip_media=TRUE;
+	collide_polygon_get_normal(poly_uid,&normal);
 	
-	return(script_null_to_value(cx));
+	return(script_angle_to_value(cx,normal.x,normal.y,normal.z));
 }
 
-JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_get_dot_product_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			err_str[256],err_str_2[256];
+	int			poly_uid;
+	float		dot_product;
+	obj_type	*obj;
+
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
-	
-		// networked games can not call this API
-		
-	if (net_setup.mode!=net_mode_none) {
-		*exception=script_create_exception(cx,"restartMapFromSave() illegal for client games");
-		return(script_null_to_value(cx));
-	}
-	
-		// if no save game file, restart from map
-		
-	if (!game_file_reload_ok()) {
-		server.map_change=TRUE;
-		server.skip_media=TRUE;
-		return(script_null_to_value(cx));
-	}
-	
-		// else reload
-	
-	if (!game_file_reload(err_str)) {
-		sprintf(err_str_2,"Reload failed (%s)",err_str);
-		*exception=script_create_exception(cx,err_str_2);
-		return(script_null_to_value(cx));
-	}
-	
-	game_time_pause_end();			// loaded files are in paused mode
-	
-	return(script_null_to_value(cx));
+	poly_uid=script_value_to_int(cx,argv[0]);
+
+	obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
+
+	dot_product=collide_polygon_dot_product_to_object(poly_uid,obj);
+
+	return(script_float_to_value(cx,dot_product));
 }
-*/

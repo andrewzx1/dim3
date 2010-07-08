@@ -2875,19 +2875,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\map_light_trace.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\map_movement.c"
 						>
 						<FileConfiguration

@@ -458,3 +458,32 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Polygon APIs
+      
+======================================================= */
+
+int collide_polygon_find_faced_by_object(obj_type *obj)
+{
+	return(-1);
+}
+
+int collide_polygon_distance_to_object(int poly_uid,obj_type *obj)
+{
+	return(0);
+}
+
+void collide_polygon_hit_point_to_object(int poly_uid,obj_type *obj,d3pnt *pt)
+{
+}
+
+void collide_polygon_get_normal(int poly_uid,d3vct *normal)
+{
+}
+
+float collide_polygon_dot_product_to_object(int poly_uid,obj_type *obj)
+{
+	return(0.0f);
+}
+

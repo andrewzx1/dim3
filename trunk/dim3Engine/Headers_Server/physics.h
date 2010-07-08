@@ -63,6 +63,14 @@ extern bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2);
 extern int collide_find_projectile_for_projectile(proj_type *proj);
 extern bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *proj);
 
+// polygon APIs
+
+extern int collide_polygon_find_faced_by_object(obj_type *obj);
+extern int collide_polygon_distance_to_object(int poly_uid,obj_type *obj);
+extern void collide_polygon_hit_point_to_object(int poly_uid,obj_type *obj,d3pnt *pt);
+extern void collide_polygon_get_normal(int poly_uid,d3vct *normal);
+extern float collide_polygon_dot_product_to_object(int poly_uid,obj_type *obj);
+
 // misc
 
 extern int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher);
