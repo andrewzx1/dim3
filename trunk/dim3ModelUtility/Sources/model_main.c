@@ -69,7 +69,6 @@ bool model_new(model_type *model,char *name)
 		
 		// default settings
 	
-	model->nmesh=1;
 	model->deform_mode=deform_mode_comulative_rotate;
 	
 	for (n=0;n!=max_model_light;n++) {
@@ -85,7 +84,22 @@ bool model_new(model_type *model,char *name)
 	model->tags.name_bone_tag=model_null_tag;
 	model->tags.name_bone_idx=-1;
 
-		// dynamic memory
+		// setup first mesh
+
+	model->nmesh=1;
+
+	model->meshes[0].nvertex=0;
+	model->meshes[0].ntrig=0;
+		
+	model->meshes[0].vertexes=NULL;
+	model->meshes[0].trigs=NULL;
+
+	model->meshes[0].materials=malloc(max_model_texture*sizeof(model_material_type));
+	if (model->meshes[0].materials==NULL) return(FALSE);
+
+	bzero(model->meshes[0].materials,(max_model_texture*sizeof(model_material_type)));
+
+		// other model structures
 
 	model->nbone=0;
 	model->npose=0;
@@ -96,31 +110,11 @@ bool model_new(model_type *model,char *name)
 	model->poses=NULL;
 	model->animates=NULL;
 	model->hit_boxes=NULL;
-	
-		// non-dynamic memory
 
-	model->meshes[0].nvertex=0;
-	model->meshes[0].ntrig=0;
-		
-	model->meshes[0].vertexes=malloc(max_model_vertex*sizeof(model_vertex_type));
-	model->meshes[0].trigs=malloc(max_model_trig*sizeof(model_trig_type));
-	model->meshes[0].materials=malloc(max_model_texture*sizeof(model_material_type));
+		// textures
 
 	model->textures=malloc(max_model_texture*sizeof(texture_type));
-	
-		// memory OK?
-		
-	if (model->meshes[0].vertexes==NULL) return(FALSE);
-	if (model->meshes[0].trigs==NULL) return(FALSE);
-	if (model->meshes[0].materials==NULL) return(FALSE);
-
 	if (model->textures==NULL) return(FALSE);
-
-		// zero memory
-		
-	bzero(model->meshes[0].vertexes,(max_model_vertex*sizeof(model_vertex_type)));
-	bzero(model->meshes[0].trigs,(max_model_trig*sizeof(model_trig_type)));
-	bzero(model->meshes[0].materials,(max_model_texture*sizeof(model_material_type)));
 
 	bzero(model->textures,(max_model_texture*sizeof(texture_type)));
 
@@ -201,9 +195,9 @@ void model_close(model_type *model)
 	model_textures_close(model);
 	
 	for (n=0;n!=model->nmesh;n++) {
-		free(model->meshes[n].vertexes);
-		free(model->meshes[n].trigs);
-		free(model->meshes[n].materials);
+		if (model->meshes[n].vertexes!=NULL) free(model->meshes[n].vertexes);
+		if (model->meshes[n].trigs!=NULL) free(model->meshes[n].trigs);
+		if (model->meshes[n].materials!=NULL) free(model->meshes[n].materials);
 	}
 
 	free(model->textures);

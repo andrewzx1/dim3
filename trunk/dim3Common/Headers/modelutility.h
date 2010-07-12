@@ -310,8 +310,10 @@ extern void model_tag_to_text(model_tag tag,char *str);
 
 extern int model_mesh_add(model_type *model);
 extern int model_mesh_duplicate(model_type *model,int mesh_idx);
-extern void model_mesh_copy(model_type *model,int copy_mesh_idx,int mesh_idx);
+extern bool model_mesh_copy(model_type *model,int copy_mesh_idx,int mesh_idx);
 extern bool model_mesh_delete(model_type *model,int mesh_idx);
+extern bool model_mesh_set_vertex_count(model_type *model,int mesh_idx,int vertex_count);
+extern bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count);
 
 extern int model_bone_add(model_type *model,int x,int y,int z);
 extern void model_bone_delete(model_type *model,int bone_idx);

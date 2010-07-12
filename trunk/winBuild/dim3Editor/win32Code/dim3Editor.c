@@ -46,6 +46,8 @@ editor_state_type		state;
 
 d3rect					main_wind_box;
 
+extern d3rect			txt_palette_box;
+
 extern bool setup_xml_read(void);
 extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
 void editor_button_down(int x,int y);
@@ -55,6 +57,8 @@ extern void glue_end(void);
 extern void walk_view_draw(void);
 extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
+extern void editor_menu_commands(int id);
+extern void editor_menu_create(void);
 
 /* =======================================================
 
@@ -98,95 +102,6 @@ void main_wind_tool_reset(void)
 
 /* =======================================================
 
-      Menu Commands
-      
-======================================================= */
-
-// supergumba -- temporary until real menu
-
-void editor_menu_commands(int id)
-{
-	switch (id) {
-
-		case kCommandFileQuit:
-			quit=TRUE;
-			break;
-
-		case kCommandViewFront:
-			walk_view_face_front();
-			main_wind_draw();
-			break;
-
-		case kCommandViewLeft:
-			walk_view_face_left();
-			main_wind_draw();
-			break;
-
-		case kCommandViewRight:
-			walk_view_face_right();
-			main_wind_draw();
-			break;
-
-		case kCommandViewBack:
-			walk_view_face_back();
-			main_wind_draw();
-			break;
-
-		case kCommandViewTop:
-			walk_view_face_top();
-			main_wind_draw();
-			break;
-
-		case kCommandViewBottom:
-			walk_view_face_bottom();
-			main_wind_draw();
-			break;
-
-		case kCommandViewPerspective:
-		case kCommandViewOrtho:
-			break;
-
-		case kCommandViewUVLayer1:
-			walk_view_set_uv_layer(uv_layer_normal);
-			main_wind_draw();
-			break;
-
-		case kCommandViewUVLayer2:
-			walk_view_set_uv_layer(uv_layer_light_map);
-			main_wind_draw();
-			break;
-
-		case kCommandViewClip:
-			walk_view_flip_clip();
-			main_wind_draw();
-			break;
-
-		case kCommandViewShowHideLiquids:
-		case kCommandViewShowHideSpots:
-		case kCommandViewShowHideLights:
-		case kCommandViewShowHideNodes:
-			break;
-
-		case kCommandViewSplitHorizontal:
-			walk_view_split_horizontal();
-			main_wind_draw();
-			break;
-
-		case kCommandViewSplitVertical:
-			walk_view_split_vertical();
-			main_wind_draw();
-			break;
-
-		case kCommandViewRemoveSplit:
-			walk_view_remove();
-			main_wind_draw();
-			break;
-
-	}
-}
-
-/* =======================================================
-
       UI Window Procedure
       
 ======================================================= */
@@ -221,7 +136,14 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			pnt.y=HIWORD(lParam);
 			
 			SetCapture(wnd);
-			walk_view_click(&pnt,FALSE);
+
+			if (pnt.y<txt_palette_box.ty) {
+				walk_view_click(&pnt,FALSE);
+			}
+			else {
+				texture_palette_click(&pnt,FALSE);
+			}
+
 			ReleaseCapture();
 			break;
 
@@ -258,7 +180,6 @@ bool editor_start(char *err_str)
 	RECT					wbox;
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
-	HMENU					menu,sub_menu;
 	HINSTANCE				hInst;
 
 		// glue start
@@ -299,46 +220,7 @@ bool editor_start(char *err_str)
 
 		// menu
 
-	menu=CreateMenu();
-
-	sub_menu=CreatePopupMenu();
-
-	AppendMenu(sub_menu,MF_STRING,kCommandFileQuit,"Exit");
-	AppendMenu(menu,(MF_STRING|MF_POPUP),(UINT)sub_menu,"File");
-
-	sub_menu=CreatePopupMenu();
-
-	AppendMenu(sub_menu,MF_STRING,kCommandViewFront,"Front");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewLeft,"Left");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewRight,"Right");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewBack,"Back");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewTop,"Top");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewBottom,"Bottom");
-	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
-
-	AppendMenu(sub_menu,MF_STRING,kCommandViewPerspective,"Perspective");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewOrtho,"Ortho");
-	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
-
-	AppendMenu(sub_menu,MF_STRING,kCommandViewUVLayer1,"Normal Map");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewUVLayer2,"Light Map");
-	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
-
-	AppendMenu(sub_menu,MF_STRING,kCommandViewClip,"Clip");
-	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
-
-	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideLiquids,"Show Liquids");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideSpots,"Show Spots");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideLights,"Show Lights");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewShowHideNodes,"Show Nodes");
-	AppendMenu(sub_menu,MF_SEPARATOR,0,NULL);
-
-	AppendMenu(sub_menu,MF_STRING,kCommandViewSplitHorizontal,"Split Horz");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewSplitVertical,"Split Vert");
-	AppendMenu(sub_menu,MF_STRING,kCommandViewRemoveSplit,"Remove");
-	AppendMenu(menu,(MF_STRING|MF_POPUP),(UINT)sub_menu,"View");
-
-	SetMenu(wnd,menu);
+	editor_menu_create();
 
 		// create font for window
 

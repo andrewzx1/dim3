@@ -37,7 +37,7 @@ and can be sold or given away.
 
 int model_mesh_add(model_type *model)
 {
-	int					nmesh,i;
+	int					n,nmesh;
 	model_mesh_type		*mesh;
 	
 	nmesh=model->nmesh;
@@ -47,25 +47,27 @@ int model_mesh_add(model_type *model)
 	
 	mesh=&model->meshes[nmesh];
 	
-		// memory
-		
-	mesh->vertexes=malloc(max_model_vertex*sizeof(model_vertex_type));
-	mesh->trigs=malloc(max_model_trig*sizeof(model_trig_type));
-	mesh->materials=malloc(max_model_texture*sizeof(model_material_type));
-	
-	bzero(mesh->vertexes,(max_model_vertex*sizeof(model_vertex_type)));
-	bzero(mesh->trigs,(max_model_trig*sizeof(model_trig_type)));
-	bzero(mesh->materials,(max_model_texture*sizeof(model_material_type)));
-	
-		// initialize
+		// vertexes and trigs
 		
 	mesh->nvertex=0;
 	mesh->ntrig=0;
+
+	mesh->vertexes=NULL;
+	mesh->trigs=NULL;
+
+		// materials
+
+	mesh->materials=malloc(max_model_texture*sizeof(model_material_type));
+	if (mesh->materials==NULL) return(-1);
 	
-	for (i=0;i!=max_model_texture;i++) {
-		mesh->materials[i].trig_start=mesh->materials[i].trig_count=0;
+	bzero(mesh->materials,(max_model_texture*sizeof(model_material_type)));
+		
+	for (n=0;n!=max_model_texture;n++) {
+		mesh->materials[n].trig_start=mesh->materials[n].trig_count=0;
 	}
 	
+		// setup
+
 	strcpy(mesh->name,"New Mesh");
 	mesh->no_lighting=FALSE;
 	mesh->blend_add=FALSE;
@@ -97,13 +99,16 @@ int model_mesh_duplicate(model_type *model,int mesh_idx)
 	org_mesh=&model->meshes[mesh_idx];
 	mesh=&model->meshes[idx];
 
-	memmove(mesh->vertexes,org_mesh->vertexes,(max_model_vertex*sizeof(model_vertex_type)));
-	memmove(mesh->trigs,org_mesh->trigs,(max_model_trig*sizeof(model_trig_type)));
+	mesh->nvertex=org_mesh->nvertex;
+	if (!model_mesh_set_vertex_count(model,idx,org_mesh->nvertex)) return(-1);
+	memmove(mesh->vertexes,org_mesh->vertexes,(org_mesh->nvertex*sizeof(model_vertex_type)));
+
+	mesh->ntrig=org_mesh->ntrig;
+	if (!model_mesh_set_trig_count(model,idx,org_mesh->ntrig)) return(-1);
+	memmove(mesh->trigs,org_mesh->trigs,(org_mesh->ntrig*sizeof(model_trig_type)));
+
 	memmove(mesh->materials,org_mesh->materials,(max_model_texture*sizeof(model_material_type)));
 	
-	mesh->nvertex=org_mesh->nvertex;
-	mesh->ntrig=org_mesh->ntrig;
-
 	mesh->no_lighting=org_mesh->no_lighting;
 	mesh->blend_add=org_mesh->blend_add;
 	mesh->tintable=org_mesh->tintable;
@@ -117,23 +122,28 @@ int model_mesh_duplicate(model_type *model,int mesh_idx)
       
 ======================================================= */
 
-void model_mesh_copy(model_type *model,int copy_mesh_idx,int mesh_idx)
+bool model_mesh_copy(model_type *model,int copy_mesh_idx,int mesh_idx)
 {
 	model_mesh_type		*org_mesh,*mesh;
 	
 	org_mesh=&model->meshes[copy_mesh_idx];
 	mesh=&model->meshes[mesh_idx];
 
-	memmove(mesh->vertexes,org_mesh->vertexes,(max_model_vertex*sizeof(model_vertex_type)));
-	memmove(mesh->trigs,org_mesh->trigs,(max_model_trig*sizeof(model_trig_type)));
-	memmove(mesh->materials,org_mesh->materials,(max_model_texture*sizeof(model_material_type)));
-	
 	mesh->nvertex=org_mesh->nvertex;
+	if (!model_mesh_set_vertex_count(model,copy_mesh_idx,org_mesh->nvertex)) return(FALSE);
+	memmove(mesh->vertexes,org_mesh->vertexes,(org_mesh->nvertex*sizeof(model_vertex_type)));
+
 	mesh->ntrig=org_mesh->ntrig;
+	if (!model_mesh_set_trig_count(model,copy_mesh_idx,org_mesh->ntrig)) return(FALSE);
+	memmove(mesh->trigs,org_mesh->trigs,(org_mesh->ntrig*sizeof(model_trig_type)));
+
+	memmove(mesh->materials,org_mesh->materials,(max_model_texture*sizeof(model_material_type)));
 
 	mesh->no_lighting=org_mesh->no_lighting;
 	mesh->blend_add=org_mesh->blend_add;
 	mesh->tintable=org_mesh->tintable;
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -155,9 +165,9 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 		
 	mesh=&model->meshes[mesh_idx];
 		
-	free(mesh->vertexes);
-	free(mesh->trigs);
-	free(mesh->materials);
+	if (mesh->vertexes!=NULL) free(mesh->vertexes);
+	if (mesh->trigs!=NULL) free(mesh->trigs);
+	if (mesh->materials!=NULL) free(mesh->materials);
 	
 		// delete current mesh
 				
@@ -169,4 +179,44 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 	return(TRUE);
 }
 
+/* =======================================================
 
+      Vertex and Trig Sizes
+      
+======================================================= */
+
+bool model_mesh_set_vertex_count(model_type *model,int mesh_idx,int vertex_count)
+{
+	model_mesh_type		*mesh;
+	
+	mesh=&model->meshes[mesh_idx];
+
+	if (mesh->vertexes!=NULL) free(mesh->vertexes);
+
+	mesh->vertexes=malloc(vertex_count*sizeof(model_vertex_type));
+	if (mesh->vertexes==NULL) return(FALSE);
+
+	bzero(mesh->vertexes,(vertex_count*sizeof(model_vertex_type)));
+
+	mesh->nvertex=vertex_count;
+
+	return(TRUE);
+}
+
+bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count)
+{
+	model_mesh_type		*mesh;
+	
+	mesh=&model->meshes[mesh_idx];
+
+	if (mesh->trigs!=NULL) free(mesh->trigs);
+
+	mesh->trigs=malloc(trig_count*sizeof(model_trig_type));
+	if (mesh->trigs==NULL) return(FALSE);
+
+	bzero(mesh->trigs,(trig_count*sizeof(model_trig_type)));
+
+	mesh->ntrig=trig_count;
+
+	return(TRUE);
+}
