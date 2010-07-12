@@ -734,7 +734,9 @@ void render_model_setup(model_draw *draw)
     texture_type		*texture;
 	
 		// get model
-
+	
+	if ((draw->model_idx==-1) || (!draw->on)) return;
+	
 	mdl=server.model_list.models[draw->model_idx];
 
 		// setup animated textures
@@ -826,6 +828,8 @@ void render_model_build_vertex_lists(model_draw *draw)
 	model_type			*mdl;
 
 		// get model
+		
+	if ((draw->model_idx==-1) || (!draw->on)) return;
 
 	mdl=server.model_list.models[draw->model_idx];
 
@@ -874,6 +878,7 @@ void render_model_opaque(model_draw *draw)
 
 		// any opaque?
 
+	if ((draw->model_idx==-1) || (!draw->on)) return;
 	if (!draw->has_opaque) return;
 	
 		// get model
@@ -919,6 +924,7 @@ void render_model_transparent(model_draw *draw)
 
 		// any transparent?
 
+	if ((draw->model_idx==-1) || (!draw->on)) return;
 	if (!draw->has_transparent) return;
 	
 		// get model
@@ -968,9 +974,10 @@ void render_model_target(model_draw *draw,d3col *col)
 	model_type		*mdl;
 	
 		// get model
+		
+	if ((draw->model_idx==-1) || (!draw->on)) return;
 
 	mdl=server.model_list.models[draw->model_idx];
-	if (mdl==NULL) return;
 
 		// get draw coordinates
 

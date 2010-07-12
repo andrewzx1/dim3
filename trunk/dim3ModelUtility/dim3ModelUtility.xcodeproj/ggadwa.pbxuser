@@ -155,8 +155,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 299910226;
-			PBXWorkspaceStateSaveDate = 299910226;
+			PBXPerProjectTemplateStateSaveDate = 300431409;
+			PBXWorkspaceStateSaveDate = 300431409;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -188,9 +188,9 @@
 	};
 	F56D96E70502F83C00143299 /* file_model_texture.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1699, 1898}}";
-			sepNavSelRange = "{3727, 0}";
-			sepNavVisRange = "{1868, 1996}";
+			sepNavIntBoundsRect = "{{0, 0}, {1699, 1924}}";
+			sepNavSelRange = "{1376, 20}";
+			sepNavVisRange = "{2000, 2057}";
 			sepNavWindowFrame = "{{340, 172}, {1041, 747}}";
 		};
 	};
@@ -212,9 +212,9 @@
 	};
 	F56D96EA0502F83C00143299 /* model_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1055, 3198}}";
-			sepNavSelRange = "{2993, 14}";
-			sepNavVisRange = "{1988, 1373}";
+			sepNavIntBoundsRect = "{{0, 0}, {1055, 3185}}";
+			sepNavSelRange = "{3732, 20}";
+			sepNavVisRange = "{2453, 1388}";
 			sepNavWindowFrame = "{{447, 163}, {1041, 747}}";
 		};
 	};
@@ -276,17 +276,17 @@
 	};
 	F5CA4EF305100FB60055C8B8 /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5330}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1125, 5512}}";
 			sepNavSelRange = "{1262, 0}";
-			sepNavVisRange = "{339, 1887}";
+			sepNavVisRange = "{6832, 1503}";
 			sepNavWindowFrame = "{{481, 97}, {1041, 747}}";
 		};
 	};
 	F5E514E00542395B006E0418 /* model_frames.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1391}}";
-			sepNavSelRange = "{1627, 30}";
-			sepNavVisRange = "{787, 1249}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1430}}";
+			sepNavSelRange = "{1566, 29}";
+			sepNavVisRange = "{549, 1303}";
 			sepNavWindowFrame = "{{458, 102}, {1041, 747}}";
 		};
 	};
