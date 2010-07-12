@@ -289,6 +289,7 @@ void bitmap_texture_clear(texture_type *texture)
 		bitmap_new(&frame->bumpmap);
 		bitmap_new(&frame->specularmap);
 		bitmap_new(&frame->glowmap);
+		bitmap_new(&frame->combinemap);
 
 		texture->animate.wait[n]=100;
 		
