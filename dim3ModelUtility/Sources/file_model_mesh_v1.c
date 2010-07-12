@@ -44,7 +44,7 @@ extern model_tag			bone_parent_tag[max_model_bone],
 void decode_mesh_v1_xml(model_type *model,int model_head)
 {
 	int						i,n,k,bone_idx,nbone,hit_box_idx,nhit_box,
-							nfill,ntrig,frame_count,
+							nfill,frame_count,trig_idx,
 							tag,hit_box_tag,vertex_tag,bone_tag,vtag,trig_tag,image_tag,
 							fills_tag,fill_tag;
 	model_hit_box_type		*hit_box;
@@ -125,6 +125,8 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 
     model->meshes[0].nvertex=xml_countchildren(vertex_tag);
 	tag=xml_findfirstchild("v",vertex_tag);
+
+	model_mesh_set_vertex_count(model,0,model->meshes[0].nvertex);
 	
     vertex=model->meshes[0].vertexes;
     
@@ -202,17 +204,19 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
     nfill=xml_countchildren(fills_tag);
 	fill_tag=xml_findfirstchild("Fill",fills_tag);
     
-	ntrig=0;
+	model->meshes[0].ntrig=0;
 	
     for (n=0;n!=nfill;n++) {
         trig_tag=xml_findfirstchild("Triangles",fill_tag);
-        ntrig+=xml_countchildren(trig_tag)/3;
+        model->meshes[0].ntrig+=(xml_countchildren(trig_tag)/3);
 		fill_tag=xml_findnextchild(fill_tag);
 	}
 
+	model_mesh_set_trig_count(model,0,model->meshes[0].ntrig);
+
 		// load the fills and trigs
 		
-    ntrig=0;
+	trig_idx=0;
     trig=model->meshes[0].trigs;
 
 	texture=model->textures;
@@ -243,7 +247,7 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
     
         trig_tag=xml_findfirstchild("Triangles",fill_tag);
         
-        material->trig_start=ntrig;
+        material->trig_start=trig_idx;
         material->trig_count=xml_countchildren(trig_tag)/3;
 		
 		vtag=xml_findfirstchild("v",trig_tag);
@@ -258,7 +262,7 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
             }
             
             trig++;
-            ntrig++;
+			trig_idx++;
         }
 		
 		texture++;
@@ -266,8 +270,6 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 		
 		fill_tag=xml_findnextchild(fill_tag);
     }
-    
-    model->meshes[0].ntrig=ntrig;
 
 		// recalc all tangent space
 		

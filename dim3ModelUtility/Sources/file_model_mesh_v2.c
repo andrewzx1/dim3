@@ -44,7 +44,7 @@ extern model_tag			bone_parent_tag[max_model_bone],
 void decode_mesh_v2_xml(model_type *model,int model_head)
 {
 	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,
-							mesh_idx,nmesh,nfill,ntrig,
+							mesh_idx,nmesh,nfill,trig_idx,
 							tag,hit_box_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
@@ -233,6 +233,8 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 
 		mesh->nvertex=xml_countchildren(vertex_tag);
 		tag=xml_findfirstchild("v",vertex_tag);
+
+		model_mesh_set_vertex_count(model,mesh_idx,mesh->nvertex);
 		
 		vertex=mesh->vertexes;
 		
@@ -247,24 +249,38 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 			tag=xml_findnextchild(tag);
 		}
 		
-			// materials
+			// count the trigs
 			
 		materials_tag=xml_findfirstchild("Materials",mesh_tag);
+
+		nfill=xml_countchildren(materials_tag);
+		material_tag=xml_findfirstchild("Material",materials_tag);
+
+		mesh->ntrig=0;
 		
-		ntrig=0;
+		for (n=0;n!=nfill;n++) {
+			trig_tag=xml_findfirstchild("Triangles",material_tag);
+			mesh->ntrig+=(xml_countchildren(trig_tag)/3);
+			material_tag=xml_findnextchild(material_tag);
+		}
+
+		model_mesh_set_trig_count(model,mesh_idx,mesh->ntrig);
+
+			// run the materials
+		
+		trig_idx=0;
 		trig=mesh->trigs;
 
 		texture=model->textures;
 		material=mesh->materials;
 		
-		nfill=xml_countchildren(materials_tag);
 		material_tag=xml_findfirstchild("Material",materials_tag);
 		
 		for (n=0;n!=nfill;n++) {
 		
 			trig_tag=xml_findfirstchild("Triangles",material_tag);
 			
-			material->trig_start=ntrig;
+			material->trig_start=trig_idx;
 			material->trig_count=xml_countchildren(trig_tag)/3;
 			
 			vtag=xml_findfirstchild("v",trig_tag);
@@ -283,7 +299,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 				}
 				
 				trig++;
-				ntrig++;
+				trig_idx++;
 			}
 			
 			texture++;
@@ -291,8 +307,6 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 			
 			material_tag=xml_findnextchild(material_tag);
 		}
-		
-		mesh->ntrig=ntrig;
 		
 			// reset the vertexes from tags to indexes
 			
