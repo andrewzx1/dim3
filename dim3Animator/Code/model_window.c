@@ -46,6 +46,7 @@ char							tool_icns_file_name[tool_count][64]=
 										"Tool Mesh Hit Boxes",
 										"Tool Boxes",
 										"Tool Normals",
+										"Tool Cull",
 										"Tool Show First Mesh",
 										"Tool Rotate Mode",
 										"Tool Move Mode",
@@ -57,35 +58,36 @@ char							tool_tooltip_str[tool_count][64]=
 										"Show Textured Model",
 										"Show Mesh",
 										"Show Bones",
-										"Show Hit Boxes",
-										"Show View Boxes",
-										"Show Normals",
+										"Show or Hide Hit Boxes",
+										"Show or Hide View Boxes",
+										"Show or Hide Normals",
+										"Show or Hide Backface Culling",
 										"Always Show First Mesh",
 										"Rotate Bones Mode",
 										"Stretch Bones Mode",
 										"Play Current Animation"
 									};
 
-int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
-                        shift_x,shift_y,magnify_z,drag_bone_mode,
-						gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size,
-						play_animate_tick[max_model_blend_animation],
-						play_animate_blend_idx[max_model_blend_animation],
-						play_animate_pose_move_idx[max_model_blend_animation];
-float					ang_y,ang_x;
-bool					play_animate,play_animate_blend,
-						model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
-						model_bone_drag_on;
-Rect					drag_sel_box;
-AGLContext				ctx,texture_ctx;
+int								draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
+								shift_x,shift_y,magnify_z,drag_bone_mode,
+								gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size,
+								play_animate_tick[max_model_blend_animation],
+								play_animate_blend_idx[max_model_blend_animation],
+								play_animate_pose_move_idx[max_model_blend_animation];
+float							ang_y,ang_x;
+bool							play_animate,play_animate_blend,
+								model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
+								model_bone_drag_on;
+Rect							drag_sel_box;
+AGLContext						ctx,texture_ctx;
 
-display_type			display;
+display_type					display;
 
-model_type				model;
-model_draw_setup		draw_setup;
+model_type						model;
+model_draw_setup				draw_setup;
 
-extern bool					fileopen;
-extern file_path_setup_type	file_path_setup;
+extern bool						fileopen;
+extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
 
@@ -241,22 +243,26 @@ bool model_wind_control(ControlRef ctrl)
 			break;
 			
 		case 6:
-			display.first_mesh=!display.first_mesh;
+			display.cull=!display.cull;
 			break;
 			
 		case 7:
+			display.first_mesh=!display.first_mesh;
+			break;
+			
+		case 8:
 			drag_bone_mode=drag_bone_mode_rotate;
 			SetControlValue(tool_ctrl[7],1);
 			SetControlValue(tool_ctrl[8],0);
 			break;
 			
-		case 8:
+		case 9:
 			drag_bone_mode=drag_bone_mode_stretch;
 			SetControlValue(tool_ctrl[7],0);
 			SetControlValue(tool_ctrl[8],1);
 			break;
 			
-		case 9:
+		case 10:
 			model_wind_play(!play_animate,FALSE);
 			break;
 	}
@@ -798,7 +804,7 @@ void model_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==5) || (n==6) || (n==8)) OffsetRect(&box,5,0);
+		if ((n==2) || (n==4) || (n==6) || (n==7) || (n==9)) OffsetRect(&box,5,0);
 	}
 	
 		// magnify slider
@@ -939,13 +945,15 @@ void model_wind_reset_tools(void)
 	
 	SetControlValue(tool_ctrl[3],display.hit_box?1:0);
 	SetControlValue(tool_ctrl[4],display.view_box?1:0);
+	
 	SetControlValue(tool_ctrl[5],display.normal?1:0);
+	SetControlValue(tool_ctrl[6],display.cull?1:0);
 	
-	SetControlValue(tool_ctrl[6],display.first_mesh?1:0);
+	SetControlValue(tool_ctrl[7],display.first_mesh?1:0);
 	
-	SetControlValue(tool_ctrl[7],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
-	SetControlValue(tool_ctrl[8],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
+	SetControlValue(tool_ctrl[8],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
+	SetControlValue(tool_ctrl[9],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
 
-	SetControlValue(tool_ctrl[9],play_animate?1:0);
+	SetControlValue(tool_ctrl[10],play_animate?1:0);
 }
 

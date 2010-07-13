@@ -27,8 +27,9 @@ and can be sold or given away.
 
 #include "model.h"
 
-extern float					ang_y;
 extern bool						play_animate;
+
+extern display_type				display;
 
 /* =======================================================
 
@@ -94,17 +95,63 @@ void model_end_texture(texture_type *texture)
 
 /* =======================================================
 
+      Culling
+      
+======================================================= */
+
+bool draw_model_cull_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup,model_trig_type *trig)
+{
+	int				n;
+	float			*pv,*pn;
+	d3pnt			pnt;
+	d3vct			normal,face_vct;
+	
+	if (!display.cull) return(FALSE);
+	
+	pnt.x=pnt.y=pnt.z=0;
+	normal.x=normal.y=normal.z=0.0f;
+	
+	for (n=0;n!=3;n++) {
+		pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[n]*3);
+		pnt.x+=((int)*pv++);
+		pnt.y+=((int)*pv++);
+		pnt.z+=((int)*pv);
+	
+		pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array+(trig->v[n]*3);
+		normal.x+=*pn++;
+		normal.y+=*pn++;
+		normal.z+=*pn;
+	}
+	
+	pnt.x/=3;
+	pnt.y/=3;
+	pnt.z/=3;
+	
+	normal.x/=3.0f;
+	normal.y/=3.0f;
+	normal.z/=3.0f;
+	
+	vector_create(&face_vct,pnt.x,pnt.y,pnt.z,0,0,0);
+	return(vector_dot_product(&normal,&face_vct)>0.0f);
+}
+
+/* =======================================================
+
       Draw Model
       
 ======================================================= */
 
-void draw_model_material(model_type *model,int mesh_idx,texture_type *texture,model_material_type *material)
+void draw_model_material(model_type *model,int mesh_idx,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material)
 {
 	int					k,trig_count;
+	bool				in_cull;
     model_trig_type		*trig;
 
 	trig_count=material->trig_count;
 	if (trig_count==0) return;
+	
+	in_cull=FALSE;
+	glColor3f(0.5f,0.5f,0.5f);
 
 	model_start_texture(texture);
 	
@@ -113,18 +160,38 @@ void draw_model_material(model_type *model,int mesh_idx,texture_type *texture,mo
 	trig=&model->meshes[mesh_idx].trigs[material->trig_start];
 
 	for (k=0;k!=trig_count;k++) {
-	
-		if (!vertex_check_hide_mask_trig(mesh_idx,trig)) {
-			glTexCoord2f(trig->gx[0],trig->gy[0]);
-			glMultiTexCoord2f(GL_TEXTURE1,trig->gx[0],trig->gy[0]);
-			glArrayElement(trig->v[0]);
-			glTexCoord2f(trig->gx[1],trig->gy[1]);
-			glMultiTexCoord2f(GL_TEXTURE1,trig->gx[1],trig->gy[1]);
-			glArrayElement(trig->v[1]);
-			glTexCoord2f(trig->gx[2],trig->gy[2]);
-			glMultiTexCoord2f(GL_TEXTURE1,trig->gx[2],trig->gy[2]);
-			glArrayElement(trig->v[2]);
+
+		if (vertex_check_hide_mask_trig(mesh_idx,trig)) {
+			trig++;
+			continue;
 		}
+	
+		if (draw_model_cull_trig(model,mesh_idx,draw_setup,trig)) {
+			if (!in_cull) {
+				in_cull=TRUE;
+				glEnd();
+				model_end_texture(texture);
+				glBegin(GL_TRIANGLES);
+			}
+		}
+		else {
+			if (in_cull) {
+				in_cull=FALSE;
+				glEnd();
+				model_start_texture(texture);
+				glBegin(GL_TRIANGLES);
+			}
+		}
+
+		glTexCoord2f(trig->gx[0],trig->gy[0]);
+		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[0],trig->gy[0]);
+		glArrayElement(trig->v[0]);
+		glTexCoord2f(trig->gx[1],trig->gy[1]);
+		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[1],trig->gy[1]);
+		glArrayElement(trig->v[1]);
+		glTexCoord2f(trig->gx[2],trig->gy[2]);
+		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[2],trig->gy[2]);
+		glArrayElement(trig->v[2]);
 		
 		trig++;
 	}
@@ -132,6 +199,8 @@ void draw_model_material(model_type *model,int mesh_idx,texture_type *texture,mo
 	glEnd();
 	
 	model_end_texture(texture);
+	
+	glColor3f(1.0f,1.0f,1.0f);
 }
 
 void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
@@ -168,7 +237,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) draw_model_material(model,mesh_idx,texture,material);
+		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) draw_model_material(model,mesh_idx,draw_setup,texture,material);
 		texture++;
 		material++;
 	}
@@ -183,7 +252,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) draw_model_material(model,mesh_idx,texture,material);
+		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) draw_model_material(model,mesh_idx,draw_setup,texture,material);
 		texture++;
 		material++;
 	}
@@ -237,7 +306,7 @@ void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setu
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		draw_model_material(model,mesh_idx,texture,material);
+		draw_model_material(model,mesh_idx,draw_setup,texture,material);
 		texture++;
 		material++;
 	}

@@ -75,6 +75,7 @@ void menu_start(void)
 	display.bone=FALSE;
     display.hit_box=FALSE;
 	display.normal=FALSE;
+	display.cull=FALSE;
 	display.view_box=FALSE;
 	display.first_mesh=FALSE;
 	
