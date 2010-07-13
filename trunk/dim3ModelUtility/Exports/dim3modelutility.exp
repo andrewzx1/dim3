@@ -5,6 +5,8 @@ _model_mesh_add
 _model_mesh_duplicate
 _model_mesh_copy
 _model_mesh_delete
+_model_mesh_set_vertex_count
+_model_mesh_set_trig_count
 
 _model_bone_add
 _model_bone_delete

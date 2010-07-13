@@ -8,6 +8,8 @@ EXPORTS
 	model_mesh_duplicate					@111
 	model_mesh_copy							@112
 	model_mesh_delete						@113
+	model_mesh_set_vertex_count				@114
+	model_mesh_set_trig_count				@115
 
 	model_bone_add							@120
 	model_bone_delete						@121
