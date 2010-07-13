@@ -466,24 +466,120 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 
 int collide_polygon_find_faced_by_object(obj_type *obj)
 {
-	return(-1);
+	int						sz,xadd,zadd;
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
+
+		// setup ray trace
+
+	spt.x=obj->pnt.x;
+	spt.y=obj->pnt.y-(obj->size.y>>1);
+	spt.z=obj->pnt.z;
+
+	sz=obj->size.radius*10;
+	angle_get_movement(obj->ang.y,sz,&xadd,&zadd);
+
+	ept.x=spt.x+xadd;
+	ept.y=spt.y;
+	ept.z=spt.z+zadd;
+
+	contact.obj.on=FALSE;
+	contact.proj.on=FALSE;
+
+	contact.hit_mode=poly_ray_trace_hit_mode_wall_only;
+	contact.origin=poly_ray_trace_origin_object;
+
+		// run trace
+
+	if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return(-1);
+
+		// return polygon contact
+
+	if (contact.poly.mesh_idx==-1) return(-1);
+
+	return((contact.poly.mesh_idx<<16)|contact.poly.poly_idx);
 }
 
 int collide_polygon_distance_to_object(int poly_uid,obj_type *obj)
 {
-	return(0);
+	int					mesh_idx,poly_idx,xadd,zadd,x,z;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	mesh_idx=poly_uid>>16;
+	if ((mesh_idx<0) || (mesh_idx>=map.mesh.nmesh)) return(-1);
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	poly_idx=(poly_uid&0xFFFF);
+	if ((poly_idx<0) || (poly_idx>=mesh->npoly)) return(-1);
+	poly=&mesh->polys[poly_idx];
+
+	angle_get_movement(obj->ang.y,map_max_size,&xadd,&zadd);
+	if (!line_2D_get_intersect(obj->pnt.x,obj->pnt.z,(obj->pnt.x+xadd),(obj->pnt.z+zadd),poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz,&x,&z)) return(-1);
+
+	return(distance_2D_get(obj->pnt.x,obj->pnt.z,x,z));
 }
 
 void collide_polygon_hit_point_to_object(int poly_uid,obj_type *obj,d3pnt *pt)
 {
+	int					mesh_idx,poly_idx,xadd,zadd,x,z;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	pt->x=obj->pnt.x;
+	pt->y=obj->pnt.y;
+	pt->z=obj->pnt.z;
+
+	mesh_idx=poly_uid>>16;
+	if ((mesh_idx<0) || (mesh_idx>=map.mesh.nmesh)) return;
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	poly_idx=(poly_uid&0xFFFF);
+	if ((poly_idx<0) || (poly_idx>=mesh->npoly)) return;
+	poly=&mesh->polys[poly_idx];
+
+	angle_get_movement(obj->ang.y,map_max_size,&xadd,&zadd);
+	if (!line_2D_get_intersect(obj->pnt.x,obj->pnt.z,(obj->pnt.x+xadd),(obj->pnt.z+zadd),poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz,&x,&z)) return;
+
+	pt->x=x;
+	pt->z=z;
 }
 
 void collide_polygon_get_normal(int poly_uid,d3vct *normal)
 {
+	int					mesh_idx,poly_idx;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	normal->x=normal->y=normal->z=0.0f;
+
+	mesh_idx=poly_uid>>16;
+	if ((mesh_idx<0) || (mesh_idx>=map.mesh.nmesh)) return;
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	poly_idx=(poly_uid&0xFFFF);
+	if ((poly_idx<0) || (poly_idx>=mesh->npoly)) return;
+	poly=&mesh->polys[poly_idx];
+
+	normal->x=poly->tangent_space.normal.x;
+	normal->y=poly->tangent_space.normal.y;
+	normal->z=poly->tangent_space.normal.z;
 }
 
 float collide_polygon_dot_product_to_object(int poly_uid,obj_type *obj)
 {
-	return(0.0f);
+	int					mesh_idx,poly_idx;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	mesh_idx=poly_uid>>16;
+	if ((mesh_idx<0) || (mesh_idx>=map.mesh.nmesh)) return(0.0f);
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	poly_idx=(poly_uid&0xFFFF);
+	if ((poly_idx<0) || (poly_idx>=mesh->npoly)) return(0.0f);
+	poly=&mesh->polys[poly_idx];
+
+	return(((poly->tangent_space.normal.x*(float)(poly->box.mid.x-obj->pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-obj->pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-obj->pnt.z))));
 }
 
