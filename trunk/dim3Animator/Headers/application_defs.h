@@ -11,7 +11,7 @@
 //
 
 #define tool_button_size				32
-#define tool_count						10
+#define tool_count						11
 #define tool_height						33
 
 #define model_view_min_size				512
@@ -199,6 +199,7 @@ typedef struct		{
 										bone,
 										hit_box,
 										normal,
+										cull,
 										view_box,
 										first_mesh;
 					} display_type;

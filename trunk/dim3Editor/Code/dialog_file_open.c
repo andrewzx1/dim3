@@ -165,7 +165,7 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
 
 bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
-	int								n,idx,count;
+	int								n,count;
 	CFStringRef						cfstr;
 	ControlRef						ctrl;
 	ControlID						ctrl_id;
