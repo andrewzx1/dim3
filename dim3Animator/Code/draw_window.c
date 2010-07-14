@@ -48,7 +48,7 @@ extern model_draw_setup		draw_setup;
 void draw_model_gl_setup(model_type *model)
 {
 	int				yoff,sz,bsz;
-	float			aspect;
+	float			ratio,aspect;
 	Rect			wbox;
 	GLint			rect[4];
 	
@@ -70,9 +70,39 @@ void draw_model_gl_setup(model_type *model)
 	
 	glScissor(0,0,gl_view_x_sz,gl_view_y_sz);
 	glEnable(GL_SCISSOR_TEST);
+	
+
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	ratio=(float)gl_view_x_sz/(float)gl_view_y_sz;
+	gluPerspective(45.0f,ratio,(GLdouble)100,(GLdouble)10000);		// supergumba -- do something better!
+	glScalef(-1.0f,-1.0f,-1.0f);	/// supergumba, in editor this is -1,-1,-1
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+//	glRotatef(-ang_x,1.0f,0.0f,0.0f);
+//	glRotatef(-angle_add(ang_y,180.0f),0.0f,1.0f,0.0f);
+	
+	glTranslatef((GLfloat)0,(GLfloat)0,(GLfloat)5000);
+
+//	glRotatef(15.0f,0.0f,1.0f,0.0f);
+
+/*
+
+	sz=model->view_box.size.x;
+	if (model->view_box.size.z>sz) sz=model->view_box.size.z;
+	if (model->view_box.size.y>sz) sz=model->view_box.size.y;
+	sz+=magnify_z;
+	yoff=-(model->view_box.size.y/2);
+	glTranslatef((float)shift_x,-(float)(yoff+shift_y),-(((float)sz)*((1.0f/ratio)+0.5f)));
+*/
 
 		// model perspective
-		
+
+
 	aspect=(float)gl_view_x_sz/(float)gl_view_y_sz;
 	
 	sz=model->view_box.size.x;
@@ -82,22 +112,27 @@ void draw_model_gl_setup(model_type *model)
 	bsz=sz>>2;
 	
 	yoff=-(model->view_box.size.y/2);
-
+/*
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
 	gluPerspective(45,aspect,(bsz>>1),(sz*10));
 	glScalef(1,-1,1);						// y is reversed
-	
+*/
+
+/*	
 	sz+=magnify_z;
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef((float)shift_x,-(float)(yoff+shift_y),-(((float)sz)*((1.0f/aspect)+0.5f)));
 	
-	glRotatef(ang_x,1,0,0);
-	glRotatef(ang_y,0,1,0);
-	
+//	glRotatef(ang_x,1,0,0);
+//	glRotatef(ang_y,0,1,0);
+
+*/
+
+
 	glColor4f(1.0f,1.0f,1.0f,0.0f);
 	
 	glDisable(GL_SMOOTH);
