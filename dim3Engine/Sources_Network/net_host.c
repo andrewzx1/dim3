@@ -224,7 +224,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 	obj_type					*obj;
 	network_reply_join			reply_join;
 	network_reply_join_remote	remote;
-
+	
 		// check if join is OK
 	
 	remote_uid=-1;
@@ -417,7 +417,7 @@ bool net_host_game_start(char *err_str)
 void net_host_game_end(void)
 {
 		// inform all player of server shutdown
-
+		
 	net_host_player_send_message_all(net_action_request_host_exit,NULL,0);
 
 		// shutdown server

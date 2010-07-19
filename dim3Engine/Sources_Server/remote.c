@@ -829,9 +829,10 @@ bool remote_network_get_updates(void)
 		if (!net_client_check_message_queue(&remote_uid,&action,msg)) return(TRUE);
 		
 			// if at score limit, only accept reset messages
+			// or game exits
 			
 		if (server.state==gs_score_limit) {
-			if (action!=net_action_request_game_reset) continue;
+			if ((action!=net_action_request_game_reset) && (action!=net_action_request_host_exit)) continue;
 		}
 		
 			// run message

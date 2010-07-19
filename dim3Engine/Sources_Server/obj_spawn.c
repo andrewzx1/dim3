@@ -305,8 +305,6 @@ void game_multiplayer_bots_create(void)
 		strcpy(spot.script,"Bot");
 		spot.params[0]=0x0;
 		
-		fprintf(stdout,"spawning %s\n",name);
-		
 		uid=object_start(&spot,name,object_type_bot_multiplayer,bt_game,err_str);
 	}
 }

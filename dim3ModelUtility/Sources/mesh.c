@@ -187,36 +187,58 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 
 bool model_mesh_set_vertex_count(model_type *model,int mesh_idx,int vertex_count)
 {
+	int					count;
 	model_mesh_type		*mesh;
+	model_vertex_type	*vtx;
 	
 	mesh=&model->meshes[mesh_idx];
 
-	if (mesh->vertexes!=NULL) free(mesh->vertexes);
+	vtx=malloc(vertex_count*sizeof(model_vertex_type));
+	if (vtx==NULL) return(FALSE);
 
-	mesh->vertexes=malloc(vertex_count*sizeof(model_vertex_type));
-	if (mesh->vertexes==NULL) return(FALSE);
-
-	bzero(mesh->vertexes,(vertex_count*sizeof(model_vertex_type)));
-
+	bzero(vtx,(vertex_count*sizeof(model_vertex_type)));
+	
+	if (mesh->vertexes!=NULL) {
+		count=mesh->nvertex;
+		if (count>vertex_count) count=vertex_count;
+	
+		memmove(vtx,mesh->vertexes,(count*sizeof(model_vertex_type)));
+	
+		free(mesh->vertexes);
+	}
+	
 	mesh->nvertex=vertex_count;
-
+	mesh->vertexes=vtx;
+	
 	return(TRUE);
 }
 
 bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count)
 {
+	int					count;
 	model_mesh_type		*mesh;
+	model_trig_type		*trg;
 	
 	mesh=&model->meshes[mesh_idx];
 
-	if (mesh->trigs!=NULL) free(mesh->trigs);
+	trg=malloc(trig_count*sizeof(model_trig_type));
+	if (trg==NULL) return(FALSE);
 
-	mesh->trigs=malloc(trig_count*sizeof(model_trig_type));
-	if (mesh->trigs==NULL) return(FALSE);
-
-	bzero(mesh->trigs,(trig_count*sizeof(model_trig_type)));
-
+	bzero(trg,(trig_count*sizeof(model_trig_type)));
+	
+	if (mesh->trigs!=NULL) {
+		count=mesh->ntrig;
+		if (count>trig_count) count=trig_count;
+	
+		memmove(trg,mesh->trigs,(count*sizeof(model_trig_type)));
+	
+		free(mesh->trigs);
+	}
+	
 	mesh->ntrig=trig_count;
-
+	mesh->trigs=trg;
+	
 	return(TRUE);
+
+
 }

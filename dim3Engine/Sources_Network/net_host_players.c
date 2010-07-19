@@ -635,12 +635,17 @@ void net_host_player_send_message_others(int remote_uid,int action,unsigned char
 
 		// find sending player
 
-	idx=net_host_player_find(remote_uid);
-	if (idx==-1) {
-		SDL_mutexV(net_host_player_lock);
-		return;
+	if (remote_uid==-1) {
+		idx=-1;
 	}
-
+	else {
+		idx=net_host_player_find(remote_uid);
+		if (idx==-1) {
+			SDL_mutexV(net_host_player_lock);
+			return;
+		}
+	}
+	
 		// send to others
 	
 	for (n=0;n!=net_host_player_count;n++) {

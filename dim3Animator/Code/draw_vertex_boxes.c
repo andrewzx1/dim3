@@ -160,20 +160,14 @@ void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_setup)
 
 void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
-	int				n,k,ntrig,
-					sx,sy,sz,lsz;
+	int				n,k,ntrig;
 	float			fx,fy,fz,fx2,fy2,fz2,flsz;
 	float			*pv,*pt,*pn;
 	model_trig_type	*trig;
 	
-		// find normal line size
+		// normal line size
 		
-	model_get_size(model,&sx,&sy,&sz);
-	lsz=sx;
-	if (sz>lsz) lsz=sz;
-	if (sy>lsz) lsz=sy;
-	
-	flsz=((float)lsz)/15.0f;
+	flsz=50.0f;
 	
 		// draw normals
 	

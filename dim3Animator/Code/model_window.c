@@ -282,7 +282,7 @@ void model_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
 {
 	int				mag_z;
 	
-	mag_z=((400-GetControlValue(ctrl))-200)*10;
+	mag_z=GetControlValue(ctrl);
 	if (mag_z==magnify_z) return;
 	
 	magnify_z=mag_z;
@@ -292,11 +292,8 @@ void model_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
 
 void model_wind_set_magnify(int mag_z)
 {
-	magnify_z=mag_z;
-	if (magnify_z<-2000) magnify_z=-2000;
-	if (magnify_z>2000) magnify_z=2000;
-
-	SetControlValue(magnify_slider,(400-((magnify_z/10)+200)));
+	SetControlValue(magnify_slider,mag_z);
+	magnify_z=GetControlValue(magnify_slider);
 }
 
 /* =======================================================
@@ -817,7 +814,9 @@ void model_wind_open(void)
 	box.top+=5;
 	
 	magnify_proc=NewControlActionUPP(model_wind_magnify_action);
-	CreateSliderControl(model_wind,&box,200,0,400,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
+	CreateSliderControl(model_wind,&box,500,0,1000,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
+	
+	model_wind_set_magnify(500);
 		
 		// dragging for bones window
 		

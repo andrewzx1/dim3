@@ -139,7 +139,7 @@ void debug_dump(void)
 	fprintf(stdout,"#########################################################################\n");
 	fprintf(stdout,"Dump: dim3 Debugging Info\n");
 	fprintf(stdout,"Engine v%s\n",dim3_version);
-	fprintf(stdout,"(c) 2000-2007 Klink! Software\n");
+	fprintf(stdout,"(c) 2000-2010 Klink! Software\n");
 	fprintf(stdout,"#########################################################################\n\n");
 
 		// game info
