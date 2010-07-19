@@ -93,6 +93,10 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		return(FALSE);
 	}
 	
+		// count the vertexes
+		
+	
+	
 		// get the vertex and uv
 
     nvertex=0;

@@ -179,7 +179,6 @@ void reset_model_open(void)
     ang_y=180;
 	ang_x=0;
 	shift_x=shift_y=0;
-	magnify_z=0;
 	
 	vertex_clear_sel_mask(cur_mesh);
 	vertex_clear_hide_mask(cur_mesh);

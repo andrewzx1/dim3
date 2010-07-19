@@ -1838,7 +1838,7 @@ void element_draw_table_line_header(element_type *element,int x,int y,int wid,in
 	
 	col.r=col.g=col.b=0.0f;
 
-	y+=((row_high>>1)-1);
+	y+=((row_high>>1)-3);
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
 		gl_text_start(font_interface_index,hud.font.text_size_small);
@@ -1920,7 +1920,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	d3col			col,col2;
 
 	dx=x+4;
-	dy=y+((row_high>>1)-1);
+	dy=y+((row_high>>1)-3);
 
 		// data column
 
@@ -2230,6 +2230,10 @@ void element_draw_table(element_type *element,int sel_id)
 	lft+=10;
 	rgt-=35;
 	
+	col.r=col.g=col.b=0.0f;
+	
+	view_draw_next_vertex_object_2D_color_quad(&col,0.25f,lft,rgt,top,bot);
+	
 	col.r=hud.color.control_hilite.r*0.5f;
 	col.g=hud.color.control_hilite.g*0.5f;
 	col.b=hud.color.control_hilite.b*0.5f;
@@ -2251,7 +2255,7 @@ void element_draw_table(element_type *element,int sel_id)
 	if (element->setup.table.busy_str[0]!=0x0) {
 		col.r=col.g=col.b=0.0f;
 		gl_text_start(font_interface_index,hud.font.text_size_small);
-		gl_text_draw(((lft+rgt)>>1),((top+bot)>>1),element->setup.table.busy_str,tx_center,TRUE,&col,1.0f);
+		gl_text_draw(((lft+rgt)>>1),(((top+bot)>>1)-2),element->setup.table.busy_str,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
 	

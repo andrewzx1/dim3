@@ -99,6 +99,8 @@ void insert_model(char *file_name)
 		
 	v_off=model.meshes[cur_mesh].nvertex;
 	
+	model_mesh_set_vertex_count(&model,cur_mesh,(model.meshes[cur_mesh].nvertex+ins_model.meshes[0].nvertex));
+	
 	vertex=&model.meshes[cur_mesh].vertexes[v_off];
 	ins_vertex=ins_model.meshes[0].vertexes;
 	
@@ -109,14 +111,14 @@ void insert_model(char *file_name)
 		if (vertex->minor_bone_idx!=-1) vertex->minor_bone_idx+=b_off;
 		
 		vertex++;
-		model.meshes[cur_mesh].nvertex++;
-		
 		ins_vertex++;
 	}
 	
 		// bring in the trigs
 		
 	t_off=model.meshes[cur_mesh].ntrig;
+	
+	model_mesh_set_vertex_count(&model,cur_mesh,(model.meshes[cur_mesh].ntrig+ins_model.meshes[0].ntrig));
 	
 	trig=&model.meshes[cur_mesh].trigs[t_off];
 	ins_trig=ins_model.meshes[0].trigs;
@@ -129,8 +131,6 @@ void insert_model(char *file_name)
 		trig->v[2]+=v_off;
 		
 		trig++;
-		model.meshes[cur_mesh].ntrig++;
-		
 		ins_trig++;
 	}
 	

@@ -99,6 +99,10 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 
 		// wait for the reply
 		
+		// it's possible, especially with bots, that other players
+		// can start sending messages to this player.  Ignore them and
+		// only look for a join reply
+		
 	reply_ok=TRUE;
 	action=-1;
 	
@@ -106,7 +110,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 
 	while (wait_tick>time_get()) {
 		reply_ok=net_recvfrom_mesage(client_socket,NULL,NULL,&action,&remote_uid,msg,NULL);
-		if ((!reply_ok) || (action!=-1)) break;
+		if ((!reply_ok) || (action==net_action_reply_join)) break;
 		
 		usleep(100000);
 	}
@@ -125,17 +129,9 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 		return(-1);
 	}
 
-		// right message?
-
-	if (action!=net_action_reply_join) {
-		strcpy(deny_reason,"Host Sent Bad Reply");
-		net_close_socket(&client_socket);
-		return(-1);
-	}
-
-	memmove(&reply_join,msg,sizeof(network_reply_join));
-	
 		// check for denial
+		
+	memmove(&reply_join,msg,sizeof(network_reply_join));
 		
 	if (reply_join.deny_reason[0]!=0x0) {
 		strcpy(deny_reason,reply_join.deny_reason);

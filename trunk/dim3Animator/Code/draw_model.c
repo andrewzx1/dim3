@@ -102,7 +102,7 @@ void model_end_texture(texture_type *texture)
 bool draw_model_cull_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup,model_trig_type *trig)
 {
 	int				n;
-	float			*pv,*pn;
+	float			*pv;
 	d3pnt			pnt;
 	d3vct			normal,face_vct;
 	
@@ -117,10 +117,9 @@ bool draw_model_cull_trig(model_type *model,int mesh_idx,model_draw_setup *draw_
 		pnt.y+=((int)*pv++);
 		pnt.z+=((int)*pv);
 	
-		pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array+(trig->v[n]*3);
-		normal.x+=*pn++;
-		normal.y+=*pn++;
-		normal.z+=*pn;
+		normal.x+=trig->tangent_space[n].normal.x;
+		normal.y+=trig->tangent_space[n].normal.y;
+		normal.z+=trig->tangent_space[n].normal.z;
 	}
 	
 	pnt.x/=3;
@@ -131,7 +130,7 @@ bool draw_model_cull_trig(model_type *model,int mesh_idx,model_draw_setup *draw_
 	normal.y/=3.0f;
 	normal.z/=3.0f;
 	
-	vector_create(&face_vct,pnt.x,pnt.y,pnt.z,0,0,0);
+	vector_create(&face_vct,pnt.x,pnt.y,pnt.z,0,0,-5000);
 	return(vector_dot_product(&normal,&face_vct)>0.0f);
 }
 
