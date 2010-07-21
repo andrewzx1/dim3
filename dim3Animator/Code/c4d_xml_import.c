@@ -105,7 +105,7 @@ bool import_c4d_xml(char *path,char *err_str)
 		
 	nvertex=xml_countchildren(vertex_tag);
 	
-	mesh->nvertex=nvertex;
+	model_mesh_set_vertex_count(&model,cur_mesh,nvertex);
 	
 		// bring in uvs
 	
@@ -141,8 +141,37 @@ bool import_c4d_xml(char *path,char *err_str)
 		// bring in polygons
 		
 	npoly=xml_countchildren(poly_tag);
-	tag=xml_findfirstchild("polygon",poly_tag);
 	
+		// count polygons
+		
+	tag=xml_findfirstchild("polygon",poly_tag);
+
+	ntrig=0;
+	
+	for (n=0;n!=npoly;n++) {
+			
+		npt=0;
+		strcpy(name,"a");
+		
+		while (npt<obj_max_face_vertex) {
+			k=xml_get_attribute_int_default(tag,name,-1);
+			if (k==-1) break;
+			
+			name[0]++;
+			npt++;
+		}
+		
+		ntrig+=(npt-2);
+		
+		tag=xml_findnextchild(tag);
+	}
+	
+	model_mesh_set_trig_count(&model,cur_mesh,ntrig);
+		
+		// load polygons
+	
+	tag=xml_findfirstchild("polygon",poly_tag);
+
 	ntrig=0;
 	trig=mesh->trigs;
 	
@@ -194,8 +223,6 @@ bool import_c4d_xml(char *path,char *err_str)
 		
 		tag=xml_findnextchild(tag);
 	}
-	
-	mesh->ntrig=ntrig;
 	
 		// set trigs in material
 		

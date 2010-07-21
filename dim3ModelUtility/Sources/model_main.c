@@ -233,8 +233,8 @@ int model_memory_size(model_type *model)
 	sz=0;
 
 	for (n=0;n!=model->nmesh;n++) {
-		sz+=(max_model_vertex*sizeof(model_vertex_type));
-		sz+=(max_model_trig*sizeof(model_trig_type));
+		sz+=(model->meshes[n].nvertex*sizeof(model_vertex_type));
+		sz+=(model->meshes[n].ntrig*sizeof(model_trig_type));
 		sz+=(max_model_texture*sizeof(model_material_type));
 
 		sz+=((model->meshes[n].nvertex*3)*sizeof(float));

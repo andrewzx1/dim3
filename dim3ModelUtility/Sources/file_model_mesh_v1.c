@@ -31,10 +31,6 @@ and can be sold or given away.
 
 extern char					deform_mode_str[][32],model_bump_mode_str[][32];
 
-extern model_tag			bone_parent_tag[max_model_bone],
-                            major_bone_tag[max_model_vertex],
-							minor_bone_tag[max_model_vertex];
-
 /* =======================================================
 
       Read Mesh v1 XML
@@ -47,6 +43,8 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 							nfill,frame_count,trig_idx,
 							tag,hit_box_tag,vertex_tag,bone_tag,vtag,trig_tag,image_tag,
 							fills_tag,fill_tag;
+	model_tag				*major_bone_tags,*minor_bone_tags,
+							*bone_parent_tags;
 	model_hit_box_type		*hit_box;
     model_vertex_type		*vertex;
 	model_material_type		*material;
@@ -127,14 +125,17 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 	tag=xml_findfirstchild("v",vertex_tag);
 
 	model_mesh_set_vertex_count(model,0,model->meshes[0].nvertex);
+
+	major_bone_tags=(model_tag*)malloc(model->meshes[0].nvertex*sizeof(model_tag));
+	minor_bone_tags=(model_tag*)malloc(model->meshes[0].nvertex*sizeof(model_tag));
 	
     vertex=model->meshes[0].vertexes;
     
     for (i=0;i!=model->meshes[0].nvertex;i++) {
         xml_get_attribute_3_coord_int(tag,"c3",&vertex->pnt.x,&vertex->pnt.y,&vertex->pnt.z);
 		
-        major_bone_tag[i]=xml_get_attribute_model_tag(tag,"major");
-        minor_bone_tag[i]=xml_get_attribute_model_tag(tag,"minor");
+        major_bone_tags[i]=xml_get_attribute_model_tag(tag,"major");
+        minor_bone_tags[i]=xml_get_attribute_model_tag(tag,"minor");
         vertex->bone_factor=xml_get_attribute_float_default(tag,"factor",1);
     
         vertex++;
@@ -147,6 +148,8 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 
     nbone=xml_countchildren(bone_tag);
 	tag=xml_findfirstchild("Bone",bone_tag);
+	
+	bone_parent_tags=(model_tag*)malloc(max_model_bone*sizeof(model_tag));
     
     for (i=0;i!=nbone;i++) {
 
@@ -163,7 +166,7 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 		xml_get_attribute_text(tag,"name",bone->name,name_str_len);
         
         xml_get_attribute_3_coord_int(tag,"c3",&bone->pnt.x,&bone->pnt.y,&bone->pnt.z);
-        bone_parent_tag[i]=xml_get_attribute_model_tag(tag,"parent");
+        bone_parent_tags[i]=xml_get_attribute_model_tag(tag,"parent");
     
 		tag=xml_findnextchild(tag);
     }
@@ -178,20 +181,25 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 	vertex=model->meshes[0].vertexes;
 	
 	for (i=0;i!=model->meshes[0].nvertex;i++) {
-		vertex->major_bone_idx=model_find_bone(model,major_bone_tag[i]);
-		vertex->minor_bone_idx=model_find_bone(model,minor_bone_tag[i]);
+		vertex->major_bone_idx=model_find_bone(model,major_bone_tags[i]);
+		vertex->minor_bone_idx=model_find_bone(model,minor_bone_tags[i]);
         if ((vertex->major_bone_idx==-1) || (vertex->minor_bone_idx==-1)) vertex->bone_factor=1;
 		vertex++;
 	}
+	
+	free(major_bone_tags);
+	free(minor_bone_tags);
 		
 		// reset the bones from tags to indexes
 		
 	bone=model->bones;
 	
 	for (i=0;i!=model->nbone;i++) {
-		bone->parent_idx=model_find_bone(model,bone_parent_tag[i]);
+		bone->parent_idx=model_find_bone(model,bone_parent_tags[i]);
 		bone++;
 	}
+	
+	free(bone_parent_tags);
     
         // fills
 

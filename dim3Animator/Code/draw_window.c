@@ -77,16 +77,12 @@ void draw_model_gl_setup(model_type *model)
 	glLoadIdentity();
 
 	ratio=(float)gl_view_x_sz/(float)gl_view_y_sz;
-	gluPerspective(45.0f,ratio,(GLdouble)100,(GLdouble)10000);		// supergumba -- do something better!
-	glScalef(-1.0f,-1.0f,-1.0f);	/// supergumba, in editor this is -1,-1,-1
+	gluPerspective(45.0,ratio,100.0,25000.0);
+	glScalef(-1.0f,-1.0f,-1.0f);
 
 	yoff=model->view_box.size.y/2;
 
-	sz=model->view_box.size.x;
-	if (model->view_box.size.z>sz) sz=model->view_box.size.z;
-	if (model->view_box.size.y>sz) sz=model->view_box.size.y;
-
-	sz=(sz>>2)+((1000-magnify_z)*5);
+	sz=500+((4000-magnify_z)*5);
 	
 	glTranslatef(-((GLfloat)shift_x),-((GLfloat)(shift_y-yoff)),(GLfloat)sz);
 	

@@ -32,11 +32,7 @@ and can be sold or given away.
 #define max_model										64			// maximum models in a map
 
 #define max_model_mesh									32			// maximum number of meshes
-
-#define max_model_vertex								8000		// maximum number of vertexs
 #define max_model_bone									128			// maximum number of bones
-#define max_model_trig									8000		// maximum number of triangles in a model
-
 #define max_model_texture								32			// maximum number of textures in model
 
 #define max_model_pose									256			// maximum number of poses

@@ -501,7 +501,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
 					if (axis!=kEventMouseWheelAxisY) return(noErr);
 					GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
-					model_wind_set_magnify(magnify_z-(delta*20));
+					model_wind_set_magnify(magnify_z+(delta*20));
 					draw_model_wind_pose(&model,cur_mesh,cur_pose);
 					return(noErr);
 					
@@ -814,9 +814,9 @@ void model_wind_open(void)
 	box.top+=5;
 	
 	magnify_proc=NewControlActionUPP(model_wind_magnify_action);
-	CreateSliderControl(model_wind,&box,500,0,1000,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
+	CreateSliderControl(model_wind,&box,0,0,4000,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
 	
-	model_wind_set_magnify(500);
+	model_wind_set_magnify(3000);
 		
 		// dragging for bones window
 		

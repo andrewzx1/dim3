@@ -228,7 +228,8 @@ bool find_VMAD_uv(ptr data,int datasz,int poly,int v,float *gx,float *gy)
 
 bool import_lightwave(char *path,char *err_str)
 {
-    int						i,k,poly,npt,nvertex,ntrig,datasz,chunksz,texture_idx;
+    int						i,k,poly,npt,nvertex,ntrig,datasz,
+							chunksz,texture_idx;
  	short					*sptr;
 	long					*lptr;
     float					*fptr;
@@ -275,11 +276,7 @@ bool import_lightwave(char *path,char *err_str)
     fptr=(float*)chunk;
     nvertex=chunksz/12;
 	
-	if (nvertex>=max_model_vertex) {
-		sprintf(err_str,"Too many vertexes, models can have a maximum of %d vertexes.",max_model_vertex);
-		free(data);
-		return(FALSE);
-	}
+	model_mesh_set_vertex_count(&model,cur_mesh,nvertex);
 
 	vertex=model.meshes[cur_mesh].vertexes;
     
@@ -293,8 +290,6 @@ bool import_lightwave(char *path,char *err_str)
     
         vertex++;
     }
-    
-    model.meshes[cur_mesh].nvertex=nvertex;
         
         // find polygons
         
@@ -314,6 +309,26 @@ bool import_lightwave(char *path,char *err_str)
     
     chunk+=4;
     chunksz-=4;
+	
+		// count trigs
+		
+    ntrig=poly=0;
+	trig=model.meshes[cur_mesh].trigs;
+    
+    sptr=(short*)chunk;
+    
+    while ((chunksz>2) && (ntrig<max_model_trig)) {
+        npt=*sptr++;
+
+        npt=npt&0x03FF;
+		ntrig+=(npt-2);
+        
+        sptr+=npt;
+    }
+	
+	model_mesh_set_trig_count(&model,cur_mesh,ntrig);
+		
+		// load trigs
     
 	texture_idx=texture_pick("Fill 0",err_str);
 	if (texture_idx==-1) {
@@ -369,8 +384,6 @@ bool import_lightwave(char *path,char *err_str)
     }
     
 	material->trig_count=ntrig-material->trig_start;
-    
-	model.meshes[cur_mesh].ntrig=ntrig;
     
         // free the data
         
