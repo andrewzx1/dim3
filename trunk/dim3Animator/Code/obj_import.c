@@ -93,13 +93,39 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		return(FALSE);
 	}
 	
-		// count the vertexes
+		// count the vertexes and trigs
 		
+	nvertex=0;
+	ntrig=0;
+
+    for (n=0;n!=nline;n++) {
+        textdecode_get_piece(n,0,txt);
+		
+        if (strcmp(txt,"v")==0) {
+			nvertex++;
+			continue;
+		}
+
+		if (strcmp(txt,"f")==0) {
+        
+			npt=0;
+        
+			for (k=0;k!=obj_max_face_vertex;k++) {
+				textdecode_get_piece(n,(k+1),txt);
+				if (txt[0]==0x0) break;
+				
+				npt++;
+			}
+			
+			ntrig+=(npt-2);
+		}
+	}
 	
+	model_mesh_set_vertex_count(&model,cur_mesh,nvertex);
+	model_mesh_set_trig_count(&model,cur_mesh,ntrig);
 	
 		// get the vertex and uv
 
-    nvertex=0;
 	vertex=model.meshes[cur_mesh].vertexes;
     
     nobj_uv=0;
@@ -116,12 +142,6 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             // a vertex
             
         if (strcmp(txt,"v")==0) {
-            if (nvertex>=max_model_vertex) {
-				textdecode_close();
-				sprintf(err_str,"Too many vertexes, models can have a maximum of %d vertexes.",max_model_vertex);
-				return(FALSE);
-			}
-
 			textdecode_get_piece(n,1,txt);
 			vertex->pnt.x=-(int)(strtod(txt,NULL)*import_scale_factor);
 			textdecode_get_piece(n,2,txt);
@@ -177,10 +197,6 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		sprintf(err_str,"There are no UVs in this OBJ, please texture map the model before importing.");
 		return(FALSE);
 	}
-
-		// set new vertexes
-    
-    model.meshes[cur_mesh].nvertex=nvertex;
 	
 		// single material import?
 		
@@ -296,12 +312,6 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
         }
 		
         for (k=0;k!=(npt-2);k++) {
-            if (ntrig>=max_model_trig) {
-				textdecode_close();
-				sprintf(err_str,"Too many triangles, models can have a maximum of %d triangles.",max_model_trig);
-				return(FALSE);
-			}
-
             trig->v[0]=pvtx[0];
             trig->v[1]=pvtx[k+1];
             trig->v[2]=pvtx[k+2];

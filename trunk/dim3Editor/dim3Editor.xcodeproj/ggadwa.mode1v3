@@ -270,48 +270,7 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>2697C8A011ED70E900AAC421</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>walk_view_click_piece.c</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>2697C8A111ED70E900AAC421</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>walk_view_click_piece.c</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>2674295A11F401510072B88F</string>
-						<key>history</key>
-						<array>
-							<string>2697C8A211ED70E900AAC421</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {1041, 706}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>516 152 1041 747 0 0 1680 1028 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -495,9 +454,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2674295811F401510072B88F</string>
+				<string>26EEA27811F55345001989F1</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2674295911F401510072B88F</string>
+				<string>26EEA27911F55345001989F1</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -618,7 +577,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>301203793.18427998</real>
+	<real>301290309.59882098</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -634,7 +593,6 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>260AFEFF0D4050AF00F6C42F</string>
-		<string>2697C8A011ED70E900AAC421</string>
 		<string>/Users/ggadwa/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -715,7 +673,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEFF0D4050AF00F6C42F</string>
-				<string>2674295B11F401510072B88F</string>
+				<string>26EEA27A11F55345001989F1</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

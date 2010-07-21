@@ -118,7 +118,7 @@ void insert_model(char *file_name)
 		
 	t_off=model.meshes[cur_mesh].ntrig;
 	
-	model_mesh_set_vertex_count(&model,cur_mesh,(model.meshes[cur_mesh].ntrig+ins_model.meshes[0].ntrig));
+	model_mesh_set_trig_count(&model,cur_mesh,(model.meshes[cur_mesh].ntrig+ins_model.meshes[0].ntrig));
 	
 	trig=&model.meshes[cur_mesh].trigs[t_off];
 	ins_trig=ins_model.meshes[0].trigs;
