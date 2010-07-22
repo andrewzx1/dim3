@@ -33,9 +33,6 @@ and can be sold or given away.
 extern int						cur_mesh;
 extern model_type				model;
 
-float							obj_gx[max_model_vertex],obj_gy[max_model_vertex];
-d3vct							obj_normals[max_model_vertex];
-
 /* =======================================================
 
       Import OBJ File
@@ -48,12 +45,12 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 							pvtx[obj_max_face_vertex],npt;
 	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
 							material_name[256],last_material_name[256];
-    float					*gx,*gy,pgx[obj_max_face_vertex],pgy[obj_max_face_vertex];
 	bool					single_material,first_material;
+	d3uv					*uv,*uv_ptr,pt_uv[obj_max_face_vertex];
+	d3vct					*normal,*normal_ptr,pnormal[obj_max_face_vertex];
 	model_vertex_type		*vertex;
     model_trig_type			*trig;
 	model_material_type		*material;
-	d3vct					*normal,pnormal[obj_max_face_vertex];
 	
 		// clear mesh materials
     
@@ -124,16 +121,20 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 	model_mesh_set_vertex_count(&model,cur_mesh,nvertex);
 	model_mesh_set_trig_count(&model,cur_mesh,ntrig);
 	
+		// uv memory
+		
+	uv_ptr=(d3uv*)malloc(nvertex*sizeof(d3uv));
+	normal_ptr=(d3vct*)malloc(nvertex*sizeof(d3vct));
+	
 		// get the vertex and uv
 
 	vertex=model.meshes[cur_mesh].vertexes;
     
     nobj_uv=0;
-    gx=obj_gx;
-    gy=obj_gy;
+    uv=uv_ptr;
 	
 	nobj_normal=0;
-	normal=obj_normals;
+	normal=normal_ptr;
    
     for (n=0;n!=nline;n++) {
 
@@ -160,22 +161,19 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             // a uv
             
             if (strcmp(txt,"vt")==0) {
-                if (nobj_uv>=max_model_vertex) continue;
-
                 textdecode_get_piece(n,1,txt);
-                *gx++=strtod(txt,NULL);
+                uv->x=strtod(txt,NULL);
                 textdecode_get_piece(n,2,txt);
-                *gy++=strtod(txt,NULL);
+                uv->x=strtod(txt,NULL);
                 
                 nobj_uv++;
+				uv++;
             }
 			else {
 			
 				// a normal
 				
 				if (strcmp(txt,"vn")==0) {
-					if (nobj_normal>=max_model_vertex) continue;
-
 					textdecode_get_piece(n,1,txt);
 					normal->x=-strtod(txt,NULL);
 					textdecode_get_piece(n,2,txt);
@@ -194,6 +192,8 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		
 	if (nobj_uv==0) {
 		textdecode_close();
+		free(uv_ptr);
+		free(normal_ptr);
 		sprintf(err_str,"There are no UVs in this OBJ, please texture map the model before importing.");
 		return(FALSE);
 	}
@@ -295,17 +295,17 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             pvtx[npt]=atoi(vstr)-1;
             
 			if (vtstr[0]==0x0) {
-				pgx[npt]=pgy[npt]=0.0f;
+				pt_uv[npt].x=pt_uv[npt].y=0.0f;
 			}
 			else {
 				t=atoi(vtstr)-1;
-				pgx[npt]=obj_gx[t];
-				pgy[npt]=1-obj_gy[t];
+				pt_uv[npt].x=uv_ptr[t].x;
+				pt_uv[npt].y=1.0f-uv_ptr[t].y;
             }
 				
 			if (vnstr[0]!=0x0) {
 				t=atoi(vnstr)-1;
-				memmove(&pnormal[npt],&obj_normals[t],sizeof(d3vct));
+				memmove(&pnormal[npt],&normal_ptr[t],sizeof(d3vct));
 			}
 			
             npt++;
@@ -316,13 +316,13 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             trig->v[1]=pvtx[k+1];
             trig->v[2]=pvtx[k+2];
                 
-            trig->gx[0]=pgx[0];
-            trig->gx[1]=pgx[k+1];
-            trig->gx[2]=pgx[k+2];
+            trig->gx[0]=pt_uv[0].x;
+            trig->gx[1]=pt_uv[k+1].x;
+            trig->gx[2]=pt_uv[k+2].x;
             
-            trig->gy[0]=pgy[0];
-            trig->gy[1]=pgy[k+1];
-            trig->gy[2]=pgy[k+2];
+            trig->gy[0]=pt_uv[0].y;
+            trig->gy[1]=pt_uv[k+1].y;
+            trig->gy[2]=pt_uv[k+2].y;
 			
 			memmove(&trig->tangent_space[0].normal,&pnormal[0],sizeof(d3vct));
 			memmove(&trig->tangent_space[1].normal,&pnormal[k+1],sizeof(d3vct));
@@ -338,6 +338,9 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
     }
 	
 	model.meshes[cur_mesh].ntrig=ntrig;
+	
+	free(uv_ptr);
+	free(normal_ptr);
 	
 	textdecode_close();
 

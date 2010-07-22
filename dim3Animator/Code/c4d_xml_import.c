@@ -33,11 +33,6 @@ and can be sold or given away.
 extern int						cur_mesh;
 extern model_type				model;
 
-short							c4d_v_bone_idx[max_model_vertex][2];
-float							c4d_v_attach[max_model_vertex],
-								c4d_v_bone_value[max_model_vertex][2],
-								c4d_gx[max_model_trig*3],c4d_gy[max_model_trig*3];
-
 /* =======================================================
 
       Import C4D XML File
@@ -49,8 +44,10 @@ bool import_c4d_xml(char *path,char *err_str)
 	int						n,k,nuv,npoly,nvertex,ntrig,nbone,uv_idx,texture_idx,
 							tag,uv_tag,poly_tag,vertex_tag,bone_tag,x,y,z,nattach,
 							pvtx[obj_max_face_vertex],npt;
-	float					pgx[obj_max_face_vertex],pgy[obj_max_face_vertex];
+	int						*v_major_bone_idx,*v_minor_bone_idx;
+	float					*v_attach,*v_major_bone_value,*v_minor_bone_value;
 	char					name[32];
+	d3uv					*uv_ptr,pt_uv[obj_max_face_vertex];
 	model_mesh_type			*mesh;
 	model_vertex_type		*vertex;
     model_trig_type			*trig;
@@ -107,15 +104,25 @@ bool import_c4d_xml(char *path,char *err_str)
 	
 	model_mesh_set_vertex_count(&model,cur_mesh,nvertex);
 	
+		// bone arrays
+		
+	v_major_bone_idx=(int*)malloc(nvertex*sizeof(int));
+	v_minor_bone_idx=(int*)malloc(nvertex*sizeof(int));
+	v_attach=(float*)malloc(nvertex*sizeof(float));
+	v_major_bone_value=(float*)malloc(nvertex*sizeof(float));
+	v_minor_bone_value=(float*)malloc(nvertex*sizeof(float));
+	
 		// bring in uvs
 	
 	nuv=xml_countchildren(uv_tag);
 	
+	uv_ptr=(d3uv*)malloc(nuv*sizeof(d3uv));
+	
 	tag=xml_findfirstchild("vector",uv_tag);
 	
 	for (n=0;n!=nuv;n++) {
-		c4d_gx[n]=xml_get_attribute_float_default(tag,"x",0.0f);
-		c4d_gy[n]=xml_get_attribute_float_default(tag,"y",0.0f);
+		uv_ptr[n].x=xml_get_attribute_float_default(tag,"x",0.0f);
+		uv_ptr[n].y=xml_get_attribute_float_default(tag,"y",0.0f);
 		tag=xml_findnextchild(tag);
 	}
 	
@@ -189,8 +196,8 @@ bool import_c4d_xml(char *path,char *err_str)
 			if (k==-1) break;
 			
 			pvtx[npt]=k;
-			pgx[npt]=c4d_gx[uv_idx];
-			pgy[npt]=c4d_gy[uv_idx++];
+			pt_uv[npt].x=uv_ptr[uv_idx].x;
+			pt_uv[npt].y=uv_ptr[uv_idx++].y;
 			
 			name[0]++;
 			npt++;
@@ -199,23 +206,17 @@ bool import_c4d_xml(char *path,char *err_str)
 			// tesellate into triangles
 			
         for (k=0;k!=(npt-2);k++) {
-            if (ntrig>=max_model_trig) {
-				xml_close_file();
-				sprintf(err_str,"Too many triangles, models can have a maximum of %d triangles.",max_model_trig);
-				return(FALSE);
-			}
-
             trig->v[0]=pvtx[0];
             trig->v[1]=pvtx[k+1];
             trig->v[2]=pvtx[k+2];
                 
-            trig->gx[0]=pgx[0];
-			trig->gx[1]=pgx[k+1];
-            trig->gx[2]=pgx[k+2];
+            trig->gx[0]=pt_uv[0].x;
+			trig->gx[1]=pt_uv[k+1].x;
+            trig->gx[2]=pt_uv[k+2].x;
 
-			trig->gy[0]=pgy[0];
-            trig->gy[1]=pgy[k+1];
-            trig->gy[2]=pgy[k+2];
+			trig->gy[0]=pt_uv[0].y;
+            trig->gy[1]=pt_uv[k+1].y;
+            trig->gy[2]=pt_uv[k+2].y;
             
             trig++;
             ntrig++;
@@ -223,6 +224,10 @@ bool import_c4d_xml(char *path,char *err_str)
 		
 		tag=xml_findnextchild(tag);
 	}
+	
+		// don't need uv list anymore
+		
+	free(uv_ptr);
 	
 		// set trigs in material
 		
@@ -232,7 +237,8 @@ bool import_c4d_xml(char *path,char *err_str)
 		// clear bone vertex attach list
 		
 	for (n=0;n!=nvertex;n++) {
-		c4d_v_bone_idx[n][0]=c4d_v_bone_idx[n][1]=-1;
+		v_major_bone_idx[n]=-1;
+		v_minor_bone_idx[n]=-1;
 	}
 	
 		// grab the bones
@@ -258,9 +264,9 @@ bool import_c4d_xml(char *path,char *err_str)
 		tag=xml_findfirstchild("real",tag);
 		
 		for (k=0;k!=nvertex;k++) {
-			c4d_v_attach[k]=xml_get_attribute_float_default(tag,"v",0.0f);
+			v_attach[k]=xml_get_attribute_float_default(tag,"v",0.0f);
 			
-			if (c4d_v_attach[k]!=0.0f) {
+			if (v_attach[k]!=0.0f) {
 			
 					// get vertex data for bone position
 					
@@ -277,21 +283,21 @@ bool import_c4d_xml(char *path,char *err_str)
 					// minor bone and attachment the major.  Otherwise, replace
 					// the minor if attachment is greater
 				
-				if (c4d_v_bone_idx[k][0]==-1) {
-					c4d_v_bone_idx[k][0]=nbone;
-					c4d_v_bone_value[k][0]=c4d_v_attach[k];
+				if (v_major_bone_idx[k]==-1) {
+					v_major_bone_idx[k]=nbone;
+					v_major_bone_value[k]=v_attach[k];
 				}
 				else {
-					if (c4d_v_attach[k]>c4d_v_bone_value[k][0]) {
-						c4d_v_bone_idx[k][1]=c4d_v_bone_idx[k][0];	// move old major bone to minor
-						c4d_v_bone_value[k][1]=c4d_v_bone_value[k][0];
-						c4d_v_bone_idx[k][0]=nbone;
-						c4d_v_bone_value[k][0]=c4d_v_attach[k];
+					if (v_attach[k]>v_major_bone_value[k]) {
+						v_minor_bone_idx[k]=v_major_bone_idx[k];	// move old major bone to minor
+						v_minor_bone_value[k]=v_major_bone_value[k];
+						v_major_bone_idx[k]=nbone;
+						v_major_bone_value[k]=v_attach[k];
 					}
 					else {
-						if (c4d_v_attach[k]>c4d_v_bone_value[k][1]) {
-							c4d_v_bone_idx[k][1]=nbone;
-							c4d_v_bone_value[k][1]=c4d_v_attach[k];
+						if (v_attach[k]>v_minor_bone_value[k]) {
+							v_minor_bone_idx[k]=nbone;
+							v_minor_bone_value[k]=v_attach[k];
 						}
 					}
 				}
@@ -339,17 +345,25 @@ bool import_c4d_xml(char *path,char *err_str)
 	
 	for (n=0;n!=nvertex;n++) {
 		
-		if (c4d_v_bone_idx[n][0]!=-1) {
-			vertex->major_bone_idx=c4d_v_bone_idx[n][0];
+		if (v_major_bone_idx[n]!=-1) {
+			vertex->major_bone_idx=v_major_bone_idx[n];
 			
-			if (c4d_v_bone_idx[n][1]!=-1) {
-				vertex->minor_bone_idx=c4d_v_bone_idx[n][1];
-				vertex->bone_factor=1.0f-(c4d_v_bone_value[n][1]*(1.0/c4d_v_bone_value[n][0]));
+			if (v_minor_bone_idx[n]!=-1) {
+				vertex->minor_bone_idx=v_minor_bone_idx[n];
+				vertex->bone_factor=1.0f-(v_minor_bone_value[n]*(1.0/v_major_bone_value[n]));
 			}
 		}
 	
 		vertex++;
 	}
+	
+		// don't need bone lists
+		
+	free(v_major_bone_idx);
+	free(v_minor_bone_idx);
+	free(v_attach);
+	free(v_major_bone_value);
+	free(v_minor_bone_value);
 	
 		// close xml file
 		

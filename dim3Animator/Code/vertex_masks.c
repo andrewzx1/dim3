@@ -27,10 +27,10 @@ and can be sold or given away.
 
 #include "model.h"
 
-extern model_type				model;
+#define animator_vertex_flag_sel			0x1
+#define animator_vertex_flag_hide			0x2
 
-unsigned char					vertex_sel_mask[max_model_mesh][vertex_sel_hide_mask_sz],
-								vertex_hide_mask[max_model_mesh][vertex_sel_hide_mask_sz];
+extern model_type				model;
 
 /* =======================================================
 
@@ -40,37 +40,41 @@ unsigned char					vertex_sel_mask[max_model_mesh][vertex_sel_hide_mask_sz],
 
 void vertex_clear_sel_mask(int mesh_idx)
 {
-	bzero(vertex_sel_mask[mesh_idx],vertex_sel_hide_mask_sz);
+	int				n;
+	model_mesh_type	*mesh;
+	
+	mesh=&model.meshes[mesh_idx];
+	
+	for (n=0;n!=mesh->nvertex;n++) {
+		mesh->vertexes[n].animator_flag&=(animator_vertex_flag_sel^0xFFFF);
+	}
 }
 
 void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value)
 {
-	int				idx,sft;
-	
-	idx=vertex_idx>>3;
-	sft=vertex_idx%8;
-	
 	if (value) {
-		vertex_sel_mask[mesh_idx][idx]|=(0x1<<sft);
+		model.meshes[mesh_idx].vertexes[vertex_idx].animator_flag|=animator_vertex_flag_sel;
 	}
 	else {
-		vertex_sel_mask[mesh_idx][idx]&=((0x1<<sft)^0xFF);
+		model.meshes[mesh_idx].vertexes[vertex_idx].animator_flag&=(animator_vertex_flag_sel^0xFFFF);
 	}
 }
 
 void vertex_set_sel_mask_all(int mesh_idx)
 {
-	memset(vertex_sel_mask[mesh_idx],0xFF,vertex_sel_hide_mask_sz);
+	int				n;
+	model_mesh_type	*mesh;
+	
+	mesh=&model.meshes[mesh_idx];
+	
+	for (n=0;n!=mesh->nvertex;n++) {
+		mesh->vertexes[n].animator_flag|=animator_vertex_flag_sel;
+	}
 }
 
 bool vertex_check_sel_mask(int mesh_idx,int vertex_idx)
 {
-	int				idx,sft;
-	
-	idx=vertex_idx>>3;
-	sft=vertex_idx%8;
-	
-	return((vertex_sel_mask[mesh_idx][idx]&(0x1<<sft))!=0);
+	return((model.meshes[mesh_idx].vertexes[vertex_idx].animator_flag&animator_vertex_flag_sel)!=0);
 }
 
 /* =======================================================
@@ -81,32 +85,29 @@ bool vertex_check_sel_mask(int mesh_idx,int vertex_idx)
 
 void vertex_clear_hide_mask(int mesh_idx)
 {
-	bzero(vertex_hide_mask[mesh_idx],vertex_sel_hide_mask_sz);
+	int				n;
+	model_mesh_type	*mesh;
+	
+	mesh=&model.meshes[mesh_idx];
+	
+	for (n=0;n!=mesh->nvertex;n++) {
+		mesh->vertexes[n].animator_flag&=(animator_vertex_flag_hide^0xFFFF);
+	}
 }
 
 void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value)
 {
-	int				idx,sft;
-	
-	idx=vertex_idx>>3;
-	sft=vertex_idx%8;
-	
 	if (value) {
-		vertex_hide_mask[mesh_idx][idx]|=(0x1<<sft);
+		model.meshes[mesh_idx].vertexes[vertex_idx].animator_flag|=animator_vertex_flag_hide;
 	}
 	else {
-		vertex_hide_mask[mesh_idx][idx]&=((0x1<<sft)^0xFF);
+		model.meshes[mesh_idx].vertexes[vertex_idx].animator_flag&=(animator_vertex_flag_hide^0xFFFF);
 	}
 }
 
 bool vertex_check_hide_mask(int mesh_idx,int vertex_idx)
 {
-	int				idx,sft;
-	
-	idx=vertex_idx>>3;
-	sft=vertex_idx%8;
-	
-	return((vertex_hide_mask[mesh_idx][idx]&(0x1<<sft))!=0);
+	return((model.meshes[mesh_idx].vertexes[vertex_idx].animator_flag&animator_vertex_flag_hide)!=0);
 }
 
 /* =======================================================

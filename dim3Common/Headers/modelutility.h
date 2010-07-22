@@ -139,6 +139,7 @@ typedef struct		{
 
 typedef struct		{
 						int								major_bone_idx,minor_bone_idx;
+						short							animator_flag;
 						float							bone_factor;
 						d3pnt							pnt;
 						d3vct							major_dist,minor_dist;

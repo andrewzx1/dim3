@@ -48,17 +48,18 @@ extern WindowRef				model_wind;
 
 void hilite_vertex_rows(void)
 {
-	register int			n,nt,nitem;
-	DataBrowserItemID		*itemID,vertex_sel_itemIDs[max_model_vertex];
+	register int			n,nvertex,nitem;
+	DataBrowserItemID		*itemID,*vertex_sel_itemIDs;
 	
 	vertex_list_notify_ignore=TRUE;
 	
-	nt=model.meshes[cur_mesh].nvertex;
+	nvertex=model.meshes[cur_mesh].nvertex;
 	nitem=0;
 	
+	vertex_sel_itemIDs=(DataBrowserItemID*)malloc(nvertex*sizeof(DataBrowserItemID));
 	itemID=vertex_sel_itemIDs;
 	
-	for (n=0;n!=nt;n++) {
+	for (n=0;n!=nvertex;n++) {
 		if (vertex_check_sel_mask(cur_mesh,n)) {
 			*itemID=n+1;
 			itemID++;
@@ -68,6 +69,8 @@ void hilite_vertex_rows(void)
 	
 	SetDataBrowserSelectedItems(vertex_list,nitem,vertex_sel_itemIDs,kDataBrowserItemsAssign);
 	
+	free(vertex_sel_itemIDs);
+		
 	vertex_list_notify_ignore=FALSE;
 }
 
