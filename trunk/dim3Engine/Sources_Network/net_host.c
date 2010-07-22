@@ -43,6 +43,7 @@ extern hud_type				hud;
 
 d3socket					host_socket;
 bool						host_complete;
+net_queue_type				host_queue;
 char						host_err_str[256];
 SDL_Thread					*host_thread;
 
@@ -56,6 +57,13 @@ int net_host_thread(void *arg);		// forward reference for main thread
 
 bool net_host_initialize(char *err_str)
 {
+		// create cache
+
+	if (!net_queue_initialize(&host_queue)) {
+		strcpy(err_str,"Networking: Out of memory");
+		return(FALSE);
+	}
+
 		// begin listener thread
 		
 	host_complete=FALSE;
@@ -63,6 +71,7 @@ bool net_host_initialize(char *err_str)
 	
 	host_thread=SDL_CreateThread(net_host_thread,NULL);
 	if (host_thread==NULL) {
+		net_queue_shutdown(&host_queue);
 		strcpy(err_str,"Networking: Could not start host listener thread");
 		return(FALSE);
 	}
@@ -75,6 +84,7 @@ bool net_host_initialize(char *err_str)
 	}
 	
 	if (host_err_str[0]!=0x0) {
+		net_queue_shutdown(&host_queue);
 		strcpy(err_str,host_err_str);
 		return(FALSE);
 	}
@@ -94,6 +104,10 @@ void net_host_shutdown(void)
 		
 	net_close_socket(&host_socket);
 	SDL_WaitThread(host_thread,NULL);
+
+		// free queue
+
+	net_queue_shutdown(&host_queue);
 }
 
 /* =======================================================
@@ -312,6 +326,49 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 /* =======================================================
 
+      Host Process Messages
+      
+======================================================= */
+
+void net_host_process_messages(void)
+{
+	int						remote_uid,action,count;
+	unsigned char			msg[net_max_msg_size];
+	
+	count=0;
+	
+	while (count<host_message_per_loop_count) {
+	
+			// check for messages
+
+		if (!net_queue_check_message(&host_queue,&remote_uid,&action,msg,NULL)) return;
+		
+			// reply to all info request
+			
+		if (action==net_action_request_info) {
+			net_host_info_request(ip_addr,port);
+			continue;
+		}
+
+			// reply to all join requests
+
+		if (action==net_action_request_join) {
+			net_host_join_request(ip_addr,port,(network_request_join*)msg);
+			continue;
+		}
+		
+			// all other requests are routed to
+			// player queues
+
+		// supergumba -- call right to players here
+
+		net_host_player_remote_route_msg(player_uid,action,msg,msg_len);
+		
+	}
+}
+
+/* =======================================================
+
       Host Networking Main Thread
       
 ======================================================= */
@@ -354,13 +411,18 @@ int net_host_thread(void *arg)
 	net_socket_blocking(host_socket,TRUE);
 	
 	while (TRUE) {
-	
-			// get message
-			// false return = host shutting down
+
+			// feed the queues from the socket
+			// if there's an error, break out of loop
+			// and cancel network game
 			
-		if (!net_recvfrom_mesage(host_socket,&ip_addr,&port,&action,&player_uid,msg,&msg_len)) break;
-		
-			// reply to all info request
+		if (!net_queue_feed(client_socket,&client_queue)) break;
+	
+
+
+
+
+			// auto reply to all info request
 			
 		if (action==net_action_request_info) {
 			net_host_info_request(ip_addr,port);

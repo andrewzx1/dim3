@@ -49,8 +49,17 @@ and can be sold or given away.
 #define socket_no_data_u_wait							25
 
 //
+// max message size
+//
+
+#define net_max_msg_size								3072
+
+
+//
 // host defines
 //
+
+#define host_message_per_loop_count						50
 
 #define host_no_data_u_wait								25
 #define host_max_network_error_reject					10
@@ -64,7 +73,7 @@ and can be sold or given away.
 //
 
 #define client_timeout_wait_seconds						5
-#define client_message_per_loop_count					5
+#define client_message_per_loop_count					10
 
 #define client_communication_update_msec_rate			50
 #define client_communication_group_synch_msec_rate		10000
@@ -85,15 +94,22 @@ and can be sold or given away.
 // queue defines
 //
 
-#define net_queue_max_message							64
+#define net_queue_max_message							256
 
 //
 // network queues
 //
 
 typedef struct		{
+						int								port,player_uid,
+														action,msg_len;
+						unsigned long					ip_addr;
+						unsigned char					msg[net_max_msg_size];
+					} net_queue_msg_type;
+
+typedef struct		{
 						int								count;
-						unsigned char					*data;
+						net_queue_msg_type				*msgs;
 						SDL_mutex						*lock;
 					} net_queue_type;
 
@@ -222,8 +238,6 @@ typedef struct		{
 //
 // network headers and messages
 //
-
-#define net_max_msg_size								3072
 
 typedef struct		{
 						short							remote_uid,
