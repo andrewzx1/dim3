@@ -317,7 +317,7 @@ bool import_lightwave(char *path,char *err_str)
     
     sptr=(short*)chunk;
     
-    while ((chunksz>2) && (ntrig<max_model_trig)) {
+    while (chunksz>2) {
         npt=*sptr++;
 
         npt=npt&0x03FF;
@@ -344,19 +344,13 @@ bool import_lightwave(char *path,char *err_str)
     
     sptr=(short*)chunk;
     
-    while ((chunksz>2) && (ntrig<max_model_trig)) {
+    while (chunksz>2) {
         npt=*sptr++;
         chunksz-=2;
         
         npt=npt&0x03FF;
         
-        for ((k=0);(k!=(npt-2));k++) {
-            if (ntrig>=max_model_trig) {
-				sprintf(err_str,"Too many triangles, models can have a maximum of %d triangles.",max_model_trig);
-				free(data);
-				return(FALSE);
-			}
-        
+        for (k=0;k!=(npt-2);k++) {
             trig->v[0]=*sptr;
             trig->v[1]=*(sptr+(k+1));
             trig->v[2]=*(sptr+(k+2));

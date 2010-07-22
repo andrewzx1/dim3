@@ -112,7 +112,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 {
 	int						lx,rx,ty,by,sz;
 	double					mod_matrix[16],proj_matrix[16],vport[4];
-	char					org_vertex_sel[max_model_vertex];
+	char					*org_vertex_sel;
 	bool					chg_sel;
 	float					*pv;
 	Point					pt,last_pt;
@@ -148,6 +148,8 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 	
 		// turn on or off?
 		
+	org_vertex_sel=(char*)malloc(model.meshes[cur_mesh].nvertex);
+		
 	if ((modifiers&shiftKey)!=0) {
 		select_model_wind_save_sel_state(org_vertex_sel);
 		SetThemeCursor(kThemePlusCursor);
@@ -160,7 +162,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 			chg_sel=FALSE;
 		}
 		else {
-			memset(org_vertex_sel,0x0,max_model_vertex);
+			memset(org_vertex_sel,0x0,model.meshes[cur_mesh].nvertex);
 			SetThemeCursor(kThemeArrowCursor);
 			chg_sel=TRUE;
 		}
@@ -208,6 +210,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 	drag_sel_on=FALSE;
 	
 	free(pv);
+	free(org_vertex_sel);
 
 		// redraw the model
 		

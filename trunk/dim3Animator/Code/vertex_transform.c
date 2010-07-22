@@ -228,10 +228,12 @@ void vertex_delete_sel_vertex(int mesh_idx)
 {
 	int					i,n,k,j,
 						trig_start,trig_end,sz;
-	char				vertex_sel[max_model_vertex];
+	char				*vertex_sel;
 	bool				hit;
 
 		// convert sels to boolean
+		
+	vertex_sel=(char*)malloc(model.meshes[mesh_idx].nvertex);
 		
 	for (i=0;i!=model.meshes[mesh_idx].nvertex;i++) {
 		vertex_sel[i]=(char)vertex_check_sel_mask(mesh_idx,i);
@@ -240,6 +242,7 @@ void vertex_delete_sel_vertex(int mesh_idx)
 		// delete all vertexes
 		
 	i=0;
+	
 	while (i<model.meshes[mesh_idx].nvertex) {
 	
 		if (vertex_sel[i]==0) {
@@ -310,6 +313,8 @@ void vertex_delete_sel_vertex(int mesh_idx)
 		}
 	}
 	
+	free(vertex_sel);
+	
 		// clear sels
 		
 	vertex_clear_sel_mask(mesh_idx);
@@ -329,9 +334,11 @@ void vertex_delete_unused_vertexes(int mesh_idx)
     model_trig_type		*trig;
 	
 		// vertex hit list
-		
-	v_ok=(unsigned char*)malloc(max_model_vertex);
-	bzero(v_ok,max_model_vertex);
+			
+	nvertex=model.meshes[mesh_idx].nvertex;
+	
+	v_ok=(unsigned char*)malloc(nvertex);
+	bzero(v_ok,nvertex);
 	
 		// find vertexes hit
 		
@@ -346,8 +353,6 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 	}
 	
 		// delete unused vertexes
-		
-	nvertex=model.meshes[mesh_idx].nvertex;
 	
 	for (n=(nvertex-1);n>=0;n--) {
 	
