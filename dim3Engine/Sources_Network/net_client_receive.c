@@ -123,12 +123,35 @@ int net_client_receive_thread(void *arg)
 
 /* =======================================================
 
-      Check Message Queue
+      Client Process Queue
       
 ======================================================= */
 
-inline bool net_client_check_message_queue(int *remote_uid,int *action,unsigned char *data)
+bool net_client_process_messages(void)
 {
-	return(net_queue_check_message(&client_queue,remote_uid,action,data,NULL));
-}
+	int						remote_uid,action,count;
+	unsigned char			msg[net_max_msg_size];
+	
+	count=0;
+	
+	while (count<client_message_per_loop_count) {
+	
+			// check for messages
 
+		if (!net_queue_check_message(&client_queue,&remote_uid,&action,msg,NULL)) return(TRUE);
+		
+			// if at score limit, only accept reset messages
+			// or game exits
+			
+		if (server.state==gs_score_limit) {
+			if ((action!=net_action_request_game_reset) && (action!=net_action_request_host_exit)) continue;
+		}
+		
+			// run message
+			
+		if (!remote_route_message(remote_uid,action,msg)) return(FALSE);
+		
+	}
+	
+	return(TRUE);
+}

@@ -815,35 +815,6 @@ bool remote_route_message(int remote_uid,int action,unsigned char *msg)
 	return(TRUE);
 }
 
-bool remote_network_get_updates(void)
-{
-	int						remote_uid,action,count;
-	unsigned char			msg[net_max_msg_size];
-	
-	count=0;
-	
-	while (count<client_message_per_loop_count) {
-	
-			// check for messages
-
-		if (!net_client_check_message_queue(&remote_uid,&action,msg)) return(TRUE);
-		
-			// if at score limit, only accept reset messages
-			// or game exits
-			
-		if (server.state==gs_score_limit) {
-			if ((action!=net_action_request_game_reset) && (action!=net_action_request_host_exit)) continue;
-		}
-		
-			// run message
-			
-		if (!remote_route_message(remote_uid,action,msg)) return(FALSE);
-		
-	}
-	
-	return(TRUE);
-}
-
 /* =======================================================
 
       Remote Networking Updates, Pings, and Synchs

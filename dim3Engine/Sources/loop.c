@@ -67,10 +67,14 @@ extern void view_calculate_fps(void);
 
 void loop_game_run(void)
 {
-		// receive networking updates
+		// networking
+
+	if ((net_setup_mode==net_mode_host) || (net_setup_mode==net_mode_host_dedicated)) {
+		net_host_process_messages();
+	}
 		
 	if (net_setup.mode!=net_mode_none) {
-		if (!remote_network_get_updates()) return;
+		if (!net_client_process_messages()) return;
 	}
 	
 		// run game

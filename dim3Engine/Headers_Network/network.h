@@ -88,6 +88,8 @@ extern void net_host_join_multiplayer_bots(void);
 
 extern int net_host_player_remote_thread(void *arg);
 
+extern void net_host_process_messages(void);
+
 //
 // host player lists
 //
@@ -131,7 +133,7 @@ extern int net_client_find_game(char *game_name);
 
 extern bool net_client_start_message_queue(char *err_str);
 extern void net_client_end_message_queue(void);
-extern bool net_client_check_message_queue(int *remote_uid,int *action,unsigned char *data);
+extern bool net_client_process_messages(void);
 
 //
 // client sending messages

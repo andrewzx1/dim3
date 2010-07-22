@@ -33,7 +33,7 @@ extern bool remote_timed_out(obj_type *obj);
 extern void remote_predict_move(obj_type *obj);
 
 extern bool remote_route_message(int remote_uid,int action,unsigned char *msg);
-extern bool remote_network_get_updates(void);
+
 extern void remote_network_send_updates(void);
 extern void remote_network_send_group_synch(void);
 extern void remote_network_send_latency_ping(void);
