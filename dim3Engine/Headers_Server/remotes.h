@@ -26,13 +26,13 @@ and can be sold or given away.
 *********************************************************************/
 
 extern bool remote_add(network_reply_join_remote *remote,bool send_event);
-extern void remote_remove(int remote_uid,bool send_event);
+extern void remote_remove(int net_uid,bool send_event);
 
 extern bool remote_timed_out(obj_type *obj);
 
 extern void remote_predict_move(obj_type *obj);
 
-extern bool remote_route_message(int remote_uid,int action,unsigned char *msg);
+extern bool remote_route_message(net_queue_msg_type *msg);
 
 extern void remote_network_send_updates(void);
 extern void remote_network_send_group_synch(void);

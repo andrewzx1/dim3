@@ -48,7 +48,7 @@ inline obj_type* object_script_lookup(void)
 	return(server.obj_list.objs[js.attach.obj_idx]);
 }
 
-obj_type* object_find_remote_uid(int uid)
+obj_type* object_find_remote_net_uid(int net_uid)
 {
 	int				n;
 	obj_type		*obj;
@@ -57,7 +57,7 @@ obj_type* object_find_remote_uid(int uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (obj->remote.uid==uid) return(obj);
+		if (obj->remote.net_uid==net_uid) return(obj);
 	}
 	
 	return(NULL);

@@ -69,7 +69,7 @@ int net_client_find_game(char *game_name)
 
 int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,network_reply_join_remote_list *remote_list)
 {
-	int						action,wait_tick,remote_uid;
+	int						action,wait_tick,net_uid;
 	unsigned char			msg[net_max_msg_size];
 	char					err_str[256];
 	bool					reply_ok;
@@ -95,7 +95,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 	strcpy(request_join.draw_name,obj->draw.name);
 	request_join.tint_color_idx=(signed short)ntohs((short)obj->tint_color_idx);
 
-	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_join,net_player_uid_none,(unsigned char*)&request_join,sizeof(network_request_join));
+	net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,net_action_request_join,net_uid_constant_none,(unsigned char*)&request_join,sizeof(network_request_join));
 
 		// wait for the reply
 		
@@ -109,7 +109,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 	wait_tick=time_get()+(client_timeout_wait_seconds*1000);
 
 	while (wait_tick>time_get()) {
-		reply_ok=net_recvfrom_mesage(client_socket,NULL,NULL,&action,&remote_uid,msg,NULL);
+		reply_ok=net_recvfrom_mesage(client_socket,NULL,NULL,&action,&net_uid,msg,NULL);
 		if ((!reply_ok) || (action==net_action_reply_join)) break;
 		
 		usleep(100000);
@@ -141,14 +141,14 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 	
 		// finish setup
 		
-	obj->remote.uid=(signed short)ntohs(reply_join.remote_uid);
+	obj->remote.net_uid=(signed short)ntohs(reply_join.net_uid);
 	obj->team_idx=(signed short)ntohs(reply_join.team_idx);
 	
 	*tick_offset=ntohl(reply_join.map_tick);
 
 	memmove(remote_list,&reply_join.remote_list,sizeof(network_reply_join_remote_list));
 
-	return(obj->remote.uid);
+	return(obj->remote.net_uid);
 }
 
 void net_client_join_host_end(void)

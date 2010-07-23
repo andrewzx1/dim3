@@ -276,7 +276,7 @@ typedef struct		{
 
 typedef struct		{
 						int								obj_idx,weap_idx,proj_idx,
-														net_remote_uid;
+														net_uid;
 						bool							net_sound;
 						d3vct							motion_vct;
 					} model_draw_connect;
@@ -424,7 +424,8 @@ typedef struct		{
 					} obj_contact;
 					
 typedef struct		{
-						int						obj_uid;
+						int						touch_obj_idx,stand_obj_idx,
+												last_touch_tick;
 						bool					stand;
 						d3pnt					pnt;
 						d3ang					ang;
@@ -637,7 +638,7 @@ typedef struct		{
 					} obj_remote_predict;
 					
 typedef struct		{
-						int						uid,last_update;
+						int						net_uid,last_update;
 						bool					talking;
 						obj_remote_predict		predict;
 					} obj_remote;
@@ -857,7 +858,7 @@ typedef struct		{
 						int						idx,type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
 												count,input_mode,air_mode,camera_z_adjust,
-												stand_obj_uid,damage_obj_uid,item_count,
+												damage_obj_uid,item_count,
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],spawn_spot_name[name_str_len],
 												spot_script[file_str_len],spot_params[param_str_len];

@@ -200,7 +200,7 @@ void object_clear_pickup(obj_pickup *pickup)
 
 void object_clear_remote(obj_remote *remote)
 {
-	remote->uid=-1;
+	remote->net_uid=-1;
 }
 
 void object_clear_watch(obj_watch *watch)

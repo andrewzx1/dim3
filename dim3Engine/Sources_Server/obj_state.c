@@ -299,26 +299,32 @@ void object_touch(obj_type *obj)
 {
 	int				uid;
 	obj_type		*hit_obj;
-	
+
 		// touching objects
 	
 	uid=obj->contact.obj_uid;
 	if (uid==-1) return;
-	
+
 		// if standing, don't send touching callbacks
 		
 	if (obj->stand_obj_uid==uid) return;
 
-		// send callbacks
+		// get touch object
 
 	hit_obj=server.obj_list.objs[uid];
 	if (hit_obj->type==object_type_remote) return;
 		
-	object_setup_touch(hit_obj,obj,FALSE);
-	scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
-	
-	object_setup_touch(obj,hit_obj,FALSE);
-	scripts_post_event_console(&obj->attach,sd_event_touch,0,0);
+		// only send callbacks if this is a change hit
+
+	if (hit_obj->touch.obj_uid!=obj->idx) {
+		object_setup_touch(hit_obj,obj,FALSE);
+		scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
+	}
+
+	if (obj->touch.obj_uid!=hit_obj->idx) {
+		object_setup_touch(obj,hit_obj,FALSE);
+		scripts_post_event_console(&obj->attach,sd_event_touch,0,0);
+	}
 }
 
 /* =======================================================

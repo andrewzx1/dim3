@@ -113,9 +113,16 @@ JSObjectRef script_add_event_object(JSContextRef cx,JSObjectRef parent_obj)
 
 JSValueRef js_event_start_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	char			err_str[256];
+
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
-	return(script_bool_to_value(cx,timers_add(&js.attach,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),NULL,timer_mode_repeat)));
+	if (!timers_add(&js.attach,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),NULL,timer_mode_repeat,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_bool_to_value(cx,FALSE));
+	}
+
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -134,14 +141,22 @@ JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 JSValueRef js_event_start_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	char			err_str[256];
+
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	return(script_bool_to_value(cx,timers_add(&js.attach,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),NULL,timer_mode_single)));
+	if (!timers_add(&js.attach,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),NULL,timer_mode_single,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_bool_to_value(cx,FALSE));
+	}
+
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_event_start_wait_random_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				min,max,tick;
+	char			err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
@@ -149,7 +164,12 @@ JSValueRef js_event_start_wait_random_func(JSContextRef cx,JSObjectRef func,JSOb
 	max=script_value_to_int(cx,argv[1]);
 	tick=random_int(abs(max-min))+min;
 	
-	return(script_bool_to_value(cx,timers_add(&js.attach,tick,script_value_to_int(cx,argv[2]),NULL,timer_mode_single)));
+	if (!timers_add(&js.attach,tick,script_value_to_int(cx,argv[2]),NULL,timer_mode_single,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_bool_to_value(cx,FALSE));
+	}
+
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_event_clear_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -168,13 +188,18 @@ JSValueRef js_event_clear_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 JSValueRef js_event_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			chain_func_name[64];
+	char			chain_func_name[64],err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[1],chain_func_name,64);
 	
-	return(script_bool_to_value(cx,timers_add(&js.attach,script_value_to_int(cx,argv[0]),0,chain_func_name,timer_mode_chain)));
+	if (!timers_add(&js.attach,script_value_to_int(cx,argv[0]),0,chain_func_name,timer_mode_chain,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_bool_to_value(cx,FALSE));
+	}
+
+	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_event_clear_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

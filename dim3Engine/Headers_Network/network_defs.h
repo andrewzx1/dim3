@@ -101,8 +101,8 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int								port,player_uid,
-														action,msg_len;
+						int								net_uid,action,
+														msg_len,port;
 						unsigned long					ip_addr;
 						unsigned char					msg[net_max_msg_size];
 					} net_queue_msg_type;
@@ -118,8 +118,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								remote_uid,
-														port;
+						int								net_uid,port;
 						unsigned long					ip_addr;
 						bool							local,bot;
 						d3socket						sock;
@@ -131,7 +130,6 @@ typedef struct		{
 														draw_name[name_str_len];
 						d3pnt							pnt;
 						net_host_player_connect_type	connect;
-						net_queue_type					queue;
 					} net_host_player_type;
 
 //
@@ -150,26 +148,20 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
-						int								next_remote_uid;
-					} network_setup_uid;
-
-typedef struct		{
-						int								mode,game_idx,option_flags;
+						int								mode,game_idx,option_flags,
+														next_net_uid;
 						network_setup_host_type			host;
 						network_setup_client_type		client;
-						network_setup_uid				uid;
 					} network_setup_type;
 
 //
 // special remote unqiue IDs
 //
 
-#define net_player_uid_none								0
-#define net_player_uid_host								1
-#define net_player_uid_client_start						1000
-#define net_player_uid_map_bot_start					2000
-
-// supergumba -- all this above might not be necessary
+#define net_uid_constant_none							0
+#define net_uid_constant_host							1
+#define net_uid_constant_client_start					1000
+#define net_uid_constant_map_bot_start					2000
 
 //
 // messages actions
@@ -240,7 +232,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						short							remote_uid,
+						short							net_uid,
 														action,len;
 					} network_header;
 
@@ -273,7 +265,7 @@ typedef struct		{
 
 typedef struct		{
 						int								pnt_x,pnt_y,pnt_z;
-						short							remote_uid,bot,score,
+						short							net_uid,bot,score,
 														team_idx,tint_color_idx;
 						char							name[name_str_len],
 														draw_name[name_str_len];
@@ -298,7 +290,7 @@ typedef struct		{
 
 typedef struct		{
 						int								map_tick;
-						short							remote_uid,team_idx;
+						short							net_uid,team_idx;
 						char							deny_reason[64];
 						network_reply_join_remote_list	remote_list;
 					} network_reply_join;
@@ -316,7 +308,7 @@ typedef struct		{
 //
 				
 typedef struct		{
-						short							remote_killer_obj_uid,telefrag;
+						short							net_uid_killer_obj,telefrag;
 					} network_request_remote_death;
 
 typedef struct		{

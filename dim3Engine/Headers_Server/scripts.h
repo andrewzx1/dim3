@@ -573,7 +573,7 @@ extern void timers_free_list(void);
 extern int timers_count_list(void);
 
 extern int timers_find(attach_type *attach,int mode);
-extern bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode);
+extern bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode,char *err_str);
 extern void timers_remove(int idx);
 extern void timers_clear(attach_type *attach,int mode);
 extern void timers_script_dispose(int script_idx);

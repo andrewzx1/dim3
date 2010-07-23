@@ -103,11 +103,19 @@ int timers_find(attach_type *attach,int mode)
       
 ======================================================= */
 
-bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode)
+bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode,char *err_str)
 {
 	int				n,idx;
 	timer_type		*timer;
-	
+
+		// check for bad frequency
+		// no greater than 10 minutes of less than 1 tick
+
+	if ((freq<=0) || (freq>=(10*(10*60)))) {
+		sprintf(err_str,"Timer: Illegal frequency: %d\n",freq);
+		return(FALSE);
+	}
+
 		// if already timer for this script, mark it as disposed
 		
 	idx=timers_find(attach,mode);
@@ -125,13 +133,19 @@ bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,i
 		}
 	}
 
-	if (idx==-1) return(FALSE);
+	if (idx==-1) {
+		strcpy(err_str,"Timer: Too many timers launched (timers, waits, chains)");
+		return(FALSE);
+	}
 
 		// create it
 
 	js.timer_list.timers[idx]=(timer_type*)malloc(sizeof(timer_type));
-	if (js.timer_list.timers[idx]==NULL) return(FALSE);
-	
+	if (js.timer_list.timers[idx]==NULL) {
+		strcpy(err_str,"Timer: Out of memory");
+		return(FALSE);
+	}
+
 		// setup timer
 	
 	timer=js.timer_list.timers[idx];

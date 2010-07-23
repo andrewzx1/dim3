@@ -31,10 +31,6 @@ and can be sold or given away.
 
 #include "network.h"
 
-
-// supergumba -- queues need to be message based!
-
-
 /* =======================================================
 
       Initialize and Shutdown Queues
@@ -62,12 +58,6 @@ bool net_queue_initialize(net_queue_type *queue)
 	queue->lock=SDL_CreateMutex();
 
 	return(TRUE);
-}
-
-// supergumba -- will this be needed?
-void net_queue_initialize_empty(net_queue_type *queue)
-{
-	queue->msgs=NULL;
 }
 
 void net_queue_shutdown(net_queue_type *queue)
@@ -104,7 +94,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 
 		queue_msg=queue->msgs+queue->count;
 
-		if (!net_recvfrom_mesage(sock,&queue_msg->ip_addr,&queue_msg->port,&queue_msg->action,&queue_msg->player_uid,queue_msg->msg,&queue_msg->msg_len)) {
+		if (!net_recvfrom_mesage(sock,&queue_msg->ip_addr,&queue_msg->port,&queue_msg->action,&queue_msg->net_uid,queue_msg->msg,&queue_msg->msg_len)) {
 			err=TRUE;			// socket has closed, error out
 			break;
 		}
@@ -129,7 +119,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
       
 ======================================================= */
 
-bool net_queue_push_message(net_queue_type *queue,int remote_uid,int action,unsigned char *msg_data,int msg_len)
+bool net_queue_push_message(net_queue_type *queue,int net_uid,int action,unsigned char *msg_data,int msg_len)
 {
 	net_queue_msg_type	*queue_msg;
 
@@ -150,7 +140,7 @@ bool net_queue_push_message(net_queue_type *queue,int remote_uid,int action,unsi
 	queue_msg->port=0;
 
 	queue_msg->action=action;
-	queue_msg->player_uid=remote_uid;
+	queue_msg->net_uid=net_uid;
 
 	queue_msg->msg_len=msg_len;
 	if (msg_data!=NULL) memmove(queue_msg->msg,msg_data,msg_len);
