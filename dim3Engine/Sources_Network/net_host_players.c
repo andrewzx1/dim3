@@ -461,139 +461,47 @@ void net_host_player_create_info_player_list(network_reply_info_player_list *pla
 
 /* =======================================================
 
-      Message Routing
+      Route Remote Messages to Host
       
 ======================================================= */
 
-void net_host_player_remote_route_msg(int remote_uid,int action,unsigned char *msg,int msg_len)
+void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 {
-	int				idx;
-
-		// lock all player operations
-		
-	SDL_mutexP(net_host_player_lock);
-
-		// find player
-
-	idx=net_host_player_find(remote_uid);
-	if (idx==-1) {
-		SDL_mutexV(net_host_player_lock);
-		return;
-	}
-		// put on queue
-		
-	net_queue_push_message(&net_host_players[idx].queue,remote_uid,action,msg,msg_len);
-
-		// unlock player operation
-
-	SDL_mutexV(net_host_player_lock);
-}
-
-bool net_host_player_remote_check_msg(int remote_uid,int *action,unsigned char *msg,int *msg_len)
-{
-	int				idx,queue_remote_uid;
-	bool			has_msg;
-
-		// lock all player operations
-		
-	SDL_mutexP(net_host_player_lock);
-
-		// find player
-
-	idx=net_host_player_find(remote_uid);
-	if (idx==-1) {
-		SDL_mutexV(net_host_player_lock);
-		return(FALSE);
-	}
-		// read from queue
-
-	has_msg=net_queue_check_message(&net_host_players[idx].queue,&queue_remote_uid,action,msg,msg_len);
-
-		// unlock player operation
-
-	SDL_mutexV(net_host_player_lock);
-
-	return(has_msg);
-}
-
-/* =======================================================
-
-      Remote Threads
-      
-======================================================= */
-
-int net_host_player_remote_thread(void *arg)
-{
-	int						remote_uid,action,msg_len;
-	unsigned char			msg[net_max_msg_size];
+	switch (msg->action) {
 	
-		// get player uid from argument
-		
-	remote_uid=(int)arg;
-	
-		// wait for messages
-		
-	while (TRUE) {
+		case net_action_request_leave:
+			net_host_player_remove(msg->player_uid);
+			net_host_player_send_message_others(msg->player_uid,net_action_request_remote_remove,NULL,0);
+			break;
+			
+		case net_action_request_remote_update:
+			net_host_player_update(msg->player_uid,(network_request_remote_update*)msg->msg);
+			net_host_player_send_message_others(msg->player_uid,net_action_request_remote_update,msg->msg,msg->msg_len);
+			break;
+			
+		case net_action_request_remote_death:
+		case net_action_request_remote_chat:
+		case net_action_request_remote_sound:
+		case net_action_request_remote_fire:
+		case net_action_request_remote_pickup:
+		case net_action_request_remote_click:
+			net_host_player_send_message_others(msg->player_uid,msg->action,msg->msg,msg->msg_len);
+			break;
 
-			// check player queue
+		case net_action_request_latency_ping:
+			net_host_player_send_message_single(msg->player_uid,net_action_reply_latency_ping,NULL,0);
+			break;
 
-		if (!net_host_player_remote_check_msg(remote_uid,&action,msg,&msg_len)) {
-			usleep(host_no_data_u_wait);
-			continue;
-		}
-		
-			// route messages
+		case net_action_request_group_synch:
+			net_host_player_remote_group_synch(msg->player_uid);
+			break;
 
-		switch (action) {
-		
-			case net_action_request_leave:
-				net_host_player_remove(remote_uid);
-				net_host_player_send_message_others(remote_uid,net_action_request_remote_remove,NULL,0);
-
-				remote_uid=-1;
-				break;
-				
-			case net_action_request_remote_update:
-				net_host_player_update(remote_uid,(network_request_remote_update*)msg);
-				net_host_player_send_message_others(remote_uid,net_action_request_remote_update,msg,msg_len);
-				break;
-				
-			case net_action_request_remote_death:
-			case net_action_request_remote_chat:
-			case net_action_request_remote_sound:
-			case net_action_request_remote_fire:
-			case net_action_request_remote_pickup:
-			case net_action_request_remote_click:
-				net_host_player_send_message_others(remote_uid,action,msg,msg_len);
-				break;
-
-			case net_action_request_latency_ping:
-				net_host_player_send_message_single(remote_uid,net_action_reply_latency_ping,NULL,0);
-				break;
-
-			case net_action_request_group_synch:
-				net_host_player_remote_group_synch(remote_uid);
-				break;
-
-		}
-
-			// if remote_uid is reset to -1
-			// then remote has exited
-
-		if (remote_uid==-1) break;
+	}
 		
 			// since this is the host, we need to pass on
-			// the messages to the host remotes
+			// the messages to the remotes on the host
 			
-		if (net_setup.mode!=net_mode_host_dedicated) remote_route_message(remote_uid,action,msg);
-	}
-	
-	return(0);
-}
-
-void net_host_player_remote_start_thread(int remote_uid)
-{
-	SDL_CreateThread(net_host_player_remote_thread,(void*)remote_uid);
+	if (net_setup.mode!=net_mode_host_dedicated) remote_route_message(msg->player_uid,msg->action,msg->msg);
 }
 
 /* =======================================================

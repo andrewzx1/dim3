@@ -129,8 +129,8 @@ int net_client_receive_thread(void *arg)
 
 bool net_client_process_messages(void)
 {
-	int						remote_uid,action,count;
-	unsigned char			msg[net_max_msg_size];
+	int						count;
+	net_queue_msg_type		msg;
 	
 	count=0;
 	
@@ -138,18 +138,18 @@ bool net_client_process_messages(void)
 	
 			// check for messages
 
-		if (!net_queue_check_message(&client_queue,&remote_uid,&action,msg,NULL)) return(TRUE);
+		if (!net_queue_check_message(&client_queue,&msg)) return(TRUE);
 		
 			// if at score limit, only accept reset messages
 			// or game exits
 			
 		if (server.state==gs_score_limit) {
-			if ((action!=net_action_request_game_reset) && (action!=net_action_request_host_exit)) continue;
+			if ((msg.action!=net_action_request_game_reset) && (msg.action!=net_action_request_host_exit)) continue;
 		}
 		
 			// run message
 			
-		if (!remote_route_message(remote_uid,action,msg)) return(FALSE);
+		if (!remote_route_message(msg.player_uid,msg.action,msg.msg)) return(FALSE);
 		
 	}
 	
