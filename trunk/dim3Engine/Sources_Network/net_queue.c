@@ -48,7 +48,7 @@ bool net_queue_initialize(net_queue_type *queue)
 		// create queue
 		
 	queue->count=0;
-	queue->data=NULL;
+	queue->msgs=NULL;
 	
 	sz=net_queue_max_message*sizeof(net_queue_msg_type);
 
@@ -64,9 +64,10 @@ bool net_queue_initialize(net_queue_type *queue)
 	return(TRUE);
 }
 
+// supergumba -- will this be needed?
 void net_queue_initialize_empty(net_queue_type *queue)
 {
-	queue->data=NULL;
+	queue->msgs=NULL;
 }
 
 void net_queue_shutdown(net_queue_type *queue)
@@ -85,7 +86,6 @@ void net_queue_shutdown(net_queue_type *queue)
 
 bool net_queue_feed(d3socket sock,net_queue_type *queue)
 {
-	int					len;
 	bool				err;
 	net_queue_msg_type	*queue_msg;
 
@@ -102,7 +102,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 	
 			// get the next message
 
-		queue_msg=queue->msgs[queue->count];
+		queue_msg=queue->msgs+queue->count;
 
 		if (!net_recvfrom_mesage(sock,&queue_msg->ip_addr,&queue_msg->port,&queue_msg->action,&queue_msg->player_uid,queue_msg->msg,&queue_msg->msg_len)) {
 			err=TRUE;			// socket has closed, error out
@@ -131,8 +131,6 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 
 bool net_queue_push_message(net_queue_type *queue,int remote_uid,int action,unsigned char *msg_data,int msg_len)
 {
-	unsigned char		*ptr;
-	network_header		head;
 	net_queue_msg_type	*queue_msg;
 
 	SDL_mutexP(queue->lock);
@@ -146,7 +144,7 @@ bool net_queue_push_message(net_queue_type *queue,int remote_uid,int action,unsi
 	
 		// put message on queue
 		
-	queue_msg=queue->msgs[queue->count];
+	queue_msg=queue->msgs+queue->count;
 
 	queue_msg->ip_addr=0;
 	queue_msg->port=0;
@@ -172,13 +170,8 @@ bool net_queue_push_message(net_queue_type *queue,int remote_uid,int action,unsi
       
 ======================================================= */
 
-bool net_queue_check_message(net_queue_type *queue,int *remote_uid,int *action,unsigned char *msg_data,int *msg_data_len)
+bool net_queue_check_message(net_queue_type *queue,net_queue_msg_type *msg)
 {
-	int					msg_len;
-	unsigned char		*ptr;
-	network_header		head;
-	net_queue_msg_type	*queue_msg;
-	
 	SDL_mutexP(queue->lock);
 	
 		// any messages any queue?
@@ -190,31 +183,14 @@ bool net_queue_check_message(net_queue_type *queue,int *remote_uid,int *action,u
 
 		// FIFO, use first message
 
-	ptr=queue->data;
-	
-		// get message header
-		
-	memmove(&head,ptr,sizeof(network_header));
-	ptr+=sizeof(network_header);
-	
-	*remote_uid=(int)ntohs(head.remote_uid);
-	*action=(int)ntohs(head.action);
-	msg_len=(int)ntohs(head.len);
-
-		// get message data
-		
-	if (msg_len!=0) memmove(msg_data,ptr,msg_len);
+	memmove(msg,queue->msgs,sizeof(net_queue_msg_type));
 	
 		// remove retreived mesage
 		
-	if (queue->count>1) memmove(queue->data,(queue->data+net_max_msg_size),((queue->count-1)*net_max_msg_size));
+	if (queue->count>1) memmove(queue->msgs,(queue->msgs+1),((queue->count-1)*sizeof(net_queue_msg_type)));
 	queue->count--;
 		
 	SDL_mutexV(queue->lock);
-	
-		// return message size
-
-	if (msg_data_len!=NULL) *msg_data_len=msg_len;
 		
 	return(TRUE);
 }

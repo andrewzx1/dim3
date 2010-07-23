@@ -311,11 +311,6 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 		// if no player uid, then player was rejected
 		
 	if (remote_uid==-1) return(FALSE);
-
-		// start host thread to get and deal with
-		// messages from this remote
-
-	net_host_player_remote_start_thread(remote_uid);
 	
 		// send all other players on host the new player for remote add
 
@@ -332,8 +327,8 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 void net_host_process_messages(void)
 {
-	int						remote_uid,action,count;
-	unsigned char			msg[net_max_msg_size];
+	int						count;
+	net_queue_msg_type		msg;
 	
 	count=0;
 	
@@ -341,29 +336,27 @@ void net_host_process_messages(void)
 	
 			// check for messages
 
-		if (!net_queue_check_message(&host_queue,&remote_uid,&action,msg,NULL)) return;
+		if (!net_queue_check_message(&host_queue,&msg)) return;
 		
 			// reply to all info request
 			
-		if (action==net_action_request_info) {
-			net_host_info_request(ip_addr,port);
+		if (msg.action==net_action_request_info) {
+			net_host_info_request(msg.ip_addr,msg.port);
 			continue;
 		}
 
 			// reply to all join requests
 
-		if (action==net_action_request_join) {
-			net_host_join_request(ip_addr,port,(network_request_join*)msg);
+		if (msg.action==net_action_request_join) {
+			net_host_join_request(msg.ip_addr,msg.port,(network_request_join*)msg.msg);
 			continue;
 		}
 		
 			// all other requests are routed to
-			// player queues
+			// proper remotes and back to other players
+			// if necessary
 
-		// supergumba -- call right to players here
-
-		net_host_player_remote_route_msg(player_uid,action,msg,msg_len);
-		
+		net_host_player_remote_route_msg(&msg);
 	}
 }
 
@@ -375,10 +368,6 @@ void net_host_process_messages(void)
 
 int net_host_thread(void *arg)
 {
-	int					action,player_uid,port,msg_len;
-	unsigned long		ip_addr;
-	unsigned char		msg[net_max_msg_size];
-	
 		// use host err_str to flag if errors occured
 		
 	host_err_str[0]=0x0;
@@ -416,30 +405,7 @@ int net_host_thread(void *arg)
 			// if there's an error, break out of loop
 			// and cancel network game
 			
-		if (!net_queue_feed(client_socket,&client_queue)) break;
-	
-
-
-
-
-			// auto reply to all info request
-			
-		if (action==net_action_request_info) {
-			net_host_info_request(ip_addr,port);
-			continue;
-		}
-
-			// reply to all join requests
-
-		if (action==net_action_request_join) {
-			net_host_join_request(ip_addr,port,(network_request_join*)msg);
-			continue;
-		}
-		
-			// all other requests are routed to
-			// player queues
-
-		net_host_player_remote_route_msg(player_uid,action,msg,msg_len);
+		if (!net_queue_feed(host_socket,&host_queue)) break;
 	}
 	
 	return(0);

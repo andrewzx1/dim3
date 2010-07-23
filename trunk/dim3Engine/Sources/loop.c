@@ -69,7 +69,7 @@ void loop_game_run(void)
 {
 		// networking
 
-	if ((net_setup_mode==net_mode_host) || (net_setup_mode==net_mode_host_dedicated)) {
+	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
 		net_host_process_messages();
 	}
 		
