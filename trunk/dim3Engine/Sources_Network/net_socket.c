@@ -200,7 +200,7 @@ bool net_send_ready(d3socket sock)
       
 ======================================================= */
 
-bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *player_uid,unsigned char *msg,int *msg_len)
+bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *action,int *net_uid,unsigned char *msg,int *msg_len)
 {
 	int						len;
 	unsigned char			data[net_max_msg_size];
@@ -246,7 +246,7 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 		
 	head=(network_header*)data;
 	
-	*player_uid=(int)ntohs(head->remote_uid);
+	*net_uid=(int)ntohs(head->net_uid);
 	*action=(int)ntohs(head->action);
 	
 	len=(int)ntohs(head->len);
@@ -259,7 +259,7 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 	return(TRUE);
 }
 
-bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int player_uid,unsigned char *msg,int msg_len)
+bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int net_uid,unsigned char *msg,int msg_len)
 {
 	int						send_sz;
 	unsigned char			data[net_max_msg_size];
@@ -270,7 +270,7 @@ bool net_sendto_msg(d3socket sock,unsigned long ip_addr,int port,int action,int 
 		
 	head=(network_header*)data;
 
-	head->remote_uid=htons((short)player_uid);
+	head->net_uid=htons((short)net_uid);
 	head->action=htons((short)action);
 	head->len=htons((short)msg_len);
 	

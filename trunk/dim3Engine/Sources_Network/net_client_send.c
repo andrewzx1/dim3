@@ -55,14 +55,14 @@ void net_client_send_msg(obj_type *obj,int action,unsigned char *msg,int msg_len
 		// messages to the host
 
 	if (net_setup.mode==net_mode_client) {
-		net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,action,obj->remote.uid,msg,msg_len);
+		net_sendto_msg(client_socket,net_setup.client.host_ip_addr,net_port_host,action,obj->remote.net_uid,msg,msg_len);
 	}
 
 		// if we are the host, some of the
 		// actions we route to other players
 
 	else {
-		net_host_player_send_message_others(obj->remote.uid,action,msg,msg_len);
+		net_host_player_send_message_others(obj->remote.net_uid,action,msg,msg_len);
 	}
 }
 
@@ -101,25 +101,25 @@ void net_client_request_group_synch_ping(obj_type *obj)
 
 void net_client_send_death(obj_type *obj,bool telefrag)
 {
-	int								send_remote_kill_uid;
+	int								net_uid_killer_obj;
 	obj_type						*chk_obj;
 	network_request_remote_death	death;
 	
 		// normal deaths
 
 	if (!telefrag) {
-		send_remote_kill_uid=-1;
+		net_uid_killer_obj=-1;
 		
 		if (obj->damage_obj_uid!=-1) {
 			chk_obj=server.obj_list.objs[obj->damage_obj_uid];
 			if (chk_obj!=NULL) {
 				if ((chk_obj->type==object_type_player) || (chk_obj->type==object_type_remote)) {
-					send_remote_kill_uid=chk_obj->remote.uid;
+					net_uid_killer_obj=chk_obj->remote.net_uid;
 				}
 			}
 		}
 		
-		death.remote_killer_obj_uid=htons((short)send_remote_kill_uid);
+		death.net_uid_killer_obj=htons((short)net_uid_killer_obj);
 		death.telefrag=htons(0);
 	}
 
@@ -128,7 +128,7 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 	else {
 		chk_obj=server.obj_list.objs[obj->damage_obj_uid];		// only remote objects can telefrag each other, so no other checks necessary
 		
-		death.remote_killer_obj_uid=htons((short)chk_obj->remote.uid);
+		death.net_uid_killer_obj=htons((short)chk_obj->remote.net_uid);
 		death.telefrag=htons(1);
 	}
 

@@ -304,7 +304,6 @@ void scripts_dispose(int idx)
 ======================================================= */
 
 // supergumba -- js -- as a patch?
-// and TEST!
 
 bool JSValueIsArray(JSContextRef ctx,JSValueRef value)
 {

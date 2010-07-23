@@ -200,7 +200,8 @@ void scripts_post_event_console(attach_type *attach,int main_event,int sub_event
 
 bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 {
-	JSValueRef		rval,exception,argv[2];
+	bool			good_chain;
+	JSValueRef		vp,rval,exception,argv[2];
 	JSObjectRef		func_obj;
 	script_type		*script;
 	attach_type		old_attach;
@@ -214,18 +215,29 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	if (attach->script_idx==-1) return(TRUE);
 	
 	script=js.script_list.scripts[attach->script_idx];
+	
+		// is the chain a good function?
+		
+	good_chain=FALSE;
+
+	vp=script_get_single_property(script->cx,script->global_obj,func_name);
+	if (vp!=NULL) {
+		if (!JSValueIsNull(script->cx,vp)) {
+			if (JSValueIsObject(script->cx,vp)) {
+				func_obj=(JSObjectRef)vp;
+				if (JSObjectIsFunction(script->cx,func_obj)) good_chain=TRUE;
+			}
+		}
+	}
+
+	if (!good_chain) {
+		sprintf(err_str,"Timer: Chaining failed, unknown or non-callable function: %s",func_name);
+		return(FALSE);
+	}
 
 		// enter recursion
 
 	if (!scripts_recursion_in(script,err_str)) return(FALSE);
-	
-		// get the function
-		
-	func_obj=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,func_name);
-	if (func_obj==NULL) {
-		sprintf(err_str,"Chaining failed, unknown function '%s'",func_name);
-		return(FALSE);
-	}
 	
 		// save current attach in case event called within another script
 		

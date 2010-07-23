@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "objects.h"
+#include "remotes.h"
 #include "interfaces.h"
 #include "network.h"
 
@@ -112,9 +113,9 @@ int net_client_receive_thread(void *arg)
 	}
 
 		// if there was an error, put a exit on
-		// the queue
+		// the queue as if it came from the host
 		
-	if (client_err) net_queue_push_message(&client_queue,0,net_action_request_host_exit,NULL,0);
+	if (client_err) net_queue_push_message(&client_queue,net_uid_constant_none,net_action_request_host_exit,NULL,0);
 	
 		// exit thread
 	
@@ -149,8 +150,7 @@ bool net_client_process_messages(void)
 		
 			// run message
 			
-		if (!remote_route_message(msg.player_uid,msg.action,msg.msg)) return(FALSE);
-		
+		if (!remote_route_message(&msg)) return(FALSE);
 	}
 	
 	return(TRUE);
