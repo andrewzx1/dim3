@@ -166,18 +166,22 @@ void object_clear_contact(obj_contact *contact)
 	
 	contact->obj_uid=-1;
 	contact->proj_uid=-1;
+	contact->stand_obj_idx=-1;
 	
 	contact->melee=FALSE;
 }
 
 void object_clear_touch(obj_touch *touch)
 {
-	touch->obj_uid=-1;
+	touch->obj_idx=-1;
+	touch->last_obj_idx=-1;
+	
+	touch->last_touch_tick=0;
+	
+	touch->stand=FALSE;
 	
 	touch->pnt.x=touch->pnt.y=touch->pnt.z=0;
 	touch->ang.x=touch->ang.y=touch->ang.z=0.0f;
-	
-	touch->stand=FALSE;
 }
 
 void object_clear_hit(obj_hit *hit)
@@ -553,7 +557,6 @@ int object_create(char *name,int type,int bind)
 	
 	obj->lock.x=obj->lock.y=obj->lock.z=FALSE;
 	
-	obj->stand_obj_uid=-1;
 	obj->damage_obj_uid=-1;
 	
 	obj->team_idx=net_team_none;
@@ -711,6 +714,12 @@ int object_create(char *name,int type,int bind)
 	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
 	obj->score.place=1;
 	
+		// clear weapons
+
+	for (n=0;n!=max_weap_list;n++) {
+		obj->weap_list.weaps[n]=NULL;
+	}
+	
 		// connections for animated effects
 		
 	obj->draw.connect.obj_idx=idx;
@@ -816,7 +825,7 @@ void object_run_game_rules(obj_type *obj)
 
 int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 {
-	int					n,idx;
+	int					idx;
 	obj_type			*obj;
 	weapon_type			*weap;
 
@@ -869,12 +878,6 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 	if (spot!=NULL) {
 		strcpy(obj->spot_script,spot->script);
 		strcpy(obj->spot_params,spot->params);
-	}
-
-		// clear weapons
-
-	for (n=0;n!=max_weap_list;n++) {
-		obj->weap_list.weaps[n]=NULL;
 	}
 
 		// if networked player or multiplayer bot, run rules

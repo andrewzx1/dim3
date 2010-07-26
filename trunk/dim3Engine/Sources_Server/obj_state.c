@@ -266,7 +266,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 
 /* =======================================================
 
-      Setup Object Touch
+      Object Touch
       
 ======================================================= */
 
@@ -276,7 +276,9 @@ void object_setup_touch(obj_type *obj,obj_type *source_obj,bool stand)
 	
 	touch=&obj->touch;
 	
-	touch->obj_uid=source_obj->idx;
+	touch->obj_idx=source_obj->idx;
+
+	touch->stand=stand;
 	
 	touch->pnt.x=(obj->pnt.x+source_obj->pnt.x)>>1;
 	touch->pnt.y=(obj->pnt.y+source_obj->pnt.y)>>1;
@@ -285,46 +287,54 @@ void object_setup_touch(obj_type *obj,obj_type *source_obj,bool stand)
 	touch->ang.x=angle_find(source_obj->pnt.y,source_obj->pnt.z,obj->pnt.y,obj->pnt.z);
 	touch->ang.y=angle_find(source_obj->pnt.x,source_obj->pnt.z,obj->pnt.x,obj->pnt.z);
 	touch->ang.z=angle_find(source_obj->pnt.x,source_obj->pnt.y,obj->pnt.x,obj->pnt.y);
-	
-	touch->stand=stand;
 }
-
-/* =======================================================
-
-      Object Touch
-      
-======================================================= */
 
 void object_touch(obj_type *obj)
 {
-	int				uid;
+	int				idx,tick;
+	bool			stand;
 	obj_type		*hit_obj;
 
-		// touching objects
+		// get the standing or touching object
+		// touching always overrides standing
 	
-	uid=obj->contact.obj_uid;
-	if (uid==-1) return;
-
-		// if standing, don't send touching callbacks
+	stand=FALSE;
+	
+	idx=obj->contact.obj_uid;
+	
+	if (idx==-1) {
+		idx=obj->contact.stand_obj_idx;
+		if (idx==-1) return;
 		
-	if (obj->stand_obj_uid==uid) return;
+		stand=TRUE;
+	}
 
 		// get touch object
 
-	hit_obj=server.obj_list.objs[uid];
+	hit_obj=server.obj_list.objs[idx];
 	if (hit_obj->type==object_type_remote) return;
+	
+		// is this a change hit (i.e., hit a different
+		// object or hit below the re-hit threshold?)
 		
-		// only send callbacks if this is a change hit
-
-	if (hit_obj->touch.obj_uid!=obj->idx) {
-		object_setup_touch(hit_obj,obj,FALSE);
-		scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
+	if (idx==obj->touch.last_obj_idx) return;
+	
+	tick=game_time_get();
+	
+	if (obj->touch.last_obj_idx!=-1) {
+		if ((obj->touch.last_touch_tick+touch_retouch_msec_wait)<tick) return;
 	}
+	
+	obj->touch.last_obj_idx=idx;
+	obj->touch.last_touch_tick=tick;
+		
+		// send events
 
-	if (obj->touch.obj_uid!=hit_obj->idx) {
-		object_setup_touch(obj,hit_obj,FALSE);
-		scripts_post_event_console(&obj->attach,sd_event_touch,0,0);
-	}
+	object_setup_touch(hit_obj,obj,stand);
+	scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
+
+	object_setup_touch(obj,hit_obj,stand);
+	scripts_post_event_console(&obj->attach,sd_event_touch,0,0);
 }
 
 /* =======================================================
@@ -695,7 +705,7 @@ bool object_is_targetted(obj_type *obj,d3col *col)
 	player_obj=server.obj_list.objs[server.player_obj_idx];
 
 	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
+		weap=player_obj->weap_list.weaps[n];
 		if (weap==NULL) continue;
 		
 		if ((weap->target.on) && (weap->target.obj_uid==obj->idx)) {

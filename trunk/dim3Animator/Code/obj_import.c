@@ -164,7 +164,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
                 textdecode_get_piece(n,1,txt);
                 uv->x=strtod(txt,NULL);
                 textdecode_get_piece(n,2,txt);
-                uv->x=strtod(txt,NULL);
+                uv->y=strtod(txt,NULL);
                 
                 nobj_uv++;
 				uv++;

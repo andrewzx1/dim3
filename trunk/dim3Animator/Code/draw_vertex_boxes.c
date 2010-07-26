@@ -27,6 +27,8 @@ and can be sold or given away.
 
 #include "model.h"
 
+extern display_type				display;
+
 /* =======================================================
 
       Draw Vertexes
@@ -163,17 +165,22 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 	int				n,k,ntrig;
 	float			fx,fy,fz,fx2,fy2,fz2,flsz;
 	float			*pv,*pt,*pn;
+	bool			has_sel;
 	model_trig_type	*trig;
 	
 		// normal line size
 		
 	flsz=50.0f;
 	
+		// is there a vertex selection?
+		
+	has_sel=vertex_check_any(mesh_idx);
+	
 		// draw normals
 	
 	glLineWidth(2.0f);
 	
-	glColor4f(1,0,1,1);
+	glColor4f(1.0f,0.0f,1.0f,1.0f);
 	
 	glBegin(GL_LINES);
 	
@@ -190,48 +197,29 @@ void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_se
 		
 		pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array+(n*9);
 		pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array+(n*9);
-
-		for (k=0;k!=3;k++) {
+		
+			// vertex normals
 			
-				// vertex
+		for (k=0;k!=3;k++) {
 				
+			if (has_sel) {
+				if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) {
+					pn+=3;
+					continue;
+				}
+			}
+			
 			pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
 			fx=*pv++;
 			fy=*pv++;
 			fz=*pv;
-			
-/*		
-				// tangent
-
-			glColor4f(1.0f,0.0f,0.0f,1.0f);
-			
-			glVertex3f(fx,fy,fz);
-			
-			fx2=fx+((*pt++)*flsz);
-			fy2=fy+((*pt++)*flsz);
-			fz2=fz+((*pt++)*flsz);
-			glVertex3f(fx2,fy2,fz2);
-			
-				// binormal
 				
-			glColor4f(0.0f,0.0f,1.0f,1.0f);
-			
-			glVertex3f(fx,fy,fz);
-			
-			fx2=fx+((*pb++)*flsz);
-			fy2=fy+((*pb++)*flsz);
-			fz2=fz+((*pb++)*flsz);
-			glVertex3f(fx2,fy2,fz2);
-	*/
-				// normal
-				
-			glColor4f(1.0f,0.0f,1.0f,1.0f);
-			
 			glVertex3f(fx,fy,fz);
 			
 			fx2=fx+((*pn++)*flsz);
 			fy2=fy+((*pn++)*flsz);
 			fz2=fz+((*pn++)*flsz);
+
 			glVertex3f(fx2,fy2,fz2);
 		}
 	}

@@ -421,7 +421,7 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 		
 	if (!obj->slope_gravity) return;
 	if (obj->air_mode!=am_ground) return;
-	if (obj->stand_obj_uid!=-1) return;
+	if (obj->contact.stand_obj_idx!=-1) return;
 	
 		// get floor going to
 		
@@ -525,8 +525,12 @@ void object_move_y_fall(obj_type *obj)
 		
 	if (obj->contact.stand_poly.mesh_idx!=-1) {
 	
-		obj->stand_obj_uid=-1;
-
+			// clear any stand touch
+			
+		if (obj->touch.stand) {
+			obj->touch.obj_idx=-1;
+		}
+		
 			// below or on the floor?
 
 		if (y>=fy) {
@@ -557,18 +561,11 @@ void object_move_y_fall(obj_type *obj)
 		obj->pnt.y=hit_obj->pnt.y-hit_obj->size.y;
 		obj->air_mode=am_ground;
 		
-			// trigger stand on events
+			// stand on contact touch
 			
-		if (obj->stand_obj_uid!=uid) {
-			object_setup_touch(hit_obj,obj,TRUE);
-			scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
-		}
-		
-		obj->stand_obj_uid=uid;
+		obj->contact.stand_obj_idx=hit_obj->idx;
 		return;
 	}
-
-	obj->stand_obj_uid=-1;
 	
 		// find air mode
 		

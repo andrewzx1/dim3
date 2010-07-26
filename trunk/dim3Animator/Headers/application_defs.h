@@ -11,7 +11,7 @@
 //
 
 #define tool_button_size				32
-#define tool_count						11
+#define tool_count						10
 #define tool_height						33
 
 #define model_view_min_size				512
@@ -168,6 +168,14 @@
 #define dt_mesh_hit_boxes				5
 
 //
+// Normal Modes
+//
+
+#define normal_mode_none				0
+#define normal_mode_vertex				1
+#define normal_mode_face				2
+
+//
 // Drag Modes
 //
 
@@ -194,14 +202,9 @@
 //
 
 typedef struct		{
-						bool			texture,
-										mesh,
-										bone,
-										hit_box,
-										normal,
-										cull,
-										view_box,
-										first_mesh;
+						int				drag_bone_mode;
+						bool			texture,mesh,bone,hit_box,
+										normal,view_box,first_mesh;
 					} display_type;
 
 

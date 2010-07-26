@@ -241,7 +241,7 @@ void object_grow_run(obj_type *obj)
 			test_obj=server.obj_list.objs[n];
 			if (test_obj==NULL) continue;
 
-			if (test_obj->stand_obj_uid==obj->idx) {
+			if (test_obj->contact.stand_obj_idx==obj->idx) {
 				object_move_y(test_obj,-ymove);
 				if (test_obj->force.vct.y>ypush) test_obj->force.vct.y+=ypush;
 			}

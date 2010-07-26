@@ -81,7 +81,7 @@ JSValueRef js_obj_touch_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->touch.obj_uid));
+	return(script_int_to_value(cx,obj->touch.obj_idx));
 }
 
 JSValueRef js_obj_touch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -89,9 +89,9 @@ JSValueRef js_obj_touch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 	obj_type		*obj,*touch_obj;
 
 	obj=object_script_lookup();
-	if (obj->touch.obj_uid==-1) return(script_null_to_value(cx));
+	if (obj->touch.obj_idx==-1) return(script_null_to_value(cx));
 	
-	touch_obj=server.obj_list.objs[obj->touch.obj_uid];
+	touch_obj=server.obj_list.objs[obj->touch.obj_idx];
 	return(script_string_to_value(cx,touch_obj->name));
 }
 
@@ -100,9 +100,9 @@ JSValueRef js_obj_touch_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSS
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	if (obj->touch.obj_uid==-1) return(script_bool_to_value(cx,FALSE));
+	if (obj->touch.obj_idx==-1) return(script_bool_to_value(cx,FALSE));
 
-	return(script_bool_to_value(cx,obj->touch.obj_uid==server.player_obj_idx));
+	return(script_bool_to_value(cx,obj->touch.obj_idx==server.player_obj_idx));
 }
 
 JSValueRef js_obj_touch_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -110,7 +110,7 @@ JSValueRef js_obj_touch_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	if (obj->touch.obj_uid==-1) return(script_bool_to_value(cx,FALSE));
+	if (obj->touch.obj_idx==-1) return(script_bool_to_value(cx,FALSE));
 
 	return(script_bool_to_value(cx,obj->touch.stand));
 }
