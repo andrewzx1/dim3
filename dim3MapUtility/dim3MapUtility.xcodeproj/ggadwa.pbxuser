@@ -74,7 +74,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 5915}}";
 			sepNavSelRange = "{9118, 76}";
-			sepNavVisRange = "{9673, 1902}";
+			sepNavVisRange = "{11492, 1556}";
 			sepNavWindowFrame = "{{639, 83}, {1041, 945}}";
 		};
 	};
@@ -263,8 +263,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 300751115;
-			PBXWorkspaceStateSaveDate = 300751115;
+			PBXPerProjectTemplateStateSaveDate = 301724979;
+			PBXWorkspaceStateSaveDate = 301724979;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {

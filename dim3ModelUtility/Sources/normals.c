@@ -76,7 +76,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
     model_vertex_type	*vertex;
 	model_trig_type		*trig,*chk_trig;
 	tangent_space_type	avg_space;
-
+	
 	mesh=&model->meshes[mesh_idx];
 	if ((mesh->nvertex==0) || (mesh->ntrig==0)) return;
 
@@ -136,11 +136,30 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		f_denom=(v10*u20)-(u10*v20);
 		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
 		vector_scalar_multiply(bptr,&v_num,f_denom);
- 			
+		
+		
+		
+		
+		//supergumba -- testing
+			/*
+		vector_normalize(tptr);
+		vector_normalize(bptr);
+
+		vector_cross_product(&p10,tptr,bptr);
+		
+		for (t=0;t!=3;t++) {
+			memmove(&trig->tangent_space[t].tangent,tptr,sizeof(d3vct));
+			memmove(&trig->tangent_space[t].binormal,bptr,sizeof(d3vct));
+			memmove(&trig->tangent_space[t].normal,&p10,sizeof(d3vct));
+		}
+*/
+			
 		trig++;
 		tptr++;
 		bptr++;
 	}
+	
+//	return;		// supergumba -- testing
     
 		// average tangent and binormal for each
 		// trig vertex that have the same material

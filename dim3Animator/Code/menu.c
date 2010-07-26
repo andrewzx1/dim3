@@ -34,7 +34,7 @@ and can be sold or given away.
 char							filename[256];
 
 extern int						cur_mesh,cur_bone,cur_pose,cur_animate,
-								shift_x,shift_y,magnify_z,drag_bone_mode,
+								shift_x,shift_y,magnify_z,
 								play_animate_blend_idx[max_model_blend_animation];
 extern float					ang_y,ang_x;
 extern bool						done,fileopen,
@@ -75,12 +75,11 @@ void menu_start(void)
 	display.bone=FALSE;
     display.hit_box=FALSE;
 	display.normal=FALSE;
-	display.cull=FALSE;
 	display.view_box=FALSE;
 	display.first_mesh=FALSE;
 	
 	model_bone_drag_on=FALSE;
-	drag_bone_mode=drag_bone_mode_rotate;
+	display.drag_bone_mode=drag_bone_mode_rotate;
 	
 	fix_menus();
 }

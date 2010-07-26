@@ -45,6 +45,7 @@ extern void draw_model_wind_pose(model_type *model,int wmesh,int wpose);
 extern void vertex_clear_sel_mask(int mesh_idx);
 extern void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value);
 extern void vertex_set_sel_mask_all(int mesh_idx);
+extern bool vertex_check_any(int mesh_idx);
 extern bool vertex_check_sel_mask(int mesh_idx,int vertex_idx);
 extern void vertex_clear_hide_mask(int mesh_idx);
 extern void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value);

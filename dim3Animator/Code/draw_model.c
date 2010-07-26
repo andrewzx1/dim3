@@ -95,47 +95,6 @@ void model_end_texture(texture_type *texture)
 
 /* =======================================================
 
-      Culling
-      
-======================================================= */
-
-bool draw_model_cull_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup,model_trig_type *trig)
-{
-	int				n;
-	float			*pv;
-	d3pnt			pnt;
-	d3vct			normal,face_vct;
-	
-	if (!display.cull) return(FALSE);
-	
-	pnt.x=pnt.y=pnt.z=0;
-	normal.x=normal.y=normal.z=0.0f;
-	
-	for (n=0;n!=3;n++) {
-		pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[n]*3);
-		pnt.x+=((int)*pv++);
-		pnt.y+=((int)*pv++);
-		pnt.z+=((int)*pv);
-	
-		normal.x+=trig->tangent_space[n].normal.x;
-		normal.y+=trig->tangent_space[n].normal.y;
-		normal.z+=trig->tangent_space[n].normal.z;
-	}
-	
-	pnt.x/=3;
-	pnt.y/=3;
-	pnt.z/=3;
-	
-	normal.x/=3.0f;
-	normal.y/=3.0f;
-	normal.z/=3.0f;
-	
-	vector_create(&face_vct,pnt.x,pnt.y,pnt.z,0,0,-5000);
-	return(vector_dot_product(&normal,&face_vct)>0.0f);
-}
-
-/* =======================================================
-
       Draw Model
       
 ======================================================= */
@@ -143,13 +102,11 @@ bool draw_model_cull_trig(model_type *model,int mesh_idx,model_draw_setup *draw_
 void draw_model_material(model_type *model,int mesh_idx,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material)
 {
 	int					k,trig_count;
-	bool				in_cull;
     model_trig_type		*trig;
 
 	trig_count=material->trig_count;
 	if (trig_count==0) return;
 	
-	in_cull=FALSE;
 	glColor3f(0.5f,0.5f,0.5f);
 
 	model_start_texture(texture);
@@ -165,23 +122,6 @@ void draw_model_material(model_type *model,int mesh_idx,model_draw_setup *draw_s
 			continue;
 		}
 	
-		if (draw_model_cull_trig(model,mesh_idx,draw_setup,trig)) {
-			if (!in_cull) {
-				in_cull=TRUE;
-				glEnd();
-				model_end_texture(texture);
-				glBegin(GL_TRIANGLES);
-			}
-		}
-		else {
-			if (in_cull) {
-				in_cull=FALSE;
-				glEnd();
-				model_start_texture(texture);
-				glBegin(GL_TRIANGLES);
-			}
-		}
-
 		glTexCoord2f(trig->gx[0],trig->gy[0]);
 		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[0],trig->gy[0]);
 		glArrayElement(trig->v[0]);

@@ -15,7 +15,6 @@
 		266C5AAF10523868006FD9D1 /* Tool Mesh Bones.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5AA310523868006FD9D1 /* Tool Mesh Bones.icns */; };
 		266C5AB010523868006FD9D1 /* Tool Mesh.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5AA410523868006FD9D1 /* Tool Mesh.icns */; };
 		266C5AB110523868006FD9D1 /* Tool Move Mode.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5AA510523868006FD9D1 /* Tool Move Mode.icns */; };
-		266C5AB210523868006FD9D1 /* Tool Normals.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5AA610523868006FD9D1 /* Tool Normals.icns */; };
 		266C5AB310523868006FD9D1 /* Tool Play.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5AA710523868006FD9D1 /* Tool Play.icns */; };
 		266C5AB410523868006FD9D1 /* Tool Rotate Mode.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5AA810523868006FD9D1 /* Tool Rotate Mode.icns */; };
 		266C5AB510523868006FD9D1 /* Tool Show First Mesh.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5AA910523868006FD9D1 /* Tool Show First Mesh.icns */; };
@@ -23,11 +22,11 @@
 		266C5AB710523868006FD9D1 /* Tool Textured.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5AAB10523868006FD9D1 /* Tool Textured.icns */; };
 		267CE6D210D3726700AF4721 /* Tool Texture Hit Boxes.icns in Resources */ = {isa = PBXBuildFile; fileRef = 267CE6D110D3726700AF4721 /* Tool Texture Hit Boxes.icns */; };
 		267DEEE010F41C7300C7B6B1 /* Tool Mesh Hit Boxes.icns in Resources */ = {isa = PBXBuildFile; fileRef = 267DEEDF10F41C7300C7B6B1 /* Tool Mesh Hit Boxes.icns */; };
+		269CB44911FC9CD500AE9982 /* Tool Normals.icns in Resources */ = {isa = PBXBuildFile; fileRef = 269CB44811FC9CD500AE9982 /* Tool Normals.icns */; };
 		26A59FA50F327FB5007C6209 /* mesh_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A59FA40F327FB5007C6209 /* mesh_list.c */; };
 		26AA925C0DF2457E004A03AE /* dialog_particle_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */; };
 		26AA925E0DF24582004A03AE /* dialog_ring_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925D0DF24582004A03AE /* dialog_ring_settings.c */; };
 		26CC06B20F02C88E00807FEA /* bone_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CC06B10F02C88E00807FEA /* bone_list.c */; };
-		26CC6F9311EC01B400306329 /* Tool Cull.icns in Resources */ = {isa = PBXBuildFile; fileRef = 26CC6F9211EC01B400306329 /* Tool Cull.icns */; };
 		F503D2570981A35B00DEDC74 /* draw_model.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2560981A35B00DEDC74 /* draw_model.c */; };
 		F503D25F0981A3DC00DEDC74 /* draw_mesh_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */; };
 		F503D2680981A42C00DEDC74 /* draw_vertex_boxes.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2670981A42C00DEDC74 /* draw_vertex_boxes.c */; };
@@ -141,7 +140,6 @@
 		266C5AA310523868006FD9D1 /* Tool Mesh Bones.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Mesh Bones.icns"; path = "Resources/Tool Mesh Bones.icns"; sourceTree = "<group>"; };
 		266C5AA410523868006FD9D1 /* Tool Mesh.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Mesh.icns"; path = "Resources/Tool Mesh.icns"; sourceTree = "<group>"; };
 		266C5AA510523868006FD9D1 /* Tool Move Mode.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Move Mode.icns"; path = "Resources/Tool Move Mode.icns"; sourceTree = "<group>"; };
-		266C5AA610523868006FD9D1 /* Tool Normals.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Normals.icns"; path = "Resources/Tool Normals.icns"; sourceTree = "<group>"; };
 		266C5AA710523868006FD9D1 /* Tool Play.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Play.icns"; path = "Resources/Tool Play.icns"; sourceTree = "<group>"; };
 		266C5AA810523868006FD9D1 /* Tool Rotate Mode.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Rotate Mode.icns"; path = "Resources/Tool Rotate Mode.icns"; sourceTree = "<group>"; };
 		266C5AA910523868006FD9D1 /* Tool Show First Mesh.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Show First Mesh.icns"; path = "Resources/Tool Show First Mesh.icns"; sourceTree = "<group>"; };
@@ -149,11 +147,11 @@
 		266C5AAB10523868006FD9D1 /* Tool Textured.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Textured.icns"; path = "Resources/Tool Textured.icns"; sourceTree = "<group>"; };
 		267CE6D110D3726700AF4721 /* Tool Texture Hit Boxes.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Texture Hit Boxes.icns"; path = "Resources/Tool Texture Hit Boxes.icns"; sourceTree = "<group>"; };
 		267DEEDF10F41C7300C7B6B1 /* Tool Mesh Hit Boxes.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Mesh Hit Boxes.icns"; path = "Resources/Tool Mesh Hit Boxes.icns"; sourceTree = "<group>"; };
+		269CB44811FC9CD500AE9982 /* Tool Normals.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Normals.icns"; path = "Resources/Tool Normals.icns"; sourceTree = "<group>"; };
 		26A59FA40F327FB5007C6209 /* mesh_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mesh_list.c; path = Code/mesh_list.c; sourceTree = "<group>"; };
 		26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_particle_settings.c; path = Code/dialog_particle_settings.c; sourceTree = "<group>"; };
 		26AA925D0DF24582004A03AE /* dialog_ring_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_ring_settings.c; path = Code/dialog_ring_settings.c; sourceTree = "<group>"; };
 		26CC06B10F02C88E00807FEA /* bone_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bone_list.c; path = Code/bone_list.c; sourceTree = "<group>"; };
-		26CC6F9211EC01B400306329 /* Tool Cull.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Cull.icns"; path = "Resources/Tool Cull.icns"; sourceTree = "<group>"; };
 		F503D2560981A35B00DEDC74 /* draw_model.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_model.c; path = Code/draw_model.c; sourceTree = "<group>"; };
 		F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_mesh_bone.c; path = Code/draw_mesh_bone.c; sourceTree = "<group>"; };
 		F503D2670981A42C00DEDC74 /* draw_vertex_boxes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_vertex_boxes.c; path = Code/draw_vertex_boxes.c; sourceTree = "<group>"; };
@@ -389,13 +387,12 @@
 				266C5AA010523868006FD9D1 /* Tool Bones.icns */,
 				266C5AA110523868006FD9D1 /* Tool Boxes.icns */,
 				266C5AA210523868006FD9D1 /* Tool Bump Mapping.icns */,
-				26CC6F9211EC01B400306329 /* Tool Cull.icns */,
 				266C5AA310523868006FD9D1 /* Tool Mesh Bones.icns */,
 				267DEEDF10F41C7300C7B6B1 /* Tool Mesh Hit Boxes.icns */,
 				266C5AA410523868006FD9D1 /* Tool Mesh.icns */,
 				267CE6D110D3726700AF4721 /* Tool Texture Hit Boxes.icns */,
 				266C5AA510523868006FD9D1 /* Tool Move Mode.icns */,
-				266C5AA610523868006FD9D1 /* Tool Normals.icns */,
+				269CB44811FC9CD500AE9982 /* Tool Normals.icns */,
 				266C5AA710523868006FD9D1 /* Tool Play.icns */,
 				266C5AA810523868006FD9D1 /* Tool Rotate Mode.icns */,
 				266C5AA910523868006FD9D1 /* Tool Show First Mesh.icns */,
@@ -523,7 +520,6 @@
 				266C5AAF10523868006FD9D1 /* Tool Mesh Bones.icns in Resources */,
 				266C5AB010523868006FD9D1 /* Tool Mesh.icns in Resources */,
 				266C5AB110523868006FD9D1 /* Tool Move Mode.icns in Resources */,
-				266C5AB210523868006FD9D1 /* Tool Normals.icns in Resources */,
 				266C5AB310523868006FD9D1 /* Tool Play.icns in Resources */,
 				266C5AB410523868006FD9D1 /* Tool Rotate Mode.icns in Resources */,
 				266C5AB510523868006FD9D1 /* Tool Show First Mesh.icns in Resources */,
@@ -531,7 +527,7 @@
 				266C5AB710523868006FD9D1 /* Tool Textured.icns in Resources */,
 				267CE6D210D3726700AF4721 /* Tool Texture Hit Boxes.icns in Resources */,
 				267DEEE010F41C7300C7B6B1 /* Tool Mesh Hit Boxes.icns in Resources */,
-				26CC6F9311EC01B400306329 /* Tool Cull.icns in Resources */,
+				269CB44911FC9CD500AE9982 /* Tool Normals.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

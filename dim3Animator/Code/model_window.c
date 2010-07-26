@@ -46,7 +46,6 @@ char							tool_icns_file_name[tool_count][64]=
 										"Tool Mesh Hit Boxes",
 										"Tool Boxes",
 										"Tool Normals",
-										"Tool Cull",
 										"Tool Show First Mesh",
 										"Tool Rotate Mode",
 										"Tool Move Mode",
@@ -61,7 +60,6 @@ char							tool_tooltip_str[tool_count][64]=
 										"Show or Hide Hit Boxes",
 										"Show or Hide View Boxes",
 										"Show or Hide Normals",
-										"Show or Hide Backface Culling",
 										"Always Show First Mesh",
 										"Rotate Bones Mode",
 										"Stretch Bones Mode",
@@ -69,7 +67,7 @@ char							tool_tooltip_str[tool_count][64]=
 									};
 
 int								draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
-								shift_x,shift_y,magnify_z,drag_bone_mode,
+								shift_x,shift_y,magnify_z,
 								gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size,
 								play_animate_tick[max_model_blend_animation],
 								play_animate_blend_idx[max_model_blend_animation],
@@ -243,26 +241,22 @@ bool model_wind_control(ControlRef ctrl)
 			break;
 			
 		case 6:
-			display.cull=!display.cull;
-			break;
-			
-		case 7:
 			display.first_mesh=!display.first_mesh;
 			break;
 			
-		case 8:
-			drag_bone_mode=drag_bone_mode_rotate;
+		case 7:
+			display.drag_bone_mode=drag_bone_mode_rotate;
 			SetControlValue(tool_ctrl[7],1);
 			SetControlValue(tool_ctrl[8],0);
 			break;
 			
-		case 9:
-			drag_bone_mode=drag_bone_mode_stretch;
+		case 8:
+			display.drag_bone_mode=drag_bone_mode_stretch;
 			SetControlValue(tool_ctrl[7],0);
 			SetControlValue(tool_ctrl[8],1);
 			break;
 			
-		case 10:
+		case 9:
 			model_wind_play(!play_animate,FALSE);
 			break;
 	}
@@ -801,7 +795,7 @@ void model_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==4) || (n==6) || (n==7) || (n==9)) OffsetRect(&box,5,0);
+		if ((n==2) || (n==4) || (n==5) || (n==6) || (n==8)) OffsetRect(&box,5,0);
 	}
 	
 		// magnify slider
@@ -945,14 +939,13 @@ void model_wind_reset_tools(void)
 	SetControlValue(tool_ctrl[3],display.hit_box?1:0);
 	SetControlValue(tool_ctrl[4],display.view_box?1:0);
 	
-	SetControlValue(tool_ctrl[5],display.normal?1:0);
-	SetControlValue(tool_ctrl[6],display.cull?1:0);
+	SetControlValue(tool_ctrl[5],display.normal);
 	
-	SetControlValue(tool_ctrl[7],display.first_mesh?1:0);
+	SetControlValue(tool_ctrl[6],display.first_mesh?1:0);
 	
-	SetControlValue(tool_ctrl[8],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
-	SetControlValue(tool_ctrl[9],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
+	SetControlValue(tool_ctrl[7],(display.drag_bone_mode==drag_bone_mode_rotate)?1:0);
+	SetControlValue(tool_ctrl[8],(display.drag_bone_mode==drag_bone_mode_stretch)?1:0);
 
-	SetControlValue(tool_ctrl[10],play_animate?1:0);
+	SetControlValue(tool_ctrl[9],play_animate?1:0);
 }
 

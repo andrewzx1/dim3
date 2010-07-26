@@ -72,6 +72,20 @@ void vertex_set_sel_mask_all(int mesh_idx)
 	}
 }
 
+bool vertex_check_any(int mesh_idx)
+{
+	int				n;
+	model_mesh_type	*mesh;
+	
+	mesh=&model.meshes[mesh_idx];
+	
+	for (n=0;n!=mesh->nvertex;n++) {
+		if ((mesh->vertexes[n].animator_flag&animator_vertex_flag_sel)!=0) return(TRUE);
+	}
+	
+	return(FALSE);
+}
+
 bool vertex_check_sel_mask(int mesh_idx,int vertex_idx)
 {
 	return((model.meshes[mesh_idx].vertexes[vertex_idx].animator_flag&animator_vertex_flag_sel)!=0);

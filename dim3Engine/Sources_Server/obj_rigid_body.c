@@ -107,7 +107,7 @@ void object_rigid_body_reset_angle(obj_type *obj)
 
 	y=obj->pnt.y;
 
-	if (obj->stand_obj_uid!=-1) {
+	if (obj->contact.stand_obj_idx!=-1) {
 		object_rigid_body_offset_reset_y(obj);			// no movement if standing on object
 	}
 	else {

@@ -222,6 +222,8 @@ and can be sold or given away.
 
 #define liquid_float_slop						0.1f				// how much object height is in float area
 
+#define touch_retouch_msec_wait					250					// how long between touches counts as a single touch
+
 //
 // dynamic bones
 //
@@ -416,15 +418,15 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int						obj_uid,proj_uid,hit_face,
-												liquid_idx;
+						int						obj_uid,proj_uid,stand_obj_idx,
+												hit_face,liquid_idx;
 						bool					object_on,projectile_on,force_on,
 												melee,pushable;
 						poly_pointer_type		hit_poly,stand_poly,head_poly;
 					} obj_contact;
 					
 typedef struct		{
-						int						touch_obj_idx,stand_obj_idx,
+						int						obj_idx,last_obj_idx,
 												last_touch_tick;
 						bool					stand;
 						d3pnt					pnt;

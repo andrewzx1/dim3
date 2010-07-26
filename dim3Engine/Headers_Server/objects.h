@@ -76,7 +76,7 @@ extern obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,
 extern int object_count_team(int team_idx,int ignore_obj_uid);
 extern void object_set_even_team(obj_type *obj);
 extern int object_find_uid_click_object(obj_type *obj);
-extern int object_find_uid_by_stood_on_object_uid(int stand_obj_uid);
+extern int object_find_idx_by_stood_on_object_idx(int stand_obj_idx);
 extern bool object_sight_test_object(obj_type *obj,int test_obj_uid);
 
 extern void object_attach_click_crosshair_up(obj_type *obj);

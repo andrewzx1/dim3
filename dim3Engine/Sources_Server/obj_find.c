@@ -233,7 +233,7 @@ int object_find_uid_click_object(obj_type *obj)
       
 ======================================================= */
 
-int object_find_uid_by_stood_on_object_uid(int stand_obj_uid)
+int object_find_idx_by_stood_on_object_idx(int stand_obj_idx)
 {
 	int				n;
 	obj_type		*obj;
@@ -242,18 +242,11 @@ int object_find_uid_by_stood_on_object_uid(int stand_obj_uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (obj->stand_obj_uid==stand_obj_uid) return(obj->idx);
+		if ((obj->touch.stand) && (obj->touch.obj_idx==stand_obj_idx)) return(obj->idx);
 	}
 	
 	return(-1);
 }
-
-/* =======================================================
-
-      Find Network Spawn Spot
-      
-======================================================= */
-
 
 /* =======================================================
 

@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "window.h"
 #include "menu.h"
 
-extern int						cur_mesh,cur_pose,cur_bone,draw_type,shift_x,shift_y,magnify_z,drag_bone_mode,
+extern int						cur_mesh,cur_pose,cur_bone,draw_type,shift_x,shift_y,magnify_z,
 								gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size;
 extern float					ang_y,ang_x;
 extern bool						shift_on,rotate_on,size_on,play_animate,drag_sel_on,model_bone_drag_on;
@@ -455,7 +455,7 @@ bool drag_bone_model_wind(Point start_pt)
 		if (x<-180) x=-180;
 		if (x>180) x=180;
 		
-		if (drag_bone_mode==drag_bone_mode_rotate) {
+		if (display.drag_bone_mode==drag_bone_mode_rotate) {
 			*ang=org_ang+(((float)x)/2.0f);
 		}
 		else {
