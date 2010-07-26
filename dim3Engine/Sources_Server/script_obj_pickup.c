@@ -104,7 +104,7 @@ JSValueRef js_obj_pickup_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSString
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->pickup.obj_uid));
+	return(script_int_to_value(cx,obj->pickup.obj_idx));
 }
 
 JSValueRef js_obj_pickup_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -113,7 +113,7 @@ JSValueRef js_obj_pickup_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 	obj=object_script_lookup();
 
-	pickup_obj=server.obj_list.objs[obj->pickup.obj_uid];
+	pickup_obj=server.obj_list.objs[obj->pickup.obj_idx];
 	if (pickup_obj==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,pickup_obj->name));
@@ -124,7 +124,7 @@ JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JS
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_bool_to_value(cx,obj->pickup.obj_uid==server.player_obj_idx));
+	return(script_bool_to_value(cx,obj->pickup.obj_idx==server.player_obj_idx));
 }
 
 JSValueRef js_obj_pickup_get_itemId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -132,7 +132,7 @@ JSValueRef js_obj_pickup_get_itemId(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->pickup.item_uid));
+	return(script_int_to_value(cx,obj->pickup.item_idx));
 }
 
 JSValueRef js_obj_pickup_get_itemName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -141,7 +141,7 @@ JSValueRef js_obj_pickup_get_itemName(JSContextRef cx,JSObjectRef j_obj,JSString
 
 	obj=object_script_lookup();
 
-	pickup_item=server.obj_list.objs[obj->pickup.item_uid];
+	pickup_item=server.obj_list.objs[obj->pickup.item_idx];
 	if (pickup_item==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,pickup_item->name));

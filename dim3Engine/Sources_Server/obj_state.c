@@ -298,35 +298,42 @@ void object_touch(obj_type *obj)
 		// get the standing or touching object
 		// touching always overrides standing
 	
-	stand=FALSE;
-	
-	idx=obj->contact.obj_uid;
-	
+	idx=obj->contact.obj_idx;
+	if (idx==-1) idx=obj->contact.stand_obj_idx;
+
+		// if we are touching nothing, only reset
+		// the last touch if we are over a threshold wait
+		// this is because pushing things can sometimes
+		// move them ahead of the player so you aren't
+		// constantly touching them
+
+	tick=game_time_get();
+
 	if (idx==-1) {
-		idx=obj->contact.stand_obj_idx;
-		if (idx==-1) return;
-		
-		stand=TRUE;
+		if (obj->touch.last_obj_idx!=-1) {
+			if ((obj->touch.last_touch_tick+touch_retouch_msec_wait)<tick) obj->touch.last_obj_idx=-1;
+		}
+		return;
 	}
 
 		// get touch object
 
 	hit_obj=server.obj_list.objs[idx];
 	if (hit_obj->type==object_type_remote) return;
+
+	stand=(idx==obj->contact.stand_obj_idx);
+
+		// last touch is reset
+
+	obj->touch.last_touch_tick=tick;
 	
-		// is this a change hit (i.e., hit a different
-		// object or hit below the re-hit threshold?)
+		// is this a change hit, i.e., a new object
+		// or change in stand/hit boolean?
 		
-	if (idx==obj->touch.last_obj_idx) return;
-	
-	tick=game_time_get();
-	
-	if (obj->touch.last_obj_idx!=-1) {
-		if ((obj->touch.last_touch_tick+touch_retouch_msec_wait)<tick) return;
-	}
+	if ((idx==obj->touch.last_obj_idx) && (stand==obj->touch.last_stand)) return;
 	
 	obj->touch.last_obj_idx=idx;
-	obj->touch.last_touch_tick=tick;
+	obj->touch.last_stand=stand;
 		
 		// send events
 
@@ -352,13 +359,13 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 
 		// setup hit object, weapon, projectile
 		
-	hit->obj_uid=-1;
-	hit->weap_uid=-1;
-	hit->proj_uid=-1;
+	hit->obj_idx=-1;
+	hit->weap_idx=-1;
+	hit->proj_idx=-1;
 	
-    if (from_obj!=NULL) hit->obj_uid=from_obj->idx;
-	if (from_weap!=NULL) hit->weap_uid=from_weap->idx;
-	if (from_proj!=NULL) hit->proj_uid=from_proj->idx;
+    if (from_obj!=NULL) hit->obj_idx=from_obj->idx;
+	if (from_weap!=NULL) hit->weap_idx=from_weap->idx;
+	if (from_proj!=NULL) hit->proj_idx=from_proj->idx;
 	
 		// damage
 		

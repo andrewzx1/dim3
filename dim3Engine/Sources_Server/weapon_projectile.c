@@ -145,8 +145,8 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 		
 		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
 		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
-		proj->contact.obj_uid=contact.obj.uid;
-		proj->contact.proj_uid=-1;
+		proj->contact.obj_idx=contact.obj.uid;
+		proj->contact.proj_idx=-1;
 
 		projectile_hit(proj,FALSE);
 	}

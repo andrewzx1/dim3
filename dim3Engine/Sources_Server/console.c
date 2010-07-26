@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "consoles.h"
+#include "inputs.h"
 
 int								console_mode,console_count;
 console_line_type				console_line[max_console_line];
@@ -165,6 +166,9 @@ void console_add_error(char *txt)
 		// if in debug mode, all errors
 		// pop open the console
 		
-	if (setup.debug_console) view.console.on=TRUE;
+	if (setup.debug_console) {
+		view.console.on=TRUE;
+		input_clear_all_last_raw_key();
+	}
 }
 

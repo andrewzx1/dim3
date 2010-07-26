@@ -98,15 +98,15 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
 	proj->contact.liquid_idx=-1;
 
-	proj->contact.obj_uid=contact.obj.uid;
-	proj->contact.proj_uid=contact.proj.uid;
+	proj->contact.obj_idx=contact.obj.uid;
+	proj->contact.proj_idx=contact.proj.uid;
 	proj->contact.melee=FALSE;
 	
 		// projectile collisions force other projectile into hit mode
 			
 	if (contact.proj.uid!=-1) {
 		hit_proj=server.proj_list.projs[contact.proj.uid];
-		hit_proj->contact.proj_uid=proj->idx;
+		hit_proj->contact.proj_idx=proj->idx;
 		projectile_hit(hit_proj,TRUE);
 	}
 

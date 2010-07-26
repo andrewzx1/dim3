@@ -236,7 +236,7 @@ void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *pa
 	projectile_set_position(proj,pt,ang);
 	projectile_set_origin(proj);
 	
-	proj->contact.obj_uid=-1;
+	proj->contact.obj_idx=-1;
 }
 
 /* =======================================================

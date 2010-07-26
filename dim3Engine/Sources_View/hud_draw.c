@@ -658,19 +658,19 @@ void hud_metrics_draw(void)
 
 	str[0]=0x0;
 
-	if (obj->contact.obj_uid==-1) {
+	if (obj->contact.obj_idx==-1) {
 		strcat(str,"* ");
 	}
 	else {
-		sprintf(str2,"%d ",obj->contact.obj_uid);
+		sprintf(str2,"%d ",obj->contact.obj_idx);
 		strcat(str,str2);
 	}
 
-	if (obj->contact.proj_uid==-1) {
+	if (obj->contact.proj_idx==-1) {
 		strcat(str,"* ");
 	}
 	else {
-		sprintf(str2,"%d ",obj->contact.proj_uid);
+		sprintf(str2,"%d ",obj->contact.proj_idx);
 		strcat(str,str2);
 	}
 

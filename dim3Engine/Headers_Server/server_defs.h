@@ -418,7 +418,7 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int						obj_uid,proj_uid,stand_obj_idx,
+						int						obj_idx,proj_idx,stand_obj_idx,
 												hit_face,liquid_idx;
 						bool					object_on,projectile_on,force_on,
 												melee,pushable;
@@ -428,13 +428,13 @@ typedef struct		{
 typedef struct		{
 						int						obj_idx,last_obj_idx,
 												last_touch_tick;
-						bool					stand;
+						bool					stand,last_stand;
 						d3pnt					pnt;
 						d3ang					ang;
 					} obj_touch;
 					
 typedef struct		{
-						int						obj_uid,weap_uid,proj_uid,
+						int						obj_idx,weap_idx,proj_idx,
 												damage;
 						char					hit_box_name[name_str_len];
 						d3pnt					pnt;
@@ -455,7 +455,7 @@ typedef struct		{
 					} obj_click;
 					
 typedef struct		{
-						int						obj_uid,item_uid;
+						int						obj_idx,item_idx;
 						bool					on,ignore,canceled;
 					} obj_pickup;
 					
@@ -577,7 +577,7 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int						mode,obj_uid,node_event_id,
+						int						mode,obj_idx,node_event_id,
 												node_from_idx,node_dest_idx,
 												node_seek_idx,node_last_seek_idx;
 						bool					pause_for_turn;
@@ -590,7 +590,7 @@ typedef struct		{
 					} obj_watch_restrict;
 					
 typedef struct		{
-						int						dist,obj_uid,base_team;
+						int						dist,obj_idx,base_team;
 						float					restrict_ang;
 						char					obj_flags[max_obj_list],sound_name[name_str_len];
 						bool					on;

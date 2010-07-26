@@ -106,7 +106,7 @@ JSValueRef js_obj_watch_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->watch.obj_uid));
+	return(script_int_to_value(cx,obj->watch.obj_idx));
 }
 
 JSValueRef js_obj_watch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -115,7 +115,7 @@ JSValueRef js_obj_watch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 	obj=object_script_lookup();
 	
-	watch_obj=server.obj_list.objs[obj->watch.obj_uid];
+	watch_obj=server.obj_list.objs[obj->watch.obj_idx];
 	if (watch_obj==NULL) return(script_null_to_value(cx));
 
 	return(script_string_to_value(cx,watch_obj->name));
@@ -126,7 +126,7 @@ JSValueRef js_obj_watch_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSS
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_bool_to_value(cx,obj->watch.obj_uid==server.player_obj_idx));
+	return(script_bool_to_value(cx,obj->watch.obj_idx==server.player_obj_idx));
 }
 
 JSValueRef js_obj_watch_get_objectIsRemote(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -135,7 +135,7 @@ JSValueRef js_obj_watch_get_objectIsRemote(JSContextRef cx,JSObjectRef j_obj,JSS
 
 	obj=object_script_lookup();
 	
-	watch_obj=server.obj_list.objs[obj->watch.obj_uid];
+	watch_obj=server.obj_list.objs[obj->watch.obj_idx];
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,watch_obj->type==object_type_remote));
@@ -147,7 +147,7 @@ JSValueRef js_obj_watch_get_objectIsBot(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 	obj=object_script_lookup();
 	
-	watch_obj=server.obj_list.objs[obj->watch.obj_uid];
+	watch_obj=server.obj_list.objs[obj->watch.obj_idx];
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,(watch_obj->type==object_type_bot_multiplayer)));
@@ -159,7 +159,7 @@ JSValueRef js_obj_watch_get_objectIsMapBot(JSContextRef cx,JSObjectRef j_obj,JSS
 
 	obj=object_script_lookup();
 	
-	watch_obj=server.obj_list.objs[obj->watch.obj_uid];
+	watch_obj=server.obj_list.objs[obj->watch.obj_idx];
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,(watch_obj->type==object_type_bot_map)));
@@ -171,9 +171,9 @@ JSValueRef js_obj_watch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef 
 
 	obj=object_script_lookup();
 	
-	if (obj->watch.obj_uid==server.player_obj_idx) return(script_bool_to_value(cx,TRUE));
+	if (obj->watch.obj_idx==server.player_obj_idx) return(script_bool_to_value(cx,TRUE));
 
-	watch_obj=server.obj_list.objs[obj->watch.obj_uid];
+	watch_obj=server.obj_list.objs[obj->watch.obj_idx];
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,(watch_obj->type==object_type_remote) || (watch_obj->type==object_type_bot_multiplayer)));
@@ -185,9 +185,9 @@ JSValueRef js_obj_watch_get_objectIsPlayerRemoteBotMapBot(JSContextRef cx,JSObje
 
 	obj=object_script_lookup();
 	
-	if (obj->watch.obj_uid==server.player_obj_idx) return(script_bool_to_value(cx,TRUE));
+	if (obj->watch.obj_idx==server.player_obj_idx) return(script_bool_to_value(cx,TRUE));
 
-	watch_obj=server.obj_list.objs[obj->watch.obj_uid];
+	watch_obj=server.obj_list.objs[obj->watch.obj_idx];
 	if (watch_obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,(watch_obj->type==object_type_remote) || (watch_obj->type==object_type_bot_multiplayer) || (watch_obj->type==object_type_bot_map)));
@@ -199,7 +199,7 @@ JSValueRef js_obj_watch_get_objectTeam(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 	obj=object_script_lookup();
 	
-	watch_obj=server.obj_list.objs[obj->watch.obj_uid];
+	watch_obj=server.obj_list.objs[obj->watch.obj_idx];
 	if (watch_obj==NULL) return(script_int_to_value(cx,sd_team_none));
 	
 	return(script_int_to_value(cx,watch_obj->team_idx+sd_team_none));

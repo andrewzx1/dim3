@@ -115,7 +115,7 @@ bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only,char *er
 		// setup to seek object
 		
 	obj->auto_walk.mode=turn_only?aw_object_turn_only:aw_object;
-	obj->auto_walk.obj_uid=uid;
+	obj->auto_walk.obj_idx=uid;
 
 		// start walking
 		
@@ -207,7 +207,7 @@ bool object_auto_walk_get_seek_position(obj_type *obj,d3pnt *pnt)
 
 		case aw_object:
 		case aw_object_turn_only:
-			seek_obj=server.obj_list.objs[obj->auto_walk.obj_uid];
+			seek_obj=server.obj_list.objs[obj->auto_walk.obj_idx];
 			if (seek_obj==NULL) return(FALSE);
 			
 			pnt->x=seek_obj->pnt.x;
@@ -356,7 +356,7 @@ void object_auto_walk_object(obj_type *obj)
 	
 		// get object
 		
-	seek_obj=server.obj_list.objs[obj->auto_walk.obj_uid];
+	seek_obj=server.obj_list.objs[obj->auto_walk.obj_idx];
 	if (seek_obj==NULL) {
 		obj->auto_walk.mode=aw_none;
 		return;

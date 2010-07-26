@@ -54,7 +54,7 @@ void projectile_stick(proj_type *proj)
 	ignore_obj_uid=-1;
    	if (proj->parent_grace>0) ignore_obj_uid=proj->obj_idx;
     
-	proj->contact.obj_uid=collide_find_object_for_projectile_hit(proj,ignore_obj_uid);
+	proj->contact.obj_idx=collide_find_object_for_projectile_hit(proj,ignore_obj_uid);
 }	
 
 /* =======================================================
@@ -86,7 +86,7 @@ void projectile_collision(proj_type *proj)
     
         // check projectile collisions
 		
-	proj->contact.proj_uid=collide_find_projectile_for_projectile(proj);
+	proj->contact.proj_idx=collide_find_projectile_for_projectile(proj);
 }
         
 /* =======================================================
@@ -124,7 +124,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 
 bool projectile_hit(proj_type *proj,bool hit_scan)
 {
-	int					uid;
+	int					idx;
 	bool				auto_hit,wall_hit;
     obj_type			*obj,*hurt_obj;
     weapon_type			*weap;
@@ -140,7 +140,7 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
 		// hits?
     
 	if (!hit_scan) {			// hit scans always hit
-		if ((proj->contact.hit_poly.mesh_idx==-1) && (proj->contact.obj_uid==-1) && (proj->contact.proj_uid==-1) && (!proj->contact.melee) && (!auto_hit)) return(FALSE);
+		if ((proj->contact.hit_poly.mesh_idx==-1) && (proj->contact.obj_idx==-1) && (proj->contact.proj_idx==-1) && (!proj->contact.melee) && (!auto_hit)) return(FALSE);
 	}
 	
 		// auto-bounces and reflects
@@ -169,12 +169,12 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
 	weap=obj->weap_list.weaps[proj->weap_idx];
 	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	
-	uid=proj->contact.obj_uid;
-    if (uid!=-1) {
+	idx=proj->contact.obj_idx;
+    if (idx!=-1) {
 	
 			// damage object
 			
-        hurt_obj=server.obj_list.objs[uid];
+        hurt_obj=server.obj_list.objs[idx];
 		object_damage(hurt_obj,obj,weap,proj,NULL,proj_setup->damage);
 		
 			// push object
