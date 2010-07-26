@@ -91,7 +91,7 @@ JSValueRef js_obj_hit_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	obj_type			*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->hit.obj_uid));
+	return(script_int_to_value(cx,obj->hit.obj_idx));
 }
 
 JSValueRef js_obj_hit_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -100,7 +100,7 @@ JSValueRef js_obj_hit_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 	obj=object_script_lookup();
 
-	hit_obj=server.obj_list.objs[obj->hit.obj_uid];
+	hit_obj=server.obj_list.objs[obj->hit.obj_idx];
 	if (hit_obj==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,hit_obj->name));
@@ -111,7 +111,7 @@ JSValueRef js_obj_hit_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStr
 	obj_type			*obj;
 
 	obj=object_script_lookup();
-	return(script_bool_to_value(cx,obj->hit.obj_uid==server.player_obj_idx));
+	return(script_bool_to_value(cx,obj->hit.obj_idx==server.player_obj_idx));
 }
 
 JSValueRef js_obj_hit_get_isBackAttack(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -150,7 +150,7 @@ JSValueRef js_obj_hit_get_projectileName(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 	obj=object_script_lookup();
 
-	hit_proj=server.proj_list.projs[obj->hit.proj_uid];
+	hit_proj=server.proj_list.projs[obj->hit.proj_idx];
 	if (hit_proj==NULL) return(script_null_to_value(cx));
 	
 	weap=weapon_script_lookup();

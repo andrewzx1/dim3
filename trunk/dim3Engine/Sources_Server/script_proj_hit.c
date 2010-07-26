@@ -100,8 +100,8 @@ int js_get_proj_hit_type(proj_type *proj)
 
 		// object or projectile hits
 
-    if (proj->contact.obj_uid!=-1) return(sd_proj_hit_type_object);
-	if (proj->contact.proj_uid!=-1) return(sd_proj_hit_type_projectile);
+    if (proj->contact.obj_idx!=-1) return(sd_proj_hit_type_object);
+	if (proj->contact.proj_idx!=-1) return(sd_proj_hit_type_projectile);
 	if (proj->contact.melee) return(sd_proj_hit_type_melee);
 
 		// map hits
@@ -129,13 +129,13 @@ void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
 	switch (hit_type) {
 	
 		case sd_proj_hit_type_object:
-			hit_obj=server.obj_list.objs[proj->contact.obj_uid];
+			hit_obj=server.obj_list.objs[proj->contact.obj_idx];
 			strcpy(name,hit_obj->name);
 			return;
 		
 		case sd_proj_hit_type_projectile:
-			hit_proj=server.proj_list.projs[proj->contact.proj_uid];
-			hit_obj=server.obj_list.objs[proj->contact.obj_uid];
+			hit_proj=server.proj_list.projs[proj->contact.proj_idx];
+			hit_obj=server.obj_list.objs[proj->contact.obj_idx];
 			hit_weap=hit_obj->weap_list.weaps[hit_proj->weap_idx];
 			hit_proj_setup=hit_weap->proj_setup_list.proj_setups[hit_proj->proj_setup_idx];
 			strcpy(name,hit_proj_setup->name);
@@ -208,7 +208,7 @@ JSValueRef js_proj_hit_get_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_int_to_value(cx,proj->contact.obj_uid));
+	return(script_int_to_value(cx,proj->contact.obj_idx));
 }
 
 JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -218,7 +218,7 @@ JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	proj=proj_get_attach();
 	if (proj==NULL) return(script_null_to_value(cx));
 
-	return(script_bool_to_value(cx,proj->contact.obj_uid==server.player_obj_idx));
+	return(script_bool_to_value(cx,proj->contact.obj_idx==server.player_obj_idx));
 }
 
 JSValueRef js_proj_hit_get_startTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

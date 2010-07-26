@@ -511,7 +511,7 @@ void object_move_y_up(obj_type *obj,int ymove)
 
 void object_move_y_fall(obj_type *obj)
 {
-	int				y,fy,ymove,uid;
+	int				y,fy,ymove,idx;
 	obj_type		*hit_obj;
 
 		// check standing on polygons
@@ -553,11 +553,11 @@ void object_move_y_fall(obj_type *obj)
 	
 		// check standing on objects
 
-	uid=collide_find_object_for_standing_object(obj);
-	if (uid!=-1) {
-		hit_obj=server.obj_list.objs[uid];
+	idx=collide_find_object_for_standing_object(obj);
+	if (idx!=-1) {
+		hit_obj=server.obj_list.objs[idx];
 		
-		obj->contact.obj_uid=uid;
+		obj->contact.obj_idx=idx;
 		obj->pnt.y=hit_obj->pnt.y-hit_obj->size.y;
 		obj->air_mode=am_ground;
 		
@@ -825,9 +825,9 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		// between the object and slide across that
 		// line
 
-	if (obj->contact.obj_uid==-1) return(TRUE);
+	if (obj->contact.obj_idx==-1) return(TRUE);
 
-	cnt_obj=server.obj_list.objs[obj->contact.obj_uid];
+	cnt_obj=server.obj_list.objs[obj->contact.obj_idx];
 	if (cnt_obj==NULL) return(FALSE);
 
 		// if it's pushable, then we don't slide
@@ -883,7 +883,7 @@ void object_move_climb(obj_type *obj)
 
 void object_move_fly(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove,hit_obj_uid;
+	int				i_xmove,i_ymove,i_zmove,hit_obj_idx;
     float			xmove,zmove,ymove;
 
 		// get object motion
@@ -914,9 +914,9 @@ void object_move_fly(obj_type *obj)
 				i_ymove=(int)ymove;
 				i_zmove=(int)zmove;
 
-				hit_obj_uid=obj->contact.obj_uid;
+				hit_obj_idx=obj->contact.obj_idx;
 				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
-				obj->contact.obj_uid=hit_obj_uid;
+				obj->contact.obj_idx=hit_obj_idx;
 			}
 		}
 	
@@ -991,9 +991,9 @@ void object_move_swim(obj_type *obj)
 				i_ymove=(int)ymove;
 				i_zmove=(int)zmove;
 
-				hit_obj_uid=obj->contact.obj_uid;
+				hit_obj_uid=obj->contact.obj_idx;
 				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
-				obj->contact.obj_uid=hit_obj_uid;
+				obj->contact.obj_idx=hit_obj_uid;
 			}
 		}
 
@@ -1020,7 +1020,7 @@ void object_move_swim(obj_type *obj)
 void object_move_normal(obj_type *obj)
 {
 	int					i_xmove,i_ymove,i_zmove,bump_y_move,
-						start_y,fall_damage,hit_obj_uid;
+						start_y,fall_damage,hit_obj_idx;
     float				xmove,zmove,ymove;
 	bool				push_once,old_falling;
 	d3pnt				old_pnt;
@@ -1151,7 +1151,7 @@ void object_move_normal(obj_type *obj)
 			// move to stop and then need to be retried
 			
 		push_once=FALSE;
-		hit_obj_uid=-1;
+		hit_obj_idx=-1;
 	
 			// attempt to move
 			
@@ -1174,7 +1174,7 @@ void object_move_normal(obj_type *obj)
 					i_ymove=(int)ymove;
 					i_zmove=(int)zmove;
 
-					hit_obj_uid=obj->contact.obj_uid;
+					hit_obj_idx=obj->contact.obj_idx;
 
 					continue;
 				}
@@ -1186,7 +1186,7 @@ void object_move_normal(obj_type *obj)
 			// potentially, pushing could reset the object
 			// hit ID, so we reset it here
 			
-		if (hit_obj_uid!=-1) obj->contact.obj_uid=hit_obj_uid;
+		if (hit_obj_idx!=-1) obj->contact.obj_idx=hit_obj_idx;
 
 			// determine if we moved or not
 
@@ -1431,7 +1431,7 @@ void object_thrust(obj_type *obj)
 	
 		// contacts cancel thrust
 
-	if ((obj->contact.hit_poly.mesh_idx!=-1) || (obj->contact.obj_uid!=-1)) {
+	if ((obj->contact.hit_poly.mesh_idx!=-1) || (obj->contact.obj_idx!=-1)) {
 		obj->thrust.vct.x=0;
 		obj->thrust.vct.y=0;
 		obj->thrust.vct.z=0;

@@ -345,11 +345,11 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 	bool			contact_on;
 	obj_type		*pushed_obj;
 	
-	if (obj->contact.obj_uid==-1) return(TRUE);
+	if (obj->contact.obj_idx==-1) return(TRUE);
 	
 		// get object to push
 
-	pushed_obj=server.obj_list.objs[obj->contact.obj_uid];
+	pushed_obj=server.obj_list.objs[obj->contact.obj_idx];
 	if (pushed_obj==NULL) return(TRUE);
 
 	if (!pushed_obj->contact.pushable) return(TRUE);

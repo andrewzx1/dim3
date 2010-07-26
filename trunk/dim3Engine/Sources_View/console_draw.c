@@ -171,7 +171,10 @@ void console_input(void)
 		// if console is off, check for on key
 		
 	if (!view.console.on) {
-		if (input_action_get_state_single(nc_console)) view.console.on=TRUE;
+		if (input_action_get_state_single(nc_console)) {
+			view.console.on=TRUE;
+			input_clear_all_last_raw_key();
+		}
 		return;
 	}
 	

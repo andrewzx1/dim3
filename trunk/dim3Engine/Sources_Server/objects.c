@@ -164,8 +164,8 @@ void object_clear_contact(obj_contact *contact)
 
 	contact->liquid_idx=-1;
 	
-	contact->obj_uid=-1;
-	contact->proj_uid=-1;
+	contact->obj_idx=-1;
+	contact->proj_idx=-1;
 	contact->stand_obj_idx=-1;
 	
 	contact->melee=FALSE;
@@ -176,9 +176,10 @@ void object_clear_touch(obj_touch *touch)
 	touch->obj_idx=-1;
 	touch->last_obj_idx=-1;
 	
-	touch->last_touch_tick=0;
-	
 	touch->stand=FALSE;
+	
+	touch->last_touch_tick=0;
+	touch->last_stand=FALSE;
 	
 	touch->pnt.x=touch->pnt.y=touch->pnt.z=0;
 	touch->ang.x=touch->ang.y=touch->ang.z=0.0f;
@@ -186,9 +187,9 @@ void object_clear_touch(obj_touch *touch)
 
 void object_clear_hit(obj_hit *hit)
 {
-	hit->obj_uid=-1;
-	hit->weap_uid=-1;
-	hit->proj_uid=-1;
+	hit->obj_idx=-1;
+	hit->weap_idx=-1;
+	hit->proj_idx=-1;
 	
 	hit->pnt.x=hit->pnt.y=hit->pnt.z=0;
 	hit->ang.x=hit->ang.y=hit->ang.z=0.0f;
@@ -198,8 +199,8 @@ void object_clear_hit(obj_hit *hit)
 
 void object_clear_pickup(obj_pickup *pickup)
 {
-	pickup->obj_uid=-1;
-	pickup->item_uid=-1;
+	pickup->obj_idx=-1;
+	pickup->item_idx=-1;
 }
 
 void object_clear_remote(obj_remote *remote)
@@ -210,7 +211,7 @@ void object_clear_remote(obj_remote *remote)
 void object_clear_watch(obj_watch *watch)
 {
 	watch->on=FALSE;
-	watch->obj_uid=-1;
+	watch->obj_idx=-1;
 	watch->dist=map_enlarge*50;
 	watch->watch_restrict.on=FALSE;
 	watch->watch_restrict.ray_trace=FALSE;

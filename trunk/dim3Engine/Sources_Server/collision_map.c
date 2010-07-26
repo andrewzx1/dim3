@@ -206,12 +206,12 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	}
 
 	if (contacts[idx].obj.uid!=-1) {
-		obj->contact.obj_uid=contacts[idx].obj.uid;
+		obj->contact.obj_idx=contacts[idx].obj.uid;
 		obj->contact.hit_face=contacts[idx].obj.hit_face;
 	}
 
 	if (contacts[idx].proj.uid!=-1) {
-		obj->contact.proj_uid=contacts[idx].proj.uid;
+		obj->contact.proj_idx=contacts[idx].proj.uid;
 		obj->contact.hit_face=contacts[idx].proj.hit_face;
 	}
 
@@ -451,8 +451,8 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 
 		// setup hits
 
-	proj->contact.obj_uid=contact.obj.uid;
-	proj->contact.proj_uid=contact.proj.uid;
+	proj->contact.obj_idx=contact.obj.uid;
+	proj->contact.proj_idx=contact.proj.uid;
 	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
 
 	return(TRUE);

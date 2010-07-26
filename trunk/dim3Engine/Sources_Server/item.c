@@ -85,14 +85,14 @@ void item_pickup_check(obj_type *obj)
 	
 				// setup pickup for items
 				
-			item_obj->pickup.item_uid=-1;
-			item_obj->pickup.obj_uid=obj->idx;
+			item_obj->pickup.item_idx=-1;
+			item_obj->pickup.obj_idx=obj->idx;
 			item_obj->pickup.canceled=FALSE;
 
 				// setup pickup for objects
 
-			obj->pickup.item_uid=item_obj->idx;
-			obj->pickup.obj_uid=-1;
+			obj->pickup.item_idx=item_obj->idx;
+			obj->pickup.obj_idx=-1;
 
 				// need to setup any network messages
 				// before the pickup event as it could
