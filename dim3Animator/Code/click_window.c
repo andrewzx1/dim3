@@ -141,7 +141,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 	
 		// setup transforms
 		
-	draw_model_gl_setup(&model);
+	draw_model_gl_setup(&model,0);
 	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
 	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
 	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
@@ -324,7 +324,7 @@ bool drag_bone_model_wind(Point start_pt)
 	
 		// setup transforms
 		
-	draw_model_gl_setup(&model);
+	draw_model_gl_setup(&model,0);
 	
 		// click on any drag handles?
 		
@@ -507,7 +507,7 @@ bool drag_hit_box_handle_model_wind(Point start_pt)
 	
 		// setup transforms
 		
-	draw_model_gl_setup(&model);
+	draw_model_gl_setup(&model,0);
 
 		// find a click
 		

@@ -37,7 +37,7 @@ extern void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_se
 extern void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_axis(model_type *model);
 
-extern void draw_model_gl_setup(model_type *model);
+extern void draw_model_gl_setup(model_type *model,int z_offset);
 extern void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_setup_pose(model_type *model,model_draw_setup *draw_setup,int wpose);
 extern void draw_model_wind_pose(model_type *model,int wmesh,int wpose);

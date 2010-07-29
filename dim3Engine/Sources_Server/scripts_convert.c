@@ -106,6 +106,11 @@ inline JSValueRef script_bool_to_value(JSContextRef cx,bool b)
 void script_value_to_string(JSContextRef cx,JSValueRef val,char *str,int len)
 {
 	JSStringRef		js_str;
+	
+	if (JSValueIsNull(cx,val)) {
+		str[0]=0x0;
+		return;
+	}
 
 	js_str=JSValueToStringCopy(cx,val,NULL);
 	if (js_str==NULL) {

@@ -45,7 +45,7 @@ extern model_draw_setup		draw_setup;
       
 ======================================================= */
 
-void draw_model_gl_setup(model_type *model)
+void draw_model_gl_setup(model_type *model,int z_offset)
 {
 	int				yoff,sz;
 	float			ratio;
@@ -77,7 +77,7 @@ void draw_model_gl_setup(model_type *model)
 	glLoadIdentity();
 
 	ratio=(float)gl_view_x_sz/(float)gl_view_y_sz;
-	gluPerspective(45.0,ratio,100.0,25000.0);
+	gluPerspective(45.0,ratio,(float)(100+z_offset),(float)(25000-z_offset));
 	glScalef(-1.0f,-1.0f,-1.0f);
 
 	yoff=model->view_box.size.y/2;
@@ -141,7 +141,7 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 {
 		// setup transformation to fit model in middle of screen
 		
-	draw_model_gl_setup(model);
+	draw_model_gl_setup(model,0);
 
 		// clear the buffer
 		
@@ -174,8 +174,10 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	}
 	
 	if (display.mesh) {
+		draw_model_gl_setup(model,10);
 		if ((display.first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
 		draw_model_mesh(model,mesh_idx,draw_setup);
+		draw_model_gl_setup(model,0);
 	}
 	
 	if (display.bone) draw_model_bones(model,draw_setup,cur_bone);
