@@ -452,6 +452,10 @@ void host_game_setup(void)
 	
 		// game options
 		
+	net_setup.score_limit=setup.network.score_limit;
+	net_setup.respawn_secs=setup.network.respawn_secs;
+	net_setup.game_reset_secs=setup.network.game_reset_secs;
+		
 	net_setup.option_flags=0x0;
 	
 	for (n=0;n!=setup.network.option.count;n++) {
@@ -463,9 +467,7 @@ void host_game_setup(void)
 		}
 	}
 
-		// game maps
-
-	host_map_table_to_list();
+		// starting game map
 
 	net_setup.host.current_map_idx=0;
 }

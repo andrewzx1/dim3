@@ -216,6 +216,10 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	
 	script=js.script_list.scripts[attach->script_idx];
 	
+	// supergumba -- testing display
+//	fprintf(stdout,"Chain (script:%s) (%s)\n",script->name,func_name);
+//	fflush(stdout);
+	
 		// is the chain a good function?
 		
 	good_chain=FALSE;

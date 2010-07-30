@@ -197,6 +197,9 @@ void net_host_info_request(unsigned long ip_addr,int port)
 	strcpy(info.game_name,hud.net_game.games[net_setup.game_idx].name);
 	strcpy(info.map_name,map.info.name);
 
+	info.score_limit=htons((short)net_setup.score_limit);
+	info.respawn_secs=htons((short)net_setup.respawn_secs);
+	info.game_reset_secs=htons((short)net_setup.game_reset_secs);
 	info.option_flags=htonl(net_setup.option_flags);
 
 	net_host_player_create_info_player_list(&info.player_list);

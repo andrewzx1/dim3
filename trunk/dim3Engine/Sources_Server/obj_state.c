@@ -195,7 +195,12 @@ void object_death(obj_type *obj)
 	
 		// setup respawn timer
 		
-	obj->status.respawn_tick=game_time_get()+(setup.network.respawn_secs*1000);
+	if (net_setup.mode==net_mode_none) {
+		obj->status.respawn_tick=game_time_get()+(setup.network.respawn_secs*1000);
+	}
+	else {
+		obj->status.respawn_tick=game_time_get()+(net_setup.respawn_secs*1000);
+	}
 }
 
 /* =======================================================
@@ -352,8 +357,9 @@ void object_touch(obj_type *obj)
 
 void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,proj_type *from_proj,d3pnt *melee_hit_pt,int damage)
 {
-	int				x,z,y;
+	int				x,z,y,hit_box_idx;
 	obj_hit			*hit;
+	model_type		*mdl;
 
 	hit=&obj->hit;
 
@@ -410,8 +416,12 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 		
 	hit->hit_box_name[0]=0x0;
 
-	if ((obj->hit_box.on) && (obj->hit_box.proj_hit_box_idx!=-1) && (obj->draw.model_idx!=-1)) {
-		strcpy(hit->hit_box_name,server.model_list.models[obj->draw.model_idx]->hit_boxes[obj->hit_box.proj_hit_box_idx].name);
+	if ((obj->hit_box.on) && (obj->draw.model_idx!=-1)) {
+		hit_box_idx=obj->hit_box.obj_hit_box_idx;
+		if (hit_box_idx==-1) hit_box_idx=obj->hit_box.proj_hit_box_idx;
+		
+		mdl=server.model_list.models[obj->draw.model_idx];
+		if ((hit_box_idx>=0) && (hit_box_idx<mdl->nhit_box)) strcpy(hit->hit_box_name,mdl->hit_boxes[hit_box_idx].name);
 	}
 }
 
@@ -456,7 +466,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 		// don't re-enter damage calls
 		
 	if (obj->damage.in_damage) return;
-
+	
 		// reduce any damage
 
 	damage=(int)(((float)damage)*obj->status.health_factor);
@@ -476,7 +486,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 			}
 
 		}
-		
+	
 			// remove the health
 			
 		obj->status.health-=damage;

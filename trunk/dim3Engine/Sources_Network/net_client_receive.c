@@ -128,7 +128,7 @@ int net_client_receive_thread(void *arg)
       
 ======================================================= */
 
-bool net_client_process_messages(void)
+	bool net_client_process_messages(void)
 {
 	int						count;
 	net_queue_msg_type		msg;

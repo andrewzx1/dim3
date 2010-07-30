@@ -330,7 +330,7 @@ bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha)
 	if (!node->back_render.render) return(FALSE);
 
 	*txt_id=node->back_render.txt_id;
-	*alpha=node->alpha;
+	if (alpha!=NULL) *alpha=node->alpha;
 	
 	return(TRUE);
 }

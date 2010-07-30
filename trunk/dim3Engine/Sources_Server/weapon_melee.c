@@ -337,7 +337,7 @@ bool melee_script_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *err_s
 		// get strike position
 
 	if (!melee_strike_position_weapon_model(obj,weap,&pt,err_str)) return(FALSE);
-
+	
 		// add melee
 		
 	melee_add(obj,weap,&pt,&obj->ang,&weap->melee,obj->idx);

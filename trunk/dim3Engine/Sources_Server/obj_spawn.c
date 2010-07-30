@@ -317,7 +317,7 @@ void game_remotes_create(network_reply_join_remote_list *remote_list)
 		// remote lists are network based,
 		// so we need to translate the count
 
-	count=(int)ntohs(remote_list->count);
+	count=(signed short)ntohs(remote_list->count);
 
 		// run through the list
 

@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "common_view.h"
+#include "walk_view.h"
 
 extern map_type				map;
 extern setup_type			setup;
