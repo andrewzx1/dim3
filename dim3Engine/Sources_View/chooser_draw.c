@@ -105,9 +105,7 @@ void chooser_open(void)
 	char				path[1024],path2[1024],fname[256],
 						title[max_chooser_frame_text_sz],str[max_chooser_text_data_sz];
 	chooser_type		*chooser;
-	chooser_text_type	*text;
-	chooser_item_type	*item;
-	chooser_button_type	*button;
+	chooser_piece_type	*piece;
 	chooser_frame_type	frame;
 	
 	chooser=&hud.choosers[chooser_idx];
@@ -124,43 +122,43 @@ void chooser_open(void)
 	gui_initialize(NULL,NULL);
 	gui_set_frame(&frame);
 		
-		// text
+		// pieces
 
-	text=chooser->texts;
+	piece=chooser->pieces;
 
-	for (n=0;n!=chooser->ntext;n++) {
-		chooser_text_substitute(text->data,str,max_chooser_text_data_sz);
-		element_text_add(str,text->text_id,text->x,text->y,text->size,text->just,text->clickable,FALSE);
-		text++;
-	}
+	for (n=0;n!=chooser->npiece;n++) {
 
-		// items
+		switch (piece->type) {
 
-	item=chooser->items;
+			case chooser_piece_type_text:
+				chooser_text_substitute(piece->data.text.str,str,max_chooser_text_data_sz);
+				element_text_add(str,piece->id,piece->x,piece->y,piece->data.text.size,piece->data.text.just,piece->clickable,FALSE);
+				break;
 
-	for (n=0;n!=chooser->nitem;n++) {
-	
-		file_paths_data(&setup.file_path_setup,path,"Chooser",item->file,"png");
-		
-		if (item->clickable) {
-			sprintf(fname,"%s_selected",item->file);
-			file_paths_data(&setup.file_path_setup,path2,"Chooser",fname,"png");
-			element_button_bitmap_add(path,path2,item->item_id,item->x,item->y,item->wid,item->high,element_pos_left,element_pos_top);
+			case chooser_piece_type_item:
+				file_paths_data(&setup.file_path_setup,path,"Chooser",piece->data.item.file,"png");
+				
+				if (piece->clickable) {
+					sprintf(fname,"%s_selected",piece->data.item.file);
+					file_paths_data(&setup.file_path_setup,path2,"Chooser",fname,"png");
+					element_button_bitmap_add(path,path2,piece->id,piece->x,piece->y,piece->wid,piece->high,element_pos_left,element_pos_top);
+				}
+				else {
+					element_bitmap_add(path,0,piece->x,piece->y,piece->wid,piece->high,FALSE);
+				}
+				break;
+
+			case chooser_piece_type_model:
+				// supergumba -- complete this
+				break;
+
+			case chooser_piece_type_button:
+				element_button_text_add(piece->data.button.name,piece->id,piece->x,piece->y,piece->wid,piece->high,element_pos_left,element_pos_top);
+				break;
+
 		}
-		else {
-			element_bitmap_add(path,0,item->x,item->y,item->wid,item->high,FALSE);
-		}
-		
-		item++;
-	}
 
-		// buttons
-
-	button=chooser->buttons;
-
-	for (n=0;n!=chooser->nbutton;n++) {
-		element_button_text_add(button->name,button->item_id,button->x,button->y,button->wid,button->high,element_pos_left,element_pos_top);
-		button++;
+		piece++;
 	}
 }
 

@@ -223,10 +223,8 @@ typedef struct		{
 #define max_menu_item							24
 #define max_menu_item_data_sz					64
 
-#define max_chooser								32
-#define max_chooser_text						32
-#define max_chooser_item						32
-#define max_chooser_button						32
+#define max_chooser								128
+#define max_chooser_piece						64
 #define max_chooser_frame_text_sz				64
 #define max_chooser_text_data_sz				256
 #define max_chooser_button_text_sz				64
@@ -374,23 +372,43 @@ typedef struct		{
 // chooser
 //
 
+#define chooser_piece_type_text					0
+#define chooser_piece_type_item					1
+#define chooser_piece_type_model				2
+#define chooser_piece_type_button				3
+
 typedef struct		{
-						int						x,y,text_id,size,just;
-						char					data[max_chooser_text_data_sz];
-						bool					clickable;
+						int						size,just;
+						char					str[max_chooser_text_data_sz];
 					} chooser_text_type;
 
 typedef struct		{
-						int						x,y,wid,high,item_id;
 						char					file[file_str_len];
-						bool					clickable;
 					} chooser_item_type;
 
 typedef struct		{
-						int						x,y,wid,high,item_id;
+						char					model_name[name_str_len],animate_name[name_str_len];
+					} chooser_model_type;
+
+typedef struct		{
 						char					name[max_chooser_button_text_sz];
 					} chooser_button_type;
-					
+
+typedef union		{
+						chooser_text_type		text;
+						chooser_item_type		item;
+						chooser_model_type		model;
+						chooser_button_type		button;
+					} chooser_piece_data_type;
+
+typedef struct		{
+						int						type,id,
+												x,y,wid,high;
+						bool					clickable;
+						char					goto_name[name_str_len];
+						chooser_piece_data_type	data;
+					} chooser_piece_type;
+
 typedef struct		{
 						int						x,y,wid,high;
 						char					title[max_chooser_frame_text_sz];
@@ -402,13 +420,11 @@ typedef struct		{
 					} chooser_key_type;
 					
 typedef struct		{
-						int						ntext,nitem,nbutton;
+						int						npiece;
 						char					name[name_str_len];
 						chooser_frame_type		frame;
 						chooser_key_type		key;
-						chooser_text_type		texts[max_chooser_text];
-						chooser_item_type		items[max_chooser_item];
-						chooser_button_type		buttons[max_chooser_button];
+						chooser_piece_type		pieces[max_chooser_piece];
 					} chooser_type;
 					
 //
