@@ -421,6 +421,7 @@ bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,o
 		// tag no hit box hits
 		
 	obj->hit_box.obj_hit_box_idx=-1;
+	obj->hit_box.proj_hit_box_idx=-1;
 	
 		// find hit box middle closest to damage box middle
 	

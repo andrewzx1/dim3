@@ -137,6 +137,9 @@ bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply
 	strcpy(info->game_name,reply_info->game_name);
 	strcpy(info->map_name,reply_info->map_name);
 
+	info->score_limit=(signed short)ntohs(reply_info->score_limit);
+	info->respawn_secs=(signed short)ntohs(reply_info->respawn_secs);
+	info->game_reset_secs=(signed short)ntohs(reply_info->game_reset_secs);
 	info->option_flags=ntohl(reply_info->option_flags);
 
 		// players
@@ -653,6 +656,9 @@ void join_game(void)
 
 	net_setup.mode=net_mode_client;
 	net_setup.client.latency=0;
+	net_setup.score_limit=info->score_limit;
+	net_setup.respawn_secs=info->respawn_secs;
+	net_setup.game_reset_secs=info->game_reset_secs;
 	net_setup.option_flags=info->option_flags;
 
 		// setup game type and map

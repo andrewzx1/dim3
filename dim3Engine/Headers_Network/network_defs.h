@@ -148,7 +148,9 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
-						int								mode,game_idx,option_flags,
+						int								mode,game_idx,
+														score_limit,option_flags,
+														respawn_secs,game_reset_secs,
 														next_net_uid;
 						network_setup_host_type			host;
 						network_setup_client_type		client;
@@ -252,6 +254,7 @@ typedef struct		{
 
 typedef struct		{
 						int								option_flags;
+						short							score_limit,respawn_secs,game_reset_secs;
 						char							host_name[name_str_len],host_ip_resolve[16],
 														proj_name[name_str_len],
 														game_name[name_str_len],

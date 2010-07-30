@@ -109,7 +109,7 @@ void score_limit_check_scores(void)
 
 		// get score limit
 		
-	limit=setup.network.score_limit;
+	limit=net_setup.score_limit;
 	if (limit==0) return;
 
 		// team checks?
@@ -168,7 +168,7 @@ int score_limit_get_resume_time(void)
 {
 	int			secs;
 	
-	secs=setup.network.game_reset_secs-((game_time_get_raw()-score_limit_start_tick)/1000);
+	secs=net_setup.game_reset_secs-((game_time_get_raw()-score_limit_start_tick)/1000);
 	if (secs<0) secs=0;
 	
 	return(secs);
@@ -195,7 +195,7 @@ void score_limit_run(void)
 		// or after timeout
 	
 	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
-		if ((game_time_get_raw()>(score_limit_start_tick+(setup.network.game_reset_secs*1000))) || (input_action_get_state_single(nc_menu))) {
+		if ((game_time_get_raw()>(score_limit_start_tick+(net_setup.game_reset_secs*1000))) || (input_action_get_state_single(nc_menu))) {
 			server.next_state=gs_running;
 			game_reset();
 		}
@@ -205,7 +205,7 @@ void score_limit_run(void)
 		// clients either wait for host
 		// message or time out and fail
 		
-	if (game_time_get_raw()>(score_limit_start_tick+((setup.network.game_reset_secs+SCORE_LIMIT_EXTRA_SECOND_FAIL)*1000))) {
+	if (game_time_get_raw()>(score_limit_start_tick+((net_setup.game_reset_secs+SCORE_LIMIT_EXTRA_SECOND_FAIL)*1000))) {
 		error_setup("Host failed to restart game","Join Canceled");
 		server.next_state=gs_error;
 	}

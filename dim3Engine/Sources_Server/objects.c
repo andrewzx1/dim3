@@ -674,6 +674,9 @@ int object_create(char *name,int type,int bind)
 	obj->melee.damage=0;
 	obj->melee.force=0;
 	
+	obj->hit_box.obj_hit_box_idx=-1;
+	obj->hit_box.proj_hit_box_idx=-1;
+	
 	obj->count=0;
 	obj->item_count=0;
 
