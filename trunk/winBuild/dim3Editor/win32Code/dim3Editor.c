@@ -25,12 +25,13 @@
 #define kCommandViewSplitVertical			216
 #define kCommandViewRemoveSplit				217
 
-#define EDITOR_WIN_X					10
-#define EDITOR_WIN_Y					40
-#define EDITOR_WIN_WIDTH				1100
-#define EDITOR_WIN_HEIGHT				700
-#define EDITOR_WIN_EXTRA_HEIGHT			20
+#define EDITOR_WIN_X						10
+#define EDITOR_WIN_Y						40
+#define EDITOR_WIN_WIDTH					1100
+#define EDITOR_WIN_HEIGHT					700
+#define EDITOR_WIN_EXTRA_HEIGHT				20
 
+HINSTANCE				hinst;
 ATOM					wnd_rg_class;
 HFONT					fnt;
 HWND					wnd;
@@ -59,6 +60,7 @@ extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
 extern void editor_menu_commands(int id);
 extern void editor_menu_create(void);
+extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
 
 /* =======================================================
 
@@ -367,13 +369,19 @@ bool editor_setup(char *err_str)
 
 bool editor_open_map(char *err_str)
 {
+	char			file_name[256];
 	d3pnt			pnt;
+
+	if (!dialog_file_open_run("Open a Map","Maps","xml",NULL,file_name)) {
+		strcpy(err_str,"no map!");
+		return(FALSE);
+	}
 
 		// open map
 
 	map_setup(&file_path_setup,anisotropic_mode_high,mipmap_mode_trilinear,texture_quality_mode_normal,FALSE,FALSE);
 
-	if (!map_open(&map,"DM Map")) {
+	if (!map_open(&map,file_name)) {
 		strcpy(err_str,"Could not open map");
 		return(FALSE);
 	}
@@ -493,6 +501,8 @@ void test_debug(char *str)
 int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
 {
 	char		err_str[256];
+
+	hinst=hInstance;
 
 	if (!editor_setup(err_str)) {
 		MessageBox(NULL,err_str,"Error",MB_OK);

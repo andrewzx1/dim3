@@ -379,6 +379,10 @@
 					RelativePath=".\win32Code\dim3Editor_win32_glue.c"
 					>
 				</File>
+				<File
+					RelativePath=".\win32Code\win32_dialog_file_open.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 	</Files>

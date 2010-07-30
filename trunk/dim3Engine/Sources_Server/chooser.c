@@ -35,7 +35,7 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Add Chooser and Items
+      Add Chooser
       
 ======================================================= */
 
@@ -50,73 +50,9 @@ int chooser_add(char *name)
 	
 	strcpy(chooser->name,name);
 
-	chooser->ntext=0;
-	chooser->nitem=0;
-	chooser->nbutton=0;
+	chooser->npiece=0;
 	
 	return(hud.count.chooser-1);
-}
-
-void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,int size,int just,bool clickable)
-{
-	chooser_type		*chooser;
-	chooser_text_type	*text;
-	
-	chooser=&hud.choosers[chooser_idx];
-	
-	if (chooser->ntext>=max_chooser_text) return;
-	
-	text=&chooser->texts[chooser->ntext];
-	chooser->ntext++;
-	
-	text->text_id=text_id;
-	strcpy(text->data,data);
-	text->x=x;
-	text->y=y;
-	text->size=size;
-	text->just=just;
-	text->clickable=clickable;
-}
-
-void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,int wid,int high,bool clickable)
-{
-	chooser_type		*chooser;
-	chooser_item_type	*item;
-	
-	chooser=&hud.choosers[chooser_idx];
-	
-	if (chooser->nitem>=max_chooser_item) return;
-	
-	item=&chooser->items[chooser->nitem];
-	chooser->nitem++;
-	
-	item->item_id=item_id;
-	strcpy(item->file,file);
-	item->x=x;
-	item->y=y;
-	item->wid=wid;
-	item->high=high;
-	item->clickable=clickable;
-}
-
-void chooser_add_button(int chooser_idx,int item_id,char *name,int x,int y,int wid,int high)
-{
-	chooser_type		*chooser;
-	chooser_button_type	*button;
-	
-	chooser=&hud.choosers[chooser_idx];
-	
-	if (chooser->nbutton>=max_chooser_button) return;
-	
-	button=&chooser->buttons[chooser->nbutton];
-	chooser->nbutton++;
-	
-	button->item_id=item_id;
-	strcpy(button->name,name);
-	button->x=x;
-	button->y=y;
-	button->wid=wid;
-	button->high=high;
 }
 
 /* =======================================================
@@ -138,5 +74,178 @@ int chooser_find(char *name)
 	}
 	
 	return(-1);
+}
+
+int chooser_find_piece(chooser_type *chooser,int id)
+{
+	int				n;
+	chooser_piece_type	*piece;
+
+	piece=chooser->pieces;
+
+	for (n=0;n!=chooser->npiece;n++) {
+		if (piece->id==id) return(n);
+		piece++;
+	}
+
+	return(-1);
+}
+
+/* =======================================================
+
+      Add Chooser Items
+      
+======================================================= */
+
+void chooser_add_text(int chooser_idx,int template_idx,int id,char *str,int x,int y,int size,int just,bool clickable,char *goto_name)
+{
+	int					piece_idx;
+	chooser_type		*chooser;
+	chooser_piece_type	*piece;
+	
+	chooser=&hud.choosers[chooser_idx];
+
+		// is this a template substitution?
+
+	if (template_idx!=-1) {
+		piece_idx=chooser_find_piece(chooser,id);
+		if (piece_idx!=-1) {
+			piece=&chooser->pieces[piece_idx];
+			strcpy(piece->data.text.str,str);
+			return;
+		}
+	}
+
+		// add a new piece
+	
+	if (chooser->npiece>=max_chooser_piece) return;
+	
+	piece=&chooser->pieces[chooser->npiece];
+	chooser->npiece++;
+	
+	piece->type=chooser_piece_type_text;
+	piece->id=id;
+	strcpy(piece->data.text.str,str);
+	piece->x=x;
+	piece->y=y;
+	piece->data.text.size=size;
+	piece->data.text.just=just;
+
+	piece->clickable=clickable;
+	strcpy(piece->goto_name,goto_name);
+}
+
+void chooser_add_item(int chooser_idx,int template_idx,int id,char *file,int x,int y,int wid,int high,bool clickable,char *goto_name)
+{
+	int					piece_idx;
+	chooser_type		*chooser;
+	chooser_piece_type	*piece;
+	
+	chooser=&hud.choosers[chooser_idx];
+
+		// is this a template substitution?
+
+	if (template_idx!=-1) {
+		piece_idx=chooser_find_piece(chooser,id);
+		if (piece_idx!=-1) {
+			piece=&chooser->pieces[piece_idx];
+			strcpy(piece->data.item.file,file);
+			return;
+		}
+	}
+
+		// add a new piece
+
+	if (chooser->npiece>=max_chooser_piece) return;
+	
+	piece=&chooser->pieces[chooser->npiece];
+	chooser->npiece++;
+	
+	piece->type=chooser_piece_type_item;
+	piece->id=id;
+	strcpy(piece->data.item.file,file);
+	piece->x=x;
+	piece->y=y;
+	piece->wid=wid;
+	piece->high=high;
+
+	piece->clickable=clickable;
+	strcpy(piece->goto_name,goto_name);
+}
+
+void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,bool clickable,char *goto_name)
+{
+	int					piece_idx;
+	chooser_type		*chooser;
+	chooser_piece_type	*piece;
+	
+	chooser=&hud.choosers[chooser_idx];
+	
+		// is this a template substitution?
+
+	if (template_idx!=-1) {
+		piece_idx=chooser_find_piece(chooser,id);
+		if (piece_idx!=-1) {
+			piece=&chooser->pieces[piece_idx];
+			strcpy(piece->data.model.model_name,model_name);
+			strcpy(piece->data.model.animate_name,animate_name);
+			return;
+		}
+	}
+
+		// add a new piece
+
+	if (chooser->npiece>=max_chooser_piece) return;
+	
+	piece=&chooser->pieces[chooser->npiece];
+	chooser->npiece++;
+	
+	piece->type=chooser_piece_type_model;
+	piece->id=id;
+	strcpy(piece->data.model.model_name,model_name);
+	strcpy(piece->data.model.animate_name,animate_name);
+	piece->x=x;
+	piece->y=y;
+
+	piece->clickable=clickable;
+	strcpy(piece->goto_name,goto_name);
+}
+
+void chooser_add_button(int chooser_idx,int template_idx,int id,char *name,int x,int y,int wid,int high,char *goto_name)
+{
+	int					piece_idx;
+	chooser_type		*chooser;
+	chooser_piece_type	*piece;
+	
+	chooser=&hud.choosers[chooser_idx];
+	
+		// is this a template substitution?
+
+	if (template_idx!=-1) {
+		piece_idx=chooser_find_piece(chooser,id);
+		if (piece_idx!=-1) {
+			piece=&chooser->pieces[piece_idx];
+			strcpy(piece->data.button.name,name);
+			return;
+		}
+	}
+
+		// add a new piece
+
+	if (chooser->npiece>=max_chooser_piece) return;
+	
+	piece=&chooser->pieces[chooser->npiece];
+	chooser->npiece++;
+	
+	piece->type=chooser_piece_type_button;
+	piece->id=id;
+	strcpy(piece->data.button.name,name);
+	piece->x=x;
+	piece->y=y;
+	piece->wid=wid;
+	piece->high=high;
+
+	piece->clickable=TRUE;
+	strcpy(piece->goto_name,goto_name);
 }
 

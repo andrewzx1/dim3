@@ -41,10 +41,12 @@ char							just_mode_str[][32]={"left","center","right"},
 
 extern int menu_add(char *name);
 extern void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multiplayer_disable,bool quit);
+extern int chooser_find(char *name);
 extern int chooser_add(char *name);
-extern void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,int size,int just,bool clickable);
-extern void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,int wid,int high,bool clickable);
-extern void chooser_add_button(int chooser_idx,int item_id,char *name,int x,int y,int wid,int high);
+extern void chooser_add_text(int chooser_idx,int template_idx,int id,char *str,int x,int y,int size,int just,bool clickable,char *goto_name);
+extern void chooser_add_item(int chooser_idx,int template_idx,int id,char *file,int x,int y,int wid,int high,bool clickable,char *goto_name);
+extern void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,bool clickable,char *goto_name);
+extern void chooser_add_button(int chooser_idx,int template_idx,int id,char *name,int x,int y,int wid,int high,char *goto_name);
 
 /* =======================================================
 
@@ -631,41 +633,34 @@ void read_settings_interface_menu(int menu_tag)
 
 void read_settings_interface_chooser(int chooser_tag)
 {
-	int				idx,just,tag,texts_head_tag,text_tag,
+	int				idx,template_idx,just,tag,texts_head_tag,text_tag,
 					items_head_tag,item_tag,buttons_head_tag,button_tag,
 					x,y,wid,high,id,text_size;
 	char			name[name_str_len],file[file_str_len],
+					template_name[name_str_len],goto_name[name_str_len],
 					btn_name[max_chooser_button_text_sz],
 					data[max_chooser_text_data_sz];
 	bool			clickable;
 
+		// name and template
+
 	xml_get_attribute_text(chooser_tag,"name",name,name_str_len);
+	xml_get_attribute_text(chooser_tag,"template",template_name,name_str_len);
 	
 	idx=chooser_add(name);
 	if (idx==-1) return;
 
-		// text
+		// run any templates
+		// templates MUST be in order
 
-	texts_head_tag=xml_findfirstchild("Texts",chooser_tag);
-	if (texts_head_tag==-1) return;
-	
-	text_tag=xml_findfirstchild("Text",texts_head_tag);
-	
-	while (text_tag!=-1) {
+	template_idx=-1;
 
-		data[0]=0x0;
+	if (template_name[0]!=0x0) {
+		template_idx=chooser_find(template_name);
 
-		id=xml_get_attribute_int(text_tag,"id");
-		xml_get_attribute_text(text_tag,"data",data,max_chooser_text_data_sz);
-		text_size=xml_get_attribute_int_default(text_tag,"size",hud.font.text_size_small);
-		just=xml_get_attribute_list(text_tag,"just",(char*)just_mode_str);
-		x=xml_get_attribute_int(text_tag,"x");
-		y=xml_get_attribute_int(text_tag,"y");
-		clickable=xml_get_attribute_boolean(text_tag,"clickable");
-
-		chooser_add_text(idx,id,data,x,y,text_size,just,clickable);
-
-		text_tag=xml_findnextchild(text_tag);
+		if (template_idx!=-1) {
+			memmove(&hud.choosers[idx],&hud.choosers[template_idx],sizeof(chooser_type));
+		}
 	}
 	
 		// frames and keys
@@ -693,6 +688,31 @@ void read_settings_interface_chooser(int chooser_tag)
 		hud.choosers[idx].key.cancel_id=-1;
 	}
 
+		// text
+
+	texts_head_tag=xml_findfirstchild("Texts",chooser_tag);
+	if (texts_head_tag==-1) return;
+	
+	text_tag=xml_findfirstchild("Text",texts_head_tag);
+	
+	while (text_tag!=-1) {
+
+		data[0]=0x0;
+
+		id=xml_get_attribute_int(text_tag,"id");
+		xml_get_attribute_text(text_tag,"data",data,max_chooser_text_data_sz);
+		text_size=xml_get_attribute_int_default(text_tag,"size",hud.font.text_size_small);
+		just=xml_get_attribute_list(text_tag,"just",(char*)just_mode_str);
+		x=xml_get_attribute_int(text_tag,"x");
+		y=xml_get_attribute_int(text_tag,"y");
+		clickable=xml_get_attribute_boolean(text_tag,"clickable");
+		xml_get_attribute_text(text_tag,"goto",goto_name,name_str_len);
+
+		chooser_add_text(idx,template_idx,id,data,x,y,text_size,just,clickable,goto_name);
+
+		text_tag=xml_findnextchild(text_tag);
+	}
+
 		// items
 	
 	items_head_tag=xml_findfirstchild("Items",chooser_tag);
@@ -708,8 +728,9 @@ void read_settings_interface_chooser(int chooser_tag)
 		wid=xml_get_attribute_int_default(item_tag,"width",-1);
 		high=xml_get_attribute_int_default(item_tag,"height",-1);
 		clickable=xml_get_attribute_boolean(item_tag,"clickable");
+		xml_get_attribute_text(text_tag,"goto",goto_name,name_str_len);
 		
-		chooser_add_item(idx,id,file,x,y,wid,high,clickable);
+		chooser_add_item(idx,template_idx,id,file,x,y,wid,high,clickable,goto_name);
 		
 		item_tag=xml_findnextchild(item_tag);
 	}
@@ -728,8 +749,9 @@ void read_settings_interface_chooser(int chooser_tag)
 		y=xml_get_attribute_int(button_tag,"y");
 		wid=xml_get_attribute_int_default(button_tag,"width",-1);
 		high=xml_get_attribute_int_default(button_tag,"height",-1);
+		xml_get_attribute_text(text_tag,"goto",goto_name,name_str_len);
 		
-		chooser_add_button(idx,id,btn_name,x,y,wid,high);
+		chooser_add_button(idx,template_idx,id,btn_name,x,y,wid,high,goto_name);
 		
 		button_tag=xml_findnextchild(button_tag);
 	}
