@@ -16,9 +16,9 @@
 	};
 	2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6734}}";
-			sepNavSelRange = "{4716, 0}";
-			sepNavVisRange = "{2809, 2139}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6981}}";
+			sepNavSelRange = "{735, 0}";
+			sepNavVisRange = "{171, 1681}";
 			sepNavWindowFrame = "{{297, 133}, {1041, 747}}";
 		};
 	};
@@ -170,9 +170,9 @@
 	};
 	F5A8B1AF05229DA4008D4331 /* file_map_read.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6032}}";
-			sepNavSelRange = "{13291, 0}";
-			sepNavVisRange = "{11918, 1686}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5967}}";
+			sepNavSelRange = "{1097, 0}";
+			sepNavVisRange = "{144, 2247}";
 			sepNavWindowFrame = "{{409, 168}, {1041, 747}}";
 		};
 	};
@@ -263,8 +263,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 301724979;
-			PBXWorkspaceStateSaveDate = 301724979;
+			PBXPerProjectTemplateStateSaveDate = 302311004;
+			PBXWorkspaceStateSaveDate = 302311004;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {

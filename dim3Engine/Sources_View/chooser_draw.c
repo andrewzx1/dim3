@@ -42,6 +42,7 @@ int							chooser_idx;
 char						chooser_sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
 
 extern int chooser_find(char *name);
+extern int chooser_find_piece(chooser_type *chooser,int id);
 
 /* =======================================================
 
@@ -99,7 +100,7 @@ void chooser_text_substitute(char *init_str,char *sub_str,int max_len)
       
 ======================================================= */
 
-void chooser_open(void)
+void chooser_create_elements(void)
 {
 	int					n;
 	char				path[1024],path2[1024],fname[256],
@@ -110,16 +111,13 @@ void chooser_open(void)
 	
 	chooser=&hud.choosers[chooser_idx];
 	
-		// text substitution for frames
+		// setup frame
 		
 	memmove(&frame,&chooser->frame,sizeof(chooser_frame_type));
 
 	chooser_text_substitute(chooser->frame.title,title,max_chooser_frame_text_sz);
 	strcpy(frame.title,title);
 	
-		// setup gui
-		
-	gui_initialize(NULL,NULL);
 	gui_set_frame(&frame);
 		
 		// pieces
@@ -162,25 +160,42 @@ void chooser_open(void)
 	}
 }
 
+void chooser_open(void)
+{
+	gui_initialize(NULL,NULL);
+	chooser_create_elements();
+}
+
 void chooser_close(void)
 {
 	gui_shutdown();
 }
 
-void chooser_setup(char *name,char *sub_txt)
+bool chooser_setup(char *name,char *sub_txt,char *err_str)
 {
 	int				n;
 
 		// find chooser
 
 	chooser_idx=chooser_find(name);
-	if (chooser_idx==-1) return;
+	if (chooser_idx==-1) {
+		sprintf(err_str,"Chooser does not exist: %s",name);
+		return(FALSE);
+	}
 
 		// setup text substitutions
 
-	for (n=0;n!=max_chooser_sub_txt;n++) {
-		strcpy(chooser_sub_txt[n],(char*)&sub_txt[max_chooser_text_data_sz*n]);
+	if (sub_txt!=NULL) {
+		for (n=0;n!=max_chooser_sub_txt;n++) {
+			strcpy(chooser_sub_txt[n],(char*)&sub_txt[max_chooser_text_data_sz*n]);
+		}
 	}
+	
+		// run chooser
+		
+	server.next_state=gs_chooser;
+	
+	return(TRUE);
 }
 
 /* =======================================================
@@ -191,7 +206,8 @@ void chooser_setup(char *name,char *sub_txt)
 
 void chooser_click(void)
 {
-	int					id,ch;
+	int					id,idx,next_idx,ch;
+	chooser_piece_type	*piece;
 	
 	id=-1;
 	
@@ -217,6 +233,23 @@ void chooser_click(void)
 		// run click
 		
 	hud_click();
+	
+		// check for any goto clicks
+		
+	idx=chooser_find_piece(&hud.choosers[chooser_idx],id);
+	
+	if (idx!=-1) {
+	
+		piece=&hud.choosers[chooser_idx].pieces[idx];
+		next_idx=chooser_find(piece->goto_name);
+		
+		if (next_idx!=-1) {
+			element_clear();
+			chooser_idx=next_idx;
+			chooser_create_elements();
+			return;
+		}
+	}
 	
 		// set the state here as event
 		// might reset it to something else

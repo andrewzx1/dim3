@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define max_element								128
-#define max_element_str_len						64
+#define max_element_str_len						256
 #define max_element_value_str_len				64
 #define max_element_column						32
 #define max_element_tab							8
@@ -387,6 +387,7 @@ typedef struct		{
 					} chooser_item_type;
 
 typedef struct		{
+						float					resize;
 						char					model_name[name_str_len],animate_name[name_str_len];
 					} chooser_model_type;
 
@@ -413,6 +414,7 @@ typedef struct		{
 						int						x,y,wid,high;
 						char					title[max_chooser_frame_text_sz];
 						bool					on;
+						d3col					background_col;
 					} chooser_frame_type;
 					
 typedef struct		{

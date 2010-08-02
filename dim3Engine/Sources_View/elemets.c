@@ -339,7 +339,8 @@ void element_text_add(char *str,int id,int x,int y,int size,int just,bool select
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 	
-	strcpy(element->str,str);
+	strncpy(element->str,str,max_element_str_len);
+	element->str[max_element_str_len-1]=0x0;
 
 		// need to calculate size through returns
 

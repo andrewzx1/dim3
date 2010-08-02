@@ -85,12 +85,29 @@ void title_close(void)
 	if (title_event_id!=-1) scripts_post_event_console(&js.game_attach,sd_event_interface,sd_event_interface_title_done,title_event_id);
 }
 
-void title_setup(char *dir,char *name,char *sound_name,int event_id)
+bool title_setup(char *dir,char *name,char *sound_name,int event_id,char *err_str)
 {
+	char			path[1024];
+	struct stat		sb;
+
 	strcpy(title_dir,dir);
 	strcpy(title_name,name);
 	strcpy(title_sound_name,sound_name);
 	title_event_id=event_id;
+	
+		// does title exist?
+		
+	file_paths_data(&setup.file_path_setup,path,dir,name,"png");
+	if (stat(path,&sb)==-1) {
+		sprintf(err_str,"Title does not exist: %s.png",name);
+		return(FALSE);
+	}
+	
+		// switch to title state
+		
+	server.next_state=gs_title;
+	
+	return(TRUE);
 }
 
 /* =======================================================

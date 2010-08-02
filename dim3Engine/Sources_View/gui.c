@@ -192,10 +192,9 @@ void gui_draw_dialog(void)
 	top=gui_frame.y;
 	bot=top+gui_frame.high;
 
-		// darken
+		// inside frame
 
-	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_color_quad(&col,0.5f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_color_quad(&gui_frame.background_col,1.0f,lft,rgt,top,bot);
 	
 		// header
 		
@@ -214,7 +213,7 @@ void gui_draw_dialog(void)
 		col.r=col.g=col.b=1.0f;
 		
 		gl_text_start(font_interface_index,hud.font.text_size_medium);
-		gl_text_draw(((lft+rgt)/2),y,gui_frame.title,tx_center,TRUE,&col,1.0f);
+		gl_text_draw(((lft+rgt)/2),(y-2),gui_frame.title,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
 	
