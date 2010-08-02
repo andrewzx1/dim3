@@ -154,10 +154,27 @@ void movie_close(void)
 	gui_shutdown();
 }
 
-void movie_setup(char *name,int event_id)
+bool movie_setup(char *name,int event_id,char *err_str)
 {
+	char			path[1024];
+	struct stat		sb;
+
 	strcpy(movie_name,name);
 	movie_event_id=event_id;
+	
+		// does movie exist?
+		
+	file_paths_data(&setup.file_path_setup,path,"Movies",movie_name,"mov");
+	if (stat(path,&sb)==-1) {
+		sprintf(err_str,"Movie does not exist: %s.mov",name);
+		return(FALSE);
+	}
+	
+		// switch to movie state
+		
+	server.next_state=gs_movie;
+	
+	return(TRUE);
 }
 
 /* =======================================================

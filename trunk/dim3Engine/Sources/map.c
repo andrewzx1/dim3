@@ -81,6 +81,8 @@ extern void view_clear_fps(void);
 
 void map_media_start(map_media_type *media)
 {
+	char			err_str[256];
+	
 		// no media when launched from editor
 
 	if (setup.editor_override.on) return;
@@ -96,19 +98,22 @@ void map_media_start(map_media_type *media)
 
 	switch (media->type) {
 	
-		case mi_story:
-			story_setup(media->name,-1);
-			server.next_state=gs_story;
+		case mi_chooser:
+			if (!chooser_setup(media->name,NULL,err_str)) {
+				console_add_error(err_str);
+			}
 			break;
 			
 		case mi_title:
-			title_setup("Titles",media->name,media->title_sound_name,-1);
-			server.next_state=gs_title;
+			if (!title_setup("Titles",media->name,media->title_sound_name,-1,err_str)) {
+				console_add_error(err_str);
+			}
 			break;
 			
 		case mi_movie:
-			movie_setup(media->name,-1);
-			server.next_state=gs_movie;
+			if (!movie_setup(media->name,-1,err_str)) {
+				console_add_error(err_str);
+			}
 			break;
 		
 	}

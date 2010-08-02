@@ -31,7 +31,7 @@ and can be sold or given away.
 
 extern maputility_settings_type		maputility_settings;
 
-char					media_type_str[][32]={"none","story","title","movie",""},
+char					media_type_str[][32]={"none","chooser","title","movie",""},
 						sky_type_str[][32]={"dome_panoramic","dome_hemisphere","cube",""},
 						gl_fog_type_str[][32]={"linear","exp","exp2",""},
 						mesh_hide_mode_str[][32]={"never","single_player","multiplayer",""},

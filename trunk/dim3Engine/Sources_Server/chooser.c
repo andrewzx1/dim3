@@ -41,7 +41,7 @@ extern setup_type			setup;
 
 int chooser_add(char *name)
 {
-	chooser_type		*chooser;
+	chooser_type	*chooser;
 	
 	if (hud.count.chooser>=max_chooser) return(-1);
 	
@@ -51,8 +51,20 @@ int chooser_add(char *name)
 	strcpy(chooser->name,name);
 
 	chooser->npiece=0;
+	chooser->frame.on=FALSE;
+	chooser->key.ok_id=-1;
+	chooser->key.cancel_id=-1;
 	
 	return(hud.count.chooser-1);
+}
+
+void chooser_copy_template(int idx,int template_idx)
+{
+	char			name[name_str_len];
+	
+	strcpy(name,hud.choosers[idx].name);
+	memmove(&hud.choosers[idx],&hud.choosers[template_idx],sizeof(chooser_type));
+	strcpy(hud.choosers[idx].name,name);
 }
 
 /* =======================================================
@@ -173,7 +185,7 @@ void chooser_add_item(int chooser_idx,int template_idx,int id,char *file,int x,i
 	strcpy(piece->goto_name,goto_name);
 }
 
-void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,bool clickable,char *goto_name)
+void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,float resize,bool clickable,char *goto_name)
 {
 	int					piece_idx;
 	chooser_type		*chooser;
@@ -204,6 +216,7 @@ void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,
 	piece->id=id;
 	strcpy(piece->data.model.model_name,model_name);
 	strcpy(piece->data.model.animate_name,animate_name);
+	piece->data.model.resize=resize;
 	piece->x=x;
 	piece->y=y;
 

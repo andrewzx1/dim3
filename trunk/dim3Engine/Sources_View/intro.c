@@ -212,6 +212,7 @@ void intro_click_load(void)
 void intro_click(void)
 {
 	int				id;
+	char			err_str[256];
 	
 		// element being clicked?
 		
@@ -278,8 +279,7 @@ void intro_click(void)
 			// credit and quit
 			
 		case intro_button_credit_id:
-			title_setup("Bitmaps/Backgrounds","credit","",-1);
-			server.next_state=gs_title;
+			title_setup("Bitmaps/Backgrounds","credit","",-1,err_str);
 			break;
 
 		case intro_button_quit_id:

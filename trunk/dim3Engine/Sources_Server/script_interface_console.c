@@ -33,14 +33,17 @@ and can be sold or given away.
 #include "consoles.h"
 
 extern char				console_input_str[max_console_txt_sz];
+extern view_type		view;
 extern js_type			js;
 
 JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_console_open_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	interface_console_functions[]={
 							{"write",				js_interface_console_write_func,		kJSPropertyAttributeDontDelete},
 							{"read",				js_interface_console_read_func,			kJSPropertyAttributeDontDelete},
+							{"open",				js_interface_console_open_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			interface_console_class;
@@ -90,5 +93,16 @@ JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObj
 
 	return(script_string_to_value(cx,console_input_str));
 }
+
+JSValueRef js_interface_console_open_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	view.console.on=TRUE;
+	input_clear_all_last_raw_key();
+
+	return(script_null_to_value(cx));
+}
+
 
 

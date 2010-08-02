@@ -221,10 +221,6 @@ void loop_state_run(void)
 			title_run();
 			return;
 			
-		case gs_story:
-			story_run();
-			return;
-			
 		case gs_movie:
 			movie_run();
 			return;
@@ -278,10 +274,6 @@ void loop_state_last_close(void)
 			title_close();
 			return;
 			
-		case gs_story:
-			story_close();
-			return;
-			
 		case gs_movie:
 			movie_close();
 			return;
@@ -331,10 +323,6 @@ void loop_state_next_open(void)
 			
 		case gs_title:
 			title_open();
-			return;
-			
-		case gs_story:
-			story_open();
 			return;
 			
 		case gs_movie:

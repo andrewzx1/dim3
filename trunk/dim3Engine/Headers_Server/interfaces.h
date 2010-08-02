@@ -199,22 +199,17 @@ extern void file_run(void);
 
 extern void chooser_open(void);
 extern void chooser_close(void);
-extern void chooser_setup(char *name,char *sub_txt);
+extern bool chooser_setup(char *name,char *sub_txt,char *err_str);
 extern void chooser_run(void);
 
 extern void title_open(void);
 extern void title_close(void);
-extern void title_setup(char *dir,char *name,char *sound_name,int event_id);
+extern bool title_setup(char *dir,char *name,char *sound_name,int event_id,char *err_str);
 extern void title_run(void);
-
-extern void story_open(void);
-extern void story_close(void);
-extern void story_setup(char *name,int event_id);
-extern void story_run(void);
 
 extern void movie_open(void);
 extern void movie_close(void);
-extern void movie_setup(char *name,int event_id);
+extern bool movie_setup(char *name,int event_id,char *err_str);
 extern void movie_run(void);
 
 extern void error_open(void);

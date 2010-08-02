@@ -35,7 +35,6 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -46,7 +45,6 @@ JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef 
 JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	interface_interaction_functions[]={
-							{"startStory",			js_interface_interaction_start_story_func,				kJSPropertyAttributeDontDelete},
 							{"startTitle",			js_interface_interaction_start_title_func,				kJSPropertyAttributeDontDelete},
 							{"startMovie",			js_interface_interaction_start_movie_func,				kJSPropertyAttributeDontDelete},
 							{"startChooser",		js_interface_interaction_start_chooser_func,			kJSPropertyAttributeDontDelete},
@@ -86,45 +84,34 @@ JSObjectRef script_add_interface_interaction_object(JSContextRef cx,JSObjectRef 
       
 ======================================================= */
 
-JSValueRef js_interface_interaction_start_story_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
-{
-	char			name[name_str_len];
-
-	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-
-	script_value_to_string(cx,argv[0],name,name_str_len);
-	
-	story_setup(name,script_value_to_int(cx,argv[1]));
-	server.next_state=gs_story;
-	
-	return(script_null_to_value(cx));
-}
-
 JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			name[name_str_len],sound_name[name_str_len];
+	char			name[name_str_len],sound_name[name_str_len],
+					err_str[256];
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_value_to_string(cx,argv[1],sound_name,name_str_len);
 	
-	title_setup("Titles",name,sound_name,script_value_to_int(cx,argv[2]));
-	server.next_state=gs_title;
+	if (!title_setup("Titles",name,sound_name,script_value_to_int(cx,argv[2]),err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
 	
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	
-	movie_setup(name,script_value_to_int(cx,argv[1]));
-	server.next_state=gs_movie;
+	if (!movie_setup(name,script_value_to_int(cx,argv[1]),err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
 	
 	return(script_null_to_value(cx));
 }
@@ -132,7 +119,7 @@ JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef
 JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,cnt;
-	char			name[name_str_len],
+	char			name[name_str_len],err_str[256],
 					sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
 
 	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
@@ -157,8 +144,9 @@ JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectR
 
 		// start chooser
 
-	chooser_setup(name,(char*)sub_txt);
-	server.next_state=gs_chooser;
+	if (!chooser_setup(name,(char*)sub_txt,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
 	
 	return(script_null_to_value(cx));
 }

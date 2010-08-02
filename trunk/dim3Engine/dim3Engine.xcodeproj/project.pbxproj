@@ -317,7 +317,6 @@
 		F5DD1A8209085BC600721649 /* join.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7909085BC600721649 /* join.c */; };
 		F5DD1A8309085BC600721649 /* menu_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7A09085BC600721649 /* menu_draw.c */; };
 		F5DD1A8409085BC600721649 /* movie.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7B09085BC600721649 /* movie.c */; };
-		F5DD1A8609085BC600721649 /* story.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7D09085BC600721649 /* story.c */; };
 		F5DD1A8709085BC600721649 /* title.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7E09085BC600721649 /* title.c */; };
 		F5DD1A8C09085C2500721649 /* cursor.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A8809085C2500721649 /* cursor.c */; };
 		F5DD1A8D09085C2500721649 /* elemets.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A8909085C2500721649 /* elemets.c */; };
@@ -696,7 +695,6 @@
 		F5DD1A7909085BC600721649 /* join.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = join.c; path = Sources_View/join.c; sourceTree = "<group>"; };
 		F5DD1A7A09085BC600721649 /* menu_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu_draw.c; path = Sources_View/menu_draw.c; sourceTree = "<group>"; };
 		F5DD1A7B09085BC600721649 /* movie.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = movie.c; path = Sources_View/movie.c; sourceTree = "<group>"; };
-		F5DD1A7D09085BC600721649 /* story.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = story.c; path = Sources_View/story.c; sourceTree = "<group>"; };
 		F5DD1A7E09085BC600721649 /* title.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = title.c; path = Sources_View/title.c; sourceTree = "<group>"; };
 		F5DD1A8809085C2500721649 /* cursor.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cursor.c; path = Sources_View/cursor.c; sourceTree = "<group>"; };
 		F5DD1A8909085C2500721649 /* elemets.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = elemets.c; path = Sources_View/elemets.c; sourceTree = "<group>"; };
@@ -1362,7 +1360,6 @@
 				F5DD1A7909085BC600721649 /* join.c */,
 				26D109600DAC797D006666F2 /* host.c */,
 				F5DD1A7E09085BC600721649 /* title.c */,
-				F5DD1A7D09085BC600721649 /* story.c */,
 				F5DD1A7B09085BC600721649 /* movie.c */,
 				26BE14270F44FA57008DB7DB /* score_limit.c */,
 				F5FD1E470CDECD9500CB5AC7 /* error.c */,
@@ -1701,7 +1698,6 @@
 				F5DD1A8209085BC600721649 /* join.c in Sources */,
 				F5DD1A8309085BC600721649 /* menu_draw.c in Sources */,
 				F5DD1A8409085BC600721649 /* movie.c in Sources */,
-				F5DD1A8609085BC600721649 /* story.c in Sources */,
 				F5DD1A8709085BC600721649 /* title.c in Sources */,
 				F5DD1A8C09085C2500721649 /* cursor.c in Sources */,
 				F5DD1A8D09085C2500721649 /* elemets.c in Sources */,

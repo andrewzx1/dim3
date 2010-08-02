@@ -133,7 +133,7 @@ extern char light_type_str[][32];
 //
 
 #define mi_none												0
-#define mi_story											1
+#define mi_chooser											1
 #define mi_title											2
 #define mi_movie											3
 
