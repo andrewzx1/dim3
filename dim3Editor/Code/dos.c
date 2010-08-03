@@ -46,10 +46,9 @@ map_type						map;
 
 void redraw_windows(void)
 {
-        // center
+        // no selection
         
 	select_clear();
-	main_wind_center_position_in_map();
 	
 		// redraw
 	

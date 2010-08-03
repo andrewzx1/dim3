@@ -60,13 +60,12 @@ void piece_create_get_spot(d3pnt *pnt)
 		// center in view if no selection
 		
 	if (select_count()==0) {
-		walk_view_get_position(&pnt);
+		walk_view_get_position(pnt);
 	}
 	
 		// find place in selection
 		
 	else {
-
 		select_get_extent(&min,&max);
 		pnt->x=(min.x+max.x)>>1;
 		pnt->z=(min.z+max.z)>>1;
