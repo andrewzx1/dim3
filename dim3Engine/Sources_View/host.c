@@ -668,7 +668,7 @@ void host_click(void)
 
 void host_run(void)
 {
-	gui_draw(1.0f,TRUE);
+	gui_draw(1.0f,TRUE,FALSE);
 	host_click();
 	host_keyboard();
 }

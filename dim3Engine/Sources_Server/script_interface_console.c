@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "consoles.h"
+#include "inputs.h"
 
 extern char				console_input_str[max_console_txt_sz];
 extern view_type		view;

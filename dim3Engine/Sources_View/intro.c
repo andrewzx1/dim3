@@ -328,7 +328,7 @@ void intro_key(void)
 
 void intro_run(void)
 {
-	gui_draw(1.0f,TRUE);
+	gui_draw(1.0f,TRUE,FALSE);
 	intro_click();
 	intro_key();
 }
