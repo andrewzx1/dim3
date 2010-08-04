@@ -240,7 +240,7 @@ void gui_draw_dialog(void)
       
 ======================================================= */
 
-void gui_draw(float background_alpha,bool cursor)
+void gui_draw(float background_alpha,bool cursor,bool no_swap)
 {
 	gl_frame_clear(FALSE);
 
@@ -269,7 +269,7 @@ void gui_draw(float background_alpha,bool cursor)
 
 		// end frame
 
-	gl_frame_swap();
+	if (!no_swap) gl_frame_swap();
 }
 
 void gui_draw_message(char *txt)

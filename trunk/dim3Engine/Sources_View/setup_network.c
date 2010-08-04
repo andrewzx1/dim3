@@ -503,7 +503,7 @@ void setup_network_click(void)
 
 void setup_network_run(void)
 {
-	gui_draw(1.0f,TRUE);
+	gui_draw(1.0f,TRUE,FALSE);
 	setup_network_keyboard();
 	setup_network_click();
 }

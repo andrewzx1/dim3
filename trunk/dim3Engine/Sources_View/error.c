@@ -108,7 +108,7 @@ void error_run(void)
 {
 	int				id;
 
-	gui_draw(1.0f,TRUE);
+	gui_draw(1.0f,TRUE,FALSE);
 		
 	id=gui_click();
 	if (id==-1) return;
