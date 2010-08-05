@@ -148,7 +148,7 @@ void title_run(void)
 
 		// run the GUI
 
-	gui_draw(alpha,FALSE,FALSE);
+	gui_draw(alpha,FALSE);
 	
 		// the input
 		

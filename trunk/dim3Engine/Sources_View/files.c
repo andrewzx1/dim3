@@ -429,7 +429,7 @@ void file_click(void)
 
 void file_run(void)
 {
-	gui_draw(1.0f,TRUE,FALSE);
+	gui_draw(1.0f,TRUE);
 	file_click();
 }
 

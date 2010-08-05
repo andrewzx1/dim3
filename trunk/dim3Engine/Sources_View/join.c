@@ -605,7 +605,7 @@ void join_activity_start(void)
 	element_enable(join_button_join_id,FALSE);
 	element_enable(join_button_cancel_id,FALSE);
 	
-	gui_draw(1.0f,FALSE,FALSE);
+	gui_draw(1.0f,FALSE);
 }
 
 void join_activity_complete(bool single,char *msg)
@@ -616,7 +616,7 @@ void join_activity_complete(bool single,char *msg)
 	if (!single) element_set_value(join_table_id,-1);
 	if (msg!=NULL) element_text_change(join_status_id,msg);
 	
-	gui_draw(1.0f,FALSE,FALSE);
+	gui_draw(1.0f,FALSE);
 }
 
 /* =======================================================
@@ -789,7 +789,7 @@ void join_click(void)
 
 void join_run(void)
 {
-	gui_draw(1.0f,TRUE,FALSE);
+	gui_draw(1.0f,TRUE);
 	join_click();
 }
 

@@ -831,7 +831,7 @@ void setup_game_run(void)
 	
 		// draw UI
 		
-	gui_draw(1.0f,TRUE,FALSE);
+	gui_draw(1.0f,TRUE);
 
 		// keyboard and clicking
 
