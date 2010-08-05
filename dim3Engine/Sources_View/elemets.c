@@ -45,7 +45,51 @@ SDL_mutex					*element_thread_lock;
 
 /* =======================================================
 
-      Initialize/Shutdown Elements
+      Element Models
+      
+======================================================= */
+
+model_draw* element_load_model(char *name,char *animate,float resize)
+{
+	char				err_str[256];
+	model_draw			*draw;
+	
+	draw=(model_draw*)malloc(sizeof(model_draw));
+	if (draw==NULL) return(NULL);
+	
+	strcpy(draw->name,name);
+	if (!model_draw_load(draw,"Interface","Element",err_str)) {
+		console_add_error(err_str);
+		free(draw);
+		return(NULL);
+	}
+	
+	fprintf(stdout,"loaded %s\n",name);
+	
+	draw->resize=resize;
+	
+	return(draw);
+}
+
+void element_free_model(element_type *element)
+{
+	int					n;
+	chooser_type		*chooser;
+	chooser_piece_type	*piece;
+	
+	if (element->setup.model.draw==NULL) return;
+	
+	
+	fprintf(stdout,"freed %s\n",element->setup.model.draw->name);
+	model_draw_dispose(element->setup.model.draw);
+	free(element->setup.model.draw);
+
+	element->setup.model.draw=NULL;
+}
+
+/* =======================================================
+
+      Elements Clear and Free
       
 ======================================================= */
 
@@ -88,12 +132,22 @@ void element_release_control_memory(void)
 			case element_type_text_box:
 				if (element->data!=NULL) free(element->data);
 				break;
+				
+			case element_type_model:
+				element_free_model(element);
+				break;
 		
 		}
 		
 		element++;
 	}
 }
+
+/* =======================================================
+
+      Initialize/Shutdown Elements
+      
+======================================================= */
 
 void element_initialize(void)
 {
@@ -737,6 +791,30 @@ void element_info_field_add(char *str,char *value_str,int id,int x,int y)
 	strcpy(element->str,str);
 	strncpy(element->value_str,value_str,max_element_value_str_len);
 	element->value_str[max_element_value_str_len-1]=0x0;
+
+	SDL_mutexV(element_thread_lock);
+}
+
+void element_model_add(char *name,char *animate,float resize,int id,int x,int y)
+{
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_model;
+	
+	element->x=x;
+	element->y=y;
+	
+	element->selectable=FALSE;
+	element->enabled=TRUE;
+	element->hidden=FALSE;
+	
+	element->setup.model.draw=element_load_model(name,animate,resize);
 
 	SDL_mutexV(element_thread_lock);
 }
@@ -2715,6 +2793,89 @@ void element_draw_info_field(element_type *element)
 
 /* =======================================================
 
+      Model Elements
+      
+======================================================= */
+
+void element_draw_model(element_type *element)
+{
+// supergumba
+/*
+	int					n,k,t,yoff,model_idx;
+	float				ratio;
+	d3pnt				*pnt;
+	chooser_type		*chooser;
+	chooser_piece_type	*piece;
+	model_type			*mdl;
+	model_mesh_type		*mesh;
+	model_trig_type		*trig;
+	
+	chooser=&hud.choosers[chooser_idx];
+	
+		// pieces
+
+	piece=chooser->pieces;
+
+	for (n=0;n!=chooser->npiece;n++) {
+
+		piece=&chooser->pieces[n];
+		if (piece->type!=chooser_piece_type_model) continue;
+
+			// get model
+
+		model_idx=piece->data.model.draw->model_idx;
+		if (model_idx==-1) continue;
+
+		mdl=server.model_list.models[model_idx];
+		if (mdl==NULL) continue;
+
+			// setup drawing
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		ratio=((float)setup.screen.x_sz)/((float)setup.screen.y_sz);
+		gluPerspective(45.0,ratio,(float)100,(float)25000);
+		glScalef(-1.0f,-1.0f,-1.0f);
+
+		yoff=mdl->view_box.size.y/2;
+	//	glTranslatef(-((GLfloat)piece->x),-((GLfloat)(piece->y-yoff)),(GLfloat)1000);
+
+		glTranslatef(0,0,1000);
+	
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+	
+//	glRotatef(-ang_x,1.0f,0.0f,0.0f);
+//	glRotatef(angle_add(ang_y,180.0f),0.0f,1.0f,0.0f);
+
+		mesh=&mdl->meshes[0];
+
+glDisable(GL_DEPTH_TEST);
+
+		glColor4f(1.0f,0.5f,0.0f,1.0f);
+
+		glBegin(GL_TRIANGLES);
+
+		trig=mesh->trigs;
+
+		for (k=0;k!=mesh->ntrig;k++) {
+			for (t=0;t!=3;t++) {
+				pnt=&mesh->vertexes[trig->v[t]].pnt;
+				glVertex3i(pnt->x,pnt->y,pnt->z);
+			}
+
+			trig++;
+		}
+
+		glEnd();
+
+	}
+*/
+}
+
+/* =======================================================
+
       Draw Elements
       
 ======================================================= */
@@ -2817,6 +2978,9 @@ void element_draw_lock(bool cursor_hilite)
 				break;
 			case element_type_info_field:
 				element_draw_info_field(element);
+				break;
+			case element_type_model:
+				element_draw_model(element);
 				break;
 				
 		}

@@ -52,6 +52,7 @@ and can be sold or given away.
 #define element_type_color						10
 #define element_type_text_box					11
 #define element_type_info_field					12
+#define element_type_model						13
 
 //
 // GUI position mode
@@ -184,7 +185,11 @@ typedef struct		{
 						int						line_count,pos_y;
 						bool					scroll_up_ok,scroll_down_ok;
 					} element_text_box_type;
-					
+
+typedef struct		{
+						model_draw				*draw;
+					} element_model_type;
+
 typedef union		{
 						element_button_type		button;
 						element_text_type		text;
@@ -193,6 +198,7 @@ typedef union		{
 						element_table_type		table;
 						element_tab_type		tab;
 						element_text_box_type	text_box;
+						element_model_type		model;
 					} element_setup_type;
 
 typedef struct		{
@@ -389,7 +395,6 @@ typedef struct		{
 typedef struct		{
 						float					resize;
 						char					model_name[name_str_len],animate_name[name_str_len];
-						model_draw				*draw;
 					} chooser_model_type;
 
 typedef struct		{

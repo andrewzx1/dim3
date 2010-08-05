@@ -36,6 +36,8 @@ and can be sold or given away.
 #include "inputs.h"
 #include "video.h"
 
+int testz=100;		// supergumba
+
 extern server_type			server;
 extern js_type				js;
 extern hud_type				hud;
@@ -99,77 +101,6 @@ void chooser_text_substitute(char *init_str,char *sub_str,int max_len)
 
 /* =======================================================
 
-      Start and Stop Models
-      
-======================================================= */
-
-void chooser_init_models(void)
-{
-	int					n;
-	char				err_str[256];
-	model_draw			*draw;
-	chooser_type		*chooser;
-	chooser_piece_type	*piece;
-	
-	chooser=&hud.choosers[chooser_idx];
-
-		// initialize any models to draw in
-		// this chooser
-
-	piece=chooser->pieces;
-
-	for (n=0;n!=chooser->npiece;n++) {
-
-		if (piece->type==chooser_piece_type_model) {
-
-			piece->data.model.draw=NULL;
-
-			draw=(model_draw*)malloc(sizeof(model_draw));
-			if (draw!=NULL) {
-				strcpy(draw->name,piece->data.model.model_name);
-				if (!model_draw_load(draw,"Interface","Chooser",err_str)) {
-					console_add_error(err_str);
-					free(draw);
-				}
-				else {
-					piece->data.model.draw=draw;
-				}
-			}
-		}
-
-		piece++;
-	}
-}
-
-void chooser_free_models(void)
-{
-	int					n;
-	chooser_type		*chooser;
-	chooser_piece_type	*piece;
-	
-	chooser=&hud.choosers[chooser_idx];
-
-		// free any loaded models
-
-	piece=chooser->pieces;
-
-	for (n=0;n!=chooser->npiece;n++) {
-
-		if (piece->type==chooser_piece_type_model) {
-			if (piece->data.model.draw!=NULL) {
-				model_draw_dispose(piece->data.model.draw);
-				free(piece->data.model.draw);
-			}
-
-			piece->data.model.draw=NULL;
-		}
-
-		piece++;
-	}
-}
-
-/* =======================================================
-
       Chooser Operations
       
 ======================================================= */
@@ -219,6 +150,10 @@ void chooser_create_elements(void)
 					element_bitmap_add(path,0,piece->x,piece->y,piece->wid,piece->high,FALSE);
 				}
 				break;
+				
+			case chooser_piece_type_model:
+				element_model_add(piece->data.model.model_name,piece->data.model.animate_name,piece->data.model.resize,piece->id,piece->x,piece->y);
+				break;
 
 			case chooser_piece_type_button:
 				element_button_text_add(piece->data.button.name,piece->id,piece->x,piece->y,piece->wid,piece->high,element_pos_left,element_pos_top);
@@ -234,12 +169,10 @@ void chooser_open(void)
 {
 	gui_initialize(NULL,NULL);
 	chooser_create_elements();
-	chooser_init_models();
 }
 
 void chooser_close(void)
 {
-	chooser_free_models();
 	gui_shutdown();
 }
 
@@ -268,86 +201,6 @@ bool chooser_setup(char *name,char *sub_txt,char *err_str)
 	server.next_state=gs_chooser;
 	
 	return(TRUE);
-}
-
-/* =======================================================
-
-      Chooser Draw Models
-      
-======================================================= */
-
-void chooser_model_draw(void)
-{
-	int					n,k,t,yoff,model_idx;
-	float				ratio;
-	d3pnt				*pnt;
-	chooser_type		*chooser;
-	chooser_piece_type	*piece;
-	model_type			*mdl;
-	model_mesh_type		*mesh;
-	model_trig_type		*trig;
-	
-	chooser=&hud.choosers[chooser_idx];
-	
-		// pieces
-
-	piece=chooser->pieces;
-
-	for (n=0;n!=chooser->npiece;n++) {
-
-		piece=&chooser->pieces[n];
-		if (piece->type!=chooser_piece_type_model) continue;
-
-			// get model
-
-		model_idx=piece->data.model.draw->model_idx;
-		if (model_idx==-1) continue;
-
-		mdl=server.model_list.models[model_idx];
-		if (mdl==NULL) continue;
-
-			// setup drawing
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-
-		ratio=((float)setup.screen.x_sz)/((float)setup.screen.y_sz);
-		gluPerspective(45.0,ratio,(float)100,(float)25000);
-	//	glScalef(1.0f,1.0f,1.0f);
-
-		yoff=mdl->view_box.size.y/2;
-	//	glTranslatef(-((GLfloat)piece->x),-((GLfloat)(piece->y-yoff)),(GLfloat)1000);
-
-		glTranslatef(0,0,1000);
-	
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-	
-//	glRotatef(-ang_x,1.0f,0.0f,0.0f);
-//	glRotatef(angle_add(ang_y,180.0f),0.0f,1.0f,0.0f);
-
-		mesh=&mdl->meshes[0];
-
-glDisable(GL_DEPTH_TEST);
-
-		glColor4f(1.0f,0.5f,0.0f,1.0f);
-
-		glBegin(GL_TRIANGLES);
-
-		trig=mesh->trigs;
-
-		for (k=0;k!=mesh->ntrig;k++) {
-			for (t=0;t!=3;t++) {
-				pnt=&mesh->vertexes[trig->v[t]].pnt;
-				glVertex3i(pnt->x,pnt->y,pnt->z);
-			}
-
-			trig++;
-		}
-
-		glEnd();
-
-	}
 }
 
 /* =======================================================
@@ -419,9 +272,6 @@ void chooser_click(void)
 
 void chooser_run(void)
 {
-	gui_draw(1.0f,TRUE,TRUE);
-	chooser_model_draw();
-	gl_frame_swap();
-
+	gui_draw(1.0f,TRUE);
 	chooser_click();
 }
