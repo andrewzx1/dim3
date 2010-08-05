@@ -85,7 +85,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 	
 			// hilited meshes
 
-		if (mesh->no_lighting) {
+		if ((mesh->no_lighting) || (draw->no_lighting)) {
 
 			if (mesh->tintable) {
 				for (k=0;k!=mesh->nvertex;k++) {
@@ -496,7 +496,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 		
 			// run the shader
 		
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,(mesh->no_lighting),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,((mesh->no_lighting)||(draw->no_lighting)),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 			
@@ -655,7 +655,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 		
 			// run the shader
 			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,(mesh->no_lighting),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,((mesh->no_lighting)||(draw->no_lighting)),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 	}
 	
@@ -725,7 +725,7 @@ void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
       
 ======================================================= */
 
-void render_model_setup(model_draw *draw)
+void render_model_setup(model_draw *draw,int tick)
 {
 	int					n,t,frame;
 	float				alpha;
@@ -741,7 +741,7 @@ void render_model_setup(model_draw *draw)
 
 		// setup animated textures
 
-	model_setup_animated_textures(mdl,game_time_get());
+	model_setup_animated_textures(mdl,tick);
 
 		// setup the rendering mesh mask
 
@@ -839,9 +839,9 @@ void render_model_build_vertex_lists(model_draw *draw)
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
 
 			// build model vertex list
-			
+
 		model_create_draw_vertexes(mdl,n,&draw->setup);
-		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize,&draw->setup);
+		if (draw->resize!=1.0f) model_resize_draw_vertex(mdl,n,draw->resize,&draw->setup);
 		if (draw->flip_x) model_flip_draw_vertex(mdl,n,&draw->setup);
 
 			// translate vertex to view

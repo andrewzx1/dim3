@@ -92,7 +92,7 @@ int model_find_animation_from_draw(model_draw *draw,char *name)
 	return(model_find_animate(server.model_list.models[draw->model_idx],name));
 }
 
-bool model_start_animation(model_draw *draw,char *name)
+bool model_start_animation(model_draw *draw,char *name,int tick)
 {
 	int							idx;
 	model_draw_animation		*draw_animation;
@@ -115,7 +115,7 @@ bool model_start_animation(model_draw *draw,char *name)
 
 		// set next animation
 
-	draw_animation->tick=game_time_get();
+	draw_animation->tick=tick;
 
 	draw_animation->animate_idx=idx;
 	draw_animation->animate_next_idx=-1;
@@ -178,7 +178,7 @@ bool model_cancel_animation(model_draw *draw,char *name)
 	return(TRUE);
 }
 
-bool model_change_animation(model_draw *draw,char *name)
+bool model_change_animation(model_draw *draw,char *name,int tick)
 {
 	int						idx;
 	model_draw_animation	*draw_animation;
@@ -186,7 +186,7 @@ bool model_change_animation(model_draw *draw,char *name)
 		// if not playing, then start new animation
 
 	draw_animation=&draw->animations[draw->script_animation_idx];
-	if (draw_animation->mode!=am_playing) return(model_start_animation(draw,name));
+	if (draw_animation->mode!=am_playing) return(model_start_animation(draw,name,tick));
 
 		// chain to next animation
 
@@ -198,7 +198,7 @@ bool model_change_animation(model_draw *draw,char *name)
 	return(TRUE);
 }
 
-bool model_interrupt_animation(model_draw *draw,char *name)
+bool model_interrupt_animation(model_draw *draw,char *name,int tick)
 {
 	int						old_animate_idx;
 	model_draw_animation	*draw_animation;
@@ -211,7 +211,7 @@ bool model_interrupt_animation(model_draw *draw,char *name)
 
 		// start interupted animation
 
-	if (!model_start_animation(draw,name)) return(FALSE);
+	if (!model_start_animation(draw,name,tick)) return(FALSE);
 
 		// old animation is chained to new one
 
@@ -226,9 +226,9 @@ bool model_interrupt_animation(model_draw *draw,char *name)
       
 ======================================================= */
 
-void model_run_animation_single(model_draw *draw,int animation_idx)
+void model_run_animation_single(model_draw *draw,int animation_idx,int tick)
 {
-	int						mode,tick,nxt_tick;
+	int						mode,nxt_tick;
 	model_type				*mdl;
 	model_animate_type		*animate;
  	model_draw_animation	*draw_animation;
@@ -254,7 +254,6 @@ void model_run_animation_single(model_draw *draw,int animation_idx)
 		// loop until all pose changes for this
 		// time frame are accomplished
 	
-	tick=game_time_get();
 	nxt_tick=draw_animation->tick+animate->pose_moves[draw_animation->pose_move_idx].msec;
 	
 	while (tick>=nxt_tick) {
@@ -324,7 +323,7 @@ void model_run_animation_single(model_draw *draw,int animation_idx)
 	}
 }
 
-void model_run_animation(model_draw *draw)
+void model_run_animation(model_draw *draw,int tick)
 {
 	int						n;
    
@@ -335,7 +334,7 @@ void model_run_animation(model_draw *draw)
 		// run all the animations
 
 	for (n=0;n!=max_model_blend_animation;n++) {
-		model_run_animation_single(draw,n);
+		model_run_animation_single(draw,n,tick);
 	}
 }
 
@@ -425,7 +424,7 @@ model_pose_move_type* model_calc_animation_second_pose(model_type *mdl,model_dra
       
 ======================================================= */
 
-void model_calc_animation_poses(model_draw *draw)
+void model_calc_animation_poses(model_draw *draw,int tick)
 {
 	int						n,k;
 	model_type				*mdl;
@@ -490,7 +489,7 @@ void model_calc_animation_poses(model_draw *draw)
 			setup_pose->factor=1.0f;
 		}
 		else {
-			k=(1000*(game_time_get()-animation->tick))/pose_move_1->msec;
+			k=(1000*(tick-animation->tick))/pose_move_1->msec;
 			if (k<0) k=0;
 			if (k>1000) k=1000;
 
@@ -553,9 +552,9 @@ void model_calc_animation_move_sway(model_draw *draw)
 	setup->sway.z=pose_move_2->sway.z+((pose_move_1->sway.z-pose_move_2->sway.z)*pose_factor);
 }
 
-void model_calc_animation(model_draw *draw)
+void model_calc_animation(model_draw *draw,int tick)
 {
-	model_calc_animation_poses(draw);
+	model_calc_animation_poses(draw,tick);
 	model_calc_animation_move_sway(draw);
 }
 

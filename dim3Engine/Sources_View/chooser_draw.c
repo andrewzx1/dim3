@@ -30,13 +30,9 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
-#include "models.h"
 #include "interfaces.h"
-#include "consoles.h"
 #include "inputs.h"
 #include "video.h"
-
-int testz=100;		// supergumba
 
 extern server_type			server;
 extern js_type				js;

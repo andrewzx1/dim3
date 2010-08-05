@@ -251,8 +251,6 @@ void gui_draw(float background_alpha,bool cursor)
 
 		// elements
 
-	gl_2D_view_interface();
-
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	glEnable(GL_BLEND);
@@ -285,8 +283,6 @@ void gui_draw_message(char *txt)
 
 		// messages
 
-	gl_2D_view_interface();
-
 	element_draw(FALSE);
 	
 		// get band size
@@ -302,9 +298,9 @@ void gui_draw_message(char *txt)
 	
 		// draw the band
 		
+	gl_2D_view_interface();
+
 	view_draw_next_vertex_object_2D_color_quad(&hud.color.control_header,1.0f,lx,rx,ty,by);
-	
-		// draw the text
 		
 	x=hud.scale_x>>1;
 	y=hud.scale_y>>1;

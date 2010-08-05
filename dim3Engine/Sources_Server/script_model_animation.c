@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "models.h"
+#include "timing.h"
 
 JSValueRef js_model_animation_get_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_animation_get_currentAnimationName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -171,7 +172,7 @@ JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObje
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	
-	if (!model_start_animation(draw,name)) {
+	if (!model_start_animation(draw,name,game_time_get())) {
 		*exception=js_model_animation_name_exception(cx,name);
 	}
 	
@@ -229,7 +230,7 @@ JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObj
 	draw=script_find_model_draw();
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	if (!model_change_animation(draw,name)) {
+	if (!model_change_animation(draw,name,game_time_get())) {
 		*exception=js_model_animation_name_exception(cx,name);
 	}
 	
@@ -246,7 +247,7 @@ JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JS
 	draw=script_find_model_draw();
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	if (!model_interrupt_animation(draw,name)) {
+	if (!model_interrupt_animation(draw,name,game_time_get())) {
 		*exception=js_model_animation_name_exception(cx,name);
 	}
 	
@@ -263,13 +264,13 @@ JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef
 	draw=script_find_model_draw();
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	if (!model_start_animation(draw,name)) {
+	if (!model_start_animation(draw,name,game_time_get())) {
 		*exception=js_model_animation_name_exception(cx,name);
 		return(script_null_to_value(cx));
 	}
 
 	script_value_to_string(cx,argv[1],name,name_str_len);
-	if (!model_change_animation(draw,name)) {
+	if (!model_change_animation(draw,name,game_time_get())) {
 		*exception=js_model_animation_name_exception(cx,name);
 		return(script_null_to_value(cx));
 	}

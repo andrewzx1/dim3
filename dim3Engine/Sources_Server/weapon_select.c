@@ -535,7 +535,7 @@ void weapon_zoom_key(obj_type *obj,weapon_type *weap)
 
 void weapon_run_hand(obj_type *obj)
 {
-    int					weap_mode,swap_tick;
+    int					weap_mode,tick,swap_tick;
 	weapon_type			*weap;
 	
 		// is player object in
@@ -554,13 +554,15 @@ void weapon_run_hand(obj_type *obj)
 	model_draw_setup_weapon(obj,weap,FALSE,FALSE);
     
         // model animations
+
+	tick=game_time_get();
        
-	model_run_animation(&weap->draw);
+	model_run_animation(&weap->draw,tick);
 	model_fade_run(&weap->draw);
 	model_mesh_fade_run(&weap->draw);
 
 	if ((weap->dual.on) && (weap->dual.active)) {
-		model_run_animation(&weap->draw_dual);
+		model_run_animation(&weap->draw_dual,tick);
 		model_fade_run(&weap->draw_dual);
 		model_mesh_fade_run(&weap->draw_dual);
 	}
