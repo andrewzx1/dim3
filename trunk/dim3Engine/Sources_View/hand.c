@@ -34,16 +34,12 @@ and can be sold or given away.
 #include "consoles.h"
 #include "interfaces.h"
 #include "video.h"
+#include "timing.h"
 
 extern map_type				map;
 extern camera_type			camera;
 extern server_type			server;
 extern view_type			view;
-
-extern void render_model_setup(model_draw *draw);
-extern void render_model_build_vertex_lists(model_draw *draw);
-extern void render_model_opaque(model_draw *draw);
-extern void render_model_transparent(model_draw *draw);
 
 /* =======================================================
 
@@ -53,6 +49,7 @@ extern void render_model_transparent(model_draw *draw);
 
 void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 {
+	int				tick;
     model_draw		*draw;
 	model_type		*mdl;
 	
@@ -78,14 +75,16 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 		// regular weapon model
+
+	tick=game_time_get();
 	
 	model_draw_setup_clear(mdl,&draw->setup);
 	model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 
-	model_calc_animation(draw);
+	model_calc_animation(draw,tick);
 	model_calc_draw_bones(draw);
 	
-	render_model_setup(draw);
+	render_model_setup(draw,tick);
 	render_model_build_vertex_lists(draw);
 	render_model_opaque(draw);
 	render_model_transparent(draw);
@@ -98,10 +97,10 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 		model_draw_setup_clear(mdl,&draw->setup);
 		model_draw_setup_weapon(obj,weap,FALSE,TRUE);
 
-		model_calc_animation(draw);
+		model_calc_animation(draw,tick);
 		model_calc_draw_bones(draw);
 		
-		render_model_setup(draw);
+		render_model_setup(draw,tick);
 		render_model_build_vertex_lists(draw);
 		render_model_opaque(draw);
 		render_model_transparent(draw);

@@ -66,6 +66,8 @@ void cursor_draw(void)
 {
 	int				x,y,sz,lft,top,rgt,bot;
 	GLuint			gl_id;
+
+	gl_2D_view_interface();
 	
 		// get cursor position
 		

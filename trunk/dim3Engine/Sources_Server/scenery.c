@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "models.h"
 #include "consoles.h"
+#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -156,6 +157,6 @@ void scenery_start(void)
 			
 			// start scenery animation
 			
-		if (map_scenery->animation_name[0]!=0x0) model_start_animation(&obj->draw,map_scenery->animation_name);
+		if (map_scenery->animation_name[0]!=0x0) model_start_animation(&obj->draw,map_scenery->animation_name,game_time_get());
 	}
 }

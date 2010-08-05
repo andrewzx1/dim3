@@ -30,10 +30,14 @@ and can be sold or given away.
 #endif
 
 #include "video.h"
+#include "models.h"
+#include "consoles.h"
 #include "inputs.h"
+#include "timing.h"
 
 extern bool					game_app_active;
 
+extern server_type			server;
 extern hud_type				hud;
 extern setup_type			setup;
 
@@ -64,23 +68,17 @@ model_draw* element_load_model(char *name,char *animate,float resize)
 		return(NULL);
 	}
 	
-	fprintf(stdout,"loaded %s\n",name);
-	
 	draw->resize=resize;
+
+	model_start_animation(draw,animate,game_time_get_raw());
 	
 	return(draw);
 }
 
 void element_free_model(element_type *element)
 {
-	int					n;
-	chooser_type		*chooser;
-	chooser_piece_type	*piece;
-	
 	if (element->setup.model.draw==NULL) return;
-	
-	
-	fprintf(stdout,"freed %s\n",element->setup.model.draw->name);
+
 	model_draw_dispose(element->setup.model.draw);
 	free(element->setup.model.draw);
 
@@ -2799,79 +2797,50 @@ void element_draw_info_field(element_type *element)
 
 void element_draw_model(element_type *element)
 {
-// supergumba
-/*
-	int					n,k,t,yoff,model_idx;
-	float				ratio;
-	d3pnt				*pnt;
-	chooser_type		*chooser;
-	chooser_piece_type	*piece;
+	int					tick,model_idx;
 	model_type			*mdl;
-	model_mesh_type		*mesh;
-	model_trig_type		*trig;
+	model_draw			*draw;
+
+		// get model
+
+	draw=element->setup.model.draw;
+
+	model_idx=draw->model_idx;
+	if (model_idx==-1) return;
+
+	mdl=server.model_list.models[model_idx];
+	if (mdl==NULL) return;
 	
-	chooser=&hud.choosers[chooser_idx];
-	
-		// pieces
+		// setup 3D drawing
 
-	piece=chooser->pieces;
+	gl_3D_view_interface_model();
 
-	for (n=0;n!=chooser->npiece;n++) {
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
-		piece=&chooser->pieces[n];
-		if (piece->type!=chooser_piece_type_model) continue;
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
-			// get model
+		// setup drawing
 
-		model_idx=piece->data.model.draw->model_idx;
-		if (model_idx==-1) continue;
+	tick=game_time_get_raw();
 
-		mdl=server.model_list.models[model_idx];
-		if (mdl==NULL) continue;
+	model_run_animation(draw,tick);
+	model_draw_setup_interface_models(mdl,draw,element->x,element->y);
 
-			// setup drawing
+		// draw model
 
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
+	model_calc_animation(draw,tick);
+	model_calc_draw_bones(draw);
+	render_model_setup(draw,tick);
+	render_model_build_vertex_lists(draw);
+	render_model_opaque(draw);
+	render_model_transparent(draw);
 
-		ratio=((float)setup.screen.x_sz)/((float)setup.screen.y_sz);
-		gluPerspective(45.0,ratio,(float)100,(float)25000);
-		glScalef(-1.0f,-1.0f,-1.0f);
+		// restore 2D drawing
 
-		yoff=mdl->view_box.size.y/2;
-	//	glTranslatef(-((GLfloat)piece->x),-((GLfloat)(piece->y-yoff)),(GLfloat)1000);
+	glDisable(GL_DEPTH_TEST);
 
-		glTranslatef(0,0,1000);
-	
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-	
-//	glRotatef(-ang_x,1.0f,0.0f,0.0f);
-//	glRotatef(angle_add(ang_y,180.0f),0.0f,1.0f,0.0f);
-
-		mesh=&mdl->meshes[0];
-
-glDisable(GL_DEPTH_TEST);
-
-		glColor4f(1.0f,0.5f,0.0f,1.0f);
-
-		glBegin(GL_TRIANGLES);
-
-		trig=mesh->trigs;
-
-		for (k=0;k!=mesh->ntrig;k++) {
-			for (t=0;t!=3;t++) {
-				pnt=&mesh->vertexes[trig->v[t]].pnt;
-				glVertex3i(pnt->x,pnt->y,pnt->z);
-			}
-
-			trig++;
-		}
-
-		glEnd();
-
-	}
-*/
+	gl_2D_view_interface();
 }
 
 /* =======================================================
@@ -2884,6 +2853,10 @@ void element_draw_lock(bool cursor_hilite)
 {
 	int					n,id,x,y;
 	element_type		*element;
+
+		// setup drawing
+
+	gl_2D_view_interface();
 	
 		// get element under cursor
 		// only works if app active
@@ -3420,6 +3393,32 @@ bool element_has_table_check(int id)
 				break;
 			}
 		}
+	}
+	
+	SDL_mutexV(element_thread_lock);
+
+	return(hit);
+}
+
+/* =======================================================
+
+      Models
+      
+======================================================= */
+
+bool element_replace_model(int id,char *name,char *animate,float resize)
+{
+	bool			hit;
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	hit=FALSE;
+	element=element_find(id);
+
+	if (element!=NULL) {
+		element_free_model(element);
+		element->setup.model.draw=element_load_model(name,animate,resize);
 	}
 	
 	SDL_mutexV(element_thread_lock);

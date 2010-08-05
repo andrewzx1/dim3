@@ -150,6 +150,28 @@ void gl_2D_view_interface(void)
 
 /* =======================================================
 
+      Pseudo 3D Model Projections (for models in interface)
+      
+======================================================= */
+
+void gl_3D_view_interface_model()
+{
+	float			ratio;
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	ratio=((float)setup.screen.x_sz)/((float)setup.screen.y_sz);
+	gluPerspective(45.0,ratio,(float)1000,(float)21000);
+	glScalef(-1.0f,-1.0f,-1.0f);
+	glTranslatef(0.0f,0.0f,5000.0f);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+/* =======================================================
+
       Start and End a Drawing Session
       
 ======================================================= */

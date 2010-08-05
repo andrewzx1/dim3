@@ -274,7 +274,7 @@ void run_objects_no_slice(void)
 		if (!obj->hidden) {
 			
 			model_draw_setup_object(obj);
-			model_run_animation(&obj->draw);
+			model_run_animation(&obj->draw,game_time_get());
 
 			if (!obj->scenery.on) {
 				model_fade_run(&obj->draw);
@@ -345,7 +345,7 @@ void run_projectiles_no_slice(void)
 		if (!proj->on) continue;
 	
 		model_draw_setup_projectile(proj);
-		model_run_animation(&proj->draw);
+		model_run_animation(&proj->draw,game_time_get());
 		model_fade_run(&proj->draw);
 		model_mesh_fade_run(&proj->draw);
 	}

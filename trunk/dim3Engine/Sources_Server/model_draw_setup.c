@@ -40,6 +40,7 @@ extern server_type			server;
 extern view_type			view;
 extern camera_type			camera;
 extern map_type				map;
+extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern hud_type				hud;
 
@@ -122,6 +123,10 @@ void model_draw_setup_object(obj_type *obj)
 	draw->pnt.x=obj->pnt.x+draw->offset.x;
 	draw->pnt.z=obj->pnt.z+draw->offset.z;
 	draw->pnt.y=obj->pnt.y+draw->offset.y;
+
+		// regular lighting
+
+	draw->no_lighting=FALSE;
 
 		// regular drawing in 3D space
 
@@ -279,6 +284,10 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	draw->pnt.y=(int)fy+obj->pnt.y;
 	draw->pnt.z=((int)fz+obj->pnt.z)-obj->camera_z_adjust;
 
+		// regular lighting
+
+	draw->no_lighting=FALSE;
+
 		// weapons need rotation fixes
 		// as they are rendered without rotation in fpp
 		// we need to remember the rotation they would
@@ -380,6 +389,10 @@ void model_draw_setup_projectile(proj_type *proj)
 	draw->pnt.z=proj->pnt.z+draw->offset.z;
 	draw->pnt.y=proj->pnt.y+draw->offset.y;
 
+		// regular lighting
+
+	draw->no_lighting=FALSE;
+
 		// regular drawing in 3D space
 
 	draw->no_rot.on=FALSE;
@@ -440,6 +453,58 @@ void model_draw_setup_projectile(proj_type *proj)
 		// team tint
 
 	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
+}
+
+/* =======================================================
+
+      Model Draw Setup For Interface Models
+      
+======================================================= */
+
+void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,int y)
+{
+	int					n;
+
+	model_draw_setup_clear(mdl,&draw->setup);
+
+	draw->on=TRUE;
+
+	draw->flip_x=FALSE;
+	draw->no_rot.on=FALSE;
+
+		// always hilite these
+
+	draw->no_lighting=TRUE;
+	draw->light_cache.count=0;
+
+	draw->alpha=1.0f;
+	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
+
+		// need to change point for
+		// resizes
+
+	draw->pnt.x=-(int)(((float)(x-(setup.screen.x_sz>>1)))*8.0f);
+	draw->pnt.y=(int)(((float)(y-(setup.screen.y_sz>>1)))*4.4f)+(int)((1.0f-draw->resize)*((float)(mdl->view_box.size.y/2)));
+	draw->pnt.z=0;
+
+		// face forward
+
+	draw->setup.ang.x=draw->setup.ang.y=draw->setup.ang.z=0.0f;
+
+		// only draw first mesh
+
+	draw->mesh_mask=0x1;
+
+		// fix any animation or frames
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		draw->meshes[n].fade.on=FALSE;
+	}
+
+	for (n=0;n!=max_model_texture;n++) {
+		draw->meshes[0].materials[n].frame=0;
+		draw->cur_texture_frame[n]=0;
+	}
 }
 
 /* =======================================================

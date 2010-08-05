@@ -86,6 +86,7 @@ extern void element_tab_add(char *tab_list,int value,int id,int ntab);
 extern void element_color_add(char *str,int value,int id,int x,int y,bool selectable);
 extern void element_text_box_add(char *data,int id,int x,int y,int wid,int high);
 extern void element_info_field_add(char *str,char *value_str,int id,int x,int y);
+extern void element_model_add(char *name,char *animate,float resize,int id,int x,int y);
 
 extern int element_get_selected(void);
 
@@ -104,6 +105,7 @@ extern void element_set_bitmap(int id,char *path);
 extern void element_set_table_checkbox(int id,int idx,bool on);
 extern bool element_get_table_checkbox(int id,int idx);
 extern bool element_has_table_check(int id);
+extern bool element_replace_model(int id,char *name,char *animate,float resize);
 extern int element_get_scroll_position(int id);
 extern void element_set_scroll_position(int id,int pos);
 extern void element_make_selection_visible(int id);

@@ -44,6 +44,7 @@ and can be sold or given away.
 #define ctrl_network_show_names_id			11
 #define ctrl_color_id						12
 #define ctrl_character_id					13
+#define ctrl_character_model_id				14
 
 #define ctrl_network_host_id				20
 #define ctrl_network_host_name_id			21
@@ -112,7 +113,7 @@ void setup_network_create_host_list(void)
 
 void setup_network_player_pane(void)
 {
-	int						x,y,wid,high,margin,padding,
+	int						x,y,wid,high,margin,padding,model_wid,
 							control_y_add,control_y_sz;
 	element_column_type		cols[1];
 
@@ -139,30 +140,39 @@ void setup_network_player_pane(void)
 	y+=control_y_add;
 	element_color_add("Color",setup.network.tint_color_idx,ctrl_color_id,x,y,TRUE);
 	
+		// is there a character control?
+
+	if (hud.character.ncharacter==0) return;
+	
 		// character table
+		
+	x=margin+padding;
+	y+=padding;
 
-	if (hud.character.ncharacter!=0) {
+	wid=hud.scale_x-((margin+padding)*2);
+	high=(int)(((float)hud.scale_y)*0.85f)-y;
+
+	strcpy(cols[0].name,"Characters");
+	cols[0].percent_size=1.0f;
+
+	element_table_add(cols,NULL,ctrl_character_id,1,x,y,wid,high,FALSE,element_table_bitmap_data);
+
+		// fill and select table
+
+	setup_network_fill_character_table();
+
+	element_set_value(ctrl_character_id,setup.network.character_idx);
+	element_make_selection_visible(ctrl_character_id);
 	
-			// make table
-			
-		x=margin+padding;
-		y+=padding;
+		// character model
 
-		wid=hud.scale_x-((margin+padding)*2);
-		high=(int)(((float)hud.scale_y)*0.85f)-y;
+	model_wid=(int)(((float)hud.scale_x)*0.25f);
 
-		strcpy(cols[0].name,"Characters");
-		cols[0].percent_size=1.0f;
+//	x=10; // hud.scale_x-(((margin+padding)*2)+(model_wid>>1));
+//	x+=wid;
+	y+=high;
 
-		element_table_add(cols,NULL,ctrl_character_id,1,x,y,wid,high,FALSE,element_table_bitmap_data);
-	
-			// fill and select table
-
-		setup_network_fill_character_table();
-
-		element_set_value(ctrl_character_id,setup.network.character_idx);
-		element_make_selection_visible(ctrl_character_id);
-	}
+	element_model_add("Player","Idle",1.0f,ctrl_character_model_id,x,y);
 }
 
 void setup_network_host_pane(void)
@@ -464,6 +474,8 @@ void setup_network_handle_click(int id)
 			
 		case ctrl_character_id:
 			setup.network.character_idx=element_get_value(ctrl_character_id);
+		//	bool element_replace_model(int id,char *model,char *animate,float resize)	// supergumba
+
 			break;
 
 		case ctrl_network_host_id:

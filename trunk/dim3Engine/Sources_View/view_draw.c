@@ -67,11 +67,6 @@ extern void fog_solid_start(void);
 extern void fog_solid_end(void);
 extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
-extern void render_model_setup(model_draw *draw);
-extern void render_model_build_vertex_lists(model_draw *draw);
-extern void render_model_opaque(model_draw *draw);
-extern void render_model_transparent(model_draw *draw);
-extern void render_model_target(model_draw *draw,d3col *col);
 extern void view_draw_liquid_tint(int liquid_idx);
 extern void view_draw_effect_tint(void);
 extern void view_draw_fade_draw(void);
@@ -262,7 +257,7 @@ void view_draw_models_final(void)
 
 				if ((shadow_on) && (proj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
-						render_model_setup(&proj->draw);
+						render_model_setup(&proj->draw,game_time_get());
 						render_model_build_vertex_lists(&proj->draw);
 						shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw);
 					}

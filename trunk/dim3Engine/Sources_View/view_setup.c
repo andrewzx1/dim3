@@ -51,7 +51,6 @@ extern server_type			server;
 extern setup_type			setup;
 
 extern bool fog_solid_on(void);
-extern void render_model_setup(model_draw *draw);
 extern bool mesh_inview(map_mesh_type *mesh);
 extern bool mesh_shadow_inview(map_mesh_type *mesh);
 extern bool model_inview(model_draw *draw);
@@ -594,9 +593,9 @@ void view_setup_objects(int tick)
 	
 			// setup model animations for models in view
 		
-		model_calc_animation(&obj->draw);
+		model_calc_animation(&obj->draw,tick);
 		model_calc_draw_bones(&obj->draw);
-		render_model_setup(&obj->draw);
+		render_model_setup(&obj->draw,tick);
 		
 			// setup held weapon model
 			// if player
@@ -650,9 +649,9 @@ void view_setup_projectiles(int tick)
 		
 			// setup model animations for models in view
 			
-		model_calc_animation(&proj->draw);
+		model_calc_animation(&proj->draw,tick);
 		model_calc_draw_bones(&proj->draw);
-		render_model_setup(&proj->draw);
+		render_model_setup(&proj->draw,tick);
 	}
 }
 
