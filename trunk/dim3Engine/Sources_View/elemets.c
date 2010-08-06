@@ -2804,6 +2804,7 @@ void element_draw_model(element_type *element)
 		// get model
 
 	draw=element->setup.model.draw;
+	if (draw==NULL) return;
 
 	model_idx=draw->model_idx;
 	if (model_idx==-1) return;

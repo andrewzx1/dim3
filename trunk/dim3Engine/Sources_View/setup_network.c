@@ -83,7 +83,7 @@ void setup_network_fill_character_table(void)
 	c=(char*)setup_character_list;
 	
 	for (n=0;n!=hud.character.ncharacter;n++) {
-		sprintf(c,"Models/%s;Portrait;%s",hud.character.characters[n].model_name,hud.character.characters[n].name);
+		sprintf(c,"%s",hud.character.characters[n].name);
 		c+=128;
 	}
 
@@ -113,7 +113,7 @@ void setup_network_create_host_list(void)
 
 void setup_network_player_pane(void)
 {
-	int						x,y,wid,high,margin,padding,model_wid,
+	int						x,y,wid,high,margin,padding,
 							control_y_add,control_y_sz;
 	element_column_type		cols[1];
 
@@ -123,7 +123,7 @@ void setup_network_player_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*3;
 	
-	x=(int)(((float)hud.scale_x)*0.35f);
+	x=(int)(((float)hud.scale_x)*0.26f);
 	
 	if (hud.character.ncharacter!=0) {
 		y=((margin+element_get_tab_control_high())+padding)+control_y_add;
@@ -149,13 +149,13 @@ void setup_network_player_pane(void)
 	x=margin+padding;
 	y+=padding;
 
-	wid=hud.scale_x-((margin+padding)*2);
+	wid=(int)(((float)hud.scale_x)*0.83f)-((margin+padding)*2);
 	high=(int)(((float)hud.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Characters");
 	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,NULL,ctrl_character_id,1,x,y,wid,high,FALSE,element_table_bitmap_data);
+	element_table_add(cols,NULL,ctrl_character_id,1,x,y,wid,high,FALSE,element_table_bitmap_none);
 
 		// fill and select table
 
@@ -166,13 +166,10 @@ void setup_network_player_pane(void)
 	
 		// character model
 
-	model_wid=(int)(((float)hud.scale_x)*0.25f);
+	x=(int)(((float)hud.scale_x)*0.85f);
+	y=(int)(((float)hud.scale_y)*0.8f);
 
-//	x=10; // hud.scale_x-(((margin+padding)*2)+(model_wid>>1));
-//	x+=wid;
-	y+=high;
-
-	element_model_add("Player","Idle",1.0f,ctrl_character_model_id,x,y);
+	element_model_add(hud.character.characters[setup.network.character_idx].model_name,"Idle",hud.character.characters[setup.network.character_idx].interface_resize,ctrl_character_model_id,x,y);
 }
 
 void setup_network_host_pane(void)
@@ -474,8 +471,7 @@ void setup_network_handle_click(int id)
 			
 		case ctrl_character_id:
 			setup.network.character_idx=element_get_value(ctrl_character_id);
-		//	bool element_replace_model(int id,char *model,char *animate,float resize)	// supergumba
-
+			element_replace_model(ctrl_character_model_id,hud.character.characters[setup.network.character_idx].model_name,"Idle",hud.character.characters[setup.network.character_idx].interface_resize);
 			break;
 
 		case ctrl_network_host_id:

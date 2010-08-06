@@ -382,6 +382,7 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 			}
 
 				// check if obscured by other meshes
+				// this only works in fpp
 
 			if (n!=start_mesh_idx) {
 				if (!view_visibility_check_mesh(start_mesh_idx,mesh)) continue;

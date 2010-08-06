@@ -1088,6 +1088,7 @@ void read_settings_interface(void)
 			xml_get_attribute_text(character_item_tag,"name",hud.character.characters[hud.character.ncharacter].name,name_str_len);
 			xml_get_attribute_text(character_item_tag,"model",hud.character.characters[hud.character.ncharacter].model_name,name_str_len);
 			xml_get_attribute_text(character_item_tag,"parameter",hud.character.characters[hud.character.ncharacter].param,name_str_len);
+			hud.character.characters[hud.character.ncharacter].interface_resize=xml_get_attribute_float_default(character_item_tag,"interface_resize",1.0f);
 			hud.character.ncharacter++;
 			character_item_tag=xml_findnextchild(character_item_tag);
 		}
