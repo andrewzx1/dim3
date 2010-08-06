@@ -57,7 +57,6 @@ and can be sold or given away.
 #include "setup_defs.h"
 #include "script_defs.h"
 #include "server_defs.h"
-#include "camera_defs.h"
 #include "view_defs.h"
 #include "network_defs.h"
 #include "interface_defs.h"

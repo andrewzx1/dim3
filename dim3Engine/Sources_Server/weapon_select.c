@@ -481,11 +481,11 @@ void weapon_zoom_enter(obj_type *obj,weapon_type *weap)
 
 		// save old camera mode and switch to fpp
 
-	obj->zoom_draw.old_camera_mode=camera.mode;
+	obj->zoom_draw.old_camera_mode=camera.setup.mode;
 	obj->zoom_draw.start_tick=game_time_get();
 	obj->zoom_draw.sway_reset=TRUE;
 	
-	camera.mode=cv_fpp;
+	camera.setup.mode=cv_fpp;
 
  	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_enter,0);
 }
@@ -502,7 +502,7 @@ void weapon_zoom_off(obj_type *obj,weapon_type *weap)
 {
 		// switch back to original camera mode
 
-	camera.mode=obj->zoom_draw.old_camera_mode;
+	camera.setup.mode=obj->zoom_draw.old_camera_mode;
 
 		// turn off zoom
 
@@ -542,7 +542,7 @@ void weapon_run_hand(obj_type *obj)
 		// right state?
 		
 	if (obj->hidden) return;
-	if (camera.mode!=cv_fpp) return;
+	if (camera.setup.mode!=cv_fpp) return;
 	
 		// find held weapon
 	

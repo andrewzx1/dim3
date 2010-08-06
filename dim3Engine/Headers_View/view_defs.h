@@ -285,6 +285,31 @@ typedef struct		{
 					} shader_type;
 
 //
+// camera structure
+//
+
+typedef struct		{
+						int									node_seek_idx,node_dest_idx,
+															msec,event_id;
+						float								speed,turn_speed;
+						bool								on,open_doors,in_freeze;
+					} camera_auto_walk_type;
+
+typedef struct		{
+						int									ang_end_tick;
+						bool								ang_on;
+						d3ang								ang;
+					} camera_auto_move_type;
+
+typedef struct		{
+						int									obj_idx;
+						d3ang								cur_chase_ang;
+						map_camera_type						setup;
+						camera_auto_walk_type				auto_walk;
+						camera_auto_move_type				auto_move;
+					} camera_type;
+
+//
 // view counts
 //
 

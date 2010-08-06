@@ -386,7 +386,7 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	
 			// draw the weapons in hand
 
-		if (camera.mode==cv_fpp) draw_weapon_hand(obj,weap);
+		if (camera.setup.mode==cv_fpp) draw_weapon_hand(obj,weap);
 	}
 
 		// draw the remote names, halos, crosshairs, and zoom masks
@@ -419,7 +419,7 @@ void view_draw(void)
 	camera_obj=server.obj_list.objs[camera.obj_idx];
 	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang);
 
-	view.render->camera.fov=camera.plane.fov;
+	view.render->camera.fov=camera.setup.plane.fov;
 	view.render->camera.flip=FALSE;
 	view.render->camera.under_liquid_idx=camera_check_liquid(obj,&view.render->camera.pnt);
 	view.render->camera.z_adjust=obj->camera_z_adjust;
@@ -428,7 +428,7 @@ void view_draw(void)
 
 		// camera adjustments
 	
-	if (camera.mode==cv_fpp) {
+	if (camera.setup.mode==cv_fpp) {
 		view_calculate_scope(obj,camera_obj);
 		view_calculate_recoil(obj);
 	}
@@ -490,7 +490,7 @@ bool view_draw_node(node_type *node)
 		view.render->camera.ang.z=angle_find(node->pnt.x,node->pnt.y,pnt.x,pnt.y);
 	}
 
-	view.render->camera.fov=camera.plane.fov;
+	view.render->camera.fov=camera.setup.plane.fov;
 	view.render->camera.flip=TRUE;
 	view.render->camera.under_liquid_idx=-1;
 	view.render->camera.z_adjust=0;

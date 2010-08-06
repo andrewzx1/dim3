@@ -80,7 +80,7 @@ JSObjectRef script_add_camera_setting_object(JSContextRef cx,JSObjectRef parent_
 
 JSValueRef js_camera_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,camera.mode+sd_camera_type_fpp));
+	return(script_int_to_value(cx,camera.setup.mode+sd_camera_type_fpp));
 }
 
 JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -96,7 +96,7 @@ JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx,JSObjectRef j_ob
 
 bool js_camera_setting_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.mode=script_value_to_int(cx,vp)-sd_camera_type_fpp;
+	camera.setup.mode=script_value_to_int(cx,vp)-sd_camera_type_fpp;
 	
 	return(TRUE);
 }

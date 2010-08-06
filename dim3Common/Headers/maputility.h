@@ -146,6 +146,15 @@ extern char light_type_str[][32];
 #define st_cube												2
 
 //
+// camera modes
+//
+
+#define cv_fpp												0
+#define cv_chase											1
+#define cv_static											2
+#define cv_chase_static										3
+
+//
 // liquids
 //
 
@@ -570,6 +579,35 @@ typedef struct		{
 					} map_fog_type;
 
 //
+// map camera
+//
+
+typedef struct		{
+						int									near_z,far_z,near_z_offset;
+						float								fov,aspect_ratio;
+					} map_camera_plane_type;
+
+typedef struct		{
+						int									distance;
+						float								track_speed;
+						d3ang								slop;
+					} map_camera_setup_chase_type;
+
+typedef struct		{
+						bool								follow;
+						char								attach_node[name_str_len];
+					} map_camera_setup_static_type;
+
+typedef struct		{
+						int									mode;
+						d3pnt								pnt;
+						d3ang								ang;
+						map_camera_plane_type				plane;
+						map_camera_setup_chase_type			chase;
+						map_camera_setup_static_type		c_static;
+					} map_camera_type;
+
+//
 // map editor structures
 //
 
@@ -609,6 +647,7 @@ typedef struct		{
 						map_rain_type						rain;
 						
 						map_settings_type					settings;
+						map_camera_type						camera;
 						map_media_type						media;
 						map_music_type						music;
 

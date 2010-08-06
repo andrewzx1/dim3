@@ -535,7 +535,7 @@ bool weapon_script_projectile_spawn_weapon_model(obj_type *obj,weapon_type *weap
 
 		// if not in fpp, auto-switch to center spawn
 
-	if (camera.mode!=cv_fpp) {
+	if (camera.setup.mode!=cv_fpp) {
 		return(weapon_script_projectile_spawn_center(obj,weap,proj_name,count,slop,off_ang,err_str));
 	}
 
@@ -557,7 +557,7 @@ bool weapon_script_projectile_spawn_weapon_barrel(obj_type *obj,weapon_type *wea
 
 		// if not in fpp, auto-switch to center spawn
 
-	if (camera.mode!=cv_fpp) {
+	if (camera.setup.mode!=cv_fpp) {
 		return(weapon_script_projectile_spawn_center(obj,weap,proj_name,count,slop,off_ang,err_str));
 	}
 	

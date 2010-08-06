@@ -62,17 +62,8 @@ void gl_3D_view(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	switch (camera.plane.type) {
-
-		case cp_fov:
-			ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.plane.aspect_ratio;
-			gluPerspective(view.render->camera.fov,ratio,camera.plane.near_z,camera.plane.far_z);
-			break;
-
-		case cp_frustum:
-			glFrustum(camera.plane.lft,camera.plane.rgt,camera.plane.top,camera.plane.bot,camera.plane.near_z,camera.plane.far_z);
-			break;
-	}
+	ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.setup.plane.aspect_ratio;
+	gluPerspective(view.render->camera.fov,ratio,camera.setup.plane.near_z,camera.setup.plane.far_z);
 	
 		// projection flips
 		
@@ -83,14 +74,14 @@ void gl_3D_view(void)
 		glScalef(-1.0f,-1.0f,-1.0f);
 	}
 	
-	glTranslatef(0.0f,0.0f,(float)(camera.plane.near_z_offset+view.render->camera.z_adjust));
+	glTranslatef(0.0f,0.0f,(float)(camera.setup.plane.near_z_offset+view.render->camera.z_adjust));
 
 		// default rotations
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	gluLookAt(view.render->camera.pnt.x,view.render->camera.pnt.y,(view.render->camera.pnt.z+camera.plane.near_z),view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,0.0f,1.0f,0.0f);
+	gluLookAt(view.render->camera.pnt.x,view.render->camera.pnt.y,(view.render->camera.pnt.z+camera.setup.plane.near_z),view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,0.0f,1.0f,0.0f);
 }
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
@@ -111,7 +102,7 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 		
 	matrix_rotate_zyx(&mat,ang_x,ang->y,0.0f);
 	fx=fy=0.0f;
-	fz=-((float)camera.plane.near_z);
+	fz=-((float)camera.setup.plane.near_z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	if (pnt==NULL) {

@@ -86,7 +86,7 @@ JSObjectRef script_add_camera_static_position_object(JSContextRef cx,JSObjectRef
 
 JSValueRef js_camera_static_position_get_follow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_bool_to_value(cx,camera.static_follow));
+	return(script_bool_to_value(cx,camera.setup.c_static.follow));
 }
 
 JSValueRef js_camera_static_position_get_walkTurnSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -102,7 +102,7 @@ JSValueRef js_camera_static_position_get_walkTurnSpeed(JSContextRef cx,JSObjectR
 
 bool js_camera_static_position_set_follow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.static_follow=script_value_to_bool(cx,vp);
+	camera.setup.c_static.follow=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
 }

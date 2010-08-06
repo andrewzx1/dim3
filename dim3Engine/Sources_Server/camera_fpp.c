@@ -52,8 +52,8 @@ void camera_fpp_get_position(d3pnt *pnt,d3ang *ang)
     pnt->y=(obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset;
     pnt->z=obj->pnt.z;
 
-	ang->x=camera.ang.x-obj->view_ang.x;
-	ang->y=angle_add(obj->ang.y,camera.ang.y);
-    ang->z=camera.ang.z+obj->view_ang.z;
+	ang->x=camera.setup.ang.x-obj->view_ang.x;
+	ang->y=angle_add(obj->ang.y,camera.setup.ang.y);
+    ang->z=camera.setup.ang.z+obj->view_ang.z;
 }
 

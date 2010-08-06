@@ -81,6 +81,34 @@ bool map_new(map_type *map,char *name)
 	map->settings.editor.view_near_dist=6*map_enlarge;
 	map->settings.editor.view_far_dist=2000*map_enlarge;
 	map->settings.editor.link_always_start=FALSE;
+
+		// camera
+
+	map->camera.mode=cv_fpp;
+	
+	map->camera.pnt.x=0;
+	map->camera.pnt.y=0;
+	map->camera.pnt.z=0;
+
+	map->camera.ang.x=0.0f;
+	map->camera.ang.y=0.0f;
+	map->camera.ang.z=0.0f;
+    
+    map->camera.chase.distance=map_enlarge*50;
+	map->camera.chase.track_speed=1.0f;
+    
+	map->camera.chase.slop.x=0.0f;
+	map->camera.chase.slop.y=0.0f;
+	map->camera.chase.slop.z=0.0f;
+    
+    map->camera.c_static.follow=TRUE;
+	map->camera.c_static.attach_node[0]=0x0;
+
+	map->camera.plane.fov=60.0f;
+	map->camera.plane.aspect_ratio=1.0f;
+	map->camera.plane.near_z=3*map_enlarge;
+	map->camera.plane.far_z=2000*map_enlarge;
+	map->camera.plane.near_z_offset=-(3*map_enlarge);
 	
 		// media
 		
