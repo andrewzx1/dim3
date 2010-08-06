@@ -84,17 +84,17 @@ JSObjectRef script_add_camera_angle_object(JSContextRef cx,JSObjectRef parent_ob
 
 JSValueRef js_camera_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.ang.x));
+	return(script_float_to_value(cx,camera.setup.ang.x));
 }
 
 JSValueRef js_camera_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.ang.y));
+	return(script_float_to_value(cx,camera.setup.ang.y));
 }
 
 JSValueRef js_camera_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.ang.z));
+	return(script_float_to_value(cx,camera.setup.ang.z));
 }
 
 /* =======================================================
@@ -105,19 +105,19 @@ JSValueRef js_camera_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 
 bool js_camera_angle_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.x=script_value_to_float(cx,vp);
+	camera.setup.ang.x=script_value_to_float(cx,vp);
 	return(TRUE);
 }
 
 bool js_camera_angle_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.y=script_value_to_float(cx,vp);
+	camera.setup.ang.y=script_value_to_float(cx,vp);
 	return(TRUE);
 }
 
 bool js_camera_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.ang.z=script_value_to_float(cx,vp);
+	camera.setup.ang.z=script_value_to_float(cx,vp);
 	return(TRUE);
 }
 

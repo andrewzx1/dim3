@@ -354,7 +354,7 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
@@ -384,7 +384,7 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 				// check if obscured by other meshes
 				// this only works in fpp
 
-			if (n!=start_mesh_idx) {
+			if ((n!=start_mesh_idx) && (camera.setup.mode==cv_fpp)) {
 				if (!view_visibility_check_mesh(start_mesh_idx,mesh)) continue;
 			}
 		}
@@ -408,7 +408,7 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
@@ -451,7 +451,9 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 			
 				// check if obscured by other meshes
 
-			if (!view_visibility_check_liquid(start_mesh_idx,liq)) continue;
+			if (camera.setup.mode==cv_fpp) {
+				if (!view_visibility_check_liquid(start_mesh_idx,liq)) continue;
+			}
 		}
 		else {
 			d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
@@ -501,7 +503,7 @@ bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 		// is model within obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
@@ -530,7 +532,7 @@ bool view_setup_shadow_in_view(model_draw *draw,int mesh_idx)
 		// is model within obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
@@ -557,7 +559,7 @@ void view_setup_objects(int tick)
 		
 		if (obj->hidden) continue;
 		
-		is_camera=((camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
+		is_camera=((camera.setup.mode==cv_fpp) && (obj->idx==camera.obj_idx));
 		
 			// setup model positions
 			
@@ -672,7 +674,7 @@ void view_add_effect_draw_list(int tick)
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);

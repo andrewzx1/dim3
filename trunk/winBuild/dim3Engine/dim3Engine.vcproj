@@ -364,10 +364,6 @@
 				Name="Server Headers"
 				>
 				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\camera_defs.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Headers_Server\cameras.h"
 					>
 				</File>
@@ -933,32 +929,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_camera_chase.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\script_camera_chase_angle.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\script_camera_chase_offset.c"
 						>
 						<FileConfiguration
 							Name="Release|Win32"

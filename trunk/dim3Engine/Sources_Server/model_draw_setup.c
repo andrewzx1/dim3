@@ -295,7 +295,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		// these calcs are sort of loose, but will work
 		// good for lighting and normals
 
-	draw->no_rot.on=((camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
+	draw->no_rot.on=((camera.setup.mode==cv_fpp) && (obj->idx==camera.obj_idx));
 
 	if (draw->no_rot.on) {
 		draw->no_rot.center.x=obj->pnt.x;
@@ -463,7 +463,7 @@ void model_draw_setup_projectile(proj_type *proj)
 
 void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,int y)
 {
-	int					n;
+	int				n,fact_x,fact_y;
 
 	model_draw_setup_clear(mdl,&draw->setup);
 
@@ -482,12 +482,18 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 
 		// need to change point for
 		// resizes and projection
+
+	// supergumba -- was 3500 + 2300
+
+	fact_x=(int)(((float)hud.scale_x)*3.0f);
 		
 	x=x-(hud.scale_x>>1);
-	x=(x*3500)/(hud.scale_x>>1);
+	x=(x*fact_x)/(hud.scale_x>>1);
+
+	fact_y=(int)(((float)hud.scale_y)*3.0f);
 	
 	y=y-(hud.scale_y>>1);
-	y=(y*2300)/(hud.scale_y>>1);
+	y=(y*fact_y)/(hud.scale_y>>1);
 	y+=(int)((1.0f-draw->resize)*((float)(mdl->view_box.size.y>>1)));
 
 	draw->pnt.x=-x;

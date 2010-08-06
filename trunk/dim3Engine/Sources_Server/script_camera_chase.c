@@ -43,7 +43,6 @@ bool js_camera_chase_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 bool js_camera_chase_set_trackSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		camera_chase_props[]={
-							{"size",				js_camera_chase_get_size,				js_camera_chase_set_size,			kJSPropertyAttributeDontDelete},
 							{"distance",			js_camera_chase_get_distance,			js_camera_chase_set_distance,		kJSPropertyAttributeDontDelete},
 							{"trackSpeed",			js_camera_chase_get_trackSpeed,			js_camera_chase_set_trackSpeed,		kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
@@ -77,19 +76,14 @@ JSObjectRef script_add_camera_chase_object(JSContextRef cx,JSObjectRef parent_ob
       
 ======================================================= */
 
-JSValueRef js_camera_chase_get_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_int_to_value(cx,camera.chase_size));
-}
-
 JSValueRef js_camera_chase_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,camera.chase_distance));
+	return(script_int_to_value(cx,camera.setup.chase.distance));
 }
 
 JSValueRef js_camera_chase_get_trackSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.chase_track_speed));
+	return(script_float_to_value(cx,camera.setup.chase.track_speed));
 }
 
 /* =======================================================
@@ -98,23 +92,16 @@ JSValueRef js_camera_chase_get_trackSpeed(JSContextRef cx,JSObjectRef j_obj,JSSt
       
 ======================================================= */
 
-bool js_camera_chase_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	camera.chase_size=script_value_to_int(cx,vp);
-	
-	return(TRUE);
-}
-
 bool js_camera_chase_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_distance=script_value_to_int(cx,vp);
+	camera.setup.chase.distance=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_camera_chase_set_trackSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_track_speed=script_value_to_float(cx,vp);
+	camera.setup.chase.track_speed=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }

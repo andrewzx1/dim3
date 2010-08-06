@@ -83,11 +83,11 @@ void camera_static_get_position(d3pnt *pnt,d3ang *ang)
 	
 		// if following an object, point camera at object
 
-    if (camera.static_follow) {
+    if (camera.setup.c_static.follow) {
 		obj=server.obj_list.objs[camera.obj_idx];
         ang->y=angle_find(camera_static_pnt.x,camera_static_pnt.z,obj->pnt.x,obj->pnt.z);
 		ang->x=-(180.0f-angle_find(camera_static_pnt.y,camera_static_pnt.z,obj->pnt.y,obj->pnt.z));
- 		ang->z=camera.ang.z;
+ 		ang->z=camera.setup.ang.z;
 		return;
 	}
  
@@ -95,15 +95,15 @@ void camera_static_get_position(d3pnt *pnt,d3ang *ang)
 		// then point way specified in node
 
 	if (camera.auto_walk.on) {
-		ang->x=angle_add(camera_static_walk_ang.x,camera.ang.x);
-		ang->y=angle_add(camera_static_walk_ang.y,camera.ang.y);
-		ang->z=angle_add(camera_static_walk_ang.z,camera.ang.z);
+		ang->x=angle_add(camera_static_walk_ang.x,camera.setup.ang.x);
+		ang->y=angle_add(camera_static_walk_ang.y,camera.setup.ang.y);
+		ang->z=angle_add(camera_static_walk_ang.z,camera.setup.ang.z);
 		return;
 	}
 
 		// else just use camera offset
 
-	memmove(ang,&camera.ang,sizeof(d3ang));
+	memmove(ang,&camera.setup.ang,sizeof(d3ang));
 }
 
 /* =======================================================
@@ -120,7 +120,7 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 
 		// only works in static camera
 
-	if (camera.mode!=cv_static) {
+	if (camera.setup.mode!=cv_static) {
 		strcpy(err_str,"Can only walk cameras in static mode");
 		return(FALSE);
 	}
@@ -241,7 +241,7 @@ void camera_static_run(void)
 
 		// get the look angle if not following
 
-    if (!camera.static_follow) {
+    if (!camera.setup.c_static.follow) {
 		camera_static_walk_ang.x=angle_turn_toward(camera_static_walk_ang.x,node->ang.x,camera.auto_walk.turn_speed);
 		camera_static_walk_ang.y=angle_turn_toward(camera_static_walk_ang.y,node->ang.y,camera.auto_walk.turn_speed);
 		camera_static_walk_ang.z=angle_turn_toward(camera_static_walk_ang.z,node->ang.z,camera.auto_walk.turn_speed);

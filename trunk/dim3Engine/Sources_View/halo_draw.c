@@ -191,7 +191,7 @@ void halo_draw_setup(void)
 
 		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
 
-		if (camera.mode==cv_fpp) {
+		if (camera.setup.mode==cv_fpp) {
 			if (hit) {
 				if (contact.obj.uid!=server.player_obj_idx) {
 					halo_draw->in_view=FALSE;

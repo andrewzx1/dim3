@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Script: camera.slop object
+ Usage: Script: camera.chase.slop object
 
 ***************************** License ********************************
 
@@ -79,17 +79,17 @@ JSObjectRef script_add_camera_chase_slop_object(JSContextRef cx,JSObjectRef pare
 
 JSValueRef js_camera_chase_slop_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.chase_slop.x));
+	return(script_float_to_value(cx,camera.setup.chase.slop.x));
 }
 
 JSValueRef js_camera_chase_slop_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.chase_slop.y));
+	return(script_float_to_value(cx,camera.setup.chase.slop.y));
 }
 
 JSValueRef js_camera_chase_slop_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.chase_slop.z));
+	return(script_float_to_value(cx,camera.setup.chase.slop.z));
 }
 
 /* =======================================================
@@ -100,21 +100,21 @@ JSValueRef js_camera_chase_slop_get_z(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_camera_chase_slop_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_slop.x=script_value_to_float(cx,vp);
+	camera.setup.chase.slop.x=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_camera_chase_slop_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_slop.y=script_value_to_float(cx,vp);
+	camera.setup.chase.slop.y=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_camera_chase_slop_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.chase_slop.z=script_value_to_float(cx,vp);
+	camera.setup.chase.slop.z=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }
