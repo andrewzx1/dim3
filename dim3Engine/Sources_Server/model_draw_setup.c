@@ -481,10 +481,17 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
 
 		// need to change point for
-		// resizes
+		// resizes and projection
+		
+	x=x-(hud.scale_x>>1);
+	x=(x*3500)/(hud.scale_x>>1);
+	
+	y=y-(hud.scale_y>>1);
+	y=(y*2300)/(hud.scale_y>>1);
+	y+=(int)((1.0f-draw->resize)*((float)(mdl->view_box.size.y>>1)));
 
-	draw->pnt.x=-(int)(((float)(x-(setup.screen.x_sz>>1)))*8.0f);
-	draw->pnt.y=(int)(((float)(y-(setup.screen.y_sz>>1)))*4.4f)+(int)((1.0f-draw->resize)*((float)(mdl->view_box.size.y/2)));
+	draw->pnt.x=-x;
+	draw->pnt.y=y;
 	draw->pnt.z=0;
 
 		// face forward
