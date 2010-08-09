@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>IBFramework Version</key>
-	<string>740</string>
+	<string>788</string>
 	<key>IBLastKnownRelativeProjectPath</key>
 	<string>../dim3Animator.xcodeproj</string>
 	<key>IBOldestOS</key>
@@ -11,7 +11,7 @@
 	<key>IBOpenObjects</key>
 	<array/>
 	<key>IBSystem Version</key>
-	<string>10D573</string>
+	<string>10F569</string>
 	<key>targetFramework</key>
 	<string>IBCarbonFramework</string>
 </dict>

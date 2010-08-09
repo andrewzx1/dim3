@@ -285,7 +285,11 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		sprintf(err_str,"Could not open map: %s.  This map contains no meshes or spots.",map.info.name);
 		return(FALSE);
 	}
+	
+		// attach shaders and camera
 
+	camera_map_setup();
+	
 	gl_shader_attach_map();
 
 		// prepare map surfaces

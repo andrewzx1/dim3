@@ -76,6 +76,33 @@ void camera_initialize(void)
 	memmove(&state_camera,&camera,sizeof(camera_type));
 }
 
+void camera_map_setup(void)
+{
+	int				node_idx;
+	char			err_str[256];
+	
+		// move over the map camera
+		
+	memmove(&camera.setup,&map.camera,sizeof(map_camera_type));
+	
+		// if static, attach from node
+		
+	if (camera.setup.mode!=cv_static) return;
+	
+		// find node, go to fpp if missing
+		
+	node_idx=map_find_node(&map,camera.setup.c_static.attach_node);
+	if (node_idx==-1) {
+		sprintf(err_str,"Can not attach camera to missing node: %s",camera.setup.c_static.attach_node);
+		console_add_error(err_str);
+		camera.setup.mode=cv_fpp;
+		return;
+	}
+	
+	memmove(&camera.setup.pnt,&map.nodes[node_idx].pnt,sizeof(d3pnt));
+	memmove(&camera.setup.ang,&map.nodes[node_idx].ang,sizeof(d3ang));
+}
+
 void camera_connect(obj_type *obj)
 {
 	camera.obj_idx=obj->idx;

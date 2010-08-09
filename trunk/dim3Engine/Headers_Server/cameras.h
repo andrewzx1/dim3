@@ -26,6 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 extern void camera_initialize(void);
+extern void camera_map_setup(void);
 extern void camera_connect(obj_type *obj);
 extern void camera_get_position(d3pnt *pnt,d3ang *ang);
 extern void camera_get_angle_from(d3pnt *pt,d3ang *ang);

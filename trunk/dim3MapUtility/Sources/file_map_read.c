@@ -32,6 +32,7 @@ and can be sold or given away.
 extern maputility_settings_type		maputility_settings;
 
 char					media_type_str[][32]={"none","chooser","title","movie",""},
+						camera_mode_str[][32]={"fpp","chase","static","chase_static",""},
 						sky_type_str[][32]={"dome_panoramic","dome_hemisphere","cube",""},
 						gl_fog_type_str[][32]={"linear","exp","exp2",""},
 						mesh_hide_mode_str[][32]={"never","single_player","multiplayer",""},
@@ -268,6 +269,39 @@ void decode_map_movements_xml(map_type *map,int map_head)
 	}
 }
 
+void decode_map_camera_xml(map_type *map,int map_head)
+{
+	int				camera_tag,tag;
+	
+    camera_tag=xml_findfirstchild("Camera",map_head);
+    if (camera_tag==-1) return;
+	
+	map->camera.mode=xml_get_attribute_list(camera_tag,"mode",(char*)camera_mode_str);
+	xml_get_attribute_3_coord_float(camera_tag,"ang",&map->camera.ang.x,&map->camera.ang.y,&map->camera.ang.z);
+	
+    tag=xml_findfirstchild("Plane",camera_tag);
+    if (tag!=-1) {
+		map->camera.plane.fov=xml_get_attribute_float(tag,"fov");
+		map->camera.plane.aspect_ratio=xml_get_attribute_float(tag,"aspectRatio");
+		map->camera.plane.near_z=xml_get_attribute_int(tag,"near");
+		map->camera.plane.far_z=xml_get_attribute_int(tag,"far");
+		map->camera.plane.near_z_offset=xml_get_attribute_int(tag,"nearOffset");
+	}
+	
+    tag=xml_findfirstchild("Chase",camera_tag);
+    if (tag!=-1) {
+		map->camera.chase.distance=xml_get_attribute_int(tag,"distance");
+		map->camera.chase.track_speed=xml_get_attribute_float(tag,"track_speed");
+		xml_get_attribute_3_coord_float(tag,"slop",&map->camera.chase.slop.x,&map->camera.chase.slop.y,&map->camera.chase.slop.z);
+	}
+	
+    tag=xml_findfirstchild("Static",camera_tag);
+    if (tag!=-1) {
+		map->camera.c_static.follow=xml_get_attribute_boolean(tag,"follow");
+		xml_get_attribute_text(tag,"attach_node",map->camera.c_static.attach_node,name_str_len);
+	}
+}
+
 /* =======================================================
 
       Read Editor Views
@@ -433,6 +467,7 @@ bool read_map_xml(map_type *map)
 	decode_map_groups_xml(map,map_head);
 	decode_map_textures_xml(map,map_head);
 	decode_map_movements_xml(map,map_head);
+	decode_map_camera_xml(map,map_head);
 
 		// editor setup
 

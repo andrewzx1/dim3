@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 extern char					media_type_str[][32],
+							camera_mode_str[][32],
 							sky_type_str[][32],
 							gl_fog_type_str[][32],
 							mesh_hide_mode_str[][32],
@@ -347,6 +348,35 @@ void write_map_movements_xml(map_type *map)
     xml_add_tagclose("Movements");
 }
 
+void write_map_camera_xml(map_type *map)
+{
+    xml_add_tagstart("Camera");
+	xml_add_attribute_list("mode",(char*)camera_mode_str,map->camera.mode);
+	xml_add_attribute_3_coord_float("ang",map->camera.ang.x,map->camera.ang.y,map->camera.ang.z);
+	xml_add_tagend(FALSE);
+
+	xml_add_tagstart("Plane");
+	xml_add_attribute_float("fov",map->camera.plane.fov);
+	xml_add_attribute_float("aspectRatio",map->camera.plane.aspect_ratio);
+	xml_add_attribute_int("near",map->camera.plane.near_z);
+	xml_add_attribute_int("far",map->camera.plane.far_z);
+	xml_add_attribute_int("nearOffset",map->camera.plane.near_z_offset);
+	xml_add_tagend(TRUE);
+
+	xml_add_tagstart("Chase");
+	xml_add_attribute_int("distance",map->camera.chase.distance);
+	xml_add_attribute_float("track_speed",map->camera.chase.track_speed);
+	xml_add_attribute_3_coord_float("slop",map->camera.chase.slop.x,map->camera.chase.slop.y,map->camera.chase.slop.z);
+	xml_add_tagend(TRUE);
+
+	xml_add_tagstart("Static");
+	xml_add_attribute_boolean("follow",map->camera.c_static.follow);
+	xml_add_attribute_text("attach_node",map->camera.c_static.attach_node);
+	xml_add_tagend(TRUE);
+
+    xml_add_tagclose("Camera");
+}
+
 /* =======================================================
 
       Write Editor Views
@@ -615,6 +645,7 @@ bool write_map_xml(map_type *map)
 	write_map_groups_xml(map);
 	write_map_textures_xml(map);
 	write_map_movements_xml(map);
+	write_map_camera_xml(map);
 
 		// editor setup
 
