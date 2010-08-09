@@ -1,1 +1,1 @@
-function mapConstruct(course){	camera.setting.type=DIM3_CAMERA_TYPE_FPP;}function event(course,mainEvent,subEvent,id,tick){	switch (mainEvent) {			case DIM3_EVENT_CONSTRUCT:			mapConstruct(course);			return;				}}
+function mapConstruct(course){}function event(course,mainEvent,subEvent,id,tick){	switch (mainEvent) {			case DIM3_EVENT_CONSTRUCT:			mapConstruct(course);			return;				}}

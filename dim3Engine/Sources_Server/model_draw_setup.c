@@ -485,7 +485,7 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 
 	// supergumba -- was 3500 + 2300
 
-	fact_x=(int)(((float)hud.scale_x)*3.0f);
+	fact_x=(int)(((float)hud.scale_x)*3.5f);
 		
 	x=x-(hud.scale_x>>1);
 	x=(x*fact_x)/(hud.scale_x>>1);

@@ -104,8 +104,6 @@
 		F5A57F8E090ABFA700BE7C36 /* camera_fpp.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A57F8A090ABFA700BE7C36 /* camera_fpp.c */; };
 		F5A58171090B432200BE7C36 /* script_data.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58170090B432200BE7C36 /* script_data.c */; };
 		F5A581D6090B433F00BE7C36 /* script_camera_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58172090B433F00BE7C36 /* script_camera_angle.c */; };
-		F5A581D7090B433F00BE7C36 /* script_camera_chase_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58173090B433F00BE7C36 /* script_camera_chase_angle.c */; };
-		F5A581D8090B433F00BE7C36 /* script_camera_chase_offset.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58174090B433F00BE7C36 /* script_camera_chase_offset.c */; };
 		F5A581D9090B433F00BE7C36 /* script_camera_chase_slop.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58175090B433F00BE7C36 /* script_camera_chase_slop.c */; };
 		F5A581DA090B433F00BE7C36 /* script_camera_chase.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58176090B433F00BE7C36 /* script_camera_chase.c */; };
 		F5A581DB090B433F00BE7C36 /* script_camera_plane.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58177090B433F00BE7C36 /* script_camera_plane.c */; };
@@ -211,7 +209,6 @@
 		F5A58259090B51B400BE7C36 /* sounds.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58258090B51B400BE7C36 /* sounds.h */; };
 		F5A5825B090B51B800BE7C36 /* inputs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A5825A090B51B800BE7C36 /* inputs.h */; };
 		F5A58286090B589C00BE7C36 /* interfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58285090B589C00BE7C36 /* interfaces.h */; };
-		F5A582BF090C98D500BE7C36 /* camera_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582B9090C98D500BE7C36 /* camera_defs.h */; };
 		F5A582C1090C98D500BE7C36 /* interface_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */; };
 		F5A582C2090C98D500BE7C36 /* script_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BC090C98D500BE7C36 /* script_defs.h */; };
 		F5A582C3090C98D500BE7C36 /* server_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BD090C98D500BE7C36 /* server_defs.h */; };
@@ -487,8 +484,6 @@
 		F5A57F8A090ABFA700BE7C36 /* camera_fpp.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = camera_fpp.c; path = Sources_Server/camera_fpp.c; sourceTree = "<group>"; };
 		F5A58170090B432200BE7C36 /* script_data.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_data.c; path = Sources_Server/script_data.c; sourceTree = "<group>"; };
 		F5A58172090B433F00BE7C36 /* script_camera_angle.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_camera_angle.c; path = Sources_Server/script_camera_angle.c; sourceTree = "<group>"; };
-		F5A58173090B433F00BE7C36 /* script_camera_chase_angle.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_camera_chase_angle.c; path = Sources_Server/script_camera_chase_angle.c; sourceTree = "<group>"; };
-		F5A58174090B433F00BE7C36 /* script_camera_chase_offset.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_camera_chase_offset.c; path = Sources_Server/script_camera_chase_offset.c; sourceTree = "<group>"; };
 		F5A58175090B433F00BE7C36 /* script_camera_chase_slop.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_camera_chase_slop.c; path = Sources_Server/script_camera_chase_slop.c; sourceTree = "<group>"; };
 		F5A58176090B433F00BE7C36 /* script_camera_chase.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_camera_chase.c; path = Sources_Server/script_camera_chase.c; sourceTree = "<group>"; };
 		F5A58177090B433F00BE7C36 /* script_camera_plane.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_camera_plane.c; path = Sources_Server/script_camera_plane.c; sourceTree = "<group>"; };
@@ -594,7 +589,6 @@
 		F5A58258090B51B400BE7C36 /* sounds.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sounds.h; path = Headers_View/sounds.h; sourceTree = "<group>"; };
 		F5A5825A090B51B800BE7C36 /* inputs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = inputs.h; path = Headers_View/inputs.h; sourceTree = "<group>"; };
 		F5A58285090B589C00BE7C36 /* interfaces.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = interfaces.h; path = Headers_Server/interfaces.h; sourceTree = "<group>"; };
-		F5A582B9090C98D500BE7C36 /* camera_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = camera_defs.h; path = Headers_Server/camera_defs.h; sourceTree = "<group>"; };
 		F5A582BB090C98D500BE7C36 /* interface_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = interface_defs.h; path = Headers_Server/interface_defs.h; sourceTree = "<group>"; };
 		F5A582BC090C98D500BE7C36 /* script_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = script_defs.h; path = Headers_Server/script_defs.h; sourceTree = "<group>"; };
 		F5A582BD090C98D500BE7C36 /* server_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = server_defs.h; path = Headers_Server/server_defs.h; sourceTree = "<group>"; };
@@ -1105,8 +1099,6 @@
 				F5A58178090B433F00BE7C36 /* script_camera_position.c */,
 				F5A58172090B433F00BE7C36 /* script_camera_angle.c */,
 				F5A58176090B433F00BE7C36 /* script_camera_chase.c */,
-				F5A58173090B433F00BE7C36 /* script_camera_chase_angle.c */,
-				F5A58174090B433F00BE7C36 /* script_camera_chase_offset.c */,
 				F5A58175090B433F00BE7C36 /* script_camera_chase_slop.c */,
 				F5A5817A090B433F00BE7C36 /* script_camera_static_position.c */,
 				F5A58177090B433F00BE7C36 /* script_camera_plane.c */,
@@ -1248,7 +1240,6 @@
 			children = (
 				F5A582BD090C98D500BE7C36 /* server_defs.h */,
 				F5A582BC090C98D500BE7C36 /* script_defs.h */,
-				F5A582B9090C98D500BE7C36 /* camera_defs.h */,
 				F5A582BB090C98D500BE7C36 /* interface_defs.h */,
 				F5A582BE090C98D500BE7C36 /* setup_defs.h */,
 				F5A58244090B512000BE7C36 /* scripts.h */,
@@ -1552,7 +1543,6 @@
 				F5A58259090B51B400BE7C36 /* sounds.h in Headers */,
 				F5A5825B090B51B800BE7C36 /* inputs.h in Headers */,
 				F5A58286090B589C00BE7C36 /* interfaces.h in Headers */,
-				F5A582BF090C98D500BE7C36 /* camera_defs.h in Headers */,
 				F5A582C1090C98D500BE7C36 /* interface_defs.h in Headers */,
 				F5A582C2090C98D500BE7C36 /* script_defs.h in Headers */,
 				F5A582C3090C98D500BE7C36 /* server_defs.h in Headers */,
@@ -1734,8 +1724,6 @@
 				F5A57F8E090ABFA700BE7C36 /* camera_fpp.c in Sources */,
 				F5A58171090B432200BE7C36 /* script_data.c in Sources */,
 				F5A581D6090B433F00BE7C36 /* script_camera_angle.c in Sources */,
-				F5A581D7090B433F00BE7C36 /* script_camera_chase_angle.c in Sources */,
-				F5A581D8090B433F00BE7C36 /* script_camera_chase_offset.c in Sources */,
 				F5A581D9090B433F00BE7C36 /* script_camera_chase_slop.c in Sources */,
 				F5A581DA090B433F00BE7C36 /* script_camera_chase.c in Sources */,
 				F5A581DB090B433F00BE7C36 /* script_camera_plane.c in Sources */,

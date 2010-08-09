@@ -30,7 +30,7 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kMapSettingTabCount							6
+#define kMapSettingTabCount							7
 #define kMapSettingTab								FOUR_CHAR_CODE('tabb')
 
 	// general
@@ -59,6 +59,25 @@ extern map_type				map;
 #define kMapMediaTitleSoundName						FOUR_CHAR_CODE('otsd')
 #define kMapMediaMusicName							FOUR_CHAR_CODE('musc')
 #define kMapMediaMusicFadeIn						FOUR_CHAR_CODE('mfdi')
+
+	// camera
+	
+#define kMapCameraMode								FOUR_CHAR_CODE('cmde')
+#define kMapCameraFOV								FOUR_CHAR_CODE('cfov')
+#define kMapCameraAspectRatio						FOUR_CHAR_CODE('cart')
+#define kMapCameraNearZ								FOUR_CHAR_CODE('cnrz')
+#define kMapCameraFarZ								FOUR_CHAR_CODE('cfrz')
+#define kMapCameraNearOffsetZ						FOUR_CHAR_CODE('cnoz')
+#define kMapCameraAngleX							FOUR_CHAR_CODE('cagx')
+#define kMapCameraAngleY							FOUR_CHAR_CODE('cagy')
+#define kMapCameraAngleZ							FOUR_CHAR_CODE('cagz')
+#define kMapCameraDistance							FOUR_CHAR_CODE('cdst')
+#define kMapCameraTrackSpeed						FOUR_CHAR_CODE('ctsp')
+#define kMapCameraSlopX								FOUR_CHAR_CODE('cslx')
+#define kMapCameraSlopY								FOUR_CHAR_CODE('csly')
+#define kMapCameraSlopZ								FOUR_CHAR_CODE('cslz')
+#define kMapCameraAttachNode						FOUR_CHAR_CODE('cand')
+#define kMapCameraFollowCameraObject				FOUR_CHAR_CODE('cfco')
 
 	// background-sky
 	
@@ -222,6 +241,28 @@ bool dialog_map_settings_run(void)
 	dialog_set_text(dialog_map_settings_wind,kMapMediaMusicName,0,map.music.name);
 	dialog_set_int(dialog_map_settings_wind,kMapMediaMusicFadeIn,0,map.music.fade_msec);
 	
+		// camera
+		
+	dialog_set_combo(dialog_map_settings_wind,kMapCameraMode,0,map.camera.mode);
+	dialog_set_float(dialog_map_settings_wind,kMapCameraFOV,0,map.camera.plane.fov);
+	dialog_set_float(dialog_map_settings_wind,kMapCameraAspectRatio,0,map.camera.plane.aspect_ratio);
+	dialog_set_int(dialog_map_settings_wind,kMapCameraNearZ,0,map.camera.plane.near_z);
+	dialog_set_int(dialog_map_settings_wind,kMapCameraFarZ,0,map.camera.plane.far_z);
+	dialog_set_int(dialog_map_settings_wind,kMapCameraNearOffsetZ,0,map.camera.plane.near_z_offset);
+	
+	dialog_set_float(dialog_map_settings_wind,kMapCameraAngleX,0,map.camera.ang.x);
+	dialog_set_float(dialog_map_settings_wind,kMapCameraAngleY,0,map.camera.ang.y);
+	dialog_set_float(dialog_map_settings_wind,kMapCameraAngleZ,0,map.camera.ang.z);
+
+	dialog_set_int(dialog_map_settings_wind,kMapCameraDistance,0,map.camera.chase.distance);
+	dialog_set_float(dialog_map_settings_wind,kMapCameraTrackSpeed,0,map.camera.chase.track_speed);
+	dialog_set_float(dialog_map_settings_wind,kMapCameraSlopX,0,map.camera.chase.slop.x);
+	dialog_set_float(dialog_map_settings_wind,kMapCameraSlopY,0,map.camera.chase.slop.y);
+	dialog_set_float(dialog_map_settings_wind,kMapCameraSlopZ,0,map.camera.chase.slop.z);
+	
+	dialog_special_combo_fill_node(dialog_map_settings_wind,kMapCameraAttachNode,0,map.camera.c_static.attach_node);
+	dialog_set_boolean(dialog_map_settings_wind,kMapCameraFollowCameraObject,0,map.camera.c_static.follow);
+	
 		// set background-sky controls
 		
 	dialog_set_boolean(dialog_map_settings_wind,kBackSkySettingBackgroundOn,0,map.background.on);
@@ -347,6 +388,28 @@ bool dialog_map_settings_run(void)
 		dialog_special_combo_get_sound(dialog_map_settings_wind,kMapMediaTitleSoundName,0,map.media.title_sound_name,name_str_len);
 		dialog_get_text(dialog_map_settings_wind,kMapMediaMusicName,0,map.music.name,name_str_len);
 		map.music.fade_msec=dialog_get_int(dialog_map_settings_wind,kMapMediaMusicFadeIn,0);
+		
+			// camera
+			
+		map.camera.mode=dialog_get_combo(dialog_map_settings_wind,kMapCameraMode,0);
+		map.camera.plane.fov=dialog_get_float(dialog_map_settings_wind,kMapCameraFOV,0);
+		map.camera.plane.aspect_ratio=dialog_get_float(dialog_map_settings_wind,kMapCameraAspectRatio,0);
+		map.camera.plane.near_z=dialog_get_int(dialog_map_settings_wind,kMapCameraNearZ,0);
+		map.camera.plane.far_z=dialog_get_int(dialog_map_settings_wind,kMapCameraFarZ,0);
+		map.camera.plane.near_z_offset=dialog_get_int(dialog_map_settings_wind,kMapCameraNearOffsetZ,0);
+
+		map.camera.ang.x=dialog_get_float(dialog_map_settings_wind,kMapCameraAngleX,0);
+		map.camera.ang.y=dialog_get_float(dialog_map_settings_wind,kMapCameraAngleY,0);
+		map.camera.ang.z=dialog_get_float(dialog_map_settings_wind,kMapCameraAngleZ,0);
+			
+		map.camera.chase.distance=dialog_get_int(dialog_map_settings_wind,kMapCameraDistance,0);
+		map.camera.chase.track_speed=dialog_get_float(dialog_map_settings_wind,kMapCameraTrackSpeed,0);
+		map.camera.chase.slop.x=dialog_get_float(dialog_map_settings_wind,kMapCameraSlopX,0);
+		map.camera.chase.slop.y=dialog_get_float(dialog_map_settings_wind,kMapCameraSlopY,0);
+		map.camera.chase.slop.z=dialog_get_float(dialog_map_settings_wind,kMapCameraSlopZ,0);
+	
+		dialog_special_combo_get_node(dialog_map_settings_wind,kMapCameraAttachNode,0,map.camera.c_static.attach_node,name_str_len);
+		map.camera.c_static.follow=dialog_get_boolean(dialog_map_settings_wind,kMapCameraFollowCameraObject,0);
 		
 			// background-sky
 			

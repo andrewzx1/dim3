@@ -99,6 +99,7 @@ JSValueRef js_obj_hit_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	obj_type			*obj,*hit_obj;
 
 	obj=object_script_lookup();
+	if (obj->hit.obj_idx==-1) return(script_null_to_value(cx));
 
 	hit_obj=server.obj_list.objs[obj->hit.obj_idx];
 	if (hit_obj==NULL) return(script_null_to_value(cx));
@@ -134,8 +135,9 @@ JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	weapon_type			*hit_weap;
 
 	obj=object_script_lookup();
+	if (obj->hit.weap_idx==-1) return(script_null_to_value(cx));
 
-	hit_weap=weapon_script_lookup();
+	hit_weap=obj->weap_list.weaps[obj->hit.weap_idx];
 	if (hit_weap==NULL) return(script_null_to_value(cx));
 
 	return(script_string_to_value(cx,hit_weap->name));
@@ -144,18 +146,21 @@ JSValueRef js_obj_hit_get_weaponName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_obj_hit_get_projectileName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type			*obj;
-	weapon_type			*weap;
+	weapon_type			*hit_weap;
 	proj_type			*hit_proj;
 	proj_setup_type		*hit_proj_setup;
 
 	obj=object_script_lookup();
+	if (obj->hit.weap_idx==-1) return(script_null_to_value(cx));
+	if (obj->hit.proj_idx==-1) return(script_null_to_value(cx));
+	
+	hit_weap=obj->weap_list.weaps[obj->hit.weap_idx];
+	if (hit_weap==NULL) return(script_null_to_value(cx));
 
 	hit_proj=server.proj_list.projs[obj->hit.proj_idx];
 	if (hit_proj==NULL) return(script_null_to_value(cx));
 	
-	weap=weapon_script_lookup();
-
-	hit_proj_setup=weap->proj_setup_list.proj_setups[hit_proj->proj_setup_idx];
+	hit_proj_setup=hit_weap->proj_setup_list.proj_setups[hit_proj->proj_setup_idx];
 	return(script_string_to_value(cx,hit_proj_setup->name));
 }
 
