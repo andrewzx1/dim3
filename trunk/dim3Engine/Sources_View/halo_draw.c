@@ -51,7 +51,7 @@ void halo_draw_clear(void)
 	view.render->halo_draw.count=0;
 }
 
-void halo_draw_add(int x,int y,int z,int obj_uid,model_draw_halo *mdl_halo)
+void halo_draw_add(int x,int y,int z,int obj_idx,model_draw_halo *mdl_halo)
 {
 	halo_draw_type		*halo_draw;
 	
@@ -63,7 +63,7 @@ void halo_draw_add(int x,int y,int z,int obj_uid,model_draw_halo *mdl_halo)
 	
 	halo_draw->idx=mdl_halo->idx;
 
-	halo_draw->obj_uid=obj_uid;
+	halo_draw->obj_idx=obj_idx;
 	
 	halo_draw->pnt.x=x;
 	halo_draw->pnt.y=y;
@@ -174,18 +174,18 @@ void halo_draw_setup(void)
 		contact.obj.on=!halo_draw->no_clip_object;
 
 		if (halo_draw->no_clip_self) {
-			contact.obj.ignore_uid=halo_draw->obj_uid;
+			contact.obj.ignore_idx=halo_draw->obj_idx;
 		}
 		else {
-			contact.obj.ignore_uid=-1;
+			contact.obj.ignore_idx=-1;
 		}
 		
 			// push slighty towards player to clear
 			// any ray trace errors from being too
 			// close to projecting object
 
-		if (halo_draw->obj_uid!=-1) {
-			obj=server.obj_list.objs[halo_draw->obj_uid];
+		if (halo_draw->obj_idx!=-1) {
+			obj=server.obj_list.objs[halo_draw->obj_idx];
 			ray_push_to_end(&spt,&ept,obj->size.radius);
 		}
 
@@ -193,7 +193,7 @@ void halo_draw_setup(void)
 
 		if (camera.setup.mode==cv_fpp) {
 			if (hit) {
-				if (contact.obj.uid!=server.player_obj_idx) {
+				if (contact.obj.idx!=server.player_obj_idx) {
 					halo_draw->in_view=FALSE;
 					continue;
 				}
@@ -251,6 +251,7 @@ void halo_draw_setup(void)
 void halo_draw_render(void)
 {
 	int						n,x,y,psz;
+	float					*vp,*uv,*vertex_ptr,*uv_ptr;
 	halo_draw_type			*halo_draw;
 	
 		// any halos to draw?
@@ -260,7 +261,14 @@ void halo_draw_render(void)
 		// halos are post-render overlay effects
 		
 	gl_2D_view_screen();
-	
+
+		// enable vertex drawing
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		// setup texture drawing
+
 	gl_texture_simple_start();
 
 	glEnable(GL_BLEND);
@@ -281,22 +289,51 @@ void halo_draw_render(void)
 		y=setup.screen.y_sz-halo_draw->proj_pnt.y;
 		psz=halo_draw->pixel_sz>>1;
 
-			// draw halo
-			
-		gl_texture_simple_set(view_images_get_gl_id(server.halo_list.halos[halo_draw->idx]->image_idx),TRUE,1,1,1,halo_draw->alpha);
+			// setup vertex
 
-		glBegin(GL_QUADS);
-		glTexCoord2f(0,0);
-		glVertex2i((x-psz),(y-psz));
-		glTexCoord2f(1,0);
-		glVertex2i((x+psz),(y-psz));
-		glTexCoord2f(1,1);
-		glVertex2i((x+psz),(y+psz));
-		glTexCoord2f(0,1);
-		glVertex2i((x-psz),(y+psz));
-		glEnd();
+		vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
+		if (vertex_ptr==NULL) continue;
+
+		uv_ptr=vertex_ptr+(4*2);
+		
+		vp=vertex_ptr;
+		uv=uv_ptr;
+
+		*uv++=0.0f;
+		*uv++=0.0f;
+		*vp++=(float)(x-psz);
+		*vp++=(float)(y-psz);
+		*uv++=1.0f;
+		*uv++=0.0f;
+		*vp++=(float)(x+psz);
+		*vp++=(float)(y-psz);
+		*uv++=1.0f;
+		*uv++=1.0f;
+		*vp++=(float)(x+psz);
+		*vp++=(float)(y+psz);
+		*uv++=0.0f;
+		*uv++=1.0f;
+		*vp++=(float)(x-psz);
+		*vp++=(float)(y+psz);
+		
+		view_unmap_current_vertex_object();
+
+			// draw halo
+
+		glVertexPointer(2,GL_FLOAT,0,0);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+
+		gl_texture_simple_set(view_images_get_gl_id(server.halo_list.halos[halo_draw->idx]->image_idx),TRUE,1,1,1,halo_draw->alpha);
+		glDrawArrays(GL_QUADS,0,4);
+
+		view_unbind_current_vertex_object();
 	}
 		
 	gl_texture_simple_end();
+
+		// disable vertex drawing
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

@@ -294,7 +294,7 @@ int particle_get_effect_size(particle_type *particle)
       
 ======================================================= */
 
-bool particle_spawn_single(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
+bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
 {
 	obj_type				*obj;
 	effect_type				*effect;
@@ -348,15 +348,15 @@ bool particle_spawn_single(int particle_idx,int obj_uid,d3pnt *pt,particle_rotat
 
 	eff_particle->tint.r=eff_particle->tint.g=eff_particle->tint.b=1.0f;
 
-	if ((particle->team_tint) && (obj_uid!=-1)) {
-		obj=server.obj_list.objs[obj_uid];
+	if ((particle->team_tint) && (obj_idx!=-1)) {
+		obj=server.obj_list.objs[obj_idx];
 		if (obj!=NULL) object_get_tint(obj,&eff_particle->tint);
 	}
 	
 	return(TRUE);
 }
 
-bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
+bool particle_spawn(int particle_idx,int obj_idx,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
 {
 	int						n,count,shift,idx;
 	float					xoff,yoff,zoff;
@@ -370,7 +370,7 @@ bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,
 		// single particles
 
 	if (!particle->group.on) {
-		return(particle_spawn_single(particle_idx,obj_uid,pt,rot,motion));
+		return(particle_spawn_single(particle_idx,obj_idx,pt,rot,motion));
 	}
 
 		// get offset to camera position
@@ -406,13 +406,13 @@ bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,
 
 			// spawn particle
 
-		if (!particle_spawn_single(idx,obj_uid,&ppt,rot,motion)) return(FALSE);
+		if (!particle_spawn_single(idx,obj_idx,&ppt,rot,motion)) return(FALSE);
 	}
 
 	return(TRUE);
 }
 
-bool particle_line_spawn(int particle_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int count)
+bool particle_line_spawn(int particle_idx,int obj_idx,d3pnt *start_pt,d3pnt *end_pt,int count)
 {
 	int				n,dx,dz,dy;
 	d3pnt			pt;
@@ -428,7 +428,7 @@ bool particle_line_spawn(int particle_idx,int obj_uid,d3pnt *start_pt,d3pnt *end
 		pt.y=start_pt->y+((dy*n)/count);
 		pt.z=start_pt->z+((dz*n)/count);
 
-		if (!particle_spawn(particle_idx,obj_uid,&pt,NULL,NULL)) return(FALSE);
+		if (!particle_spawn(particle_idx,obj_idx,&pt,NULL,NULL)) return(FALSE);
 	}
 
 	return(TRUE);

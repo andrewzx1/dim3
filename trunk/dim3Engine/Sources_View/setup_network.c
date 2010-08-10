@@ -166,7 +166,7 @@ void setup_network_player_pane(void)
 	
 		// character model
 
-	x=(int)(((float)hud.scale_x)*0.85f);
+	x=(int)(((float)hud.scale_x)*0.845f);
 	y=(int)(((float)hud.scale_y)*0.8f);
 
 	element_model_add(hud.character.characters[setup.network.character_idx].model_name,"Idle",hud.character.characters[setup.network.character_idx].interface_resize,ctrl_character_model_id,x,y);

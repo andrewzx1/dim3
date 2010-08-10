@@ -56,24 +56,26 @@ model_draw* particle_draw_get_model(particle_motion *motion)
 
 		// is it a projectile?
 
-	if (motion->proj_uid!=-1) {
-		proj=server.proj_list.projs[motion->proj_uid];
+	if (motion->proj_idx!=-1) {
+		proj=server.proj_list.projs[motion->proj_idx];
 		if (!proj->on) return(NULL);
 		return(&proj->draw);
 	}
 
 		// is it a weapon?
 
-	if (motion->weap_uid!=-1) {
-		obj=server.obj_list.objs[motion->obj_uid];
-		weap=obj->weap_list.weaps[motion->weap_uid];
+	if (motion->weap_idx!=-1) {
+		obj=server.obj_list.objs[motion->obj_idx];
+		weap=obj->weap_list.weaps[motion->weap_idx];
 		if (weap==NULL) return(NULL);
 		return(&weap->draw);
 	}
 
 		// is object
 
-	obj=server.obj_list.objs[motion->obj_uid];
+	if (motion->obj_idx==-1) return(NULL);
+
+	obj=server.obj_list.objs[motion->obj_idx];
 	if (obj==NULL) return(NULL);
 	return(&obj->draw);
 }

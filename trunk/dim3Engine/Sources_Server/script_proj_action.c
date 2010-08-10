@@ -329,7 +329,7 @@ JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSOb
 	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 		
-	to_obj=server.obj_list.objs[weap->target.obj_uid];
+	to_obj=server.obj_list.objs[weap->target.obj_idx];
 	if (to_obj==NULL) return(script_null_to_value(cx));
 	
 	projectile_seek(proj,to_obj,script_value_to_float(cx,argv[0]),script_value_to_float(cx,argv[1]));

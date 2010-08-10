@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "objects.h"
 #include "cameras.h"
+#include "consoles.h"
 #include "timing.h"
 
 extern map_type				map;

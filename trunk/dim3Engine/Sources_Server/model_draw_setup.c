@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "weapons.h"
 #include "models.h"
 #include "effects.h"
+#include "video.h"
 #include "timing.h"
 
 extern server_type			server;
@@ -463,7 +464,7 @@ void model_draw_setup_projectile(proj_type *proj)
 
 void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,int y)
 {
-	int				n,fact_x,fact_y;
+	int				n;
 
 	model_draw_setup_clear(mdl,&draw->setup);
 
@@ -483,17 +484,17 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 		// need to change point for
 		// resizes and projection
 
-	// supergumba -- was 3500 + 2300
-
-	fact_x=(int)(((float)hud.scale_x)*3.5f);
-		
 	x=x-(hud.scale_x>>1);
-	x=(x*fact_x)/(hud.scale_x>>1);
 
-	fact_y=(int)(((float)hud.scale_y)*3.0f);
-	
+	if (gl_is_screen_widescreen()) {
+		x=(int)(((float)x)*7.8f);
+	}
+	else {
+		x=(int)(((float)x)*5.8f);
+	}
+
 	y=y-(hud.scale_y>>1);
-	y=(y*fact_y)/(hud.scale_y>>1);
+	y=(int)(((float)y)*6.0f);
 	y+=(int)((1.0f-draw->resize)*((float)(mdl->view_box.size.y>>1)));
 
 	draw->pnt.x=-x;

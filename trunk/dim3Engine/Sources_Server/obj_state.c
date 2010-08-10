@@ -120,7 +120,7 @@ void object_score_death(obj_type *obj)
 	
 		// suicide
 		
-	if ((obj->idx==obj->damage_obj_uid) || (obj->damage_obj_uid==-1)) {
+	if ((obj->idx==obj->damage_obj_idx) || (obj->damage_obj_idx==-1)) {
 		obj->score.suicide++;
 		object_score_update(obj);
 	}
@@ -133,8 +133,8 @@ void object_score_death(obj_type *obj)
 	
 			// kill
 		
-		if (obj->damage_obj_uid!=-1) {
-			source_obj=server.obj_list.objs[obj->damage_obj_uid];
+		if (obj->damage_obj_idx!=-1) {
+			source_obj=server.obj_list.objs[obj->damage_obj_idx];
 		
 			source_obj->score.kill++;
 			object_score_update(source_obj);
@@ -215,7 +215,7 @@ void object_telefrag(obj_type *obj,obj_type *source_obj)
 	
 	obj->death_trigger=TRUE;		// trigger death
 	obj->death_telefrag=TRUE;
-	obj->damage_obj_uid=source_obj->idx;
+	obj->damage_obj_idx=source_obj->idx;
 	
 	object_death(obj);
 }
@@ -257,7 +257,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 
 			if (net_setup.mode!=net_mode_none) {
 				if ((check_obj->idx==server.player_obj_idx) || (check_obj->type==object_type_bot_multiplayer)) {
-					check_obj->damage_obj_uid=obj->idx;
+					check_obj->damage_obj_idx=obj->idx;
 					net_client_send_death(check_obj,TRUE);
 				}
 			}
@@ -438,7 +438,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 		// setup click structure
 		
 	click=&obj->click;
-	click->current_click_obj_uid=from_obj->idx;
+	click->current_click_obj_idx=from_obj->idx;
 	
 		// post the event
 		
@@ -478,11 +478,11 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 	
 			// setup damage object
 			
-		obj->damage_obj_uid=-1;
+		obj->damage_obj_idx=-1;
 		
 		if (source_obj!=NULL) {
 			if ((source_obj->type!=object_type_object) && (source_obj->idx!=obj->idx)) {		// no damage from regular objects and same object
-				obj->damage_obj_uid=source_obj->idx;
+				obj->damage_obj_idx=source_obj->idx;
 			}
 
 		}
@@ -580,7 +580,7 @@ void object_crush(obj_type *obj,bool auto_crush)
 	if (obj->type==object_type_remote) return;
 	if (obj->damage.invincible) return;
 
-	obj->damage_obj_uid=-1;
+	obj->damage_obj_idx=-1;
 	obj->status.health=0;
 	obj->death_trigger=TRUE;
 }
@@ -725,7 +725,7 @@ bool object_is_targetted(obj_type *obj,d3col *col)
 		weap=player_obj->weap_list.weaps[n];
 		if (weap==NULL) continue;
 		
-		if ((weap->target.on) && (weap->target.obj_uid==obj->idx)) {
+		if ((weap->target.on) && (weap->target.obj_idx==obj->idx)) {
 			memmove(col,&weap->target.col,sizeof(d3col));
 			return(TRUE);
 		}

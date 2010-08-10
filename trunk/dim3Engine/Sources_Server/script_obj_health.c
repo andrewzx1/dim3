@@ -272,7 +272,7 @@ JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj=object_script_lookup();
     status=&obj->status;
 	
-	obj->damage_obj_uid=-1;			// self-inflicted damage
+	obj->damage_obj_idx=-1;			// self-inflicted damage
 	
     status->health-=script_value_to_int(cx,argv[0]);
     if (status->health<0) {

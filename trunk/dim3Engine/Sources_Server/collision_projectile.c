@@ -179,7 +179,7 @@ bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj
 	return(obj->hit_box.proj_hit_box_idx!=-1);
 }
 
-int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_uid)
+int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_idx)
 {
 	int			n;
 	obj_type	*obj;
@@ -188,7 +188,7 @@ int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->idx==ignore_obj_uid)) continue;
+		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->idx==ignore_obj_idx)) continue;
 		
 			// projectile hit?
 			
@@ -203,7 +203,7 @@ int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_uid)
 	return(-1);
 }
 
-int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_uid)
+int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_idx)
 {
 	int			n;
 	obj_type	*obj;
@@ -212,7 +212,7 @@ int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->idx==ignore_obj_uid)) continue;
+		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->idx==ignore_obj_idx)) continue;
 		
 			// projectile hit?
 			
@@ -281,16 +281,16 @@ bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2)
 
 int collide_find_projectile_for_projectile(proj_type *proj)
 {
-	int				n,ignore_proj_uid;
+	int				n,ignore_proj_idx;
 	proj_type		*check_proj;
 	
-	ignore_proj_uid=proj->idx;
+	ignore_proj_idx=proj->idx;
 	
 	for (n=0;n!=max_proj_list;n++) {
 		check_proj=server.proj_list.projs[n];
 		if (!check_proj->on) continue;
 
-		if (check_proj->idx==ignore_proj_uid) continue;
+		if (check_proj->idx==ignore_proj_idx) continue;
 		
 			// projectile hit?
 			

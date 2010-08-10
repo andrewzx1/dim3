@@ -90,7 +90,7 @@ obj_type* object_find_name(char *name)
       
 ======================================================= */
 
-obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,int skip_obj_uid)
+obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,int skip_obj_idx)
 {
 	int				n,i,d,dist;
 	float			fang;
@@ -112,7 +112,7 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
 			if ((obj->type!=object_type_player) && (obj->type!=object_type_bot_multiplayer) && (obj->type!=object_type_remote)) continue;
 		}
 
-		if (obj->idx==skip_obj_uid) continue;
+		if (obj->idx==skip_obj_idx) continue;
 		
 			// check name
 			
@@ -160,7 +160,7 @@ obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float a
       
 ======================================================= */
 
-int object_count_team(int team_idx,int ignore_obj_uid)
+int object_count_team(int team_idx,int ignore_obj_idx)
 {
 	int				n,count;
 	obj_type		*obj;
@@ -171,7 +171,7 @@ int object_count_team(int team_idx,int ignore_obj_uid)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 		
-		if ((obj->idx!=ignore_obj_uid) && (obj->team_idx==team_idx)) count++;
+		if ((obj->idx!=ignore_obj_idx) && (obj->team_idx==team_idx)) count++;
 	}
 
 	return(count);
@@ -193,13 +193,13 @@ void object_set_even_team(obj_type *obj)
       
 ======================================================= */
 
-int object_find_uid_click_object(obj_type *obj)
+int object_find_idx_click_object(obj_type *obj)
 {
-	int				n,uid,d,dist;
+	int				n,idx,d,dist;
 	float			fang;
 	obj_type		*click_obj;
 	
-	uid=-1;
+	idx=-1;
 	dist=0;
 
 	for (n=0;n!=max_obj_list;n++) {
@@ -213,18 +213,18 @@ int object_find_uid_click_object(obj_type *obj)
 			
 		d=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,click_obj->pnt.x,click_obj->pnt.y,click_obj->pnt.z);
 		if (d>click_obj->click.distance) continue;
-		if ((uid!=-1) && (d>dist)) continue;
+		if ((idx!=-1) && (d>dist)) continue;
 		
 			// check angle
 			
 		fang=angle_find(obj->pnt.x,obj->pnt.z,click_obj->pnt.x,click_obj->pnt.z);
 		if (angle_dif(fang,obj->ang.y,NULL)>ci_object_click_angle) continue;
 		
-		uid=click_obj->idx;
+		idx=click_obj->idx;
 		dist=d;
 	}
 	
-	return(uid);
+	return(idx);
 }
 
 /* =======================================================
@@ -254,7 +254,7 @@ int object_find_idx_by_stood_on_object_idx(int stand_obj_idx)
       
 ======================================================= */
 
-bool object_sight_test_object(obj_type *obj,int test_obj_uid)
+bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 {
 	int						x,y,side_div,look_div;
 	float					side_start,look_start,side_add,look_add;
@@ -262,15 +262,15 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 	d3ang					ang;
 	ray_trace_contact_type	contact;
 	
-	if (test_obj_uid==-1) return(FALSE);
+	if (test_obj_idx==-1) return(FALSE);
 
 		// setup contact
 
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
 
-	contact.obj.ignore_uid=obj->idx;
-	contact.proj.ignore_uid=-1;
+	contact.obj.ignore_idx=obj->idx;
+	contact.proj.ignore_idx=-1;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
@@ -325,7 +325,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 				// ray trace
 
 			if (ray_trace_map_by_angle(&spt,&ang,obj->sight.distance,&hpt,&contact)) {
-				if (contact.obj.uid==test_obj_uid) return(TRUE);
+				if (contact.obj.idx==test_obj_idx) return(TRUE);
 			}
 
 			ang.y=angle_add(ang.y,side_add);		// these angles are constrained 0...360

@@ -61,7 +61,7 @@ void crosshair_show_alt(obj_type *obj)
       
 ======================================================= */
 
-bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_uid,int *dist)
+bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_idx,int *dist)
 {
 	int						tx,ty,tz;
 	d3pnt					fpt,hpt;
@@ -90,7 +90,7 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		// trace to find any clicking or hit objects
 
 	contact.obj.on=TRUE;
-	contact.obj.ignore_uid=obj->idx;
+	contact.obj.ignore_idx=obj->idx;
 	contact.proj.on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
@@ -98,7 +98,7 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 
 	ray_trace_map_by_angle(&fpt,&ang,(map_enlarge*400),&hpt,&contact);
 
-	if (hit_obj_uid!=NULL) *hit_obj_uid=contact.obj.uid;
+	if (hit_obj_idx!=NULL) *hit_obj_idx=contact.obj.idx;
 	
 		// get the 2D point
 		
@@ -149,7 +149,7 @@ void crosshair_setup_click(obj_type *obj)
 	
 		// static setup for click crosshair
 		
-	crosshair_draw->aim_obj_uid=-1;
+	crosshair_draw->aim_obj_idx=-1;
 	crosshair_draw->sz=setup.screen.x_sz/10;
 	crosshair_draw->alpha=1;
 	crosshair_draw->color.r=crosshair_draw->color.g=crosshair_draw->color.b=1;
@@ -173,14 +173,14 @@ void crosshair_setup_click(obj_type *obj)
 
 void crosshair_setup_weapon(obj_type *obj,weapon_type *weap)
 {
-	int					x,y,sz,dist,obj_uid,
+	int					x,y,sz,dist,obj_idx,
 						item_count,weap_mode,move_tick,swap_tick;
 	float				alpha;
 	obj_crosshair_draw	*crosshair_draw;
 	
 	crosshair_draw=&obj->crosshair_draw;
 	crosshair_draw->on=FALSE;
-	crosshair_draw->aim_obj_uid=-1;
+	crosshair_draw->aim_obj_idx=-1;
 
 		// weapon displays a crosshair?
 	
@@ -191,10 +191,10 @@ void crosshair_setup_weapon(obj_type *obj,weapon_type *weap)
 	
 		// get crosshair location
 
-	if (!crosshair_get_location(obj,weap,&x,&y,&obj_uid,&dist)) return;
+	if (!crosshair_get_location(obj,weap,&x,&y,&obj_idx,&dist)) return;
 	
 	crosshair_draw->on=TRUE;
-	crosshair_draw->aim_obj_uid=obj_uid;
+	crosshair_draw->aim_obj_idx=obj_idx;
 	
 	crosshair_draw->x=x;
 	crosshair_draw->y=y;
@@ -275,7 +275,7 @@ void crosshair_setup(obj_type *obj,weapon_type *weap)
 	
 		// if there an object to click?
 		
-	if (obj->click.current_click_obj_uid==-1) return;
+	if (obj->click.current_click_obj_idx==-1) return;
 	
 		// change to click crosshair
 		

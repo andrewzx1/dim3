@@ -48,8 +48,8 @@ extern void particle_precalculate(particle_type *particle);
 extern void particle_precalculate_all(void);
 extern particle_type* particle_find(char *name);
 extern int particle_find_index(char *name);
-extern bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,particle_motion *motion);
-extern bool particle_line_spawn(int particle_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int count);
+extern bool particle_spawn(int particle_idx,int obj_idx,d3pnt *pt,particle_rotate *rot,particle_motion *motion);
+extern bool particle_line_spawn(int particle_idx,int obj_idx,d3pnt *start_pt,d3pnt *end_pt,int count);
 extern float particle_get_gravity(particle_type *particle,int count);
 extern void particle_map_initialize(void);
 extern void particle_map_run(void);
@@ -60,8 +60,8 @@ extern void ring_free_list(void);
 extern ring_type* ring_add_list(void);
 extern ring_type* ring_find(char *name);
 extern int ring_find_index(char *name);
-extern bool ring_spawn(int ring_idx,int obj_uid,d3pnt *pt,d3ang *ang);
-extern bool ring_line_spawn(int ring_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int count);
+extern bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang);
+extern bool ring_line_spawn(int ring_idx,int obj_idx,d3pnt *start_pt,d3pnt *end_pt,int count);
 extern void ring_draw(effect_type *effect,int count);
 
 extern void mark_initialize_list(void);
@@ -75,5 +75,5 @@ extern int decal_count_list(void);
 
 extern void decal_move_with_mesh(int mesh_idx,int xmove,int ymove,int zmove);
 extern void decal_rotate_with_mesh(int mesh_idx,float y);
-extern void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha);
+extern void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha);
 extern void decal_dispose(void);

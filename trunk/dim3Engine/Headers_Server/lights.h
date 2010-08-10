@@ -34,6 +34,6 @@ extern void halo_free_bitmaps(void);
 extern int halo_find(char *name);
 
 extern void halo_draw_clear(void);
-extern void halo_draw_add(int x,int y,int z,int obj_uid,model_draw_halo *mdl_halo);
+extern void halo_draw_add(int x,int y,int z,int obj_idx,model_draw_halo *mdl_halo);
 extern void halo_draw_setup(void);
 extern void halo_draw_render(void);

@@ -58,10 +58,6 @@ and can be sold or given away.
 
 #include <zlib.h>
 
-#ifdef __ppc__
-	#include <ppc_intrinsics.h>
-#endif
-
 //
 // os flags
 //

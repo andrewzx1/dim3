@@ -55,6 +55,7 @@ void radar_draw(void)
 							dist,max_dist,fade_dist,fade_count,radar_sz;
 	unsigned long			cur_gl_id,gl_id;
 	float					alpha,cur_alpha,fade_mult;
+	float					*vp,*uv,*vertex_ptr,*uv_ptr;
 	d3col					tint;
 	obj_type				*obj,*player_obj;
 	hud_radar_icon_type		*icon;
@@ -102,19 +103,51 @@ void radar_draw(void)
 		}
 	}
 
+		// setup vertex ptr
+
+	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
+	if (vertex_ptr==NULL) return;
+
+	uv_ptr=vertex_ptr+(4*2);
+	
+	vp=vertex_ptr;
+	uv=uv_ptr;
+
+    *uv++=0.0f;
+	*uv++=0.0f;
+    *vp++=(float)lx;
+	*vp++=(float)ty;
+    *uv++=1.0f;
+	*uv++=0.0f;
+    *vp++=(float)rx;
+	*vp++=(float)ty;
+    *uv++=1.0f;
+	*uv++=1.0f;
+    *vp++=(float)rx;
+	*vp++=(float)by;
+    *uv++=0.0f;
+	*uv++=1.0f;
+    *vp++=(float)lx;
+	*vp++=(float)by;
+	
+	view_unmap_current_vertex_object();
+
+		// enable vertex drawing
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		// draw background
+
+	glVertexPointer(2,GL_FLOAT,0,0);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+			
 	gl_texture_simple_start();
 	gl_texture_simple_set(view_images_get_gl_id(hud.radar.background_image_idx),TRUE,tint.r,tint.g,tint.b,1.0f);
 
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f,0.0f);
-	glVertex2i(lx,ty);
-	glTexCoord2f(1.0f,0.0f);
-	glVertex2i(rx,ty);
-	glTexCoord2f(1.0f,1.0f);
-	glVertex2i(rx,by);
-	glTexCoord2f(0.0f,1.0f);
-	glVertex2i(lx,by);
-	glEnd();
+	glDrawArrays(GL_QUADS,0,4);
+
+	view_unbind_current_vertex_object();
 
 		// ticks for fades
 
@@ -209,19 +242,51 @@ void radar_draw(void)
 		py[2]=py[3]=y+icon->size;
 
 		if (icon->rot) rotate_2D_polygon(4,px,py,x,y,obj->ang.y);
-	
-		glBegin(GL_QUADS);
-		glTexCoord2f(0.0f,0.0f);
-		glVertex2i(px[0],py[0]);
-		glTexCoord2f(1.0f,0.0f);
-		glVertex2i(px[1],py[1]);
-		glTexCoord2f(1.0f,1.0f);
-		glVertex2i(px[2],py[2]);
-		glTexCoord2f(0.0f,1.0f);
-		glVertex2i(px[3],py[3]);
-		glEnd();
+
+			// setup vertex ptr
+
+		vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
+		if (vertex_ptr==NULL) continue;
+
+		uv_ptr=vertex_ptr+(4*2);
+		
+		vp=vertex_ptr;
+		uv=uv_ptr;
+
+		*uv++=0.0f;
+		*uv++=0.0f;
+		*vp++=(float)px[0];
+		*vp++=(float)py[0];
+		*uv++=1.0f;
+		*uv++=0.0f;
+		*vp++=(float)px[1];
+		*vp++=(float)py[1];
+		*uv++=1.0f;
+		*uv++=1.0f;
+		*vp++=(float)px[2];
+		*vp++=(float)py[2];
+		*uv++=0.0f;
+		*uv++=1.0f;
+		*vp++=(float)px[3];
+		*vp++=(float)py[3];
+		
+		view_unmap_current_vertex_object();
+
+			// draw icon
+
+		glVertexPointer(2,GL_FLOAT,0,0);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+
+		glDrawArrays(GL_QUADS,0,4);
+
+		view_unbind_current_vertex_object();
 	}
 
 	gl_texture_simple_end();
+
+		// disable vertex drawing
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

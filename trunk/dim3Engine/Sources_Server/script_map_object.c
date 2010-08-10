@@ -757,7 +757,7 @@ JSValueRef js_map_object_get_last_damage_object_id_func(JSContextRef cx,JSObject
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_int_to_value(cx,obj->damage_obj_uid));
+	return(script_int_to_value(cx,obj->damage_obj_idx));
 }
 
 JSValueRef js_map_object_was_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

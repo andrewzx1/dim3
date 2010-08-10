@@ -558,7 +558,7 @@ int object_create(char *name,int type,int bind)
 	
 	obj->lock.x=obj->lock.y=obj->lock.z=FALSE;
 	
-	obj->damage_obj_uid=-1;
+	obj->damage_obj_idx=-1;
 	
 	obj->team_idx=net_team_none;
 	obj->spawn_spot_name[0]=0x0;
@@ -640,7 +640,7 @@ int object_create(char *name,int type,int bind)
 	obj->kickback.size=100;
 
 	obj->vehicle.on=FALSE;
-	obj->vehicle.attach_obj_uid=-1;
+	obj->vehicle.attach_obj_idx=-1;
 
 	obj->radar.on=FALSE;
 	obj->radar.icon[0]=0x0;

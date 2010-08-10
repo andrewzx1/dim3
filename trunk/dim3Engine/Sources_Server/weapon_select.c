@@ -301,13 +301,13 @@ void weapon_pick(obj_type *obj,int index)
 void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 {
 	int				n,dist,min_dist,cur_dist,dif,cur_dif,
-					min_uid,next_uid;
+					min_idx,next_idx;
 	obj_type		*chk_obj;
 
 		// get current distance
 
-	if (weap->target.obj_uid!=-1) {
-		chk_obj=server.obj_list.objs[weap->target.obj_uid];
+	if (weap->target.obj_idx!=-1) {
+		chk_obj=server.obj_list.objs[weap->target.obj_idx];
 		cur_dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
 	}
 	else {
@@ -320,8 +320,8 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 	min_dist=-1;
 	cur_dif=-1;
 
-	next_uid=-1;
-	min_uid=-1;
+	next_idx=-1;
+	min_idx=-1;
 
 	for (n=0;n!=max_obj_list;n++) {
 		chk_obj=server.obj_list.objs[n];
@@ -343,12 +343,12 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 
 		if ((min_dist==-1) || (dist<min_dist)) {
 			min_dist=dist;
-			min_uid=chk_obj->idx;
+			min_idx=chk_obj->idx;
 		}
 
 			// can't re-select same target
 
-		if (chk_obj->idx==weap->target.obj_uid) continue;
+		if (chk_obj->idx==weap->target.obj_idx) continue;
 
 			// next further target?
 
@@ -357,26 +357,26 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 
 		if ((cur_dif==-1) || (dif<cur_dif)) {
 			cur_dif=dif;
-			next_uid=chk_obj->idx;
+			next_idx=chk_obj->idx;
 		}
 	}
 
 		// get next uid
 
-	if (next_uid==-1) next_uid=min_uid;
-	weap->target.obj_uid=next_uid;
+	if (next_idx==-1) next_idx=min_idx;
+	weap->target.obj_idx=next_idx;
 }
 
 void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 {
 	int				n,dist,max_dist,cur_dist,dif,cur_dif,
-					max_uid,prev_uid;
+					max_idx,prev_idx;
 	obj_type		*chk_obj;
 
 		// get current distance
 
-	if (weap->target.obj_uid!=-1) {
-		chk_obj=server.obj_list.objs[weap->target.obj_uid];
+	if (weap->target.obj_idx!=-1) {
+		chk_obj=server.obj_list.objs[weap->target.obj_idx];
 		cur_dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
 	}
 	else {
@@ -389,8 +389,8 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 	max_dist=0;
 	cur_dif=-1;
 
-	prev_uid=-1;
-	max_uid=-1;
+	prev_idx=-1;
+	max_idx=-1;
 
 	for (n=0;n!=max_obj_list;n++) {
 		chk_obj=server.obj_list.objs[n];
@@ -412,12 +412,12 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 
 		if (dist>max_dist) {
 			max_dist=dist;
-			max_uid=chk_obj->idx;
+			max_idx=chk_obj->idx;
 		}
 
 			// can't re-select same target
 
-		if (chk_obj->idx==weap->target.obj_uid) continue;
+		if (chk_obj->idx==weap->target.obj_idx) continue;
 
 			// next closest target?
 
@@ -426,26 +426,26 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 
 		if ((cur_dif==-1) || (dif<cur_dif)) {
 			cur_dif=dif;
-			prev_uid=chk_obj->idx;
+			prev_idx=chk_obj->idx;
 		}
 	}
 
 		// get next uid
 
-	if (prev_uid==-1) prev_uid=max_uid;
-	weap->target.obj_uid=prev_uid;
+	if (prev_idx==-1) prev_idx=max_idx;
+	weap->target.obj_idx=prev_idx;
 }
 
 bool weapon_target_start(obj_type *obj,weapon_type *weap,bool opponent_only)
 {
-	weap->target.obj_uid=-1;
+	weap->target.obj_idx=-1;
 	weap->target.opponent_only=opponent_only;
 	
 	weapon_target_next_object(obj,weap);
 
 		// if no available targets, return false
 
-	if (weap->target.obj_uid==-1) {
+	if (weap->target.obj_idx==-1) {
 		weap->target.on=FALSE;
 		return(FALSE);
 	}
@@ -461,7 +461,7 @@ bool weapon_target_end(obj_type *obj,weapon_type *weap)
 {
 	weap->target.on=FALSE;
 
-	return(weap->target.obj_uid!=-1);
+	return(weap->target.obj_idx!=-1);
 }
 
 /* =======================================================

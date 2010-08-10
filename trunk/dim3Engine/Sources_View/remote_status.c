@@ -55,7 +55,8 @@ int							remote_slow_image_idx,remote_talk_image_idx;
 
 void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 {
-	int				x,y,z,x_sz,y_sz,z_sz;
+	int			x,y,z,x_sz,y_sz,z_sz;
+	float		*vp,*uv,*vertex_ptr,*uv_ptr;
 	
 		// get the position and rotation
 		
@@ -68,8 +69,47 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	z_sz=0;
 	rotate_2D_point_center(&x_sz,&z_sz,view.render->camera.ang.y);
 
+		// setup vertex ptr
+
+	vertex_ptr=view_bind_map_next_vertex_object(4*(3+2));
+	if (vertex_ptr==NULL) return;
+
+	uv_ptr=vertex_ptr+(4*3);
+	
+	vp=vertex_ptr;
+	uv=uv_ptr;
+
+    *uv++=0.0f;
+	*uv++=0.0f;
+    *vp++=(float)(x-x_sz);
+	*vp++=(float)(y-y_sz);
+	*vp++=-(float)(z-z_sz);
+    *uv++=1.0f;
+	*uv++=0.0f;
+    *vp++=(float)(x+x_sz);
+	*vp++=(float)(y-y_sz);
+ 	*vp++=-(float)(z+z_sz);
+	*uv++=1.0f;
+	*uv++=1.0f;
+    *vp++=(float)(x+x_sz);
+	*vp++=(float)y;
+	*vp++=-(float)(z+z_sz);
+    *uv++=0.0f;
+	*uv++=1.0f;
+    *vp++=(float)(x-x_sz);
+	*vp++=(float)y;
+	*vp++=-(float)(z-z_sz);
+	
+	view_unmap_current_vertex_object();
+
 		// draw the bitmap
-		
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*3)*sizeof(float)));
+			
 	gl_texture_simple_start();
 
 	glEnable(GL_BLEND);
@@ -84,18 +124,14 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 
 	gl_texture_simple_set(gl_id,TRUE,1,1,1,1);
 
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex3i((x-x_sz),(y-y_sz),-(z-z_sz));
-	glTexCoord2f(1,0);
-	glVertex3i((x+x_sz),(y-y_sz),-(z+z_sz));
-	glTexCoord2f(1,1);
-	glVertex3i((x+x_sz),y,-(z+z_sz));
-	glTexCoord2f(0,1);
-	glVertex3i((x-x_sz),y,-(z-z_sz));
-	glEnd();
-		
+	glDrawArrays(GL_QUADS,0,4);
+
 	gl_texture_simple_end();
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	view_unbind_current_vertex_object();
 }
 
 void remote_draw_status(obj_type *obj)
@@ -229,13 +265,13 @@ void remote_draw_names_setup(void)
 		spt.y=obj->draw.remote_name.pnt.y;
 		spt.z=obj->draw.remote_name.pnt.z;
 
-		contact.obj.ignore_uid=obj->idx;
+		contact.obj.ignore_idx=obj->idx;
 		
 		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
 		
 		if (camera.setup.mode==cv_fpp) {
 			if (hit) {
-				if (contact.obj.uid!=server.player_obj_idx) {
+				if (contact.obj.idx!=server.player_obj_idx) {
 					obj->draw.remote_name.on=FALSE;
 					continue;
 				}

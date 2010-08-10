@@ -942,7 +942,7 @@ void object_move_fly(obj_type *obj)
 
 void object_move_swim(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove,hit_obj_uid;
+	int				i_xmove,i_ymove,i_zmove,hit_obj_idx;
     float			xmove,ymove,zmove,liq_speed_alter;
 
 		// get object motion
@@ -991,9 +991,9 @@ void object_move_swim(obj_type *obj)
 				i_ymove=(int)ymove;
 				i_zmove=(int)zmove;
 
-				hit_obj_uid=obj->contact.obj_idx;
+				hit_obj_idx=obj->contact.obj_idx;
 				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
-				obj->contact.obj_idx=hit_obj_uid;
+				obj->contact.obj_idx=hit_obj_idx;
 			}
 		}
 

@@ -105,7 +105,7 @@ JSValueRef js_weap_target_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStrin
 	weapon_type		*weap;
 
 	weap=weapon_script_lookup();
-	return(script_int_to_value(cx,weap->target.obj_uid));
+	return(script_int_to_value(cx,weap->target.obj_idx));
 }
 
 /* =======================================================

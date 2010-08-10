@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: View Routines
+ Usage: OpenGL Frame Routines
 
 ***************************** License ********************************
 
@@ -63,7 +63,7 @@ void gl_3D_view(void)
 	glLoadIdentity();
 
 	ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.setup.plane.aspect_ratio;
-	gluPerspective(view.render->camera.fov,ratio,camera.setup.plane.near_z,camera.setup.plane.far_z);
+	gluPerspective(view.render->camera.fov,ratio,(float)camera.setup.plane.near_z,(float)camera.setup.plane.far_z);
 	
 		// projection flips
 		
@@ -81,7 +81,7 @@ void gl_3D_view(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	gluLookAt(view.render->camera.pnt.x,view.render->camera.pnt.y,(view.render->camera.pnt.z+camera.setup.plane.near_z),view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,0.0f,1.0f,0.0f);
+	gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+camera.setup.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
 }
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
@@ -109,7 +109,7 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 		gluLookAt(fx,fy,fz,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
 	}
 	else {
-		gluLookAt((pnt->x+fx),(pnt->y+fy),(pnt->z+fz),pnt->x,pnt->y,pnt->z,0.0f,1.0f,0.0f);
+		gluLookAt((((float)pnt->x)+fx),(((float)pnt->y)+fy),(((float)pnt->z)+fz),(float)pnt->x,(float)pnt->y,(float)pnt->z,0.0f,1.0f,0.0f);
 	}
 }
 
@@ -123,7 +123,7 @@ void gl_2D_view_screen(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0,(GLdouble)setup.screen.x_sz,(GLdouble)setup.screen.y_sz,0);
+	glOrtho(0.0f,(GLfloat)setup.screen.x_sz,(GLfloat)setup.screen.y_sz,0.0f,-1.0f,1.0f);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -133,7 +133,7 @@ void gl_2D_view_interface(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0,(GLdouble)hud.scale_x,(GLdouble)hud.scale_y,0);
+	glOrtho(0.0f,(GLfloat)hud.scale_x,(GLfloat)hud.scale_y,0.0f,-1.0f,1.0f);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

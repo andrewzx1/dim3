@@ -110,8 +110,8 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 	if (!telefrag) {
 		net_uid_killer_obj=-1;
 		
-		if (obj->damage_obj_uid!=-1) {
-			chk_obj=server.obj_list.objs[obj->damage_obj_uid];
+		if (obj->damage_obj_idx!=-1) {
+			chk_obj=server.obj_list.objs[obj->damage_obj_idx];
 			if (chk_obj!=NULL) {
 				if ((chk_obj->type==object_type_player) || (chk_obj->type==object_type_remote)) {
 					net_uid_killer_obj=chk_obj->remote.net_uid;
@@ -126,7 +126,7 @@ void net_client_send_death(obj_type *obj,bool telefrag)
 		// telefrag deaths
 
 	else {
-		chk_obj=server.obj_list.objs[obj->damage_obj_uid];		// only remote objects can telefrag each other, so no other checks necessary
+		chk_obj=server.obj_list.objs[obj->damage_obj_idx];		// only remote objects can telefrag each other, so no other checks necessary
 		
 		death.net_uid_killer_obj=htons((short)chk_obj->remote.net_uid);
 		death.telefrag=htons(1);

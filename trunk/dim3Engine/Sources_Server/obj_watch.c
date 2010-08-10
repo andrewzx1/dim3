@@ -65,8 +65,8 @@ bool object_watch_restrict(obj_type *obj,obj_type *watch_obj)
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
 
-	contact.obj.ignore_uid=-1;
-	contact.proj.ignore_uid=-1;
+	contact.obj.ignore_idx=-1;
+	contact.proj.ignore_idx=-1;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;

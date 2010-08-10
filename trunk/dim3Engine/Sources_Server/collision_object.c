@@ -216,16 +216,16 @@ bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,obj_typ
 
 int collide_find_object_for_object_move(obj_type *obj,int x,int z)
 {
-	int				n,ignore_obj_uid;
+	int				n,ignore_obj_idx;
 	obj_type	 	*check_obj;
 	
-	ignore_obj_uid=obj->idx;
+	ignore_obj_idx=obj->idx;
 	
 	for (n=0;n!=max_obj_list;n++) {
 		check_obj=server.obj_list.objs[n];
 		if (check_obj==NULL) continue;
 	
-		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->idx==ignore_obj_uid)) continue;
+		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->idx==ignore_obj_idx)) continue;
 
 			// object hit?
 			
@@ -253,20 +253,20 @@ inline int collide_find_object_for_object(obj_type *obj)
 
 int collide_find_object_for_standing_object(obj_type *obj)
 {
-	int			n,uid,y,ty,ydist,ignore_obj_uid;
+	int			n,uid,y,ty,ydist,ignore_obj_idx;
 	obj_type	*stand_obj;
 	
 	y=obj->pnt.y;
 	ydist=floor_slop;
 	uid=-1;
 	
-	ignore_obj_uid=obj->idx;
+	ignore_obj_idx=obj->idx;
 	
 	for (n=0;n!=max_obj_list;n++) {
 		stand_obj=server.obj_list.objs[n];
 		if (stand_obj==NULL) continue;
 	
-		if ((stand_obj->idx==ignore_obj_uid) || (stand_obj->hidden) || (!stand_obj->contact.object_on) || (stand_obj->pickup.on)) continue;
+		if ((stand_obj->idx==ignore_obj_idx) || (stand_obj->hidden) || (!stand_obj->contact.object_on) || (stand_obj->pickup.on)) continue;
 		
 		ty=abs(y-(stand_obj->pnt.y-stand_obj->size.y));
 		if (ty>ydist) continue;
