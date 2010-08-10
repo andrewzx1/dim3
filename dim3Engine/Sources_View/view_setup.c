@@ -359,7 +359,7 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
-
+	
 		// check all visibile meshes from the start mesh
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {

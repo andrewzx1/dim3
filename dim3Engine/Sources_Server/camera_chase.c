@@ -247,7 +247,7 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 
 void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 {
-	float			fx,fy,fz;
+	float			fx,fy,fz,fang;
 	obj_type		*obj;
 	matrix_type		mat;
 
@@ -259,7 +259,10 @@ void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 	fy=0;
 	fz=(float)camera.setup.chase.distance;
 	
-	matrix_rotate_zyx(&mat,camera.setup.ang.x,camera.setup.ang.y,camera.setup.ang.z);
+	fang=camera.setup.ang.x;
+	if (fang>180.0f) fang=fang-360.0f;
+	
+	matrix_rotate_zyx(&mat,fang,camera.setup.ang.y,camera.setup.ang.z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	pnt->x=camera.setup.pnt.x=obj->pnt.x+((int)fx);
@@ -267,9 +270,9 @@ void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 	pnt->z=camera.setup.pnt.z=obj->pnt.z+((int)fz);
 	
 		// looking angles
-
-	ang->y=angle_find(pnt->x,pnt->z,obj->pnt.x,obj->pnt.z);
-	ang->x=-(180.0f-angle_find(pnt->y,pnt->z,obj->pnt.y,obj->pnt.z));
+		
+	ang->x=-fang;
+	ang->y=camera.setup.ang.y;
 	ang->z=camera.setup.ang.z;
 }
 
