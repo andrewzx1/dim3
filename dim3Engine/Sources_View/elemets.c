@@ -68,7 +68,12 @@ model_draw* element_load_model(char *name,char *animate,float resize)
 		return(NULL);
 	}
 	
+		// screen size changes element resizing
+
 	draw->resize=resize;
+	if (!gl_is_screen_widescreen()) draw->resize*=0.75f;
+
+		// start the animation
 
 	model_start_animation(draw,animate,game_time_get_raw());
 	

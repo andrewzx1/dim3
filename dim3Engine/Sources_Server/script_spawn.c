@@ -368,7 +368,7 @@ JSValueRef js_spawn_ray_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,
 
 JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				wid,life_msec,obj_uid;
+	int				wid,life_msec,obj_idx;
 	d3pnt			start_pt,end_pt;
 	d3col			col;
 	obj_type		*obj;
@@ -391,9 +391,9 @@ JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	col.r=col.g=col.b=1.0f;
 
-	obj_uid=script_get_attached_object_uid();
-	if (obj_uid!=-1) {
-		obj=server.obj_list.objs[obj_uid];
+	obj_idx=script_get_attached_object_uid();
+	if (obj_idx!=-1) {
+		obj=server.obj_list.objs[obj_idx];
 		if (obj!=NULL) object_get_tint(obj,&col);
 	}
 

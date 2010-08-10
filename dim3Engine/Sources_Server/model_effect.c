@@ -158,9 +158,9 @@ void model_animation_effect_launch_particle(model_particle_type *particle,d3pnt 
 	}
 
 	if (particle->stick) {
-		motion.obj_uid=connect->obj_idx;
-		motion.weap_uid=connect->weap_idx;
-		motion.proj_uid=connect->proj_idx;
+		motion.obj_idx=connect->obj_idx;
+		motion.weap_idx=connect->weap_idx;
+		motion.proj_idx=connect->proj_idx;
 		motion.bone_idx=bone_idx;
 	}
 

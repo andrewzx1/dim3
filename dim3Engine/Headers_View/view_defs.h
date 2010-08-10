@@ -189,7 +189,7 @@ typedef struct		{
 //
  
 typedef struct		{
-						int									idx,obj_uid,
+						int									idx,obj_idx,
 															min_dist,max_dist,
 															min_pixel_sz,max_pixel_sz,pixel_sz;
 						float								min_alpha,max_alpha,alpha;

@@ -96,7 +96,7 @@ JSValueRef js_obj_vehicle_get_hasOccupant(JSContextRef cx,JSObjectRef j_obj,JSSt
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_bool_to_value(cx,obj->vehicle.attach_obj_uid!=-1));
+	return(script_bool_to_value(cx,obj->vehicle.attach_obj_idx!=-1));
 }
 
 /* =======================================================

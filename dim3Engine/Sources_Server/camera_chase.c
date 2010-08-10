@@ -178,7 +178,7 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 		// setup contacts
 
 	contact.obj.on=TRUE;
-	contact.obj.ignore_uid=obj->idx;
+	contact.obj.ignore_idx=obj->idx;
 
 	contact.proj.on=FALSE;
 

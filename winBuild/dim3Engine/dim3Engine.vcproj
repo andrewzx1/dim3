@@ -3512,6 +3512,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\gl_es_patches.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\gl_frames.c"
 						>
 						<FileConfiguration

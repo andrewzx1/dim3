@@ -311,10 +311,10 @@ bool shadow_get_volume(d3pnt *pnt,int high,int *px,int *py,int *pz)
 	}
 
 	base_contact.obj.on=FALSE;
-	base_contact.obj.ignore_uid=-1;
+	base_contact.obj.ignore_idx=-1;
 
 	base_contact.proj.on=FALSE;
-	base_contact.proj.ignore_uid=-1;
+	base_contact.proj.ignore_idx=-1;
 
 	base_contact.hit_mode=poly_ray_trace_hit_mode_all;
 	base_contact.origin=poly_ray_trace_origin_object;

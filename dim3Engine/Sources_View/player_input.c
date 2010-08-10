@@ -437,7 +437,7 @@ void player_enter_exit_input(obj_type *obj)
 	
 		// exit a vehicle?
 		
-	if (obj->vehicle.attach_obj_uid!=-1) {
+	if (obj->vehicle.attach_obj_idx!=-1) {
 		object_exit_vehicle(obj,FALSE,NULL);
 		return;
 	}

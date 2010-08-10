@@ -99,6 +99,7 @@ void hud_bitmaps_draw(void)
 								px[4],py[4],sx,sy,rx,ry,
 								wid,high,repeat_count;
 	float						gx,gy,gx2,gy2,g_size,alpha,cur_alpha;
+	float						*vp,*uv,*vertex_ptr,*uv_ptr;
 	GLuint						cur_gl_id;
 	d3col						tint,cur_tint,team_tint;
 	hud_bitmap_type				*bitmap;
@@ -118,6 +119,11 @@ void hud_bitmaps_draw(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	gl_texture_simple_start();
+
+		// start vertex ptrs
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// timing for flashes and fades
 
@@ -224,22 +230,36 @@ void hud_bitmaps_draw(void)
 		
 		wrap_count=0;
 
-			// draw bitmaps
+			// setup the vertex pointer
 
-		glBegin(GL_QUADS);
+		vertex_ptr=view_bind_map_next_vertex_object((repeat_count*4)*(2+2));
+		if (vertex_ptr==NULL) continue;
+
+		uv_ptr=vertex_ptr+((repeat_count*4)*2);
+		
+		vp=vertex_ptr;
+		uv=uv_ptr;
 
 		for (r=0;r!=repeat_count;r++) {
 
 				// quad
 
-			glTexCoord2f(gx,gy);
-			glVertex2i(px[0],py[0]);
-			glTexCoord2f(gx2,gy);
-			glVertex2i(px[1],py[1]);
-			glTexCoord2f(gx2,gy2);
-			glVertex2i(px[2],py[2]);
-			glTexCoord2f(gx,gy2);
-			glVertex2i(px[3],py[3]);
+			*uv++=gx;
+			*uv++=gy;
+			*vp++=(float)px[0];
+			*vp++=(float)py[0];
+			*uv++=gx2;
+			*uv++=gy;
+			*vp++=(float)px[1];
+			*vp++=(float)py[1];
+			*uv++=gx2;
+			*uv++=gy2;
+			*vp++=(float)px[2];
+			*vp++=(float)py[2];
+			*uv++=gx;
+			*uv++=gy2;
+			*vp++=(float)px[3];
+			*vp++=(float)py[3];
 			
 				// column wrapping repeats
 				
@@ -302,10 +322,24 @@ void hud_bitmaps_draw(void)
 			}
 		}
 			
-		glEnd();
+		view_unmap_current_vertex_object();
+
+			// draw the quads
+
+		glVertexPointer(2,GL_FLOAT,0,0);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)(((repeat_count*4)*2)*sizeof(float)));
+				
+		glDrawArrays(GL_QUADS,0,(repeat_count*4));
+
+		view_unbind_current_vertex_object();
 	}
 	
 	gl_texture_simple_end();
+
+		// disable vertex drawing
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================

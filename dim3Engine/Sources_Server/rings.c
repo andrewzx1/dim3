@@ -134,7 +134,7 @@ int ring_get_effect_size(ring_type *ring)
       
 ======================================================= */
 
-bool ring_spawn(int ring_idx,int obj_uid,d3pnt *pt,d3ang *ang)
+bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 {
 	obj_type				*obj;
 	effect_type				*effect;
@@ -170,15 +170,15 @@ bool ring_spawn(int ring_idx,int obj_uid,d3pnt *pt,d3ang *ang)
 
 	eff_ring->tint.r=eff_ring->tint.g=eff_ring->tint.b=1.0f;
 
-	if ((ring->team_tint) && (obj_uid!=-1)) {
-		obj=server.obj_list.objs[obj_uid];
+	if ((ring->team_tint) && (obj_idx!=-1)) {
+		obj=server.obj_list.objs[obj_idx];
 		if (obj!=NULL) object_get_tint(obj,&eff_ring->tint);
 	}
 	
 	return(TRUE);
 }
 
-bool ring_line_spawn(int ring_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int count)
+bool ring_line_spawn(int ring_idx,int obj_idx,d3pnt *start_pt,d3pnt *end_pt,int count)
 {
 	int				n,dx,dz,dy;
 	d3pnt			pt;
@@ -187,7 +187,7 @@ bool ring_line_spawn(int ring_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int 
 		// need more than 1 ring to do effect
 		
 	if (count<=1) {
-		ring_spawn(ring_idx,obj_uid,start_pt,NULL);
+		ring_spawn(ring_idx,obj_idx,start_pt,NULL);
 		return(TRUE);
 	}
 	
@@ -216,7 +216,7 @@ bool ring_line_spawn(int ring_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int 
 		pt.y=start_pt->y+((dy*n)/count);
 		pt.z=start_pt->z+((dz*n)/count);
 
-		if (!ring_spawn(ring_idx,obj_uid,&pt,&ang)) return(FALSE);
+		if (!ring_spawn(ring_idx,obj_idx,&pt,&ang)) return(FALSE);
 	}
 
 	return(TRUE);

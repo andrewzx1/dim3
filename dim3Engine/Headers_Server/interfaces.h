@@ -161,7 +161,7 @@ extern crosshair_type* crosshair_add_list(void);
 extern int crosshair_find(char *name);
 extern void crosshair_show_alt(obj_type *obj);
 
-extern bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_uid,int *dist);
+extern bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_idx,int *dist);
 extern void crosshair_setup(obj_type *obj,weapon_type *weap);
 extern void crosshair_draw(obj_type *obj,weapon_type *weap);
 

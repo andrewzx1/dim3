@@ -99,7 +99,7 @@ JSValueRef js_obj_click_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	obj_type			*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->click.current_click_obj_uid));
+	return(script_int_to_value(cx,obj->click.current_click_obj_idx));
 }
 
 JSValueRef js_obj_click_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -108,9 +108,9 @@ JSValueRef js_obj_click_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 	obj=object_script_lookup();
 
-	if (obj->click.current_click_obj_uid==-1) return(script_null_to_value(cx));
+	if (obj->click.current_click_obj_idx==-1) return(script_null_to_value(cx));
 
-	click_obj=server.obj_list.objs[obj->click.current_click_obj_uid];
+	click_obj=server.obj_list.objs[obj->click.current_click_obj_idx];
 	return(script_string_to_value(cx,click_obj->name));
 }
 

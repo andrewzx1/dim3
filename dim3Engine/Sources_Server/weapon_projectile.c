@@ -132,7 +132,7 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 	
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
-	contact.obj.ignore_uid=obj->idx;
+	contact.obj.ignore_idx=obj->idx;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;
@@ -145,7 +145,7 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 		
 		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
 		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
-		proj->contact.obj_idx=contact.obj.uid;
+		proj->contact.obj_idx=contact.obj.idx;
 		proj->contact.proj_idx=-1;
 
 		projectile_hit(proj,FALSE);
@@ -580,7 +580,7 @@ bool weapon_script_projectile_spawn_weapon_barrel(obj_type *obj,weapon_type *wea
 
 void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method)
 {
-	int			tick,clicked_obj_uid;
+	int			tick,clicked_obj_idx;
 	obj_type	*clicked_obj;
 	
 		// if no weapon, send message directly to object
@@ -596,9 +596,9 @@ void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method)
 	
 		// if crosshair in click mode, the click
 		
-	clicked_obj_uid=obj->click.current_click_obj_uid;
-	if (clicked_obj_uid!=-1) {
-		clicked_obj=server.obj_list.objs[clicked_obj_uid];
+	clicked_obj_idx=obj->click.current_click_obj_idx;
+	if (clicked_obj_idx!=-1) {
+		clicked_obj=server.obj_list.objs[clicked_obj_idx];
 		object_click(clicked_obj,obj);
 		crosshair_show_alt(obj);
 		return;
@@ -652,7 +652,7 @@ void weapon_player_fire_repeat(obj_type *obj,weapon_type *weap)
 	
 		// no fire messages if crosshair is in click mode
 		
-	if (obj->click.current_click_obj_uid!=-1) return;
+	if (obj->click.current_click_obj_idx!=-1) return;
 
 		// fail under liquid?
 
@@ -700,7 +700,7 @@ void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method)
 	
 		// no fire messages if crosshair is in click mode
 		
-	if (obj->click.current_click_obj_uid!=-1) return;
+	if (obj->click.current_click_obj_idx!=-1) return;
 
 		// fail under liquid?
 

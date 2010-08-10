@@ -89,7 +89,7 @@ extern void weapon_recoil_run(obj_type *obj,weapon_type *weap);
 extern void weapon_recoil_add(obj_type *obj,weapon_type *weap,d3ang *ang);
 extern void weapon_recoil(obj_type *obj,weapon_type *weap);
 
-extern void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *melee,int ignore_uid);
+extern void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *melee,int ignore_obj_idx);
 extern bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str);
 extern bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str);
 extern bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str);

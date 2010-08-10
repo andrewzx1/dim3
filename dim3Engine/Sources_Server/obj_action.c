@@ -590,7 +590,7 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 		
 	vehicle=&vehicle_obj->vehicle;
 
-	if (vehicle->attach_obj_uid!=-1) {
+	if (vehicle->attach_obj_idx!=-1) {
 		if (err_str!=NULL) strcpy(err_str,"Vehicle has already been entered");
 		return(FALSE);
 	}
@@ -619,7 +619,7 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 	
 		// attach object
 
-	vehicle->attach_obj_uid=obj->idx;
+	vehicle->attach_obj_idx=obj->idx;
 
 		// if this object was the camera object, then reconnect
 
@@ -656,7 +656,7 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 
 		// get original object
 	
-	orig_obj=server.obj_list.objs[vehicle_obj->vehicle.attach_obj_uid];
+	orig_obj=server.obj_list.objs[vehicle_obj->vehicle.attach_obj_idx];
 	
 		// find exit point
 		
@@ -689,7 +689,7 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 	
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
-	contact.obj.ignore_uid=vehicle_obj->idx;
+	contact.obj.ignore_idx=vehicle_obj->idx;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
@@ -708,7 +708,7 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 	
 		// exit
 	
-	vehicle->attach_obj_uid=-1;
+	vehicle->attach_obj_idx=-1;
 	object_stop(vehicle_obj);
 
 		// if this vehicle was the camera object, then reconnect

@@ -49,12 +49,12 @@ extern setup_type			setup;
 
 void projectile_stick(proj_type *proj)
 {
-    int				ignore_obj_uid;
+    int				ignore_obj_idx;
 	
-	ignore_obj_uid=-1;
-   	if (proj->parent_grace>0) ignore_obj_uid=proj->obj_idx;
+	ignore_obj_idx=-1;
+   	if (proj->parent_grace>0) ignore_obj_idx=proj->obj_idx;
     
-	proj->contact.obj_idx=collide_find_object_for_projectile_hit(proj,ignore_obj_uid);
+	proj->contact.obj_idx=collide_find_object_for_projectile_hit(proj,ignore_obj_idx);
 }	
 
 /* =======================================================

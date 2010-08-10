@@ -448,7 +448,7 @@ typedef struct		{
 					} obj_hit_box;
 					
 typedef struct		{
-						int						distance,current_click_obj_uid,
+						int						distance,current_click_obj_idx,
 												crosshair_up_idx,crosshair_down_idx;
 						char					crosshair_up_name[name_str_len],
 												crosshair_down_name[name_str_len];
@@ -603,7 +603,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						attach_obj_uid;
+						int						attach_obj_idx;
 						bool					on;
 						d3pnt					attach_offset;
 					} obj_vehicle;
@@ -670,7 +670,7 @@ typedef struct		{
 					} obj_held_weapon;
 					
 typedef struct		{
-						int						x,y,sz,aim_obj_uid,
+						int						x,y,sz,aim_obj_idx,
 												alt_tick,gl_id;
 						float					alpha;
 						bool					on;
@@ -738,7 +738,7 @@ typedef struct		{
 					} proj_setup_mark_type;
 			
 typedef struct		{
-						int						idx,obj_idx,weap_idx,script_uid,
+						int						idx,obj_idx,weap_idx,
 												damage,decel_grace;
 						char					name[name_str_len];
 						float					speed,decel_speed,decel_min_speed,
@@ -795,7 +795,7 @@ typedef struct		{
 					} weap_fire_type;
 
 typedef struct		{
-						int						distance,obj_uid;
+						int						distance,obj_idx;
 						bool					on,opponent_only;
 						d3col					col;
 					} weap_target_type;
@@ -861,7 +861,7 @@ typedef struct		{
 						int						idx,type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
 												count,input_mode,air_mode,camera_z_adjust,
-												damage_obj_uid,item_count,
+												damage_obj_idx,item_count,
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],spawn_spot_name[name_str_len],
 												spot_script[file_str_len],spot_params[param_str_len];
@@ -965,7 +965,7 @@ typedef struct		{
 					} particle_rotate;
 	
 typedef struct		{
-						int						obj_uid,weap_uid,proj_uid,
+						int						obj_idx,weap_idx,proj_idx,
 												bone_idx;
 						d3vct					vct;
 					} particle_motion;
@@ -1071,7 +1071,7 @@ typedef struct		{
 
 
 typedef struct		{
-						int								uid,ignore_uid,hit_face;
+						int								idx,ignore_idx,hit_face;
 						bool							on;
 					} ray_trace_obj_proj_type;
 

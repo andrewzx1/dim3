@@ -288,7 +288,7 @@ void decal_add_floor_like(d3pnt *pnt,decal_type *decal,map_mesh_type *mesh,map_m
       
 ======================================================= */
 
-void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
+void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
 {
 	int					n,idx;
 	decal_type			*decal;
@@ -340,8 +340,8 @@ void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 
 	decal->tint.r=decal->tint.g=decal->tint.b=1.0f;
 
-	if ((server.mark_list.marks[mark_idx]->team_tint) && (obj_uid!=-1)) {
-		obj=server.obj_list.objs[obj_uid];
+	if ((server.mark_list.marks[mark_idx]->team_tint) && (obj_idx!=-1)) {
+		obj=server.obj_list.objs[obj_idx];
 		if (obj!=NULL) object_get_tint(obj,&decal->tint);
 	}
 

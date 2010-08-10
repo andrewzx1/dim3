@@ -205,6 +205,20 @@ extern char light_type_str[][32];
 #define mesh_hide_mode_multiplayer							2
 
 //
+// cinema types
+//
+
+#define cinema_actor_camera									0
+#define cinema_actor_object									1
+#define cinema_actor_map_movement							2
+
+#define cinema_action_place									0
+#define cinema_action_move									1
+#define cinema_action_show									2
+#define cinema_action_hide									3
+#define cinema_action_change_animation						4
+
+//
 // group structure
 //
 
@@ -608,6 +622,28 @@ typedef struct		{
 					} map_camera_type;
 
 //
+// map cinema structures
+//
+
+typedef struct		{
+						int									actor,action,
+															start_msec,len_msec;
+						char								actor_name[name_str_len],
+															animation_name[name_str_len],
+															node_name[name_str_len];
+					} map_cinema_command_type;
+
+typedef struct		{
+						int									ncommand;
+						map_cinema_command_type				*commands;
+					} map_cinema_type;
+
+typedef struct		{
+						int									ncinema;
+						map_cinema_type						*cinemas;
+					} map_cinema_collection_type;
+
+//
 // map editor structures
 //
 
@@ -667,6 +703,8 @@ typedef struct		{
 	
 						map_mesh_collection_type			mesh;
 						map_liquid_collection_type			liquid;
+
+						map_cinema_collection_type			cinema;
 						
 					} map_type;
 

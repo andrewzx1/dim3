@@ -713,7 +713,7 @@ void view_add_effect_draw_list(int tick)
       
 ======================================================= */
 
-void view_add_model_halo(model_draw *draw,int obj_uid)
+void view_add_model_halo(model_draw *draw,int obj_idx)
 {
 	int					n,x,z,y;
 	model_type			*mdl;
@@ -739,7 +739,7 @@ void view_add_model_halo(model_draw *draw,int obj_uid)
 			model_get_halo_position(mdl,&draw->setup,n,&x,&y,&z);
 			if (draw->no_rot.on) gl_project_fix_rotation(&x,&y,&z);
 			
-			halo_draw_add(x,y,z,obj_uid,halo);
+			halo_draw_add(x,y,z,obj_idx,halo);
 		}
 
 		halo++;

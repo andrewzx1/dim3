@@ -297,17 +297,17 @@ void remote_death(int net_uid,network_request_remote_death *death)
 		
 			// find kill object
 			
-		obj->damage_obj_uid=-1;
+		obj->damage_obj_idx=-1;
 		
 		if (net_uid_killer_obj!=-1) {
 			kill_obj=object_find_remote_net_uid(net_uid_killer_obj);
-			if (kill_obj!=NULL) obj->damage_obj_uid=kill_obj->idx;
+			if (kill_obj!=NULL) obj->damage_obj_idx=kill_obj->idx;
 		}
 
 			// send death/suicide remote event
 
 		player_obj=server.obj_list.objs[server.player_obj_idx];
-		if ((obj->damage_obj_uid==-1) || (obj->damage_obj_uid==obj->idx)) {
+		if ((obj->damage_obj_idx==-1) || (obj->damage_obj_idx==obj->idx)) {
 			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_suicide,obj->idx);
 		}
 		else {
@@ -709,7 +709,7 @@ void remote_pickup(int net_uid,network_request_remote_pickup *pickup)
 
 void remote_click(int net_uid,network_request_remote_click *click)
 {
-	int					clicked_obj_uid;
+	int					clicked_obj_idx;
 	d3pnt				org_pnt;
 	d3ang				org_ang;
 	obj_type			*obj,*clicked_obj;
@@ -732,9 +732,9 @@ void remote_click(int net_uid,network_request_remote_click *click)
 
 		// run click
 
-	clicked_obj_uid=object_find_uid_click_object(obj);
-	if (clicked_obj_uid!=-1) {
-		clicked_obj=server.obj_list.objs[clicked_obj_uid];
+	clicked_obj_idx=object_find_idx_click_object(obj);
+	if (clicked_obj_idx!=-1) {
+		clicked_obj=server.obj_list.objs[clicked_obj_idx];
 		object_click(clicked_obj,obj);
 	}
 
