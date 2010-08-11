@@ -484,20 +484,14 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 		// need to change point for
 		// resizes and projection
 
-	x=x-(hud.scale_x>>1);
+	x-=(hud.scale_x>>1);
+	x=(int)(((float)x)*5.8f);
 
-	if (gl_is_screen_widescreen()) {
-		x=(int)(((float)x)*7.8f);
-	}
-	else {
-		x=(int)(((float)x)*5.8f);
-	}
-
-	y=y-(hud.scale_y>>1);
+	y-=(hud.scale_y>>1);
 	y=(int)(((float)y)*6.0f);
 	y+=(int)((1.0f-draw->resize)*((float)(mdl->view_box.size.y>>1)));
 
-	draw->pnt.x=-x;
+	draw->pnt.x=x;
 	draw->pnt.y=y;
 	draw->pnt.z=0;
 

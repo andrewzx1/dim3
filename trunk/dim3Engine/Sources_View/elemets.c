@@ -67,11 +67,8 @@ model_draw* element_load_model(char *name,char *animate,float resize)
 		free(draw);
 		return(NULL);
 	}
-	
-		// screen size changes element resizing
 
 	draw->resize=resize;
-	if (!gl_is_screen_widescreen()) draw->resize*=0.75f;
 
 		// start the animation
 

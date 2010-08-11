@@ -147,14 +147,16 @@ void gl_2D_view_interface(void)
 
 void gl_3D_view_interface_model()
 {
-	float			ratio;
+	float				x,y;
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	ratio=((float)setup.screen.x_sz)/((float)setup.screen.y_sz);
-	gluPerspective(45.0,ratio,(float)1000,(float)21000);
-	glScalef(-1.0f,-1.0f,-1.0f);
+	x=(float)(hud.scale_x>>1);
+	y=(float)(hud.scale_y>>1);
+
+	glFrustum(-x,x,-y,y,1000.0f,21000.0f);
+	glScalef(1.0f,-1.0f,-1.0f);
 	glTranslatef(0.0f,0.0f,5000.0f);
 
 	glMatrixMode(GL_MODELVIEW);

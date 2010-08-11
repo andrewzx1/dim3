@@ -123,7 +123,7 @@ void setup_network_player_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*3;
 	
-	x=(int)(((float)hud.scale_x)*0.26f);
+	x=(int)(((float)hud.scale_x)*0.24f);
 	
 	if (hud.character.ncharacter!=0) {
 		y=((margin+element_get_tab_control_high())+padding)+control_y_add;
@@ -149,7 +149,7 @@ void setup_network_player_pane(void)
 	x=margin+padding;
 	y+=padding;
 
-	wid=(int)(((float)hud.scale_x)*0.83f)-((margin+padding)*2);
+	wid=(int)(((float)hud.scale_x)*0.80f)-((margin+padding)*2);
 	high=(int)(((float)hud.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Characters");
@@ -166,7 +166,7 @@ void setup_network_player_pane(void)
 	
 		// character model
 
-	x=(int)(((float)hud.scale_x)*0.845f);
+	x=(int)(((float)hud.scale_x)*0.81f);
 	y=(int)(((float)hud.scale_y)*0.8f);
 
 	element_model_add(hud.character.characters[setup.network.character_idx].model_name,"Idle",hud.character.characters[setup.network.character_idx].interface_resize,ctrl_character_model_id,x,y);
