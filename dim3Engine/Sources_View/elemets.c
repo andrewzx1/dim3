@@ -53,7 +53,7 @@ SDL_mutex					*element_thread_lock;
       
 ======================================================= */
 
-model_draw* element_load_model(char *name,char *animate,float resize)
+model_draw* element_load_model(char *name,char *animate,float resize,d3pnt *offset)
 {
 	char				err_str[256];
 	model_draw			*draw;
@@ -69,7 +69,14 @@ model_draw* element_load_model(char *name,char *animate,float resize)
 	}
 
 	draw->resize=resize;
-
+	
+	if (offset==NULL) {
+		draw->offset.x=draw->offset.y=draw->offset.z=0;
+	}
+	else {
+		memmove(&draw->offset,offset,sizeof(d3pnt));
+	}
+	
 		// start the animation
 
 	model_start_animation(draw,animate,game_time_get_raw());
@@ -795,7 +802,7 @@ void element_info_field_add(char *str,char *value_str,int id,int x,int y)
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_model_add(char *name,char *animate,float resize,int id,int x,int y)
+void element_model_add(char *name,char *animate,float resize,d3pnt *offset,int id,int x,int y)
 {
 	element_type	*element;
 
@@ -814,7 +821,7 @@ void element_model_add(char *name,char *animate,float resize,int id,int x,int y)
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 	
-	element->setup.model.draw=element_load_model(name,animate,resize);
+	element->setup.model.draw=element_load_model(name,animate,resize,offset);
 
 	SDL_mutexV(element_thread_lock);
 }
@@ -3409,7 +3416,7 @@ bool element_has_table_check(int id)
       
 ======================================================= */
 
-bool element_replace_model(int id,char *name,char *animate,float resize)
+bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *offset)
 {
 	bool			hit;
 	element_type	*element;
@@ -3421,7 +3428,7 @@ bool element_replace_model(int id,char *name,char *animate,float resize)
 
 	if (element!=NULL) {
 		element_free_model(element);
-		element->setup.model.draw=element_load_model(name,animate,resize);
+		element->setup.model.draw=element_load_model(name,animate,resize,offset);
 	}
 	
 	SDL_mutexV(element_thread_lock);

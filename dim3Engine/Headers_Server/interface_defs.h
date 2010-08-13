@@ -498,6 +498,7 @@ typedef struct		{
 						char					name[name_str_len],model_name[name_str_len],
 												param[name_str_len];
 						float					interface_resize;
+						d3pnt					interface_offset;
 					} hud_character_item_type;
 
 typedef struct		{

@@ -148,7 +148,7 @@ void chooser_create_elements(void)
 				break;
 				
 			case chooser_piece_type_model:
-				element_model_add(piece->data.model.model_name,piece->data.model.animate_name,piece->data.model.resize,piece->id,piece->x,piece->y);
+				element_model_add(piece->data.model.model_name,piece->data.model.animate_name,piece->data.model.resize,NULL,piece->id,piece->x,piece->y);
 				break;
 
 			case chooser_piece_type_button:
