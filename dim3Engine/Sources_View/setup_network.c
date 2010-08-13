@@ -172,7 +172,7 @@ void setup_network_player_pane(void)
 	
 	hud_character=&hud.character.characters[setup.network.character_idx];
 
-	element_model_add(hud_character->model_name,"Idle",hud_character->interface_resize,&hud_character->interface_offset,ctrl_character_model_id,x,y);
+	element_model_add(hud_character->model_name,"Idle",hud_character->interface_resize,&hud_character->interface_offset,NULL,ctrl_character_model_id,x,y);
 }
 
 void setup_network_host_pane(void)
@@ -477,7 +477,7 @@ void setup_network_handle_click(int id)
 		case ctrl_character_id:
 			setup.network.character_idx=element_get_value(ctrl_character_id);
 			hud_character=&hud.character.characters[setup.network.character_idx];
-			element_replace_model(ctrl_character_model_id,hud_character->model_name,"Idle",hud_character->interface_resize,&hud_character->interface_offset);
+			element_replace_model(ctrl_character_model_id,hud_character->model_name,"Idle",hud_character->interface_resize,&hud_character->interface_offset,NULL);
 			break;
 
 		case ctrl_network_host_id:

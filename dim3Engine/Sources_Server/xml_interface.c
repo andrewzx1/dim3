@@ -46,7 +46,7 @@ extern int chooser_add(char *name);
 extern void chooser_copy_template(int idx,int template_idx);
 extern void chooser_add_text(int chooser_idx,int template_idx,int id,char *str,int x,int y,int size,int just,bool clickable,char *goto_name);
 extern void chooser_add_item(int chooser_idx,int template_idx,int id,char *file,int x,int y,int wid,int high,bool clickable,char *goto_name);
-extern void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,float resize,bool clickable,char *goto_name);
+extern void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,d3ang *rot,float resize,bool clickable,char *goto_name);
 extern void chooser_add_button(int chooser_idx,int template_idx,int id,char *name,int x,int y,int wid,int high,char *goto_name);
 
 /* =======================================================
@@ -645,6 +645,7 @@ void read_settings_interface_chooser(int chooser_tag)
 					btn_name[max_chooser_button_text_sz],
 					data[max_chooser_text_data_sz];
 	bool			clickable;
+	d3ang			rot;
 	chooser_type	*chooser;
 
 		// name and template
@@ -686,32 +687,6 @@ void read_settings_interface_chooser(int chooser_tag)
 		chooser->key.ok_id=xml_get_attribute_int(tag,"ok_id");
 		chooser->key.cancel_id=xml_get_attribute_int(tag,"cancel_id");
 	}
-
-		// text
-
-	texts_head_tag=xml_findfirstchild("Texts",chooser_tag);
-	if (texts_head_tag!=-1) {
-	
-		text_tag=xml_findfirstchild("Text",texts_head_tag);
-		
-		while (text_tag!=-1) {
-
-			data[0]=0x0;
-
-			id=xml_get_attribute_int(text_tag,"id");
-			xml_get_attribute_text(text_tag,"data",data,max_chooser_text_data_sz);
-			text_size=xml_get_attribute_int_default(text_tag,"size",hud.font.text_size_small);
-			just=xml_get_attribute_list(text_tag,"just",(char*)just_mode_str);
-			x=xml_get_attribute_int(text_tag,"x");
-			y=xml_get_attribute_int(text_tag,"y");
-			clickable=xml_get_attribute_boolean(text_tag,"clickable");
-			xml_get_attribute_text(text_tag,"goto",goto_name,name_str_len);
-
-			chooser_add_text(idx,template_idx,id,data,x,y,text_size,just,clickable,goto_name);
-
-			text_tag=xml_findnextchild(text_tag);
-		}
-	}
 	
 		// items
 	
@@ -749,13 +724,41 @@ void read_settings_interface_chooser(int chooser_tag)
 			xml_get_attribute_text(model_item_tag,"animate",animate_name,name_str_len);
 			x=xml_get_attribute_int(model_item_tag,"x");
 			y=xml_get_attribute_int(model_item_tag,"y");
+			xml_get_attribute_3_coord_float(model_item_tag,"rot",&rot.x,&rot.y,&rot.z);
 			resize=xml_get_attribute_float_default(model_item_tag,"resize",1.0f);
+
 			clickable=xml_get_attribute_boolean(model_item_tag,"clickable");
 			xml_get_attribute_text(model_item_tag,"goto",goto_name,name_str_len);
 			
-			chooser_add_model(idx,template_idx,id,model_name,animate_name,x,y,resize,clickable,goto_name);
+			chooser_add_model(idx,template_idx,id,model_name,animate_name,x,y,&rot,resize,clickable,goto_name);
 			
 			model_item_tag=xml_findnextchild(model_item_tag);
+		}
+	}
+
+		// text
+
+	texts_head_tag=xml_findfirstchild("Texts",chooser_tag);
+	if (texts_head_tag!=-1) {
+	
+		text_tag=xml_findfirstchild("Text",texts_head_tag);
+		
+		while (text_tag!=-1) {
+
+			data[0]=0x0;
+
+			id=xml_get_attribute_int(text_tag,"id");
+			xml_get_attribute_text(text_tag,"data",data,max_chooser_text_data_sz);
+			text_size=xml_get_attribute_int_default(text_tag,"size",hud.font.text_size_small);
+			just=xml_get_attribute_list(text_tag,"just",(char*)just_mode_str);
+			x=xml_get_attribute_int(text_tag,"x");
+			y=xml_get_attribute_int(text_tag,"y");
+			clickable=xml_get_attribute_boolean(text_tag,"clickable");
+			xml_get_attribute_text(text_tag,"goto",goto_name,name_str_len);
+
+			chooser_add_text(idx,template_idx,id,data,x,y,text_size,just,clickable,goto_name);
+
+			text_tag=xml_findnextchild(text_tag);
 		}
 	}
 	

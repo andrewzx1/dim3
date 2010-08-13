@@ -495,9 +495,9 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 	draw->pnt.y=y+draw->offset.y;
 	draw->pnt.z=draw->offset.z;
 
-		// face forward
+		// facing angle
 
-	draw->setup.ang.x=draw->setup.ang.y=draw->setup.ang.z=0.0f;
+	memmove(&draw->setup.ang,&draw->rot,sizeof(d3ang));
 
 		// only draw first mesh
 
