@@ -107,7 +107,7 @@ char						setup_screen_size_list[max_screen_size][32],
 							setup_action_list[ncontrol+1][128];
 							
 bool						setup_action_set_flag,setup_action_set_last_click,
-							setup_in_game;
+							setup_in_game,setup_close_save_flag;
 setup_type					setup_backup;
 
 action_display_type			action_display[ncontrol];
@@ -536,6 +536,10 @@ void setup_game_open(void)
 		
 	setup_action_set_flag=FALSE;
 	
+		// save/restore flag
+		
+	setup_close_save_flag=FALSE;
+	
 		// start with first tab
 		
 	setup_tab_value=0;
@@ -548,30 +552,19 @@ void setup_game_open(void)
 
 void setup_game_close(void)
 {
-	gui_shutdown();
-}
-
-void setup_game_done(void)
-{
-		// continue game or intro
-
-	if (setup_in_game) {
-		server.next_state=gs_running;
-	}
-	else {
-		server.next_state=gs_intro;
-	}
-}
-
-void setup_game_restore(void)
-{
-	memmove(&setup,&setup_backup,sizeof(setup_type));
-}
-
-void setup_game_save(void)
-{
 	char			err_str[256];
 	bool			display_reset;
+
+	gui_shutdown();
+	
+		// is it a restore?
+		
+	if (!setup_close_save_flag) {
+		memmove(&setup,&setup_backup,sizeof(setup_type));
+		return;
+	}
+	
+		// save
 
 		// fix control and sound changes
 		
@@ -592,13 +585,6 @@ void setup_game_save(void)
 		display_reset=display_reset || (setup_backup.mipmap_mode!=setup.mipmap_mode);
 	
 		if (display_reset) {
-
-				// need to shutdown GUI before we do this
-
-			gui_shutdown();
-
-				// reset
-
 			if (!view_reset_display(err_str)) {
 				game_loop_quit=TRUE;			// fatal error resetting display
 				return;
@@ -610,6 +596,18 @@ void setup_game_save(void)
 		// write setup
 		
 	setup_xml_write();
+}
+
+void setup_game_done(void)
+{
+		// continue game or intro
+
+	if (setup_in_game) {
+		server.next_state=gs_running;
+	}
+	else {
+		server.next_state=gs_intro;
+	}
 }
 
 void setup_game_default(void)
@@ -640,12 +638,12 @@ void setup_game_handle_click(int id)
 			// buttons
 			
 		case setup_game_ok_button:
-			setup_game_save();
+			setup_close_save_flag=TRUE;
 			setup_game_done();
 			return;
 			
 		case setup_game_cancel_button:
-			setup_game_restore();
+			setup_close_save_flag=FALSE;
 			setup_game_done();
 			return;
 

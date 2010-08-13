@@ -808,13 +808,14 @@ void read_settings_interface_button(int tag,hud_intro_button_type *btn)
 
 void read_settings_interface(void)
 {
-	int			cnt,interface_head_tag,scale_tag,
-				bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
-				radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
-				color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
-				proj_tag,debug_tag,games_head_tag,game_tag,options_head_tag,option_tag,
-				character_head_tag,character_item_tag,bot_head_tag,bot_tag,news_tag;
-	char		path[1024];
+	int						cnt,interface_head_tag,scale_tag,
+							bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
+							radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
+							color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
+							proj_tag,debug_tag,games_head_tag,game_tag,options_head_tag,option_tag,
+							character_head_tag,character_item_tag,bot_head_tag,bot_tag,news_tag;
+	char					path[1024];
+	hud_character_item_type	*hud_character;
 
 	default_settings_interface();
 	
@@ -1085,10 +1086,14 @@ void read_settings_interface(void)
 		character_item_tag=xml_findfirstchild("Character",character_head_tag);
 		
 		while (character_item_tag!=-1) {
-			xml_get_attribute_text(character_item_tag,"name",hud.character.characters[hud.character.ncharacter].name,name_str_len);
-			xml_get_attribute_text(character_item_tag,"model",hud.character.characters[hud.character.ncharacter].model_name,name_str_len);
-			xml_get_attribute_text(character_item_tag,"parameter",hud.character.characters[hud.character.ncharacter].param,name_str_len);
-			hud.character.characters[hud.character.ncharacter].interface_resize=xml_get_attribute_float_default(character_item_tag,"interface_resize",1.0f);
+			hud_character=&hud.character.characters[hud.character.ncharacter];
+			
+			xml_get_attribute_text(character_item_tag,"name",hud_character->name,name_str_len);
+			xml_get_attribute_text(character_item_tag,"model",hud_character->model_name,name_str_len);
+			xml_get_attribute_text(character_item_tag,"parameter",hud_character->param,name_str_len);
+			hud_character->interface_resize=xml_get_attribute_float_default(character_item_tag,"interface_resize",1.0f);
+			xml_get_attribute_3_coord_int(character_item_tag,"interface_offset",&hud_character->interface_offset.x,&hud_character->interface_offset.y,&hud_character->interface_offset.z);
+			
 			hud.character.ncharacter++;
 			character_item_tag=xml_findnextchild(character_item_tag);
 		}

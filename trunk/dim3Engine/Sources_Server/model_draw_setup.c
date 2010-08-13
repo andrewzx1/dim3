@@ -491,9 +491,9 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 	y=(int)(((float)y)*6.0f);
 	y+=(int)((1.0f-draw->resize)*((float)(mdl->view_box.size.y>>1)));
 
-	draw->pnt.x=x;
-	draw->pnt.y=y;
-	draw->pnt.z=0;
+	draw->pnt.x=x+draw->offset.x;
+	draw->pnt.y=y+draw->offset.y;
+	draw->pnt.z=draw->offset.z;
 
 		// face forward
 
