@@ -53,7 +53,7 @@ SDL_mutex					*element_thread_lock;
       
 ======================================================= */
 
-model_draw* element_load_model(char *name,char *animate,float resize,d3pnt *offset)
+model_draw* element_load_model(char *name,char *animate,float resize,d3pnt *offset,d3ang *rot)
 {
 	char				err_str[256];
 	model_draw			*draw;
@@ -75,6 +75,13 @@ model_draw* element_load_model(char *name,char *animate,float resize,d3pnt *offs
 	}
 	else {
 		memmove(&draw->offset,offset,sizeof(d3pnt));
+	}
+
+	if (rot==NULL) {
+		draw->rot.x=draw->rot.y=draw->rot.z=0.0f;
+	}
+	else {
+		memmove(&draw->rot,rot,sizeof(d3ang));
 	}
 	
 		// start the animation
@@ -802,7 +809,7 @@ void element_info_field_add(char *str,char *value_str,int id,int x,int y)
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_model_add(char *name,char *animate,float resize,d3pnt *offset,int id,int x,int y)
+void element_model_add(char *name,char *animate,float resize,d3pnt *offset,d3ang *rot,int id,int x,int y)
 {
 	element_type	*element;
 
@@ -821,7 +828,7 @@ void element_model_add(char *name,char *animate,float resize,d3pnt *offset,int i
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 	
-	element->setup.model.draw=element_load_model(name,animate,resize,offset);
+	element->setup.model.draw=element_load_model(name,animate,resize,offset,rot);
 
 	SDL_mutexV(element_thread_lock);
 }
@@ -3416,7 +3423,7 @@ bool element_has_table_check(int id)
       
 ======================================================= */
 
-bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *offset)
+bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *offset,d3ang *rot)
 {
 	bool			hit;
 	element_type	*element;
@@ -3428,7 +3435,7 @@ bool element_replace_model(int id,char *name,char *animate,float resize,d3pnt *o
 
 	if (element!=NULL) {
 		element_free_model(element);
-		element->setup.model.draw=element_load_model(name,animate,resize,offset);
+		element->setup.model.draw=element_load_model(name,animate,resize,offset,rot);
 	}
 	
 	SDL_mutexV(element_thread_lock);

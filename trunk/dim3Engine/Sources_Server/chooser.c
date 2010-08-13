@@ -185,7 +185,7 @@ void chooser_add_item(int chooser_idx,int template_idx,int id,char *file,int x,i
 	strcpy(piece->goto_name,goto_name);
 }
 
-void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,float resize,bool clickable,char *goto_name)
+void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,d3ang *rot,float resize,bool clickable,char *goto_name)
 {
 	int					piece_idx;
 	chooser_type		*chooser;
@@ -216,7 +216,10 @@ void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,
 	piece->id=id;
 	strcpy(piece->data.model.model_name,model_name);
 	strcpy(piece->data.model.animate_name,animate_name);
+
+	memmove(&piece->data.model.rot,rot,sizeof(d3ang));
 	piece->data.model.resize=resize;
+
 	piece->x=x;
 	piece->y=y;
 

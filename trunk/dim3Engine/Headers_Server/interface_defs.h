@@ -395,6 +395,7 @@ typedef struct		{
 typedef struct		{
 						float					resize;
 						char					model_name[name_str_len],animate_name[name_str_len];
+						d3ang					rot;
 					} chooser_model_type;
 
 typedef struct		{
