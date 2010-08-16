@@ -328,6 +328,7 @@ typedef struct		{
 typedef struct		{
 						int									nvertex,npoly,group_idx,
 															hide_mode,normal_mode;
+						float								import_factor;
 						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
@@ -712,7 +713,7 @@ typedef struct		{
 // functions
 //
 
-extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress_on,bool in_engine);
+extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool in_engine);
 extern bool map_new(map_type *map,char *name);
 extern bool map_open(map_type *map,char *name);
 extern bool map_reload(map_type *map);

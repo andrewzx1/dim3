@@ -222,7 +222,6 @@ bool view_initialize_display(char *err_str)
 
 	if (!gl_check_fsaa_ok()) setup.fsaa_mode=fsaa_mode_none;
 	if (!gl_check_texture_anisotropic_filter_ok()) setup.anisotropic_mode=anisotropic_mode_none;
-	if (!gl_check_texture_compress_ok()) setup.compress_on=FALSE;
 
 		// shadows
 

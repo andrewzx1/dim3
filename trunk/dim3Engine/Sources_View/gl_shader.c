@@ -681,7 +681,7 @@ void gl_shader_texture_set(shader_type *shader,bool map_shader,texture_type *tex
 {
 	GLuint			gl_id;
 
-		// extra texture map
+		// light map
 
 	if (map_shader) {
 		if ((lmap_txt_idx==-1) || (view.debug.on)) {

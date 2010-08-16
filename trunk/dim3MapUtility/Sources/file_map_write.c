@@ -449,6 +449,8 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("shadow",mesh->flag.shadow);
 	xml_add_attribute_boolean("no_light_map",mesh->flag.no_light_map);
 	xml_add_attribute_boolean("skip_light_map_trace",mesh->flag.skip_light_map_trace);
+	
+ 	if (mesh->import_factor!=0.0f) xml_add_attribute_float("import_factor",mesh->import_factor);
 
 	if (mesh->hide_mode!=mesh_hide_mode_never) xml_add_attribute_list("hide",(char*)mesh_hide_mode_str,mesh->hide_mode);
 	if (mesh->normal_mode!=mesh_normal_mode_auto) xml_add_attribute_list("normal",(char*)mesh_normal_mode_str,mesh->normal_mode);

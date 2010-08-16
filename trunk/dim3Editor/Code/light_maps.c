@@ -33,39 +33,40 @@ extern map_type					map;
 
 extern file_path_setup_type		file_path_setup;
 
-#define max_light_map_textures						64
-#define max_light_map_solid_color					128
-#define light_map_render_margin						5
+#define max_light_map_textures								64
+#define max_light_map_solid_color							64
+#define light_map_render_margin								5
+					
+typedef struct		{
+						int									x_shift,y_shift;
+						unsigned char						col[3];
+					} light_map_solid_color_cache_type;
 
 typedef struct		{
-						unsigned char				*block,*pixel_data,
-													*pixel_touch,*pixel_ignore;
+						int									solid_color_cache_count;
+						unsigned char						*block,*pixel_data,
+															*pixel_touch,*pixel_ignore;
+						light_map_solid_color_cache_type	*solid_color_cache;
 					} light_map_texture_type;
 					
 typedef struct		{
-						int							ptsz,txt_idx,
-													mesh_idx,poly_idx,liquid_idx,
-													x[8],y[8],
-													x_shift,y_shift,
-													x_sz,y_sz;
-						bool						solid_color;
-						d3pnt						pt[8];
-						d3rect						box;
+						int									ptsz,txt_idx,
+															mesh_idx,poly_idx,liquid_idx,
+															x[8],y[8],
+															x_shift,y_shift,
+															x_sz,y_sz;
+						bool								solid_color;
+						d3pnt								pt[8];
+						d3rect								box;
 					} light_map_poly_type;
 					
 typedef struct		{
-						unsigned char				*data;
+						unsigned char						*data;
 					} light_map_map_texture_alpha_type;
-					
-typedef struct		{
-						int							txt_idx,x_shift,y_shift;
-						unsigned char				col[3];
-					} light_map_solid_color_cache_type;
 
-int									light_map_poly_count,light_map_solid_color_cache_count;
+int									light_map_poly_count,light_map_texture_count;
 light_map_texture_type				*light_map_textures;
 light_map_poly_type					*light_map_polys;
-light_map_solid_color_cache_type	*light_map_solid_color_cache;
 light_map_map_texture_alpha_type	light_map_map_texture_alphas[max_map_texture];
 
 /* =======================================================
@@ -74,63 +75,19 @@ light_map_map_texture_alpha_type	light_map_map_texture_alphas[max_map_texture];
       
 ======================================================= */
 
-bool light_map_textures_start(char *err_str)
+bool light_map_textures_create(void)
 {
-	int						n,sz;
-	
-		// textures
-		
-	sz=sizeof(light_map_texture_type)*max_light_map_textures;
-	light_map_textures=(light_map_texture_type*)malloc(sz);
-	if (light_map_textures==NULL) {
-		strcpy(err_str,"Out of Memory");
-		return(FALSE);
-	}
-	
-	for (n=0;n!=max_light_map_textures;n++) {
-		light_map_textures[n].block=NULL;
-		light_map_textures[n].pixel_data=NULL;
-		light_map_textures[n].pixel_touch=NULL;
-		light_map_textures[n].pixel_ignore=NULL;
-	}
-	
-		// color cache
-		
-	light_map_solid_color_cache_count=0;
-	sz=sizeof(light_map_solid_color_cache_type)*max_light_map_solid_color;
-	
-	light_map_solid_color_cache=(light_map_solid_color_cache_type*)malloc(sz);
-	if (light_map_solid_color_cache==NULL) {
-		free(light_map_textures);
-		strcpy(err_str,"Out of Memory");
-		return(FALSE);
-	}
-		
-	
-	return(TRUE);
-}
-
-int light_map_textures_create(void)
-{
-	int						n,idx,sz;
+	int						sz;
 	light_map_texture_type	*lmap;
 	
-		// find free texture
+		// any free textures?
 		
-	idx=-1;
-	
-	for (n=0;n!=max_light_map_textures;n++) {
-		if (light_map_textures[n].pixel_data==NULL) {
-			idx=n;
-			break;
-		}
-	}
-	
-	if (idx==-1) return(-1);
+	if (light_map_texture_count==max_light_map_textures) return(FALSE);
 	
 		// setup texture
 		
-	lmap=&light_map_textures[idx];
+	lmap=&light_map_textures[light_map_texture_count];
+	light_map_texture_count++;
 	
 		// blocking data
 		// this is used to find empty slots to put in polygons
@@ -161,7 +118,42 @@ int light_map_textures_create(void)
 	lmap->pixel_ignore=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_ignore,sz);
 	
-	return(idx);
+		// color cache for solid color polygons
+		// each texture can use the same spot
+		// for solid colors for polys on this texture
+		
+	lmap->solid_color_cache_count=0;
+	
+	sz=sizeof(light_map_solid_color_cache_type)*max_light_map_solid_color;
+	lmap->solid_color_cache=(light_map_solid_color_cache_type*)malloc(sz);
+	
+	return(TRUE);
+}
+
+bool light_map_textures_start(char *err_str)
+{
+	int				sz;
+	
+		// textures
+		
+	sz=sizeof(light_map_texture_type)*max_light_map_textures;
+	light_map_textures=(light_map_texture_type*)malloc(sz);
+	if (light_map_textures==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+		// pre-create the first texture
+		
+	light_map_texture_count=0;
+	
+	if (!light_map_textures_create()) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+		
+	
+	return(TRUE);
 }
 
 void light_map_texture_map_folder_name(char *map_name)
@@ -195,10 +187,20 @@ void light_map_textures_save(char *base_path)
 		
 	txt_idx=max_map_texture-max_light_map_textures;
 	
-	for (n=0;n!=max_light_map_textures;n++) {
+	for (n=0;n!=light_map_texture_count;n++) {
 		dialog_progress_next();
 		
 		if (light_map_textures[n].pixel_data==NULL) break;
+		
+			// some setup
+			
+		sprintf(map.textures[txt_idx].material_name,"Light Map %.3d",n);
+
+		map.textures[txt_idx].shader_name[0]=0x0;
+			
+		map.textures[txt_idx].additive=FALSE;
+		map.textures[txt_idx].pixelated=FALSE;
+		map.textures[txt_idx].compress=FALSE;
 		
 			// save bitmap
 		
@@ -216,17 +218,21 @@ void light_map_textures_save(char *base_path)
 void light_map_textures_free(void)
 {
 	int						n;
+	light_map_texture_type	*lmap;
 	
-	for (n=0;n!=max_light_map_textures;n++) {
-		if (light_map_textures[n].block!=NULL) free(light_map_textures[n].block);
-		if (light_map_textures[n].pixel_data!=NULL) free(light_map_textures[n].pixel_data);
-		if (light_map_textures[n].pixel_touch!=NULL) free(light_map_textures[n].pixel_touch);
-		if (light_map_textures[n].pixel_ignore!=NULL) free(light_map_textures[n].pixel_ignore);
+	lmap=light_map_textures;
+	
+	for (n=0;n!=light_map_texture_count;n++) {
+		if (lmap->block!=NULL) free(lmap->block);
+		if (lmap->pixel_data!=NULL) free(lmap->pixel_data);
+		if (lmap->pixel_touch!=NULL) free(lmap->pixel_touch);
+		if (lmap->pixel_ignore!=NULL) free(lmap->pixel_ignore);
+		if (lmap->solid_color_cache!=NULL) free(lmap->solid_color_cache);
+		
+		lmap++;
 	}
 	
 	free(light_map_textures);
-	
-	free(light_map_solid_color_cache);
 }
 
 /* =======================================================
@@ -345,7 +351,7 @@ void light_map_textures_pixel_border(void)
 {
 	int						n;
 	
-	for (n=0;n!=max_light_map_textures;n++) {
+	for (n=0;n!=light_map_texture_count;n++) {
 		dialog_progress_next();
 		light_map_texture_single_pixel_border(n,map.settings.light_map.pixel_border_count);
 	}
@@ -441,7 +447,7 @@ void light_map_textures_blur(void)
 {
 	int						n;
 	
-	for (n=0;n!=max_light_map_textures;n++) {
+	for (n=0;n!=light_map_texture_count;n++) {
 		dialog_progress_next();
 		light_map_texture_single_blur(n,map.settings.light_map.blur_count);
 	}
@@ -597,11 +603,56 @@ int light_map_get_poly_count(void)
 
 bool light_map_polys_start(char *err_str)
 {
-	int							n,k,sz;
-	map_mesh_type				*mesh;
+	int							n,k,sz,idx,nmesh,
+								d,dist;
+	int							*mesh_idx_list;
+	map_mesh_type				*mesh,*chk_mesh;
 	map_mesh_poly_type			*poly;
 	map_liquid_type				*liq;
 	light_map_poly_type			*lm_poly;
+	
+		// build a list of meshes that
+		// are close to each other to minimize
+		// texture switches
+		
+	mesh_idx_list=(int*)malloc(map.mesh.nmesh*sizeof(int));
+	if (mesh_idx_list==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+	nmesh=0;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		mesh=&map.mesh.meshes[n];
+		
+			// sort it
+			
+		idx=-1;
+		dist=0;
+		
+		for (k=0;k!=nmesh;k++) {
+			chk_mesh=&map.mesh.meshes[mesh_idx_list[k]];
+			
+			d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,chk_mesh->box.mid.x,chk_mesh->box.mid.y,chk_mesh->box.mid.z);
+			
+			if ((idx==-1) || (d<dist)) {
+				idx=k;
+				dist=d;
+			}
+		}
+		
+		if (idx==-1) idx=nmesh;
+		
+			// move it into list
+			
+		sz=sizeof(int)*(nmesh-idx);
+		if (sz>0) memmove(&mesh_idx_list[idx+1],&mesh_idx_list[idx],sz);
+		
+		mesh_idx_list[idx]=n;
+		
+		nmesh++;
+	}
 	
 		// get poly count
 	
@@ -611,6 +662,7 @@ bool light_map_polys_start(char *err_str)
 	light_map_polys=(light_map_poly_type*)malloc(sz);
 	
 	if (light_map_polys==NULL) {
+		free(mesh_idx_list);
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
@@ -621,9 +673,10 @@ bool light_map_polys_start(char *err_str)
 	
 		// mesh polys
 		
-	for (n=0;n!=map.mesh.nmesh;n++) {
+	for (n=0;n!=nmesh;n++) {
 	
-		mesh=&map.mesh.meshes[n];
+		idx=mesh_idx_list[n];
+		mesh=&map.mesh.meshes[idx];
 		
 			// clear all light map textures
 			
@@ -648,7 +701,7 @@ bool light_map_polys_start(char *err_str)
 	
 		for (k=0;k!=mesh->npoly;k++) {
 			
-			lm_poly->mesh_idx=n;
+			lm_poly->mesh_idx=idx;
 			lm_poly->poly_idx=k;
 			
 				// flatten the poly
@@ -1425,40 +1478,40 @@ bool light_map_render_poly(int lm_poly_idx,unsigned char *solid_color,light_map_
 
 /* =======================================================
 
-      Solid Color Cache
+      Solid Colors in Textures
       
 ======================================================= */
 
-bool light_map_find_solid_color(unsigned char *col,int *txt_idx,int *x,int *y)
+bool light_map_find_solid_color(unsigned char *col,int *x,int *y,light_map_texture_type *lmap)
 {
 	int									n;
 	light_map_solid_color_cache_type	*cache;
 
-	cache=light_map_solid_color_cache;
+	cache=lmap->solid_color_cache;
 	
-	for (n=0;n!=light_map_solid_color_cache_count;n++) {
+	for (n=0;n!=lmap->solid_color_cache_count;n++) {
+	
 		if ((cache->col[0]==col[0]) && (cache->col[1]==col[1]) && (cache->col[2]==col[2])) {
-			*txt_idx=cache->txt_idx;
 			*x=cache->x_shift;
 			*y=cache->y_shift;
 			return(TRUE);
 		}
+		
 		cache++;
 	}
 	
 	return(FALSE);
 }
 
-void light_map_add_solid_color(unsigned char *col,int txt_idx,int x,int y)
+void light_map_add_solid_color(unsigned char *col,int x,int y,light_map_texture_type *lmap)
 {
 	light_map_solid_color_cache_type		*cache;
 	
-	if (light_map_solid_color_cache_count==max_light_map_solid_color) return;
+	if (lmap->solid_color_cache_count==max_light_map_solid_color) return;
 	
-	cache=&light_map_solid_color_cache[light_map_solid_color_cache_count];
-	light_map_solid_color_cache_count++;
+	cache=&lmap->solid_color_cache[lmap->solid_color_cache_count];
+	lmap->solid_color_cache_count++;
 	
-	cache->txt_idx=txt_idx;
 	cache->x_shift=x;
 	cache->y_shift=y;
 	
@@ -1473,7 +1526,7 @@ void light_map_add_solid_color(unsigned char *col,int txt_idx,int x,int y)
 
 bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 {
-	int							n,x,y,txt_idx;
+	int							x,y;
 	unsigned char				solid_col[3];
 	d3rect						box;
 	light_map_poly_type			*lm_poly;
@@ -1503,6 +1556,10 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 		lm_poly->solid_color=light_map_render_poly(lm_poly_idx,solid_col,NULL);
 	}
 	
+		// current light map
+		
+	lmap=&light_map_textures[light_map_texture_count-1];
+	
 		// solid color lightmaps only take 1 block
 		// check to see if we already made a solid block
 		// for this, if so, use that and skip out
@@ -1511,43 +1568,27 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	if (lm_poly->solid_color) {
 		lm_poly->x_sz=lm_poly->y_sz=light_map_texture_block_size;
 		
-		if (light_map_find_solid_color(solid_col,&txt_idx,&x,&y)) {
-			lm_poly->txt_idx=txt_idx;
+		if (light_map_find_solid_color(solid_col,&x,&y,lmap)) {
+			lm_poly->txt_idx=light_map_texture_count-1;
 			lm_poly->x_shift=x;
 			lm_poly->y_shift=y;
 			return(TRUE);
 		}
 	}
 	
-		// can this polygon fit in any of the current
-		// light maps?
+		// can this polygon fit in the current light map?
 		
-	txt_idx=-1;
+	if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lm_poly->solid_color,lmap)) {
 	
-	for (n=0;n!=max_light_map_textures;n++) {
-		lmap=&light_map_textures[n];
-		if (lmap->pixel_data==NULL) continue;
-		
-		if (light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lm_poly->solid_color,lmap)) {
-			txt_idx=n;
-			break;
-		}
-	}
-
-		// need to create a new light map?
-		
-	if (txt_idx==-1) {
-	
-		txt_idx=light_map_textures_create();
-		if (txt_idx==-1) {
+		if (!light_map_textures_create()) {
 			sprintf(err_str,"Too many polys in map, would create more than %d light maps",max_light_map_textures);
 			return(FALSE);
 		}
 		
-		light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lm_poly->solid_color,&light_map_textures[txt_idx]);
+		lmap=&light_map_textures[light_map_texture_count-1];
+		
+		light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lm_poly->solid_color,lmap);
 	}
-	
-	lmap=&light_map_textures[txt_idx];
 	
 		// remember the shift for creating the UVs
 		
@@ -1556,14 +1597,14 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	
 	memmove(&lm_poly->box,&box,sizeof(d3rect));
 	
-	lm_poly->txt_idx=txt_idx;
+	lm_poly->txt_idx=light_map_texture_count-1;
 	
 		// special check for all solid colors
 		// light maps
 		
 	if (lm_poly->solid_color) {
 		light_map_texture_fill_solid_color(solid_col,x,y,lmap);
-		light_map_add_solid_color(solid_col,txt_idx,x,y);
+		light_map_add_solid_color(solid_col,x,y,lmap);
 		return(TRUE);
 	}
 

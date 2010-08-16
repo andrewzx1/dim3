@@ -32,7 +32,7 @@ and can be sold or given away.
 typedef struct		{
 						int						anisotropic_mode,mipmap_mode,
 												texture_quality_mode;
-						bool					compress_on,in_engine;
+						bool					in_engine;
 						file_path_setup_type	file_path_setup;
                     } maputility_settings_type;
 

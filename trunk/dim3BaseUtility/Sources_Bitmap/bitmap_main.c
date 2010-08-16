@@ -210,7 +210,7 @@ unsigned char* bitmap_fix_power_2_and_quality(bitmap_type *bitmap,bool has_alpha
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress_on,bool rectangle,bool pixelated,bool scrub_black_to_alpha,bool keep_pixel_data)
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha,bool keep_pixel_data)
 {
 	unsigned char		*png_data,*strip_data;
 	bool				ok,alpha_channel;
@@ -256,7 +256,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 	
 		// get the texture
 		
-	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,compress_on,rectangle,pixelated);
+	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,compress,rectangle,pixelated);
 
 		// can return pixel data if requested,
 		// otherwise free it
@@ -316,7 +316,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
       
 ======================================================= */
 
-bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle)
+bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle)
 {
 	bitmap->wid=wid;
 	bitmap->high=high;
@@ -334,7 +334,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 	
 		// get the texture
 		
-	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,compress_on,rectangle,FALSE));
+	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,compress,rectangle,FALSE));
 }
 
 /* =======================================================
@@ -343,7 +343,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
       
 ======================================================= */
 
-void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bumpmap,bitmap_type *specularmap,int anisotropic_mode,int mipmap_mode,bool compress_on)
+void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bumpmap,bitmap_type *specularmap,int anisotropic_mode,int mipmap_mode,bool compress)
 {
 	int					n,wid,high,pixel_cnt,data_sz;
 	float				f,pf[3];
@@ -452,7 +452,7 @@ void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bum
 
 		// and finally make the combine bitmap
 
-	bitmap_data(combinemap,data,wid,high,(bitmap->alpha_mode!=alpha_mode_none),anisotropic_mode,mipmap_mode,compress_on,FALSE);
+	bitmap_data(combinemap,data,wid,high,(bitmap->alpha_mode!=alpha_mode_none),anisotropic_mode,mipmap_mode,compress,FALSE);
 }
 
 /* =======================================================

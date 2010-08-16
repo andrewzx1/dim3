@@ -79,7 +79,7 @@ int file_paths_add_file(file_path_directory_type *fpd,int parent_idx,char *name,
 	idx=-1;
 	
 	for (n=0;n!=fpd->nfile;n++) {
-		if (strcasecmp(fpd->files[n].file_name,file_name)==0) {
+		if ((strcasecmp(fpd->files[n].file_name,file_name)==0) && (fpd->files[n].parent_idx==parent_idx)) {
 			idx=n;
 			break;
 		}

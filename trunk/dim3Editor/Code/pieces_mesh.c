@@ -36,6 +36,8 @@ and can be sold or given away.
 extern map_type					map;
 extern editor_state_type		state;
 
+extern file_path_setup_type		file_path_setup;
+
 /* =======================================================
 
       Finish Mesh Addition
@@ -55,7 +57,11 @@ void piece_add_mesh_finish(int mesh_idx)
 		
 	state.drag_mode=drag_mode_mesh;
 	
-	if (state.auto_texture) {
+		// if import hasn't already locked UV,
+		// lock it if auto texture state is off
+		// otherwise, reset the UVs
+	
+	if ((state.auto_texture) && (!map.mesh.meshes[mesh_idx].flag.lock_uv)) {
 		map_mesh_reset_uv(&map,mesh_idx);
 	}
 	else {
@@ -72,11 +78,34 @@ void piece_add_mesh_finish(int mesh_idx)
       
 ======================================================= */
 
-void piece_add_obj_mesh_replace(d3pnt *r_min,d3pnt *r_max)
+bool piece_add_obj_is_replace_ok(float *old_scale)
+{
+	int				n,type,mesh_idx,poly_idx,sel_cnt,hit_mesh_idx;
+	
+	sel_cnt=select_count();
+	if (sel_cnt==0) return(FALSE);
+
+	hit_mesh_idx=-1;
+		
+	for (n=0;n!=sel_cnt;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		if (hit_mesh_idx!=-1) {
+			if (hit_mesh_idx!=mesh_idx) return(FALSE);			// can only replace one mesh
+		}
+		
+		hit_mesh_idx=mesh_idx;
+		
+		*old_scale=map.mesh.meshes[mesh_idx].import_factor;
+	}
+	
+	return(hit_mesh_idx!=-1);
+}
+
+void piece_add_obj_replace_delete_existing(void)
 {
 	int				n,type,mesh_idx,poly_idx,sel_cnt;
-	bool			hit;
-	d3pnt			pmin,pmax;
 	
 	sel_cnt=select_count();
 	if (sel_cnt==0) return;
@@ -84,34 +113,6 @@ void piece_add_obj_mesh_replace(d3pnt *r_min,d3pnt *r_max)
 		// sort segment so higher indexes are deleted first
 		
 	select_sort();
-
-		// get size
-		
-	hit=FALSE;
-		
-	for (n=0;n!=sel_cnt;n++) {
-		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type!=mesh_piece) continue;
-	
-		map_mesh_calculate_extent(&map,mesh_idx,&pmin,&pmax);
-		
-		if (!hit) {
-			memmove(r_min,&pmin,sizeof(d3pnt));
-			memmove(r_max,&pmax,sizeof(d3pnt));
-			
-			hit=TRUE;
-			continue;
-		}
-
-		if (pmin.x<r_min->x) r_min->x=pmin.x;
-		if (pmax.x>r_max->x) r_max->x=pmax.x;
-		if (pmin.y<r_min->y) r_min->y=pmin.y;
-		if (pmax.y>r_max->y) r_max->y=pmax.y;
-		if (pmin.z<r_min->z) r_min->z=pmin.z;
-		if (pmax.z>r_max->z) r_max->z=pmax.z;
-	}
-		
-		// delete old meshes
 		
 	for (n=0;n!=sel_cnt;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
@@ -119,6 +120,124 @@ void piece_add_obj_mesh_replace(d3pnt *r_min,d3pnt *r_max)
 	}
 	
 	select_clear();
+}
+
+/* =======================================================
+
+      Textures in Materials
+      
+======================================================= */
+
+void import_texture_copy(char *path,char *name,char *sub_name)
+{
+    char			*c,dest_name[256],srce_path[1024],dest_path[1024];
+
+	strcpy(srce_path,path);
+	
+	if (sub_name!=NULL) {
+		c=strrchr(srce_path,'.');
+		if (c==NULL) return;
+		
+		*c=0x0;
+		strcat(srce_path,sub_name);
+		strcat(srce_path,".png");
+	}
+	
+	strcpy(dest_name,name);
+	
+	if (sub_name!=NULL) strcat(dest_name,sub_name);
+	
+	file_paths_data_default(&file_path_setup,dest_path,"Bitmaps/Textures",dest_name,"png");
+	bitmap_copy(srce_path,dest_path);
+}
+
+int import_texture_pick(char *material_name)
+{
+	int				n,idx;
+    char			*c,path[1024],title[256],
+					file_name[256],err_str[256];
+	texture_type	*texture;
+	
+		// check for null or missing materials
+		// use selected texture
+		
+	idx=texture_palette_get_selected_texture();
+	if (idx==-1) idx=0;
+	
+	if (material_name[0]==0x0) return(idx);
+	if (strstr(material_name,"null")==material_name) return(idx);
+	if (strstr(material_name,"(null)")==material_name) return(idx);
+	if (strstr(material_name,"default")==material_name) return(idx);
+	
+		// find a free texture or texture
+		// that already has material name
+		
+	idx=-1;
+	
+	texture=map.textures;
+	
+    for (n=0;n!=max_map_texture;n++) {
+	
+			// a free texture
+			
+		if ((texture->frames[0].bitmap.gl_id==-1) && (idx==-1)) {
+			idx=n;
+		}
+		
+			// a used texture, check to see if
+			// material already exists
+			
+		else {
+			if (strcasecmp(texture->material_name,material_name)==0) return(n);
+		}
+		
+		texture++;
+	}
+	
+	if (idx==-1) return(0);
+	
+	texture=&map.textures[idx];
+	
+		// remember material name
+		
+	strcpy(texture->material_name,material_name);
+	
+		// pick a bitmap
+		
+	sprintf(title,"Material %s Found - Select Bitmap",material_name);
+	dialog_alert(title,"Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
+	
+	if (!import_load_file(path,"png")) return(0);
+	
+		// is it good?
+		
+	if (!bitmap_check(path,err_str)) {
+		dialog_alert("Error",err_str);
+		return(0);
+	}
+	
+		// get the actual file name
+		
+	c=strrchr(path,'/');
+	strcpy(file_name,c);
+	c=strrchr(file_name,'.');
+	*c=0x0;
+	
+		// copy bitmaps to texture folder
+		// copy selected bitmap and any addition _n, _s, or _g files
+		
+	strcpy(texture->frames[0].name,file_name);
+		
+	import_texture_copy(path,texture->frames[0].name,NULL);
+	import_texture_copy(path,texture->frames[0].name,"_n");
+	import_texture_copy(path,texture->frames[0].name,"_s");
+	import_texture_copy(path,texture->frames[0].name,"_g");
+	
+		// open the textures
+		
+	map_refresh_textures(&map);
+
+	return(idx);
 }
 
 /* =======================================================
@@ -133,12 +252,13 @@ void piece_add_obj_mesh(void)
 						v_idx,uv_idx,normal_idx,normal_count,
 						mesh_idx,poly_idx,txt_idx,x,y,z;
 	int					px[8],py[8],pz[8];
-	char				*c,txt[256],vstr[256],uvstr[256],normalstr[256],path[1024];
+	char				*c,txt[256],material_name[256],
+						vstr[256],uvstr[256],normalstr[256],path[1024];
 	unsigned char		*vertex_mark;
-	float				fx,fy,fz,fsz,f_scale,gx[8],gy[8];
+	float				fx,fy,fz,f_scale,f_old_scale,gx[8],gy[8];
 	float				*uvs,*uv,*normals,*normal;
-	bool				replace,mesh_add;
-	d3pnt				*vertexes,*dpt,pnt,r_min,r_max;
+	bool				replace,replace_ok,mesh_add;
+	d3pnt				*vertexes,*dpt,pnt;
 	d3fpnt				min,max,scale;
 	d3vct				n_v;
 	map_mesh_type		*mesh;
@@ -279,19 +399,16 @@ void piece_add_obj_mesh(void)
 	
 	free(vertex_mark);
 	
+		// if replaceable, get replaceable mesh
+		// scale
+		
+	replace_ok=piece_add_obj_is_replace_ok(&f_old_scale);
+	
 		// get default scale
 		
-	fsz=max.x-min.x;
-	if ((max.y-min.y)>fsz) fsz=max.y-min.y;
-	if ((max.z-min.z)>fsz) fsz=max.z-min.z;
-	
-	f_scale=import_obj_max_dimension/fsz;
-	k=(int)(f_scale*100.0f);
-	f_scale=((float)k)/100.0f;
-
 	os_set_arrow_cursor();
 
-	replace=dialog_mesh_scale_run(&f_scale,select_has_type(mesh_piece));
+	replace=dialog_mesh_scale_run(&min,&max,replace_ok,f_old_scale,&f_scale);
 	
 		// start progress
 		
@@ -299,14 +416,9 @@ void piece_add_obj_mesh(void)
 	
 	scale.x=scale.y=scale.z=f_scale;
 	
-		// fix scale if a replace
+		// delete old meshes if replace
 		
-	if (replace) piece_add_obj_mesh_replace(&r_min,&r_max);
-	
-		// get texture index
-		
-	txt_idx=texture_palette_get_selected_texture();
-	if (txt_idx==-1) txt_idx=0;
+	if (replace) piece_add_obj_replace_delete_existing();
 	
 		// get the vertexes
 		
@@ -334,20 +446,9 @@ void piece_add_obj_mesh(void)
 		textdecode_get_piece(n,3,txt);
 		fz=strtod(txt,NULL);
 		
-		if (!replace) {
-			dpt->x=(int)(fx*scale.x);
-			dpt->y=(int)(fy*scale.y);
-			dpt->z=(int)(fz*scale.z);
-		}
-		else {
-			dpt->x=r_min.x;
-			dpt->y=r_min.y;
-			dpt->z=r_min.z;
-			
-			if (max.x!=min.x) dpt->x=r_min.x+(int)(((fx-min.x)/(max.x-min.x))*(float)(r_max.x-r_min.x));
-			if (max.y!=min.y) dpt->y=r_min.y+(int)(((fy-min.y)/(max.y-min.y))*(float)(r_max.y-r_min.y));
-			if (max.z!=min.z) dpt->z=r_min.z+(int)(((fz-min.z)/(max.z-min.z))*(float)(r_max.z-r_min.z));
-		}
+		dpt->x=(int)(fx*scale.x);
+		dpt->y=(int)(fy*scale.y);
+		dpt->z=(int)(fz*scale.z);
 		
 		dpt++;
 	}
@@ -356,31 +457,28 @@ void piece_add_obj_mesh(void)
 		
 	dialog_progress_next();
 		
-	if (!replace) {
-			
-		x=y=z=0;
+	x=y=z=0;
+	
+	dpt=vertexes;
+	
+	for (n=0;n!=nvertex;n++) {
+		x+=dpt->x;
+		y+=dpt->y;
+		z+=dpt->z;
+		dpt++;
+	}
+	
+	x/=nvertex;
+	y/=nvertex;
+	z/=nvertex;
 		
-		dpt=vertexes;
-		
-		for (n=0;n!=nvertex;n++) {
-			x+=dpt->x;
-			y+=dpt->y;
-			z+=dpt->z;
-			dpt++;
-		}
-		
-		x/=nvertex;
-		y/=nvertex;
-		z/=nvertex;
-			
-		dpt=vertexes;
-		
-		for (n=0;n!=nvertex;n++) {
-			dpt->x=(dpt->x-x)+pnt.x;
-			dpt->y=(dpt->y-y)+pnt.y;
-			dpt->z=(dpt->z-z)+pnt.z;
-			dpt++;
-		}
+	dpt=vertexes;
+	
+	for (n=0;n!=nvertex;n++) {
+		dpt->x=(dpt->x-x)+pnt.x;
+		dpt->y=(dpt->y-y)+pnt.y;
+		dpt->z=(dpt->z-z)+pnt.z;
+		dpt++;
 	}
 	
 		// get the UVs
@@ -440,6 +538,7 @@ void piece_add_obj_mesh(void)
 		// need to split up meshes by materials
 		
 	mesh=NULL;
+	txt_idx=0;
 	
 		// get the polys
 		
@@ -453,8 +552,15 @@ void piece_add_obj_mesh(void)
 			// if we don't have one yet and if we do,
 			// the older one actually has polygons
 			
-		if ((strcmp(txt,"usemtl")==0) || (mesh==NULL)) {
+		if (strcmp(txt,"usemtl")==0) {
 		
+				// get material and texture
+				
+			textdecode_get_piece(n,1,material_name);
+			txt_idx=import_texture_pick(material_name);
+		
+				// add the mesh
+				
 			mesh_add=TRUE;
 			
 			if (mesh!=NULL) {
@@ -473,8 +579,23 @@ void piece_add_obj_mesh(void)
 				}
 	
 				mesh=&map.mesh.meshes[mesh_idx];
+				
+					// set the scale for replacements
+					
+				mesh->import_factor=f_scale;
+				
+					// set UV and Normal locks if uvs and normals
+					// exist in obj
+					
+				mesh->flag.lock_uv=(nuv!=0);
+				if (nnormal!=0) map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_lock;
 			}
 		}
+		
+			// skip if we don't have a mesh
+			// we have to encounter a material first
+			
+		if (mesh==NULL) continue;
 
 			// a face?
 			
@@ -577,7 +698,6 @@ void piece_add_obj_mesh(void)
 	dialog_progress_next();
 
 	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(nnormal!=0));
-	if (nnormal!=0) map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_lock;
 	
 		// finish up
 		

@@ -49,8 +49,7 @@ and can be sold or given away.
 #define ctrl_anisotropic_id					6
 #define ctrl_mipmap_id						7
 #define ctrl_texture_quality_id				8
-#define ctrl_compress_id					9
-#define ctrl_gamma_id						10
+#define ctrl_gamma_id						9
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -124,7 +123,7 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*10;
+	control_y_sz=control_y_add*9;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -163,9 +162,6 @@ void setup_game_video_pane(void)
 	element_combo_add("MipMap Filtering",(char*)setup_mipmap_mode_list,setup.mipmap_mode,ctrl_mipmap_id,x,y,TRUE);
 	y+=control_y_add;
 	element_combo_add("Texture Quality",(char*)setup_texture_quality_mode_list,setup.texture_quality_mode,ctrl_texture_quality_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("Texture Compression",setup.compress_on,ctrl_compress_id,x,y,TRUE);
-	element_enable(ctrl_compress_id,gl_check_texture_compress_ok());
 	y+=control_y_add;
 
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
@@ -701,10 +697,6 @@ void setup_game_handle_click(int id)
 			setup.fsaa_mode=element_get_value(ctrl_fsaa_id);
 			break;
 			
-		case ctrl_compress_id:
-			setup.compress_on=element_get_value(ctrl_compress_id);
-			break;
-
 		case ctrl_gamma_id:
 			setup.gamma=element_get_slider_value(ctrl_gamma_id);
 			break;
