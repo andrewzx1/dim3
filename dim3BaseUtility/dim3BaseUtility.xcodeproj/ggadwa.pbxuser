@@ -66,8 +66,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 302310905;
-			PBXWorkspaceStateSaveDate = 302310905;
+			PBXPerProjectTemplateStateSaveDate = 303510432;
+			PBXWorkspaceStateSaveDate = 303510432;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
@@ -116,10 +116,10 @@
 	};
 	F556BC740C7BA9E90059E7FC /* file_search.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9308}}";
-			sepNavSelRange = "{13744, 39}";
-			sepNavVisRange = "{13135, 1199}";
-			sepNavWindowFrame = "{{429, 182}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9386}}";
+			sepNavSelRange = "{2156, 0}";
+			sepNavVisRange = "{1589, 1081}";
+			sepNavWindowFrame = "{{274, 103}, {1041, 747}}";
 		};
 	};
 	F5AD52770BBE148C001C7C04 /* dim3baseutility.exp */ = {
@@ -204,17 +204,17 @@
 	};
 	F5AD52A00BBE16AC001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1496, 7397}}";
-			sepNavSelRange = "{2475, 0}";
-			sepNavVisRange = "{17685, 1748}";
-			sepNavWindowFrame = "{{953, 143}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1475, 7189}}";
+			sepNavSelRange = "{19162, 0}";
+			sepNavVisRange = "{17128, 817}";
+			sepNavWindowFrame = "{{310, 220}, {1041, 747}}";
 		};
 	};
 	F5AD52A90BBE1720001C7C04 /* baseprivate.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1062, 1222}}";
-			sepNavSelRange = "{2220, 19}";
-			sepNavVisRange = "{1280, 1216}";
+			sepNavIntBoundsRect = "{{0, 0}, {1041, 1222}}";
+			sepNavSelRange = "{2330, 0}";
+			sepNavVisRange = "{1280, 1272}";
 			sepNavWindowFrame = "{{495, 170}, {1041, 747}}";
 		};
 	};
@@ -244,7 +244,7 @@
 	};
 	F5AD52FA0BBE1A66001C7C04 /* bitmap_movie.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2587}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2366}}";
 			sepNavSelRange = "{2026, 9}";
 			sepNavVisRange = "{1215, 975}";
 			sepNavWindowFrame = "{{428, 173}, {1041, 747}}";
@@ -252,17 +252,17 @@
 	};
 	F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6461}}";
-			sepNavSelRange = "{7615, 14}";
-			sepNavVisRange = "{614, 1186}";
+			sepNavIntBoundsRect = "{{0, 0}, {1139, 6539}}";
+			sepNavSelRange = "{10026, 0}";
+			sepNavVisRange = "{9413, 1155}";
 			sepNavWindowFrame = "{{435, 164}, {1041, 747}}";
 		};
 	};
 	F5AD52FD0BBE1A66001C7C04 /* textures.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1055, 5174}}";
-			sepNavSelRange = "{3542, 6}";
-			sepNavVisRange = "{2601, 1291}";
+			sepNavIntBoundsRect = "{{0, 0}, {1034, 5356}}";
+			sepNavSelRange = "{3685, 0}";
+			sepNavVisRange = "{2715, 1342}";
 			sepNavWindowFrame = "{{491, 100}, {1041, 747}}";
 		};
 	};

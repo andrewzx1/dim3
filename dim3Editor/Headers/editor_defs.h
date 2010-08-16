@@ -156,7 +156,8 @@ typedef struct		{
 
 typedef struct		{
 						int						anisotropic_mode,mipmap_mode,
-												duplicate_offset,snap_size;
+												duplicate_offset,snap_size,
+												clip_distance;
 						bool					auto_texture,flip_movement;
 						char					engine_name[256];
 						setup_col_type			col;

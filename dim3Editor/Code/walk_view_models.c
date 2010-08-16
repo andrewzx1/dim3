@@ -52,7 +52,7 @@ void walk_view_models_start(void)
 	
 	models=malloc(sizeof(model_type)*max_model);
 	
-	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
 }
 
 void walk_view_models_close(void)

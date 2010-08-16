@@ -72,21 +72,6 @@ int texture_count(void)
 	return(count);
 }
 
-int texture_find_free(void)
-{
-	int				n;
-	texture_type	*texture;
-	
-	texture=model.textures;
-	
-    for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[0].bitmap.gl_id==-1) return(n);
-		texture++;
-	}
-	
-	return(0);
-}
-
 /* =======================================================
 
       Texture Copy
@@ -126,14 +111,42 @@ void texture_copy(char *path,char *name,char *sub_name)
 
 int texture_pick(char *material_name,char *err_str)
 {
-	int				idx;
-    char			path[1024],title[256];
+	int				n,idx;
+    char			*c,path[1024],title[256],file_name[256];
 	texture_type	*texture;
 	
-		// find a free texture
+		// find a free texture or texture
+		// that already has material name
 		
-	idx=texture_find_free();
+	idx=-1;
+	
+	texture=model.textures;
+	
+    for (n=0;n!=max_model_texture;n++) {
+	
+			// a free texture
+			
+		if ((texture->frames[0].bitmap.gl_id==-1) && (idx==-1)) {
+			idx=n;
+		}
+		
+			// a used texture, check to see if
+			// material already exists
+			
+		else {
+			if (strcasecmp(texture->material_name,material_name)==0) return(n);
+		}
+		
+		texture++;
+	}
+	
+	if (idx==-1) return(0);
+	
 	texture=&model.textures[idx];
+	
+		// remember material name
+		
+	strcpy(texture->material_name,material_name);
 	
 		// pick a bitmap
 		
@@ -149,10 +162,17 @@ int texture_pick(char *material_name,char *err_str)
 		
 	if (!bitmap_check(path,err_str)) return(-1);
 	
+		// get the actual file name
+		
+	c=strrchr(path,'/');
+	strcpy(file_name,c);
+	c=strrchr(file_name,'.');
+	*c=0x0;
+	
 		// copy bitmaps to model folder
 		// copy selected bitmap and any addition _n, _s, or _g files
 		
-	strcpy(texture->frames[0].name,material_name);
+	strcpy(texture->frames[0].name,file_name);
 		
 	texture_copy(path,texture->frames[0].name,NULL);
 	texture_copy(path,texture->frames[0].name,"_n");

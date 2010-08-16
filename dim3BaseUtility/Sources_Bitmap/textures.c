@@ -96,7 +96,7 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
       
 ======================================================= */
 
-bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool compress_on,bool rectangle,bool pixelated)
+bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle,bool pixelated)
 {
 	int					gl_txtformat,gl_txttype,gl_bindtype;
 	GLuint				gl_id;
@@ -125,11 +125,11 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 		
 	if (bitmap->alpha_mode==alpha_mode_none) {
 		gl_txttype=GL_RGB;
-		gl_txtformat=compress_on?GL_COMPRESSED_RGB:GL_RGB;
+		gl_txtformat=compress?GL_COMPRESSED_RGB:GL_RGB;
 	}
 	else {
 		gl_txttype=GL_RGBA;
-		gl_txtformat=compress_on?GL_COMPRESSED_RGBA:GL_RGBA;
+		gl_txtformat=compress?GL_COMPRESSED_RGBA:GL_RGBA;
 	}
 	
 		// load texture
@@ -270,7 +270,7 @@ void bitmap_texture_clear(texture_type *texture)
 	strcpy(texture->shader_name,"Default");
 
 	texture->shine_factor=10.0f;
-	texture->additive=texture->pixelated=FALSE;
+	texture->additive=texture->pixelated=texture->compress=FALSE;
 	texture->material_name[0]=0x0;
 
 	texture->animate.on=FALSE;
@@ -312,6 +312,7 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	texture->animate.on=xml_get_attribute_boolean(main_tag,"animate");
 	texture->additive=xml_get_attribute_boolean(main_tag,"additive");
 	texture->pixelated=xml_get_attribute_boolean(main_tag,"pixelated");
+	texture->compress=xml_get_attribute_boolean(main_tag,"compress");
 
 	texture->shine_factor=xml_get_attribute_float_default(main_tag,"shine_factor",10.0f);
 
@@ -359,6 +360,7 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_boolean("animate",texture->animate.on);
 	xml_add_attribute_boolean("additive",texture->additive);
 	xml_add_attribute_boolean("pixelated",texture->pixelated);
+	xml_add_attribute_boolean("compress",texture->compress);
 
 	xml_add_attribute_float("shine_factor",texture->shine_factor);
 	

@@ -19,6 +19,7 @@
 		2625D03B0F54C9960023B0D3 /* render_map_opaque.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0370F54C9960023B0D3 /* render_map_opaque.c */; };
 		2625D03D0F54C9960023B0D3 /* render_map_transparent.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0390F54C9960023B0D3 /* render_map_transparent.c */; };
 		262955440F9E5C4B00763482 /* render_shadow.c in Sources */ = {isa = PBXBuildFile; fileRef = 262955430F9E5C4B00763482 /* render_shadow.c */; };
+		262CFBBA1212046200BD4214 /* gl_es_patches.c in Sources */ = {isa = PBXBuildFile; fileRef = 262CFBB91212046200BD4214 /* gl_es_patches.c */; };
 		263722E911E83E5000BE22EA /* script_map_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = 263722E811E83E5000BE22EA /* script_map_polygon.c */; };
 		263EF8C00FD9CFEE00FEB1E5 /* script_multiplayer_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */; };
 		264A29FB1193C66700291FAB /* obj_spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A29FA1193C66700291FAB /* obj_spawn.c */; };
@@ -400,6 +401,7 @@
 		2625D0370F54C9960023B0D3 /* render_map_opaque.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_opaque.c; path = Sources_View/render_map_opaque.c; sourceTree = "<group>"; };
 		2625D0390F54C9960023B0D3 /* render_map_transparent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_transparent.c; path = Sources_View/render_map_transparent.c; sourceTree = "<group>"; };
 		262955430F9E5C4B00763482 /* render_shadow.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_shadow.c; path = Sources_View/render_shadow.c; sourceTree = "<group>"; };
+		262CFBB91212046200BD4214 /* gl_es_patches.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_es_patches.c; path = Sources_View/gl_es_patches.c; sourceTree = "<group>"; };
 		263722E811E83E5000BE22EA /* script_map_polygon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_polygon.c; path = Sources_Server/script_map_polygon.c; sourceTree = "<group>"; };
 		263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer_score.c; path = Sources_Server/script_multiplayer_score.c; sourceTree = "<group>"; };
 		264A29FA1193C66700291FAB /* obj_spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = obj_spawn.c; path = Sources_Server/obj_spawn.c; sourceTree = "<group>"; };
@@ -1301,6 +1303,7 @@
 				260AE9340F832A5B00451942 /* gl_back_render.c */,
 				F5DD1A9609085CAA00721649 /* gl_text.c */,
 				F5DD1A9709085CAA00721649 /* gl_texture.c */,
+				262CFBB91212046200BD4214 /* gl_es_patches.c */,
 			);
 			name = Video;
 			sourceTree = "<group>";
@@ -1919,6 +1922,7 @@
 				26C83ADA11C185B100E2D41B /* scripts_timers.c in Sources */,
 				26A60BD511CC1DCF00E9AB33 /* view_draw_debug.c in Sources */,
 				263722E911E83E5000BE22EA /* script_map_polygon.c in Sources */,
+				262CFBBA1212046200BD4214 /* gl_es_patches.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

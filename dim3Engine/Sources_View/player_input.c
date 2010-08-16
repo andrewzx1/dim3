@@ -798,6 +798,11 @@ void player_side_scroll_input(obj_type *obj)
         if (!obj->vert_move.reverse) obj->vert_move.speed=0;
         obj->vert_move.reverse=TRUE;
     }
+	
+		// if no movement, then stop
+		
+	if ((!go_left) && (!go_right)) obj->forward_move.moving=FALSE;
+	if ((!go_up) && (!go_down)) obj->vert_move.moving=FALSE;
 }
 
 /* =======================================================

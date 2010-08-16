@@ -240,9 +240,8 @@ bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_pol
 	}
 	
 		// get distance
-		// supergumba -- make this settable
 		
-	return(dist<(map_enlarge*200));
+	return(dist<(map_enlarge*setup.clip_distance));
 }
 
 /* =======================================================

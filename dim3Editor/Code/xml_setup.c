@@ -49,6 +49,7 @@ void setup_xml_default(void)
 	setup.flip_movement=FALSE;
 	setup.duplicate_offset=5;
 	setup.snap_size=5;
+	setup.clip_distance=200;
 	
 	strcpy(setup.engine_name,"dim3 Engine");
 	
@@ -108,6 +109,7 @@ bool setup_xml_read(void)
  	xml_key_read_boolean(setup_tag,"Flip_Movement",&setup.flip_movement);
 	xml_key_read_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
 	xml_key_read_int(setup_tag,"Snap_Size",&setup.snap_size);
+	xml_key_read_int(setup_tag,"Clip_Distance",&setup.clip_distance);
 	xml_key_read_text(setup_tag,"Engine_Name",setup.engine_name,256);
 	xml_key_read_color(setup_tag,"Color_Mesh_Line",&setup.col.mesh_line);
 	xml_key_read_color(setup_tag,"Color_Mesh_Sel",&setup.col.mesh_sel);
@@ -145,6 +147,7 @@ bool setup_xml_write(void)
  	xml_key_write_boolean("Flip_Movement",setup.flip_movement);
 	xml_key_write_int("Duplicate_Offset",setup.duplicate_offset);
 	xml_key_write_int("Snap_Size",setup.snap_size);
+	xml_key_write_int("Clip_Distance",setup.clip_distance);
 	xml_key_write_text("Engine_Name",setup.engine_name);
 	xml_key_write_color("Color_Mesh_Line",&setup.col.mesh_line);
 	xml_key_write_color("Color_Mesh_Sel",&setup.col.mesh_sel);

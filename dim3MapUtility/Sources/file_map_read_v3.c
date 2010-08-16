@@ -88,6 +88,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
 	
+	mesh->import_factor=xml_get_attribute_float_default(mesh_tag,"import_factor",0.0f);
+	
 		// old version of climbable at mesh level
 		// push it to polys if it's still there
 		

@@ -35,6 +35,7 @@ and can be sold or given away.
 #define kPrefFlipMovement					FOUR_CHAR_CODE('flip')
 #define kPrefDuplicateOffset				FOUR_CHAR_CODE('doff')
 #define kPrefSnapSize						FOUR_CHAR_CODE('spsz')
+#define kPrefClipDistance					FOUR_CHAR_CODE('cldt')
 #define kPrefBackgroundColor				FOUR_CHAR_CODE('bcol')
 #define kPrefLineColor						FOUR_CHAR_CODE('lcol')
 #define kPrefMeshSelColor					FOUR_CHAR_CODE('scol')
@@ -107,6 +108,7 @@ void dialog_preference_run(void)
 	dialog_set_boolean(dialog_preference_wind,kPrefFlipMovement,0,setup.flip_movement);
 	dialog_set_value(dialog_preference_wind,kPrefDuplicateOffset,0,setup.duplicate_offset);
 	dialog_set_value(dialog_preference_wind,kPrefSnapSize,0,setup.snap_size);
+	dialog_set_value(dialog_preference_wind,kPrefClipDistance,0,setup.clip_distance);
 	
 	dialog_set_color(dialog_preference_wind,kPrefBackgroundColor,0,&setup.col.background);
 	dialog_set_color(dialog_preference_wind,kPrefLineColor,0,&setup.col.mesh_line);
@@ -137,6 +139,7 @@ void dialog_preference_run(void)
 		setup.flip_movement=dialog_get_boolean(dialog_preference_wind,kPrefFlipMovement,0);
 		setup.duplicate_offset=dialog_get_value(dialog_preference_wind,kPrefDuplicateOffset,0);
 		setup.snap_size=dialog_get_value(dialog_preference_wind,kPrefSnapSize,0);
+		setup.clip_distance=dialog_get_value(dialog_preference_wind,kPrefClipDistance,0);
 		
 		dialog_get_color(dialog_preference_wind,kPrefBackgroundColor,0,&setup.col.background);
 		dialog_get_color(dialog_preference_wind,kPrefLineColor,0,&setup.col.mesh_line);

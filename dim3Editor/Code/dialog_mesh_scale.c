@@ -30,6 +30,7 @@ and can be sold or given away.
 
 extern map_type				map;
 
+#define kMeshScaleAxis							FOUR_CHAR_CODE('axis')
 #define kMeshScaleScale							FOUR_CHAR_CODE('scle')
 #define kMeshScaleButtonScale					FOUR_CHAR_CODE('scal')
 #define kMeshScaleButtonReplace					FOUR_CHAR_CODE('repl')
@@ -79,8 +80,9 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
       
 ======================================================= */
 
-bool dialog_mesh_scale_run(float *scale,bool replace_ok)
+bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_scale,float *scale)
 {
+	int						sz;
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
@@ -90,7 +92,8 @@ bool dialog_mesh_scale_run(float *scale,bool replace_ok)
 
 		// set controls
 		
-	dialog_set_float(dialog_mesh_scale_wind,kMeshScaleScale,0,(*scale));
+	dialog_set_combo(dialog_mesh_scale_wind,kMeshScaleAxis,0,0);
+	dialog_set_int(dialog_mesh_scale_wind,kMeshScaleScale,0,(20*map_enlarge));
 	dialog_set_focus(dialog_mesh_scale_wind,kMeshScaleScale,0);
 	
 	dialog_enable(dialog_mesh_scale_wind,kMeshScaleButtonReplace,0,replace_ok);
@@ -112,8 +115,29 @@ bool dialog_mesh_scale_run(float *scale,bool replace_ok)
 	
 		// dialog to data
 		
-	*scale=dialog_get_float(dialog_mesh_scale_wind,kMeshScaleScale,0);
-
+	if (dialog_mesh_scale_replace) {
+		*scale=old_scale;
+		if (*scale==0.0f) *scale=1.0f;
+	}
+	else {
+		*scale=1.0f;
+		
+		sz=dialog_get_int(dialog_mesh_scale_wind,kMeshScaleScale,0);
+		
+		switch (dialog_get_combo(dialog_mesh_scale_wind,kMeshScaleAxis,0)) {
+			case 0:
+				*scale=((float)sz)/(max->x-min->x);
+				break;
+			case 1:
+				*scale=((float)sz)/(max->y-min->y);
+				break;
+			case 2:
+				*scale=((float)sz)/(max->z-min->z);
+				break;
+		}
+		
+	}
+	
 		// close window
 		
 	DisposeWindow(dialog_mesh_scale_wind);
