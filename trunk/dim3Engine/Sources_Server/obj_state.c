@@ -367,11 +367,11 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 		
 	hit->obj_idx=-1;
 	hit->weap_idx=-1;
-	hit->proj_idx=-1;
+	hit->proj_setup_idx=-1;
 	
     if (from_obj!=NULL) hit->obj_idx=from_obj->idx;
 	if (from_weap!=NULL) hit->weap_idx=from_weap->idx;
-	if (from_proj!=NULL) hit->proj_idx=from_proj->idx;
+	if (from_proj!=NULL) hit->proj_setup_idx=from_proj->proj_setup_idx;
 	
 		// damage
 		

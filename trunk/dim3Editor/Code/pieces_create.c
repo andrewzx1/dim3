@@ -200,6 +200,8 @@ void piece_create_light(void)
 	map.nlight++;
 	
 	piece_create_get_spot(&lit->pnt);
+	
+	lit->name[0]=0x0;
 
 	lit->type=lt_normal;
 	lit->col.r=lit->col.g=lit->col.b=1;
