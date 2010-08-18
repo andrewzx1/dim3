@@ -269,13 +269,17 @@ void menu_draw(void)
 		item=menu->items;
 
 		for (n=0;n!=menu->nitem;n++) {
-			wid=gl_text_get_string_width(font_interface_index,hud.font.text_size_large,item->data)>>1;
 			
-			if ((kx>=(x-wid)) && (kx<=(x+wid)) && (ky>=(y-half_high)) && (ky<=(y+half_high))) {
-				view.menu.click_item_idx=n;
-				break;
-			}
+			if (!((net_setup.mode!=net_mode_none) && (item->multiplayer_disable))) {
 
+				wid=gl_text_get_string_width(font_interface_index,hud.font.text_size_large,item->data)>>1;
+				
+				if ((kx>=(x-wid)) && (kx<=(x+wid)) && (ky>=(y-half_high)) && (ky<=(y+half_high))) {
+					view.menu.click_item_idx=n;
+					break;
+				}
+			}
+			
 			y+=(high+5);
 			item++;
 		}

@@ -435,7 +435,7 @@ typedef struct		{
 					} obj_touch;
 					
 typedef struct		{
-						int						obj_idx,weap_idx,proj_idx,
+						int						obj_idx,weap_idx,proj_setup_idx,
 												damage;
 						char					hit_box_name[name_str_len];
 						d3pnt					pnt;

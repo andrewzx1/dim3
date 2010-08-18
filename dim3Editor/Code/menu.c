@@ -417,12 +417,14 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandClearLightMaps:
 			light_maps_clear();
 			walk_view_set_uv_layer(uv_layer_normal);
+			menu_update_view();
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandBuildLightMaps:
 			if (dialog_light_map_run()) {
 				walk_view_set_uv_layer(uv_layer_light_map);
+				menu_update_view();
 				main_wind_draw();
 			}
 			return(noErr);

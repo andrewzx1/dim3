@@ -189,7 +189,7 @@ void object_clear_hit(obj_hit *hit)
 {
 	hit->obj_idx=-1;
 	hit->weap_idx=-1;
-	hit->proj_idx=-1;
+	hit->proj_setup_idx=-1;
 	
 	hit->pnt.x=hit->pnt.y=hit->pnt.z=0;
 	hit->ang.x=hit->ang.y=hit->ang.z=0.0f;

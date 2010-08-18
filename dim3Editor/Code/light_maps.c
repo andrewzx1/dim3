@@ -1131,7 +1131,7 @@ bool light_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,
 	return(FALSE);
 }
 
-bool light_map_ray_trace_map(int mesh_idx,int poly_idx,d3pnt *spt,d3pnt *ept)
+bool light_map_ray_trace_map(int mesh_idx,int poly_idx,d3pnt *spt,d3pnt *ept,int direction)
 {
 	int							n,k;
 	d3pnt						min,max;
@@ -1144,6 +1144,36 @@ bool light_map_ray_trace_map(int mesh_idx,int poly_idx,d3pnt *spt,d3pnt *ept)
 	vct.x=(float)(ept->x-spt->x);
 	vct.y=(float)(ept->y-spt->y);
 	vct.z=(float)(ept->z-spt->z);
+	
+		// check direction
+		
+	switch (direction) {
+	
+		case ld_neg_x:
+			if (vct.x<0.0f) return(TRUE);
+			break;
+			
+		case ld_pos_x:
+			if (vct.x>0.0f) return(TRUE);
+			break;
+
+		case ld_neg_y:
+			if (vct.y<0.0f) return(TRUE);
+			break;
+			
+		case ld_pos_y:
+			if (vct.y>0.0f) return(TRUE);
+			break;
+			
+		case ld_neg_z:
+			if (vct.z<0.0f) return(TRUE);
+			break;
+			
+		case ld_pos_z:
+			if (vct.z>0.0f) return(TRUE);
+			break;
+		
+	}
 	
 		// ray trace bounds
 		
@@ -1228,7 +1258,7 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 
 			// is it visible?
 			
-		if (light_map_ray_trace_map(mesh_idx,poly_idx,rpt,&lit->pnt)) continue;
+		if (light_map_ray_trace_map(mesh_idx,poly_idx,rpt,&lit->pnt,lit->direction)) continue;
 		
 			// get color
 			
