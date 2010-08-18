@@ -215,3 +215,5 @@ EXPORTS
 	bitmap_movie_get_texture_id					@406
 	bitmap_movie_playing						@407
 	bitmap_movie_texture_refresh				@408
+	
+	bitmap_text									@410

@@ -304,3 +304,14 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 		if (t_max.z>(max->z)) max->z=t_max.z;
 	}
 }
+
+void select_get_center(d3pnt *mid)
+{
+	d3pnt			min,max;
+
+	select_get_extent(&min,&max);
+
+	mid->x=(min.x+max.x)>>1;
+	mid->y=(min.y+max.y)>>1;
+	mid->z=(min.z+max.z)>>1;
+}
