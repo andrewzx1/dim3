@@ -401,7 +401,6 @@ void write_map_editor_views_xml(map_type *map)
 		xml_add_attribute_3_coord_int("pnt",view->pnt.x,view->pnt.y,view->pnt.z);
 		xml_add_attribute_3_coord_float("ang",view->ang.x,view->ang.y,view->ang.z);
 		xml_add_attribute_int("uv_layer",view->uv_layer);
-		xml_add_attribute_int("magnify_factor",view->magnify_factor);
   		xml_add_attribute_boolean("ortho",view->ortho);
     	xml_add_attribute_boolean("cull",view->cull);
     	xml_add_attribute_boolean("clip",view->clip);

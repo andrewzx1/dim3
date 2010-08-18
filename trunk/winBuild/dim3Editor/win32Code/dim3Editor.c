@@ -379,7 +379,7 @@ bool editor_open_map(char *err_str)
 
 		// open map
 
-	map_setup(&file_path_setup,anisotropic_mode_high,mipmap_mode_trilinear,texture_quality_mode_normal,FALSE,FALSE);
+	map_setup(&file_path_setup,anisotropic_mode_high,mipmap_mode_trilinear,texture_quality_mode_normal,FALSE);
 
 	if (!map_open(&map,file_name)) {
 		strcpy(err_str,"Could not open map");

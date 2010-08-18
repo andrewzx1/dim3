@@ -48,17 +48,6 @@ and can be sold or given away.
 #define view_selection_size						10
 
 //
-// magnify factors
-//
-
-#define magnify_size							6000
-
-#define magnify_factor_min						10
-#define magnify_factor_max						910
-
-#define magnify_factor_default					800
-
-//
 // vertex modes
 //
 

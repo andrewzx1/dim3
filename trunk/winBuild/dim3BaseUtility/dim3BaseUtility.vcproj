@@ -454,6 +454,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Bitmap\bitmap_text.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3BaseUtility\Sources_Bitmap\pngutility.c"
 					>
 					<FileConfiguration

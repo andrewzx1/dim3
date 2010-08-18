@@ -133,7 +133,6 @@ void walk_view_setup_default_views(void)
 	view->ang.z=0.0f;
 
 	view->uv_layer=0;
-	view->magnify_factor=magnify_factor_default;
 
 	view->cull=FALSE;
 	view->ortho=FALSE;
@@ -347,6 +346,28 @@ void walk_view_remove(void)
 
 /* =======================================================
 
+      View Look At Point
+      
+======================================================= */
+
+void walk_view_get_lookat_point(editor_view_type *view,float dist,d3vct *look_vct)
+{
+	float				fx,fy,fz;
+	matrix_type			mat;
+
+	matrix_rotate_zyx(&mat,view->ang.x,view->ang.y,0.0f);
+
+	fx=fy=0.0f;
+	fz=-dist;
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+	look_vct->x=fx;
+	look_vct->y=fy;
+	look_vct->z=fz;
+}
+
+/* =======================================================
+
       Viewport and Projection Setup
       
 ======================================================= */
@@ -420,6 +441,7 @@ void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int
 {
 	int				x_sz,y_sz;
 	float			ratio;
+	d3vct			look_vct;
 	d3rect			box;
 	
 	walk_view_get_pixel_box(view,&box);
@@ -441,11 +463,12 @@ void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
-	glRotatef(-view->ang.x,1.0f,0.0f,0.0f);
-	glRotatef(-angle_add(view->ang.y,180.0f),0.0f,1.0f,0.0f);
-	
-	glTranslatef((GLfloat)-view->pnt.x,(GLfloat)-view->pnt.y,(GLfloat)((-view->pnt.z)+near_z_offset));
+
+		// create the look at vector
+
+	walk_view_get_lookat_point(view,(float)near_z_offset,&look_vct);
+
+	gluLookAt((((float)view->pnt.x)+look_vct.x),(((float)view->pnt.y)+look_vct.y),(((float)view->pnt.z)+look_vct.z),(float)view->pnt.x,(float)view->pnt.y,(float)view->pnt.z,0.0f,1.0f,0.0f);
 }
 
 /* =======================================================
@@ -632,16 +655,6 @@ int walk_view_get_uv_layer(void)
 void walk_view_set_uv_layer(int uv_layer)
 {
 	map.editor_views.views[view_select_idx].uv_layer=uv_layer;
-}
-
-int walk_view_get_magnify_factor(void)
-{
-	return(map.editor_views.views[view_select_idx].magnify_factor);
-}
-
-void walk_view_set_magnify_factor(int magnify_factor)
-{
-	map.editor_views.views[view_select_idx].magnify_factor=magnify_factor;
 }
 
 /* =======================================================
