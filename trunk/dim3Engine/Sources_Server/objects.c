@@ -587,7 +587,6 @@ int object_create(char *name,int type,int bind)
 	obj->sight.distance=map_enlarge*150;
 
 	obj->rigid_body.on=FALSE;
-	obj->rigid_body.max_drop_y=map_enlarge*8;
 	obj->rigid_body.draw_offset_y=0;
 	obj->rigid_body.reset_factor_y=0.8f;
 	obj->rigid_body.smooth_factor_y=0.2f;

@@ -35,7 +35,6 @@ and can be sold or given away.
 extern js_type			js;
 
 JSValueRef js_obj_rigid_body_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_obj_rigid_body_get_maxDropY(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_rigid_body_get_resetFactorY(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_rigid_body_get_smoothFactorY(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_rigid_body_get_maxAngleX(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -57,7 +56,6 @@ bool js_obj_rigid_body_set_smoothFactorZ(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 JSStaticValue 		obj_rigid_body_props[]={
 							{"on",					js_obj_rigid_body_get_on,				js_obj_rigid_body_set_on,				kJSPropertyAttributeDontDelete},
-							{"maxDropY",			js_obj_rigid_body_get_maxDropY,			js_obj_rigid_body_set_maxDropY,			kJSPropertyAttributeDontDelete},
 							{"resetFactorY",		js_obj_rigid_body_get_resetFactorY,		js_obj_rigid_body_set_resetFactorY,		kJSPropertyAttributeDontDelete},
 							{"smoothFactorY",		js_obj_rigid_body_get_smoothFactorY,	js_obj_rigid_body_set_smoothFactorY,	kJSPropertyAttributeDontDelete},
 							{"maxAngleX",			js_obj_rigid_body_get_maxAngleX,		js_obj_rigid_body_set_maxAngleX,		kJSPropertyAttributeDontDelete},
@@ -103,14 +101,6 @@ JSValueRef js_obj_rigid_body_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 	obj=object_script_lookup();
 	return(script_bool_to_value(cx,obj->rigid_body.on));
-}
-
-JSValueRef js_obj_rigid_body_get_maxDropY(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	obj_type		*obj;
-
-	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->rigid_body.max_drop_y));
 }
 
 JSValueRef js_obj_rigid_body_get_resetFactorY(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -189,16 +179,6 @@ bool js_obj_rigid_body_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 	
 	obj=object_script_lookup();
 	obj->rigid_body.on=script_value_to_bool(cx,vp);
-	
-	return(TRUE);
-}
-
-bool js_obj_rigid_body_set_maxDropY(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	obj_type		*obj;
-	
-	obj=object_script_lookup();
-	obj->rigid_body.max_drop_y=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }

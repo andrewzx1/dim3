@@ -399,7 +399,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						max_drop_y,draw_offset_y;
+						int						draw_offset_y;
 						float					reset_factor_y,smooth_factor_y,
 												max_ang_x,reset_factor_x,smooth_factor_x,
 												max_ang_z,reset_factor_z,smooth_factor_z;

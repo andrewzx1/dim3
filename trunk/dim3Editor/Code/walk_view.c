@@ -623,7 +623,7 @@ void walk_view_turn_angle(d3ang *ang)
 
 /* =======================================================
 
-      View Perspective, Cull, UV Layer, Magnify
+      View Perspective, Cull, UV Layer
       
 ======================================================= */
 
