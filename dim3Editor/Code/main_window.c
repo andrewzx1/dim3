@@ -39,8 +39,7 @@ d3rect					main_wind_box;
 WindowRef				mainwind;
 EventHandlerRef			main_wind_event;
 EventHandlerUPP			main_wind_upp;
-ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],magnify_slider;
-ControlActionUPP		magnify_proc;
+ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count];
 IconRef					tool_icon_ref[tool_count],piece_icon_ref[piece_count];
 MenuRef					grid_menu,spot_menu,light_menu,sound_menu,particle_menu,
 						scenery_menu,node_menu,area_menu;
@@ -492,23 +491,6 @@ void main_wind_control(ControlRef ctrl)
 
 /* =======================================================
 
-      Magnify Slider Action
-      
-======================================================= */
-
-void main_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
-{
-	int				magnify_factor;
-	
-	magnify_factor=GetControlValue(ctrl);
-	if (magnify_factor==walk_view_get_magnify_factor()) return;
-	
-	walk_view_set_magnify_factor(magnify_factor);
-    main_wind_draw();
-}
-
-/* =======================================================
-
       Main Window Events
       
 ======================================================= */
@@ -893,16 +875,6 @@ void main_wind_open(void)
 		
 		OffsetRect(&box,tool_button_size,0);
     }
-	
-		// magnify slider
-
-	box.left+=10;
-	box.right=(wbox.right-5);
-	box.top+=5;
-	box.bottom-=5;
-	
-	magnify_proc=NewControlActionUPP(main_wind_magnify_action);
-	CreateSliderControl(mainwind,&box,magnify_factor_default,magnify_factor_min,magnify_factor_max,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
 
 		// show window before additional setup
 		
@@ -989,9 +961,6 @@ void main_wind_close(void)
 		ReleaseIconRef(piece_icon_ref[n]);
 	}
 	
-	DisposeControl(magnify_slider);
-	DisposeControlActionUPP(magnify_proc);
-	
 		// tool menus
 		
 	DeleteMenu(tool_grid_menu_id);
@@ -1044,18 +1013,6 @@ void main_wind_set_title(char *file_name)
       
 ======================================================= */
 
-void main_wind_resize_buttons(void)
-{
-	Rect			wbox,box;
-	
-	GetWindowPortBounds(mainwind,&wbox);
-		
-	GetControlBounds(magnify_slider,&box);
-	box.right=wbox.right-5;
-		
-	SetControlBounds(magnify_slider,&box);
-}
-
 void main_wind_resize(void)
 {
 	Rect			wbox;
@@ -1078,7 +1035,6 @@ void main_wind_resize(void)
 	texture_palette_setup();
 	
 	main_wind_setup();
-	main_wind_resize_buttons();
 	DrawControls(mainwind);
 
 	main_wind_draw();

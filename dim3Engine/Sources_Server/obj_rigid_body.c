@@ -51,7 +51,7 @@ int object_rigid_body_get_point_y(obj_type *obj,int x_off,int z_off,int y)
 	x=obj->pnt.x+x_off;
 	z=obj->pnt.z+z_off;
 	
-	return(find_poly_nearest_stand(x,y,z,obj->rigid_body.max_drop_y,FALSE));
+	return(find_poly_nearest_stand(x,y,z,obj->size.y,FALSE));
 }
 
 void object_rigid_body_offset_reset_y(obj_type *obj)
@@ -112,7 +112,7 @@ void object_rigid_body_reset_angle(obj_type *obj)
 	}
 	else {
 
-		ky=pin_downward_movement_point(obj->pnt.x,y,obj->pnt.z,obj->rigid_body.max_drop_y,&stand_poly);
+		ky=pin_downward_movement_point(obj->pnt.x,y,obj->pnt.z,obj->size.y,&stand_poly);
 		if (stand_poly.mesh_idx!=-1) {
 
 			if (ky>y) {
@@ -140,6 +140,15 @@ void object_rigid_body_reset_angle(obj_type *obj)
 	fy[1]=object_rigid_body_get_point_y(obj,xsz,-zsz,y);
 	fy[2]=object_rigid_body_get_point_y(obj,xsz,zsz,y);
 	fy[3]=object_rigid_body_get_point_y(obj,-xsz,zsz,y);
+	
+		// if all the same, skip out
+		
+	if ((fy[0]==fy[1]) && (fy[0]==fy[2]) && (fy[0]==fy[3])) {
+		object_rigid_body_offset_reset_y(obj);
+		object_rigid_body_angle_reset_x(obj);
+		object_rigid_body_angle_reset_z(obj);
+		return;
+	}
 	
 		// find angles
 	

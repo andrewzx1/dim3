@@ -64,7 +64,6 @@ extern void progress_wind_close(void);
 
 extern void main_wind_open(void);
 extern void main_wind_close(void);
-extern void main_wind_resize_buttons(void);
 extern void main_wind_resize(void);
 extern void main_wind_set_title(char *file_name);
 extern void main_wind_rotate_view(void);

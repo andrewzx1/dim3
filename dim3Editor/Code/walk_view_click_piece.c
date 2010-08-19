@@ -120,6 +120,8 @@ void walk_view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *ma
 	glReadPixels(click_pnt.x,click_pnt.y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
 
 		// find which pick it represents
+		
+	*type=-1;
 
 	pick=picks;
 
