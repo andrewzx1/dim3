@@ -308,7 +308,8 @@ void main_wind_control_piece(int piece_idx)
 				
 				select_clear();
 				select_add(spot_piece,idx,-1);
-				
+				walk_view_set_lookat_or_walk_mode();
+
 				main_wind_draw();	
 			}
 			break;
@@ -333,6 +334,7 @@ void main_wind_control_piece(int piece_idx)
 				
 				select_clear();
 				select_add(light_piece,idx,-1);
+				walk_view_set_lookat_or_walk_mode();
 				
 				main_wind_draw();	
 			}
@@ -358,6 +360,7 @@ void main_wind_control_piece(int piece_idx)
 				
 				select_clear();
 				select_add(sound_piece,idx,-1);
+				walk_view_set_lookat_or_walk_mode();
 				
 				main_wind_draw();	
 			}
@@ -383,6 +386,7 @@ void main_wind_control_piece(int piece_idx)
 				
 				select_clear();
 				select_add(particle_piece,idx,-1);
+				walk_view_set_lookat_or_walk_mode();
 				
 				main_wind_draw();	
 			}
@@ -408,6 +412,7 @@ void main_wind_control_piece(int piece_idx)
 				
 				select_clear();
 				select_add(scenery_piece,idx,-1);
+				walk_view_set_lookat_or_walk_mode();
 				
 				main_wind_draw();	
 			}
@@ -433,6 +438,7 @@ void main_wind_control_piece(int piece_idx)
 				
 				select_clear();
 				select_add(node_piece,idx,-1);
+				walk_view_set_lookat_or_walk_mode();
 				
 				main_wind_draw();	
 			}

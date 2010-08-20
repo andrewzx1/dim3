@@ -49,6 +49,7 @@ void redraw_windows(void)
         // no selection
         
 	select_clear();
+	walk_view_set_lookat_or_walk_mode();
 	
 		// redraw
 	
@@ -150,6 +151,8 @@ bool file_new_map(void)
     map_new(&map,file_name);
 	
 	state.map_opened=TRUE;
+	
+	walk_view_set_lookat_or_walk_mode();
   	
     main_wind_open();
 	main_wind_set_title(file_name);
@@ -189,6 +192,8 @@ bool file_open_map(void)
 	
 	select_clear();
 	
+	walk_view_set_lookat_or_walk_mode();
+	
 	main_wind_open();
 	main_wind_set_title(file_name);
 	
@@ -212,6 +217,8 @@ bool file_open_map(void)
 		
 	select_clear();
 	undo_clear_all();
+	
+	walk_view_set_lookat_or_walk_mode();
 	
 		// fill in the combos
 		

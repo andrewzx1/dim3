@@ -52,6 +52,7 @@ void piece_add_mesh_finish(int mesh_idx)
 		
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
+	walk_view_set_lookat_or_walk_mode();
 
 		// change mode to move entire mesh
 		
@@ -120,6 +121,7 @@ void piece_add_obj_replace_delete_existing(void)
 	}
 	
 	select_clear();
+	walk_view_set_lookat_or_walk_mode();
 }
 
 /* =======================================================
@@ -1256,6 +1258,8 @@ void piece_combine_mesh(void)
 	if (mesh_combine_idx!=-1) {
 		select_add(mesh_piece,mesh_combine_idx,0);
 	}
+	
+	walk_view_set_lookat_or_walk_mode();
 }
 
 /* =======================================================
@@ -1329,6 +1333,7 @@ void piece_split_mesh(void)
 		
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
+	walk_view_set_lookat_or_walk_mode();
 	
 		// auto-switch to mesh drag mode
 		
@@ -1374,6 +1379,7 @@ void map_optimize(void)
 	if (!dialog_optimize_run(&poly_threshold)) return;
 	
 	select_clear();
+	walk_view_set_lookat_or_walk_mode();
 	
 	os_set_wait_cursor();
 	comb_count=map_mesh_combine_small(&map,poly_threshold);

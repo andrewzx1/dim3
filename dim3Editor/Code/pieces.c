@@ -322,6 +322,7 @@ void piece_delete(void)
 	select_clear();
 	
 	palette_reset();
+	walk_view_set_lookat_or_walk_mode();
     
 	main_wind_draw();
 }
@@ -984,6 +985,7 @@ void piece_poly_hole(void)
 	}
 	
 	select_clear();
+	walk_view_set_lookat_or_walk_mode();
 	
 	main_wind_draw();
 }
