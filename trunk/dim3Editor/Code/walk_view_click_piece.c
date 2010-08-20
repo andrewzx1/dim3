@@ -790,6 +790,8 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 		}
 	}
 	
+	walk_view_set_lookat_or_walk_mode();
+	
 		// redraw and reset palettes and menus
 		
 	menu_fix_enable();

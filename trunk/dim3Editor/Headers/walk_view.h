@@ -52,6 +52,7 @@ extern void walk_view_move_position(d3pnt *pnt);
 extern void walk_view_get_angle(d3ang *ang);
 extern void walk_view_set_angle(d3ang *ang);
 extern void walk_view_turn_angle(d3ang *ang);
+extern void walk_view_set_lookat_or_walk_mode(void);
 extern void walk_view_perspective_ortho(bool on);
 extern void walk_view_cull(bool on);
 extern void walk_view_clip(bool on);

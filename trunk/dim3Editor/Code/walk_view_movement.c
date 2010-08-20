@@ -311,7 +311,7 @@ void walk_view_mouse_turn_free(d3pnt *pnt)
 			old_pnt.y=pnt->y;
 			
 			turn_ang.y=turn_ang.z=0.0f;
-			turn_ang.x=((float)y)/move_mouse_turn_reduce_scale;
+			turn_ang.x=-((float)y)/move_mouse_turn_reduce_scale;
 			walk_view_turn_angle(&turn_ang);
 
 			redraw=TRUE;
@@ -328,7 +328,6 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 	bool			redraw;
 	d3pnt			old_pnt,org_pnt,
 					view_pnt,org_view_pnt;
-	d3ang			org_ang,ang;
     
     os_set_drag_cursor();
 
@@ -336,7 +335,6 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 	memmove(&org_pnt,pnt,sizeof(d3pnt));
 	
 	walk_view_get_position(&org_view_pnt);
-	walk_view_get_angle(&org_ang);
 	
 	while (!os_track_mouse_location(pnt,NULL)) {
 		
@@ -351,7 +349,6 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 		redraw=FALSE;
 
 		memmove(&view_pnt,&org_view_pnt,sizeof(d3pnt));
-		memmove(&ang,&org_ang,sizeof(d3ang));
 	
 			// y turning
 			
@@ -359,9 +356,7 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 			old_pnt.x=pnt->x;
 
 			fang=((float)(org_pnt.x-pnt->x))/move_mouse_turn_reduce_scale;
-
 			rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,0.0f,fang,0.0f);
-			ang.y=angle_add(ang.y,fang);
 
 			redraw=TRUE;
 		}
@@ -372,12 +367,7 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 			old_pnt.y=pnt->y;
 
 			fang=((float)(org_pnt.y-pnt->y))/move_mouse_turn_reduce_scale;
-
 			rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,fang,0.0f,0.0f);
-
-			ang.x+=fang;
-			if (ang.x<=-90.0f) ang.x=-89.9f;
-			if (ang.x>=90.0f) ang.x=89.9f;
 
 			redraw=TRUE;
 		}
@@ -386,8 +376,6 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 
 		if (redraw) {
 			walk_view_set_position(&view_pnt);
-			walk_view_set_angle(&ang);
-
 			main_wind_draw();
 		}
 	}
