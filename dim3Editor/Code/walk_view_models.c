@@ -193,14 +193,35 @@ void walk_view_models_reset(void)
 
 /* =======================================================
 
+      Model Y size
+      
+======================================================= */
+
+void walk_view_get_model_size(char *model_name,d3pnt *size)
+{
+	int					idx;
+
+	size->x=size->z=map_enlarge*3;
+	size->y=map_enlarge*4;
+
+	if (model_name[0]==0x0) return;
+	
+	idx=walk_view_models_find_model(model_name);
+	if (idx==-1) return;
+	
+	memmove(size,&models[idx].view_box.size,sizeof(d3pnt));
+}
+
+/* =======================================================
+
       Draw Model
       
 ======================================================= */
 
 void walk_view_model_draw_material(model_type *model,texture_type *texture,model_material_type *material,int frame)
 {
-	register int					k,trig_count,bitmap_gl_id;
-    register model_trig_type		*trig;
+	int					k,trig_count,bitmap_gl_id;
+    model_trig_type		*trig;
 
 	trig_count=material->trig_count;
 	if (trig_count==0) return;
@@ -238,8 +259,8 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
 	model_type						*model;
 	model_draw_setup				draw_setup;
 	model_mesh_type					*mesh;
-    register texture_type			*texture;
-	register model_material_type	*material;
+    texture_type					*texture;
+	model_material_type				*material;
 
 	if (name[0]==0x0) return(FALSE);
 	

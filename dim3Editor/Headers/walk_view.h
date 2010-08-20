@@ -41,6 +41,7 @@ extern void walk_view_set_viewport_box(d3rect *box,bool erase,bool use_backgroun
 extern void walk_view_set_viewport(editor_view_type *view,bool erase,bool use_background);
 extern void walk_view_set_2D_projection(editor_view_type *view);
 extern void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near_z_offset);
+extern void walk_view_project_point(editor_view_type *view,d3pnt *pnt);
 extern editor_view_type* walk_view_get_current_view(void);
 extern bool walk_view_point_in_view(editor_view_type *view,d3pnt *pnt);
 extern void walk_view_cursor(d3pnt *pnt);
@@ -77,7 +78,7 @@ extern bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_m
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
 extern void walk_view_draw_select_liquid_get_grow_handles(int liquid_idx,int *px,int *py,int *pz);
 extern void walk_view_draw_view(editor_view_type *view);
-extern void walk_view_draw_select(d3pnt *cpt);
+extern void walk_view_draw_select(editor_view_type *view);
 
 //
 // walk view click
@@ -127,6 +128,7 @@ extern void walk_view_mouse_turn(d3pnt *pnt);
 extern void walk_view_models_start(void);
 extern void walk_view_models_close(void);
 extern void walk_view_models_reset(void);
+extern void walk_view_get_model_size(char *model_name,d3pnt *size);
 extern bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count);
 extern bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz);
 extern int walk_view_model_rot_y_size(d3pnt *pnt,d3ang *ang,char *name);

@@ -70,6 +70,7 @@ extern void select_duplicate_copy(void);
 
 extern void select_get_extent(d3pnt *min,d3pnt *max);
 extern void select_get_center(d3pnt *mid);
+extern void select_get_angle(d3ang *ang);
 
 //
 // palette routines

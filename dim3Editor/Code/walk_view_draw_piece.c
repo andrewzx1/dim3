@@ -859,10 +859,6 @@ void walk_view_draw_view(editor_view_type *view)
 		
 		// draw selection
 		
-	walk_view_draw_select(&view->pnt);
-
-		// position
-		
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+	walk_view_draw_select(view);
 }
 

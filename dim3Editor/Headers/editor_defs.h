@@ -116,7 +116,10 @@ and can be sold or given away.
 //
 
 #define walk_view_near_offset					(3*map_enlarge)
-#define walk_view_handle_size					10.0f
+
+#define walk_view_handle_size					12.0f
+#define walk_view_handle_length					40.0f
+#define walk_view_handle_line_width				2.0f
 
 //
 // light maps

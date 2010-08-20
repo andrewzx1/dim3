@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "common_view.h"
+#include "walk_view.h"
 
 extern map_type				map;
 
@@ -234,7 +235,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 {
 	int				n,sel_count,
 					type,main_idx,sub_idx;
-	d3pnt			t_min,t_max;
+	d3pnt			t_min,t_max,size;
 	
 	min->x=min->z=min->y=map_max_size;
 	max->x=max->z=max->y=-map_max_size;
@@ -265,15 +266,23 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				break;
 				
 			case spot_piece:
-				t_min.x=t_max.x=map.spots[main_idx].pnt.x;
-				t_min.y=t_max.y=map.spots[main_idx].pnt.y;
-				t_min.z=t_max.z=map.spots[main_idx].pnt.z;
+				walk_view_get_model_size(map.spots[main_idx].display_model,&size);
+				t_min.x=map.spots[main_idx].pnt.x-(size.x>>1);
+				t_max.x=map.spots[main_idx].pnt.x+(size.x>>1);
+				t_min.y=map.spots[main_idx].pnt.y-size.y;
+				t_max.y=map.spots[main_idx].pnt.y;
+				t_min.z=map.spots[main_idx].pnt.z-(size.z>>1);
+				t_max.z=map.spots[main_idx].pnt.z+(size.z>>1);
 				break;
 				
 			case scenery_piece:
-				t_min.x=t_max.x=map.sceneries[main_idx].pnt.x;
-				t_min.y=t_max.y=map.sceneries[main_idx].pnt.y;
-				t_min.z=t_max.z=map.sceneries[main_idx].pnt.z;
+				walk_view_get_model_size(map.sceneries[main_idx].model_name,&size);
+				t_min.x=map.sceneries[main_idx].pnt.x-(size.x>>1);
+				t_max.x=map.sceneries[main_idx].pnt.x+(size.x>>1);
+				t_min.y=map.sceneries[main_idx].pnt.y-size.y;
+				t_max.y=map.sceneries[main_idx].pnt.y;
+				t_min.z=map.sceneries[main_idx].pnt.z-(size.z>>1);
+				t_max.z=map.sceneries[main_idx].pnt.z+(size.z>>1);
 				break;
 				
 			case light_piece:
@@ -315,3 +324,30 @@ void select_get_center(d3pnt *mid)
 	mid->y=(min.y+max.y)>>1;
 	mid->z=(min.z+max.z)>>1;
 }
+
+void select_get_angle(d3ang *ang)
+{
+	int			type,main_idx,sub_idx;
+
+	ang->x=ang->y=ang->z=0.0f;
+
+		// is this something with an
+		// angle?
+
+	if (select_count()==0) return;
+
+	select_get(0,&type,&main_idx,&sub_idx);
+
+	switch (type) {
+
+		case spot_piece:
+			memmove(ang,&map.spots[main_idx].ang,sizeof(d3ang));
+			break;
+
+		case scenery_piece:
+			memmove(ang,&map.sceneries[main_idx].ang,sizeof(d3ang));
+			break;
+	
+	}
+}
+
