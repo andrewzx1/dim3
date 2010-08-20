@@ -37,6 +37,9 @@ extern map_type					map;
 extern setup_type				setup;
 extern editor_state_type		state;
 
+extern bool						view_in_look;
+extern d3pnt					view_look_pnt;
+
 /* =======================================================
 
       Mouse Movement
@@ -252,13 +255,41 @@ void walk_view_mouse_forward_movement(d3pnt *pnt)
 	}
 }
 
+/* =======================================================
+
+      Scroll Wheel Mouse Movement
+      
+======================================================= */
+
 void walk_view_scroll_wheel_z_movement(int delta)
 {
-	d3pnt			move_pnt;
+	int				mv;
+	d3vct			move_vct;
+	d3pnt			pnt,move_pnt;
 
 	move_pnt.x=move_pnt.y=move_pnt.z=0;
+
+	mv=delta*move_scroll_wheel_scale;
+
+		// free look
+
+	if (!view_in_look) {
+		walk_view_mouse_get_forward_axis(&move_pnt,-mv);
+	}
 	
-	walk_view_mouse_get_forward_axis(&move_pnt,-(delta*move_scroll_wheel_scale));
+		// look at
+
+	else {
+		walk_view_get_position(&pnt);
+
+		vector_create(&move_vct,view_look_pnt.x,view_look_pnt.y,view_look_pnt.z,pnt.x,pnt.y,pnt.z);
+		vector_normalize(&move_vct);
+
+		move_pnt.x=(int)(move_vct.x*((float)mv));
+		move_pnt.y=(int)(move_vct.y*((float)mv));
+		move_pnt.z=(int)(move_vct.z*((float)mv));
+	}
+
 	walk_view_move_position(&move_pnt);
 	
 	main_wind_draw();
@@ -385,14 +416,14 @@ void walk_view_mouse_turn(d3pnt *pnt)
 {
 	d3pnt			cnt;
 
-		// rotate freely
+		// free look
 
-	if (select_count()==0) {
+	if (!view_in_look) {
 		walk_view_mouse_turn_free(pnt);
 		return;
 	}
 
-		// rotate around selection
+		// look at
 
 	select_get_center(&cnt);
 	walk_view_mouse_turn_center(pnt,&cnt);

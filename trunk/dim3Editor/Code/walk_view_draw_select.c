@@ -300,19 +300,14 @@ void walk_view_draw_select_sprite(d3pnt *pnt)
 
 /* =======================================================
 
-      Draw Rotation Handles
+      Draw Rotation and Move Handles
       
 ======================================================= */
 
-void walk_view_draw_select_single_rot_handles(d3pnt *pnt,d3vct *vct,d3ang *ang,int y_size,d3col *col)
+void walk_view_draw_select_make_handle(d3pnt *pnt,d3vct *vct,d3ang *ang,d3pnt *hand_pnt)
 {
-	int				y;
 	matrix_type		mat;
 
-		// y location
-		
-	y=pnt->y-y_size;
-	
 		// rotations
 	
 	if (ang->x!=0) {
@@ -329,16 +324,23 @@ void walk_view_draw_select_single_rot_handles(d3pnt *pnt,d3vct *vct,d3ang *ang,i
 		matrix_rotate_z(&mat,ang->z);
 		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
 	}
-	
-		// draw line
-		
-    glLineWidth(2.0f);
+
+		// make point
+
+	hand_pnt->x=pnt->x+(int)vct->x;
+	hand_pnt->y=pnt->y+(int)vct->y;
+	hand_pnt->z=pnt->z+(int)vct->z;
+}
+
+void walk_view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
+{
+    glLineWidth(walk_view_handle_line_width);
 	
 	glColor4f(col->r,col->g,col->b,1.0f);
 	
 	glBegin(GL_LINES);
-	glVertex3i(pnt->x,y,pnt->z);
-	glVertex3i((pnt->x+(int)vct->x),(y+(int)vct->y),(pnt->z+(int)vct->z));
+	glVertex2i(pnt->x,pnt->y);
+	glVertex2i(hand_pnt->x,hand_pnt->y);
 	glEnd();
 	
     glLineWidth(1.0f);
@@ -346,65 +348,88 @@ void walk_view_draw_select_single_rot_handles(d3pnt *pnt,d3vct *vct,d3ang *ang,i
 	glPointSize(walk_view_handle_size);
 	
 	glBegin(GL_POINTS);
-	glVertex3i((pnt->x+(int)vct->x),(y+(int)vct->y),(pnt->z+(int)vct->z));
+	glVertex2i(hand_pnt->x,hand_pnt->y);
 	glEnd();
 	
 	glPointSize(1.0f);
 }
 
-void walk_view_draw_select_rot_handles(d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
+void walk_view_draw_select_rot_handles(editor_view_type *view)
 {
 	float			len;
+	d3pnt			pnt,hand_pnt[3];
+	d3ang			ang;
 	d3vct			vct;
 	d3col			col;
-	
-	len=(float)(map_enlarge*4);
-	
-		// x rot
-		
+
+		// is there a selection?
+
+	if (select_count()==0) return;
+
+		// get position and angle
+
+	select_get_center(&pnt);
+	select_get_angle(&ang);
+
+		// create the handle points
+
+	len=((float)map_enlarge)+(((float)distance_get(view->pnt.x,view->pnt.y,view->pnt.z,pnt.x,pnt.y,pnt.z)*0.05f));
+
 	vct.x=len;
 	vct.y=0.0f;
 	vct.z=0.0f;
-	
-	if (y_only) {
-		col.r=col.g=col.b=0.5f;
-	}
-	else {
-		col.r=1.0f;
-		col.g=0.0f;
-		col.b=0.0f;
-	}
-	
-	walk_view_draw_select_single_rot_handles(pnt,&vct,ang,y_size,&col);
-	
-		// y rot
-		
+
+	walk_view_draw_select_make_handle(&pnt,&vct,&ang,&hand_pnt[0]);
+
 	vct.x=0.0f;
 	vct.y=-len;
 	vct.z=0.0f;
+
+	walk_view_draw_select_make_handle(&pnt,&vct,&ang,&hand_pnt[1]);
+
+	vct.x=0.0f;
+	vct.y=0.0f;
+	vct.z=len;
+
+	walk_view_draw_select_make_handle(&pnt,&vct,&ang,&hand_pnt[2]);
+
+		// project the points
+
+	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+
+	walk_view_project_point(view,&pnt);
+
+	walk_view_project_point(view,&hand_pnt[0]);
+	walk_view_project_point(view,&hand_pnt[1]);
+	walk_view_project_point(view,&hand_pnt[2]);
+
+		// draw points
+
+	walk_view_set_2D_projection(view);
+
+	glDisable(GL_DEPTH_TEST);
+	
+	col.r=1.0f;
+	col.g=0.0f;
+	col.b=0.0f;
+	
+	walk_view_draw_select_2D_rot_handle(&pnt,&hand_pnt[0],&col);
 	
 	col.r=0.0f;
 	col.g=1.0f;
 	col.b=0.0f;
 	
-	walk_view_draw_select_single_rot_handles(pnt,&vct,ang,y_size,&col);
+	walk_view_draw_select_2D_rot_handle(&pnt,&hand_pnt[1],&col);
 	
-		// z rot
+	col.r=0.0f;
+	col.g=0.0f;
+	col.b=1.0f;
 	
-	vct.x=0.0f;
-	vct.y=0.0f;
-	vct.z=len;
-	
-	if (y_only) {
-		col.r=col.g=col.b=0.5f;
-	}
-	else {
-		col.r=0.0f;
-		col.g=0.0f;
-		col.b=1.0f;
-	}
-	
-	walk_view_draw_select_single_rot_handles(pnt,&vct,ang,y_size,&col);
+	walk_view_draw_select_2D_rot_handle(&pnt,&hand_pnt[2],&col);
+
+		// restore projection
+
+	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 }
 
 /* =======================================================
@@ -413,7 +438,7 @@ void walk_view_draw_select_rot_handles(d3pnt *pnt,d3ang *ang,int y_size,bool y_o
       
 ======================================================= */
 
-void walk_view_draw_select(d3pnt *cpt)
+void walk_view_draw_select(editor_view_type *view)
 {
 	int						n,sel_count,y_size,
 							type,main_idx,sub_idx;
@@ -454,7 +479,6 @@ void walk_view_draw_select(d3pnt *cpt)
 			case node_piece:
 				walk_view_draw_select_sprite(&map.nodes[main_idx].pnt);
 				y_size=map_enlarge*5;
-				walk_view_draw_select_rot_handles(&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,y_size,FALSE);
 				break;
 				
 			case spot_piece:
@@ -462,7 +486,6 @@ void walk_view_draw_select(d3pnt *cpt)
 					walk_view_draw_select_sprite(&map.spots[main_idx].pnt);
 				}
 				y_size=walk_view_model_rot_y_size(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model);
-				walk_view_draw_select_rot_handles(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,y_size,TRUE);
 				break;
 				
 			case scenery_piece:
@@ -470,7 +493,6 @@ void walk_view_draw_select(d3pnt *cpt)
 					walk_view_draw_select_sprite(&map.sceneries[main_idx].pnt);
 				}
 				y_size=walk_view_model_rot_y_size(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name);
-				walk_view_draw_select_rot_handles(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,y_size,FALSE);
 				break;
 				
 			case light_piece:
@@ -504,7 +526,7 @@ void walk_view_draw_select(d3pnt *cpt)
 		
 	}
 	
-		// finish with selecte mesh vertexes
+		// draw selected mesh vertexes
 		
 	if (state.drag_mode==drag_mode_vertex) {
 
@@ -521,5 +543,9 @@ void walk_view_draw_select(d3pnt *cpt)
 			}
 		}
 	}
+
+		// draw selection handle
+	
+	walk_view_draw_select_rot_handles(view);
 }
 			

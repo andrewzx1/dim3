@@ -457,7 +457,7 @@ void walk_view_set_2D_projection(editor_view_type *view)
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)box.lx,(GLdouble)box.rx,(GLdouble)box.by,(GLdouble)box.ty,-1.0,1.0);
+	glOrtho((GLdouble)box.lx,(GLdouble)box.rx,(GLdouble)box.ty,(GLdouble)box.by,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -495,6 +495,21 @@ void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int
 	walk_view_get_lookat_point(view,(float)near_z_offset,&look_vct);
 
 	gluLookAt((((float)view->pnt.x)+look_vct.x),(((float)view->pnt.y)+look_vct.y),(((float)view->pnt.z)+look_vct.z),(float)view->pnt.x,(float)view->pnt.y,(float)view->pnt.z,0.0f,1.0f,0.0f);
+}
+
+void walk_view_project_point(editor_view_type *view,d3pnt *pnt)
+{
+	double			dx,dy,dz,
+					mod_matrix[16],proj_matrix[16];
+	GLint			vport[4];
+
+	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,vport);
+
+	gluProject(pnt->x,pnt->y,pnt->z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
+	pnt->x=(int)(dx-view->box.lft);
+	pnt->y=(int)(dy-view->box.top);
 }
 
 /* =======================================================
