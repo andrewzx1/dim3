@@ -62,8 +62,6 @@ void auto_generate_map(void)
 	
 		// redraw the map
 	
-	walk_view_set_lookat_or_walk_mode();
-	
 	main_wind_center_position_in_map();		
 	main_wind_draw();
 	

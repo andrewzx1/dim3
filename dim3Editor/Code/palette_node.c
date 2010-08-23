@@ -81,10 +81,6 @@ void palette_node_save(void)
 	node->follow_camera=dialog_get_boolean(palette_node_wind,kNodeFollowCamera,0);
 	node->alpha=dialog_get_float(palette_node_wind,kNodeAlpha,0);
 	
-		// need to reset node combo
-		
-	main_wind_tool_fill_node_combo();
-	
 	main_wind_draw();
 }
 

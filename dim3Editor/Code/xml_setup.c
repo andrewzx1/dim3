@@ -43,15 +43,22 @@ setup_type						setup;
 
 void setup_xml_default(void)
 {
+	strcpy(setup.engine_name,"dim3 Engine");
+	
 	setup.mipmap_mode=mipmap_mode_bilinear;
 	
+	setup.free_look=TRUE;
 	setup.auto_texture=TRUE;
-	setup.flip_movement=FALSE;
+
 	setup.duplicate_offset=5;
 	setup.snap_size=5;
 	setup.clip_distance=200;
 	
-	strcpy(setup.engine_name,"dim3 Engine");
+	setup.flip_horz_movement=FALSE;
+	setup.flip_vert_movement=FALSE;
+	setup.flip_horz_turn=FALSE;
+	setup.flip_vert_turn=FALSE;
+	setup.flip_forward_movement=FALSE;
 	
 	setup.col.mesh_line.r=0.5f;
 	setup.col.mesh_line.g=0.5f;
@@ -105,8 +112,13 @@ bool setup_xml_read(void)
 		// keys
 
     xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
+ 	xml_key_read_boolean(setup_tag,"Free_Look",&setup.free_look);
  	xml_key_read_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
- 	xml_key_read_boolean(setup_tag,"Flip_Movement",&setup.flip_movement);
+ 	xml_key_read_boolean(setup_tag,"Flip_Horz_Movement",&setup.flip_horz_movement);
+ 	xml_key_read_boolean(setup_tag,"Flip_Vert_Movement",&setup.flip_vert_movement);
+ 	xml_key_read_boolean(setup_tag,"Flip_Horz_Turn",&setup.flip_horz_turn);
+ 	xml_key_read_boolean(setup_tag,"Flip_Vert_Turn",&setup.flip_vert_turn);
+ 	xml_key_read_boolean(setup_tag,"Flip_Forward_Movement",&setup.flip_forward_movement);
 	xml_key_read_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
 	xml_key_read_int(setup_tag,"Snap_Size",&setup.snap_size);
 	xml_key_read_int(setup_tag,"Clip_Distance",&setup.clip_distance);
@@ -143,8 +155,13 @@ bool setup_xml_write(void)
 		// keys
 		
     xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
+ 	xml_key_write_boolean("Free_Look",setup.free_look);
  	xml_key_write_boolean("Auto_Texture",setup.auto_texture);
- 	xml_key_write_boolean("Flip_Movement",setup.flip_movement);
+ 	xml_key_write_boolean("Flip_Horz_Movement",setup.flip_horz_movement);
+ 	xml_key_write_boolean("Flip_Vert_Movement",setup.flip_vert_movement);
+ 	xml_key_write_boolean("Flip_Horz_Turn",setup.flip_horz_turn);
+ 	xml_key_write_boolean("Flip_Vert_Turn",setup.flip_vert_turn);
+ 	xml_key_write_boolean("Flip_Forward_Movement",setup.flip_forward_movement);
 	xml_key_write_int("Duplicate_Offset",setup.duplicate_offset);
 	xml_key_write_int("Snap_Size",setup.snap_size);
 	xml_key_write_int("Clip_Distance",setup.clip_distance);

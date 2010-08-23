@@ -52,7 +52,6 @@ void piece_add_mesh_finish(int mesh_idx)
 		
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
-	walk_view_set_lookat_or_walk_mode();
 
 		// change mode to move entire mesh
 		
@@ -121,7 +120,6 @@ void piece_add_obj_replace_delete_existing(void)
 	}
 	
 	select_clear();
-	walk_view_set_lookat_or_walk_mode();
 }
 
 /* =======================================================
@@ -252,7 +250,7 @@ void piece_add_obj_mesh(void)
 {
 	int					n,k,nline,nvertex,npoly,nuv,nnormal,npt,
 						v_idx,uv_idx,normal_idx,normal_count,
-						mesh_idx,poly_idx,txt_idx,x,y,z;
+						mesh_idx,poly_idx,txt_idx,old_nmesh,x,y,z;
 	int					px[8],py[8],pz[8];
 	char				*c,txt[256],material_name[256],
 						vstr[256],uvstr[256],normalstr[256],path[1024];
@@ -542,6 +540,11 @@ void piece_add_obj_mesh(void)
 	mesh=NULL;
 	txt_idx=0;
 	
+		// remember the number of meshes
+		// we add so we can fix some things later
+		
+	old_nmesh=map.mesh.nmesh;
+	
 		// get the polys
 		
 	dialog_progress_next();
@@ -688,24 +691,38 @@ void piece_add_obj_mesh(void)
 	
 	textdecode_close();
 	
+		// were any meshes imported?
+		
+	if (old_nmesh==map.mesh.nmesh) {
+		dialog_alert("Import Failed","Could not find mesh.  OBJ is missing a material (usemtl) deceleration.");
+		dialog_progress_end();
+		return;
+	}
+	
 		// if no uvs, force auto-texture
 		
 	dialog_progress_next();
 		
-	if (nuv==0) map_mesh_reset_uv(&map,mesh_idx);
+	if (nuv==0) {
+		for (n=old_nmesh;n!=map.mesh.nmesh;n++) {
+			map_mesh_reset_uv(&map,n);
+		}
+	}
 
 		// calc the normals
 		// and lock if this import had normals
 		
 	dialog_progress_next();
 
-	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(nnormal!=0));
+	for (n=old_nmesh;n!=map.mesh.nmesh;n++) {
+		map_recalc_normals_mesh(&map.mesh.meshes[n],(nnormal!=0));
+	}
 	
 		// finish up
 		
 	dialog_progress_next();
 		
-	piece_add_mesh_finish(mesh_idx);
+	piece_add_mesh_finish(old_nmesh);
 	
 	dialog_progress_end();
 }
@@ -1258,8 +1275,6 @@ void piece_combine_mesh(void)
 	if (mesh_combine_idx!=-1) {
 		select_add(mesh_piece,mesh_combine_idx,0);
 	}
-	
-	walk_view_set_lookat_or_walk_mode();
 }
 
 /* =======================================================
@@ -1333,7 +1348,6 @@ void piece_split_mesh(void)
 		
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
-	walk_view_set_lookat_or_walk_mode();
 	
 		// auto-switch to mesh drag mode
 		
@@ -1379,7 +1393,6 @@ void map_optimize(void)
 	if (!dialog_optimize_run(&poly_threshold)) return;
 	
 	select_clear();
-	walk_view_set_lookat_or_walk_mode();
 	
 	os_set_wait_cursor();
 	comb_count=map_mesh_combine_small(&map,poly_threshold);

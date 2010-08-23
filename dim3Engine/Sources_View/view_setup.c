@@ -433,7 +433,7 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 				// liquid normal is always facing up (0,-1,0)
 				// so this calculation is realitively easy
 				
-			if (!liq->never_cull) {
+			if ((!liq->never_cull) && (!map.settings.never_cull)) {
 				mx=(liq->lft+liq->rgt)>>1;
 				mz=(liq->top+liq->bot)>>1;
 				

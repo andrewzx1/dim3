@@ -201,8 +201,7 @@ void walk_view_get_model_size(char *model_name,d3pnt *size)
 {
 	int					idx;
 
-	size->x=size->z=map_enlarge*3;
-	size->y=map_enlarge*4;
+	size->x=size->y=size->z=view_sprite_size;
 
 	if (model_name[0]==0x0) return;
 	
@@ -354,17 +353,18 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
       
 ======================================================= */
 
-bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz)
+void walk_view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,d3pnt *v_pnts)
 {
-	int						n,idx,cx,cy,cz,wid_x,wid_z,high;
+	int						n,idx,cx,cy,cz,wid_x,wid_z,high,
+							px[8],py[8],pz[8];
 	float					fx,fy,fz;
-	matrix_type				rot_x_mat,rot_y_mat,rot_z_mat;
+	matrix_type				mat;
 	model_type				*model;
 	
 		// default size
 		
-    wid_x=wid_z=map_enlarge*3;
-    high=map_enlarge*4;
+    wid_x=wid_z=view_sprite_size;
+	high=view_sprite_size*2;
 	
 	cx=cy=cz=0;
 
@@ -403,18 +403,14 @@ bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,
 		// any rotations
 	
 	if (ang!=NULL) {
-		matrix_rotate_x(&rot_x_mat,ang->x);
-		matrix_rotate_z(&rot_z_mat,ang->z);
-		matrix_rotate_y(&rot_y_mat,ang->y);
-
+		matrix_rotate_xyz(&mat,ang->x,ang->y,ang->z);
+		
 		for (n=0;n!=8;n++) {
 			fx=(float)(px[n]-cx);
 			fy=(float)(py[n]-cy);
 			fz=(float)(pz[n]-cz);
 			
-			matrix_vertex_multiply(&rot_x_mat,&fx,&fy,&fz);
-			matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
-			matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
+			matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 			
 			px[n]=((int)fx)+cx;
 			py[n]=((int)fy)+cy;
@@ -423,74 +419,9 @@ bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,
 	}
 	
 	for (n=0;n!=8;n++) {
-		px[n]+=pnt->x;
-		py[n]+=pnt->y;
-		pz[n]+=pnt->z;
+		v_pnts[n].x=px[n]+pnt->x;
+		v_pnts[n].y=py[n]+pnt->y;
+		v_pnts[n].z=pz[n]+pnt->z;
 	}
-	
-	return(TRUE);
-}
-
-/* =======================================================
-
-      Get Rot Handle Position
-      
-======================================================= */
-
-int walk_view_model_rot_y_size(d3pnt *pnt,d3ang *ang,char *name)
-{
-	int				px[8],py[8],pz[8];
-	
-	if (!walk_view_model_click_select_size(name,pnt,ang,px,py,pz)) return(map_enlarge*5);
-	return((py[7]-py[0])+map_enlarge);
-}
-
-/* =======================================================
-
-      Draw Model Select
-      
-======================================================= */
-
-bool walk_view_model_draw_select(d3pnt *pnt,d3ang *ang,char *name)
-{
-	int				px[8],py[8],pz[8];
-	
-		// get polygons
-		
-	if (!walk_view_model_click_select_size(name,pnt,ang,px,py,pz)) return(FALSE);
-
-		// draw selection
-		
-    glLineWidth(3);
-	glColor4f(1,0,0,1);
-    
-	glBegin(GL_LINE_LOOP);
-	glVertex3i(px[0],py[0],pz[0]);
-	glVertex3i(px[1],py[1],pz[1]);
-	glVertex3i(px[2],py[2],pz[2]);
-	glVertex3i(px[3],py[3],pz[3]);
-	glEnd();
-
-	glBegin(GL_LINE_LOOP);
-	glVertex3i(px[4],py[4],pz[4]);
-	glVertex3i(px[5],py[5],pz[5]);
-	glVertex3i(px[6],py[6],pz[6]);
-	glVertex3i(px[7],py[7],pz[7]);
-	glEnd();
-	
-	glBegin(GL_LINES);
-	glVertex3i(px[0],py[0],pz[0]);
-	glVertex3i(px[7],py[7],pz[7]);
-	glVertex3i(px[1],py[1],pz[1]);
-	glVertex3i(px[4],py[4],pz[4]);
-	glVertex3i(px[2],py[2],pz[2]);
-	glVertex3i(px[5],py[5],pz[5]);
-	glVertex3i(px[3],py[3],pz[3]);
-	glVertex3i(px[6],py[6],pz[6]);
-	glEnd();
-    
-    glLineWidth(1);
-	
-	return(TRUE);
 }
 

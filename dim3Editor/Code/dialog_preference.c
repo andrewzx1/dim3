@@ -31,11 +31,16 @@ and can be sold or given away.
 
 #define kPrefEngineName						FOUR_CHAR_CODE('name')
 #define kPrefMipMapMode						FOUR_CHAR_CODE('mmap')
+#define kPrefFreeLook						FOUR_CHAR_CODE('free')
 #define kPrefAutoTexture					FOUR_CHAR_CODE('auto')
-#define kPrefFlipMovement					FOUR_CHAR_CODE('flip')
 #define kPrefDuplicateOffset				FOUR_CHAR_CODE('doff')
 #define kPrefSnapSize						FOUR_CHAR_CODE('spsz')
 #define kPrefClipDistance					FOUR_CHAR_CODE('cldt')
+#define kPrefFlipHorzMovement				FOUR_CHAR_CODE('fphm')
+#define kPrefFlipVertMovement				FOUR_CHAR_CODE('fpvm')
+#define kPrefFlipHorzTurn					FOUR_CHAR_CODE('fpht')
+#define kPrefFlipVertTurn					FOUR_CHAR_CODE('fpvt')
+#define kPrefFlipForwardMovement			FOUR_CHAR_CODE('fpfm')
 #define kPrefBackgroundColor				FOUR_CHAR_CODE('bcol')
 #define kPrefLineColor						FOUR_CHAR_CODE('lcol')
 #define kPrefMeshSelColor					FOUR_CHAR_CODE('scol')
@@ -103,12 +108,20 @@ void dialog_preference_run(void)
 		// set controls
 		
 	dialog_set_text(dialog_preference_wind,kPrefEngineName,0,setup.engine_name);
+	
 	dialog_set_combo(dialog_preference_wind,kPrefMipMapMode,0,setup.mipmap_mode);
+	dialog_set_boolean(dialog_preference_wind,kPrefFreeLook,0,setup.free_look);
 	dialog_set_boolean(dialog_preference_wind,kPrefAutoTexture,0,setup.auto_texture);
-	dialog_set_boolean(dialog_preference_wind,kPrefFlipMovement,0,setup.flip_movement);
+	
 	dialog_set_value(dialog_preference_wind,kPrefDuplicateOffset,0,setup.duplicate_offset);
 	dialog_set_value(dialog_preference_wind,kPrefSnapSize,0,setup.snap_size);
 	dialog_set_value(dialog_preference_wind,kPrefClipDistance,0,setup.clip_distance);
+
+	dialog_set_boolean(dialog_preference_wind,kPrefFlipHorzMovement,0,setup.flip_horz_movement);
+	dialog_set_boolean(dialog_preference_wind,kPrefFlipVertMovement,0,setup.flip_vert_movement);
+	dialog_set_boolean(dialog_preference_wind,kPrefFlipHorzTurn,0,setup.flip_horz_turn);
+	dialog_set_boolean(dialog_preference_wind,kPrefFlipVertTurn,0,setup.flip_vert_turn);
+	dialog_set_boolean(dialog_preference_wind,kPrefFlipForwardMovement,0,setup.flip_forward_movement);
 	
 	dialog_set_color(dialog_preference_wind,kPrefBackgroundColor,0,&setup.col.background);
 	dialog_set_color(dialog_preference_wind,kPrefLineColor,0,&setup.col.mesh_line);
@@ -134,12 +147,20 @@ void dialog_preference_run(void)
 		
 	if (!dialog_preference_cancel) {
 		dialog_get_text(dialog_preference_wind,kPrefEngineName,0,setup.engine_name,256);
+		
 		setup.mipmap_mode=dialog_get_combo(dialog_preference_wind,kPrefMipMapMode,0);
+		setup.free_look=dialog_get_boolean(dialog_preference_wind,kPrefFreeLook,0);
 		setup.auto_texture=dialog_get_boolean(dialog_preference_wind,kPrefAutoTexture,0);
-		setup.flip_movement=dialog_get_boolean(dialog_preference_wind,kPrefFlipMovement,0);
+		
 		setup.duplicate_offset=dialog_get_value(dialog_preference_wind,kPrefDuplicateOffset,0);
 		setup.snap_size=dialog_get_value(dialog_preference_wind,kPrefSnapSize,0);
 		setup.clip_distance=dialog_get_value(dialog_preference_wind,kPrefClipDistance,0);
+
+		setup.flip_horz_movement=dialog_get_boolean(dialog_preference_wind,kPrefFlipHorzMovement,0);
+		setup.flip_vert_movement=dialog_get_boolean(dialog_preference_wind,kPrefFlipVertMovement,0);
+		setup.flip_horz_turn=dialog_get_boolean(dialog_preference_wind,kPrefFlipHorzTurn,0);
+		setup.flip_vert_turn=dialog_get_boolean(dialog_preference_wind,kPrefFlipVertTurn,0);
+		setup.flip_forward_movement=dialog_get_boolean(dialog_preference_wind,kPrefFlipForwardMovement,0);
 		
 		dialog_get_color(dialog_preference_wind,kPrefBackgroundColor,0,&setup.col.background);
 		dialog_get_color(dialog_preference_wind,kPrefLineColor,0,&setup.col.mesh_line);

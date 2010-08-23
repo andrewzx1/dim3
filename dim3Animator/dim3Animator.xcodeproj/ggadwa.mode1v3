@@ -404,10 +404,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26161F02121A1D42006F692E</string>
+										<string>26511214121C87F200E2ED78</string>
 										<key>history</key>
 										<array>
-											<string>26161E35121A117D006F692E</string>
+											<string>26161F02121A1D42006F692E</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -465,9 +465,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26161F03121A1D42006F692E</string>
+				<string>26511212121C878300E2ED78</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26161F04121A1D42006F692E</string>
+				<string>26511213121C878300E2ED78</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -588,7 +588,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>303701314.22189802</real>
+	<real>303859698.217646</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -645,6 +645,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -684,7 +686,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26161F01121A1D3E006F692E</string>
+				<string>2651120C121C877E00E2ED78</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -695,7 +697,7 @@
 			<key>WindowToolGUID</key>
 			<string>260AFEE90D40505C00F6C42F</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>

@@ -81,10 +81,6 @@ void palette_particle_save(void)
 	particle->slop_tick=dialog_get_int(palette_particle_wind,kParticleSlopTick,0);
 	particle->on=dialog_get_boolean(palette_particle_wind,kParticleOn,0);
 	
-		// need to reset particle combo
-		
-	main_wind_tool_fill_particle_combo();
-	
 	main_wind_draw();
 }
 

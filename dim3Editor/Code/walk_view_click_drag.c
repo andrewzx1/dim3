@@ -120,15 +120,15 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		
 	walk_view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
 		
-	walk_view_pick_list_start(view,8);
+	view_pick_list_start(view,FALSE,8);
 	
 	for (n=0;n!=8;n++) {
-		walk_view_pick_list_add_handle(px[n],py[n],pz[n],liquid_piece,n,0);
+		view_pick_list_add_handle(px[n],py[n],pz[n],liquid_piece,n,0);
 	}
 
 	handle_idx=-1;
 
-	walk_view_pick_list_end(view,pt,&type,&handle_idx,&sub_idx);
+	view_pick_list_end(view,pt,&type,&handle_idx,&sub_idx);
 	
 	if (handle_idx==-1) return(FALSE);
 	
@@ -239,6 +239,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		// turn off hilite
 		
 	state.drag_handle_idx=-1;
+	
 	main_wind_draw();
 	
 	return(TRUE);
@@ -418,6 +419,8 @@ bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 	
 	os_set_arrow_cursor();
 	
+	main_wind_draw();
+	
 	return(!first_drag);
 }
 
@@ -548,6 +551,8 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 
 	os_set_arrow_cursor();
 	
+	main_wind_draw();
+	
 	return(!first_drag);
 }
 
@@ -577,18 +582,18 @@ bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 	
 	if (mesh->flag.lock_move) return(FALSE);
 		
-	walk_view_pick_list_start(view,mesh->nvertex);
+	view_pick_list_start(view,FALSE,mesh->nvertex);
 	
 	dpt=mesh->vertexes;
 	
 	for (n=0;n!=mesh->nvertex;n++) {
-		walk_view_pick_list_add_handle(dpt->x,dpt->y,dpt->z,mesh_piece,n,0);
+		view_pick_list_add_handle(dpt->x,dpt->y,dpt->z,mesh_piece,n,0);
 		dpt++;
 	}
 
 	vertex_idx=-1;
 
-	walk_view_pick_list_end(view,pt,&type,&vertex_idx,&sub_idx);
+	view_pick_list_end(view,pt,&type,&vertex_idx,&sub_idx);
 
     if (vertex_idx==-1) return(FALSE);
 	
@@ -667,6 +672,7 @@ bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 		// turn off hilite
 		
 	state.drag_handle_idx=-1;
+	
 	main_wind_draw();
 	
 	return(TRUE);
@@ -699,15 +705,15 @@ bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 	
 	walk_view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
 		
-	walk_view_pick_list_start(view,4);
+	view_pick_list_start(view,FALSE,4);
 	
 	for (n=0;n!=4;n++) {
-		walk_view_pick_list_add_handle(px[n],py[n],pz[n],liquid_piece,n,0);
+		view_pick_list_add_handle(px[n],py[n],pz[n],liquid_piece,n,0);
 	}
 
 	handle_idx=-1;
 
-	walk_view_pick_list_end(view,pt,&type,&handle_idx,&sub_idx);
+	view_pick_list_end(view,pt,&type,&handle_idx,&sub_idx);
 
     if (handle_idx==-1) return(FALSE);
 	
@@ -811,6 +817,7 @@ bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 		// remove hilite
 
 	state.drag_handle_idx=-1;
+	
 	main_wind_draw();
 	
 	os_set_arrow_cursor();
@@ -907,6 +914,8 @@ bool walk_view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 	}
 	
 	os_set_arrow_cursor();
+	
+	main_wind_draw();
 	
 	return(!first_drag);
 }
@@ -1011,6 +1020,8 @@ bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt)
 	}
 	
 	os_set_arrow_cursor();
+	
+	main_wind_draw();
 	
 	return(!first_drag);
 }

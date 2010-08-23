@@ -53,7 +53,6 @@ extern void walk_view_move_position(d3pnt *pnt);
 extern void walk_view_get_angle(d3ang *ang);
 extern void walk_view_set_angle(d3ang *ang);
 extern void walk_view_turn_angle(d3ang *ang);
-extern void walk_view_set_lookat_or_walk_mode(void);
 extern void walk_view_perspective_ortho(bool on);
 extern void walk_view_cull(bool on);
 extern void walk_view_clip(bool on);
@@ -81,14 +80,20 @@ extern void walk_view_draw_view(editor_view_type *view);
 extern void walk_view_draw_select(editor_view_type *view);
 
 //
+// view picking
+//
+
+extern bool view_pick_list_start(editor_view_type *view,bool in_2D,int count);
+extern void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx);
+extern void view_pick_list_add(int type,int main_idx,int sub_idx);
+extern void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx);
+extern void view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_idx);
+extern void view_pick_list_add_2D_handle(int x,int y,int type,int main_idx,int sub_idx);
+
+//
 // walk view click
 //
 
-extern bool walk_view_pick_list_start(editor_view_type *view,int count);
-extern void walk_view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx);
-extern void walk_view_pick_list_add(int type,int main_idx,int sub_idx);
-extern void walk_view_pick_list_add_cube(int *px,int *py,int *pz,int type,int main_idx,int sub_idx);
-extern void walk_view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_idx);
 extern int walk_view_get_grid(void);
 extern void walk_view_click_grid(d3pnt *pt);
 extern bool walk_view_click_snap(int mesh_idx,d3pnt *pt);
@@ -108,7 +113,8 @@ extern bool walk_view_click_drag_texture(editor_view_type *view,d3pnt *pt,bool e
 // walk view draw handle
 //
 
-extern void walk_view_sprite_select_size(d3pnt *pnt,int *px,int *py,int *pz);
+extern bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *center_pnt,d3pnt *hand_pnt);
+extern void view_get_sprite_vertexes(d3pnt *pnt,d3ang *ang,d3pnt *v_pnts);
 
 //
 // walk view movement
@@ -116,10 +122,10 @@ extern void walk_view_sprite_select_size(d3pnt *pnt,int *px,int *py,int *pz);
 
 extern void walk_view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *pnt,int dist);
 extern void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,int dist);
-extern void walk_view_mouse_scroll_movement(d3pnt *pnt);
-extern void walk_view_mouse_forward_movement(d3pnt *pnt);
-extern void walk_view_scroll_wheel_z_movement(int delta);
-extern void walk_view_mouse_turn(d3pnt *pnt);
+extern void walk_view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt);
+extern void walk_view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt);
+extern void walk_view_scroll_wheel_z_movement(editor_view_type *view,int delta);
+extern void walk_view_mouse_turn(editor_view_type *view,d3pnt *pnt);
 
 //
 // walk view models
@@ -130,6 +136,4 @@ extern void walk_view_models_close(void);
 extern void walk_view_models_reset(void);
 extern void walk_view_get_model_size(char *model_name,d3pnt *size);
 extern bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count);
-extern bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz);
-extern int walk_view_model_rot_y_size(d3pnt *pnt,d3ang *ang,char *name);
-extern bool walk_view_model_draw_select(d3pnt *pnt,d3ang *ang,char *name);
+extern void walk_view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,d3pnt *v_pnts);

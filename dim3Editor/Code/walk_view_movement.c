@@ -37,9 +37,6 @@ extern map_type					map;
 extern setup_type				setup;
 extern editor_state_type		state;
 
-extern bool						view_in_look;
-extern d3pnt					view_look_pnt;
-
 /* =======================================================
 
       Mouse Movement
@@ -93,7 +90,7 @@ void walk_view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *pn
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	pnt->x+=(int)fx;
-	pnt->z-=(int)fz;
+	pnt->z+=(int)fz;
 }
 
 void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,int dist)
@@ -102,7 +99,6 @@ void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,
 	matrix_type		mat;
 
 	if (dist==0) return;
-
 
 		// always move on axises, find
 		// closest to view angle
@@ -144,48 +140,28 @@ void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,
 	pnt->y+=dist;
 }
 
-void walk_view_mouse_get_forward_axis(d3pnt *pnt,int dist)
+void walk_view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist)
 {
-	d3ang			ang;
-	
-		// always move on axises, find
-		// closest to view angle
-		
-	walk_view_get_angle(&ang);
+	float			fx,fy,fz;
+	matrix_type		mat;
 
-	if ((ang.x<=315.0f) && (ang.x>180.0f)) {
-		pnt->y+=-dist;
-		return;
-	}
-	
-	if ((ang.x>=45.0f) && (ang.x<180.0f)) {
-		pnt->y+=dist;
-		return;
-	}
+	if (dist==0) return;
 
-	if ((ang.y>=45.0f) && (ang.y<135.0f)) {
-		pnt->x+=dist;
-		return;
-	}
-	if ((ang.y>=135.0f) && (ang.y<225.0f)) {
-		pnt->z+=-dist;
-		return;
-	}
-	if ((ang.y>=225.0f) && (ang.y<315.0f)) {
-		pnt->x+=-dist;
-		return;
-	}
-	
-	pnt->z+=dist;
+	fx=0.0f;
+	fy=0.0f;
+	fz=(float)dist;
+
+	matrix_rotate_y(&mat,view->ang.y);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+	pnt->x+=(int)fx;
+	pnt->z+=(int)fz;
 }
 
-void walk_view_mouse_scroll_movement(d3pnt *pnt)
+void walk_view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
 {
 	int						x,y;
 	d3pnt					old_pnt,move_pnt;
-	editor_view_type		*view;
-
-	view=walk_view_get_current_view();
     
     os_set_hand_cursor();
 	
@@ -198,10 +174,8 @@ void walk_view_mouse_scroll_movement(d3pnt *pnt)
 		x=old_pnt.x-pnt->x;
 		y=old_pnt.y-pnt->y;
 
-		if (setup.flip_movement) {
-			x=-x;
-			y=-y;
-		}
+		if (setup.flip_horz_movement) x=-x;
+		if (setup.flip_vert_movement) y=-y;
 		
 		memmove(&old_pnt,pnt,sizeof(d3pnt));
 		
@@ -216,7 +190,7 @@ void walk_view_mouse_scroll_movement(d3pnt *pnt)
 	}
 }
 
-void walk_view_mouse_forward_movement(d3pnt *pnt)
+void walk_view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 {
 	int				x,y;
 	d3pnt			old_pnt,move_pnt;
@@ -239,7 +213,7 @@ void walk_view_mouse_forward_movement(d3pnt *pnt)
 		
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 
-		walk_view_mouse_get_forward_axis(&move_pnt,(y*move_mouse_scale));
+		walk_view_mouse_get_forward_axis(view,&move_pnt,(y*move_mouse_scale));
 		walk_view_move_position(&move_pnt);
 		
 			// y turn
@@ -247,7 +221,7 @@ void walk_view_mouse_forward_movement(d3pnt *pnt)
 		if (x!=0) {
 			turn_ang.x=turn_ang.z=0.0f;
 			turn_ang.y=((float)x)/move_mouse_turn_reduce_scale;
-			if (setup.flip_movement) turn_ang.y=-turn_ang.y;
+			if (setup.flip_forward_movement) turn_ang.y=-turn_ang.y;
 			walk_view_turn_angle(&turn_ang);
 		}
 
@@ -261,28 +235,31 @@ void walk_view_mouse_forward_movement(d3pnt *pnt)
       
 ======================================================= */
 
-void walk_view_scroll_wheel_z_movement(int delta)
+void walk_view_scroll_wheel_z_movement(editor_view_type *view,int delta)
 {
 	int				mv;
 	d3vct			move_vct;
-	d3pnt			pnt,move_pnt;
+	d3pnt			pnt,move_pnt,look_pnt;
 
 	move_pnt.x=move_pnt.y=move_pnt.z=0;
 
 	mv=delta*move_scroll_wheel_scale;
+	if (setup.flip_forward_movement) mv=-mv;
 
 		// free look
 
-	if (!view_in_look) {
-		walk_view_mouse_get_forward_axis(&move_pnt,-mv);
+	if ((select_count()!=1) || (state.free_look)) {
+		walk_view_mouse_get_forward_axis(view,&move_pnt,-mv);
 	}
 	
 		// look at
 
 	else {
 		walk_view_get_position(&pnt);
+		
+		select_get_center(&look_pnt);
 
-		vector_create(&move_vct,view_look_pnt.x,view_look_pnt.y,view_look_pnt.z,pnt.x,pnt.y,pnt.z);
+		vector_create(&move_vct,look_pnt.x,look_pnt.y,look_pnt.z,pnt.x,pnt.y,pnt.z);
 		vector_normalize(&move_vct);
 
 		move_pnt.x=(int)(move_vct.x*((float)mv));
@@ -317,10 +294,8 @@ void walk_view_mouse_turn_free(d3pnt *pnt)
 		x=old_pnt.x-pnt->x;
 		y=old_pnt.y-pnt->y;
 
-		if (setup.flip_movement) {
-			x=-x;
-			y=-y;
-		}
+		if (setup.flip_horz_turn) x=-x;
+		if (setup.flip_vert_turn) y=-y;
 		
 		redraw=FALSE;
 	
@@ -355,10 +330,10 @@ void walk_view_mouse_turn_free(d3pnt *pnt)
 void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 {
 	int				x,y;
-	float			fang;
-	bool			redraw;
+	float			ang_y,ang_x;
 	d3pnt			old_pnt,org_pnt,
 					view_pnt,org_view_pnt;
+	d3ang			view_ang,org_view_ang;
     
     os_set_drag_cursor();
 
@@ -366,59 +341,46 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 	memmove(&org_pnt,pnt,sizeof(d3pnt));
 	
 	walk_view_get_position(&org_view_pnt);
+	walk_view_get_angle(&org_view_ang);
 	
 	while (!os_track_mouse_location(pnt,NULL)) {
 		
 		x=old_pnt.x-pnt->x;
 		y=old_pnt.y-pnt->y;
-
-		if (setup.flip_movement) {
-			x=-x;
-			y=-y;
-		}
+		if ((x==0) && (y==0)) continue;
 		
-		redraw=FALSE;
-
-		memmove(&view_pnt,&org_view_pnt,sizeof(d3pnt));
+		old_pnt.x=pnt->x;
+		old_pnt.y=pnt->y;
 	
-			// y turning
-			
-		if (x!=0) {
-			old_pnt.x=pnt->x;
-
-			fang=((float)(org_pnt.x-pnt->x))/move_mouse_turn_reduce_scale;
-			rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,0.0f,fang,0.0f);
-
-			redraw=TRUE;
-		}
+		ang_y=-(((float)(org_pnt.x-pnt->x))/move_mouse_turn_reduce_scale);
+		ang_x=-(((float)(org_pnt.y-pnt->y))/move_mouse_turn_reduce_scale);
 		
-			// x turning
-			
-		if (y!=0) {
-			old_pnt.y=pnt->y;
-
-			fang=((float)(org_pnt.y-pnt->y))/move_mouse_turn_reduce_scale;
-			rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,fang,0.0f,0.0f);
-
-			redraw=TRUE;
-		}
+		ang_x=0.0f;		// supergumba -- just rotate around Y now
 		
-			// if point has changed, then move
-
-		if (redraw) {
-			walk_view_set_position(&view_pnt);
-			main_wind_draw();
-		}
+		if (setup.flip_horz_turn) ang_x=-ang_x;
+		if (setup.flip_vert_turn) ang_y=-ang_y;
+		
+		memmove(&view_pnt,&org_view_pnt,sizeof(d3pnt));
+		rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,ang_x,ang_y,0.0f);
+		walk_view_set_position(&view_pnt);
+		
+		memmove(&view_ang,&org_view_ang,sizeof(d3ang));
+		view_ang.x=angle_add(view_ang.x,ang_x);
+		view_ang.y=angle_add(view_ang.y,ang_y);
+		walk_view_set_angle(&view_ang);
+	
+		
+		main_wind_draw();
 	}
 }
 
-void walk_view_mouse_turn(d3pnt *pnt)
+void walk_view_mouse_turn(editor_view_type *view,d3pnt *pnt)
 {
 	d3pnt			cnt;
 
 		// free look
 
-	if (!view_in_look) {
+	if ((select_count()!=1) || (state.free_look)) {
 		walk_view_mouse_turn_free(pnt);
 		return;
 	}

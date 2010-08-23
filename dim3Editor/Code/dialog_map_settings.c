@@ -43,6 +43,7 @@ extern map_type				map;
 #define kMapGravityPower							FOUR_CHAR_CODE('gpwr')
 #define kMapGravitySpeed							FOUR_CHAR_CODE('gspd')
 #define kMapResistance								FOUR_CHAR_CODE('rest')
+#define kMapNeverCull								FOUR_CHAR_CODE('ncul')
 #define kMapGameTypeList							FOUR_CHAR_CODE('gtyp')
 
 	// ambients
@@ -222,6 +223,8 @@ bool dialog_map_settings_run(void)
 	dialog_set_float(dialog_map_settings_wind,kMapGravityPower,0,map.settings.gravity_max_power);
 	dialog_set_float(dialog_map_settings_wind,kMapGravitySpeed,0,map.settings.gravity_max_speed);
 	dialog_set_float(dialog_map_settings_wind,kMapResistance,0,map.settings.resistance);
+	dialog_set_boolean(dialog_map_settings_wind,kMapNeverCull,0,map.settings.never_cull);
+
 	dialog_set_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list);
 	
 		// set ambient controls
@@ -372,6 +375,8 @@ bool dialog_map_settings_run(void)
 		map.settings.gravity_max_power=dialog_get_float(dialog_map_settings_wind,kMapGravityPower,0);
 		map.settings.gravity_max_speed=dialog_get_float(dialog_map_settings_wind,kMapGravitySpeed,0);
 		map.settings.resistance=dialog_get_float(dialog_map_settings_wind,kMapResistance,0);
+		map.settings.never_cull=dialog_get_boolean(dialog_map_settings_wind,kMapNeverCull,0);
+
 		dialog_get_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list,256);
 		
 			// ambient controls

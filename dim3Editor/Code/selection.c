@@ -260,9 +260,12 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				break;
 				
 			case node_piece:
-				t_min.x=t_max.x=map.nodes[main_idx].pnt.x;
-				t_min.y=t_max.y=map.nodes[main_idx].pnt.y;
-				t_min.z=t_max.z=map.nodes[main_idx].pnt.z;
+				t_min.x=map.nodes[main_idx].pnt.x-view_sprite_size;
+				t_max.x=map.nodes[main_idx].pnt.x+view_sprite_size;
+				t_min.y=map.nodes[main_idx].pnt.y-(view_sprite_size*2);
+				t_max.y=map.nodes[main_idx].pnt.y;
+				t_min.z=map.nodes[main_idx].pnt.z-view_sprite_size;
+				t_max.z=map.nodes[main_idx].pnt.z+view_sprite_size;
 				break;
 				
 			case spot_piece:
@@ -286,21 +289,30 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				break;
 				
 			case light_piece:
-				t_min.x=t_max.x=map.lights[main_idx].pnt.x;
-				t_min.y=t_max.y=map.lights[main_idx].pnt.y;
-				t_min.z=t_max.z=map.lights[main_idx].pnt.z;
+				t_min.x=map.lights[main_idx].pnt.x-view_sprite_size;
+				t_max.x=map.lights[main_idx].pnt.x+view_sprite_size;
+				t_min.y=map.lights[main_idx].pnt.y-(view_sprite_size*2);
+				t_max.y=map.lights[main_idx].pnt.y;
+				t_min.z=map.lights[main_idx].pnt.z-view_sprite_size;
+				t_max.z=map.lights[main_idx].pnt.z+view_sprite_size;
 				break;
 				
 			case sound_piece:
-				t_min.x=t_max.x=map.sounds[main_idx].pnt.x;
-				t_min.y=t_max.y=map.sounds[main_idx].pnt.y;
-				t_min.z=t_max.z=map.sounds[main_idx].pnt.z;
+				t_min.x=map.sounds[main_idx].pnt.x-view_sprite_size;
+				t_max.x=map.sounds[main_idx].pnt.x+view_sprite_size;
+				t_min.y=map.sounds[main_idx].pnt.y-(view_sprite_size*2);
+				t_max.y=map.sounds[main_idx].pnt.y;
+				t_min.z=map.sounds[main_idx].pnt.z-view_sprite_size;
+				t_max.z=map.sounds[main_idx].pnt.z+view_sprite_size;
 				break;
 				
 			case particle_piece:
-				t_min.x=t_max.x=map.particles[main_idx].pnt.x;
-				t_min.y=t_max.y=map.particles[main_idx].pnt.y;
-				t_min.z=t_max.z=map.particles[main_idx].pnt.z;
+				t_min.x=map.particles[main_idx].pnt.x-view_sprite_size;
+				t_max.x=map.particles[main_idx].pnt.x+view_sprite_size;
+				t_min.y=map.particles[main_idx].pnt.y-(view_sprite_size*2);
+				t_max.y=map.particles[main_idx].pnt.y;
+				t_min.z=map.particles[main_idx].pnt.z-view_sprite_size;
+				t_max.z=map.particles[main_idx].pnt.z+view_sprite_size;
 				break;
 				
 		}
@@ -334,11 +346,15 @@ void select_get_angle(d3ang *ang)
 		// is this something with an
 		// angle?
 
-	if (select_count()==0) return;
+	if (select_count()!=1) return;
 
 	select_get(0,&type,&main_idx,&sub_idx);
 
 	switch (type) {
+	
+		case node_piece:
+			memmove(ang,&map.nodes[main_idx].ang,sizeof(d3ang));
+			break;
 
 		case spot_piece:
 			memmove(ang,&map.spots[main_idx].ang,sizeof(d3ang));

@@ -47,80 +47,66 @@ extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
       
 ======================================================= */
 
-void walk_view_draw_sprite(d3pnt *pnt,float ang_y,unsigned long gl_id)
+void view_get_sprite_vertexes(d3pnt *pnt,d3ang *ang,d3pnt *v_pnts)
 {
-    int			px[4],pz[4],wid,high;
+    int				n;
+	float			fx[8],fy[8],fz[8];
+	matrix_type		mat;
 	
-    wid=map_enlarge*3;
-    high=map_enlarge*4;
+	fx[0]=fx[3]=fx[4]=fx[7]=-(float)view_sprite_size;
+	fx[1]=fx[2]=fx[5]=fx[6]=(float)view_sprite_size;
 	
-	px[0]=px[3]=pnt->x-wid;
-	px[1]=px[2]=pnt->x+wid;
-	pz[0]=pz[1]=pnt->z-wid;
-	pz[2]=pz[3]=pnt->z+wid;
+	fy[0]=fy[1]=fy[2]=fy[3]=-(float)(view_sprite_size*2);
+	fy[4]=fy[5]=fy[6]=fy[7]=0.0f;
 	
-	rotate_2D_polygon(4,px,pz,pnt->x,pnt->z,ang_y);
-    
+	fz[0]=fz[1]=fz[4]=fz[5]=-(float)view_sprite_size;
+	fz[2]=fz[3]=fz[6]=fz[7]=(float)view_sprite_size;
+	
+	if (ang!=NULL) matrix_rotate_xyz(&mat,ang->x,ang->y,ang->z);
+		
+	for (n=0;n!=8;n++) {
+		if (ang!=NULL) matrix_vertex_multiply(&mat,&fx[n],&fy[n],&fz[n]);
+		
+		v_pnts[n].x=pnt->x+(int)fx[n];
+		v_pnts[n].y=pnt->y+(int)fy[n];
+		v_pnts[n].z=pnt->z+(int)fz[n];
+	}
+}
+
+void walk_view_draw_sprite(d3pnt *pnt,d3ang *ang,unsigned long gl_id)
+{
+	int				n,idx,face_idx[24]={0,1,2,3,4,5,6,7,0,1,5,4,3,2,6,7,1,2,6,5,0,3,7,4};
+	d3pnt			v_pnts[8];
+	
+	view_get_sprite_vertexes(pnt,ang,v_pnts);
+	
+		// draw sprite
+		
 	glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D,gl_id);
     
-	glColor4f(1,1,1,1);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	glBegin(GL_QUADS);
-
-    glTexCoord2f(0,0);
-	glVertex3i(px[0],(pnt->y-high),pz[0]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[1],(pnt->y-high),pz[1]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[1],pnt->y,pz[1]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[0],pnt->y,pz[0]);
-
-    glTexCoord2f(0,0);
-	glVertex3i(px[3],(pnt->y-high),pz[3]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[2],(pnt->y-high),pz[2]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[2],pnt->y,pz[2]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[3],pnt->y,pz[3]);
-
-    glTexCoord2f(0,0);
-	glVertex3i(px[0],(pnt->y-high),pz[0]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[3],(pnt->y-high),pz[3]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[3],pnt->y,pz[3]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[0],pnt->y,pz[0]);
-
-    glTexCoord2f(0,0);
-	glVertex3i(px[1],(pnt->y-high),pz[1]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[2],(pnt->y-high),pz[2]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[2],pnt->y,pz[2]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[1],pnt->y,pz[1]);
-
-    glTexCoord2f(0,0);
-	glVertex3i(px[0],(pnt->y-high),pz[0]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[1],(pnt->y-high),pz[1]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[2],(pnt->y-high),pz[2]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[3],(pnt->y-high),pz[3]);
-
-    glTexCoord2f(0,0);
-	glVertex3i(px[0],pnt->y,pz[0]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[1],pnt->y,pz[1]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[2],pnt->y,pz[2]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[3],pnt->y,pz[3]);
+	
+	for (n=0;n!=24;n+=4) {
+	
+		idx=face_idx[n];
+		glTexCoord2f(0,0);
+		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
+		
+		idx=face_idx[n+1];
+		glTexCoord2f(1,0);
+		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
+		
+		idx=face_idx[n+2];
+		glTexCoord2f(1,1);
+		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
+		
+		idx=face_idx[n+3];
+		glTexCoord2f(0,1);
+		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
+	}
 	
 	glEnd();
 	
@@ -738,10 +724,10 @@ void walk_view_draw_nodes(editor_view_type *view_setup)
 		node=&map.nodes[n];
 		
 		if (node->name[0]==0x0) {
-			walk_view_draw_sprite(&node->pnt,0.0f,node_bitmap.gl_id);
+			walk_view_draw_sprite(&node->pnt,NULL,node_bitmap.gl_id);
 		}
 		else {
-			walk_view_draw_sprite(&node->pnt,0.0f,node_defined_bitmap.gl_id);
+			walk_view_draw_sprite(&node->pnt,NULL,node_defined_bitmap.gl_id);
 		}
 	}
 }
@@ -758,7 +744,7 @@ void walk_view_draw_spots_scenery(editor_view_type *view_setup)
 		spot=&map.spots[n];
 	
 		if (!walk_view_model_draw(&spot->pnt,&spot->ang,spot->display_model,NULL,0)) {
-			walk_view_draw_sprite(&spot->pnt,spot->ang.y,spot_bitmap.gl_id);
+			walk_view_draw_sprite(&spot->pnt,&spot->ang,spot_bitmap.gl_id);
 		}
 	}		
     
@@ -766,7 +752,7 @@ void walk_view_draw_spots_scenery(editor_view_type *view_setup)
 		scenery=&map.sceneries[n];
 	
 		if (!walk_view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
-			walk_view_draw_sprite(&scenery->pnt,scenery->ang.y,scenery_bitmap.gl_id);
+			walk_view_draw_sprite(&scenery->pnt,&scenery->ang,scenery_bitmap.gl_id);
 		}
 	}		
 }
@@ -778,16 +764,16 @@ void walk_view_draw_lights_sounds_particles(editor_view_type *view_setup)
 	if (!state.show_lightsoundparticle) return;
 	
 	for (n=0;n!=map.nlight;n++) {
-		walk_view_draw_sprite(&map.lights[n].pnt,0.0f,light_bitmap.gl_id);
+		walk_view_draw_sprite(&map.lights[n].pnt,NULL,light_bitmap.gl_id);
 		if (select_check(light_piece,n,-1)) walk_view_draw_circle(&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
-		walk_view_draw_sprite(&map.sounds[n].pnt,0.0f,sound_bitmap.gl_id);
+		walk_view_draw_sprite(&map.sounds[n].pnt,NULL,sound_bitmap.gl_id);
 	}
 	
 	for (n=0;n!=map.nparticle;n++) {
-		walk_view_draw_sprite(&map.particles[n].pnt,0.0f,particle_bitmap.gl_id);
+		walk_view_draw_sprite(&map.particles[n].pnt,NULL,particle_bitmap.gl_id);
 	}
 }
 
