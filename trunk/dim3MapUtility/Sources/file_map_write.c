@@ -152,6 +152,8 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
 	xml_add_attribute_float("gravity_max_speed",map->settings.gravity_max_speed);
     xml_add_attribute_float("resistance",map->settings.resistance);
+    xml_add_attribute_boolean("never_cull",map->settings.never_cull);
+
 	xml_add_attribute_text("network_game_list",map->settings.network_game_list);
 
     xml_add_attribute_int("light_map_quality",map->settings.light_map.quality);

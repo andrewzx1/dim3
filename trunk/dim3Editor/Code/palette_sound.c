@@ -78,7 +78,6 @@ void palette_sound_save(void)
 	sound->pitch=dialog_get_float(palette_sound_wind,kSoundPitch,0);
 	sound->on=dialog_get_boolean(palette_sound_wind,kSoundOn,0);
 	
-	main_wind_tool_fill_sound_combo();
 	main_wind_draw();
 }
 

@@ -29,6 +29,7 @@ and can be sold or given away.
 // os routines
 //
 
+extern void os_get_icon_file_path(char *path);
 extern void os_get_window_box(d3rect *box);
 extern void os_set_arrow_cursor(void);
 extern void os_set_wait_cursor(void);

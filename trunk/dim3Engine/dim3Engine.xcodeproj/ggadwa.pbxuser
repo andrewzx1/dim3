@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 303861006;
-			PBXWorkspaceStateSaveDate = 303861006;
+			PBXPerProjectTemplateStateSaveDate = 304224049;
+			PBXWorkspaceStateSaveDate = 304224049;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -203,17 +203,17 @@
 	};
 	2625D0370F54C9960023B0D3 /* render_map_opaque.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1937, 4524}}";
-			sepNavSelRange = "{5696, 22}";
-			sepNavVisRange = "{4860, 1514}";
+			sepNavIntBoundsRect = "{{0, 0}, {1937, 4693}}";
+			sepNavSelRange = "{7263, 0}";
+			sepNavVisRange = "{8221, 847}";
 			sepNavWindowFrame = "{{205, 175}, {999, 779}}";
 		};
 	};
 	2625D0390F54C9960023B0D3 /* render_map_transparent.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {2112, 5161}}";
-			sepNavSelRange = "{3776, 4}";
-			sepNavVisRange = "{0, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {1993, 5213}}";
+			sepNavSelRange = "{3531, 0}";
+			sepNavVisRange = "{2830, 1557}";
 			sepNavWindowFrame = "{{492, 236}, {999, 779}}";
 		};
 	};
@@ -756,10 +756,10 @@
 	};
 	F57CAC770527D9E000A68578 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9828}}";
-			sepNavSelRange = "{4103, 0}";
-			sepNavVisRange = "{3279, 1037}";
-			sepNavWindowFrame = "{{526, 110}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10985}}";
+			sepNavSelRange = "{17843, 0}";
+			sepNavVisRange = "{17130, 1408}";
+			sepNavWindowFrame = "{{259, 187}, {1041, 747}}";
 		};
 	};
 	F585FED70C51D9E30003750B /* script_map_fog_color.c */ = {
@@ -2103,9 +2103,9 @@
 	};
 	F5DD19E00908310200721649 /* view_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 12688}}";
-			sepNavSelRange = "{8714, 0}";
-			sepNavVisRange = "{8256, 1367}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12649}}";
+			sepNavSelRange = "{10544, 0}";
+			sepNavVisRange = "{9629, 1427}";
 			sepNavWindowFrame = "{{253, 202}, {1041, 747}}";
 		};
 	};

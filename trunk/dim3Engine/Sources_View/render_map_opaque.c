@@ -96,7 +96,7 @@ void render_opaque_mesh_normal(void)
 				// do dot product between normal and vector
 				// from poly mid-eye point
 
-			if (!poly->never_cull) {
+			if ((!poly->never_cull)  && (!map.settings.never_cull)) {
 				if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>0.0f) {
 					poly++;
 					continue;
@@ -193,7 +193,7 @@ void render_opaque_mesh_shader(void)
 				// do dot product between normal and vector
 				// from poly mid-eye point
 
-			if (!poly->never_cull) {
+			if ((!poly->never_cull) && (!map.settings.never_cull)) {
 				if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>0.0f) {
 					poly++;
 					continue;
@@ -277,7 +277,7 @@ void render_opaque_mesh_glow(void)
 				// do dot product between normal and vector
 				// from poly mid-eye point
 
-			if (!poly->never_cull) {
+			if ((!poly->never_cull) && (!map.settings.never_cull)) {
 				if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>0.0f) {
 					poly++;
 					continue;

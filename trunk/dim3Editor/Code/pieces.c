@@ -112,8 +112,6 @@ void piece_duplicate(void)
 				map.spots[map.nspot].pnt.z+=zadd;
 				select_duplicate_add(spot_piece,map.nspot,0);
 				map.nspot++;
-				
-				main_wind_tool_fill_spot_combo();
 				break;
 				
 			case scenery_piece:
@@ -129,8 +127,6 @@ void piece_duplicate(void)
 				map.sceneries[map.nscenery].pnt.z+=zadd;
 				select_duplicate_add(scenery_piece,map.nscenery,0);
 				map.nscenery++;
-				
-				main_wind_tool_fill_scenery_combo();
 				break;
 				
 			case node_piece:
@@ -149,8 +145,6 @@ void piece_duplicate(void)
 				}
 				select_duplicate_add(node_piece,map.nnode,0);
 				map.nnode++;
-				
-				main_wind_tool_fill_node_combo();
 				break;
 				
 			case light_piece:
@@ -166,8 +160,6 @@ void piece_duplicate(void)
 				map.lights[map.nlight].pnt.z+=zadd;
 				select_duplicate_add(light_piece,map.nlight,0);
 				map.nlight++;
-				
-				main_wind_tool_fill_light_combo();
 				break;
 				
 			case sound_piece:
@@ -183,8 +175,6 @@ void piece_duplicate(void)
 				map.sounds[map.nsound].pnt.z+=zadd;
 				select_duplicate_add(sound_piece,map.nsound,0);
 				map.nsound++;
-				
-				main_wind_tool_fill_sound_combo();
 				break;
 				
 			case particle_piece:
@@ -200,8 +190,6 @@ void piece_duplicate(void)
 				map.particles[map.nparticle].pnt.z+=zadd;
 				select_duplicate_add(particle_piece,map.nparticle,0);
 				map.nparticle++;
-				
-				main_wind_tool_fill_particle_combo();
 				break;
 				
 		}
@@ -263,8 +251,6 @@ void piece_delete(void)
 					map.spots[i]=map.spots[i+1];
 				}
 				map.nspot--;
-				
-				main_wind_tool_fill_spot_combo();
 				break;
 				
 			case scenery_piece:
@@ -272,8 +258,6 @@ void piece_delete(void)
 					map.sceneries[i]=map.sceneries[i+1];
 				}
 				map.nscenery--;
-				
-				main_wind_tool_fill_scenery_combo();
 				break;
 				
 			case node_piece:
@@ -291,8 +275,6 @@ void piece_delete(void)
 				}
 				
 				map.nnode--;
-				
-				main_wind_tool_fill_node_combo();
 				break;
 				
 			case light_piece:
@@ -322,7 +304,6 @@ void piece_delete(void)
 	select_clear();
 	
 	palette_reset();
-	walk_view_set_lookat_or_walk_mode();
     
 	main_wind_draw();
 }
@@ -985,7 +966,6 @@ void piece_poly_hole(void)
 	}
 	
 	select_clear();
-	walk_view_set_lookat_or_walk_mode();
 	
 	main_wind_draw();
 }

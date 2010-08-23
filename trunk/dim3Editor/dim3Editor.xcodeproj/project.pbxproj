@@ -11,6 +11,7 @@
 		263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263614450DC41DF6002345C0 /* walk_view_click_texture.c */; };
 		263A519F115C62B40059859F /* Tool Cull.icns in Resources */ = {isa = PBXBuildFile; fileRef = 263A519E115C62B40059859F /* Tool Cull.icns */; };
 		263B67380F7072EE0065AB38 /* palette_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 263B67370F7072EE0065AB38 /* palette_spot.c */; };
+		263C5EBE122045E3008935B9 /* view_handle.c in Sources */ = {isa = PBXBuildFile; fileRef = 263C5EBD122045E3008935B9 /* view_handle.c */; };
 		2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = 2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
 		264A46FB0F75C1D80054BAA6 /* palette_scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A46FA0F75C1D80054BAA6 /* palette_scenery.c */; };
@@ -53,7 +54,11 @@
 		266C5A8A105235F9006FD9D1 /* Piece Mesh UV.icns in Resources */ = {isa = PBXBuildFile; fileRef = 266C5A89105235F9006FD9D1 /* Piece Mesh UV.icns */; };
 		26772F810EBE8A6600F9E241 /* dialog_reposition.c in Sources */ = {isa = PBXBuildFile; fileRef = 26772F800EBE8A6600F9E241 /* dialog_reposition.c */; };
 		26791D430E4D626700AAD058 /* dialog_grid_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26791D420E4D626700AAD058 /* dialog_grid_mesh.c */; };
+		26808225122057F600EB7897 /* view_picker.c in Sources */ = {isa = PBXBuildFile; fileRef = 26808224122057F600EB7897 /* view_picker.c */; };
+		268083171220BB2F00EB7897 /* Tool Rotate Mode.icns in Resources */ = {isa = PBXBuildFile; fileRef = 268083161220BB2F00EB7897 /* Tool Rotate Mode.icns */; };
+		268083191220BB3900EB7897 /* Tool Move Mode.icns in Resources */ = {isa = PBXBuildFile; fileRef = 268083181220BB3900EB7897 /* Tool Move Mode.icns */; };
 		2681880310A3A28A000B2CD8 /* light_maps.c in Sources */ = {isa = PBXBuildFile; fileRef = 2681880210A3A28A000B2CD8 /* light_maps.c */; };
+		26839B261221A0620039BFCA /* Tool Free Look.icns in Resources */ = {isa = PBXBuildFile; fileRef = 26839B251221A0620039BFCA /* Tool Free Look.icns */; };
 		26871A3C0F11666E0043B667 /* node_defined.png in Resources */ = {isa = PBXBuildFile; fileRef = 26871A3B0F11666E0043B667 /* node_defined.png */; };
 		26871A5C0F1168330043B667 /* node_defined.png in Copy (Icons) */ = {isa = PBXBuildFile; fileRef = 26871A3B0F11666E0043B667 /* node_defined.png */; };
 		26899FA90F1EBF25007860EB /* editor_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26899FA80F1EBF25007860EB /* editor_defs.h */; };
@@ -221,6 +226,7 @@
 		263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_texture.c; path = Code/walk_view_click_texture.c; sourceTree = "<group>"; };
 		263A519E115C62B40059859F /* Tool Cull.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Cull.icns"; path = "Resources/Tool Cull.icns"; sourceTree = "<group>"; };
 		263B67370F7072EE0065AB38 /* palette_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_spot.c; path = Code/palette_spot.c; sourceTree = "<group>"; };
+		263C5EBD122045E3008935B9 /* view_handle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_handle.c; path = Code/view_handle.c; sourceTree = "<group>"; };
 		2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_scale.c; path = Code/dialog_mesh_scale.c; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
 		264A46FA0F75C1D80054BAA6 /* palette_scenery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_scenery.c; path = Code/palette_scenery.c; sourceTree = "<group>"; };
@@ -263,7 +269,11 @@
 		266C5A89105235F9006FD9D1 /* Piece Mesh UV.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Piece Mesh UV.icns"; path = "Resources/Piece Mesh UV.icns"; sourceTree = "<group>"; };
 		26772F800EBE8A6600F9E241 /* dialog_reposition.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_reposition.c; path = Code/dialog_reposition.c; sourceTree = "<group>"; };
 		26791D420E4D626700AAD058 /* dialog_grid_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_grid_mesh.c; path = Code/dialog_grid_mesh.c; sourceTree = "<group>"; };
+		26808224122057F600EB7897 /* view_picker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_picker.c; path = Code/view_picker.c; sourceTree = "<group>"; };
+		268083161220BB2F00EB7897 /* Tool Rotate Mode.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Rotate Mode.icns"; path = "Resources/Tool Rotate Mode.icns"; sourceTree = "<group>"; };
+		268083181220BB3900EB7897 /* Tool Move Mode.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Move Mode.icns"; path = "Resources/Tool Move Mode.icns"; sourceTree = "<group>"; };
 		2681880210A3A28A000B2CD8 /* light_maps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = light_maps.c; path = Code/light_maps.c; sourceTree = "<group>"; };
+		26839B251221A0620039BFCA /* Tool Free Look.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Free Look.icns"; path = "Resources/Tool Free Look.icns"; sourceTree = "<group>"; };
 		26871A3B0F11666E0043B667 /* node_defined.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = node_defined.png; sourceTree = "<group>"; };
 		26899FA80F1EBF25007860EB /* editor_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = editor_defs.h; path = Headers/editor_defs.h; sourceTree = "<group>"; };
 		268BC8A50F64C8E400E900C2 /* dialog_preference.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_preference.c; path = Code/dialog_preference.c; sourceTree = "<group>"; };
@@ -447,6 +457,9 @@
 		264B31A81050D24000067D2F /* UI Icons */ = {
 			isa = PBXGroup;
 			children = (
+				26839B251221A0620039BFCA /* Tool Free Look.icns */,
+				268083161220BB2F00EB7897 /* Tool Rotate Mode.icns */,
+				268083181220BB3900EB7897 /* Tool Move Mode.icns */,
 				263A519E115C62B40059859F /* Tool Cull.icns */,
 				269B2A8811178EE800E3FDA8 /* Tool Normals.icns */,
 				26EB4DFD105590B700E0FAE6 /* Tool Node Link.icns */,
@@ -526,6 +539,8 @@
 				F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */,
 				0123D87500C0AFD57F000001 /* walk_view_draw_select.c */,
 				F595F34D0A8C47D2004AB8BA /* walk_view_models.c */,
+				263C5EBD122045E3008935B9 /* view_handle.c */,
+				26808224122057F600EB7897 /* view_picker.c */,
 			);
 			name = "Walk View";
 			sourceTree = "<group>";
@@ -736,6 +751,9 @@
 				26EB4E02105590B700E0FAE6 /* Tool Node Select.icns in Resources */,
 				269B2A8911178EE800E3FDA8 /* Tool Normals.icns in Resources */,
 				263A519F115C62B40059859F /* Tool Cull.icns in Resources */,
+				268083171220BB2F00EB7897 /* Tool Rotate Mode.icns in Resources */,
+				268083191220BB3900EB7897 /* Tool Move Mode.icns in Resources */,
+				26839B261221A0620039BFCA /* Tool Free Look.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -815,6 +833,8 @@
 				264A478B0F760CCA0054BAA6 /* palette_sound.c in Sources */,
 				2681880310A3A28A000B2CD8 /* light_maps.c in Sources */,
 				26184B2C10AA56C0002C81BE /* dialog_light_map.c in Sources */,
+				263C5EBE122045E3008935B9 /* view_handle.c in Sources */,
+				26808225122057F600EB7897 /* view_picker.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

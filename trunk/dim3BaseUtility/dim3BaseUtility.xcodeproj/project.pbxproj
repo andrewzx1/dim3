@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2612D45F0E6CEEE200994B22 /* area.c in Sources */ = {isa = PBXBuildFile; fileRef = 2612D45E0E6CEEE200994B22 /* area.c */; };
+		265111D4121C871000E2ED78 /* bitmap_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 265111D3121C871000E2ED78 /* bitmap_text.c */; };
 		26ED705E0FF1A7DB00AD19BF /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 26ED705D0FF1A7DB00AD19BF /* zip.c */; };
 		26ED70770FF1A86600AD19BF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26ED70760FF1A86600AD19BF /* libz.dylib */; };
 		F53F280E0BC1C7D900EB3C0F /* dim3baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD52AB0BBE1727001C7C04 /* dim3baseutility.h */; };
@@ -57,6 +58,7 @@
 /* Begin PBXFileReference section */
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		2612D45E0E6CEEE200994B22 /* area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = area.c; path = Sources_Math/area.c; sourceTree = "<group>"; };
+		265111D3121C871000E2ED78 /* bitmap_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitmap_text.c; path = Sources_Bitmap/bitmap_text.c; sourceTree = "<group>"; };
 		26ED705D0FF1A7DB00AD19BF /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zip.c; path = Sources_File/zip.c; sourceTree = "<group>"; };
 		26ED70760FF1A86600AD19BF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F53F25260BBF770900EB3C0F /* file_paths.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_paths.c; path = Sources_File/file_paths.c; sourceTree = "<group>"; };
@@ -219,9 +221,10 @@
 			isa = PBXGroup;
 			children = (
 				F5AD52F90BBE1A66001C7C04 /* pngutility.c */,
-				F5AD52FA0BBE1A66001C7C04 /* bitmap_movie.c */,
-				F5AD52FD0BBE1A66001C7C04 /* textures.c */,
 				F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */,
+				F5AD52FA0BBE1A66001C7C04 /* bitmap_movie.c */,
+				265111D3121C871000E2ED78 /* bitmap_text.c */,
+				F5AD52FD0BBE1A66001C7C04 /* textures.c */,
 			);
 			name = Bitmap;
 			sourceTree = "<group>";
@@ -306,6 +309,7 @@
 				F556BC750C7BA9E90059E7FC /* file_search.c in Sources */,
 				2612D45F0E6CEEE200994B22 /* area.c in Sources */,
 				26ED705E0FF1A7DB00AD19BF /* zip.c in Sources */,
+				265111D4121C871000E2ED78 /* bitmap_text.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -45,8 +45,6 @@ bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
 								
 int								view_select_idx;
-bool							view_in_look;
-d3pnt							view_look_pnt;
 
 /* =======================================================
 
@@ -58,16 +56,11 @@ bool walk_view_initialize(void)
 {
 	char			sub_path[1024],path[1024];
 
-		// on OS X, icons are stored as resources
-		// in the bundle.  Everywhere else it's a folder
-
-#ifdef D3_OS_MAC
-	strcpy(sub_path,"Contents/Resources/Icons");
-#else
-	strcpy(sub_path,"dim3 Editor Icons");
-#endif
+	// supergumba -- duplicate this for win32 version, but use path: "dim3 Editor Icons"
 	
 		// interface textures
+		
+	os_get_icon_file_path(sub_path);
 		
 	file_paths_app(&file_path_setup,path,sub_path,"spot","png");
 	bitmap_open(&spot_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
@@ -93,7 +86,6 @@ bool walk_view_initialize(void)
 		// some defaults
 		
 	view_select_idx=0;
-	view_in_look=FALSE;
 
 	return(TRUE);
 }
@@ -361,26 +353,7 @@ void walk_view_get_lookat_point(editor_view_type *view,float dist,d3vct *look_vc
 {
 	float				fx,fy,fz;
 	matrix_type			mat;
-	
-		// if we are in look, then
-		// vector just equals look point
-		
-	if (view_in_look) {
-		look_vct->x=(float)(view_look_pnt.x-view->pnt.x);
-		look_vct->y=(float)(view_look_pnt.y-view->pnt.y);
-		look_vct->z=(float)(view_look_pnt.z-view->pnt.z);
-		
-		vector_normalize(look_vct);
-		
-		look_vct->x*=dist;
-		look_vct->y*=dist;
-		look_vct->z*=dist;
-		
-		return;
-	}
-	
-		// else create from looking angles
-		
+
 	matrix_rotate_zyx(&mat,view->ang.x,view->ang.y,0.0f);
 
 	fx=fy=0.0f;
@@ -562,7 +535,7 @@ void walk_view_cursor(d3pnt *pnt)
 		// setup cursor
 		
 	if (os_key_space_down()) {
-        os_set_hand_cursor();
+		os_set_hand_cursor();
         return;
     }
 	
@@ -592,8 +565,7 @@ void walk_view_key(char ch)
 	if (ch==0x9) {
 		view_select_idx++;
 		if (view_select_idx>=map.editor_views.count) view_select_idx=0;
-		walk_view_set_lookat_or_walk_mode();
-		walk_view_draw();
+		main_wind_draw();
 		return;
 	}
 	
@@ -601,8 +573,7 @@ void walk_view_key(char ch)
 		
 	if (ch==0x1B) {
 		select_clear();
-		walk_view_set_lookat_or_walk_mode();
-		walk_view_draw();
+		main_wind_draw();
 		return;
 	}
 	
@@ -647,7 +618,14 @@ void walk_view_get_angle(d3ang *ang)
 
 void walk_view_set_angle(d3ang *ang)
 {
-	memmove(&map.editor_views.views[view_select_idx].ang,ang,sizeof(d3ang));
+	d3ang			*vang;
+	
+	vang=&map.editor_views.views[view_select_idx].ang;
+
+	memmove(vang,ang,sizeof(d3ang));
+	
+	if ((vang->x>90.0f) && (vang->x<180.0f)) vang->x=90.0f;
+	if ((vang->x<270.0f) && (vang->x>180.0f)) vang->x=270.0f;
 }
 
 void walk_view_turn_angle(d3ang *ang)
@@ -662,31 +640,6 @@ void walk_view_turn_angle(d3ang *ang)
 	
 	if ((vang->x>90.0f) && (vang->x<180.0f)) vang->x=90.0f;
 	if ((vang->x<270.0f) && (vang->x>180.0f)) vang->x=270.0f;
-}
-
-/* =======================================================
-
-      Switch Look At and Walk Mode
-      
-======================================================= */
-
-void walk_view_set_lookat_or_walk_mode(void)
-{
-	editor_view_type		*view;
-	
-	view=&map.editor_views.views[view_select_idx];
-	
-		// in regular walking
-		
-	if (select_count()==0) {
-		view_in_look=FALSE;
-		return;
-	}
-	
-		// in look at
-		
-	view_in_look=TRUE;
-	select_get_center(&view_look_pnt);
 }
 
 /* =======================================================
@@ -837,23 +790,23 @@ bool walk_view_click(d3pnt *pnt,bool dblclick)
 	
 		// handle click
 
-	view=&map.editor_views.views[view_select_idx];
+	view=walk_view_get_current_view();
 	if (!walk_view_point_in_view(view,pnt)) return(FALSE);
 		
 		// scrolling and movement clicks
 		
 	if (os_key_space_down()) {
-		walk_view_mouse_scroll_movement(pnt);
+		walk_view_mouse_scroll_movement(view,pnt);
 		return(TRUE);
 	}
 
 	if (os_key_option_down()) {
-		walk_view_mouse_forward_movement(pnt);
+		walk_view_mouse_forward_movement(view,pnt);
 		return(TRUE);
 	}
 
 	if (os_key_command_down()) {
-		walk_view_mouse_turn(pnt);
+		walk_view_mouse_turn(view,pnt);
 		return(TRUE);
 	}
 

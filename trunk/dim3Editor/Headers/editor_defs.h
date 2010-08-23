@@ -29,7 +29,7 @@ and can be sold or given away.
 // UI sizes
 //
 
-#define tool_count								19
+#define tool_count								22
 #define piece_count								12
 
 #define tool_button_size						32
@@ -81,6 +81,13 @@ and can be sold or given away.
 #define node_mode_remove_link					2
 
 //
+// handle modes
+//
+
+#define handle_mode_rotate						0
+#define handle_mode_move						1
+
+//
 // selection types
 //
 
@@ -105,6 +112,8 @@ and can be sold or given away.
 #define move_key_scale							30
 #define move_key_shift_reduce_scale				10
 
+#define view_handle_move_scale					3
+
 //
 // clicking
 //
@@ -112,14 +121,21 @@ and can be sold or given away.
 #define walk_view_max_z_click					1000000
 
 //
-// walk view opengl settings
+// opengl settings
 //
 
 #define walk_view_near_offset					(3*map_enlarge)
 
-#define walk_view_handle_size					12.0f
-#define walk_view_handle_length					40.0f
-#define walk_view_handle_line_width				2.0f
+//
+// display sizes
+//
+
+#define view_handle_size						12.0f
+
+#define view_handle_length_factor				0.05f
+#define view_handle_line_width					2.0f
+
+#define view_sprite_size						(map_enlarge*3)
 
 //
 // light maps
@@ -150,7 +166,10 @@ typedef struct		{
 						int						anisotropic_mode,mipmap_mode,
 												duplicate_offset,snap_size,
 												clip_distance;
-						bool					auto_texture,flip_movement;
+						bool					free_look,auto_texture,
+												flip_horz_movement,flip_vert_movement,
+												flip_horz_turn,flip_vert_turn,
+												flip_forward_movement;
 						char					engine_name[256];
 						setup_col_type			col;
 					} setup_type;
@@ -180,8 +199,8 @@ typedef struct		{
 
 typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
-												drag_handle_idx;
-						bool					map_opened,select_toggle_mode,auto_texture,
+												handle_mode,drag_handle_idx;
+						bool					map_opened,free_look,select_add,auto_texture,
 												show_liquid,show_normals,show_node,show_object,
 												show_lightsoundparticle;
 					} editor_state_type;

@@ -552,6 +552,7 @@ typedef struct		{
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance;
 						char								network_game_list[256];
+						bool								never_cull;
 						map_settings_light_map_type			light_map;
 						map_settings_editor_type			editor;
 					} map_settings_type;

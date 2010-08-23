@@ -93,7 +93,7 @@ void walk_view_draw_select_mesh(int mesh_idx)
 	
 		glEnable(GL_DEPTH_TEST);
 
-		glPointSize(walk_view_handle_size);
+		glPointSize(view_handle_size);
 		
 		walk_view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
 		
@@ -123,7 +123,7 @@ void walk_view_draw_select_mesh_vertex(int mesh_idx)
 	
 	glEnable(GL_DEPTH_TEST);
 
-	glPointSize(walk_view_handle_size);
+	glPointSize(view_handle_size);
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	pt=mesh->vertexes;
@@ -214,7 +214,7 @@ void walk_view_draw_select_liquid(int liquid_idx)
 	
 		// handles
 
-	glPointSize(walk_view_handle_size);
+	glPointSize(view_handle_size);
 		
 	walk_view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
 		
@@ -235,67 +235,41 @@ void walk_view_draw_select_liquid(int liquid_idx)
 
 /* =======================================================
 
-      Draw Selection for Sprite
+      Draw Selection for Cube Items
       
 ======================================================= */
 
-void walk_view_sprite_select_size(d3pnt *pnt,int *px,int *py,int *pz)
+void walk_view_draw_select_cube(d3pnt *v_pnts)
 {
-	int				wid;
-	
-    wid=map_enlarge*3;
-
-	px[0]=px[3]=px[6]=px[7]=pnt->x-wid;
-	px[1]=px[2]=px[4]=px[5]=pnt->x+wid;
-	
-	py[0]=py[1]=py[2]=py[3]=pnt->y-(map_enlarge*4);
-	py[4]=py[5]=py[6]=py[7]=pnt->y;
-		
-	pz[0]=pz[1]=pz[4]=pz[7]=pnt->z-wid;
-	pz[2]=pz[3]=pz[5]=pz[6]=pnt->z+wid;
-}
-
-void walk_view_draw_select_sprite(d3pnt *pnt)
-{
-    int			wid,high;
-  
-    wid=map_enlarge*3;
-    high=map_enlarge*4;
-    
- 	glColor4f(1,0,0,1);
-
-	glEnable(GL_DEPTH_TEST);
-	glLineWidth(2);
+    glLineWidth(3.0f);
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
     
 	glBegin(GL_LINE_LOOP);
-	glVertex3i((pnt->x-wid),(pnt->y-high),(pnt->z-wid));
-	glVertex3i((pnt->x+wid),(pnt->y-high),(pnt->z-wid));
-	glVertex3i((pnt->x+wid),pnt->y,(pnt->z-wid));
-	glVertex3i((pnt->x-wid),pnt->y,(pnt->z-wid));
+	glVertex3i(v_pnts[0].x,v_pnts[0].y,v_pnts[0].z);
+	glVertex3i(v_pnts[1].x,v_pnts[1].y,v_pnts[1].z);
+	glVertex3i(v_pnts[2].x,v_pnts[2].y,v_pnts[2].z);
+	glVertex3i(v_pnts[3].x,v_pnts[3].y,v_pnts[3].z);
 	glEnd();
 
 	glBegin(GL_LINE_LOOP);
- 	glVertex3i((pnt->x-wid),(pnt->y-high),(pnt->z+wid));
-	glVertex3i((pnt->x+wid),(pnt->y-high),(pnt->z+wid));
-	glVertex3i((pnt->x+wid),pnt->y,(pnt->z+wid));
-	glVertex3i((pnt->x-wid),pnt->y,(pnt->z+wid));
+	glVertex3i(v_pnts[4].x,v_pnts[4].y,v_pnts[4].z);
+	glVertex3i(v_pnts[5].x,v_pnts[5].y,v_pnts[5].z);
+	glVertex3i(v_pnts[6].x,v_pnts[6].y,v_pnts[6].z);
+	glVertex3i(v_pnts[7].x,v_pnts[7].y,v_pnts[7].z);
 	glEnd();
 	
-	glBegin(GL_LINE_LOOP);
- 	glVertex3i((pnt->x-wid),(pnt->y-high),(pnt->z-wid));
-	glVertex3i((pnt->x-wid),(pnt->y-high),(pnt->z+wid));
-	glVertex3i((pnt->x-wid),pnt->y,(pnt->z+wid));
-	glVertex3i((pnt->x-wid),pnt->y,(pnt->z-wid));
-	glEnd();
-	
-	glBegin(GL_LINE_LOOP);
-	glVertex3i((pnt->x+wid),(pnt->y-high),(pnt->z-wid));
-	glVertex3i((pnt->x+wid),(pnt->y-high),(pnt->z+wid));
-	glVertex3i((pnt->x+wid),pnt->y,(pnt->z+wid));
-	glVertex3i((pnt->x+wid),pnt->y,(pnt->z-wid));
+	glBegin(GL_LINES);
+	glVertex3i(v_pnts[0].x,v_pnts[0].y,v_pnts[0].z);
+	glVertex3i(v_pnts[7].x,v_pnts[7].y,v_pnts[7].z);
+	glVertex3i(v_pnts[1].x,v_pnts[1].y,v_pnts[1].z);
+	glVertex3i(v_pnts[4].x,v_pnts[4].y,v_pnts[4].z);
+	glVertex3i(v_pnts[2].x,v_pnts[2].y,v_pnts[2].z);
+	glVertex3i(v_pnts[5].x,v_pnts[5].y,v_pnts[5].z);
+	glVertex3i(v_pnts[3].x,v_pnts[3].y,v_pnts[3].z);
+	glVertex3i(v_pnts[6].x,v_pnts[6].y,v_pnts[6].z);
 	glEnd();
     
-    glLineWidth(1);
+    glLineWidth(1.0f);
 }
 
 /* =======================================================
@@ -304,37 +278,9 @@ void walk_view_draw_select_sprite(d3pnt *pnt)
       
 ======================================================= */
 
-void walk_view_draw_select_make_handle(d3pnt *pnt,d3vct *vct,d3ang *ang,d3pnt *hand_pnt)
-{
-	matrix_type		mat;
-
-		// rotations
-	
-	if (ang->x!=0) {
-		matrix_rotate_x(&mat,ang->x);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
-	}
-	
-	if (ang->y!=0) {
-		matrix_rotate_y(&mat,ang->y);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
-	}
-	
-	if (ang->z!=0) {
-		matrix_rotate_z(&mat,ang->z);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
-	}
-
-		// make point
-
-	hand_pnt->x=pnt->x+(int)vct->x;
-	hand_pnt->y=pnt->y+(int)vct->y;
-	hand_pnt->z=pnt->z+(int)vct->z;
-}
-
 void walk_view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
 {
-    glLineWidth(walk_view_handle_line_width);
+    glLineWidth(view_handle_line_width);
 	
 	glColor4f(col->r,col->g,col->b,1.0f);
 	
@@ -345,7 +291,7 @@ void walk_view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
 	
     glLineWidth(1.0f);
 	
-	glPointSize(walk_view_handle_size);
+	glPointSize(view_handle_size);
 	
 	glBegin(GL_POINTS);
 	glVertex2i(hand_pnt->x,hand_pnt->y);
@@ -356,52 +302,12 @@ void walk_view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
 
 void walk_view_draw_select_rot_handles(editor_view_type *view)
 {
-	float			len;
 	d3pnt			pnt,hand_pnt[3];
-	d3ang			ang;
-	d3vct			vct;
 	d3col			col;
 
-		// is there a selection?
-
-	if (select_count()==0) return;
-
-		// get position and angle
-
-	select_get_center(&pnt);
-	select_get_angle(&ang);
-
-		// create the handle points
-
-	len=((float)map_enlarge)+(((float)distance_get(view->pnt.x,view->pnt.y,view->pnt.z,pnt.x,pnt.y,pnt.z)*0.05f));
-
-	vct.x=len;
-	vct.y=0.0f;
-	vct.z=0.0f;
-
-	walk_view_draw_select_make_handle(&pnt,&vct,&ang,&hand_pnt[0]);
-
-	vct.x=0.0f;
-	vct.y=-len;
-	vct.z=0.0f;
-
-	walk_view_draw_select_make_handle(&pnt,&vct,&ang,&hand_pnt[1]);
-
-	vct.x=0.0f;
-	vct.y=0.0f;
-	vct.z=len;
-
-	walk_view_draw_select_make_handle(&pnt,&vct,&ang,&hand_pnt[2]);
-
-		// project the points
-
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
-
-	walk_view_project_point(view,&pnt);
-
-	walk_view_project_point(view,&hand_pnt[0]);
-	walk_view_project_point(view,&hand_pnt[1]);
-	walk_view_project_point(view,&hand_pnt[2]);
+		// create rot handles
+		
+	if (!view_handle_create_rot_handle(view,&pnt,hand_pnt)) return;
 
 		// draw points
 
@@ -426,10 +332,6 @@ void walk_view_draw_select_rot_handles(editor_view_type *view)
 	col.b=1.0f;
 	
 	walk_view_draw_select_2D_rot_handle(&pnt,&hand_pnt[2],&col);
-
-		// restore projection
-
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
 }
 
 /* =======================================================
@@ -440,9 +342,10 @@ void walk_view_draw_select_rot_handles(editor_view_type *view)
 
 void walk_view_draw_select(editor_view_type *view)
 {
-	int						n,sel_count,y_size,
+	int						n,sel_count,
 							type,main_idx,sub_idx;
 	unsigned char			draw_mesh_once[max_mesh];
+	d3pnt					v_pnts[8];
 	
 	sel_count=select_count();
 	if (sel_count==0) return;
@@ -477,34 +380,33 @@ void walk_view_draw_select(editor_view_type *view)
 				break;
 				
 			case node_piece:
-				walk_view_draw_select_sprite(&map.nodes[main_idx].pnt);
-				y_size=map_enlarge*5;
+				view_get_sprite_vertexes(&map.nodes[main_idx].pnt,NULL,v_pnts);
+				walk_view_draw_select_cube(v_pnts);
 				break;
 				
 			case spot_piece:
-				if (!walk_view_model_draw_select(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model)) {
-					walk_view_draw_select_sprite(&map.spots[main_idx].pnt);
-				}
-				y_size=walk_view_model_rot_y_size(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model);
+				walk_view_model_cube_vertexes(map.spots[main_idx].display_model,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,v_pnts);
+				walk_view_draw_select_cube(v_pnts);
 				break;
 				
 			case scenery_piece:
-				if (!walk_view_model_draw_select(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name)) {
-					walk_view_draw_select_sprite(&map.sceneries[main_idx].pnt);
-				}
-				y_size=walk_view_model_rot_y_size(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name);
+				walk_view_model_cube_vertexes(map.sceneries[main_idx].model_name,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,v_pnts);
+				walk_view_draw_select_cube(v_pnts);
 				break;
 				
 			case light_piece:
-				walk_view_draw_select_sprite(&map.lights[main_idx].pnt);
+				view_get_sprite_vertexes(&map.lights[main_idx].pnt,NULL,v_pnts);
+				walk_view_draw_select_cube(v_pnts);
 				break;
 				
 			case sound_piece:
-				walk_view_draw_select_sprite(&map.sounds[main_idx].pnt);
+				view_get_sprite_vertexes(&map.sounds[main_idx].pnt,NULL,v_pnts);
+				walk_view_draw_select_cube(v_pnts);
 				break;
 				
 			case particle_piece:
-				walk_view_draw_select_sprite(&map.particles[main_idx].pnt);
+				view_get_sprite_vertexes(&map.particles[main_idx].pnt,NULL,v_pnts);
+				walk_view_draw_select_cube(v_pnts);
 				break;
 
 		}

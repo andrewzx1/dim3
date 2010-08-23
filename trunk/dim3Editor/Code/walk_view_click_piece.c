@@ -40,184 +40,6 @@ extern map_type				map;
 extern setup_type			setup;
 extern editor_state_type	state;
 
-int							walk_view_vport[4];
-double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
-
-int							pick_count,pick_col[3];
-view_picker_type			*picks;
-
-/* =======================================================
-
-      View Picking
-      
-======================================================= */
-
-bool walk_view_pick_list_start(editor_view_type *view,int count)
-{
-		// start picker list
-
-	picks=(view_picker_type*)malloc(sizeof(view_picker_type)*count);
-	if (picks==NULL) return(FALSE);
-
-		// no picks set yet
-
-	pick_count=0;
-
-		// start the pick color
-
-	pick_col[0]=0x1;
-	pick_col[1]=0x0;
-	pick_col[2]=0x0;
-
-		// start the back buffer drawing
-		// disable smoothing so colors stay true
-
-	walk_view_set_viewport(view,TRUE,TRUE);
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
-
-	glClearColor(0.0f,0.0f,0.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-	glDisable(GL_SMOOTH);
-	glDisable(GL_BLEND);
-
-	glDisable(GL_TEXTURE_2D);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-
-	glDisable(GL_ALPHA_TEST);
-
-	return(TRUE);
-}
-
-void walk_view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx)
-{
-	int					n;
-	unsigned char		pixel[3];
-	d3pnt				click_pnt;
-	d3rect				box;
-	view_picker_type	*pick;
-
-		// flush the drawing
-
-	glFinish();
-
-		// need to make click point global
-		// and swap Y for OpenGL read
-
-	walk_view_get_pixel_box(view,&box);
-
-	click_pnt.x=pnt->x+box.lx;
-	click_pnt.y=pnt->y+box.ty;
-
-	os_get_window_box(&box);
-
-	click_pnt.y=box.by-click_pnt.y;
-
-		// find the color at the clicked point
-
-	glReadPixels(click_pnt.x,click_pnt.y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
-
-		// find which pick it represents
-		
-	*type=-1;
-
-	pick=picks;
-
-	for (n=0;n!=pick_count;n++) {
-
-		if ((pick->col[0]==pixel[0]) && (pick->col[1]==pixel[1]) && (pick->col[2]==pixel[2])) {
-			*type=pick->type;
-			*main_idx=pick->main_idx;
-			*sub_idx=pick->sub_idx;
-			break;
-		}
-
-		pick++;
-	}
-
-	free(picks);
-
-		// restore smoothing
-
-	glEnable(GL_SMOOTH);
-}
-
-void walk_view_pick_list_add(int type,int main_idx,int sub_idx)
-{
-	view_picker_type	*pick;
-
-		// set color
-
-	glColor3ub((unsigned char)pick_col[0],(unsigned char)pick_col[1],(unsigned char)pick_col[2]);
-
-		// remember color in pick list
-
-	pick=&picks[pick_count];
-
-	pick->type=type;
-	pick->main_idx=(short)main_idx;
-	pick->sub_idx=(short)sub_idx;
-
-	pick->col[0]=(unsigned char)pick_col[0];
-	pick->col[1]=(unsigned char)pick_col[1];
-	pick->col[2]=(unsigned char)pick_col[2];
-
-		// next color
-
-	pick_col[0]++;
-	if (pick_col[0]>0xFF) {
-		pick_col[0]=0x0;
-		pick_col[1]++;
-		if (pick_col[1]>0xFF) {
-			pick_col[1]=0x0;
-			pick_col[2]++;
-		}
-	}
-
-		// next picker
-
-	pick_count++;
-}
-
-void walk_view_pick_list_add_cube(int *px,int *py,int *pz,int type,int main_idx,int sub_idx)
-{
-	int				n,idx,quad_list[24]={0,1,2,3,4,5,6,7,3,2,5,6,0,1,4,7,0,7,6,3,1,2,5,4};
-
-		// set the color
-
-	walk_view_pick_list_add(type,main_idx,sub_idx);
-
-		// draw the cube
-
-	glBegin(GL_QUADS);
-	
-	for (n=0;n!=24;n++) {
-		idx=quad_list[n];
-		glVertex3i(px[idx],py[idx],pz[idx]);
-	}
-
-	glEnd();
-}
-
-void walk_view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_idx)
-{
-		// set the color
-
-	walk_view_pick_list_add(type,main_idx,sub_idx);
-
-		// draw the point
-
-	glPointSize(walk_view_handle_size);
-	
-	glBegin(GL_POINTS);
-	glVertex3i(x,y,z);
-	glEnd();
-	
-	glPointSize(1.0f);
-}
-
 /* =======================================================
 
       Grid and Snap
@@ -348,142 +170,140 @@ bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt)
 
 /* =======================================================
 
-      View Rotation Handles Clicking
+      Rot Handle Rotation Run
       
 ======================================================= */
 
-void walk_view_click_item_rot_handles_run_single(editor_view_type *view_setup,int type,int main_idx,int sub_idx,d3pnt *pnt,d3vct *vct,d3ang *ang,int y_size)
+d3ang* walk_view_click_rot_handle_rotate_setup(void)
 {
-	matrix_type		mat;
+	int				type,main_idx,sub_idx;
 
-		// rotations
-	
-	if (ang->x!=0) {
-		matrix_rotate_x(&mat,ang->x);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
-	}
-	
-	if (ang->y!=0) {
-		matrix_rotate_y(&mat,ang->y);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
-	}
-	
-	if (ang->z!=0) {
-		matrix_rotate_z(&mat,ang->z);
-		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
-	}
-	
-		// click in position
-		
-	walk_view_pick_list_add_handle((pnt->x+(int)vct->x),((pnt->y-y_size)+(int)vct->y),(pnt->z+(int)vct->z),type,main_idx,sub_idx);
-}
-
-void walk_view_click_item_rot_handles_run(editor_view_type *view,int type,int main_idx,d3pnt *pnt,d3ang *ang,int y_size,bool y_only)
-{
-	float			len;
-	d3vct			vct;
-	
-	len=(float)(map_enlarge*4);
-	
-		// x rot
-		
-	if (!y_only) {
-		vct.x=len;
-		vct.y=0.0f;
-		vct.z=0.0f;
-		walk_view_click_item_rot_handles_run_single(view,type,main_idx,0,pnt,&vct,ang,y_size);
-	}
-	
-		// y rot
-		
-	vct.x=0.0f;
-	vct.y=-len;
-	vct.z=0.0f;
-	
-	walk_view_click_item_rot_handles_run_single(view,type,main_idx,1,pnt,&vct,ang,y_size);
-	
-		// z rot
-	
-	if (!y_only) {
-		vct.x=0.0f;
-		vct.y=0.0f;
-		vct.z=len;
-		
-		walk_view_click_item_rot_handles_run_single(view,type,main_idx,2,pnt,&vct,ang,y_size);
-	}
-}
-
-bool walk_view_click_item_rot_handles(editor_view_type *view,d3pnt *click_pt)
-{
-	int			n,ncount,type,main_idx,sub_idx,
-				y_size,which_axis;
-	float		ang_add;
-	bool		first_drag;
-	d3pnt		pt;
-	d3ang		*ang,old_ang;
-	d3rect		box;
-
-		// check if any rotatable items is in
-		// the selection
-
-	ncount=select_count();
-	if (ncount==0) return(FALSE);
-
-	if ((!select_has_type(node_piece)) && (!select_has_type(spot_piece)) && (!select_has_type(scenery_piece))) return(FALSE);
-
-		// start pick list
-	
-	walk_view_pick_list_start(view,(ncount*3));
-
-		// draw rot handles for all selected items
-
-	for (n=0;n!=ncount;n++) {
-		select_get(n,&type,&main_idx,&sub_idx);
-		
-		switch (type) {
-		
-			case node_piece:
-				walk_view_click_item_rot_handles_run(view,type,main_idx,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,(map_enlarge*5),FALSE);
-				break;
-				
-			case spot_piece:
-				y_size=walk_view_model_rot_y_size(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model);
-				walk_view_click_item_rot_handles_run(view,type,main_idx,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,y_size,TRUE);
-				break;
-				
-			case scenery_piece:
-				y_size=walk_view_model_rot_y_size(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name);
-				walk_view_click_item_rot_handles_run(view,type,main_idx,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,y_size,FALSE);
-				break;
-				
-		}
-	}
-
-		// get the pick
-
-	type=-1;
-
-	walk_view_pick_list_end(view,click_pt,&type,&main_idx,&which_axis);
-	if (type==-1) return(FALSE);
-
-	ang=NULL;
-	
+	select_get(0,&type,&main_idx,&sub_idx);
+			
 	switch (type) {
-		case node_piece:
-			ang=&map.nodes[main_idx].ang;
-			break;
-				
+	
 		case spot_piece:
-			ang=&map.spots[main_idx].ang;
-			break;
-				
+			return(&map.spots[main_idx].ang);
+			
 		case scenery_piece:
-			ang=&map.sceneries[main_idx].ang;
+			return(&map.sceneries[main_idx].ang);
+			
+		case node_piece:
+			return(&map.nodes[main_idx].ang);
+			
+	}
+	
+	return(NULL);
+}
+
+void walk_view_click_rot_handle_rotate_run_axis(float *value,float org_value,float ang_add)
+{
+	int				k;
+	
+	*value=angle_add(org_value,ang_add);
+	
+	if (os_key_shift_down()) {
+		k=(int)*value;
+		k/=45;
+		*value=(float)(k*45);
+	}
+}
+
+void walk_view_click_rot_handle_rotate_run(d3ang *ang,d3ang *org_ang,float ang_add,int which_axis)
+{
+	switch (which_axis) {
+		case 0:
+			walk_view_click_rot_handle_rotate_run_axis(&ang->x,org_ang->x,ang_add);
+			break;
+		case 1:
+			walk_view_click_rot_handle_rotate_run_axis(&ang->y,org_ang->y,ang_add);
+			break;
+		case 2:
+			walk_view_click_rot_handle_rotate_run_axis(&ang->z,org_ang->z,ang_add);
 			break;
 	}
+}
 
-	if (ang==NULL) return(FALSE);
+/* =======================================================
 
+      Rot Handle Move Run
+      
+======================================================= */
+
+d3pnt* walk_view_click_rot_handle_move_setup(void)
+{
+	int				type,main_idx,sub_idx;
+
+	select_get(0,&type,&main_idx,&sub_idx);
+			
+	switch (type) {
+	
+		case spot_piece:
+			return(&map.spots[main_idx].pnt);
+			
+		case scenery_piece:
+			return(&map.sceneries[main_idx].pnt);
+			
+		case node_piece:
+			return(&map.nodes[main_idx].pnt);
+			
+	}
+	
+	return(NULL);
+}
+
+void walk_view_click_rot_handle_move_run_axis(int *value,int org_value,float mv_add)
+{
+	*value=org_value+mv_add;
+}
+
+void walk_view_click_rot_handle_move_run(d3pnt *pnt,d3pnt *org_pnt,float mv_add,int which_axis)
+{
+	mv_add=-(mv_add*view_handle_move_scale);
+	
+	switch (which_axis) {
+		case 0:
+			walk_view_click_rot_handle_move_run_axis(&pnt->x,org_pnt->x,mv_add);
+			break;
+		case 1:
+			walk_view_click_rot_handle_move_run_axis(&pnt->y,org_pnt->y,mv_add);
+			break;
+		case 2:
+			walk_view_click_rot_handle_move_run_axis(&pnt->z,org_pnt->z,mv_add);
+			break;
+	}
+}
+
+/* =======================================================
+
+      Rot Handle Clicking Main
+      
+======================================================= */
+
+bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
+{
+	int			n,type,sub_idx,which_axis;
+	bool		first_drag;
+	d3pnt		pt,center_pnt,hand_pnt[3],
+				*pnt,org_pnt;
+	d3ang		*ang,org_ang;
+	d3rect		box;
+	
+		// create rot handle
+		
+	if (!view_handle_create_rot_handle(view,&center_pnt,hand_pnt)) return(FALSE);
+	
+		// run pick list for handles
+	
+	view_pick_list_start(view,TRUE,3);
+	
+	for (n=0;n!=3;n++) {
+		view_pick_list_add_2D_handle(hand_pnt[n].x,hand_pnt[n].y,0,n,0);
+	}
+	
+	view_pick_list_end(view,click_pt,&type,&which_axis,&sub_idx);
+	if (type==-1) return(FALSE);
+	
 		// handle drag
 	
     if (!os_button_down()) return(FALSE);
@@ -492,13 +312,18 @@ bool walk_view_click_item_rot_handles(editor_view_type *view,d3pnt *click_pt)
 	
 	first_drag=TRUE;
 	
+	if (state.handle_mode==handle_mode_rotate) {
+		ang=walk_view_click_rot_handle_rotate_setup();
+		if (ang!=NULL) memmove(&org_ang,ang,sizeof(d3ang));
+	}
+	else {
+		pnt=walk_view_click_rot_handle_move_setup();
+		if (pnt!=NULL) memmove(&org_pnt,pnt,sizeof(d3pnt));
+	}
+	
 	walk_view_get_pixel_box(view,&box);
-	memmove(&old_ang,ang,sizeof(d3ang));
 	
 	while (!os_track_mouse_location(&pt,&box)) {
-		
-		ang_add=(float)(click_pt->x-pt.x);		
-		if (ang_add==0.0f) continue;
 		
 			// turn on drag cursor
 			
@@ -507,20 +332,15 @@ bool walk_view_click_item_rot_handles(editor_view_type *view,d3pnt *click_pt)
 			first_drag=FALSE;
 		}
 
-			// move vertex
+			// handle movement
 			
-		switch (which_axis) {
-			case 0:
-				ang->x=angle_add(old_ang.x,ang_add);
-				break;
-			case 1:
-				ang->y=angle_add(old_ang.y,ang_add);
-				break;
-			case 2:
-				ang->z=angle_add(old_ang.z,ang_add);
-				break;
+		if (state.handle_mode==handle_mode_rotate) {
+			if (ang!=NULL) walk_view_click_rot_handle_rotate_run(ang,&org_ang,(float)(click_pt->x-pt.x),which_axis);
 		}
-
+		else {
+			if (pnt!=NULL) walk_view_click_rot_handle_move_run(pnt,&org_pnt,(click_pt->x-pt.x),which_axis);
+		}
+		
         main_wind_draw();
 	}
 	
@@ -537,9 +357,9 @@ bool walk_view_click_item_rot_handles(editor_view_type *view,d3pnt *click_pt)
 
 void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
 {
-	int					n,k,t,count,
-						px[8],py[8],pz[8];
+	int					n,k,t,count;
 	d3pnt				*pt;
+	d3pnt				v_pnts[8];
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
@@ -581,7 +401,7 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 
 		// start the pick list
 
-	walk_view_pick_list_start(view,count);
+	view_pick_list_start(view,FALSE,count);
 
 		// run through all the items
 		// in the map and draw them to the
@@ -606,7 +426,7 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 			
 				// draw color poly
 
-			walk_view_pick_list_add(mesh_piece,n,k);
+			view_pick_list_add(mesh_piece,n,k);
 
 			glBegin(GL_POLYGON);
 			
@@ -631,7 +451,7 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 		
 		for (n=0;n!=map.liquid.nliquid;n++) {
 		
-			walk_view_pick_list_add(liquid_piece,n,-1);
+			view_pick_list_add(liquid_piece,n,-1);
 
 			glBegin(GL_POLYGON);
 			glVertex3i(liq->lft,liq->y,liq->top);
@@ -651,18 +471,16 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 		spot=map.spots;
 
 		for (n=0;n!=map.nspot;n++) {
-			if (walk_view_model_click_select_size(spot->display_model,&spot->pnt,&spot->ang,px,py,pz)) {
-				walk_view_pick_list_add_cube(px,py,pz,spot_piece,n,-1);
-			}
+			walk_view_model_cube_vertexes(spot->display_model,&spot->pnt,&spot->ang,v_pnts);
+			view_pick_list_add_cube(v_pnts,spot_piece,n,-1);
 			spot++;
 		}
 			
 		scenery=map.sceneries;
 
 		for (n=0;n!=map.nscenery;n++) {
-			if (walk_view_model_click_select_size(scenery->model_name,&scenery->pnt,&scenery->ang,px,py,pz)) {
-				walk_view_pick_list_add_cube(px,py,pz,scenery_piece,n,-1);
-			}
+			walk_view_model_cube_vertexes(scenery->model_name,&scenery->pnt,&scenery->ang,v_pnts);
+			view_pick_list_add_cube(v_pnts,scenery_piece,n,-1);
 			scenery++;
 		}
 
@@ -675,24 +493,24 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 		map_light=map.lights;
 
 		for (n=0;n!=map.nlight;n++) {
-			walk_view_sprite_select_size(&map_light->pnt,px,py,pz);
-			walk_view_pick_list_add_cube(px,py,pz,light_piece,n,-1);
+			view_get_sprite_vertexes(&map_light->pnt,NULL,v_pnts);
+			view_pick_list_add_cube(v_pnts,light_piece,n,-1);
 			map_light++;
 		}
 		
 		map_sound=map.sounds;
 
 		for (n=0;n!=map.nsound;n++) {
-			walk_view_sprite_select_size(&map_sound->pnt,px,py,pz);
-			walk_view_pick_list_add_cube(px,py,pz,sound_piece,n,-1);
+			view_get_sprite_vertexes(&map_sound->pnt,NULL,v_pnts);
+			view_pick_list_add_cube(v_pnts,sound_piece,n,-1);
 			map_sound++;
 		}
 		
 		map_particle=map.particles;
 
 		for (n=0;n!=map.nparticle;n++) {
-			walk_view_sprite_select_size(&map_particle->pnt,px,py,pz);
-			walk_view_pick_list_add_cube(px,py,pz,particle_piece,n,-1);
+			view_get_sprite_vertexes(&map_particle->pnt,NULL,v_pnts);
+			view_pick_list_add_cube(v_pnts,particle_piece,n,-1);
 			map_particle++;
 		}
 	}
@@ -703,15 +521,15 @@ void walk_view_click_piece_map_pick(editor_view_type *view,d3pnt *click_pt,int *
 		node=map.nodes;
 
 		for (n=0;n!=map.nnode;n++) {
-			walk_view_sprite_select_size(&node->pnt,px,py,pz);
-			walk_view_pick_list_add_cube(px,py,pz,node_piece,n,-1);
+			view_get_sprite_vertexes(&node->pnt,NULL,v_pnts);
+			view_pick_list_add_cube(v_pnts,node_piece,n,-1);
 			node++;
 		}
 	}
 	
 		// find the picked item
 
-	walk_view_pick_list_end(view,click_pt,type,main_idx,sub_idx);
+	view_pick_list_end(view,click_pt,type,main_idx,sub_idx);
 }
 	
 /* =======================================================
@@ -735,7 +553,7 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 
 		// rotation handles
 
-	if (walk_view_click_item_rot_handles(view,pt)) return;
+	if (walk_view_click_rot_handles(view,pt)) return;
 	
 		// liquid vertex drags
 		
@@ -771,7 +589,7 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 	
 		// regular or toggle selection
 		
-	toggle_select=os_key_shift_down() || state.select_toggle_mode;
+	toggle_select=(os_key_shift_down()) || (state.select_add);
 	
 		// clear or add to selection
 		
@@ -789,8 +607,6 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 			select_flip(type,main_idx,sub_idx);
 		}
 	}
-	
-	walk_view_set_lookat_or_walk_mode();
 	
 		// redraw and reset palettes and menus
 		
