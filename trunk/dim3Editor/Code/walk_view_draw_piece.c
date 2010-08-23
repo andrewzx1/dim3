@@ -779,17 +779,56 @@ void walk_view_draw_lights_sounds_particles(editor_view_type *view_setup)
 
 /* =======================================================
 
-      Walk View Drawing Setup
+      Walk View Grid
       
 ======================================================= */
 
-void walk_view_gl_setup(editor_view_type *view_setup)
+void walk_view_draw_grid(editor_view_type *view)
 {
-	walk_view_set_viewport(view_setup,TRUE,TRUE);
-	walk_view_set_3D_projection(view_setup,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+	int				x,y,z,sz;
+	d3pnt			pnt,min,max;
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
+	sz=walk_view_get_grid();
+	if (sz==1) return;
+
+		// get mid-point
+
+	pnt.x=view->pnt.x/sz;
+	pnt.x=pnt.x*sz;
+	min.x=pnt.x-(25*sz);
+	max.x=pnt.x+(25*sz);
+
+	pnt.y=view->pnt.y/sz;
+	pnt.y=pnt.y*sz;
+	min.y=pnt.y-(25*sz);
+	max.y=pnt.y+(25*sz);
+
+	pnt.z=view->pnt.z/sz;
+	pnt.z=pnt.z*sz;
+	min.z=pnt.z-(25*sz);
+	max.z=pnt.z+(25*sz);
+
+		// setup drawing
+
+	glColor4f(0.5f,0.5f,0.5f,1.0f);
+
+		// x grid
+
+	glPointSize(2.0f);
+
+	glBegin(GL_POINTS);
+
+	for (x=min.x;x<max.x;x+=sz) {
+		for (y=min.y;y<max.y;y+=sz) {
+			for (z=min.z;z<max.z;z+=sz) {
+				glVertex3i(x,y,z);
+			}
+		}
+	}
+
+	glEnd();
+
+	glPointSize(1.0f);
 }
 
 /* =======================================================
@@ -804,6 +843,8 @@ void walk_view_draw_view(editor_view_type *view)
         
 	walk_view_set_viewport(view,TRUE,TRUE);
 	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+
+		// setup item drawing
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -834,6 +875,11 @@ void walk_view_draw_view(editor_view_type *view)
         
 	walk_view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
 	walk_view_draw_meshes_line(view,TRUE);
+
+		// draw the grid
+// supergumba -- think of something better
+//	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+//	walk_view_draw_grid(view);
 	
         // draw normals mesh lines
 		// push view forward to better z-buffer lines

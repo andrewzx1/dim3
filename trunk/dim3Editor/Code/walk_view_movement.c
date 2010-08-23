@@ -359,16 +359,27 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 		
 		if (setup.flip_horz_turn) ang_x=-ang_x;
 		if (setup.flip_vert_turn) ang_y=-ang_y;
-		
-		memmove(&view_pnt,&org_view_pnt,sizeof(d3pnt));
-		rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,ang_x,ang_y,0.0f);
-		walk_view_set_position(&view_pnt);
-		
+
+			// run the angle first to get any constraints
+
 		memmove(&view_ang,&org_view_ang,sizeof(d3ang));
 		view_ang.x=angle_add(view_ang.x,ang_x);
 		view_ang.y=angle_add(view_ang.y,ang_y);
 		walk_view_set_angle(&view_ang);
-	
+
+			// rebuild the angle change
+			// as setting the angle can constraint it
+
+		walk_view_get_angle(&view_ang);
+		ang_x=view_ang.x-org_view_ang.x;
+		ang_y=view_ang.y-org_view_ang.y;
+
+			// now move the point
+
+		memmove(&view_pnt,&org_view_pnt,sizeof(d3pnt));
+		rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,0.0f,ang_y,0.0f);
+		rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,ang_x,0.0f,0.0f);
+		walk_view_set_position(&view_pnt);
 		
 		main_wind_draw();
 	}

@@ -336,6 +336,61 @@ void walk_view_draw_select_rot_handles(editor_view_type *view)
 
 /* =======================================================
 
+      Draw Selection Box
+      
+======================================================= */
+
+void walk_view_draw_select_box(editor_view_type *view)
+{
+	int				lx,rx,ty,by;
+	d3rect			box;
+
+		// selection in this view?
+
+	if ((!state.select_box_on) || (view!=walk_view_get_current_view())) return;
+
+		// need the box to position
+
+	walk_view_get_pixel_box(view,&box);
+
+	lx=state.select_box_start_pnt.x+box.lx;
+	rx=state.select_box_end_pnt.x+box.lx;
+	ty=box.by-state.select_box_start_pnt.y;
+	by=box.by-state.select_box_end_pnt.y;
+
+		// draw the selection
+
+	walk_view_set_2D_projection(view);
+	
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_BLEND);
+
+	glColor4f(0.5f,0.5f,0.5f,0.7f);
+	
+	glBegin(GL_QUADS);
+	glVertex2i(lx,ty);
+	glVertex2i(rx,ty);
+	glVertex2i(rx,by);
+	glVertex2i(lx,by);
+	glEnd();
+
+	glColor4f(1.0f,1.0f,1.0f,0.7f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lx,ty);
+	glVertex2i(rx,ty);
+	glVertex2i(rx,by);
+	glVertex2i(lx,by);
+	glEnd();
+
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
+}
+
+/* =======================================================
+
       Draw Selections for Map
       
 ======================================================= */
@@ -347,9 +402,15 @@ void walk_view_draw_select(editor_view_type *view)
 	unsigned char			draw_mesh_once[max_mesh];
 	d3pnt					v_pnts[8];
 	
+		// if no selection, only the box
+		// select can draw
+
 	sel_count=select_count();
-	if (sel_count==0) return;
-	
+	if (sel_count==0) {
+		walk_view_draw_select_box(view);
+		return;
+	}
+
 		// only draw mesh selections once
 		// as there could be multiple polygon selections
 		// for a single mesh
@@ -449,5 +510,9 @@ void walk_view_draw_select(editor_view_type *view)
 		// draw selection handle
 	
 	walk_view_draw_select_rot_handles(view);
+
+		// draw box selection
+
+	walk_view_draw_select_box(view);
 }
 			
