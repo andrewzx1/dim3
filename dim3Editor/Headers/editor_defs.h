@@ -120,6 +120,8 @@ and can be sold or given away.
 
 #define walk_view_max_z_click					1000000
 
+#define view_max_box_select_item				256
+
 //
 // opengl settings
 //
@@ -199,9 +201,11 @@ typedef struct		{
 
 typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
-												handle_mode,drag_handle_idx;
+												handle_mode,view_select_idx,drag_handle_idx;
 						bool					map_opened,free_look,select_add,auto_texture,
+												select_box_on,
 												show_liquid,show_normals,show_node,show_object,
 												show_lightsoundparticle;
+						d3pnt					select_box_start_pnt,select_box_end_pnt;
 					} editor_state_type;
 					

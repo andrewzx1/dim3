@@ -45,7 +45,7 @@ view_picker_type			*picks;
 
 /* =======================================================
 
-      View Picking
+      View Picking Start/Stop
       
 ======================================================= */
 
@@ -146,6 +146,158 @@ void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_id
 
 	glEnable(GL_SMOOTH);
 }
+
+int view_pick_list_end_multiple(editor_view_type *view,d3pnt *start_pnt,d3pnt *end_pnt,int *type,int *main_idx,int *sub_idx,int max_item)
+{
+	int					n,k,x,y,lx,rx,ty,by,
+						wid,high,pixel_count,
+						item_count,p_type,p_main_idx,p_sub_idx;
+	unsigned char		*pixel,*pixels;
+	bool				hit;
+	d3rect				box;
+	view_picker_type	*pick;
+
+		// flush the drawing
+
+	glFinish();
+
+		// get the starting position and size
+
+	walk_view_get_pixel_box(view,&box);
+
+	lx=start_pnt->x+box.lx;
+	rx=end_pnt->x+box.lx;
+
+	ty=start_pnt->y+box.ty;
+	by=end_pnt->y+box.ty;
+
+	if (lx<box.lx) lx=box.lx;
+	if (rx>=box.rx) rx=box.rx-1;
+	if (ty<box.ty) ty=box.ty;
+	if (by>=box.by) by=box.by-1;
+
+	if (lx<rx) {
+		x=lx;
+		wid=rx-lx;
+	}
+	else {
+		x=rx;
+		wid=lx-rx;
+	}
+
+	if (ty<by) {
+		y=by;
+		high=by-ty;
+	}
+	else {
+		y=ty;
+		high=ty-by;
+	}
+
+		// read pixels gets one more pixel
+
+	wid--;
+	high--;
+
+	if ((wid<=0) || (high<=0)) {
+		free(picks);
+		glEnable(GL_SMOOTH);
+		return(0);
+	}
+
+		// swap Y for OpenGL read
+
+	os_get_window_box(&box);
+
+	y=box.by-y;
+
+		// get pixel data
+
+	pixel_count=(wid+1)*(high+1);
+
+	pixels=(unsigned char*)malloc(pixel_count*3);
+	if (pixels==NULL) {
+		free(picks);
+		glEnable(GL_SMOOTH);
+		return(0);
+	}
+
+	glReadPixels(x,y,wid,high,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixels);
+
+		// run through the pixels
+
+	item_count=0;
+	pixel=pixels;
+
+	for (k=0;k!=pixel_count;k++) {
+
+			// find color in pick list
+
+		p_type=-1;
+
+		pick=picks;
+
+		for (n=0;n!=pick_count;n++) {
+
+			if ((pick->col[0]==*pixel) && (pick->col[1]==*(pixel+1)) && (pick->col[2]==*(pixel+2))) {
+				p_type=pick->type;
+				p_main_idx=pick->main_idx;
+				p_sub_idx=pick->sub_idx;
+				break;
+			}
+
+			pick++;
+		}
+
+			// next color
+
+		pixel+=3;
+
+			// is it in list already?
+
+		if (p_type==-1) continue;
+
+		hit=FALSE;
+
+		for (n=0;n!=item_count;n++) {
+			if ((type[n]==p_type) && (main_idx[n]==p_main_idx) && (sub_idx[n]==p_sub_idx)) {
+				hit=TRUE;
+				break;
+			}
+		}
+
+		if (hit) continue;
+
+			// add to list
+
+		if (item_count==max_item) break;
+
+		type[item_count]=p_type;
+		main_idx[item_count]=p_main_idx;
+		sub_idx[item_count]=p_sub_idx;
+
+		item_count++;
+	}
+
+		// free memory
+
+	free(pixels);
+	free(picks);
+
+		// restore smoothing
+
+	glEnable(GL_SMOOTH);
+
+		// return item count
+
+	return(item_count);
+}
+
+/* =======================================================
+
+      View Picking Adding
+      
+======================================================= */
 
 void view_pick_list_add(int type,int main_idx,int sub_idx)
 {

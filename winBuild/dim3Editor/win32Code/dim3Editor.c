@@ -110,9 +110,10 @@ void main_wind_tool_reset(void)
 
 LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
-	int				delta;
-	d3pnt			pnt;
-	PAINTSTRUCT		ps;
+	int					delta;
+	d3pnt				pnt;
+	editor_view_type	*view;
+	PAINTSTRUCT			ps;
 
 	switch (msg) {
 
@@ -124,7 +125,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 		case WM_SIZE:
 			texture_palette_setup();
-			// deal with these, need to check if map is loaded, reset main_wind_box
+			// supergumba -- deal with these, need to check if map is loaded, reset main_wind_box
 			break;
 
 		case WM_MOUSEMOVE:
@@ -150,8 +151,13 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_MOUSEWHEEL:
+			view=walk_view_get_current_view();
 			delta=GET_WHEEL_DELTA_WPARAM(wParam)/60;
-			walk_view_scroll_wheel_z_movement(delta);
+			walk_view_scroll_wheel_z_movement(view,delta);
+			break;
+
+		case WM_CHAR:
+			walk_view_key((char)wParam);
 			break;
 
 		case WM_COMMAND:
@@ -522,6 +528,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	}
 
 	editor_draw();
+
+	state.free_look=TRUE;		// supergumba -- lock on free look
+	state.grid_mode=grid_mode_large;	// supergumba -- setup grid
 
 	editor_pump();
 

@@ -43,8 +43,6 @@ extern editor_state_type		state;
 
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
-								
-int								view_select_idx;
 
 /* =======================================================
 
@@ -56,8 +54,6 @@ bool walk_view_initialize(void)
 {
 	char			sub_path[1024],path[1024];
 
-	// supergumba -- duplicate this for win32 version, but use path: "dim3 Editor Icons"
-	
 		// interface textures
 		
 	os_get_icon_file_path(sub_path);
@@ -85,7 +81,8 @@ bool walk_view_initialize(void)
 	
 		// some defaults
 		
-	view_select_idx=0;
+	state.view_select_idx=0;
+	state.select_box_on=FALSE;
 
 	return(TRUE);
 }
@@ -114,7 +111,9 @@ void walk_view_setup_default_views(void)
 	editor_view_type		*view;
 	
 	map.editor_views.count=1;
-	view_select_idx=0;
+	
+	state.view_select_idx=0;
+	state.select_box_on=FALSE;
 	
 	view=&map.editor_views.views[0];
 	
@@ -180,7 +179,7 @@ void walk_view_split_horizontal(void)
 
 	if (map.editor_views.count>=max_editor_view) return;
 	
-	old_view=&map.editor_views.views[view_select_idx];
+	old_view=&map.editor_views.views[state.view_select_idx];
 	
 	view=&map.editor_views.views[map.editor_views.count];
 	
@@ -200,7 +199,7 @@ void walk_view_split_horizontal(void)
 
 		// select new view
 	
-	view_select_idx=map.editor_views.count;
+	state.view_select_idx=map.editor_views.count;
 	map.editor_views.count++;
 }
 
@@ -211,7 +210,7 @@ void walk_view_split_vertical(void)
 
 	if (map.editor_views.count>=max_editor_view) return;
 	
-	old_view=&map.editor_views.views[view_select_idx];
+	old_view=&map.editor_views.views[state.view_select_idx];
 	
 	view=&map.editor_views.views[map.editor_views.count];
 	
@@ -231,7 +230,7 @@ void walk_view_split_vertical(void)
 
 		// select new view
 	
-	view_select_idx=map.editor_views.count;
+	state.view_select_idx=map.editor_views.count;
 	map.editor_views.count++;
 }
 
@@ -244,7 +243,7 @@ void walk_view_remove(void)
 
 	if (map.editor_views.count==1) return;
 	
-	del_view=&map.editor_views.views[view_select_idx];
+	del_view=&map.editor_views.views[state.view_select_idx];
 
 		// get the view box, and slowly
 		// remove parts of it to move the other
@@ -257,7 +256,7 @@ void walk_view_remove(void)
 		moved=FALSE;
 
 		for (n=0;n!=map.editor_views.count;n++) {
-			if (n==view_select_idx) continue;
+			if (n==state.view_select_idx) continue;
 
 			view=&map.editor_views.views[n];
 
@@ -333,14 +332,14 @@ void walk_view_remove(void)
 
 		// remove old view
 
-	move_count=(map.editor_views.count-view_select_idx)-1;
-	if (move_count>=1) memmove(&map.editor_views.views[view_select_idx],&map.editor_views.views[view_select_idx+1],(sizeof(editor_view_type)*move_count));
+	move_count=(map.editor_views.count-state.view_select_idx)-1;
+	if (move_count>=1) memmove(&map.editor_views.views[state.view_select_idx],&map.editor_views.views[state.view_select_idx+1],(sizeof(editor_view_type)*move_count));
 
 	map.editor_views.count--;
 
 		// new selection
 
-	view_select_idx=0;
+	state.view_select_idx=0;
 }
 
 /* =======================================================
@@ -470,7 +469,7 @@ void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int
 	gluLookAt((((float)view->pnt.x)+look_vct.x),(((float)view->pnt.y)+look_vct.y),(((float)view->pnt.z)+look_vct.z),(float)view->pnt.x,(float)view->pnt.y,(float)view->pnt.z,0.0f,1.0f,0.0f);
 }
 
-void walk_view_project_point(editor_view_type *view,d3pnt *pnt)
+bool walk_view_project_point(editor_view_type *view,d3pnt *pnt)
 {
 	double			dx,dy,dz,
 					mod_matrix[16],proj_matrix[16];
@@ -480,9 +479,17 @@ void walk_view_project_point(editor_view_type *view,d3pnt *pnt)
 	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
 	glGetIntegerv(GL_VIEWPORT,vport);
 
+		// skip if projection is behind z
+
+	if (((((double)pnt->x)*mod_matrix[2])+(((double)pnt->y)*mod_matrix[6])+(((double)pnt->z)*mod_matrix[10])+mod_matrix[14])<=0.0) return(FALSE);
+
+		// project
+
 	gluProject(pnt->x,pnt->y,pnt->z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 	pnt->x=(int)(dx-view->box.lft);
 	pnt->y=(int)(dy-view->box.top);
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -493,7 +500,7 @@ void walk_view_project_point(editor_view_type *view,d3pnt *pnt)
 
 editor_view_type* walk_view_get_current_view(void)
 {
-	return(&map.editor_views.views[view_select_idx]);
+	return(&map.editor_views.views[state.view_select_idx]);
 }
 
 bool walk_view_point_in_view(editor_view_type *view,d3pnt *pnt)
@@ -539,7 +546,7 @@ void walk_view_cursor(d3pnt *pnt)
         return;
     }
 	
-    if ((os_key_option_down()) && ((!os_key_control_down()) && (!os_key_shift_down()))) {
+    if ((os_key_option_down()) && (!os_key_control_down())) {
         os_set_drag_cursor();
         return;
     }
@@ -563,8 +570,8 @@ void walk_view_key(char ch)
 		// tab switches view
 		
 	if (ch==0x9) {
-		view_select_idx++;
-		if (view_select_idx>=map.editor_views.count) view_select_idx=0;
+		state.view_select_idx++;
+		if (state.view_select_idx>=map.editor_views.count) state.view_select_idx=0;
 		main_wind_draw();
 		return;
 	}
@@ -590,37 +597,37 @@ void walk_view_key(char ch)
 
 void walk_view_get_position(d3pnt *pnt)
 {
-	memmove(pnt,&map.editor_views.views[view_select_idx].pnt,sizeof(d3pnt));
+	memmove(pnt,&map.editor_views.views[state.view_select_idx].pnt,sizeof(d3pnt));
 }
 
 void walk_view_set_position(d3pnt *pnt)
 {
-	memmove(&map.editor_views.views[view_select_idx].pnt,pnt,sizeof(d3pnt));
+	memmove(&map.editor_views.views[state.view_select_idx].pnt,pnt,sizeof(d3pnt));
 }
 
 void walk_view_set_position_y_shift(d3pnt *pnt,int y_shift)
 {
-	memmove(&map.editor_views.views[view_select_idx].pnt,pnt,sizeof(d3pnt));
-	map.editor_views.views[view_select_idx].pnt.y+=y_shift;
+	memmove(&map.editor_views.views[state.view_select_idx].pnt,pnt,sizeof(d3pnt));
+	map.editor_views.views[state.view_select_idx].pnt.y+=y_shift;
 }
 
 void walk_view_move_position(d3pnt *pnt)
 {
-	map.editor_views.views[view_select_idx].pnt.x+=pnt->x;
-	map.editor_views.views[view_select_idx].pnt.y+=pnt->y;
-	map.editor_views.views[view_select_idx].pnt.z+=pnt->z;
+	map.editor_views.views[state.view_select_idx].pnt.x+=pnt->x;
+	map.editor_views.views[state.view_select_idx].pnt.y+=pnt->y;
+	map.editor_views.views[state.view_select_idx].pnt.z+=pnt->z;
 }
 
 void walk_view_get_angle(d3ang *ang)
 {
-	memmove(ang,&map.editor_views.views[view_select_idx].ang,sizeof(d3ang));
+	memmove(ang,&map.editor_views.views[state.view_select_idx].ang,sizeof(d3ang));
 }
 
 void walk_view_set_angle(d3ang *ang)
 {
 	d3ang			*vang;
 	
-	vang=&map.editor_views.views[view_select_idx].ang;
+	vang=&map.editor_views.views[state.view_select_idx].ang;
 
 	memmove(vang,ang,sizeof(d3ang));
 	
@@ -632,7 +639,7 @@ void walk_view_turn_angle(d3ang *ang)
 {
 	d3ang			*vang;
 	
-	vang=&map.editor_views.views[view_select_idx].ang;
+	vang=&map.editor_views.views[state.view_select_idx].ang;
 	
 	vang->x=angle_add(vang->x,ang->x);
 	vang->y=angle_add(vang->y,ang->y);
@@ -650,32 +657,32 @@ void walk_view_turn_angle(d3ang *ang)
 
 void walk_view_perspective_ortho(bool on)
 {
-	map.editor_views.views[view_select_idx].ortho=on;
+	map.editor_views.views[state.view_select_idx].ortho=on;
 }
 
 void walk_view_cull(bool on)
 {
-	map.editor_views.views[view_select_idx].cull=on;
+	map.editor_views.views[state.view_select_idx].cull=on;
 }
 
 void walk_view_clip(bool on)
 {
-	map.editor_views.views[view_select_idx].clip=on;
+	map.editor_views.views[state.view_select_idx].clip=on;
 }
 
 void walk_view_flip_clip(void)
 {
-	map.editor_views.views[view_select_idx].clip=!map.editor_views.views[view_select_idx].clip;
+	map.editor_views.views[state.view_select_idx].clip=!map.editor_views.views[state.view_select_idx].clip;
 }
 
 int walk_view_get_uv_layer(void)
 {
-	return(map.editor_views.views[view_select_idx].uv_layer);
+	return(map.editor_views.views[state.view_select_idx].uv_layer);
 }
 
 void walk_view_set_uv_layer(int uv_layer)
 {
-	map.editor_views.views[view_select_idx].uv_layer=uv_layer;
+	map.editor_views.views[state.view_select_idx].uv_layer=uv_layer;
 }
 
 /* =======================================================
@@ -762,11 +769,11 @@ void walk_view_select_view(d3pnt *pnt)
 	
 		// find selection
 		
-	old_idx=view_select_idx;
+	old_idx=state.view_select_idx;
 	
 	for (n=0;n!=map.editor_views.count;n++) {
 		if (walk_view_point_in_view(&map.editor_views.views[n],pnt)) {
-			view_select_idx=n;
+			state.view_select_idx=n;
 			break;
 		}
 	}
@@ -774,7 +781,7 @@ void walk_view_select_view(d3pnt *pnt)
 		// if select changed, we need to update
 		// interface
 		
-	if (view_select_idx!=old_idx) {
+	if (state.view_select_idx!=old_idx) {
 		main_wind_tool_reset();
 		menu_update_view();
 	}
@@ -855,9 +862,9 @@ void walk_view_draw(void)
 	
 		// draw the selection
 		
-	if ((view_select_idx>=0) && (view_select_idx<map.editor_views.count)) {
+	if ((state.view_select_idx>=0) && (state.view_select_idx<map.editor_views.count)) {
 	
-		view=&map.editor_views.views[view_select_idx];
+		view=&map.editor_views.views[state.view_select_idx];
 		walk_view_get_pixel_box(view,&box);
 		
 		glEnable(GL_BLEND);

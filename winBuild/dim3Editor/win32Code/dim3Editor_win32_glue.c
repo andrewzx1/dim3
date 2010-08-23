@@ -39,6 +39,11 @@ void glue_end(void)
       Win32 Glue Routines
       
 ======================================================= */
+		
+void os_get_icon_file_path(char *path)
+{
+	strcpy(path,"dim3 Editor Icons");
+}
 
 void os_get_window_box(d3rect *box)
 {

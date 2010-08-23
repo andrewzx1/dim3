@@ -41,7 +41,7 @@ extern void walk_view_set_viewport_box(d3rect *box,bool erase,bool use_backgroun
 extern void walk_view_set_viewport(editor_view_type *view,bool erase,bool use_background);
 extern void walk_view_set_2D_projection(editor_view_type *view);
 extern void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near_z_offset);
-extern void walk_view_project_point(editor_view_type *view,d3pnt *pnt);
+extern bool walk_view_project_point(editor_view_type *view,d3pnt *pnt);
 extern editor_view_type* walk_view_get_current_view(void);
 extern bool walk_view_point_in_view(editor_view_type *view,d3pnt *pnt);
 extern void walk_view_cursor(d3pnt *pnt);
@@ -85,6 +85,7 @@ extern void walk_view_draw_select(editor_view_type *view);
 
 extern bool view_pick_list_start(editor_view_type *view,bool in_2D,int count);
 extern void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx);
+extern int view_pick_list_end_multiple(editor_view_type *view,d3pnt *start_pnt,d3pnt *end_pnt,int *type,int *main_idx,int *sub_idx,int max_item);
 extern void view_pick_list_add(int type,int main_idx,int sub_idx);
 extern void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx);
 extern void view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_idx);
@@ -99,6 +100,8 @@ extern void walk_view_click_grid(d3pnt *pt);
 extern bool walk_view_click_snap(int mesh_idx,d3pnt *pt);
 extern bool walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt);
 extern bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt);
+extern void walk_view_click_piece_map_pick_single(editor_view_type *view,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx);
+extern int walk_view_click_piece_map_pick_multiple(editor_view_type *view,d3pnt *click_start_pt,d3pnt *click_end_pt,int *type,int *main_idx,int *sub_idx,int max_item);
 extern void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick);
 extern bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt);
 extern bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt);
@@ -106,6 +109,7 @@ extern bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt);
 extern bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt);
 extern bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt);
 extern bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt);
+extern void walk_view_click_box_select(editor_view_type *view,d3pnt *pt);
 extern bool walk_view_click_drag_liquid(editor_view_type *view,d3pnt *pt);
 extern bool walk_view_click_drag_texture(editor_view_type *view,d3pnt *pt,bool entire_mesh);
 

@@ -404,11 +404,6 @@ void view_game_start(void)
     camera_initialize();
 	game_file_initialize();
 	
-		// shortcut for game being in
-		// shader of fixed-function mode
-		
-	view.shader_on=(!setup.disable_shaders)&&gl_check_shader_ok();
-	
 		// load images for hud bitmaps, radar, particles,
 		// rings, halos, marks, crosshairs and remote icons
 	
@@ -503,6 +498,10 @@ void view_loop_draw(void)
 
 	view.time.draw_tick=raw_tick+view.time.draw_time;
 
+		// shader flag
+
+	view.shader_on=(!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.settings.no_shaders);
+
 		// texture setup
 	
 	tick=game_time_get();
@@ -565,6 +564,10 @@ void view_loop_draw_dedicated_host(int tick)
 
 	view.time.draw_tick=raw_tick+view.time.draw_time;
 
+		// shader flag
+
+	view.shader_on=(!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.settings.no_shaders);
+
 		// draw dedicated host screen
 
 	gl_frame_clear(FALSE);
@@ -581,9 +584,17 @@ void view_loop_draw_dedicated_host(int tick)
 
 void view_capture_draw(char *path)
 {
+		// shader flag
+
+	view.shader_on=(!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.settings.no_shaders);
+
+		// draw view
+
 	gl_frame_clear(FALSE);
 	view_draw();
 	
+		// make screenshot
+
 	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
 }
 

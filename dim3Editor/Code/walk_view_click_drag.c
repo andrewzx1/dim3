@@ -38,58 +38,6 @@ extern editor_state_type		state;
 
 /* =======================================================
 
-      Drag Constraints
-      
-======================================================= */
-
-void walk_view_click_drag_constraint_axis(int *x,int *y)
-{
-	int			ax,ay;
-	
-	if (!os_key_shift_down()) return;
-	
-	ax=abs(*x);
-	ay=abs(*y);
-	
-	if (ax>ay) {
-		if ((*y)<0) {
-			*y=-ax;
-		}
-		else {
-			*y=ax;
-		}
-		
-		return;
-	}
-
-	if ((*x)<0) {
-		*x=-ay;
-	}
-	else {
-		*x=ay;
-	}
-}
-
-void walk_view_click_drag_constraint(int *x,int *y,int *z)
-{
-	/* supergumba -- fix constraints
-
-	switch (view_mode_dir) {
-		case vm_dir_forward:
-			walk_view_click_drag_constraint_axis(x,y);
-			break;
-		case vm_dir_side:
-			walk_view_click_drag_constraint_axis(z,y);
-			break;
-		case vm_dir_top:
-			walk_view_click_drag_constraint_axis(x,z);
-			break;
-	}
-	*/
-}
-
-/* =======================================================
-
       Drag Mesh Handles
       
 ======================================================= */
@@ -187,8 +135,6 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
 		mz+=move_pnt.z;
-			
-		walk_view_click_drag_constraint(&mx,&my,&mz);
 
 		mpt.x=mx;
 		mpt.y=my;
@@ -1026,3 +972,62 @@ bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt)
 	return(!first_drag);
 }
 
+/* =======================================================
+
+      Box Select
+      
+======================================================= */
+
+void walk_view_click_box_select(editor_view_type *view,d3pnt *pt)
+{
+	int						n,x,y,item_count,
+							type[view_max_box_select_item],
+							main_idx[view_max_box_select_item],
+							sub_idx[view_max_box_select_item];
+	d3pnt					old_pt;
+	d3rect					box;
+		
+	walk_view_get_pixel_box(view,&box);
+
+		// setup the start point
+
+	state.select_box_on=TRUE;
+	memmove(&state.select_box_start_pnt,pt,sizeof(d3pnt));
+	
+		// run the select
+
+	memmove(&old_pt,pt,sizeof(d3pnt));
+
+	while (!os_track_mouse_location(pt,&box)) {
+		
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
+		
+			// setup the end point
+
+		memmove(&state.select_box_end_pnt,pt,sizeof(d3pnt));
+
+			// select any items
+
+		item_count=walk_view_click_piece_map_pick_multiple(view,&state.select_box_start_pnt,&state.select_box_end_pnt,type,main_idx,sub_idx,view_max_box_select_item);
+
+		select_clear();
+		for (n=0;n!=item_count;n++) {
+			select_add(type[n],main_idx[n],sub_idx[n]);
+		}
+
+			// redraw the selection
+
+        main_wind_draw();
+	}
+
+		// clear the select box
+
+	state.select_box_on=FALSE;
+	
+	main_wind_draw();
+}
