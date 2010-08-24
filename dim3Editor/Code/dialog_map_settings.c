@@ -44,6 +44,7 @@ extern map_type				map;
 #define kMapGravitySpeed							FOUR_CHAR_CODE('gspd')
 #define kMapResistance								FOUR_CHAR_CODE('rest')
 #define kMapNeverCull								FOUR_CHAR_CODE('ncul')
+#define kMapNoShaders								FOUR_CHAR_CODE('nshd')
 #define kMapGameTypeList							FOUR_CHAR_CODE('gtyp')
 
 	// ambients
@@ -224,6 +225,7 @@ bool dialog_map_settings_run(void)
 	dialog_set_float(dialog_map_settings_wind,kMapGravitySpeed,0,map.settings.gravity_max_speed);
 	dialog_set_float(dialog_map_settings_wind,kMapResistance,0,map.settings.resistance);
 	dialog_set_boolean(dialog_map_settings_wind,kMapNeverCull,0,map.settings.never_cull);
+	dialog_set_boolean(dialog_map_settings_wind,kMapNoShaders,0,map.settings.no_shaders);
 
 	dialog_set_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list);
 	
@@ -376,6 +378,7 @@ bool dialog_map_settings_run(void)
 		map.settings.gravity_max_speed=dialog_get_float(dialog_map_settings_wind,kMapGravitySpeed,0);
 		map.settings.resistance=dialog_get_float(dialog_map_settings_wind,kMapResistance,0);
 		map.settings.never_cull=dialog_get_boolean(dialog_map_settings_wind,kMapNeverCull,0);
+		map.settings.no_shaders=dialog_get_boolean(dialog_map_settings_wind,kMapNoShaders,0);
 
 		dialog_get_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list,256);
 		
