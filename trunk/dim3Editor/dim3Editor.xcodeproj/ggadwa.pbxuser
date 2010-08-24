@@ -145,8 +145,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 304223360;
-			PBXWorkspaceStateSaveDate = 304223360;
+			PBXPerProjectTemplateStateSaveDate = 304293707;
+			PBXWorkspaceStateSaveDate = 304293707;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -431,10 +431,10 @@
 	};
 	26808224122057F600EB7897 /* view_picker.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {943, 2873}}";
-			sepNavSelRange = "{1200, 0}";
-			sepNavVisRange = "{646, 1203}";
-			sepNavWindowFrame = "{{161, 240}, {950, 757}}";
+			sepNavIntBoundsRect = "{{0, 0}, {971, 5031}}";
+			sepNavSelRange = "{3445, 0}";
+			sepNavVisRange = "{3141, 875}";
+			sepNavWindowFrame = "{{243, 98}, {950, 757}}";
 		};
 	};
 	2681880210A3A28A000B2CD8 /* light_maps.c */ = {
@@ -474,9 +474,9 @@
 	};
 	26934B100D876A800009F81E /* walk_view_click_drag.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 13351}}";
-			sepNavSelRange = "{20320, 0}";
-			sepNavVisRange = "{19476, 890}";
+			sepNavIntBoundsRect = "{{0, 0}, {1174, 13546}}";
+			sepNavSelRange = "{20448, 39}";
+			sepNavVisRange = "{19669, 1166}";
 			sepNavWindowFrame = "{{261, 253}, {1041, 747}}";
 		};
 	};
@@ -690,9 +690,9 @@
 	};
 	F56EF37B09A69A3400F06521 /* dialog_map_settings.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6656}}";
-			sepNavSelRange = "{8508, 0}";
-			sepNavVisRange = "{7482, 2758}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6708}}";
+			sepNavSelRange = "{1631, 0}";
+			sepNavVisRange = "{986, 2126}";
 			sepNavWindowFrame = "{{380, 205}, {1041, 747}}";
 		};
 	};
@@ -714,9 +714,9 @@
 	};
 	F58D0FAF05B8C0A800DBBDC5 /* walk_view_click_piece.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8658}}";
-			sepNavSelRange = "{12172, 0}";
-			sepNavVisRange = "{12037, 1012}";
+			sepNavIntBoundsRect = "{{0, 0}, {1125, 8528}}";
+			sepNavSelRange = "{11235, 27}";
+			sepNavVisRange = "{10240, 1420}";
 			sepNavWindowFrame = "{{357, 178}, {1041, 747}}";
 		};
 	};

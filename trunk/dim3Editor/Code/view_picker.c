@@ -194,11 +194,6 @@ int view_pick_list_end_multiple(editor_view_type *view,d3pnt *start_pnt,d3pnt *e
 		high=ty-by;
 	}
 
-		// read pixels gets one more pixel
-
-	wid--;
-	high--;
-
 	if ((wid<=0) || (high<=0)) {
 		free(picks);
 		glEnable(GL_SMOOTH);
@@ -213,7 +208,7 @@ int view_pick_list_end_multiple(editor_view_type *view,d3pnt *start_pnt,d3pnt *e
 
 		// get pixel data
 
-	pixel_count=(wid+1)*(high+1);
+	pixel_count=wid*high;
 
 	pixels=(unsigned char*)malloc(pixel_count*3);
 	if (pixels==NULL) {
@@ -222,6 +217,7 @@ int view_pick_list_end_multiple(editor_view_type *view,d3pnt *start_pnt,d3pnt *e
 		return(0);
 	}
 
+	glPixelStoref(GL_PACK_ALIGNMENT,1);
 	glReadPixels(x,y,wid,high,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixels);
 
 		// run through the pixels
