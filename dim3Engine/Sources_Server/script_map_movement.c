@@ -40,12 +40,12 @@ extern void map_movements_script_freeze(int movement_idx);
 extern void map_movements_script_thaw(int movement_idx);
 extern bool map_movements_script_is_looping(int movement_idx);
 
-JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_movement_freeze_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_movement_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_movement_is_looping_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_movement_freeze_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_movement_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_movement_is_looping_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	map_movement_functions[]={
 							{"start",				js_map_movement_start_func,			kJSPropertyAttributeDontDelete},
@@ -74,9 +74,9 @@ void script_free_map_movement_object(void)
 	script_free_class(map_movement_class);
 }
 
-JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement"));
+	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement",script_idx));
 }
 
 /* =======================================================
@@ -85,7 +85,7 @@ JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_ob
       
 ======================================================= */
 
-JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
@@ -97,7 +97,7 @@ JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
@@ -109,7 +109,7 @@ JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,J
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
@@ -121,7 +121,7 @@ JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,J
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_map_movement_freeze_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_movement_freeze_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
@@ -133,7 +133,7 @@ JSValueRef js_map_movement_freeze_func(JSContextRef cx,JSObjectRef func,JSObject
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_map_movement_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_movement_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	
@@ -145,7 +145,7 @@ JSValueRef js_map_movement_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_map_movement_is_looping_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_movement_is_looping_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
 	

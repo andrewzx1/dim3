@@ -37,9 +37,9 @@ extern js_type			js;
 
 JSValueRef js_weap_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_fire_get_lastFireTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		weap_fire_props[]={
 							{"method",				js_weap_fire_get_method,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -70,9 +70,9 @@ void script_free_weap_fire_object(void)
 	script_free_class(weap_fire_class);
 }
 
-JSObjectRef script_add_weap_fire_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_fire_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_fire_class,"fire"));
+	return(script_create_child_object(cx,parent_obj,weap_fire_class,"fire",script_idx));
 }
 
 /* =======================================================
@@ -105,7 +105,7 @@ JSValueRef js_weap_fire_get_lastFireTick(JSContextRef cx,JSObjectRef j_obj,JSStr
       
 ======================================================= */
 
-JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				last_fire_tick;
 	weapon_type		*weap;
@@ -124,7 +124,7 @@ JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSO
 	return(script_bool_to_value(cx,(game_time_get()>(last_fire_tick+script_value_to_int(cx,argv[0])))));
 }
 
-JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -142,7 +142,7 @@ JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JS
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	weapon_type		*weap;
 

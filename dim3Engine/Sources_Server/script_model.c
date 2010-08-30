@@ -78,9 +78,9 @@ void script_free_model_object(void)
 	script_free_class(model_class);
 }
 
-JSObjectRef script_add_model_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-    return(script_create_child_object(cx,parent_obj,model_class,"model"));
+    return(script_create_child_object(cx,parent_obj,model_class,"model",script_idx));
 }
 
 /* =======================================================
@@ -93,7 +93,7 @@ JSValueRef js_model_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_bool_to_value(cx,draw->on));
 }
 
@@ -101,7 +101,7 @@ JSValueRef js_model_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_string_to_value(cx,draw->name));
 }
 
@@ -109,7 +109,7 @@ JSValueRef js_model_get_bounce(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_bool_to_value(cx,draw->bounce));
 }
 
@@ -117,7 +117,7 @@ JSValueRef js_model_get_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_float_to_value(cx,draw->alpha));
 }
 
@@ -125,7 +125,7 @@ JSValueRef js_model_get_resize(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_float_to_value(cx,draw->resize));
 }
 
@@ -133,7 +133,7 @@ JSValueRef js_model_get_faceForward(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_bool_to_value(cx,draw->face_forward));
 }
 
@@ -147,7 +147,7 @@ bool js_model_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueR
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	draw->on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -157,7 +157,7 @@ bool js_model_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValu
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	script_value_to_string(cx,vp,draw->name,name_str_len);
 	
 	return(TRUE);
@@ -167,7 +167,7 @@ bool js_model_set_bounce(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	draw->bounce=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -177,7 +177,7 @@ bool js_model_set_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	draw->alpha=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -187,7 +187,7 @@ bool js_model_set_resize(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	draw->resize=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -197,7 +197,7 @@ bool js_model_set_faceForward(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	draw->face_forward=script_value_to_bool(cx,vp);
 	
 	return(TRUE);

@@ -86,9 +86,9 @@ void script_free_obj_turn_speed_object(void)
 	script_free_class(obj_turn_speed_class);
 }
 
-JSObjectRef script_add_obj_turn_speed_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_turn_speed_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_turn_speed_class,"turnSpeed"));
+	return(script_create_child_object(cx,parent_obj,obj_turn_speed_class,"turnSpeed",script_idx));
 }
 
 /* =======================================================

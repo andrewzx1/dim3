@@ -80,9 +80,9 @@ void script_free_obj_forward_speed_object(void)
 	script_free_class(obj_forward_speed_class);
 }
 
-JSObjectRef script_add_obj_forward_speed_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_forward_speed_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_forward_speed_class,"forwardSpeed"));
+	return(script_create_child_object(cx,parent_obj,obj_forward_speed_class,"forwardSpeed",script_idx));
 }
 
 /* =======================================================

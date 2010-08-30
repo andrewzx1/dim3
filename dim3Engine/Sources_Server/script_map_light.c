@@ -34,7 +34,7 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	map_light_functions[]={
 							{"toggle",				js_map_light_toggle_func,			kJSPropertyAttributeDontDelete},
@@ -58,9 +58,9 @@ void script_free_map_light_object(void)
 	script_free_class(map_light_class);
 }
 
-JSObjectRef script_add_map_light_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_map_light_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,map_light_class,"light"));
+	return(script_create_child_object(cx,parent_obj,map_light_class,"light",script_idx));
 }
 
 /* =======================================================
@@ -69,7 +69,7 @@ JSObjectRef script_add_map_light_object(JSContextRef cx,JSObjectRef parent_obj)
       
 ======================================================= */
 
-JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	map_light_type		*map_light;
 

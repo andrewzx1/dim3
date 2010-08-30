@@ -38,8 +38,8 @@ extern server_type		server;
 extern js_type			js;
 extern setup_type		setup;
 
-JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	multiplayer_score_functions[]={
 							{"getObject",			js_multiplayer_score_get_object_func,		kJSPropertyAttributeDontDelete},
@@ -64,9 +64,9 @@ void script_free_multiplayer_score_object(void)
 	script_free_class(multiplayer_score_class);
 }
 
-JSObjectRef script_add_multiplayer_score_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_multiplayer_score_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_score_class,"score"));
+	return(script_create_child_object(cx,parent_obj,multiplayer_score_class,"score",script_idx));
 }
 
 /* =======================================================
@@ -75,7 +75,7 @@ JSObjectRef script_add_multiplayer_score_object(JSContextRef cx,JSObjectRef pare
       
 ======================================================= */
 
-JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -87,7 +87,7 @@ JSValueRef js_multiplayer_score_get_object_func(JSContextRef cx,JSObjectRef func
 	return(script_int_to_value(cx,obj->score.score));
 }
 
-JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_multiplayer_score_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,score,team_idx;
 	obj_type		*obj;

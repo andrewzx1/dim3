@@ -37,9 +37,9 @@ extern setup_type		setup;
 
 JSValueRef js_interface_screen_get_width(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_interface_screen_get_height(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_interface_screen_shader_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_interface_screen_shader_start_timed_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_interface_screen_shader_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_screen_shader_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_screen_shader_start_timed_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_screen_shader_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		interface_screen_props[]={
 							{"width",				js_interface_screen_get_width,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -70,9 +70,9 @@ void script_free_interface_screen_object(void)
 	script_free_class(interface_screen_class);
 }
 
-JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,interface_screen_class,"screen"));
+	return(script_create_child_object(cx,parent_obj,interface_screen_class,"screen",script_idx));
 }
 
 /* =======================================================
@@ -97,7 +97,7 @@ JSValueRef js_interface_screen_get_height(JSContextRef cx,JSObjectRef j_obj,JSSt
       
 ======================================================= */
 
-JSValueRef js_interface_screen_shader_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_interface_screen_shader_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	bool			ok;
 	char			shader_name[name_str_len],err_str[256];
@@ -111,7 +111,7 @@ JSValueRef js_interface_screen_shader_start_func(JSContextRef cx,JSObjectRef fun
 	return(script_bool_to_value(cx,ok));
 }
 
-JSValueRef js_interface_screen_shader_start_timed_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_interface_screen_shader_start_timed_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	bool			ok;
 	char			shader_name[name_str_len],err_str[256];
@@ -125,7 +125,7 @@ JSValueRef js_interface_screen_shader_start_timed_func(JSContextRef cx,JSObjectR
 	return(script_bool_to_value(cx,ok));
 }
 
-JSValueRef js_interface_screen_shader_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_interface_screen_shader_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 

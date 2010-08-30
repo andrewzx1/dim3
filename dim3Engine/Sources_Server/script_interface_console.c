@@ -37,9 +37,9 @@ extern char				console_input_str[max_console_txt_sz];
 extern view_type		view;
 extern js_type			js;
 
-JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_interface_console_open_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_console_open_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	interface_console_functions[]={
 							{"write",				js_interface_console_write_func,		kJSPropertyAttributeDontDelete},
@@ -65,9 +65,9 @@ void script_free_interface_console_object(void)
 	script_free_class(interface_console_class);
 }
 
-JSObjectRef script_add_interface_console_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_interface_console_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,interface_console_class,"console"));
+	return(script_create_child_object(cx,parent_obj,interface_console_class,"console",script_idx));
 }
 
 /* =======================================================
@@ -76,7 +76,7 @@ JSObjectRef script_add_interface_console_object(JSContextRef cx,JSObjectRef pare
       
 ======================================================= */
 
-JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			txt[256];
 	
@@ -88,14 +88,14 @@ JSValueRef js_interface_console_write_func(JSContextRef cx,JSObjectRef func,JSOb
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_interface_console_read_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
 	return(script_string_to_value(cx,console_input_str));
 }
 
-JSValueRef js_interface_console_open_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_interface_console_open_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	

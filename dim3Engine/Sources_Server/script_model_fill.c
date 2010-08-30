@@ -34,7 +34,7 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	model_fill_functions[]={
 							{"change",				js_model_fill_change_func,				kJSPropertyAttributeDontDelete},
@@ -58,9 +58,9 @@ void script_free_model_fill_object(void)
 	script_free_class(model_fill_class);
 }
 
-JSObjectRef script_add_model_fill_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_fill_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_fill_class,"fill"));
+	return(script_create_child_object(cx,parent_obj,model_fill_class,"fill",script_idx));
 }
 
 /* =======================================================
@@ -69,13 +69,13 @@ JSObjectRef script_add_model_fill_object(JSContextRef cx,JSObjectRef parent_obj)
       
 ======================================================= */
 
-JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
     model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
     model_change_fill(draw,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]));
 
 	return(script_null_to_value(cx));

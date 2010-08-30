@@ -65,9 +65,9 @@ void script_free_obj_thrust_object(void)
 	script_free_class(obj_thrust_class);
 }
 
-JSObjectRef script_add_obj_thrust_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_thrust_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_thrust_class,"thrust"));
+	return(script_create_child_object(cx,parent_obj,obj_thrust_class,"thrust",script_idx));
 }
 
 /* =======================================================

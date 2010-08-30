@@ -75,9 +75,9 @@ void script_free_obj_hit_object(void)
 	script_free_class(obj_hit_class);
 }
 
-JSObjectRef script_add_obj_hit_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_hit_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_hit_class,"hit"));
+	return(script_create_child_object(cx,parent_obj,obj_hit_class,"hit",script_idx));
 }
 
 /* =======================================================

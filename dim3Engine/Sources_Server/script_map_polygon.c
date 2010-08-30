@@ -38,11 +38,11 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern js_type				js;
 
-JSValueRef js_map_polygon_find_faced_by_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_polygon_get_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_polygon_get_hit_point_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_polygon_get_dot_product_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_polygon_find_faced_by_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_polygon_get_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_polygon_get_hit_point_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_polygon_get_dot_product_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	map_polygon_functions[]={
 							{"findFacedByObject",		js_map_polygon_find_faced_by_object_func,		kJSPropertyAttributeDontDelete},
@@ -70,9 +70,9 @@ void script_free_map_polygon_object(void)
 	script_free_class(map_polygon_class);
 }
 
-JSObjectRef script_add_map_polygon_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_map_polygon_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,map_polygon_class,"polygon"));
+	return(script_create_child_object(cx,parent_obj,map_polygon_class,"polygon",script_idx));
 }
 
 /* =======================================================
@@ -81,7 +81,7 @@ JSObjectRef script_add_map_polygon_object(JSContextRef cx,JSObjectRef parent_obj
       
 ======================================================= */
 
-JSValueRef js_map_polygon_find_faced_by_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_find_faced_by_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;
 
@@ -93,7 +93,7 @@ JSValueRef js_map_polygon_find_faced_by_object_func(JSContextRef cx,JSObjectRef 
 	return(script_int_to_value(cx,collide_polygon_find_faced_by_object(obj)));
 }
 
-JSValueRef js_map_polygon_get_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_get_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			poly_uid;
 	obj_type	*obj;
@@ -108,7 +108,7 @@ JSValueRef js_map_polygon_get_distance_to_object_func(JSContextRef cx,JSObjectRe
 	return(script_int_to_value(cx,collide_polygon_distance_to_object(poly_uid,obj)));
 }
 
-JSValueRef js_map_polygon_get_hit_point_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_get_hit_point_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			poly_uid;
 	d3pnt		pt;
@@ -126,7 +126,7 @@ JSValueRef js_map_polygon_get_hit_point_to_object_func(JSContextRef cx,JSObjectR
 	return(script_point_to_value(cx,pt.x,pt.y,pt.z));
 }
 
-JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			poly_uid;
 	d3vct		normal;
@@ -140,7 +140,7 @@ JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObj
 	return(script_angle_to_value(cx,normal.x,normal.y,normal.z));
 }
 
-JSValueRef js_map_polygon_get_dot_product_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_polygon_get_dot_product_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			poly_uid;
 	float		dot_product;

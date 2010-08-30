@@ -47,7 +47,7 @@ bool js_obj_melee_set_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 bool js_obj_melee_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_melee_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_melee_props[]={
 							{"strikeBoneTag",			js_obj_melee_get_strikeBoneTag,					js_obj_melee_set_strikeBoneTag,		kJSPropertyAttributeDontDelete},
@@ -80,9 +80,9 @@ void script_free_obj_melee_object(void)
 	script_free_class(obj_melee_class);
 }
 
-JSObjectRef script_add_obj_melee_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_melee_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_melee_class,"melee"));
+	return(script_create_child_object(cx,parent_obj,obj_melee_class,"melee",script_idx));
 }
 
 /* =======================================================
@@ -215,7 +215,7 @@ bool js_obj_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
       
 ======================================================= */
 
-JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char				err_str[256];
     obj_type			*obj;

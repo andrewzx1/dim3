@@ -33,10 +33,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_data_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_data_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_data_set_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_data_get_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_data_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_data_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_data_set_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_data_get_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	data_functions[]={
 							{"add",					js_data_add_func,					kJSPropertyAttributeDontDelete},
@@ -63,9 +63,9 @@ void script_free_global_data_object(void)
 	script_free_class(data_class);
 }
 
-JSObjectRef script_add_global_data_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_global_data_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,data_class,"data"));
+	return(script_create_child_object(cx,parent_obj,data_class,"data",script_idx));
 }
 
 /* =======================================================
@@ -74,7 +74,7 @@ JSObjectRef script_add_global_data_object(JSContextRef cx,JSObjectRef parent_obj
       
 ======================================================= */
 
-JSValueRef js_data_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_data_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
 
@@ -86,7 +86,7 @@ JSValueRef js_data_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_data_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_data_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
 
@@ -98,7 +98,7 @@ JSValueRef js_data_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_data_set_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_data_set_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
 
@@ -110,7 +110,7 @@ JSValueRef js_data_set_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,s
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_data_get_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_data_get_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
 

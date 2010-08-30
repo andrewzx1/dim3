@@ -49,9 +49,9 @@ JSValueRef js_map_setting_get_multiplayerType(JSContextRef cx,JSObjectRef j_obj,
 JSValueRef js_map_setting_get_botSkill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_map_setting_set_gravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_map_setting_set_resistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		map_setting_props[]={
 							{"scale",				js_map_setting_get_scale,				NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -85,9 +85,9 @@ void script_free_map_setting_object(void)
 	script_free_class(map_setting_class);
 }
 
-JSObjectRef script_add_map_setting_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_map_setting_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,map_setting_class,"setting"));
+	return(script_create_child_object(cx,parent_obj,map_setting_class,"setting",script_idx));
 }
 
 /* =======================================================
@@ -154,7 +154,7 @@ bool js_map_setting_set_resistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef
       
 ======================================================= */
 
-JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -169,7 +169,7 @@ JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	

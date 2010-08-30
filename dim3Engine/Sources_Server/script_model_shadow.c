@@ -58,9 +58,9 @@ void script_free_model_shadow_object(void)
 	script_free_class(model_shadow_class);
 }
 
-JSObjectRef script_add_model_shadow_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_shadow_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_shadow_class,"shadow"));
+	return(script_create_child_object(cx,parent_obj,model_shadow_class,"shadow",script_idx));
 }
 
 /* =======================================================
@@ -74,7 +74,7 @@ JSValueRef js_model_shadow_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	shadow=&draw->shadow;
 	
 	return(script_bool_to_value(cx,shadow->on));
@@ -91,7 +91,7 @@ bool js_model_shadow_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	shadow=&draw->shadow;
 
 	shadow->on=script_value_to_bool(cx,vp);

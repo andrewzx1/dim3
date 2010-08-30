@@ -34,7 +34,7 @@ and can be sold or given away.
 #include <JavaScriptCore/JavaScript.h>
 
 //
-// Script Defines
+// script defines
 //
 
 #define max_script_list									1024
@@ -43,6 +43,20 @@ and can be sold or given away.
 
 #define js_max_recursive_count							5
 
+//
+// attach types
+//
+
+#define script_type_game								0
+#define script_type_course								1
+#define script_type_object								2
+#define script_type_weapon								3
+#define script_type_projectile_setup					4
+#define script_type_projectile							5
+
+
+
+// supergumba -- can probably get rid of this, and all attach stuff
 //
 // Thing types
 //
@@ -55,7 +69,7 @@ and can be sold or given away.
 #define thing_type_projectile							5
 
 //
-// Timer types
+// timer types
 //
 
 #define timer_mode_single								0
@@ -247,6 +261,11 @@ and can be sold or given away.
 #define sd_event_remote									2037
 #define sd_event_score									2038
 
+#define event_main_id_start								sd_event_construct
+#define event_main_id_end								sd_event_score
+
+#define event_main_id_count								((event_main_id_end-event_main_id_start)+1)
+
 //
 // sub events constants
 //
@@ -402,10 +421,37 @@ typedef struct		{
 // script structures
 //
 
+#define d3_jsval_type_number							0
+#define d3_jsval_type_boolean							1
+#define d3_jsval_type_string							2
+
+#define max_d3_jsval_str_len							128
+
+#define max_msg_data									8
+// supergumba -- move these and delete from baseutility
+
+typedef union		{
+						float							d3_number;
+						bool							d3_boolean;
+						char							d3_string[max_d3_jsval_str_len];
+					} script_attach_jsval_type;
+ 
+
+typedef struct		{
+						int								type;
+						script_attach_jsval_type		data;
+					} script_attach_msg_type;
+
+typedef struct		{
+						int								type,obj_idx,weap_idx,proj_setup_idx,proj_idx;
+						script_attach_msg_type			set_msg_data[max_msg_data],get_msg_data[max_msg_data];
+					} script_attach_type;
+					
 typedef struct		{
 						int								idx,data_len,recursive_count;
 						char							name[file_str_len];
 						char							*data;
+						script_attach_type				attach;
 						JSGlobalContextRef				cx;
 						JSObjectRef						obj,global_obj,event_func;
 					} script_type;

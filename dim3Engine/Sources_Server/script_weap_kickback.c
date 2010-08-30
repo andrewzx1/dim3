@@ -37,7 +37,7 @@ extern js_type			js;
 
 JSValueRef js_weap_kickback_get_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_weap_kickback_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		weap_kickback_props[]={
 							{"size",				js_weap_kickback_get_size,				js_weap_kickback_set_size,		kJSPropertyAttributeDontDelete},
@@ -65,9 +65,9 @@ void script_free_weap_kickback_object(void)
 	script_free_class(weap_kickback_class);
 }
 
-JSObjectRef script_add_weap_kickback_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_kickback_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_kickback_class,"kickback"));
+	return(script_create_child_object(cx,parent_obj,weap_kickback_class,"kickback",script_idx));
 }
 
 /* =======================================================
@@ -106,7 +106,7 @@ bool js_weap_kickback_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
       
 ======================================================= */
 
-JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type			*obj;
 	weapon_type			*weap;

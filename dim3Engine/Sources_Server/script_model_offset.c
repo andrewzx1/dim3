@@ -64,9 +64,9 @@ void script_free_model_offset_object(void)
 	script_free_class(model_offset_class);
 }
 
-JSObjectRef script_add_model_offset_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_offset_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_offset_class,"offset"));
+	return(script_create_child_object(cx,parent_obj,model_offset_class,"offset",script_idx));
 }
 
 /* =======================================================
@@ -79,7 +79,7 @@ JSValueRef js_model_offset_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_int_to_value(cx,draw->offset.x));
 }
 
@@ -87,7 +87,7 @@ JSValueRef js_model_offset_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_int_to_value(cx,draw->offset.y));
 }
 
@@ -95,7 +95,7 @@ JSValueRef js_model_offset_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_int_to_value(cx,draw->offset.z));
 }
 
@@ -109,7 +109,7 @@ bool js_model_offset_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	draw->offset.x=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -119,7 +119,7 @@ bool js_model_offset_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	draw->offset.y=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -129,7 +129,7 @@ bool js_model_offset_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	draw->offset.z=script_value_to_int(cx,vp);
 	
 	return(TRUE);
