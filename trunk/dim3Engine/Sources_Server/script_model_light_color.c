@@ -64,9 +64,9 @@ void script_free_model_light_color_object(void)
 	script_free_class(model_light_color_class);
 }
 
-JSObjectRef script_add_model_light_color_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_light_color_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_light_color_class,"lightColor"));
+	return(script_create_child_object(cx,parent_obj,model_light_color_class,"lightColor",script_idx));
 }
 
 /* =======================================================
@@ -80,7 +80,7 @@ JSValueRef js_model_light_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSStri
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	return(script_float_to_value(cx,light->col.r));
@@ -91,7 +91,7 @@ JSValueRef js_model_light_color_get_green(JSContextRef cx,JSObjectRef j_obj,JSSt
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 
 	return(script_float_to_value(cx,light->col.g));
@@ -102,7 +102,7 @@ JSValueRef js_model_light_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JSStr
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	return(script_float_to_value(cx,light->col.b));
@@ -119,7 +119,7 @@ bool js_model_light_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 
 	light->col.r=script_value_to_float(cx,vp);
@@ -132,7 +132,7 @@ bool js_model_light_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 
 	light->col.g=script_value_to_float(cx,vp);
@@ -145,7 +145,7 @@ bool js_model_light_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 
 	light->col.b=script_value_to_float(cx,vp);

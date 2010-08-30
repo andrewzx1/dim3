@@ -33,10 +33,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	utility_random_functions[]={
 							{"getInteger",			js_utility_random_get_integer_func,		kJSPropertyAttributeDontDelete},
@@ -63,9 +63,9 @@ void script_free_utility_random_object(void)
 	script_free_class(utility_random_class);
 }
 
-JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,utility_random_class,"random"));
+	return(script_create_child_object(cx,parent_obj,utility_random_class,"random",script_idx));
 }
 
 /* =======================================================
@@ -74,7 +74,7 @@ JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_
       
 ======================================================= */
 
-JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				min,max;
 
@@ -86,7 +86,7 @@ JSValueRef js_utility_random_get_integer_func(JSContextRef cx,JSObjectRef func,J
 	return(script_int_to_value(cx,random_int(abs(max-min))+min));
 }
 
-JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float				min,max;
 
@@ -98,14 +98,14 @@ JSValueRef js_utility_random_get_float_func(JSContextRef cx,JSObjectRef func,JSO
 	return(script_float_to_value(cx,random_float(fabsf(max-min))+min));
 }
 
-JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_random_get_boolean_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
 	return(script_bool_to_value(cx,random_boolean()));
 }
 
-JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_random_get_pos_or_neg_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 

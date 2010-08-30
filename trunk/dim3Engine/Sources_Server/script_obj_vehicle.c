@@ -39,9 +39,9 @@ extern js_type			js;
 JSValueRef js_obj_vehicle_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_vehicle_get_hasOccupant(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_vehicle_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_vehicle_props[]={
 							{"on",					js_obj_vehicle_get_on,				js_obj_vehicle_set_on,		kJSPropertyAttributeDontDelete},
@@ -72,9 +72,9 @@ void script_free_obj_vehicle_object(void)
 	script_free_class(obj_vehicle_class);
 }
 
-JSObjectRef script_add_obj_vehicle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_vehicle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_vehicle_class,"vehicle"));
+	return(script_create_child_object(cx,parent_obj,obj_vehicle_class,"vehicle",script_idx));
 }
 
 /* =======================================================
@@ -121,7 +121,7 @@ bool js_obj_vehicle_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
       
 ======================================================= */
 
-JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256];
 	obj_type		*obj;
@@ -137,7 +137,7 @@ JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256];
 	obj_type		*obj;

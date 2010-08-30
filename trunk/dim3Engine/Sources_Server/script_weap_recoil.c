@@ -57,7 +57,7 @@ bool js_weap_recoil_set_maxZ(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 bool js_weap_recoil_set_resetZ(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_recoil_set_resetLook(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_recoil_set_resetTurn(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_recoil_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_recoil_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		weap_recoil_props[]={
 							{"minX",				js_weap_recoil_get_minX,			js_weap_recoil_set_minX,		kJSPropertyAttributeDontDelete},
@@ -95,9 +95,9 @@ void script_free_weap_recoil_object(void)
 	script_free_class(weap_recoil_class);
 }
 
-JSObjectRef script_add_weap_recoil_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_recoil_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_recoil_class,"recoil"));
+	return(script_create_child_object(cx,parent_obj,weap_recoil_class,"recoil",script_idx));
 }
 
 /* =======================================================
@@ -316,7 +316,7 @@ bool js_weap_recoil_set_resetTurn(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
       
 ======================================================= */
 
-JSValueRef js_weap_recoil_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_weap_recoil_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type			*obj;
 	weapon_type			*weap;

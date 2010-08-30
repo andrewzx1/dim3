@@ -44,7 +44,7 @@ JSValueRef js_multiplayer_setting_get_on(JSContextRef cx,JSObjectRef j_obj,JSStr
 JSValueRef js_multiplayer_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_multiplayer_setting_get_monsters(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		multiplayer_setting_props[]={
 							{"on",					js_multiplayer_setting_get_on,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -75,9 +75,9 @@ void script_free_multiplayer_setting_object(void)
 	script_free_class(multiplayer_setting_class);
 }
 
-JSObjectRef script_add_multiplayer_setting_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_multiplayer_setting_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_setting_class,"setting"));
+	return(script_create_child_object(cx,parent_obj,multiplayer_setting_class,"setting",script_idx));
 }
 
 /* =======================================================
@@ -118,7 +118,7 @@ JSValueRef js_multiplayer_setting_get_monsters(JSContextRef cx,JSObjectRef j_obj
       
 ======================================================= */
 
-JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n;
 	bool			on;

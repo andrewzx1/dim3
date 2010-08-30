@@ -33,9 +33,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	utility_pack_functions[]={
 							{"pack",				js_utility_pack_pack_func,				kJSPropertyAttributeDontDelete},
@@ -61,9 +61,9 @@ void script_free_utility_pack_object(void)
 	script_free_class(utility_pack_class);
 }
 
-JSObjectRef script_add_utility_pack_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_utility_pack_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,utility_pack_class,"pack"));
+	return(script_create_child_object(cx,parent_obj,utility_pack_class,"pack",script_idx));
 }
 
 /* =======================================================
@@ -72,7 +72,7 @@ JSObjectRef script_add_utility_pack_object(JSContextRef cx,JSObjectRef parent_ob
       
 ======================================================= */
 
-JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	unsigned long			i,high,low;
 
@@ -85,7 +85,7 @@ JSValueRef js_utility_pack_pack_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	return(script_int_to_value(cx,i));
 }
 
-JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	unsigned int			i;
 	int						high;
@@ -98,7 +98,7 @@ JSValueRef js_utility_pack_unpack_high_func(JSContextRef cx,JSObjectRef func,JSO
 	return(script_int_to_value(cx,high));
 }
 
-JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_pack_unpack_low_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	unsigned int			i;
 	int						low;

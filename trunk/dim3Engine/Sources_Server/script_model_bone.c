@@ -37,12 +37,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	model_bone_functions[]={
 							{"findOffset",			js_model_bone_find_offset_func,				kJSPropertyAttributeDontDelete},
@@ -71,9 +71,9 @@ void script_free_model_bone_object(void)
 	script_free_class(model_bone_class);
 }
 
-JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_bone_class,"bone"));
+	return(script_create_child_object(cx,parent_obj,model_bone_class,"bone",script_idx));
 }
 
 /* =======================================================
@@ -135,7 +135,7 @@ JSValueRef js_model_bone_name_exception(JSContextRef cx,char *pose_name,char *bo
       
 ======================================================= */
 
-JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char				pose_name[name_str_len],bone_name[name_str_len];
 	int					x,y,z;
@@ -161,7 +161,7 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	return(script_point_to_value(cx,x,y,z));
 }
 
-JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char				pose_name[name_str_len],bone_name[name_str_len];
 	int					x,y,z;
@@ -187,7 +187,7 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	return(script_point_to_value(cx,x,y,z));
 }
 
-JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			pose_name[name_str_len],bone_name[name_str_len];
 	float			bright;
@@ -219,7 +219,7 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
       
 ======================================================= */
 
-JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			bone_name[name_str_len],err_str[256];
 	d3ang			ang;
@@ -246,7 +246,7 @@ JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef fun
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			bone_name[name_str_len],err_str[256];
 	d3pnt			pnt;
@@ -273,7 +273,7 @@ JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			bone_name[name_str_len],err_str[256];
 	float			resize;

@@ -73,9 +73,9 @@ void script_free_model_light_object(void)
 	script_free_class(model_light_class);
 }
 
-JSObjectRef script_add_model_light_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_light_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_light_class,"light"));
+	return(script_create_child_object(cx,parent_obj,model_light_class,"light",script_idx));
 }
 
 /* =======================================================
@@ -89,7 +89,7 @@ JSValueRef js_model_light_get_index(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	return(script_int_to_value(cx,draw->script_light_idx));
@@ -100,7 +100,7 @@ JSValueRef js_model_light_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 
 	return(script_bool_to_value(cx,light->on));
@@ -111,7 +111,7 @@ JSValueRef js_model_light_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	return(script_int_to_value(cx,light->type-sd_light_type_normal));
@@ -122,7 +122,7 @@ JSValueRef js_model_light_get_direction(JSContextRef cx,JSObjectRef j_obj,JSStri
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 
 	return(script_int_to_value(cx,light->direction+sd_light_direction_all));
@@ -133,7 +133,7 @@ JSValueRef js_model_light_get_intensity(JSContextRef cx,JSObjectRef j_obj,JSStri
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	return(script_int_to_value(cx,light->intensity));
@@ -144,7 +144,7 @@ JSValueRef js_model_light_get_exponent(JSContextRef cx,JSObjectRef j_obj,JSStrin
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	return(script_float_to_value(cx,light->exponent));
@@ -161,7 +161,7 @@ bool js_model_light_set_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	draw->script_light_idx=script_value_to_int(cx,vp);
@@ -175,7 +175,7 @@ bool js_model_light_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->on=script_value_to_bool(cx,vp);
@@ -188,7 +188,7 @@ bool js_model_light_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->type=script_value_to_int(cx,vp)-sd_light_type_normal;
@@ -201,7 +201,7 @@ bool js_model_light_set_direction(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->direction=script_value_to_int(cx,vp)-sd_light_direction_all;
@@ -214,7 +214,7 @@ bool js_model_light_set_intensity(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 
 	light->intensity=script_value_to_int(cx,vp);
@@ -227,7 +227,7 @@ bool js_model_light_set_exponent(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	light=&draw->lights[draw->script_light_idx];
 	
 	light->exponent=script_value_to_float(cx,vp);

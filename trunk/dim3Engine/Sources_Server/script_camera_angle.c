@@ -41,7 +41,7 @@ JSValueRef js_camera_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 bool js_camera_angle_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_camera_angle_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_camera_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		camera_angle_props[]={
 							{"x",					js_camera_angle_get_x,		js_camera_angle_set_x,		kJSPropertyAttributeDontDelete},
@@ -71,9 +71,9 @@ void script_free_camera_angle_object(void)
 	script_free_class(camera_angle_class);
 }
 
-JSObjectRef script_add_camera_angle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_camera_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,camera_angle_class,"angle"));
+	return(script_create_child_object(cx,parent_obj,camera_angle_class,"angle",script_idx));
 }
 
 /* =======================================================
@@ -127,7 +127,7 @@ bool js_camera_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
       
 ======================================================= */
 
-JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	d3ang			ang;
 

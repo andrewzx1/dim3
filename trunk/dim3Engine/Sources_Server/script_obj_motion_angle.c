@@ -38,11 +38,11 @@ extern js_type			js;
 JSValueRef js_obj_motion_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_motion_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_motion_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_motion_angle_face_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_motion_angle_face_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_motion_angle_face_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_angle_face_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_angle_face_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_angle_face_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_motion_angle_props[]={
 							{"x",					js_obj_motion_angle_get_x,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -76,9 +76,9 @@ void script_free_obj_motion_angle_object(void)
 	script_free_class(obj_motion_angle_class);
 }
 
-JSObjectRef script_add_obj_motion_angle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_motion_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_motion_angle_class,"motionAngle"));
+	return(script_create_child_object(cx,parent_obj,obj_motion_angle_class,"motionAngle",script_idx));
 }
 
 /* =======================================================
@@ -117,7 +117,7 @@ JSValueRef js_obj_motion_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringR
       
 ======================================================= */
 
-JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			turn_speed;
 	bool			cwise;
@@ -156,7 +156,7 @@ JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef fu
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -168,7 +168,7 @@ JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,J
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_obj_motion_angle_face_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_motion_angle_face_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj,*track_obj;
 	
@@ -184,7 +184,7 @@ JSValueRef js_obj_motion_angle_face_object_func(JSContextRef cx,JSObjectRef func
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_obj_motion_angle_face_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_motion_angle_face_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -196,7 +196,7 @@ JSValueRef js_obj_motion_angle_face_player_func(JSContextRef cx,JSObjectRef func
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_obj_motion_angle_face_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_motion_angle_face_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	

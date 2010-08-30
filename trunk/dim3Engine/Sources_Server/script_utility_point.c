@@ -35,10 +35,10 @@ extern js_type			js;
 
 extern void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2);
 
-JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	utility_point_functions[]={
 							{"equal",				js_utility_point_equal_func,				kJSPropertyAttributeDontDelete},
@@ -65,9 +65,9 @@ void script_free_utility_point_object(void)
 	script_free_class(utility_point_class);
 }
 
-JSObjectRef script_add_utility_point_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_utility_point_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,utility_point_class,"point"));
+	return(script_create_child_object(cx,parent_obj,utility_point_class,"point",script_idx));
 }
 
 /* =======================================================
@@ -76,7 +76,7 @@ JSObjectRef script_add_utility_point_object(JSContextRef cx,JSObjectRef parent_o
       
 ======================================================= */
 
-JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y,to_x,to_z,to_y,slop;
 
@@ -93,7 +93,7 @@ JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObject
 	return(script_bool_to_value(cx,!((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop)))));
 }
 
-JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,to_x,to_z;
 	float			ang;
@@ -109,7 +109,7 @@ JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObj
     return(script_float_to_value(cx,ang));
 }
 
-JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				dist,x,z,y,to_x,to_z,to_y;
 	
@@ -126,7 +126,7 @@ JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JS
 	return(script_int_to_value(cx,dist));
 }
 
-JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y,x2,y2;
 	

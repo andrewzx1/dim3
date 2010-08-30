@@ -39,7 +39,7 @@ extern js_type			js;
 extern setup_type		setup;
 
 JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		multiplayer_bot_props[]={
 							{"skill",				js_multiplayer_bot_get_skill,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -67,9 +67,9 @@ void script_free_multiplayer_bot_object(void)
 	script_free_class(multiplayer_bot_class);
 }
 
-JSObjectRef script_add_multiplayer_bot_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_multiplayer_bot_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_bot_class,"bot"));
+	return(script_create_child_object(cx,parent_obj,multiplayer_bot_class,"bot",script_idx));
 }
 
 /* =======================================================
@@ -89,7 +89,7 @@ JSValueRef js_multiplayer_bot_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStri
       
 ======================================================= */
 
-JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_multiplayer_bot_get_from_min_max_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			skill,min,max;
 

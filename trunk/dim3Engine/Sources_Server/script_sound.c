@@ -40,15 +40,15 @@ extern setup_type			setup;
 extern server_type			server;
 extern network_setup_type	net_setup;
 
-JSValueRef js_sound_play_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_sound_play_at_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_sound_play_global_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_play_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_play_at_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_play_global_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	sound_functions[]={
 							{"play",				js_sound_play_func,						kJSPropertyAttributeDontDelete},
@@ -80,9 +80,9 @@ void script_free_global_sound_object(void)
 	script_free_class(sound_class);
 }
 
-JSObjectRef script_add_global_sound_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_global_sound_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,sound_class,"sound"));
+	return(script_create_child_object(cx,parent_obj,sound_class,"sound",script_idx));
 }
 
 /* =======================================================
@@ -171,7 +171,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
       
 ======================================================= */
 
-JSValueRef js_sound_play_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_play_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -190,7 +190,7 @@ JSValueRef js_sound_play_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_sound_play_at_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_play_at_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -209,7 +209,7 @@ JSValueRef js_sound_play_at_object_func(JSContextRef cx,JSObjectRef func,JSObjec
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_sound_play_global_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_play_global_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -227,7 +227,7 @@ JSValueRef js_sound_play_global_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			pitch;
 	char			name[name_str_len];
@@ -251,7 +251,7 @@ JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSO
       
 ======================================================= */
 
-JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len],err_str[256];
 
@@ -269,7 +269,7 @@ JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
@@ -278,7 +278,7 @@ JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				msec;
 	char			name[name_str_len],err_str[256];
@@ -298,7 +298,7 @@ JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObject
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int					msec;
 	
@@ -313,7 +313,7 @@ JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjec
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int					fade_out_msec,fade_in_msec;
 	char				name[name_str_len],err_str[256];

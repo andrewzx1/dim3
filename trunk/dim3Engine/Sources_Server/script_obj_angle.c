@@ -40,8 +40,8 @@ extern void object_setup_motion(obj_type *obj,float ang,float speed);
 JSValueRef js_obj_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_angle_props[]={
 							{"x",					js_obj_angle_get_x,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -72,9 +72,9 @@ void script_free_obj_angle_object(void)
 	script_free_class(obj_angle_class);
 }
 
-JSObjectRef script_add_obj_angle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_angle_class,"angle"));
+	return(script_create_child_object(cx,parent_obj,obj_angle_class,"angle",script_idx));
 }
 
 /* =======================================================
@@ -113,7 +113,7 @@ JSValueRef js_obj_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
       
 ======================================================= */
 
-JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			ang_add;
 	obj_type		*obj;
@@ -128,7 +128,7 @@ JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	

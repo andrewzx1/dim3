@@ -234,7 +234,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	
 		// create the object
 
-	script->obj=script_create_main_object(script->cx,attach);
+	script->obj=script_create_main_object(script->cx,attach,script->idx);
 	if (script->obj==NULL) {
 		strcpy(err_str,"JavaScript Engine: Not enough memory to create an object");
 		script_free_file(script);

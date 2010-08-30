@@ -33,9 +33,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSValueRef js_utility_angle_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_utility_angle_dif_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_angle_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_utility_angle_dif_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	utility_angle_functions[]={
 							{"add",					js_utility_angle_add_func,			kJSPropertyAttributeDontDelete},
@@ -61,9 +61,9 @@ void script_free_utility_angle_object(void)
 	script_free_class(utility_angle_class);
 }
 
-JSObjectRef script_add_utility_angle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_utility_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,utility_angle_class,"angle"));
+	return(script_create_child_object(cx,parent_obj,utility_angle_class,"angle",script_idx));
 }
 
 /* =======================================================
@@ -72,7 +72,7 @@ JSObjectRef script_add_utility_angle_object(JSContextRef cx,JSObjectRef parent_o
       
 ======================================================= */
 
-JSValueRef js_utility_angle_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_angle_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			ang1,ang2,rang;
     
@@ -85,7 +85,7 @@ JSValueRef js_utility_angle_add_func(JSContextRef cx,JSObjectRef func,JSObjectRe
     return(script_float_to_value(cx,rang));
 }
 
-JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			ang1,ang2,rang;
 	bool			cwise;
@@ -101,7 +101,7 @@ JSValueRef js_utility_angle_sub_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	return(script_float_to_value(cx,rang));
 }
 
-JSValueRef js_utility_angle_dif_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_utility_angle_dif_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	float			ang1,ang2,rang;
 	bool			cwise;

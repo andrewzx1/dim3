@@ -38,7 +38,7 @@ extern js_type			js;
 JSValueRef js_camera_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_camera_setting_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		camera_setting_props[]={
 							{"type",				js_camera_setting_get_type,				js_camera_setting_set_type,		kJSPropertyAttributeDontDelete},
@@ -67,9 +67,9 @@ void script_free_camera_setting_object(void)
 	script_free_class(camera_setting_class);
 }
 
-JSObjectRef script_add_camera_setting_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_camera_setting_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,camera_setting_class,"setting"));
+	return(script_create_child_object(cx,parent_obj,camera_setting_class,"setting",script_idx));
 }
 
 /* =======================================================
@@ -107,7 +107,7 @@ bool js_camera_setting_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
       
 ======================================================= */
 
-JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_camera_setting_attach_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 

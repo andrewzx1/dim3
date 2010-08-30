@@ -47,8 +47,8 @@ JSValueRef js_obj_status_get_air(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_status_props[]={
 							{"speed",				js_obj_status_get_speed,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -86,9 +86,9 @@ void script_free_obj_status_object(void)
 	script_free_class(obj_status_class);
 }
 
-JSObjectRef script_add_obj_status_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_status_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_status_class,"status"));
+	return(script_create_child_object(cx,parent_obj,obj_status_class,"status",script_idx));
 }
 
 /* =======================================================
@@ -185,7 +185,7 @@ JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_ob
       
 ======================================================= */
 
-JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -203,7 +203,7 @@ JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSOb
       
 ======================================================= */
 
-JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	d3col			col;
 	

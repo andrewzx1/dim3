@@ -35,8 +35,8 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	obj_held_functions[]={
 							{"add",					js_obj_held_add_func,				kJSPropertyAttributeDontDelete},
@@ -61,9 +61,9 @@ void script_free_obj_held_object(void)
 	script_free_class(obj_held_class);
 }
 
-JSObjectRef script_add_obj_held_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_held_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_held_class,"held"));
+	return(script_create_child_object(cx,parent_obj,obj_held_class,"held",script_idx));
 }
 
 /* =======================================================
@@ -72,7 +72,7 @@ JSObjectRef script_add_obj_held_object(JSContextRef cx,JSObjectRef parent_obj)
       
 ======================================================= */
 
-JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			uid;
 	char		name[name_str_len],type[name_str_len],
@@ -97,7 +97,7 @@ JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_o
 	return(script_int_to_value(cx,uid));
 }
 
-JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			uid,y_change;
 	float		y_ang;

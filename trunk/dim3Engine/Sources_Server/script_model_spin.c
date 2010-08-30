@@ -65,9 +65,9 @@ void script_free_model_spin_object(void)
 	script_free_class(model_spin_class);
 }
 
-JSObjectRef script_add_model_spin_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_spin_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_spin_class,"spin"));
+	return(script_create_child_object(cx,parent_obj,model_spin_class,"spin",script_idx));
 }
 
 /* =======================================================
@@ -80,7 +80,7 @@ JSValueRef js_model_spin_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_float_to_value(cx,draw->spin.x));
 }
 
@@ -88,7 +88,7 @@ JSValueRef js_model_spin_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_float_to_value(cx,draw->spin.y));
 }
 
@@ -96,7 +96,7 @@ JSValueRef js_model_spin_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	model_draw		*draw;
 
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	return(script_float_to_value(cx,draw->spin.z));
 }
 
@@ -110,7 +110,7 @@ bool js_model_spin_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 
 	draw->spin.x=script_value_to_float(cx,vp);
 	draw->spin_tick=game_time_get();
@@ -122,7 +122,7 @@ bool js_model_spin_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 
 	draw->spin.y=script_value_to_float(cx,vp);
 	draw->spin_tick=game_time_get();
@@ -134,7 +134,7 @@ bool js_model_spin_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	model_draw		*draw;
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 
 	draw->spin.z=script_value_to_float(cx,vp);
 	draw->spin_tick=game_time_get();

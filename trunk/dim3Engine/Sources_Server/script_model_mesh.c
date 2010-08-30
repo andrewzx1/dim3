@@ -32,11 +32,11 @@ and can be sold or given away.
 #include "scripts.h"
 #include "models.h"
 
-JSValueRef js_model_mesh_show_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_mesh_show_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 extern js_type			js;
 
@@ -66,9 +66,9 @@ void script_free_model_mesh_object(void)
 	script_free_class(model_mesh_class);
 }
 
-JSObjectRef script_add_model_mesh_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_mesh_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_mesh_class,"mesh"));
+	return(script_create_child_object(cx,parent_obj,model_mesh_class,"mesh",script_idx));
 }
 
 /* =======================================================
@@ -91,14 +91,14 @@ JSValueRef js_model_mesh_name_exception(JSContextRef cx,char *name)
       
 ======================================================= */
 
-JSValueRef js_model_mesh_show_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_mesh_show_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_show_mesh(draw,name)) {
@@ -108,26 +108,26 @@ JSValueRef js_model_mesh_show_mesh_func(JSContextRef cx,JSObjectRef func,JSObjec
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	model_show_all_mesh(draw);
 
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_show_only_mesh(draw,name)) {
@@ -137,14 +137,14 @@ JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JS
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	if (!model_hide_mesh(draw,name)) {
@@ -154,13 +154,13 @@ JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjec
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	draw=script_find_model_draw();
+	draw=script_find_model_draw(j_obj);
 	model_hide_all_mesh(draw);
 
 	return(script_null_to_value(cx));

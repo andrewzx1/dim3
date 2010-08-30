@@ -60,9 +60,9 @@ bool js_weap_zoom_set_crawlSwayFactor(JSContextRef cx,JSObjectRef j_obj,JSString
 bool js_weap_zoom_set_maskName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_showWeapon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_zoom_set_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_weap_zoom_goto_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_weap_zoom_goto_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		weap_zoom_props[]={
 							{"on",					js_weap_zoom_get_on,						js_weap_zoom_set_on,				kJSPropertyAttributeDontDelete},
@@ -104,9 +104,9 @@ void script_free_weap_zoom_object(void)
 	script_free_class(weap_zoom_class);
 }
 
-JSObjectRef script_add_weap_zoom_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_zoom_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_zoom_class,"zoom"));
+	return(script_create_child_object(cx,parent_obj,weap_zoom_class,"zoom",script_idx));
 }
 
 /* =======================================================
@@ -352,7 +352,7 @@ bool js_weap_zoom_set_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
       
 ======================================================= */
 
-JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	weapon_type		*weap;
@@ -367,7 +367,7 @@ JSValueRef js_weap_zoom_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	weapon_type		*weap;
@@ -382,7 +382,7 @@ JSValueRef js_weap_zoom_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_weap_zoom_goto_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_onj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_weap_zoom_goto_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				step;
 	obj_type		*obj;
