@@ -230,6 +230,92 @@ bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_pol
 	return(dist<(map_enlarge*setup.clip_distance));
 }
 
+bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	// supergumba
+	/*
+	int			n,pt_count,
+				px[14],py[14],pz[14];
+	bool		above_z,behind_z,lft,rgt,top,bot;
+	
+		// check if points are behind z
+		
+	above_z=FALSE;
+	behind_z=FALSE;
+	
+	for (n=0;n!=8;n++) {
+		if (gl_project_in_view_z(cbx[n],cby[n],cbz[n])) {
+			above_z=TRUE;
+		}
+		else {
+			behind_z=TRUE;
+		}
+	}
+	
+	if (!above_z) return(FALSE);
+	
+		// create additional points to
+		// deal with meshes that are split
+		// behind and above the z
+		
+	pt_count=8;
+	
+	memmove(px,cbx,(sizeof(int)*8));
+	memmove(py,cby,(sizeof(int)*8));
+	memmove(pz,cbz,(sizeof(int)*8));
+	
+	if ((above_z) && (behind_z)) {
+		px[8]=(px[0]+px[1]+px[2]+px[3])>>2;
+		py[8]=(py[0]+py[1]+py[2]+py[3])>>2;
+		pz[8]=(pz[0]+pz[1]+pz[2]+pz[3])>>2;
+
+		px[9]=(px[0]+px[1]+px[5]+px[4])>>2;
+		py[9]=(py[0]+py[1]+py[5]+py[4])>>2;
+		pz[9]=(pz[0]+pz[1]+pz[5]+pz[4])>>2;
+
+		px[10]=(px[1]+px[2]+px[6]+px[5])>>2;
+		py[10]=(py[1]+py[2]+py[6]+py[5])>>2;
+		pz[10]=(pz[1]+pz[2]+pz[6]+pz[5])>>2;
+
+		px[11]=(px[3]+px[2]+px[6]+px[7])>>2;
+		py[11]=(py[3]+py[2]+py[6]+py[7])>>2;
+		pz[11]=(pz[3]+pz[2]+pz[6]+pz[7])>>2;
+
+		px[12]=(px[0]+px[3]+px[7]+px[4])>>2;
+		py[12]=(py[0]+py[3]+py[7]+py[4])>>2;
+		pz[12]=(pz[0]+pz[3]+pz[7]+pz[4])>>2;
+
+		px[13]=(px[4]+px[5]+px[6]+px[7])>>2;
+		py[13]=(py[4]+py[5]+py[6]+py[7])>>2;
+		pz[13]=(pz[4]+pz[5]+pz[6]+pz[7])>>2;
+		
+		pt_count=14;
+	}
+
+		// project to screen
+
+	gl_project_poly(pt_count,px,py,pz);
+	
+		// are points grouped completely
+		// off one side of the screen?
+
+	lft=rgt=top=bot=TRUE;
+
+	for (n=0;n!=pt_count;n++) {
+		lft=lft&&(px[n]<0);
+		rgt=rgt&&(px[n]>=setup.screen.x_sz);
+		top=top&&(py[n]<0);
+		bot=bot&&(py[n]>=setup.screen.y_sz);
+	}
+
+	return(!(lft||rgt||top||bot));
+*/
+
+	return(TRUE);
+
+
+}
+
 /* =======================================================
 
       Walk View Mesh Drawing

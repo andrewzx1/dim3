@@ -41,6 +41,7 @@ extern setup_type			setup;
 extern editor_state_type	state;
 
 int							pick_count,pick_col[3];
+unsigned char				*pick_pixels;
 view_picker_type			*picks;
 
 /* =======================================================
@@ -55,6 +56,10 @@ bool view_pick_list_start(editor_view_type *view,bool in_2D,int count)
 
 	picks=(view_picker_type*)malloc(sizeof(view_picker_type)*count);
 	if (picks==NULL) return(FALSE);
+
+		// no multiple pixel data
+
+	pick_pixels=NULL;
 
 		// no picks set yet
 
@@ -102,10 +107,10 @@ bool view_pick_list_start(editor_view_type *view,bool in_2D,int count)
 
 void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx)
 {
-	int					n;
+	int					n,col;
 	unsigned char		pixel[3];
 	d3pnt				click_pnt;
-	d3rect				box;
+	d3rect				box,wbox;
 	view_picker_type	*pick;
 
 		// flush the drawing
@@ -116,17 +121,16 @@ void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_id
 		// and swap Y for OpenGL read
 
 	walk_view_get_pixel_box(view,&box);
+	os_get_window_box(&wbox);
 
 	click_pnt.x=pnt->x+box.lx;
-	click_pnt.y=pnt->y+box.ty;
-
-	os_get_window_box(&box);
-
-	click_pnt.y=box.by-click_pnt.y;
+	click_pnt.y=wbox.by-(pnt->y+box.ty);
 
 		// find the color at the clicked point
 
 	glReadPixels(click_pnt.x,click_pnt.y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixel);
+
+	col=(pixel[2]<<16)|(pixel[1]<<8)|(pixel[0]);
 
 		// find which pick it represents
 		
@@ -136,7 +140,7 @@ void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_id
 
 	for (n=0;n!=pick_count;n++) {
 
-		if ((pick->col[0]==pixel[0]) && (pick->col[1]==pixel[1]) && (pick->col[2]==pixel[2])) {
+		if (pick->col==col) {
 			*type=pick->type;
 			*main_idx=pick->main_idx;
 			*sub_idx=pick->sub_idx;
@@ -159,11 +163,10 @@ void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_id
       
 ======================================================= */
 
-unsigned char* view_pick_list_multiple_get_pixels(editor_view_type *view)
+bool view_pick_list_multiple_setup(editor_view_type *view)
 {
-	int					wid,high,pixel_count;
-	unsigned char		*pixels;
-	d3rect				box;
+	int					wid,high;
+	d3rect				box,wbox;
 
 		// flush the drawing
 
@@ -172,32 +175,30 @@ unsigned char* view_pick_list_multiple_get_pixels(editor_view_type *view)
 		// grab the pixels
 
 	walk_view_get_pixel_box(view,&box);
+	os_get_window_box(&wbox);
 
 	wid=box.rx-box.lx;
 	high=box.by-box.ty;
 	
-	pixel_count=wid*high;
-
-	pixels=(unsigned char*)malloc(pixel_count*3);
-	if (pixels==NULL) return(NULL);
+	pick_pixels=(unsigned char*)malloc((wid*3)*high);
+	if (pick_pixels==NULL) return(FALSE);
 
 	glPixelStoref(GL_PACK_ALIGNMENT,1);
-	glReadPixels(0,0,wid,high,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixels);
+	glReadPixels(box.lx,(wbox.by-box.by),wid,high,GL_RGB,GL_UNSIGNED_BYTE,(void*)pick_pixels);
 
 		// restore smoothing
 
 	glEnable(GL_SMOOTH);
 	
-	return(pixels);
+	return(TRUE);
 }
 
-int view_pick_list_multiple_pick(editor_view_type *view,unsigned char *pixels,d3pnt *start_pnt,d3pnt *end_pnt,int *type,int *main_idx,int *sub_idx,int max_item)
+int view_pick_list_multiple_pick(editor_view_type *view,d3pnt *start_pnt,d3pnt *end_pnt,int *type,int *main_idx,int *sub_idx,int max_item)
 {
-	int					n,x,y,lx,rx,ty,by,wid,
+	int					n,x,y,lx,rx,ty,by,wid,high,col,
 						item_count,p_type,p_main_idx,p_sub_idx;
 	unsigned char		*pixel;
-	unsigned char		r,g,b;
-	d3rect				box,wbox;
+	d3rect				box;
 	view_picker_type	*pick;
 
 		// get the starting position and size
@@ -205,33 +206,39 @@ int view_pick_list_multiple_pick(editor_view_type *view,unsigned char *pixels,d3
 	walk_view_get_pixel_box(view,&box);
 	
 	wid=box.rx-box.lx;
+	high=box.by-box.ty;
 
-	lx=start_pnt->x+box.lx;
-	rx=end_pnt->x+box.lx;
-
-	ty=start_pnt->y+box.ty;
-	by=end_pnt->y+box.ty;
-
-	if (lx<box.lx) lx=box.lx;
-	if (rx>=box.rx) rx=box.rx-1;
-	if (ty<box.ty) ty=box.ty;
-	if (by>=box.by) by=box.by-1;
-
-	if (lx>rx) {
-		x=lx;
-		lx=rx;
-		rx=x;
+	if (start_pnt->x<end_pnt->x) {
+		lx=start_pnt->x;
+		rx=end_pnt->x;
+	}
+	else {
+		lx=end_pnt->x;
+		rx=start_pnt->x;
 	}
 
-	if (ty>by) {
-		y=ty;
-		ty=by;
-		by=y;
+	if (start_pnt->y<end_pnt->y) {
+		ty=start_pnt->y;
+		by=end_pnt->y;
+	}
+	else {
+		ty=end_pnt->y;
+		by=start_pnt->y;
 	}
 
-		// swap Y for OpenGL read
+	if (lx<0) lx=0;
+	if (rx>wid) rx=wid;
+	if (ty<0) ty=0;
+	if (by>high) by=high;
 
-	os_get_window_box(&wbox);
+		// clear the pick flags
+
+	pick=picks;
+
+	for (n=0;n!=pick_count;n++) {
+		pick->hit=FALSE;
+		pick++;
+	}
 
 		// run through the pixels
 
@@ -239,15 +246,14 @@ int view_pick_list_multiple_pick(editor_view_type *view,unsigned char *pixels,d3
 	
 	for (y=ty;y<by;y++) {
 	
-		pixel=pixels+((((wbox.by-y)*wid)+lx)*3);
+		pixel=pick_pixels+(((high-y)*(wid*3))+(lx*3));
 		
 		for (x=lx;x<rx;x++) {
 		
 				// get the color
 				
-			r=*pixel++;
-			g=*pixel++;
-			b=*pixel++;
+			col=((*(pixel+2))<<16)|((*(pixel+1))<<8)|(*pixel);
+			pixel+=3;
 
 				// find color in pick list
 				// we use the hit to early exit if we've already
@@ -259,14 +265,17 @@ int view_pick_list_multiple_pick(editor_view_type *view,unsigned char *pixels,d3
 
 			for (n=0;n!=pick_count;n++) {
 
-				if ((pick->col[0]==r) && (pick->col[1]==g) && (pick->col[2]==b)) {
-					if (pick->hit) break;
+				if (pick->hit) {
+					pick++;
+					continue;
+				}
+
+				if (pick->col==col) {
+					pick->hit=TRUE;
 					
 					p_type=pick->type;
 					p_main_idx=pick->main_idx;
 					p_sub_idx=pick->sub_idx;
-					
-					pick->hit=TRUE;
 					break;
 				}
 
@@ -292,11 +301,11 @@ int view_pick_list_multiple_pick(editor_view_type *view,unsigned char *pixels,d3
 	return(item_count);
 }
 	
-void view_pick_list_multiple_end(unsigned char *pixels)
+void view_pick_list_multiple_end(void)
 {
 		// free memory
 
-	if (pixels!=NULL) free(pixels);
+	if (pick_pixels!=NULL) free(pick_pixels);
 	free(picks);
 }
 
@@ -324,9 +333,7 @@ void view_pick_list_add(int type,int main_idx,int sub_idx)
 
 	pick->hit=FALSE;
 	
-	pick->col[0]=(unsigned char)pick_col[0];
-	pick->col[1]=(unsigned char)pick_col[1];
-	pick->col[2]=(unsigned char)pick_col[2];
+	pick->col=(pick_col[2]<<16)|(pick_col[1]<<8)|(pick_col[0]);
 
 		// next color
 
