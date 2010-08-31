@@ -192,6 +192,7 @@ typedef struct		{
 
 typedef struct		{
 						short					type,main_idx,sub_idx;
+						bool					hit;
 						unsigned char			col[3];
 					} view_picker_type;
 

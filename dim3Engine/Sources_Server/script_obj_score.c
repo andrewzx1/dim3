@@ -72,9 +72,9 @@ void script_free_obj_score_object(void)
 	script_free_class(obj_score_class);
 }
 
-JSObjectRef script_add_obj_score_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_obj_score_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_score_class,"score",script_idx));
+	return(script_create_child_object(cx,parent_obj,obj_score_class,"score"));
 }
 
 /* =======================================================

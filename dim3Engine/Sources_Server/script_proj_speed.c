@@ -74,9 +74,9 @@ void script_free_proj_speed_object(void)
 	script_free_class(proj_speed_class);
 }
 
-JSObjectRef script_add_proj_speed_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_proj_speed_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,proj_speed_class,"speed",script_idx));
+	return(script_create_child_object(cx,parent_obj,proj_speed_class,"speed"));
 }
 
 /* =======================================================

@@ -71,9 +71,9 @@ void script_free_camera_angle_object(void)
 	script_free_class(camera_angle_class);
 }
 
-JSObjectRef script_add_camera_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_camera_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,camera_angle_class,"angle",script_idx));
+	return(script_create_child_object(cx,parent_obj,camera_angle_class,"angle"));
 }
 
 /* =======================================================

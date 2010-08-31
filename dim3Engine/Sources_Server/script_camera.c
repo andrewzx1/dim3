@@ -52,8 +52,8 @@ void script_free_global_camera_object(void)
 	script_free_class(camera_class);
 }
 
-JSObjectRef script_add_global_camera_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_global_camera_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,camera_class,"camera",script_idx));
+	return(script_create_child_object(cx,parent_obj,camera_class,"camera"));
 }
 

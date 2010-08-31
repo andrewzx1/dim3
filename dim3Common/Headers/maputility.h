@@ -227,12 +227,11 @@ typedef struct		{
 					} group_unit_type;
 
 typedef struct		{
-						int									count,user_id,
+						int									count,user_id,attach_obj_idx,
 															movement_idx,movement_move_idx;
 						bool								on,was_moved,freeze,main_move;
 						d3pnt								mov_add,cuml_mov_add;
 						d3ang								rot_add,cuml_rot_add;
-						attach_type							attach;
 					} group_move_type;
 
 typedef struct		{

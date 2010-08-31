@@ -61,9 +61,9 @@ void script_free_utility_angle_object(void)
 	script_free_class(utility_angle_class);
 }
 
-JSObjectRef script_add_utility_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_utility_angle_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,utility_angle_class,"angle",script_idx));
+	return(script_create_child_object(cx,parent_obj,utility_angle_class,"angle"));
 }
 
 /* =======================================================

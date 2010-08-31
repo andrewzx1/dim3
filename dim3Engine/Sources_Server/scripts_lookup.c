@@ -314,26 +314,26 @@ model_draw* script_find_model_draw(JSObjectRef j_obj)
 	
 		// get correct model from attachment
 		
-	switch (script->attach.type) {
+	switch (js.attach.thing_type) {
 	
 		case script_type_object:
-			obj=server.obj_list.objs[script->attach.obj_idx];
+			obj=server.obj_list.objs[js.attach.obj_idx];
 			return(&obj->draw);
 			
 		case script_type_weapon:
-			obj=server.obj_list.objs[script->attach.obj_idx];
-			weap=obj->weap_list.weaps[script->attach.weap_idx];
+			obj=server.obj_list.objs[js.attach.obj_idx];
+			weap=obj->weap_list.weaps[js.attach.weap_idx];
 			if (weap->dual.in_dual) return(&weap->draw_dual);
 			return(&weap->draw);
 			
 		case script_type_projectile_setup:
-			obj=server.obj_list.objs[script->attach.obj_idx];
-			weap=obj->weap_list.weaps[script->attach.weap_idx];
-			proj_setup=weap->proj_setup_list.proj_setups[script->attach.proj_setup_idx];
+			obj=server.obj_list.objs[js.attach.obj_idx];
+			weap=obj->weap_list.weaps[js.attach.weap_idx];
+			proj_setup=weap->proj_setup_list.proj_setups[js.attach.proj_setup_idx];
 			return(&proj_setup->draw);
 			
 		case script_type_projectile:
-			proj=server.proj_list.projs[script->attach.proj_idx];
+			proj=server.proj_list.projs[js.attach.proj_idx];
 			return(&proj->draw);
 			
 	}

@@ -63,9 +63,9 @@ void script_free_proj_push_object(void)
 	script_free_class(proj_push_class);
 }
 
-JSObjectRef script_add_proj_push_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_proj_push_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,proj_push_class,"push",script_idx));
+	return(script_create_child_object(cx,parent_obj,proj_push_class,"push"));
 }
 
 /* =======================================================

@@ -35,9 +35,10 @@ and can be sold or given away.
 #include "consoles.h"
 
 extern map_type			map;
+extern server_type		server;
 extern js_type			js;
 
-extern bool map_movement_next_move(int movement_idx,int move_idx,attach_type *attach);
+extern bool map_movement_next_move(int movement_idx,int move_idx,int obj_idx);
 
 /* =======================================================
 
@@ -45,7 +46,7 @@ extern bool map_movement_next_move(int movement_idx,int move_idx,attach_type *at
       
 ======================================================= */
 
-bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move)
+bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,int obj_idx,bool main_move)
 {
 	int					n,unit_cnt;
 	float				f_count;
@@ -113,10 +114,10 @@ bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt
 	move->freeze=FALSE;
 	move->on=TRUE;
 	
-		// the movement attach is a duplicate of the script
-		// attach, this is done to fix some references in header files
-
-	memmove(&move->attach,&js.attach,sizeof(attach_type));
+		// attached object, otherwise it calls the course
+		// script on events
+		
+	move->attach_obj_idx=obj_idx;
 
 	return(TRUE);
 }
@@ -356,6 +357,8 @@ void group_moves_run(bool run_events)
 	int				n,user_id;
 	group_type		*group;
 	group_move_type	*move;
+	obj_type		*obj;
+	attach_type		*attach;
 
 		// run all moves
 		
@@ -388,16 +391,32 @@ void group_moves_run(bool run_events)
 			// this move is the main move of a group of movements
 			
 		if (!move->main_move) continue;
+		
+			// get proper attachment
+			
+		attach=NULL;
+		
+		if (run_events) {
+			if (move->attach_obj_idx==-1) {
+				attach=&js.course_attach;
+			}
+			else {
+				obj=server.obj_list.objs[attach->obj_idx];
+				if (obj!=NULL) attach=&obj->attach;
+			}
+		}
+		
+		if (attach==NULL) run_events=FALSE;
 
 			// post the finished event
 	
 		user_id=move->user_id;
-		if (run_events) scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_done,user_id);
+		if (run_events) scripts_post_event_console(attach,sd_event_move,sd_event_move_done,user_id);
 
 			// signal back to the original map movement
 	
-		if (map_movement_next_move(move->movement_idx,move->movement_move_idx,(attach_type*)&move->attach)) {
-			if (run_events) scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_loop,user_id);
+		if (map_movement_next_move(move->movement_idx,move->movement_move_idx,move->attach_obj_idx)) {
+			if (run_events) scripts_post_event_console(attach,sd_event_move,sd_event_move_loop,user_id);
 		}
 	}
 }

@@ -355,7 +355,7 @@ bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
       
 ======================================================= */
 
-void walk_view_click_piece_map_pick_run(editor_view_type *view)
+void walk_view_click_piece_map_pick_start(editor_view_type *view)
 {
 	int					n,k,t,count;
 	d3pnt				*pt;
@@ -527,18 +527,6 @@ void walk_view_click_piece_map_pick_run(editor_view_type *view)
 		}
 	}
 }
-
-void walk_view_click_piece_map_pick_single(editor_view_type *view,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx)
-{
-	walk_view_click_piece_map_pick_run(view);
-	view_pick_list_end(view,click_pt,type,main_idx,sub_idx);
-}
-
-int walk_view_click_piece_map_pick_multiple(editor_view_type *view,d3pnt *click_start_pt,d3pnt *click_end_pt,int *type,int *main_idx,int *sub_idx,int max_item)
-{
-	walk_view_click_piece_map_pick_run(view);
-	return(view_pick_list_end_multiple(view,click_start_pt,click_end_pt,type,main_idx,sub_idx,max_item));
-}
 	
 /* =======================================================
 
@@ -590,7 +578,8 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 
 		// pick clicked map item (mesh, liquid, nodes, etc)
 		
-	walk_view_click_piece_map_pick_single(view,pt,&type,&main_idx,&sub_idx);
+	walk_view_click_piece_map_pick_start(view);
+	view_pick_list_end(view,pt,&type,&main_idx,&sub_idx);
 	
 		// if a node, check link
 		// connections

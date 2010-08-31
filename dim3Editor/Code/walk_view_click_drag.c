@@ -984,10 +984,19 @@ void walk_view_click_box_select(editor_view_type *view,d3pnt *pt)
 							type[view_max_box_select_item],
 							main_idx[view_max_box_select_item],
 							sub_idx[view_max_box_select_item];
+	unsigned char			*pixels;
 	d3pnt					old_pt;
 	d3rect					box;
 		
 	walk_view_get_pixel_box(view,&box);
+	
+		// draw map and get pixels
+		
+	pixels=view_pick_list_multiple_get_pixels(view);
+	if (pixels==NULL) {	
+		view_pick_list_multiple_end(pixels);
+		return;
+	}
 
 		// setup the start point
 
@@ -1012,8 +1021,8 @@ void walk_view_click_box_select(editor_view_type *view,d3pnt *pt)
 		memmove(&state.select_box_end_pnt,pt,sizeof(d3pnt));
 
 			// select any items
-
-		item_count=walk_view_click_piece_map_pick_multiple(view,&state.select_box_start_pnt,&state.select_box_end_pnt,type,main_idx,sub_idx,view_max_box_select_item);
+			
+		item_count=view_pick_list_multiple_pick(view,pixels,&state.select_box_start_pnt,&state.select_box_end_pnt,type,main_idx,sub_idx,view_max_box_select_item);
 		
 		select_clear();
 		for (n=0;n!=item_count;n++) {

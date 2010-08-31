@@ -45,7 +45,7 @@ view_picker_type			*picks;
 
 /* =======================================================
 
-      View Picking Start/Stop
+      View Picking Start
       
 ======================================================= */
 
@@ -93,6 +93,12 @@ bool view_pick_list_start(editor_view_type *view,bool in_2D,int count)
 
 	return(TRUE);
 }
+
+/* =======================================================
+
+      View Picking Single End
+      
+======================================================= */
 
 void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx)
 {
@@ -147,23 +153,58 @@ void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_id
 	glEnable(GL_SMOOTH);
 }
 
-int view_pick_list_end_multiple(editor_view_type *view,d3pnt *start_pnt,d3pnt *end_pnt,int *type,int *main_idx,int *sub_idx,int max_item)
+/* =======================================================
+
+      View Picking Multiple End
+      
+======================================================= */
+
+unsigned char* view_pick_list_multiple_get_pixels(editor_view_type *view)
 {
-	int					n,k,x,y,lx,rx,ty,by,
-						wid,high,pixel_count,
-						item_count,p_type,p_main_idx,p_sub_idx;
-	unsigned char		*pixel,*pixels;
-	bool				hit;
+	int					wid,high,pixel_count;
+	unsigned char		*pixels;
 	d3rect				box;
-	view_picker_type	*pick;
 
 		// flush the drawing
 
 	glFinish();
 
+		// grab the pixels
+
+	walk_view_get_pixel_box(view,&box);
+
+	wid=box.rx-box.lx;
+	high=box.by-box.ty;
+	
+	pixel_count=wid*high;
+
+	pixels=(unsigned char*)malloc(pixel_count*3);
+	if (pixels==NULL) return(NULL);
+
+	glPixelStoref(GL_PACK_ALIGNMENT,1);
+	glReadPixels(0,0,wid,high,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixels);
+
+		// restore smoothing
+
+	glEnable(GL_SMOOTH);
+	
+	return(pixels);
+}
+
+int view_pick_list_multiple_pick(editor_view_type *view,unsigned char *pixels,d3pnt *start_pnt,d3pnt *end_pnt,int *type,int *main_idx,int *sub_idx,int max_item)
+{
+	int					n,x,y,lx,rx,ty,by,wid,
+						item_count,p_type,p_main_idx,p_sub_idx;
+	unsigned char		*pixel;
+	unsigned char		r,g,b;
+	d3rect				box,wbox;
+	view_picker_type	*pick;
+
 		// get the starting position and size
 
 	walk_view_get_pixel_box(view,&box);
+	
+	wid=box.rx-box.lx;
 
 	lx=start_pnt->x+box.lx;
 	rx=end_pnt->x+box.lx;
@@ -176,117 +217,87 @@ int view_pick_list_end_multiple(editor_view_type *view,d3pnt *start_pnt,d3pnt *e
 	if (ty<box.ty) ty=box.ty;
 	if (by>=box.by) by=box.by-1;
 
-	if (lx<rx) {
+	if (lx>rx) {
 		x=lx;
-		wid=rx-lx;
-	}
-	else {
-		x=rx;
-		wid=lx-rx;
+		lx=rx;
+		rx=x;
 	}
 
-	if (ty<by) {
-		y=by;
-		high=by-ty;
-	}
-	else {
+	if (ty>by) {
 		y=ty;
-		high=ty-by;
-	}
-
-	if ((wid<=0) || (high<=0)) {
-		free(picks);
-		glEnable(GL_SMOOTH);
-		return(0);
+		ty=by;
+		by=y;
 	}
 
 		// swap Y for OpenGL read
 
-	os_get_window_box(&box);
-
-	y=box.by-y;
-
-		// get pixel data
-
-	pixel_count=wid*high;
-
-	pixels=(unsigned char*)malloc(pixel_count*3);
-	if (pixels==NULL) {
-		free(picks);
-		glEnable(GL_SMOOTH);
-		return(0);
-	}
-
-	glPixelStoref(GL_PACK_ALIGNMENT,1);
-	glReadPixels(x,y,wid,high,GL_RGB,GL_UNSIGNED_BYTE,(void*)pixels);
+	os_get_window_box(&wbox);
 
 		// run through the pixels
 
 	item_count=0;
-	pixel=pixels;
+	
+	for (y=ty;y<by;y++) {
+	
+		pixel=pixels+((((wbox.by-y)*wid)+lx)*3);
+		
+		for (x=lx;x<rx;x++) {
+		
+				// get the color
+				
+			r=*pixel++;
+			g=*pixel++;
+			b=*pixel++;
 
-	for (k=0;k!=pixel_count;k++) {
+				// find color in pick list
+				// we use the hit to early exit if we've already
+				// selected this item
 
-			// find color in pick list
+			p_type=-1;
 
-		p_type=-1;
+			pick=picks;
 
-		pick=picks;
+			for (n=0;n!=pick_count;n++) {
 
-		for (n=0;n!=pick_count;n++) {
+				if ((pick->col[0]==r) && (pick->col[1]==g) && (pick->col[2]==b)) {
+					if (pick->hit) break;
+					
+					p_type=pick->type;
+					p_main_idx=pick->main_idx;
+					p_sub_idx=pick->sub_idx;
+					
+					pick->hit=TRUE;
+					break;
+				}
 
-			if ((pick->col[0]==*pixel) && (pick->col[1]==*(pixel+1)) && (pick->col[2]==*(pixel+2))) {
-				p_type=pick->type;
-				p_main_idx=pick->main_idx;
-				p_sub_idx=pick->sub_idx;
-				break;
+				pick++;
 			}
 
-			pick++;
+				// no hit or a skip?
+
+			if (p_type==-1) continue;
+
+				// add to list
+
+			if (item_count==max_item) break;
+
+			type[item_count]=p_type;
+			main_idx[item_count]=p_main_idx;
+			sub_idx[item_count]=p_sub_idx;
+
+			item_count++;
 		}
-
-			// next color
-
-		pixel+=3;
-
-			// is it in list already?
-
-		if (p_type==-1) continue;
-
-		hit=FALSE;
-
-		for (n=0;n!=item_count;n++) {
-			if ((type[n]==p_type) && (main_idx[n]==p_main_idx) && (sub_idx[n]==p_sub_idx)) {
-				hit=TRUE;
-				break;
-			}
-		}
-
-		if (hit) continue;
-
-			// add to list
-
-		if (item_count==max_item) break;
-
-		type[item_count]=p_type;
-		main_idx[item_count]=p_main_idx;
-		sub_idx[item_count]=p_sub_idx;
-
-		item_count++;
 	}
-
+	
+	return(item_count);
+}
+	
+void view_pick_list_multiple_end(unsigned char *pixels)
+{
 		// free memory
 
-	free(pixels);
+	if (pixels!=NULL) free(pixels);
 	free(picks);
-
-		// restore smoothing
-
-	glEnable(GL_SMOOTH);
-
-		// return item count
-
-	return(item_count);
 }
 
 /* =======================================================
@@ -311,6 +322,8 @@ void view_pick_list_add(int type,int main_idx,int sub_idx)
 	pick->main_idx=(short)main_idx;
 	pick->sub_idx=(short)sub_idx;
 
+	pick->hit=FALSE;
+	
 	pick->col[0]=(unsigned char)pick_col[0];
 	pick->col[1]=(unsigned char)pick_col[1];
 	pick->col[2]=(unsigned char)pick_col[2];

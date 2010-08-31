@@ -79,9 +79,9 @@ void script_free_map_node_object(void)
 	script_free_class(map_node_class);
 }
 
-JSObjectRef script_add_map_node_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_map_node_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,map_node_class,"node",script_idx));
+	return(script_create_child_object(cx,parent_obj,map_node_class,"node"));
 }
 
 /* =======================================================

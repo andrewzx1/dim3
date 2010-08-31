@@ -100,7 +100,7 @@ void scripts_clear_attach_data(attach_type *attach)
 {
 	int				n;
 
-	for (n=0;n!=max_msg_data;n++) {
+	for (n=0;n!=max_attach_msg_data;n++) {
 		attach->set_msg_data[n].type=d3_jsval_type_number;
 		attach->set_msg_data[n].data.d3_number=0.0f;
 		attach->get_msg_data[n].type=d3_jsval_type_number;

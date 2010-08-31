@@ -104,9 +104,9 @@ void script_free_weap_zoom_object(void)
 	script_free_class(weap_zoom_class);
 }
 
-JSObjectRef script_add_weap_zoom_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_weap_zoom_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,weap_zoom_class,"zoom",script_idx));
+	return(script_create_child_object(cx,parent_obj,weap_zoom_class,"zoom"));
 }
 
 /* =======================================================

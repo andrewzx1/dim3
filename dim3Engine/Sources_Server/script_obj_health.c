@@ -88,9 +88,9 @@ void script_free_obj_health_object(void)
 	script_free_class(obj_health_class);
 }
 
-JSObjectRef script_add_obj_health_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_obj_health_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_health_class,"health",script_idx));
+	return(script_create_child_object(cx,parent_obj,obj_health_class,"health"));
 }
 
 /* =======================================================

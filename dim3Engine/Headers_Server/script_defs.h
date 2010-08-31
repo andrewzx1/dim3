@@ -54,11 +54,8 @@ and can be sold or given away.
 #define script_type_projectile_setup					4
 #define script_type_projectile							5
 
-
-
-// supergumba -- can probably get rid of this, and all attach stuff
 //
-// Thing types
+// thing types
 //
 
 #define thing_type_game									0
@@ -381,6 +378,18 @@ and can be sold or given away.
 #define sd_event_remote_telefrag						3087
 
 //
+// script event messages
+//
+
+#define d3_jsval_type_number							0
+#define d3_jsval_type_boolean							1
+#define d3_jsval_type_string							2
+
+#define max_d3_jsval_str_len							128
+
+#define max_attach_msg_data								8
+
+//
 // define structure
 //
  
@@ -388,6 +397,31 @@ typedef struct		{
 						int								value_int;
 						char							value_str[64],name[64];
 					} script_define_type;
+
+//
+// js value structures
+//
+
+typedef union		{
+						float							d3_number;
+						bool							d3_boolean;
+						char							d3_string[max_d3_jsval_str_len];
+					} d3_jsval_data_type;
+
+//
+// script attach structures
+//
+
+typedef struct		{
+						int								type;
+						d3_jsval_data_type				data;
+					} attach_msg_type;
+
+typedef struct		{
+						int								thing_type,script_idx,
+														obj_idx,weap_idx,proj_setup_idx,proj_idx;
+						attach_msg_type					set_msg_data[max_attach_msg_data],get_msg_data[max_attach_msg_data];
+					} attach_type;
 
 //
 // global structures
@@ -421,37 +455,10 @@ typedef struct		{
 // script structures
 //
 
-#define d3_jsval_type_number							0
-#define d3_jsval_type_boolean							1
-#define d3_jsval_type_string							2
-
-#define max_d3_jsval_str_len							128
-
-#define max_msg_data									8
-// supergumba -- move these and delete from baseutility
-
-typedef union		{
-						float							d3_number;
-						bool							d3_boolean;
-						char							d3_string[max_d3_jsval_str_len];
-					} script_attach_jsval_type;
- 
-
-typedef struct		{
-						int								type;
-						script_attach_jsval_type		data;
-					} script_attach_msg_type;
-
-typedef struct		{
-						int								type,obj_idx,weap_idx,proj_setup_idx,proj_idx;
-						script_attach_msg_type			set_msg_data[max_msg_data],get_msg_data[max_msg_data];
-					} script_attach_type;
-					
 typedef struct		{
 						int								idx,data_len,recursive_count;
 						char							name[file_str_len];
 						char							*data;
-						script_attach_type				attach;
 						JSGlobalContextRef				cx;
 						JSObjectRef						obj,global_obj,event_func;
 					} script_type;
