@@ -81,9 +81,9 @@ void script_free_game_join_object(void)
 	script_free_class(game_join_class);
 }
 
-JSObjectRef script_add_game_join_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_game_join_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,game_join_class,"join",script_idx));
+	return(script_create_child_object(cx,parent_obj,game_join_class,"join"));
 }
 
 /* =======================================================

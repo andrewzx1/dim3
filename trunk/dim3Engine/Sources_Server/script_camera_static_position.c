@@ -73,9 +73,9 @@ void script_free_camera_static_position_object(void)
 	script_free_class(camera_static_position_class);
 }
 
-JSObjectRef script_add_camera_static_position_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_camera_static_position_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,camera_static_position_class,"staticPosition",script_idx));
+	return(script_create_child_object(cx,parent_obj,camera_static_position_class,"staticPosition"));
 }
 
 /* =======================================================

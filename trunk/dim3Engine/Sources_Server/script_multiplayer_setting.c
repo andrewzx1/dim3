@@ -75,9 +75,9 @@ void script_free_multiplayer_setting_object(void)
 	script_free_class(multiplayer_setting_class);
 }
 
-JSObjectRef script_add_multiplayer_setting_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_multiplayer_setting_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_setting_class,"setting",script_idx));
+	return(script_create_child_object(cx,parent_obj,multiplayer_setting_class,"setting"));
 }
 
 /* =======================================================

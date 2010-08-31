@@ -88,9 +88,9 @@ void script_free_obj_pickup_object(void)
 	script_free_class(obj_pickup_class);
 }
 
-JSObjectRef script_add_obj_pickup_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_obj_pickup_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,obj_pickup_class,"pickup",script_idx));
+	return(script_create_child_object(cx,parent_obj,obj_pickup_class,"pickup"));
 }
 
 /* =======================================================

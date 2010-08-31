@@ -136,9 +136,9 @@ void script_free_map_object_object(void)
 	script_free_class(map_object_class);
 }
 
-JSObjectRef script_add_map_object_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_map_object_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,map_object_class,"object",script_idx));
+	return(script_create_child_object(cx,parent_obj,map_object_class,"object"));
 }
 
 /* =======================================================

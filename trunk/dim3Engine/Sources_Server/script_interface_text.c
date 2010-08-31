@@ -84,9 +84,9 @@ void script_free_interface_text_object(void)
 	script_free_class(interface_text_class);
 }
 
-JSObjectRef script_add_interface_text_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_interface_text_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,interface_text_class,"text",script_idx));
+	return(script_create_child_object(cx,parent_obj,interface_text_class,"text"));
 }
 
 /* =======================================================

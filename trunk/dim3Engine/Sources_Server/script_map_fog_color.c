@@ -65,9 +65,9 @@ void script_free_map_fog_color_object(void)
 	script_free_class(map_fog_color_class);
 }
 
-JSObjectRef script_add_map_fog_color_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_map_fog_color_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,map_fog_color_class,"fogColor",script_idx));
+	return(script_create_child_object(cx,parent_obj,map_fog_color_class,"fogColor"));
 }
 
 /* =======================================================

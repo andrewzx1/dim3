@@ -39,7 +39,7 @@ extern server_type		server;
 extern camera_type		camera;
 extern js_type			js;
 
-extern bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move);
+extern bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,int obj_idx,bool main_move);
 extern void group_move_freeze(int group_idx,bool freeze);
 extern bool group_move_frozen(int group_idx);
 extern bool group_move_object_stand(int group_idx,int stand_mesh_idx);
@@ -74,14 +74,13 @@ void map_movements_get_center(movement_type *movement,d3pnt *pt)
       
 ======================================================= */
 
-void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
+void map_movements_start(int movement_idx,int move_idx,int obj_idx)
 {
 	int						msec,buffer_idx;
 	d3pnt					rev_mov,pt;
 	d3ang					rev_rot;
 	movement_type			*movement;
 	movement_move_type		*move;
-	attach_type				bkup_attach;
 
 	movement=&map.movements[movement_idx];
 	if (movement->nmove==0) return;
@@ -91,11 +90,6 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	movement->started=TRUE;
 	
 	move=&movement->moves[move_idx];
-	
-		// save current script attach and use course
-			
-	memmove(&bkup_attach,&js.attach,sizeof(attach_type));
-	memmove(&js.attach,attach,sizeof(attach_type));
 	
 		// get reverse movement
 		
@@ -112,17 +106,13 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	msec=move->msec/10;
 	
 	if (!movement->reverse) {
-		group_move_start(movement->group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,TRUE);
-		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,FALSE);
+		group_move_start(movement->group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,obj_idx,TRUE);
+		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,obj_idx,FALSE);
 	}
 	else {
-		group_move_start(movement->group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,TRUE);
-		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,FALSE);
+		group_move_start(movement->group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,obj_idx,TRUE);
+		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,obj_idx,FALSE);
 	}
-	
-		// restore old attach
-		
-	memmove(&js.attach,&bkup_attach,sizeof(attach_type));
 	
 		// play any sound
 		
@@ -165,7 +155,7 @@ void map_movements_initialize(void)
 		
 		if (movement->auto_start) {
 			movement->reverse=FALSE;
-			map_movements_start(n,0,&js.course_attach);
+			map_movements_start(n,0,-1);
 		}
 		
 		movement++;
@@ -188,11 +178,11 @@ void map_movements_script_start(int movement_idx,bool reverse)
 	
 	if (!reverse) {
 		movement->reverse=FALSE;
-		map_movements_start(movement_idx,0,&js.attach);
+		map_movements_start(movement_idx,0,js.attach.obj_idx);
 	}
 	else {
 		movement->reverse=TRUE;
-		map_movements_start(movement_idx,(movement->nmove-1),&js.attach);
+		map_movements_start(movement_idx,(movement->nmove-1),js.attach.obj_idx);
 	}
 }
 
@@ -231,7 +221,7 @@ void map_movements_script_start_or_thaw(int movement_idx)
 	}
 	else {
 		movement->reverse=FALSE;
-		map_movements_start(movement_idx,0,&js.attach);
+		map_movements_start(movement_idx,0,js.attach.obj_idx);
 	}
 }
 
@@ -246,7 +236,7 @@ bool map_movements_script_is_looping(int movement_idx)
       
 ======================================================= */
 
-bool map_movement_next_move(int movement_idx,int move_idx,attach_type *attach)
+bool map_movement_next_move(int movement_idx,int move_idx,int obj_idx)
 {
 	movement_type	*movement;
 	
@@ -291,7 +281,7 @@ bool map_movement_next_move(int movement_idx,int move_idx,attach_type *attach)
 	
 		// start next movement
 		
-	map_movements_start(movement_idx,move_idx,attach);
+	map_movements_start(movement_idx,move_idx,obj_idx);
 	
 	return(FALSE);
 }
@@ -385,14 +375,14 @@ void map_movements_auto_open(void)
 			if (obj_in_range) {
 				movement->reverse=FALSE;
 				movement->opened=TRUE;
-				map_movements_start(n,0,&js.course_attach);
+				map_movements_start(n,0,-1);
 			}
 		}
 		else {
 			if (!obj_in_range) {
 				movement->reverse=TRUE;
 				movement->opened=FALSE;
-				map_movements_start(n,(movement->nmove-1),&js.course_attach);
+				map_movements_start(n,(movement->nmove-1),-1);
 			}
 		}
 		

@@ -62,9 +62,9 @@ void script_free_proj_position_object(void)
 	script_free_class(proj_position_class);
 }
 
-JSObjectRef script_add_proj_position_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_proj_position_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,proj_position_class,"position",script_idx));
+	return(script_create_child_object(cx,parent_obj,proj_position_class,"position"));
 }
 
 /* =======================================================

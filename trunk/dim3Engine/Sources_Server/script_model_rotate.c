@@ -64,9 +64,9 @@ void script_free_model_rotate_object(void)
 	script_free_class(model_rotate_class);
 }
 
-JSObjectRef script_add_model_rotate_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
+JSObjectRef script_add_model_rotate_object(JSContextRef cx,JSObjectRef parent_obj)
 {
-	return(script_create_child_object(cx,parent_obj,model_rotate_class,"rotate",script_idx));
+	return(script_create_child_object(cx,parent_obj,model_rotate_class,"rotate"));
 }
 
 /* =======================================================
