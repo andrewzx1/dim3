@@ -41,6 +41,9 @@ extern map_type					map;
 extern setup_type				setup;
 extern editor_state_type		state;
 
+double							view_mod_matrix[16],view_proj_matrix[16];
+GLint							view_vport[4];
+
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
 
@@ -469,27 +472,31 @@ void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int
 	gluLookAt((((float)view->pnt.x)+look_vct.x),(((float)view->pnt.y)+look_vct.y),(((float)view->pnt.z)+look_vct.z),(float)view->pnt.x,(float)view->pnt.y,(float)view->pnt.z,0.0f,1.0f,0.0f);
 }
 
-bool walk_view_project_point(editor_view_type *view,d3pnt *pnt)
+/* =======================================================
+
+      Projection Utilities
+      
+======================================================= */
+
+void view_setup_project(void)
 {
-	double			dx,dy,dz,
-					mod_matrix[16],proj_matrix[16];
-	GLint			vport[4];
+	glGetDoublev(GL_MODELVIEW_MATRIX,view_mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,view_proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,view_vport);
+}
 
-	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,vport);
+void view_project_point(editor_view_type *view,d3pnt *pnt)
+{
+	double			dx,dy,dz;
 
-		// skip if projection is behind z
-
-	if (((((double)pnt->x)*mod_matrix[2])+(((double)pnt->y)*mod_matrix[6])+(((double)pnt->z)*mod_matrix[10])+mod_matrix[14])<=0.0) return(FALSE);
-
-		// project
-
-	gluProject(pnt->x,pnt->y,pnt->z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
+	gluProject(pnt->x,pnt->y,pnt->z,view_mod_matrix,view_proj_matrix,view_vport,&dx,&dy,&dz);
 	pnt->x=(int)(dx-view->box.lft);
 	pnt->y=(int)(dy-view->box.top);
+}
 
-	return(TRUE);
+bool view_project_point_in_z(d3pnt *pnt)
+{
+	return(((((double)pnt->x)*view_mod_matrix[2])+(((double)pnt->y)*view_mod_matrix[6])+(((double)pnt->z)*view_mod_matrix[10])+view_mod_matrix[14])>0.0);
 }
 
 /* =======================================================
