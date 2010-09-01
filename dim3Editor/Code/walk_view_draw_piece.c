@@ -259,9 +259,7 @@ bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_p
 	
 		// are points grouped completely
 		// off one side of the screen?
-		
-		return(FALSE);
-		
+
 	walk_view_get_pixel_box(view,&box);
 	
 	wid=box.rx-box.lx;
@@ -272,10 +270,10 @@ bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_p
 	for (n=0;n!=poly->ptsz;n++) {
 		memmove(&pnt,&mesh->vertexes[poly->v[n]],sizeof(d3pnt));
 		view_project_point(view,&pnt);
-		lft=lft&&(pnt.x<0);
-		rgt=rgt&&(pnt.x>=wid);
-		top=top&&(pnt.y<0);
-		bot=bot&&(pnt.y>=high);
+		lft=lft&&(pnt.x<box.lx);
+		rgt=rgt&&(pnt.x>=box.rx);
+		top=top&&(pnt.y<box.ty);
+		bot=bot&&(pnt.y>=box.by);
 	}
 
 	return(lft||rgt||top||bot);
