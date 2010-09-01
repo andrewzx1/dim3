@@ -355,8 +355,8 @@ void walk_view_draw_select_box(editor_view_type *view)
 
 	lx=state.select_box_start_pnt.x+box.lx;
 	rx=state.select_box_end_pnt.x+box.lx;
-	ty=box.by-state.select_box_start_pnt.y;
-	by=box.by-state.select_box_end_pnt.y;
+	ty=state.select_box_start_pnt.y+box.ty;
+	by=state.select_box_end_pnt.y+box.ty;
 
 		// draw the selection
 
@@ -401,6 +401,11 @@ void walk_view_draw_select(editor_view_type *view)
 							type,main_idx,sub_idx;
 	unsigned char			draw_mesh_once[max_mesh];
 	d3pnt					v_pnts[8];
+
+		// push view forward so selections
+		// display properly
+
+	walk_view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
 	
 		// if no selection, only the box
 		// select can draw

@@ -361,10 +361,14 @@ void view_setup_project_point(void)
 void view_project_point(editor_view_type *view,d3pnt *pnt)
 {
 	double			dx,dy,dz;
+	d3rect			wbox;
+
+	os_get_window_box(&wbox);
 
 	gluProject(pnt->x,pnt->y,pnt->z,view_mod_matrix,view_proj_matrix,view_vport,&dx,&dy,&dz);
-	pnt->x=(int)(dx-view->box.lft);
-	pnt->y=(int)(dy-view->box.top);
+
+	pnt->x=((int)dx)-wbox.lx;
+	pnt->y=wbox.by-(((int)dy)-wbox.ty);
 }
 
 bool view_project_point_in_z(d3pnt *pnt)
@@ -459,7 +463,7 @@ void walk_view_set_2D_projection(editor_view_type *view)
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)box.lx,(GLdouble)box.rx,(GLdouble)box.ty,(GLdouble)box.by,-1.0,1.0);
+	glOrtho((GLdouble)box.lx,(GLdouble)box.rx,(GLdouble)box.by,(GLdouble)box.ty,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

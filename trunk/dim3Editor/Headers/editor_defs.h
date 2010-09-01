@@ -156,6 +156,26 @@ and can be sold or given away.
 #define normal_vector_scale						300.0f
 
 //
+// undos
+//
+
+#define max_undo_level							8
+
+typedef struct		{
+						int						nmesh,nliquid,
+												nspot,nscenery,nnode,
+												nlight,nsound,nparticle;
+						map_mesh_type			*meshes;
+						map_liquid_type			*liquids;
+						spot_type				*spots;
+						map_scenery_type		*sceneries;
+						node_type				*nodes;
+						map_light_type			*lights;
+						map_sound_type			*sounds;
+						map_particle_type		*particles;
+					} undo_type;
+
+//
 // setups
 //
 

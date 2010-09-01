@@ -116,6 +116,7 @@ bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *center_pnt,d3pn
 	if (!view_project_point_in_z(center_pnt)) return(FALSE);
 
 	view_project_point(view,center_pnt);
+
 	view_project_point(view,&hand_pnt[0]);
 	view_project_point(view,&hand_pnt[1]);
 	view_project_point(view,&hand_pnt[2]);
