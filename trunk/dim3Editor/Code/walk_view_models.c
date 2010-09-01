@@ -391,14 +391,14 @@ void walk_view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,d3pnt *v_pnt
 
 		// get polygons
 	
-	px[0]=px[3]=px[6]=px[7]=-wid_x;
-	px[1]=px[2]=px[4]=px[5]=wid_x;
+	px[0]=px[3]=px[4]=px[7]=-wid_x;
+	px[1]=px[2]=px[5]=px[6]=wid_x;
 	
 	py[0]=py[1]=py[2]=py[3]=-high;
 	py[4]=py[5]=py[6]=py[7]=0;
 		
-	pz[0]=pz[1]=pz[4]=pz[7]=-wid_z;
-	pz[2]=pz[3]=pz[5]=pz[6]=wid_z;
+	pz[0]=pz[1]=pz[4]=pz[5]=-wid_z;
+	pz[2]=pz[3]=pz[6]=pz[7]=wid_z;
 	
 		// any rotations
 	

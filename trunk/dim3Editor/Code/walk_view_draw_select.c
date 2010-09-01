@@ -260,13 +260,13 @@ void walk_view_draw_select_cube(d3pnt *v_pnts)
 	
 	glBegin(GL_LINES);
 	glVertex3i(v_pnts[0].x,v_pnts[0].y,v_pnts[0].z);
-	glVertex3i(v_pnts[7].x,v_pnts[7].y,v_pnts[7].z);
-	glVertex3i(v_pnts[1].x,v_pnts[1].y,v_pnts[1].z);
 	glVertex3i(v_pnts[4].x,v_pnts[4].y,v_pnts[4].z);
-	glVertex3i(v_pnts[2].x,v_pnts[2].y,v_pnts[2].z);
+	glVertex3i(v_pnts[1].x,v_pnts[1].y,v_pnts[1].z);
 	glVertex3i(v_pnts[5].x,v_pnts[5].y,v_pnts[5].z);
-	glVertex3i(v_pnts[3].x,v_pnts[3].y,v_pnts[3].z);
+	glVertex3i(v_pnts[2].x,v_pnts[2].y,v_pnts[2].z);
 	glVertex3i(v_pnts[6].x,v_pnts[6].y,v_pnts[6].z);
+	glVertex3i(v_pnts[3].x,v_pnts[3].y,v_pnts[3].z);
+	glVertex3i(v_pnts[7].x,v_pnts[7].y,v_pnts[7].z);
 	glEnd();
     
     glLineWidth(1.0f);
