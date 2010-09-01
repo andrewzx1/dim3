@@ -424,6 +424,13 @@ void walk_view_click_piece_map_pick_start(editor_view_type *view)
 				continue;
 			}
 			
+				// hidden
+				
+			if (walk_view_hidden_poly(view,mesh,poly)) {
+				poly++;
+				continue;
+			}
+			
 				// draw color poly
 
 			view_pick_list_add(mesh_piece,n,k);

@@ -190,6 +190,8 @@ bool view_pick_list_multiple_setup(editor_view_type *view)
 
 	glEnable(GL_SMOOTH);
 	
+	fprintf(stdout,"pick count = %d\n",pick_count);
+	
 	return(TRUE);
 }
 

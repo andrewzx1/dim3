@@ -41,7 +41,7 @@ extern void walk_view_set_viewport_box(d3rect *box,bool erase,bool use_backgroun
 extern void walk_view_set_viewport(editor_view_type *view,bool erase,bool use_background);
 extern void walk_view_set_2D_projection(editor_view_type *view);
 extern void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near_z_offset);
-extern void view_setup_project(void);
+extern void view_setup_project_point(void);
 extern void view_project_point(editor_view_type *view,d3pnt *pnt);
 extern bool view_project_point_in_z(d3pnt *pnt);
 extern editor_view_type* walk_view_get_current_view(void);
@@ -76,6 +76,7 @@ extern void walk_view_draw(void);
 //
 
 extern bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly);
+extern bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
 extern void walk_view_draw_select_liquid_get_grow_handles(int liquid_idx,int *px,int *py,int *pz);
 extern void walk_view_draw_view(editor_view_type *view);

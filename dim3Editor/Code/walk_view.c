@@ -347,6 +347,33 @@ void walk_view_remove(void)
 
 /* =======================================================
 
+      Projection Utilities
+      
+======================================================= */
+
+void view_setup_project_point(void)
+{
+	glGetDoublev(GL_MODELVIEW_MATRIX,view_mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,view_proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,view_vport);
+}
+
+void view_project_point(editor_view_type *view,d3pnt *pnt)
+{
+	double			dx,dy,dz;
+
+	gluProject(pnt->x,pnt->y,pnt->z,view_mod_matrix,view_proj_matrix,view_vport,&dx,&dy,&dz);
+	pnt->x=(int)(dx-view->box.lft);
+	pnt->y=(int)(dy-view->box.top);
+}
+
+bool view_project_point_in_z(d3pnt *pnt)
+{
+	return(((((double)pnt->x)*view_mod_matrix[2])+(((double)pnt->y)*view_mod_matrix[6])+(((double)pnt->z)*view_mod_matrix[10])+view_mod_matrix[14])>0.0);
+}
+
+/* =======================================================
+
       View Look At Point
       
 ======================================================= */
@@ -470,33 +497,10 @@ void walk_view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int
 	walk_view_get_lookat_point(view,(float)near_z_offset,&look_vct);
 
 	gluLookAt((((float)view->pnt.x)+look_vct.x),(((float)view->pnt.y)+look_vct.y),(((float)view->pnt.z)+look_vct.z),(float)view->pnt.x,(float)view->pnt.y,(float)view->pnt.z,0.0f,1.0f,0.0f);
-}
-
-/* =======================================================
-
-      Projection Utilities
-      
-======================================================= */
-
-void view_setup_project(void)
-{
-	glGetDoublev(GL_MODELVIEW_MATRIX,view_mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,view_proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,view_vport);
-}
-
-void view_project_point(editor_view_type *view,d3pnt *pnt)
-{
-	double			dx,dy,dz;
-
-	gluProject(pnt->x,pnt->y,pnt->z,view_mod_matrix,view_proj_matrix,view_vport,&dx,&dy,&dz);
-	pnt->x=(int)(dx-view->box.lft);
-	pnt->y=(int)(dy-view->box.top);
-}
-
-bool view_project_point_in_z(d3pnt *pnt)
-{
-	return(((((double)pnt->x)*view_mod_matrix[2])+(((double)pnt->y)*view_mod_matrix[6])+(((double)pnt->z)*view_mod_matrix[10])+view_mod_matrix[14])>0.0);
+	
+		// save projection
+		
+	view_setup_project_point();
 }
 
 /* =======================================================

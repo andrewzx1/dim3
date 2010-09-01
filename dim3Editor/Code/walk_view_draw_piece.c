@@ -232,19 +232,18 @@ bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_pol
 
 bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	// supergumba
-	/*
-	int			n,pt_count,
-				px[14],py[14],pz[14];
+	int			n,wid,high;
 	bool		above_z,behind_z,lft,rgt,top,bot;
+	d3pnt		pnt;
+	d3rect		box;
 	
 		// check if points are behind z
 		
 	above_z=FALSE;
 	behind_z=FALSE;
 	
-	for (n=0;n!=8;n++) {
-		if (gl_project_in_view_z(cbx[n],cby[n],cbz[n])) {
+	for (n=0;n!=poly->ptsz;n++) {
+		if (view_project_point_in_z(&mesh->vertexes[poly->v[n]])) {
 			above_z=TRUE;
 		}
 		else {
@@ -252,68 +251,34 @@ bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_p
 		}
 	}
 	
-	if (!above_z) return(FALSE);
+	if (!above_z) return(TRUE);
 	
-		// create additional points to
-		// deal with meshes that are split
-		// behind and above the z
+		// if it's split on the z, just keep
 		
-	pt_count=8;
-	
-	memmove(px,cbx,(sizeof(int)*8));
-	memmove(py,cby,(sizeof(int)*8));
-	memmove(pz,cbz,(sizeof(int)*8));
-	
-	if ((above_z) && (behind_z)) {
-		px[8]=(px[0]+px[1]+px[2]+px[3])>>2;
-		py[8]=(py[0]+py[1]+py[2]+py[3])>>2;
-		pz[8]=(pz[0]+pz[1]+pz[2]+pz[3])>>2;
-
-		px[9]=(px[0]+px[1]+px[5]+px[4])>>2;
-		py[9]=(py[0]+py[1]+py[5]+py[4])>>2;
-		pz[9]=(pz[0]+pz[1]+pz[5]+pz[4])>>2;
-
-		px[10]=(px[1]+px[2]+px[6]+px[5])>>2;
-		py[10]=(py[1]+py[2]+py[6]+py[5])>>2;
-		pz[10]=(pz[1]+pz[2]+pz[6]+pz[5])>>2;
-
-		px[11]=(px[3]+px[2]+px[6]+px[7])>>2;
-		py[11]=(py[3]+py[2]+py[6]+py[7])>>2;
-		pz[11]=(pz[3]+pz[2]+pz[6]+pz[7])>>2;
-
-		px[12]=(px[0]+px[3]+px[7]+px[4])>>2;
-		py[12]=(py[0]+py[3]+py[7]+py[4])>>2;
-		pz[12]=(pz[0]+pz[3]+pz[7]+pz[4])>>2;
-
-		px[13]=(px[4]+px[5]+px[6]+px[7])>>2;
-		py[13]=(py[4]+py[5]+py[6]+py[7])>>2;
-		pz[13]=(pz[4]+pz[5]+pz[6]+pz[7])>>2;
-		
-		pt_count=14;
-	}
-
-		// project to screen
-
-	gl_project_poly(pt_count,px,py,pz);
+	if ((above_z) && (behind_z)) return(FALSE);
 	
 		// are points grouped completely
 		// off one side of the screen?
+		
+		return(FALSE);
+		
+	walk_view_get_pixel_box(view,&box);
+	
+	wid=box.rx-box.lx;
+	high=box.by-box.ty;
 
 	lft=rgt=top=bot=TRUE;
 
-	for (n=0;n!=pt_count;n++) {
-		lft=lft&&(px[n]<0);
-		rgt=rgt&&(px[n]>=setup.screen.x_sz);
-		top=top&&(py[n]<0);
-		bot=bot&&(py[n]>=setup.screen.y_sz);
+	for (n=0;n!=poly->ptsz;n++) {
+		memmove(&pnt,&mesh->vertexes[poly->v[n]],sizeof(d3pnt));
+		view_project_point(view,&pnt);
+		lft=lft&&(pnt.x<0);
+		rgt=rgt&&(pnt.x>=wid);
+		top=top&&(pnt.y<0);
+		bot=bot&&(pnt.y>=high);
 	}
 
-	return(!(lft||rgt||top||bot));
-*/
-
-	return(TRUE);
-
-
+	return(lft||rgt||top||bot);
 }
 
 /* =======================================================
@@ -382,6 +347,10 @@ void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
 				// clipping
 				
 			if (walk_view_clip_poly(view,mesh,mesh_poly)) continue;
+			
+				// hidden
+				
+			if (walk_view_hidden_poly(view,mesh,mesh_poly)) continue;
 			
 				// no light map?
 				
@@ -484,6 +453,10 @@ void walk_view_draw_meshes_line(editor_view_type *view,bool opaque)
 				// clipping
 				
 			if (walk_view_clip_poly(view,mesh,mesh_poly)) continue;
+			
+				// hidden
+				
+			if (walk_view_hidden_poly(view,mesh,mesh_poly)) continue;
 			
 				// opaque or transparent flag
 		
