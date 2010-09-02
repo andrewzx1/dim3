@@ -174,28 +174,6 @@ bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt)
       
 ======================================================= */
 
-d3ang* walk_view_click_rot_handle_rotate_setup(void)
-{
-	int				type,main_idx,sub_idx;
-
-	select_get(0,&type,&main_idx,&sub_idx);
-			
-	switch (type) {
-	
-		case spot_piece:
-			return(&map.spots[main_idx].ang);
-			
-		case scenery_piece:
-			return(&map.sceneries[main_idx].ang);
-			
-		case node_piece:
-			return(&map.nodes[main_idx].ang);
-			
-	}
-	
-	return(NULL);
-}
-
 void walk_view_click_rot_handle_rotate_run_axis(float *value,float org_value,float ang_add)
 {
 	int				k;
@@ -230,28 +208,6 @@ void walk_view_click_rot_handle_rotate_run(d3ang *ang,d3ang *org_ang,float ang_a
       
 ======================================================= */
 
-d3pnt* walk_view_click_rot_handle_move_setup(void)
-{
-	int				type,main_idx,sub_idx;
-
-	select_get(0,&type,&main_idx,&sub_idx);
-			
-	switch (type) {
-	
-		case spot_piece:
-			return(&map.spots[main_idx].pnt);
-			
-		case scenery_piece:
-			return(&map.sceneries[main_idx].pnt);
-			
-		case node_piece:
-			return(&map.nodes[main_idx].pnt);
-			
-	}
-	
-	return(NULL);
-}
-
 void walk_view_click_rot_handle_move_run_axis(int *value,int org_value,int mv_add)
 {
 	*value=org_value+mv_add;
@@ -282,27 +238,88 @@ void walk_view_click_rot_handle_move_run(d3pnt *pnt,d3pnt *org_pnt,int mv_add,in
 
 bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 {
-	int			n,type,sub_idx,which_axis;
+	int			n,k,type,main_idx,sub_idx,which_axis,sel_count,item_count;
 	bool		first_drag;
 	d3pnt		pt,center_pnt,hand_pnt[3],
 				*pnt,org_pnt;
 	d3ang		*ang,org_ang;
 	d3rect		box;
-	
-		// create rot handle
-		
-	if (!view_handle_create_rot_handle(view,&center_pnt,hand_pnt)) return(FALSE);
-	
+
+		// count the items
+
+	item_count=0;
+	sel_count=select_count();
+
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&main_idx,&sub_idx);
+		if ((type==node_piece) || (type==spot_piece) || (type==scenery_piece)) item_count++;
+	}
+
+	if (item_count==0) return(FALSE);
+
 		// run pick list for handles
 	
-	view_pick_list_start(view,TRUE,3);
+	view_pick_list_start(view,TRUE,item_count);
+
+		// draw the handles
+
+	for (n=0;n!=sel_count;n++) {
 	
-	for (n=0;n!=3;n++) {
-		view_pick_list_add_2D_handle(hand_pnt[n].x,hand_pnt[n].y,0,n,0);
+		select_get(n,&type,&main_idx,&sub_idx);
+		
+		switch (type) {
+		
+			case node_piece:
+				if (!view_handle_create_rot_handle(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,&center_pnt,hand_pnt)) break;
+				for (k=0;k!=3;k++) {
+					view_pick_list_add_2D_handle(hand_pnt[k].x,hand_pnt[k].y,type,main_idx,k);
+				}
+				break;
+				
+			case spot_piece:
+				if (!view_handle_create_rot_handle(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,&center_pnt,hand_pnt)) break;
+				for (k=0;k!=3;k++) {
+					view_pick_list_add_2D_handle(hand_pnt[k].x,hand_pnt[k].y,type,main_idx,k);
+				}
+				break;
+				
+			case scenery_piece:
+				if (!view_handle_create_rot_handle(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,&center_pnt,hand_pnt)) break;
+				for (k=0;k!=3;k++) {
+					view_pick_list_add_2D_handle(hand_pnt[k].x,hand_pnt[k].y,type,main_idx,k);
+				}
+				break;
+
+		}
 	}
+
+		// finish the pick
 	
-	view_pick_list_end(view,click_pt,&type,&which_axis,&sub_idx);
+	view_pick_list_end(view,click_pt,&type,&main_idx,&which_axis);
 	if (type==-1) return(FALSE);
+
+		// setup the drag
+
+	switch (type) {
+	
+		case node_piece:
+			pnt=&map.nodes[main_idx].pnt;
+			ang=&map.nodes[main_idx].ang;
+			break;
+			
+		case spot_piece:
+			pnt=&map.spots[main_idx].pnt;
+			ang=&map.spots[main_idx].ang;
+			break;
+			
+		case scenery_piece:
+			pnt=&map.sceneries[main_idx].pnt;
+			ang=&map.sceneries[main_idx].ang;
+			break;
+	}
+
+	memmove(&org_pnt,pnt,sizeof(d3pnt));
+	memmove(&org_ang,ang,sizeof(d3ang));
 	
 		// handle drag
 	
@@ -311,15 +328,6 @@ bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 	undo_push();
 	
 	first_drag=TRUE;
-	
-	if (state.handle_mode==handle_mode_rotate) {
-		ang=walk_view_click_rot_handle_rotate_setup();
-		if (ang!=NULL) memmove(&org_ang,ang,sizeof(d3ang));
-	}
-	else {
-		pnt=walk_view_click_rot_handle_move_setup();
-		if (pnt!=NULL) memmove(&org_pnt,pnt,sizeof(d3pnt));
-	}
 	
 	walk_view_get_pixel_box(view,&box);
 	
@@ -335,10 +343,10 @@ bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 			// handle movement
 			
 		if (state.handle_mode==handle_mode_rotate) {
-			if (ang!=NULL) walk_view_click_rot_handle_rotate_run(ang,&org_ang,(float)(click_pt->x-pt.x),which_axis);
+			walk_view_click_rot_handle_rotate_run(ang,&org_ang,(float)(click_pt->x-pt.x),which_axis);
 		}
 		else {
-			if (pnt!=NULL) walk_view_click_rot_handle_move_run(pnt,&org_pnt,(click_pt->x-pt.x),which_axis);
+			walk_view_click_rot_handle_move_run(pnt,&org_pnt,(click_pt->x-pt.x),which_axis);
 		}
 		
         main_wind_draw();

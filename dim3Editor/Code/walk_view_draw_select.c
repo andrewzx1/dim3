@@ -300,14 +300,14 @@ void walk_view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
 	glPointSize(1.0f);
 }
 
-void walk_view_draw_select_rot_handles(editor_view_type *view)
+void walk_view_draw_select_rot_handles(editor_view_type *view,d3pnt *pnt,d3ang *ang)
 {
-	d3pnt			pnt,hand_pnt[3];
+	d3pnt			center_pnt,hand_pnt[3];
 	d3col			col;
 
 		// create rot handles
 		
-	if (!view_handle_create_rot_handle(view,&pnt,hand_pnt)) return;
+	if (!view_handle_create_rot_handle(view,pnt,ang,&center_pnt,hand_pnt)) return;
 
 		// draw points
 
@@ -319,19 +319,19 @@ void walk_view_draw_select_rot_handles(editor_view_type *view)
 	col.g=0.0f;
 	col.b=0.0f;
 	
-	walk_view_draw_select_2D_rot_handle(&pnt,&hand_pnt[0],&col);
+	walk_view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[0],&col);
 	
 	col.r=0.0f;
 	col.g=1.0f;
 	col.b=0.0f;
 	
-	walk_view_draw_select_2D_rot_handle(&pnt,&hand_pnt[1],&col);
+	walk_view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[1],&col);
 	
 	col.r=0.0f;
 	col.g=0.0f;
 	col.b=1.0f;
 	
-	walk_view_draw_select_2D_rot_handle(&pnt,&hand_pnt[2],&col);
+	walk_view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[2],&col);
 }
 
 /* =======================================================
@@ -448,16 +448,19 @@ void walk_view_draw_select(editor_view_type *view)
 			case node_piece:
 				view_get_sprite_vertexes(&map.nodes[main_idx].pnt,NULL,v_pnts);
 				walk_view_draw_select_cube(v_pnts);
+				walk_view_draw_select_rot_handles(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang);
 				break;
 				
 			case spot_piece:
 				walk_view_model_cube_vertexes(map.spots[main_idx].display_model,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,v_pnts);
 				walk_view_draw_select_cube(v_pnts);
+				walk_view_draw_select_rot_handles(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang);
 				break;
 				
 			case scenery_piece:
 				walk_view_model_cube_vertexes(map.sceneries[main_idx].model_name,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,v_pnts);
 				walk_view_draw_select_cube(v_pnts);
+				walk_view_draw_select_rot_handles(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang);
 				break;
 				
 			case light_piece:
@@ -511,10 +514,6 @@ void walk_view_draw_select(editor_view_type *view)
 			}
 		}
 	}
-
-		// draw selection handle
-	
-	walk_view_draw_select_rot_handles(view);
 
 		// draw box selection
 

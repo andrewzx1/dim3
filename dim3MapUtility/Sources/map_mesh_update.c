@@ -454,6 +454,42 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 
 /* =======================================================
 
+      Skew Mesh
+      
+======================================================= */
+
+void map_mesh_skew(map_type *map,int mesh_idx,d3pnt *skew)
+{
+	int						n,nvertex;
+	d3pnt					min,max,sz;
+	d3pnt					*pt;
+	map_mesh_type			*mesh;
+
+		// get extent
+
+	map_mesh_calculate_extent(map,mesh_idx,&min,&max);
+
+	sz.x=max.x-min.x;
+	sz.y=max.y-min.y;
+	sz.z=max.z-min.z;
+
+		// skew from min to max
+
+	mesh=&map->mesh.meshes[mesh_idx];
+
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
+
+	for (n=0;n!=nvertex;n++) {
+		pt->x+=(((pt->x-min.x)*skew->x)/sz.x);
+		pt->y+=(((pt->y-min.y)*skew->y)/sz.y);
+		pt->z+=(((pt->z-min.z)*skew->z)/sz.z);
+		pt++;
+	}
+}
+
+/* =======================================================
+
       Tesselate Mesh
       
 ======================================================= */

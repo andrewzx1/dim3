@@ -774,6 +774,7 @@ extern void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt);
 extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang);
+extern void map_mesh_skew(map_type *map,int mesh_idx,d3pnt *skew);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);
