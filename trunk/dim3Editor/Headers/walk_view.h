@@ -121,7 +121,7 @@ extern bool walk_view_click_drag_texture(editor_view_type *view,d3pnt *pt,bool e
 // walk view draw handle
 //
 
-extern bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *center_pnt,d3pnt *hand_pnt);
+extern bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *pnt,d3ang *ang,d3pnt *center_pnt,d3pnt *hand_pnt);
 extern void view_get_sprite_vertexes(d3pnt *pnt,d3ang *ang,d3pnt *v_pnts);
 
 //

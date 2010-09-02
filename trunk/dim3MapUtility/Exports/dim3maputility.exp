@@ -45,6 +45,7 @@ _map_mesh_move
 _map_mesh_resize
 _map_mesh_flip
 _map_mesh_rotate
+-map_mesh_skew
 _map_mesh_tesselate
 _map_mesh_poly_punch_hole
 _map_mesh_poly_run_shifts

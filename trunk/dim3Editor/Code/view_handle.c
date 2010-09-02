@@ -70,21 +70,13 @@ void view_handle_create_single_rot_handle(d3pnt *pnt,d3vct *vct,d3ang *ang,d3pnt
 	hand_pnt->z=pnt->z+(int)vct->z;
 }
 
-bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *center_pnt,d3pnt *hand_pnt)
+bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *pnt,d3ang *ang,d3pnt *center_pnt,d3pnt *hand_pnt)
 {
 	float			len;
-	d3ang			ang;
 	d3vct			vct;
+
+	memmove(center_pnt,pnt,sizeof(d3pnt));
 	
-		// is there a selection?
-
-	if (select_count()!=1) return(FALSE);
-	
-		// get position and angle
-
-	select_get_center(center_pnt);
-	select_get_angle(&ang);
-
 		// create the handle points
 
 	len=((float)map_enlarge)+(((float)distance_get(view->pnt.x,view->pnt.y,view->pnt.z,center_pnt->x,center_pnt->y,center_pnt->z)*view_handle_length_factor));
@@ -93,19 +85,19 @@ bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *center_pnt,d3pn
 	vct.y=0.0f;
 	vct.z=0.0f;
 
-	view_handle_create_single_rot_handle(center_pnt,&vct,&ang,&hand_pnt[0]);
+	view_handle_create_single_rot_handle(center_pnt,&vct,ang,&hand_pnt[0]);
 
 	vct.x=0.0f;
 	vct.y=-len;
 	vct.z=0.0f;
 
-	view_handle_create_single_rot_handle(center_pnt,&vct,&ang,&hand_pnt[1]);
+	view_handle_create_single_rot_handle(center_pnt,&vct,ang,&hand_pnt[1]);
 
 	vct.x=0.0f;
 	vct.y=0.0f;
 	vct.z=len;
 
-	view_handle_create_single_rot_handle(center_pnt,&vct,&ang,&hand_pnt[2]);
+	view_handle_create_single_rot_handle(center_pnt,&vct,ang,&hand_pnt[2]);
 
 		// project the points
 		// no points if z is behind the camera
