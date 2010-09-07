@@ -76,9 +76,7 @@ void menu_fix_enable(void)
 		EnableMenuItem(GetMenuHandle(app_menu_file),2);
 		DisableMenuItem(GetMenuHandle(app_menu_file),3);
 		DisableMenuItem(GetMenuHandle(app_menu_file),5);
-		DisableMenuItem(GetMenuHandle(app_menu_file),6);
 		DisableMenuItem(GetMenuHandle(app_menu_file),7);
-		DisableMenuItem(GetMenuHandle(app_menu_file),9);
 	
 		DisableMenuItem(GetMenuHandle(app_menu_edit),0);
 		DisableMenuItem(GetMenuHandle(app_menu_view),0);
@@ -96,9 +94,7 @@ void menu_fix_enable(void)
 		DisableMenuItem(GetMenuHandle(app_menu_file),2);
 		EnableMenuItem(GetMenuHandle(app_menu_file),3);
 		EnableMenuItem(GetMenuHandle(app_menu_file),5);
-		EnableMenuItem(GetMenuHandle(app_menu_file),6);
 		EnableMenuItem(GetMenuHandle(app_menu_file),7);
-		EnableMenuItem(GetMenuHandle(app_menu_file),9);
 	
 			// other menus
 			
@@ -152,27 +148,27 @@ void menu_update_view(void)
 	CheckMenuItem(GetMenuHandle(app_menu_view),11,(view->uv_layer==uv_layer_normal));
 	CheckMenuItem(GetMenuHandle(app_menu_view),12,(view->uv_layer==uv_layer_light_map));
 
-	CheckMenuItem(GetMenuHandle(app_menu_view),14,(view->clip));
+	CheckMenuItem(GetMenuHandle(app_menu_view),16,(view->clip));
 
-	CheckMenuItem(GetMenuHandle(app_menu_view),16,state.show_liquid);
-	CheckMenuItem(GetMenuHandle(app_menu_view),17,state.show_object);
-	CheckMenuItem(GetMenuHandle(app_menu_view),18,state.show_lightsoundparticle);
-	CheckMenuItem(GetMenuHandle(app_menu_view),19,state.show_node);
+	CheckMenuItem(GetMenuHandle(app_menu_view),18,state.show_liquid);
+	CheckMenuItem(GetMenuHandle(app_menu_view),19,state.show_object);
+	CheckMenuItem(GetMenuHandle(app_menu_view),20,state.show_lightsoundparticle);
+	CheckMenuItem(GetMenuHandle(app_menu_view),21,state.show_node);
 	
 	if (map.editor_views.count<max_editor_view) {
-		EnableMenuItem(GetMenuHandle(app_menu_view),21);
-		EnableMenuItem(GetMenuHandle(app_menu_view),22);
-	}
-	else {
-		DisableMenuItem(GetMenuHandle(app_menu_view),21);
-		DisableMenuItem(GetMenuHandle(app_menu_view),22);
-	}
-	
-	if (map.editor_views.count>1) {
+		EnableMenuItem(GetMenuHandle(app_menu_view),23);
 		EnableMenuItem(GetMenuHandle(app_menu_view),24);
 	}
 	else {
+		DisableMenuItem(GetMenuHandle(app_menu_view),23);
 		DisableMenuItem(GetMenuHandle(app_menu_view),24);
+	}
+	
+	if (map.editor_views.count>1) {
+		EnableMenuItem(GetMenuHandle(app_menu_view),25);
+	}
+	else {
+		DisableMenuItem(GetMenuHandle(app_menu_view),25);
 	}
 }
 
@@ -323,6 +319,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
+		case kCommandViewGotoSelect:
+			walk_view_goto_select();
+			main_wind_draw();
+			return(noErr);
+			
 		case kCommandViewClip:
 			walk_view_flip_clip();
 			menu_update_view();
@@ -455,6 +456,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandMeshReposition:
 			piece_reposition();
+			return(noErr);
+			
+		case kCommandMeshSkew:
+			piece_skew();
 			return(noErr);
 			
 		case kCommandMeshFlipX:

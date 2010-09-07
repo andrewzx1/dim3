@@ -44,32 +44,57 @@ extern view_type		view;
       
 ======================================================= */
 
+void draw_background_single(map_background_layer_type *layer)
+{
+	float				gx,gy,gy_high;
+	texture_type		*texture;
+	bitmap_type			*bitmap;
+
+	if ((layer->fill<0) || (layer->fill>=max_map_texture)) return;
+	
+		// get y scaling
+		
+	gy_high=((float)setup.screen.y_sz)/((float)setup.screen.x_sz);
+
+		// get scrolling
+		
+	gx=((float)(view.render->camera.pnt.x+view.render->camera.pnt.z))*(layer->x_scroll_fact*0.001f);
+	gy=((float)view.render->camera.pnt.y)*(layer->y_scroll_fact*0.001f);
+
+		// draw background
+		
+	texture=&map.textures[layer->fill];
+	bitmap=&texture->frames[texture->animate.current_frame].bitmap;
+	
+	view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,setup.screen.x_sz,0,setup.screen.y_sz,gx,(gx+1.0f),gy,(gy+gy_high));
+}
+
 void draw_background(void)
 {
-	float				gx,gy;
-	GLuint				gl_id;
-	texture_type		*texture;
-	
 		// is there a background?
 	
 	if (!map.background.on) return;
-	if ((map.background.fill<0) || (map.background.fill>=max_map_texture)) return;
 
 		// setup view
 
 	gl_2D_view_screen();
 	
-		// get scrolling
+		// draw the layers
 		
-	gx=((float)(view.render->camera.pnt.x+view.render->camera.pnt.z))*(map.background.x_scroll_fact*0.001f);
-	gy=((float)view.render->camera.pnt.y)*(map.background.y_scroll_fact*0.001f);
-
-		// draw background
+	glDisable(GL_DEPTH_TEST);
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
 		
-	texture=&map.textures[map.background.fill];
-	gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
+	draw_background_single(&map.background.back);
+	draw_background_single(&map.background.middle);
+	draw_background_single(&map.background.front);
 
-	view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,0,setup.screen.x_sz,0,setup.screen.y_sz,gx,gy);
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================

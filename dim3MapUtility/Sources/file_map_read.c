@@ -122,8 +122,12 @@ void decode_map_settings_xml(map_type *map,int map_head)
 	main_background_tag=xml_findfirstchild("Background",map_head);
     if (main_background_tag!=-1) {
 		map->background.on=xml_get_attribute_boolean(main_background_tag,"on");
-		map->background.fill=xml_get_attribute_int(main_background_tag,"fill");
-		xml_get_attribute_2_coord_float(main_background_tag,"scroll",&map->background.x_scroll_fact,&map->background.y_scroll_fact);
+		map->background.front.fill=xml_get_attribute_int(main_background_tag,"front_fill");
+		xml_get_attribute_2_coord_float(main_background_tag,"front_scroll",&map->background.front.x_scroll_fact,&map->background.front.y_scroll_fact);
+		map->background.middle.fill=xml_get_attribute_int(main_background_tag,"middle_fill");
+		xml_get_attribute_2_coord_float(main_background_tag,"middle_scroll",&map->background.middle.x_scroll_fact,&map->background.middle.y_scroll_fact);
+		map->background.back.fill=xml_get_attribute_int(main_background_tag,"back_fill");
+		xml_get_attribute_2_coord_float(main_background_tag,"back_scroll",&map->background.back.x_scroll_fact,&map->background.back.y_scroll_fact);
     }
   
 	main_sky_tag=xml_findfirstchild("Sky",map_head);

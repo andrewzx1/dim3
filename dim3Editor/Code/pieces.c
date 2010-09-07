@@ -396,6 +396,8 @@ void piece_tesselate(void)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	
+	undo_push();
+	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
@@ -408,7 +410,7 @@ void piece_tesselate(void)
 
 /* =======================================================
 
-      Piece Resize and Reposition
+      Piece Resize, Reposition, and Skew
       
 ======================================================= */
 
@@ -420,7 +422,7 @@ void piece_resize(void)
 	
 		// get the resize factor
 		
-    dialog_resize_run(&fct_x,&fct_y,&fct_z);
+    if (!dialog_resize_run(&fct_x,&fct_y,&fct_z)) return;
 	
 	fct_x=fct_x/100.0f;
 	fct_y=fct_y/100.0f;
@@ -429,6 +431,8 @@ void piece_resize(void)
 	if ((fct_x<=0.0f) || (fct_y<=0.0f) || (fct_z<=0.0f)) return;
 	
 		// resize meshes
+		
+	undo_push();
 		
 	sel_count=select_count();
 	
@@ -469,11 +473,40 @@ void piece_reposition(void)
 	
 		// get the reposition
 		
-    dialog_reposition_run(&mesh->box.min,&mesh->box.max);
+    if (!dialog_reposition_run(&mesh->box.min,&mesh->box.max)) return;
 	
 		// reposition
 		
+	undo_push();
+	
 	map_mesh_resize(&map,mesh_idx,&mesh->box.min,&mesh->box.max);
+	
+	main_wind_draw();
+}
+
+void piece_skew(void)
+{
+	int				type,mesh_idx,poly_idx,
+					axis,dir,size;
+	map_mesh_type	*mesh;
+	
+	if (select_count()==0) return;
+	
+	select_get(0,&type,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return;
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	map_prepare_mesh_box(mesh);
+	
+		// get the skew
+		
+    if (!dialog_skew_run(&axis,&dir,&size)) return;
+	
+		// skew
+		
+	undo_push();
+		
+	map_mesh_skew(&map,mesh_idx,axis,dir,size);
 	
 	main_wind_draw();
 }
@@ -487,6 +520,8 @@ void piece_reposition(void)
 void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
+	
+	undo_push();
 	
 	sel_count=select_count();
 	
@@ -503,6 +538,8 @@ void piece_rotate(float rot_x,float rot_y,float rot_z)
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	d3pnt			center_pnt;
 	d3ang			rot;
+	
+	undo_push();
 	
 	sel_count=select_count();
 	
@@ -527,6 +564,8 @@ void piece_free_rotate(void)
 	
 	if (!dialog_free_rotate_run(&rot_x,&rot_y,&rot_z)) return;
 	
+	undo_push();
+	
 	piece_rotate(rot_x,rot_y,rot_z);
 }
 
@@ -534,6 +573,8 @@ void piece_move(int move_x,int move_y,int move_z)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	d3pnt			mov_pnt;
+	
+	undo_push();
 	
 	sel_count=select_count();
 	

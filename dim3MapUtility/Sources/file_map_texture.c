@@ -99,13 +99,19 @@ bool map_textures_read(map_type *map)
 		}
 		
 		if (map->fog.texture_idx!=-1) txt_ok[map->fog.texture_idx]=TRUE;
-		if (map->background.fill!=-1) txt_ok[map->background.fill]=TRUE;
-		if (map->sky.fill!=-1) txt_ok[map->sky.fill]=TRUE;
-		if (map->sky.bottom_fill!=-1) txt_ok[map->sky.bottom_fill]=TRUE;
-		if (map->sky.north_fill!=-1) txt_ok[map->sky.north_fill]=TRUE;
-		if (map->sky.south_fill!=-1) txt_ok[map->sky.south_fill]=TRUE;
-		if (map->sky.east_fill!=-1) txt_ok[map->sky.east_fill]=TRUE;
-		if (map->sky.west_fill!=-1) txt_ok[map->sky.west_fill]=TRUE;
+		if (map->background.on) {
+			if (map->background.front.fill!=-1) txt_ok[map->background.front.fill]=TRUE;
+			if (map->background.middle.fill!=-1) txt_ok[map->background.middle.fill]=TRUE;
+			if (map->background.back.fill!=-1) txt_ok[map->background.back.fill]=TRUE;
+		}
+		if (map->sky.on) {
+			if (map->sky.fill!=-1) txt_ok[map->sky.fill]=TRUE;
+			if (map->sky.bottom_fill!=-1) txt_ok[map->sky.bottom_fill]=TRUE;
+			if (map->sky.north_fill!=-1) txt_ok[map->sky.north_fill]=TRUE;
+			if (map->sky.south_fill!=-1) txt_ok[map->sky.south_fill]=TRUE;
+			if (map->sky.east_fill!=-1) txt_ok[map->sky.east_fill]=TRUE;
+			if (map->sky.west_fill!=-1) txt_ok[map->sky.west_fill]=TRUE;
+		}
 	}
 	
 		// load textures

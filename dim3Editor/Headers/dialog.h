@@ -108,6 +108,7 @@ extern bool dialog_light_map_run(void);
 extern bool dialog_group_settings_run(group_type *group);
 extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
 extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
+extern bool dialog_skew_run(int *axis,int *dir,int *size);
 extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 
 //

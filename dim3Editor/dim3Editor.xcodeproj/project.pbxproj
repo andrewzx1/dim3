@@ -69,6 +69,7 @@
 		26AFB4D20D9615C00004805A /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = 26AFB4D10D9615C00004805A /* maputility.h */; };
 		26B8C2D70F62F2A200C6DEBD /* palettes.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B8C2D60F62F2A200C6DEBD /* palettes.c */; };
 		26BE521B0E5FD01A009B6925 /* dialog_save.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE521A0E5FD01A009B6925 /* dialog_save.c */; };
+		26D77AF6123069AA00EA7902 /* dialog_skew.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D77AF5123069AA00EA7902 /* dialog_skew.c */; };
 		26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6D960DDFCE4100BDD008 /* dialog_resize.c */; };
 		26EB4E00105590B700E0FAE6 /* Tool Node Link.icns in Resources */ = {isa = PBXBuildFile; fileRef = 26EB4DFD105590B700E0FAE6 /* Tool Node Link.icns */; };
 		26EB4E01105590B700E0FAE6 /* Tool Node Remove Link.icns in Resources */ = {isa = PBXBuildFile; fileRef = 26EB4DFE105590B700E0FAE6 /* Tool Node Remove Link.icns */; };
@@ -283,6 +284,7 @@
 		26AFB4D10D9615C00004805A /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
 		26B8C2D60F62F2A200C6DEBD /* palettes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palettes.c; path = Code/palettes.c; sourceTree = "<group>"; };
 		26BE521A0E5FD01A009B6925 /* dialog_save.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_save.c; path = Code/dialog_save.c; sourceTree = "<group>"; };
+		26D77AF5123069AA00EA7902 /* dialog_skew.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_skew.c; path = Code/dialog_skew.c; sourceTree = "<group>"; };
 		26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_resize.c; path = Code/dialog_resize.c; sourceTree = "<group>"; };
 		26EB4DFD105590B700E0FAE6 /* Tool Node Link.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Node Link.icns"; path = "Resources/Tool Node Link.icns"; sourceTree = "<group>"; };
 		26EB4DFE105590B700E0FAE6 /* Tool Node Remove Link.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Tool Node Remove Link.icns"; path = "Resources/Tool Node Remove Link.icns"; sourceTree = "<group>"; };
@@ -594,6 +596,7 @@
 				F56EF4C109A7D4A400F06521 /* dialog_group_settings.c */,
 				26DB6D960DDFCE4100BDD008 /* dialog_resize.c */,
 				26772F800EBE8A6600F9E241 /* dialog_reposition.c */,
+				26D77AF5123069AA00EA7902 /* dialog_skew.c */,
 				F5AF023209CFB5A0008B576A /* dialog_free_rotate.c */,
 				F5AF0C5609638BC600F99950 /* dialog_texture_setting.c */,
 				2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */,
@@ -835,6 +838,7 @@
 				26184B2C10AA56C0002C81BE /* dialog_light_map.c in Sources */,
 				263C5EBE122045E3008935B9 /* view_handle.c in Sources */,
 				26808225122057F600EB7897 /* view_picker.c in Sources */,
+				26D77AF6123069AA00EA7902 /* dialog_skew.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

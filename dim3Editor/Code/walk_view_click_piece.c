@@ -40,6 +40,8 @@ extern map_type				map;
 extern setup_type			setup;
 extern editor_state_type	state;
 
+extern AGLContext				ctx;
+
 /* =======================================================
 
       Grid and Snap
@@ -238,14 +240,19 @@ void walk_view_click_rot_handle_move_run(d3pnt *pnt,d3pnt *org_pnt,int mv_add,in
 
 bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 {
-	int			n,k,type,main_idx,sub_idx,which_axis,sel_count,item_count;
+	int			n,k,idx,type,main_idx,sub_idx,which_axis,sel_count,item_count;
+	int			*type_list,*idx_list;
 	bool		first_drag;
-	d3pnt		pt,center_pnt,hand_pnt[3],
+	d3pnt		pt,center_pnt,*hand_pnts,
 				*pnt,org_pnt;
 	d3ang		*ang,org_ang;
 	d3rect		box;
 
-		// count the items
+		// need to create the items outside
+		// of the pick call so rendering doesn't get
+		// reset on us
+		
+		// first count the items
 
 	item_count=0;
 	sel_count=select_count();
@@ -256,13 +263,17 @@ bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 	}
 
 	if (item_count==0) return(FALSE);
-
-		// run pick list for handles
 	
-	view_pick_list_start(view,TRUE,item_count);
-
-		// draw the handles
-
+		// build the item list
+		
+	hand_pnts=(d3pnt*)malloc(sizeof(d3pnt)*(item_count*3));
+	type_list=(int*)malloc(sizeof(int)*item_count);
+	idx_list=(int*)malloc(sizeof(int)*item_count);
+	
+		// get the handles
+		
+	item_count=0;
+	
 	for (n=0;n!=sel_count;n++) {
 	
 		select_get(n,&type,&main_idx,&sub_idx);
@@ -270,30 +281,54 @@ bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 		switch (type) {
 		
 			case node_piece:
-				if (!view_handle_create_rot_handle(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,&center_pnt,hand_pnt)) break;
-				for (k=0;k!=3;k++) {
-					view_pick_list_add_2D_handle(hand_pnt[k].x,hand_pnt[k].y,type,main_idx,k);
+				if (view_handle_create_rot_handle(view,&map.nodes[main_idx].pnt,&map.nodes[main_idx].ang,&center_pnt,&hand_pnts[item_count*3])) {
+					type_list[item_count]=type;
+					idx_list[item_count]=main_idx;
+					item_count++;
 				}
 				break;
 				
 			case spot_piece:
-				if (!view_handle_create_rot_handle(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,&center_pnt,hand_pnt)) break;
-				for (k=0;k!=3;k++) {
-					view_pick_list_add_2D_handle(hand_pnt[k].x,hand_pnt[k].y,type,main_idx,k);
+				if (view_handle_create_rot_handle(view,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,&center_pnt,&hand_pnts[item_count*3])) {
+					type_list[item_count]=type;
+					idx_list[item_count]=main_idx;
+					item_count++;
 				}
 				break;
 				
 			case scenery_piece:
-				if (!view_handle_create_rot_handle(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,&center_pnt,hand_pnt)) break;
-				for (k=0;k!=3;k++) {
-					view_pick_list_add_2D_handle(hand_pnt[k].x,hand_pnt[k].y,type,main_idx,k);
+				if (view_handle_create_rot_handle(view,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,&center_pnt,&hand_pnts[item_count*3])) {
+					type_list[item_count]=type;
+					idx_list[item_count]=main_idx;
+					item_count++;
 				}
 				break;
 
 		}
 	}
+	
+	if (item_count==0) {
+		free(hand_pnts);
+		free(type_list);
+		free(idx_list);
+		return(FALSE);
+	}
 
-		// finish the pick
+		// run pick list for handles
+	
+	view_pick_list_start(view,TRUE,(item_count*3));
+
+	for (n=0;n!=item_count;n++) {
+		idx=n*3;
+		for (k=0;k!=3;k++) {
+			view_pick_list_add_2D_handle(hand_pnts[idx].x,hand_pnts[idx].y,type_list[n],idx_list[n],k);
+			idx++;
+		}
+	}
+	
+	free(hand_pnts);
+	free(type_list);
+	free(idx_list);
 	
 	view_pick_list_end(view,click_pt,&type,&main_idx,&which_axis);
 	if (type==-1) return(FALSE);
