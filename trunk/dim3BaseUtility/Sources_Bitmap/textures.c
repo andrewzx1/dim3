@@ -270,7 +270,8 @@ void bitmap_texture_clear(texture_type *texture)
 	strcpy(texture->shader_name,"Default");
 
 	texture->shine_factor=10.0f;
-	texture->additive=texture->pixelated=texture->compress=FALSE;
+	texture->additive=texture->pixelated=FALSE;
+	texture->compress=TRUE;
 	texture->material_name[0]=0x0;
 
 	texture->animate.on=FALSE;

@@ -110,7 +110,7 @@ void progress_draw(float percentage)
 		view_draw_next_vertex_object_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,progress_bitmap.wid,progress_bitmap.high);
 	}
 	else {
-		view_draw_next_vertex_object_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,0.0f);
+		view_draw_next_vertex_object_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,1.0f,0.0f,1.0f);
 	}
 	
 		// draw the progress background

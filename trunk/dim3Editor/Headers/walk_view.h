@@ -58,6 +58,7 @@ extern void walk_view_turn_angle(d3ang *ang);
 extern void walk_view_perspective_ortho(bool on);
 extern void walk_view_cull(bool on);
 extern void walk_view_clip(bool on);
+extern void walk_view_goto_select(void);
 extern void walk_view_flip_clip(void);
 extern int walk_view_get_uv_layer(void);
 extern void walk_view_set_uv_layer(int uv_layer);

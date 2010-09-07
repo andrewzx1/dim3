@@ -458,9 +458,10 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
       
 ======================================================= */
 
-void map_mesh_skew(map_type *map,int mesh_idx,d3pnt *skew)
+void map_mesh_skew(map_type *map,int mesh_idx,int axis,int dir,int size)
 {
 	int						n,nvertex;
+	float					skew_fact,skew_size;
 	d3pnt					min,max,sz;
 	d3pnt					*pt;
 	map_mesh_type			*mesh;
@@ -472,6 +473,8 @@ void map_mesh_skew(map_type *map,int mesh_idx,d3pnt *skew)
 	sz.x=max.x-min.x;
 	sz.y=max.y-min.y;
 	sz.z=max.z-min.z;
+	
+	skew_size=(float)size;
 
 		// skew from min to max
 
@@ -481,9 +484,37 @@ void map_mesh_skew(map_type *map,int mesh_idx,d3pnt *skew)
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		pt->x+=(((pt->x-min.x)*skew->x)/sz.x);
-		pt->y+=(((pt->y-min.y)*skew->y)/sz.y);
-		pt->z+=(((pt->z-min.z)*skew->z)/sz.z);
+	
+			// get the skew direction factor
+			
+		skew_fact=0.0f;
+		
+		switch (dir) {
+			case 0:
+				skew_fact=(float)(pt->x-min.x)/(float)sz.x;
+				break;
+			case 1:
+				skew_fact=(float)(pt->y-min.y)/(float)sz.y;
+				break;
+			case 2:
+				skew_fact=(float)(pt->z-min.z)/(float)sz.z;
+				break;
+		}
+		
+			// skew that axis
+			
+		switch (axis) {
+			case 0:
+				pt->x+=(int)(skew_size*skew_fact);
+				break;
+			case 1:
+				pt->y+=(int)(skew_size*skew_fact);
+				break;
+			case 2:
+				pt->z+=(int)(skew_size*skew_fact);
+				break;
+		}
+
 		pt++;
 	}
 }

@@ -30,7 +30,7 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kMapSettingTabCount							7
+#define kMapSettingTabCount							8
 #define kMapSettingTab								FOUR_CHAR_CODE('tabb')
 
 	// general
@@ -81,26 +81,29 @@ extern map_type				map;
 #define kMapCameraAttachNode						FOUR_CHAR_CODE('cand')
 #define kMapCameraFollowCameraObject				FOUR_CHAR_CODE('cfco')
 
-	// background-sky
+	// sky
 	
-#define kBackSkySettingBackgroundOn					FOUR_CHAR_CODE('bgon')
-#define kBackSkySettingBackgroundTextureIndex		FOUR_CHAR_CODE('bgti')
-#define kBackSkySettingBackgroundXShift				FOUR_CHAR_CODE('bgxs')
-#define kBackSkySettingBackgroundYShift				FOUR_CHAR_CODE('bgys')
-#define kBackSkySettingSkyOn						FOUR_CHAR_CODE('syon')
-#define kBackSkySettingSkyType						FOUR_CHAR_CODE('syty')
-#define kBackSkySettingSkyTextureIndex				FOUR_CHAR_CODE('syti')
-#define kBackSkySettingSkyTextureBottomIndex		FOUR_CHAR_CODE('stxb')
-#define kBackSkySettingSkyTextureNorthIndex			FOUR_CHAR_CODE('stxn')
-#define kBackSkySettingSkyTextureSouthIndex			FOUR_CHAR_CODE('stxs')
-#define kBackSkySettingSkyTextureEastIndex			FOUR_CHAR_CODE('stxe')
-#define kBackSkySettingSkyTextureWestIndex			FOUR_CHAR_CODE('stxw')
-#define kBackSkySettingSkyRadius					FOUR_CHAR_CODE('syrd')
-#define kBackSkySettingSkyDomeY						FOUR_CHAR_CODE('sdmy')
-#define kBackSkySettingSkyDomeMirror				FOUR_CHAR_CODE('smdm')
-#define kBackSkySettingSkyTextureRepeat				FOUR_CHAR_CODE('sytr')
-#define kBackSkySettingSkyTextureXShift				FOUR_CHAR_CODE('stxx')
-#define kBackSkySettingSkyTextureYShift				FOUR_CHAR_CODE('styy')
+#define kSkySettingSkyOn							FOUR_CHAR_CODE('syon')
+#define kSkySettingSkyType							FOUR_CHAR_CODE('syty')
+#define kSkySettingSkyTextureIndex					FOUR_CHAR_CODE('syti')
+#define kSkySettingSkyTextureBottomIndex			FOUR_CHAR_CODE('stxb')
+#define kSkySettingSkyTextureNorthIndex				FOUR_CHAR_CODE('stxn')
+#define kSkySettingSkyTextureSouthIndex				FOUR_CHAR_CODE('stxs')
+#define kSkySettingSkyTextureEastIndex				FOUR_CHAR_CODE('stxe')
+#define kSkySettingSkyTextureWestIndex				FOUR_CHAR_CODE('stxw')
+#define kSkySettingSkyRadius						FOUR_CHAR_CODE('syrd')
+#define kSkySettingSkyDomeY							FOUR_CHAR_CODE('sdmy')
+#define kSkySettingSkyDomeMirror					FOUR_CHAR_CODE('smdm')
+#define kSkySettingSkyTextureRepeat					FOUR_CHAR_CODE('sytr')
+#define kSkySettingSkyTextureXShift					FOUR_CHAR_CODE('stxx')
+#define kSkySettingSkyTextureYShift					FOUR_CHAR_CODE('styy')
+
+	// background
+	
+#define kBackSettingBackgroundOn					FOUR_CHAR_CODE('bgon')
+#define kBackSettingBackgroundTextureIndex			FOUR_CHAR_CODE('bgti')
+#define kBackSettingBackgroundXShift				FOUR_CHAR_CODE('bgxs')
+#define kBackSettingBackgroundYShift				FOUR_CHAR_CODE('bgys')
 
 	// fog
 	
@@ -267,28 +270,36 @@ bool dialog_map_settings_run(void)
 	
 	dialog_special_combo_fill_node(dialog_map_settings_wind,kMapCameraAttachNode,0,map.camera.c_static.attach_node);
 	dialog_set_boolean(dialog_map_settings_wind,kMapCameraFollowCameraObject,0,map.camera.c_static.follow);
+
+		// set sky controls
 	
-		// set background-sky controls
+	dialog_set_boolean(dialog_map_settings_wind,kSkySettingSkyOn,0,map.sky.on);
+	dialog_set_combo(dialog_map_settings_wind,kSkySettingSkyType,0,map.sky.type);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureIndex,0,TRUE,map.sky.fill);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureBottomIndex,0,TRUE,map.sky.bottom_fill);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureNorthIndex,0,TRUE,map.sky.north_fill);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureSouthIndex,0,TRUE,map.sky.south_fill);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureEastIndex,0,TRUE,map.sky.east_fill);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureWestIndex,0,TRUE,map.sky.west_fill);
+	dialog_set_int(dialog_map_settings_wind,kSkySettingSkyRadius,0,map.sky.radius);
+	dialog_set_int(dialog_map_settings_wind,kSkySettingSkyDomeY,0,map.sky.dome_y);
+	dialog_set_boolean(dialog_map_settings_wind,kSkySettingSkyDomeMirror,0,map.sky.dome_mirror);
+	dialog_set_float(dialog_map_settings_wind,kSkySettingSkyTextureRepeat,0,map.sky.txt_fact);
+	dialog_set_float(dialog_map_settings_wind,kSkySettingSkyTextureXShift,0,map.sky.txt_x_shift);
+	dialog_set_float(dialog_map_settings_wind,kSkySettingSkyTextureYShift,0,map.sky.txt_y_shift);
+
+		// set background controls
 		
-	dialog_set_boolean(dialog_map_settings_wind,kBackSkySettingBackgroundOn,0,map.background.on);
-	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSkySettingBackgroundTextureIndex,0,TRUE,map.background.fill);
-	dialog_set_float(dialog_map_settings_wind,kBackSkySettingBackgroundXShift,0,map.background.x_scroll_fact);
-	dialog_set_float(dialog_map_settings_wind,kBackSkySettingBackgroundYShift,0,map.background.y_scroll_fact);
-	
-	dialog_set_boolean(dialog_map_settings_wind,kBackSkySettingSkyOn,0,map.sky.on);
-	dialog_set_combo(dialog_map_settings_wind,kBackSkySettingSkyType,0,map.sky.type);
-	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureIndex,0,TRUE,map.sky.fill);
-	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureBottomIndex,0,TRUE,map.sky.bottom_fill);
-	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureNorthIndex,0,TRUE,map.sky.north_fill);
-	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureSouthIndex,0,TRUE,map.sky.south_fill);
-	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureEastIndex,0,TRUE,map.sky.east_fill);
-	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureWestIndex,0,TRUE,map.sky.west_fill);
-	dialog_set_int(dialog_map_settings_wind,kBackSkySettingSkyRadius,0,map.sky.radius);
-	dialog_set_int(dialog_map_settings_wind,kBackSkySettingSkyDomeY,0,map.sky.dome_y);
-	dialog_set_boolean(dialog_map_settings_wind,kBackSkySettingSkyDomeMirror,0,map.sky.dome_mirror);
-	dialog_set_float(dialog_map_settings_wind,kBackSkySettingSkyTextureRepeat,0,map.sky.txt_fact);
-	dialog_set_float(dialog_map_settings_wind,kBackSkySettingSkyTextureXShift,0,map.sky.txt_x_shift);
-	dialog_set_float(dialog_map_settings_wind,kBackSkySettingSkyTextureYShift,0,map.sky.txt_y_shift);
+	dialog_set_boolean(dialog_map_settings_wind,kBackSettingBackgroundOn,0,map.background.on);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSettingBackgroundTextureIndex,0,TRUE,map.background.back.fill);
+	dialog_set_float(dialog_map_settings_wind,kBackSettingBackgroundXShift,0,map.background.back.x_scroll_fact);
+	dialog_set_float(dialog_map_settings_wind,kBackSettingBackgroundYShift,0,map.background.back.y_scroll_fact);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSettingBackgroundTextureIndex,1,TRUE,map.background.middle.fill);
+	dialog_set_float(dialog_map_settings_wind,kBackSettingBackgroundXShift,1,map.background.middle.x_scroll_fact);
+	dialog_set_float(dialog_map_settings_wind,kBackSettingBackgroundYShift,1,map.background.middle.y_scroll_fact);
+	dialog_fill_texture_combo(dialog_map_settings_wind,kBackSettingBackgroundTextureIndex,2,TRUE,map.background.front.fill);
+	dialog_set_float(dialog_map_settings_wind,kBackSettingBackgroundXShift,2,map.background.front.x_scroll_fact);
+	dialog_set_float(dialog_map_settings_wind,kBackSettingBackgroundYShift,2,map.background.front.y_scroll_fact);
 	
 		// set fog controls
 		
@@ -419,27 +430,35 @@ bool dialog_map_settings_run(void)
 		dialog_special_combo_get_node(dialog_map_settings_wind,kMapCameraAttachNode,0,map.camera.c_static.attach_node,name_str_len);
 		map.camera.c_static.follow=dialog_get_boolean(dialog_map_settings_wind,kMapCameraFollowCameraObject,0);
 		
-			// background-sky
+			// sky
 			
-		map.background.on=dialog_get_boolean(dialog_map_settings_wind,kBackSkySettingBackgroundOn,0);
-		map.background.fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSkySettingBackgroundTextureIndex,0,TRUE);
-		map.background.x_scroll_fact=dialog_get_float(dialog_map_settings_wind,kBackSkySettingBackgroundXShift,0);
-		map.background.y_scroll_fact=dialog_get_float(dialog_map_settings_wind,kBackSkySettingBackgroundYShift,0);
+		map.sky.on=dialog_get_boolean(dialog_map_settings_wind,kSkySettingSkyOn,0);
+		map.sky.type=dialog_get_combo(dialog_map_settings_wind,kSkySettingSkyType,0);
+		map.sky.fill=dialog_get_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureIndex,0,TRUE);
+		map.sky.bottom_fill=dialog_get_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureBottomIndex,0,TRUE);
+		map.sky.north_fill=dialog_get_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureNorthIndex,0,TRUE);
+		map.sky.south_fill=dialog_get_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureSouthIndex,0,TRUE);
+		map.sky.east_fill=dialog_get_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureEastIndex,0,TRUE);
+		map.sky.west_fill=dialog_get_texture_combo(dialog_map_settings_wind,kSkySettingSkyTextureWestIndex,0,TRUE);
+		map.sky.radius=dialog_get_int(dialog_map_settings_wind,kSkySettingSkyRadius,0);
+		map.sky.dome_y=dialog_get_int(dialog_map_settings_wind,kSkySettingSkyDomeY,0);
+		map.sky.dome_mirror=dialog_get_boolean(dialog_map_settings_wind,kSkySettingSkyDomeMirror,0);
+		map.sky.txt_fact=dialog_get_float(dialog_map_settings_wind,kSkySettingSkyTextureRepeat,0);
+		map.sky.txt_x_shift=dialog_get_float(dialog_map_settings_wind,kSkySettingSkyTextureXShift,0);
+		map.sky.txt_y_shift=dialog_get_float(dialog_map_settings_wind,kSkySettingSkyTextureYShift,0);
 		
-		map.sky.on=dialog_get_boolean(dialog_map_settings_wind,kBackSkySettingSkyOn,0);
-		map.sky.type=dialog_get_combo(dialog_map_settings_wind,kBackSkySettingSkyType,0);
-		map.sky.fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureIndex,0,TRUE);
-		map.sky.bottom_fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureBottomIndex,0,TRUE);
-		map.sky.north_fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureNorthIndex,0,TRUE);
-		map.sky.south_fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureSouthIndex,0,TRUE);
-		map.sky.east_fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureEastIndex,0,TRUE);
-		map.sky.west_fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSkySettingSkyTextureWestIndex,0,TRUE);
-		map.sky.radius=dialog_get_int(dialog_map_settings_wind,kBackSkySettingSkyRadius,0);
-		map.sky.dome_y=dialog_get_int(dialog_map_settings_wind,kBackSkySettingSkyDomeY,0);
-		map.sky.dome_mirror=dialog_get_boolean(dialog_map_settings_wind,kBackSkySettingSkyDomeMirror,0);
-		map.sky.txt_fact=dialog_get_float(dialog_map_settings_wind,kBackSkySettingSkyTextureRepeat,0);
-		map.sky.txt_x_shift=dialog_get_float(dialog_map_settings_wind,kBackSkySettingSkyTextureXShift,0);
-		map.sky.txt_y_shift=dialog_get_float(dialog_map_settings_wind,kBackSkySettingSkyTextureYShift,0);
+			// background
+			
+		map.background.on=dialog_get_boolean(dialog_map_settings_wind,kBackSettingBackgroundOn,0);
+		map.background.back.fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSettingBackgroundTextureIndex,0,TRUE);
+		map.background.back.x_scroll_fact=dialog_get_float(dialog_map_settings_wind,kBackSettingBackgroundXShift,0);
+		map.background.back.y_scroll_fact=dialog_get_float(dialog_map_settings_wind,kBackSettingBackgroundYShift,0);
+		map.background.middle.fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSettingBackgroundTextureIndex,1,TRUE);
+		map.background.middle.x_scroll_fact=dialog_get_float(dialog_map_settings_wind,kBackSettingBackgroundXShift,1);
+		map.background.middle.y_scroll_fact=dialog_get_float(dialog_map_settings_wind,kBackSettingBackgroundYShift,1);
+		map.background.front.fill=dialog_get_texture_combo(dialog_map_settings_wind,kBackSettingBackgroundTextureIndex,2,TRUE);
+		map.background.front.x_scroll_fact=dialog_get_float(dialog_map_settings_wind,kBackSettingBackgroundXShift,2);
+		map.background.front.y_scroll_fact=dialog_get_float(dialog_map_settings_wind,kBackSettingBackgroundYShift,2);
 		
 			// fog
 			

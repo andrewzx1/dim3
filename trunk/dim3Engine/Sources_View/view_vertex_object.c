@@ -1003,7 +1003,7 @@ void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,in
       
 ======================================================= */
 
-void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gy)
+void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2)
 {
 	float			*vertex_ptr,*uv_ptr;
 
@@ -1017,26 +1017,26 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 	*vertex_ptr++=(float)lft;
 	*vertex_ptr++=(float)top;
 
-	*uv_ptr++=gx+0.0f;
-	*uv_ptr++=gy+0.0f;
+	*uv_ptr++=gx;
+	*uv_ptr++=gy;
 
 	*vertex_ptr++=(float)rgt;
 	*vertex_ptr++=(float)top;
 
-	*uv_ptr++=gx+1.0f;
-	*uv_ptr++=gy+0.0f;
+	*uv_ptr++=gx2;
+	*uv_ptr++=gy;
 
 	*vertex_ptr++=(float)rgt;
 	*vertex_ptr++=(float)bot;
 
-	*uv_ptr++=gx+1.0f;
-	*uv_ptr++=gy+1.0f;
+	*uv_ptr++=gx2;
+	*uv_ptr++=gy2;
 
 	*vertex_ptr++=(float)lft;
 	*vertex_ptr++=(float)bot;
 
-	*uv_ptr++=gx+0.0f;
-	*uv_ptr++=gy+1.0f;
+	*uv_ptr++=gx;
+	*uv_ptr++=gy2;
 
   	view_unmap_current_vertex_object();
 

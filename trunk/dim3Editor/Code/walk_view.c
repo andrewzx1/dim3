@@ -384,10 +384,18 @@ bool view_project_point_in_z(d3pnt *pnt)
 
 void walk_view_get_lookat_point(editor_view_type *view,float dist,d3vct *look_vct)
 {
-	float				fx,fy,fz;
+	float				fx,fy,fz,ang_x;
 	matrix_type			mat;
-
-	matrix_rotate_zyx(&mat,view->ang.x,view->ang.y,0.0f);
+	
+		// stop gimble effect on extreme X angle
+		
+	ang_x=view->ang.x;
+	if ((ang_x<271.0f) && (ang_x>180.0f)) ang_x=271.0f;
+	if ((ang_x>89.0f) && (ang_x<180.0f)) ang_x=89.0f;
+	
+		// create the lookat
+		
+	matrix_rotate_zyx(&mat,ang_x,view->ang.y,0.0f);
 
 	fx=fy=0.0f;
 	fz=-dist;
@@ -698,6 +706,38 @@ int walk_view_get_uv_layer(void)
 void walk_view_set_uv_layer(int uv_layer)
 {
 	map.editor_views.views[state.view_select_idx].uv_layer=uv_layer;
+}
+
+/* =======================================================
+
+      View Goto
+      
+======================================================= */
+
+void walk_view_goto_select(void)
+{
+	float			fx,fy,fz;
+	d3ang			ang;
+	d3pnt			pnt;
+	matrix_type		mat;
+	
+	if (select_count()==0) return;
+	
+	walk_view_get_angle(&ang);
+	
+	select_get_center(&pnt);
+	
+	matrix_rotate_zyx(&mat,ang.x,ang.y,0.0f);
+
+	fx=fy=0.0f;
+	fz=(map_enlarge*100);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+	pnt.x+=(int)fx;
+	pnt.y+=(int)fy;
+	pnt.z+=(int)fz;
+	
+	walk_view_set_position(&pnt);
 }
 
 /* =======================================================
