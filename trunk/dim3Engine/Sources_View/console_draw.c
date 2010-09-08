@@ -124,7 +124,7 @@ void console_draw(void)
 
 		// version
 
-	sprintf(str,"%s %s",hud.proj_name,dim3_version);
+	sprintf(str,"%s %s",hud.project_name,dim3_version);
 	gl_text_draw((hud.scale_x-5),(ty+y_add),str,tx_right,FALSE,&col,1.0f);
 
 	gl_text_end();

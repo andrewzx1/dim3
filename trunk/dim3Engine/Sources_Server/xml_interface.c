@@ -78,7 +78,6 @@ void default_settings_interface(void)
 	
 		// project setup
 		
-	strcpy(hud.proj_name,"dim3 Engine");
 	hud.skill=FALSE;
 	
 		// sounds and music
@@ -1025,13 +1024,13 @@ void read_settings_interface(void)
 	}
 
 		// project setup
-
+		
 	proj_tag=xml_findfirstchild("Project",interface_head_tag);
 	if (proj_tag!=-1) {
-		xml_get_attribute_text(proj_tag,"name",hud.proj_name,name_str_len);
+		xml_get_attribute_text(proj_tag,"name",hud.project_name,name_str_len);
 		hud.skill=xml_get_attribute_boolean(proj_tag,"skill");
 	}
-
+	
 		// debug setup
 
 	debug_tag=xml_findfirstchild("Debug",interface_head_tag);
@@ -1127,6 +1126,49 @@ void read_settings_interface(void)
 		hud.net_news.port=xml_get_attribute_int_default(news_tag,"port",80);
 		xml_get_attribute_text(news_tag,"url",hud.net_news.url,256);
 	}
+
+	xml_close_file();
+}
+
+/* =======================================================
+
+      Read Interface XML
+	  For Project Name, so we can put it in the
+	  File Path so project name can override the application's
+	  name (therefore we can have multiple data files
+	  per same application)
+      
+======================================================= */
+
+void read_settings_interface_project_name(void)
+{
+	int						interface_head_tag,proj_tag;
+	char					path[1024];
+	
+		// default project name
+		
+	strcpy(hud.project_name,"dim3 Engine");
+
+		// read in interface from setting files
+		
+	file_paths_data(&setup.file_path_setup,path,"Settings","Interface","xml");
+	if (!xml_open_file(path)) return;
+	
+		// decode the file
+      
+    interface_head_tag=xml_findrootchild("Interface");
+    if (interface_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+		// project setup
+		
+	proj_tag=xml_findfirstchild("Project",interface_head_tag);
+	if (proj_tag!=-1) {
+		xml_get_attribute_text(proj_tag,"name",setup.file_path_setup.proj_name,256);
+	}
+	
 
 	xml_close_file();
 }

@@ -308,8 +308,14 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 		// on application name and create if necessary
 		
 	strcat(path,"/");
-	strcat(path,file_path_setup->app_name);
-		
+	
+	if (file_path_setup->proj_name[0]!=0x0) {
+		strcat(path,file_path_setup->proj_name);
+	}
+	else {
+		strcat(path,file_path_setup->app_name);
+	}
+	
 	file_paths_create_directory(path);
 	
 		// sub-path in game documents

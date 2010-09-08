@@ -41,6 +41,7 @@ and can be sold or given away.
 
 extern server_type			server;
 extern setup_type			setup;
+extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 extern bool server_initialize(char *err_str);

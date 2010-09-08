@@ -221,6 +221,7 @@ extern void string_convert_float(char *str,float f);
 
 typedef struct	{
 					char							app_name[256],
+													proj_name[256],
 													path_base[1024],
 													path_app[1024],
 													path_data[1024],

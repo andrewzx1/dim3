@@ -196,6 +196,10 @@ int main(int argc,char *argv[])
 		return(0);
 	}
 	
+		// get the project name
+		
+	read_settings_interface_project_name();
+	
 		// check for required OS
 		
 	if (!app_check_os_support(err_str)) {
@@ -217,13 +221,12 @@ int main(int argc,char *argv[])
 
 		game_app_active=TRUE;
 		game_loop_quit=FALSE;
-		
+
 		while (!game_loop_quit) {
 			if (!loop_main(err_str)) break;
 		}
-		
-		app_end();
 
+		app_end();
 	}
 	
 		// report any errors

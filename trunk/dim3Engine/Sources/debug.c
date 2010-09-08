@@ -147,7 +147,7 @@ void debug_dump(void)
 	fprintf(stdout,"**************************************\n");
 	fprintf(stdout,"Game\n");
 	fprintf(stdout,"**************************************\n\n");
-	fprintf(stdout,"Project:  %s\n",hud.proj_name);
+	fprintf(stdout,"Project:  %s\n",hud.project_name);
 	fprintf(stdout,"Tick: %d\n",game_time_get());
 	
 	debug_return();

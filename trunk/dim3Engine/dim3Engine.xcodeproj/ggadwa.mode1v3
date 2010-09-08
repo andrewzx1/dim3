@@ -365,14 +365,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>175</integer>
-									<integer>174</integer>
-									<integer>140</integer>
+									<integer>134</integer>
+									<integer>132</integer>
+									<integer>16</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 2382}, {305, 809}}</string>
+							<string>{{0, 958}, {305, 809}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -472,9 +472,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2639DD571235608A00A56C21</string>
+				<string>26D8CF8F1236F413006A6E65</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2639DD581235608A00A56C21</string>
+				<string>26D8CF901236F413006A6E65</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -595,7 +595,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>305527258.32962298</real>
+	<real>305613526.953475</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -610,11 +610,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>2639DDB91235F99200A56C21</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>2639DD7C12357DB800A56C21</string>
-		<string>2639DD7D12357DB800A56C21</string>
+		<string>26D8CF931236F413006A6E65</string>
+		<string>26D8CF941236F413006A6E65</string>
 		<string>1C78EAAD065D492600B07095</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>265A040B103721C7000F8D29</string>
 		<string>/Users/ggadwa/dim3Code/dim3Engine/dim3Engine.xcodeproj</string>
@@ -699,7 +698,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>265A040B103721C7000F8D29</string>
-				<string>2639DD591235608A00A56C21</string>
+				<string>26D8CF831236F40D006A6E65</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -819,13 +818,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>2639DD5F12357C4000A56C21</string>
+				<string>26D8CF841236F40D006A6E65</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>2639DD6012357C4000A56C21</string>
-				<string>2639DD6112357C4000A56C21</string>
-				<string>2639DD6212357C4000A56C21</string>
-				<string>2639DD6312357C4000A56C21</string>
-				<string>2639DD6412357C4000A56C21</string>
+				<string>26D8CF851236F40D006A6E65</string>
+				<string>26D8CF861236F40D006A6E65</string>
+				<string>26D8CF871236F40D006A6E65</string>
+				<string>26D8CF881236F40D006A6E65</string>
+				<string>26D8CF891236F40D006A6E65</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -915,8 +914,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>2639DD7212357D5700A56C21</string>
-				<string>2639DD7312357D5700A56C21</string>
+				<string>26D8CF8B1236F40D006A6E65</string>
+				<string>26D8CF8C1236F40D006A6E65</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -958,7 +957,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {702, 401}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1462 129 702 442 0 0 1680 1028 </string>
+								<string>912 149 702 442 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXDebugCLIModule</string>
@@ -981,13 +980,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>2639DD7412357D5700A56C21</string>
+				<string>26D8CF911236F413006A6E65</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.consoleV3</string>
 			<key>WindowString</key>
-			<string>1462 129 702 442 0 0 1680 1028 </string>
+			<string>912 149 702 442 0 0 1680 1028 </string>
 			<key>WindowToolGUID</key>
 			<string>1C78EAAD065D492600B07095</string>
 			<key>WindowToolIsVisible</key>

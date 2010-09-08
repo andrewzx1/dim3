@@ -535,7 +535,7 @@ typedef struct		{
  
 typedef struct		{
 						int						scale_x,scale_y;
-						char					proj_name[name_str_len],
+						char					project_name[name_str_len],
 												click_sound[name_str_len],
 												intro_music[name_str_len];
 						bool					debug,skill;

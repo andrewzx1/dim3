@@ -130,12 +130,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 305077510;
-			PBXWorkspaceStateSaveDate = 305077510;
+			PBXPerProjectTemplateStateSaveDate = 305612428;
+			PBXWorkspaceStateSaveDate = 305612428;
 		};
 		perUserProjectItems = {
-			26A129021223274100B79D39 /* PBXTextBookmark */ = 26A129021223274100B79D39 /* PBXTextBookmark */;
-			26C01014122F1D72008505B5 /* PBXTextBookmark */ = 26C01014122F1D72008505B5 /* PBXTextBookmark */;
+			26D8CFED1236FAD6006A6E65 /* PBXTextBookmark */ = 26D8CFED1236FAD6006A6E65 /* PBXTextBookmark */;
+			26D8D15D123746A1006A6E65 /* PBXTextBookmark */ = 26D8D15D123746A1006A6E65 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -288,16 +288,6 @@
 		originalNumberOfMultipleMatches = 0;
 		state = 1;
 	};
-	26A129021223274100B79D39 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26A59FA40F327FB5007C6209 /* mesh_list.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1181, 2769}}";
@@ -322,7 +312,15 @@
 			sepNavWindowFrame = "{{247, 201}, {1041, 747}}";
 		};
 	};
-	26C01014122F1D72008505B5 /* PBXTextBookmark */ = {
+	26CC06B10F02C88E00807FEA /* bone_list.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5850}}";
+			sepNavSelRange = "{12530, 0}";
+			sepNavVisRange = "{11105, 1585}";
+			sepNavWindowFrame = "{{498, 115}, {1041, 747}}";
+		};
+	};
+	26D8CFED1236FAD6006A6E65 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -332,13 +330,15 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
-	26CC06B10F02C88E00807FEA /* bone_list.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5850}}";
-			sepNavSelRange = "{12530, 0}";
-			sepNavVisRange = "{11105, 1585}";
-			sepNavWindowFrame = "{{498, 115}, {1041, 747}}";
-		};
+	26D8D15D123746A1006A6E65 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	F503D2560981A35B00DEDC74 /* draw_model.c */ = {
 		uiCtxt = {
