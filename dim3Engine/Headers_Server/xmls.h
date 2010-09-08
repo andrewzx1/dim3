@@ -45,6 +45,7 @@ extern void read_settings_interface_text(int text_tag);
 extern void read_settings_interface_menu(int menu_tag);
 extern void read_settings_interface_chooser(int chooser_tag);
 extern void read_settings_interface(void);
+extern void read_settings_interface_project_name(void);
 
 extern void read_settings_particle(void);
 extern void read_settings_ring(void);

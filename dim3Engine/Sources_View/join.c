@@ -121,7 +121,7 @@ bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply
 
 		// only add if same project
 
-	if (strcasecmp(reply_info->proj_name,hud.proj_name)!=0) return(FALSE);
+	if (strcasecmp(reply_info->proj_name,hud.project_name)!=0) return(FALSE);
 
 		// add to list
 
