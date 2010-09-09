@@ -689,8 +689,6 @@ typedef struct		{
 
 typedef struct		{
 						char					str[256];
-						d3pnt					collide_spt[collide_obj_ray_count],
-												collide_ept[collide_obj_ray_count];
 					} obj_debug;
 
 //

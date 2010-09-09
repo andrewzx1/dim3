@@ -211,32 +211,6 @@ void view_draw_debug_object_path(obj_type *obj)
 	glLineWidth(1.0f);
 }
 
-void view_draw_debug_object_collision_ray(obj_type *obj)
-{
-	int			n;
-	d3pnt		*spt,*ept;
-	d3col		col;
-
-	if (obj->suspend) return;
-	if ((!obj->forward_move.moving) && (!obj->side_move.moving)) return;
-
-	col.r=col.b=1.0f;
-	col.g=0.0f;
-
-	spt=obj->debug.collide_spt;
-	ept=obj->debug.collide_ept;
-
-	glLineWidth(2.0f);
-
-	for (n=0;n!=collide_obj_ray_count;n++) {
-		view_draw_next_vertex_object_3D_line(&col,1.0f,spt->x,spt->y,spt->z,ept->x,ept->y,ept->z);
-		spt++;
-		ept++;
-	}
-
-	glLineWidth(1.0f);
-}
-
 /* =======================================================
 
       Draw Debug Specific Type
@@ -255,10 +229,7 @@ void view_draw_debug_object(obj_type *obj)
 	if (obj->liquid.mode==lm_float) size.y+=obj->liquid.bob_y_move;
 
 	view_draw_debug_bounding_box(&obj->draw.pnt,&obj->draw.setup.ang,&size);
-
 	view_draw_debug_object_path(obj);
-//	view_draw_debug_object_collision_ray(obj);
-
 	view_draw_debug_info(obj->name,obj->debug.str,&obj->draw.pnt,&size);
 }
 
