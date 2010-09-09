@@ -1145,9 +1145,10 @@ void read_settings_interface_project_name(void)
 	int						interface_head_tag,proj_tag;
 	char					path[1024];
 	
-		// default project name
+		// default project name is blank
+		// (will use application name)
 		
-	strcpy(hud.project_name,"dim3 Engine");
+	hud.project_name[0]=0x0;
 
 		// read in interface from setting files
 		
