@@ -61,7 +61,7 @@ and can be sold or given away.
 								 "player_15","player_16","player_17","player_18","player_19", \
 								 "console","menu","quick_save","save","load", \
 								 "message","network_score", \
-								 "debug_status","debug_game","debug_screenshot","debug_map", \
+								 "debug_status","debug_game","debug_screenshot", \
 								 ""}
 
 //

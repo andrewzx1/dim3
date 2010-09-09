@@ -108,6 +108,10 @@ bool file_paths_setup(file_path_setup_type *file_path_setup)
 	
 #endif
 
+		// project name starts as blank
+		
+	file_path_setup->proj_name[0]=0x0;
+
 		// check all the possible paths
 	
 		// app data path
