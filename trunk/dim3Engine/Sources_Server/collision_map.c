@@ -73,6 +73,140 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 
+
+
+
+// supergumba -- rework
+bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
+{
+	int						n,k,t,sz,hit_idx,poly_count,
+							box_x[4],box_z[4],poly_x[8],poly_z[8];
+	short					*poly_idx;
+	float					fx,fy,fz;
+	d3pnt					min,max,*vpt;
+	matrix_type				mat;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+		// get the move to box
+
+	sz=box_sz->x>>1;
+	box_x[0]=box_x[3]=(pt->x-sz)+(*xadd);
+	box_x[1]=box_x[2]=(pt->x+sz)+(*xadd);
+
+	sz=box_sz->z>>1;
+	box_z[0]=box_z[1]=(pt->z-sz)+(*zadd);
+	box_z[2]=box_z[3]=(pt->z+sz)+(*zadd);
+
+		// apply the rotation
+
+	matrix_rotate_y(&mat,obj->ang.y);
+
+	for (n=0;n!=4;n++) {
+		fx=(float)(box_x[n]-pt->x);
+		fy=0.0f;
+		fz=(float)(box_z[n]-pt->z);
+
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+		box_x[n]=pt->x+(int)fx;
+		box_z[n]=pt->z+(int)fz;
+	}
+
+		// find min and max for object
+
+	min.x=max.x=box_x[0];
+	min.z=max.z=box_z[0];
+
+	for (n=1;n!=4;n++) {
+		if (box_x[n]<min.x) min.x=box_x[n];
+		if (box_x[n]>max.x) max.x=box_x[n];
+		if (box_z[n]<min.z) min.z=box_z[n];
+		if (box_z[n]>max.z) max.z=box_z[n];
+	}
+
+	min.y=pt->y-box_sz->y;
+	max.y=pt->y;
+
+		// collide against map
+
+		// check all meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		mesh=&map.mesh.meshes[n];
+
+			// check mesh bounds
+
+		if ((mesh->box.min.x>max.x) || (mesh->box.max.x<min.x)) continue;
+		if ((mesh->box.min.y>max.y) || (mesh->box.max.y<min.y)) continue;
+		if ((mesh->box.min.z>max.z) || (mesh->box.max.z<min.z)) continue;
+
+			// check wall polys
+						
+		poly_count=mesh->poly_list.wall_count;
+		poly_idx=mesh->poly_list.wall_idxs;
+
+		hit_idx=-1;
+			
+		for (k=0;k!=poly_count;k++) {
+
+			poly=&mesh->polys[poly_idx[k]];
+				
+				// check poly bounds
+
+			if ((poly->box.min.x>max.x) || (poly->box.max.x<min.x)) continue;
+			if ((poly->box.min.y>max.y) || (poly->box.max.y<min.y)) continue;
+			if ((poly->box.min.z>max.z) || (poly->box.max.z<min.z)) continue;
+
+				// get poly points
+
+			for (t=0;t!=poly->ptsz;t++) {
+				vpt=&mesh->vertexes[poly->v[t]];
+
+				poly_x[t]=vpt->x;
+				poly_z[t]=vpt->z;
+			}
+
+				// check collision
+				// consider a collision if any points of one polygon
+				// are inside the other, or any of the lines intersect
+		
+			if (polygon_2D_polygon_points_inside(poly->ptsz,poly_x,poly_z,4,box_x,box_z)) {
+				hit_idx=k;
+				break;
+			}
+
+			if (polygon_2D_polygon_lines_intersect(poly->ptsz,poly_x,poly_z,4,box_x,box_z)) {
+				hit_idx=k;
+				break;
+			}
+		}
+
+			// a poly hit
+
+		if (hit_idx!=-1) {
+			obj->contact.hit_poly.mesh_idx=n;
+			obj->contact.hit_poly.poly_idx=k;
+
+			*xadd=*zadd=0;		// supergumba -- temporary
+
+			return(TRUE);
+		}
+				
+	}
+
+	return(FALSE);
+}
+
+
+
+
+
+
+/*
+supergumba -- delete later
+
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
 	int						n,k,y,idx,d,dist,
@@ -151,13 +285,6 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		}
 	}
 
-		// collision debugging
-
-	if (view.debug.on) {
-		memmove(obj->debug.collide_spt,spt,(sizeof(d3pnt)*collide_obj_ray_count));
-		memmove(obj->debug.collide_ept,ept,(sizeof(d3pnt)*collide_obj_ray_count));
-	}
-
 		// set the collisions and run the
 		// ray tracing
 
@@ -217,6 +344,8 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 	return(TRUE);
 }
+
+*/
 
 /* =======================================================
 

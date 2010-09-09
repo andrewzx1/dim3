@@ -96,6 +96,17 @@ void scripts_free_list(void)
       
 ======================================================= */
 
+void scripts_clear_event_list(script_type *script)
+{
+	int				n;
+
+	script->event_list.on=FALSE;
+
+	for (n=0;n!=event_main_id_count;n++) {
+		script->event_list.calls[n].func=NULL;
+	}
+}
+
 void scripts_clear_attach_data(attach_type *attach)
 {
 	int				n;
@@ -128,6 +139,10 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 		sprintf(err_str,"[%s] contains extraneous control characters",script->name);
 		return(FALSE);
 	}
+
+		// attach proper attach
+
+	memmove(&js.attach,attach,sizeof(attach_type));
 	
 		// evaulate script
 		
@@ -200,6 +215,10 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	script->idx=idx;
 	
 	strcpy(script->name,name);
+
+		// clear event list
+
+	scripts_clear_event_list(script);
 
 		// original object script attachments
 		

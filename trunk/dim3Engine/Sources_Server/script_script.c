@@ -76,7 +76,7 @@ JSObjectRef script_add_global_script_object(JSContextRef cx,JSObjectRef parent_o
 
 JSValueRef js_script_implements_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-/*
+/* supergumba -- do this
 	int				idx;
 	char			name[name_str_len];
 	d3pnt			pt;
@@ -102,27 +102,20 @@ JSValueRef js_script_implements_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-/*
-	int				idx;
-	char			name[name_str_len];
-	d3pnt			pt;
+	int				main_event;
+	bool			call_parent;
+	char			func_name[256],err_str[256];
 	
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
-	
-	script_value_to_string(cx,argv[3],name,name_str_len);
-	
-	idx=particle_find_index(name);
-	if (idx==-1) {
-		*exception=js_particle_name_exception(cx,name);
+	main_event=script_value_to_int(cx,argv[0]);
+	script_value_to_string(cx,argv[1],func_name,256);
+	call_parent=script_value_to_bool(cx,argv[2]);
+
+	if (!scripts_setup_event_attach(&js.attach,main_event,func_name,call_parent,err_str)) {
+		*exception=script_create_exception(cx,err_str);
 	}
-	else {
-		script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL));
-	}
-*/
+
 	return(script_null_to_value(cx));
 }
 

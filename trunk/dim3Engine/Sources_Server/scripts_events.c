@@ -73,6 +73,55 @@ bool scripts_setup_events(script_type *script,char *err_str)
 	return(TRUE);
 }
 
+bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_name,bool call_parent,char *err_str)
+{
+	int					idx;
+	script_type			*script;
+	JSObjectRef			func;
+
+		// get the script
+
+	if (attach->script_idx==-1) return(TRUE);
+	script=js.script_list.scripts[attach->script_idx];
+
+		// get the func and determine if
+		// it exists and is callable
+
+	func=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,func_name);
+		
+	if (func!=NULL) {
+		if (!JSValueIsObject(script->cx,func)) {
+			func=NULL;
+		}
+		else {
+			if (!JSObjectIsFunction(script->cx,func)) func=NULL;
+		}
+	}
+
+	if (func==NULL) {
+		sprintf(err_str,"[%s] '%s' does not exist or is not a callable function",script->name,func_name);
+		return(FALSE);
+	}
+
+		// legal event?
+
+	if ((main_event<event_main_id_start) || (main_event>event_main_id_end)) {
+		strcpy(err_str,"Attempting to setup an unknown event");
+		return(FALSE);
+	}
+
+		// attach, any attachment turns on
+		// this version of event calling
+
+	idx=main_event-event_main_id_start;
+
+	script->event_list.on=TRUE;
+	script->event_list.calls[idx].parent=call_parent;
+	script->event_list.calls[idx].func=func;
+
+	return(TRUE);
+}
+
 /* =======================================================
 
       Locking and Unlocking Events
@@ -124,6 +173,7 @@ void scripts_recursion_out(script_type *script)
 
 bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
 {
+	int				idx;
 	JSValueRef		rval,exception,argv[5];
 	script_type		*script;
 	attach_type		old_attach;
@@ -143,6 +193,15 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	
 	script=js.script_list.scripts[attach->script_idx];
 
+		// is this an attached event?
+
+	idx=-1;
+
+	if (script->event_list.on) {
+		idx=main_event-event_main_id_start;
+		if (script->event_list.calls[idx].func==NULL) return(TRUE);
+	}
+
 		// enter recursion
 
 	if (!scripts_recursion_in(script,err_str)) return(FALSE);
@@ -156,22 +215,34 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	memmove(&js.attach,attach,sizeof(attach_type));
 
 		// run the event function
-		
-	argv[0]=(JSValueRef)script->obj;
-	argv[1]=script_int_to_value(script->cx,main_event);
-	argv[2]=script_int_to_value(script->cx,sub_event);
-	argv[3]=script_int_to_value(script->cx,id);
-	argv[4]=script_int_to_value(script->cx,game_time_get());
+		// supergumba -- for now we handle both methods, but
+		// in the future we should replace with a single method
 
-// supergumba -- testing display
-//	fprintf(stdout,"Event (script:%s) (id:%d.%d)\n",script->name,main_event,sub_event);
-//	fflush(stdout);
+	if (idx!=-1) {
+		argv[0]=(JSValueRef)script->obj;
+		argv[1]=script_int_to_value(script->cx,sub_event);
+		argv[2]=script_int_to_value(script->cx,id);
+		argv[3]=script_int_to_value(script->cx,game_time_get());
 
-	rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
-	if (rval==NULL) {
-		script_exception_to_string(script->cx,exception,err_str,256);
+		rval=JSObjectCallAsFunction(script->cx,script->event_list.calls[idx].func,NULL,4,argv,&exception);
+		if (rval==NULL) {
+			script_exception_to_string(script->cx,exception,err_str,256);
+		}
 	}
-		
+
+	else {
+		argv[0]=(JSValueRef)script->obj;
+		argv[1]=script_int_to_value(script->cx,main_event);
+		argv[2]=script_int_to_value(script->cx,sub_event);
+		argv[3]=script_int_to_value(script->cx,id);
+		argv[4]=script_int_to_value(script->cx,game_time_get());
+
+		rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
+		if (rval==NULL) {
+			script_exception_to_string(script->cx,exception,err_str,256);
+		}
+	}
+
 		// restore old attach
 		
 	memmove(&js.attach,&old_attach,sizeof(attach_type));
@@ -215,10 +286,6 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	if (attach->script_idx==-1) return(TRUE);
 	
 	script=js.script_list.scripts[attach->script_idx];
-	
-	// supergumba -- testing display
-//	fprintf(stdout,"Chain (script:%s) (%s)\n",script->name,func_name);
-//	fflush(stdout);
 	
 		// is the chain a good function?
 		

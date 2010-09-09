@@ -456,9 +456,20 @@ typedef struct		{
 //
 
 typedef struct		{
+						bool							parent;
+						JSObjectRef						func;
+					} script_event_call_type;
+
+typedef struct		{
+						bool							on;
+						script_event_call_type			calls[event_main_id_count];
+					} script_event_type;
+
+typedef struct		{
 						int								idx,data_len,recursive_count;
 						char							name[file_str_len];
 						char							*data;
+						script_event_type				event_list;
 						JSGlobalContextRef				cx;
 						JSObjectRef						obj,global_obj,event_func;
 					} script_type;
