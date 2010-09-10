@@ -81,49 +81,48 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 
 bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
 {
-	float		line_a,line_b,line_c,
+	double		v_x,v_y,v_z,line_a,line_b,line_c,
 				bb4ac,sqr_bb4ac,in_1,in_2,
 				dx,dy,dz,hdist_1,hdist_2;
-	d3vct		dp;
 	d3pnt		hpt_1,hpt_2;
 
 		// line vector
 		
-	dp.x=(float)(p2->x-p1->x);
-	dp.y=(float)(p2->y-p1->y);
-	dp.z=(float)(p2->z-p1->z);
+	v_x=(double)(p2->x-p1->x);
+	v_y=(double)(p2->y-p1->y);
+	v_z=(double)(p2->z-p1->z);
 
 		// calc intersection
 		
-	line_a=(dp.x*dp.x)+(dp.y*dp.y)+(dp.z*dp.z);
-	line_b=2.0*((dp.x*(float)(p1->x-circle_pt->x))+(dp.y*(float)(p1->y-circle_pt->y))+(dp.z*(float)(p1->z-circle_pt->z)));
-	line_c=(float)((circle_pt->x*circle_pt->x)+(circle_pt->y*circle_pt->y)+(circle_pt->z*circle_pt->z));
-	line_c+=(float)((p1->x*p1->x)+(p1->y*p1->y)+(p1->z*p1->z));
-	line_c-=2.0f*(float)((circle_pt->x*p1->x)+(circle_pt->y*p1->y)+(circle_pt->z*p1->z));
-	line_c-=(float)(radius*radius);
+	line_a=(v_x*v_x)+(v_y*v_y)+(v_z*v_z);
+	line_b=2.0*((v_x*(double)(p1->x-circle_pt->x))+(v_y*(double)(p1->y-circle_pt->y))+(v_z*(double)(p1->z-circle_pt->z)));
+	line_c=(double)((circle_pt->x*circle_pt->x)+(circle_pt->y*circle_pt->y)+(circle_pt->z*circle_pt->z));
+	line_c+=(double)((p1->x*p1->x)+(p1->y*p1->y)+(p1->z*p1->z));
+	line_c-=2.0*(double)((circle_pt->x*p1->x)+(circle_pt->y*p1->y)+(circle_pt->z*p1->z));
+	line_c-=(double)(radius*radius);
 	
 	bb4ac=(line_b*line_b)-((4*line_a)*line_c);
 
 		// do we have an intersection?
 		
-	if (bb4ac<0.0) return(FALSE);
-	if (abs(line_a)<DBL_EPSILON) return(FALSE);
+	if (bb4ac<0.0f) return(FALSE);
+	if (line_a==0.0f) return(FALSE);
 
 		// get the intersections
 		
 	sqr_bb4ac=sqrt(bb4ac);
-	in_1=((-line_b)+sqr_bb4ac)/(2.0*line_a);
-	in_2=((-line_b)-sqr_bb4ac)/(2.0*line_a);
+	in_1=((-line_b)+sqr_bb4ac)/(2.0f*line_a);
+	in_2=((-line_b)-sqr_bb4ac)/(2.0f*line_a);
 	
 		// get the 2 hit points
 	
-	hpt_1.x=p1->x+(int)(dp.x*in_1);
-	hpt_1.y=p1->y+(int)(dp.y*in_1);
-	hpt_1.z=p1->z+(int)(dp.z*in_1);
+	hpt_1.x=p1->x+(int)(v_x*in_1);
+	hpt_1.y=p1->y+(int)(v_y*in_1);
+	hpt_1.z=p1->z+(int)(v_z*in_1);
 	
-	hpt_2.x=p1->x+(int)(dp.x*in_2);
-	hpt_2.y=p1->y+(int)(dp.y*in_2);
-	hpt_2.z=p1->z+(int)(dp.z*in_2);
+	hpt_2.x=p1->x+(int)(v_x*in_2);
+	hpt_2.y=p1->y+(int)(v_y*in_2);
+	hpt_2.z=p1->z+(int)(v_z*in_2);
 	
 		// determine closest point
 	
@@ -169,55 +168,42 @@ bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt
 
 
 
-
 // supergumba -- rework
+
+// TODO
+// 1. need to always move BACK from hitpoint!
+// 2. y checks
+// 3. make it universal
+// 4. move intersect to utility?
+
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
-	int						n,k,t,sz,hit_idx,poly_count,
-							box_x[4],box_z[4],poly_x[8],poly_z[8];
+	int						n,k,hit_idx,poly_count,radius;
+	double					d,dx,dz;
 	short					*poly_idx;
-	float					fx,fy,fz;
-	d3pnt					min,max,*vpt;
-	matrix_type				mat;
+	d3pnt					circle_pnt,p1,p2,hit_pnt,min,max;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-		// get the move to box
+		// get the circle radius
 
-	sz=box_sz->x>>1;
-	box_x[0]=box_x[3]=(pt->x-sz)+(*xadd);
-	box_x[1]=box_x[2]=(pt->x+sz)+(*xadd);
+	radius=box_sz->x;
+	if (box_sz->z>radius) radius=box_sz->z;
 
-	sz=box_sz->z>>1;
-	box_z[0]=box_z[1]=(pt->z-sz)+(*zadd);
-	box_z[2]=box_z[3]=(pt->z+sz)+(*zadd);
+	radius=radius>>1;
 
-		// apply the rotation
+		// get the moved circle
 
-	matrix_rotate_y(&mat,obj->ang.y);
-
-	for (n=0;n!=4;n++) {
-		fx=(float)(box_x[n]-pt->x);
-		fy=0.0f;
-		fz=(float)(box_z[n]-pt->z);
-
-		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-	//	box_x[n]=pt->x+(int)fx;
-	//	box_z[n]=pt->z+(int)fz;
-	}
+	circle_pnt.x=pt->x+(*xadd);
+	circle_pnt.y=pt->y;
+	circle_pnt.z=pt->z+(*zadd);
 
 		// find min and max for object
 
-	min.x=max.x=box_x[0];
-	min.z=max.z=box_z[0];
-
-	for (n=1;n!=4;n++) {
-		if (box_x[n]<min.x) min.x=box_x[n];
-		if (box_x[n]>max.x) max.x=box_x[n];
-		if (box_z[n]<min.z) min.z=box_z[n];
-		if (box_z[n]>max.z) max.z=box_z[n];
-	}
+	min.x=circle_pnt.x-radius;
+	max.x=circle_pnt.x+radius;
+	min.z=circle_pnt.z-radius;
+	max.z=circle_pnt.z+radius;
 
 	min.y=pt->y-box_sz->y;
 	max.y=pt->y;
@@ -253,39 +239,40 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 			if ((poly->box.min.y>=max.y) || (poly->box.max.y<=min.y)) continue;
 			if ((poly->box.min.z>=max.z) || (poly->box.max.z<=min.z)) continue;
 
-				// get poly points
+				// collide with line
+				// this is in 2D so we switch y & z here
 
-			for (t=0;t!=poly->ptsz;t++) {
-				vpt=&mesh->vertexes[poly->v[t]];
+			p1.x=poly->line.lx;
+			p1.y=circle_pnt.y;
+			p1.z=poly->line.lz;
 
-				poly_x[t]=vpt->x;
-				poly_z[t]=vpt->z;
+			p2.x=poly->line.rx;
+			p2.y=circle_pnt.y;
+			p2.z=poly->line.rz;
+
+			if (circle_line_intersect(&p1,&p2,&circle_pnt,radius,&hit_pnt)) {
+
+					// hit a polygon, return the polygon
+
+				obj->contact.hit_poly.mesh_idx=n;
+				obj->contact.hit_poly.poly_idx=k;
+
+					// move back from hit point
+					// about 10% of radius
+
+				dx=(double)(hit_pnt.x-obj->pnt.x);
+				dz=(double)(hit_pnt.z-obj->pnt.z);
+
+				d=sqrt((dx*dx)+(dz*dz));
+
+				radius=radius/10;
+				if (radius<1) radius=1;
+
+				*xadd=(int)(dx/d);
+				*zadd=;
+
+				return(TRUE);
 			}
-
-				// check collision
-				// consider a collision if any points of one polygon
-				// are inside the other, or any of the lines intersect
-		
-			if (polygon_2D_polygon_points_inside(poly->ptsz,poly_x,poly_z,4,box_x,box_z)) {
-				hit_idx=k;
-				break;
-			}
-
-			if (polygon_2D_polygon_lines_intersect(poly->ptsz,poly_x,poly_z,4,box_x,box_z)) {
-				hit_idx=k;
-				break;
-			}
-		}
-
-			// a poly hit
-
-		if (hit_idx!=-1) {
-			obj->contact.hit_poly.mesh_idx=n;
-			obj->contact.hit_poly.poly_idx=k;
-
-			*xadd=*zadd=0;		// supergumba -- temporary
-
-			return(TRUE);
 		}
 				
 	}
