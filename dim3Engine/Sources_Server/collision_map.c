@@ -40,6 +40,8 @@ extern map_type			map;
 extern view_type		view;
 extern server_type		server;
 
+bool first_test=TRUE;	// supergumba
+
 /* =======================================================
 
       Determine if Contact Poly is Wall-Like
@@ -71,6 +73,98 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 	dz=(double)(pt_1->z-pt_2->z);
 	
 	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+}
+
+
+
+
+
+bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
+{
+	float		line_a,line_b,line_c,
+				bb4ac,sqr_bb4ac,in_1,in_2,
+				dx,dy,dz,hdist_1,hdist_2;
+	d3vct		dp;
+	d3pnt		hpt_1,hpt_2;
+
+		// line vector
+		
+	dp.x=(float)(p2->x-p1->x);
+	dp.y=(float)(p2->y-p1->y);
+	dp.z=(float)(p2->z-p1->z);
+
+		// calc intersection
+		
+	line_a=(dp.x*dp.x)+(dp.y*dp.y)+(dp.z*dp.z);
+	line_b=2.0*((dp.x*(float)(p1->x-circle_pt->x))+(dp.y*(float)(p1->y-circle_pt->y))+(dp.z*(float)(p1->z-circle_pt->z)));
+	line_c=(float)((circle_pt->x*circle_pt->x)+(circle_pt->y*circle_pt->y)+(circle_pt->z*circle_pt->z));
+	line_c+=(float)((p1->x*p1->x)+(p1->y*p1->y)+(p1->z*p1->z));
+	line_c-=2.0f*(float)((circle_pt->x*p1->x)+(circle_pt->y*p1->y)+(circle_pt->z*p1->z));
+	line_c-=(float)(radius*radius);
+	
+	bb4ac=(line_b*line_b)-((4*line_a)*line_c);
+
+		// do we have an intersection?
+		
+	if (bb4ac<0.0) return(FALSE);
+	if (abs(line_a)<DBL_EPSILON) return(FALSE);
+
+		// get the intersections
+		
+	sqr_bb4ac=sqrt(bb4ac);
+	in_1=((-line_b)+sqr_bb4ac)/(2.0*line_a);
+	in_2=((-line_b)-sqr_bb4ac)/(2.0*line_a);
+	
+		// get the 2 hit points
+	
+	hpt_1.x=p1->x+(int)(dp.x*in_1);
+	hpt_1.y=p1->y+(int)(dp.y*in_1);
+	hpt_1.z=p1->z+(int)(dp.z*in_1);
+	
+	hpt_2.x=p1->x+(int)(dp.x*in_2);
+	hpt_2.y=p1->y+(int)(dp.y*in_2);
+	hpt_2.z=p1->z+(int)(dp.z*in_2);
+	
+		// determine closest point
+	
+	if ((in_1<0.0f) || (in_1>1.0f)) {
+		hit_pt->x=hpt_2.x;
+		hit_pt->y=hpt_2.y;
+		hit_pt->z=hpt_2.z;
+		return(TRUE);
+	}
+	
+	if ((in_2<0.0f) || (in_2>1.0f)) {
+		hit_pt->x=hpt_1.x;
+		hit_pt->y=hpt_1.y;
+		hit_pt->z=hpt_1.z;
+		return(TRUE);
+	}
+		
+	dx=(double)(hpt_1.x-circle_pt->x);
+	dy=(double)(hpt_1.y-circle_pt->y);
+	dz=(double)(hpt_1.z-circle_pt->z);
+		
+	hdist_1=(dx*dx)+(dy*dy)+(dz*dz);
+	
+	dx=(double)(hpt_2.x-circle_pt->x);
+	dy=(double)(hpt_2.y-circle_pt->y);
+	dz=(double)(hpt_2.z-circle_pt->z);
+	
+	hdist_2=(dx*dx)+(dy*dy)+(dz*dz);
+
+	if (hdist_1<hdist_2) {
+		hit_pt->x=hpt_1.x;
+		hit_pt->y=hpt_1.y;
+		hit_pt->z=hpt_1.z;
+	}
+	else {
+		hit_pt->x=hpt_2.x;
+		hit_pt->y=hpt_2.y;
+		hit_pt->z=hpt_2.z;
+	}
+
+	return(TRUE);
 }
 
 
@@ -109,8 +203,8 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-		box_x[n]=pt->x+(int)fx;
-		box_z[n]=pt->z+(int)fz;
+	//	box_x[n]=pt->x+(int)fx;
+	//	box_z[n]=pt->z+(int)fz;
 	}
 
 		// find min and max for object
@@ -138,9 +232,9 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 			// check mesh bounds
 
-		if ((mesh->box.min.x>max.x) || (mesh->box.max.x<min.x)) continue;
-		if ((mesh->box.min.y>max.y) || (mesh->box.max.y<min.y)) continue;
-		if ((mesh->box.min.z>max.z) || (mesh->box.max.z<min.z)) continue;
+		if ((mesh->box.min.x>=max.x) || (mesh->box.max.x<=min.x)) continue;
+		if ((mesh->box.min.y>=max.y) || (mesh->box.max.y<=min.y)) continue;
+		if ((mesh->box.min.z>=max.z) || (mesh->box.max.z<=min.z)) continue;
 
 			// check wall polys
 						
@@ -155,9 +249,9 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 				
 				// check poly bounds
 
-			if ((poly->box.min.x>max.x) || (poly->box.max.x<min.x)) continue;
-			if ((poly->box.min.y>max.y) || (poly->box.max.y<min.y)) continue;
-			if ((poly->box.min.z>max.z) || (poly->box.max.z<min.z)) continue;
+			if ((poly->box.min.x>=max.x) || (poly->box.max.x<=min.x)) continue;
+			if ((poly->box.min.y>=max.y) || (poly->box.max.y<=min.y)) continue;
+			if ((poly->box.min.z>=max.z) || (poly->box.max.z<=min.z)) continue;
 
 				// get poly points
 
