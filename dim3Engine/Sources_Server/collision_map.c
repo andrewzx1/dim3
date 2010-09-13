@@ -103,13 +103,23 @@ bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt
 	
 	bb4ac=(line_b*line_b)-((4*line_a)*line_c);
 
-		// do we have an intersection?
+		// no intersections
 		
 	if (bb4ac<0.0f) return(FALSE);
-	if (line_a==0.0f) return(FALSE);
-
-		// get the intersections
+	
+		// on intersection
 		
+	if (bb4ac==0.0) {
+		in_1=(-line_b)/(2.0*line_a);
+		hit_pt->x=p1->x+(int)(v_x*in_1);
+		hit_pt->y=p1->y+(int)(v_y*in_1);
+		hit_pt->z=p1->z+(int)(v_z*in_1);
+		return(TRUE);
+	}
+	
+		// two intersections
+		// pick the one closest
+
 	sqr_bb4ac=sqrt(bb4ac);
 	in_1=((-line_b)+sqr_bb4ac)/(2.0f*line_a);
 	in_2=((-line_b)-sqr_bb4ac)/(2.0f*line_a);
@@ -125,21 +135,7 @@ bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt
 	hpt_2.z=p1->z+(int)(v_z*in_2);
 	
 		// determine closest point
-	
-	if ((in_1<0.0f) || (in_1>1.0f)) {
-		hit_pt->x=hpt_2.x;
-		hit_pt->y=hpt_2.y;
-		hit_pt->z=hpt_2.z;
-		return(TRUE);
-	}
-	
-	if ((in_2<0.0f) || (in_2>1.0f)) {
-		hit_pt->x=hpt_1.x;
-		hit_pt->y=hpt_1.y;
-		hit_pt->z=hpt_1.z;
-		return(TRUE);
-	}
-		
+
 	dx=(double)(hpt_1.x-circle_pt->x);
 	dy=(double)(hpt_1.y-circle_pt->y);
 	dz=(double)(hpt_1.z-circle_pt->z);
@@ -168,6 +164,135 @@ bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt
 
 
 
+
+bool circle_line_2D_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
+{
+	double		v_x,v_y,v_z,line_a,line_b,line_c,
+				bb4ac,sqr_bb4ac,in_1,in_2,
+				dx,dy,dz,hdist_1,hdist_2;
+	d3pnt		hpt_1,hpt_2;
+
+		// line vector
+		
+	v_x=(double)(p2->x-p1->x);
+	v_z=(double)(p2->z-p1->z);
+
+		// calc intersection
+		
+	line_a=(v_x*v_x)+(v_z*v_z);
+	line_b=2.0*((v_x*(double)(p1->x-circle_pt->x))+(v_z*(double)(p1->z-circle_pt->z)));
+	line_c=(double)((circle_pt->x*circle_pt->x)+(circle_pt->z*circle_pt->z));
+	line_c+=(double)((p1->x*p1->x)+(p1->z*p1->z));
+	line_c-=2.0*(double)((circle_pt->x*p1->x)+(circle_pt->z*p1->z));
+	line_c-=(double)(radius*radius);
+	
+	bb4ac=(line_b*line_b)-((4*line_a)*line_c);
+
+		// no intersections
+		
+	if (bb4ac<0.0f) return(FALSE);
+	
+		// on intersection
+		
+	if (bb4ac==0.0) {
+		in_1=(-line_b)/(2.0*line_a);
+		hit_pt->x=p1->x+(int)(v_x*in_1);
+		hit_pt->z=p1->z+(int)(v_z*in_1);
+		return(TRUE);
+	}
+	
+		// two intersections
+		// pick the one closest
+
+	sqr_bb4ac=sqrt(bb4ac);
+	in_1=((-line_b)+sqr_bb4ac)/(2.0f*line_a);
+	in_2=((-line_b)-sqr_bb4ac)/(2.0f*line_a);
+	
+		// get the 2 hit points
+	
+	hpt_1.x=p1->x+(int)(v_x*in_1);
+	hpt_1.z=p1->z+(int)(v_z*in_1);
+	
+	hpt_2.x=p1->x+(int)(v_x*in_2);
+	hpt_2.z=p1->z+(int)(v_z*in_2);
+	
+		// determine closest point
+
+	dx=(double)(hpt_1.x-circle_pt->x);
+	dz=(double)(hpt_1.z-circle_pt->z);
+		
+	hdist_1=(dx*dx)+(dz*dz);
+	
+	dx=(double)(hpt_2.x-circle_pt->x);
+	dz=(double)(hpt_2.z-circle_pt->z);
+	
+	hdist_2=(dx*dx)+(dz*dz);
+
+	if (hdist_1<hdist_2) {
+		hit_pt->x=hpt_1.x;
+		hit_pt->z=hpt_1.z;
+	}
+	else {
+		hit_pt->x=hpt_2.x;
+		hit_pt->z=hpt_2.z;
+	}
+
+	return(TRUE);
+} 
+
+bool circle_line_TEST_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
+{
+	int				d;
+	double			u,un,ud,dx,dy,dz;
+	
+	un=((circle_pt->x-p1->x)*(p2->x-p1->x))+((circle_pt->y-p1->y)*(p2->y-p1->y))+((circle_pt->z-p1->z)*(p2->z-p1->z));
+	ud=((p2->x-p1->x)*(p2->x-p1->x))+((p2->y-p1->y)*(p2->y-p1->y))+((p2->z-p1->z)*(p2->z-p1->z));
+
+	u=un/ud;
+	
+	if ((u<0.0) || (u>1.0)) return(FALSE);
+	
+	hit_pt->x=p1->x+(int)(((double)(p2->x-p1->x))*u);
+	hit_pt->y=p1->y+(int)(((double)(p2->y-p1->y))*u);
+	hit_pt->z=p1->z+(int)(((double)(p2->z-p1->z))*u);
+	
+	dx=(hit_pt->x-circle_pt->x);
+	dy=(hit_pt->y-circle_pt->y);
+	dz=(hit_pt->z-circle_pt->z);
+	
+	d=(int)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+	if (d>radius) return(FALSE);
+	
+	return(TRUE);
+}
+
+bool circle_line_TEST2_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
+{
+	int				v_x,v_z,d;
+	double			dx,dz;
+	d3pnt			cp2;
+	
+		// get the line vector
+		
+	v_x=p2->x-p1->x;
+	v_z=p2->z-p1->z;
+	
+		// reverse to get perpendicular
+		// line from circle center
+		
+	cp2.x=circle_pt->x-(10000*v_z);
+	cp2.z=circle_pt->z-(10000*v_x);
+		
+	if (!line_2D_get_intersect(p1->x,p1->z,p2->x,p2->z,circle_pt->x,circle_pt->z,cp2.x,cp2.z,&hit_pt->x,&hit_pt->y)) return(FALSE);
+	
+	dx=(hit_pt->x-circle_pt->x);
+	dz=(hit_pt->z-circle_pt->z);
+	
+	d=(int)sqrt((dx*dx)+(dz*dz));
+	return(d<=radius);
+}
+
+
 // supergumba -- rework
 
 // TODO
@@ -179,7 +304,7 @@ bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
 	int						n,k,hit_idx,poly_count,radius;
-	double					d,dx,dz;
+	float					vx,vz,fx,fz;
 	short					*poly_idx;
 	d3pnt					circle_pnt,p1,p2,hit_pnt,min,max;
 	map_mesh_type			*mesh;
@@ -250,7 +375,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 			p2.y=circle_pnt.y;
 			p2.z=poly->line.rz;
 
-			if (circle_line_intersect(&p1,&p2,&circle_pnt,radius,&hit_pnt)) {
+			if (circle_line_TEST2_intersect(&p1,&p2,&circle_pnt,radius,&hit_pnt)) {
 
 					// hit a polygon, return the polygon
 
@@ -259,17 +384,22 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 					// move back from hit point
 					// about 10% of radius
-
-				dx=(double)(hit_pnt.x-obj->pnt.x);
-				dz=(double)(hit_pnt.z-obj->pnt.z);
+/*
+				vx=(float);
+				vz=(float);
+				
+				fx=vx/(vx+vz);
+				fz=vz/(vx+vz);
+				
+				vx+=
 
 				d=sqrt((dx*dx)+(dz*dz));
 
 				radius=radius/10;
 				if (radius<1) radius=1;
-
-				*xadd=(int)(dx/d);
-				*zadd=;
+*/
+				*xadd=0;
+				*zadd=0;
 
 				return(TRUE);
 			}
