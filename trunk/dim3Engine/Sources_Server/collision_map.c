@@ -78,6 +78,9 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 
 
 
+/*
+
+supergumba -- deal with these later
 
 bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
 {
@@ -265,48 +268,96 @@ bool circle_line_TEST_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,
 	
 	return(TRUE);
 }
+*/
 
-bool circle_line_TEST2_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
+int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
 {
-	int				v_x,v_z,d;
-	double			dx,dz;
+	double			d,dx,dz;
+	float			fr,fx,fz;
 	d3pnt			cp2;
 	
-		// get the line vector
+		// get the normalized line vector
 		
-	v_x=p2->x-p1->x;
-	v_z=p2->z-p1->z;
+	dx=(double)(p2->x-p1->x);
+	dz=(double)(p2->z-p1->z);
+
+	d=sqrt((dx*dx)+(dz*dz));
+	if (d!=0.0) {
+		d=1.0/d;
+		fx=(float)(dx*d);
+		fz=(float)(dz*d);
+	}
 	
 		// reverse to get perpendicular
 		// line from circle center
+		// we need to test both directions
 		
-	cp2.x=circle_pt->x-(10000*v_z);
-	cp2.z=circle_pt->z-(10000*v_x);
+	fr=(float)radius;
+
+	cp2.x=circle_pt->x-(int)(fr*fz);
+	cp2.z=circle_pt->z+(int)(fr*fx);
 		
-	if (!line_2D_get_intersect(p1->x,p1->z,p2->x,p2->z,circle_pt->x,circle_pt->z,cp2.x,cp2.z,&hit_pt->x,&hit_pt->y)) return(FALSE);
-	
+	if (!line_2D_get_intersect(p1->x,p1->z,p2->x,p2->z,circle_pt->x,circle_pt->z,cp2.x,cp2.z,&hit_pt->x,&hit_pt->z)) {
+		cp2.x=circle_pt->x+(int)(fr*fz);
+		cp2.z=circle_pt->z-(int)(fr*fx);
+
+		if (!line_2D_get_intersect(p1->x,p1->z,p2->x,p2->z,circle_pt->x,circle_pt->z,cp2.x,cp2.z,&hit_pt->x,&hit_pt->z)) return(-1);
+	}
+
+		// return distance to hit point
+
 	dx=(hit_pt->x-circle_pt->x);
 	dz=(hit_pt->z-circle_pt->z);
 	
-	d=(int)sqrt((dx*dx)+(dz*dz));
-	return(d<=radius);
+	return((int)sqrt((dx*dx)+(dz*dz)));
+}
+
+void circle_get_point_on_radius_through_hit_point(d3pnt *circle_pt,int radius,d3pnt *hit_pt,d3pnt *radius_pt)
+{
+	double			d,dx,dz;
+	float			fr,fx,fz;
+
+		// get the normalized line vector
+		
+	dx=(double)(hit_pt->x-circle_pt->x);
+	dz=(double)(hit_pt->z-circle_pt->z);
+
+	d=sqrt((dx*dx)+(dz*dz));
+	if (d!=0.0) {
+		d=1.0/d;
+		fx=(float)(dx*d);
+		fz=(float)(dz*d);
+	}
+
+		// get point on radius
+		// that line hits
+
+	fr=(float)radius;
+
+	radius_pt->x=circle_pt->x+(int)(fr*fx);
+	radius_pt->z=circle_pt->z+(int)(fr*fz);
 }
 
 
 // supergumba -- rework
 
 // TODO
-// 1. need to always move BACK from hitpoint!
+// 1. can jump through corners
+// 1.5 figure out sliding and true/false, always use TRUE for hit
 // 2. y checks
+// 2.5 add object, projectiles, etc
 // 3. make it universal
 // 4. move intersect to utility?
 
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
-	int						n,k,hit_idx,poly_count,radius;
-	float					vx,vz,fx,fz;
+	int						n,k,hit_idx,poly_count,radius,
+							hit_mesh_idx,hit_poly_idx,
+							dist,cur_dist;
 	short					*poly_idx;
-	d3pnt					circle_pnt,p1,p2,hit_pnt,min,max;
+	d3pnt					circle_pnt,p1,p2,
+							hit_pnt,cur_hit_pnt,radius_pnt,
+							min,max;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
@@ -334,6 +385,8 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	max.y=pt->y;
 
 		// collide against map
+
+	cur_dist=-1;
 
 		// check all meshes
 
@@ -365,46 +418,42 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 			if ((poly->box.min.z>=max.z) || (poly->box.max.z<=min.z)) continue;
 
 				// collide with line
-				// this is in 2D so we switch y & z here
 
 			p1.x=poly->line.lx;
-			p1.y=circle_pnt.y;
 			p1.z=poly->line.lz;
 
 			p2.x=poly->line.rx;
-			p2.y=circle_pnt.y;
 			p2.z=poly->line.rz;
 
-			if (circle_line_TEST2_intersect(&p1,&p2,&circle_pnt,radius,&hit_pnt)) {
+			dist=circle_line_intersect(&p1,&p2,&circle_pnt,radius,&hit_pnt);
+			if (dist==-1) continue;
+			if (dist>radius) continue;
 
-					// hit a polygon, return the polygon
+				// is this the next nearest hit?
 
-				obj->contact.hit_poly.mesh_idx=n;
-				obj->contact.hit_poly.poly_idx=k;
+			if ((dist<cur_dist) || (cur_dist==-1)) {
+				hit_mesh_idx=n;
+				hit_poly_idx=k;
 
-					// move back from hit point
-					// about 10% of radius
-/*
-				vx=(float);
-				vz=(float);
-				
-				fx=vx/(vx+vz);
-				fz=vz/(vx+vz);
-				
-				vx+=
-
-				d=sqrt((dx*dx)+(dz*dz));
-
-				radius=radius/10;
-				if (radius<1) radius=1;
-*/
-				*xadd=0;
-				*zadd=0;
-
-				return(TRUE);
+				cur_dist=dist;
+				cur_hit_pnt.x=hit_pnt.x;
+				cur_hit_pnt.z=hit_pnt.z;
 			}
 		}
-				
+	}
+
+		// any hits?
+
+	if (cur_dist!=-1) {
+		obj->contact.hit_poly.mesh_idx=hit_mesh_idx;
+		obj->contact.hit_poly.poly_idx=hit_poly_idx;
+
+		circle_get_point_on_radius_through_hit_point(&circle_pnt,radius,&hit_pnt,&radius_pnt);
+	
+		*xadd-=radius_pnt.x-cur_hit_pnt.x;
+		*zadd-=radius_pnt.z-cur_hit_pnt.z;
+
+		return((*xadd==0)&&(*zadd==0));
 	}
 
 	return(FALSE);
