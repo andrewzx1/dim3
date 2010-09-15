@@ -28,7 +28,6 @@ and can be sold or given away.
 // map collisions
 
 extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
-extern int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2);
 extern bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd);
 extern bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd);
 extern bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bump_y_move);

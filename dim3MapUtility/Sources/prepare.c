@@ -152,6 +152,8 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 
 	if (poly->box.wall_like) {
 			
+			// get the lx,lz to rx,rz
+			
 		lx=poly->box.min.x;
 		rx=poly->box.max.x;
 		lz=poly->box.min.z;
@@ -174,6 +176,29 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 		poly->line.rx=rx;
 		poly->line.lz=lz;
 		poly->line.rz=rz;
+		
+			// find ty,by for each point
+			
+		poly->line.l_ty=poly->line.r_ty=poly->line.l_by=poly->line.r_by=-1;
+		
+		for (n=0;n!=poly->ptsz;n++) {
+			pt=&mesh->vertexes[poly->v[n]];
+			
+			if ((poly->line.lx==pt->x) && (poly->line.lz==pt->z)) {
+				if ((pt->y<poly->line.l_ty) || (poly->line.l_ty==-1)) poly->line.l_ty=pt->y;
+				if ((pt->y>poly->line.l_by) || (poly->line.l_by==-1)) poly->line.l_by=pt->y;
+			}
+			
+			if ((poly->line.rx==pt->x) && (poly->line.rz==pt->z)) {
+				if ((pt->y<poly->line.r_ty) || (poly->line.r_ty==-1)) poly->line.r_ty=pt->y;
+				if ((pt->y>poly->line.r_by) || (poly->line.r_by==-1)) poly->line.r_by=pt->y;
+			}
+		}
+		
+		if (poly->line.l_ty==-1) poly->line.l_ty=poly->box.min.y;
+		if (poly->line.r_ty==-1) poly->line.r_ty=poly->box.min.y;
+		if (poly->line.l_by==-1) poly->line.l_by=poly->box.max.y;
+		if (poly->line.r_by==-1) poly->line.r_by=poly->box.max.y;
 	}
 }
 

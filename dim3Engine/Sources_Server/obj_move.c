@@ -790,7 +790,8 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		return(FALSE);
 	}
 
-	return(TRUE);		// supergumba -- do we even need slighting anymore?
+	return(TRUE);		// supergumba -- do we even need sliding anymore?
+						// delete this and then clear up hit_face nonsense 
 
 		// if the hit poly was wall-like, then find vector for wall
 		// and attempt to slide across it
