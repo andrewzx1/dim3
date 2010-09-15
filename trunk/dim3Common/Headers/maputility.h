@@ -261,7 +261,8 @@ typedef struct		{
 					} map_mesh_poly_box_type;
 
 typedef struct		{
-						int									lx,rx,lz,rz;
+						int									lx,rx,lz,rz,
+															l_ty,l_by,r_ty,r_by;
 					} map_mesh_poly_line_type;
 
 typedef struct		{
