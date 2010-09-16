@@ -419,8 +419,7 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int						obj_idx,proj_idx,stand_obj_idx,
-												hit_face,liquid_idx;
+						int						obj_idx,proj_idx,stand_obj_idx,liquid_idx;
 						bool					object_on,projectile_on,force_on,
 												melee,pushable;
 						poly_pointer_type		hit_poly,stand_poly,head_poly;
@@ -1069,7 +1068,7 @@ typedef struct		{
 
 
 typedef struct		{
-						int								idx,ignore_idx,hit_face;
+						int								idx,ignore_idx;
 						bool							on;
 					} ray_trace_obj_proj_type;
 

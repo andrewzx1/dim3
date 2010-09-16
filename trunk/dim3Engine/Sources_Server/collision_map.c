@@ -63,95 +63,6 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
 ======================================================= */
 
 
-/*
-
-supergumba -- deal with these later
-
-bool circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pt,int radius,d3pnt *hit_pt)
-{
-	double		v_x,v_y,v_z,line_a,line_b,line_c,
-				bb4ac,sqr_bb4ac,in_1,in_2,
-				dx,dy,dz,hdist_1,hdist_2;
-	d3pnt		hpt_1,hpt_2;
-
-		// line vector
-		
-	v_x=(double)(p2->x-p1->x);
-	v_y=(double)(p2->y-p1->y);
-	v_z=(double)(p2->z-p1->z);
-
-		// calc intersection
-		
-	line_a=(v_x*v_x)+(v_y*v_y)+(v_z*v_z);
-	line_b=2.0*((v_x*(double)(p1->x-circle_pt->x))+(v_y*(double)(p1->y-circle_pt->y))+(v_z*(double)(p1->z-circle_pt->z)));
-	line_c=(double)((circle_pt->x*circle_pt->x)+(circle_pt->y*circle_pt->y)+(circle_pt->z*circle_pt->z));
-	line_c+=(double)((p1->x*p1->x)+(p1->y*p1->y)+(p1->z*p1->z));
-	line_c-=2.0*(double)((circle_pt->x*p1->x)+(circle_pt->y*p1->y)+(circle_pt->z*p1->z));
-	line_c-=(double)(radius*radius);
-	
-	bb4ac=(line_b*line_b)-((4*line_a)*line_c);
-
-		// no intersections
-		
-	if (bb4ac<0.0f) return(FALSE);
-	
-		// on intersection
-		
-	if (bb4ac==0.0) {
-		in_1=(-line_b)/(2.0*line_a);
-		hit_pt->x=p1->x+(int)(v_x*in_1);
-		hit_pt->y=p1->y+(int)(v_y*in_1);
-		hit_pt->z=p1->z+(int)(v_z*in_1);
-		return(TRUE);
-	}
-	
-		// two intersections
-		// pick the one closest
-
-	sqr_bb4ac=sqrt(bb4ac);
-	in_1=((-line_b)+sqr_bb4ac)/(2.0f*line_a);
-	in_2=((-line_b)-sqr_bb4ac)/(2.0f*line_a);
-	
-		// get the 2 hit points
-	
-	hpt_1.x=p1->x+(int)(v_x*in_1);
-	hpt_1.y=p1->y+(int)(v_y*in_1);
-	hpt_1.z=p1->z+(int)(v_z*in_1);
-	
-	hpt_2.x=p1->x+(int)(v_x*in_2);
-	hpt_2.y=p1->y+(int)(v_y*in_2);
-	hpt_2.z=p1->z+(int)(v_z*in_2);
-	
-		// determine closest point
-
-	dx=(double)(hpt_1.x-circle_pt->x);
-	dy=(double)(hpt_1.y-circle_pt->y);
-	dz=(double)(hpt_1.z-circle_pt->z);
-		
-	hdist_1=(dx*dx)+(dy*dy)+(dz*dz);
-	
-	dx=(double)(hpt_2.x-circle_pt->x);
-	dy=(double)(hpt_2.y-circle_pt->y);
-	dz=(double)(hpt_2.z-circle_pt->z);
-	
-	hdist_2=(dx*dx)+(dy*dy)+(dz*dz);
-
-	if (hdist_1<hdist_2) {
-		hit_pt->x=hpt_1.x;
-		hit_pt->y=hpt_1.y;
-		hit_pt->z=hpt_1.z;
-	}
-	else {
-		hit_pt->x=hpt_2.x;
-		hit_pt->y=hpt_2.y;
-		hit_pt->z=hpt_2.z;
-	}
-
-	return(TRUE);
-}
-
-
-*/
 
 
 
@@ -230,39 +141,51 @@ void circle_get_point_on_radius_through_hit_point(d3pnt *circle_pnt,int radius,d
 
 
 
-inline int collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
+inline bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
 {
-	return(FALSE);
-/*
-	int			x,z,radius;
+	int			dist,chk_radius;
+	double		dx,dz;
 	
 		// object a hit candidate?
 
-	if ((obj->hidden) || (obj->pickup.on) || (obj->idx==contact->obj.ignore_idx)) return(FALSE);
-	if (((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) || ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on))) return(FALSE);
+	if ((obj->hidden) || (obj->pickup.on)) return(FALSE);
+	if (!obj->contact.object_on) return(FALSE);
 	
-		// rough y vector box check
+		// y check
 		
 	if (max->y<(obj->pnt.y-obj->size.y)) return(FALSE);
 	if (min->y>obj->pnt.y) return(FALSE);
-	
-		// rough x/z vector box checks
-		
-	x=obj->pnt.x;
-	z=obj->pnt.z;
 
-	radius=obj->size.x;
-	if (obj->size.z>radius) radius=obj->size.z;
-	
-	radius=radius>>1;
-	
-	if (max->x<(x-radius)) return(FALSE);
-	if (min->x>(x+radius)) return(FALSE);
-	if (max->z<(z-radius)) return(FALSE);
-	if (min->z>(z+radius)) return(FALSE);
+		// radius check
+
+	chk_radius=obj->size.x;
+	if (obj->size.z>chk_radius) chk_radius=obj->size.z;
+
+	chk_radius=chk_radius>>1;
+
+		// if distance between center points
+		// is greater than radius+chk_radius,
+		// then no contact
+
+	dx=(double)(circle_pnt->x-obj->pnt.x);
+	dz=(double)(circle_pnt->z-obj->pnt.z);
+
+	dist=(int)sqrt((dx*dx)+(dz*dz));
+
+	if (dist>(chk_radius+radius)) return(FALSE);
+
+		// next nearest hit?
+
+	if ((dist>(*p_cur_dist)) && ((*p_cur_dist)!=-1)) return(FALSE);
+
+		// return hit point, at edge of
+		// object circle
+
+	*p_cur_dist=dist;
+
+	circle_get_point_on_radius_through_hit_point(&obj->pnt,chk_radius,circle_pnt,cur_hit_pnt);
 	
 	return(TRUE);
-*/
 }
 
 
@@ -357,13 +280,12 @@ inline bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3
 // supergumba -- rework
 
 // TODO
-// 1.5 figure out sliding and true/false, always use TRUE for hit
-// 2. y checks
 // 2.5 add object, projectiles, etc
 // 3. make it universal
 // 4. move intersect to utility?
+// supergumba -- make sure you set:
+// obj->contact.object_on and obj->contact.proj_on!!
 
-// supergumba -- can get rid of obj_contact->face? and other stuff?
 
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
@@ -403,17 +325,22 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	obj->contact.obj_idx=-1;
 	obj->contact.proj_idx=-1;
 	obj->contact.hit_poly.mesh_idx=-1;
+	obj->contact.hit_poly.poly_idx=-1;
 	
 		// check objects
 
 	for (n=0;n!=max_obj_list;n++) {
 		chk_obj=server.obj_list.objs[n];
 		if (chk_obj==NULL) continue;
-/*
+
+		if (chk_obj==obj) continue;
+
 		if (collide_circle_check_object(&circle_pnt,radius,&min,&max,&cur_dist,chk_obj,&cur_hit_pnt)) {
 			obj->contact.obj_idx=n;
+			obj->contact.proj_idx=-1;
+			obj->contact.hit_poly.mesh_idx=-1;
+			obj->contact.hit_poly.poly_idx=-1;
 		}
-		*/
 	}
 
 		// check meshes
@@ -627,6 +554,7 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
       
 ======================================================= */
 
+// supergumba -- replace with generic routine
 bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 {
 	d3pnt					spt,ept,hpt;

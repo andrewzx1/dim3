@@ -138,8 +138,6 @@ extern void object_move_y_fall(obj_type *obj);
 extern void object_move_y_down(obj_type *obj,int ymove);
 extern void object_move_y(obj_type *obj,int ymove);
 extern void object_move_y_fly(obj_type *obj,int ymove);
-extern bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int lx,int rx,int lz,int rz);
-extern bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd);
 extern void object_move_fly(obj_type *obj);
 extern void object_move_swim(obj_type *obj);
 extern void object_move_normal(obj_type *obj);

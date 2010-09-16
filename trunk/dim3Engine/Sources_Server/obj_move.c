@@ -644,220 +644,34 @@ void object_move_y_fly(obj_type *obj,int ymove)
       
 ======================================================= */
 
-bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int lx,int rx,int lz,int rz)
+void object_move_xz(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
-	int					xadd2,yadd2,zadd2,mv,mv_x,mv_z;
-	float				f,ang;
-	double				dx,dz;
-	bool				hit;
-	d3vct				line_vct,obj_vct;
+	int				hit_obj_idx;
 
-		// special check for horizontal/vertical walls
+		// move object
 
-	if (lx==rx) {
-		xadd2=0;
-		yadd2=0;
-		zadd2=*zadd;
-
-		if (collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
-
-		obj->pnt.z+=zadd2;
-
-		xadd2=*xadd;
-		yadd2=0;
-		zadd2=0;
-
-		if (collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
-
-		obj->pnt.x+=xadd2;
-
-		return(FALSE);
-	}
-	
-	if (lz==rz) {
-		xadd2=*xadd;
-		yadd2=0;
-		zadd2=0;
-
-		if (collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
-
-		obj->pnt.x+=xadd2;
-
-		xadd2=0;
-		yadd2=0;
-		zadd2=*zadd;
-
-		if (collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
-
-		obj->pnt.z+=zadd2;
-
-		return(FALSE);
-	}
-	
-		// get angle between the line and the object movement
-			
-	obj_vct.x=(float)*xadd;
-	obj_vct.y=0.0f;
-	obj_vct.z=(float)*zadd;
-	vector_normalize(&obj_vct);
-	
-	vector_create(&line_vct,lx,0,lz,rx,0,rz);		// perpendicular vector (swap x/z)
-	
-		// get the angle between them
-
-	f=vector_dot_product(&obj_vct,&line_vct);
-	f=((float)acos(f))*RAD_to_ANG;
-
-		// get angle of wall.  If the angle between the
-		// collision lines is less than 90, then head down
-		// the line the opposite way
-
-	ang=angle_find(lx,lz,rx,rz);
-	if (f<90.0f) ang=angle_add(ang,180.0f);
-
-		// get total movement
-
-	dx=(double)*xadd;
-	dz=(double)*zadd;
-	mv=(int)sqrt((dx*dx)+(dz*dz));
-
-		// translate to wall angle
-
-	angle_get_movement(ang,mv,&mv_x,&mv_z);
-
-	xadd2=0;
-	yadd2=0;
-	zadd2=mv_z;
-
-	hit=collide_object_to_map(obj,&xadd2,&yadd2,&zadd2);
-	
-	if (!hit) {
-		obj->pnt.z+=zadd2;
-
-		xadd2=mv_x;
-		yadd2=0;
-		zadd2=0;
-
-		if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
-			obj->pnt.x+=xadd2;
-		}
-
-		return(FALSE);
+	if (!collide_object_to_map(obj,xadd,yadd,zadd)) {
+		obj->pnt.x+=(*xadd);
+		obj->pnt.z+=(*zadd);
+		return;
 	}
 
-		// try x then z movement next
-
-	xadd2=mv_x;
-	yadd2=0;
-	zadd2=0;
-
-	hit=collide_object_to_map(obj,&xadd2,&yadd2,&zadd2);
-
-	if (!hit) {
-		obj->pnt.x+=xadd2;
-
-		xadd2=0;
-		yadd2=0;
-		zadd2=mv_z;
-
-		if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
-			obj->pnt.z+=zadd2;
-		}
-	}
+		// hit something, check pushing
+		// other objects
 	
-	return(FALSE);
-}
+	if (object_push_with_object(obj,*xadd,*zadd)) return;
 
-bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
-{
-	int					xadd2,yadd2,zadd2,
-						bump_y,lx,rx,lz,rz,hit_box_idx;
-	obj_type			*cnt_obj;
-	model_draw			*draw;
-	model_type			*model;
-	poly_pointer_type	*poly_ptr;
-	map_mesh_poly_type	*poly;
+		// save hit contact and move
+		// original object, then try to move again
 
-		// attempt to move cleanly
-
-	xadd2=*xadd;
-	yadd2=*yadd;
-	zadd2=*zadd;
-
-	if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
-		obj->pnt.x+=xadd2;
-		obj->pnt.z+=zadd2;
-		return(FALSE);
+	hit_obj_idx=obj->contact.obj_idx;
+	
+	if (collide_object_to_map(obj,xadd,yadd,zadd)) {
+		obj->pnt.x+=(*xadd);
+		obj->pnt.z+=(*zadd);
 	}
 
-	return(TRUE);		// supergumba -- do we even need sliding anymore?
-						// delete this and then clear up hit_face nonsense 
-
-		// if the hit poly was wall-like, then find vector for wall
-		// and attempt to slide across it
-	
-	poly_ptr=&obj->contact.hit_poly;
-
-	if (poly_ptr->mesh_idx!=-1) {
-
-		poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
-		if (poly->box.wall_like) {
-
-				// don't slide on polys that are bump up candidates
-
-			if (obj->bump.on) {
-				bump_y=obj->pnt.y-poly->box.min.y;
-				if ((bump_y>0) && (bump_y<=obj->bump.high)) return(TRUE);
-			}
-		
-				// slide against the angle of the wall
-			
-			return(object_move_xz_slide_line(obj,xadd,yadd,zadd,poly->line.lx,poly->line.rx,poly->line.lz,poly->line.rz));
-		}
-
-			// skipped out on wall, so return hit
-
-		*xadd=xadd2;
-		*yadd=yadd2;
-		*zadd=zadd2;
-
-		return(TRUE);
-	}
-
-		// if object hit, find the collision lines
-		// between the object and slide across that
-		// line
-
-	if (obj->contact.obj_idx==-1) return(TRUE);
-
-	cnt_obj=server.obj_list.objs[obj->contact.obj_idx];
-	if (cnt_obj==NULL) return(FALSE);
-
-		// if it's pushable, then we don't slide
-
-	if (object_push_object_allowed(obj,cnt_obj)) return(TRUE);
-
-		// no hit box collisions
-
-	if (!cnt_obj->hit_box.on) {
-		if (!collide_object_to_object_get_slide_line(cnt_obj,obj->contact.hit_face,&lx,&rx,&lz,&rz)) return(TRUE);
-		return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
-	}
-
-		// hit box collisions
-
-	hit_box_idx=cnt_obj->hit_box.obj_hit_box_idx;
-	if (hit_box_idx==-1) return(TRUE);
-		
-	draw=&cnt_obj->draw;
-	if ((draw->model_idx==-1) || (!draw->on)) return(TRUE);
-	
-	model=server.model_list.models[draw->model_idx];
-	
-		// check hit boxes
-		
-	if (!collide_object_to_hit_box_get_slide_line(cnt_obj,obj->contact.hit_face,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) return(TRUE);
-	return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
+	obj->contact.obj_idx=hit_obj_idx;
 }
 
 /* =======================================================
@@ -886,7 +700,7 @@ void object_move_climb(obj_type *obj)
 
 void object_move_fly(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove,hit_obj_idx;
+	int				i_xmove,i_ymove,i_zmove;
     float			xmove,zmove,ymove;
 
 		// get object motion
@@ -907,23 +721,11 @@ void object_move_fly(obj_type *obj)
 	
 	if ((i_xmove!=0) || (i_zmove!=0) || (i_ymove!=0)) {
 
-		if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
-	
-				// pushing objects
-				
-			if (!object_push_with_object(obj,i_xmove,i_zmove)) {
-				
-				i_xmove=(int)xmove;
-				i_ymove=(int)ymove;
-				i_zmove=(int)zmove;
+			// move object
 
-				hit_obj_idx=obj->contact.obj_idx;
-				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
-				obj->contact.obj_idx=hit_obj_idx;
-			}
-		}
+		object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove);
 	
-			// force move other objects
+			// move objects standing on this object
 	
 		if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
 	}
@@ -945,7 +747,7 @@ void object_move_fly(obj_type *obj)
 
 void object_move_swim(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove,hit_obj_idx;
+	int				i_xmove,i_ymove,i_zmove;
     float			xmove,ymove,zmove,liq_speed_alter;
 
 		// get object motion
@@ -983,24 +785,12 @@ void object_move_swim(obj_type *obj)
 	i_zmove=(int)zmove;
 	
 	if ((i_xmove!=0) || (i_zmove!=0) || (i_ymove!=0)) {
-		
-		if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
-		
-				// pushing objects
 
-			if (!object_push_with_object(obj,i_xmove,i_zmove)) {
-				
-				i_xmove=(int)xmove;
-				i_ymove=(int)ymove;
-				i_zmove=(int)zmove;
+			// move object
 
-				hit_obj_idx=obj->contact.obj_idx;
-				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
-				obj->contact.obj_idx=hit_obj_idx;
-			}
-		}
+		object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove);
 
-			// move standing objects
+			// move objects standing on this object
 
 		if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
 	}
@@ -1158,33 +948,7 @@ void object_move_normal(obj_type *obj)
 	
 			// attempt to move
 			
-		while (TRUE) {
-
-			if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
-
-				// push objects, then try the movement again
-				// save the hit object uid so the hit still registers
-
-			if (!push_once) {
-
-				if (!object_push_with_object(obj,i_xmove,i_zmove)) {
-				
-					push_once=TRUE;
-
-					memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
-					
-					i_xmove=(int)xmove;
-					i_ymove=(int)ymove;
-					i_zmove=(int)zmove;
-
-					hit_obj_idx=obj->contact.obj_idx;
-
-					continue;
-				}
-			}
-		
-			break;
-		}
+		object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove);
 		
 			// potentially, pushing could reset the object
 			// hit ID, so we reset it here

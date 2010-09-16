@@ -268,7 +268,7 @@ float ray_trace_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,
 	return(hit_t);
 }
 
-float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int *hit_face,int x,int z,int lx,int rx,int tz,int bz,int ty,int by,float rang)
+float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,int rx,int tz,int bz,int ty,int by,float rang)
 {
 	int			n,idx,px[4],py[4],pz[4];
 	float		t[6],hit_t;
@@ -339,7 +339,6 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int *hit_face,int x
 		hpt->x=pt[idx].x;
 		hpt->y=pt[idx].y;
 		hpt->z=pt[idx].z;
-		*hit_face=idx;
 		return(hit_t);
 	}
 	
@@ -461,7 +460,7 @@ inline bool ray_trace_mesh_poly_bound_check(map_mesh_poly_type *poly,d3pnt *min,
       
 ======================================================= */
 
-float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face,int *hit_box_idx,obj_type *obj)
+float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_box_idx,obj_type *obj)
 {
 	int					n,nhit_box,wid,
 						x,y,z,lx,rx,tz,bz,ty,by,
@@ -494,7 +493,7 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face
 		// regular collisions
 
 	if (!obj->hit_box.on) {
-		return(ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang));
+		return(ray_trace_rotated_box(spt,vct,hpt,x,z,lx,rx,tz,bz,ty,by,rang));
 	}
 
 		// check model
@@ -526,7 +525,7 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face
 		tz=z2-wid;
 		bz=z2+wid;
 		
-		hit_t=ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang);
+		hit_t=ray_trace_rotated_box(spt,vct,hpt,x,z,lx,rx,tz,bz,ty,by,rang);
 		if (hit_t!=-1.0f) {
 			*hit_box_idx=n;
 			return(hit_t);
@@ -596,7 +595,7 @@ inline bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray
       
 ======================================================= */
 
-float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face,proj_type *proj)
+float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type *proj)
 {
 	int			wid,x,z,lx,rx,tz,bz,ty,by;
 	float		rang;
@@ -621,7 +620,7 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_
 
 		// box collisions
 
-	return(ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang));
+	return(ray_trace_rotated_box(spt,vct,hpt,x,z,lx,rx,tz,bz,ty,by,rang));
 }
 
 inline bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *max,ray_trace_contact_type *contact)
@@ -660,7 +659,7 @@ inline bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *m
 
 void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
 {
-	int							n,hit_face,hit_box_idx;
+	int							n,hit_box_idx;
 	float						t;
 	d3pnt						pt;
 	obj_type					*obj;
@@ -680,7 +679,7 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 			case ray_trace_check_item_object:
 				obj=server.obj_list.objs[item->index];
 
-				t=ray_trace_object(spt,ept,vct,&pt,&hit_face,&hit_box_idx,obj);
+				t=ray_trace_object(spt,ept,vct,&pt,&hit_box_idx,obj);
 				if (t==-1.0f) break;
 				
 					// closer hit?
@@ -695,7 +694,6 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 				ray_trace_contact_clear(contact);
 
 				contact->obj.idx=obj->idx;
-				contact->obj.hit_face=hit_face;
 				
 				ray_trace_object_set_hitbox(obj,hit_box_idx,contact);
 				break;
@@ -703,7 +701,7 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 			case ray_trace_check_item_projectile:
 				proj=server.proj_list.projs[item->index];
 				
-				t=ray_trace_projectile(spt,ept,vct,&pt,&hit_face,proj);
+				t=ray_trace_projectile(spt,ept,vct,&pt,proj);
 				if (t==-1.0f) break;
 					
 					// closer hit?
@@ -718,7 +716,6 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 				ray_trace_contact_clear(contact);
 
 				contact->proj.idx=proj->idx;
-				contact->proj.hit_face=hit_face;
 				break;
 
 			case ray_trace_check_item_mesh_poly:
@@ -765,7 +762,7 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 
 void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
 {
-	int							n,k,hit_face,hit_box_idx,poly_count;
+	int							n,k,hit_box_idx,poly_count;
 	short						*poly_idx;
 	float						t;
 	d3pnt						pt,min,max;
@@ -792,7 +789,7 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 
 			if (!ray_trace_object_bound_check(obj,&min,&max,contact)) continue;
 			
-			t=ray_trace_object(spt,ept,vct,&pt,&hit_face,&hit_box_idx,obj);
+			t=ray_trace_object(spt,ept,vct,&pt,&hit_box_idx,obj);
 			if (t==-1.0f) continue;
 			if (t>=(*hit_t)) continue;
 			
@@ -804,7 +801,6 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 			ray_trace_contact_clear(contact);
 
 			contact->obj.idx=obj->idx;
-			contact->obj.hit_face=hit_face;
 			
 			ray_trace_object_set_hitbox(obj,hit_box_idx,contact);
 		}
@@ -820,7 +816,7 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 
 			if (!ray_trace_projectile_bound_check(proj,&min,&max,contact)) continue;
 			
-			t=ray_trace_projectile(spt,ept,vct,&pt,&hit_face,proj);
+			t=ray_trace_projectile(spt,ept,vct,&pt,proj);
 			if (t==-1.0f) continue;
 			if (t>=(*hit_t)) continue;
 				
@@ -832,7 +828,6 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 			ray_trace_contact_clear(contact);
 
 			contact->proj.idx=proj->idx;
-			contact->proj.hit_face=hit_face;
 		}
 	}
 

@@ -43,8 +43,6 @@ extern bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,
 extern int collide_find_object_for_object_move(obj_type *obj,int x,int z);
 extern int collide_find_object_for_object(obj_type *obj);
 extern int collide_find_object_for_standing_object(obj_type *obj);
-extern bool collide_object_to_object_get_slide_line(obj_type *obj,int hit_face,int *p_lx,int *p_rx,int *p_lz,int *p_rz);
-extern bool collide_object_to_hit_box_get_slide_line(obj_type *obj,int hit_face,model_hit_box_type *hit_box,int *p_lx,int *p_rx,int *p_lz,int *p_rz);
 extern bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,obj_type *obj);
 extern bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj);
 extern bool collide_sphere_to_object_hit_box(int sx,int sy,int sz,int radius,obj_type *obj,model_hit_box_type *hit_box);
