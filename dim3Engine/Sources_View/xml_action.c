@@ -51,7 +51,7 @@ void read_settings_action(void)
 		
 	for (n=0;n!=ncontrol;n++) {
 		strcpy(action_display[n].display_name,control_names_str[n]);
-		action_display[n].show=TRUE;
+		action_display[n].show=FALSE;
 	}
 	
 		// read in actions from setting files
