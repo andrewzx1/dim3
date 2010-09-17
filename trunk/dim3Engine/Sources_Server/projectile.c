@@ -241,49 +241,6 @@ void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *pa
 
 /* =======================================================
 
-      Get Projectile Motion
-      
-======================================================= */
-
-void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,int *x,int *y,int *z)
-{
-	float			fx,fy,fz;
-	matrix_type		mat;
-	
-		// get motion
-		
-	fx=fy=0;
-	fz=-speed;
-	
-	matrix_rotate_x(&mat,ang_x);
-	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-	
-	matrix_rotate_y(&mat,ang_y);
-	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-	
-		// add in the forces
-		
-	fx+=proj->force.vct.x;
-	fy+=proj->force.vct.y;
-	fz+=proj->force.vct.z;
-
-	fy+=proj->gravity_add;
-	
-		// save for projectile
-		
-	proj->motion.vct.x=fx;
-	proj->motion.vct.z=fz;
-	proj->motion.vct.y=fy;
-	
-		// return as integers
-	
-	*x=(int)fx;
-	*y=(int)fy;
-	*z=(int)fz;
-}
-
-/* =======================================================
-
       Dispose Projectiles
       
 ======================================================= */

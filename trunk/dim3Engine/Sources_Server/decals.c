@@ -164,7 +164,7 @@ bool decal_segment_ok(map_mesh_poly_type *poly,int mark_idx)
       
 ======================================================= */
 
-void decal_move_with_mesh(int mesh_idx,int xmove,int ymove,int zmove)
+void decal_move_with_mesh(int mesh_idx,d3pnt *motion)
 {
 	int			n,i;
 	decal_type	*decal;
@@ -175,9 +175,9 @@ void decal_move_with_mesh(int mesh_idx,int xmove,int ymove,int zmove)
 
 		if (decal->mesh_idx==mesh_idx) {
 			for (i=0;i!=4;i++) {
-				decal->x[i]+=xmove;
-				decal->y[i]+=ymove;
-				decal->z[i]+=zmove;
+				decal->x[i]+=motion->x;
+				decal->y[i]+=motion->y;
+				decal->z[i]+=motion->z;
 			}
 		}
 	}

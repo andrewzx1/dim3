@@ -35,7 +35,6 @@ extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_t
 
 extern void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang);
 extern void projectile_set_origin(proj_type *proj);
-extern void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,int *x,int *y,int *z);
 extern void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj);
 
 extern void projectile_dispose(proj_type *proj);
@@ -55,7 +54,7 @@ extern proj_type* proj_get_attach(void);
 
 extern void projectile_gravity(proj_type *proj);
 extern void projectile_speed(proj_type *proj);
-extern bool projectile_move(proj_type *proj);
+extern void projectile_move(proj_type *proj);
 extern void projectile_turn_xz_towards(proj_type *proj,obj_type *to_obj,float turn_add);
 extern void projectile_thrust_y_towards(proj_type *proj,obj_type *to_obj,float thrust_add);
 extern void projectile_seek(proj_type *proj,obj_type *to_obj,float turn_add,float thrust_add);

@@ -315,12 +315,7 @@ void run_projectiles_slice(void)
 			
 		if (!proj->stick) {
 			projectile_speed(proj);
-
-			if (projectile_move(proj)) {
-				projectile_dispose(proj);
-				continue;
-			}
-			
+			projectile_move(proj);
 			projectile_gravity(proj);
 		}
 		

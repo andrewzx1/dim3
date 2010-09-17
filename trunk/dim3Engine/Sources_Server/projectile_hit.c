@@ -63,6 +63,7 @@ void projectile_stick(proj_type *proj)
       
 ======================================================= */
 
+// supergumba -- do this through box_map collision
 void projectile_collision(proj_type *proj)
 {
 	obj_type			*obj;

@@ -37,52 +37,52 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 
-extern bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd);
-
 /* =======================================================
 
       Get Motion Movement
       
 ======================================================= */
 
-void get_motion_movement(float ang,obj_movement *move,float *xmove,float *zmove)
+inline void get_motion_movement(float ang,obj_movement *move,d3pnt *motion)
 {
-    angle_get_movement_float(ang,move->speed,xmove,zmove);
+    angle_get_movement(ang,(int)move->speed,&motion->x,&motion->z);
     if (move->reverse) {
-        *xmove=-(*xmove);
-        *zmove=-(*zmove);
+        motion->x=-motion->x;
+        motion->z=-motion->z;
     }
 }
 
-void object_motion_setup(obj_type *obj,int *xmove,int *ymove,int *zmove)
+void object_motion_setup(obj_type *obj,d3pnt *motion)
 {
-	float			ang,xadd,zadd;
+	int				xadd,zadd;
+	float			ang;
+	d3pnt			side_motion;
 	
 		// if thrust input type, then use thrust
 		
 	if (obj->input_mode==im_thrust) {
-		*xmove=(int)(obj->thrust.vct.x+obj->force.vct.x);
-		*ymove=(int)(obj->thrust.vct.y+obj->force.vct.y);
-		*zmove=(int)(obj->thrust.vct.z+obj->force.vct.z);
+		motion->x=(int)(obj->thrust.vct.x+obj->force.vct.x);
+		motion->y=(int)(obj->thrust.vct.y+obj->force.vct.y);
+		motion->z=(int)(obj->thrust.vct.z+obj->force.vct.z);
 		return;
 	}
 	
 		// forward motion
 		
 	ang=obj->motion.ang.y;
-	get_motion_movement(ang,&obj->forward_move,xmove,zmove);
+	get_motion_movement(ang,&obj->forward_move,motion);
 	
 		// side motion
 		
 	if (obj->side_step) {
-		get_motion_movement(angle_add(ang,270),&obj->side_move,&xadd,&zadd);
-		*xmove=(*xmove)+xadd;
-		*zmove=(*zmove)+zadd;
+		get_motion_movement(angle_add(ang,270),&obj->side_move,&side_motion);
+		motion->x+=side_motion.x;
+		motion->z+=side_motion.z;
 	}
 	
 		// vertical motion
 		
-	*ymove=0;
+	motion->y=0;
 
 		// flying or swiming
 	
@@ -92,8 +92,8 @@ void object_motion_setup(obj_type *obj,int *xmove,int *ymove,int *zmove)
 			
 		if (obj->auto_walk.mode!=aw_none) {
 			if (obj->forward_move.moving) {
-				angle_get_movement_float(obj->vert_move.seek_ang,obj->vert_move.max_walk_speed,&xadd,&zadd);
-				*ymove=xadd;
+				angle_get_movement(obj->vert_move.seek_ang,(int)obj->vert_move.max_walk_speed,&xadd,&zadd);
+				motion->y=xadd;
 			}
 		}
 		
@@ -101,17 +101,17 @@ void object_motion_setup(obj_type *obj,int *xmove,int *ymove,int *zmove)
 			
 		else {
 			if (obj->vert_move.moving) {
-				*ymove=(int)obj->vert_move.speed;
-				if (obj->vert_move.reverse) *ymove=-(*ymove);
+				motion->y=(int)obj->vert_move.speed;
+				if (obj->vert_move.reverse) motion->y=-motion->y;
 			}
 		}
 	}
 
 		// add in outside forces
 
-	*xmove+=(int)obj->force.vct.x;
-	*ymove+=(int)obj->force.vct.y;
-	*zmove+=(int)obj->force.vct.z;
+	motion->x+=(int)obj->force.vct.x;
+	motion->y+=(int)obj->force.vct.y;
+	motion->z+=(int)obj->force.vct.z;
 }
 
 /* =======================================================
@@ -377,7 +377,7 @@ void object_move_xz_bounce(obj_type *obj)
       
 ======================================================= */
 
-void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slope_mv)
+void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope_mv)
 {
 	bool			same_dir;
 	
@@ -385,8 +385,8 @@ void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slo
 		
 	same_dir=FALSE;
 	
-	if ((*mv)!=0.0f) {
-		same_dir=(((*mv)<0.0f) && (slope_mv>=0.0f)) || (((*mv)>=0.0f) && (slope_mv<=0.0f));
+	if ((*mv)!=0) {
+		same_dir=(((*mv)<0) && (slope_mv>=0.0f)) || (((*mv)>=0) && (slope_mv<=0.0f));
 	}
 	
 		// if slope is greater than max gravity,
@@ -394,10 +394,10 @@ void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slo
 
 	if (slope_y>=gravity_slope_max_y) {
 		if (same_dir) {
-			*mv=-slope_mv;
+			*mv=-(int)slope_mv;
 		}
 		else {
-			*mv=0.0f;
+			*mv=0;
 		}
 		return;
 	}
@@ -408,10 +408,10 @@ void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slo
 	
 		// subtract slope push from movement
 
-	*mv-=slope_mv;
+	*mv-=(int)slope_mv;
 }
 
-void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
+void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 {
 	int					x,y,z,sy;
 	poly_pointer_type	poly;
@@ -425,9 +425,9 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 	
 		// get floor going to
 		
-	x=obj->pnt.x+(int)(*xmove);
+	x=obj->pnt.x+motion->x;
 	y=obj->pnt.y;
-	z=obj->pnt.z+(int)(*zmove);
+	z=obj->pnt.z+motion->z;
 
 	sy=pin_downward_movement_point(x,y,z,obj->size.y,&poly);
 	if (poly.mesh_idx==-1) return;
@@ -443,8 +443,8 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 
 		// apply gravity
 
-	object_motion_slope_alter_movement_single(xmove,mesh_poly->slope.y,mesh_poly->slope.move_x);
-	object_motion_slope_alter_movement_single(zmove,mesh_poly->slope.y,mesh_poly->slope.move_z);
+	object_motion_slope_alter_movement_single(&motion->x,mesh_poly->slope.y,mesh_poly->slope.move_x);
+	object_motion_slope_alter_movement_single(&motion->z,mesh_poly->slope.y,mesh_poly->slope.move_z);
 }
 
 /* =======================================================
@@ -453,18 +453,18 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
       
 ======================================================= */
 
-void object_motion_lock(obj_type *obj,float *xmove,float *ymove,float *zmove)
+void object_motion_lock(obj_type *obj,d3pnt *motion)
 {
-	if (obj->lock.x) *xmove=0;
-	if (obj->lock.y) *ymove=0;
-	if (obj->lock.z) *zmove=0;
+	if (obj->lock.x) motion->x=0;
+	if (obj->lock.y) motion->y=0;
+	if (obj->lock.z) motion->z=0;
 }
 
-void object_motion_set_script_property(obj_type *obj,float xmove,float ymove,float zmove)
+void object_motion_set_script_property(obj_type *obj,d3pnt *motion)
 {
-	obj->motion.vct.x=xmove;
-	obj->motion.vct.z=zmove;
-	obj->motion.vct.y=ymove;
+	obj->motion.vct.x=(float)motion->x;
+	obj->motion.vct.z=(float)motion->y;
+	obj->motion.vct.y=(float)motion->z;
 }
 
 /* =======================================================
@@ -644,32 +644,41 @@ void object_move_y_fly(obj_type *obj,int ymove)
       
 ======================================================= */
 
-void object_move_xz(obj_type *obj,int *xadd,int *yadd,int *zadd)
+void object_move_xz(obj_type *obj,d3pnt *motion)
 {
 	int				hit_obj_idx;
 
 		// move object
 
-	if (!collide_object_to_map(obj,xadd,yadd,zadd)) {
-		obj->pnt.x+=(*xadd);
-		obj->pnt.z+=(*zadd);
+	if (!collide_object_to_map(obj,motion)) {
+		object_motion_lock(obj,motion);
+		obj->pnt.x+=motion->x;
+		obj->pnt.z+=motion->z;
 		return;
 	}
 
-		// hit something, check pushing
-		// other objects
-	
-	if (object_push_with_object(obj,*xadd,*zadd)) return;
+		// if we hit something, see if it's a
+		// pushable object, otherwise we just
+		// add in the motion for sliding
+
+	if (!object_push_with_object(obj,motion)) {
+		object_motion_lock(obj,motion);
+		obj->pnt.x+=motion->x;
+		obj->pnt.z+=motion->z;
+		return;
+	}
 
 		// save hit contact and move
-		// original object, then try to move again
+		// original object after moving
+		// pushed object
 
 	hit_obj_idx=obj->contact.obj_idx;
 	
-	if (collide_object_to_map(obj,xadd,yadd,zadd)) {
-		obj->pnt.x+=(*xadd);
-		obj->pnt.z+=(*zadd);
-	}
+	collide_object_to_map(obj,motion);
+
+	object_motion_lock(obj,motion);
+	obj->pnt.x+=motion->x;
+	obj->pnt.z+=motion->z;
 
 	obj->contact.obj_idx=hit_obj_idx;
 }
@@ -700,34 +709,27 @@ void object_move_climb(obj_type *obj)
 
 void object_move_fly(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove;
-    float			xmove,zmove,ymove;
+	d3pnt			motion;
 
 		// get object motion
 		
-	object_motion_setup(obj,&xmove,&ymove,&zmove);
-	object_motion_lock(obj,&xmove,&ymove,&zmove);
-	object_motion_set_script_property(obj,xmove,ymove,zmove);
+	object_motion_setup(obj,&motion);
+	object_motion_lock(obj,&motion);
+	object_motion_set_script_property(obj,&motion);
  
 		// clear all contacts
 
 	object_clear_contact(&obj->contact);
-   
-        // moving x/z
-
-	i_xmove=(int)xmove;
-	i_ymove=(int)ymove;
-	i_zmove=(int)zmove;
 	
-	if ((i_xmove!=0) || (i_zmove!=0) || (i_ymove!=0)) {
+	if ((motion.x!=0) || (motion.y!=0) || (motion.z!=0)) {
 
 			// move object
 
-		object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove);
+		object_move_xz(obj,&motion);
 	
 			// move objects standing on this object
 	
-		if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
+		if ((motion.x!=0) || (motion.x!=0)) object_move_with_standing_object(obj,&motion);
 	}
 
 		// bounces
@@ -736,7 +738,7 @@ void object_move_fly(obj_type *obj)
 	
         // move Y
 
-	object_move_y_fly(obj,(int)ymove);
+	object_move_y_fly(obj,motion.y);
 }
 
 /* =======================================================
@@ -747,14 +749,14 @@ void object_move_fly(obj_type *obj)
 
 void object_move_swim(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove;
-    float			xmove,ymove,zmove,liq_speed_alter;
+    float			liq_speed_alter;
+	d3pnt			motion;
 
 		// get object motion
 		
-	object_motion_setup(obj,&xmove,&ymove,&zmove);
-	object_motion_lock(obj,&xmove,&ymove,&zmove);
-	object_motion_set_script_property(obj,xmove,ymove,zmove);
+	object_motion_setup(obj,&motion);
+	object_motion_lock(obj,&motion);
+	object_motion_set_script_property(obj,&motion);
 
 		// clear all contacts
 
@@ -764,35 +766,31 @@ void object_move_swim(obj_type *obj)
 
 	liq_speed_alter=object_liquid_alter_speed(obj);
 	
-	xmove*=liq_speed_alter;
-  	zmove*=liq_speed_alter;
-	ymove*=liq_speed_alter;
+	motion.x=(int)(((float)motion.x)*liq_speed_alter);
+	motion.y=(int)(((float)motion.y)*liq_speed_alter);
+	motion.z=(int)(((float)motion.z)*liq_speed_alter);
 
 		// falling in water
 		// if on surface, then auto-float
 
-	if (ymove>=0) object_move_y_fall(obj);
+	if (motion.y>=0) object_move_y_fall(obj);
 
-	if ((obj->air_mode==am_ground) || (ymove<0)) {
+	if ((obj->air_mode==am_ground) || (motion.y<0)) {
 		if (obj->force.vct.y>0) obj->force.vct.y=0;
 		obj->force.gravity=gravity_start_power;
 	}
 
         // moving x/z
 
-	i_xmove=(int)xmove;
-	i_ymove=(int)ymove;
-	i_zmove=(int)zmove;
-	
-	if ((i_xmove!=0) || (i_zmove!=0) || (i_ymove!=0)) {
+	if ((motion.x!=0) || (motion.y!=0) || (motion.z!=0)) {
 
 			// move object
 
-		object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove);
+		object_move_xz(obj,&motion);
 
 			// move objects standing on this object
 
-		if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
+		if ((motion.x!=0) || (motion.z!=0)) object_move_with_standing_object(obj,&motion);
 	}
 
 		// bounces
@@ -801,7 +799,7 @@ void object_move_swim(obj_type *obj)
 	
         // move Y
 
-	object_move_y_fly(obj,i_ymove);
+	object_move_y_fly(obj,motion.y);
 }
 
 /* =======================================================
@@ -812,34 +810,26 @@ void object_move_swim(obj_type *obj)
 
 void object_move_normal(obj_type *obj)
 {
-	int					i_xmove,i_ymove,i_zmove,bump_y_move,
-						start_y,fall_damage,hit_obj_idx;
-    float				xmove,zmove,ymove;
+	int					bump_y_move,start_y,fall_damage,hit_obj_idx;
 	bool				push_once,old_falling;
-	d3pnt				old_pnt;
+	d3pnt				motion,old_pnt;
 
 		// get object motion
 		
-	object_motion_setup(obj,&xmove,&ymove,&zmove);
-	object_motion_slope_alter_movement(obj,&xmove,&zmove);
-	object_motion_lock(obj,&xmove,&ymove,&zmove);
-	object_motion_set_script_property(obj,xmove,ymove,zmove);
+	object_motion_setup(obj,&motion);
+	object_motion_slope_alter_movement(obj,&motion);
+	object_motion_lock(obj,&motion);
+	object_motion_set_script_property(obj,&motion);
 
 		// save old settings
 
 	old_falling=(obj->air_mode==am_falling);
 
-		// get int version of movement
-
-	i_xmove=(int)xmove;
-	i_zmove=(int)zmove;
-	i_ymove=(int)ymove;
-
 		// special check for non-moving objects that can retain their
 		// position and not run physics.  They must be standing on
 		// non-moveable meshes and not be a player
 
-	if ((i_xmove==0) && (i_zmove==0) && (i_ymove==0) && (obj->type!=object_type_player)) {
+	if ((motion.x==0) && (motion.y==0) && (motion.z==0) && (obj->type!=object_type_player)) {
 	
 			// are we standing on a non-moving mesh?
 			// if so, mark no hit collisions and return
@@ -874,15 +864,15 @@ void object_move_normal(obj_type *obj)
 
 	start_y=obj->pnt.y;
 
-	obj->pnt.x=obj->pnt.x+i_xmove;
-	obj->pnt.z=obj->pnt.z+i_zmove;
+	obj->pnt.x=obj->pnt.x+motion.x;
+	obj->pnt.z=obj->pnt.z+motion.z;
 
-	if (i_ymove<0) {
-		object_move_y_up(obj,i_ymove);
+	if (motion.y<0) {
+		object_move_y_up(obj,motion.y);
 	}
 	else {
 		object_move_y_fall(obj);
-		object_move_y_down(obj,i_ymove);
+		object_move_y_down(obj,motion.y);
 	}
 
 	obj->pnt.x=old_pnt.x;
@@ -896,8 +886,8 @@ void object_move_normal(obj_type *obj)
 		// we only use the y change in x/z movement
 		// if we are going up
 
-	i_ymove=(obj->pnt.y-start_y)+obj->motion.last_y_change;
-	if (i_ymove>0) i_ymove=0;
+	motion.y=(obj->pnt.y-start_y)+obj->motion.last_y_change;
+	if (motion.y>0) motion.y=0;
 
 	obj->motion.last_y_change=obj->pnt.y-start_y;
 
@@ -909,7 +899,7 @@ void object_move_normal(obj_type *obj)
 	
 	if ((obj->bump.on) && (obj->air_mode==am_ground)) {
 
-		if (collide_object_to_map_bump(obj,i_xmove,i_ymove,i_zmove,&bump_y_move)) {
+		if (collide_object_to_map_bump(obj,&motion,&bump_y_move)) {
 
 			bump_y_move=pin_upward_movement_obj(obj,bump_y_move);
 			if (obj->contact.head_poly.mesh_idx==-1) {
@@ -937,7 +927,7 @@ void object_move_normal(obj_type *obj)
 		// land features that could hold up the
 		// object
 
-	if ((i_xmove!=0) || (i_zmove!=0)) {
+	if ((motion.x!=0) || (motion.z!=0)) {
 	
 			// try to move a number of times
 			// hitting another object or bumping can force the
@@ -948,7 +938,7 @@ void object_move_normal(obj_type *obj)
 	
 			// attempt to move
 			
-		object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove);
+		object_move_xz(obj,&motion);
 		
 			// potentially, pushing could reset the object
 			// hit ID, so we reset it here
@@ -957,14 +947,14 @@ void object_move_normal(obj_type *obj)
 
 			// determine if we moved or not
 
-		i_xmove=obj->pnt.x-old_pnt.x;
-		i_zmove=obj->pnt.z-old_pnt.z;
+		motion.x=obj->pnt.x-old_pnt.x;
+		motion.z=obj->pnt.z-old_pnt.z;
 			
-		if ((i_xmove!=0) || (i_zmove!=0)) {
+		if ((motion.z!=0) || (motion.z!=0)) {
 
 				// move objects standing on object
 
-			object_move_with_standing_object(obj,i_xmove,i_zmove);
+			object_move_with_standing_object(obj,&motion);
 
 				// objects with automatic bouncing
 
@@ -1165,22 +1155,27 @@ void object_move(obj_type *obj)
 
 void object_move_remote(obj_type *obj)
 {
-	int			i_xmove,i_ymove,i_zmove;
+	d3pnt			motion;
 
-	i_xmove=obj->remote.predict.move.x;
-	i_ymove=obj->remote.predict.move.y;
-	i_zmove=obj->remote.predict.move.z;
+	motion.x=obj->remote.predict.move.x;
+	motion.y=obj->remote.predict.move.y;
+	motion.z=obj->remote.predict.move.z;
 
-	if (!collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) {
-		obj->pnt.x+=i_xmove;
-		obj->pnt.z+=i_zmove;
-	}
-	else {
+		// if we hit anything, clear
+		// the prediction until next
+		// network message
+
+	if (collide_object_to_map(obj,&motion)) {
 		obj->remote.predict.move.x=0;
 		obj->remote.predict.move.z=0;
 	}
-	
-	object_move_y(obj,i_ymove);
+
+	object_motion_lock(obj,&motion);
+
+	obj->pnt.x+=motion.x;
+	obj->pnt.z+=motion.z;
+
+	object_move_y(obj,motion.y);
 }
 
 /* =======================================================

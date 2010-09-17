@@ -36,6 +36,8 @@ and can be sold or given away.
 extern map_type			map;
 extern server_type		server;
 
+// supergumba -- go over all these to find what to delete
+
 /* =======================================================
 
       Colliding Object to Object
