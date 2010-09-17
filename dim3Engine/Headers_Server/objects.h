@@ -119,7 +119,6 @@ extern void object_shove_direct(obj_type *obj,d3vct *vct);
 extern bool object_is_targetted(obj_type *obj,d3col *col);
 extern bool object_set_radar_icon(obj_type *obj,char *err_str);
 
-extern void get_motion_movement(float ang,obj_movement *move,float *xmove,float *zmove);
 extern void object_movement(obj_type *obj,obj_movement *move);
 extern void object_simple_movement(obj_type *obj,obj_movement *move);
 extern void object_gravity(obj_type *obj);
@@ -127,11 +126,8 @@ extern void object_fix_force(obj_type *obj);
 extern void object_alter_speed(obj_type *obj,float alt_speed);
 extern void object_alter_gravity(obj_type *obj,float alt_gravity);
 extern void object_fix_bump_smooth(obj_type *obj);
+extern void object_motion_lock(obj_type *obj,d3pnt *motion);
 extern void object_move_xz_bounce(obj_type *obj);
-extern void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slope_mv);
-extern void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove);
-extern void object_motion_lock(obj_type *obj,float *xmove,float *ymove,float *zmove);
-extern void object_motion_set_script_property(obj_type *obj,float xmove,float ymove,float zmove);
 extern void object_move_y_up(obj_type *obj,int ymove);
 extern void object_move_y_fall(obj_type *obj);
 extern void object_move_y_down(obj_type *obj,int ymove);
@@ -146,11 +142,11 @@ extern void object_thrust(obj_type *obj);
 extern void object_move_start(obj_type *obj);
 extern void object_move_stop(obj_type *obj);
 
-extern void object_move_with_mesh(int mesh_idx,int xmove,int zmove);
+extern void object_move_with_mesh(int mesh_idx,d3pnt *motion);
 extern void object_rotate_with_mesh(int mesh_idx,float y);
 extern bool object_push_object_allowed(obj_type *obj,obj_type *push_obj);
-extern bool object_push_with_object(obj_type *obj,int xmove,int zmove);
-extern void object_move_with_standing_object(obj_type *obj,int xmove,int zmove);
+extern bool object_push_with_object(obj_type *obj,d3pnt *motion);
+extern void object_move_with_standing_object(obj_type *obj,d3pnt *motion);
 extern void object_rotate_with_standing_object(obj_type *obj,float y);
 
 extern float object_liquid_alter_speed(obj_type *obj);

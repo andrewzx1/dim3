@@ -245,8 +245,8 @@ void group_move(group_type *group,d3pnt *mpnt)
 
 					// move objects and decals with mesh
 
-				if (move_objs) object_move_with_mesh(unit_list->idx,mpnt->x,mpnt->z);
-				decal_move_with_mesh(unit_list->idx,mpnt->x,mpnt->y,mpnt->z);
+				if (move_objs) object_move_with_mesh(unit_list->idx,mpnt);
+				decal_move_with_mesh(unit_list->idx,mpnt);
 				break;
 
 			case group_type_liquid:

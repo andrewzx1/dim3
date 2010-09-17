@@ -58,14 +58,9 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
 
 /* =======================================================
 
-      Box-Map Collisions
+      Intersection Utilities
       
 ======================================================= */
-
-
-
-
-
 
 int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt *hit_pnt)
 {
@@ -135,13 +130,13 @@ void circle_get_point_on_radius_through_hit_point(d3pnt *circle_pnt,int radius,d
 	radius_pt->z=circle_pnt->z+(int)(fr*fz);
 }
 
+/* =======================================================
 
+      Circle Intersection Routines
+      
+======================================================= */
 
-
-
-
-
-inline bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
+bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
 {
 	int			dist,chk_radius;
 	double		dx,dz;
@@ -188,9 +183,7 @@ inline bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,
 	return(TRUE);
 }
 
-
-
-inline bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,int mesh_idx,int *idx,d3pnt *cur_hit_pnt)
+bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool bump_only,int bump_high,int *p_cur_dist,int mesh_idx,int *idx,d3pnt *cur_hit_pnt)
 {
 	int					n,y,dist,poly_count,cur_dist;
 	short				*poly_idx;
@@ -219,6 +212,12 @@ inline bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3
 	for (n=0;n!=poly_count;n++) {
 
 		poly=&mesh->polys[poly_idx[n]];
+
+			// is this a bump candidate?
+
+		if (bump_only) {
+			if (!poly->draw.bump_ok) continue;
+		}
 			
 			// check poly bounds
 
@@ -256,6 +255,12 @@ inline bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3
 			}
 		}
 
+			// additional bump checks
+
+		if (bump_only) {
+			if ((max->y-poly->box.min.y)>bump_high) continue;
+		}
+
 			// is this the next nearest hit?
 
 		if ((dist<cur_dist) || (cur_dist==-1)) {
@@ -276,18 +281,13 @@ inline bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3
 	return(hit);
 }
 
+/* =======================================================
 
-// supergumba -- rework
+      Generic Collision Routines
+      
+======================================================= */
 
-// TODO
-// 2.5 add object, projectiles, etc
-// 3. make it universal
-// 4. move intersect to utility?
-// supergumba -- make sure you set:
-// obj->contact.object_on and obj->contact.proj_on!!
-
-
-bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
+bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,int skip_obj_idx,bool check_projs,int skip_proj_idx,obj_contact *contact)
 {
 	int						n,radius,cur_dist,idx;
 	d3pnt					circle_pnt,
@@ -304,11 +304,11 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		// get the moved circle
 
-	circle_pnt.x=pt->x+(*xadd);
+	circle_pnt.x=pt->x+motion->x;
 	circle_pnt.y=pt->y;
-	circle_pnt.z=pt->z+(*zadd);
+	circle_pnt.z=pt->z+motion->z;
 
-		// find min and max for object
+		// find min and max for box
 
 	min.x=circle_pnt.x-radius;
 	max.x=circle_pnt.x+radius;
@@ -322,35 +322,43 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 	cur_dist=-1;
 	
-	obj->contact.obj_idx=-1;
-	obj->contact.proj_idx=-1;
-	obj->contact.hit_poly.mesh_idx=-1;
-	obj->contact.hit_poly.poly_idx=-1;
+	contact->obj_idx=-1;
+	contact->proj_idx=-1;
+	contact->hit_poly.mesh_idx=-1;
+	contact->hit_poly.poly_idx=-1;
 	
 		// check objects
 
-	for (n=0;n!=max_obj_list;n++) {
-		chk_obj=server.obj_list.objs[n];
-		if (chk_obj==NULL) continue;
+	if (check_objs) {
+		for (n=0;n!=max_obj_list;n++) {
+			if (n==skip_obj_idx) continue;
 
-		if (chk_obj==obj) continue;
+			chk_obj=server.obj_list.objs[n];
+			if (chk_obj==NULL) continue;
 
-		if (collide_circle_check_object(&circle_pnt,radius,&min,&max,&cur_dist,chk_obj,&cur_hit_pnt)) {
-			obj->contact.obj_idx=n;
-			obj->contact.proj_idx=-1;
-			obj->contact.hit_poly.mesh_idx=-1;
-			obj->contact.hit_poly.poly_idx=-1;
+			if (collide_circle_check_object(&circle_pnt,radius,&min,&max,&cur_dist,chk_obj,&cur_hit_pnt)) {
+				contact->obj_idx=n;
+				contact->proj_idx=-1;
+				contact->hit_poly.mesh_idx=-1;
+				contact->hit_poly.poly_idx=-1;
+			}
 		}
+	}
+
+		// check projectiles
+
+	if (check_projs) {
+		// supergumba -- add this!
 	}
 
 		// check meshes
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (collide_circle_check_mesh(&circle_pnt,radius,&min,&max,&cur_dist,n,&idx,&cur_hit_pnt)) {
-			obj->contact.obj_idx=-1;
-			obj->contact.proj_idx=-1;
-			obj->contact.hit_poly.mesh_idx=n;
-			obj->contact.hit_poly.poly_idx=idx;
+		if (collide_circle_check_mesh(&circle_pnt,radius,&min,&max,FALSE,0,&cur_dist,n,&idx,&cur_hit_pnt)) {
+			contact->obj_idx=-1;
+			contact->proj_idx=-1;
+			contact->hit_poly.mesh_idx=n;
+			contact->hit_poly.poly_idx=idx;
 		}
 	}
 
@@ -359,28 +367,22 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	if (cur_dist!=-1) {
 		circle_get_point_on_radius_through_hit_point(&circle_pnt,radius,&cur_hit_pnt,&radius_pnt);
 	
-		*xadd-=radius_pnt.x-cur_hit_pnt.x;
-		*zadd-=radius_pnt.z-cur_hit_pnt.z;
+		motion->x-=radius_pnt.x-cur_hit_pnt.x;
+		motion->z-=radius_pnt.z-cur_hit_pnt.z;
 
-		return((*xadd==0)&&(*zadd==0));		// supergumba -- clear up all this return stuff
+		return(TRUE);	
 	}
 
 	return(FALSE);
 }
 
-
-
-
-
-
-
 /* =======================================================
 
-      Object-Map Collisions
+      Object Collisions
       
 ======================================================= */
 
-bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
+bool collide_object_to_map(obj_type *obj,d3pnt *motion)
 {
 	int					n,nhit_box;
 	bool				hit_box_hit;
@@ -410,7 +412,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		box_sz.y=obj->size.y;
 		if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
 
-		return(collide_object_box_to_map(obj,&obj->pnt,&box_sz,xadd,yadd,zadd));
+		return(collide_box_to_map(&obj->pnt,&box_sz,motion,obj->contact.object_on,obj->idx,FALSE,-1,&obj->contact));
 	}
 
 		// hit box collisions
@@ -431,7 +433,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 			box_sz.y=hit_box->box.size.y;
 			if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
 			
-			if (collide_object_box_to_map(obj,&pt,&box_sz,xadd,yadd,zadd)) {
+			if (collide_box_to_map(&pt,&box_sz,motion,obj->contact.object_on,obj->idx,FALSE,-1,&obj->contact)) {
 				obj->hit_box.obj_hit_box_idx=n;
 				return(TRUE);
 			}
@@ -443,106 +445,68 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	return(FALSE);
 }
 
-bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bump_y_move)
+bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move)
 {
-	int							n,k,ty,px[4],pz[4];
-	d3pnt						min,max;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	obj_type	 				*check_obj;
+	int						n,radius,cur_dist,ty,idx;
+	d3pnt					circle_pnt,cur_hit_pnt,
+							min,max;
+	obj_type				*chk_obj;
+	map_mesh_poly_type		*poly;
 
-		// get polygon and object bounds
+		// get the circle radius
 
-	collide_object_polygon(obj,xadd,zadd,px,pz);
+	radius=obj->size.x;
+	if (obj->size.z>radius) radius=obj->size.z;
 
-	min.x=max.x=px[0];
-	min.z=max.z=pz[0];
+	radius=radius>>1;
 
-	for (n=1;n!=4;n++) {
-		if (px[n]<min.x) min.x=px[n];
-		if (px[n]>max.x) max.x=px[n];
-		if (pz[n]<min.z) min.z=pz[n];
-		if (pz[n]>max.z) max.z=pz[n];
-	}
+		// get the moved circle
+
+	circle_pnt.x=obj->pnt.x+motion->x;
+	circle_pnt.y=obj->pnt.y;
+	circle_pnt.z=obj->pnt.z+motion->z;
+
+		// find min and max for object
+
+	min.x=circle_pnt.x-radius;
+	max.x=circle_pnt.x+radius;
+	min.z=circle_pnt.z-radius;
+	max.z=circle_pnt.z+radius;
 
 		// min y is top of bump over
 
-	max.y=obj->pnt.y+yadd;
+	max.y=obj->pnt.y+motion->y;
 	min.y=max.y-obj->bump.high;
 
-		// check mesh polygons
-
-		// setup collision checks
-
-	polygon_2D_collision_setup(4,px,pz);
-
-		// find polys to check
+		// check meshes
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-
-		mesh=&map.mesh.meshes[n];
-		
-			// rough bounds check
-
-		if (max.x<mesh->box.min.x) continue;
-		if (min.x>mesh->box.max.x) continue;
-		if (max.z<mesh->box.min.z) continue;
-		if (min.z>mesh->box.max.z) continue;
-		if (max.y<mesh->box.min.y) continue;
-		if (min.y>mesh->box.max.y) continue;
-			
-			// skip off and pass through meshes
-
-		if (!mesh->flag.on) continue;
-		if (mesh->flag.pass_through) continue;
-		
-			// check wall polys
-			
-		for (k=0;k!=mesh->poly_list.wall_count;k++) {
-
-			poly=&mesh->polys[mesh->poly_list.wall_idxs[k]];
-			if (!poly->draw.bump_ok) continue;
-			
-				// rough bounds check
-
-			if (max.x<poly->box.min.x) continue;
-			if (min.x>poly->box.max.x) continue;
-			if (max.z<poly->box.min.z) continue;
-			if (min.z>poly->box.max.z) continue;
-			if (max.y<poly->box.min.y) continue;
-			if (min.y>poly->box.max.y) continue;
-
-				// is it a bump up candidate?
-
-			if ((poly->box.min.y<min.y) || (poly->box.min.y>=max.y)) continue;
-			if (!polygon_2D_collision_line(poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz)) continue;
-
+		if (collide_circle_check_mesh(&circle_pnt,radius,&min,&max,TRUE,obj->bump.high,&cur_dist,n,&idx,&cur_hit_pnt)) {
+			poly=&map.mesh.meshes[n].polys[idx];
 			*bump_y_move=poly->box.min.y-obj->pnt.y;		// don't use Y added version, it bumps too much on slopes
-
 			return(TRUE);
 		}
-				
 	}
 
 		// check objects
 
 	for (n=0;n!=max_obj_list;n++) {
+		chk_obj=server.obj_list.objs[n];
+		if (chk_obj==NULL) continue;
 
-		check_obj=server.obj_list.objs[n];
-		if (check_obj==NULL) continue;
-	
-			// any collision?
+		if (chk_obj==obj) continue;
 
-		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->idx==obj->idx)) continue;
-		if (!collide_object_to_object(obj,xadd,zadd,check_obj,TRUE,FALSE)) continue;
-		
-			// is it a bump up candidate?
-		
-		ty=obj->pnt.y-obj->size.y;
-		if ((ty<min.y) || (obj->pnt.y>=max.y)) continue;
-		
-		*bump_y_move=ty-obj->pnt.y;		// don't use Y added version, it bumps too much on slopes
-		return(TRUE);
+			// bump candidate?
+
+		ty=chk_obj->pnt.y-chk_obj->size.y;
+		if ((ty<min.y) || (chk_obj->pnt.y>=max.y)) continue;
+
+			// check collision
+
+		if (collide_circle_check_object(&circle_pnt,radius,&min,&max,&cur_dist,chk_obj,&cur_hit_pnt)) {
+			*bump_y_move=ty-obj->pnt.y;		// don't use Y added version, it bumps too much on slopes
+			return(TRUE);
+		}
 	}
 
 	return(FALSE);
@@ -554,65 +518,39 @@ bool collide_object_to_map_bump(obj_type *obj,int xadd,int yadd,int zadd,int *bu
       
 ======================================================= */
 
-// supergumba -- replace with generic routine
-bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
+bool collide_projectile_to_map(proj_type *proj,d3pnt *motion)
 {
-	d3pnt					spt,ept,hpt;
-	ray_trace_contact_type	contact;
-	obj_type				*obj;
-	weapon_type				*weap;
-	proj_setup_type			*proj_setup;
+	int					skip_obj_idx,skip_proj_idx;
+	bool				check_projs;
+	d3pnt				box_sz;
+	obj_type			*obj;
+	weapon_type			*weap;
+	proj_setup_type		*proj_setup;
 
-		// setup ray trace
+		// setup contacts
 
-	spt.x=proj->pnt.x;
-	spt.y=proj->pnt.y;
-	spt.z=proj->pnt.z;
-
-	ept.x=spt.x+xadd;
-	ept.y=spt.y+yadd;
-	ept.z=spt.z+zadd;
-
-	contact.obj.on=TRUE;
-	if (proj->parent_grace>0) {
-		contact.obj.ignore_idx=proj->obj_idx;
-	}
-	else {
-		contact.obj.ignore_idx=-1;
-	}
+	skip_obj_idx=-1;
+	if (proj->parent_grace>0) skip_obj_idx=proj->obj_idx;
 	
 	obj=server.obj_list.objs[proj->obj_idx];
 	weap=obj->weap_list.weaps[proj->weap_idx];
 	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 
-	contact.proj.on=proj_setup->collision;
-	contact.proj.ignore_idx=proj->idx;
+	check_projs=FALSE;
+	skip_proj_idx=-1;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_all;
-	contact.origin=poly_ray_trace_origin_projectile;
-
-		// run trace
-
-	if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
-		proj->pnt.x=ept.x;
-		proj->pnt.y=ept.y;
-		proj->pnt.z=ept.z;
-		return(FALSE);
+	if (proj_setup->collision) {
+		check_projs=TRUE;
+		skip_proj_idx=proj->idx;
 	}
 
-		// move to hit point
+		// run the collisions
 
-	proj->pnt.x=hpt.x;
-	proj->pnt.y=hpt.y;
-	proj->pnt.z=hpt.z;
+	box_sz.x=proj->size.x;
+	box_sz.y=proj->size.y;
+	box_sz.z=proj->size.z;
 
-		// setup hits
-
-	proj->contact.obj_idx=contact.obj.idx;
-	proj->contact.proj_idx=contact.proj.idx;
-	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
-
-	return(TRUE);
+	return(collide_box_to_map(&proj->pnt,&box_sz,motion,TRUE,skip_obj_idx,check_projs,skip_proj_idx,&proj->contact));
 }
 
 /* =======================================================
@@ -620,6 +558,8 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
       Polygon APIs
       
 ======================================================= */
+
+// supergumba -- revise or remove these
 
 int collide_polygon_find_faced_by_object(obj_type *obj)
 {

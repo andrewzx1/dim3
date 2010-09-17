@@ -37,7 +37,48 @@ extern map_type				map;
 extern server_type			server;
 extern view_type			view;
 
-extern bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd);
+/* =======================================================
+
+      Get Projectile Motion
+      
+======================================================= */
+
+void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,d3pnt *motion)
+{
+	float			fx,fy,fz;
+	matrix_type		mat;
+	
+		// get motion
+		
+	fx=fy=0;
+	fz=-speed;
+	
+	matrix_rotate_x(&mat,ang_x);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	
+	matrix_rotate_y(&mat,ang_y);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	
+		// add in the forces
+		
+	fx+=proj->force.vct.x;
+	fy+=proj->force.vct.y;
+	fz+=proj->force.vct.z;
+
+	fy+=proj->gravity_add;
+	
+		// save for projectile
+		
+	proj->motion.vct.x=fx;
+	proj->motion.vct.z=fz;
+	proj->motion.vct.y=fy;
+	
+		// return as integers
+	
+	motion->x=(int)fx;
+	motion->y=(int)fy;
+	motion->z=(int)fz;
+}
 
 /* =======================================================
 
@@ -131,24 +172,42 @@ void projectile_speed(proj_type *proj)
       
 ======================================================= */
 
-bool projectile_move(proj_type *proj)
+void projectile_move(proj_type *proj)
 {
-	int				xmove,zmove,ymove;
+	d3pnt				motion;
+	poly_pointer_type	hit_poly;
 
 		// project movement
 		
-	projectile_set_motion(proj,proj->speed,proj->motion.ang.y,proj->motion.ang.x,&xmove,&ymove,&zmove);
-	if ((xmove==0) && (zmove==0) && (ymove==0)) return(FALSE);
+	projectile_set_motion(proj,proj->speed,proj->motion.ang.y,proj->motion.ang.x,&motion);
+	if ((motion.x==0) && (motion.y==0) && (motion.z==0)) return;
 		
 		// save old position
 
 	memmove(&proj->last_pnt,&proj->pnt,sizeof(d3pnt));
 	
-        // move
+        // xz move
 
-	collide_projectile_to_map(proj,xmove,ymove,zmove);
-	
-	return(FALSE);
+	collide_projectile_to_map(proj,&motion);
+
+	proj->pnt.x+=motion.x;
+	proj->pnt.z+=motion.z;
+
+		// y move
+
+	if (motion.y==0) return;
+
+	if (motion.y<0) {
+		proj->pnt.y=pin_upward_movement_point(proj->pnt.x,proj->pnt.y,proj->pnt.z,abs(motion.y),&hit_poly);
+	}
+	else {
+		proj->pnt.y=pin_downward_movement_point(proj->pnt.x,proj->pnt.y,proj->pnt.z,motion.y,&hit_poly);
+	}
+
+	if (hit_poly.mesh_idx!=-1) {
+		proj->contact.hit_poly.mesh_idx=hit_poly.mesh_idx;
+		proj->contact.hit_poly.poly_idx=hit_poly.poly_idx;
+	}
 }
 
 /* =======================================================
@@ -197,8 +256,8 @@ void projectile_seek(proj_type *proj,obj_type *to_obj,float turn_add,float thrus
 
 bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_event)
 {
-	int					xmove,ymove,zmove;
 	float				fy,slope_y;
+	d3pnt				motion;
 	poly_pointer_type	*poly;
 
 		// get polygon slope
@@ -230,9 +289,9 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 
 		// bounce projectile
 	
-	projectile_set_motion(proj,proj->speed,proj->motion.ang.y,proj->motion.ang.x,&xmove,&ymove,&zmove);
+	projectile_set_motion(proj,proj->speed,proj->motion.ang.y,proj->motion.ang.x,&motion);
 		
-	fy=((float)ymove)*reduce;
+	fy=((float)motion.y)*reduce;
 	if (fy<min_ymove) fy=min_ymove;
 		
 	proj->force.vct.y=-fy;
@@ -243,7 +302,7 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 
 	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_bounce,0);
 	
-	return(ymove==min_ymove);
+	return(motion.y==min_ymove);
 }
 
 /* =======================================================
@@ -254,9 +313,9 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 
 float projectile_reflect_angle(proj_type *proj)
 {
-	int					x,z,y;
 	float				f,ang;
 	bool				wall_hit;
+	d3pnt				motion;
 	d3vct				proj_vct,normal_vct;
 	poly_pointer_type	*poly;
 	map_mesh_poly_type	*mesh_poly;
@@ -281,11 +340,11 @@ float projectile_reflect_angle(proj_type *proj)
 
 		// get the projectile and polygon vector
 
-	projectile_set_motion(proj,1000,proj->motion.ang.y,0,&x,&y,&z);
+	projectile_set_motion(proj,1000,proj->motion.ang.y,0,&motion);
 	
-	proj_vct.x=(float)x;			// projectile vector
+	proj_vct.x=(float)motion.x;			// projectile vector
 	proj_vct.y=0.0f;
-	proj_vct.z=(float)z;
+	proj_vct.z=(float)motion.z;
 	vector_normalize(&proj_vct);
 	
 	vector_create(&normal_vct,mesh_poly->box.min.x,0,mesh_poly->box.min.z,mesh_poly->box.max.x,0,mesh_poly->box.max.z);		// perpendicular vector (swap x/z)
@@ -351,8 +410,8 @@ void projectile_reset_angle_for_flight(proj_type *proj)
 
 void projectile_eject_vector(proj_type *proj,d3vct *vct)
 {
-	int					x,y,z;
 	float				wall_ang;
+	d3pnt				motion;
 	poly_pointer_type	*poly;
 	map_mesh_poly_type	*mesh_poly;
 
@@ -361,11 +420,11 @@ void projectile_eject_vector(proj_type *proj,d3vct *vct)
 		// if it hit anything other than a polygon, just eject backwards
 		
 	if (poly->mesh_idx==-1) {
-		projectile_set_motion(proj,1000,proj->motion.ang.y,proj->motion.ang.x,&x,&y,&z);
+		projectile_set_motion(proj,1000,proj->motion.ang.y,proj->motion.ang.x,&motion);
 	
-		vct->x=-(float)x;
-		vct->y=-(float)y;
-		vct->z=-(float)z;
+		vct->x=-(float)motion.x;
+		vct->y=-(float)motion.y;
+		vct->z=-(float)motion.z;
 		vector_normalize(vct);
 		
 		return;
@@ -393,32 +452,32 @@ void projectile_eject_vector(proj_type *proj,d3vct *vct)
 	wall_ang=angle_find(mesh_poly->box.min.x,mesh_poly->box.min.z,mesh_poly->box.max.x,mesh_poly->box.max.z);
 	wall_ang=angle_add(wall_ang,90.0f);
 
-	angle_get_movement(wall_ang,1000,&x,&z);
+	angle_get_movement(wall_ang,1000,&motion.x,&motion.z);
 	
-	x=abs(x);
-	if (view.render->camera.pnt.x<proj->pnt.x) x=-x;
+	motion.x=abs(motion.x);
+	if (view.render->camera.pnt.x<proj->pnt.x) motion.x=-motion.x;
 	
-	z=abs(z);
-	if (view.render->camera.pnt.z<proj->pnt.z) z=-z;
+	motion.z=abs(motion.z);
+	if (view.render->camera.pnt.z<proj->pnt.z) motion.z=-motion.z;
 	
-	vct->x=(float)x;
+	vct->x=(float)motion.x;
 	vct->y=0;
-	vct->z=(float)z;
+	vct->z=(float)motion.z;
 	vector_normalize(vct);
 }
 
 void projectile_reflect_vector(proj_type *proj,d3vct *vct)
 {
-	int				x,y,z;
 	float			ang_y;
+	d3pnt			motion;
 
 	ang_y=projectile_reflect_angle(proj);
 
-	projectile_set_motion(proj,1000,ang_y,proj->motion.ang.x,&x,&y,&z);
+	projectile_set_motion(proj,1000,ang_y,proj->motion.ang.x,&motion);
 	
-	vct->x=(float)x;
-	vct->y=(float)y;
-	vct->z=(float)z;
+	vct->x=(float)motion.x;
+	vct->y=(float)motion.y;
+	vct->z=(float)motion.z;
 	vector_normalize(vct);
 }
 

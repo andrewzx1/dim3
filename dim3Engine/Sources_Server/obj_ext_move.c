@@ -37,50 +37,50 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 
-extern bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd);
-
 /* =======================================================
 
       Objects External Movement
       
 ======================================================= */
 
-inline bool object_move_with_move(obj_type *obj,int xmove,int zmove)
+inline bool object_move_with_move(obj_type *obj,d3pnt *motion)
 {
-	int			ymove;
+	d3pnt		move_motion;
 
-	if (obj->lock.x) xmove=0;
-	if (obj->lock.z) zmove=0;
-	ymove=0;
+	move_motion.x=motion->x;
+	move_motion.y=0;
+	move_motion.z=motion->z;
 	
-	if (collide_object_to_map(obj,&xmove,&ymove,&zmove)) return(TRUE);
+	collide_object_to_map(obj,&move_motion);
 
-	obj->pnt.x+=xmove;
-	obj->pnt.y+=ymove;
-	obj->pnt.z+=zmove;
+	object_motion_lock(obj,&move_motion);
+
+	obj->pnt.x+=move_motion.x;
+	obj->pnt.y+=move_motion.y;
+	obj->pnt.z+=move_motion.z;
 
 	return(FALSE);
 }
 
 inline bool object_turn_with_turn(obj_type *obj,d3pnt *mpt,float rot_y,float reduce)
 {
-	int			x,z;
 	bool		hit;
+	d3pnt		motion;
 
 		// get change
 
-	x=obj->pnt.x;
-	z=obj->pnt.z;
-	rotate_2D_point(&x,&z,mpt->x,mpt->z,rot_y);
+	motion.x=obj->pnt.x;
+	motion.z=obj->pnt.z;
+	rotate_2D_point(&motion.x,&motion.z,mpt->x,mpt->z,rot_y);
 
 		// reduction in movement
 
-	x=(int)((float)(x-obj->pnt.x)*reduce);
-	z=(int)((float)(z-obj->pnt.z)*reduce);
+	motion.x=(int)((float)(motion.x-obj->pnt.x)*reduce);
+	motion.z=(int)((float)(motion.z-obj->pnt.z)*reduce);
 
 		// move
 
-	hit=object_move_with_move(obj,x,z);
+	hit=object_move_with_move(obj,&motion);
 
 		// rotate player
 
@@ -228,9 +228,10 @@ bool object_move_with_mesh_check_object(obj_type *obj,int mesh_idx)
 	return(FALSE);
 }
 
-void object_move_with_mesh(int mesh_idx,int xmove,int zmove)
+void object_move_with_mesh(int mesh_idx,d3pnt *motion)
 {
-	int			n,x,z,cnt;
+	int			n,cnt;
+	d3pnt		move_motion;
 	obj_type	*obj;
 
 	for (n=0;n!=max_obj_list;n++) {
@@ -241,26 +242,28 @@ void object_move_with_mesh(int mesh_idx,int xmove,int zmove)
 			// with mesh
 
 		if (obj->contact.stand_poly.mesh_idx==mesh_idx) {
-			object_move_with_move(obj,xmove,zmove);
+			object_move_with_move(obj,motion);
 			continue;
 		}
 
 			// we might try to move multiple times to push
 			// items out of meshes
 
-		x=xmove;
-		z=zmove;
+		move_motion.x=motion->x;
+		move_motion.y=0;
+		move_motion.z=motion->z;
+
 		cnt=0;
 
 		while (object_move_with_mesh_check_object(obj,mesh_idx)) {
 			
-			if (object_move_with_move(obj,x,z)) {
+			if (object_move_with_move(obj,&move_motion)) {
 				if (obj->contact.hit_poly.mesh_idx!=mesh_idx) object_crush(obj,TRUE);
 				break;
 			}
 
-			x=x>>1;
-			z=z>>1;
+			move_motion.x=move_motion.x>>1;
+			move_motion.z=move_motion.z>>1;
 
 			cnt++;
 			if (cnt>2) break;
@@ -338,26 +341,27 @@ bool object_push_object_allowed(obj_type *obj,obj_type *push_obj)
 	return(weight_dif>=0);
 }
 
-bool object_push_with_object(obj_type *obj,int xmove,int zmove)
+bool object_push_with_object(obj_type *obj,d3pnt *motion)
 {
 	int				weight_dif;
 	float			f,f_xmove,f_zmove;
 	bool			contact_on;
+	d3pnt			move_motion;
 	obj_type		*pushed_obj;
 	
-	if (obj->contact.obj_idx==-1) return(TRUE);
+	if (obj->contact.obj_idx==-1) return(FALSE);
 	
 		// get object to push
 
 	pushed_obj=server.obj_list.objs[obj->contact.obj_idx];
-	if (pushed_obj==NULL) return(TRUE);
+	if (pushed_obj==NULL) return(FALSE);
 
-	if (!pushed_obj->contact.pushable) return(TRUE);
+	if (!pushed_obj->contact.pushable) return(FALSE);
 
 		// compare weights
 
 	weight_dif=obj->size.weight-pushed_obj->size.weight;
-	if (weight_dif<0) return(TRUE);
+	if (weight_dif<0) return(FALSE);
 
 		// calculate the force by weight
 
@@ -371,8 +375,8 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 	
 		// add in vector
 
-	f_xmove=((float)xmove)*f;
-	f_zmove=((float)zmove)*f;
+	f_xmove=((float)motion->x)*f;
+	f_zmove=((float)motion->z)*f;
 
 	f_xmove=(pushed_obj->force.vct.x+f_xmove)/2.0f;
 	f_zmove=(pushed_obj->force.vct.z+f_zmove)/2.0f;
@@ -387,14 +391,18 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 	contact_on=obj->contact.object_on;
 	obj->contact.object_on=FALSE;
 
-	object_move_with_move(pushed_obj,(int)f_xmove,(int)f_zmove);
+	move_motion.x=(int)f_xmove;
+	move_motion.y=0;
+	move_motion.z=(int)f_zmove;
+
+	object_move_with_move(pushed_obj,&move_motion);
 
 	obj->contact.object_on=contact_on;
 
-	return(FALSE);
+	return(TRUE);
 }
 
-void object_move_with_standing_object(obj_type *obj,int xmove,int zmove)
+void object_move_with_standing_object(obj_type *obj,d3pnt *motion)
 {
 	int			n;
 	obj_type	*obj_check;
@@ -404,7 +412,7 @@ void object_move_with_standing_object(obj_type *obj,int xmove,int zmove)
 		if (obj_check==NULL) continue;
 
 		if (obj_check->contact.stand_obj_idx==obj->idx) {
-			if (!obj_check->suspend) object_move_with_move(obj_check,xmove,zmove);
+			if (!obj_check->suspend) object_move_with_move(obj_check,motion);
 		}
 	}
 }
