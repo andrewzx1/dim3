@@ -54,16 +54,16 @@ void get_motion_movement(float ang,obj_movement *move,float *xmove,float *zmove)
     }
 }
 
-void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
+void object_motion_setup(obj_type *obj,int *xmove,int *ymove,int *zmove)
 {
 	float			ang,xadd,zadd;
 	
 		// if thrust input type, then use thrust
 		
 	if (obj->input_mode==im_thrust) {
-		*xmove=obj->thrust.vct.x+obj->force.vct.x;
-		*ymove=obj->thrust.vct.y+obj->force.vct.y;
-		*zmove=obj->thrust.vct.z+obj->force.vct.z;
+		*xmove=(int)(obj->thrust.vct.x+obj->force.vct.x);
+		*ymove=(int)(obj->thrust.vct.y+obj->force.vct.y);
+		*zmove=(int)(obj->thrust.vct.z+obj->force.vct.z);
 		return;
 	}
 	
@@ -101,7 +101,7 @@ void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
 			
 		else {
 			if (obj->vert_move.moving) {
-				*ymove=obj->vert_move.speed;
+				*ymove=(int)obj->vert_move.speed;
 				if (obj->vert_move.reverse) *ymove=-(*ymove);
 			}
 		}
@@ -109,9 +109,9 @@ void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
 
 		// add in outside forces
 
-	*xmove=(*xmove)+obj->force.vct.x;
-	*ymove=(*ymove)+obj->force.vct.y;
-	*zmove=(*zmove)+obj->force.vct.z;
+	*xmove+=(int)obj->force.vct.x;
+	*ymove+=(int)obj->force.vct.y;
+	*zmove+=(int)obj->force.vct.z;
 }
 
 /* =======================================================
