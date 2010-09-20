@@ -206,7 +206,7 @@ bool map_prepare_mesh_poly_bump_check_floor_hit(map_mesh_type *mesh,d3pnt *p1,d3
 {
 	int					n,k,t,z;
 	bool				p1_ok,p2_ok;
-	d3pnt				*pt,*pt2;
+	d3pnt				*pt,*line_p1,*line_p2;
 	map_mesh_poly_type	*poly;
 	
 	for (n=0;n!=mesh->npoly;n++) {
@@ -238,18 +238,50 @@ bool map_prepare_mesh_poly_bump_check_floor_hit(map_mesh_type *mesh,d3pnt *p1,d3
 
 				// get line points
 
-			pt=&mesh->vertexes[poly->v[k]];
+			line_p1=&mesh->vertexes[poly->v[k]];
 			t=k+1;
 			if (t==poly->ptsz) t=0;
-			pt2=&mesh->vertexes[poly->v[t]];
+			line_p2=&mesh->vertexes[poly->v[t]];
 
-				// solve line equation
+				// on horizontal line?
 
-			z=pt->z+(int)((float)(pt2->z-pt->z)*((float)(pt2->x-p1->x)/(float)(pt2->x-pt->x)));
+			if (line_p1->z==line_p2->z) {
+				if (line_p1->x<line_p2->x) {
+					p1_ok=((p1->x>=line_p1->x) && (p1->x<=line_p2->x));
+					p2_ok=((p2->x>=line_p1->x) && (p2->x<=line_p2->x));
+				}
+				else {
+					p1_ok=((p1->x>=line_p2->x) && (p1->x<=line_p1->x));
+					p2_ok=((p2->x>=line_p2->x) && (p2->x<=line_p1->x));
+				}
+
+				if ((p1_ok) && (p2_ok)) return(TRUE);
+				continue;
+			}
+
+				// on vertical line?
+
+			if (line_p1->x==line_p2->x) {
+				if (line_p1->z<line_p2->z) {
+					p1_ok=((p1->z>=line_p1->z) && (p1->z<=line_p2->z));
+					p2_ok=((p2->z>=line_p1->z) && (p2->z<=line_p2->z));
+				}
+				else {
+					p1_ok=((p1->z>=line_p2->z) && (p1->z<=line_p1->z));
+					p2_ok=((p2->z>=line_p2->z) && (p2->z<=line_p1->z));
+				}
+
+				if ((p1_ok) && (p2_ok)) return(TRUE);
+				continue;
+			}
+			
+				// solve the line equation
+
+			z=line_p1->z+(int)((float)(line_p2->z-line_p1->z)*((float)(line_p2->x-p1->x)/(float)(line_p2->x-line_p1->x)));
 			p1_ok|=(abs(z-p1->z)<25);
 
-			z=pt->z+(int)((float)(pt2->z-pt->z)*((float)(pt2->x-p2->x)/(float)(pt2->x-pt->x)));
-			p2_ok|=(abs(z-p1->z)<25);
+			z=pt->z+(int)((float)(line_p2->z-line_p1->z)*((float)(line_p2->x-p2->x)/(float)(line_p2->x-line_p1->x)));
+			p2_ok|=(abs(z-p2->z)<25);
 		}
 
 		if ((p1_ok) && (p2_ok)) return(TRUE);
