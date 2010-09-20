@@ -62,58 +62,87 @@ char						object_type_str[][32]={"Player","Remote","Bot Multiplayer","Bot Map","
       
 ======================================================= */
 
-void debug_header(char *txt,int count,int memory)
+void debug_dump_header(FILE *file,char *str)
 {
-	fprintf(stdout,"****************************************************************************\n");
-	if (memory!=-1) {
-		fprintf(stdout,"%s | Count=%d | Memory=%.2fM\n",txt,count,(((float)memory)/1000000.0f));
-	}
-	else {
-		fprintf(stdout,"%s | Count=%d\n",txt,count);
-	}
-	fprintf(stdout,"****************************************************************************\n\n");
+	fwrite("\r\n### ",1,6,file);
+	fwrite(str,1,strlen(str),file);
+	fwrite(" ###\r\n\r\n",1,8,file);
 }
 
-void debug_space(char *txt,int fieldsz)
+void debug_dump_info_str(FILE *file,char *title,char *value)
+{
+	fwrite(title,1,strlen(title),file);
+	fwrite(": ",1,2,file);
+	fwrite(value,1,strlen(value),file);
+	fwrite("\r\n",1,2,file);
+}
+
+void debug_dump_info_int(FILE *file,char *title,int value)
+{
+	char		str[256];
+
+	sprintf(str,"%d",value);
+
+	fwrite(title,1,strlen(title),file);
+	fwrite(": ",1,2,file);
+	fwrite(str,1,strlen(str),file);
+	fwrite("\r\n",1,2,file);
+}
+
+void debug_dump_info_enable(FILE *file,char *title,bool enabled)
+{
+	fwrite(title,1,strlen(title),file);
+	fwrite(": ",1,2,file);
+	if (enabled) {
+		fwrite("Enabled",1,7,file);
+	}
+	else {
+		fwrite("Disabled",1,8,file);
+	}
+	fwrite("\r\n",1,2,file);
+}
+
+void debug_info_return(FILE *file)
+{
+	fwrite("\r\n",1,2,file);
+}
+
+void debug_info_table_str(FILE *file,char *title,int fieldsz)
 {
 	int			strsz;
 	char		str[256];
 	
-	strsz=strlen(txt);
+	strsz=strlen(title);
 	
 	if (strsz>=fieldsz) {
-		strcpy(str,txt);
+		strcpy(str,title);
 	}
 	else {
 		memset(str,0x20,256);
-		memmove(str,txt,strsz);
+		memmove(str,title,strsz);
 	}
 	
 	str[fieldsz]=0x0;
-	fprintf(stdout,str);
+
+	fwrite(str,1,strlen(str),file);
 }
 
-void debug_int_space(int n,int fieldsz)
+void debug_info_table_int(FILE *file,int value,int fieldsz)
 {
 	char		str[256];
 	
-	sprintf(str,"%d",n);
-	debug_space(str,fieldsz);
+	sprintf(str,"%d",value);
+	debug_info_table_str(file,str,fieldsz);
 }
 
-void debug_space_tag(unsigned long tag,int fieldsz)
+void debug_info_table_tag(FILE *file,unsigned long tag,int fieldsz)
 {
 	char		str[256];
 	
 	memmove(str,&tag,4);
 	str[4]=0x0;
 	
-	debug_space(str,fieldsz);
-}
-
-void debug_return(void)
-{
-	fprintf(stdout,"\n");
+	debug_info_table_str(file,str,fieldsz);
 }
 
 /* =======================================================
@@ -125,89 +154,162 @@ void debug_return(void)
 void debug_dump(void)
 {
 	int					n,k,i,cnt,mem_sz;
+	char				str[256],path[1024];
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	model_type			*mdl;
 	script_type			*script;
 	timer_type			*timer;
-	SDL_version			*sdl_ver;
-	
-	console_add_system("Debugging info dumped to stdout");
-	
-	fprintf(stdout,"\n\n");
-	fprintf(stdout,"#########################################################################\n");
-	fprintf(stdout,"Dump: dim3 Debugging Info\n");
-	fprintf(stdout,"Engine v%s\n",dim3_version);
-	fprintf(stdout,"(c) 2000-2010 Klink! Software\n");
-	fprintf(stdout,"#########################################################################\n\n");
+	FILE				*file;
 
-		// game info
-		
-	fprintf(stdout,"**************************************\n");
-	fprintf(stdout,"Game\n");
-	fprintf(stdout,"**************************************\n\n");
-	fprintf(stdout,"Project:  %s\n",hud.project_name);
-	fprintf(stdout,"Tick: %d\n",game_time_get());
-	
-	debug_return();
-	
-		// system info
-		
-	fprintf(stdout,"**************************************\n");
-	fprintf(stdout,"System\n");
-	fprintf(stdout,"**************************************\n\n");
-	fprintf(stdout,"Arch Type: %s\n",arch_type);
+		// start output file
 
-#ifdef D3_OS_MAC
-	fprintf(stdout,"OS Version: %d.%d.%d\n",os_vers_major,os_vers_minor_1,os_vers_minor_2);
-#endif
+	file_paths_documents(&setup.file_path_setup,path,"Debug","info","txt");
 	
-	sdl_ver=(SDL_version*)SDL_Linked_Version();
-	fprintf(stdout,"SDL Version: %d.%d.%d\n",sdl_ver->major,sdl_ver->minor,sdl_ver->patch);
-// supergumba -- js -- get version
-//	fprintf(stdout,"JavaScript Version: %.2f\n",((float)JS_VERSION/100.0f));
-	fprintf(stdout,"PNG Version: %s\n",PNG_LIBPNG_VER_STRING);
-	
-	debug_return();
-	
-		// video info
-		
-	fprintf(stdout,"**************************************\n");
-	fprintf(stdout,"Video\n");
-	fprintf(stdout,"**************************************\n\n");
-	fprintf(stdout,"Engine: %s\n",render_info.name);
-	fprintf(stdout,"Screen: %d,%d at %d\n",render_info.monitor_x_sz,render_info.monitor_y_sz,render_info.monitor_refresh_rate);
-	fprintf(stdout,"Max Texture Units: %d\n",render_info.texture_unit_count);
-	fprintf(stdout,"Max Texture Size: %d\n",render_info.texture_max_size);
-	
-	if (!gl_check_shader_ok()) fprintf(stdout,"GLSL (shaders) unsupported\n");
-	if (!gl_check_frame_buffer_ok()) fprintf(stdout,"FBO unsupported\n");
-	if (!gl_check_texture_rectangle_ok()) fprintf(stdout,"Rectangular Textures unsupported\n");
-	if (!gl_check_fsaa_ok()) fprintf(stdout,"FSAA unsupported\n");
+	file=fopen(path,"w");
+	if (file==NULL) return;
 
-	fprintf(stdout,"Extensions:\n%s\n",render_info.ext_string);
+		// engine
+
+	debug_dump_header(file,"Engine");
+
+	debug_dump_info_str(file,"Engine",dim3_version);
+	debug_dump_info_str(file,"Project",hud.project_name);
+
+	debug_dump_info_str(file,"GPU",render_info.name);
+	sprintf(str,"%d,%d @ %d",render_info.monitor_x_sz,render_info.monitor_y_sz,render_info.monitor_refresh_rate);
+	debug_dump_info_str(file,"Screen",str);
+	debug_dump_info_int(file,"Max Texture Units",render_info.texture_unit_count);
+	debug_dump_info_int(file,"Max Texture Size",render_info.texture_max_size);
+	
+	debug_dump_info_enable(file,"GLSL",gl_check_shader_ok());
+	debug_dump_info_enable(file,"FBO",gl_check_frame_buffer_ok());
+	debug_dump_info_enable(file,"Rectangular Textures",gl_check_texture_rectangle_ok());
+	debug_dump_info_enable(file,"FSAA",gl_check_fsaa_ok());
+	debug_dump_info_enable(file,"Card Mipmaps",gl_check_texture_generate_mipmaps_ok());
+	debug_dump_info_enable(file,"Anisotropic Filter",gl_check_texture_anisotropic_filter_ok());
+
+	debug_dump_info_str(file,"Extensions",render_info.ext_string);
 
 #ifdef D3_OS_WINDOWS
-	fprintf(stdout,"WGL Extensions:\n%s\n",wglGetExtensionsStringARB(wglGetCurrentDC()));
+	debug_dump_info_str(file,"WGL Extensions",(char*)wglGetExtensionsStringARB(wglGetCurrentDC()));
 #endif
-	
-	debug_return();
 
-		// map info
+		// timing
+
+	debug_dump_header(file,"Timing");
+
+	debug_dump_info_int(file,"Raw Tick",game_time_get_raw());
+	debug_dump_info_int(file,"Game Tick",game_time_get());
+
+	debug_dump_info_int(file,"Server Run Tick (Game)",server.time.run_tick);
+	debug_dump_info_int(file,"Server Network Update Tick (Game)",server.time.network_update_tick);
+	debug_dump_info_int(file,"Server Network Group Synch Tick (Game)",server.time.network_group_synch_tick);
+	debug_dump_info_int(file,"Server Network Latency Ping Tick (Game)",server.time.network_latency_ping_tick);
+
+	debug_dump_info_int(file,"View Input Tick (Raw)",view.time.input_tick);
+	debug_dump_info_int(file,"View Draw Tick (Raw)",view.time.draw_tick);
+	debug_dump_info_int(file,"View Run Tick (Game)",view.time.run_tick);
+	debug_dump_info_int(file,"View Frame Draw Time",view.time.draw_time);
+
+	debug_dump_info_int(file,"Map Start Tick (Game)",map.start_game_tick);
+	debug_dump_info_int(file,"JS Timer Tick (Game)",js.timer_tick);
+
+		// map
+
+	debug_dump_header(file,"Map");
+
+	debug_dump_info_str(file,"Name",map.info.name);
+	debug_dump_info_str(file,"Author",map.info.author);
+
+	debug_dump_info_int(file,"Mesh Count",map.mesh.nmesh);
+	debug_dump_info_int(file,"Liquid Count",map.liquid.nliquid);
+	debug_dump_info_int(file,"Spot Count",map.nspot);
+	debug_dump_info_int(file,"Scenery Count",map.nscenery);
+	debug_dump_info_int(file,"Node Count",map.nnode);
+
+		// objects
+
+	debug_dump_header(file,"Objects");
+
+	debug_info_table_str(file,"Index",6);
+	debug_info_table_str(file,"Name",25);
+	debug_info_table_str(file,"Type",15);
+	debug_info_table_str(file,"Model",25);
+	debug_info_table_str(file,"Script",30);
+	debug_info_table_str(file,"Binding",10);
+	debug_info_return(file);
+	debug_info_table_str(file,"-----",6);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"--------------",15);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"-----------------------------",30);
+	debug_info_table_str(file,"---------",10);
+	debug_info_return(file);
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		debug_info_table_int(file,obj->idx,6);
+		debug_info_table_str(file,obj->name,25);
+		debug_info_table_str(file,object_type_str[obj->type],15);
 		
-	fprintf(stdout,"**************************************\n");
-	fprintf(stdout,"Map\n");
-	fprintf(stdout,"**************************************\n\n");
-	fprintf(stdout,"Map:  %s\n",map.info.name);
-	fprintf(stdout,"Author:  %s\n",map.info.author);
-	fprintf(stdout,"Mesh Count:  %d\n",map.mesh.nmesh);
-	fprintf(stdout,"Liquid Count:  %d\n",map.liquid.nliquid);
-	fprintf(stdout,"Spot Count:  %d\n",map.nspot);
-	fprintf(stdout,"Scenery Count:  %d\n",map.nscenery);
-	fprintf(stdout,"Node Count:  %d\n",map.nnode);
+		if (obj->draw.model_idx==-1) {
+			debug_info_table_str(file,"*",25);
+		}
+		else {
+			debug_info_table_str(file,server.model_list.models[obj->draw.model_idx]->name,25);
+		}
+		
+		if (!obj->scenery.on) {
+			debug_info_table_str(file,js.script_list.scripts[obj->attach.script_idx]->name,30);
+		}
+		else {
+			debug_info_table_str(file,"*",30);
+		}
+		
+		debug_info_table_str(file,bind_type_str[obj->bind],10);
+		debug_info_return(file);
+
+			// object weapons
+
+		if (object_count_weapons(obj)==0) continue;
+
+		debug_info_table_str(file,"",3);
+		debug_info_table_str(file,"Index",6);
+		debug_info_table_str(file,"Name",25);
+		debug_info_table_str(file,"Model",25);
+		debug_info_table_str(file,"Script",30);
+		debug_info_return(file);
+		debug_info_table_str(file,"",10);
+		debug_info_table_str(file,"-----",6);
+		debug_info_table_str(file,"------------------------",25);
+		debug_info_table_str(file,"------------------------",25);
+		debug_info_table_str(file,"-----------------------------",30);
+		debug_info_return(file);
+
+		for (k=0;k!=max_weap_list;k++) {
+			weap=obj->weap_list.weaps[k];
+			if (weap==NULL) continue;
+
+			debug_info_table_str(file,"",3);
+			debug_info_table_int(file,weap->idx,6);
+			debug_info_table_str(file,weap->name,25);
+			if (weap->draw.model_idx==-1) {
+				debug_info_table_str(file,"*",25);
+			}
+			else {
+				debug_info_table_str(file,server.model_list.models[weap->draw.model_idx]->name,25);
+			}
+			debug_info_table_str(file,js.script_list.scripts[weap->attach.script_idx]->name,30);
+			debug_info_return(file);
+		}
+	}
+
+	/*
 	
-	debug_return();
 	
 		// objects
 
@@ -352,7 +454,7 @@ void debug_dump(void)
 	}
 	
 	debug_return();
-	*/
+
 		// effects
 	
 	/* supergumba -- fix later
@@ -375,7 +477,7 @@ void debug_dump(void)
 	}
 	
 	debug_return();
-	*/
+
 		// scripts
 		
 	cnt=0;
@@ -435,6 +537,18 @@ void debug_dump(void)
 	debug_return();
 
 	fflush(stdout);
+*/
+
+		// finish
+
+	fclose(file);
+
+		// console message
+
+	snprintf(str,256,"Debug Info: %s",path);
+	str[255]=0x0;
+
+	console_add_system(str);
 }
 
 /* =======================================================

@@ -113,11 +113,6 @@ inline bool gl_check_fsaa_ok(void)
 	return(gl_check_value_fsaa);
 }
 
-inline bool gl_check_texture_compress_ok(void)
-{
-	return(gl_check_value_texture_compress);
-}
-
 inline bool gl_check_texture_anisotropic_filter_ok(void)
 {
 	return(gl_check_value_texture_anisotropic_filter);
