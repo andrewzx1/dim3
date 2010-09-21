@@ -183,6 +183,48 @@ bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *
 	return(TRUE);
 }
 
+bool collide_circle_check_projectile(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,proj_type *proj,d3pnt *cur_hit_pnt)
+{
+	int			dist,chk_radius;
+	double		dx,dz;
+	
+		// y check
+		
+	if (max->y<(proj->pnt.y-proj->size.y)) return(FALSE);
+	if (min->y>proj->pnt.y) return(FALSE);
+
+		// radius check
+
+	chk_radius=proj->size.x;
+	if (proj->size.z>chk_radius) chk_radius=proj->size.z;
+
+	chk_radius=chk_radius>>1;
+
+		// if distance between center points
+		// is greater than radius+chk_radius,
+		// then no contact
+
+	dx=(double)(circle_pnt->x-proj->pnt.x);
+	dz=(double)(circle_pnt->z-proj->pnt.z);
+
+	dist=(int)sqrt((dx*dx)+(dz*dz));
+
+	if (dist>(chk_radius+radius)) return(FALSE);
+
+		// next nearest hit?
+
+	if ((dist>(*p_cur_dist)) && ((*p_cur_dist)!=-1)) return(FALSE);
+
+		// return hit point, at edge of
+		// object circle
+
+	*p_cur_dist=dist;
+
+	circle_get_point_on_radius_through_hit_point(&proj->pnt,chk_radius,circle_pnt,cur_hit_pnt);
+	
+	return(TRUE);
+}
+
 bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool bump_only,int bump_high,int *p_cur_dist,int mesh_idx,int *idx,d3pnt *cur_hit_pnt)
 {
 	int					n,y,dist,poly_count,cur_dist;
@@ -294,6 +336,7 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 							cur_hit_pnt,radius_pnt,
 							min,max;
 	obj_type				*chk_obj;
+	proj_type				*chk_proj;
 
 		// get the circle radius
 
@@ -348,7 +391,19 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 		// check projectiles
 
 	if (check_projs) {
-		// supergumba -- add this!
+		for (n=0;n!=max_proj_list;n++) {
+			if (n==skip_proj_idx) continue;
+
+			chk_proj=server.proj_list.projs[n];
+			if (chk_proj==NULL) continue;
+
+			if (collide_circle_check_projectile(&circle_pnt,radius,&min,&max,&cur_dist,chk_proj,&cur_hit_pnt)) {
+				contact->obj_idx=-1;
+				contact->proj_idx=n;
+				contact->hit_poly.mesh_idx=-1;
+				contact->hit_poly.poly_idx=-1;
+			}
+		}
 	}
 
 		// check meshes
@@ -374,6 +429,30 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 	}
 
 	return(FALSE);
+}
+
+bool collide_box_to_sphere(d3pnt *sphere_pnt,int radius,d3pnt *pt,d3pnt *box_sz)
+{
+	int			dist,box_radius;
+	double		dx,dy,dz;
+
+		// get the box radius
+
+	box_radius=box_sz->x;
+	if (box_sz->z>box_radius) box_radius=box_sz->z;
+
+	box_radius=box_radius>>1;
+
+		// see if distance between points
+		// is less than both radiuses
+
+	dx=sphere_pnt->x-pt->x;
+	dy=sphere_pnt->y-pt->y;
+	dz=sphere_pnt->z-pt->z;
+
+	dist=(int)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+
+	return(dist<=(box_radius+radius));
 }
 
 /* =======================================================
@@ -512,6 +591,69 @@ bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move)
 	return(FALSE);
 }
 
+bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj)
+{
+	int					n,nhit_box;
+	bool				hit_box_hit;
+	d3pnt				pt,box_sz;
+	model_draw			*draw;
+	model_type			*model;
+	model_hit_box_type	*hit_box;
+
+		// are we using hit box hits?
+
+	hit_box_hit=FALSE;
+
+	if (obj->hit_box.on) {
+		draw=&obj->draw;
+		if ((draw->model_idx!=-1) && (!draw->on)) {
+			model=server.model_list.models[draw->model_idx];
+			hit_box_hit=TRUE;
+		}
+	}
+
+		// regular collisions
+
+	if (!hit_box_hit) {
+		box_sz.x=obj->size.x;
+		box_sz.z=obj->size.z;
+
+		box_sz.y=obj->size.y;
+		if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
+
+		return(collide_box_to_sphere(sphere_pnt,radius,&obj->pnt,&box_sz));
+	}
+
+		// hit box collisions
+
+	else {
+
+		hit_box=model->hit_boxes;
+		nhit_box=model->nhit_box;
+		
+		for (n=0;n!=nhit_box;n++) {
+			pt.x=obj->pnt.x+hit_box->box.offset.x;
+			pt.y=obj->pnt.y+hit_box->box.offset.y;
+			pt.z=obj->pnt.z+hit_box->box.offset.z;
+
+			box_sz.x=hit_box->box.size.x;
+			box_sz.z=hit_box->box.size.z;
+
+			box_sz.y=hit_box->box.size.y;
+			if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
+			
+			if (collide_box_to_sphere(sphere_pnt,radius,&obj->pnt,&box_sz)) {
+				obj->hit_box.obj_hit_box_idx=n;
+				return(TRUE);
+			}
+
+			hit_box++;
+		}
+	}
+
+	return(FALSE);
+}
+
 /* =======================================================
 
       Project-Map Collisions
@@ -551,6 +693,58 @@ bool collide_projectile_to_map(proj_type *proj,d3pnt *motion)
 	box_sz.z=proj->size.z;
 
 	return(collide_box_to_map(&proj->pnt,&box_sz,motion,TRUE,skip_obj_idx,check_projs,skip_proj_idx,&proj->contact));
+}
+
+bool collide_projectile_to_sphere(d3pnt *sphere_pnt,int radius,proj_type *proj)
+{
+	d3pnt				box_sz;
+
+	box_sz.x=proj->size.x;
+	box_sz.y=proj->size.y;
+	box_sz.z=proj->size.z;
+
+	return(collide_box_to_sphere(sphere_pnt,radius,&proj->pnt,&box_sz));
+}
+
+/* =======================================================
+
+      Pushing
+      
+======================================================= */
+
+void collide_objects_push(d3pnt *push_pnt,int radius,int force)
+{
+	int			n,yhit;
+	d3pnt		box_sz;
+	d3ang		ang;
+	obj_type	*obj;
+	
+		// check objects
+		
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
+
+		if ((obj->hidden) || (obj->suspend) || (!obj->contact.object_on)) continue;
+		
+			// check for collision
+
+		box_sz.x=obj->size.x;
+		box_sz.y=obj->size.y;
+		box_sz.z=obj->size.z;
+			
+		if (!collide_box_to_sphere(push_pnt,radius,&obj->pnt,&box_sz)) continue;
+		
+			// add push
+				
+		yhit=obj->pnt.y-(obj->size.y/2);
+		
+		ang.x=angle_find(push_pnt->y,push_pnt->z,yhit,obj->pnt.z);
+		ang.y=angle_find(push_pnt->x,push_pnt->z,obj->pnt.x,obj->pnt.z);
+		ang.z=0;
+		
+		object_push(obj,&ang,force,FALSE);
+	}
 }
 
 /* =======================================================

@@ -53,17 +53,11 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
-
-// supergumba -- get this all in order
-// melee calls to object_x and project_x
-// generalize sphere hits
-
 void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *melee,int ignore_obj_idx)
 {
-	int				n,x,y,z,xadd,zadd,damage,dist;
-	bool			hit;
+	int				n,xadd,zadd;
 	char			weap_name[name_str_len];
-	d3pnt			pnt;
+	d3pnt			pnt,sphere_pnt;
 	obj_type		*hurt_obj;
 	proj_type		*proj;
 
@@ -83,9 +77,9 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		
 	angle_get_movement(ang->y,melee->distance,&xadd,&zadd);
 
-	x=pt->x+xadd;
-	y=pt->y;
-	z=pt->z+zadd;
+	sphere_pnt.x=pt->x+xadd;
+	sphere_pnt.y=pt->y;
+	sphere_pnt.z=pt->z+zadd;
 	
 		// check objects
 		
@@ -96,41 +90,8 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
         if ((hurt_obj->hidden) || (!hurt_obj->contact.projectile_on) || (hurt_obj->idx==ignore_obj_idx)) continue;
 		
 			// melee hit?
-			
-		if (!collide_sphere_to_object(x,y,z,melee->radius,hurt_obj)) continue;
-		
-			// which hit box?
-		
-		hit=TRUE;
-		
-		if (hurt_obj->hit_box.on) {
-			hit=collide_set_object_hit_box_for_sphere_hit(x,y,z,melee->radius,hurt_obj);
-		}
 
-			// get damage
-
-		damage=melee->damage;
-
-		if (melee->fall_off) {
-			dist=distance_2D_get(x,z,hurt_obj->pnt.x,hurt_obj->pnt.z);
-			dist-=obj->size.radius;
-
-			if (dist>0) damage=damage-((damage*dist)/melee->radius);
-			if (damage<1) damage=1;
-		}
-		
-			// hurt
-            
-		if (hit) {
-			object_damage(hurt_obj,obj,weap,NULL,pt,damage);
-			if (weap==NULL) {
-				scripts_post_event_console(&obj->attach,sd_event_melee,sd_event_melee_hit,0);
-			}
-			else {
-				scripts_post_event_console(&weap->attach,sd_event_melee,sd_event_melee_hit,0);
-			}
-			scripts_post_event_console(&hurt_obj->attach,sd_event_melee,sd_event_melee_hit,0);
-		}
+		if (collide_object_to_sphere(&sphere_pnt,melee->radius,obj)) object_melee_hit(hurt_obj,obj,weap,melee,&sphere_pnt);
 	}
   
 		// check projectiles
@@ -139,13 +100,13 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
 
-		if (collide_sphere_to_projectile(x,y,z,melee->radius,proj)) projectile_hit(proj);
+		if (collide_projectile_to_sphere(&sphere_pnt,melee->radius,proj)) projectile_hit(proj);
 	}
 	
 		// do any pushes
 		
 	if (melee->force!=0) {
-		collide_push_objects(x,y,z,melee->radius,melee->force);
+		collide_objects_push(&sphere_pnt,melee->radius,melee->force);
 	}
 	
 		// if this object is the player or multiplayer/map bot,

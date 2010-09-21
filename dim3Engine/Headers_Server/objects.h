@@ -108,6 +108,7 @@ extern void object_touch(obj_type *obj);
 extern void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,proj_type *from_proj,d3pnt *melee_hit_pt,int damage);
 extern void object_click(obj_type *obj,obj_type *from_obj);
 extern void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,proj_type *source_proj,d3pnt *melee_hit_pt,int damage);
+extern void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,melee_type *melee,d3pnt *sphere_pnt);
 extern void object_heal(obj_type *obj,int heal);
 extern void object_health_recover(obj_type *obj);
 extern void object_crush(obj_type *obj,bool auto_crush);

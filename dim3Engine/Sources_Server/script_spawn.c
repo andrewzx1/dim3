@@ -437,18 +437,19 @@ JSValueRef js_spawn_shake_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_ob
 
 JSValueRef js_spawn_push_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				x,z,y,radius,force;
+	int				radius,force;
+	d3pnt			push_pnt;
 	
 	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
 	
-	x=script_value_to_int(cx,argv[0]);
-	z=script_value_to_int(cx,argv[1]);
-	y=script_value_to_int(cx,argv[2]);
+	push_pnt.x=script_value_to_int(cx,argv[0]);
+	push_pnt.z=script_value_to_int(cx,argv[1]);
+	push_pnt.y=script_value_to_int(cx,argv[2]);
 	
 	radius=script_value_to_int(cx,argv[3]);
 	force=script_value_to_int(cx,argv[4]);
 
-	collide_push_objects(x,y,z,radius,force);
+	collide_objects_push(&push_pnt,radius,force);
 	return(script_bool_to_value(cx,TRUE));
 }
 
