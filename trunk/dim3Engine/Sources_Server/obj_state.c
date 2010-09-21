@@ -516,6 +516,44 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 
 /* =======================================================
 
+      Melee Hits
+      
+======================================================= */
+
+void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,melee_type *melee,d3pnt *sphere_pnt)
+{
+	int			damage,dist;
+
+		// get damage
+
+	damage=melee->damage;
+
+	if (melee->fall_off) {
+		dist=distance_get(sphere_pnt->x,sphere_pnt->y,sphere_pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
+		dist-=obj->size.radius;
+
+		if (dist>0) damage=damage-((damage*dist)/melee->radius);
+		if (damage<1) damage=1;
+	}
+	
+		// run damage
+        
+	object_damage(obj,melee_obj,melee_weap,NULL,sphere_pnt,damage);
+
+		// events
+
+	if (melee_weap==NULL) {
+		scripts_post_event_console(&melee_obj->attach,sd_event_melee,sd_event_melee_hit,0);
+	}
+	else {
+		scripts_post_event_console(&melee_weap->attach,sd_event_melee,sd_event_melee_hit,0);
+	}
+
+	scripts_post_event_console(&obj->attach,sd_event_melee,sd_event_melee_hit,0);
+}
+
+/* =======================================================
+
       Health Recover and Heal Object
       
 ======================================================= */

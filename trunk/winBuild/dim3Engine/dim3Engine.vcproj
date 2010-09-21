@@ -2845,10 +2845,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\collision_projectile.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\map_movement.c"
 						>
 						<FileConfiguration

@@ -153,11 +153,14 @@ void debug_info_table_tag(FILE *file,unsigned long tag,int fieldsz)
 
 void debug_dump(void)
 {
-	int					n,k,i,cnt,mem_sz;
+	int					n,k,t,nvertex,ntrig;
 	char				str[256],path[1024];
+	char				timer_type_str[][32]={"Single","Repeat","Chain","Dispose"};
 	obj_type			*obj;
 	weapon_type			*weap;
+	proj_type			*proj;
 	proj_setup_type		*proj_setup;
+	effect_type			*effect;
 	model_type			*mdl;
 	script_type			*script;
 	timer_type			*timer;
@@ -272,30 +275,37 @@ void debug_dump(void)
 		
 		debug_info_table_str(file,bind_type_str[obj->bind],10);
 		debug_info_return(file);
+	}
 
-			// object weapons
+		// weapons
+
+	debug_dump_header(file,"Weapons");
+
+	debug_info_table_str(file,"Index",6);
+	debug_info_table_str(file,"Object",25);
+	debug_info_table_str(file,"Name",25);
+	debug_info_table_str(file,"Model",25);
+	debug_info_table_str(file,"Script",30);
+	debug_info_return(file);
+	debug_info_table_str(file,"-----",6);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"-----------------------------",30);
+	debug_info_return(file);
+
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj==NULL) continue;
 
 		if (object_count_weapons(obj)==0) continue;
-
-		debug_info_table_str(file,"",3);
-		debug_info_table_str(file,"Index",6);
-		debug_info_table_str(file,"Name",25);
-		debug_info_table_str(file,"Model",25);
-		debug_info_table_str(file,"Script",30);
-		debug_info_return(file);
-		debug_info_table_str(file,"",10);
-		debug_info_table_str(file,"-----",6);
-		debug_info_table_str(file,"------------------------",25);
-		debug_info_table_str(file,"------------------------",25);
-		debug_info_table_str(file,"-----------------------------",30);
-		debug_info_return(file);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 
-			debug_info_table_str(file,"",3);
 			debug_info_table_int(file,weap->idx,6);
+			debug_info_table_str(file,obj->name,25);
 			debug_info_table_str(file,weap->name,25);
 			if (weap->draw.model_idx==-1) {
 				debug_info_table_str(file,"*",25);
@@ -308,236 +318,180 @@ void debug_dump(void)
 		}
 	}
 
-	/*
-	
-	
-		// objects
+		// projectile setups
 
-	cnt=object_count_list();
+	debug_dump_header(file,"Projectile Setups");
 
-	debug_header("Objects",cnt,(sizeof(obj_type)*cnt));
-	
-	debug_space("Index",6);
-	debug_space("Name",15);
-	debug_space("Weapon",15);
-	debug_space("Projectile",15);
-	debug_space("Type",15);
-	debug_space("Model",15);
-	debug_space("Script",25);
-	debug_space("Binding",10);
-	debug_return();
-	debug_space("-----",6);
-	debug_space("--------------",15);
-	debug_space("--------------",15);
-	debug_space("--------------",15);
-	debug_space("--------------",15);
-	debug_space("--------------",15);
-	debug_space("------------------------",25);
-	debug_space("---------",10);
-	debug_return();
-	
+	debug_info_table_str(file,"Index",6);
+	debug_info_table_str(file,"Object",25);
+	debug_info_table_str(file,"Weapon",25);
+	debug_info_table_str(file,"Name",25);
+	debug_info_table_str(file,"Model",25);
+	debug_info_table_str(file,"Script",30);
+	debug_info_return(file);
+	debug_info_table_str(file,"-----",6);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"-----------------------------",30);
+	debug_info_return(file);
+
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		debug_int_space(n,6);
-		debug_space(obj->name,15);
-		debug_space("",30);
-		debug_space(object_type_str[obj->type],15);
-		
-		if (obj->draw.model_idx==-1) {
-			debug_space("*",15);
-		}
-		else {
-			debug_space(server.model_list.models[obj->draw.model_idx]->name,15);
-		}
-		
-		if (!obj->scenery.on) {
-			debug_space(js.script_list.scripts[obj->attach.script_idx]->name,25);
-		}
-		else {
-			debug_space("*",25);
-		}
-		
-		debug_space(bind_type_str[obj->bind],10);
-		debug_return();
-		
-			// object weapons
-			
+		if (object_count_weapons(obj)==0) continue;
+
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
-			if (weap!=NULL) {
-				debug_space("",25);
-				debug_space(weap->name,15);
-				debug_return();
-				
-					// weapon projectiles
-					
-				for (i=0;i!=max_proj_setup_list;i++) {
-					proj_setup=weap->proj_setup_list.proj_setups[i];
-					if (proj_setup!=NULL) {
-						debug_space("",40);
-						debug_space(proj_setup->name,15);
-						debug_return();
-					}
+			if (weap==NULL) continue;
+
+			if (weapon_count_projectile_setups(weap)==0) continue;
+
+			for (t=0;t!=max_proj_setup_list;t++) {
+				proj_setup=weap->proj_setup_list.proj_setups[t];
+				if (proj_setup==NULL) continue;
+
+				debug_info_table_int(file,proj_setup->idx,6);
+				debug_info_table_str(file,obj->name,25);
+				debug_info_table_str(file,weap->name,25);
+				debug_info_table_str(file,proj_setup->name,25);
+				if (proj_setup->draw.model_idx==-1) {
+					debug_info_table_str(file,"*",25);
 				}
+				else {
+					debug_info_table_str(file,server.model_list.models[proj_setup->draw.model_idx]->name,25);
+				}
+				debug_info_table_str(file,js.script_list.scripts[proj_setup->attach.script_idx]->name,30);
+				debug_info_return(file);
 			}
 		}
 	}
+
+		// projectiles
+
+	debug_dump_header(file,"Projectiles");
+
+	debug_info_table_str(file,"Name",25);
+	debug_info_table_str(file,"Object",25);
+	debug_info_table_str(file,"Weapon",25);
+	debug_info_return(file);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_table_str(file,"------------------------",25);
+	debug_info_return(file);
 	
-	debug_return();
+	for (n=0;n!=max_proj_list;n++) {
+		proj=server.proj_list.projs[n];
+		if (!proj->on) continue;
+
+		obj=server.obj_list.objs[proj->obj_idx];
+		weap=obj->weap_list.weaps[proj->weap_idx];
+		proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
+		
+		debug_info_table_str(file,proj_setup->name,25);
+		debug_info_table_str(file,obj->name,25);
+		debug_info_table_str(file,weap->name,25);
+		debug_info_return(file);
+	}
+
+		// effects
+
+	debug_dump_header(file,"Effects");
+	
+	debug_info_table_str(file,"Type",20);
+	debug_info_table_str(file,"Life Tick",10);
+	debug_info_return(file);
+	debug_info_table_str(file,"------------------",20);
+	debug_info_table_str(file,"---------",10);
+	debug_info_return(file);
+	
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) continue;
+
+		debug_info_table_str(file,effect_type_str[effect->effecttype],20);
+		debug_info_table_int(file,effect->life_tick,10);
+		debug_info_return(file);
+	}
 	
 		// models
 
-	mem_sz=0;
-
-	for (i=0;i!=max_model_list;i++) {
-		mdl=server.model_list.models[i];
-		if (mdl!=NULL) mem_sz+=(sizeof(model_type)+model_memory_size(mdl));
-	}
-
-	cnt=model_count_list();
-		
-	debug_header("Models",cnt,mem_sz);
+	debug_dump_header(file,"Models");
 	
-	debug_space("Name",32);
-	debug_space("Vertexes",10);
-	debug_space("Trigs",10);
-	debug_space("Ref Count",10);
-	debug_return();
-	debug_space("------------------------------",32);
-	debug_space("---------",10);
-	debug_space("---------",10);
-	debug_space("---------",10);
-	debug_return();
+	debug_info_table_str(file,"Name",25);
+	debug_info_table_str(file,"Vertexes",10);
+	debug_info_table_str(file,"Trigs",10);
+	debug_info_table_str(file,"Ref Count",10);
+	debug_info_return(file);
+	debug_info_table_str(file,"-----------------------",25);
+	debug_info_table_str(file,"---------",10);
+	debug_info_table_str(file,"---------",10);
+	debug_info_table_str(file,"---------",10);
+	debug_info_return(file);
 
-	for (i=0;i!=max_model_list;i++) {
-		mdl=server.model_list.models[i];
+	for (n=0;n!=max_model_list;n++) {
+		mdl=server.model_list.models[n];
 		if (mdl==NULL) continue;
 
-		debug_space(mdl->name,32);
-		debug_int_space(mdl->meshes[0].nvertex,10);
-		debug_int_space(mdl->meshes[0].ntrig,10);
-		debug_int_space(mdl->reference_count,10);
-		debug_return();
-		mdl++;
-	}
-	
-	debug_return();
-	
-		// projectiles
-	
-		/* supergumba -- fix later	
-	debug_header("Projectiles",server.count.proj,(sizeof(proj_type)*max_projectile));
-	
-	debug_space("Name",20);
-	debug_space("Object",20);
-	debug_space("Weapon",20);
-	debug_return();
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
-	debug_return();
-	
-	proj=server.projs;
-	
-	for ((i=0);(i!=server.count.proj);i++) {
-		obj=server.obj_list.objs[proj->obj_index];
-		weap=obj->weap_list.weaps[proj->weap_index];
-		proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_index];
-		
-		debug_space(proj_setup->name,20);
-		debug_space(obj->name,20);
-		debug_space(weap->name,20);
-		debug_return();
-		proj++;
-	}
-	
-	debug_return();
+		nvertex=ntrig=0;
 
-		// effects
-	
-	/* supergumba -- fix later
-	debug_header("Effects",server.count.effect,(sizeof(effect_type)*max_effect));
-	
-	debug_space("Type",10);
-	debug_space("Life Tick",10);
-	debug_return();
-	debug_space("---------",10);
-	debug_space("---------",10);
-	debug_return();
-	
-	effect=server.effects;
-	
-	for ((i=0);(i!=server.count.effect);i++) {
-		debug_space(effect_type_str[effect->effecttype],10);
-		debug_int_space(effect->life_tick,10);
-		debug_return();
-		effect++;
+		for (k=0;k!=mdl->nmesh;k++) {
+			nvertex+=mdl->meshes[k].nvertex;
+			ntrig+=mdl->meshes[k].ntrig;
+		}
+
+		debug_info_table_str(file,mdl->name,25);
+		debug_info_table_int(file,nvertex,10);
+		debug_info_table_int(file,ntrig,10);
+		debug_info_table_int(file,mdl->reference_count,10);
+		debug_info_return(file);
 	}
-	
-	debug_return();
 
 		// scripts
 		
-	cnt=0;
-	for (n=0;n!=max_script_list;n++) {
-		if (js.script_list.scripts[n]!=NULL) cnt++;
-	}
-		
-	debug_header("Scripts",cnt,-1);
+	debug_dump_header(file,"Scripts");
 	
-	debug_space("Name",32);
-	debug_return();
-	debug_space("-------------------------------",32);
-	debug_return();
+	debug_info_table_str(file,"Name",35);
+	debug_info_return(file);
+	debug_info_table_str(file,"----------------------------------",35);
+	debug_info_return(file);
 	
 	for (n=0;n!=max_script_list;n++) {
 		script=js.script_list.scripts[n];
 		if (script==NULL) continue;
 
-		debug_space(script->name,32);
-		debug_return();
+		debug_info_table_str(file,script->name,35);
+		debug_info_return(file);
 	}
-	
-	debug_return();
-	
+
 		// timers
 
-	cnt=0;
-
-	for (n=0;n!=max_timer_list;n++) {
-		timer=js.timer_list.timers[n];
-		if (timer!=NULL) cnt++;
-	}
-
-	debug_header("Timers",cnt,-1);
+	debug_dump_header(file,"Timers");
 	
-	debug_space("Script",32);
-	debug_space("Count",10);
-	debug_space("Type",10);
-	debug_return();
-	debug_space("-------------------------------",32);
-	debug_space("---------",10);
-	debug_space("---------",10);
-	debug_return();
+	debug_info_table_str(file,"Script",35);
+	debug_info_table_str(file,"Count",10);
+	debug_info_table_str(file,"Frequency",10);
+	debug_info_table_str(file,"Type",10);
+	debug_info_return(file);
+	debug_info_table_str(file,"----------------------------------",35);
+	debug_info_table_str(file,"---------",10);
+	debug_info_table_str(file,"---------",10);
+	debug_info_table_str(file,"---------",10);
+	debug_info_return(file);
 	
 	for (n=0;n!=max_timer_list;n++) {
 		timer=js.timer_list.timers[n];
 		if (timer==NULL) continue;
 
 		script=js.script_list.scripts[timer->attach.script_idx];
-		debug_space(script->name,32);
-		debug_int_space(timer->count,10);
-		debug_space((timer->mode==timer_mode_repeat)?"Timer":"Wait",10);
-		debug_return();
-		timer++;
+		debug_info_table_str(file,script->name,35);
+		debug_info_table_int(file,timer->count,10);
+		debug_info_table_int(file,timer->freq,10);
+		debug_info_table_str(file,timer_type_str[timer->mode==timer_mode_repeat],10);
+		debug_info_return(file);
 	}
-	
-	debug_return();
-
-	fflush(stdout);
-*/
 
 		// finish
 

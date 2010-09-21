@@ -30,7 +30,12 @@ and can be sold or given away.
 extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
 extern bool collide_object_to_map(obj_type *obj,d3pnt *motion);
 extern bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move);
+extern bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj);
+
 extern bool collide_projectile_to_map(proj_type *proj,d3pnt *motion);
+extern bool collide_projectile_to_sphere(d3pnt *sphere_pnt,int radius,proj_type *proj);
+
+extern void collide_objects_push(d3pnt *push_pnt,int radius,int force);
 
 // object collisions
 
@@ -42,22 +47,6 @@ extern bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,
 extern int collide_find_object_for_object_move(obj_type *obj,int x,int z);
 extern int collide_find_object_for_object(obj_type *obj);
 extern int collide_find_object_for_standing_object(obj_type *obj);
-extern bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,obj_type *obj);
-extern bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj);
-extern bool collide_sphere_to_object_hit_box(int sx,int sy,int sz,int radius,obj_type *obj,model_hit_box_type *hit_box);
-extern void collide_push_objects(int sx,int sy,int sz,int radius,int force);
-
-// projectile collisions
-
-extern void collide_projectile_polygon(proj_type *proj,int *px,int *pz);
-extern bool collide_projectile_to_object(proj_type *proj,obj_type *obj);
-extern bool collide_projectile_to_object_hit_box(proj_type *proj,obj_type *obj,model_hit_box_type *hit_box);
-extern bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj);
-extern int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_idx);
-extern int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_idx);
-extern bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2);
-extern int collide_find_projectile_for_projectile(proj_type *proj);
-extern bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *proj);
 
 // polygon APIs
 

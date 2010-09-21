@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "scripts.h"
 #include "projectiles.h"
 #include "physics.h"
