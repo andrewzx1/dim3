@@ -107,10 +107,10 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 	if (contact.proj.idx!=-1) {
 		hit_proj=server.proj_list.projs[contact.proj.idx];
 		hit_proj->contact.proj_idx=proj->idx;
-		projectile_hit(hit_proj,TRUE);
+		projectile_hit(hit_proj);
 	}
 
 		// hit projectile
 			
-	projectile_hit(proj,TRUE);
+	projectile_hit(proj);
 }

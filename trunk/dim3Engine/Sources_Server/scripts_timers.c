@@ -88,10 +88,21 @@ int timers_find(attach_type *attach,int mode)
 	for (n=0;n!=max_timer_list;n++) {
 		timer=js.timer_list.timers[n];
 		if (timer==NULL) continue;
+		
+			// correct mode?
+			
+		if (timer->mode!=mode) continue;
+		
+			// is this attached to same object?
 
-		if (bcmp(&timer->attach,attach,sizeof(attach_type))==0) {
-			if (timer->mode==mode) return(n);
-		}
+		if (timer->attach.thing_type!=attach->thing_type) continue;
+		if (timer->attach.script_idx!=attach->script_idx) continue;
+		if (timer->attach.obj_idx!=attach->obj_idx) continue;
+		if (timer->attach.weap_idx!=attach->weap_idx) continue;
+		if (timer->attach.proj_setup_idx!=attach->proj_setup_idx) continue;
+		if (timer->attach.proj_idx!=attach->proj_idx) continue;
+
+		return(n);
 	}
 	
 	return(-1);

@@ -64,6 +64,7 @@ and can be sold or given away.
 #define kCommandViewUVLayer1				FOUR_CHAR_CODE('uvl1')
 #define kCommandViewUVLayer2				FOUR_CHAR_CODE('uvl2')
 #define kCommandViewGotoSelect				FOUR_CHAR_CODE('goto')
+#define kCommandViewGotoMapCenter			FOUR_CHAR_CODE('gotc')
 #define kCommandViewClip					FOUR_CHAR_CODE('vwcp')
 #define kCommandViewShowHideLiquids			FOUR_CHAR_CODE('shlq')
 #define kCommandViewShowHideSpots			FOUR_CHAR_CODE('shss')

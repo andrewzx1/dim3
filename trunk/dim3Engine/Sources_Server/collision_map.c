@@ -559,8 +559,6 @@ bool collide_projectile_to_map(proj_type *proj,d3pnt *motion)
       
 ======================================================= */
 
-// supergumba -- revise or remove these
-
 int collide_polygon_find_faced_by_object(obj_type *obj)
 {
 	int						sz,xadd,zadd;

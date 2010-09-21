@@ -119,6 +119,7 @@ extern void object_shove_direct(obj_type *obj,d3vct *vct);
 extern bool object_is_targetted(obj_type *obj,d3col *col);
 extern bool object_set_radar_icon(obj_type *obj,char *err_str);
 
+extern void object_slice_setup(obj_type *obj);
 extern void object_movement(obj_type *obj,obj_movement *move);
 extern void object_simple_movement(obj_type *obj,obj_movement *move);
 extern void object_gravity(obj_type *obj);

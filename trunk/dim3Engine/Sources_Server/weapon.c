@@ -119,14 +119,10 @@ void weapon_clear_ammo(weap_ammo_type *ammo,bool use)
 
 bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str)
 {
-	weap->attach.script_idx=-1;
-	weap->attach.thing_type=thing_type_weapon;
+	scripts_clear_attach(&weap->attach,thing_type_weapon);
+
 	weap->attach.obj_idx=obj->idx;
 	weap->attach.weap_idx=weap->idx;
-	weap->attach.proj_setup_idx=-1;
-	weap->attach.proj_idx=-1;
-	
-	scripts_clear_attach_data(&weap->attach);
 
 	return(scripts_add(&weap->attach,"Weapons",weap->name,err_str));
 }
@@ -290,15 +286,6 @@ bool weapon_add(obj_type *obj,char *name)
 	
 		// the scripts
 		
-	weap->attach.script_idx=-1;
-	weap->attach.thing_type=thing_type_weapon;
-	weap->attach.obj_idx=obj->idx;
-	weap->attach.weap_idx=weap->idx;
-	weap->attach.proj_setup_idx=-1;
-	weap->attach.proj_idx=-1;
-	
-	scripts_clear_attach_data(&weap->attach);
-
 	ok=FALSE;
 	
 	if (weapon_start_script(obj,weap,err_str)) {

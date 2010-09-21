@@ -35,7 +35,7 @@ extern void scripts_engine_shutdown(void);
 extern void scripts_initialize_list(void);
 extern void scripts_free_list(void);
 
-extern void scripts_clear_attach_data(attach_type *attach);
+extern void scripts_clear_attach(attach_type *attach,int thing_type);
 
 extern bool scripts_execute(attach_type *attach,script_type *script,char *err_str);
 

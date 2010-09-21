@@ -71,14 +71,11 @@ proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
 
 bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,char *err_str)
 {
-	proj_setup->attach.script_idx=-1;
-	proj_setup->attach.thing_type=thing_type_projectile_setup;
+	scripts_clear_attach(&proj_setup->attach,thing_type_projectile_setup);
+
 	proj_setup->attach.obj_idx=obj->idx;
 	proj_setup->attach.weap_idx=weap->idx;
-	proj_setup->attach.proj_idx=-1;
 	proj_setup->attach.proj_setup_idx=proj_setup->idx;
-
-	scripts_clear_attach_data(&proj_setup->attach);
 
 	return(scripts_add(&proj_setup->attach,"Projectiles",proj_setup->name,err_str));
 }

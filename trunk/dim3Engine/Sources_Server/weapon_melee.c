@@ -53,6 +53,11 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
+
+// supergumba -- get this all in order
+// melee calls to object_x and project_x
+// generalize sphere hits
+
 void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *melee,int ignore_obj_idx)
 {
 	int				n,x,y,z,xadd,zadd,damage,dist;
@@ -134,7 +139,7 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
 
-		if (collide_sphere_to_projectile(x,y,z,melee->radius,proj)) proj->flag_melee_hit=TRUE;		// flag the melee hit
+		if (collide_sphere_to_projectile(x,y,z,melee->radius,proj)) projectile_hit(proj);
 	}
 	
 		// do any pushes

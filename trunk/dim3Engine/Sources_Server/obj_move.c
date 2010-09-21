@@ -39,6 +39,30 @@ extern server_type			server;
 
 /* =======================================================
 
+      Object Slice Setup
+      
+======================================================= */
+
+void object_slice_setup(obj_type *obj)
+{
+		// item counts
+		
+	obj->count++;
+	if (obj->item_count!=0) obj->item_count--;
+	
+		// last positions
+		
+	obj->last_pnt.x=obj->pnt.x;
+	obj->last_pnt.y=obj->pnt.y;
+	obj->last_pnt.z=obj->pnt.z;
+
+	obj->last_ang.x=obj->ang.x;
+	obj->last_ang.y=obj->ang.y;
+	obj->last_ang.z=obj->ang.z;
+}
+
+/* =======================================================
+
       Get Motion Movement
       
 ======================================================= */

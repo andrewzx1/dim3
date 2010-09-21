@@ -52,6 +52,7 @@ extern void proj_setup_attach_mark(proj_setup_type *proj_setup);
 extern proj_setup_type* proj_setup_get_attach(void);
 extern proj_type* proj_get_attach(void);
 
+extern void projectile_slice_setup(proj_type *proj);
 extern void projectile_gravity(proj_type *proj);
 extern void projectile_speed(proj_type *proj);
 extern void projectile_move(proj_type *proj);
@@ -65,9 +66,8 @@ extern void projectile_reset_angle_for_flight(proj_type *proj);
 extern void projectile_eject_vector(proj_type *proj,d3vct *vct);
 extern void projectile_reflect_vector(proj_type *proj,d3vct *vct);
 
-extern void projectile_stick(proj_type *proj);
-extern void projectile_collision(proj_type *proj);
 extern void projectile_decals(proj_type *proj,proj_setup_type *proj_setup);
-extern bool projectile_hit(proj_type *proj,bool hit_scan);
+extern void projectile_hit(proj_type *proj);
+extern bool projectile_hit_auto(proj_type *proj);
 
 extern void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang);

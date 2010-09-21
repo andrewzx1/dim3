@@ -359,7 +359,6 @@ bool game_file_save(char *err_str)
 
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
-		if (proj==NULL) continue;
 		if (!proj->on) continue;
 
 		game_file_add_chunk(&n,1,sizeof(int));
