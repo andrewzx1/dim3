@@ -35,6 +35,8 @@ and can be sold or given away.
 extern map_type			map;
 extern server_type		server;
 
+// supergumba -- what do we need delete
+
 /* =======================================================
 
       Colliding Projectile to Object

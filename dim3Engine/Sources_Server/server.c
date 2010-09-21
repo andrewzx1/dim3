@@ -215,9 +215,7 @@ bool server_game_start(bool in_file_load,int skill,char *err_str)
 	
 	server.player_obj_idx=-1;
 	
-	js.game_attach.thing_type=thing_type_game;
-
-	scripts_clear_attach_data(&js.game_attach);
+	scripts_clear_attach(&js.game_attach,thing_type_game);
 	
 	if (!scripts_add(&js.game_attach,"Game","Game",err_str)) return(FALSE);
 

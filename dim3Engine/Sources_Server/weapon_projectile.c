@@ -148,7 +148,7 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 		proj->contact.obj_idx=contact.obj.idx;
 		proj->contact.proj_idx=-1;
 
-		projectile_hit(proj,FALSE);
+		projectile_hit(proj);
 	}
 
 	return(TRUE);

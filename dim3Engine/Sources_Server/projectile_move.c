@@ -39,6 +39,27 @@ extern view_type			view;
 
 /* =======================================================
 
+      Projectile Slice Setup
+      
+======================================================= */
+
+void projectile_slice_setup(proj_type *proj)
+{
+		// counts
+		
+	proj->count++;
+	
+	if (proj->parent_grace>0) proj->parent_grace--;
+		
+		// old position
+
+	proj->last_pnt.x=proj->pnt.x;
+	proj->last_pnt.y=proj->pnt.y;
+	proj->last_pnt.z=proj->pnt.z;
+}
+
+/* =======================================================
+
       Get Projectile Motion
       
 ======================================================= */
@@ -47,6 +68,15 @@ void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,d
 {
 	float			fx,fy,fz;
 	matrix_type		mat;
+	
+		// sticking
+		
+	if (proj->stick) {
+		motion->x=0;
+		motion->y=0;
+		motion->z=0;
+		return;
+	}
 	
 		// get motion
 		
@@ -174,17 +204,15 @@ void projectile_speed(proj_type *proj)
 
 void projectile_move(proj_type *proj)
 {
+	bool				wall_hit;
 	d3pnt				motion;
 	poly_pointer_type	hit_poly;
+	
+	object_clear_contact(&proj->contact);
 
 		// project movement
 		
 	projectile_set_motion(proj,proj->speed,proj->motion.ang.y,proj->motion.ang.x,&motion);
-	if ((motion.x==0) && (motion.y==0) && (motion.z==0)) return;
-		
-		// save old position
-
-	memmove(&proj->last_pnt,&proj->pnt,sizeof(d3pnt));
 	
         // xz move
 
@@ -195,19 +223,47 @@ void projectile_move(proj_type *proj)
 
 		// y move
 
-	if (motion.y==0) return;
+	if (motion.y!=0) {
 
-	if (motion.y<0) {
-		proj->pnt.y=pin_upward_movement_point(proj->pnt.x,proj->pnt.y,proj->pnt.z,abs(motion.y),&hit_poly);
-	}
-	else {
-		proj->pnt.y=pin_downward_movement_point(proj->pnt.x,proj->pnt.y,proj->pnt.z,motion.y,&hit_poly);
-	}
+		if (motion.y<0) {
+			proj->pnt.y=pin_upward_movement_point(proj->pnt.x,proj->pnt.y,proj->pnt.z,abs(motion.y),&hit_poly);
+		}
+		else {
+			proj->pnt.y=pin_downward_movement_point(proj->pnt.x,proj->pnt.y,proj->pnt.z,motion.y,&hit_poly);
+		}
 
-	if (hit_poly.mesh_idx!=-1) {
-		proj->contact.hit_poly.mesh_idx=hit_poly.mesh_idx;
-		proj->contact.hit_poly.poly_idx=hit_poly.poly_idx;
+		if (hit_poly.mesh_idx!=-1) {
+			proj->contact.hit_poly.mesh_idx=hit_poly.mesh_idx;
+			proj->contact.hit_poly.poly_idx=hit_poly.poly_idx;
+		}
 	}
+	
+		// sticking ignores poly hits
+		
+	if (proj->stick) proj->contact.hit_poly.mesh_idx=-1;
+	
+		// hits
+		
+	if ((proj->contact.hit_poly.mesh_idx==-1) && (proj->contact.obj_idx==-1) && (proj->contact.proj_idx==-1)) return;
+	
+		// auto-bounces and reflects
+		
+	if (proj->contact.hit_poly.mesh_idx!=-1) {
+		wall_hit=collide_contact_is_wall_hit(&proj->contact.hit_poly);
+
+		if ((proj->action.reflect) && (wall_hit)) {
+			projectile_reflect(proj,TRUE);
+			return;
+		}
+		
+		if ((proj->action.bounce) && (!wall_hit)) {
+			if (!projectile_bounce(proj,proj->action.bounce_min_move,proj->action.bounce_reduce,TRUE)) return;
+		}
+	}
+	
+		// run hit
+		
+	projectile_hit(proj);
 }
 
 /* =======================================================

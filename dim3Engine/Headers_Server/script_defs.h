@@ -420,6 +420,7 @@ typedef struct		{
 typedef struct		{
 						int								thing_type,script_idx,
 														obj_idx,weap_idx,proj_setup_idx,proj_idx;
+						bool							in_event[event_main_id_count];
 						attach_msg_type					set_msg_data[max_attach_msg_data],get_msg_data[max_attach_msg_data];
 					} attach_type;
 

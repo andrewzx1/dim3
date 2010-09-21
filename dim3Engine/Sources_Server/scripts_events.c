@@ -173,7 +173,7 @@ void scripts_recursion_out(script_type *script)
 
 bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
 {
-	int				idx;
+	int				event_idx;
 	JSValueRef		rval,exception,argv[5];
 	script_type		*script;
 	attach_type		old_attach;
@@ -195,16 +195,25 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 
 		// is this an attached event?
 
-	idx=-1;
+	event_idx=main_event-event_main_id_start;
 
 	if (script->event_list.on) {
-		idx=main_event-event_main_id_start;
-		if (script->event_list.calls[idx].func==NULL) return(TRUE);
+		if (script->event_list.calls[event_idx].func==NULL) return(TRUE);
 	}
+	
+		// can only enter an event once
+		// to stop infinite loops
+		
+	if (attach->in_event[event_idx]) return(TRUE);
+	
+	attach->in_event[event_idx]=TRUE;
 
 		// enter recursion
 
-	if (!scripts_recursion_in(script,err_str)) return(FALSE);
+	if (!scripts_recursion_in(script,err_str)) {
+		attach->in_event[event_idx]=FALSE;
+		return(FALSE);
+	}
 	
 		// save current attach in case event called within another script
 		
@@ -218,13 +227,13 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		// supergumba -- for now we handle both methods, but
 		// in the future we should replace with a single method
 
-	if (idx!=-1) {
+	if (script->event_list.on) {
 		argv[0]=(JSValueRef)script->obj;
 		argv[1]=script_int_to_value(script->cx,sub_event);
 		argv[2]=script_int_to_value(script->cx,id);
 		argv[3]=script_int_to_value(script->cx,game_time_get());
 
-		rval=JSObjectCallAsFunction(script->cx,script->event_list.calls[idx].func,NULL,4,argv,&exception);
+		rval=JSObjectCallAsFunction(script->cx,script->event_list.calls[event_idx].func,NULL,4,argv,&exception);
 		if (rval==NULL) {
 			script_exception_to_string(script->cx,exception,err_str,256);
 		}
@@ -250,6 +259,10 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		// leave recursion
 
 	scripts_recursion_out(script);
+	
+		// leave event
+		
+	attach->in_event[event_idx]=FALSE;
 	
 	return(err_str[0]==0x0);
 }

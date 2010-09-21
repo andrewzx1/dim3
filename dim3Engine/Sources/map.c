@@ -366,9 +366,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_draw(50);
 		
-	js.course_attach.thing_type=thing_type_course;
-
-	scripts_clear_attach_data(&js.course_attach);
+	scripts_clear_attach(&js.course_attach,thing_type_course);
 	
 	if (!scripts_add(&js.course_attach,"Courses",map.info.name,err_str)) {
 		progress_shutdown();

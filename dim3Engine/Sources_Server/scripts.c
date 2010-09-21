@@ -107,10 +107,27 @@ void scripts_clear_event_list(script_type *script)
 	}
 }
 
-void scripts_clear_attach_data(attach_type *attach)
+void scripts_clear_attach(attach_type *attach,int thing_type)
 {
 	int				n;
+	
+		// item attachments
+		
+	attach->script_idx=-1;
+	attach->thing_type=thing_type;
+	attach->obj_idx=-1;
+	attach->weap_idx=-1;
+	attach->proj_idx=-1;
+	attach->proj_setup_idx=-1;
+	
+		// in event flags
+		
+	for (n=0;n!=event_main_id_count;n++) {
+		attach->in_event[n]=FALSE;
+	}
 
+		// messages
+		
 	for (n=0;n!=max_attach_msg_data;n++) {
 		attach->set_msg_data[n].type=d3_jsval_type_number;
 		attach->set_msg_data[n].data.d3_number=0.0f;

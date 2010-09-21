@@ -108,15 +108,9 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
 
 void run_object_single(obj_type *obj)
 {
-		// remember last positions
+		// slice setup
 		
-	memmove(&obj->last_pnt,&obj->pnt,sizeof(d3pnt));
-	memmove(&obj->last_ang,&obj->ang,sizeof(d3ang));
-
-		// item counts
-		
-	obj->count++;
-	if (obj->item_count!=0) obj->item_count--;
+	object_slice_setup(obj);
 	
 		// turning and looking
 		
@@ -303,30 +297,14 @@ void run_projectiles_slice(void)
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
-
-		object_clear_contact(&proj->contact);
 	   
-			// projectile counts
-			
-		proj->count++;
-		if (proj->parent_grace>0) proj->parent_grace--;
-
-			// moving projectiles
-			
-		if (!proj->stick) {
-			projectile_speed(proj);
-			projectile_move(proj);
-			projectile_gravity(proj);
-		}
+		projectile_slice_setup(proj);
 		
-			// stuck projectiles
+		if (projectile_hit_auto(proj)) continue;
 			
-		else {
-			projectile_stick(proj);
-		}
-		
-		projectile_collision(proj);
-		projectile_hit(proj,FALSE);
+		projectile_speed(proj);
+		projectile_gravity(proj);
+		projectile_move(proj);
 	}
 }
 

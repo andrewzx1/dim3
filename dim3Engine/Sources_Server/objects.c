@@ -744,13 +744,9 @@ int object_create(char *name,int type,int bind)
 
 bool object_start_script(obj_type *obj,char *err_str)
 {
-	obj->attach.thing_type=thing_type_object;
+	scripts_clear_attach(&obj->attach,thing_type_object);
+	
 	obj->attach.obj_idx=obj->idx;
-	obj->attach.weap_idx=-1;
-	obj->attach.proj_setup_idx=-1;
-	obj->attach.proj_idx=-1;
-
-	scripts_clear_attach_data(&obj->attach);
 
 		// was it a non-script scenery
 		// this is usually something set when re-loading

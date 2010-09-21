@@ -85,9 +85,7 @@ int projectile_count_list(void)
 	count=0;
 
 	for (n=0;n!=max_proj_list;n++) {
-		if (server.proj_list.projs[n]!=NULL) {
-			if (server.proj_list.projs[n]->on) count++;
-		}
+		if (server.proj_list.projs[n]->on) count++;
 	}
 
 	return(count);
@@ -177,14 +175,13 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 
 		// scripts
 		
-	proj->attach.thing_type=thing_type_projectile;
+	scripts_clear_attach(&proj->attach,thing_type_projectile);
+
 	proj->attach.obj_idx=obj->idx;
 	proj->attach.weap_idx=weap->idx;
 	proj->attach.proj_setup_idx=proj_setup->idx;
 	proj->attach.proj_idx=idx;
 	proj->attach.script_idx=proj_setup->attach.script_idx;
-
-	scripts_clear_attach_data(&proj->attach);
 
     return(proj);
 }
@@ -252,7 +249,7 @@ void projectile_dispose(proj_type *proj)
 	if (!proj->on) return;
 
 		// delete all timers
-			
+		
 	timers_clear(&proj->attach,timer_mode_repeat);
 	timers_clear(&proj->attach,timer_mode_single);
 

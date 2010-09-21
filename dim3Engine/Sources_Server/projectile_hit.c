@@ -43,55 +43,6 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Projectile Sticking
-      
-======================================================= */
-
-void projectile_stick(proj_type *proj)
-{
-    int				ignore_obj_idx;
-	
-	ignore_obj_idx=-1;
-   	if (proj->parent_grace>0) ignore_obj_idx=proj->obj_idx;
-    
-	proj->contact.obj_idx=collide_find_object_for_projectile_hit(proj,ignore_obj_idx);
-}	
-
-/* =======================================================
-
-      Projectile Collisions
-      
-======================================================= */
-
-// supergumba -- do this through box_map collision
-void projectile_collision(proj_type *proj)
-{
-	obj_type			*obj;
-	weapon_type			*weap;
-	proj_setup_type		*proj_setup;
-	
-		// projectile collisions on?
-	
-	obj=server.obj_list.objs[proj->obj_idx];
-	weap=obj->weap_list.weaps[proj->weap_idx];
-		
-	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
-	if (!proj_setup->collision) return;
-    
-        // was there a melee hit?
-        
-    if (proj->flag_melee_hit) {
-		proj->contact.melee=TRUE;
-        return;
-    }
-    
-        // check projectile collisions
-		
-	proj->contact.proj_idx=collide_find_projectile_for_projectile(proj);
-}
-        
-/* =======================================================
-
       Projectiles Decals
       
 ======================================================= */
@@ -119,50 +70,22 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 
 /* =======================================================
 
-      Projectiles Hits
+      Projectiles Hit
       
 ======================================================= */
 
-bool projectile_hit(proj_type *proj,bool hit_scan)
+void projectile_hit(proj_type *proj)
 {
 	int					idx;
-	bool				auto_hit,wall_hit;
     obj_type			*obj,*hurt_obj;
     weapon_type			*weap;
 	proj_setup_type		*proj_setup;
-	
-		// auto-hit?
-		
-	auto_hit=FALSE;
-	if (proj->action.hit_tick!=0) {
-		auto_hit=((proj->start_tick+proj->action.hit_tick)<=game_time_get());
-	}
-	
-		// hits?
-    
-	if (!hit_scan) {			// hit scans always hit
-		if ((proj->contact.hit_poly.mesh_idx==-1) && (proj->contact.obj_idx==-1) && (proj->contact.proj_idx==-1) && (!proj->contact.melee) && (!auto_hit)) return(FALSE);
-	}
-	
-		// auto-bounces and reflects
-		
-	if ((!auto_hit) && (!hit_scan) && (proj->contact.hit_poly.mesh_idx!=-1)) {
-		wall_hit=collide_contact_is_wall_hit(&proj->contact.hit_poly);
-
-		if ((proj->action.reflect) && (wall_hit)) {
-			projectile_reflect(proj,TRUE);
-			return(FALSE);
-		}
-		if ((proj->action.bounce) && (!wall_hit)) {
-			if (!projectile_bounce(proj,proj->action.bounce_min_move,proj->action.bounce_reduce,TRUE)) return(FALSE);
-		}
-	}
 	
 		// call projectile hit
 
 	scripts_post_event_console(&proj->attach,sd_event_hit,0,0);
 	
-	if (!proj->script_dispose) return(FALSE);
+	if (!proj->script_dispose) return;
   
         // object damage
 
@@ -190,7 +113,21 @@ bool projectile_hit(proj_type *proj,bool hit_scan)
 		// dispose of projectile
 		
 	projectile_dispose(proj);
+}
 
+/* =======================================================
+
+      Projectile Auto Hits
+      
+======================================================= */
+
+bool projectile_hit_auto(proj_type *proj)
+{
+	if (proj->action.hit_tick==0) return(FALSE);
+	if ((proj->start_tick+proj->action.hit_tick)>game_time_get()) return(FALSE);
+	
+	projectile_hit(proj);
 	return(TRUE);
 }
+
 
