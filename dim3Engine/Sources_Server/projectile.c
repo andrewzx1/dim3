@@ -150,7 +150,6 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 	proj->decel_speed=proj_setup->decel_speed;
 	proj->decel_min_speed=proj_setup->decel_min_speed;
     proj->stick=FALSE;
-    proj->flag_melee_hit=FALSE;
 	
 	memmove(&proj->size,&proj_setup->size,sizeof(obj_size));
 

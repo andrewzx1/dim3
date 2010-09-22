@@ -7,9 +7,9 @@
 	};
 	0123D85F00C0AFD57F000001 /* dos.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1748, 3536}}";
-			sepNavSelRange = "{4502, 0}";
-			sepNavVisRange = "{3645, 988}";
+			sepNavIntBoundsRect = "{{0, 0}, {1748, 3341}}";
+			sepNavSelRange = "{1405, 0}";
+			sepNavVisRange = "{784, 923}";
 			sepNavWindowFrame = "{{195, 259}, {1041, 747}}";
 		};
 	};
@@ -23,9 +23,9 @@
 	};
 	0123D86600C0AFD57F000001 /* menu.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7540}}";
-			sepNavSelRange = "{1940, 0}";
-			sepNavVisRange = "{1381, 1713}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7826}}";
+			sepNavSelRange = "{5075, 0}";
+			sepNavVisRange = "{389, 1360}";
 			sepNavWindowFrame = "{{447, 226}, {1041, 747}}";
 		};
 	};
@@ -145,8 +145,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 305612454;
-			PBXWorkspaceStateSaveDate = 305612454;
+			PBXPerProjectTemplateStateSaveDate = 306713575;
+			PBXWorkspaceStateSaveDate = 306713575;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -490,9 +490,9 @@
 	};
 	26AFB4D10D9615C00004805A /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11037}}";
-			sepNavSelRange = "{16888, 0}";
-			sepNavVisRange = "{16080, 1064}";
+			sepNavIntBoundsRect = "{{0, 0}, {1167, 10374}}";
+			sepNavSelRange = "{16837, 0}";
+			sepNavVisRange = "{5343, 1147}";
 			sepNavWindowFrame = "{{490, 264}, {1041, 747}}";
 		};
 	};
@@ -578,9 +578,9 @@
 	};
 	F51ABADA048DACFE00B78D6A /* application_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1742}}";
-			sepNavSelRange = "{1781, 18}";
-			sepNavVisRange = "{945, 2161}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1755}}";
+			sepNavSelRange = "{2373, 22}";
+			sepNavVisRange = "{946, 2166}";
 			sepNavWindowFrame = "{{527, 114}, {1041, 747}}";
 		};
 	};
@@ -642,9 +642,9 @@
 	};
 	F545877E0952654600CBE89A /* walk_view.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2015}}";
-			sepNavSelRange = "{2600, 0}";
-			sepNavVisRange = "{605, 2329}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2028}}";
+			sepNavSelRange = "{2645, 0}";
+			sepNavVisRange = "{605, 2374}";
 			sepNavWindowFrame = "{{639, 217}, {1041, 747}}";
 		};
 	};
@@ -674,9 +674,9 @@
 	};
 	F54CD20D0233497001250BB8 /* walk_view.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1174, 12701}}";
-			sepNavSelRange = "{9312, 0}";
-			sepNavVisRange = "{9065, 1236}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 13481}}";
+			sepNavSelRange = "{17824, 0}";
+			sepNavVisRange = "{17339, 826}";
 			sepNavWindowFrame = "{{355, 201}, {1041, 747}}";
 		};
 	};
