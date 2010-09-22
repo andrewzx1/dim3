@@ -14,7 +14,6 @@
 		26101DCE0E5D075100D2919B /* view_vertex_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 26101DCD0E5D075100D2919B /* view_vertex_object.c */; };
 		261B52AF0FA551CE0070CAB0 /* render_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 261B52AE0FA551CE0070CAB0 /* render_model.c */; };
 		261ED11C1064A0A20035747E /* collision_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 261ED11A1064A0A20035747E /* collision_object.c */; };
-		261ED11D1064A0A20035747E /* collision_projectile.c in Sources */ = {isa = PBXBuildFile; fileRef = 261ED11B1064A0A20035747E /* collision_projectile.c */; };
 		2625D03A0F54C9960023B0D3 /* render_map_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0360F54C9960023B0D3 /* render_map_liquid.c */; };
 		2625D03B0F54C9960023B0D3 /* render_map_opaque.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0370F54C9960023B0D3 /* render_map_opaque.c */; };
 		2625D03D0F54C9960023B0D3 /* render_map_transparent.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0390F54C9960023B0D3 /* render_map_transparent.c */; };
@@ -397,7 +396,6 @@
 		26101DCD0E5D075100D2919B /* view_vertex_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vertex_object.c; path = Sources_View/view_vertex_object.c; sourceTree = "<group>"; };
 		261B52AE0FA551CE0070CAB0 /* render_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_model.c; path = Sources_View/render_model.c; sourceTree = "<group>"; };
 		261ED11A1064A0A20035747E /* collision_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = collision_object.c; path = Sources_Server/collision_object.c; sourceTree = "<group>"; };
-		261ED11B1064A0A20035747E /* collision_projectile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = collision_projectile.c; path = Sources_Server/collision_projectile.c; sourceTree = "<group>"; };
 		2625D0360F54C9960023B0D3 /* render_map_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_liquid.c; path = Sources_View/render_map_liquid.c; sourceTree = "<group>"; };
 		2625D0370F54C9960023B0D3 /* render_map_opaque.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_opaque.c; path = Sources_View/render_map_opaque.c; sourceTree = "<group>"; };
 		2625D0390F54C9960023B0D3 /* render_map_transparent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_transparent.c; path = Sources_View/render_map_transparent.c; sourceTree = "<group>"; };
@@ -1074,7 +1072,6 @@
 			children = (
 				F5DD2C8E0CEABBA20028796D /* collision_map.c */,
 				261ED11A1064A0A20035747E /* collision_object.c */,
-				261ED11B1064A0A20035747E /* collision_projectile.c */,
 				F5DD1A4A0908598900721649 /* map_y_check.c */,
 				F57346D60A1C270600378534 /* map_ray_trace.c */,
 				265B377C0D7F8D3A004AE124 /* group_change.c */,
@@ -1915,7 +1912,6 @@
 				26CC83371027BAC200682555 /* script_map_light.c in Sources */,
 				26C7B8D41060558900F800DA /* map_multiplayer.c in Sources */,
 				261ED11C1064A0A20035747E /* collision_object.c in Sources */,
-				261ED11D1064A0A20035747E /* collision_projectile.c in Sources */,
 				26100DED10BB5156002B3FA1 /* gl_shader_core.c in Sources */,
 				26100DEE10BB5156002B3FA1 /* gl_shader_fullscreen.c in Sources */,
 				26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */,

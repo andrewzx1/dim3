@@ -86,7 +86,7 @@
 			sepNavWindowFrame = "{{168, 211}, {999, 779}}";
 		};
 	};
-	26B84E630EE1EC7300B413B1 /* prepare.c:369 */ = {
+	26B84E630EE1EC7300B413B1 /* prepare.c:394 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -98,7 +98,7 @@
 		functionName = "map_prepare()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 369;
+		lineNumber = 394;
 		location = libMapUtility.dylib;
 		modificationTime = 264660588.10721;
 		originalNumberOfMultipleMatches = 0;
@@ -215,7 +215,7 @@
 			F5F4951E067BFCCA00E809E7 /* MapUtility */,
 		);
 		breakpoints = (
-			26B84E630EE1EC7300B413B1 /* prepare.c:369 */,
+			26B84E630EE1EC7300B413B1 /* prepare.c:394 */,
 		);
 		codeSenseManager = 260AFEC00D404E9300F6C42F /* Code sense */;
 		perUserDictionary = {
@@ -263,8 +263,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 305612409;
-			PBXWorkspaceStateSaveDate = 305612409;
+			PBXPerProjectTemplateStateSaveDate = 306713521;
+			PBXWorkspaceStateSaveDate = 306713521;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -280,9 +280,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10881}}";
-			sepNavSelRange = "{14945, 0}";
-			sepNavVisRange = "{13967, 1507}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10998}}";
+			sepNavSelRange = "{6577, 0}";
+			sepNavVisRange = "{5965, 1137}";
 			sepNavWindowFrame = "{{304, 244}, {1041, 691}}";
 		};
 	};
@@ -328,9 +328,9 @@
 	};
 	F5DD16E00907328000721649 /* prepare.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7319}}";
-			sepNavSelRange = "{1881, 73}";
-			sepNavVisRange = "{2061, 971}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7904}}";
+			sepNavSelRange = "{4848, 0}";
+			sepNavVisRange = "{3537, 1429}";
 			sepNavWindowFrame = "{{262, 193}, {1041, 747}}";
 		};
 	};
