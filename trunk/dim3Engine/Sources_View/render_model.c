@@ -767,6 +767,7 @@ void render_model_setup(model_draw *draw,int tick)
 		
 		mesh=&mdl->meshes[n];
 		
+		draw->meshes[n].has_opaque=FALSE;
 		draw->meshes[n].has_transparent=FALSE;
 		draw->meshes[n].has_glow=FALSE;
 			
@@ -814,6 +815,7 @@ void render_model_setup(model_draw *draw,int tick)
 			}
 			else {
 				draw->meshes[n].materials[t].has_transparent=FALSE;
+				draw->meshes[n].has_opaque=TRUE;
 				draw->has_opaque=TRUE;
 			}
 			
@@ -893,7 +895,7 @@ void render_model_opaque(model_draw *draw)
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
-		if (draw->meshes[n].has_transparent) continue;
+		if (!draw->meshes[n].has_opaque) continue;
 
 			// create VBO for this mesh
 

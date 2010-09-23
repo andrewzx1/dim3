@@ -308,7 +308,7 @@ typedef struct		{
 					} model_draw_material_type;
 					
 typedef struct		{
-						bool							has_transparent,has_glow;
+						bool							has_opaque,has_transparent,has_glow;
 						model_draw_mesh_fade			fade;
 						model_draw_material_type		materials[max_model_texture];
 					} model_draw_mesh_type;
