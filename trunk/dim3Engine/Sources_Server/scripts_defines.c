@@ -392,6 +392,24 @@ bool script_is_prop_define(char *name)
 	return(FALSE);
 }
 
+void script_get_define_for_event(int event,char *name)
+{
+	script_define_type	*define;
+
+	name[0]=0x0;
+	
+	define=script_dim3_defines;
+		
+	while (TRUE) {
+		if (define->value_int==-1) break;
+		if (define->value_int==event) {
+			strcpy(name,define->name);
+			return;
+		}
+		define++;
+	}
+}
+
 /* =======================================================
 
       User Defines

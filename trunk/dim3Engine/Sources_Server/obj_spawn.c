@@ -403,7 +403,6 @@ void map_object_detach_all(void)
 		if (obj->attach.script_idx!=-1) {
 		
 				// exit any vehicles
-					// supergumba -- test vehicle exiting
 				
 			if (obj->vehicle.attach_obj_idx!=-1) {
 				object_exit_vehicle(obj,TRUE,NULL);

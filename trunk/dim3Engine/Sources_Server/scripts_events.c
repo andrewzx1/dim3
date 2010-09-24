@@ -60,11 +60,6 @@ bool scripts_setup_events(script_type *script,char *err_str)
 	else {
 		if (!JSObjectIsFunction(script->cx,script->event_func)) script->event_func=NULL;
 	}
-	
-	if (script->event_func==NULL) {
-		sprintf(err_str,"[%s] 'event' function is required",script->name);
-		return(FALSE);
-	}
 
 		// set recursive count to 0
 
@@ -199,6 +194,9 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 
 	if (script->event_list.on) {
 		if (script->event_list.calls[event_idx].func==NULL) return(TRUE);
+	}
+	else {
+		if (script->event_func==NULL) return(TRUE);
 	}
 	
 		// can only enter an event once
