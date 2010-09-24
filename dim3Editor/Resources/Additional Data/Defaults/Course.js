@@ -1,1 +1,1 @@
-function mapConstruct(course){}function event(course,mainEvent,subEvent,id,tick){	switch (mainEvent) {			case DIM3_EVENT_CONSTRUCT:			mapConstruct(course);			return;				}}
+script.attachEvent(DIM3_EVENT_CONSTRUCT,'mapConstruct',false);function mapConstruct(course,subEvent,id,tick){}

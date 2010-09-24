@@ -44,6 +44,7 @@ extern void scripts_dispose(int idx);
 
 extern void script_defines_create_constants(script_type *script);
 extern bool script_is_prop_define(char *name);
+extern void script_get_define_for_event(int event,char *name);
 extern void script_load_user_defines(void);
 extern void script_free_user_defines(void);
 

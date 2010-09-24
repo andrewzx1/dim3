@@ -454,7 +454,9 @@ void debug_dump(void)
 	debug_dump_header(file,"Scripts");
 	
 	debug_info_table_str(file,"Name",35);
+	debug_info_table_str(file,"Attached Events",35);
 	debug_info_return(file);
+	debug_info_table_str(file,"----------------------------------",35);
 	debug_info_table_str(file,"----------------------------------",35);
 	debug_info_return(file);
 	
@@ -463,6 +465,15 @@ void debug_dump(void)
 		if (script==NULL) continue;
 
 		debug_info_table_str(file,script->name,35);
+		
+		for (k=0;k!=event_main_id_count;k++) {
+			if (script->event_list.calls[k].func!=NULL) {
+				script_get_define_for_event((event_main_id_start+k),str);
+				fwrite(str,1,strlen(str),file);
+				fwrite(" ",1,1,file);
+			}
+		}
+		
 		debug_info_return(file);
 	}
 
