@@ -242,7 +242,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 		if ((check_obj->hidden) || (!check_obj->contact.object_on)) continue;
 		if (obj->idx==check_obj->idx) continue;
 		
-		if (collide_object_to_object(obj,0,0,check_obj,TRUE,FALSE)) {
+		if (collide_object_to_object(obj,NULL,check_obj,TRUE)) {
 		
 				// if we are only checking, just return TRUE on
 				// first hit

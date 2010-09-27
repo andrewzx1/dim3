@@ -39,54 +39,45 @@ extern server_type			server;
 
 /* =======================================================
 
-      Objects External Movement
+      Objects External Movement Utilities
       
 ======================================================= */
 
-inline bool object_move_with_move(obj_type *obj,d3pnt *motion)
+inline void object_move_get_turn_motion(obj_type *obj,d3pnt *mpt,float rot_y,d3pnt *turn_motion)
 {
-	d3pnt		move_motion;
-
-	move_motion.x=motion->x;
-	move_motion.y=0;
-	move_motion.z=motion->z;
+	float				fx,fy,fz;
+	matrix_type			mat;
 	
-	collide_object_to_map(obj,&move_motion);
+	fx=(float)(obj->pnt.x-mpt->x);
+	fy=0.0f;
+	fz=(float)(obj->pnt.z-mpt->z);
+	
+	matrix_rotate_y(&mat,rot_y);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-	object_motion_lock(obj,&move_motion);
-
-	obj->pnt.x+=move_motion.x;
-	obj->pnt.y+=move_motion.y;
-	obj->pnt.z+=move_motion.z;
-
-	return(FALSE);
+	turn_motion->x=(((int)fx)+mpt->x)-obj->pnt.x;
+	turn_motion->y=0;
+	turn_motion->z=(((int)fz)+mpt->z)-obj->pnt.z;
 }
 
-inline bool object_turn_with_turn(obj_type *obj,d3pnt *mpt,float rot_y,float reduce)
+inline void object_move_with_motion(obj_type *obj,d3pnt *motion,int crush_mesh_idx)
 {
-	bool		hit;
-	d3pnt		motion;
+		// collide with map and crush if blocked
+		
+	if (collide_object_to_map(obj,motion)) {
+		if ((obj->contact.hit_poly.mesh_idx!=-1) && (obj->contact.hit_poly.mesh_idx!=crush_mesh_idx)) {
+			object_crush(obj,TRUE);
+			return;
+		}
+	}
+	
+		// otherwise move
+		
+	object_motion_lock(obj,motion);
 
-		// get change
-
-	motion.x=obj->pnt.x;
-	motion.z=obj->pnt.z;
-	rotate_2D_point(&motion.x,&motion.z,mpt->x,mpt->z,rot_y);
-
-		// reduction in movement
-
-	motion.x=(int)((float)(motion.x-obj->pnt.x)*reduce);
-	motion.z=(int)((float)(motion.z-obj->pnt.z)*reduce);
-
-		// move
-
-	hit=object_move_with_move(obj,&motion);
-
-		// rotate player
-
-	obj->ang.y=angle_add(obj->ang.y,rot_y);
-
-	return(hit);
+	obj->pnt.x+=motion->x;
+	obj->pnt.y+=motion->y;
+	obj->pnt.z+=motion->z;
 }
 
 /* =======================================================
@@ -95,187 +86,33 @@ inline bool object_turn_with_turn(obj_type *obj,d3pnt *mpt,float rot_y,float red
       
 ======================================================= */
 
-bool collide_check_box_to_line(d3pnt *min,d3pnt *max,int lx,int rx,int lz,int rz)
-{
-	int			lft,rgt,top,bot,
-				dx,dz,x,z,lngadd,kadd;
-	
-		// get box
-		
-	lft=min->x;
-	rgt=max->x;
-	top=min->z;
-	bot=max->z;
-	
-		// completely outside line
-		
-	if ((lx>rgt) && (rx>rgt)) return(FALSE);
-	if ((lx<lft) && (rx<lft)) return(FALSE);
-	if ((lz>bot) && (rz>bot)) return(FALSE);
-	if ((lz<top) && (rz<top)) return(FALSE);
-	
-		// are either of the line points in box?
-				
-	if ((lx>=lft) && (lx<=rgt) && (lz>=top) && (lz<=bot)) return(TRUE);
-	if ((rx>=lft) && (rx<=rgt) && (rz>=top) && (rz<=bot)) return(TRUE);
-	
-		// special check for horizontal lines
-				
-	if (lz==rz) {
-		return((top<=lz) && (bot>=lz));			// z points pass through?
-	}
-
-		// special check for vertical lines
-				
-	if (lx==rx) {
-		return((lft<=lx) && (rgt>=lx));			// x points pass through?
-	}
-	
-		// get the slope
-		
-	dx=abs(rx-lx);
-	dz=abs(rz-lz);
-	
-		// check for intersections with left and right sides
-		
-	if (lx>rx) {
-		lngadd=lx;
-		lx=rx;
-		rx=lngadd;
-		lngadd=lz;
-		lz=rz;
-		rz=lngadd;
-	}
-	kadd=((rz-lz)<<10)/dx;
-	
-	z=lz+((kadd*(lft-lx))>>10);
-	if ((z>=top) && (z<=bot)) return(TRUE);
-	
-	z=lz+((kadd*(rgt-lx))>>10);
-	if ((z>=top) && (z<=bot)) return(TRUE);
-	
-		// check for intersections with top and bottom sides
-		
-	if (lz>rz) {
-		lngadd=lx;
-		lx=rx;
-		rx=lngadd;
-		lngadd=lz;
-		lz=rz;
-		rz=lngadd;
-	}
-	kadd=((rx-lx)<<10)/dz;
-	
-	x=lx+((kadd*(top-lz))>>10);
-	if ((x>=lft) && (x<=rgt)) return(TRUE);
-		
-	x=lx+((kadd*(bot-lz))>>10);
-	if ((x>=lft) && (x<=rgt)) return(TRUE);
-
-		// no collision
-		
-	return(FALSE);
-}
-
-bool object_move_with_mesh_check_object(obj_type *obj,int mesh_idx)
-{
-	int					n,sz;
-	d3pnt				min,max;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	
-	sz=obj->size.x>>1;
-	min.x=obj->pnt.x-sz;
-	max.x=obj->pnt.x+sz;
-
-	sz=obj->size.z>>1;
-	min.z=obj->pnt.z-sz;
-	max.z=obj->pnt.z+sz;
-
-	sz=obj->size.y;
-	if (obj->duck.mode!=dm_stand) sz-=obj->duck.y_move;
-	
-	min.y=obj->pnt.y-sz;
-	max.y=obj->pnt.y;
-
-		// rough mesh check
-
-	mesh=&map.mesh.meshes[mesh_idx];
-
-	if ((max.x<mesh->box.min.x) || (min.x>mesh->box.max.x)) return(FALSE);
-	if ((max.y<mesh->box.min.y) || (min.y>mesh->box.max.y)) return(FALSE);
-	if ((max.z<mesh->box.min.z) || (min.z>mesh->box.max.z)) return(FALSE);
-
-		// polygon checks
-		// only check wall like polys for pushing
-
-	for (n=0;n!=mesh->npoly;n++) {
-
-		poly=&mesh->polys[n];
-		if (!poly->box.wall_like) continue;
-		
-			// rough poly check
-		
-		if ((max.x<poly->box.min.x) || (min.x>poly->box.max.x)) continue;
-		if ((max.y<poly->box.min.y) || (min.y>poly->box.max.y)) continue;
-		if ((max.z<poly->box.min.z) || (min.z>poly->box.max.z)) continue;
-		
-			// check x/z (2D) wall
-			
-		if (collide_check_box_to_line(&min,&max,poly->line.lx,poly->line.rx,poly->line.lz,poly->line.rz)) return(TRUE);
-	}
-
-	return(FALSE);
-}
-
 void object_move_with_mesh(int mesh_idx,d3pnt *motion)
 {
-	int			n,cnt;
+	int			n;
 	d3pnt		move_motion;
 	obj_type	*obj;
 
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
-
-			// if we are standing on mesh, move
-			// with mesh
-
-		if (obj->contact.stand_poly.mesh_idx==mesh_idx) {
-			object_move_with_move(obj,motion);
-			continue;
-		}
-
-			// we might try to move multiple times to push
-			// items out of meshes
-
-		move_motion.x=motion->x;
-		move_motion.y=0;
-		move_motion.z=motion->z;
-
-		cnt=0;
-
-		while (object_move_with_mesh_check_object(obj,mesh_idx)) {
+		
+			// stand on or collide with mesh?
 			
-			if (object_move_with_move(obj,&move_motion)) {
-				if (obj->contact.hit_poly.mesh_idx!=mesh_idx) object_crush(obj,TRUE);
-				break;
-			}
-
-			move_motion.x=move_motion.x>>1;
-			move_motion.z=move_motion.z>>1;
-
-			cnt++;
-			if (cnt>2) break;
+		if ((obj->contact.stand_poly.mesh_idx==mesh_idx) || (collide_object_to_mesh(obj,mesh_idx))) {
+		
+			move_motion.x=motion->x;
+			move_motion.y=0;
+			move_motion.z=motion->z;
+			
+			object_move_with_motion(obj,&move_motion,mesh_idx);
 		}
 	}
 }
 
-void object_rotate_with_mesh(int mesh_idx,float y)
+void object_rotate_with_mesh(int mesh_idx,float rot_y)
 {
-	int				n,cnt;
-	float			reduce;
-	d3pnt			mpt;
+	int				n;
+	d3pnt			mpt,turn_motion;
 	map_mesh_type	*mesh;
 	obj_type		*obj;
 
@@ -293,32 +130,13 @@ void object_rotate_with_mesh(int mesh_idx,float y)
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
-
-			// if we are standing on mesh, turn
-			// with mesh
-
-		if (obj->contact.stand_poly.mesh_idx==mesh_idx) {
-			object_turn_with_turn(obj,&mpt,y,1.0f);
-			continue;
-		}
-
-			// we might try to move multiple times to push
-			// items out of meshes
-
-		reduce=1.0f;
-		cnt=0;
-
-		while (object_move_with_mesh_check_object(obj,mesh_idx)) {
+		
+			// stand on or collide with mesh?
 			
-			if (object_turn_with_turn(obj,&mpt,y,reduce)) {
-				if (obj->contact.hit_poly.mesh_idx!=mesh_idx) object_crush(obj,TRUE);
-				break;
-			}
-
-			reduce=reduce/2.0f;
-
-			cnt++;
-			if (cnt>2) break;
+		if ((obj->contact.stand_poly.mesh_idx==mesh_idx) || (collide_object_to_mesh(obj,mesh_idx))) {
+			object_move_get_turn_motion(obj,&mpt,rot_y,&turn_motion);
+			object_move_with_motion(obj,&turn_motion,mesh_idx);
+			obj->ang.y=angle_add(obj->ang.y,rot_y);
 		}
 	}
 }
@@ -390,12 +208,12 @@ bool object_push_with_object(obj_type *obj,d3pnt *motion)
 
 	contact_on=obj->contact.object_on;
 	obj->contact.object_on=FALSE;
-
+	
 	move_motion.x=(int)f_xmove;
 	move_motion.y=0;
 	move_motion.z=(int)f_zmove;
-
-	object_move_with_move(pushed_obj,&move_motion);
+	
+	object_move_with_motion(pushed_obj,&move_motion,-1);
 
 	obj->contact.object_on=contact_on;
 
@@ -405,22 +223,28 @@ bool object_push_with_object(obj_type *obj,d3pnt *motion)
 void object_move_with_standing_object(obj_type *obj,d3pnt *motion)
 {
 	int			n;
+	d3pnt		move_motion;
 	obj_type	*obj_check;
-
+	
 	for (n=0;n!=max_obj_list;n++) {
 		obj_check=server.obj_list.objs[n];
 		if (obj_check==NULL) continue;
 
-		if (obj_check->contact.stand_obj_idx==obj->idx) {
-			if (!obj_check->suspend) object_move_with_move(obj_check,motion);
-		}
+		if (obj_check->contact.stand_obj_idx!=obj->idx) continue;
+		if (obj_check->suspend) continue;
+		
+		move_motion.x=motion->x;
+		move_motion.y=0;
+		move_motion.z=motion->z;
+		
+		object_move_with_motion(obj_check,&move_motion,-1);
 	}
 }
 
-void object_rotate_with_standing_object(obj_type *obj,float y)
+void object_rotate_with_standing_object(obj_type *obj,float rot_y)
 {
 	int				n;
-	d3pnt			mpt;
+	d3pnt			mpt,turn_motion;
 	obj_type		*obj_check;
 
 		// get center point for object
@@ -435,8 +259,11 @@ void object_rotate_with_standing_object(obj_type *obj,float y)
 		obj_check=server.obj_list.objs[n];
 		if (obj_check==NULL) continue;
 
-		if (obj_check->contact.stand_obj_idx==obj->idx) {
-			if (!obj_check->suspend) object_turn_with_turn(obj_check,&mpt,y,1.0f);
-		}
+		if (obj_check->contact.stand_obj_idx!=obj->idx) continue;
+		if (obj_check->suspend) continue;
+			
+		object_move_get_turn_motion(obj_check,&mpt,rot_y,&turn_motion);
+		object_move_with_motion(obj_check,&turn_motion,-1);
+		obj_check->ang.y=angle_add(obj_check->ang.y,rot_y);
 	}
 }

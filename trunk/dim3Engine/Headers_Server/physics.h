@@ -30,23 +30,15 @@ and can be sold or given away.
 extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
 extern bool collide_object_to_map(obj_type *obj,d3pnt *motion);
 extern bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move);
+extern bool collide_object_to_mesh(obj_type *obj,int mesh_idx);
+extern bool collide_object_to_object(obj_type *obj,d3pnt *motion,obj_type *chk_obj,bool skip_pickup);
+extern int collide_object_for_object_stand(obj_type *obj);
 extern bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj);
 
 extern bool collide_projectile_to_map(proj_type *proj,d3pnt *motion);
 extern bool collide_projectile_to_sphere(d3pnt *sphere_pnt,int radius,proj_type *proj);
 
 extern void collide_objects_push(d3pnt *push_pnt,int radius,int force);
-
-// object collisions
-
-extern void collide_object_polygon(obj_type *obj,int x_add,int z_add,int *px,int *pz);
-extern void collide_object_hit_box_polygon(obj_type *obj,model_hit_box_type *hit_box,int *px,int *pz);
-extern bool collide_object_to_object(obj_type *obj1,int x_add,int z_add,obj_type *obj2,bool include_y,bool include_stand);
-extern bool collide_object_to_object_hit_box(obj_type *obj1,int x_add,int z_add,obj_type *obj2,model_hit_box_type *hit_box);
-extern bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,obj_type *check_obj);
-extern int collide_find_object_for_object_move(obj_type *obj,int x,int z);
-extern int collide_find_object_for_object(obj_type *obj);
-extern int collide_find_object_for_standing_object(obj_type *obj);
 
 // polygon APIs
 

@@ -577,7 +577,7 @@ void object_move_y_fall(obj_type *obj)
 	
 		// check standing on objects
 
-	idx=collide_find_object_for_standing_object(obj);
+	idx=collide_object_for_object_stand(obj);
 	if (idx!=-1) {
 		hit_obj=server.obj_list.objs[idx];
 		
@@ -834,8 +834,8 @@ void object_move_swim(obj_type *obj)
 
 void object_move_normal(obj_type *obj)
 {
-	int					bump_y_move,start_y,fall_damage,hit_obj_idx;
-	bool				push_once,old_falling;
+	int					bump_y_move,start_y,fall_damage;
+	bool				old_falling;
 	d3pnt				motion,old_pnt;
 
 		// get object motion
@@ -950,31 +950,19 @@ void object_move_normal(obj_type *obj)
 		// collision detection to help eliminate
 		// land features that could hold up the
 		// object
-
+		
 	if ((motion.x!=0) || (motion.z!=0)) {
-	
-			// try to move a number of times
-			// hitting another object or bumping can force the
-			// move to stop and then need to be retried
-			
-		push_once=FALSE;
-		hit_obj_idx=-1;
 	
 			// attempt to move
 			
 		object_move_xz(obj,&motion);
-		
-			// potentially, pushing could reset the object
-			// hit ID, so we reset it here
-			
-		if (hit_obj_idx!=-1) obj->contact.obj_idx=hit_obj_idx;
 
 			// determine if we moved or not
 
 		motion.x=obj->pnt.x-old_pnt.x;
 		motion.z=obj->pnt.z-old_pnt.z;
 			
-		if ((motion.z!=0) || (motion.z!=0)) {
+		if ((motion.x!=0) || (motion.z!=0)) {
 
 				// move objects standing on object
 
