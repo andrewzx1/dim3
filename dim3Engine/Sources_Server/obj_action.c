@@ -564,16 +564,33 @@ void object_clear_ambient(obj_type *obj)
 
 bool object_enter_vehicle(obj_type *obj,char *err_str)
 {
-	int				idx,x,z,y,sz;
+	int				n,idx,x,z,y,sz;
+	d3pnt			motion;
 	obj_type		*vehicle_obj;
 	obj_vehicle		*vehicle;
 
 		// find a vehicle within right distance
 		
-	sz=(obj->size.z*3)>>1;
+	idx=-1;
 	
-	angle_get_movement(obj->motion.ang.y,obj->size.z,&x,&z);
-	idx=collide_find_object_for_object_move(obj,x,z);
+	sz=(obj->size.z*3)>>1;
+	angle_get_movement(obj->motion.ang.y,obj->size.z,&motion.x,&motion.z);
+	
+	motion.y=0;
+	
+	for (n=0;n!=max_obj_list;n++) {
+		vehicle_obj=server.obj_list.objs[n];
+		if (vehicle_obj==NULL) continue;
+    
+		if ((vehicle_obj->hidden) || (!vehicle_obj->contact.object_on) || (!vehicle_obj->vehicle.on) || (vehicle_obj->idx==obj->idx)) continue;
+
+            // check bounds
+			
+		if (collide_object_to_object(obj,&motion,vehicle_obj,FALSE)) {
+			idx=n;
+			break;
+		}
+	}
 		
 	if (idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"No object nearby to enter");

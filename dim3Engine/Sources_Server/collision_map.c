@@ -136,20 +136,21 @@ void circle_get_point_on_radius_through_hit_point(d3pnt *circle_pnt,int radius,d
       
 ======================================================= */
 
-bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
+bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool skip_pickup,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
 {
 	int			dist,chk_radius;
 	double		dx,dz;
 	
 		// object a hit candidate?
 
-	if ((obj->hidden) || (obj->pickup.on)) return(FALSE);
+	if (obj->hidden) return(FALSE);
+	if ((skip_pickup) && (obj->pickup.on)) return(FALSE);
 	if (!obj->contact.object_on) return(FALSE);
 	
 		// y check
 		
-	if (max->y<(obj->pnt.y-obj->size.y)) return(FALSE);
-	if (min->y>obj->pnt.y) return(FALSE);
+	if (max->y<=(obj->pnt.y-obj->size.y)) return(FALSE);
+	if (min->y>=obj->pnt.y) return(FALSE);
 
 		// radius check
 
@@ -190,8 +191,8 @@ bool collide_circle_check_projectile(d3pnt *circle_pnt,int radius,d3pnt *min,d3p
 	
 		// y check
 		
-	if (max->y<(proj->pnt.y-proj->size.y)) return(FALSE);
-	if (min->y>proj->pnt.y) return(FALSE);
+	if (max->y<=(proj->pnt.y-proj->size.y)) return(FALSE);
+	if (min->y>=proj->pnt.y) return(FALSE);
 
 		// radius check
 
@@ -373,19 +374,21 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 		// check objects
 
 	if (check_objs) {
+
 		for (n=0;n!=max_obj_list;n++) {
 			if (n==skip_obj_idx) continue;
 
 			chk_obj=server.obj_list.objs[n];
 			if (chk_obj==NULL) continue;
 
-			if (collide_circle_check_object(&circle_pnt,radius,&min,&max,&cur_dist,chk_obj,&cur_hit_pnt)) {
+			if (collide_circle_check_object(&circle_pnt,radius,&min,&max,TRUE,&cur_dist,chk_obj,&cur_hit_pnt)) {
 				contact->obj_idx=n;
 				contact->proj_idx=-1;
 				contact->hit_poly.mesh_idx=-1;
 				contact->hit_poly.poly_idx=-1;
 			}
 		}
+
 	}
 
 		// check projectiles
@@ -556,6 +559,8 @@ bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move)
 
 	max.y=obj->pnt.y+motion->y;
 	min.y=max.y-obj->bump.high;
+	
+	cur_dist=-1;
 
 		// check meshes
 
@@ -582,13 +587,126 @@ bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move)
 
 			// check collision
 
-		if (collide_circle_check_object(&circle_pnt,radius,&min,&max,&cur_dist,chk_obj,&cur_hit_pnt)) {
+		if (collide_circle_check_object(&circle_pnt,radius,&min,&max,TRUE,&cur_dist,chk_obj,&cur_hit_pnt)) {
 			*bump_y_move=ty-obj->pnt.y;		// don't use Y added version, it bumps too much on slopes
 			return(TRUE);
 		}
 	}
 
 	return(FALSE);
+}
+
+bool collide_object_to_mesh(obj_type *obj,int mesh_idx)
+{
+	int						radius,cur_dist,idx;
+	d3pnt					circle_pnt,cur_hit_pnt,
+							min,max;
+
+		// get the circle radius
+
+	radius=obj->size.x;
+	if (obj->size.z>radius) radius=obj->size.z;
+
+	radius=radius>>1;
+
+		// get the circle
+
+	circle_pnt.x=obj->pnt.x;
+	circle_pnt.y=obj->pnt.y;
+	circle_pnt.z=obj->pnt.z;
+
+		// find min and max for object
+
+	min.x=circle_pnt.x-radius;
+	max.x=circle_pnt.x+radius;
+	min.z=circle_pnt.z-radius;
+	max.z=circle_pnt.z+radius;
+	max.y=circle_pnt.y;
+	min.y=max.y-obj->size.y;
+
+		// check mesh
+		
+	cur_dist=-1;
+
+	return(collide_circle_check_mesh(&circle_pnt,radius,&min,&max,FALSE,0,&cur_dist,mesh_idx,&idx,&cur_hit_pnt));
+}
+
+bool collide_object_to_object(obj_type *obj,d3pnt *motion,obj_type *chk_obj,bool skip_pickup)
+{
+	int						radius,cur_dist;
+	d3pnt					circle_pnt,cur_hit_pnt,
+							min,max;
+							
+		// get the circle radius
+
+	radius=obj->size.x;
+	if (obj->size.z>radius) radius=obj->size.z;
+
+	radius=radius>>1;
+
+		// get the circle
+
+	circle_pnt.x=obj->pnt.x;
+	circle_pnt.y=obj->pnt.y;
+	circle_pnt.z=obj->pnt.z;
+	
+	if (motion!=NULL) {
+		circle_pnt.x+=motion->x;
+		circle_pnt.y+=motion->y;
+		circle_pnt.z+=motion->z;
+	}
+
+		// find min and max for object
+
+	min.x=circle_pnt.x-radius;
+	max.x=circle_pnt.x+radius;
+	min.z=circle_pnt.z-radius;
+	max.z=circle_pnt.z+radius;
+	max.y=circle_pnt.y;
+	min.y=max.y-obj->size.y;
+
+		// check mesh
+		
+	cur_dist=-1;
+	
+	return(collide_circle_check_object(&circle_pnt,radius,&min,&max,skip_pickup,&cur_dist,chk_obj,&cur_hit_pnt));
+}
+
+int collide_object_for_object_stand(obj_type *obj)
+{
+	int			n,uid,y,ty,ydist;
+	d3pnt		motion;
+	obj_type	*stand_obj;
+
+	y=obj->pnt.y;
+	ydist=floor_slop;
+	
+		// stand on are 1 point
+		// above the standing on object
+		
+	motion.x=motion.z=0;
+	motion.y=1;
+	
+		// find stand on object
+	
+	uid=-1;
+	
+	for (n=0;n!=max_obj_list;n++) {
+		stand_obj=server.obj_list.objs[n];
+		if (stand_obj==NULL) continue;
+	
+		if ((stand_obj->idx==obj->idx) || (stand_obj->hidden) || (!stand_obj->contact.object_on) || (stand_obj->pickup.on)) continue;
+		
+		ty=abs(y-(stand_obj->pnt.y-stand_obj->size.y));
+		if (ty>ydist) continue;
+
+		if (collide_object_to_object(obj,&motion,stand_obj,TRUE)) {
+			uid=stand_obj->idx;
+			ydist=ty;
+		}
+	}
+
+	return(uid);	
 }
 
 bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj)

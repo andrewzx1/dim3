@@ -81,7 +81,7 @@ void item_pickup_check(obj_type *obj)
 
             // check bounds
 			
-		if (collide_object_to_object(obj,0,0,item_obj,TRUE,TRUE)) {
+		if (collide_object_to_object(obj,NULL,item_obj,FALSE)) {
 	
 				// setup pickup for items
 				
