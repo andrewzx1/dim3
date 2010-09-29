@@ -41,7 +41,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 {
 	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,
 							mesh_idx,nmesh,nfill,trig_idx,
-							tag,hit_box_tag,meshes_tag,mesh_tag,
+							tag,hit_box_tag,rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
 	bool					had_tangent;
@@ -135,6 +135,38 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 	else {
 		model->nhit_box=0;
 	}
+
+		// rigid body
+
+    rigid_body_tag=xml_findfirstchild("Rigid_Body",model_head);
+	if (rigid_body_tag!=-1) {
+
+		model->rigid_body.on=xml_get_attribute_boolean(rigid_body_tag,"on");
+
+		model->rigid_body.y.max_ang=0.0f;			// unused, but in struct
+		model->rigid_body.y.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"y_factor",0.8f);
+		model->rigid_body.y.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"y_smooth",0.2f);
+		model->rigid_body.x.max_ang=xml_get_attribute_float_default(rigid_body_tag,"x_max_ang",45.0f);
+		model->rigid_body.x.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"x_factor",0.8f);
+		model->rigid_body.x.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"x_smooth",0.2f);
+		model->rigid_body.z.max_ang=xml_get_attribute_float_default(rigid_body_tag,"z_max_ang",45.0f);
+		model->rigid_body.z.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"z_factor",0.8f);
+		model->rigid_body.z.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"z_smooth",0.2f);
+
+	}
+	else {
+		model->rigid_body.on=FALSE;
+
+		model->rigid_body.y.max_ang=0.0f;			// unused, but in struct
+		model->rigid_body.y.reset_factor=0.8f;
+		model->rigid_body.y.smooth_factor=0.2f;
+		model->rigid_body.x.max_ang=45.0f;
+		model->rigid_body.x.reset_factor=0.8f;
+		model->rigid_body.x.smooth_factor=0.2f;
+		model->rigid_body.z.max_ang=45.0f;
+		model->rigid_body.z.reset_factor=0.8f;
+		model->rigid_body.z.smooth_factor=0.2f;
+	}
     
         // bones
  
@@ -215,6 +247,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		mesh=&model->meshes[mesh_idx];
 		xml_get_attribute_text(mesh_tag,"name",mesh->name,name_str_len);
 		mesh->no_lighting=xml_get_attribute_boolean(mesh_tag,"no_lighting");
+		mesh->diffuse=xml_get_attribute_boolean_default_true(mesh_tag,"diffuse");
 		mesh->blend_add=xml_get_attribute_boolean(mesh_tag,"additive");
 		mesh->tintable=xml_get_attribute_boolean(mesh_tag,"tintable");
 		
@@ -447,6 +480,20 @@ void encode_mesh_v2_xml(model_type *model)
 	}
 	
     xml_add_tagclose("Hit_Boxes");
+
+		// rigid body
+
+    xml_add_tagstart("Rigid_Body");
+	xml_add_attribute_boolean("on",model->rigid_body.on);
+	xml_add_attribute_float("y_factor",model->rigid_body.y.reset_factor);
+	xml_add_attribute_float("y_smooth",model->rigid_body.y.smooth_factor);
+	xml_add_attribute_float("x_max_ang",model->rigid_body.x.max_ang);
+	xml_add_attribute_float("x_factor",model->rigid_body.x.reset_factor);
+	xml_add_attribute_float("x_smooth",model->rigid_body.x.smooth_factor);
+	xml_add_attribute_float("z_max_ang",model->rigid_body.z.max_ang);
+	xml_add_attribute_float("z_factor",model->rigid_body.z.reset_factor);
+	xml_add_attribute_float("z_smooth",model->rigid_body.z.smooth_factor);
+    xml_add_tagend(TRUE);
     
         // bones
         
@@ -485,6 +532,7 @@ void encode_mesh_v2_xml(model_type *model)
 		xml_add_tagstart("Mesh");
 		xml_add_attribute_text("name",mesh->name);
 		xml_add_attribute_boolean("no_lighting",mesh->no_lighting);
+		xml_add_attribute_boolean("diffuse",mesh->diffuse);
 		xml_add_attribute_boolean("additive",mesh->blend_add);
 		xml_add_attribute_boolean("tintable",mesh->tintable);
 		xml_add_tagend(FALSE);

@@ -158,7 +158,7 @@ typedef struct		{
 typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
-						bool							no_lighting,blend_add,tintable;
+						bool							no_lighting,diffuse,blend_add,tintable;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;
 						model_material_type				*materials;
@@ -175,6 +175,19 @@ typedef struct		{
 						d3vct							parent_dist;
 						model_tag						tag;
 					} model_bone_type;
+
+//
+// model rigid body
+//
+
+typedef struct		{
+						float							max_ang,reset_factor,smooth_factor;
+					} model_rigid_body_axis_type;
+
+typedef struct		{
+						bool							on;
+						model_rigid_body_axis_type		x,y,z;
+					} model_rigid_body_type;
 
 //
 // Model Poses and Animation Structures
@@ -291,6 +304,7 @@ typedef struct		{
 						model_box_type					view_box;
 						model_tags						tags;
  						model_mesh_type					meshes[max_model_mesh];
+						model_rigid_body_type			rigid_body;
 						model_bone_type					*bones;
 						model_pose_type					*poses;
 						model_animate_type				*animates;

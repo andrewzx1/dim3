@@ -305,6 +305,7 @@ extern float xml_get_attribute_float(int n,char *name);
 extern float xml_get_attribute_float_default(int n,char *name,float def_float);
 extern int xml_get_attribute_float_array(int n,char *name,float *value,int count);
 extern bool xml_get_attribute_boolean(int n,char *name);
+extern bool xml_get_attribute_boolean_default_true(int n,char *name);
 extern int xml_get_attribute_list(int n,char *name,char *list);
 extern bool xml_get_attribute_2_coord_int(int n,char *name,int *x,int *y);
 extern bool xml_get_attribute_2_coord_float(int n,char *name,float *x,float *y);

@@ -133,6 +133,7 @@ void object_clear_angle(d3ang *ang)
 void object_clear_motion(obj_motion *motion)
 {
 	motion->last_y_change=0;
+	motion->rigid_body_offset_y=0;
 	motion->vct.x=motion->vct.z=motion->vct.y=0;
 	motion->ang.y=motion->ang.x=motion->ang.z=0;
 }
@@ -585,17 +586,6 @@ int object_create(char *name,int type,int bind)
 	obj->sight.side_division=3;
 	obj->sight.look_division=1;
 	obj->sight.distance=map_enlarge*150;
-
-	obj->rigid_body.on=FALSE;
-	obj->rigid_body.draw_offset_y=0;
-	obj->rigid_body.reset_factor_y=0.8f;
-	obj->rigid_body.smooth_factor_y=0.2f;
-	obj->rigid_body.max_ang_x=45.0f;
-	obj->rigid_body.reset_factor_x=0.8f;
-	obj->rigid_body.smooth_factor_x=0.2f;
-	obj->rigid_body.max_ang_z=45.0f;
-	obj->rigid_body.reset_factor_z=0.8f;
-	obj->rigid_body.smooth_factor_z=0.2f;
 	
     obj->bump.on=TRUE;
     obj->bump.high=450;

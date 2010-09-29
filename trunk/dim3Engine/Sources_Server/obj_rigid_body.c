@@ -54,25 +54,25 @@ int object_rigid_body_get_point_y(obj_type *obj,int x_off,int z_off,int y)
 	return(find_poly_nearest_stand(x,y,z,obj->size.y,FALSE));
 }
 
-void object_rigid_body_offset_reset_y(obj_type *obj)
+void object_rigid_body_offset_reset_y(obj_type *obj,model_type *mdl)
 {
 	float			f;
 
-	if (obj->rigid_body.draw_offset_y==0) return;
+	if (obj->motion.rigid_body_offset_y==0) return;
 
-	f=(float)obj->rigid_body.draw_offset_y;
-	obj->rigid_body.draw_offset_y=(int)(f*obj->rigid_body.reset_factor_y);
+	f=(float)obj->motion.rigid_body_offset_y;
+	obj->motion.rigid_body_offset_y=(int)(f*mdl->rigid_body.y.reset_factor);
 }
 
-void object_rigid_body_angle_reset_x(obj_type *obj)
+void object_rigid_body_angle_reset_x(obj_type *obj,model_type *mdl)
 {
-	obj->ang.x*=obj->rigid_body.reset_factor_x;
+	obj->ang.x*=mdl->rigid_body.x.reset_factor;
 	if (fabsf(obj->ang.x)<1.0f) obj->ang.x=0;
 }
 
-void object_rigid_body_angle_reset_z(obj_type *obj)
+void object_rigid_body_angle_reset_z(obj_type *obj,model_type *mdl)
 {
-	obj->ang.z*=obj->rigid_body.reset_factor_z;
+	obj->ang.z*=mdl->rigid_body.z.reset_factor;
 	if (fabsf(obj->ang.z)<1.0f) obj->ang.z=0;
 }
 
@@ -89,17 +89,21 @@ void object_rigid_body_reset_angle(obj_type *obj)
 	float				x_ang,x_neg_ang,x_pos_ang,
 						z_ang,z_neg_ang,z_pos_ang;
 	poly_pointer_type	stand_poly;
+	model_type			*mdl;
 
 		// is rigid body on?
 
-	if (!obj->rigid_body.on) return;
+	if (obj->draw.model_idx==-1) return;
+	mdl=server.model_list.models[obj->draw.model_idx];
+
+	if (!mdl->rigid_body.on) return;
 
 		// if in air, reset angles
 
 	if (obj->air_mode!=am_ground) {
-		object_rigid_body_offset_reset_y(obj);
-		object_rigid_body_angle_reset_x(obj);
-		object_rigid_body_angle_reset_z(obj);
+		object_rigid_body_offset_reset_y(obj,mdl);
+		object_rigid_body_angle_reset_x(obj,mdl);
+		object_rigid_body_angle_reset_z(obj,mdl);
 		return;
 	}
 
@@ -108,7 +112,7 @@ void object_rigid_body_reset_angle(obj_type *obj)
 	y=obj->pnt.y;
 
 	if (obj->contact.stand_obj_idx!=-1) {
-		object_rigid_body_offset_reset_y(obj);			// no movement if standing on object
+		object_rigid_body_offset_reset_y(obj,mdl);			// no movement if standing on object
 	}
 	else {
 
@@ -120,9 +124,9 @@ void object_rigid_body_reset_angle(obj_type *obj)
 					// reset draw offset (with smoothing)
 
 				off_y=ky-y;
-				ry=obj->rigid_body.draw_offset_y;
+				ry=obj->motion.rigid_body_offset_y;
 
-				obj->rigid_body.draw_offset_y=ry+(int)((float)(off_y-ry)*obj->rigid_body.smooth_factor_y);
+				obj->motion.rigid_body_offset_y=ry+(int)((float)(off_y-ry)*mdl->rigid_body.y.smooth_factor);
 
 					// set y for angle changes
 
@@ -144,9 +148,9 @@ void object_rigid_body_reset_angle(obj_type *obj)
 		// if all the same, skip out
 		
 	if ((fy[0]==fy[1]) && (fy[0]==fy[2]) && (fy[0]==fy[3])) {
-		object_rigid_body_offset_reset_y(obj);
-		object_rigid_body_angle_reset_x(obj);
-		object_rigid_body_angle_reset_z(obj);
+		object_rigid_body_offset_reset_y(obj,mdl);
+		object_rigid_body_angle_reset_x(obj,mdl);
+		object_rigid_body_angle_reset_z(obj,mdl);
 		return;
 	}
 	
@@ -164,12 +168,12 @@ void object_rigid_body_reset_angle(obj_type *obj)
 	
 	x_ang=x_neg_ang;
 	if (x_pos_ang>x_ang) x_ang=x_pos_ang;
-	if (x_ang>obj->rigid_body.max_ang_x) x_ang=obj->rigid_body.max_ang_x;
+	if (x_ang>mdl->rigid_body.x.max_ang) x_ang=mdl->rigid_body.x.max_ang;
 	if ((y<fy[0]) || (y<fy[1])) x_ang=-x_ang;
 
 	z_ang=z_neg_ang;
 	if (z_pos_ang>z_ang) z_ang=z_pos_ang;
-	if (z_ang>obj->rigid_body.max_ang_z) z_ang=obj->rigid_body.max_ang_z;
+	if (z_ang>mdl->rigid_body.z.max_ang) z_ang=mdl->rigid_body.z.max_ang;
 	if ((y<fy[0]) || (y<fy[3])) z_ang=-z_ang;
 	
 		// set angle (smooth out drastic angle changes)
@@ -178,7 +182,7 @@ void object_rigid_body_reset_angle(obj_type *obj)
 		obj->ang.x=x_ang;
 	}
 	else {
-		obj->ang.x=obj->ang.x+((x_ang-obj->ang.x)*obj->rigid_body.smooth_factor_x);
+		obj->ang.x=obj->ang.x+((x_ang-obj->ang.x)*mdl->rigid_body.x.smooth_factor);
 	}
 
 	z_ang=-z_ang;
@@ -187,7 +191,7 @@ void object_rigid_body_reset_angle(obj_type *obj)
 		obj->ang.z=z_ang;
 	}
 	else {
-		obj->ang.z=obj->ang.z+((z_ang-obj->ang.z)*obj->rigid_body.smooth_factor_x);
+		obj->ang.z=obj->ang.z+((z_ang-obj->ang.z)*mdl->rigid_body.z.smooth_factor);
 	}
 }
 

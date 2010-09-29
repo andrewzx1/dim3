@@ -147,7 +147,7 @@ void model_draw_setup_object(obj_type *obj)
 
 		// rigid body offsets
 
-	if (obj->rigid_body.on) draw->pnt.y+=obj->rigid_body.draw_offset_y;
+	if (mdl->rigid_body.on) draw->pnt.y+=obj->motion.rigid_body_offset_y;
 
 		// timing for bounces and spins
 
