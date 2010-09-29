@@ -148,13 +148,6 @@ int map_recalc_normals_get_auto_mode(map_mesh_type *mesh)
 	return(mesh_normal_mode_in);
 }
 
-bool map_recalc_normals_compare_sign(float f1,float f2)
-{
-	if ((f1<0.0f) && (f2<0.0f)) return(TRUE);
-	if ((f1>=0.0f) && (f2>=0.0f)) return(TRUE);
-	return(FALSE);
-}
-
 bool map_recalc_normals_poly_is_outside(map_mesh_type *mesh,int poly_idx)
 {
 	int					n,dir;

@@ -821,7 +821,8 @@ void main_wind_set_title(char *file_name)
 
 void main_wind_resize(void)
 {
-	Rect			wbox;
+	int				n;
+	Rect			wbox,box;
 	CGrafPtr		saveport;
 	
 		// erase window
@@ -837,6 +838,16 @@ void main_wind_resize(void)
 		// fix all views and palettes
 		
 	aglUpdateContext(ctx);
+		
+	box.top=0;
+	box.bottom=tool_button_size;
+	box.left=wbox.right-(piece_count*tool_button_size);
+	box.right=box.left+tool_button_size;
+	
+	for (n=0;n!=piece_count;n++) {
+		SetControlBounds(piece_ctrl[n],&box);
+		OffsetRect(&box,tool_button_size,0);
+    }
 
 	texture_palette_setup();
 	

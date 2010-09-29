@@ -35,7 +35,7 @@ extern void menu_update_view(void);
 extern bool menu_save_changes_dialog(void);
 
 extern void undo_initialize(void);
-extern void undo_clear_all(void);
+extern void undo_clear(void);
 extern void undo_push(void);
 extern void undo_pull(void);
 

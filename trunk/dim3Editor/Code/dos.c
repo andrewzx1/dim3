@@ -145,7 +145,7 @@ bool file_new_map(void)
 		// start the map
 		
 	select_clear();
-	undo_clear_all();
+	undo_clear();
 		
     map_new(&map,file_name);
 	
@@ -209,7 +209,7 @@ bool file_open_map(void)
 		// clear selection
 		
 	select_clear();
-	undo_clear_all();
+	undo_clear();
 	
 		// start models
 		
@@ -257,6 +257,6 @@ void file_close_map(void)
 	
     close_windows();
 	
-	undo_clear_all();
+	undo_clear();
 }
 
