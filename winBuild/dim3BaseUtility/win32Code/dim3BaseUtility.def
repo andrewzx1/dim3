@@ -125,6 +125,8 @@ EXPORTS
 	zip_compress								@255
 	zip_expand									@256
 
+
+
 	xml_new_file								@280
 	xml_open_file								@281
 	xml_save_file								@282
@@ -149,19 +151,20 @@ EXPORTS
 	xml_get_attribute_float_default				@308
 	xml_get_attribute_float_array				@309
 	xml_get_attribute_boolean					@310
-	xml_get_attribute_list						@311
-	xml_get_attribute_2_coord_int				@312
-	xml_get_attribute_2_coord_float				@313
-	xml_get_attribute_2_coord_float_default		@314
-	xml_get_attribute_3_coord_int				@315
-	xml_get_attribute_3_coord_float				@316
-	xml_get_attribute_4_coord_float				@317
-	xml_get_attribute_color						@318
-	xml_get_attribute_bit_array					@319
+	xml_get_attribute_boolean_default_true		@311
+	xml_get_attribute_list						@312
+	xml_get_attribute_2_coord_int				@313
+	xml_get_attribute_2_coord_float				@314
+	xml_get_attribute_2_coord_float_default		@315
+	xml_get_attribute_3_coord_int				@316
+	xml_get_attribute_3_coord_float				@317
+	xml_get_attribute_4_coord_float				@318
+	xml_get_attribute_color						@319
+	xml_get_attribute_bit_array					@320
 
-	xml_add_tagstart							@320
-	xml_add_tagend								@321
-	xml_add_tagclose							@322
+	xml_add_tagstart							@321
+	xml_add_tagend								@322
+	xml_add_tagclose							@323
 
 	xml_add_attribute_text						@330
 	xml_add_attribute_int						@331

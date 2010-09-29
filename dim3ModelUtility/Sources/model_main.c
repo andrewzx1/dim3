@@ -83,6 +83,18 @@ bool model_new(model_type *model,char *name)
 	model->tags.name_bone_tag=model_null_tag;
 	model->tags.name_bone_idx=-1;
 
+	model->rigid_body.on=FALSE;
+
+	model->rigid_body.y.max_ang=0.0f;			// unused, but in struct
+	model->rigid_body.y.reset_factor=0.8f;
+	model->rigid_body.y.smooth_factor=0.2f;
+	model->rigid_body.x.max_ang=45.0f;
+	model->rigid_body.x.reset_factor=0.8f;
+	model->rigid_body.x.smooth_factor=0.2f;
+	model->rigid_body.z.max_ang=45.0f;
+	model->rigid_body.z.reset_factor=0.8f;
+	model->rigid_body.z.smooth_factor=0.2f;
+
 		// setup first mesh
 
 	model->nmesh=1;
@@ -92,6 +104,11 @@ bool model_new(model_type *model,char *name)
 		
 	model->meshes[0].vertexes=NULL;
 	model->meshes[0].trigs=NULL;
+
+	model->meshes[0].no_lighting=FALSE;
+	model->meshes[0].diffuse=TRUE;
+	model->meshes[0].blend_add=FALSE;
+	model->meshes[0].tintable=FALSE;
 
 	model->meshes[0].materials=malloc(max_model_texture*sizeof(model_material_type));
 	if (model->meshes[0].materials==NULL) return(FALSE);

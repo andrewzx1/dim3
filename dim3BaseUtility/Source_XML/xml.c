@@ -667,6 +667,14 @@ bool xml_get_attribute_boolean(int n,char *name)
 	return(strcmp(str,"true")==0);
 }
 
+bool xml_get_attribute_boolean_default_true(int n,char *name)
+{
+	char			str[256];
+
+	if (!xml_get_attribute_raw(n,name,str,256)) return(TRUE);
+	return(strcmp(str,"true")==0);
+}
+
 int xml_get_attribute_list(int n,char *name,char *list)
 {
     int				i;

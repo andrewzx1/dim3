@@ -128,7 +128,6 @@ void script_initialize_classes(void)
 	script_init_obj_sight_object();
 	script_init_obj_health_object();
 	script_init_obj_size_object();
-	script_init_obj_rigid_body_object();
 	script_init_obj_vehicle_object();
 	script_init_obj_radar_object();
 	script_init_obj_score_object();
@@ -269,7 +268,6 @@ void script_release_classes(void)
 	script_free_obj_sight_object();
 	script_free_obj_health_object();
 	script_free_obj_size_object();
-	script_free_obj_rigid_body_object();
 	script_free_obj_vehicle_object();
 	script_free_obj_radar_object();
 	script_free_obj_score_object();
@@ -594,7 +592,6 @@ JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach,int sc
 			script_add_obj_sight_object(cx,j_obj);
 			script_add_obj_health_object(cx,j_obj);
 			script_add_obj_size_object(cx,j_obj);
-			script_add_obj_rigid_body_object(cx,j_obj);
 			script_add_obj_vehicle_object(cx,j_obj);
 			script_add_obj_radar_object(cx,j_obj);
 			script_add_obj_score_object(cx,j_obj);

@@ -395,18 +395,6 @@ typedef struct		{
 					} obj_grow;
 
 //
-// rigid bodies
-//
-
-typedef struct		{
-						int						draw_offset_y;
-						float					reset_factor_y,smooth_factor_y,
-												max_ang_x,reset_factor_x,smooth_factor_x,
-												max_ang_z,reset_factor_z,smooth_factor_z;
-						bool					on;
-					} obj_rigid_body;
-
-//
 // object hits and contacts
 //
 
@@ -483,7 +471,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						last_y_change;
+						int						last_y_change,rigid_body_offset_y;
 						d3vct					vct;
 						d3ang					ang;
 					} obj_motion;
@@ -880,7 +868,6 @@ typedef struct		{
 						obj_size				size;
 						obj_grow				grow;
 						obj_sight				sight;
-						obj_rigid_body			rigid_body;
 						obj_bump				bump;
 						obj_bounce				bounce;
 						obj_duck				duck;
