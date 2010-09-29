@@ -52,7 +52,7 @@ void auto_generate_map(void)
 	ag_first=FALSE;
 
 	select_clear();
-	undo_clear_all();
+	undo_clear();
 
 		// run the auto-generate
 		
