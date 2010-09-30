@@ -53,6 +53,8 @@ extern bool gl_check_shader_ok(void);
 extern void gl_lights_compile(int tick);
 extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
 extern void gl_lights_calc_ambient_color(d3col *col);
+extern float gl_lights_calc_ambient_factor(void);
+extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct);
 extern void gl_lights_calc_color(double x,double y,double z,float *cf);
 extern void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cf);
 extern void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list);
@@ -119,7 +121,7 @@ extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
-extern void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,bool hilite,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset);
+extern void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset);
 
 	// core shaders
 

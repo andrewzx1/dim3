@@ -93,6 +93,8 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3ShineFactor=glGetUniformLocationARB(shader->program_obj,"dim3ShineFactor");
 	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
+	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
+	shader->var_locs.dim3DiffuseAmbientValue=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseAmbientValue");
 
 	shader->var_locs.dim3Tangent=glGetUniformLocationARB(shader->program_obj,"dim3Tangent");
 	shader->var_locs.dim3Normal=glGetUniformLocationARB(shader->program_obj,"dim3Normal");
@@ -377,12 +379,20 @@ void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
 	glUniform3fARB(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
 }
 
-void gl_shader_set_light_normal_variables(shader_type *shader,bool is_core,view_light_list_type *light_list)
+void gl_shader_set_light_variables(shader_type *shader,bool map_shader,bool is_core,view_light_list_type *light_list)
 {
 	int								n,k,count,in_light_map,max_light;
 	view_light_spot_type			*lspot;
 	shader_cached_var_light_loc		*loc_light;
 	shader_current_var_light_value	*cur_light;
+
+		// if model shader, set diffuse
+
+	if (!map_shader) {
+		glUniform3fARB(shader->var_locs.dim3AmbientColor,1.0f,1.0f,1.0f);
+
+
+	}
 	
 		// if in core and no lights,
 		// skip all this as core shaders ignore lights
@@ -500,20 +510,39 @@ void gl_shader_set_light_normal_variables(shader_type *shader,bool is_core,view_
 	}
 }
 
-void gl_shader_set_poly_variables(shader_type *shader,float alpha,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
+void gl_shader_set_tint_variables(shader_type *shader,view_light_list_type *light_list)
 {
-		// set tint color
-		// only for model shaders
-		
-	if (tint_col!=NULL) {
-		if (shader->var_locs.dim3TintColor!=-1) {
-			if ((shader->var_values.tint_col.r!=tint_col->r) || (shader->var_values.tint_col.g!=tint_col->g) || (shader->var_values.tint_col.b!=tint_col->b)) {
-				memmove(&shader->var_values.tint_col,tint_col,sizeof(d3col));
-				glUniform3fARB(shader->var_locs.dim3TintColor,tint_col->r,tint_col->g,tint_col->b);
-			}
+	if (shader->var_locs.dim3TintColor!=-1) {
+		if ((shader->var_values.tint_col.r!=light_list->tint.r) || (shader->var_values.tint_col.g!=light_list->tint.g) || (shader->var_values.tint_col.b!=light_list->tint.b)) {
+			memmove(&shader->var_values.tint_col,&light_list->tint,sizeof(d3col));
+			glUniform3fARB(shader->var_locs.dim3TintColor,light_list->tint.r,light_list->tint.g,light_list->tint.b);
 		}
 	}
-	
+}
+
+void gl_shader_set_diffuse_variables(shader_type *shader,view_light_list_type *light_list)
+{
+		// diffuse vector
+
+	if (shader->var_locs.dim3DiffuseVector!=-1) {
+		if ((shader->var_values.diffuse_vct.x!=light_list->diffuse_vct.x) || (shader->var_values.diffuse_vct.y!=light_list->diffuse_vct.y) || (shader->var_values.diffuse_vct.z!=light_list->diffuse_vct.z)) {
+			memmove(&shader->var_values.diffuse_vct,&light_list->diffuse_vct,sizeof(d3vct));
+			glUniform3fARB(shader->var_locs.dim3DiffuseVector,light_list->diffuse_vct.x,light_list->diffuse_vct.y,light_list->diffuse_vct.z);
+		}
+	}
+
+		// diffuse ambient value
+
+	if (shader->var_locs.dim3DiffuseAmbientValue!=-1) {
+		if (shader->var_values.diffuse_ambient_value!=light_list->diffuse_ambient_value) {
+			shader->var_values.diffuse_ambient_value=light_list->diffuse_ambient_value;
+			glUniform1fARB(shader->var_locs.dim3DiffuseAmbientValue,light_list->diffuse_ambient_value);
+		}
+	}
+}
+
+void gl_shader_set_poly_variables(shader_type *shader,float alpha,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
+{
 		// alpha
 		
 	if (shader->var_locs.dim3Alpha!=-1) {
@@ -594,7 +623,9 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 	shader->var_values.alpha=-1.0f;
 	shader->var_values.shine_factor=-1.0f;
 	shader->var_values.tint_col.r=shader->var_values.tint_col.g=shader->var_values.tint_col.b=-1.0f;
-	
+	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
+	shader->var_values.diffuse_ambient_value=-1.0f;
+
 	shader->var_values.tangent.x=shader->var_values.tangent.y=shader->var_values.tangent.z=0.0f;
 	shader->var_values.normal.x=shader->var_values.normal.y=shader->var_values.normal.z=0.0f;
 
@@ -743,7 +774,7 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
       
 ======================================================= */
 
-void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,bool hilite,d3pnt *pnt,d3col *tint_col,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
+void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
 {
 	bool						is_core;
 	shader_type					*shader;
@@ -780,7 +811,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// hiliting
 		
-	if ((!map_shader) && (hilite)) {
+	if ((!map_shader) && (light_list->hilite)) {
 		shader->in_hilite=TRUE;
 		gl_shader_ambient_hilite_override(shader,TRUE);
 	}
@@ -797,9 +828,14 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// per polygon variables
 		
-	gl_shader_set_poly_variables(shader,alpha,tint_col,tangent_space,vbo_offset);
-	
+	gl_shader_set_poly_variables(shader,alpha,tangent_space,vbo_offset);
+
 		// lighting variables
 			
-	gl_shader_set_light_normal_variables(shader,is_core,light_list);
+	if (!map_shader) {
+		gl_shader_set_tint_variables(shader,light_list);
+		gl_shader_set_diffuse_variables(shader,light_list);
+	}
+
+	gl_shader_set_light_variables(shader,map_shader,is_core,light_list);
 }
