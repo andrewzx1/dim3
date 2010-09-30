@@ -13,7 +13,6 @@
 		26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEC10BB5156002B3FA1 /* gl_shader_user.c */; };
 		26101DCE0E5D075100D2919B /* view_vertex_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 26101DCD0E5D075100D2919B /* view_vertex_object.c */; };
 		261B52AF0FA551CE0070CAB0 /* render_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 261B52AE0FA551CE0070CAB0 /* render_model.c */; };
-		261ED11C1064A0A20035747E /* collision_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 261ED11A1064A0A20035747E /* collision_object.c */; };
 		2625D03A0F54C9960023B0D3 /* render_map_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0360F54C9960023B0D3 /* render_map_liquid.c */; };
 		2625D03B0F54C9960023B0D3 /* render_map_opaque.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0370F54C9960023B0D3 /* render_map_opaque.c */; };
 		2625D03D0F54C9960023B0D3 /* render_map_transparent.c in Sources */ = {isa = PBXBuildFile; fileRef = 2625D0390F54C9960023B0D3 /* render_map_transparent.c */; };
@@ -69,7 +68,6 @@
 		F51925CA0A4E3D50005B1F5E /* zoom_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F51925C90A4E3D50005B1F5E /* zoom_draw.c */; };
 		F51AB0DD0CFE3BDA0085DC72 /* input_joystick.c in Sources */ = {isa = PBXBuildFile; fileRef = F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */; };
 		F51B6B9A0936F0A800505E9C /* xml_action.c in Sources */ = {isa = PBXBuildFile; fileRef = F51B6B990936F0A800505E9C /* xml_action.c */; };
-		F51D59370A0063FB00C13E23 /* script_obj_rigid_body.c in Sources */ = {isa = PBXBuildFile; fileRef = F51D59360A0063FB00C13E23 /* script_obj_rigid_body.c */; };
 		F51EE0AB0AEED99E0013EC4A /* script_game_score.c in Sources */ = {isa = PBXBuildFile; fileRef = F51EE0A90AEED99E0013EC4A /* script_game_score.c */; };
 		F51EE0AC0AEED99E0013EC4A /* script_game_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F51EE0AA0AEED99E0013EC4A /* script_game_setting.c */; };
 		F52036090C0FA1B800B779EC /* obj_grow.c in Sources */ = {isa = PBXBuildFile; fileRef = F52036080C0FA1B800B779EC /* obj_grow.c */; };
@@ -395,7 +393,6 @@
 		26100DEC10BB5156002B3FA1 /* gl_shader_user.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_user.c; path = Sources_View/gl_shader_user.c; sourceTree = "<group>"; };
 		26101DCD0E5D075100D2919B /* view_vertex_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vertex_object.c; path = Sources_View/view_vertex_object.c; sourceTree = "<group>"; };
 		261B52AE0FA551CE0070CAB0 /* render_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_model.c; path = Sources_View/render_model.c; sourceTree = "<group>"; };
-		261ED11A1064A0A20035747E /* collision_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = collision_object.c; path = Sources_Server/collision_object.c; sourceTree = "<group>"; };
 		2625D0360F54C9960023B0D3 /* render_map_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_liquid.c; path = Sources_View/render_map_liquid.c; sourceTree = "<group>"; };
 		2625D0370F54C9960023B0D3 /* render_map_opaque.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_opaque.c; path = Sources_View/render_map_opaque.c; sourceTree = "<group>"; };
 		2625D0390F54C9960023B0D3 /* render_map_transparent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_map_transparent.c; path = Sources_View/render_map_transparent.c; sourceTree = "<group>"; };
@@ -449,7 +446,6 @@
 		F51925C90A4E3D50005B1F5E /* zoom_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zoom_draw.c; path = Sources_View/zoom_draw.c; sourceTree = "<group>"; };
 		F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = input_joystick.c; path = Sources_View/input_joystick.c; sourceTree = "<group>"; };
 		F51B6B990936F0A800505E9C /* xml_action.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xml_action.c; path = Sources_View/xml_action.c; sourceTree = "<group>"; };
-		F51D59360A0063FB00C13E23 /* script_obj_rigid_body.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_obj_rigid_body.c; path = Sources_Server/script_obj_rigid_body.c; sourceTree = "<group>"; };
 		F51EE0A90AEED99E0013EC4A /* script_game_score.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_score.c; path = Sources_Server/script_game_score.c; sourceTree = "<group>"; };
 		F51EE0AA0AEED99E0013EC4A /* script_game_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_setting.c; path = Sources_Server/script_game_setting.c; sourceTree = "<group>"; };
 		F52036080C0FA1B800B779EC /* obj_grow.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_grow.c; path = Sources_Server/obj_grow.c; sourceTree = "<group>"; };
@@ -846,7 +842,6 @@
 				F534781A0C23B3A500B34D05 /* script_obj_sight.c */,
 				F5A5819D090B433F00BE7C36 /* script_obj_health.c */,
 				F5A581AA090B433F00BE7C36 /* script_obj_size.c */,
-				F51D59360A0063FB00C13E23 /* script_obj_rigid_body.c */,
 				F5FAB74A0A5DEF08001FC86E /* script_obj_vehicle.c */,
 				F5CF599C0BFD161D007DD44C /* script_obj_radar.c */,
 				F5E483DC09F86698001910AB /* script_obj_score.c */,
@@ -1071,7 +1066,6 @@
 			isa = PBXGroup;
 			children = (
 				F5DD2C8E0CEABBA20028796D /* collision_map.c */,
-				261ED11A1064A0A20035747E /* collision_object.c */,
 				F5DD1A4A0908598900721649 /* map_y_check.c */,
 				F57346D60A1C270600378534 /* map_ray_trace.c */,
 				265B377C0D7F8D3A004AE124 /* group_change.c */,
@@ -1837,7 +1831,6 @@
 				F571969909E8CCA2001E7A67 /* script_obj_weapon_fire.c in Sources */,
 				F5BE44EC09F5C18700292ECD /* script_weap_alt_ammo.c in Sources */,
 				F5E483DD09F86698001910AB /* script_obj_score.c in Sources */,
-				F51D59370A0063FB00C13E23 /* script_obj_rigid_body.c in Sources */,
 				F5C1BCDA0A03DDA4002D02AB /* scripts_defines.c in Sources */,
 				F5C1BD520A047590002D02AB /* script_utility_pack.c in Sources */,
 				F5C1BE780A05A2E3002D02AB /* model_effect.c in Sources */,
@@ -1911,7 +1904,6 @@
 				263EF8C00FD9CFEE00FEB1E5 /* script_multiplayer_score.c in Sources */,
 				26CC83371027BAC200682555 /* script_map_light.c in Sources */,
 				26C7B8D41060558900F800DA /* map_multiplayer.c in Sources */,
-				261ED11C1064A0A20035747E /* collision_object.c in Sources */,
 				26100DED10BB5156002B3FA1 /* gl_shader_core.c in Sources */,
 				26100DEE10BB5156002B3FA1 /* gl_shader_fullscreen.c in Sources */,
 				26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */,
