@@ -153,8 +153,12 @@ void walk_view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist
 
 	matrix_rotate_y(&mat,view->ang.y);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	
+	matrix_rotate_x(&mat,view->ang.x);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	pnt->x+=(int)fx;
+	pnt->y+=(int)fy;
 	pnt->z+=(int)fz;
 }
 

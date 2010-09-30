@@ -27,7 +27,7 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-#define kModelSettingTabCount				4
+#define kModelSettingTabCount				5
 #define kModelSettingTab					FOUR_CHAR_CODE('tabb')
 
 #define kRotateMode							FOUR_CHAR_CODE('rotm')
@@ -44,6 +44,16 @@ and can be sold or given away.
 #define kLightBoneTag						FOUR_CHAR_CODE('lbtg')
 #define kHaloBoneTag						FOUR_CHAR_CODE('hbtg')
 #define kNameBoneTag						FOUR_CHAR_CODE('nbtg')
+
+#define kRigidBodyOn						FOUR_CHAR_CODE('rbon')
+#define kRigidBodyYResetFact				FOUR_CHAR_CODE('yrtf')
+#define kRigidBodyYSmoothFact				FOUR_CHAR_CODE('ysmf')
+#define kRigidBodyXMaxAngle					FOUR_CHAR_CODE('xmxa')
+#define kRigidBodyXResetFact				FOUR_CHAR_CODE('xrtf')
+#define kRigidBodyXSmoothFact				FOUR_CHAR_CODE('xsmf')
+#define kRigidBodyZMaxAngle					FOUR_CHAR_CODE('zmxa')
+#define kRigidBodyZResetFact				FOUR_CHAR_CODE('zrtf')
+#define kRigidBodyZSmoothFact				FOUR_CHAR_CODE('zsmf')
 
 bool						dialog_model_settings_cancel;
 WindowRef					dialog_model_settings_wind;
@@ -158,6 +168,17 @@ bool dialog_model_settings_run(void)
 		dialog_set_bone_combo(dialog_model_settings_wind,kHaloBoneTag,n,idx);
 	}
 	
+	dialog_set_boolean(dialog_model_settings_wind,kRigidBodyOn,0,model.rigid_body.on);
+
+	dialog_set_float(dialog_model_settings_wind,kRigidBodyYResetFact,0,model.rigid_body.y.reset_factor);
+	dialog_set_float(dialog_model_settings_wind,kRigidBodyYSmoothFact,0,model.rigid_body.y.smooth_factor);
+	dialog_set_float(dialog_model_settings_wind,kRigidBodyXMaxAngle,0,model.rigid_body.x.max_ang);
+	dialog_set_float(dialog_model_settings_wind,kRigidBodyXResetFact,0,model.rigid_body.x.reset_factor);
+	dialog_set_float(dialog_model_settings_wind,kRigidBodyXSmoothFact,0,model.rigid_body.x.smooth_factor);
+	dialog_set_float(dialog_model_settings_wind,kRigidBodyZMaxAngle,0,model.rigid_body.z.max_ang);
+	dialog_set_float(dialog_model_settings_wind,kRigidBodyZResetFact,0,model.rigid_body.z.reset_factor);
+	dialog_set_float(dialog_model_settings_wind,kRigidBodyZSmoothFact,0,model.rigid_body.z.smooth_factor);
+
 		// show window
 	
 	ShowWindow(dialog_model_settings_wind);
@@ -220,6 +241,17 @@ bool dialog_model_settings_run(void)
 				model.tags.halo_bone_tag[n]=model.bones[idx].tag;
 			}
 		}
+		
+		model.rigid_body.on=dialog_get_boolean(dialog_model_settings_wind,kRigidBodyOn,0);
+
+		model.rigid_body.y.reset_factor=dialog_get_float(dialog_model_settings_wind,kRigidBodyYResetFact,0);
+		model.rigid_body.y.smooth_factor=dialog_get_float(dialog_model_settings_wind,kRigidBodyYSmoothFact,0);
+		model.rigid_body.x.max_ang=dialog_get_float(dialog_model_settings_wind,kRigidBodyXMaxAngle,0);
+		model.rigid_body.x.reset_factor=dialog_get_float(dialog_model_settings_wind,kRigidBodyXResetFact,0);
+		model.rigid_body.x.smooth_factor=dialog_get_float(dialog_model_settings_wind,kRigidBodyXSmoothFact,0);
+		model.rigid_body.z.max_ang=dialog_get_float(dialog_model_settings_wind,kRigidBodyZMaxAngle,0);
+		model.rigid_body.z.reset_factor=dialog_get_float(dialog_model_settings_wind,kRigidBodyZResetFact,0);
+		model.rigid_body.z.smooth_factor=dialog_get_float(dialog_model_settings_wind,kRigidBodyZSmoothFact,0);
 	}
 
 		// close window
