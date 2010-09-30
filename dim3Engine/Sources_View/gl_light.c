@@ -585,6 +585,30 @@ void gl_lights_calc_ambient_color(d3col *col)
 	col->b=map.ambient.light_color.b+setup.gamma;
 }
 
+float gl_lights_calc_ambient_factor(void)
+{
+	float			f;
+
+	f=(map.ambient.light_color.r+map.ambient.light_color.g+map.ambient.light_color.b)/3.0f;
+	f+=setup.gamma;
+
+	if (f>1.0f) return(1.0f);
+	return(f);
+}
+
+/* =======================================================
+
+      Calculate Diffuse Vector
+      
+======================================================= */
+
+void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct)
+{
+	vct->x=0.0f;		// supergumba -- calculate
+	vct->y=-1.0f;
+	vct->z=0.0f;
+}
+
 /* =======================================================
 
       Calculate Lighting at a Point
@@ -691,6 +715,14 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 	map_mesh_type			*mesh;
 	view_light_spot_type	*lspot;
 
+		// misc settings, mostly for models
+
+	light_list->hilite=FALSE;
+	light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
+	light_list->diffuse_vct.x=light_list->diffuse_vct.z=0.0f;
+	light_list->diffuse_vct.y=-1.0f;
+	light_list->diffuse_ambient_value=1.0f;
+
 		// meshes already have a reduced light list
 		
 	mesh=&map.mesh.meshes[mesh_idx];
@@ -762,6 +794,16 @@ void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type
 {
 	int				n;
 
+		// misc settings, mostly for models
+
+	light_list->hilite=FALSE;
+	light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
+	light_list->diffuse_vct.x=light_list->diffuse_vct.z=0.0f;
+	light_list->diffuse_vct.y=-1.0f;
+	light_list->diffuse_ambient_value=1.0f;
+
+		// lights
+
 	light_list->nlight=liq->light_cache.count;
 		
 	for (n=0;n!=light_list->nlight;n++) {
@@ -772,6 +814,15 @@ void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type
 void gl_lights_build_model_light_list(model_draw *draw,view_light_list_type *light_list)
 {
 	int				n;
+
+		// misc settings, mostly for models
+
+	light_list->hilite=FALSE;
+	memmove(&light_list->tint,&draw->tint,sizeof(d3col));
+	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&light_list->diffuse_vct);
+	light_list->diffuse_ambient_value=gl_lights_calc_ambient_factor();
+
+		// lights
 
 	light_list->nlight=draw->light_cache.count;
 		

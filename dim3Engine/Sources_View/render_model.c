@@ -44,6 +44,68 @@ extern bool fog_solid_on(void);
 
 /* =======================================================
 
+      Model Diffuse and Tints
+      
+======================================================= */
+
+void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw *draw)
+{
+	int				n;
+	float			diffuse,ambient_factor;
+	float			*cp,*nl;
+	d3vct			diffuse_vct;
+	model_mesh_type	*mesh;
+
+	mesh=&mdl->meshes[mesh_idx];
+
+	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
+	ambient_factor=gl_lights_calc_ambient_factor();
+
+	cp=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
+	nl=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+
+			// get the dot product
+
+		diffuse=(diffuse_vct.x*(*nl))+(diffuse_vct.y*(*(nl+1)))+(diffuse_vct.z*(*(nl+2)));
+		nl+=3;
+
+			// never less then ambient
+
+		diffuse*=1.2f;
+		if (diffuse<ambient_factor) diffuse=ambient_factor;
+
+		if (diffuse<1.0f) {
+			*cp++=(*cp)*diffuse;
+			*cp++=(*cp)*diffuse;
+			*cp++=(*cp)*diffuse;
+		}
+		else {
+			cp+=3;
+		}
+	}
+}
+
+void render_model_tint_color_vertexes(model_type *mdl,int mesh_idx,model_draw *draw)
+{
+	int				n;
+	float			*cp;
+	model_mesh_type	*mesh;
+
+	mesh=&mdl->meshes[mesh_idx];
+
+	cp=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		*cp++=(*cp)*draw->tint.r;
+		*cp++=(*cp)*draw->tint.g;
+		*cp++=(*cp)*draw->tint.b;
+	}
+}
+
+/* =======================================================
+
       Model Colors and Normals
       
 ======================================================= */
@@ -51,7 +113,8 @@ extern bool fog_solid_on(void);
 void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n,k;
-	float			*cp,*vp,fx,fy,fz;
+	float			fx,fy,fz;
+	float			*cp,*vp;
 	d3fpnt			cnt;
 	d3col			col;
 	matrix_type		mat;
@@ -62,8 +125,6 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
 		
-			// shaders don't need color lists
-
 		mesh=&mdl->meshes[n];
 		
 			// setup color list
@@ -87,20 +148,18 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 		if ((mesh->no_lighting) || (draw->no_lighting)) {
 
-			if (mesh->tintable) {
-				for (k=0;k!=mesh->nvertex;k++) {
-					*cp++=draw->tint.r;
-					*cp++=draw->tint.g;
-					*cp++=draw->tint.b;
-				}
+				// set vertexes to white
+
+			for (k=0;k!=mesh->nvertex;k++) {
+				*cp++=1.0f;
+				*cp++=1.0f;
+				*cp++=1.0f;
 			}
-			else {
-				for (k=0;k!=mesh->nvertex;k++) {
-					*cp++=1.0f;
-					*cp++=1.0f;
-					*cp++=1.0f;
-				}
-			}
+
+				// diffuse and tint
+
+			if (mesh->diffuse) render_model_diffuse_color_vertexes(mdl,n,draw);
+			if (mesh->tintable) render_model_tint_color_vertexes(mdl,n,draw);
 
 			continue;
 		}
@@ -109,13 +168,20 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			
 		if (draw->light_cache.count==0) {
 		
+				// set vertexes to ambient color
+
 			gl_lights_calc_ambient_color(&col);
 		
 			for (k=0;k!=mesh->nvertex;k++) {
-				*cp++=col.r*draw->tint.r;
-				*cp++=col.g*draw->tint.g;
-				*cp++=col.b*draw->tint.b;
+				*cp++=col.r;
+				*cp++=col.g;
+				*cp++=col.b;
 			}
+
+				// diffuse and tint
+
+			if (mesh->diffuse) render_model_diffuse_color_vertexes(mdl,n,draw);
+			if (mesh->tintable) render_model_tint_color_vertexes(mdl,n,draw);
 			
 			continue;
 		}
@@ -155,18 +221,10 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 			}
 		}
 
-			// tints
+			// diffuse and tint
 
-		if (mesh->tintable) {
-
-			cp=draw->setup.mesh_arrays[n].gl_color_array;
-
-			for (k=0;k!=mesh->nvertex;k++) {
-				*cp++=(*cp)*draw->tint.r;
-				*cp++=(*cp)*draw->tint.g;
-				*cp++=(*cp)*draw->tint.b;
-			}
-		}
+		if (mesh->diffuse) render_model_diffuse_color_vertexes(mdl,n,draw);
+		if (mesh->tintable) render_model_tint_color_vertexes(mdl,n,draw);
 	}
 }
 
@@ -451,6 +509,7 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
 	int						n,trig_count,frame,trig_idx;
+	float					old_diffuse_ambient_value;
 	model_mesh_type			*mesh;
  	model_draw_mesh_type	*draw_mesh;
 	texture_type			*texture;
@@ -494,10 +553,23 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 
 		trig_idx=material->trig_start*3;
 		
-			// run the shader
+			// set hilite and diffuse on a per
+			// mesh basis
 		
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,((mesh->no_lighting)||(draw->no_lighting)),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
+		light_list->hilite=((mesh->no_lighting)||(draw->no_lighting));
+		if (!mesh->diffuse) {
+			old_diffuse_ambient_value=light_list->diffuse_ambient_value;
+			light_list->diffuse_ambient_value=1.0f;
+		}
+
+			// run the shader
+
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,1.0f,light_list,NULL,&draw->setup.vbo_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
+
+			// put back diffuse override
+
+		if (!mesh->diffuse) light_list->diffuse_ambient_value=old_diffuse_ambient_value;
 	}
 			
 	gl_shader_draw_end();
@@ -591,6 +663,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
 	int						n,frame,trig_count,trig_idx;
+	float					old_diffuse_ambient_value;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
  	model_draw_mesh_type	*draw_mesh;
@@ -653,10 +726,23 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 			}
 		}
 		
+			// set hilite and diffuse on a per
+			// mesh basis
+		
+		light_list->hilite=((mesh->no_lighting)||(draw->no_lighting));
+		if (!mesh->diffuse) {
+			old_diffuse_ambient_value=light_list->diffuse_ambient_value;
+			light_list->diffuse_ambient_value=1.0f;
+		}
+
 			// run the shader
-			
-		gl_shader_draw_execute(FALSE,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,((mesh->no_lighting)||(draw->no_lighting)),NULL,&draw->tint,NULL,&draw->setup.vbo_offset);
+
+		gl_shader_draw_execute(FALSE,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,NULL,&draw->setup.vbo_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
+
+			// put back diffuse override
+
+		if (!mesh->diffuse) light_list->diffuse_ambient_value=old_diffuse_ambient_value;
 	}
 	
 	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -852,14 +938,10 @@ void render_model_build_vertex_lists(model_draw *draw)
 	}
 
 		// setup the colors and normals
-		// shaders need only normals, FF needs only colors
+		// shaders don't need color list
 
-	if (view.shader_on) {
-		render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
-	}
-	else {
-		render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
-	}
+	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
+	if (!view.shader_on) render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
 }
 
 /* =======================================================

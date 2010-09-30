@@ -402,11 +402,11 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	if (spec) strcat(buf,",dim3TexSpecular");
 	strcat(buf,";\n");
 
-	strcat(buf,"uniform float dim3Alpha");
+	strcat(buf,"uniform float dim3Alpha,dim3DiffuseAmbientValue");
 	if (spec) strcat(buf,",dim3ShineFactor");
 	strcat(buf,";\n");
 	
-	strcat(buf,"uniform vec3 dim3AmbientColor,dim3TintColor;\n");
+	strcat(buf,"uniform vec3 dim3AmbientColor,dim3TintColor,dim3DiffuseVector;\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
@@ -444,11 +444,9 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 			
 		// diffuse
 		
-	if (nlight!=0) {
-		strcat(buf,"vec3 diffuse=vec3(max(dot(normalize(lightVector[0]),tangentSpaceNormal),0.0));\n");
-		strcat(buf,"diffuse=max((diffuse*1.2),dim3AmbientColor);\n");
-		strcat(buf,"diffuse=clamp(diffuse,0.0,1.0);\n");
-	}
+	strcat(buf,"vec3 diffuse=vec3(max(dot(diffuseVector,tangentSpaceNormal),0.0));\n");
+	strcat(buf,"diffuse=max((diffuse*1.2),dim3DiffuseAmbientValue);\n");
+	strcat(buf,"diffuse=clamp(diffuse,0.0,1.0);\n");
 	
 		// the texture lighting
 		
@@ -487,14 +485,13 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		strcat(buf,"vec3 frag=");
 	}
 	
-	if (nlight!=0) strcat(buf,"(");
+	strcat(buf,"(");
 	if (bump) strcat(buf,"(");
 	if (spec) strcat(buf,"(");
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
-	if (nlight!=0) strcat(buf,"*diffuse)");
-	strcat(buf,"*dim3TintColor;\n");
+	strcat(buf,"*diffuse)*dim3TintColor;\n");
 	
 	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
 	
