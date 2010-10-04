@@ -279,6 +279,14 @@ typedef struct		{
 					} model_animate_type;
 
 //
+// model diffuse structure
+//
+
+typedef struct		{
+						float							factor,boost;
+					} model_diffuse_type;
+
+//
 // Model Special Bones
 //
 
@@ -302,6 +310,7 @@ typedef struct		{
 						char							name[name_str_len],load_base_path[1024];
 						d3pnt							center;
 						model_box_type					view_box;
+						model_diffuse_type				diffuse;
 						model_tags						tags;
  						model_mesh_type					meshes[max_model_mesh];
 						model_rigid_body_type			rigid_body;

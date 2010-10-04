@@ -40,7 +40,7 @@ and can be sold or given away.
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
 extern void map_restart_ambient(void);
-extern void debug_change_map(char *name);
+extern bool debug_change_map(char *name);
 
 extern int						console_mode,console_count;
 extern bool						game_loop_quit;
@@ -149,7 +149,7 @@ bool console_builtin_commands(void)
 		
 	if ((hud.debug) && (net_setup.mode==net_mode_none)) {
 		if (strncasecmp(console_input_str,"map ",4)==0) {
-			debug_change_map((char*)&console_input_str[4]);
+			if (debug_change_map((char*)&console_input_str[4])) view.console.on=FALSE;
 			return(TRUE);
 		}
 	}

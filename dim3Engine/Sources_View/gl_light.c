@@ -585,17 +585,6 @@ void gl_lights_calc_ambient_color(d3col *col)
 	col->b=map.ambient.light_color.b+setup.gamma;
 }
 
-float gl_lights_calc_ambient_factor(void)
-{
-	float			f;
-
-	f=(map.ambient.light_color.r+map.ambient.light_color.g+map.ambient.light_color.b)/3.0f;
-	f+=setup.gamma;
-
-	if (f>1.0f) return(1.0f);
-	return(f);
-}
-
 /* =======================================================
 
       Calculate Diffuse Vector
@@ -604,9 +593,61 @@ float gl_lights_calc_ambient_factor(void)
 
 void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct)
 {
-	vct->x=0.0f;		// supergumba -- calculate
-	vct->y=-1.0f;
-	vct->z=0.0f;
+	int						n,light_count;
+	float					f_light_count;
+	d3vct					light_vct;
+	view_light_spot_type	*lspot;
+	
+		// average lights
+		
+	light_count=0;
+	vct->x=vct->y=vct->z=0.0f;
+	
+		// if there is a ambient, then
+		// consider it a light from above
+		
+	if ((map.ambient.light_color.r!=0.0f) || (map.ambient.light_color.g!=0.0f) || (map.ambient.light_color.b!=0.0f)) {
+		light_count++;
+		vct->y+=-1.0f;
+	}
+	
+	for (n=0;n!=count;n++) {
+	
+		lspot=&view.render->light.spots[indexes[n]];
+
+		light_count++;
+		
+		light_vct.x=(float)(lspot->pnt.x-pnt->x);
+		light_vct.y=(float)(lspot->pnt.y-pnt->y);
+		light_vct.z=(float)(lspot->pnt.z-pnt->z);
+		
+		vector_normalize(&light_vct);
+		
+		vct->x+=light_vct.x;
+		vct->y+=light_vct.y;
+		vct->z+=light_vct.z;
+	}
+	
+		// if no lights, count as light from above
+		
+	if (light_count==0) {
+		vct->x=0.0f;
+		vct->y=-1.0f;
+		vct->z=0.0f;
+		return;
+	}
+	
+		// average
+		
+	f_light_count=(float)light_count;
+		
+	vct->x/=f_light_count;
+	vct->y/=f_light_count;
+	vct->z/=f_light_count;
+	
+		// and normalize
+		
+	vector_normalize(vct);
 }
 
 /* =======================================================
@@ -719,9 +760,9 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 
 	light_list->hilite=FALSE;
 	light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
-	light_list->diffuse_vct.x=light_list->diffuse_vct.z=0.0f;
-	light_list->diffuse_vct.y=-1.0f;
-	light_list->diffuse_ambient_value=1.0f;
+	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
+	light_list->diffuse_factor=1.0f;
+	light_list->diffuse_boost=0.0f;
 
 		// meshes already have a reduced light list
 		
@@ -798,9 +839,9 @@ void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type
 
 	light_list->hilite=FALSE;
 	light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
-	light_list->diffuse_vct.x=light_list->diffuse_vct.z=0.0f;
-	light_list->diffuse_vct.y=-1.0f;
-	light_list->diffuse_ambient_value=1.0f;
+	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
+	light_list->diffuse_factor=1.0f;
+	light_list->diffuse_boost=0.0f;
 
 		// lights
 
@@ -811,7 +852,7 @@ void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type
 	}
 }
 
-void gl_lights_build_model_light_list(model_draw *draw,view_light_list_type *light_list)
+void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,view_light_list_type *light_list)
 {
 	int				n;
 
@@ -820,7 +861,8 @@ void gl_lights_build_model_light_list(model_draw *draw,view_light_list_type *lig
 	light_list->hilite=FALSE;
 	memmove(&light_list->tint,&draw->tint,sizeof(d3col));
 	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&light_list->diffuse_vct);
-	light_list->diffuse_ambient_value=gl_lights_calc_ambient_factor();
+	light_list->diffuse_factor=mdl->diffuse.factor;
+	light_list->diffuse_boost=mdl->diffuse.boost;
 
 		// lights
 
