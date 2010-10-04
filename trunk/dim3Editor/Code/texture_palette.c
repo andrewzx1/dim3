@@ -184,15 +184,22 @@ void texture_palette_draw(void)
 		
 			// draw page
 			
-		glColor4f(0.75f,0.75f,0.75f,1.0f);
-		
+		if (txt_page==n) {
+			glColor4f(0.3f,0.3f,1.0f,1.0f);
+		}
+		else {
+			glColor4f(0.75f,0.75f,0.75f,1.0f);
+		}
+
 		glBegin(GL_QUADS);
 		glVertex2i(x,ty);
 		glVertex2i((x+16),ty);
 		glVertex2i((x+16),by);
 		glVertex2i(x,by);
 		glEnd();
-		
+
+			// outline
+
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
 		glBegin(GL_LINE_LOOP);
@@ -202,16 +209,6 @@ void texture_palette_draw(void)
 		glVertex2i(x,by);
 		glEnd();
 		
-		if (txt_page==n) {
-			glColor4f(0.3f,0.3f,1.0f,1.0f);
-			
-			glBegin(GL_QUADS);
-			glVertex2i((x+1),(ty+1));
-			glVertex2i((x+14),(ty+1));
-			glVertex2i((x+14),(by-2));
-			glVertex2i((x+1),(by-2));
-			glEnd();
-		}
 		
 			// mark if there are textures
 			
@@ -349,7 +346,7 @@ void texture_palette_reset(void)
 
 /* =======================================================
 
-      Texture Clicking
+      Texture Palette Clicking
       
 ======================================================= */
 

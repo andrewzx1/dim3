@@ -243,6 +243,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\tool_palette.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\undo.c"
 					>
 				</File>

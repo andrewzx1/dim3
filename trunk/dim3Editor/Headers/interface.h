@@ -40,6 +40,16 @@ extern void undo_push(void);
 extern void undo_pull(void);
 
 //
+// tool palette
+//
+
+extern void tool_palette_initialize(void);
+extern void tool_palette_shutdown(void);
+extern void tool_palette_setup(void);
+extern void tool_palette_draw(void);
+extern void tool_palette_click(d3pnt *pnt);
+
+//
 // texture palette
 //
 
@@ -72,7 +82,6 @@ extern void main_wind_center_position_in_map(void);
 extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
 extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
-extern void main_wind_tool_reset(void);
 extern void main_wind_tool_default(void);
 extern void main_wind_tool_switch_vertex_mode(void);
 extern void main_wind_tool_switch_drag_mode(void);

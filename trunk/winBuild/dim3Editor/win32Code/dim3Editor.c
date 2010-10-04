@@ -47,7 +47,7 @@ editor_state_type		state;
 
 d3rect					main_wind_box;
 
-extern d3rect			txt_palette_box;
+extern d3rect			tool_palette_box,txt_palette_box;
 
 extern bool setup_xml_read(void);
 extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
@@ -98,10 +98,6 @@ void menu_update_view(void)
 {
 }
 
-void main_wind_tool_reset(void)
-{
-}
-
 /* =======================================================
 
       UI Window Procedure
@@ -124,6 +120,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_SIZE:
+			tool_palette_setup();
 			texture_palette_setup();
 			// supergumba -- deal with these, need to check if map is loaded, reset main_wind_box
 			break;
@@ -140,11 +137,16 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			
 			SetCapture(wnd);
 
-			if (pnt.y<txt_palette_box.ty) {
-				walk_view_click(&pnt,FALSE);
+			if (pnt.y<tool_palette_box.by) {
+				tool_palette_click(&pnt);
 			}
 			else {
-				texture_palette_click(&pnt,FALSE);
+				if (pnt.y>=txt_palette_box.ty) {
+					texture_palette_click(&pnt,FALSE);
+				}
+				else {
+					walk_view_click(&pnt,FALSE);
+				}
 			}
 
 			ReleaseCapture();
@@ -299,7 +301,11 @@ bool editor_start(char *err_str)
 
 		// initialize walk view
 
+	tool_palette_initialize();
+	tool_palette_setup();
+
 	texture_palette_setup();
+	
 	walk_view_initialize();
 
 	return(TRUE);
@@ -308,6 +314,7 @@ bool editor_start(char *err_str)
 void editor_end(void)
 {
 	walk_view_shutdown();
+	tool_palette_shutdown();
 
 		// close opengl
 
@@ -467,6 +474,7 @@ void editor_draw(void)
 
 	walk_view_draw();
 
+	tool_palette_draw();
 	texture_palette_draw();
 
 		// swap buffers
