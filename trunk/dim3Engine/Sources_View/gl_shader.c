@@ -94,7 +94,8 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
-	shader->var_locs.dim3DiffuseAmbientValue=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseAmbientValue");
+	shader->var_locs.dim3DiffuseFactor=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseFactor");
+	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
 
 	shader->var_locs.dim3Tangent=glGetUniformLocationARB(shader->program_obj,"dim3Tangent");
 	shader->var_locs.dim3Normal=glGetUniformLocationARB(shader->program_obj,"dim3Normal");
@@ -128,7 +129,7 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 {
 	int				line;
 	GLint			result,len;
-	char			*c,*str,log_line[256];
+	char			*c,*str,path[1024],log_line[256];
 	FILE			*file;
 	struct tm		*tm;
 	time_t			curtime;
@@ -140,7 +141,9 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 	
 		// start or append log file
 		
-	file=fopen("glsl_error_log.txt","a");
+	file_paths_documents(&setup.file_path_setup,path,"Debug","glsl_error_log","txt");
+
+	file=fopen(path,"w");
 	if (file==NULL) {
 		strcpy(err_str,"GLSL Error: Could not write log file");
 		return(FALSE);
@@ -220,7 +223,7 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 
 		// fatal error string
 
-	strcpy(err_str,"GLSL: Could not compile or link code, check out glsl_error_log.txt for more information");
+	strcpy(err_str,"GLSL: Could not compile or link code, check out Debug\\glsl_error_log.txt for more information");
 	
 	return(FALSE);
 }
@@ -530,13 +533,22 @@ void gl_shader_set_diffuse_variables(shader_type *shader,view_light_list_type *l
 			glUniform3fARB(shader->var_locs.dim3DiffuseVector,light_list->diffuse_vct.x,light_list->diffuse_vct.y,light_list->diffuse_vct.z);
 		}
 	}
+	
+		// diffuse factor
 
-		// diffuse ambient value
+	if (shader->var_locs.dim3DiffuseFactor!=-1) {
+		if (shader->var_values.diffuse_factor!=light_list->diffuse_factor) {
+			shader->var_values.diffuse_factor=light_list->diffuse_factor;
+			glUniform1fARB(shader->var_locs.dim3DiffuseFactor,light_list->diffuse_factor);
+		}
+	}
 
-	if (shader->var_locs.dim3DiffuseAmbientValue!=-1) {
-		if (shader->var_values.diffuse_ambient_value!=light_list->diffuse_ambient_value) {
-			shader->var_values.diffuse_ambient_value=light_list->diffuse_ambient_value;
-			glUniform1fARB(shader->var_locs.dim3DiffuseAmbientValue,light_list->diffuse_ambient_value);
+		// diffuse boost
+
+	if (shader->var_locs.dim3DiffuseBoost!=-1) {
+		if (shader->var_values.diffuse_boost!=light_list->diffuse_boost) {
+			shader->var_values.diffuse_boost=light_list->diffuse_boost;
+			glUniform1fARB(shader->var_locs.dim3DiffuseBoost,light_list->diffuse_boost);
 		}
 	}
 }
@@ -618,13 +630,16 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 		
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
+		// we start with impossible values so they always get set
+		// the first time
 
 	shader->var_values.nlight=-1;
 	shader->var_values.alpha=-1.0f;
 	shader->var_values.shine_factor=-1.0f;
 	shader->var_values.tint_col.r=shader->var_values.tint_col.g=shader->var_values.tint_col.b=-1.0f;
 	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
-	shader->var_values.diffuse_ambient_value=-1.0f;
+	shader->var_values.diffuse_factor=-1.0f;
+	shader->var_values.diffuse_boost=-1.0f;
 
 	shader->var_values.tangent.x=shader->var_values.tangent.y=shader->var_values.tangent.z=0.0f;
 	shader->var_values.normal.x=shader->var_values.normal.y=shader->var_values.normal.z=0.0f;

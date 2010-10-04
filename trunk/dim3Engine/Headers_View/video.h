@@ -53,13 +53,12 @@ extern bool gl_check_shader_ok(void);
 extern void gl_lights_compile(int tick);
 extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
 extern void gl_lights_calc_ambient_color(d3col *col);
-extern float gl_lights_calc_ambient_factor(void);
 extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct);
 extern void gl_lights_calc_color(double x,double y,double z,float *cf);
 extern void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cf);
 extern void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list);
 extern void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type *light_list);
-extern void gl_lights_build_model_light_list(model_draw *draw,view_light_list_type *light_list);
+extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,view_light_list_type *light_list);
 
 	// vbos
 

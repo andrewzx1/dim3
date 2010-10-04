@@ -592,7 +592,7 @@ void debug_input(void)
       
 ======================================================= */
 
-void debug_change_map(char *name)
+bool debug_change_map(char *name)
 {
 	int							n;
 	char						str[256];
@@ -619,7 +619,7 @@ void debug_change_map(char *name)
 	if (!map_ok) {
 		sprintf(str,"map '%s' does not exist",name);
 		console_add_error(str);
-		return;
+		return(FALSE);
 	}
 	
 		// set map
@@ -628,4 +628,6 @@ void debug_change_map(char *name)
 	strcpy(map.info.player_start_name,"Start");
 	server.map_change=TRUE;
 	server.skip_media=TRUE;
+	
+	return(TRUE);
 }
