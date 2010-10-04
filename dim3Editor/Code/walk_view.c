@@ -60,6 +60,7 @@ bool walk_view_initialize(void)
 		// interface textures
 		
 	os_get_icon_file_path(sub_path);
+	strcat(sub_path,"/Items");
 		
 	file_paths_app(&file_path_setup,path,sub_path,"spot","png");
 	bitmap_open(&spot_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
@@ -875,7 +876,6 @@ void walk_view_select_view(d3pnt *pnt)
 		// interface
 		
 	if (state.view_select_idx!=old_idx) {
-		main_wind_tool_reset();
 		menu_update_view();
 	}
 }

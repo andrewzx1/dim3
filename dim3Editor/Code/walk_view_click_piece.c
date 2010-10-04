@@ -40,8 +40,6 @@ extern map_type				map;
 extern setup_type			setup;
 extern editor_state_type	state;
 
-extern AGLContext				ctx;
-
 /* =======================================================
 
       Grid and Snap
