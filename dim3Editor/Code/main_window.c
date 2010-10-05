@@ -651,14 +651,19 @@ void os_set_resize_cursor(void)
    SetThemeCursor(kThemeResizeUpDownCursor);
 }
 
-void os_enable_menu_item_undo(bool enable)
+void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 {
 	if (enable) {
-		EnableMenuItem(GetMenuRef(app_menu_edit),1);
+		EnableMenuItem(GetMenuRef(menu_idx),item_idx);
 	}
 	else {
-		DisableMenuItem(GetMenuRef(app_menu_edit),1);
+		DisableMenuItem(GetMenuRef(menu_idx),item_idx);
 	}
+}
+
+void os_menu_check_item(int menu_idx,int item_idx,bool check)
+{
+	CheckMenuItem(GetMenuRef(menu_idx),item_idx,check);
 }
 
 bool os_button_down(void)

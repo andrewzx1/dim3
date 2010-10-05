@@ -133,7 +133,7 @@ void undo_clear(void)
 		undo++;
 	}
 	
-	os_enable_menu_item_undo(FALSE);
+	os_menu_enable_item(app_menu_edit,1,FALSE);
 }
 
 /* =======================================================
@@ -273,14 +273,14 @@ bool undo_push_internal(void)
 void undo_push(void)
 {
 	if (undo_push_internal()) {
-		os_enable_menu_item_undo(TRUE);
+		os_menu_enable_item(app_menu_edit,1,TRUE);
 		return;
 	}
 	
 	dialog_alert("Undo","Not enough memory to setup undo");
 	undo_clear();
 	
-	os_enable_menu_item_undo(FALSE);
+	os_menu_enable_item(app_menu_edit,1,FALSE);
 }
 
 /* =======================================================
@@ -427,7 +427,7 @@ void undo_pull(void)
 		// move down undo level
 		
 	undo_level--;
-	if (undo_level==0) os_enable_menu_item_undo(FALSE);
+	if (undo_level==0) os_menu_enable_item(app_menu_edit,1,FALSE);
 	
 		// redraw windows
 		
