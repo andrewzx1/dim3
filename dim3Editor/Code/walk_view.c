@@ -33,7 +33,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int						top_view_x,top_view_z,txt_pixel_sz;
+extern int						top_view_x,top_view_z,
+								tool_pixel_sz,txt_pixel_sz;
 extern d3rect					main_wind_box;
 
 extern file_path_setup_type		file_path_setup;
@@ -156,7 +157,7 @@ void walk_view_get_pixel_box(editor_view_type *view,d3rect *box)
 		
 	os_get_window_box(&wbox);
 	
-	wbox.ty+=toolbar_high;
+	wbox.ty+=tool_pixel_sz;
 	wbox.by-=txt_pixel_sz;
 	
 	wid=(float)(wbox.rx-wbox.lx);

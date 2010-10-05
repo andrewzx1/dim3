@@ -169,8 +169,8 @@ void tool_palette_setup(void)
 	
 	tool_palette_box.lx=wbox.lx;
 	tool_palette_box.rx=wbox.rx;
-	tool_palette_box.ty=0;
-	tool_palette_box.by=tool_pixel_sz+1;
+	tool_palette_box.ty=wbox.ty;
+	tool_palette_box.by=wbox.ty+(tool_pixel_sz+1);
 
 	tool_palette_push_idx=-1;
 }
@@ -332,7 +332,7 @@ void tool_palette_draw(void)
 
 		// viewport setup
 		
-	walk_view_set_viewport_box(&tool_palette_box,TRUE,FALSE);
+	walk_view_set_viewport_box(&tool_palette_box,FALSE,FALSE);
 
 		// draw setup
 
@@ -372,6 +372,15 @@ void tool_palette_draw(void)
 		tool_palette_draw_icon(x,tool_palette_box.ty,piece_bitmaps[n].gl_id,FALSE,(tool_palette_push_idx==(n+tool_count)));
 		x+=tool_pixel_sz;
 	}
+	
+		// border
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glBegin(GL_LINES);
+	glVertex2i(tool_palette_box.lx,tool_palette_box.by);
+	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
+	glEnd();
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
@@ -579,6 +588,9 @@ void tool_palette_click_piece(int piece_idx)
 bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 {
 	d3pnt				pt;
+	
+	tool_palette_push_idx=push_idx;
+	main_wind_draw();
 
 	while (!os_track_mouse_location(&pt,NULL)) {
 		if ((pt.x<lx) || (pt.x>=(lx+tool_pixel_sz)) || (pt.y<ty) || (pt.y>=(ty+tool_pixel_sz))) {
