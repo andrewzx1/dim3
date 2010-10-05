@@ -48,8 +48,4 @@ and can be sold or given away.
 // Application Headers
 //
 
-#ifdef D3_OS_MAC
-	#include "application_defs.h"
-#endif
-
 #include "editor_defs.h"

@@ -25,10 +25,15 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "dialog.h"
 #include "walk_view.h"
 #include "common_view.h"
+#include "import.h"
 
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
@@ -372,11 +377,11 @@ void piece_add_obj_mesh(void)
 			}
 			
 			textdecode_get_piece(n,1,txt);
-			fx=strtod(txt,NULL);
+			fx=(float)strtod(txt,NULL);
 			textdecode_get_piece(n,2,txt);
-			fy=-strtod(txt,NULL);
+			fy=-(float)strtod(txt,NULL);
 			textdecode_get_piece(n,3,txt);
-			fz=strtod(txt,NULL);
+			fz=(float)strtod(txt,NULL);
 			
 			if (v_idx==0) {
 				min.x=max.x=fx;
@@ -439,11 +444,11 @@ void piece_add_obj_mesh(void)
 		if (strcmp(txt,"v")!=0) continue;
 				
 		textdecode_get_piece(n,1,txt);
-		fx=strtod(txt,NULL);
+		fx=(float)strtod(txt,NULL);
 		textdecode_get_piece(n,2,txt);
-		fy=-strtod(txt,NULL);
+		fy=-(float)strtod(txt,NULL);
 		textdecode_get_piece(n,3,txt);
-		fz=strtod(txt,NULL);
+		fz=(float)strtod(txt,NULL);
 		
 		dpt->x=(int)(fx*scale.x);
 		dpt->y=(int)(fy*scale.y);
@@ -500,9 +505,9 @@ void piece_add_obj_mesh(void)
 			if (strcmp(txt,"vt")!=0) continue;
 					
 			textdecode_get_piece(n,1,uvstr);
-			*uv++=strtod(uvstr,NULL);
+			*uv++=(float)strtod(uvstr,NULL);
 			textdecode_get_piece(n,2,uvstr);
-			*uv++=1.0f-strtod(uvstr,NULL);
+			*uv++=1.0f-(float)strtod(uvstr,NULL);
 		}
 	}
 
@@ -526,11 +531,11 @@ void piece_add_obj_mesh(void)
 			if (strcmp(txt,"vn")!=0) continue;
 					
 			textdecode_get_piece(n,1,normalstr);
-			*normal++=strtod(normalstr,NULL);
+			*normal++=(float)strtod(normalstr,NULL);
 			textdecode_get_piece(n,2,normalstr);
-			*normal++=strtod(normalstr,NULL);
+			*normal++=(float)strtod(normalstr,NULL);
 			textdecode_get_piece(n,3,normalstr);
-			*normal++=strtod(normalstr,NULL);
+			*normal++=(float)strtod(normalstr,NULL);
 		}
 	}
 
@@ -781,11 +786,11 @@ void piece_add_obj_mesh_uv(void)
 			nvertex++;
 			
 			textdecode_get_piece(n,1,txt);
-			fx=strtod(txt,NULL);
+			fx=(float)strtod(txt,NULL);
 			textdecode_get_piece(n,2,txt);
-			fy=strtod(txt,NULL);
+			fy=(float)strtod(txt,NULL);
 			textdecode_get_piece(n,3,txt);
-			fz=strtod(txt,NULL);
+			fz=(float)strtod(txt,NULL);
 			
 			if (fx<min.x) min.x=fx;
 			if (fx>max.x) max.x=fx;
@@ -836,9 +841,9 @@ void piece_add_obj_mesh_uv(void)
 		if (strcmp(txt,"vt")!=0) continue;
 				
 		textdecode_get_piece(n,1,uvstr);
-		*uv++=strtod(uvstr,NULL);
+		*uv++=(float)strtod(uvstr,NULL);
 		textdecode_get_piece(n,2,uvstr);
-		*uv++=1.0f-strtod(uvstr,NULL);
+		*uv++=1.0f-(float)strtod(uvstr,NULL);
 	}
 
 		// replace the UVs
@@ -982,7 +987,7 @@ void piece_add_height_map_mesh(void)
 		return;
 	}
 	
-	SetThemeCursor(kThemeWatchCursor);
+	os_set_wait_cursor();
 	
 	for (z=0;z!=div_cnt;z++) {
 		for (x=0;x!=div_cnt;x++) {
@@ -1100,7 +1105,7 @@ void piece_add_grid_mesh(void)
 	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
 	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
 	
-	SetThemeCursor(kThemeWatchCursor);
+	os_set_wait_cursor();
 	
 		// add top and bottom polys
 		

@@ -49,7 +49,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers"
+				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -215,11 +215,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Headers\dialog.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Headers\dim3editor.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\dim3Editor\Headers\editor_defs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Editor\Headers\import.h"
 					>
 				</File>
 				<File
@@ -234,6 +242,22 @@
 			<Filter
 				Name="EditorSources"
 				>
+				<File
+					RelativePath="..\..\dim3Editor\Code\import_text_decode.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Editor\Code\pieces.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Editor\Code\pieces_create.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Editor\Code\pieces_mesh.c"
+					>
+				</File>
 				<File
 					RelativePath="..\..\dim3Editor\Code\selection.c"
 					>
@@ -382,6 +406,10 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\dim3Editor.rc"
+					>
 				</File>
 				<File
 					RelativePath=".\win32Code\dim3Editor_menu.c"

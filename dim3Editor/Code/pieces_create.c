@@ -25,9 +25,14 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
+#include "walk_view.h"
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;

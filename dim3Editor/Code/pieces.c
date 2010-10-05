@@ -25,9 +25,14 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "common_view.h"
 #include "walk_view.h"
+#include "dialog.h"
 
 extern map_type				map;
 extern setup_type			setup;
@@ -443,13 +448,13 @@ void piece_resize(void)
 			map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
 			map_mesh_calculate_center(&map,mesh_idx,&mpt);
 						
-			min.x=((min.x-mpt.x)*fct_x)+mpt.x;
-			min.y=((min.y-mpt.y)*fct_y)+mpt.y;
-			min.z=((min.z-mpt.z)*fct_z)+mpt.z;
+			min.x=(int)((float)(min.x-mpt.x)*fct_x)+mpt.x;
+			min.y=(int)((float)(min.y-mpt.y)*fct_y)+mpt.y;
+			min.z=(int)((float)(min.z-mpt.z)*fct_z)+mpt.z;
 			
-			max.x=((max.x-mpt.x)*fct_x)+mpt.x;
-			max.y=((max.y-mpt.y)*fct_y)+mpt.y;
-			max.z=((max.z-mpt.z)*fct_z)+mpt.z;
+			max.x=(int)((float)(max.x-mpt.x)*fct_x)+mpt.x;
+			max.y=(int)((float)(max.y-mpt.y)*fct_y)+mpt.y;
+			max.z=(int)((float)(max.z-mpt.z)*fct_z)+mpt.z;
 
 			map_mesh_resize(&map,mesh_idx,&min,&max);
 		}
@@ -911,7 +916,7 @@ void piece_rotate_uvs(void)
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 
-		map_mesh_rotate_poly_uv(&map,mesh_idx,poly_idx,90.0f);
+		map_mesh_rotate_poly_uv(&map,mesh_idx,poly_idx,90);
 	}
 }
 

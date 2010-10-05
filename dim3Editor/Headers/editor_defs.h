@@ -145,6 +145,96 @@ and can be sold or given away.
 #define normal_vector_scale						300.0f
 
 //
+// menus
+//
+
+#define kCommandAbout							FOUR_CHAR_CODE('abot')
+#define kCommandPreference						FOUR_CHAR_CODE('pref')
+
+#define kCommandFileNew							FOUR_CHAR_CODE('new ')
+#define kCommandFileOpen						FOUR_CHAR_CODE('open')
+#define kCommandFileClose						FOUR_CHAR_CODE('clse')
+#define kCommandFileSave						FOUR_CHAR_CODE('save')
+#define kCommandFileAutoGenerateMap				FOUR_CHAR_CODE('auto')
+#define kCommandFileQuit						FOUR_CHAR_CODE('quit')
+
+#define kCommandEditUndo						FOUR_CHAR_CODE('undo')
+#define kCommandEditDuplicate					FOUR_CHAR_CODE('pdup')
+#define kCommandEditDelete						FOUR_CHAR_CODE('pdel')
+#define kCommandEditSelectMore					FOUR_CHAR_CODE('selm')
+
+#define kCommandViewFront						FOUR_CHAR_CODE('vw01')
+#define kCommandViewLeft						FOUR_CHAR_CODE('vw02')
+#define kCommandViewRight						FOUR_CHAR_CODE('vw03')
+#define kCommandViewBack						FOUR_CHAR_CODE('vw04')
+#define kCommandViewTop							FOUR_CHAR_CODE('vw05')
+#define kCommandViewBottom						FOUR_CHAR_CODE('vw06')
+#define kCommandViewPerspective					FOUR_CHAR_CODE('vwps')
+#define kCommandViewOrtho						FOUR_CHAR_CODE('vwot')
+#define kCommandViewUVLayer1					FOUR_CHAR_CODE('uvl1')
+#define kCommandViewUVLayer2					FOUR_CHAR_CODE('uvl2')
+#define kCommandViewGotoSelect					FOUR_CHAR_CODE('goto')
+#define kCommandViewGotoMapCenter				FOUR_CHAR_CODE('gotc')
+#define kCommandViewClip						FOUR_CHAR_CODE('vwcp')
+#define kCommandViewShowHideLiquids				FOUR_CHAR_CODE('shlq')
+#define kCommandViewShowHideSpots				FOUR_CHAR_CODE('shss')
+#define kCommandViewShowHideLights				FOUR_CHAR_CODE('shls')
+#define kCommandViewShowHideNodes				FOUR_CHAR_CODE('shnd')
+#define kCommandViewSplitHorizontal				FOUR_CHAR_CODE('sphz')
+#define kCommandViewSplitVertical				FOUR_CHAR_CODE('spvt')
+#define kCommandViewRemoveSplit					FOUR_CHAR_CODE('sprm')
+
+#define kCommandMapSettings						FOUR_CHAR_CODE('mset')
+#define kCommandMapRaiseY						FOUR_CHAR_CODE('mrsy')
+#define kCommandMapLowerY						FOUR_CHAR_CODE('mlwy')
+#define kCommandMapCenter						FOUR_CHAR_CODE('mctr')
+#define kCommandMapResetUV						FOUR_CHAR_CODE('mpuv')
+#define kCommandMapOptimize						FOUR_CHAR_CODE('mopt')
+#define kCommandMapCreateNormals				FOUR_CHAR_CODE('rmnm')
+#define kCommandClearLightMaps					FOUR_CHAR_CODE('clmp')
+#define kCommandBuildLightMaps					FOUR_CHAR_CODE('lmap')
+#define kCommandRun								FOUR_CHAR_CODE('mrun')
+
+#define kCommandMeshCombine						FOUR_CHAR_CODE('pcmb')
+#define kCommandMeshSplit						FOUR_CHAR_CODE('pspt')
+#define kCommandMeshTesselate					FOUR_CHAR_CODE('ptsl')
+#define kCommandMeshResize						FOUR_CHAR_CODE('mrsz')
+#define kCommandMeshReposition					FOUR_CHAR_CODE('mrps')
+#define kCommandMeshSkew						FOUR_CHAR_CODE('mskw')
+#define kCommandMeshFlipX						FOUR_CHAR_CODE('pfpx')
+#define kCommandMeshFlipY						FOUR_CHAR_CODE('pfpy')
+#define kCommandMeshFlipZ						FOUR_CHAR_CODE('pfpz')
+#define kCommandMeshRotateX						FOUR_CHAR_CODE('prtx')
+#define kCommandMeshRotateY						FOUR_CHAR_CODE('prty')
+#define kCommandMeshRotateZ						FOUR_CHAR_CODE('prtz')
+#define kCommandMeshFreeRotate					FOUR_CHAR_CODE('prtf')
+#define kCommandMeshRaiseY						FOUR_CHAR_CODE('prsy')
+#define kCommandMeshLowerY						FOUR_CHAR_CODE('plry')
+#define kCommandMeshSelectAllPoly				FOUR_CHAR_CODE('msll')
+#define kCommandMeshSnapToGrid					FOUR_CHAR_CODE('msnp')
+#define kCommandMeshSnapClosestVertex			FOUR_CHAR_CODE('mscv')
+#define kCommandMeshResetUV						FOUR_CHAR_CODE('mruv')
+#define kCommandMeshWholeUV						FOUR_CHAR_CODE('mrwv')
+#define kCommandMeshSingleUV					FOUR_CHAR_CODE('mrss')
+#define kCommandMeshCreateNormals				FOUR_CHAR_CODE('rsnm')
+#define kCommandMeshInvertNormals				FOUR_CHAR_CODE('isnm')
+
+#define kCommandPolygonHole						FOUR_CHAR_CODE('fhl1')
+#define kCommandPolygonSnapToGrid				FOUR_CHAR_CODE('psnp')
+#define kCommandPolygonRotateUV					FOUR_CHAR_CODE('pyru')
+#define kCommandPolygonFlipU					FOUR_CHAR_CODE('pyfu')
+#define kCommandPolygonFlipV					FOUR_CHAR_CODE('pyfv')
+#define kCommandPolygonInvertNormal				FOUR_CHAR_CODE('inrm')
+#define kCommandPolygonResetUV					FOUR_CHAR_CODE('pyuv')
+#define kCommandPolygonWholeUV					FOUR_CHAR_CODE('pywv')
+#define kCommandPolygonSingleUV					FOUR_CHAR_CODE('pyss')
+
+#define kCommandVertexSnapToGrid				FOUR_CHAR_CODE('vsnp')
+
+#define kCommandGroups							FOUR_CHAR_CODE('grrp')
+#define kCommandGroupMovements					FOUR_CHAR_CODE('mmov')
+
+//
 // undos
 //
 

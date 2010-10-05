@@ -165,23 +165,3 @@ void dialog_alert(char *a,char *b)
 	// supergumba -- temporary
 }
 
-// supergumba -- misc for now
-
-void launch_map_script_editor(void) {}
-void launch_engine(void) {}
-void piece_create_spot(void) {}
-void piece_create_light(void) {}
-void piece_create_sound(void) {}
-void piece_create_particle(void) {}
-void piece_create_scenery(void) {}
-void piece_create_node(void) {}
-void piece_add_obj_mesh(void) {}
-void piece_add_obj_mesh_uv(void) {}
-void piece_add_height_map_mesh(void) {}
-void piece_add_grid_mesh(void) {}
-void piece_add_polygon_mesh(void) {}
-void piece_create_liquid(void) {}
-void piece_combine_mesh(void) {}
-void piece_split_mesh(void) {}
-void piece_tesselate(void) {}
-
