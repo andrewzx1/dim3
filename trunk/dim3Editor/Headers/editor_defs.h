@@ -148,6 +148,16 @@ and can be sold or given away.
 // menus
 //
 
+#define app_menu_apple							128
+#define app_menu_file							129
+#define app_menu_edit							130
+#define app_menu_view							131
+#define app_menu_map							132
+#define app_menu_mesh							133
+#define app_menu_polygon						134
+#define app_menu_vertex							135
+#define app_menu_groups							136
+
 #define kCommandAbout							FOUR_CHAR_CODE('abot')
 #define kCommandPreference						FOUR_CHAR_CODE('pref')
 

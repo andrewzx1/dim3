@@ -31,8 +31,6 @@ and can be sold or given away.
 #include "walk_view.h"
 #include "import.h"
 
-extern bool					done;
-
 extern map_type				map;
 extern editor_state_type	state;
 
@@ -222,44 +220,44 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 	
 			// file menu
 			
-		case kCommandNew:
+		case kCommandFileNew:
 			file_new_map();
 			return(noErr);
 			
-		case kCommandOpen:
+		case kCommandFileOpen:
 			file_open_map();
 			return(noErr);
 			
-		case kCommandClose:
+		case kCommandFileClose:
 			if (state.map_opened) {
 				if (!menu_save_changes_dialog()) return(noErr);
 				file_close_map();
 			}
 			return(noErr);
 
-		case kCommandSave:
+		case kCommandFileSave:
 			file_save_map();
 			return(noErr);
 			
-		case kCommandAutoGenerateMap:
+		case kCommandFileAutoGenerateMap:
 			auto_generate_map();
 			return(noErr);
 			
 			// edit menu
 			
-		case kCommandUndo:
+		case kCommandEditUndo:
 			undo_pull();
 			return(noErr);
 			
-		case kCommandDelete:
+		case kCommandEditDelete:
 			piece_delete();
 			return(noErr);
 			
-		case kCommandDuplicate:
+		case kCommandEditDuplicate:
 			piece_duplicate();
 			return(noErr);
 			
-		case kCommandSelectMore:
+		case kCommandEditSelectMore:
 			piece_select_more();
 			return(noErr);
 			

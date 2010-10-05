@@ -413,19 +413,22 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					SetPort(GetWindowPort(model_wind));
 					GlobalToLocal(&pt);
 
-						// clicking in toolbar or right side controls
+						// clicking in toolbar
 
 					if (pt.v<=tool_height) return(eventNotHandledErr);
-					if (pt.h>=gl_view_x_sz) return(eventNotHandledErr);
 					
 						// clicking in palettes
 						
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					 
-					if ((pt.h>=0) && (pt.h<=gl_view_x_sz) && (pt.v>=(tool_height+gl_view_y_sz)) && (pt.v<=(tool_height+gl_view_y_sz+gl_view_texture_palette_size))) {
+					if ((pt.v>=(tool_height+gl_view_y_sz)) && (pt.v<=(tool_height+gl_view_y_sz+gl_view_texture_palette_size))) {
 						texture_palette_click(pt,(nclick!=1));
 						return(noErr);
 					}
+					
+						// clicking in right side controls
+						
+					if (pt.h>=gl_view_x_sz) return(eventNotHandledErr);
 					
 						// clicking in model view
 						
