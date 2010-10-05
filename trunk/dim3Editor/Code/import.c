@@ -66,7 +66,6 @@ void auto_generate_map(void)
 	main_wind_draw();
 	
 	texture_palette_reset();
-	main_wind_tool_reset();
 	menu_fix_enable();
 }
 

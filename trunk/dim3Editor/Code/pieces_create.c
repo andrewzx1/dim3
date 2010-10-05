@@ -114,7 +114,6 @@ void piece_create_spot(void)
 	main_wind_draw();
 	
 	menu_update_view();
-	main_wind_tool_reset();
 }
 
 /* =======================================================
@@ -169,7 +168,6 @@ void piece_create_scenery(void)
 	main_wind_draw();
 	
 	menu_update_view();
-	main_wind_tool_reset();
 }
 
 /* =======================================================
@@ -346,7 +344,6 @@ void piece_create_node(void)
 	main_wind_draw();
 	
 	menu_update_view();
-	main_wind_tool_reset();
 }
 
 /* =======================================================
@@ -417,6 +414,5 @@ void piece_create_liquid(void)
 	main_wind_draw();
 	
 	menu_update_view();
-	main_wind_tool_reset();
 }
 
