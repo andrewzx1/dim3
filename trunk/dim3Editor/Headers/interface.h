@@ -61,14 +61,6 @@ extern void texture_palette_reset(void);
 extern void texture_palette_click(d3pnt *pnt,bool dbl_click);
 
 //
-// progress window
-//
-
-extern void progress_wind_start(char *txt,int max);
-extern void progress_wind_update(int v);
-extern void progress_wind_close(void);
-
-//
 // main window
 //
 

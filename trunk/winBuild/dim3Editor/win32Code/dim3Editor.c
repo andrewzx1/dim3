@@ -4,27 +4,6 @@
 #include "common_view.h"
 #include "interface.h"
 
-#define kCommandFileQuit					100
-// supergumba -- temporary
-#define kCommandViewFront					200
-#define kCommandViewLeft					201
-#define kCommandViewRight					202
-#define kCommandViewBack					203
-#define kCommandViewTop						204
-#define kCommandViewBottom					205
-#define kCommandViewPerspective				206
-#define kCommandViewOrtho					207
-#define kCommandViewUVLayer1				208
-#define kCommandViewUVLayer2				209
-#define kCommandViewClip					210
-#define kCommandViewShowHideLiquids			211
-#define kCommandViewShowHideSpots			212
-#define kCommandViewShowHideLights			213
-#define kCommandViewShowHideNodes			214
-#define kCommandViewSplitHorizontal			215
-#define kCommandViewSplitVertical			216
-#define kCommandViewRemoveSplit				217
-
 #define EDITOR_WIN_X						10
 #define EDITOR_WIN_Y						40
 #define EDITOR_WIN_WIDTH					1100
@@ -68,34 +47,59 @@ extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *exten
       
 ======================================================= */
 
-void menu_fix_enable(void)
-{
-}
-
-void palette_reset(void)
-{
-}
-
+void menu_fix_enable(void) {}
+void palette_reset(void) {}
 bool main_wind_click_check_box(d3pnt *pt,d3rect *box)
 {
 	return(FALSE);
 }
-
-void piece_key(char ch)
-{
-}
-
-void dialog_texture_setting_run(int txt)
-{
-}
-
+void dialog_texture_setting_run(int txt) {}
 bool node_link_click(int node_idx)
 {
 	return(FALSE);
 }
-
-void menu_update_view(void)
+void menu_update_view(void) {}
+void file_save_map(void) {}
+void launch_map_script_editor(void) {}
+void launch_engine(void) {}
+bool dialog_resize_run(float *x,float *y,float *z)
 {
+	return(FALSE);
+}
+bool dialog_reposition_run(d3pnt *min,d3pnt *max)
+{
+	return(FALSE);
+}
+bool dialog_skew_run(int *axis,int *dir,int *size)
+{
+	return(FALSE);
+}
+bool dialog_free_rotate_run(float *x,float *y,float *z)
+{
+	return(FALSE);
+}
+bool import_load_file(char *path,char *ext)
+{
+	return(FALSE);
+}
+void dialog_progress_next(void) {}
+void dialog_progress_start(char *title,int count) {}
+void dialog_progress_end(void) {}
+bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv)
+{
+	return(FALSE);
+}
+bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_scale,float *scale)
+{
+	return(FALSE);
+}
+bool dialog_height_import_run(int *div_cnt,int *size,int *high)
+{
+	return(FALSE);
+}
+bool dialog_optimize_run(int *poly_threshold)
+{
+	return(FALSE);
 }
 
 /* =======================================================
@@ -294,9 +298,9 @@ bool editor_start(char *err_str)
 
 		// main wind box
 
-	main_wind_box.lx=0;
+	main_wind_box.lx=wbox.left;
 	main_wind_box.rx=(wbox.right-wbox.left);
-	main_wind_box.ty=toolbar_high;
+	main_wind_box.ty=wbox.top;
 	main_wind_box.by=wbox.bottom-wbox.top;
 
 		// initialize walk view

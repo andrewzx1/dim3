@@ -69,6 +69,11 @@ extern void dialog_fill_group_combo(WindowRef wind,unsigned long sig,int id,int 
 extern int dialog_get_group_combo(WindowRef wind,unsigned long sig,int id);
 extern void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none,int idx);
 extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none);
+
+//
+// misc dialogs
+//
+
 extern void dialog_progress_next(void);
 extern void dialog_progress_start(char *title,int count);
 extern void dialog_progress_end(void);
