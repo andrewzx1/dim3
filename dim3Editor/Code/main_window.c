@@ -97,7 +97,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
 					
 					if (btn==kEventMouseButtonTertiary) {
-						main_wind_tool_switch_drag_mode();
+						tool_palette_switch_drag_mode();
 						return(noErr);
 					}
 					
@@ -503,22 +503,22 @@ void main_wind_key_down(char ch)
 		// special tool keys
 		
 	if ((ch=='q') || (ch=='Q')) {
-		main_wind_tool_switch_vertex_mode();
+		tool_palette_switch_vertex_mode();
 		return;
 	}
 	
 	if ((ch=='w') || (ch=='W')) {
-		main_wind_tool_switch_drag_mode();
+		tool_palette_switch_drag_mode();
 		return;
 	}
 	
 	if ((ch=='e') || (ch=='E')) {
-		main_wind_tool_switch_grid_mode();
+		tool_palette_switch_grid_mode();
 		return;
 	}
 	
 	if ((ch=='r') || (ch=='R')) {
-		main_wind_tool_switch_node_mode();
+		tool_palette_switch_node_mode();
 		return;
 	}
 	
@@ -545,179 +545,5 @@ void main_wind_scroll_wheel(d3pnt *pt,int delta)
 	
 	view=walk_view_get_current_view();
 	walk_view_scroll_wheel_z_movement(view,delta);
-}
-
-/* =======================================================
-
-      Values and States
-      
-======================================================= */
-
-
-void main_wind_tool_default(void)
-{
-	state.free_look=setup.free_look;
-	state.select_add=FALSE;
-	
-    state.vertex_mode=vertex_mode_none;
-	state.drag_mode=drag_mode_mesh;
-	state.grid_mode=grid_mode_small;
-	state.node_mode=node_mode_select;
-	state.handle_mode=handle_mode_rotate;
-	
-	state.auto_texture=setup.auto_texture;
-	
-	state.show_liquid=TRUE;
-	state.show_object=TRUE;
-	state.show_lightsoundparticle=TRUE;
-	state.show_node=FALSE;
-	
-	state.show_normals=FALSE;
-    
-	menu_update_view();
-}
-
-void main_wind_tool_switch_vertex_mode(void)
-{
-	state.vertex_mode++;
-	if (state.vertex_mode>vertex_mode_snap) state.vertex_mode=vertex_mode_none;
-}
-
-void main_wind_tool_switch_drag_mode(void)
-{
-	state.drag_mode++;
-	if (state.drag_mode>drag_mode_vertex) state.drag_mode=drag_mode_mesh;
-
-	main_wind_draw();
-}
-
-void main_wind_tool_switch_grid_mode(void)
-{
-	state.grid_mode++;
-	if (state.grid_mode>grid_mode_large) state.grid_mode=grid_mode_none;
-}
-
-void main_wind_tool_switch_node_mode(void)
-{
-	state.node_mode++;
-	if (state.node_mode>node_mode_remove_link) state.node_mode=node_mode_select;
-}
-
-/* =======================================================
-
-      OS Specific Utility Routines
-      
-======================================================= */
-
-void os_get_icon_file_path(char *path)
-{
-	strcpy(path,"Contents/Resources");
-}
-
-void os_get_window_box(d3rect *box)
-{
-	Rect			wbox;
-	
-	GetWindowPortBounds(mainwind,&wbox);
-
-	box->lx=wbox.left;
-	box->rx=wbox.right;
-	box->ty=wbox.top;
-	box->by=wbox.bottom;
-}
-
-void os_set_arrow_cursor(void)
-{
-	SetThemeCursor(kThemeArrowCursor);
-}
-
-void os_set_wait_cursor(void)
-{
-	SetThemeCursor(kThemeWatchCursor);
-}
-
-void os_set_hand_cursor(void)
-{
-   SetThemeCursor(kThemeOpenHandCursor);
-}
-
-void os_set_drag_cursor(void)
-{
-   SetThemeCursor(kThemeClosedHandCursor);
-}
-
-void os_set_resize_cursor(void)
-{
-   SetThemeCursor(kThemeResizeUpDownCursor);
-}
-
-void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
-{
-	if (enable) {
-		EnableMenuItem(GetMenuRef(menu_idx),item_idx);
-	}
-	else {
-		DisableMenuItem(GetMenuRef(menu_idx),item_idx);
-	}
-}
-
-void os_menu_check_item(int menu_idx,int item_idx,bool check)
-{
-	CheckMenuItem(GetMenuRef(menu_idx),item_idx,check);
-}
-
-bool os_button_down(void)
-{
-	return(Button());
-}
-
-bool os_key_space_down(void)
-{
-	KeyMap			map;
-	unsigned char	*c;
-	
-	GetKeys(map);
-	c=(unsigned char*)map;
-	
-	return((c[6]&0x02)!=0);
-}
-
-bool os_key_option_down(void)
-{
-	return((GetCurrentKeyModifiers()&optionKey)!=0);
-}
-
-bool os_key_control_down(void)
-{
-	return((GetCurrentKeyModifiers()&controlKey)!=0);
-}
-
-bool os_key_command_down(void)
-{
-	return((GetCurrentKeyModifiers()&cmdKey)!=0);
-}
-
-bool os_key_shift_down(void)
-{
-	return((GetCurrentKeyModifiers()&shiftKey)!=0);
-}
-
-bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
-{
-	Point					uipt;
-	MouseTrackingResult		track;
-
-	TrackMouseLocation(NULL,&uipt,&track);
-	
-	if (offset_box==NULL) {
-		pt->x=uipt.h;
-		pt->y=uipt.v;
-	}
-	else {
-		pt->x=uipt.h-offset_box->lx;
-		pt->y=uipt.v-offset_box->ty;
-	}
-	
-	return(track==kMouseTrackingMouseReleased);
 }
 

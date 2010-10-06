@@ -52,8 +52,9 @@ void redraw_windows(void)
 	
 		// redraw
 	
-    main_wind_tool_default();
-	
+    tool_palette_default();
+	    
+	menu_update_view();
 	menu_fix_enable();
 	
     SelectWindow(mainwind);

@@ -125,9 +125,10 @@ void model_draw_setup_object(obj_type *obj)
 	draw->pnt.z=obj->pnt.z+draw->offset.z;
 	draw->pnt.y=obj->pnt.y+draw->offset.y;
 
-		// regular lighting
+		// regular lighting and shaders
 
 	draw->no_lighting=FALSE;
+	draw->no_shader=FALSE;
 
 		// regular drawing in 3D space
 
@@ -285,9 +286,10 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	draw->pnt.y=(int)fy+obj->pnt.y;
 	draw->pnt.z=((int)fz+obj->pnt.z)-obj->camera_z_adjust;
 
-		// regular lighting
+		// regular lighting and shaders
 
 	draw->no_lighting=FALSE;
+	draw->no_shader=FALSE;
 
 		// weapons need rotation fixes
 		// as they are rendered without rotation in fpp
@@ -390,9 +392,10 @@ void model_draw_setup_projectile(proj_type *proj)
 	draw->pnt.z=proj->pnt.z+draw->offset.z;
 	draw->pnt.y=proj->pnt.y+draw->offset.y;
 
-		// regular lighting
+		// regular lighting and shaders
 
 	draw->no_lighting=FALSE;
+	draw->no_shader=FALSE;
 
 		// regular drawing in 3D space
 
@@ -474,8 +477,11 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 	draw->no_rot.on=FALSE;
 
 		// always hilite these
+		// and never draw shaders
 
 	draw->no_lighting=TRUE;
+	draw->no_shader=TRUE;
+	
 	draw->light_cache.count=0;
 
 	draw->alpha=1.0f;

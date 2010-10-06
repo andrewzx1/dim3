@@ -64,6 +64,7 @@ void doloop(void)
       
 ======================================================= */
 
+// supergumba -- some of this is ANCIENT and probably deperciated, look it up and fix
 void doinit(void)
 {
 	RegisterAppearanceClient();
@@ -93,6 +94,28 @@ void doshutdown(void)
 
 /* =======================================================
 
+      Start Menu
+      
+======================================================= */
+
+void menu_start(void)
+{
+	IBNibRef				nib;
+	CFStringRef				cf_str;
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Editor",kCFStringEncodingMacRoman);
+	CreateNibReference(cf_str,&nib);
+	CFRelease(cf_str);
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"MenuBar",kCFStringEncodingMacRoman);
+	SetMenuBarFromNib(nib,cf_str);
+	CFRelease(cf_str);
+
+	DisposeNibReference(nib);
+}
+
+/* =======================================================
+
       Infamous Main Code
       
 ======================================================= */
@@ -102,6 +125,9 @@ int main(int argc,char *argv[])
 	doinit();
 	
 	menu_start();
+	
+	undo_initialize();
+	menu_fix_enable();
 	
 	file_open_map();
 	doloop();

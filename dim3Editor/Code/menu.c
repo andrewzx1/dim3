@@ -38,31 +38,6 @@ extern void light_maps_clear(void);
 
 /* =======================================================
 
-      Misc. Dialog Routines
-      
-======================================================= */
-
-void menu_start(void)
-{
-	IBNibRef				nib;
-	CFStringRef				cf_str;
-	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Editor",kCFStringEncodingMacRoman);
-	CreateNibReference(cf_str,&nib);
-	CFRelease(cf_str);
-	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"MenuBar",kCFStringEncodingMacRoman);
-	SetMenuBarFromNib(nib,cf_str);
-	CFRelease(cf_str);
-
-	DisposeNibReference(nib);
-
-	undo_initialize();
-	menu_fix_enable();
-}
-
-/* =======================================================
-
       Mainline Menu Enable/Disable
       
 ======================================================= */

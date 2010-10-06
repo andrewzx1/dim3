@@ -337,7 +337,7 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 
 		// setup per-scene shader variables
 
-	gl_shader_draw_scene_initialize();
+	if (view.shader_on) gl_shader_draw_scene_initialize();
 
 		// compile meshes for drawing
 	

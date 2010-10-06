@@ -327,7 +327,8 @@ typedef struct		{
 						float							alpha,resize,normal[3];
 						double							draw_dist;
 						bool							on,player,
-														flip_x,no_lighting,bounce,face_forward,
+														flip_x,no_lighting,no_shader,
+														bounce,face_forward,
 														has_opaque,has_transparent,has_glow,
 														built_vertex_list;
 						unsigned char					cur_texture_frame[max_model_mesh];
