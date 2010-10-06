@@ -32,6 +32,7 @@ and can be sold or given away.
 extern void menu_fix_enable(void);
 extern void menu_update_view(void);
 extern bool menu_save_changes_dialog(void);
+extern bool menu_event_run(int cmd);
 
 extern void undo_initialize(void);
 extern void undo_clear(void);

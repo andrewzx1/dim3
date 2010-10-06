@@ -40,6 +40,7 @@ extern void walk_view_shutdown(void);
 extern void editor_menu_commands(int id);
 extern void editor_menu_create(void);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
+extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
 
@@ -47,22 +48,102 @@ extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *exten
       
 ======================================================= */
 
-void menu_fix_enable(void) {}
-void palette_reset(void) {}
-bool main_wind_click_check_box(d3pnt *pt,d3rect *box)
+void palette_reset(void)
 {
-	return(FALSE);
 }
-void dialog_texture_setting_run(int txt) {}
 bool node_link_click(int node_idx)
 {
 	return(FALSE);
 }
-void menu_update_view(void) {}
-void file_save_map(void) {}
-void launch_map_script_editor(void) {}
-void launch_engine(void) {}
-bool dialog_resize_run(float *x,float *y,float *z)
+void file_save_map(void)
+{}
+void launch_map_script_editor(void)
+{}
+void launch_engine(void)
+{}
+bool import_load_file(char *path,char *ext)
+{
+	return(FALSE);
+}
+void auto_generate_map(void)
+{
+}
+void light_maps_clear(void)
+{
+}
+
+bool file_new_map(void)
+{
+	return(FALSE);
+}
+bool file_open_map(void)
+{
+	return(FALSE);
+}
+void file_close_map(void)
+{
+}
+
+
+void dialog_progress_next(void)
+{}
+void dialog_progress_start(char *title,int count)
+{}
+void dialog_progress_end(void)
+{}
+int dialog_alert(char *title,char *msg)
+{
+	return(0);
+}
+int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *button_3)
+{
+	return(0);
+}
+void dialog_about_run(void)
+{}
+void dialog_preference_run(void)
+{}
+bool dialog_file_new_run(char *title,char *file_name)
+{
+	return(FALSE);
+}
+bool dialog_save_run(void)
+{
+	return(FALSE);
+}
+bool dialog_map_settings_run(void)
+{
+	return(FALSE);
+}
+bool dialog_map_movements_run(void)
+{
+	return(FALSE);
+}
+bool dialog_movement_settings_run(movement_type *movement)
+{
+	return(FALSE);
+}
+bool dialog_map_groups_run(void)
+{
+	return(FALSE);
+}
+bool dialog_movement_move_settings_run(movement_move_type *move)
+{
+	return(FALSE);
+}
+bool dialog_optimize_run(int *poly_threshold)
+{
+	return(FALSE);
+}
+bool dialog_light_map_run(void)
+{
+	return(FALSE);
+}
+bool dialog_group_settings_run(group_type *group)
+{
+	return(FALSE);
+}
+bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z)
 {
 	return(FALSE);
 }
@@ -74,17 +155,10 @@ bool dialog_skew_run(int *axis,int *dir,int *size)
 {
 	return(FALSE);
 }
-bool dialog_free_rotate_run(float *x,float *y,float *z)
+bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z)
 {
 	return(FALSE);
 }
-bool import_load_file(char *path,char *ext)
-{
-	return(FALSE);
-}
-void dialog_progress_next(void) {}
-void dialog_progress_start(char *title,int count) {}
-void dialog_progress_end(void) {}
 bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv)
 {
 	return(FALSE);
@@ -93,14 +167,19 @@ bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_sca
 {
 	return(FALSE);
 }
+void dialog_texture_setting_run(int txt)
+{}
 bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 {
 	return(FALSE);
 }
-bool dialog_optimize_run(int *poly_threshold)
+bool dialog_map_auto_generate_setting_run(bool first)
 {
 	return(FALSE);
 }
+
+
+
 
 /* =======================================================
 
@@ -110,7 +189,7 @@ bool dialog_optimize_run(int *poly_threshold)
 
 LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
-	int					delta;
+	int					cmd,delta;
 	d3pnt				pnt;
 	editor_view_type	*view;
 	PAINTSTRUCT			ps;
@@ -167,7 +246,10 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_COMMAND:
-			editor_menu_commands(LOWORD(wParam));
+			cmd=os_win32_menu_lookup(LOWORD(wParam));
+			if (cmd==-1) break;
+
+			menu_event_run(cmd);
 			break;
 
 		case WM_CLOSE:
@@ -195,6 +277,7 @@ bool editor_start(char *err_str)
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
 	HINSTANCE				hInst;
+	HMENU					menu;
 
 		// glue start
 
@@ -234,7 +317,11 @@ bool editor_start(char *err_str)
 
 		// menu
 
-	editor_menu_create();
+	menu=LoadMenu(hinst,MAKEINTRESOURCE(128));
+	SetMenu(wnd,menu);
+
+	undo_initialize();
+	menu_fix_enable();
 
 		// create font for window
 
@@ -406,12 +493,9 @@ bool editor_open_map(char *err_str)
 	walk_view_models_start();
 	walk_view_models_reset();
 
-		// supergumba -- some temporary state
+	state.map_opened=TRUE;
 
-	state.show_liquid=TRUE;
-	state.show_object=TRUE;
-	state.show_lightsoundparticle=TRUE;
-	state.drag_mode=drag_mode_mesh;
+	menu_fix_enable();
 
 		// supergumba -- fake starting point
 
@@ -521,6 +605,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	char		err_str[256];
 
 	hinst=hInstance;
+
+	state.map_opened=FALSE;
 
 	if (!editor_setup(err_str)) {
 		MessageBox(NULL,err_str,"Error",MB_OK);

@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
@@ -45,62 +49,62 @@ extern void light_maps_clear(void);
 void menu_fix_enable(void)
 {
 	if (!state.map_opened) {
-		EnableMenuItem(GetMenuHandle(app_menu_file),1);
-		EnableMenuItem(GetMenuHandle(app_menu_file),2);
-		DisableMenuItem(GetMenuHandle(app_menu_file),3);
-		DisableMenuItem(GetMenuHandle(app_menu_file),5);
-		DisableMenuItem(GetMenuHandle(app_menu_file),7);
+		os_menu_enable_item(app_menu_file,1,TRUE);
+		os_menu_enable_item(app_menu_file,2,TRUE);
+		os_menu_enable_item(app_menu_file,3,FALSE);
+		os_menu_enable_item(app_menu_file,5,FALSE);
+		os_menu_enable_item(app_menu_file,7,FALSE);
 	
-		DisableMenuItem(GetMenuHandle(app_menu_edit),0);
-		DisableMenuItem(GetMenuHandle(app_menu_view),0);
-		DisableMenuItem(GetMenuHandle(app_menu_map),0);
-		DisableMenuItem(GetMenuHandle(app_menu_mesh),0);
-		DisableMenuItem(GetMenuHandle(app_menu_polygon),0);
-		DisableMenuItem(GetMenuHandle(app_menu_vertex),0);
-		DisableMenuItem(GetMenuHandle(app_menu_groups),0);
+		os_menu_enable_item(app_menu_edit,0,FALSE);
+		os_menu_enable_item(app_menu_view,0,FALSE);
+		os_menu_enable_item(app_menu_map,0,FALSE);
+		os_menu_enable_item(app_menu_mesh,0,FALSE);
+		os_menu_enable_item(app_menu_polygon,0,FALSE);
+		os_menu_enable_item(app_menu_vertex,0,FALSE);
+		os_menu_enable_item(app_menu_groups,0,FALSE);
 	}
 	else {
 	
 			// file menu
 			
-		DisableMenuItem(GetMenuHandle(app_menu_file),1);
-		DisableMenuItem(GetMenuHandle(app_menu_file),2);
-		EnableMenuItem(GetMenuHandle(app_menu_file),3);
-		EnableMenuItem(GetMenuHandle(app_menu_file),5);
-		EnableMenuItem(GetMenuHandle(app_menu_file),7);
+		os_menu_enable_item(app_menu_file,1,FALSE);
+		os_menu_enable_item(app_menu_file,2,FALSE);
+		os_menu_enable_item(app_menu_file,3,TRUE);
+		os_menu_enable_item(app_menu_file,5,TRUE);
+		os_menu_enable_item(app_menu_file,7,TRUE);
 	
 			// other menus
 			
-		EnableMenuItem(GetMenuHandle(app_menu_edit),0);
-		EnableMenuItem(GetMenuHandle(app_menu_view),0);
-		EnableMenuItem(GetMenuHandle(app_menu_map),0);
-		EnableMenuItem(GetMenuHandle(app_menu_groups),0);
+		os_menu_enable_item(app_menu_edit,0,TRUE);
+		os_menu_enable_item(app_menu_view,0,TRUE);
+		os_menu_enable_item(app_menu_map,0,TRUE);
+		os_menu_enable_item(app_menu_groups,0,TRUE);
         
             // pieces menu
         
 		if (select_has_type(mesh_piece)) {
-			EnableMenuItem(GetMenuHandle(app_menu_mesh),0);
+			os_menu_enable_item(app_menu_mesh,0,TRUE);
 			if (state.drag_mode==drag_mode_polygon) {
-				EnableMenuItem(GetMenuHandle(app_menu_polygon),0);
+				os_menu_enable_item(app_menu_polygon,0,TRUE);
 			}
 			else {
-				DisableMenuItem(GetMenuHandle(app_menu_polygon),0);
+				os_menu_enable_item(app_menu_polygon,0,FALSE);
 			}
 			if (state.drag_mode==drag_mode_vertex) {
-				EnableMenuItem(GetMenuHandle(app_menu_vertex),0);
+				os_menu_enable_item(app_menu_vertex,0,TRUE);
 			}
 			else {
-				DisableMenuItem(GetMenuHandle(app_menu_vertex),0);
+				os_menu_enable_item(app_menu_vertex,0,FALSE);
 			}
 		}
 		else {
-			DisableMenuItem(GetMenuHandle(app_menu_mesh),0);
-			DisableMenuItem(GetMenuHandle(app_menu_polygon),0);
-			DisableMenuItem(GetMenuHandle(app_menu_vertex),0);
+			os_menu_enable_item(app_menu_mesh,0,FALSE);
+			os_menu_enable_item(app_menu_polygon,0,FALSE);
+			os_menu_enable_item(app_menu_vertex,0,FALSE);
 		}
 	}
 	
-	DrawMenuBar();
+	os_menu_redraw();
 }
 
 /* =======================================================
@@ -115,34 +119,36 @@ void menu_update_view(void)
 	
 	view=walk_view_get_current_view();
 	
-	CheckMenuItem(GetMenuHandle(app_menu_view),8,(!view->ortho));
-	CheckMenuItem(GetMenuHandle(app_menu_view),9,view->ortho);
+	os_menu_check_item(app_menu_view,8,(!view->ortho));
+	os_menu_check_item(app_menu_view,9,view->ortho);
 	
-	CheckMenuItem(GetMenuHandle(app_menu_view),11,(view->uv_layer==uv_layer_normal));
-	CheckMenuItem(GetMenuHandle(app_menu_view),12,(view->uv_layer==uv_layer_light_map));
+	os_menu_check_item(app_menu_view,11,(view->uv_layer==uv_layer_normal));
+	os_menu_check_item(app_menu_view,12,(view->uv_layer==uv_layer_light_map));
 
-	CheckMenuItem(GetMenuHandle(app_menu_view),16,(view->clip));
+	os_menu_check_item(app_menu_view,16,(view->clip));
 
-	CheckMenuItem(GetMenuHandle(app_menu_view),19,state.show_liquid);
-	CheckMenuItem(GetMenuHandle(app_menu_view),20,state.show_object);
-	CheckMenuItem(GetMenuHandle(app_menu_view),21,state.show_lightsoundparticle);
-	CheckMenuItem(GetMenuHandle(app_menu_view),22,state.show_node);
+	os_menu_check_item(app_menu_view,19,state.show_liquid);
+	os_menu_check_item(app_menu_view,20,state.show_object);
+	os_menu_check_item(app_menu_view,21,state.show_lightsoundparticle);
+	os_menu_check_item(app_menu_view,22,state.show_node);
 	
 	if (map.editor_views.count<max_editor_view) {
-		EnableMenuItem(GetMenuHandle(app_menu_view),24);
-		EnableMenuItem(GetMenuHandle(app_menu_view),25);
+		os_menu_enable_item(app_menu_view,24,TRUE);
+		os_menu_enable_item(app_menu_view,25,TRUE);
 	}
 	else {
-		DisableMenuItem(GetMenuHandle(app_menu_view),24);
-		DisableMenuItem(GetMenuHandle(app_menu_view),25);
+		os_menu_enable_item(app_menu_view,24,FALSE);
+		os_menu_enable_item(app_menu_view,25,FALSE);
 	}
 	
 	if (map.editor_views.count>1) {
-		EnableMenuItem(GetMenuHandle(app_menu_view),26);
+		os_menu_enable_item(app_menu_view,26,TRUE);
 	}
 	else {
-		DisableMenuItem(GetMenuHandle(app_menu_view),26);
+		os_menu_enable_item(app_menu_view,26,FALSE);
 	}
+
+	os_menu_redraw();
 }
 
 /* =======================================================
@@ -168,73 +174,71 @@ bool menu_save_changes_dialog(void)
       
 ======================================================= */
 
-OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
+bool menu_event_run(int cmd)
 {
-	HICommand		cmd;
-	
-	GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
-	
-	switch (cmd.commandID) {
+	switch (cmd) {
 		
+			// misc commands
+
         case kCommandAbout:
             dialog_about_run();
-            return(noErr);
+            return(TRUE);
 			
         case kCommandPreference:
             dialog_preference_run();
 			main_wind_draw();
-            return(noErr);
-            
-		case kHICommandQuit:
+            return(TRUE);
+
+		case kCommandFileQuit:
 			if (state.map_opened) {
-				if (!menu_save_changes_dialog()) return(noErr);
+				if (!menu_save_changes_dialog()) return(TRUE);
 				file_close_map();
 			}
-			QuitApplicationEventLoop();
-			return(noErr);
-	
+			os_application_quit();
+			return(TRUE);
+            
 			// file menu
 			
 		case kCommandFileNew:
 			file_new_map();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFileOpen:
 			file_open_map();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFileClose:
 			if (state.map_opened) {
-				if (!menu_save_changes_dialog()) return(noErr);
+				if (!menu_save_changes_dialog()) return(TRUE);
 				file_close_map();
 			}
-			return(noErr);
+			return(TRUE);
 
 		case kCommandFileSave:
 			file_save_map();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFileAutoGenerateMap:
 			auto_generate_map();
-			return(noErr);
+			return(TRUE);
 			
 			// edit menu
 			
 		case kCommandEditUndo:
 			undo_pull();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandEditDelete:
 			piece_delete();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandEditDuplicate:
 			piece_duplicate();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandEditSelectMore:
 			piece_select_more();
-			return(noErr);
+			return(TRUE);
 			
 			// view menu
 			
@@ -272,41 +276,41 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			walk_view_perspective_ortho(FALSE);
 			menu_update_view();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandViewOrtho:
 			walk_view_perspective_ortho(TRUE);
 			menu_update_view();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandViewUVLayer1:
 			walk_view_set_uv_layer(uv_layer_normal);
 			menu_update_view();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandViewUVLayer2:
 			walk_view_set_uv_layer(uv_layer_light_map);
 			menu_update_view();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandViewGotoSelect:
 			walk_view_goto_select();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandViewGotoMapCenter:
 			walk_view_goto_map_center();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandViewClip:
 			walk_view_flip_clip();
 			menu_update_view();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandViewShowHideLiquids:
 			select_remove_type(liquid_piece);
@@ -361,44 +365,44 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 
 		case kCommandMapSettings:
 			dialog_map_settings_run();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMapRaiseY:
 			map_mesh_move_all(0,-(map_enlarge*10),0);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMapLowerY:
 			map_mesh_move_all(0,(map_enlarge*10),0);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMapCenter:
 			map_center(&map);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMapResetUV:
 			map_mesh_reset_uv_all();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMapOptimize:
 			map_optimize();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMapCreateNormals:
 			map_recalc_normals(&map,FALSE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandClearLightMaps:
 			light_maps_clear();
 			walk_view_set_uv_layer(uv_layer_normal);
 			menu_update_view();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandBuildLightMaps:
 			if (dialog_light_map_run()) {
@@ -406,184 +410,183 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 				menu_update_view();
 				main_wind_draw();
 			}
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandRun:
 			launch_engine();
-			return(noErr);
+			return(TRUE);
 			            
 			// mesh menu
 
 		case kCommandMeshCombine:
 			piece_combine_mesh();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshSplit:
 			piece_split_mesh();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshTesselate:
 			piece_tesselate();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshResize:
 			piece_resize();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshReposition:
 			piece_reposition();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshSkew:
 			piece_skew();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshFlipX:
 			piece_flip(TRUE,FALSE,TRUE);
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshFlipY:
 			piece_flip(FALSE,TRUE,FALSE);
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshFlipZ:
 			piece_flip(FALSE,FALSE,TRUE);
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshRotateX:
 			piece_rotate(90.0f,0.0f,0.0f);
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshRotateY:
 			piece_rotate(0.0f,90.0f,0.0f);
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshRotateZ:
 			piece_rotate(0.0f,0.0f,90.0f);
-			return(noErr);
+			return(TRUE);
 
 		case kCommandMeshFreeRotate:
 			piece_free_rotate();
-			return(noErr);
+			return(TRUE);
 
 		case kCommandMeshRaiseY:
 			piece_move(0,-100,0);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
             
 		case kCommandMeshLowerY:
 			piece_move(0,100,0);
             main_wind_draw();
- 			return(noErr);
+ 			return(TRUE);
 
 		case kCommandMeshSelectAllPoly:
 			piece_mesh_select_all_poly();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshSnapToGrid:
 			piece_mesh_snap_to_grid();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshSnapClosestVertex:
 			piece_mesh_snap_closest_vertex();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshResetUV:
 			piece_reset_uvs(FALSE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshWholeUV:
 			piece_whole_uvs(FALSE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshSingleUV:
 			piece_single_uvs(FALSE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshCreateNormals:
 			piece_mesh_recalc_normals();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandMeshInvertNormals:
 			piece_mesh_invert_normals(FALSE);
 			main_wind_draw();
-			return(noErr);
-			
+			return(TRUE);
 			
 			// polygon menu
 			
 		case kCommandPolygonHole:
 			piece_poly_hole();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPolygonSnapToGrid:
 			piece_mesh_poly_snap_to_grid();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPolygonRotateUV:
 			piece_rotate_uvs();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPolygonFlipU:
 			piece_flip_uvs(TRUE,FALSE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPolygonFlipV:
 			piece_flip_uvs(FALSE,TRUE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPolygonInvertNormal:
 			piece_mesh_invert_normals(TRUE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 
 		case kCommandPolygonResetUV:
 			piece_reset_uvs(TRUE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPolygonWholeUV:
 			piece_whole_uvs(TRUE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPolygonSingleUV:
 			piece_single_uvs(TRUE);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 			// vertex menu
 			
 		case kCommandVertexSnapToGrid:
 			piece_mesh_vertexes_snap_to_grid();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 			// group menu
 			
 		case kCommandGroups:
 			dialog_map_groups_run();
-			return(noErr);
+			return(TRUE);
 
 		case kCommandGroupMovements:
 			dialog_map_movements_run();
-			return(noErr);
+			return(TRUE);
 
 	}
 	
-	return(eventNotHandledErr);
+	return(FALSE);
 }
 

@@ -2,6 +2,95 @@
 
 #include "common_view.h"
 
+	// remapping for menu items
+
+int				win32_menu_remap[][2]={
+					{kCommandFileNew,100},
+					{kCommandFileOpen,101},
+					{kCommandFileClose,102},
+					{kCommandFileSave,103},
+					{kCommandFileAutoGenerateMap,104},
+					{kCommandFileQuit,105},
+
+					{kCommandEditUndo,200},
+					{kCommandEditDelete,201},
+					{kCommandEditDuplicate,202},
+					{kCommandEditSelectMore,203},
+
+					{kCommandViewFront,300},
+					{kCommandViewLeft,301},
+					{kCommandViewRight,302},
+					{kCommandViewBack,303},
+					{kCommandViewTop,304},
+					{kCommandViewBottom,305},
+					{kCommandViewPerspective,306},
+					{kCommandViewOrtho,307},
+					{kCommandViewUVLayer1,308},
+					{kCommandViewUVLayer2,309},
+					{kCommandViewGotoSelect,310},
+					{kCommandViewGotoMapCenter,311},
+					{kCommandViewClip,312},
+					{kCommandViewShowHideLiquids,313},
+					{kCommandViewShowHideSpots,314},
+					{kCommandViewShowHideLights,315},
+					{kCommandViewShowHideNodes,316},
+					{kCommandViewSplitHorizontal,317},
+					{kCommandViewSplitVertical,318},
+					{kCommandViewRemoveSplit,319},
+
+					{kCommandMapSettings,400},
+					{kCommandMapRaiseY,401},
+					{kCommandMapLowerY,402},
+					{kCommandMapCenter,403},
+					{kCommandMapResetUV,404},
+					{kCommandMapOptimize,405},
+					{kCommandMapCreateNormals,406},
+					{kCommandClearLightMaps,407},
+					{kCommandBuildLightMaps,408},
+					{kCommandRun,409},
+
+					{kCommandMeshCombine,500},
+					{kCommandMeshSplit,501},
+					{kCommandMeshTesselate,502},
+					{kCommandMeshResize,503},
+					{kCommandMeshReposition,504},
+					{kCommandMeshSkew,505},
+					{kCommandMeshFlipX,506},
+					{kCommandMeshFlipY,507},
+					{kCommandMeshFlipZ,508},
+					{kCommandMeshRotateX,509},
+					{kCommandMeshRotateY,510},
+					{kCommandMeshRotateZ,511},
+					{kCommandMeshFreeRotate,512},
+					{kCommandMeshRaiseY,513},
+					{kCommandMeshLowerY,514},
+					{kCommandMeshSelectAllPoly,515},
+					{kCommandMeshSnapToGrid,516},
+					{kCommandMeshSnapClosestVertex,517},
+					{kCommandMeshResetUV,518},
+					{kCommandMeshWholeUV,519},
+					{kCommandMeshSingleUV,520},
+					{kCommandMeshCreateNormals,521},
+					{kCommandMeshInvertNormals,522},
+
+					{kCommandPolygonHole,600},
+					{kCommandPolygonSnapToGrid,601},
+					{kCommandPolygonRotateUV,602},
+					{kCommandPolygonFlipU,603},
+					{kCommandPolygonFlipV,604},
+					{kCommandPolygonInvertNormal,605},
+					{kCommandPolygonResetUV,606},
+					{kCommandPolygonWholeUV,607},
+					{kCommandPolygonSingleUV,608},
+
+					{kCommandVertexSnapToGrid,700},
+
+					{kCommandGroups,800},
+					{kCommandGroupMovements,801},
+					{-1,-1},
+				};
+
+extern bool				quit;
 extern HWND				wnd;
 
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize;
@@ -57,6 +146,11 @@ void os_get_window_box(d3rect *box)
 	box->by=wbox.bottom;
 }
 
+void os_application_quit(void)
+{
+	quit=TRUE;
+}
+
 void os_set_arrow_cursor(void)
 {
 	SetCursor(cur_arrow);
@@ -82,21 +176,51 @@ void os_set_resize_cursor(void)
 	SetCursor(cur_resize);
 }
 
-void os_enable_menu_item_undo(bool enable)
+void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 {
-	/* supergumba -- reactivate when we have menus
-
 	HMENU			menu;
 
-	menu=GetSubMenu([MAIN MENU HERE],menu_idx);
+		// enabling entire menu
+
+	if (item_idx==0) {
+		if (enable) {
+			EnableMenuItem(GetMenu(wnd),(menu_idx-129),MF_BYPOSITION|MF_ENABLED);
+		}
+		else {
+			EnableMenuItem(GetMenu(wnd),(menu_idx-129),MF_BYPOSITION|MF_GRAYED);
+		}
+		return;
+	}
+
+		// enabling single item
+
+	menu=GetSubMenu(GetMenu(wnd),(menu_idx-129));
 
 	if (enable) {
-		EnableMenuItem(menu,0,MF_BYPOSITION|MF_ENABLED);
+		EnableMenuItem(menu,(item_idx-1),MF_BYPOSITION|MF_ENABLED);
 	}
 	else {
-		EnableMenuItem(menu,0,MF_BYPOSITION|MF_GRAYED);
+		EnableMenuItem(menu,(item_idx-1),MF_BYPOSITION|MF_GRAYED);
 	}
-	*/
+}
+
+void os_menu_check_item(int menu_idx,int item_idx,bool check)
+{
+	HMENU			menu;
+
+	menu=GetSubMenu(GetMenu(wnd),(menu_idx-129));
+
+	if (check) {
+		CheckMenuItem(menu,(item_idx-1),MF_BYPOSITION|MF_CHECKED);
+	}
+	else {
+		CheckMenuItem(menu,(item_idx-1),MF_BYPOSITION|MF_UNCHECKED);
+	}
+}
+
+void os_menu_redraw(void)
+{
+	DrawMenuBar(wnd);
 }
 
 bool os_key_space_down(void)
@@ -156,12 +280,22 @@ bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
 
 /* =======================================================
 
-      Dialogs
+      Menu Lookups
       
 ======================================================= */
-
-void dialog_alert(char *a,char *b)
+		
+int os_win32_menu_lookup(int id)
 {
-	// supergumba -- temporary
+	int			idx;
+
+	idx=0;
+
+	while (TRUE) {
+		if (win32_menu_remap[idx][1]==-1) return(-1);
+		if (win32_menu_remap[idx][1]==id) return(win32_menu_remap[idx][0]);
+		idx++;
+	}
+
+	return(-1);
 }
 
