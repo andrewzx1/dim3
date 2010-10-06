@@ -1,5 +1,3 @@
-#include "../../dim3Editor/Headers/editor_defs.h"
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
@@ -9,105 +7,130 @@
 BEGIN
     POPUP "File"
     BEGIN
-        MENUITEM "New",							1852143392
-        MENUITEM "Open...",						1869636974
-        MENUITEM "Close",						1668051813
+        MENUITEM "New",							100
+        MENUITEM "Open...",						101
+        MENUITEM "Close",						102
         MENUITEM SEPARATOR
-        MENUITEM "Save",						1935767141
+        MENUITEM "Save",						103
         MENUITEM SEPARATOR
-        MENUITEM "Auto Generator...",			1635087471
+        MENUITEM "Auto Generate Map...",		104
         MENUITEM SEPARATOR
-        MENUITEM "Exit",						1903520116
+        MENUITEM "Exit",						105
     END
     POPUP "Edit"
     BEGIN
-        MENUITEM "Undo",						1970168943
-        MENUITEM "Duplicate",					1885631856
-        MENUITEM "Delete",						1885627756
-        MENUITEM "Select More",					1936026733
+        MENUITEM "Undo",						200
+		MENUITEM SEPARATOR
+        MENUITEM "Delete",						201
+        MENUITEM "Duplicate",					202
+		MENUITEM SEPARATOR
+        MENUITEM "Select More",					203
     END
     POPUP "View"
     BEGIN
-        MENUITEM "Front",						1987522609
-        MENUITEM "Left",						1987522610
-        MENUITEM "Right",						1987522611
-        MENUITEM "Back",						1987522612
-        MENUITEM "Top",							1987522613
-        MENUITEM "Bottom",						1987522614
-        MENUITEM "Perspecitve",					1987539059
-        MENUITEM "Ortho",						1987538804
-        MENUITEM "Normal Layer",				1970695217
-        MENUITEM "Light Map Layer",				1970695218
-        MENUITEM "Goto Selection",				1735357551
-        MENUITEM "Goto Map Center",				1735357539
-        MENUITEM "Clip",						1987535728
-        MENUITEM "Show Liquids",				1936223345
-        MENUITEM "Show Spots",					1936225139
-        MENUITEM "Show Lights",					1936223347
-        MENUITEM "Show Nodes",					1936223844
-        MENUITEM "Split Horizontal",			1936746618
-        MENUITEM "Split Vertical",				1936750196
-        MENUITEM "Remove Split",				1936749165
+        MENUITEM "Front",						300
+        MENUITEM "Left",						301
+        MENUITEM "Right",						302
+        MENUITEM "Back",						303
+        MENUITEM "Top",							304
+        MENUITEM "Bottom",						305
+		MENUITEM SEPARATOR
+        MENUITEM "Perspecitve",					306
+        MENUITEM "Ortho",						307
+ 		MENUITEM SEPARATOR
+        MENUITEM "Normal UV Layer",				308
+        MENUITEM "Light Map UV Layer",			309
+		MENUITEM SEPARATOR
+        MENUITEM "Goto Selection",				310
+        MENUITEM "Goto Map Center",				311
+		MENUITEM SEPARATOR
+        MENUITEM "Clipping",					312
+		MENUITEM SEPARATOR
+        MENUITEM "Liquids",						313
+        MENUITEM "Spots and Scenery",			314
+        MENUITEM "Lights, Sounds and Particles",315
+        MENUITEM "Nodes",						316
+		MENUITEM SEPARATOR
+        MENUITEM "Split Panel Horizontal",		317
+        MENUITEM "Split Panel Vertical",		318
+        MENUITEM "Remove Panel",				319
     END
     POPUP "Map"
     BEGIN
-        MENUITEM "Settings...",					1836279156
-        MENUITEM "Raise Y",						1836217209
-        MENUITEM "Lower Y",						1835825017
-        MENUITEM "Center",						1835234418
-        MENUITEM "Reset UVs",					1836086646
-        MENUITEM "Optimize",					1836019828
-        MENUITEM "Create Normals",				1919774317
-        MENUITEM "Clear Light Maps",			1668050288
-        MENUITEM "Build Light Maps",			1819107696
-        MENUITEM "Run...",						1836217710
+        MENUITEM "Settings...",					400
+		MENUITEM SEPARATOR
+        MENUITEM "Raise Y",						401
+        MENUITEM "Lower Y",						402
+        MENUITEM "Center",						403
+		MENUITEM SEPARATOR
+        MENUITEM "Reset UVs",					404
+        MENUITEM "Optimize Meshes...",			405
+		MENUITEM SEPARATOR
+        MENUITEM "Recalc Normals",				406
+		MENUITEM SEPARATOR
+        MENUITEM "Clear Light Maps",			407
+        MENUITEM "Build Light Maps...",			408
+		MENUITEM SEPARATOR
+        MENUITEM "Run...",						409
     END
     POPUP "Mesh"
     BEGIN
-        MENUITEM "Combine",						1885564258
-        MENUITEM "Split",						1886613620
-        MENUITEM "Tesselate",					1886679916
-        MENUITEM "Resize",						1836217210
-        MENUITEM "Reposition",					1836216435
-        MENUITEM "Skew",						1836280695
-        MENUITEM "Flip X",						1885761656
-        MENUITEM "Flip Y",						1885761657
-        MENUITEM "Flip Z",						1885761658
-        MENUITEM "Rotate X",					1886549112
-        MENUITEM "Rotate Y",					1886549113
-        MENUITEM "Rotate Z",					1886549114
-        MENUITEM "Free Rotate...",				1886549094
-        MENUITEM "Raise Y",						1886548857
-        MENUITEM "Lower Y",						1886155385
-        MENUITEM "Select All Polygons",			1836280940
-        MENUITEM "Snap To Grid",				1836281456
-        MENUITEM "Snap Closest Vertex",			1836278646
-        MENUITEM "Reset UV",					1836217718
-        MENUITEM "Whole UV",					1836218230
-        MENUITEM "Single UV",					1836217203
-        MENUITEM "Create Normals",				1920167533
-        MENUITEM "Invert Normals",				1769172589
+        MENUITEM "Combine",						500
+        MENUITEM "Split",						501
+        MENUITEM "Tesselate",					502
+		MENUITEM SEPARATOR
+        MENUITEM "Resize...",					503
+        MENUITEM "Reposition...",				504
+        MENUITEM "Skew...",						505
+		MENUITEM SEPARATOR
+        MENUITEM "Flip X",						506
+        MENUITEM "Flip Y",						507
+        MENUITEM "Flip Z",						508
+		MENUITEM SEPARATOR
+        MENUITEM "Rotate X",					509
+        MENUITEM "Rotate Y",					510
+        MENUITEM "Rotate Z",					511
+        MENUITEM "Free Rotate...",				512
+		MENUITEM SEPARATOR
+        MENUITEM "Raise Y",						513
+        MENUITEM "Lower Y",						514
+		MENUITEM SEPARATOR
+        MENUITEM "Select All Polygons",			515
+ 		MENUITEM SEPARATOR
+        MENUITEM "Snap Mesh To Grid",			516
+        MENUITEM "Snap Mesh To Closest Vertex",	517
+ 		MENUITEM SEPARATOR
+        MENUITEM "Reset Mesh UVs",				518
+        MENUITEM "Whole Mesh UVs",				519
+        MENUITEM "Single Stamp Mesh UVs",		520
+		MENUITEM SEPARATOR
+        MENUITEM "Recalc Normals",				521
+        MENUITEM "Invert Normals",				522
    END
     POPUP "Polygon"
     BEGIN
-        MENUITEM "Punch Hole",					1718119473
-        MENUITEM "Snap To Grid",				1886613104
-        MENUITEM "Rotate UV",					1887007349
-        MENUITEM "Flip U",						1887004277
-        MENUITEM "Flip V",						1887004278
-        MENUITEM "Invert Normal",				1768845933
-        MENUITEM "Reset UV",					1887008118
-        MENUITEM "Whole UV",					1887008630
-        MENUITEM "Single UV",					1887007603
+        MENUITEM "Punch Middle Hole",			600
+		MENUITEM SEPARATOR
+        MENUITEM "Snap Polygon To Grid",		601
+ 		MENUITEM SEPARATOR
+        MENUITEM "Rotate Polygon UVs",			602
+        MENUITEM "Flip Us",						603
+        MENUITEM "Flip Vs",						604
+ 		MENUITEM SEPARATOR
+        MENUITEM "Invert Normals",				605
+ 		MENUITEM SEPARATOR
+        MENUITEM "Reset Polygon UVs",			606
+        MENUITEM "Whole Polygon UVs",			607
+        MENUITEM "Single Stamp Polygon UVs",	608
     END
     POPUP "Vertex"
     BEGIN
-        MENUITEM "Snap To Grid",				1987276400
+        MENUITEM "Snap All Vertexes To Grid",	700
     END
     POPUP "Group"
     BEGIN
-        MENUITEM "Groups...",					1735553648
-        MENUITEM "Group Movements...",			1835888502
+        MENUITEM "Groups...",					800
+        MENUITEM "Group Movements...",			801
     END
 END
 
@@ -120,7 +143,8 @@ IDR_MAINFRAME ACCELERATORS
 BEGIN
 END
 
-
-
-
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
 

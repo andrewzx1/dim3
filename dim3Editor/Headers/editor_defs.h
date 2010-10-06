@@ -169,8 +169,8 @@ and can be sold or given away.
 #define kCommandFileQuit						FOUR_CHAR_CODE('quit')
 
 #define kCommandEditUndo						FOUR_CHAR_CODE('undo')
-#define kCommandEditDuplicate					FOUR_CHAR_CODE('pdup')
 #define kCommandEditDelete						FOUR_CHAR_CODE('pdel')
+#define kCommandEditDuplicate					FOUR_CHAR_CODE('pdup')
 #define kCommandEditSelectMore					FOUR_CHAR_CODE('selm')
 
 #define kCommandViewFront						FOUR_CHAR_CODE('vw01')
