@@ -29,7 +29,6 @@ and can be sold or given away.
 // menu
 //
 
-extern void menu_start(void);
 extern void menu_fix_enable(void);
 extern void menu_update_view(void);
 extern bool menu_save_changes_dialog(void);
@@ -48,6 +47,12 @@ extern void tool_palette_shutdown(void);
 extern void tool_palette_setup(void);
 extern void tool_palette_draw(void);
 extern void tool_palette_click(d3pnt *pnt);
+
+extern void tool_palette_default(void);
+extern void tool_palette_switch_vertex_mode(void);
+extern void tool_palette_switch_drag_mode(void);
+extern void tool_palette_switch_grid_mode(void);
+extern void tool_palette_switch_node_mode(void);
 
 //
 // texture palette
@@ -74,11 +79,6 @@ extern void main_wind_center_position_in_map(void);
 extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
 extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
-extern void main_wind_tool_default(void);
-extern void main_wind_tool_switch_vertex_mode(void);
-extern void main_wind_tool_switch_drag_mode(void);
-extern void main_wind_tool_switch_grid_mode(void);
-extern void main_wind_tool_switch_node_mode(void);
 
 //
 // dos

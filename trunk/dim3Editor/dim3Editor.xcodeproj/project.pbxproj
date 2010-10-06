@@ -34,6 +34,7 @@
 		26B8C2D70F62F2A200C6DEBD /* palettes.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B8C2D60F62F2A200C6DEBD /* palettes.c */; };
 		26BE521B0E5FD01A009B6925 /* dialog_save.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE521A0E5FD01A009B6925 /* dialog_save.c */; };
 		26D77AF6123069AA00EA7902 /* dialog_skew.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D77AF5123069AA00EA7902 /* dialog_skew.c */; };
+		26D8C066125C320400C21D34 /* dim3Editor_OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D8C065125C320400C21D34 /* dim3Editor_OSX_glue.c */; };
 		26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6D960DDFCE4100BDD008 /* dialog_resize.c */; };
 		26EE38810EA595D5002A8365 /* dialog_map_groups.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE38800EA595D5002A8365 /* dialog_map_groups.c */; };
 		26F95EA4125AD1430016127D /* light.png in Copy (Items Icons) */ = {isa = PBXBuildFile; fileRef = 26636ADB125A8ED10090A321 /* light.png */; };
@@ -107,7 +108,6 @@
 		F595F33C0A8BBF06004AB8BA /* libModelUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F595F33B0A8BBF06004AB8BA /* libModelUtility.dylib */; };
 		F595F34E0A8C47D2004AB8BA /* walk_view_models.c in Sources */ = {isa = PBXBuildFile; fileRef = F595F34D0A8C47D2004AB8BA /* walk_view_models.c */; };
 		F5A4321F055602DF002DF965 /* dim3editor.h in Headers */ = {isa = PBXBuildFile; fileRef = F51ABAD3048DAB0200B78D6A /* dim3editor.h */; };
-		F5A43220055602DF002DF965 /* application_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F51ABADA048DACFE00B78D6A /* application_defs.h */; };
 		F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */; };
 		F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0123D85400C0AF0B7F000001 /* dim3 Editor.icns */; };
 		F5A4322E055602DF002DF965 /* dos.c in Sources */ = {isa = PBXBuildFile; fileRef = 0123D85F00C0AFD57F000001 /* dos.c */; };
@@ -119,7 +119,6 @@
 		F5A4324E055602DF002DF965 /* pieces.c in Sources */ = {isa = PBXBuildFile; fileRef = F54797150107EA3C01000001 /* pieces.c */; };
 		F5A43252055602DF002DF965 /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = F54CD2090233430101250BB8 /* main_window.c */; };
 		F5A43253055602DF002DF965 /* walk_view.c in Sources */ = {isa = PBXBuildFile; fileRef = F54CD20D0233497001250BB8 /* walk_view.c */; };
-		F5A43254055602DF002DF965 /* progress_window.c in Sources */ = {isa = PBXBuildFile; fileRef = F510D43D02485F2F01DF5EE2 /* progress_window.c */; };
 		F5A4325A055602DF002DF965 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20286C33FDCF999611CA2CEA /* Carbon.framework */; };
 		F5A4325C055602DF002DF965 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59E531D014DBA5801382915 /* AGL.framework */; };
 		F5A4325D055602DF002DF965 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5FE22D0014DC000015DC241 /* OpenGL.framework */; };
@@ -350,15 +349,14 @@
 		26B8C2D60F62F2A200C6DEBD /* palettes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palettes.c; path = Code/palettes.c; sourceTree = "<group>"; };
 		26BE521A0E5FD01A009B6925 /* dialog_save.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_save.c; path = Code/dialog_save.c; sourceTree = "<group>"; };
 		26D77AF5123069AA00EA7902 /* dialog_skew.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_skew.c; path = Code/dialog_skew.c; sourceTree = "<group>"; };
+		26D8C065125C320400C21D34 /* dim3Editor_OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dim3Editor_OSX_glue.c; path = Code/dim3Editor_OSX_glue.c; sourceTree = "<group>"; };
 		26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_resize.c; path = Code/dialog_resize.c; sourceTree = "<group>"; };
 		26EE38800EA595D5002A8365 /* dialog_map_groups.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_map_groups.c; path = Code/dialog_map_groups.c; sourceTree = "<group>"; };
 		26FC3AFE0ECF8F2F00DD6F37 /* dialog_optimize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_optimize.c; path = Code/dialog_optimize.c; sourceTree = "<group>"; };
 		F50AF9AD088601C600F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F50EC4D609DEED57007A0B8A /* mapimport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapimport.h; path = ../dim3Common/Headers/mapimport.h; sourceTree = SOURCE_ROOT; };
 		F50EC58A09E0B9F0007A0B8A /* import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import.c; path = Code/import.c; sourceTree = "<group>"; };
-		F510D43D02485F2F01DF5EE2 /* progress_window.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = progress_window.c; path = Code/progress_window.c; sourceTree = "<group>"; };
 		F51ABAD3048DAB0200B78D6A /* dim3editor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3editor.h; path = Headers/dim3editor.h; sourceTree = "<group>"; };
-		F51ABADA048DACFE00B78D6A /* application_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = application_defs.h; path = Headers/application_defs.h; sourceTree = "<group>"; };
 		F51E8B6B084FE4D600C3AC6A /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = Code/dialog_file_new.c; sourceTree = "<group>"; };
 		F522DCBD0BBC853C00DFF256 /* Course.js */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.javascript; path = Course.js; sourceTree = "<group>"; };
 		F5239B9D0AFD9C5200241092 /* undo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = undo.c; path = Code/undo.c; sourceTree = "<group>"; };
@@ -427,7 +425,6 @@
 			isa = PBXGroup;
 			children = (
 				F51ABAD3048DAB0200B78D6A /* dim3editor.h */,
-				F51ABADA048DACFE00B78D6A /* application_defs.h */,
 				26899FA80F1EBF25007860EB /* editor_defs.h */,
 				F50AF9AD088601C600F261B1 /* os_defs.h */,
 				F5AD54420BBE1FDB001C7C04 /* baseutility.h */,
@@ -601,6 +598,7 @@
 				0123D85F00C0AFD57F000001 /* dos.c */,
 				F5239B9D0AFD9C5200241092 /* undo.c */,
 				F571C8760B34DA6300F979B7 /* xml_setup.c */,
+				26D8C065125C320400C21D34 /* dim3Editor_OSX_glue.c */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -710,7 +708,6 @@
 				F54CD2090233430101250BB8 /* main_window.c */,
 				26636ACC125A8E540090A321 /* tool_palette.c */,
 				F57CACA60C38B76200B595F4 /* texture_palette.c */,
-				F510D43D02485F2F01DF5EE2 /* progress_window.c */,
 			);
 			name = Windows;
 			sourceTree = "<group>";
@@ -723,7 +720,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5A4321F055602DF002DF965 /* dim3editor.h in Headers */,
-				F5A43220055602DF002DF965 /* application_defs.h in Headers */,
 				F50AF9AE088601C600F261B1 /* os_defs.h in Headers */,
 				F52F19D50946A89C00FEFE18 /* common_view.h in Headers */,
 				F5A9881D094BF7D8005E55AE /* dialog.h in Headers */,
@@ -821,7 +817,6 @@
 				F5A4324E055602DF002DF965 /* pieces.c in Sources */,
 				F5A43252055602DF002DF965 /* main_window.c in Sources */,
 				F5A43253055602DF002DF965 /* walk_view.c in Sources */,
-				F5A43254055602DF002DF965 /* progress_window.c in Sources */,
 				F58D0FB005B8C0A800DBBDC5 /* walk_view_click_piece.c in Sources */,
 				F5691685084E6B9000ADFA44 /* dialog_file_open.c in Sources */,
 				F51E8B6C084FE4D600C3AC6A /* dialog_file_new.c in Sources */,
@@ -875,6 +870,7 @@
 				26808225122057F600EB7897 /* view_picker.c in Sources */,
 				26D77AF6123069AA00EA7902 /* dialog_skew.c in Sources */,
 				26636ACD125A8E540090A321 /* tool_palette.c in Sources */,
+				26D8C066125C320400C21D34 /* dim3Editor_OSX_glue.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

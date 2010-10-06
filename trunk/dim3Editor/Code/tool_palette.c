@@ -36,6 +36,7 @@ and can be sold or given away.
 
 extern map_type					map;
 extern editor_state_type		state;
+extern setup_type				setup;
 extern file_path_setup_type		file_path_setup;
 
 int								tool_pixel_sz,tool_palette_push_idx;
@@ -644,4 +645,58 @@ void tool_palette_click(d3pnt *pnt)
 		return;
 	}
 }
+
+/* =======================================================
+
+      Values and States
+      
+======================================================= */
+
+void tool_palette_default(void)
+{
+	state.free_look=setup.free_look;
+	state.select_add=FALSE;
+	
+    state.vertex_mode=vertex_mode_none;
+	state.drag_mode=drag_mode_mesh;
+	state.grid_mode=grid_mode_small;
+	state.node_mode=node_mode_select;
+	state.handle_mode=handle_mode_rotate;
+	
+	state.auto_texture=setup.auto_texture;
+	
+	state.show_liquid=TRUE;
+	state.show_object=TRUE;
+	state.show_lightsoundparticle=TRUE;
+	state.show_node=FALSE;
+	
+	state.show_normals=FALSE;
+}
+
+void tool_palette_switch_vertex_mode(void)
+{
+	state.vertex_mode++;
+	if (state.vertex_mode>vertex_mode_snap) state.vertex_mode=vertex_mode_none;
+}
+
+void tool_palette_switch_drag_mode(void)
+{
+	state.drag_mode++;
+	if (state.drag_mode>drag_mode_vertex) state.drag_mode=drag_mode_mesh;
+
+	main_wind_draw();
+}
+
+void tool_palette_switch_grid_mode(void)
+{
+	state.grid_mode++;
+	if (state.grid_mode>grid_mode_large) state.grid_mode=grid_mode_none;
+}
+
+void tool_palette_switch_node_mode(void)
+{
+	state.node_mode++;
+	if (state.node_mode>node_mode_remove_link) state.node_mode=node_mode_select;
+}
+
 

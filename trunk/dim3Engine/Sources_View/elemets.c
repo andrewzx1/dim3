@@ -38,6 +38,7 @@ and can be sold or given away.
 extern bool					game_app_active;
 
 extern server_type			server;
+extern view_type			view;
 extern hud_type				hud;
 extern setup_type			setup;
 
@@ -2845,7 +2846,7 @@ void element_draw_model(element_type *element)
 	model_draw_setup_interface_models(mdl,draw,element->x,element->y);
 
 		// draw model
-
+		
 	model_calc_animation(draw,tick);
 	model_calc_draw_bones(draw);
 	render_model_setup(draw,tick);

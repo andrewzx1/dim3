@@ -287,7 +287,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 	mesh=&mdl->meshes[mesh_idx];
 
-	if (!view.shader_on) {
+	if ((!view.shader_on) || (draw->no_shader)) {
 		mem_sz=(mesh->ntrig*3)*(3+2+3);
 
 		draw->setup.vbo_offset.color=((mesh->ntrig*3)*(3+2))*sizeof(float);
@@ -321,7 +321,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 	trig=mesh->trigs;
 
-	if (!view.shader_on) {
+	if ((!view.shader_on) || (draw->no_shader)) {
 
 		cl=vertex_ptr+((mesh->ntrig*3)*(3+2));
 
@@ -942,7 +942,7 @@ void render_model_build_vertex_lists(model_draw *draw)
 		// shaders don't need color list
 
 	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
-	if (!view.shader_on) render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
+	if ((!view.shader_on) || (draw->no_shader)) render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
 }
 
 /* =======================================================
@@ -970,9 +970,9 @@ void render_model_opaque(model_draw *draw)
 
 	mdl=server.model_list.models[draw->model_idx];
 
-		// start lighting
+		// start glsl lighting
 
-	gl_lights_build_model_light_list(mdl,draw,&light_list);
+	if ((view.shader_on) && (!draw->no_shader)) gl_lights_build_model_light_list(mdl,draw,&light_list);
 
 		// draw opaque materials
 
@@ -986,7 +986,7 @@ void render_model_opaque(model_draw *draw)
 
 			// render opaque segments
 
-		if (!view.shader_on) {
+		if ((!view.shader_on) || (draw->no_shader)) {
 			render_model_opaque_normal(mdl,n,draw);
 		}
 		else {
@@ -1018,7 +1018,7 @@ void render_model_transparent(model_draw *draw)
 	
 		// start lighting
 
-	gl_lights_build_model_light_list(mdl,draw,&light_list);
+	if ((view.shader_on) && (!draw->no_shader)) gl_lights_build_model_light_list(mdl,draw,&light_list);
 
 		// draw transparent materials
 
@@ -1032,7 +1032,7 @@ void render_model_transparent(model_draw *draw)
 
 			// draw transparent mesh
 
-		if (!view.shader_on) {
+		if ((!view.shader_on) || (draw->no_shader)) {
 			render_model_transparent_normal(mdl,n,draw);
 		}
 		else {
