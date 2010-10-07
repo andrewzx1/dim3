@@ -54,6 +54,11 @@ void os_get_window_box(d3rect *box)
 	box->by=wbox.bottom;
 }
 
+void os_application_quit(void)
+{
+	QuitApplicationEventLoop();
+}
+
 void os_set_arrow_cursor(void)
 {
 	SetThemeCursor(kThemeArrowCursor);
@@ -92,6 +97,11 @@ void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 void os_menu_check_item(int menu_idx,int item_idx,bool check)
 {
 	CheckMenuItem(GetMenuRef(menu_idx),item_idx,check);
+}
+
+void os_menu_redraw(void)
+{
+	DrawMenuBar();
 }
 
 bool os_button_down(void)

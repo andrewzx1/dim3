@@ -96,6 +96,7 @@ extern int script_find_group_from_name(JSContextRef cx,JSValueRef arg,JSValueRef
 extern int script_find_map_movement_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern int script_get_attached_object_uid(void);
 extern model_draw* script_find_model_draw(JSObjectRef j_obj);
+extern bool script_in_construct(void);
 
 //
 // initialize script objects

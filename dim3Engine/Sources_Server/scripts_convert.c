@@ -252,3 +252,4 @@ JSValueRef script_color_to_value(JSContextRef cx,d3col *col)
 	
 	return((JSValueRef)j_obj);
 }
+

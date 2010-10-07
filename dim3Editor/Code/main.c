@@ -35,13 +35,23 @@ extern file_path_setup_type		file_path_setup;
 extern editor_state_type		state;
 
 extern bool setup_xml_read(void);
-extern OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
 
 /* =======================================================
 
       Main Event Loop
       
 ======================================================= */
+
+OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
+{
+	HICommand		cmd;
+	
+	GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+	
+	if (menu_event_run(cmd.commandID)) return(noErr);
+
+	return(eventNotHandledErr);
+}
 
 void doloop(void)
 {

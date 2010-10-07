@@ -854,7 +854,7 @@ typedef struct		{
 						bool					hidden,suspend,fly,slope_gravity,
 												side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,
-												find_on,in_collide_event,
+												find_on,in_collide_event,in_construct_event,
 												quick_reverse,death_trigger,death_telefrag;
 						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang,view_ang,org_ang,last_ang;

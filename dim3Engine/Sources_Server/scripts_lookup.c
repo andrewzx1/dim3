@@ -340,4 +340,16 @@ model_draw* script_find_model_draw(JSObjectRef j_obj)
 	
 	return(NULL);
 }
-	
+
+/* =======================================================
+
+      Construct Check
+      
+======================================================= */
+
+inline bool script_in_construct(void)
+{
+	return(js.script_list.scripts[js.attach.script_idx]->main_event==sd_event_construct);
+}
+
+

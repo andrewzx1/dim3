@@ -187,6 +187,11 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	if (attach->script_idx==-1) return(TRUE);
 	
 	script=js.script_list.scripts[attach->script_idx];
+	
+		// remember the event
+		
+	script->main_event=main_event;
+	script->sub_event=sub_event;
 
 		// is this an attached event?
 

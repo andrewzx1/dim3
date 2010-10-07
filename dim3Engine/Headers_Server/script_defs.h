@@ -467,7 +467,8 @@ typedef struct		{
 					} script_event_type;
 
 typedef struct		{
-						int								idx,data_len,recursive_count;
+						int								idx,data_len,
+														main_event,sub_event,recursive_count;
 						char							name[file_str_len];
 						char							*data;
 						script_event_type				event_list;
@@ -485,7 +486,6 @@ typedef struct		{
 
 typedef struct		{
 						int								timer_tick;
-						bool							add_property_lock;
 						attach_type						attach;
 						
 						attach_type						game_attach,course_attach;
