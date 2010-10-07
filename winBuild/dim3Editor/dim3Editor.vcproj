@@ -243,11 +243,19 @@
 				Name="EditorSources"
 				>
 				<File
+					RelativePath="..\..\dim3Editor\Code\dos.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\import_text_decode.c"
 					>
 				</File>
 				<File
 					RelativePath="..\..\dim3Editor\Code\menu.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Editor\Code\nodes.c"
 					>
 				</File>
 				<File
@@ -417,6 +425,10 @@
 				</File>
 				<File
 					RelativePath=".\win32Code\dim3Editor_win32_glue.c"
+					>
+				</File>
+				<File
+					RelativePath=".\resource.h"
 					>
 				</File>
 				<File

@@ -26,149 +26,83 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "dim3editor.h"
-
-#define kFileOpenList				FOUR_CHAR_CODE('list')
-#define kFileOpenListNameColumn		FOUR_CHAR_CODE('name')
-#define kFileOpenButton				FOUR_CHAR_CODE('open')
+#include "resource.h"
 
 extern HINSTANCE				hinst;
 extern HWND						wnd;
 
-
-int								fp_file_index;
-char							fp_file_name[256];
+char							fp_file_name[256],*fp_dialog_name;
 bool							fp_cancel;
 file_path_directory_type		*fpd;
-WindowRef						dialog_file_open_wind;
 
 extern file_path_setup_type		file_path_setup;
-
-/* =======================================================
-
-      File Open Event Handlers
-      
-======================================================= */
-
-/*
-static pascal OSStatus file_open_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
-{
-	HICommand		cmd;
-	
-	switch (GetEventKind(event)) {
-	
-		case kEventProcessCommand:
-			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
-			
-			switch (cmd.commandID) {
-			
-				case kHICommandOpen:
-					QuitAppModalLoopForWindow(dialog_file_open_wind);
-					return(noErr);
-					
-				case kHICommandCancel:
-					fp_cancel=TRUE;
-					QuitAppModalLoopForWindow(dialog_file_open_wind);
-					return(noErr);
-			}
-
-			return(eventNotHandledErr);
-	
-	}
-	
-	return(eventNotHandledErr);
-}
-*/
 
 /* =======================================================
 
       File List Event Handlers
       
 ======================================================= */
-/*
-int file_open_list_build_items_for_parent(int parent_idx,DataBrowserItemID *items)
+
+HTREEITEM dialog_file_open_fill_list(HWND diag,HTREEITEM parent_item,int parent_idx)
 {
-	int					n,count;
-	
-	count=0;
-	
+	int					n;
+	TV_INSERTSTRUCT		tv_item;
+	HTREEITEM			item,first_item;
+
+	first_item=NULL;
+
 	for (n=0;n!=fpd->nfile;n++) {
 		if (fpd->files[n].parent_idx==parent_idx) {
-			items[count++]=n+1;
+			tv_item.hParent=parent_item;
+			tv_item.hInsertAfter=TVI_LAST;
+			tv_item.item.mask=TVIF_TEXT;
+			tv_item.item.pszText=fpd->files[n].file_name;
+			item=(HTREEITEM)SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_INSERTITEM,0,(LPARAM)&tv_item);
+
+			if (first_item==NULL) first_item=item;
+			dialog_file_open_fill_list(diag,item,n);
 		}
 	}
 
-	return(count);
+	return(first_item);
 }
 
-static pascal OSStatus file_open_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
+void dialog_file_open_set(HWND diag)
 {
-	int				idx;
-	CFStringRef		cfstr;
-	
-	switch (property) {
+	HTREEITEM			item;
 
-		case kFileOpenListNameColumn:
-			idx=itemID-1;
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,fpd->files[idx].file_name,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-			
-		case kDataBrowserItemIsContainerProperty:
-			idx=itemID-1;
-			SetDataBrowserItemDataBooleanValue(itemData,fpd->files[idx].is_dir);
-			return(noErr);
-						
-	}
+	item=dialog_file_open_fill_list(diag,NULL,-1);
 
-	return(errDataBrowserPropertyNotSupported);
+	if (item!=NULL) SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_EXPAND,TVE_EXPAND,(LPARAM)item);
 }
 
-static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
+void dialog_file_open_get(HWND diag)
 {
-	int					idx;
-	bool				enable;
-	UInt32				count;
-	DataBrowserItemID	items[file_paths_max_directory_file];
+	HTREEITEM			item;
+	TV_ITEM				info;
 	
-	switch (message) {
-	
-		case kDataBrowserItemDoubleClicked:
-			fp_file_index=itemID-1;
-			if (!fpd->files[fp_file_index].is_dir) QuitAppModalLoopForWindow(dialog_file_open_wind);
-			break;
+	fp_file_name[0]=0x0;
 
-		case kDataBrowserItemSelected:
-			fp_file_index=itemID-1;
-			break;
-			
-		case kDataBrowserItemDeselected:
-			if (fp_file_index==(itemID-1)) fp_file_index=-1;
-			break;
-			
-		case kDataBrowserContainerOpened:
-			idx=itemID-1;
-			count=file_open_list_build_items_for_parent(idx,items);
-			AddDataBrowserItems(ctrl,itemID,count,items,kDataBrowserItemNoProperty);
-			break;
-	}
-	
-		// enable open button
-		
-	enable=FALSE;
-	if (fp_file_index!=-1) {
-		enable=!fpd->files[fp_file_index].is_dir;
-	}
+	item=(HTREEITEM)SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_GETNEXTITEM,TVGN_CARET,(LPARAM)0);
+	if (item==NULL) return;
 
-	dialog_enable(dialog_file_open_wind,kFileOpenButton,0,enable);
+	info.mask=TVIF_TEXT;
+	info.pszText=fp_file_name;
+	info.cchTextMax=256;
+	info.hItem=item;
+
+	SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_GETITEM,0,(LPARAM)&info);
 }
-*/
 
-LRESULT CALLBACK dialog_file_open_proc(HWND diag_wnd,UINT msg,WPARAM wparam,LPARAM lparam)
+LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
+	LPNMHDR			hdr;
+
 	switch (msg) {
 
 		case WM_INITDIALOG:
+			SetWindowText(diag,fp_dialog_name);
+			dialog_file_open_set(diag);
 			return(TRUE);
 
 		case WM_COMMAND:
@@ -176,13 +110,25 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag_wnd,UINT msg,WPARAM wparam,LPAR
 			switch (wparam) {
 
 				case IDOK:
-					EndDialog(diag_wnd,0);
+					dialog_file_open_get(diag);
+					EndDialog(diag,0);
 					return(TRUE);
 
 				case IDCANCEL:
-					EndDialog(diag_wnd,1);
+					EndDialog(diag,1);
 					return(TRUE);
 
+			}
+
+			break;
+
+		case WM_NOTIFY:
+
+			hdr=(LPNMHDR)lparam;
+
+			if ((hdr->idFrom==IDC_FILE_OPEN_TREE) && (hdr->code==NM_DBLCLK)) {
+				dialog_file_open_get(diag);
+				EndDialog(diag,0);
 			}
 
 			break;
@@ -192,28 +138,6 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag_wnd,UINT msg,WPARAM wparam,LPAR
 	return(FALSE);
 }
 
-/*
-LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
-{
-	switch(Msg)
-	{
-	case WM_INITDIALOG:
-		return TRUE;
-
-	case WM_COMMAND:
-		switch(wParam)
-		{
-		case IDOK:
-			EndDialog(hWndDlg, 0);
-			return TRUE;
-		}
-		break;
-	}
-
-	return FALSE;
-}
-*/
-
 /* =======================================================
 
       Run File Open
@@ -222,34 +146,8 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 
 bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
-	/*
-	int								n,count;
-	CFStringRef						cfstr;
-	ControlRef						ctrl;
-	ControlID						ctrl_id;
-	DataBrowserCallbacks			dbcall;
-	EventHandlerUPP					event_upp;
-	DataBrowserItemID				items[file_paths_max_directory_file];
-	DataBrowserItemDataUPP			list_item_upp;
-	DataBrowserItemNotificationUPP	list_notify_upp;
-	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
-	*/
-		// open the dialog
+	bool			ok;
 
-//	fp_cancel=(DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_OPEN),wnd,dialog_file_open_proc)!=0);
-	strcpy(file_name,"DM Map");
-
-	/*
-		
-
-
-
-	dialog_open(&dialog_file_open_wind,"FileOpen");
-	
-	cfstr=CFStringCreateWithCString(kCFAllocatorDefault,dialog_name,kCFStringEncodingMacRoman);
-	SetWindowTitleWithCFString(dialog_file_open_wind,cfstr);
-	CFRelease(cfstr);
-	
 		// scan for files
 		
 	if (extension!=NULL) {
@@ -258,107 +156,22 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	else {
 		fpd=file_paths_read_directory_data_dir(&file_path_setup,search_path,required_file_name);
 	}
-	
-		// setup the list
-		
-	ctrl_id.signature=kFileOpenList;
-	ctrl_id.id=0;
-	GetControlByID(dialog_file_open_wind,&ctrl_id,&ctrl);
-	
-	dbcall.version=kDataBrowserLatestCallbacks;
-	InitDataBrowserCallbacks(&dbcall);
-	
-	list_item_upp=NewDataBrowserItemDataUPP(&file_open_list_item_proc);
-	dbcall.u.v1.itemDataCallback=list_item_upp;
 
-	list_notify_upp=NewDataBrowserItemNotificationUPP(&file_open_list_notify_proc);
-	dbcall.u.v1.itemNotificationCallback=list_notify_upp;
-	
-	SetDataBrowserCallbacks(ctrl,&dbcall);
-	
-	SetDataBrowserListViewDisclosureColumn(ctrl,kFileOpenListNameColumn,FALSE);
+		// run dialog
 
-	count=file_open_list_build_items_for_parent(-1,items);
-	AddDataBrowserItems(ctrl,kDataBrowserNoItem,count,items,kDataBrowserItemNoProperty);
-	
-		// always start with top level items open
-		
-	for (n=0;n!=count;n++) {
-		OpenDataBrowserContainer(ctrl,items[n]);
-	}
-	
-		// disable open
-		
-	dialog_enable(dialog_file_open_wind,kFileOpenButton,0,FALSE);
-		
-		// show window
-	
-	ShowWindow(dialog_file_open_wind);
-	
-		// install event handler
-		
-	event_upp=NewEventHandlerUPP(file_open_event_proc);
-	InstallWindowEventHandler(dialog_file_open_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
-	
-		// modal window
-		
-	fp_cancel=FALSE;
-	
-	RunAppModalLoopForWindow(dialog_file_open_wind);
-	
-		// get the file
-		
-	if (!fp_cancel) file_paths_get_complete_path_from_index(fpd,fp_file_index,file_name);
-	
-		// close window
-		
-	DisposeDataBrowserItemDataUPP(list_item_upp);
-	DisposeDataBrowserItemNotificationUPP(list_notify_upp);
-	DisposeWindow(dialog_file_open_wind);
-	
-		// clear up memory
-		
+	fp_dialog_name=dialog_name;
+
+	ok=(DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_OPEN),NULL,dialog_file_open_proc)==0);
+
+		// close the files
+
 	file_paths_close_directory(fpd);
-*/
+	
+	if (!ok) return(FALSE);
 
-	return(!fp_cancel);
+		// get the file
+
+	strcpy(file_name,fp_file_name);
+	return(TRUE);
 }
 
-/*
-#include <windows.h>
-#include "Resource.h"
-
-//---------------------------------------------------------------------------
-HWND hWnd;
-LRESULT CALLBACK DlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-//---------------------------------------------------------------------------
-INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-				   LPSTR lpCmdLine, int nCmdShow)
-{
-	DialogBox(hInstance, MAKEINTRESOURCE(IDD_DLGFIRST),
-	          hWnd, reinterpret_cast<DLGPROC>(DlgProc));
-
-	return FALSE;
-}
-//---------------------------------------------------------------------------
-LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
-{
-	switch(Msg)
-	{
-	case WM_INITDIALOG:
-		return TRUE;
-
-	case WM_COMMAND:
-		switch(wParam)
-		{
-		case IDOK:
-			EndDialog(hWndDlg, 0);
-			return TRUE;
-		}
-		break;
-	}
-
-	return FALSE;
-}
-//---------------------------------------------------------------------------
-*/

@@ -151,6 +151,16 @@ void os_application_quit(void)
 	quit=TRUE;
 }
 
+void os_select_window(void)
+{
+    ShowWindow(wnd,SW_SHOWNORMAL);
+}
+
+void os_set_title_window(char *title)
+{
+	SetWindowText(wnd,title);
+}
+
 void os_set_arrow_cursor(void)
 {
 	SetCursor(cur_arrow);

@@ -1,9 +1,12 @@
+#include <windows.h>
+#include "resource.h"
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
 //
 
-128 MENU 
+IDR_MAIN_MENU MENU 
 BEGIN
     POPUP "File"
     BEGIN
@@ -148,3 +151,12 @@ END
 // Dialog
 //
 
+IDD_FILE_OPEN DIALOGEX 100, 100, 336, 234
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,279,213,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,213,50,14
+    CONTROL         "",IDC_FILE_OPEN_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | WS_BORDER | WS_TABSTOP,7,7,322,201
+END
