@@ -291,6 +291,11 @@ JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
+	if (!script_in_construct()) {
+		*exception=script_create_exception(cx,"Can only add projectiles to a weapon in the construct event");
+		return(script_null_to_value(cx));
+	}
+	
 	obj=object_script_lookup();
 	weap=weapon_script_lookup();
 

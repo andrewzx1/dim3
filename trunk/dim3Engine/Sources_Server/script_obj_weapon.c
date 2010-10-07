@@ -109,6 +109,11 @@ JSValueRef js_obj_weapon_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
+	if (!script_in_construct()) {
+		*exception=script_create_exception(cx,"Can only add weapons to an object in the construct event");
+		return(script_null_to_value(cx));
+	}
+	
 	obj=object_script_lookup();
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
