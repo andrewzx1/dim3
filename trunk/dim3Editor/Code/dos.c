@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
@@ -44,7 +48,7 @@ map_type						map;
             
 ======================================================= */
 
-void redraw_windows(void)
+void file_reset_windows(void)
 {
         // no selection
         
@@ -57,13 +61,13 @@ void redraw_windows(void)
 	menu_update_view();
 	menu_fix_enable();
 	
-    SelectWindow(mainwind);
+    os_select_window();
     
 	main_wind_draw();
 	texture_palette_reset();
 }
 
-void close_windows(void)
+void file_close_windows(void)
 {
     main_wind_close();
 	menu_fix_enable();
@@ -153,7 +157,7 @@ bool file_new_map(void)
 	state.map_opened=TRUE;
   	
     main_wind_open();
-	main_wind_set_title(file_name);
+	os_set_title_window(file_name);
 	walk_view_setup_default_views();
 	
 		// start models
@@ -162,7 +166,7 @@ bool file_new_map(void)
 		
 		// redraw the window
     
-	redraw_windows();
+	file_reset_windows();
 	
 	return(TRUE);
 }
@@ -184,21 +188,21 @@ bool file_open_map(void)
 	
 		// open the map
 		
-	SetThemeCursor(kThemeWatchCursor);
+	os_set_wait_cursor();
 	
 	select_clear();
 	
 	main_wind_open();
-	main_wind_set_title(file_name);
+	os_set_title_window(file_name);
 	
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,texture_quality_mode_high,FALSE);
 	
 	ok=map_open(&map,file_name);
 
-    SetThemeCursor(kThemeArrowCursor);
+    os_set_arrow_cursor();
 	
 	if (!ok) {
-		close_windows();
+		file_close_windows();
 		return(FALSE);
 	}
 	
@@ -221,7 +225,7 @@ bool file_open_map(void)
 		
 	state.map_opened=TRUE;
 	
-	redraw_windows();
+	file_reset_windows();
 	
 	return(TRUE);
 }
@@ -249,15 +253,17 @@ void file_close_map(void)
 {
 	if (!state.map_opened) return;
 	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_wait_cursor();
+
 	map_close(&map);
-	
-	state.map_opened=FALSE;
-	
 	walk_view_models_close();
-	
-    close_windows();
+    file_close_windows();
 	
 	undo_clear();
+
+	os_set_arrow_cursor();
+
+	state.map_opened=FALSE;
+	
 }
 

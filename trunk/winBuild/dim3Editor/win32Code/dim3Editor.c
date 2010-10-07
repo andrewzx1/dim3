@@ -4,6 +4,8 @@
 #include "common_view.h"
 #include "interface.h"
 
+#include "resource.h"
+
 #define EDITOR_WIN_X						10
 #define EDITOR_WIN_Y						40
 #define EDITOR_WIN_WIDTH					1100
@@ -31,7 +33,6 @@ extern d3rect			tool_palette_box,txt_palette_box;
 extern bool setup_xml_read(void);
 extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
 void editor_button_down(int x,int y);
-void editor_draw(void);	// supergumba -- testing
 extern void glue_start(void);
 extern void glue_end(void);
 extern void walk_view_draw(void);
@@ -51,16 +52,12 @@ extern int os_win32_menu_lookup(int id);
 void palette_reset(void)
 {
 }
-bool node_link_click(int node_idx)
-{
-	return(FALSE);
-}
-void file_save_map(void)
-{}
 void launch_map_script_editor(void)
-{}
+{
+}
 void launch_engine(void)
-{}
+{
+}
 bool import_load_file(char *path,char *ext)
 {
 	return(FALSE);
@@ -72,25 +69,16 @@ void light_maps_clear(void)
 {
 }
 
-bool file_new_map(void)
-{
-	return(FALSE);
-}
-bool file_open_map(void)
-{
-	return(FALSE);
-}
-void file_close_map(void)
-{
-}
-
 
 void dialog_progress_next(void)
-{}
+{
+}
 void dialog_progress_start(char *title,int count)
-{}
+{
+}
 void dialog_progress_end(void)
-{}
+{
+}
 int dialog_alert(char *title,char *msg)
 {
 	return(0);
@@ -100,16 +88,20 @@ int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *but
 	return(0);
 }
 void dialog_about_run(void)
-{}
+{
+}
 void dialog_preference_run(void)
-{}
+{
+}
 bool dialog_file_new_run(char *title,char *file_name)
 {
 	return(FALSE);
 }
 bool dialog_save_run(void)
 {
-	return(FALSE);
+	node_path_rebuild();
+	map_recalc_normals(&map,FALSE);
+	return(map_save(&map));
 }
 bool dialog_map_settings_run(void)
 {
@@ -198,7 +190,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 		case WM_PAINT:
 			BeginPaint(wnd,&ps);
-			editor_draw();
+			main_wind_draw();
 			EndPaint(wnd,&ps);
 			break;
 
@@ -270,18 +262,14 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
       
 ======================================================= */
 
-bool editor_start(char *err_str)
+void main_wind_open(void)
 {
-	int						format,glew_error;
+	int						format;
 	RECT					wbox;
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
 	HINSTANCE				hInst;
 	HMENU					menu;
-
-		// glue start
-
-	glue_start();
 
 		// settings
 
@@ -317,7 +305,7 @@ bool editor_start(char *err_str)
 
 		// menu
 
-	menu=LoadMenu(hinst,MAKEINTRESOURCE(128));
+	menu=LoadMenu(hinst,MAKEINTRESOURCE(IDR_MAIN_MENU));
 	SetMenu(wnd,menu);
 
 	undo_initialize();
@@ -352,11 +340,7 @@ bool editor_start(char *err_str)
 
 		// initialize glew
 
-	glew_error=glewInit();
-	if (glew_error!=GL_NO_ERROR) {
-		strcpy(err_str,glewGetErrorString(glew_error));
-		return(FALSE);
-	}
+	glewInit();
 
 		// default opengl setup
 	
@@ -398,11 +382,9 @@ bool editor_start(char *err_str)
 	texture_palette_setup();
 	
 	walk_view_initialize();
-
-	return(TRUE);
 }
 
-void editor_end(void)
+void main_wind_close(void)
 {
 	walk_view_shutdown();
 	tool_palette_shutdown();
@@ -418,21 +400,6 @@ void editor_end(void)
 	DeleteObject(fnt);
 	DestroyWindow(wnd);
 	UnregisterClass("dim3ServerWindowClass",GetModuleHandle(NULL));
-
-		// close glue
-
-	glue_end();
-}
-
-/* =======================================================
-
-      Editor Draw Utility
-      
-======================================================= */
-
-void editor_gl_swap(void)
-{
-	SwapBuffers(wnd_gl_dc);
 }
 
 /* =======================================================
@@ -461,15 +428,6 @@ void editor_pump(void)
       
 ======================================================= */
 
-bool editor_setup(char *err_str)
-{
-	if (!file_paths_setup(&file_path_setup)) {
-		strcpy(err_str,"No data folder");
-		return(FALSE);
-	}
-
-	return(TRUE);
-}
 
 bool editor_open_map(char *err_str)
 {
@@ -536,7 +494,7 @@ void editor_clear_viewport(void)
 	glViewport(0,0,wid,high);
 }
 
-void editor_draw(void)
+void main_wind_draw(void)
 {
 	int				mx,my,wnd_high;
 	RECT			wbox;
@@ -558,21 +516,18 @@ void editor_draw(void)
 	glClearColor(0.75f,0.75f,0.75f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-		// draw editor
+		// draw window
 
-	walk_view_draw();
+	if (state.map_opened) {
+		walk_view_draw();
 
-	tool_palette_draw();
-	texture_palette_draw();
+		tool_palette_draw();
+		texture_palette_draw();
+	}
 
 		// swap buffers
 
-	editor_gl_swap();
-}
-
-void main_wind_draw(void)
-{
-	editor_draw();
+	SwapBuffers(wnd_gl_dc);
 }
 
 /* =======================================================
@@ -602,12 +557,28 @@ void test_debug(char *str)
 
 int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
 {
-	char		err_str[256];
-
 	hinst=hInstance;
 
 	state.map_opened=FALSE;
+	
+		// glue start
 
+	glue_start();
+	
+	if (!file_paths_setup(&file_path_setup)) {
+		glue_end();
+		MessageBox(NULL,"No data folder","Error",MB_OK);
+		return(0);
+	}
+
+	if (!file_open_map()) {
+		glue_end();
+		return(0);
+	}
+
+
+
+/*
 	if (!editor_setup(err_str)) {
 		MessageBox(NULL,err_str,"Error",MB_OK);
 		return(0);
@@ -624,16 +595,13 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		MessageBox(NULL,err_str,"Error",MB_OK);
 		return(0);
 	}
-
-	editor_draw();
-
-	state.free_look=TRUE;		// supergumba -- lock on free look
-	state.grid_mode=grid_mode_large;	// supergumba -- setup grid
+*/
 
 	editor_pump();
 
-	editor_end();
-	editor_close_map();
+		// close glue
+
+	glue_end();
 
 	return(0);
 }
