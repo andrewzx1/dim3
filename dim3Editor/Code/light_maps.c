@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
@@ -572,9 +576,9 @@ void light_map_create_liquid_poly_flatten(map_liquid_type *liq,light_map_poly_ty
 	lm_poly->pt[2].z=lm_poly->pt[3].z=liq->bot;
 	lm_poly->pt[0].y=lm_poly->pt[1].y=lm_poly->pt[2].y=lm_poly->pt[3].y=liq->y;
 	
-	lm_poly->x[0]=lm_poly->x[3]=0.0f;
+	lm_poly->x[0]=lm_poly->x[3]=0;
 	lm_poly->x[1]=lm_poly->x[2]=(int)((float)(liq->rgt-liq->lft)*factor);
-	lm_poly->y[0]=lm_poly->y[1]=0.0f;
+	lm_poly->y[0]=lm_poly->y[1]=0;
 	lm_poly->y[2]=lm_poly->y[3]=(int)((float)(liq->bot-liq->top)*factor);
 }
 
@@ -1005,8 +1009,8 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *me
 
 		// get the alpha
 
-	fx-=floor(fx);
-	fy-=floor(fy);
+	fx-=(float)floor(fx);
+	fy-=(float)floor(fy);
 
 	x=(int)(((float)bitmap->wid)*fx);
 	y=(int)(((float)bitmap->high)*fy);
@@ -1464,9 +1468,9 @@ bool light_map_render_poly(int lm_poly_idx,unsigned char *solid_color,light_map_
 			x_count=x_end-x_start;
 			
 			if (x_count==0) {
-				rpt.x=(pt1.x+pt2.x)*0.5f;
-				rpt.y=(pt1.y+pt2.y)*0.5f;
-				rpt.z=(pt1.z+pt2.z)*0.5f;
+				rpt.x=(pt1.x+pt2.x)>>1;
+				rpt.y=(pt1.y+pt2.y)>>1;
+				rpt.z=(pt1.z+pt2.z)>>1;
 			}
 			else {
 				rpt.x=pt1.x+(((pt2.x-pt1.x)*(x-x_start))/x_count);
@@ -1759,12 +1763,12 @@ bool light_maps_create_process(char *err_str)
 		// create folders if they don't exist
 		
 	sprintf(dir_path,"%s/LightMaps",base_path);
-	mkdir(dir_path,S_IRWXU|S_IRWXG|S_IRWXO);
+	os_create_directory(dir_path);
 	
 	light_map_texture_map_folder_name(map_name);
 	
 	sprintf(dir_path,"%s/LightMaps/%s",base_path,map_name);
-	mkdir(dir_path,S_IRWXU|S_IRWXG|S_IRWXO);
+	os_create_directory(dir_path);
 		
 		// clear the textures and
 		// start mesh-poly and/or liquid setup

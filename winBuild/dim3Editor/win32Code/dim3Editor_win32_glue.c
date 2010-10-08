@@ -134,6 +134,11 @@ void os_get_icon_file_path(char *path)
 	strcpy(path,"dim3 Editor Icons");
 }
 
+void os_create_directory(char *path)
+{
+	CreateDirectory(path,NULL);
+}
+
 void os_get_window_box(d3rect *box)
 {
 	RECT			wbox;

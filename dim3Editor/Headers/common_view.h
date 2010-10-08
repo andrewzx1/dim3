@@ -30,6 +30,7 @@ and can be sold or given away.
 //
 
 extern void os_get_icon_file_path(char *path);
+extern void os_create_directory(char *path);
 extern void os_get_window_box(d3rect *box);
 extern void os_application_quit(void);
 extern void os_select_window(void);

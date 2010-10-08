@@ -100,6 +100,7 @@ extern bool dialog_save_run(void);
 //
 
 extern bool dialog_map_settings_run(void);
+extern bool dialog_map_groups_run(void);
 extern bool dialog_map_movements_run(void);
 extern bool dialog_movement_settings_run(movement_type *movement);
 extern bool dialog_movement_move_settings_run(movement_move_type *move);
