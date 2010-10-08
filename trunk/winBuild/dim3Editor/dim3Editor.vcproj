@@ -251,6 +251,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\light_maps.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\menu.c"
 					>
 				</File>

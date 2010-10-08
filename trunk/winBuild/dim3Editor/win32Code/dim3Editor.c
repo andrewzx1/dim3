@@ -65,9 +65,6 @@ bool import_load_file(char *path,char *ext)
 void auto_generate_map(void)
 {
 }
-void light_maps_clear(void)
-{
-}
 
 
 void dialog_progress_next(void)
@@ -81,6 +78,7 @@ void dialog_progress_end(void)
 }
 int dialog_alert(char *title,char *msg)
 {
+	MessageBox(NULL,title,msg,MB_OK);
 	return(0);
 }
 int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *button_3)
@@ -129,7 +127,7 @@ bool dialog_optimize_run(int *poly_threshold)
 }
 bool dialog_light_map_run(void)
 {
-	return(FALSE);
+	return(TRUE);
 }
 bool dialog_group_settings_run(group_type *group)
 {
