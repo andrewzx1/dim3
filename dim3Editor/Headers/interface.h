@@ -73,7 +73,6 @@ extern void texture_palette_click(d3pnt *pnt,bool dbl_click);
 extern void main_wind_open(void);
 extern void main_wind_close(void);
 extern void main_wind_resize(void);
-extern void main_wind_set_title(char *file_name);
 extern void main_wind_rotate_view(void);
 extern void main_wind_draw(void);
 extern void main_wind_center_position_in_map(void);
