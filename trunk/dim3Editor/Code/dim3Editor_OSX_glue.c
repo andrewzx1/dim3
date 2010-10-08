@@ -59,6 +59,19 @@ void os_application_quit(void)
 	QuitApplicationEventLoop();
 }
 
+void os_select_window(void)
+{
+   SelectWindow(mainwind);
+}
+
+void os_set_title_window(char *title)
+{
+	unsigned char	p_str[256];
+	
+	CopyCStringToPascal(title,p_str);
+	SetWTitle(mainwind,p_str);
+}
+
 void os_set_arrow_cursor(void)
 {
 	SetThemeCursor(kThemeArrowCursor);

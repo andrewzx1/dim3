@@ -61,7 +61,7 @@
 			F5A4320D055602DF002DF965 /* dim3 Editor */,
 		);
 		breakpoints = (
-			2630149C0D73978900564E2C /* main_window.c:407 */,
+			2630149C0D73978900564E2C /* main_window.c:394 */,
 			2614C5D31058891B00B09EAB /* main_window.c:273 */,
 			26184ADD10AA3F9F002C81BE /* light_maps.c:1228 */,
 		);
@@ -145,8 +145,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 308095192;
-			PBXWorkspaceStateSaveDate = 308095192;
+			PBXPerProjectTemplateStateSaveDate = 308198526;
+			PBXWorkspaceStateSaveDate = 308198526;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -292,7 +292,7 @@
 			sepNavWindowFrame = "{{485, 176}, {1078, 758}}";
 		};
 	};
-	2630149C0D73978900564E2C /* main_window.c:407 */ = {
+	2630149C0D73978900564E2C /* main_window.c:394 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -304,7 +304,7 @@
 		functionName = "main_wind_set_3D_projection()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 407;
+		lineNumber = 394;
 		modificationTime = 279593062.084119;
 		originalNumberOfMultipleMatches = 0;
 		state = 0;
@@ -530,10 +530,10 @@
 	};
 	26D8C065125C320400C21D34 /* dim3Editor_OSX_glue.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1011, 1911}}";
-			sepNavSelRange = "{1460, 0}";
-			sepNavVisRange = "{542, 1281}";
-			sepNavWindowFrame = "{{412, 118}, {1026, 910}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1011, 2106}}";
+			sepNavSelRange = "{1655, 0}";
+			sepNavVisRange = "{648, 1216}";
+			sepNavWindowFrame = "{{651, 102}, {1026, 910}}";
 		};
 	};
 	26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {
@@ -634,9 +634,9 @@
 	};
 	F54581BA094F75D200CBE89A /* interface.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1274}}";
-			sepNavSelRange = "{958, 0}";
-			sepNavVisRange = "{141, 1545}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1287}}";
+			sepNavSelRange = "{2157, 0}";
+			sepNavVisRange = "{1301, 1424}";
 			sepNavWindowFrame = "{{403, 130}, {1041, 747}}";
 		};
 	};
@@ -674,9 +674,9 @@
 	};
 	F54CD2090233430101250BB8 /* main_window.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1762, 7098}}";
-			sepNavSelRange = "{398, 0}";
-			sepNavVisRange = "{8278, 967}";
+			sepNavIntBoundsRect = "{{0, 0}, {1762, 6942}}";
+			sepNavSelRange = "{9454, 0}";
+			sepNavVisRange = "{9039, 870}";
 			sepNavWindowFrame = "{{280, 161}, {1041, 747}}";
 		};
 	};

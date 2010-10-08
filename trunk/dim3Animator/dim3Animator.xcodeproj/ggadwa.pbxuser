@@ -26,10 +26,10 @@
 	};
 	0111608E00BE2A8F7F000001 /* model_window.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 12389}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12636}}";
 			sepNavSelRange = "{9922, 0}";
-			sepNavVisRange = "{8871, 1603}";
-			sepNavWindowFrame = "{{244, 228}, {1041, 747}}";
+			sepNavVisRange = "{94, 1623}";
+			sepNavWindowFrame = "{{826, 255}, {1041, 747}}";
 		};
 	};
 	0111609100BE2A8F7F000001 /* text_decode.c */ = {
@@ -130,11 +130,11 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 308095108;
-			PBXWorkspaceStateSaveDate = 308095108;
+			PBXPerProjectTemplateStateSaveDate = 308195674;
+			PBXWorkspaceStateSaveDate = 308195674;
 		};
 		perUserProjectItems = {
-			267EEC84125D1F000027A9BC /* PBXTextBookmark */ = 267EEC84125D1F000027A9BC /* PBXTextBookmark */;
+			266FFEB0125EBD9400E40F28 /* PBXTextBookmark */ = 266FFEB0125EBD9400E40F28 /* PBXTextBookmark */;
 			267EECAC125D28C50027A9BC /* PBXTextBookmark */ = 267EECAC125D28C50027A9BC /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
@@ -271,6 +271,16 @@
 			sepNavWindowFrame = "{{400, 188}, {1041, 747}}";
 		};
 	};
+	266FFEB0125EBD9400E40F28 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	267039F211FBBF4400C8473D /* draw_vertex_boxes.c:203 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
@@ -287,16 +297,6 @@
 		modificationTime = 301711172.606087;
 		originalNumberOfMultipleMatches = 0;
 		state = 1;
-	};
-	267EEC84125D1F000027A9BC /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	267EECAC125D28C50027A9BC /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -414,9 +414,9 @@
 	};
 	F54B630E0C4033E8005CB612 /* info_palette.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1391}}";
-			sepNavSelRange = "{1671, 0}";
-			sepNavVisRange = "{1400, 1142}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1404}}";
+			sepNavSelRange = "{2070, 0}";
+			sepNavVisRange = "{1353, 1092}";
 			sepNavWindowFrame = "{{200, 237}, {1041, 747}}";
 		};
 	};

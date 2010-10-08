@@ -357,19 +357,6 @@ void main_wind_close(void)
 	DisposeWindow(mainwind);
 }
 
-void main_wind_set_title(char *file_name)
-{
-	char			*c,wname[256];
-	unsigned char	p_str[256];
-	
-	strcpy(wname,file_name);
-	c=strchr(wname,'.');
-	if (c!=NULL) *c=0x0;
-	
-	CopyCStringToPascal(wname,p_str);
-	SetWTitle(mainwind,p_str);
-}
-
 /* =======================================================
 
       Resizing
