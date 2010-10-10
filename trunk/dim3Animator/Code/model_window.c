@@ -28,47 +28,15 @@ and can be sold or given away.
 #include "model.h"
 #include "window.h"
 
-WindowRef						model_wind;
+WindowRef						wind;
 EventHandlerRef					model_wind_event;
 EventHandlerUPP					model_wind_upp;
 EventLoopTimerRef				model_timer_event;
 EventLoopTimerUPP				model_timer_upp;
-ControlRef						magnify_slider;
-ControlActionUPP				magnify_proc;
-ControlRef						tool_ctrl[tool_count];
-IconRef							tool_icon_ref[tool_count];
-
-char							tool_icns_file_name[tool_count][64]=
-									{
-										"Tool Textured",
-										"Tool Mesh",
-										"Tool Bones",
-										"Tool Mesh Hit Boxes",
-										"Tool Boxes",
-										"Tool Normals",
-										"Tool Show First Mesh",
-										"Tool Rotate Mode",
-										"Tool Move Mode",
-										"Tool Play"
-									};
-									
-char							tool_tooltip_str[tool_count][64]=
-									{
-										"Show Textured Model",
-										"Show Mesh",
-										"Show Bones",
-										"Show or Hide Hit Boxes",
-										"Show or Hide View Boxes",
-										"Show or Hide Normals",
-										"Always Show First Mesh",
-										"Rotate Bones Mode",
-										"Stretch Bones Mode",
-										"Play Current Animation"
-									};
 
 int								draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
 								shift_x,shift_y,magnify_z,
-								gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size,
+								gl_view_texture_palette_size,
 								play_animate_tick[max_model_blend_animation],
 								play_animate_blend_idx[max_model_blend_animation],
 								play_animate_pose_move_idx[max_model_blend_animation];
@@ -77,12 +45,14 @@ bool							play_animate,play_animate_blend,
 								model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
 								model_bone_drag_on;
 Rect							drag_sel_box;
-AGLContext						ctx,texture_ctx;
+AGLContext						ctx;
 
 display_type					display;
 
 model_type						model;
 model_draw_setup				draw_setup;
+
+extern d3rect					model_box;
 
 extern bool						fileopen;
 extern file_path_setup_type		file_path_setup;
@@ -101,7 +71,7 @@ void model_wind_key(char ch,bool up)
 		
 	if ((ch==0x1B) && (!up)) {
 		vertex_clear_sel_mask(cur_mesh);
-		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		main_wind_draw();
 		return;
 	}
 	
@@ -201,8 +171,10 @@ void model_wind_cursor(unsigned long modifiers)
 ======================================================= */
 
 bool model_wind_control(ControlRef ctrl)
-{
+{/* supergumba -- move to tool_palette
 	int				i,idx;
+	
+	return(FALSE);
 	
 	idx=-1;
 	for (i=0;i!=tool_count;i++) {
@@ -261,65 +233,9 @@ bool model_wind_control(ControlRef ctrl)
 			break;
 	}
 	
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
-	
+	main_wind_draw();
+	*/
 	return(TRUE);
-}
-
-/* =======================================================
-
-      Magnify Slider Action
-      
-======================================================= */
-
-void model_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
-{
-	int				mag_z;
-	
-	mag_z=GetControlValue(ctrl);
-	if (mag_z==magnify_z) return;
-	
-	magnify_z=mag_z;
-	
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
-}
-
-void model_wind_set_magnify(int mag_z)
-{
-	SetControlValue(magnify_slider,mag_z);
-	magnify_z=GetControlValue(magnify_slider);
-}
-
-/* =======================================================
-
-      Window Background Draw
-      
-======================================================= */
-
-void model_wind_draw_background(void)
-{
-	Rect				wbox;
-    RGBColor			blackcolor={0x0,0x0,0x0};
-	GrafPtr				saveport;
-	
-		// get draw box
-		
-	GetPort(&saveport);
-	SetPort(GetWindowPort(model_wind));
-
-	GetWindowPortBounds(model_wind,&wbox);
-	
-		// draw lines
-		
-	RGBForeColor(&blackcolor);
-	
-	MoveTo(wbox.left,tool_button_size);
-	LineTo(wbox.right,tool_button_size);
-
-	MoveTo((wbox.left+(gl_view_x_sz+0)),(wbox.top+tool_height));
-	LineTo((wbox.left+(gl_view_x_sz+0)),(wbox.bottom-info_palette_height));
-
-	SetPort(saveport);
 }
 
 /* =======================================================
@@ -330,26 +246,31 @@ void model_wind_draw_background(void)
 
 void model_wind_resize(void)
 {
-	Rect			box,cbox;
+	Rect			box;
+	GLint			rect[4];	
 	
 		// new model view size
 		
 	aglUpdateContext(ctx);
-	aglUpdateContext(texture_ctx);
 		
-	GetWindowPortBounds(model_wind,&box);
+	GetWindowPortBounds(wind,&box);
 	
-	gl_view_x_sz=(box.right-box.left)-total_list_width;
-	if (gl_view_x_sz<model_view_min_size) gl_view_x_sz=model_view_min_size;
+	rect[0]=0;
+	rect[1]=0;
+	rect[2]=model_box.rx;
+	rect[3]=box.bottom;
+
+	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
+	aglEnable(ctx,AGL_BUFFER_RECT);
 	
-	gl_view_texture_palette_size=(box.right-box.left)/max_model_texture;
-	
-	gl_view_y_sz=(box.bottom-box.top)-(tool_height+gl_view_texture_palette_size+info_palette_height);
+		// resize windows and palettes
+		
+	tool_palette_setup();
+	model_wind_setup();
 
 		// resize controls
 
-	box.left+=gl_view_x_sz;
-	box.bottom-=info_palette_height;
+	box.left=model_box.rx;
 		
 	resize_pose_controls(&box);
 	resize_bone_controls(&box);
@@ -357,22 +278,44 @@ void model_wind_resize(void)
 	resize_mesh_controls(&box);
 	resize_vertex_controls(&box);
 	
-	cbox.left=box.right-250;
-	cbox.right=box.right-5;
-	cbox.bottom=(box.top+tool_height)-5;
-	cbox.top=box.top+5;
-	
-	MoveControl(magnify_slider,cbox.left,cbox.top);
-	SizeControl(magnify_slider,(cbox.right-cbox.left),(cbox.bottom-cbox.top));
-	
 		// redraw
 
-	model_wind_draw_background();
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
-	texture_palette_draw();
-	info_palette_draw();
+	main_wind_draw();
 	
-	DrawControls(model_wind);
+	DrawControls(wind);
+}
+
+/* =======================================================
+
+      Main Window Draw
+      
+======================================================= */
+
+void main_wind_draw(void)
+{
+		// clear gl buffer
+		
+	glDisable(GL_SCISSOR_TEST);
+	
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+		// model
+		
+	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+
+		// palettes
+		
+	tool_palette_draw();
+	texture_palette_draw();
+	
+		// swap GL buffer
+		
+	aglSwapBuffers(ctx);
+	
+		// controls
+		
+	DrawControls(wind);
 }
 
 /* =======================================================
@@ -387,6 +330,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 	unsigned short		btn;
 	long				delta;
 	char				ch;
+	d3pnt				pnt;
 	Point				pt;
 	EventMouseWheelAxis	axis;
 	ControlRef			ctrl;
@@ -398,9 +342,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 			switch (GetEventKind(event)) {
 			
 				case kEventWindowDrawContent:
-					model_wind_draw_background();
-					draw_model_wind_pose(&model,cur_mesh,cur_pose);
-					DrawControls(model_wind);
+					main_wind_draw();
 					return(noErr);
 					
 				case kEventWindowBoundsChanged:
@@ -410,29 +352,35 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 				case kEventWindowClickContentRgn:
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 					
-					SetPort(GetWindowPort(model_wind));
+					SetPort(GetWindowPort(wind));
 					GlobalToLocal(&pt);
+					
+					pnt.x=pt.h;
+					pnt.y=pt.v;
+					
+						// clicking in right side controls
+						
+					if (pt.h>=model_box.rx) return(eventNotHandledErr);
 
 						// clicking in toolbar
 
-					if (pt.v<=tool_height) return(eventNotHandledErr);
+					if (pt.v<=model_box.ty) {
+						tool_palette_click(&pnt);
+						return(noErr);
+					}
 					
 						// clicking in palettes
 						
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					 
-					if ((pt.v>=(tool_height+gl_view_y_sz)) && (pt.v<=(tool_height+gl_view_y_sz+gl_view_texture_palette_size))) {
+					if (pt.v>=model_box.by) {
 						texture_palette_click(pt,(nclick!=1));
 						return(noErr);
 					}
 					
-						// clicking in right side controls
-						
-					if (pt.h>=gl_view_x_sz) return(eventNotHandledErr);
-					
 						// clicking in model view
 						
-					model_wind_offset_click(&pt);
+					pt.v-=model_box.ty;
 					
 					GetEventParameter(event,kEventParamKeyModifiers,typeUInt32,NULL,sizeof(unsigned long),NULL,&modifiers);
 					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
@@ -488,18 +436,20 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 						// are we over model window?
 						
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
-					SetPort(GetWindowPort(model_wind));
+					SetPort(GetWindowPort(wind));
+					
 					GlobalToLocal(&pt);
-					if (pt.v<=tool_height) return(eventNotHandledErr);
-					if (pt.h>=gl_view_x_sz) return(eventNotHandledErr);
+					if (pt.h>=model_box.rx) return(eventNotHandledErr);
+					if (pt.v<=model_box.ty) return(eventNotHandledErr);
+					if (pt.v>=model_box.by) return(eventNotHandledErr);
 					
 						// zoom
 						
 					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
 					if (axis!=kEventMouseWheelAxisY) return(noErr);
 					GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
-					model_wind_set_magnify(magnify_z+(delta*20));
-					draw_model_wind_pose(&model,cur_mesh,cur_pose);
+					magnify_z+=(delta*20);
+					main_wind_draw();
 					return(noErr);
 					
 			}
@@ -640,7 +590,7 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 	if (!play_animate) {
 		if (model_view_reset) {
 			model_view_reset=FALSE;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 		}
 		return;
 	}
@@ -648,7 +598,7 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 		// if no current animation, just do no pose for animated textures
 		
 	if ((cur_animate==-1) && (!play_animate_blend)) {
-		draw_model_wind_pose(&model,cur_mesh,-1);
+		main_wind_draw();
 		return;
 	}
 	
@@ -673,7 +623,7 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 		
 		// global draw setup
 	
-	draw_model_wind(&model,cur_mesh,&draw_setup);
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -718,12 +668,10 @@ IconRef main_wind_load_icon_ref(char *name)
 
 void model_wind_open(void)
 {
-	int							n;
 	Rect						wbox,box;
 	GLint						attrib[]={AGL_RGBA,AGL_DOUBLEBUFFER,AGL_DEPTH_SIZE,16,AGL_ALL_RENDERERS,AGL_NONE};
 	AGLPixelFormat				pf;
-	ControlButtonContentInfo	icon_info;
-	HMHelpContentRec			tag;
+	GLint						rect[4];
 	EventTypeSpec	wind_events[]={	{kEventClassWindow,kEventWindowDrawContent},
 									{kEventClassWindow,kEventWindowBoundsChanged},
 									{kEventClassWindow,kEventWindowClickContentRgn},
@@ -738,109 +686,43 @@ void model_wind_open(void)
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 	
 	SetRect(&box,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
-	CreateNewWindow(kDocumentWindowClass,kWindowStandardDocumentAttributes|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&box,&model_wind);
-	SetWTitle(model_wind,"\pModel");
-	ShowWindow(model_wind);
+	CreateNewWindow(kDocumentWindowClass,kWindowStandardDocumentAttributes|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&box,&wind);
+	SetWTitle(wind,"\pModel");
+	ShowWindow(wind);
 	
 		// set font
 		
-	SetPort(GetWindowPort(model_wind));
+	SetPort(GetWindowPort(wind));
 	TextFont(FMGetFontFamilyFromName("\pMonaco"));
 	TextSize(10);
 	
 		// setup and cursors
 		
-	cur_animate=-1;
-	model_wind_play(FALSE,FALSE);
-	
 	shift_on=FALSE;
 	rotate_on=FALSE;
 	size_on=FALSE;
 	drag_sel_on=FALSE;
 	
+	magnify_z=3000;
+	
 		// get gl sizes
 		
-	GetWindowPortBounds(model_wind,&box);
+	GetWindowPortBounds(wind,&box);
 	
-	gl_view_x_sz=(wbox.right-wbox.left)-total_list_width;
-	if (gl_view_x_sz<model_view_min_size) gl_view_x_sz=model_view_min_size;
-	
+	// supergumba -- get rid of this!
 	gl_view_texture_palette_size=(wbox.right-wbox.left)/max_model_texture;
 	
-	gl_view_y_sz=(box.bottom-box.top)-(tool_height+gl_view_texture_palette_size+info_palette_height);
-	
-		// toolbar buttons
-			
-	SetRect(&box,0,0,tool_button_size,tool_button_size);
-	
-	for (n=0;n!=tool_count;n++) {
-	
-			// create button
-			
-		tool_icon_ref[n]=main_wind_load_icon_ref(tool_icns_file_name[n]);
-		icon_info.contentType=kControlContentIconRef;
-		icon_info.u.iconRef=tool_icon_ref[n];
-			
-		CreateBevelButtonControl(model_wind,&box,NULL,kControlBevelButtonSmallBevel,kControlBehaviorToggles,&icon_info,0,0,0,&tool_ctrl[n]);
-		SetBevelButtonGraphicAlignment(tool_ctrl[n],kControlBevelButtonAlignCenter,0,0);
-	
-			// create tooltip
-			
-		tag.version=kMacHelpVersion;
-		tag.tagSide=kHMDefaultSide;
-		SetRect(&tag.absHotRect,0,0,0,0);
-		tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-		tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,tool_tooltip_str[n],kCFStringEncodingMacRoman);
-		tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
-		
-		HMSetControlHelpContent(tool_ctrl[n],&tag);
 
-			// next button position
-			
-		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==4) || (n==5) || (n==6) || (n==8)) OffsetRect(&box,5,0);
-	}
-	
-		// magnify slider
-		
-	GetWindowPortBounds(model_wind,&box);
-
-	box.left=box.right-250;
-	box.right-=5;
-	box.bottom=(box.top+tool_height)-5;
-	box.top+=5;
-	
-	magnify_proc=NewControlActionUPP(model_wind_magnify_action);
-	CreateSliderControl(model_wind,&box,0,0,4000,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
-	
-	model_wind_set_magnify(3000);
-		
 		// dragging for bones window
 		
-	SetAutomaticControlDragTrackingEnabledForWindow(model_wind,TRUE);
-	
-		// controls
-		
-	GetWindowPortBounds(model_wind,&box);
-
-	box.left+=gl_view_x_sz;
-	box.bottom-=info_palette_height;
-	
-	start_pose_controls(model_wind,&box);
-	start_bone_controls(model_wind,&box);
-    start_animate_controls(model_wind,&box);
-	start_mesh_controls(model_wind,&box);
-	start_vertex_controls(model_wind,&box);
+	SetAutomaticControlDragTrackingEnabledForWindow(wind,TRUE);
 	
 		// model OpenGL contexts
 		
 	pf=aglChoosePixelFormat(NULL,0,attrib);
 	
 	ctx=aglCreateContext(pf,NULL);
-	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(model_wind));
-	
-	texture_ctx=aglCreateContext(pf,ctx);
-	aglSetDrawable(texture_ctx,(AGLDrawable)GetWindowPort(model_wind));
+	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(wind));
 	
 	aglSetCurrentContext(ctx);
 	
@@ -851,15 +733,48 @@ void model_wind_open(void)
 	glClearColor(0.9f,0.9f,0.9f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
-		// get the controls draw
+		// setup models and palettes
+		
+	tool_palette_initialize();
+	tool_palette_setup();
+	
+	model_wind_setup();
+	
+		// box from the controls
+		
+	GetWindowPortBounds(wind,&box);
+		
+	rect[0]=0;
+	rect[1]=0;
+	rect[2]=model_box.rx;
+	rect[3]=box.bottom;
 
-	DrawControls(model_wind);
-	model_wind_draw_background();
+	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
+	aglEnable(ctx,AGL_BUFFER_RECT);
+	
+		// controls
+		
+	GetWindowPortBounds(wind,&box);
+
+	box.left+=model_box.rx;
+	
+	start_pose_controls(wind,&box);
+	start_bone_controls(wind,&box);
+    start_animate_controls(wind,&box);
+	start_mesh_controls(wind,&box);
+	start_vertex_controls(wind,&box);
+
+	DrawControls(wind);
+	
+		// animation setup
+		
+	cur_animate=-1;
+	model_wind_play(FALSE,FALSE);
 
 		// events
 		
 	model_wind_upp=NewEventHandlerUPP(model_wind_event_handler);
-	InstallEventHandler(GetWindowEventTarget(model_wind),model_wind_upp,GetEventTypeCount(wind_events),wind_events,NULL,&model_wind_event);
+	InstallEventHandler(GetWindowEventTarget(wind),model_wind_upp,GetEventTypeCount(wind_events),wind_events,NULL,&model_wind_event);
 		
 	model_timer_upp=NewEventLoopTimerUPP(model_wind_timer);
 	InstallEventLoopTimer(GetCurrentEventLoop(),0,0.01,model_timer_upp,NULL,&model_timer_event);
@@ -867,8 +782,6 @@ void model_wind_open(void)
 
 void model_wind_close(void)
 {
-	int				n;
-	
 		// remove events
 		
 	RemoveEventLoopTimer(model_timer_event);
@@ -884,28 +797,21 @@ void model_wind_close(void)
     end_animate_controls();
     end_mesh_controls();
 	end_vertex_controls();
-	
-	DisposeControl(magnify_slider);
-	DisposeControlActionUPP(magnify_proc);
-		
-	for (n=0;n!=tool_count;n++) {
-		DisposeControl(tool_ctrl[n]);
-		ReleaseIconRef(tool_icon_ref[n]);
-	}
 
+		// close tool palette
+		
+	tool_palette_shutdown();
+	
 		// close OpenGL contexts
 		
 	aglSetCurrentContext(NULL);
-	
-	aglSetDrawable(texture_ctx,NULL);
-	aglDestroyContext(texture_ctx);
 	
 	aglSetDrawable(ctx,NULL);
 	aglDestroyContext(ctx);
 	
 		// close window
 
-	DisposeWindow(model_wind);
+	DisposeWindow(wind);
 }
 
 /* =======================================================
@@ -925,16 +831,9 @@ void model_wind_offset_click(Point *pt)
       
 ======================================================= */
 
-void model_wind_set_title(char *title)
-{
-	unsigned char		p_str[256];
-	
-	CopyCStringToPascal(title,p_str);
-	SetWTitle(model_wind,p_str);
-}
-
 void model_wind_reset_tools(void)
 {
+/* supergumba -- delete and move
 	SetControlValue(tool_ctrl[0],display.texture?1:0);
 	SetControlValue(tool_ctrl[1],display.mesh?1:0);
 	SetControlValue(tool_ctrl[2],display.bone?1:0);
@@ -950,5 +849,6 @@ void model_wind_reset_tools(void)
 	SetControlValue(tool_ctrl[8],(display.drag_bone_mode==drag_bone_mode_stretch)?1:0);
 
 	SetControlValue(tool_ctrl[9],play_animate?1:0);
+*/
 }
 

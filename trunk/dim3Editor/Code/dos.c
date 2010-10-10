@@ -34,8 +34,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern WindowRef				mainwind;
-
 extern file_path_setup_type		file_path_setup;
 extern setup_type				setup;
 extern editor_state_type		state;
@@ -56,7 +54,7 @@ void file_reset_windows(void)
 	
 		// redraw
 	
-    tool_palette_default();
+    tool_default();
 	    
 	menu_update_view();
 	menu_fix_enable();

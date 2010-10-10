@@ -49,11 +49,11 @@ extern void tool_palette_setup(void);
 extern void tool_palette_draw(void);
 extern void tool_palette_click(d3pnt *pnt);
 
-extern void tool_palette_default(void);
-extern void tool_palette_switch_vertex_mode(void);
-extern void tool_palette_switch_drag_mode(void);
-extern void tool_palette_switch_grid_mode(void);
-extern void tool_palette_switch_node_mode(void);
+extern void tool_default(void);
+extern void tool_switch_vertex_mode(void);
+extern void tool_switch_drag_mode(void);
+extern void tool_switch_grid_mode(void);
+extern void tool_switch_node_mode(void);
 
 //
 // texture palette

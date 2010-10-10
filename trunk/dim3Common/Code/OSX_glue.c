@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: Common
 Author: Brian Barnes
  Usage: OS X Glue Code
 
@@ -25,11 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "interface.h"
-#include "common_view.h"
-#include "walk_view.h"
-
-extern WindowRef				mainwind;
+extern WindowRef				wind;
+extern AGLContext				ctx;
 
 /* =======================================================
 
@@ -42,11 +39,16 @@ void os_get_icon_file_path(char *path)
 	strcpy(path,"Contents/Resources");
 }
 
+void os_create_directory(char *path)
+{
+   mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
+}
+
 void os_get_window_box(d3rect *box)
 {
 	Rect			wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	GetWindowPortBounds(wind,&wbox);
 
 	box->lx=wbox.left;
 	box->rx=wbox.right;
@@ -61,7 +63,7 @@ void os_application_quit(void)
 
 void os_select_window(void)
 {
-   SelectWindow(mainwind);
+   SelectWindow(wind);
 }
 
 void os_set_title_window(char *title)
@@ -69,7 +71,12 @@ void os_set_title_window(char *title)
 	unsigned char	p_str[256];
 	
 	CopyCStringToPascal(title,p_str);
-	SetWTitle(mainwind,p_str);
+	SetWTitle(wind,p_str);
+}
+
+void os_swap_gl_buffer(void)
+{
+	aglSwapBuffers(ctx);
 }
 
 void os_set_arrow_cursor(void)

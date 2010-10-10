@@ -38,8 +38,6 @@ extern int						cur_mesh,cur_pose,cur_bone;
 extern bool						model_view_reset;
 extern model_type				model;
 
-extern WindowRef				model_wind;
-
 /* =======================================================
 
       Set Pose List

@@ -50,11 +50,9 @@ int walk_view_get_grid(void)
 {
 	switch (state.grid_mode) {
 		case grid_mode_small:
-			return(map_enlarge);
-		case grid_mode_medium:
-			return(map_enlarge<<1);
+			return(map_enlarge<<2);
 		case grid_mode_large:
-			return(map_enlarge<<3);
+			return(map_enlarge<<4);
 	}
 
 	return(1);

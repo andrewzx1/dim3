@@ -27,17 +27,41 @@ and can be sold or given away.
 
 #include "model.h"
 
+d3rect						model_box;
+
 extern int					cur_mesh,cur_bone,shift_x,shift_y,magnify_z,
-							gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size;
+							gl_view_texture_palette_size,tool_pixel_sz;
 extern float				ang_y,ang_x;
 extern bool					fileopen,play_animate,model_bone_drag_on,drag_sel_on;
 extern Rect					drag_sel_box;
 extern AGLContext			ctx;
-extern WindowRef			model_wind;
+extern WindowRef			wind;
 
 extern display_type			display;
 
 extern model_draw_setup		draw_setup;
+
+/* =======================================================
+
+      Model Window Setup
+      
+======================================================= */
+
+void model_wind_setup(void)
+{
+	int				x_sz;
+	d3rect			wbox;
+	
+	os_get_window_box(&wbox);
+	
+	x_sz=(wbox.rx-wbox.lx)-total_list_width;
+	if (x_sz<model_view_min_size) x_sz=model_view_min_size;
+	
+	model_box.lx=0;
+	model_box.rx=model_box.lx+x_sz;
+	model_box.ty=tool_pixel_sz;
+	model_box.by=(wbox.by-wbox.ty)-(tool_pixel_sz+((wbox.rx-wbox.lx)/max_model_texture));	// supergumba -- replace with better textures
+}
 
 /* =======================================================
 
@@ -49,34 +73,23 @@ void draw_model_gl_setup(model_type *model,int z_offset)
 {
 	int				yoff,sz;
 	float			ratio;
-	Rect			wbox;
-	GLint			rect[4];
+	d3rect			wbox;
 	
-		// model viewport
+		// viewport setup
 		
-	aglSetCurrentContext(ctx);
-		
-	GetWindowPortBounds(model_wind,&wbox);
-	
-	rect[0]=0;
-	rect[1]=info_palette_height+gl_view_texture_palette_size;
-	rect[2]=gl_view_x_sz;
-	rect[3]=gl_view_y_sz;
+	os_get_window_box(&wbox);
 
-	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
-	aglEnable(ctx,AGL_BUFFER_RECT);
-	
-	glViewport(0,0,gl_view_x_sz,gl_view_y_sz);
-	
-	glScissor(0,0,gl_view_x_sz,gl_view_y_sz);
 	glEnable(GL_SCISSOR_TEST);
-	
+	glScissor(model_box.lx,(wbox.by-model_box.by),(model_box.rx-model_box.lx),(model_box.by-model_box.ty));
+
+	glViewport(model_box.lx,(wbox.by-model_box.by),(model_box.rx-model_box.lx),(model_box.by-model_box.ty));
+
 		// projection
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	ratio=(float)gl_view_x_sz/(float)gl_view_y_sz;
+	ratio=(float)(model_box.rx-model_box.lx)/(float)(model_box.by-model_box.ty);
 	gluPerspective(45.0,ratio,(float)(100+z_offset),(float)(25000-z_offset));
 	glScalef(-1.0f,-1.0f,-1.0f);
 
@@ -139,19 +152,13 @@ void draw_model_setup_bones_vertexes(model_type *model,int mesh_idx,model_draw_s
 
 void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
+	int		y_sz;
+	
+	if (!fileopen) return;
+
 		// setup transformation to fit model in middle of screen
 		
 	draw_model_gl_setup(model,0);
-
-		// clear the buffer
-		
-	glClearColor(0.9,0.9,0.9,0);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-	if (!fileopen) {
-		aglSwapBuffers(ctx);
-		return;
-	}
 	
 		// draw memory
 		
@@ -197,21 +204,21 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	if (drag_sel_on) {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0,gl_view_x_sz,0,gl_view_y_sz,-1,1);
+		glOrtho(model_box.lx,model_box.ty,model_box.rx,model_box.by,-1,1);
 	
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+		
+		y_sz=0;	// supergumba -- TEMPORARY!
 	
 		glColor4f(0.8,0.8,0.8,0.4);
 		glBegin(GL_POLYGON);
-		glVertex3i(drag_sel_box.left,(gl_view_y_sz-drag_sel_box.top),-0.1);
-		glVertex3i(drag_sel_box.right,(gl_view_y_sz-drag_sel_box.top),-0.1);
-		glVertex3i(drag_sel_box.right,(gl_view_y_sz-drag_sel_box.bottom),-0.1);
-		glVertex3i(drag_sel_box.left,(gl_view_y_sz-drag_sel_box.bottom),-0.1);
+		glVertex3i(drag_sel_box.left,(y_sz-drag_sel_box.top),-0.1);
+		glVertex3i(drag_sel_box.right,(y_sz-drag_sel_box.top),-0.1);
+		glVertex3i(drag_sel_box.right,(y_sz-drag_sel_box.bottom),-0.1);
+		glVertex3i(drag_sel_box.left,(y_sz-drag_sel_box.bottom),-0.1);
 		glEnd();
 	}
-   
-	aglSwapBuffers(ctx);
 	
 		// free memory
 		

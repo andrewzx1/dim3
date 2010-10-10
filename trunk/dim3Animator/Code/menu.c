@@ -45,8 +45,6 @@ extern display_type				display;
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 
-extern WindowRef				model_wind;
-
 extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
@@ -108,7 +106,7 @@ void windows_start(void)
 	model_wind_open();
 	model_wind_reset_tools();
 	
-	SelectWindow(model_wind);
+	os_select_window();
 }
 
 void windows_end(void)
@@ -173,8 +171,6 @@ bool save_binary(void)
 
 void reset_model_open(void)
 {
-	CFStringRef						cfstr;
-	
     ang_y=180;
 	ang_x=0;
 	shift_x=shift_y=0;
@@ -191,13 +187,10 @@ void reset_model_open(void)
 	cur_animate=-1;
 	if (model.nanimate!=0) cur_animate=0;
 	
-	cfstr=CFStringCreateWithCString(kCFAllocatorDefault,filename,kCFStringEncodingMacRoman);
-	SetWindowTitleWithCFString(model_wind,cfstr);
-	CFRelease(cfstr);
+	os_set_title_window(filename);
 	
-    draw_model_wind_pose(&model,cur_mesh,cur_pose);
-    texture_palette_draw();
-    info_palette_draw();
+    main_wind_draw();
+
     reset_pose_list();
 	reset_bone_list();
     reset_animate_list();
@@ -344,9 +337,7 @@ void import_mesh_obj(void)
 	reset_pose_list();
 	reset_bone_list();
 	
-    draw_model_wind_pose(&model,cur_mesh,cur_pose);
-    texture_palette_draw();
-    info_palette_draw();
+	main_wind_draw();
 }
 
 void import_mesh_lightwave(void)
@@ -379,9 +370,7 @@ void import_mesh_lightwave(void)
 	reset_pose_list();
 	reset_bone_list();
 	
-    draw_model_wind_pose(&model,cur_mesh,cur_pose);
-    texture_palette_draw();
-    info_palette_draw();
+    main_wind_draw();
 }
 
 void import_mesh_c4d_xml(void)
@@ -414,9 +403,7 @@ void import_mesh_c4d_xml(void)
 	reset_pose_list();
 	reset_bone_list();
 	
-    draw_model_wind_pose(&model,cur_mesh,cur_pose);
-    texture_palette_draw();
-    info_palette_draw();
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -450,9 +437,8 @@ void insert_mesh_dim3_model(void)
 	reset_pose_list();
 	reset_bone_list();
 	reset_animate_list();
-    draw_model_wind_pose(&model,cur_mesh,cur_pose);
-    texture_palette_draw();
-    info_palette_draw();
+	
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -515,13 +501,13 @@ void prepare_model(void)
 
 void redraw_model(void)
 {
-    draw_model_wind_pose(&model,cur_mesh,cur_pose);
-    info_palette_draw();
-	reset_vertex_tab();
+ 	reset_vertex_tab();
 	reset_pose_list();
 	reset_bone_list();
     reset_animate_list();
 	reset_mesh_list();
+	
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -611,9 +597,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 
 		case kCommandUndo:
 			undo_run();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
-			texture_palette_draw();
-			info_palette_draw();
+			main_wind_draw();
 			return(noErr);
 			
 			// --------------------------------
@@ -705,37 +689,37 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 		case kCommandFront:
 			ang_y=180;
 			ang_x=0;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandLeft:
 			ang_y=270;
 			ang_x=0;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandRight:
 			ang_y=90;
 			ang_x=0;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandBack:
 			ang_y=0;
 			ang_x=0;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandTop:
 			ang_y=0;
 			ang_x=270;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandBottom:
 			ang_y=0;
 			ang_x=90;
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 						
 			// --------------------------------
@@ -755,7 +739,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 			cur_mesh=idx;
 
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			reset_mesh_list();
 			return(noErr);
 			
@@ -771,7 +755,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			cur_mesh=idx;
 
 			reset_mesh_list();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandCopyMesh:
@@ -779,7 +763,6 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			if (idx==-1) return(noErr);
 			if (idx!=cur_mesh) model_mesh_copy(&model,idx,cur_mesh);
 			texture_palette_draw();
-			info_palette_draw();
 			redraw_model();
 			reset_mesh_list();
 			reset_vertex_tab();
@@ -789,7 +772,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			model_mesh_delete(&model,cur_mesh);
 			cur_mesh=0;
 			reset_mesh_list();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandImportOBJ:
@@ -878,13 +861,13 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandVertexSelectAll:
 			vertex_set_sel_mask_all(cur_mesh);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			hilite_vertex_rows();
 			return(noErr);
 			
 		case kCommandVertexSelectNotAttached:
 			vertex_set_sel_mask_no_bone(cur_mesh);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			hilite_vertex_rows();
 			return(noErr);
 			
@@ -892,54 +875,53 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			if (!dialog_nudge_rotate_run(&x,&z,&y,"NudgePick",0)) return(noErr);
 			vertex_move_sel_vertexes(cur_mesh,x,y,z);
 			model_calculate_parents(&model);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandVertexScale:
 			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(noErr);
 			vertex_scale_sel_vertexes(cur_mesh,fx,fy,fz);
 			model_calculate_parents(&model);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandVertexRotate:
 			if (!dialog_nudge_rotate_run(&x,&z,&y,"RotatePick",0)) return(noErr);
 			vertex_rotate_sel_vertexes(cur_mesh,(float)x,(float)y,(float)z);
 			model_calculate_parents(&model);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandVertexInvertNormals:
 			vertex_invert_normal_sel_vertexes(cur_mesh);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 		
 		case kCommandVertexClearBones:
 			vertex_clear_bone_attachments_sel_vertexes(cur_mesh);
 			reset_vertex_tab();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 				
 		case kCommandVertexHideSelected:
 			vertex_hide_mask_set_sel_vertexes(cur_mesh);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandVertexHideNonSelected:
 			vertex_hide_mask_set_non_sel_vertexes(cur_mesh);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandVertexShowAll:
 			vertex_hide_mask_show_all_vertexes(cur_mesh);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandVertexDelete:
 			vertex_delete_sel_vertex(cur_mesh);
 			model_calculate_parents(&model);
 			texture_palette_draw();
-			info_palette_draw();
 			redraw_model();
 			reset_vertex_tab();
 			return(noErr);
@@ -967,14 +949,14 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 
 			reset_pose_list();
 			reset_bone_list();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandSetBone:
 			if (!dialog_set_vertex_bone_run(&major_bone_idx,&minor_bone_idx,&bone_factor)) return(noErr);
 			vertex_set_sel_vertex_to_bone(cur_mesh,major_bone_idx,minor_bone_idx,bone_factor);
 			reset_vertex_tab();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandNudgeBone:
@@ -983,7 +965,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			if (!dialog_bone_nudge_run(&x,&z,&y,&nudge_children,&nudge_vertexes)) return(noErr);
 			model_bone_move(&model,cur_bone,x,y,z,nudge_children,nudge_vertexes);
 			model_calculate_parents(&model);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandDeleteBone:
@@ -999,7 +981,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 		case kCommandSelectVertexNearBone:
 			if (cur_bone!=-1) return(noErr);
 			vertex_set_sel_mask_near_bone(cur_mesh,cur_bone,0.10);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 			// --------------------------------
@@ -1027,7 +1009,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 
 			reset_pose_list();
 			reset_bone_list();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandDupPose:
@@ -1046,7 +1028,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 
 			reset_pose_list();
 			reset_bone_list();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandPreviousPose:
@@ -1156,7 +1138,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			}
 
 			reset_animate_list();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandDupAnimate:
@@ -1177,7 +1159,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			}
 
 			reset_animate_list();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
             
 		case kCommandDeleteAnimate:
@@ -1192,7 +1174,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 				cur_animate=0;
 			}
 			reset_animate_list();
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
+			main_wind_draw();
 			return(noErr);
 			
 		case kCommandResetTimeAnimate:
