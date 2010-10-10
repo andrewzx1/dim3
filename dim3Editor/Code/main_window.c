@@ -36,7 +36,7 @@ extern setup_type		setup;
 
 d3rect					main_wind_box;
 
-WindowRef				mainwind;
+WindowRef				wind;
 EventHandlerRef			main_wind_event;
 EventHandlerUPP			main_wind_upp;
 
@@ -70,7 +70,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 			
 				case kEventWindowDrawContent:
 					main_wind_draw();
-					DrawControls(mainwind);
+					DrawControls(wind);
 					return(noErr);
 					
                 case kEventWindowCursorChange:
@@ -84,10 +84,10 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 				case kEventWindowClickContentRgn:
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 
-                    SetPort(GetWindowPort(mainwind));
+                    SetPort(GetWindowPort(wind));
                     GlobalToLocal(&pt);
 					
-					GetWindowPortBounds(mainwind,&wbox);
+					GetWindowPortBounds(wind,&wbox);
 					
 					dpt.x=pt.h;
 					dpt.y=pt.v;
@@ -97,7 +97,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
 					
 					if (btn==kEventMouseButtonTertiary) {
-						tool_palette_switch_drag_mode();
+						tool_switch_drag_mode();
 						return(noErr);
 					}
 					
@@ -168,7 +168,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 			
 				case kEventMouseWheelMoved:
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
-					SetPort(GetWindowPort(mainwind));
+					SetPort(GetWindowPort(wind));
                     GlobalToLocal(&pt);
 					
 					dpt.x=pt.h;
@@ -202,7 +202,7 @@ void main_wind_setup(void)
 	
 		// setup view box
 		
-	GetWindowPortBounds(mainwind,&wbox);
+	GetWindowPortBounds(wind,&wbox);
 
 	main_wind_box.lx=wbox.left;
 	main_wind_box.rx=wbox.right;
@@ -269,13 +269,13 @@ void main_wind_open(void)
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 
 	SetRect(&wbox,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
-	CreateNewWindow(kDocumentWindowClass,kWindowCloseBoxAttribute|kWindowCollapseBoxAttribute|kWindowFullZoomAttribute|kWindowResizableAttribute|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&wbox,&mainwind);
+	CreateNewWindow(kDocumentWindowClass,kWindowCloseBoxAttribute|kWindowCollapseBoxAttribute|kWindowFullZoomAttribute|kWindowResizableAttribute|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&wbox,&wind);
 
 		// show window before additional setup
 		
-	ShowWindow(mainwind);
+	ShowWindow(wind);
    
-	SetPort(GetWindowPort(mainwind));
+	SetPort(GetWindowPort(wind));
 		
 	TextFont(FMGetFontFamilyFromName("\pMonaco"));
 	TextSize(10);
@@ -297,7 +297,7 @@ void main_wind_open(void)
 	
 	glEnable(GL_DEPTH_TEST);
 	
-	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(mainwind));
+	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(wind));
 
 		// setup view sizes
 	
@@ -326,7 +326,7 @@ void main_wind_open(void)
         // events
     
 	main_wind_upp=NewEventHandlerUPP(main_wind_event_callback);
-	InstallEventHandler(GetWindowEventTarget(mainwind),main_wind_upp,GetEventTypeCount(wind_events),wind_events,NULL,&main_wind_event);
+	InstallEventHandler(GetWindowEventTarget(wind),main_wind_upp,GetEventTypeCount(wind_events),wind_events,NULL,&main_wind_event);
 	
 		// start palettes
 		
@@ -354,7 +354,7 @@ void main_wind_close(void)
         
 	RemoveEventHandler(main_wind_event);
 	DisposeEventHandlerUPP(main_wind_upp);
-	DisposeWindow(mainwind);
+	DisposeWindow(wind);
 }
 
 /* =======================================================
@@ -371,9 +371,9 @@ void main_wind_resize(void)
 		// erase window
 		
 	GetPort(&saveport);
-	SetPort(GetWindowPort(mainwind));
+	SetPort(GetWindowPort(wind));
     
-	GetWindowPortBounds(mainwind,&wbox);
+	GetWindowPortBounds(wind,&wbox);
 	EraseRect(&wbox);
 	
 	SetPort(saveport);
@@ -386,7 +386,7 @@ void main_wind_resize(void)
 	texture_palette_setup();
 	
 	main_wind_setup();
-	DrawControls(mainwind);
+	DrawControls(wind);
 
 	main_wind_draw();
 }
@@ -490,22 +490,22 @@ void main_wind_key_down(char ch)
 		// special tool keys
 		
 	if ((ch=='q') || (ch=='Q')) {
-		tool_palette_switch_vertex_mode();
+		tool_switch_vertex_mode();
 		return;
 	}
 	
 	if ((ch=='w') || (ch=='W')) {
-		tool_palette_switch_drag_mode();
+		tool_switch_drag_mode();
 		return;
 	}
 	
 	if ((ch=='e') || (ch=='E')) {
-		tool_palette_switch_grid_mode();
+		tool_switch_grid_mode();
 		return;
 	}
 	
 	if ((ch=='r') || (ch=='R')) {
-		tool_palette_switch_node_mode();
+		tool_switch_node_mode();
 		return;
 	}
 	

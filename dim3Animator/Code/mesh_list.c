@@ -38,8 +38,6 @@ extern int						cur_mesh,gl_view_texture_palette_size;
 extern bool						model_view_reset;
 extern model_type				model;
 
-extern WindowRef				model_wind;
-
 /* =======================================================
 
       Set Mesh List

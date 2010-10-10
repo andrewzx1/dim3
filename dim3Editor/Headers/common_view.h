@@ -26,32 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// os routines
-//
-
-extern void os_get_icon_file_path(char *path);
-extern void os_create_directory(char *path);
-extern void os_get_window_box(d3rect *box);
-extern void os_application_quit(void);
-extern void os_select_window(void);
-extern void os_set_title_window(char *title);
-extern void os_set_arrow_cursor(void);
-extern void os_set_wait_cursor(void);
-extern void os_set_hand_cursor(void);
-extern void os_set_drag_cursor(void);
-extern void os_set_resize_cursor(void);
-extern void os_menu_enable_item(int menu_idx,int item_idx,bool enable);
-extern void os_menu_check_item(int menu_idx,int item_idx,bool check);
-extern void os_menu_redraw(void);
-extern bool os_key_space_down(void);
-extern bool os_key_option_down(void);
-extern bool os_key_control_down(void);
-extern bool os_key_command_down(void);
-extern bool os_key_shift_down(void);
-extern bool os_button_down(void);
-extern bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box);
-
-//
 // selection routines
 //
 

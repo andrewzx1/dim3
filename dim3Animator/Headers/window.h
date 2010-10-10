@@ -25,22 +25,24 @@ and can be sold or given away.
  
 *********************************************************************/
 
+extern void main_wind_draw(void);
+
 extern void model_wind_open(void);
 extern void model_wind_close(void);
 extern void model_wind_offset_click(Point *pt);
-extern void model_wind_set_title(char *title);
 extern void model_wind_reset_tools(void);
 extern void model_wind_switch_mesh_mode(void);
 extern void model_wind_reset_modifiers(void);
 
-extern void model_wind_set_magnify(int mag_z);
-
 extern void click_model_wind(Point pt,unsigned long modifiers);
+
+extern void tool_palette_initialize(void);
+extern void tool_palette_shutdown(void);
+extern void tool_palette_setup(void);
+extern void tool_palette_draw(void);
 
 extern void texture_palette_draw(void);
 extern void texture_palette_click(Point pt,bool dblclick);
-
-extern void info_palette_draw(void);
 
 extern void add_db_column(ControlRef ctrl,char *name,int idx,int type,int sz,int spot);
 

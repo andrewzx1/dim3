@@ -41,8 +41,6 @@ extern int						cur_mesh,cur_pose,cur_bone;
 extern bool						model_view_reset;
 extern model_type				model;
 
-extern WindowRef				model_wind;
-
 /* =======================================================
 
       Create Bone Children ID
@@ -356,7 +354,7 @@ static pascal Boolean bone_list_drag_receive_proc(ControlRef browser,DragReferen
 	model_calculate_parents(&model);
 	reset_bone_list();
 	
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	main_wind_draw();
 	
 	return(TRUE);
 }

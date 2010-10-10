@@ -78,7 +78,7 @@ void dialog_hit_box_settings_load(void)
 	
 	DrawControls(dialog_hit_box_settings_wind);
 	
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	main_wind_draw();
 }
 
 void dialog_hit_box_settings_save(void)

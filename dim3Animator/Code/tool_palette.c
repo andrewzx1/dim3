@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Animator
 Author: Brian Barnes
  Usage: Tool Palette
 
@@ -26,17 +26,10 @@ and can be sold or given away.
 *********************************************************************/
 
 #ifdef D3_PCH
-	#include "dim3editor.h"
+	#include "dim3animator.h"
 #endif
 
-#include "walk_view.h"
-#include "interface.h"
-#include "dialog.h"
-#include "common_view.h"
-
-extern map_type					map;
-extern editor_state_type		state;
-extern setup_type				setup;
+extern model_type				model;
 extern file_path_setup_type		file_path_setup;
 
 int								tool_pixel_sz,tool_palette_push_idx;
@@ -46,46 +39,21 @@ bitmap_type						tool_bitmaps[tool_count];
 
 char							tool_bitmaps_file_name[tool_count][64]=
 									{
-										"Tool Move Points",
-										"Tool Move Points Together",
-										"Tool Snap Points",
-										"Tool Free Look",
-										"Tool Toggle Mode",
-										"Tool Edit Mesh",
+										"Tool Textured",
+										"Tool Mesh",
+										"Tool Bones",
+										"Tool Hit Boxes",
 										"Tool Edit Polygons",
 										"Tool Edit Vertexes",
-										"Tool Combine Meshes",
-										"Tool Split Mesh",
-										"Tool Tesselate Mesh",
-										"Tool No Grid",
-										"Tool Small Grid",
-										"Tool Large Grid",
-										"Tool Auto-Texture Mesh",
+										"Tool Boxes",
+										"Tool Normals",
+										"Tool Show First Mesh",
 										"Tool Rotate Mode",
 										"Tool Move Mode",
-										"Tool Node Select",
-										"Tool Node Link",
-										"Tool Node Remove Link",
-										"Tool Normals",
-										"Tool Cull",
-										"Tool Edit Map Script",
-										"Tool Run Map",
-										"",
-										"Tool Spot",
-										"Tool Light",
-										"Tool Sound",
-										"Tool Particle",
-										"Tool Scenery",
-										"Tool Node",
-										"Tool Mesh",
-										"Tool Mesh UV",
-										"Tool Height Map",
-										"Tool Grid",
-										"Tool Polygon",
-										"Tool Liquid",
+										"Tool Play"
 									};
 
-char							tool_bitmaps_separator[tool_count]={"0001010010010011010010100000000000000"};
+char							tool_bitmaps_separator[tool_count]={"000010100101"};
 
 /* =======================================================
 
@@ -149,6 +117,7 @@ void tool_palette_setup(void)
 
 bool tool_get_highlight_state(int tool_idx)
 {
+/*
 	editor_view_type		*view;
 
 	switch (tool_idx) {
@@ -215,7 +184,7 @@ bool tool_get_highlight_state(int tool_idx)
 			view=walk_view_get_current_view();
 			return(view->cull);
 	}
-
+*/
 	return(FALSE);
 }
 
@@ -373,6 +342,7 @@ void tool_palette_draw(void)
 
 void tool_click(int tool_idx)
 {
+/*
 	editor_view_type		*view;
 	
 	switch (tool_idx) {
@@ -554,6 +524,7 @@ void tool_click(int tool_idx)
 	menu_fix_enable();
 	
 	main_wind_draw();
+	*/
 }
 
 /* =======================================================
@@ -632,6 +603,7 @@ void tool_palette_click(d3pnt *pnt)
 
 void tool_default(void)
 {
+/*
 	state.free_look=setup.free_look;
 	state.select_add=FALSE;
 	
@@ -649,39 +621,5 @@ void tool_default(void)
 	state.show_node=FALSE;
 	
 	state.show_normals=FALSE;
+	*/
 }
-
-void tool_switch_vertex_mode(void)
-{
-	state.vertex_mode++;
-	if (state.vertex_mode>vertex_mode_snap) state.vertex_mode=vertex_mode_none;
-	
-	main_wind_draw();
-}
-
-void tool_switch_drag_mode(void)
-{
-	state.drag_mode++;
-	if (state.drag_mode>drag_mode_vertex) state.drag_mode=drag_mode_mesh;
-
-	main_wind_draw();
-}
-
-void tool_switch_grid_mode(void)
-{
-	state.grid_mode++;
-	if (state.grid_mode>grid_mode_large) state.grid_mode=grid_mode_none;
-	
-	main_wind_draw();
-}
-
-void tool_switch_node_mode(void)
-{
-	state.node_mode++;
-	if (state.node_mode>node_mode_remove_link) state.node_mode=node_mode_select;
-	
-	main_wind_draw();
-}
-
-
-

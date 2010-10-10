@@ -30,12 +30,12 @@ and can be sold or given away.
 #include "model.h"
 
 extern int					cur_mesh,cur_pose,
-							gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size;
+							gl_view_texture_palette_size;
 extern bool					fileopen;
 extern model_type			model;
 
-extern AGLContext			texture_ctx;
-extern WindowRef			model_wind;
+extern AGLContext			ctx;
+extern WindowRef			wind;
 
 /* =======================================================
 
@@ -51,25 +51,21 @@ void texture_palette_draw(void)
 	texture_type			*texture;
 	
  	if (!fileopen) return;
+	
+	return;
 
 		// texture palette viewport
 		
-	aglSetCurrentContext(texture_ctx);
-		
-	GetWindowPortBounds(model_wind,&wbox);
-	
-	rect[0]=0;
-	rect[1]=info_palette_height;
-	rect[2]=wbox.right-wbox.left;
-	rect[3]=gl_view_texture_palette_size;
-
-	aglSetInteger(texture_ctx,AGL_BUFFER_RECT,rect);
-	aglEnable(texture_ctx,AGL_BUFFER_RECT);
+	GetWindowPortBounds(wind,&wbox);
 	
 	glViewport(0,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
 	
-	glScissor(0,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
-	glEnable(GL_SCISSOR_TEST);
+//	glScissor(0,0,(wbox.right-wbox.left),gl_view_texture_palette_size);
+//	glEnable(GL_SCISSOR_TEST);
+
+
+
+
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -160,8 +156,6 @@ void texture_palette_draw(void)
 	glVertex2i(0,(gl_view_texture_palette_size+1));
 	glVertex2i((wbox.right-wbox.left),(gl_view_texture_palette_size+1));
 	glEnd();
-	
-	aglSwapBuffers(texture_ctx);
 }
 
 /* =======================================================
@@ -174,14 +168,15 @@ void texture_palette_click(Point pt,bool dblclick)
 {
 	int					nsel;
 	Rect				wbox;
+	return;
 	
     if (!fileopen) return;
  
 		// drawing area
 		
-	GetWindowPortBounds(model_wind,&wbox);
+	GetWindowPortBounds(wind,&wbox);
 	
-	wbox.top+=tool_height+gl_view_y_sz;
+//	wbox.top+=tool_height+gl_view_y_sz;
 	wbox.bottom=wbox.top+gl_view_texture_palette_size;
 
 		// find clicked texture
@@ -199,7 +194,6 @@ void texture_palette_click(Point pt,bool dblclick)
 		hilite_vertex_rows();
 	}
 	
-    draw_model_wind_pose(&model,cur_mesh,cur_pose);
-    texture_palette_draw();
+    main_wind_draw();
 }
 

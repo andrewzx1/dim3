@@ -30,10 +30,11 @@ and can be sold or given away.
 #include "menu.h"
 
 extern int						cur_mesh,cur_pose,cur_bone,draw_type,shift_x,shift_y,magnify_z,
-								gl_view_x_sz,gl_view_y_sz,gl_view_texture_palette_size;
+								gl_view_texture_palette_size;
 extern float					ang_y,ang_x;
 extern bool						shift_on,rotate_on,size_on,play_animate,drag_sel_on,model_bone_drag_on;
 extern Rect						drag_sel_box;
+extern d3rect					model_box;
 
 extern display_type				display;
 
@@ -70,7 +71,7 @@ void model_sel_vertex(float *pv,int lx,int ty,int rx,int by,bool chg_sel,double 
 		sz=(int)*pv++;
 		gluProject(sx,sy,sz,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 		x=(int)dx;
-		y=(int)(gl_view_y_sz-dy);
+		y=(int)((model_box.by-model_box.ty)-dy);
 		
 		if ((x>=lx) && (x<=rx) && (y>=ty) && (y<=by)) {
 			if (!vertex_check_hide_mask(cur_mesh,i)) vertex_set_sel_mask(cur_mesh,i,chg_sel);
@@ -203,7 +204,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 		model_sel_vertex(pv,lx,ty,rx,by,chg_sel,mod_matrix,proj_matrix,vport);
 		
 		SetRect(&drag_sel_box,lx,ty,rx,by);
-		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		main_wind_draw();
 	
 	} while (track!=kMouseTrackingMouseReleased);
 	
@@ -214,7 +215,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 
 		// redraw the model
 		
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	main_wind_draw();
 		
 		// reset the data browser
 		
@@ -263,14 +264,14 @@ void change_model_wind(Point start_pt)
 			ang_x=old_ang_x-(float)((last_pt.v-start_pt.v)/5);
 		}
 		if (size_on) {
-			model_wind_set_magnify(old_magnify_z+((last_pt.v-start_pt.v)*2));
+			magnify_z=old_magnify_z+((last_pt.v-start_pt.v)*2);
 		}
 		
-		if (!play_animate) draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		if (!play_animate) main_wind_draw();
 	
 	} while (track!=kMouseTrackingMouseReleased);
 	
-	if (!play_animate) draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	if (!play_animate) main_wind_draw();
 }
 
 /* =======================================================
@@ -293,7 +294,7 @@ bool draw_bone_model_wind_click_box(Point start_pt,float x,float y,float z)
 	
 	gluProject(x,y,z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 	ix=(int)dx;
-	iy=(int)(gl_view_y_sz-dy);
+	iy=(int)((model_box.by-model_box.ty)-dy);
 
 		// check box
 		
@@ -402,7 +403,7 @@ bool drag_bone_model_wind(Point start_pt)
 			
 		cur_bone=k;
 		reset_bone_list();
-		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		main_wind_draw();
 
 		return(TRUE);
 	}
@@ -465,7 +466,7 @@ bool drag_bone_model_wind(Point start_pt)
 			// draw the model
 			
 		model_bone_drag_on=TRUE;
-		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		main_wind_draw();
 		model_bone_drag_on=FALSE;
 		
 		reset_bone_list();
@@ -477,7 +478,7 @@ bool drag_bone_model_wind(Point start_pt)
 
 		// redraw model
 		
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	main_wind_draw();
 
 	return(TRUE);
 }
@@ -594,7 +595,7 @@ bool drag_hit_box_handle_model_wind(Point start_pt)
 		
 			// draw the model
 			
-		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		main_wind_draw();
 		model_hit_box_drag_on=TRUE;
 
 	} while (track!=kMouseTrackingMouseReleased);
@@ -603,7 +604,7 @@ bool drag_hit_box_handle_model_wind(Point start_pt)
 
 		// redraw model
 		
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	main_wind_draw();
 
 	return(model_hit_box_drag_on);
 }

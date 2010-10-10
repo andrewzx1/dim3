@@ -38,8 +38,6 @@ extern int						cur_mesh,cur_pose,gl_view_texture_palette_size;
 extern bool						model_view_reset;
 extern model_type				model;
 
-extern WindowRef				model_wind;
-
 /* =======================================================
 
       Hiliting Vertexes
