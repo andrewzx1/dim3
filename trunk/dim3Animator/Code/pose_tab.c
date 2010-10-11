@@ -187,7 +187,7 @@ void start_pose_controls(WindowRef wind,Rect *box)
 	cbox.left=box->left+1;
 	cbox.right=box->left+list_width;
 	
-	cbox.top=box->top+tool_height;
+	cbox.top=box->top;
 	cbox.bottom=(box->bottom-box->top)/2;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&pose_list);
@@ -246,7 +246,7 @@ void resize_pose_controls(Rect *box)
 	cbox.left=box->left+1;
 	cbox.right=box->left+list_width;
 	
-	cbox.top=box->top+tool_height;
+	cbox.top=box->top;
 	cbox.bottom=(box->bottom-box->top)/2;
 
 	MoveControl(pose_list,cbox.left,cbox.top);

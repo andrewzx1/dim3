@@ -223,7 +223,7 @@ bool dialog_model_settings_run(void)
 			model.deform_mode=deform_mode_single_rotate;
 		}
 		
-		idx=dialog_get_bone_combo(dialog_model_settings_wind,kNameBoneTag,n);
+		idx=dialog_get_bone_combo(dialog_model_settings_wind,kNameBoneTag,0);
 		if (idx==-1) {
 			model.tags.name_bone_tag=model_null_tag;
 		}

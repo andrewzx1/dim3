@@ -12,7 +12,6 @@
 
 #define tool_button_size				32
 #define tool_count						12
-#define tool_height						33
 
 #define model_view_min_size				512
 
@@ -181,6 +180,13 @@
 #define drag_bone_mode_stretch			1
 
 //
+// Select Modes
+//
+
+#define select_mode_polygon				0
+#define select_mode_vertex				1
+
+//
 // Drag Handle Types
 //
 
@@ -200,9 +206,10 @@
 //
 
 typedef struct		{
-						int				drag_bone_mode;
+						int				drag_bone_mode,select_mode;
 						bool			texture,mesh,bone,hit_box,
-										normal,view_box,first_mesh;
+										normal,view_box,first_mesh,
+										playing,play_animate_blend;
 					} display_type;
 
 

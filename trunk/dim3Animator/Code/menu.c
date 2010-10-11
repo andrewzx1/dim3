@@ -38,7 +38,7 @@ extern int						cur_mesh,cur_bone,cur_pose,cur_animate,
 								play_animate_blend_idx[max_model_blend_animation];
 extern float					ang_y,ang_x;
 extern bool						done,fileopen,
-								model_bone_drag_on,play_animate,play_animate_blend,model_show_first_mesh;
+								model_bone_drag_on,model_show_first_mesh;
 
 extern display_type				display;
 
@@ -96,15 +96,14 @@ void windows_start(void)
 	cur_bone=-1;
 	cur_pose=-1;
 	
-	play_animate=FALSE;
-	play_animate_blend=FALSE;
+	display.playing=FALSE;
+	display.play_animate_blend=FALSE;
 	
 	for (n=0;n!=max_model_blend_animation;n++) {
 		play_animate_blend_idx[n]=-1;
 	}
 	
 	model_wind_open();
-	model_wind_reset_tools();
 	
 	os_select_window();
 }
@@ -1186,7 +1185,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			return(noErr);
 			
 		case kCommandPlayAnimate:
-			model_wind_play(!play_animate,FALSE);
+			model_wind_play(!display.playing,FALSE);
 			return(noErr);
 			
 		case kCommandPlayBlendAnimate:

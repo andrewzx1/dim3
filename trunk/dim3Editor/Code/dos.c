@@ -35,7 +35,7 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern file_path_setup_type		file_path_setup;
-extern setup_type				setup;
+extern editor_setup_type		setup;
 extern editor_state_type		state;
 
 map_type						map;

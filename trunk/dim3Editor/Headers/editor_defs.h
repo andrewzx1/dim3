@@ -271,13 +271,13 @@ typedef struct		{
 						int						anisotropic_mode,mipmap_mode,
 												duplicate_offset,snap_size,
 												clip_distance;
-						bool					free_look,auto_texture,
+						bool					free_look,auto_texture,big_texture,
 												flip_horz_movement,flip_vert_movement,
 												flip_horz_turn,flip_vert_turn,
 												flip_forward_movement;
 						char					engine_name[256];
 						setup_col_type			col;
-					} setup_type;
+					} editor_setup_type;
 
 //
 // selections

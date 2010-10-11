@@ -28,9 +28,9 @@ and can be sold or given away.
 #include "common_view.h"
 #include "interface.h"
 
-extern file_path_setup_type		file_path_setup;
-extern setup_type				setup;
 extern map_type					map;
+extern editor_setup_type		setup;
+extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
 

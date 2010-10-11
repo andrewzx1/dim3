@@ -36,7 +36,7 @@ and can be sold or given away.
 
 extern map_type					map;
 extern editor_state_type		state;
-extern setup_type				setup;
+extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 
 int								tool_pixel_sz,tool_palette_push_idx;
@@ -282,8 +282,8 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(x,y);
 	glVertex2i((x+tool_pixel_sz),y);
-	glVertex2i((x+tool_pixel_sz),(y+tool_pixel_sz));
-	glVertex2i(x,(y+tool_pixel_sz));
+	glVertex2i((x+tool_pixel_sz),(y+(tool_pixel_sz+1)));
+	glVertex2i(x,(y+(tool_pixel_sz+1)));
 	glEnd();
 }
 

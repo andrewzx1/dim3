@@ -377,7 +377,7 @@ void start_bone_controls(WindowRef wind,Rect *box)
 	cbox.left=box->left+list_width;
 	cbox.right=box->right;
 	
-	cbox.top=box->top+tool_height;
+	cbox.top=box->top;
 	cbox.bottom=(box->bottom-box->top)/2;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&bone_list);
@@ -456,7 +456,7 @@ void resize_bone_controls(Rect *box)
 	cbox.left=box->left+list_width;
 	cbox.right=box->right;
 	
-	cbox.top=box->top+tool_height;
+	cbox.top=box->top;
 	cbox.bottom=(box->bottom-box->top)/2;
 
 	MoveControl(bone_list,cbox.left,cbox.top);

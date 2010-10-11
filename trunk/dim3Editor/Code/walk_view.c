@@ -34,12 +34,12 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern int						top_view_x,top_view_z,
-								tool_pixel_sz,txt_pixel_sz;
+								tool_pixel_sz,txt_palette_pixel_sz;
 extern d3rect					main_wind_box;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
-extern setup_type				setup;
+extern editor_setup_type		setup;
 extern editor_state_type		state;
 
 double							view_mod_matrix[16],view_proj_matrix[16];
@@ -158,7 +158,7 @@ void walk_view_get_pixel_box(editor_view_type *view,d3rect *box)
 	os_get_window_box(&wbox);
 	
 	wbox.ty+=tool_pixel_sz;
-	wbox.by-=txt_pixel_sz;
+	wbox.by-=txt_palette_pixel_sz;
 	
 	wid=(float)(wbox.rx-wbox.lx);
 	high=(float)(wbox.by-wbox.ty);

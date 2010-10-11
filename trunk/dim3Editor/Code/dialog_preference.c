@@ -33,6 +33,7 @@ and can be sold or given away.
 #define kPrefMipMapMode						FOUR_CHAR_CODE('mmap')
 #define kPrefFreeLook						FOUR_CHAR_CODE('free')
 #define kPrefAutoTexture					FOUR_CHAR_CODE('auto')
+#define kPrefBigTexture						FOUR_CHAR_CODE('bigt')
 #define kPrefDuplicateOffset				FOUR_CHAR_CODE('doff')
 #define kPrefSnapSize						FOUR_CHAR_CODE('spsz')
 #define kPrefClipDistance					FOUR_CHAR_CODE('cldt')
@@ -48,7 +49,7 @@ and can be sold or given away.
 #define kPrefPolyCullColor					FOUR_CHAR_CODE('ccol')
 
 extern map_type				map;
-extern setup_type			setup;
+extern editor_setup_type	setup;
 
 bool						dialog_preference_cancel;
 WindowRef					dialog_preference_wind;
@@ -112,6 +113,7 @@ void dialog_preference_run(void)
 	dialog_set_combo(dialog_preference_wind,kPrefMipMapMode,0,setup.mipmap_mode);
 	dialog_set_boolean(dialog_preference_wind,kPrefFreeLook,0,setup.free_look);
 	dialog_set_boolean(dialog_preference_wind,kPrefAutoTexture,0,setup.auto_texture);
+	dialog_set_boolean(dialog_preference_wind,kPrefBigTexture,0,setup.big_texture);
 	
 	dialog_set_value(dialog_preference_wind,kPrefDuplicateOffset,0,setup.duplicate_offset);
 	dialog_set_value(dialog_preference_wind,kPrefSnapSize,0,setup.snap_size);
@@ -151,6 +153,7 @@ void dialog_preference_run(void)
 		setup.mipmap_mode=dialog_get_combo(dialog_preference_wind,kPrefMipMapMode,0);
 		setup.free_look=dialog_get_boolean(dialog_preference_wind,kPrefFreeLook,0);
 		setup.auto_texture=dialog_get_boolean(dialog_preference_wind,kPrefAutoTexture,0);
+		setup.big_texture=dialog_get_boolean(dialog_preference_wind,kPrefBigTexture,0);
 		
 		setup.duplicate_offset=dialog_get_value(dialog_preference_wind,kPrefDuplicateOffset,0);
 		setup.snap_size=dialog_get_value(dialog_preference_wind,kPrefSnapSize,0);

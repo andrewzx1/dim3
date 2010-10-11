@@ -42,7 +42,7 @@ extern void tool_palette_setup(void);
 extern void tool_palette_draw(void);
 
 extern void texture_palette_draw(void);
-extern void texture_palette_click(Point pt,bool dblclick);
+extern void texture_palette_click(d3pnt *pnt,bool dblclick);
 
 extern void add_db_column(ControlRef ctrl,char *name,int idx,int type,int sz,int spot);
 

@@ -32,7 +32,7 @@ d3rect						model_box;
 extern int					cur_mesh,cur_bone,shift_x,shift_y,magnify_z,
 							gl_view_texture_palette_size,tool_pixel_sz;
 extern float				ang_y,ang_x;
-extern bool					fileopen,play_animate,model_bone_drag_on,drag_sel_on;
+extern bool					fileopen,model_bone_drag_on,drag_sel_on;
 extern Rect					drag_sel_box;
 extern AGLContext			ctx;
 extern WindowRef			wind;
@@ -223,6 +223,22 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 		// free memory
 		
 	model_draw_setup_shutdown(model,draw_setup);
+	
+		// border
+		
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho((GLdouble)model_box.lx,(GLdouble)model_box.rx,(GLdouble)model_box.by,(GLdouble)model_box.ty,-1.0,1.0);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glBegin(GL_LINES);
+	glVertex2i(model_box.rx,model_box.ty);
+	glVertex2i(model_box.rx,model_box.by);
+	glEnd();
 }
 
 void draw_model_setup_pose(model_type *model,model_draw_setup *draw_setup,int wpose)
