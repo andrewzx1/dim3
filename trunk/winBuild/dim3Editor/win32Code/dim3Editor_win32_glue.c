@@ -92,6 +92,7 @@ int				win32_menu_remap[][2]={
 
 extern bool				quit;
 extern HWND				wnd;
+extern HDC				wnd_gl_dc;
 
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize;
 
@@ -129,9 +130,9 @@ void glue_end(void)
       
 ======================================================= */
 		
-void os_get_icon_file_path(char *path)
+void os_get_support_file_path(char *path,char *app_name)
 {
-	strcpy(path,"dim3 Editor Icons");
+	sprintf(path,"dim3 App Support\\%s",app_name);
 }
 
 void os_create_directory(char *path)
@@ -164,6 +165,11 @@ void os_select_window(void)
 void os_set_title_window(char *title)
 {
 	SetWindowText(wnd,title);
+}
+
+void os_swap_gl_buffer(void)
+{
+	SwapBuffers(wnd_gl_dc);
 }
 
 void os_set_arrow_cursor(void)

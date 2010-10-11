@@ -60,6 +60,7 @@ extern void walk_view_cull(bool on);
 extern void walk_view_clip(bool on);
 extern void walk_view_goto_select(void);
 extern void walk_view_goto_map_center(void);
+extern void walk_view_goto_map_center_all(void);
 extern void walk_view_flip_clip(void);
 extern int walk_view_get_uv_layer(void);
 extern void walk_view_set_uv_layer(int uv_layer);
