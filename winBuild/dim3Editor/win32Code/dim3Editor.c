@@ -23,7 +23,7 @@ bool					quit;
 
 map_type				map;
 file_path_setup_type	file_path_setup;
-setup_type				setup;
+editor_setup_type		setup;
 editor_state_type		state;
 
 d3rect					main_wind_box;
@@ -64,6 +64,7 @@ bool import_load_file(char *path,char *ext)
 }
 void auto_generate_map(void)
 {
+	auto_generate_map_2();
 }
 
 

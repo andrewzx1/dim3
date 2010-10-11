@@ -227,6 +227,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Common\Headers\glue.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Headers\import.h"
 					>
 				</File>
@@ -242,6 +246,10 @@
 			<Filter
 				Name="EditorSources"
 				>
+				<File
+					RelativePath="..\..\dim3Editor\Code\auto_generate.c"
+					>
+				</File>
 				<File
 					RelativePath="..\..\dim3Editor\Code\dos.c"
 					>

@@ -29,8 +29,9 @@ and can be sold or given away.
 	#include "dim3editor.h"
 #endif
 
-#include "walk_view.h"
+#include "glue.h"
 #include "interface.h"
+#include "walk_view.h"
 #include "dialog.h"
 #include "common_view.h"
 
@@ -98,7 +99,7 @@ void tool_palette_initialize(void)
 	int				n;
 	char			sub_path[1024],path[1024];
 
-	os_get_icon_file_path(sub_path);
+	os_get_support_file_path(sub_path,"Editor");
 	strcat(sub_path,"/Tools");
 		
 	for (n=0;n!=tool_count;n++) {

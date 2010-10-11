@@ -55,8 +55,9 @@ HTREEITEM dialog_file_open_fill_list(HWND diag,HTREEITEM parent_item,int parent_
 		if (fpd->files[n].parent_idx==parent_idx) {
 			tv_item.hParent=parent_item;
 			tv_item.hInsertAfter=TVI_LAST;
-			tv_item.item.mask=TVIF_TEXT;
+			tv_item.item.mask=TVIF_TEXT|TVIF_PARAM;
 			tv_item.item.pszText=fpd->files[n].file_name;
+			tv_item.item.lParam=fpd->files[n].is_dir?1:0;
 			item=(HTREEITEM)SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_INSERTITEM,0,(LPARAM)&tv_item);
 
 			if (first_item==NULL) first_item=item;
@@ -76,7 +77,7 @@ void dialog_file_open_set(HWND diag)
 	if (item!=NULL) SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_EXPAND,TVE_EXPAND,(LPARAM)item);
 }
 
-void dialog_file_open_get(HWND diag)
+bool dialog_file_open_get(HWND diag)
 {
 	HTREEITEM			item;
 	TV_ITEM				info;
@@ -84,14 +85,16 @@ void dialog_file_open_get(HWND diag)
 	fp_file_name[0]=0x0;
 
 	item=(HTREEITEM)SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_GETNEXTITEM,TVGN_CARET,(LPARAM)0);
-	if (item==NULL) return;
+	if (item==NULL) return(FALSE);
 
-	info.mask=TVIF_TEXT;
+	info.mask=TVIF_TEXT|TVIF_PARAM;
 	info.pszText=fp_file_name;
 	info.cchTextMax=256;
 	info.hItem=item;
 
 	SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_GETITEM,0,(LPARAM)&info);
+
+	return(info.lParam==0);
 }
 
 LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
@@ -127,7 +130,7 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
 			hdr=(LPNMHDR)lparam;
 
 			if ((hdr->idFrom==IDC_FILE_OPEN_TREE) && (hdr->code==NM_DBLCLK)) {
-				dialog_file_open_get(diag);
+				if (!dialog_file_open_get(diag)) return(FALSE);
 				EndDialog(diag,0);
 			}
 

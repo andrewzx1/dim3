@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3editor.h"
 #endif
 
+#include "glue.h"
 #include "interface.h"
 #include "common_view.h"
 #include "walk_view.h"
@@ -60,7 +61,7 @@ bool walk_view_initialize(void)
 
 		// interface textures
 		
-	os_get_icon_file_path(sub_path);
+	os_get_support_file_path(sub_path,"Editor");
 	strcat(sub_path,"/Items");
 		
 	file_paths_app(&file_path_setup,path,sub_path,"spot","png");
@@ -778,6 +779,20 @@ void walk_view_goto_map_center(void)
 	
 	ang.x=ang.y=ang.z=0.0f;
 	walk_view_set_angle(&ang);
+}
+
+void walk_view_goto_map_center_all(void)
+{
+	int			n,old_idx;
+
+	old_idx=state.view_select_idx;
+
+	for (n=0;n!=map.editor_views.count;n++) {
+		state.view_select_idx=n;
+		walk_view_goto_map_center();
+	}
+
+	state.view_select_idx=old_idx;
 }
 
 /* =======================================================
