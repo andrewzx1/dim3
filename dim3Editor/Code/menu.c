@@ -186,6 +186,7 @@ bool menu_event_run(int cmd)
 			
         case kCommandPreference:
             dialog_preference_run();
+			texture_palette_setup();
 			main_wind_draw();
             return(TRUE);
 

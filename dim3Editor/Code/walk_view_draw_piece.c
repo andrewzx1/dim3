@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern map_type				map;
-extern setup_type			setup;
+extern editor_setup_type	setup;
 extern editor_state_type	state;
 extern bitmap_type			spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 							light_bitmap,sound_bitmap,particle_bitmap;

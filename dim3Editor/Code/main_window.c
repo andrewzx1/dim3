@@ -29,21 +29,21 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern d3rect			tool_palette_box,txt_palette_box;
+extern d3rect				tool_palette_box,txt_palette_box;
 
-extern map_type			map;
-extern setup_type		setup;
+extern map_type				map;
+extern editor_setup_type	setup;
 
-d3rect					main_wind_box;
+d3rect						main_wind_box;
 
-WindowRef				wind;
-EventHandlerRef			main_wind_event;
-EventHandlerUPP			main_wind_upp;
+WindowRef					wind;
+EventHandlerRef				main_wind_event;
+EventHandlerUPP				main_wind_upp;
 
-AGLContext				ctx;
+AGLContext					ctx;
 
-file_path_setup_type	file_path_setup;
-editor_state_type		state;
+file_path_setup_type		file_path_setup;
+editor_state_type			state;
 
 /* =======================================================
 

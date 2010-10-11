@@ -33,7 +33,7 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 
-setup_type						setup;
+editor_setup_type				setup;
 
 /* =======================================================
 
@@ -49,6 +49,7 @@ void setup_xml_default(void)
 	
 	setup.free_look=TRUE;
 	setup.auto_texture=TRUE;
+	setup.big_texture=FALSE;
 
 	setup.duplicate_offset=5;
 	setup.snap_size=5;
@@ -114,6 +115,7 @@ bool setup_xml_read(void)
     xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
  	xml_key_read_boolean(setup_tag,"Free_Look",&setup.free_look);
  	xml_key_read_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
+ 	xml_key_read_boolean(setup_tag,"Big_Texture",&setup.big_texture);
  	xml_key_read_boolean(setup_tag,"Flip_Horz_Movement",&setup.flip_horz_movement);
  	xml_key_read_boolean(setup_tag,"Flip_Vert_Movement",&setup.flip_vert_movement);
  	xml_key_read_boolean(setup_tag,"Flip_Horz_Turn",&setup.flip_horz_turn);
@@ -157,6 +159,7 @@ bool setup_xml_write(void)
     xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
  	xml_key_write_boolean("Free_Look",setup.free_look);
  	xml_key_write_boolean("Auto_Texture",setup.auto_texture);
+ 	xml_key_write_boolean("Big_Texture",setup.big_texture);
  	xml_key_write_boolean("Flip_Horz_Movement",setup.flip_horz_movement);
  	xml_key_write_boolean("Flip_Vert_Movement",setup.flip_vert_movement);
  	xml_key_write_boolean("Flip_Horz_Turn",setup.flip_horz_turn);

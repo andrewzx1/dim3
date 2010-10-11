@@ -32,7 +32,7 @@ and can be sold or given away.
 extern int						cur_mesh,cur_pose,cur_bone,draw_type,shift_x,shift_y,magnify_z,
 								gl_view_texture_palette_size;
 extern float					ang_y,ang_x;
-extern bool						shift_on,rotate_on,size_on,play_animate,drag_sel_on,model_bone_drag_on;
+extern bool						shift_on,rotate_on,size_on,drag_sel_on,model_bone_drag_on;
 extern Rect						drag_sel_box;
 extern d3rect					model_box;
 
@@ -267,11 +267,11 @@ void change_model_wind(Point start_pt)
 			magnify_z=old_magnify_z+((last_pt.v-start_pt.v)*2);
 		}
 		
-		if (!play_animate) main_wind_draw();
+		if (!display.playing) main_wind_draw();
 	
 	} while (track!=kMouseTrackingMouseReleased);
 	
-	if (!play_animate) main_wind_draw();
+	if (!display.playing) main_wind_draw();
 }
 
 /* =======================================================

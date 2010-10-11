@@ -41,8 +41,7 @@ int								draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
 								play_animate_blend_idx[max_model_blend_animation],
 								play_animate_pose_move_idx[max_model_blend_animation];
 float							ang_y,ang_x;
-bool							play_animate,play_animate_blend,
-								model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
+bool							model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
 								model_bone_drag_on;
 Rect							drag_sel_box;
 AGLContext						ctx;
@@ -166,80 +165,6 @@ void model_wind_cursor(unsigned long modifiers)
 
 /* =======================================================
 
-      Window Controls
-      
-======================================================= */
-
-bool model_wind_control(ControlRef ctrl)
-{/* supergumba -- move to tool_palette
-	int				i,idx;
-	
-	return(FALSE);
-	
-	idx=-1;
-	for (i=0;i!=tool_count;i++) {
-		if (ctrl==tool_ctrl[i]) {
-			idx=i;
-			break;
-		}
-	}
-	
-	if (idx==-1) return(FALSE);
-	
-	switch (idx) {
-	
-		case 0:
-			display.texture=!display.texture;
-			break;
-			
-		case 1:
-			display.mesh=!display.mesh;
-			break;
-			
-		case 2:
-			display.bone=!display.bone;
-			break;
-			
-		case 3:
-			display.hit_box=!display.hit_box;
-			break;
-			
-		case 4:
-			display.view_box=!display.view_box;
-			break;
-			
-		case 5:
-			display.normal=!display.normal;
-			break;
-			
-		case 6:
-			display.first_mesh=!display.first_mesh;
-			break;
-			
-		case 7:
-			display.drag_bone_mode=drag_bone_mode_rotate;
-			SetControlValue(tool_ctrl[7],1);
-			SetControlValue(tool_ctrl[8],0);
-			break;
-			
-		case 8:
-			display.drag_bone_mode=drag_bone_mode_stretch;
-			SetControlValue(tool_ctrl[7],0);
-			SetControlValue(tool_ctrl[8],1);
-			break;
-			
-		case 9:
-			model_wind_play(!play_animate,FALSE);
-			break;
-	}
-	
-	main_wind_draw();
-	*/
-	return(TRUE);
-}
-
-/* =======================================================
-
       Window Resize
       
 ======================================================= */
@@ -266,6 +191,7 @@ void model_wind_resize(void)
 		// resize windows and palettes
 		
 	tool_palette_setup();
+	texture_palette_setup();
 	model_wind_setup();
 
 		// resize controls
@@ -333,7 +259,6 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 	d3pnt				pnt;
 	Point				pt;
 	EventMouseWheelAxis	axis;
-	ControlRef			ctrl;
 	
 	switch (GetEventClass(event)) {
 	
@@ -374,7 +299,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					 
 					if (pt.v>=model_box.by) {
-						texture_palette_click(pt,(nclick!=1));
+						texture_palette_click(&pnt,(nclick!=1));
 						return(noErr);
 					}
 					
@@ -455,13 +380,6 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 			}
 			break;
 			
-		case kEventClassControl:
-		
-			GetEventParameter(event,kEventParamDirectObject,typeControlRef,NULL,sizeof(ControlRef),NULL,&ctrl);
-			if (model_wind_control(ctrl)) return(noErr);
-			
-			return(eventNotHandledErr);
-			
 	}
 
 	return(eventNotHandledErr);
@@ -487,11 +405,11 @@ void model_wind_play(bool play,bool blend)
 		// always turn off animation until setup is complete
 		// as animation is on a timer
 		
-	play_animate=FALSE;
+	display.playing=FALSE;
 	
 		// setup animation
 		
-	play_animate_blend=blend;
+	display.play_animate_blend=blend;
 	
 	time_start();
 	tick=time_get();
@@ -500,14 +418,12 @@ void model_wind_play(bool play,bool blend)
 		play_animate_pose_move_idx[n]=0;
 		play_animate_tick[n]=tick;
 	}
-	
+// supergumba -- is this necessary?	
 	model_view_reset=FALSE;
 	
 		// turn on/off animation
 		
-	play_animate=play;
-	
-	model_wind_reset_tools();
+	display.playing=play;
 }
 
 void model_wind_play_calc_animation(int cur_tick,int animate_idx,int blend_idx,bool non_blend_setup)
@@ -587,7 +503,7 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 	
 		// if not playing, then do model view resets
 		
-	if (!play_animate) {
+	if (!display.playing) {
 		if (model_view_reset) {
 			model_view_reset=FALSE;
 			main_wind_draw();
@@ -597,7 +513,7 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 	
 		// if no current animation, just do no pose for animated textures
 		
-	if ((cur_animate==-1) && (!play_animate_blend)) {
+	if ((cur_animate==-1) && (!display.play_animate_blend)) {
 		main_wind_draw();
 		return;
 	}
@@ -610,7 +526,7 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 		
 	cur_tick=time_get();
 	
-	if (!play_animate_blend) {
+	if (!display.play_animate_blend) {
 		model_wind_play_calc_animation(cur_tick,cur_animate,0,TRUE);
 	}
 	else {
@@ -680,8 +596,7 @@ void model_wind_open(void)
 									{kEventClassKeyboard,kEventRawKeyUp},
 									{kEventClassKeyboard,kEventRawKeyDown},
 									{kEventClassKeyboard,kEventRawKeyModifiersChanged},
-									{kEventClassMouse,kEventMouseWheelMoved},
-									{kEventClassControl,kEventControlHit}};
+									{kEventClassMouse,kEventMouseWheelMoved}};
 	
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 	
@@ -738,6 +653,8 @@ void model_wind_open(void)
 	tool_palette_initialize();
 	tool_palette_setup();
 	
+	texture_palette_setup();
+	
 	model_wind_setup();
 	
 		// box from the controls
@@ -754,8 +671,6 @@ void model_wind_open(void)
 	
 		// controls
 		
-	GetWindowPortBounds(wind,&box);
-
 	box.left+=model_box.rx;
 	
 	start_pose_controls(wind,&box);
@@ -822,33 +737,7 @@ void model_wind_close(void)
 
 void model_wind_offset_click(Point *pt)
 {
-	pt->v-=tool_height;
-}
-
-/* =======================================================
-
-      Model Window Controls
-      
-======================================================= */
-
-void model_wind_reset_tools(void)
-{
-/* supergumba -- delete and move
-	SetControlValue(tool_ctrl[0],display.texture?1:0);
-	SetControlValue(tool_ctrl[1],display.mesh?1:0);
-	SetControlValue(tool_ctrl[2],display.bone?1:0);
-	
-	SetControlValue(tool_ctrl[3],display.hit_box?1:0);
-	SetControlValue(tool_ctrl[4],display.view_box?1:0);
-	
-	SetControlValue(tool_ctrl[5],display.normal);
-	
-	SetControlValue(tool_ctrl[6],display.first_mesh?1:0);
-	
-	SetControlValue(tool_ctrl[7],(display.drag_bone_mode==drag_bone_mode_rotate)?1:0);
-	SetControlValue(tool_ctrl[8],(display.drag_bone_mode==drag_bone_mode_stretch)?1:0);
-
-	SetControlValue(tool_ctrl[9],play_animate?1:0);
-*/
+	// supergumba -- fix all this up
+//	pt->v-=tool_height;
 }
 

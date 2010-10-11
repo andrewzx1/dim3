@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern map_type					map;
-extern setup_type				setup;
+extern editor_setup_type		setup;
 extern editor_state_type		state;
 
 /* =======================================================
