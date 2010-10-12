@@ -747,7 +747,6 @@ void walk_view_goto_map_center(void)
 {
 	int				n,k,count;
 	d3pnt			center,*pt;
-	d3ang			ang;
 	map_mesh_type	*mesh;
 	
 	count=0;
@@ -776,9 +775,6 @@ void walk_view_goto_map_center(void)
 	center.z/=count;
 	
 	walk_view_set_position(&center);
-	
-	ang.x=ang.y=ang.z=0.0f;
-	walk_view_set_angle(&ang);
 }
 
 void walk_view_goto_map_center_all(void)

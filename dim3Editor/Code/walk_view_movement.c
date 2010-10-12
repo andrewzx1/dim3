@@ -143,7 +143,7 @@ void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,
 
 void walk_view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist)
 {
-	float			fx,fy,fz;
+	float			fx,fy,fz,ang_x;
 	matrix_type		mat;
 
 	if (dist==0) return;
@@ -155,7 +155,10 @@ void walk_view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist
 	matrix_rotate_y(&mat,view->ang.y);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
-	matrix_rotate_x(&mat,-view->ang.x);
+	ang_x=view->ang.x;
+	if (fabs(view->ang.x)<45.0f) ang_x=-ang_x;
+
+	matrix_rotate_x(&mat,ang_x);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	pnt->x+=(int)fx;
