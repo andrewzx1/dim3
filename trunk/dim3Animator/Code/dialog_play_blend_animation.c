@@ -27,8 +27,8 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-extern int				play_animate_blend_idx[max_model_blend_animation];
-extern model_type		model;
+extern model_type			model;
+extern animator_state_type	state;
 
 #define kBlendAnimate1						FOUR_CHAR_CODE('ani1')
 #define kBlendAnimate2						FOUR_CHAR_CODE('ani2')
@@ -137,10 +137,10 @@ bool dialog_play_blend_animation_run(void)
 
 		// set controls
 		
-	dialog_set_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate1,0,play_animate_blend_idx[0],FALSE);
-	dialog_set_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate2,0,play_animate_blend_idx[1],TRUE);
-	dialog_set_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate3,0,play_animate_blend_idx[2],TRUE);
-	dialog_set_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate4,0,play_animate_blend_idx[3],TRUE);
+	dialog_set_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate1,0,state.blend[0].animate_idx,FALSE);
+	dialog_set_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate2,0,state.blend[1].animate_idx,TRUE);
+	dialog_set_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate3,0,state.blend[2].animate_idx,TRUE);
+	dialog_set_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate4,0,state.blend[3].animate_idx,TRUE);
 	
 		// show window
 	
@@ -162,10 +162,10 @@ bool dialog_play_blend_animation_run(void)
 
 			// get play animations
 			
-		play_animate_blend_idx[0]=dialog_get_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate1,0,FALSE);
-		play_animate_blend_idx[1]=dialog_get_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate2,0,TRUE);
-		play_animate_blend_idx[2]=dialog_get_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate3,0,TRUE);
-		play_animate_blend_idx[3]=dialog_get_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate4,0,TRUE);
+		state.blend[0].animate_idx=dialog_get_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate1,0,FALSE);
+		state.blend[1].animate_idx=dialog_get_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate2,0,TRUE);
+		state.blend[2].animate_idx=dialog_get_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate3,0,TRUE);
+		state.blend[3].animate_idx=dialog_get_animate_combo(dialog_play_blend_animation_wind,kBlendAnimate4,0,TRUE);
 	}
 
 		// close window

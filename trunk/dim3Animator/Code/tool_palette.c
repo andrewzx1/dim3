@@ -30,7 +30,7 @@ and can be sold or given away.
 #endif
 
 extern model_type				model;
-extern display_type				display;
+extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
 int								tool_pixel_sz,tool_palette_push_idx;
@@ -67,7 +67,7 @@ void tool_palette_initialize(void)
 	int				n;
 	char			sub_path[1024],path[1024];
 
-	os_get_icon_file_path(sub_path);
+	os_get_support_file_path(sub_path,"Animator");
 	strcat(sub_path,"/Tools");
 		
 	for (n=0;n!=tool_count;n++) {
@@ -121,40 +121,40 @@ bool tool_get_highlight_state(int tool_idx)
 	switch (tool_idx) {
 
 		case 0:
-			return(display.texture);
+			return(state.texture);
 
 		case 1:
-			return(display.mesh);
+			return(state.mesh);
 
 		case 2:
-			return(display.bone);
+			return(state.bone);
 
 		case 3:
-			return(display.hit_box);
+			return(state.hit_box);
 
 		case 4:
-			return(display.select_mode==select_mode_polygon);
+			return(state.select_mode==select_mode_polygon);
 
 		case 5:
-			return(display.select_mode==select_mode_vertex);
+			return(state.select_mode==select_mode_vertex);
 
 		case 6:
-			return(display.view_box);
+			return(state.view_box);
 
 		case 7:
-			return(display.normal);
+			return(state.normal);
 
 		case 8:
-			return(display.first_mesh);
+			return(state.first_mesh);
 
 		case 9:
-			return(display.drag_bone_mode==drag_bone_mode_rotate);
+			return(state.drag_bone_mode==drag_bone_mode_rotate);
 
 		case 10:
-			return(display.drag_bone_mode==drag_bone_mode_stretch);
+			return(state.drag_bone_mode==drag_bone_mode_stretch);
 
 		case 11:
-			return(display.playing);
+			return(state.playing);
 			
 	}
 
@@ -318,51 +318,51 @@ void tool_click(int tool_idx)
 	switch (tool_idx) {
 	
 		case 0:
-			display.texture=!display.texture;
+			state.texture=!state.texture;
 			break;
 			
 		case 1:
-			display.mesh=!display.mesh;
+			state.mesh=!state.mesh;
 			break;
 			
 		case 2:
-			display.bone=!display.bone;
+			state.bone=!state.bone;
 			break;
 			
 		case 3:
-			display.hit_box=!display.hit_box;
+			state.hit_box=!state.hit_box;
 			break;
 			
 		case 4:
-			display.select_mode=select_mode_polygon;
+			state.select_mode=select_mode_polygon;
 			break;
 			
 		case 5:
-			display.select_mode=select_mode_vertex;
+			state.select_mode=select_mode_vertex;
 			break;
 			
 		case 6:
-			display.view_box=!display.view_box;
+			state.view_box=!state.view_box;
 			break;
 			
 		case 7:
-			display.normal=!display.normal;
+			state.normal=!state.normal;
 			break;
 			
 		case 8:
-			display.first_mesh=!display.first_mesh;
+			state.first_mesh=!state.first_mesh;
 			break;
 			
 		case 9:
-			display.drag_bone_mode=drag_bone_mode_rotate;
+			state.drag_bone_mode=drag_bone_mode_rotate;
 			break;
 			
 		case 10:
-			display.drag_bone_mode=drag_bone_mode_stretch;
+			state.drag_bone_mode=drag_bone_mode_stretch;
 			break;
 			
 		case 11:
-			model_wind_play(!display.playing,FALSE);
+			model_wind_play(!state.playing,FALSE);
 			break;
 	}
 	

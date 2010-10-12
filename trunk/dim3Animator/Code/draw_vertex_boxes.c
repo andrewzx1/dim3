@@ -27,8 +27,6 @@ and can be sold or given away.
 
 #include "model.h"
 
-extern display_type				display;
-
 /* =======================================================
 
       Draw Vertexes

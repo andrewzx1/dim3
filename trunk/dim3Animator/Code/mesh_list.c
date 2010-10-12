@@ -34,8 +34,7 @@ ControlRef						mesh_list;
 DataBrowserItemDataUPP			mesh_list_setitem_upp;
 DataBrowserItemNotificationUPP	mesh_list_notify_upp;
 
-extern int						cur_mesh,gl_view_texture_palette_size;
-extern bool						model_view_reset;
+extern int						cur_mesh;
 extern model_type				model;
 
 /* =======================================================
@@ -110,14 +109,14 @@ static pascal void mesh_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 
 		case kDataBrowserItemSelected:
 			cur_mesh=itemID-1;
-			model_view_reset=TRUE;
+			main_wind_draw();
 			break;
 			
 		case kDataBrowserSelectionSetChanged:
 			GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,FALSE,kDataBrowserItemIsSelected,&count);
 			if (count==0) {
 				reset_mesh_list();
-				model_view_reset=TRUE;
+				main_wind_draw();
 			}
 			break;
 	}
@@ -142,7 +141,7 @@ void start_mesh_controls(WindowRef wind,Rect *box)
 	cbox.right=cbox.left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
-	cbox.bottom=box->bottom-gl_view_texture_palette_size;
+	cbox.bottom=box->bottom;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&mesh_list);
     
@@ -200,7 +199,7 @@ void resize_mesh_controls(Rect *box)
 	cbox.right=cbox.left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
-	cbox.bottom=box->bottom-gl_view_texture_palette_size;
+	cbox.bottom=box->bottom;
 
 	MoveControl(mesh_list,cbox.left,cbox.top);
 	SizeControl(mesh_list,(cbox.right-cbox.left),(cbox.bottom-cbox.top));

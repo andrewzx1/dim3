@@ -38,7 +38,6 @@ DataBrowserAcceptDragUPP		bone_list_drag_accept_upp;
 DataBrowserReceiveDragUPP		bone_list_drag_receive_upp;
 
 extern int						cur_mesh,cur_pose,cur_bone;
-extern bool						model_view_reset;
 extern model_type				model;
 
 /* =======================================================
@@ -273,14 +272,14 @@ static pascal void bone_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 				dialog_bone_move_settings_run(&model.poses[cur_pose].bone_moves[idx]);
 			}
 			reset_bone_list();
-			model_view_reset=TRUE;
+			main_wind_draw();
 			break;
 	
 		case kDataBrowserItemSelected:
 			cur_bone=itemID-1;
 			vertex_set_sel_mask_bone(cur_mesh,cur_bone);
 			hilite_vertex_rows();
-			model_view_reset=TRUE;
+			main_wind_draw();
 			break;
 			
 		case kDataBrowserSelectionSetChanged:
@@ -289,7 +288,7 @@ static pascal void bone_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 				cur_bone=-1;
 				vertex_set_sel_mask_no_bone(cur_mesh);
 				hilite_vertex_rows();
-				model_view_reset=TRUE;
+				main_wind_draw();
 			}
 			break;
 			

@@ -34,8 +34,7 @@ ControlRef						vertex_list;
 DataBrowserItemDataUPP			vertex_list_setitem_upp;
 DataBrowserItemNotificationUPP	vertex_list_notify_upp;
 
-extern int						cur_mesh,cur_pose,gl_view_texture_palette_size;
-extern bool						model_view_reset;
+extern int						cur_mesh,cur_pose;
 extern model_type				model;
 
 /* =======================================================
@@ -188,18 +187,18 @@ static pascal void vertex_list_notify_proc(ControlRef ctrl,DataBrowserItemID ite
 			if (dialog_vertex_settings_run(&model.meshes[cur_mesh].vertexes[i])) {
 				model_calculate_parents(&model);
 				reset_vertex_tab();
-				model_view_reset=TRUE;
+				main_wind_draw();
 			}
 			break;
 
 		case kDataBrowserItemSelected:
 			vertex_set_sel_mask(cur_mesh,(itemID-1),TRUE);
-			model_view_reset=TRUE;
+			main_wind_draw();
 			break;
 			
 		case kDataBrowserItemDeselected:
 			vertex_set_sel_mask(cur_mesh,(itemID-1),FALSE);
-			model_view_reset=TRUE;
+			main_wind_draw();
 			break;
 	}
 }
@@ -223,7 +222,7 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 	cbox.right=box->right;
 	
 	cbox.top=(box->bottom-box->top)/2;
-	cbox.bottom=box->bottom-gl_view_texture_palette_size;
+	cbox.bottom=box->bottom;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&vertex_list);
     
@@ -282,7 +281,7 @@ void resize_vertex_controls(Rect *box)
 	cbox.right=box->right;
 	
 	cbox.top=(box->bottom-box->top)/2;
-	cbox.bottom=box->bottom-gl_view_texture_palette_size;
+	cbox.bottom=box->bottom;
 
 	MoveControl(vertex_list,cbox.left,cbox.top);
 	SizeControl(vertex_list,(cbox.right-cbox.left),(cbox.bottom-cbox.top));

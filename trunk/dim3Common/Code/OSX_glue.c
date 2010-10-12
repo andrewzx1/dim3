@@ -34,7 +34,7 @@ extern AGLContext				ctx;
       
 ======================================================= */
 
-void os_get_icon_file_path(char *path)
+void os_get_support_file_path(char *path,char *app_name)
 {
 	strcpy(path,"Contents/Resources");
 }

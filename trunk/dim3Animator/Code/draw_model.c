@@ -27,7 +27,7 @@ and can be sold or given away.
 
 #include "model.h"
 
-extern display_type				display;
+extern animator_state_type			state;
 
 /* =======================================================
 
@@ -50,7 +50,7 @@ void model_start_texture(texture_type *texture)
 	
 		// get texture ids
 		
-	if (display.playing) {
+	if (state.playing) {
 		bitmap_gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 	}
 	else {
@@ -160,7 +160,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	
 		// setup the current texture frames
 		
-	if (display.playing) {
+	if (state.playing) {
 		model_setup_animated_textures(model,time_get());
 	}
 	
@@ -229,7 +229,7 @@ void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setu
 	
 		// setup the current texture frames
 		
-	if (display.playing) {
+	if (state.playing) {
 		model_setup_animated_textures(model,time_get());
 	}
 	

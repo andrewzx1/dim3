@@ -27,19 +27,17 @@ and can be sold or given away.
 
 #include "model.h"
 
-d3rect						model_box;
+d3rect						model_box,drag_sel_box;
 
 extern int					cur_mesh,cur_bone,shift_x,shift_y,magnify_z,
-							gl_view_texture_palette_size,tool_pixel_sz;
+							tool_pixel_sz,txt_palette_pixel_sz;
 extern float				ang_y,ang_x;
 extern bool					fileopen,model_bone_drag_on,drag_sel_on;
-extern Rect					drag_sel_box;
 extern AGLContext			ctx;
 extern WindowRef			wind;
 
-extern display_type			display;
-
 extern model_draw_setup		draw_setup;
+extern animator_state_type	state;
 
 /* =======================================================
 
@@ -60,7 +58,7 @@ void model_wind_setup(void)
 	model_box.lx=0;
 	model_box.rx=model_box.lx+x_sz;
 	model_box.ty=tool_pixel_sz;
-	model_box.by=(wbox.by-wbox.ty)-(tool_pixel_sz+((wbox.rx-wbox.lx)/max_model_texture));	// supergumba -- replace with better textures
+	model_box.by=(wbox.by-wbox.ty)-txt_palette_pixel_sz;
 }
 
 /* =======================================================
@@ -133,7 +131,7 @@ void draw_model_setup_bones_vertexes(model_type *model,int mesh_idx,model_draw_s
 	
 		// calculate vertexes for first mesh if "show first mesh" is on
 		
-	if ((display.first_mesh) && (mesh_idx!=0)) {
+	if ((state.first_mesh) && (mesh_idx!=0)) {
 		model_create_draw_vertexes(model,0,draw_setup);
 		model_create_draw_normals(model,0,draw_setup);
 	}
@@ -152,8 +150,6 @@ void draw_model_setup_bones_vertexes(model_type *model,int mesh_idx,model_draw_s
 
 void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
-	int		y_sz;
-	
 	if (!fileopen) return;
 
 		// setup transformation to fit model in middle of screen
@@ -174,57 +170,36 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 		// draw the mesh(es) in the current view
 	
-	if (display.texture) {
-		if ((display.first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
+	if (state.texture) {
+		if ((state.first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
 		draw_model(model,mesh_idx,draw_setup);
 		draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 	}
 	
-	if (display.mesh) {
+	if (state.mesh) {
 		draw_model_gl_setup(model,10);
-		if ((display.first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
+		if ((state.first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
 		draw_model_mesh(model,mesh_idx,draw_setup);
 		draw_model_gl_setup(model,0);
 	}
 	
-	if (display.bone) draw_model_bones(model,draw_setup,cur_bone);
+	if (state.bone) draw_model_bones(model,draw_setup,cur_bone);
 	
-	if ((display.texture) || (display.mesh)) {
+	if ((state.texture) || (state.mesh)) {
 		draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 	}
 	
 		// boxes and normals
 		
-	if (display.hit_box) draw_model_box_hit_boxes(model,draw_setup);
-	if (display.normal) draw_model_normals(model,mesh_idx,draw_setup);
-	if (display.view_box) draw_model_box_view(model,draw_setup);
-	
-		// draw the drag selection
-		
-	if (drag_sel_on) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(model_box.lx,model_box.ty,model_box.rx,model_box.by,-1,1);
-	
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		
-		y_sz=0;	// supergumba -- TEMPORARY!
-	
-		glColor4f(0.8,0.8,0.8,0.4);
-		glBegin(GL_POLYGON);
-		glVertex3i(drag_sel_box.left,(y_sz-drag_sel_box.top),-0.1);
-		glVertex3i(drag_sel_box.right,(y_sz-drag_sel_box.top),-0.1);
-		glVertex3i(drag_sel_box.right,(y_sz-drag_sel_box.bottom),-0.1);
-		glVertex3i(drag_sel_box.left,(y_sz-drag_sel_box.bottom),-0.1);
-		glEnd();
-	}
+	if (state.hit_box) draw_model_box_hit_boxes(model,draw_setup);
+	if (state.normal) draw_model_normals(model,mesh_idx,draw_setup);
+	if (state.view_box) draw_model_box_view(model,draw_setup);
 	
 		// free memory
 		
 	model_draw_setup_shutdown(model,draw_setup);
 	
-		// border
+		// 2D drawing
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -232,6 +207,22 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
+		// draw the drag selection
+		
+	if (drag_sel_on) {
+		glColor4f(0.8,0.8,0.8,0.4);
+		
+		glBegin(GL_QUADS);
+		glVertex2i((drag_sel_box.lx+model_box.lx),(drag_sel_box.ty+model_box.ty));
+		glVertex2i((drag_sel_box.rx+model_box.lx),(drag_sel_box.ty+model_box.ty));
+		glVertex2i((drag_sel_box.rx+model_box.lx),(drag_sel_box.by+model_box.ty));
+		glVertex2i((drag_sel_box.lx+model_box.lx),(drag_sel_box.by+model_box.ty));
+
+		glEnd();
+	}
+	
+		// border
 		
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 

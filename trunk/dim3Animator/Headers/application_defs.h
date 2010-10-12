@@ -202,14 +202,19 @@
 #define import_scale_factor				100000.0f
 
 //
-// display
+// animator state
 //
 
 typedef struct		{
-						int				drag_bone_mode,select_mode;
-						bool			texture,mesh,bone,hit_box,
-										normal,view_box,first_mesh,
-										playing,play_animate_blend;
-					} display_type;
+						int					tick,animate_idx,pose_move_idx;
+					} play_blend_type;
+					
+typedef struct		{
+						int					drag_bone_mode,select_mode;
+						bool				texture,mesh,bone,hit_box,
+											normal,view_box,first_mesh,
+											playing,play_animate_blend;
+						play_blend_type		blend[max_model_blend_animation];
+					} animator_state_type;
 
 
