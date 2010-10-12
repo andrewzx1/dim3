@@ -35,7 +35,6 @@ DataBrowserItemDataUPP			pose_list_setitem_upp;
 DataBrowserItemNotificationUPP	pose_list_notify_upp;
 
 extern int						cur_mesh,cur_pose,cur_bone;
-extern bool						model_view_reset;
 extern model_type				model;
 
 /* =======================================================
@@ -120,7 +119,7 @@ static pascal void pose_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 			idx=itemID-2;
 			cur_pose=itemID-2;
 			reset_bone_list();
-			model_view_reset=TRUE;
+			main_wind_draw();
 			break;
 			
 		case kDataBrowserSelectionSetChanged:
@@ -128,7 +127,7 @@ static pascal void pose_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 			if (count==0) {
 				reset_pose_list();
 				reset_bone_list();
-				model_view_reset=TRUE;
+				main_wind_draw();
 			}
 			break;
 

@@ -34,8 +34,7 @@ ControlRef						animate_list;
 DataBrowserItemDataUPP			animate_list_setitem_upp;
 DataBrowserItemNotificationUPP	animate_list_notify_upp;
 
-extern int						cur_animate,cur_pose,gl_view_texture_palette_size;
-extern bool						model_view_reset;
+extern int						cur_animate,cur_pose;
 extern model_type				model;
 
 /* =======================================================
@@ -109,14 +108,14 @@ static pascal void animate_list_notify_proc(ControlRef ctrl,DataBrowserItemID it
 			
 		case kDataBrowserItemSelected:
 			cur_animate=itemID-1;
-			model_view_reset=TRUE;
+			main_wind_draw();
 			break;
 			
 		case kDataBrowserSelectionSetChanged:
 			GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,FALSE,kDataBrowserItemIsSelected,&count);
 			if (count==0) {
 				reset_animate_list();
-				model_view_reset=TRUE;
+				main_wind_draw();
 			}
 			break;
 
@@ -142,7 +141,7 @@ void start_animate_controls(WindowRef wind,Rect *box)
 	cbox.right=box->left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
-	cbox.bottom=box->bottom-gl_view_texture_palette_size;
+	cbox.bottom=box->bottom;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&animate_list);
 
@@ -201,7 +200,7 @@ void resize_animate_controls(Rect *box)
 	cbox.right=box->left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
-	cbox.bottom=box->bottom-gl_view_texture_palette_size;
+	cbox.bottom=box->bottom;
 
 	MoveControl(animate_list,cbox.left,cbox.top);
 	SizeControl(animate_list,(cbox.right-cbox.left),(cbox.bottom-cbox.top));

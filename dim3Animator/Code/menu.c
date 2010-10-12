@@ -34,17 +34,15 @@ and can be sold or given away.
 char							filename[256];
 
 extern int						cur_mesh,cur_bone,cur_pose,cur_animate,
-								shift_x,shift_y,magnify_z,
-								play_animate_blend_idx[max_model_blend_animation];
+								shift_x,shift_y,magnify_z;
 extern float					ang_y,ang_x;
 extern bool						done,fileopen,
 								model_bone_drag_on,model_show_first_mesh;
 
-extern display_type				display;
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
-
+extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
@@ -68,16 +66,17 @@ void menu_start(void)
 	
 	DisposeNibReference(nib);
 	
-	display.texture=TRUE;
-	display.mesh=FALSE;
-	display.bone=FALSE;
-    display.hit_box=FALSE;
-	display.normal=FALSE;
-	display.view_box=FALSE;
-	display.first_mesh=FALSE;
+	state.texture=TRUE;
+	state.mesh=FALSE;
+	state.bone=FALSE;
+    state.hit_box=FALSE;
+	state.normal=FALSE;
+	state.view_box=FALSE;
+	state.first_mesh=FALSE;
 	
 	model_bone_drag_on=FALSE;
-	display.drag_bone_mode=drag_bone_mode_rotate;
+	state.select_mode=select_mode_vertex;
+	state.drag_bone_mode=drag_bone_mode_rotate;
 	
 	fix_menus();
 }
@@ -96,11 +95,11 @@ void windows_start(void)
 	cur_bone=-1;
 	cur_pose=-1;
 	
-	display.playing=FALSE;
-	display.play_animate_blend=FALSE;
+	state.playing=FALSE;
+	state.play_animate_blend=FALSE;
 	
 	for (n=0;n!=max_model_blend_animation;n++) {
-		play_animate_blend_idx[n]=-1;
+		state.blend[n].animate_idx=-1;
 	}
 	
 	model_wind_open();
@@ -1185,7 +1184,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			return(noErr);
 			
 		case kCommandPlayAnimate:
-			model_wind_play(!display.playing,FALSE);
+			model_wind_play(!state.playing,FALSE);
 			return(noErr);
 			
 		case kCommandPlayBlendAnimate:

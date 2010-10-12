@@ -35,21 +35,16 @@ EventLoopTimerRef				model_timer_event;
 EventLoopTimerUPP				model_timer_upp;
 
 int								draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
-								shift_x,shift_y,magnify_z,
-								gl_view_texture_palette_size,
-								play_animate_tick[max_model_blend_animation],
-								play_animate_blend_idx[max_model_blend_animation],
-								play_animate_pose_move_idx[max_model_blend_animation];
+								shift_x,shift_y,magnify_z;
 float							ang_y,ang_x;
-bool							model_view_reset,shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
+bool							shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
 								model_bone_drag_on;
-Rect							drag_sel_box;
 AGLContext						ctx;
 
-display_type					display;
 
 model_type						model;
 model_draw_setup				draw_setup;
+animator_state_type				state;
 
 extern d3rect					model_box;
 
@@ -217,6 +212,112 @@ void model_wind_resize(void)
       
 ======================================================= */
 
+void main_wind_draw_play_calc_animation(int cur_tick,int animate_idx,int blend_idx,bool non_blend_setup)
+{
+	int						first_pose,last_pose,tick,nxt_tick,
+							pose_move_1_idx,pose_move_2_idx,msec;
+	float					pose_factor;
+	model_animate_type		*animate;
+	model_pose_move_type	*pose_move_1,*pose_move_2;
+
+		// calc animation
+		
+	animate=&model.animates[animate_idx];
+	
+	first_pose=0;
+	if (animate->loop_start!=-1) first_pose=animate->loop_start;
+
+	last_pose=animate->npose_move-1;
+	if (animate->loop_end!=-1) last_pose=animate->loop_end;
+	
+	tick=state.blend[blend_idx].tick;
+	pose_move_1_idx=state.blend[blend_idx].pose_move_idx;
+	
+	msec=animate->pose_moves[pose_move_1_idx].msec;
+	nxt_tick=tick+msec;
+	
+	while (nxt_tick<cur_tick) {				// skip ahead till we find correct pose
+		pose_move_1_idx++;
+		if (pose_move_1_idx>last_pose) pose_move_1_idx=first_pose;
+		
+		msec=animate->pose_moves[pose_move_1_idx].msec;
+
+		tick=nxt_tick;
+		nxt_tick=tick+msec;
+	}
+	
+	state.blend[blend_idx].tick=tick;
+	state.blend[blend_idx].pose_move_idx=pose_move_1_idx;
+	
+	pose_move_2_idx=pose_move_1_idx+1;
+	if (pose_move_2_idx>last_pose) pose_move_2_idx=first_pose;
+	
+		// get the pose moves
+		
+	pose_move_1=&animate->pose_moves[pose_move_1_idx];
+	pose_move_2=&animate->pose_moves[pose_move_2_idx];
+	
+		// setup the poses
+	
+	draw_setup.poses[blend_idx].idx_1=pose_move_1->pose_idx;
+	draw_setup.poses[blend_idx].idx_2=pose_move_2->pose_idx;
+	
+	pose_factor=(float)(nxt_tick-cur_tick)/(float)msec;
+	
+    draw_setup.poses[blend_idx].factor=pose_factor;
+	draw_setup.poses[blend_idx].acceleration=pose_move_1->acceleration;
+	
+		// non-blended setup
+		
+	if (non_blend_setup) {
+		draw_setup.ang.x=0;
+		draw_setup.ang.y=0;
+		draw_setup.ang.z=0;
+		
+		draw_setup.sway.x=pose_move_2->sway.x+((pose_move_1->sway.x-pose_move_2->sway.x)*pose_factor);
+		draw_setup.sway.y=pose_move_2->sway.y+((pose_move_1->sway.y-pose_move_2->sway.y)*pose_factor);
+		draw_setup.sway.z=pose_move_2->sway.z+((pose_move_1->sway.z-pose_move_2->sway.z)*pose_factor);
+		draw_setup.move.x=pose_move_2->mov.x+((pose_move_1->mov.x-pose_move_2->mov.x)*pose_factor);
+		draw_setup.move.y=pose_move_2->mov.y+((pose_move_1->mov.y-pose_move_2->mov.y)*pose_factor);
+		draw_setup.move.z=pose_move_2->mov.z+((pose_move_1->mov.z-pose_move_2->mov.z)*pose_factor);
+	}
+}
+
+void main_wind_draw_play(void)
+{
+	int					n,cur_tick;
+	
+		// if no current animation, just do no pose for animated textures
+		
+	if ((cur_animate==-1) && (!state.play_animate_blend)) {
+		main_wind_draw();
+		return;
+	}
+	
+		// clear the draw setup
+		
+	model_draw_setup_clear(&model,&draw_setup);
+	
+		// calc the pose
+		
+	cur_tick=time_get();
+	
+	if (!state.play_animate_blend) {
+		main_wind_draw_play_calc_animation(cur_tick,cur_animate,0,TRUE);
+	}
+	else {
+		for (n=0;n!=max_model_blend_animation;n++) {
+			if (state.blend[n].animate_idx!=-1) {
+				main_wind_draw_play_calc_animation(cur_tick,state.blend[n].animate_idx,n,(n==0));
+			}
+		}
+	}
+		
+		// global draw setup
+	
+	draw_model_wind(&model,cur_mesh,&draw_setup);
+}
+
 void main_wind_draw(void)
 {
 		// clear gl buffer
@@ -228,7 +329,12 @@ void main_wind_draw(void)
 	
 		// model
 		
-	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	if (!state.playing) {
+		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	}
+	else {
+		main_wind_draw_play();
+	}
 
 		// palettes
 		
@@ -238,10 +344,6 @@ void main_wind_draw(void)
 		// swap GL buffer
 		
 	aglSwapBuffers(ctx);
-	
-		// controls
-		
-	DrawControls(wind);
 }
 
 /* =======================================================
@@ -268,6 +370,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 			
 				case kEventWindowDrawContent:
 					main_wind_draw();
+					DrawControls(wind);
 					return(noErr);
 					
 				case kEventWindowBoundsChanged:
@@ -305,12 +408,10 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					
 						// clicking in model view
 						
-					pt.v-=model_box.ty;
-					
 					GetEventParameter(event,kEventParamKeyModifiers,typeUInt32,NULL,sizeof(unsigned long),NULL,&modifiers);
 					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
 					
-					click_model_wind(pt,modifiers);
+					click_model_wind(&pnt,modifiers);
 					model_wind_reset_modifiers();
 					
 					return(noErr);
@@ -387,7 +488,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 
 /* =======================================================
 
-      Model Timer
+      Model Playering and Timer
       
 ======================================================= */
 
@@ -405,141 +506,30 @@ void model_wind_play(bool play,bool blend)
 		// always turn off animation until setup is complete
 		// as animation is on a timer
 		
-	display.playing=FALSE;
+	state.playing=FALSE;
 	
 		// setup animation
 		
-	display.play_animate_blend=blend;
+	state.play_animate_blend=blend;
 	
 	time_start();
 	tick=time_get();
 
 	for (n=0;n!=max_model_blend_animation;n++) {
-		play_animate_pose_move_idx[n]=0;
-		play_animate_tick[n]=tick;
+		state.blend[n].pose_move_idx=0;
+		state.blend[n].tick=tick;
 	}
-// supergumba -- is this necessary?	
-	model_view_reset=FALSE;
 	
 		// turn on/off animation
 		
-	display.playing=play;
-}
-
-void model_wind_play_calc_animation(int cur_tick,int animate_idx,int blend_idx,bool non_blend_setup)
-{
-	int						first_pose,last_pose,tick,nxt_tick,
-							pose_move_1_idx,pose_move_2_idx,msec;
-	float					pose_factor;
-	model_animate_type		*animate;
-	model_pose_move_type	*pose_move_1,*pose_move_2;
-
-		// calc animation
-		
-	animate=&model.animates[animate_idx];
+	state.playing=play;
 	
-	first_pose=0;
-	if (animate->loop_start!=-1) first_pose=animate->loop_start;
-
-	last_pose=animate->npose_move-1;
-	if (animate->loop_end!=-1) last_pose=animate->loop_end;
-	
-	tick=play_animate_tick[blend_idx];
-	pose_move_1_idx=play_animate_pose_move_idx[blend_idx];
-	
-	msec=animate->pose_moves[pose_move_1_idx].msec;
-	nxt_tick=tick+msec;
-	
-	while (nxt_tick<cur_tick) {				// skip ahead till we find correct pose
-		pose_move_1_idx++;
-		if (pose_move_1_idx>last_pose) pose_move_1_idx=first_pose;
-		
-		msec=animate->pose_moves[pose_move_1_idx].msec;
-
-		tick=nxt_tick;
-		nxt_tick=tick+msec;
-	}
-	
-	play_animate_tick[blend_idx]=tick;
-	play_animate_pose_move_idx[blend_idx]=pose_move_1_idx;
-	
-	pose_move_2_idx=pose_move_1_idx+1;
-	if (pose_move_2_idx>last_pose) pose_move_2_idx=first_pose;
-	
-		// get the pose moves
-		
-	pose_move_1=&animate->pose_moves[pose_move_1_idx];
-	pose_move_2=&animate->pose_moves[pose_move_2_idx];
-	
-		// setup the poses
-	
-	draw_setup.poses[blend_idx].idx_1=pose_move_1->pose_idx;
-	draw_setup.poses[blend_idx].idx_2=pose_move_2->pose_idx;
-	
-	pose_factor=(float)(nxt_tick-cur_tick)/(float)msec;
-	
-    draw_setup.poses[blend_idx].factor=pose_factor;
-	draw_setup.poses[blend_idx].acceleration=pose_move_1->acceleration;
-	
-		// non-blended setup
-		
-	if (non_blend_setup) {
-		draw_setup.ang.x=0;
-		draw_setup.ang.y=0;
-		draw_setup.ang.z=0;
-		
-		draw_setup.sway.x=pose_move_2->sway.x+((pose_move_1->sway.x-pose_move_2->sway.x)*pose_factor);
-		draw_setup.sway.y=pose_move_2->sway.y+((pose_move_1->sway.y-pose_move_2->sway.y)*pose_factor);
-		draw_setup.sway.z=pose_move_2->sway.z+((pose_move_1->sway.z-pose_move_2->sway.z)*pose_factor);
-		draw_setup.move.x=pose_move_2->mov.x+((pose_move_1->mov.x-pose_move_2->mov.x)*pose_factor);
-		draw_setup.move.y=pose_move_2->mov.y+((pose_move_1->mov.y-pose_move_2->mov.y)*pose_factor);
-		draw_setup.move.z=pose_move_2->mov.z+((pose_move_1->mov.z-pose_move_2->mov.z)*pose_factor);
-	}
+	if (fileopen) main_wind_draw();
 }
 
 void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 {
-	int					n,cur_tick;
-	
-		// if not playing, then do model view resets
-		
-	if (!display.playing) {
-		if (model_view_reset) {
-			model_view_reset=FALSE;
-			main_wind_draw();
-		}
-		return;
-	}
-	
-		// if no current animation, just do no pose for animated textures
-		
-	if ((cur_animate==-1) && (!display.play_animate_blend)) {
-		main_wind_draw();
-		return;
-	}
-	
-		// clear the draw setup
-		
-	model_draw_setup_clear(&model,&draw_setup);
-	
-		// calc the pose
-		
-	cur_tick=time_get();
-	
-	if (!display.play_animate_blend) {
-		model_wind_play_calc_animation(cur_tick,cur_animate,0,TRUE);
-	}
-	else {
-		for (n=0;n!=max_model_blend_animation;n++) {
-			if (play_animate_blend_idx[n]!=-1) {
-				model_wind_play_calc_animation(cur_tick,play_animate_blend_idx[n],n,(n==0));
-			}
-		}
-	}
-		
-		// global draw setup
-	
-	main_wind_draw();
+	if (state.playing) main_wind_draw();
 }
 
 /* =======================================================
@@ -623,10 +613,6 @@ void model_wind_open(void)
 		// get gl sizes
 		
 	GetWindowPortBounds(wind,&box);
-	
-	// supergumba -- get rid of this!
-	gl_view_texture_palette_size=(wbox.right-wbox.left)/max_model_texture;
-	
 
 		// dragging for bones window
 		

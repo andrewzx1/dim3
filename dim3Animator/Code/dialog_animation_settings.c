@@ -29,8 +29,8 @@ and can be sold or given away.
 #include "dialog.h"
 #include "model.h"
 
-extern model_type		model;
-extern display_type		display;
+extern model_type			model;
+extern animator_state_type	state;
 
 #define kAnimationPoseTabCount				6
 #define kAnimationPoseTab					FOUR_CHAR_CODE('tabb')
@@ -296,7 +296,7 @@ static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler
 					// dialog buttons
 			
 				case kAnimationPosePlay:
-					model_wind_play(!display.playing,FALSE);
+					model_wind_play(!state.playing,FALSE);
 					return(noErr);
 					
 				case kHICommandCancel:

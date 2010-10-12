@@ -34,7 +34,7 @@ extern void model_wind_reset_tools(void);
 extern void model_wind_switch_mesh_mode(void);
 extern void model_wind_reset_modifiers(void);
 
-extern void click_model_wind(Point pt,unsigned long modifiers);
+extern void click_model_wind(d3pnt *pnt,unsigned long modifiers);
 
 extern void tool_palette_initialize(void);
 extern void tool_palette_shutdown(void);
