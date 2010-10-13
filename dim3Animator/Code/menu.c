@@ -33,12 +33,10 @@ and can be sold or given away.
 
 char							filename[256];
 
-extern int						cur_mesh,cur_bone,cur_pose,cur_animate,
-								shift_x,shift_y,magnify_z;
-extern float					ang_y,ang_x;
-extern bool						done,fileopen,
-								model_bone_drag_on,model_show_first_mesh;
-
+extern int						cur_mesh,cur_bone,cur_pose,cur_animate,magnify_z;
+extern bool						fileopen;
+extern d3pnt					shift;
+extern d3ang					ang;
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
@@ -74,7 +72,6 @@ void menu_start(void)
 	state.view_box=FALSE;
 	state.first_mesh=FALSE;
 	
-	model_bone_drag_on=FALSE;
 	state.select_mode=select_mode_vertex;
 	state.drag_bone_mode=drag_bone_mode_rotate;
 	
@@ -142,7 +139,7 @@ bool create_binary(void)
 	
 	model_save(&model);
 	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
     
 	return(TRUE);
 }
@@ -154,7 +151,7 @@ bool save_binary(void)
 	SetThemeCursor(kThemeWatchCursor);
 	
 	ok=model_save(&model);
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	
 	if (!ok) dialog_alert("dim3 Animator could not save model.","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
 	
@@ -169,9 +166,11 @@ bool save_binary(void)
 
 void reset_model_open(void)
 {
-    ang_y=180;
-	ang_x=0;
-	shift_x=shift_y=0;
+	ang.x=0;
+    ang.y=180;
+	
+	shift.x=0;
+	shift.y=0;
 	
 	vertex_clear_sel_mask(cur_mesh);
 	vertex_clear_hide_mask(cur_mesh);
@@ -228,11 +227,11 @@ void new_model_xml(void)
 	
 	if (!create_binary()) {
 		windows_end();
-		SetThemeCursor(kThemeArrowCursor);
+		os_set_arrow_cursor();
 		return;
 	}
 	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	
 		// finish
 		
@@ -245,7 +244,7 @@ void open_model_xml(void)
 {
 	char		file_name[256];
 	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 
     if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
 	
@@ -258,7 +257,7 @@ void open_model_xml(void)
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
 	model_open(&model,file_name,TRUE);
     	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	
 		// finish
 		
@@ -310,7 +309,7 @@ void import_mesh_obj(void)
 	char			path[1024],err_str[256];
 	bool			found_normals;
     
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	if (!nav_open_file("obj",path)) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
@@ -343,7 +342,7 @@ void import_mesh_lightwave(void)
 	float			scale;
 	char			path[1024],err_str[256];
     
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	if (!nav_open_file("lwo",path)) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
@@ -376,7 +375,7 @@ void import_mesh_c4d_xml(void)
 	char			path[1024],err_str[256];
 	float			scale;
     
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	if (!nav_open_file("xml",path)) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
@@ -414,7 +413,7 @@ void insert_mesh_dim3_model(void)
 {
 	char			file_name[256];
 	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 
     if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
 	
@@ -429,7 +428,7 @@ void insert_mesh_dim3_model(void)
     model_floor(&model,cur_mesh);
     model_recalc_boxes(&model);
 	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	
 	reset_vertex_tab();
 	reset_pose_list();
@@ -685,38 +684,38 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			// --------------------------------
 					
 		case kCommandFront:
-			ang_y=180;
-			ang_x=0;
+			ang.x=0;
+			ang.y=180;
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandLeft:
-			ang_y=270;
-			ang_x=0;
+			ang.x=0;
+			ang.y=270;
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandRight:
-			ang_y=90;
-			ang_x=0;
+			ang.x=0;
+			ang.y=90;
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandBack:
-			ang_y=0;
-			ang_x=0;
+			ang.x=0;
+			ang.y=0;
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandTop:
-			ang_y=0;
-			ang_x=270;
+			ang.x=270;
+			ang.y=0;
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandBottom:
-			ang_y=0;
-			ang_x=90;
+			ang.x=90;
+			ang.y=0;
 			main_wind_draw();
 			return(noErr);
 						

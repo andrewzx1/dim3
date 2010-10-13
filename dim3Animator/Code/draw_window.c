@@ -29,10 +29,12 @@ and can be sold or given away.
 
 d3rect						model_box,drag_sel_box;
 
-extern int					cur_mesh,cur_bone,shift_x,shift_y,magnify_z,
+extern int					cur_mesh,cur_bone,magnify_z,
 							tool_pixel_sz,txt_palette_pixel_sz;
-extern float				ang_y,ang_x;
-extern bool					fileopen,model_bone_drag_on,drag_sel_on;
+extern bool					fileopen,drag_sel_on;
+extern d3pnt				shift;
+extern d3ang				ang;
+
 extern AGLContext			ctx;
 extern WindowRef			wind;
 
@@ -95,13 +97,13 @@ void draw_model_gl_setup(model_type *model,int z_offset)
 
 	sz=500+((4000-magnify_z)*5);
 	
-	glTranslatef(-((GLfloat)shift_x),-((GLfloat)(shift_y-yoff)),(GLfloat)sz);
+	glTranslatef(-((GLfloat)shift.x),-((GLfloat)(shift.y-yoff)),(GLfloat)sz);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glRotatef(-ang_x,1.0f,0.0f,0.0f);
-	glRotatef(angle_add(ang_y,180.0f),0.0f,1.0f,0.0f);
+	glRotatef(-ang.x,1.0f,0.0f,0.0f);
+	glRotatef(angle_add(ang.y,180.0f),0.0f,1.0f,0.0f);
 
 		// drawing setup
 		

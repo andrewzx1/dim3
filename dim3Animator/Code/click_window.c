@@ -29,9 +29,10 @@ and can be sold or given away.
 #include "window.h"
 #include "menu.h"
 
-extern int						cur_mesh,cur_pose,cur_bone,draw_type,shift_x,shift_y,magnify_z;
-extern float					ang_y,ang_x;
-extern bool						shift_on,rotate_on,size_on,drag_sel_on,model_bone_drag_on;
+extern int						cur_mesh,cur_pose,cur_bone,magnify_z;
+extern bool						shift_on,rotate_on,size_on,drag_sel_on;
+extern d3pnt					shift;
+extern d3ang					ang;
 extern d3rect					model_box,drag_sel_box;
 
 extern animator_state_type		state;
@@ -164,7 +165,7 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		}
 		else {
 			memset(org_vertex_sel,0x0,model.meshes[cur_mesh].nvertex);
-			SetThemeCursor(kThemeArrowCursor);
+			os_set_arrow_cursor();
 			chg_sel=TRUE;
 		}
 	}
@@ -216,7 +217,7 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		
 	hilite_vertex_rows();
 
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 }
 
 /* =======================================================
@@ -225,50 +226,46 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
       
 ======================================================= */
 
-void change_model_wind(d3pnt *pnt)
+void change_model_wind(d3pnt *start_pnt)
 {
-/* supergumba
-	int						old_shift_x,old_shift_y,old_magnify_z;
-	float					old_ang_y,old_ang_x;
-	Point					pt,last_pt;
-	MouseTrackingResult		track;
+	int						old_magnify_z;
+	d3pnt					pnt,last_pnt,old_shift;
+	d3ang					old_ang;
 	
-		// rotate the model
+		// rotate, shift, or size the model
 
-	last_pt.h=last_pt.v=-1;
+	last_pnt.x=last_pnt.y=-1;
 	
-	old_shift_x=shift_x;
-	old_shift_y=shift_y;
-	old_ang_y=ang_y;
-	old_ang_x=ang_x;
+	old_shift.x=shift.x;
+	old_shift.y=shift.y;
+	
+	old_ang.x=ang.x;
+	old_ang.y=ang.y;
+	
 	old_magnify_z=magnify_z;
 	
-	do {
-		TrackMouseLocation(NULL,&pt,&track);
-		model_wind_offset_click(&pt);
+	while (!os_track_mouse_location(&pnt,&model_box)) {
 		
-		if (memcmp(&last_pt,&pt,sizeof(Point))==0) continue;
-		
-		memmove(&last_pt,&pt,sizeof(Point));
-		
+		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
+		memmove(&last_pnt,&pnt,sizeof(d3pnt));
+			
 		if (shift_on) {
-			shift_x=old_shift_x+((last_pt.h-start_pt.h)*4);
-			shift_y=old_shift_y-((last_pt.v-start_pt.v)*4);
+			shift.x=old_shift.x+((last_pnt.x-start_pnt->x)*4);
+			shift.y=old_shift.y-((last_pnt.y-start_pnt->y)*4);
 		}
 		if (rotate_on) {
-			ang_y=old_ang_y+(float)((last_pt.h-start_pt.h)/5);
-			ang_x=old_ang_x-(float)((last_pt.v-start_pt.v)/5);
+			ang.x=old_ang.x-(float)((last_pnt.y-start_pnt->y)/5);
+			ang.y=old_ang.y+(float)((last_pnt.x-start_pnt->x)/5);
 		}
 		if (size_on) {
-			magnify_z=old_magnify_z+((last_pt.v-start_pt.v)*2);
+			magnify_z=old_magnify_z+((last_pnt.y-start_pnt->y)*2);
 		}
 		
 		if (!state.playing) main_wind_draw();
 	
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 	if (!state.playing) main_wind_draw();
-*/
 }
 
 /* =======================================================
@@ -277,11 +274,13 @@ void change_model_wind(d3pnt *pnt)
       
 ======================================================= */
 
-bool draw_bone_model_wind_click_box(Point start_pt,float x,float y,float z)
+bool draw_bone_model_wind_click_box(d3pnt *start_pnt,float x,float y,float z)
 {
 	int				ix,iy;
 	double			dx,dy,dz,mod_matrix[16],proj_matrix[16],vport[4];
-	Rect			box;
+	d3rect			wbox;
+	
+	os_get_window_box(&wbox);
 	
 		// reverse the projection
 		
@@ -291,26 +290,23 @@ bool draw_bone_model_wind_click_box(Point start_pt,float x,float y,float z)
 	
 	gluProject(x,y,z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 	ix=(int)dx;
-	iy=(int)((model_box.by-model_box.ty)-dy);
+	iy=(wbox.by-((int)dy))-model_box.ty;
 
 		// check box
 		
-	SetRect(&box,(ix-6),(iy-6),(ix+6),(iy+6));
-	return(PtInRect(start_pt,&box));
+	return((start_pnt->x>=(ix-6)) && (start_pnt->x<=(ix+6)) && (start_pnt->y>=(iy-6)) && (start_pnt->y<=(iy+6)));
 }
 
 bool drag_bone_model_wind(d3pnt *start_pnt)
 {
-/* supergumba
 	int						n,k,drag_handle;
 	float					x,y,z,hx,hy,hz,org_ang,org_mov,
 							bone_drag_handle_offset;
 	float					*ang,*mov;
-	Point					pt,last_pt;
+	d3pnt					pnt,last_pnt;
 	d3vct					vct;
 	d3ang					hang,rot;
 	model_draw_bone_type	*draw_bone;
-	MouseTrackingResult		track;
 	
 	if (model.nbone==0) return(FALSE);
 	
@@ -350,7 +346,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.y=rot.y;
 		hang.z=rot.z;
 		draw_model_bones_drag_handle_calc(x,y,z,&vct,&hang,&hx,&hy,&hz);
-		if (draw_bone_model_wind_click_box(start_pt,hx,hy,hz)) drag_handle=drag_handle_x;
+		if (draw_bone_model_wind_click_box(start_pnt,hx,hy,hz)) drag_handle=drag_handle_x;
 		
 			// y drag bone
 			
@@ -361,7 +357,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.y=0;
 		hang.z=rot.z;
 		draw_model_bones_drag_handle_calc(x,y,z,&vct,&hang,&hx,&hy,&hz);
-		if (draw_bone_model_wind_click_box(start_pt,hx,hy,hz)) drag_handle=drag_handle_y;
+		if (draw_bone_model_wind_click_box(start_pnt,hx,hy,hz)) drag_handle=drag_handle_y;
 		
 			// z drag bone
 			
@@ -372,7 +368,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.y=rot.y;
 		hang.z=0;
 		draw_model_bones_drag_handle_calc(x,y,z,&vct,&hang,&hx,&hy,&hz);
-		if (draw_bone_model_wind_click_box(start_pt,hx,hy,hz)) drag_handle=drag_handle_z;
+		if (draw_bone_model_wind_click_box(start_pnt,hx,hy,hz)) drag_handle=drag_handle_z;
 	}
 	
 		// click on any bones?
@@ -387,7 +383,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 			y=draw_bone->fpnt.y+draw_setup.move.y;
 			z=draw_bone->fpnt.z+draw_setup.move.z;
 			
-			if (draw_bone_model_wind_click_box(start_pt,x,y,z)) {
+			if (draw_bone_model_wind_click_box(start_pnt,x,y,z)) {
 				k=n;
 				break;
 			}
@@ -436,21 +432,18 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 
 	org_ang=*ang;
 	org_mov=*mov;
-	last_pt.h=last_pt.v=-1;
+	last_pnt.x=last_pnt.y=-1;
 	
 	undo_set_bone_move(cur_pose,cur_bone);
 	
 	SetThemeCursor(kThemeClosedHandCursor);
 		
-	do {
-		TrackMouseLocation(NULL,&pt,&track);
-		model_wind_offset_click(&pt);
+	while (!os_track_mouse_location(&pnt,&model_box)) {
 		
-		if (memcmp(&last_pt,&pt,sizeof(Point))==0) continue;
-	
-		memmove(&last_pt,&pt,sizeof(Point));
+		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
+		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 		
-		x=pt.h-start_pt.h;
+		x=pnt.x-start_pnt->x;
 		if (x<-180) x=-180;
 		if (x>180) x=180;
 		
@@ -463,21 +456,19 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		
 			// draw the model
 			
-		model_bone_drag_on=TRUE;
 		main_wind_draw();
-		model_bone_drag_on=FALSE;
 		
 		reset_bone_list();
 		redraw_bone_list();
 
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 
 		// redraw model
 		
 	main_wind_draw();
-*/
+
 	return(TRUE);
 }
 
@@ -489,14 +480,11 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 
 bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 {
-/*
 	int						n,k,box_idx,pt_idx,xsz,zsz,ysz,offx,offz,offy,
 							kx,ky,kz,x[8],y[8],z[8];
 	bool					model_hit_box_drag_on;
-	d3pnt					org_pt,org_cnt;
-	Point					last_pt,pt;
+	d3pnt					org_pnt,org_cnt,last_pnt,pnt;
 	model_box_type			*box;
-	MouseTrackingResult		track;
 	
 	model_wind_play(FALSE,FALSE);
 	
@@ -532,7 +520,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	
 		for (k=0;k!=8;k++) {
 			model_get_point_position(&draw_setup,&x[k],&y[k],&z[k]);
-			if (draw_bone_model_wind_click_box(start_pt,x[k],y[k],z[k])) {
+			if (draw_bone_model_wind_click_box(start_pnt,x[k],y[k],z[k])) {
 				box_idx=n;
 				pt_idx=k;
 				break;
@@ -547,67 +535,61 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 		// get original size
 		
 	box=&model.hit_boxes[box_idx].box;
-	memmove(&org_pt,&box->size,sizeof(d3pnt));
+	memmove(&org_pnt,&box->size,sizeof(d3pnt));
 	memmove(&org_cnt,&box->offset,sizeof(d3pnt));
 	
 		// drag handle
 		
 	model_hit_box_drag_on=FALSE;
 
-	last_pt.h=last_pt.v=-1;
+	last_pnt.x=last_pnt.y=-1;
 	
 	SetThemeCursor(kThemeClosedHandCursor);
 		
-	do {
-		TrackMouseLocation(NULL,&pt,&track);
-		model_wind_offset_click(&pt);
+	while (!os_track_mouse_location(&pnt,&model_box)) {
 		
-		if (memcmp(&last_pt,&pt,sizeof(Point))==0) continue;
-	
-		memmove(&last_pt,&pt,sizeof(Point));
+		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
+		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 		
-		kx=(pt.h-start_pt.h)*5;
-		ky=(pt.v-start_pt.v)*5;
+		kx=(pnt.x-start_pnt->x)*5;
+		ky=(pnt.y-start_pnt->y)*5;
 		kz=0;
 		
-		rotate_point_center(&kx,&ky,&kz,ang_x,ang_y,0.0f);
+		rotate_point_center(&kx,&ky,&kz,ang.x,ang.y,0.0f);
 
 		if ((pt_idx==0) || (pt_idx==1) || (pt_idx==4) || (pt_idx==5)) {
-			box->size.x=org_pt.x-kx;
+			box->size.x=org_pnt.x-kx;
 		}
 		else {
-			box->size.x=org_pt.x+kx;
+			box->size.x=org_pnt.x+kx;
 		}
 		if ((pt_idx==0) || (pt_idx==1) || (pt_idx==2) || (pt_idx==3)) {
-			box->size.y=org_pt.y-ky;
+			box->size.y=org_pnt.y-ky;
 		}
 		else {
-			box->size.y=org_pt.y+ky;
+			box->size.y=org_pnt.y+ky;
 			box->offset.y=org_cnt.y+ky;
 		}
 		if ((pt_idx==0) || (pt_idx==3) || (pt_idx==4) || (pt_idx==7)) {
-			box->size.z=org_pt.z-kz;
+			box->size.z=org_pnt.z-kz;
 		}
 		else {
-			box->size.z=org_pt.z+kz;
+			box->size.z=org_pnt.z+kz;
 		}
 		
 			// draw the model
 			
 		main_wind_draw();
 		model_hit_box_drag_on=TRUE;
+	}
 
-	} while (track!=kMouseTrackingMouseReleased);
-
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 
 		// redraw model
 		
 	main_wind_draw();
 
 	return(model_hit_box_drag_on);
-	*/
-	return(FALSE);
 }
 
 /* =======================================================

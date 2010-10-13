@@ -29,7 +29,6 @@ extern void main_wind_draw(void);
 
 extern void model_wind_open(void);
 extern void model_wind_close(void);
-extern void model_wind_offset_click(Point *pt);
 extern void model_wind_reset_tools(void);
 extern void model_wind_switch_mesh_mode(void);
 extern void model_wind_reset_modifiers(void);

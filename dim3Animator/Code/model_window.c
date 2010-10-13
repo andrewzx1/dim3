@@ -34,13 +34,12 @@ EventHandlerUPP					model_wind_upp;
 EventLoopTimerRef				model_timer_event;
 EventLoopTimerUPP				model_timer_upp;
 
-int								draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
-								shift_x,shift_y,magnify_z;
-float							ang_y,ang_x;
-bool							shift_on,rotate_on,size_on,drag_sel_on,vertex_on,
-								model_bone_drag_on;
-AGLContext						ctx;
+int								cur_mesh,cur_bone,cur_pose,cur_animate,magnify_z;
+bool							shift_on,rotate_on,size_on,drag_sel_on,vertex_on;
+d3pnt							shift;
+d3ang							ang;
 
+AGLContext						ctx;
 
 model_type						model;
 model_draw_setup				draw_setup;
@@ -74,7 +73,7 @@ void model_wind_key(char ch,bool up)
 	if (ch==0x20) {
 		if (up) {
 			shift_on=FALSE;
-			SetThemeCursor(kThemeArrowCursor);
+			os_set_arrow_cursor();
 		}
 		else {
 			shift_on=TRUE;
@@ -118,7 +117,7 @@ void key_modifier_model_wind(unsigned long modifiers)
 		return;
 	}
 	
-	if (!shift_on) SetThemeCursor(kThemeArrowCursor);
+	if (!shift_on) os_set_arrow_cursor();
 }
 
 void model_wind_reset_modifiers(void)
@@ -155,7 +154,7 @@ void model_wind_cursor(unsigned long modifiers)
 		return;
 	}
 	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 }
 
 /* =======================================================
@@ -713,17 +712,5 @@ void model_wind_close(void)
 		// close window
 
 	DisposeWindow(wind);
-}
-
-/* =======================================================
-
-      Window Click Offsets
-      
-======================================================= */
-
-void model_wind_offset_click(Point *pt)
-{
-	// supergumba -- fix all this up
-//	pt->v-=tool_height;
 }
 
