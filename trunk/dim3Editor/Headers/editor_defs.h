@@ -300,7 +300,53 @@ typedef struct		{
 					} view_picker_type;
 
 //
-// mode struct
+// auto generator
+//
+
+#define ag_max_room								256
+#define ag_max_shape							128
+#define ag_max_shape_point						64
+#define ag_max_shape_connector					32
+#define ag_max_shape_poly						64
+
+#define ag_connector_type_min_x					0
+#define ag_connector_type_max_x					1
+#define ag_connector_type_min_z					2
+#define ag_connector_type_max_z					3
+
+typedef struct		{
+						int						npt,v[4];
+					} ag_shape_poly_type;
+
+typedef struct		{
+						int						type,dist,v[2];
+						d3pnt					top_left;
+					} ag_shape_connector_type;
+
+typedef struct		{
+						int						nvertex,npoly,nconnector;
+						char					name[name_str_len];
+						bool					corridor;
+						d3pnt					vertexes[ag_max_shape_point];
+						ag_shape_poly_type		polys[ag_max_shape_poly];
+						ag_shape_connector_type	connectors[ag_max_shape_connector];
+					} ag_shape_type;
+
+typedef struct		{
+						int						shape_idx,mesh_idx;
+						bool					connectors_used[ag_max_shape_connector];
+						d3pnt					min,max;
+						d3vct					size;
+					} ag_room_type;
+
+typedef struct		{
+						int						nshape,nroom;
+						ag_shape_type			*shapes;
+						ag_room_type			*rooms;
+					} ag_state_type;
+
+//
+// editor state struct
 //
 
 typedef struct		{
