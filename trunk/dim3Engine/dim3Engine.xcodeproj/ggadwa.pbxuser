@@ -79,12 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 308108655;
-			PBXWorkspaceStateSaveDate = 308108655;
-		};
-		perUserProjectItems = {
-			267EECFE125D5E720027A9BC /* PBXBookmark */ = 267EECFE125D5E720027A9BC /* PBXBookmark */;
-			267EED52125D6D520027A9BC /* PBXTextBookmark */ = 267EED52125D6D520027A9BC /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 308635288;
+			PBXWorkspaceStateSaveDate = 308635288;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -365,32 +361,6 @@
 			sepNavVisRange = "{2422, 1595}";
 			sepNavWindowFrame = "{{274, 253}, {1041, 747}}";
 		};
-	};
-	267EECFA125D5E6E0027A9BC /* JSValueRef.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		path = JSValueRef.h;
-		sourceTree = "<group>";
-	};
-	267EECFE125D5E720027A9BC /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 267EECFA125D5E6E0027A9BC /* JSValueRef.h */;
-	};
-	267EED52125D6D520027A9BC /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 267EED53125D6D520027A9BC /* JSValueRef.h */;
-		name = "JSValueRef.h: 210";
-		rLen = 17;
-		rLoc = 8011;
-		rType = 0;
-		vrLen = 3300;
-		vrLoc = 7827;
-	};
-	267EED53125D6D520027A9BC /* JSValueRef.h */ = {
-		isa = PBXFileReference;
-		name = JSValueRef.h;
-		path = /Users/ggadwa/dim3Code/dim3Common/Frameworks/JavaScriptCore.framework/Headers/JSValueRef.h;
-		sourceTree = "<absolute>";
 	};
 	268CBC8B0DD2AA6700CF0256 /* network.h */ = {
 		uiCtxt = {
@@ -1218,9 +1188,9 @@
 	};
 	F5A58199090B433F00BE7C36 /* script_model.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1048, 2392}}";
-			sepNavSelRange = "{3621, 0}";
-			sepNavVisRange = "{2687, 1609}";
+			sepNavIntBoundsRect = "{{0, 0}, {1048, 2899}}";
+			sepNavSelRange = "{5666, 0}";
+			sepNavVisRange = "{4750, 1330}";
 			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
 		};
 	};
@@ -1658,9 +1628,9 @@
 	};
 	F5A581D4090B433F00BE7C36 /* script_weap_projectile.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1244, 9516}}";
-			sepNavSelRange = "{14435, 0}";
-			sepNavVisRange = "{13496, 1572}";
+			sepNavIntBoundsRect = "{{0, 0}, {1181, 9815}}";
+			sepNavSelRange = "{14327, 174}";
+			sepNavVisRange = "{13496, 1524}";
 			sepNavWindowFrame = "{{639, 188}, {1041, 747}}";
 		};
 	};

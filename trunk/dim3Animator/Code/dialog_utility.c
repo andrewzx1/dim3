@@ -51,7 +51,7 @@ void dialog_open(WindowRef *wind,char *name)
 	IBNibRef				nib;
 	CFStringRef				cf_str;
 	
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	
 #ifdef DIALOG_IS_EDITOR
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Editor",kCFStringEncodingMacRoman);
@@ -960,7 +960,7 @@ void dialog_progress_start(char *title,int count)
 
 void dialog_progress_end(void)
 {
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	DisposeWindow(dialog_progress_wind);
 }
 
@@ -975,7 +975,7 @@ int dialog_alert(char *title,char *msg)
 	CFStringRef			cf_title_str,cf_msg_str;
 	CFOptionFlags		resp;
 
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	
 	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
 	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);
@@ -994,7 +994,7 @@ int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *but
 						cf_butt_1_str,cf_butt_2_str,cf_butt_3_str;
 	CFOptionFlags		resp;
 
-	SetThemeCursor(kThemeArrowCursor);
+	os_set_arrow_cursor();
 	
 	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
 	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);

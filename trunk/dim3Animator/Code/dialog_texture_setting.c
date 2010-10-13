@@ -470,7 +470,7 @@ bool texture_setting_frame_add_delete(void)
 		if (texture_setting_bitmap_open(bitmap_name)) {
 			SetThemeCursor(kThemeWatchCursor);
 			model_add_texture_frame(&model,dialog_texture_wind_current_txt,bitmap_name);
-			SetThemeCursor(kThemeArrowCursor);
+			os_set_arrow_cursor();
 		}
 	
 		return(TRUE);
@@ -484,7 +484,7 @@ bool texture_setting_frame_add_delete(void)
 		
 		SetThemeCursor(kThemeWatchCursor);
 		model_delete_texture_frame(&model,dialog_texture_wind_current_txt);
-		SetThemeCursor(kThemeArrowCursor);
+		os_set_arrow_cursor();
 		
 		return(TRUE);
 	}
@@ -533,7 +533,7 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 						SetThemeCursor(kThemeWatchCursor);
 						model_refresh_textures(&model);
 						texture_setting_frame_reset();
-						SetThemeCursor(kThemeArrowCursor);
+						os_set_arrow_cursor();
 					}
 					return(noErr);
 					
