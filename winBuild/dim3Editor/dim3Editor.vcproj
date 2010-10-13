@@ -251,6 +251,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\auto_generate_setup.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\dos.c"
 					>
 				</File>

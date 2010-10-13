@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Auto Generation Routines
+ Usage: Auto Generation Main Line
 
 ***************************** License ********************************
 
@@ -34,46 +34,12 @@ and can be sold or given away.
 #include "dialog.h"
 #include "walk_view.h"
 
-#define ag_max_room					256
-#define ag_max_shape				128
-#define ag_max_shape_point			64
-#define ag_max_shape_connector		32
-#define ag_max_shape_poly			64
-
-#define ag_connector_type_horz		0
-#define ag_connector_type_vert		1
-
-typedef struct		{
-						int						npt,v[4];
-					} ag_shape_poly_type;
-
-typedef struct		{
-						int						type,v[2];
-					} ag_shape_connector_type;
-
-typedef struct		{
-						int						nvertex,npoly,nconnector;
-						char					name[name_str_len];
-						d3pnt					vertexes[ag_max_shape_point];
-						ag_shape_poly_type		polys[ag_max_shape_poly];
-						ag_shape_connector_type	connectors[ag_max_shape_connector];
-					} ag_shape_type;
-
-typedef struct		{
-						int						mesh_idx;
-						d3pnt					min,max;
-					} ag_room_type;
-
-typedef struct		{
-						int						nshape,nroom;
-						ag_shape_type			*shapes;
-						ag_room_type			*rooms;
-					} ag_state_type;
-
 extern map_type					map;
-extern file_path_setup_type		file_path_setup;
 
 ag_state_type					ag_state;
+
+extern bool ag_initialize(void);
+extern void ag_release(void);
 
 /* =======================================================
 
@@ -116,165 +82,235 @@ int ag_random_int(int max)
 
 /* =======================================================
 
-      Auto Generate Settings
+      Auto Generate Room Utilities
       
 ======================================================= */
 
-bool ag_read_settings(void)
+bool ag_room_space_blocked(d3pnt *min,d3pnt *max)
 {
-	int					n,k,head_tag,shapes_tag,shape_tag,
-						vertexes_tag,vertex_tag,
-						polys_tag,poly_tag,
-						connectors_tag,connector_tag;
-	char				path[1024],sub_path[1024];
-	ag_shape_type		*shape;
-	
-        // find the auto generate.xml file
+	int				n;
+	ag_room_type	*room;
 
-	os_get_support_file_path(sub_path,"Editor");
-	strcat(sub_path,"/Data");
+	for (n=0;n!=ag_state.nroom;n++) {
+		room=&ag_state.rooms[n];
 
-	file_paths_app(&file_path_setup,path,sub_path,"Auto Generate","xml");
+		if (min->x>=room->max.x) continue;
+		if (max->x<=room->min.x) continue;
+		if (min->z>=room->max.z) continue;
+		if (max->z<=room->min.z) continue;
 
-	if (!xml_open_file(path)) return(FALSE);
-    
-		// decode the file
-      
-    head_tag=xml_findrootchild("auto_generate");
-    if (head_tag==-1) {
-		xml_close_file();
-		return(FALSE);
-    }
-
-		// shapes
-
-	shapes_tag=xml_findfirstchild("shapes",head_tag);
-	if (shapes_tag==-1) {
-		xml_close_file();
-		return(FALSE);
+		return(TRUE);
 	}
 
-	ag_state.nshape=xml_countchildren(shapes_tag);
-
-	shape=ag_state.shapes;
-	shape_tag=xml_findfirstchild("shape",shapes_tag);
-
-	for (n=0;n!=ag_state.nshape;n++) {
-		xml_get_attribute_text(shape_tag,"name",shape->name,256);
-
-			// shape vertexes
-
-		shape->nvertex=0;
-
-		vertexes_tag=xml_findfirstchild("vertexes",shape_tag);
-		if (vertexes_tag!=-1) {
-
-			shape->nvertex=xml_countchildren(vertexes_tag);
-			vertex_tag=xml_findfirstchild("vertex",vertexes_tag);
-
-			for (k=0;k!=shape->nvertex;k++) {
-				xml_get_attribute_2_coord_int(vertex_tag,"c2",&shape->vertexes[k].x,&shape->vertexes[k].z);
-				vertex_tag=xml_findnextchild(vertex_tag);
-			}
-		}
-
-			// shape polys
-
-		shape->npoly=0;
-
-		polys_tag=xml_findfirstchild("polys",shape_tag);
-		if (polys_tag!=-1) {
-
-			shape->npoly=xml_countchildren(polys_tag);
-			poly_tag=xml_findfirstchild("poly",polys_tag);
-
-			for (k=0;k!=shape->npoly;k++) {
-				shape->polys[k].npt=xml_get_attribute_int_array(poly_tag,"v",shape->polys[k].v,4);
-				poly_tag=xml_findnextchild(poly_tag);
-			}
-		}
-
-			// shape connectors
-
-		shape->nconnector=0;
-
-		connectors_tag=xml_findfirstchild("connectors",shape_tag);
-		if (connectors_tag!=-1) {
-
-			shape->nconnector=xml_countchildren(connectors_tag);
-			connector_tag=xml_findfirstchild("connector",connectors_tag);
-
-			for (k=0;k!=shape->nconnector;k++) {
-				xml_get_attribute_int_array(connector_tag,"v",shape->connectors[k].v,2);
-				shape->connectors[k].type=(shape->vertexes[shape->connectors[k].v[0]].x==shape->vertexes[shape->connectors[k].v[1]].x)?ag_connector_type_horz:ag_connector_type_vert;
-				connector_tag=xml_findnextchild(connector_tag);
-			}
-		}
-
-			// next shape
-
-		shape++;
-		shape_tag=xml_findnextchild(shape_tag);
-	}
-  
-	xml_close_file();
-	
-	return(TRUE);
+	return(FALSE);
 }
 
 /* =======================================================
 
-      Auto Generate Memory
+      Auto Generate Connection Utilities
       
 ======================================================= */
 
-bool ag_initialize(void)
+int ag_connector_get_opposite_type(ag_shape_connector_type *connector)
 {
-		// memory
-
-	ag_state.nroom=0;
-	ag_state.rooms=(ag_room_type*)malloc(ag_max_room*sizeof(ag_room_type));
-	if (ag_state.rooms==NULL) return(FALSE);
-
-	ag_state.nshape=0;
-	ag_state.shapes=(ag_shape_type*)malloc(ag_max_shape*sizeof(ag_shape_type));
-	if (ag_state.shapes==NULL) {
-		free(ag_state.rooms);
-		ag_state.rooms=NULL;
-		return(FALSE);
+	switch (connector->type) {
+		case ag_connector_type_min_x:
+			return(ag_connector_type_max_x);
+		case ag_connector_type_max_x:
+			return(ag_connector_type_min_x);
+		case ag_connector_type_min_z:
+			return(ag_connector_type_max_z);
+		case ag_connector_type_max_z:
+			return(ag_connector_type_min_z);
 	}
 
-		// read settings file
-
-	if (!ag_read_settings()) {
-		free(ag_state.rooms);
-		ag_state.rooms=NULL;
-		free(ag_state.shapes);
-		ag_state.shapes=NULL;
-		return(FALSE);
-	}
-
-	return(TRUE);
+	return(ag_connector_type_min_x);
 }
 
-void ag_release(void)
+int ag_shape_has_connector_type(ag_room_type *room,int connect_type)
 {
-	if (ag_state.rooms!=NULL) free(ag_state.rooms);
-	ag_state.rooms=NULL;
+	int				n;
+	ag_shape_type	*shape;
 
-	if (ag_state.shapes!=NULL) free(ag_state.shapes);
-	ag_state.shapes=NULL;
+	shape=&ag_state.shapes[room->shape_idx];
+
+	for (n=0;n!=shape->nconnector;n++) {
+
+			// skip connectors that have been used
+
+		if (room->connectors_used[n]) continue;
+
+			// is this the correct type?
+
+		if (shape->connectors[n].type==connect_type) return(n);
+	}
+
+	return(-1);
 }
 
 /* =======================================================
 
-      Auto Generate Rooms
+      Auto Generate Setup Rooms
       
 ======================================================= */
 
-void ag_add_room(int shape_idx,d3pnt *pnt,d3pnt *size)
+int ag_get_room_shape(bool skip_corridors)
 {
-	int					n,k,t,x,z,mesh_idx,txt_idx;
+	int			idx,count;
+
+	count=ag_random_int(ag_state.nshape);
+
+		// if any room, just return random room
+
+	if (!skip_corridors) return(count);
+
+		// otherwise skip all corridors
+
+	idx=0;
+
+	while (TRUE) {
+		if (!ag_state.shapes[idx].corridor) {
+			if (count==0) break;
+			count--;
+		}
+
+		idx++;
+		if (idx==ag_state.nshape) idx=0;
+	}
+
+	return(idx);
+}
+
+int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size)
+{
+	int						n,connect_idx,connect2_idx,nhit,opposite_cnt_type;
+	float					dist_fact;
+	bool					connect_hit[ag_max_shape_connector];
+	d3pnt					min,max;
+	d3vct					org_size;
+	ag_shape_type			*shape,*shape2;
+	ag_shape_connector_type	*connector,*connector2;
+	ag_room_type			*room2;
+
+		// run through and try each corridor
+
+	for (n=0;n!=ag_max_shape_connector;n++) {
+		connect_hit[n]=FALSE;
+	}
+
+		// start at a random corridor
+
+	shape=&ag_state.shapes[shape_idx];
+	connect_idx=ag_random_int(shape->nconnector);
+
+		// find a place
+
+	nhit=0;
+
+	memmove(&org_size,size,sizeof(d3vct));
+
+	while (TRUE) {
+
+			// already hit?
+
+		if (connect_hit[connect_idx]) {
+			connect_idx++;
+			if (connect_idx==shape->nconnector) connect_idx=0;
+			continue;
+		}
+
+		connector=&shape->connectors[connect_idx];
+
+			// get opposite type
+
+		opposite_cnt_type=ag_connector_get_opposite_type(connector);
+
+			// check other connectors
+
+		for (n=0;n!=ag_state.nroom;n++) {
+
+				// do we have the opposite type
+
+			room2=&ag_state.rooms[n];
+			connect2_idx=ag_shape_has_connector_type(room2,opposite_cnt_type);
+			if (connect2_idx==-1) continue;
+
+			shape2=&ag_state.shapes[room2->shape_idx];
+			connector2=&shape2->connectors[connect2_idx];
+
+				// get a size that makes the connectors
+				// equal to each other
+
+			dist_fact=(float)(connector2->dist)/(float)(connector->dist);
+
+			if ((opposite_cnt_type==ag_connector_type_min_x) || (opposite_cnt_type==ag_connector_type_max_x)) {
+				size->x=org_size.x;
+				size->z=room2->size.z*dist_fact;
+			}
+			else {
+				size->x=room2->size.x*dist_fact;
+				size->z=org_size.z;
+			}
+
+				// get position
+
+			switch (opposite_cnt_type) {
+				case ag_connector_type_min_x:
+					pnt->x=room2->min.x-(int)(100.0f*size->x);
+					pnt->z=room2->min.z+(int)((float)(connector2->top_left.z-connector->top_left.z)*size->z);
+					break;
+				case ag_connector_type_max_x:
+					pnt->x=room2->max.x;
+					pnt->z=room2->min.z+(int)((float)(connector2->top_left.z-connector->top_left.z)*size->z);
+					break;
+				case ag_connector_type_min_z:
+					pnt->x=room2->min.x+(int)((float)(connector2->top_left.x-connector->top_left.x)*size->x);
+					pnt->z=room2->min.z-(int)(100.0f*size->z);
+					break;
+				case ag_connector_type_max_z:
+					pnt->x=room2->min.x+(int)((float)(connector2->top_left.x-connector->top_left.x)*size->x);
+					pnt->z=room2->max.z;
+					break;
+			}
+
+				// is this position clear?
+
+			min.x=pnt->x;
+			min.z=pnt->z;
+			max.x=min.x+(int)(100.0f*size->x);
+			max.z=min.z+(int)(100.0f*size->z);
+
+			if (ag_room_space_blocked(&min,&max)) continue;
+
+				// mark room connector as used
+
+			room2->connectors_used[connect2_idx]=TRUE;
+
+			return(connect_idx);
+		}
+
+			// mark this connector as tried
+
+		connect_hit[connect_idx]=TRUE;
+
+			// have we tried all connectors?
+
+		nhit++;
+		if (nhit==shape->nconnector) return(-1);
+	}
+
+	return(0);
+}
+
+/* =======================================================
+
+      Auto Generate Add Rooms
+      
+======================================================= */
+
+void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
+{
+	int					n,k,t,x,z,mesh_idx,poly_idx;
 	int					px[4],py[4],pz[4];
 	float				gx[4],gy[4];
 	ag_shape_type		*shape;
@@ -292,12 +328,24 @@ void ag_add_room(int shape_idx,d3pnt *pnt,d3pnt *size)
 	room=&ag_state.rooms[ag_state.nroom];
 	ag_state.nroom++;
 
+	room->shape_idx=shape_idx;
 	room->mesh_idx=mesh_idx;
 
 	memmove(&room->min,pnt,sizeof(d3pnt));
-	room->max.x=room->min.x+size->x;
-	room->max.y=room->min.y+size->y;
-	room->max.z=room->min.z+size->z;
+	room->max.x=room->min.x+(int)(100.0f*size->x);
+	room->max.y=room->min.y+(int)(100.0f*size->y);
+	room->max.z=room->min.z+(int)(100.0f*size->z);
+
+	memmove(&room->size,size,sizeof(d3vct));
+
+		// mark off the connection we are
+		// using
+
+	for (n=0;n!=ag_max_shape_connector;n++) {
+		room->connectors_used[n]=FALSE;
+	}
+
+	if (connect_idx!=-1) room->connectors_used[connect_idx]=TRUE;
 
 		// add walls
 
@@ -307,27 +355,28 @@ void ag_add_room(int shape_idx,d3pnt *pnt,d3pnt *size)
 		k=n+1;
 		if (k==shape->nvertex) k=0;
 
-			// supergumba -- temp, check if connector
+			// is this a connector?
 
-		txt_idx=0;
+		connect_idx=-1;
 
 		for (t=0;t!=shape->nconnector;t++) {
 			if ((shape->connectors[t].v[0]==n) && (shape->connectors[t].v[1]==k)) {
-				txt_idx=4;
+				connect_idx=t;
 				break;
 			}
 			if ((shape->connectors[t].v[0]==k) && (shape->connectors[t].v[1]==n)) {
-				txt_idx=4;
+				connect_idx=t;
 				break;
 			}
 		}
 
+			// build the wall
 
-		px[0]=px[3]=((shape->vertexes[n].x*size->x)/100)+pnt->x;
-		px[1]=px[2]=((shape->vertexes[k].x*size->x)/100)+pnt->x;
-		pz[0]=pz[3]=((shape->vertexes[n].z*size->z)/100)+pnt->z;
-		pz[1]=pz[2]=((shape->vertexes[k].z*size->z)/100)+pnt->z;
-		py[0]=py[1]=pnt->y-size->y;
+		px[0]=px[3]=(int)(((float)shape->vertexes[n].x)*size->x)+pnt->x;
+		px[1]=px[2]=(int)(((float)shape->vertexes[k].x)*size->x)+pnt->x;
+		pz[0]=pz[3]=(int)(((float)shape->vertexes[n].z)*size->z)+pnt->z;
+		pz[1]=pz[2]=(int)(((float)shape->vertexes[k].z)*size->z)+pnt->z;
+		py[0]=py[1]=pnt->y-(int)(100.0f*size->y);
 		py[2]=py[3]=pnt->y;
 
 		gx[0]=gx[3]=0.0f;
@@ -335,7 +384,7 @@ void ag_add_room(int shape_idx,d3pnt *pnt,d3pnt *size)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 	
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,((connect_idx!=-1)?4:0));
 	}
 
 		// add floors
@@ -348,8 +397,8 @@ void ag_add_room(int shape_idx,d3pnt *pnt,d3pnt *size)
 			x=shape->vertexes[shape_poly->v[k]].x;
 			z=shape->vertexes[shape_poly->v[k]].z;
 
-			px[k]=((x*size->x)/100)+pnt->x;
-			pz[k]=((z*size->z)/100)+pnt->z;
+			px[k]=(int)(((float)x)*size->x)+pnt->x;
+			pz[k]=(int)(((float)z)*size->z)+pnt->z;
 			py[k]=pnt->y;
 
 			gx[k]=((float)x)/100.0f;
@@ -362,51 +411,26 @@ void ag_add_room(int shape_idx,d3pnt *pnt,d3pnt *size)
 	}
 }
 
-void ag_find_room_position(d3pnt *pnt,d3pnt *size)
+void ag_delete_shared_wall_poly_room(int room_idx)
 {
-	int					n,temp;
-	bool				hit;
-	d3pnt				mv_pt,min,max;
-	ag_room_type		*room;
+	/* supergumba -- redo this, just look for shared polygons
 
-		// move randomly away from center
-		// until we are clear of other rooms
+	int						n;
+	ag_shape_type			*shape;
+	ag_room_type			*room;
 
-	angle_get_movement((float)ag_random_int(359),map_enlarge,&mv_pt.x,&mv_pt.z);
+	room=&ag_state.rooms[room_idx];
+	shape=&ag_state.shapes[room->shape_idx];
 
+		// delete them backwards to not change
+		// poly indexes
 
-	temp=0;
-
-	while (TRUE) {
-			
-			// size of this room
-
-		memmove(&min,pnt,sizeof(d3pnt));
-		max.x=min.x+size->x;
-		max.y=min.y+size->y;
-		max.z=min.z+size->z;
-
-			// any collisions?
-
-		hit=FALSE;
-
-		for (n=0;n!=ag_state.nroom;n++) {
-			room=&ag_state.rooms[n];
-
-			if ((min.x>=room->max.x) || (max.x<=room->min.x)) continue;
-			if ((min.z>=room->max.z) || (max.z<=room->min.z)) continue;
-		
-			hit=TRUE;
-			break;
+	for (n=(shape->nconnector-1);n>=0;n--) {
+		if (room->connectors[n].used) {
+			map_mesh_delete_poly(&map,room->mesh_idx,room->connectors[n].poly_idx);
 		}
-
-		if (!hit) break;
-		temp++;
-		if (temp==1000) break;	// supergumba -- for testing
-
-		pnt->x+=mv_pt.x;
-		pnt->z+=mv_pt.z;
 	}
+	*/
 }
 
 /* =======================================================
@@ -418,30 +442,58 @@ void ag_find_room_position(d3pnt *pnt,d3pnt *size)
 
 void tester(void)
 {
-	int				n,shape_idx,
-					cx,cy,cz;
-	d3pnt			pnt,size;
+	int				n,shape_idx,connect_idx;
+	d3pnt			pnt;
+	d3vct			size;
 
-	cx=map_max_size>>1;
-	cz=map_max_size>>1;
-	cy=10000;
+		// create the rooms
 
 	for (n=0;n!=20;n++) {
-		shape_idx=ag_random_int(ag_state.nshape);
+			
+			// the default size
 
-		pnt.x=cx;
-		pnt.z=cz;
-		pnt.y=10000;
+		size.x=400.0f;
+		size.y=150.0f;
+		size.z=400.0f;
 
-		size.x=2000+ag_random_int(3000);
-		size.y=2000+ag_random_int(3000);
-		size.z=2000+ag_random_int(3000);
+			// if this is the first room, pick a non-corridor
+			// type room and put it at the center of the map.
+			// give it the default size, all other rooms will
+			// gain their size from connecting to this room
 
-		ag_find_room_position(&pnt,&size);
+		if (n==0) {
+			shape_idx=ag_get_room_shape(TRUE);
 
-		ag_add_room(shape_idx,&pnt,&size);
+			pnt.x=map_max_size>>1;
+			pnt.z=map_max_size>>1;
+			pnt.y=10000;
+			
+			connect_idx=-1;
+		}
+
+			// otherwise, pick any room and randomly
+			// connect it to an existing room
+
+		else {
+			shape_idx=ag_get_room_shape(FALSE);
+
+				// get the connector
+
+			connect_idx=ag_get_room_position(shape_idx,&pnt,&size);
+			if (connect_idx==-1) continue;
+		}
+
+			// add the room
+
+		ag_add_room(shape_idx,connect_idx,&pnt,&size);
 	}
 
+		// delete any polygons that share the
+		// same space
+
+	for (n=0;n!=ag_state.nroom;n++) {
+		ag_delete_shared_wall_poly_room(n);
+	}
 }
 
 /* =======================================================
@@ -454,7 +506,7 @@ bool auto_generate_map_2(void)
 {
 	if (!ag_initialize()) return(FALSE);
 
-	ag_random_seed(5);		// supergumba -- testing
+	ag_random_seed(GetTickCount());		// supergumba -- testing
 
 		// clear map
 
