@@ -238,18 +238,21 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size)
 			shape2=&ag_state.shapes[room2->shape_idx];
 			connector2=&shape2->connectors[connect2_idx];
 
+				// if this new room is a corridor type,
+				// then only connect to other rooms
+
+			if ((shape->corridor) && (shape2->corridor)) continue;
+
 				// get a size that makes the connectors
 				// equal to each other
 
 			dist_fact=(float)(connector2->dist)/(float)(connector->dist);
 
 			if ((opposite_cnt_type==ag_connector_type_min_x) || (opposite_cnt_type==ag_connector_type_max_x)) {
-				size->x=org_size.x;
-				size->z=room2->size.z*dist_fact;
+				size->x=size->z=room2->size.z*dist_fact;
 			}
 			else {
-				size->x=room2->size.x*dist_fact;
-				size->z=org_size.z;
+				size->x=size->z=room2->size.x*dist_fact;
 			}
 
 				// get position
@@ -257,18 +260,18 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size)
 			switch (opposite_cnt_type) {
 				case ag_connector_type_min_x:
 					pnt->x=room2->min.x-(int)(100.0f*size->x);
-					pnt->z=room2->min.z+(int)((float)(connector2->top_left.z-connector->top_left.z)*size->z);
+					pnt->z=room2->min.z+((int)(((float)connector2->top_left.z)*room2->size.z)-(int)(((float)connector->top_left.z)*size->z));
 					break;
 				case ag_connector_type_max_x:
 					pnt->x=room2->max.x;
-					pnt->z=room2->min.z+(int)((float)(connector2->top_left.z-connector->top_left.z)*size->z);
+					pnt->z=room2->min.z+((int)(((float)connector2->top_left.z)*room2->size.z)-(int)(((float)connector->top_left.z)*size->z));
 					break;
 				case ag_connector_type_min_z:
-					pnt->x=room2->min.x+(int)((float)(connector2->top_left.x-connector->top_left.x)*size->x);
+					pnt->x=room2->min.x+((int)(((float)connector2->top_left.x)*room2->size.x)-(int)(((float)connector->top_left.x)*size->x));
 					pnt->z=room2->min.z-(int)(100.0f*size->z);
 					break;
 				case ag_connector_type_max_z:
-					pnt->x=room2->min.x+(int)((float)(connector2->top_left.x-connector->top_left.x)*size->x);
+					pnt->x=room2->min.x+((int)(((float)connector2->top_left.x)*room2->size.x)-(int)(((float)connector->top_left.x)*size->x));
 					pnt->z=room2->max.z;
 					break;
 			}
@@ -411,36 +414,96 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	}
 }
 
-void ag_delete_shared_wall_poly_room(int room_idx)
+/* =======================================================
+
+      Map Utilities
+      
+======================================================= */
+
+bool ag_delete_shared_polygons_compare(map_mesh_type *mesh_1,int poly_1_idx,map_mesh_type *mesh_2,int poly_2_idx)
 {
-	/* supergumba -- redo this, just look for shared polygons
+	int					n,k;
+	bool				hit;
+	d3pnt				*pt_1,*pt_2;
+	map_mesh_poly_type	*poly_1,*poly_2;
 
-	int						n;
-	ag_shape_type			*shape;
-	ag_room_type			*room;
+	poly_1=&mesh_1->polys[poly_1_idx];
+	poly_2=&mesh_2->polys[poly_2_idx];
 
-	room=&ag_state.rooms[room_idx];
-	shape=&ag_state.shapes[room->shape_idx];
+		// same vertex count?
 
-		// delete them backwards to not change
-		// poly indexes
+	if (poly_1->ptsz!=poly_2->ptsz) return(FALSE);
 
-	for (n=(shape->nconnector-1);n>=0;n--) {
-		if (room->connectors[n].used) {
-			map_mesh_delete_poly(&map,room->mesh_idx,room->connectors[n].poly_idx);
+		// might be in different orders, so look
+		// for equal points anywhere in polygon
+
+	for (n=0;n!=poly_1->ptsz;n++) {
+		pt_1=&mesh_1->vertexes[poly_1->v[n]];
+
+		hit=FALSE;
+		for (k=0;k!=poly_2->ptsz;k++) {
+			pt_2=&mesh_2->vertexes[poly_2->v[k]];
+			if ((pt_1->x==pt_2->x) && (pt_1->y==pt_2->y) && (pt_1->z==pt_2->z)) {
+				hit=TRUE;
+				break;
+			}
+		}
+
+		if (!hit) return(FALSE);
+	}
+
+	return(TRUE);
+}
+
+void ag_delete_shared_polygons(void)
+{
+	int					n,mesh_1_idx,poly_1_idx,
+						mesh_2_idx,poly_2_idx;
+	map_mesh_type		*mesh_1,*mesh_2;
+
+	for (mesh_1_idx=0;mesh_1_idx!=map.mesh.nmesh;mesh_1_idx++) {
+
+		mesh_1=&map.mesh.meshes[mesh_1_idx];
+
+		poly_1_idx=0;
+
+		while (poly_1_idx<mesh_1->npoly) {
+
+			poly_2_idx=-1;
+
+			for (mesh_2_idx=0;mesh_2_idx!=map.mesh.nmesh;mesh_2_idx++) {
+				if (mesh_2_idx==mesh_1_idx) continue;
+
+				mesh_2=&map.mesh.meshes[mesh_2_idx];
+
+				for (n=0;n!=mesh_2->npoly;n++) {
+					if (ag_delete_shared_polygons_compare(mesh_1,poly_1_idx,mesh_2,n)) {
+						poly_2_idx=n;
+						break;
+					}
+				}
+
+				if (poly_2_idx!=-1) break;
+			}
+
+			if (poly_2_idx!=-1) {
+				map_mesh_delete_poly(&map,mesh_1_idx,poly_1_idx);
+				map_mesh_delete_poly(&map,mesh_2_idx,poly_2_idx);
+				continue;
+			}
+
+			poly_1_idx++;
 		}
 	}
-	*/
 }
 
 /* =======================================================
 
-      ???
+      Generate Map
       
 ======================================================= */
 
-
-void tester(void)
+void ag_generate_map(void)
 {
 	int				n,shape_idx,connect_idx;
 	d3pnt			pnt;
@@ -452,9 +515,9 @@ void tester(void)
 			
 			// the default size
 
-		size.x=400.0f;
-		size.y=150.0f;
-		size.z=400.0f;
+		size.x=200.0f;
+		size.y=50.0f;
+		size.z=200.0f;
 
 			// if this is the first room, pick a non-corridor
 			// type room and put it at the center of the map.
@@ -491,9 +554,7 @@ void tester(void)
 		// delete any polygons that share the
 		// same space
 
-	for (n=0;n!=ag_state.nroom;n++) {
-		ag_delete_shared_wall_poly_room(n);
-	}
+	ag_delete_shared_polygons();
 }
 
 /* =======================================================
@@ -506,18 +567,14 @@ bool auto_generate_map_2(void)
 {
 	if (!ag_initialize()) return(FALSE);
 
-	ag_random_seed(GetTickCount());		// supergumba -- testing
+//	ag_random_seed(GetTickCount());		// supergumba -- testing
+	ag_random_seed(5);		// supergumba -- testing
 
 		// clear map
 
 	ag_map_clear();
 
-	tester();
-
-
-
-
-
+	ag_generate_map();
 
 		// finish up, center views, and redraw
 
