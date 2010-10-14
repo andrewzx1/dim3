@@ -434,6 +434,42 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 	return(FALSE);
 }
 
+bool collide_box_slide_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,int skip_obj_idx,bool check_projs,int skip_proj_idx,obj_contact *contact)
+{
+	d3pnt			motion2;
+	obj_contact		contact2;
+
+		// try to move
+
+	if (!collide_box_to_map(pt,box_sz,motion,check_objs,skip_obj_idx,check_projs,skip_proj_idx,contact)) return(FALSE);
+
+		// we had a hit ... see if new motion
+		// is free or hits some other object
+
+	motion2.x=motion->x;
+	motion2.y=motion->y;
+	motion2.z=motion->z;
+
+	if (!collide_box_to_map(pt,box_sz,&motion2,check_objs,skip_obj_idx,check_projs,skip_proj_idx,&contact2)) return(FALSE);
+
+		// hit same object?
+
+	if ((contact2.obj_idx!=-1) && (contact2.obj_idx==contact->obj_idx)) return(TRUE);
+	if ((contact2.proj_idx!=-1) && (contact2.proj_idx==contact->proj_idx)) return(TRUE);
+	if (contact2.hit_poly.mesh_idx!=-1) {
+		if ((contact2.hit_poly.mesh_idx==contact->hit_poly.mesh_idx) && (contact2.hit_poly.poly_idx==contact->hit_poly.poly_idx)) return(TRUE);
+	}
+
+		// if not, then reduce any
+		// movement that goes into
+		// the other object
+
+	if ((motion2.x*motion->x)<0) motion->x=0;
+	if ((motion2.z*motion->z)<0) motion->z=0;
+
+	return(TRUE);
+}
+
 bool collide_box_to_sphere(d3pnt *sphere_pnt,int radius,d3pnt *pt,d3pnt *box_sz)
 {
 	int			dist,box_radius;
@@ -494,7 +530,7 @@ bool collide_object_to_map(obj_type *obj,d3pnt *motion)
 		box_sz.y=obj->size.y;
 		if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
 
-		return(collide_box_to_map(&obj->pnt,&box_sz,motion,obj->contact.object_on,obj->idx,FALSE,-1,&obj->contact));
+		return(collide_box_slide_to_map(&obj->pnt,&box_sz,motion,obj->contact.object_on,obj->idx,FALSE,-1,&obj->contact));
 	}
 
 		// hit box collisions
@@ -515,7 +551,7 @@ bool collide_object_to_map(obj_type *obj,d3pnt *motion)
 			box_sz.y=hit_box->box.size.y;
 			if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
 			
-			if (collide_box_to_map(&pt,&box_sz,motion,obj->contact.object_on,obj->idx,FALSE,-1,&obj->contact)) {
+			if (collide_box_slide_to_map(&pt,&box_sz,motion,obj->contact.object_on,obj->idx,FALSE,-1,&obj->contact)) {
 				obj->hit_box.obj_hit_box_idx=n;
 				return(TRUE);
 			}
