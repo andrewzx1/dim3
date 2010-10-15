@@ -252,7 +252,6 @@ void remote_draw_names_setup(void)
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
 
 	for (n=0;n!=view.render->draw_list.count;n++) {

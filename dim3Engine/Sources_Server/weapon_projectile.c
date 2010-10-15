@@ -134,7 +134,6 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 	contact.proj.on=FALSE;
 	contact.obj.ignore_idx=obj->idx;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;
 	
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {

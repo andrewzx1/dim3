@@ -159,7 +159,7 @@ bool js_model_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValu
 	
 	if (!script_in_construct()) {
 		*exception=script_create_exception(cx,"Can only set model name in the construct event");
-		return(script_null_to_value(cx));
+		return(TRUE);
 	}
 
 	draw=script_find_model_draw(j_obj);

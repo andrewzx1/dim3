@@ -143,7 +143,6 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size)
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return;

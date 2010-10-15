@@ -188,34 +188,18 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 		
 	for (n=0;n!=div;n++) {
 		
-			// xz movement
-			
 		spt.x=cx;
 		spt.y=cy;
 		spt.z=cz;
 
 		ept.x=cx+xadd;
-		ept.y=cy;
+		ept.y=cy+yadd;
 		ept.z=cz+zadd;
 
-		contact.hit_mode=poly_ray_trace_hit_mode_wall_only;
 		if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
 			cx+=xadd;
 			cz+=zadd;
 		}
-		
-			// y movement
-
-		spt.x=cx;
-		spt.y=cy;
-		spt.z=cz;
-
-		ept.x=cx;
-		ept.y=cy+yadd;
-		ept.z=cz;
-
-		contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
-		if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) cy+=yadd;
 	}
 	
         // new camera position

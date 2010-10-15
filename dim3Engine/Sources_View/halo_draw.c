@@ -150,7 +150,6 @@ void halo_draw_setup(void)
 
 	contact.proj.on=FALSE;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
 
 	for (n=0;n!=view.render->halo_draw.count;n++) {

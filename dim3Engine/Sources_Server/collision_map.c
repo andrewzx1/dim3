@@ -62,7 +62,85 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
       
 ======================================================= */
 
+inline bool line_line_intersect(d3pnt *p0,d3pnt *p1,d3pnt *p2,d3pnt *p3,d3pnt *hit_pnt)
+{
+	float			fx0,fy0,fx1,fy1,fx2,fy2,fx3,fy3,
+					ax,bx,dx,ay,by,dy,r,s;
+
+	fx0=(float)p0->x;
+	fy0=(float)p0->z;
+	fx1=(float)p1->x;
+	fy1=(float)p1->z;
+	fx2=(float)p2->x;
+	fy2=(float)p2->z;
+	fx3=(float)p3->x;
+	fy3=(float)p3->z;
+	
+	ax=fx0-fx2;
+	bx=fx1-fx0;
+	dx=fx3-fx2;
+	
+	ay=fy0-fy2;
+	by=fy1-fy0;
+	dy=fy3-fy2;
+	
+	r=((ay*dx)-(ax*dy))/((bx*dy)-(by*dx));
+	if ((r<0) || (r>1)) return(FALSE);
+	
+	s=((ay*bx)-(ax*by))/((bx*dy)-(by*dx));
+	if ((s<0) || (s>1)) return(FALSE);
+	
+	hit_pnt->x=(int)(fx0+(r*bx));
+	hit_pnt->z=(int)(fy0+(r*by));
+	
+	return(TRUE);
+}
+
 int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt *hit_pnt)
+{
+	int				n,xadd,zadd;
+	double			rad,d_radius,dist,cur_dist,dx,dz;
+	d3pnt			cp2,temp_hit_pnt;
+
+		// ray cast like spokes from the circle
+		// normal math says check the perpendicular,
+		// but that allows parts of the circle to
+		// wade into corners
+
+	cur_dist=-1;
+
+	d_radius=(double)radius;
+
+	for (n=0;n!=24;n++) {
+		rad=(double)(((float)(n*15))*ANG_to_RAD);
+
+		xadd=(int)(d_radius*sin(rad));
+		zadd=-(int)(d_radius*cos(rad));
+
+		cp2.x=circle_pnt->x+xadd;
+		cp2.z=circle_pnt->z+zadd;
+		
+		if (line_line_intersect(p1,p2,circle_pnt,&cp2,&temp_hit_pnt)) {
+			dx=(hit_pnt->x-circle_pnt->x);
+			dz=(hit_pnt->z-circle_pnt->z);
+			dist=(dx*dx)+(dz*dz);
+
+			if ((dist<cur_dist) || (cur_dist==-1)) {
+				cur_dist=dist;
+				hit_pnt->x=temp_hit_pnt.x;
+				hit_pnt->z=temp_hit_pnt.z;
+			}
+		}
+	}
+
+	if (cur_dist==-1) return(-1);
+	
+	return((int)sqrt(cur_dist));
+}
+
+
+// supergumba -- delete me
+int circle_line_intersect2(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt *hit_pnt)
 {
 	double			d,dx,dz;
 	float			fr,fx,fz;
@@ -78,6 +156,9 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 		d=1.0/d;
 		fx=(float)(dx*d);
 		fz=(float)(dz*d);
+	}
+	else {
+		fx=fz=0;
 	}
 	
 		// reverse to get perpendicular
@@ -441,12 +522,19 @@ bool collide_box_slide_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_o
 
 		// try to move
 
+//	motion2.x=motion->x;
+//	motion2.z=motion->z;
+
 	if (!collide_box_to_map(pt,box_sz,motion,check_objs,skip_obj_idx,check_projs,skip_proj_idx,contact)) return(FALSE);
+
+//	if (((motion2.x*motion->x)<0) || (motion2.x==0)) motion->x=0;
+//	if (((motion2.z*motion->z)<0) || (motion2.z==0)) motion->z=0;
+
 	
-	return(TRUE);
+//	return(TRUE);
 	
-	fprintf(stdout,"%d,%d [%d,%d]\n",motion->x,motion->z,contact->hit_poly.mesh_idx,contact->hit_poly.poly_idx);
-	return(TRUE);
+//	fprintf(stdout,"%d,%d [%d,%d]\n",motion->x,motion->z,contact->hit_poly.mesh_idx,contact->hit_poly.poly_idx);
+//	return(TRUE);
 	
 		// supergumba -- testing
 	
@@ -940,7 +1028,6 @@ int collide_polygon_find_faced_by_object(obj_type *obj)
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_wall_only;
 	contact.origin=poly_ray_trace_origin_object;
 
 		// run trace
