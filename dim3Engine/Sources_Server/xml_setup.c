@@ -408,11 +408,6 @@ bool setup_xml_write(void)
 		// always save to user specific data
 		
 	file_paths_documents(&setup.file_path_setup,path,"Settings","Setup","xml");
-	
-		
-	fprintf(stdout,"path=%s\n",path);
-	fprintf(stdout,"2. proj=%s\n",hud.project_name);
-
 		
 	ok=xml_save_file(path);
     xml_close_file();
