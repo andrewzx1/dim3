@@ -442,6 +442,17 @@ bool collide_box_slide_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_o
 		// try to move
 
 	if (!collide_box_to_map(pt,box_sz,motion,check_objs,skip_obj_idx,check_projs,skip_proj_idx,contact)) return(FALSE);
+	
+	return(TRUE);
+	
+	fprintf(stdout,"%d,%d [%d,%d]\n",motion->x,motion->z,contact->hit_poly.mesh_idx,contact->hit_poly.poly_idx);
+	return(TRUE);
+	
+		// supergumba -- testing
+	
+	
+	
+	
 
 		// we had a hit ... see if new motion
 		// is free or hits some other object
@@ -464,8 +475,8 @@ bool collide_box_slide_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_o
 		// movement that goes into
 		// the other object
 
-	if ((motion2.x*motion->x)<0) motion->x=0;
-	if ((motion2.z*motion->z)<0) motion->z=0;
+	if (((motion2.x*motion->x)<0) || (motion2.x==0)) motion->x=0;
+	if (((motion2.z*motion->z)<0) || (motion2.z==0)) motion->z=0;
 
 	return(TRUE);
 }
