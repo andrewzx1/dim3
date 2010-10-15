@@ -272,7 +272,6 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 	contact.obj.ignore_idx=obj->idx;
 	contact.proj.ignore_idx=-1;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
 
 		// set divisions

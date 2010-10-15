@@ -708,7 +708,6 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 	contact.proj.on=FALSE;
 	contact.obj.ignore_idx=vehicle_obj->idx;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
 	
 	empty=!ray_trace_map_by_point(&spt,&ept,&hpt,&contact);

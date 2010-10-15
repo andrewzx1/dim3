@@ -84,7 +84,6 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 	contact.obj.ignore_idx=obj->idx;
 	contact.proj.ignore_idx=proj->idx;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;
 	
 	ray_trace_map_by_angle(&spt,ang,proj_setup->hitscan.max_dist,&hpt,&contact);

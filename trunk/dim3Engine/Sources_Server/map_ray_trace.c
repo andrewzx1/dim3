@@ -838,27 +838,8 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 		mesh=&map.mesh.meshes[n];
 		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
 		
-			// check polys, use the poly
-			// reduced list to save time
-						
-		switch (contact->hit_mode) {
-		
-			case poly_ray_trace_hit_mode_wall_only:
-				poly_count=mesh->poly_list.wall_count;
-				poly_idx=mesh->poly_list.wall_idxs;
-				break;
-				
-			case poly_ray_trace_hit_mode_floor_only:
-				poly_count=mesh->poly_list.floor_count;
-				poly_idx=mesh->poly_list.floor_idxs;
-				break;
-			
-			default:
-				poly_count=mesh->poly_list.all_count;
-				poly_idx=mesh->poly_list.all_idxs;
-				break;
-				
-		}
+		poly_count=mesh->poly_list.all_count;
+		poly_idx=mesh->poly_list.all_idxs;
 			
 		for (k=0;k!=poly_count;k++) {
 
@@ -1010,27 +991,8 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 		mesh=&map.mesh.meshes[n];
 		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
 		
-			// check polys, use the poly
-			// reduced list to save time
-						
-		switch (contact->hit_mode) {
-		
-			case poly_ray_trace_hit_mode_wall_only:
-				poly_count=mesh->poly_list.wall_count;
-				poly_idx=mesh->poly_list.wall_idxs;
-				break;
-				
-			case poly_ray_trace_hit_mode_floor_only:
-				poly_count=mesh->poly_list.floor_count;
-				poly_idx=mesh->poly_list.floor_idxs;
-				break;
-			
-			default:
-				poly_count=mesh->poly_list.all_count;
-				poly_idx=mesh->poly_list.all_idxs;
-				break;
-				
-		}
+		poly_count=mesh->poly_list.all_count;
+		poly_idx=mesh->poly_list.all_idxs;
 			
 		for (k=0;k!=poly_count;k++) {
 

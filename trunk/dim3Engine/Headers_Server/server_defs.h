@@ -1033,10 +1033,6 @@ typedef struct		{
 // ray trace structures
 //
 
-#define poly_ray_trace_hit_mode_all						0
-#define poly_ray_trace_hit_mode_wall_only				1
-#define poly_ray_trace_hit_mode_floor_only				2
-
 #define poly_ray_trace_origin_unknown					0
 #define poly_ray_trace_origin_object					1
 #define poly_ray_trace_origin_projectile				2
@@ -1061,7 +1057,7 @@ typedef struct		{
 					} ray_trace_obj_proj_type;
 
 typedef struct		{
-						int								hit_mode,origin;
+						int								origin;
 						ray_trace_obj_proj_type			obj,proj;
 						poly_pointer_type				poly;
 					} ray_trace_contact_type;

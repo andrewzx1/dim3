@@ -316,7 +316,6 @@ bool shadow_get_volume(d3pnt *pnt,int high,int *px,int *py,int *pz)
 	base_contact.proj.on=FALSE;
 	base_contact.proj.ignore_idx=-1;
 
-	base_contact.hit_mode=poly_ray_trace_hit_mode_all;
 	base_contact.origin=poly_ray_trace_origin_object;
 
 	ray_trace_map_by_point_array_no_contact(8,spt,ept,hpt,hits,&base_contact);

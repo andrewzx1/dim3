@@ -64,7 +64,6 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	contact.origin=poly_ray_trace_origin_unknown;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return(hpt.y);
@@ -94,7 +93,6 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	contact.origin=poly_ray_trace_origin_unknown;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
@@ -129,7 +127,6 @@ int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *sta
 	base_contact.obj.on=FALSE;
 	base_contact.proj.on=FALSE;
 
-	base_contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	base_contact.origin=poly_ray_trace_origin_unknown;
 
 		// create ray arrays
@@ -223,7 +220,6 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
 
-	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	contact.origin=poly_ray_trace_origin_unknown;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
@@ -258,7 +254,6 @@ int pin_upward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *head_
 	base_contact.obj.on=FALSE;
 	base_contact.proj.on=FALSE;
 
-	base_contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	base_contact.origin=poly_ray_trace_origin_unknown;
 
 		// create ray arrays
