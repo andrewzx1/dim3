@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2007 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -46,6 +46,16 @@ auto_generate_settings_type			ag_settings;
 
 void auto_generate_map(void)
 {
+
+											  
+//	auto_generate_map_2();		// supergumba!
+//	map_mesh_reset_uv_all();
+//	main_wind_draw();
+//	return;
+	
+	
+
+
 		// dialog
 		
 	if (!dialog_map_auto_generate_setting_run(ag_first)) return;

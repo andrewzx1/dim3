@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2007 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -157,7 +157,8 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}},
 							tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
 											  {kEventClassControl,kEventControlHit}};
-	
+											  
+											  
 		// open the dialog
 		
 	dialog_open(&dialog_map_generate_wind,"MapGenerate");

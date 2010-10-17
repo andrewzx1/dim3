@@ -214,8 +214,14 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
 
 		// set next weapon
 	
-	obj->held_weapon.next_idx=weap->idx;
-
+	if (camera.setup.mode==cv_fpp) {
+		obj->held_weapon.next_idx=weap->idx;
+	}
+	else {
+		obj->held_weapon.next_idx=-1;
+		obj->held_weapon.current_idx=weap->idx;
+	}
+	
 		// clear any animation smoothing
 
 	weapon_clear_animation(weap);
@@ -227,7 +233,7 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
         
         // start hand swap
 
-    if (obj->held_weapon.mode!=wm_lower) weapon_lower(obj);
+    if ((obj->held_weapon.mode!=wm_lower) && (camera.setup.mode==cv_fpp)) weapon_lower(obj);
 }
 
 void weapon_switch(obj_type *obj,int dir)
@@ -239,12 +245,12 @@ void weapon_switch(obj_type *obj,int dir)
     
         // already changing weapons?
         
-    if (weap_mode!=wm_lower) {
+	if (weap_mode!=wm_lower) {
 		weap_idx=obj->held_weapon.current_idx;
-    }
-    else {
+	}
+	else {
 		weap_idx=obj->held_weapon.next_idx;
-    }
+	}
 
 	if (weap_idx==-1) return;
 	
@@ -580,6 +586,7 @@ void weapon_run_hand(obj_type *obj)
         if (swap_tick>weap->hand.lower_tick) {
 			weapon_cur_weapon_recoil_copy(obj,obj->held_weapon.next_idx);
             obj->held_weapon.current_idx=obj->held_weapon.next_idx;
+			obj->held_weapon.next_idx=-1;
             weapon_raise(obj);
         }
         return;

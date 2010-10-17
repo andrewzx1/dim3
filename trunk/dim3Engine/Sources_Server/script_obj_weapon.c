@@ -139,12 +139,22 @@ JSValueRef js_obj_weapon_get_select_func(JSContextRef cx,JSObjectRef func,JSObje
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
     obj=object_script_lookup();
-	if (obj->held_weapon.next_idx==-1) return(script_null_to_value(cx));
-
-	weap=obj->weap_list.weaps[obj->held_weapon.next_idx];
-	if (weap==NULL) return(script_null_to_value(cx));
 	
-    return(script_string_to_value(cx,weap->name));
+		// check if we are moving towards a new weapon
+		
+	if (obj->held_weapon.next_idx!=-1) {
+		weap=obj->weap_list.weaps[obj->held_weapon.next_idx];
+		if (weap!=NULL) return(script_string_to_value(cx,weap->name));
+	}
+	
+		// check currently held weapon
+		
+	if (obj->held_weapon.current_idx!=-1) {
+		weap=obj->weap_list.weaps[obj->held_weapon.current_idx];
+		if (weap!=NULL) return(script_string_to_value(cx,weap->name));
+	}
+	
+	return(script_null_to_value(cx));
 }
 
 JSValueRef js_obj_weapon_set_select_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

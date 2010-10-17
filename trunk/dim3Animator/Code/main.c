@@ -21,16 +21,18 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2006 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
-#include "menu.h"
+#include "interface.h"
 #include "dialog.h"
 
 bool					fileopen;
 
 file_path_setup_type	file_path_setup;
+
+extern OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
 
 /* =======================================================
 

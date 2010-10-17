@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>dim3 Editor</string>
 	<key>CFBundleGetInfoString</key>
-	<string>dim3 Editor version 3.0, ©2001-2009 Klink! Software</string>
+	<string>dim3 Editor version 3.0, ©2001-2011 Klink! Software</string>
 	<key>CFBundleIconFile</key>
 	<string>dim3 Editor.icns</string>
 	<key>CFBundleIdentifier</key>

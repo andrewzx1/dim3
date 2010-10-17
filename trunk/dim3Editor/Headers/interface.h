@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2007 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -62,9 +62,9 @@ extern void tool_switch_node_mode(void);
 extern void texture_palette_setup(void);
 extern int texture_palette_get_selected_texture(void);
 extern void texture_palette_put_selected_texture(int txt_idx);
-extern void texture_palette_draw(void);
+extern void texture_palette_draw(texture_type *txt_list);
 extern void texture_palette_reset(void);
-extern void texture_palette_click(d3pnt *pnt,bool dbl_click);
+extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_click);
 
 //
 // main window

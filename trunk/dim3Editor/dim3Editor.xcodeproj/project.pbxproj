@@ -50,6 +50,12 @@
 		26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6D960DDFCE4100BDD008 /* dialog_resize.c */; };
 		26E155EF12601C9D003158E5 /* OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E155EE12601C9D003158E5 /* OSX_glue.c */; };
 		26EE38810EA595D5002A8365 /* dialog_map_groups.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE38800EA595D5002A8365 /* dialog_map_groups.c */; };
+		26EE4757126961AF001D0025 /* Auto Generate.xml in Resources */ = {isa = PBXBuildFile; fileRef = 26EE4756126961AF001D0025 /* Auto Generate.xml */; };
+		26EE4763126961EF001D0025 /* Auto Generate.xml in Copy (Data) */ = {isa = PBXBuildFile; fileRef = 26EE4756126961AF001D0025 /* Auto Generate.xml */; };
+		26EE476812696220001D0025 /* auto_generate_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE476612696220001D0025 /* auto_generate_setup.c */; };
+		26EE476912696220001D0025 /* auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE476712696220001D0025 /* auto_generate.c */; };
+		26EE494C126B8455001D0025 /* texture_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE494B126B8455001D0025 /* texture_palette_common.c */; };
+		26EE4A3E126B8E2E001D0025 /* import_text_decode_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE4A3D126B8E2E001D0025 /* import_text_decode_common.c */; };
 		26F95EA4125AD1430016127D /* light.png in Copy (Items Icons) */ = {isa = PBXBuildFile; fileRef = 26636ADB125A8ED10090A321 /* light.png */; };
 		26F95EA5125AD1430016127D /* node.png in Copy (Items Icons) */ = {isa = PBXBuildFile; fileRef = 26636ADC125A8ED10090A321 /* node.png */; };
 		26F95EA6125AD1430016127D /* node_defined.png in Copy (Items Icons) */ = {isa = PBXBuildFile; fileRef = 26636ADD125A8ED10090A321 /* node_defined.png */; };
@@ -135,7 +141,6 @@
 		F5DB0C520856A976005A7CB7 /* dim3 Editor.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5A43266055602E0002DF965 /* dim3 Editor.app */; };
 		F5DD757B092CFD8700465E14 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD757A092CFD8700465E14 /* launch.c */; };
 		F5E3883A0960AC1D003264F6 /* import.h in Headers */ = {isa = PBXBuildFile; fileRef = F5E388390960AC1D003264F6 /* import.h */; };
-		F5E4C0FA0899DA1E005B03EC /* import_text_decode.c in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C0F90899DA1E005B03EC /* import_text_decode.c */; };
 		F5EA6BA709B176BD00E31EE7 /* dialog_map_movements.c in Sources */ = {isa = PBXBuildFile; fileRef = F5EA6BA609B176BD00E31EE7 /* dialog_map_movements.c */; };
 		F5EA6CB809B29F0E00E31EE7 /* dialog_movement_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F5EA6CB709B29F0E00E31EE7 /* dialog_movement_settings.c */; };
 		F5EA6CE809B2AF6200E31EE7 /* dialog_movement_move_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F5EA6CE709B2AF6200E31EE7 /* dialog_movement_move_settings.c */; };
@@ -158,6 +163,17 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		26EE4765126961F9001D0025 /* Copy (Data) */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Data;
+			dstSubfolderSpec = 7;
+			files = (
+				26EE4763126961EF001D0025 /* Auto Generate.xml in Copy (Data) */,
+			);
+			name = "Copy (Data)";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		26F95ECA125AD24D0016127D /* Copy (Tools Icons) */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -341,6 +357,11 @@
 		26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_resize.c; path = Code/dialog_resize.c; sourceTree = "<group>"; };
 		26E155EE12601C9D003158E5 /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
 		26EE38800EA595D5002A8365 /* dialog_map_groups.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_map_groups.c; path = Code/dialog_map_groups.c; sourceTree = "<group>"; };
+		26EE4756126961AF001D0025 /* Auto Generate.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Auto Generate.xml"; sourceTree = "<group>"; };
+		26EE476612696220001D0025 /* auto_generate_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_setup.c; path = Code/auto_generate_setup.c; sourceTree = "<group>"; };
+		26EE476712696220001D0025 /* auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate.c; path = Code/auto_generate.c; sourceTree = "<group>"; };
+		26EE494B126B8455001D0025 /* texture_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_palette_common.c; path = ../dim3Common/Code/texture_palette_common.c; sourceTree = SOURCE_ROOT; };
+		26EE4A3D126B8E2E001D0025 /* import_text_decode_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_text_decode_common.c; path = ../dim3Common/Code/import_text_decode_common.c; sourceTree = SOURCE_ROOT; };
 		26FC3AFE0ECF8F2F00DD6F37 /* dialog_optimize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_optimize.c; path = Code/dialog_optimize.c; sourceTree = "<group>"; };
 		F50AF9AD088601C600F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F50EC4D609DEED57007A0B8A /* mapimport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapimport.h; path = ../dim3Common/Headers/mapimport.h; sourceTree = SOURCE_ROOT; };
@@ -384,7 +405,6 @@
 		F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_draw_piece.c; path = Code/walk_view_draw_piece.c; sourceTree = "<group>"; };
 		F5DD757A092CFD8700465E14 /* launch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = launch.c; path = Code/launch.c; sourceTree = "<group>"; };
 		F5E388390960AC1D003264F6 /* import.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = import.h; path = Headers/import.h; sourceTree = "<group>"; };
-		F5E4C0F90899DA1E005B03EC /* import_text_decode.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import_text_decode.c; path = Code/import_text_decode.c; sourceTree = "<group>"; };
 		F5EA6BA609B176BD00E31EE7 /* dialog_map_movements.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_movements.c; path = Code/dialog_map_movements.c; sourceTree = "<group>"; };
 		F5EA6CB709B29F0E00E31EE7 /* dialog_movement_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_movement_settings.c; path = Code/dialog_movement_settings.c; sourceTree = "<group>"; };
 		F5EA6CE709B2AF6200E31EE7 /* dialog_movement_move_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_movement_move_settings.c; path = Code/dialog_movement_move_settings.c; sourceTree = "<group>"; };
@@ -469,8 +489,9 @@
 				265DCE8F0F6CBFCF00C1E65D /* Palettes */,
 				F5E8EBA808A1C1EF00F06B82 /* Common View */,
 				F508860900E8413C01000001 /* Walk View */,
-				F5A98817094BF740005E55AE /* Dialogs */,
 				F5E387980960916F003264F6 /* Import */,
+				26EE4764126961F8001D0025 /* Auto Generator */,
+				F5A98817094BF740005E55AE /* Dialogs */,
 				F503BCC9011B901401000001 /* Main */,
 			);
 			name = Sources;
@@ -572,6 +593,23 @@
 			path = Tools;
 			sourceTree = "<group>";
 		};
+		26EE4755126961AF001D0025 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				26EE4756126961AF001D0025 /* Auto Generate.xml */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		26EE4764126961F8001D0025 /* Auto Generator */ = {
+			isa = PBXGroup;
+			children = (
+				26EE476712696220001D0025 /* auto_generate.c */,
+				26EE476612696220001D0025 /* auto_generate_setup.c */,
+			);
+			name = "Auto Generator";
+			sourceTree = "<group>";
+		};
 		F503BCC9011B901401000001 /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -605,6 +643,7 @@
 		F522DCBB0BBC853C00DFF256 /* Additional Data */ = {
 			isa = PBXGroup;
 			children = (
+				26EE4755126961AF001D0025 /* Data */,
 				F522DCBC0BBC853C00DFF256 /* Defaults */,
 				F522DCBE0BBC853C00DFF256 /* Icons */,
 			);
@@ -663,7 +702,7 @@
 			isa = PBXGroup;
 			children = (
 				F50EC58A09E0B9F0007A0B8A /* import.c */,
-				F5E4C0F90899DA1E005B03EC /* import_text_decode.c */,
+				26EE4A3D126B8E2E001D0025 /* import_text_decode_common.c */,
 			);
 			name = Import;
 			sourceTree = "<group>";
@@ -689,6 +728,7 @@
 				F54CD2090233430101250BB8 /* main_window.c */,
 				26C5F0EA126135DC000B0F9E /* tool_palette.c */,
 				F57CACA60C38B76200B595F4 /* texture_palette.c */,
+				26EE494B126B8455001D0025 /* texture_palette_common.c */,
 			);
 			name = Windows;
 			sourceTree = "<group>";
@@ -733,6 +773,7 @@
 				F522DC530BBC726B00DFF256 /* Copy (Defaults) */,
 				F522DC770BBC810E00DFF256 /* Copy (Items Icons) */,
 				26F95ECA125AD24D0016127D /* Copy (Tools Icons) */,
+				26EE4765126961F9001D0025 /* Copy (Data) */,
 			);
 			buildRules = (
 				F522DCB90BBC851000DFF256 /* PBXBuildRule */,
@@ -769,6 +810,7 @@
 				F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */,
 				F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */,
 				F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */,
+				26EE4757126961AF001D0025 /* Auto Generate.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -801,7 +843,6 @@
 				F58D0FB005B8C0A800DBBDC5 /* walk_view_click_piece.c in Sources */,
 				F5691685084E6B9000ADFA44 /* dialog_file_open.c in Sources */,
 				F51E8B6C084FE4D600C3AC6A /* dialog_file_new.c in Sources */,
-				F5E4C0FA0899DA1E005B03EC /* import_text_decode.c in Sources */,
 				F5595F7E0918717300B60FAD /* groups.c in Sources */,
 				F5DD757B092CFD8700465E14 /* launch.c in Sources */,
 				F52F19B80946A63100FEFE18 /* selection.c in Sources */,
@@ -852,6 +893,10 @@
 				26D77AF6123069AA00EA7902 /* dialog_skew.c in Sources */,
 				26E155EF12601C9D003158E5 /* OSX_glue.c in Sources */,
 				26C5F0EB126135DC000B0F9E /* tool_palette.c in Sources */,
+				26EE476812696220001D0025 /* auto_generate_setup.c in Sources */,
+				26EE476912696220001D0025 /* auto_generate.c in Sources */,
+				26EE494C126B8455001D0025 /* texture_palette_common.c in Sources */,
+				26EE4A3E126B8E2E001D0025 /* import_text_decode_common.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

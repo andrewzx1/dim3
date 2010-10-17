@@ -479,7 +479,7 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 			if (n==skip_proj_idx) continue;
 
 			chk_proj=server.proj_list.projs[n];
-			if (chk_proj==NULL) continue;
+			if (!chk_proj->on) continue;
 
 			if (collide_circle_check_projectile(&circle_pnt,radius,&min,&max,&cur_dist,chk_proj,&cur_hit_pnt)) {
 				contact->obj_idx=-1;
@@ -522,25 +522,7 @@ bool collide_box_slide_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_o
 
 		// try to move
 
-//	motion2.x=motion->x;
-//	motion2.z=motion->z;
-
 	if (!collide_box_to_map(pt,box_sz,motion,check_objs,skip_obj_idx,check_projs,skip_proj_idx,contact)) return(FALSE);
-
-//	if (((motion2.x*motion->x)<0) || (motion2.x==0)) motion->x=0;
-//	if (((motion2.z*motion->z)<0) || (motion2.z==0)) motion->z=0;
-
-	
-//	return(TRUE);
-	
-//	fprintf(stdout,"%d,%d [%d,%d]\n",motion->x,motion->z,contact->hit_poly.mesh_idx,contact->hit_poly.poly_idx);
-//	return(TRUE);
-	
-		// supergumba -- testing
-	
-	
-	
-	
 
 		// we had a hit ... see if new motion
 		// is free or hits some other object

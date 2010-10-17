@@ -37,7 +37,6 @@ and can be sold or given away.
 
 int							os_vers_major,os_vers_minor_1,os_vers_minor_2;
 long						os_vers_hex;
-char						arch_type[64];
 bool						arch_is_ppc;
 
 bool						game_app_active,game_loop_quit;
@@ -73,12 +72,9 @@ bool app_check_os_support(char *err_str)
 		return(FALSE);
 	}
 
-		// arch type
+		// check for ppc
 
 	info=(NXArchInfo*)NXGetLocalArchInfo();
-	strncpy(arch_type,info->name,name_str_len);
-	arch_type[name_str_len-1]=0x0;
-	
 	arch_is_ppc=(info->cputype==CPU_TYPE_POWERPC);
 
 #else

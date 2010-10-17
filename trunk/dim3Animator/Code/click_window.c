@@ -21,13 +21,12 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2006 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
 #include "model.h"
-#include "window.h"
-#include "menu.h"
+#include "interface.h"
 
 extern int						cur_mesh,cur_pose,cur_bone,magnify_z;
 extern bool						shift_on,rotate_on,size_on,drag_sel_on;
