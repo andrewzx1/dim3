@@ -21,12 +21,12 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2006 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
 #include "model.h"
-#include "window.h"
+#include "interface.h"
 
 WindowRef						wind;
 EventHandlerRef					model_wind_event;
@@ -338,7 +338,7 @@ void main_wind_draw(void)
 		// palettes
 		
 	tool_palette_draw();
-	texture_palette_draw();
+	texture_palette_draw(model.textures);
 	
 		// swap GL buffer
 		
@@ -401,7 +401,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					 
 					if (pt.v>=model_box.by) {
-						texture_palette_click(&pnt,(nclick!=1));
+						texture_palette_click(model.textures,&pnt,(nclick!=1));
 						return(noErr);
 					}
 					

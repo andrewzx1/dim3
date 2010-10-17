@@ -48,8 +48,6 @@ view_type					view;
 view_render_type			view_camera_render,view_node_render;
 render_info_type			render_info;
 
-extern bool					game_app_active;
-
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;

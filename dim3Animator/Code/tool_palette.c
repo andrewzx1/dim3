@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2007 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -437,31 +437,3 @@ void tool_palette_click(d3pnt *pnt)
 	}
 }
 
-/* =======================================================
-
-      Values and States
-      
-======================================================= */
-
-void tool_default(void)
-{
-/*
-	state.free_look=setup.free_look;
-	state.select_add=FALSE;
-	
-    state.vertex_mode=vertex_mode_none;
-	state.drag_mode=drag_mode_mesh;
-	state.grid_mode=grid_mode_small;
-	state.node_mode=node_mode_select;
-	state.handle_mode=handle_mode_rotate;
-	
-	state.auto_texture=setup.auto_texture;
-	
-	state.show_liquid=TRUE;
-	state.show_object=TRUE;
-	state.show_lightsoundparticle=TRUE;
-	state.show_node=FALSE;
-	
-	state.show_normals=FALSE;
-	*/
-}

@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2007 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -113,7 +113,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					
 					if ((pt.v>=txt_palette_box.ty) && (pt.v<=txt_palette_box.by)) {
-						texture_palette_click(&dpt,(nclick!=1));
+						texture_palette_click(map.textures,&dpt,(nclick!=1));
 						return(noErr);
 					}
 					
@@ -411,7 +411,7 @@ void main_wind_draw(void)
 		// palettes
 		
 	tool_palette_draw();
-	texture_palette_draw();
+	texture_palette_draw(map.textures);
 	
 		// swap GL buffer
 		

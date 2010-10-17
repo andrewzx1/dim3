@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Common
 Author: Brian Barnes
 Usage: Import Text Decode Routines
 
@@ -21,15 +21,17 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2007 Klink! Software www.klinksoftware.com
+(c) 2000-2011 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
 #ifdef D3_PCH
-	#include "dim3editor.h"
+	#ifdef D3_EDITOR
+		#include "dim3editor.h"
+	#else
+		#include "dim3Animator.h"
+	#endif
 #endif
-
-#include "import.h"
 
 int				text_nline,text_data_sz;
 char			piece_break=0x9;

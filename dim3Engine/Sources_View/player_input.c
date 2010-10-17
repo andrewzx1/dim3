@@ -296,7 +296,7 @@ void player_weapon_zoom_input(obj_type *obj,weapon_type *weap)
 
 void player_weapon_change_input(obj_type *obj,weapon_type *weap)
 {
-	int				i,k;
+	int				n,k;
 	bool			down_key,weapon_key[(nc_weapon_end-nc_weapon_start)+1],
 					next_weapon_key,previous_weapon_key;
 	
@@ -324,9 +324,9 @@ void player_weapon_change_input(obj_type *obj,weapon_type *weap)
 		
 	down_key=next_weapon_key||previous_weapon_key;
 
-	for (i=nc_weapon_start;i<=nc_weapon_end;i++) {
-		k=i-nc_weapon_start;
-		weapon_key[k]=input_action_get_state(i);
+	for (n=nc_weapon_start;n!=nc_weapon_end;n++) {
+		k=n-nc_weapon_start;
+		weapon_key[k]=input_action_get_state(n);
 		down_key=down_key||weapon_key[k];
 	}
 	
@@ -356,8 +356,8 @@ void player_weapon_change_input(obj_type *obj,weapon_type *weap)
 		return;
 	}
 	
-	for ((i=nc_weapon_start);(i<=nc_weapon_end);i++) {
-		k=i-nc_weapon_start;
+	for (n=nc_weapon_start;n!=nc_weapon_end;n++) {
+		k=n-nc_weapon_start;
 		if (weapon_key[k]) {
 			weapon_pick(obj,k);
 			weapon_change_key_down=TRUE;
@@ -368,19 +368,19 @@ void player_weapon_change_input(obj_type *obj,weapon_type *weap)
 
 void player_weapon_fire_input(obj_type *obj,weapon_type *weap)
 {
-	int					i,method;
+	int					n,method;
 	
 		// no firing if no weapon is being held
 		
 	if (obj->held_weapon.mode!=wm_held) return;
-		
-		// check keys
-
-	for (i=nc_fire_start;i<=nc_fire_end;i++) {
 	
-		method=i-nc_fire_start;
+		// check keys
 		
-		if (input_action_get_state(i)) {
+	for (n=nc_fire_start;n!=nc_fire_end;n++) {
+	
+		method=n-nc_fire_start;
+		
+		if (input_action_get_state(n)) {
 			if (!fire_key_down[method]) {
 				fire_key_down[method]=TRUE;
 				weapon_player_fire_down(obj,weap,method);
@@ -1092,6 +1092,7 @@ void player_get_input(void)
 	player_enter_exit_input(obj);
 	
 		// clear mouse wheel state (since it's single state instead of held, like buttons)
+		// supergumba -- SDL 1.3 will probably change this
 		
 	input_clear_mouse_wheel_state();
 }

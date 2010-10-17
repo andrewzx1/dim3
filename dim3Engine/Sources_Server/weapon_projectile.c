@@ -794,6 +794,12 @@ void weapon_recoil_run(obj_type *obj,weapon_type *weap)
 
 void weapon_recoil_add(obj_type *obj,weapon_type *weap,d3ang *ang)
 {
+		// no recoil if not in fpp
+		
+	if (camera.setup.mode!=cv_fpp) return;
+	
+		// add in recoil
+		
 	ang->x=object_player_look_constrain(obj,weap,(ang->x+weap->recoil.ang.x));
 	ang->y=angle_add(ang->y,weap->recoil.ang.y);
 	ang->z+=weap->recoil.ang.z;

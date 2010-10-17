@@ -41,7 +41,7 @@ and can be sold or given away.
 #include "timing.h"
 
 extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2;
-extern char					arch_type[64];
+extern bool					game_app_active;
 
 extern render_info_type		render_info;
 extern map_type				map;
@@ -172,6 +172,13 @@ void debug_dump(void)
 	
 	file=fopen(path,"w");
 	if (file==NULL) return;
+	
+		// app
+		
+	debug_dump_header(file,"App");
+
+	debug_dump_info_enable(file,"Game State",game_app_active);
+	debug_dump_info_int(file,"SDL State",SDL_GetAppState());
 
 		// engine
 
