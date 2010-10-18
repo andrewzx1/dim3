@@ -263,6 +263,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Common\Code\import_text_decode_common.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\light_maps.c"
 					>
 				</File>
@@ -292,6 +296,10 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Editor\Code\texture_palette.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Common\Code\texture_palette_common.c"
 					>
 				</File>
 				<File

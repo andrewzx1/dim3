@@ -40,6 +40,7 @@ extern void scripts_clear_attach(attach_type *attach,int thing_type);
 extern bool scripts_execute(attach_type *attach,script_type *script,char *err_str);
 
 extern bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str);
+extern bool scripts_add_parent(attach_type *attach,char *name,char *err_str);
 extern void scripts_dispose(int idx);
 
 extern void script_defines_create_constants(script_type *script);
@@ -526,11 +527,12 @@ extern JSObjectRef script_add_proj_melee_object(JSContextRef cx,JSObjectRef pare
 //
 
 extern bool scripts_setup_events(script_type *script,char *err_str);
-extern bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_name,bool call_parent,char *err_str);
+extern bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_name,char *err_str);
 extern void scripts_lock_events(void);
 extern void scripts_unlock_events(void);
 extern bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str);
 extern void scripts_post_event_console(attach_type *attach,int main_event,int sub_event,int id);
+extern bool scripts_post_event_call_parent(attach_type *attach,char *err_str);
 extern bool scripts_chain(attach_type *attach,char *func_name,char *err_str);
 extern void scripts_chain_console(attach_type *attach,char *func_name);
 extern JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,JSValueRef *exception);

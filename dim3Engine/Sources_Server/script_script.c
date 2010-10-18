@@ -39,10 +39,12 @@ extern js_type			js;
 
 JSValueRef js_script_implements_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_script_call_parent_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	script_functions[]={
 							{"implements",			js_script_implements_func,			kJSPropertyAttributeDontDelete},
 							{"attachEvent",			js_script_attach_event_func,		kJSPropertyAttributeDontDelete},
+							{"callParent",			js_script_call_parent_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			script_class;
@@ -76,46 +78,45 @@ JSObjectRef script_add_global_script_object(JSContextRef cx,JSObjectRef parent_o
 
 JSValueRef js_script_implements_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-/* supergumba -- do this
-	int				idx;
-	char			name[name_str_len];
-	d3pnt			pt;
+	char			name[file_str_len],err_str[256];
 	
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
-	
-	script_value_to_string(cx,argv[3],name,name_str_len);
-	
-	idx=particle_find_index(name);
-	if (idx==-1) {
-		*exception=js_particle_name_exception(cx,name);
-	}
-	else {
-		script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL));
-	}
-*/
-	return(script_null_to_value(cx));
-}
+	script_value_to_string(cx,argv[0],name,file_str_len);
 
-JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
-{
-	int				main_event;
-	bool			call_parent;
-	char			func_name[256],err_str[256];
-	
-	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
-	
-	main_event=script_value_to_int(cx,argv[0]);
-	script_value_to_string(cx,argv[1],func_name,256);
-	call_parent=script_value_to_bool(cx,argv[2]);
-
-	if (!scripts_setup_event_attach(&js.attach,main_event,func_name,call_parent,err_str)) {
+	if (!scripts_add_parent(&js.attach,name,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 
 	return(script_null_to_value(cx));
 }
 
+JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				main_event;
+	char			func_name[256],err_str[256];
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+	main_event=script_value_to_int(cx,argv[0]);
+	script_value_to_string(cx,argv[1],func_name,256);
+
+	if (!scripts_setup_event_attach(&js.attach,main_event,func_name,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_script_call_parent_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char			err_str[256];
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
+	if (!scripts_post_event_call_parent(&js.attach,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+
+	return(script_null_to_value(cx));
+}
