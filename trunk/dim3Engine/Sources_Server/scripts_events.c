@@ -60,15 +60,11 @@ bool scripts_setup_events(script_type *script,char *err_str)
 	else {
 		if (!JSObjectIsFunction(script->cx,script->event_func)) script->event_func=NULL;
 	}
-
-		// set recursive count to 0
-
-	script->recursive_count=0;
 	
 	return(TRUE);
 }
 
-bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_name,bool call_parent,char *err_str)
+bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_name,char *err_str)
 {
 	int					idx;
 	script_type			*script;
@@ -110,9 +106,8 @@ bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_na
 
 	idx=main_event-event_main_id_start;
 
-	script->event_list.on=TRUE;
-	script->event_list.calls[idx].parent=call_parent;
-	script->event_list.calls[idx].func=func;
+	script->event_attach_list.on=TRUE;
+	script->event_attach_list.func[idx]=func;
 
 	return(TRUE);
 }
@@ -145,19 +140,19 @@ inline void scripts_unlock_events(void)
 
 bool scripts_recursion_in(script_type *script,char *err_str)
 {
-	if (script->recursive_count==js_max_recursive_count) {
+	if (script->recursive.count==js_max_recursive_count) {
 		sprintf(err_str,"[%s] Script has recursed to deep",script->name);
 		return(FALSE);
 	}
 
-	script->recursive_count++;
+	script->recursive.count++;
 
 	return(TRUE);
 }
 
 void scripts_recursion_out(script_type *script)
 {
-	script->recursive_count--;
+	script->recursive.count--;
 }
 
 /* =======================================================
@@ -168,10 +163,11 @@ void scripts_recursion_out(script_type *script)
 
 bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
 {
-	int				event_idx;
-	JSValueRef		rval,exception,argv[5];
-	script_type		*script;
-	attach_type		old_attach;
+	int						event_idx,tick;
+	JSValueRef				rval,exception,argv[5];
+	script_type				*script;
+	script_event_state_type	old_event_state;
+	attach_type				old_attach;
 	
 		// no error
 		
@@ -187,36 +183,44 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	if (attach->script_idx==-1) return(TRUE);
 	
 	script=js.script_list.scripts[attach->script_idx];
-	
-		// remember the event
-		
-	script->main_event=main_event;
-	script->sub_event=sub_event;
+
+	fprintf(stdout,"IN %s: attach script idx = %d, js.script idx = %d\n",script->name,attach->script_idx,js.attach.script_idx);
 
 		// is this an attached event?
 
 	event_idx=main_event-event_main_id_start;
 
-	if (script->event_list.on) {
-		if (script->event_list.calls[event_idx].func==NULL) return(TRUE);
+	if (script->event_attach_list.on) {
+		if (script->event_attach_list.func[event_idx]==NULL) return(TRUE);
 	}
 	else {
 		if (script->event_func==NULL) return(TRUE);
 	}
-	
-		// can only enter an event once
-		// to stop infinite loops
-		
-	if (attach->in_event[event_idx]) return(TRUE);
-	
-	attach->in_event[event_idx]=TRUE;
 
 		// enter recursion
 
-	if (!scripts_recursion_in(script,err_str)) {
-		attach->in_event[event_idx]=FALSE;
-		return(FALSE);
-	}
+	if (!scripts_recursion_in(script,err_str)) return(FALSE);
+	
+		// can't re-enter an event we are already in
+		// this is a silent failure as it usually happens
+		// in cascading damage events
+		
+	if (script->recursive.in_event[event_idx]) return(TRUE);
+	
+	script->recursive.in_event[event_idx]=TRUE;
+
+		// backup the current event state in
+		// case we are re-entering from another event
+		// and setup new state
+
+	tick=game_time_get();
+
+	memmove(&old_event_state,&script->event_state,sizeof(script_event_state_type));
+		
+	script->event_state.main_event=main_event;
+	script->event_state.sub_event=sub_event;
+	script->event_state.id=id;
+	script->event_state.tick=tick;
 	
 		// save current attach in case event called within another script
 		
@@ -225,18 +229,19 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		// attach to proper script
 		
 	memmove(&js.attach,attach,sizeof(attach_type));
+	fprintf(stdout,"ATTACHED %s: attach script idx = %d, js.script idx = %d\n",script->name,attach->script_idx,js.attach.script_idx);
 
 		// run the event function
 		// supergumba -- for now we handle both methods, but
 		// in the future we should replace with a single method
 
-	if (script->event_list.on) {
+	if (script->event_attach_list.on) {
 		argv[0]=(JSValueRef)script->obj;
 		argv[1]=script_int_to_value(script->cx,sub_event);
 		argv[2]=script_int_to_value(script->cx,id);
-		argv[3]=script_int_to_value(script->cx,game_time_get());
+		argv[3]=script_int_to_value(script->cx,tick);
 
-		rval=JSObjectCallAsFunction(script->cx,script->event_list.calls[event_idx].func,NULL,4,argv,&exception);
+		rval=JSObjectCallAsFunction(script->cx,script->event_attach_list.func[event_idx],NULL,4,argv,&exception);
 		if (rval==NULL) {
 			script_exception_to_string(script->cx,exception,err_str,256);
 		}
@@ -247,25 +252,30 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		argv[1]=script_int_to_value(script->cx,main_event);
 		argv[2]=script_int_to_value(script->cx,sub_event);
 		argv[3]=script_int_to_value(script->cx,id);
-		argv[4]=script_int_to_value(script->cx,game_time_get());
+		argv[4]=script_int_to_value(script->cx,tick);
 
 		rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
 		if (rval==NULL) {
 			script_exception_to_string(script->cx,exception,err_str,256);
 		}
 	}
-
-		// restore old attach
+	
+		// leave event
 		
-	memmove(&js.attach,&old_attach,sizeof(attach_type));
+	script->recursive.in_event[event_idx]=FALSE;
 
 		// leave recursion
 
 	scripts_recursion_out(script);
-	
-		// leave event
+
+		// restore old event state
+
+	memmove(&script->event_state,&old_event_state,sizeof(script_event_state_type));
+
+		// restore old attach
 		
-	attach->in_event[event_idx]=FALSE;
+	memmove(&js.attach,&old_attach,sizeof(attach_type));
+	fprintf(stdout,"OUT %s: attach script idx = %d, js.script idx = %d\n",script->name,attach->script_idx,js.attach.script_idx);
 	
 	return(err_str[0]==0x0);
 }
@@ -277,6 +287,29 @@ void scripts_post_event_console(attach_type *attach,int main_event,int sub_event
 	if (!scripts_post_event(attach,main_event,sub_event,id,err_str)) {
 		console_add_error(err_str);
 	}
+}
+
+bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
+{
+	script_type		*script,*parent_script;
+
+	if (attach->script_idx==-1) return(TRUE);
+	
+		// get the parent script
+
+	script=js.script_list.scripts[attach->script_idx];
+	if (script->parent_idx==-1) {
+		strcpy(err_str,"This script does not implement any parent script");
+		return(FALSE);
+	}
+
+	parent_script=js.script_list.scripts[script->parent_idx];
+
+		// call on parent script
+
+	return(TRUE);	// supergumba
+	// supergumba -- need to work on all this
+//	return(scripts_post_event(attach,script->event_state.main_event,script->event_state.sub_event,script->event_state.id,err_str));
 }
 
 /* =======================================================

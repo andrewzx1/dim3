@@ -96,21 +96,45 @@ void scripts_free_list(void)
       
 ======================================================= */
 
-void scripts_clear_event_list(script_type *script)
+void scripts_setup_data(script_type *script)
 {
 	int				n;
 
-	script->event_list.on=FALSE;
+		// clear attached event list
+
+	script->event_attach_list.on=FALSE;
 
 	for (n=0;n!=event_main_id_count;n++) {
-		script->event_list.calls[n].func=NULL;
+		script->event_attach_list.func[n]=NULL;
+	}
+
+		// setup recursion checks
+
+	script->recursive.count=0;
+
+	for (n=0;n!=event_main_id_count;n++) {
+		script->recursive.in_event[n]=FALSE;
+	}
+
+		// blank out event state
+
+	script->event_state.main_event=-1;
+	script->event_state.sub_event=-1;
+	script->event_state.id=0;
+	script->event_state.tick=0;
+
+		// messages
+		
+	for (n=0;n!=max_script_msg_data;n++) {
+		script->msg_data.set[n].type=d3_jsval_type_number;
+		script->msg_data.set[n].data.d3_number=0.0f;
+		script->msg_data.get[n].type=d3_jsval_type_number;
+		script->msg_data.get[n].data.d3_number=0.0f;
 	}
 }
 
 void scripts_clear_attach(attach_type *attach,int thing_type)
 {
-	int				n;
-	
 		// item attachments
 		
 	attach->script_idx=-1;
@@ -119,21 +143,7 @@ void scripts_clear_attach(attach_type *attach,int thing_type)
 	attach->weap_idx=-1;
 	attach->proj_idx=-1;
 	attach->proj_setup_idx=-1;
-	
-		// in event flags
-		
-	for (n=0;n!=event_main_id_count;n++) {
-		attach->in_event[n]=FALSE;
-	}
 
-		// messages
-		
-	for (n=0;n!=max_attach_msg_data;n++) {
-		attach->set_msg_data[n].type=d3_jsval_type_number;
-		attach->set_msg_data[n].data.d3_number=0.0f;
-		attach->get_msg_data[n].type=d3_jsval_type_number;
-		attach->get_msg_data[n].data.d3_number=0.0f;
-	}
 }
 
 /* =======================================================
@@ -230,12 +240,14 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	script=js.script_list.scripts[idx];
 
 	script->idx=idx;
+	script->parent_idx=-1;
 	
 	strcpy(script->name,name);
+	strcpy(script->sub_dir,sub_dir);
 
-		// clear event list
+		// setup script data
 
-	scripts_clear_event_list(script);
+	scripts_setup_data(script);
 
 		// original object script attachments
 		
@@ -297,19 +309,36 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	return(TRUE);
 }
 
+bool scripts_add_parent(attach_type *attach,char *name,char *err_str)
+{
+	attach_type			parent_attach;
+	script_type			*script;
+
+		// need to duplicate the attach
+
+	script=js.script_list.scripts[attach->script_idx];
+	memmove(&parent_attach,attach,sizeof(attach_type));
+
+		// add in the new parent script
+
+	if (!scripts_add(&parent_attach,script->sub_dir,name,err_str)) return(FALSE);
+
+		// set the parent
+
+	script->parent_idx=parent_attach.script_idx;
+
+	return(TRUE);
+}
+
 /* =======================================================
 
       Dispose Scripts
       
 ======================================================= */
 
-void scripts_dispose(int idx)
+void scripts_dispose_single(int idx)
 {
 	script_type		*script;
-	
-		// no script loaded
-		
-	if (idx==-1) return;
 	
 		// dispose all script timers
 
@@ -331,6 +360,24 @@ void scripts_dispose(int idx)
 		
 	free(js.script_list.scripts[idx]);
 	js.script_list.scripts[idx]=NULL;
+}
+
+void scripts_dispose(int idx)
+{
+	int			parent_idx;
+
+		// no attached script
+
+	if (idx==-1) return;
+
+		// recurse through the parents
+
+	parent_idx=js.script_list.scripts[idx]->parent_idx;
+	if (parent_idx!=-1) scripts_dispose(parent_idx);
+
+		// dispose the script itself
+
+	scripts_dispose_single(idx);
 }
 
 /* =======================================================

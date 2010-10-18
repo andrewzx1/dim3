@@ -349,7 +349,7 @@ model_draw* script_find_model_draw(JSObjectRef j_obj)
 
 inline bool script_in_construct(void)
 {
-	return(js.script_list.scripts[js.attach.script_idx]->main_event==sd_event_construct);
+	return(js.script_list.scripts[js.attach.script_idx]->event_state.main_event==sd_event_construct);
 }
 
 

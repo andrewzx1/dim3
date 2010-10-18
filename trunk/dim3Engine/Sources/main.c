@@ -83,7 +83,6 @@ bool app_check_os_support(char *err_str)
 	os_vers_minor_1=0;
 	os_vers_minor_2=0;
 
-	strcpy(arch_type,"x86");
 	arch_is_ppc=FALSE;
 #endif
 
@@ -109,7 +108,6 @@ void app_check_editor_link(void)
 
 		// attempt to open editor link file
 		
-//	file_paths_base(&setup.file_path_setup,path,"editor_link","tmp");
 	file_paths_preferences(path,"dim3 Editor Link","tmp");
 	
 	file=fopen(path,"rb");

@@ -162,7 +162,7 @@ void debug_dump(void)
 	proj_setup_type		*proj_setup;
 	effect_type			*effect;
 	model_type			*mdl;
-	script_type			*script;
+	script_type			*script,*script_parent;
 	timer_type			*timer;
 	FILE				*file;
 
@@ -461,8 +461,10 @@ void debug_dump(void)
 	debug_dump_header(file,"Scripts");
 	
 	debug_info_table_str(file,"Name",35);
+	debug_info_table_str(file,"Parent",35);
 	debug_info_table_str(file,"Attached Events",35);
 	debug_info_return(file);
+	debug_info_table_str(file,"----------------------------------",35);
 	debug_info_table_str(file,"----------------------------------",35);
 	debug_info_table_str(file,"----------------------------------",35);
 	debug_info_return(file);
@@ -473,8 +475,18 @@ void debug_dump(void)
 
 		debug_info_table_str(file,script->name,35);
 		
+		if (script->parent_idx==-1) {
+			debug_info_table_str(file,"*",35);
+		}
+		else {
+			script_parent=js.script_list.scripts[script->parent_idx];
+			debug_info_table_str(file,script_parent->name,35);
+		}
+
+		debug_info_table_str(file,script->name,35);
+		
 		for (k=0;k!=event_main_id_count;k++) {
-			if (script->event_list.calls[k].func!=NULL) {
+			if (script->event_attach_list.func[k]!=NULL) {
 				script_get_define_for_event((event_main_id_start+k),str);
 				fwrite(str,1,strlen(str),file);
 				fwrite(" ",1,1,file);

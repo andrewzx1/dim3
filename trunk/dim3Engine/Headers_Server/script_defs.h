@@ -387,7 +387,7 @@ and can be sold or given away.
 
 #define max_d3_jsval_str_len							128
 
-#define max_attach_msg_data								8
+#define max_script_msg_data								8
 
 //
 // define structure
@@ -413,15 +413,8 @@ typedef union		{
 //
 
 typedef struct		{
-						int								type;
-						d3_jsval_data_type				data;
-					} attach_msg_type;
-
-typedef struct		{
 						int								thing_type,script_idx,
 														obj_idx,weap_idx,proj_setup_idx,proj_idx;
-						bool							in_event[event_main_id_count];
-						attach_msg_type					set_msg_data[max_attach_msg_data],get_msg_data[max_attach_msg_data];
 					} attach_type;
 
 //
@@ -457,21 +450,37 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool							parent;
-						JSObjectRef						func;
-					} script_event_call_type;
+						int								count;
+						bool							in_event[event_main_id_count];
+					} script_recursive_type;
 
 typedef struct		{
 						bool							on;
-						script_event_call_type			calls[event_main_id_count];
-					} script_event_type;
+						JSObjectRef						func[event_main_id_count];
+					} script_event_attach_list_type;
 
 typedef struct		{
-						int								idx,data_len,
-														main_event,sub_event,recursive_count;
-						char							name[file_str_len];
+						int								main_event,sub_event,id,tick;
+					} script_event_state_type;
+
+typedef struct		{
+						int								type;
+						d3_jsval_data_type				data;
+					} script_msg_type;
+
+typedef struct		{
+						script_msg_type					set[max_script_msg_data],
+														get[max_script_msg_data];
+					} script_message_data_type;
+
+typedef struct		{
+						int								idx,data_len,parent_idx;
+						char							name[file_str_len],sub_dir[file_str_len];
 						char							*data;
-						script_event_type				event_list;
+						script_recursive_type			recursive;
+						script_event_state_type			event_state;
+						script_event_attach_list_type	event_attach_list;
+						script_message_data_type		msg_data;
 						JSGlobalContextRef				cx;
 						JSObjectRef						obj,global_obj,event_func;
 					} script_type;
@@ -485,7 +494,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								timer_tick;
+						int								timer_tick,current_script_idx,
+														game_script_idx,course_script_idx;
+
 						attach_type						attach;
 						
 						attach_type						game_attach,course_attach;
