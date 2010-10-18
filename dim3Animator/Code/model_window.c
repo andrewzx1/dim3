@@ -635,7 +635,7 @@ void model_wind_open(void)
 	
 		// setup models and palettes
 		
-	tool_palette_initialize();
+	tool_palette_initialize("Animator");
 	tool_palette_setup();
 	
 	texture_palette_setup();

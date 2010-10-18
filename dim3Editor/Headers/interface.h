@@ -43,7 +43,7 @@ extern void undo_pull(void);
 // tool palette
 //
 
-extern void tool_palette_initialize(void);
+extern void tool_palette_initialize(char *app_name);
 extern void tool_palette_shutdown(void);
 extern void tool_palette_setup(void);
 extern void tool_palette_draw(void);

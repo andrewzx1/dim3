@@ -31,13 +31,9 @@ and can be sold or given away.
 
 #define D3_ANIMATOR						1
 
-
 //
 // inteface defs
 //
-
-#define tool_button_size				32
-#define tool_count						12
 
 #define model_view_min_size				512
 
@@ -45,6 +41,32 @@ and can be sold or given away.
 
 #define list_width						170
 #define total_list_width				810
+
+//
+// tool bars
+//
+
+#define tool_button_size				32
+#define tool_count						12
+
+
+#define tool_file_names					{ \
+											"Tool Textured", \
+											"Tool Mesh", \
+											"Tool Bones", \
+											"Tool Hit Boxes", \
+											"Tool Edit Polygons", \
+											"Tool Edit Vertexes", \
+											"Tool Boxes", \
+											"Tool Normals", \
+											"Tool Show First Mesh", \
+											"Tool Rotate Mode", \
+											"Tool Move Mode", \
+											"Tool Play" \
+										}
+
+#define tool_separators					{"000010100101"}
+
 
 //
 // Menus
