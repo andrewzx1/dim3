@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Animator
+Module: dim3 Common
 Author: Brian Barnes
  Usage: Dialog Utilities
 
@@ -27,9 +27,7 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-// #define DIALOG_IS_EDITOR			1
-
-#ifdef DIALOG_IS_EDITOR
+#ifdef D3_EDITOR
 	extern map_type					map;
 #else
 	extern model_type				model;
@@ -51,9 +49,9 @@ void dialog_open(WindowRef *wind,char *name)
 	IBNibRef				nib;
 	CFStringRef				cf_str;
 	
-	os_set_arrow_cursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
-#ifdef DIALOG_IS_EDITOR
+#ifdef D3_EDITOR
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Editor",kCFStringEncodingMacRoman);
 #else
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Animator",kCFStringEncodingMacRoman);
@@ -514,7 +512,7 @@ void dialog_set_focus(WindowRef wind,unsigned long sig,int id)
 
 /* =======================================================
 
-      Enabling/Hiding
+      Specific Control Changes
       
 ======================================================= */
 
@@ -545,6 +543,33 @@ void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show)
 	GetControlByID(wind,&ctrl_id,&ctrl);
 	
 	SetControlVisibility(ctrl,show,show);
+}
+
+static pascal OSStatus dialog_numeric_only_proc(EventHandlerCallRef handler,EventRef event,void *data)
+{
+	char			ch;
+	
+	GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
+	if (((ch>='0') && (ch<='9')) || (ch=='.') || (ch=='-') || ((ch<' ') && (ch!=0xD))) return(eventNotHandledErr);
+	
+	return(noErr);
+}
+
+void dialog_set_numeric_only(WindowRef wind,int sig,int id)
+{
+	ControlRef				ctrl;
+	ControlID				ctrl_id;
+	EventHandlerUPP			ctrl_event_upp;
+	EventTypeSpec			ctrl_event_list[]={{kEventClassKeyboard,kEventRawKeyDown}};
+
+		// instal numeric only event handler
+
+	ctrl_id.signature=sig;
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+	
+	ctrl_event_upp=NewEventHandlerUPP(dialog_numeric_only_proc);
+	InstallControlEventHandler(ctrl,ctrl_event_upp,GetEventTypeCount(ctrl_event_list),ctrl_event_list,wind,NULL);
 }
 
 void dialog_redraw(WindowRef wind,unsigned long sig,int id)
@@ -794,7 +819,7 @@ void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,int id,ch
 
 void dialog_special_combo_fill_node(WindowRef wind,unsigned long sig,int id,char *sel_name)
 {
-#ifdef DIALOG_IS_EDITOR
+#ifdef D3_EDITOR
 
 	int							n,node_count;
 	char						node_names[max_node][name_str_len];
@@ -846,6 +871,52 @@ inline void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int
 
 /* =======================================================
 
+      Dialog Group Combo Utilities
+      
+======================================================= */
+
+void dialog_fill_group_combo(WindowRef wind,unsigned long sig,int id,int idx)
+{
+#ifdef D3_EDITOR
+	int					n;
+	
+		// clear combo
+		
+	dialog_clear_combo(wind,sig,id);
+	
+		// none items
+		
+	dialog_add_combo_item(wind,sig,id,"None",0);
+	dialog_add_combo_item(wind,sig,id,"-",0);
+	
+		// groups
+		
+	for (n=0;n!=map.ngroup;n++) {
+		dialog_add_combo_item(wind,sig,id,map.groups[n].name,0);
+	}
+	
+	if (idx==-1) {
+		dialog_set_combo(wind,sig,id,0);
+	}
+	else {
+		dialog_set_combo(wind,sig,id,(idx+2));
+	}
+#endif
+}
+
+int dialog_get_group_combo(WindowRef wind,unsigned long sig,int id)
+{
+	int				idx;
+	
+	idx=dialog_get_combo(wind,sig,id);
+	
+	if (idx==0) return(-1);
+	return(idx-2);
+}
+
+
+/* =======================================================
+
       Dialog Map Texture Combo Utilities
       
 ======================================================= */
@@ -868,7 +939,7 @@ void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none
 	
 		// textures
 		
-#ifdef DIALOG_IS_EDITOR
+#ifdef D3_EDITOR
 	texture=map.textures;
 	ntexture=max_map_texture;
 #else
@@ -960,7 +1031,7 @@ void dialog_progress_start(char *title,int count)
 
 void dialog_progress_end(void)
 {
-	os_set_arrow_cursor();
+	SetThemeCursor(kThemeArrowCursor);
 	DisposeWindow(dialog_progress_wind);
 }
 
@@ -975,7 +1046,7 @@ int dialog_alert(char *title,char *msg)
 	CFStringRef			cf_title_str,cf_msg_str;
 	CFOptionFlags		resp;
 
-	os_set_arrow_cursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
 	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);
@@ -994,7 +1065,7 @@ int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *but
 						cf_butt_1_str,cf_butt_2_str,cf_butt_3_str;
 	CFOptionFlags		resp;
 
-	os_set_arrow_cursor();
+	SetThemeCursor(kThemeArrowCursor);
 	
 	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
 	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);

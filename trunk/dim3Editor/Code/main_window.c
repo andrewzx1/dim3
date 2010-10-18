@@ -301,7 +301,7 @@ void main_wind_open(void)
 
 		// setup view sizes
 	
-	tool_palette_initialize();
+	tool_palette_initialize("Editor");
 	tool_palette_setup();
 	
 	texture_palette_setup();

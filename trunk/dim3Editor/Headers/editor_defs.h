@@ -32,13 +32,59 @@ and can be sold or given away.
 #define D3_EDITOR								1
 
 //
-// UI sizes
+// view selection
+//
+
+#define view_selection_size						10
+
+//
+// tools
 //
 
 #define tool_count								37
 #define tool_button_size						32
 
-#define view_selection_size						10
+#define tool_file_names							{ \
+													"Tool Move Points", \
+													"Tool Move Points Together", \
+													"Tool Snap Points", \
+													"Tool Free Look", \
+													"Tool Toggle Mode", \
+													"Tool Edit Mesh", \
+													"Tool Edit Polygons", \
+													"Tool Edit Vertexes", \
+													"Tool Combine Meshes", \
+													"Tool Split Mesh", \
+													"Tool Tesselate Mesh", \
+													"Tool No Grid", \
+													"Tool Small Grid", \
+													"Tool Large Grid", \
+													"Tool Auto-Texture Mesh", \
+													"Tool Rotate Mode", \
+													"Tool Move Mode", \
+													"Tool Node Select", \
+													"Tool Node Link", \
+													"Tool Node Remove Link", \
+													"Tool Normals", \
+													"Tool Cull", \
+													"Tool Edit Map Script", \
+													"Tool Run Map", \
+													"", \
+													"Tool Spot", \
+													"Tool Light", \
+													"Tool Sound", \
+													"Tool Particle", \
+													"Tool Scenery", \
+													"Tool Node", \
+													"Tool Mesh", \
+													"Tool Mesh UV", \
+													"Tool Height Map", \
+													"Tool Grid", \
+													"Tool Polygon", \
+													"Tool Liquid", \
+											}
+											
+#define tool_separators						{"0001010010010011010010100000000000000"}
 
 //
 // vertex modes

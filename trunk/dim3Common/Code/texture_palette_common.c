@@ -41,6 +41,9 @@ int							txt_palette_max_page_count,txt_palette_per_page_count,
 							txt_palette_page_list_count,txt_palette_page_list_width;
 d3rect						txt_palette_box;
 
+extern int texture_palette_get_selected_texture(void);
+extern void texture_palette_put_selected_texture(int txt_idx);
+
 /* =======================================================
 
       Texture Palette Drawing
