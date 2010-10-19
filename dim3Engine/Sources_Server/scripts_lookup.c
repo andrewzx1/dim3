@@ -343,9 +343,14 @@ model_draw* script_find_model_draw(JSObjectRef j_obj)
 
 /* =======================================================
 
-      Construct Check
+      Event Check
       
 ======================================================= */
+
+inline bool script_in_event(void)
+{
+	return(js.attach.event_state.main_event!=-1);
+}
 
 inline bool script_in_construct(void)
 {

@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "dialog.h"
+#include "common_view.h"
 #include "walk_view.h"
 
 extern map_type					map;
@@ -40,6 +40,10 @@ ag_state_type					ag_state;
 
 extern bool ag_initialize(void);
 extern void ag_release(void);
+extern void ag_random_seed(int seed);
+extern int ag_random_int(int max);
+extern void ag_generate_mirror_meshes(void);
+extern void ag_generate_spots_add(void);
 
 /* =======================================================
 
@@ -65,19 +69,6 @@ void ag_map_clear(void)
 
 	map.liquid.nliquid=0;
 	if (map.liquid.liquids!=NULL) free(map.liquid.liquids);
-}
-
-void ag_random_seed(int seed)
-{
-	srandom(seed);
-}
-
-int ag_random_int(int max)
-{
-	float			f;
-
-	f=(float)random()/(float)RAND_MAX;
-	return((int)(f*(float)max));
 }
 
 /* =======================================================
@@ -154,34 +145,37 @@ int ag_shape_has_connector_type(ag_room_type *room,int connect_type)
       
 ======================================================= */
 
-int ag_get_room_shape(bool skip_corridors)
+int ag_get_room_shape(int style_idx,bool skip_corridors)
 {
-	int			idx,count;
+	int				idx,count;
+	ag_style_type	*style;
 
-	count=ag_random_int(ag_state.nshape);
+	style=&ag_state.styles[style_idx];
+
+	count=ag_random_int(style->nshape);
 
 		// if any room, just return random room
 
-	if (!skip_corridors) return(count);
+	if (!skip_corridors) return(style->shape_list[count]);
 
 		// otherwise skip all corridors
 
 	idx=0;
 
 	while (TRUE) {
-		if (!ag_state.shapes[idx].corridor) {
+		if (!ag_state.shapes[style->shape_list[idx]].corridor) {
 			if (count==0) break;
 			count--;
 		}
 
 		idx++;
-		if (idx==ag_state.nshape) idx=0;
+		if (idx==style->nshape) idx=0;
 	}
 
-	return(idx);
+	return(style->shape_list[idx]);
 }
 
-int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size)
+int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror)
 {
 	int						n,connect_idx,connect2_idx,nhit,opposite_cnt_type;
 	float					dist_fact;
@@ -192,20 +186,37 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size)
 	ag_shape_connector_type	*connector,*connector2;
 	ag_room_type			*room2;
 
+	shape=&ag_state.shapes[shape_idx];
+
 		// run through and try each corridor
 
 	for (n=0;n!=ag_max_shape_connector;n++) {
 		connect_hit[n]=FALSE;
 	}
 
+		// if it's a mirror, then only build
+		// on left-bottom connectors
+
+	nhit=0;
+
+	if (mirror) {
+
+		for (n=0;n!=shape->nconnector;n++) {
+			if ((shape->connectors[n].type==ag_connector_type_max_x) || (shape->connectors[n].type==ag_connector_type_min_z)) {
+				connect_hit[n]=TRUE;
+				nhit++;
+			}
+		}
+
+		if (nhit==0) return(-1);
+
+	}
+
 		// start at a random corridor
 
-	shape=&ag_state.shapes[shape_idx];
 	connect_idx=ag_random_int(shape->nconnector);
 
 		// find a place
-
-	nhit=0;
 
 	memmove(&org_size,size,sizeof(d3vct));
 
@@ -335,9 +346,15 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	room->mesh_idx=mesh_idx;
 
 	memmove(&room->min,pnt,sizeof(d3pnt));
-	room->max.x=room->min.x+(int)(100.0f*size->x);
-	room->max.y=room->min.y+(int)(100.0f*size->y);
-	room->max.z=room->min.z+(int)(100.0f*size->z);
+	
+	room->min.x=pnt->x;
+	room->max.x=pnt->x+(int)(100.0f*size->x);
+
+	room->min.z=pnt->z;
+	room->max.z=pnt->z+(int)(100.0f*size->z);
+
+	room->min.y=pnt->y-(int)(100.0f*size->y);
+	room->max.y=pnt->y;
 
 	memmove(&room->size,size,sizeof(d3vct));
 
@@ -503,21 +520,41 @@ void ag_delete_shared_polygons(void)
       
 ======================================================= */
 
-void ag_generate_map(void)
+bool ag_generate_map(ag_build_setup_type *build_setup)
 {
-	int				n,shape_idx,connect_idx;
+	int				n,room_count,
+					shape_idx,connect_idx;
 	d3pnt			pnt;
 	d3vct			size;
 
+	build_setup->mirror=TRUE;
+
+		// initialize auto generate structures
+
+	if (!ag_initialize()) {
+		ag_release();
+		return(FALSE);
+	}
+
+	ag_random_seed(build_setup->seed);
+
+		// clear map
+
+	ag_map_clear();
+
+		// cut room count in half if mirroring
+
+	room_count=build_setup->room_count;
+	if (build_setup->mirror) room_count=room_count>>1;
+
 		// create the rooms
 
-	for (n=0;n!=20;n++) {
+	for (n=0;n!=room_count;n++) {
 			
 			// the default size
 
-		size.x=200.0f;
-		size.y=50.0f;
-		size.z=200.0f;
+		size.x=size.z=(float)build_setup->room_sz;
+		size.y=(float)build_setup->floor_sz;
 
 			// if this is the first room, pick a non-corridor
 			// type room and put it at the center of the map.
@@ -525,7 +562,7 @@ void ag_generate_map(void)
 			// gain their size from connecting to this room
 
 		if (n==0) {
-			shape_idx=ag_get_room_shape(TRUE);
+			shape_idx=ag_get_room_shape(build_setup->style_idx,TRUE);
 
 			pnt.x=map_max_size>>1;
 			pnt.z=map_max_size>>1;
@@ -538,11 +575,11 @@ void ag_generate_map(void)
 			// connect it to an existing room
 
 		else {
-			shape_idx=ag_get_room_shape(FALSE);
+			shape_idx=ag_get_room_shape(build_setup->style_idx,FALSE);
 
 				// get the connector
 
-			connect_idx=ag_get_room_position(shape_idx,&pnt,&size);
+			connect_idx=ag_get_room_position(shape_idx,&pnt,&size,build_setup->mirror);
 			if (connect_idx==-1) continue;
 		}
 
@@ -555,34 +592,26 @@ void ag_generate_map(void)
 		// same space
 
 	ag_delete_shared_polygons();
-}
 
-/* =======================================================
+		// mirroring
 
-      Auto Generate Main Line
-      
-======================================================= */
+	if (build_setup->mirror) ag_generate_mirror_meshes();
 
-bool auto_generate_map_2(void)
-{
-	if (!ag_initialize()) return(FALSE);
+		// add spots and nodes
 
-//	ag_random_seed(GetTickCount());		// supergumba -- testing
-	ag_random_seed(5);		// supergumba -- testing
+	ag_generate_spots_add();
 
-		// clear map
-
-	ag_map_clear();
-
-	ag_generate_map();
-
-		// finish up, center views, and redraw
+		// free auto generate structures
 
 	ag_release();
 
+		// center view, reset UVs
+		// and redraw
+
 	walk_view_goto_map_center_all();
+	map_mesh_reset_uv_all();
+
 	main_wind_draw();
-		
+
 	return(TRUE);
 }
-

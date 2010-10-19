@@ -100,13 +100,15 @@ void ag_read_settings_setup_connector(ag_shape_type *shape,ag_shape_connector_ty
 
 bool ag_read_settings(void)
 {
-	int					n,k,head_tag,shapes_tag,shape_tag,
+	int					n,k,t,nshape,
+						head_tag,shapes_tag,shape_tag,
 						vertexes_tag,vertex_tag,
 						polys_tag,poly_tag,
 						connectors_tag,connector_tag,
-						corridor_tag;
-	char				path[1024],sub_path[1024];
+						corridor_tag,styles_tag,style_tag;
+	char				path[1024],sub_path[1024],name[256];
 	ag_shape_type		*shape;
+	ag_style_type		*style;
 	
         // find the auto generate.xml file
 
@@ -204,7 +206,57 @@ bool ag_read_settings(void)
 		shape++;
 		shape_tag=xml_findnextchild(shape_tag);
 	}
-  
+
+		// styles
+
+	styles_tag=xml_findfirstchild("styles",head_tag);
+	if (styles_tag==-1) {
+		xml_close_file();
+		return(FALSE);
+	}
+
+	ag_state.nstyle=xml_countchildren(styles_tag);
+
+	style=ag_state.styles;
+	style_tag=xml_findfirstchild("style",styles_tag);
+
+	for (n=0;n!=ag_state.nstyle;n++) {
+		xml_get_attribute_text(style_tag,"name",style->name,256);
+
+			// load in the shape list
+
+		style->nshape=0;
+
+		shapes_tag=xml_findfirstchild("shapes",style_tag);
+		if (shapes_tag!=-1) {
+
+			nshape=xml_countchildren(shapes_tag);
+
+			shape_tag=xml_findfirstchild("shape",shapes_tag);
+
+			for (k=0;k!=nshape;k++) {
+				xml_get_attribute_text(shape_tag,"name",name,256);
+
+				for (t=0;t!=ag_state.nshape;t++) {
+					if (strcasecmp(name,ag_state.shapes[t].name)==0) {
+						style->shape_list[style->nshape]=t;
+						style->nshape++;
+						break;
+					}
+				}
+
+				shape_tag=xml_findnextchild(shape_tag);
+			}
+		}
+
+  			// next style
+
+		style++;
+		style_tag=xml_findnextchild(style_tag);
+	}
+
+		// finished
+
 	xml_close_file();
 	
 	return(TRUE);
@@ -218,39 +270,37 @@ bool ag_read_settings(void)
 
 bool ag_initialize(void)
 {
+	ag_state.styles=NULL;
+	ag_state.shapes=NULL;
+	ag_state.rooms=NULL;
+
 		// memory
+
+	ag_state.nstyle=0;
+	ag_state.styles=(ag_style_type*)malloc(ag_max_style*sizeof(ag_style_type));
+	if (ag_state.styles==NULL) return(FALSE);
+
+	ag_state.nshape=0;
+	ag_state.shapes=(ag_shape_type*)malloc(ag_max_shape*sizeof(ag_shape_type));
+	if (ag_state.shapes==NULL) return(FALSE);
 
 	ag_state.nroom=0;
 	ag_state.rooms=(ag_room_type*)malloc(ag_max_room*sizeof(ag_room_type));
 	if (ag_state.rooms==NULL) return(FALSE);
 
-	ag_state.nshape=0;
-	ag_state.shapes=(ag_shape_type*)malloc(ag_max_shape*sizeof(ag_shape_type));
-	if (ag_state.shapes==NULL) {
-		free(ag_state.rooms);
-		ag_state.rooms=NULL;
-		return(FALSE);
-	}
-
 		// read settings file
 
-	if (!ag_read_settings()) {
-		free(ag_state.rooms);
-		ag_state.rooms=NULL;
-		free(ag_state.shapes);
-		ag_state.shapes=NULL;
-		return(FALSE);
-	}
-
-	return(TRUE);
+	return(ag_read_settings());
 }
 
 void ag_release(void)
 {
-	if (ag_state.rooms!=NULL) free(ag_state.rooms);
-	ag_state.rooms=NULL;
+	if (ag_state.styles!=NULL) free(ag_state.styles);
+	ag_state.styles=NULL;
 
 	if (ag_state.shapes!=NULL) free(ag_state.shapes);
 	ag_state.shapes=NULL;
-}
 
+	if (ag_state.rooms!=NULL) free(ag_state.rooms);
+	ag_state.rooms=NULL;
+}

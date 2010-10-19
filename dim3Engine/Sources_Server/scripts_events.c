@@ -216,7 +216,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 
 	attach->event_state.main_event=main_event;
 	attach->event_state.sub_event=sub_event;
-	attach->event_state.user_id=id;
+	attach->event_state.id=id;
 	attach->event_state.tick=tick;
 		
 	memmove(&js.attach,attach,sizeof(attach_type));
@@ -276,7 +276,8 @@ void scripts_post_event_console(attach_type *attach,int main_event,int sub_event
 
 bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
 {
-	script_type		*script,*parent_script;
+	attach_type		parent_attach;
+	script_type		*script;
 
 	if (attach->script_idx==-1) return(TRUE);
 	
@@ -284,17 +285,18 @@ bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
 
 	script=js.script_list.scripts[attach->script_idx];
 	if (script->parent_idx==-1) {
-		strcpy(err_str,"This script does not implement any parent script");
+		strcpy(err_str,"Can not call parent; this script does not implement a parent script");
 		return(FALSE);
 	}
 
-	parent_script=js.script_list.scripts[script->parent_idx];
+		// create attach
+
+	memmove(&parent_attach,attach,sizeof(attach_type));
+	parent_attach.script_idx=script->parent_idx;
 
 		// call on parent script
 
-	return(TRUE);	// supergumba
-	// supergumba -- need to work on all this
-//	return(scripts_post_event(attach,script->event_state.main_event,script->event_state.sub_event,script->event_state.id,err_str));
+	return(scripts_post_event(&parent_attach,attach->event_state.main_event,attach->event_state.sub_event,attach->event_state.id,err_str));
 }
 
 /* =======================================================

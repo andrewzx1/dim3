@@ -423,7 +423,7 @@ typedef struct		{
 					} attach_message_data_type;
 
 typedef struct		{
-						int								main_event,sub_event,user_id,tick;
+						int								main_event,sub_event,id,tick;
 					} attach_event_state_type;
 					
 typedef struct		{
