@@ -166,7 +166,6 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	int						event_idx,tick;
 	JSValueRef				rval,exception,argv[5];
 	script_type				*script;
-	script_event_state_type	old_event_state;
 	attach_type				old_attach;
 	
 		// no error
@@ -183,8 +182,6 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	if (attach->script_idx==-1) return(TRUE);
 	
 	script=js.script_list.scripts[attach->script_idx];
-
-	fprintf(stdout,"IN %s: attach script idx = %d, js.script idx = %d\n",script->name,attach->script_idx,js.attach.script_idx);
 
 		// is this an attached event?
 
@@ -208,19 +205,6 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	if (script->recursive.in_event[event_idx]) return(TRUE);
 	
 	script->recursive.in_event[event_idx]=TRUE;
-
-		// backup the current event state in
-		// case we are re-entering from another event
-		// and setup new state
-
-	tick=game_time_get();
-
-	memmove(&old_event_state,&script->event_state,sizeof(script_event_state_type));
-		
-	script->event_state.main_event=main_event;
-	script->event_state.sub_event=sub_event;
-	script->event_state.id=id;
-	script->event_state.tick=tick;
 	
 		// save current attach in case event called within another script
 		
@@ -228,8 +212,14 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	
 		// attach to proper script
 		
+	tick=game_time_get();
+
+	attach->event_state.main_event=main_event;
+	attach->event_state.sub_event=sub_event;
+	attach->event_state.user_id=id;
+	attach->event_state.tick=tick;
+		
 	memmove(&js.attach,attach,sizeof(attach_type));
-	fprintf(stdout,"ATTACHED %s: attach script idx = %d, js.script idx = %d\n",script->name,attach->script_idx,js.attach.script_idx);
 
 		// run the event function
 		// supergumba -- for now we handle both methods, but
@@ -268,14 +258,9 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 
 	scripts_recursion_out(script);
 
-		// restore old event state
-
-	memmove(&script->event_state,&old_event_state,sizeof(script_event_state_type));
-
 		// restore old attach
 		
 	memmove(&js.attach,&old_attach,sizeof(attach_type));
-	fprintf(stdout,"OUT %s: attach script idx = %d, js.script idx = %d\n",script->name,attach->script_idx,js.attach.script_idx);
 	
 	return(err_str[0]==0x0);
 }

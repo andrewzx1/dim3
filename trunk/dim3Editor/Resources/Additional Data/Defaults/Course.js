@@ -1,1 +1,1 @@
-script.attachEvent(DIM3_EVENT_CONSTRUCT,'mapConstruct',false);function mapConstruct(course,subEvent,id,tick){}
+script.attachEvent(DIM3_EVENT_CONSTRUCT,'mapConstruct');function mapConstruct(course,subEvent,id,tick){}

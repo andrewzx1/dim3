@@ -115,27 +115,13 @@ void scripts_setup_data(script_type *script)
 	for (n=0;n!=event_main_id_count;n++) {
 		script->recursive.in_event[n]=FALSE;
 	}
-
-		// blank out event state
-
-	script->event_state.main_event=-1;
-	script->event_state.sub_event=-1;
-	script->event_state.id=0;
-	script->event_state.tick=0;
-
-		// messages
-		
-	for (n=0;n!=max_script_msg_data;n++) {
-		script->msg_data.set[n].type=d3_jsval_type_number;
-		script->msg_data.set[n].data.d3_number=0.0f;
-		script->msg_data.get[n].type=d3_jsval_type_number;
-		script->msg_data.get[n].data.d3_number=0.0f;
-	}
 }
 
 void scripts_clear_attach(attach_type *attach,int thing_type)
 {
-		// item attachments
+	int				n;
+	
+		// attachment
 		
 	attach->script_idx=-1;
 	attach->thing_type=thing_type;
@@ -144,6 +130,21 @@ void scripts_clear_attach(attach_type *attach,int thing_type)
 	attach->proj_idx=-1;
 	attach->proj_setup_idx=-1;
 
+		// event state
+		
+	attach->event_state.main_event=-1;
+	attach->event_state.sub_event=-1;
+	attach->event_state.user_id=0;
+	attach->event_state.tick=0;
+
+		// messages
+		
+	for (n=0;n!=max_attach_msg_data;n++) {
+		attach->msg_data.set[n].type=d3_jsval_type_number;
+		attach->msg_data.set[n].data.d3_number=0.0f;
+		attach->msg_data.get[n].type=d3_jsval_type_number;
+		attach->msg_data.get[n].data.d3_number=0.0f;
+	}
 }
 
 /* =======================================================
@@ -156,6 +157,7 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 {
 	JSStringRef		j_script_data,j_script_name;
 	JSValueRef		rval,exception;
+	attach_type		old_attach;
 	
 		// make sure UTF8 conversion didn't go crazy
 		// on some hidden characters
@@ -168,6 +170,8 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 	}
 
 		// attach proper attach
+		
+	memmove(&old_attach,&js.attach,sizeof(attach_type));
 
 	memmove(&js.attach,attach,sizeof(attach_type));
 	
@@ -184,6 +188,10 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 		script_exception_to_string(script->cx,exception,err_str,256);
 		return(FALSE);
 	}
+	
+		// restore attach
+		
+	memmove(&js.attach,&old_attach,sizeof(attach_type));
 
 		// get a pointer to the event object
 		
