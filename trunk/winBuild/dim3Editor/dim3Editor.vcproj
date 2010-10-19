@@ -50,7 +50,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_EDITOR"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -255,11 +255,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Editor\Code\dos.c"
+					RelativePath="..\..\dim3Editor\Code\auto_generate_utility.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Editor\Code\import_text_decode.c"
+					RelativePath="..\..\dim3Editor\Code\dos.c"
 					>
 				</File>
 				<File
@@ -304,6 +304,10 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Editor\Code\tool_palette.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
 					>
 				</File>
 				<File

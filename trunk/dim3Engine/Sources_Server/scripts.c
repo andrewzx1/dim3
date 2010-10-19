@@ -134,7 +134,7 @@ void scripts_clear_attach(attach_type *attach,int thing_type)
 		
 	attach->event_state.main_event=-1;
 	attach->event_state.sub_event=-1;
-	attach->event_state.user_id=0;
+	attach->event_state.id=0;
 	attach->event_state.tick=0;
 
 		// messages
@@ -322,9 +322,16 @@ bool scripts_add_parent(attach_type *attach,char *name,char *err_str)
 	attach_type			parent_attach;
 	script_type			*script;
 
-		// need to duplicate the attach
+		// already have a parent?
 
 	script=js.script_list.scripts[attach->script_idx];
+	if (script->parent_idx!=-1) {
+		strcpy(err_str,"This script already has an implemented script");
+		return(FALSE);
+	}
+
+		// need to duplicate the attach
+
 	memmove(&parent_attach,attach,sizeof(attach_type));
 
 		// add in the new parent script

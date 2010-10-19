@@ -81,6 +81,11 @@ JSValueRef js_script_implements_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	char			name[file_str_len],err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	if (script_in_event()) {
+		*exception=script_create_exception(cx,"Can not set implemented script inside an event");
+		return(script_null_to_value(cx));
+	}
 	
 	script_value_to_string(cx,argv[0],name,file_str_len);
 
@@ -97,6 +102,11 @@ JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObject
 	char			func_name[256],err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+	if (script_in_event()) {
+		*exception=script_create_exception(cx,"Can not attach an event inside an event");
+		return(script_null_to_value(cx));
+	}
 	
 	main_event=script_value_to_int(cx,argv[0]);
 	script_value_to_string(cx,argv[1],func_name,256);
@@ -113,6 +123,11 @@ JSValueRef js_script_call_parent_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	char			err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+
+	if (!script_in_event()) {
+		*exception=script_create_exception(cx,"Can not call parent outside an event");
+		return(script_null_to_value(cx));
+	}
 
 	if (!scripts_post_event_call_parent(&js.attach,err_str)) {
 		*exception=script_create_exception(cx,err_str);

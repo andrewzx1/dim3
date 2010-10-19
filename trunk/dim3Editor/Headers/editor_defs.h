@@ -26,12 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// for common code
-//
-
-#define D3_EDITOR								1
-
-//
 // view selection
 //
 
@@ -355,16 +349,25 @@ typedef struct		{
 // auto generator
 //
 
-#define ag_max_room								256
+#define ag_max_style							32
+
 #define ag_max_shape							128
 #define ag_max_shape_point						64
 #define ag_max_shape_connector					32
 #define ag_max_shape_poly						64
 
+#define ag_max_room								256
+
 #define ag_connector_type_min_x					0
 #define ag_connector_type_max_x					1
 #define ag_connector_type_min_z					2
 #define ag_connector_type_max_z					3
+
+typedef struct		{
+						int						nshape,
+												shape_list[ag_max_shape];
+						char					name[name_str_len];
+					} ag_style_type;
 
 typedef struct		{
 						int						npt,v[4];
@@ -392,10 +395,17 @@ typedef struct		{
 					} ag_room_type;
 
 typedef struct		{
-						int						nshape,nroom;
+						int						nstyle,nshape,nroom;
+						ag_style_type			*styles;
 						ag_shape_type			*shapes;
 						ag_room_type			*rooms;
 					} ag_state_type;
+
+typedef struct		{
+						int						style_idx,seed,
+												room_count,room_sz,floor_sz;
+						bool					mirror;
+					} ag_build_setup_type;
 
 //
 // editor state struct

@@ -96,3 +96,10 @@ extern void file_close_map(void);
 extern void launch_engine(void);
 extern void launch_map_script_editor(void);
 extern void launch_spot_script_editor(char *script_name);
+
+//
+// auto generator
+//
+
+extern bool ag_generate_map(ag_build_setup_type *build_setup);
+

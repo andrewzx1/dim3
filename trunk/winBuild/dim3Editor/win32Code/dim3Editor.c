@@ -42,6 +42,7 @@ extern void editor_menu_commands(int id);
 extern void editor_menu_create(void);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern int os_win32_menu_lookup(int id);
+extern void ag_generate_map(ag_build_setup_type *build_setup);
 
 /* =======================================================
 
@@ -64,9 +65,17 @@ bool import_load_file(char *path,char *ext)
 }
 void auto_generate_map(void)
 {
-	auto_generate_map_2();
-}
+	ag_build_setup_type		build_setup;
 
+	build_setup.style_idx=0;
+	build_setup.seed=5;
+	build_setup.mirror=TRUE;
+	build_setup.room_count=20;
+	build_setup.room_sz=200;
+	build_setup.floor_sz=50;
+
+	ag_generate_map(&build_setup);
+}
 
 void dialog_progress_next(void)
 {
@@ -216,7 +225,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			}
 			else {
 				if (pnt.y>=txt_palette_box.ty) {
-					texture_palette_click(&pnt,FALSE);
+					texture_palette_click(map.textures,&pnt,FALSE);
 				}
 				else {
 					walk_view_click(&pnt,FALSE);
@@ -375,7 +384,7 @@ void main_wind_open(void)
 
 		// initialize walk view
 
-	tool_palette_initialize();
+	tool_palette_initialize("Editor");
 	tool_palette_setup();
 
 	texture_palette_setup();
@@ -521,7 +530,7 @@ void main_wind_draw(void)
 		walk_view_draw();
 
 		tool_palette_draw();
-		texture_palette_draw();
+		texture_palette_draw(map.textures);
 	}
 
 		// swap buffers
