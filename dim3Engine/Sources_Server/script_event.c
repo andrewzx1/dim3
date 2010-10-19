@@ -220,7 +220,6 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 {
 	int				msg_to,id;
 	char			name[name_str_len];
-	script_type		*set_script,*get_script;
 	obj_type		*obj;
 	JSValueRef		vp;
 
@@ -235,11 +234,7 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 		case sd_message_to_player:
 			obj=server.obj_list.objs[server.player_obj_idx];
-
-			get_script=js.script_list.scripts[obj->attach.script_idx];
-			set_script=js.script_list.scripts[js.attach.script_idx];
-			memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+			memmove(&obj->attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,id);
 			break;
 	
@@ -251,26 +246,17 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 				break;
 			}
 
-			get_script=js.script_list.scripts[obj->attach.script_idx];
-			set_script=js.script_list.scripts[js.attach.script_idx];
-			memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+			memmove(&obj->attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,id);
 			break;
 			
 		case sd_message_to_course:
-			get_script=js.script_list.scripts[js.course_attach.script_idx];
-			set_script=js.script_list.scripts[js.attach.script_idx];
-			memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+			memmove(&js.course_attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 			scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_script,id);
 			break;
 		
 		case sd_message_to_game:
-			get_script=js.script_list.scripts[js.game_attach.script_idx];
-			set_script=js.script_list.scripts[js.attach.script_idx];
-			memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+			memmove(&js.game_attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 			scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_script,id);
 			break;
 	
@@ -281,25 +267,18 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	script_type		*set_script,*get_script;
 	obj_type		*obj;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=server.obj_list.objs[server.player_obj_idx];
-
-	get_script=js.script_list.scripts[obj->attach.script_idx];
-	set_script=js.script_list.scripts[js.attach.script_idx];
-	memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+	memmove(&obj->attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
-
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	script_type		*set_script,*get_script;
 	obj_type		*obj;
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
@@ -307,19 +286,14 @@ JSValueRef js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObjectRe
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 
-	get_script=js.script_list.scripts[obj->attach.script_idx];
-	set_script=js.script_list.scripts[js.attach.script_idx];
-	memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+	memmove(&obj->attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[1]));
-
 	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len];
-	script_type		*set_script,*get_script;
 	obj_type		*obj;
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
@@ -328,25 +302,16 @@ JSValueRef js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObject
 	obj=object_find_name(name);
 	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 
-	get_script=js.script_list.scripts[obj->attach.script_idx];
-	set_script=js.script_list.scripts[js.attach.script_idx];
-	memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-			
+	memmove(&obj->attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[1]));
-
 	return(script_bool_to_value(cx,TRUE));
 }
 
 JSValueRef js_event_send_message_to_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	script_type		*set_script,*get_script;
-
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	get_script=js.script_list.scripts[js.course_attach.script_idx];
-	set_script=js.script_list.scripts[js.attach.script_idx];
-	memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+	memmove(&js.course_attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 	scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
 
 	return(script_null_to_value(cx));
@@ -354,14 +319,9 @@ JSValueRef js_event_send_message_to_course_func(JSContextRef cx,JSObjectRef func
 
 JSValueRef js_event_send_message_to_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	script_type		*set_script,*get_script;
-
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	get_script=js.script_list.scripts[js.game_attach.script_idx];
-	set_script=js.script_list.scripts[js.attach.script_idx];
-	memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+	memmove(&js.game_attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 	scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
 
 	return(script_null_to_value(cx));
@@ -369,7 +329,6 @@ JSValueRef js_event_send_message_to_game_func(JSContextRef cx,JSObjectRef func,J
 
 JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	script_type		*set_script,*get_script;
 	obj_type		*obj;
 	weapon_type		*weap;
 
@@ -387,10 +346,7 @@ JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef
 		return(script_null_to_value(cx));
 	}
 
-	get_script=js.script_list.scripts[weap->attach.script_idx];
-	set_script=js.script_list.scripts[js.attach.script_idx];
-	memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+	memmove(&weap->attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
 
 	return(script_null_to_value(cx));
@@ -398,7 +354,6 @@ JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef
 
 JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	script_type		*set_script,*get_script;
 	proj_type		*proj;
 	weapon_type		*weap;
 
@@ -421,10 +376,7 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 		return(script_null_to_value(cx));
 	}
 
-	get_script=js.script_list.scripts[weap->attach.script_idx];
-	set_script=js.script_list.scripts[js.attach.script_idx];
-	memmove(get_script->msg_data.get,set_script->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
-
+	memmove(&weap->attach.msg_data.get,&js.attach.msg_data.set,(sizeof(attach_msg_type)*max_attach_msg_data));
 	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,script_value_to_int(cx,argv[0]));
 	return(script_null_to_value(cx));
 }
@@ -447,7 +399,7 @@ JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
 		// get index
 
 	idx=script_value_to_int(cx,argv[0]);
-	if ((idx<0) || (idx>=max_script_msg_data)) {
+	if ((idx<0) || (idx>=max_attach_msg_data)) {
 		*exception=script_create_exception(cx,"Message data index out of bounds");
 		return(script_null_to_value(cx));
 	}
@@ -457,19 +409,19 @@ JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
 	v_type=JSValueGetType(cx,argv[1]);
 
 	if (v_type==kJSTypeNumber) {
-		script->msg_data.set[idx].type=d3_jsval_type_number;
-		script->msg_data.set[idx].data.d3_number=script_value_to_float(cx,argv[1]);
+		js.attach.msg_data.set[idx].type=d3_jsval_type_number;
+		js.attach.msg_data.set[idx].data.d3_number=script_value_to_float(cx,argv[1]);
 		return(script_null_to_value(cx));
 	}
 	
 	if (v_type==kJSTypeBoolean) {
-		script->msg_data.set[idx].type=d3_jsval_type_boolean;
-		script->msg_data.set[idx].data.d3_boolean=script_value_to_bool(cx,argv[1]);
+		js.attach.msg_data.set[idx].type=d3_jsval_type_boolean;
+		js.attach.msg_data.set[idx].data.d3_boolean=script_value_to_bool(cx,argv[1]);
 		return(script_null_to_value(cx));
 	}
 	
-	script->msg_data.set[idx].type=d3_jsval_type_string;
-	script_value_to_string(cx,argv[1],script->msg_data.set[idx].data.d3_string,max_d3_jsval_str_len);	
+	js.attach.msg_data.set[idx].type=d3_jsval_type_string;
+	script_value_to_string(cx,argv[1],js.attach.msg_data.set[idx].data.d3_string,max_d3_jsval_str_len);	
     return(script_null_to_value(cx));
 }
 
@@ -486,7 +438,7 @@ JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
  		// get index
 
 	idx=script_value_to_int(cx,argv[0]);
-	if ((idx<0) || (idx>=max_script_msg_data)) {
+	if ((idx<0) || (idx>=max_attach_msg_data)) {
 		*exception=script_create_exception(cx,"Message data index out of bounds");
 		return(script_null_to_value(cx));
 	}
@@ -495,18 +447,18 @@ JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
 
 	vp=script_null_to_value(cx);
 
-	switch (script->msg_data.get[idx].type) {
+	switch (js.attach.msg_data.get[idx].type) {
 
 		case d3_jsval_type_number:
-			vp=script_float_to_value(cx,script->msg_data.get[idx].data.d3_number);
+			vp=script_float_to_value(cx,js.attach.msg_data.get[idx].data.d3_number);
 			break;
 
 		case d3_jsval_type_boolean:
-			vp=script_bool_to_value(cx,script->msg_data.get[idx].data.d3_boolean);
+			vp=script_bool_to_value(cx,js.attach.msg_data.get[idx].data.d3_boolean);
 			break;
 
 		case d3_jsval_type_string:
-			vp=script_string_to_value(cx,script->msg_data.get[idx].data.d3_string);
+			vp=script_string_to_value(cx,js.attach.msg_data.get[idx].data.d3_string);
 			break;
 
 	}
