@@ -42,7 +42,6 @@ extern void editor_menu_commands(int id);
 extern void editor_menu_create(void);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern int os_win32_menu_lookup(int id);
-extern void ag_generate_map(ag_build_setup_type *build_setup);
 
 /* =======================================================
 
@@ -69,7 +68,7 @@ void auto_generate_map(void)
 
 	build_setup.style_idx=0;
 	build_setup.seed=5;
-	build_setup.mirror=TRUE;
+	build_setup.mirror=FALSE;
 	build_setup.room_count=20;
 	build_setup.room_sz=200;
 	build_setup.floor_sz=50;

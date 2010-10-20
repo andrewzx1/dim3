@@ -43,6 +43,7 @@ extern void ag_release(void);
 extern void ag_random_seed(int seed);
 extern int ag_random_int(int max);
 extern void ag_generate_mirror_meshes(void);
+extern void ag_generate_delete_shared_polygons(void);
 extern void ag_generate_spots_add(void);
 
 /* =======================================================
@@ -94,6 +95,19 @@ bool ag_room_space_blocked(d3pnt *min,d3pnt *max)
 	}
 
 	return(FALSE);
+}
+
+bool ag_room_mirror_blocked(d3pnt *min,d3pnt *max)
+{
+	ag_room_type	*room;
+
+		// mirrors can't be below
+		// or to the right of original room
+
+	room=&ag_state.rooms[0];
+
+	if (min->x<room->min.x) return(TRUE);
+	return(max->z>room->max.z);
 }
 
 /* =======================================================
@@ -209,7 +223,6 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror)
 		}
 
 		if (nhit==0) return(-1);
-
 	}
 
 		// start at a random corridor
@@ -296,6 +309,13 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror)
 
 			if (ag_room_space_blocked(&min,&max)) continue;
 
+				// if it's a mirror, it can never be
+				// past the left or bottom or original room
+
+			if (mirror) {
+				if (ag_room_mirror_blocked(&min,&max)) continue;
+			}
+
 				// mark room connector as used
 
 			room2->connectors_used[connect2_idx]=TRUE;
@@ -313,7 +333,7 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror)
 		if (nhit==shape->nconnector) return(-1);
 	}
 
-	return(0);
+	return(-1);
 }
 
 /* =======================================================
@@ -345,16 +365,14 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	room->shape_idx=shape_idx;
 	room->mesh_idx=mesh_idx;
 
-	memmove(&room->min,pnt,sizeof(d3pnt));
-	
 	room->min.x=pnt->x;
 	room->max.x=pnt->x+(int)(100.0f*size->x);
 
-	room->min.z=pnt->z;
-	room->max.z=pnt->z+(int)(100.0f*size->z);
-
 	room->min.y=pnt->y-(int)(100.0f*size->y);
 	room->max.y=pnt->y;
+
+	room->min.z=pnt->z;
+	room->max.z=pnt->z+(int)(100.0f*size->z);
 
 	memmove(&room->size,size,sizeof(d3vct));
 
@@ -433,86 +451,70 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 
 /* =======================================================
 
-      Map Utilities
+      Corridor Clipping
       
 ======================================================= */
 
-bool ag_delete_shared_polygons_compare(map_mesh_type *mesh_1,int poly_1_idx,map_mesh_type *mesh_2,int poly_2_idx)
+void ag_generate_clip_bad_corridors(void)
 {
-	int					n,k;
-	bool				hit;
-	d3pnt				*pt_1,*pt_2;
-	map_mesh_poly_type	*poly_1,*poly_2;
+	int				n,k,hit,mesh_idx,sz;
+	ag_room_type	*room,*chk_room;
 
-	poly_1=&mesh_1->polys[poly_1_idx];
-	poly_2=&mesh_2->polys[poly_2_idx];
+		// find all the rooms to clip
 
-		// same vertex count?
+	for (n=0;n!=ag_state.nroom;n++) {
 
-	if (poly_1->ptsz!=poly_2->ptsz) return(FALSE);
+			// check corridors
 
-		// might be in different orders, so look
-		// for equal points anywhere in polygon
+		room=&ag_state.rooms[n];
+		room->clip=FALSE;
 
-	for (n=0;n!=poly_1->ptsz;n++) {
-		pt_1=&mesh_1->vertexes[poly_1->v[n]];
+		if (!ag_state.shapes[room->shape_idx].corridor) continue;
 
-		hit=FALSE;
-		for (k=0;k!=poly_2->ptsz;k++) {
-			pt_2=&mesh_2->vertexes[poly_2->v[k]];
-			if ((pt_1->x==pt_2->x) && (pt_1->y==pt_2->y) && (pt_1->z==pt_2->z)) {
-				hit=TRUE;
-				break;
-			}
+			// check for used connectors
+
+		hit=0;
+
+		for (k=0;k!=ag_max_shape_connector;k++) {
+			if (room->connectors_used[k]) hit++;
 		}
 
-		if (!hit) return(FALSE);
+		room->clip=(hit<2);
 	}
 
-	return(TRUE);
-}
+		// clip them
 
-void ag_delete_shared_polygons(void)
-{
-	int					n,mesh_1_idx,poly_1_idx,
-						mesh_2_idx,poly_2_idx;
-	map_mesh_type		*mesh_1,*mesh_2;
+	n=0;
 
-	for (mesh_1_idx=0;mesh_1_idx!=map.mesh.nmesh;mesh_1_idx++) {
-
-		mesh_1=&map.mesh.meshes[mesh_1_idx];
-
-		poly_1_idx=0;
-
-		while (poly_1_idx<mesh_1->npoly) {
-
-			poly_2_idx=-1;
-
-			for (mesh_2_idx=0;mesh_2_idx!=map.mesh.nmesh;mesh_2_idx++) {
-				if (mesh_2_idx==mesh_1_idx) continue;
-
-				mesh_2=&map.mesh.meshes[mesh_2_idx];
-
-				for (n=0;n!=mesh_2->npoly;n++) {
-					if (ag_delete_shared_polygons_compare(mesh_1,poly_1_idx,mesh_2,n)) {
-						poly_2_idx=n;
-						break;
-					}
-				}
-
-				if (poly_2_idx!=-1) break;
-			}
-
-			if (poly_2_idx!=-1) {
-				map_mesh_delete_poly(&map,mesh_1_idx,poly_1_idx);
-				map_mesh_delete_poly(&map,mesh_2_idx,poly_2_idx);
-				continue;
-			}
-
-			poly_1_idx++;
+	while (n<ag_state.nroom) {
+		if (!ag_state.rooms[n].clip) {
+			n++;
+			continue;
 		}
+
+			// delete the mesh
+
+		mesh_idx=ag_state.rooms[n].mesh_idx;
+		map_mesh_delete(&map,mesh_idx);
+
+			// fix other indexes
+
+		for (k=0;k!=ag_state.nroom;k++) {
+			if (k==n) continue;
+
+			chk_room=&ag_state.rooms[k];
+			if (chk_room->mesh_idx>mesh_idx) chk_room->mesh_idx--;
+		}
+
+			// remove the room
+
+		sz=((ag_state.nroom-n)-1)*sizeof(ag_room_type);
+		if (sz>0) memmove(&ag_state.rooms[n],&ag_state.rooms[n+1],sz);
+
+		ag_state.nroom--;
 	}
 }
+
 
 /* =======================================================
 
@@ -522,12 +524,10 @@ void ag_delete_shared_polygons(void)
 
 bool ag_generate_map(ag_build_setup_type *build_setup)
 {
-	int				n,room_count,
+	int				n,room_count,try_count,
 					shape_idx,connect_idx;
 	d3pnt			pnt;
 	d3vct			size;
-
-	build_setup->mirror=TRUE;
 
 		// initialize auto generate structures
 
@@ -543,9 +543,10 @@ bool ag_generate_map(ag_build_setup_type *build_setup)
 	ag_map_clear();
 
 		// cut room count in half if mirroring
+		// but add one extra for center room
 
 	room_count=build_setup->room_count;
-	if (build_setup->mirror) room_count=room_count>>1;
+	if (build_setup->mirror) room_count=(room_count>>1)+1;
 
 		// create the rooms
 
@@ -573,14 +574,27 @@ bool ag_generate_map(ag_build_setup_type *build_setup)
 
 			// otherwise, pick any room and randomly
 			// connect it to an existing room
+			// might need to try a couple times to find
+			// a proper fit
 
 		else {
-			shape_idx=ag_get_room_shape(build_setup->style_idx,FALSE);
 
-				// get the connector
+			try_count=0;
 
-			connect_idx=ag_get_room_position(shape_idx,&pnt,&size,build_setup->mirror);
-			if (connect_idx==-1) continue;
+			while (try_count!=4) {
+				shape_idx=ag_get_room_shape(build_setup->style_idx,FALSE);
+
+					// get the connector
+
+				connect_idx=ag_get_room_position(shape_idx,&pnt,&size,build_setup->mirror);
+				if (connect_idx!=-1) break;
+
+					// try again
+
+				try_count++;
+			}
+
+			if (connect_idx==-1) break;
 		}
 
 			// add the room
@@ -588,14 +602,19 @@ bool ag_generate_map(ag_build_setup_type *build_setup)
 		ag_add_room(shape_idx,connect_idx,&pnt,&size);
 	}
 
-		// delete any polygons that share the
-		// same space
+		// remove corridors that aren't
+		// connected to at least two rooms
 
-	ag_delete_shared_polygons();
+	ag_generate_clip_bad_corridors();
 
 		// mirroring
 
 	if (build_setup->mirror) ag_generate_mirror_meshes();
+
+		// delete any polygons that share the
+		// same space
+
+	ag_generate_delete_shared_polygons();
 
 		// add spots and nodes
 
