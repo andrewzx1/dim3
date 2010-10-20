@@ -193,17 +193,19 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	else {
 		if (script->event_func==NULL) return(TRUE);
 	}
-
-		// enter recursion
-
-	if (!scripts_recursion_in(script,err_str)) return(FALSE);
 	
 		// can't re-enter an event we are already in
 		// this is a silent failure as it usually happens
 		// in cascading damage events
 		
 	if (script->recursive.in_event[event_idx]) return(TRUE);
+
+		// enter recursion
+
+	if (!scripts_recursion_in(script,err_str)) return(FALSE);
 	
+		// in event
+		
 	script->recursive.in_event[event_idx]=TRUE;
 	
 		// save current attach in case event called within another script

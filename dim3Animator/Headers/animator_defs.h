@@ -26,12 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// for common code
-//
-
-#define D3_ANIMATOR						1
-
-//
 // inteface defs
 //
 

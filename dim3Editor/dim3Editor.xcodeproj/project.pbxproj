@@ -21,6 +21,7 @@
 		265DCEA00F6CC13100C1E65D /* palette_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 265DCE9F0F6CC13100C1E65D /* palette_mesh.c */; };
 		265DCEFB0F6D6A3E00C1E65D /* palette_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = 265DCEFA0F6D6A3E00C1E65D /* palette_polygon.c */; };
 		265DCF4D0F6DBF9D00C1E65D /* palette_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 265DCF4C0F6DBF9D00C1E65D /* palette_liquid.c */; };
+		266B1D2D126E5F02006CC1E9 /* auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 266B1D2C126E5F02006CC1E9 /* auto_generate_utility.c */; };
 		26772F810EBE8A6600F9E241 /* dialog_reposition.c in Sources */ = {isa = PBXBuildFile; fileRef = 26772F800EBE8A6600F9E241 /* dialog_reposition.c */; };
 		26791D430E4D626700AAD058 /* dialog_grid_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26791D420E4D626700AAD058 /* dialog_grid_mesh.c */; };
 		26808225122057F600EB7897 /* view_picker.c in Sources */ = {isa = PBXBuildFile; fileRef = 26808224122057F600EB7897 /* view_picker.c */; };
@@ -329,6 +330,7 @@
 		26636B19125A8EE20090A321 /* Tool Split Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Split Mesh.png"; sourceTree = "<group>"; };
 		26636B1A125A8EE20090A321 /* Tool Tesselate Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Tesselate Mesh.png"; sourceTree = "<group>"; };
 		26636B1B125A8EE20090A321 /* Tool Toggle Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Toggle Mode.png"; sourceTree = "<group>"; };
+		266B1D2C126E5F02006CC1E9 /* auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_utility.c; path = Code/auto_generate_utility.c; sourceTree = "<group>"; };
 		26772F800EBE8A6600F9E241 /* dialog_reposition.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_reposition.c; path = Code/dialog_reposition.c; sourceTree = "<group>"; };
 		26791D420E4D626700AAD058 /* dialog_grid_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_grid_mesh.c; path = Code/dialog_grid_mesh.c; sourceTree = "<group>"; };
 		26808224122057F600EB7897 /* view_picker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_picker.c; path = Code/view_picker.c; sourceTree = "<group>"; };
@@ -608,6 +610,7 @@
 			children = (
 				26EE476712696220001D0025 /* auto_generate.c */,
 				26EE476612696220001D0025 /* auto_generate_setup.c */,
+				266B1D2C126E5F02006CC1E9 /* auto_generate_utility.c */,
 			);
 			name = "Auto Generator";
 			sourceTree = "<group>";
@@ -901,6 +904,7 @@
 				26EE4A3E126B8E2E001D0025 /* import_text_decode_common.c in Sources */,
 				26CF62A5126BDE55002DCC2A /* tool_palette_common.c in Sources */,
 				26CF632C126BF34A002DCC2A /* dialog_utility_common.c in Sources */,
+				266B1D2D126E5F02006CC1E9 /* auto_generate_utility.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -941,6 +945,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = headers/dim3editor.h;
+				GCC_PREPROCESSOR_DEFINITIONS = D3_EDITOR;
 				GCC_STRICT_ALIASING = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_USE_GCC3_PFE_SUPPORT = NO;

@@ -161,10 +161,10 @@ JSValueRef js_obj_pickup_add_weapon_func(JSContextRef cx,JSObjectRef func,JSObje
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
-	if (obj==NULL) return(script_null_to_value(cx));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
-	if (weap==NULL) return(script_null_to_value(cx));
+	if (weap==NULL) return(script_bool_to_value(cx,FALSE));
 	
     return(script_bool_to_value(cx,item_add_weapon(obj,weap)));
 }
@@ -177,10 +177,10 @@ JSValueRef js_obj_pickup_swap_weapon_func(JSContextRef cx,JSObjectRef func,JSObj
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
-	if (obj==NULL) return(script_null_to_value(cx));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
-	if (weap==NULL) return(script_null_to_value(cx));
+	if (weap==NULL) return(script_bool_to_value(cx,FALSE));
 	
     return(script_bool_to_value(cx,item_swap_weapon(obj,weap)));
 }
@@ -193,10 +193,10 @@ JSValueRef js_obj_pickup_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObject
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
-	if (obj==NULL) return(script_null_to_value(cx));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
-	if (weap==NULL) return(script_null_to_value(cx));
+	if (weap==NULL) return(script_bool_to_value(cx,FALSE));
 	
     return(script_bool_to_value(cx,item_add_ammo(obj,weap,script_value_to_int(cx,argv[2]))));
 }
@@ -209,10 +209,10 @@ JSValueRef js_obj_pickup_add_clip_func(JSContextRef cx,JSObjectRef func,JSObject
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
-	if (obj==NULL) return(script_null_to_value(cx));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
-	if (weap==NULL) return(script_null_to_value(cx));
+	if (weap==NULL) return(script_bool_to_value(cx,FALSE));
 	
     return(script_bool_to_value(cx,item_add_clip(obj,weap,script_value_to_int(cx,argv[2]))));
 }
@@ -225,10 +225,10 @@ JSValueRef js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObjectRef func,JSOb
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
-	if (obj==NULL) return(script_null_to_value(cx));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
-	if (weap==NULL) return(script_null_to_value(cx));
+	if (weap==NULL) return(script_bool_to_value(cx,FALSE));
 	
     return(script_bool_to_value(cx,item_add_alt_ammo(obj,weap,script_value_to_int(cx,argv[2]))));
 }
@@ -241,10 +241,10 @@ JSValueRef js_obj_pickup_add_alt_clip_func(JSContextRef cx,JSObjectRef func,JSOb
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
-	if (obj==NULL) return(script_null_to_value(cx));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[1],exception);
-	if (weap==NULL) return(script_null_to_value(cx));
+	if (weap==NULL) return(script_bool_to_value(cx,FALSE));
 	
     return(script_bool_to_value(cx,item_add_alt_clip(obj,weap,script_value_to_int(cx,argv[2]))));
 }
@@ -256,7 +256,7 @@ JSValueRef js_obj_pickup_add_health_func(JSContextRef cx,JSObjectRef func,JSObje
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
-	if (obj==NULL) return(script_null_to_value(cx));
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
 
 	return(script_bool_to_value(cx,item_add_health(obj,script_value_to_int(cx,argv[1]))));
 }
