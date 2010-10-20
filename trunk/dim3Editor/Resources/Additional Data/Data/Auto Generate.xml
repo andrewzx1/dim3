@@ -171,70 +171,54 @@
 				<vertex c2="0,0" />
 				<vertex c2="20,0" />
 				<vertex c2="30,10" />
-				<vertex c2="30,0" />
 				<vertex c2="40,0" />
 				<vertex c2="60,0" />
-				<vertex c2="70,0" />
 				<vertex c2="70,10" />
 				<vertex c2="80,0" />
 				<vertex c2="100,0" />
 				<vertex c2="100,20" />
 				<vertex c2="90,30" />
-				<vertex c2="100,30" />
 				<vertex c2="100,40" />
 				<vertex c2="100,60" />
-				<vertex c2="100,70" />
 				<vertex c2="90,70" />
 				<vertex c2="100,80" />
 				<vertex c2="100,100" />
 				<vertex c2="80,100" />
 				<vertex c2="70,90" />
-				<vertex c2="70,100" />
 				<vertex c2="60,100" />
 				<vertex c2="40,100" />
-				<vertex c2="30,100" />
 				<vertex c2="30,90" />
 				<vertex c2="20,100" />
 				<vertex c2="0,100" />
 				<vertex c2="0,80" />
 				<vertex c2="10,70" />
-				<vertex c2="0,70" />
 				<vertex c2="0,60" />
 				<vertex c2="0,40" />
-				<vertex c2="0,30" />
 				<vertex c2="10,30" />
 				<vertex c2="0,20" />
 			</vertexes>
 			<polys>
-				<poly v="35,0,1" />
-				<poly v="35,1,2,34" />
-				<poly v="8,9,10" />
-				<poly v="8,10,11,7" />
-				<poly v="17,18,19" />
-				<poly v="17,19,20,16" />
-				<poly v="26,27,28" />
-				<poly v="26,28,29,25" />
-				<poly v="2,3,4" />
-				<poly v="5,6,7" />
-				<poly v="2,4,5,7" />
+				<poly v="27,0,1" />
+				<poly v="1,2,26,27" />
+				<poly v="6,7,8" />
+				<poly v="6,8,9,5" />
+				<poly v="13,14,15" />
+				<poly v="12,13,15,16" />
 				<poly v="20,21,22" />
-				<poly v="23,24,25" />
-				<poly v="23,25,20,22" />
-				<poly v="34,2,7,11" />
-				<poly v="16,20,25,29" />
-				<poly v="32,33,34" />
-				<poly v="11,12,13" />
-				<poly v="31,30,29" />
-				<poly v="14,15,16" />
-				<poly v="32,34,11,13" />
-				<poly v="31,14,16,29" />
-				<poly v="32,13,14,31" />
+				<poly v="19,20,22,23" />
+				<poly v="2,3,4,5" />
+				<poly v="9,10,11,12" />
+				<poly v="16,17,18,19" />
+				<poly v="23,24,25,26" />
+				<poly v="2,5,9,26" />
+				<poly v="26,9,12,23" />
+				<poly v="23,12,16,19" />
 			</polys>
 			<connectors>
-				<connector v="4,5" />
-				<connector v="13,14" />
-				<connector v="22,23" />
-				<connector v="31,32" />
+				<connector v="3,4" />
+				<connector v="10,11" />
+				<connector v="17,18" />
+				<connector v="24,25" />
 			</connectors>
 		</shape>
 
@@ -334,24 +318,28 @@
 				<vertex c2="80,0" />
 				<vertex c2="100,0" />
 				<vertex c2="100,20" />
+				<vertex c2="100,40" />
 				<vertex c2="100,60" />
 				<vertex c2="100,80" />
 				<vertex c2="80,100" />
 				<vertex c2="60,100" />
+				<vertex c2="40,100" />
 				<vertex c2="20,100" />
 				<vertex c2="0,100" />
 			</vertexes>
 			<polys>
-				<poly v="0,1,12,13" />
-				<poly v="1,2,11,12" />
-				<poly v="2,10,11" />
-				<poly v="2,3,9,10" />
+				<poly v="0,1,14,15" />
+				<poly v="1,2,13,14" />
+				<poly v="2,12,13" />
+				<poly v="2,11,12" />
+				<poly v="2,3,10,11" />
+				<poly v="3,9,10" />
 				<poly v="3,8,9" />
 				<poly v="3,4,7,8" />
 				<poly v="4,5,6,7" />
  			</polys>
 			<connectors>
-				<connector v="13,0" />
+				<connector v="15,0" />
 				<connector v="5,6" />
 			</connectors>
 			<corridor>
@@ -368,24 +356,28 @@
 				<vertex c2="20,100" />
 				<vertex c2="0,100" />
 				<vertex c2="0,80" />
+				<vertex c2="0,60" />
 				<vertex c2="0,40" />
 				<vertex c2="0,20" />
 				<vertex c2="20,0" />
 				<vertex c2="40,0" />
 				<vertex c2="60,0" />
+				<vertex c2="80,0" />
 				<vertex c2="100,0" />
 			</vertexes>
 			<polys>
-				<poly v="0,1,12,13" />
-				<poly v="1,2,11,12" />
-				<poly v="2,10,11" />
-				<poly v="2,3,9,10" />
+				<poly v="0,1,14,15" />
+				<poly v="1,2,13,14" />
+				<poly v="2,12,13" />
+				<poly v="2,11,12" />
+				<poly v="2,3,10,11" />
+				<poly v="3,9,10" />
 				<poly v="3,8,9" />
 				<poly v="3,4,7,8" />
 				<poly v="4,5,6,7" />
  			</polys>
 			<connectors>
-				<connector v="13,0" />
+				<connector v="15,0" />
 				<connector v="5,6" />
 			</connectors>
 			<corridor>
@@ -396,7 +388,7 @@
 
 	<styles>
 
-		<style name="Normal">
+		<style name="Rooms and Corridors">
 
 			<shapes>
 				<shape name="box" />
@@ -408,6 +400,15 @@
 				<shape name="x" />
 				<shape name="curve 1" />
 				<shape name="curve 2" />
+			</shapes>
+
+		</style>
+
+		<style name="Open Arena">
+
+			<shapes>
+				<shape name="box" />
+				<shape name="box slant corner" />
 			</shapes>
 
 		</style>

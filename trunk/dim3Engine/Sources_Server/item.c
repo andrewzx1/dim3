@@ -175,6 +175,7 @@ bool item_swap_weapon(obj_type *obj,weapon_type *weap)
 
 bool item_add_ammo(obj_type *obj,weapon_type *weap,int add_count)
 {
+	if (weap->hidden) return(FALSE);
 	if (weap->ammo.count==weap->ammo.max_count) return(FALSE);
 	
     weap->ammo.count+=add_count;
@@ -185,6 +186,7 @@ bool item_add_ammo(obj_type *obj,weapon_type *weap,int add_count)
 
 bool item_add_clip(obj_type *obj,weapon_type *weap,int add_count)
 {
+	if (weap->hidden) return(FALSE);
 	if (!weap->ammo.use_clips) return(FALSE);
 	if (weap->ammo.clip_count==weap->ammo.max_clip_count) return(FALSE);
     
@@ -195,6 +197,7 @@ bool item_add_clip(obj_type *obj,weapon_type *weap,int add_count)
 
 bool item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count)
 {
+	if (weap->hidden) return(FALSE);
     if (weap->alt_ammo.count==weap->alt_ammo.max_count) return(FALSE);
 
     weap->alt_ammo.count+=add_count;
@@ -204,6 +207,7 @@ bool item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count)
 
 bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count)
 {
+	if (weap->hidden) return(FALSE);
 	if (!weap->alt_ammo.use_clips) return(FALSE);
 	if (weap->alt_ammo.clip_count==weap->alt_ammo.max_clip_count) return(FALSE);
    
