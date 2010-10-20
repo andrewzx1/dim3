@@ -66,15 +66,14 @@ int ag_random_int(int max)
 
 void ag_generate_mirror_meshes(void)
 {
-	int				n,cx,cz,
-					nmesh,mesh_idx;
+	int				n,nmesh,mesh_idx;
 	d3pnt			pnt;
-	map_mesh_type	*mesh;
+	map_mesh_type	*mesh,*center_mesh;
 
-		// flip around map center
+		// get center mesh
 
-	cx=map_max_size>>1;
-	cz=map_max_size>>1;
+	center_mesh=&map.mesh.meshes[0];
+	map_prepare_mesh_box(center_mesh);
 
 		// skip first mesh as it's
 		// the middle ground
@@ -88,18 +87,101 @@ void ag_generate_mirror_meshes(void)
 			// create mesh box so we
 			// can find extents to move by
 
-		mesh=&map.mesh.meshes[n];
+		mesh=&map.mesh.meshes[mesh_idx];
 		map_prepare_mesh_box(mesh);
 
 			// flip and move
 
 		map_mesh_flip(&map,mesh_idx,TRUE,FALSE,TRUE);
 
-		pnt.x=(cx-mesh->box.max.x)*2;
+		pnt.x=(center_mesh->box.mid.x-mesh->box.mid.x)*2;
 		pnt.y=0;
-		pnt.z=(cz-mesh->box.max.z)*2;
+		pnt.z=(center_mesh->box.mid.z-mesh->box.mid.z)*2;
 
 		map_mesh_move(&map,mesh_idx,&pnt);
+	}
+}
+
+/* =======================================================
+
+      Delete Shared Polygons
+      
+======================================================= */
+
+bool ag_generate_delete_shared_polygons_compare(map_mesh_type *mesh_1,int poly_1_idx,map_mesh_type *mesh_2,int poly_2_idx)
+{
+	int					n,k;
+	bool				hit;
+	d3pnt				*pt_1,*pt_2;
+	map_mesh_poly_type	*poly_1,*poly_2;
+
+	poly_1=&mesh_1->polys[poly_1_idx];
+	poly_2=&mesh_2->polys[poly_2_idx];
+
+		// same vertex count?
+
+	if (poly_1->ptsz!=poly_2->ptsz) return(FALSE);
+
+		// might be in different orders, so look
+		// for equal points anywhere in polygon
+
+	for (n=0;n!=poly_1->ptsz;n++) {
+		pt_1=&mesh_1->vertexes[poly_1->v[n]];
+
+		hit=FALSE;
+		for (k=0;k!=poly_2->ptsz;k++) {
+			pt_2=&mesh_2->vertexes[poly_2->v[k]];
+			if ((pt_1->x==pt_2->x) && (pt_1->y==pt_2->y) && (pt_1->z==pt_2->z)) {
+				hit=TRUE;
+				break;
+			}
+		}
+
+		if (!hit) return(FALSE);
+	}
+
+	return(TRUE);
+}
+
+void ag_generate_delete_shared_polygons(void)
+{
+	int					n,mesh_1_idx,poly_1_idx,
+						mesh_2_idx,poly_2_idx;
+	map_mesh_type		*mesh_1,*mesh_2;
+
+	for (mesh_1_idx=0;mesh_1_idx!=map.mesh.nmesh;mesh_1_idx++) {
+
+		mesh_1=&map.mesh.meshes[mesh_1_idx];
+
+		poly_1_idx=0;
+
+		while (poly_1_idx<mesh_1->npoly) {
+
+			poly_2_idx=-1;
+
+			for (mesh_2_idx=0;mesh_2_idx!=map.mesh.nmesh;mesh_2_idx++) {
+				if (mesh_2_idx==mesh_1_idx) continue;
+
+				mesh_2=&map.mesh.meshes[mesh_2_idx];
+
+				for (n=0;n!=mesh_2->npoly;n++) {
+					if (ag_generate_delete_shared_polygons_compare(mesh_1,poly_1_idx,mesh_2,n)) {
+						poly_2_idx=n;
+						break;
+					}
+				}
+
+				if (poly_2_idx!=-1) break;
+			}
+
+			if (poly_2_idx!=-1) {
+				map_mesh_delete_poly(&map,mesh_1_idx,poly_1_idx);
+				map_mesh_delete_poly(&map,mesh_2_idx,poly_2_idx);
+				continue;
+			}
+
+			poly_1_idx++;
+		}
 	}
 }
 
@@ -128,12 +210,16 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 	idx=0;
 
 	while (TRUE) {
-		if (idx>ag_state.nroom) idx=0;
+
+		if (idx==ag_state.nroom) {
+			idx=0;
+			break;
+		}
+
+			// ignore corridors
 
 		room=&ag_state.rooms[idx];
 		shape=&ag_state.shapes[room->shape_idx];
-
-			// ignore corridors
 
 		if (shape->corridor) {
 			idx++;
@@ -142,8 +228,8 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 
 			// have we hit the right one?
 
-		count--;
 		if (count==0) break;
+		count--;
 
 		idx++;
 	}
