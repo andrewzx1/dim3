@@ -193,7 +193,7 @@ void light_map_textures_save(char *base_path)
 	txt_idx=max_map_texture-max_light_map_textures;
 	
 	for (n=0;n!=light_map_texture_count;n++) {
-		dialog_progress_next();
+		progress_next();
 		
 		if (light_map_textures[n].pixel_data==NULL) break;
 		
@@ -357,7 +357,7 @@ void light_map_textures_pixel_border(void)
 	int						n;
 	
 	for (n=0;n!=light_map_texture_count;n++) {
-		dialog_progress_next();
+		progress_next();
 		light_map_texture_single_pixel_border(n,map.settings.light_map.pixel_border_count);
 	}
 }
@@ -453,7 +453,7 @@ void light_map_textures_blur(void)
 	int						n;
 	
 	for (n=0;n!=light_map_texture_count;n++) {
-		dialog_progress_next();
+		progress_next();
 		light_map_texture_single_blur(n,map.settings.light_map.blur_count);
 	}
 }
@@ -1774,7 +1774,7 @@ bool light_maps_create_process(char *err_str)
 		// clear the textures and
 		// start mesh-poly and/or liquid setup
 		
-	dialog_progress_next();
+	progress_next();
 		
 	if (!light_map_textures_start(err_str)) return(FALSE);
 	
@@ -1789,7 +1789,7 @@ bool light_maps_create_process(char *err_str)
 		// for all the polys
 		
 	for (n=0;n!=light_map_poly_count;n++) {
-		if ((n%20)==0) dialog_progress_next();
+		if ((n%20)==0) progress_next();
 		
 		if (!light_map_run_for_poly(n,err_str)) {
 			light_map_bitmap_transparency_free();
@@ -1804,25 +1804,25 @@ bool light_maps_create_process(char *err_str)
 		
 	light_map_textures_pixel_border();
 	
-	dialog_progress_next();
+	progress_next();
 	light_map_textures_blur();
 	
 		// write all the textures
 		
-	dialog_progress_next();
+	progress_next();
 	light_map_textures_save(base_path);
 	
 		// set light map textures
 		// and UVs
 		
 	for (n=0;n!=light_map_poly_count;n++) {
-		if ((n%20)==0) dialog_progress_next();
+		if ((n%20)==0) progress_next();
 		light_map_set_texture_uv(n);
 	}
 	
 		// free textures and polys
 		
-	dialog_progress_next();
+	progress_next();
 
 	light_map_bitmap_transparency_free();
 	light_map_textures_free();
@@ -1858,9 +1858,9 @@ bool light_maps_create(char *err_str)
 		
 	npoly=light_map_get_poly_count();
 	
-	dialog_progress_start("Generating Light Maps...",(3+(max_light_map_textures*3)+((npoly/20)*2)));
+	progress_start("Generating Light Maps...",(3+(max_light_map_textures*3)+((npoly/20)*2)));
 	ok=light_maps_create_process(err_str);
-	dialog_progress_end();
+	progress_end();
 	
 	if (ok) file_save_map();
 	

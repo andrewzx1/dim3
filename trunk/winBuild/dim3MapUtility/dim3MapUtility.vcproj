@@ -256,6 +256,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\dim3MapUtility\Sources\map_cinema.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3MapUtility\Sources\map_frames.c"
 					>
 					<FileConfiguration

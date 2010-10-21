@@ -441,19 +441,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources_Bitmap\bitmap_movie.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\dim3BaseUtility\Sources_Bitmap\bitmap_text.c"
 					>
 				</File>

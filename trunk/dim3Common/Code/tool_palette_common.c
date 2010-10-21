@@ -244,8 +244,7 @@ bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 	
 	tool_palette_push_idx=push_idx;
 	
-	tool_palette_draw();
-	os_swap_gl_buffer();
+	main_wind_draw();
 
 	while (!os_track_mouse_location(&pt,NULL)) {
 		if ((pt.x<lx) || (pt.x>=(lx+tool_pixel_sz)) || (pt.y<ty) || (pt.y>=(ty+tool_pixel_sz))) {

@@ -261,7 +261,7 @@ script_define_type			script_dim3_defines[]={
 
 								{sd_event_interface_title_done,					"",		"DIM3_EVENT_INTERFACE_TITLE_DONE"},
 								{sd_event_interface_story_done,					"",		"DIM3_EVENT_INTERFACE_STORY_DONE"},
-								{sd_event_interface_movie_done,					"",		"DIM3_EVENT_INTERFACE_MOVIE_DONE"},
+								{sd_event_interface_cinema_done,				"",		"DIM3_EVENT_INTERFACE_CINEMA_DONE"},
 
 								{sd_event_state_load,							"",		"DIM3_EVENT_STATE_LOAD"},
 								{sd_event_state_save,							"",		"DIM3_EVENT_STATE_SAVE"},

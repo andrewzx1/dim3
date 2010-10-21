@@ -218,6 +218,11 @@ bool map_new(map_type *map,char *name)
 
 	map->liquid.nliquid=0;
 	map->liquid.liquids=NULL;
+		
+		// cinemas
+
+	map->cinema.ncinema=0;
+	map->cinema.cinemas=NULL;
 	
 		// memory
 		

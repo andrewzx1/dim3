@@ -75,10 +75,27 @@ extern void main_wind_close(void);
 extern void main_wind_resize(void);
 extern void main_wind_rotate_view(void);
 extern void main_wind_draw(void);
+extern void main_wind_draw_no_swap(void);
 extern void main_wind_center_position_in_map(void);
 extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
 extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
+
+//
+// text
+//
+
+extern void text_initialize(void);
+extern void text_shutdown(void);
+extern void text_draw(int x,int y,float txt_size,char *str);
+
+//
+// progress
+//
+
+extern void progress_start(char *title,int count);
+extern void progress_end(void);
+extern void progress_next(void);
 
 //
 // dos

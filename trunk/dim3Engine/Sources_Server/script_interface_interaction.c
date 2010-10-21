@@ -37,7 +37,7 @@ extern js_type			js;
 
 JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_chooser_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_interaction_start_cinema_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_setup_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -46,7 +46,7 @@ JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,J
 
 JSStaticFunction	interface_interaction_functions[]={
 							{"startTitle",			js_interface_interaction_start_title_func,				kJSPropertyAttributeDontDelete},
-							{"startMovie",			js_interface_interaction_start_movie_func,				kJSPropertyAttributeDontDelete},
+							{"startCinema",			js_interface_interaction_start_cinema_func,				kJSPropertyAttributeDontDelete},
 							{"startChooser",		js_interface_interaction_start_chooser_func,			kJSPropertyAttributeDontDelete},
 							{"startSave",			js_interface_interaction_start_save_func,				kJSPropertyAttributeDontDelete},
 							{"startLoad",			js_interface_interaction_start_load_func,				kJSPropertyAttributeDontDelete},
@@ -101,7 +101,7 @@ JSValueRef js_interface_interaction_start_title_func(JSContextRef cx,JSObjectRef
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_interface_interaction_start_cinema_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[name_str_len],err_str[256];
 
@@ -109,7 +109,7 @@ JSValueRef js_interface_interaction_start_movie_func(JSContextRef cx,JSObjectRef
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	
-	if (!movie_setup(name,script_value_to_int(cx,argv[1]),err_str)) {
+	if (!cinema_setup(name,script_value_to_int(cx,argv[1]),err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 	

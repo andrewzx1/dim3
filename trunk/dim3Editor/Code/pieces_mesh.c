@@ -417,7 +417,7 @@ void piece_add_obj_mesh(void)
 	
 		// start progress
 		
-	dialog_progress_start("OBJ Import",8);
+	progress_start("OBJ Import",8);
 	
 	scale.x=scale.y=scale.z=f_scale;
 	
@@ -427,12 +427,12 @@ void piece_add_obj_mesh(void)
 	
 		// get the vertexes
 		
-	dialog_progress_next();
+	progress_next();
 
 	vertexes=(d3pnt*)malloc(sizeof(d3pnt)*nvertex);
 	if (vertexes==NULL) {
 		textdecode_close();
-		dialog_progress_end();
+		progress_end();
 		dialog_alert("Import Failed","Out of Memory.");
 		return;
     }
@@ -460,7 +460,7 @@ void piece_add_obj_mesh(void)
 		
 		// recenter the vertexes
 		
-	dialog_progress_next();
+	progress_next();
 		
 	x=y=z=0;
 	
@@ -488,13 +488,13 @@ void piece_add_obj_mesh(void)
 	
 		// get the UVs
 		
-	dialog_progress_next();
+	progress_next();
 		
 	if (nuv!=0) {
 		uvs=(float*)malloc(sizeof(float)*(2*nuv));
 		if (uvs==NULL) {
 			textdecode_close();
-			dialog_progress_end();
+			progress_end();
 			dialog_alert("Import Failed","Out of Memory.");
 			return;
 		}
@@ -514,13 +514,13 @@ void piece_add_obj_mesh(void)
 
 		// get the normals
 		
-	dialog_progress_next();
+	progress_next();
 		
 	if (nnormal!=0) {
 		normals=(float*)malloc(sizeof(float)*(3*nnormal));
 		if (normals==NULL) {
 			textdecode_close();
-			dialog_progress_end();
+			progress_end();
 			dialog_alert("Import Failed","Out of Memory.");
 			return;
 		}
@@ -552,7 +552,7 @@ void piece_add_obj_mesh(void)
 	
 		// get the polys
 		
-	dialog_progress_next();
+	progress_next();
 
     for (n=0;n!=nline;n++) {
 	
@@ -583,7 +583,7 @@ void piece_add_obj_mesh(void)
 				
 				if (mesh_idx==-1) {
 					textdecode_close();
-					dialog_progress_end();
+					progress_end();
 					dialog_alert("Import Failed","Not enough memory to create mesh.");
 					return;
 				}
@@ -700,13 +700,13 @@ void piece_add_obj_mesh(void)
 		
 	if (old_nmesh==map.mesh.nmesh) {
 		dialog_alert("Import Failed","Could not find mesh.  OBJ is missing a material (usemtl) deceleration.");
-		dialog_progress_end();
+		progress_end();
 		return;
 	}
 	
 		// if no uvs, force auto-texture
 		
-	dialog_progress_next();
+	progress_next();
 		
 	if (nuv==0) {
 		for (n=old_nmesh;n!=map.mesh.nmesh;n++) {
@@ -717,7 +717,7 @@ void piece_add_obj_mesh(void)
 		// calc the normals
 		// and lock if this import had normals
 		
-	dialog_progress_next();
+	progress_next();
 
 	for (n=old_nmesh;n!=map.mesh.nmesh;n++) {
 		map_recalc_normals_mesh(&map.mesh.meshes[n],(nnormal!=0));
@@ -725,11 +725,11 @@ void piece_add_obj_mesh(void)
 	
 		// finish up
 		
-	dialog_progress_next();
+	progress_next();
 		
 	piece_add_mesh_finish(old_nmesh);
 	
-	dialog_progress_end();
+	progress_end();
 }
 
 /* =======================================================

@@ -74,9 +74,6 @@ extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool
 // misc dialogs
 //
 
-extern void dialog_progress_next(void);
-extern void dialog_progress_start(char *title,int count);
-extern void dialog_progress_end(void);
 extern int dialog_alert(char *title,char *msg);
 extern int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *button_3);
 

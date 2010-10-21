@@ -3675,6 +3675,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\cinema.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\console_draw.c"
 						>
 						<FileConfiguration
@@ -3780,19 +3784,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_View\menu_draw.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_View\movie.c"
 						>
 						<FileConfiguration
 							Name="Release|Win32"

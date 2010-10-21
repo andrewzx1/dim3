@@ -76,15 +76,6 @@ void auto_generate_map(void)
 	ag_generate_map(&build_setup);
 }
 
-void dialog_progress_next(void)
-{
-}
-void dialog_progress_start(char *title,int count)
-{
-}
-void dialog_progress_end(void)
-{
-}
 int dialog_alert(char *title,char *msg)
 {
 	MessageBox(NULL,title,msg,MB_OK);
@@ -106,9 +97,18 @@ bool dialog_file_new_run(char *title,char *file_name)
 }
 bool dialog_save_run(void)
 {
+	bool				ok;
+
+	progress_start("Saving Map",3);
 	node_path_rebuild();
+	progress_next();
 	map_recalc_normals(&map,FALSE);
-	return(map_save(&map));
+	progress_next();
+	ok=map_save(&map);
+	progress_next();
+	progress_end();
+
+	return(ok);
 }
 bool dialog_map_settings_run(void)
 {
@@ -381,6 +381,10 @@ void main_wind_open(void)
 	main_wind_box.ty=wbox.top;
 	main_wind_box.by=wbox.bottom-wbox.top;
 
+		// text
+
+	text_initialize();
+
 		// initialize walk view
 
 	tool_palette_initialize("Editor");
@@ -395,6 +399,7 @@ void main_wind_close(void)
 {
 	walk_view_shutdown();
 	tool_palette_shutdown();
+	text_shutdown();
 
 		// close opengl
 
@@ -503,16 +508,6 @@ void editor_clear_viewport(void)
 
 void main_wind_draw(void)
 {
-	int				mx,my,wnd_high;
-	RECT			wbox;
-
-	GetClientRect(wnd,&wbox);
-
-	mx=(wbox.left+wbox.right)/2;
-	my=(wbox.top+wbox.bottom)/2;
-
-	wnd_high=wbox.bottom;
-
 		// clear draw buffer
 
 	glEnable(GL_DEPTH_TEST);
@@ -535,6 +530,28 @@ void main_wind_draw(void)
 		// swap buffers
 
 	SwapBuffers(wnd_gl_dc);
+}
+
+void main_wind_draw_no_swap(void)
+{
+		// clear draw buffer
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+
+	editor_clear_viewport();
+
+	glClearColor(0.75f,0.75f,0.75f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+		// draw window
+
+	if (state.map_opened) {
+		walk_view_draw();
+
+		tool_palette_draw();
+		texture_palette_draw(map.textures);
+	}
 }
 
 /* =======================================================
