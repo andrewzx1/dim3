@@ -336,7 +336,7 @@ typedef struct		{
 					} select_item_type;
 
 //
-// picker struct
+// view picker
 //
 
 typedef struct		{
@@ -344,7 +344,7 @@ typedef struct		{
 						short					type,main_idx,sub_idx;
 						bool					hit;
 					} view_picker_type;
-
+							
 //
 // auto generator
 //

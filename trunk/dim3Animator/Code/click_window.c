@@ -110,42 +110,11 @@ void select_model_wind_restore_sel_state(char *vertex_sel)
 	}
 }
 
-void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
+void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv,double *mod_matrix,double *proj_matrix,double *vport)
 {
-	int						sz;
-	double					mod_matrix[16],proj_matrix[16],vport[4];
 	char					*org_vertex_sel;
 	bool					chg_sel;
-	float					*pv;
 	d3pnt					pnt,last_pnt;
-	
-	model_wind_play(FALSE,FALSE);
-	
-		// get the draw vertexes
-		// need to save off array as drawing will reuse
-		// array and free it
-		
-	model_draw_setup_initialize(&model,&draw_setup,TRUE);
-		
-	draw_model_setup_pose(&model,&draw_setup,cur_pose);
-	
-	model_create_draw_bones(&model,&draw_setup);
-	model_create_draw_vertexes(&model,cur_mesh,&draw_setup);
-	
-	sz=(model.meshes[cur_mesh].nvertex*3)*sizeof(float);
-	pv=(float*)malloc(sz);
-	if (pv==NULL) return;
-	
-	memmove(pv,draw_setup.mesh_arrays[cur_mesh].gl_vertex_array,sz);
-		
-	model_draw_setup_shutdown(&model,&draw_setup);
-	
-		// setup transforms
-		
-	draw_model_gl_setup(&model,0);
-	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
 	
 		// turn on or off?
 		
@@ -205,8 +174,61 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 	
 	drag_sel_on=FALSE;
 	
-	free(pv);
 	free(org_vertex_sel);
+}
+
+void select_model_wind_polygon(d3pnt *start_pnt,float *pv,double *mod_matrix,double *proj_matrix,double *vport)
+{
+}
+
+void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
+{
+	int				sz;
+	float			*pv;
+	double			mod_matrix[16],proj_matrix[16],vport[4];
+	
+		// no playing while selecting
+		
+	model_wind_play(FALSE,FALSE);
+	
+		// get the draw vertexes
+		// need to save off array as drawing will reuse
+		// array and free it
+		
+	model_draw_setup_initialize(&model,&draw_setup,TRUE);
+		
+	draw_model_setup_pose(&model,&draw_setup,cur_pose);
+	
+	model_create_draw_bones(&model,&draw_setup);
+	model_create_draw_vertexes(&model,cur_mesh,&draw_setup);
+	
+	sz=(model.meshes[cur_mesh].nvertex*3)*sizeof(float);
+	pv=(float*)malloc(sz);
+	if (pv==NULL) return;
+	
+	memmove(pv,draw_setup.mesh_arrays[cur_mesh].gl_vertex_array,sz);
+		
+	model_draw_setup_shutdown(&model,&draw_setup);
+	
+		// setup transforms
+		
+	draw_model_gl_setup(&model,0);
+	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
+
+		// run the correct click
+		
+	if (state.select_mode==select_mode_vertex) {
+		select_model_wind_vertex(start_pnt,modifiers,pv,mod_matrix,proj_matrix,vport);
+	}
+	else {
+		select_model_wind_polygon(start_pnt,pv,mod_matrix,proj_matrix,vport);
+	}
+	
+		// free the saved vertexes
+
+	free(pv);
 
 		// redraw the model
 		
@@ -216,7 +238,7 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		
 	hilite_vertex_rows();
 
-	os_set_arrow_cursor();
+	os_set_arrow_cursor();	
 }
 
 /* =======================================================
