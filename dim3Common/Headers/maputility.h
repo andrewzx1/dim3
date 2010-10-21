@@ -135,7 +135,7 @@ extern char light_type_str[][32];
 #define mi_none												0
 #define mi_chooser											1
 #define mi_title											2
-#define mi_movie											3
+#define mi_cinema											3
 
 //
 // sky types
@@ -208,15 +208,11 @@ extern char light_type_str[][32];
 // cinema types
 //
 
-#define cinema_actor_camera									0
-#define cinema_actor_object									1
-#define cinema_actor_map_movement							2
-
-#define cinema_action_place									0
-#define cinema_action_move									1
-#define cinema_action_show									2
-#define cinema_action_hide									3
-#define cinema_action_change_animation						4
+#define cinema_action_none									0
+#define cinema_action_place									1
+#define cinema_action_move									2
+#define cinema_action_show									3
+#define cinema_action_hide									4
 
 //
 // group structure
@@ -632,16 +628,18 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									actor,action,
-															start_msec,len_msec;
+						int									action,
+															start_msec,end_msec;
 						char								actor_name[name_str_len],
 															animation_name[name_str_len],
+															next_animation_name[name_str_len],
 															node_name[name_str_len];
-					} map_cinema_command_type;
+					} map_cinema_action_type;
 
 typedef struct		{
-						int									ncommand;
-						map_cinema_command_type				*commands;
+						int									naction,len_msec;
+						char								name[name_str_len];
+						map_cinema_action_type				*actions;
 					} map_cinema_type;
 
 typedef struct		{
@@ -821,3 +819,7 @@ extern bool map_delete_texture(map_type *map,int start_txt,int end_txt);
 extern void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal);
 extern void map_recalc_normals(map_type *map,bool only_tangent_binormal);
 
+extern int map_cinema_add(map_type *map);
+extern bool map_cinema_delete(map_type *map,int cinema_idx);
+extern int map_cinema_add_action(map_type *map,int cinema_idx);
+extern bool map_cinema_delete_action(map_type *map,int cinema_idx,int action_idx);

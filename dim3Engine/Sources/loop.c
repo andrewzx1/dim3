@@ -221,8 +221,8 @@ void loop_state_run(void)
 			title_run();
 			return;
 			
-		case gs_movie:
-			movie_run();
+		case gs_cinema:
+			cinema_run();
 			return;
 			
 		case gs_error:
@@ -274,8 +274,8 @@ void loop_state_last_close(void)
 			title_close();
 			return;
 			
-		case gs_movie:
-			movie_close();
+		case gs_cinema:
+			cinema_close();
 			return;
 
 		case gs_error:
@@ -325,8 +325,8 @@ void loop_state_next_open(void)
 			title_open();
 			return;
 			
-		case gs_movie:
-			movie_open();
+		case gs_cinema:
+			cinema_open();
 			return;
 
 		case gs_error:

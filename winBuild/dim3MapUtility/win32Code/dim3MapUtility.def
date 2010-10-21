@@ -110,3 +110,8 @@ EXPORTS
 
 	map_recalc_normals_mesh							@340
 	map_recalc_normals								@341
+
+	map_cinema_add									@350
+	map_cinema_delete								@351
+	map_cinema_add_action							@352
+	map_cinema_delete_action						@353

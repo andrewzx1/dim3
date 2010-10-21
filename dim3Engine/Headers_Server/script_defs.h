@@ -362,7 +362,7 @@ and can be sold or given away.
 
 #define sd_event_interface_title_done					3075
 #define sd_event_interface_story_done					3076
-#define sd_event_interface_movie_done					3077
+#define sd_event_interface_cinema_done					3077
 
 #define sd_event_state_load								3078
 #define sd_event_state_save								3079

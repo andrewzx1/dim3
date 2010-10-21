@@ -42,7 +42,8 @@ char					media_type_str[][32]={"none","chooser","title","movie",""},
                         light_direction_str[][32]={"all","neg_x","pos_x","neg_y","pos_y","neg_z","pos_z",""},
 						spot_type_str[][32]={"Object","Bot","Player","Spawn",""},
 						skill_type_str[][32]={"easy","medium","hard",""},
-						spawn_type_str[][32]={"always","single_player","multiplayer",""};
+						spawn_type_str[][32]={"always","single_player","multiplayer",""},
+						cinema_action_type_str[][32]={"none","place","move","show","hide",""};
 
 extern bool decode_map_v1_xml(map_type *map,int map_head);
 extern bool decode_map_v2_xml(map_type *map,int map_head);
@@ -188,6 +189,12 @@ void decode_map_settings_xml(map_type *map,int map_head)
 	}
 }
 
+/* =======================================================
+
+      Read Groups
+      
+======================================================= */
+
 void decode_map_groups_xml(map_type *map,int map_head)
 {
 	int						i,main_group_tag,group_tag;
@@ -203,6 +210,12 @@ void decode_map_groups_xml(map_type *map,int map_head)
 		group_tag=xml_findnextchild(group_tag);
 	}
 }
+
+/* =======================================================
+
+      Read Textures
+      
+======================================================= */
 
 void decode_map_textures_xml(map_type *map,int map_head)
 {
@@ -221,6 +234,12 @@ void decode_map_textures_xml(map_type *map,int map_head)
 		fill_tag=xml_findnextchild(fill_tag);
     }
 }
+
+/* =======================================================
+
+      Read Movements
+      
+======================================================= */
 
 void decode_map_movements_xml(map_type *map,int map_head)
 {
@@ -275,6 +294,73 @@ void decode_map_movements_xml(map_type *map,int map_head)
 		movement++;
 	}
 }
+
+/* =======================================================
+
+      Read Cinemas
+      
+======================================================= */
+
+void decode_map_cinemas_xml(map_type *map,int map_head)
+{
+	int						n,k,cinema_idx,action_idx,ncinema,naction,
+							cinemas_tag,cinema_tag,actions_tag,action_tag;
+	map_cinema_type			*cinema;
+	map_cinema_action_type	*action;
+    
+    cinemas_tag=xml_findfirstchild("Cinemas",map_head);
+    if (cinemas_tag==-1) return;
+    
+    map->cinema.ncinema=0;
+	
+	ncinema=xml_countchildren(cinemas_tag);
+	cinema_tag=xml_findfirstchild("Cinema",cinemas_tag);
+
+    for (n=0;n!=ncinema;n++) {
+		cinema_idx=map_cinema_add(map);
+		if (cinema_idx==-1) break;
+
+		cinema=&map->cinema.cinemas[cinema_idx];
+
+		xml_get_attribute_text(cinema_tag,"name",cinema->name,name_str_len);
+		cinema->len_msec=xml_get_attribute_int(cinema_tag,"length");
+		
+		cinema->naction=0;
+		
+		actions_tag=xml_findfirstchild("Actions",cinema_tag);
+		if (actions_tag==-1) continue;
+
+		naction=xml_countchildren(actions_tag);
+		action_tag=xml_findfirstchild("Action",actions_tag);
+		
+		for (k=0;k!=naction;k++) {
+			action_idx=map_cinema_add_action(map,cinema_idx);
+			if (action_idx==-1) break;
+
+			action=&cinema->actions[action_idx];
+
+			xml_get_attribute_text(action_tag,"actor",action->actor_name,name_str_len);
+			action->action=xml_get_attribute_list(action_tag,"action",(char*)cinema_action_type_str);
+
+			action->start_msec=xml_get_attribute_int_default(action_tag,"start",0);
+			action->end_msec=xml_get_attribute_int_default(action_tag,"end",0);
+
+			xml_get_attribute_text(action_tag,"animation",action->animation_name,name_str_len);
+			xml_get_attribute_text(action_tag,"next_animation",action->next_animation_name,name_str_len);
+			xml_get_attribute_text(action_tag,"node",action->node_name,name_str_len);
+			
+			action_tag=xml_findnextchild(action_tag);
+		}
+		
+		cinema_tag=xml_findnextchild(cinema_tag);
+	}
+}
+
+/* =======================================================
+
+      Read Cameras
+      
+======================================================= */
 
 void decode_map_camera_xml(map_type *map,int map_head)
 {
@@ -473,6 +559,7 @@ bool read_map_xml(map_type *map)
 	decode_map_groups_xml(map,map_head);
 	decode_map_textures_xml(map,map_head);
 	decode_map_movements_xml(map,map_head);
+	decode_map_cinemas_xml(map,map_head);
 	decode_map_camera_xml(map,map_head);
 
 		// editor setup

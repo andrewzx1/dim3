@@ -41,6 +41,7 @@ extern char					media_type_str[][32],
 							spot_type_str[][32],
 							skill_type_str[][32],
 							spawn_type_str[][32],
+							cinema_action_type_str[][32],
 							map_bump_mode_str[][32];
 
 extern maputility_settings_type		maputility_settings;
@@ -256,6 +257,12 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagend(TRUE);
 }
 
+/* =======================================================
+
+      Write Groups
+      
+======================================================= */
+
 void write_map_groups_xml(map_type *map)
 {
 	int						n;
@@ -276,6 +283,12 @@ void write_map_groups_xml(map_type *map)
     
     xml_add_tagclose("Groups");
 }
+
+/* =======================================================
+
+      Write Textures
+      
+======================================================= */
 
 void write_map_textures_xml(map_type *map)
 {
@@ -302,6 +315,12 @@ void write_map_textures_xml(map_type *map)
     
     xml_add_tagclose("Fills");
 }
+
+/* =======================================================
+
+      Write Movements
+      
+======================================================= */
 
 void write_map_movements_xml(map_type *map)
 {
@@ -354,6 +373,69 @@ void write_map_movements_xml(map_type *map)
     
     xml_add_tagclose("Movements");
 }
+
+/* =======================================================
+
+      Write Cinemas
+      
+======================================================= */
+
+void write_map_cinemas_xml(map_type *map)
+{
+	int						n,k;
+	map_cinema_type			*cinema;
+	map_cinema_action_type	*action;
+
+	xml_add_tagstart("Cinemas");
+    xml_add_tagend(FALSE);
+    
+    cinema=map->cinema.cinemas;
+    
+    for (n=0;n!=map->cinema.ncinema;n++) {
+    
+		xml_add_tagstart("Cinema");
+		xml_add_attribute_text("name",cinema->name);
+		xml_add_attribute_int("length",cinema->len_msec);
+		xml_add_tagend(FALSE);
+		
+		xml_add_tagstart("Actions");
+		xml_add_tagend(FALSE);
+
+		action=cinema->actions;
+    
+		for (k=0;k!=cinema->naction;k++) {
+
+			xml_add_tagstart("Action");
+
+			xml_add_attribute_text("actor",action->actor_name);
+			xml_add_attribute_list("action",(char*)cinema_action_type_str,action->action);
+
+			if (action->start_msec!=0) xml_add_attribute_int("start",action->start_msec);
+			if (action->end_msec!=0) xml_add_attribute_int("end",action->end_msec);
+
+			if (action->animation_name[0]!=0x0) xml_add_attribute_text("animation",action->animation_name);
+			if (action->next_animation_name[0]!=0x0) xml_add_attribute_text("next_animation",action->next_animation_name);
+			if (action->node_name[0]!=0x0) xml_add_attribute_text("node",action->node_name);
+
+			xml_add_tagend(TRUE);
+			
+			action++;
+		}
+
+		xml_add_tagclose("Actions");
+		xml_add_tagclose("Cinema");
+        
+        cinema++;
+    }
+    
+    xml_add_tagclose("Cinemas");
+}
+
+/* =======================================================
+
+      Write Camera
+      
+======================================================= */
 
 void write_map_camera_xml(map_type *map)
 {
@@ -653,6 +735,7 @@ bool write_map_xml(map_type *map)
 	write_map_groups_xml(map);
 	write_map_textures_xml(map);
 	write_map_movements_xml(map);
+	write_map_cinemas_xml(map);
 	write_map_camera_xml(map);
 
 		// editor setup

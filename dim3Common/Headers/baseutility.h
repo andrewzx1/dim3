@@ -496,12 +496,6 @@ extern bool bitmap_write_png_data(unsigned char *data,int wid,int high,bool alph
 extern bool bitmap_check(char *path,char *err_str);
 extern bool bitmap_copy(char *srce_path,char *dest_path);
 
-extern bool bitmap_movie_start(char *path,int *wid,int *high);
-extern void bitmap_movie_end(void);
-extern int bitmap_movie_get_texture_id(void);
-extern bool bitmap_movie_playing(void);
-extern void bitmap_movie_texture_refresh(void);
-
 /* =======================================================
 
       Bitmap Fonts

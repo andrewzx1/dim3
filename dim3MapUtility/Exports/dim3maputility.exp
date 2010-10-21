@@ -107,3 +107,8 @@ _map_auto_generate_test
 
 _map_recalc_normals_mesh
 _map_recalc_normals
+
+_map_cinema_add
+_map_cinema_delete
+_map_cinema_add_action
+_map_cinema_delete_action

@@ -110,8 +110,8 @@ void map_media_start(map_media_type *media)
 			}
 			break;
 			
-		case mi_movie:
-			if (!movie_setup(media->name,-1,err_str)) {
+		case mi_cinema:
+			if (!cinema_setup(media->name,-1,err_str)) {
 				console_add_error(err_str);
 			}
 			break;

@@ -272,10 +272,12 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 	unsigned char	ch;
 	unsigned char	*data,*ptr;
 	HDC				screen_dc,dc;
-	HBITMAP			bmp,*old_bmp;
-	HFONT			font;
+	HBITMAP			bmp,old_bmp;
+	HFONT			font,old_font;
+	HBRUSH			brsh,old_brsh;
 	COLORREF		col;
-	SIZE			chsz;
+	RECT			box;
+	ABC				ch_abc;
 
 		// data for bitmap
 
@@ -296,15 +298,29 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 	SetBkMode(dc,TRANSPARENT);
 	SetBkColor(dc,RGB(0,0,0));
 
+		// clear bitmap
+
+	brsh=CreateSolidBrush(RGB(255,255,255));
+	old_brsh=SelectObject(dc,brsh);
+
+	box.left=box.top=0;
+	box.right=font_bitmap_pixel_sz;
+	box.bottom=font_bitmap_pixel_sz;
+
+	FillRect(dc,&box,brsh);
+
+	SelectObject(dc,old_brsh);
+	DeleteObject(brsh);
+
 		// draw the characters
 
-	font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
+	font=CreateFont(-font_bitmap_point,0,0,0,FW_BOLD,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
 	if (font==NULL) {
-		font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,alt_name);
+		font=CreateFont(-font_bitmap_point,0,0,0,FW_BOLD,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,alt_name);
 	}
 
-	SelectObject(dc,font);
-	SetTextColor(dc,RGB(255,255,255));
+	old_font=SelectObject(dc,font);
+	SetTextColor(dc,RGB(0,0,0));
 
 	for (n=0;n!=90;n++) {
 
@@ -319,10 +335,11 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 
 			// get the spacing information
 
-		GetTextExtentPoint32(dc,(char*)&ch,1,&chsz);
-		d3_font->char_size[n]=(float)chsz.cx/(float)font_bitmap_char_wid;
+		GetCharABCWidths(dc,ch,ch,&ch_abc);
+		d3_font->char_size[n]=((float)(ch_abc.abcA+ch_abc.abcB+ch_abc.abcC))/((float)font_bitmap_char_wid);
 	}
 
+	SelectObject(dc,old_font);
 	DeleteObject(font);
 
 		// get the bitmap
@@ -339,7 +356,7 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 			*ptr++=0xFF;
 			*ptr++=0xFF;
 
-			*ptr++=GetRValue(col);		// use the anti-aliased font as the alpha mask
+			*ptr++=255-GetRValue(col);		// use the anti-aliased font as the alpha mask
 
 		}
 	}

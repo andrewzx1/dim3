@@ -212,11 +212,5 @@ EXPORTS
 	bitmap_write_png_data						@401
 	bitmap_check								@402
 	bitmap_copy									@403
-
-	bitmap_movie_start							@404
-	bitmap_movie_end							@405
-	bitmap_movie_get_texture_id					@406
-	bitmap_movie_playing						@407
-	bitmap_movie_texture_refresh				@408
 	
 	bitmap_text									@410

@@ -291,7 +291,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Common\Code\progress_common.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\selection.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Common\Code\text_common.c"
 					>
 				</File>
 				<File

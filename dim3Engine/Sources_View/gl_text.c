@@ -231,49 +231,48 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 	
 		ch=(int)*c++;
 
-		if ((ch>='!') && (ch<='z')) {
-			
-			ch-='!';
-
-				// the vertexes
-
-			f_rgt=f_lft+f_wid;
-
-			*vertex_ptr++=f_lft;
-			*vertex_ptr++=f_top;
-			*vertex_ptr++=f_rgt;
-			*vertex_ptr++=f_top;
-			*vertex_ptr++=f_rgt;
-			*vertex_ptr++=f_bot;
-			*vertex_ptr++=f_lft;
-			*vertex_ptr++=f_bot;
-
-			f_lft+=(f_wid*fonts[font_index].char_size[ch]);
-
-				// the UVs
-
-			yoff=ch/font_bitmap_char_per_line;
-			xoff=ch-(yoff*font_bitmap_char_per_line);
-
-			gx_lft=((float)xoff)*font_bitmap_gl_xoff;
-			gx_rgt=gx_lft+font_bitmap_gl_xadd;
-			gy_top=((float)yoff)*font_bitmap_gl_yoff;
-			gy_bot=gy_top+font_bitmap_gl_yadd;
-
-			*uv_ptr++=gx_lft;
-			*uv_ptr++=gy_top;
-			*uv_ptr++=gx_rgt;
-			*uv_ptr++=gy_top;
-			*uv_ptr++=gx_rgt;
-			*uv_ptr++=gy_bot;
-			*uv_ptr++=gx_lft;
-			*uv_ptr++=gy_bot;
-
-			cnt+=4;
-		}
-		else {
+		if ((ch<'!') || (ch>'z')) {
 			f_lft+=(f_wid/3);
+			continue;
 		}
+
+		ch-='!';
+
+			// the vertexes
+
+		f_rgt=f_lft+f_wid;
+
+		*vertex_ptr++=f_lft;
+		*vertex_ptr++=f_top;
+		*vertex_ptr++=f_rgt;
+		*vertex_ptr++=f_top;
+		*vertex_ptr++=f_rgt;
+		*vertex_ptr++=f_bot;
+		*vertex_ptr++=f_lft;
+		*vertex_ptr++=f_bot;
+
+		f_lft+=(f_wid*fonts[font_index].char_size[ch]);
+
+			// the UVs
+
+		yoff=ch/font_bitmap_char_per_line;
+		xoff=ch-(yoff*font_bitmap_char_per_line);
+
+		gx_lft=((float)xoff)*font_bitmap_gl_xoff;
+		gx_rgt=gx_lft+font_bitmap_gl_xadd;
+		gy_top=((float)yoff)*font_bitmap_gl_yoff;
+		gy_bot=gy_top+font_bitmap_gl_yadd;
+
+		*uv_ptr++=gx_lft;
+		*uv_ptr++=gy_top;
+		*uv_ptr++=gx_rgt;
+		*uv_ptr++=gy_top;
+		*uv_ptr++=gx_rgt;
+		*uv_ptr++=gy_bot;
+		*uv_ptr++=gx_lft;
+		*uv_ptr++=gy_bot;
+
+		cnt+=4;
 	}
 
 	view_unmap_current_vertex_object();
