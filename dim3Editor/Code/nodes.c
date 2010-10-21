@@ -61,6 +61,13 @@ int node_link_is_node_link_selected(void)
 	return(main_idx);
 }
 
+void node_link_select(int node_idx)
+{
+	select_clear();
+	
+	select_add(node_piece,node_idx,-1);
+}
+
 /* =======================================================
 
       Node Links Add/Delete
@@ -140,6 +147,8 @@ bool node_link_click(int node_idx)
 		
 		if (!node_link_has_link(org_node_idx,node_idx)) map.nodes[org_node_idx].link[k1]=node_idx;
 		if (!node_link_has_link(node_idx,org_node_idx)) map.nodes[node_idx].link[k2]=org_node_idx;
+		
+		node_link_select(node_idx);
 		
 		return(TRUE);
 	}
