@@ -249,15 +249,15 @@ void gl_fs_shader_render_finish(void)
 	uv_ptr=vertex_ptr+(4*2);
 
 	*vertex_ptr++=0.0f;
+	*vertex_ptr++=0.0f;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=(float)setup.screen.y_sz;
+
+	*vertex_ptr++=0.0f;
 	*vertex_ptr++=(float)setup.screen.y_sz;
 
 	*uv_ptr++=0.0f;
-	*uv_ptr++=0.0f;
-
-	*vertex_ptr++=(float)setup.screen.x_sz;
-	*vertex_ptr++=(float)setup.screen.y_sz;
-
-	*uv_ptr++=(float)setup.screen.x_sz;
 	*uv_ptr++=0.0f;
 
 	*vertex_ptr++=(float)setup.screen.x_sz;
@@ -266,11 +266,11 @@ void gl_fs_shader_render_finish(void)
 	*uv_ptr++=(float)setup.screen.x_sz;
 	*uv_ptr++=(float)setup.screen.y_sz;
 
-	*vertex_ptr++=0.0f;
-	*vertex_ptr++=0.0f;
+	*vertex_ptr++=(float)setup.screen.x_sz;
+	*vertex_ptr++=(float)setup.screen.y_sz;
 
+	*uv_ptr++=(float)setup.screen.x_sz;
 	*uv_ptr++=0.0f;
-	*uv_ptr++=(float)setup.screen.y_sz;
 
   	view_unmap_current_vertex_object();
 
@@ -306,7 +306,7 @@ void gl_fs_shader_render_finish(void)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
  	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

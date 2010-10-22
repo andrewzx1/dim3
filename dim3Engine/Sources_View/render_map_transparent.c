@@ -235,7 +235,7 @@ void render_transparent_mesh_normal(void)
 			// draw the polygon
 
 		gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,1.0f);
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	
 		view.count.poly++;
 	}
@@ -293,7 +293,7 @@ void render_transparent_mesh_shader(void)
 		gl_lights_build_poly_light_list(mesh_idx,poly,&light_list);
 		gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,&poly->tangent_space,NULL);
 
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	
 		view.count.poly++;
 	}
@@ -337,7 +337,7 @@ void render_transparent_mesh_glow(void)
 			// draw glow
 
 		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	
 		view.count.poly++;
 	}

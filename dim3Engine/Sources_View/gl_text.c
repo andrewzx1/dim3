@@ -244,11 +244,11 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 
 		*vertex_ptr++=f_lft;
 		*vertex_ptr++=f_top;
+		*vertex_ptr++=f_lft;
+		*vertex_ptr++=f_bot;
 		*vertex_ptr++=f_rgt;
 		*vertex_ptr++=f_top;
 		*vertex_ptr++=f_rgt;
-		*vertex_ptr++=f_bot;
-		*vertex_ptr++=f_lft;
 		*vertex_ptr++=f_bot;
 
 		f_lft+=(f_wid*fonts[font_index].char_size[ch]);
@@ -265,14 +265,16 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 
 		*uv_ptr++=gx_lft;
 		*uv_ptr++=gy_top;
+		*uv_ptr++=gx_lft;
+		*uv_ptr++=gy_bot;
 		*uv_ptr++=gx_rgt;
 		*uv_ptr++=gy_top;
 		*uv_ptr++=gx_rgt;
 		*uv_ptr++=gy_bot;
-		*uv_ptr++=gx_lft;
-		*uv_ptr++=gy_bot;
 
-		cnt+=4;
+			// remember number of characters
+
+		cnt++;
 	}
 
 	view_unmap_current_vertex_object();
@@ -285,7 +287,9 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((txtlen*4)*2)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,cnt);
+	for (n=0;n!=cnt;n++) {
+		glDrawArrays(GL_TRIANGLE_STRIP,(n*4),4);
+	}
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

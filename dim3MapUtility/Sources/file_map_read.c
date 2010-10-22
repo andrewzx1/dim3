@@ -345,6 +345,8 @@ void decode_map_cinemas_xml(map_type *map,int map_head)
 			action->start_msec=xml_get_attribute_int_default(action_tag,"start",0);
 			action->end_msec=xml_get_attribute_int_default(action_tag,"end",0);
 
+			action->move_reverse=xml_get_attribute_boolean(action_tag,"move_reverse");
+
 			xml_get_attribute_text(action_tag,"animation",action->animation_name,name_str_len);
 			xml_get_attribute_text(action_tag,"next_animation",action->next_animation_name,name_str_len);
 			xml_get_attribute_text(action_tag,"node",action->node_name,name_str_len);

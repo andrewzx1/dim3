@@ -188,6 +188,13 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 		*pt++=gx;
 		*pt++=gy;
 
+		*pv++=(px[3]+fx);
+		*pv++=(py[3]+fy);
+		*pv++=(pz[3]+fz);
+		
+		*pt++=gx;
+		*pt++=gy+g_size;
+
 		*pv++=(px[1]+fx);
 		*pv++=(py[1]+fy);
 		*pv++=(pz[1]+fz);
@@ -200,13 +207,6 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 		*pv++=(pz[2]+fz);
 		
 		*pt++=gx+g_size;
-		*pt++=gy+g_size;
-
-		*pv++=(px[3]+fx);
-		*pv++=(py[3]+fy);
-		*pv++=(pz[3]+fz);
-		
-		*pt++=gx;
 		*pt++=gy+g_size;
 
 			// change particle image
@@ -234,7 +234,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 
 void particle_draw(effect_type *effect,int count)
 {
-	int						i,idx,particle_count,nvertex,
+	int						n,idx,particle_count,nvertex,
 							ntrail,mx,mz,my,pixel_dif;
 	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],trail_step,
 							alpha,alpha_dif,color_dif,f_count,f_tick;
@@ -367,7 +367,7 @@ void particle_draw(effect_type *effect,int count)
 		
 	idx=0;
 			
-	for (i=0;i!=ntrail;i++) {
+	for (n=0;n!=ntrail;n++) {
 
 			// get gravity
 
@@ -416,7 +416,9 @@ void particle_draw(effect_type *effect,int count)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((nvertex*3)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,idx);
+	for (n=0;n<idx;n+=4) {
+		glDrawArrays(GL_TRIANGLE_STRIP,n,4);
+	}
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

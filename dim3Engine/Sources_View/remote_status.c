@@ -79,26 +79,29 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	vp=vertex_ptr;
 	uv=uv_ptr;
 
-    *uv++=0.0f;
-	*uv++=0.0f;
     *vp++=(float)(x-x_sz);
 	*vp++=(float)(y-y_sz);
 	*vp++=-(float)(z-z_sz);
-    *uv++=1.0f;
+    *uv++=0.0f;
 	*uv++=0.0f;
+
+    *vp++=(float)(x-x_sz);
+	*vp++=(float)y;
+	*vp++=-(float)(z-z_sz);
+    *uv++=0.0f;
+	*uv++=1.0f;
+
     *vp++=(float)(x+x_sz);
 	*vp++=(float)(y-y_sz);
  	*vp++=-(float)(z+z_sz);
-	*uv++=1.0f;
-	*uv++=1.0f;
+    *uv++=1.0f;
+	*uv++=0.0f;
+
     *vp++=(float)(x+x_sz);
 	*vp++=(float)y;
 	*vp++=-(float)(z+z_sz);
-    *uv++=0.0f;
 	*uv++=1.0f;
-    *vp++=(float)(x-x_sz);
-	*vp++=(float)y;
-	*vp++=-(float)(z-z_sz);
+	*uv++=1.0f;
 	
 	view_unmap_current_vertex_object();
 
@@ -124,7 +127,7 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 
 	gl_texture_simple_set(gl_id,TRUE,1,1,1,1);
 
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 	gl_texture_simple_end();
 

@@ -418,13 +418,13 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 	*vertex_ptr++=0.0f;
 	*vertex_ptr++=0.0f;
 
-	*vertex_ptr++=(float)setup.screen.x_sz;
 	*vertex_ptr++=0.0f;
-
-	*vertex_ptr++=(float)setup.screen.x_sz;
 	*vertex_ptr++=(float)setup.screen.y_sz;
 
+	*vertex_ptr++=(float)setup.screen.x_sz;
 	*vertex_ptr++=0.0f;
+
+	*vertex_ptr++=(float)setup.screen.x_sz;
 	*vertex_ptr++=(float)setup.screen.y_sz;
 
   	view_unmap_current_vertex_object();
@@ -434,7 +434,7 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -468,6 +468,14 @@ void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1
 	*col_ptr++=col0->b;
 	*col_ptr++=alpha;
 
+	*vertex_ptr++=(float)x3;
+	*vertex_ptr++=(float)y3;
+
+	*col_ptr++=col3->r;
+	*col_ptr++=col3->g;
+	*col_ptr++=col3->b;
+	*col_ptr++=alpha;
+
 	*vertex_ptr++=(float)x1;
 	*vertex_ptr++=(float)y1;
 
@@ -482,14 +490,6 @@ void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1
 	*col_ptr++=col2->r;
 	*col_ptr++=col2->g;
 	*col_ptr++=col2->b;
-	*col_ptr++=alpha;
-
-	*vertex_ptr++=(float)x3;
-	*vertex_ptr++=(float)y3;
-
-	*col_ptr++=col3->r;
-	*col_ptr++=col3->g;
-	*col_ptr++=col3->b;
 	*col_ptr++=alpha;
 
   	view_unmap_current_vertex_object();
@@ -512,7 +512,7 @@ void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(4,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
  	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -599,7 +599,7 @@ void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,i
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_POLYGON,0,3);
+	glDrawArrays(GL_TRIANGLES,0,3);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	
@@ -1020,6 +1020,12 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 	*uv_ptr++=gx;
 	*uv_ptr++=gy;
 
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=gx;
+	*uv_ptr++=gy2;
+
 	*vertex_ptr++=(float)rgt;
 	*vertex_ptr++=(float)top;
 
@@ -1030,12 +1036,6 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 	*vertex_ptr++=(float)bot;
 
 	*uv_ptr++=gx2;
-	*uv_ptr++=gy2;
-
-	*vertex_ptr++=(float)lft;
-	*vertex_ptr++=(float)bot;
-
-	*uv_ptr++=gx;
 	*uv_ptr++=gy2;
 
   	view_unmap_current_vertex_object();
@@ -1070,7 +1070,7 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
  	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -1104,6 +1104,12 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 	*uv_ptr++=0.0f;
 	*uv_ptr++=0.0f;
 
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=(float)pixel_high;
+
 	*vertex_ptr++=(float)rgt;
 	*vertex_ptr++=(float)top;
 
@@ -1114,12 +1120,6 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 	*vertex_ptr++=(float)bot;
 
 	*uv_ptr++=(float)pixel_wid;
-	*uv_ptr++=(float)pixel_high;
-
-	*vertex_ptr++=(float)lft;
-	*vertex_ptr++=(float)bot;
-
-	*uv_ptr++=0.0f;
 	*uv_ptr++=(float)pixel_high;
 
   	view_unmap_current_vertex_object();
@@ -1151,7 +1151,7 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
  	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

@@ -298,23 +298,26 @@ void halo_draw_render(void)
 		vp=vertex_ptr;
 		uv=uv_ptr;
 
-		*uv++=0.0f;
-		*uv++=0.0f;
 		*vp++=(float)(x-psz);
 		*vp++=(float)(y-psz);
-		*uv++=1.0f;
 		*uv++=0.0f;
+		*uv++=0.0f;
+
+		*vp++=(float)(x-psz);
+		*vp++=(float)(y+psz);
+		*uv++=0.0f;
+		*uv++=1.0f;
+
 		*vp++=(float)(x+psz);
 		*vp++=(float)(y-psz);
 		*uv++=1.0f;
-		*uv++=1.0f;
+		*uv++=0.0f;
+
 		*vp++=(float)(x+psz);
 		*vp++=(float)(y+psz);
-		*uv++=0.0f;
 		*uv++=1.0f;
-		*vp++=(float)(x-psz);
-		*vp++=(float)(y+psz);
-		
+		*uv++=1.0f;
+
 		view_unmap_current_vertex_object();
 
 			// draw halo
@@ -323,7 +326,7 @@ void halo_draw_render(void)
 		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
 		gl_texture_simple_set(view_images_get_gl_id(server.halo_list.halos[halo_draw->idx]->image_idx),TRUE,1,1,1,halo_draw->alpha);
-		glDrawArrays(GL_QUADS,0,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 		view_unbind_current_vertex_object();
 	}

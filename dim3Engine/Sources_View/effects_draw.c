@@ -50,32 +50,61 @@ extern bool view_mesh_in_draw_list(int mesh_idx);
       
 ======================================================= */
 
-void effect_draw_lightning_lines(int nline,float varient,int k,int sx,int sz,int sy,int ex,int ez,int ey,int xadd,int zadd,int yadd)
+void effect_draw_lightning_lines(int nline,float varient,int k,int sx,int sy,int sz,int ex,int ey,int ez,int xadd,int yadd,int zadd)
 {
-    int			i,x,z,y;
+    int			n;
+	float		fx,fy,fz,f_xadd,f_yadd,f_zadd;
+	float		*vp;
+
+		// setup vertex ptr
+
+	vp=view_bind_map_next_vertex_object(((nline+1)*2)*3);
+	if (vp==NULL) return;
+
+	fx=(float)sx;
+	fy=(float)sy;
+	fz=(float)sz;
+
+	f_xadd=(float)xadd;
+	f_yadd=(float)yadd;
+	f_zadd=(float)zadd;
+
+	for (n=0;n!=nline;n++) {
 		
-	glBegin(GL_LINES);
+		*vp++=fx;
+		*vp++=fy;
+		*vp++=fz;
 	
-	for (i=1;i<(nline-1);i++) {
-	
-		x=(sx+xadd)+(int)(line_zag[k]*varient);
-		y=(sy+yadd)+(int)(line_zag[(k+4)&0xF]*varient);
-		z=(sz+zadd)+(int)(line_zag[(k+8)&0xF]*varient);
-		
-		glVertex3i(sx,sy,sz);
-		glVertex3i(x,y,z);
-		
-		sx=x;
-		sz=z;
-		sy=y;
-        
+		if (n==(nline-1)) {
+			*vp++=(float)ex;
+			*vp++=(float)ey;
+			*vp++=(float)ez;
+		}
+		else {
+			fx=(fx+f_xadd)+(int)(line_zag[k]*varient);
+			fy=(fy+f_yadd)+(int)(line_zag[(k+4)&0xF]*varient);
+			fz=(fz+f_zadd)+(int)(line_zag[(k+8)&0xF]*varient);
+
+			*vp++=fx;
+			*vp++=fy;
+			*vp++=fz;
+		}
+
 		k=(k+1)&0xF;
 	}
 	
-	glVertex3i(sx,sy,sz);
-	glVertex3i(ex,ey,ez);
+	view_unmap_current_vertex_object();
 	
-	glEnd();
+         // draw the lines
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,0);
+
+	glDrawArrays(GL_LINES,0,(nline*2));
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	view_unbind_current_vertex_object();
 }
 
 void effect_draw_lightning(effect_type *effect)
@@ -142,14 +171,14 @@ void effect_draw_lightning(effect_type *effect)
 	if (wid>2) {
 		glLineWidth((float)wid);
 		glColor4f(col->r,col->g,col->b,alpha);
-		effect_draw_lightning_lines(nline,varient,k,sx,sz,sy,ex,ez,ey,xadd,zadd,yadd);
+		effect_draw_lightning_lines(nline,varient,k,sx,sy,sz,ex,ey,ez,xadd,yadd,zadd);
 		alpha-=0.1f;
 	}
 	
 	if (wid>1) {
 		glLineWidth((float)((wid-1)/2));
 		glColor4f(((col->r+1.0f)/2.0f),((col->g+1.0f)/2.0f),((col->b+1.0f)/2.0f),alpha);
-		effect_draw_lightning_lines(nline,varient,k,sx,sz,sy,ex,ez,ey,xadd,zadd,yadd);
+		effect_draw_lightning_lines(nline,varient,k,sx,sy,sz,ex,ey,ez,xadd,yadd,zadd);
 		alpha-=0.1f;
 	}
 	
@@ -160,7 +189,7 @@ void effect_draw_lightning(effect_type *effect)
 	else {
 		glColor4f(1.0f,1.0f,1.0f,alpha);
 	}
-	effect_draw_lightning_lines(nline,varient,k,sx,sz,sy,ex,ez,ey,xadd,zadd,yadd);
+	effect_draw_lightning_lines(nline,varient,k,sx,sy,sz,ex,ey,ez,xadd,yadd,zadd);
     
 	glEnable(GL_LINE_SMOOTH);
 }
@@ -175,6 +204,7 @@ void effect_draw_ray(effect_type *effect,int count)
 {
 	int						wid,sx,sz,sy,ex,ez,ey,life_tick;
 	float					alpha;
+	float					*vp;
 	d3col					*col;
 	ray_effect_data			*ray;
 	
@@ -209,7 +239,27 @@ void effect_draw_ray(effect_type *effect,int count)
 		// line colors
 		
 	col=&ray->col;
-    
+
+		// setup vertexes
+
+	vp=view_bind_map_next_vertex_object(3*2);
+	if (vp==NULL) return;
+
+	*vp++=(float)sx;
+	*vp++=(float)sy;
+	*vp++=(float)sz;
+
+	*vp++=(float)ex;
+	*vp++=(float)ey;
+	*vp++=(float)ez;
+
+	view_unmap_current_vertex_object();
+	
+         // setup drawing
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,0);
+
         // draw lines
 		
 	wid=ray->wid;
@@ -229,20 +279,14 @@ void effect_draw_ray(effect_type *effect,int count)
 	if (wid>2) {
 		glLineWidth((float)wid);
 		glColor4f(col->r,col->g,col->b,0.6f);
-		glBegin(GL_LINES);
-		glVertex3i(sx,sy,sz);
-		glVertex3i(ex,ey,ez);
-		glEnd();
+		glDrawArrays(GL_LINES,0,2);
 		alpha-=0.1f;
 	}
 	
 	if (wid>1) {
 		glLineWidth((float)((wid-1)/2));
 		glColor4f(((col->r+1.0f)/2.0f),((col->g+1.0f)/2.0f),((col->b+1.0f)/2.0f),0.5f);
-		glBegin(GL_LINES);
-		glVertex3i(sx,sy,sz);
-		glVertex3i(ex,ey,ez);
-		glEnd();
+		glDrawArrays(GL_LINES,0,2);
 		alpha-=0.1f;
 	}
 	
@@ -253,12 +297,15 @@ void effect_draw_ray(effect_type *effect,int count)
 	else {
 		glColor4f(1.0f,1.0f,1.0f,alpha);
 	}
-	glBegin(GL_LINES);
-	glVertex3i(sx,sy,sz);
-	glVertex3i(ex,ey,ez);
-	glEnd();
+	glDrawArrays(GL_LINES,0,2);
 	
 	glEnable(GL_LINE_SMOOTH);
+
+		// unbind the vbo
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	view_unbind_current_vertex_object();
 }
 
 /* =======================================================

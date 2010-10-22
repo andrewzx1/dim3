@@ -117,3 +117,231 @@ void es_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
     glTranslatef(-eyex,-eyey,-eyez);
 }
 
+/* =======================================================
+
+      OpenGL ES Missing Functions
+	  gluProject
+      
+======================================================= */
+
+void es_patch_matrix_mult_vector(float mat[16],float v_in[4],float v_out[4])
+{
+	v_out[0]=(v_in[0]*mat[0])+(v_in[1]*mat[4])+(v_in[2]*mat[8])+(v_in[3]*mat[12]);
+	v_out[1]=(v_in[0]*mat[1])+(v_in[1]*mat[5])+(v_in[2]*mat[9])+(v_in[3]*mat[13]);
+	v_out[2]=(v_in[0]*mat[2])+(v_in[1]*mat[6])+(v_in[2]*mat[10])+(v_in[3]*mat[14]);
+	v_out[3]=(v_in[0]*mat[3])+(v_in[1]*mat[7])+(v_in[2]*mat[11])+(v_in[3]*mat[15]);
+}
+
+void es_patch_matrix_mult_matrix(float mat_1[16],float mat_2[16],float mat_out[16])
+{
+	int			n;
+
+	for (n=0;n!=4;n++) {
+		mat_out[(n*4)]=
+			(mat_1[(n*4)]*mat_2[0])+
+			(mat_1[(n*4)+1]*mat_2[4])+
+			(mat_1[(n*4)+2]*mat_2[8])+
+			(mat_1[(n*4)+3]*mat_2[12]);
+		mat_out[(n*4)+1]=
+			(mat_1[(n*4)]*mat_2[1])+
+			(mat_1[(n*4)+1]*mat_2[5])+
+			(mat_1[(n*4)+2]*mat_2[9])+
+			(mat_1[(n*4)+3]*mat_2[13]);
+		mat_out[(n*4)+2]=
+			(mat_1[(n*4)]*mat_2[2])+
+			(mat_1[(n*4)+1]*mat_2[6])+
+			(mat_1[(n*4)+2]*mat_2[10])+
+			(mat_1[(n*4)+3]*mat_2[14]);
+		mat_out[(n*4)+3]=
+			(mat_1[(n*4)]*mat_2[3])+
+			(mat_1[(n*4)+1]*mat_2[7])+
+			(mat_1[(n*4)+2]*mat_2[11])+
+			(mat_1[(n*4)+3]*mat_2[15]);
+	}
+}
+
+bool es_patch_matrix_invert(float mat_in[16],float mat_out[16])
+{
+	int					n;
+	float				mat_inv[16],det;
+
+    mat_inv[0]=
+		(mat_in[5]*mat_in[10]*mat_in[15])-
+		(mat_in[5]*mat_in[11]*mat_in[14])-
+		(mat_in[9]*mat_in[6]*mat_in[15])+
+		(mat_in[9]*mat_in[7]*mat_in[14])+
+		(mat_in[13]*mat_in[6]*mat_in[11])-
+		(mat_in[13]*mat_in[7]*mat_in[10]);
+    mat_inv[4]=
+		(-mat_in[4]*mat_in[10]*mat_in[15])+
+		(mat_in[4]*mat_in[11]*mat_in[14])+
+		(mat_in[8]*mat_in[6]*mat_in[15])-
+		(mat_in[8]*mat_in[7]*mat_in[14])-
+		(mat_in[12]*mat_in[6]*mat_in[11])+
+		(mat_in[12]*mat_in[7]*mat_in[10]);
+    mat_inv[8]=
+		(mat_in[4]*mat_in[9]*mat_in[15])-
+		(mat_in[4]*mat_in[11]*mat_in[13])-
+		(mat_in[8]*mat_in[5]*mat_in[15])+
+		(mat_in[8]*mat_in[7]*mat_in[13])+
+		(mat_in[12]*mat_in[5]*mat_in[11])-
+		(mat_in[12]*mat_in[7]*mat_in[9]);
+    mat_inv[12]=
+		(-mat_in[4]*mat_in[9]*mat_in[14])+
+		(mat_in[4]*mat_in[10]*mat_in[13])+
+		(mat_in[8]*mat_in[5]*mat_in[14])-
+		(mat_in[8]*mat_in[6]*mat_in[13])-
+		(mat_in[12]*mat_in[5]*mat_in[10])+
+		(mat_in[12]*mat_in[6]*mat_in[9]);
+    mat_inv[1]=
+		(-mat_in[1]*mat_in[10]*mat_in[15])+
+		(mat_in[1]*mat_in[11]*mat_in[14])+
+		(mat_in[9]*mat_in[2]*mat_in[15])-
+		(mat_in[9]*mat_in[3]*mat_in[14])-
+		(mat_in[13]*mat_in[2]*mat_in[11])+
+		(mat_in[13]*mat_in[3]*mat_in[10]);
+    mat_inv[5]=
+		(mat_in[0]*mat_in[10]*mat_in[15])-
+		(mat_in[0]*mat_in[11]*mat_in[14])-
+		(mat_in[8]*mat_in[2]*mat_in[15])+
+		(mat_in[8]*mat_in[3]*mat_in[14])+
+		(mat_in[12]*mat_in[2]*mat_in[11])-
+		(mat_in[12]*mat_in[3]*mat_in[10]);
+    mat_inv[9]=
+		(-mat_in[0]*mat_in[9]*mat_in[15])+
+		(mat_in[0]*mat_in[11]*mat_in[13])+
+		(mat_in[8]*mat_in[1]*mat_in[15])-
+		(mat_in[8]*mat_in[3]*mat_in[13])-
+		(mat_in[12]*mat_in[1]*mat_in[11])+
+		(mat_in[12]*mat_in[3]*mat_in[9]);
+    mat_inv[13]=
+		(mat_in[0]*mat_in[9]*mat_in[14])-
+		(mat_in[0]*mat_in[10]*mat_in[13])-
+		(mat_in[8]*mat_in[1]*mat_in[14])+
+		(mat_in[8]*mat_in[2]*mat_in[13])+
+		(mat_in[12]*mat_in[1]*mat_in[10])-
+		(mat_in[12]*mat_in[2]*mat_in[9]);
+    mat_inv[2]=
+		(mat_in[1]*mat_in[6]*mat_in[15])-
+		(mat_in[1]*mat_in[7]*mat_in[14])-
+		(mat_in[5]*mat_in[2]*mat_in[15])+
+		(mat_in[5]*mat_in[3]*mat_in[14])+
+		(mat_in[13]*mat_in[2]*mat_in[7])-
+		(mat_in[13]*mat_in[3]*mat_in[6]);
+    mat_inv[6]=
+		(-mat_in[0]*mat_in[6]*mat_in[15])+
+		(mat_in[0]*mat_in[7]*mat_in[14])+
+		(mat_in[4]*mat_in[2]*mat_in[15])-
+		(mat_in[4]*mat_in[3]*mat_in[14])-
+		(mat_in[12]*mat_in[2]*mat_in[7])+
+		(mat_in[12]*mat_in[3]*mat_in[6]);
+    mat_inv[10]=
+		(mat_in[0]*mat_in[5]*mat_in[15])-
+		(mat_in[0]*mat_in[7]*mat_in[13])-
+		(mat_in[4]*mat_in[1]*mat_in[15])+
+		(mat_in[4]*mat_in[3]*mat_in[13])+
+		(mat_in[12]*mat_in[1]*mat_in[7])-
+		(mat_in[12]*mat_in[3]*mat_in[5]);
+    mat_inv[14]=
+		(-mat_in[0]*mat_in[5]*mat_in[14])+
+		(mat_in[0]*mat_in[6]*mat_in[13])+
+		(mat_in[4]*mat_in[1]*mat_in[14])-
+		(mat_in[4]*mat_in[2]*mat_in[13])-
+		(mat_in[12]*mat_in[1]*mat_in[6])+
+		(mat_in[12]*mat_in[2]*mat_in[5]);
+    mat_inv[3]=
+		(-mat_in[1]*mat_in[6]*mat_in[11])+
+		(mat_in[1]*mat_in[7]*mat_in[10])+
+		(mat_in[5]*mat_in[2]*mat_in[11])-
+		(mat_in[5]*mat_in[3]*mat_in[10])-
+		(mat_in[9]*mat_in[2]*mat_in[7])+
+		(mat_in[9]*mat_in[3]*mat_in[6]);
+    mat_inv[7]=
+		(mat_in[0]*mat_in[6]*mat_in[11])-
+		(mat_in[0]*mat_in[7]*mat_in[10])-
+		(mat_in[4]*mat_in[2]*mat_in[11])+
+		(mat_in[4]*mat_in[3]*mat_in[10])+
+		(mat_in[8]*mat_in[2]*mat_in[7])-
+		(mat_in[8]*mat_in[3]*mat_in[6]);
+    mat_inv[11]=
+		(-mat_in[0]*mat_in[5]*mat_in[11])+
+		(mat_in[0]*mat_in[7]*mat_in[9])+
+		(mat_in[4]*mat_in[1]*mat_in[11])-
+		(mat_in[4]*mat_in[3]*mat_in[9])-
+		(mat_in[8]*mat_in[1]*mat_in[7])+
+		(mat_in[8]*mat_in[3]*mat_in[5]);
+    mat_inv[15]=
+		(mat_in[0]*mat_in[5]*mat_in[10])-
+		(mat_in[0]*mat_in[6]*mat_in[9])-
+		(mat_in[4]*mat_in[1]*mat_in[10])+
+		(mat_in[4]*mat_in[2]*mat_in[9])+
+		(mat_in[8]*mat_in[1]*mat_in[6])-
+		(mat_in[8]*mat_in[2]*mat_in[5]);
+
+    det=(mat_in[0]*mat_inv[0])+(mat_in[1]*mat_inv[4])+(mat_in[2]*mat_inv[8])+(mat_in[3]*mat_inv[12]);
+    if (det==0.0) return(FALSE);
+
+    det=1.0f/det;
+
+	for (n=0;n!=16;n++) {
+        mat_out[n]=mat_inv[n]*det;
+	}
+
+    return(TRUE);
+}
+
+bool es_patch_gluProject(float objx,float objy,float objz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *winx,float *winy,float *winz)
+{
+    float		in[4],out[4];
+
+    in[0]=objx;
+    in[1]=objy;
+    in[2]=objz;
+    in[3]=1.0;
+
+    es_patch_matrix_mult_vector(modelMatrix,in,out);
+    es_patch_matrix_mult_vector(projMatrix,out,in);
+    if (in[3]==0.0f) return(FALSE);
+
+	in[0]=((in[0]/in[3])*0.5f)+0.5f;
+    in[1]=((in[1]/in[3])*0.5f)+0.5f;
+    in[2]=((in[2]/in[3])*0.5f)+0.5f;
+
+    in[0]=(in[0]*viewport[2])+viewport[0];
+    in[1]=(in[1]*viewport[3])+viewport[1];
+
+    *winx=in[0];
+    *winy=in[1];
+    *winz=in[2];
+
+    return(TRUE);
+}
+
+bool es_patch_gluUnProject(float winx,float winy,float winz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *objx, float *objy, float *objz)
+{
+    float		mat[16],in[4],out[4];
+
+    es_patch_matrix_mult_matrix(modelMatrix,projMatrix,mat);
+    if (!es_patch_matrix_invert(mat,mat)) return(FALSE);
+
+    in[0]=winx;
+    in[1]=winy;
+    in[2]=winz;
+    in[3]=1.0;
+
+    in[0]=(in[0]-viewport[0])/viewport[2];
+    in[1]=(in[1]-viewport[1])/viewport[3];
+
+    in[0]=(in[0]*2)-1;
+    in[1]=(in[1]*2)-1;
+    in[2]=(in[2]*2)-1;
+
+    es_patch_matrix_mult_vector(mat,in,out);
+    if (out[3]==0.0) return(FALSE);
+
+    *objx=out[0]/out[3];
+    *objy=out[1]/out[3];
+    *objz=out[2]/out[3];
+
+    return(TRUE);
+}

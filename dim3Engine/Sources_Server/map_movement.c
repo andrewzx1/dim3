@@ -232,6 +232,30 @@ bool map_movements_script_is_looping(int movement_idx)
 
 /* =======================================================
 
+      Cinema Movements
+      
+======================================================= */
+
+void map_movements_cinema_start(int movement_idx,bool reverse)
+{
+	movement_type	*movement;
+	
+	movement=&map.movements[movement_idx];
+
+	if (movement->started) return;
+	
+	if (!reverse) {
+		movement->reverse=FALSE;
+		map_movements_start(movement_idx,0,-1);
+	}
+	else {
+		movement->reverse=TRUE;
+		map_movements_start(movement_idx,(movement->nmove-1),-1);
+	}
+}
+
+/* =======================================================
+
       Run Movements
       
 ======================================================= */
