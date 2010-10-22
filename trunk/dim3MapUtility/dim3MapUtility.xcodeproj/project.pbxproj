@@ -18,6 +18,7 @@
 		26A276F40FC64E9B006B2157 /* auto_generate_second_story.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A276F30FC64E9B006B2157 /* auto_generate_second_story.c */; };
 		26BF8BBB0DBA5B900071D014 /* file_map_read_v1_curves.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */; };
 		26E372E60DA5AB75009653F2 /* file_map_read_v2.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E372E50DA5AB75009653F2 /* file_map_read_v2.c */; };
+		26E8DBA01270E84400ACA294 /* map_cinema.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DB9F1270E84400ACA294 /* map_cinema.c */; };
 		26FC4AAD0DA2F87A00E6ECED /* file_map_read_v1.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */; };
 		F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9280885FF0E00F261B1 /* os_defs.h */; };
 		F511664F093CDA2C00E766C3 /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F511664E093CDA2C00E766C3 /* groups.c */; };
@@ -70,6 +71,7 @@
 		26A276F30FC64E9B006B2157 /* auto_generate_second_story.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_second_story.c; path = Sources/auto_generate_second_story.c; sourceTree = "<group>"; };
 		26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v1_curves.c; path = Sources/file_map_read_v1_curves.c; sourceTree = "<group>"; };
 		26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v2.c; path = Sources/file_map_read_v2.c; sourceTree = "<group>"; };
+		26E8DB9F1270E84400ACA294 /* map_cinema.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_cinema.c; path = Sources/map_cinema.c; sourceTree = "<group>"; };
 		26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v1.c; path = Sources/file_map_read_v1.c; sourceTree = "<group>"; };
 		F50AF9280885FF0E00F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F511664E093CDA2C00E766C3 /* groups.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = groups.c; path = Sources/groups.c; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				F5C40DAB05439C17002FA7E9 /* map_frames.c */,
+				26E8DB9F1270E84400ACA294 /* map_cinema.c */,
 				F5DD18BA0907FD6E00721649 /* spots.c */,
 				F5DA8623059148C40043E685 /* nodes.c */,
 				F511664E093CDA2C00E766C3 /* groups.c */,
@@ -329,6 +332,7 @@
 				2674501C0E513E1900812D9D /* file_map_read_v3.c in Sources */,
 				26A276F40FC64E9B006B2157 /* auto_generate_second_story.c in Sources */,
 				269B2A6A11178C7000E3FDA8 /* map_normals.c in Sources */,
+				26E8DBA01270E84400ACA294 /* map_cinema.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

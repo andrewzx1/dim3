@@ -36,7 +36,7 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
-texture_font_type				txt_font;
+texture_font_type					txt_font;
 
 /* =======================================================
 
@@ -60,7 +60,7 @@ void text_shutdown(void)
       
 ======================================================= */
 
-void text_draw(int x,int y,float txt_size,char *str)
+void text_draw(int x,int y,float txt_size,bool center,char *str)
 {
 	int			n,len,ch,xoff,yoff;
 	float		f_lx,f_rx,f_wid,f_ty,f_by,
@@ -72,7 +72,31 @@ void text_draw(int x,int y,float txt_size,char *str)
 	len=strlen(str);
 	if (len==0) return;
 	
+		// centering
+		
+	if (center) {
+	
+		c=str;
+		f_wid=0.0f;
+	
+		for (n=0;n!=len;n++) {
+		
+			ch=(int)*c++;
+			if ((ch<'!') || (ch>'z')) {
+				f_wid+=(txt_size*0.34f);
+			}
+			else {
+				ch-='!';
+				f_wid+=txt_size*txt_font.char_size[ch];
+			}
+		}
+		
+		x-=(int)(f_wid*0.5f);
+	}
+	
         // setup drawing
+		
+	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -81,7 +105,7 @@ void text_draw(int x,int y,float txt_size,char *str)
 	glAlphaFunc(GL_NOTEQUAL,0);
       
 	glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,txt_font.bitmap.gl_id);
+	glBindTexture(GL_TEXTURE_2D,txt_font.bitmap.gl_id);
 
 		// no wrapping
 
@@ -110,12 +134,8 @@ void text_draw(int x,int y,float txt_size,char *str)
 
 		ch-='!';
 
-			// size
-
-		f_wid=txt_size*txt_font.char_size[ch];
-
 			// the UVs
-
+			
 		yoff=ch/font_bitmap_char_per_line;
 		xoff=ch-(yoff*font_bitmap_char_per_line);
 
@@ -126,7 +146,7 @@ void text_draw(int x,int y,float txt_size,char *str)
 
 			// the vertexes
 
-		f_rx=f_lx+f_wid;
+		f_rx=f_lx+txt_size;
 
 		glTexCoord2f(gx_lft,gy_top);
 		glVertex2f(f_lx,f_ty);
@@ -137,7 +157,7 @@ void text_draw(int x,int y,float txt_size,char *str)
 		glTexCoord2f(gx_lft,gy_bot);
 		glVertex2f(f_lx,f_by);
 
-		f_lx+=f_wid;
+		f_lx+=(txt_size*txt_font.char_size[ch]);
 	}
 
 	glEnd();

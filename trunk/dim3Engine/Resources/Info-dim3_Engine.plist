@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>dim3 Engine</string>
 	<key>CFBundleGetInfoString</key>
-	<string>dim3 Engine version 2.2, ©2001-2007 Klink! Software</string>
+	<string>dim3 Engine version 3.0, ©2001-2011 Klink! Software</string>
 	<key>CFBundleIconFile</key>
 	<string>dim3 Engine.icns</string>
 	<key>CFBundleIdentifier</key>

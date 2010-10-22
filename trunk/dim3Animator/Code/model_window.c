@@ -345,6 +345,30 @@ void main_wind_draw(void)
 	aglSwapBuffers(ctx);
 }
 
+void main_wind_draw_no_swap(void)
+{
+		// clear gl buffer
+		
+	glDisable(GL_SCISSOR_TEST);
+	
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+		// model
+		
+	if (!state.playing) {
+		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+	}
+	else {
+		main_wind_draw_play();
+	}
+
+		// palettes
+		
+	tool_palette_draw();
+	texture_palette_draw(model.textures);
+}
+
 /* =======================================================
 
       Info Window Events

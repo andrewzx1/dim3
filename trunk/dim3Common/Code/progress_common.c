@@ -93,8 +93,8 @@ void progress_draw(void)
 
 		// progress box
 
-	lx=wbox.lx+20;
-	rx=wbox.rx-20;
+	lx=wbox.lx+50;
+	rx=wbox.rx-50;
 	ty=((wbox.ty+wbox.by)>>1)-30;
 	by=ty+60;
 
@@ -152,9 +152,16 @@ void progress_draw(void)
 	glVertex2i(lx,by);
 	glEnd();
 
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lx,ty);
+	glVertex2i(mx,ty);
+	glVertex2i(mx,by);
+	glVertex2i(lx,by);
+	glEnd();
+
 		// title
 
-	text_draw(lx,(ty-5),20.0f,progress_title);
+	text_draw(((lx+rx)>>1),(ty-5),20.0f,TRUE,progress_title);
 
 	os_swap_gl_buffer();
 }
@@ -186,4 +193,10 @@ void progress_next(void)
 	if (progress_pos>progress_count) progress_pos=progress_count;
 
 	progress_draw();
+}
+
+void progress_next_title(char *title)
+{
+	strcpy(progress_title,title);
+	progress_next();
 }

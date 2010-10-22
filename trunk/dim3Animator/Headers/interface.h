@@ -30,6 +30,7 @@ and can be sold or given away.
 //
 
 extern void main_wind_draw(void);
+extern void main_wind_draw_no_swap(void);
 
 extern void model_wind_open(void);
 extern void model_wind_close(void);
@@ -58,6 +59,22 @@ extern void open_model_xml(void);
 extern void undo_clear(void);
 extern void undo_set_bone_move(int pose_idx,int bone_idx);
 extern void undo_run(void);
+
+//
+// text
+//
+
+extern void text_initialize(void);
+extern void text_shutdown(void);
+extern void text_draw(int x,int y,float txt_size,char *str);
+
+//
+// progress
+//
+
+extern void progress_start(char *title,int count);
+extern void progress_end(void);
+extern void progress_next(void);
 
 //
 // tool palette
