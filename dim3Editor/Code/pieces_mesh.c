@@ -427,7 +427,7 @@ void piece_add_obj_mesh(void)
 	
 		// get the vertexes
 		
-	progress_next();
+	progress_next_title("Obj Import: Loading Vertexes");
 
 	vertexes=(d3pnt*)malloc(sizeof(d3pnt)*nvertex);
 	if (vertexes==NULL) {
@@ -488,7 +488,7 @@ void piece_add_obj_mesh(void)
 	
 		// get the UVs
 		
-	progress_next();
+	progress_next_title("Obj Import: Loading UVs");
 		
 	if (nuv!=0) {
 		uvs=(float*)malloc(sizeof(float)*(2*nuv));
@@ -514,7 +514,7 @@ void piece_add_obj_mesh(void)
 
 		// get the normals
 		
-	progress_next();
+	progress_next_title("Obj Import: Loading Normals");
 		
 	if (nnormal!=0) {
 		normals=(float*)malloc(sizeof(float)*(3*nnormal));
@@ -552,7 +552,7 @@ void piece_add_obj_mesh(void)
 	
 		// get the polys
 		
-	progress_next();
+	progress_next_title("Obj Import: Building Polygons");
 
     for (n=0;n!=nline;n++) {
 	

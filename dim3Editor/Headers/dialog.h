@@ -90,7 +90,6 @@ extern void dialog_preference_run(void);
 
 extern bool dialog_file_new_run(char *title,char *file_name);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
-extern bool dialog_save_run(void);
 
 //
 // map dialogs

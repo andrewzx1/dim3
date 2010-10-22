@@ -87,7 +87,7 @@ extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
 
 extern void text_initialize(void);
 extern void text_shutdown(void);
-extern void text_draw(int x,int y,float txt_size,char *str);
+extern void text_draw(int x,int y,float txt_size,bool center,char *str);
 
 //
 // progress
@@ -96,6 +96,7 @@ extern void text_draw(int x,int y,float txt_size,char *str);
 extern void progress_start(char *title,int count);
 extern void progress_end(void);
 extern void progress_next(void);
+extern void progress_next_title(char *title);
 
 //
 // dos

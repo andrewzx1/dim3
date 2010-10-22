@@ -32,7 +32,6 @@
 		26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4480D95E0E60004805A /* pieces_mesh.c */; };
 		26AFB4D20D9615C00004805A /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = 26AFB4D10D9615C00004805A /* maputility.h */; };
 		26B8C2D70F62F2A200C6DEBD /* palettes.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B8C2D60F62F2A200C6DEBD /* palettes.c */; };
-		26BE521B0E5FD01A009B6925 /* dialog_save.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE521A0E5FD01A009B6925 /* dialog_save.c */; };
 		26C5F02712612832000B0F9E /* Tool Grid.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F00F12612826000B0F9E /* Tool Grid.png */; };
 		26C5F02812612832000B0F9E /* Tool Height Map.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01012612826000B0F9E /* Tool Height Map.png */; };
 		26C5F02912612832000B0F9E /* Tool Light.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01112612826000B0F9E /* Tool Light.png */; };
@@ -52,6 +51,8 @@
 		26D77AF6123069AA00EA7902 /* dialog_skew.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D77AF5123069AA00EA7902 /* dialog_skew.c */; };
 		26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6D960DDFCE4100BDD008 /* dialog_resize.c */; };
 		26E155EF12601C9D003158E5 /* OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E155EE12601C9D003158E5 /* OSX_glue.c */; };
+		26E8DBFE1270EA6C00ACA294 /* progress_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DBFC1270EA6C00ACA294 /* progress_common.c */; };
+		26E8DBFF1270EA6C00ACA294 /* text_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DBFD1270EA6C00ACA294 /* text_common.c */; };
 		26EE38810EA595D5002A8365 /* dialog_map_groups.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE38800EA595D5002A8365 /* dialog_map_groups.c */; };
 		26EE4757126961AF001D0025 /* Auto Generate.xml in Resources */ = {isa = PBXBuildFile; fileRef = 26EE4756126961AF001D0025 /* Auto Generate.xml */; };
 		26EE4763126961EF001D0025 /* Auto Generate.xml in Copy (Data) */ = {isa = PBXBuildFile; fileRef = 26EE4756126961AF001D0025 /* Auto Generate.xml */; };
@@ -341,7 +342,6 @@
 		26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pieces_mesh.c; path = Code/pieces_mesh.c; sourceTree = "<group>"; };
 		26AFB4D10D9615C00004805A /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
 		26B8C2D60F62F2A200C6DEBD /* palettes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palettes.c; path = Code/palettes.c; sourceTree = "<group>"; };
-		26BE521A0E5FD01A009B6925 /* dialog_save.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_save.c; path = Code/dialog_save.c; sourceTree = "<group>"; };
 		26C5F00F12612826000B0F9E /* Tool Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Grid.png"; sourceTree = "<group>"; };
 		26C5F01012612826000B0F9E /* Tool Height Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Height Map.png"; sourceTree = "<group>"; };
 		26C5F01112612826000B0F9E /* Tool Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Light.png"; sourceTree = "<group>"; };
@@ -361,6 +361,8 @@
 		26D77AF5123069AA00EA7902 /* dialog_skew.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_skew.c; path = Code/dialog_skew.c; sourceTree = "<group>"; };
 		26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_resize.c; path = Code/dialog_resize.c; sourceTree = "<group>"; };
 		26E155EE12601C9D003158E5 /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
+		26E8DBFC1270EA6C00ACA294 /* progress_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = progress_common.c; path = ../dim3Common/Code/progress_common.c; sourceTree = SOURCE_ROOT; };
+		26E8DBFD1270EA6C00ACA294 /* text_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = text_common.c; path = ../dim3Common/Code/text_common.c; sourceTree = SOURCE_ROOT; };
 		26EE38800EA595D5002A8365 /* dialog_map_groups.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_map_groups.c; path = Code/dialog_map_groups.c; sourceTree = "<group>"; };
 		26EE4756126961AF001D0025 /* Auto Generate.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Auto Generate.xml"; sourceTree = "<group>"; };
 		26EE476612696220001D0025 /* auto_generate_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_setup.c; path = Code/auto_generate_setup.c; sourceTree = "<group>"; };
@@ -698,7 +700,6 @@
 				2647AD810E4F48D000BA3338 /* dialog_height_import.c */,
 				F5CA0192098D8E6E00039712 /* dialog_map_auto_generate.c */,
 				26184B2B10AA56C0002C81BE /* dialog_light_map.c */,
-				26BE521A0E5FD01A009B6925 /* dialog_save.c */,
 			);
 			name = Dialogs;
 			sourceTree = "<group>";
@@ -735,6 +736,8 @@
 				26CF62A4126BDE55002DCC2A /* tool_palette_common.c */,
 				F57CACA60C38B76200B595F4 /* texture_palette.c */,
 				26EE494B126B8455001D0025 /* texture_palette_common.c */,
+				26E8DBFD1270EA6C00ACA294 /* text_common.c */,
+				26E8DBFC1270EA6C00ACA294 /* progress_common.c */,
 			);
 			name = Windows;
 			sourceTree = "<group>";
@@ -876,7 +879,6 @@
 				2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */,
 				26791D430E4D626700AAD058 /* dialog_grid_mesh.c in Sources */,
 				2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */,
-				26BE521B0E5FD01A009B6925 /* dialog_save.c in Sources */,
 				26EE38810EA595D5002A8365 /* dialog_map_groups.c in Sources */,
 				26772F810EBE8A6600F9E241 /* dialog_reposition.c in Sources */,
 				26FC3AFF0ECF8F2F00DD6F37 /* dialog_optimize.c in Sources */,
@@ -905,6 +907,8 @@
 				26CF62A5126BDE55002DCC2A /* tool_palette_common.c in Sources */,
 				26CF632C126BF34A002DCC2A /* dialog_utility_common.c in Sources */,
 				266B1D2D126E5F02006CC1E9 /* auto_generate_utility.c in Sources */,
+				26E8DBFE1270EA6C00ACA294 /* progress_common.c in Sources */,
+				26E8DBFF1270EA6C00ACA294 /* text_common.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

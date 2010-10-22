@@ -289,7 +289,7 @@ void main_wind_open(void)
 	aglSetCurrentContext(ctx);
 	aglDestroyPixelFormat(pf);
 
-	glDisable(GL_SMOOTH);
+	glEnable(GL_SMOOTH);
 	glDisable(GL_DITHER);
 	
 	glEnable(GL_BLEND);
@@ -300,6 +300,8 @@ void main_wind_open(void)
 	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(wind));
 
 		// setup view sizes
+		
+	text_initialize();
 	
 	tool_palette_initialize("Editor");
 	tool_palette_setup();
@@ -343,6 +345,8 @@ void main_wind_close(void)
 		
 	walk_view_shutdown();
 	tool_palette_shutdown();
+	
+	text_shutdown();
 	
 		// gl shutdown
 		
@@ -416,6 +420,23 @@ void main_wind_draw(void)
 		// swap GL buffer
 		
 	aglSwapBuffers(ctx);
+}
+
+void main_wind_draw_no_swap(void)
+{
+		// clear gl buffer
+		
+	glDisable(GL_SCISSOR_TEST);
+	
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+	walk_view_draw();
+
+		// palettes
+		
+	tool_palette_draw();
+	texture_palette_draw(map.textures);
 }
 
 /* =======================================================

@@ -237,9 +237,26 @@ bool file_open_map(void)
 
 void file_save_map(void)
 {
-	if (dialog_save_run()) return;
+	bool			save_ok;
+
+	os_set_wait_cursor();
+
+	progress_start("Saving...",3);
 	
-	dialog_alert("dim3 Editor could not save map","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
+	progress_next_title("Saving: Rebuilding Paths");
+	node_path_rebuild();
+	
+	progress_next_title("Saving: Recalculating Normals");
+	map_recalc_normals(&map,FALSE);
+	
+	progress_next_title("Saving: Writing XML");
+	save_ok=map_save(&map);
+	
+	progress_end();
+	
+	os_set_arrow_cursor();
+	
+	if (!save_ok) dialog_alert("dim3 Editor could not save map","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
 }
 
 /* =======================================================
