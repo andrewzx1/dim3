@@ -58,11 +58,11 @@ void camera_static_connect(void)
       
 ======================================================= */
 
-void camera_static_update(int x,int z,int y)
+void camera_static_update(d3pnt *pnt)
 {
-    camera_static_pnt.x=x;
-    camera_static_pnt.z=z;
-    camera_static_pnt.y=y;
+    camera_static_pnt.x=pnt->x;
+	camera_static_pnt.y=pnt->y;
+	camera_static_pnt.z=pnt->z;
 }
 
 /* =======================================================
@@ -112,9 +112,9 @@ void camera_static_get_position(d3pnt *pnt,d3ang *ang)
       
 ======================================================= */
 
-bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int event_id,bool open_doors,bool in_freeze,char *err_str)
+bool camera_walk_to_node_by_index_setup(int from_idx,int to_idx,int msec,int event_id,bool open_doors,bool in_freeze,char *err_str)
 {
-	int			from_idx,to_idx,dist;
+	int			dist;
 	float		speed;
 	obj_type	*player_obj;
 
@@ -125,24 +125,10 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 		return(FALSE);
 	}
 	
-		// get the nodes
-		
-	from_idx=map_find_node(&map,start_node);
-	if (from_idx==-1) {
-		sprintf(err_str,"Named node does not exist: %s",start_node);
-		return(FALSE);
-	}
-	
-	to_idx=map_find_node(&map,end_node);
-	if (to_idx==-1) {
-		sprintf(err_str,"Named node does not exist: %s",end_node);
-		return(FALSE);
-	}
-	
 		// is end node in start node path?
 		
 	if (map_find_next_node_in_path(&map,from_idx,to_idx)==-1) {
-		sprintf(err_str,"End node '%s' is not in the same path as the start node '%s'",end_node,start_node);
+		sprintf(err_str,"End node '%s' is not in the same path as the start node '%s'",map.nodes[to_idx].name,map.nodes[from_idx].name);
 		return(FALSE);
 	}
 
@@ -183,6 +169,29 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 	}
 
 	return(TRUE);
+}
+
+bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int event_id,bool open_doors,bool in_freeze,char *err_str)
+{
+	int			from_idx,to_idx;
+
+		// get the nodes
+		
+	from_idx=map_find_node(&map,start_node);
+	if (from_idx==-1) {
+		sprintf(err_str,"Named node does not exist: %s",start_node);
+		return(FALSE);
+	}
+	
+	to_idx=map_find_node(&map,end_node);
+	if (to_idx==-1) {
+		sprintf(err_str,"Named node does not exist: %s",end_node);
+		return(FALSE);
+	}
+
+		// call the index version
+
+	return(camera_walk_to_node_by_index_setup(from_idx,to_idx,msec,event_id,open_doors,in_freeze,err_str));
 }
 
 /* =======================================================

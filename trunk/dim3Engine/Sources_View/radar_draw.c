@@ -113,22 +113,25 @@ void radar_draw(void)
 	vp=vertex_ptr;
 	uv=uv_ptr;
 
-    *uv++=0.0f;
-	*uv++=0.0f;
     *vp++=(float)lx;
 	*vp++=(float)ty;
-    *uv++=1.0f;
+    *uv++=0.0f;
 	*uv++=0.0f;
+
+    *vp++=(float)lx;
+	*vp++=(float)by;
+    *uv++=0.0f;
+
     *vp++=(float)rx;
 	*vp++=(float)ty;
     *uv++=1.0f;
-	*uv++=1.0f;
+	*uv++=0.0f;
+
     *vp++=(float)rx;
 	*vp++=(float)by;
-    *uv++=0.0f;
+    *uv++=1.0f;
 	*uv++=1.0f;
-    *vp++=(float)lx;
-	*vp++=(float)by;
+	*uv++=1.0f;
 	
 	view_unmap_current_vertex_object();
 
@@ -145,7 +148,7 @@ void radar_draw(void)
 	gl_texture_simple_start();
 	gl_texture_simple_set(view_images_get_gl_id(hud.radar.background_image_idx),TRUE,tint.r,tint.g,tint.b,1.0f);
 
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 	view_unbind_current_vertex_object();
 
@@ -253,22 +256,25 @@ void radar_draw(void)
 		vp=vertex_ptr;
 		uv=uv_ptr;
 
-		*uv++=0.0f;
-		*uv++=0.0f;
 		*vp++=(float)px[0];
 		*vp++=(float)py[0];
-		*uv++=1.0f;
 		*uv++=0.0f;
+		*uv++=0.0f;
+
+		*vp++=(float)px[3];
+		*vp++=(float)py[3];
+		*uv++=0.0f;
+		*uv++=1.0f;
+
 		*vp++=(float)px[1];
 		*vp++=(float)py[1];
 		*uv++=1.0f;
-		*uv++=1.0f;
+		*uv++=0.0f;
+
 		*vp++=(float)px[2];
 		*vp++=(float)py[2];
-		*uv++=0.0f;
 		*uv++=1.0f;
-		*vp++=(float)px[3];
-		*vp++=(float)py[3];
+		*uv++=1.0f;
 		
 		view_unmap_current_vertex_object();
 
@@ -277,7 +283,7 @@ void radar_draw(void)
 		glVertexPointer(2,GL_FLOAT,0,0);
 		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-		glDrawArrays(GL_QUADS,0,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 		view_unbind_current_vertex_object();
 	}

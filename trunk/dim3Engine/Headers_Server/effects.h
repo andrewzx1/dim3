@@ -35,7 +35,6 @@ extern bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent
 extern bool effect_spawn_lightning(d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec);
 extern bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,int life_msec);
 extern bool effect_spawn_shake(d3pnt *pt,int distance,int size,int life_msec);
-extern void effect_draw_lightning_lines(int nline,float varient,int k,int sx,int sz,int sy,int ex,int ez,int ey,int xadd,int zadd,int yadd);
 extern void effect_draw_lightning(effect_type *effect);
 extern void effect_draw_ray(effect_type *effect,int count);
 extern void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *gx,float *gy,float *g_size);

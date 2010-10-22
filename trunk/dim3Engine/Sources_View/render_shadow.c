@@ -522,7 +522,7 @@ void shadow_stencil_mesh_poly(shadow_render_type *shadow_render)
 		mesh=&map.mesh.meshes[shadow_poly->ptr.mesh_idx];
 		poly=&mesh->polys[shadow_poly->ptr.poly_idx];
 
-		glDrawArrays(GL_POLYGON,vertex_count,poly->ptsz);
+		glDrawArrays(GL_TRIANGLE_FAN,vertex_count,poly->ptsz);
 
 		vertex_count+=poly->ptsz;
 		shadow_poly++;
@@ -575,7 +575,7 @@ void shadow_stencil_clear_mesh_poly(shadow_render_type *shadow_render)
 		mesh=&map.mesh.meshes[shadow_poly->ptr.mesh_idx];
 		poly=&mesh->polys[shadow_poly->ptr.poly_idx];
 
-		glDrawArrays(GL_POLYGON,vertex_count,poly->ptsz);
+		glDrawArrays(GL_TRIANGLE_FAN,vertex_count,poly->ptsz);
 
 		vertex_count+=poly->ptsz;
 		shadow_poly++;

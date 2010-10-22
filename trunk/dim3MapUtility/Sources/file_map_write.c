@@ -413,6 +413,8 @@ void write_map_cinemas_xml(map_type *map)
 			if (action->start_msec!=0) xml_add_attribute_int("start",action->start_msec);
 			if (action->end_msec!=0) xml_add_attribute_int("end",action->end_msec);
 
+			xml_add_attribute_boolean("move_reverse",action->move_reverse);
+
 			if (action->animation_name[0]!=0x0) xml_add_attribute_text("animation",action->animation_name);
 			if (action->next_animation_name[0]!=0x0) xml_add_attribute_text("next_animation",action->next_animation_name);
 			if (action->node_name[0]!=0x0) xml_add_attribute_text("node",action->node_name);

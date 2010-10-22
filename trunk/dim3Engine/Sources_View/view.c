@@ -523,12 +523,18 @@ void view_loop_draw(void)
 	view_draw();
 
 		// draw hud and interface elements
+		// unless we are in a cinema
 
-	hud_draw();
-	radar_draw();
-	network_draw();
-	menu_draw();
+	if (server.state!=gs_cinema) {
+		hud_draw();
+		radar_draw();
+		network_draw();
+	}
 	
+		// menu
+
+	menu_draw();
+
 		// restore if console open
 		// and draw console
 		

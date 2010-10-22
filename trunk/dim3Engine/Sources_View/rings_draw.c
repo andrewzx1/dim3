@@ -177,6 +177,23 @@ void ring_draw(effect_type *effect,int count)
 		*vl++=my+fy;
 		*vl++=mz+fz;
 
+			// quad 4
+
+		fx=(float)cos(rd)*inner_sz;
+		fy=-((float)sin(rd)*inner_sz);
+		fz=0.0f;
+
+		*vt++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		*vt++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
+		
+		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
+		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
+		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
+
+		*vl++=mx+fx;
+		*vl++=my+fy;
+		*vl++=mz+fz;
+
 			// quad 2
 
 		fx=(float)cos(rd2)*outer_sz;
@@ -198,23 +215,6 @@ void ring_draw(effect_type *effect,int count)
 
 		fx=(float)cos(rd2)*inner_sz;
 		fy=-((float)sin(rd2)*inner_sz);
-		fz=0.0f;
-
-		*vt++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		*vt++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
-		
-		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
-		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
-		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
-
-		*vl++=mx+fx;
-		*vl++=my+fy;
-		*vl++=mz+fz;
-
-			// quad 4
-
-		fx=(float)cos(rd)*inner_sz;
-		fy=-((float)sin(rd)*inner_sz);
 		fz=0.0f;
 
 		*vt++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
@@ -260,7 +260,9 @@ void ring_draw(effect_type *effect,int count)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((nvertex*3)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,nvertex);
+	for (n=0;n<nvertex;n+=4) {
+		glDrawArrays(GL_TRIANGLE_STRIP,n,4);
+	}
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

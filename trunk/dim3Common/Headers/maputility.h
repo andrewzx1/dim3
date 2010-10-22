@@ -630,6 +630,7 @@ typedef struct		{
 typedef struct		{
 						int									action,
 															start_msec,end_msec;
+						bool								move_reverse;
 						char								actor_name[name_str_len],
 															animation_name[name_str_len],
 															next_animation_name[name_str_len],

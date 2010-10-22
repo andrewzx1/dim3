@@ -81,7 +81,7 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 
-	glDrawArrays(GL_POLYGON,0,poly->ptsz);
+	glDrawArrays(GL_TRIANGLE_FAN,0,poly->ptsz);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -154,26 +154,33 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 	vp=vertex_ptr;
 	uv=uv_ptr;
 
-    *uv++=gx;
-	*uv++=gy;
     *vp++=(float)decal->x[0];
 	*vp++=(float)decal->y[0];
 	*vp++=(float)decal->z[0];
-    *uv++=gx+g_size;
-	*uv++=gy;
-    *vp++=(float)decal->x[1];
-	*vp++=(float)decal->y[1];
-	*vp++=(float)decal->z[1];
-    *uv++=gx+g_size;
-	*uv++=gy+g_size;
-    *vp++=(float)decal->x[2];
-	*vp++=(float)decal->y[2];
-	*vp++=(float)decal->z[2];
+
     *uv++=gx;
-	*uv++=gy+g_size;
+	*uv++=gy;
+
     *vp++=(float)decal->x[3];
 	*vp++=(float)decal->y[3];
 	*vp++=(float)decal->z[3];
+
+    *uv++=gx;
+	*uv++=gy+g_size;
+
+    *vp++=(float)decal->x[1];
+	*vp++=(float)decal->y[1];
+	*vp++=(float)decal->z[1];
+
+    *uv++=gx+g_size;
+	*uv++=gy;
+
+    *vp++=(float)decal->x[2];
+	*vp++=(float)decal->y[2];
+	*vp++=(float)decal->z[2];
+
+    *uv++=gx+g_size;
+	*uv++=gy+g_size;
 	
 	view_unmap_current_vertex_object();
 	
@@ -188,7 +195,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
 	gl_texture_decal_set(view_images_get_gl_id(mark->image_idx),cf[0],cf[1],cf[2],alpha);
 
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

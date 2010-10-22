@@ -244,22 +244,25 @@ void hud_bitmaps_draw(void)
 
 				// quad
 
-			*uv++=gx;
-			*uv++=gy;
 			*vp++=(float)px[0];
 			*vp++=(float)py[0];
-			*uv++=gx2;
+			*uv++=gx;
 			*uv++=gy;
+
+			*vp++=(float)px[3];
+			*vp++=(float)py[3];
+			*uv++=gx;
+			*uv++=gy2;
+
 			*vp++=(float)px[1];
 			*vp++=(float)py[1];
 			*uv++=gx2;
-			*uv++=gy2;
+			*uv++=gy;
+
 			*vp++=(float)px[2];
 			*vp++=(float)py[2];
-			*uv++=gx;
+			*uv++=gx2;
 			*uv++=gy2;
-			*vp++=(float)px[3];
-			*vp++=(float)py[3];
 			
 				// column wrapping repeats
 				
@@ -328,8 +331,10 @@ void hud_bitmaps_draw(void)
 
 		glVertexPointer(2,GL_FLOAT,0,0);
 		glTexCoordPointer(2,GL_FLOAT,0,(void*)(((repeat_count*4)*2)*sizeof(float)));
-				
-		glDrawArrays(GL_QUADS,0,(repeat_count*4));
+			
+		for (r=0;r!=repeat_count;r++) {
+			glDrawArrays(GL_TRIANGLE_STRIP,(r*4),4);
+		}
 
 		view_unbind_current_vertex_object();
 	}

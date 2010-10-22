@@ -597,25 +597,25 @@ void draw_sky_cube_setup(void)
 		*uv_ptr++=g0;
 		*uv_ptr++=g1;
 
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=-f_radius;
-
-		*uv_ptr++=g1;
-		*uv_ptr++=g1;
-
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-
-		*uv_ptr++=g1;
-		*uv_ptr++=g0;
-
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=g0;
+		*uv_ptr++=g0;
+
+		*vertex_ptr++=f_radius;
+		*vertex_ptr++=-f_radius;
+		*vertex_ptr++=-f_radius;
+
+		*uv_ptr++=g1;
+		*uv_ptr++=g1;
+
+		*vertex_ptr++=f_radius;
+		*vertex_ptr++=-f_radius;
+		*vertex_ptr++=f_radius;
+
+		*uv_ptr++=g1;
 		*uv_ptr++=g0;
 	}
 	
@@ -629,6 +629,13 @@ void draw_sky_cube_setup(void)
 		*uv_ptr++=g0;
 		*uv_ptr++=g1;
 
+		*vertex_ptr++=-f_radius;
+		*vertex_ptr++=f_radius;
+		*vertex_ptr++=f_radius;
+
+		*uv_ptr++=g0;
+		*uv_ptr++=g0;
+
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
@@ -641,13 +648,6 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=g1;
-		*uv_ptr++=g0;
-
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-
-		*uv_ptr++=g0;
 		*uv_ptr++=g0;
 	}
 	
@@ -661,6 +661,13 @@ void draw_sky_cube_setup(void)
 		*uv_ptr++=g0;
 		*uv_ptr++=g0;
 
+		*vertex_ptr++=-f_radius;
+		*vertex_ptr++=f_radius;
+		*vertex_ptr++=f_radius;
+
+		*uv_ptr++=g0;
+		*uv_ptr++=g1;
+
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
@@ -673,13 +680,6 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=g1;
-		*uv_ptr++=g1;
-
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-
-		*uv_ptr++=g0;
 		*uv_ptr++=g1;
 	}
 	
@@ -694,6 +694,13 @@ void draw_sky_cube_setup(void)
 		*uv_ptr++=g0;
 
 		*vertex_ptr++=f_radius;
+		*vertex_ptr++=f_radius;
+		*vertex_ptr++=f_radius;
+
+		*uv_ptr++=g0;
+		*uv_ptr++=g1;
+
+		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
@@ -705,13 +712,6 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=g1;
-		*uv_ptr++=g1;
-
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-
-		*uv_ptr++=g0;
 		*uv_ptr++=g1;
 	}
 	
@@ -725,6 +725,13 @@ void draw_sky_cube_setup(void)
 		*uv_ptr++=g0;
 		*uv_ptr++=g0;
 
+		*vertex_ptr++=f_radius;
+		*vertex_ptr++=f_radius;
+		*vertex_ptr++=-f_radius;
+
+		*uv_ptr++=g0;
+		*uv_ptr++=g1;
+
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
@@ -737,13 +744,6 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 
 		*uv_ptr++=g1;
-		*uv_ptr++=g1;
-
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-
-		*uv_ptr++=g0;
 		*uv_ptr++=g1;
 	}
 	
@@ -758,6 +758,13 @@ void draw_sky_cube_setup(void)
 		*uv_ptr++=g0;
 
 		*vertex_ptr++=-f_radius;
+		*vertex_ptr++=f_radius;
+		*vertex_ptr++=-f_radius;
+
+		*uv_ptr++=g0;
+		*uv_ptr++=g1;
+
+		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
@@ -769,13 +776,6 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=f_radius;
 
 		*uv_ptr++=g1;
-		*uv_ptr++=g1;
-
-		*vertex_ptr++=-f_radius;
-		*vertex_ptr++=f_radius;
-		*vertex_ptr++=-f_radius;
-
-		*uv_ptr++=g0;
 		*uv_ptr++=g1;
 	}
  
@@ -842,7 +842,7 @@ void draw_sky_cube(void)
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-		glDrawArrays(GL_QUADS,0,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		
 		offset+=4;
 	}
@@ -854,7 +854,7 @@ void draw_sky_cube(void)
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-		glDrawArrays(GL_QUADS,offset,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
 	}
@@ -866,7 +866,7 @@ void draw_sky_cube(void)
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-		glDrawArrays(GL_QUADS,offset,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
 	}
@@ -878,7 +878,7 @@ void draw_sky_cube(void)
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-		glDrawArrays(GL_QUADS,offset,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
 	}
@@ -890,7 +890,7 @@ void draw_sky_cube(void)
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-		glDrawArrays(GL_QUADS,offset,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
 	}
@@ -902,7 +902,7 @@ void draw_sky_cube(void)
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-		glDrawArrays(GL_QUADS,offset,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 	}
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

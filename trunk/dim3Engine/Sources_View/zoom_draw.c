@@ -101,7 +101,7 @@ void zoom_setup(obj_type *obj,weapon_type *weap)
 
 void zoom_draw(obj_type *obj,weapon_type *weap)
 {
-	int				x,y,sz,lft,rgt,top,bot,
+	int				n,x,y,sz,lft,rgt,top,bot,
 					cnt,gl_id;
 	float			*vertex_ptr,*uv_ptr;
 	
@@ -152,11 +152,11 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	if (lft>0) {
 		*vertex_ptr++=0.0f;
 		*vertex_ptr++=0.0f;
-		*vertex_ptr++=(float)(lft+1);
 		*vertex_ptr++=0.0f;
-		*vertex_ptr++=(float)(lft+1);
 		*vertex_ptr++=(float)setup.screen.y_sz;
+		*vertex_ptr++=(float)(lft+1);
 		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)(lft+1);
 		*vertex_ptr++=(float)setup.screen.y_sz;
 
 		uv_ptr+=8;
@@ -166,11 +166,11 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	if (rgt<setup.screen.x_sz) {
 		*vertex_ptr++=(float)(rgt-1);
 		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)(rgt-1);
+		*vertex_ptr++=(float)setup.screen.y_sz;
 		*vertex_ptr++=(float)setup.screen.x_sz;
 		*vertex_ptr++=0.0f;
 		*vertex_ptr++=(float)setup.screen.x_sz;
-		*vertex_ptr++=(float)setup.screen.y_sz;
-		*vertex_ptr++=(float)(rgt-1);
 		*vertex_ptr++=(float)setup.screen.y_sz;
 
 		uv_ptr+=8;
@@ -180,11 +180,11 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	if (top>0) {
 		*vertex_ptr++=0.0f;
 		*vertex_ptr++=0.0f;
-		*vertex_ptr++=(float)setup.screen.x_sz;
 		*vertex_ptr++=0.0f;
-		*vertex_ptr++=(float)setup.screen.x_sz;
 		*vertex_ptr++=(float)(top+1);
+		*vertex_ptr++=(float)setup.screen.x_sz;
 		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)setup.screen.x_sz;
 		*vertex_ptr++=(float)(top+1);
 
 		uv_ptr+=8;
@@ -194,11 +194,11 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	if (bot<setup.screen.y_sz) {
 		*vertex_ptr++=0.0f;
 		*vertex_ptr++=(float)(bot-1);
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)setup.screen.y_sz;
 		*vertex_ptr++=(float)setup.screen.x_sz;
 		*vertex_ptr++=(float)(bot-1);
 		*vertex_ptr++=(float)setup.screen.x_sz;
-		*vertex_ptr++=(float)setup.screen.y_sz;
-		*vertex_ptr++=0.0f;
 		*vertex_ptr++=(float)setup.screen.y_sz;
 
 		uv_ptr+=8;
@@ -213,6 +213,12 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	*uv_ptr++=0.0f;
 	*uv_ptr++=0.0f;
 
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=1.0f;
+
 	*vertex_ptr++=(float)rgt;
 	*vertex_ptr++=(float)top;
 
@@ -225,12 +231,6 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	*uv_ptr++=1.0f;
 	*uv_ptr++=1.0f;
 
-	*vertex_ptr++=(float)lft;
-	*vertex_ptr++=(float)bot;
-
-	*uv_ptr++=0.0f;
-	*uv_ptr++=1.0f;
-
   	view_unmap_current_vertex_object();
 
 		// draw border and zoom
@@ -241,7 +241,10 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 		// borders
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	glDrawArrays(GL_QUADS,0,cnt);
+
+	for (n=0;n<cnt;n+=4) {
+		glDrawArrays(GL_TRIANGLE_STRIP,n,4);
+	}
 
 		// zoom
 
@@ -258,7 +261,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 
 	gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
 
-	glDrawArrays(GL_QUADS,cnt,4);
+	glDrawArrays(GL_TRIANGLE_STRIP,cnt,4);
 
 	gl_texture_simple_end();
 
