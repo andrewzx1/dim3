@@ -42,6 +42,7 @@ extern char					media_type_str[][32],
 							skill_type_str[][32],
 							spawn_type_str[][32],
 							cinema_action_type_str[][32],
+							cinema_actor_type_str[][32],
 							map_bump_mode_str[][32];
 
 extern maputility_settings_type		maputility_settings;
@@ -396,6 +397,8 @@ void write_map_cinemas_xml(map_type *map)
 		xml_add_tagstart("Cinema");
 		xml_add_attribute_text("name",cinema->name);
 		xml_add_attribute_int("length",cinema->len_msec);
+		xml_add_attribute_boolean("freeze_input",cinema->freeze_input);
+		xml_add_attribute_boolean("show_hud",cinema->show_hud);
 		xml_add_tagend(FALSE);
 		
 		xml_add_tagstart("Actions");
@@ -407,8 +410,10 @@ void write_map_cinemas_xml(map_type *map)
 
 			xml_add_tagstart("Action");
 
-			xml_add_attribute_text("actor",action->actor_name);
 			xml_add_attribute_list("action",(char*)cinema_action_type_str,action->action);
+
+			xml_add_attribute_list("actor_type",(char*)cinema_actor_type_str,action->actor_type);
+			xml_add_attribute_text("actor_name",action->actor_name);
 
 			if (action->start_msec!=0) xml_add_attribute_int("start",action->start_msec);
 			if (action->end_msec!=0) xml_add_attribute_int("end",action->end_msec);

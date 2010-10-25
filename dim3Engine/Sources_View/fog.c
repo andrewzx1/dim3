@@ -135,6 +135,13 @@ void fog_draw_textured(void)
 			*uv_ptr++=gx;
 			*uv_ptr++=0.0f;
 
+			*vertex_ptr++=fx_1;
+			*vertex_ptr++=f_by;
+			*vertex_ptr++=fz_1;
+
+			*uv_ptr++=gx;
+			*uv_ptr++=map.fog.txt_y_fact;
+
 			*vertex_ptr++=fx_2;
 			*vertex_ptr++=f_ty;
 			*vertex_ptr++=fz_2;
@@ -147,13 +154,6 @@ void fog_draw_textured(void)
 			*vertex_ptr++=fz_2;
 
 			*uv_ptr++=gx+gx_add;
-			*uv_ptr++=map.fog.txt_y_fact;
-
-			*vertex_ptr++=fx_1;
-			*vertex_ptr++=f_by;
-			*vertex_ptr++=fz_1;
-
-			*uv_ptr++=gx;
 			*uv_ptr++=map.fog.txt_y_fact;
 
 			r_ang=r_ang_2;
@@ -191,7 +191,7 @@ void fog_draw_textured(void)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((((8*4)*count)*3)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,((8*4)*count));
+	glDrawArrays(GL_TRIANGLE_STRIP,0,((8*4)*count));
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

@@ -2,7 +2,6 @@ LIBRARY      "dim3MapUtility"
 
 EXPORTS
 	light_type_str									@100
-	cinema_action_type_str							@101
 
 	map_count_texture_frames						@110
 	map_setup_animated_textures						@111

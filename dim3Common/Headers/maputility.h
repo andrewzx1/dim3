@@ -30,7 +30,6 @@ and can be sold or given away.
 //
 
 extern char light_type_str[][32];
-extern char cinema_action_type_str[][32];
 
 //
 // version
@@ -214,6 +213,12 @@ extern char cinema_action_type_str[][32];
 #define cinema_action_move									2
 #define cinema_action_show									3
 #define cinema_action_hide									4
+
+#define cinema_actor_camera									0
+#define cinema_actor_player									1
+#define cinema_actor_object									2
+#define cinema_actor_movement								3
+#define cinema_actor_particle								4
 
 //
 // group structure
@@ -629,7 +634,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									action,
+						int									action,actor_type,
 															start_msec,end_msec;
 						bool								move_reverse;
 						char								actor_name[name_str_len],
@@ -640,6 +645,7 @@ typedef struct		{
 
 typedef struct		{
 						int									naction,len_msec;
+						bool								freeze_input,show_hud;
 						char								name[name_str_len];
 						map_cinema_action_type				*actions;
 					} map_cinema_type;
