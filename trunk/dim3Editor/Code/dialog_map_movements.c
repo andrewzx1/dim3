@@ -30,22 +30,27 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kMapMovementList					FOUR_CHAR_CODE('list')
-#define kMapMovementListNameColumn			FOUR_CHAR_CODE('name')
-#define kMapMovementListGroupColumn			FOUR_CHAR_CODE('grop')
-#define kMapMovementListTimeColumn			FOUR_CHAR_CODE('time')
-#define kMapMovementListMoveColumn			FOUR_CHAR_CODE('move')
-#define kMapMovementListRotateColumn		FOUR_CHAR_CODE('rott')
-#define kMapMovementListSoundColumn			FOUR_CHAR_CODE('sond')
+#define kMovementList						FOUR_CHAR_CODE('tmvm')
+#define kMovementListNameColumn				FOUR_CHAR_CODE('name')
+#define kMovementListGroupColumn			FOUR_CHAR_CODE('grop')
+#define kMovementListReverseGroupColumn		FOUR_CHAR_CODE('rgop')
 
-#define kMapMovementAddMovementButton		FOUR_CHAR_CODE('amov')
-#define kMapMovementAddMovementMoveButton	FOUR_CHAR_CODE('ammv')
-#define kMapMovementDeleteButton			FOUR_CHAR_CODE('dele')
+#define kMovementAddButton					FOUR_CHAR_CODE('amvm')
+#define kMovementDeleteButton				FOUR_CHAR_CODE('dmvm')
 
-int							dialog_map_movements_current_idx,
-							dialog_map_movements_move_current_idx;
-bool						dialog_map_movements_ignore_deselect;
-WindowRef					dialog_map_movements_wind;
+#define kMoveList							FOUR_CHAR_CODE('tmov')
+#define kMoveListTimeColumn					FOUR_CHAR_CODE('time')
+#define kMoveListMoveColumn					FOUR_CHAR_CODE('move')
+#define kMoveListRotateColumn				FOUR_CHAR_CODE('rott')
+#define kMoveListSoundColumn				FOUR_CHAR_CODE('sond')
+
+#define kMoveAddButton						FOUR_CHAR_CODE('amov')
+#define kMoveDeleteButton					FOUR_CHAR_CODE('dmov')
+
+int							dialog_movement_current_idx,
+							dialog_move_current_idx;
+bool						dialog_movement_ignore_deselect;
+WindowRef					dialog_movements_wind;
 
 /* =======================================================
 
@@ -53,86 +58,109 @@ WindowRef					dialog_map_movements_wind;
       
 ======================================================= */
 
-ControlRef map_movements_list_get_ctrl(void)
+ControlRef movements_list_get_ctrl(void)
 {
 	ControlRef		ctrl;
 	ControlID		ctrl_id;
 	
-	ctrl_id.signature=kMapMovementList;
+	ctrl_id.signature=kMovementList;
 	ctrl_id.id=0;
-	GetControlByID(dialog_map_movements_wind,&ctrl_id,&ctrl);
+	GetControlByID(dialog_movements_wind,&ctrl_id,&ctrl);
 
 	return(ctrl);
 }
 
-void map_movements_reset_list(int movement_idx,int move_idx)
+ControlRef moves_list_get_ctrl(void)
+{
+	ControlRef		ctrl;
+	ControlID		ctrl_id;
+	
+	ctrl_id.signature=kMoveList;
+	ctrl_id.id=0;
+	GetControlByID(dialog_movements_wind,&ctrl_id,&ctrl);
+
+	return(ctrl);
+}
+
+void movements_list_reset(int movement_idx)
 {
 	ControlRef			ctrl;
 	DataBrowserItemID	itemID;
 	
-	dialog_map_movements_current_idx=movement_idx;
-	dialog_map_movements_move_current_idx=move_idx;
+	dialog_movement_current_idx=movement_idx;
 	
-	ctrl=map_movements_list_get_ctrl();
-
-		// delete old items
+		// clear movements list
 		
-	dialog_map_movements_ignore_deselect=TRUE;
+	ctrl=movements_list_get_ctrl();
+		
+	dialog_movement_ignore_deselect=TRUE;
 	RemoveDataBrowserItems(ctrl,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
-	dialog_map_movements_ignore_deselect=FALSE;
-	
-		// add items
+	dialog_movement_ignore_deselect=FALSE;
+
+		// add in movement list items
 	
 	AddDataBrowserItems(ctrl,kDataBrowserNoItem,map.nmovement,NULL,kDataBrowserItemNoProperty);
 	
-		// select items
+		// select movement item
 		
-	if (dialog_map_movements_current_idx==-1) return;
+	if (dialog_movement_current_idx==-1) return;
 		
-	itemID=dialog_map_movements_current_idx+1;
-	OpenDataBrowserContainer(ctrl,itemID);
-		
-	if (dialog_map_movements_move_current_idx!=-1) {
-		itemID=(1000*(dialog_map_movements_current_idx+1))+dialog_map_movements_move_current_idx;
-	}
-	
+	itemID=dialog_movement_current_idx+1;
 	SetDataBrowserSelectedItems(ctrl,1,&itemID,kDataBrowserItemsAssign);
+	RevealDataBrowserItem(ctrl,itemID,kDataBrowserNoItem,kDataBrowserRevealOnly);
 }
 
-void map_movements_add_move(DataBrowserItemID itemID)
+void moves_list_reset(int move_idx)
 {
-	int					n,idx;
-	movement_type		*movement;
-	DataBrowserItemID	items[max_movement_move];
 	ControlRef			ctrl;
+	DataBrowserItemID	itemID;
 	
-	idx=itemID-1;
-	movement=&map.movements[idx];
+	dialog_move_current_idx=move_idx;
 	
-	for (n=0;n!=movement->nmove;n++) {
-		items[n]=((idx+1)*1000)+n;
-	}
+		// clear move list
+		
+	ctrl=moves_list_get_ctrl();
 	
-	ctrl=map_movements_list_get_ctrl();
-	AddDataBrowserItems(ctrl,itemID,movement->nmove,items,kDataBrowserItemNoProperty);
+	dialog_movement_ignore_deselect=TRUE;
+	RemoveDataBrowserItems(ctrl,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	dialog_movement_ignore_deselect=FALSE;
+	
+	if (dialog_movement_current_idx==-1) return;
+	
+		// add in move list items
+		
+	AddDataBrowserItems(ctrl,kDataBrowserNoItem,map.movements[dialog_movement_current_idx].nmove,NULL,kDataBrowserItemNoProperty);
+	
+		// select move item
+		
+	if (dialog_move_current_idx==-1) return;
+		
+	itemID=dialog_move_current_idx+1;
+	SetDataBrowserSelectedItems(ctrl,1,&itemID,kDataBrowserItemsAssign);
+	RevealDataBrowserItem(ctrl,itemID,kDataBrowserNoItem,kDataBrowserRevealOnly);
 }
 
-void map_movement_reset_buttons(void)
+void movements_reset_buttons(void)
 {
-	ControlRef		add_movement_ctrl,add_move_ctrl,delete_ctrl;
+	ControlRef		add_movement_ctrl,delete_movement_ctrl,
+					add_move_ctrl,delete_move_ctrl;
 	ControlID		ctrl_id;
 	
-	ctrl_id.signature=kMapMovementAddMovementButton;
+	ctrl_id.signature=kMovementAddButton;
 	ctrl_id.id=0;
-	GetControlByID(dialog_map_movements_wind,&ctrl_id,&add_movement_ctrl);
+	GetControlByID(dialog_movements_wind,&ctrl_id,&add_movement_ctrl);
 	
-	ctrl_id.signature=kMapMovementAddMovementMoveButton;
+	ctrl_id.signature=kMovementDeleteButton;
 	ctrl_id.id=0;
-	GetControlByID(dialog_map_movements_wind,&ctrl_id,&add_move_ctrl);
+	GetControlByID(dialog_movements_wind,&ctrl_id,&delete_movement_ctrl);
 	
-	ctrl_id.signature=kMapMovementDeleteButton;
+	ctrl_id.signature=kMoveAddButton;
 	ctrl_id.id=0;
-	GetControlByID(dialog_map_movements_wind,&ctrl_id,&delete_ctrl);
+	GetControlByID(dialog_movements_wind,&ctrl_id,&add_move_ctrl);
+	
+	ctrl_id.signature=kMoveDeleteButton;
+	ctrl_id.id=0;
+	GetControlByID(dialog_movements_wind,&ctrl_id,&delete_move_ctrl);
 	
 	if (map.nmovement>=max_movement) {
 		DisableControl(add_movement_ctrl);
@@ -141,13 +169,20 @@ void map_movement_reset_buttons(void)
 		EnableControl(add_movement_ctrl);
 	}
 	
-	if ((dialog_map_movements_current_idx==-1) && (dialog_map_movements_move_current_idx==-1)) {
+	if (dialog_movement_current_idx==-1) {
+		DisableControl(delete_movement_ctrl);
 		DisableControl(add_move_ctrl);
-		DisableControl(delete_ctrl);
 	}
 	else {
+		EnableControl(delete_movement_ctrl);
 		EnableControl(add_move_ctrl);
-		EnableControl(delete_ctrl);
+	}
+	
+	if (dialog_move_current_idx==-1) {
+		DisableControl(delete_move_ctrl);
+	}
+	else {
+		EnableControl(delete_move_ctrl);
 	}
 }
 
@@ -157,11 +192,9 @@ void map_movement_reset_buttons(void)
       
 ======================================================= */
 
-static pascal OSStatus map_movements_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus movements_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	int					idx;
-	movement_type		*movement;
-	movement_move_type	*move;
 	HICommand			cmd;
 	
 	switch (GetEventKind(event)) {
@@ -171,7 +204,7 @@ static pascal OSStatus map_movements_event_proc(EventHandlerCallRef handler,Even
 			
 			switch (cmd.commandID) {
 			
-				case kMapMovementAddMovementButton:
+				case kMovementAddButton:
 					if (map.ngroup==0) {
 						dialog_alert("Can Not Create Movement","You need at least one segment group to create a movement.");
 						return(noErr);
@@ -180,55 +213,66 @@ static pascal OSStatus map_movements_event_proc(EventHandlerCallRef handler,Even
 					idx=map_movement_add(&map);
 					if (idx==-1) return(noErr);
 					
-					movement=&map.movements[idx];
-					
-					if (!dialog_movement_settings_run(movement)) {
+					if (!dialog_movement_settings_run(&map.movements[idx])) {
 						map_movement_delete(&map,idx);
 						return(noErr);
 					}
 					
-					map_movements_reset_list(idx,-1);
-					Draw1Control(map_movements_list_get_ctrl());
-					map_movement_reset_buttons();
+					movements_list_reset(idx);
+					Draw1Control(movements_list_get_ctrl());
+
+					moves_list_reset(-1);
+					Draw1Control(moves_list_get_ctrl());
+					
+					movements_reset_buttons();
 
 					return(noErr);
 					
-				case kMapMovementAddMovementMoveButton:
-					idx=map_movement_move_add(&map,dialog_map_movements_current_idx);
+				case kMovementDeleteButton:
+					if (dialog_movement_current_idx==-1) return(noErr);
+					
+					map_movement_delete(&map,dialog_movement_current_idx);
+					
+					movements_list_reset(-1);
+					Draw1Control(movements_list_get_ctrl());
+					
+					moves_list_reset(-1);
+					Draw1Control(moves_list_get_ctrl());
+					
+					movements_reset_buttons();
+					
+					return(noErr);
+					
+				case kMoveAddButton:
+					idx=map_movement_move_add(&map,dialog_movement_current_idx);
 					if (idx==-1) return(noErr);
 					
-					movement=&map.movements[dialog_map_movements_current_idx];
-					move=&movement->moves[idx];
-					
-					if (!dialog_movement_move_settings_run(move)) {
-						map_movement_move_delete(&map,dialog_map_movements_current_idx,idx);
+					if (!dialog_movement_move_settings_run(&map.movements[dialog_movement_current_idx].moves[idx])) {
+						map_movement_move_delete(&map,dialog_movement_current_idx,idx);
 						return(noErr);
 					}
 					
-					map_movements_reset_list(dialog_map_movements_current_idx,idx);
-					Draw1Control(map_movements_list_get_ctrl());
-					map_movement_reset_buttons();
+					moves_list_reset(idx);
+					Draw1Control(moves_list_get_ctrl());
+					
+					movements_reset_buttons();
 
 					return(noErr);
 					
-				case kMapMovementDeleteButton:
-					if (dialog_map_movements_current_idx==-1) return(noErr);
-					if (dialog_map_movements_move_current_idx==-1) {
-						map_movement_delete(&map,dialog_map_movements_current_idx);
-					}
-					else {
-						map_movement_move_delete(&map,dialog_map_movements_current_idx,dialog_map_movements_move_current_idx);
-					}
+				case kMoveDeleteButton:
+					if (dialog_move_current_idx==-1) return(noErr);
+
+					map_movement_move_delete(&map,dialog_movement_current_idx,dialog_move_current_idx);
 					
-					map_movements_reset_list(-1,-1);
-					Draw1Control(map_movements_list_get_ctrl());
-					map_movement_reset_buttons();
+					moves_list_reset(-1);
+					Draw1Control(moves_list_get_ctrl());
+					
+					movements_reset_buttons();
 					
 					return(noErr);
 				
-			
 				case kHICommandOK:
-					QuitAppModalLoopForWindow(dialog_map_movements_wind);
+					QuitAppModalLoopForWindow(dialog_movements_wind);
 					return(noErr);
 					
 			}
@@ -246,17 +290,15 @@ static pascal OSStatus map_movements_event_proc(EventHandlerCallRef handler,Even
       
 ======================================================= */
 
-static pascal OSStatus map_movements_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
+static pascal OSStatus movements_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
 {
-	int					movement_idx,move_idx;
+	int					movement_idx;
 	char				str[256];
-	movement_move_type	*move;
 	CFStringRef			cfstr;
 
 	switch (property) {
 		
-		case kMapMovementListNameColumn:
-			if (itemID>=1000) return(noErr);
+		case kMovementListNameColumn:
 			movement_idx=itemID-1;
 			
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,map.movements[movement_idx].name,kCFStringEncodingMacRoman);
@@ -264,80 +306,22 @@ static pascal OSStatus map_movements_list_item_proc(ControlRef ctrl,DataBrowserI
 			CFRelease(cfstr);
 			return(noErr);
 			
-		case kMapMovementListGroupColumn:
-			if (itemID>=1000) return(noErr);
+		case kMovementListGroupColumn:
 			movement_idx=itemID-1;
 			
 			strcpy(str,map.groups[map.movements[movement_idx].group_idx].name);
-			if (map.movements[movement_idx].reverse_group_idx!=-1) {
-				strcat(str,"/");
-				strcat(str,map.groups[map.movements[movement_idx].reverse_group_idx].name);
-			}
-			
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
 			return(noErr);
 			
-		case kMapMovementListTimeColumn:
-			if (itemID<1000) return(noErr);
+		case kMovementListReverseGroupColumn:
+			movement_idx=itemID-1;
 			
-			movement_idx=(itemID/1000)-1;
-			move_idx=itemID%1000;
-			
-			move=&map.movements[movement_idx].moves[move_idx];
-			sprintf(str,"%d msec",move->msec);
-			
+			strcpy(str,map.groups[map.movements[movement_idx].reverse_group_idx].name);
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
-			return(noErr);
-			
-		case kMapMovementListMoveColumn:
-			if (itemID<1000) return(noErr);
-			
-			movement_idx=(itemID/1000)-1;
-			move_idx=itemID%1000;
-			
-			move=&map.movements[movement_idx].moves[move_idx];
-			sprintf(str,"%d,%d,%d",move->mov.x,move->mov.y,move->mov.z);
-			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-			
-		case kMapMovementListRotateColumn:
-			if (itemID<1000) return(noErr);
-			
-			movement_idx=(itemID/1000)-1;
-			move_idx=itemID%1000;
-			
-			move=&map.movements[movement_idx].moves[move_idx];
-			sprintf(str,"%.2f,%.2f,%.2f",move->rot.x,move->rot.y,move->rot.z);
-			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-			
-		case kMapMovementListSoundColumn:
-			if (itemID<1000) return(noErr);
-			
-			movement_idx=(itemID/1000)-1;
-			move_idx=itemID%1000;
-			
-			move=&map.movements[movement_idx].moves[move_idx];
-			if (move->sound_name[0]==0x0) return(noErr);
-			sprintf(str,"%s @ %.2f",move->sound_name,move->sound_pitch);
-				
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-			
-		case kDataBrowserItemIsContainerProperty:
-			SetDataBrowserItemDataBooleanValue(itemData,(itemID<1000));
 			return(noErr);
 						
 	}
@@ -345,59 +329,140 @@ static pascal OSStatus map_movements_list_item_proc(ControlRef ctrl,DataBrowserI
 	return(errDataBrowserPropertyNotSupported);
 }
 
-static pascal void map_movements_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
+static pascal void movements_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
 {
-	int				movement_idx,move_idx;
+	int				movement_idx;
 	UInt32			count;
 	
 	switch (message) {
 
 		case kDataBrowserItemDoubleClicked:
-			if (itemID<1000) {
-				movement_idx=itemID-1;
-				if (dialog_movement_settings_run(&map.movements[movement_idx])) {
-					UpdateDataBrowserItems(ctrl,kDataBrowserNoItem,1,&itemID,kDataBrowserItemNoProperty,kDataBrowserNoItem);
-					Draw1Control(ctrl);
-				}
-				break;
-			}
-			
-			movement_idx=(itemID/1000)-1;
-			move_idx=itemID%1000;
-			
-			if (dialog_movement_move_settings_run(&map.movements[movement_idx].moves[move_idx])) {
-				UpdateDataBrowserItems(ctrl,(movement_idx+1),1,&itemID,kDataBrowserItemNoProperty,kDataBrowserNoItem);
+			movement_idx=itemID-1;
+			if (dialog_movement_settings_run(&map.movements[movement_idx])) {
+				movements_list_reset(movement_idx);
 				Draw1Control(ctrl);
 			}
 			break;
 			
 		case kDataBrowserItemSelected:
-			if (itemID<1000) {
-				dialog_map_movements_current_idx=itemID-1;
-				dialog_map_movements_move_current_idx=-1;
-			}
-			else {
-				dialog_map_movements_current_idx=(itemID/1000)-1;
-				dialog_map_movements_move_current_idx=itemID%1000;
-			}
-			map_movement_reset_buttons();
+			dialog_movement_current_idx=itemID-1;
+			
+			moves_list_reset(-1);
+			Draw1Control(moves_list_get_ctrl());
+			movements_reset_buttons();
 			break;
 
 		case kDataBrowserItemDeselected:
-			if (dialog_map_movements_ignore_deselect) break;
+			if (dialog_movement_ignore_deselect) break;
 			
 			GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,TRUE,kDataBrowserItemIsSelected,&count);
 			if (count!=0) break;
 			
-			dialog_map_movements_current_idx=-1;
-			dialog_map_movements_move_current_idx=-1;
-			map_movement_reset_buttons();
+			dialog_movement_current_idx=-1;
+			
+			moves_list_reset(-1);
+			Draw1Control(moves_list_get_ctrl());
+			movements_reset_buttons();
 			break;
 
-		case kDataBrowserContainerOpened:
-			if (itemID<1000) map_movements_add_move(itemID);
+	}
+}
+
+/* =======================================================
+
+      Move List Event Handlers
+      
+======================================================= */
+
+static pascal OSStatus moves_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
+{
+	int					move_idx;
+	char				str[256];
+	movement_move_type	*move;
+	CFStringRef			cfstr;
+
+	switch (property) {
+		
+		case kMoveListTimeColumn:
+			move_idx=itemID-1;
+			
+			move=&map.movements[dialog_movement_current_idx].moves[move_idx];
+			sprintf(str,"%d msec",move->msec);
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
+		case kMoveListMoveColumn:
+			move_idx=itemID-1;
+			
+			move=&map.movements[dialog_movement_current_idx].moves[move_idx];
+			sprintf(str,"%d,%d,%d",move->mov.x,move->mov.y,move->mov.z);
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
+		case kMoveListRotateColumn:
+			move_idx=itemID-1;
+			
+			move=&map.movements[dialog_movement_current_idx].moves[move_idx];
+			sprintf(str,"%.2f,%.2f,%.2f",move->rot.x,move->rot.y,move->rot.z);
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
+		case kMoveListSoundColumn:
+			move_idx=itemID-1;
+			
+			move=&map.movements[dialog_movement_current_idx].moves[move_idx];
+			if (move->sound_name[0]==0x0) return(noErr);
+			sprintf(str,"%s @ %.2f",move->sound_name,move->sound_pitch);
+				
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+						
+	}
+
+	return(errDataBrowserPropertyNotSupported);
+}
+
+static pascal void moves_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
+{
+	int				move_idx;
+	UInt32			count;
+
+	switch (message) {
+
+		case kDataBrowserItemDoubleClicked:
+			move_idx=itemID-1;			
+			if (dialog_movement_move_settings_run(&map.movements[dialog_movement_current_idx].moves[move_idx])) {
+				moves_list_reset(move_idx);
+				Draw1Control(ctrl);
+			}
 			break;
 			
+		case kDataBrowserItemSelected:
+			dialog_move_current_idx=itemID-1;
+			movements_reset_buttons();
+			break;
+
+		case kDataBrowserItemDeselected:
+			if (dialog_movement_ignore_deselect) break;
+			
+			GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,TRUE,kDataBrowserItemIsSelected,&count);
+			if (count!=0) break;
+			
+			dialog_move_current_idx=-1;
+			movements_reset_buttons();
+			break;
+
 	}
 }
 
@@ -410,54 +475,74 @@ static pascal void map_movements_list_notify_proc(ControlRef ctrl,DataBrowserIte
 bool dialog_map_movements_run(void)
 {
 	ControlRef						ctrl;
-	DataBrowserCallbacks			dbcall;
+	DataBrowserCallbacks			dbcall_movements,dbcall_moves;
 	EventHandlerUPP					event_upp;
-	DataBrowserItemDataUPP			list_item_upp;
-	DataBrowserItemNotificationUPP	list_notify_upp;
+	DataBrowserItemDataUPP			list_movements_item_upp,list_moves_item_upp;
+	DataBrowserItemNotificationUPP	list_movements_notify_upp,list_moves_notify_upp;
 	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
 		// open the dialog
 		
-	dialog_open(&dialog_map_movements_wind,"MapMovements");
+	dialog_open(&dialog_movements_wind,"MapMovements");
 	
-		// setup the list
+		// setup the movement list
 		
-	ctrl=map_movements_list_get_ctrl();
+	ctrl=movements_list_get_ctrl();
 	
-	dbcall.version=kDataBrowserLatestCallbacks;
-	InitDataBrowserCallbacks(&dbcall);
+	dbcall_movements.version=kDataBrowserLatestCallbacks;
+	InitDataBrowserCallbacks(&dbcall_movements);
 	
-	list_item_upp=NewDataBrowserItemDataUPP(&map_movements_list_item_proc);
-	dbcall.u.v1.itemDataCallback=list_item_upp;
+	list_movements_item_upp=NewDataBrowserItemDataUPP(&movements_list_item_proc);
+	dbcall_movements.u.v1.itemDataCallback=list_movements_item_upp;
 
-	list_notify_upp=NewDataBrowserItemNotificationUPP(&map_movements_list_notify_proc);
-	dbcall.u.v1.itemNotificationCallback=list_notify_upp;
+	list_movements_notify_upp=NewDataBrowserItemNotificationUPP(&movements_list_notify_proc);
+	dbcall_movements.u.v1.itemNotificationCallback=list_movements_notify_upp;
 	
-	SetDataBrowserCallbacks(ctrl,&dbcall);
+	SetDataBrowserCallbacks(ctrl,&dbcall_movements);
+
+		// setup the move list
+		
+	ctrl=moves_list_get_ctrl();
 	
-	SetDataBrowserListViewDisclosureColumn(ctrl,kMapMovementListNameColumn,FALSE);
+	dbcall_moves.version=kDataBrowserLatestCallbacks;
+	InitDataBrowserCallbacks(&dbcall_moves);
 	
-	map_movements_reset_list(-1,-1);
-	map_movement_reset_buttons();
+	list_moves_item_upp=NewDataBrowserItemDataUPP(&moves_list_item_proc);
+	dbcall_moves.u.v1.itemDataCallback=list_moves_item_upp;
+
+	list_moves_notify_upp=NewDataBrowserItemNotificationUPP(&moves_list_notify_proc);
+	dbcall_moves.u.v1.itemNotificationCallback=list_moves_notify_upp;
+	
+	SetDataBrowserCallbacks(ctrl,&dbcall_moves);
+
+		// reset lists
+	
+	movements_list_reset(-1);
+	moves_list_reset(-1);
+	movements_reset_buttons();
 
 		// show window
 	
-	ShowWindow(dialog_map_movements_wind);
+	ShowWindow(dialog_movements_wind);
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(map_movements_event_proc);
-	InstallWindowEventHandler(dialog_map_movements_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	event_upp=NewEventHandlerUPP(movements_event_proc);
+	InstallWindowEventHandler(dialog_movements_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window
 		
-	RunAppModalLoopForWindow(dialog_map_movements_wind);
+	RunAppModalLoopForWindow(dialog_movements_wind);
 	
 		// close window
 		
-	DisposeDataBrowserItemDataUPP(list_item_upp);
-	DisposeDataBrowserItemNotificationUPP(list_notify_upp);
-	DisposeWindow(dialog_map_movements_wind);
+	DisposeDataBrowserItemDataUPP(list_movements_item_upp);
+	DisposeDataBrowserItemNotificationUPP(list_movements_notify_upp);
+	
+	DisposeDataBrowserItemDataUPP(list_moves_item_upp);
+	DisposeDataBrowserItemNotificationUPP(list_moves_notify_upp);
+	
+	DisposeWindow(dialog_movements_wind);
 	
 	return(TRUE);
 }

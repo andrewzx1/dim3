@@ -96,6 +96,9 @@ extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *exten
 //
 
 extern bool dialog_map_settings_run(void);
+extern bool dialog_map_cinemas_run(void);
+extern bool dialog_cinema_settings_run(map_cinema_type *cinema);
+extern bool dialog_cinema_action_settings_run(map_cinema_action_type *action);
 extern bool dialog_map_groups_run(void);
 extern bool dialog_map_movements_run(void);
 extern bool dialog_movement_settings_run(movement_type *movement);

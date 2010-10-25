@@ -238,6 +238,7 @@ and can be sold or given away.
 #define kCommandViewRemoveSplit					FOUR_CHAR_CODE('sprm')
 
 #define kCommandMapSettings						FOUR_CHAR_CODE('mset')
+#define kCommandMapCinemas						FOUR_CHAR_CODE('cinm')
 #define kCommandMapRaiseY						FOUR_CHAR_CODE('mrsy')
 #define kCommandMapLowerY						FOUR_CHAR_CODE('mlwy')
 #define kCommandMapCenter						FOUR_CHAR_CODE('mctr')
