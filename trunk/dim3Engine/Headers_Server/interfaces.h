@@ -209,9 +209,7 @@ extern void title_close(void);
 extern bool title_setup(char *dir,char *name,char *sound_name,int event_id,char *err_str);
 extern void title_run(void);
 
-extern void cinema_open(void);
-extern void cinema_close(void);
-extern bool cinema_setup(char *name,int event_id,char *err_str);
+extern bool cinema_start(char *name,int event_id,char *err_str);
 extern void cinema_run(void);
 
 extern void error_open(void);

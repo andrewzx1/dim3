@@ -114,6 +114,10 @@ bool dialog_map_settings_run(void)
 {
 	return(FALSE);
 }
+bool dialog_map_cinemas_run(void)
+{
+	return(FALSE);
+}
 bool dialog_map_movements_run(void)
 {
 	return(FALSE);

@@ -487,6 +487,7 @@ void view_loop_input(void)
 void view_loop_draw(void)
 {
 	int			raw_tick,tick,y_add;
+	bool		draw_hud;
 
 		// time for view draw?
 		// use raw ticks so it works through pauses
@@ -525,7 +526,13 @@ void view_loop_draw(void)
 		// draw hud and interface elements
 		// unless we are in a cinema
 
-	if (server.state!=gs_cinema) {
+	draw_hud=TRUE;
+
+	if (view.cinema.on) {
+		draw_hud=map.cinema.cinemas[view.cinema.idx].show_hud;
+	}
+
+	if (draw_hud) {
 		hud_draw();
 		radar_draw();
 		network_draw();

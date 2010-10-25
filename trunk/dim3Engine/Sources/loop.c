@@ -221,10 +221,6 @@ void loop_state_run(void)
 			title_run();
 			return;
 			
-		case gs_cinema:
-			cinema_run();
-			return;
-			
 		case gs_error:
 			error_run();
 			return;
@@ -274,10 +270,6 @@ void loop_state_last_close(void)
 			title_close();
 			return;
 			
-		case gs_cinema:
-			cinema_close();
-			return;
-
 		case gs_error:
 			error_close();
 			return;
@@ -325,10 +317,6 @@ void loop_state_next_open(void)
 			title_open();
 			return;
 			
-		case gs_cinema:
-			cinema_open();
-			return;
-
 		case gs_error:
 			error_open();
 			return;

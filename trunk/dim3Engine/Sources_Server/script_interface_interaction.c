@@ -109,7 +109,7 @@ JSValueRef js_interface_interaction_start_cinema_func(JSContextRef cx,JSObjectRe
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	
-	if (!cinema_setup(name,script_value_to_int(cx,argv[1]),err_str)) {
+	if (!cinema_start(name,script_value_to_int(cx,argv[1]),err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 	

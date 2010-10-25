@@ -38,9 +38,8 @@ and can be sold or given away.
 #define gs_file									6
 #define gs_chooser								7
 #define gs_title								8
-#define gs_cinema								9
-#define gs_error								10
-#define gs_score_limit							11
+#define gs_error								9
+#define gs_score_limit							10
 
 //
 // lists
@@ -569,7 +568,7 @@ typedef struct		{
 						int						mode,obj_idx,node_event_id,
 												node_from_idx,node_dest_idx,
 												node_seek_idx,node_last_seek_idx;
-						bool					pause_for_turn;
+						bool					pause_for_turn,skip_event;
 						d3pnt					pnt;
 					} obj_auto_walk;
 

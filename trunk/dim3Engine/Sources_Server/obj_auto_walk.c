@@ -42,7 +42,7 @@ extern js_type				js;
       
 ======================================================= */
 
-bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event_id,char *err_str)
+bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,bool skip_event,int event_id,char *err_str)
 {
 		// check for valid nodes
 		
@@ -74,6 +74,7 @@ bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event
 	
 		// setup event and start walking
 		
+	obj->auto_walk.skip_event=skip_event;
 	obj->auto_walk.node_event_id=event_id;
 	obj->auto_walk.pause_for_turn=FALSE;
 
@@ -100,7 +101,7 @@ bool object_auto_walk_node_name_setup(obj_type *obj,char *start_node,char *end_n
 		return(FALSE);
 	}
 	
-	return(object_auto_walk_node_setup(obj,from_idx,to_idx,event_id,err_str));
+	return(object_auto_walk_node_setup(obj,from_idx,to_idx,FALSE,event_id,err_str));
 }
 
 bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only,char *err_str)
@@ -335,7 +336,7 @@ void object_auto_walk_node(obj_type *obj)
 	if (seek_idx!=dest_idx) {
 		obj->auto_walk.node_last_seek_idx=obj->auto_walk.node_seek_idx;
 		obj->auto_walk.node_seek_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
-		scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_node,node->event_id);
+		if (!obj->auto_walk.skip_event) scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_node,node->event_id);
 		return;
 	}
 	
@@ -345,7 +346,7 @@ void object_auto_walk_node(obj_type *obj)
 	obj->auto_walk.node_seek_idx=-1;
 	obj->auto_walk.node_dest_idx=-1;
 	
-	scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_done,obj->auto_walk.node_event_id);
+	if (!obj->auto_walk.skip_event) scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_done,obj->auto_walk.node_event_id);
 }
 
 void object_auto_walk_object(obj_type *obj)

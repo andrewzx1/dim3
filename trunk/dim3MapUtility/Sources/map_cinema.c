@@ -62,6 +62,8 @@ int map_cinema_add(map_type *map)
 	
 	cinema->name[0]=0x0;
 	cinema->len_msec=0;
+	cinema->freeze_input=TRUE;
+	cinema->show_hud=FALSE;
 	
 	cinema->naction=0;
 	cinema->actions=NULL;
@@ -136,8 +138,9 @@ int map_cinema_add_action(map_type *map,int cinema_idx)
 	action=&cinema->actions[action_idx];
 	
 	action->action=cinema_action_none;
-	action->start_msec=action->end_msec=0;
+	action->actor_type=cinema_actor_camera;
 	action->actor_name[0]=0x0;
+	action->start_msec=action->end_msec=0;
 	action->animation_name[0]=0x0;
 	action->next_animation_name[0]=0x0;
 	action->node_name[0]=0x0;

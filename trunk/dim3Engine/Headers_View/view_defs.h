@@ -390,6 +390,13 @@ typedef struct		{
 					} view_menu_type;
 
 typedef struct		{
+						int									idx,event_id,
+															start_tick,last_tick;
+						bool								on;
+						camera_type							camera_state;
+					} view_cinema_type;
+
+typedef struct		{
 						bool								on;
 					} view_console_type;
 
@@ -415,6 +422,7 @@ typedef struct		{
 						rain_draw_type						*rain_draws;
 						view_obscure_type					obscure;
 						view_menu_type						menu;
+						view_cinema_type					cinema;
 						view_console_type					console;
 						view_error_type						error;
 						view_debug_type						debug;

@@ -256,14 +256,14 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
 	liq->draw.z_sz=z_sz;
 }
 
-int liquid_render_liquid_create_quads(map_liquid_type *liq,int v_sz)
+int liquid_render_liquid_create_trigs(map_liquid_type *liq,int v_sz)
 {
-	int				x,z,x_sz,z_sz,quad_cnt,
+	int				x,z,x_sz,z_sz,trig_cnt,
 					tz,bz,tz_add,top_row,bot_row,
 					lx,rx,lx_add,tide_split;
 	unsigned int	*index_ptr;
 
-		// drawing the quads only draws to the edges
+		// drawing the triangles only draws to the edges
 
 	x_sz=liq->draw.x_sz-1;
 	if (x_sz<=0) return(0);
@@ -275,12 +275,12 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq,int v_sz)
 
 		// setup index vbo
 
-	index_ptr=view_bind_map_liquid_index_object(v_sz*4);
+	index_ptr=view_bind_map_liquid_index_object(v_sz*6);
 	if (index_ptr==NULL) return(0);
 
 		// create the draw indexes
 
-	quad_cnt=0;
+	trig_cnt=0;
 		
 	tz=liq->top;
 	tz_add=tide_split-(tz%tide_split);
@@ -302,10 +302,13 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq,int v_sz)
 			
 			*index_ptr++=(unsigned int)(top_row+x);
 			*index_ptr++=(unsigned int)(top_row+(x+1));
+			*index_ptr++=(unsigned int)(bot_row+x);
+
+			*index_ptr++=(unsigned int)(top_row+(x+1));
 			*index_ptr++=(unsigned int)(bot_row+(x+1));
 			*index_ptr++=(unsigned int)(bot_row+x);
 
-			quad_cnt++;
+			trig_cnt+=2;
 
 			lx=rx;
 		}
@@ -316,7 +319,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq,int v_sz)
 
 	view_unmap_liquid_index_object();
 
-	return(quad_cnt);
+	return(trig_cnt);
 }
 
 /* =======================================================
@@ -327,7 +330,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq,int v_sz)
 
 void liquid_render_liquid(map_liquid_type *liq)
 {
-	int						v_sz,quad_cnt,frame;
+	int						v_sz,trig_cnt,frame;
 	float					alpha;
 	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
@@ -352,10 +355,10 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 	liquid_render_liquid_create_vertex(liq,v_sz);
 
-		// create quads
+		// create trigs
 
-	quad_cnt=liquid_render_liquid_create_quads(liq,v_sz);
-	if (quad_cnt==0) {
+	trig_cnt=liquid_render_liquid_create_trigs(liq,v_sz);
+	if (trig_cnt==0) {
 		view_unbind_liquid_vertex_object();
 		return;
 	}
@@ -402,7 +405,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 		
 			// draw liquid
 		
-		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
+		glDrawElements(GL_TRIANGLES,(trig_cnt*3),GL_UNSIGNED_INT,(GLvoid*)0);
 		
 		gl_shader_draw_end();
 
@@ -445,7 +448,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		gl_texture_transparent_light_map_start();
 		gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,alpha);
-		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
+		glDrawElements(GL_TRIANGLES,(trig_cnt*3),GL_UNSIGNED_INT,(GLvoid*)0);
 		gl_texture_transparent_light_map_end();
 
 			// disable color array

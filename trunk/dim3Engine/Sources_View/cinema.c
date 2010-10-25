@@ -34,26 +34,21 @@ and can be sold or given away.
 #include "video.h"
 #include "objects.h"
 #include "models.h"
+#include "effects.h"
 #include "consoles.h"
 #include "cameras.h"
 #include "inputs.h"
 #include "timing.h"
 
-extern void server_loop(void);
-extern void view_run(void);
-extern void view_loop_draw(void);
 extern void map_movements_cinema_start(int movement_idx,bool reverse);
 
 extern server_type				server;
+extern view_type				view;
 extern map_type					map;
 extern js_type					js;
 extern network_setup_type		net_setup;
 
 extern camera_type				camera;
-
-int								cinema_last_state,cinema_event_id,
-								cinema_idx,cinema_start_tick,cinema_last_tick;
-camera_type						cinema_camera_state;
 
 /* =======================================================
 
@@ -61,49 +56,64 @@ camera_type						cinema_camera_state;
       
 ======================================================= */
 
-void cinema_open(void)
-{
-	cinema_start_tick=game_time_get();
-	cinema_last_tick=0;
-
-	memmove(&cinema_camera_state,&camera,sizeof(camera_type));
-}
-
-void cinema_close(void)
-{
-	memmove(&camera,&cinema_camera_state,sizeof(camera_type));
-}
-
-bool cinema_setup(char *name,int event_id,char *err_str)
+bool cinema_start(char *name,int event_id,char *err_str)
 {
 	int				n;
+	obj_type		*player_obj;
 
 		// get the cinema
 
-	cinema_idx=-1;
+	view.cinema.idx=-1;
 
 	for (n=0;n!=map.cinema.ncinema;n++) {
 		if (strcmp(name,map.cinema.cinemas[n].name)==0) {
-			cinema_idx=n;
+			view.cinema.idx=n;
 			break;
 		}
 	}
 
-	if (cinema_idx==-1) {
+	if (view.cinema.idx==-1) {
 		sprintf(err_str,"No cinema exists with this name: %s",name);
 		return(FALSE);
 	}
 
-		// remember last state and event
+		// start the timing and events
 
-	cinema_last_state=server.next_state;
-	cinema_event_id=event_id;
-	
-		// switch to cinema state
-		
-	server.next_state=gs_cinema;
-	
+	view.cinema.on=TRUE;
+
+	view.cinema.start_tick=game_time_get();
+	view.cinema.last_tick=0;
+
+	view.cinema.event_id=event_id;
+
+		// backup the camera
+
+	memmove(&view.cinema.camera_state,&camera,sizeof(camera_type));
+
+		// run any input freeze
+
+	if (map.cinema.cinemas[view.cinema.idx].freeze_input) {
+		player_obj=server.obj_list.objs[server.player_obj_idx];
+		object_input_freeze(player_obj,TRUE);
+	}
+
 	return(TRUE);
+}
+
+void cinema_end(void)
+{
+	obj_type		*player_obj;
+
+		// turn off input freeze
+
+	if (map.cinema.cinemas[view.cinema.idx].freeze_input) {
+		player_obj=server.obj_list.objs[server.player_obj_idx];
+		object_input_freeze(player_obj,FALSE);
+	}
+
+		// restore camera
+
+	memmove(&camera,&view.cinema.camera_state,sizeof(camera_type));
 }
 
 /* =======================================================
@@ -207,7 +217,7 @@ void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type 
 
 			// start walk
 
-		if (!object_auto_walk_node_setup(obj,start_node_idx,node_idx,-1,err_str)) console_add_error(err_str);
+		if (!object_auto_walk_node_setup(obj,start_node_idx,node_idx,TRUE,-1,err_str)) console_add_error(err_str);
 
 		return;
 	}
@@ -233,41 +243,72 @@ void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type 
 
 void cinema_action_run_generic(map_cinema_action_type *action)
 {
-	int					node_idx,movement_idx;
+	int					node_idx,movement_idx,particle_idx;
+	char				err_str[256];
 	obj_type			*obj;
 
 		// determine any nodes
 
 	node_idx=map_find_node(&map,action->node_name);
 
-		// camera actor
+		// route to proper action
 
-	if (strcasecmp(action->actor_name,"camera")==0) {
-		cinema_action_run_camera(node_idx,action);
-		return;
+	switch (action->actor_type) {
+
+			// camera actor
+
+		case cinema_actor_camera:
+			cinema_action_run_camera(node_idx,action);
+			return;
+
+			// player actor
+
+		case cinema_actor_player:
+			obj=server.obj_list.objs[server.player_obj_idx];
+			cinema_action_run_object(obj,node_idx,action);
+			return;
+
+			// object actor
+
+		case cinema_actor_object:
+			obj=object_find_name(action->actor_name);
+			if (obj==NULL) {
+				sprintf(err_str,"Unknown object in cinema: %s",action->actor_name);
+				console_add_error(err_str);
+				return;
+			}
+			cinema_action_run_object(obj,node_idx,action);
+			return;
+
+			// movement actor
+
+		case cinema_actor_movement:
+			movement_idx=map_movement_find(&map,action->actor_name);
+			if (movement_idx==-1) {
+				sprintf(err_str,"Unknown movement in cinema: %s",action->actor_name);
+				console_add_error(err_str);
+				return;
+			}
+			map_movements_cinema_start(movement_idx,action->move_reverse);
+			return;
+
+			// particle actor
+
+		case cinema_actor_particle:
+			particle_idx=particle_find_index(action->actor_name);
+			if (particle_idx==-1) {
+				sprintf(err_str,"Unknown particle in cinema: %s",action->actor_name);
+				console_add_error(err_str);
+				return;
+			}
+			if (node_idx==-1) {
+				sprintf(err_str,"Need node to launch cinema particle: %s",action->actor_name);
+				console_add_error(err_str);
+				return;
+			}
+			particle_spawn(particle_idx,-1,&map.nodes[node_idx].pnt,NULL,NULL);
+			return;
 	}
-
-		// object actor
-
-	obj=object_find_name(action->actor_name);
-	if (obj!=NULL) {
-		cinema_action_run_object(obj,node_idx,action);
-		return;
-	}
-
-		// movement actor
-
-	movement_idx=map_movement_find(&map,action->actor_name);
-	if (movement_idx!=-1) {
-		map_movements_cinema_start(movement_idx,action->move_reverse);
-		return;
-	}
-
-		// particle actor
-
-
-	// supergumba -- particles here
-
 }
 
 bool cinema_actions(void)
@@ -276,11 +317,11 @@ bool cinema_actions(void)
 	map_cinema_type			*cinema;
 	map_cinema_action_type	*action;
 
-	cinema=&map.cinema.cinemas[cinema_idx];
+	cinema=&map.cinema.cinemas[view.cinema.idx];
 
 		// is cinema over?
 
-	tick=game_time_get()-cinema_start_tick;
+	tick=game_time_get()-view.cinema.start_tick;
 	if (tick>=cinema->len_msec) return(TRUE);
 
 		// run actions
@@ -291,7 +332,7 @@ bool cinema_actions(void)
 
 			// time to start action?
 
-		if ((action->start_msec>=cinema_last_tick) && (action->start_msec<tick)) {
+		if ((action->start_msec>=view.cinema.last_tick) && (action->start_msec<tick)) {
 			cinema_action_run_generic(action);
 		}
 
@@ -300,7 +341,7 @@ bool cinema_actions(void)
 
 		// remember last tick
 
-	cinema_last_tick=tick;
+	view.cinema.last_tick=tick;
 
 	return(FALSE);
 }
@@ -316,15 +357,11 @@ void cinema_run(void)
 	bool				cinema_done;
 	obj_type			*obj;
 
+	if (!view.cinema.on) return;
+
 		// run actions
 
 	cinema_done=cinema_actions();
-
-		// run and draw the game
-
-	server_loop();
-	view_run();
-	view_loop_draw();
 	
 		// cinema over or mouse button pushed?
 	
@@ -332,17 +369,17 @@ void cinema_run(void)
 
 			// send the finish event
 
-		if (cinema_event_id!=-1) {
-			scripts_post_event_console(&js.game_attach,sd_event_interface,sd_event_interface_cinema_done,cinema_event_id);
-			scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_interface_cinema_done,cinema_event_id);
+		if (view.cinema.event_id!=-1) {
+			scripts_post_event_console(&js.game_attach,sd_event_interface,sd_event_interface_cinema_done,view.cinema.event_id);
+			scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_interface_cinema_done,view.cinema.event_id);
 
 			if (net_setup.mode!=net_mode_host_dedicated) {
 				obj=server.obj_list.objs[server.player_obj_idx];
-				scripts_post_event_console(&obj->attach,sd_event_map,sd_event_interface_cinema_done,cinema_event_id);
+				scripts_post_event_console(&obj->attach,sd_event_map,sd_event_interface_cinema_done,view.cinema.event_id);
 			}
 		}
 
-		server.next_state=cinema_last_state;
+		cinema_end();
 	}
 }
 

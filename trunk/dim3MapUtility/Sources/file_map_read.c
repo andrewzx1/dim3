@@ -43,7 +43,8 @@ char					media_type_str[][32]={"none","chooser","title","movie",""},
 						spot_type_str[][32]={"Object","Bot","Player","Spawn",""},
 						skill_type_str[][32]={"easy","medium","hard",""},
 						spawn_type_str[][32]={"always","single_player","multiplayer",""},
-						cinema_action_type_str[][32]={"none","place","move","show","hide",""};
+						cinema_action_type_str[][32]={"none","place","move","show","hide",""},
+						cinema_actor_type_str[][32]={"camera","player","object","movement","particle",""};
 
 extern bool decode_map_v1_xml(map_type *map,int map_head);
 extern bool decode_map_v2_xml(map_type *map,int map_head);
@@ -324,6 +325,8 @@ void decode_map_cinemas_xml(map_type *map,int map_head)
 
 		xml_get_attribute_text(cinema_tag,"name",cinema->name,name_str_len);
 		cinema->len_msec=xml_get_attribute_int(cinema_tag,"length");
+		cinema->freeze_input=xml_get_attribute_boolean(cinema_tag,"freeze_input");
+		cinema->show_hud=xml_get_attribute_boolean(cinema_tag,"show_hud");
 		
 		cinema->naction=0;
 		
@@ -339,8 +342,10 @@ void decode_map_cinemas_xml(map_type *map,int map_head)
 
 			action=&cinema->actions[action_idx];
 
-			xml_get_attribute_text(action_tag,"actor",action->actor_name,name_str_len);
 			action->action=xml_get_attribute_list(action_tag,"action",(char*)cinema_action_type_str);
+
+			action->actor_type=xml_get_attribute_list(action_tag,"actor_type",(char*)cinema_actor_type_str);
+			xml_get_attribute_text(action_tag,"actor_name",action->actor_name,name_str_len);
 
 			action->start_msec=xml_get_attribute_int_default(action_tag,"start",0);
 			action->end_msec=xml_get_attribute_int_default(action_tag,"end",0);

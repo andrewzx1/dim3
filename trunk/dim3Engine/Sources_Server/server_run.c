@@ -48,6 +48,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 extern void group_moves_run(bool run_events);
+extern void cinema_run(void);
 extern void map_movements_auto_open(void);
 
 /* =======================================================
@@ -352,6 +353,7 @@ void server_run(void)
 			server.time.run_tick+=10;
 
 			group_moves_run(TRUE);
+			cinema_run();
 			
 			run_objects_slice();
 			run_projectiles_slice();
