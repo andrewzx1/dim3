@@ -369,6 +369,10 @@ bool menu_event_run(int cmd)
 			dialog_map_settings_run();
 			return(TRUE);
 			
+		case kCommandMapCinemas:
+			dialog_map_cinemas_run();
+			return(TRUE);
+			
 		case kCommandMapRaiseY:
 			map_mesh_move_all(0,-(map_enlarge*10),0);
 			main_wind_draw();

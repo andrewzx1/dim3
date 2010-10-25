@@ -30,6 +30,7 @@ and can be sold or given away.
 //
 
 extern char light_type_str[][32];
+extern char cinema_action_type_str[][32];
 
 //
 // version
