@@ -129,10 +129,10 @@ void draw_sky_dome_panoramic_setup(void)
 	
 		// construct VBO
 
-	vertex_ptr=view_bind_map_sky_vertex_object(((120*4)*(3+2)));
+	vertex_ptr=view_bind_map_sky_vertex_object(((120*6)*(3+2)));
 	if (vertex_ptr==NULL) return;
 
-	uv_ptr=vertex_ptr+((120*4)*3);
+	uv_ptr=vertex_ptr+((120*6)*3);
 
 		// create the dome vertexes
 
@@ -314,7 +314,7 @@ void draw_sky_dome_panoramic(void)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((120*4)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((120*6)*3)*sizeof(float)));
 
 		// draw textured dome
 		
@@ -381,7 +381,7 @@ void draw_sky_dome_hemisphere_setup(void)
 
 		// construct VBO
 		
-	sz=(5*20)*4;
+	sz=(5*20)*6;
 	if (map.sky.dome_mirror) sz*=2;
 
 	vertex_ptr=view_bind_map_sky_vertex_object((sz*(3+2)));
@@ -422,12 +422,31 @@ void draw_sky_dome_hemisphere_setup(void)
 				// regular dome
 
 			if (i!=4) {
+
+					// trig 1
+
 				*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
 				*vertex_ptr++=f_by;
 				*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
 
 				*uv_ptr++=gx1;
 				*uv_ptr++=bgy;
+
+				*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+				*vertex_ptr++=f_by;
+				*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+
+				*uv_ptr++=gx2;
+				*uv_ptr++=bgy;
+
+				*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+				*vertex_ptr++=f_ty;
+				*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+
+				*uv_ptr++=gx1;
+				*uv_ptr++=tgy;
+
+					// trig 2
 
 				*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
 				*vertex_ptr++=f_by;
@@ -451,12 +470,31 @@ void draw_sky_dome_hemisphere_setup(void)
 				*uv_ptr++=tgy;
 			}
 			else {
+
+					// trig 1
+
 				*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
 				*vertex_ptr++=f_by;
 				*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
 
 				*uv_ptr++=gx1;
 				*uv_ptr++=bgy;
+
+				*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+				*vertex_ptr++=f_by;
+				*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+
+				*uv_ptr++=gx2;
+				*uv_ptr++=bgy;
+
+				*vertex_ptr++=0.0f;
+				*vertex_ptr++=f_ty;
+				*vertex_ptr++=0.0f;
+
+				*uv_ptr++=0.5f;
+				*uv_ptr++=0.01f;
+
+					// trig 2
 
 				*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
 				*vertex_ptr++=f_by;
@@ -485,12 +523,31 @@ void draw_sky_dome_hemisphere_setup(void)
 			if (map.sky.dome_mirror) {
 
 				if (i!=4) {
+
+						// trig 1
+
 					*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
 					*vertex_ptr++=f_by2;
 					*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
 				
 					*uv_ptr++=gx1;
 					*uv_ptr++=bgy;
+
+					*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+					*vertex_ptr++=f_by2;
+					*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+					
+					*uv_ptr++=gx2;
+					*uv_ptr++=bgy;
+
+					*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+					*vertex_ptr++=f_ty2;
+					*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+					
+					*uv_ptr++=gx1;
+					*uv_ptr++=tgy;
+
+						// trig 2
 
 					*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
 					*vertex_ptr++=f_by2;
@@ -514,12 +571,31 @@ void draw_sky_dome_hemisphere_setup(void)
 					*uv_ptr++=tgy;
 				}
 				else {
+
+						// trig 1
+
 					*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
 					*vertex_ptr++=f_by2;
 					*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
 				
 					*uv_ptr++=gx1;
 					*uv_ptr++=bgy;
+
+					*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+					*vertex_ptr++=f_by2;
+					*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+					
+					*uv_ptr++=gx2;
+					*uv_ptr++=bgy;
+
+					*vertex_ptr++=0.0f;
+					*vertex_ptr++=f_ty2;
+					*vertex_ptr++=0.0f;
+
+					*uv_ptr++=0.5f;
+					*uv_ptr++=0.01f;
+
+						// trig 2
 
 					*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
 					*vertex_ptr++=f_by2;
@@ -600,7 +676,7 @@ void draw_sky_dome_hemisphere(void)
 
 		// quad counts
 
-	dome_cnt=(5*20)*4;
+	dome_cnt=(5*20)*6;
 	if (map.sky.dome_mirror) dome_cnt*=2;
 
 		// draw the dome
@@ -611,7 +687,7 @@ void draw_sky_dome_hemisphere(void)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((dome_cnt*3)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,dome_cnt);
+	glDrawArrays(GL_TRIANGLES,0,dome_cnt);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
