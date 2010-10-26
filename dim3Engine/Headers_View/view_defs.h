@@ -297,9 +297,11 @@ typedef struct		{
 
 typedef struct		{
 						int									node_seek_idx,node_dest_idx,
-															msec,event_id;
-						float								speed,turn_speed;
+															total_dist,msec,event_id;
+						float								speed;
 						bool								on,open_doors,in_freeze;
+						d3vct								walk_vct,walk_add_vct;
+						d3ang								turn_ang;
 					} camera_auto_walk_type;
 
 typedef struct		{

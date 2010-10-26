@@ -37,16 +37,13 @@ extern camera_type		camera;
 extern js_type			js;
 
 JSValueRef js_camera_static_position_get_follow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_camera_static_position_get_walkTurnSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_camera_static_position_set_follow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-bool js_camera_static_position_set_walkTurnSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_camera_static_position_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		camera_static_position_props[]={
 							{"follow",				js_camera_static_position_get_follow,			js_camera_static_position_set_follow,			kJSPropertyAttributeDontDelete},
-							{"walkTurnSpeed",		js_camera_static_position_get_walkTurnSpeed,	js_camera_static_position_set_walkTurnSpeed,	kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 							
 JSStaticFunction	camera_static_position_functions[]={
@@ -89,11 +86,6 @@ JSValueRef js_camera_static_position_get_follow(JSContextRef cx,JSObjectRef j_ob
 	return(script_bool_to_value(cx,camera.setup.c_static.follow));
 }
 
-JSValueRef js_camera_static_position_get_walkTurnSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_float_to_value(cx,camera.auto_walk.turn_speed));
-}
-
 /* =======================================================
 
       Setters
@@ -103,13 +95,6 @@ JSValueRef js_camera_static_position_get_walkTurnSpeed(JSContextRef cx,JSObjectR
 bool js_camera_static_position_set_follow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	camera.setup.c_static.follow=script_value_to_bool(cx,vp);
-	
-	return(TRUE);
-}
-
-bool js_camera_static_position_set_walkTurnSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
-{
-	camera.auto_walk.turn_speed=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }

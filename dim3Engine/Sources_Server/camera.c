@@ -70,7 +70,6 @@ void camera_initialize(void)
 	camera.setup.plane.near_z_offset=-(3*map_enlarge);
 
 	camera.auto_walk.on=FALSE;
-	camera.auto_walk.turn_speed=1.0f;
 
 	camera.auto_move.ang_on=FALSE;
 	
