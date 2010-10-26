@@ -144,11 +144,8 @@ void cinema_action_run_camera(int node_idx,map_cinema_action_type *action)
 		// camera placement
 
 	if (action->action==cinema_action_place) {
-		camera_static_update(&node->pnt);
-
-		camera.setup.ang.x=node->ang.x;
-		camera.setup.ang.y=node->ang.y;
-		camera.setup.ang.z=node->ang.z;
+		memmove(&camera.setup.pnt,&node->pnt,sizeof(d3pnt));
+		memmove(&camera.setup.ang,&node->ang,sizeof(d3ang));
 		
 		return;
 	}
@@ -220,6 +217,12 @@ void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type 
 		if (!object_auto_walk_node_setup(obj,start_node_idx,node_idx,TRUE,-1,err_str)) console_add_error(err_str);
 
 		return;
+	}
+	
+		// none action causes a stop
+		
+	if (action->action==cinema_action_none) {
+		object_move_stop(obj);
 	}
 
 		// show and hide

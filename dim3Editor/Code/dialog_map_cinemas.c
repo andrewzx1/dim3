@@ -353,7 +353,8 @@ static pascal OSStatus actions_list_item_proc(ControlRef ctrl,DataBrowserItemID 
 {
 	int						action_idx;
 	char					str[256];
-	char					action_type_str[][32]={"None","Place","Move","Show","Hide"};
+	char					actor_type_str[][32]={"Camera","Player","Object","Movement","Particle"},
+							action_type_str[][32]={"None","Place","Move","Show","Hide"};
 	map_cinema_action_type	*action;
 	CFStringRef				cfstr;
 
@@ -379,7 +380,14 @@ static pascal OSStatus actions_list_item_proc(ControlRef ctrl,DataBrowserItemID 
 			action_idx=itemID-1;
 			action=&map.cinema.cinemas[dialog_cinema_current_idx].actions[action_idx];
 			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,action->actor_name,kCFStringEncodingMacRoman);
+			if ((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player)) {
+				sprintf(str,"%s: %s",actor_type_str[action->actor_type],action->actor_name);
+			}
+			else {
+				strcpy(str,actor_type_str[action->actor_type]);
+			}
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
 			return(noErr);

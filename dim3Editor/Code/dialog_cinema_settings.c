@@ -31,6 +31,8 @@ extern map_type				map;
 
 #define kCinemaName							FOUR_CHAR_CODE('name')
 #define kCinemaLength						FOUR_CHAR_CODE('clen')
+#define kCinemaFreezeInput					FOUR_CHAR_CODE('fzin')
+#define kCinemaShowHUD						FOUR_CHAR_CODE('swhd')
 
 bool						dialog_cinema_settings_cancel;
 WindowRef					dialog_cinema_settings_wind;
@@ -89,6 +91,8 @@ bool dialog_cinema_settings_run(map_cinema_type *cinema)
 
 	dialog_set_text(dialog_cinema_settings_wind,kCinemaName,0,cinema->name);
 	dialog_set_int(dialog_cinema_settings_wind,kCinemaLength,0,cinema->len_msec);
+	dialog_set_boolean(dialog_cinema_settings_wind,kCinemaFreezeInput,0,cinema->freeze_input);
+	dialog_set_boolean(dialog_cinema_settings_wind,kCinemaShowHUD,0,cinema->show_hud);
 	
 	dialog_set_focus(dialog_cinema_settings_wind,kCinemaName,0);
 	
@@ -111,6 +115,8 @@ bool dialog_cinema_settings_run(map_cinema_type *cinema)
 	if (!dialog_cinema_settings_cancel) {
 		dialog_get_text(dialog_cinema_settings_wind,kCinemaName,0,cinema->name,name_str_len);
 		cinema->len_msec=dialog_get_int(dialog_cinema_settings_wind,kCinemaLength,0);
+		cinema->freeze_input=dialog_get_boolean(dialog_cinema_settings_wind,kCinemaFreezeInput,0);
+		cinema->show_hud=dialog_get_boolean(dialog_cinema_settings_wind,kCinemaShowHUD,0);
 	}
 
 		// close window
