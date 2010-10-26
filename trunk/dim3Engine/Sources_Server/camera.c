@@ -124,12 +124,10 @@ void camera_get_position(d3pnt *pnt,d3ang *ang)
 	
 		case cv_fpp:
             camera_fpp_get_position(pnt,ang);
-			camera_static_update(pnt);
 			break;
 
 		case cv_chase:
             camera_chase_get_position(pnt,ang);
-			camera_static_update(pnt);
 			break;
 
 		case cv_static:

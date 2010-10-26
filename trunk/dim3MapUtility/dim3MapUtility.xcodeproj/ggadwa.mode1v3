@@ -368,7 +368,7 @@
 							<real>284</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>1080 268 306 751 0 0 1680 1028 </string>
+						<string>1080 269 306 751 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -405,7 +405,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1080 268 306 751 0 0 1680 1028 </string>
+								<string>1080 269 306 751 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -425,7 +425,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 705}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1080 268 306 751 0 0 1680 1028 </string>
+								<string>1080 269 306 751 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -449,9 +449,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26E5B1B21274B4C200336C52</string>
+				<string>268DD92D12763D7C001E4970</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26E5B1B31274B4C200336C52</string>
+				<string>268DD92E12763D7C001E4970</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -572,7 +572,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>309638338.49548399</real>
+	<real>309738876.89285803</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -587,12 +587,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>260AFEBC0D404E7500F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>1080 268 306 751 0 0 1680 1028 </string>
+	<string>1080 269 306 751 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -669,7 +668,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>26E5B1A31274B42B00336C52</string>
+				<string>268DD92A12762352001E4970</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

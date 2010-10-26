@@ -29,7 +29,8 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kCinemaActionActor					FOUR_CHAR_CODE('actr')
+#define kCinemaActionActorType				FOUR_CHAR_CODE('actt')
+#define kCinemaActionActorName				FOUR_CHAR_CODE('actr')
 #define kCinemaActionAction					FOUR_CHAR_CODE('actn')
 #define kCinemaActionTimeStart				FOUR_CHAR_CODE('tsrt')
 #define kCinemaActionTimeEnd				FOUR_CHAR_CODE('tend')
@@ -93,7 +94,8 @@ bool dialog_cinema_action_settings_run(map_cinema_action_type *action)
 
 		// set controls
 		
-	dialog_set_text(dialog_cinema_action_settings_wind,kCinemaActionActor,0,action->actor_name);
+	dialog_set_combo(dialog_cinema_action_settings_wind,kCinemaActionActorType,0,action->actor_type);
+	dialog_set_text(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,action->actor_name);
 	dialog_set_combo(dialog_cinema_action_settings_wind,kCinemaActionAction,0,action->action);
 	
 	dialog_set_int(dialog_cinema_action_settings_wind,kCinemaActionTimeStart,0,action->start_msec);
@@ -106,7 +108,7 @@ bool dialog_cinema_action_settings_run(map_cinema_action_type *action)
 
 	dialog_set_boolean(dialog_cinema_action_settings_wind,kCinemaActionReverseMove,0,action->move_reverse);
 	
-	dialog_set_focus(dialog_cinema_action_settings_wind,kCinemaActionActor,0);
+	dialog_set_focus(dialog_cinema_action_settings_wind,kCinemaActionActorName,0);
 	
 		// show window
 	
@@ -125,7 +127,8 @@ bool dialog_cinema_action_settings_run(map_cinema_action_type *action)
 		// dialog to data
 		
 	if (!dialog_cinema_action_settings_cancel) {
-		dialog_get_text(dialog_cinema_action_settings_wind,kCinemaActionActor,0,action->actor_name,name_str_len);
+		action->actor_type=dialog_get_combo(dialog_cinema_action_settings_wind,kCinemaActionActorType,0);
+		dialog_get_text(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,action->actor_name,name_str_len);
 		action->action=dialog_get_combo(dialog_cinema_action_settings_wind,kCinemaActionAction,0);
 
 		action->start_msec=dialog_get_int(dialog_cinema_action_settings_wind,kCinemaActionTimeStart,0);

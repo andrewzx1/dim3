@@ -122,15 +122,11 @@ bool js_camera_static_position_set_walkTurnSpeed(JSContextRef cx,JSObjectRef j_o
 
 JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	d3pnt			pnt;
-
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	pnt.x=script_value_to_int(cx,argv[0]);
-	pnt.y=script_value_to_int(cx,argv[2]);
-	pnt.z=script_value_to_int(cx,argv[1]);
-
-	camera_static_update(&pnt);
+	camera.setup.pnt.x=script_value_to_int(cx,argv[0]);
+	camera.setup.pnt.y=script_value_to_int(cx,argv[2]);
+	camera.setup.pnt.z=script_value_to_int(cx,argv[1]);
 	
 	return(script_null_to_value(cx));
 }
@@ -148,7 +144,7 @@ JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectR
 	}
 	else {
 		spot=&map.spots[idx];
-		camera_static_update(&spot->pnt);
+		memmove(&camera.setup.pnt,&spot->pnt,sizeof(d3pnt));
 	}
 
 	return(script_null_to_value(cx));

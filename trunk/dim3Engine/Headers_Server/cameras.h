@@ -46,7 +46,6 @@ extern void camera_chase_get_position(d3pnt *pnt,d3ang *ang);
 extern void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang);
 
 extern void camera_static_connect(void);
-extern void camera_static_update(d3pnt *pnt);
 extern void camera_static_get_position(d3pnt *pnt,d3ang *ang);
 extern bool camera_walk_to_node_by_index_setup(int from_idx,int to_idx,int msec,int event_id,bool open_doors,bool in_freeze,char *err_str);
 extern bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int event_id,bool open_doors,bool in_freeze,char *err_str);
