@@ -284,7 +284,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		
 	draw->pnt.x=(int)fx+obj->pnt.x;
 	draw->pnt.y=(int)fy+obj->pnt.y;
-	draw->pnt.z=((int)fz+obj->pnt.z)-obj->camera_z_adjust;
+	draw->pnt.z=(int)fz+obj->pnt.z;
 
 		// regular lighting and shaders
 

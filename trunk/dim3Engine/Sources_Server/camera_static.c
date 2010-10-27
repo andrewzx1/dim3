@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "cameras.h"
 #include "scripts.h"
+#include "timing.h"
 
 extern server_type		server;
 extern map_type			map;
@@ -211,6 +212,33 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 
 /* =======================================================
 
+      Walk to Node Angle Utility
+      
+======================================================= */
+
+float camera_walk_to_node_move_angle(float s_ang,float e_ang,int tick,int tot_tick)
+{
+	float			ang;
+
+	if (s_ang<e_ang) {
+		if ((e_ang-s_ang)<=180.0f) return(s_ang+(((e_ang-s_ang)*((float)tick))/((float)tot_tick)));
+
+		s_ang+=360.0f;
+		ang=s_ang+(((e_ang-s_ang)*((float)tick))/((float)tot_tick));
+		if (ang>=360.0f) ang-=360.0f;
+		return(ang);
+	}
+
+	if ((s_ang-e_ang)<=180.0f) return(s_ang+(((e_ang-s_ang)*((float)tick))/((float)tot_tick)));
+
+	e_ang+=360.0f;
+	ang=s_ang+(((e_ang-s_ang)*((float)tick))/((float)tot_tick));
+	if (ang>=360.0f) ang-=360.0f;
+	return(ang);
+}
+
+/* =======================================================
+
       Run Static Camera
       
 ======================================================= */
@@ -248,16 +276,15 @@ void camera_static_run(void)
 			// set the current walk pnt
 		
 		camera.setup.pnt.x=camera.auto_walk.start_pnt.x+(((camera.auto_walk.end_pnt.x-camera.auto_walk.start_pnt.x)*tick)/tot_tick);
-		camera.setup.pnt.x=camera.auto_walk.start_pnt.x+(((camera.auto_walk.end_pnt.x-camera.auto_walk.start_pnt.x)*tick)/tot_tick);
-		camera.setup.pnt.x=camera.auto_walk.start_pnt.x+(((camera.auto_walk.end_pnt.x-camera.auto_walk.start_pnt.x)*tick)/tot_tick);
-		
+		camera.setup.pnt.y=camera.auto_walk.start_pnt.y+(((camera.auto_walk.end_pnt.y-camera.auto_walk.start_pnt.y)*tick)/tot_tick);
+		camera.setup.pnt.z=camera.auto_walk.start_pnt.z+(((camera.auto_walk.end_pnt.z-camera.auto_walk.start_pnt.z)*tick)/tot_tick);
 
 			// get the look angle if not following
 
 		if (!camera.setup.c_static.follow) {
-		//	camera.setup.ang.x=angle_turn_toward(camera.setup.ang.x,node->ang.x,camera.auto_walk.turn_ang.x);
-		//	camera.setup.ang.y=angle_turn_toward(camera.setup.ang.y,node->ang.y,camera.auto_walk.turn_ang.y);
-		//	camera.setup.ang.z=angle_turn_toward(camera.setup.ang.z,node->ang.z,camera.auto_walk.turn_ang.z);
+			camera.setup.ang.x=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.x,camera.auto_walk.end_ang.x,tick,tot_tick);
+			camera.setup.ang.y=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.y,camera.auto_walk.end_ang.y,tick,tot_tick);
+			camera.setup.ang.z=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.z,camera.auto_walk.end_ang.z,tick,tot_tick);
 		}
 		
 		return;

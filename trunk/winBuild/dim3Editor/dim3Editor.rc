@@ -62,19 +62,21 @@ BEGIN
     BEGIN
         MENUITEM "Settings...",					400
 		MENUITEM SEPARATOR
-        MENUITEM "Raise Y",						401
-        MENUITEM "Lower Y",						402
-        MENUITEM "Center",						403
+        MENUITEM "Cinemas...",					401
 		MENUITEM SEPARATOR
-        MENUITEM "Reset UVs",					404
-        MENUITEM "Optimize Meshes...",			405
+        MENUITEM "Raise Y",						402
+        MENUITEM "Lower Y",						403
+        MENUITEM "Center",						404
 		MENUITEM SEPARATOR
-        MENUITEM "Recalc Normals",				406
+        MENUITEM "Reset UVs",					405
+        MENUITEM "Optimize Meshes...",			406
 		MENUITEM SEPARATOR
-        MENUITEM "Clear Light Maps",			407
-        MENUITEM "Build Light Maps...",			408
+        MENUITEM "Recalc Normals",				407
 		MENUITEM SEPARATOR
-        MENUITEM "Run...",						409
+        MENUITEM "Clear Light Maps",			408
+        MENUITEM "Build Light Maps...",			409
+		MENUITEM SEPARATOR
+        MENUITEM "Run...",						410
     END
     POPUP "Mesh"
     BEGIN
