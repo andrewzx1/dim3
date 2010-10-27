@@ -422,7 +422,6 @@ void view_draw(void)
 	view.render->camera.fov=camera.setup.plane.fov;
 	view.render->camera.flip=FALSE;
 	view.render->camera.under_liquid_idx=camera_check_liquid(obj,&view.render->camera.pnt);
-	view.render->camera.z_adjust=obj->camera_z_adjust;
 	
 	view.render->force_camera_obj=FALSE;
 

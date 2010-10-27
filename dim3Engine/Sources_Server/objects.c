@@ -118,6 +118,8 @@ void object_clear_size(obj_size *size)
 
 	size->radius=10*map_enlarge;
 	size->weight=200;
+
+	size->node_touch_dist=3*map_enlarge;
 }
 
 void object_clear_position(d3pnt *pnt)
@@ -563,8 +565,6 @@ int object_create(char *name,int type,int bind)
 	
 	obj->team_idx=net_team_none;
 	obj->spawn_spot_name[0]=0x0;
-
-	obj->camera_z_adjust=0;
 	
 	obj->click.on=FALSE;
 	obj->click.distance=map_enlarge*10;

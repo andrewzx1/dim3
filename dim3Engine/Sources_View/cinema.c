@@ -212,6 +212,15 @@ void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type 
 		dist=map_node_to_node_distance(&map,start_node_idx,node_idx);
 		obj->forward_move.speed=((float)dist)/((float)((action->end_msec-action->start_msec)/10));
 
+			// throw an error if forward speed is
+			// greater than object max speed
+
+		if (obj->forward_move.speed>obj->forward_move.max_walk_speed) {
+			sprintf(err_str,"%s max speed is too low to reach the node",obj->name);
+			console_add_error(err_str);
+			return;
+		}
+
 			// start walk
 
 		if (!object_auto_walk_node_setup(obj,start_node_idx,node_idx,TRUE,-1,err_str)) console_add_error(err_str);

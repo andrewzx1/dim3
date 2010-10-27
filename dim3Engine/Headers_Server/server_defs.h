@@ -189,7 +189,6 @@ and can be sold or given away.
 // node walking
 //
 
-#define node_slop_speed_factor					2.5f				// how close to a node do we have to be (compared with speed) to be a hit
 #define node_pause_max_angle					45.0f				// angle needed to get out of a pause to turn
 #define node_pause_min_angle					25.0f				// angle needed to get out of a pause when already paused
 
@@ -381,7 +380,8 @@ typedef struct		{
 
 typedef struct		{
 						int						x,z,y,radius,
-												eye_offset,weight;
+												eye_offset,weight,
+												node_touch_dist;
 					} obj_size;
 
 typedef struct		{
@@ -845,7 +845,7 @@ typedef struct		{
 typedef struct		{
 						int						idx,type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
-												count,input_mode,air_mode,camera_z_adjust,
+												count,input_mode,air_mode,
 												damage_obj_idx,item_count,
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],spawn_spot_name[name_str_len],
