@@ -236,13 +236,16 @@ bool map_movements_script_is_looping(int movement_idx)
       
 ======================================================= */
 
-void map_movements_cinema_start(int movement_idx,bool reverse)
+bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_str)
 {
 	movement_type	*movement;
 	
 	movement=&map.movements[movement_idx];
 
-	if (movement->started) return;
+	if (movement->started) {
+		sprintf(err_str,"Can't start another movement during a movement: %s",movement->name);
+		return(FALSE);
+	}
 	
 	if (!reverse) {
 		movement->reverse=FALSE;
@@ -252,6 +255,8 @@ void map_movements_cinema_start(int movement_idx,bool reverse)
 		movement->reverse=TRUE;
 		map_movements_start(movement_idx,(movement->nmove-1),-1);
 	}
+	
+	return(TRUE);
 }
 
 /* =======================================================

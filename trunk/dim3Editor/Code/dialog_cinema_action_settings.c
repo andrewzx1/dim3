@@ -40,7 +40,73 @@ extern map_type				map;
 #define kCinemaActionReverseMove			FOUR_CHAR_CODE('rmov')
 
 bool						dialog_cinema_action_settings_cancel;
+map_cinema_action_type		*dialog_cinema_action_action;
+ControlRef					dialog_cinema_action_type_ctrl;
 WindowRef					dialog_cinema_action_settings_wind;
+
+/* =======================================================
+
+      Cinema Action Setting Actor Type Setup
+      
+======================================================= */
+
+void cinema_action_setting_actor_type_setup(void)
+{
+	int				actor_type;
+	
+	actor_type=dialog_get_combo(dialog_cinema_action_settings_wind,kCinemaActionActorType,0);
+	
+	switch (actor_type) {
+		case cinema_actor_camera:
+		case cinema_actor_player:
+		
+			dialog_clear_combo(dialog_cinema_action_settings_wind,kCinemaActionActorName,0);
+			dialog_set_combo(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,0);
+			dialog_enable(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,FALSE);
+			break;
+			
+		case cinema_actor_object:
+			dialog_special_combo_fill_spot(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,dialog_cinema_action_action->actor_name);
+			dialog_enable(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,TRUE);
+			break;
+		
+		case cinema_actor_movement:
+			dialog_special_combo_fill_movement(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,dialog_cinema_action_action->actor_name);
+			dialog_enable(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,TRUE);
+			break;
+		
+		case cinema_actor_particle:
+			dialog_special_combo_fill_particle(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,dialog_cinema_action_action->actor_name);
+			dialog_enable(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,TRUE);
+			break;
+		
+	}
+}
+
+void cinema_action_setting_actor_type_get(char *name)
+{
+	int				actor_type;
+	
+	name[0]=0x0;
+	
+	actor_type=dialog_get_combo(dialog_cinema_action_settings_wind,kCinemaActionActorType,0);
+	
+	switch (actor_type) {
+	
+		case cinema_actor_object:
+			dialog_special_combo_get_spot(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,name,name_str_len);
+			break;
+		
+		case cinema_actor_movement:
+			dialog_special_combo_get_movement(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,name,name_str_len);
+			break;
+		
+		case cinema_actor_particle:
+			dialog_special_combo_get_particle(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,name,name_str_len);
+			break;
+		
+	}
+}
 
 /* =======================================================
 
@@ -77,6 +143,12 @@ static pascal OSStatus cinema_action_settings_event_proc(EventHandlerCallRef han
 	return(eventNotHandledErr);
 }
 
+static pascal OSStatus cinema_action_type_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+{
+	cinema_action_setting_actor_type_setup();	
+	return(eventNotHandledErr);
+}
+
 /* =======================================================
 
       Run Cinema Action Setting
@@ -85,17 +157,21 @@ static pascal OSStatus cinema_action_settings_event_proc(EventHandlerCallRef han
 
 bool dialog_cinema_action_settings_run(map_cinema_action_type *action)
 {
-	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	ControlID				ctrl_id;
+	EventHandlerUPP			event_upp,ctrl_event_upp;
+	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}},
+							ctrl_event_list[]={{kEventClassControl,kEventControlHit}};
 	
 		// open the dialog
 		
 	dialog_open(&dialog_cinema_action_settings_wind,"CinemaActionSettings");
+	
+	dialog_cinema_action_action=action;
 
 		// set controls
 		
 	dialog_set_combo(dialog_cinema_action_settings_wind,kCinemaActionActorType,0,action->actor_type);
-	dialog_set_text(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,action->actor_name);
+	cinema_action_setting_actor_type_setup();
 	dialog_set_combo(dialog_cinema_action_settings_wind,kCinemaActionAction,0,action->action);
 	
 	dialog_set_int(dialog_cinema_action_settings_wind,kCinemaActionTimeStart,0,action->start_msec);
@@ -114,11 +190,18 @@ bool dialog_cinema_action_settings_run(map_cinema_action_type *action)
 	
 	ShowWindow(dialog_cinema_action_settings_wind);
 	
-		// install event handler
+		// install event handlers
 		
 	event_upp=NewEventHandlerUPP(cinema_action_settings_event_proc);
 	InstallWindowEventHandler(dialog_cinema_action_settings_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+
+	ctrl_id.signature=kCinemaActionActorType;
+	ctrl_id.id=0;
+	GetControlByID(dialog_cinema_action_settings_wind,&ctrl_id,&dialog_cinema_action_type_ctrl);
 	
+	ctrl_event_upp=NewEventHandlerUPP(cinema_action_type_event_proc);
+	InstallControlEventHandler(dialog_cinema_action_type_ctrl,ctrl_event_upp,GetEventTypeCount(ctrl_event_list),ctrl_event_list,dialog_cinema_action_settings_wind,NULL);
+
 		// modal window
 		
 	dialog_cinema_action_settings_cancel=FALSE;
@@ -128,7 +211,7 @@ bool dialog_cinema_action_settings_run(map_cinema_action_type *action)
 		
 	if (!dialog_cinema_action_settings_cancel) {
 		action->actor_type=dialog_get_combo(dialog_cinema_action_settings_wind,kCinemaActionActorType,0);
-		dialog_get_text(dialog_cinema_action_settings_wind,kCinemaActionActorName,0,action->actor_name,name_str_len);
+		cinema_action_setting_actor_type_get(action->actor_name);
 		action->action=dialog_get_combo(dialog_cinema_action_settings_wind,kCinemaActionAction,0);
 
 		action->start_msec=dialog_get_int(dialog_cinema_action_settings_wind,kCinemaActionTimeStart,0);

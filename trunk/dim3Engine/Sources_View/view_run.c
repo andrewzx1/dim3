@@ -43,6 +43,7 @@ and can be sold or given away.
 extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
+extern camera_type			camera;
 
 extern void run_objects_animations(void);
 extern void ambient_add_map_sounds(void);
@@ -116,7 +117,12 @@ void view_run(void)
 
 			// listener position
 			
-		al_set_listener(&obj->pnt,obj->ang.y);
+		if (camera.setup.mode!=cv_static) {
+			al_set_listener(&obj->pnt,obj->ang.y);
+		}
+		else {
+			al_set_listener(&camera.setup.pnt,camera.setup.ang.y);
+		}
 		
 			// ambients
 
