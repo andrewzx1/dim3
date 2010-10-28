@@ -40,7 +40,7 @@ and can be sold or given away.
 #include "inputs.h"
 #include "timing.h"
 
-extern void map_movements_cinema_start(int movement_idx,bool reverse);
+extern bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_str);
 
 extern server_type				server;
 extern view_type				view;
@@ -301,7 +301,7 @@ void cinema_action_run_generic(map_cinema_action_type *action)
 				console_add_error(err_str);
 				return;
 			}
-			map_movements_cinema_start(movement_idx,action->move_reverse);
+			if (!map_movements_cinema_start(movement_idx,action->move_reverse,err_str)) console_add_error(err_str);
 			return;
 
 			// particle actor

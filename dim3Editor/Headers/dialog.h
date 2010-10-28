@@ -59,12 +59,16 @@ extern void dialog_special_combo_fill_sound(WindowRef wind,unsigned long sig,int
 extern void dialog_special_combo_fill_particle(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_ring(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,int id,char *sel_name);
+extern void dialog_special_combo_fill_spot(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_node(WindowRef wind,unsigned long sig,int id,char *sel_name);
+extern void dialog_special_combo_fill_movement(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_get_sound(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_particle(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_ring(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
+extern void dialog_special_combo_get_spot(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_node(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
+extern void dialog_special_combo_get_movement(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_fill_group_combo(WindowRef wind,unsigned long sig,int id,int idx);
 extern int dialog_get_group_combo(WindowRef wind,unsigned long sig,int id);
 extern void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none,int idx);

@@ -814,6 +814,22 @@ void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,int id,ch
 	dialog_special_combo_fill(wind,sig,id,shader_count,(char*)shader_names,file_str_len,sel_name);
 }
 
+void dialog_special_combo_fill_spot(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+#ifdef D3_EDITOR
+
+	int							n;
+	char						spot_names[max_spot][name_str_len];
+	
+	for (n=0;n!=map.nspot;n++) {
+		strcpy(spot_names[n],map.spots[n].name);
+	}
+	
+	dialog_special_combo_fill(wind,sig,id,map.nspot,(char*)spot_names,name_str_len,sel_name);
+	
+#endif
+}
+
 void dialog_special_combo_fill_node(WindowRef wind,unsigned long sig,int id,char *sel_name)
 {
 #ifdef D3_EDITOR
@@ -831,6 +847,22 @@ void dialog_special_combo_fill_node(WindowRef wind,unsigned long sig,int id,char
 	}
 	
 	dialog_special_combo_fill(wind,sig,id,node_count,(char*)node_names,name_str_len,sel_name);
+	
+#endif
+}
+
+void dialog_special_combo_fill_movement(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+#ifdef D3_EDITOR
+
+	int							n;
+	char						movement_names[max_movement][name_str_len];
+	
+	for (n=0;n!=map.nmovement;n++) {
+		strcpy(movement_names[n],map.movements[n].name);
+	}
+	
+	dialog_special_combo_fill(wind,sig,id,map.nmovement,(char*)movement_names,name_str_len,sel_name);
 	
 #endif
 }
@@ -856,12 +888,22 @@ inline void dialog_special_combo_get_ring(WindowRef wind,unsigned long sig,int i
 	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
 }
 
+inline void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_spot(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
 inline void dialog_special_combo_get_node(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
 {
 	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
 }
 
-inline void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+inline void dialog_special_combo_get_movement(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
 {
 	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
 }
