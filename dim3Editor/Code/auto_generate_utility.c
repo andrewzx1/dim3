@@ -104,6 +104,20 @@ void ag_generate_mirror_meshes(void)
 
 /* =======================================================
 
+      Polygon Utilies
+      
+======================================================= */
+
+bool ag_generate_is_poly_straight_wall(int mesh_idx,int poly_idx)
+{
+	map_mesh_poly_type		*poly;
+
+	poly=&map.mesh.meshes[mesh_idx].polys[poly_idx];
+	if (!poly->box.wall_like) return(FALSE);
+	return((poly->box.min.x==poly->box.max.x) || (poly->box.min.z==poly->box.max.z));
+}
+/* =======================================================
+
       Delete Shared Polygons
       
 ======================================================= */
@@ -194,7 +208,6 @@ void ag_generate_delete_shared_polygons(void)
 void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name)
 {
 	int					idx,count,mx,mz;
-	ag_shape_type		*shape;
 	ag_room_type		*room;
 	spot_type			*spot;
 
@@ -219,9 +232,7 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 			// ignore corridors
 
 		room=&ag_state.rooms[idx];
-		shape=&ag_state.shapes[room->shape_idx];
-
-		if (shape->corridor) {
+		if (room->corridor) {
 			idx++;
 			continue;
 		}
