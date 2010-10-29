@@ -423,6 +423,8 @@ void write_map_cinemas_xml(map_type *map)
 			if (action->animation_name[0]!=0x0) xml_add_attribute_text("animation",action->animation_name);
 			if (action->next_animation_name[0]!=0x0) xml_add_attribute_text("next_animation",action->next_animation_name);
 			if (action->node_name[0]!=0x0) xml_add_attribute_text("node",action->node_name);
+			
+			if (action->text_str[0]!=0x0) xml_add_attribute_text("text",action->text_str);
 
 			xml_add_tagend(TRUE);
 			

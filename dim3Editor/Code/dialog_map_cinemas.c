@@ -45,6 +45,7 @@ extern map_type				map;
 #define kActionListAnimationColumn			FOUR_CHAR_CODE('anim')
 
 #define kActionAddButton					FOUR_CHAR_CODE('aact')
+#define kActionSortButton					FOUR_CHAR_CODE('asrt')
 #define kActionDeleteButton					FOUR_CHAR_CODE('dact')
 
 int							dialog_cinema_current_idx,
@@ -353,8 +354,8 @@ static pascal OSStatus actions_list_item_proc(ControlRef ctrl,DataBrowserItemID 
 {
 	int						action_idx;
 	char					str[256];
-	char					actor_type_str[][32]={"Camera","Player","Object","Movement","Particle"},
-							action_type_str[][32]={"None","Place","Move","Show","Hide"};
+	char					actor_type_str[][32]={"Camera","Player","Object","Movement","Particle","HUD Text","HUD Bitmap"},
+							action_type_str[][32]={"None","Place","Move","Stop","Show","Hide"};
 	map_cinema_action_type	*action;
 	CFStringRef				cfstr;
 
