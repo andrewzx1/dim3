@@ -43,8 +43,8 @@ char					media_type_str[][32]={"none","chooser","title","movie",""},
 						spot_type_str[][32]={"Object","Bot","Player","Spawn",""},
 						skill_type_str[][32]={"easy","medium","hard",""},
 						spawn_type_str[][32]={"always","single_player","multiplayer",""},
-						cinema_action_type_str[][32]={"none","place","move","show","hide",""},
-						cinema_actor_type_str[][32]={"camera","player","object","movement","particle",""};
+						cinema_action_type_str[][32]={"none","place","move","stop","show","hide",""},
+						cinema_actor_type_str[][32]={"camera","player","object","movement","particle","hud_text","hud_bitmap",""};
 
 extern bool decode_map_v1_xml(map_type *map,int map_head);
 extern bool decode_map_v2_xml(map_type *map,int map_head);
@@ -355,6 +355,8 @@ void decode_map_cinemas_xml(map_type *map,int map_head)
 			xml_get_attribute_text(action_tag,"animation",action->animation_name,name_str_len);
 			xml_get_attribute_text(action_tag,"next_animation",action->next_animation_name,name_str_len);
 			xml_get_attribute_text(action_tag,"node",action->node_name,name_str_len);
+			
+			xml_get_attribute_text(action_tag,"text",action->text_str,256);
 			
 			action_tag=xml_findnextchild(action_tag);
 		}

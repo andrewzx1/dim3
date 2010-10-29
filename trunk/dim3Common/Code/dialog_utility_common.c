@@ -676,6 +676,70 @@ void dialog_special_combo_get(WindowRef wind,unsigned long sig,int id,char *sel_
       
 ======================================================= */
 
+void dialog_special_combo_fill_hud_text(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int					text_count,iface_tag,head_tag,tag;
+	char				path[1024],text_names[256][name_str_len];
+	
+	text_count=0;
+		
+	file_paths_data(&file_path_setup,path,"Settings","Interface","xml");
+	if (xml_open_file(path)) {
+	
+		iface_tag=xml_findrootchild("Interface");
+		if (iface_tag!=-1) {
+
+			head_tag=xml_findfirstchild("Texts",iface_tag);
+			if (head_tag!=-1) {
+		
+				tag=xml_findfirstchild("Text",head_tag);
+			
+				while (tag!=-1) {
+					xml_get_attribute_text(tag,"name",text_names[text_count],name_str_len);
+					text_count++;
+					tag=xml_findnextchild(tag);
+				}
+			}
+		}
+		
+		xml_close_file();
+	}
+
+	dialog_special_combo_fill(wind,sig,id,text_count,(char*)text_names,name_str_len,sel_name);
+}
+
+void dialog_special_combo_fill_hud_bitmap(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int					bitmap_count,iface_tag,head_tag,tag;
+	char				path[1024],bitmap_names[256][name_str_len];
+	
+	bitmap_count=0;
+		
+	file_paths_data(&file_path_setup,path,"Settings","Interface","xml");
+	if (xml_open_file(path)) {
+	
+		iface_tag=xml_findrootchild("Interface");
+		if (iface_tag!=-1) {
+
+			head_tag=xml_findfirstchild("Bitmaps",iface_tag);
+			if (head_tag!=-1) {
+		
+				tag=xml_findfirstchild("Bitmap",head_tag);
+			
+				while (tag!=-1) {
+					xml_get_attribute_text(tag,"name",bitmap_names[bitmap_count],name_str_len);
+					bitmap_count++;
+					tag=xml_findnextchild(tag);
+				}
+			}
+		}
+		
+		xml_close_file();
+	}
+
+	dialog_special_combo_fill(wind,sig,id,bitmap_count,(char*)bitmap_names,name_str_len,sel_name);
+}
+
 void dialog_special_combo_fill_sound(WindowRef wind,unsigned long sig,int id,char *sel_name)
 {
 	int					sound_count,head_tag,tag;
@@ -872,6 +936,16 @@ void dialog_special_combo_fill_movement(WindowRef wind,unsigned long sig,int id,
       Get Special Dialogs
       
 ======================================================= */
+
+inline void dialog_special_combo_get_hud_text(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_hud_bitmap(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
 
 inline void dialog_special_combo_get_sound(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
 {

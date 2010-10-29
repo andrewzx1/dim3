@@ -144,6 +144,7 @@ int map_cinema_add_action(map_type *map,int cinema_idx)
 	action->animation_name[0]=0x0;
 	action->next_animation_name[0]=0x0;
 	action->node_name[0]=0x0;
+	action->text_str[0]=0x0;
 	action->move_reverse=FALSE;
 	
 	cinema->naction++;

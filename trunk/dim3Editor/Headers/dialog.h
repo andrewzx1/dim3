@@ -55,6 +55,8 @@ extern void dialog_enable(WindowRef wind,unsigned long sig,int id,bool enable);
 extern void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show);
 extern void dialog_set_numeric_only(WindowRef wind,int sig,int id);
 extern void dialog_redraw(WindowRef wind,unsigned long sig,int id);
+extern void dialog_special_combo_fill_hud_text(WindowRef wind,unsigned long sig,int id,char *sel_name);
+extern void dialog_special_combo_fill_hud_bitmap(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_sound(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_particle(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_ring(WindowRef wind,unsigned long sig,int id,char *sel_name);
@@ -62,6 +64,8 @@ extern void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,in
 extern void dialog_special_combo_fill_spot(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_node(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_movement(WindowRef wind,unsigned long sig,int id,char *sel_name);
+extern void dialog_special_combo_get_hud_text(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
+extern void dialog_special_combo_get_hud_bitmap(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_sound(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_particle(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_ring(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);

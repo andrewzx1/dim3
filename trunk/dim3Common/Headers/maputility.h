@@ -211,14 +211,17 @@ extern char light_type_str[][32];
 #define cinema_action_none									0
 #define cinema_action_place									1
 #define cinema_action_move									2
-#define cinema_action_show									3
-#define cinema_action_hide									4
+#define cinema_action_stop									3
+#define cinema_action_show									4
+#define cinema_action_hide									5
 
 #define cinema_actor_camera									0
 #define cinema_actor_player									1
 #define cinema_actor_object									2
 #define cinema_actor_movement								3
 #define cinema_actor_particle								4
+#define cinema_actor_hud_text								5
+#define cinema_actor_hud_bitmap								6
 
 //
 // group structure
@@ -640,7 +643,8 @@ typedef struct		{
 						char								actor_name[name_str_len],
 															animation_name[name_str_len],
 															next_animation_name[name_str_len],
-															node_name[name_str_len];
+															node_name[name_str_len],
+															text_str[256];
 					} map_cinema_action_type;
 
 typedef struct		{
