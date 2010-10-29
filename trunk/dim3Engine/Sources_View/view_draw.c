@@ -394,9 +394,11 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	remote_draw_names_render();
 	halo_draw_render();
 	
-	if ((obj!=NULL) && (weap!=NULL)) {
-		crosshair_draw(obj,weap);
-		zoom_draw(obj,weap);
+	if (!view.cinema.on) {
+		if ((obj!=NULL) && (weap!=NULL)) {
+			crosshair_draw(obj,weap);
+			zoom_draw(obj,weap);
+		}
 	}
 }
 

@@ -122,19 +122,13 @@ void cinema_end(void)
       
 ======================================================= */
 
-void cinema_action_run_camera(int node_idx,map_cinema_action_type *action)
+void cinema_action_run_camera(map_cinema_action_type *action)
 {
-	int			start_node_idx;
+	int			node_idx,start_node_idx;
 	char		err_str[256];
 	d3pnt		pnt;
 	d3ang		ang;
 	node_type	*node;
-
-		// always need a node for cameras
-
-	if (node_idx==-1) return;
-
-	node=&map.nodes[node_idx];
 
 		// any camera action sets camera to static
 
@@ -144,6 +138,12 @@ void cinema_action_run_camera(int node_idx,map_cinema_action_type *action)
 		// camera placement
 
 	if (action->action==cinema_action_place) {
+
+		node_idx=map_find_node(&map,action->node_name);
+		if (node_idx==-1) return;
+		
+		node=&map.nodes[node_idx];
+
 		memmove(&camera.setup.pnt,&node->pnt,sizeof(d3pnt));
 		memmove(&camera.setup.ang,&node->ang,sizeof(d3ang));
 		
@@ -153,6 +153,10 @@ void cinema_action_run_camera(int node_idx,map_cinema_action_type *action)
 		// camera walking
 
 	if (action->action==cinema_action_move) {
+
+		node_idx=map_find_node(&map,action->node_name);
+		if (node_idx==-1) return;
+
 		camera_get_position(&pnt,&ang);
 		start_node_idx=map_find_nearest_node_by_point(&map,&pnt);
 		if (start_node_idx==-1) return;
@@ -167,11 +171,26 @@ void cinema_action_run_camera(int node_idx,map_cinema_action_type *action)
       
 ======================================================= */
 
-void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type *action)
+void cinema_action_run_object(map_cinema_action_type *action)
 {
-	int					start_node_idx,dist;
+	int					node_idx,start_node_idx,dist;
 	char				err_str[256];
 	node_type			*node;
+	obj_type			*obj;
+
+		// get object
+
+	if (action->actor_type==cinema_actor_player) {
+		obj=server.obj_list.objs[server.player_obj_idx];
+	}
+	else {
+		obj=object_find_name(action->actor_name);
+		if (obj==NULL) {
+			sprintf(err_str,"Unknown object in cinema: %s",action->actor_name);
+			console_add_error(err_str);
+			return;
+		}
+	}
 
 		// start any animations
 
@@ -186,6 +205,8 @@ void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type 
 		// object placement
 
 	if (action->action==cinema_action_place) {
+
+		node_idx=map_find_node(&map,action->node_name);
 		if (node_idx==-1) return;
 
 		node=&map.nodes[node_idx];
@@ -204,6 +225,10 @@ void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type 
 		// object walking
 
 	if (action->action==cinema_action_move) {
+		
+		node_idx=map_find_node(&map,action->node_name);
+		if (node_idx==-1) return;
+
 		start_node_idx=map_find_nearest_node_by_point(&map,&obj->pnt);
 		if (start_node_idx==-1) return;
 
@@ -224,14 +249,15 @@ void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type 
 			// start walk
 
 		if (!object_auto_walk_node_setup(obj,start_node_idx,node_idx,TRUE,-1,err_str)) console_add_error(err_str);
-
+		
 		return;
 	}
 	
-		// none action causes a stop
+		// object stopping
 		
-	if (action->action==cinema_action_none) {
+	if (action->action==cinema_action_stop) {
 		object_move_stop(obj);
+		return;
 	}
 
 		// show and hide
@@ -249,77 +275,125 @@ void cinema_action_run_object(obj_type *obj,int node_idx,map_cinema_action_type 
 
 /* =======================================================
 
+      Cinema Actions Movement, Particle, HUD
+      
+======================================================= */
+
+void cinema_action_run_movement(map_cinema_action_type *action)
+{
+	int				movement_idx;
+	char			err_str[256];
+
+	movement_idx=map_movement_find(&map,action->actor_name);
+	if (movement_idx==-1) {
+		sprintf(err_str,"Unknown movement in cinema: %s",action->actor_name);
+		console_add_error(err_str);
+		return;
+	}
+
+	if (!map_movements_cinema_start(movement_idx,action->move_reverse,err_str)) console_add_error(err_str);
+}
+
+void cinema_action_run_particle(map_cinema_action_type *action)
+{
+	int				particle_idx,node_idx;
+	char			err_str[256];
+
+	particle_idx=particle_find_index(action->actor_name);
+	if (particle_idx==-1) {
+		sprintf(err_str,"Unknown particle in cinema: %s",action->actor_name);
+		console_add_error(err_str);
+		return;
+	}
+
+	node_idx=map_find_node(&map,action->node_name);
+	if (node_idx==-1) {
+		sprintf(err_str,"Need node to launch cinema particle: %s",action->actor_name);
+		console_add_error(err_str);
+		return;
+	}
+	
+	particle_spawn(particle_idx,-1,&map.nodes[node_idx].pnt,NULL,NULL);
+}
+
+void cinema_action_run_hud_bitmap(map_cinema_action_type *action)
+{
+	hud_bitmap_type			*bitmap;
+
+	bitmap=hud_bitmaps_find(action->actor_name);
+	if (bitmap==NULL) return;
+
+	switch (action->action) {
+		case cinema_action_show:
+			bitmap->show=TRUE;
+			break;
+		case cinema_action_hide:
+			bitmap->show=FALSE;
+			break;
+	}
+}
+
+void cinema_action_run_hud_text(map_cinema_action_type *action)
+{
+	hud_text_type			*text;
+
+	text=hud_texts_find(action->actor_name);
+	if (text==NULL) return;
+
+		// do hide show
+
+	switch (action->action) {
+		case cinema_action_show:
+			text->show=TRUE;
+			break;
+		case cinema_action_hide:
+			text->show=FALSE;
+			break;
+	}
+
+		// do text replacement
+
+	strncpy(text->data,action->text_str,max_hud_text_str_sz);
+	text->data[max_hud_text_str_sz-1]=0x0;
+}
+
+/* =======================================================
+
       Cinema Actions
       
 ======================================================= */
 
-void cinema_action_run_generic(map_cinema_action_type *action)
+inline void cinema_action_run_generic(map_cinema_action_type *action)
 {
-	int					node_idx,movement_idx,particle_idx;
-	char				err_str[256];
-	obj_type			*obj;
-
-		// determine any nodes
-
-	node_idx=map_find_node(&map,action->node_name);
-
 		// route to proper action
 
 	switch (action->actor_type) {
 
-			// camera actor
-
 		case cinema_actor_camera:
-			cinema_action_run_camera(node_idx,action);
+			cinema_action_run_camera(action);
 			return;
-
-			// player actor
 
 		case cinema_actor_player:
-			obj=server.obj_list.objs[server.player_obj_idx];
-			cinema_action_run_object(obj,node_idx,action);
-			return;
-
-			// object actor
-
 		case cinema_actor_object:
-			obj=object_find_name(action->actor_name);
-			if (obj==NULL) {
-				sprintf(err_str,"Unknown object in cinema: %s",action->actor_name);
-				console_add_error(err_str);
-				return;
-			}
-			cinema_action_run_object(obj,node_idx,action);
+			cinema_action_run_object(action);
 			return;
-
-			// movement actor
 
 		case cinema_actor_movement:
-			movement_idx=map_movement_find(&map,action->actor_name);
-			if (movement_idx==-1) {
-				sprintf(err_str,"Unknown movement in cinema: %s",action->actor_name);
-				console_add_error(err_str);
-				return;
-			}
-			if (!map_movements_cinema_start(movement_idx,action->move_reverse,err_str)) console_add_error(err_str);
+			cinema_action_run_movement(action);
 			return;
-
-			// particle actor
 
 		case cinema_actor_particle:
-			particle_idx=particle_find_index(action->actor_name);
-			if (particle_idx==-1) {
-				sprintf(err_str,"Unknown particle in cinema: %s",action->actor_name);
-				console_add_error(err_str);
-				return;
-			}
-			if (node_idx==-1) {
-				sprintf(err_str,"Need node to launch cinema particle: %s",action->actor_name);
-				console_add_error(err_str);
-				return;
-			}
-			particle_spawn(particle_idx,-1,&map.nodes[node_idx].pnt,NULL,NULL);
+			cinema_action_run_particle(action);
 			return;
+
+		case cinema_actor_hud_text:
+			cinema_action_run_hud_text(action);
+			return;
+
+		case cinema_actor_hud_bitmap:
+			cinema_action_run_hud_bitmap(action);
+			return;
+
 	}
 }
 

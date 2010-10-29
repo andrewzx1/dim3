@@ -390,7 +390,8 @@ typedef struct		{
 
 typedef struct		{
 						int						shape_idx,mesh_idx;
-						bool					clip,connectors_used[ag_max_shape_connector];
+						bool					corridor,clip,
+												connectors_used[ag_max_shape_connector];
 						d3pnt					min,max;
 						d3vct					size;
 					} ag_room_type;

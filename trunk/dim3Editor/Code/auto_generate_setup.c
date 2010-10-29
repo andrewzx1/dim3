@@ -41,6 +41,23 @@ extern ag_state_type			ag_state;
 
 /* =======================================================
 
+      Shape Utilities
+      
+======================================================= */
+
+int ag_shape_find(char *name)
+{
+	int				n;
+
+	for (n=0;n!=ag_state.nshape;n++) {
+		if (strcasecmp(name,ag_state.shapes[n].name)==0) return(n);
+	}
+
+	return(-1);
+}
+
+/* =======================================================
+
       Auto Generate PreCalc
       
 ======================================================= */
@@ -100,7 +117,7 @@ void ag_read_settings_setup_connector(ag_shape_type *shape,ag_shape_connector_ty
 
 bool ag_read_settings(void)
 {
-	int					n,k,t,nshape,
+	int					n,k,nshape,
 						head_tag,shapes_tag,shape_tag,
 						vertexes_tag,vertex_tag,
 						polys_tag,poly_tag,
@@ -237,13 +254,8 @@ bool ag_read_settings(void)
 			for (k=0;k!=nshape;k++) {
 				xml_get_attribute_text(shape_tag,"name",name,256);
 
-				for (t=0;t!=ag_state.nshape;t++) {
-					if (strcasecmp(name,ag_state.shapes[t].name)==0) {
-						style->shape_list[style->nshape]=t;
-						style->nshape++;
-						break;
-					}
-				}
+				style->shape_list[style->nshape]=ag_shape_find(name);
+				if (style->shape_list[style->nshape]!=-1) style->nshape++;
 
 				shape_tag=xml_findnextchild(shape_tag);
 			}
@@ -303,4 +315,27 @@ void ag_release(void)
 
 	if (ag_state.rooms!=NULL) free(ag_state.rooms);
 	ag_state.rooms=NULL;
+}
+
+/* =======================================================
+
+      Auto Generate UI Utilities
+      
+======================================================= */
+
+int ag_get_styles(char *style_list)
+{
+	int				n,nstyle;
+
+	ag_initialize();
+
+	nstyle=ag_state.nstyle;
+
+	for (n=0;n!=nstyle;n++) {
+		strcpy((char*)&style_list[n*name_str_len],ag_state.styles[n].name);
+	}
+
+	ag_release();
+
+	return(nstyle);
 }

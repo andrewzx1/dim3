@@ -40,9 +40,11 @@ ag_state_type					ag_state;
 
 extern bool ag_initialize(void);
 extern void ag_release(void);
+extern int ag_shape_find(char *name);
 extern void ag_random_seed(int seed);
 extern int ag_random_int(int max);
 extern void ag_generate_mirror_meshes(void);
+extern bool ag_generate_is_poly_straight_wall(int mesh_idx,int poly_idx);
 extern void ag_generate_delete_shared_polygons(void);
 extern void ag_generate_spots_add(void);
 
@@ -265,7 +267,7 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror)
 				// if this new room is a corridor type,
 				// then only connect to other rooms
 
-			if ((shape->corridor) && (shape2->corridor)) continue;
+			if ((shape->corridor) && (room2->corridor)) continue;
 
 				// get a size that makes the connectors
 				// equal to each other
@@ -362,7 +364,10 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	room=&ag_state.rooms[ag_state.nroom];
 	ag_state.nroom++;
 
+	shape=&ag_state.shapes[shape_idx];
+
 	room->shape_idx=shape_idx;
+	room->corridor=shape->corridor;
 	room->mesh_idx=mesh_idx;
 
 	room->min.x=pnt->x;
@@ -386,8 +391,6 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	if (connect_idx!=-1) room->connectors_used[connect_idx]=TRUE;
 
 		// add walls
-
-	shape=&ag_state.shapes[shape_idx];
 
 	for (n=0;n!=shape->nvertex;n++) {
 		k=n+1;
@@ -449,6 +452,148 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	}
 }
 
+void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
+{
+	int					n,lx,rx,tz,bz,mesh_idx,poly_idx;
+	int					px[4],py[4],pz[4];
+	float				gx[4],gy[4];
+	ag_room_type		*room;
+
+	if (ag_state.nroom==ag_max_room) return;
+
+		// add shape mesh to map
+
+	mesh_idx=map_mesh_add(&map);
+
+		// add to room
+
+	room=&ag_state.rooms[ag_state.nroom];
+	ag_state.nroom++;
+
+	room->shape_idx=0;
+	room->corridor=TRUE;
+	room->mesh_idx=mesh_idx;
+
+	memmove(&room->min,min,sizeof(d3pnt));
+	memmove(&room->max,max,sizeof(d3pnt));
+
+	room->size.x=room->size.y=room->size.z=0.0f;
+
+		// connections are ignored here
+
+	for (n=0;n!=ag_max_shape_connector;n++) {
+		room->connectors_used[n]=FALSE;
+	}
+
+		// add walls
+
+	lx=min->x;
+
+	while (TRUE) {
+
+		rx=lx+wall_sz;
+		if (rx>max->x) rx=max->x;
+
+		px[0]=px[3]=lx;
+		px[1]=px[2]=rx;
+		pz[0]=pz[1]=pz[2]=pz[3]=min->z;
+		py[0]=py[1]=min->y;
+		py[2]=py[3]=max->y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+
+		px[0]=px[3]=lx;
+		px[1]=px[2]=rx;
+		pz[0]=pz[1]=pz[2]=pz[3]=max->z;
+		py[0]=py[1]=min->y;
+		py[2]=py[3]=max->y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+
+		lx=rx;
+		if (lx>=max->x) break;
+	}
+
+	tz=min->z;
+
+	while (TRUE) {
+
+		bz=tz+wall_sz;
+		if (bz>max->z) bz=max->z;
+
+		px[0]=px[1]=px[2]=px[3]=min->x;
+		pz[0]=pz[3]=tz;
+		pz[1]=pz[2]=bz;
+		py[0]=py[1]=min->y;
+		py[2]=py[3]=max->y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+
+		px[0]=px[1]=px[2]=px[3]=max->x;
+		pz[0]=pz[3]=tz;
+		pz[1]=pz[2]=bz;
+		py[0]=py[1]=min->y;
+		py[2]=py[3]=max->y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+
+		tz=bz;
+		if (tz>=max->z) break;
+	}
+
+		// add floors
+
+	lx=min->x;
+	tz=min->z;
+
+	while (TRUE) {
+
+		rx=lx+wall_sz;
+		bz=tz+wall_sz;
+
+		px[0]=px[3]=lx;
+		px[1]=px[2]=rx;
+		pz[0]=pz[1]=tz;
+		pz[2]=pz[3]=bz;
+		py[0]=py[1]=py[2]=py[3]=max->y;
+
+		gx[0]=gx[3]=0.0f;
+		gx[1]=gx[2]=1.0f;
+		gy[0]=gy[1]=0.0f;
+		gy[2]=gy[3]=1.0f;
+	
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,1);
+
+		lx=rx;
+		if (lx>=max->x) {
+			lx=min->x;
+
+			tz=bz;
+			if (tz>=max->z) break;
+		}
+	}
+}
+
 /* =======================================================
 
       Corridor Clipping
@@ -469,7 +614,7 @@ void ag_generate_clip_bad_corridors(void)
 		room=&ag_state.rooms[n];
 		room->clip=FALSE;
 
-		if (!ag_state.shapes[room->shape_idx].corridor) continue;
+		if (!room->corridor) continue;
 
 			// check for used connectors
 
@@ -515,6 +660,131 @@ void ag_generate_clip_bad_corridors(void)
 	}
 }
 
+/* =======================================================
+
+      Add Extra Corridors
+      
+======================================================= */
+
+void ag_generate_extra_corridors(void)
+{
+	int					n,k,i,t,nroom,npoly,nchk_poly;
+	d3pnt				min,max;
+	ag_room_type		*room,*chk_room;
+	map_mesh_type		*mesh,*chk_mesh;
+	map_mesh_poly_type	*poly,*chk_poly;
+
+		// we need min max, so prepare the polys
+
+	for (n=0;n!=ag_state.nroom;n++) {
+
+		room=&ag_state.rooms[n];
+		mesh=&map.mesh.meshes[room->mesh_idx];
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+			map_prepare_mesh_poly(mesh,poly);
+			poly++;
+		}
+	}
+
+		// only look at original rooms
+
+	nroom=ag_state.nroom;
+
+		// check rooms polys against each other
+		// we only compare wall like polygons that are straight
+		// vertical or horizontal
+
+	for (n=0;n!=nroom;n++) {
+
+		room=&ag_state.rooms[n];
+		npoly=map.mesh.meshes[room->mesh_idx].npoly;
+
+		for (k=0;k!=npoly;k++) {
+
+			if (!ag_generate_is_poly_straight_wall(room->mesh_idx,k)) continue;
+
+			for (i=0;i!=nroom;i++) {
+				if (i==n) continue;
+
+				chk_room=&ag_state.rooms[i];
+				nchk_poly=map.mesh.meshes[chk_room->mesh_idx].npoly;
+
+				for (t=0;t!=nchk_poly;t++) {
+					
+					if (!ag_generate_is_poly_straight_wall(chk_room->mesh_idx,t)) continue;
+
+						// have to always get the pointers as adding
+						// a mesh can move memory around
+
+					mesh=&map.mesh.meshes[room->mesh_idx];
+					poly=&mesh->polys[k];
+
+					chk_mesh=&map.mesh.meshes[chk_room->mesh_idx];
+					chk_poly=&chk_mesh->polys[t];
+
+						// horizontal
+
+					if (poly->box.min.z!=poly->box.max.z) {
+						if ((poly->box.min.z==chk_poly->box.min.z) && (poly->box.max.z==chk_poly->box.max.z)) {
+							if (poly->box.max.x!=chk_poly->box.min.x) {
+
+								min.z=poly->box.min.z;
+								max.z=poly->box.max.z;
+
+								if (poly->box.max.x<chk_poly->box.min.x) {
+									min.x=poly->box.max.x;
+									max.x=chk_poly->box.min.x;
+								}
+								else {
+									min.x=chk_poly->box.max.x;
+									max.x=poly->box.min.x;
+								}
+
+								if (!ag_room_space_blocked(&min,&max)) {
+									min.y=room->min.y;
+									max.y=room->max.y;
+									ag_add_extra_corridor_room(&min,&max,(max.z-min.z));
+									continue;
+								}
+							}
+						}
+					}
+
+						// vertical
+
+					if (poly->box.min.x!=poly->box.max.x) {
+						if ((poly->box.min.x==chk_poly->box.min.x) && (poly->box.max.x==chk_poly->box.max.x)) {
+							if (poly->box.max.z!=chk_poly->box.min.z) {
+
+								min.x=poly->box.min.x;
+								max.x=poly->box.max.x;
+
+								if (poly->box.max.z<chk_poly->box.min.z) {
+									min.z=poly->box.max.z;
+									max.z=chk_poly->box.min.z;
+								}
+								else {
+									min.z=chk_poly->box.max.z;
+									max.z=poly->box.min.z;
+								}
+
+								if (!ag_room_space_blocked(&min,&max)) {
+									min.y=room->min.y;
+									max.y=room->max.y;
+									ag_add_extra_corridor_room(&min,&max,(max.x-min.x));
+									continue;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 /* =======================================================
 
@@ -606,6 +876,11 @@ bool ag_generate_map(ag_build_setup_type *build_setup)
 		// connected to at least two rooms
 
 	ag_generate_clip_bad_corridors();
+
+		// add corridors where two
+		// polygons are equal and not blocked
+
+	ag_generate_extra_corridors();
 
 		// mirroring
 
