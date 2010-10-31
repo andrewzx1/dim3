@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "common_view.h"
 #include "dialog.h"
 
 extern map_type					map;

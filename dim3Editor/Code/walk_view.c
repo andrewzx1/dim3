@@ -31,8 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "common_view.h"
-#include "walk_view.h"
+#include "view.h"
 
 extern int						top_view_x,top_view_z,
 								tool_pixel_sz,txt_palette_pixel_sz;
@@ -55,7 +54,7 @@ bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 	        
 ======================================================= */
 
-bool walk_view_initialize(void)
+bool view_initialize(void)
 {
 	char			sub_path[1024],path[1024];
 
@@ -93,7 +92,7 @@ bool walk_view_initialize(void)
 	return(TRUE);
 }
 
-void walk_view_shutdown(void)
+void view_shutdown(void)
 {
 		// interface textures
 		
@@ -112,7 +111,7 @@ void walk_view_shutdown(void)
       
 ======================================================= */
 
-void walk_view_setup_default_views(void)
+void view_setup_default_views(void)
 {
 	editor_view_type		*view;
 	
@@ -178,7 +177,7 @@ void walk_view_get_pixel_box(editor_view_type *view,d3rect *box)
       
 ======================================================= */
 
-void walk_view_split_horizontal(void)
+void view_split_horizontal(void)
 {
 	float					mid;
 	editor_view_type		*old_view,*view;
@@ -209,7 +208,7 @@ void walk_view_split_horizontal(void)
 	map.editor_views.count++;
 }
 
-void walk_view_split_vertical(void)
+void view_split_vertical(void)
 {
 	float					mid;
 	editor_view_type		*old_view,*view;
@@ -240,7 +239,7 @@ void walk_view_split_vertical(void)
 	map.editor_views.count++;
 }
 
-void walk_view_remove(void)
+void view_split_remove(void)
 {
 	int						n,move_count;
 	bool					moved;
@@ -346,6 +345,79 @@ void walk_view_remove(void)
 		// new selection
 
 	state.view_select_idx=0;
+}
+
+/* =======================================================
+
+      Center Walk Views
+      
+======================================================= */
+
+void view_center_all(bool reset_ang)
+{
+	int					n,old_sel_idx;
+	d3pnt				pnt;
+	d3ang				ang;
+	
+		// find center
+		
+	pnt.x=-1;
+	
+		// look for player spot first
+		
+	for (n=0;n!=map.nspot;n++) {
+		if (map.spots[n].type==spot_type_player) {
+			memmove(&pnt,&map.spots[n].pnt,sizeof(d3pnt));
+			pnt.y-=(map_enlarge*20);
+			break;
+		}
+	}
+
+		// otherwise do first mesh with vertexes
+		
+	if (pnt.x==-1) {
+	
+		for (n=0;n!=map.mesh.nmesh;n++) {
+			if (map.mesh.meshes[n].nvertex!=0) {
+				map_mesh_calculate_center(&map,n,&pnt);
+				break;
+			}
+		}
+	
+	}
+	
+		// just center in total map size
+		
+	if (pnt.x==-1) {
+		pnt.x=map_max_size>>1;
+		pnt.y=map_max_size>>1;
+		pnt.z=map_max_size>>1;
+	}
+	
+		// reset all the views
+	
+	old_sel_idx=state.view_select_idx;
+
+	for (n=0;n!=map.editor_views.count;n++) {
+	
+		state.view_select_idx=n;
+	
+			// view angles
+			
+		if (reset_ang) {
+			ang.x=0.0f;
+			ang.y=0.0f;
+			ang.z=0.0f;
+			
+			walk_view_set_angle(&ang);
+		}
+		
+			// view position
+			
+		walk_view_set_position(&pnt);
+	}
+	
+	state.view_select_idx=old_sel_idx;
 }
 
 /* =======================================================

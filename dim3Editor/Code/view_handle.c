@@ -29,8 +29,7 @@ and can be sold or given away.
 	#include "dim3editor.h"
 #endif
 
-#include "common_view.h"
-#include "walk_view.h"
+#include "view.h"
 
 extern map_type					map;
 extern editor_setup_type		setup;

@@ -253,7 +253,7 @@ bool dialog_cinema_action_settings_run(map_cinema_action_type *action)
 	actor_ctrl_event_upp=NewEventHandlerUPP(cinema_actor_type_event_proc);
 	InstallControlEventHandler(dialog_cinema_actor_type_ctrl,actor_ctrl_event_upp,GetEventTypeCount(actor_ctrl_event_list),actor_ctrl_event_list,dialog_cinema_action_settings_wind,NULL);
 
-	ctrl_id.signature=kCinemaActionActionType;
+	ctrl_id.signature=kCinemaActionAction;
 	ctrl_id.id=0;
 	GetControlByID(dialog_cinema_action_settings_wind,&ctrl_id,&dialog_cinema_action_type_ctrl);
 	

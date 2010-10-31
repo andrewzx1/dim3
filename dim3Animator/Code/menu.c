@@ -308,7 +308,7 @@ void import_mesh_obj(void)
 	bool			found_normals;
     
 	os_set_arrow_cursor();
-	if (!nav_open_file("obj",path)) return;
+	if (!os_load_file(path,"obj")) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
@@ -341,7 +341,7 @@ void import_mesh_lightwave(void)
 	char			path[1024],err_str[256];
     
 	os_set_arrow_cursor();
-	if (!nav_open_file("lwo",path)) return;
+	if (!os_load_file(path,"lwo")) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
@@ -374,7 +374,7 @@ void import_mesh_c4d_xml(void)
 	float			scale;
     
 	os_set_arrow_cursor();
-	if (!nav_open_file("xml",path)) return;
+	if (!os_load_file(path,"xml")) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;

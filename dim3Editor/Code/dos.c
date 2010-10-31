@@ -31,9 +31,8 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "view.h"
 #include "dialog.h"
-#include "common_view.h"
-#include "walk_view.h"
 
 extern file_path_setup_type		file_path_setup;
 extern editor_setup_type		setup;
@@ -157,7 +156,7 @@ bool file_new_map(void)
   	
     main_wind_open();
 	os_set_title_window(file_name);
-	walk_view_setup_default_views();
+	view_setup_default_views();
 	
 		// start models
 		
@@ -208,7 +207,7 @@ bool file_open_map(void)
 		// if no views in map, then
 		// set to default
 		
-	if (map.editor_views.count==0) 	walk_view_setup_default_views();
+	if (map.editor_views.count==0) 	view_setup_default_views();
 	
 		// clear selection
 		

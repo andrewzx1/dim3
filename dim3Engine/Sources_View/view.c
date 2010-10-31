@@ -524,19 +524,10 @@ void view_loop_draw(void)
 	view_draw();
 
 		// draw hud and interface elements
-		// unless we are in a cinema
 
-	draw_hud=TRUE;
-
-	if (view.cinema.on) {
-		draw_hud=map.cinema.cinemas[view.cinema.idx].show_hud;
-	}
-
-	if (draw_hud) {
-		hud_draw();
-		radar_draw();
-		network_draw();
-	}
+	hud_draw();
+	radar_draw();
+	network_draw();
 	
 		// menu
 

@@ -8,14 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		2674501C0E513E1900812D9D /* file_map_read_v3.c in Sources */ = {isa = PBXBuildFile; fileRef = 2674501B0E513E1900812D9D /* file_map_read_v3.c */; };
-		267568D30DBD52E1008BEDEE /* auto_generate_door_ramp_step.c in Sources */ = {isa = PBXBuildFile; fileRef = 267568D10DBD52E1008BEDEE /* auto_generate_door_ramp_step.c */; };
-		267568D40DBD52E1008BEDEE /* auto_generate_light_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 267568D20DBD52E1008BEDEE /* auto_generate_light_spot.c */; };
 		2683177D0E4A8B1900BBCDCA /* map_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 268317780E4A8B1900BBCDCA /* map_liquid.c */; };
 		2683177E0E4A8B1900BBCDCA /* map_liquid_update.c in Sources */ = {isa = PBXBuildFile; fileRef = 268317790E4A8B1900BBCDCA /* map_liquid_update.c */; };
 		2683177F0E4A8B1900BBCDCA /* map_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683177A0E4A8B1900BBCDCA /* map_mesh.c */; };
 		268317800E4A8B1900BBCDCA /* map_mesh_update.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683177B0E4A8B1900BBCDCA /* map_mesh_update.c */; };
 		269B2A6A11178C7000E3FDA8 /* map_normals.c in Sources */ = {isa = PBXBuildFile; fileRef = 269B2A6911178C7000E3FDA8 /* map_normals.c */; };
-		26A276F40FC64E9B006B2157 /* auto_generate_second_story.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A276F30FC64E9B006B2157 /* auto_generate_second_story.c */; };
 		26BF8BBB0DBA5B900071D014 /* file_map_read_v1_curves.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */; };
 		26E372E60DA5AB75009653F2 /* file_map_read_v2.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E372E50DA5AB75009653F2 /* file_map_read_v2.c */; };
 		26E8DBA01270E84400ACA294 /* map_cinema.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DB9F1270E84400ACA294 /* map_cinema.c */; };
@@ -28,10 +25,6 @@
 		F5934B04099E651F0063E081 /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5934B03099E651F0063E081 /* PNG.framework */; };
 		F5AD54160BBE1EBD001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54150BBE1EBD001C7C04 /* baseutility.h */; };
 		F5AD541F0BBE1F16001C7C04 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */; };
-		F5CE96BE0D23584100512EE1 /* mapimport.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CE96BD0D23584100512EE1 /* mapimport.h */; };
-		F5CE96C30D23586E00512EE1 /* auto_generate_blocking.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C00D23586E00512EE1 /* auto_generate_blocking.c */; };
-		F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */; };
-		F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C20D23586E00512EE1 /* auto_generate.c */; };
 		F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */; };
 		F5DD16E40907328000721649 /* prepare.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16E00907328000721649 /* prepare.c */; };
 		F5DD18BB0907FD6E00721649 /* spots.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18BA0907FD6E00721649 /* spots.c */; };
@@ -61,14 +54,11 @@
 
 /* Begin PBXFileReference section */
 		2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v3.c; path = Sources/file_map_read_v3.c; sourceTree = "<group>"; };
-		267568D10DBD52E1008BEDEE /* auto_generate_door_ramp_step.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_door_ramp_step.c; path = Sources/auto_generate_door_ramp_step.c; sourceTree = "<group>"; };
-		267568D20DBD52E1008BEDEE /* auto_generate_light_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_light_spot.c; path = Sources/auto_generate_light_spot.c; sourceTree = "<group>"; };
 		268317780E4A8B1900BBCDCA /* map_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_liquid.c; path = Sources/map_liquid.c; sourceTree = "<group>"; };
 		268317790E4A8B1900BBCDCA /* map_liquid_update.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_liquid_update.c; path = Sources/map_liquid_update.c; sourceTree = "<group>"; };
 		2683177A0E4A8B1900BBCDCA /* map_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_mesh.c; path = Sources/map_mesh.c; sourceTree = "<group>"; };
 		2683177B0E4A8B1900BBCDCA /* map_mesh_update.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_mesh_update.c; path = Sources/map_mesh_update.c; sourceTree = "<group>"; };
 		269B2A6911178C7000E3FDA8 /* map_normals.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_normals.c; path = Sources/map_normals.c; sourceTree = "<group>"; };
-		26A276F30FC64E9B006B2157 /* auto_generate_second_story.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_second_story.c; path = Sources/auto_generate_second_story.c; sourceTree = "<group>"; };
 		26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v1_curves.c; path = Sources/file_map_read_v1_curves.c; sourceTree = "<group>"; };
 		26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v2.c; path = Sources/file_map_read_v2.c; sourceTree = "<group>"; };
 		26E8DB9F1270E84400ACA294 /* map_cinema.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_cinema.c; path = Sources/map_cinema.c; sourceTree = "<group>"; };
@@ -89,10 +79,6 @@
 		F5C40DAB05439C17002FA7E9 /* map_frames.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_frames.c; path = Sources/map_frames.c; sourceTree = "<group>"; };
 		F5C5353D051C074F00968AF1 /* dim3maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3maputility.h; path = Headers/dim3maputility.h; sourceTree = "<group>"; };
 		F5C53548051C085800968AF1 /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
-		F5CE96BD0D23584100512EE1 /* mapimport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapimport.h; path = ../dim3Common/Headers/mapimport.h; sourceTree = SOURCE_ROOT; };
-		F5CE96C00D23586E00512EE1 /* auto_generate_blocking.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate_blocking.c; path = Sources/auto_generate_blocking.c; sourceTree = "<group>"; };
-		F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate_utility.c; path = Sources/auto_generate_utility.c; sourceTree = "<group>"; };
-		F5CE96C20D23586E00512EE1 /* auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate.c; path = Sources/auto_generate.c; sourceTree = "<group>"; };
 		F5DA8623059148C40043E685 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Sources/nodes.c; sourceTree = "<group>"; };
 		F5DD16E00907328000721649 /* prepare.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare.c; path = Sources/prepare.c; sourceTree = "<group>"; };
 		F5DD18BA0907FD6E00721649 /* spots.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = spots.c; path = Sources/spots.c; sourceTree = "<group>"; };
@@ -141,7 +127,6 @@
 				F5C5353D051C074F00968AF1 /* dim3maputility.h */,
 				F50AF9280885FF0E00F261B1 /* os_defs.h */,
 				F5AD54150BBE1EBD001C7C04 /* baseutility.h */,
-				F5CE96BD0D23584100512EE1 /* mapimport.h */,
 				F5C53548051C085800968AF1 /* maputility.h */,
 				F56B6200080C885A00E9D08B /* mapprivate.h */,
 			);
@@ -162,23 +147,9 @@
 				F5DA862D059148E60043E685 /* Files */,
 				F5DD177C09074DEE00721649 /* Maps */,
 				F5DA8632059148F80043E685 /* Objects */,
-				F5CE96BF0D23584D00512EE1 /* AutoGenerate */,
 				F5DA86350591490E0043E685 /* Main */,
 			);
 			name = Sources;
-			sourceTree = "<group>";
-		};
-		F5CE96BF0D23584D00512EE1 /* AutoGenerate */ = {
-			isa = PBXGroup;
-			children = (
-				F5CE96C20D23586E00512EE1 /* auto_generate.c */,
-				26A276F30FC64E9B006B2157 /* auto_generate_second_story.c */,
-				267568D10DBD52E1008BEDEE /* auto_generate_door_ramp_step.c */,
-				267568D20DBD52E1008BEDEE /* auto_generate_light_spot.c */,
-				F5CE96C00D23586E00512EE1 /* auto_generate_blocking.c */,
-				F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */,
-			);
-			name = AutoGenerate;
 			sourceTree = "<group>";
 		};
 		F5DA862D059148E60043E685 /* Files */ = {
@@ -259,7 +230,6 @@
 				F56B6201080C885A00E9D08B /* mapprivate.h in Headers */,
 				F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */,
 				F5AD54160BBE1EBD001C7C04 /* baseutility.h in Headers */,
-				F5CE96BE0D23584100512EE1 /* mapimport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -317,20 +287,14 @@
 				F5DD18BB0907FD6E00721649 /* spots.c in Sources */,
 				F511664F093CDA2C00E766C3 /* groups.c in Sources */,
 				F58F951009B7E260004DD122 /* movements.c in Sources */,
-				F5CE96C30D23586E00512EE1 /* auto_generate_blocking.c in Sources */,
-				F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */,
-				F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */,
 				26FC4AAD0DA2F87A00E6ECED /* file_map_read_v1.c in Sources */,
 				26E372E60DA5AB75009653F2 /* file_map_read_v2.c in Sources */,
 				26BF8BBB0DBA5B900071D014 /* file_map_read_v1_curves.c in Sources */,
-				267568D30DBD52E1008BEDEE /* auto_generate_door_ramp_step.c in Sources */,
-				267568D40DBD52E1008BEDEE /* auto_generate_light_spot.c in Sources */,
 				2683177D0E4A8B1900BBCDCA /* map_liquid.c in Sources */,
 				2683177E0E4A8B1900BBCDCA /* map_liquid_update.c in Sources */,
 				2683177F0E4A8B1900BBCDCA /* map_mesh.c in Sources */,
 				268317800E4A8B1900BBCDCA /* map_mesh_update.c in Sources */,
 				2674501C0E513E1900812D9D /* file_map_read_v3.c in Sources */,
-				26A276F40FC64E9B006B2157 /* auto_generate_second_story.c in Sources */,
 				269B2A6A11178C7000E3FDA8 /* map_normals.c in Sources */,
 				26E8DBA01270E84400ACA294 /* map_cinema.c in Sources */,
 			);

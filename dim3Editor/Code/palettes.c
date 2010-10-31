@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "dialog.h"
-#include "common_view.h"
 
 #define palette_type_none				0
 #define palette_type_mesh				1

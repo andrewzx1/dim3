@@ -42,7 +42,6 @@ and can be sold or given away.
 #include "baseutility.h"
 #include "modelutility.h"
 #include "maputility.h"
-#include "mapimport.h"
 
 //
 // Application Headers

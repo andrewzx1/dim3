@@ -469,9 +469,9 @@ bool texture_setting_frame_add_delete(void)
 		texture_setting_frame_save();
 		
 		if (texture_setting_bitmap_open(bitmap_name)) {
-			SetThemeCursor(kThemeWatchCursor);
+			os_set_wait_cursor();
 			map_add_texture_frame(&map,dialog_texture_wind_current_txt,bitmap_name);
-			SetThemeCursor(kThemeArrowCursor);
+			os_set_arrow_cursor();
 		}
 	
 		return(TRUE);
@@ -483,9 +483,9 @@ bool texture_setting_frame_add_delete(void)
 	
 		texture_setting_frame_save();
 		
-		SetThemeCursor(kThemeWatchCursor);
+		os_set_wait_cursor();
 		map_delete_texture_frame(&map,dialog_texture_wind_current_txt);
-		SetThemeCursor(kThemeArrowCursor);
+		os_set_arrow_cursor();
 		
 		return(TRUE);
 	}
@@ -531,10 +531,10 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 				case kTextureSettingFrameBitmapEdit:
 					if (texture_setting_bitmap_open(bitmap_name)) {
 						strcpy(map.textures[dialog_texture_wind_current_txt].frames[dialog_texture_wind_current_frame].name,bitmap_name);
-						SetThemeCursor(kThemeWatchCursor);
+						os_set_wait_cursor();
 						map_refresh_textures(&map);
 						texture_setting_frame_reset();
-						SetThemeCursor(kThemeArrowCursor);
+						os_set_arrow_cursor();
 					}
 					return(noErr);
 										

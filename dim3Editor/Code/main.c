@@ -26,7 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "interface.h"
-#include "common_view.h"
 #include "dialog.h"
 
 bool							done;
@@ -70,40 +69,6 @@ void doloop(void)
 
 /* =======================================================
 
-      Initialization Code
-      
-======================================================= */
-
-// supergumba -- some of this is ANCIENT and probably deperciated, look it up and fix
-void doinit(void)
-{
-	RegisterAppearanceClient();
-	
-	SetThemeCursor(kThemeArrowCursor);
-	
-	MoreMasterPointers(128);
-	FlushEvents(everyEvent,0);
-
-	HMSetTagDelay(250);
-    
-	state.map_opened=FALSE;
-	
-		// setup paths
-
-	file_paths_setup(&file_path_setup);
-	
-		// setup XML
-		
-	setup_xml_read();
-}
-
-void doshutdown(void)
-{
-	UnregisterAppearanceClient();
-}
-
-/* =======================================================
-
       Start Menu
       
 ======================================================= */
@@ -132,8 +97,13 @@ void menu_start(void)
 
 int main(int argc,char *argv[])
 {
-	doinit();
-	
+	os_set_arrow_cursor();
+    
+	state.map_opened=FALSE;
+	file_paths_setup(&file_path_setup);
+		
+	setup_xml_read();
+
 	menu_start();
 	
 	undo_initialize();
@@ -142,8 +112,6 @@ int main(int argc,char *argv[])
 	file_open_map();
 	doloop();
 	file_close_map();
-	
-	doshutdown();
 	
     return(0);
 }

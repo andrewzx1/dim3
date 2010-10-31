@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 #include "dialog.h"
-#include "common_view.h"
 
 extern map_type					map;
 

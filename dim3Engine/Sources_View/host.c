@@ -228,8 +228,10 @@ void host_game_pane(void)
 
 		// dedicated checkbox
 
-	element_checkbox_add("Dedicated",setup.network.dedicated,host_dedicated_id,x,y,TRUE);
-	y+=padding;
+// supergumba -- not fully implemented yet
+	setup.network.dedicated=FALSE;
+//	element_checkbox_add("Dedicated",setup.network.dedicated,host_dedicated_id,x,y,TRUE);
+//	y+=padding;
 
 		// hosts table
 		
@@ -600,9 +602,10 @@ void host_handle_click(int id)
 			element_enable(host_button_host_id,(setup.network.map.count!=0));
 			break;
 
-		case host_dedicated_id:
-			setup.network.dedicated=(element_get_value(host_dedicated_id)!=0);
-			break;
+// supergumba -- not fully implemented yet
+//		case host_dedicated_id:
+//			setup.network.dedicated=(element_get_value(host_dedicated_id)!=0);
+//			break;
 
 		case host_game_bot_count_id:
 			setup.network.bot.count=element_get_value(host_game_bot_count_id);

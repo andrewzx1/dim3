@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "dialog.h"
-#include "common_view.h"
 
 extern map_type					map;
 
