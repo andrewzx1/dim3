@@ -45,6 +45,7 @@ extern bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_s
 extern server_type				server;
 extern view_type				view;
 extern map_type					map;
+extern hud_type					hud;
 extern js_type					js;
 extern network_setup_type		net_setup;
 
@@ -89,6 +90,25 @@ bool cinema_start(char *name,int event_id,char *err_str)
 		// backup the camera
 
 	memmove(&view.cinema.camera_state,&camera,sizeof(camera_type));
+	
+		// backup the HUD states and hid if necessary
+		
+	if (!map.cinema.cinemas[view.cinema.idx].show_hud) {
+	
+		for (n=0;n!=hud.count.bitmap;n++) {
+			hud.bitmaps[n].old_show=hud.bitmaps[n].show;
+			hud.bitmaps[n].show=FALSE;
+		}
+		for (n=0;n!=hud.count.text;n++) {
+			hud.texts[n].old_show=hud.texts[n].show;
+			hud.texts[n].show=FALSE;
+		}
+		for (n=0;n!=hud.count.bar;n++) {
+			hud.bars[n].old_show=hud.bars[n].show;
+			hud.bars[n].show=FALSE;
+		}
+	
+	}
 
 		// run any input freeze
 
@@ -102,7 +122,24 @@ bool cinema_start(char *name,int event_id,char *err_str)
 
 void cinema_end(void)
 {
+	int				n;
 	obj_type		*player_obj;
+	
+		// restore HUD states
+		
+	if (!map.cinema.cinemas[view.cinema.idx].show_hud) {
+	
+		for (n=0;n!=hud.count.bitmap;n++) {
+			hud.bitmaps[n].show=hud.bitmaps[n].old_show;
+		}
+		for (n=0;n!=hud.count.text;n++) {
+			hud.texts[n].show=hud.texts[n].old_show;
+		}
+		for (n=0;n!=hud.count.bar;n++) {
+			hud.bars[n].show=hud.bars[n].old_show;
+		}
+	
+	}
 
 		// turn off input freeze
 
@@ -319,10 +356,10 @@ void cinema_action_run_particle(map_cinema_action_type *action)
 void cinema_action_run_hud_bitmap(map_cinema_action_type *action)
 {
 	hud_bitmap_type			*bitmap;
-
+	
 	bitmap=hud_bitmaps_find(action->actor_name);
 	if (bitmap==NULL) return;
-
+	
 	switch (action->action) {
 		case cinema_action_show:
 			bitmap->show=TRUE;
@@ -449,9 +486,16 @@ void cinema_run(void)
 
 	cinema_done=cinema_actions();
 	
-		// cinema over or mouse button pushed?
+		// mouse buttons end cinema
+		// if we are in an input freeze
+		
+	if (map.cinema.cinemas[view.cinema.idx].freeze_input) {
+		if (input_gui_get_mouse_left_button_down()) cinema_done=TRUE;
+	}
 	
-	if ((cinema_done) || (input_gui_get_mouse_left_button_down())) {
+		// cinema over
+	
+	if (cinema_done) {
 
 			// send the finish event
 

@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Walk View Functions
+ Usage: View Functions
 
 ***************************** License ********************************
 
@@ -26,15 +26,16 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// walk view
+// view
 //
 
-extern bool walk_view_initialize(void);
-extern void walk_view_shutdown(void);
-extern void walk_view_setup_default_views(void);
-extern void walk_view_split_horizontal(void);
-extern void walk_view_split_vertical(void);
-extern void walk_view_remove(void);
+extern bool view_initialize(void);
+extern void view_shutdown(void);
+extern void view_setup_default_views(void);
+extern void view_split_horizontal(void);
+extern void view_split_vertical(void);
+extern void view_split_remove(void);
+extern void view_center_all(bool reset_ang);
 extern void walk_view_get_lookat_vector(editor_view_type *view,float dist,d3vct *look_vct);
 extern void walk_view_get_pixel_box(editor_view_type *view,d3rect *box);
 extern void walk_view_set_viewport_box(d3rect *box,bool erase,bool use_background);

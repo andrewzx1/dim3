@@ -26,7 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "interface.h"
-#include "common_view.h"
 #include "dialog.h"
 
 #define kSoundName									FOUR_CHAR_CODE('snam')

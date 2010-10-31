@@ -31,10 +31,8 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "view.h"
 #include "dialog.h"
-#include "common_view.h"
-#include "walk_view.h"
-#include "import.h"
 
 extern map_type				map;
 extern editor_state_type	state;
@@ -221,7 +219,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandFileAutoGenerateMap:
-			auto_generate_map();
+			dialog_map_auto_generate_setting_run();
 			return(TRUE);
 			
 			// edit menu
@@ -346,19 +344,19 @@ bool menu_event_run(int cmd)
 			break;
 
 		case kCommandViewSplitHorizontal:
-			walk_view_split_horizontal();
+			view_split_horizontal();
 			menu_update_view();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewSplitVertical:
-			walk_view_split_vertical();
+			view_split_vertical();
 			menu_update_view();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewRemoveSplit:
-			walk_view_remove();
+			view_split_remove();
 			menu_update_view();
 			main_wind_draw();
 			break;

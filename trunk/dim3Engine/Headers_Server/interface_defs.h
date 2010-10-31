@@ -298,7 +298,8 @@ typedef struct		{
 						int						x,y,x_size,y_size,image_idx,show_tick;
 						float					alpha,rot;
 						char					name[name_str_len],filename[file_str_len];
-						bool					show,flash,flip_horz,flip_vert,team_tint;
+						bool					show,old_show,
+												flash,flip_horz,flip_vert,team_tint;
 						hud_bitmap_repeat_type	repeat;
 						image_animation_type	animate;
 						hud_item_fade_type		fade;
@@ -308,7 +309,7 @@ typedef struct		{
 						int						x,y,size,just,special;
 						float					alpha;
 						char					name[name_str_len],data[max_hud_text_str_sz];
-						bool					show,has_return;
+						bool					show,old_show,has_return;
 						d3col					color;
 						hud_item_fade_type		fade;
 					} hud_text_type;
@@ -317,7 +318,7 @@ typedef struct		{
 						int						x,y,x_size,y_size;
 						float					fill_alpha,outline_alpha,value;
 						char					name[name_str_len];
-						bool					outline,vert,show;
+						bool					show,old_show,outline,vert;
 						d3col					fill_start_color,fill_end_color,outline_color;
 					} hud_bar_type;
 

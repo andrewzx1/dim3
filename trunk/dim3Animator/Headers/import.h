@@ -43,5 +43,3 @@ extern void clear_materials(void);
 extern int texture_count(void);
 extern int texture_pick(char *material_name,char *err_str);
 extern bool texture_use_single(void);
-
-extern bool nav_open_file(char *filetype,char *path);

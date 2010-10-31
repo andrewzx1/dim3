@@ -31,10 +31,8 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "view.h"
 #include "dialog.h"
-#include "walk_view.h"
-#include "common_view.h"
-#include "import.h"
 
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
@@ -212,7 +210,7 @@ int import_texture_pick(char *material_name)
 	sprintf(title,"Material %s Found - Select Bitmap",material_name);
 	dialog_alert(title,"Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
 	
-	if (!import_load_file(path,"png")) return(0);
+	if (!os_load_file(path,"png")) return(0);
 	
 		// is it good?
 		
@@ -276,7 +274,7 @@ void piece_add_obj_mesh(void)
 	
 		// import the file
 		
-	if (!import_load_file(path,"obj")) return;
+	if (!os_load_file(path,"obj")) return;
 
 	if (!textdecode_open(path,0x20)) {
 		dialog_alert("Import Failed","Could not open OBJ file.");
@@ -762,7 +760,7 @@ void piece_add_obj_mesh_uv(void)
 	
 		// import the file
 		
-	if (!import_load_file(path,"obj")) return;
+	if (!os_load_file(path,"obj")) return;
 
 	if (!textdecode_open(path,0x20)) {
 		dialog_alert("Import Failed","Could not open OBJ file.");
@@ -959,7 +957,7 @@ void piece_add_height_map_mesh(void)
 	
 		// get the png
 		
-	if (!import_load_file(path,"png")) return;
+	if (!os_load_file(path,"png")) return;
 	data=bitmap_load_png_data(path,&bwid,&bhigh,&alpha_channel);
 	if (data==NULL) return;
 	

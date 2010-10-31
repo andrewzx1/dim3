@@ -26,8 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "interface.h"
-#include "common_view.h"
-#include "walk_view.h"
+#include "view.h"
 
 extern d3rect				tool_palette_box,txt_palette_box;
 
@@ -309,7 +308,7 @@ void main_wind_open(void)
 	texture_palette_setup();
 	
 	main_wind_setup();
-	walk_view_initialize();
+	view_initialize();
    
         // misc setup
         
@@ -343,7 +342,7 @@ void main_wind_close(void)
 	
         // close views
 		
-	walk_view_shutdown();
+	view_shutdown();
 	tool_palette_shutdown();
 	
 	text_shutdown();
@@ -437,53 +436,6 @@ void main_wind_draw_no_swap(void)
 		
 	tool_palette_draw();
 	texture_palette_draw(map.textures);
-}
-
-/* =======================================================
-
-      Center Position in Map
-	        
-======================================================= */
-
-void main_wind_center_position_in_map(void)
-{
-	int					n;
-	d3pnt				pnt;
-	d3ang				ang;
-	
-		// view angles
-		
-	ang.x=0.0f;
-	ang.y=0.0f;
-	ang.z=0.0f;
-	
-	walk_view_set_angle(&ang);
-	
-		// look for player spot first
-		
-	for (n=0;n!=map.nspot;n++) {
-		if ((strcasecmp(map.spots[n].name,"start")==0) || (strcasecmp(map.spots[n].script,"player")==0)) {
-			walk_view_set_position_y_shift(&map.spots[n].pnt,-(map_enlarge*20));
-			return;
-		}
-	}
-
-		// otherwise do first mesh with vertexes
-		
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (map.mesh.meshes[n].nvertex!=0) {
-			map_mesh_calculate_center(&map,n,&pnt);
-			walk_view_set_position(&pnt);
-			return;
-		}
-	}
-	
-		// just center in total map size
-		
-	pnt.x=map_max_size/2;
-	pnt.y=map_max_size/2;
-	pnt.z=map_max_size/2;
-	walk_view_set_position(&pnt);
 }
 
 /* =======================================================

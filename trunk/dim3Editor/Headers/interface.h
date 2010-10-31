@@ -76,7 +76,6 @@ extern void main_wind_resize(void);
 extern void main_wind_rotate_view(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
-extern void main_wind_center_position_in_map(void);
 extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
 extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
@@ -116,8 +115,137 @@ extern void launch_map_script_editor(void);
 extern void launch_spot_script_editor(char *script_name);
 
 //
-// auto generator
+// import text decoder
 //
 
+extern int textdecode_count_linestarts(void);
+extern void textdecode_linestarts(void);
+extern bool textdecode_open(char *path,char p_piece_break);
+extern void textdecode_close(void);
+extern int textdecode_count(void);
+extern int textdecode_find(int str_line,char *txt);
+extern void textdecode_get_line(int i,char *txt);
+extern void textdecode_get_piece(int i,int k,char *txt);
+
+//
+// auto-generate maps
+//
+
+extern int ag_get_styles(char *style_list);
 extern bool ag_generate_map(ag_build_setup_type *build_setup);
 
+//
+// selection routines
+//
+
+extern void select_clear(void);
+extern void select_add(int type,int main_idx,int sub_idx);
+extern int select_count(void);
+extern void select_get(int sel_idx,int *type,int *main_idx,int *sub_idx);
+extern void select_switch(int sel_idx,int type,int main_idx,int sub_idx);
+extern int select_find(int type,int main_idx,int sub_idx);
+extern bool select_check(int type,int main_idx,int sub_idx);
+extern bool select_has_type(int type);
+extern void select_flip(int type,int main_idx,int sub_idx);
+extern void select_remove_type(int type);
+extern void select_delete_move_index(int type,int main_idx,int sub_idx);
+extern void select_sort(void);
+extern void select_duplicate_clear(void);
+extern void select_duplicate_add(int type,int main_idx,int sub_idx);
+extern void select_duplicate_copy(void);
+
+//
+// selection move routines
+//
+
+extern void select_get_extent(d3pnt *min,d3pnt *max);
+extern void select_get_center(d3pnt *mid);
+extern void select_get_angle(d3ang *ang);
+
+//
+// palette routines
+//
+
+extern void palette_initialize(void);
+extern void palette_shutdown(void);
+extern void palette_close(void);
+extern void palette_reset(void);
+
+//
+// groups
+//
+
+extern int group_count(int group_idx);
+extern void group_set(int group_idx);
+extern void group_clear(int group_idx,bool delete_shift);
+
+//
+// piece routines
+//
+
+extern void piece_duplicate(void);
+extern void piece_delete_face(void);
+extern void piece_delete(void);
+extern void piece_select_more(void);
+extern void piece_tesselate(void);
+extern void piece_resize(void);
+extern void piece_reposition(void);
+extern void piece_skew(void);
+extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
+extern void piece_rotate(float rot_x,float rot_y,float rot_z);
+extern void piece_free_rotate(void);
+extern void piece_move(int move_x,int move_y,int move_z);
+extern void piece_mesh_select_all_poly(void);
+extern void mesh_snap_to_grid(int mesh_idx);
+extern void mesh_poly_snap_to_grid(int mesh_idx,int poly_idx);
+extern void mesh_vertexes_snap_to_grid(int mesh_idx);
+extern void piece_mesh_snap_to_grid(void);
+extern void piece_mesh_snap_closest_vertex(void);
+extern void piece_mesh_poly_snap_to_grid(void);
+extern void piece_mesh_vertexes_snap_to_grid(void);
+extern void piece_rotate_uvs(void);
+extern void piece_flip_uvs(bool flip_u,bool flip_v);
+extern void piece_reset_uvs(bool poly_only);
+extern void piece_whole_uvs(bool poly_only);
+extern void piece_single_uvs(bool poly_only);
+extern void piece_mesh_recalc_normals(void);
+extern void piece_mesh_poly_invert_normals(map_mesh_poly_type *poly);
+extern void piece_mesh_invert_normals(bool poly_only);
+extern void piece_poly_hole(void);
+extern void piece_key(char ch);
+
+//
+// piece create routines
+//
+
+extern bool piece_create_texture_ok(void);
+extern void piece_create_get_spot(d3pnt *pnt);
+extern void piece_create_spot(void);
+extern void piece_create_scenery(void);
+extern void piece_create_light(void);
+extern void piece_create_sound(void);
+extern void piece_create_particle(void);
+extern void piece_create_node(void);
+extern void piece_create_liquid(void);
+
+//
+// piece mesh routines
+//
+
+extern void piece_add_obj_mesh(void);
+extern void piece_add_obj_mesh_uv(void);
+extern void piece_add_height_map_mesh(void);
+extern void piece_add_grid_mesh(void);
+extern void piece_add_polygon_mesh(void);
+extern void piece_combine_mesh(void);
+extern void piece_split_mesh(void);
+extern void map_mesh_move_all(int x,int y,int z);
+extern void map_mesh_reset_uv_all(void);
+extern void map_optimize(void);
+
+//
+// node routines
+//
+
+extern bool node_link_click(int node_idx);
+extern void node_path_rebuild(void);

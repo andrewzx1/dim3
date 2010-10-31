@@ -150,10 +150,10 @@ int texture_pick(char *material_name,char *err_str)
 	
 		// pick a bitmap
 		
-	sprintf(title,"Material %s Found - Select Bitmap",material_name);
+	sprintf(title,"Material %s Found - Select a PNG Bitmap",material_name);
 	dialog_alert(title,"Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
 	
-	if (!nav_open_file("png",path)) {
+	if (!os_load_file(path,"png")) {
 		strcpy(err_str,"No texture was choosen.");
 		return(-1);
 	}

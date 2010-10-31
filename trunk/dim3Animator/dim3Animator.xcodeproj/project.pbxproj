@@ -65,7 +65,6 @@
 		F5A42DA40555EC87002DF965 /* model_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608E00BE2A8F7F000001 /* model_window.c */; };
 		F5A42DA60555EC87002DF965 /* texture_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111609200BE2A8F7F000001 /* texture_import.c */; };
 		F5A42DA80555EC87002DF965 /* obj_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C12EAB0143003C01000001 /* obj_import.c */; };
-		F5A42DA90555EC87002DF965 /* nav_serve.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CAF0140183DF6A013CEF5C /* nav_serve.c */; };
 		F5A42DAE0555EC87002DF965 /* animation_tab.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C01E8301EABB0C01A091D9 /* animation_tab.c */; };
 		F5A42DAF0555EC87002DF965 /* pose_tab.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C01E8401EABB0C01A091D9 /* pose_tab.c */; };
 		F5A42DB00555EC87002DF965 /* lwo_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5F8B3D10239B6DE010E3C3C /* lwo_import.c */; };
@@ -222,7 +221,6 @@
 		F5C5354609267C6D00663E36 /* dialog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dialog.h; path = Headers/dialog.h; sourceTree = "<group>"; };
 		F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_model_settings.c; path = Code/dialog_model_settings.c; sourceTree = "<group>"; };
 		F5CA4EF7051010AD0055C8B8 /* modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelutility.h; path = ../dim3Common/Headers/modelutility.h; sourceTree = SOURCE_ROOT; };
-		F5CAF0140183DF6A013CEF5C /* nav_serve.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nav_serve.c; path = Code/nav_serve.c; sourceTree = "<group>"; };
 		F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_play_blend_animation.c; path = Code/dialog_play_blend_animation.c; sourceTree = "<group>"; };
 		F5D97E160857E233000BB6A3 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = Code/dialog_file_open.c; sourceTree = "<group>"; };
 		F5D97E170857E233000BB6A3 /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = Code/dialog_file_new.c; sourceTree = "<group>"; };
@@ -291,7 +289,6 @@
 				F5263C1D0CC58C7E00A84EB9 /* c4d_xml_import.c */,
 				0111609200BE2A8F7F000001 /* texture_import.c */,
 				F579A01D07DFDF8400DB4213 /* insert.c */,
-				F5CAF0140183DF6A013CEF5C /* nav_serve.c */,
 			);
 			name = Import;
 			sourceTree = "<group>";
@@ -583,7 +580,6 @@
 				F5A42DA40555EC87002DF965 /* model_window.c in Sources */,
 				F5A42DA60555EC87002DF965 /* texture_import.c in Sources */,
 				F5A42DA80555EC87002DF965 /* obj_import.c in Sources */,
-				F5A42DA90555EC87002DF965 /* nav_serve.c in Sources */,
 				F5A42DAE0555EC87002DF965 /* animation_tab.c in Sources */,
 				F5A42DAF0555EC87002DF965 /* pose_tab.c in Sources */,
 				F5A42DB00555EC87002DF965 /* lwo_import.c in Sources */,

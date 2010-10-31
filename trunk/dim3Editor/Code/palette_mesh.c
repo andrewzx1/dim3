@@ -26,7 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "interface.h"
-#include "common_view.h"
 #include "dialog.h"
 
 #define kMeshSettingTabCount					3

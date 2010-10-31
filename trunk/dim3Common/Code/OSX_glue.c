@@ -28,9 +28,11 @@ and can be sold or given away.
 extern WindowRef				wind;
 extern AGLContext				ctx;
 
+char							os_load_file_ext[32];
+
 /* =======================================================
 
-      OS Specific Utility Routines
+      Paths and Directories
       
 ======================================================= */
 
@@ -44,6 +46,17 @@ void os_create_directory(char *path)
    mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
 }
 
+/* =======================================================
+
+      Windows
+      
+======================================================= */
+
+void os_application_quit(void)
+{
+	QuitApplicationEventLoop();
+}
+
 void os_get_window_box(d3rect *box)
 {
 	Rect			wbox;
@@ -54,11 +67,6 @@ void os_get_window_box(d3rect *box)
 	box->rx=wbox.right;
 	box->ty=wbox.top;
 	box->by=wbox.bottom;
-}
-
-void os_application_quit(void)
-{
-	QuitApplicationEventLoop();
 }
 
 void os_select_window(void)
@@ -78,6 +86,12 @@ void os_swap_gl_buffer(void)
 {
 	aglSwapBuffers(ctx);
 }
+
+/* =======================================================
+
+      Cursors
+      
+======================================================= */
 
 void os_set_arrow_cursor(void)
 {
@@ -104,6 +118,12 @@ void os_set_resize_cursor(void)
    SetThemeCursor(kThemeResizeUpDownCursor);
 }
 
+/* =======================================================
+
+      Menus
+      
+======================================================= */
+
 void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 {
 	if (enable) {
@@ -124,10 +144,11 @@ void os_menu_redraw(void)
 	DrawMenuBar();
 }
 
-bool os_button_down(void)
-{
-	return(Button());
-}
+/* =======================================================
+
+      Keys
+      
+======================================================= */
 
 bool os_key_space_down(void)
 {
@@ -160,6 +181,17 @@ bool os_key_shift_down(void)
 	return((GetCurrentKeyModifiers()&shiftKey)!=0);
 }
 
+/* =======================================================
+
+      Mouse
+      
+======================================================= */
+
+bool os_button_down(void)
+{
+	return(Button());
+}
+
 bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
 {
 	Point					uipt;
@@ -178,4 +210,89 @@ bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
 	
 	return(track==kMouseTrackingMouseReleased);
 }
+
+/* =======================================================
+
+      Load a File
+      
+======================================================= */
+
+void os_load_file_event_proc(const NavEventCallbackMessage callBackSelector,NavCBRecPtr callBackParms,NavCallBackUserData callBackUD)
+{
+}
+
+Boolean os_load_file_filter(AEDesc *theItem,void *info,void *callBackUD,NavFilterModes filterMode)
+{
+    char					*c,filename[256];
+    NavFileOrFolderInfo		*filefolder;
+    AEDesc					desc;
+	HFSUniStr255			uniname;
+    CFStringRef				cfstr;
+    FSRef					fref;
+    
+    if ((theItem->descriptorType!=typeFSS) && (theItem->descriptorType!=typeFSRef)) return(FALSE);
+
+    filefolder=(NavFileOrFolderInfo*)info;
+    if (filefolder->isFolder) return(TRUE);
+
+	AECoerceDesc(theItem,typeFSRef,&desc);
+	AEGetDescData(&desc,(void*)&fref,sizeof(FSRef));
+    AEDisposeDesc(&desc);
+
+    FSGetCatalogInfo(&fref,kFSCatInfoNone,NULL,&uniname,NULL,NULL);
+	cfstr=CFStringCreateWithCharacters(kCFAllocatorDefault,uniname.unicode,uniname.length);
+	CFStringGetCString(cfstr,filename,256,kCFStringEncodingMacRoman);
+    CFRelease(cfstr);
+    
+    c=strchr(filename,'.');
+    if (c==NULL) return(FALSE);
+    
+    return(strcasecmp((c+1),os_load_file_ext)==0);
+}
+
+bool os_load_file(char *path,char *ext)
+{
+    NavDialogCreationOptions	navoption;
+    NavReplyRecord				navreply;
+	NavEventUPP					navevent;
+    NavObjectFilterUPP			navfilter;
+	AEKeyword					keyword;
+	DescType					typecode;
+    Size						sz;
+    NavDialogRef				diagref;
+	FSRef						fsref;
+	
+	strcpy(os_load_file_ext,ext);
+	
+		// get the file
+		
+	NavGetDefaultDialogCreationOptions(&navoption);
+	navoption.optionFlags-=kNavDontAddTranslateItems;
+	navoption.optionFlags-=kNavAllowPreviews;
+
+	navevent=NewNavEventUPP(os_load_file_event_proc);
+	navfilter=NewNavObjectFilterUPP(os_load_file_filter);
+	NavCreateGetFileDialog(&navoption,NULL,navevent,NULL,navfilter,NULL,&diagref);
+	NavDialogRun(diagref);
+ 
+ 	NavDialogGetReply(diagref,&navreply);
+	NavDialogDispose(diagref);
+	DisposeNavEventUPP(navevent);
+    DisposeNavObjectFilterUPP(navfilter);
+    
+	if (!navreply.validRecord) {
+		NavDisposeReply(&navreply);
+        return(FALSE);
+    }
+    
+	AEGetNthPtr(&(navreply.selection),1,typeFSRef,&keyword,&typecode,(void*)&fsref,sizeof(FSRef),&sz);
+    NavDisposeReply(&navreply);
+	
+    FSRefMakePath(&fsref,(unsigned char*)path,1024);
+	
+	return(TRUE);
+}
+
+
+
 

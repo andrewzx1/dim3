@@ -26,9 +26,8 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "interface.h"
+#include "view.h"
 #include "dialog.h"
-#include "walk_view.h"
-#include "common_view.h"
 
 #define kMeshPolySettingOffX					FOUR_CHAR_CODE('offx')
 #define kMeshPolySettingOffY					FOUR_CHAR_CODE('offy')

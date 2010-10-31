@@ -144,7 +144,7 @@ void actions_list_reset(int action_idx)
 void cinemas_reset_buttons(void)
 {
 	ControlRef		delete_cinema_ctrl,
-					add_action_ctrl,delete_action_ctrl;
+					add_action_ctrl,sort_action_ctrl,delete_action_ctrl;
 	ControlID		ctrl_id;
 	
 	ctrl_id.signature=kCinemaDeleteButton;
@@ -155,6 +155,10 @@ void cinemas_reset_buttons(void)
 	ctrl_id.id=0;
 	GetControlByID(dialog_cinemas_wind,&ctrl_id,&add_action_ctrl);
 	
+	ctrl_id.signature=kActionSortButton;
+	ctrl_id.id=0;
+	GetControlByID(dialog_cinemas_wind,&ctrl_id,&sort_action_ctrl);
+	
 	ctrl_id.signature=kActionDeleteButton;
 	ctrl_id.id=0;
 	GetControlByID(dialog_cinemas_wind,&ctrl_id,&delete_action_ctrl);
@@ -162,10 +166,12 @@ void cinemas_reset_buttons(void)
 	if (dialog_cinema_current_idx==-1) {
 		DisableControl(delete_cinema_ctrl);
 		DisableControl(add_action_ctrl);
+		DisableControl(sort_action_ctrl);
 	}
 	else {
 		EnableControl(delete_cinema_ctrl);
 		EnableControl(add_action_ctrl);
+		EnableControl(sort_action_ctrl);
 	}
 	
 	if (dialog_action_current_idx==-1) {
@@ -174,6 +180,77 @@ void cinemas_reset_buttons(void)
 	else {
 		EnableControl(delete_action_ctrl);
 	}
+}
+
+/* =======================================================
+
+      Map Cinemas Action Sorting
+      
+======================================================= */
+
+void cinemas_action_sort(void)
+{
+	int						n,k,idx,count,sz;
+	int						*sort_list;
+	map_cinema_type			*cinema;
+	map_cinema_action_type	*action,*a_ptr;
+	
+	cinema=&map.cinema.cinemas[dialog_cinema_current_idx];
+	if (cinema->naction<=1) return;
+	
+		// sort the items
+		
+	sort_list=(int*)malloc((cinema->naction+1)*sizeof(int));
+	if (sort_list==NULL) return;
+	
+	count=0;
+	action=cinema->actions;
+	
+	for (n=0;n!=cinema->naction;n++) {
+	
+		idx=count;
+		
+		for (k=0;k!=count;k++) {
+			if (cinema->actions[sort_list[k]].start_msec>action->start_msec) {
+				idx=k;
+				break;
+			}
+		}
+		
+		sz=(count-idx)*sizeof(int);
+		if (sz>0) memmove(&sort_list[idx+1],&sort_list[idx],sz);
+		
+		sort_list[idx]=n;
+		count++;
+
+		action++;
+	}
+	
+		// find the new index
+		
+	for (n=0;n!=cinema->naction;n++) {
+		if (sort_list[n]==dialog_action_current_idx) {
+			dialog_action_current_idx=n;
+			break;
+		}
+	}
+	
+		// sort the list
+		
+	a_ptr=(map_cinema_action_type*)malloc(cinema->naction*sizeof(map_cinema_action_type));
+	if (a_ptr==NULL) {
+		free(sort_list);
+		return;
+	}
+	
+	for (n=0;n!=cinema->naction;n++) {
+		memmove(&a_ptr[n],&cinema->actions[sort_list[n]],sizeof(map_cinema_action_type));
+	}
+	
+	memmove(cinema->actions,a_ptr,(cinema->naction*sizeof(map_cinema_action_type)));
+	free(a_ptr);
+		
+	free(sort_list);
 }
 
 /* =======================================================
@@ -238,6 +315,16 @@ static pascal OSStatus cinemas_event_proc(EventHandlerCallRef handler,EventRef e
 					}
 					
 					actions_list_reset(idx);
+					Draw1Control(actions_list_get_ctrl());
+					
+					cinemas_reset_buttons();
+
+					return(noErr);
+					
+				case kActionSortButton:
+					cinemas_action_sort();
+					
+					actions_list_reset(dialog_action_current_idx);
 					Draw1Control(actions_list_get_ctrl());
 					
 					cinemas_reset_buttons();
@@ -366,7 +453,7 @@ static pascal OSStatus actions_list_item_proc(ControlRef ctrl,DataBrowserItemID 
 			
 			action=&map.cinema.cinemas[dialog_cinema_current_idx].actions[action_idx];
 			if (action->action==cinema_action_move) {
-				sprintf(str,"%d to %d msec",action->start_msec,action->end_msec);
+				sprintf(str,"%d - %d msec",action->start_msec,action->end_msec);
 			}
 			else {
 				sprintf(str,"%d msec",action->start_msec);

@@ -142,7 +142,7 @@ extern void dialog_texture_setting_run(int txt);
 //
 
 extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
-extern bool dialog_map_auto_generate_setting_run(bool first);
+extern bool dialog_map_auto_generate_setting_run(void);
 
 
 
